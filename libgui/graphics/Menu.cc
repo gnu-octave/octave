@@ -120,7 +120,7 @@ namespace QtHandles
 
             int count = 0;
 
-            foreach (QAction *a, m_parent->actions ())
+            for (auto *a : m_parent->actions ())
               if (! a->isSeparator ())
                 count++;
 
@@ -133,7 +133,7 @@ namespace QtHandles
             int count = 0;
             QAction *before = nullptr;
 
-            foreach (QAction *a, m_parent->actions ())
+            for (auto *a : m_parent->actions ())
               {
                 if (! a->isSeparator ())
                   {
@@ -238,7 +238,7 @@ namespace QtHandles
             {
               int count = 0;
 
-              foreach (QAction *a, m_parent->actions ())
+              for (auto *a : m_parent->actions ())
                 {
                   if (! a->isSeparator ())
                     {
@@ -308,7 +308,7 @@ namespace QtHandles
       {
         double count = 1.0;
 
-        foreach (QAction *a, m_parent->actions ())
+        for (auto *a : m_parent->actions ())
           {
             if (! a->isSeparator ())
               {

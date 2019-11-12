@@ -137,7 +137,7 @@ namespace QtHandles
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 
-    foreach (QObject *qObj, children ())
+    for (auto *qObj : children ())
       {
         if (qObj->isWidgetType ())
           {

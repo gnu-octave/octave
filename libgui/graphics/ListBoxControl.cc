@@ -180,7 +180,7 @@ namespace QtHandles
         Matrix value (dim_vector (1, l.size ()));
         int i = 0;
 
-        foreach (const QModelIndex& idx, l)
+        for (const auto& idx : l)
           value(i++) = idx.row () + 1;
 
         emit gh_set_event (m_handle, "value", octave_value (value), false);

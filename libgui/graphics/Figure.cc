@@ -291,8 +291,7 @@ namespace QtHandles
     if (canvas)
       canvas->redraw ();
 
-    foreach (QObject *qobj,
-             qWidget<QWidget> ()->findChildren<QObject*> ())
+    for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject*> ())
       {
         if (qobj->objectName () == "UIPanel"
             || qobj->objectName () == "UIButtonGroup"
@@ -382,7 +381,7 @@ namespace QtHandles
           int toffset = 0;
           int boffset = 0;
 
-          foreach (QToolBar *tb, win->findChildren<QToolBar*> ())
+          for (auto *tb : win->findChildren<QToolBar*> ())
             if (! tb->isHidden ())
               toffset += tb->sizeHint ().height ();
 
@@ -448,8 +447,7 @@ namespace QtHandles
         else
           m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
         // Signal the change to uipanels as well
-        foreach (QObject *qobj,
-                 qWidget<QWidget> ()->findChildren<QObject*> ())
+        for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject*> ())
           {
             if (qobj->objectName () == "UIPanel")
               {
@@ -475,8 +473,7 @@ namespace QtHandles
           m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
         break;
         // Signal the change to uipanels as well
-        foreach (QObject *qobj,
-                 qWidget<QWidget> ()->findChildren<QObject*> ())
+        for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject*> ())
           {
             if (qobj->objectName () == "UIPanel")
               {
@@ -903,7 +900,7 @@ namespace QtHandles
     // Enable mouse tracking on every widgets
     m_container->setMouseTracking (true);
     m_container->canvas (m_handle)->qWidget ()->setMouseTracking (true);
-    foreach (QWidget *w, m_container->findChildren<QWidget*> ())
+    for (auto *w : m_container->findChildren<QWidget*> ())
       w->setMouseTracking (true);
   }
 

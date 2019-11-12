@@ -151,9 +151,9 @@ namespace QtHandles
 
     if (frame->hasMouseTracking ())
       {
-        foreach (QWidget *w, frame->findChildren<QWidget*> ())
+        for (auto *w : frame->findChildren<QWidget*> ())
           w->setMouseTracking (true);
-        foreach (QWidget *w, buttongroup->findChildren<QWidget*> ())
+        for (auto *w : buttongroup->findChildren<QWidget*> ())
           w->setMouseTracking (true);
       }
 

@@ -68,7 +68,7 @@ namespace QtHandles
   bool GenericEventNotifySender::notifyReceiversBefore (QObject *obj,
       QEvent *evt)
   {
-    foreach (GenericEventNotifyReceiver *r, m_receivers)
+    for (auto *r : m_receivers)
       if (r->eventNotifyBefore (obj, evt))
         return true;
 
@@ -79,7 +79,7 @@ namespace QtHandles
   void GenericEventNotifySender::notifyReceiversAfter (QObject *obj,
       QEvent *evt)
   {
-    foreach (GenericEventNotifyReceiver *r, m_receivers)
+    for (auto *r : m_receivers)
       r->eventNotifyAfter (obj, evt);
   }
 

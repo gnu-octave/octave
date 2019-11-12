@@ -77,7 +77,7 @@ namespace QtHandles
       string_vector v (l.length ());
       int i = 0;
 
-      foreach (const QString& s, l)
+      for (const auto& s : l)
         v[i++] = toStdString (s);
 
       return v;

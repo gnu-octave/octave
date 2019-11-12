@@ -595,7 +595,7 @@ Undocumented internal function.
 DEFMETHOD (commandwindow, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} commandwindow ()
-Show the the GUI command window and give it the keyboard focus.
+Show the GUI command window and give it the keyboard focus.
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -609,7 +609,7 @@ Show the the GUI command window and give it the keyboard focus.
 DEFMETHOD (commandhistory, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} commandhistory ()
-Show the the GUI command history window and give it the keyboard focus.
+Show the GUI command history window and give it the keyboard focus.
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -623,7 +623,7 @@ Show the the GUI command history window and give it the keyboard focus.
 DEFMETHOD (workspace, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} workspace ()
-Show the the GUI workspace window and give it the keyboard focus.
+Show the GUI workspace window and give it the keyboard focus.
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -637,7 +637,7 @@ Show the the GUI workspace window and give it the keyboard focus.
 DEFMETHOD (filebrowser, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} filebrowser ()
-Show the the GUI file browser window and give it the keyboard focus.
+Show the GUI file browser window and give it the keyboard focus.
 @end deftypefn */)
 {
   if (args.length () != 0)

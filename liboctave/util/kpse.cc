@@ -169,7 +169,7 @@ READABLE (const std::string& fn)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-  std::wstring w_fn = L"\\\\?\\" + octave::sys::u8_to_wstring (fn);
+  std::wstring w_fn = octave::sys::u8_to_wstring (fn);
 
   DWORD f_attr = GetFileAttributesW (w_fn.c_str ());
 

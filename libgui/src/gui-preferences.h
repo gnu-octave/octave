@@ -49,6 +49,4 @@ struct gui_pref
   const QVariant def;  // the default value
 };
 
-#include "gui-preferences-global.h"
-
 #endif

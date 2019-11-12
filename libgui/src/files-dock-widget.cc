@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "files-dock-widget.h"
 #include "gui-preferences-fb.h"
+#include "gui-preferences-global.h"
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 

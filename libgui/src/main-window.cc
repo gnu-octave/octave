@@ -55,10 +55,10 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_QSCINTILLA)
 #  include "file-editor.h"
 #endif
-#include "gui-preferences.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-ed.h"
+#include "gui-preferences-global.h"
 #include "gui-preferences-mw.h"
 #include "gui-preferences-nr.h"
 #include "gui-settings.h"

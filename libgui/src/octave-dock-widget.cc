@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolBar>
 #include <QMenuBar>
 
-#include "gui-preferences.h"
 #include "gui-preferences-dw.h"
+#include "gui-preferences-global.h"
 #include "gui-preferences-mw.h"
 #include "gui-settings.h"
 #include "octave-dock-widget.h"

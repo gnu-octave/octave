@@ -182,7 +182,7 @@ namespace octave
     gui_settings *settings = rmgr.get_settings ();
     m_view->sortByColumn (
       settings->value (ws_sort_column).toInt (),
-      static_cast<Qt::SortOrder> (settings->value (ws_sort_order.key, ws_sort_column.def).toUInt ()));
+      static_cast<Qt::SortOrder> (settings->value (ws_sort_order).toUInt ()));
 
     m_model = model;
   }

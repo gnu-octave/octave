@@ -124,6 +124,9 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
 ### Alphabetical list of new functions added in Octave 6
 
+* `commandhistory`
+* `commandwindow`
+* `filebrowser`
 * `is_same_file`
 * `lightangle`
 * `namedargs2cell`
@@ -137,6 +140,7 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 * `weboptions`
 * `webread`
 * `webwrite`
+* `workspace`
 
 
 ### Deprecated functions and properties

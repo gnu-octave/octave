@@ -797,8 +797,12 @@ namespace octave
     // Create tmp file with script for echoing a command and adding
     // the the history
     QString echo_hist = QString (
-        "function cnt = %2 (oldcnt, i, command, line)\n"
-        "   cnt = oldcnt;\n"
+        "function %2 (i, command, line)\n"
+        "   persistent cnt;\n"
+        "   mlock ();\n"
+        "   if (i == 0)\n"
+        "     cnt = -1;\n"
+        "   end\n"
         "   if cnt < i\n"
         "       cnt = i;\n"
         "       prompt = PS1;\n"
@@ -824,7 +828,7 @@ namespace octave
     // evaluated line and for adding the line to the history (use script)
 
     QString tmp_dir = QFileInfo (tmp_script->fileName ()).absolutePath ();
-    QString code = QString ("%1 = -1;\n\n").arg (tmp_hist_name);
+    QString code = QString ();
 
     // Split contents into single lines and complete commands
     QStringList lines = selectedText ().split (QRegExp ("[\r\n]"),
@@ -835,17 +839,15 @@ namespace octave
         QString line = lines.at (i);
         line = line.replace (QString ("%"), QString ("%%"));
 
-        code += QString ("%1 = %2 (%1, %3, '%4', '%5');\n"
+        code += QString ("%1 (%2, '%3', '%4');\n"
                          "%4\n\n")
-                         .arg (tmp_hist_name)
                          .arg (tmp_script_name)
                          .arg (i)
                          .arg (lines.at (i))
                          .arg (line);
       }
 
-    code += QString ("clear %1 %2_fcn;\n")
-                     .arg (tmp_hist_name).arg (tmp_script_name);
+    code += QString ("munlock (\"%1\"); clear %1;\n").arg (tmp_script_name);
 
     // Create tmp file with the code to be executed by the interpreter
     QPointer<QTemporaryFile> tmp_file

@@ -184,6 +184,9 @@ namespace octave
       return false;
     }
 
+    virtual void focus_window (const std::string /*win_name*/)
+    { }
+
     virtual void
     execute_command_in_terminal (const std::string& /*command*/) { }
 
@@ -456,6 +459,12 @@ namespace octave
     bool copy_image_to_clipboard (const std::string& file)
     {
       return enabled () ? instance->copy_image_to_clipboard (file) : false;
+    }
+
+    virtual void focus_window (const std::string win_name)
+    {
+      if (enabled ())
+        instance->focus_window (win_name);
     }
 
     // Preserves pending input.

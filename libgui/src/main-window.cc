@@ -266,6 +266,18 @@ namespace octave
     m_command_window->activate ();
   }
 
+  void main_window::focus_window (const QString& win_name)
+  {
+    if (win_name == "command")
+      m_command_window->activate ();
+    else if (win_name == "history")
+      m_history_window->activate ();
+    else if (win_name == "workspace")
+      m_workspace_window->activate ();
+    else if (win_name == "filebrowser")
+      m_file_browser_window->activate ();
+  }
+
   bool main_window::confirm_shutdown (void)
   {
     bool closenow = true;

@@ -422,6 +422,11 @@ namespace octave
     return true;
   }
 
+  void qt_interpreter_events::focus_window (const std::string win_name)
+  {
+    emit focus_window_signal (QString::fromStdString (win_name));
+  }
+
   void qt_interpreter_events::execute_command_in_terminal
   (const std::string& command)
   {

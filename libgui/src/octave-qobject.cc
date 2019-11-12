@@ -352,6 +352,10 @@ namespace octave
     connect (m_interpreter_qobj, SIGNAL (octave_ready_signal (void)),
              m_main_window, SLOT (handle_octave_ready (void)));
 
+    connect (qt_link (),
+             SIGNAL (focus_window_signal (const QString&)),
+             m_main_window, SLOT (focus_window (const QString&)));
+
     m_app_context.gui_running (true);
 
     start_main_thread ();

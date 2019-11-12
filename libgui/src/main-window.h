@@ -125,6 +125,7 @@ namespace octave
   public slots:
 
     void focus_changed (QWidget *w_old, QWidget *w_new);
+    void focus_window (const QString& win_name);
     void request_reload_settings (void);
 
     void report_status_message (const QString& statusMessage);

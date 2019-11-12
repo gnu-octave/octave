@@ -132,6 +132,8 @@ namespace octave
 
     bool copy_image_to_clipboard (const std::string& file);
 
+    void focus_window (const std::string win_name);
+
     void execute_command_in_terminal (const std::string& command);
 
     void register_doc (const std::string& file);
@@ -190,6 +192,8 @@ namespace octave
   signals:
 
     void copy_image_to_clipboard_signal (const QString& file, bool remove_file);
+
+    void focus_window_signal (const QString& win_name);
 
     void edit_file_signal (const QString& file);
 

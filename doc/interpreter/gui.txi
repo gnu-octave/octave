@@ -143,6 +143,14 @@ programs that do.  The functions @code{uiwait}, @code{uiresume}, and
 @DOCSTRING(movegui)
 
 @c Not sure where this should go...
+@DOCSTRING(commandhistory)
+
+@DOCSTRING(commandwindow)
+
+@DOCSTRING(filebrowser)
+
+@DOCSTRING(workspace)
+
 @DOCSTRING(openvar)
 
 @DOCSTRING(uiwait)

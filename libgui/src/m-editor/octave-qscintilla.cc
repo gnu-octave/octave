@@ -406,12 +406,10 @@ namespace octave
               // The commenting string is requested
               if (settings->contains (ed_comment_str.key))
                 // new version (radio buttons)
-                comment_string = settings->value (ed_comment_str.key,
-                                                  ed_comment_str.def).toInt ();
+                comment_string = settings->value (ed_comment_str).toInt ();
               else
                 // old version (combo box)
-                comment_string = settings->value (ed_comment_str_old.key,
-                                                  ed_comment_str.def).toInt ();
+                comment_string = settings->value (ed_comment_str_old.key,                                                  ed_comment_str.def).toInt ();
 
               return (QStringList (ed_comment_strings.at (comment_string)));
             }
@@ -420,8 +418,7 @@ namespace octave
               QStringList c_str;
 
               // The possible uncommenting string(s) are requested
-              comment_string = settings->value (ed_uncomment_str.key,
-                                                ed_uncomment_str.def).toInt ();
+              comment_string = settings->value (ed_uncomment_str).toInt ();
 
               for (int i = 0; i < ed_comment_strings_count; i++)
                 {
@@ -865,8 +862,7 @@ namespace octave
 
     // Disable opening a file at a breakpoint in case keyboard () is used
     gui_settings* settings = rmgr.get_settings ();
-    bool show_dbg_file = settings->value (ed_show_dbg_file.key,
-                                       ed_show_dbg_file.def).toBool ();
+    bool show_dbg_file = settings->value (ed_show_dbg_file).toBool ();
     settings->setValue (ed_show_dbg_file.key, false);
 
     emit focus_console_after_command_signal ();

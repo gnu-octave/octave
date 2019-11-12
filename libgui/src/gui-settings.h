@@ -25,10 +25,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QSettings>
 
+#include "gui-preferences.h"
+
 namespace octave
 {
   class gui_settings : public QSettings
   {
+    Q_OBJECT
+
   public:
 
     gui_settings (const QString& file_name, QSettings::Format format,
@@ -50,6 +54,13 @@ namespace octave
     gui_settings& operator = (const gui_settings&) = delete;
 
     ~gui_settings (void) = default;
+
+    using QSettings::value;
+
+    QVariant value (const gui_pref& pref) const
+    {
+      return value (pref.key, pref.def);
+    }
   };
 }
 

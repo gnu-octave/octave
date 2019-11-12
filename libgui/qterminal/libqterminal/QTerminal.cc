@@ -223,26 +223,24 @@ QTerminal::notice_settings (const gui_settings *settings)
   // Set terminal font:
   QFont term_font = QFont ();
   term_font.setStyleHint (QFont::TypeWriter);
-  QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+  QString default_font = settings->value (global_mono_font).toString ();
   term_font.setFamily
     (settings->value (cs_font.key, default_font).toString ());
   term_font.setPointSize
-    (settings->value (cs_font_size.key, cs_font_size.def).toInt ());
+    (settings->value (cs_font_size).toInt ());
   setTerminalFont (term_font);
 
   QFontMetrics metrics (term_font);
   setMinimumSize (metrics.maxWidth ()*16, metrics.height ()*3);
 
   QString cursor_type
-    = settings->value (cs_cursor.key, cs_cursor.def).toString ();
+    = settings->value (cs_cursor).toString ();
 
   bool cursor_blinking;
   if (settings->contains (global_cursor_blinking.key))
-    cursor_blinking = settings->value (global_cursor_blinking.key,
-                                       global_cursor_blinking.def).toBool ();
+    cursor_blinking = settings->value (global_cursor_blinking).toBool ();
   else
-    cursor_blinking = settings->value (cs_cursor_blinking.key,
-                                       cs_cursor_blinking.def).toBool ();
+    cursor_blinking = settings->value (cs_cursor_blinking).toBool ();
 
   for (int ct = IBeamCursor; ct <= UnderlineCursor; ct++)
     {
@@ -254,7 +252,7 @@ QTerminal::notice_settings (const gui_settings *settings)
     }
 
   bool cursorUseForegroundColor
-    = settings->value (cs_cursor_use_fgcol.key, cs_cursor_use_fgcol.def).toBool ();
+    = settings->value (cs_cursor_use_fgcol).toBool ();
 
   setForegroundColor
     (settings->value (cs_colors[0].key, cs_colors[0].def).value<QColor> ());
@@ -268,13 +266,12 @@ QTerminal::notice_settings (const gui_settings *settings)
   setCursorColor (cursorUseForegroundColor,
      settings->value (cs_colors[3].key, cs_colors[3].def).value<QColor> ());
 
-  setScrollBufferSize (settings->value (cs_hist_buffer.key,
-                                        cs_hist_buffer.def).toInt ());
+  setScrollBufferSize (settings->value (cs_hist_buffer).toInt ());
 
   // If the Copy shortcut is Ctrl-C, then set up to allow Ctrl-C to also
   // be processed as the interrupt character in the command window.
 
-  QVariant tmp = settings->value (sc_main_edit_copy.key, sc_main_edit_copy.def);
+  QVariant tmp = settings->value (sc_main_edit_copy);
   QKeySequence sc = tmp.value<QKeySequence> ();
 
   //  dis- or enable extra interrupt action
@@ -283,7 +280,7 @@ QTerminal::notice_settings (const gui_settings *settings)
   has_extra_interrupt (extra_ir_action);
 
   // check whether shortcut Ctrl-D is in use by the main-window
-  bool ctrld = settings->value (sc_main_ctrld.key, sc_main_ctrld.def).toBool ();
+  bool ctrld = settings->value (sc_main_ctrld).toBool ();
   _nop_action->setEnabled (! ctrld);
 }
 

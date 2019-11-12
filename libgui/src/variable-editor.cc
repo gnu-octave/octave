@@ -461,8 +461,7 @@ namespace octave
     int opts = 0;  // No options by default.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs.key,
-                           global_use_native_dialogs.def).toBool ())
+    if (! settings->value (global_use_native_dialogs).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString name = objectName ();
@@ -1352,32 +1351,27 @@ namespace octave
   {
     m_main->notice_settings (settings); // update settings in parent main win
 
-    m_default_width = settings->value (ve_column_width.key,
-                                       ve_column_width.def).toInt ();
+    m_default_width = settings->value (ve_column_width).toInt ();
 
-    m_default_height = settings->value (ve_row_height.key,
-                                        ve_row_height.def).toInt ();
+    m_default_height = settings->value (ve_row_height).toInt ();
 
-    m_alternate_rows = settings->value (ve_alternate_rows.key,
-                                        ve_alternate_rows.def).toBool ();
+    m_alternate_rows = settings->value (ve_alternate_rows).toBool ();
 
-    m_use_terminal_font = settings->value (ve_use_terminal_font.key,
-                                           ve_use_terminal_font.def).toBool ();
+    m_use_terminal_font = settings->value (ve_use_terminal_font).toBool ();
 
     QString font_name;
     int font_size;
-    QString default_font = settings->value (global_mono_font.key,
-                                            global_mono_font.def).toString ();
+    QString default_font = settings->value (global_mono_font).toString ();
 
     if (m_use_terminal_font)
       {
         font_name = settings->value (cs_font.key, default_font).toString ();
-        font_size = settings->value (cs_font_size.key, cs_font_size.def).toInt ();
+        font_size = settings->value (cs_font_size).toInt ();
       }
     else
       {
         font_name = settings->value (ve_font_name.key, default_font).toString ();
-        font_size = settings->value (ve_font_size.key, ve_font_size.def).toInt ();
+        font_size = settings->value (ve_font_size).toInt ();
       }
 
     m_font = QFont (font_name, font_size);
@@ -1402,8 +1396,7 @@ namespace octave
 
     // Icon size in the toolbar.
 
-    int size_idx = settings->value (global_icon_size.key,
-                                    global_icon_size.def).toInt ();
+    int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();

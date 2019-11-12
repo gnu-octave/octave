@@ -131,7 +131,7 @@ namespace octave
     combo_styles->addItems (styles);
     combo_styles->insertItem (0, global_style.def.toString ());
     combo_styles->insertSeparator (1);
-    QString current_style = settings->value (global_style.key, global_style.def).toString ();
+    QString current_style = settings->value (global_style).toString ();
     if (current_style == global_style.def.toString ())
       current_style = global_style.def.toString ();
     selected = combo_styles->findText (current_style);
@@ -145,11 +145,11 @@ namespace octave
     icon_size_group->addButton (icon_size_small);
     icon_size_group->addButton (icon_size_normal);
     icon_size_group->addButton (icon_size_large);
-    int icon_size = settings->value (global_icon_size.key, global_icon_size.def).toInt ();
+    int icon_size = settings->value (global_icon_size).toInt ();
     icon_size_normal->setChecked (true);  // the default
     icon_size_small->setChecked (icon_size < 0);
     icon_size_large->setChecked (icon_size > 0);
-    cb_system_icon_theme->setChecked (settings->value (global_icon_theme.key, global_icon_theme.def).toBool ());
+    cb_system_icon_theme->setChecked (settings->value (global_icon_theme).toBool ());
 
     // which icon has to be selected
     QButtonGroup *icon_group = new QButtonGroup (this);
@@ -157,15 +157,14 @@ namespace octave
     icon_group->addButton (general_icon_graphic);
     icon_group->addButton (general_icon_letter);
     QString widget_icon_set =
-      settings->value (dw_icon_set.key, dw_icon_set.def).toString ();
+      settings->value (dw_icon_set).toString ();
     general_icon_octave->setChecked (true);  // the default (if invalid set)
     general_icon_octave->setChecked (widget_icon_set == "NONE");
     general_icon_graphic->setChecked (widget_icon_set == "GRAPHIC");
     general_icon_letter->setChecked (widget_icon_set == "LETTER");
 
     // custom title bar of dock widget
-    QColor bg_color = settings->value (dw_title_bg_color.key,
-                                       dw_title_bg_color.def).value<QColor> ();
+    QColor bg_color = settings->value (dw_title_bg_color).value<QColor> ();
     m_widget_title_bg_color = new color_picker (bg_color);
     m_widget_title_bg_color->setEnabled (false);
     layout_widget_bgtitle->addWidget (m_widget_title_bg_color, 0);
@@ -173,8 +172,7 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_bg_color, SLOT (setEnabled (bool)));
 
-    QColor bg_color_active = settings->value (dw_title_bg_color_active.key,
-                                              dw_title_bg_color_active.def).value<QColor> ();
+    QColor bg_color_active = settings->value (dw_title_bg_color_active).value<QColor> ();
     m_widget_title_bg_color_active = new color_picker (bg_color_active);
     m_widget_title_bg_color_active->setEnabled (false);
     layout_widget_bgtitle_active->addWidget (m_widget_title_bg_color_active, 0);
@@ -182,8 +180,7 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_bg_color_active, SLOT (setEnabled (bool)));
 
-    QColor fg_color = settings->value (dw_title_fg_color.key,
-                                       dw_title_fg_color.def).value<QColor> ();
+    QColor fg_color = settings->value (dw_title_fg_color).value<QColor> ();
     m_widget_title_fg_color = new color_picker (fg_color);
     m_widget_title_fg_color->setEnabled (false);
     layout_widget_fgtitle->addWidget (m_widget_title_fg_color, 0);
@@ -191,8 +188,7 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_fg_color, SLOT (setEnabled (bool)));
 
-    QColor fg_color_active = settings->value (dw_title_fg_color_active.key,
-                                              dw_title_fg_color_active.def).value<QColor> ();
+    QColor fg_color_active = settings->value (dw_title_fg_color_active).value<QColor> ();
     m_widget_title_fg_color_active = new color_picker (fg_color_active);
     m_widget_title_fg_color_active->setEnabled (false);
     layout_widget_fgtitle_active->addWidget (m_widget_title_fg_color_active, 0);
@@ -200,18 +196,14 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_fg_color_active, SLOT (setEnabled (bool)));
 
-    sb_3d_title->setValue (settings->value (dw_title_3d.key,
-                                            dw_title_3d.def).toInt ());
-    cb_widget_custom_style->setChecked (settings->value (dw_title_custom_style.key,
-                                                         dw_title_custom_style.def).toBool ());
+    sb_3d_title->setValue (settings->value (dw_title_3d.key,                                            dw_title_3d.def).toInt ());
+    cb_widget_custom_style->setChecked (settings->value (dw_title_custom_style).toBool ());
 
     // Native file dialogs.
     // FIXME: This preference can be deprecated / removed if all display
     //       managers, especially KDE, run those dialogs without hangs or
     //       delays from the start (bug #54607).
-    cb_use_native_file_dialogs->setChecked (settings->value (
-                                    global_use_native_dialogs.key,
-                                    global_use_native_dialogs.def).toBool ());
+    cb_use_native_file_dialogs->setChecked (settings->value (global_use_native_dialogs).toBool ());
 
     // Cursor blinking: consider old terminal related setting if not yet set
     // FIXME: This pref. can be deprecated / removed if Qt adds support for
@@ -299,19 +291,16 @@ namespace octave
 
     editor_combox_tab_pos->insertItems (0, ed_tab_position_names);
     editor_combox_tab_pos->setCurrentIndex
-      (settings->value (ed_tab_position.key, ed_tab_position.def).toInt ());
+      (settings->value (ed_tab_position).toInt ());
 
     int selected_comment_string, selected_uncomment_string;
 
     if (settings->contains (ed_comment_str.key))   // new version (radio buttons)
-      selected_comment_string = settings->value (ed_comment_str.key,
-                                                 ed_comment_str.def).toInt ();
+      selected_comment_string = settings->value (ed_comment_str).toInt ();
     else                                         // old version (combo box)
-      selected_comment_string = settings->value (ed_comment_str_old.key,
-                                                 ed_comment_str.def).toInt ();
+      selected_comment_string = settings->value (ed_comment_str_old.key,                                                 ed_comment_str.def).toInt ();
 
-    selected_uncomment_string = settings->value (ed_uncomment_str.key,
-                                                 ed_uncomment_str.def).toInt ();
+    selected_uncomment_string = settings->value (ed_uncomment_str).toInt ();
 
     for (int i = 0; i < ed_comment_strings_count; i++)
       {
@@ -358,19 +347,19 @@ namespace octave
     editor_create_new_file->setChecked (settings->value ("editor/create_new_file", false).toBool ());
     editor_reload_changed_files->setChecked (settings->value ("editor/always_reload_changed_files", false).toBool ());
     editor_hiding_closes_files->setChecked (settings->value ("editor/hiding_closes_files", false).toBool ());
-    editor_show_dbg_file->setChecked (settings->value (ed_show_dbg_file.key, ed_show_dbg_file.def).toBool ());
+    editor_show_dbg_file->setChecked (settings->value (ed_show_dbg_file).toBool ());
 
     // terminal
-    QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+    QString default_font = settings->value (global_mono_font).toString ();
     terminal_fontName->setCurrentFont (QFont (settings->value (cs_font.key, default_font).toString ()));
-    terminal_fontSize->setValue (settings->value (cs_font_size.key, cs_font_size.def).toInt ());
-    terminal_history_buffer->setValue (settings->value (cs_hist_buffer.key, cs_hist_buffer.def).toInt ());
-    terminal_cursorUseForegroundColor->setChecked (settings->value (cs_cursor_use_fgcol.key, cs_cursor_use_fgcol.def).toBool ());
+    terminal_fontSize->setValue (settings->value (cs_font_size).toInt ());
+    terminal_history_buffer->setValue (settings->value (cs_hist_buffer).toInt ());
+    terminal_cursorUseForegroundColor->setChecked (settings->value (cs_cursor_use_fgcol).toBool ());
     terminal_focus_command->setChecked (settings->value ("terminal/focus_after_command", false).toBool ());
     terminal_print_dbg_location->setChecked (settings->value ("terminal/print_debug_location", false).toBool ());
 
     QString cursor_type
-      = settings->value (cs_cursor.key, cs_cursor.def).toString ();
+      = settings->value (cs_cursor).toString ();
 
     QStringList items;
     items << QString ("0") << QString ("1") << QString ("2");
@@ -392,16 +381,16 @@ namespace octave
     connect (sync_octave_directory, SIGNAL (toggled (bool)),
              this, SLOT (set_disabled_pref_file_browser_dir (bool)));
 
-    sync_octave_directory->setChecked (settings->value (fb_sync_octdir.key, fb_sync_octdir.def).toBool ());
-    cb_restore_file_browser_dir->setChecked (settings->value (fb_restore_last_dir.key, fb_restore_last_dir.def).toBool ());
+    sync_octave_directory->setChecked (settings->value (fb_sync_octdir).toBool ());
+    cb_restore_file_browser_dir->setChecked (settings->value (fb_restore_last_dir).toBool ());
     le_file_browser_dir->setText (settings->value (fb_startup_dir.key).toString ());
 
     connect (pb_file_browser_dir, SIGNAL (pressed (void)),
              this, SLOT (get_file_browser_dir (void)));
 
-    le_file_browser_extensions->setText (settings->value (fb_txt_file_ext.key, fb_txt_file_ext.def).toString ());
+    le_file_browser_extensions->setText (settings->value (fb_txt_file_ext).toString ());
 
-    checkbox_allow_web_connect->setChecked (settings->value (nr_allow_connection.key, nr_allow_connection.def).toBool ());
+    checkbox_allow_web_connect->setChecked (settings->value (nr_allow_connection).toBool ());
     useProxyServer->setChecked (settings->value ("useProxyServer", false).toBool ());
     proxyHostName->setText (settings->value ("proxyHostName").toString ());
 
@@ -425,21 +414,21 @@ namespace octave
     read_terminal_colors (settings);
 
     // variable editor
-    varedit_columnWidth->setValue (settings->value (ve_column_width.key, ve_column_width.def).toInt ());
-    varedit_rowHeight->setValue (settings->value (ve_row_height.key, ve_row_height.def).toInt ());
+    varedit_columnWidth->setValue (settings->value (ve_column_width).toInt ());
+    varedit_rowHeight->setValue (settings->value (ve_row_height).toInt ());
 
     varedit_font->setCurrentFont (QFont (settings->value (ve_font_name.key,
                                                           settings->value (cs_font.key, default_font)).toString ()));
-    varedit_fontSize->setValue (settings->value (ve_font_size.key, ve_font_size.def).toInt ());
+    varedit_fontSize->setValue (settings->value (ve_font_size).toInt ());
     connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
              varedit_font, SLOT (setDisabled (bool)));
     connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
              varedit_fontSize, SLOT (setDisabled (bool)));
-    varedit_useTerminalFont->setChecked (settings->value (ve_use_terminal_font.key, ve_use_terminal_font.def).toBool ());
+    varedit_useTerminalFont->setChecked (settings->value (ve_use_terminal_font).toBool ());
     varedit_font->setDisabled (varedit_useTerminalFont->isChecked ());
     varedit_fontSize->setDisabled (varedit_useTerminalFont->isChecked ());
 
-    varedit_alternate->setChecked (settings->value (ve_alternate_rows.key, ve_alternate_rows.def).toBool ());
+    varedit_alternate->setChecked (settings->value (ve_alternate_rows).toBool ());
 
     // variable editor colors
     read_varedit_colors (settings);
@@ -558,8 +547,7 @@ namespace octave
     int opts = QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs.key,
-                           global_use_native_dialogs.def).toBool ())
+    if (! settings->value (global_use_native_dialogs).toBool ())
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory
@@ -743,7 +731,7 @@ namespace octave
     int default_size = 10;
 
     QString default_font_name
-      = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+      = settings->value (global_mono_font).toString ();
     QFont default_font = QFont (default_font_name, 10, -1, 0);
     QColor default_color = QColor ();
     QColor dummy_color = QColor (255, 0, 255);
@@ -1064,7 +1052,7 @@ namespace octave
     connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
              m_ws_hide_tool_tips, SLOT(setEnabled (bool)));
     m_ws_hide_tool_tips->setChecked
-      (settings->value (ws_hide_tool_tips.key, ws_hide_tool_tips.def).toBool ());
+      (settings->value (ws_hide_tool_tips).toBool ());
 
     for (int i = 0; i < ws_colors_count; i++)
       {
@@ -1093,7 +1081,7 @@ namespace octave
 
     // Load enable settings at the end for having signals already connected
     bool colors_enabled =
-        settings->value (ws_enable_colors.key, ws_enable_colors.def).toBool ();
+        settings->value (ws_enable_colors).toBool ();
     m_ws_enable_colors->setChecked (colors_enabled);
     m_ws_hide_tool_tips->setEnabled (colors_enabled);
 

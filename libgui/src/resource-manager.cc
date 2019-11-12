@@ -365,7 +365,7 @@ namespace octave
   QIcon resource_manager::icon (const QString& icon_name, bool fallback)
   {
     // If system icon theme is not desired, take own icon files
-    if (! m_settings->value (global_icon_theme.key, global_icon_theme.def).toBool ())
+    if (! m_settings->value (global_icon_theme).toBool ())
       return QIcon (":/actions/icons/" + icon_name + ".png");
 
     // Use system icon theme with own files as fallback except the fallback is
@@ -421,7 +421,7 @@ namespace octave
         ("SYSTEM (").append (")");
     if (enc.isEmpty ())
       {
-        enc = m_settings->value (ed_default_enc.key, ed_default_enc.def).toString ();
+        enc = m_settings->value (ed_default_enc).toString ();
 
         if (enc.isEmpty ())  // still empty?
           {

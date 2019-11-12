@@ -192,8 +192,7 @@ namespace octave
     // Create the QFileSystemModel starting in the desired directory
     QDir startup_dir;  // take current dir
 
-    if (settings->value (fb_restore_last_dir.key,
-                         fb_restore_last_dir.def).toBool ())
+    if (settings->value (fb_restore_last_dir).toBool ())
       {
         // restore last dir from previous session
         QStringList last_dirs
@@ -201,12 +200,10 @@ namespace octave
         if (last_dirs.length () > 0)
           startup_dir = QDir (last_dirs.at (0));  // last dir in previous session
       }
-    else if (! settings->value (fb_startup_dir.key, fb_startup_dir.def)
-               .toString ().isEmpty ())
+    else if (! settings->value (fb_startup_dir).toString ().isEmpty ())
       {
         // do not restore but there is a startup dir configured
-        startup_dir
-          = QDir (settings->value (fb_startup_dir.key).toString ());
+        startup_dir = QDir (settings->value (fb_startup_dir.key).toString ());
       }
 
     if (! startup_dir.exists ())
@@ -232,8 +229,8 @@ namespace octave
     // get sort column and order as well as cloumn state (order and width)
 
     m_file_tree_view->sortByColumn
-      (settings->value (fb_sort_column.key, fb_sort_column.def).toInt (),
-       static_cast<Qt::SortOrder> (settings->value (fb_sort_order.key, fb_sort_order.def).toUInt ()));
+      (settings->value (fb_sort_column).toInt (),
+       static_cast<Qt::SortOrder> (settings->value (fb_sort_order).toUInt ()));
 
     if (settings->contains (fb_column_state.key))
       m_file_tree_view->header ()->restoreState
@@ -409,8 +406,7 @@ namespace octave
             QString suffix = fileInfo.suffix ().toLower ();
             resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
             gui_settings *settings = rmgr.get_settings ();
-            QString ext = settings->value (fb_txt_file_ext.key,
-                                           fb_txt_file_ext.def).toString ();
+            QString ext = settings->value (fb_txt_file_ext).toString ();
             QStringList extensions = ext.split (";", QString::SkipEmptyParts);
 
             if (QFile::exists (abs_fname))
@@ -868,8 +864,7 @@ namespace octave
   {
     // Qsettings pointer is checked before emitting.
 
-    int size_idx = settings->value (global_icon_size.key,
-                                    global_icon_size.def).toInt ();
+    int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -894,7 +889,7 @@ namespace octave
     // enable the buttons to sync octave/browser dir
     // only if this is not done by default
     m_sync_octave_dir
-      = settings->value (fb_sync_octdir.key, fb_sync_octdir.def).toBool ();
+      = settings->value (fb_sync_octdir).toBool ();
     m_sync_octave_directory_action->setEnabled (! m_sync_octave_dir);
     m_sync_browser_directory_action->setEnabled (! m_sync_octave_dir);
 
@@ -924,8 +919,7 @@ namespace octave
     int opts = QFileDialog::ShowDirsOnly;
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs.key,
-                           global_use_native_dialogs.def).toBool ())
+    if (! settings->value (global_use_native_dialogs).toBool ())
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory (this,

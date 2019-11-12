@@ -424,25 +424,20 @@ namespace octave
   octave_dock_widget::handle_settings (const gui_settings *settings)
   {
     m_custom_style
-      = settings->value (dw_title_custom_style.key,
-                         dw_title_custom_style.def).toBool ();
+      = settings->value (dw_title_custom_style).toBool ();
 
     m_title_3d = settings->value (dw_title_3d.key, dw_title_3d.def).toInt ();
 
     m_fg_color
-      = settings->value (dw_title_fg_color.key,
-                         dw_title_fg_color.def).value<QColor> ();
+      = settings->value (dw_title_fg_color).value<QColor> ();
 
     m_fg_color_active
-      = settings->value (dw_title_fg_color_active.key,
-                         dw_title_fg_color_active.def).value<QColor> ();
+      = settings->value (dw_title_fg_color_active).value<QColor> ();
 
-    m_bg_color = settings->value (dw_title_bg_color.key,
-                                  dw_title_bg_color.def).value<QColor> ();
+    m_bg_color = settings->value (dw_title_bg_color).value<QColor> ();
 
     m_bg_color_active
-      = settings->value (dw_title_bg_color_active.key,
-                         dw_title_bg_color_active.def).value<QColor> ();
+      = settings->value (dw_title_bg_color_active).value<QColor> ();
 
     QColor bcol (m_bg_color);
     QColor bcola (m_bg_color_active);

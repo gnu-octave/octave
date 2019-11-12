@@ -198,15 +198,13 @@ namespace octave
     if (settings)
       {
         connect_to_web
-          = settings->value (nr_allow_connection.key,
-                             nr_allow_connection.def).toBool ();
+          = settings->value (nr_allow_connection).toBool ();
 
         last_checked
-          = settings->value (nr_last_time.key, nr_last_time.def).toDateTime ();
+          = settings->value (nr_last_time).toDateTime ();
 
-        serial = settings->value (nr_last_news.key, nr_last_news.def).toInt ();
-        m_default_encoding = settings->value (ed_default_enc.key,
-                                              ed_default_enc.def).toString ();
+        serial = settings->value (nr_last_news).toInt ();
+        m_default_encoding = settings->value (ed_default_enc).toString ();
       }
 
     QDateTime current = QDateTime::currentDateTime ();
@@ -693,8 +691,7 @@ namespace octave
 
     bool connect_to_web
       = (settings
-         ? settings->value (nr_allow_connection.key,
-                            nr_allow_connection.def).toBool ()
+         ? settings->value (nr_allow_connection).toBool ()
          : true);
 
     QString base_url = "https://octave.org";
@@ -837,7 +834,7 @@ namespace octave
     // Get desired style from preferences or take the default one if
     // the desired one is not found
     QString preferred_style
-          = settings->value (global_style.key, global_style.def).toString ();
+          = settings->value (global_style).toString ();
 
     if (preferred_style == global_style.def.toString ())
       preferred_style = m_default_style;
@@ -852,7 +849,7 @@ namespace octave
 
     // the widget's icons (when floating)
     QString icon_set
-      = settings->value (dw_icon_set.key, dw_icon_set.def).toString ();
+      = settings->value (dw_icon_set).toString ();
 
     int count = 0;
     int icon_set_found = 0; // default
@@ -888,8 +885,7 @@ namespace octave
     else
       m_release_notes_icon = ":/actions/icons/logo.png";
 
-    int size_idx = settings->value (global_icon_size.key,
-                                    global_icon_size.def).toInt ();
+    int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -918,7 +914,7 @@ namespace octave
 
     // Check whether some octave internal preferences have to be updated
     QString new_default_encoding
-      = settings->value (ed_default_enc.key, ed_default_enc.def).toString ();
+      = settings->value (ed_default_enc).toString ();
     if (new_default_encoding != m_default_encoding)
       update_default_encoding (new_default_encoding);
 
@@ -929,11 +925,9 @@ namespace octave
     bool cursor_blinking;
 
     if (settings->contains (global_cursor_blinking.key))
-      cursor_blinking = settings->value (global_cursor_blinking.key,
-                                         global_cursor_blinking.def).toBool ();
+      cursor_blinking = settings->value (global_cursor_blinking).toBool ();
     else
-      cursor_blinking = settings->value (cs_cursor_blinking.key,
-                                         cs_cursor_blinking.def).toBool ();
+      cursor_blinking = settings->value (cs_cursor_blinking).toBool ();
 
     if (cursor_blinking)
       QApplication::setCursorFlashTime (1000);  // 1000 ms flash time
@@ -1476,10 +1470,10 @@ namespace octave
     // of an error from the default layout
     if (settings)
       {
-        if (! restoreState (settings->value (mw_state.key, mw_state.def).toByteArray ()))
+        if (! restoreState (settings->value (mw_state).toByteArray ()))
           restoreState (mw_state.def.toByteArray ());
 
-        if (! restoreGeometry (settings->value (mw_geometry.key, mw_geometry.def).toByteArray ()))
+        if (! restoreGeometry (settings->value (mw_geometry).toByteArray ()))
           restoreGeometry (mw_geometry.def.toByteArray ());
       }
 
@@ -1665,8 +1659,7 @@ namespace octave
           }
 
         update_default_encoding
-          (settings->value (ed_default_enc.key,
-                            ed_default_enc.def).toString ());
+          (settings->value (ed_default_enc).toString ());
       }
 
     if (! startup_dir.exists ())

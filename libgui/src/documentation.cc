@@ -571,8 +571,7 @@ namespace octave
       return;
 
     // Icon size in the toolbar.
-    int size_idx = settings->value (global_icon_size.key,
-                                    global_icon_size.def).toInt ();
+    int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();

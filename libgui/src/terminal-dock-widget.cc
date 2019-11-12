@@ -67,11 +67,11 @@ namespace octave
 
     QFont font = QFont ();
     font.setStyleHint (QFont::TypeWriter);
-    QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+    QString default_font = settings->value (global_mono_font).toString ();
     font.setFamily
       (settings->value (cs_font.key, default_font).toString ());
     font.setPointSize
-      (settings->value (cs_font_size.key, cs_font_size.def).toInt ());
+      (settings->value (cs_font_size).toInt ());
 
     QFontMetrics metrics(font);
 

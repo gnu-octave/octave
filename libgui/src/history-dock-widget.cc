@@ -321,14 +321,14 @@ namespace octave
     gui_settings *settings = rmgr.get_settings ();
 
     m_filter_shown
-      = settings->value (hw_filter_shown.key, hw_filter_shown.def).toBool ();
+      = settings->value (hw_filter_shown).toBool ();
     m_filter_widget->setVisible (m_filter_shown);
 
     m_filter->addItems
-      (settings->value (hw_mru_list.key, hw_mru_list.def).toStringList ());
+      (settings->value (hw_mru_list).toStringList ());
 
     bool filter_state
-      = settings->value (hw_filter_active.key, hw_filter_active.def).toBool ();
+      = settings->value (hw_filter_active).toBool ();
     m_filter_checkbox->setChecked (filter_state);
     filter_activate (filter_state);
 
@@ -352,10 +352,10 @@ namespace octave
     QFont font = QFont ();
 
     font.setStyleHint (QFont::TypeWriter);
-    QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+    QString default_font = settings->value (global_mono_font).toString ();
 
     font.setFamily (settings->value (cs_font.key, default_font).toString ());
-    font.setPointSize (settings->value (cs_font_size.key, cs_font_size.def).toInt ());
+    font.setPointSize (settings->value (cs_font_size).toInt ());
 
     m_history_list_view->setFont (font);
   }

@@ -101,8 +101,7 @@ namespace octave
 
     if (settings)
       {
-        m_filter_shown = settings->value (ws_filter_shown.key,
-                                          ws_filter_shown.def).toBool ();
+        m_filter_shown = settings->value (ws_filter_shown).toBool ();
         m_filter_widget->setVisible (m_filter_shown);
 
         ws_layout->setMargin (2);
@@ -130,8 +129,8 @@ namespace octave
         m_view->horizontalHeader ()->setMovable (true);
 #endif
         m_view->horizontalHeader ()->setSortIndicator (
-            settings->value (ws_sort_column.key, ws_sort_column.def).toInt (),
-            static_cast<Qt::SortOrder> (settings->value (ws_sort_order.key, ws_sort_order.def).toUInt ()));
+            settings->value (ws_sort_column).toInt (),
+            static_cast<Qt::SortOrder> (settings->value (ws_sort_order).toUInt ()));
         m_view->horizontalHeader ()->setSortIndicatorShown (true);
 
         m_view->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
@@ -143,7 +142,7 @@ namespace octave
         m_filter->addItems (settings->value (ws_mru_list.key).toStringList ());
 
         bool filter_state =
-          settings->value (ws_filter_active.key, ws_filter_active.def).toBool ();
+          settings->value (ws_filter_active).toBool ();
         m_filter_checkbox->setChecked (filter_state);
         filter_activate (filter_state);
       }
@@ -182,7 +181,7 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     m_view->sortByColumn (
-      settings->value (ws_sort_column.key ,ws_sort_column.def).toInt (),
+      settings->value (ws_sort_column).toInt (),
       static_cast<Qt::SortOrder> (settings->value (ws_sort_order.key, ws_sort_column.def).toUInt ()));
 
     m_model = model;
@@ -198,8 +197,8 @@ namespace octave
 
     QString tool_tip;
 
-    if (settings->value (ws_enable_colors.key, ws_enable_colors.def).toBool ()
-        && ! settings->value (ws_hide_tool_tips.key, ws_hide_tool_tips.def).toBool ())
+    if (settings->value (ws_enable_colors).toBool ()
+        && ! settings->value (ws_hide_tool_tips).toBool ())
       {
         tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
         tool_tip += QString (tr ("Colors for variable attributes:"));

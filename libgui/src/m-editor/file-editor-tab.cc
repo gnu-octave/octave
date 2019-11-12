@@ -266,8 +266,7 @@ namespace octave
     // encoding, not updated with the settings
     QString locale_enc_name =
       QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")");
-    m_encoding = settings->value (ed_default_enc.key, locale_enc_name)
-                .toString ();
+    m_encoding = settings->value (ed_default_enc.key, locale_enc_name).toString ();
     m_enc_indicator->setText (m_encoding);
     // no changes in encoding yet
     m_new_encoding = m_encoding;
@@ -2908,11 +2907,9 @@ namespace octave
     bool cursor_blinking;
 
     if (settings->contains (global_cursor_blinking.key))
-      cursor_blinking = settings->value (global_cursor_blinking.key,
-                                         global_cursor_blinking.def).toBool ();
+      cursor_blinking = settings->value (global_cursor_blinking).toBool ();
     else
-      cursor_blinking = settings->value (cs_cursor_blinking.key,
-                                         cs_cursor_blinking.def).toBool ();
+      cursor_blinking = settings->value (cs_cursor_blinking).toBool ();
 
     if (cursor_blinking)
       m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETCARETPERIOD,500);

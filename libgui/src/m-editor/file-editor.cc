@@ -284,20 +284,16 @@ namespace octave
 
     // get the data from the settings file
     QStringList sessionFileNames
-      = settings->value (ed_session_names.key, ed_session_names.def)
-                         .toStringList ();
+      = settings->value (ed_session_names).toStringList ();
 
     QStringList session_encodings
-      = settings->value (ed_session_enc.key, ed_session_enc.def)
-                        .toStringList ();
+      = settings->value (ed_session_enc).toStringList ();
 
     QStringList session_index
-      = settings->value (ed_session_ind.key, ed_session_ind.def)
-                         .toStringList ();
+      = settings->value (ed_session_ind).toStringList ();
 
     QStringList session_lines
-      = settings->value (ed_session_lines.key, ed_session_lines.def)
-                         .toStringList ();
+      = settings->value (ed_session_lines).toStringList ();
 
     // fill a list of the struct and sort it (depending on index)
     QList<session_data> s_data;
@@ -1135,8 +1131,7 @@ namespace octave
 
   void file_editor::notice_settings (const gui_settings *settings)
   {
-    int size_idx = settings->value (global_icon_size.key,
-                                    global_icon_size.def).toInt ();
+    int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -1145,7 +1140,7 @@ namespace octave
 
     // Tab position
     QTabWidget::TabPosition pos
-      = static_cast<QTabWidget::TabPosition> (settings->value (ed_tab_position.key, ed_tab_position.def).toInt ());
+      = static_cast<QTabWidget::TabPosition> (settings->value (ed_tab_position).toInt ());
 
     m_tab_widget->setTabPosition (pos);
 
@@ -1395,7 +1390,7 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     bool show_dbg_file
-      = settings->value (ed_show_dbg_file.key, ed_show_dbg_file.def).toBool ();
+      = settings->value (ed_show_dbg_file).toBool ();
 
     if (openFileName.isEmpty ())
       {

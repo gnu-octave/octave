@@ -848,7 +848,7 @@ namespace octave
     QModelIndex previous = indices.first ();
     QString copy = mod->data (previous).toString ();
     indices.removeFirst ();
-    foreach (QModelIndex idx, indices)
+    for (auto idx : indices)
       {
         copy.push_back (previous.row () != idx.row () ? '\n' : '\t');
         copy.append (mod->data (idx).toString ());
@@ -1324,7 +1324,7 @@ namespace octave
         QList<QTabBar *> barlist = main_win ()->findChildren<QTabBar *> ();
         QVariant this_value (reinterpret_cast<quintptr> (this));
 
-        foreach (QTabBar *tbar, barlist)
+        for (auto *tbar : barlist)
           for (int i = 0; i < tbar->count (); i++)
             if (tbar->tabData (i) == this_value)
               {

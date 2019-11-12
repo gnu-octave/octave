@@ -303,14 +303,14 @@ namespace octave
       {
         // remove all standard actions from scintilla
         QList<QAction *> all_actions = context_menu->actions ();
-        QAction *a;
 
-        foreach (a, all_actions)
+        for (auto *a : all_actions)
           context_menu->removeAction (a);
 
-        a = context_menu->addAction (tr ("dbstop if ..."), this,
+        QAction *act
+          = context_menu->addAction (tr ("dbstop if ..."), this,
                                      SLOT (contextmenu_break_condition (bool)));
-        a->setData (local_pos);
+        act->setData (local_pos);
       }
 #endif
 

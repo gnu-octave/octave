@@ -285,7 +285,7 @@ namespace octave
         dir.setFilter (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden);
         QStringList namefilter;
         namefilter.append ("*" + bname + "*");
-        foreach (QFileInfo fi, dir.entryInfoList (namefilter))
+        for (const auto& fi : dir.entryInfoList (namefilter))
           {
             std::string file_name = fi.absoluteFilePath ().toStdString ();
             sys::recursive_rmdir (file_name);

@@ -1631,9 +1631,8 @@ namespace octave
   {
     // remove all standard actions from scintilla
     QList<QAction *> all_actions = menu->actions ();
-    QAction *a;
 
-    foreach (a, all_actions)
+    for (auto *a : all_actions)
       menu->removeAction (a);
 
     // add editor's actions with icons and customized shortcuts
@@ -1701,7 +1700,7 @@ namespace octave
   {
     if (e->mimeData ()->hasUrls ())
       {
-        foreach (QUrl url, e->mimeData ()->urls ())
+        for (const auto& url : e->mimeData ()->urls ())
           request_open_file (url.toLocalFile ());
       }
   }

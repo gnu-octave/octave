@@ -382,7 +382,7 @@ namespace octave
   {
     // get the codec name for each mib
     QList<int> all_mibs = QTextCodec::availableMibs ();
-    foreach (int mib, all_mibs)
+    for (auto mib : all_mibs)
       {
         QTextCodec *c = QTextCodec::codecForMib (mib);
         codecs->append (c->name ().toUpper ());
@@ -433,7 +433,7 @@ namespace octave
       }
 
     // fill the combo box
-    foreach (QString c, all_codecs)
+    for (const auto& c : all_codecs)
       combo->addItem (c);
 
     // prepend the default item

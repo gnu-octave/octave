@@ -322,7 +322,7 @@ namespace octave
       {
         // Go through all dock widgets and check whether the current widget
         // widget with focus is a child of one of it
-        foreach (octave_dock_widget *w, w_list)
+        for (auto w : w_list)
           {
             if (w->isAncestorOf (w_new))
               dock = w;
@@ -867,7 +867,7 @@ namespace octave
       }
 
     QString icon;
-    foreach (octave_dock_widget *widget, dock_widget_list ())
+    for (auto *widget : dock_widget_list ())
       {
         QString name = widget->objectName ();
         if (! name.isEmpty ())
@@ -1478,7 +1478,7 @@ namespace octave
       }
 
     // Restore the geometry of all dock-widgets
-    foreach (octave_dock_widget *widget, dock_widget_list ())
+    for (auto *widget : dock_widget_list ())
       {
         QString name = widget->objectName ();
 
@@ -1564,7 +1564,7 @@ namespace octave
   // This has to be done after the window is shown (see octave-gui.cc)
   void main_window::connect_visibility_changed (void)
   {
-    foreach (octave_dock_widget *widget, dock_widget_list ())
+    for (auto *widget : dock_widget_list ())
       widget->connect_visibility_changed ();
 
 #if defined (HAVE_QSCINTILLA)

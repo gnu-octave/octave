@@ -271,11 +271,10 @@ QTerminal::notice_settings (const gui_settings *settings)
   // If the Copy shortcut is Ctrl-C, then set up to allow Ctrl-C to also
   // be processed as the interrupt character in the command window.
 
-  QVariant tmp = settings->value (sc_main_edit_copy);
-  QKeySequence sc = tmp.value<QKeySequence> ();
+  QString sc = settings->value (sc_main_edit_copy).toString ();
 
   //  dis- or enable extra interrupt action
-  bool extra_ir_action = (sc == QKeySequence (Qt::ControlModifier | Qt::Key_C));
+  bool extra_ir_action = (QKeySequence (sc) != QKeySequence::Copy);
   _interrupt_action->setEnabled (extra_ir_action);
   has_extra_interrupt (extra_ir_action);
 

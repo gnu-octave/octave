@@ -839,8 +839,23 @@ namespace octave
         QString line = lines.at (i);
         line = line.replace (QString ("%"), QString ("%%"));
 
+        // Prevent output of breakpoint in temp. file for keyboard
+        QString next_bp_quiet;
+        QString next_bp_quiet_reset;
+        if (line.contains ("keyboard"))
+          {
+            // Define commands for not showing bp location and for resetting
+            // thisin case "keyboard" was within a comment
+            next_bp_quiet = "__db_next_breakpoint_quiet__;\n";
+            next_bp_quiet_reset = "__db_next_breakpoint_quiet__(false);\n";
+          }
+
+        // Add codeline togetcher with call to echo/hitory function to tmp
         code += QString ("%1 (%2, '%3', '%4');\n"
-                         "%4\n\n")
+                          + next_bp_quiet
+                          + "%4\n"
+                          + next_bp_quiet_reset
+                          + "\n")
                          .arg (tmp_script_name)
                          .arg (i)
                          .arg (lines.at (i))
@@ -898,7 +913,26 @@ namespace octave
              Frmpath (interp, path);
              emit ctx_menu_run_finished_signal (show_dbg_file,
                                                 tmp_file, tmp_hist, tmp_script);
-             throw (e);
+
+             // Drop line and column from error message
+             std::size_t line_pos = e.message ().find ("near line");
+             std::string new_msg = e.message ();
+             if (line_pos != std::string::npos)
+               {
+                 new_msg = e.message ().substr (0, line_pos);
+                 new_msg.append ("near line 1, column 1");
+               }
+
+             // Drop first stack level, i.e. temporary function file
+             std::list<frame_info> stack = e.stack_info ();
+             stack.pop_back ();
+
+             // New exception with updated message and stack
+             octave::execution_exception ee (e.err_type (),e.identifier (),
+                                             new_msg, stack);
+
+             // Throw
+             throw (ee);
            }
 
          // Clean up

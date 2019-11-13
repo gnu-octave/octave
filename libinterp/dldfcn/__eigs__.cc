@@ -231,8 +231,6 @@ Undocumented internal function.
           else
             acm = (args(0).complex_matrix_value ());
           a_is_complex = true;
-          symmetric = false;  // ARPACK doesn't special case complex symmetric
-          sym_tested = true;
         }
       else
         {
@@ -464,9 +462,19 @@ Undocumented internal function.
         }
 
       if (nargout < 2)
-        retval(0) = eig_val;
+        {
+          if (symmetric)
+            retval(0) = real (eig_val);
+          else
+            retval(0) = eig_val;
+        }
       else
-        retval = ovl (eig_vec, ComplexDiagMatrix (eig_val), double (info));
+        {
+          if (symmetric)
+            retval = ovl (eig_vec, DiagMatrix (real (eig_val)), double (info));
+          else
+            retval = ovl (eig_vec, ComplexDiagMatrix (eig_val), double (info));
+        }
     }
   else if (sigmai != 0.0)
     {
@@ -502,9 +510,19 @@ Undocumented internal function.
         }
 
       if (nargout < 2)
-        retval(0) = eig_val;
+        {
+          if (symmetric)
+            retval(0) = real (eig_val);
+          else
+            retval(0) = eig_val;
+        }
       else
-        retval = ovl (eig_vec, ComplexDiagMatrix (eig_val), double (info));
+        {
+          if (symmetric)
+            retval = ovl (eig_vec, DiagMatrix (real (eig_val)), double (info));
+          else
+            retval = ovl (eig_vec, ComplexDiagMatrix (eig_val), double (info));
+        }
     }
   else
     {

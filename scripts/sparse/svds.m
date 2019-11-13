@@ -179,14 +179,12 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       b_k = k;  # Normal case, find just the k largest eigenvalues
     endif
 
-    ## FIXME: singular values are always real.  Until eigs() guarantees
-    ## real results for symmetric inputs (bug #57196), use real() here.
     if (nargout > 1)
       [V, s, flag] = eigs ([sparse(m,m), b; b', sparse(n,n)],
                            b_k, b_sigma, b_opts);
-      s = real (diag (s));
+      s = diag (s);
     else
-      s = real (eigs ([sparse(m,m), b; b', sparse(n,n)], b_k, b_sigma, b_opts));
+      s = eigs ([sparse(m,m), b; b', sparse(n,n)], b_k, b_sigma, b_opts);
     endif
 
     if (ischar (sigma))

@@ -925,7 +925,8 @@ namespace octave
 
              // Drop first stack level, i.e. temporary function file
              std::list<frame_info> stack = e.stack_info ();
-             stack.pop_back ();
+             if (stack.size () > 0)
+               stack.pop_back ();
 
              // New exception with updated message and stack
              octave::execution_exception ee (e.err_type (),e.identifier (),

@@ -113,7 +113,7 @@ function s = mat2str (x, n = 15, cls = "")
       t = x.';
       s = sprintf (fmt, [real(t(:))'; imag(t(:))']);
     elseif (x_islogical)
-      t = v(x+1);
+      t = v(x.'+1);
       s = cstrcat (sprintf (fmt, t{:}));
     else
       s = sprintf (fmt, x.');
@@ -143,6 +143,7 @@ endfunction
 %!assert (mat2str (true), "true")
 %!assert (mat2str (false), "false")
 %!assert (mat2str (logical (eye (2))), "[true false;false true]")
+%!assert (mat2str (logical ([0 1; 0 0])), "[false true;false false]")
 
 ## Test input validation
 %!error mat2str ()

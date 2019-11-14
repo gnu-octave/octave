@@ -592,24 +592,11 @@ Undocumented internal function.
   return ovl ();
 }
 
-DEFMETHOD (commandwindow, interp, args, ,
-           doc: /* -*- texinfo -*-
-@deftypefn {} {} commandwindow ()
-Show the GUI command window and give it the keyboard focus.
-@end deftypefn */)
-{
-  if (args.length () != 0)
-    print_usage ();
-
-  octave::event_manager& evmgr = interp.get_event_manager ();
-  evmgr.focus_window ("command");
-  return ovl ();
-}
-
 DEFMETHOD (commandhistory, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} commandhistory ()
 Show the GUI command history window and give it the keyboard focus.
+@seealso{commandwindow, filebrowser, workspace} 
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -620,17 +607,18 @@ Show the GUI command history window and give it the keyboard focus.
   return ovl ();
 }
 
-DEFMETHOD (workspace, interp, args, ,
+DEFMETHOD (commandwindow, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} workspace ()
-Show the GUI workspace window and give it the keyboard focus.
+@deftypefn {} {} commandwindow ()
+Show the GUI command window and give it the keyboard focus.
+@seealso{commandhistory, filebrowser, workspace} 
 @end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
 
   octave::event_manager& evmgr = interp.get_event_manager ();
-  evmgr.focus_window ("workspace");
+  evmgr.focus_window ("command");
   return ovl ();
 }
 
@@ -638,6 +626,7 @@ DEFMETHOD (filebrowser, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} filebrowser ()
 Show the GUI file browser window and give it the keyboard focus.
+@seealso{commandwindow, commandhistory, workspace} 
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -645,5 +634,20 @@ Show the GUI file browser window and give it the keyboard focus.
 
   octave::event_manager& evmgr = interp.get_event_manager ();
   evmgr.focus_window ("filebrowser");
+  return ovl ();
+}
+
+DEFMETHOD (workspace, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} workspace ()
+Show the GUI workspace window and give it the keyboard focus.
+@seealso{commandwindow, commandhistory, filebrowser} 
+@end deftypefn */)
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  octave::event_manager& evmgr = interp.get_event_manager ();
+  evmgr.focus_window ("workspace");
   return ovl ();
 }

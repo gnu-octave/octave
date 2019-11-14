@@ -809,6 +809,7 @@ GUI Development
 * UI Elements::
 * GUI Utility Functions::
 * User-Defined Preferences::
+* Octave Workspace Windows::
 
 System Utilities
 

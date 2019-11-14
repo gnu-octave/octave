@@ -791,9 +791,9 @@ namespace octave
 
             if (options.forced_interactive ())
               command_editor::blink_matching_paren (false);
-          }
 
-        return main_loop ();
+            exit_status = main_loop ();
+          }
       }
     catch (const exit_exception& ex)
       {

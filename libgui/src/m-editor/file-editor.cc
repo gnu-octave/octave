@@ -494,8 +494,6 @@ namespace octave
     m_tab_widget->clear ();
 
     setVisible (vis);
-
-    octave_dock_widget::close ();
   }
 
   void file_editor::request_new_file (const QString& commands)

@@ -448,8 +448,14 @@ namespace octave
       return m_executing_finish_script;
     }
 
+    void add_atexit_fcn (const std::string& fname);
+
+    bool remove_atexit_fcn (const std::string& fname);
+
+    OCTAVE_DEPRECATED (6, "use interpreter::add_atexit_fcn member function instead")
     static void add_atexit_function (const std::string& fname);
 
+    OCTAVE_DEPRECATED (6, "use interpreter::remove_atexit_fcn member function instead")
     static bool remove_atexit_function (const std::string& fname);
 
     static interpreter * the_interpreter (void) { return instance; }
@@ -466,8 +472,6 @@ namespace octave
 
     OCTAVE_THREAD_LOCAL static interpreter *instance;
 
-    static std::list<std::string> atexit_functions;
-
     void display_startup_message (void) const;
 
     int execute_startup_files (void);
@@ -480,9 +484,13 @@ namespace octave
 
     void cleanup (void);
 
+    void execute_atexit_fcns (void);
+
     application *m_app_context;
 
     temporary_file_list m_tmp_files;
+
+    std::list<std::string> m_atexit_fcns;
 
     display_info m_display_info;
 

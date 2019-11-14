@@ -279,10 +279,10 @@ from the list, so if a function was placed in the list multiple times with
   octave_value_list retval;
 
   if (add_mode)
-    octave::interpreter::add_atexit_function (arg);
+    interp.add_atexit_fcn (arg);
   else
     {
-      bool found = interp.remove_atexit_function (arg);
+      bool found = interp.remove_atexit_fcn (arg);
 
       if (nargout > 0)
         retval = ovl (found);
@@ -433,6 +433,7 @@ namespace octave
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context),
       m_tmp_files (),
+      m_atexit_fcns (),
       m_display_info (),
       m_environment (),
       m_settings (),
@@ -1216,16 +1217,10 @@ namespace octave
 
     OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
 
-    while (! atexit_functions.empty ())
-      {
-        std::string fcn = atexit_functions.front ();
+    // Any atexit functions added after this function call won't be
+    // executed.
 
-        atexit_functions.pop_front ();
-
-        OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
-
-        OCTAVE_SAFE_CALL (flush_stdout, ());
-      }
+    execute_atexit_fcns ();
 
     // Do this explicitly so that destructors for mex file objects
     // are called, so that functions registered with mexAtExit are
@@ -1263,6 +1258,20 @@ namespace octave
     // is unloaded.
     //
     // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
+  }
+
+  void interpreter::execute_atexit_fcns (void)
+  {
+    while (! m_atexit_fcns.empty ())
+      {
+        std::string fcn = m_atexit_fcns.front ();
+
+        m_atexit_fcns.pop_front ();
+
+        OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
+
+        OCTAVE_SAFE_CALL (flush_stdout, ());
+      }
   }
 
   tree_evaluator& interpreter::get_evaluator (void)
@@ -1786,31 +1795,43 @@ namespace octave
     throw exit_exception (exit_status);
   }
 
-  // Functions to call when the interpreter exits.
-
-  std::list<std::string> interpreter::atexit_functions;
-
-  void interpreter::add_atexit_function (const std::string& fname)
+  void interpreter::add_atexit_fcn (const std::string& fname)
   {
-    atexit_functions.push_front (fname);
+    m_atexit_fcns.push_front (fname);
   }
 
-  bool interpreter::remove_atexit_function (const std::string& fname)
+  bool interpreter::remove_atexit_fcn (const std::string& fname)
   {
     bool found = false;
 
-    for (auto it = atexit_functions.begin ();
-         it != atexit_functions.end (); it++)
+    for (auto it = m_atexit_fcns.begin ();
+         it != m_atexit_fcns.end (); it++)
       {
         if (*it == fname)
           {
-            atexit_functions.erase (it);
+            m_atexit_fcns.erase (it);
             found = true;
             break;
           }
       }
 
     return found;
+  }
+
+  void interpreter::add_atexit_function (const std::string& fname)
+  {
+    interpreter& interp
+      = __get_interpreter__ ("interpreter::add_atexit_function");
+
+    interp.add_atexit_fcn (fname);
+  }
+
+  bool interpreter::remove_atexit_function (const std::string& fname)
+  {
+    interpreter& interp
+      = __get_interpreter__ ("interpreter::remove_atexit_function");
+
+    return interp.remove_atexit_fcn (fname);
   }
 
   // What internal options get configured by --traditional.

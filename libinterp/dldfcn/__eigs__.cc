@@ -315,17 +315,14 @@ Undocumented internal function.
       octave_value tmp;
 
       // issym is ignored for complex matrix inputs
-      if (! sym_tested)
+      tmp = map.getfield ("issym");
+      if (tmp.is_defined ())
         {
-          tmp = map.getfield ("issym");
-          if (tmp.is_defined ())
-            {
-              if (tmp.numel () != 1)
-                error ("eigs: OPTS.issym must be a scalar value");
+          if (tmp.numel () != 1)
+            error ("eigs: OPTS.issym must be a scalar value");
 
-              symmetric = tmp.xbool_value ("eigs: OPTS.issym must be a logical value");
-              sym_tested = true;
-            }
+          symmetric = tmp.xbool_value ("eigs: OPTS.issym must be a logical value");
+          sym_tested = true;
         }
 
       // isreal is ignored if A is not a function
@@ -386,10 +383,20 @@ Undocumented internal function.
   // Test undeclared (no issym) matrix inputs for symmetry
   if (! sym_tested && ! have_a_fun)
     {
-      if (a_is_sparse)
-        symmetric = asmm.issymmetric ();
+      if (a_is_complex)
+        {
+          if (a_is_sparse)
+            symmetric = ascm.ishermitian ();
+          else
+            symmetric = acm.ishermitian ();
+        }
       else
-        symmetric = amm.issymmetric ();
+        {
+          if (a_is_sparse)
+            symmetric = asmm.issymmetric ();
+          else
+            symmetric = amm.issymmetric ();
+        }
     }
 
   if (have_b)

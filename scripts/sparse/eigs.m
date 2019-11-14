@@ -1563,3 +1563,12 @@ endfunction
 %! [Evector_f, Evalues_f] = eigs (Afun, 10, B, 4, "SM", opts);
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
+
+%!testif HAVE_ARPACK <*57196>
+%! x = ones (10, 10);
+%! z = complex (x, x);
+%! A = [sparse(10,10), z; z', sparse(10,10)];
+%! d = eigs (A);
+%! assert (isreal (d));
+%! [~, d] = eigs (A);
+%! assert (isreal (d));

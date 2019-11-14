@@ -465,6 +465,7 @@ namespace octave
       m_in_top_level_repl (false),
       m_cancel_quit (false),
       m_executing_finish_script (false),
+      m_executing_atexit (false),
       m_initialized (false)
   {
     // FIXME: When thread_local storage is used by default, this message
@@ -1262,6 +1263,9 @@ namespace octave
 
   void interpreter::execute_atexit_fcns (void)
   {
+    // Prevent atexit functions from adding new functions to the list.
+    m_executing_atexit = true;
+
     while (! m_atexit_fcns.empty ())
       {
         std::string fcn = m_atexit_fcns.front ();
@@ -1797,6 +1801,9 @@ namespace octave
 
   void interpreter::add_atexit_fcn (const std::string& fname)
   {
+    if (m_executing_atexit)
+      return;
+
     m_atexit_fcns.push_front (fname);
   }
 

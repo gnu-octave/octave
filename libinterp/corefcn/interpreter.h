@@ -556,6 +556,8 @@ namespace octave
 
     bool m_executing_finish_script;
 
+    bool m_executing_atexit;
+
     bool m_initialized;
 
     void maximum_braindamage (void);

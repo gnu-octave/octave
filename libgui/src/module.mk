@@ -204,6 +204,7 @@ noinst_HEADERS += \
   %reldir%/gui-settings.h \
   %reldir%/external-editor-interface.h \
   %reldir%/files-dock-widget.h \
+  %reldir%/graphics-init.h \
   %reldir%/history-dock-widget.h \
   %reldir%/interpreter-qobject.h \
   %reldir%/m-editor/file-editor-interface.h \
@@ -242,6 +243,7 @@ noinst_HEADERS += \
   %reldir%/dw-main-window.cc \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
+  %reldir%/graphics-init.cc \
   %reldir%/gui-settings.cc \
   %reldir%/history-dock-widget.cc \
   %reldir%/interpreter-qobject.cc \

@@ -82,6 +82,15 @@ namespace octave
           retval += "OpenBLAS (config: " + std::string (open_f_ptr ()) + ")";
         }
 
+      // OpenBLAS with minimal extension functions included in the library
+      else if (dyn_libs.search ("openblas_get_num_threads"))
+        {
+          if (! retval.empty ())
+            retval += "\n";
+
+          retval += "OpenBLAS (config: unknown)";
+        }
+
       // GotoBLAS(2)
       if (dyn_libs.search ("gotoblas_profile_init"))
         {

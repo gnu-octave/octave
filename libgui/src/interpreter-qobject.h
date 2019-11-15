@@ -48,6 +48,8 @@ namespace octave
 
     void graphics_init (void);
 
+    void graphics_fini (void);
+
     qt_interpreter_events * qt_link (void);
 
     void interpreter_event (const fcn_callback& fcn);

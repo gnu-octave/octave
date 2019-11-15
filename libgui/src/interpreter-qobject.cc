@@ -36,6 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "qt-graphics-toolkit.h"
 #include "qt-interpreter-events.h"
 
+#include "unwind-prot.h"
+
 #include "graphics.h"
 #include "gtk-manager.h"
 #include "input.h"
@@ -53,6 +55,9 @@ namespace octave
     // The Octave application context owns the interpreter.
 
     qt_application& app_context = m_octave_qobj.app_context ();
+
+    // The application context will own the interpreter.  It is
+    // responsible for cleaning it up when the application exits.
 
     interpreter& interp = app_context.create_interpreter ();
 
@@ -79,14 +84,22 @@ namespace octave
 
         if (interp.initialized ())
           {
-            // The interpreter should be completely ready at this point so let
-            // the GUI know.
+            // The interpreter should be completely ready at this point
+            // so let the GUI know.
 
             m_interpreter = &interp;
 
             emit octave_ready_signal ();
 
             graphics_init ();
+
+            // We created the Qt graphics toolkit and interperter here.
+            // Disable and delete it when the interpreter is done
+            // executing commands for us.  Use an unwind_action to
+            // ensure that it is disabled and deleted even if we exit
+            // this code block becuase an exception is thrown.
+
+            unwind_action ([this] (void) { graphics_fini (); });
 
             // Start executing commands in the command window.
 
@@ -102,11 +115,6 @@ namespace octave
 
     m_interpreter = nullptr;
 
-    // Whether or not initialization succeeds we need to clean up the
-    // interpreter once we are done with it.
-
-    app_context.delete_interpreter ();
-
     emit octave_finished_signal (exit_status);
   }
 
@@ -118,6 +126,9 @@ namespace octave
   void interpreter_qobject::graphics_init (void)
   {
 #if defined (HAVE_QT_GRAPHICS)
+
+    if (! m_interpreter)
+      return;
 
     gh_manager& gh_mgr = m_interpreter->get_gh_manager ();
 
@@ -141,6 +152,26 @@ namespace octave
     gtk_mgr.register_toolkit ("qt");
 
     gtk_mgr.load_toolkit (*m_graphics_toolkit);
+
+#endif
+  }
+
+  void interpreter_qobject::graphics_fini (void)
+  {
+#if defined (HAVE_QT_GRAPHICS)
+
+    if (! m_interpreter)
+      return;
+
+    octave::gtk_manager& gtk_mgr = m_interpreter->get_gtk_manager ();
+
+    gtk_mgr.unregister_toolkit ("qt");
+
+    gtk_mgr.unload_toolkit ("qt");
+
+    delete m_graphics_toolkit;
+
+    m_graphics_toolkit = nullptr;
 
 #endif
   }

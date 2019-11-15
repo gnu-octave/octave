@@ -25,19 +25,27 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <QApplication>
+#include <QMetaType>
+#include <QThread>
+
+#include "QtHandlesUtils.h"
 #include "interpreter-qobject.h"
 #include "octave-qobject.h"
 #include "qt-application.h"
+#include "qt-graphics-toolkit.h"
 #include "qt-interpreter-events.h"
 
-#include "graphics-init.h"
+#include "graphics.h"
+#include "gtk-manager.h"
 #include "input.h"
 #include "interpreter.h"
 
 namespace octave
 {
   interpreter_qobject::interpreter_qobject (base_qobject& oct_qobj)
-    : QObject (), m_octave_qobj (oct_qobj), m_interpreter (nullptr)
+    : QObject (), m_octave_qobj (oct_qobj), m_interpreter (nullptr),
+      m_graphics_toolkit (nullptr)
   { }
 
   void interpreter_qobject::execute (void)
@@ -78,7 +86,7 @@ namespace octave
 
             emit octave_ready_signal ();
 
-            graphics_init (interp, m_octave_qobj);
+            graphics_init ();
 
             // Start executing commands in the command window.
 
@@ -100,6 +108,41 @@ namespace octave
     app_context.delete_interpreter ();
 
     emit octave_finished_signal (exit_status);
+  }
+
+  interpreter_qobject::~interpreter_qobject (void)
+  {
+    delete m_graphics_toolkit;
+  }
+
+  void interpreter_qobject::graphics_init (void)
+  {
+#if defined (HAVE_QT_GRAPHICS)
+
+    gh_manager& gh_mgr = m_interpreter->get_gh_manager ();
+
+    autolock guard (gh_mgr.graphics_lock ());
+
+    qRegisterMetaType<graphics_object> ("graphics_object");
+
+    gh_mgr.enable_event_processing (true);
+
+    QtHandles::qt_graphics_toolkit *qt_gtk
+      = new QtHandles::qt_graphics_toolkit (*m_interpreter, m_octave_qobj);
+
+    if (QThread::currentThread ()
+        != QApplication::instance ()->thread ())
+      qt_gtk->moveToThread (QApplication::instance ()->thread ());
+
+    m_graphics_toolkit = new graphics_toolkit (qt_gtk);
+
+    octave::gtk_manager& gtk_mgr = m_interpreter->get_gtk_manager ();
+
+    gtk_mgr.register_toolkit ("qt");
+
+    gtk_mgr.load_toolkit (*m_graphics_toolkit);
+
+#endif
   }
 
   void interpreter_qobject::interpreter_event (const fcn_callback& fcn)

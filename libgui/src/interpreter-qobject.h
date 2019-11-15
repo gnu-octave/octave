@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "qt-interpreter-events.h"
 
+class graphics_toolkit;
+
 namespace octave
 {
   class interpreter;
@@ -42,7 +44,9 @@ namespace octave
 
     interpreter_qobject (base_qobject& oct_qobj);
 
-    ~interpreter_qobject (void) = default;
+    ~interpreter_qobject (void);
+
+    void graphics_init (void);
 
     qt_interpreter_events * qt_link (void);
 
@@ -85,6 +89,8 @@ namespace octave
     base_qobject& m_octave_qobj;
 
     interpreter *m_interpreter;
+
+    graphics_toolkit *m_graphics_toolkit;
   };
 }
 

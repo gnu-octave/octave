@@ -2272,6 +2272,11 @@ public:
   virtual void delete_listener (const caseless_str&, const octave_value&,
                                 listener_mode = GCB_POSTSET);
 
+  void set_beingdeleted (const octave_value& val)
+  {
+    beingdeleted.set (val, true, false);
+  }
+
   void set_tag (const octave_value& val) { tag = val; }
 
   void set_parent (const octave_value& val);
@@ -2364,7 +2369,7 @@ protected:
 
   BEGIN_BASE_PROPERTIES
     // properties common to all objects
-    bool_property beingdeleted , "off"
+    bool_property beingdeleted s , "off"
     radio_property busyaction , "{queue}|cancel"
     callback_property buttondownfcn , Matrix ()
     children_property children gf , Matrix ()

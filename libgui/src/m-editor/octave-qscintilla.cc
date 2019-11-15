@@ -914,23 +914,28 @@ namespace octave
              emit ctx_menu_run_finished_signal (show_dbg_file,
                                                 tmp_file, tmp_hist, tmp_script);
 
-             // Drop line and column from error message
-             std::size_t line_pos = e.message ().find ("near line");
-             std::string new_msg = e.message ();
-             if (line_pos != std::string::npos)
+             // New error message and error stack
+             QString new_msg = QString::fromStdString (e.message ());
+             std::list<frame_info> stack = e.stack_info ();
+
+             // Remove line and column from first line of error message only
+             // if it is related to the tmp itself, i.e. only if the
+             // the error stack size is 0 or 1
+             if (stack.size () < 2)
                {
-                 new_msg = e.message ().substr (0, line_pos);
-                 new_msg.append ("near line 1, column 1");
+                 new_msg = new_msg.replace (
+                               QRegExp ("near line [^\n]*\n"), QString ("\n"));
+                 new_msg = new_msg.replace (
+                               QRegExp ("near line [^\n]*$"), QString (""));
                }
 
              // Drop first stack level, i.e. temporary function file
-             std::list<frame_info> stack = e.stack_info ();
              if (stack.size () > 0)
                stack.pop_back ();
 
              // New exception with updated message and stack
              octave::execution_exception ee (e.err_type (),e.identifier (),
-                                             new_msg, stack);
+                                             new_msg.toStdString (), stack);
 
              // Throw
              throw (ee);

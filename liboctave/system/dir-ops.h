@@ -37,6 +37,12 @@ namespace octave
     OCTAVE_API
     dir_entry
     {
+
+      // NOTE: This class cannot be used safely cross-platform (Windows) with
+      // non-ASCII characters in paths.
+      // Consider replacing the implementation using std::filesystem (C++ 17).
+      // In the meantime, consider using octave::sys::get_dirlist instead.
+
     public:
 
       dir_entry (const std::string& n = "")

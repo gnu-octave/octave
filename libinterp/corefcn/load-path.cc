@@ -1398,69 +1398,66 @@ namespace octave
   void
   load_path::dir_info::get_file_list (const std::string& d)
   {
-    sys::dir_entry dir (d);
+    string_vector flist;
+    std::string msg;
 
-    if (dir)
+    if (! sys::get_dirlist (d, flist, msg))
       {
-        string_vector flist = dir.read ();
+        warning ("load_path: %s: %s", d.c_str (), msg.c_str ());
+        return;
+      }
 
-        octave_idx_type len = flist.numel ();
+    octave_idx_type len = flist.numel ();
 
-        all_files.resize (len);
-        fcn_files.resize (len);
+    all_files.resize (len);
+    fcn_files.resize (len);
 
-        octave_idx_type all_files_count = 0;
-        octave_idx_type fcn_files_count = 0;
+    octave_idx_type all_files_count = 0;
+    octave_idx_type fcn_files_count = 0;
 
-        for (octave_idx_type i = 0; i < len; i++)
+    for (octave_idx_type i = 0; i < len; i++)
+      {
+        std::string fname = flist[i];
+
+        std::string full_name = sys::file_ops::concat (d, fname);
+
+        sys::file_stat fs (full_name);
+
+        if (fs)
           {
-            std::string fname = flist[i];
-
-            std::string full_name = sys::file_ops::concat (d, fname);
-
-            sys::file_stat fs (full_name);
-
-            if (fs)
+            if (fs.is_dir ())
               {
-                if (fs.is_dir ())
-                  {
-                    if (fname == "private")
-                      get_private_file_map (full_name);
-                    else if (fname[0] == '@')
-                      get_method_file_map (full_name, fname.substr (1));
-                    else if (fname[0] == '+')
-                      get_package_dir (full_name, fname.substr (1));
-                  }
-                else
-                  {
-                    all_files[all_files_count++] = fname;
+                if (fname == "private")
+                  get_private_file_map (full_name);
+                else if (fname[0] == '@')
+                  get_method_file_map (full_name, fname.substr (1));
+                else if (fname[0] == '+')
+                  get_package_dir (full_name, fname.substr (1));
+              }
+            else
+              {
+                all_files[all_files_count++] = fname;
 
-                    size_t pos = fname.rfind ('.');
+                size_t pos = fname.rfind ('.');
 
-                    if (pos != std::string::npos)
+                if (pos != std::string::npos)
+                  {
+                    std::string ext = fname.substr (pos);
+
+                    if (ext == ".m" || ext == ".oct" || ext == ".mex")
                       {
-                        std::string ext = fname.substr (pos);
+                        std::string base = fname.substr (0, pos);
 
-                        if (ext == ".m" || ext == ".oct" || ext == ".mex")
-                          {
-                            std::string base = fname.substr (0, pos);
-
-                            if (valid_identifier (base))
-                              fcn_files[fcn_files_count++] = fname;
-                          }
+                        if (valid_identifier (base))
+                          fcn_files[fcn_files_count++] = fname;
                       }
                   }
               }
           }
+      }
 
-        all_files.resize (all_files_count);
-        fcn_files.resize (fcn_files_count);
-      }
-    else
-      {
-        std::string msg = dir.error ();
-        warning ("load_path: %s: %s", d.c_str (), msg.c_str ());
-      }
+    all_files.resize (all_files_count);
+    fcn_files.resize (fcn_files_count);
   }
 
   void

@@ -287,13 +287,6 @@ namespace octave
     HINSTANCE m_handle;
   };
 
-  static void
-  set_dll_directory (const std::string& dir = "")
-  {
-    SetDllDirectoryW (dir.empty ()
-                      ? nullptr : sys::u8_to_wstring (dir).c_str ());
-  }
-
   octave_w32_shlib::octave_w32_shlib (const std::string& f)
     : dynamic_library::dynlib_rep (f), m_handle (nullptr)
   {
@@ -304,38 +297,39 @@ namespace octave
       }
 
     std::string dir = sys::file_ops::dirname (f);
-
-    set_dll_directory (dir);
+    SetDllDirectoryW (dir.empty ()
+                      ? nullptr : sys::u8_to_wstring (dir).c_str ());
 
     m_handle = LoadLibraryW (sys::u8_to_wstring (m_file).c_str ());
 
-    set_dll_directory ();
+    SetDllDirectoryW (nullptr);
 
     if (! m_handle)
       {
-        DWORD lastError = GetLastError ();
-        const char *msg;
+        DWORD last_error = GetLastError ();
 
-        switch (lastError)
+        wchar_t *error_text = nullptr;
+        FormatMessageW (FORMAT_MESSAGE_FROM_SYSTEM |
+                        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                        FORMAT_MESSAGE_IGNORE_INSERTS,
+                        nullptr, last_error,
+                        MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
+                        reinterpret_cast <wchar_t *> (&error_text), 0, nullptr);
+
+        std::string msg = "opening the library '" + m_file + "' failed: ";
+        if (error_text != nullptr)
           {
-          case ERROR_MOD_NOT_FOUND:
-          case ERROR_DLL_NOT_FOUND:
-            msg = "could not find library or dependencies";
-            break;
-
-          case ERROR_INVALID_DLL:
-            msg = "library or its dependencies are damaged";
-            break;
-
-          case ERROR_DLL_INIT_FAILED:
-            msg = "library initialization routine failed";
-            break;
-
-          default:
-            msg = "library open failed";
+            msg.append (sys::u8_from_wstring (error_text));
+            LocalFree (error_text);
+          }
+        else
+          {
+            std::ostringstream err_str;
+            err_str << "Unknown error (" << last_error << ").";
+            msg.append (err_str.str ());
           }
 
-        (*current_liboctave_error_handler) ("%s: %s", msg, m_file.c_str ());
+        (*current_liboctave_error_handler) ("%s", msg.c_str ());
       }
   }
 

@@ -142,6 +142,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
           ## On Windows ensure LFN paths are saved rather than 8.3 style paths
           global_packages = standardize_paths (global_packages);
         endif
+        global_packages = make_rel_paths (global_packages);
         save (global_list, "global_packages");
       endif
     else

@@ -261,6 +261,7 @@ function install (files, handle_deps, prefix, archprefix, verbose,
         ## On Windows ensure LFN paths are saved rather than 8.3 style paths
         global_packages = standardize_paths (global_packages);
       endif
+      global_packages = make_rel_paths (global_packages);
       save (global_list, "global_packages");
       installed_pkgs_lst = {local_packages{:}, global_packages{:}};
     else
@@ -802,6 +803,9 @@ endfunction
 function generate_lookfor_cache (desc)
 
   dirs = strtrim (ostrsplit (genpath (desc.dir), pathsep ()));
+  if (ispc)
+    dirs = cellfun (@canonicalize_file_name, dirs, "uniformoutput", false);
+  endif
   for i = 1 : length (dirs)
     doc_cache_create (fullfile (dirs{i}, "doc-cache"), dirs{i});
   endfor

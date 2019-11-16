@@ -32,6 +32,11 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
   end_try_catch
   try
     global_packages = load (global_list).global_packages;
+    global_packages = expand_rel_paths (global_packages);
+    if (ispc)
+      ## On Windows ensure 8.3 style paths are turned into LFN paths
+      global_packages = standardize_paths (global_packages);
+    endif
   catch
     global_packages = {};
   end_try_catch

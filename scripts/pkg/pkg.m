@@ -567,6 +567,7 @@ function [local_packages, global_packages] = pkg (varargin)
           ## On Windows ensure LFN paths are saved rather than 8.3 style paths
           global_packages = standardize_paths (global_packages);
         endif
+        global_packages = make_rel_paths (global_packages);
         save (global_list, "global_packages");
         if (nargout)
           local_packages = global_packages;

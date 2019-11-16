@@ -2089,7 +2089,8 @@ namespace octave
     if (win_y > 720)
       win_y = 720;
 
-    setGeometry (0, 0, win_x, win_y);
+    setGeometry (0, 0, win_x, win_y);   // excluding frame geometry
+    move (0, 0);                        // including frame geometry
 
     setStatusBar (m_status_bar);
 

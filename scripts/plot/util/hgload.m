@@ -65,11 +65,10 @@ function [h, old_prop] = hgload (filename, prop_struct = struct ())
   hgs = {"s_oct40", "hgS_050200", "hgS_070000"};
   hg = load (filename);
   fig_file_version = isfield (hg, hgs);
-  if (nnz (fig_file_version) == 1)
-    hg = hg.(hgs{fig_file_version});
-  else
+  if (nnz (fig_file_version) != 1)
     error ("hgload: could not load hgsave-formatted object in file %s", filename);
   endif
+  hg = hg.(hgs{fig_file_version});
   is_matlab_fig_file = any (fig_file_version(2:3));
 
   ## Override properties of top-level objects
@@ -93,9 +92,9 @@ function [h, old_prop] = hgload (filename, prop_struct = struct ())
       endfor
     endfor
   endif
-  
+
   ## Translate field names for Matlab .fig files
-  if is_matlab_fig_file
+  if (is_matlab_fig_file)
     for i_hg = 1:numel (hg)
       fn = fieldnames (hg(i_hg).properties);
       is_appdata = ismember (tolower (fn), "applicationdata");

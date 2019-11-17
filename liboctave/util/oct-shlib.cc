@@ -316,20 +316,18 @@ namespace octave
                         MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
                         reinterpret_cast <wchar_t *> (&error_text), 0, nullptr);
 
-        std::string msg = "opening the library '" + m_file + "' failed: ";
+        std::ostringstream err_str;
+        err_str << "opening the library '" << m_file << "' failed (error "
+                << last_error << "): ";
         if (error_text != nullptr)
           {
-            msg.append (sys::u8_from_wstring (error_text));
+            err_str << sys::u8_from_wstring (error_text);
             LocalFree (error_text);
           }
         else
-          {
-            std::ostringstream err_str;
-            err_str << "Unknown error (" << last_error << ").";
-            msg.append (err_str.str ());
-          }
+          err_str << "Unknown error.";
 
-        (*current_liboctave_error_handler) ("%s", msg.c_str ());
+        (*current_liboctave_error_handler) ("%s", err_str.str ().c_str ());
       }
   }
 

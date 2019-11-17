@@ -245,32 +245,10 @@ function hg = __scatter__ (varargin)
 
   else
 
-    ## For larger numbers of points, we split the points by common color.
-
+    ## For larger numbers of points, we use one single object.
     vert = [x, y, z];
-    if (one_explicit_color)
-      render_size_color (hg, vert, s, c, marker, filled, true);
-    else
-      if (rows (c) == 1)
-        c = repmat (c, rows (x), 1);
-      endif
-      ## We want to group points by color.  So first get all the unique colors
-      [cc, ~, c_to_cc] = unique (c, "rows");
+    render_size_color (hg, vert, s, c, marker, filled, true);
 
-      for i = 1 : rows (cc)
-        ## Now for each possible unique color, get the logical index of
-        ## points that correspond to that color
-        idx = (i == c_to_cc);
-        if (isscalar (s))
-          render_size_color (hg, vert(idx, :), s, c(idx,:),
-                                 marker, filled, true);
-        else
-          render_size_color (hg, vert(idx, :), s(idx), c(idx,:),
-                                 marker, filled, true);
-        endif
-      endfor
-
-    endif
   endif
 
   if (! ischar (c) && rows (c) > 1)

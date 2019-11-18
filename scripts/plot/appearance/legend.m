@@ -18,12 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} legend ()
+## @deftypefnx {} {} legend @var{command}
 ## @deftypefnx {} {} legend (@var{str1}, @var{str2}, @dots{})
 ## @deftypefnx {} {} legend (@var{charmat})
 ## @deftypefnx {} {} legend (@{@var{cellstr}@})
 ## @deftypefnx {} {} legend (@dots{}, @var{property}, @var{value}, @dots{})
 ## @deftypefnx {} {} legend (@var{hobjs}, @dots{})
-## @deftypefnx {} {} legend (@var{command})
+## @deftypefnx {} {} legend ("@var{command}")
 ## @deftypefnx {} {} legend (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{hleg, hplt} =} legend (@dots{})
 ##
@@ -32,7 +33,8 @@
 ## Legend entries may be specified as individual character string arguments,
 ## a character array, or a cell array of character strings.  When label names
 ## might be confused with legend properties, or @var{command} arguments,
-## the labels should be protected by specifying them as a cell array of strings.
+## the labels should be protected by specifying them as a cell array of
+## strings.
 ##
 ## If the first argument @var{hax} is an axes handle, then add a legend to this
 ## axes, rather than the current axes returned by @code{gca}.
@@ -43,11 +45,11 @@
 ## labeling all objects, provide their graphic handles in the input
 ## @var{hobjs}.
 ##
-## The optional parameter @var{pos} specifies the location of the legend as
+## The optional parameter @var{loc} specifies the location of the legend as
 ## follows:
 ##
 ## @multitable @columnfractions 0.06 0.14 0.80
-## @headitem @tab pos @tab location of the legend
+## @headitem @tab loc @tab location of the legend
 ## @item @tab north @tab center top
 ## @item @tab south @tab center bottom
 ## @item @tab east @tab right center
@@ -61,7 +63,7 @@
 ## @item @tab         @tab which will place the legend outside the axes
 ## @end multitable
 ##
-## The following customizations are available using @var{option}:
+## The following customizations are available using @var{command}:
 ##
 ## @table @asis
 ## @item @qcode{"show"}
@@ -103,7 +105,7 @@
 ## this property whereas axes, figures, etc.@: do not so they are never present
 ## in a legend.  If no labels or @code{DisplayName} properties are available,
 ## then the label text is simply @qcode{"data1"}, @qcode{"data2"}, @dots{},
-## @nospell{@qcode{"dataN"}}.  
+## @nospell{@qcode{"dataN"}}.
 ##
 ## The legend @code{FontSize} property is initially set to 90% of the axes
 ## @code{FontSize} to which it is attached.  Use @code{set} to override this
@@ -116,24 +118,24 @@
 
 function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
-  opts = parse_opts (varargin{:});
-
   ## Use the old legend code to handle gnuplot toolkit
   if (strcmp (graphics_toolkit (), "gnuplot"))
     [hleg, hleg_obj, hplot, labels] = __gnuplot_legend__ (varargin{:});
     return;
   endif
 
+  opts = parse_opts (varargin{:});
+
   hl = opts.legend_handle;
 
   ## Fix property/value pairs
   pval = ["string", {opts.obj_labels}, opts.propval(:)'];
-  
+
   if (! isempty (opts.action))
 
     do_set_box = isempty (hl);
 
-    switch opts.action
+    switch (opts.action)
       case "boxoff"
         tmp_pval = {"box", "off"};
         do_set_box = false;
@@ -165,7 +167,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
       case "off"
         if (! isempty (hl))
-          delete (hl)
+          delete (hl);
         endif
         return;
 
@@ -185,10 +187,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
   if (isempty (hl))
 
-    hl = axes ("handlevisibility", "off", ...
-               "tag", "legend", "ydir", "reverse", ...
-               "position", [.5 .5 .3 .3], "xtick", [], "ytick", [], ...
-               "tag", "legend");
+    hl = axes ("tag", "legend", "handlevisibility", "off", "ydir", "reverse",
+               "position", [.5 .5 .3 .3], "xtick", [], "ytick", []);
 
     ## FIXME: Use the axes appdata to store its peer legend handle
     ## rather that adding a public property and change all uses.
@@ -208,27 +208,25 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       rethrow (ee);
     end_try_catch
 
-
     ## Update legend layout
-    setappdata (hl, "__axes_handle__", opts.axes_handles, ...
-                "__next_label_index__", opts.next_idx, ...
-                "__peer_objects__", opts.obj_handles);
+    setappdata (hl, "__axes_handle__", opts.axes_handles,
+                    "__next_label_index__", opts.next_idx,
+                    "__peer_objects__", opts.obj_handles);
     update_location_cb (hl, [], false);
     update_layout_cb (hl, [], true);
     update_numchild_cb (hl);
 
     ## Dummy invisible object that deletes the legend when "newplot" is called
-    ht = __go_text__ (opts.axes_handles(1), "visible", "off", ...
-                      "handlevisibility", "off", ...
-                      "tag", "__legend_watcher__", ...
+    ht = __go_text__ (opts.axes_handles(1), "tag", "__legend_watcher__",
+                      "visible", "off", "handlevisibility", "off",
                       "deletefcn", {@reset_cb, hl});
 
     ## Listeners to foreign objects properties are stored for later
     ## deletion in "delfunction"
     setappdata (hl, "__listeners__", {});
-    add_safe_listener (hl, ancestor (opts.axes_handles(1), "figure") , ...
+    add_safe_listener (hl, ancestor (opts.axes_handles(1), "figure"),
                        "position", {@maybe_update_layout_cb, hl});
-    add_safe_listener (hl, opts.axes_handles(1), ...
+    add_safe_listener (hl, opts.axes_handles(1),
                        "position", {@maybe_update_layout_cb, hl});
     add_safe_listener (hl, opts.axes_handles(1), ...
                        "tightinset", ...
@@ -251,7 +249,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     endfor
 
     addlistener (hl, "autoupdate", @update_numchild_cb);
-    
+
     addlistener (hl, "beingdeleted", @delete_legend_cb);
 
     addlistener (hl, "box", @update_box_cb);
@@ -272,9 +270,9 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
   else
 
-    ## FIXME: this will trigger the execution of update_layout_cb
-    ## for each watched property. Should we suspend its execution with
-    ## yet another appdata bool property?
+    ## FIXME: This will trigger the execution of update_layout_cb for each
+    ## watched property.  Should we suspend its execution with yet another
+    ## appdata bool property for performance?
 
     ## Update properties
     setappdata (hl, "__peer_objects__", opts.obj_handles);
@@ -284,14 +282,14 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
   if (nargout > 0)
     hleg = hl;
-    ## Those ones are needed for backward compatibility
+    ## These ones are needed for backward compatibility
     hleg_obj = get (hl, "children");
     hplot = getappdata (hl, "__peer_objects__");
     labels = get (hl, "string");
   endif
 
   set (hl, "handlevisibility", "on");
-  
+
 endfunction
 
 function update_box_cb (hl)
@@ -301,7 +299,7 @@ function update_box_cb (hl)
       set (hl, "color", "w");
     endif
   else
-    set (hl, "color", "none");    
+    set (hl, "color", "none");
   endif
 
 endfunction
@@ -309,7 +307,7 @@ endfunction
 function update_location_cb (hl, ~, do_layout = true)
 
   if (strcmp (get (hl, "location"), "best"))
-    warning ("Octave:legend:unimplemented-location", ...
+    warning ("Octave:legend:unimplemented-location",
              ["legend: 'best' not yet implemented for location ", ...
               "specifier, using 'northeast' instead\n"]);
   endif
@@ -324,16 +322,17 @@ function update_position_cb (hl)
 
   updating = getappdata (hl, "__updating_layout__");
   if (isempty (updating) || ! updating)
-    set (hl, "location", "none")
+    set (hl, "location", "none");
   endif
 
 endfunction
 
 function update_string_cb (hl)
 
-  ## Check adequation between the number of legend item and the number
-  ## of labels before calling update_layout_cb
+  ## Check that the number of legend item and the number of labels match
+  ## before calling update_layout_cb.
   persistent updating = false;
+
   if (! updating)
     updating = true;
     unwind_protect
@@ -344,10 +343,10 @@ function update_string_cb (hl)
       nobj = numel (obj);
 
       if (ischar (str) && nobj != 1)
-        setappdata (hl, "__peer_objects__", obj(1))
+        setappdata (hl, "__peer_objects__", obj(1));
       elseif (iscellstr (str) && nobj != nstr)
         if (nobj > nstr)
-          setappdata (hl, "__peer_objects__", obj(1:nstr))
+          setappdata (hl, "__peer_objects__", obj(1:nstr));
         elseif (nobj == 1)
           set (hl, "string", str{1});
         else
@@ -367,7 +366,7 @@ function reset_cb (ht, evt, hl, deletelegend = true)
   if (ishghandle (hl))
     listeners = getappdata (hl, "__listeners__");
     for ii = 1:numel (listeners)
-      dellistener (listeners{ii}{:})
+      dellistener (listeners{ii}{:});
     endfor
 
     if (deletelegend)
@@ -383,9 +382,10 @@ function delete_legend_cb (hl)
 
   hax = getappdata (hl, "__axes_handle__")(1);
   units = get (hax, "units");
-  set (hax, "units", getappdata (hl, "__original_units__"), ...
-            "looseinset", getappdata (hl, "__original_looseinset__"), ...
-            "units", units, "__legend_handle__", []);
+  set (hax, "units", getappdata (hl, "__original_units__"),
+            "looseinset", getappdata (hl, "__original_looseinset__"),
+            "units", units,
+            "__legend_handle__", []);
 
 endfunction
 
@@ -394,7 +394,7 @@ function add_safe_listener (hl, varargin)
   addlistener (varargin{:});
 
   lsn = getappdata (hl, "__listeners__");
-  lsn = [lsn {varargin}];
+  lsn = [lsn, {varargin}];
   setappdata (hl, "__listeners__", lsn);
 
 endfunction
@@ -473,7 +473,7 @@ endfunction
 function update_numchild_cb (hl)
 
   if (strcmp (get (hl, "autoupdate"), "on"))
-    
+
     hax = getappdata (hl, "__axes_handle__");
     kids = get (hax, "children");
     if (iscell (kids))
@@ -481,48 +481,46 @@ function update_numchild_cb (hl)
     else
       nkids = numel (get (hax, "children"));
     endif
-    
+
     setappdata (hl, "__total_num_children__", nkids);
-    
+
   endif
-  
+
 endfunction
 
 function legend_autoupdate_cb (hax, d, hl)
 
-  ## Get all current children including eventual peer plotyy axes
-  ## children
+  ## Get all current children including eventual peer plotyy axes children
   try
     hax = get (hax, "__plotyy_axes__");
     kids = cell2mat (get (hax, "children"));
   catch
     kids = get (hax, "children");
   end_try_catch
-  
+
   is_deletion = getappdata (hl, "__total_num_children__") > numel (kids);
   setappdata (hl, "__total_num_children__", numel (kids));
-  
+
   ## Remove item for deleted object
   current_obj = getappdata (hl, "__peer_objects__");
   [~, iold, inew] = setxor (current_obj, kids);
   kids = kids(inew);
   current_obj(iold) = [];
-  
+
   if (isempty (current_obj))
     delete (hl);
     return;
   endif
 
   if (! is_deletion && strcmp (get (hl, "autoupdate"), "on"))
-  
+
     ## Add item for the latest created object
     persistent valid_types = {"line", "patch", "surface", "hggroup"};
     valid = arrayfun (@(h) any (strcmp (get (h, "type"), valid_types)), kids);
     kids(! valid) = [];
 
-    ## FIXME: if the latest child is an hggroup, we cannot label it
-    ## since this function is called before the hggroup has been properly
-    ## populated
+    ## FIXME: if the latest child is an hggroup, we cannot label it since this
+    ## function is called before the hggroup has been properly populated.
     if (numel (kids) > 0 && strcmp (get (kids(1), "type"), "hggroup"))
       kids = [];
     elseif (numel (kids) > 1)
@@ -532,7 +530,7 @@ function legend_autoupdate_cb (hax, d, hl)
   else
     kids = [];
   endif
-  
+
   if (any (iold) || any (kids))
     setappdata (hl, "__peer_objects__", [current_obj; kids]);
     set (hl, "string", displayname_or_default ([current_obj; kids], hl));
@@ -555,7 +553,7 @@ function opts = parse_opts (varargin)
       && (! ishghandle (varargin{1})
           || (strcmp (get (varargin{1}, "type"), "axes")
               && ! strcmp (get (varargin{1}, "tag"), "legend"))))
-    [axes_handles, varargin, nargs] = __plt_get_axis_arg__ ("legend", ...
+    [axes_handles, varargin, nargs] = __plt_get_axis_arg__ ("legend",
                                                             varargin{:});
     if (isempty (axes_handles))
       axes_handles = gca ();
@@ -588,8 +586,8 @@ function opts = parse_opts (varargin)
       && any (strcmp (varargin{1}, actions)))
     action = varargin{1};
     if (nargs > 1)
-      warning ("Octave:legend:ignoring-extra-argument", ...
-               "legend: ignoring extra arguments after \"%s\"", action);
+      warning ("Octave:legend:ignoring-extra-argument",
+               'legend: ignoring extra arguments after "%s"', action);
     endif
     nargs = 0;
   endif
@@ -637,8 +635,8 @@ function opts = parse_opts (varargin)
 
     idx = cellfun (@(s) any (strcmp (s, valid_types)), types);
     if (! all (idx))
-      error ("Octave:legend:bad-object", ...
-             "legend: objects of type \"%s\" can't be labeled", ...
+      error ("Octave:legend:bad-object",
+             "legend: objects of type \"%s\" can't be labeled",
              types(! idx){1});
     endif
     varargin(1) = [];
@@ -702,7 +700,7 @@ function opts = parse_opts (varargin)
 
         msg = "legend: ignoring extra objects.";
         if (! isempty (warn_propval))
-          msg = [msg " \"" warn_propval "\" interpreted as a property " , ...
+          msg = [msg ' "' warn_propval '" interpreted as a property ' , ...
                  "name. Use a cell array of strings to specify labels ", ...
                  "that match a legend property name."];
         endif
@@ -711,7 +709,7 @@ function opts = parse_opts (varargin)
         endif
       else
         obj_labels = obj_labels(1:nobj);
-        warning ("Octave:legend:object-label-mismatch", ...
+        warning ("Octave:legend:object-label-mismatch",
                  "legend: ignoring extra labels.");
       endif
     endif
@@ -746,7 +744,7 @@ function [labels, next_idx] = displayname_or_default (hplots, hl = [])
     default = arrayfun (@(ii) sprintf ("data%d", ii), ...
                         [next_idx:(next_idx + sum (idx) - 1)], ...
                         "uniformoutput", false)(:);
-    labels(idx)  = default;
+    labels(idx) = default;
   endif
 
   next_idx += sum (idx);
@@ -774,11 +772,11 @@ function update_layout_cb (hl, ~, update_item = false)
 
     if (update_item)
       pos = get (hl, "position")(3:4);
-      set (hl, "xlim",  [0 pos(1)], "ylim",  [0 pos(2)]);
+      set (hl, "xlim",  [0, pos(1)], "ylim",  [0, pos(2)]);
 
       textright = strcmp (get (hl, "textposition"), "right");
       set (hl, "ydir", "reverse", ...
-           "xdir", ifelse (textright, "normal", "reverse"));
+               "xdir", ifelse (textright, "normal", "reverse"));
 
       ## Create or reuse text and item graphics objects
       objlist = textitem_objects (hl, textright);
@@ -789,21 +787,21 @@ function update_layout_cb (hl, ~, update_item = false)
       for ii = 1:nitem
         set (objlist(ii,1), "position", txtdata(ii,:));
         if (strcmp (get (objlist(ii,2), "type"), "line"))
-          set (objlist(ii,2), "xdata", itemdata(ii,1:2), ...
-               "ydata", itemdata(ii,3:4));
+          set (objlist(ii,2), "xdata", itemdata(ii,1:2),
+                              "ydata", itemdata(ii,3:4));
         else
-          set (objlist(ii,2), "xdata", [itemdata(ii,1:2) itemdata(ii,[2 1])],
+          set (objlist(ii,2), "xdata", [itemdata(ii,1:2), itemdata(ii,[2 1])],
                               "ydata", [itemdata(ii,3), itemdata(ii,3), ...
                                         itemdata(ii,4), itemdata(ii,4)]);
         endif
       endfor
     else
-      sz = [diff(get (hl, "xlim")) diff(get (hl, "ylim"))];
+      sz = [diff(get (hl, "xlim")), diff(get (hl, "ylim"))];
     endif
 
     ## Place the legend
-    update_legend_position (hl, sz)
-    
+    update_legend_position (hl, sz);
+
   unwind_protect_cleanup
     set (hl, "units", units);
     setappdata(hl, "__updating_layout__", false);
@@ -823,8 +821,7 @@ function objlist = textitem_objects (hl, textright)
 
   new_peer_objects = getappdata (hl, "__peer_objects__")(:).';
 
-  unused = arrayfun (@(h) ! any (h == new_peer_objects), ...
-                     old_peer_objects);
+  unused = arrayfun (@(h) ! any (h == new_peer_objects), old_peer_objects);
   set (old_kids(unused), "visible", "off");
 
   ## Text properties
@@ -842,7 +839,7 @@ function objlist = textitem_objects (hl, textright)
 
   ## Create or reuse text/item objects as needed
   nitem = numel (new_peer_objects);
-  objlist = nan (nitem, 2);
+  objlist = NaN (nitem, 2);
 
   for ii = 1:nitem
 
@@ -860,7 +857,7 @@ function objlist = textitem_objects (hl, textright)
       hitem = tmp(! idx);
 
       set (htxt, "visible", "on", "string", str, ...
-           [txtprops(:)'; txtvals(:)']{:});
+                 [txtprops(:)'; txtvals(:)']{:});
       set (hitem, "visible", "on");
       set (hplt, "displayname", str);
 
@@ -910,18 +907,16 @@ function objlist = textitem_objects (hl, textright)
 
       endswitch
 
-      htxt = __go_text__ (hl, "string", str, ...
-                          [txtprops(:)'; txtvals(:)']{:});
+      htxt = __go_text__ (hl, "string", str, [txtprops(:)'; txtvals(:)']{:});
       set (base_hplt, "displayname", str);
 
       addproperty ("peer_object", htxt, "double", base_hplt);
       addproperty ("peer_object", hitem, "double", base_hplt);
 
       if (isempty (hmarker))
-        setappdata (hplt, "__item_link__",
-                    linkprop ([hplt hitem], pprops));
+        setappdata (hplt, "__item_link__", linkprop ([hplt, hitem], pprops));
       else
-        setappdata (hplt, "__item_link__", linkprop ([hplt hitem], lprops));
+        setappdata (hplt, "__item_link__", linkprop ([hplt, hitem], lprops));
         setappdata (hplt, "__marker_link__", linkprop ([hplt hmarker], mprops));
         addlistener (hitem, "ydata", ...
                      @(h) set (hmarker, "ydata", mean (get (h, "ydata"))));
@@ -931,15 +926,17 @@ function objlist = textitem_objects (hl, textright)
       endif
     endif
 
-    objlist(ii,:) = [htxt hitem];
+    objlist(ii,:) = [htxt, hitem];
   endfor
 
 endfunction
 
 function update_marker_cb (h)
+
   if (get (h, "markersize") > 6)
-    set (h, "markersize", 6)
+    set (h, "markersize", 6);
   endif
+
 endfunction
 
 function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
@@ -977,14 +974,14 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
   end_unwind_protect
 
   location = get (hl, "location");
-  outside = strcmp (location(end:-1:end-3), "edis");
+  outside = strcmp (location(end-3:end), "side");
   if (! outside)
-    max_size *= .9;
+    max_size *= .90;
   endif
 
   autolayout = strcmp (get (hl, "numcolumnsmode"), "auto");
-  itemdata = nan (nitem, 4);
-  txtdata = nan (nitem, 3);
+  itemdata = NaN (nitem, 4);
+  txtdata = NaN (nitem, 3);
   xmax = ymax = 0;
   iter = 1;
 
@@ -993,7 +990,7 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
     if (autolayout)
       if (any (strcmpi (location, {"north", "northoutside",
                                    "south", "southoutside"})))
-        ##FIXME: handle autolayout for those better
+        ##FIXME: handle autolayout for these in a better fashion
         nrow = 1;
       else
         nrow = max (find ((cumsum (ext(:,2) + vmargin) + vmargin) ...
@@ -1005,17 +1002,16 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
       nrow = ceil (nitem / ncol);
     endif
 
-    rowheighs = arrayfun (@(idx) max(ext(idx:nrow:end, 2)),
-                          1:nrow);
+    rowheights = arrayfun (@(idx) max(ext(idx:nrow:end, 2)), 1:nrow);
     x = hmargin;
     for ii = 1:ncol
       y = vmargin;
       for jj = 1:nrow
         if (iter > nitem)
-          continue
+          continue;
         endif
 
-        hg = rowheighs(jj);
+        hg = rowheights(jj);
         dx = 0;
         if (! strcmp (markers{iter}, "none"))
           dx = markersz{iter}/2;
@@ -1027,17 +1023,17 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
           y1 = y + hg - dx;
         endif
 
-        ## [x0 x1 y0 y1]
-        itemdata(iter,:) = [x+dx x+item_width-dx y0 y1];
+        ## [x0, x1, y0, y1]
+        itemdata(iter,:) = [x+dx, x+item_width-dx, y0, y1];
 
-        ## [x y z]
-        txtdata(iter,:) = [x+item_width+hmargin y+hg/2 0];
+        ## [x, y, z]
+        txtdata(iter,:) = [x+item_width+hmargin, y+hg/2, 0];
 
-        xmax = max ([xmax x+item_width+2*hmargin+ext(iter,1)]);
+        xmax = max ([xmax, x+item_width+2*hmargin+ext(iter,1)]);
         y += (vmargin + hg);
         iter++;
       endfor
-      ymax = max ([ymax y]);
+      ymax = max ([ymax, y]);
       x = xmax + 2*hmargin;
     endfor
 
@@ -1046,7 +1042,7 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
     if (autolayout)
       if (any (strcmpi (location, {"north", "northoutside",
                                    "south", "southoutside"})))
-        ##FIXME: handle autolayout for those better
+        ##FIXME: handle autolayout for these in a better fashion
         ncol = nitem;
       else
         ncol = max (find ((cumsum (ext(:,1) + 2*hmargin ...
@@ -1067,7 +1063,7 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
       x = hmargin;
       for jj = 1:ncol
         if (iter > nitem)
-          continue
+          continue;
         endif
 
         wd = colwidth(jj);
@@ -1084,22 +1080,22 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
           y1 = y + hg - dx;
         endif
 
-        ## [x0 x1 y0 y1]
-        itemdata(iter,:) = [x+dx x+item_width-dx y0 y1];
-        ## [x y z]
-        txtdata(iter,:) = [x+item_width+hmargin ybase 0];
+        ## [x0, x1, y0, y1]
+        itemdata(iter,:) = [x+dx, x+item_width-dx, y0, y1];
+        ## [x, y, z]
+        txtdata(iter,:) = [x+item_width+hmargin, ybase, 0];
 
-        ymax = max ([ymax ybase+ext(iter,2)/2+vmargin]);
+        ymax = max ([ymax, ybase+ext(iter,2)/2+vmargin]);
         x += (3*hmargin + item_width + wd);
         iter++;
       endfor
-      xmax = max ([xmax x-hmargin]);
+      xmax = max ([xmax, x-hmargin]);
       y = ymax + vmargin;
     endfor
 
   endif
 
-  sz = [xmax ymax];
+  sz = [xmax, ymax];
 
 endfunction
 
@@ -1109,19 +1105,21 @@ function update_legend_position (hl, sz)
   persistent vmargin = 6;
 
   location = get (hl, "location");
-  outside = strcmp (location(end:-1:end-3), "edis");
+  outside = strcmp (location(end-3:end), "side");
   if (outside)
     location = location(1:end-7);
   endif
 
   if (strcmp (location, "best"))
     orientation = get (hl, "orientation");
-    if (outside && strcmp (orientation, "vertical"))
-      location = "northeast";
-    elseif (outside)
-      location = "south";
+    if (outside)
+      if (strcmp (orientation, "vertical"))
+        location = "northeast";
+      else
+        location = "south";
+      endif
     else
-      ## FIXME: implement this properly
+      ## FIXME: implement "best" inside properly
       location = "northeast";
     endif
   endif
@@ -1139,11 +1137,12 @@ function update_legend_position (hl, sz)
       setappdata (hl, "__original_units__", units);
     endif
 
-    set (hax, "units", getappdata (hl, "__original_units__"), ...
-              "looseinset", li, "units", "points");
+    set (hax, "units", getappdata (hl, "__original_units__"),
+              "looseinset", li,
+              "units", "points");
 
     [li, axpos] = get (hax, {"looseinset", "position"}){:};
-    lpos = [get(hl, "position")(1:2) sz];
+    lpos = [get(hl, "position")(1:2), sz];
 
     if (! outside)
 
@@ -1257,7 +1256,7 @@ function update_legend_position (hl, sz)
       endswitch
     endif
 
-    set (hl, "xlim", [0 sz(1)], "ylim", [0 sz(2)], ...
+    set (hl, "xlim", [0, sz(1)], "ylim", [0, sz(2)], ...
              "position", lpos);
 
     setappdata (hl, "__peer_axes_position__", axpos);
@@ -1267,6 +1266,7 @@ function update_legend_position (hl, sz)
   end_unwind_protect
 
 endfunction
+
 
 %!demo
 %! clf;
@@ -1337,7 +1337,7 @@ endfunction
 %! h = legend ({"I am blue", "I am orange"}, "location", "east");
 %! legend ("right");
 %! set (h, "textposition", "left");
-%! set (h, "textcolor", [1 0 1]);
+%! set (h, "textcolor", [1, 0, 1]);
 
 %!demo
 %! clf;
@@ -1415,15 +1415,15 @@ endfunction
 %! subplot (2,1,1);
 %! rand_2x3_data1 = [0.341447, 0.171220, 0.284370; 0.039773, 0.731725, 0.779382];
 %! bar (rand_2x3_data1);
-%! ylim ([0 1.0]);
+%! ylim ([0, 1.0]);
 %! title ("legend() works for bar graphs (hggroups)");
 %! legend ({"1st Bar", "2nd Bar", "3rd Bar"}, "location", "northwest");
 %! subplot (2,1,2);
 %! x = linspace (0, 10, 20);
-%! stem (x, 0.5+x.*rand (size (x))/max (x), "markeredgecolor", [0 0.7 0]);
+%! stem (x, 0.5+x.*rand (size (x))/max (x), "markeredgecolor", [0, 0.7, 0]);
 %! hold on;
 %! stem (x+10/(2*20), x.*(1.0+rand (size (x)))/max (x));
-%! xlim ([0 10+10/(2*20)]);
+%! xlim ([0, 10+10/(2*20)]);
 %! title ("legend() works for stem plots (hggroups)");
 %! legend ({"Multicolor", "Unicolor"}, "location", "northwest");
 
@@ -1438,7 +1438,7 @@ endfunction
 %! clf reset;  # needed to undo colormap assignment in previous demo
 %! rand_2x3_data2 = [0.44804, 0.84368, 0.23012; 0.72311, 0.58335, 0.90531];
 %! bar (rand_2x3_data2);
-%! ylim ([0 1.2]);
+%! ylim ([0, 1.2]);
 %! title ('"left" option places colors to the left of text label');
 %! legend ("1st Bar", "2nd Bar", "3rd Bar");
 %! legend left;
@@ -1640,11 +1640,11 @@ endfunction
 %!  ylabel ("ylabel");
 %!  legend ({"12345678901234567890"}, "location", "southwestoutside");
 
-%!demo  # bug 36408;
+%!demo  # bug 39697
 %! clf;
 %! plot (1:10);
 %! legend ("Legend Text");
-%! title ({"Multi-line", "titles", "are a", "problem", "See bug #39697"});
+%! title ({"Multi-line", "titles", "are *not* a", "problem"});
 
 ## Test input validation
 %!test
@@ -1758,7 +1758,7 @@ endfunction
 %!   plot (1:10);
 %!   hl = legend ("Legend Text", "units", "normalized");
 %!   pos = get (gca, 'position');
-%!   set (hf, 'position', [0 0 200 200]);
+%!   set (hf, 'position', [0, 0, 200, 200]);
 %!   set (hl, 'fontsize', 20);
 %!   assert (get (gca, 'position'), pos, 2*eps);
 %! unwind_protect_cleanup

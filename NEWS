@@ -30,8 +30,8 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
         format long e uppercase loose
 
-  Note, that in case of multiple competing format options the rightmost
-  one is used and in case of an error the previous format remains
+  Note, in the case of multiple competing format options the rightmost
+  one is used, and, in case of an error, the previous format remains
   unchanged.
 
 - New warnings have been added about questionable uses of the colon ':'
@@ -49,10 +49,10 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
 #### Graphics backend
 
-- The `"legend"` function has been entirely rewritten. This mainly fixes
-  a number of historical bugs, but also implements new properties such as
-  `"AutoUpdate"` and `"NumColumns"`. Gnuplot which is no more actively
-  maintained will keep using the old legend function. 
+- The `"legend"` function has been entirely rewritten.  This fixes a
+  number of historical bugs, but also implements new properties such as
+  `"AutoUpdate"` and `"NumColumns"`.  The gnuplot toolkit---which is no
+  longer actively maintained---still uses the old legend function.
 
 - Graphic primitives now accept a color property value of `"none"`
   which is useful when a particular primitive needs to be hidden

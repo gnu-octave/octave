@@ -128,9 +128,9 @@ namespace octave
 #else
         m_view->horizontalHeader ()->setMovable (true);
 #endif
-        m_view->horizontalHeader ()->setSortIndicator
-          (settings->value (ws_sort_column).toInt (),
-           settings->value (ws_sort_order).value<Qt::SortOrder> ());
+        m_view->horizontalHeader ()->setSortIndicator (
+            settings->value (ws_sort_column).toInt (),
+            static_cast<Qt::SortOrder> (settings->value (ws_sort_order).toUInt ()));
         m_view->horizontalHeader ()->setSortIndicatorShown (true);
 
         m_view->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
@@ -180,8 +180,9 @@ namespace octave
     // set the sorting after a model was set, it would be ignored otherwise
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    m_view->sortByColumn (settings->value (ws_sort_column).toInt (),
-                          settings->value (ws_sort_order).value<Qt::SortOrder> ());
+    m_view->sortByColumn (
+      settings->value (ws_sort_column).toInt (),
+      static_cast<Qt::SortOrder> (settings->value (ws_sort_order).toUInt ()));
 
     m_model = model;
   }

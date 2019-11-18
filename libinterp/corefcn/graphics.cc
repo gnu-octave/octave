@@ -4185,14 +4185,6 @@ figure::properties::get_number (void) const
 graphics_toolkit
 figure::properties::get_toolkit (void) const
 {
-  if (! toolkit)
-    {
-      octave::gtk_manager& gtk_mgr
-        = octave::__get_gtk_manager__ ("figure::properties::get_toolkit");
-
-      toolkit = gtk_mgr.get_toolkit ();
-    }
-
   return toolkit;
 }
 
@@ -9256,6 +9248,15 @@ axes::properties::update_handlevisibility (void)
     }
 
   base_properties::update_handlevisibility ();
+}
+
+void
+figure::properties::init_toolkit (void)
+{
+  octave::gtk_manager& gtk_mgr
+    = octave::__get_gtk_manager__ ("figure::properties::init_toolkit");
+
+  toolkit = gtk_mgr.get_toolkit ();
 }
 
 void

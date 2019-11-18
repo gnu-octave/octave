@@ -3216,6 +3216,8 @@ public:
       pointershapehotspot.add_constraint (dim_vector (1, 2));
       position.add_constraint (dim_vector (1, 4));
       position.add_constraint (FINITE);
+
+      init_toolkit ();
     }
 
   private:
@@ -3229,7 +3231,9 @@ public:
 
     void update_handlevisibility (void);
 
-    mutable graphics_toolkit toolkit;
+    void init_toolkit (void);
+
+    graphics_toolkit toolkit;
   };
 
 private:

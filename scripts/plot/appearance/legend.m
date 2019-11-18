@@ -1184,7 +1184,7 @@ function update_legend_position (hl, sz)
         case "southwest"
           dx = lpos(3) + hmargin + ti(1);
           if (axpos(1) < (dx + hmargin))
-            li(1) = dx + hmargin;
+            li(1) = min (dx + hmargin, 0.95 * (axpos(1) + axpos(3)));
             set (hax, "looseinset", li);
             axpos = get (hax, "position");
           endif
@@ -1193,7 +1193,7 @@ function update_legend_position (hl, sz)
         case "west"
           dx = lpos(3) + hmargin + ti(1);
           if (axpos(1) < (dx + hmargin))
-            li(1) = dx + hmargin;
+            li(1) = min (dx + hmargin, 0.95 * (axpos(1) + axpos(3)));
             set (hax, "looseinset", li);
             axpos = get (hax, "position");
           endif
@@ -1202,7 +1202,7 @@ function update_legend_position (hl, sz)
         case "northwest"
           dx = lpos(3) + hmargin + ti(1);
           if (axpos(1) < (dx + hmargin))
-            li(1) = dx + hmargin;
+            li(1) = min (dx + hmargin, 0.95 * (axpos(1) + axpos(3)));
             set (hax, "looseinset", li);
             axpos = get (hax, "position");
           endif
@@ -1211,7 +1211,7 @@ function update_legend_position (hl, sz)
         case "north"
           dy = lpos(4) + vmargin + ti(4);
           if (li(4) < (dy + vmargin))
-            li(4) = dy + vmargin;
+            li(4) = min (dy + vmargin, axpos(4));
             set (hax, "looseinset", li);
             axpos = get (hax, "position");
           endif
@@ -1220,7 +1220,7 @@ function update_legend_position (hl, sz)
         case "northeast"
           dx = lpos(3) + hmargin + ti(3);
           if (li(3) < (dx + hmargin))
-            li(3) = dx + hmargin;
+            li(3) = min (dx + hmargin, axpos(3));
             set (hax, "looseinset", li);
             axpos = get (hax, "position");
           endif
@@ -1229,7 +1229,7 @@ function update_legend_position (hl, sz)
         case "east"
           dx = lpos(3) + hmargin + ti(3);
           if (li(3) < (dx + hmargin))
-            li(3) = dx + hmargin;
+            li(3) = min (dx + hmargin, axpos(3));
             set (hax, "looseinset", li);
             axpos = get (hax, "position");
           endif
@@ -1238,7 +1238,7 @@ function update_legend_position (hl, sz)
         case "southeast"
           dx = lpos(3) + hmargin + ti(3);
           if (li(3) < (dx + hmargin))
-            li(3) = dx + hmargin;
+            li(3) = min (dx + hmargin, axpos(3));
             set (hax, "looseinset", li);
             axpos = get (hax, "position");
           endif
@@ -1247,7 +1247,7 @@ function update_legend_position (hl, sz)
         case "south"
           dy = lpos(4) + vmargin + ti(2);
           if (li(2) < (dy + vmargin))
-            li(2) = dy + vmargin;
+            li(2) = min (dy + vmargin, 0.95 * (axpos(2) + axpos(4)));
             set (hax, "looseinset", li);
             axpos = get (hax, "position");
           endif

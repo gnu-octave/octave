@@ -649,8 +649,8 @@ function opts = parse_opts (varargin)
     if (isscalar (axes_handles))
       obj_handles = flipud (get (axes_handles, "children")(:));
     else
-      obj_handles = vertcat (flipud (get (flipud (axes_handles(:)), ...
-                                          "children")){:});
+      tmp = get (axes_handles(:), "children");
+      obj_handles = [flipud(tmp{1}); flipud(tmp{2})];
     endif
 
     if (isempty (obj_handles))

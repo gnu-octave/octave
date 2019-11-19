@@ -178,17 +178,15 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       pval = [pval, "box", "on"];
     endif
 
-  elseif (isempty (hl))
-
-    pval = ["fontsize", (0.9 * get (opts.axes_handles(1), "fontsize")), ...
-            "box", "on", pval];
-
   endif
 
   if (isempty (hl))
 
-    hl = axes ("tag", "legend", "handlevisibility", "off", "ydir", "reverse",
-               "position", [.5 .5 .3 .3], "xtick", [], "ytick", []);
+    hl = axes ("tag", "legend", "handlevisibility", "off", ...
+               "ydir", "reverse", "position", [.5 .5 .3 .3], ...
+               "fontsize", 0.9 * get (opts.axes_handles(1), "fontsize"), ...
+               "colormap", get (opts.axes_handles(1), "colormap"), ...
+               "xtick", [], "ytick", [], "box", "on");
 
     ## FIXME: Use the axes appdata to store its peer legend handle
     ## rather that adding a public property and change all uses.

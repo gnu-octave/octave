@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2019 David Bateman
+## Copyright (C) 2010-2019 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -322,8 +322,8 @@ endfunction
 
 function update_edgecolor_cb (hl)
 
-  set (hl, "xcolor", get (hl, "edgecolor"), ...
-           "ycolor", get (hl, "edgecolor"))
+  ecolor = get (hl, "edgecolor");
+  set (hl, "xcolor", ecolor, "ycolor", ecolor);
 
 endfunction
 

@@ -461,20 +461,31 @@ endfunction
 
 function maybe_update_layout_cb (h, d, hl)
 
-  if (isaxes (h))
-    pos = get_position_points (h);
-    old_pos = getappdata (hl, "__peer_axes_position__");
-    if (! all (pos == old_pos))
-      update_layout_cb (hl);
-      setappdata (hl, "__peer_axes_position__", pos);
-    endif
-  elseif (isfigure (h))
-    pos = get_position_points (h)(3:4);
-    old_pos = getappdata (hl, "__peer_figure_position__");
-    if (isempty (old_pos) || ! all (pos == old_pos))
-      update_layout_cb (hl);
-      setappdata (hl, "__peer_figure_position__", pos);
-    endif
+  persistent updating = false;
+
+  if (! updating)
+
+    unwind_protect
+      updating = true;
+      if (isaxes (h))
+        pos = get_position_points (h);
+        old_pos = getappdata (hl, "__peer_axes_position__");
+        if (! all (pos == old_pos))
+          update_layout_cb (hl);
+          setappdata (hl, "__peer_axes_position__", pos);
+        endif
+      elseif (isfigure (h))
+        pos = get_position_points (h)(3:4);
+        old_pos = getappdata (hl, "__peer_figure_position__");
+        if (isempty (old_pos) || ! all (pos == old_pos))
+          update_layout_cb (hl);
+          setappdata (hl, "__peer_figure_position__", pos);
+        endif
+      endif
+    unwind_protect_cleanup
+      updating = false;
+    end_unwind_protect
+
   endif
 
 endfunction

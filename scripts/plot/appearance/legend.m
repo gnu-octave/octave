@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2019 David Bateman
+# Copyright (C) 2010-2019 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -214,8 +214,9 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                     "__next_label_index__", opts.next_idx,
                     "__peer_objects__", opts.obj_handles);
     update_location_cb (hl, [], false);
-    update_layout_cb (hl, [], true);
+    update_edgecolor_cb (hl);
     update_numchild_cb (hl);
+    update_layout_cb (hl, [], true);
 
     ## Dummy invisible object that deletes the legend when "newplot" is called
     ht = __go_text__ (opts.axes_handles(1), "tag", "__legend_watcher__",
@@ -257,9 +258,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
     addlistener (hl, "box", @update_box_cb);
 
-    addlistener (hl, "edgecolor", ...
-                 @(h) set (hl, "xcolor", get (hl, "edgecolor"), ...
-                               "ycolor", get (hl, "edgecolor")));
+    addlistener (hl, "edgecolor", @update_edgecolor_cb);
 
     addlistener (hl, "location", @update_location_cb);
 
@@ -318,6 +317,13 @@ function update_location_cb (hl, ~, do_layout = true)
   if (do_layout)
     update_layout_cb (hl);
   endif
+
+endfunction
+
+function update_edgecolor_cb (hl)
+
+  set (hl, "xcolor", get (hl, "edgecolor"), ...
+           "ycolor", get (hl, "edgecolor"))
 
 endfunction
 

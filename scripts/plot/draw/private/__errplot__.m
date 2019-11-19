@@ -106,7 +106,7 @@ function h = __do_errplot__ (fstr, hax, varargin)
     if (isempty (fmt.color))
       lc = __next_line_color__ ();
     else
-      lc = fmt.color ();
+      lc = fmt.color;
     endif
     if (isempty (fmt.marker) && isempty (fmt.linestyle))
       [ls, mk] = __next_line_style__ ();

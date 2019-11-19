@@ -1018,7 +1018,7 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
         endif
 
         y0 = y1 = y + hg/2;
-        if (! strcmp (types{jj}, "line"))
+        if (! strcmp (types{iter}, "line"))
           y0 = y + dx;
           y1 = y + hg - dx;
         endif
@@ -1061,6 +1061,10 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
     y = vmargin;
     for ii = 1:nrow
       x = hmargin;
+
+      endidx = min (iter+ncol-1, nitem);
+      hg = max (ext(iter:endidx,2));
+
       for jj = 1:ncol
         if (iter > nitem)
           continue;
@@ -1069,13 +1073,13 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
         wd = colwidth(jj);
 
         dx = 0;
-        if (! strcmp (markers, "none"))
+        if (! strcmp (markers{iter}, "none"))
           dx = markersz{iter}/2;
         endif
 
-        ybase = y + ext(iter,2) / 2;
+        ybase = y + hg / 2;
         y0 = y1 = ybase;
-        if (! strcmp (types{jj}, "line"))
+        if (! strcmp (types{iter}, "line"))
           y0 = y + dx;
           y1 = y + hg - dx;
         endif
@@ -1085,7 +1089,7 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
         ## [x, y, z]
         txtdata(iter,:) = [x+item_width+hmargin, ybase, 0];
 
-        ymax = max ([ymax, ybase+ext(iter,2)/2+vmargin]);
+        ymax = max ([ymax, ybase+hg/2+vmargin]);
         x += (3*hmargin + item_width + wd);
         iter++;
       endfor

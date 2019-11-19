@@ -965,6 +965,7 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
   persistent hmargin = 3;
   persistent vmargin = 3;
   persistent item_width = 15;
+  persistent item_height = 7;
 
   ext = get (objlist(:,1), "extent");
   markers = get (objlist(:,2), "marker");
@@ -1022,7 +1023,8 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
       nrow = ceil (nitem / ncol);
     endif
 
-    rowheights = arrayfun (@(idx) max(ext(idx:nrow:end, 2)), 1:nrow);
+    rowheights = arrayfun (@(idx) max([item_height; ext(idx:nrow:end, 2)]), ...
+                           1:nrow);
     x = hmargin;
     for ii = 1:ncol
       y = vmargin;
@@ -1039,8 +1041,8 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
 
         y0 = y1 = y + hg/2;
         if (! strcmp (types{iter}, "line"))
-          y0 = y + dx;
-          y1 = y + hg - dx;
+          y0 = y + hg/2 - item_height/2 + dx;
+          y1 = y + hg/2 + item_height/2 - dx;
         endif
 
         ## [x0, x1, y0, y1]
@@ -1083,7 +1085,7 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
       x = hmargin;
 
       endidx = min (iter+ncol-1, nitem);
-      hg = max (ext(iter:endidx,2));
+      hg = max ([item_height; ext(iter:endidx,2)]);
 
       for jj = 1:ncol
         if (iter > nitem)
@@ -1100,8 +1102,8 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
         ybase = y + hg / 2;
         y0 = y1 = ybase;
         if (! strcmp (types{iter}, "line"))
-          y0 = y + dx;
-          y1 = y + hg - dx;
+          y0 = y + hg/2 - item_height/2 + dx;
+          y1 = y + hg/2 + item_height/2 - dx;
         endif
 
         ## [x0, x1, y0, y1]

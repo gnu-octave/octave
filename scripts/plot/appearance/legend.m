@@ -699,7 +699,7 @@ function opts = parse_opts (varargin)
       obj_labels = varargin{1};
       varargin(1) = [];
       nargs--;
-    elseif (ischar (varargin{1}) && ! isvector (varargin{1}))
+    elseif (ischar (varargin{1}) && rows (varargin{1}) > 1)
       obj_labels = cellstr (varargin{1});
       varargin(1) = [];
       nargs--;

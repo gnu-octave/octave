@@ -192,11 +192,13 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
     ## FIXME: Use the axes appdata to store its peer legend handle
     ## rather that adding a public property and change all uses.
-    try
-      addproperty ("__legend_handle__", opts.axes_handles, "handle", hl);
-    catch
-      set (opts.axes_handles, "__legend_handle__", hl);
-    end_try_catch
+    for htmp = opts.axes_handles
+      try
+        addproperty ("__legend_handle__", htmp, "handle", hl);
+      catch
+        set (htmp, "__legend_handle__", hl);
+      end_try_catch
+    endfor
 
     ## Add and update legend specific properties
     addproperties (hl);

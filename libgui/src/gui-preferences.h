@@ -49,4 +49,36 @@ struct gui_pref
   const QVariant def;  // the default value
 };
 
+// The version for shortcuts, where the default value is stored as a
+// combination of Qt:Keys (resutling in an unsigend int, when added)
+// or as one of the predefined standard key sequences.
+
+struct sc_pref
+{
+  sc_pref (const QString& key_arg, Qt::Key def_arg)
+    : key (key_arg), def (static_cast<unsigned int> (def_arg)),
+      def_std (QKeySequence::UnknownKey)
+  { }
+
+  sc_pref (const QString& key_arg, unsigned int def_arg)
+    : key (key_arg), def (def_arg), def_std (QKeySequence::UnknownKey)
+  { }
+
+  sc_pref (const QString& key_arg, QKeySequence::StandardKey def_std_arg)
+    : key (key_arg), def (0), def_std (def_std_arg)
+  { }
+
+  // No copying!
+
+  sc_pref (const sc_pref&) = delete;
+
+  sc_pref& operator = (const sc_pref&) = delete;
+
+  ~sc_pref (void) = default;
+
+  const QString key;                        // the key name
+  const unsigned int def;                   // the default as key
+  const QKeySequence::StandardKey def_std;  // the default as standard key
+};
+
 #endif

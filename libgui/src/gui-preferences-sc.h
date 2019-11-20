@@ -25,10 +25,23 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "gui-preferences.h"
 
-// Console preferences
+// Define shortcuts
 
-const gui_pref
-sc_main_edit_copy ("shortcuts/main_edit:copy", QVariant (QKeySequence::Copy));
+// The shortcut's default values are given as QKeySequence for being able
+// to use platform independent standard keys (QKeySequence::StandardKey).
+// However, converting key sequences into QVariants does not seem to
+// revertable. In addition the related string (which is saved in the
+// preferences file) can not be determined during compile time since the
+// result depends on the platform (at least in case of standard key sequences
+// like, e.g., QKeySequence::Copy)
+// Therefore, these prefs for key sequences require a separate constant
+// definition and value method for the settings class.
+
+
+
+const sc_pref sc_main_edit_copy ("shortcuts/main_edit:copy", Qt::CTRL + Qt::Key_C);
+
+// Other normal, shortcut related options
 
 const gui_pref
 sc_main_ctrld ("shortcuts/main_ctrld", QVariant (false));

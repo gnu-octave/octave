@@ -61,6 +61,9 @@ namespace octave
     {
       return value (pref.key, pref.def);
     }
+
+    QVariant sc_value (const sc_pref& pref) const;
+
   };
 }
 

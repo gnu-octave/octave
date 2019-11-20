@@ -24,9 +24,30 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <QSettings>
+
 #include "gui-settings.h"
 
 namespace octave
 {
+
+  QVariant gui_settings::sc_value (const sc_pref& pref) const
+  {
+    QKeySequence key_seq = QKeySequence ();
+
+    // Check, which of the elements for the default value in the sc_pref
+    // structure has a valid value and take this as default. If both
+    // elements are not valid, leave the key sequence empty
+    if (pref.def)
+      key_seq = QKeySequence (pref.def);
+    else if (pref.def_std != QKeySequence::UnknownKey)
+      key_seq = QKeySequence (pref.def_std);
+
+    // Get the value from the settings where the key sequences are stored
+    // as strings
+    return value (pref.key, key_seq.toString ());
+  }
+
   // Additional gui_settings functions will be added later.
+
 }

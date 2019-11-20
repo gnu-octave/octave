@@ -35,9 +35,9 @@ see <https://www.gnu.org/licenses/>.
 #include <QApplication>
 #include <QAction>
 
+#include "gui-preferences-global.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-sc.h"
-#include "gui-preferences-global.h"
 #include "octave-qobject.h"
 #include "resource-manager.h"
 
@@ -268,13 +268,17 @@ QTerminal::notice_settings (const gui_settings *settings)
 
   setScrollBufferSize (settings->value (cs_hist_buffer).toInt ());
 
-  // If the Copy shortcut is Ctrl-C, then set up to allow Ctrl-C to also
-  // be processed as the interrupt character in the command window.
+  // If the Copy shortcut is Ctrl+C, then the Copy action also emits
+  // a signal for interrupting the current code executed by the worker.
+  // If the Copy shortcut is not Ctrl+C, an extra interrupt action is
+  // set up for emitting the interrupt signal.
 
-  QString sc = settings->value (sc_main_edit_copy).toString ();
+  QString sc = settings->sc_value (sc_main_edit_copy).toString ();
 
-  //  dis- or enable extra interrupt action
-  bool extra_ir_action = (QKeySequence (sc) != QKeySequence::Copy);
+  //  Dis- or enable extra interrupt action depending on the Copy shortcut
+  bool extra_ir_action
+      = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C).toString ());
+
   _interrupt_action->setEnabled (extra_ir_action);
   has_extra_interrupt (extra_ir_action);
 

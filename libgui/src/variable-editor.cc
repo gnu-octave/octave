@@ -1386,6 +1386,9 @@ namespace octave
         // the application's palette
         QColor default_color = qApp->palette ().color
                               (static_cast<QPalette::ColorRole> (ve_colors[i].def.toInt ()));
+                  // FIXME: use value<QPalette::ColorRole> instead of static cast after
+                  //        dropping support of Qt 5.4
+
         QColor setting_color =
             settings->value (ve_colors[i].key, default_color).value<QColor> ();
 

@@ -131,6 +131,9 @@ namespace octave
         m_view->horizontalHeader ()->setSortIndicator (
             settings->value (ws_sort_column).toInt (),
             static_cast<Qt::SortOrder> (settings->value (ws_sort_order).toUInt ()));
+            // FIXME: use value<Qt::SortOrder> instead of static cast after
+            //        dropping support of Qt 5.4
+
         m_view->horizontalHeader ()->setSortIndicatorShown (true);
 
         m_view->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
@@ -183,6 +186,8 @@ namespace octave
     m_view->sortByColumn (
       settings->value (ws_sort_column).toInt (),
       static_cast<Qt::SortOrder> (settings->value (ws_sort_order).toUInt ()));
+      // FIXME: use value<Qt::SortOrder> instead of static cast after
+      //        dropping support of Qt 5.4
 
     m_model = model;
   }

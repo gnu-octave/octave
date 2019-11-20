@@ -231,6 +231,8 @@ namespace octave
     m_file_tree_view->sortByColumn
       (settings->value (fb_sort_column).toInt (),
        static_cast<Qt::SortOrder> (settings->value (fb_sort_order).toUInt ()));
+       // FIXME: use value<Qt::SortOrder> instead of static cast after
+       //        dropping support of Qt 5.4
 
     if (settings->contains (fb_column_state.key))
       m_file_tree_view->header ()->restoreState

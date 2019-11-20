@@ -138,6 +138,8 @@ namespace octave
                                static_cast<Qt::SortOrder>
                                (settings->value ("findfiles/sort_files_by_order",
                                                  Qt::AscendingOrder).toUInt ()));
+                // FIXME: use value<Qt::SortOrder> instead of static cast after
+                //        dropping support of Qt 5.4
 
     connect (m_file_list, SIGNAL (doubleClicked (const QModelIndex&)),
              this, SLOT (item_double_clicked (const QModelIndex &)));

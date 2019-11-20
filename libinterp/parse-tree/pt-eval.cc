@@ -2016,16 +2016,6 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_decl_init_list (tree_decl_init_list& lst)
-  {
-    // FIXME: tree_decl_elt is not derived from tree, so should it
-    // really have an accept method?
-
-    for (tree_decl_elt *elt : lst)
-      elt->accept (*this);
-  }
-
-  void
   tree_evaluator::visit_decl_elt (tree_decl_elt& elt)
   {
     tree_identifier *id = elt.ident ();

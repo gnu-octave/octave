@@ -912,20 +912,6 @@ namespace octave
   }
 
   void
-  tree_print_code::visit_switch_case_list (tree_switch_case_list& lst)
-  {
-    auto p = lst.begin ();
-
-    while (p != lst.end ())
-      {
-        tree_switch_case *elt = *p++;
-
-        if (elt)
-          elt->accept (*this);
-      }
-  }
-
-  void
   tree_print_code::visit_switch_command (tree_switch_command& cmd)
   {
     print_comment_list (cmd.leading_comment ());

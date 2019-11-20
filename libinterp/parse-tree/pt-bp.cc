@@ -145,24 +145,6 @@ namespace octave
   }
 
   void
-  tree_breakpoint::visit_octave_user_script (octave_user_script& fcn)
-  {
-    tree_statement_list *cmd_list = fcn.body ();
-
-    if (cmd_list)
-      cmd_list->accept (*this);
-  }
-
-  void
-  tree_breakpoint::visit_octave_user_function (octave_user_function& fcn)
-  {
-    tree_statement_list *cmd_list = fcn.body ();
-
-    if (cmd_list)
-      cmd_list->accept (*this);
-  }
-
-  void
   tree_breakpoint::visit_octave_user_function_header (octave_user_function&)
   {
     panic_impossible ();
@@ -175,17 +157,6 @@ namespace octave
   }
 
   void
-  tree_breakpoint::visit_function_def (tree_function_def& fdef)
-  {
-    octave_value fcn = fdef.function ();
-
-    octave_function *f = fcn.function_value ();
-
-    if (f)
-      f->accept (*this);
-  }
-
-  void
   tree_breakpoint::visit_identifier (tree_identifier&)
   {
     panic_impossible ();
@@ -195,15 +166,6 @@ namespace octave
   tree_breakpoint::visit_if_clause (tree_if_clause&)
   {
     panic_impossible ();
-  }
-
-  void
-  tree_breakpoint::visit_if_command (tree_if_command& cmd)
-  {
-    tree_if_command_list *lst = cmd.cmd_list ();
-
-    if (lst)
-      lst->accept (*this);
   }
 
   void

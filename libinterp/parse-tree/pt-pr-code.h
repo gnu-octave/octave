@@ -135,8 +135,6 @@ namespace octave
 
     void visit_switch_case (tree_switch_case&);
 
-    void visit_switch_case_list (tree_switch_case_list&);
-
     void visit_switch_command (tree_switch_command&);
 
     void visit_try_catch_command (tree_try_catch_command&);

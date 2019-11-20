@@ -580,14 +580,6 @@ namespace octave
   }
 
   void
-  jit_convert::visit_if_command (tree_if_command& cmd)
-  {
-    tree_if_command_list *lst = cmd.cmd_list ();
-    assert (lst); // jwe: Can this be null?
-    lst->accept (*this);
-  }
-
-  void
   jit_convert::visit_if_command_list (tree_if_command_list& lst)
   {
     tree_if_clause *last = lst.back ();
@@ -845,18 +837,6 @@ namespace octave
             m_block->append (m_factory.create<jit_call> (fn, name,
                                                          expr_result));
           }
-      }
-  }
-
-  void
-  jit_convert::visit_statement_list (tree_statement_list& lst)
-  {
-    for (auto iter = lst.begin (); iter != lst.end(); ++iter)
-      {
-        tree_statement *elt = *iter;
-        // jwe: Can this ever be null?
-        assert (elt);
-        elt->accept (*this);
       }
   }
 

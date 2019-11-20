@@ -139,12 +139,6 @@ namespace octave
 
     ~ctor_analyzer (void) = default;
 
-    void visit_statement_list (tree_statement_list& t)
-    {
-      for (const auto& stmt_p : t)
-        stmt_p->accept (*this);
-    }
-
     void visit_statement (tree_statement& t)
     {
       if (t.is_expression ())

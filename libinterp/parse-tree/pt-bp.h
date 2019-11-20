@@ -81,21 +81,14 @@ namespace octave
 
     void visit_complex_for_command (tree_complex_for_command&);
 
-    void visit_octave_user_script (octave_user_script&);
-
-    void visit_octave_user_function (octave_user_function&);
-
     void visit_octave_user_function_header (octave_user_function&);
 
     void visit_octave_user_function_trailer (octave_user_function&);
 
-    void visit_function_def (tree_function_def&);
 
     void visit_identifier (tree_identifier&);
 
     void visit_if_clause (tree_if_clause&);
-
-    void visit_if_command (tree_if_command&);
 
     void visit_if_command_list (tree_if_command_list&);
 

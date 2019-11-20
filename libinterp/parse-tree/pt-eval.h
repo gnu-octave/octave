@@ -192,8 +192,6 @@ namespace octave
 
     void visit_decl_command (tree_decl_command&);
 
-    void visit_decl_init_list (tree_decl_init_list&);
-
     void visit_decl_elt (tree_decl_elt&);
 
     void visit_simple_for_command (tree_simple_for_command&);

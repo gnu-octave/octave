@@ -114,188 +114,127 @@ namespace octave
 
     tree_walker& operator = (const tree_walker&) = delete;
 
-    virtual void
-    visit_anon_fcn_handle (tree_anon_fcn_handle&) = 0;
+    virtual void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
-    virtual void
-    visit_argument_list (tree_argument_list&) = 0;
+    virtual void visit_argument_list (tree_argument_list&);
 
-    virtual void
-    visit_binary_expression (tree_binary_expression&) = 0;
+    virtual void visit_binary_expression (tree_binary_expression&);
 
-    virtual void
-    visit_boolean_expression (tree_boolean_expression& expr);
+    virtual void visit_boolean_expression (tree_boolean_expression&);
 
-    virtual void
-    visit_compound_binary_expression (tree_compound_binary_expression& expr);
+    virtual void visit_compound_binary_expression (tree_compound_binary_expression&);
 
-    virtual void
-    visit_break_command (tree_break_command&) = 0;
+    virtual void visit_break_command (tree_break_command&);
 
-    virtual void
-    visit_colon_expression (tree_colon_expression&) = 0;
+    virtual void visit_colon_expression (tree_colon_expression&);
 
-    virtual void
-    visit_continue_command (tree_continue_command&) = 0;
+    virtual void visit_continue_command (tree_continue_command&);
 
-    virtual void
-    visit_decl_command (tree_decl_command&) = 0;
+    virtual void visit_decl_command (tree_decl_command&);
 
-    virtual void
-    visit_decl_elt (tree_decl_elt&) = 0;
+    virtual void visit_decl_elt (tree_decl_elt&);
 
-    virtual void
-    visit_decl_init_list (tree_decl_init_list&) = 0;
+    virtual void visit_decl_init_list (tree_decl_init_list&);
 
-    virtual void
-    visit_simple_for_command (tree_simple_for_command&) = 0;
+    virtual void visit_simple_for_command (tree_simple_for_command&);
 
-    virtual void
-    visit_complex_for_command (tree_complex_for_command&) = 0;
+    virtual void visit_complex_for_command (tree_complex_for_command&);
 
-    virtual void
-    visit_octave_user_script (octave_user_script&) = 0;
+    virtual void visit_octave_user_script (octave_user_script&);
 
-    virtual void
-    visit_octave_user_function (octave_user_function&) = 0;
+    virtual void visit_octave_user_function (octave_user_function&);
 
-    virtual void
-    visit_function_def (tree_function_def&) = 0;
+    virtual void visit_function_def (tree_function_def&);
 
-    virtual void
-    visit_identifier (tree_identifier&) = 0;
+    virtual void visit_identifier (tree_identifier&);
 
-    virtual void
-    visit_if_clause (tree_if_clause&) = 0;
+    virtual void visit_if_clause (tree_if_clause&);
 
-    virtual void
-    visit_if_command (tree_if_command&) = 0;
+    virtual void visit_if_command (tree_if_command&);
 
-    virtual void
-    visit_if_command_list (tree_if_command_list&) = 0;
+    virtual void visit_if_command_list (tree_if_command_list&);
 
-    virtual void
-    visit_switch_case (tree_switch_case&) = 0;
+    virtual void visit_switch_case (tree_switch_case&);
 
-    virtual void
-    visit_switch_case_list (tree_switch_case_list&) = 0;
+    virtual void visit_switch_case_list (tree_switch_case_list&);
 
-    virtual void
-    visit_switch_command (tree_switch_command&) = 0;
+    virtual void visit_switch_command (tree_switch_command&);
 
-    virtual void
-    visit_index_expression (tree_index_expression&) = 0;
+    virtual void visit_index_expression (tree_index_expression&);
 
-    virtual void
-    visit_matrix (tree_matrix&) = 0;
+    virtual void visit_matrix (tree_matrix&);
 
-    virtual void
-    visit_cell (tree_cell&) = 0;
+    virtual void visit_cell (tree_cell&);
 
-    virtual void
-    visit_multi_assignment (tree_multi_assignment&) = 0;
+    virtual void visit_multi_assignment (tree_multi_assignment&);
 
-    virtual void
-    visit_no_op_command (tree_no_op_command&) = 0;
+    virtual void visit_no_op_command (tree_no_op_command&);
 
-    virtual void
-    visit_constant (tree_constant&) = 0;
+    virtual void visit_constant (tree_constant&);
 
-    virtual void
-    visit_fcn_handle (tree_fcn_handle&) = 0;
+    virtual void visit_fcn_handle (tree_fcn_handle&);
 
-    virtual void
-    visit_parameter_list (tree_parameter_list&) = 0;
+    virtual void visit_parameter_list (tree_parameter_list&);
 
-    virtual void
-    visit_postfix_expression (tree_postfix_expression&) = 0;
+    virtual void visit_postfix_expression (tree_postfix_expression&);
 
-    virtual void
-    visit_prefix_expression (tree_prefix_expression&) = 0;
+    virtual void visit_prefix_expression (tree_prefix_expression&);
 
-    virtual void
-    visit_return_command (tree_return_command&) = 0;
+    virtual void visit_return_command (tree_return_command&);
 
-    virtual void
-    visit_return_list (tree_return_list&) = 0;
+    virtual void visit_return_list (tree_return_list&);
 
-    virtual void
-    visit_simple_assignment (tree_simple_assignment&) = 0;
+    virtual void visit_simple_assignment (tree_simple_assignment&);
 
-    virtual void
-    visit_statement (tree_statement&) = 0;
+    virtual void visit_statement (tree_statement&);
 
-    virtual void
-    visit_statement_list (tree_statement_list&) = 0;
+    virtual void visit_statement_list (tree_statement_list&);
 
-    virtual void
-    visit_try_catch_command (tree_try_catch_command&) = 0;
+    virtual void visit_try_catch_command (tree_try_catch_command&);
 
-    virtual void
-    visit_unwind_protect_command (tree_unwind_protect_command&) = 0;
+    virtual void visit_unwind_protect_command (tree_unwind_protect_command&);
 
-    virtual void
-    visit_while_command (tree_while_command&) = 0;
+    virtual void visit_while_command (tree_while_command&);
 
-    virtual void
-    visit_do_until_command (tree_do_until_command&) = 0;
+    virtual void visit_do_until_command (tree_do_until_command&);
 
-    virtual void
-    visit_superclass_ref (tree_superclass_ref&) { } /* = 0; */
+    virtual void visit_superclass_ref (tree_superclass_ref&);
 
-    virtual void
-    visit_metaclass_query (tree_metaclass_query&) { } /* = 0; */
+    virtual void visit_metaclass_query (tree_metaclass_query&);
 
-    virtual void
-    visit_classdef_attribute (tree_classdef_attribute&) { } /* = 0; */
+    virtual void visit_classdef_attribute (tree_classdef_attribute&);
 
-    virtual void
-    visit_classdef_attribute_list (tree_classdef_attribute_list&) { } // = 0;
+    virtual void visit_classdef_attribute_list (tree_classdef_attribute_list&);
 
-    virtual void
-    visit_classdef_superclass (tree_classdef_superclass&) { } // = 0;
+    virtual void visit_classdef_superclass (tree_classdef_superclass&);
 
-    virtual void
-    visit_classdef_superclass_list (tree_classdef_superclass_list&) { } // = 0;
+    virtual void visit_classdef_superclass_list (tree_classdef_superclass_list&);
 
-    virtual void
-    visit_classdef_property (tree_classdef_property&) { } // = 0;
+    virtual void visit_classdef_property (tree_classdef_property&);
 
-    virtual void
-    visit_classdef_property_list (tree_classdef_property_list&) { } // = 0;
+    virtual void visit_classdef_property_list (tree_classdef_property_list&);
 
-    virtual void
-    visit_classdef_properties_block (tree_classdef_properties_block&) { } // = 0;
+    virtual void visit_classdef_properties_block (tree_classdef_properties_block&);
 
-    virtual void
-    visit_classdef_methods_list (tree_classdef_methods_list&) { } // = 0;
+    virtual void visit_classdef_methods_list (tree_classdef_methods_list&);
 
-    virtual void
-    visit_classdef_methods_block (tree_classdef_methods_block&) { } // = 0;
+    virtual void visit_classdef_methods_block (tree_classdef_methods_block&);
 
-    virtual void
-    visit_classdef_event (tree_classdef_event&) { } // = 0;
+    virtual void visit_classdef_event (tree_classdef_event&);
 
-    virtual void
-    visit_classdef_events_list (tree_classdef_events_list&) { } // = 0;
+    virtual void visit_classdef_events_list (tree_classdef_events_list&);
 
-    virtual void
-    visit_classdef_events_block (tree_classdef_events_block&) { } // = 0;
+    virtual void visit_classdef_events_block (tree_classdef_events_block&);
 
-    virtual void
-    visit_classdef_enum (tree_classdef_enum&) { } // = 0;
+    virtual void visit_classdef_enum (tree_classdef_enum&);
 
-    virtual void
-    visit_classdef_enum_list (tree_classdef_enum_list&) { } // = 0;
+    virtual void visit_classdef_enum_list (tree_classdef_enum_list&);
 
-    virtual void
-    visit_classdef_enum_block (tree_classdef_enum_block&) { } // = 0;
+    virtual void visit_classdef_enum_block (tree_classdef_enum_block&);
 
-    virtual void
-    visit_classdef_body (tree_classdef_body&) { } // = 0;
+    virtual void visit_classdef_body (tree_classdef_body&);
 
-    virtual void
-    visit_classdef (tree_classdef&) { } // = 0;
+    virtual void visit_classdef (tree_classdef&);
   };
 }
 

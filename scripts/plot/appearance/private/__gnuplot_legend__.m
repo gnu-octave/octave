@@ -340,7 +340,8 @@ function [hleg, hleg_obj, hplot, labels] = __gnuplot_legend__ (varargin)
       varargin = arg;
       nargs = numel (varargin);
     else
-      error ("legend: single argument must be a string or cellstr");
+      error ("Octave:invalid-fun-call",
+             "legend: single argument must be a string or cellstr");
     endif
 
   elseif (nargs > 1 && iscellstr (varargin{1}))
@@ -460,7 +461,8 @@ function [hleg, hleg_obj, hplot, labels] = __gnuplot_legend__ (varargin)
       for i = 1 : nargs
         label = varargin{i};
         if (! ischar (label))
-          error ("legend: expecting label to be a string");
+          error ("Octave:invalid-fun-call",
+                 "legend: expecting label to be a string");
         endif
         ## Locate an object which can be labeled
         while (k > 0)

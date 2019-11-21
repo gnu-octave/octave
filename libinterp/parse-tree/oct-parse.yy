@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "Cell.h"
+#include "anon-fcn-validator.h"
 #include "builtin-defun-decls.h"
 #include "defun.h"
 #include "dynamic-ld.h"
@@ -606,6 +607,11 @@ fcn_handle      : FCN_HANDLE
 anon_fcn_handle : '@' param_list stmt_begin expr_no_assign
                   {
                     $$ = parser.make_anon_fcn_handle ($2, $4);
+                    if (! $$)
+                      {
+                        // make_anon_fcn_handle deleted $2 and $4.
+                        YYABORT;
+                      }
                     lexer.m_nesting_level.remove ();
                   }
                 | '@' param_list stmt_begin error
@@ -2392,6 +2398,23 @@ namespace octave
     // FIXME: need to get these from the location of the @ symbol.
     int l = m_lexer.m_input_line_number;
     int c = m_lexer.m_current_input_column;
+
+    // FIXME: We need to examine EXPR and issue an error if any
+    // sub-expression contains an assignment, compound assignment,
+    // increment, or decrement operator.
+
+    anon_fcn_validator validator (param_list, expr);
+
+    if (! validator.ok ())
+      {
+        delete param_list;
+        delete expr;
+
+        bison_error (validator.message (), validator.line (),
+                     validator.column ());
+
+        return nullptr;
+      }
 
     symbol_scope fcn_scope = m_lexer.m_symtab_context.curr_scope ();
     symbol_scope parent_scope = m_lexer.m_symtab_context.parent_scope ();

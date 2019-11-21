@@ -1,4 +1,5 @@
 PARSE_TREE_INC = \
+  %reldir%/anon-fcn-validator.h \
   %reldir%/bp-table.h \
   %reldir%/comment-list.h \
   %reldir%/jit-ir.h \
@@ -48,6 +49,7 @@ PARSE_TREE_INC = \
 ## be distributed but not installed.
 
 PARSE_TREE_SRC = \
+  %reldir%/anon-fcn-validator.cc \
   %reldir%/bp-table.cc \
   %reldir%/comment-list.cc \
   %reldir%/jit-ir.cc \

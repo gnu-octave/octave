@@ -54,11 +54,11 @@ To initialize:
 
 static bool toolkit_loaded = false;
 
-class gnuplot_graphics_toolkit : public base_graphics_toolkit
+class gnuplot_graphics_toolkit : public octave::base_graphics_toolkit
 {
 public:
   gnuplot_graphics_toolkit (octave::interpreter& interp)
-    : base_graphics_toolkit ("gnuplot"), m_interpreter (interp) { }
+    : octave::base_graphics_toolkit ("gnuplot"), m_interpreter (interp) { }
 
   ~gnuplot_graphics_toolkit (void) = default;
 
@@ -237,7 +237,7 @@ Undocumented internal function.
 
       octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
-      graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
+      octave::graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
       gtk_mgr.load_toolkit (tk);
 
       toolkit_loaded = true;

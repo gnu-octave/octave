@@ -2255,12 +2255,12 @@ int figure_manager::curr_index = 1;
 
 static bool toolkit_loaded = false;
 
-class fltk_graphics_toolkit : public base_graphics_toolkit
+class fltk_graphics_toolkit : public octave::base_graphics_toolkit
 {
 public:
 
   fltk_graphics_toolkit (octave::interpreter& interp)
-    : base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME),
+    : octave::base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME),
       m_interpreter (interp), input_event_hook_fcn_id ()
   {
     Fl::visual (FL_RGB);
@@ -2522,7 +2522,7 @@ Undocumented internal function.
       octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
       fltk_graphics_toolkit *fltk = new fltk_graphics_toolkit (interp);
-      graphics_toolkit tk (fltk);
+      octave::graphics_toolkit tk (fltk);
       gtk_mgr.load_toolkit (tk);
       toolkit_loaded = true;
 

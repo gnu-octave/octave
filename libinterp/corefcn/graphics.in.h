@@ -2255,7 +2255,7 @@ public:
     mark_modified ();
   }
 
-  virtual graphics_toolkit get_toolkit (void) const;
+  virtual octave::graphics_toolkit get_toolkit (void) const;
 
   virtual Matrix
   get_boundingbox (bool /* finternal */ = false,
@@ -2619,7 +2619,7 @@ public:
     return type () == go_name;
   }
 
-  virtual graphics_toolkit get_toolkit (void) const
+  virtual octave::graphics_toolkit get_toolkit (void) const
   {
     if (! valid_object ())
       error ("base_graphics_object::get_toolkit: invalid graphics object");
@@ -2866,7 +2866,7 @@ public:
   bool is_handle_visible (void) const
   { return get_properties ().is_handle_visible (); }
 
-  graphics_toolkit get_toolkit (void) const { return rep->get_toolkit (); }
+  octave::graphics_toolkit get_toolkit (void) const { return rep->get_toolkit (); }
 
   void add_property_listener (const std::string& nm, const octave_value& v,
                               listener_mode mode = GCB_POSTSET)
@@ -3087,9 +3087,9 @@ public:
 
     void set_visible (const octave_value& val);
 
-    graphics_toolkit get_toolkit (void) const;
+    octave::graphics_toolkit get_toolkit (void) const;
 
-    void set_toolkit (const graphics_toolkit& b);
+    void set_toolkit (const octave::graphics_toolkit& b);
 
     void set___graphics_toolkit__ (const octave_value& val);
 
@@ -3233,7 +3233,7 @@ public:
 
     void init_toolkit (void);
 
-    graphics_toolkit toolkit;
+    octave::graphics_toolkit toolkit;
   };
 
 private:

@@ -2122,7 +2122,7 @@ initialize_r (const graphics_handle& h)
 }
 
 void
-figure::properties::set_toolkit (const graphics_toolkit& b)
+figure::properties::set_toolkit (const octave::graphics_toolkit& b)
 {
   if (toolkit)
     finalize_r (get___myhandle__ ());
@@ -3515,7 +3515,7 @@ base_properties::is_handle_visible (void) const
           || (! executing_callbacks.empty () && ! handlevisibility.is ("off")));
 }
 
-graphics_toolkit
+octave::graphics_toolkit
 base_properties::get_toolkit (void) const
 {
   gh_manager& gh_mgr
@@ -3526,7 +3526,7 @@ base_properties::get_toolkit (void) const
   if (go)
     return go.get_toolkit ();
   else
-    return graphics_toolkit ();
+    return octave::graphics_toolkit ();
 }
 
 void
@@ -4182,7 +4182,7 @@ figure::properties::get_number (void) const
     return Matrix ();
 }
 
-graphics_toolkit
+octave::graphics_toolkit
 figure::properties::get_toolkit (void) const
 {
   return toolkit;
@@ -4199,7 +4199,7 @@ figure::properties::set___graphics_toolkit__ (const octave_value& val)
   octave::gtk_manager& gtk_mgr
     = octave::__get_gtk_manager__ ("figure::properties::set___graphics_toolkit__");
 
-  graphics_toolkit b = gtk_mgr.find_toolkit (nm);
+  octave::graphics_toolkit b = gtk_mgr.find_toolkit (nm);
 
   if (b.get_name () != nm)
     error ("set___graphics_toolkit__: invalid graphics toolkit");

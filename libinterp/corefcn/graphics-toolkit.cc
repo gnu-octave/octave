@@ -28,24 +28,27 @@ along with Octave; see the file COPYING.  If not, see
 #include "gtk-manager.h"
 #include "interpreter-private.h"
 
-void
-base_graphics_toolkit::update (const graphics_handle& h, int id)
+namespace octave
 {
-  gh_manager& gh_mgr
-    = octave::__get_gh_manager__ ("base_graphics_toolkit::update");
+  void
+  base_graphics_toolkit::update (const graphics_handle& h, int id)
+  {
+    gh_manager& gh_mgr
+      = octave::__get_gh_manager__ ("base_graphics_toolkit::update");
 
-  graphics_object go = gh_mgr.get_object (h);
+    graphics_object go = gh_mgr.get_object (h);
 
-  update (go, id);
-}
+    update (go, id);
+  }
 
-bool
-base_graphics_toolkit::initialize (const graphics_handle& h)
-{
-  gh_manager& gh_mgr
-    = octave::__get_gh_manager__ ("base_graphics_toolkit::initialize");
+  bool
+  base_graphics_toolkit::initialize (const graphics_handle& h)
+  {
+    gh_manager& gh_mgr
+      = octave::__get_gh_manager__ ("base_graphics_toolkit::initialize");
 
-  graphics_object go = gh_mgr.get_object (h);
+    graphics_object go = gh_mgr.get_object (h);
 
-  return initialize (go);
+    return initialize (go);
+  }
 }

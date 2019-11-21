@@ -241,7 +241,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_matrix_type> matrix_rows
 %type <tree_cell_type> cell_rows
 %type <tree_expression_type> matrix cell
-%type <tree_expression_type> primary_expr oper_expr power_expr expr_no_assign
+%type <tree_expression_type> primary_expr oper_expr power_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name magic_tilde
 %type <tree_superclass_ref_type> superclass_identifier
@@ -604,7 +604,7 @@ fcn_handle      : FCN_HANDLE
                   { $$ = parser.make_fcn_handle ($1); }
                 ;
 
-anon_fcn_handle : '@' param_list stmt_begin expr_no_assign
+anon_fcn_handle : '@' param_list stmt_begin expression
                   {
                     $$ = parser.make_anon_fcn_handle ($2, $4);
                     if (! $$)
@@ -931,7 +931,7 @@ assign_expr     : assign_lhs '=' expression
                   { $$ = parser.make_assign_op (OR_EQ, $1, $2, $3); }
                 ;
 
-expr_no_assign  : simple_expr
+expression      : simple_expr
                   {
                     if ($1 && ($1->is_matrix () || $1->iscell ()))
                       {
@@ -946,12 +946,6 @@ expr_no_assign  : simple_expr
                     else
                       $$ = $1;
                   }
-                | anon_fcn_handle
-                  { $$ = $1; }
-                ;
-
-expression      : expr_no_assign
-                  { $$ = $1; }
                 | assign_expr
                   {
                     if (! $1)
@@ -959,6 +953,9 @@ expression      : expr_no_assign
 
                     $$ = $1;
                   }
+                | anon_fcn_handle
+                  { $$ = $1; }
+                ;
 
 // ================================================
 // Commands, declarations, and function definitions

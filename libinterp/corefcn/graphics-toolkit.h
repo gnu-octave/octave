@@ -35,34 +35,49 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "graphics-handle.h"
 
-class graphics_toolkit;
 class graphics_object;
+class graphics_toolkit;
 
 class base_graphics_toolkit
 {
 public:
+
   friend class graphics_toolkit;
 
 public:
+
   base_graphics_toolkit (const std::string& nm)
-    : name (nm) { }
+    : m_name (nm)
+  { }
 
   virtual ~base_graphics_toolkit (void) = default;
 
-  std::string get_name (void) const { return name; }
+  std::string get_name (void) const
+  {
+    return m_name;
+  }
 
-  virtual bool is_valid (void) const { return false; }
+  virtual bool is_valid (void) const
+  {
+    return false;
+  }
 
   virtual void redraw_figure (const graphics_object&) const
-  { gripe_if_tkit_invalid ("redraw_figure"); }
+  {
+    gripe_if_tkit_invalid ("redraw_figure");
+  }
 
   virtual void show_figure (const graphics_object&) const
-  { gripe_if_tkit_invalid ("show_figure"); }
+  {
+    gripe_if_tkit_invalid ("show_figure");
+  }
 
   virtual void print_figure (const graphics_object&, const std::string&,
                              const std::string&,
                              const std::string& = "") const
-  { gripe_if_tkit_invalid ("print_figure"); }
+  {
+    gripe_if_tkit_invalid ("print_figure");
+  }
 
   virtual uint8NDArray get_pixels (const graphics_object&) const
   {
@@ -98,7 +113,9 @@ public:
   // changes.  This allows the graphics toolkit to act on property
   // changes if needed.
   virtual void update (const graphics_object&, int)
-  { gripe_if_tkit_invalid ("base_graphics_toolkit::update"); }
+  {
+    gripe_if_tkit_invalid ("base_graphics_toolkit::update");
+  }
 
   void update (const graphics_handle&, int);
 
@@ -117,18 +134,24 @@ public:
   // graphics object.  This allows the graphics toolkit to perform
   // toolkit-specific cleanup operations before an object is deleted.
   virtual void finalize (const graphics_object&)
-  { gripe_if_tkit_invalid ("base_graphics_toolkit::finalize"); }
+  {
+    gripe_if_tkit_invalid ("base_graphics_toolkit::finalize");
+  }
 
   void finalize (const graphics_handle&);
 
   // Close the graphics toolkit.
   virtual void close (void)
-  { gripe_if_tkit_invalid ("base_graphics_toolkit::close"); }
+  {
+    gripe_if_tkit_invalid ("base_graphics_toolkit::close");
+  }
 
 private:
-  std::string name;
+
+  std::string m_name;
 
 private:
+
   void gripe_if_tkit_invalid (const std::string& fname) const
   {
     if (! is_valid ())
@@ -140,14 +163,14 @@ class graphics_toolkit
 {
 public:
   graphics_toolkit (const std::string& name = "unknown")
-    : rep (new base_graphics_toolkit (name))
+    : m_rep (new base_graphics_toolkit (name))
   { }
 
   // NEW_REP must be dynamically allocated.
   graphics_toolkit (base_graphics_toolkit *new_rep)
-    : rep (std::shared_ptr<base_graphics_toolkit> (new_rep))
+    : m_rep (std::shared_ptr<base_graphics_toolkit> (new_rep))
   {
-    if (! rep)
+    if (! m_rep)
       error ("invalid graphics_toolkit!");
   }
 
@@ -157,65 +180,102 @@ public:
 
   ~graphics_toolkit (void) = default;
 
-  operator bool (void) const { return rep->is_valid (); }
+  operator bool (void) const
+  {
+    return m_rep->is_valid ();
+  }
 
-  std::string get_name (void) const { return rep->get_name (); }
+  std::string get_name (void) const
+  {
+    return m_rep->get_name ();
+  }
 
   void redraw_figure (const graphics_object& go) const
-  { rep->redraw_figure (go); }
+  {
+    m_rep->redraw_figure (go);
+  }
 
   void show_figure (const graphics_object& go) const
-  { rep->show_figure (go); }
+  {
+    m_rep->show_figure (go);
+  }
 
   void print_figure (const graphics_object& go, const std::string& term,
                      const std::string& file,
                      const std::string& debug_file = "") const
-  { rep->print_figure (go, term, file, debug_file); }
+  {
+    m_rep->print_figure (go, term, file, debug_file);
+  }
 
   uint8NDArray get_pixels (const graphics_object& go) const
-  { return rep->get_pixels (go); }
+  {
+    return m_rep->get_pixels (go);
+  }
 
   Matrix get_canvas_size (const graphics_handle& fh) const
-  { return rep->get_canvas_size (fh); }
+  {
+    return m_rep->get_canvas_size (fh);
+  }
 
   double get_screen_resolution (void) const
-  { return rep->get_screen_resolution (); }
+  {
+    return m_rep->get_screen_resolution ();
+  }
 
   Matrix get_screen_size (void) const
-  { return rep->get_screen_size (); }
+  {
+    return m_rep->get_screen_size ();
+  }
 
   Matrix get_text_extent (const graphics_object& go) const
-  { return rep->get_text_extent (go); }
+  {
+    return m_rep->get_text_extent (go);
+  }
 
   // Notifies graphics toolkit that object't property has changed.
   void update (const graphics_object& go, int id)
-  { rep->update (go, id); }
+  {
+    m_rep->update (go, id);
+  }
 
   void update (const graphics_handle& h, int id)
-  { rep->update (h, id); }
+  {
+    m_rep->update (h, id);
+  }
 
   // Notifies graphics toolkit that new object was created.
   bool initialize (const graphics_object& go)
-  { return rep->initialize (go); }
+  {
+    return m_rep->initialize (go);
+  }
 
   bool initialize (const graphics_handle& h)
-  { return rep->initialize (h); }
+  {
+    return m_rep->initialize (h);
+  }
 
   // Notifies graphics toolkit that object was destroyed.
   // This is called only for explicitly deleted object.
   // Children are deleted implicitly and graphics toolkit isn't notified.
   void finalize (const graphics_object& go)
-  { rep->finalize (go); }
+  {
+    m_rep->finalize (go);
+  }
 
   void finalize (const graphics_handle& h)
-  { rep->finalize (h); }
+  {
+    m_rep->finalize (h);
+  }
 
   // Close the graphics toolkit.
-  void close (void) { rep->close (); }
+  void close (void)
+  {
+    m_rep->close ();
+  }
 
 private:
 
-  std::shared_ptr<base_graphics_toolkit> rep;
+  std::shared_ptr<base_graphics_toolkit> m_rep;
 };
 
 #endif

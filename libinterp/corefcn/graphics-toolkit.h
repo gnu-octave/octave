@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <map>
+#include <memory>
 #include <string>
 
 #include "dMatrix.h"
@@ -44,7 +45,7 @@ public:
 
 public:
   base_graphics_toolkit (const std::string& nm)
-    : name (nm), count (0) { }
+    : name (nm) { }
 
   virtual ~base_graphics_toolkit (void) = default;
 
@@ -126,7 +127,6 @@ public:
 
 private:
   std::string name;
-  octave::refcount<octave_idx_type> count;
 
 private:
   void gripe_if_tkit_invalid (const std::string& fname) const
@@ -139,43 +139,23 @@ private:
 class graphics_toolkit
 {
 public:
-  graphics_toolkit (void)
-    : rep (new base_graphics_toolkit ("unknown"))
+  graphics_toolkit (const std::string& name = "unknown")
+    : rep (new base_graphics_toolkit (name))
+  { }
+
+  // NEW_REP must be dynamically allocated.
+  graphics_toolkit (base_graphics_toolkit *new_rep)
+    : rep (std::shared_ptr<base_graphics_toolkit> (new_rep))
   {
-    rep->count++;
+    if (! rep)
+      error ("invalid graphics_toolkit!");
   }
 
-  graphics_toolkit (base_graphics_toolkit *b)
-    : rep (b)
-  {
-    rep->count++;
-  }
+  graphics_toolkit (const graphics_toolkit& b) = default;
 
-  graphics_toolkit (const graphics_toolkit& b)
-    : rep (b.rep)
-  {
-    rep->count++;
-  }
+  graphics_toolkit& operator = (const graphics_toolkit& b) = default;
 
-  ~graphics_toolkit (void)
-  {
-    if (--rep->count == 0)
-      delete rep;
-  }
-
-  graphics_toolkit& operator = (const graphics_toolkit& b)
-  {
-    if (rep != b.rep)
-      {
-        if (--rep->count == 0)
-          delete rep;
-
-        rep = b.rep;
-        rep->count++;
-      }
-
-    return *this;
-  }
+  ~graphics_toolkit (void) = default;
 
   operator bool (void) const { return rep->is_valid (); }
 
@@ -235,7 +215,7 @@ public:
 
 private:
 
-  base_graphics_toolkit *rep;
+  std::shared_ptr<base_graphics_toolkit> rep;
 };
 
 #endif

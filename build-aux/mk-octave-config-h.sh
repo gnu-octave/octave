@@ -128,6 +128,12 @@ since all of Octave's header files already include it.
      * either gnu_printf or ms_printf depending on where we are compiling
      * to avoid warnings on format specifiers that are legal.
      * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1331349  */
+#    if defined (__cplusplus)
+#      include <cstdio>
+#    else
+#      include <stdio.h>
+#    endif
+
 #    define OCTAVE_FORMAT_PRINTF(stringIndex, firstToCheck) \
        __attribute__ ((format (__MINGW_PRINTF_FORMAT, stringIndex, firstToCheck)))
 

@@ -272,6 +272,7 @@ namespace octave
         m_looking_at_matrix_or_assign_lhs (false),
         m_looking_for_object_index (false),
         m_looking_at_indirect_ref (false),
+        m_parsing_anon_fcn_body (false),
         m_parsing_class_method (false),
         m_parsing_classdef (false),
         m_parsing_classdef_decl (false),
@@ -386,6 +387,9 @@ namespace octave
     // true means we're looking at an indirect reference to a
     // structure element.
     bool m_looking_at_indirect_ref;
+
+    // true means we are parsing the body of an anonymous function.
+    bool m_parsing_anon_fcn_body;
 
     // true means we are parsing a class method in function or classdef file.
     bool m_parsing_class_method;

@@ -229,8 +229,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // Nonterminals we construct.
 %type <dummy_type> indirect_ref_op decl_param_init
 %type <dummy_type> push_fcn_symtab push_script_symtab begin_file
-%type <dummy_type> param_list_beg param_list_end stmt_begin parse_error
-%type <dummy_type> parsing_local_fcns
+%type <dummy_type> param_list_beg param_list_end stmt_begin anon_fcn_begin
+%type <dummy_type> parsing_local_fcns parse_error
 %type <comment_type> stash_comment
 %type <tok_val> function_beg classdef_beg
 %type <punct_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
@@ -604,7 +604,11 @@ fcn_handle      : FCN_HANDLE
                   { $$ = parser.make_fcn_handle ($1); }
                 ;
 
-anon_fcn_handle : '@' param_list stmt_begin expression
+// Note that we are deliberately not setting the beginning of statement
+// flag after recognizing the parameter list because we don't want to
+// accept word list commands in anonymous function bodies.
+
+anon_fcn_handle : '@' param_list anon_fcn_begin expression
                   {
                     $$ = parser.make_anon_fcn_handle ($2, $4);
                     if (! $$)
@@ -612,11 +616,15 @@ anon_fcn_handle : '@' param_list stmt_begin expression
                         // make_anon_fcn_handle deleted $2 and $4.
                         YYABORT;
                       }
+
+                    lexer.m_parsing_anon_fcn_body = false;
                     lexer.m_nesting_level.remove ();
                   }
-                | '@' param_list stmt_begin error
+                | '@' param_list anon_fcn_begin error
                   {
                     YYUSE ($2);
+
+                    lexer.m_parsing_anon_fcn_body = false;
 
                     $$ = nullptr;
                     parser.bison_error ("anonymous function bodies must be single expressions");
@@ -1972,6 +1980,14 @@ stmt_begin      : // empty
                   {
                     $$ = 0;
                     lexer.m_at_beginning_of_statement = true;
+                  }
+                ;
+
+anon_fcn_begin  : // empty
+                  {
+                    $$ = 0;
+                    lexer.m_at_beginning_of_statement = true;
+                    lexer.m_parsing_anon_fcn_body = true;
                   }
                 ;
 

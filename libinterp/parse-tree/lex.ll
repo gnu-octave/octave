@@ -2156,6 +2156,7 @@ namespace octave
     m_looking_at_matrix_or_assign_lhs = false;
     m_looking_for_object_index = false;
     m_looking_at_indirect_ref = false;
+    m_parsing_anon_fcn_body = false;
     m_parsing_class_method = false;
     m_parsing_classdef = false;
     m_parsing_classdef_decl = false;
@@ -3170,12 +3171,13 @@ namespace octave
     // function call with the argument "+1".
 
     if (m_at_beginning_of_statement
-        && (! (is_variable (ident, scope)
-               || ident == "e" || ident == "pi"
-               || ident == "I" || ident == "i"
-               || ident == "J" || ident == "j"
-               || ident == "Inf" || ident == "inf"
-               || ident == "NaN" || ident == "nan")))
+        && ! (m_parsing_anon_fcn_body
+              || is_variable (ident, scope)
+              || ident == "e" || ident == "pi"
+              || ident == "I" || ident == "i"
+              || ident == "J" || ident == "j"
+              || ident == "Inf" || ident == "inf"
+              || ident == "NaN" || ident == "nan"))
       tok->mark_may_be_command ();
 
     push_token (tok);

@@ -6048,40 +6048,6 @@ namespace octave
     error (who, std::string ("stream not open for ") + rw);
   }
 
-  stream::stream (base_stream *bs)
-    : m_rep (bs)
-  { }
-
-  stream::~stream (void)
-  {
-    if (m_rep && --m_rep->m_count == 0)
-      delete m_rep;
-  }
-
-  stream::stream (const stream& s)
-    : m_rep (s.m_rep)
-  {
-    if (m_rep)
-      m_rep->m_count++;
-  }
-
-  stream&
-  stream::operator = (const stream& s)
-  {
-    if (m_rep != s.m_rep)
-      {
-        if (m_rep && --m_rep->m_count == 0)
-          delete m_rep;
-
-        m_rep = s.m_rep;
-
-        if (m_rep)
-          m_rep->m_count++;
-      }
-
-    return *this;
-  }
-
   int
   stream::flush (void)
   {

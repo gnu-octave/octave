@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <list>
 #include <map>
+#include <memory>
 #include <string>
 
 // These only appear as reference arguments or return values.
@@ -41,7 +42,6 @@ class string_vector;
 
 #include "data-conv.h"
 #include "mach-info.h"
-#include "oct-refcount.h"
 
 namespace octave
 {
@@ -69,7 +69,7 @@ namespace octave
     base_stream (std::ios::openmode arg_md = std::ios::in | std::ios::out,
                  mach_info::float_format ff = mach_info::native_float_format (),
                  const std::string& encoding = "utf-8")
-      : m_count (1), m_mode (arg_md), m_flt_fmt (ff), m_encoding (encoding),
+      : m_mode (arg_md), m_flt_fmt (ff), m_encoding (encoding),
         m_fail (false), m_open_state (true), m_errmsg ()
     { }
 
@@ -170,9 +170,6 @@ namespace octave
 
   private:
 
-    // A reference count.
-    refcount<octave_idx_type> m_count;
-
     // The permission bits for the file.  Should be some combination of
     // std::ios::open_mode bits.
     int m_mode;
@@ -252,13 +249,14 @@ namespace octave
   {
   public:
 
-    stream (base_stream *bs = nullptr);
+    // BS must be allocated with new or nullptr.
+    stream (base_stream *bs = nullptr) : m_rep (bs) { }
 
-    ~stream (void);
+    stream (const stream&) = default;
 
-    stream (const stream&);
+    stream& operator = (const stream&) = default;
 
-    stream& operator = (const stream&);
+    ~stream (void) = default;
 
     int flush (void);
 
@@ -355,7 +353,7 @@ namespace octave
 
     int file_number (void) { return m_rep ? m_rep->file_number () : -1; }
 
-    bool is_valid (void) const { return (m_rep != nullptr); }
+    bool is_valid (void) const { return bool (m_rep); }
 
     bool ok (void) const { return m_rep && m_rep->ok (); }
 
@@ -389,7 +387,7 @@ namespace octave
   private:
 
     // The actual representation of this stream.
-    base_stream *m_rep;
+    std::shared_ptr<base_stream> m_rep;
 
     bool stream_ok (bool clear = true) const
     {

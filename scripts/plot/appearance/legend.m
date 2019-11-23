@@ -270,6 +270,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                  @(h) set (findobj (h, "type", "text"), ...
                            "color", get (hl, "textcolor")));
 
+    addlistener (hl, "visible", @update_visible_cb);
+
   else
 
     ## FIXME: This will trigger the execution of update_layout_cb for each
@@ -370,6 +372,15 @@ function update_string_cb (hl)
     unwind_protect_cleanup
       updating = false;
     end_unwind_protect
+  endif
+
+endfunction
+
+function update_visible_cb (hl)
+
+  location = get (hl, "location");
+  if (strcmp (location(end:-1:end-3), "edis"))
+    update_layout_cb (hl);
   endif
 
 endfunction
@@ -740,7 +751,7 @@ function opts = parse_opts (varargin)
         || ! isequal (tmp_labels, get (legend_handle, "string")))
       obj_labels = tmp_labels;
     endif
-    
+
   endif
 
   opts.action = action;
@@ -1213,9 +1224,17 @@ function update_legend_position (hl, sz)
       setappdata (hl, "__original_units__", units);
     endif
 
-    set (hax, "units", getappdata (hl, "__original_units__"),
-              "looseinset", li,
-              "units", "points");
+    if (strcmp (get (hl, "visible"), "on"))
+      set (hax, "units", getappdata (hl, "__original_units__"),
+                "looseinset", li,
+                "units", "points");
+    else
+      ## Return early for invible legends
+      set (hax, "units", getappdata (hl, "__original_units__"),
+                "looseinset", li,
+                "units", units);
+      return;
+    endif
 
     [li, axpos] = get (hax, {"looseinset", "position"}){:};
     lpos = [get(hl, "position")(1:2), sz];

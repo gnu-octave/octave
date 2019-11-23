@@ -129,7 +129,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   hl = opts.legend_handle;
 
   ## Fix property/value pairs
-  pval = ["string", {opts.obj_labels}, opts.propval(:)'];
+  pval = opts.propval(:)';
 
   if (! isempty (opts.action))
 
@@ -202,7 +202,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     ## Add and update legend specific properties
     addproperties (hl);
     try
-      set (hl, pval{:});
+      set (hl, "string", opts.obj_labels, pval{:});
     catch ee
       delete (hl);
       set (opts.axes_handles, "__legend_handle__", []);
@@ -278,7 +278,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
     ## Update properties
     setappdata (hl, "__peer_objects__", opts.obj_handles);
-    set (hl, pval{:});
+    if (! isempty (opts.obj_labels))
+      set (hl ,"string", opts.obj_labels, pval{:})
+    elseif (! isempty (pval))
+      set (hl, pval{:});
+    endif
 
   endif
 
@@ -518,13 +522,12 @@ function legend_autoupdate_cb (hax, d, hl)
     kids = get (hax, "children");
   end_try_catch
 
-  is_deletion = getappdata (hl, "__total_num_children__") > numel (kids);
+  is_deletion = (getappdata (hl, "__total_num_children__") > numel (kids));
   setappdata (hl, "__total_num_children__", numel (kids));
 
   ## Remove item for deleted object
   current_obj = getappdata (hl, "__peer_objects__");
   [~, iold, inew] = setxor (current_obj, kids);
-  kids = kids(inew);
   current_obj(iold) = [];
 
   if (isempty (current_obj))
@@ -534,17 +537,14 @@ function legend_autoupdate_cb (hax, d, hl)
 
   if (! is_deletion && strcmp (get (hl, "autoupdate"), "on"))
 
-    ## Add item for the latest created object
-    persistent valid_types = {"line", "patch", "surface", "hggroup"};
-    valid = arrayfun (@(h) any (strcmp (get (h, "type"), valid_types)), kids);
-    kids(! valid) = [];
+    ## We only expect 1 new child
+    kids = kids(min (inew));
 
     ## FIXME: if the latest child is an hggroup, we cannot label it since this
     ## function is called before the hggroup has been properly populated.
-    if (numel (kids) > 0 && strcmp (get (kids(1), "type"), "hggroup"))
+    persistent valid_types = {"line", "patch", "surface"};
+    if (! any (strcmp (get (kids, "type"), valid_types)))
       kids = [];
-    elseif (numel (kids) > 1)
-      kids = kids(1);
     endif
 
   else
@@ -734,7 +734,13 @@ function opts = parse_opts (varargin)
       endif
     endif
   else
-    [obj_labels, next_idx] = displayname_or_default (obj_handles);
+    [tmp_labels, next_idx] = displayname_or_default (obj_handles,
+                                                     legend_handle);
+    if (isempty (legend_handle)
+        || ! isequal (tmp_labels, get (legend_handle, "string")))
+      obj_labels = tmp_labels;
+    endif
+    
   endif
 
   opts.action = action;
@@ -754,20 +760,43 @@ function [labels, next_idx] = displayname_or_default (hplots, hl = [])
     next_idx = getappdata (hl, "__next_label_index__");
   endif
 
+  ## Use the displayname property
   labels = get (hplots, "displayname");
   if (! iscell (labels))
     labels = {labels};
   endif
 
-  idx = cellfun (@isempty, labels);
-  if (any (idx))
-    default = arrayfun (@(ii) sprintf ("data%d", ii), ...
-                        [next_idx:(next_idx + sum (idx) - 1)], ...
-                        "uniformoutput", false)(:);
-    labels(idx) = default;
+  ## Fallback to automatic names for empty labels
+  empty_label_idx = cellfun (@isempty, labels);
+
+  if (any (empty_label_idx) && ! isempty (hl))
+    ## Empty strings must not be blindly replaced by data%d. If there exist
+    ## an old text item that was affected an empty string, keep it as is.
+    kids = get (hl, "children");
+    htext = kids(strcmp (get (kids, "type"), "text"));
+    old_objects = get (htext, "peer_object");
+    if (iscell (old_objects))
+      old_objects = cell2mat (old_objects);
+    endif
+
+    for h = hplots(empty_label_idx).'
+      idx = (h == old_objects);
+      if (any (idx))
+        labels(hplots == h) = get (htext(idx), "string");
+        empty_label_idx(hplots == h) = false;
+      endif
+    endfor
+
   endif
 
-  next_idx += sum (idx);
+  if (any (empty_label_idx))
+    default = arrayfun (@(ii) sprintf ("data%d", ii), ...
+                        [next_idx:(next_idx + sum (empty_label_idx) - 1)], ...
+                        "uniformoutput", false)(:);
+    labels(empty_label_idx) = default;
+  endif
+
+  next_idx += sum (empty_label_idx);
 
   if (! isempty (hl))
     setappdata (hl, "__next_label_index__", next_idx);
@@ -944,10 +973,31 @@ function objlist = textitem_objects (hl, textright)
                      @(h) set (hmarker, "xdata", mean (get (h, "xdata"))));
         addlistener (hmarker, "markersize", @update_marker_cb);
       endif
+
+      add_safe_listener (hl, hplt, "displayname", ...
+                         {@update_displayname_cb, hl});
     endif
 
     objlist(ii,:) = [htxt, hitem];
   endfor
+
+endfunction
+
+function update_displayname_cb (h, ~, hl)
+
+  updating = getappdata (hl, "__updating_layout__");
+  if (! isempty (updating) && updating)
+    return;
+  endif
+
+  str = get (hl, "string");
+  if (! iscell (str))
+    str = {str};
+  endif
+
+  str{h == getappdata (hl, "__peer_objects__")} = get (h, "displayname");
+
+  set (hl ,"string", str);
 
 endfunction
 

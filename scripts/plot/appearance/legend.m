@@ -663,7 +663,7 @@ function opts = parse_opts (varargin)
     nargs--;
     warn_extra_obj = true;
 
-  elseif (isempty (legend_handle))
+  elseif (nargs > 0 || isempty (legend_handle))
 
     ## Find list of plot objects from axes "children"
     if (isscalar (axes_handles))

@@ -353,11 +353,12 @@ namespace octave
       {
         // It starts with two slashes.  Find the next slash.
         size_t next_slash = name.find ("\\", 3);
-        if (next_slash != -1 && len > next_slash+1)
+        if (next_slash != std::string::npos && len > next_slash+1)
           {
             // Check if it ends with the share
             size_t last_slash = name.find ("\\", next_slash+1);
-            if (last_slash == -1 || (len > next_slash+2 && last_slash == len-1))
+            if (last_slash == std::string::npos
+                || (len > next_slash+2 && last_slash == len-1))
               candidate = true;
           }
       }

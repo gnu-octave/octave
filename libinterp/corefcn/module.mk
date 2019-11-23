@@ -238,6 +238,7 @@ COREFCN_SRC = \
   %reldir%/spparms.cc \
   %reldir%/sqrtm.cc \
   %reldir%/stack-frame.cc \
+  %reldir%/stream-euler.cc \
   %reldir%/strfind.cc \
   %reldir%/strfns.cc \
   %reldir%/sub2ind.cc \

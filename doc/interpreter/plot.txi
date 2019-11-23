@@ -245,6 +245,14 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(quiver3)
 
+@DOCSTRING(streamtube)
+
+@DOCSTRING(streamline)
+
+@DOCSTRING(stream2)
+
+@DOCSTRING(stream3)
+
 @DOCSTRING(compass)
 
 @DOCSTRING(feather)

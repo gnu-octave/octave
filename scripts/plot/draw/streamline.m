@@ -1,0 +1,160 @@
+## Copyright (C) 2019 Markus Meisinger
+##
+## This file is part of Octave.
+##
+## Octave is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <https://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn  {} {} streamline (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
+## @deftypefnx {} {} streamline (@var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
+## @deftypefnx {} {} streamline (@dots{}, "@var{options}")
+## @deftypefnx {} {} streamline (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} streamline (@dots{})
+## Plot streamlines of 2D or 3D vector fields.
+##
+## Plot streamlines of a 2D or 3D vector field given by
+## [@var{u}, @var{v}] or [@var{u}, @var{v}, @var{w}]. The vector field
+## is defined over a rectangular grid given by [@var{x}, @var{y}]
+## or [@var{x}, @var{y}, @var{z}]. The streamlines start at the seed
+## points [@var{sx}, @var{sy}] or [@var{sx}, @var{sy}, @var{sz}].
+##
+## The input parameter @var{options} is a 2D vector of the form
+## [@var{stepsize}, @var{maxnumbervertices}]. The first parameter specifies
+## the step size used for trajectory integration (default 0.1). It is
+## allowed to set a negative value to control the direction of integration.
+## The second parameter specifies the maximum number of segments used to
+## create a streamline (default 10000).
+##
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
+## rather than the current axes returned by @code{gca}.
+##
+## The optional return value @var{h} is a graphics handle to the hggroup
+## comprising the field lines.
+##
+## Example:
+##
+## @example
+## @group
+## [x, y] = meshgrid (-1.5:0.2:2, -1:0.2:2);
+## u = - x / 4 - y;
+## v = x - y / 4;
+## streamline (x, y, u, v, 1.7, 1.5);
+## @end group
+## @end example
+##
+## @seealso{stream2, stream3}
+##
+## @end deftypefn
+
+function h = streamline (varargin)
+
+  if (nargin == 0)
+    print_usage ();
+  endif
+
+  [hax, varargin] = __plt_get_axis_arg__ ("streamline", varargin{:});
+
+  if (isempty (hax))
+    hax = gca ();
+  else
+    hax = hax(1);
+  endif
+
+  h = [];
+  argval = varargin(1);
+  switch (numel (size (argval{:})))
+    case (2)
+      xy = stream2 (varargin{:});
+      for i = 1:length (xy)
+        sl = xy{i};
+        if (! isempty (sl))
+          tmp = line (hax, "xdata", sl(:, 1), "ydata", sl(:, 2), "color", "b");
+          h = [h; tmp];
+        endif
+      endfor
+    case (3)
+      xyz = stream3 (varargin{:});
+      for i = 1:length (xyz)
+        sl = xyz{i};
+        if (! isempty (sl))
+          tmp = line (hax, "xdata", sl(:, 1), "ydata", sl(:, 2), "zdata", sl(:, 3), ...
+                      "color", "b");
+          h = [h; tmp];
+        endif
+      endfor
+    otherwise
+      error ("streamline: 2D or 3D input data only");
+  endswitch
+
+endfunction
+
+%!demo
+%! clf;
+%! [x, y] = meshgrid (-2:0.5:2);
+%! u = - y - x / 2;
+%! v = x - y / 2;
+%! [sx, sy] = meshgrid (-2:2:2);
+%! h = streamline (x, y, u, v, sx, sy);
+%! set (h, "color", "r");
+%! hold on;
+%! quiver (x, y, u, v);
+%! scatter (sx(:), sy(:), 20, "filled", "o", "markerfacecolor", "r");
+%! title ("Spiral Sink");
+%! grid on;
+%! axis equal;
+
+%!demo
+%! clf;
+%! [x, y, z] = meshgrid (-3:3);
+%! u = - x / 2 - y;
+%! v = x - y / 2;
+%! w = - z;
+%! [sx, sy, sz] = meshgrid (3, 0:1.5:1.5, 0:1.5:3);
+%! h = streamline (x, y, z, u, v, w, sx, sy, sz);
+%! set (h, "color", "r");
+%! hold on;
+%! quiver3 (x, y, z, u, v, w);
+%! scatter3 (sx(:), sy(:), sz(:), 20, "filled", "o", "markerfacecolor", "r");
+%! view (3);
+%! title ("Spiral Sink");
+%! grid on;
+%! axis equal;
+
+%!demo
+%! clf;
+%! [x, y, z] = meshgrid (-1:0.4:1, -1:0.4:1, -3:0.3:0);
+%! a = 0.08;
+%! b = 0.04;
+%! u = - a * x - y;
+%! v = x - a * y;
+%! w = - b * ones (size (x));
+%! hold on;
+%! sx = 1.0;
+%! sy = 0.0;
+%! sz = 0.0;
+%! plot3 (sx, sy, sz, ".r", "markersize", 15);
+%! t = linspace (0, 12 * 2 * pi(), 500);
+%! tx = exp (-a * t).*cos (t);
+%! ty = exp (-a * t).*sin (t);
+%! tz = - b * t;
+%! plot3 (tx, ty, tz, "-b");
+%! h = streamline (x, y, z, u, v, w, sx, sy, sz);
+%! set (h, "color", "r");
+%! view (3);
+%! title ("Heuns Scheme (red) vs. Analytical Solution (blue)");
+%! grid on;
+%! axis equal tight;
+
+%!error streamline ()

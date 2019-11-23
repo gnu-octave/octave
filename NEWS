@@ -140,6 +140,10 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 * `rotx`
 * `roty`
 * `rotz`
+* `stream2`
+* `stream3`
+* `streamline`
+* `streamtube`
 * `uisetfont`
 * `verLessThan`
 * `web`

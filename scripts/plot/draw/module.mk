@@ -94,6 +94,10 @@ FCN_FILE_DIRS += \
   %reldir%/stem.m \
   %reldir%/stem3.m \
   %reldir%/stemleaf.m \
+  %reldir%/stream2.m \
+  %reldir%/stream3.m \
+  %reldir%/streamline.m \
+  %reldir%/streamtube.m \
   %reldir%/surf.m \
   %reldir%/surface.m \
   %reldir%/surfc.m \

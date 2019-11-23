@@ -69,35 +69,43 @@ function z = idivide (x, y, op)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
-  elseif (nargin == 2)
+  endif
+
+  if (nargin == 2)
     op = "fix";
   else
     op = tolower (op);
   endif
 
-  if (strcmp (op, "round"))
-    z = x ./ y;
-  else
-    if (isfloat (x))
+  if (isfloat (x))
+    if (isinteger (y))
       typ = class (y);
-    elseif (isfloat (y))
+    else
+      error ("idivide: at least one input (X or Y) must be an integer type");
+    endif
+  elseif (isfloat (y))
+    if (isinteger (x))
       typ = class (x);
     else
-      typ = class (x);
-      if (! strcmp (class (x), class (y)))
-        error ("idivide: incompatible types");
-      endif
+      error ("idivide: at least one input (X or Y) must be an integer type");
     endif
+  else
+    typ = class (x);
+    if (! strcmp (typ, class (y)))
+      error ("idivide: integer type of X (%s) must match integer type of Y (%s)", typ, class (y));
+    endif
+  endif
 
-    if (strcmp (op, "fix"))
-      z = cast (fix (double (x) ./ double (y)), typ);
-    elseif (strcmp (op, "floor"))
-      z = cast (floor (double (x) ./ double (y)), typ);
-    elseif (strcmp (op, "ceil"))
-      z = cast (ceil (double (x) ./ double (y)), typ);
-    else
-      error ("idivide: unrecognized rounding type");
-    endif
+  if (strcmp (op, "fix"))
+    z = cast (fix (double (x) ./ double (y)), typ);
+  elseif (strcmp (op, "round"))
+    z = x ./ y;
+  elseif (strcmp (op, "floor"))
+    z = cast (floor (double (x) ./ double (y)), typ);
+  elseif (strcmp (op, "ceil"))
+    z = cast (ceil (double (x) ./ double (y)), typ);
+  else
+    error ('idivide: unrecognized rounding type "%s"', op);
   endif
 
 endfunction
@@ -124,4 +132,10 @@ endfunction
 %!assert (idivide (a, bf, "ceil"), int8 ([0, 1]))
 %!assert (idivide (a, bf, "round"), int8 ([-1, 1]))
 
-%!error (idivide (uint8 (1), int8 (1)))
+## Test input validation
+%!error idivide (uint8 (1))
+%!error idivide (uint8 (1), 2, 3)
+%!error <at least one input> idivide (1, 2)
+%!error <at least one input> idivide ({1}, 2)
+%!error <X \(int8\) must match.* Y \(uint8\)> idivide (int8 (1), uint8 (2))
+%!error <unrecognized rounding type "foo"> idivide (int8 (1), 2, "foo")

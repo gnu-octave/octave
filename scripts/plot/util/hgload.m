@@ -69,7 +69,6 @@ function [h, old_prop] = hgload (filename, prop_struct = struct ())
     error ("hgload: could not load hgsave-formatted object in file %s", filename);
   endif
   hg = hg.(hgs{fig_file_version});
-  is_matlab_fig_file = any (fig_file_version(2:3));
 
   ## Override properties of top-level objects
   calc_old_prop = false;
@@ -90,19 +89,6 @@ function [h, old_prop] = hgload (filename, prop_struct = struct ())
           hg(i).properties.(fn_old{idx}) = prop_struct.(fn_new{j});
         endif
       endfor
-    endfor
-  endif
-
-  ## Translate field names for Matlab .fig files
-  if (is_matlab_fig_file)
-    for i_hg = 1:numel (hg)
-      fn = fieldnames (hg(i_hg).properties);
-      is_appdata = ismember (tolower (fn), "applicationdata");
-      if any (is_appdata)
-        ## from "applicationdata" to "__appdata__"
-        hg(i_hg).properties.__appdata__ = hg(i_hg).properties.(fn{is_appdata});
-        hg(i_hg).properties = rmfield (hg(i_hg).properties, fn{is_appdata});
-      endif
     endfor
   endif
 

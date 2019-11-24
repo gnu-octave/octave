@@ -122,7 +122,14 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   ## Silence deprecation warnings
   warning ("off", "Octave:deprecated-property", "local");
 
-  ## create object
+  ## Translate field names for Matlab .fig files
+  ## FIXME: Is it ok to do this unconditionally?
+  if isfield (s.properties, "applicationdata")
+    s.properties.__appdata__ = s.properties.applicationdata;
+    s.properties = rmfield (s.properties, "applicationdata");
+  endif
+
+  ## Create object
   if (strcmp (s.type, "root"))
     h = 0;
     s.properties = rmfield (s.properties, ...

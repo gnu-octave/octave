@@ -1243,6 +1243,7 @@ public:
   int get_fs (void);
   void set_nbits (int nbits);
   int get_nbits (void);
+  PaSampleFormat get_sampleFormat (void);
   void set_id (int id);
   int get_id (void);
   void set_channels (int channels);
@@ -1303,14 +1304,14 @@ octave_record_callback (const void *input, void *, unsigned long frames,
   audiorecorder *recorder = static_cast<audiorecorder *> (data);
 
   if (! recorder)
-    error ("audio recorder callback function called without player");
+    error ("audio recorder callback function called without recorder");
 
   int channels = recorder->get_channels ();
 
   Matrix sound (frames, 2);
   sound.resize (frames, 2);
 
-  if (recorder->get_nbits () == 8)
+  if (recorder->get_sampleFormat () == bits_to_format (8))
     {
       static double scale_factor = std::pow (2.0, 7) - 1.0;
 
@@ -1325,7 +1326,27 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           sound(i,1) = sample_r;
         }
     }
-  else if (recorder->get_nbits () == 16)
+  // FIXME: This is a workaround for a bug in PortAudio affecting 8-Bit
+  //        recording (see Octave bug #44305).
+  //        Remove this clause once the bug in PortAudio has been fixed.
+  else if (recorder->get_sampleFormat () == bits_to_format (16)
+           && recorder->get_nbits () == 8)
+    {
+      static double scale_factor = std::pow (2.0, 7) - 1.0;
+
+      const int16_t *input16 = static_cast<const int16_t *> (input);
+
+      for (unsigned long i = 0; i < frames; i++)
+        {
+          float sample_l = (input16[i*channels] >> 8) / scale_factor;
+          float sample_r = (input16[i*channels + (channels - 1)] >> 8)
+                           / scale_factor;
+
+          sound(i,0) = sample_l;
+          sound(i,1) = sample_r;
+        }
+    }
+  else if (recorder->get_sampleFormat () == bits_to_format (16))
     {
       static double scale_factor = std::pow (2.0, 15) - 1.0;
 
@@ -1340,7 +1361,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           sound(i,1) = sample_r;
         }
     }
-  else if (recorder->get_nbits () == 24)
+  else if (recorder->get_sampleFormat () == bits_to_format (24))
     {
       static double scale_factor = std::pow (2.0, 23);
 
@@ -1386,11 +1407,11 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
   audiorecorder *recorder = static_cast<audiorecorder *> (data);
 
   if (! recorder)
-    error ("audio recorder callback function called without player");
+    error ("audio recorder callback function called without recorder");
 
   int channels = recorder->get_channels ();
 
-  if (recorder->get_nbits () == 8)
+  if (recorder->get_sampleFormat () == bits_to_format (8))
     {
       static float scale_factor = std::pow (2.0f, 7) - 1.0f;
 
@@ -1404,7 +1425,26 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
           recorder->append (sample_l, sample_r);
         }
     }
-  else if (recorder->get_nbits () == 16)
+  // FIXME: This is a workaround for a bug in PortAudio affecting 8-Bit
+  //        recording (see Octave bug #44305).
+  //        Remove this clause once the bug in PortAudio has been fixed.
+  else if (recorder->get_sampleFormat () == bits_to_format (16)
+           && recorder->get_nbits () == 8)
+    {
+      static double scale_factor = std::pow (2.0, 7) - 1.0;
+
+      const int16_t *input16 = static_cast<const int16_t *> (input);
+
+      for (unsigned long i = 0; i < frames; i++)
+        {
+          float sample_l = (input16[i*channels] >> 8) / scale_factor;
+          float sample_r = (input16[i*channels + (channels - 1)] >> 8) 
+                           / scale_factor;
+
+          recorder->append (sample_l, sample_r);
+        }
+    }
+  else if (recorder->get_sampleFormat () == bits_to_format (16))
     {
       static float scale_factor = std::pow (2.0f, 15) - 1.0f;
 
@@ -1418,7 +1458,7 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
           recorder->append (sample_l, sample_r);
         }
     }
-  else if (recorder->get_nbits () == 24)
+  else if (recorder->get_sampleFormat () == bits_to_format (24))
     {
       static float scale_factor = std::pow (2.0f, 23);
 
@@ -1510,6 +1550,12 @@ audiorecorder::init (void)
   input_parameters.channelCount = get_channels ();
   input_parameters.sampleFormat = bits_to_format (get_nbits ());
 
+  // FIXME: This is a workaround for a bug in PortAudio affecting 8-Bit
+  //        recording (see Octave bug #44305).
+  //        Remove this clause once the bug in PortAudio has been fixed.
+  if (get_nbits () == 8)
+    input_parameters.sampleFormat = bits_to_format (16);
+
   const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
 
   if (! device_info)
@@ -1544,6 +1590,12 @@ int
 audiorecorder::get_nbits (void)
 {
   return nbits;
+}
+
+PaSampleFormat
+audiorecorder::get_sampleFormat (void)
+{
+  return input_parameters.sampleFormat;
 }
 
 void

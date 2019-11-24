@@ -1504,7 +1504,7 @@ safe_audiorecorder_stop (audiorecorder *recorder)
 
 audiorecorder::audiorecorder (void)
   : octave_callback_function (nullptr),
-    id (-1), fs (44100), nbits (16), channels (2), sample_number (0),
+    id (-1), fs (8000), nbits (8), channels (1), sample_number (0),
     end_sample (-1), tag (""), y (), userdata (Matrix ()),
     left (), right (), stream (nullptr), input_parameters (), type ()
 { }

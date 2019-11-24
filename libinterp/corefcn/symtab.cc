@@ -596,13 +596,6 @@ namespace octave
     return retval;
   }
 
-  octave_user_function * symbol_table::get_curr_fcn (void)
-  {
-    symbol_scope curr_scope = current_scope ();
-
-    return curr_scope ? curr_scope.function () : nullptr;
-  }
-
   void symbol_table::cleanup (void)
   {
     clear_functions ();

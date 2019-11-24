@@ -173,8 +173,6 @@ namespace octave
 
     std::list<std::string> parent_classes (const std::string& dispatch_type);
 
-    octave_user_function * get_curr_fcn (void);
-
     void cleanup (void);
 
     fcn_info * get_fcn_info (const std::string& name);

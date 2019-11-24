@@ -67,7 +67,7 @@ octave_user_code::~octave_user_code (void)
   // the corresponding scope.
   // FIXME: would it be better to use shared/weak pointers for this job
   // instead of storing a bare pointer in the scope object?
-  m_scope.set_function (nullptr);
+  m_scope.set_user_code (nullptr);
 
   // FIXME: shouldn't this happen automatically when deleting cmd_list?
   if (cmd_list)
@@ -212,9 +212,6 @@ octave_user_function::octave_user_function
 {
   if (cmd_list)
     cmd_list->mark_as_function_body ();
-
-  if (m_scope)
-    m_scope.set_function (this);
 }
 
 octave_user_function::~octave_user_function (void)

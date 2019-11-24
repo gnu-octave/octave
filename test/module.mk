@@ -89,6 +89,7 @@ include %reldir%/fcn-handle/module.mk
 include %reldir%/local-functions/module.mk
 include %reldir%/mex/module.mk
 include %reldir%/nest/module.mk
+include %reldir%/private-functions/module.mk
 include %reldir%/publish/module.mk
 include %reldir%/pkg/module.mk
 

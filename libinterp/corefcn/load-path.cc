@@ -157,15 +157,15 @@ namespace octave
 
     symbol_scope scope = __get_current_scope__ ("find_private_file");
 
-    octave_user_function *curr_fcn = scope ? scope.function () : nullptr;
+    octave_user_code *curr_code = scope ? scope.user_code () : nullptr;
 
-    if (curr_fcn)
+    if (curr_code)
       {
         // Even for private functions, dir_name doesn't contain the
         // "private" directory component so we append it here in all
         // cases.
 
-        std::string dir_name = curr_fcn->dir_name ();
+        std::string dir_name = curr_code->dir_name ();
 
         if (! dir_name.empty ())
           {

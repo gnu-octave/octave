@@ -3281,6 +3281,7 @@ namespace octave
     sys::time now;
 
     script->stash_fcn_file_time (now);
+    script->stash_dir_name (m_lexer.m_dir_name);
 
     m_primary_fcn = octave_value (script);
   }

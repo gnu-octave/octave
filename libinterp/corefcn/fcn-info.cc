@@ -626,8 +626,8 @@ namespace octave
   fcn_info::fcn_info_rep::xfind (const symbol_scope& search_scope,
                                  const octave_value_list& args)
   {
-    octave_user_function *current_fcn
-      = search_scope ? search_scope.function () : nullptr;
+    octave_user_code *curr_code
+      = search_scope ? search_scope.user_code () : nullptr;
 
     // Subfunction.  I think it only makes sense to check for
     // subfunctions if we are currently executing a function defined
@@ -643,9 +643,9 @@ namespace octave
 
     // Local function.
 
-    if (current_fcn)
+    if (curr_code)
       {
-        std::string fcn_file = current_fcn->fcn_file_name ();
+        std::string fcn_file = curr_code->fcn_file_name ();
 
         // For anonymous functions we look at the parent scope so that if
         // they were defined within class methods and use local functions
@@ -669,9 +669,9 @@ namespace octave
 
     // Private function.
 
-    if (current_fcn)
+    if (curr_code)
       {
-        std::string dir_name = current_fcn->dir_name ();
+        std::string dir_name = curr_code->dir_name ();
 
         if (! dir_name.empty ())
           {
@@ -847,12 +847,12 @@ namespace octave
 
     // Private function.
 
-    octave_user_function *current_fcn
-      = search_scope ? search_scope.function () : nullptr;
+    octave_user_code *curr_code
+      = search_scope ? search_scope.user_code () : nullptr;
 
-    if (current_fcn)
+    if (curr_code)
       {
-        std::string dir_name = current_fcn->dir_name ();
+        std::string dir_name = curr_code->dir_name ();
 
         if (! dir_name.empty ())
           {
@@ -887,9 +887,9 @@ namespace octave
 
     // Local function.
 
-    if (current_fcn)
+    if (curr_code)
       {
-        std::string fcn_file = current_fcn->fcn_file_name ();
+        std::string fcn_file = curr_code->fcn_file_name ();
 
         if (! fcn_file.empty ())
           {

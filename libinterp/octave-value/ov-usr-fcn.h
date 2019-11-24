@@ -68,7 +68,10 @@ protected:
       t_parsed (static_cast<time_t> (0)),
       t_checked (static_cast<time_t> (0)),
       m_file_info (nullptr), cmd_list (cmds)
-  { }
+  {
+    if (m_scope)
+      m_scope.set_user_code (this);
+  }
 
 public:
 

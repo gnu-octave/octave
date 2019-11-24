@@ -65,7 +65,7 @@ namespace octave
 
     symbol_scope_rep (const std::string& name = "")
       : m_name (name), m_symbols (), m_subfunctions (),
-        m_persistent_values (), m_fcn (nullptr), m_parent (),
+        m_persistent_values (), m_code (nullptr), m_parent (),
         m_primary_parent (), m_children (), m_nesting_depth (0),
         m_is_static (false)
     {
@@ -123,7 +123,7 @@ namespace octave
       new_sid->m_subfunctions = m_subfunctions;
       new_sid->m_persistent_values = m_persistent_values;
       new_sid->m_subfunction_names = m_subfunction_names;
-      new_sid->m_fcn = m_fcn;
+      new_sid->m_code = m_code;
       new_sid->m_parent = m_parent;
       new_sid->m_primary_parent = m_primary_parent;
       new_sid->m_children = m_children;
@@ -242,9 +242,9 @@ namespace octave
 
     void cache_name (const std::string& name) { m_name = name; }
 
-    octave_user_function *function (void) const { return m_fcn; }
+    octave_user_code *user_code (void) const { return m_code; }
 
-    void set_function (octave_user_function *fcn) { m_fcn = fcn; }
+    void set_user_code (octave_user_code *code) { m_code = code; }
 
     void set_parent (const std::shared_ptr<symbol_scope_rep>& parent);
 
@@ -296,7 +296,7 @@ namespace octave
 
     //! The associated user code (may be null).
 
-    octave_user_function *m_fcn;
+    octave_user_code *m_code;
 
     //! Parent of nested function (may be null).
 
@@ -525,15 +525,15 @@ namespace octave
         m_rep->cache_name (name);
     }
 
-    octave_user_function * function (void) const
+    octave_user_code * user_code (void) const
     {
-      return m_rep ? m_rep->function () : nullptr;
+      return m_rep ? m_rep->user_code () : nullptr;
     }
 
-    void set_function (octave_user_function *fcn)
+    void set_user_code (octave_user_code *code)
     {
       if (m_rep)
-        m_rep->set_function (fcn);
+        m_rep->set_user_code (code);
     }
 
     void set_parent (const symbol_scope& p)

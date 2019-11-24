@@ -499,7 +499,7 @@ namespace octave
     while (curr_fcn->is_subfunction ())
       {
         symbol_scope pscope = curr_fcn->parent_fcn_scope ();
-        curr_fcn = pscope.function ();
+        curr_fcn = pscope.user_code ();
       }
 
     // Get subfunctions.

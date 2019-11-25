@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 #include <cstring>
 
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -1489,87 +1490,100 @@ expansion use a second backslash before the sequence (e.g.,
       string_vector argv = args.make_argv ("warning");
 
       std::string arg1 = argv[1];
+      std::transform (arg1.begin (), arg1.end (), arg1.begin (), tolower);
       std::string arg2 = "all";
+      std::string arg2_lc = "all";
 
       if (nargin >= 2)
-        arg2 = argv[2];
+        {
+          arg2 = argv[2];
+          arg2_lc = arg2;
+          std::transform (arg2_lc.begin (), arg2_lc.end (), arg2_lc.begin (),
+                          tolower);
+        }
 
       if (arg1 == "on" || arg1 == "off" || arg1 == "error")
         {
           // Prepare output structure
           octave_map old_warning_options;
-          if (arg2 == "all")
+          if (arg2_lc == "all")
             old_warning_options = es.warning_options ();
           else
             old_warning_options = octave_map (es.warning_query (arg2));
 
-          if (nargin == 3 && argv[3] == "local" && ! interp.at_top_level ())
+          if (nargin == 3)
             {
-              octave_scalar_map val = es.warning_query (arg2);
-
-              octave_value curr_state = val.contents ("state");
-
-              // FIXME: this might be better with a dictionary object.
-
-              octave::tree_evaluator& tw = interp.get_evaluator ();
-
-              octave_value curr_warning_states
-                = tw.get_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES);
-
-              octave_map m;
-
-              if (curr_warning_states.is_defined ())
-                m = curr_warning_states.map_value ();
-              else
+              std::string arg3_lc = argv[3];
+              std::transform (arg3_lc.begin (), arg3_lc.end (),
+                              arg3_lc.begin (), tolower);
+              if (arg3_lc == "local" && ! interp.at_top_level ())
                 {
-                  string_vector fields (2);
+                  octave_scalar_map val = es.warning_query (arg2);
 
-                  fields(0) = "identifier";
-                  fields(1) = "state";
+                  octave_value curr_state = val.contents ("state");
 
-                  m = octave_map (dim_vector (0, 1), fields);
-                }
+                  // FIXME: this might be better with a dictionary object.
 
-              Cell ids = m.contents ("identifier");
-              Cell states = m.contents ("state");
+                  octave::tree_evaluator& tw = interp.get_evaluator ();
 
-              octave_idx_type nel = states.numel ();
-              bool found = false;
-              octave_idx_type i;
-              for (i = 0; i < nel; i++)
-                {
-                  std::string id = ids(i).string_value ();
+                  octave_value curr_warning_states
+                    = tw.get_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES);
 
-                  if (id == arg2)
+                  octave_map m;
+
+                  if (curr_warning_states.is_defined ())
+                    m = curr_warning_states.map_value ();
+                  else
                     {
-                      states(i) = curr_state;
-                      found = true;
-                      break;
+                      string_vector fields (2);
+
+                      fields(0) = "identifier";
+                      fields(1) = "state";
+
+                      m = octave_map (dim_vector (0, 1), fields);
                     }
+
+                  Cell ids = m.contents ("identifier");
+                  Cell states = m.contents ("state");
+
+                  octave_idx_type nel = states.numel ();
+                  bool found = false;
+                  octave_idx_type i;
+                  for (i = 0; i < nel; i++)
+                    {
+                      std::string id = ids(i).string_value ();
+
+                      if (id == arg2)
+                        {
+                          states(i) = curr_state;
+                          found = true;
+                          break;
+                        }
+                    }
+
+                  if (! found)
+                    {
+                      m.resize (dim_vector (nel+1, 1));
+
+                      ids.resize (dim_vector (nel+1, 1));
+                      states.resize (dim_vector (nel+1, 1));
+
+                      ids(nel) = arg2;
+                      states(nel) = curr_state;
+                    }
+
+                  m.contents ("identifier") = ids;
+                  m.contents ("state") = states;
+
+                  tw.set_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES, m);
+
+                  // Now ignore the "local" argument and continue to
+                  // handle the current setting.
+                  nargin--;
                 }
-
-              if (! found)
-                {
-                  m.resize (dim_vector (nel+1, 1));
-
-                  ids.resize (dim_vector (nel+1, 1));
-                  states.resize (dim_vector (nel+1, 1));
-
-                  ids(nel) = arg2;
-                  states(nel) = curr_state;
-                }
-
-              m.contents ("identifier") = ids;
-              m.contents ("state") = states;
-
-              tw.set_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES, m);
-
-              // Now ignore the "local" argument and continue to
-              // handle the current setting.
-              nargin--;
             }
 
-          if (nargin >= 2 && arg2 == "all")
+          if (nargin >= 2 && arg2_lc == "all")
             {
               // If "all" is explicitly given as ID.
 
@@ -1579,7 +1593,7 @@ expansion use a second backslash before the sequence (e.g.,
               Cell id (1, 1 + 2*is_error);
               Cell st (1, 1 + 2*is_error);
 
-              id(0) = arg2;
+              id(0) = "all";
               st(0) = arg1;
 
               // Since internal Octave functions are not compatible,
@@ -1603,7 +1617,7 @@ expansion use a second backslash before the sequence (e.g.,
 
               done = true;
             }
-          else if (arg2 == "backtrace")
+          else if (arg2_lc == "backtrace")
             {
               if (arg1 != "error")
                 {
@@ -1611,7 +1625,7 @@ expansion use a second backslash before the sequence (e.g.,
                   done = true;
                 }
             }
-          else if (arg2 == "debug")
+          else if (arg2_lc == "debug")
             {
               if (arg1 != "error")
                 {
@@ -1619,7 +1633,7 @@ expansion use a second backslash before the sequence (e.g.,
                   done = true;
                 }
             }
-          else if (arg2 == "verbose")
+          else if (arg2_lc == "verbose")
             {
               if (arg1 != "error")
                 {
@@ -1627,7 +1641,7 @@ expansion use a second backslash before the sequence (e.g.,
                   done = true;
                 }
             }
-          else if (arg2 == "quiet")
+          else if (arg2_lc == "quiet")
             {
               if (arg1 != "error")
                 {
@@ -1637,7 +1651,7 @@ expansion use a second backslash before the sequence (e.g.,
             }
           else
             {
-              if (arg2 == "last")
+              if (arg2_lc == "last")
                 arg2 = es.last_warning_id ();
 
               es.set_warning_option (arg1, arg2);
@@ -1650,18 +1664,18 @@ expansion use a second backslash before the sequence (e.g.,
         }
       else if (arg1 == "query")
         {
-          if (arg2 == "all")
+          if (arg2_lc == "all")
             retval = es.warning_options ();
-          else if (arg2 == "backtrace" || arg2 == "debug"
-                   || arg2 == "verbose" || arg2 == "quiet")
+          else if (arg2_lc == "backtrace" || arg2_lc == "debug"
+                   || arg2_lc == "verbose" || arg2_lc == "quiet")
             {
               octave_scalar_map tmp;
-              tmp.assign ("identifier", arg2);
-              if (arg2 == "backtrace")
+              tmp.assign ("identifier", arg2_lc);
+              if (arg2_lc == "backtrace")
                 tmp.assign ("state", es.backtrace_on_warning () ? "on" : "off");
-              else if (arg2 == "debug")
+              else if (arg2_lc == "debug")
                 tmp.assign ("state", es.debug_on_warning () ? "on" : "off");
-              else if (arg2 == "verbose")
+              else if (arg2_lc == "verbose")
                 tmp.assign ("state", es.verbose_warning () ? "on" : "off");
               else
                 tmp.assign ("state", es.quiet_warning () ? "on" : "off");
@@ -1755,9 +1769,7 @@ expansion use a second backslash before the sequence (e.g.,
 %!test <*45753>
 %! warning ("error");
 %! assert (! isempty (help ("warning")));
-*/
 
-/*
 %!test <*51997>
 %! id = "Octave:logical-conversion";
 %! current = warning ("query", id);
@@ -1768,6 +1780,17 @@ expansion use a second backslash before the sequence (e.g.,
 %! assert (previous, current);
 %! previous = warning (current.state, id);
 %! assert (previous, current);
+
+%!test <*57290>
+%! warning ("oN", "Octave:test-57290-ID");
+%! warnst = warning ("QUery", "Octave:test-57290-ID");
+%! assert (warnst.state, "on");
+%! assert (warnst.identifier, "Octave:test-57290-ID");
+%! warning ("OFF", "Octave:test-57290-ID");
+%! warnst = warning ("QUery", "ALL");
+%! idx = strcmp ({warnst.identifier}, "Octave:test-57290-ID");
+%! assert (warnst(idx).state, "off");
+
 */
 
 octave_value_list

@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 #include <cassert>
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -861,9 +862,16 @@ namespace octave
 
     std::string mfile_encoding = input_sys.mfile_encoding ();
 
-    std::string encoding
-      = (mfile_encoding.compare ("system") == 0
-         ? octave_locale_charset_wrapper () : mfile_encoding);
+    std::string encoding;
+    if (mfile_encoding.compare ("system") == 0)
+      {
+        encoding = octave_locale_charset_wrapper ();
+        // encoding identifiers should consist of ASCII only characters
+        std::transform (encoding.begin (), encoding.end (), encoding.begin (),
+                        ::tolower);
+      }
+    else
+      encoding = mfile_encoding;
 
     if (encoding.compare ("utf-8") == 0)
     {

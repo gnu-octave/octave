@@ -1028,7 +1028,11 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
   persistent hmargin = 3;
   persistent vmargin = 3;
   persistent item_width = 15;
-  persistent item_height = 7;
+
+  units = get (hl, "fontunits");
+  set (hl, "fontunits", "points");
+  item_height = 0.7 * get (hl, "fontsize");
+  set (hl, "fontunits", units);
 
   ext = get (objlist(:,1), "extent");
   markers = get (objlist(:,2), "marker");

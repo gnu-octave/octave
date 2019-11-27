@@ -79,7 +79,8 @@ function [ax, h1, h2] = plotyy (varargin)
         && isaxes (get (hax, "__plotyy_axes__")) == [true; true])
       hax = get (hax, "__plotyy_axes__");
     else
-      hax = [hax; axes("nextplot", get (hax(1), "nextplot"))];
+      hax = [hax; axes("nextplot", get (hax(1), "nextplot"), ...
+                       "parent", get(hax(1), "parent"))];
     endif
 
     [axtmp, h1tmp, h2tmp] = __plotyy__ (hax, varargin{:});

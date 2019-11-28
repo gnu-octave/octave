@@ -406,12 +406,13 @@ function delete_legend_cb (hl)
 
   reset_cb ([], [], hl, false);
 
-  hax = getappdata (hl, "__axes_handle__")(1);
-  units = get (hax, "units");
-  set (hax, "units", getappdata (hl, "__original_units__"),
-            "looseinset", getappdata (hl, "__original_looseinset__"),
-            "units", units,
-            "__legend_handle__", []);
+  hax = getappdata (hl, "__axes_handle__");
+  for h = hax(:)'
+    units = get (h, "units");
+    set (h, "units", getappdata (hl, "__original_units__"), ...
+            "looseinset", getappdata (hl, "__original_looseinset__"), ...
+            "units", units, "__legend_handle__", []);
+  endfor
 
 endfunction
 

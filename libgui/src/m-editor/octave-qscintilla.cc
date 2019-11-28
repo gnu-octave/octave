@@ -837,7 +837,12 @@ namespace octave
     for (int i = 0; i < lines.count (); i++)
       {
         QString line = lines.at (i);
+        QString line_clean_1 = line;
+        line_clean_1.replace (QString ("\""), QString ("\\\""));
+
         line = line.replace (QString ("%"), QString ("%%"));
+        QString line_clean_2 = line;
+        line_clean_2.replace (QString ("\""), QString ("\\\""));
 
         // Prevent output of breakpoint in temp. file for keyboard
         QString next_bp_quiet;
@@ -851,14 +856,15 @@ namespace octave
           }
 
         // Add codeline togetcher with call to echo/hitory function to tmp
-        code += QString ("%1 (%2, '%3', '%4');\n"
+        code += QString ("%1 (%2, \"%3\", \"%4\");\n"
                           + next_bp_quiet
-                          + "%4\n"
+                          + "%5\n"
                           + next_bp_quiet_reset
                           + "\n")
                          .arg (tmp_script_name)
                          .arg (i)
-                         .arg (lines.at (i))
+                         .arg (line_clean_1)
+                         .arg (line_clean_2)
                          .arg (line);
       }
 

@@ -339,7 +339,13 @@ namespace octave
   void octave_qscintilla::context_run (void)
   {
     if (hasSelectedText ())
-      contextmenu_run (true);
+      {
+        contextmenu_run (true);
+
+        emit interpreter_event
+          ([] (interpreter&)
+            { command_editor::erase_empty_line (false); });
+      }
   }
 
   void octave_qscintilla::get_global_textcursor_pos (QPoint *global_pos,
@@ -952,12 +958,13 @@ namespace octave
          emit ctx_menu_run_finished_signal (show_dbg_file,
                                             tmp_file, tmp_hist, tmp_script);
 
+         command_editor::erase_empty_line (true);
          command_editor::replace_line ("");
          command_editor::set_initial_input (pending_input);
          command_editor::redisplay ();
          command_editor::interrupt_event_loop ();
          command_editor::accept_line ();
-
+         command_editor::erase_empty_line (true);
        });
   }
 

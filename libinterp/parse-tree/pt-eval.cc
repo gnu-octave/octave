@@ -2562,8 +2562,8 @@ namespace octave
       {
         tree_expression *expr = tic->condition ();
 
-        if (m_statement_context == SC_FUNCTION
-            || m_statement_context == SC_SCRIPT)
+        if (! (in_debug_repl ()
+               && m_call_stack.current_frame () == m_debug_frame))
           m_call_stack.set_location (tic->line (), tic->column ());
 
         if (m_debug_mode && ! tic->is_else_clause ())
@@ -2692,8 +2692,8 @@ namespace octave
 
     if (cmd || expr)
       {
-        if (m_statement_context == SC_FUNCTION
-            || m_statement_context == SC_SCRIPT)
+        if (! (in_debug_repl ()
+               && m_call_stack.current_frame () == m_debug_frame))
           m_call_stack.set_location (stmt.line (), stmt.column ());
 
         try

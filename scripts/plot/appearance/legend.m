@@ -226,8 +226,6 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
     ## Listeners to foreign objects properties are stored for later
     ## deletion in "delfunction"
-    setappdata (hl, "__listeners__", {});
-
     hax = opts.axes_handles(1);
     hf = ancestor (hax, "figure");
 
@@ -997,8 +995,7 @@ function objlist = textitem_objects (hl, textright)
         addlistener (hmarker, "markersize", @update_marker_cb);
       endif
 
-      add_safe_listener (hl, hplt, "displayname", ...
-                         {@update_displayname_cb, hl});
+      add_safe_listener (hl, hplt, "displayname", {@update_displayname_cb, hl});
     endif
 
     objlist(ii,:) = [htxt, hitem];

@@ -501,6 +501,15 @@ function maybe_update_layout_cb (h, d, hl)
         endif
       endif
     unwind_protect_cleanup
+      ## FIXME: If the parent is an uipanel, asynchronous events that affect
+      ## the "position" and "tightinset" properties are emitted.
+      ## Since those events are asynchronous, there is no recursion (which we
+      ## can stop using the "updating" variable) and this leeds to an infinite
+      ## execution of listeners. Porcessing graphics events here seems to fix
+      ## the issue but is this reliable?
+      if (strcmp (get (get (hl, "parent"), "type"), "uipanel"))
+        pause (0.01);
+      endif
       updating = false;
     end_unwind_protect
 

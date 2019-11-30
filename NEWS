@@ -136,6 +136,7 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 * `lightangle`
 * `namedargs2cell`
 * `newline`
+* `rescale`
 * `rotx`
 * `roty`
 * `rotz`

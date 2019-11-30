@@ -233,6 +233,10 @@ variety of data.
 
 @DOCSTRING(importdata)
 
+After importing, the data may need to be transformed before further analysis.  The @code{rescale} function can shift and normalize a data set in to a specified range.
+
+@DOCSTRING(rescale)
+
 @menu
 * Saving Data on Unexpected Exits::
 @end menu

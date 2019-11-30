@@ -17,27 +17,23 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} rescale (@var{A})
-## @deftypefnx {} {} rescale (@var{A}, @var{l}, @var{u})
-## @deftypefnx {} {} rescale (@var{A}, 'inputmin', @var{inmin})
-## @deftypefnx {} {} rescale (@var{A}, 'inputmax', @var{inmax})
-## @deftypefnx {} {} rescale (@var{A}, 'inputmin', @var{inmin}, 'inputmax', @var{inmax})
-## @deftypefnx {} {} rescale (@var{A}, @var{l}, @var{u}, 'inputmin', @var{inmin})
-## @deftypefnx {} {} rescale (@var{A}, @var{l}, @var{u}, 'inputmax', @var{inmax})
-## @deftypefnx {} {} rescale (@var{A}, @var{l}, @var{u}, 'inputmin', @var{inmin}, 'inputmax', @var{inmax})
-## Rescale matrix.
+## @deftypefn  {} {@var{B} =} rescale (@var{A})
+## @deftypefnx {} {@var{B} =} rescale (@var{A}, @var{l}, @var{u})
+## @deftypefnx {} {@var{B} =} rescale (@dots{}, "inputmin", @var{inmin})
+## @deftypefnx {} {@var{B} =} rescale (@dots{}, "inputmax", @var{inmax})
+## Rescale range of array values.
 ##
-## Rescales a matrix to the interval [l,u]. The name-value pairs 'inputmin' and
-## 'inputmax' set all elements of A to min(A,inmin) and max(A,inmax)
-## respectively. The applied formula is:
+## The values of the input array elements are rescaled to the interval
+## [@var{l}, @var{u}].  Optionally before rescaling, the elements of @var{A} are
+## truncated to the interval [@var{inmin}, @var{inmax}].  In this case, these
+## values are scaled to @var{l} and @var{u}, respectively.  The default value
+## for the lower bound @var{l} of the output interval is 0. The default upper
+## bound @var{u} is 1.
+##
+## The formula used for rescaling is:
 ## @tex
-## B = l + \frac{A - inmin}{inmax - inmin} * (u - l).
+## $$B = l + {A - inmin \over inmax - inmin} \cdot (u - l).$$
 ## @end tex
-##
-## The default value for the lower bound @var{l} is 0, and for the upper bound
-## @var{u} is 1. If the name-value pairs 'inputmin' or 'inputmax' are not set,
-## the minimum and maximum input range are set to @var{inmin} = min(A(:)) and
-## @var{inmax) = max(A(:)) respectively.
 ##
 ## @seealso{min, max}
 ## @end deftypefn
@@ -45,66 +41,59 @@
 ## Author: Christian Himpe <christian.himpe@wwu.de>
 ## Created: November 2019
 
-function B = rescale(A,varargin)
+function B = rescale (A, varargin)
 
-    % Check if 1st argument is a matrix
-    if not(isnumeric(A)) || not(any(nargin == [1,3,5,7]))
+  ## Check if 1st argument is a matrix
+  if (! isnumeric(A) || ! any (nargin == [1,3,5,7]))
+    print_usage ();
+  endif
 
-        print_usage();
+  l = 0;
+  u = 1;
+
+  ## If 2nd and 3rd argument are numeric, set non-default interval.
+  if (nargin > 1 && isnumeric (varargin{1}))
+    if (! isnumeric (varargin{2}))
+      print_usage ();
     endif
-
-    l = 0;
-    u = 1.0;
-
-    % Check if 2nd and 3rd argument are numeric, then set non-default interval.
-    if nargin > 1 && isnumeric(varargin{1})
-
-        l = varargin{1}; 
-
-        if isnumeric(varargin{2})
-
-            u = varargin{2};
-        else
-
-            print_usage();
-        endif
+    l = varargin{1}; 
+    u = varargin{2};
+    if (l > u)
+      error ("rescale: L must not be larger than U.");
     endif
+  endif
 
-    % Check for named argument 'inputmin'.
-    if not(isempty(varargin))
-
-        inminidx = find(strcmp(lower(varargin),'inputmin'));
-    else
-
-        inminidx = [];
+  ## Check for named argument "inputmin".
+  inminidx = find (strcmpi (varargin, "inputmin"), 1, "last");
+  if (! isempty (inminidx))
+    if (! isnumeric (varargin{inminidx + 1}))
+      error ("rescale: INMIN must be numeric.");
     endif
-        
-    if not(isempty(inminidx)) && isnumeric(varargin(inminidx(end) + 1))
+    inmin = varargin{inminidx + 1};
+  else
+    inmin = min (A(:));
+  endif
 
-        inmin = varargin(inminidx(end) + 1);
-    else
-
-        inmin = min(A(:));
+  ## Check for named argument "inputmax".
+  inmaxidx = find (strcmpi (varargin, "inputmax"), 1, "last");
+  if (! isempty (inmaxidx))
+    if (! isnumeric (varargin{inmaxidx + 1}))
+      error ("rescale: INMAX must be numeric.");
     endif
+    inmax = varargin{inmaxidx + 1};
+  else
+    inmax = max (A(:));
+  endif
 
-    % Check for named argument 'inputmax'.
-    if not(isempty(varargin))
+  ## Truncate values in A
+  A(A < inmin) = inmin;
+  A(A > inmax) = inmax;
 
-        inmaxidx = find(strcmp(lower(varargin),'inputmax'));
-    else
-
-        inmaxidx = [];
-    endif
-        
-    if not(isempty(inmaxidx)) && isnumeric(varargin(inmaxidx(end) + 1));
-
-        inmax = varargin(inmaxidx(end) + 1);
-    else
-
-        inmax = max(A(:));
-    endif  
-
-    % Rescale A to interval [l,u] in range interval [inmin,inmax].
-    B = l + ( (A - inmin) ./ (inmax - inmin) ) .* (u - l);
+  ## Rescale A to interval [l,u] in range interval [inmin,inmax].
+  B = l + ( (A - inmin) ./ (inmax - inmin) ) .* (u - l);
 
 endfunction
+
+%!assert (rescale (0:5), (0:5)/5)
+%!assert (rescale (0:6, "inputmin", 1, "inputmax", 5), [0,0,0.25,0.5,0.75,1,1]);
+%!assert (rescale (1:4, 3, 9), [3,5,7,9]);

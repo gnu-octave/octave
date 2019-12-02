@@ -792,13 +792,18 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
-// End of a series of full-line comments.
+// End of a series of full-line because some other character was
+// found on the input stream.
 %}
 
 <LINE_COMMENT_START>{ANY_INCLUDING_NL} {
     curr_lexer->lexer_debug ("<LINE_COMMENT_START>{ANY_INCLUDING_NL}");
 
-    curr_lexer->xunput (yytext[0]);
+    // Restore all characters except the ASCII 1 marker that was
+    // inserted by push_lexer::fill_flex_buffer.
+
+    if (yytext[0] != '\001')
+      curr_lexer->xunput (yytext[0]);
 
     curr_lexer->finish_comment (octave::comment_elt::full_line);
 
@@ -3756,8 +3761,14 @@ namespace octave
   {
     int status = 0;
 
+    // If the input buffer is empty or we are at the end of the buffer,
+    // insert ASCII 1 as a marker for subsequent rules.
+
     if (m_input_buf.empty () && ! m_input_buf.at_eof ())
       m_input_buf.fill (std::string (1, static_cast<char> (1)), false);
+
+    // Note that the copy_chunk function may append a newline character
+    // to the input.
 
     if (! m_input_buf.empty ())
       status = m_input_buf.copy_chunk (buf, max_size);

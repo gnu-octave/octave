@@ -189,6 +189,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
 
 // Tokens with line and column information.
 %token <tok_val> '=' ':' '-' '+' '*' '/'
+%token <tok_val> '(' ')' '[' ']' '{' '}' '.' '@'
+%token <tok_val> ',' ';' '\n'
 %token <tok_val> ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ
 %token <tok_val> EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ AND_EQ OR_EQ
 %token <tok_val> EXPR_AND_AND EXPR_OR_OR
@@ -223,8 +225,6 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token<dummy_type> END_OF_INPUT
 %token<dummy_type> INPUT_FILE
 // %token VARARGIN VARARGOUT
-
-%token<dummy_type> '(' ')' '[' ']' '{' '}' '.' ',' ';' '@' '\n'
 
 // Nonterminals we construct.
 %type <dummy_type> indirect_ref_op decl_param_init
@@ -382,6 +382,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
 
 input           : simple_list '\n'
                   {
+                    YYUSE ($2);
+
                     $$ = nullptr;
                     parser.statement_list (std::shared_ptr<octave::tree_statement_list> ($1));
                     YYACCEPT;
@@ -543,13 +545,20 @@ constant        : NUM
                 ;
 
 matrix          : '[' matrix_rows ']'
-                  { $$ = parser.finish_matrix ($2); }
+                  {
+                    YYUSE ($1);
+                    YYUSE ($3);
+
+                    $$ = parser.finish_matrix ($2);
+                  }
                 ;
 
 matrix_rows     : cell_or_matrix_row
                   { $$ = $1 ? new octave::tree_matrix ($1) : nullptr; }
                 | matrix_rows ';' cell_or_matrix_row
                   {
+                    YYUSE ($2);
+
                     if ($1)
                       {
                         if ($3)
@@ -563,13 +572,20 @@ matrix_rows     : cell_or_matrix_row
                 ;
 
 cell            : '{' cell_rows '}'
-                  { $$ = parser.finish_cell ($2); }
+                  {
+                    YYUSE ($1);
+                    YYUSE ($3);
+
+                    $$ = parser.finish_cell ($2);
+                  }
                 ;
 
 cell_rows       : cell_or_matrix_row
                   { $$ = $1 ? new octave::tree_cell ($1) : nullptr; }
                 | cell_rows ';' cell_or_matrix_row
                   {
+                    YYUSE ($2);
+
                     if ($1)
                       {
                         if ($3)
@@ -589,15 +605,32 @@ cell_or_matrix_row
                 : // empty
                   { $$ = nullptr; }
                 | ','
-                  { $$ = nullptr; }
+                  {
+                    YYUSE ($1);
+
+                    $$ = nullptr;
+                  }
                 | arg_list
                   { $$ = $1; }
                 | arg_list ','
-                  { $$ = $1; }
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
                 | ',' arg_list
-                  { $$ = $2; }
+                  {
+                    YYUSE ($1);
+
+                    $$ = $2;
+                  }
                 | ',' arg_list ','
-                  { $$ = $2; }
+                  {
+                    YYUSE ($1);
+                    YYUSE ($3);
+
+                    $$ = $2;
+                  }
                 ;
 
 fcn_handle      : FCN_HANDLE
@@ -610,6 +643,8 @@ fcn_handle      : FCN_HANDLE
 
 anon_fcn_handle : '@' param_list anon_fcn_begin expression
                   {
+                    YYUSE ($1);
+
                     $$ = parser.make_anon_fcn_handle ($2, $4);
                     if (! $$)
                       {
@@ -622,6 +657,7 @@ anon_fcn_handle : '@' param_list anon_fcn_begin expression
                   }
                 | '@' param_list anon_fcn_begin error
                   {
+                    YYUSE ($1);
                     YYUSE ($2);
 
                     lexer.m_parsing_anon_fcn_body = false;
@@ -650,7 +686,12 @@ primary_expr    : identifier
                 | superclass_identifier
                   { $$ = $1; }
                 | '(' expression ')'
-                  { $$ = $2->mark_in_parens (); }
+                  {
+                    YYUSE ($1);
+                    YYUSE ($3);
+
+                    $$ = $2->mark_in_parens ();
+                  }
                 ;
 
 magic_colon     : ':'
@@ -678,16 +719,22 @@ arg_list        : expression
                   { $$ = new octave::tree_argument_list ($1); }
                 | arg_list ',' magic_colon
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
                 | arg_list ',' magic_tilde
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
                 | arg_list ',' expression
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
@@ -695,6 +742,8 @@ arg_list        : expression
 
 indirect_ref_op : '.'
                   {
+                    YYUSE ($1);
+
                     $$ = 0;
                     lexer.m_looking_at_indirect_ref = true;
                   }
@@ -708,6 +757,9 @@ oper_expr       : primary_expr
                   { $$ = parser.make_postfix_op (MINUS_MINUS, $1, $2); }
                 | oper_expr '(' ')'
                   {
+                    YYUSE ($2);
+                    YYUSE ($3);
+
                     $$ = parser.make_index_expression ($1, nullptr, '(');
                     if (! $$)
                       {
@@ -717,6 +769,9 @@ oper_expr       : primary_expr
                   }
                 | oper_expr '(' arg_list ')'
                   {
+                    YYUSE ($2);
+                    YYUSE ($4);
+
                     $$ = parser.make_index_expression ($1, $3, '(');
                     if (! $$)
                       {
@@ -726,6 +781,9 @@ oper_expr       : primary_expr
                   }
                 | oper_expr '{' '}'
                   {
+                    YYUSE ($2);
+                    YYUSE ($3);
+
                     $$ = parser.make_index_expression ($1, nullptr, '{');
                     if (! $$)
                       {
@@ -735,6 +793,9 @@ oper_expr       : primary_expr
                   }
                 | oper_expr '{' arg_list '}'
                   {
+                    YYUSE ($2);
+                    YYUSE ($4);
+
                     $$ = parser.make_index_expression ($1, $3, '{');
                     if (! $$)
                       {
@@ -749,7 +810,12 @@ oper_expr       : primary_expr
                 | oper_expr indirect_ref_op STRUCT_ELT
                   { $$ = parser.make_indirect_ref ($1, $3->text ()); }
                 | oper_expr indirect_ref_op '(' expression ')'
-                  { $$ = parser.make_indirect_ref ($1, $4); }
+                  {
+                    YYUSE ($3);
+                    YYUSE ($5);
+
+                    $$ = parser.make_indirect_ref ($1, $4);
+                  }
                 | PLUS_PLUS oper_expr %prec UNARY
                   { $$ = parser.make_prefix_op (PLUS_PLUS, $2, $1); }
                 | MINUS_MINUS oper_expr %prec UNARY
@@ -794,6 +860,9 @@ power_expr      : primary_expr
                   { $$ = parser.make_postfix_op (MINUS_MINUS, $1, $2); }
                 | power_expr '(' ')'
                   {
+                    YYUSE ($2);
+                    YYUSE ($3);
+
                     $$ = parser.make_index_expression ($1, nullptr, '(');
                     if (! $$)
                       {
@@ -803,6 +872,9 @@ power_expr      : primary_expr
                   }
                 | power_expr '(' arg_list ')'
                   {
+                    YYUSE ($2);
+                    YYUSE ($4);
+
                     $$ = parser.make_index_expression ($1, $3, '(');
                     if (! $$)
                       {
@@ -812,6 +884,9 @@ power_expr      : primary_expr
                   }
                 | power_expr '{' '}'
                   {
+                    YYUSE ($2);
+                    YYUSE ($3);
+
                     $$ = parser.make_index_expression ($1, nullptr, '{');
                     if (! $$)
                       {
@@ -821,6 +896,9 @@ power_expr      : primary_expr
                   }
                 | power_expr '{' arg_list '}'
                   {
+                    YYUSE ($2);
+                    YYUSE ($4);
+
                     $$ = parser.make_index_expression ($1, $3, '{');
                     if (! $$)
                       {
@@ -831,7 +909,12 @@ power_expr      : primary_expr
                 | power_expr indirect_ref_op STRUCT_ELT
                   { $$ = parser.make_indirect_ref ($1, $3->text ()); }
                 | power_expr indirect_ref_op '(' expression ')'
-                  { $$ = parser.make_indirect_ref ($1, $4); }
+                  {
+                    YYUSE ($3);
+                    YYUSE ($5);
+
+                    $$ = parser.make_indirect_ref ($1, $4);
+                  }
                 | PLUS_PLUS power_expr %prec POW
                   { $$ = parser.make_prefix_op (PLUS_PLUS, $2, $1); }
                 | MINUS_MINUS power_expr %prec POW
@@ -1188,7 +1271,9 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
                   {
+                    YYUSE ($3);
                     YYUSE ($5);
+                    YYUSE ($7);
                     YYUSE ($8);
 
                     if (! ($$ = parser.make_for_command (FOR, $1, $4, $6,
@@ -1212,7 +1297,10 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   }
                 | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
                   {
+                    YYUSE ($3);
                     YYUSE ($5);
+                    YYUSE ($7);
+                    YYUSE ($9);
                     YYUSE ($10);
 
                     if (! ($$ = parser.make_for_command (PARFOR, $1, $4, $6,
@@ -1304,6 +1392,8 @@ push_fcn_symtab : // empty
 
 param_list_beg  : '('
                   {
+                    YYUSE ($1);
+
                     $$ = 0;
                     lexer.m_looking_at_parameter_list = true;
 
@@ -1319,6 +1409,8 @@ param_list_beg  : '('
 
 param_list_end  : ')'
                   {
+                    YYUSE ($1);
+
                     $$ = 0;
                     lexer.m_looking_at_parameter_list = false;
                     lexer.m_looking_for_object_index = false;
@@ -1369,6 +1461,8 @@ param_list2     : param_list_elt
                   { $$ = new octave::tree_parameter_list ($1); }
                 | param_list2 ',' param_list_elt
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
@@ -1386,6 +1480,9 @@ param_list_elt  : decl2
 
 return_list     : '[' ']'
                   {
+                    YYUSE ($1);
+                    YYUSE ($2);
+
                     lexer.m_looking_at_return_list = false;
 
                     $$ = new octave::tree_parameter_list ();
@@ -1410,6 +1507,9 @@ return_list     : '[' ']'
                   }
                 | '[' return_list1 ']'
                   {
+                    YYUSE ($1);
+                    YYUSE ($3);
+
                     lexer.m_looking_at_return_list = false;
 
                     // Check for duplicate parameter names, varargin,
@@ -1429,6 +1529,8 @@ return_list1    : identifier
                   { $$ = new octave::tree_parameter_list (new octave::tree_decl_elt ($1)); }
                 | return_list1 ',' identifier
                   {
+                    YYUSE ($2);
+
                     $1->append (new octave::tree_decl_elt ($3));
                     $$ = $1;
                   }
@@ -1525,6 +1627,7 @@ fcn_name        : identifier
                 | GET '.' identifier
                   {
                     YYUSE ($1);
+                    YYUSE ($2);
 
                     lexer.m_parsed_function_name.top () = true;
                     lexer.m_maybe_classdef_get_set_method = false;
@@ -1534,6 +1637,7 @@ fcn_name        : identifier
                 | SET '.' identifier
                   {
                     YYUSE ($1);
+                    YYUSE ($2);
 
                     lexer.m_parsed_function_name.top () = true;
                     lexer.m_maybe_classdef_get_set_method = false;
@@ -1659,13 +1763,20 @@ classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superc
 opt_attr_list   : // empty
                   { $$ = nullptr; }
                 | '(' attr_list ')'
-                  { $$ = $2; }
+                  {
+                    YYUSE ($1);
+                    YYUSE ($3);
+
+                    $$ = $2;
+                  }
                 ;
 
 attr_list       : attr
                   { $$ = new octave::tree_classdef_attribute_list ($1); }
                 | attr_list ',' attr
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
@@ -1969,7 +2080,12 @@ enum_list       : class_enum
                 ;
 
 class_enum      : identifier '(' expression ')'
-                  { $$ = new octave::tree_classdef_enum ($1, $3); }
+                  {
+                    YYUSE ($2);
+                    YYUSE ($4);
+
+                    $$ = new octave::tree_classdef_enum ($1, $3);
+                  }
                 ;
 
 // =============
@@ -2006,13 +2122,29 @@ parse_error     : LEXICAL_ERROR
                 ;
 
 sep_no_nl       : ','
-                  { $$ = ','; }
+                  {
+                    YYUSE ($1);
+
+                    $$ = ',';
+                  }
                 | ';'
-                  { $$ = ';'; }
+                  {
+                    YYUSE ($1);
+
+                    $$ = ';';
+                  }
                 | sep_no_nl ','
-                  { $$ = $1; }
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
                 | sep_no_nl ';'
-                  { $$ = $1; }
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
                 ;
 
 opt_sep_no_nl   : // empty
@@ -2028,23 +2160,55 @@ opt_nl          : // empty
                 ;
 
 nl              : '\n'
-                  { $$ = '\n'; }
+                  {
+                    YYUSE ($1);
+
+                    $$ = '\n';
+                  }
                 | nl '\n'
-                  { $$ = $1; }
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
                 ;
 
 sep             : ','
-                  { $$ = ','; }
+                  {
+                    YYUSE ($1);
+
+                    $$ = ',';
+                  }
                 | ';'
-                  { $$ = ';'; }
+                  {
+                    YYUSE ($1);
+
+                    $$ = ';';
+                  }
                 | '\n'
-                  { $$ = '\n'; }
+                  {
+                    YYUSE ($1);
+
+                    $$ = '\n';
+                  }
                 | sep ','
-                  { $$ = $1; }
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
                 | sep ';'
-                  { $$ = $1; }
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
                 | sep '\n'
-                  { $$ = $1; }
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
                 ;
 
 opt_sep         : // empty

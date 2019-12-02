@@ -834,10 +834,10 @@ namespace octave
     m_glfcns.glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     m_glfcns.glAlphaFunc (GL_GREATER, 0.0f);
     m_glfcns.glEnable (GL_NORMALIZE);
+    m_glfcns.glEnable (GL_BLEND);
 
     if (enhanced)
       {
-        m_glfcns.glEnable (GL_BLEND);
         m_glfcns.glEnable (GL_MULTISAMPLE);
         bool has_multisample = false;
         if (! m_glfcns.glGetError ())
@@ -863,7 +863,6 @@ namespace octave
       }
     else
       {
-        m_glfcns.glDisable (GL_BLEND);
         m_glfcns.glDisable (GL_LINE_SMOOTH);
       }
 

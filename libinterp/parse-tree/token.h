@@ -31,8 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class
-  token
+  class token
   {
   public:
 
@@ -65,17 +64,15 @@ namespace octave
       while_end,
     };
 
-    token (int tv, int l = -1, int c = -1);
-    token (int tv, bool is_keyword, int l = -1, int c = -1);
-    token (int tv, const char *s, int l = -1, int c = -1);
-    token (int tv, const std::string& s, int l = -1, int c = -1);
-    token (int tv, double d, const std::string& s = "",
-           int l = -1, int c = -1);
-    token (int tv, end_tok_type t, int l = -1, int c = -1);
-    token (int tv, const symbol_record& s,
-           int l = -1, int c = -1);
+    token (int tv, int l, int c);
+    token (int tv, bool is_keyword, int l, int c);
+    token (int tv, const char *s, int l, int c);
+    token (int tv, const std::string& s, int l, int c);
+    token (int tv, double d, const std::string& s, int l, int c);
+    token (int tv, end_tok_type t, int l, int c);
+    token (int tv, const symbol_record& s, int l, int c);
     token (int tv, const std::string& mth, const std::string& cls,
-           int l = -1, int c = -1);
+           int l, int c);
 
     // No copying!
 

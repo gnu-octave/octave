@@ -545,12 +545,7 @@ constant        : NUM
                 ;
 
 matrix          : '[' matrix_rows ']'
-                  {
-                    YYUSE ($1);
-                    YYUSE ($3);
-
-                    $$ = parser.finish_matrix ($2);
-                  }
+                  { $$ = parser.finish_matrix ($2, $1, $3); }
                 ;
 
 matrix_rows     : cell_or_matrix_row
@@ -572,12 +567,7 @@ matrix_rows     : cell_or_matrix_row
                 ;
 
 cell            : '{' cell_rows '}'
-                  {
-                    YYUSE ($1);
-                    YYUSE ($3);
-
-                    $$ = parser.finish_cell ($2);
-                  }
+                  { $$ = parser.finish_cell ($2, $1, $3); }
                 ;
 
 cell_rows       : cell_or_matrix_row
@@ -4342,9 +4332,12 @@ namespace octave
   // Finish building an array_list.
 
   tree_expression *
-  base_parser::finish_array_list (tree_array_list *array_list)
+  base_parser::finish_array_list (tree_array_list *array_list,
+                                  token */*open_delim*/, token *close_delim)
   {
     tree_expression *retval = array_list;
+
+    array_list->set_location (close_delim->line (), close_delim->column ());
 
     if (array_list->all_elements_are_constant ())
       {
@@ -4375,8 +4368,8 @@ namespace octave
             if (msg.empty ())
               {
                 tree_constant *tc_retval
-                  = new tree_constant (tmp, array_list->line (),
-                                       array_list->column ());
+                  = new tree_constant (tmp, close_delim->line (),
+                                       close_delim->column ());
 
                 std::ostringstream buf;
 
@@ -4403,21 +4396,25 @@ namespace octave
   // Finish building a matrix list.
 
   tree_expression *
-  base_parser::finish_matrix (tree_matrix *m)
+  base_parser::finish_matrix (tree_matrix *m, token *open_delim,
+                              token *close_delim)
   {
     return (m
-            ? finish_array_list (m)
-            : new tree_constant (octave_null_matrix::instance));
+            ? finish_array_list (m, open_delim, close_delim)
+            : new tree_constant (octave_null_matrix::instance,
+                                 close_delim->line (), close_delim->column ()));
   }
 
   // Finish building a cell list.
 
   tree_expression *
-  base_parser::finish_cell (tree_cell *c)
+  base_parser::finish_cell (tree_cell *c, token *open_delim,
+                            token *close_delim)
   {
     return (c
-            ? finish_array_list (c)
-            : new tree_constant (octave_value (Cell ())));
+            ? finish_array_list (c, open_delim, close_delim)
+            : new tree_constant (octave_value (Cell ()),
+                                 close_delim->line (), close_delim->column ()));
   }
 
   tree_statement_list *

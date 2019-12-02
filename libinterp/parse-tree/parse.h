@@ -418,13 +418,16 @@ namespace octave
 
     // Finish building an array_list (common action for finish_matrix
     // and finish_cell).
-    tree_expression * finish_array_list (tree_array_list *a);
+    tree_expression * finish_array_list (tree_array_list *a, token *open_delim,
+                                         token *close_delim);
 
     // Finish building a matrix list.
-    tree_expression * finish_matrix (tree_matrix *m);
+    tree_expression * finish_matrix (tree_matrix *m, token *open_delim,
+                                     token *close_delim);
 
     // Finish building a cell list.
-    tree_expression * finish_cell (tree_cell *c);
+    tree_expression * finish_cell (tree_cell *c, token *open_delim,
+                                   token *close_delim);
 
     // Set the print flag for a statement based on the separator type.
     tree_statement_list *

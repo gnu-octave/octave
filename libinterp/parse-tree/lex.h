@@ -296,7 +296,8 @@ namespace octave
         m_command_arg_paren_count (0),
         m_token_count (0),
         m_filepos (),
-        m_beg_string (),
+        m_tok_beg (),
+        m_tok_end (),
         m_string_text (),
         m_current_input_line (),
         m_comment_text (),
@@ -464,8 +465,12 @@ namespace octave
     // The current position in the file (line and column).
     filepos m_filepos;
 
-    // The position of the beginning of the current character string.
-    filepos m_beg_string;
+    // The positions of the beginning and end of the current token after
+    // calling update_token_positions.  Also used apart from
+    // update_token_positions to handle the beginning and end of
+    // character strings.
+    filepos m_tok_beg;
+    filepos m_tok_end;
 
     // The current character string text.
     std::string m_string_text;
@@ -639,6 +644,8 @@ namespace octave
 
     void xunput (char c);
 
+    void update_token_positions (int tok_len);
+
     bool looking_at_space (void);
 
     bool inside_any_object_index (void);
@@ -736,10 +743,6 @@ namespace octave
                                       bool bos = false);
 
     bool maybe_unput_comma_before_unary_op (int tok);
-
-    int handle_unary_op (int tok, bool bos = false);
-
-    int handle_language_extension_unary_op (int tok, bool bos = false);
 
     int handle_assign_op (const char *pattern, int tok);
 

@@ -220,10 +220,10 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token <tok_val> GET SET
 %token <tok_val> FCN
 %token <tok_val> LEXICAL_ERROR
+%token <tok_val> END_OF_INPUT
 
 // Other tokens.
-%token<dummy_type> END_OF_INPUT
-%token<dummy_type> INPUT_FILE
+%token <dummy_type> INPUT_FILE
 // %token VARARGIN VARARGOUT
 
 // Nonterminals we construct.
@@ -390,6 +390,8 @@ input           : simple_list '\n'
                   }
                 | simple_list END_OF_INPUT
                   {
+                    YYUSE ($2);
+
                     $$ = nullptr;
                     lexer.m_end_of_input = true;
                     parser.statement_list (std::shared_ptr<octave::tree_statement_list> ($1));
@@ -633,9 +635,7 @@ fcn_handle      : FCN_HANDLE
 
 anon_fcn_handle : '@' param_list anon_fcn_begin expression
                   {
-                    YYUSE ($1);
-
-                    $$ = parser.make_anon_fcn_handle ($2, $4);
+                    $$ = parser.make_anon_fcn_handle ($2, $4, $1->beg_pos ());
                     if (! $$)
                       {
                         // make_anon_fcn_handle deleted $2 and $4.
@@ -1570,7 +1570,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                       {
                         octave::tree_statement *end_of_script
                           = parser.make_end ("endscript", true,
-                                             lexer.m_filepos.line (), lexer.m_filepos.column ());
+                                             $4->beg_pos (), $4->end_pos ());
 
                         parser.make_script ($3, end_of_script);
                       }
@@ -1581,6 +1581,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                   {
                     YYUSE ($2);
                     YYUSE ($5);
+                    YYUSE ($7);
 
                     // Unused symbol table context.
                     lexer.m_symtab_context.pop ();
@@ -1641,7 +1642,7 @@ function_end    : END
 
                     if (parser.end_token_ok ($1, octave::token::function_end))
                       $$ = parser.make_end ("endfunction", false,
-                                            $1->line (), $1->column ());
+                                            $1->beg_pos (), $1->end_pos ());
                     else
                       {
                         parser.end_token_error ($1, octave::token::function_end);
@@ -1679,7 +1680,7 @@ function_end    : END
                       }
 
                     $$ = parser.make_end ("endfunction", true,
-                                          lexer.m_filepos.line (), lexer.m_filepos.column ());
+                                          $1->beg_pos (), $1->end_pos ());
                   }
                 ;
 
@@ -2439,7 +2440,7 @@ namespace octave
                        + "' command matched by '"
                        + end_token_as_string (tok->ettype ()) + "'");
 
-    bison_error (msg, tok->line (), tok->column ());
+    bison_error (msg, tok->beg_pos ());
   }
 
   // Check to see that end tokens are properly matched.
@@ -2558,12 +2559,9 @@ namespace octave
 
   tree_anon_fcn_handle *
   base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
-                                     tree_expression *expr)
+                                     tree_expression *expr,
+                                     const filepos& at_pos)
   {
-    // FIXME: need to get these from the location of the @ symbol.
-    int l = m_lexer.m_filepos.line ();
-    int c = m_lexer.m_filepos.column ();
-
     // FIXME: We need to examine EXPR and issue an error if any
     // sub-expression contains an assignment, compound assignment,
     // increment, or decrement operator.
@@ -2590,9 +2588,12 @@ namespace octave
 
     fcn_scope.mark_static ();
 
+    int at_line = at_pos.line ();
+    int at_column = at_pos.column ();
+
     tree_anon_fcn_handle *retval
       = new tree_anon_fcn_handle (param_list, expr, fcn_scope,
-                                  parent_scope, l, c);
+                                  parent_scope, at_line, at_column);
 
     std::ostringstream buf;
 
@@ -2607,7 +2608,7 @@ namespace octave
       buf << ": *terminal input*";
     else if (m_lexer.input_from_eval_string ())
       buf << ": *eval string*";
-    buf << ": line: " << l << " column: " << c;
+    buf << ": line: " << at_line << " column: " << at_column;
 
     std::string scope_name = buf.str ();
 
@@ -3356,7 +3357,8 @@ namespace octave
         delete lhs;
         delete rhs;
 
-        bison_error ("computed multiple assignment not allowed", l, c);
+        bison_error ("computed multiple assignment not allowed",
+                     eq_tok->beg_pos ());
 
         return nullptr;
       }
@@ -3376,7 +3378,8 @@ namespace octave
             delete lhs;
             delete rhs;
 
-            bison_error ("invalid assignment to keyword \"" + kw + "\"", l, c);
+            bison_error ("invalid assignment to keyword \"" + kw + "\"",
+                         eq_tok->beg_pos ());
 
             return nullptr;
           }
@@ -3397,7 +3400,7 @@ namespace octave
                 delete rhs;
 
                 bison_error ("invalid assignment to keyword \"" + kw + "\"",
-                             l, c);
+                             eq_tok->beg_pos ());
 
                 return nullptr;
               }
@@ -3632,8 +3635,12 @@ namespace octave
   }
 
   tree_statement *
-  base_parser::make_end (const std::string& type, bool eof, int l, int c)
+  base_parser::make_end (const std::string& type, bool eof,
+                         const filepos& beg_pos, const filepos& /*end_pos*/)
   {
+    int l = beg_pos.line ();
+    int c = beg_pos.column ();
+
     return make_statement (new tree_no_op_command (type, eof, l, c));
   }
 
@@ -4517,11 +4524,20 @@ namespace octave
   }
 
   void
-  base_parser::bison_error (const std::string& str, int l, int c)
+  base_parser::bison_error (const std::string& str)
   {
-    int err_line = l < 0 ? m_lexer.m_filepos.line () : l;
-    int err_col = c < 0 ? m_lexer.m_filepos.column () - 1 : c;
+    bison_error (str, m_lexer.m_filepos);
+  }
 
+  void
+  base_parser::bison_error (const std::string& str, const filepos& pos)
+  {
+    bison_error (str, pos.line (), pos.column ());
+  }
+
+  void
+  base_parser::bison_error (const std::string& str, int err_line, int err_col)
+  {
     std::ostringstream output_buf;
 
     if (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file
@@ -4541,8 +4557,6 @@ namespace octave
     if (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file
         || m_lexer.m_reading_classdef_file)
       curr_line = get_file_line (m_lexer.m_fcn_file_full_name, err_line);
-    else
-      curr_line = m_lexer.m_filepos.line ();
 
     if (! curr_line.empty ())
       {

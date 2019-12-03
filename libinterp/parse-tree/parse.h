@@ -216,7 +216,7 @@ namespace octave
     // Build an anonymous function handle.
     tree_anon_fcn_handle *
     make_anon_fcn_handle (tree_parameter_list *param_list,
-                          tree_expression * expr);
+                          tree_expression * expr, const filepos& at_pos);
 
     // Build a colon expression.
     tree_expression *
@@ -331,7 +331,8 @@ namespace octave
                     tree_statement_list *body, tree_statement *end_function);
 
     // Create a no-op statement for end_function.
-    tree_statement * make_end (const std::string& type, bool eof, int l, int c);
+    tree_statement * make_end (const std::string& type, bool eof,
+                               const filepos& beg_pos, const filepos& end_pos);
 
     // Do most of the work for defining a function.
     octave_user_function *
@@ -451,7 +452,9 @@ namespace octave
     void disallow_command_syntax (void);
 
     // Generic error messages.
-    void bison_error (const std::string& s, int l = -1, int c = -1);
+    void bison_error (const std::string& s);
+    void bison_error (const std::string& s, const filepos& pos);
+    void bison_error (const std::string& s, int line, int column);
 
     friend octave_value
     parse_fcn_file (interpreter& interp, const std::string& full_file,

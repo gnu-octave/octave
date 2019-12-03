@@ -840,7 +840,8 @@ ANY_INCLUDING_NL (.|{NL})
 
         curr_lexer->push_token (new octave::token (DQ_STRING,
                                                    curr_lexer->m_string_text,
-                                                   curr_lexer->m_beg_string));
+                                                   curr_lexer->m_beg_string,
+                                                   curr_lexer->m_filepos));
 
         curr_lexer->m_string_text = "";
 
@@ -861,7 +862,7 @@ ANY_INCLUDING_NL (.|{NL})
         octave::token *tok
           = new octave::token (LEXICAL_ERROR,
                                "invalid octal escape sequence in character string",
-                               curr_lexer->m_filepos);
+                               curr_lexer->m_filepos, curr_lexer->m_filepos);
 
         curr_lexer->push_token (tok);
 
@@ -1002,7 +1003,7 @@ ANY_INCLUDING_NL (.|{NL})
     octave::token *tok
       = new octave::token (LEXICAL_ERROR,
                            "unterminated character string constant",
-                           curr_lexer->m_filepos);
+                           curr_lexer->m_filepos, curr_lexer->m_filepos);
 
     curr_lexer->push_token (tok);
 
@@ -1036,7 +1037,8 @@ ANY_INCLUDING_NL (.|{NL})
 
         curr_lexer->push_token (new octave::token (SQ_STRING,
                                                    curr_lexer->m_string_text,
-                                                   curr_lexer->m_beg_string));
+                                                   curr_lexer->m_beg_string,
+                                                   curr_lexer->m_filepos));
 
         curr_lexer->m_string_text = "";
 
@@ -1057,7 +1059,7 @@ ANY_INCLUDING_NL (.|{NL})
     octave::token *tok
       = new octave::token (LEXICAL_ERROR,
                            "unterminated character string constant",
-                           curr_lexer->m_filepos);
+                           curr_lexer->m_filepos, curr_lexer->m_filepos);
 
     curr_lexer->push_token (tok);
 
@@ -1368,12 +1370,14 @@ ANY_INCLUDING_NL (.|{NL})
                 if (kw_token)
                   tok = new octave::token (LEXICAL_ERROR,
                                            "function handles may not refer to keywords",
+                                           curr_lexer->m_filepos,
                                            curr_lexer->m_filepos);
                 else
                   {
                     curr_lexer->m_looking_for_object_index = true;
 
                     tok = new octave::token (FCN_HANDLE, ident,
+                                             curr_lexer->m_filepos,
                                              curr_lexer->m_filepos);
                   }
 
@@ -1416,7 +1420,7 @@ ANY_INCLUDING_NL (.|{NL})
         octave::token *tok
           = new octave::token (LEXICAL_ERROR,
                                "unexpected internal lexer error",
-                               curr_lexer->m_filepos);
+                               curr_lexer->m_filepos, curr_lexer->m_filepos);
 
         curr_lexer->push_token (tok);
 
@@ -1806,7 +1810,7 @@ ANY_INCLUDING_NL (.|{NL})
 
         octave::token *tok
           = new octave::token (LEXICAL_ERROR, buf.str (),
-                               curr_lexer->m_filepos);
+                               curr_lexer->m_filepos, curr_lexer->m_filepos);
 
         curr_lexer->push_token (tok);
 
@@ -2575,73 +2579,86 @@ namespace octave
                 return 0;
               }
 
-            tok_val = new token (end_kw, token::simple_end, m_filepos);
+            tok_val = new token (end_kw, token::simple_end, m_filepos,
+                                 m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case end_try_catch_kw:
-            tok_val = new token (end_try_catch_kw, token::try_catch_end, m_filepos);
+            tok_val = new token (end_try_catch_kw, token::try_catch_end,
+                                 m_filepos, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case end_unwind_protect_kw:
             tok_val = new token (end_unwind_protect_kw,
-                                 token::unwind_protect_end, m_filepos);
+                                 token::unwind_protect_end, m_filepos,
+                                 m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endfor_kw:
-            tok_val = new token (endfor_kw, token::for_end, m_filepos);
+            tok_val = new token (endfor_kw, token::for_end, m_filepos,
+                                 m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endfunction_kw:
-            tok_val = new token (endfunction_kw, token::function_end, m_filepos);
+            tok_val = new token (endfunction_kw, token::function_end,
+                                 m_filepos, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endif_kw:
-            tok_val = new token (endif_kw, token::if_end, m_filepos);
+            tok_val = new token (endif_kw, token::if_end, m_filepos, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endparfor_kw:
-            tok_val = new token (endparfor_kw, token::parfor_end, m_filepos);
+            tok_val = new token (endparfor_kw, token::parfor_end, m_filepos,
+                                 m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endswitch_kw:
-            tok_val = new token (endswitch_kw, token::switch_end, m_filepos);
+            tok_val = new token (endswitch_kw, token::switch_end, m_filepos,
+                                 m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endwhile_kw:
-            tok_val = new token (endwhile_kw, token::while_end, m_filepos);
+            tok_val = new token (endwhile_kw, token::while_end, m_filepos,
+                                 m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endclassdef_kw:
-            tok_val = new token (endclassdef_kw, token::classdef_end, m_filepos);
+            tok_val = new token (endclassdef_kw, token::classdef_end,
+                                 m_filepos, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endenumeration_kw:
-            tok_val = new token (endenumeration_kw, token::enumeration_end, m_filepos);
+            tok_val = new token (endenumeration_kw, token::enumeration_end,
+                                 m_filepos, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endevents_kw:
-            tok_val = new token (endevents_kw, token::events_end, m_filepos);
+            tok_val = new token (endevents_kw, token::events_end, m_filepos,
+                                 m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endmethods_kw:
-            tok_val = new token (endmethods_kw, token::methods_end, m_filepos);
+            tok_val = new token (endmethods_kw, token::methods_end, m_filepos,
+                                 m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endproperties_kw:
-            tok_val = new token (endproperties_kw, token::properties_end, m_filepos);
+            tok_val = new token (endproperties_kw, token::properties_end,
+                                 m_filepos, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
@@ -2729,9 +2746,11 @@ namespace octave
               if ((m_reading_fcn_file || m_reading_script_file
                    || m_reading_classdef_file)
                   && ! m_fcn_file_full_name.empty ())
-                tok_val = new token (magic_file_kw, m_fcn_file_full_name, m_filepos);
+                tok_val = new token (magic_file_kw, m_fcn_file_full_name,
+                                     m_filepos, m_filepos);
               else
-                tok_val = new token (magic_file_kw, "stdin", m_filepos);
+                tok_val = new token (magic_file_kw, "stdin", m_filepos,
+                                     m_filepos);
             }
             break;
 
@@ -2739,7 +2758,7 @@ namespace octave
             {
               int l = m_filepos.line ();
               tok_val = new token (magic_line_kw, static_cast<double> (l),
-                                   "", m_filepos);
+                                   "", m_filepos, m_filepos);
             }
             break;
 
@@ -2748,7 +2767,7 @@ namespace octave
           }
 
         if (! tok_val)
-          tok_val = new token (kw->tok, true, m_filepos);
+          tok_val = new token (kw->tok, true, m_filepos, m_filepos);
 
         push_token (tok_val);
 
@@ -2874,7 +2893,7 @@ namespace octave
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = false;
 
-    push_token (new token (NUM, value, yytxt, m_filepos));
+    push_token (new token (NUM, value, yytxt, m_filepos, m_filepos));
 
     m_filepos.increment_column (flex_yyleng ());
   }
@@ -3018,15 +3037,14 @@ namespace octave
         token *tok
           = new token (LEXICAL_ERROR,
                        "method, class, and package names may not be keywords",
-                       m_filepos);
+                       m_filepos, m_filepos);
 
         push_token (tok);
 
         return count_token_internal (LEXICAL_ERROR);
       }
 
-    push_token (new token (SUPERCLASSREF, meth, cls,
-                           m_filepos));
+    push_token (new token (SUPERCLASSREF, meth, cls, m_filepos, m_filepos));
 
     m_filepos.increment_column (flex_yyleng ());
 
@@ -3048,13 +3066,13 @@ namespace octave
       {
         token *tok = new token (LEXICAL_ERROR,
                                 "class and package names may not be keywords",
-                                m_filepos);
+                                m_filepos, m_filepos);
         push_token (tok);
 
         return count_token_internal (LEXICAL_ERROR);
       }
 
-    push_token (new token (METAQUERY, cls, m_filepos));
+    push_token (new token (METAQUERY, cls, m_filepos, m_filepos));
 
     m_filepos.increment_column (flex_yyleng ());
 
@@ -3074,14 +3092,14 @@ namespace octave
         token *tok
           = new token (LEXICAL_ERROR,
                        "function, method, class, and package names may not be keywords",
-                       m_filepos);
+                       m_filepos, m_filepos);
 
         push_token (tok);
 
         return count_token_internal (LEXICAL_ERROR);
       }
 
-    push_token (new token (FQ_IDENT, txt, m_filepos));
+    push_token (new token (FQ_IDENT, txt, m_filepos, m_filepos));
 
     m_filepos.increment_column (flex_yyleng ());
 
@@ -3103,7 +3121,7 @@ namespace octave
 
     if (m_looking_at_indirect_ref)
       {
-        push_token (new token (STRUCT_ELT, ident, m_filepos));
+        push_token (new token (STRUCT_ELT, ident, m_filepos, m_filepos));
 
         m_looking_for_object_index = true;
 
@@ -3140,7 +3158,7 @@ namespace octave
 
     symbol_record sr = (scope ? scope.insert (ident) : symbol_record (ident));
 
-    token *tok = new token (NAME, sr, m_filepos);
+    token *tok = new token (NAME, sr, m_filepos, m_filepos);
 
     // The following symbols are handled specially so that things like
     //
@@ -3574,7 +3592,7 @@ namespace octave
     if (! compat)
       warn_language_extension_operator (flex_yytext ());
 
-    push_token (new token (tok, m_filepos));
+    push_token (new token (tok, m_filepos, m_filepos));
 
     m_filepos.increment_column (flex_yyleng ());
     m_looking_for_object_index = false;
@@ -3605,7 +3623,7 @@ namespace octave
   int
   base_lexer::handle_token (const std::string& name, int tok)
   {
-    token *tok_val = new token (tok, name, m_filepos);
+    token *tok_val = new token (tok, name, m_filepos, m_filepos);
 
     return handle_token (tok, tok_val);
   }
@@ -3614,7 +3632,7 @@ namespace octave
   base_lexer::handle_token (int tok, token *tok_val)
   {
     if (! tok_val)
-      tok_val = new token (tok, m_filepos);
+      tok_val = new token (tok, m_filepos, m_filepos);
 
     push_token (tok_val);
 
@@ -3626,7 +3644,7 @@ namespace octave
   int
   base_lexer::count_token (int tok)
   {
-    token *tok_val = new token (tok, m_filepos);
+    token *tok_val = new token (tok, m_filepos, m_filepos);
 
     push_token (tok_val);
 

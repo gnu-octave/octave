@@ -65,15 +65,28 @@ namespace octave
       while_end,
     };
 
-    token (int tv, const filepos& pos);
-    token (int tv, bool is_keyword, const filepos& pos);
-    token (int tv, const char *s, const filepos& pos);
-    token (int tv, const std::string& s, const filepos& pos);
-    token (int tv, double d, const std::string& s, const filepos& pos);
-    token (int tv, end_tok_type t, const filepos& pos);
-    token (int tv, const symbol_record& s, const filepos& pos);
+    token (int tv, const filepos& beg_pos, const filepos& end_pos);
+
+    token (int tv, bool is_keyword, const filepos& beg_pos
+           , const filepos& end_pos);
+
+    token (int tv, const char *s, const filepos& beg_pos,
+           const filepos& end_pos);
+
+    token (int tv, const std::string& s, const filepos& beg_pos,
+           const filepos& end_pos);
+
+    token (int tv, double d, const std::string& s, const filepos& beg_pos,
+           const filepos& end_pos);
+
+    token (int tv, end_tok_type t, const filepos& beg_pos,
+           const filepos& end_pos);
+
+    token (int tv, const symbol_record& s, const filepos& beg_pos,
+           const filepos& end_pos);
+
     token (int tv, const std::string& mth, const std::string& cls,
-           const filepos& pos);
+           const filepos& beg_pos, const filepos& end_pos);
 
     // No copying!
 
@@ -92,8 +105,15 @@ namespace octave
     int token_value (void) const { return m_tok_val; }
     bool token_value_is (int tv) const { return tv == m_tok_val; }
 
-    int line (void) const { return m_pos.line (); }
-    int column (void) const { return m_pos.column (); }
+    filepos beg_pos (void) const { return m_beg_pos; }
+    filepos end_pos (void) const { return m_end_pos; }
+
+    void beg_pos (const filepos& pos) { m_beg_pos = pos; }
+    void end_pos (const filepos& pos) { m_end_pos = pos; }
+
+    // These will probably be removed.
+    int line (void) const { return m_beg_pos.line (); }
+    int column (void) const { return m_beg_pos.column (); }
 
     bool iskeyword (void) const
     {
@@ -129,7 +149,8 @@ namespace octave
 
     bool m_tspc;
 
-    filepos m_pos;
+    filepos m_beg_pos;
+    filepos m_end_pos;
 
     int m_tok_val;
 

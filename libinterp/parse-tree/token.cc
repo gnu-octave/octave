@@ -31,52 +31,59 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  token::token (int tv, const filepos& pos)
-    : m_maybe_cmd (false), m_tspc (false), m_pos (pos),
-      m_tok_val (tv), m_type_tag (generic_token), m_tok_info (),
-      m_orig_text ()
-  { }
-
-  token::token (int tv, bool is_kw, const filepos& pos)
-    : m_maybe_cmd (false), m_tspc (false), m_pos (pos),
-      m_tok_val (tv), m_type_tag (is_kw ? keyword_token : generic_token),
+  token::token (int tv, const filepos& beg_pos, const filepos& end_pos)
+    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
+      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (generic_token),
       m_tok_info (), m_orig_text ()
   { }
 
-  token::token (int tv, const char *s, const filepos& pos)
-    : m_maybe_cmd (false), m_tspc (false), m_pos (pos),
-      m_tok_val (tv), m_type_tag (string_token), m_tok_info (s),
+  token::token (int tv, bool is_kw, const filepos& beg_pos,
+                const filepos& end_pos)
+    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
+      m_end_pos (end_pos), m_tok_val (tv),
+      m_type_tag (is_kw ? keyword_token : generic_token), m_tok_info (),
       m_orig_text ()
   { }
 
-  token::token (int tv, const std::string& s, const filepos& pos)
-    : m_maybe_cmd (false), m_tspc (false), m_pos (pos),
-      m_tok_val (tv), m_type_tag (string_token), m_tok_info (s),
-      m_orig_text ()
+  token::token (int tv, const char *s, const filepos& beg_pos,
+                const filepos& end_pos)
+    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
+      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (string_token),
+      m_tok_info (s), m_orig_text ()
   { }
 
-  token::token (int tv, double d, const std::string& s, const filepos& pos)
-    : m_maybe_cmd (false), m_tspc (false), m_pos (pos),
-      m_tok_val (tv), m_type_tag (double_token), m_tok_info (d),
-      m_orig_text (s)
+  token::token (int tv, const std::string& s, const filepos& beg_pos,
+                const filepos& end_pos)
+    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
+      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (string_token),
+      m_tok_info (s), m_orig_text ()
   { }
 
-  token::token (int tv, end_tok_type t, const filepos& pos)
-    : m_maybe_cmd (false), m_tspc (false), m_pos (pos),
-      m_tok_val (tv), m_type_tag (ettype_token), m_tok_info (t),
-      m_orig_text ()
+  token::token (int tv, double d, const std::string& s, const filepos& beg_pos,
+                const filepos& end_pos)
+    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
+      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (double_token),
+      m_tok_info (d), m_orig_text (s)
   { }
 
-  token::token (int tv, const symbol_record& sr, const filepos& pos)
-    : m_maybe_cmd (false), m_tspc (false), m_pos (pos),
-      m_tok_val (tv), m_type_tag (sym_rec_token), m_tok_info (sr),
-      m_orig_text ()
+  token::token (int tv, end_tok_type t, const filepos& beg_pos,
+                const filepos& end_pos)
+    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
+      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (ettype_token),
+      m_tok_info (t), m_orig_text ()
+  { }
+
+  token::token (int tv, const symbol_record& sr, const filepos& beg_pos,
+                const filepos& end_pos)
+    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
+      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (sym_rec_token),
+      m_tok_info (sr), m_orig_text ()
   { }
 
   token::token (int tv, const std::string& meth, const std::string& cls,
-                const filepos& pos)
-    : m_maybe_cmd (false), m_tspc (false), m_pos (pos),
-      m_tok_val (tv), m_type_tag (scls_name_token),
+                const filepos& beg_pos, const filepos& end_pos)
+    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
+      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (scls_name_token),
       m_tok_info (meth, cls), m_orig_text ()
   { }
 

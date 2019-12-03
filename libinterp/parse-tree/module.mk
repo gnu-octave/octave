@@ -2,6 +2,7 @@ PARSE_TREE_INC = \
   %reldir%/anon-fcn-validator.h \
   %reldir%/bp-table.h \
   %reldir%/comment-list.h \
+  %reldir%/filepos.h \
   %reldir%/jit-ir.h \
   %reldir%/jit-typeinfo.h \
   %reldir%/jit-util.h \

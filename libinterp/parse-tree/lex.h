@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 
 #include "comment-list.h"
+#include "filepos.h"
 #include "input.h"
 #include "symscope.h"
 #include "token.h"
@@ -286,8 +287,6 @@ namespace octave
         m_reading_script_file (false),
         m_reading_classdef_file (false),
         m_buffer_function_text (false),
-        m_input_line_number (1),
-        m_current_input_column (1),
         m_bracketflag (0),
         m_braceflag (0),
         m_looping (0),
@@ -296,6 +295,7 @@ namespace octave
         m_block_comment_nesting_level (0),
         m_command_arg_paren_count (0),
         m_token_count (0),
+        m_filepos (),
         m_current_input_line (),
         m_comment_text (),
         m_help_text (),
@@ -437,12 +437,6 @@ namespace octave
     // parsing.
     bool m_buffer_function_text;
 
-    // the current input line number.
-    int m_input_line_number;
-
-    // the column of the current token.
-    int m_current_input_column;
-
     // square bracket level count.
     int m_bracketflag;
 
@@ -467,6 +461,9 @@ namespace octave
     // Count of tokens recognized by this lexer since initialized or
     // since the last reset.
     size_t m_token_count;
+
+    // The current position in the file (line and column).
+    filepos m_filepos;
 
     // The current line of input.
     std::string m_current_input_line;

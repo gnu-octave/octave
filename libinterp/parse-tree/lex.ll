@@ -226,7 +226,7 @@ object) relevant global values before and after the nested call.
                yyless (0);                                              \
                curr_lexer->xunput (',');                                \
                /* Adjust for comma that was not really in the input stream. */ \
-               curr_lexer->m_current_input_column--;                    \
+               curr_lexer->m_filepos.decrement_column ();               \
              }                                                          \
            else                                                         \
              {                                                          \
@@ -245,8 +245,7 @@ object) relevant global values before and after the nested call.
 #define HANDLE_STRING_CONTINUATION                      \
    do                                                   \
      {                                                  \
-       curr_lexer->m_input_line_number++;               \
-       curr_lexer->m_current_input_column = 1;          \
+       curr_lexer->m_filepos.next_line ();              \
                                                         \
        if (curr_lexer->is_push_lexer ())                \
          {                                              \
@@ -411,8 +410,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     COMMAND_ARG_FINISH;
 
-    curr_lexer->m_input_line_number++;
-    curr_lexer->m_current_input_column = 1;
+    curr_lexer->m_filepos.next_line ();
     curr_lexer->m_looking_for_object_index = false;
     curr_lexer->m_at_beginning_of_statement = true;
     curr_lexer->pop_start_state ();
@@ -434,7 +432,7 @@ ANY_INCLUDING_NL (.|{NL})
     else
       curr_lexer->m_string_text += yytext;
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
   }
 
 %{
@@ -448,7 +446,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->m_command_arg_paren_count += yyleng;
     curr_lexer->m_string_text += yytext;
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
   }
 
 <COMMAND_START>[\)\]\}]* {
@@ -456,7 +454,7 @@ ANY_INCLUDING_NL (.|{NL})
 
    curr_lexer->m_command_arg_paren_count -= yyleng;
    curr_lexer->m_string_text += yytext;
-   curr_lexer->m_current_input_column += yyleng;
+   curr_lexer->m_filepos.increment_column (yyleng);
 }
 
 %{
@@ -480,7 +478,7 @@ ANY_INCLUDING_NL (.|{NL})
     else
       curr_lexer->m_string_text += yytext;
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
   }
 
 %{
@@ -497,7 +495,7 @@ ANY_INCLUDING_NL (.|{NL})
     else
       curr_lexer->m_string_text += yytext;
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
   }
 
 %{
@@ -508,13 +506,13 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->lexer_debug ("<COMMAND_START>([\\.]|[^#% \\t\\r\\n\\.\\,\\;\\\"\\'\\(\\[\\{\\}\\]\\)]*");
 
     curr_lexer->m_string_text += yytext;
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
   }
 
 <MATRIX_START>{S}* {
     curr_lexer->lexer_debug ("<MATRIX_START>{S}*");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
 
     curr_lexer->mark_previous_token_trailing_space ();
   }
@@ -522,8 +520,7 @@ ANY_INCLUDING_NL (.|{NL})
 <MATRIX_START>{NL} {
     curr_lexer->lexer_debug ("<MATRIX_START>{NL}");
 
-    curr_lexer->m_input_line_number++;
-    curr_lexer->m_current_input_column = 1;
+    curr_lexer->m_filepos.next_line ();
 
     if (curr_lexer->m_nesting_level.is_paren ())
       curr_lexer->warn_language_extension ("bare newline inside parentheses");
@@ -535,7 +532,7 @@ ANY_INCLUDING_NL (.|{NL})
           {
             curr_lexer->xunput (';');
             // Adjust for semicolon that was not really in the input stream.
-            curr_lexer->m_current_input_column--;
+            curr_lexer->m_filepos.decrement_column ();
           }
       }
   }
@@ -590,7 +587,7 @@ ANY_INCLUDING_NL (.|{NL})
         yyless (0);
         curr_lexer->xunput (',');
         // Adjust for comma that was not really in the input stream.
-        curr_lexer->m_current_input_column--;
+        curr_lexer->m_filepos.decrement_column ();
       }
     else
       {
@@ -598,7 +595,7 @@ ANY_INCLUDING_NL (.|{NL})
 
         curr_lexer->m_looking_at_object_index.push_front (false);
 
-        curr_lexer->m_current_input_column += yyleng;
+        curr_lexer->m_filepos.increment_column (yyleng);
         curr_lexer->m_looking_for_object_index = false;
         curr_lexer->m_at_beginning_of_statement = false;
 
@@ -653,8 +650,7 @@ ANY_INCLUDING_NL (.|{NL})
 <BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL} {
     curr_lexer->lexer_debug ("<BLOCK_COMMENT_START>^{S}*{CCHAR}\\{{S}*{NL}");
 
-    curr_lexer->m_input_line_number++;
-    curr_lexer->m_current_input_column = 1;
+    curr_lexer->m_filepos.next_line ();
 
     if (curr_lexer->m_block_comment_nesting_level)
       curr_lexer->m_comment_text = "\n";
@@ -675,8 +671,7 @@ ANY_INCLUDING_NL (.|{NL})
 <BLOCK_COMMENT_START>^{S}*{CCHAR}\}{S}*{NL} {
     curr_lexer->lexer_debug ("<BLOCK_COMMENT_START>^{S}*{CCHAR}\\}{S}*{NL}");
 
-    curr_lexer->m_input_line_number++;
-    curr_lexer->m_current_input_column = 1;
+    curr_lexer->m_filepos.next_line ();
 
     if (curr_lexer->m_block_comment_nesting_level > 1)
       curr_lexer->m_comment_text = "\n";
@@ -696,8 +691,7 @@ ANY_INCLUDING_NL (.|{NL})
 <BLOCK_COMMENT_START>{ANY_EXCEPT_NL}*{NL} {
     curr_lexer->lexer_debug ("<BLOCK_COMMENT_START>{ANY_EXCEPT_NL}*{NL}");
 
-    curr_lexer->m_input_line_number++;
-    curr_lexer->m_current_input_column = 1;
+    curr_lexer->m_filepos.next_line ();
     curr_lexer->m_comment_text += yytext;
   }
 
@@ -762,10 +756,9 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->m_comment_text += &yytext[i];
 
-    if (curr_lexer->m_current_input_column == 1)
+    if (curr_lexer->m_filepos.column () == 1)
       {
-        curr_lexer->m_input_line_number++;
-        curr_lexer->m_current_input_column = 1;
+        curr_lexer->m_filepos.next_line ();
       }
     else
       {
@@ -787,7 +780,7 @@ ANY_INCLUDING_NL (.|{NL})
         // The next action should recognize a newline character and set
         // the input column back to 1, but we should try to keep the
         // input column location accurate anyway, so update here.
-        curr_lexer->m_current_input_column += yyleng;
+        curr_lexer->m_filepos.increment_column (yyleng);
       }
   }
 
@@ -829,14 +822,14 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>\"\" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\"\\\"");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += '"';
   }
 
 <DQ_STRING_START>\" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\"");
 
-    curr_lexer->m_current_input_column++;
+    curr_lexer->m_filepos.increment_column ();
 
     curr_lexer->pop_start_state ();
 
@@ -845,10 +838,12 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_looking_for_object_index = true;
         curr_lexer->m_at_beginning_of_statement = false;
 
+        octave::filepos pos (curr_lexer->m_string_line,
+                             curr_lexer->m_string_column);
+
         curr_lexer->push_token (new octave::token (DQ_STRING,
                                                    curr_lexer->m_string_text,
-                                                   curr_lexer->m_string_line,
-                                                   curr_lexer->m_string_column));
+                                                   pos));
 
         curr_lexer->m_string_text = "";
 
@@ -859,7 +854,7 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>\\[0-7]{1,3} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\[0-7]{1,3}");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
 
     unsigned int result;
     sscanf (yytext+1, "%o", &result);
@@ -869,8 +864,7 @@ ANY_INCLUDING_NL (.|{NL})
         octave::token *tok
           = new octave::token (LEXICAL_ERROR,
                                "invalid octal escape sequence in character string",
-                               curr_lexer->m_input_line_number,
-                               curr_lexer->m_current_input_column);
+                               curr_lexer->m_filepos);
 
         curr_lexer->push_token (tok);
 
@@ -883,7 +877,7 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>\\x[0-9a-fA-F]+ {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\x[0-9a-fA-F]+");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
 
     unsigned int result;
     sscanf (yytext+2, "%x", &result);
@@ -898,49 +892,49 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>"\\a" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\a\"");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += '\a';
   }
 
 <DQ_STRING_START>"\\b" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\b\"");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += '\b';
   }
 
 <DQ_STRING_START>"\\f" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\f\"");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += '\f';
   }
 
 <DQ_STRING_START>"\\n" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\n\"");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += '\n';
   }
 
 <DQ_STRING_START>"\\r" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\r\"");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += '\r';
   }
 
 <DQ_STRING_START>"\\t" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\t\"");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += '\t';
   }
 
 <DQ_STRING_START>"\\v" {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\"\\\\v\"");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += '\v';
   }
 
@@ -956,7 +950,7 @@ ANY_INCLUDING_NL (.|{NL})
     else
       warning_with_id ("Octave:deprecated-syntax",
                        "%s; near line %d of file '%s'", msg,
-                       curr_lexer->m_input_line_number, nm.c_str ());
+                       curr_lexer->m_filepos.line (), nm.c_str ());
 
     HANDLE_STRING_CONTINUATION;
   }
@@ -973,7 +967,7 @@ ANY_INCLUDING_NL (.|{NL})
     else
       warning_with_id ("Octave:deprecated-syntax",
                        "%s; near line %d of file '%s'", msg,
-                       curr_lexer->m_input_line_number, nm.c_str ());
+                       curr_lexer->m_filepos.line (), nm.c_str ());
 
     HANDLE_STRING_CONTINUATION;
   }
@@ -987,21 +981,21 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>\\. {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\.");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += yytext[1];
   }
 
 <DQ_STRING_START>\. {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\.");
 
-    curr_lexer->m_current_input_column++;
+    curr_lexer->m_filepos.increment_column ();
     curr_lexer->m_string_text += yytext[0];
   }
 
 <DQ_STRING_START>[^\.\\\r\n\"]+ {
     curr_lexer->lexer_debug ("<DQ_STRING_START>[^\\.\\\\\\r\\n\\\"]+");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += yytext;
   }
 
@@ -1011,13 +1005,11 @@ ANY_INCLUDING_NL (.|{NL})
     octave::token *tok
       = new octave::token (LEXICAL_ERROR,
                            "unterminated character string constant",
-                           curr_lexer->m_input_line_number,
-                           curr_lexer->m_current_input_column);
+                           curr_lexer->m_filepos);
 
     curr_lexer->push_token (tok);
 
-    curr_lexer->m_input_line_number++;
-    curr_lexer->m_current_input_column = 1;
+    curr_lexer->m_filepos.next_line ();
 
     return curr_lexer->count_token_internal (LEXICAL_ERROR);
   }
@@ -1029,14 +1021,14 @@ ANY_INCLUDING_NL (.|{NL})
 <SQ_STRING_START>\'\' {
     curr_lexer->lexer_debug ("<SQ_STRING_START>\\'\\'");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += '\'';
   }
 
 <SQ_STRING_START>\' {
     curr_lexer->lexer_debug ("<SQ_STRING_START>\\'");
 
-    curr_lexer->m_current_input_column++;
+    curr_lexer->m_filepos.increment_column ();
 
     curr_lexer->pop_start_state ();
 
@@ -1045,10 +1037,12 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_looking_for_object_index = true;
         curr_lexer->m_at_beginning_of_statement = false;
 
+        octave::filepos pos (curr_lexer->m_string_line,
+                             curr_lexer->m_string_column);
+
         curr_lexer->push_token (new octave::token (SQ_STRING,
                                                    curr_lexer->m_string_text,
-                                                   curr_lexer->m_string_line,
-                                                   curr_lexer->m_string_column));
+                                                   pos));
 
         curr_lexer->m_string_text = "";
 
@@ -1059,7 +1053,7 @@ ANY_INCLUDING_NL (.|{NL})
 <SQ_STRING_START>[^\'\n\r]+ {
     curr_lexer->lexer_debug ("<SQ_STRING_START>[^\\'\\n\\r]+");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
     curr_lexer->m_string_text += yytext;
   }
 
@@ -1069,13 +1063,11 @@ ANY_INCLUDING_NL (.|{NL})
     octave::token *tok
       = new octave::token (LEXICAL_ERROR,
                            "unterminated character string constant",
-                           curr_lexer->m_input_line_number,
-                           curr_lexer->m_current_input_column);
+                           curr_lexer->m_filepos);
 
     curr_lexer->push_token (tok);
 
-    curr_lexer->m_input_line_number++;
-    curr_lexer->m_current_input_column = 1;
+    curr_lexer->m_filepos.next_line ();
 
     return curr_lexer->count_token_internal (LEXICAL_ERROR);
   }
@@ -1102,7 +1094,7 @@ ANY_INCLUDING_NL (.|{NL})
 <FQ_IDENT_START>{S}+ {
     curr_lexer->lexer_debug ("<FQ_IDENT_START>{S}+");
 
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
 
     curr_lexer->mark_previous_token_trailing_space ();
   }
@@ -1110,8 +1102,7 @@ ANY_INCLUDING_NL (.|{NL})
 <FQ_IDENT_START>(\.\.\.){ANY_EXCEPT_NL}*{NL} {
     curr_lexer->lexer_debug ("<FQ_IDENT_START>(\\.\\.\\.){ANY_EXCEPT_NL}*{NL}");
 
-    curr_lexer->m_input_line_number++;
-    curr_lexer->m_current_input_column = 1;
+    curr_lexer->m_filepos.next_line ();
   }
 
 <FQ_IDENT_START>{ANY_INCLUDING_NL} {
@@ -1149,7 +1140,7 @@ ANY_INCLUDING_NL (.|{NL})
             yyless (0);
             unput (',');
             // Adjust for comma that was not really in the input stream.
-            curr_lexer->m_current_input_column--;
+            curr_lexer->m_filepos.decrement_column ();
           }
         else
           {
@@ -1186,7 +1177,7 @@ ANY_INCLUDING_NL (.|{NL})
             yyless (0);
             unput (',');
             // Adjust for comma that was not really in the input stream.
-            curr_lexer->m_current_input_column--;
+            curr_lexer->m_filepos.decrement_column ();
           }
         else
           {
@@ -1202,7 +1193,7 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 {S}+ {
-    curr_lexer->m_current_input_column += yyleng;
+    curr_lexer->m_filepos.increment_column (yyleng);
 
     curr_lexer->mark_previous_token_trailing_space ();
   }
@@ -1234,7 +1225,7 @@ ANY_INCLUDING_NL (.|{NL})
     else
       warning_with_id ("Octave:deprecated-syntax",
                        "%s; near line %d of file '%s'", msg,
-                       curr_lexer->m_input_line_number, nm.c_str ());
+                       curr_lexer->m_filepos.line (), nm.c_str ());
 
     curr_lexer->handle_continuation ();
   }
@@ -1354,11 +1345,11 @@ ANY_INCLUDING_NL (.|{NL})
             yyless (0);
             unput (',');
             // Adjust for comma that was not really in the input stream.
-            curr_lexer->m_current_input_column--;
+            curr_lexer->m_filepos.decrement_column ();
           }
         else
           {
-            curr_lexer->m_current_input_column += yyleng;
+            curr_lexer->m_filepos.increment_column (yyleng);
             curr_lexer->m_at_beginning_of_statement = false;
 
             std::string ident = yytext;
@@ -1383,15 +1374,13 @@ ANY_INCLUDING_NL (.|{NL})
                 if (kw_token)
                   tok = new octave::token (LEXICAL_ERROR,
                                            "function handles may not refer to keywords",
-                                           curr_lexer->m_input_line_number,
-                                           curr_lexer->m_current_input_column);
+                                           curr_lexer->m_filepos);
                 else
                   {
                     curr_lexer->m_looking_for_object_index = true;
 
                     tok = new octave::token (FCN_HANDLE, ident,
-                                             curr_lexer->m_input_line_number,
-                                             curr_lexer->m_current_input_column);
+                                             curr_lexer->m_filepos);
                   }
 
                 curr_lexer->push_token (tok);
@@ -1413,8 +1402,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     if (curr_lexer->m_nesting_level.is_paren ())
       {
-        curr_lexer->m_input_line_number++;
-        curr_lexer->m_current_input_column = 1;
+        curr_lexer->m_filepos.next_line ();
 
         curr_lexer->m_at_beginning_of_statement = false;
         curr_lexer->warn_language_extension
@@ -1423,8 +1411,7 @@ ANY_INCLUDING_NL (.|{NL})
     else if (curr_lexer->m_nesting_level.none ()
         || curr_lexer->m_nesting_level.is_anon_fcn_body ())
       {
-        curr_lexer->m_input_line_number++;
-        curr_lexer->m_current_input_column = 1;
+        curr_lexer->m_filepos.next_line ();
 
         curr_lexer->m_at_beginning_of_statement = true;
 
@@ -1435,13 +1422,11 @@ ANY_INCLUDING_NL (.|{NL})
         octave::token *tok
           = new octave::token (LEXICAL_ERROR,
                                "unexpected internal lexer error",
-                               curr_lexer->m_input_line_number,
-                               curr_lexer->m_current_input_column);
+                               curr_lexer->m_filepos);
 
         curr_lexer->push_token (tok);
 
-        curr_lexer->m_input_line_number++;
-        curr_lexer->m_current_input_column = 1;
+        curr_lexer->m_filepos.next_line ();
 
         return curr_lexer->count_token_internal (LEXICAL_ERROR);
       }
@@ -1458,13 +1443,13 @@ ANY_INCLUDING_NL (.|{NL})
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
       {
-        curr_lexer->m_current_input_column++;
+        curr_lexer->m_filepos.increment_column ();
         curr_lexer->push_start_state (COMMAND_START);
         curr_lexer->begin_string (SQ_STRING_START);
       }
     else if (curr_lexer->m_at_beginning_of_statement)
       {
-        curr_lexer->m_current_input_column++;
+        curr_lexer->m_filepos.increment_column ();
         curr_lexer->begin_string (SQ_STRING_START);
       }
     else
@@ -1478,7 +1463,7 @@ ANY_INCLUDING_NL (.|{NL})
                 if (tok == '[' || tok == '{'
                     || curr_lexer->previous_token_is_binop ())
                   {
-                    curr_lexer->m_current_input_column++;
+                    curr_lexer->m_filepos.increment_column ();
                     curr_lexer->begin_string (SQ_STRING_START);
                   }
                 else
@@ -1486,7 +1471,7 @@ ANY_INCLUDING_NL (.|{NL})
                     yyless (0);
                     curr_lexer->xunput (',');
                     // Adjust for comma that was not really in the input stream.
-                    curr_lexer->m_current_input_column--;
+                    curr_lexer->m_filepos.decrement_column ();
                   }
               }
             else
@@ -1495,12 +1480,12 @@ ANY_INCLUDING_NL (.|{NL})
                     || curr_lexer->previous_token_is_binop ()
                     || curr_lexer->previous_token_is_keyword ())
                   {
-                    curr_lexer->m_current_input_column++;
+                    curr_lexer->m_filepos.increment_column ();
                     curr_lexer->begin_string (SQ_STRING_START);
                   }
                 else
                   {
-                    curr_lexer->m_current_input_column++;
+                    curr_lexer->m_filepos.increment_column ();
                     return curr_lexer->count_token (HERMITIAN);
                   }
               }
@@ -1511,12 +1496,12 @@ ANY_INCLUDING_NL (.|{NL})
                 || curr_lexer->previous_token_is_binop ()
                 || curr_lexer->previous_token_is_keyword ())
               {
-                curr_lexer->m_current_input_column++;
+                curr_lexer->m_filepos.increment_column ();
                 curr_lexer->begin_string (SQ_STRING_START);
               }
             else
               {
-                curr_lexer->m_current_input_column++;
+                curr_lexer->m_filepos.increment_column ();
                 return curr_lexer->count_token (HERMITIAN);
               }
           }
@@ -1533,7 +1518,7 @@ ANY_INCLUDING_NL (.|{NL})
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
       {
-        curr_lexer->m_current_input_column++;
+        curr_lexer->m_filepos.increment_column ();
         curr_lexer->push_start_state (COMMAND_START);
         curr_lexer->begin_string (DQ_STRING_START);
       }
@@ -1548,7 +1533,7 @@ ANY_INCLUDING_NL (.|{NL})
                 if (tok == '[' || tok == '{'
                     || curr_lexer->previous_token_is_binop ())
                   {
-                    curr_lexer->m_current_input_column++;
+                    curr_lexer->m_filepos.increment_column ();
                     curr_lexer->begin_string (DQ_STRING_START);
                   }
                 else
@@ -1556,18 +1541,18 @@ ANY_INCLUDING_NL (.|{NL})
                     yyless (0);
                     curr_lexer->xunput (',');
                     // Adjust for comma that was not really in the input stream.
-                    curr_lexer->m_current_input_column--;
+                    curr_lexer->m_filepos.decrement_column ();
                   }
               }
             else
               {
-                curr_lexer->m_current_input_column++;
+                curr_lexer->m_filepos.increment_column ();
                 curr_lexer->begin_string (DQ_STRING_START);
               }
           }
         else
           {
-            curr_lexer->m_current_input_column++;
+            curr_lexer->m_filepos.increment_column ();
             curr_lexer->begin_string (DQ_STRING_START);
           }
       }
@@ -1657,7 +1642,7 @@ ANY_INCLUDING_NL (.|{NL})
         yyless (0);
         curr_lexer->xunput (',');
         // Adjust for comma that was not really in the input stream.
-        curr_lexer->m_current_input_column--;
+        curr_lexer->m_filepos.decrement_column ();
       }
     else
       {
@@ -1683,7 +1668,7 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->lexer_debug (")");
 
     curr_lexer->m_nesting_level.remove ();
-    curr_lexer->m_current_input_column++;
+    curr_lexer->m_filepos.increment_column ();
 
     curr_lexer->m_looking_at_object_index.pop_front ();
 
@@ -1768,7 +1753,7 @@ ANY_INCLUDING_NL (.|{NL})
         yyless (0);
         curr_lexer->xunput (',');
         // Adjust for comma that was not really in the input stream.
-        curr_lexer->m_current_input_column--;
+        curr_lexer->m_filepos.decrement_column ();
       }
     else
       {
@@ -1777,7 +1762,7 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_looking_at_object_index.push_front
           (curr_lexer->m_looking_for_object_index);
 
-        curr_lexer->m_current_input_column += yyleng;
+        curr_lexer->m_filepos.increment_column (yyleng);
         curr_lexer->m_looking_for_object_index = false;
         curr_lexer->m_at_beginning_of_statement = false;
 
@@ -1827,12 +1812,11 @@ ANY_INCLUDING_NL (.|{NL})
 
         octave::token *tok
           = new octave::token (LEXICAL_ERROR, buf.str (),
-                               curr_lexer->m_input_line_number,
-                               curr_lexer->m_current_input_column);
+                               curr_lexer->m_filepos);
 
         curr_lexer->push_token (tok);
 
-        curr_lexer->m_current_input_column++;
+        curr_lexer->m_filepos.increment_column ();
 
         return curr_lexer->count_token_internal (LEXICAL_ERROR);
       }
@@ -2175,8 +2159,6 @@ namespace octave
     m_reading_script_file = false;
     m_reading_classdef_file = false;
     m_buffer_function_text = false;
-    m_input_line_number = 1;
-    m_current_input_column = 1;
     m_bracketflag = 0;
     m_braceflag = 0;
     m_looping = 0;
@@ -2185,6 +2167,7 @@ namespace octave
     m_block_comment_nesting_level = 0;
     m_command_arg_paren_count = 0;
     m_token_count = 0;
+    m_filepos = filepos ();
     m_current_input_line = "";
     m_comment_text = "";
     m_help_text = "";
@@ -2420,8 +2403,8 @@ namespace octave
   void
   base_lexer::begin_string (int state)
   {
-    m_string_line = m_input_line_number;
-    m_string_column = m_current_input_column;
+    m_string_line = m_filepos.line ();
+    m_string_column = m_filepos.column ();
 
     push_start_state (state);
   }
@@ -2438,7 +2421,7 @@ namespace octave
         if ((m_reading_fcn_file || m_reading_script_file || m_reading_classdef_file)
             && ! m_fcn_file_name.empty ())
           warning ("near line %d of file '%s.m'",
-                   m_input_line_number, m_fcn_file_name.c_str ());
+                   m_filepos.line (), m_fcn_file_name.c_str ());
       }
 
     return handle_token (END_OF_INPUT);
@@ -2555,9 +2538,6 @@ namespace octave
   int
   base_lexer::is_keyword_token (const std::string& s)
   {
-    int l = m_input_line_number;
-    int c = m_current_input_column;
-
     int len = s.length ();
 
     const octave_kw *kw = octave_kw_hash::in_word_set (s.c_str (), len);
@@ -2603,73 +2583,73 @@ namespace octave
                 return 0;
               }
 
-            tok_val = new token (end_kw, token::simple_end, l, c);
+            tok_val = new token (end_kw, token::simple_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case end_try_catch_kw:
-            tok_val = new token (end_try_catch_kw, token::try_catch_end, l, c);
+            tok_val = new token (end_try_catch_kw, token::try_catch_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case end_unwind_protect_kw:
             tok_val = new token (end_unwind_protect_kw,
-                                 token::unwind_protect_end, l, c);
+                                 token::unwind_protect_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endfor_kw:
-            tok_val = new token (endfor_kw, token::for_end, l, c);
+            tok_val = new token (endfor_kw, token::for_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endfunction_kw:
-            tok_val = new token (endfunction_kw, token::function_end, l, c);
+            tok_val = new token (endfunction_kw, token::function_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endif_kw:
-            tok_val = new token (endif_kw, token::if_end, l, c);
+            tok_val = new token (endif_kw, token::if_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endparfor_kw:
-            tok_val = new token (endparfor_kw, token::parfor_end, l, c);
+            tok_val = new token (endparfor_kw, token::parfor_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endswitch_kw:
-            tok_val = new token (endswitch_kw, token::switch_end, l, c);
+            tok_val = new token (endswitch_kw, token::switch_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endwhile_kw:
-            tok_val = new token (endwhile_kw, token::while_end, l, c);
+            tok_val = new token (endwhile_kw, token::while_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endclassdef_kw:
-            tok_val = new token (endclassdef_kw, token::classdef_end, l, c);
+            tok_val = new token (endclassdef_kw, token::classdef_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endenumeration_kw:
-            tok_val = new token (endenumeration_kw, token::enumeration_end, l, c);
+            tok_val = new token (endenumeration_kw, token::enumeration_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endevents_kw:
-            tok_val = new token (endevents_kw, token::events_end, l, c);
+            tok_val = new token (endevents_kw, token::events_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endmethods_kw:
-            tok_val = new token (endmethods_kw, token::methods_end, l, c);
+            tok_val = new token (endmethods_kw, token::methods_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
           case endproperties_kw:
-            tok_val = new token (endproperties_kw, token::properties_end, l, c);
+            tok_val = new token (endproperties_kw, token::properties_end, m_filepos);
             m_at_beginning_of_statement = true;
             break;
 
@@ -2744,7 +2724,11 @@ namespace octave
                 m_buffer_function_text = true;
                 m_function_text += (m_current_input_line + "\n");
 
-                m_input_line_number = 1;
+                // FIXME: do we need to save and restore the file position
+                // or just reset the line number here?  The goal is to
+                // track line info for command-line functions relative
+                // to the function keyword.
+                m_filepos.line (1);
               }
             break;
 
@@ -2753,15 +2737,18 @@ namespace octave
               if ((m_reading_fcn_file || m_reading_script_file
                    || m_reading_classdef_file)
                   && ! m_fcn_file_full_name.empty ())
-                tok_val = new token (magic_file_kw, m_fcn_file_full_name, l, c);
+                tok_val = new token (magic_file_kw, m_fcn_file_full_name, m_filepos);
               else
-                tok_val = new token (magic_file_kw, "stdin", l, c);
+                tok_val = new token (magic_file_kw, "stdin", m_filepos);
             }
             break;
 
           case magic_line_kw:
-            tok_val = new token (magic_line_kw, static_cast<double> (l),
-                                 "", l, c);
+            {
+              int l = m_filepos.line ();
+              tok_val = new token (magic_line_kw, static_cast<double> (l),
+                                   "", m_filepos);
+            }
             break;
 
           default:
@@ -2769,7 +2756,7 @@ namespace octave
           }
 
         if (! tok_val)
-          tok_val = new token (kw->tok, true, l, c);
+          tok_val = new token (kw->tok, true, m_filepos);
 
         push_token (tok_val);
 
@@ -2895,10 +2882,9 @@ namespace octave
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = false;
 
-    push_token (new token (NUM, value, yytxt, m_input_line_number,
-                           m_current_input_column));
+    push_token (new token (NUM, value, yytxt, m_filepos));
 
-    m_current_input_column += flex_yyleng ();
+    m_filepos.increment_column (flex_yyleng ());
   }
 
   void
@@ -2957,8 +2943,7 @@ namespace octave
         m_at_beginning_of_statement = saved_bos;
       }
 
-    m_input_line_number++;
-    m_current_input_column = 1;
+    m_filepos.next_line ();
   }
 
   void
@@ -2988,7 +2973,7 @@ namespace octave
     m_looking_for_object_index = true;
     m_at_beginning_of_statement = false;
 
-    m_current_input_column++;
+    m_filepos.increment_column ();
 
     if (! m_nesting_level.none ())
       {
@@ -3041,7 +3026,7 @@ namespace octave
         token *tok
           = new token (LEXICAL_ERROR,
                        "method, class, and package names may not be keywords",
-                       m_input_line_number, m_current_input_column);
+                       m_filepos);
 
         push_token (tok);
 
@@ -3049,9 +3034,9 @@ namespace octave
       }
 
     push_token (new token (SUPERCLASSREF, meth, cls,
-                           m_input_line_number, m_current_input_column));
+                           m_filepos));
 
-    m_current_input_column += flex_yyleng ();
+    m_filepos.increment_column (flex_yyleng ());
 
     return SUPERCLASSREF;
   }
@@ -3071,16 +3056,15 @@ namespace octave
       {
         token *tok = new token (LEXICAL_ERROR,
                                 "class and package names may not be keywords",
-                                m_input_line_number, m_current_input_column);
+                                m_filepos);
         push_token (tok);
 
         return count_token_internal (LEXICAL_ERROR);
       }
 
-    push_token (new token (METAQUERY, cls, m_input_line_number,
-                           m_current_input_column));
+    push_token (new token (METAQUERY, cls, m_filepos));
 
-    m_current_input_column += flex_yyleng ();
+    m_filepos.increment_column (flex_yyleng ());
 
     return METAQUERY;
   }
@@ -3098,17 +3082,16 @@ namespace octave
         token *tok
           = new token (LEXICAL_ERROR,
                        "function, method, class, and package names may not be keywords",
-                       m_input_line_number, m_current_input_column);
+                       m_filepos);
 
         push_token (tok);
 
         return count_token_internal (LEXICAL_ERROR);
       }
 
-    push_token (new token (FQ_IDENT, txt, m_input_line_number,
-                           m_current_input_column));
+    push_token (new token (FQ_IDENT, txt, m_filepos));
 
-    m_current_input_column += flex_yyleng ();
+    m_filepos.increment_column (flex_yyleng ());
 
     return FQ_IDENT;
   }
@@ -3128,12 +3111,11 @@ namespace octave
 
     if (m_looking_at_indirect_ref)
       {
-        push_token (new token (STRUCT_ELT, ident, m_input_line_number,
-                               m_current_input_column));
+        push_token (new token (STRUCT_ELT, ident, m_filepos));
 
         m_looking_for_object_index = true;
 
-        m_current_input_column += flex_yyleng ();
+        m_filepos.increment_column (flex_yyleng ());
 
         return STRUCT_ELT;
       }
@@ -3151,7 +3133,7 @@ namespace octave
       {
         if (kw_token >= 0)
           {
-            m_current_input_column += flex_yyleng ();
+            m_filepos.increment_column (flex_yyleng ());
             m_looking_for_object_index = false;
           }
 
@@ -3166,7 +3148,7 @@ namespace octave
 
     symbol_record sr = (scope ? scope.insert (ident) : symbol_record (ident));
 
-    token *tok = new token (NAME, sr, m_input_line_number, m_current_input_column);
+    token *tok = new token (NAME, sr, m_filepos);
 
     // The following symbols are handled specially so that things like
     //
@@ -3187,7 +3169,7 @@ namespace octave
 
     push_token (tok);
 
-    m_current_input_column += flex_yyleng ();
+    m_filepos.increment_column (flex_yyleng ());
 
     // The magic end index can't be indexed.
 
@@ -3207,11 +3189,11 @@ namespace octave
     if (nm.empty ())
       warning_with_id ("Octave:separator-insert",
                        "potential auto-insertion of '%c' near line %d",
-                       sep, m_input_line_number);
+                       sep, m_filepos.line ());
     else
       warning_with_id ("Octave:separator-insert",
                        "potential auto-insertion of '%c' near line %d of file %s",
-                       sep, m_input_line_number, nm.c_str ());
+                       sep, m_filepos.line (), nm.c_str ());
   }
 
   void
@@ -3222,11 +3204,11 @@ namespace octave
     if (nm.empty ())
       warning_with_id ("Octave:single-quote-string",
                        "single quote delimited string near line %d",
-                       m_input_line_number);
+                       m_filepos.line ());
     else
       warning_with_id ("Octave:single-quote-string",
                        "single quote delimited string near line %d of file %s",
-                       m_input_line_number, nm.c_str ());
+                       m_filepos.line (), nm.c_str ());
   }
 
   void
@@ -3241,7 +3223,7 @@ namespace octave
     else
       warning_with_id ("Octave:language-extension",
                        "Octave language extension used: %s near line %d offile %s",
-                       msg.c_str (), m_input_line_number, nm.c_str ());
+                       msg.c_str (), m_filepos.line (), nm.c_str ());
   }
 
   void
@@ -3600,9 +3582,9 @@ namespace octave
     if (! compat)
       warn_language_extension_operator (flex_yytext ());
 
-    push_token (new token (tok, m_input_line_number, m_current_input_column));
+    push_token (new token (tok, m_filepos));
 
-    m_current_input_column += flex_yyleng ();
+    m_filepos.increment_column (flex_yyleng ());
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = bos;
 
@@ -3631,8 +3613,7 @@ namespace octave
   int
   base_lexer::handle_token (const std::string& name, int tok)
   {
-    token *tok_val = new token (tok, name, m_input_line_number,
-                                m_current_input_column);
+    token *tok_val = new token (tok, name, m_filepos);
 
     return handle_token (tok, tok_val);
   }
@@ -3641,11 +3622,11 @@ namespace octave
   base_lexer::handle_token (int tok, token *tok_val)
   {
     if (! tok_val)
-      tok_val = new token (tok, m_input_line_number, m_current_input_column);
+      tok_val = new token (tok, m_filepos);
 
     push_token (tok_val);
 
-    m_current_input_column += flex_yyleng ();
+    m_filepos.increment_column (flex_yyleng ());
 
     return count_token_internal (tok);
   }
@@ -3653,7 +3634,7 @@ namespace octave
   int
   base_lexer::count_token (int tok)
   {
-    token *tok_val = new token (tok, m_input_line_number, m_current_input_column);
+    token *tok_val = new token (tok, m_filepos);
 
     push_token (tok_val);
 

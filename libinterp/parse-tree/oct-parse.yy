@@ -1570,8 +1570,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                       {
                         octave::tree_statement *end_of_script
                           = parser.make_end ("endscript", true,
-                                             lexer.m_input_line_number,
-                                             lexer.m_current_input_column);
+                                             lexer.m_filepos.line (), lexer.m_filepos.column ());
 
                         parser.make_script ($3, end_of_script);
                       }
@@ -1680,8 +1679,7 @@ function_end    : END
                       }
 
                     $$ = parser.make_end ("endfunction", true,
-                                          lexer.m_input_line_number,
-                                          lexer.m_current_input_column);
+                                          lexer.m_filepos.line (), lexer.m_filepos.column ());
                   }
                 ;
 
@@ -2563,8 +2561,8 @@ namespace octave
                                      tree_expression *expr)
   {
     // FIXME: need to get these from the location of the @ symbol.
-    int l = m_lexer.m_input_line_number;
-    int c = m_lexer.m_current_input_column;
+    int l = m_lexer.m_filepos.line ();
+    int c = m_lexer.m_filepos.column ();
 
     // FIXME: We need to examine EXPR and issue an error if any
     // sub-expression contains an assignment, compound assignment,
@@ -4521,8 +4519,8 @@ namespace octave
   void
   base_parser::bison_error (const std::string& str, int l, int c)
   {
-    int err_line = l < 0 ? m_lexer.m_input_line_number : l;
-    int err_col = c < 0 ? m_lexer.m_current_input_column - 1 : c;
+    int err_line = l < 0 ? m_lexer.m_filepos.line () : l;
+    int err_col = c < 0 ? m_lexer.m_filepos.column () - 1 : c;
 
     std::ostringstream output_buf;
 
@@ -4544,7 +4542,7 @@ namespace octave
         || m_lexer.m_reading_classdef_file)
       curr_line = get_file_line (m_lexer.m_fcn_file_full_name, err_line);
     else
-      curr_line = m_lexer.m_current_input_line;
+      curr_line = m_lexer.m_filepos.line ();
 
     if (! curr_line.empty ())
       {

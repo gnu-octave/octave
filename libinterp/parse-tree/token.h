@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "filepos.h"
 #include "symrec.h"
 
 namespace octave
@@ -64,15 +65,15 @@ namespace octave
       while_end,
     };
 
-    token (int tv, int l, int c);
-    token (int tv, bool is_keyword, int l, int c);
-    token (int tv, const char *s, int l, int c);
-    token (int tv, const std::string& s, int l, int c);
-    token (int tv, double d, const std::string& s, int l, int c);
-    token (int tv, end_tok_type t, int l, int c);
-    token (int tv, const symbol_record& s, int l, int c);
+    token (int tv, const filepos& pos);
+    token (int tv, bool is_keyword, const filepos& pos);
+    token (int tv, const char *s, const filepos& pos);
+    token (int tv, const std::string& s, const filepos& pos);
+    token (int tv, double d, const std::string& s, const filepos& pos);
+    token (int tv, end_tok_type t, const filepos& pos);
+    token (int tv, const symbol_record& s, const filepos& pos);
     token (int tv, const std::string& mth, const std::string& cls,
-           int l, int c);
+           const filepos& pos);
 
     // No copying!
 
@@ -91,8 +92,8 @@ namespace octave
     int token_value (void) const { return m_tok_val; }
     bool token_value_is (int tv) const { return tv == m_tok_val; }
 
-    int line (void) const { return m_line_num; }
-    int column (void) const { return m_column_num; }
+    int line (void) const { return m_pos.line (); }
+    int column (void) const { return m_pos.column (); }
 
     bool iskeyword (void) const
     {
@@ -128,9 +129,7 @@ namespace octave
 
     bool m_tspc;
 
-    int m_line_num;
-
-    int m_column_num;
+    filepos m_pos;
 
     int m_tok_val;
 

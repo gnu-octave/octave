@@ -68,6 +68,7 @@ namespace QtHandles
     Container *m_container;
     QLabel *m_title;
     bool m_blockUpdates;
+    Matrix m_previous_bbox;
   };
 
 }

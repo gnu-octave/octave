@@ -109,7 +109,8 @@ namespace QtHandles
   Panel::Panel (octave::base_qobject& oct_qobj, octave::interpreter& interp,
                 const graphics_object& go, QFrame *frame)
     : Object (oct_qobj, interp, go, frame), m_container (nullptr),
-      m_title (nullptr), m_blockUpdates (false)
+      m_title (nullptr), m_blockUpdates (false),
+      m_previous_bbox (Matrix (1, 4, 0))
   {
     uipanel::properties& pp = properties<uipanel> ();
 
@@ -266,10 +267,16 @@ namespace QtHandles
       case uipanel::properties::ID_POSITION:
         {
           Matrix bb = pp.get_boundingbox (false);
-
-          frame->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
-                              octave::math::round (bb(2)), octave::math::round (bb(3)));
-          updateLayout ();
+          if (m_previous_bbox(0) != bb(0) || m_previous_bbox(1) != bb(1)
+              || m_previous_bbox(2) != bb(2) || m_previous_bbox(3) != bb(3))
+            {
+              frame->setGeometry (octave::math::round (bb(0)),
+                                  octave::math::round (bb(1)),
+                                  octave::math::round (bb(2)),
+                                  octave::math::round (bb(3)));
+              updateLayout ();
+            }
+          m_previous_bbox = bb;
         }
         break;
 

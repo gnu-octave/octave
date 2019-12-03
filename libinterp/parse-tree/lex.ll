@@ -2538,243 +2538,241 @@ namespace octave
 
     const octave_kw *kw = octave_kw_hash::in_word_set (s.c_str (), len);
 
-    if (kw)
+    if (! kw)
+      return 0;
+
+    bool previous_at_bos = m_at_beginning_of_statement;
+
+    // May be reset to true for some token types.
+    m_at_beginning_of_statement = false;
+
+    token *tok_val = nullptr;
+
+    switch (kw->kw_id)
       {
-        bool previous_at_bos = m_at_beginning_of_statement;
+      case break_kw:
+      case catch_kw:
+      case continue_kw:
+      case else_kw:
+      case otherwise_kw:
+      case return_kw:
+      case unwind_protect_cleanup_kw:
+        m_at_beginning_of_statement = true;
+        break;
 
-        // May be reset to true for some token types.
-        m_at_beginning_of_statement = false;
+      case persistent_kw:
+      case global_kw:
+        m_looking_at_decl_list = true;
+        break;
 
-        token *tok_val = nullptr;
+      case case_kw:
+      case elseif_kw:
+      case until_kw:
+        break;
 
-        switch (kw->kw_id)
+      case end_kw:
+        if (inside_any_object_index ()
+            || (m_defining_func
+                && ! (m_looking_at_return_list
+                      || m_parsed_function_name.top ())))
           {
-          case break_kw:
-          case catch_kw:
-          case continue_kw:
-          case else_kw:
-          case otherwise_kw:
-          case return_kw:
-          case unwind_protect_cleanup_kw:
-            m_at_beginning_of_statement = true;
-            break;
-
-          case persistent_kw:
-          case global_kw:
-            m_looking_at_decl_list = true;
-            break;
-
-          case case_kw:
-          case elseif_kw:
-          case until_kw:
-            break;
-
-          case end_kw:
-            if (inside_any_object_index ()
-                || (m_defining_func
-                    && ! (m_looking_at_return_list
-                          || m_parsed_function_name.top ())))
-              {
-                m_at_beginning_of_statement = previous_at_bos;
-                return 0;
-              }
-
-            tok_val = new token (end_kw, token::simple_end, m_filepos,
-                                 m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case end_try_catch_kw:
-            tok_val = new token (end_try_catch_kw, token::try_catch_end,
-                                 m_filepos, m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case end_unwind_protect_kw:
-            tok_val = new token (end_unwind_protect_kw,
-                                 token::unwind_protect_end, m_filepos,
-                                 m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endfor_kw:
-            tok_val = new token (endfor_kw, token::for_end, m_filepos,
-                                 m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endfunction_kw:
-            tok_val = new token (endfunction_kw, token::function_end,
-                                 m_filepos, m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endif_kw:
-            tok_val = new token (endif_kw, token::if_end, m_filepos, m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endparfor_kw:
-            tok_val = new token (endparfor_kw, token::parfor_end, m_filepos,
-                                 m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endswitch_kw:
-            tok_val = new token (endswitch_kw, token::switch_end, m_filepos,
-                                 m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endwhile_kw:
-            tok_val = new token (endwhile_kw, token::while_end, m_filepos,
-                                 m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endclassdef_kw:
-            tok_val = new token (endclassdef_kw, token::classdef_end,
-                                 m_filepos, m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endenumeration_kw:
-            tok_val = new token (endenumeration_kw, token::enumeration_end,
-                                 m_filepos, m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endevents_kw:
-            tok_val = new token (endevents_kw, token::events_end, m_filepos,
-                                 m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endmethods_kw:
-            tok_val = new token (endmethods_kw, token::methods_end, m_filepos,
-                                 m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-          case endproperties_kw:
-            tok_val = new token (endproperties_kw, token::properties_end,
-                                 m_filepos, m_filepos);
-            m_at_beginning_of_statement = true;
-            break;
-
-
-          case for_kw:
-          case parfor_kw:
-          case while_kw:
-            m_looping++;
-            break;
-
-          case do_kw:
-            m_at_beginning_of_statement = true;
-            m_looping++;
-            break;
-
-          case try_kw:
-          case unwind_protect_kw:
-            m_at_beginning_of_statement = true;
-            break;
-
-          case if_kw:
-          case switch_kw:
-            break;
-
-          case get_kw:
-          case set_kw:
-            // 'get' and 'set' are keywords in classdef method
-            // declarations.
-            if (! m_maybe_classdef_get_set_method)
-              {
-                m_at_beginning_of_statement = previous_at_bos;
-                return 0;
-              }
-            break;
-
-          case enumeration_kw:
-          case events_kw:
-          case methods_kw:
-          case properties_kw:
-            // 'properties', 'methods' and 'events' are keywords for
-            // classdef blocks.
-            if (! m_parsing_classdef)
-              {
-                m_at_beginning_of_statement = previous_at_bos;
-                return 0;
-              }
-            // fall through ...
-
-          case classdef_kw:
-            // 'classdef' is always a keyword.
-            if (! m_force_script && m_token_count == 0 && input_from_file ())
-              {
-                m_reading_classdef_file = true;
-                m_reading_script_file = false;
-              }
-            break;
-
-          case function_kw:
-            m_defining_func++;
-            m_parsed_function_name.push (false);
-
-            if (! m_force_script && m_token_count == 0 && input_from_file ())
-              {
-                m_reading_fcn_file = true;
-                m_reading_script_file = false;
-              }
-
-            if (! (m_reading_fcn_file || m_reading_script_file
-                   || m_reading_classdef_file))
-              {
-                // Input must be coming from the terminal or stdin?
-                m_buffer_function_text = true;
-                m_function_text += (m_current_input_line + "\n");
-
-                // FIXME: do we need to save and restore the file position
-                // or just reset the line number here?  The goal is to
-                // track line info for command-line functions relative
-                // to the function keyword.
-                m_filepos.line (1);
-              }
-            break;
-
-          case magic_file_kw:
-            {
-              if ((m_reading_fcn_file || m_reading_script_file
-                   || m_reading_classdef_file)
-                  && ! m_fcn_file_full_name.empty ())
-                tok_val = new token (magic_file_kw, m_fcn_file_full_name,
-                                     m_filepos, m_filepos);
-              else
-                tok_val = new token (magic_file_kw, "stdin", m_filepos,
-                                     m_filepos);
-            }
-            break;
-
-          case magic_line_kw:
-            {
-              int l = m_filepos.line ();
-              tok_val = new token (magic_line_kw, static_cast<double> (l),
-                                   "", m_filepos, m_filepos);
-            }
-            break;
-
-          default:
-            panic_impossible ();
+            m_at_beginning_of_statement = previous_at_bos;
+            return 0;
           }
 
-        if (! tok_val)
-          tok_val = new token (kw->tok, true, m_filepos, m_filepos);
+        tok_val = new token (end_kw, token::simple_end, m_filepos,
+                             m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
 
-        push_token (tok_val);
+      case end_try_catch_kw:
+        tok_val = new token (end_try_catch_kw, token::try_catch_end,
+                             m_filepos, m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
 
-        return kw->tok;
+      case end_unwind_protect_kw:
+        tok_val = new token (end_unwind_protect_kw,
+                             token::unwind_protect_end, m_filepos,
+                             m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endfor_kw:
+        tok_val = new token (endfor_kw, token::for_end, m_filepos,
+                             m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endfunction_kw:
+        tok_val = new token (endfunction_kw, token::function_end,
+                             m_filepos, m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endif_kw:
+        tok_val = new token (endif_kw, token::if_end, m_filepos, m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endparfor_kw:
+        tok_val = new token (endparfor_kw, token::parfor_end, m_filepos,
+                             m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endswitch_kw:
+        tok_val = new token (endswitch_kw, token::switch_end, m_filepos,
+                             m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endwhile_kw:
+        tok_val = new token (endwhile_kw, token::while_end, m_filepos,
+                             m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endclassdef_kw:
+        tok_val = new token (endclassdef_kw, token::classdef_end,
+                             m_filepos, m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endenumeration_kw:
+        tok_val = new token (endenumeration_kw, token::enumeration_end,
+                             m_filepos, m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endevents_kw:
+        tok_val = new token (endevents_kw, token::events_end, m_filepos,
+                             m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endmethods_kw:
+        tok_val = new token (endmethods_kw, token::methods_end, m_filepos,
+                             m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endproperties_kw:
+        tok_val = new token (endproperties_kw, token::properties_end,
+                             m_filepos, m_filepos);
+        m_at_beginning_of_statement = true;
+        break;
+
+
+      case for_kw:
+      case parfor_kw:
+      case while_kw:
+        m_looping++;
+        break;
+
+      case do_kw:
+        m_at_beginning_of_statement = true;
+        m_looping++;
+        break;
+
+      case try_kw:
+      case unwind_protect_kw:
+        m_at_beginning_of_statement = true;
+        break;
+
+      case if_kw:
+      case switch_kw:
+        break;
+
+      case get_kw:
+      case set_kw:
+        // 'get' and 'set' are keywords in classdef method
+        // declarations.
+        if (! m_maybe_classdef_get_set_method)
+          {
+            m_at_beginning_of_statement = previous_at_bos;
+            return 0;
+          }
+        break;
+
+      case enumeration_kw:
+      case events_kw:
+      case methods_kw:
+      case properties_kw:
+        // 'properties', 'methods' and 'events' are keywords for
+        // classdef blocks.
+        if (! m_parsing_classdef)
+          {
+            m_at_beginning_of_statement = previous_at_bos;
+            return 0;
+          }
+        // fall through ...
+
+      case classdef_kw:
+        // 'classdef' is always a keyword.
+        if (! m_force_script && m_token_count == 0 && input_from_file ())
+          {
+            m_reading_classdef_file = true;
+            m_reading_script_file = false;
+          }
+        break;
+
+      case function_kw:
+        m_defining_func++;
+        m_parsed_function_name.push (false);
+
+        if (! m_force_script && m_token_count == 0 && input_from_file ())
+          {
+            m_reading_fcn_file = true;
+            m_reading_script_file = false;
+          }
+
+        if (! (m_reading_fcn_file || m_reading_script_file
+               || m_reading_classdef_file))
+          {
+            // Input must be coming from the terminal or stdin?
+            m_buffer_function_text = true;
+            m_function_text += (m_current_input_line + "\n");
+
+            // FIXME: do we need to save and restore the file position
+            // or just reset the line number here?  The goal is to
+            // track line info for command-line functions relative
+            // to the function keyword.
+            m_filepos.line (1);
+          }
+        break;
+
+      case magic_file_kw:
+        {
+          if ((m_reading_fcn_file || m_reading_script_file
+               || m_reading_classdef_file)
+              && ! m_fcn_file_full_name.empty ())
+            tok_val = new token (magic_file_kw, m_fcn_file_full_name,
+                                 m_filepos, m_filepos);
+          else
+            tok_val = new token (magic_file_kw, "stdin", m_filepos,
+                                 m_filepos);
+        }
+        break;
+
+      case magic_line_kw:
+        {
+          int l = m_filepos.line ();
+          tok_val = new token (magic_line_kw, static_cast<double> (l),
+                               "", m_filepos, m_filepos);
+        }
+        break;
+
+      default:
+        panic_impossible ();
       }
 
-    return 0;
+    if (! tok_val)
+      tok_val = new token (kw->tok, true, m_filepos, m_filepos);
+
+    push_token (tok_val);
+
+    return kw->tok;
   }
 
   bool

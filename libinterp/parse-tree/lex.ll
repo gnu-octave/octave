@@ -1363,7 +1363,7 @@ ANY_INCLUDING_NL (.|{NL})
                 ident.erase (std::remove_if (ident.begin (), ident.end (),
                                              is_space_or_tab), ident.end ());
 
-                int kw_token = curr_lexer->is_keyword_token (ident);
+                bool kw_token = curr_lexer->is_keyword_token (ident);
 
                 octave::token *tok;
 
@@ -2531,8 +2531,16 @@ namespace octave
 
   // Handle keywords.  Return -1 if the keyword should be ignored.
 
-  int
+  bool
   base_lexer::is_keyword_token (const std::string& s)
+  {
+    int len = s.length ();
+
+    return octave_kw_hash::in_word_set (s.c_str (), len);
+  }
+
+  int
+  base_lexer::make_keyword_token (const std::string& s)
   {
     int len = s.length ();
 
@@ -3132,7 +3140,7 @@ namespace octave
     // m_at_beginning_of_statement.  For example, if tok is an IF
     // token, then m_at_beginning_of_statement will be false.
 
-    int kw_token = is_keyword_token (ident);
+    int kw_token = make_keyword_token (ident);
 
     // If we have a regular keyword, return it.
     // Keywords can be followed by identifiers.
@@ -3145,7 +3153,7 @@ namespace octave
             m_looking_for_object_index = false;
           }
 
-        // The call to is_keyword_token set m_at_beginning_of_statement.
+        // The call to make_keyword_token set m_at_beginning_of_statement.
 
         return kw_token;
       }
@@ -3728,7 +3736,7 @@ namespace octave
     // FIXME: input may contain more than one line, so how can we
     // properly start buffering input for command-line functions?
     //
-    // Currently, base_lexer::is_keyword_token starts buffering text
+    // Currently, base_lexer::make_keyword_token starts buffering text
     // for command-line functions by setting the initial value of
     // m_function_text to m_current_input_line when function_kw is
     // recognized.  To make that work, we need to do something like

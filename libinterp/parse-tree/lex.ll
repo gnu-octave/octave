@@ -838,12 +838,9 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_looking_for_object_index = true;
         curr_lexer->m_at_beginning_of_statement = false;
 
-        octave::filepos pos (curr_lexer->m_string_line,
-                             curr_lexer->m_string_column);
-
         curr_lexer->push_token (new octave::token (DQ_STRING,
                                                    curr_lexer->m_string_text,
-                                                   pos));
+                                                   curr_lexer->m_beg_string));
 
         curr_lexer->m_string_text = "";
 
@@ -1037,12 +1034,9 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_looking_for_object_index = true;
         curr_lexer->m_at_beginning_of_statement = false;
 
-        octave::filepos pos (curr_lexer->m_string_line,
-                             curr_lexer->m_string_column);
-
         curr_lexer->push_token (new octave::token (SQ_STRING,
                                                    curr_lexer->m_string_text,
-                                                   pos));
+                                                   curr_lexer->m_beg_string));
 
         curr_lexer->m_string_text = "";
 
@@ -2168,13 +2162,12 @@ namespace octave
     m_command_arg_paren_count = 0;
     m_token_count = 0;
     m_filepos = filepos ();
+    m_beg_string = filepos ();
+    m_string_text = "";
     m_current_input_line = "";
     m_comment_text = "";
     m_help_text = "";
     m_function_text = "";
-    m_string_text = "";
-    m_string_line = 0;
-    m_string_column = 0;
     m_fcn_file_name = "";
     m_fcn_file_full_name = "";
     m_dir_name = "";
@@ -2403,8 +2396,7 @@ namespace octave
   void
   base_lexer::begin_string (int state)
   {
-    m_string_line = m_filepos.line ();
-    m_string_column = m_filepos.column ();
+    m_beg_string = m_filepos;
 
     push_start_state (state);
   }

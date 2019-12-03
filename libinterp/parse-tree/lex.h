@@ -296,13 +296,12 @@ namespace octave
         m_command_arg_paren_count (0),
         m_token_count (0),
         m_filepos (),
+        m_beg_string (),
+        m_string_text (),
         m_current_input_line (),
         m_comment_text (),
         m_help_text (),
         m_function_text (),
-        m_string_text (),
-        m_string_line (0),
-        m_string_column (0),
         m_fcn_file_name (),
         m_fcn_file_full_name (),
         m_dir_name (),
@@ -465,6 +464,12 @@ namespace octave
     // The current position in the file (line and column).
     filepos m_filepos;
 
+    // The position of the beginning of the current character string.
+    filepos m_beg_string;
+
+    // The current character string text.
+    std::string m_string_text;
+
     // The current line of input.
     std::string m_current_input_line;
 
@@ -476,13 +481,6 @@ namespace octave
 
     // The text of functions entered on the command line.
     std::string m_function_text;
-
-    // The current character string text.
-    std::string m_string_text;
-
-    // The position of the beginning of the current character string.
-    int m_string_line;
-    int m_string_column;
 
     // Simple name of function file we are reading.
     std::string m_fcn_file_name;

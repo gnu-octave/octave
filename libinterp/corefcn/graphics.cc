@@ -10005,7 +10005,7 @@ patch::properties::calc_face_normals (Matrix& fn)
       octave_idx_type nc = 3;
       if (max_nc > 3)
         {
-          while (! octave::math::isnan (f(i,nc)) && nc < max_nc)
+          while (nc < max_nc && ! octave::math::isnan (f(i,nc)))
             nc++;
         }
 
@@ -10129,7 +10129,7 @@ patch::properties::update_vertex_normals (bool reset, bool force)
           octave_idx_type nc = 3;
           if (max_nc > 3)
             {
-              while (! octave::math::isnan (f(i,nc)) && nc < max_nc)
+              while (nc < max_nc && ! octave::math::isnan (f(i,nc)))
                 nc++;
             }
 

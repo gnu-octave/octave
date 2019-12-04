@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "iconv-wrappers.h"
 #include "localcharset-wrapper.h"
+#include "oct-string.h"
 #include "quit.h"
 #include "str-vec.h"
 #include "uniconv-wrappers.h"
@@ -874,32 +875,39 @@ namespace octave
       encoding = mfile_encoding;
 
     if (encoding.compare ("utf-8") == 0)
-    {
-      // Check for BOM and strip it
-      if (src_str.compare (0, 3, "\xef\xbb\xbf") == 0)
-        src_str.erase (0, 3);
-    }
+      {
+        // Check for BOM and strip it
+        if (src_str.compare (0, 3, "\xef\xbb\xbf") == 0)
+          src_str.erase (0, 3);
+
+        // replace invalid portions of the string
+        // FIXME: Include file name that corresponds to m_file.
+        if (string::u8_validate ("get_input", src_str) > 0)
+          warning_with_id ("octave:get_input:invalid_utf8",
+                           "Invalid UTF-8 byte sequences have been replaced.");
+      }
     else
-    {
-      // convert encoding to UTF-8 before returning string
-      const char *src = src_str.c_str ();
-      size_t srclen = src_str.length ();
+      {
+        // convert encoding to UTF-8 before returning string
+        const char *src = src_str.c_str ();
+        size_t srclen = src_str.length ();
 
-      size_t length;
-      uint8_t *utf8_str;
+        size_t length;
+        uint8_t *utf8_str;
 
-      utf8_str = octave_u8_conv_from_encoding (encoding.c_str (), src, srclen,
-                                               &length);
+        utf8_str = octave_u8_conv_from_encoding (encoding.c_str (), src, srclen,
+                                                 &length);
 
-      if (! utf8_str)
-        error ("file_reader::get_input: converting from codepage '%s' to UTF-8: %s",
-               encoding.c_str (), std::strerror (errno));
+        if (! utf8_str)
+          error ("file_reader::get_input: "
+                 "converting from codepage '%s' to UTF-8: %s",
+                 encoding.c_str (), std::strerror (errno));
 
-      unwind_protect frame;
-      frame.add_fcn (::free, static_cast<void *> (utf8_str));
+        unwind_protect frame;
+        frame.add_fcn (::free, static_cast<void *> (utf8_str));
 
-      src_str = std::string (reinterpret_cast<char *> (utf8_str), length);
-    }
+        src_str = std::string (reinterpret_cast<char *> (utf8_str), length);
+      }
 
     return src_str;
   }

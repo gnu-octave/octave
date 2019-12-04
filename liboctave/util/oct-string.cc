@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "uniconv-wrappers.h"
+#include "unistr-wrappers.h"
 #include "unwind-prot.h"
 
 template <typename T>
@@ -548,6 +549,58 @@ octave::string::u8_from_encoding (const std::string& who,
   std::string retval = std::string (reinterpret_cast<char *> (utf8_str), length);
 
   return retval;
+}
+
+unsigned int
+octave::string::u8_validate (const std::string& who,
+                             std::string& in_str,
+                             const octave::string::u8_fallback_type type)
+{
+  std::string out_str;
+
+  unsigned int num_replacements = 0;
+  const char *in_chr = in_str.c_str ();
+  const char *inv_utf8 = in_chr;
+  const char * const in_end = in_chr + in_str.length ();
+  while (inv_utf8 && in_chr < in_end)
+    {
+      inv_utf8 = reinterpret_cast<const char *>
+          (octave_u8_check_wrapper (reinterpret_cast<const uint8_t *> (in_chr),
+                                    in_end - in_chr));
+
+      if (inv_utf8 == nullptr)
+        out_str.append (in_chr, in_end - in_chr);
+      else
+        {
+          num_replacements++;
+          out_str.append (in_chr, inv_utf8 - in_chr);
+          in_chr = inv_utf8 + 1;
+
+          if (type == U8_REPLACEMENT_CHAR)
+            out_str.append ("\xef\xbf\xbd");
+          else if (type == U8_ISO_8859_1)
+            {
+              std::string fallback = "iso-8859-1";
+              size_t lengthp;
+              uint8_t *val_utf8 = octave_u8_conv_from_encoding
+                                    (fallback.c_str (), inv_utf8, 1, &lengthp);
+
+              if (! val_utf8)
+                (*current_liboctave_error_handler)
+                  ("%s: converting from codepage '%s' to UTF-8 failed: %s",
+                   who.c_str (), fallback.c_str (), std::strerror (errno));
+
+              octave::unwind_protect frame;
+              frame.add_fcn (::free, static_cast<void *> (val_utf8));
+
+              out_str.append (reinterpret_cast<const char *> (val_utf8),
+                              lengthp);
+            }
+        }
+    }
+
+  in_str = out_str;
+  return num_replacements;
 }
 
 template <typename T>

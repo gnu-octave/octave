@@ -133,6 +133,16 @@ namespace octave
     extern OCTAVE_API std::string
     u8_from_encoding (const std::string& who, const std::string& native_string,
                       const std::string& encoding);
+
+    enum u8_fallback_type
+    {
+      U8_REPLACEMENT_CHAR,
+      U8_ISO_8859_1
+    };
+
+    extern OCTAVE_API unsigned int
+    u8_validate (const std::string& who, std::string& in_string,
+                 const u8_fallback_type type = U8_REPLACEMENT_CHAR);
   }
 }
 

@@ -1041,6 +1041,29 @@ unicode_idx ("aäbc")
 %!assert (unicode_idx (["aäou"; "Ä∞"]), [1 2 2 3 4; 5 5 6 6 6]);
 */
 
+DEFUN (__u8_validate__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{out_str} =} __u8_validate__ (in_str)
+Return string with valid UTF-8.
+
+On encountering invalid UTF-8, the bytes are interpreted as the Unicode code
+points U+0080–U+00FF with the same value as the byte, thus interpreting the
+bytes according to ISO-8859-1.
+
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  // Input check
+  std::string in_str =
+      args(0).xstring_value ("__u8_validate__: Not a string.");
+
+  octave::string::u8_validate ("__u8_validate__", in_str);
+
+  return ovl (in_str);
+}
+
 DEFUN (newline, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} newline

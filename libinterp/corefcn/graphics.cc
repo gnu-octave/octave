@@ -10122,7 +10122,8 @@ patch::properties::update_vertex_normals (bool reset, bool force)
         }
 
       // Second step: assign normals to the respective vertices
-      std::vector<RowVector> vec_vn [num_v];  // list of normals for vertices
+      // list of normals for vertices
+      std::vector<RowVector> *vec_vn = new std::vector<RowVector> [num_v];
       for (octave_idx_type i = 0; i < num_f; i++)
         {
           // get number of corners
@@ -10176,6 +10177,8 @@ patch::properties::update_vertex_normals (bool reset, bool force)
                 vn(i,j) = vn0(j)/n_len;
             }
         }
+
+      delete[] vec_vn;
 
       vertexnormals = vn;
     }

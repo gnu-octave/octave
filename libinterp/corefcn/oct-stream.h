@@ -229,6 +229,8 @@ namespace octave
                                 const octave_value& val,
                                 const std::string& who);
 
+    void field_width_error (const std::string& who) const;
+
     int do_printf (printf_format_list& fmt_list, const octave_value_list& args,
                    const std::string& who /* = "printf" */);
 

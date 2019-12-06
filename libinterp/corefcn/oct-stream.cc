@@ -5444,7 +5444,10 @@ namespace octave
     // Get the current value as a double and advance the internal pointer.
     octave_value get_next_value (char type = 0);
 
-    // Get the current value as an int and advance the internal pointer.
+    // Get the current value as an int and advance the internal
+    // pointer.  Value before conversion to int must be >= 0 and less
+    // than std::numeric_limits<int>::max ().
+
     int int_value (void);
 
     operator bool () const { return (curr_state == ok); }
@@ -5584,18 +5587,18 @@ namespace octave
   int
   printf_value_cache::int_value (void)
   {
-    int retval = 0;
-
     octave_value val = get_next_value ();
 
     double dval = val.double_value (true);
 
-    if (math::x_nint (dval) == dval)
-      retval = math::nint (dval);
-    else
-      curr_state = conversion_error;
+    if (dval < 0 || dval > std::numeric_limits<int>::max ()
+        || math::x_nint (dval) != dval)
+      {
+        curr_state = conversion_error;
+        return -1;
+      }
 
-    return retval;
+    return math::nint (dval);
   }
 
   // Ugh again and again.
@@ -5857,6 +5860,13 @@ namespace octave
     return retval;
   }
 
+  void
+  base_stream::field_width_error (const std::string& who) const
+  {
+    ::error ("%s: invalid field width, must be integer >= 0 and <= INT_MAX",
+             who.c_str ());
+  }
+
   int
   base_stream::do_printf (printf_format_list& fmt_list,
                           const octave_value_list& args,
@@ -5896,7 +5906,10 @@ namespace octave
                 sa_1 = val_cache.int_value ();
 
                 if (! val_cache)
-                  break;
+                  {
+                    field_width_error (who);
+                    break;
+                  }
                 else
                   {
                     if (nsa > 1)
@@ -5904,7 +5917,10 @@ namespace octave
                         sa_2 = val_cache.int_value ();
 
                         if (! val_cache)
-                          break;
+                          {
+                            field_width_error (who);
+                            break;
+                          }
                       }
                   }
               }

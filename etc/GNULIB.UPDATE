@@ -1,0 +1,7 @@
+## Instructions for updating gnulib on development branch
+cd gnulib
+hg pull default
+hg update
+cd ..
+hg commit -m "maint: update gnulib subrepo."
+hg push default -r . 

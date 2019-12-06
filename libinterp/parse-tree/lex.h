@@ -747,7 +747,7 @@ namespace octave
 
     int handle_op_internal (int tok, bool bos, bool compat);
 
-    int handle_token (const std::string& name, int tok);
+    int finish_command_arg (void);
 
     int handle_token (int tok, token *tok_val = nullptr);
 

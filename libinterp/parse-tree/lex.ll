@@ -258,28 +258,6 @@ object) relevant global values before and after the nested call.
      }                                                  \
    while (0)
 
-// When a command argument boundary is detected, push out the
-// current argument being built.  This one seems like a good
-// candidate for a function call.
-
-#define COMMAND_ARG_FINISH                                              \
-   do                                                                   \
-     {                                                                  \
-       if (curr_lexer->m_string_text.empty ())                          \
-         break;                                                         \
-                                                                        \
-       int retval = curr_lexer->handle_token (curr_lexer->m_string_text, \
-                                              SQ_STRING);               \
-                                                                        \
-       curr_lexer->m_string_text = "";                                  \
-       curr_lexer->m_command_arg_paren_count = 0;                       \
-                                                                        \
-       yyless (0);                                                      \
-                                                                        \
-       return retval;                                                   \
-     }                                                                  \
-   while (0)
-
 #define HANDLE_IDENTIFIER(pattern, get_set)                             \
    do                                                                   \
      {                                                                  \
@@ -396,7 +374,12 @@ ANY_INCLUDING_NL (.|{NL})
 <COMMAND_START>(\.\.\.){ANY_EXCEPT_NL}*{NL} {
     curr_lexer->lexer_debug ("<COMMAND_START>(\\.\\.\\.){ANY_EXCEPT_NL}*{NL}");
 
-    COMMAND_ARG_FINISH;
+    if (! curr_lexer->m_string_text.empty ())
+      {
+        yyless (0);
+
+        return curr_lexer->finish_command_arg ();
+      }
 
     HANDLE_STRING_CONTINUATION;
   }
@@ -408,7 +391,12 @@ ANY_INCLUDING_NL (.|{NL})
 <COMMAND_START>({CCHAR}{ANY_EXCEPT_NL}*)?{NL} {
     curr_lexer->lexer_debug ("<COMMAND_START>({CCHAR}{ANY_EXCEPT_NL}*)?{NL}");
 
-    COMMAND_ARG_FINISH;
+    if (! curr_lexer->m_string_text.empty ())
+      {
+        yyless (0);
+
+        return curr_lexer->finish_command_arg ();
+      }
 
     curr_lexer->m_filepos.next_line ();
     curr_lexer->m_looking_for_object_index = false;
@@ -423,10 +411,17 @@ ANY_INCLUDING_NL (.|{NL})
 
     if (yytext[0] != ',' || curr_lexer->m_command_arg_paren_count == 0)
       {
-        COMMAND_ARG_FINISH;
+        if (! curr_lexer->m_string_text.empty ())
+          {
+            yyless (0);
+
+            return curr_lexer->finish_command_arg ();
+          }
+
         curr_lexer->m_looking_for_object_index = false;
         curr_lexer->m_at_beginning_of_statement = true;
         curr_lexer->pop_start_state ();
+
         return curr_lexer->handle_token (yytext[0]);
       }
     else
@@ -491,7 +486,14 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->lexer_debug ("<COMMAND_START>{S}*");
 
     if (curr_lexer->m_command_arg_paren_count == 0)
-      COMMAND_ARG_FINISH;
+      {
+        if (! curr_lexer->m_string_text.empty ())
+          {
+            yyless (0);
+
+            return curr_lexer->finish_command_arg ();
+          }
+      }
     else
       curr_lexer->m_string_text += yytext;
 
@@ -3626,10 +3628,19 @@ namespace octave
     return count_token_internal (tok);
   }
 
+  // When a command argument boundary is detected, push out the current
+  // argument being built.  This one seems like a good candidate for a
+  // function call.
+
   int
-  base_lexer::handle_token (const std::string& name, int tok)
+  base_lexer::finish_command_arg (void)
   {
-    token *tok_val = new token (tok, name, m_filepos, m_filepos);
+    int tok = SQ_STRING;
+
+    token *tok_val = new token (tok, m_string_text, m_filepos, m_filepos);
+
+    m_string_text = "";
+    m_command_arg_paren_count = 0;
 
     return handle_token (tok, tok_val);
   }

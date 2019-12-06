@@ -10104,8 +10104,8 @@ patch::properties::update_vertex_normals (bool reset, bool force)
       Matrix v = get_vertices ().matrix_value ();
       Matrix f = get_faces ().matrix_value ();
 
-      octave_idx_type num_v = v.rows ();  // number of vertices
-      octave_idx_type num_f = f.rows ();  // number of faces
+      octave_idx_type num_v = v.rows ();      // number of vertices
+      octave_idx_type num_f = f.rows ();      // number of faces
       octave_idx_type max_nc = f.columns ();  // max. number of polygon corners
 
       // In which cases can we skip updating the normals?
@@ -10122,7 +10122,14 @@ patch::properties::update_vertex_normals (bool reset, bool force)
         }
 
       // Second step: assign normals to the respective vertices
-      // list of normals for vertices
+
+      // The following code collects the face normals for all faces adjacent to
+      // each vertex.  For this, a std::vector of length NUM_V (which might be
+      // very large) is used so that memory is allocated from the heap rather
+      // than the stack.  Each element of this vector corresponds to one vertex
+      // of the patch.  The element itself is a variable length std::vector.
+      // This second vector contains the face normals (of type RowVector) of
+      // the adjacent faces.
       std::vector<std::vector<RowVector>> vec_vn (num_v);
       for (octave_idx_type i = 0; i < num_f; i++)
         {
@@ -10154,8 +10161,8 @@ patch::properties::update_vertex_normals (bool reset, bool force)
               // direction of the normal.  How to determine the inner and outer
               // faces of all parts of the patch and point the normals outwards?
               // (Necessary for correct lighting with "backfacelighting" set to
-              // "lit" or "unlit".) Matlab does not seem to do it correctly
-              // either.  So bother here?
+              // "lit" or "unlit".)  Matlab does not seem to do it correctly
+              // either.  So should we bother?
 
               vn0 = *it;
 

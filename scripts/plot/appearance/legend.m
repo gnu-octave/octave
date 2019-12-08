@@ -56,24 +56,6 @@
 ## labeling all objects, provide their graphic handles in the input
 ## @var{hobjs}.
 ##
-## The optional parameter @nospell{@var{loc}} specifies the location of the
-## legend as follows:
-##
-## @multitable @columnfractions 0.06 0.14 0.80
-## @headitem @tab @nospell{loc} @tab location of the legend
-## @item @tab north @tab center top
-## @item @tab south @tab center bottom
-## @item @tab east @tab right center
-## @item @tab west @tab left center
-## @item @tab northeast @tab right top (default)
-## @item @tab northwest @tab left top
-## @item @tab southeast @tab right bottom
-## @item @tab southwest @tab left bottom
-## @sp 1
-## @item @tab outside @tab can be appended to any location string @*
-## @item @tab         @tab which will place the legend outside the axes
-## @end multitable
-##
 ## The following customizations are available using @var{command}:
 ##
 ## @table @asis
@@ -108,6 +90,83 @@
 ## including @var{property}/@var{value} pairs.  If using this calling form, the
 ## labels must be specified as a cell array of strings.
 ##
+## Following is a subset of supported legend properties:
+## @c The following table is obtained by copying the output of
+## @c genpropdoc ("legend", "", {"autoupdate", "box", "location", "numcolumns", "orientation", "string", "textcolor"})
+## @table @asis
+## 
+## @item @code{autoupdate}: @qcode{"off"} | @{@qcode{"on"}@}
+## Control whether the number of legend items is updated automatically when objects are added to (or deleted from) the peer axes.
+## For example:
+## @example
+## @group
+## ## Create a single plot with its legend.
+## figure ();
+## plot (1:10);
+## legend ("Slope 1");
+## ## Add another plot and specify its displayname so that
+## ## the legend is correctly updated.
+## hold on;
+## plot ((1:10) * 2, "displayname", "Slope 2");
+## ## Stop automatic updates for further plots.
+## legend ("autoupdate", "off");
+## plot ((1:10) * 3);
+## @end group
+## @end example
+## 
+## 
+## @item @code{box}: @qcode{"off"} | @{@qcode{"on"}@}
+## Control whether the legend has a surrounding box.
+## 
+## 
+## @item @code{location}: @qcode{"best"} | @qcode{"bestoutside"} | @qcode{"east"} | @qcode{"eastoutside"} | @qcode{"none"} | @qcode{"north"} | @{@qcode{"northeast"}@} | @qcode{"northeastoutside"} | @qcode{"northoutside"} | @qcode{"northwest"}| @qcode{"northwestoutside"} | @qcode{"south"} | @qcode{"southeast"} | @qcode{"southeastoutside"} | @qcode{"southoutside"} | @qcode{"southwest"} | @qcode{"southwestoutside"} | @qcode{"west"} | @qcode{"westoutside"}
+## Control the location of the legend.
+## 
+## 
+## @item @code{numcolumns}: scalar interger, def. @code{1}
+## Control the number of columns used in the layout of the legend items.  For example:
+## @example
+## @group
+## figure ();
+## plot (rand (30));
+## legend ("numcolumns", 3);
+## @end group
+## @end example
+## Setting @code{numcolumns} also forces the @code{numcolumnsmode} property to be set to @qcode{"manual"}.
+## 
+## 
+## @item @code{orientation}: @qcode{"horizontal"} | @{@qcode{"vertical"}@}
+## Control whether the legend items are arranged vertically (column-wise) or horizontally (row-wise).
+## 
+## 
+## @item @code{string}: string | cell array of strings
+## List of labels for the legend items.  For example:
+## @example
+## @group
+## figure ();
+## plot (rand (20));
+## ## Let legend choose names automatically
+## hl = legend ();
+## ## Selectively change some names
+## str = get (hl, "string");
+## str(1:5:end) = "Garbage";
+## set (hl, "string", str);
+## @end group
+## @end example
+## 
+## 
+## @item @code{textcolor}: colorspec, def. @code{[0   0   0]}
+## Control the color of the text strings for legend item.
+## 
+## @end table
+##
+## The full list of supported legend specific properties can be found at
+## @ref{Legend Properties, , Legend Properties}.
+##
+## A legend is implemented as an additional axes object with the @code{tag}
+## property set to @qcode{"legend"}.  Properties of the legend object may be
+## manipulated directly by using @code{set}.
+##
 ## The optional output value @var{hleg} is a handle to the legend object.
 ##
 ## Implementation Note: The legend label text is either provided in the call to
@@ -121,10 +180,6 @@
 ## The legend @code{FontSize} property is initially set to 90% of the axes
 ## @code{FontSize} to which it is attached.  Use @code{set} to override this
 ## if necessary.
-##
-## A legend is implemented as an additional axes object with the @code{tag}
-## property set to @qcode{"legend"}.  Properties of the legend object may be
-## manipulated directly by using @code{set}.
 ## @end deftypefn
 
 function [hleg, hleg_obj, hplot, labels] = legend (varargin)

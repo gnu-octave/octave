@@ -320,7 +320,8 @@ namespace octave
                     std::shared_ptr<tree_statement_list> stmt_list
                       = debug_parser.statement_list ();
 
-                    stmt_list->accept (tw);
+                    if (stmt_list)
+                      stmt_list->accept (tw);
 
                     if (octave_completion_matches_called)
                       octave_completion_matches_called = false;

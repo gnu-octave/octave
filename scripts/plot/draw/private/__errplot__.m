@@ -116,7 +116,8 @@ function h = __do_errplot__ (fstr, hax, varargin)
     endif
 
     ## Must occur after __next_line_color__ in order to work correctly.
-    hg = hggroup ("parent", hax);
+    hg = hggroup ("parent", hax, ...
+                  "__appdata__", struct ("__creator__", "__errplot__"));
     h = [h; hg];
     args = __add_datasource__ ("__do_errplot__", hg,
                                {"x", "y", "l", "u", "xl", "xu"});

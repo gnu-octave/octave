@@ -84,7 +84,7 @@ function h = __stem__ (have_z, varargin)
       endif
 
       ## Must occur after __next_line_color__ in order to work correctly.
-      hg = hggroup ();
+      hg = hggroup ("__appdata__", struct ("__creator__", "__stem__"));
       h = [h; hg];
       args = __add_datasource__ (caller, hg, {"x", "y", "z"}, varargin{:});
 

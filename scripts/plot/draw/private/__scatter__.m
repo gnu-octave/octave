@@ -167,7 +167,7 @@ function hg = __scatter__ (varargin)
   endif
 
   ## Must occur after __next_line_color__ in order to work correctly.
-  hg = hggroup ();
+  hg = hggroup ("__appdata__", struct ("__creator__", "__scatter__"));
   newargs = __add_datasource__ (fcn, hg, {"x", "y", "z", "c", "size"},
                                 newargs{:});
 

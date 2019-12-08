@@ -139,7 +139,7 @@ function [c, hg] = __contour__ (varargin)
     [c, lev] = contourc (x1, y1, z1, lvl);
   endif
 
-  hg = hggroup ();
+  hg = hggroup ("__appdata__", struct ("__creator__", "__contour__"));
   opts = __add_datasource__ ("__countour__", hg, {"x", "y", "z"}, opts{:});
 
   addproperty ("xdata", hg, "data", x1);

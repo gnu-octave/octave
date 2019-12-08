@@ -792,7 +792,7 @@ function [labels, next_idx] = displayname_or_default (hplots, hl = [])
 
   if (any (empty_label_idx) && ! isempty (hl))
     ## Empty strings must not be blindly replaced by data%d. If there exist
-    ## an old text item that was affected an empty string, keep it as is.
+    ## an old text object that was affected an empty string, keep it as is.
     kids = get (hl, "children");
     htext = kids(strcmp (get (kids, "type"), "text"));
     old_objects = get (htext, "peer_object");
@@ -848,23 +848,12 @@ function update_layout_cb (hl, ~, update_item = false)
       set (hl, "ydir", "reverse", ...
                "xdir", ifelse (textright, "normal", "reverse"));
 
-      ## Create or reuse text and item graphics objects
-      objlist = textitem_objects (hl, textright);
+      ## Create or reuse text and icon graphics objects
+      objlist = texticon_objects (hl, textright);
       nitem = rows (objlist);
 
-      ## Prepare the array of text/item pairs and update their position
-      [sz, txtdata, itemdata] = textitem_data (hl, objlist);
-      for ii = 1:nitem
-        set (objlist(ii,1), "position", txtdata(ii,:));
-        if (strcmp (get (objlist(ii,2), "type"), "line"))
-          set (objlist(ii,2), "xdata", itemdata(ii,1:2),
-                              "ydata", itemdata(ii,3:4));
-        else
-          set (objlist(ii,2), "xdata", [itemdata(ii,1:2), itemdata(ii,[2 1])],
-                              "ydata", [itemdata(ii,3), itemdata(ii,3), ...
-                                        itemdata(ii,4), itemdata(ii,4)]);
-        endif
-      endfor
+      ## Prepare the array of text/icon pairs and update their position
+      sz = update_texticon_position (hl, objlist);
     else
       sz = [diff(get (hl, "xlim")), diff(get (hl, "ylim"))];
     endif
@@ -879,9 +868,9 @@ function update_layout_cb (hl, ~, update_item = false)
 
 endfunction
 
-function objlist = textitem_objects (hl, textright)
+function objlist = texticon_objects (hl, textright)
 
-  ## Delete or set invisible obsolete or unused text/item objects.
+  ## Delete or set invisible obsolete or unused text/icon objects.
   old_kids = get (hl, "children")(:).';
   old_peer_objects = cell2mat (get (old_kids, "peer_object"))(:).';
   unused = ! ishghandle (old_peer_objects);
@@ -907,7 +896,7 @@ function objlist = textitem_objects (hl, textright)
   txtprops = [txtprops, "horizontalalignment"];
   txtvals = [txtvals, ifelse(textright, "left", "right")];
 
-  ## Create or reuse text/item objects as needed
+  ## Create or reuse text/icon objects as needed
   nitem = numel (new_peer_objects);
   objlist = NaN (nitem, 2);
 
@@ -917,89 +906,140 @@ function objlist = textitem_objects (hl, textright)
     hplt = new_peer_objects(ii);
 
     idx = (old_peer_objects == hplt);
-    typ = get (hplt, "type");
 
     if (any (idx))
       tmp = old_kids(idx);
       idx = strcmp (get (tmp, "type"), "text");
 
       htxt = tmp(idx);
-      hitem = tmp(! idx);
+      hicon = tmp(! idx);
 
       set (htxt, "visible", "on", "string", str, ...
                  [txtprops(:)'; txtvals(:)']{:});
-      set (hitem, "visible", "on");
-      set (hplt, "displayname", str);
+      set (hicon, "visible", "on");
 
     else
-      ## For hggroups use the first child that can be labeled
-      base_hplt = hplt;
-      if (strcmp (typ, "hggroup"))
-        kids = get (hplt, "children");
-        types = get (kids, "type");
-        if (! iscell (types))
-          types = {types};
-        endif
-
-        idx = cellfun (@(s) any (strcmp (s, {"line", "patch", "surface"})), ...
-                       types);
-        hplt = kids(idx)(1);
-        typ = types(idx){1};
-      endif
-
-      hmarker = [];
-
-      switch (typ)
-        case "line"
-          persistent lprops = {"color", "linestyle", "linewidth"};
-          persistent mprops = {"color", "marker", "markeredgecolor", ...
-                               "markerfacecolor", "markersize"};
-
-          ## Main line
-          vals = get (hplt, lprops);
-          hitem = __go_line__ (hl, [lprops; vals]{:});
-
-          ## Additional line for the marker
-          vals = get (hplt, mprops);
-          hmarker = __go_line__ (hl, "handlevisibility", "off", ...
-                                     "xdata", 0, "ydata", 0, [mprops; vals]{:});
-          update_marker_cb (hmarker);
-
-        case {"patch", "surface"}
-          persistent pprops = {"edgecolor", "facecolor", "cdata", ...
-                               "linestyle", "linewidth", ...
-                               "marker", "markeredgecolor", ...
-                               "markerfacecolor", "markersize"};
-
-          vals = get (hplt, pprops);
-
-          hitem = __go_patch__ (hl, [pprops; vals]{:});
-
-      endswitch
-
-      htxt = __go_text__ (hl, "string", str, [txtprops(:)'; txtvals(:)']{:});
-      set (base_hplt, "displayname", str);
-
-      addproperty ("peer_object", htxt, "double", base_hplt);
-      addproperty ("peer_object", hitem, "double", base_hplt);
-
-      if (isempty (hmarker))
-        setappdata (hplt, "__item_link__", linkprop ([hplt, hitem], pprops));
-      else
-        setappdata (hplt, "__item_link__", linkprop ([hplt, hitem], lprops));
-        setappdata (hplt, "__marker_link__", linkprop ([hplt hmarker], mprops));
-        addlistener (hitem, "ydata", ...
-                     @(h) set (hmarker, "ydata", mean (get (h, "ydata"))));
-        addlistener (hitem, "xdata", ...
-                     @(h) set (hmarker, "xdata", mean (get (h, "xdata"))));
-        addlistener (hmarker, "markersize", @update_marker_cb);
-      endif
-
+      [htxt, hicon] = create_item (hl, str, [txtprops(:)'; txtvals(:)'], hplt);
       add_safe_listener (hl, hplt, "displayname", {@update_displayname_cb, hl});
     endif
 
-    objlist(ii,:) = [htxt, hitem];
+    set (hplt, "displayname", str);
+
+    objlist(ii,:) = [htxt, hicon];
   endfor
+
+endfunction
+
+function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
+
+  typ = get (hplt, "type");
+
+  ## For unknown hggroups use the first child that can be labeled
+  persistent known_creators = {"__contour__", "__errplot__", "__quiver__", ...
+                               "__scatter__", "__stem__"};
+  base_hplt = hplt;
+
+  if (strcmp (typ, "hggroup"))
+    creator = getappdata (hplt, "__creator__");
+    kids = get (hplt, "children");
+    if (any (strcmp (known_creators, creator)))
+      typ = creator;
+      switch (creator)
+        case "__contour__"
+          hplt = [kids(1), kids(end)];
+        case {"__errplot__", "__quiver__", "__stem__"}
+          hplt = kids(2:-1:1);
+        otherwise
+          hplt = kids(1);
+      endswitch
+    else
+      types = get (kids, "type");
+      if (! iscell (types))
+        types = {types};
+      endif
+
+      idx = cellfun (@(s) any (strcmp (s, {"line", "patch", "surface"})), ...
+                     types);
+      hplt = kids(idx)(1);
+      typ = types(idx){1};
+    endif
+  endif
+
+  persistent lprops = {"color", "linestyle", "linewidth"};
+  persistent mprops = {"color", "marker", "markeredgecolor", ...
+                       "markerfacecolor", "markersize"};
+  persistent pprops = {"edgecolor", "facecolor", "cdata", ...
+                       "linestyle", "linewidth", ...
+                       "marker", "markeredgecolor", ...
+                       "markerfacecolor", "markersize"};
+  switch (typ)
+    case {"line", "__errplot__", "__quiver__", "__stem__"}
+
+      ## Main line
+      vals = get (hplt(1), lprops);
+      hicon = __go_line__ (hl, [lprops; vals]{:});
+      addproperty ("markerxdata", hicon, "double", 0);
+      addproperty ("markerydata", hicon, "double", 0);
+
+      ## Additional line for the marker
+      vals = get (hplt(end), mprops);
+      hmarker = __go_line__ (hl, "handlevisibility", "off", ...
+                             "xdata", 0, "ydata", 0, [mprops; vals]{:});
+      update_marker_cb (hmarker);
+
+      setappdata (hplt(1), "__icon_link__", ...
+                  linkprop ([hplt(1), hicon], lprops));
+      setappdata (hplt(end), "__marker_link__", ...
+                  linkprop ([hplt(end) hmarker], mprops));
+      addlistener (hicon, "ydata", ...
+                   @(h) set (hmarker, "ydata", get (h, "markerydata")));
+      addlistener (hicon, "xdata", ...
+                   @(h) set (hmarker, "xdata", get (h, "markerxdata")));
+      addlistener (hmarker, "markersize", @update_marker_cb);
+      add_safe_listener (hl, hplt(1), "beingdeleted",
+                         @() delete ([hicon hmarker]))
+
+    case {"patch", "surface", "__scatter__"}
+
+      vals = get (hplt, pprops);
+
+      hicon = __go_patch__ (hl, [pprops; vals]{:});
+
+      setappdata (hplt, "__icon_link__", linkprop ([hplt, hicon], pprops));
+
+    case "__contour__"
+
+      ## Main patch
+
+      vals = get (hplt(1), pprops);
+      hicon = __go_patch__ (hl, [pprops; vals]{:});
+
+      addproperty ("innerxdata", hicon, "any", 0);
+      addproperty ("innerydata", hicon, "any", 0);
+
+      ## Additional patch for the inner contour
+      vals = get (hplt(end), pprops);
+      htmp =  __go_patch__ (hl, "handlevisibility", "off", ...
+                            "xdata", 0, "ydata", 0, [pprops; vals]{:});
+
+      setappdata (hplt(1), "__icon_link__", ...
+                  linkprop ([hplt(1), hicon], pprops));
+      setappdata (hplt(end), "__icon_link__", ...
+                  linkprop ([hplt(end) htmp], pprops));
+      addlistener (hicon, "ydata", ...
+                   @(h) set (htmp, "ydata", get (h, "innerydata")));
+      addlistener (hicon, "xdata", ...
+                   @(h) set (htmp, "xdata", get (h, "innerxdata")));
+
+      add_safe_listener (hl, hplt(1), "beingdeleted",
+                         @() delete ([hicon htmp]))
+  endswitch
+
+  htxt = __go_text__ (hl, "string", str, txtpval{:});
+
+  addproperty ("peer_object", htxt, "double", base_hplt);
+  addproperty ("peer_object", hicon, "double", base_hplt);
+  setappdata (hicon, "__creator__", typ);
 
 endfunction
 
@@ -1023,22 +1063,22 @@ endfunction
 
 function update_marker_cb (h)
 
-  if (get (h, "markersize") > 6)
-    set (h, "markersize", 6);
+  if (get (h, "markersize") > 3)
+    set (h, "markersize", 3);
   endif
 
 endfunction
 
-function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
+function sz = update_texticon_position (hl, objlist)
 
   ## margins in points
   persistent hmargin = 3;
   persistent vmargin = 3;
-  persistent item_width = 15;
+  persistent icon_width = 15;
 
   units = get (hl, "fontunits");
   set (hl, "fontunits", "points");
-  item_height = 0.7 * get (hl, "fontsize");
+  icon_height = 0.7 * get (hl, "fontsize");
   set (hl, "fontunits", units);
 
   ext = get (objlist(:,1), "extent");
@@ -1046,9 +1086,9 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
   markersz = get (objlist(:,2), "markersize");
   types = get (objlist(:,2), "type");
 
-  ## Simple case of 1 text/item pair
+  ## Simple case of 1 text/icon pair
   nitem = rows (objlist);
-  txtitem = zeros (nitem, 4);
+  txticon = zeros (nitem, 4);
   if (nitem == 1)
     ext = abs (ext(:,3:4));
     types = {types};
@@ -1075,8 +1115,6 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
   endif
 
   autolayout = strcmp (get (hl, "numcolumnsmode"), "auto");
-  itemdata = NaN (nitem, 4);
-  txtdata = NaN (nitem, 3);
   xmax = ymax = 0;
   iter = 1;
 
@@ -1097,7 +1135,7 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
       nrow = ceil (nitem / ncol);
     endif
 
-    rowheights = arrayfun (@(idx) max([item_height; ext(idx:nrow:end, 2)]), ...
+    rowheights = arrayfun (@(idx) max([icon_height; ext(idx:nrow:end, 2)]), ...
                            1:nrow);
     x = hmargin;
     for ii = 1:ncol
@@ -1113,19 +1151,16 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
           dx = markersz{iter}/2;
         endif
 
-        y0 = y1 = y + hg/2;
-        if (! strcmp (types{iter}, "line"))
-          y0 = y + hg/2 - item_height/2 + dx;
-          y1 = y + hg/2 + item_height/2 - dx;
-        endif
+        ybase = y + hg / 2;
+        y0 = y + hg/2 - icon_height/2 + dx;
+        y1 = y + hg/2 + icon_height/2 - dx;
 
-        ## [x0, x1, y0, y1]
-        itemdata(iter,:) = [x+dx, x+item_width-dx, y0, y1];
+        update_icon_position (objlist(iter,2), [x+dx, x+icon_width-dx], ...
+                              [y0, y1]);
 
-        ## [x, y, z]
-        txtdata(iter,:) = [x+item_width+hmargin, y+hg/2, 0];
+        set (objlist(iter,1), "position", [x+icon_width+hmargin, ybase, 0]);
 
-        xmax = max ([xmax, x+item_width+2*hmargin+ext(iter,1)]);
+        xmax = max ([xmax, x+icon_width+2*hmargin+ext(iter,1)]);
         y += (vmargin + hg);
         iter++;
       endfor
@@ -1142,7 +1177,7 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
         ncol = nitem;
       else
         ncol = max (find ((cumsum (ext(:,1) + 2*hmargin ...
-                                   + item_width) + hmargin) ...
+                                   + icon_width) + hmargin) ...
                           < max_size(1)));
       endif
     else
@@ -1159,7 +1194,7 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
       x = hmargin;
 
       endidx = min (iter+ncol-1, nitem);
-      hg = max ([item_height; ext(iter:endidx,2)]);
+      hg = max ([icon_height; ext(iter:endidx,2)]);
 
       for jj = 1:ncol
         if (iter > nitem)
@@ -1174,19 +1209,16 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
         endif
 
         ybase = y + hg / 2;
-        y0 = y1 = ybase;
-        if (! strcmp (types{iter}, "line"))
-          y0 = y + hg/2 - item_height/2 + dx;
-          y1 = y + hg/2 + item_height/2 - dx;
-        endif
+        y0 = y + hg/2 - icon_height/2 + dx;
+        y1 = y + hg/2 + icon_height/2 - dx;
 
-        ## [x0, x1, y0, y1]
-        itemdata(iter,:) = [x+dx, x+item_width-dx, y0, y1];
-        ## [x, y, z]
-        txtdata(iter,:) = [x+item_width+hmargin, ybase, 0];
+        update_icon_position (objlist(iter,2), [x+dx, x+icon_width-dx], ...
+                              [y0, y1]);
+
+        set (objlist(iter,1), "position", [x+icon_width+hmargin, ybase, 0]);
 
         ymax = max ([ymax, ybase+hg/2+vmargin]);
-        x += (3*hmargin + item_width + wd);
+        x += (3*hmargin + icon_width + wd);
         iter++;
       endfor
       xmax = max ([xmax, x-hmargin]);
@@ -1197,6 +1229,60 @@ function [sz, txtdata, itemdata] = textitem_data (hl, objlist)
 
   sz = [xmax, ymax];
 
+endfunction
+
+function update_icon_position (hicon, xdata, ydata)
+  creator = getappdata (hicon, "__creator__");
+  switch (creator)
+    case {"line", "__stem__"}
+      set (hicon, "markerxdata", mean (xdata), "markerydata", mean (ydata), ...
+           "xdata", xdata, "ydata", [mean(ydata), mean(ydata)]);
+    case {"patch", "surface"}
+      set (hicon, ...
+           "xdata", [xdata, fliplr(xdata)], ...
+           "ydata", [ydata; ydata](:).');
+    case "__contour__"
+      ## Draw two patches
+      x0 = xdata(1);
+      x1 = xdata(2);
+      xm = mean (xdata);
+      y0 = ydata(1);
+      y1 = ydata(2);
+      ym = mean (ydata);
+
+      xdata = [x0, x1, x1, x0];
+      ydata = [y0, y0, y1, y1];
+      set (hicon, ...
+           "innerxdata", (xdata-xm) * 0.6 + xm, ...
+           "innerydata", (ydata-ym) * 0.6 + ym, ...
+           "xdata", xdata, "ydata", ydata);
+    case "__errplot__"
+      ## Draw a double arrow
+      x0 = xdata(1);
+      x1 = xdata(2);
+      xm = mean (xdata);
+      y0 = ydata(1);
+      y1 = ydata(2);
+      ym = mean (ydata);
+
+      xdata = [x0, x0, x0, x1, x1, x1, x1, ...
+               xm, xm, xm-2, xm+2, xm, xm, xm-2, xm+2];
+      ydata = [ym+2, ym-2, ym, ym, ym+2, ym-2, ym, ...
+               ym, y0, y0, y0, y0, y1, y1, y1];
+      set (hicon, "markerxdata", xm, "markerydata", ym, ...
+           "xdata", xdata, "ydata", ydata);
+    case "__quiver__"
+      ## Draw an arrow
+      x0 = xdata(1);
+      x1 = xdata(2);
+      y0 = mean (ydata);
+      xdata = [x0, x1, x1-2, x1, x1-2];
+      ydata = [y0, y0, y0+2, y0, y0-2];
+      set (hicon, "markerxdata", x0, "markerydata", y0, ...
+           "xdata", xdata, "ydata", ydata);
+    case "__scatter__"
+      set (hicon, "xdata", mean(xdata), "ydata", mean(ydata));
+  endswitch
 endfunction
 
 function update_legend_position (hl, sz)

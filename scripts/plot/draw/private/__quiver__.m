@@ -182,7 +182,7 @@ function hg = __quiver__ (varargin)
     endif
 
     ## Must occur after __next_line_color__ in order to work correctly.
-    hg = hggroup ();
+    hg = hggroup ("__appdata__", struct ("__creator__", "__quiver__"));
     if (is3d)
       args = __add_datasource__ ("quiver3", hg,
                                  {"x", "y", "z", "u", "v", "w"}, args{:});

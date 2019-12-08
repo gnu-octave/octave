@@ -80,4 +80,30 @@ const gui_pref
 ed_default_enc ("editor/default_encoding",
                 QVariant (QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")")));
 
+// The find dialog
+
+enum find_dialog_options
+  {
+    FIND_DLG_MORE  = 1,
+    FIND_DLG_CASE  = 2,
+    FIND_DLG_START = 4,
+    FIND_DLG_WRAP  = 8,
+    FIND_DLG_REGX  = 16,
+    FIND_DLG_WORDS = 32,
+    FIND_DLG_BACK  = 64,
+    FIND_DLG_SEL   = 128
+  };
+
+// Dialog position, the default will be calculated from the editor's geometry
+const gui_pref
+ed_fdlg_pos ("editor/fdgl_pos", QVariant (QPoint (0,0)));
+
+const gui_pref
+ed_fdlg_opts ("editor/fdgl_opts", QVariant (FIND_DLG_WRAP));
+
+const gui_pref
+ed_fdlg_search ("editor/fdgl_search", QVariant ());
+const gui_pref
+ed_fdlg_replace ("editor/fdgl_replace", QVariant ());
+
 #endif

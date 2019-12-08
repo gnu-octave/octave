@@ -105,6 +105,9 @@ namespace octave
     m_copy_action = nullptr;
     m_paste_action = nullptr;
     m_selectall_action = nullptr;
+
+    m_find_dialog = nullptr;
+
     m_closed = false;
     m_no_focus = false;
 
@@ -112,10 +115,6 @@ namespace octave
     m_undo_action_enabled = false;
 
     construct ();
-
-    // actions that should also be available in the find dialog
-    m_fetab_actions << m_find_next_action;
-    m_fetab_actions << m_find_previous_action;
 
     setVisible (false);
     setAcceptDrops (true);
@@ -354,6 +353,13 @@ namespace octave
   // focus of the editor
   void file_editor::enable_menu_shortcuts (bool enable)
   {
+    // Hide or show the find dialog together with the focus of the
+    // editor widget depending on the overall visibility of the find dialog.
+    // Do not change internal visibility state.
+    if (m_find_dialog)
+      m_find_dialog->set_visible (enable);
+
+    // Take care of the shortcuts
     QHash<QMenu*, QStringList>::const_iterator i = m_hash_menu_text.constBegin ();
 
     while (i != m_hash_menu_text.constEnd ())
@@ -481,6 +487,10 @@ namespace octave
     settings->setValue (ed_session_ind.key, fet_index);
     settings->setValue (ed_session_lines.key, fet_lines);
     settings->sync ();
+
+    // Take care of the find dialog
+    if (m_find_dialog)
+      m_find_dialog->close ();
 
     // Finally close all the tabs and return indication that we can exit
     // the application or close the editor.
@@ -794,19 +804,73 @@ namespace octave
                             QsciScintilla::EolMac);
   }
 
+  // Slot for initially creating and showing the find dialog
   void file_editor::request_find (bool)
   {
-    emit fetab_find (m_tab_widget->currentWidget (), m_fetab_actions);
+    // Create the dialog
+    find_create ();
+
+    // Since find_create shows the dialog without activating the widget
+    // (which is reuqired in other cases) do this manually here
+    m_find_dialog->activateWindow ();
+
+    // Initiate search text from possible selection and save the initial
+    // data from the dialog on the defined structure
+    m_find_dialog->init_search_text ();
   }
 
-  void file_editor::request_find_next (bool)
+  // This methos creates the find dialog
+  void file_editor::find_create ()
   {
-    emit fetab_find_next (m_tab_widget->currentWidget ());
+    if (isFloating ())
+      m_find_dialog = new find_dialog (m_octave_qobj, this, this);
+    else
+      m_find_dialog = new find_dialog (m_octave_qobj, this, main_win ());
+
+    // Add required actions
+    m_find_dialog->addAction (m_find_next_action);
+    m_find_dialog->addAction (m_find_previous_action);
+
+    // Update edit area
+    file_editor_tab* fet
+      = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
+    m_find_dialog->update_edit_area (fet->qsci_edit_area ());
+
+    // Icon is the same as the editor
+    m_find_dialog->setWindowIcon (windowIcon ());
+
+    // Position:  lower right of editor's position
+    int xp = x () + frameGeometry ().width ();
+    int yp = y () + frameGeometry ().height ();
+
+    if (! isFloating ())
+      {
+        // Fix position if editor is docked
+        xp = xp + main_win ()->x();
+        yp = yp + main_win ()->y();
+      }
+
+    if (yp < 0)
+      yp = 0;
+
+    // The size of the find dialog is considered in restore_settings
+    // since its size might change depending on the options
+    m_find_dialog->restore_settings (QPoint (xp, yp));
+
+    // Set visible
+    m_find_dialog->set_visible (true);
+  }
+
+ void file_editor::request_find_next (bool)
+  {
+    if (m_find_dialog)
+      m_find_dialog->find_next ();
   }
 
   void file_editor::request_find_previous (bool)
   {
-    emit fetab_find_previous (m_tab_widget->currentWidget ());
+    if (m_find_dialog)
+      m_find_dialog->find_prev ();
   }
 
   void file_editor::request_goto_line (bool)
@@ -1218,6 +1282,10 @@ namespace octave
 
     set_shortcuts ();
 
+    // Find dialog with the same icon as the editor
+    if (m_find_dialog)
+      m_find_dialog->setWindowIcon (windowIcon ());
+
     // Relay signal to file editor tabs.
     emit fetab_settings_changed (settings);
   }
@@ -1331,13 +1399,21 @@ namespace octave
 
     if (visible && ! isFloating ())
       setFocus ();
-
   }
 
-  void file_editor::toplevel_change (bool toplevel)
+  // This slot is a reimplementation of the virtual slot in octave_dock_widget.
+  // We need this for updating the parent of the find dialog
+  void file_editor::toplevel_change (bool)
   {
-    emit fetab_toplevel_changed (toplevel);
-    octave_dock_widget::toplevel_change (toplevel);
+    if (m_find_dialog)
+      {
+        // close current dialog
+        m_find_dialog->close ();
+
+        // re-create dialog with the new parent (editor or main-win)
+        find_create ();
+        m_find_dialog->activateWindow ();
+      }
   }
 
   void file_editor::update_octave_directory (const QString& dir)
@@ -2264,6 +2340,9 @@ namespace octave
                                                            const QString&,
                                                            const QString&, int)));
 
+    connect (f, SIGNAL (edit_area_changed (octave_qscintilla*)),
+             this, SIGNAL (edit_area_changed (octave_qscintilla*)));
+
     connect (f, SIGNAL (set_focus_editor_signal (QWidget*)),
              this, SLOT (set_focus (QWidget*)));
 
@@ -2360,15 +2439,6 @@ namespace octave
              SIGNAL (fetab_convert_eol (const QWidget*, QsciScintilla::EolMode)),
              f, SLOT (convert_eol (const QWidget*, QsciScintilla::EolMode)));
 
-    connect (this, SIGNAL (fetab_find (const QWidget*, QList<QAction *>)),
-             f, SLOT (find (const QWidget*, QList<QAction *>)));
-
-    connect (this, SIGNAL (fetab_find_next (const QWidget*)),
-             f, SLOT (find_next (const QWidget*)));
-
-    connect (this, SIGNAL (fetab_find_previous (const QWidget*)),
-             f, SLOT (find_previous (const QWidget*)));
-
     connect (this, SIGNAL (fetab_goto_line (const QWidget*, int)),
              f, SLOT (goto_line (const QWidget*, int)));
 
@@ -2380,9 +2450,6 @@ namespace octave
 
     connect (this, SIGNAL (fetab_set_focus (const QWidget*)),
              f, SLOT (set_focus (const QWidget*)));
-
-    connect (this, SIGNAL (fetab_toplevel_changed (bool)),
-             f, SLOT (handle_toplevel_changed (bool)));
 
     connect (this, SIGNAL (fetab_insert_debugger_pointer (const QWidget*, int)),
              f, SLOT (insert_debugger_pointer (const QWidget*, int)));

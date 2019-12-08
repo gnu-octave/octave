@@ -33,9 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QWidget>
 #include <Qsci/qsciapis.h>
 
-#include "find-dialog.h"
-// Only needed for typedef of "QIntList", which may be typedefed
-// elsewhere.  Could use common location.
 #include "gui-settings.h"
 #include "marker.h"
 #include "octave-qscintilla.h"
@@ -76,6 +73,7 @@ namespace octave
                             bool modified);
     void editor_state_changed (bool copy_available, bool is_octave_file);
     void set_focus_editor_signal (QWidget *);
+    void edit_area_changed (octave_qscintilla *edit_area);
     void tab_remove_request (void);
     void mru_add_file (const QString& file_name, const QString& encoding);
     void editor_check_conflict_save (const QString& saveFileName,
@@ -84,9 +82,6 @@ namespace octave
     void request_open_file (const QString&, const QString& = QString ());
     void edit_mfile_request (const QString&, const QString&,
                              const QString&, int);
-
-    void request_find_next (void);
-    void request_find_previous (void);
 
     void update_breakpoints_signal (const octave_value_list& args);
 
@@ -141,7 +136,6 @@ namespace octave
     // Change to a different editor tab by identifier tag.
     void change_editor_state (const QWidget *ID);
 
-    void handle_toplevel_changed (bool);
     void set_focus (const QWidget *ID);
     void set_current_directory (const QString& dir);
     void context_help (const QWidget *ID, bool);
@@ -177,9 +171,6 @@ namespace octave
     void zoom_out (const QWidget *ID);
     void zoom_normal (const QWidget *ID);
 
-    void find (const QWidget *ID, QList<QAction *>);
-    void find_next (const QWidget *ID);
-    void find_previous (const QWidget *ID);
     void goto_line (const QWidget *ID, int line = -1);
     void move_match_brace (const QWidget *ID, bool select);
     void show_auto_completion (const QWidget *ID);
@@ -219,9 +210,6 @@ namespace octave
 
     // When user closes message box for resave question.
     void handle_file_resave_answer (int decision);
-
-    // When user closes find_dialog box.
-    void handle_find_dialog_finished (int decision);
 
     // When user closes QFileDialog box.
     void handle_save_file_as_answer (const QString& fileName);
@@ -278,8 +266,6 @@ namespace octave
     };
 
     void add_breakpoint_event (const bp_info& info);
-
-    void find_create (void);
 
     bool valid_file_name (const QString& file = QString ());
     void save_file (const QString& saveFileName, bool remove_on_success = false,
@@ -359,9 +345,6 @@ namespace octave
     };
 
     breakpoint_info m_breakpoint_info;
-
-    find_dialog *m_find_dialog;
-    find_dialog::find_dialog_data m_find_dlg_data;
   };
 }
 

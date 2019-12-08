@@ -167,9 +167,6 @@ namespace octave
     m_status_bar->addWidget (m_eol_indicator, 0);
     m_status_bar->addWidget (new QLabel (" ", this), 0);
 
-    // Leave the find dialog box out of memory until requested.
-    m_find_dialog = nullptr;
-
     // symbols
     m_edit_area->setMarginType (1, QsciScintilla::SymbolMargin);
     m_edit_area->setMarginSensitivity (1, true);
@@ -284,11 +281,6 @@ namespace octave
       {
         delete lexer;
         m_edit_area->setLexer (nullptr);
-      }
-    if (m_find_dialog)
-      {
-        delete m_find_dialog;
-        m_find_dialog = nullptr;
       }
 
     // Destroy m_edit_area.
@@ -947,37 +939,13 @@ namespace octave
     m_lexer_apis->savePrepared (m_prep_apis_file);
   }
 
-  // Slot for editors signal is its toplevel state has changed
-  void file_editor_tab::handle_toplevel_changed (bool)
-  {
-    // The find dialog has to be re-created since making the editor
-    // floating or docked obviously changes the parent/child relation
-    // of the find dialog
-    if (m_find_dialog == nullptr)
-      return;
-    else
-      {
-        if (m_find_dialog->isVisible ())
-          {
-            m_find_dialog->save_data (&m_find_dlg_data);     // Save current data
-            delete m_find_dialog;
-            m_find_dialog = nullptr;
-
-            find_create ();                                 // Create new dialog
-
-            m_find_dialog->restore_data (&m_find_dlg_data);  // Restore data
-
-            m_edit_area->setFocus ();
-          }
-      }
-  }
-
   // slot for fetab_set_focus: sets the focus to the current edit area
   void file_editor_tab::set_focus (const QWidget *ID)
   {
     if (ID != this)
       return;
     m_edit_area->setFocus ();
+    emit edit_area_changed (m_edit_area); // update the edit area in find dlg
   }
 
   void file_editor_tab::context_help (const QWidget *ID, bool doc)
@@ -1377,35 +1345,6 @@ namespace octave
     auto_margin_width ();
   }
 
-  void file_editor_tab::handle_find_dialog_finished (int)
-  {
-    // Find dialog is going to hide.  Save location of window for
-    // when it is reshown.
-    m_find_dlg_data.geometry = m_find_dialog->geometry ();
-    m_find_dlg_data.is_visible = false;
-  }
-
-  // Slot for initially creating and showing the find dialog
-  void file_editor_tab::find (const QWidget *ID, QList<QAction *> fetab_actions)
-  {
-    if (ID != this)
-      return;
-
-    m_find_dlg_data.actions = fetab_actions.mid (0,2);
-
-    // Create the dialog
-    find_create ();
-
-    // Since find_create shows the dialog without activating the widget
-    // (which is reuqired in other cases) do this manually here
-    m_find_dialog->activateWindow ();
-
-    // Initiate search text from possible selection and save the initial
-    // data from the dialog on the defined structure
-    m_find_dialog->init_search_text ();
-    m_find_dialog->save_data (&m_find_dlg_data);
-  }
-
   void file_editor_tab::add_breakpoint_event (const bp_info& info)
   {
     emit interpreter_event
@@ -1451,57 +1390,6 @@ namespace octave
         m_breakpoint_info.remove_line = remove_line;
         m_breakpoint_info.remove_next = false;
       }
-  }
-
-  // This methos creates the find dialog in way that is at first suitable
-  // for re-creating it after the toplevel of the editor has changed.
-  // The find dialog is initially creatied, activated and shown with find ()
-  void file_editor_tab::find_create ()
-  {
-    // The find_dialog feature doesn't need a slot for return info.
-    // Rather than Qt::DeleteOnClose, let the find feature hang about
-    // in case it contains useful information like previous searches
-    // and so on.  Perhaps one find dialog for the whole editor is
-    // better, but individual find dialogs has the nice feature of
-    // retaining position per file editor tabs, which can be undocked.
-
-    if (! m_find_dialog)
-      {
-        m_find_dialog = new find_dialog (m_edit_area,
-                                        m_find_dlg_data.actions,
-                                        this);
-        connect (m_find_dialog, SIGNAL (finished (int)),
-                 this, SLOT (handle_find_dialog_finished (int)));
-
-        connect (this, SIGNAL (request_find_next ()),
-                 m_find_dialog, SLOT (find_next ()));
-
-        connect (this, SIGNAL (request_find_previous ()),
-                 m_find_dialog, SLOT (find_prev ()));
-
-        m_find_dialog->setWindowModality (Qt::NonModal);
-      }
-    else if (! m_find_dialog->isVisible ())
-      {
-        m_find_dialog->setGeometry (m_find_dlg_data.geometry);
-        QPoint p = m_find_dialog->pos ();
-        m_find_dialog->move (p.x ()+10, p.y ()+10);
-      }
-
-    m_find_dialog->setAttribute(Qt::WA_ShowWithoutActivating);
-    m_find_dialog->show ();
-  }
-
-  void file_editor_tab::find_next (const QWidget *ID)
-  {
-    if (ID == this)
-      emit request_find_next ();
-  }
-
-  void file_editor_tab::find_previous (const QWidget *ID)
-  {
-    if (ID == this)
-      emit request_find_previous ();
   }
 
   void file_editor_tab::goto_line (const QWidget *ID, int line)
@@ -2937,26 +2825,7 @@ namespace octave
   void file_editor_tab::change_editor_state (const QWidget *ID)
   {
     if (ID != this)
-      {
-        // Widget may be going out of focus.  If so, record location.
-        if (m_find_dialog)
-          {
-            if (m_find_dialog->isVisible ())
-              {
-                m_find_dlg_data.geometry = m_find_dialog->geometry ();
-                m_find_dialog->hide ();
-              }
-          }
-        return;
-      }
-
-    if (m_find_dialog && m_find_dlg_data.is_visible)
-      {
-        m_find_dialog->setGeometry (m_find_dlg_data.geometry);
-        QPoint p = m_find_dialog->pos ();
-        m_find_dialog->move (p.x ()+10, p.y ()+10);
-        m_find_dialog->show ();
-      }
+      return;
 
     emit editor_state_changed (m_copy_available, m_is_octave_file);
   }

@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"
+#include "find-dialog.h"
 #include "tab-bar.h"
 
 namespace octave
@@ -117,7 +118,6 @@ namespace octave
 
   signals:
 
-    void fetab_toplevel_changed (bool);
     void fetab_settings_changed (const gui_settings *settings);
     void fetab_change_request (const QWidget *ID);
     // Save is a ping-pong type of communication
@@ -146,9 +146,6 @@ namespace octave
     void fetab_unindent_selected_text (const QWidget *ID);
     void fetab_smart_indent_line_or_selected_text (const QWidget *ID);
     void fetab_convert_eol (const QWidget *ID, QsciScintilla::EolMode eol_mode);
-    void fetab_find (const QWidget *ID, QList<QAction *>);
-    void fetab_find_next (const QWidget *ID);
-    void fetab_find_previous (const QWidget *ID);
     void fetab_goto_line (const QWidget *ID, int line = -1);
     void fetab_move_match_brace (const QWidget *ID, bool select);
     void fetab_completion (const QWidget*);
@@ -166,6 +163,8 @@ namespace octave
     void fetab_set_directory (const QString& dir);
     void fetab_recover_from_exit (void);
 
+    void edit_area_changed (octave_qscintilla *edit_area);
+
     void request_settings_dialog (const QString&);
     void request_open_file_external (const QString& file_name, int line);
     void file_loaded_signal (void);
@@ -174,8 +173,6 @@ namespace octave
     void request_dbcont_signal (void);
 
   public slots:
-
-    void toplevel_change (bool);
 
     void activate (void);
     void set_focus (QWidget *fet);
@@ -272,6 +269,8 @@ namespace octave
 
     void update_octave_directory (const QString& dir);
 
+    void toplevel_change (bool toplevel);
+
   protected slots:
 
     void copyClipboard (void);
@@ -326,6 +325,8 @@ namespace octave
     void handle_dir_remove (const QString& old_name, const QString& new_name);
 
     bool editor_tab_has_focus (void);
+
+    void find_create (void);
 
     file_editor_tab * find_tab_widget (const QString& openFileName);
     QAction * add_action (QMenu *menu, const QString& text,
@@ -442,8 +443,6 @@ namespace octave
     QMenu *m_fileMenu;
     QMenu *m_view_editor_menu;
 
-    QList<QAction*> m_fetab_actions;
-
     file_editor_tab_widget *m_tab_widget;
 
     int m_marker_breakpoint;
@@ -457,6 +456,8 @@ namespace octave
     QAction *m_mru_file_actions[MaxMRUFiles];
     QStringList m_mru_files;
     QStringList m_mru_files_encodings;
+
+    QPointer<find_dialog> m_find_dialog;
 
     // List of data on temporarily closed files for later reloading.
     QList<session_data> m_tmp_closed_files;

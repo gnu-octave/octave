@@ -2,7 +2,7 @@
 
 Find dialog derived from an example from Qt Toolkit (license below (**))
 
-Copyright (C) 2012-2019 Torsten <ttl@justmail.de>
+Copyright (C) 2012-2019 Torsten Lilge <ttl-octave@mailbox.org>
 Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
  All rights reserved.
  Contact: Nokia Corporation (qt-info@nokia.com)
@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDialog>
 
 #include "octave-qscintilla.h"
+#include "octave-dock-widget.h"
 
 class QCheckBox;
 class QDialogButtonBox;
@@ -75,41 +76,38 @@ class QPushButton;
 
 namespace octave
 {
+  class base_qobject;
+  class file_editor;
+
   class find_dialog : public QDialog
   {
     Q_OBJECT
 
   public:
 
-    typedef struct
-      {
-        QList<QAction *>  actions;
-        QString           text;
-        QString           replace_text;
-        QRect             geometry;
-        bool              is_visible;
-        int               options;
-      } find_dialog_data;
+    find_dialog (base_qobject& oct_qobj, octave_dock_widget *ed, QWidget *p);
 
-    enum find_dialog_options
-      {
-        FIND_DLG_MORE  = 1,
-        FIND_DLG_CASE  = 2,
-        FIND_DLG_START = 4,
-        FIND_DLG_WRAP  = 8,
-        FIND_DLG_REGX  = 16,
-        FIND_DLG_WORDS = 32,
-        FIND_DLG_BACK  = 64,
-        FIND_DLG_SEL   = 128
-      };
+    void find_next (void);
+    void find_prev (void);
 
-    find_dialog (octave_qscintilla *edit_area, QList<QAction *> find_actions,
-                 QWidget *parent = nullptr);
+    //! Set dialog visible or not and storing the new visibility state
+    void set_visible (bool visible);
+
+    //! Init the search text with the selected text in the editor tab
     void init_search_text (void);
-    void save_data (find_dialog_data *fdlg_data);
-    void restore_data (const find_dialog_data *fdlg_data);
+
+    //! Restore position and the search options from the given settings
+    //! where def_pos is the default position suitable for the current
+    //! editor position
+    void restore_settings (QPoint def_pos);
+
+  public slots:
+
+    //! Slot for updating the edit area when the active tab has changed
+    void update_edit_area (octave_qscintilla*);
 
   private slots:
+
     void handle_sel_search_changed (int);
     void handle_selection_changed (bool has_selected);
 
@@ -117,15 +115,26 @@ namespace octave
     void handle_search_text_changed (QString new_search_text);
 
     void find (bool forward = true);
-    void find_next (void);
-    void find_prev (void);
     void replace (void);
     void replace_all (void);
 
   private:
 
+    base_qobject& m_octave_qobj;
+
+    //! Save position and the search options in the given settings
+    void save_settings ();
+
+    //! Reimplemented slot: close instead of hiding
+    void reject ();
+
+    //! Reimplemented close event
+    void closeEvent (QCloseEvent* e);
+
     void no_matches_message (void);
     void do_replace (void);
+
+    octave_dock_widget *m_editor;
 
     QLabel            *_search_label;
     QLineEdit         *_search_line_edit;
@@ -153,6 +162,8 @@ namespace octave
     bool               m_in_sel;
     int                m_sel_beg;
     int                m_sel_end;
+
+    QPoint             m_last_position;
   };
 }
 

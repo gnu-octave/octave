@@ -2,7 +2,7 @@
 
 Find dialog derived from an example from Qt Toolkit (license below (**))
 
-Copyright (C) 2012-2019 Torsten <ttl@justmail.de>
+Copyright (C) 2012-2019 Torsten Lilge <ttl-octave@mailbox.org>
 Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
  All rights reserved.
  Contact: Nokia Corporation (qt-info@nokia.com)
@@ -77,14 +77,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 
 #include "find-dialog.h"
+#include "gui-preferences-ed.h"
+#include "resource-manager.h"
+#include "octave-qobject.h"
 
 namespace octave
 {
-  find_dialog::find_dialog (octave_qscintilla *edit_area,
-                            QList<QAction *> find_actions, QWidget *p)
-    : QDialog (p), m_in_sel (false), m_sel_beg (-1), m_sel_end (-1)
+  find_dialog::find_dialog (base_qobject& oct_qobj,
+                            octave_dock_widget *ed, QWidget *p)
+    : QDialog (p), m_octave_qobj (oct_qobj), m_editor (ed),
+      m_in_sel (false), m_sel_beg (-1), m_sel_end (-1)
   {
-    setWindowTitle (tr ("Find and Replace"));
+    setWindowTitle (tr ("Editor: Find and Replace"));
     setWindowIcon (QIcon (":/actions/icons/find.png"));
 
     _search_label = new QLabel (tr ("Find &what:"));
@@ -121,10 +125,7 @@ namespace octave
     _backward_check_box = new QCheckBox (tr ("Search &backward"));
     _search_selection_check_box = new QCheckBox (tr ("Search se&lection"));
     _search_selection_check_box->setCheckable (true);
-    if (edit_area)
-      _search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
 
-    _edit_area = edit_area;
     connect (_find_next_button,   SIGNAL (clicked ()),
              this,                SLOT (find_next ()));
     connect (_find_prev_button,   SIGNAL (clicked ()),
@@ -142,8 +143,6 @@ namespace octave
     connect (_search_line_edit,   SIGNAL (textChanged (QString)),
              this,                SLOT (handle_search_text_changed (QString)));
 
-    connect (_edit_area, SIGNAL (copyAvailable (bool)),
-             this,       SLOT (handle_selection_changed (bool)));
     connect (_search_selection_check_box, SIGNAL (stateChanged (int)),
              this,                        SLOT (handle_sel_search_changed (int)));
 
@@ -181,27 +180,48 @@ namespace octave
     _rep_all = 0;
     _rep_active = false;
 
-    // set the actions
-    addActions (find_actions);
+    // Connect required external signals
+    connect (ed, SIGNAL (edit_area_changed (octave_qscintilla*)),
+             this, SLOT (update_edit_area (octave_qscintilla*)));
 
-    // move dialog to side of the parent if there is room on the desktop to do so.
-    int xp = p->x () +20;
-    int yp = p->y () + p->frameGeometry ().height () - sizeHint ().height () -20;
+    setWindowModality (Qt::NonModal);
 
-    if (yp < 0)
-      yp = 0;
-
-    move (xp, yp);
-
+    setAttribute(Qt::WA_ShowWithoutActivating);
+    setAttribute(Qt::WA_DeleteOnClose);
   }
 
-  void find_dialog::save_data (find_dialog_data *fdlg_data)
+  // The edit_area has changed: update relevant data of the file dialog
+  void find_dialog::update_edit_area (octave_qscintilla* edit_area)
   {
-    fdlg_data->text = _search_line_edit->text ();
-    fdlg_data->replace_text = _replace_line_edit->text ();
-    fdlg_data->geometry = geometry ();
-    fdlg_data->is_visible = isVisible ();
-    fdlg_data->options = 0
+    _edit_area = edit_area;
+    _search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
+
+    connect (_edit_area, SIGNAL (copyAvailable (bool)),
+             this,       SLOT (handle_selection_changed (bool)),
+             Qt::UniqueConnection);
+  }
+
+  void find_dialog::save_settings ()
+  {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *s = rmgr.get_settings ();
+
+    // Save position and fix offset it by the frame geometry
+    int fy = 2;
+    if (m_editor->isFloating ())
+      fy = 1;
+
+    int dy = geometry ().y () - frameGeometry ().y ();
+    QPoint dlg_pos = pos ();
+
+    m_last_position = QPoint (dlg_pos.x (), dlg_pos.y () + fy*dy);
+
+    s->setValue (ed_fdlg_pos.key, m_last_position);
+
+    s->setValue (ed_fdlg_search.key, _search_line_edit->text ());
+    s->setValue (ed_fdlg_replace.key, _replace_line_edit->text ());
+
+    int opts = 0
           + _extension->isVisible () * FIND_DLG_MORE
           + _case_check_box->isChecked () * FIND_DLG_CASE
           + _from_start_check_box->isChecked () * FIND_DLG_START
@@ -210,22 +230,37 @@ namespace octave
           + _whole_words_check_box->isChecked () * FIND_DLG_WORDS
           + _backward_check_box->isChecked () * FIND_DLG_BACK
           + _search_selection_check_box->isChecked () * FIND_DLG_SEL;
+    s->setValue (ed_fdlg_opts.key, opts);
+
+    s->sync ();
   }
 
-  void find_dialog::restore_data (const find_dialog_data* fdlg_data)
+  void find_dialog::restore_settings (QPoint ed_bottom_right)
   {
-    setGeometry (fdlg_data->geometry);
-    setVisible (fdlg_data->is_visible);
-    _search_line_edit->setText (fdlg_data->text);
-    _replace_line_edit->setText (fdlg_data->replace_text);
-    _extension->setVisible (FIND_DLG_MORE & fdlg_data->options);
-    _case_check_box->setChecked (FIND_DLG_CASE & fdlg_data->options);
-    _from_start_check_box->setChecked (FIND_DLG_START & fdlg_data->options);
-    _wrap_check_box->setChecked (FIND_DLG_WRAP & fdlg_data->options);
-    _regex_check_box->setChecked (FIND_DLG_REGX & fdlg_data->options);
-    _whole_words_check_box->setChecked (FIND_DLG_WORDS & fdlg_data->options);
-    _backward_check_box->setChecked (FIND_DLG_BACK & fdlg_data->options);
-    _search_selection_check_box->setChecked (FIND_DLG_SEL & fdlg_data->options);
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *s = rmgr.get_settings ();
+
+    _search_line_edit->setText (s->value (ed_fdlg_search.key).toString ());
+    _replace_line_edit->setText (s->value (ed_fdlg_replace.key).toString ());
+
+    int opts = s->value (ed_fdlg_opts.key, ed_fdlg_opts.def).toInt ();
+
+    _extension->setVisible (FIND_DLG_MORE & opts);
+    _case_check_box->setChecked (FIND_DLG_CASE & opts);
+    _from_start_check_box->setChecked (FIND_DLG_START & opts);
+    _wrap_check_box->setChecked (FIND_DLG_WRAP & opts);
+    _regex_check_box->setChecked (FIND_DLG_REGX & opts);
+    _whole_words_check_box->setChecked (FIND_DLG_WORDS & opts);
+    _backward_check_box->setChecked (FIND_DLG_BACK & opts);
+    _search_selection_check_box->setChecked (FIND_DLG_SEL & opts);
+
+    // Position:  lower right of editor's position
+    int xp = ed_bottom_right.x () - sizeHint ().width ();
+    int yp = ed_bottom_right.y () - sizeHint ().height ();
+
+    m_last_position = s->value (ed_fdlg_pos.key, QPoint (xp,yp)).toPoint ();
+
+    move (m_last_position);
   }
 
   // set text of "search from start" depending on backward search
@@ -510,6 +545,33 @@ namespace octave
                          tr ("No more matches found"), QMessageBox::Ok, this);
     msg_box.exec ();
   }
-}
 
+  void find_dialog::reject ()
+  {
+    close ();
+  }
+
+  void find_dialog::closeEvent (QCloseEvent *e)
+  {
+    save_settings ();
+    e->accept ();
+  }
+
+  // Show and hide with (re-)storing position, otherwise there is always
+  // a small shift each time the dialog is shown again
+  void find_dialog::set_visible (bool visible)
+  {
+    if (visible)
+      {
+        show ();
+        move (m_last_position);
+      }
+    else
+      {
+        m_last_position = pos ();
+        hide ();
+      }
+  }
+
+}
 #endif

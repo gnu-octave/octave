@@ -49,7 +49,7 @@ public:
   void operator delete (void *p, size_t size);
 #endif
 
-  idx_vector index_vector (void) const { return idx_vector ((double) scalar); }
+  idx_vector index_vector (bool) const { return idx_vector ((double) scalar); }
 
   int rows (void) const { return 1; }
   int columns (void) const { return 1; }
@@ -273,6 +273,12 @@ DEFUN_DLD (doit, args, ,
            "doit (I)")
 {
   octave_value_list retval;
+
+  if (args.length () != 1)
+    {
+      print_usage ();
+      return retval;
+    }
 
   if (args(0).type_id () == octave_integer::static_type_id ())
     {

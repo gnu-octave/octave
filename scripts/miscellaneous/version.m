@@ -54,6 +54,10 @@
 ## the mercurial ID of the sources used to build Octave.
 ## @end table
 ##
+## The information returned for the @qcode{"-blas"} and @qcode{"-lapack"}
+## options might be unreliable.  It might report which library was linked in
+## when Octave was built instead of which library is currently used.
+##
 ## The variant with no input and output argument is an alias for the function
 ## @w{@env{OCTAVE_VERSION}} provided for compatibility.
 ## @seealso{OCTAVE_VERSION, ver}

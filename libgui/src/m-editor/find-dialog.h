@@ -87,9 +87,6 @@ namespace octave
 
     find_dialog (base_qobject& oct_qobj, octave_dock_widget *ed, QWidget *p);
 
-    void find_next (void);
-    void find_prev (void);
-
     //! Set dialog visible or not and storing the new visibility state
     void set_visible (bool visible);
 
@@ -102,6 +99,9 @@ namespace octave
     void restore_settings (QPoint def_pos);
 
   public slots:
+
+    void find_next (void);
+    void find_prev (void);
 
     //! Slot for updating the edit area when the active tab has changed
     void update_edit_area (octave_qscintilla*);

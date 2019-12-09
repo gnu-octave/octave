@@ -231,7 +231,6 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
     add_safe_listener (hl, hf, "colormap", ...
                        @() set (hl, "colormap", get (hax, "colormap")));
-    add_safe_listener (hl, hf, "position", {@maybe_update_layout_cb, hl});
 
     add_safe_listener (hl, hax, "position", {@maybe_update_layout_cb, hl});
     add_safe_listener (hl, hax, "tightinset", ...
@@ -463,18 +462,6 @@ function addproperties (hl)
 
 endfunction
 
-function pos = get_position_points (h)
-
-  units = get (h, "units");
-  unwind_protect
-    set (h, "units", "points");
-    pos = get (h, "position");
-  unwind_protect_cleanup
-    set (h, "units", units);
-  end_unwind_protect
-
-endfunction
-
 function maybe_update_layout_cb (h, d, hl)
 
   persistent updating = false;
@@ -483,31 +470,17 @@ function maybe_update_layout_cb (h, d, hl)
 
     unwind_protect
       updating = true;
-      if (isaxes (h))
-        pos = get_position_points (h);
-        old_pos = getappdata (hl, "__peer_axes_position__");
-        if (! all (pos == old_pos))
-          update_layout_cb (hl);
-          setappdata (hl, "__peer_axes_position__", pos);
-        endif
-      elseif (isfigure (h))
-        pos = get_position_points (h)(3:4);
-        old_pos = getappdata (hl, "__peer_figure_position__");
-        if (isempty (old_pos) || ! all (pos == old_pos))
-          update_layout_cb (hl);
-          setappdata (hl, "__peer_figure_position__", pos);
-        endif
+      units = get (h, "units");
+      set (h, "units", "points");
+      pos = get (h, "position");
+      set (h, "units", units);
+      old_pos = getappdata (hl, "__peer_axes_position__");
+      
+      if (! all (pos == old_pos))
+        update_layout_cb (hl);
+        setappdata (hl, "__peer_axes_position__", pos);
       endif
     unwind_protect_cleanup
-      ## FIXME: If the parent is an uipanel, asynchronous events that affect
-      ## the "position" and "tightinset" properties are emitted.
-      ## Since those events are asynchronous, there is no recursion (which we
-      ## can stop using the "updating" variable) and this leeds to an infinite
-      ## execution of listeners. Porcessing graphics events here seems to fix
-      ## the issue but is this reliable?
-      if (strcmp (get (get (hl, "parent"), "type"), "uipanel"))
-        pause (0.01);
-      endif
       updating = false;
     end_unwind_protect
 

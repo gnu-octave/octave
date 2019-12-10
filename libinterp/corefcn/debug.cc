@@ -1144,7 +1144,7 @@ Leave command-line debugging mode and continue code execution normally.
 
 DEFMETHOD (dbquit, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} dbquit
+@deftypefn  {} {} dbquit
 @deftypefnx {} {} dbquit all
 Quit debugging mode immediately without further code execution.  With no
 arguments, exit the current debugging level.  With argument @code{all},

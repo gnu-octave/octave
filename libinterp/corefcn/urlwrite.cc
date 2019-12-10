@@ -274,7 +274,7 @@ s = urlread ("http://www.google.com/search", "get",
 
 DEFUN (__restful_service__, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{response} =} __restful_service__ (@var{url}, @var{param}, @var{weboptions})
+@deftypefn {} {@var{response} =} __restful_service__ (@var{url}, @var{param}, @var{weboptions})
 Undocumented internal function.
 @end deftypefn */)
 {

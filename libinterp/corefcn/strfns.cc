@@ -979,7 +979,8 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
 DEFUN (__locale_charset__, , ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{charset} =} __locale_charset__ ()
-Return the identifier for the charset used if the encoding is set to "locale".
+Return the identifier for the charset used if the encoding is set to
+@qcode{"locale"}.
 @end deftypefn */)
 {
   const char *charset = octave_locale_charset_wrapper ();

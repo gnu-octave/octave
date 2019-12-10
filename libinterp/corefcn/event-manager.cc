@@ -596,7 +596,7 @@ DEFMETHOD (commandhistory, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} commandhistory ()
 Show the GUI command history window and give it the keyboard focus.
-@seealso{commandwindow, filebrowser, workspace} 
+@seealso{commandwindow, filebrowser, workspace}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -611,7 +611,7 @@ DEFMETHOD (commandwindow, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} commandwindow ()
 Show the GUI command window and give it the keyboard focus.
-@seealso{commandhistory, filebrowser, workspace} 
+@seealso{commandhistory, filebrowser, workspace}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -626,7 +626,7 @@ DEFMETHOD (filebrowser, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} filebrowser ()
 Show the GUI file browser window and give it the keyboard focus.
-@seealso{commandwindow, commandhistory, workspace} 
+@seealso{commandwindow, commandhistory, workspace}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -641,7 +641,7 @@ DEFMETHOD (workspace, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} workspace ()
 Show the GUI workspace window and give it the keyboard focus.
-@seealso{commandwindow, commandhistory, filebrowser} 
+@seealso{commandwindow, commandhistory, filebrowser}
 @end deftypefn */)
 {
   if (args.length () != 0)

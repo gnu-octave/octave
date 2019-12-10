@@ -489,7 +489,7 @@ Open a file for low-level I/O or query open files and file descriptors.
 
 The first form of the @code{fopen} function opens the named file with
 the specified mode (read-write, read-only, etc.@:), architecture
-interpretation (IEEE big endian, IEEE little endian, etc.) and file encoding,
+interpretation (IEEE big endian, IEEE little endian, etc.@:) and file encoding,
 and returns an integer value that may be used to refer to the file later.  If
 an error occurs, @var{fid} is set to @minus{}1 and @var{msg} contains the
 corresponding system error message.  The @var{mode} is a one or two

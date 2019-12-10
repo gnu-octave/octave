@@ -502,10 +502,10 @@ streameuler3d_internal (const octave_value_list& args, const char *fcn)
 
 DEFUN (streameuler2d, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} streameuler2d (@var{U}, @var{V}, @var{TX}, @var{TY}, @var{ZETA}, @var{XI}, @var{H}, @var{MAXNVERTS})
+@deftypefn {} {} streameuler2d (@var{U}, @var{V}, @var{TX}, @var{TY}, @var{ZETA}, @var{XI}, @var{H}, @var{MAXNVERTS})
 Calculates the streamline in a vector field [@var{U}, @var{V}] starting from a
-seed point at position [@var{ZETA}, @var{XI}]. The integrator used is
-Heun's Scheme. The step size can be controlled by @var{H}. The Jacobian
+seed point at position [@var{ZETA}, @var{XI}].  The integrator used is
+Heun's Scheme.  The step size can be controlled by @var{H}.  The Jacobian
 matrix can be defined for each grid cell by [@var{TX}, @var{TY}].
 
 @seealso{streamline, stream2, stream3, streameuler3d}
@@ -516,11 +516,12 @@ matrix can be defined for each grid cell by [@var{TX}, @var{TY}].
 
 DEFUN (streameuler3d, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} streameuler3d (@var{U}, @var{V}, @var{W}, @var{TX}, @var{TY}, @var{TZ}, @var{ZETA}, @var{XI}, @var{RHO}, @var{H}, @var{MAXNVERTS})
-Calculates the streamline in a vector field [@var{U}, @var{V}, @var{W}] starting
-from a seed point at position [@var{ZETA}, @var{XI}, @var{RHO}]. The integrator
-used is Heun's Scheme. The step size can be controlled by @var{H}. The Jacobian
-matrix can be defined for each grid cell by [@var{TX}, @var{TY}, @var{TZ}].
+@deftypefn {} {} streameuler3d (@var{U}, @var{V}, @var{W}, @var{TX}, @var{TY}, @var{TZ}, @var{ZETA}, @var{XI}, @var{RHO}, @var{H}, @var{MAXNVERTS})
+Calculates the streamline in a vector field [@var{U}, @var{V}, @var{W}]
+starting from a seed point at position [@var{ZETA}, @var{XI}, @var{RHO}].  The
+integrator used is Heun's Scheme.  The step size can be controlled by @var{H}.
+ The Jacobian matrix can be defined for each grid cell by [@var{TX}, @var{TY},
+@var{TZ}].
 
 @seealso{streamline, stream2, stream3, streameuler2d}
 @end deftypefn */)

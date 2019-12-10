@@ -192,7 +192,7 @@ endfunction
 %! assert (c, [1, 4 ,5; 7, 9 7]);
 %! assert (ia, [5; 3]);
 
-## Output orientation with "legacy" option 
+## Output orientation with "legacy" option
 %!assert (size (setdiff ([1:5], [2:3], "legacy")), [1, 3])
 %!assert (size (setdiff ([1:5]', [2:3], "legacy")), [1, 3])
 %!assert (size (setdiff ([1:5], [2:3]', "legacy")), [1, 3])

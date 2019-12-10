@@ -45,5 +45,5 @@ function runtests (varargin)
              "runtests is obsolete and will be removed from a future version of Octave, please use oruntests instead\n");
   endif
 
-  oruntests (varargin{:}); 
+  oruntests (varargin{:});
 endfunction

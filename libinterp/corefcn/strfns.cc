@@ -1088,9 +1088,9 @@ line2
 {
   if (args.length () != 0)
   print_usage ();
- 
+
   static octave_value_list retval = ovl ("\n");
- 
+
   return retval;
 }
 

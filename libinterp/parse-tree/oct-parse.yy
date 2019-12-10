@@ -5359,7 +5359,7 @@ does.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  if (! args(0).is_string () || args(0).rows () > 1 || args(0).ndims () != 2) 
+  if (! args(0).is_string () || args(0).rows () > 1 || args(0).ndims () != 2)
     error ("eval: TRY must be a string");
 
   std::string try_code = args(0).string_value ();
@@ -5369,7 +5369,7 @@ does.
   else
     {
       if (! args(1).is_string () || args(1).rows () > 1
-          || args(1).ndims () != 2) 
+          || args(1).ndims () != 2)
         error ("eval: CATCH must be a string");
 
       std::string catch_code = args(1).string_value ();

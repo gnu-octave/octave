@@ -169,7 +169,7 @@ endfunction
 %! y0 = movstd (x, 4, 0);
 %! assert (y, y0);
 %! y1 = movstd (x, 4, 1);
-%! assert (y1(1:3), sqrt ([1/4, 2/3, 5/4])); 
+%! assert (y1(1:3), sqrt ([1/4, 2/3, 5/4]));
 
 ## Test input validation
 %!error movstd ()

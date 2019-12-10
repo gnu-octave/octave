@@ -102,7 +102,7 @@ function [status, h, url] = web (url, varargin)
   if (any (strcmp (varargin, "-browser")))
     url = [];
   endif
-  
+
   if (nargout > 0)
     status = sts;
   endif

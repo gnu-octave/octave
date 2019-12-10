@@ -22,7 +22,7 @@
 ## @code{sizemax} is deprecated and will be removed in Octave version 8.
 ##
 ## Return the largest value allowed for the size of an array.
-## 
+##
 ## If Octave is compiled with 64-bit indexing, the result is of class int64,
 ## otherwise it is of class int32.  The maximum array size is slightly smaller
 ## than the maximum value allowable for the relevant class as reported by

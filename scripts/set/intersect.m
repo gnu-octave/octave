@@ -235,7 +235,7 @@ endfunction
 
 ## Test "legacy" argument
 %!test
-%! a = [7 1 7 7 4]; 
+%! a = [7 1 7 7 4];
 %! b = [7 0 4 4 0];
 %! [c, ia, ib] = intersect (a, b);
 %! assert (c, [4, 7]);

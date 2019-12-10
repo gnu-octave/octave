@@ -49,7 +49,7 @@
 ##
 ## The optional string argument @qcode{"@var{nancond}"} controls whether
 ## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
-## or excluded (@qcode{"omitnan"}), from the data passed to @code{movprod}. 
+## or excluded (@qcode{"omitnan"}), from the data passed to @code{movprod}.
 ## The default is @qcode{"includenan"}.  Caution: the @qcode{"omitnan"}
 ## option is not yet implemented.
 ##

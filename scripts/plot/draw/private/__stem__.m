@@ -362,7 +362,8 @@ function update_xlim (h, ~)
 
   for i = 1 : length (kids)
     obj = get (kids(i));
-    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline"))
+    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline")
+        && ! strcmp (obj.beingdeleted, "on"))
       if (any (get (obj.baseline, "xdata") != xlim))
         set (obj.baseline, "xdata", xlim);
       endif

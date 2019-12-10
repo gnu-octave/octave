@@ -26,7 +26,7 @@
 ## This function may be used, for example, to reduce the impact of noise in
 ## @var{data} before calculating isosurfaces.
 ##
-## @var{data} must be a non-singleton 3-dimensional matrix.  The output 
+## @var{data} must be a non-singleton 3-dimensional matrix.  The output
 ## @var{smoothed_data} is a matrix of the same size as @var{data}.
 ##
 ## The option input @var{method} determines which convolution kernel is used

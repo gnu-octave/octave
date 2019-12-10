@@ -47,7 +47,7 @@
 ## @end example
 ##
 ## @noindent
-## installs the package found in the given URL.  This
+## installs the package found in the given URL@.  This
 ## requires an internet connection and the cURL library.
 ##
 ## @noindent
@@ -186,8 +186,10 @@
 ## Display can be limited to a set of packages:
 ##
 ## @example
+## @group
 ## ## describe control and signal packages
 ## pkg describe control signal
+## @end group
 ## @end example
 ##
 ## If one output is requested a cell of structure containing the

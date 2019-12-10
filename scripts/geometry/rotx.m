@@ -21,7 +21,7 @@
 ##
 ## @code{rotx} returns the 3x3 transformation matrix corresponding to an active
 ## rotation of the vector about the x-axis by the specified @var{angle}, given
-## in degrees, where a positive angle corresponds to a counter-clockwise
+## in degrees, where a positive angle corresponds to a counterclockwise
 ## rotation when viewing the y-z plane from the positive x side.
 ##
 ## The form of the transformation matrix is:

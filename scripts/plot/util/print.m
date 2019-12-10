@@ -114,10 +114,10 @@
 ##   Specifies whether the opengl (pixel-based) or painters (vector-based)
 ## renderer is used.  This is equivalent to changing the figure's
 ## @qcode{"Renderer"} property.  When the figure @code{RendererMode} property
-## is @qcode{"auto"} (the default) Octave will use the @qcode{"opengl"} renderer
-## for raster formats (e.g., JPEG) and @qcode{"painters"} for vector formats
-## (e.g., PDF).
-## Those options are only supported for the "qt" graphics tookit.
+## is @qcode{"auto"} (the default) Octave will use the @qcode{"opengl"}
+## renderer for raster formats (e.g., JPEG) and @qcode{"painters"} for
+## vector formats (e.g., PDF).  Those options are only supported for the "qt"
+## graphics tookit.
 ##
 ## @item -svgconvert
 ##   When using the -painters renderer, this enables a different backend
@@ -127,11 +127,14 @@
 ## @item Font handling:
 ## The actual font is embedded in the output file which allows for printing
 ## arbitrary characters and fonts in all vector formats.
+##
 ## @item Output Simplification:
-## By default, the @code{-painters} renders patch and surface objects
+## By default, the @option{-painters} renders patch and surface objects
 ## using assemblies of triangles.  This may lead to anti-aliasing
-## artifacts when viewing the file. The @code{-svgconvert} option reconstructs
-## polygons in order to avoid those artifacts (particularly for 2-D figures).
+## artifacts when viewing the file.  The @option{-svgconvert} option
+## reconstructs polygons in order to avoid those artifacts (particularly for
+## 2-D figures).
+##
 ## @item Transparency:
 ## Allows for printing transparent graphics objects in PDF format.
 ## For PostScript formats the presence of any transparent object will cause the
@@ -257,7 +260,7 @@
 ##     Encapsulated PostScript (level 1 and 2, mono and color).
 ##
 ## The OpenGL-based graphics toolkits always generate PostScript level 3.0.
-## They have limited support for text unless using the @code{-svgconvert}
+## They have limited support for text unless using the @option{-svgconvert}
 ## option.
 ## Limitations include using only ASCII characters (e.g., no Greek letters)
 ## and support for just three base PostScript fonts: Helvetica (the default),

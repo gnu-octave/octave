@@ -55,9 +55,9 @@
 ## @example
 ## @group
 ## unique ([3, 1, 1, 2])
-## @result{} [1, 2, 3] 
+## @result{} [1, 2, 3]
 ## unique ([3, 1, 1, 2], "stable")
-## @result{} [3, 1, 2] 
+## @result{} [3, 1, 2]
 ## @end group
 ## @end example
 ##
@@ -66,9 +66,9 @@
 ## @example
 ## @group
 ## [~, @var{i}] = unique ([3, 1, 1, 2], "first")
-## @result{} @var{i} = [2; 4; 1] 
+## @result{} @var{i} = [2; 4; 1]
 ## [~, @var{i}] = unique ([3, 1, 1, 2], "last")
-## @result{} @var{i} = [3; 4; 1] 
+## @result{} @var{i} = [3; 4; 1]
 ## @end group
 ## @end example
 ##

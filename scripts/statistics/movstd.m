@@ -100,8 +100,8 @@
 ## @code{@var{y}(1) = movstd ([NaN, @var{x}(1:2)])}, and
 ## @code{@var{y}(end) = movstd ([@var{x}(end-1:end), NaN])}.
 ## This option usually results in @var{y} having @code{NaN} values at the
-## boundaries, although it is influenced by how @code{movstd} handles @code{NaN},
-## and also by the property @qcode{"nancond"}.
+## boundaries, although it is influenced by how @code{movstd} handles
+## @code{NaN}, and also by the property @qcode{"nancond"}.
 ##
 ## @item @var{user_value}
 ## Any window elements outside the data array are replaced by the specified

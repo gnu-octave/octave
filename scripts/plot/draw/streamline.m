@@ -22,20 +22,20 @@
 ## @deftypefnx {} {} streamline (@dots{}, "@var{options}")
 ## @deftypefnx {} {} streamline (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} streamline (@dots{})
-## Plot streamlines of 2D or 3D vector fields.
+## Plot streamlines of 2-D or 3-D vector fields.
 ##
-## Plot streamlines of a 2D or 3D vector field given by
-## [@var{u}, @var{v}] or [@var{u}, @var{v}, @var{w}]. The vector field
-## is defined over a rectangular grid given by [@var{x}, @var{y}]
-## or [@var{x}, @var{y}, @var{z}]. The streamlines start at the seed
-## points [@var{sx}, @var{sy}] or [@var{sx}, @var{sy}, @var{sz}].
+## Plot streamlines of a 2-D or 3-D vector field given by
+## @code{[@var{u}, @var{v}]} or @code{[@var{u}, @var{v}, @var{w}]}.  The vector
+## field is defined over a rectangular grid given by @code{[@var{x}, @var{y}]}
+## or @code{[@var{x}, @var{y}, @var{z}]}.  The streamlines start at the seed
+## points @code{[@var{sx}, @var{sy}]} or @code{[@var{sx}, @var{sy}, @var{sz}]}.
 ##
-## The input parameter @var{options} is a 2D vector of the form
-## [@var{stepsize}, @var{maxnumbervertices}]. The first parameter specifies
-## the step size used for trajectory integration (default 0.1). It is
-## allowed to set a negative value to control the direction of integration.
+## The input parameter @var{options} is a 2-D vector of the form
+## @code{[@var{stepsize}, @var{maxnumbervertices}]}.  The first parameter
+## specifies the step size used for trajectory integration (default 0.1).  It
+## is allowed to set a negative value to control the direction of integration.
 ## The second parameter specifies the maximum number of segments used to
-## create a streamline (default 10000).
+## create a streamline (default 10,000).
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
@@ -54,7 +54,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{stream2, stream3}
+## @seealso{stream2, stream3, streamtube}
 ##
 ## @end deftypefn
 

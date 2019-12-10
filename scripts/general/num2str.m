@@ -30,7 +30,6 @@
 ## Examples:
 ##
 ## @example
-## @group
 ## num2str (123.456)
 ##   @result{} 123.456
 ##
@@ -50,7 +49,6 @@
 ##
 ## num2str (1.234 + 27.3i)
 ##   @result{} 1.234+27.3i
-## @end group
 ## @end example
 ##
 ## The @code{num2str} function is not very flexible.  For better control

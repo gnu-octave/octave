@@ -36,7 +36,7 @@
 ## are taken from the data itself (@w{@code{@var{inmin} = min (A(:))}} and
 ## @w{@code{@var{inmax} = max (A(:))}}).
 ##
-## Programming Notes: 
+## Programming Notes:
 ## The applied formula is
 ##
 ## @tex

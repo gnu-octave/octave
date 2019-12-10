@@ -17,14 +17,14 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{out} =} tar_is_bsd ()
+## @deftypefn {} {@var{out} =} tar_is_bsd ()
 ## True if the default tar command is BSD tar.
 ##
 ## Checks whether the default tar command (the one invoked when an un-prefixed
-## @code{tar} is executed) is BSD tar or another tar. Caches the results for
+## @code{tar} is executed) is BSD tar or another tar.  Caches the results for
 ## performance.
 ##
-## Returns true if the detected tar is BSD tar, and false otherwise. Errors if
+## Returns true if the detected tar is BSD tar, and false otherwise.  Errors if
 ## @code{tar --version} does not succeed.
 ## @end deftypefn
 

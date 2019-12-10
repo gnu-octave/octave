@@ -26,7 +26,7 @@
 ## Create a 2-D plot from polar coordinates @var{theta} and @var{rho}.
 ##
 ## The input @var{theta} is assumed to be radians and is converted to degrees
-## for plotting. If you have degrees then you must convert
+## for plotting.  If you have degrees then you must convert
 ## (@pxref{XREFcart2pol,,cart2pol}) to radians before passing the data to this
 ## function.
 ##

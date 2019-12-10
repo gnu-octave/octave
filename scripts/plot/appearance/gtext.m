@@ -26,19 +26,22 @@
 ##
 ## The string argument @var{s} may be a character array or a cell array
 ## of strings.  If @var{s} has more than one row, each row is used
-## to create a separate text object after a mouse click. For example:
+## to create a separate text object after a mouse click.  For example:
 ##
 ## Place a single string after one mouse click
+##
 ## @example
 ## gtext ("I clicked here")
 ## @end example
 ##
 ## Place two strings after two mouse clicks
+##
 ## @example
 ## gtext (@{"I clicked here"; "and there"@})
 ## @end example
 ##
 ## Place two strings, each with two lines, after two mouse clicks
+##
 ## @example
 ## gtext (@{"I clicked", "here"; "and", "there"@})
 ## @end example

@@ -20,21 +20,21 @@
 ## @deftypefn  {} {@var{xyz} =} stream3 (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
 ## @deftypefnx {} {@var{xyz} =} stream3 (@var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
 ## @deftypefnx {} {@var{xyz} =} stream3 (@dots{}, "@var{options}")
-## Compute 3D streamline data.
+## Compute 3-D streamline data.
 ##
-## Calculates streamlines of a vector field given by [@var{u}, @var{v}, @var{w}].
-## The vector field is defined over a rectangular grid given by
-## [@var{x}, @var{y}, @var{z}]. The streamlines start at the seed points
-## [@var{sx}, @var{sy}, @var{sz}]. The returned value @var{xyz}
-## contains a cell array of vertex arrays. If the starting point is outside
-## the vector field, [] is returned.
+## Calculate streamlines of a vector field given by @code{[@var{u}, @var{v},
+## @var{w}]}.  The vector field is defined over a rectangular grid given by
+## @code{[@var{x}, @var{y}, @var{z}]}.  The streamlines start at the seed
+## points @code{[@var{sx}, @var{sy}, @var{sz}]}.  The returned value @var{xyz}
+## contains a cell array of vertex arrays.  If the starting point is outside
+## the vector field, @code{[]} is returned.
 ##
-## The input parameter @var{options} is a 2D vector of the form
-## [@var{stepsize}, @var{maxnumbervertices}]. The first parameter specifies
-## the step size used for trajectory integration (default 0.1). It is
-## allowed to set a negative value to control the direction of integration.
+## The input parameter @var{options} is a 2-D vector of the form
+## @code{[@var{stepsize}, @var{maxnumbervertices}]}.  The first parameter
+## specifies the step size used for trajectory integration (default 0.1).  It
+## is allowed to set a negative value to control the direction of integration.
 ## The second parameter specifies the maximum number of segments used to
-## create a streamline (default 10000).
+## create a streamline (default 10,000).
 ##
 ## The return value @var{xyz} is a @nospell{nverts x 3} matrix containing the
 ## coordinates of the field line segments.
@@ -51,7 +51,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{streamline, stream2}
+## @seealso{stream2, streamline, streamtube}
 ##
 ## @end deftypefn
 

@@ -120,7 +120,7 @@
 ##
 ## Reference: @nospell{L.F. Shampine},
 ## @cite{@sc{matlab} program for quadrature in 2D}, Applied Mathematics and
-## Computation, pp. 266--274, Vol 1, 2008.
+## Computation, pp.@: 266--274, Vol 1, 2008.
 ##
 ## @seealso{triplequad, integral, quad, quadgk, quadv, quadl,
 ##          quadcc, trapz, integral2, quad2d, dblquad}

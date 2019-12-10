@@ -78,7 +78,7 @@
 ##
 ## @nospell{W. Gautschi},
 ## @cite{A computational procedure for incomplete gamma functions},
-## @nospell{ACM Trans. Math Software}, pp. 466--481, Vol 5, No. 4, 2012.
+## @nospell{ACM Trans.@: Math Software}, pp.@: 466--481, Vol 5, No.@: 4, 2012.
 ##
 ## @nospell{W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery},
 ## @cite{Numerical Recipes in Fortran 77}, ch.@: 6.2, Vol 1, 1992.

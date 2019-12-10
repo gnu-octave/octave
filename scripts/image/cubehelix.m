@@ -35,8 +35,8 @@
 ## If unspecified, the length of the current colormap, or 64, is used.
 ##
 ## Reference: Green, D. A., 2011,
-## @cite{"A @nospell{colour} scheme for the display of astronomical intensity
-## images"}, Bulletin of the Astronomical Society of India, 39, 289.
+## @cite{A @nospell{colour} scheme for the display of astronomical intensity
+## images}, Bulletin of the Astronomical Society of India, 39, 289.
 ##
 ## @seealso{colormap}
 ## @end deftypefn

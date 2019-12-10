@@ -117,7 +117,7 @@
 ##
 ## Reference: @nospell{L.F. Shampine},
 ## @cite{"Vectorized adaptive quadrature in @sc{matlab}"}, Journal of
-## Computational and Applied Mathematics, pp. 131--140, Vol 211, Issue 2,
+## Computational and Applied Mathematics, pp.@: 131--140, Vol 211, Issue 2,
 ## Feb 2008.
 ##
 ## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad, integral,

@@ -437,7 +437,7 @@ in
 Proceedings of the 24th @nospell{ACM} National Conference,
 157--172 1969, Brandon Press, New Jersey.
 
-@nospell{A. George, J.W.H. Liu}. @cite{Computer Solution of Large Sparse
+@nospell{A. George, J.W.H. Liu}.  @cite{Computer Solution of Large Sparse
 Positive Definite Systems}, Prentice Hall Series in Computational
 Mathematics, ISBN 0-13-165274-5, 1981.
 

@@ -74,8 +74,8 @@
 ##
 ## Reference: @nospell{A. Gil, J. Segura, and N. M. Temme}, @cite{Efficient and
 ## accurate algorithms for the computation and inversion of the incomplete
-## gamma function ratios}, @nospell{SIAM J. Sci. Computing}, pp. A2965--A2981,
-## Vol 34, 2012.
+## gamma function ratios}, @nospell{SIAM J. Sci.@: Computing}, pp.@:
+## A2965--A2981, Vol 34, 2012.
 ##
 ## @seealso{gammainc, gamma, gammaln}
 ## @end deftypefn

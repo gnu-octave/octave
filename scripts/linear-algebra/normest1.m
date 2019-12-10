@@ -88,8 +88,8 @@
 ## Reference: @nospell{N. J. Higham and F. Tisseur},
 ## @cite{A block algorithm for matrix 1-norm estimation, with and
 ## application to 1-norm @nospell{pseudospectra}},
-## @nospell{SIAM J. Matrix Anal. Appl.},
-## pp. 1185--1201, Vol 21, No. 4, 2000.
+## @nospell{SIAM J. Matrix Anal.@: Appl.@:},
+## pp.@: 1185--1201, Vol 21, No.@: 4, 2000.
 ##
 ## @seealso{normest, norm, cond, condest}
 ## @end deftypefn

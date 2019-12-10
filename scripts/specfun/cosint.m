@@ -63,8 +63,7 @@
 ## Reference:
 ##
 ## @nospell{M. Abramowitz and I.A. Stegun},
-## @cite{Handbook of Mathematical Functions}
-## 1964.
+## @cite{Handbook of Mathematical Functions}, 1964.
 ##
 ## @seealso{sinint, expint, cos}
 ##

@@ -475,7 +475,7 @@ function maybe_update_layout_cb (h, d, hl)
       pos = get (h, "position");
       set (h, "units", units);
       old_pos = getappdata (hl, "__peer_axes_position__");
-      
+
       if (! all (pos == old_pos))
         update_layout_cb (hl);
         setappdata (hl, "__peer_axes_position__", pos);
@@ -919,7 +919,7 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       typ = creator;
       switch (creator)
         case "__contour__"
-          hplt = [kids(1), kids(end)];
+          hplt = [kids(end), kids(1)];
         case {"__errplot__", "__quiver__", "__stem__"}
           hplt = kids(2:-1:1);
         otherwise
@@ -945,6 +945,7 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
                        "linestyle", "linewidth", ...
                        "marker", "markeredgecolor", ...
                        "markerfacecolor", "markersize"};
+
   switch (typ)
     case {"line", "__errplot__", "__quiver__", "__stem__"}
 
@@ -971,6 +972,12 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       addlistener (hmarker, "markersize", @update_marker_cb);
       add_safe_listener (hl, hplt(1), "beingdeleted",
                          @() delete ([hicon hmarker]))
+      if (! strcmp (typ, "__errplot__"))
+        setappdata (hicon, "__creator__", typ);
+      else
+        setappdata (hicon, "__creator__", typ, ...
+                    "__format__", get (base_hplt, "format"));
+      endif
 
     case {"patch", "surface", "__scatter__"}
 
@@ -979,6 +986,7 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       hicon = __go_patch__ (hl, [pprops; vals]{:});
 
       setappdata (hplt, "__icon_link__", linkprop ([hplt, hicon], pprops));
+      setappdata (hicon, "__creator__", typ);
 
     case "__contour__"
 
@@ -1006,13 +1014,14 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
 
       add_safe_listener (hl, hplt(1), "beingdeleted",
                          @() delete ([hicon htmp]))
+      setappdata (hicon, "__creator__", typ);
+
   endswitch
 
   htxt = __go_text__ (hl, "string", str, txtpval{:});
 
   addproperty ("peer_object", htxt, "double", base_hplt);
   addproperty ("peer_object", hicon, "double", base_hplt);
-  setappdata (hicon, "__creator__", typ);
 
 endfunction
 
@@ -1207,7 +1216,7 @@ endfunction
 function update_icon_position (hicon, xdata, ydata)
   creator = getappdata (hicon, "__creator__");
   switch (creator)
-    case {"line", "__stem__"}
+    case "line"
       set (hicon, "markerxdata", mean (xdata), "markerydata", mean (ydata), ...
            "xdata", xdata, "ydata", [mean(ydata), mean(ydata)]);
     case {"patch", "surface"}
@@ -1227,10 +1236,9 @@ function update_icon_position (hicon, xdata, ydata)
       ydata = [y0, y0, y1, y1];
       set (hicon, ...
            "innerxdata", (xdata-xm) * 0.6 + xm, ...
-           "innerydata", (ydata-ym) * 0.6 + ym, ...
+           "innerydata", (ydata-ym) * 0.4 + ym, ...
            "xdata", xdata, "ydata", ydata);
     case "__errplot__"
-      ## Draw a double arrow
       x0 = xdata(1);
       x1 = xdata(2);
       xm = mean (xdata);
@@ -1238,12 +1246,22 @@ function update_icon_position (hicon, xdata, ydata)
       y1 = ydata(2);
       ym = mean (ydata);
 
-      xdata = [x0, x0, x0, x1, x1, x1, x1, ...
-               xm, xm, xm-2, xm+2, xm, xm, xm-2, xm+2];
-      ydata = [ym+2, ym-2, ym, ym, ym+2, ym-2, ym, ...
-               ym, y0, y0, y0, y0, y1, y1, y1];
+      fmt = getappdata (hicon, "__format__");
+      if (strcmp (fmt, "yerr"))
+        xdata = [xm, xm, xm-2, xm+2, xm, xm, xm-2, xm+2];
+        ydata = [ym, y0, y0, y0, y0, y1, y1, y1];
+      elseif (strcmp (fmt, "xerr"))
+        xdata = [x0+2, x0+2, x0+2, x1-2, x1-2, x1-2, x1-2];
+        ydata = [ym+2, ym-2, ym, ym, ym+2, ym-2, ym];
+      else # "both"
+        xdata = [x0+2, x0+2, x0+2, x1-2, x1-2, x1-2, x1-2, ...
+                 xm, xm, xm-2, xm+2, xm, xm, xm-2, xm+2];
+        ydata = [ym+2, ym-2, ym, ym, ym+2, ym-2, ym, ...
+                 ym, y0, y0, y0, y0, y1, y1, y1];
+      endif
       set (hicon, "markerxdata", xm, "markerydata", ym, ...
            "xdata", xdata, "ydata", ydata);
+
     case "__quiver__"
       ## Draw an arrow
       x0 = xdata(1);
@@ -1255,6 +1273,10 @@ function update_icon_position (hicon, xdata, ydata)
            "xdata", xdata, "ydata", ydata);
     case "__scatter__"
       set (hicon, "xdata", mean(xdata), "ydata", mean(ydata));
+    case "__stem__"
+      xdata(2) -= (get (get (hicon, "peer_object"), "markersize") / 2);
+      set (hicon, "markerxdata", xdata(2), "markerydata", mean (ydata), ...
+           "xdata", xdata, "ydata", [mean(ydata), mean(ydata)]);
   endswitch
 endfunction
 

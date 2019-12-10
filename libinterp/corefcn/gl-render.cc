@@ -3334,8 +3334,6 @@ namespace octave
     if (fl_mode > 0 || el_mode > 0)
       m_glfcns.glMaterialf (LIGHT_MODE, GL_SHININESS, se);
 
-    std::list<std::list<octave_idx_type>>::const_iterator it1;
-
     if (draw_all || ! props.facecolor_is ("none"))
       {
         // FIXME: adapt to double-radio property
@@ -3371,8 +3369,7 @@ namespace octave
             // axes planes at +2.5.
             patch_tesselator tess (this, fc_mode, fl_mode, 1.0);
 
-            it1 = props.coplanar_last_idx.begin ();
-            std::list<octave_idx_type>::const_iterator it2;
+            std::vector<octave_idx_type>::const_iterator it;
             octave_idx_type i_start, i_end;
 
             for (int i = 0; i < nf; i++)
@@ -3381,11 +3378,12 @@ namespace octave
                   continue;
 
                 bool is_non_planar = false;
-                if (props.coplanar_last_idx.size () > 0 && (*it1).size () > 1)
+                if (props.coplanar_last_idx.size () > 0
+                    && props.coplanar_last_idx[i].size () > 1)
                   {
                     is_non_planar = true;
-                    it2 = (*it1).end ();
-                    it2--;
+                    it = props.coplanar_last_idx[i].end ();
+                    it--;
                   }
 
                 // loop over planar subsets of face
@@ -3393,13 +3391,13 @@ namespace octave
                   {
                     if (is_non_planar)
                       {
-                        i_end = *it2;
-                        if (it2 == (*it1).begin ())
+                        i_end = *it;
+                        if (it == props.coplanar_last_idx[i].begin ())
                           i_start = 0;
                         else
                           {
-                            it2--;
-                            i_start = *it2 - 1;
+                            it--;
+                            i_start = *it - 1;
                           }
                       }
                     else
@@ -3460,9 +3458,6 @@ namespace octave
                     tess.end_contour ();
                     tess.end_polygon ();
                   } while (i_start > 0);
-
-                if (is_non_planar)
-                  it1++;
               }
 
             if ((fl_mode > 0) && do_lighting)
@@ -3517,12 +3512,11 @@ namespace octave
             // not supported by glPolygonOffset which is used to do Z offsets.
             patch_tesselator tess (this, ec_mode, el_mode);
 
-            it1 = props.coplanar_last_idx.begin ();
-
             for (int i = 0; i < nf; i++)
               {
                 bool is_non_planar = false;
-                if (props.coplanar_last_idx.size () > 0 && (*it1).size () > 1)
+                if (props.coplanar_last_idx.size () > 0
+                    && props.coplanar_last_idx[i].size () > 1)
                   is_non_planar = true;
                 if (clip_f(i) || is_non_planar)
                   {
@@ -3597,8 +3591,6 @@ namespace octave
                     tess.end_contour ();
                     tess.end_polygon ();
                   }
-                if (is_non_planar)
-                  it1++;
               }
 
             set_linestyle ("-");  // Disable LineStipple

@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "caseless-str.h"
 
@@ -4815,7 +4816,7 @@ public:
 
     bool get_do_lighting (void) const;
 
-    std::list<std::list<octave_idx_type>> coplanar_last_idx;
+    std::vector<std::vector<octave_idx_type>> coplanar_last_idx;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.

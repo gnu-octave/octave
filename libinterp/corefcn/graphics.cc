@@ -9729,11 +9729,11 @@ bool is_coplanar (const Matrix &cov)
   return ev.min () <= tol * ev.max ();
 }
 
-std::list<octave_idx_type>
+std::vector<octave_idx_type>
 coplanar_partition (const Matrix &vert, const Matrix &idx,
                     octave_idx_type nc, octave_idx_type jj)
 {
-  std::list<octave_idx_type> coplanar_ends;
+  std::vector<octave_idx_type> coplanar_ends;
 
   Matrix plane_pivot = Matrix (1, 3, 0.0);
   for (octave_idx_type i = 0; i < 3; i++)
@@ -9861,6 +9861,7 @@ patch::properties::update_data (void)
   if (fcmax > 3 && vert.columns () > 2
       && ! (facecolor_is ("none") && edgecolor_is ("none")))
     {
+      coplanar_last_idx.resize (idx.columns ());
       for (octave_idx_type jj = 0; jj < idx.columns (); jj++)
         {
           if (octave::math::isnan (idx(3,jj)))
@@ -9888,9 +9889,11 @@ patch::properties::update_data (void)
           if (is_unclosed)
             continue;
 
-          coplanar_last_idx.push_back (coplanar_partition (vert, idx, nc, jj));
+          coplanar_last_idx[jj] = coplanar_partition (vert, idx, nc, jj);
         }
     }
+  else
+    coplanar_last_idx.resize (0);
 
   // Build cdata
   dim_vector dv = dim_vector::alloc (3);
@@ -9985,21 +9988,13 @@ patch::properties::calc_face_normals (Matrix& fn)
     }
 
   // Calculate normals for all faces
-  std::list<std::list<octave_idx_type>>::const_iterator
-    cp_it = coplanar_last_idx.begin ();
   octave_idx_type i1, i2, i3;
   octave_idx_type j1, j2;
   for (octave_idx_type i = 0; i < num_f; i++)
     {
       bool is_coplanar = true;
-      if (coplanar_last_idx.size () > 0)
-        {
-          if ((*cp_it).size () > 1)
-          {
-            is_coplanar = false;
-          }
-          cp_it++;
-        }
+      if (coplanar_last_idx.size () > 0 && coplanar_last_idx[i].size () > 1)
+        is_coplanar = false;
 
       // get number of corners
       octave_idx_type nc = 3;

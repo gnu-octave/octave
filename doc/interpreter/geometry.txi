@@ -454,15 +454,15 @@ The output of the above can be seen in @ref{fig:griddata}.
 @section Vector Rotation Matrices
 
 Also included in Octave's geometry functions are primitive functions to enable
-vector rotations in 3 dimensional space. Separate functions are provided for
+vector rotations in 3-dimensional space.  Separate functions are provided for
 rotation about each of the principle axes, @var{x}, @var{y}, and @var{z}.
 According to Euler's rotation theorem, any arbitrary rotation, @var{R}, of any
-vector, @var{p}, can be expressed as a product of the three principle rotations:
+vector, @var{p}, can be expressed as a product of the three principle
+rotations:
 
 @tex
 $p' = R \cdot p = R_z \cdot R_y \cdot R_x \cdot p$
 @end tex
-
 @ifnottex
 @example
 p' = Rp = Rz*Ry*Rx*p

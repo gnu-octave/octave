@@ -175,10 +175,14 @@ Examples:
 @group
 strfind ("abababa", "aba")
      @result{} [1, 3, 5]
+@end group
 
+@group
 strfind ("abababa", "aba", "overlaps", false)
      @result{} [1, 5]
+@end group
 
+@group
 strfind (@{"abababa", "bebebe", "ab"@}, "aba")
      @result{}
         @{
@@ -189,7 +193,9 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
           [1,2] = [](1x0)
           [1,3] = [](1x0)
         @}
+@end group
 
+@group
 strfind ("abababa", "aba", "forcecelloutput", true)
      @result{}
         @{

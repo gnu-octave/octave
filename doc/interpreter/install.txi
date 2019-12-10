@@ -658,7 +658,7 @@ to use 64-bit integers, but most systems do not provide packages built
 this way.  If you wish to experiment with large arrays, the following
 information may be helpful.
 
-To determine the integer size of the BLAS library used by Octave, the
+To determine the integer size of the @sc{blas} library used by Octave, the
 following code can be executed:
 
 @example
@@ -671,7 +671,7 @@ c = a' * b
 @end group
 @end example
 
-If the BLAS library uses 32-bit integers, an error will be thrown:
+If the @sc{blas} library uses 32-bit integers, an error will be thrown:
 
 @example
 @group
@@ -680,7 +680,7 @@ INTEGER type
 @end group
 @end example
 
-Otherwise, if the BLAS library uses 64-bit integers, the result is:
+Otherwise, if the @sc{blas} library uses 64-bit integers, the result is:
 
 @example
 c = 2^31 = 2147483648

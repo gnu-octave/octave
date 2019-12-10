@@ -824,7 +824,7 @@ For example, most @code{scanf} conversions skip over any amount of
 file, and there is no concept of precision for the numeric input
 conversions as there is for the corresponding output conversions.
 Ordinarily, non-whitespace characters in the template are expected to
-match characters in the input stream exactly. For example, note that
+match characters in the input stream exactly.  For example, note that
 @code{sscanf} parses the string and whitespace differently when using
 mixed numeric and string output types:
 @cindex conversion specifications (@code{scanf})
@@ -1010,7 +1010,7 @@ modifier, 16-bit integers are used, and with the @samp{l} modifier,
 64-bit integers are used.
 
 The @samp{%e}, @samp{%f}, @samp{%g}, @samp{%E}, and @samp{%G} conversions
-match optionally signed floating-point numbers. All five conversion
+match optionally signed floating-point numbers.  All five conversion
 specifications behave identically, and will read in numerical values of
 any floating point display style.
 

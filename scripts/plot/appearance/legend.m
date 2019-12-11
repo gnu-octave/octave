@@ -45,11 +45,11 @@
 ## labeling all objects, provide their graphic handles in the input
 ## @var{hobjs}.
 ##
-## The optional parameter @var{loc} specifies the location of the legend as
-## follows:
+## The optional parameter @nospell{@var{loc}} specifies the location of the
+## legend as follows:
 ##
 ## @multitable @columnfractions 0.06 0.14 0.80
-## @headitem @tab loc @tab location of the legend
+## @headitem @tab @nospell{loc} @tab location of the legend
 ## @item @tab north @tab center top
 ## @item @tab south @tab center bottom
 ## @item @tab east @tab right center

@@ -43,7 +43,7 @@
 ## @end example
 ## @end ifnottex
 ##
-## This rotation matrix is intended to be used as a left-multiplyig matrix
+## This rotation matrix is intended to be used as a left-multiplying matrix
 ## when acting on a column vector, using the notation @var{v} = @var{T}@var{u}.
 ## For example, a vector, @var{u}, pointing along the positive y-axis, rotated
 ## 90-degrees about the x-axis, will result in a vector pointing along the

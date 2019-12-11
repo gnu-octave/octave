@@ -31,9 +31,9 @@
 ## A colorbar displays the current colormap along with numerical rulings
 ## so that the color scale can be interpreted.
 ##
-## The optional input @var{loc} determines the location of the colorbar.  If
-## present, it must be the last argument to @code{colorbar}.  Valid values for
-## @var{loc} are
+## The optional input @nospell{@var{loc}} determines the location of the
+## colorbar.  If present, it must be the last argument to @code{colorbar}.
+## Valid values for @nospell{@var{loc}} are
 ##
 ## @table @asis
 ## @item @qcode{"EastOutside"}

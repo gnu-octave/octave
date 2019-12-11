@@ -56,7 +56,7 @@
 ## @var{x} is not too large (< 1e15).  For larger values special purpose
 ## factorization code should be used.
 ##
-## Compatibility Note: @var{matlab} does not extend the definition of prime
+## Compatibility Note: @sc{matlab} does not extend the definition of prime
 ## numbers and will produce an error if given negative or complex inputs.
 ## @seealso{primes, factor, gcd, lcm}
 ## @end deftypefn

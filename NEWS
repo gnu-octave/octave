@@ -130,6 +130,9 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   "Superclasslist" for Matlab compatibility.  The original name will
   exist as an alias until Octave version 8.1.
 
+- An undocumented function `gui_mainfcn` has been added, for compatibility
+  with figures created with Matlab's Guide.
+
 ### Alphabetical list of new functions added in Octave 6
 
 * `commandhistory`

@@ -389,7 +389,9 @@ function reset_cb (ht, evt, hl, deletelegend = true)
   if (ishghandle (hl))
     listeners = getappdata (hl, "__listeners__");
     for ii = 1:numel (listeners)
-      dellistener (listeners{ii}{:});
+      if (ishghandle (listeners{ii}{1}))
+        dellistener (listeners{ii}{:});
+      endif
     endfor
 
     if (deletelegend)
@@ -961,10 +963,9 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
                              "xdata", 0, "ydata", 0, [mprops; vals]{:});
       update_marker_cb (hmarker);
 
-      setappdata (hplt(1), "__icon_link__", ...
-                  linkprop ([hplt(1), hicon], lprops));
-      setappdata (hplt(end), "__marker_link__", ...
-                  linkprop ([hplt(end) hmarker], mprops));
+      ## Listeners
+      safe_property_link (hplt(1), hicon, lprops);
+      safe_property_link (hplt(end), hmarker, mprops);
       addlistener (hicon, "ydata", ...
                    @(h) set (hmarker, "ydata", get (h, "markerydata")));
       addlistener (hicon, "xdata", ...
@@ -985,7 +986,9 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
 
       hicon = __go_patch__ (hl, [pprops; vals]{:});
 
-      setappdata (hplt, "__icon_link__", linkprop ([hplt, hicon], pprops));
+      ## Listeners
+      safe_property_link (hplt(1), hicon, pprops);
+
       setappdata (hicon, "__creator__", typ);
 
     case "__contour__"
@@ -1003,17 +1006,16 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       htmp =  __go_patch__ (hl, "handlevisibility", "off", ...
                             "xdata", 0, "ydata", 0, [pprops; vals]{:});
 
-      setappdata (hplt(1), "__icon_link__", ...
-                  linkprop ([hplt(1), hicon], pprops));
-      setappdata (hplt(end), "__icon_link__", ...
-                  linkprop ([hplt(end) htmp], pprops));
+      ## Listeners
+      safe_property_link (hplt(1), hicon, pprops);
+      safe_property_link (hplt(end), htmp, pprops);
       addlistener (hicon, "ydata", ...
                    @(h) set (htmp, "ydata", get (h, "innerydata")));
       addlistener (hicon, "xdata", ...
                    @(h) set (htmp, "xdata", get (h, "innerxdata")));
-
       add_safe_listener (hl, hplt(1), "beingdeleted",
                          @() delete ([hicon htmp]))
+
       setappdata (hicon, "__creator__", typ);
 
   endswitch
@@ -1023,6 +1025,15 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
   addproperty ("peer_object", htxt, "double", base_hplt);
   addproperty ("peer_object", hicon, "double", base_hplt);
 
+endfunction
+
+function safe_property_link (h1, h2, props)
+  for ii = 1:numel (props)
+    prop = props{ii};
+    lsn = {h1, prop, @(h) set (h2, prop, get (h, prop))};
+    addlistener (lsn{:});
+    addlistener (h2, "beingdeleted", @() dellistener (lsn{:}));
+  endfor
 endfunction
 
 function update_displayname_cb (h, ~, hl)

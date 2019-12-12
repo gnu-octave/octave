@@ -20,7 +20,7 @@
 ## @deftypefn  {} {} streamtube (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
 ## @deftypefnx {} {} streamtube (@var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
 ## @deftypefnx {} {} streamtube (@var{vertices}, @var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w})
-## @deftypefnx {} {} streamtube (@dots{}, "@var{options}")
+## @deftypefnx {} {} streamtube (@dots{}, @var{options})
 ## @deftypefnx {} {} streamtube (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} streamtube (@dots{})
 ## Calculate and display streamtubes.
@@ -34,14 +34,14 @@
 ## The streamtubes start at the seed points
 ## @code{[@var{sx}, @var{sy}, @var{sz}]}.
 ##
-## The tubes are colored depending on the local vector field strength.
+## The tubes are colored based on the local vector field strength.
 ##
 ## The input parameter @var{options} is a 2-D vector of the form
 ## @code{[@var{scale}, @var{n}]}.  The first parameter scales the start radius
 ## of the streamtubes (default 1).  The second parameter specifies the number
 ## of patches used for the streamtube circumference (default 20).
 ##
-## @code{streamtube} can be called with a cell array containing precomputed
+## @code{streamtube} can be called with a cell array containing pre-computed
 ## streamline data.  To do this, @var{vertices} must be created with the
 ## @code{stream3} function.  This option is useful if you need to alter the
 ## integrator step size or the maximum number of vertices of the streamline.
@@ -65,7 +65,6 @@
 ## @end example
 ##
 ## @seealso{stream3, streamline}
-##
 ## @end deftypefn
 
 ## References:
@@ -78,28 +77,18 @@
 
 function h = streamtube (varargin)
 
-  if (nargin == 0)
-    print_usage ();
-  endif
-
-  [hax, varargin] = __plt_get_axis_arg__ ("streamtube", varargin{:});
-
-  if (isempty (hax))
-    hax = gca ();
-  else
-    hax = hax(1);
-  endif
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("streamtube", varargin{:});
 
   options = [];
   xyz = [];
-  switch (length (varargin))
-    case (0)
+  switch (nargin)
+    case 0
       print_usage ();
-    case (6)
+    case 6
       [u, v, w, spx, spy, spz] = varargin{:};
       [m, n, p] = size (u);
       [x, y, z] = meshgrid (1:n, 1:m, 1:p);
-    case (7)
+    case 7
       if (iscell (varargin{1}))
         [xyz, x, y, z, u, v, w] = varargin{:};
       else
@@ -107,57 +96,64 @@ function h = streamtube (varargin)
         [m, n, p] = size (u);
         [x, y, z] = meshgrid (1:n, 1:m, 1:p);
       endif
-    case (8)
+    case 8
       [xyz, x, y, z, u, v, w, options] = varargin{:};
-    case (9)
+    case 9
       [x, y, z, u, v, w, spx, spy, spz] = varargin{:};
-    case (10)
+    case 10
       [x, y, z, u, v, w, spx, spy, spz, options] = varargin{:};
     otherwise
-      error ("streamtube: unknown input parameter count");
+      error ("streamtube: invalid number of inputs");
   endswitch
 
   scale = 1;
   n = 20;
   if (! isempty (options))
-    switch (length (options))
-      case (1)
+    switch (numel (options))
+      case 1
         scale = options(1);
-      case (2)
+      case 2
         scale = options(1);
         n = options(2);
       otherwise
-        error ("streamtube: wrong options length");
+        error ("streamtube: invalid number of OPTIONS elements");
     endswitch
+
+    if (! isreal (scale) || scale <= 0)
+      error ("streamtube: SCALE must be a real scalar > 0");
+    endif
+    if (! isreal (n) || n < 3)
+      error ("streamtube: number of polygons N must be greater than 2");
+    endif
+    n = fix (n);
   endif
 
-  if ((! isnumeric (scale)) || (scale <= 0))
-    error ("streamtube: scale error");
+  if (isempty (hax))
+    hax = gca ();
+  else
+    hax = hax(1);
   endif
-  if ((! isnumeric (n)) || (n < 3))
-    error ("streamtube: number of polygons for tube circumference too small");
-  endif
+
   if isempty (xyz)
     xyz = stream3 (x, y, z, u, v, w, spx, spy, spz, 0.5);
   endif
 
   div = divergence (x, y, z, u, v, w);
   vn = sqrt (u.*u + v.*v + w.*w);
-  vmax = max (max (max (vn)));
-  vmin = min (min (min (vn)));
+  vmax = max (vn(:));
+  vmin = min (vn(:));
 
   ## Radius estimator
   [ny, nx, nz] = size (x);
-  dx = (max (max (max (x))) - min (min (min (x)))) / nx;
-  dy = (max (max (max (y))) - min (min (min (y)))) / ny;
-  dz = (max (max (max (z))) - min (min (min (z)))) / nz;
-  r0 = scale * sqrt (dx * dx + dy * dy + dz * dz);
+  dx = (max (x(:)) - min (x(:))) / nx;
+  dy = (max (y(:)) - min (y(:))) / ny;
+  dz = (max (z(:)) - min (z(:))) / nz;
+  r0 = scale * sqrt (dx*dx + dy*dy + dz*dz);
 
   h = [];
-  for i = 1:length (xyz)
-
+  for i = 1 : length (xyz)
     sl = xyz{i};
-    [nverts, ~] = size(sl);
+    nverts = rows (sl);
     if (! isempty (sl)) && (nverts > 2)
 
       divsl = interp3 (x, y, z, div, sl(:, 1), sl(:, 2), sl(:, 3));
@@ -166,11 +162,10 @@ function h = streamtube (varargin)
       wsl = interp3 (x, y, z, w, sl(:, 1), sl(:, 2), sl(:, 3));
       vv = sqrt (usl.*usl + vsl.*vsl + wsl.*wsl);
 
-      tmp = plottube (hax, sl, divsl, vv, vmax, vmin, r0, n);
-      h = [h, tmp];
+      htmp = plottube (hax, sl, divsl, vv, vmax, vmin, r0, n);
+      h = [h; htmp];
 
     endif
-
   endfor
 
 endfunction
@@ -184,7 +179,7 @@ function h = plottube (hax, sl, divsl, vv, vmax, vmin, r0, npoly)
     maxnverts = length (sl);
   endif
   if (maxnverts < 3)
-    error ("streamtube: too less data to show");
+    error ("streamtube: too little data to plot");
   endif
 
   if (vmax == vmin)
@@ -193,7 +188,7 @@ function h = plottube (hax, sl, divsl, vv, vmax, vmin, r0, npoly)
     colscale = 1.0 / (vmax - vmin);
   endif
 
-  phi = linspace (0, 2*pi (), npoly);
+  phi = linspace (0, 2*pi, npoly);
 
   X0 = sl(1, :);
   X1 = sl(2, :);
@@ -265,7 +260,7 @@ function N = get_guide_point (X0, X1)
     N = [S(3), S(3), - S(1) - S(2)];
   endif
 
-  N = N / norm(N);
+  N /= norm (N);
 
 endfunction
 
@@ -273,7 +268,7 @@ endfunction
 ## from starting point XS to ending point XE
 function [px, py, pz] = segment_patch_data (XS, XE)
 
-  [~, npoly] = size (XS);
+  npoly = columns (XS);
 
   px = zeros (4, npoly);
   py = zeros (4, npoly);
@@ -324,6 +319,7 @@ function Y = rotation (A, X, phi)
 
 endfunction
 
+
 %!demo
 %! clf;
 %! [x, y, z] = meshgrid (-1:0.1:1, -1:0.1:1, -3.5:0.1:0);
@@ -368,5 +364,15 @@ endfunction
 %! set (gca, "cameraviewanglemode", "manual");
 %! title ("Integration Towards Sink");
 
+## Test input validation
 %!error streamtube ()
-
+%!error <invalid number of inputs> streamtube (1)
+%!error <invalid number of inputs> streamtube (1,2)
+%!error <invalid number of inputs> streamtube (1,2,3)
+%!error <invalid number of inputs> streamtube (1,2,3,4)
+%!error <invalid number of inputs> streamtube (1,2,3,4,5)
+%!error <invalid number of OPTIONS> streamtube (1,2,3,4,5,6, [1,2,3])
+%!error <SCALE must be a real scalar . 0> streamtube (1,2,3,4,5,6, [1i])
+%!error <SCALE must be a real scalar . 0> streamtube (1,2,3,4,5,6, [0])
+%!error <N must be greater than 2> streamtube (1,2,3,4,5,6, [1, 1i])
+%!error <N must be greater than 2> streamtube (1,2,3,4,5,6, [1, 2])

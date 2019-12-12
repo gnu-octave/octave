@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} streamline (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
 ## @deftypefnx {} {} streamline (@var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
-## @deftypefnx {} {} streamline (@dots{}, "@var{options}")
+## @deftypefnx {} {} streamline (@dots{}, @var{options})
 ## @deftypefnx {} {} streamline (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} streamline (@dots{})
 ## Plot streamlines of 2-D or 3-D vector fields.
@@ -31,9 +31,9 @@
 ## points @code{[@var{sx}, @var{sy}]} or @code{[@var{sx}, @var{sy}, @var{sz}]}.
 ##
 ## The input parameter @var{options} is a 2-D vector of the form
-## @code{[@var{stepsize}, @var{maxnumbervertices}]}.  The first parameter
-## specifies the step size used for trajectory integration (default 0.1).  It
-## is allowed to set a negative value to control the direction of integration.
+## @code{[@var{stepsize}, @var{max_vertices}]}.  The first parameter
+## specifies the step size used for trajectory integration (default 0.1).  A
+## negative value is allowed which will reverse the direction of integration.
 ## The second parameter specifies the maximum number of segments used to
 ## create a streamline (default 10,000).
 ##
@@ -55,16 +55,20 @@
 ## @end example
 ##
 ## @seealso{stream2, stream3, streamtube}
-##
 ## @end deftypefn
 
 function h = streamline (varargin)
+
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("streamline", varargin{:});
 
   if (nargin == 0)
     print_usage ();
   endif
 
-  [hax, varargin] = __plt_get_axis_arg__ ("streamline", varargin{:});
+  nd = ndims (varargin{1});
+  if (nd > 3)
+    error ("streamline: input data must be 2-D or 3-D");
+  endif
 
   if (isempty (hax))
     hax = gca ();
@@ -73,32 +77,30 @@ function h = streamline (varargin)
   endif
 
   h = [];
-  argval = varargin(1);
-  switch (numel (size (argval{:})))
-    case (2)
-      xy = stream2 (varargin{:});
-      for i = 1:length (xy)
-        sl = xy{i};
-        if (! isempty (sl))
-          tmp = line (hax, "xdata", sl(:, 1), "ydata", sl(:, 2), "color", "b");
-          h = [h; tmp];
-        endif
-      endfor
-    case (3)
-      xyz = stream3 (varargin{:});
-      for i = 1:length (xyz)
-        sl = xyz{i};
-        if (! isempty (sl))
-          tmp = line (hax, "xdata", sl(:, 1), "ydata", sl(:, 2), "zdata", sl(:, 3), ...
-                      "color", "b");
-          h = [h; tmp];
-        endif
-      endfor
-    otherwise
-      error ("streamline: 2D or 3D input data only");
-  endswitch
+  if (nd == 2)
+    xy = stream2 (varargin{:});
+    for i = 1 : length (xy)
+      sl = xy{i};
+      if (! isempty (sl))
+        htmp = line (hax, "xdata", sl(:, 1), "ydata", sl(:, 2), "color", "b");
+        h = [h; htmp];
+      endif
+    endfor
+  else
+    xyz = stream3 (varargin{:});
+    for i = 1 : length (xyz)
+      sl = xyz{i};
+      if (! isempty (sl))
+        htmp = line (hax,
+                     "xdata", sl(:, 1), "ydata", sl(:, 2), "zdata", sl(:, 3),
+                     "color", "b");
+        h = [h; htmp];
+      endif
+    endfor
+  endif
 
 endfunction
+
 
 %!demo
 %! clf;
@@ -157,4 +159,14 @@ endfunction
 %! grid on;
 %! axis equal tight;
 
+## Test input validation
 %!error streamline ()
+%!error <Invalid call to streamline>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ();
+%!   streamline (hax);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%!error <input data must be 2-D or 3-D> streamline (ones (2,2,2,2))

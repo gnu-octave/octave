@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{xyz} =} stream3 (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
 ## @deftypefnx {} {@var{xyz} =} stream3 (@var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
-## @deftypefnx {} {@var{xyz} =} stream3 (@dots{}, "@var{options}")
+## @deftypefnx {} {@var{xyz} =} stream3 (@dots{}, @var{options})
 ## Compute 3-D streamline data.
 ##
 ## Calculate streamlines of a vector field given by @code{[@var{u}, @var{v},
@@ -30,9 +30,9 @@
 ## the vector field, @code{[]} is returned.
 ##
 ## The input parameter @var{options} is a 2-D vector of the form
-## @code{[@var{stepsize}, @var{maxnumbervertices}]}.  The first parameter
-## specifies the step size used for trajectory integration (default 0.1).  It
-## is allowed to set a negative value to control the direction of integration.
+## @code{[@var{stepsize}, @var{max_vertices}]}.  The first parameter
+## specifies the step size used for trajectory integration (default 0.1).  A
+## negative value is allowed which will reverse the direction of integration.
 ## The second parameter specifies the maximum number of segments used to
 ## create a streamline (default 10,000).
 ##
@@ -52,7 +52,6 @@
 ## @end example
 ##
 ## @seealso{stream2, streamline, streamtube}
-##
 ## @end deftypefn
 
 ## References:
@@ -76,53 +75,54 @@
 function xyz = stream3 (varargin)
 
   options = [];
-  switch (length (varargin))
-    case (0)
+  switch (numel (varargin))
+    case 0
       print_usage ();
     case {6,7}
-      if (length (varargin) == 6)
+      if (numel (varargin) == 6)
         [u, v, w, spx, spy, spz] = varargin{:};
       else
         [u, v, w, spx, spy, spz, options] = varargin{:};
       endif
       [m, n, p] = size (u);
       [x, y, z] = meshgrid (1:n, 1:m, 1:p);
-    case (9)
+    case 9
       [x, y, z, u, v, w, spx, spy, spz] = varargin{:};
-    case (10)
+    case 10
       [x, y, z, u, v, w, spx, spy, spz, options] = varargin{:};
     otherwise
-      error ("stream3: unknown input parameter count");
+      error ("stream3: invalid number of inputs");
   endswitch
 
-  h = 0.1;
-  maxnverts = 10000;
+  stepsize = 0.1;
+  max_vertices = 10_000;
   if (! isempty (options))
-    switch (length (options))
-      case (1)
-        h = options(1);
-      case (2)
-        h = options(1);
-        maxnverts = options(2);
+    switch (numel (options))
+      case 1
+        stepsize = options(1);
+      case 2
+        stepsize = options(1);
+        max_vertices = options(2);
       otherwise
-        error ("stream3: wrong options length");
+        error ("stream3: invalid number of OPTIONS elements");
     endswitch
+
+    if (! isreal (stepsize) || stepsize == 0)
+      error ("stream2: STEPSIZE must be a real scalar != 0");
+    endif
+    if (! isreal (max_vertices) || max_vertices < 1)
+      error ("stream2: MAX_VERTICES must be an integer > 0");
+    endif
+    max_vertices = fix (max_vertices);
   endif
 
-  if ((! isnumeric (h)) || (h == 0))
-    error ("stream3: step size error");
-  endif
-  if ((! isnumeric (maxnverts)) || (maxnverts < 1))
-    error ("stream3: max num vertices error");
-  endif
-  if (! (isequal (size (u), size (v), size (w), size (x), size (y), size (z)) && ...
-         isequal (size (spx), size (spy))) )
+  if (! (size_equal (u, v, w, x, y, z) && size_equal (spx, spy, spz)))
     error ("stream3: matrix dimensions must match");
   endif
-  if (iscomplex (u) || iscomplex (v) || iscomplex (w) || ...
-      iscomplex (x) || iscomplex (y) || iscomplex (z) || ...
-      iscomplex (spx) || iscomplex (spy) || iscomplex (spz))
-    error ("stream3: input must be real valued");
+  if (iscomplex (u) || iscomplex (v) || iscomplex (w)
+      || iscomplex (x) || iscomplex (y) || iscomplex (z)
+      || iscomplex (spx) || iscomplex (spy) || iscomplex (spz))
+    error ("stream3: all inputs must be real-valued");
   endif
 
   gx = x(1, :, 1);
@@ -135,13 +135,13 @@ function xyz = stream3 (varargin)
   dy = diff (gy);
   dz = diff (gz);
   ## "<" used to check if the mesh is ascending
-  if (any (dx <= 0) || any (dy <= 0) || any (dz <= 0) || ...
-      any (isnan (dx)) || any (isnan (dy)) || any (isnan (dz)))
-    error ("stream3: ill shaped elements in mesh");
+  if (any (dx <= 0) || any (dy <= 0) || any (dz <= 0)
+      || any (isnan (dx)) || any (isnan (dy)) || any (isnan (dz)))
+    error ("stream3: non-monotonically increasing or NaN values found in mesh");
   endif
-  tx = 1./dx;
-  ty = 1./dy;
-  tz = 1./dz;
+  tx = 1 ./ dx;
+  ty = 1 ./ dy;
+  tz = 1 ./ dz;
   ## "Don't cares" used for handling points located on the border
   tx(end + 1) = 0;
   ty(end + 1) = 0;
@@ -154,20 +154,20 @@ function xyz = stream3 (varargin)
   py = spy(:);
   pz = spz(:);
 
-  for nseed = 1:length (px)
+  for nseed = 1 : numel (px)
 
     xp = px(nseed);
     yp = py(nseed);
     zp = pz(nseed);
-    idx = find (logical (diff (gx <= xp)), 1);
+    idx = find (diff (gx <= xp), 1);
     if (gx(end) == xp)
       idx = numel (gx);
     endif
-    idy = find (logical (diff (gy <= yp)), 1);
+    idy = find (diff (gy <= yp), 1);
     if (gy(end) == yp)
       idy = numel (gy);
     endif
-    idz = find (logical (diff (gz <= zp)), 1);
+    idz = find (diff (gz <= zp), 1);
     if (gz(end) == zp)
       idz = numel (gz);
     endif
@@ -180,7 +180,8 @@ function xyz = stream3 (varargin)
       xi = (idy - 1) + (yp - gy(idy)) * ty(idy);
       rho = (idz - 1) + (zp - gz(idz)) * tz(idz);
 
-      C = __streameuler3d__ (u, v, w, tx, ty, tz, zeta, xi, rho, h, maxnverts);
+      C = __streameuler3d__ (u, v, w, tx, ty, tz, zeta, xi, rho, ...
+                             stepsize, max_vertices);
 
       ## Transform from C coordinates to P coordinates
       idu = floor (C(:, 1));
@@ -194,6 +195,7 @@ function xyz = stream3 (varargin)
   endfor
 
 endfunction
+
 
 %!demo
 %! clf;
@@ -220,3 +222,42 @@ endfunction
 %! [u, v, w] = meshgrid (0:3, 0:3, 0:3);
 %! xyz = stream3 (u, v, w, 2, 2, 2, [0.01,5]);
 %! assert (numel (xyz{:}), 15);
+
+## Test input validation
+%!error stream3 ()
+%!error <invalid number of inputs> stream3 (1)
+%!error <invalid number of inputs> stream3 (1,2)
+%!error <invalid number of inputs> stream3 (1,2,3)
+%!error <invalid number of inputs> stream3 (1,2,3,4)
+%!error <invalid number of inputs> stream3 (1,2,3,4,5)
+%!error <invalid number of inputs> stream3 (1,2,3,4,5,6,7,8)
+%!error <invalid number of OPTIONS> stream3 (1,2,3,4,5,6, [1,2,3])
+%!error <STEPSIZE must be a real scalar != 0> stream3 (1,2,3,4,5,6, [1i])
+%!error <STEPSIZE must be a real scalar != 0> stream3 (1,2,3,4,5,6, [0])
+%!error <MAX_VERTICES must be an integer> stream3 (1,2,3,4,5,6, [1, 1i])
+%!error <MAX_VERTICES must be an integer> stream3 (1,2,3,4,5,6, [1, 0])
+%!error <matrix dimensions must match> stream3 ([1 1],2,3,4,5,6)
+%!error <matrix dimensions must match> stream3 (1,[2 2],3,4,5,6)
+%!error <matrix dimensions must match> stream3 (1,2,[3 3],4,5,6)
+%!error <matrix dimensions must match> stream3 (1,2,3,[4 4],5,6)
+%!error <matrix dimensions must match> stream3 (1,2,3,4,[5 5],6)
+%!error <matrix dimensions must match> stream3 (1,2,3,4,5,[6 6])
+%!error <all inputs must be real-valued> stream3 (1i,2,3,4,5,6)
+%!error <all inputs must be real-valued> stream3 (1,2i,3,4,5,6)
+%!error <all inputs must be real-valued> stream3 (1,2,3i,4,5,6)
+%!error <all inputs must be real-valued> stream3 (1,2,3,4i,5,6)
+%!error <all inputs must be real-valued> stream3 (1,2,3,4,5i,6)
+%!error <all inputs must be real-valued> stream3 (1,2,3,4,5,6i)
+%!error <non-monotonically increasing or NaN values found in mesh>
+%! stream3 ([2 1], [1 2], [3 3], [4 4], [5 5], [6 6], [7 7], [8 8], [9 9]);
+%!error <non-monotonically increasing or NaN values found in mesh>
+%! stream3 ([1 NaN], [1 2], [3 3], [4 4], [5 5], [6 6], [7 7], [8 8], [9 9]);
+## FIXME: vectors representing x, y, z mesh are not accepted.
+%#!error <non-monotonically increasing or NaN values found in mesh>
+%! stream3 ([1 2], [2 1], [3 3], [4 4], [5 5], [6 6], [7 7], [8 8], [9 9]);
+%#!error <non-monotonically increasing or NaN values found in mesh>
+%! stream3 ([1 2], [1 NaN], [3 3], [4 4], [5 5], [6 6], [7 7], [8 8], [9 9]);
+%#!error <non-monotonically increasing or NaN values found in mesh>
+%! stream3 ([1 2], [1 2], [2 1], [4 4], [5 5], [6 6], [7 7], [8 8], [9 9]);
+%#!error <non-monotonically increasing or NaN values found in mesh>
+%! stream3 ([1 2], [1 2], [1 NaN], [4 4], [5 5], [6 6], [7 7], [8 8], [9 9]);

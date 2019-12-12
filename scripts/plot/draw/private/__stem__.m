@@ -155,7 +155,10 @@ function h = __stem__ (have_z, varargin)
 
     ## baseline listeners
     if (! isempty (h_baseline))
-      addlistener (hax, "xlim", @update_xlim);
+      fcn_handle = @update_xlim;
+      addlistener (hax, "xlim", fcn_handle);
+      set (h_baseline, "deletefcn", {@rm_xlim_listener, hax, fcn_handle});
+
       for hg = h'
         addlistener (hg, "showbaseline", @show_baseline);
         addlistener (hg, "visible", {@show_baseline, h});
@@ -362,14 +365,19 @@ function update_xlim (h, ~)
 
   for i = 1 : length (kids)
     obj = get (kids(i));
-    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline")
-        && ! strcmp (obj.beingdeleted, "on"))
+    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline"))
       if (any (get (obj.baseline, "xdata") != xlim))
         set (obj.baseline, "xdata", xlim);
       endif
     endif
   endfor
 
+endfunction
+
+## Good practice to remove listeners when object is deleted.
+## In this case, required to avoid error in update_xlim callback (bug #57391).
+function rm_xlim_listener (~, ~, hax, fcn_handle)
+  dellistener (hax, "xlim", fcn_handle);
 endfunction
 
 function update_baseline (h, ~, src)

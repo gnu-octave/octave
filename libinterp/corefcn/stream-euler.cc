@@ -500,32 +500,32 @@ streameuler3d_internal (const octave_value_list& args, const char *fcn)
   return octave_value (xyz);
 }
 
-DEFUN (streameuler2d, args, ,
+DEFUN (__streameuler2d__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} streameuler2d (@var{U}, @var{V}, @var{TX}, @var{TY}, @var{ZETA}, @var{XI}, @var{H}, @var{MAXNVERTS})
+@deftypefn {} {} __streameuler2d__ (@var{U}, @var{V}, @var{TX}, @var{TY}, @var{ZETA}, @var{XI}, @var{H}, @var{MAXNVERTS})
 Calculates the streamline in a vector field [@var{U}, @var{V}] starting from a
 seed point at position [@var{ZETA}, @var{XI}].  The integrator used is
 Heun's Scheme.  The step size can be controlled by @var{H}.  The Jacobian
 matrix can be defined for each grid cell by [@var{TX}, @var{TY}].
 
-@seealso{streamline, stream2, stream3, streameuler3d}
+@seealso{streamline, stream2, stream3, __streameuler3d__}
 @end deftypefn */)
 {
   return streameuler2d_internal (args);
 }
 
-DEFUN (streameuler3d, args, ,
+DEFUN (__streameuler3d__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} streameuler3d (@var{U}, @var{V}, @var{W}, @var{TX}, @var{TY}, @var{TZ}, @var{ZETA}, @var{XI}, @var{RHO}, @var{H}, @var{MAXNVERTS})
+@deftypefn {} {} __streameuler3d__ (@var{U}, @var{V}, @var{W}, @var{TX}, @var{TY}, @var{TZ}, @var{ZETA}, @var{XI}, @var{RHO}, @var{H}, @var{MAXNVERTS})
 Calculates the streamline in a vector field [@var{U}, @var{V}, @var{W}]
 starting from a seed point at position [@var{ZETA}, @var{XI}, @var{RHO}].  The
 integrator used is Heun's Scheme.  The step size can be controlled by @var{H}.
  The Jacobian matrix can be defined for each grid cell by [@var{TX}, @var{TY},
 @var{TZ}].
 
-@seealso{streamline, stream2, stream3, streameuler2d}
+@seealso{streamline, stream2, stream3, __streameuler2d__}
 @end deftypefn */)
 {
-  return streameuler3d_internal (args, "streameuler3d");
+  return streameuler3d_internal (args, "__streameuler3d__");
 }
 

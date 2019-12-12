@@ -180,8 +180,7 @@ function xyz = stream3 (varargin)
       xi = (idy - 1) + (yp - gy(idy)) * ty(idy);
       rho = (idz - 1) + (zp - gz(idz)) * tz(idz);
 
-      C = streameuler3d (u, v, w, tx, ty, tz, zeta, xi, rho, ...
-                         h, maxnverts);
+      C = __streameuler3d__ (u, v, w, tx, ty, tz, zeta, xi, rho, h, maxnverts);
 
       ## Transform from C coordinates to P coordinates
       idu = floor (C(:, 1));

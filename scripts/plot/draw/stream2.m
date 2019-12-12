@@ -165,7 +165,7 @@ function xy = stream2 (varargin)
       zeta = (idx - 1) + (xp - gx(idx)) * tx(idx);
       xi = (idy - 1) + (yp - gy(idy)) * ty(idy);
 
-      C = streameuler2d (u, v, tx, ty, zeta, xi, h, maxnverts);
+      C = __streameuler2d__ (u, v, tx, ty, zeta, xi, h, maxnverts);
 
       ## Transform from C coordinates to P coordinates
       idu = floor (C(:,1));

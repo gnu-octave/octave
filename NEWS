@@ -7,6 +7,13 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   accept a new sorting option `"stable"` which will return output values
   in the same order as the input, rather than in ascending order.
 
+- Complex RESTful web services can now be accessed by the `webread` and
+  `webwrite` functions alongside with the `weboptions` structure.  One
+  major feature is the support for cookies to enable RESTful
+  communication with the web service.
+
+  Additionally, the system web browser can be opened by the `web` function.
+
 - The `linspace` function now produces symmetrical sequences when the
   endpoints are symmetric.  This is more intuitive and also compatible
   with recent changes made in Matlab R2019b.
@@ -49,10 +56,13 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
 #### Graphics backend
 
-- The `"legend"` function has been entirely rewritten.  This fixes a
+- The `legend` function has been entirely rewritten.  This fixes a
   number of historical bugs, but also implements new properties such as
   `"AutoUpdate"` and `"NumColumns"`.  The gnuplot toolkit---which is no
   longer actively maintained---still uses the old legend function.
+
+- The `axis` function was updated which resolved 10 bugs affecting
+  axes to which `"equal"` had been applied.
 
 - Graphic primitives now accept a color property value of `"none"`
   which is useful when a particular primitive needs to be hidden
@@ -109,13 +119,6 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   `"legacy"` flag which changes the index values (second and third
   outputs) as well as the orientation of all outputs to match Matlab
   releases prior to R2012b.
-
-- Complex RESTful web services can now be accessed by the `webread` and
-  `webwrite` functions alongside with the `weboptions` structure.  One
-  major feature is the support for cookies to enable RESTful
-  communication with the web service.
-
-  Additionally, the system web browser can be opened by the `web` function.
 
 - The interpreter now supports handles to nested functions.
 

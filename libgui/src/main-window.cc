@@ -283,7 +283,8 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
 
-    if (settings->value ("prompt_to_exit", false).toBool ())
+    if (settings->value (global_prompt_to_exit.key,
+                         global_prompt_to_exit.def).toBool ())
       {
         int ans = QMessageBox::question (this, tr ("Octave"),
                                          tr ("Are you sure you want to exit Octave?"),
@@ -387,7 +388,8 @@ namespace octave
     int opts = 0;  // No options by default.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value ("use_native_file_dialogs", true).toBool ())
+    if (! settings->value (global_use_native_dialogs.key,
+                           global_use_native_dialogs.def).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString file
@@ -412,7 +414,8 @@ namespace octave
     int opts = 0;  // No options by default.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value ("use_native_file_dialogs", true).toBool ())
+    if (! settings->value (global_use_native_dialogs.key,
+                           global_use_native_dialogs.def).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString file = file_arg;
@@ -892,7 +895,7 @@ namespace octave
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_main_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
-    if (settings->value ("show_status_bar",true).toBool ())
+    if (settings->value (global_status_bar.key, global_status_bar.def).toBool ())
       m_status_bar->show ();
     else
       m_status_bar->hide ();
@@ -979,7 +982,8 @@ namespace octave
     int opts = QFileDialog::ShowDirsOnly;
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value ("use_native_file_dialogs", true).toBool ())
+    if (! settings->value (global_use_native_dialogs.key,
+                           global_use_native_dialogs.def).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString dir
@@ -1236,7 +1240,8 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     bool is_internal = m_editor_window
-                       && ! settings->value ("useCustomFileEditor",false).toBool ();
+                       && ! settings->value (global_use_custom_editor.key,
+                                             global_use_custom_editor.def).toBool ();
 
     // Create a NonModal message.
     QWidget *p = this;
@@ -1251,7 +1256,8 @@ namespace octave
     fileDialog->setDirectory (m_current_directory_combo_box->itemText (0));
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-    if (! settings->value ("use_native_file_dialogs", true).toBool ())
+    if (! settings->value (global_use_native_dialogs.key,
+                           global_use_native_dialogs.def).toBool ())
       fileDialog->setOption(QFileDialog::DontUseNativeDialog);
 
     connect (fileDialog, SIGNAL (filesSelected (const QStringList&)),
@@ -1278,7 +1284,8 @@ namespace octave
     QWidget *p = m_editor_window;
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! p || settings->value ("useCustomFileEditor",false).toBool ())
+    if (! p || settings->value (global_use_custom_editor.key,
+                                global_use_custom_editor.def).toBool ())
       p = this;
     QString new_name = QInputDialog::getText (p, tr ("New Function"),
                                               tr ("New function name:\n"), QLineEdit::Normal, "", &ok);
@@ -1643,7 +1650,8 @@ namespace octave
 
     if (settings)
       {
-        if (settings->value ("restore_octave_dir").toBool ())
+        if (settings->value (global_restore_ov_dir.key,
+                             global_restore_ov_dir.def).toBool ())
           {
             // restore last dir from previous session
             QStringList curr_dirs
@@ -1651,11 +1659,13 @@ namespace octave
             startup_dir
               = QDir (curr_dirs.at (0));  // last dir in previous session
           }
-        else if (! settings->value ("octave_startup_dir").toString ().isEmpty ())
+        else if (! settings->value (global_ov_startup_dir.key,
+                                    global_ov_startup_dir.def).toString ().isEmpty ())
           {
             // do not restore but there is a startup dir configured
             startup_dir
-              = QDir (settings->value ("octave_startup_dir").toString ());
+              = QDir (settings->value (global_ov_startup_dir.key,
+                                       global_ov_startup_dir.def).toString ());
           }
 
         update_default_encoding

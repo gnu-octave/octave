@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dialog.h"
 #include "octave-qobject.h"
+#include "gui-preferences-global.h"
 
 namespace octave
 {
@@ -665,7 +666,8 @@ namespace octave
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     resource_manager& rmgr = oct_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value ("use_native_file_dialogs", true).toBool ())
+    if (! settings->value (global_use_native_dialogs.key,
+                           global_use_native_dialogs.def).toBool ())
       setOption(QFileDialog::DontUseNativeDialog);
 
     if (multimode == "on")         // uigetfile multiselect=on

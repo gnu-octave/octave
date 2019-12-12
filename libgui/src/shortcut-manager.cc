@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-qobject.h"
 #include "shortcut-manager.h"
-
+#include "gui-preferences-global.h"
 #include "error.h"
 
 namespace octave
@@ -601,8 +601,8 @@ namespace octave
         int opts = 0;  // No options by default.
         resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
         gui_settings *settings = rmgr.get_settings ();
-        if (! settings->value ("use_native_file_dialogs",
-                                                        true).toBool ())
+        if (! settings->value (global_use_native_dialogs.key,
+                               global_use_native_dialogs.def).toBool ())
           opts = QFileDialog::DontUseNativeDialog;
 
         if (action == OSC_IMPORT)

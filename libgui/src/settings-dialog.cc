@@ -117,8 +117,9 @@ namespace octave
     // System at beginning
     comboBox_language->insertItem (0, tr ("System setting"));
     comboBox_language->insertSeparator (1);    // separator after System
-    QString language = settings->value ("language", "SYSTEM").toString ();
-    if (language == "SYSTEM")
+    QString language = settings->value (global_language.key,
+                                        global_language.def).toString ();
+    if (language == global_language.def.toString ())
       language = tr ("System setting");
     int selected = comboBox_language->findText (language);
     if (selected >= 0)
@@ -222,14 +223,18 @@ namespace octave
       }
 
     // prompt on exit
-    cb_prompt_to_exit->setChecked (settings->value ("prompt_to_exit", false).toBool ());
+    cb_prompt_to_exit->setChecked (
+        settings->value (global_prompt_to_exit.key, global_prompt_to_exit.def).toBool ());
 
     // Main status bar
-    cb_status_bar->setChecked (settings->value ("show_status_bar", true).toBool ());
+    cb_status_bar->setChecked (
+        settings->value (global_status_bar.key, global_status_bar.def).toBool ());
 
     // Octave startup
-    cb_restore_octave_dir->setChecked (settings->value ("restore_octave_dir", false).toBool ());
-    le_octave_dir->setText (settings->value ("octave_startup_dir").toString ());
+    cb_restore_octave_dir->setChecked (
+        settings->value (global_restore_ov_dir.key, global_restore_ov_dir.def).toBool ());
+    le_octave_dir->setText (settings->value (global_ov_startup_dir.key,
+                                             global_ov_startup_dir.def).toString ());
 
     connect (pb_octave_dir, SIGNAL (pressed (void)),
              this, SLOT (get_octave_dir (void)));
@@ -237,8 +242,10 @@ namespace octave
     //
     // editor
     //
-    useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor", false).toBool ());
-    customFileEditor->setText (settings->value ("customFileEditor").toString ());
+    useCustomFileEditor->setChecked (
+      settings->value (global_use_custom_editor.key, global_use_custom_editor.def).toBool ());
+    customFileEditor->setText (
+      settings->value (global_custom_editor.key, global_custom_editor.def).toString ());
     editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers", true).toBool ());
     editor_linenr_size->setValue (settings->value ("editor/line_numbers_size", 0).toInt ());
 
@@ -391,21 +398,21 @@ namespace octave
     le_file_browser_extensions->setText (settings->value (fb_txt_file_ext).toString ());
 
     checkbox_allow_web_connect->setChecked (settings->value (nr_allow_connection).toBool ());
-    useProxyServer->setChecked (settings->value ("useProxyServer", false).toBool ());
-    proxyHostName->setText (settings->value ("proxyHostName").toString ());
+    useProxyServer->setChecked (
+        settings->value (global_use_proxy.key, global_use_proxy.def).toBool ());
+    proxyHostName->setText (settings->value (global_proxy_host.key, global_proxy_host.def).toString ());
 
     int currentIndex = 0;
-    QString proxyTypeString = settings->value ("proxyType").toString ();
+    QString proxyTypeString = settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
     while ((currentIndex < proxyType->count ())
            && (proxyType->currentText () != proxyTypeString))
       {
         currentIndex++;
         proxyType->setCurrentIndex (currentIndex);
       }
-
-    proxyPort->setText (settings->value ("proxyPort").toString ());
-    proxyUserName->setText (settings->value ("proxyUserName").toString ());
-    proxyPassword->setText (settings->value ("proxyPassword").toString ());
+    proxyPort->setText (settings->value (global_proxy_port.key, global_proxy_port.def).toString ());
+    proxyUserName->setText (settings->value (global_proxy_user.key, global_proxy_user.def).toString ());
+    proxyPassword->setText (settings->value (global_proxy_pass.key, global_proxy_pass.def).toString ());
 
     // Workspace
     read_workspace_colors (settings);
@@ -824,8 +831,8 @@ namespace octave
     // language
     QString language = comboBox_language->currentText ();
     if (language == tr ("System setting"))
-      language = "SYSTEM";
-    settings->setValue ("language", language);
+      language = global_language.def.toString ();
+    settings->setValue (global_language.key, language);
 
     // style
     QString selected_style = combo_styles->currentText ();
@@ -853,18 +860,18 @@ namespace octave
     settings->setValue (global_cursor_blinking.key, cb_cursor_blinking->isChecked ());
 
     // promp to exit
-    settings->setValue ("prompt_to_exit", cb_prompt_to_exit->isChecked ());
+    settings->setValue (global_prompt_to_exit.key, cb_prompt_to_exit->isChecked ());
 
     // status bar
-    settings->setValue ("show_status_bar", cb_status_bar->isChecked ());
+    settings->setValue (global_status_bar.key, cb_status_bar->isChecked ());
 
     // Octave startup
-    settings->setValue ("restore_octave_dir", cb_restore_octave_dir->isChecked ());
-    settings->setValue ("octave_startup_dir", le_octave_dir->text ());
+    settings->setValue (global_restore_ov_dir.key, cb_restore_octave_dir->isChecked ());
+    settings->setValue (global_ov_startup_dir.key, le_octave_dir->text ());
 
     //editor
-    settings->setValue ("useCustomFileEditor", useCustomFileEditor->isChecked ());
-    settings->setValue ("customFileEditor", customFileEditor->text ());
+    settings->setValue (global_use_custom_editor.key, useCustomFileEditor->isChecked ());
+    settings->setValue (global_custom_editor.key, customFileEditor->text ());
     settings->setValue ("editor/showLineNumbers", editor_showLineNumbers->isChecked ());
     settings->setValue ("editor/line_numbers_size", editor_linenr_size->value ());
     settings->setValue ("editor/highlightCurrentLine", editor_highlightCurrentLine->isChecked ());
@@ -941,12 +948,12 @@ namespace octave
     settings->setValue (fb_txt_file_ext.key, le_file_browser_extensions->text ());
 
     settings->setValue (nr_allow_connection.key, checkbox_allow_web_connect->isChecked ());
-    settings->setValue ("useProxyServer", useProxyServer->isChecked ());
-    settings->setValue ("proxyType", proxyType->currentText ());
-    settings->setValue ("proxyHostName", proxyHostName->text ());
-    settings->setValue ("proxyPort", proxyPort->text ());
-    settings->setValue ("proxyUserName", proxyUserName->text ());
-    settings->setValue ("proxyPassword", proxyPassword->text ());
+    settings->setValue (global_use_proxy.key, useProxyServer->isChecked ());
+    settings->setValue (global_proxy_type.key, proxyType->currentText ());
+    settings->setValue (global_proxy_host.key, proxyHostName->text ());
+    settings->setValue (global_proxy_port.key, proxyPort->text ());
+    settings->setValue (global_proxy_user.key, proxyUserName->text ());
+    settings->setValue (global_proxy_pass.key, proxyPassword->text ());
     settings->setValue (cs_cursor_use_fgcol.key, terminal_cursorUseForegroundColor->isChecked ());
     settings->setValue ("terminal/focus_after_command", terminal_focus_command->isChecked ());
     settings->setValue ("terminal/print_debug_location", terminal_print_dbg_location->isChecked ());

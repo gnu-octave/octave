@@ -230,7 +230,8 @@ namespace octave
   {
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (settings->value ("useCustomFileEditor",false).toBool ())
+    if (settings->value (global_use_custom_editor.key,
+                         global_use_custom_editor.def).toBool ())
       return;  // do not open an empty script in the external editor
 
     bool real_visible;
@@ -2534,7 +2535,8 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
 
-    if (settings->value ("useCustomFileEditor",false).toBool ())
+    if (settings->value (global_use_custom_editor.key,
+                         global_use_custom_editor.def).toBool ())
       {
         // use the external editor interface for handling the call
         emit request_open_file_external (file_name, line);

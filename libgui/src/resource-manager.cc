@@ -155,7 +155,8 @@ namespace octave
     if (m_settings)
       {
         // get the locale from the settings if already available
-        language = m_settings->value ("language", "SYSTEM").toString ();
+        language = m_settings->value (global_language.key,
+                                      global_language.def).toString ();
       }
 
     // load the translations depending on the settings
@@ -336,9 +337,10 @@ namespace octave
       {
         QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
 
-        if (m_settings->value ("useProxyServer",false).toBool ())
+        if (m_settings->value (global_use_proxy.key, global_use_proxy.def).toBool ())
           {
-            QString proxyTypeString = m_settings->value ("proxyType").toString ();
+            QString proxyTypeString
+                = m_settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
 
             if (proxyTypeString == "Socks5Proxy")
               proxyType = QNetworkProxy::Socks5Proxy;
@@ -349,10 +351,14 @@ namespace octave
         QNetworkProxy proxy;
 
         proxy.setType (proxyType);
-        proxy.setHostName (m_settings->value ("proxyHostName").toString ());
-        proxy.setPort (m_settings->value ("proxyPort",80).toInt ());
-        proxy.setUser (m_settings->value ("proxyUserName").toString ());
-        proxy.setPassword (m_settings->value ("proxyPassword").toString ());
+        proxy.setHostName (m_settings->value (global_proxy_host.key,
+                                              global_proxy_host.def).toString ());
+        proxy.setPort (m_settings->value (global_proxy_port.key,
+                                          global_proxy_port.def).toInt ());
+        proxy.setUser (m_settings->value (global_proxy_user.key,
+                                          global_proxy_user.def).toString ());
+        proxy.setPassword (m_settings->value (global_proxy_pass.key,
+                                              global_proxy_pass.def).toString ());
 
         QNetworkProxy::setApplicationProxy (proxy);
       }

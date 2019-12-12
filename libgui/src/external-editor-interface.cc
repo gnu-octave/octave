@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "external-editor-interface.h"
 #include "gui-settings.h"
+#include "gui-preferences-global.h"
 #include "octave-qobject.h"
 
 namespace octave
@@ -100,7 +101,8 @@ namespace octave
   {
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    QString editor = settings->value ("customFileEditor").toString ();
+    QString editor = settings->value (global_custom_editor.key,
+                                      global_custom_editor.def).toString ();
 
     // check the settings (avoid an empty string)
     if (editor.trimmed ().isEmpty ())

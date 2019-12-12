@@ -39,7 +39,10 @@ const QString global_font_family = "Courier";
 const gui_pref
 global_mono_font ("monospace_font", global_font_family);
 
-// Compacter Style for some widgets
+// Style
+
+const gui_pref
+global_style ("style", QVariant ("default"));
 
 const QString
 global_toolbar_style ("QToolBar {"
@@ -78,17 +81,46 @@ global_icon_size ("toolbar_icon_size", QVariant (0));
 const gui_pref
 global_icon_theme ("use_system_icon_theme", QVariant (true));
 
-// Style
+// Other
 
 const gui_pref
-global_style ("style", QVariant ("default"));
-
-// Other
+global_status_bar ("show_status_bar", QVariant (true));
 
 const gui_pref
 global_use_native_dialogs ("use_native_file_dialogs", QVariant (true));
 
 const gui_pref
 global_cursor_blinking ("cursor_blinking", QVariant (true));
+
+const gui_pref
+global_language ("language", QVariant ("SYSTEM"));
+
+const gui_pref
+global_ov_startup_dir ("octave_startup_dir", QVariant (QString ()));
+const gui_pref
+global_restore_ov_dir ("restore_octave_dir", QVariant (false));
+
+const gui_pref
+global_use_custom_editor ("useCustomFileEditor", QVariant (false));
+const gui_pref
+global_custom_editor ("customFileEditor", QVariant ("emacs +%l %f"));
+
+const gui_pref
+global_prompt_to_exit ("prompt_to_exit", QVariant (false));
+
+// Proxy
+
+const gui_pref
+global_proxy_host ("proxyHostName", QVariant (QString ()));
+const gui_pref
+global_use_proxy ("useProxyServer", QVariant (false));
+const gui_pref
+global_proxy_type ("proxyType", QVariant (QString ()));
+const gui_pref
+global_proxy_port ("proxyPort", QVariant (80));
+const gui_pref
+global_proxy_user ("proxyUserName", QVariant (QString ()));
+const gui_pref
+global_proxy_pass ("proxyPassword", QVariant (QString ()));
 
 #endif

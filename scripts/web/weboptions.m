@@ -24,8 +24,8 @@
 ##
 ## @code{weboptions} with no inputs returns a default @code{weboptions} object
 ## to specify parameters for a request to a web service.  A @code{weboptions}
-## object can be an optional input argument to the @code{webread},
-## @code{websave}, and ## @code{webwrite} functions.
+## object can be an optional input argument to the @code{webread} and
+## @code{webwrite} functions.
 ##
 ## Multiple name and value pair arguments may be specified in any order as
 ## @var{name1}, @var{value1}, @var{name2}, @var{value2}, etc.
@@ -117,8 +117,8 @@
 ## The following methods are available:
 ## @samp{get}, @samp{put}, @samp{post}, @samp{delete}, @samp{patch}
 ##
-## @code{webread} and @code{websave} use the HTTP GET method.  @code{webwrite}
-## uses the HTTP POST method as default.
+## @code{webread} uses the HTTP GET method.  @code{webwrite} uses the HTTP POST
+## method as default.
 ##
 ## @item
 ## @samp{ArrayFormat} -- Not yet implemented.  Only for @sc{matlab}
@@ -129,7 +129,7 @@
 ## compatibility.
 ## @end itemize
 ##
-## @seealso{webwrite, webread, websave}
+## @seealso{webread, webwrite}
 ## @end deftypefn
 
 classdef weboptions < handle

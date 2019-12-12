@@ -35,7 +35,7 @@
 ## HTTP request options.  This argument can be used with either calling form.
 ## See @code{help weboptions} for a complete list of supported HTTP options.
 ##
-## @seealso{weboptions, webwrite, websave}
+## @seealso{weboptions, webwrite}
 ## @end deftypefn
 
 function response = webread (url, varargin)

@@ -254,7 +254,7 @@ status information on files; and for manipulating file and path names.
 
 @menu
 * FTP Objects::
-* URL Manipulation::
+* WWW Access::
 * Base64 and Binary Data Transmission::
 @end menu
 
@@ -291,12 +291,27 @@ connection.  All FTP functions take an FTP object as the first argument.
 
 @DOCSTRING(@ftp/rmdir)
 
-@node URL Manipulation
-@subsection URL Manipulation
+@node WWW Access
+@subsection WWW Access
+
+Octave can communicate with websites across the Internet.  The @code{web}
+function will launch an external web browser to interactively view a site.  The
+remaining functions---@code{urlread}, @code{urlwrite}, @code{webread},
+@code{webwrite}---are internal Octave functions which can import or export
+data to/from Octave and a website identified by a URL (Uniform Resource
+Locator).
+
+@DOCSTRING(web)
 
 @DOCSTRING(urlread)
 
 @DOCSTRING(urlwrite)
+
+@DOCSTRING(webread)
+
+@DOCSTRING(webwrite)
+
+@DOCSTRING(weboptions)
 
 @node Base64 and Binary Data Transmission
 @subsection Base64 and Binary Data Transmission

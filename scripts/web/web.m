@@ -63,7 +63,7 @@
 ## The return values @var{handle} and @var{url} are currently unimplemented
 ## but given for compatibility.
 ##
-## @seealso{weboptions, webread, webwrite, websave, urlread, urlwrite}
+## @seealso{weboptions, webread, webwrite, urlread, urlwrite}
 ## @end deftypefn
 
 function [status, h, url] = web (url, varargin)

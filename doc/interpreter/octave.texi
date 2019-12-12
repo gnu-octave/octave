@@ -829,7 +829,7 @@ System Utilities
 Networking Utilities
 
 * FTP Objects::
-* URL Manipulation::
+* WWW Access::
 * Base64 and Binary Data Transmission::
 
 Packages

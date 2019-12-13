@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dw-main-window.h"
 #include "octave-qobject.h"
 #include "shortcut-manager.h"
+#include "gui-preferences-sc.h"
 
 namespace octave
 {
@@ -130,12 +131,12 @@ namespace octave
   {
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
 
-    scmgr.set_shortcut (m_close_action, "editor_file:close");
-    scmgr.set_shortcut (m_close_all_action, "editor_file:close_all");
-    scmgr.set_shortcut (m_close_others_action, "editor_file:close_other");
+    scmgr.set_shortcut (m_close_action, sc_edit_file_close);
+    scmgr.set_shortcut (m_close_all_action, sc_edit_file_close_all);
+    scmgr.set_shortcut (m_close_others_action, sc_edit_file_close_other);
 
-    scmgr.set_shortcut (m_switch_left_action, "editor_tabs:switch_left_tab");
-    scmgr.set_shortcut (m_switch_right_action, "editor_tabs:switch_right_tab");
+    scmgr.set_shortcut (m_switch_left_action, sc_edit_tabs_switch_left_tab);
+    scmgr.set_shortcut (m_switch_right_action, sc_edit_tabs_switch_right_tab);
   }
 
 

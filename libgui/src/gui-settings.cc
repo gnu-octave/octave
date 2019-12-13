@@ -31,7 +31,16 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
 
-  QVariant gui_settings::sc_value (const sc_pref& pref) const
+  QString gui_settings::sc_value (const sc_pref& pref) const
+  {
+    QKeySequence key_seq = sc_def_value (pref);
+
+    // Get the value from the settings where the key sequences are stored
+    // as strings
+    return value (sc_group + pref.key, key_seq.toString ()).toString ();
+  }
+
+  QKeySequence gui_settings::sc_def_value (const sc_pref& pref) const
   {
     QKeySequence key_seq = QKeySequence ();
 
@@ -43,11 +52,7 @@ namespace octave
     else if (pref.def_std != QKeySequence::UnknownKey)
       key_seq = QKeySequence (pref.def_std);
 
-    // Get the value from the settings where the key sequences are stored
-    // as strings
-    return value (pref.key, key_seq.toString ());
+    return key_seq;
   }
-
-  // Additional gui_settings functions will be added later.
 
 }

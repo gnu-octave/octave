@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "documentation.h"
 #include "gui-preferences-global.h"
+#include "gui-preferences-sc.h"
 #include "octave-qobject.h"
 #include "shortcut-manager.h"
 
@@ -581,15 +582,15 @@ namespace octave
     // Shortcuts
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
 
-    scmgr.set_shortcut (m_action_find, "editor_edit:find_replace");
-    scmgr.shortcut (m_findnext_shortcut, "editor_edit:find_next");
-    scmgr.shortcut (m_findprev_shortcut, "editor_edit:find_previous");
-    scmgr.set_shortcut (m_action_zoom_in, "editor_view:zoom_in");
-    scmgr.set_shortcut (m_action_zoom_out, "editor_view:zoom_out");
-    scmgr.set_shortcut (m_action_zoom_original, "editor_view:zoom_normal");
-    scmgr.set_shortcut (m_action_go_home, "doc_browser:go_home");
-    scmgr.set_shortcut (m_action_go_prev, "doc_browser:go_back");
-    scmgr.set_shortcut (m_action_go_next, "doc_browser:go_next");
+    scmgr.set_shortcut (m_action_find, sc_edit_edit_find_replace);
+    scmgr.shortcut (m_findnext_shortcut, sc_edit_edit_find_next);
+    scmgr.shortcut (m_findprev_shortcut, sc_edit_edit_find_previous);
+    scmgr.set_shortcut (m_action_zoom_in, sc_edit_view_zoom_in);
+    scmgr.set_shortcut (m_action_zoom_out, sc_edit_view_zoom_out);
+    scmgr.set_shortcut (m_action_zoom_original, sc_edit_view_zoom_normal);
+    scmgr.set_shortcut (m_action_go_home, sc_doc_go_home);
+    scmgr.set_shortcut (m_action_go_prev, sc_doc_go_back);
+    scmgr.set_shortcut (m_action_go_next, sc_doc_go_next);
   }
 
   void documentation::copyClipboard (void)

@@ -444,7 +444,9 @@ namespace octave
 
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
 
-    cb_prevent_readline_conflicts->setChecked (settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ());
+    cb_prevent_readline_conflicts->setChecked (
+          settings->value (sc_prevent_rl_conflicts.key,
+                           sc_prevent_rl_conflicts.def).toBool ());
 
     // initialize the tree view with all shortcut data
     scmgr.fill_treewidget (shortcuts_treewidget);
@@ -1030,7 +1032,7 @@ namespace octave
 
     // shortcuts
 
-    settings->setValue ("shortcuts/prevent_readline_conflicts", cb_prevent_readline_conflicts->isChecked ());
+    settings->setValue (sc_prevent_rl_conflicts.key, cb_prevent_readline_conflicts->isChecked ());
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
     scmgr.write_shortcuts (settings, closing);
 

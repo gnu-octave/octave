@@ -53,6 +53,8 @@ struct gui_pref
 // combination of Qt:Keys (resutling in an unsigend int, when added)
 // or as one of the predefined standard key sequences.
 
+const QString sc_group ("shortcuts/");  // group name is handled separately
+
 struct sc_pref
 {
   sc_pref (const QString& key_arg, Qt::Key def_arg)

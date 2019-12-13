@@ -273,7 +273,7 @@ QTerminal::notice_settings (const gui_settings *settings)
   // If the Copy shortcut is not Ctrl+C, an extra interrupt action is
   // set up for emitting the interrupt signal.
 
-  QString sc = settings->sc_value (sc_main_edit_copy).toString ();
+  QString sc = settings->sc_value (sc_main_edit_copy);
 
   //  Dis- or enable extra interrupt action depending on the Copy shortcut
   bool extra_ir_action

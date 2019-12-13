@@ -62,7 +62,9 @@ namespace octave
       return value (pref.key, pref.def);
     }
 
-    QVariant sc_value (const sc_pref& pref) const;
+    QString sc_value (const sc_pref& pref) const;
+
+    QKeySequence sc_def_value (const sc_pref& pref) const;
 
   };
 }

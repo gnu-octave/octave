@@ -87,9 +87,9 @@ namespace octave
 
     void write_shortcuts (gui_settings *settings, bool closing);
 
-    void set_shortcut (QAction *action, const QString& key);
+    void set_shortcut (QAction *action, const sc_pref& scpref);
 
-    void shortcut (QShortcut *sc, const QString& key);
+    void shortcut (QShortcut *sc, const sc_pref& scpref);
 
     void fill_treewidget (QTreeWidget *tree_view);
 
@@ -103,7 +103,7 @@ namespace octave
 
   private:
 
-    void init (const QString&, const QString&, const QKeySequence&);
+    void init (const QString&, const sc_pref& scpref);
     void shortcut_dialog (int);
     void import_shortcuts (gui_settings *settings);
     bool overwrite_all_shortcuts (void);

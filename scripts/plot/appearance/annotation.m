@@ -481,8 +481,6 @@ function h = buildannot (hax, objtype, pos)
       hr = patch (x, y, "parent", h);
 
       propnames = rectprops ("names");
-      ## FIXME: Remove in Octave 6
-      propnames(strcmp ("edgecolor", propnames)) = [];
       for ii = 1:numel (propnames)
         update_rect (h, {}, propnames{ii}, hr, objtype);
       endfor
@@ -799,9 +797,7 @@ endfunction
 
 function props = rectprops (varargin)
 
-  ## FIXME: DEPRECATED: Remove "edgecolor" in version 6.
   props = {"color", "patchedgecolor", "k", ...
-           "edgecolor", "patchedgecolor", "k", ...
            "facealpha", "patchfacealpha", 1, ...
            "facecolor", "patchfacecolor", "none", ...
            "linestyle", "patchlinestyle", "-", ...
@@ -1273,14 +1269,6 @@ function update_rect (h, ~, prop, hre, typ)
         set (hre, "xdata", x, "ydata", y);
 
       case "color"
-        set (hre, "edgecolor", get (h, prop));
-
-      case "edgecolor"
-        ## FIXME: DEPRECATED: Remove "edgecolor" in version 6.
-        warning ("Octave:deprecated-property",
-                 ['annotation: Property "edgecolor" for ' typ ' annotations'...
-                  ' is deprecated and will be removed from a future version'...
-                  ' of Octave.  Use "color" instead.']);
         set (hre, "edgecolor", get (h, prop));
 
       otherwise

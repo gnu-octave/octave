@@ -12144,15 +12144,9 @@ gh_manager::execute_callback (const graphics_handle& h,
             {
               m_interpreter.eval_string (s, false, status, 0);
             }
-          catch (octave::execution_exception&)
+          catch (octave::execution_exception& e)
             {
-              std::cerr << "execution error in graphics callback function"
-                        << std::endl;
-
-              es.last_error_id ("");
-              es.last_error_message ("execution error in graphics callback function");
-
-              m_interpreter.recover_from_exception ();
+              m_interpreter.handle_exception (e);
             }
         }
       else if (cb.iscell () && cb.length () > 0
@@ -12182,15 +12176,9 @@ gh_manager::execute_callback (const graphics_handle& h,
             else
               octave::feval (fcn, args);
           }
-        catch (octave::execution_exception&)
+        catch (octave::execution_exception& e)
           {
-            std::cerr << "execution error in graphics callback function"
-                      << std::endl;
-
-            es.last_error_id ("");
-            es.last_error_message ("execution error in graphics callback function");
-
-            m_interpreter.recover_from_exception ();
+            m_interpreter.handle_exception (e);
           }
 
       // Redraw after interacting with a user-interface (ui*) object.

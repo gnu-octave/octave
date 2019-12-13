@@ -386,7 +386,8 @@ users of your library to changes in a shared library:
   * Programs may need to be changed, recompiled, and relinked in order
     to use the new version.  Bump current, set revision and age to 0.
 
-These guidelines also appear in the automake manual.
+These guidelines also appear in the GNU libtool manual, see
+https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html.
 
 
 ################################################################################

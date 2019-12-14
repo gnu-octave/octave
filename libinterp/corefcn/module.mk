@@ -91,7 +91,6 @@ COREFCN_INC = \
   %reldir%/sysdep.h \
   %reldir%/text-engine.h \
   %reldir%/text-renderer.h \
-  %reldir%/toplev.h \
   %reldir%/txt-eng.h \
   %reldir%/url-handle-manager.h \
   %reldir%/utils.h \

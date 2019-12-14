@@ -65,7 +65,6 @@ COREFCN_INC = \
   %reldir%/oct-hist.h \
   %reldir%/oct-iostrm.h \
   %reldir%/oct-map.h \
-  %reldir%/oct-obj.h \
   %reldir%/oct-prcstrm.h \
   %reldir%/oct-procbuf.h \
   %reldir%/oct-process.h \

@@ -46,10 +46,6 @@ function txt = __unimplemented__ (fcn)
       txt = ["Basic video file support is provided in the video package.  ", ...
              "See @url{https://octave.sourceforge.io/video/}."];
 
-    case "exifread"
-      txt = ["exifread is deprecated.  " ...
-             "The functionality is available in the imfinfo function."];
-
     case "funm"
       txt = ["funm is not currently part of core Octave.  ", ...
              "See the linear-algebra package at ", ...
@@ -68,8 +64,8 @@ function txt = __unimplemented__ (fcn)
       txt = ["matlabrc is not implemented.  ", ...
              "Octave uses the file '.octaverc' instead."];
 
-    case {"ode113", "ode15i", "ode15s", "ode23s", "ode23t", "ode23tb"}
-      txt = ["Octave provides lsode and ode45 for solving differential equations. ", ...
+    case {"ode113", "ode23s", "ode23t", "ode23tb"}
+      txt = ["Octave provides lsode and ode15i, ode15s, ode23, and ode45 for solving differential equations. ", ...
              "For more information try @code{help lsode}, @code{help ode45}.  ", ...
              "Matlab-compatible ODE functions are provided by the odepkg ", ...
              "package.  See @url{https://octave.sourceforge.io/odepkg/}."];
@@ -1360,6 +1356,7 @@ function rlist = missing_functions ()
 
   rlist = list;
 endfunction
+
 
 %!test
 %! str = __unimplemented__ ("no_name_function");

@@ -2487,10 +2487,10 @@ DEFMETHOD (addpath, interp, args, nargout,
 @deftypefnx {} {} addpath (@var{dir1}, @dots{}, @var{option})
 Add named directories to the function search path.
 
-If @var{option} is @qcode{"-begin"} or 0 (the default), prepend the
-directory name to the current path.  If @var{option} is @qcode{"-end"}
-or 1, append the directory name to the current path.
-Directories added to the path must exist.
+If @var{option} is @qcode{"-begin"} or 0 (the default), prepend the directory
+name(s) to the current path.  If @var{option} is @qcode{"-end"} or 1, append
+the directory name(s) to the current path.  Directories added to the path must
+exist.
 
 In addition to accepting individual directory arguments, lists of
 directory names separated by @code{pathsep} are also accepted.  For example:
@@ -2498,6 +2498,12 @@ directory names separated by @code{pathsep} are also accepted.  For example:
 @example
 addpath ("dir1:/dir2:~/dir3")
 @end example
+
+The newly added paths appear in the load path in the same order that they
+appear in the arguments of @code{addpath}.  When extending the load path to
+the front, the last path in the list of arguments is added first.  When
+extending the load path to the end, the first path in the list of arguments
+is added first.
 
 For each directory that is added, and that was not already in the path,
 @code{addpath} checks for the existence of a file named @file{PKG_ADD}

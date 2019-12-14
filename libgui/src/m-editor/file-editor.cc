@@ -824,6 +824,9 @@ namespace octave
   // This methos creates the find dialog
   void file_editor::find_create ()
   {
+    if (m_find_dialog)
+      m_find_dialog->close ();
+
     if (isFloating ())
       m_find_dialog = new find_dialog (m_octave_qobj, this, this);
     else

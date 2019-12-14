@@ -181,57 +181,56 @@ namespace octave
     // compatibility.  New code should use the functions provided by the
     // interpreter class.
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::at_top_level' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::at_top_level' instead")
     bool at_top_level (void);
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::varval' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::varval' instead")
     octave_value varval (const std::string& name) const;
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::global_varval' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::global_varval' instead")
     octave_value global_varval (const std::string& name) const;
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::top_level_varval' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::top_level_varval' instead")
     octave_value top_level_varval (const std::string& name) const;
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::global_variable_names' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::global_variable_names' instead")
     std::list<std::string> global_variable_names (void);
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::top_level_variable_names' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::top_level_variable_names' instead")
     std::list<std::string> top_level_variable_names (void);
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::variable_names' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::variable_names' instead")
     std::list<std::string> variable_names (void);
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::assign' instead")
-    void assign (const std::string& name, const octave_value& value = octave_value ());
+    OCTAVE_DEPRECATED (6, "use 'interpreter::assign' instead")
+    void assign (const std::string& name,
+                 const octave_value& value = octave_value ());
 
     // Note, FORCE_ADD no longer has any meaning.
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::assign' instead")
-    void assign (const std::string& name, const octave_value& value, bool /*force_add*/)
-    {
-      assign (name, value);
-    }
+    OCTAVE_DEPRECATED (6, "use 'interpreter::assign' instead")
+    void assign (const std::string& name, const octave_value& value,
+                 bool /*force_add*/);
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::clear_all' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::clear_all' instead")
     void clear_all (bool force = false);
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::clear_global' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::clear_global' instead")
     void clear_global (const std::string& name);
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::clear_global_pattern' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::clear_global_pattern' instead")
     void clear_global_pattern (const std::string& pattern);
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::clear_symbol' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::clear_symbol' instead")
     void clear_symbol (const std::string& name);
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::clear_symbol_pattern' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::clear_symbol_pattern' instead")
     void clear_symbol_pattern (const std::string& pattern);
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::global_assign' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::global_assign' instead")
     void global_assign (const std::string& name,
                         const octave_value& value = octave_value ());
 
-    // OCTAVE_DEPRECATED (V, "use 'interpreter::top_level_assign' instead")
+    OCTAVE_DEPRECATED (6, "use 'interpreter::top_level_assign' instead")
     void top_level_assign (const std::string& name,
                            const octave_value& value = octave_value ());
 

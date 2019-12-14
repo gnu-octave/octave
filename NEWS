@@ -197,6 +197,8 @@ and have been removed from Octave 6.
 
   Object               | Property                  | Value
   ---------------------|---------------------------|-----------------------
+  `annotation`         | `edgecolor ("rectangle")` |
+  `axes`               | `drawmode`                |
   `figure`             | `doublebuffer`            |
                        | `mincolormap`             |
                        | `wvisual`                 |
@@ -204,12 +206,13 @@ and have been removed from Octave 6.
                        | `xdisplay`                |
                        | `xvisual`                 |
                        | `xvisualmode`             |
-  `axes`               | `drawmode`                |
-  `annotation`         | `edgecolor ("rectangle")` |
+  `line`               | `interpreter`             |
+  `patch`              | `interpreter`             |
+  `surface`            | `interpreter`             |
   `text`               | `fontweight`              | `"demi"` and `"light"`
+  `uibuttongroup`      | `fontweight`              | `"demi"` and `"light"`
   `uicontrol`          | `fontweight`              | `"demi"` and `"light"`
   `uipanel`            | `fontweight`              | `"demi"` and `"light"`
-  `uibuttongroup`      | `fontweight`              | `"demi"` and `"light"`
   `uitable`            | `fontweight`              | `"demi"` and `"light"`
 
 

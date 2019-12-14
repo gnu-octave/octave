@@ -12129,8 +12129,6 @@ gh_manager::execute_callback (const graphics_handle& h,
       // Copy CB because "function_value" method is non-const.
       octave_value cb = cb_arg;
 
-      octave::error_system& es = m_interpreter.get_error_system ();
-
       if (cb.is_function ())
         fcn = cb.function_value ();
       else if (cb.is_function_handle ())

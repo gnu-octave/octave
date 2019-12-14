@@ -1551,8 +1551,6 @@ error estimate is computed from the L2-norm of the difference between two
 successive interpolations of the integrand over the nodes of the respective
 quadrature rules.
 
-disabled with @code{warning ("off", "Octave:quadcc:RelTol-conversion")}.
-
 Reference: @nospell{P. Gonnet}, @cite{Increasing the Reliability of Adaptive
 Quadrature Using Explicit Interpolants}, @nospell{ACM} Transactions on
 Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.

@@ -33,8 +33,9 @@
 ## @table @asis
 ## @item @qcode{"/path/to/filename.ext"}
 ## If a filename is given then the file extension is extracted and used as
-## filter.  In addition, the path is selected as current path and the filename
-## is selected as default file.  Example: @code{uigetfile ("myfun.m")}
+## filter.  In addition, the path is selected as current path in the dialog and
+## the filename is selected as default file.
+## Example: @code{uigetfile ("myfun.m")}
 ##
 ## @item A single file extension @qcode{"*.ext"}
 ## Example: @code{uigetfile ("*.ext")}
@@ -56,7 +57,7 @@
 ## is present the parent directory is listed.  The substring to the right of
 ## the rightmost file separator (if any) will be interpreted as a file or
 ## directory name and if that file or directory exists it will be highlighted.
-## If the path name or directory name is wholly or partly nonexistent, the
+## If the path name or directory name is entirely or partly nonexistent, the
 ## current working directory will be displayed.
 ## No filter will be active.
 ## @end table
@@ -71,6 +72,11 @@
 ## coordinates.  Two or more files can be selected when setting the
 ## @qcode{"MultiSelect"} key to @qcode{"on"}.  In that case @var{fname} is a
 ## cell array containing the files.
+##
+## @var{fname} and @var{fpath} contain the chosen name(s) and path,
+## respectively.  @var{fltidx} is the index to list of filter extensions
+## @var{flt} that was selected.
+##
 ## @seealso{uiputfile, uigetdir}
 ## @end deftypefn
 

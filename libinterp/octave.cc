@@ -154,7 +154,7 @@ namespace octave
               m_exec_path = octave_optarg_wrapper ();
             break;
 
-          case GUI_OPTION: // same value as FORCE_GUI_OPTION
+          case GUI_OPTION:
             m_gui = true;
             break;
 

@@ -59,8 +59,6 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define DOC_CACHE_FILE_OPTION 2
 #define EVAL_OPTION 3
 #define EXEC_PATH_OPTION 4
-// FIXME: DEPRECATED: ignored since Octave 4.4, remove for version 6.
-#define FORCE_GUI_OPTION 5
 #define GUI_OPTION 5
 #define IMAGE_PATH_OPTION 6
 #define INFO_FILE_OPTION 7
@@ -86,7 +84,6 @@ struct octave_getopt_options long_opts[] =
   { "echo-commands",            octave_no_arg,       0, 'x' },
   { "eval",                     octave_required_arg, 0, EVAL_OPTION },
   { "exec-path",                octave_required_arg, 0, EXEC_PATH_OPTION },
-  { "force-gui",                octave_no_arg,       0, FORCE_GUI_OPTION },
   { "gui",                      octave_no_arg,       0, GUI_OPTION },
   { "help",                     octave_no_arg,       0, 'h' },
   { "image-path",               octave_required_arg, 0, IMAGE_PATH_OPTION },

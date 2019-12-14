@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+// Deprecated in Octave 5.  Remove in Octave 7
 #warning "txt-eng.h has been deprecated; use text-engine instead"
 
 #include "text-engine.h"

@@ -43,10 +43,12 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
     endif
   endfor
 
-  ## Load the packages.
-  if (length (dirs) > 0)
-    addpath (dirs{:});
-  endif
+  ## Dependencies are sorted before their dependers in "dirs". Add them
+  ## consecutively in a for loop to the path to make sure dependencies are
+  ## added before their dependers (bug #57403).
+  for ii = 1:numel (dirs)
+    addpath (dirs{ii});
+  endfor
 
   ## Add the binaries to exec_path.
   if (! strcmp (EXEC_PATH, execpath))

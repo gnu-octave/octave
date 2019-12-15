@@ -1091,22 +1091,6 @@ function sz = update_texticon_position (hl, objlist)
     ext = abs (cell2mat (ext)(:,3:4));
   endif
 
-  ## Maximum allowable size for the legend
-  hax = getappdata (hl, "__axes_handle__")(1);
-  units = get (hax, "units");
-  unwind_protect
-    set (hax, "units", "points");
-    max_size = get (hax, "position")(3:4);
-  unwind_protect_cleanup
-    set (hax, "units", units);
-  end_unwind_protect
-
-  location = get (hl, "location");
-  outside = strcmp (location(end-3:end), "side");
-  if (! outside)
-    max_size *= .90;
-  endif
-
   autolayout = strcmp (get (hl, "numcolumnsmode"), "auto");
   xmax = ymax = 0;
   iter = 1;
@@ -1114,19 +1098,12 @@ function sz = update_texticon_position (hl, objlist)
   if (strcmp (get (hl, "orientation"), "vertical"))
 
     if (autolayout)
-      if (any (strcmpi (location, {"north", "northoutside",
-                                   "south", "southoutside"})))
-        ##FIXME: handle autolayout for these in a better fashion
-        nrow = 1;
-      else
-        nrow = max (find ((cumsum (ext(:,2) + vmargin) + vmargin) ...
-                          < max_size(2)));
-      endif
-      ncol = ceil (nitem / nrow);
+      ncol = 1;
     else
       ncol = min (nitem, get (hl, "numcolumns"));
-      nrow = ceil (nitem / ncol);
     endif
+
+    nrow = ceil (nitem / ncol);
 
     rowheights = arrayfun (@(idx) max([icon_height; ext(idx:nrow:end, 2)]), ...
                            1:nrow);
@@ -1164,18 +1141,9 @@ function sz = update_texticon_position (hl, objlist)
   else
 
     if (autolayout)
-      if (any (strcmpi (location, {"north", "northoutside",
-                                   "south", "southoutside"})))
-        ##FIXME: handle autolayout for these in a better fashion
-        ncol = nitem;
-      else
-        ncol = max (find ((cumsum (ext(:,1) + 2*hmargin ...
-                                   + icon_width) + hmargin) ...
-                          < max_size(1)));
-      endif
+      ncol = nitem;
     else
       ncol = min (nitem, get (hl, "numcolumns"));
-      nrow = ceil (nitem / ncol);
     endif
 
     nrow = ceil (nitem / ncol);

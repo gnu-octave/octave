@@ -57,7 +57,7 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 - The startup file `octaverc` now can be located in the platform
   dependent location for user local configuration files (e.g.
   ${XDG_CONFIG_HOME}/octave/octaverc on Unix-like operating systems or
-  %LOCALAPPDATA%\octave\octaverc on Windows).
+  %APPDATA%\octave\octaverc on Windows).
 
 #### Graphics backend
 

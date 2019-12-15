@@ -242,8 +242,7 @@ namespace octave
 
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && defined (OCTAVE_USE_WINDOWS_API)
       wchar_t path[MAX_PATH+1];
-      if (SHGetFolderPathW (nullptr,
-                            CSIDL_LOCAL_APPDATA | CSIDL_FLAG_DONT_VERIFY,
+      if (SHGetFolderPathW (nullptr, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY,
                             nullptr, SHGFP_TYPE_CURRENT, path) == S_OK)
         {
           char *local_app_data = u8_from_wchar (path);

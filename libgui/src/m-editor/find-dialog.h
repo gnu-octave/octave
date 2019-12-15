@@ -63,6 +63,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_find_dialog_h 1
 
 #include <QDialog>
+#include <QComboBox>
 
 #include "octave-qscintilla.h"
 #include "octave-dock-widget.h"
@@ -112,7 +113,6 @@ namespace octave
     void handle_selection_changed (bool has_selected);
 
     void handle_backward_search_changed (int);
-    void handle_search_text_changed (QString new_search_text);
 
     void find (bool forward = true);
     void replace (void);
@@ -131,15 +131,21 @@ namespace octave
     //! Reimplemented close event
     void closeEvent (QCloseEvent* e);
 
+    //! Update mru lists with new entry
+    void mru_update (QComboBox *mru);
+
     void no_matches_message (void);
     void do_replace (void);
+
+    void handle_search_text_changed (void);
+    void handle_replace_text_changed (void);
 
     octave_dock_widget *m_editor;
 
     QLabel            *_search_label;
-    QLineEdit         *_search_line_edit;
+    QComboBox         *_search_line_edit;
     QLabel            *_replace_label;
-    QLineEdit         *_replace_line_edit;
+    QComboBox         *_replace_line_edit;
     QCheckBox         *_case_check_box;
     QCheckBox         *_from_start_check_box;
     QCheckBox         *_wrap_check_box;
@@ -164,6 +170,8 @@ namespace octave
     int                m_sel_end;
 
     QPoint             m_last_position;
+
+    const int          m_mru_length = 10;
   };
 }
 

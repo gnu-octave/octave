@@ -67,6 +67,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QCheckBox>
 #include <QCheckBox>
+#include <QCompleter>
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QIcon>
@@ -92,11 +93,24 @@ namespace octave
     setWindowIcon (QIcon (":/actions/icons/find.png"));
 
     _search_label = new QLabel (tr ("Find &what:"));
-    _search_line_edit = new QLineEdit;
+    _search_line_edit = new QComboBox (this);
+    _search_line_edit->setToolTip (tr ("Enter text to search for"));
+    _search_line_edit->setEditable (true);
+    _search_line_edit->setMaxCount (m_mru_length);
+    _search_line_edit->completer ()->setCaseSensitivity (Qt::CaseSensitive);
     _search_label->setBuddy (_search_line_edit);
+
     _replace_label = new QLabel (tr ("Re&place with:"));
-    _replace_line_edit = new QLineEdit;
+    _replace_line_edit = new QComboBox (this);
+    _replace_line_edit->setToolTip (tr ("Enter new text replacing search hits"));
+    _replace_line_edit->setEditable (true);
+    _replace_line_edit->setMaxCount (m_mru_length);
+    _replace_line_edit->completer ()->setCaseSensitivity (Qt::CaseSensitive);
     _replace_label->setBuddy (_replace_line_edit);
+
+     int width = QFontMetrics (_search_line_edit->font ()).averageCharWidth();
+     _search_line_edit->setFixedWidth (20*width);
+     _replace_line_edit->setFixedWidth (20*width);
 
     _case_check_box = new QCheckBox (tr ("Match &case"));
     _from_start_check_box = new QCheckBox (tr ("Search from &start"));
@@ -140,8 +154,6 @@ namespace octave
              this,                SLOT (handle_backward_search_changed (int)));
     connect (_button_box,         SIGNAL (rejected ()),
              this,                SLOT (close ()));
-    connect (_search_line_edit,   SIGNAL (textChanged (QString)),
-             this,                SLOT (handle_search_text_changed (QString)));
 
     connect (_search_selection_check_box, SIGNAL (stateChanged (int)),
              this,                        SLOT (handle_sel_search_changed (int)));
@@ -218,9 +230,22 @@ namespace octave
 
     s->setValue (ed_fdlg_pos.key, m_last_position);
 
-    s->setValue (ed_fdlg_search.key, _search_line_edit->text ());
-    s->setValue (ed_fdlg_replace.key, _replace_line_edit->text ());
+    // Is current search/replace text in the mru list?
+    mru_update (_search_line_edit);
+    mru_update (_replace_line_edit);
 
+    // Store mru lists
+    QStringList mru;
+    for (int i = 0; i < _search_line_edit->count (); i++)
+      mru.append (_search_line_edit->itemText (i));
+    s->setValue (ed_fdlg_search.key, mru);
+
+    mru.clear ();
+    for (int i = 0; i < _replace_line_edit->count (); i++)
+      mru.append (_replace_line_edit->itemText (i));
+    s->setValue (ed_fdlg_replace.key, mru);
+
+    // Store dialog's options
     int opts = 0
           + _extension->isVisible () * FIND_DLG_MORE
           + _case_check_box->isChecked () * FIND_DLG_CASE
@@ -240,9 +265,18 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *s = rmgr.get_settings ();
 
-    _search_line_edit->setText (s->value (ed_fdlg_search.key).toString ());
-    _replace_line_edit->setText (s->value (ed_fdlg_replace.key).toString ());
+    // Get mru lists for search and replace text
+    QStringList mru = s->value (ed_fdlg_search.key).toStringList ();
+    while (mru.length () > m_mru_length)
+      mru.removeLast ();
+    _search_line_edit->addItems (mru);
 
+    mru = s->value (ed_fdlg_replace.key).toStringList ();
+    while (mru.length () > m_mru_length)
+      mru.removeLast ();
+    _replace_line_edit->addItems (mru);
+
+    // Get the dialog's options
     int opts = s->value (ed_fdlg_opts.key, ed_fdlg_opts.def).toInt ();
 
     _extension->setVisible (FIND_DLG_MORE & opts);
@@ -273,10 +307,54 @@ namespace octave
   }
 
   // search text has changed: reset the search
-  void find_dialog::handle_search_text_changed (QString)
+  void find_dialog::handle_search_text_changed (void)
   {
+    // Return if nothing has changed
+    if (_search_line_edit->currentText () == _search_line_edit->itemText (0))
+      return;
+
     if (_search_selection_check_box->isChecked ())
       _find_result_available = false;
+
+    mru_update (_search_line_edit);
+  }
+
+  // replaced text has changed: reset the search
+  void find_dialog::handle_replace_text_changed (void)
+  {
+    // Return if nothing has changed
+    if (_replace_line_edit->currentText ()
+            == _replace_line_edit->itemText (0))
+      return;
+
+    mru_update (_replace_line_edit);
+  }
+
+  // Update the mru list
+  void find_dialog::mru_update (QComboBox *mru)
+  {
+    // Remove possible empty entries from the mru list
+    int index;
+    while ((index = mru->findText (QString ())) >= 0)
+      mru->removeItem (index);
+
+    // Get current text and return if it is empty
+    QString text = mru->currentText ();
+
+    if (text.isEmpty ())
+      return;
+
+    // Remove occurrences of the current text in the mru list
+    while ((index = mru->findText (text)) >= 0)
+      mru->removeItem (index);
+
+    // Remove the last entry from the end if the list is full
+    if (mru->count () == m_mru_length)
+      mru->removeItem (m_mru_length -1);
+
+    // Insert new item at the beginning and set it as current item
+    mru->insertItem (0, text);
+    mru->setCurrentIndex (0);
   }
 
   void find_dialog::handle_sel_search_changed (int selected)
@@ -302,12 +380,12 @@ namespace octave
         int lbeg, lend, cbeg, cend;
         _edit_area->getSelection (&lbeg,&cbeg,&lend,&cend);
         if (lbeg == lend)
-          _search_line_edit->setText (_edit_area->selectedText ());
+          _search_line_edit->setCurrentText (_edit_area->selectedText ());
       }
 
     // set focus to "Find what" and select all text
     _search_line_edit->setFocus ();
-    _search_line_edit->selectAll ();
+    _search_line_edit->lineEdit ()->selectAll ();
 
     // Default to "find" next time.
     // Otherwise, it defaults to the last action, which may be "replace all".
@@ -328,6 +406,8 @@ namespace octave
   {
     if (! _edit_area)
       return;
+
+    handle_search_text_changed ();
 
     // line adn col: -1 means search starts at current position
     int line = -1, col = -1;
@@ -411,7 +491,7 @@ namespace octave
             if (_find_result_available && _edit_area->hasSelectedText ())
               {
                 int currpos = _edit_area->positionFromLineIndex (line,col);
-                currpos -= (_search_line_edit->text ().length ());
+                currpos -= (_search_line_edit->currentText ().length ());
                 if (currpos < 0)
                   currpos = 0;
                 _edit_area->lineIndexFromPosition (currpos, &line, &col);
@@ -421,7 +501,7 @@ namespace octave
 
     // Do the search
     _find_result_available
-      = _edit_area->findFirst (_search_line_edit->text (),
+      = _edit_area->findFirst (_search_line_edit->currentText (),
                                _regex_check_box->isChecked (),
                                _case_check_box->isChecked (),
                                _whole_words_check_box->isChecked (),
@@ -481,13 +561,13 @@ namespace octave
       {
         _rep_active = true;  // changes in selection not made by the user
 
-        _edit_area->replace (_replace_line_edit->text ());
+        _edit_area->replace (_replace_line_edit->currentText ());
         if (m_in_sel)
           {
             // Update the length of the selection
             m_sel_end = m_sel_end
-                        - _search_line_edit->text ().toUtf8 ().size ()
-                        + _replace_line_edit->text ().toUtf8 ().size ();
+                        - _search_line_edit->currentText ().toUtf8 ().size ()
+                        + _replace_line_edit->currentText ().toUtf8 ().size ();
           }
 
         _rep_active = false;
@@ -498,6 +578,8 @@ namespace octave
   {
     if (_edit_area)
       {
+        handle_replace_text_changed ();
+
         // Do the replace if we have selected text
         if (_find_result_available && _edit_area->hasSelectedText ())
           do_replace ();
@@ -512,6 +594,8 @@ namespace octave
 
     if (_edit_area)
       {
+        handle_replace_text_changed ();
+
         _edit_area->getCursorPosition (&line,&col);
 
         _rep_all = 1;

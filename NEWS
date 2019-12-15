@@ -61,6 +61,10 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
 #### Graphics backend
 
+- The use of Qt4 for graphics and the GUI is deprecated in Octave
+  version 6 and no further bug fixes will be made.  Qt4 support will be
+  removed completely in Octave version 7.
+
 - The `legend` function has been entirely rewritten.  This fixes a
   number of historical bugs, but also implements new properties such as
   `"AutoUpdate"` and `"NumColumns"`.  The gnuplot toolkit---which is no

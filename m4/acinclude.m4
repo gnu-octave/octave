@@ -1789,6 +1789,8 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
     BUILD_QT_SUMMARY_MSG="yes (version: $have_qt_version)"
     if test x"$have_qt_version" = x4; then
       AC_DEFINE(HAVE_QT4, 1, [Define to 1 if using Qt version 4.])
+      warn_qt_ver="Use of Qt version 4 is deprecated.  Support will be removed in Octave version 7."
+      OCTAVE_CONFIGURE_WARNING([warn_qt_ver])
     fi
     if test x"$have_qt_version" = x5; then
       AC_DEFINE(HAVE_QT5, 1, [Define to 1 if using Qt version 5.])
@@ -1807,10 +1809,10 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
       OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
     fi
     if test -n "$warn_qt_version"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_version])
+      OCTAVE_CONFIGURE_WARNING([warn_qt_version])
     fi
     if test -n "$warn_qt_tools"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_tools])
+      OCTAVE_CONFIGURE_WARNING([warn_qt_tools])
     fi
     if test -n "$warn_qt_setvbuf"; then
       OCTAVE_CONFIGURE_WARNING([warn_qt_setvbuf])

@@ -247,8 +247,7 @@ function set_graphics_toolkit ()
   elseif (strcmp ("qt", graphics_toolkit ())
           && __have_feature__ ("QT_OFFSCREEN"))
     ## Use qt with QOffscreenSurface for plot
-  elseif (! strcmp ("gnuplot", graphics_toolkit ())
-          && ! __have_feature__ ("OSMESA"))
+  elseif (! strcmp ("gnuplot", graphics_toolkit ()))
     if (! any (strcmp ("gnuplot", available_graphics_toolkits ())))
       error ("no graphics toolkit available for offscreen plotting");
     else

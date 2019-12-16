@@ -22,11 +22,12 @@
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
-%!   if (ispc () || ! __have_feature__ ("OSMESA"))
+%!   if (! __have_feature__ ("QT_OFFSCREEN")
+%!       || ! strcmp (graphics_toolkit (), "qt"))
 %!     try
 %!       graphics_toolkit ("gnuplot");
 %!     catch
-%!       ## The system doesn't support OSMESA or gnuplot for drawing hidden
+%!       ## The system doesn't support gnuplot for drawing hidden
 %!       ## figures.  Just return and have test marked as passing.
 %!       return;
 %!     end_try_catch
@@ -53,11 +54,12 @@
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
-%!   if (ispc () || ! __have_feature__ ("OSMESA"))
+%!   if (! __have_feature__ ("QT_OFFSCREEN")
+%!       || ! strcmp (graphics_toolkit (), "qt"))
 %!     try
 %!       graphics_toolkit ("gnuplot");
 %!     catch
-%!       ## The system doesn't support OSMESA or gnuplot for drawing hidden
+%!       ## The system doesn't support gnuplot for drawing hidden
 %!       ## figures.  Just return and have test marked as passing.
 %!       return;
 %!     end_try_catch

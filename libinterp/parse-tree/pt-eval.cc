@@ -1726,12 +1726,7 @@ namespace octave
 
   void tree_evaluator::mlock (void) const
   {
-    octave_function *fcn = m_call_stack.current ();
-
-    if (! fcn)
-      error ("mlock: invalid use outside a function");
-
-    fcn->lock ();
+    m_call_stack.mlock ();
   }
 
   octave_value

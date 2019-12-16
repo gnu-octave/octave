@@ -720,6 +720,41 @@ namespace octave
       pop ();
   }
 
+  void call_stack::mlock (void) const
+  {
+    if (m_cs.empty ())
+      error ("mlock: call stack is empty");
+
+    octave_function *fcn = nullptr;
+
+    size_t idx = size ();
+
+    while (--idx)
+      {
+        const stack_frame *elt = m_cs[idx];
+        fcn = elt->function ();
+
+        if (fcn)
+          {
+            if (fcn->is_builtin_function ())
+              {
+                if (fcn->name () == "mlock")
+                  continue;
+
+                warning ("mlock: locking built-in function has no effect");
+                return;
+              }
+
+            break;
+          }
+      }
+
+    if (! fcn)
+      error ("mlock: invalid use outside a function");
+
+    fcn->lock ();
+  }
+
   symbol_info_list call_stack::all_variables (void)
   {
     return m_cs[m_curr_frame]->all_variables ();

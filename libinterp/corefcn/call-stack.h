@@ -255,6 +255,14 @@ namespace octave
 
     void clear (void);
 
+    // Lock current function.  Skip built-in functions (mlock is skipped
+    // silently; warn for others) and look for the first caller that is
+    // a user-defined (m-file) or dynamically loaded (.oct or .mex)
+    // function.  That allows the built-in Fmlock function to lock the
+    // calling function instead of locking istelf.
+
+    void mlock (void) const;
+
     symbol_info_list all_variables (void);
 
     std::list<symbol_record> glob (const std::string& pattern) const;

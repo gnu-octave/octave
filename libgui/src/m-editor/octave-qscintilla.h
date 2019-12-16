@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLabel>
 #include <QMenu>
 #include <Qsci/qsciscintilla.h>
+#include <QTemporaryFile>
 
 #include "gui-settings.h"
 #include "qt-interpreter-events.h"

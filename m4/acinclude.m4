@@ -344,6 +344,37 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
   fi
 ])
 dnl
+dnl Check whether the Qt QComboBox class has the setCurrentText
+dnl function.  This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QCOMBOBOX_SETCURRENTTEXT], [
+  AC_CACHE_CHECK([for QComboBox::setCurrentText],
+    [octave_cv_func_qcombobox_setcurrenttext],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QComboBox>
+        ]], [[
+        QComboBox combo_box (nullptr);
+        combo_box.setCurrentText ("text");
+        ]])],
+      octave_cv_func_qcombobox_setcurrenttext=yes,
+      octave_cv_func_qcombobox_setcurrenttext=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qcombobox_setcurrenttext = yes; then
+    AC_DEFINE(HAVE_QCOMBOBOX_SETCURRENTTEXT, 1,
+      [Define to 1 if you have the `QComboBox::setCurrentText' member function.])
+  fi
+])
+dnl
 dnl Check whether the Qt QGuiApplication class has the setDesktopFileName
 dnl static member function.  This function was introduced in Qt 5.7.
 dnl
@@ -2155,6 +2186,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ## tests if they fail because we have already decided that the Qt
     ## version that we are testing now will be the one used.
 
+    OCTAVE_CHECK_FUNC_QCOMBOBOX_SETCURRENTTEXT
     OCTAVE_CHECK_FUNC_QGUIAPPLICATION_SETDESKTOPFILENAME
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONRESIZEMODE
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSCLICKABLE

@@ -277,7 +277,7 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
 
-    if (! settings || settings->value ("editor/create_new_file",false).toBool ())
+    if (! settings || settings->value (ed_create_new_file).toBool ())
       return true;
 
     std::string abs_fname = sys::env::make_absolute (file);

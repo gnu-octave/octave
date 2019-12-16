@@ -83,4 +83,7 @@ const gui_pref
 mw_state ("MainWindow/windowState",
           QVariant (QByteArray (reinterpret_cast<const char*> (ba_state_data), sizeof (ba_state_data))));
 
+const gui_pref
+mw_dir_list ("MainWindow/current_directory_list", QVariant (QStringList ()));
+
 #endif

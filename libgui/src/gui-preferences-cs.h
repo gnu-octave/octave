@@ -67,4 +67,10 @@ cs_color_names (QStringList ()
              << QT_TRANSLATE_NOOP ("QTerminal::QTerminal", "selection")
              << QT_TRANSLATE_NOOP ("QTerminal::QTerminal", "cursor"));
 
+const gui_pref
+cs_focus_cmd ("terminal/focus_after_command", QVariant (false));
+
+const gui_pref
+cs_dbg_location ("terminal/print_debug_location", QVariant (false));
+
 #endif

@@ -80,6 +80,9 @@ const gui_pref
 ed_default_enc ("editor/default_encoding",
                 QVariant (QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")")));
 
+const gui_pref
+ed_create_new_file ("editor/create_new_file", QVariant (false));
+
 // The find dialog
 
 enum find_dialog_options

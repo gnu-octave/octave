@@ -351,7 +351,7 @@ namespace octave
     editor_notebook_tab_width_min->setValue (settings->value ("editor/notebook_tab_width_min", 160).toInt ());
     editor_notebook_tab_width_max->setValue (settings->value ("editor/notebook_tab_width_max", 300).toInt ());
     editor_restoreSession->setChecked (settings->value ("editor/restoreSession", true).toBool ());
-    editor_create_new_file->setChecked (settings->value ("editor/create_new_file", false).toBool ());
+    editor_create_new_file->setChecked (settings->value (ed_create_new_file).toBool ());
     editor_reload_changed_files->setChecked (settings->value ("editor/always_reload_changed_files", false).toBool ());
     editor_hiding_closes_files->setChecked (settings->value ("editor/hiding_closes_files", false).toBool ());
     editor_show_dbg_file->setChecked (settings->value (ed_show_dbg_file).toBool ());
@@ -362,8 +362,8 @@ namespace octave
     terminal_fontSize->setValue (settings->value (cs_font_size).toInt ());
     terminal_history_buffer->setValue (settings->value (cs_hist_buffer).toInt ());
     terminal_cursorUseForegroundColor->setChecked (settings->value (cs_cursor_use_fgcol).toBool ());
-    terminal_focus_command->setChecked (settings->value ("terminal/focus_after_command", false).toBool ());
-    terminal_print_dbg_location->setChecked (settings->value ("terminal/print_debug_location", false).toBool ());
+    terminal_focus_command->setChecked (settings->value (cs_focus_cmd).toBool ());
+    terminal_print_dbg_location->setChecked (settings->value (cs_dbg_location).toBool ());
 
     QString cursor_type
       = settings->value (cs_cursor).toString ();
@@ -935,7 +935,7 @@ namespace octave
     settings->setValue ("editor/notebook_tab_width_min", editor_notebook_tab_width_min->value ());
     settings->setValue ("editor/notebook_tab_width_max", editor_notebook_tab_width_max->value ());
     settings->setValue ("editor/restoreSession", editor_restoreSession->isChecked ());
-    settings->setValue ("editor/create_new_file", editor_create_new_file->isChecked ());
+    settings->setValue (ed_create_new_file.key, editor_create_new_file->isChecked ());
     settings->setValue ("editor/hiding_closes_files", editor_hiding_closes_files->isChecked ());
     settings->setValue ("editor/always_reload_changed_files", editor_reload_changed_files->isChecked ());
     settings->setValue (ed_show_dbg_file.key, editor_show_dbg_file->isChecked ());
@@ -957,8 +957,8 @@ namespace octave
     settings->setValue (global_proxy_user.key, proxyUserName->text ());
     settings->setValue (global_proxy_pass.key, proxyPassword->text ());
     settings->setValue (cs_cursor_use_fgcol.key, terminal_cursorUseForegroundColor->isChecked ());
-    settings->setValue ("terminal/focus_after_command", terminal_focus_command->isChecked ());
-    settings->setValue ("terminal/print_debug_location", terminal_print_dbg_location->isChecked ());
+    settings->setValue (mw_dir_list.key, terminal_focus_command->isChecked ());
+    settings->setValue (cs_dbg_location.key, terminal_print_dbg_location->isChecked ());
     settings->setValue (cs_hist_buffer.key, terminal_history_buffer->value ());
 
     // the cursor

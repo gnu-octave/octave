@@ -1582,7 +1582,7 @@ namespace octave
                     bool create_file = true;
                     QMessageBox *msgBox;
 
-                    if (! settings->value ("editor/create_new_file", false).toBool ())
+                    if (! settings->value (ed_create_new_file).toBool ())
                       {
                         msgBox = new QMessageBox (QMessageBox::Question,
                                                   tr ("Octave Editor"),

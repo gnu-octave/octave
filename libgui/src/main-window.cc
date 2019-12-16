@@ -906,7 +906,7 @@ namespace octave
                          sc_prevent_rl_conflicts.def).toBool ();
 
     m_suppress_dbg_location
-      = ! settings->value ("terminal/print_debug_location", false).toBool ();
+      = ! settings->value (cs_dbg_location).toBool ();
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     rmgr.update_network_settings ();
@@ -1298,10 +1298,10 @@ namespace octave
         if (new_name.rightRef (2) != ".m")
           new_name.append (".m");
         // check whether new files are created without prompt
-        if (! settings->value ("editor/create_new_file",false).toBool ())
+        if (! settings->value (ed_create_new_file).toBool ())
           {
             // no, so enable this settings and wait for end of new file loading
-            settings->setValue ("editor/create_new_file",true);
+            settings->setValue (ed_create_new_file.key, true);
             connect (m_editor_window, SIGNAL (file_loaded_signal (void)),
                      this, SLOT (restore_create_file_setting (void)));
           }
@@ -1459,8 +1459,7 @@ namespace octave
     set_window_layout (settings);
 
     // restore the list of the last directories
-    QStringList curr_dirs
-      = settings->value ("MainWindow/current_directory_list").toStringList ();
+    QStringList curr_dirs = settings->value (mw_dir_list).toStringList ();
     for (int i=0; i < curr_dirs.size (); i++)
       {
         m_current_directory_combo_box->addItem (curr_dirs.at (i));
@@ -1565,7 +1564,7 @@ namespace octave
       {
         curr_dirs.append (m_current_directory_combo_box->itemText (i));
       }
-    settings->setValue ("MainWindow/current_directory_list", curr_dirs);
+    settings->setValue (mw_dir_list.key, curr_dirs);
     settings->sync ();
   }
 
@@ -1657,7 +1656,7 @@ namespace octave
           {
             // restore last dir from previous session
             QStringList curr_dirs
-              = settings->value ("MainWindow/current_directory_list").toStringList ();
+              = settings->value (mw_dir_list).toStringList ();
             startup_dir
               = QDir (curr_dirs.at (0));  // last dir in previous session
           }
@@ -1865,7 +1864,7 @@ namespace octave
     // restore the new files creation setting
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    settings->setValue ("editor/create_new_file",false);
+    settings->setValue (ed_create_new_file.key, false);
     disconnect (m_editor_window, SIGNAL (file_loaded_signal (void)),
                 this, SLOT (restore_create_file_setting (void)));
   }
@@ -2735,7 +2734,7 @@ namespace octave
   {
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (settings->value ("terminal/focus_after_command",false).toBool ())
+    if (settings->value (cs_focus_cmd).toBool ())
       focus_command_window ();
   }
 

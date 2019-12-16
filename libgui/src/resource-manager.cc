@@ -33,7 +33,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QNetworkProxy>
 #if defined (HAVE_QSTANDARDPATHS)
 #  include <QStandardPaths>
+#else
+#  include <QDesktopServices>
 #endif
+
 #include <QTextCodec>
 
 #include "QTerminal.h"

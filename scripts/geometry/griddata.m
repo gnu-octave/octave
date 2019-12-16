@@ -81,7 +81,8 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method = "linear")
   z = z(:);
 
   ## Triangulate data.
-  tri = delaunay (x, y);
+  ## Bug #50494 (loss of precision unless non-default Qhull options used)
+  tri = delaunay (x, y, {"Qt", "Qbb", "Qc"});
   zi = NaN (size (xi));
 
   if (strcmp (method, "cubic"))

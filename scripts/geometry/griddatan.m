@@ -55,6 +55,11 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
     error ("griddatan: dimensional mismatch");
   endif
 
+  ## Bug #50494 (loss of precision unless non-default Qhull options used)
+  if (isempty (varargin) && n <= 3)
+    varargin{1} = {"Qt", "Qbb", "Qc"};
+  endif
+
   ## triangulate data
   tri = delaunayn (x, varargin{:});
 

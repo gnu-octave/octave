@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "find-files-dialog.h"
 #include "find-files-model.h"
 #include "gui-preferences-global.h"
+#include "gui-preferences-ff.h"
 #include "octave-qobject.h"
 
 namespace octave
@@ -69,14 +70,13 @@ namespace octave
     m_file_name_edit = new QLineEdit;
     m_file_name_edit->setToolTip (tr ("Enter the filename search expression"));
 
-    m_file_name_edit->setText (settings->value ("findfiles/file_name",
-                                                "*").toString ());
+    m_file_name_edit->setText (settings->value (ff_file_name).toString ());
     file_name_label->setBuddy (m_file_name_edit);
 
     QLabel *start_dir_label = new QLabel (tr ("Start in:"));
 
     m_start_dir_edit = new QLineEdit;
-    m_start_dir_edit->setText (settings->value ("findfiles/start_dir",
+    m_start_dir_edit->setText (settings->value (ff_start_dir.key,
                                                 QDir::currentPath ()).toString ());
     m_start_dir_edit->setToolTip (tr ("Enter the start directory"));
     start_dir_label->setBuddy (m_start_dir_edit);
@@ -87,33 +87,27 @@ namespace octave
              this, SLOT (browse_folders (void)));
 
     m_recurse_dirs_check = new QCheckBox (tr ("Search subdirectories"));
-    m_recurse_dirs_check->setChecked (settings->value ("findfiles/recurse_dirs",
-                                                       false).toBool ());
+    m_recurse_dirs_check->setChecked (settings->value (ff_recurse_dirs).toBool ());
     m_recurse_dirs_check->setToolTip (tr ("Search recursively through directories for matching files"));
 
     m_include_dirs_check = new QCheckBox (tr ("Include directory names"));
-    m_include_dirs_check->setChecked (settings->value ("findfiles/include_dirs",
-                                                       false).toBool ());
+    m_include_dirs_check->setChecked (settings->value (ff_include_dirs).toBool ());
     m_include_dirs_check->setToolTip (tr ("Include matching directories in search results"));
 
     m_name_case_check = new QCheckBox (tr ("Name case insensitive"));
-    m_name_case_check->setChecked (settings->value ("findfiles/name_case",
-                                                    false).toBool ());
+    m_name_case_check->setChecked (settings->value (ff_name_case).toBool ());
     m_name_case_check->setToolTip (tr ("Set matching name is case insensitive"));
 
     m_contains_text_check = new QCheckBox (tr ("Contains text:"));
     m_contains_text_check->setToolTip (tr ("Enter the file content search expression"));
-    m_contains_text_check->setChecked (settings->value ("findfiles/check_text",
-                                                        false).toBool ());
+    m_contains_text_check->setChecked (settings->value (ff_check_text).toBool ());
 
     m_contains_text_edit = new QLineEdit ();
     m_contains_text_edit->setToolTip (tr ("Text to match"));
-    m_contains_text_edit->setText (settings->value ("findfiles/contains_text",
-                                                    "").toString ());
+    m_contains_text_edit->setText (settings->value (ff_contains_text).toString ());
 
     m_content_case_check = new QCheckBox (tr ("Text case insensitive"));
-    m_content_case_check->setChecked (settings->value ("findfiles/content_case",
-                                                       false).toBool ());
+    m_content_case_check->setChecked (settings->value (ff_content_case).toBool ());
     m_content_case_check->setToolTip (tr ("Set text content is case insensitive"));
 
     find_files_model *model = new find_files_model (this);
@@ -127,7 +121,7 @@ namespace octave
     m_file_list->setAlternatingRowColors (true);
     m_file_list->setToolTip (tr ("Search results"));
     m_file_list->setSortingEnabled (true);
-    m_file_list->horizontalHeader ()->restoreState (settings->value ("findfiles/column_state").toByteArray ());
+    m_file_list->horizontalHeader ()->restoreState (settings->value (ff_column_state.key).toByteArray ());
     m_file_list->horizontalHeader ()->setSortIndicatorShown (true);
 #if defined (HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE)
     m_file_list->horizontalHeader ()->setSectionsClickable (true);
@@ -135,10 +129,9 @@ namespace octave
     m_file_list->horizontalHeader ()->setClickable (true);
 #endif
     m_file_list->horizontalHeader ()->setStretchLastSection (true);
-    m_file_list->sortByColumn (settings->value ("findfiles/sort_files_by_column",0).toInt (),
+    m_file_list->sortByColumn (settings->value (ff_sort_files_by_column).toInt (),
                                static_cast<Qt::SortOrder>
-                               (settings->value ("findfiles/sort_files_by_order",
-                                                 Qt::AscendingOrder).toUInt ()));
+                               (settings->value (ff_sort_files_by_order).toUInt ()));
                 // FIXME: use value<Qt::SortOrder> instead of static cast after
                 //        dropping support of Qt 5.4
 
@@ -224,24 +217,21 @@ namespace octave
     int sort_column = m_file_list->horizontalHeader ()->sortIndicatorSection ();
     Qt::SortOrder sort_order
       = m_file_list->horizontalHeader ()->sortIndicatorOrder ();
-    settings->setValue ("findfiles/sort_files_by_column", sort_column);
-    settings->setValue ("findfiles/sort_files_by_order", sort_order);
-    settings->setValue ("findfiles/column_state",
-                        m_file_list->horizontalHeader ()->saveState ());
+    settings->setValue (ff_sort_files_by_column.key, sort_column);
+    settings->setValue (ff_sort_files_by_order.key, sort_order);
+    settings->setValue (ff_column_state.key, m_file_list->horizontalHeader ()->saveState ());
 
-    settings->setValue ("findfiles/file_name", m_file_name_edit->text ());
+    settings->setValue (ff_file_name.key, m_file_name_edit->text ());
 
-    settings->setValue ("findfiles/start_dir", m_start_dir_edit->text ());
+    settings->setValue (ff_start_dir.key, m_start_dir_edit->text ());
 
-    settings->setValue ("findfiles/recurse_dirs", m_recurse_dirs_check->text ());
-    settings->setValue ("findfiles/include_dirs", m_include_dirs_check->text ());
-    settings->setValue ("findfiles/name_case", m_name_case_check->text ());
+    settings->setValue (ff_recurse_dirs.key, m_recurse_dirs_check->text ());
+    settings->setValue (ff_include_dirs.key, m_include_dirs_check->text ());
+    settings->setValue (ff_name_case.key, m_name_case_check->text ());
 
-    settings->setValue ("findfiles/contains_text", m_contains_text_edit->text ());
-    settings->setValue ("findfiles/check_text",
-                        m_contains_text_check->isChecked ());
-    settings->setValue ("findfiles/content_case",
-                        m_content_case_check->isChecked ());
+    settings->setValue (ff_contains_text.key, m_contains_text_edit->text ());
+    settings->setValue (ff_check_text.key, m_contains_text_check->isChecked ());
+    settings->setValue (ff_content_case.key, m_content_case_check->isChecked ());
 
     settings->sync ();
   }

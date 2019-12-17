@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gui-preferences-dw.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-fb.h"
+#include "gui-preferences-ff.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-hw.h"
 #include "gui-preferences-mw.h"

@@ -422,7 +422,7 @@ namespace octave
     // Current function that we are debugging.
     octave_user_code * debug_user_code (void) const;
 
-    octave_function * current_function (void) const;
+    octave_function * current_function (bool skip_first = false) const;
 
     octave_function * caller_function (void) const;
 
@@ -467,7 +467,11 @@ namespace octave
     symbol_scope get_top_scope (void) const;
     symbol_scope get_current_scope (void) const;
 
-    void mlock (void) const;
+    void mlock (bool skip_first = false) const;
+
+    void munlock (bool skip_first = false) const;
+
+    bool mislocked (bool skip_first = false) const;
 
     octave_value max_stack_depth (const octave_value_list& args, int nargout);
 
@@ -511,7 +515,7 @@ namespace octave
     octave_user_code * get_user_code (const std::string& fname = "",
                                       const std::string& class_name = "");
 
-    std::string current_function_name (void) const;
+    std::string current_function_name (bool skip_first = false) const;
 
     bool in_user_code (void) const;
 

@@ -62,18 +62,16 @@ namespace octave
 
     call_stack (tree_evaluator& evaluator);
 
-    // Current function (top of stack).
-    octave_function * current (void) const
+    // Lock current function.  Look for the first stack frame that is
+    // a function.  If SKIP_FIST is true, then skip the first frame.
+    // That allows functions like Fmlock to find and lock the calling
+    // function instead of locking Fmlock itself.
+
+    octave_function * current_function (bool skip_first = false) const;
+
+    octave_function * caller_function (void) const
     {
-      octave_function *retval = nullptr;
-
-      if (! m_cs.empty ())
-        {
-          const stack_frame *elt = m_cs[m_curr_frame];
-          retval = elt->function ();
-        }
-
-      return retval;
+      return current_function (true);
     }
 
     // Current line in current function.
@@ -81,14 +79,6 @@ namespace octave
 
     // Current column in current function.
     int current_column (void) const;
-
-    // Caller function, may be built-in.
-
-    octave_function * caller (void) const
-    {
-      return (m_curr_frame > 1
-              ? m_cs[m_curr_frame-1]->function () : m_cs[0]->function ());
-    }
 
     size_t current_frame (void) const { return m_curr_frame; }
 
@@ -254,14 +244,6 @@ namespace octave
     void pop (void);
 
     void clear (void);
-
-    // Lock current function.  Skip built-in functions (mlock is skipped
-    // silently; warn for others) and look for the first caller that is
-    // a user-defined (m-file) or dynamically loaded (.oct or .mex)
-    // function.  That allows the built-in Fmlock function to lock the
-    // calling function instead of locking istelf.
-
-    void mlock (void) const;
 
     symbol_info_list all_variables (void);
 

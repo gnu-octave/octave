@@ -1363,9 +1363,27 @@ namespace octave
     return cd_ok;
   }
 
-  void interpreter::mlock (void)
+  void interpreter::mlock (bool skip_first) const
   {
-    m_evaluator.mlock ();
+    m_evaluator.mlock (skip_first);
+  }
+
+  void interpreter::munlock (bool skip_first) const
+  {
+    m_evaluator.munlock (skip_first);
+  }
+
+  bool interpreter::mislocked (bool skip_first) const
+  {
+    return m_evaluator.mislocked (skip_first);
+  }
+
+  void interpreter::munlock (const char *nm)
+  {
+    if (! nm)
+      error ("munlock: invalid value for NAME");
+
+    munlock (std::string (nm));
   }
 
   void interpreter::munlock (const std::string& nm)
@@ -1379,6 +1397,14 @@ namespace octave
         if (fcn)
           fcn->unlock ();
       }
+  }
+
+  bool interpreter::mislocked (const char *nm)
+  {
+    if (! nm)
+      error ("mislocked: invalid value for NAME");
+
+    return mislocked (std::string (nm));
   }
 
   bool interpreter::mislocked (const std::string& nm)

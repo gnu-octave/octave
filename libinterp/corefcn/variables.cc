@@ -822,6 +822,15 @@ set_internal_variable (std::string& var, const octave_value_list& args,
   return retval;
 }
 
+// NOTE: Calling Fmlock directly (without an associated stack frame)
+// will probably not do what you expect because it will lock the calling
+// function.  You should use interpreter::mlock directly if you want to
+// lock a .oct function.  For .mex, you would normally use mexLock.
+//
+// FIXME: with the current implementation, calling "builtin ('mlock')"
+// will also not do what you expect.  Is there any reasonable way to fix
+// that?
+
 DEFMETHOD (mlock, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} mlock ()
@@ -833,14 +842,7 @@ Lock the current function into memory so that it can't be removed with
   if (args.length () != 0)
     print_usage ();
 
-  octave::tree_evaluator& tw = interp.get_evaluator ();
-
-  octave_function *fcn = tw.caller_function ();
-
-  if (! fcn)
-    error ("mlock: invalid use outside a function");
-
-  fcn->lock ();
+  interp.mlock (true);
 
   return ovl ();
 }
@@ -863,21 +865,13 @@ If no function is named then unlock the current function.
 
   if (nargin == 1)
     {
-      std::string name = args(0).xstring_value ("munlock: FCN must be a string");
+      std::string name
+        = args(0).xstring_value ("munlock: FCN must be a string");
 
       interp.munlock (name);
     }
   else
-    {
-      octave::tree_evaluator& tw = interp.get_evaluator ();
-
-      octave_function *fcn = tw.caller_function ();
-
-      if (! fcn)
-        error ("munlock: invalid use outside a function");
-
-      fcn->unlock ();
-    }
+    interp.munlock (true);
 
   return ovl ();
 }
@@ -897,27 +891,15 @@ If no function is named then return true if the current function is locked.
   if (nargin > 1)
     print_usage ();
 
-  octave_value retval;
-
   if (nargin == 1)
     {
-      std::string name = args(0).xstring_value ("mislocked: FCN must be a string");
+      std::string name
+        = args(0).xstring_value ("mislocked: FCN must be a string");
 
-      retval = interp.mislocked (name);
+      return ovl (interp.mislocked (name));
     }
   else
-    {
-      octave::tree_evaluator& tw = interp.get_evaluator ();
-
-      octave_function *fcn = tw.caller_function ();
-
-      if (! fcn)
-        error ("mislocked: invalid use outside a function");
-
-      retval = fcn->islocked ();
-    }
-
-  return retval;
+    return ovl (interp.mislocked (true));
 }
 
 // Deleting names from the symbol tables.

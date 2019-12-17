@@ -145,7 +145,7 @@ namespace octave
       = new octave_user_function (new_scope, param_list_dup, ret_list,
                                   stmt_list, local_var_init_vals);
 
-    octave_function *curr_fcn = cs.current ();
+    octave_function *curr_fcn = cs.current_function ();
 
     if (curr_fcn)
       {

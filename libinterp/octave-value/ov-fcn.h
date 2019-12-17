@@ -174,7 +174,10 @@ public:
     locked = false;
   }
 
-  bool islocked (void) const { return locked; }
+  bool islocked (void) const
+  {
+    return locked;
+  }
 
   virtual void lock_subfunctions (void) { }
 

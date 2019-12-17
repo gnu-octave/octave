@@ -1581,14 +1581,14 @@ namespace octave
     return m_call_stack.debug_user_code ();
   }
 
-  octave_function * tree_evaluator::current_function (void) const
+  octave_function * tree_evaluator::current_function (bool skip_first) const
   {
-    return m_call_stack.current ();
+    return m_call_stack.current_function (skip_first);
   }
 
   octave_function * tree_evaluator::caller_function (void) const
   {
-    return m_call_stack.caller ();
+    return m_call_stack.current_function (true);
   }
 
   bool tree_evaluator::goto_frame (size_t n, bool verbose)
@@ -1724,9 +1724,46 @@ namespace octave
     return m_call_stack.current_scope ();
   }
 
-  void tree_evaluator::mlock (void) const
+  void tree_evaluator::mlock (bool skip_first) const
   {
-    m_call_stack.mlock ();
+    octave_function *fcn = m_call_stack.current_function (skip_first);
+
+    if (! fcn)
+      error ("mlock: invalid use outside a function");
+
+    if (fcn->is_builtin_function ())
+      {
+        warning ("mlock: locking built-in function has no effect");
+        return;
+      }
+
+    fcn->lock ();
+  }
+
+  void tree_evaluator::munlock (bool skip_first) const
+  {
+    octave_function *fcn = m_call_stack.current_function (skip_first);
+
+    if (! fcn)
+      error ("munlock: invalid use outside a function");
+
+    if (fcn->is_builtin_function ())
+      {
+        warning ("munlock: unlocking built-in function has no effect");
+        return;
+      }
+
+    fcn->unlock ();
+  }
+
+  bool tree_evaluator::mislocked (bool skip_first) const
+  {
+    octave_function *fcn = m_call_stack.current_function (skip_first);
+
+    if (! fcn)
+      error ("mislocked: invalid use outside a function");
+
+    return fcn->islocked ();
   }
 
   octave_value
@@ -1973,9 +2010,9 @@ namespace octave
   }
 
   std::string
-  tree_evaluator::current_function_name (void) const
+  tree_evaluator::current_function_name (bool skip_first) const
   {
-    octave_function *curfcn = m_call_stack.current ();
+    octave_function *curfcn = m_call_stack.current_function (skip_first);
 
     if (curfcn)
       return curfcn->name ();
@@ -3535,7 +3572,7 @@ namespace octave
   void
   tree_evaluator::maybe_set_echo_state (void)
   {
-    octave_function *caller = m_call_stack.caller ();
+    octave_function *caller = caller_function ();
 
     if (caller && caller->is_user_code ())
       {
@@ -3766,7 +3803,7 @@ namespace octave
   {
     std::string prefix = command_editor::decode_prompt_string (m_PS4);
 
-    octave_function *curr_fcn = m_call_stack.current ();
+    octave_function *curr_fcn = m_call_stack.current_function ();
 
     if (curr_fcn && curr_fcn->is_user_code ())
       {

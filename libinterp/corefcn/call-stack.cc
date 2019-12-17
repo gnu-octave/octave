@@ -64,6 +64,29 @@ namespace octave
     push (symbol_scope ("top scope"));
   }
 
+  octave_function * call_stack::current_function (bool skip_first) const
+  {
+    if (m_cs.empty ())
+      error ("current_function: call stack is empty");
+
+    octave_function *fcn = nullptr;
+
+    size_t idx = size ();
+
+    if (idx > 1 && skip_first)
+      --idx;
+
+    while (--idx)
+      {
+        fcn = m_cs[idx]->function ();
+
+        if (fcn)
+          break;
+      }
+
+    return fcn;
+  }
+
   int call_stack::current_line (void) const
   {
     int retval = -1;
@@ -275,7 +298,7 @@ namespace octave
   {
     dispatch_class = "";
 
-    octave_function *f = current ();
+    octave_function *f = current_function ();
 
     bool retval = (f && f->is_class_method ());
 
@@ -289,7 +312,7 @@ namespace octave
   {
     dispatch_class = "";
 
-    octave_function *f = current ();
+    octave_function *f = current_function ();
 
     bool retval = (f && f->is_class_constructor ());
 
@@ -720,41 +743,6 @@ namespace octave
       pop ();
   }
 
-  void call_stack::mlock (void) const
-  {
-    if (m_cs.empty ())
-      error ("mlock: call stack is empty");
-
-    octave_function *fcn = nullptr;
-
-    size_t idx = size ();
-
-    while (--idx)
-      {
-        const stack_frame *elt = m_cs[idx];
-        fcn = elt->function ();
-
-        if (fcn)
-          {
-            if (fcn->is_builtin_function ())
-              {
-                if (fcn->name () == "mlock")
-                  continue;
-
-                warning ("mlock: locking built-in function has no effect");
-                return;
-              }
-
-            break;
-          }
-      }
-
-    if (! fcn)
-      error ("mlock: invalid use outside a function");
-
-    fcn->lock ();
-  }
-
   symbol_info_list call_stack::all_variables (void)
   {
     return m_cs[m_curr_frame]->all_variables ();
@@ -1095,12 +1083,12 @@ namespace octave
       {
         if (verbose)
           {
-            std::string caller_function_name;
-            octave_function *caller_function = caller ();
-            if (caller_function)
-              caller_function_name = caller_function->name ();
+            std::string caller_fcn_name;
+            octave_function *caller_fcn = caller_function ();
+            if (caller_fcn)
+              caller_fcn_name = caller_fcn->name ();
 
-            return symbol_stats.map_value (caller_function_name, 1);
+            return symbol_stats.map_value (caller_fcn_name, 1);
           }
         else
           return Cell (string_vector (symbol_names));

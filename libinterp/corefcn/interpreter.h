@@ -299,10 +299,16 @@ namespace octave
 
     int chdir (const std::string& dir);
 
-    void mlock (void);
+    void mlock (bool skip_first = false) const;
+    void munlock (bool skip_first = false) const;
+    bool mislocked (bool skip_first = false) const;
 
+    // NOTE: since we have a version that accepts a bool argument, we
+    // can't rely on automatic conversion from char* to std::string.
+    void munlock (const char *nm);
     void munlock (const std::string& nm);
 
+    bool mislocked (const char *nm);
     bool mislocked (const std::string& nm);
 
     std::string mfilename (const std::string& opt = "") const;

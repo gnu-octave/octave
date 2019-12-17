@@ -845,8 +845,8 @@ function str = format_text (str, formatter)
   ## Regular expressions for the formats:
   ##
   ## 1) Links "<http://www.someurl.com>"
-  ## 2) Links "<octave:Function TEXT>"
-  ## 3) Links "<http://www.someurl.com TEXT>"
+  ## 2) Links "<octave:Function SOME TEXT>"
+  ## 3) Links "<http://www.someurl.com SOME TEXT>"
   ## 4) LaTeX block math "$$x^2$$"
   ## 5) LaTeX inline math "$x^2$"
   ## 6) Bold *text*
@@ -882,8 +882,8 @@ function str = format_text (str, formatter)
           url = cstr{j};
           cstr{j} = formatter ("link", url(2:end-1), url(2:end-1));
         case 2
-          ## Links "<octave:Function TEXT>"
-          idx = strfind (cstr{j}, " ");
+          ## Links "<octave:Function SOME TEXT>"
+          idx = strfind (cstr{j}, " ")(1);
           url = cstr{j};
           url = texinfo_esc (url(9:idx-1));
           v = version ();
@@ -896,8 +896,8 @@ function str = format_text (str, formatter)
           txt = format_text (txt(idx+1:end-1), formatter);
           cstr{j} = formatter ("link", url, txt);
         case 3
-          ## Links "<http://www.someurl.com TEXT>"
-          idx = strfind (cstr{j}, " ");
+          ## Links "<http://www.someurl.com SOME TEXT>"
+          idx = strfind (cstr{j}, " ")(1);
           url = cstr{j};
           url = url(2:idx-1);
           txt = cstr{j};

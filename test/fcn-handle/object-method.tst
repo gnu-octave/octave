@@ -16,14 +16,14 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 
-%!function [fhm, fhsm] = foo ()
+%!function [fhm, fhsm] = object_method_fcns ()
 %!  obj = bug51709_c ();
 %!  fhm = @obj.meth;
 %!  fhsm = @obj.smeth;
 %!endfunction
 
 %!test <*51709>
-%! [fhm, fhsm] = foo ();
+%! [fhm, fhsm] = object_method_fcns ();
 %!
 %! out = fhm (42);
 %! assert (out{1}, "meth");
@@ -33,7 +33,7 @@
 %! assert (tmp{2}, 42);
 
 %!test <*51709>
-%! [fhm, fhsm] = foo ();
+%! [fhm, fhsm] = object_method_fcns ();
 %!
 %! out = fhsm (42);
 %! assert (out{1}, "smeth");

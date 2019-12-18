@@ -95,9 +95,9 @@ since all of Octave's header files already include it.
 #if ! defined (OCTAVE_AUTOCONFIG_H_INCLUDED)
 
 #  if defined (__cplusplus)
-#    include <cstdint>
+#    include <cinttypes>
 #  else
-#    include <stdint.h>
+#    include <inttypes.h>
 #  endif
 
 #  if defined (__GNUC__)

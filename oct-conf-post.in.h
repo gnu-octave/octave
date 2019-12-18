@@ -224,9 +224,9 @@ typedef unsigned long ino_t;
 #endif
 
 #if defined (__cplusplus)
-#  include <cstdint>
+#  include <cinttypes>
 #else
-#  include <stdint.h>
+#  include <inttypes.h>
 #endif
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;

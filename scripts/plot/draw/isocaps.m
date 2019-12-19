@@ -162,7 +162,7 @@ function varargout = isocaps (varargin)
   if (! isempty (vertices))
     ## interpolate data at the vertices for coloring of the end-cap
     fvcdata = interp3 (x, y, z, v,
-                       vertices(:,1), vertices(:,2), vertices(:,3))';
+                       vertices(:,1), vertices(:,2), vertices(:,3));
   endif
 
   switch (nargout)

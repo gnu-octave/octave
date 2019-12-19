@@ -63,7 +63,7 @@ namespace octave
 
     graphics_toolkit find_toolkit (const std::string& name) const
     {
-      const_loaded_toolkits_iterator p = loaded_toolkits.find (name);
+      auto p = loaded_toolkits.find (name);
 
       if (p != loaded_toolkits.end ())
         return p->second;
@@ -121,17 +121,6 @@ namespace octave
 
     // The list of toolkits we have actually loaded.
     std::map<std::string, graphics_toolkit> loaded_toolkits;
-
-    typedef std::set<std::string>::iterator available_toolkits_iterator;
-
-    typedef std::set<std::string>::const_iterator
-    const_available_toolkits_iterator;
-
-    typedef std::map<std::string, graphics_toolkit>::iterator
-    loaded_toolkits_iterator;
-
-    typedef std::map<std::string, graphics_toolkit>::const_iterator
-    const_loaded_toolkits_iterator;
   };
 }
 

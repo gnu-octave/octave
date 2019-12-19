@@ -498,7 +498,7 @@ rest of this article, the specific sparse versions of functions are used.
 @end table
 
 In addition all of the standard Octave mapper functions (i.e., basic
-math functions that take a single argument) such as @dfn{abs}, etc.
+math functions that take a single argument) such as @dfn{abs}, etc.@:
 can accept sparse matrices.  The reader is referred to the documentation
 supplied with these functions within Octave itself for further
 details.

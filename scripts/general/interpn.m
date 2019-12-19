@@ -30,7 +30,7 @@
 ## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}.
 ## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either
 ## @var{n}-dimensional arrays of the same size as the array @var{v} in
-## the @qcode{"ndgrid"} format or vectors.  The parameters @var{y1}, etc.
+## the @qcode{"ndgrid"} format or vectors.  The parameters @var{y1}, etc.@:
 ## respect a similar format to @var{x1}, etc., and they represent the points
 ## at which the array @var{vi} is interpolated.
 ##

@@ -18,6 +18,15 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   endpoints are symmetric.  This is more intuitive and also compatible
   with recent changes made in Matlab R2019b.
 
+- The underlying algorithm of the `rand` function has been changed.
+  For single precision outputs, the algorithm has been fixed so that it
+  produces values strictly in the range (0, 1).  Previously, it could
+  occasionally generate the right endpoint value of 1 (See bug #41742).
+  In addition, the new implementation uses a uniform interval between
+  floating point values in the range (0, 1) rather than targeting a
+  uniform density (# of random integers / length along real number
+  line).
+
 - The `edit` function option `"editinplace"` now defaults to `true` and
   the option `"home"` now defaults to the empty matrix `[]`.  Files will
   no longer be copied to the user's HOME directory for editing.  The old

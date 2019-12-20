@@ -56,6 +56,7 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global
       pkg_desc_list{name_pos}.name = installed_pkgs_lst{i}.name;
       pkg_desc_list{name_pos}.version = installed_pkgs_lst{i}.version;
       pkg_desc_list{name_pos}.description = installed_pkgs_lst{i}.description;
+      pkg_desc_list{name_pos}.depends = installed_pkgs_lst{i}.depends;
       pkg_desc_list{name_pos}.provides = parse_pkg_idx (installed_pkgs_lst{i}.dir);
 
     endif
@@ -78,6 +79,7 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global
                                  pkg_desc_list{i}.version,
                                  pkg_desc_list{i}.provides,
                                  pkg_desc_list{i}.description,
+                                 pkg_desc_list{i}.depends,
                                  flag{i}, verbose);
     endfor
   endif
@@ -140,11 +142,15 @@ endfunction
 
 
 function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
-                                    pkg_desc, status, verbose)
+                                    pkg_desc, pkg_deps, status, verbose)
 
   printf ("---\nPackage name:\n\t%s\n", pkg_name);
   printf ("Version:\n\t%s\n", pkg_ver);
   printf ("Short description:\n\t%s\n", pkg_desc);
+  pkg_deps = cellfun (@(d) sprintf ("%s %s %s", struct2cell (d){:}), pkg_deps,
+                      "UniformOutput", false);
+  pkg_deps = strjoin (pkg_deps, "\n\t");
+  printf ("Depends on:\n\t%s\n", pkg_deps);
   printf ("Status:\n\t%s\n", status);
   if (verbose)
     printf ("---\nProvides:\n");

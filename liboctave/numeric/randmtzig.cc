@@ -393,9 +393,16 @@ namespace octave
   /* generates a random number on (0,1) with 53-bit resolution */
   static double randu53 (void)
   {
-    const uint32_t a = randi32 () >> 5;
-    const uint32_t b = randi32 () >> 6;
-    return (a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
+    int32_t a, b;
+
+    do
+      {
+        a = randi32 () >> 5;
+        b = randi32 () >> 6;
+      }
+    while (a == 0 && b == 0);
+
+    return (a*67108864.0 + b) * (1.0/9007199254740992.0);
   }
 
   /* Determine mantissa for uniform doubles */

@@ -157,6 +157,7 @@ namespace octave
     void show_about_octave (void);
     void notice_settings (const gui_settings *settings);
     void prepare_to_exit (void);
+    void go_to_previous_widget (void);
     void reset_windows (void);
 
     void update_octave_directory (const QString& dir);
@@ -320,6 +321,7 @@ namespace octave
     external_editor_interface *m_external_editor;
     QWidget *m_active_editor;
 
+    octave_dock_widget *m_previous_dock;
     octave_dock_widget *m_active_dock;
 
     QString m_release_notes_icon;
@@ -368,6 +370,7 @@ namespace octave
     QAction *m_editor_action;
     QAction *m_documentation_action;
     QAction *m_variable_editor_action;
+    QAction *m_previous_dock_action;
     QAction *m_reset_windows_action;
 
     QAction *m_ondisk_doc_action;

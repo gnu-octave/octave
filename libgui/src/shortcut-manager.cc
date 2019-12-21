@@ -174,6 +174,7 @@ namespace octave
     init (tr ("Editor"), sc_main_window_editor);
     init (tr ("Documentation"), sc_main_window_doc);
     init (tr ("Variable Editor"), sc_main_window_variable_editor);
+    init (tr ("Previous Widget"), sc_main_window_previous_dock);
     init (tr ("Reset Default Window Layout"), sc_main_window_reset);
 
     // help

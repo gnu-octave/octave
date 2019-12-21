@@ -174,6 +174,8 @@ namespace octave
     m_variable_editor_window = new variable_editor (this, m_octave_qobj);
     m_workspace_window = new workspace_view (this, m_octave_qobj);
 
+    m_previous_dock = m_command_window;
+
     // Set active editor depending on editor window. If the latter is
     // not initialized (qscintilla not present), use the external editor.
     if (m_editor_window)
@@ -365,6 +367,8 @@ namespace octave
         else if (edit_dock_widget == m_active_dock)
           emit editor_focus_changed (false);
 
+        if (m_active_dock)
+          m_previous_dock = m_active_dock;
         m_active_dock = dock;
       }
   }
@@ -953,6 +957,11 @@ namespace octave
       m_set_path_dlg->save_settings ();
 
     write_settings ();
+  }
+
+  void main_window::go_to_previous_widget (void)
+  {
+    m_previous_dock->activate ();
   }
 
   void main_window::reset_windows (void)
@@ -2621,6 +2630,11 @@ namespace octave
 
     window_menu->addSeparator ();
 
+    m_previous_dock_action = add_action (window_menu, QIcon (),
+                                           tr ("Previous Widget"), SLOT (go_to_previous_widget (void)));
+
+    window_menu->addSeparator ();
+
     m_reset_windows_action = add_action (window_menu, QIcon (),
                                          tr ("Reset Default Window Layout"), SLOT (reset_windows (void)));
   }
@@ -2786,6 +2800,7 @@ namespace octave
     scmgr.set_shortcut (m_editor_action, sc_main_window_editor);
     scmgr.set_shortcut (m_documentation_action, sc_main_window_doc);
     scmgr.set_shortcut (m_variable_editor_action, sc_main_window_variable_editor);
+    scmgr.set_shortcut (m_previous_dock_action, sc_main_window_previous_dock);
     scmgr.set_shortcut (m_reset_windows_action, sc_main_window_reset);
 
     // help menu

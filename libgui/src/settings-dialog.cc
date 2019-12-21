@@ -246,13 +246,12 @@ namespace octave
       settings->value (global_use_custom_editor.key, global_use_custom_editor.def).toBool ());
     customFileEditor->setText (
       settings->value (global_custom_editor.key, global_custom_editor.def).toString ());
-    editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers", true).toBool ());
-    editor_linenr_size->setValue (settings->value ("editor/line_numbers_size", 0).toInt ());
+    editor_showLineNumbers->setChecked (settings->value (ed_show_line_numbers).toBool ());
+    editor_linenr_size->setValue (settings->value (ed_line_numbers_size).toInt ());
 
     rmgr.combo_encoding (editor_combo_encoding);
 
-    QColor default_var = QColor (240, 240, 240);
-    QColor setting_color = settings->value ("editor/highlight_current_line_color", default_var).value<QColor> ();
+    QColor setting_color = settings->value (ed_highlight_current_line_color).value<QColor> ();
     m_editor_current_line_color = new color_picker (setting_color);
     editor_grid_current_line->addWidget (m_editor_current_line_color, 0, 3);
     m_editor_current_line_color->setMinimumSize (20, 10);
@@ -261,40 +260,40 @@ namespace octave
     connect (editor_highlightCurrentLine, SIGNAL (toggled (bool)),
              m_editor_current_line_color, SLOT (setEnabled (bool)));
 
-    editor_highlightCurrentLine->setChecked (settings->value ("editor/highlightCurrentLine", true).toBool ());
-    editor_long_line_marker->setChecked (settings->value ("editor/long_line_marker", true).toBool ());
+    editor_highlightCurrentLine->setChecked (settings->value (ed_highlight_current_line).toBool ());
+    editor_long_line_marker->setChecked (settings->value (ed_long_line_marker).toBool ());
     bool long_line =
-      settings->value ("editor/long_line_marker_line", true).toBool ();
+      settings->value (ed_long_line_marker_line).toBool ();
     editor_long_line_marker_line->setChecked (long_line);
     bool long_back =
-      settings->value ("editor/long_line_marker_background", false).toBool ();
+      settings->value (ed_long_line_marker_background).toBool ();
     editor_long_line_marker_background->setChecked (long_back);
     if (! (long_line || long_back))
       editor_long_line_marker_line->setChecked (true);
-    editor_long_line_column->setValue (settings->value ("editor/long_line_column", 80).toInt ());
-    editor_break_checkbox->setChecked (settings->value ("editor/break_lines", false).toBool ());
-    editor_break_checkbox->setChecked (settings->value ("editor/break_lines_comments", false).toBool ());
-    editor_wrap_checkbox->setChecked (settings->value ("editor/wrap_lines", false).toBool ());
-    cb_edit_status_bar->setChecked (settings->value ("editor/show_edit_status_bar", true).toBool ());
-    cb_edit_tool_bar->setChecked (settings->value ("editor/show_toolbar", true).toBool ());
-    cb_code_folding->setChecked (settings->value ("editor/code_folding", true).toBool ());
-    editor_highlight_all_occurrences->setChecked (settings->value ("editor/highlight_all_occurrences", true).toBool ());
+    editor_long_line_column->setValue (settings->value (ed_long_line_column).toInt ());
+    editor_break_checkbox->setChecked (settings->value (ed_break_lines).toBool ());
+    editor_break_checkbox->setChecked (settings->value (ed_break_lines_comments).toBool ());
+    editor_wrap_checkbox->setChecked (settings->value (ed_wrap_lines).toBool ());
+    cb_edit_status_bar->setChecked (settings->value (ed_show_edit_status_bar).toBool ());
+    cb_edit_tool_bar->setChecked (settings->value (ed_show_toolbar).toBool ());
+    cb_code_folding->setChecked (settings->value (ed_code_folding).toBool ());
+    editor_highlight_all_occurrences->setChecked (settings->value (ed_highlight_all_occurrences).toBool ());
 
-    editor_auto_endif->setCurrentIndex (settings->value ("editor/auto_endif", 1).toInt () );
-    editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion", true).toBool ());
-    editor_spinbox_ac_threshold->setValue (settings->value ("editor/codeCompletion_threshold", 2).toInt ());
-    editor_checkbox_ac_keywords->setChecked (settings->value ("editor/codeCompletion_keywords", true).toBool ());
+    editor_auto_endif->setCurrentIndex (settings->value (ed_auto_endif).toInt () );
+    editor_codeCompletion->setChecked (settings->value (ed_code_completion).toBool ());
+    editor_spinbox_ac_threshold->setValue (settings->value (ed_code_completion_threshold).toInt ());
+    editor_checkbox_ac_keywords->setChecked (settings->value (ed_code_completion_keywords).toBool ());
     editor_checkbox_ac_builtins->setEnabled (editor_checkbox_ac_keywords->isChecked ());
     editor_checkbox_ac_functions->setEnabled (editor_checkbox_ac_keywords->isChecked ());
-    editor_checkbox_ac_builtins->setChecked (settings->value ("editor/codeCompletion_octave_builtins", true).toBool ());
-    editor_checkbox_ac_functions->setChecked (settings->value ("editor/codeCompletion_octave_functions", true).toBool ());
-    editor_checkbox_ac_document->setChecked (settings->value ("editor/codeCompletion_document", false).toBool ());
-    editor_checkbox_ac_case->setChecked (settings->value ("editor/codeCompletion_case", true).toBool ());
-    editor_checkbox_ac_replace->setChecked (settings->value ("editor/codeCompletion_replace", false).toBool ());
-    editor_ws_checkbox->setChecked (settings->value ("editor/show_white_space", false).toBool ());
-    editor_ws_indent_checkbox->setChecked (settings->value ("editor/show_white_space_indent", false).toBool ());
-    cb_show_eol->setChecked (settings->value ("editor/show_eol_chars", false).toBool ());
-    cb_show_hscrollbar->setChecked (settings->value ("editor/show_hscroll_bar", true).toBool ());
+    editor_checkbox_ac_builtins->setChecked (settings->value (ed_code_completion_octave_builtins).toBool ());
+    editor_checkbox_ac_functions->setChecked (settings->value (ed_code_completion_octave_functions).toBool ());
+    editor_checkbox_ac_document->setChecked (settings->value (ed_code_completion_document).toBool ());
+    editor_checkbox_ac_case->setChecked (settings->value (ed_code_completion_case).toBool ());
+    editor_checkbox_ac_replace->setChecked (settings->value (ed_code_completion_replace).toBool ());
+    editor_ws_checkbox->setChecked (settings->value (ed_show_white_space).toBool ());
+    editor_ws_indent_checkbox->setChecked (settings->value (ed_show_white_space_indent).toBool ());
+    cb_show_eol->setChecked (settings->value (ed_show_eol_chars).toBool ());
+    cb_show_hscrollbar->setChecked (settings->value (ed_show_hscroll_bar).toBool ());
 
     editor_combox_tab_pos->insertItems (0, ed_tab_position_names);
     editor_combox_tab_pos->setCurrentIndex
@@ -330,30 +329,21 @@ namespace octave
       }
 
 
-#if defined (HAVE_QSCINTILLA)
-#  if defined (Q_OS_WIN32)
-    int eol_mode = QsciScintilla::EolWindows;
-#  else
-    int eol_mode = QsciScintilla::EolUnix;
-#  endif
-#else
-    int eol_mode = 2;
-#endif
-    combo_eol_mode->setCurrentIndex (settings->value ("editor/default_eol_mode", eol_mode).toInt ());
-    editor_auto_ind_checkbox->setChecked (settings->value ("editor/auto_indent", true).toBool ());
-    editor_tab_ind_checkbox->setChecked (settings->value ("editor/tab_indents_line", false).toBool ());
-    editor_bs_unind_checkbox->setChecked (settings->value ("editor/backspace_unindents_line", false).toBool ());
-    editor_ind_guides_checkbox->setChecked (settings->value ("editor/show_indent_guides", false).toBool ());
-    editor_ind_width_spinbox->setValue (settings->value ("editor/indent_width", 2).toInt ());
-    editor_ind_uses_tabs_checkbox->setChecked (settings->value ("editor/indent_uses_tabs", false).toBool ());
-    editor_tab_width_spinbox->setValue (settings->value ("editor/tab_width", 2).toInt ());
-    editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle", false).toBool ());
-    editor_notebook_tab_width_min->setValue (settings->value ("editor/notebook_tab_width_min", 160).toInt ());
-    editor_notebook_tab_width_max->setValue (settings->value ("editor/notebook_tab_width_max", 300).toInt ());
-    editor_restoreSession->setChecked (settings->value ("editor/restoreSession", true).toBool ());
+    combo_eol_mode->setCurrentIndex (settings->value (ed_default_eol_mode).toInt ());
+    editor_auto_ind_checkbox->setChecked (settings->value (ed_auto_indent).toBool ());
+    editor_tab_ind_checkbox->setChecked (settings->value (ed_tab_indents_line).toBool ());
+    editor_bs_unind_checkbox->setChecked (settings->value (ed_backspace_unindents_line).toBool ());
+    editor_ind_guides_checkbox->setChecked (settings->value (ed_show_indent_guides).toBool ());
+    editor_ind_width_spinbox->setValue (settings->value (ed_indent_width).toInt ());
+    editor_ind_uses_tabs_checkbox->setChecked (settings->value (ed_indent_uses_tabs).toBool ());
+    editor_tab_width_spinbox->setValue (settings->value (ed_tab_width).toInt ());
+    editor_longWindowTitle->setChecked (settings->value (ed_long_window_title).toBool ());
+    editor_notebook_tab_width_min->setValue (settings->value (ed_notebook_tab_width_min).toInt ());
+    editor_notebook_tab_width_max->setValue (settings->value (ed_notebook_tab_width_max).toInt ());
+    editor_restoreSession->setChecked (settings->value (ed_restore_session).toBool ());
     editor_create_new_file->setChecked (settings->value (ed_create_new_file).toBool ());
-    editor_reload_changed_files->setChecked (settings->value ("editor/always_reload_changed_files", false).toBool ());
-    editor_hiding_closes_files->setChecked (settings->value ("editor/hiding_closes_files", false).toBool ());
+    editor_reload_changed_files->setChecked (settings->value (ed_always_reload_changed_files).toBool ());
+    editor_hiding_closes_files->setChecked (settings->value (ed_hiding_closes_files).toBool ());
     editor_show_dbg_file->setChecked (settings->value (ed_show_dbg_file).toBool ());
 
     // terminal
@@ -874,35 +864,35 @@ namespace octave
     //editor
     settings->setValue (global_use_custom_editor.key, useCustomFileEditor->isChecked ());
     settings->setValue (global_custom_editor.key, customFileEditor->text ());
-    settings->setValue ("editor/showLineNumbers", editor_showLineNumbers->isChecked ());
-    settings->setValue ("editor/line_numbers_size", editor_linenr_size->value ());
-    settings->setValue ("editor/highlightCurrentLine", editor_highlightCurrentLine->isChecked ());
-    settings->setValue ("editor/highlight_current_line_color", m_editor_current_line_color->color ());
-    settings->setValue ("editor/long_line_marker", editor_long_line_marker->isChecked ());
-    settings->setValue ("editor/long_line_marker_line", editor_long_line_marker_line->isChecked ());
-    settings->setValue ("editor/long_line_marker_background", editor_long_line_marker_background->isChecked ());
-    settings->setValue ("editor/long_line_column", editor_long_line_column->value ());
-    settings->setValue ("editor/break_lines", editor_break_checkbox->isChecked ());
-    settings->setValue ("editor/break_lines_comments", editor_break_comments_checkbox->isChecked ());
-    settings->setValue ("editor/wrap_lines", editor_wrap_checkbox->isChecked ());
-    settings->setValue ("editor/code_folding", cb_code_folding->isChecked ());
-    settings->setValue ("editor/show_edit_status_bar", cb_edit_status_bar->isChecked ());
-    settings->setValue ("editor/show_toolbar", cb_edit_tool_bar->isChecked ());
-    settings->setValue ("editor/highlight_all_occurrences", editor_highlight_all_occurrences->isChecked ());
-    settings->setValue ("editor/codeCompletion", editor_codeCompletion->isChecked ());
-    settings->setValue ("editor/codeCompletion_threshold", editor_spinbox_ac_threshold->value ());
-    settings->setValue ("editor/codeCompletion_keywords", editor_checkbox_ac_keywords->isChecked ());
-    settings->setValue ("editor/codeCompletion_octave_builtins", editor_checkbox_ac_builtins->isChecked ());
-    settings->setValue ("editor/codeCompletion_octave_functions", editor_checkbox_ac_functions->isChecked ());
-    settings->setValue ("editor/codeCompletion_document", editor_checkbox_ac_document->isChecked ());
-    settings->setValue ("editor/codeCompletion_case", editor_checkbox_ac_case->isChecked ());
-    settings->setValue ("editor/codeCompletion_replace", editor_checkbox_ac_replace->isChecked ());
-    settings->setValue ("editor/auto_endif", editor_auto_endif->currentIndex ());
-    settings->setValue ("editor/show_white_space", editor_ws_checkbox->isChecked ());
-    settings->setValue ("editor/show_white_space_indent", editor_ws_indent_checkbox->isChecked ());
-    settings->setValue ("editor/show_eol_chars", cb_show_eol->isChecked ());
-    settings->setValue ("editor/show_hscroll_bar", cb_show_hscrollbar->isChecked ());
-    settings->setValue ("editor/default_eol_mode", combo_eol_mode->currentIndex ());
+    settings->setValue (ed_show_line_numbers.key, editor_showLineNumbers->isChecked ());
+    settings->setValue (ed_line_numbers_size.key, editor_linenr_size->value ());
+    settings->setValue (ed_highlight_current_line.key, editor_highlightCurrentLine->isChecked ());
+    settings->setValue (ed_highlight_current_line_color.key, m_editor_current_line_color->color ());
+    settings->setValue (ed_long_line_marker.key, editor_long_line_marker->isChecked ());
+    settings->setValue (ed_long_line_marker_line.key, editor_long_line_marker_line->isChecked ());
+    settings->setValue (ed_long_line_marker_background.key, editor_long_line_marker_background->isChecked ());
+    settings->setValue (ed_long_line_column.key, editor_long_line_column->value ());
+    settings->setValue (ed_break_lines.key, editor_break_checkbox->isChecked ());
+    settings->setValue (ed_break_lines_comments.key, editor_break_comments_checkbox->isChecked ());
+    settings->setValue (ed_wrap_lines.key, editor_wrap_checkbox->isChecked ());
+    settings->setValue (ed_code_folding.key, cb_code_folding->isChecked ());
+    settings->setValue (ed_show_edit_status_bar.key, cb_edit_status_bar->isChecked ());
+    settings->setValue (ed_show_toolbar.key, cb_edit_tool_bar->isChecked ());
+    settings->setValue (ed_highlight_all_occurrences.key, editor_highlight_all_occurrences->isChecked ());
+    settings->setValue (ed_code_completion.key, editor_codeCompletion->isChecked ());
+    settings->setValue (ed_code_completion_threshold.key, editor_spinbox_ac_threshold->value ());
+    settings->setValue (ed_code_completion_keywords.key, editor_checkbox_ac_keywords->isChecked ());
+    settings->setValue (ed_code_completion_octave_builtins.key, editor_checkbox_ac_builtins->isChecked ());
+    settings->setValue (ed_code_completion_octave_functions.key, editor_checkbox_ac_functions->isChecked ());
+    settings->setValue (ed_code_completion_document.key, editor_checkbox_ac_document->isChecked ());
+    settings->setValue (ed_code_completion_case.key, editor_checkbox_ac_case->isChecked ());
+    settings->setValue (ed_code_completion_replace.key, editor_checkbox_ac_replace->isChecked ());
+    settings->setValue (ed_auto_endif.key, editor_auto_endif->currentIndex ());
+    settings->setValue (ed_show_white_space.key, editor_ws_checkbox->isChecked ());
+    settings->setValue (ed_show_white_space_indent.key, editor_ws_indent_checkbox->isChecked ());
+    settings->setValue (ed_show_eol_chars.key, cb_show_eol->isChecked ());
+    settings->setValue (ed_show_hscroll_bar.key, cb_show_hscrollbar->isChecked ());
+    settings->setValue (ed_default_eol_mode.key, combo_eol_mode->currentIndex ());
 
     settings->setValue (ed_tab_position.key, editor_combox_tab_pos->currentIndex ());
 
@@ -924,20 +914,20 @@ namespace octave
     settings->setValue (ed_uncomment_str.key, rb_uncomment);
 
     settings->setValue (ed_default_enc.key, editor_combo_encoding->currentText ());
-    settings->setValue ("editor/auto_indent", editor_auto_ind_checkbox->isChecked ());
-    settings->setValue ("editor/tab_indents_line", editor_tab_ind_checkbox->isChecked ());
-    settings->setValue ("editor/backspace_unindents_line", editor_bs_unind_checkbox->isChecked ());
-    settings->setValue ("editor/show_indent_guides", editor_ind_guides_checkbox->isChecked ());
-    settings->setValue ("editor/indent_width", editor_ind_width_spinbox->value ());
-    settings->setValue ("editor/indent_uses_tabs", editor_ind_uses_tabs_checkbox->isChecked ());
-    settings->setValue ("editor/tab_width", editor_tab_width_spinbox->value ());
-    settings->setValue ("editor/longWindowTitle", editor_longWindowTitle->isChecked ());
-    settings->setValue ("editor/notebook_tab_width_min", editor_notebook_tab_width_min->value ());
-    settings->setValue ("editor/notebook_tab_width_max", editor_notebook_tab_width_max->value ());
-    settings->setValue ("editor/restoreSession", editor_restoreSession->isChecked ());
+    settings->setValue (ed_auto_indent.key, editor_auto_ind_checkbox->isChecked ());
+    settings->setValue (ed_tab_indents_line.key, editor_tab_ind_checkbox->isChecked ());
+    settings->setValue (ed_backspace_unindents_line.key, editor_bs_unind_checkbox->isChecked ());
+    settings->setValue (ed_show_indent_guides.key, editor_ind_guides_checkbox->isChecked ());
+    settings->setValue (ed_indent_width.key, editor_ind_width_spinbox->value ());
+    settings->setValue (ed_indent_uses_tabs.key, editor_ind_uses_tabs_checkbox->isChecked ());
+    settings->setValue (ed_tab_width.key, editor_tab_width_spinbox->value ());
+    settings->setValue (ed_long_window_title.key, editor_longWindowTitle->isChecked ());
+    settings->setValue (ed_notebook_tab_width_min.key, editor_notebook_tab_width_min->value ());
+    settings->setValue (ed_notebook_tab_width_max.key, editor_notebook_tab_width_max->value ());
+    settings->setValue (ed_restore_session.key, editor_restoreSession->isChecked ());
     settings->setValue (ed_create_new_file.key, editor_create_new_file->isChecked ());
-    settings->setValue ("editor/hiding_closes_files", editor_hiding_closes_files->isChecked ());
-    settings->setValue ("editor/always_reload_changed_files", editor_reload_changed_files->isChecked ());
+    settings->setValue (ed_hiding_closes_files.key, editor_hiding_closes_files->isChecked ());
+    settings->setValue (ed_always_reload_changed_files.key, editor_reload_changed_files->isChecked ());
     settings->setValue (ed_show_dbg_file.key, editor_show_dbg_file->isChecked ());
 
     settings->setValue (cs_font_size.key, terminal_fontSize->value ());

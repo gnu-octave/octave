@@ -280,7 +280,7 @@ namespace octave
   void file_editor::restore_session (gui_settings *settings)
   {
     //restore previous session
-    if (! settings->value ("editor/restoreSession", true).toBool ())
+    if (! settings->value (ed_restore_session).toBool ())
       return;
 
     // get the data from the settings file
@@ -1221,9 +1221,9 @@ namespace octave
       }
 
     // Min and max width for full path titles
-    int tab_width_min = settings->value ("editor/notebook_tab_width_min", 160)
+    int tab_width_min = settings->value (ed_notebook_tab_width_min)
                         .toInt ();
-    int tab_width_max = settings->value ("editor/notebook_tab_width_max", 300)
+    int tab_width_max = settings->value (ed_notebook_tab_width_max)
                         .toInt ();
 
     // Get suitable height of a tab related to font and icon size
@@ -1237,7 +1237,7 @@ namespace octave
                                    .arg (height);
 
     // Style sheet for tab height together with width
-    if (settings->value ("editor/longWindowTitle", false).toBool ())
+    if (settings->value (ed_long_window_title).toBool ())
       {
         style_sheet = QString ("QTabBar::tab "
                                " {max-" + height_str + ": %1px;"
@@ -1266,23 +1266,23 @@ namespace octave
     m_tab_widget->setStyleSheet (style_sheet);
 
     bool show_it;
-    show_it = settings->value ("editor/showLineNumbers",true).toBool ();
+    show_it = settings->value (ed_show_line_numbers).toBool ();
     m_show_linenum_action->setChecked (show_it);
-    show_it = settings->value ("editor/show_white_space",false).toBool ();
+    show_it = settings->value (ed_show_white_space).toBool ();
     m_show_whitespace_action->setChecked (show_it);
-    show_it = settings->value ("editor/show_eol_chars",false).toBool ();
+    show_it = settings->value (ed_show_eol_chars).toBool ();
     m_show_eol_action->setChecked (show_it);
-    show_it = settings->value ("editor/show_indent_guides",false).toBool ();
+    show_it = settings->value (ed_show_indent_guides).toBool ();
     m_show_indguide_action->setChecked (show_it);
-    show_it = settings->value ("editor/long_line_marker",true).toBool ();
+    show_it = settings->value (ed_long_line_marker).toBool ();
     m_show_longline_action->setChecked (show_it);
 
-    show_it = settings->value ("editor/show_toolbar",true).toBool ();
+    show_it = settings->value (ed_show_toolbar).toBool ();
     m_show_toolbar_action->setChecked (show_it);
     m_tool_bar->setVisible (show_it);
-    show_it = settings->value ("editor/show_edit_status_bar",true).toBool ();
+    show_it = settings->value (ed_show_edit_status_bar).toBool ();
     m_show_statusbar_action->setChecked (show_it);
-    show_it = settings->value ("editor/show_hscroll_bar",true).toBool ();
+    show_it = settings->value (ed_show_hscroll_bar).toBool ();
     m_show_hscrollbar_action->setChecked (show_it);
 
     set_shortcuts ();
@@ -1653,42 +1653,42 @@ namespace octave
 
   void file_editor::show_line_numbers (bool)
   {
-    toggle_preference ("editor/showLineNumbers",true);
+    toggle_preference (ed_show_line_numbers);
   }
 
   void file_editor::show_white_space (bool)
   {
-    toggle_preference ("editor/show_white_space",false);
+    toggle_preference (ed_show_white_space);
   }
 
   void file_editor::show_eol_chars (bool)
   {
-    toggle_preference ("editor/show_eol_chars",false);
+    toggle_preference (ed_show_eol_chars);
   }
 
   void file_editor::show_indent_guides (bool)
   {
-    toggle_preference ("editor/show_indent_guides",false);
+    toggle_preference (ed_show_indent_guides);
   }
 
   void file_editor::show_long_line (bool)
   {
-    toggle_preference ("editor/long_line_marker",true);
+    toggle_preference (ed_long_line_marker);
   }
 
   void file_editor::show_toolbar (bool)
   {
-    toggle_preference ("editor/show_toolbar",true);
+    toggle_preference (ed_show_toolbar);
   }
 
   void file_editor::show_statusbar (bool)
   {
-    toggle_preference ("editor/show_edit_status_bar",true);
+    toggle_preference (ed_show_edit_status_bar);
   }
 
   void file_editor::show_hscrollbar (bool)
   {
-    toggle_preference ("editor/show_hscroll_bar",true);
+    toggle_preference (ed_show_hscroll_bar);
   }
 
   void file_editor::zoom_in (bool)
@@ -1745,7 +1745,7 @@ namespace octave
   {
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (settings->value ("editor/hiding_closes_files",false).toBool ())
+    if (settings->value (ed_hiding_closes_files).toBool ())
       {
         if (check_closing ())
           {
@@ -1822,8 +1822,8 @@ namespace octave
 
     // the mru-list and an empty array of actions
     gui_settings *settings = rmgr.get_settings ();
-    m_mru_files = settings->value ("editor/mru_file_list").toStringList ();
-    m_mru_files_encodings = settings->value ("editor/mru_file_encodings")
+    m_mru_files = settings->value (ed_mru_file_list).toStringList ();
+    m_mru_files_encodings = settings->value (ed_mru_file_encodings)
                             .toStringList ();
 
     if (m_mru_files_encodings.count () != m_mru_files.count ())
@@ -2528,8 +2528,8 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
 
-    settings->setValue ("editor/mru_file_list", m_mru_files);
-    settings->setValue ("editor/mru_file_encodings", m_mru_files_encodings);
+    settings->setValue (ed_mru_file_list.key,  m_mru_files);
+    settings->setValue (ed_mru_file_encodings.key,  m_mru_files_encodings);
     settings->sync ();
   }
 
@@ -2555,12 +2555,13 @@ namespace octave
     return false;
   }
 
-  void file_editor::toggle_preference (const QString& preference, bool def)
+  void file_editor::toggle_preference (const gui_pref& preference)
   {
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    bool old = settings->value (preference,def).toBool ();
-    settings->setValue (preference,! old);
+
+    bool old = settings->value (preference).toBool ();
+    settings->setValue (preference.key, ! old);
     notice_settings (settings);
   }
 

@@ -716,9 +716,9 @@ namespace octave
 
         // get settings which infos are used for octave
         bool octave_builtins
-          = settings->value ("editor/codeCompletion_octave_builtins", true).toBool ();
+          = settings->value (ed_code_completion_octave_builtins).toBool ();
         bool octave_functions
-          = settings->value ("editor/codeCompletion_octave_functions", true).toBool ();
+          = settings->value (ed_code_completion_octave_functions).toBool ();
 
         QCoreApplication::setApplicationName (tmp_app_name);  // Restore name
 
@@ -888,7 +888,7 @@ namespace octave
 
     // fix line number width with respect to the font size of the lexer and
     // set the line numbers font depending on the lexers font
-    if (settings->value ("editor/showLineNumbers", true).toBool ())
+    if (settings->value (ed_show_line_numbers).toBool ())
       {
         // Line numbers width
         auto_margin_width ();
@@ -897,7 +897,7 @@ namespace octave
         QFont line_numbers_font = lexer->defaultFont ();
         int font_size = line_numbers_font.pointSize ();
         font_size = font_size
-                    + settings->value ("editor/line_numbers_size", 0).toInt ();
+                    + settings->value (ed_line_numbers_size).toInt ();
         if (font_size < 4)
           font_size = 4;
         line_numbers_font.setPointSize (font_size);
@@ -1974,16 +1974,10 @@ namespace octave
     int count_lf = text.count (eol_lf) - count_crlf;  // isolated lf
     int count_cr = text.count (eol_cr) - count_crlf;  // isolated cr;
 
-    // get default from OS or from settings
-#if defined (Q_OS_WIN32)
-    int os_eol_mode = QsciScintilla::EolWindows;
-#else
-    int os_eol_mode = QsciScintilla::EolUnix;
-#endif
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     QsciScintilla::EolMode eol_mode
-      = static_cast<QsciScintilla::EolMode> (settings->value ("editor/default_eol_mode",os_eol_mode).toInt ());
+      = static_cast<QsciScintilla::EolMode> (settings->value (ed_default_eol_mode).toInt ());
 
     int count_max = 0;
 
@@ -2069,12 +2063,7 @@ namespace octave
 
     // set the eol mode from the settings or depending on the OS if the entry is
     // missing in the settings
-#if defined (Q_OS_WIN32)
-    int eol_mode = QsciScintilla::EolWindows;
-#else
-    int eol_mode = QsciScintilla::EolUnix;
-#endif
-    m_edit_area->setEolMode (static_cast<QsciScintilla::EolMode> (settings->value ("editor/default_eol_mode",eol_mode).toInt ()));
+    m_edit_area->setEolMode (static_cast<QsciScintilla::EolMode> (settings->value (ed_default_eol_mode).toInt ()));
 
     update_eol_indicator ();
 
@@ -2642,7 +2631,7 @@ namespace octave
       update_lexer_settings ();
 
     // code folding
-    if (settings->value ("editor/code_folding",true).toBool ())
+    if (settings->value (ed_code_folding).toBool ())
       {
         m_edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
         m_edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
@@ -2653,23 +2642,21 @@ namespace octave
       }
 
     // status bar
-    if (settings->value ("editor/show_edit_status_bar",true).toBool ())
+    if (settings->value (ed_show_edit_status_bar).toBool ())
       m_status_bar->show ();
     else
       m_status_bar->hide ();
 
     //highlight current line color
-    QVariant default_var = QColor (240, 240, 240);
-    QColor setting_color = settings->value ("editor/highlight_current_line_color",
-                                            default_var).value<QColor> ();
+    QColor setting_color = settings->value (ed_highlight_current_line_color).value<QColor> ();
     m_edit_area->setCaretLineBackgroundColor (setting_color);
     m_edit_area->setCaretLineVisible
-      (settings->value ("editor/highlightCurrentLine", true).toBool ());
+      (settings->value (ed_highlight_current_line).toBool ());
 
     bool match_keywords = settings->value
-                          ("editor/codeCompletion_keywords",true).toBool ();
+                          (ed_code_completion_keywords).toBool ();
     bool match_document = settings->value
-                          ("editor/codeCompletion_document",true).toBool ();
+                          (ed_code_completion_document).toBool ();
 
     QsciScintilla::AutoCompletionSource source = QsciScintilla::AcsNone;
     if (match_keywords)
@@ -2682,27 +2669,27 @@ namespace octave
     m_edit_area->setAutoCompletionSource (source);
 
     m_edit_area->setAutoCompletionReplaceWord
-      (settings->value ("editor/codeCompletion_replace",false).toBool ());
+      (settings->value (ed_code_completion_replace).toBool ());
     m_edit_area->setAutoCompletionCaseSensitivity
-      (settings->value ("editor/codeCompletion_case",true).toBool ());
+      (settings->value (ed_code_completion_case).toBool ());
 
-    if (settings->value ("editor/codeCompletion", true).toBool ())
+    if (settings->value (ed_code_completion).toBool ())
       m_edit_area->setAutoCompletionThreshold
-        (settings->value ("editor/codeCompletion_threshold",2).toInt ());
+        (settings->value (ed_code_completion_threshold).toInt ());
     else
       m_edit_area->setAutoCompletionThreshold (-1);
 
-    if (settings->value ("editor/show_white_space",false).toBool ())
-      if (settings->value ("editor/show_white_space_indent",false).toBool ())
+    if (settings->value (ed_show_white_space).toBool ())
+      if (settings->value (ed_show_white_space_indent).toBool ())
         m_edit_area->setWhitespaceVisibility (QsciScintilla::WsVisibleAfterIndent);
       else
         m_edit_area->setWhitespaceVisibility (QsciScintilla::WsVisible);
     else
       m_edit_area->setWhitespaceVisibility (QsciScintilla::WsInvisible);
 
-    m_edit_area->setEolVisibility (settings->value ("editor/show_eol_chars",false).toBool ());
+    m_edit_area->setEolVisibility (settings->value (ed_show_eol_chars).toBool ());
 
-    if (settings->value ("editor/showLineNumbers", true).toBool ())
+    if (settings->value (ed_show_line_numbers).toBool ())
       {
         m_edit_area->setMarginLineNumbers (2, true);
         auto_margin_width ();
@@ -2715,47 +2702,47 @@ namespace octave
         disconnect (m_edit_area, SIGNAL (linesChanged ()), nullptr, nullptr);
       }
 
-    m_smart_indent = settings->value ("editor/auto_indent",true).toBool ();
+    m_smart_indent = settings->value (ed_auto_indent).toBool ();
     m_edit_area->setAutoIndent (m_smart_indent);
     m_edit_area->setTabIndents
-      (settings->value ("editor/tab_indents_line",false).toBool ());
+      (settings->value (ed_tab_indents_line).toBool ());
     m_edit_area->setBackspaceUnindents
-      (settings->value ("editor/backspace_unindents_line",false).toBool ());
+      (settings->value (ed_backspace_unindents_line).toBool ());
     m_edit_area->setIndentationGuides
-      (settings->value ("editor/show_indent_guides",false).toBool ());
+      (settings->value (ed_show_indent_guides).toBool ());
     m_edit_area->setIndentationsUseTabs
-      (settings->value ("editor/indent_uses_tabs",false).toBool ());
+      (settings->value (ed_indent_uses_tabs).toBool ());
     m_edit_area->setIndentationWidth
-      (settings->value ("editor/indent_width",2).toInt ());
+      (settings->value (ed_indent_width).toInt ());
 
     m_edit_area->setTabWidth
-      (settings->value ("editor/tab_width",2).toInt ());
+      (settings->value (ed_tab_width).toInt ());
 
     m_ind_char_width = 1;
     if (m_edit_area->indentationsUseTabs ())
       m_ind_char_width = m_edit_area->tabWidth ();
 
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
-                               settings->value ("editor/show_hscroll_bar",true).toBool ());
+                               settings->value (ed_show_hscroll_bar).toBool ());
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTHTRACKING,true);
 
-    m_long_title = settings->value ("editor/longWindowTitle", false).toBool ();
+    m_long_title = settings->value (ed_long_window_title).toBool ();
     update_window_title (m_edit_area->isModified ());
 
-    m_auto_endif = settings->value ("editor/auto_endif",1).toInt ();
+    m_auto_endif = settings->value (ed_auto_endif).toInt ();
 
     // long line marker
-    int line_length = settings->value ("editor/long_line_column",80).toInt ();
+    int line_length = settings->value (ed_long_line_column).toInt ();
     m_edit_area->setEdgeColumn (line_length);
 
-    if (settings->value ("editor/long_line_marker",true).toBool ())
+    if (settings->value (ed_long_line_marker).toBool ())
       {
-        if (settings->value ("editor/long_line_marker_line",true).toBool ())
+        if (settings->value (ed_long_line_marker_line).toBool ())
           m_edit_area->setEdgeMode (QsciScintilla::EdgeLine);
         else
           {
-            if (settings->value ("editor/long_line_marker_background",false)
+            if (settings->value (ed_long_line_marker_background)
                 .toBool ())
               m_edit_area->setEdgeMode (QsciScintilla::EdgeBackground);
             else
@@ -2769,26 +2756,26 @@ namespace octave
     m_edit_area->setWrapVisualFlags (QsciScintilla::WrapFlagByBorder);
     m_edit_area->setWrapIndentMode (QsciScintilla::WrapIndentSame);
 
-    if (settings->value ("editor/wrap_lines",false).toBool ())
+    if (settings->value (ed_wrap_lines).toBool ())
       m_edit_area->setWrapMode (QsciScintilla::WrapWord);
     else
       m_edit_area->setWrapMode (QsciScintilla::WrapNone);
 
-    if (settings->value ("editor/break_lines",false).toBool ())
+    if (settings->value (ed_break_lines).toBool ())
       m_line_break = line_length;
     else
       m_line_break = 0;
 
     m_line_break_comments =
-      settings->value ("editor/break_lines_comments",false).toBool ();
+      settings->value (ed_break_lines_comments).toBool ();
 
     // highlight all occurrences of a word selected by a double click
     m_highlight_all_occurrences =
-      settings->value ("editor/highlight_all_occurrences", true).toBool ();
+      settings->value (ed_highlight_all_occurrences).toBool ();
 
     // reload changed files
     m_always_reload_changed_files =
-      settings->value ("editor/always_reload_changed_files",false).toBool ();
+      settings->value (ed_always_reload_changed_files).toBool ();
 
     // Set cursor blinking depending on the settings.
     // QScintilla ignores the application global settings, so some special

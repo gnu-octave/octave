@@ -320,7 +320,7 @@ namespace octave
     void mru_menu_update (void);
     bool call_custom_editor (const QString& file_name = QString (), int line = -1);
 
-    void toggle_preference (const QString& preference, bool def);
+    void toggle_preference (const gui_pref& preference);
 
     void handle_dir_remove (const QString& old_name, const QString& new_name);
 

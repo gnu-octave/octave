@@ -52,8 +52,6 @@ To initialize:
 
 // PKG_ADD: if (__have_gnuplot__ ()) register_graphics_toolkit ("gnuplot"); endif
 
-static bool toolkit_loaded = false;
-
 class gnuplot_graphics_toolkit : public octave::base_graphics_toolkit
 {
 public:
@@ -147,12 +145,8 @@ public:
 
   void close (void)
   {
-    if (toolkit_loaded)
-      {
-        m_interpreter.munlock ("__init_gnuplot__");
-
-        toolkit_loaded = false;
-      }
+    if (m_interpreter.mislocked ("__init_gnuplot__"))
+      m_interpreter.munlock ("__init_gnuplot__");
   }
 
 private:
@@ -231,16 +225,14 @@ Undocumented internal function.
 {
   if (! have_gnuplot_binary ())
     error ("__init_gnuplot__: the gnuplot program is not available, see 'gnuplot_binary'");
-  else if (! toolkit_loaded)
+  else if (! interp.mislocked ("__init_gnuplot__"))
     {
-      interp.mlock ();
-
       octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
       octave::graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
       gtk_mgr.load_toolkit (tk);
 
-      toolkit_loaded = true;
+      interp.mlock ();
     }
 
   return octave_value_list ();

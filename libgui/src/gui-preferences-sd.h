@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2017-2019 Torsten Lilge <ttl-octave@mailbox.de>
+Copyright (C) 2017-2019 Torsten <ttl-octave@mailbox.org>
 
 This file is part of Octave.
 
@@ -20,23 +20,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_gui_preferences_all_h)
-#define octave_gui_preferences_all_h 1
+#if ! defined (octave_gui_preferences_sd_h)
+#define octave_gui_preferences_sd_h 1
 
-#include "gui-preferences-cs.h"
-#include "gui-preferences-dw.h"
-#include "gui-preferences-ed.h"
-#include "gui-preferences-fb.h"
-#include "gui-preferences-ff.h"
-#include "gui-preferences-global.h"
-#include "gui-preferences-gp.h"
-#include "gui-preferences-hw.h"
-#include "gui-preferences-mw.h"
-#include "gui-preferences-nr.h"
-#include "gui-preferences-pd.h"
-#include "gui-preferences-ve.h"
-#include "gui-preferences-sc.h"
-#include "gui-preferences-sd.h"
-#include "gui-preferences-ws.h"
+#include "gui-preferences.h"
+
+// Settings dialog
+
+const gui_pref
+sd_geometry ("settings/geometry", QVariant ());
+
+const gui_pref
+sd_last_tab ("settings/last_tab", QVariant (0));
+
+const gui_pref
+sd_last_editor_styles_tab ("settings/last_editor_styles_tab", QVariant (0));
 
 #endif

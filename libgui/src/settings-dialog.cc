@@ -504,8 +504,8 @@ namespace octave
              this, SLOT (button_clicked (QAbstractButton *)));
 
     // restore last geometry
-    if (settings->contains ("settings/geometry"))
-      restoreGeometry (settings->value ("settings/geometry").toByteArray ());
+    if (settings->contains (sd_geometry.key))
+      restoreGeometry (settings->value (sd_geometry).toByteArray ());
     else
       setGeometry (QRect (10,50,1000,600));
   }
@@ -517,7 +517,7 @@ namespace octave
         resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
         gui_settings *settings = rmgr.get_settings ();
         if (settings)
-          tabWidget->setCurrentIndex (settings->value ("settings/last_tab", 0).toInt ());
+          tabWidget->setCurrentIndex (settings->value (sd_last_tab).toInt ());
       }
     else
       {
@@ -702,7 +702,7 @@ namespace octave
     scroll_area->setWidget (scroll_area_contents);
     tabs_editor_lexers->addTab (scroll_area, lexer->language ());
 
-    tabs_editor_lexers->setCurrentIndex (settings->value ("settings/last_editor_styles_tab", 0).toInt ());
+    tabs_editor_lexers->setCurrentIndex (settings->value (sd_last_editor_styles_tab).toInt ());
 
 #else
 
@@ -795,7 +795,7 @@ namespace octave
 
     lexer->writeSettings (*settings);
 
-    settings->setValue ("settings/last_editor_styles_tab",
+    settings->setValue (sd_last_editor_styles_tab.key,
                         tabs_editor_lexers->currentIndex ());
     settings->sync ();
 
@@ -1027,8 +1027,8 @@ namespace octave
     scmgr.write_shortcuts (settings, closing);
 
     // settings dialog's geometry
-    settings->setValue ("settings/last_tab", tabWidget->currentIndex ());
-    settings->setValue ("settings/geometry", saveGeometry ());
+    settings->setValue (sd_last_tab.key, tabWidget->currentIndex ());
+    settings->setValue (sd_geometry.key, saveGeometry ());
 
     settings->sync ();
   }

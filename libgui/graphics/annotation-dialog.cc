@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QPalette>
 
 #include "gui-settings.h"
+#include "gui-preferences-gp.h"
 #include "octave-qobject.h"
 
 #include "QtHandlesUtils.h"
@@ -56,8 +57,8 @@ annotation_dialog::init ()
   octave::gui_settings *settings = rmgr.get_settings ();
 
   // restore last geometry
-  if (settings)
-    restoreGeometry (settings->value ("annotation/geometry").toByteArray ());
+  if (settings && settings->contains (gp_annotation_geometry.key))
+    restoreGeometry (settings->value (gp_annotation_geometry).toByteArray ());
 
   // connect signals
   connect (ui->button_box, SIGNAL (clicked (QAbstractButton *)),
@@ -103,7 +104,7 @@ annotation_dialog::button_clicked (QAbstractButton *button)
 
   // save position
   if (settings)
-    settings->setValue ("annotation/geometry",saveGeometry ());
+    settings->setValue (gp_annotation_geometry.key, saveGeometry ());
 
   if (button_role == QDialogButtonBox::ApplyRole
       || button_role == QDialogButtonBox::AcceptRole)

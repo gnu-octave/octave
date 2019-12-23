@@ -50,6 +50,9 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   one is used, and, in case of an error, the previous format remains
   unchanged.
 
+- L-value references (i.e. increment, decrement, and all assignment
+  operations) are no longer allowed in anonymous functions.
+
 - New warnings have been added about questionable uses of the colon ':'
   range operator.  Each has a new warning ID so that it can be disabled
   if desired.

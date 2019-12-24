@@ -423,12 +423,12 @@
     <message>
         <location filename="../src/documentation.cc" line="+98"/>
         <location line="+12"/>
-        <location line="+644"/>
+        <location line="+647"/>
         <source>Octave Documentation</source>
         <translation>Documentação do Octave</translation>
     </message>
     <message>
-        <location line="-655"/>
+        <location line="-658"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -529,7 +529,7 @@ de ajuda na Janela de Comando estarão disponíveis.</translation>
         <translation>Páginas seguintes</translation>
     </message>
     <message>
-        <location line="+410"/>
+        <location line="+413"/>
         <source>Unable to register help file %1.</source>
         <translation>Não foi possível registrar o arquivo de ajuda %1.</translation>
     </message>
@@ -1635,7 +1635,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Localizar no texto &amp;selecionado</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+80"/>
         <source>Search from end</source>
         <translation>Localizar a partir do final</translation>
     </message>
@@ -1645,7 +1645,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Localizar a partir do início</translation>
     </message>
     <message>
-        <location line="+213"/>
+        <location line="+257"/>
         <source>Replace Result</source>
         <translation>Substituir Resultado</translation>
     </message>
@@ -2398,7 +2398,7 @@ ou habilite a conexão à Internet nas preferências de rede do Octave.
         <translation>dbstop se...</translation>
     </message>
     <message>
-        <location line="+522"/>
+        <location line="+523"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation>Pressione %1 para substituir todas as ocorrências de &apos;%2&apos; por &apos;%3&apos;.</translation>
     </message>

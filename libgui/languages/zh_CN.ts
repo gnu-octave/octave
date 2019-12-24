@@ -1089,12 +1089,12 @@
     <message>
         <location filename="../src/documentation.cc" line="+98"/>
         <location line="+12"/>
-        <location line="+644"/>
+        <location line="+647"/>
         <source>Octave Documentation</source>
         <translation>Octave文档</translation>
     </message>
     <message>
-        <location line="-655"/>
+        <location line="-658"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -1193,7 +1193,7 @@ the Command Window will be available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+410"/>
+        <location line="+413"/>
         <source>Unable to register help file %1.</source>
         <translation>无法注册帮助文件 %1.</translation>
     </message>
@@ -2282,7 +2282,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>搜索选中 (&amp;L)</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+80"/>
         <source>Search from end</source>
         <translation>从尾部搜索</translation>
     </message>
@@ -2292,7 +2292,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>从开头搜索</translation>
     </message>
     <message>
-        <location line="+213"/>
+        <location line="+257"/>
         <source>Replace Result</source>
         <translation>替换结果</translation>
     </message>
@@ -3044,7 +3044,7 @@ or enable web connections for news in Octave&apos;s network settings dialog.
         <translation>dbstop 如果 ...</translation>
     </message>
     <message>
-        <location line="+522"/>
+        <location line="+523"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation>按&apos;%1将所有出现的&apos;%2&apos;替换为&apos;%3&apos;。</translation>
     </message>

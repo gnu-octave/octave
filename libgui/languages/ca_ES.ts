@@ -1089,12 +1089,12 @@
     <message>
         <location filename="../src/documentation.cc" line="+98"/>
         <location line="+12"/>
-        <location line="+644"/>
+        <location line="+647"/>
         <source>Octave Documentation</source>
         <translation>Documentació de l&apos;Octave</translation>
     </message>
     <message>
-        <location line="-655"/>
+        <location line="-658"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -1193,7 +1193,7 @@ the Command Window will be available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+410"/>
+        <location line="+413"/>
         <source>Unable to register help file %1.</source>
         <translation>No es pot registrar el fitxer d&apos;ajuda %1.</translation>
     </message>
@@ -2282,7 +2282,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Cerca se&amp;lecció</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+80"/>
         <source>Search from end</source>
         <translation>Cerca des de la fi</translation>
     </message>
@@ -2292,7 +2292,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Cerca des de l&apos;inici</translation>
     </message>
     <message>
-        <location line="+213"/>
+        <location line="+257"/>
         <source>Replace Result</source>
         <translation>Substitueix el resultat</translation>
     </message>
@@ -3043,7 +3043,7 @@ o activa-la per veure les novetats al diàleg de configuració de la xarxa de l&
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+522"/>
+        <location line="+523"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation>Fes clic a &apos;%1&apos; per substituir tots els casos de &apos;%2&apos; amb &apos;%3&apos;.</translation>
     </message>

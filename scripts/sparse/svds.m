@@ -56,7 +56,7 @@
 ## @table @code
 ## @item tol
 ## The required convergence tolerance for the singular values.  The default
-## value is 1e-10.  @code{eigs} is passed @code{@var{tol} / sqrt(2)}.
+## value is 1e-10.  @code{eigs} is passed @code{@var{tol} / sqrt (2)}.
 ##
 ## @item maxit
 ## The maximum number of iterations.  The default is 300.
@@ -118,7 +118,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     endif
     if (isfield (opts, "v0"))
       if (! isvector (opts.v0) || (length (opts.v0) != sum (size (A))))
-        error ("svds: OPTS.v0 must be a vector with rows(A)+columns(A) entries");
+        error ("svds: OPTS.v0 must be a vector with rows (A) + columns (A) entries");
       endif
     endif
   endif
@@ -276,14 +276,14 @@ endfunction
 %! [u2,s2,v2,flag] = svds (A,k);
 %! s2 = diag (s2);
 %! assert (flag, ! 1);
-%! tol = 15 * eps() * norm(s2, 1);
+%! tol = 15 * eps * norm (s2, 1);
 %! assert (s2, s(end:-1:end-k+1), tol);
 
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! [u2,s2,v2,flag] = svds (A,k,0,opts);
 %! s2 = diag (s2);
 %! assert (flag, ! 1);
-%! tol = 15 * eps() * norm(s2, 1);
+%! tol = 15 * eps * norm (s2, 1);
 %! assert (s2, s(k:-1:1), tol);
 
 %!testif HAVE_ARPACK, HAVE_UMFPACK
@@ -293,8 +293,8 @@ endfunction
 %! [u2,s2,v2,flag] = svds (A,k,sigma,opts);
 %! s2 = diag (s2);
 %! assert (flag, ! 1);
-%! tol = 15 * eps() * norm(s2, 1);
-%! assert (s2, s((idx+floor(k/2)):-1:(idx-floor(k/2))), tol);
+%! tol = 15 * eps * norm (s2, 1);
+%! assert (s2, s((idx+floor (k/2)):-1:(idx-floor (k/2))), tol);
 
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds (zeros (10), k);

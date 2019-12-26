@@ -427,12 +427,12 @@
     <message>
         <location filename="../src/documentation.cc" line="+98"/>
         <location line="+12"/>
-        <location line="+644"/>
+        <location line="+647"/>
         <source>Octave Documentation</source>
         <translation>Octave Dokumentation</translation>
     </message>
     <message>
-        <location line="-655"/>
+        <location line="-658"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -534,7 +534,7 @@ im Befehlsfenster angezeigt werden.</translation>
         <translation>Nächste Seite</translation>
     </message>
     <message>
-        <location line="+410"/>
+        <location line="+413"/>
         <source>Unable to register help file %1.</source>
         <translation>Hilfe-Datei %1 konnte nicht registriert werden.</translation>
     </message>
@@ -1643,7 +1643,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>In Auswah&amp;l suchen</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+80"/>
         <source>Search from end</source>
         <translation>Vom Ende suchen</translation>
     </message>
@@ -1653,7 +1653,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Vom Beginn suchen</translation>
     </message>
     <message>
-        <location line="+213"/>
+        <location line="+257"/>
         <source>Replace Result</source>
         <translation>Ergebnis der Ersetzungen</translation>
     </message>
@@ -2406,7 +2406,7 @@ oder aktivieren Sie die Internetverbindung in den Einstellungen unter Netzwerk.
         <translation>dbstop wenn ...</translation>
     </message>
     <message>
-        <location line="+522"/>
+        <location line="+523"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation>&apos;%1&apos; drücken, um alle Vorkommnisse von &apos;%2&apos; mit &apos;%3&apos; zu ersetzen.</translation>
     </message>

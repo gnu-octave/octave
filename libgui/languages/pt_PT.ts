@@ -1089,12 +1089,12 @@
     <message>
         <location filename="../src/documentation.cc" line="+98"/>
         <location line="+12"/>
-        <location line="+644"/>
+        <location line="+647"/>
         <source>Octave Documentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-655"/>
+        <location line="-658"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -1191,7 +1191,7 @@ the Command Window will be available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+410"/>
+        <location line="+413"/>
         <source>Unable to register help file %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2269,7 +2269,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation type="unfinished">Localizar dentro do texto &amp;selecionado</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+80"/>
         <source>Search from end</source>
         <translation type="unfinished">Localizar a partir do final</translation>
     </message>
@@ -2279,7 +2279,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation type="unfinished">Localizar a partir do início</translation>
     </message>
     <message>
-        <location line="+213"/>
+        <location line="+257"/>
         <source>Replace Result</source>
         <translation type="unfinished">Substituir Resultado</translation>
     </message>
@@ -3029,7 +3029,7 @@ quando tiver ligação à Internet ou active a ligação à Internet nas prefer�
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+522"/>
+        <location line="+523"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation type="unfinished"></translation>
     </message>

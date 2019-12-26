@@ -1094,12 +1094,12 @@
     <message>
         <location filename="../src/documentation.cc" line="+98"/>
         <location line="+12"/>
-        <location line="+644"/>
+        <location line="+647"/>
         <source>Octave Documentation</source>
         <translation>Documentazione di Octave</translation>
     </message>
     <message>
-        <location line="-655"/>
+        <location line="-658"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -1201,7 +1201,7 @@ dei comandi sarà disponibile.</translation>
         <translation>Pagina successiva</translation>
     </message>
     <message>
-        <location line="+410"/>
+        <location line="+413"/>
         <source>Unable to register help file %1.</source>
         <translation>Impossibile registrare il file di aiuto %1.</translation>
     </message>
@@ -2306,7 +2306,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Cerca nella sele&amp;zione</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+80"/>
         <source>Search from end</source>
         <translation>Cerca dalla fine</translation>
     </message>
@@ -2316,7 +2316,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Cerca dall&apos;inizio</translation>
     </message>
     <message>
-        <location line="+213"/>
+        <location line="+257"/>
         <source>Replace Result</source>
         <translation>Sostituisci risultato</translation>
     </message>
@@ -3069,7 +3069,7 @@ o di abilitare, nella finestra delle impostazioni di rete di Octave, la connessi
         <translation>dbstop se ...</translation>
     </message>
     <message>
-        <location line="+522"/>
+        <location line="+523"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation>Premere %1 per sostituire tutte le occorrenze di &apos;%2&apos; con &apos;%3&apos;.</translation>
     </message>

@@ -843,12 +843,10 @@ namespace octave
     for (int i = 0; i < lines.count (); i++)
       {
         QString line = lines.at (i);
-        QString line_clean_1 = line;
-        line_clean_1.replace (QString ("\""), QString ("\\\""));
-
-        line = line.replace (QString ("%"), QString ("%%"));
-        QString line_clean_2 = line;
-        line_clean_2.replace (QString ("\""), QString ("\\\""));
+        QString line_history = line;
+        line_history.replace (QString ("\\"), QString ("\\\\"));
+        line_history.replace (QString ("\""), QString ("\\\""));
+        line_history.replace (QString ("%"), QString ("%%"));
 
         // Prevent output of breakpoint in temp. file for keyboard
         QString next_bp_quiet;
@@ -862,16 +860,19 @@ namespace octave
           }
 
         // Add codeline togetcher with call to echo/hitory function to tmp
-        code += QString ("%1 (%2, \"%3\", \"%4\");\n"
+        // %1 : function name for displaying and adding to history
+        // %2 : line number
+        // %3 : command line (eval and display)
+        // %4 : command line for history (via fprintf)
+        code += QString ("%1 (%2, '%3', '%4');\n"
                           + next_bp_quiet
-                          + "%5\n"
+                          + "%3\n"
                           + next_bp_quiet_reset
                           + "\n")
                          .arg (tmp_script_name)
                          .arg (i)
-                         .arg (line_clean_1)
-                         .arg (line_clean_2)
-                         .arg (line);
+                         .arg (line)
+                         .arg (line_history);
       }
 
     code += QString ("munlock (\"%1\"); clear %1;\n").arg (tmp_script_name);

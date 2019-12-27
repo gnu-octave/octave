@@ -212,14 +212,15 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
     error ("test: unknown flag '%s'", __flag);
   endif
 
-  ## Locate the file to test.
+  ## Locate the file with tests.
   __file = file_in_loadpath (__name, "all");
-  if (isempty (__file))
-    __file = file_in_loadpath ([__name ".m"], "all");
-  endif
-  if (isempty (__file))
-    __file = file_in_loadpath ([__name ".cc"], "all");
-  endif
+  for suffix = {".m", ".cc", ".cc-tst", ".c-tst", ".C-tst", ".cpp-tst", ...
+                ".cxx-tst"}
+    if (! isempty (__file))
+      break;
+    endif
+    __file = file_in_loadpath ([__name, suffix{1}], "all");
+  endfor
   if (iscell (__file))
     if (isempty (__file))
       __file = "";

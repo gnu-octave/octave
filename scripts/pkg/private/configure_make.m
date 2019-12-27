@@ -110,6 +110,39 @@ function configure_make (desc, packdir, verbose)
         error ("pkg: error running 'make' for the %s package.", desc.name);
       endif
     endif
+
+    ## Extract tests from source files which will not to be installed
+    tst_files_src = [];
+    for suffix = {"*.cc", "*.c", "*.C", "*.cpp", "*.cxx"}
+      tst_files_src = [tst_files_src; ...
+                       nthargout(1, 1, @dir, fullfile (src, suffix{1}))];
+    endfor
+    if (! isempty (tst_files_src))
+      for tst_file_src = {tst_files_src.name}
+        full_tst_file_src = fullfile (src, tst_file_src{1});
+        tst_code = __extract_test_code__ (full_tst_file_src);
+        if (isempty (tst_code))
+          continue;
+        endif
+        full_tst_file = strcat (full_tst_file_src, "-tst");
+        if (exist (full_tst_file))
+          continue;
+        endif
+        tst_code = ...
+          ["## DO NOT EDIT!\n", ...
+           "## Generated automatically from ", tst_file_src{1}, "\n", ...
+           "## by ", mfilename(), ".m during package installation.\n\n", ...
+           tst_code];
+        [fid, output] = fopen (full_tst_file, "w");
+        if (fid == -1)
+          error ("Octave:pkg:extract-tests", ...
+                 "pkg: error writing extracted tests to 'src': %s", output);
+        endif
+        fputs (fid, tst_code);
+        fclose (fid);
+      endfor
+    endif
+
   endif
 
 endfunction
@@ -151,4 +184,19 @@ function [status, output] = shell (cmd, verbose)
     [status, output] = system (cmd);
   endif
 
+endfunction
+
+function body = __extract_test_code__ (nm)
+  ## Collect all BIST lines starting %! from the file named nm
+  ## and return them as a single \n-delimited string.
+  fid = fopen (nm, "rt");
+  body = "";
+  if (fid >= 0)
+    while (ischar (ln = fgets (fid)))
+      if (strncmp (ln, "%!", 2))
+        body = [body, ln];
+      endif
+    endwhile
+    fclose (fid);
+  endif
 endfunction

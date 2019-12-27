@@ -422,9 +422,10 @@ function copy_built_files (desc, packdir, verbose)
     m = dir (fullfile (src, "*.m"));
     oct = dir (fullfile (src, "*.oct"));
     mex = dir (fullfile (src, "*.mex"));
+    tst = dir (fullfile (src, "*tst"));
 
     filenames = cellfun (@(x) fullfile (src, x),
-                         {m.name, oct.name, mex.name},
+                         {m.name, oct.name, mex.name, tst.name},
                          "uniformoutput", false);
   endif
 
@@ -475,7 +476,9 @@ endfunction
 
 
 function dep = is_architecture_dependent (nm)
-  persistent archdepsuffix = {".oct",".mex",".a",".lib",".so",".so.*",".dll","dylib"};
+
+  persistent archdepsuffix = {".oct", ".mex", ".a", ".lib", ".so", ...
+                              "tst", ".so.*", ".dll", "dylib"};
 
   dep = false;
   for i = 1 : length (archdepsuffix)

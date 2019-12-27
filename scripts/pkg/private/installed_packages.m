@@ -52,7 +52,10 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
 
   ## Check whether info on a particular package was requested
   if (! isempty (pkgname))
-    idx = find (strcmp (pkgname{1}, installed_names));
+    idx = [];
+    for i = 1 : numel (pkgname)
+      idx = [idx, find(strcmp (pkgname{i}, installed_names))];
+    endfor
     if (isempty (idx))
       installed_names = {};
       installed_pkgs_lst = {};

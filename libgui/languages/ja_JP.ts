@@ -57,57 +57,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/workspace-model.cc" line="+81"/>
-        <source>automatic</source>
-        <translation>自動</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>function</source>
-        <translation>関数</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>global</source>
-        <translation>グローバル</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>hidden</source>
-        <translation>隠す</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>inherited</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>persistent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+66"/>
-        <source>foreground</source>
-        <translation>前面</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>background</source>
-        <translation>背景</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>selection</source>
-        <translation>選択</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>cursor</source>
-        <translation>カーソル</translation>
-    </message>
-    <message>
-        <location filename="../src/settings-dialog.cc" line="+661"/>
+        <location filename="../src/settings-dialog.cc" line="+667"/>
         <source>Difference to the default size</source>
         <translation>既定のサイズとの差</translation>
     </message>
@@ -138,7 +88,22 @@
 <context>
     <name>QTerminal</name>
     <message>
-        <location filename="../qterminal/libqterminal/QTerminal.h" line="+139"/>
+        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+139"/>
+        <source>Edit %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Help on %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Documentation on %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+154"/>
         <source>Copy</source>
         <translation>コピー</translation>
     </message>
@@ -148,7 +113,7 @@
         <translation>貼り付け</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>Select All</source>
         <translation>全てを選択</translation>
     </message>
@@ -158,14 +123,52 @@
         <translation>選択部を実行</translation>
     </message>
     <message>
+        <location line="+4"/>
+        <source>Edit selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Help on selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Documentation on selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+7"/>
         <source>Clear Window</source>
         <translation>ウィンドウをクリア</translation>
     </message>
     <message>
-        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+49"/>
+        <location line="-213"/>
         <source>Edit %1 at line %2</source>
         <translation>%2 行目の %1 を編集</translation>
+    </message>
+</context>
+<context>
+    <name>QTerminal::QTerminal</name>
+    <message>
+        <location filename="../src/gui-preferences-cs.h" line="+65"/>
+        <source>foreground</source>
+        <translation type="unfinished">前面</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>background</source>
+        <translation type="unfinished">背景</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>selection</source>
+        <translation type="unfinished">選択</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>cursor</source>
+        <translation type="unfinished">カーソル</translation>
     </message>
 </context>
 <context>
@@ -843,57 +846,6 @@
     </message>
 </context>
 <context>
-    <name>QtHandles::Figure</name>
-    <message>
-        <location filename="../graphics/Figure.cc" line="+262"/>
-        <source>Figure ToolBar</source>
-        <translation>フィギュアツールバー</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Axes</source>
-        <translation>軸</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Grid</source>
-        <translation>グリッド</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Autoscale</source>
-        <translation>オートスケール</translation>
-    </message>
-</context>
-<context>
-    <name>QtHandles::MouseModeActionGroup</name>
-    <message>
-        <location filename="../graphics/MouseModeActionGroup.cc" line="+40"/>
-        <source>Rotate</source>
-        <translation>回転</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Zoom In</source>
-        <translation>ズームイン</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Zoom Out</source>
-        <translation>ズームアウト</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Pan</source>
-        <translation>パン</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Insert Text</source>
-        <translation>テキストの挿入</translation>
-    </message>
-</context>
-<context>
     <name>UrlFilter</name>
     <message>
         <location filename="../qterminal/libqterminal/unix/Filter.cpp" line="+625"/>
@@ -1077,9 +1029,32 @@
     </message>
 </context>
 <context>
+    <name>file_editor::file_editor</name>
+    <message>
+        <location filename="../src/gui-preferences-ed.h" line="+189"/>
+        <source>Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>octave::ListDialog</name>
     <message>
-        <location filename="../src/dialog.cc" line="+279"/>
+        <location filename="../src/dialog.cc" line="+481"/>
         <source>Select All</source>
         <translation>すべてを選択</translation>
     </message>
@@ -1087,14 +1062,14 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+98"/>
+        <location filename="../src/documentation.cc" line="+100"/>
         <location line="+12"/>
-        <location line="+647"/>
+        <location line="+668"/>
         <source>Octave Documentation</source>
         <translation>Octave ドキュメント</translation>
     </message>
     <message>
-        <location line="-658"/>
+        <location line="-679"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -1122,18 +1097,18 @@ the Command Window will be available.</source>
         <translation>前方検索</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <location line="+1"/>
         <source>Search backward</source>
         <translation>後方検索</translation>
     </message>
     <message>
-        <location line="+76"/>
+        <location line="+75"/>
         <source>Function Index</source>
         <translation>関数インデックス</translation>
     </message>
     <message>
-        <location line="+99"/>
+        <location line="+100"/>
         <source>Go home</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1178,13 +1153,13 @@ the Command Window will be available.</source>
         <translation>インデックスを検索するテキストを入力</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+9"/>
         <location line="+39"/>
         <source>Search</source>
         <translation>検索</translation>
     </message>
     <message>
-        <location line="+85"/>
+        <location line="+86"/>
         <source>Previous pages</source>
         <translation>前のページ</translation>
     </message>
@@ -1194,7 +1169,7 @@ the Command Window will be available.</source>
         <translation>次のページ</translation>
     </message>
     <message>
-        <location line="+413"/>
+        <location line="+433"/>
         <source>Unable to register help file %1.</source>
         <translation type="unfinished">ヘルプファイル %1 を登録できません．</translation>
     </message>
@@ -1215,22 +1190,22 @@ the Command Window will be available.</source>
 <context>
     <name>octave::dw_main_window</name>
     <message>
-        <location filename="../src/dw-main-window.cc" line="+49"/>
+        <location filename="../src/dw-main-window.cc" line="+51"/>
         <source>&amp;Close</source>
         <translation>閉じる (&amp;C)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Close &amp;All</source>
         <translation>全てを閉じる (&amp;A)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Close &amp;Other</source>
         <translation>他を閉じる (&amp;O)</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Switch to &amp;Left Widget</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1243,20 +1218,20 @@ the Command Window will be available.</source>
 <context>
     <name>octave::external_editor_interface</name>
     <message>
-        <location filename="../src/external-editor-interface.cc" line="+63"/>
-        <location line="+45"/>
+        <location filename="../src/external-editor-interface.cc" line="+65"/>
+        <location line="+47"/>
         <source>Octave Editor</source>
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="-44"/>
+        <location line="-46"/>
         <source>Could not start custom file editor
 %1</source>
         <translation>カスタムファイルエディタをスタートできません
 %1</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+47"/>
         <source>There is no custom editor configured yet.
 Do you want to open the preferences?</source>
         <translation>設定されたカスタムエディタが存在しません．設定を開きますか?</translation>
@@ -1265,16 +1240,16 @@ Do you want to open the preferences?</source>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+858"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+1007"/>
         <location line="+28"/>
-        <location line="+482"/>
+        <location line="+535"/>
         <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="-552"/>
+        <location line="-605"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
@@ -1288,7 +1263,7 @@ is already open in the editor</source>
         <translation>関連づけられたエディタタブが消失しました</translation>
     </message>
     <message>
-        <location line="+482"/>
+        <location line="+535"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -1325,7 +1300,7 @@ for write: %2.</source>
 が開けません: %2&#x3000;の書き込みのために.</translation>
     </message>
     <message>
-        <location line="+231"/>
+        <location line="+233"/>
         <source>&amp;File</source>
         <translation>ファイル (&amp;F)</translation>
     </message>
@@ -1340,62 +1315,62 @@ for write: %2.</source>
         <translation>関数の編集 (&amp;E)</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>&amp;Save File</source>
         <translation>ファイルの保存 (&amp;S)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Save File &amp;As...</source>
         <translation>ファイルを別名で保存 (&amp;A)...</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>&amp;Close</source>
         <translation>閉じる (&amp;C)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Close All</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Close Other Files</source>
         <translation>他のファイルを閉じる</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Print...</source>
         <translation>印刷...</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Edit</source>
         <translation>編集 (&amp;E)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Redo</source>
         <translation>やり直す (&amp;R)</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+7"/>
         <source>Cu&amp;t</source>
         <translation>切り取り (&amp;T)</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+5"/>
         <source>&amp;Find and Replace...</source>
         <translation>検索と置換 (&amp;F) ...</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+3"/>
         <source>Find &amp;Next...</source>
         <translation>次を検索 (&amp;N)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Find &amp;Previous...</source>
         <translation>前を検索 (&amp;N)</translation>
     </message>
@@ -1405,52 +1380,52 @@ for write: %2.</source>
         <translation>コマンド (&amp;C)</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Delete Line</source>
         <translation>行削除</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Copy Line</source>
         <translation>行のコピー</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Cut Line</source>
         <translation>行の切り取り</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Delete to Start of Word</source>
         <translation>単語の始まりまで削除</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Delete to End of Word</source>
         <translation>単語の終わりまで削除</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Delete to Start of Line</source>
         <translation>行の始まりまで削除</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Delete to End of Line</source>
         <translation>行末まで削除</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Duplicate Selection/Line</source>
         <translation>選択部/行の複製</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Transpose Line</source>
         <translation type="unfinished">行の入れ替え</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>&amp;Show Completion List</source>
         <translation>補完リストの表示 (&amp;S)</translation>
     </message>
@@ -1460,42 +1435,42 @@ for write: %2.</source>
         <translation>フォーマット (&amp;F)</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>&amp;Uppercase Selection</source>
         <translation>大文字を選択(&amp;U)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Lowercase Selection</source>
         <translation>小文字を選択(&amp;L)</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>&amp;Comment</source>
         <translation>コメント (&amp;C)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Uncomment</source>
         <translation>アンコメント (&amp;U)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Comment (Choosing String)</source>
         <translation>コメント (文字列を選択)</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>&amp;Indent Selection Rigidly</source>
         <translation>リジッドにセクションをインデント</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Unindent Selection Rigidly</source>
         <translation>リジッドにセクションをアンインデント</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Indent Code</source>
         <translation>コードをインデント</translation>
     </message>
@@ -1505,7 +1480,7 @@ for write: %2.</source>
         <translation>行末文字を Windows 仕様にする (CRLF) (&amp;W)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Convert Line Endings to &amp;Unix (LF)</source>
         <translation>行末文字を Unix 仕様にする (LF) (&amp;U)</translation>
     </message>
@@ -1520,42 +1495,42 @@ for write: %2.</source>
         <translation>ナビゲーション (&amp;G)</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Go &amp;to Line...</source>
         <translation>指定行 (&amp;T) ... へ移動</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Move to Matching Brace</source>
         <translation>対応する括弧に移動</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Select to Matching Brace</source>
         <translation>対応する括弧を選択</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>&amp;Next Bookmark</source>
         <translation>次のブックマーク (&amp;N)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Pre&amp;vious Bookmark</source>
         <translation>前のブックマーク (&amp;V)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Toggle &amp;Bookmark</source>
         <translation>ブックマークをトグル (&amp;B)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Remove All Bookmarks</source>
         <translation>全てのブックマークを取り除く (&amp;R)</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>&amp;Preferences...</source>
         <translation>設定 (&amp;P) ...</translation>
     </message>
@@ -1575,82 +1550,87 @@ for write: %2.</source>
         <translation>エディタ (&amp;E)</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show &amp;Line Numbers</source>
         <translation>行番号の表示 (&amp;L)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show &amp;Whitespace Characters</source>
         <translation>ホワイトスペースを表示 (&amp;W)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show Line &amp;Endings</source>
         <translation>行末の表示 (&amp;E)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show &amp;Indentation Guides</source>
         <translation>インデンテーションガイドの表示 (&amp;I)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show Long Line &amp;Marker</source>
         <translation>長い行のマーカーを表示</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Show &amp;Toolbar</source>
         <translation>ツールバーの表示(&amp;T)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show &amp;Statusbar</source>
         <translation>ステイタスバーの表示</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show &amp;Horizontal Scrollbar</source>
         <translation>横スクロールバーの表示</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Zoom &amp;In</source>
         <translation>ズームイン (&amp;I)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Zoom &amp;Out</source>
         <translation>ズームアウト (&amp;O)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Normal Size</source>
         <translation>通常サイズ (&amp;N)</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+5"/>
+        <source>&amp;Sort Tabs Alphabetically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
         <source>&amp;Debug</source>
         <translation>デバッグ (&amp;D)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Toggle &amp;Breakpoint</source>
         <translation>ブレークポイントをトグル (&amp;B)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>&amp;Next Breakpoint</source>
         <translation>次のブレークポイント (&amp;N)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Pre&amp;vious Breakpoint</source>
         <translation>前のブレークポイント (&amp;V)</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>&amp;Remove All Breakpoints</source>
         <translation>全てのブレークポイントを解除 (&amp;R)</translation>
     </message>
@@ -1660,9 +1640,19 @@ for write: %2.</source>
         <translation>実行 (&amp;R)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="-1989"/>
         <source>Save File and Run</source>
         <translation>ファイルを保存して実行</translation>
+    </message>
+    <message>
+        <location line="-7"/>
+        <source>Continue</source>
+        <translation type="unfinished">継続</translation>
+    </message>
+    <message>
+        <location line="+2001"/>
+        <source>Save File and Run / Continue</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1690,7 +1680,7 @@ for write: %2.</source>
         <translation>最近使用したファイル</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+69"/>
         <source>Editor</source>
         <translation>エディタ</translation>
     </message>
@@ -1698,7 +1688,7 @@ for write: %2.</source>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+141"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+147"/>
         <source>line:</source>
         <translation>行:</translation>
     </message>
@@ -1718,17 +1708,22 @@ for write: %2.</source>
         <translation>eol</translation>
     </message>
     <message>
-        <location line="+231"/>
+        <location line="+255"/>
         <source>Breakpoint condition</source>
         <translation>ブレークポイントの状態</translation>
     </message>
     <message>
-        <location line="+94"/>
-        <location line="+1174"/>
-        <location line="+136"/>
-        <location line="+358"/>
-        <location line="+148"/>
-        <location line="+27"/>
+        <location line="+56"/>
+        <source>ERROR: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+61"/>
+        <location line="+1202"/>
+        <location line="+116"/>
+        <location line="+394"/>
+        <location line="+158"/>
+        <location line="+26"/>
         <location line="+37"/>
         <location line="+102"/>
         <location line="+36"/>
@@ -1736,13 +1731,13 @@ for write: %2.</source>
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="-2017"/>
+        <location line="-2070"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+847"/>
+        <location line="+876"/>
         <source>Goto line</source>
         <translation>指定行へ行く</translation>
     </message>
@@ -1752,7 +1747,7 @@ Save and add breakpoint, or cancel?</source>
         <translation>行数</translation>
     </message>
     <message>
-        <location line="+126"/>
+        <location line="+127"/>
         <source>Comment selected text</source>
         <translation>選択部をコメントにする</translation>
     </message>
@@ -1763,8 +1758,8 @@ Save and add breakpoint, or cancel?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+135"/>
-        <location line="+60"/>
+        <location line="+136"/>
+        <location line="+57"/>
         <source>&lt;unnamed&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1785,7 +1780,7 @@ is about to be closed but has been modified.  %2</source>
 が閉じられようとしていますが修正されています．%2</translation>
     </message>
     <message>
-        <location line="+126"/>
+        <location line="+106"/>
         <source>There were problems reading the file
 %1
 with the selected encoding %2.
@@ -1831,7 +1826,7 @@ This does not change the default encoding.
 これは既定のエンコードに影響を与えません．</translation>
     </message>
     <message>
-        <location line="+207"/>
+        <location line="+161"/>
         <source>Debug or Save</source>
         <translation>デバッグまたは保存</translation>
     </message>
@@ -1842,14 +1837,14 @@ Quit debugging and save?</source>
         <translation>このファイルは現在実行中です．デバッグを終了して保存しますか?</translation>
     </message>
     <message>
-        <location line="+85"/>
+        <location line="+167"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>ファイル %1 を書き込み用として開けません:
 %2.</translation>
     </message>
     <message>
-        <location line="+175"/>
+        <location line="+184"/>
         <source>The current encoding %1
 can not be applied.
 
@@ -1871,7 +1866,7 @@ Please select another one!</source>
 他のエンコードを選択してください !</translation>
     </message>
     <message>
-        <location line="-141"/>
+        <location line="-142"/>
         <source>Octave Files (*.m)</source>
         <translation>Octave のファイル (*.m)</translation>
     </message>
@@ -1881,7 +1876,7 @@ Please select another one!</source>
         <translation>全てのファイル (*)</translation>
     </message>
     <message>
-        <location line="+76"/>
+        <location line="+78"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -1898,7 +1893,7 @@ Octave のコマンドとしてコールできません．.
 他の名前を選択しますか ?</translation>
     </message>
     <message>
-        <location line="+166"/>
+        <location line="+165"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>&apos;%1&apos; は他のアプリケーションで変更されたいます．再読込しますか？</translation>
     </message>
@@ -1924,7 +1919,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+73"/>
+        <location filename="../src/files-dock-widget.cc" line="+75"/>
         <source>File Browser</source>
         <translation>ファイルブラウザ</translation>
     </message>
@@ -1959,17 +1954,17 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>列の色のオルタネーション</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+38"/>
         <source>Enter the path or filename</source>
         <translation>パスまたはファイル名の入力</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>One directory up</source>
         <translation>一つ上のディレクトリ</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show Octave directory</source>
         <translation>Octave ディレクトリの表示</translation>
     </message>
@@ -1979,7 +1974,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>現在の Octave ディレクトリへ行く</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Set Octave directory</source>
         <translation>Octave ディレクトリの設定</translation>
     </message>
@@ -1999,35 +1994,35 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>ホームディレクトリの表示</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+11"/>
         <source>Set Browser Directory...</source>
         <translation>ブラウザディレクトリを設定</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+375"/>
+        <location line="+395"/>
         <source>Find Files...</source>
         <translation>ファイルを検索...</translation>
     </message>
     <message>
-        <location line="-371"/>
-        <location line="+384"/>
+        <location line="-391"/>
+        <location line="+404"/>
         <source>New File...</source>
         <translation>新規のファイル...</translation>
     </message>
     <message>
-        <location line="-381"/>
-        <location line="+384"/>
+        <location line="-401"/>
+        <location line="+404"/>
         <source>New Directory...</source>
         <translation>新規のディレクトリ...</translation>
     </message>
     <message>
-        <location line="-329"/>
+        <location line="-352"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
         <translation>ダブルクリックでファイル / フォルダを開く，右クリックでオルタナティブ</translation>
     </message>
     <message>
-        <location line="+282"/>
+        <location line="+289"/>
         <source>Open</source>
         <translation>開く</translation>
     </message>
@@ -2062,7 +2057,29 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>現在のディレクトリの設定</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+3"/>
+        <source>Add to Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+7"/>
+        <source>Selected Directories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-5"/>
+        <location line="+7"/>
+        <source>Selected Directories and Subdirectories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-4"/>
+        <source>Remove from Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
         <source>Rename...</source>
         <translation>名前の変更 ...</translation>
     </message>
@@ -2091,7 +2108,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
  </translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+31"/>
         <location line="+14"/>
         <source>Delete file/directory</source>
         <translation>ファイル／ディレクトリの削除</translation>
@@ -2109,7 +2126,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>空のディレクトリでないので削除できません</translation>
     </message>
     <message>
-        <location line="+152"/>
+        <location line="+192"/>
         <source>Set directory of file browser</source>
         <translation>ディレクトリをファイルブラウザで設定</translation>
     </message>
@@ -2153,7 +2170,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>octave::final_page</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+285"/>
+        <location filename="../src/welcome-wizard.cc" line="+317"/>
         <source>Enjoy!</source>
         <translation>エンジョイ！</translation>
     </message>
@@ -2216,9 +2233,9 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::find_dialog</name>
     <message>
-        <location filename="../src/m-editor/find-dialog.cc" line="+87"/>
-        <source>Find and Replace</source>
-        <translation>検索と置換</translation>
+        <location filename="../src/m-editor/find-dialog.cc" line="+92"/>
+        <source>Editor: Find and Replace</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2226,12 +2243,22 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
+        <source>Enter text to search for</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>Re&amp;place with:</source>
         <translation>以下で置換:  (&amp;P)</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+2"/>
+        <source>Enter new text replacing search hits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Match &amp;case</source>
         <translation>大文字小文字のマッチ (&amp;C)</translation>
     </message>
@@ -2291,7 +2318,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>選択部を検索 (&amp;L)</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+164"/>
         <source>Search from end</source>
         <translation>ファイルの終わりから検索</translation>
     </message>
@@ -2301,7 +2328,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>始めから検索</translation>
     </message>
     <message>
-        <location line="+257"/>
+        <location line="+321"/>
         <source>Replace Result</source>
         <translation>置換結果</translation>
     </message>
@@ -2324,7 +2351,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::find_files_dialog</name>
     <message>
-        <location filename="../src/find-files-dialog.cc" line="+54"/>
+        <location filename="../src/find-files-dialog.cc" line="+58"/>
         <source>Find Files</source>
         <translation>複数のファイルで検索</translation>
     </message>
@@ -2339,7 +2366,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>検索表現にファイル名を含める</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Start in:</source>
         <translation>スタートイン:</translation>
     </message>
@@ -2364,7 +2391,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>サブディレクトリを検索</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Search recursively through directories for matching files</source>
         <translation>マッチするファイルを再帰的に検索</translation>
     </message>
@@ -2374,7 +2401,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>ディレクトリ名を含める</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Include matching directories in search results</source>
         <translation>検索結果にマッチしたディレクトリを含ませる</translation>
     </message>
@@ -2384,7 +2411,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>名前大文字小文字の区別をしない</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Set matching name is case insensitive</source>
         <translation>検索名で大文字小文字の区別しない</translation>
     </message>
@@ -2399,17 +2426,17 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>検索表現にファイルの内容を含める</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Text to match</source>
         <translation>マッチするテキストへ</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Text case insensitive</source>
         <translation>テキスト 大文字小文字の区別をしない</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Set text content is case insensitive</source>
         <translation>テキストの内容の大文字小文字の区別をしないように設定</translation>
     </message>
@@ -2419,7 +2446,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>検索結果</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+20"/>
         <source>Idle.</source>
         <translation>アイドル</translation>
     </message>
@@ -2454,7 +2481,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>ファイルの内容</translation>
     </message>
     <message>
-        <location line="+103"/>
+        <location line="+101"/>
         <source>Searching...</source>
         <translation>検索中 ...</translation>
     </message>
@@ -2464,7 +2491,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>%1 マッチ</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+16"/>
         <source>Set search directory</source>
         <translation>検索ディレクトリを設定</translation>
     </message>
@@ -2485,22 +2512,22 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::history_dock_widget</name>
     <message>
-        <location filename="../src/history-dock-widget.cc" line="+47"/>
+        <location filename="../src/history-dock-widget.cc" line="+50"/>
         <source>Browse and search the command history.</source>
         <translation>コマンドヒストリのブラウズと検索</translation>
     </message>
     <message>
-        <location line="+94"/>
+        <location line="+95"/>
         <source>Copy</source>
         <translation>コピー</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Evaluate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Create script</source>
         <translation>スクリプトの作成</translation>
     </message>
@@ -2538,7 +2565,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::initial_page</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="-178"/>
+        <location filename="../src/welcome-wizard.cc" line="-189"/>
         <source>Welcome to Octave!</source>
         <translation>Octaveへようこそ!</translation>
     </message>
@@ -2553,7 +2580,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+9"/>
         <source>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;You seem to be using the Octave graphical interface for the first time on this computer.
 Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
@@ -2569,7 +2596,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
 <context>
     <name>octave::label_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+71"/>
+        <location filename="../src/octave-dock-widget.cc" line="+75"/>
         <source>Undock widget</source>
         <translation>ウィジェットをアンドック</translation>
     </message>
@@ -2582,17 +2609,17 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+402"/>
+        <location filename="../src/main-window.cc" line="+401"/>
         <source>Save Workspace As</source>
         <translation>ワークスペースを別名で保存</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+28"/>
         <source>Load Workspace</source>
         <translation>ワークスペースをロード</translation>
     </message>
     <message>
-        <location line="+119"/>
+        <location line="+223"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>リリースノートファイル &apos;%1&apos; が空です．</translation>
     </message>
@@ -2607,18 +2634,18 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>Octave リリースノート</translation>
     </message>
     <message>
-        <location line="+79"/>
+        <location line="+80"/>
         <source>Octave Community News</source>
         <translation>Octave コミュニティーニュース</translation>
     </message>
     <message>
         <location line="+85"/>
-        <location line="+1627"/>
+        <location line="+1832"/>
         <source>About Octave</source>
         <translation>Octave について</translation>
     </message>
     <message>
-        <location line="-1488"/>
+        <location line="-2373"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -2628,18 +2655,18 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>本当に Octave を終了しますか？</translation>
     </message>
     <message>
-        <location line="+60"/>
-        <location line="+1489"/>
+        <location line="+708"/>
+        <location line="+1728"/>
         <source>Browse directories</source>
         <translation>ディレクトリのブラウズ</translation>
     </message>
     <message>
-        <location line="-1331"/>
+        <location line="-1467"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave ファイル (*.m);;全てのファイル (*)</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+39"/>
         <source>New Function</source>
         <translation>新しい関数</translation>
     </message>
@@ -2651,24 +2678,24 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
 </translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+50"/>
         <source>%1 is a built-in, compiled or inline
 function and can not be edited.</source>
         <translation>%1 は組み込み, コンパイルされた, またはインライン関数であり，
 編集できません．</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+41"/>
         <source>Can not find function %1</source>
         <translation>関数 %1 が見つかりません</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+22"/>
         <source>Octave Editor</source>
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="+824"/>
+        <location line="+912"/>
         <source>&amp;File</source>
         <translation>ファイル (&amp;F)</translation>
     </message>
@@ -2698,7 +2725,7 @@ function and can not be edited.</source>
         <translation>終了</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+19"/>
         <source>New</source>
         <translation>新規</translation>
     </message>
@@ -2723,12 +2750,12 @@ function and can not be edited.</source>
         <translation>編集(&amp;E)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>Undo</source>
         <translation>元に戻す</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Copy</source>
         <translation>コピー</translation>
     </message>
@@ -2738,7 +2765,7 @@ function and can not be edited.</source>
         <translation>貼り付け</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Select All</source>
         <translation>すべてを選択</translation>
     </message>
@@ -2748,7 +2775,7 @@ function and can not be edited.</source>
         <translation>クリップボードをクリア</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Find Files...</source>
         <translation>複数のファイルを検索</translation>
     </message>
@@ -2768,12 +2795,17 @@ function and can not be edited.</source>
         <translation>ワークスペースのクリア</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
+        <source>Set Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Preferences...</source>
         <translation>設定 ...</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+53"/>
         <source>De&amp;bug</source>
         <translation>デバッグ (&amp;b)</translation>
     </message>
@@ -2803,7 +2835,7 @@ function and can not be edited.</source>
         <translation>デバッグモードの終了</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+49"/>
         <source>&amp;Window</source>
         <translation>ウィンドウ (&amp;W)</translation>
     </message>
@@ -2869,14 +2901,19 @@ function and can not be edited.</source>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+39"/>
+        <location line="+44"/>
         <source>Documentation</source>
         <translation>ドキュメント</translation>
     </message>
     <message>
-        <location line="-36"/>
+        <location line="-41"/>
         <source>Variable Editor</source>
         <translation>変数エディタ</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Previous Widget</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2939,17 +2976,17 @@ function and can not be edited.</source>
         <translation>ツールバー</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+21"/>
         <source>Enter directory name</source>
         <translation>ディレクトリ名を入力</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+8"/>
         <source>Current Directory: </source>
         <translation>現在のディレクトリ: </translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>One directory up</source>
         <translation>一つ上のディレクトリ</translation>
     </message>
@@ -2957,7 +2994,7 @@ function and can not be edited.</source>
 <context>
     <name>octave::news_reader</name>
     <message>
-        <location line="+345"/>
+        <location filename="../src/news-reader.cc" line="+113"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -3015,17 +3052,17 @@ or enable web connections for news in Octave&apos;s network settings dialog.
 <context>
     <name>octave::octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+138"/>
+        <location filename="../src/octave-dock-widget.cc" line="+145"/>
         <source>Hide widget</source>
         <translation>ウィジェットを隠す</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+71"/>
         <source>Dock widget</source>
         <translation>ウィジェットをドック</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+49"/>
         <source>Undock widget</source>
         <translation>ウィジェットをアンドック</translation>
     </message>
@@ -3033,7 +3070,7 @@ or enable web connections for news in Octave&apos;s network settings dialog.
 <context>
     <name>octave::octave_qscintilla</name>
     <message>
-        <location filename="../src/m-editor/octave-qscintilla.cc" line="+281"/>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+291"/>
         <source>Help on</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3053,64 +3090,23 @@ or enable web connections for news in Octave&apos;s network settings dialog.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+523"/>
-        <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
+        <location line="+459"/>
+        <source>Octave Editor</source>
+        <translation type="unfinished">Octave エディタ</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Creating temporary files failed.
+Make sure you have write access to temp. directory
+%1
+
+&quot;Run Selection&quot; requires temporary files.</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>octave::octave_qt_link</name>
     <message>
-        <location filename="../src/octave-qt-link.cc" line="+108"/>
-        <location line="+8"/>
-        <location line="+11"/>
-        <source>Create</source>
-        <translation>作成</translation>
-    </message>
-    <message>
-        <location line="-19"/>
-        <location line="+260"/>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
-    </message>
-    <message>
-        <location line="-254"/>
-        <source>File
-%1
-does not exist. Do you want to create it?</source>
-        <translation>ファイル
-%1
-が存在しません． 作成しますか ?</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Octave Editor</source>
-        <translation>Octave エディタ</translation>
-    </message>
-    <message>
-        <location line="+245"/>
-        <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation>ファイル %1 がロードパスに存在しません．編集している関数を実行またはデバッグするためには，ディレクトリを変更するかロードパスにディレクトリを加えてください．</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        <translation>ファイル %1 がロードパスに存在する同名のファイルでシャドウされています．編集している関数を実行またはデバッグするためには，ディレクトリを %2 に変更してください．</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Change Directory or Add Directory to Load Path</source>
-        <translation>ディレクトリの変更またはロードパスへのディレクトリの追加</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>&amp;Change Directory</source>
-        <translation>ディレクトリの変更 (&amp;C) </translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Add Directory to Load Path</source>
-        <translation>ロードパスにディレクトリを追加 (&amp;A)</translation>
+        <location line="+272"/>
+        <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3122,9 +3118,62 @@ does not exist. Do you want to create it?</source>
     </message>
 </context>
 <context>
+    <name>octave::qt_interpreter_events</name>
+    <message>
+        <location filename="../src/qt-interpreter-events.cc" line="+288"/>
+        <location line="+5"/>
+        <location line="+2"/>
+        <source>Create</source>
+        <translation type="unfinished">作成</translation>
+    </message>
+    <message>
+        <location line="-7"/>
+        <location line="+31"/>
+        <source>Cancel</source>
+        <translation type="unfinished">キャンセル</translation>
+    </message>
+    <message>
+        <location line="-28"/>
+        <source>File
+%1
+does not exist. Do you want to create it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Octave Editor</source>
+        <translation type="unfinished">Octave エディタ</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
+        <translation type="unfinished">ファイル %1 がロードパスに存在しません．編集している関数を実行またはデバッグするためには，ディレクトリを変更するかロードパスにディレクトリを加えてください．</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
+        <translation type="unfinished">ファイル %1 がロードパスに存在する同名のファイルでシャドウされています．編集している関数を実行またはデバッグするためには，ディレクトリを %2 に変更してください．</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Change Directory or Add Directory to Load Path</source>
+        <translation type="unfinished">ディレクトリの変更またはロードパスへのディレクトリの追加</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Change Directory</source>
+        <translation type="unfinished">ディレクトリの変更 (&amp;C) </translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Add Directory to Load Path</source>
+        <translation type="unfinished">ロードパスにディレクトリを追加 (&amp;A)</translation>
+    </message>
+</context>
+<context>
     <name>octave::resource_manager</name>
     <message>
-        <location filename="../src/resource-manager.cc" line="+302"/>
+        <location filename="../src/resource-manager.cc" line="+305"/>
         <source>The settings file
 %1
 does not exist and can not be created.
@@ -3141,15 +3190,98 @@ Octave GUI must be closed now.</source>
 Octave GUI はすぐ閉じられます．</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>Octave Critical Error</source>
         <translation>Octave クリティカルエラー</translation>
     </message>
 </context>
 <context>
+    <name>octave::set_path_dialog</name>
+    <message>
+        <location filename="../src/set-path-dialog.cc" line="+61"/>
+        <source>Set Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>All changes take effect immediately.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Add Folder...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Single Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Folder with Subfolders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Move to Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move to Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Reload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save</source>
+        <translation type="unfinished">保存</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Revert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Revert Last Change</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Revert All Changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+94"/>
+        <source>Open Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-571"/>
+        <location filename="../src/settings-dialog.cc" line="-575"/>
         <source>Octave Preferences</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3160,13 +3292,13 @@ Octave GUI はすぐ閉じられます．</translation>
     </message>
     <message>
         <location line="+15"/>
-        <location line="+4"/>
-        <location line="+698"/>
+        <location line="+5"/>
+        <location line="+702"/>
         <source>System setting</source>
         <translation type="unfinished">システム設定</translation>
     </message>
     <message>
-        <location line="-448"/>
+        <location line="-461"/>
         <source>IBeam Cursor</source>
         <translation type="unfinished">IBeam カーソル</translation>
     </message>
@@ -3181,7 +3313,7 @@ Octave GUI はすぐ閉じられます．</translation>
         <translation type="unfinished">下線カーソル</translation>
     </message>
     <message>
-        <location line="+164"/>
+        <location line="+169"/>
         <source>Set Octave Startup Directory</source>
         <translation type="unfinished">Octave のスタートアップディレクトリの設定</translation>
     </message>
@@ -3191,7 +3323,7 @@ Octave GUI はすぐ閉じられます．</translation>
         <translation type="unfinished">ファイルブラウザのスタートアップディレクトリの設定</translation>
     </message>
     <message>
-        <location line="+503"/>
+        <location line="+506"/>
         <source>Enable attribute colors</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3204,7 +3336,7 @@ Octave GUI はすぐ閉じられます．</translation>
 <context>
     <name>octave::setup_community_news</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+42"/>
+        <location filename="../src/welcome-wizard.cc" line="+46"/>
         <source>Community News</source>
         <translation>コミュニティーニュース</translation>
     </message>
@@ -3239,7 +3371,7 @@ The check will happen at most once each day and news will only be displayed if t
 </translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+30"/>
         <source>&lt;html&gt;&lt;head&gt;
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
@@ -3259,7 +3391,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::shortcut_manager</name>
     <message>
-        <location filename="../src/shortcut-manager.cc" line="+131"/>
+        <location filename="../src/shortcut-manager.cc" line="+571"/>
         <source>Double Shortcut</source>
         <translation>ダブルショートカット</translation>
     </message>
@@ -3276,7 +3408,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
 以前のアクションショートカットを削除して実行しますか?</translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="-438"/>
         <source>New File</source>
         <translation>新規ファイル</translation>
     </message>
@@ -3286,7 +3418,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>新規関数</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>New Figure</source>
         <translation>新規のフィギュア</translation>
     </message>
@@ -3341,124 +3473,134 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>複数のファイルで検索</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Clear Command Window</source>
         <translation>コマンドウィンドウのクリア</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Clear Command History</source>
         <translation>コマンドヒストリのクリア</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Clear Workspace</source>
         <translation>ワークスペースのクリア</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+173"/>
+        <source>Set Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+112"/>
         <source>Preferences</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location line="-170"/>
+        <location line="-109"/>
         <source>Step</source>
         <translation>ステップ</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Step Into</source>
         <translation>ステップイン</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Step Out</source>
         <translation>ステップアウト</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Continue</source>
         <translation>継続</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Quit Debug Mode</source>
         <translation>デバッグモードの終了</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show Command Window</source>
         <translation>コマンドウィンドウの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Command History</source>
         <translation>コマンドヒストリの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show File Browser</source>
         <translation>ファイルブラウザの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Workspace</source>
         <translation>ワークスペースの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Editor</source>
         <translation>エディタの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Documentation</source>
         <translation>ドキュメントの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Variable Editor</source>
         <translation>変数エディタの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Command Window</source>
         <translation>コマンドウィンドウ</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Command History</source>
         <translation>コマンドヒストリ</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>File Browser</source>
         <translation>ファイルブラウザ</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Workspace</source>
         <translation>ワークスペース</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <location line="+285"/>
+        <location line="+1"/>
+        <location line="+232"/>
         <source>Editor</source>
         <translation>エディタ</translation>
     </message>
     <message>
-        <location line="-283"/>
+        <location line="-231"/>
         <source>Documentation</source>
         <translation>ドキュメント</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Variable Editor</source>
         <translation>変数エディタ</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
+        <source>Previous Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Reset Default Window Layout</source>
         <translation>既定のウィンドウのレイアウトをリセット</translation>
     </message>
@@ -3468,12 +3610,12 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>ディスク保存のドキュメントの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Online Documentation</source>
         <translation>オンラインドキュメントの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Report Bug</source>
         <translation>バグの報告</translation>
     </message>
@@ -3493,7 +3635,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>Octave 開発チーム</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>About Octave</source>
         <translation>Octave について</translation>
     </message>
@@ -3528,27 +3670,27 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>左タブに切替</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Switch to Right Tab</source>
         <translation>右タブに切替</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Move Tab Left</source>
         <translation>左タブに移動</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Move Tab Right</source>
         <translation>右タブに移動</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+14"/>
         <source>Edit Function</source>
         <translation>関数の編集</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Save File</source>
         <translation>ファイルの保存</translation>
     </message>
@@ -3578,174 +3720,174 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>検索と置換</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Find Next</source>
         <translation>次を検索</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Find Previous</source>
         <translation>前を検索</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Delete to Start of Word</source>
         <translation>単語の始まりまで削除</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Delete to End of Word</source>
         <translation>単語の終わりまで削除</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Delete to Start of Line</source>
         <translation>行の始まりまで削除</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Delete to End of Line</source>
         <translation>行末まで削除</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Delete Line</source>
         <translation>行削除</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Copy Line</source>
         <translation>行のコピー</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Cut Line</source>
         <translation>行の切り取り</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Duplicate Selection/Line</source>
         <translation>選択部/行の複製</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Transpose Line</source>
         <translation>行の入れ替え</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Completion List</source>
         <translation>補完リストの表示</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Comment Selection</source>
         <translation>選択部をコメントにする</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Uncomment Selection</source>
         <translation>選択部をアンコメントする</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Comment Selection (Choosing String)</source>
         <translation>選択部をコメントにする（文字列を選ぶ）</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Uppercase Selection</source>
         <translation>選択部を大文字にする</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Lowercase Selection</source>
         <translation>選択部を小文字にする</translation>
     </message>
     <message>
-        <location line="+4"/>
-        <location line="+5"/>
+        <location line="+3"/>
+        <location line="+3"/>
         <source>Indent Selection Rigidly</source>
         <translation>リジッドにセクションをインデント</translation>
     </message>
     <message>
-        <location line="-3"/>
-        <location line="+5"/>
+        <location line="-2"/>
+        <location line="+3"/>
         <source>Unindent Selection Rigidly</source>
         <translation>リジッドにセクションをアンインデント</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Indent Code</source>
         <translation>インデントのコード</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Convert Line Endings to Windows</source>
         <translation>行末を Windows 形式に変換</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Convert Line Endings to Unix</source>
         <translation>行末を Unix 形式に変換</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Convert Line Endings to Mac</source>
         <translation>行末を Mac 形式に変換</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Goto Line</source>
         <translation>指定行に移動</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Move to Matching Brace</source>
         <translation>対応する括弧に移動</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Select to Matching Brace</source>
         <translation>対応する括弧を選択</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Toggle Bookmark</source>
         <translation>ブックマークをトグル</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Next Bookmark</source>
         <translation>次のブックマーク</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Previous Bookmark</source>
         <translation>前のブックマーク</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Remove All Bookmark</source>
         <translation>すべてのブックマークの削除</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Styles Preferences</source>
         <translation>スタイルの設定</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show Line Numbers</source>
         <translation>行番号の表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Whitespace Characters</source>
         <translation>ホワイトスペースキャラクタの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Line Endings</source>
         <translation>行末の表示</translation>
     </message>
@@ -3755,27 +3897,32 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>インデントガイドの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Long Line Marker</source>
         <translation>長い行のマーカーを表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Toolbar</source>
         <translation>ツールバーの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Statusbar</source>
         <translation>ステータスバーの表示</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Horizontal Scrollbar</source>
         <translation>縦スクロールバーの表示</translation>
     </message>
     <message>
-        <location line="+154"/>
+        <location line="+1"/>
+        <source>Sort Tabs Alphabetically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+152"/>
         <source>Documentation Viewer</source>
         <translation>ドキュメントビューワー</translation>
     </message>
@@ -3785,7 +3932,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>ブラウザ</translation>
     </message>
     <message>
-        <location line="+79"/>
+        <location line="+80"/>
         <source>Import shortcuts from file...</source>
         <translation>ファイルからショートカットをインポート</translation>
     </message>
@@ -3795,7 +3942,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-367"/>
+        <location line="-324"/>
         <source>Zoom In</source>
         <translation>ズームイン</translation>
     </message>
@@ -3806,57 +3953,57 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     </message>
     <message>
         <location line="+2"/>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Zoom Normal</source>
         <translation>ズームノーマル</translation>
     </message>
     <message>
-        <location line="+112"/>
+        <location line="+70"/>
         <source>Toggle Breakpoint</source>
         <translation>ブレークポイントをトグル</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Next Breakpoint</source>
         <translation>次のブレークポイント</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Previous Breakpoint</source>
         <translation>前のブレークポイント</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Remove All Breakpoints</source>
         <translation>全てのブレークポイントを解除</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Run File</source>
         <translation>ファイルを実行</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Run Selection</source>
         <translation>選択部を実行</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Help on Keyword</source>
         <translation>キーワードでヘルプ</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Document on Keyword</source>
         <translation>キーワードでドキュメント</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Go to Homepage</source>
         <translation>ホームページへ</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Go Back one Page</source>
         <translation>1 ページ戻る</translation>
     </message>
@@ -3866,41 +4013,41 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>1 ページ進む</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+77"/>
         <source>Global</source>
         <translation>グローバル</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+33"/>
+        <location line="+32"/>
         <source>File Menu</source>
         <translation>ファイルメニュー</translation>
     </message>
     <message>
-        <location line="-31"/>
-        <location line="+33"/>
+        <location line="-30"/>
+        <location line="+32"/>
         <source>Edit Menu</source>
         <translation>エディトメニュー</translation>
     </message>
     <message>
-        <location line="-31"/>
-        <location line="+35"/>
+        <location line="-30"/>
+        <location line="+34"/>
         <source>Debug Menu</source>
         <translation>デバッグメニュー</translation>
     </message>
     <message>
-        <location line="-33"/>
+        <location line="-32"/>
         <source>Window Menu</source>
         <translation>ウィンドウメニュー</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+35"/>
+        <location line="+34"/>
         <source>Help Menu</source>
         <translation>ヘルプメニュー</translation>
     </message>
     <message>
-        <location line="-33"/>
+        <location line="-32"/>
         <source>News Menu</source>
         <translation>新しいメニュー</translation>
     </message>
@@ -3920,7 +4067,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>エディタとドキュメントでズーム</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>View Menu</source>
         <translation>ビューメニュー</translation>
     </message>
@@ -3930,7 +4077,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>実行メニュー</translation>
     </message>
     <message>
-        <location line="+96"/>
+        <location line="+97"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation>Octave ショートカットファイル (*.osc);;全てのファイル (*)</translation>
@@ -3941,12 +4088,12 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+124"/>
         <source>Enter new Shortcut</source>
         <translation>新しいショートカットの入力</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+6"/>
         <source>Apply the desired shortcut or click on the right button to reset the shortcut to its default.</source>
         <translation>ショートカットの適用または右クリックでショートカットを既定に戻す</translation>
     </message>
@@ -3956,7 +4103,13 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>実行により直接ショートカットの入力</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+3"/>
+        <source>Add Shift modifier
+(allows to enter number keys)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
         <source>Actual shortcut</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3971,7 +4124,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>既定に設定</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+67"/>
         <source>Overwriting Shortcuts</source>
         <translation>ショートカットの上書き</translation>
     </message>
@@ -3991,7 +4144,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::terminal_dock_widget</name>
     <message>
-        <location filename="../src/terminal-dock-widget.cc" line="+49"/>
+        <location filename="../src/terminal-dock-widget.cc" line="+51"/>
         <source>Command Window</source>
         <translation>コマンドウィンドウ</translation>
     </message>
@@ -3999,17 +4152,22 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_dock_widget</name>
     <message>
-        <location filename="../src/variable-editor.cc" line="+181"/>
+        <location filename="../src/variable-editor.cc" line="+186"/>
         <source>Dock widget</source>
         <translation>ウィジェットをドック</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+3"/>
+        <source>Variable Editor: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
         <source>Undock widget</source>
         <translation>ウィジェットをアンドック</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>Restore geometry</source>
         <translation>ジオメトリをリストア</translation>
     </message>
@@ -4022,7 +4180,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+830"/>
+        <location line="+836"/>
         <source>Variable Editor</source>
         <translation>変数エディタ</translation>
     </message>
@@ -4032,77 +4190,52 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>変数の編集</translation>
     </message>
     <message>
-        <location line="+281"/>
-        <source>Foreground</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Background</source>
-        <translation type="unfinished">背景</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Selected Foreground</source>
-        <translation>選択された前景</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Selected Background</source>
-        <translation>選択された後景</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Alternate Background</source>
-        <translation>後景をオルタネート</translation>
-    </message>
-    <message>
-        <location line="+273"/>
+        <location line="+534"/>
         <source>Variable Editor Toolbar</source>
         <translation>変数エディタのツールバー</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Save variable to a file</source>
         <translation>変数をファイルに保存</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Cut</source>
         <translation>切り取り</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Cut data to clipboard</source>
         <translation>データを切り取ってクリップボードへ</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Copy</source>
         <translation>コピー</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Copy data to clipboard</source>
         <translation>クリップボードにデータをコピー</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Paste</source>
         <translation>貼り付け</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Paste clipboard into variable data</source>
         <translation>クリップボードを変数データに貼り付け</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+8"/>
         <location line="+5"/>
         <location line="+7"/>
         <source>Plot</source>
@@ -4119,12 +4252,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>選択されたデータをプロット</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>Up</source>
         <translation>アップ</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Go one level up in variable hierarchy</source>
         <translation>変数の階層を1レベルアップする</translation>
     </message>
@@ -4132,7 +4265,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1210"/>
+        <location line="-1190"/>
         <source>Save Variable %1 As</source>
         <translation>変数 %1 を別名で保存</translation>
     </message>
@@ -4140,7 +4273,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+125"/>
+        <location line="+128"/>
         <source>Cut</source>
         <translation>切り取り</translation>
     </message>
@@ -4198,7 +4331,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="-172"/>
+        <location filename="../src/welcome-wizard.cc" line="-198"/>
         <source>Welcome to GNU Octave</source>
         <translation>GNU Octave へようこそ</translation>
     </message>
@@ -4206,7 +4339,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::workspace_model</name>
     <message>
-        <location filename="../src/workspace-model.cc" line="-41"/>
+        <location filename="../src/workspace-model.cc" line="+45"/>
         <source>Name</source>
         <translation>名前</translation>
     </message>
@@ -4231,12 +4364,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>属性</translation>
     </message>
     <message>
-        <location line="+108"/>
+        <location line="+83"/>
         <source>Right click to copy, rename, or display</source>
         <translation>右クリックでコピー，名前の変更，または表示</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+30"/>
         <location line="+2"/>
         <source>complex</source>
         <translation>複素数</translation>
@@ -4245,7 +4378,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::workspace_view</name>
     <message>
-        <location filename="../src/workspace-view.cc" line="+55"/>
+        <location filename="../src/workspace-view.cc" line="+60"/>
         <source>Workspace</source>
         <translation>ワークスペース</translation>
     </message>
@@ -4255,7 +4388,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>アクティブなワークスペースの表示．</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Enter text to filter the workspace</source>
         <translation>ワークスペースをフィルタするためにテキストを入力</translation>
     </message>
@@ -4265,7 +4398,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>フィルタ</translation>
     </message>
     <message>
-        <location line="+131"/>
+        <location line="+136"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>アクティブワークスペースの変数の表示&lt;br&gt;</translation>
     </message>
@@ -4275,27 +4408,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>変数の属性のための色</translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>Class</source>
-        <translation>クラス</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Dimension</source>
-        <translation>次元</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Value</source>
-        <translation>値</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Attribute</source>
-        <translation>属性</translation>
-    </message>
-    <message>
-        <location line="+129"/>
+        <location line="+130"/>
         <source>Open in Variable Editor</source>
         <translation>変数エディタで開く</translation>
     </message>
@@ -4315,7 +4428,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>名前の変更</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+8"/>
         <source>Only top-level symbols may be renamed</source>
         <translation>トップレベルのシンボルのみの名前の変更</translation>
     </message>
@@ -4334,17 +4447,17 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <name>settings_dialog</name>
     <message>
         <location filename="../src/settings-dialog.ui" line="+42"/>
-        <location line="+798"/>
+        <location line="+811"/>
         <source>General</source>
         <translation>一般</translation>
     </message>
     <message>
-        <location line="-777"/>
+        <location line="-790"/>
         <source>Interface</source>
         <translation>インターフェイス</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+45"/>
         <source>Dock widget title bar</source>
         <translation>ドックウィジェットタイトルバー</translation>
     </message>
@@ -4365,12 +4478,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     </message>
     <message>
         <location line="-22"/>
-        <location line="+796"/>
+        <location line="+690"/>
         <source>Show status bar</source>
         <translation>ステータスバーを表示</translation>
     </message>
     <message>
-        <location line="-686"/>
+        <location line="-580"/>
         <source>Text inactive</source>
         <translation>テキストをインアクティブ</translation>
     </message>
@@ -4406,49 +4519,49 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation type="unfinished">3D</translation>
     </message>
     <message>
-        <location line="+95"/>
+        <location line="+102"/>
         <source>Octave Startup</source>
         <translation>Octave スタートアップ</translation>
     </message>
     <message>
         <location line="+46"/>
-        <location line="+1705"/>
+        <location line="+1764"/>
         <source>Browse</source>
         <translation>ブラウズ</translation>
     </message>
     <message>
-        <location line="-1392"/>
+        <location line="-1451"/>
         <source>Editor</source>
         <translation>エディタ</translation>
     </message>
     <message>
-        <location line="+314"/>
+        <location line="+201"/>
         <source>Color</source>
         <translation>色</translation>
     </message>
     <message>
-        <location line="-277"/>
+        <location line="+203"/>
         <source>Tab width min.</source>
         <translation>タブ幅の最小値</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+32"/>
         <source>max.</source>
         <translation>最大値</translation>
     </message>
     <message>
-        <location line="+422"/>
+        <location line="+152"/>
         <location line="+140"/>
         <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
         <translation>本機能は等幅フォントで正常動作します．既定フォントのスペースのキャラクターの幅で行は表示されます．スタイルがプロポーショナルフォントを使う場合や可変フォントサイズ，ボールド，イタリックフォントとノーマルテクストが使用された場合正常に動作しません．</translation>
     </message>
     <message>
-        <location line="-463"/>
+        <location line="-635"/>
         <source>Enable Code Folding</source>
         <translation>コードの折りたたみを有効化</translation>
     </message>
     <message>
-        <location line="+987"/>
+        <location line="+1159"/>
         <source>Windows (CRLF)</source>
         <translation>Windows (CRLF)</translation>
     </message>
@@ -4463,7 +4576,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Unix (LF)</translation>
     </message>
     <message>
-        <location line="-962"/>
+        <location line="-1134"/>
         <source>Show horizontal scroll bar</source>
         <translation>横方向スクロールバーの表示</translation>
     </message>
@@ -4473,7 +4586,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>ツールバーの表示</translation>
     </message>
     <message>
-        <location line="+450"/>
+        <location line="+622"/>
         <source>Wrap long lines at current window border</source>
         <translation>現在のウィンドウの境界で長い行をラップ</translation>
     </message>
@@ -4563,12 +4676,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>プロンプトなしで外部で操作されてファイルを再ロードする</translation>
     </message>
     <message>
-        <location line="-738"/>
+        <location line="-894"/>
         <source>Use custom file editor</source>
         <translation>外部エディタを使用する</translation>
     </message>
     <message>
-        <location line="+831"/>
+        <location line="+987"/>
         <source>Text encoding used for loading and saving</source>
         <translation>読込，保存に使用するテキストのエンコード</translation>
     </message>
@@ -4578,7 +4691,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>エディタのスタイル</translation>
     </message>
     <message>
-        <location line="-1404"/>
+        <location line="-1463"/>
         <source>(Changing buffer size clears history)</source>
         <translation>（バッファサイズの変更はヒストリを消去します）</translation>
     </message>
@@ -4589,12 +4702,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     </message>
     <message>
         <location line="-123"/>
-        <location line="+1821"/>
+        <location line="+1936"/>
         <source>Font</source>
         <translation>フォント</translation>
     </message>
     <message>
-        <location line="-1418"/>
+        <location line="-1646"/>
         <source>Show line numbers</source>
         <translation>行番号の表示</translation>
     </message>
@@ -4604,17 +4717,17 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>現在の行をハイライト</translation>
     </message>
     <message>
-        <location line="-936"/>
+        <location line="-830"/>
         <source>Graphic icons</source>
         <translation>グラフィクアイコン</translation>
     </message>
     <message>
-        <location line="+253"/>
+        <location line="+260"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
         <translation>設定は .octaverc スタートアップファイルの後に適用されます</translation>
     </message>
     <message>
-        <location line="+546"/>
+        <location line="+433"/>
         <source>Show whitespace</source>
         <translation>ホワイトスペースの表示</translation>
     </message>
@@ -4629,7 +4742,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>文末文字を表示する</translation>
     </message>
     <message>
-        <location line="+810"/>
+        <location line="+982"/>
         <source>Default EOL mode</source>
         <translation>既定の文末文字モード</translation>
     </message>
@@ -4644,32 +4757,32 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>プロンプトなしに現在存在しないファイルを作成</translation>
     </message>
     <message>
-        <location line="-754"/>
+        <location line="-910"/>
         <source>command line (%f=file, %l=line):</source>
         <translation>コマンドライン(%f=ファイル名, %l=行数): </translation>
     </message>
     <message>
-        <location line="+878"/>
+        <location line="+1034"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;フォントの種類, サイズ (既定のサイズからの差), フォントのスタイル (ボールド(&lt;b&gt;b&lt;/b&gt;), イタリック(&lt;b&gt;i&lt;/b&gt;), 下線(&lt;b&gt;u&lt;/b&gt;)), テキストの色, 背景色 (後者について, マジェンダ (255,0,255) は既定の背景色のプレースホルダー).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="-1522"/>
+        <location line="-1581"/>
         <source>Cursor type:</source>
         <translation>カーソルのタイプ: </translation>
     </message>
     <message>
-        <location line="-408"/>
+        <location line="-415"/>
         <source>Cursor blinking</source>
         <translation>カーソルの点滅</translation>
     </message>
     <message>
-        <location line="-151"/>
+        <location line="-157"/>
         <source>Preferences</source>
         <translation type="unfinished">設定</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+63"/>
         <source>(requires restart)</source>
         <translation>(要再起動)</translation>
     </message>
@@ -4694,7 +4807,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>言語</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+34"/>
         <source>Style</source>
         <translation>スタイル</translation>
     </message>
@@ -4729,22 +4842,32 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>コマンドウィンドウのカラー</translation>
     </message>
     <message>
-        <location line="+172"/>
+        <location line="+526"/>
         <source>Show complete path in title</source>
         <translation>完全なパスを表示</translation>
     </message>
     <message>
-        <location line="+131"/>
+        <location line="-336"/>
         <source>Number size as difference to editor font</source>
         <translation>エディタのフォントとのサイズの違い</translation>
     </message>
     <message>
-        <location line="+124"/>
+        <location line="+140"/>
         <source>Highlight all occurrences of a word selected by a double click</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+65"/>
+        <source>Tabs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+44"/>
+        <source>Tab position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+112"/>
         <source>Comments (Octave)</source>
         <translation>コメント (Octave)</translation>
     </message>
@@ -4834,13 +4957,13 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>エディタウィジェットが閉じられるまたは隠されたらすべてのファイルを閉じる</translation>
     </message>
     <message>
-        <location line="-1501"/>
+        <location line="-1560"/>
         <source>Use foreground color</source>
         <translation>前景色を使う</translation>
     </message>
     <message>
         <location line="+52"/>
-        <location line="+1767"/>
+        <location line="+1826"/>
         <source>Font size</source>
         <translation>フォントサイズ</translation>
     </message>
@@ -4865,12 +4988,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>変数の属性の色</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+133"/>
         <source>Use Command Window font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+196"/>
+        <location line="+133"/>
         <source>Import shortcut set</source>
         <translation>ショートカットセットのインポート</translation>
     </message>
@@ -4916,42 +5039,22 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>プロキシサーバーを使用する</translation>
     </message>
     <message>
-        <location line="-470"/>
+        <location line="-433"/>
         <source>Variable Editor</source>
         <translation>変数エディタ</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+43"/>
         <source>Default row height</source>
         <translation>既定の行の幅</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+7"/>
         <source>Default column width</source>
         <translation>既定の列の幅</translation>
     </message>
     <message>
-        <location line="+36"/>
-        <source>Autofit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-63"/>
-        <source>Plus font height</source>
-        <translation>フォントの高さをプラス</translation>
-    </message>
-    <message>
-        <location line="+77"/>
-        <source>By Column</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Uniform</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+40"/>
+        <location line="+78"/>
         <source>Variable Editor Colors</source>
         <translation>変数エディタの色</translation>
     </message>
@@ -4971,7 +5074,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>HTTP プロキシ</translation>
     </message>
     <message>
-        <location line="-2559"/>
+        <location line="-2588"/>
         <source>Icon set for dock widgets</source>
         <translation>Dock widgets のためのアイコンセット</translation>
     </message>
@@ -4981,7 +5084,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>標準</translation>
     </message>
     <message>
-        <location line="+1802"/>
+        <location line="+1868"/>
         <source>File handling</source>
         <translation>ファイル操作</translation>
     </message>
@@ -5001,7 +5104,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>一つ前のセッションの最後のディレクトリを保存する</translation>
     </message>
     <message>
-        <location line="+371"/>
+        <location line="+334"/>
         <source>Shortcuts</source>
         <translation>ショートカット</translation>
     </message>
@@ -5036,12 +5139,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>ホスト名: </translation>
     </message>
     <message>
-        <location line="-537"/>
+        <location line="-500"/>
         <source>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</source>
         <translation>既定のテキストエディタで開くファイルの拡張子（&quot;;&quot; で区切る）</translation>
     </message>
     <message>
-        <location line="+581"/>
+        <location line="+544"/>
         <source>Proxy type:</source>
         <translation>プロキシのタイプ: </translation>
     </message>
@@ -5059,6 +5162,75 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <location line="+37"/>
         <source>Password:</source>
         <translation>パスワード: </translation>
+    </message>
+</context>
+<context>
+    <name>variable_editor::variable_editor</name>
+    <message>
+        <location filename="../src/gui-preferences-ve.h" line="+64"/>
+        <source>Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>workspace_model::workspace_model</name>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished">背景</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished">選択された前景</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished">選択された後景</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished">後景をオルタネート</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ws.h" line="+82"/>
+        <source>argument</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>global</source>
+        <translation type="unfinished">グローバル</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>persistant</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>workspace_view::notice_settings</name>
+    <message>
+        <location line="-29"/>
+        <source>Class</source>
+        <translation type="unfinished">クラス</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Dimension</source>
+        <translation type="unfinished">次元</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Value</source>
+        <translation type="unfinished">値</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Attribute</source>
+        <translation type="unfinished">属性</translation>
     </message>
 </context>
 </TS>

@@ -38,20 +38,45 @@ public class ClassHelper
 
   /**
    * Add the given path to the classpath.
-   * @param name String - path to addd to the classpath
+   * @param name String - path to add to the classpath
+   * @param append boolean - if true, append path to classpath, otherwise prepend it.
    * @return boolean - true if the given path exists and was added to the classpath.
    * @throws Exception if an error occurs
    */
-  public static boolean addClassPath (String name)
+  public static boolean addClassPath (String name, boolean append)
     throws Exception
   {
     boolean found = false;
     java.io.File f = new java.io.File (name);
     if (f.exists ())
       {
-        loader.addClassPath (name);
         found = true;
+
+        if (append)
+          {
+            loader.addClassPath (name);
+          }
+        else
+          {
+            // create a completely new class loader because java.net.URLClassLoader appears to have no method to prepend directories to the existing classpath
+
+            // FIXME: is there a more efficient way to do this job?
+
+            java.net.URL[] urls = loader.getURLs ();
+
+            ClassLoader l = ClassHelper.class.getClassLoader ();
+            loader = (l instanceof OctClassLoader ? (OctClassLoader) l :
+                      new OctClassLoader (l));
+
+            loader.addClassPath (name);
+
+            for (int i = 0; i < urls.length; i++)
+              {
+                loader.addURL (urls[i]);
+              }
+          }
       }
+
     return (found);
   }
 

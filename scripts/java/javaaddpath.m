@@ -20,11 +20,16 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} javaaddpath (@var{clspath})
 ## @deftypefnx {} {} javaaddpath (@var{clspath1}, @dots{})
+## @deftypefnx {} {} javaaddpath (@dots{}, "-end")
 ## Add @var{clspath} to the dynamic class path of the Java virtual machine.
 ##
 ## @var{clspath} may either be a directory where @file{.class} files are
 ## found, or a @file{.jar} file containing Java classes.  Multiple paths may
 ## be added at once by specifying additional arguments.
+##
+## If the final argument is @code{"-end"}, append the new element to the
+## end of the current classpath.  Otherwise, new elements are added at
+## the beginning of the path.
 ## @seealso{javarmpath, javaclasspath}
 ## @end deftypefn
 
@@ -34,12 +39,28 @@ function javaaddpath (varargin)
     print_usage ();
   endif
 
-  for i = 1:numel (varargin)
-    clspath = varargin{i};
-    if (! ischar (clspath))
-      error ("javaaddpath: CLSPATH must be a string");
-    endif
+  if (! iscellstr (varargin))
+    error ("javaaddpath: arguments must all be character strings");
+  endif
 
+  if (strcmp (varargin{end}, "-end"))
+    at_end = true;
+    nel = nargin - 1;
+    rng = 1:nel;
+  else
+    ## Note that when prepending, we iterate over the arguments in
+    ## reverse so that a call like
+    ##
+    ##   javaaddpath ("/foo", "/bar")
+    ##
+    ## results in "/foo" first in the path followed by "/bar".
+    nel = nargin;
+    at_end = false;
+    rng = nel:-1:1;
+  endif
+
+  for i = rng
+    clspath = varargin{i};
     new_path = canonicalize_file_name (tilde_expand (clspath));
     if (isfolder (new_path))
       if (new_path(end) != filesep ())
@@ -49,7 +70,8 @@ function javaaddpath (varargin)
       error ("javaaddpath: CLSPATH does not exist: %s", clspath);
     endif
 
-    success = javaMethod ("addClassPath", "org.octave.ClassHelper", new_path);
+    success = javaMethod ("addClassPath", "org.octave.ClassHelper",
+                          new_path, at_end);
 
     if (! success)
       warning ("javaaddpath: failed to add '%s' to Java classpath", new_path);

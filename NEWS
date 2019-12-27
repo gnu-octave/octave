@@ -152,6 +152,8 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   "Superclasslist" for Matlab compatibility.  The original name will
   exist as an alias until Octave version 8.1.
 
+- The function `javaaddpath` now prepends new directories to the existing dynamic classpath by default.  To append them instead, use the new `"-end"` argument.
+
 - An undocumented function `gui_mainfcn` has been added, for compatibility
   with figures created with Matlab's Guide.
 

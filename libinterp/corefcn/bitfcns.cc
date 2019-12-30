@@ -946,3 +946,27 @@ intmin (x)
 %!error <not defined for 'double' objects> intmin ("double")
 %!error <not defined for 'char' objects> intmin ("char")
 */
+
+DEFUN (sizemax, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} sizemax ()
+Return the largest value allowed for the size of an array.
+
+If Octave is compiled with 64-bit indexing, the result is of class int64,
+otherwise it is of class int32.  The maximum array size is slightly
+smaller than the maximum value allowable for the relevant class as reported
+by @code{intmax}.
+@seealso{intmax}
+@end deftypefn */)
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  return octave_value (octave_int<octave_idx_type> (dim_vector::dim_max ()));
+}
+
+/*
+%!assert (sizemax () >= (intmax ("int32") - 1))
+
+%!error sizemax (0)
+*/

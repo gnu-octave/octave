@@ -295,7 +295,9 @@ namespace octave
     cb_show_eol->setChecked (settings->value (ed_show_eol_chars).toBool ());
     cb_show_hscrollbar->setChecked (settings->value (ed_show_hscroll_bar).toBool ());
 
-    editor_combox_tab_pos->insertItems (0, ed_tab_position_names);
+    for (int i = 0; i < ed_tab_position_names.length (); i++)
+      editor_combox_tab_pos->insertItem (i,
+              tr (ed_tab_position_names.at (i).toStdString ().data ()));
     editor_combox_tab_pos->setCurrentIndex
       (settings->value (ed_tab_position).toInt ());
 
@@ -1055,7 +1057,8 @@ namespace octave
 
     for (int i = 0; i < ws_colors_count; i++)
       {
-        description[i] = new QLabel ("    " + ws_color_names.at (i));
+        description[i] = new QLabel ("    "
+          + tr (ws_color_names.at (i).toStdString ().data ()));
         description[i]->setAlignment (Qt::AlignRight);
         connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
                  description[i], SLOT(setEnabled (bool)));
@@ -1114,7 +1117,8 @@ namespace octave
     int row = 0;
     for (unsigned int i = 0; i < cs_colors_count; i++)
       {
-        description[i] = new QLabel ("    " + cs_color_names.at (i));
+        description[i] = new QLabel ("    "
+            + tr (cs_color_names.at (i).toStdString ().data ()));
         description[i]->setAlignment (Qt::AlignRight);
         QVariant default_var = cs_colors[i].def;
         QColor setting_color = settings->value (cs_colors[i].key, cs_colors[i].def).value<QColor> ();
@@ -1159,7 +1163,8 @@ namespace octave
     int row = 0;
     for (int i = 0; i < ve_colors_count; i++)
       {
-        description[i] = new QLabel ("    " + ve_color_names.at (i));
+        description[i] = new QLabel ("    "
+            + tr (ve_color_names.at (i).toStdString ().data ()));
         description[i]->setAlignment (Qt::AlignRight);
 
         // The default colors are given as color roles for

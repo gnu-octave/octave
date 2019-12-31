@@ -186,10 +186,10 @@ ed_session_lines ("editor/saved_session_lines", QVariant (QStringList ()));
 // Tabs
 const QStringList
 ed_tab_position_names (QStringList ()
-                       << QT_TRANSLATE_NOOP ("file_editor::file_editor", "Top")
-                       << QT_TRANSLATE_NOOP ("file_editor::file_editor", "Bottom")
-                       << QT_TRANSLATE_NOOP ("file_editor::file_editor", "Left")
-                       << QT_TRANSLATE_NOOP ("file_editor::file_editor", "Right"));
+                       << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Top")
+                       << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Bottom")
+                       << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Left")
+                       << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Right"));
 
 const gui_pref
 ed_tab_position ("editor/tab_position", QVariant (QTabWidget::North));

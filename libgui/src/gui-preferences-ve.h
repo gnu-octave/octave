@@ -61,10 +61,10 @@ const gui_pref ve_colors[ve_colors_count] =
 };
 
 const QStringList ve_color_names (QStringList ()
-    << QT_TRANSLATE_NOOP ("variable_editor::variable_editor", "Foreground")
-    << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "Background")
-    << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "Selected Foreground")
-    << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "Selected Background")
-    << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "Alternate Background"));
+    << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Foreground")
+    << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Background")
+    << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selected Foreground")
+    << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selected Background")
+    << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Alternate Background"));
 
 #endif

@@ -57,7 +57,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+667"/>
+        <location filename="../src/settings-dialog.cc" line="+669"/>
         <source>Difference to the default size</source>
         <translation type="unfinished"></translation>
     </message>
@@ -145,29 +145,6 @@
     <message>
         <location line="-213"/>
         <source>Edit %1 at line %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QTerminal::QTerminal</name>
-    <message>
-        <location filename="../src/gui-preferences-cs.h" line="+65"/>
-        <source>foreground</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>background</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>cursor</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -359,29 +336,6 @@
     <message>
         <location line="+8"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>file_editor::file_editor</name>
-    <message>
-        <location filename="../src/gui-preferences-ed.h" line="+189"/>
-        <source>Top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Bottom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Right</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2525,7 +2479,7 @@ Octave GUI must be closed now.</source>
 <context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-575"/>
+        <location filename="../src/settings-dialog.cc" line="-577"/>
         <source>Octave Preferences</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2537,7 +2491,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+15"/>
         <location line="+5"/>
-        <location line="+702"/>
+        <location line="+704"/>
         <source>System setting</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2574,6 +2528,86 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+3"/>
         <source>Hide tools tips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-cs.h" line="+65"/>
+        <source>foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>cursor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ed.h" line="+189"/>
+        <source>Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ve.h" line="+64"/>
+        <source>Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ws.h" line="+82"/>
+        <source>argument</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>global</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>persistant</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3637,7 +3671,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+132"/>
         <source>Open in Variable Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3669,6 +3703,26 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ws.h" line="-29"/>
+        <source>Class</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Dimension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Attribute</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4390,75 +4444,6 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+37"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>variable_editor::variable_editor</name>
-    <message>
-        <location filename="../src/gui-preferences-ve.h" line="+64"/>
-        <source>Foreground</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>workspace_model::workspace_model</name>
-    <message>
-        <location line="+1"/>
-        <source>Background</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Selected Foreground</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Selected Background</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Alternate Background</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui-preferences-ws.h" line="+82"/>
-        <source>argument</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>global</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>persistant</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>workspace_view::notice_settings</name>
-    <message>
-        <location line="-29"/>
-        <source>Class</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Dimension</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Attribute</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

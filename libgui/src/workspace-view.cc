@@ -214,7 +214,8 @@ namespace octave
               QString (R"(<div style="background-color:%1;color:%2">%3</div>)")
               .arg (m_model->storage_class_color (i).name ())
               .arg (m_model->storage_class_color (i + ws_colors_count).name ())
-              .arg (ws_color_names.at (i));
+              .arg (QCoreApplication::translate ("octave::settings_dialog",
+                                ws_color_names.at (i).toStdString ().data ()));
           }
       }
 
@@ -294,8 +295,9 @@ namespace octave
 
     for (int i = 0; i < ws_columns_shown.length (); i++)
       {
-        QAction *action = menu.addAction (ws_columns_shown.at (i),
-                                          &sig_mapper, SLOT (map ()));
+        QAction *action
+          = menu.addAction (tr (ws_columns_shown.at (i).toStdString ().data ()),
+                            &sig_mapper, SLOT (map ()));
         sig_mapper.setMapping (action, i);
         action->setCheckable (true);
         action->setChecked (settings->value (ws_columns_shown_keys.at (i),true).toBool ());

@@ -585,7 +585,7 @@ Wil je die toch verwijderen?</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+667"/>
+        <location filename="../src/settings-dialog.cc" line="+669"/>
         <source>Difference to the default size</source>
         <translation>Verschil met standaardgrootte</translation>
     </message>
@@ -1136,29 +1136,6 @@ Wil je die overschrijven?</translation>
         <location line="-213"/>
         <source>Edit %1 at line %2</source>
         <translation>Bewerk %1 op regel %2</translation>
-    </message>
-</context>
-<context>
-    <name>QTerminal::QTerminal</name>
-    <message>
-        <location filename="../src/gui-preferences-cs.h" line="+65"/>
-        <source>foreground</source>
-        <translation>voorgrond</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>background</source>
-        <translation>achtergrond</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>selection</source>
-        <translation>selectie</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>cursor</source>
-        <translation>aanwijzer</translation>
     </message>
 </context>
 <context>
@@ -2016,29 +1993,6 @@ Wil je die overschrijven?</translation>
         <location line="+8"/>
         <source>Line width</source>
         <translation>Lijnbreedte</translation>
-    </message>
-</context>
-<context>
-    <name>file_editor::file_editor</name>
-    <message>
-        <location filename="../src/gui-preferences-ed.h" line="+189"/>
-        <source>Top</source>
-        <translation>Bovenaan</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Bottom</source>
-        <translation>Onderaan</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Left</source>
-        <translation>Links</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Right</source>
-        <translation>Rechts</translation>
     </message>
 </context>
 <context>
@@ -3491,8 +3445,8 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
     <message>
         <location line="+16"/>
-        <source>Set search map</source>
-        <translation>Stel zoekmap in</translation>
+        <source>Set search directory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3597,7 +3551,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+75"/>
         <source>Undock widget</source>
-        <translation>Widget laten zweven ("undock")</translation>
+        <translation>Widget laten zweven (&quot;undock&quot;)</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4059,12 +4013,12 @@ of schakel de internetverbinding voor nieuws aan in de netwerkinstellingen van O
     <message>
         <location line="+71"/>
         <source>Dock widget</source>
-        <translation>Widget terug in venster ("dock")</translation>
+        <translation>Widget terug in venster (&quot;dock&quot;)</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Undock widget</source>
-        <translation>Widget laten zweven ("undock")</translation>
+        <translation>Widget laten zweven (&quot;undock&quot;)</translation>
     </message>
 </context>
 <context>
@@ -4236,7 +4190,7 @@ De Octave GUI moet nu gesloten worden.</translation>
     <message>
         <location line="+1"/>
         <source>Move to Bottom</source>
-        <translation>Verschuif naar onderaan></translation>
+        <translation>Verschuif naar onderaan&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4287,7 +4241,7 @@ De Octave GUI moet nu gesloten worden.</translation>
 <context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-575"/>
+        <location filename="../src/settings-dialog.cc" line="-577"/>
         <source>Octave Preferences</source>
         <translation>Octave voorkeuren</translation>
     </message>
@@ -4299,7 +4253,7 @@ De Octave GUI moet nu gesloten worden.</translation>
     <message>
         <location line="+15"/>
         <location line="+5"/>
-        <location line="+702"/>
+        <location line="+704"/>
         <source>System setting</source>
         <translation>Systeeminstelling</translation>
     </message>
@@ -4337,6 +4291,86 @@ De Octave GUI moet nu gesloten worden.</translation>
         <location line="+3"/>
         <source>Hide tools tips</source>
         <translation>Verberg tool tips</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ed.h" line="+189"/>
+        <source>Top</source>
+        <translation type="unfinished">Bovenaan</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Bottom</source>
+        <translation type="unfinished">Onderaan</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Left</source>
+        <translation type="unfinished">Links</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Right</source>
+        <translation type="unfinished">Rechts</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-cs.h" line="+65"/>
+        <source>foreground</source>
+        <translation type="unfinished">voorgrond</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>background</source>
+        <translation type="unfinished">achtergrond</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>selection</source>
+        <translation type="unfinished">selectie</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>cursor</source>
+        <translation type="unfinished">aanwijzer</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ve.h" line="+64"/>
+        <source>Foreground</source>
+        <translation type="unfinished">Voorgrond</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished">Achtergrond</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished">Gekozen Voorgrond</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished">Gekozen achtergrond</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished">Andere Achtergrond</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ws.h" line="+82"/>
+        <source>argument</source>
+        <translation type="unfinished">argument</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>global</source>
+        <translation type="unfinished">globaal</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>persistant</source>
+        <translation type="unfinished">blijvend</translation>
     </message>
 </context>
 <context>
@@ -5172,7 +5206,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+14"/>
         <source>Undock widget</source>
-        <translation>Widget laten zweven ("undock")</translation>
+        <translation>Widget laten zweven (&quot;undock&quot;)</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -5416,7 +5450,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Kleuren voor eigenschappen van variabelen:</translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+132"/>
         <source>Open in Variable Editor</source>
         <translation>Toon in Variable Editor</translation>
     </message>
@@ -5449,6 +5483,26 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <location line="+3"/>
         <source>Show filter</source>
         <translation>Toon filter</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ws.h" line="-29"/>
+        <source>Class</source>
+        <translation type="unfinished">Klasse</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Dimension</source>
+        <translation type="unfinished">Dimensie</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Value</source>
+        <translation type="unfinished">Waarde</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Attribute</source>
+        <translation type="unfinished">Eigenschap</translation>
     </message>
 </context>
 <context>
@@ -5838,7 +5892,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+44"/>
         <source>Tab position</source>
-        <translation>Tab positie></translation>
+        <translation>Tab positie&gt;</translation>
     </message>
     <message>
         <location line="+112"/>
@@ -6170,75 +6224,6 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <location line="+37"/>
         <source>Password:</source>
         <translation>Wachtwoord:</translation>
-    </message>
-</context>
-<context>
-    <name>variable_editor::variable_editor</name>
-    <message>
-        <location filename="../src/gui-preferences-ve.h" line="+64"/>
-        <source>Foreground</source>
-        <translation>Voorgrond</translation>
-    </message>
-</context>
-<context>
-    <name>workspace_model::workspace_model</name>
-    <message>
-        <location line="+1"/>
-        <source>Background</source>
-        <translation>Achtergrond</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Selected Foreground</source>
-        <translation>Gekozen Voorgrond</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Selected Background</source>
-        <translation>Gekozen achtergrond</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Alternate Background</source>
-        <translation>Andere Achtergrond</translation>
-    </message>
-    <message>
-        <location filename="../src/gui-preferences-ws.h" line="+82"/>
-        <source>argument</source>
-        <translation>argument</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>global</source>
-        <translation>globaal</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>persistant</source>
-        <translation>blijvend</translation>
-    </message>
-</context>
-<context>
-    <name>workspace_view::notice_settings</name>
-    <message>
-        <location line="-29"/>
-        <source>Class</source>
-        <translation>Klasse</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Dimension</source>
-        <translation>Dimensie</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Value</source>
-        <translation>Waarde</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Attribute</source>
-        <translation>Eigenschap</translation>
     </message>
 </context>
 </TS>

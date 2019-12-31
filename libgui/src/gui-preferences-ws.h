@@ -52,10 +52,10 @@ const gui_pref
 ws_mru_list ("workspaceview/mru_list", QVariant ());
 
 const QStringList ws_columns_shown (QStringList ()
-    << QT_TRANSLATE_NOOP ("workspace_view::notice_settings", "Class")
-    << QT_TRANSLATE_NOOP ("workspace_view::notice_settings", "Dimension")
-    << QT_TRANSLATE_NOOP ("workspace_view::notice_settings", "Value")
-    << QT_TRANSLATE_NOOP ("workspace_view::notice_settings", "Attribute"));
+    << QT_TRANSLATE_NOOP ("octave::workspace_view", "Class")
+    << QT_TRANSLATE_NOOP ("octave::workspace_view", "Dimension")
+    << QT_TRANSLATE_NOOP ("octave::workspace_view", "Value")
+    << QT_TRANSLATE_NOOP ("octave::workspace_view", "Attribute"));
 
 const QStringList ws_columns_shown_keys (QStringList ()
     << "workspaceview/show_class"
@@ -79,8 +79,8 @@ const QString ws_class_chars ("agp");
 
 const QStringList
 ws_color_names (QStringList ()
-             << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "argument")
-             << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "global")
-             << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "persistant"));
+             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "argument")
+             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "global")
+             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "persistant"));
 
 #endif

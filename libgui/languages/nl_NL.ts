@@ -5027,7 +5027,7 @@ Wil je de sneltoets toch instellen door hem van de vorige ingestelde actie te wi
     <message>
         <location line="+77"/>
         <source>Global</source>
-        <translation>Gobaal</translation>
+        <translation>Globaal</translation>
     </message>
     <message>
         <location line="+3"/>

@@ -512,7 +512,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+1"/>
         <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation>woorden &lt;B&gt;gelijkend&lt;/B&gt; aan:</translation>
+        <translation>woorden &lt;B&gt;lijkend&lt;/B&gt; op:</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -574,7 +574,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+5"/>
         <source>&lt;p&gt;Qt is a C++ toolkit for cross-platform application development.&lt;/p&gt;&lt;p&gt;Qt provides single-source portability across all major desktop operating systems. It is also available for embedded Linux and other embedded and mobile operating systems.&lt;/p&gt;&lt;p&gt;Qt is available under three different licensing options designed to accommodate the needs of our various users.&lt;/p&gt;&lt;p&gt;Qt licensed under our commercial license agreement is appropriate for development of proprietary/commercial software where you do not want to share any source code with third parties or otherwise cannot comply with the terms of the GNU LGPL version 3 or GNU LGPL version 2.1.&lt;/p&gt;&lt;p&gt;Qt licensed under the GNU LGPL version 3 is appropriate for the development of Qt&amp;nbsp;applications provided you can comply with the terms and conditions of the GNU LGPL version 3.&lt;/p&gt;&lt;p&gt;Qt licensed under the GNU LGPL version 2.1 is appropriate for the development of Qt&amp;nbsp;applications provided you can comply with the terms and conditions of the GNU LGPL version 2.1.&lt;/p&gt;&lt;p&gt;Please see &lt;a href=&quot;http://%2/&quot;&gt;%2&lt;/a&gt; for an overview of Qt licensing.&lt;/p&gt;&lt;p&gt;Copyright (C) %1 The Qt Company Ltd and other contributors.&lt;/p&gt;&lt;p&gt;Qt and the Qt logo are trademarks of The Qt Company Ltd.&lt;/p&gt;&lt;p&gt;Qt is The Qt Company Ltd product developed as an open source project. See &lt;a href=&quot;http://%3/&quot;&gt;%3&lt;/a&gt; for more information.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Qt is een C++ toolkit voor cross-platform softwareontwikkeling.&lt;/p&gt;&lt;p&gt;Qt voorziet in enkelvoudige broncode portabiliteit op alle belangrijke desktop besturingsssystemen. Het is ook beschikbaar voor embedded Linux en andere embedded en mobiele besturingssystemen.&lt;/p&gt;&lt;p&gt;Qt is beschkbaar met drie veschillende licentie-opties om te voorzien in de behoeftes van onze uiteenlopende gebruikers.&lt;/p&gt;&lt;p&gt;Qt met een commerciele licenteovereenkomst is bedoeld voor ontwikkeling van gesloten/commerciele programmatuur waarbij broncode niet wordt geopenbaard aan derden of anderszins niet kan worden voldaan aan de eisen van de GNU LGPL versie 3 of van de GNU LGPL versie 2.1.&lt;/p&gt;&lt;p&gt;Qt met een GNU LGPL versie licentie 3 past bij de ontwikkeling van Qt&amp;nbsp;applicaties indien kan worden voldaan aan de eisen en voorwaarden van de GNU LGPL versie 3.&lt;/p&gt;&lt;p&gt;Qt met een GNU LGPL versie 2.1 licentie past bij de ontwikkeling van Qt&amp;nbsp;applicaties indien kan worden voldaan aan de eisen en voorwaarden van de GNU LGPL versie 2.1.&lt;/p&gt;&lt;p&gt;zie &lt;a href=&quot;http://%2/&quot;&gt;%2&lt;/a&gt; voor een overzicht van Qt licenties.&lt;/p&gt;&lt;p&gt;Copyright (C) %1 The Qt Company Ltd en anderen.&lt;/p&gt;&lt;p&gt;Qt en het Qt logo zijn handelsmerken van The Qt Company Ltd.&lt;/p&gt;&lt;p&gt;Qt is het The Qt Company Ltd product ontwikkeld als een open broncode project. Zie &lt;a href=&quot;http://%3/&quot;&gt;%3&lt;/a&gt; voor meer informatie.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Qt is een C++ toolkit voor cross-platform softwareontwikkeling.&lt;/p&gt;&lt;p&gt;Qt voorziet in enkelvoudige broncode portabiliteit op alle belangrijke desktop besturingsssystemen. Het is ook beschikbaar voor embedded Linux en andere embedded en mobiele besturingssystemen.&lt;/p&gt;&lt;p&gt;Qt is beschikbaar met drie verschillende licentie-opties om te voorzien in de behoeftes van onze uiteenlopende gebruikers.&lt;/p&gt;&lt;p&gt;Qt met een commerciële licentieovereenkomst is bedoeld voor ontwikkeling van gesloten/commerciële programmatuur waarbij broncode niet wordt geopenbaard aan derden of anderszins niet kan worden voldaan aan de eisen van de GNU LGPL versie 3 of van de GNU LGPL versie 2.1.&lt;/p&gt;&lt;p&gt;Qt met een GNU LGPL versie licentie 3 past bij de ontwikkeling van Qt&amp;nbsp;applicaties indien kan worden voldaan aan de eisen en voorwaarden van de GNU LGPL versie 3.&lt;/p&gt;&lt;p&gt;Qt met een GNU LGPL versie 2.1 licentie past bij de ontwikkeling van Qt&amp;nbsp;applicaties indien kan worden voldaan aan de eisen en voorwaarden van de GNU LGPL versie 2.1.&lt;/p&gt;&lt;p&gt;zie &lt;a href=&quot;http://%2/&quot;&gt;%2&lt;/a&gt; voor een overzicht van Qt licenties.&lt;/p&gt;&lt;p&gt;Copyright (C) %1 The Qt Company Ltd en anderen.&lt;/p&gt;&lt;p&gt;Qt en het Qt logo zijn handelsmerken van The Qt Company Ltd.&lt;/p&gt;&lt;p&gt;Qt is het The Qt Company Ltd product ontwikkeld als een open broncode project. Zie &lt;a href=&quot;http://%3/&quot;&gt;%3&lt;/a&gt; voor meer informatie.&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -806,7 +806,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+1"/>
         <source>US Common #10 Envelope</source>
-        <translation>US Common #10 Envelope</translation>
+        <translation>US Common #10 Enveloppe</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -971,7 +971,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+1"/>
         <source>US Common #10 Envelope (105 x 241 mm)</source>
-        <translation>US Common #10 Envelope (105 x 241 mm)</translation>
+        <translation>US Common #10 Enveloppe (105 x 241 mm)</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -1045,7 +1045,7 @@ Kies s.v.p. een andere bestandsnaam.</translation>
         <location line="+4"/>
         <source>File %1 is not writable.
 Please choose a different file name.</source>
-        <translation>Bestand %1 is niet schrijfbaar.
+        <translation>Bestand %1 is niet beschrijfbaar.
 Geef een andere bestandsnaam op.</translation>
     </message>
     <message>
@@ -1219,7 +1219,7 @@ Wil je die overschrijven?</translation>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation>Skalair getal</translation>
+        <translation>Scalair getal</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1644,7 +1644,7 @@ Wil je die overschrijven?</translation>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation>Skalair getal</translation>
+        <translation>Scalair getal</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1694,7 +1694,7 @@ Wil je die overschrijven?</translation>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document</source>
-        <translation>Here dicument tussen dubbele aanhalingstekens</translation>
+        <translation>Here document tussen dubbele aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2064,7 +2064,7 @@ Wil je die overschrijven?</translation>
 file. Search capabilities may be affected.
 %1</source>
         <translation>Kon de help collectie niet naar een tijdelijk
-bestand kopiëren. De zoekfunctie kan beinvloed zijn.
+bestand kopiëren. De zoekfunctie kan beïnvloed zijn.
 %1</translation>
     </message>
     <message>
@@ -2449,7 +2449,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+4"/>
         <source>Comment (Choosing String)</source>
-        <translation>Comment (kies string)</translation>
+        <translation>Commentaar (kies string)</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2742,7 +2742,7 @@ Opslaan en onderbrekingspunt toevoegen, of Terug?</translation>
     <message>
         <location line="+127"/>
         <source>Comment selected text</source>
-        <translation>Geslecteerde tekst omzetten naar commentaar</translation>
+        <translation>Geselecteerde tekst omzetten naar commentaar</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2759,7 +2759,7 @@ Opslaan en onderbrekingspunt toevoegen, of Terug?</translation>
     <message>
         <location line="-6"/>
         <source>Do you want to cancel closing, save or discard the changes?</source>
-        <translation>Wilt u niet meer afsluiten, danwel het gewijzigde of het originele bestand opslaan?</translation>
+        <translation>Wilt u niet meer afsluiten, dan wel het gewijzigde of het originele bestand opslaan?</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3197,7 +3197,7 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;We hopen dat je Octave een bruikbaar programma vind..&lt;/p&gt;
-&lt;p&gt;Bij problemen is er een aantal manieren om hulp te krijgen, ook commerciele hulpopties, een mailing list, een wiki en andere manieren gebaseerd op de community.
+&lt;p&gt;Bij problemen is er een aantal manieren om hulp te krijgen, ook commerciële hulpopties, een mailing list, een wiki en andere manieren gebaseerd op de community.
 Meer informatie hierover is te verkrijgen via een bezoek aan &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (opent in een externe browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -3543,7 +3543,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+121"/>
         <source>Double-click a command to transfer it to the Command Window.</source>
-        <translation>Dubbelklik op een opdracht om het naar Opdrachtvenster te kopieren.</translation>
+        <translation>Dubbelklik op een opdracht om het naar Opdrachtvenster te kopiëren.</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4009,7 +4009,7 @@ when you have a connection to the web (link opens in an external browser).
         <translation>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
-De Octave community nieuwsbron lijkt onbeschikbaar te zijn.
+De Octave community nieuwsbron lijkt niet bereikbaar te zijn.
 &lt;/p&gt;
 &lt;p&gt;
 Kijk voor het laatste nieuws op
@@ -4173,7 +4173,7 @@ bestaat niet. Wilt u het aanmaken?</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Add Directory to Load Path</source>
-        <translation>&amp;Voeg map toe aan Load Path</translation>
+        <translation>&amp;Voeg map toe aan zoekpad</translation>
     </message>
 </context>
 <context>
@@ -5267,7 +5267,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+2"/>
         <source>Go one level up in variable hierarchy</source>
-        <translation>Ga een niveau omhoog in variabele hierarchie</translation>
+        <translation>Ga een niveau omhoog in variabele hiërarchie</translation>
     </message>
 </context>
 <context>
@@ -5492,7 +5492,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+140"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
-        <translation>Deze voorkeuren worden toegepast na verwerking van .octaverc startup bestanden.</translation>
+        <translation>Deze voorkeuren worden toegepast na verwerking van .octaverc opstartbestanden.</translation>
     </message>
     <message>
         <location line="+353"/>
@@ -5763,7 +5763,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+53"/>
         <source>Use system icon theme if available (requires restart)</source>
-        <translation>gebruik systeem-icoonverzameling indien bechikbaar (herstart nodig)</translation>
+        <translation>gebruik systeem-icoonverzameling indien beschikbaar (herstart nodig)</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -5963,7 +5963,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+13"/>
         <source>Restore editor tabs from previous session on startup or when editor is shown again after closing</source>
-        <translation>Herstel editortabbladen uit vorige sessie of als editor weer getoond wordt na te zijn afgesloten</translation>
+        <translation>Herstel editortabbladen uit vorige sessie bij opstarten of als editor weer getoond wordt na te zijn afgesloten</translation>
     </message>
     <message>
         <location line="+80"/>

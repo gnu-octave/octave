@@ -78,6 +78,7 @@ DEFUN_DLD (audiodevinfo, args, ,
 @deftypefnx {} {@var{devs} =} audiodevinfo (@var{io})
 @deftypefnx {} {@var{name} =} audiodevinfo (@var{io}, @var{id})
 @deftypefnx {} {@var{id} =} audiodevinfo (@var{io}, @var{name})
+@deftypefnx {} {@var{driverversion} =} audiodevinfo (@var{io}, @var{id}, "DriverVersion")
 @deftypefnx {} {@var{id} =} audiodevinfo (@var{io}, @var{rate}, @var{bits}, @var{chans})
 @deftypefnx {} {@var{supports} =} audiodevinfo (@var{io}, @var{id}, @var{rate}, @var{bits}, @var{chans})
 
@@ -98,6 +99,9 @@ corresponding device.
 
 If the optional argument @var{name} is provided, return the ID of the named
 device.
+
+If the optional argument @qcode{"DriverVersion"} is given, return the name of
+the driver for the specified device.
 
 Given a sampling rate, bits per sample, and number of channels for an input or
 output device, return the ID of the first device that supports playback or
@@ -282,13 +286,49 @@ recording using those parameters.
       if (! found)
         error ("audiodevinfo: no device found for the specified criteria");
     }
+  // Return the DriverVersion (really, name of driver) of the specified device
   else if (nargin == 3)
     {
-      // FIXME: For Matlab Compatibility, 3-input form is
-      // DriverVersion = audiodevinfo (IO, ID, 'DriverVersion')
-      // and returns the Name of the audio driver used by device ID.
+      bool found = false;
+      int outin = args(0).int_value ();
+      int id = args(1).int_value ();
+
+      std::string arg3 = args(2).string_value ();
+      std::transform (arg3.begin (), arg3.end (), arg3.begin (), tolower);
+      if (arg3 != "driverversion")
+        error ("audiodevinfo: third argument must be \"DriverVersion\"");
+
+      if (outin == 0)
+        {
+          for (int i = 0; i < numoutput; i++)
+            {
+              if (output_id(i).int_value () == id)
+                {
+                  found = true;
+                  retval = output_driver_version(i);
+                  break;
+                }
+            }
+        }
+      else if (outin == 1)
+        {
+          for (int i = 0; i < numinput; i++)
+            {
+              if (input_id(i).int_value () == id)
+                {
+                  found = true;
+                  retval = input_driver_version(i);
+                  break;
+                }
+            }
+        }
+      else
+        error ("audiodevinfo: specify 0 for output and 1 for input devices");
+
+      if (! found)
+        error ("audiodevinfo: no device found for the specified criteria");
     }
-  // Return the id of the first device meeting specified criteria.
+  // Return the ID of the first device meeting specified criteria.
   else if (nargin == 4)
     {
       int io = args(0).int_value ();

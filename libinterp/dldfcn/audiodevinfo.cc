@@ -380,13 +380,13 @@ recording using those parameters.
         {
           if (device_info->maxOutputChannels < chans)
             {
-              retval = 0;
+              retval = false;
               return retval;
             }
           err = Pa_IsFormatSupported (nullptr, &stream_parameters, rate);
           if (err == paFormatIsSupported)
             {
-              retval = 1;
+              retval = true;
               return retval;
             }
         }
@@ -394,20 +394,20 @@ recording using those parameters.
         {
           if (device_info->maxInputChannels < chans)
             {
-              retval = 0;
+              retval = false;
               return retval;
             }
           err = Pa_IsFormatSupported (&stream_parameters, nullptr, rate);
           if (err == paFormatIsSupported)
             {
-              retval = 1;
+              retval = true;
               return retval;
             }
         }
       else
         error ("audiodevinfo: specify 0 for output and 1 for input devices");
 
-      retval = 0;
+      retval = false;
     }
 
   return retval;

@@ -79,30 +79,29 @@ DEFUN_DLD (audiodevinfo, args, ,
 @deftypefnx {} {@var{name} =} audiodevinfo (@var{io}, @var{id})
 @deftypefnx {} {@var{id} =} audiodevinfo (@var{io}, @var{name})
 @deftypefnx {} {@var{id} =} audiodevinfo (@var{io}, @var{rate}, @var{bits}, @var{chans})
-
 @deftypefnx {} {@var{supports} =} audiodevinfo (@var{io}, @var{id}, @var{rate}, @var{bits}, @var{chans})
 
 Return a structure describing the available audio input and output devices.
 
 The @var{devinfo} structure has two fields @qcode{"input"} and
-@qcode{"output"}.  The value of each field is a structure array with
-fields @qcode{"Name"}, @nospell{"DriverVersion"} and @qcode{"ID"}
-describing an audio device.
+@qcode{"output"}.  The value of each field is a structure array with fields
+@qcode{"Name"}, @nospell{"DriverVersion"} and @qcode{"ID"} describing an audio
+device.
 
-If the optional argument @var{io} is 1, return information about input
-devices only.  If it is 0, return information about output devices
-only.  If @var{io} is the only argument supplied, return the number of
-input or output devices available.
+If the optional argument @var{io} is 1, return information about input devices
+only.  If it is 0, return information about output devices only.  If @var{io}
+is the only argument supplied, return the number of input or output devices
+available.
 
-If the optional argument @var{id} is provided, return information about
-the corresponding device.
+If the optional argument @var{id} is provided, return information about the
+corresponding device.
 
-If the optional argument @var{name} is provided, return the id of the
-named device.
+If the optional argument @var{name} is provided, return the ID of the named
+device.
 
-Given a sampling rate, bits per sample, and number of channels for an input
-or output device, return the ID of the first device that supports playback
-or recording using the specified parameters.
+Given a sampling rate, bits per sample, and number of channels for an input or
+output device, return the ID of the first device that supports playback or
+recording using the specified parameters.
 
 If also given a device ID, return true if the device supports playback or
 recording using those parameters.
@@ -203,8 +202,7 @@ recording using those parameters.
 
   octave_value retval;
 
-  // Return information about input and output audio devices and
-  // their properties.
+  // Return information about input & output audio devices and their properties.
   if (nargin == 0)
     retval = devinfo;
   // Return the number of input or output devices
@@ -215,7 +213,7 @@ recording using those parameters.
       else if (args(0).int_value () == 1)
         retval = numinput;
       else
-        error ("audiodevinfo: please specify 0 for output and 1 for input devices");
+        error ("audiodevinfo: specify 0 for output and 1 for input devices");
     }
   // Return device name when given id or id when given device name.
   else if (nargin == 2)
@@ -249,7 +247,7 @@ recording using those parameters.
                 }
             }
           else
-            error ("audiodevinfo: please specify 0 for output and 1 for input devices");
+            error ("audiodevinfo: specify 0 for output and 1 for input devices");
         }
       else
         {
@@ -278,15 +276,17 @@ recording using those parameters.
                 }
             }
           else
-            error ("audiodevinfo: please specify 0 for output and 1 for input devices");
+            error ("audiodevinfo: specify 0 for output and 1 for input devices");
         }
 
       if (! found)
-        error ("audiodevinfo: no device meeting the specified criteria found");
+        error ("audiodevinfo: no device found for the specified criteria");
     }
   else if (nargin == 3)
     {
-      // FIXME: what was supposed to happen here?
+      // FIXME: For Matlab Compatibility, 3-input form is
+      // DriverVersion = audiodevinfo (IO, ID, 'DriverVersion')
+      // and returns the Name of the audio driver used by device ID.
     }
   // Return the id of the first device meeting specified criteria.
   else if (nargin == 4)
@@ -306,7 +306,7 @@ recording using those parameters.
           if (format != 0)
             stream_parameters.sampleFormat = format;
           else
-            error ("audiodevinfo: no such bits per sample format");
+            error ("audiodevinfo: invalid bits per sample format");
 
           const PaDeviceInfo *device_info = Pa_GetDeviceInfo (i);
 
@@ -365,7 +365,7 @@ recording using those parameters.
       if (format != 0)
         stream_parameters.sampleFormat = format;
       else
-        error ("audiodevinfo: no such bits per sample format");
+        error ("audiodevinfo: invalid bits per sample format");
 
       const PaDeviceInfo *device_info = Pa_GetDeviceInfo (id);
 
@@ -405,7 +405,7 @@ recording using those parameters.
             }
         }
       else
-        error ("audiodevinfo: please specify 0 for output and 1 for input devices");
+        error ("audiodevinfo: specify 0 for output and 1 for input devices");
 
       retval = 0;
     }
@@ -617,7 +617,6 @@ octave_play_callback (const void *, void *output, unsigned long frames,
             sample_l &= 0x00ffffff;
             sample_r &= 0x00ffffff;
 
-            // FIXME: Would a mask work better?
             uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
             uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
 
@@ -651,11 +650,10 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   if (! player)
     error ("audio player callback function called without player");
 
-  // Don't multiply the audio data by scale_factor here.  Although it
-  // would move the operation outside of the loops below, it also causes
-  // a second copy of the *entire* data array to be made when only a
-  // small portion (buffer_size elements) is usually needed for this
-  // callback.
+  // Don't multiply the audio data by scale_factor here.  Although it would
+  // move the operation outside of the loops below, it also causes a second
+  // copy of the *entire* data array to be made when only a small portion
+  // (buffer_size elements) is usually needed for this callback.
 
   const RowVector sound_l = player->get_left ();
   const RowVector sound_r = player->get_right ();
@@ -734,7 +732,6 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
                 sample_l &= 0x00ffffff;
                 sample_r &= 0x00ffffff;
 
-                // FIXME: Would a mask work better?
                 uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
                 uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
 
@@ -858,10 +855,10 @@ void
 audioplayer::init_fn (void)
 {
   if (Pa_Initialize () != paNoError)
-    error ("audioplayer: initialization error!");
+    error ("audioplayer: initialization error");
 
   if (Pa_GetDeviceCount () < 1)
-    error ("audioplayer: no audio devices found or available!");
+    error ("audioplayer: no audio devices found or available");
 
   int device = get_id ();
 
@@ -894,10 +891,10 @@ audioplayer::init (void)
   // RowVector *sound_l = get_left ();
 
   if (Pa_Initialize () != paNoError)
-    error ("audioplayer: initialization error!");
+    error ("audioplayer: initialization error");
 
   if (Pa_GetDeviceCount () < 1)
-    error ("audioplayer: no audio devices found or available!");
+    error ("audioplayer: no audio devices found or available");
 
   int device = get_id ();
 
@@ -1366,6 +1363,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
       static double scale_factor = std::pow (2.0, 23);
 
       // FIXME: Is there a better way?
+      // Could use union of int32_t, uint8_t[3:0]?  (12/31/19)
       const uint8_t *input24 = static_cast<const uint8_t *> (input);
 
       int32_t sample_l32, sample_r32;
@@ -1438,7 +1436,7 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
       for (unsigned long i = 0; i < frames; i++)
         {
           float sample_l = (input16[i*channels] >> 8) / scale_factor;
-          float sample_r = (input16[i*channels + (channels - 1)] >> 8) 
+          float sample_r = (input16[i*channels + (channels - 1)] >> 8)
                            / scale_factor;
 
           recorder->append (sample_l, sample_r);
@@ -1463,6 +1461,7 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
       static float scale_factor = std::pow (2.0f, 23);
 
       // FIXME: Is there a better way?
+      // Could use union of int32_t, uint8_t[3:0]?  (12/31/19)
       const uint8_t *input24 = static_cast<const uint8_t *> (input);
 
       int32_t sample_l32, sample_r32;
@@ -1536,10 +1535,10 @@ void
 audiorecorder::init (void)
 {
   if (Pa_Initialize () != paNoError)
-    error ("audiorecorder: initialization error!");
+    error ("audiorecorder: initialization error");
 
   if (Pa_GetDeviceCount () < 1)
-    error ("audiorecorder: no audio devices found or available!");
+    error ("audiorecorder: no audio devices found or available");
 
   int device = get_id ();
 
@@ -1934,7 +1933,7 @@ get_recorder (octave::interpreter& interp, const octave_value& ov)
 
   audiorecorder *rec = dynamic_cast<audiorecorder *> (ncrep);
   if (! rec)
-    error ("audiodevinfo.cc get_recorder: dynamic_cast to audiorecorder failed");
+    error ("audiodevinfo.cc (get_recorder): dynamic_cast to audiorecorder failed");
 
   return rec;
 }

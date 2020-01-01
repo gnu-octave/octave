@@ -90,17 +90,17 @@
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.cc" line="+139"/>
         <source>Edit %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeite %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Help on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe zu %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Documentation on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentation zu %1</translation>
     </message>
     <message>
         <location line="+154"/>
@@ -125,17 +125,17 @@
     <message>
         <location line="+4"/>
         <source>Edit selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswahl bearbeiten</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Help on selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe zur Auswahl</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Documentation on selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentation zur Auswahl</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -153,22 +153,22 @@
     <message>
         <location filename="../src/gui-preferences-cs.h" line="+65"/>
         <source>foreground</source>
-        <translation type="unfinished">Vordergrund</translation>
+        <translation>Vordergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>background</source>
-        <translation type="unfinished">Hintergrund</translation>
+        <translation>Hintergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>selection</source>
-        <translation type="unfinished">Auswahl</translation>
+        <translation>Auswahl</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>cursor</source>
-        <translation type="unfinished">Cursor</translation>
+        <translation>Cursor</translation>
     </message>
 </context>
 <context>
@@ -371,22 +371,22 @@
     <message>
         <location filename="../src/gui-preferences-ed.h" line="+189"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Oben</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Unten</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Links</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechts</translation>
     </message>
 </context>
 <context>
@@ -950,7 +950,7 @@ konnte nicht zum Schreiben geöffnet werden:
     <message>
         <location line="+5"/>
         <source>&amp;Sort Tabs Alphabetically</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabs alphabetisch &amp;sortieren</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -990,12 +990,12 @@ konnte nicht zum Schreiben geöffnet werden:
     <message>
         <location line="-7"/>
         <source>Continue</source>
-        <translation type="unfinished">Fortfahren</translation>
+        <translation>Fortfahren</translation>
     </message>
     <message>
         <location line="+2001"/>
         <source>Save File and Run / Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei speichern und ausführen / fortfahren</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1058,7 +1058,7 @@ konnte nicht zum Schreiben geöffnet werden:
     <message>
         <location line="+56"/>
         <source>ERROR: </source>
-        <translation type="unfinished"></translation>
+        <translation>FEHLER: </translation>
     </message>
     <message>
         <location line="+61"/>
@@ -1411,24 +1411,24 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     <message>
         <location line="+3"/>
         <source>Add to Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Zum Pfad hinzufügen</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+7"/>
         <source>Selected Directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählte Verzeichnisse</translation>
     </message>
     <message>
         <location line="-5"/>
         <location line="+7"/>
         <source>Selected Directories and Subdirectories</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählte Verzeichnisse und Unterverzeichnisse</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Remove from Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Vom Pfad entfernen</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1587,7 +1587,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/m-editor/find-dialog.cc" line="+92"/>
         <source>Editor: Find and Replace</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor: Suchen und Ersetzen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1597,7 +1597,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Enter text to search for</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchtext eingeben</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1607,7 +1607,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Enter new text replacing search hits</source>
-        <translation type="unfinished"></translation>
+        <translation>Text zum Ersetzen der Suchtreffer eingeben</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2149,7 +2149,7 @@ die nicht editiert werden kann.</translation>
     <message>
         <location line="+5"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfad setzen</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2265,7 +2265,7 @@ die nicht editiert werden kann.</translation>
     <message>
         <location line="+5"/>
         <source>Previous Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorhergehendes Widget</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2445,7 +2445,7 @@ oder aktivieren Sie die Internetverbindung in den Einstellungen unter Netzwerk.
     <message>
         <location line="+459"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Octave Editor</translation>
+        <translation>Octave Editor</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2454,7 +2454,12 @@ Make sure you have write access to temp. directory
 %1
 
 &quot;Run Selection&quot; requires temporary files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Temporäre Dateien konnten nicht angelegt werden.
+Stellen Sie sicher, dass Sie Schreibrechte auf das temp. Verzeichnis
+%1
+haben
+
+&quot;Auswahl ausführen&quot; benötigt temporäre Dateien.</translation>
     </message>
     <message>
         <location line="+272"/>
@@ -2477,50 +2482,52 @@ Make sure you have write access to temp. directory
         <location line="+5"/>
         <location line="+2"/>
         <source>Create</source>
-        <translation type="unfinished">Erstellen</translation>
+        <translation>Erstellen</translation>
     </message>
     <message>
         <location line="-7"/>
         <location line="+31"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei
+%1
+existiert nicht. Soll sie erzeugt werden?</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Octave Editor</translation>
+        <translation>Octave Editor</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation type="unfinished">Die Datei %1 befindet sich nicht im Suchpfad. Um die momentan geöffnete Datei auszuführen oder zu debuggen, in das Verzeichnis %2 wechseln oder dieses Verzeichnis dem Suchpfad hinzufügen.</translation>
+        <translation>Die Datei %1 befindet sich nicht im Suchpfad. Um die momentan geöffnete Datei auszuführen oder zu debuggen, in das Verzeichnis %2 wechseln oder dieses Verzeichnis dem Suchpfad hinzufügen.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        <translation type="unfinished">Die Datei %1 wird von einer Datei gleichen Namens im Suchpfad verdeckt. Um die momentan geöffnete Funktion auszuführen oder zu debuggen, in das Verzeichnis %2 wechseln.</translation>
+        <translation>Die Datei %1 wird von einer Datei gleichen Namens im Suchpfad verdeckt. Um die momentan geöffnete Funktion auszuführen oder zu debuggen, in das Verzeichnis %2 wechseln.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Change Directory or Add Directory to Load Path</source>
-        <translation type="unfinished">Verzeichnis wechseln oder zum Suchpfad hinzufügen</translation>
+        <translation>Verzeichnis wechseln oder zum Suchpfad hinzufügen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Change Directory</source>
-        <translation type="unfinished">Verzeichnis &amp;wechseln</translation>
+        <translation>Verzeichnis &amp;wechseln</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Add Directory to Load Path</source>
-        <translation type="unfinished">Verzeichnis zum &amp;Suchpfad hinzufügen</translation>
+        <translation>Verzeichnis zum &amp;Suchpfad hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -2554,82 +2561,82 @@ Die Octave-Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location filename="../src/set-path-dialog.cc" line="+61"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfad setzen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>All changes take effect immediately.</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Änderungen werden sofort aktiv.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnis hinzufügen...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Single Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Einfaches Verzeichnis</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Folder with Subfolders</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnis mit Unterverzeichnissen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move to Top</source>
-        <translation type="unfinished"></translation>
+        <translation>An den Anfang verschieben</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move to Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>An das Ende verschieben</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach oben verschieben</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach unten verschieben</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Neu laden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save</source>
-        <translation type="unfinished">Speichern</translation>
+        <translation>Speichern</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Revert</source>
-        <translation type="unfinished"></translation>
+        <translation>Rückgängig</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Revert Last Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Letzte Änderung rückgängig machen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Revert All Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Änderungen rückgängig machen</translation>
     </message>
     <message>
         <location line="+94"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnis öffnen</translation>
     </message>
 </context>
 <context>
@@ -2846,7 +2853,7 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     <message>
         <location line="+1"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfad setzen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2953,7 +2960,7 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     <message>
         <location line="+1"/>
         <source>Previous Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorheriges Widget</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3275,7 +3282,7 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     <message>
         <location line="+1"/>
         <source>Sort Tabs Alphabetically</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabs alphabetisch sortieren</translation>
     </message>
     <message>
         <location line="+152"/>
@@ -3462,7 +3469,8 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
         <location line="+3"/>
         <source>Add Shift modifier
 (allows to enter number keys)</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschalttaste hinzufügen
+(Ermöglicht die Verwendung von Zahlen)</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -3515,7 +3523,7 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
     <message>
         <location line="+3"/>
         <source>Variable Editor: </source>
-        <translation type="unfinished"></translation>
+        <translation>Variablen Editor: </translation>
     </message>
     <message>
         <location line="+14"/>
@@ -4229,12 +4237,12 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+65"/>
         <source>Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabs</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Tab position</source>
-        <translation type="unfinished"></translation>
+        <translation>Tab-Position</translation>
     </message>
     <message>
         <location line="+112"/>
@@ -4528,7 +4536,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location filename="../src/gui-preferences-ve.h" line="+64"/>
         <source>Foreground</source>
-        <translation type="unfinished">Vordergrund</translation>
+        <translation>Vordergrund</translation>
     </message>
 </context>
 <context>
@@ -4536,37 +4544,37 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation type="unfinished">Hintergrund</translation>
+        <translation>Hintergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished">Ausgewählter Vordergrund</translation>
+        <translation>Ausgewählter Vordergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished">Ausgewählter Hintergrund</translation>
+        <translation>Ausgewählter Hintergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished">Abwechselnder Hintergrund</translation>
+        <translation>Abwechselnder Hintergrund</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ws.h" line="+82"/>
         <source>argument</source>
-        <translation type="unfinished"></translation>
+        <translation>Argument</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>global</source>
-        <translation type="unfinished">Global</translation>
+        <translation>Global</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>persistant</source>
-        <translation type="unfinished"></translation>
+        <translation>Persistent</translation>
     </message>
 </context>
 <context>
@@ -4574,22 +4582,22 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="-29"/>
         <source>Class</source>
-        <translation type="unfinished">Klasse</translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dimension</source>
-        <translation type="unfinished">Dimension</translation>
+        <translation>Dimension</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished">Wert</translation>
+        <translation>Wert</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Attribute</source>
-        <translation type="unfinished">Attribut</translation>
+        <translation>Attribut</translation>
     </message>
 </context>
 </TS>

@@ -57,7 +57,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+667"/>
+        <location filename="../src/settings-dialog.cc" line="+669"/>
         <source>Difference to the default size</source>
         <translation>Differenz zur Standardgröße</translation>
     </message>
@@ -146,29 +146,6 @@
         <location line="-213"/>
         <source>Edit %1 at line %2</source>
         <translation>Bearbeite %1 in Zeile %2</translation>
-    </message>
-</context>
-<context>
-    <name>QTerminal::QTerminal</name>
-    <message>
-        <location filename="../src/gui-preferences-cs.h" line="+65"/>
-        <source>foreground</source>
-        <translation>Vordergrund</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>background</source>
-        <translation>Hintergrund</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>selection</source>
-        <translation>Auswahl</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>cursor</source>
-        <translation>Cursor</translation>
     </message>
 </context>
 <context>
@@ -364,29 +341,6 @@
         <location line="+8"/>
         <source>Line width</source>
         <translation>Linienbreite</translation>
-    </message>
-</context>
-<context>
-    <name>file_editor::file_editor</name>
-    <message>
-        <location filename="../src/gui-preferences-ed.h" line="+189"/>
-        <source>Top</source>
-        <translation>Oben</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Bottom</source>
-        <translation>Unten</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Left</source>
-        <translation>Links</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Right</source>
-        <translation>Rechts</translation>
     </message>
 </context>
 <context>
@@ -2642,7 +2596,7 @@ Die Octave-Benutzeroberfläche muss jetzt geschlossen werden.</translation>
 <context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-575"/>
+        <location filename="../src/settings-dialog.cc" line="-577"/>
         <source>Octave Preferences</source>
         <translation>Octave Einstellungen</translation>
     </message>
@@ -2654,7 +2608,7 @@ Die Octave-Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location line="+15"/>
         <location line="+5"/>
-        <location line="+702"/>
+        <location line="+704"/>
         <source>System setting</source>
         <translation>Systemeinstellung</translation>
     </message>
@@ -2692,6 +2646,86 @@ Die Octave-Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <location line="+3"/>
         <source>Hide tools tips</source>
         <translation>Tooltips verstecken</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-cs.h" line="+65"/>
+        <source>foreground</source>
+        <translation type="unfinished">Vordergrund</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>background</source>
+        <translation type="unfinished">Hintergrund</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>selection</source>
+        <translation type="unfinished">Auswahl</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>cursor</source>
+        <translation type="unfinished">Cursor</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ed.h" line="+189"/>
+        <source>Top</source>
+        <translation type="unfinished">Oben</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Bottom</source>
+        <translation type="unfinished">Unten</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Left</source>
+        <translation type="unfinished">Links</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Right</source>
+        <translation type="unfinished">Rechts</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ve.h" line="+64"/>
+        <source>Foreground</source>
+        <translation type="unfinished">Vordergrund</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished">Hintergrund</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished">Ausgewählter Vordergrund</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished">Ausgewählter Hintergrund</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished">Abwechselnder Hintergrund</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ws.h" line="+82"/>
+        <source>argument</source>
+        <translation type="unfinished">Argument</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>global</source>
+        <translation type="unfinished">Global</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>persistant</source>
+        <translation type="unfinished">Persistent</translation>
     </message>
 </context>
 <context>
@@ -3772,7 +3806,7 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
         <translation>Farben für Variablen-Attribute:</translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+132"/>
         <source>Open in Variable Editor</source>
         <translation>Im Variableneditor öffnen</translation>
     </message>
@@ -3805,6 +3839,26 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
         <location line="+3"/>
         <source>Show filter</source>
         <translation>Filter anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ws.h" line="-29"/>
+        <source>Class</source>
+        <translation type="unfinished">Klasse</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Dimension</source>
+        <translation type="unfinished">Dimension</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Value</source>
+        <translation type="unfinished">Wert</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Attribute</source>
+        <translation type="unfinished">Attribut</translation>
     </message>
 </context>
 <context>
@@ -4529,75 +4583,6 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
         <location line="+37"/>
         <source>Password:</source>
         <translation>Passwort:</translation>
-    </message>
-</context>
-<context>
-    <name>variable_editor::variable_editor</name>
-    <message>
-        <location filename="../src/gui-preferences-ve.h" line="+64"/>
-        <source>Foreground</source>
-        <translation>Vordergrund</translation>
-    </message>
-</context>
-<context>
-    <name>workspace_model::workspace_model</name>
-    <message>
-        <location line="+1"/>
-        <source>Background</source>
-        <translation>Hintergrund</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Selected Foreground</source>
-        <translation>Ausgewählter Vordergrund</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Selected Background</source>
-        <translation>Ausgewählter Hintergrund</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Alternate Background</source>
-        <translation>Abwechselnder Hintergrund</translation>
-    </message>
-    <message>
-        <location filename="../src/gui-preferences-ws.h" line="+82"/>
-        <source>argument</source>
-        <translation>Argument</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>global</source>
-        <translation>Global</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>persistant</source>
-        <translation>Persistent</translation>
-    </message>
-</context>
-<context>
-    <name>workspace_view::notice_settings</name>
-    <message>
-        <location line="-29"/>
-        <source>Class</source>
-        <translation>Klasse</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Dimension</source>
-        <translation>Dimension</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Value</source>
-        <translation>Wert</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Attribute</source>
-        <translation>Attribut</translation>
     </message>
 </context>
 </TS>

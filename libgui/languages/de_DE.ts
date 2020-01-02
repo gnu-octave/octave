@@ -2650,82 +2650,82 @@ Die Octave-Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location filename="../src/gui-preferences-cs.h" line="+65"/>
         <source>foreground</source>
-        <translation type="unfinished">Vordergrund</translation>
+        <translation>Vordergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>background</source>
-        <translation type="unfinished">Hintergrund</translation>
+        <translation>Hintergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>selection</source>
-        <translation type="unfinished">Auswahl</translation>
+        <translation>Auswahl</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>cursor</source>
-        <translation type="unfinished">Cursor</translation>
+        <translation>Cursor</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ed.h" line="+189"/>
         <source>Top</source>
-        <translation type="unfinished">Oben</translation>
+        <translation>Oben</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom</source>
-        <translation type="unfinished">Unten</translation>
+        <translation>Unten</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left</source>
-        <translation type="unfinished">Links</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Right</source>
-        <translation type="unfinished">Rechts</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ve.h" line="+64"/>
         <source>Foreground</source>
-        <translation type="unfinished">Vordergrund</translation>
+        <translation>Vordergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation type="unfinished">Hintergrund</translation>
+        <translation>Hintergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished">Ausgewählter Vordergrund</translation>
+        <translation>Auswahl Vordergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished">Ausgewählter Hintergrund</translation>
+        <translation>Auswahl Hintergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished">Abwechselnder Hintergrund</translation>
+        <translation>Alternierender Hintergrund</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ws.h" line="+82"/>
         <source>argument</source>
-        <translation type="unfinished">Argument</translation>
+        <translation>Argument</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>global</source>
-        <translation type="unfinished">Global</translation>
+        <translation>Global</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>persistant</source>
-        <translation type="unfinished">Persistent</translation>
+        <translation>Persistent</translation>
     </message>
 </context>
 <context>
@@ -3843,22 +3843,22 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
     <message>
         <location filename="../src/gui-preferences-ws.h" line="-29"/>
         <source>Class</source>
-        <translation type="unfinished">Klasse</translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dimension</source>
-        <translation type="unfinished">Dimension</translation>
+        <translation>Dimension</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished">Wert</translation>
+        <translation>Wert</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Attribute</source>
-        <translation type="unfinished">Attribut</translation>
+        <translation>Attribut</translation>
     </message>
 </context>
 <context>
@@ -4356,7 +4356,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+153"/>
         <source>Auto insert after &quot;if&quot; etc.</source>
-        <translation>Automatisch nach &quot;if&quot; usw. einfügen</translation>
+        <translation>Automatisches schließen on &quot;if&quot; usw.</translation>
     </message>
     <message>
         <location line="+20"/>

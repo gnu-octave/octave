@@ -21,8 +21,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: jwe
-
 function __gnuplot_drawnow__ (h, term, file, debug_file)
 
   if (nargin < 1 || nargin > 4 || nargin == 2)

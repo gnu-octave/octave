@@ -204,8 +204,6 @@
 ## @seealso{axis, box, grid, hold, legend, title, xlabel, ylabel, xlim, ylim, ezplot, errorbar, fplot, line, plot3, polar, loglog, semilogx, semilogy, subplot}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = plot (varargin)
 
   [hax, varargin, nargs] = __plt_get_axis_arg__ ("plot", varargin{:});

@@ -34,8 +34,6 @@
 ## @seealso{fliplr, flip, rot90, rotdim}
 ## @end deftypefn
 
-## Author: jwe
-
 function y = flipud (x)
 
   if (nargin != 1)

@@ -29,8 +29,6 @@
 ## @seealso{graphics_toolkit}
 ## @end deftypefn
 
-## Author: jwe
-
 function [prog, args] = gnuplot_binary (new_prog, varargin)
 
   mlock ();

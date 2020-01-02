@@ -80,7 +80,6 @@
 ## Author: Ariel Tankus
 ## Author: Paul Kienzle and Etienne Grossman
 ## Created: 13.11.98
-## Adapted-by: jwe
 
 function [varargout] = deal (varargin)
 

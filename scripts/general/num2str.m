@@ -71,8 +71,6 @@
 ## @seealso{sprintf, int2str, mat2str}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = num2str (x, arg)
 
   if (nargin != 1 && nargin != 2)

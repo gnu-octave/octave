@@ -27,8 +27,6 @@
 ## Create line object from x, y, and z with parent p.
 ## Return handle to line object.
 
-## Author: jwe
-
 function h = __line__ (hp, varargin)
 
   nvargs = nargin - 1;     # remove argument 'hp'

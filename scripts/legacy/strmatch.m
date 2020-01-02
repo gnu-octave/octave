@@ -57,7 +57,6 @@
 ## @end deftypefn
 
 ## Author: Paul Kienzle, Alois Schloegl
-## Adapted-by: jwe
 
 function idx = strmatch (s, A, exact)
 

@@ -58,8 +58,6 @@
 ## @seealso{ndgrid, mesh, contour, surf}
 ## @end deftypefn
 
-## Author: jwe
-
 function [xx, yy, zz] = meshgrid (x, y, z)
 
   if (nargin == 0 || nargin > 3)

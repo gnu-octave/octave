@@ -22,8 +22,6 @@
 ## @seealso{acsch}
 ## @end deftypefn
 
-## Author: jwe
-
 function y = csch (x)
 
   if (nargin != 1)

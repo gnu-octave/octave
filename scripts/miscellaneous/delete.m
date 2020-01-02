@@ -32,8 +32,6 @@
 ## @seealso{clf, cla, unlink, rmdir}
 ## @end deftypefn
 
-## Author: jwe
-
 function delete (varargin)
 
   if (nargin == 0)

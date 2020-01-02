@@ -23,8 +23,6 @@
 ## @seealso{ls}
 ## @end deftypefn
 
-## Author: jwe
-
 function old_val = ls_command (new_val)
 
   persistent __ls_command__;

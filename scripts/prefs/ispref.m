@@ -32,8 +32,6 @@
 ## @seealso{getpref, addpref, setpref, rmpref}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = ispref (group, pref = "")
 
   if (nargin == 0 || nargin > 2)

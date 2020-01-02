@@ -53,8 +53,6 @@
 ## @seealso{ezmesh, meshc, meshz, trimesh, contour, surf, surface, meshgrid, hidden, shading, colormap, caxis}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = mesh (varargin)
 
   if (! all (cellfun ("isreal", varargin)))

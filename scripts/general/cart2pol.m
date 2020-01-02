@@ -40,7 +40,6 @@
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
-## Adapted-by: jwe
 
 function [theta, r, z] = cart2pol (x, y, z = [])
 

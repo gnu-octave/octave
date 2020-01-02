@@ -29,8 +29,6 @@
 ## @seealso{demo, oruntests, path}
 ## @end deftypefn
 
-## Author: jwe
-
 function rundemos (directory)
 
   if (nargin == 0)

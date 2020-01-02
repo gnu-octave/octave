@@ -36,9 +36,6 @@
 ## @seealso{comet}
 ## @end deftypefn
 
-## Author: jwe
-## Created: 2010-12-17
-
 function comet3 (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("comet3", varargin{:});

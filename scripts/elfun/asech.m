@@ -22,8 +22,6 @@
 ## @seealso{sech}
 ## @end deftypefn
 
-## Author: jwe
-
 function y = asech (x)
 
   if (nargin != 1)

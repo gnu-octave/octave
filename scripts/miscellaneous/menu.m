@@ -39,8 +39,6 @@
 ## @seealso{input, listdlg}
 ## @end deftypefn
 
-## Author: jwe
-
 function choice = menu (title, varargin)
 
   if (nargin < 2)

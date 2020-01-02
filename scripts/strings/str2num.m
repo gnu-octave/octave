@@ -46,8 +46,6 @@
 ## @seealso{str2double, eval}
 ## @end deftypefn
 
-## Author: jwe
-
 function [m, state] = str2num (s)
 
   if (nargin != 1)

@@ -47,8 +47,6 @@
 ## @seealso{peaks, meshgrid, mesh, surf}
 ## @end deftypefn
 
-## Author: jwe
-
 function [x, y, z] = sombrero (n = 41)
 
   if (nargin > 2)

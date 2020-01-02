@@ -28,8 +28,6 @@
 ## @seealso{figure, drawnow, gcf}
 ## @end deftypefn
 
-## Author: jwe
-
 function shg ()
 
   if (nargin != 0)

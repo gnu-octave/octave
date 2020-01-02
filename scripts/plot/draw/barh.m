@@ -68,8 +68,6 @@
 ## @seealso{bar, hist, pie, plot, patch}
 ## @end deftypefn
 
-## Author: jwe
-
 function varargout = barh (varargin)
   varargout = cell (nargout, 1);
   [varargout{:}] = __bar__ (false, "barh", varargin{:});

@@ -21,8 +21,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = __plt__ (caller, hp, varargin)
 
   persistent warned_callers = {};

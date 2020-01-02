@@ -26,8 +26,6 @@
 ## @seealso{isaxes, ishghandle, isgraphics}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = isfigure (h)
 
   if (nargin != 1)

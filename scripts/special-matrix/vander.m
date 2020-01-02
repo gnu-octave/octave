@@ -52,8 +52,6 @@
 ## @seealso{polyfit}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = vander (c, n)
 
   if (nargin == 1)

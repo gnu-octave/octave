@@ -22,8 +22,6 @@
 ## @seealso{acot, cotd, coth}
 ## @end deftypefn
 
-## Author: jwe
-
 function y = cot (x)
 
   if (nargin != 1)

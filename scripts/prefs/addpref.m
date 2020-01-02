@@ -34,8 +34,6 @@
 ## @seealso{setpref, getpref, ispref, rmpref}
 ## @end deftypefn
 
-## Author: jwe
-
 function addpref (group, pref, val)
 
   if (nargin != 3)

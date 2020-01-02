@@ -21,8 +21,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: jwe
-
 function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
 
   h = [];

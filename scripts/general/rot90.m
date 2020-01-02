@@ -56,8 +56,6 @@
 ## @seealso{rotdim, fliplr, flipud, flip}
 ## @end deftypefn
 
-## Author: jwe
-
 function B = rot90 (A, k = 1)
 
   if (nargin < 1 || nargin > 2)

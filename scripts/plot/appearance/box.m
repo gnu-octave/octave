@@ -31,8 +31,6 @@
 ## @seealso{axis, grid}
 ## @end deftypefn
 
-## Author: jwe
-
 function box (varargin)
 
   [hax, varargin, nargs] = __plt_get_axis_arg__ ("box", varargin{:});

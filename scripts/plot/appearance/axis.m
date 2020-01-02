@@ -138,8 +138,6 @@
 ## @seealso{xlim, ylim, zlim, caxis, daspect, pbaspect, box, grid}
 ## @end deftypefn
 
-## Author: jwe
-
 function limits = axis (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("axis", varargin{:});

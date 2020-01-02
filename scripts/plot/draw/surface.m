@@ -48,8 +48,6 @@
 ## @seealso{surf, mesh, patch, line}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = surface (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("surface", varargin{:});

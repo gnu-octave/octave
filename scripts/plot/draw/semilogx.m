@@ -35,8 +35,6 @@
 ## @seealso{plot, semilogy, loglog}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = semilogx (varargin)
 
   [hax, varargin, nargs] = __plt_get_axis_arg__ ("semilogx", varargin{:});

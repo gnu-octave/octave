@@ -116,7 +116,6 @@
 ## @end deftypefn
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## Adapted-by: jwe
 
 function h = stem (varargin)
 

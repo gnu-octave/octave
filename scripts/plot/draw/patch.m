@@ -71,8 +71,6 @@
 ## @seealso{fill, get, set}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = patch (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("patch", varargin{:});

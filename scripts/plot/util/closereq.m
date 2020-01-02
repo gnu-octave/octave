@@ -25,8 +25,6 @@
 ## @seealso{close, delete}
 ## @end deftypefn
 
-## Author: jwe
-
 function closereq ()
 
   if (nargin != 0)

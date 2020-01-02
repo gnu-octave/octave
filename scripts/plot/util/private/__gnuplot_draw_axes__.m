@@ -21,8 +21,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: jwe
-
 function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                                 fg_is_set, hlgnd)
 

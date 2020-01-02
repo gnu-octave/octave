@@ -22,8 +22,6 @@
 ## @seealso{char}
 ## @end deftypefn
 
-## Author: jwe
-
 ## At one time, Matlab docs stated that this function is obsolete and would be
 ## removed in some future version.  Now users are told that it should be
 ## avoided, but there is no mention of possible future removal.

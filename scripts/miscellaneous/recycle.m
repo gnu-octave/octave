@@ -31,8 +31,6 @@
 ## @seealso{delete, rmdir}
 ## @end deftypefn
 
-## Author: jwe
-
 function val = recycle (new_val)
 
   persistent current_state = "off";

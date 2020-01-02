@@ -34,8 +34,6 @@
 ## @seealso{weekday, eomday, calendar}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = is_leap_year (year)
 
   if (nargin > 1)

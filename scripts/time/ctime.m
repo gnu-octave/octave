@@ -34,8 +34,6 @@
 ## @seealso{asctime, time, localtime}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = ctime (t)
 
   if (nargin != 1)

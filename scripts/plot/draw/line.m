@@ -59,8 +59,6 @@
 ## @seealso{image, patch, rectangle, surface, text}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = line (varargin)
 
   ## Get axis argument which may be in a 'parent' PROP/VAL pair

@@ -26,8 +26,6 @@
 ## @seealso{puts, fputs, printf, fprintf}
 ## @end deftypefn
 
-## Author: jwe
-
 function beep ()
 
   if (nargin != 0)

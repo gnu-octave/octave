@@ -50,8 +50,6 @@
 ## @seealso{unique, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 
-## Author: jwe
-
 function [y, ia, ib] = union (a, b, varargin)
 
   if (nargin < 2 || nargin > 4)

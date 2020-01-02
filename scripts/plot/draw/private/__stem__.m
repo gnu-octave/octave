@@ -22,7 +22,6 @@
 ## @end deftypefn
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## Adapted-by: jwe
 
 function h = __stem__ (have_z, varargin)
 

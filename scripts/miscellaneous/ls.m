@@ -51,8 +51,6 @@
 ## @seealso{dir, readdir, glob, what, stat, filesep, ls_command}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = ls (varargin)
 
   if (! iscellstr (varargin))

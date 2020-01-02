@@ -22,8 +22,6 @@
 ## @seealso{csc, acscd}
 ## @end deftypefn
 
-## Author: jwe
-
 function y = acsc (x)
 
   if (nargin != 1)

@@ -40,8 +40,6 @@
 ## @seealso{cla, close, delete, reset}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = clf (varargin)
 
   if (nargin > 2)

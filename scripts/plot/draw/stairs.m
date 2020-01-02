@@ -63,8 +63,6 @@
 ## @seealso{bar, hist, plot, stem}
 ## @end deftypefn
 
-## Author: jwe
-
 function [xs, ys] = stairs (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("stairs", varargin{:});

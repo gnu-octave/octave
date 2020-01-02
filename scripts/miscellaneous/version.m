@@ -63,8 +63,6 @@
 ## @seealso{OCTAVE_VERSION, ver}
 ## @end deftypefn
 
-## Author: jwe
-
 function [v, d] = version (feature)
 
   if (nargin > 1 || ((nargin != 0) && ((nargout > 1) || ! ischar (feature))))

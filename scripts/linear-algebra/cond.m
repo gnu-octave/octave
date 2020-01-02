@@ -44,8 +44,6 @@
 ## @seealso{condest, rcond, condeig, norm, svd}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = cond (A, p = 2)
 
   if (nargin < 1 || nargin > 2)

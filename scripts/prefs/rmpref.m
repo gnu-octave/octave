@@ -33,8 +33,6 @@
 ## @seealso{addpref, ispref, setpref, getpref}
 ## @end deftypefn
 
-## Author: jwe
-
 function rmpref (group, pref)
 
   if (nargin < 1 || nargin > 2)

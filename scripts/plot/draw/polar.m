@@ -52,8 +52,6 @@
 ## @seealso{rose, compass, plot, cart2pol}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = polar (varargin)
 
   [hax, varargin, nargs] = __plt_get_axis_arg__ ("polar", varargin{:});

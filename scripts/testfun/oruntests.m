@@ -29,8 +29,6 @@
 ## @seealso{rundemos, test, path}
 ## @end deftypefn
 
-## Author: jwe
-
 function oruntests (directory)
 
   if (nargin == 0)

@@ -21,8 +21,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: jwe
-
 function varargout = __bar__ (vertical, func, varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ (func, varargin{:});

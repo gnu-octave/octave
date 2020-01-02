@@ -25,8 +25,6 @@
 ## @seealso{isalpha, isdigit, ispunct, isspace, iscntrl, isalnum}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = isletter (s)
 
   if (nargin != 1)

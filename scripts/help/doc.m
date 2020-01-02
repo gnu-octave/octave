@@ -33,7 +33,6 @@
 ## @end deftypefn
 
 ## Author: Soren Hauberg <soren@hauberg.org>
-## Adapted-by: jwe
 
 function retval = doc (function_name)
 

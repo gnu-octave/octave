@@ -51,8 +51,6 @@
 ## @seealso{invhilb}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = hilb (n)
 
   if (nargin != 1)

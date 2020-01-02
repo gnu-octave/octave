@@ -71,7 +71,6 @@
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 ## Author: Søren Hauberg <hauberg@gmail.com>
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Adapted-by: jwe
 ## Reimplemented using lookup & unique: Jaroslav Hajek <highegg@gmail.com>
 
 function [tf, s_idx] = ismember (a, s, varargin)

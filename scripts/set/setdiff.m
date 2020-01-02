@@ -48,7 +48,6 @@
 ## @end deftypefn
 
 ## Author: Paul Kienzle
-## Adapted-by: jwe
 
 function [c, ia] = setdiff (a, b, varargin)
 

@@ -46,7 +46,6 @@
 ## @end deftypefn
 
 ## Author: Daniel Calvelo, Paul Kienzle
-## Adapted-by: jwe
 
 function [s, i] = sortrows (A, c)
 

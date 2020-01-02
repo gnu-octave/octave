@@ -72,8 +72,6 @@
 ## @seealso{histc, bar, pie, rose}
 ## @end deftypefn
 
-## Author: jwe
-
 function [nn, xx] = hist (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("hist", varargin{:});

@@ -44,8 +44,6 @@
 ## @seealso{subsref, subsasgn}
 ## @end deftypefn
 
-## Author:  jwe
-
 function retval = substruct (varargin)
 
   if (nargin < 2 || mod (nargin, 2) != 0)

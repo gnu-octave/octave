@@ -25,8 +25,6 @@
 ## @seealso{eig}
 ## @end deftypefn
 
-## Author: jwe
-
 function y = trace (A)
 
   if (nargin != 1)

@@ -477,7 +477,6 @@
 ## @end deftypefn
 
 ## Author: Nicolo' Giorgetti <giorgetti@dii.unisi.it>
-## Adapted-by: jwe
 
 function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, sense, param)
 

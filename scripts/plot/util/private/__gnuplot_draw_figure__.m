@@ -21,8 +21,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: jwe
-
 function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
 
   htype = get (h, "type");

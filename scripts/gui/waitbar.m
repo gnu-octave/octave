@@ -47,8 +47,6 @@
 ## @seealso{delete}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = waitbar (varargin)
 
   persistent curr_waitbar;

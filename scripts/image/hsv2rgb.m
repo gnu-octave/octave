@@ -52,7 +52,6 @@
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
-## Adapted-by: jwe
 
 function rgb = hsv2rgb (hsv)
 

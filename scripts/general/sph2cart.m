@@ -39,7 +39,6 @@
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
-## Adapted-by: jwe
 
 function [x, y, z] = sph2cart (theta, phi, r)
 

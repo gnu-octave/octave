@@ -21,8 +21,6 @@
 ## Display information about how to submit bug reports for Octave.
 ## @end deftypefn
 
-## Author: jwe
-
 function bug_report ()
 
   disp (" ");

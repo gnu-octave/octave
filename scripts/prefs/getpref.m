@@ -46,8 +46,6 @@
 ## @seealso{addpref, setpref, ispref, rmpref}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = getpref (group, pref, default)
 
   if (nargin > 3)

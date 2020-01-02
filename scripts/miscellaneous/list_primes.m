@@ -25,8 +25,6 @@
 ## @seealso{primes, isprime}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = list_primes (n = 25)
 
   if (nargin > 1)

@@ -33,7 +33,6 @@
 ## object.
 ## @seealso{xlabel, ylabel, datetick, title, text}
 ## @end deftypefn
-## Author: jwe
 
 function h = zlabel (varargin)
 

@@ -24,8 +24,6 @@
 ## @seealso{clear}
 ## @end deftypefn
 
-## Author: jwe
-
 function pack ()
 
 endfunction

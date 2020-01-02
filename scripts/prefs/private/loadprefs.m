@@ -21,8 +21,6 @@
 ## Return a structure containing all user configured preferences.
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = loadprefs ()
 
   file = prefsfile ();

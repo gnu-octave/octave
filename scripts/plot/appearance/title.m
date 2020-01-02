@@ -34,8 +34,6 @@
 ## @seealso{xlabel, ylabel, zlabel, text}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = title (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("title", varargin{:});

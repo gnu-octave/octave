@@ -65,8 +65,6 @@
 ## @seealso{ls, readdir, glob, what, stat, lstat}
 ## @end deftypefn
 
-## Author: jwe
-
 ## FIXME: This is quite slow for large directories.
 ##        Perhaps it should be converted to C++?
 

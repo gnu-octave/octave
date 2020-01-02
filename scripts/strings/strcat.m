@@ -77,8 +77,6 @@
 ## @seealso{cstrcat, char, strvcat}
 ## @end deftypefn
 
-## Author: jwe
-
 function st = strcat (varargin)
 
   if (nargin == 0)

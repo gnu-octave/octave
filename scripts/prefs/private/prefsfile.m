@@ -21,8 +21,6 @@
 ## Return the full path and name of the file containing Octave preferences.
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = prefsfile ()
 
   retval = [prefdir() filesep() ".octave_prefs"];

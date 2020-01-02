@@ -39,7 +39,6 @@
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
-## Adapted-by: jwe
 
 function [theta, phi, r] = cart2sph (x, y, z)
 

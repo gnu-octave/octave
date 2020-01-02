@@ -65,8 +65,6 @@
 ## @seealso{linspace}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = logspace (a, b, n = 50)
 
   if (nargin != 2 && nargin != 3)

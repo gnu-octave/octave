@@ -21,8 +21,6 @@
 ## Save user preferences in the structure @var{s} to Octave's preference file.
 ## @end deftypefn
 
-## Author: jwe
-
 function saveprefs (s)
 
   prefs = s;

@@ -37,8 +37,6 @@
 ## @seealso{tic, toc, clock, cputime, addtodate}
 ## @end deftypefn
 
-## Author: jwe
-
 function secs = etime (t2, t1)
 
   if (nargin != 2)

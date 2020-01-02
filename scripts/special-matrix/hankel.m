@@ -47,8 +47,6 @@
 ## @seealso{hadamard, toeplitz}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = hankel (c, r)
 
   if (nargin < 1 || nargin > 2)

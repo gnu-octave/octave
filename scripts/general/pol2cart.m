@@ -40,7 +40,6 @@
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
-## Adapted-by: jwe
 
 function [x, y, z] = pol2cart (theta, r, z = [])
 

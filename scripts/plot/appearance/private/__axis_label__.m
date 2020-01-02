@@ -21,8 +21,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = __axis_label__ (hax, caller, txt, varargin)
 
   h = get (hax, caller);

@@ -23,7 +23,6 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 // Author: Alexander Barth <abarth@marine.usf.edu>
-// Author: jwe
 
 #if ! defined (octave_url_transfer_h)
 #define octave_url_transfer_h 1

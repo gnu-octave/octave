@@ -31,8 +31,6 @@
 ## @seealso{now, clock, datestr, localtime}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = date ()
 
   if (nargin != 0)

@@ -22,8 +22,6 @@
 ## @seealso{acoth}
 ## @end deftypefn
 
-## Author: jwe
-
 function y = coth (x)
 
   if (nargin != 1)

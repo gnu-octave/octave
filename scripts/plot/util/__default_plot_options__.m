@@ -21,8 +21,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: jwe
-
 function options = __default_plot_options__ ()
 
   options.key = "";

@@ -38,8 +38,6 @@
 ## @seealso{now, date, datevec}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = clock ()
 
   tm = localtime (time ());

@@ -25,7 +25,6 @@
 ## Return the next line color in the rotation.
 
 ## Author: Carl Osterwisch
-## Author: jwe
 
 function rgb = __next_line_color__ ()
 

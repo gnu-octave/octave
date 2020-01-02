@@ -22,8 +22,6 @@
 ## @seealso{asec, secd, sech}
 ## @end deftypefn
 
-## Author: jwe
-
 function y = sec (x)
 
   if (nargin != 1)

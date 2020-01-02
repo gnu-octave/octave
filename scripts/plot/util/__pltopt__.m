@@ -84,8 +84,6 @@
 ## plotted in some future version of Octave.
 ## @end deftypefn
 
-## Author: jwe
-
 function [options, valid] = __pltopt__ (caller, opt, err_on_invalid = true)
 
   options = __default_plot_options__ ();

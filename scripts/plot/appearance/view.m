@@ -43,8 +43,6 @@
 ## @var{elevation}.
 ## @end deftypefn
 
-## Author: jwe
-
 function [azimuth, elevation] = view (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("view", varargin{:});

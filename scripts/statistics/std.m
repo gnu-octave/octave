@@ -61,8 +61,6 @@
 ## @seealso{var, bounds, mad, range, iqr, mean, median}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = std (x, opt = 0, dim)
 
   if (nargin < 1 || nargin > 3)

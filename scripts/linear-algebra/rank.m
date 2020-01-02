@@ -72,8 +72,6 @@
 ## @seealso{null, orth, sprank, svd, eps}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = rank (A, tol)
 
   if (nargin == 1)

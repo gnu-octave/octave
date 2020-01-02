@@ -54,8 +54,6 @@
 ## @seealso{mean, mode}
 ## @end deftypefn
 
-## Author: jwe
-
 function retval = median (x, dim)
 
   if (nargin != 1 && nargin != 2)

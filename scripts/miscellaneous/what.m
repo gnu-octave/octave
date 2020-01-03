@@ -72,21 +72,57 @@ function retval = what (dir)
   endif
 
   if (nargin == 0)
-    dir = pwd ();
+    dir = { pwd() };
   else
     dtmp = canonicalize_file_name (dir);
     if (isempty (dtmp))
-      ## Search for directory name in path
-      if (dir(end) == '/' || dir(end) == '\')
-        dir(end) = [];
-      endif
-      dtmp = dir_in_loadpath (dir);
-      if (isempty (dtmp))
-        error ("what: could not find the directory %s", dir);
-      endif
+      dtmp = {};
+    else
+      dtmp = {dtmp};
     endif
+    ## Search for directory name in path
+    if (dir(end) == '/' || dir(end) == '\')
+      dir(end) = [];
+    endif
+    dtmp = unique ([dtmp; dir_in_loadpath(dir, "all")]);
+
+    if (isempty (dtmp) && nargout == 0)
+      printf ("%s not found\n", dir);
+      return;
+    endif
+
     dir = dtmp;
   endif
+
+   ## Lookup info for each directory
+   for i = 1 : numel (dir)
+     w(i) = __what__ (dir{i});
+   endfor
+
+   ## If none was found, return an empty struct
+   if (numel (dir) == 0)
+     w = __what__ ("");
+     w = resize (w, [0, 1]);  # Matlab compatibility, return 0x1 empty array
+   end
+
+  if (nargout == 0)
+    for i = 1 : numel (w)
+      __display_filenames__ ("M-files in directory", w(i).path, w(i).m);
+      __display_filenames__ ("\nMAT-files in directory", w(i).path, w(i).mat);
+      __display_filenames__ ("\nMEX-files in directory", w(i).path, w(i).mex);
+      __display_filenames__ ("\nOCT-files in directory", w(i).path, w(i).oct);
+      __display_filenames__ ("\nClasses in directory", w(i).path, w(i).classes);
+      __display_filenames__ ("\nPackages in directory", w(i).path, w(i).packages);
+    endfor
+  else
+    retval = w;
+  endif
+
+endfunction
+
+
+## what() functionality for a single directory
+function w = __what__ (dir)
 
   files = readdir (dir);
   w.path = dir;
@@ -137,19 +173,10 @@ function retval = what (dir)
 
   endfor
 
-  if (nargout == 0)
-    __display_filenames__ ("M-files in directory", w.path, w.m);
-    __display_filenames__ ("\nMAT-files in directory", w.path, w.mat);
-    __display_filenames__ ("\nMEX-files in directory", w.path, w.mex);
-    __display_filenames__ ("\nOCT-files in directory", w.path, w.oct);
-    __display_filenames__ ("\nClasses in directory", w.path, w.classes);
-    __display_filenames__ ("\nPackages in directory", w.path, w.packages);
-  else
-    retval = w;
-  endif
-
 endfunction
 
+
+## Pretty print filenames to terminal
 function __display_filenames__ (msg, p, f)
 
   if (length (f) > 0)

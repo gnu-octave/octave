@@ -110,17 +110,29 @@ function retval = what (dir)
     ## mdl, slx, and p are ignored (no if test) since they are not implemented
     [~, f, e] = fileparts (nm);
     if (strcmp (e, ".m"))
-      w.m{end+1} = nm;
+      if (isfile (fullfile (dir, nm)))
+        w.m{end+1} = nm;
+      endif
     elseif (strcmp (e, ".mat"))
-      w.mat{end+1} = nm;
+      if (isfile (fullfile (dir, nm)))
+        w.mat{end+1} = nm;
+      endif
     elseif (strcmp (e, ".oct"))
-      w.oct{end+1} = nm;
+      if (isfile (fullfile (dir, nm)))
+        w.oct{end+1} = nm;
+      endif
     elseif (strcmp (e, mexext ()))
-      w.mex{end+1} = nm;
-    elseif (nm(1) == "@" && isfolder (fullfile (dir, nm)))
-      w.classes{end+1} = nm;
-    elseif (nm(1) == "+" && isfolder (fullfile (dir, nm)))
-      w.packages{end+1} = nm;
+      if (isfile (fullfile (dir, nm)))
+        w.mex{end+1} = nm;
+      endif
+    elseif (nm(1) == "@")
+      if (isfolder (fullfile (dir, nm)))
+        w.classes{end+1} = nm;
+      endif
+    elseif (nm(1) == "+")
+      if (isfolder (fullfile (dir, nm)))
+        w.packages{end+1} = nm;
+      endif
     endif
 
   endfor

@@ -101,25 +101,28 @@ function retval = what (dir)
   w.packages = cell (0, 1);
 
   for i = 1 : length (files)
-    n = files{i};
-    ## Ignore . and ..
-    if (strcmp (n, ".") || strcmp (n, ".."))
-      continue;
-    else
-      ## Ignore mdl, slx, p, and packages since they are not
-      [~, f, e] = fileparts (n);
-      if (strcmp (e, ".m"))
-        w.m{end+1} = n;
-      elseif (strcmp (e, ".mat"))
-        w.mat{end+1} = n;
-      elseif (strcmp (e, ".oct"))
-        w.oct{end+1} = n;
-      elseif (strcmp (e, mexext ()))
-        w.mex{end+1} = n;
-      elseif (n(1) == "@" && isfolder (fullfile (dir, n)))
-        w.classes{end+1} = n;
-      endif
+    nm = files{i};
+
+    if (strcmp (nm, ".") || strcmp (nm, ".."))
+      continue;   # Ignore . and ..
     endif
+
+    ## mdl, slx, and p are ignored (no if test) since they are not implemented
+    [~, f, e] = fileparts (nm);
+    if (strcmp (e, ".m"))
+      w.m{end+1} = nm;
+    elseif (strcmp (e, ".mat"))
+      w.mat{end+1} = nm;
+    elseif (strcmp (e, ".oct"))
+      w.oct{end+1} = nm;
+    elseif (strcmp (e, mexext ()))
+      w.mex{end+1} = nm;
+    elseif (nm(1) == "@" && isfolder (fullfile (dir, nm)))
+      w.classes{end+1} = nm;
+    elseif (nm(1) == "+" && isfolder (fullfile (dir, nm)))
+      w.packages{end+1} = nm;
+    endif
+
   endfor
 
   if (nargout == 0)
@@ -128,6 +131,7 @@ function retval = what (dir)
     __display_filenames__ ("\nMEX-files in directory", w.path, w.mex);
     __display_filenames__ ("\nOCT-files in directory", w.path, w.oct);
     __display_filenames__ ("\nClasses in directory", w.path, w.classes);
+    __display_filenames__ ("\nPackages in directory", w.path, w.packages);
   else
     retval = w;
   endif

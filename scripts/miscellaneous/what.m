@@ -59,9 +59,8 @@
 ## Cell array of package directories (@file{+@var{pkgname}/})
 ## @end table
 ##
-## Compatibility Note: Octave does not support mdl, slx, and p files; nor does
-## it support package directories.  @code{what} will always return an empty
-## list for these categories.
+## Compatibility Note: Octave does not support mdl, slx, and p files.
+## @code{what} will always return an empty list for these categories.
 ## @seealso{which, ls, exist}
 ## @end deftypefn
 
@@ -107,12 +106,12 @@ function retval = what (dir)
 
   if (nargout == 0)
     for i = 1 : numel (w)
-      __display_filenames__ ("M-files in directory", w(i).path, w(i).m);
-      __display_filenames__ ("\nMAT-files in directory", w(i).path, w(i).mat);
-      __display_filenames__ ("\nMEX-files in directory", w(i).path, w(i).mex);
-      __display_filenames__ ("\nOCT-files in directory", w(i).path, w(i).oct);
-      __display_filenames__ ("\nClasses in directory", w(i).path, w(i).classes);
-      __display_filenames__ ("\nPackages in directory", w(i).path, w(i).packages);
+      __print_fnames__ ("M-files in directory", w(i).path, w(i).m);
+      __print_fnames__ ("\nMAT-files in directory", w(i).path, w(i).mat);
+      __print_fnames__ ("\nMEX-files in directory", w(i).path, w(i).mex);
+      __print_fnames__ ("\nOCT-files in directory", w(i).path, w(i).oct);
+      __print_fnames__ ("\nClasses in directory", w(i).path, w(i).classes);
+      __print_fnames__ ("\nPackages in directory", w(i).path, w(i).packages);
     endfor
   else
     retval = w;
@@ -136,7 +135,7 @@ function w = __what__ (dir)
   w.classes = cell (0, 1);
   w.packages = cell (0, 1);
 
-  for i = 1 : length (files)
+  for i = 1 : numel (files)
     nm = files{i};
 
     if (strcmp (nm, ".") || strcmp (nm, ".."))
@@ -177,25 +176,11 @@ endfunction
 
 
 ## Pretty print filenames to terminal
-function __display_filenames__ (msg, p, f)
+function __print_fnames__ (msg, p, f)
 
-  if (length (f) > 0)
+  if (! isempty (f))
     printf ("%s %s:\n\n", msg, p);
-
-    maxlen = max (cellfun ("length", f));
-    ncols = max (1, floor (terminal_size ()(2) / (maxlen + 3)));
-    fmt = sprintf ("   %%-%ds", maxlen);
-    fmt = repmat (fmt, [1, ncols]);
-    fmt = [fmt "\n"];
-
-    nrows = ceil (length (f) / ncols);
-    for i = 1 : nrows
-      args = f(i:nrows:end);
-      if (length (args) < ncols)
-        args(end+1 : ncols) = {""};
-      endif
-      printf (fmt, args{:});
-    endfor
+    printf ("%s", list_in_columns (f, 0, "   "));
   endif
 
 endfunction
@@ -207,4 +192,6 @@ endfunction
 %! assert (fieldnames (w), {"path"; "m"; "mat"; "mex"; "oct"; "mdl"; "slx";
 %!                          "p"; "classes"; "packages"});
 
+## FIXME: Should have additional tests.  Possibly create a temporary directory
+## within TMPDIR, create files and folders, and call what() on that dir.
 %!error what (1, 2)

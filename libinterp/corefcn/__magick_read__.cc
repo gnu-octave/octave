@@ -144,12 +144,21 @@ static Range
 get_region_range (const octave_value& region)
 {
   Range output;
+
   if (region.is_range ())
     output = region.range_value ();
   else if (region.is_scalar_type ())
     {
       double value = region.scalar_value ();
       output = Range (value, value);
+    }
+  else if (region.is_matrix_type ())
+    {
+      NDArray array = region.array_value ();
+      double base = array(0);
+      double limit = array(array.numel () - 1);
+      double incr = array(1) - base;
+      output = Range (base, limit, incr);
     }
   else
     error ("__magick_read__: unknown datatype for Region option");

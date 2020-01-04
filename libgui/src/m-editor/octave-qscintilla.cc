@@ -615,6 +615,11 @@ namespace octave
   {
     QRegExp blank_line_regexp = QRegExp ("^[\t ]*$");
 
+    // end[xxxxx] [# comment] at end of a line
+    QRegExp end_word_regexp
+      = QRegExp ("(?:(?:['\"][^'\"]*['\"])?[^%#]*)*"
+                 "(end\\w*)[\r\n\t ;]*([%#].*)?$");
+
     QRegExp begin_block_regexp
       = QRegExp ("^([\t ]*)(if|elseif|else"
                  "|for|while|do|parfor"
@@ -702,9 +707,14 @@ namespace octave
 
         setIndentation (line, indent_column);
 
-        if (begin_block_regexp.indexIn (line_text) > -1)
+
+        int bpos = begin_block_regexp.indexIn (line_text);
+        if (bpos > -1)
           {
-            indent_column += indent_increment;
+            // Check for existing end statement in the same line
+            int epos = end_word_regexp.indexIn (line_text, bpos);
+            if (epos == -1)
+              indent_column += indent_increment;
             if (line_text.contains ("switch"))
               in_switch = true;
           }

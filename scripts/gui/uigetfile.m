@@ -73,9 +73,9 @@
 ## @qcode{"MultiSelect"} key to @qcode{"on"}.  In that case @var{fname} is a
 ## cell array containing the files.
 ##
-## @var{fname} and @var{fpath} contain the chosen name(s) and path,
-## respectively.  @var{fltidx} is the index to list of filter extensions
-## @var{flt} that was selected.
+## @var{fname} and @var{fpath} return the chosen name and path, respectively.
+## @var{fltidx} is the index in the list of filter extensions @var{flt} that
+## was selected.
 ##
 ## @seealso{uiputfile, uigetdir}
 ## @end deftypefn

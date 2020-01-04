@@ -52,9 +52,9 @@
 ## If @var{default_file} is given it is preselected in the GUI dialog.
 ## If, in addition, a path is given it is also used as current path.
 ##
-## @var{fname} and @var{fpath} return the chosen name and path, respectivly.
-## @var{fltidx} is the index to list of filter extensions @var{flt} that was
-## selected.
+## @var{fname} and @var{fpath} return the chosen name and path, respectively.
+## @var{fltidx} is the index in the list of filter extensions @var{flt} that
+## was selected.
 ##
 ## @seealso{uigetfile, uigetdir}
 ## @end deftypefn

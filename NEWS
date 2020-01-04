@@ -158,7 +158,7 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   in a cell array of strings.
 
 - An undocumented function `gui_mainfcn` has been added, for compatibility
-  with figures created with Matlab's Guide.
+  with figures created with Matlab's GUIDE.
 
 ### Alphabetical list of new functions added in Octave 6
 

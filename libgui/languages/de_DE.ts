@@ -4356,7 +4356,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+153"/>
         <source>Auto insert after &quot;if&quot; etc.</source>
-        <translation>Automatisches schließen on &quot;if&quot; usw.</translation>
+        <translation type="unfinished">Automatisches schließen von &quot;if&quot; usw.</translation>
     </message>
     <message>
         <location line="+20"/>

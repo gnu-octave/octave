@@ -481,13 +481,13 @@ namespace octave
 %! dbstop help;
 %! dbstop in ls;
 %! dbstop help at 100;
-%! dbstop in ls 100;    ## 100 is a comment; code line is at 103
+%! dbstop in ls 98;     ## 98 is a comment; code line is at 101
 %! dbstop help 201 if a==5;
 %! dbstop if error Octave:undefined-function;
 %! s = dbstatus;
 %! dbclear all;
 %! assert ({s.bkpt(:).name}, {"help", "help", "help>do_contents", "ls", "ls"});
-%! assert ([s.bkpt(:).line], [48, 100, 201, 58, 103]);
+%! assert ([s.bkpt(:).line], [48, 100, 201, 56, 101]);
 %! assert (s.errs, {"Octave:undefined-function"});
 */
 

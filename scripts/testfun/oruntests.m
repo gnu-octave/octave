@@ -71,6 +71,9 @@ function run_all_tests (directory, do_class_dirs)
     if ((length (f) > 2 && strcmpi (f((end-1):end), ".m"))
         || (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
       ff = fullfile (directory, f);
+      if (! isfile (ff))
+        continue;
+      endif
       if (has_tests (ff))
         print_test_file_name (f);
         [p, n, xf, xb, sk, rtsk, rgrs] = test (ff, "quiet");

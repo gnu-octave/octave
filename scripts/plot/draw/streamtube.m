@@ -46,7 +46,7 @@
 ## The input parameter @var{options} is a 2-D vector of the form
 ## @code{[@var{scale}, @var{n}]}.  The first parameter scales the start radius
 ## of the streamtubes (default 1).  The second parameter specifies the number
-## of patches used for the streamtube circumference (default 20).
+## of polygon points used for the streamtube circumference (default 20).
 ##
 ## @code{streamtube} can be called with a cell array containing pre-computed
 ## streamline data.  To do this, @var{vertices} must be created with the
@@ -142,20 +142,28 @@ function h = streamtube (varargin)
   endif
 
   if (isempty (xyz))
-    xyz = stream3 (x, y, z, u, v, w, spx, spy, spz, 0.5);
+    xyz = stream3 (x, y, z, u, v, w, spx, spy, spz, 0.2);
   endif
 
   div = divergence (x, y, z, u, v, w);
-  vn = sqrt (u.*u + v.*v + w.*w);
-  vmax = max (vn(:));
-  vmin = min (vn(:));
 
-  ## Radius estimator
-  [ny, nx, nz] = size (x);
-  dx = (max (x(:)) - min (x(:))) / nx;
-  dy = (max (y(:)) - min (y(:))) / ny;
-  dz = (max (z(:)) - min (z(:))) / nz;
-  rstart = scale * sqrt (dx*dx + dy*dy + dz*dz);
+  ## Determine start radius
+  mxx = mnx = mxy = mny = mxz = mnz = [];
+  j = 1;
+  for i = 1 : length (xyz)
+    sl = xyz{i};
+    if (! isempty (sl))
+      slx = sl(:, 1); sly = sl(:, 2); slz = sl(:, 3);
+      mxx(j) = max (slx(:)); mnx(j) = min (slx(:));
+      mxy(j) = max (sly(:)); mny(j) = min (sly(:));
+      mxz(j) = max (slz(:)); mnz(j) = min (slz(:));
+      j += 1;
+    endif
+  endfor
+  dx = max (mxx) - min (mnx);
+  dy = max (mxy) - min (mny);
+  dz = max (mxz) - min (mnz);
+  rstart = scale * sqrt (dx*dx + dy*dy + dz*dz) / 25;
 
   h = [];
   for i = 1 : length (xyz)
@@ -163,37 +171,33 @@ function h = streamtube (varargin)
     num_vertices = rows (sl);
     if (! isempty (sl) && num_vertices > 2)
 
-      div_sl = interp3 (x, y, z, div, sl(:, 1), sl(:, 2), sl(:, 3));
       usl = interp3 (x, y, z, u, sl(:, 1), sl(:, 2), sl(:, 3));
       vsl = interp3 (x, y, z, v, sl(:, 1), sl(:, 2), sl(:, 3));
       wsl = interp3 (x, y, z, w, sl(:, 1), sl(:, 2), sl(:, 3));
       vv = sqrt (usl.*usl + vsl.*vsl + wsl.*wsl);
 
-      htmp = plottube (hax, sl, div_sl, vv, vmax, vmin, rstart, num_poly);
-      h = [h; htmp];
+      div_sl = interp3 (x, y, z, div, sl(:, 1), sl(:, 2), sl(:, 3));
+      is_singular_div = find (isnan (div_sl), 1, "first");
 
+      if (! isempty (is_singular_div))
+        max_vertices = is_singular_div - 1;
+      else
+        max_vertices = num_vertices;
+      endif
+
+      if (max_vertices > 2)
+
+        htmp = plottube (hax, sl, div_sl, vv, max_vertices, ...
+                         rstart, num_poly);
+        h = [h; htmp];
+
+      endif
     endif
   endfor
 
 endfunction
 
-function h = plottube (hax, sl, div_sl, vv, vmax, vmin, rstart, num_poly)
-
-  is_singular_div = find (isnan (div_sl), 1, "first");
-  if (! isempty (is_singular_div))
-    max_vertices = is_singular_div - 1;
-  else
-    max_vertices = length (sl);
-  endif
-  if (max_vertices < 3)
-    error ("streamtube: too little data to plot");
-  endif
-
-  if (vmax == vmin)
-    colscale = 0.0;
-  else
-    colscale = 1.0 / (vmax - vmin);
-  endif
+function h = plottube (hax, sl, div_sl, vv, max_vertices, rstart, num_poly)
 
   phi = linspace (0, 2*pi, num_poly);
   cp = cos (phi);
@@ -218,10 +222,15 @@ function h = plottube (hax, sl, div_sl, vv, vmax, vmin, rstart, num_poly)
   K = ract * N;
   XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_poly);
 
-  px = zeros (4, num_poly * (max_vertices - 2));
-  py = zeros (4, num_poly * (max_vertices - 2));
-  pz = zeros (4, num_poly * (max_vertices - 2));
-  pc = zeros (4, num_poly * (max_vertices - 2));
+  px = zeros (num_poly, max_vertices - 1);
+  py = zeros (num_poly, max_vertices - 1);
+  pz = zeros (num_poly, max_vertices - 1);
+  pc = zeros (num_poly, max_vertices - 1);
+
+  px(:, 1) = XS(1, :).';
+  py(:, 1) = XS(2, :).';
+  pz(:, 1) = XS(3, :).';
+  pc(:, 1) = vact * ones (num_poly, 1);
 
   for i = 3 : max_vertices
 
@@ -242,21 +251,17 @@ function h = plottube (hax, sl, div_sl, vv, vmax, vmin, rstart, num_poly)
     Kp = KK - RE * dot (KK, RE);
     K = ract * Kp / norm (Kp);
 
-    XSold = XS;
     ## Rotate the guiding point around R and collect patch vertices
     XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_poly);
-    [tx, ty, tz] = segment_patch_data (XS, XSold);
 
-    from = (i - 3) * num_poly + 1;
-    to = (i + 1 - 3) * num_poly;
-    px(:, from:to) = tx;
-    py(:, from:to) = ty;
-    pz(:, from:to) = tz;
-    pc(:, from:to) = colscale * (vact - vmin) * ones (4, num_poly);
+    px(:, i - 1) = XS(1, :).';
+    py(:, i - 1) = XS(2, :).';
+    pz(:, i - 1) = XS(3, :).';
+    pc(:, i - 1) = vact * ones (num_poly, 1);
 
   endfor
 
-  h = patch (hax, px, py, pz, pc);
+  h = surface (hax, px, py, pz, pc);
 
 endfunction
 
@@ -270,33 +275,6 @@ function N = get_normal1 (X)
   endif
 
   N /= norm (N);
-
-endfunction
-
-## Create patch data to draw a segment
-## from starting point XS to ending point XE
-function [px, py, pz] = segment_patch_data (XS, XE)
-
-  num_poly = columns (XS);
-
-  px = zeros (4, num_poly);
-  py = zeros (4, num_poly);
-  pz = zeros (4, num_poly);
-
-  px(1, :) = XS(1, :);
-  px(2, :) = XE(1, :);
-  px(3, :) = [XE(1, 2:end), XE(1, 1)];
-  px(4, :) = [XS(1, 2:end), XS(1, 1)];
-
-  py(1, :) = XS(2, :);
-  py(2, :) = XE(2, :);
-  py(3, :) = [XE(2, 2:end), XE(2, 1)];
-  py(4, :) = [XS(2, 2:end), XS(2, 1)];
-
-  pz(1, :) = XS(3, :);
-  pz(2, :) = XE(3, :);
-  pz(3, :) = [XE(3, 2:end), XE(3, 1)];
-  pz(4, :) = [XS(3, 2:end), XS(3, 1)];
 
 endfunction
 

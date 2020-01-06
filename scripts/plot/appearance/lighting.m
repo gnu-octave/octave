@@ -76,16 +76,15 @@ function lighting (varargin)
     hlist = [hlist; kids(strcmp(types, "surface"))];
     parents = kids(strcmp (types, "axes"));
     hglist = kids(strcmp (types, "hggroup"));
+
+    kids = get (parents, "children");
     for i = 1 : numel (hglist)
       props = get (hglist(i));
       if (! isfield (props, "levelstep"))
-        parents(end+1) = hglist(i);
+        kids = [kids; get(hglist(i), "children")];
       endif
     endfor
-    kids = [];
-    for i = 1 : numel (parents)
-      kids = [kids; get(parents(i), "children")];
-    endfor
+
   endwhile
 
   ## FIXME: This is the old, simple code.

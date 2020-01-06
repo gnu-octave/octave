@@ -86,8 +86,8 @@ Return a structure describing the available audio input and output devices.
 
 The @var{devinfo} structure has two fields @qcode{"input"} and
 @qcode{"output"}.  The value of each field is a structure array with fields
-@qcode{"Name"}, @nospell{"DriverVersion"} and @qcode{"ID"} describing an audio
-device.
+@qcode{"Name"}, @qcode{@nospell{"DriverVersion"}} and @qcode{"ID"} describing
+an audio device.
 
 If the optional argument @var{io} is 1, return information about input devices
 only.  If it is 0, return information about output devices only.  If @var{io}
@@ -100,8 +100,8 @@ corresponding device.
 If the optional argument @var{name} is provided, return the ID of the named
 device.
 
-If the optional argument @qcode{"DriverVersion"} is given, return the name of
-the driver for the specified device.
+If the optional argument @qcode{@nospell{"DriverVersion"}} is given, return the
+name of the driver for the specified device.
 
 Given a sampling rate, bits per sample, and number of channels for an input or
 output device, return the ID of the first device that supports playback or

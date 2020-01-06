@@ -78,12 +78,13 @@
 ## @samp{KeyName} must be present in order to assign to this field.
 ##
 ## @item
-## @samp{HeaderFields} --- Specify the header fields for the connection.
+## @samp{@nospell{HeaderFields}} --- Specify the header fields for the
+## connection.
 ##
 ## Names and values of header fields, specified as an m-by-2 array of strings
 ## or cell array of character vectors to add to the HTTP request header.
-## HeaderFields@{i,1@} is the name of a field and HeaderFields@{i,2@} is its
-## value.
+## @nospell{HeaderFields}@{i,1@} is the name of a field and
+## @nospell{HeaderFields}@{i,2@} is its value.
 ##
 ## @example
 ## @group

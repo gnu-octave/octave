@@ -114,14 +114,14 @@ function h = streamtube (varargin)
   endswitch
 
   scale = 1;
-  n = 20;
+  num_poly = 20;
   if (! isempty (options))
     switch (numel (options))
       case 1
         scale = options(1);
       case 2
         scale = options(1);
-        n = options(2);
+        num_poly = options(2);
       otherwise
         error ("streamtube: invalid number of OPTIONS elements");
     endswitch
@@ -129,10 +129,10 @@ function h = streamtube (varargin)
     if (! isreal (scale) || scale <= 0)
       error ("streamtube: SCALE must be a real scalar > 0");
     endif
-    if (! isreal (n) || n < 3)
+    if (! isreal (num_poly) || num_poly < 3)
       error ("streamtube: number of polygons N must be greater than 2");
     endif
-    n = fix (n);
+    num_poly = fix (num_poly);
   endif
 
   if (isempty (hax))
@@ -141,7 +141,7 @@ function h = streamtube (varargin)
     hax = hax(1);
   endif
 
-  if isempty (xyz)
+  if (isempty (xyz))
     xyz = stream3 (x, y, z, u, v, w, spx, spy, spz, 0.5);
   endif
 
@@ -155,21 +155,21 @@ function h = streamtube (varargin)
   dx = (max (x(:)) - min (x(:))) / nx;
   dy = (max (y(:)) - min (y(:))) / ny;
   dz = (max (z(:)) - min (z(:))) / nz;
-  r0 = scale * sqrt (dx*dx + dy*dy + dz*dz);
+  rstart = scale * sqrt (dx*dx + dy*dy + dz*dz);
 
   h = [];
   for i = 1 : length (xyz)
     sl = xyz{i};
-    nverts = rows (sl);
-    if (! isempty (sl)) && (nverts > 2)
+    num_vertices = rows (sl);
+    if (! isempty (sl) && num_vertices > 2)
 
-      divsl = interp3 (x, y, z, div, sl(:, 1), sl(:, 2), sl(:, 3));
+      div_sl = interp3 (x, y, z, div, sl(:, 1), sl(:, 2), sl(:, 3));
       usl = interp3 (x, y, z, u, sl(:, 1), sl(:, 2), sl(:, 3));
       vsl = interp3 (x, y, z, v, sl(:, 1), sl(:, 2), sl(:, 3));
       wsl = interp3 (x, y, z, w, sl(:, 1), sl(:, 2), sl(:, 3));
       vv = sqrt (usl.*usl + vsl.*vsl + wsl.*wsl);
 
-      htmp = plottube (hax, sl, divsl, vv, vmax, vmin, r0, n);
+      htmp = plottube (hax, sl, div_sl, vv, vmax, vmin, rstart, num_poly);
       h = [h; htmp];
 
     endif
@@ -177,15 +177,15 @@ function h = streamtube (varargin)
 
 endfunction
 
-function h = plottube (hax, sl, divsl, vv, vmax, vmin, r0, npoly)
+function h = plottube (hax, sl, div_sl, vv, vmax, vmin, rstart, num_poly)
 
-  issingular = find (isnan (divsl), 1, "first");
-  if (! isempty (issingular))
-    maxnverts = issingular - 1;
+  is_singular_div = find (isnan (div_sl), 1, "first");
+  if (! isempty (is_singular_div))
+    max_vertices = is_singular_div - 1;
   else
-    maxnverts = length (sl);
+    max_vertices = length (sl);
   endif
-  if (maxnverts < 3)
+  if (max_vertices < 3)
     error ("streamtube: too little data to plot");
   endif
 
@@ -195,60 +195,64 @@ function h = plottube (hax, sl, divsl, vv, vmax, vmin, r0, npoly)
     colscale = 1.0 / (vmax - vmin);
   endif
 
-  phi = linspace (0, 2*pi, npoly);
+  phi = linspace (0, 2*pi, num_poly);
+  cp = cos (phi);
+  sp = sin (phi);
 
   X0 = sl(1, :);
   X1 = sl(2, :);
 
   ## 1st rotation axis
   R = X1 - X0;
+  RE = R / norm (R);
 
   ## Initial radius
   vold = vv(1);
   vact = vv(2);
-  ract = r0 * exp (0.5 * divsl(2) * norm (R) / vact) * sqrt (vold / vact);
+  ract = rstart * exp (0.5 * div_sl(2) * norm (R) / vact) * sqrt (vold / vact);
   vold = vact;
   rold = ract;
 
   ## Guide point and its rotation to create a segment
-  N = get_guide_point (X0, X1);
+  N = get_normal1 (R);
   K = ract * N;
-  XS = rotation (R, K, phi) + repmat (X1.', 1, npoly);
+  XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_poly);
 
-  px = zeros (4, npoly * (maxnverts - 2));
-  py = zeros (4, npoly * (maxnverts - 2));
-  pz = zeros (4, npoly * (maxnverts - 2));
-  pc = zeros (4, npoly * (maxnverts - 2));
+  px = zeros (4, num_poly * (max_vertices - 2));
+  py = zeros (4, num_poly * (max_vertices - 2));
+  pz = zeros (4, num_poly * (max_vertices - 2));
+  pc = zeros (4, num_poly * (max_vertices - 2));
 
-  for j = 3:maxnverts
+  for i = 3 : max_vertices
 
     KK = K;
     X0 = X1;
-    X1 = sl(j, :);
+    X1 = sl(i, :);
     R = X1 - X0;
+    RE = R / norm (R);
 
     ## Tube radius
-    vact = vv(j);
-    ract = rold * exp (0.5 * divsl(j) * norm (R) / vact) * sqrt (vold / vact);
+    vact = vv(i);
+    ract = rold * exp (0.5 * div_sl(i) * norm (R) / vact) * sqrt (vold / vact);
     vold = vact;
     rold = ract;
 
-    ## Project K onto R and get the difference in order to calculate the next
+    ## Project K onto RE and get the difference in order to calculate the next
     ## guiding point
-    Kp = KK - R * dot (KK, R) / (norm (R)^2);
+    Kp = KK - RE * dot (KK, RE);
     K = ract * Kp / norm (Kp);
 
     XSold = XS;
     ## Rotate the guiding point around R and collect patch vertices
-    XS = rotation (R, K, phi) + repmat (X1.', 1, npoly);
+    XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_poly);
     [tx, ty, tz] = segment_patch_data (XS, XSold);
 
-    from = (j - 3) * npoly + 1;
-    to = (j + 1 - 3) * npoly;
+    from = (i - 3) * num_poly + 1;
+    to = (i + 1 - 3) * num_poly;
     px(:, from:to) = tx;
     py(:, from:to) = ty;
     pz(:, from:to) = tz;
-    pc(:, from:to) = colscale * (vact - vmin) * ones (4, npoly);
+    pc(:, from:to) = colscale * (vact - vmin) * ones (4, num_poly);
 
   endfor
 
@@ -256,15 +260,13 @@ function h = plottube (hax, sl, divsl, vv, vmax, vmin, r0, npoly)
 
 endfunction
 
-## Find N orthogonal to (X1 - X0)
-function N = get_guide_point (X0, X1)
+## Arbitrary N normal to X
+function N = get_normal1 (X)
 
-  S = X1 - X0;
-
-  if ((S(3) == 0) && (S(1) == -S(2)))
-    N = [- S(2) - S(3), S(1), S(1)];
+  if ((X(3) == 0) && (X(1) == -X(2)))
+    N = [- X(2) - X(3), X(1), X(1)];
   else
-    N = [S(3), S(3), - S(1) - S(2)];
+    N = [X(3), X(3), - X(1) - X(2)];
   endif
 
   N /= norm (N);
@@ -275,11 +277,11 @@ endfunction
 ## from starting point XS to ending point XE
 function [px, py, pz] = segment_patch_data (XS, XE)
 
-  npoly = columns (XS);
+  num_poly = columns (XS);
 
-  px = zeros (4, npoly);
-  py = zeros (4, npoly);
-  pz = zeros (4, npoly);
+  px = zeros (4, num_poly);
+  py = zeros (4, num_poly);
+  pz = zeros (4, num_poly);
 
   px(1, :) = XS(1, :);
   px(2, :) = XE(1, :);
@@ -298,15 +300,9 @@ function [px, py, pz] = segment_patch_data (XS, XE)
 
 endfunction
 
-## A: Axis of rotation
-## X: Guiding point
-## phi: Angles
-## Y: Rotated points
-function Y = rotation (A, X, phi)
-
-  U = A / norm (A);
-  cp = cos (phi);
-  sp = sin (phi);
+## Rotate X around U where |U| = 1
+## cp = cos (angle), sp = sin (angle)
+function Y = rotation (X, U, cp, sp)
 
   ux = U(1);
   uy = U(2);

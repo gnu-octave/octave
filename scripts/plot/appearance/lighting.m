@@ -82,7 +82,10 @@ function lighting (varargin)
         parents(end+1) = hglist(i);
       endif
     endfor
-    kids = get (parents, "children");
+    kids = [];
+    for i = 1 : numel (parents)
+      kids = [kids; get(parents(i), "children")];
+    endfor
   endwhile
 
   ## FIXME: This is the old, simple code.

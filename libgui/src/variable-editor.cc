@@ -446,7 +446,7 @@ namespace octave
 
     if (name.endsWith (')') || name.endsWith ('}'))
       {
-        name.remove (QRegExp ("(\\(|\\{)[^({]*(\\)|\\})$"));
+        name.remove ( QRegExp ("[({][^({]*[)}]$)") );
         emit edit_variable_signal (name, octave_value ());
       }
   }

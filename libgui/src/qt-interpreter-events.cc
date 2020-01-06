@@ -84,10 +84,9 @@ namespace octave
         QString ext = QString::fromStdString (ext_name.first);
         QString name = QString::fromStdString (ext_name.second);
 
-        // Strip out extensions from name and replace ';' with spaces in
-        // list.
+        // Strip out extensions from name and replace ';' with spaces in list.
 
-        name.replace (QRegExp ("\\(.*\\)"), "");
+        name.replace (QRegExp (R"(\(.*\))"), "");
         ext.replace (";", " ");
 
         if (name.isEmpty ())

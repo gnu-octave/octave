@@ -525,9 +525,9 @@ namespace octave
 
     // last word except for comments,
     // allowing % and # in single or double quoted strings
-    // FIXME This will get confused by transpose.
+    // FIXME: This will get confused by transpose.
     QRegExp ekey = QRegExp ("(?:(?:['\"][^'\"]*['\"])?[^%#]*)*"
-                            "(\\w+)[ \t;\r\n]*([%#].*)?$");
+                            "(\\w+)[ \t;\r\n]*(?:[%#].*)?$");
 
     int bpos = bkey.indexIn (prevline, 0);
     int epos;
@@ -550,7 +550,7 @@ namespace octave
 
         if (do_auto_close
             && ! inline_end
-            && ! first_word.contains (QRegExp ("(case|otherwise|unwind_protect_cleanup)")))
+            && ! first_word.contains (QRegExp ("(?:case|otherwise|unwind_protect_cleanup)")))
           {
             // Do auto close
             auto_close (do_auto_close, line, prevline, first_word);
@@ -559,7 +559,7 @@ namespace octave
         return;
       }
 
-    QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch|unwind_protect_cleanup)"
+    QRegExp mkey = QRegExp ("^[\t ]*(?:else|elseif|catch|unwind_protect_cleanup)"
                             "[\r]?[\t #%\n]");
     if (prevline.contains (mkey))
       {
@@ -576,7 +576,7 @@ namespace octave
         return;
       }
 
-    QRegExp case_key = QRegExp ("^[\t ]*(case|otherwise)[\r]?[\t #%\n]");
+    QRegExp case_key = QRegExp ("^[\t ]*(?:case|otherwise)[\r]?[\t #%\n]");
     if (prevline.contains (case_key) && do_smart_indent)
       {
         QString last_line = text (line-1);
@@ -594,7 +594,7 @@ namespace octave
         setCursorPosition (line+1, act_ind);
       }
 
-    ekey = QRegExp ("^[\t ]*(end|endif|endfor|endwhile|until|endfunction"
+    ekey = QRegExp ("^[\t ]*(?:end|endif|endfor|endwhile|until|endfunction"
                     "|end_try_catch|end_unwind_protect)[\r]?[\t #%\n(;]");
     if (prevline.contains (ekey))
       {
@@ -618,10 +618,10 @@ namespace octave
     // end[xxxxx] [# comment] at end of a line
     QRegExp end_word_regexp
       = QRegExp ("(?:(?:['\"][^'\"]*['\"])?[^%#]*)*"
-                 "(end\\w*)[\r\n\t ;]*([%#].*)?$");
+                 "(?:end\\w*)[\r\n\t ;]*(?:[%#].*)?$");
 
     QRegExp begin_block_regexp
-      = QRegExp ("^([\t ]*)(if|elseif|else"
+      = QRegExp ("^[\t ]*(?:if|elseif|else"
                  "|for|while|do|parfor"
                  "|switch|case|otherwise"
                  "|function"
@@ -630,13 +630,13 @@ namespace octave
                  "[\r\n\t #%]");
 
     QRegExp mid_block_regexp
-      = QRegExp ("^([\t ]*)(elseif|else"
+      = QRegExp ("^[\t ]*(?:elseif|else"
                  "|otherwise"
                  "|unwind_protect_cleanup|catch)"
                  "[\r\n\t #%]");
 
     QRegExp end_block_regexp
-      = QRegExp ("^([\t ]*)(end"
+      = QRegExp ("^[\t ]*(?:end"
                  "|end(for|function|if|parfor|switch|while"
                  "|classdef|enumeration|events|methods|properties)"
                  "|end_(try_catch|unwind_protect)"
@@ -644,7 +644,7 @@ namespace octave
                  "[\r\n\t #%]");
 
     QRegExp case_block_regexp
-      = QRegExp ("^([\t ]*)(case|otherwise)"
+      = QRegExp ("^[\t ]*(?:case|otherwise)"
                  "[\r\n\t #%]");
 
     int indent_column = -1;
@@ -700,7 +700,8 @@ namespace octave
 
         if (case_block_regexp.indexIn (line_text) > -1)
           {
-            if (case_block_regexp.indexIn (prev_line) < 0 && !prev_line.contains("switch"))
+            if (case_block_regexp.indexIn (prev_line) < 0
+                && !prev_line.contains("switch"))
               indent_column -= indent_increment;
             in_switch = true;
           }

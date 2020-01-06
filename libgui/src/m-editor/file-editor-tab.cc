@@ -1526,7 +1526,7 @@ namespace octave
   void file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
   {
     QRegExp rxc;
-    QString ws = "^([ \\t]*)";
+    QString ws = "^(?:[ \\t]*)";
     QStringList comment_str = m_edit_area->comment_string (comment);
     QString used_comment_str = comment_str.at (0);
 

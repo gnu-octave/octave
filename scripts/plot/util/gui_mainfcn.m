@@ -1,4 +1,8 @@
-## Copyright (C) 2019 Guillaume Flandin
+## Copyright (C) 2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This filename is part of Octave.
 ##

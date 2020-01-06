@@ -3,10 +3,11 @@
 
 /* Look up a filename in a path.
 
-Copyright (C) 2003-2019 John W. Eaton
-Copyright (C) 1993, 94, 95, 96, 97, 98 Karl Berry.
-Copyright (C) 1993, 94, 95, 96, 97 Karl Berry & O. Weber.
-Copyright (C) 1992, 93, 94, 95, 96, 97 Free Software Foundation, Inc.
+Copyright (C) 1991-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
 
 This file is part of Octave.
 

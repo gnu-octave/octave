@@ -1,6 +1,8 @@
-## Copyright (C) 2017-2019 -2018 Rik Wehbring
-## Copyright (C) 2005-2019 William Poetra Yoga Hadisoeseno
-## Copyright (C) 2000-2019 Paul Kienzle
+## Copyright (C) 2000-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

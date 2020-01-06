@@ -1,8 +1,10 @@
 /*
 
-Copyright (C) 2016-2019 Barbara Lócsi
-Copyright (C) 2006 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 1997-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
 
 This file is part of Octave.
 

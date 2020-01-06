@@ -1,6 +1,8 @@
-## Copyright (C) 2000-2019 Paul Kienzle
-## Copyright (C) 2003 Alois Schloegl
-## Copyright (C) 2010 VZLU Prague
+## Copyright (C) 2000-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

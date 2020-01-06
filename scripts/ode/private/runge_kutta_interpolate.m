@@ -1,5 +1,8 @@
-## Copyright (C) 2015-2019 Carlo de Falco
-## Copyright (C) 2015-2019 Jacopo Corno <jacopo.corno@gmail.com>
+## Copyright (C) 2015-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

@@ -1,6 +1,8 @@
-## Copyright (C) 2008-2019 N. J. Higham
-## Copyright (C) 2010 Richard T. Guy
-## Copyright (C) 2010 Marco Caliari
+## Copyright (C) 2008-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

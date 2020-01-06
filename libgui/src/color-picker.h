@@ -3,8 +3,11 @@
 This class provides a simple color picker based on tQColorButton
 by Harald Jedele, 23.03.01, GPL version 2 or any later version.
 
-Copyright (C) FZI Forschungszentrum Informatik Karlsruhe
-Copyright (C) 2013-2019 Torsten
+Copyright (C) 2013-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
 
 This file is part of Octave.
 

@@ -1,6 +1,8 @@
-## Copyright (C) 2014-2019 Markus Bergholz
-## Copyright (C) 2000-2019 Paul Kienzle
-## Copyright (C) 2008 Jaroslav Hajek
+## Copyright (C) 2000-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

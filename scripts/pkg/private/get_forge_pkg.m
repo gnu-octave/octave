@@ -1,5 +1,8 @@
-## Copyright (C) 2005-2019 Søren Hauberg
-## Copyright (C) 2010-2019 VZLU Prague, a.s.
+## Copyright (C) 2005-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

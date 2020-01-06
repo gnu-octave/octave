@@ -1,7 +1,10 @@
 /*
 
-Copyright (C) 2016-2019 Francesco Faccio <francesco.faccio@mail.polimi.it>
-Copyright (C) 2019 William Greene <w.h.greene@gmail.com>
+Copyright (C) 2016-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
 
 This file is part of Octave.
 

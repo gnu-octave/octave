@@ -1,4 +1,8 @@
-## Copyright (C) 2017-2019 Olaf Till <i7tiol@t-online.de>
+## Copyright (C) 2017-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as

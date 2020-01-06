@@ -1,8 +1,10 @@
 /*
 
-Copyright (C) 2016-2019 John W. Eaton
-Copyright (C) 2005-2019 David Bateman
-Copyright (C) 1998-2005 Andy Adler
+Copyright (C) 1998-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
 
 This file is part of Octave.
 

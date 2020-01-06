@@ -1,7 +1,10 @@
 /*
 
-Copyright (C) 2001-2019 Ross Lippert and Paul Kienzle
-Copyright (C) 2010 VZLU Prague
+Copyright (C) 2001-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
 
 This file is part of Octave.
 

@@ -1,7 +1,8 @@
-## Copyright (C) 2016-2019 Marco Caliari
-## Copyright (C) 2016-2019 Nir Krakauer
-## Copyright (C) 2018-2019 Stefan Schlögl
-## Copyright (C) 2018-2019 Michele Ginesi
+## Copyright (C) 2016-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

@@ -1,6 +1,8 @@
-## Copyright (C) 1995-2019 Friedrich Leisch
-## Copyright (C) 2010 Alois Schloegl
-## Copyright (C) 2014-2019 Drew Abbot
+## Copyright (C) 1995-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

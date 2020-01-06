@@ -1,7 +1,10 @@
 /*
 
-Copyright (C) 2001-2019 Ben Sapp
-Copyright (C) 2007-2009 John Swensen
+Copyright (C) 2001-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
 
 This file is part of Octave.
 
@@ -480,14 +483,14 @@ namespace octave
 %! dbclear all;   # Clear out breakpoints before test
 %! dbstop help;
 %! dbstop in ls;
-%! dbstop help at 100;
-%! dbstop in ls 98;     ## 98 is a comment; code line is at 101
-%! dbstop help 201 if a==5;
+%! dbstop help at 104;
+%! dbstop in ls 102;     ## 102 is a comment; code line is at 105
+%! dbstop help 204 if a==5;
 %! dbstop if error Octave:undefined-function;
 %! s = dbstatus;
 %! dbclear all;
 %! assert ({s.bkpt(:).name}, {"help", "help", "help>do_contents", "ls", "ls"});
-%! assert ([s.bkpt(:).line], [48, 100, 201, 56, 101]);
+%! assert ([s.bkpt(:).line], [52, 104, 204, 60, 105]);
 %! assert (s.errs, {"Octave:undefined-function"});
 */
 

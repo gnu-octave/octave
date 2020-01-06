@@ -1,4 +1,8 @@
-## Copyright (C) 2012-2019 Ben Abbott, Jonas Lundgren
+## Copyright (C) 2012-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

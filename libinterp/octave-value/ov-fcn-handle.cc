@@ -1,8 +1,10 @@
 /*
 
-Copyright (C) 2003-2019 John W. Eaton
-Copyright (C) 2009 VZLU Prague, a.s.
-Copyright (C) 2010 Jaroslav Hajek
+Copyright (C) 2003-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
 
 This file is part of Octave.
 

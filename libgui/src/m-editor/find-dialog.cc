@@ -2,8 +2,11 @@
 
 Find dialog derived from an example from Qt Toolkit (license below (**))
 
-Copyright (C) 2012-2019 Torsten Lilge <ttl-octave@mailbox.org>
-Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
+Copyright (C) 2009-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
  All rights reserved.
  Contact: Nokia Corporation (qt-info@nokia.com)
 

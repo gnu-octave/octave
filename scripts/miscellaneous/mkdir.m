@@ -1,5 +1,8 @@
-## Copyright (C) 2016-2019 Lachlan Andrew
-## Copyright (C) 2012 Carnë Draug
+## Copyright (C) 2012-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by

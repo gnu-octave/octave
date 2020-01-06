@@ -1,8 +1,8 @@
-## Copyright (C) 2016-2019 Carlo de Falco
-## Copyright (C) 2016-2019 Francesco Faccio <francesco.faccio@mail.polimi.it>
-## Copyright (C) 2014-2019 Jacopo Corno <jacopo.corno@gmail.com>
-## Copyright (C) 2013-2019 Roberto Porcu' <roberto.porcu@polimi.it>
-## Copyright (C) 2006-2012 Thomas Treichl <treichl@users.sourceforge.net>
+## Copyright (C) 2006-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

@@ -1,5 +1,8 @@
-## Copyright (C) 2003-2019 Andy Adler
-## Copyright (C) 2002, 2013 N.J.Higham
+## Copyright (C) 2003-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

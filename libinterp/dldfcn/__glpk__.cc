@@ -1,7 +1,10 @@
 /*
 
-Copyright (C) 2005-2019 Nicolo' Giorgetti
-Copyright (C) 2013-2019 Sébastien Villemot <sebastien@debian.org>
+Copyright (C) 2005-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
 
 This file is part of Octave.
 

@@ -1,5 +1,8 @@
-## Copyright (C) 2007-2019 David Bateman
-## Copyright (C) 2009-2010 VZLU Prague
+## Copyright (C) 2007-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this distribution
+## or <https://octave.org/COPYRIGHT.html/>.
+##
 ##
 ## This file is part of Octave.
 ##

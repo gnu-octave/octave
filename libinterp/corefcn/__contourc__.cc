@@ -1,7 +1,10 @@
 /* Contour lines for function evaluated on a grid.
 
-Copyright (C) 2007-2019 Kai Habel
-Copyright (C) 2004, 2007 Shai Ayal
+Copyright (C) 2001-2019 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this distribution
+or <https://octave.org/COPYRIGHT.html/>.
+
 
 Adapted to an oct file from the stand alone contourl by Victro Munoz
 Copyright (C) 2004 Victor Munoz
@@ -13,6 +16,7 @@ Copyright (C) 1995, 2000, 2001 Maurice LeBrun
 Copyright (C) 2000, 2002 Joao Cardoso
 Copyright (C) 2000, 2001, 2002, 2004 Alan W. Irwin
 Copyright (C) 2004 Andrew Ross
+
 
 This file is part of Octave.
 

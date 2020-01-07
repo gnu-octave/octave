@@ -1,6 +1,6 @@
 dnl aclocal.m4 -- extra macros for configuring Octave
 dnl
-dnl Copyright (C) 1995-2019 The Octave Project Developers
+dnl Copyright (C) 1995-2020 The Octave Project Developers
 dnl
 dnl See the file COPYRIGHT.md in the top-level directory of this distribution
 dnl or <https://octave.org/COPYRIGHT.html/>.

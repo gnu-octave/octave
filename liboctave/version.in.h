@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 1992-2019 The Octave Project Developers
+Copyright (C) 1992-2020 The Octave Project Developers
 
 See the file COPYRIGHT.md in the top-level directory of this distribution
 or <https://octave.org/COPYRIGHT.html/>.

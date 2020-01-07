@@ -1,6 +1,6 @@
 # Makefile for Octave
 #
-# Copyright (C) 1993-2019 The Octave Project Developers
+# Copyright (C) 1993-2020 The Octave Project Developers
 #
 # See the file COPYRIGHT.md in the top-level directory of this distribution
 # or <https://octave.org/COPYRIGHT.html/>.

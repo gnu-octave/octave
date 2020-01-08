@@ -360,25 +360,27 @@ function __update_polar_grid__ (hax, ~, hg)
   patch (x(:,end), y(:,end), -ones (circle_points, 1),
          get (hax, "color"), "parent", hg);
 
-  ## Plot dotted circles
+  ## Plot grid circles
   line (x(:,1:end-1), y(:,1:end-1), lprops{:}, "parent", hg);
 
-  ## Outer circle is drawn solid
+  ## Outer circle (axes "box") is always drawn solid
   line (x(:,end), y(:,end), lprops{:}, "linestyle", "-", "parent", hg);
 
   ## Add radial labels
-  [x, y] = pol2cart (0.42 * pi, rtick);
+  ## Labels are arranged along a radius with an angle of 75 degrees.
+  ## 2% addition puts a small visual gap between grid circle and label.
+  [x, y] = pol2cart (0.42 * pi, rtick + (.02 * max (rtick(:))));
   text (x, y, num2cell (rtick), "verticalalignment", "bottom", tprops{:},
         "parent", hg);
 
-  ## add radial lines
+  ## Add radial lines
   s = rtick(end) * sin (ttick * pi / 180);
   c = rtick(end) * cos (ttick * pi / 180);
   x = [zeros(1, numel (ttick)); c];
   y = [zeros(1, numel (ttick)); s];
   line (x, y, "linestyle", ":", lprops{:}, "parent", hg);
 
-  ## add angular labels
+  ## Add angular labels
   tticklabel = num2cell (ttick);
   ## FIXME: This tm factor does not work as fontsize increases
   tm = 1.08;

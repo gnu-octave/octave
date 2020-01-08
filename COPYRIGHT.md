@@ -45,7 +45,7 @@ Copyright:
   1997, 1999-2000, 2008  Rolf Fabian
   1997-1999, 2001-2003  Mumit Khan
   1998  Eric Norum
-  1998  Philippe.Defert@cern.ch
+  1998  Philippe Defert
   1998  Richard Allan Holcombe
   1998  Roman Hodek
   1998  Tomislav Goles
@@ -170,7 +170,7 @@ Copyright:
   2006  Christopher Hulbert
   2006  Don Bindner
   2006  Geoffrey Knauth
-  2006  Henry Mollet mollet@pacbell.net
+  2006  Henry Mollet
   2006  Jim Peterson
   2006  Kai Labusch
   2006  Ken Kouno
@@ -311,7 +311,7 @@ Copyright:
   2011  Alexander Klein
   2011  Andriy Shinkarchuck
   2011  Andy Buckle
-  2011  David Finkel david.finkel@gmail.com
+  2011  David Finkel
   2011  David Wells
   2011  Fabian Deutsch
   2011  Giles Anderson

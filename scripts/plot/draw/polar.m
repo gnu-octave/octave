@@ -331,7 +331,7 @@ function __update_polar_grid__ (hax, ~, hg)
   rtick = unique (get (hax, "rtick")(:)');
   rtick = rtick(rtick > 0);
   if (isempty (rtick))
-    rtick = [0.5 1];
+    rtick = [0.5, 1];
   endif
 
   ttick = unique (get (hax, "ttick")(:)');
@@ -374,18 +374,17 @@ function __update_polar_grid__ (hax, ~, hg)
         "parent", hg);
 
   ## Add radial lines
-  s = rtick(end) * sin (ttick * pi / 180);
-  c = rtick(end) * cos (ttick * pi / 180);
-  x = [zeros(1, numel (ttick)); c];
-  y = [zeros(1, numel (ttick)); s];
+  [x, y] = pol2cart (deg2rad (ttick), rtick(end));
+  x = [zeros(1, numel (ttick)); x];
+  y = [zeros(1, numel (ttick)); y];
   line (x, y, "linestyle", ":", lprops{:}, "parent", hg);
 
   ## Add angular labels
   tticklabel = num2cell (ttick);
-  ## FIXME: This tm factor does not work as fontsize increases
-  tm = 1.08;
-  text (tm * c, tm * s, tticklabel, "horizontalalignment", "center",
-        tprops{:}, "parent", hg);
+  ## FIXME: The 1.08 factor does not work as fontsize increases
+  [x, y] = pol2cart (deg2rad (ttick), 1.08 * rtick(end));
+  text (x, y, tticklabel, "horizontalalignment", "center", tprops{:},
+        "parent", hg);
 
   lim = 1.1 * rtick(end);
   set (hax, "xlim", [-lim, lim], "ylim", [-lim, lim]);

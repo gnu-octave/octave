@@ -1,41 +1,42 @@
 /*
 
-Copyright (C) 1993-2020 The Octave Project Developers
+We are using the pure parser interface and the reentrant lexer interface
+but the Octave parser and lexer are NOT properly reentrant because both
+still use many global variables.  It should be safe to create a parser
+object and call it while another parser object is active (to parse a
+callback function while the main interactive parser is waiting for
+input, for example) if you take care to properly save and restore
+(typically with an unwind_protect object) relevant global values before
+and after the nested call.
 
-See the file COPYRIGHT.md in the top-level directory of this distribution
-or <https://octave.org/COPYRIGHT.html/>.
-
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-/*
-We are using the pure parser interface and the reentrant lexer
-interface but the Octave parser and lexer are NOT properly
-reentrant because both still use many global variables.  It should be
-safe to create a parser object and call it while another parser
-object is active (to parse a callback function while the main
-interactive parser is waiting for input, for example) if you take
-care to properly save and restore (typically with an unwind_protect
-object) relevant global values before and after the nested call.
 */
 
 %top {
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
+
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
@@ -2304,7 +2305,10 @@ looks_like_copyright (const std::string& s)
 
   if (! s.empty ())
     {
-      size_t offset = s.find_first_not_of (" \t");
+      // Comment characters have been stripped but whitespace
+      // (including newlines) remains.
+
+      size_t offset = s.find_first_not_of (" \t\n\r");
 
       retval = (s.substr (offset, 9) == "Copyright"
                 || s.substr (offset, 6) == "Author"

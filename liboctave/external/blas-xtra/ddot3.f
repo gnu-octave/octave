@@ -1,8 +1,7 @@
 c Copyright (C) 2009-2020 The Octave Project Developers
 c
-c See the file COPYRIGHT.md in the top-level directory of this distribution
-c or <https://octave.org/COPYRIGHT.html/>.
-c
+c See the file COPYRIGHT.md in the top-level directory of this
+c distribution or <https://octave.org/copyright/>.
 c
 c Author: Jaroslav Hajek <highegg@gmail.com>
 c

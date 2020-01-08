@@ -1,7 +1,9 @@
+@c ---------------------------------------------------------------------
+@c
 @c Copyright (C) 2012-2020 The Octave Project Developers
 @c
-@c See the file COPYRIGHT.md in the top-level directory of this distribution
-@c or <https://octave.org/COPYRIGHT.html/>.
+@c See the file COPYRIGHT.md in the top-level directory of this
+@c or <https://octave.org/copyright/>.
 @c
 @c
 @c This file is part of Octave.
@@ -19,6 +21,8 @@
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
+@c
+@c ---------------------------------------------------------------------
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces

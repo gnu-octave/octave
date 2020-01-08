@@ -1,9 +1,11 @@
 dnl aclocal.m4 -- extra macros for configuring Octave
 dnl
+dnl --------------------------------------------------------------------
+dnl
 dnl Copyright (C) 1995-2020 The Octave Project Developers
 dnl
-dnl See the file COPYRIGHT.md in the top-level directory of this distribution
-dnl or <https://octave.org/COPYRIGHT.html/>.
+dnl See the file COPYRIGHT.md in the top-level directory of this
+dnl or <https://octave.org/copyright/>.
 dnl
 dnl
 dnl This file is part of Octave.
@@ -21,11 +23,11 @@ dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, see
 dnl <https://www.gnu.org/licenses/>.
-
+dnl
+dnl --------------------------------------------------------------------
 dnl
 dnl Alphabetical list of macros in the OCTAVE_ namespace
 dnl
-
 dnl
 dnl Figure out the hardware-vendor-os info.
 dnl

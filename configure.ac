@@ -1,10 +1,11 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
+########################################################################
+###
 ### Copyright (C) 1993-2020 The Octave Project Developers
 ###
-### See the file COPYRIGHT.md in the top-level directory of this distribution
-### or <https://octave.org/COPYRIGHT.html/>.
-###
+### See the file COPYRIGHT.md in the top-level directory of this
+### distribution or <https://octave.org/copyright/>.
 ###
 ### This file is part of Octave.
 ###
@@ -21,6 +22,8 @@ dnl
 ### You should have received a copy of the GNU General Public License
 ### along with Octave; see the file COPYING.  If not, see
 ### <https://www.gnu.org/licenses/>.
+###
+########################################################################
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])

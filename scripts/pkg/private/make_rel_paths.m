@@ -1,8 +1,9 @@
+########################################################################
+##
 ## Copyright (C) 2019-2020 The Octave Project Developers
 ##
-## See the file COPYRIGHT.md in the top-level directory of this distribution
-## or <https://octave.org/COPYRIGHT.html/>.
-##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by

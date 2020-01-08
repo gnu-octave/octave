@@ -1,10 +1,11 @@
 #! /bin/sh
 #
+########################################################################
+#
 # Copyright (C) 2017-2020 The Octave Project Developers
 #
-# See the file COPYRIGHT.md in the top-level directory of this distribution
-# or <https://octave.org/COPYRIGHT.html/>.
-#
+# See the file COPYRIGHT.md in the top-level directory of this
+# distribution or <https://octave.org/copyright/>.
 #
 # This file is part of Octave.
 #
@@ -21,6 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <https://www.gnu.org/licenses/>.
+#
+########################################################################
 
 bug_numbers=$(for file in "$@"; do
   sed -n "s/.*<\([0-9][0-9][0-9][0-9]*\)>.*/\1/p" "$file"

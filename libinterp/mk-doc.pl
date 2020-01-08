@@ -1,10 +1,11 @@
 #! /usr/bin/perl -w
 #
+########################################################################
+#
 # Copyright (C) 2012-2020 The Octave Project Developers
 #
-# See the file COPYRIGHT.md in the top-level directory of this distribution
-# or <https://octave.org/COPYRIGHT.html/>.
-#
+# See the file COPYRIGHT.md in the top-level directory of this
+# distribution or <https://octave.org/copyright/>.
 #
 # This file is part of Octave.
 #
@@ -21,6 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <https://www.gnu.org/licenses/>.
+#
+########################################################################
 
 unless (@ARGV > 1) { die "Usage: $0 SRCDIR src-file1 ..." }
 

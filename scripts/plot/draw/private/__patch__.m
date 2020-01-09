@@ -117,7 +117,7 @@ function [h, failed] = __patch__ (p, varargin)
           else
             error ("patch: color data C must be numeric");
           endif
-        elseif (isvector (c) && numel (c) == 3)
+        elseif (isrow (c) && numel (c) == 3)
           args{7} = "facecolor";
           args{8} = c;
           args{9} = "cdata";

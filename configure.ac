@@ -2144,6 +2144,14 @@ OCTAVE_CHECK_LIB(cholmod, CHOLMOD,
   [], [don't use CHOLMOD library, disable some sparse matrix functionality])
 LIBS="$save_LIBS"
 
+### Check for SPQR library
+
+OCTAVE_CHECK_LIB(spqr, SPQR,
+  [SPQR library not found.  This will result in some lack of functionality for sparse matrices.],
+  [suitesparse/SuiteSparseQR.hpp],
+  [SuiteSparseQR_C],
+  [C++], [don't use SPQR library, disable some sparse matrix functionality])
+
 ### Check for CXSparse library
 
 OCTAVE_CHECK_LIB(cxsparse, CXSparse,
@@ -2209,11 +2217,11 @@ dnl substitute some of them into other source files like mkoctfile.
 
 ## Order matters, at least on some systems (Cygwin, for example).
 
-SPARSE_XCPPFLAGS="$CHOLMOD_CPPFLAGS $UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CAMD_CPPFLAGS $COLAMD_CPPFLAGS $CCOLAMD_CPPFLAGS $CXSPARSE_CPPFLAGS"
+SPARSE_XCPPFLAGS="$CHOLMOD_CPPFLAGS $UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CAMD_CPPFLAGS $COLAMD_CPPFLAGS $CCOLAMD_CPPFLAGS $CXSPARSE_CPPFLAGS $SPQR_CPPFLAGS"
 
-SPARSE_XLDFLAGS="$CHOLMOD_LDFLAGS $UMFPACK_LDFLAGS $AMD_LDFLAGS $CAMD_LDFLAGS $COLAMD_LDFLAGS  $CCOLAMD_LDFLAGS $CXSPARSE_LDFLAGS"
+SPARSE_XLDFLAGS="$CHOLMOD_LDFLAGS $UMFPACK_LDFLAGS $AMD_LDFLAGS $CAMD_LDFLAGS $COLAMD_LDFLAGS  $CCOLAMD_LDFLAGS $CXSPARSE_LDFLAGS $SPQR_LDFLAGS"
 
-SPARSE_XLIBS="$CHOLMOD_LIBS $UMFPACK_LIBS $AMD_LIBS $CAMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $CXSPARSE_LIBS $SUITESPARSECONFIG_LIBS"
+SPARSE_XLIBS="$CHOLMOD_LIBS $UMFPACK_LIBS $AMD_LIBS $CAMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $CXSPARSE_LIBS $SUITESPARSECONFIG_LIBS $SPQR_LIBS"
 
 AC_SUBST(SPARSE_XCPPFLAGS)
 AC_SUBST(SPARSE_XLDFLAGS)
@@ -3148,6 +3156,9 @@ Octave is now configured for $canonical_host_type
   Sndfile CPPFLAGS:              $SNDFILE_CPPFLAGS
   Sndfile LDFLAGS:               $SNDFILE_LDFLAGS
   Sndfile libraries:             $SNDFILE_LIBS
+  SPQR CPPFLAGS:                 $SPQR_CPPFLAGS
+  SPQR LDFLAGS:                  $SPQR_LDFLAGS
+  SPQR libraries:                $SPQR_LIBS
   SuiteSparse config libraries:  $SUITESPARSECONFIG_LIBS
   SUNDIALS IDA CPPFLAGS:         $SUNDIALS_IDA_CPPFLAGS
   SUNDIALS IDA LDFLAGS:          $SUNDIALS_IDA_LDFLAGS

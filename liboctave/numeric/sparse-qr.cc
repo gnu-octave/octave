@@ -44,24 +44,19 @@ namespace octave
 {
   namespace math
   {
+#if defined (HAVE_CXSPARSE)
     template <typename SPARSE_T>
     class
     cxsparse_types
-    {
-    };
+      { };
 
     template <>
     class
     cxsparse_types<SparseMatrix>
     {
     public:
-#if defined (HAVE_CXSPARSE)
       typedef CXSPARSE_DNAME (s) symbolic_type;
       typedef CXSPARSE_DNAME (n) numeric_type;
-#else
-      typedef void symbolic_type;
-      typedef void numeric_type;
-#endif
     };
 
     template <>
@@ -69,14 +64,10 @@ namespace octave
     cxsparse_types<SparseComplexMatrix>
     {
     public:
-#if defined (HAVE_CXSPARSE)
       typedef CXSPARSE_ZNAME (s) symbolic_type;
       typedef CXSPARSE_ZNAME (n) numeric_type;
-#else
-      typedef void symbolic_type;
-      typedef void numeric_type;
-#endif
     };
+#endif
 
     template <typename SPARSE_T>
     class sparse_qr<SPARSE_T>::sparse_qr_rep
@@ -95,7 +86,9 @@ namespace octave
 
       bool ok (void) const
       {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+        return (m_H && m_Htau && m_HPinv && m_R && m_E && &m_cc);
+#elif defined (HAVE_CXSPARSE)
         return (N && S);
 #else
         return false;
@@ -108,29 +101,56 @@ namespace octave
 
       ColumnVector P (void) const;
 
+      ColumnVector E (void) const;
+
       SPARSE_T R (bool econ) const;
 
       typename SPARSE_T::dense_matrix_type
-      C (const typename SPARSE_T::dense_matrix_type& b) const;
+      C (const typename SPARSE_T::dense_matrix_type& b);
 
       typename SPARSE_T::dense_matrix_type
-      Q (void) const;
+      C (const typename SPARSE_T::dense_matrix_type& b, bool econ);
+
+      typename SPARSE_T::dense_matrix_type Q (void);
+
+      typename SPARSE_T::dense_matrix_type Q (bool econ);
 
       refcount<octave_idx_type> count;
 
       octave_idx_type nrows;
       octave_idx_type ncols;
 
+#if defined (HAVE_SPQR)
+
+      template <typename RHS_T, typename RET_T>
+      RET_T solve (const RHS_T& b, octave_idx_type& info) const;
+
+#elif defined (HAVE_CXSPARSE)
+
       typename cxsparse_types<SPARSE_T>::symbolic_type *S;
       typename cxsparse_types<SPARSE_T>::numeric_type *N;
 
-      template <typename RHS_T, typename RET_T>
-      RET_T
-      tall_solve (const RHS_T& b, octave_idx_type& info) const;
+#endif
 
       template <typename RHS_T, typename RET_T>
-      RET_T
-      wide_solve (const RHS_T& b, octave_idx_type& info) const;
+      RET_T tall_solve (const RHS_T& b, octave_idx_type& info);
+
+      template <typename RHS_T, typename RET_T>
+      RET_T wide_solve (const RHS_T& b, octave_idx_type& info) const;
+
+#if defined (HAVE_SPQR)
+
+    private:
+
+      cholmod_common m_cc;
+      cholmod_sparse *m_R;  // R factor
+      // Column permutation for A. Fill-reducing ordering.
+      suitesparse_integer *m_E;
+      cholmod_sparse *m_H;  // Householder vectors
+      cholmod_dense *m_Htau;  // beta scalars
+      suitesparse_integer *m_HPinv;
+
+#endif
     };
 
     template <typename SPARSE_T>
@@ -157,7 +177,17 @@ namespace octave
     ColumnVector
     sparse_qr<SPARSE_T>::sparse_qr_rep::P (void) const
     {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+
+      ColumnVector ret (nrows);
+
+      // FIXME: Is ret.xelem (m_HPinv[i]) = i + 1 correct?
+      for (octave_idx_type i = 0; i < nrows; i++)
+        ret.xelem (m_HPinv[i]) = i + 1;
+
+      return ret;
+
+#elif defined (HAVE_CXSPARSE)
 
       ColumnVector ret (N->L->m);
 
@@ -173,20 +203,76 @@ namespace octave
 #endif
     }
 
+    template <typename SPARSE_T>
+    ColumnVector
+    sparse_qr<SPARSE_T>::sparse_qr_rep::E (void) const
+    {
+#if defined (HAVE_SPQR)
+
+      ColumnVector ret (ncols);
+
+      for (octave_idx_type i = 0; i < ncols; i++)
+        ret(i) = static_cast<octave_idx_type> (m_E[i]) + 1;
+
+      return ret;
+
+#else
+
+      return ColumnVector ();
+
+#endif
+    }
+
     // Specializations.
 
     // Real-valued matrices.
 
+    // Arguments for parameter order (taken from SuiteSparseQR documentation).
+    // 0: fixed ordering 0 (no permutation of columns)
+    // 1: natural ordering 1 (only singleton columns are permuted to the left of
+    //    the matrix)
+    // 2: colamd
+    // 3:
+    // 4: CHOLMOD best-effort (COLAMD, METIS,...)
+    // 5: AMD(a'*a)
+    // 6: metis(a'*a)
+    // 7: SuiteSparseQR default ordering
+    // 8: try COLAMD, AMD, and METIS; pick best
+    // 9: try COLAMD and AMD; pick best
+    //FIXME: What is order = 3?
     template <>
     sparse_qr<SparseMatrix>::sparse_qr_rep::sparse_qr_rep
     (const SparseMatrix& a, int order)
       : count (1), nrows (a.rows ()), ncols (a.columns ())
-#if defined (HAVE_CXSPARSE)
-      , S (nullptr), N (nullptr)
-#endif
+#if defined (HAVE_SPQR)
+      , m_cc (), m_R (nullptr), m_E (nullptr), m_H (nullptr), m_Htau (nullptr),
+        m_HPinv (nullptr)
     {
-#if defined (HAVE_CXSPARSE)
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.cols ();
 
+      if (nr <= 0 || nc <= 0)
+        (*current_liboctave_error_handler)
+          ("matrix dimension with negative or zero size");
+
+      if (order < 0 || order > 9)
+        (*current_liboctave_error_handler)
+          ("ordering %d is not supported by SPQR", order);
+
+      CHOLMOD_NAME (start) (&m_cc);
+      const cholmod_sparse A = ros2rcs (a);
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      SuiteSparseQR<double> (order, SPQR_DEFAULT_TOL, A.nrow,
+                             const_cast<cholmod_sparse*> (&A), &m_R, &m_E, &m_H,
+                             &m_HPinv, &m_Htau, &m_cc);
+      spqr_error_handler (&m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+    }
+
+#elif defined (HAVE_CXSPARSE)
+      , S (nullptr), N (nullptr)
+    {
       CXSPARSE_DNAME () A;
 
       A.nzmax = a.nnz ();
@@ -210,22 +296,36 @@ namespace octave
         (*current_liboctave_error_handler)
           ("sparse_qr: sparse matrix QR factorization filled");
 
+    }
+
 #else
 
+    {
       octave_unused_parameter (order);
 
       (*current_liboctave_error_handler)
-        ("sparse_qr: support for CXSparse was unavailable or disabled when liboctave was built");
+        ("sparse_qr: support for SPQR or CXSparse was unavailable or disabled when liboctave was built");
+    }
 
 #endif
-    }
 
     template <>
     sparse_qr<SparseMatrix>::sparse_qr_rep::~sparse_qr_rep (void)
     {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+
+      CHOLMOD_NAME (free_sparse) (&m_R, &m_cc);
+      CHOLMOD_NAME (free_sparse) (&m_H, &m_cc);
+      CHOLMOD_NAME (free_dense) (&m_Htau, &m_cc);
+      free (m_E);  // FIXME: use cholmod_l_free
+      free (m_HPinv);
+      CHOLMOD_NAME (finish) (&m_cc);
+
+#elif defined (HAVE_CXSPARSE)
+
       CXSPARSE_DNAME (_sfree) (S);
       CXSPARSE_DNAME (_nfree) (N);
+
 #endif
     }
 
@@ -233,7 +333,11 @@ namespace octave
     SparseMatrix
     sparse_qr<SparseMatrix>::sparse_qr_rep::V (void) const
     {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+
+      return rcs2ros (m_H);
+
+#elif defined (HAVE_CXSPARSE)
 
       // Drop zeros from V and sort
       // FIXME: Is the double transpose to sort necessary?
@@ -272,7 +376,31 @@ namespace octave
     SparseMatrix
     sparse_qr<SparseMatrix>::sparse_qr_rep::R (bool econ) const
     {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+
+      octave_idx_type nr = static_cast<octave_idx_type> (m_R->nrow);
+      octave_idx_type nc = static_cast<octave_idx_type> (m_R->ncol);
+      octave_idx_type nz = static_cast<octave_idx_type> (m_R->nzmax);
+
+      // FIXME: Does this work if econ = true?
+      SparseMatrix ret ((econ ? (nc > nr ? nr : nc) : nr), nc, nz);
+      octave_idx_type *Rp = to_octave_idx_type_ptr
+                              (static_cast<suitesparse_integer*> (m_R->p));
+      octave_idx_type *Ri = to_octave_idx_type_ptr
+                              (static_cast<suitesparse_integer*> (m_R->i));
+
+      for (octave_idx_type j = 0; j < nc + 1; j++)
+        ret.xcidx (j) = Rp[j];
+
+      for (octave_idx_type j = 0; j < nz; j++)
+        {
+          ret.xridx (j) = Ri[j];
+          ret.xdata (j) = (static_cast<double*> (m_R->x))[j];
+        }
+
+      return ret;
+
+#elif defined (HAVE_CXSPARSE)
 
       // Drop zeros from R and sort
       // FIXME: Is the double transpose to sort necessary?
@@ -312,9 +440,40 @@ namespace octave
 
     template <>
     Matrix
-    sparse_qr<SparseMatrix>::sparse_qr_rep::C (const Matrix& b) const
+    sparse_qr<SparseMatrix>::sparse_qr_rep::C (const Matrix &b)
     {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+      octave_idx_type b_nr = b.rows ();
+      octave_idx_type b_nc = b.cols ();
+      Matrix ret (b_nr, b_nc);
+
+      if (nrows != b_nr)
+        (*current_liboctave_error_handler)
+          ("sparse_qr: matrix dimension mismatch");
+      else if (b_nc <= 0 || b_nr <= 0)
+        (*current_liboctave_error_handler)
+          ("sparse_qr: matrix dimension with negative or zero size");
+
+      cholmod_dense *QTB;  // Q' * B
+      const cholmod_dense B = rod2rcd (b);
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      QTB = SuiteSparseQR_qmult<double> (SPQR_QTX, m_H, m_Htau, m_HPinv,
+                                         const_cast<cholmod_dense*>(&B), &m_cc);
+      spqr_error_handler (&m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      // copy QTB into ret
+      double *QTB_x = static_cast<double*> (QTB->x);
+      double *ret_vec = static_cast<double*> (ret.fortran_vec ());
+      for (octave_idx_type j = 0; j < b_nc; j++)
+        for (octave_idx_type i = 0; i < b_nr; i++)
+          ret_vec[j * b_nr + i] = QTB_x[j * b_nr + i];
+
+      CHOLMOD_NAME (free_dense) (&QTB, &m_cc);
+
+      return ret;
+
+#elif defined (HAVE_CXSPARSE)
 
       octave_idx_type b_nr = b.rows ();
       octave_idx_type b_nc = b.cols ();
@@ -378,13 +537,93 @@ namespace octave
 
     template <>
     Matrix
-    sparse_qr<SparseMatrix>::sparse_qr_rep::Q (void) const
+    sparse_qr<SparseMatrix>::sparse_qr_rep::C (const Matrix &b, bool econ)
     {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+      octave_idx_type nr = (econ
+                            ? (ncols > nrows ? nrows : ncols)
+                            : nrows);
+      octave_idx_type b_nr = b.rows ();
+      octave_idx_type b_nc = b.cols ();
+      Matrix ret (nr, b_nc);
+
+      if (nrows != b_nr)
+        (*current_liboctave_error_handler)
+          ("sparse_qr: matrix dimension mismatch");
+      else if (b_nc <= 0 || b_nr <= 0)
+        (*current_liboctave_error_handler)
+          ("sparse_qr: matrix dimension with negative or zero size");
+
+      cholmod_dense *QTB;  // Q' * B
+      const cholmod_dense B = rod2rcd (b);
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      QTB = SuiteSparseQR_qmult<double> (SPQR_QTX, m_H, m_Htau, m_HPinv,
+                                         const_cast<cholmod_dense*>(&B), &m_cc);
+      spqr_error_handler (&m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      // copy QTB into ret
+      double *QTB_x = static_cast<double*> (QTB->x);
+      double *ret_vec = static_cast<double*> (ret.fortran_vec ());
+      for (octave_idx_type j = 0; j < b_nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          ret_vec[j * nr + i] = QTB_x[j * b_nr + i];
+
+      CHOLMOD_NAME (free_dense) (&QTB, &m_cc);
+
+      return ret;
+
+#else
+
+      octave_unused_parameter (b);
+
+      return Matrix ();
+
+#endif
+    }
+
+    template <>
+    Matrix
+    sparse_qr<SparseMatrix>::sparse_qr_rep::Q (void)
+    {
+#if defined (HAVE_SPQR)
+
+      Matrix ret (nrows, nrows);
+      cholmod_dense *q;
+
+      // I is nrows x nrows identity matrix
+      cholmod_dense *I = static_cast<cholmod_dense*>
+                           (CHOLMOD_NAME (allocate_dense)
+                             (nrows, nrows, nrows, CHOLMOD_REAL, &m_cc));
+
+      for (octave_idx_type i = 0; i < nrows * nrows; i++)
+        (static_cast<double*> (I->x))[i] = 0.0;
+
+      for (octave_idx_type i = 0; i < nrows; i++)
+       (static_cast<double*> (I->x))[i * nrows + i] = 1.0;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      q = SuiteSparseQR_qmult<double> (SPQR_QX, m_H, m_Htau, m_HPinv, I, &m_cc);
+      spqr_error_handler (&m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      double *q_x = static_cast<double*> (q->x);
+      double *ret_vec = const_cast<double*> (ret.fortran_vec ());
+      for (octave_idx_type j = 0; j < nrows; j++)
+        for (octave_idx_type i = 0; i < nrows; i++)
+          ret_vec[j * nrows + i] = q_x[j * nrows + i];
+
+      CHOLMOD_NAME (free_dense) (&q, &m_cc);
+      CHOLMOD_NAME (free_dense) (&I, &m_cc);
+
+      return ret;
+
+#elif defined (HAVE_CXSPARSE)
+
       octave_idx_type nc = N->L->n;
       octave_idx_type nr = nrows;
       Matrix ret (nr, nr);
-      double *vec = ret.fortran_vec ();
+      double *ret_vec = ret.fortran_vec ();
 
       if (nr < 0 || nc < 0)
         (*current_liboctave_error_handler) ("matrix dimension mismatch");
@@ -400,7 +639,7 @@ namespace octave
 
           OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
 
-          for (volatile octave_idx_type j = 0, idx = 0; j < nr; j++, idx+=nr)
+          for (volatile octave_idx_type j = 0, idx = 0; j < nr; j++, idx += nr)
             {
               octave_quit ();
 
@@ -424,7 +663,7 @@ namespace octave
                 }
 
               for (octave_idx_type i = 0; i < nr; i++)
-                vec[i+idx] = buf[i];
+                ret_vec[i+idx] = buf[i];
 
               bvec[j] = 0.0;
             }
@@ -440,14 +679,116 @@ namespace octave
     }
 
     template <>
+    Matrix
+    sparse_qr<SparseMatrix>::sparse_qr_rep::Q (bool econ)
+    {
+#if defined (HAVE_SPQR)
+
+      octave_idx_type nc = (econ
+                            ? (ncols > nrows ? nrows : ncols)
+                            : nrows);
+      Matrix ret (nrows, nc);
+      cholmod_dense *q;
+
+      // I is nrows x nrows identity matrix
+      cholmod_dense *I = static_cast<cholmod_dense*>
+                           (CHOLMOD_NAME (allocate_dense)
+                             (nrows, nrows, nrows, CHOLMOD_REAL, &m_cc));
+
+      for (octave_idx_type i = 0; i < nrows * nrows; i++)
+        (static_cast<double*> (I->x))[i] = 0.0;
+
+      for (octave_idx_type i = 0; i < nrows; i++)
+       (static_cast<double*> (I->x))[i * nrows + i] = 1.0;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      q = SuiteSparseQR_qmult<double> (SPQR_QX, m_H, m_Htau, m_HPinv, I, &m_cc);
+      spqr_error_handler (&m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      double *q_x = static_cast<double*> (q->x);
+      double *ret_vec = const_cast<double*> (ret.fortran_vec ());
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nrows; i++)
+          ret_vec[j * nrows + i] = q_x[j * nrows + i];
+
+      CHOLMOD_NAME (free_dense) (&q, &m_cc);
+      CHOLMOD_NAME (free_dense) (&I, &m_cc);
+
+      return ret;
+
+#else
+
+      return Matrix ();
+
+#endif
+    }
+
+    template <>
     template <>
     Matrix
     sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
-    (const MArray<double>& b, octave_idx_type& info) const
+    (const MArray<double>& b, octave_idx_type& info)
     {
       info = -1;
 
-#if defined (HAVE_CXSPARSE)
+#if (defined (HAVE_SPQR) && defined (HAVE_CXSPARSE))
+
+      octave_idx_type b_nr = b.rows ();
+      octave_idx_type b_nc = b.cols ();
+      Matrix x (ncols, b_nc);  // X = m_E'*(m_R\(Q'*B))
+
+      if (nrows <= 0 || ncols <= 0 || b_nc <= 0 || b_nr <= 0)
+        (*current_liboctave_error_handler)
+          ("matrix dimension with negative or zero size");
+
+      if (nrows < 0 || ncols < 0 || nrows != b_nr)
+        (*current_liboctave_error_handler) ("matrix dimension mismatch");
+
+      cholmod_dense *QTB;  // Q' * B
+      const cholmod_dense B = rod2rcd (b);
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      // FIXME: Process b column by column as in the CXSPARSE version below.
+      // This avoids a large dense matrix Q' * B in memory.
+      QTB = SuiteSparseQR_qmult<double>
+             (SPQR_QTX, m_H, m_Htau, m_HPinv, const_cast<cholmod_dense*> (&B),
+              &m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      spqr_error_handler (&m_cc);
+
+      // convert m_R into CXSPARSE matrix R2
+      CXSPARSE_DNAME (_sparse) R2;
+      R2.n = ncols;
+      R2.m = ncols;
+      R2.nzmax = m_R->nzmax;
+      R2.x = static_cast<double*> (m_R->x);
+      R2.i = static_cast<suitesparse_integer*> (m_R->i);
+      R2.p = static_cast<suitesparse_integer*> (m_R->p);
+      R2.nz = -1;
+      double *x_vec = const_cast<double*> (x.fortran_vec ());
+      for (volatile octave_idx_type j = 0; j < b_nc; j++)
+        {
+          // fill x(:,j)
+          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          // solve (m_R\(Q'*B(:,j)) and store result in QTB(:,j)
+          CXSPARSE_DNAME (_usolve)
+            (&R2, &(static_cast<double*> (QTB->x)[j * b_nr]));
+          // x(:,j) = m_E' * (m_R\(Q'*B(:,j))
+          CXSPARSE_DNAME (_ipvec)
+            (m_E, &(static_cast<double*> (QTB->x)[j * b_nr]), &x_vec[j * ncols],
+             ncols);
+          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+        }
+
+      CHOLMOD_NAME (free_dense) (&QTB, &m_cc);
+
+      info = 0;
+
+      return x;
+
+#elif defined (HAVE_CXSPARSE)
 
       octave_idx_type nr = nrows;
       octave_idx_type nc = ncols;
@@ -509,7 +850,6 @@ namespace octave
     (const MArray<double>& b, octave_idx_type& info) const
     {
       info = -1;
-
 #if defined (HAVE_CXSPARSE)
 
       // These are swapped because the original matrix was transposed in
@@ -562,7 +902,6 @@ namespace octave
       return x;
 
 #else
-
       octave_unused_parameter (b);
 
       return Matrix ();
@@ -574,7 +913,7 @@ namespace octave
     template <>
     SparseMatrix
     sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseMatrix>
-    (const SparseMatrix& b, octave_idx_type& info) const
+    (const SparseMatrix& b, octave_idx_type& info)
     {
       info = -1;
 
@@ -758,7 +1097,7 @@ namespace octave
     template <>
     ComplexMatrix
     sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>, ComplexMatrix>
-    (const MArray<Complex>& b, octave_idx_type& info) const
+    (const MArray<Complex>& b, octave_idx_type& info)
     {
       info = -1;
 
@@ -949,12 +1288,35 @@ namespace octave
     sparse_qr<SparseComplexMatrix>::sparse_qr_rep::sparse_qr_rep
     (const SparseComplexMatrix& a, int order)
       : count (1), nrows (a.rows ()), ncols (a.columns ())
-#if defined (HAVE_CXSPARSE)
-      , S (nullptr), N (nullptr)
-#endif
+#if defined (HAVE_SPQR)
+        , m_cc (), m_R (nullptr), m_E (nullptr), m_H (nullptr),
+          m_Htau (nullptr), m_HPinv (nullptr)
     {
-#if defined (HAVE_CXSPARSE)
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.cols ();
 
+      if (nr <= 0 || nc <= 0)
+        (*current_liboctave_error_handler)
+          ("matrix dimension with negative or zero size");
+
+      if (order < 0 || order > 9)
+        (*current_liboctave_error_handler)
+          ("ordering %d is not supported by SPQR", order);
+
+      CHOLMOD_NAME (start) (&m_cc);
+      const cholmod_sparse A = cos2ccs (a);
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      SuiteSparseQR<Complex> (order, SPQR_DEFAULT_TOL, A.nrow,
+                              const_cast<cholmod_sparse*>(&A), &m_R, &m_E, &m_H,
+                              &m_HPinv, &m_Htau, &m_cc);
+      spqr_error_handler (&m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+    }
+
+#elif defined (HAVE_CXSPARSE)
+        , S (nullptr), N (nullptr)
+    {
       CXSPARSE_ZNAME () A;
 
       A.nzmax = a.nnz ();
@@ -979,22 +1341,36 @@ namespace octave
         (*current_liboctave_error_handler)
           ("sparse_qr: sparse matrix QR factorization filled");
 
+    }
+
 #else
 
+    {
       octave_unused_parameter (order);
 
       (*current_liboctave_error_handler)
         ("sparse_qr: support for CXSparse was unavailable or disabled when liboctave was built");
+    }
 
 #endif
-    }
 
     template <>
     sparse_qr<SparseComplexMatrix>::sparse_qr_rep::~sparse_qr_rep (void)
     {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+
+      CHOLMOD_NAME (free_sparse) (&m_R, &m_cc);
+      CHOLMOD_NAME (free_sparse) (&m_H, &m_cc);
+      CHOLMOD_NAME (free_dense) (&m_Htau, &m_cc);
+      free (m_E);  // FIXME: use cholmod_l_free
+      free (m_HPinv);
+      CHOLMOD_NAME (finish) (&m_cc);
+
+#elif defined (HAVE_CXSPARSE)
+
       CXSPARSE_ZNAME (_sfree) (S);
       CXSPARSE_ZNAME (_nfree) (N);
+
 #endif
     }
 
@@ -1040,7 +1416,32 @@ namespace octave
     SparseComplexMatrix
     sparse_qr<SparseComplexMatrix>::sparse_qr_rep::R (bool econ) const
     {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+
+      octave_idx_type nr = static_cast<octave_idx_type> (m_R->nrow);
+      octave_idx_type nc = static_cast<octave_idx_type> (m_R->ncol);
+      octave_idx_type nz = static_cast<octave_idx_type> (m_R->nzmax);
+
+      // FIXME: Does this work if econ = true?
+      SparseComplexMatrix ret ((econ ? (nc > nr ? nr : nc) : nr), nc, nz);
+      octave_idx_type *Rp = to_octave_idx_type_ptr
+                              (static_cast<suitesparse_integer*> (m_R->p));
+      octave_idx_type *Ri = to_octave_idx_type_ptr
+                              (static_cast<suitesparse_integer*> (m_R->i));
+
+      for (octave_idx_type j = 0; j < nc + 1; j++)
+        ret.xcidx (j) = Rp[j];
+
+      for (octave_idx_type j = 0; j < nz; j++)
+        {
+          ret.xridx (j) = Ri[j];
+          ret.xdata (j) = (static_cast<Complex*> (m_R->x))[j];
+        }
+
+      return ret;
+
+#elif defined (HAVE_CXSPARSE)
+
       // Drop zeros from R and sort
       // FIXME: Is the double transpose to sort necessary?
 
@@ -1080,9 +1481,45 @@ namespace octave
 
     template <>
     ComplexMatrix
-    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::C (const ComplexMatrix& b) const
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::C (const ComplexMatrix& b)
     {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+
+      // FIXME: not tested
+      octave_idx_type b_nr = b.rows ();
+      octave_idx_type b_nc = b.cols ();
+      ComplexMatrix ret (b_nr, b_nc);
+
+      if (nrows != b_nr)
+        (*current_liboctave_error_handler) ("matrix dimension mismatch");
+
+      if (b_nc <= 0 || b_nr <= 0)
+        (*current_liboctave_error_handler)
+          ("matrix dimension with negative or zero size");
+
+      cholmod_dense *QTB;  // Q' * B
+      const cholmod_dense B = cod2ccd (b);
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      QTB = SuiteSparseQR_qmult<Complex> (SPQR_QTX, m_H, m_Htau, m_HPinv,
+                                          const_cast<cholmod_dense*> (&B),
+                                          &m_cc);
+      spqr_error_handler (&m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      // copy QTB into ret
+      Complex *QTB_x = static_cast<Complex*> (QTB->x);
+      Complex *ret_vec = static_cast<Complex*> (ret.fortran_vec ());
+      for (octave_idx_type j = 0; j < b_nc; j++)
+        for (octave_idx_type i = 0; i < b_nr; i++)
+          ret_vec[j * b_nr + i] = QTB_x[j * b_nr + i];
+
+      CHOLMOD_NAME (free_dense) (&QTB, &m_cc);
+
+      return ret;
+
+#elif defined (HAVE_CXSPARSE)
+
       octave_idx_type b_nr = b.rows ();
       octave_idx_type b_nc = b.cols ();
       octave_idx_type nc = N->L->n;
@@ -1143,9 +1580,97 @@ namespace octave
 
     template <>
     ComplexMatrix
-    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::Q (void) const
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::C
+    (const ComplexMatrix& b, bool econ)
     {
-#if defined (HAVE_CXSPARSE)
+#if defined (HAVE_SPQR)
+
+      // FIXME: not tested
+      octave_idx_type nr = (econ
+                            ? (ncols > nrows ? nrows : ncols)
+                            : nrows);
+      octave_idx_type b_nr = b.rows ();
+      octave_idx_type b_nc = b.cols ();
+      ComplexMatrix ret (nr, b_nc);
+
+      if (nrows != b_nr)
+        (*current_liboctave_error_handler) ("matrix dimension mismatch");
+
+      if (b_nc <= 0 || b_nr <= 0)
+        (*current_liboctave_error_handler)
+          ("matrix dimension with negative or zero size");
+
+      cholmod_dense *QTB;  // Q' * B
+      const cholmod_dense B = cod2ccd (b);
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      QTB = SuiteSparseQR_qmult<Complex> (SPQR_QTX, m_H, m_Htau, m_HPinv,
+                                          const_cast<cholmod_dense*> (&B),
+                                          &m_cc);
+      spqr_error_handler (&m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      // copy QTB into ret
+      Complex *QTB_x = static_cast<Complex*> (QTB->x);
+      Complex *ret_vec = static_cast<Complex*> (ret.fortran_vec ());
+      for (octave_idx_type j = 0; j < b_nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          ret_vec[j * nr + i] = QTB_x[j * b_nr + i];
+
+      CHOLMOD_NAME (free_dense) (&QTB, &m_cc);
+
+      return ret;
+
+#else
+
+      octave_unused_parameter (b);
+
+      return ComplexMatrix ();
+
+#endif
+    }
+
+
+    template <>
+    ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::Q (void)
+    {
+#if defined (HAVE_SPQR)
+
+      ComplexMatrix ret (nrows, nrows);
+      cholmod_dense *q;
+
+      // I is nrows x nrows identity matrix
+      cholmod_dense *I = static_cast<cholmod_dense*>
+                           (CHOLMOD_NAME (allocate_dense)
+                              (nrows, nrows, nrows, CHOLMOD_COMPLEX, &m_cc));
+
+      for (octave_idx_type i = 0; i < nrows * nrows; i++)
+        (static_cast<Complex*> (I->x))[i] = 0.0;
+
+      for (octave_idx_type i = 0; i < nrows; i++)
+        (static_cast<Complex*> (I->x))[i * nrows + i] = 1.0;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      q = SuiteSparseQR_qmult<Complex> (SPQR_QX, m_H, m_Htau, m_HPinv, I,
+                                        &m_cc);
+      spqr_error_handler (&m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      Complex *q_x = static_cast<Complex*> (q->x);
+      Complex *ret_vec = const_cast<Complex*> (ret.fortran_vec ());
+
+      for (octave_idx_type j = 0; j < nrows; j++)
+        for (octave_idx_type i = 0; i < nrows; i++)
+          ret_vec[j * nrows + i] = q_x[j * nrows + i];
+
+      CHOLMOD_NAME (free_dense) (&q, &m_cc);
+      CHOLMOD_NAME (free_dense) (&I, &m_cc);
+
+      return ret;
+
+#elif defined (HAVE_CXSPARSE)
+
       octave_idx_type nc = N->L->n;
       octave_idx_type nr = nrows;
       ComplexMatrix ret (nr, nr);
@@ -1206,11 +1731,59 @@ namespace octave
     }
 
     template <>
+    ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::Q (bool econ)
+    {
+#if defined (HAVE_SPQR)
+
+      octave_idx_type nc = (econ
+                            ? (ncols > nrows ? nrows : ncols)
+                            : nrows);
+      ComplexMatrix ret (nrows, nc);
+      cholmod_dense *q;
+
+      // I is nrows x nrows identity matrix
+      cholmod_dense *I = static_cast<cholmod_dense*>
+                           (CHOLMOD_NAME (allocate_dense)
+                              (nrows, nrows, nrows, CHOLMOD_COMPLEX, &m_cc));
+
+      for (octave_idx_type i = 0; i < nrows * nrows; i++)
+        (static_cast<Complex*> (I->x))[i] = 0.0;
+
+      for (octave_idx_type i = 0; i < nrows; i++)
+        (static_cast<Complex*> (I->x))[i * nrows + i] = 1.0;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      q = SuiteSparseQR_qmult<Complex> (SPQR_QX, m_H, m_Htau, m_HPinv, I,
+                                        &m_cc);
+      spqr_error_handler (&m_cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      Complex *q_x = static_cast<Complex*> (q->x);
+      Complex *ret_vec = const_cast<Complex*> (ret.fortran_vec ());
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nrows; i++)
+          ret_vec[j * nrows + i] = q_x[j * nrows + i];
+
+      CHOLMOD_NAME (free_dense) (&q, &m_cc);
+      CHOLMOD_NAME (free_dense) (&I, &m_cc);
+
+      return ret;
+
+#else
+
+      return ComplexMatrix ();
+
+#endif
+    }
+
+    template <>
     template <>
     SparseComplexMatrix
     sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix,
                                                        SparseComplexMatrix>
-      (const SparseComplexMatrix& b, octave_idx_type& info) const
+      (const SparseComplexMatrix& b, octave_idx_type& info)
     {
       info = -1;
 
@@ -1448,7 +2021,7 @@ namespace octave
     ComplexMatrix
     sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<double>,
                                                               ComplexMatrix>
-      (const MArray<double>& b, octave_idx_type& info) const
+      (const MArray<double>& b, octave_idx_type& info)
     {
       info = -1;
 
@@ -1590,7 +2163,7 @@ namespace octave
     SparseComplexMatrix
     sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseMatrix,
                                                               SparseComplexMatrix>
-      (const SparseMatrix& b, octave_idx_type& info) const
+      (const SparseMatrix& b, octave_idx_type& info)
     {
       info = -1;
 
@@ -1790,7 +2363,7 @@ namespace octave
     ComplexMatrix
     sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>,
                                                               ComplexMatrix>
-      (const MArray<Complex>& b, octave_idx_type& info) const
+      (const MArray<Complex>& b, octave_idx_type& info)
     {
       info = -1;
 
@@ -1928,8 +2501,9 @@ namespace octave
     template <>
     template <>
     SparseComplexMatrix
-    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix, SparseComplexMatrix>
-      (const SparseComplexMatrix& b, octave_idx_type& info) const
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix,
+                                                              SparseComplexMatrix>
+      (const SparseComplexMatrix& b, octave_idx_type& info)
     {
       info = -1;
 
@@ -2023,7 +2597,8 @@ namespace octave
     template <>
     template <>
     SparseComplexMatrix
-    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix, SparseComplexMatrix>
+    sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix,
+                                                              SparseComplexMatrix>
       (const SparseComplexMatrix& b, octave_idx_type& info) const
     {
       info = -1;
@@ -2188,6 +2763,27 @@ namespace octave
     {
       return rep->P ();
     }
+    
+    template <typename SPARSE_T>
+    ColumnVector
+    sparse_qr<SPARSE_T>::E (void) const
+    {
+      return rep->E();
+    }
+
+
+    template <typename SPARSE_T>
+    SparseMatrix
+    sparse_qr<SPARSE_T>::E_MAT (void) const
+    {
+      ColumnVector perm = rep-> E ();
+      octave_idx_type nrows = perm.rows ();
+      SparseMatrix ret (nrows,nrows,nrows);
+      for (octave_idx_type i = 0; i < nrows; i++)
+        ret(perm(i) - 1,i) = 1.0;
+      return ret;
+    }
+
 
     template <typename SPARSE_T>
     SPARSE_T
@@ -2205,11 +2801,25 @@ namespace octave
 
     template <typename SPARSE_T>
     typename SPARSE_T::dense_matrix_type
+    sparse_qr<SPARSE_T>::C (const typename SPARSE_T::dense_matrix_type& b,
+                            bool econ) const
+    {
+      return rep->C (b,econ);
+    }
+
+    template <typename SPARSE_T>
+    typename SPARSE_T::dense_matrix_type
     sparse_qr<SPARSE_T>::Q (void) const
     {
       return rep->Q ();
     }
 
+    template <typename SPARSE_T>
+    typename SPARSE_T::dense_matrix_type
+    sparse_qr<SPARSE_T>::Q (bool econ) const
+    {
+      return rep->Q (econ);
+    }
     // FIXME: Why is the "order" of the QR calculation as used in the
     // CXSparse function sqr 3 for real matrices and 2 for complex?  These
     // values seem to be required but there was no explanation in David
@@ -2228,7 +2838,11 @@ namespace octave
     cxsparse_defaults<SparseMatrix>
     {
     public:
+#if defined (HAVE_SPQR)
+      enum { order = SPQR_ORDERING_DEFAULT };
+#elif defined (HAVE_CXSPARSE)
       enum { order = 3 };
+#endif
     };
 
     template <>
@@ -2236,7 +2850,11 @@ namespace octave
     cxsparse_defaults<SparseComplexMatrix>
     {
     public:
+#if defined (HAVE_SPQR)
+      enum { order = SPQR_ORDERING_DEFAULT };
+#elif defined (HAVE_CXSPARSE)
       enum { order = 2 };
+#endif
     };
 
     template <typename SPARSE_T>
@@ -2245,6 +2863,32 @@ namespace octave
     sparse_qr<SPARSE_T>::solve (const SPARSE_T& a, const RHS_T& b,
                                 octave_idx_type& info)
     {
+#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
+
+      info = -1;
+
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.cols ();
+
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type b_nr = b.rows ();
+
+      int order = cxsparse_defaults<SPARSE_T>::order;
+
+      if (nr <= 0 || nc <= 0 || b_nc <= 0 || b_nr <= 0)
+        (*current_liboctave_error_handler)
+          ("matrix dimension with negative or zero size");
+
+      if ( nr != b_nr)
+        (*current_liboctave_error_handler)
+          ("matrix dimension mismatch in solution of minimum norm problem");
+
+      info = 0;
+
+      return min2norm_solve<RHS_T, RET_T> (a, b, info, order);
+
+#elif defined (HAVE_CXSPARSE)
+
       info = -1;
 
       octave_idx_type nr = a.rows ();
@@ -2277,7 +2921,371 @@ namespace octave
 
           return q.ok () ? q.wide_solve<RHS_T, RET_T> (b, info) : RET_T ();
         }
+
+#endif
     }
+
+#if defined (HAVE_SPQR)
+    //explicit instantiations of static member function solve
+    template
+    OCTAVE_API Matrix
+    sparse_qr<SparseMatrix>::solve<MArray<double>, Matrix>
+    (const SparseMatrix& a, const MArray<double>& b, octave_idx_type& info);
+
+    template
+    OCTAVE_API SparseMatrix
+    sparse_qr<SparseMatrix>::solve<SparseMatrix, SparseMatrix>
+    (const SparseMatrix& a, const SparseMatrix& b, octave_idx_type& info);
+
+    template
+    OCTAVE_API ComplexMatrix
+    sparse_qr<SparseMatrix>::solve<MArray<Complex>, ComplexMatrix>
+    (const SparseMatrix& a, const MArray<Complex>& b, octave_idx_type& info);
+
+    template
+    OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseMatrix>::solve<SparseComplexMatrix, SparseComplexMatrix>
+    (const SparseMatrix& a, const SparseComplexMatrix& b,
+     octave_idx_type& info);
+
+    template
+    OCTAVE_API ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::solve<MArray<Complex>, ComplexMatrix>
+    (const SparseComplexMatrix& a, const MArray<Complex>& b,
+     octave_idx_type& info);
+
+    template
+    OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseComplexMatrix>::solve<
+    SparseComplexMatrix, SparseComplexMatrix>
+    (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     octave_idx_type& info);
+
+    template
+    OCTAVE_API ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::solve<MArray<double>, ComplexMatrix>
+    (const SparseComplexMatrix& a, const MArray<double>& b,
+     octave_idx_type& info);
+
+    template
+    OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseComplexMatrix>::solve<SparseMatrix, SparseComplexMatrix>
+    (const SparseComplexMatrix& a, const SparseMatrix& b,
+     octave_idx_type& info);
+
+    //explicit instantiations of member function E_MAT
+    template
+    OCTAVE_API SparseMatrix
+    sparse_qr<SparseMatrix>::E_MAT (void) const;
+
+    template
+    OCTAVE_API SparseMatrix
+    sparse_qr<SparseComplexMatrix>::E_MAT (void) const;
+
+#  if defined (HAVE_CHOLMOD)
+    //specializations of function min2norm_solve
+    template <>
+    template <>
+    OCTAVE_API Matrix
+    sparse_qr<SparseMatrix>::min2norm_solve<MArray<double>, Matrix>
+    (const SparseMatrix& a, const MArray<double>& b,
+     octave_idx_type& info, int order)
+    {
+      info = -1;
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type nc = a.cols ();
+      Matrix x (nc, b_nc);
+      cholmod_common cc;
+
+      CHOLMOD_NAME (start) (&cc);
+      const cholmod_sparse A = ros2rcs (a);
+      const cholmod_dense B = rod2rcd (b);
+      cholmod_dense *X;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL,
+                                          const_cast<cholmod_sparse*> (&A),
+                                          const_cast<cholmod_dense*> (&B), &cc);
+      spqr_error_handler (&cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      double *vec = x.fortran_vec ();
+      for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
+        vec[i] = static_cast<double*> (X->x)[i];
+
+      info = 0;
+      CHOLMOD_NAME (finish) (&cc);
+
+      return x;
+
+    }
+
+    template <>
+    template <>
+    OCTAVE_API SparseMatrix
+    sparse_qr<SparseMatrix>::min2norm_solve<SparseMatrix, SparseMatrix>
+    (const SparseMatrix& a, const SparseMatrix& b, octave_idx_type& info,
+     int order)
+    {
+      info = -1;
+      SparseMatrix x;
+      cholmod_common cc;
+
+      CHOLMOD_NAME (start) (&cc);
+      const cholmod_sparse A = ros2rcs(a);
+      cholmod_sparse B = ros2rcs(b);
+      cholmod_sparse *X;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL,
+                                          const_cast<cholmod_sparse*>(&A), &B,
+                                          &cc);
+      spqr_error_handler (&cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      x = rcs2ros (X);
+      CHOLMOD_NAME (finish) (&cc);
+      info = 0;
+
+      return x;
+
+    }
+
+    template <>
+    template <>
+    OCTAVE_API ComplexMatrix
+    sparse_qr<SparseMatrix>::min2norm_solve<MArray<Complex>, ComplexMatrix>
+    (const SparseMatrix& a, const MArray<Complex>& b,
+     octave_idx_type& info, int order)
+    {
+      info = -1;
+
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type nc = a.cols ();
+
+      ComplexMatrix x (nc, b_nc);
+
+      cholmod_common cc;
+
+      CHOLMOD_NAME (start) (&cc);
+
+      cholmod_sparse *A = ros2ccs (a, &cc);
+      const cholmod_dense B = cod2ccd (b);
+      cholmod_dense *X;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A,
+                                           const_cast<cholmod_dense*> (&B),
+                                           &cc);
+      spqr_error_handler (&cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      Complex *vec = x.fortran_vec ();
+      for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
+        vec[i] = static_cast<Complex*> (X->x)[i];
+
+      CHOLMOD_NAME (free_sparse) (&A, &cc);
+      CHOLMOD_NAME (finish) (&cc);
+
+      info = 0;
+
+      return x;
+
+    }
+
+    template <>
+    template <>
+    OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseMatrix>::min2norm_solve<SparseComplexMatrix,
+                                            SparseComplexMatrix>
+    (const SparseMatrix& a, const SparseComplexMatrix& b,
+     octave_idx_type& info, int order)
+    {
+      info = -1;
+
+      cholmod_common cc;
+
+      CHOLMOD_NAME (start) (&cc);
+
+      cholmod_sparse * A = ros2ccs (a, &cc);
+      const cholmod_sparse B = cos2ccs (b);
+      cholmod_sparse *X;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A,
+                                           const_cast<cholmod_sparse*> (&B),
+                                           &cc);
+      spqr_error_handler (&cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      CHOLMOD_NAME (free_sparse) (&A, &cc);
+      CHOLMOD_NAME (finish) (&cc);
+
+      SparseComplexMatrix ret = ccs2cos(X);
+
+      info = 0;
+
+      return ret;
+
+    }
+
+    template <>
+    template <>
+    OCTAVE_API ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<Complex>,
+                                                   ComplexMatrix>
+    (const SparseComplexMatrix& a, const MArray<Complex>& b,
+     octave_idx_type& info,int order)
+    {
+      info = -1;
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type nc = a.cols ();
+      ComplexMatrix x (nc, b_nc);
+
+      cholmod_common cc;
+ 
+      CHOLMOD_NAME (start) (&cc);
+
+      const cholmod_sparse A = cos2ccs (a);
+      const cholmod_dense B = cod2ccd (b);
+      cholmod_dense *X;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL,
+                                           const_cast<cholmod_sparse*> (&A),
+                                           const_cast<cholmod_dense*> (&B),
+                                           &cc);
+      spqr_error_handler (&cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      Complex *vec = x.fortran_vec ();
+      for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
+        vec[i] = static_cast<Complex*> (X->x)[i];
+
+      CHOLMOD_NAME (finish) (&cc);
+
+      info = 0;
+
+      return x;
+
+    }
+
+    template <>
+    template <>
+    OCTAVE_API ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<double>,
+                                                   ComplexMatrix>
+    (const SparseComplexMatrix& a, const MArray<double>& b,
+     octave_idx_type& info, int order)
+    {
+      info = -1;
+
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type nc = a.cols ();
+      ComplexMatrix x (nc, b_nc);
+
+      cholmod_common cc;
+
+      CHOLMOD_NAME (start) (&cc);
+
+      const cholmod_sparse A = cos2ccs (a);
+      cholmod_dense *B = rod2ccd (b, &cc);
+      cholmod_dense *X;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL,
+                                           const_cast<cholmod_sparse*> (&A),
+                                           B, &cc);
+      spqr_error_handler (&cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      Complex *vec = x.fortran_vec ();
+
+      for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
+       vec[i] = static_cast<Complex*> (X->x)[i];
+
+      CHOLMOD_NAME (free_dense) (&B, &cc);
+      CHOLMOD_NAME (finish) (&cc);
+
+      info = 0;
+
+      return x;
+
+    }
+
+    template <>
+    template <>
+    OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseComplexMatrix>::min2norm_solve<SparseComplexMatrix,
+                                                   SparseComplexMatrix>
+    (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     octave_idx_type& info, int order)
+    {
+      info = -1;
+
+      cholmod_common cc;
+
+      CHOLMOD_NAME (start) (&cc);
+
+      const cholmod_sparse A = cos2ccs (a);
+      const cholmod_sparse B = cos2ccs (b);
+      cholmod_sparse *X;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL,
+                                           const_cast<cholmod_sparse*> (&A),
+                                           const_cast<cholmod_sparse*> (&B),
+                                           &cc);
+      spqr_error_handler (&cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      CHOLMOD_NAME (finish) (&cc);
+
+      info = 0;
+
+      return ccs2cos (X);
+
+    }
+
+    template <>
+    template <>
+    OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseComplexMatrix>::min2norm_solve<SparseMatrix,
+                                                   SparseComplexMatrix>
+    (const SparseComplexMatrix& a, const SparseMatrix& b,
+     octave_idx_type& info,int order)
+    {
+      info = -1;
+
+      cholmod_common cc;
+
+      CHOLMOD_NAME (start) (&cc);
+
+      const cholmod_sparse A = cos2ccs (a);
+      cholmod_sparse *B = ros2ccs (b, &cc);
+      cholmod_sparse *X;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL,
+                                           const_cast<cholmod_sparse*> (&A), B,
+                                           &cc);
+      spqr_error_handler (&cc);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      CHOLMOD_NAME (finish) (&cc);
+
+      SparseComplexMatrix ret = ccs2cos(X);
+
+      CHOLMOD_NAME (free_sparse) (&B, &cc);
+      CHOLMOD_NAME (finish) (&cc);
+
+      info = 0;
+
+      return ret;
+
+    }
+#  endif
+#endif
 
     template <typename SPARSE_T>
     template <typename RHS_T, typename RET_T>
@@ -2304,6 +3312,7 @@ namespace octave
     sparse_qr<SparseMatrix>::sparse_qr (const sparse_qr<SparseMatrix>& a);
     template OCTAVE_API sparse_qr<SparseMatrix>::~sparse_qr (void);
     template OCTAVE_API bool sparse_qr<SparseMatrix>::ok (void) const;
+    template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::E (void) const;
     template OCTAVE_API SparseMatrix sparse_qr<SparseMatrix>::V (void) const;
     template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::Pinv (void) const;
     template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::P (void) const;
@@ -2311,7 +3320,10 @@ namespace octave
     sparse_qr<SparseMatrix>::R (bool econ) const;
     template OCTAVE_API Matrix
     sparse_qr<SparseMatrix>::C (const Matrix& b) const;
+    template OCTAVE_API Matrix
+    sparse_qr<SparseMatrix>::C (const Matrix& b, bool econ) const;
     template OCTAVE_API Matrix sparse_qr<SparseMatrix>::Q (void) const;
+    template OCTAVE_API Matrix sparse_qr<SparseMatrix>::Q (bool econ) const;
 
     template OCTAVE_API sparse_qr<SparseComplexMatrix>::sparse_qr (void);
     template OCTAVE_API
@@ -2322,6 +3334,8 @@ namespace octave
     (const sparse_qr<SparseComplexMatrix>& a);
     template OCTAVE_API sparse_qr<SparseComplexMatrix>::~sparse_qr (void);
     template OCTAVE_API bool sparse_qr<SparseComplexMatrix>::ok (void) const;
+    template OCTAVE_API ColumnVector
+    sparse_qr<SparseComplexMatrix>::E (void) const;
     template OCTAVE_API SparseComplexMatrix
     sparse_qr<SparseComplexMatrix>::V (void) const;
     template OCTAVE_API ColumnVector
@@ -2333,7 +3347,11 @@ namespace octave
     template OCTAVE_API ComplexMatrix
     sparse_qr<SparseComplexMatrix>::C (const ComplexMatrix& b) const;
     template OCTAVE_API ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::C (const ComplexMatrix& b, bool econ) const;
+    template OCTAVE_API ComplexMatrix
     sparse_qr<SparseComplexMatrix>::Q (void) const;
+    template OCTAVE_API ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::Q (bool econ) const;
 
     Matrix
     qrsolve (const SparseMatrix& a, const MArray<double>& b,

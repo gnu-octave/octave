@@ -28,6 +28,11 @@
 
 #include "octave-config.h"
 
+#if defined (HAVE_CHOLMOD)
+#  include "dSparse.h"
+#  include "CSparse.h"
+#endif
+
 #if defined (HAVE_SUITESPARSE_AMD_H)
 #  include <suitesparse/amd.h>
 #elif defined (HAVE_UFSPARSE_AMD_H)
@@ -86,6 +91,10 @@
 #  include <umfpack/umfpack.h>
 #elif defined (HAVE_UMFPACK_H)
 #  include <umfpack.h>
+#endif
+
+#if defined (HAVE_SUITESPARSE_SUITESPARSEQR_HPP)
+#  include <suitesparse/SuiteSparseQR.hpp>
 #endif
 
 // Cope with new SuiteSparse versions
@@ -161,7 +170,8 @@
 
 #if (defined (HAVE_AMD) || defined (HAVE_CCOLAMD)               \
      || defined (HAVE_CHOLMOD) || defined (HAVE_COLAMD)         \
-     || defined (HAVE_CXSPARSE) || defined (HAVE_UMFPACK))
+     || defined (HAVE_CXSPARSE) || defined (HAVE_SPQR)          \
+     || defined (HAVE_UMFPACK))
 
 namespace octave
 {
@@ -182,6 +192,53 @@ namespace octave
 
   extern OCTAVE_API const octave_idx_type*
   to_octave_idx_type_ptr (const suitesparse_integer *i);
+
+#  if defined (HAVE_CHOLMOD)
+  // Convert real sparse octave matrix to real sparse cholmod matrix.
+  // Returns a "shallow" copy of a.
+  extern const OCTAVE_API cholmod_sparse
+  ros2rcs (const SparseMatrix& a);
+
+  // Convert real sparse cholmod matrix to real sparse octave matrix.
+  // Returns a "shallow" copy of y.
+  extern OCTAVE_API SparseMatrix
+  rcs2ros (const cholmod_sparse *y);
+
+  // Convert real dense octave matrix to real dense cholmod matrix.
+  // Returns a "shallow" copy of a.
+  extern const OCTAVE_API cholmod_dense
+  rod2rcd (const MArray<double>& a);
+
+  // Convert complex dense octave matrix to complex dense cholmod matrix.
+  // Returns a "shallow" copy of a.
+  extern const OCTAVE_API cholmod_dense
+  cod2ccd (const ComplexMatrix &a);
+
+  // Convert complex sparse octave matrix to complex sparse cholmod matrix.
+  // Returns a "shallow" copy of a.
+  extern const OCTAVE_API cholmod_sparse
+  cos2ccs (const SparseComplexMatrix &a);
+
+  // Convert complex sparse cholmod matrix to complex sparse octave matrix.
+  // Returns a "deep" copy of a.
+  extern OCTAVE_API SparseComplexMatrix
+  ccs2cos (const cholmod_sparse *a);
+
+  // Convert real sparse octave matrix to complex sparse cholmod matrix.
+  // Returns a "deep" copy of a.
+  // FIXME: const return type not necessary since deep copy is returned.
+  extern OCTAVE_API cholmod_sparse *
+  ros2ccs (const SparseMatrix& a, cholmod_common *cc1);
+
+  // Convert real dense octave matrix to complex dense cholmod matrix.
+  // Returns a "deep" copy of a.
+  // FIXME: const return type not necessary since deep copy is returned.
+  extern OCTAVE_API cholmod_dense *
+  rod2ccd (const MArray<double> &a, cholmod_common *cc1);
+
+  extern OCTAVE_API void
+  spqr_error_handler (const cholmod_common *cc);
+#  endif
 }
 
 #endif

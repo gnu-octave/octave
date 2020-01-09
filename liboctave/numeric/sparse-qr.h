@@ -54,7 +54,12 @@ namespace octave
 
       OCTAVE_API sparse_qr (void);
 
+#if (HAVE_SPQR)
+      // order = 7 selects SPQR default ordering
+      OCTAVE_API sparse_qr (const SPARSE_T& a, int order = 7);
+#else
       OCTAVE_API sparse_qr (const SPARSE_T& a, int order = 0);
+#endif
 
       OCTAVE_API sparse_qr (const sparse_qr& a);
 
@@ -63,6 +68,11 @@ namespace octave
       OCTAVE_API sparse_qr& operator = (const sparse_qr& a);
 
       OCTAVE_API bool ok (void) const;
+
+      OCTAVE_API ColumnVector E (void) const; 
+
+      // constructs permutation matrix from permutation vector rep -> E()
+      OCTAVE_API SparseMatrix E_MAT () const;
 
       OCTAVE_API SPARSE_T V (void) const;
 
@@ -76,7 +86,13 @@ namespace octave
       C (const typename SPARSE_T::dense_matrix_type& b) const;
 
       OCTAVE_API typename SPARSE_T::dense_matrix_type
+      C (const typename SPARSE_T::dense_matrix_type& b, bool econ) const;
+
+      OCTAVE_API typename SPARSE_T::dense_matrix_type
       Q (void) const;
+
+      OCTAVE_API typename SPARSE_T::dense_matrix_type
+      Q (bool econ) const;
 
       template <typename RHS_T, typename RET_T>
       static OCTAVE_API RET_T
@@ -84,6 +100,11 @@ namespace octave
              octave_idx_type& info);
 
     private:
+
+      template <typename RHS_T,typename RET_T>
+      static OCTAVE_API RET_T
+      min2norm_solve (const SPARSE_T& a, const RHS_T& b,
+                      octave_idx_type& info, int order);
 
       class sparse_qr_rep;
 

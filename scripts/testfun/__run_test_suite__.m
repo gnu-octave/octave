@@ -185,13 +185,17 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
         nm = lst(i).name;
         ## Ignore hidden files
         if (nm(1) == '.')
-          continue
+          continue;
         endif
         if ((! is_fixed && length (nm) > 2 && strcmpi (nm((end-1):end), ".m"))
             || (! is_fixed && length (nm) > 4 && strcmpi (nm((end-3):end), "-tst"))
             || (is_fixed && length (nm) > 4 && strcmpi (nm((end-3):end), ".tst")))
           p = n = xf = xb = sk = rtsk = rgrs = 0;
           ffnm = fullfile (d, nm);
+          if (! isfile (ffnm))
+            continue;
+          endif
+
           ## Only run if contains %!test, %!assert, %!error, %!fail, or %!warning
           if (has_tests (ffnm))
             tmp = reduce_test_file_name (ffnm, topbuilddir, topsrcdir);

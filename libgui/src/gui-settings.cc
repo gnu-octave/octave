@@ -48,7 +48,7 @@ namespace octave
     QKeySequence key_seq = QKeySequence ();
 
     // Check, which of the elements for the default value in the sc_pref
-    // structure has a valid value and take this as default. If both
+    // structure has a valid value and take this as default.  If both
     // elements are not valid, leave the key sequence empty
     if (pref.def)
       key_seq = QKeySequence (pref.def);

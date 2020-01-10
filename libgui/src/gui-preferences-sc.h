@@ -33,7 +33,7 @@
 // The shortcut's default values are given as QKeySequence for being able
 // to use platform independent standard keys (QKeySequence::StandardKey).
 // However, converting key sequences into QVariants does not seem to be
-// revertible. In addition the related string (which is saved in the
+// revertible.  In addition the related string (which is saved in the
 // preferences file) can not be determined during compile time since the
 // result depends on the platform (at least in case of standard key sequences
 // like, e.g., QKeySequence::Copy)
@@ -124,7 +124,7 @@ const sc_pref sc_main_news_release_notes (sc_main_news + ":release_notes", QKeyS
 const sc_pref sc_main_news_community_news (sc_main_news + ":community_news", QKeySequence::UnknownKey);
 
 // Tab handling
-// The following shortcuts are moved into a separate tab. The key names
+// The following shortcuts are moved into a separate tab.  The key names
 // are not change for preserving compatibility with older versions
 const QString sc_edit_file ("editor_file");
 const QString sc_edit_file_cl (sc_edit_file + ":close");

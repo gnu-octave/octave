@@ -178,7 +178,7 @@ namespace octave
 
     m_previous_dock = m_command_window;
 
-    // Set active editor depending on editor window. If the latter is
+    // Set active editor depending on editor window.  If the latter is
     // not initialized (qscintilla not present), use the external editor.
     if (m_editor_window)
       m_active_editor = m_editor_window;
@@ -1248,7 +1248,7 @@ namespace octave
   void main_window::request_open_file (void)
   {
     // Open file isn't a file_editor_tab or editor function since the file
-    // might be opened in an external editor. Hence, functionality is here.
+    // might be opened in an external editor.  Hence, functionality is here.
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
@@ -1292,7 +1292,7 @@ namespace octave
   {
     bool ok;
     // Get the name of the new function: Parent of the input dialog is the
-    // editor window or the main window. The latter is chosen, if a custom
+    // editor window or the main window.  The latter is chosen, if a custom
     // editor is used or qscintilla is not available
     QWidget *p = m_editor_window;
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();

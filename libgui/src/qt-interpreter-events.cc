@@ -616,7 +616,7 @@ namespace octave
 
     QString adjusted_value = value;
 
-    // Not all encodings are available. Encodings are uppercase and do
+    // Not all encodings are available.  Encodings are uppercase and do
     // not use CPxxx but IBMxxx or WINDOWS-xxx.
 
     if (key == ed_default_enc.key)

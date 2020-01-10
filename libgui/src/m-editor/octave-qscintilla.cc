@@ -191,7 +191,7 @@ namespace octave
 
 #if defined (Q_OS_MAC)
     // Octave interprets Cmd key as Meta whereas Qscintilla interprets it
-    // as Ctrl. We thus invert Meta/Ctrl in Qscintilla's shortcuts list.
+    // as Ctrl.  We thus invert Meta/Ctrl in Qscintilla's shortcuts list.
     QList< QsciCommand * > cmd_list_mac = cmd_set->commands ();
     for (int i = 0; i < cmd_list_mac.length (); i++)
       {
@@ -936,7 +936,7 @@ namespace octave
          catch (const execution_exception& e)
            {
              // Catch errors otherwise the rest of the interpreter
-             // will not be executed (cleaning up). Clean up before.
+             // will not be executed (cleaning up).  Clean up before.
              Frmpath (interp, path);
              emit ctx_menu_run_finished_signal (show_dbg_file,
                                                 tmp_file, tmp_hist, tmp_script);

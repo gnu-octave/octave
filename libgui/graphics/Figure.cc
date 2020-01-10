@@ -158,7 +158,7 @@ namespace QtHandles
     enableMouseTracking ();
 
     // When this constructor gets called all properties are already
-    // set, even non default. We force "update" here to get things right.
+    // set, even non default.  We force "update" here to get things right.
 
     // Figure title
     update (figure::properties::ID_NUMBERTITLE);
@@ -889,7 +889,7 @@ namespace QtHandles
         fp.set___device_pixel_ratio__ (new_dpr);
 
         // For some obscure reason, changing the __device_pixel_ratio__ property
-        // from the GUI thread does not necessarily trigger a redraw. Force it.
+        // from the GUI thread does not necessarily trigger a redraw.  Force it.
         redraw ();
       }
 #else

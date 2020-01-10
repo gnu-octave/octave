@@ -143,7 +143,7 @@ void
 hdf5_fstreambase::open_create (const char *name, int mode)
 {
 #if defined (HAVE_HDF5)
-  // Open the HDF5 file NAME. If it does not exist, create the file.
+  // Open the HDF5 file NAME.  If it does not exist, create the file.
 
   std::string fname_str (name);
   std::string ascii_fname_str = octave::sys::get_ASCII_filename (fname_str);

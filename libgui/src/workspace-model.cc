@@ -51,7 +51,7 @@ namespace octave
     m_columnNames.append (tr ("Attribute"));
 
     // Initialize the background and foreground colors of special
-    // classes in the workspace view. The structure is
+    // classes in the workspace view.  The structure is
     // m_storage_class_colors(1,2,...,colors):        background colors
     // m_storage_class_colors(colors+1,...,2*colors): foreground colors
     for (unsigned int i = 0; i < 2*ws_colors_count; i++)

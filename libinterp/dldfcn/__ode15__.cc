@@ -394,7 +394,7 @@ namespace octave
       {
 #  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
         // FIXME : one should not allocate space for a full Jacobian
-        // when using a sparse format. Consider allocating less space
+        // when using a sparse format.  Consider allocating less space
         // then possibly using SUNSparseMatrixReallocate to increase it.
         m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, m_num*m_num, CSC_MAT);
         if (! m_sunJacMatrix)

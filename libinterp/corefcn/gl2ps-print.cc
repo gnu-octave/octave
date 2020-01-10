@@ -148,7 +148,7 @@ namespace octave
           opts &= ~GL2PS_OCCLUSION_CULL;
           // FIXME: currently the GL2PS_BLEND (which is more an equivalent of
           // GL_ALPHA_TEST than GL_BLEND) is not working on a per primitive
-          // basis. We thus set it once per viewport.
+          // basis.  We thus set it once per viewport.
           gl2psEnable (GL2PS_BLEND);
         }
       else

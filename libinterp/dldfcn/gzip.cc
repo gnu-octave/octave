@@ -224,10 +224,10 @@ namespace octave
   //
   //      Note that you cannot specify special gzip header contents (e.g.
   //      a file name or modification date), nor will inflate tell you what
-  //      was in the gzip header. If you need to customize the header or
+  //      was in the gzip header.  If you need to customize the header or
   //      see what's in it, you can use the raw deflate and inflate
   //      operations and the crc32() function and roll your own gzip
-  //      encoding and decoding. Read the gzip RFC 1952 for details of the
+  //      encoding and decoding.  Read the gzip RFC 1952 for details of the
   //      header and trailer format.
   //                                                          zlib FAQ
   //

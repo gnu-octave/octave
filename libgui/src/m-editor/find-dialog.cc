@@ -501,7 +501,7 @@ namespace octave
           }
         else if (! do_forward)
           {
-            // Start from where the cursor is. Fix QScintilla's cursor
+            // Start from where the cursor is.  Fix QScintilla's cursor
             // positioning
             _edit_area->getCursorPosition (&line,&col);
             if (_find_result_available && _edit_area->hasSelectedText ())

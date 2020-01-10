@@ -497,7 +497,7 @@ namespace octave
 
     // Finally close all the tabs and return indication that we can exit
     // the application or close the editor.
-    // Closing and deleting the tabs makes the editor visible. In case it was
+    // Closing and deleting the tabs makes the editor visible.  In case it was
     // hidden before, this state has to be restored afterwards.
     bool vis = isVisible ();
 
@@ -1123,7 +1123,7 @@ namespace octave
           }
         else
           {
-            // It is a single file. Is it open?
+            // It is a single file.  Is it open?
             file_editor_tab *editor_tab = find_tab_widget (old_names.at (i));
 
             if (editor_tab)
@@ -1166,7 +1166,7 @@ namespace octave
   {
     m_no_focus = true;  // Remember for not focussing editor
 
-    // Loop over all files that have to be reloaded. Start at the end of the
+    // Loop over all files that have to be reloaded.  Start at the end of the
     // list, otherwise the stored indexes are not correct.
     for (int i = m_tmp_closed_files.count () - 1; i >= 0; i--)
       {
@@ -1809,7 +1809,7 @@ namespace octave
     // QStyle *editor_style = QApplication::style ();
 
     // Menu bar: do not set it native, required in macOS and Ubuntu Unity (Qt5)
-    // for a visible menu bar in the editor widget. This property is ignored
+    // for a visible menu bar in the editor widget.  This property is ignored
     // on other platforms.
     m_menu_bar = new QMenuBar (editor_widget);
     m_menu_bar->setNativeMenuBar (false);
@@ -2587,7 +2587,7 @@ namespace octave
         QString abs_path_to_file = old_dir.absoluteFilePath (file_name);
 
         // Test whether the file is located within the directory that will
-        // be removed. For this, two conditions must be met:
+        // be removed.  For this, two conditions must be met:
         // 1. The path of the file rel. to the dir is not equal to the
         //    its absolute one.
         //    If both are equal, then there is no relative path and removed

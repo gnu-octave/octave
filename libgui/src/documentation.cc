@@ -530,7 +530,7 @@ namespace octave
       m_doc_browser->moveCursor (QTextCursor::Start);
     else
       {
-        // Go to to first occurrence of search text. Going to the end and then
+        // Go to to first occurrence of search text.  Going to the end and then
         // search backwards until the last occurrence ensures the search text
         // is visible in the first line of the visible part of the text.
         m_doc_browser->moveCursor (QTextCursor::End);

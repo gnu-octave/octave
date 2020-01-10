@@ -5245,7 +5245,7 @@ axes::properties::calc_tightbox (const Matrix& init_pos)
   Matrix parent_bb = go.get_properties ().get_boundingbox (true);
 
   // FIXME: The layout should be clean at this stage and we should not have to
-  //        update ticks and labels positions here again. See bug #48718.
+  //        update ticks and labels positions here again.  See bug #48718.
   update_ticklength ();
 
   Matrix ext = get_extent (true, true);
@@ -7111,7 +7111,7 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
             {
               Matrix text_ext = text_props.get_extent_matrix ();
 
-              // The text extent is returned in device pixels. Unscale and
+              // The text extent is returned in device pixels.  Unscale and
               // work with logical pixels
               double dpr = device_pixel_ratio (get___myhandle__ ());
               if (dpr != 1.0)
@@ -8740,7 +8740,7 @@ axes::update_axis_limits (const std::string& axis_type)
       else
         {
           // FIXME: get_children_limits is only needed here in order to know
-          // if there are 3D children. Is there a way to avoid this call?
+          // if there are 3D children.  Is there a way to avoid this call?
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           xproperties.set_has3Dkids ((max_val - min_val) >
@@ -9724,7 +9724,7 @@ patch::properties::update_fvc (void)
 bool is_coplanar (const Matrix &cov)
 {
   // Accuracy note: this test will also accept single precision input (although
-  // stored in double precision). This is because the error threshold is
+  // stored in double precision).  This is because the error threshold is
   // sqrt(tol) = 1.5e-7.
   double tol = 100 * std::numeric_limits<double>::epsilon ();
   EIG eig (cov, false, false, true);
@@ -9784,7 +9784,7 @@ coplanar_partition (const Matrix &vert, const Matrix &idx,
         }
 
       // Algorithm: Start from 3 points, keep adding points until the point set
-      // is no more in a plane. Record the coplanar point set, then advance
+      // is no more in a plane.  Record the coplanar point set, then advance
       // i_start.
 
       // Prepare 1+3 points for coplanar test.
@@ -12240,7 +12240,7 @@ gh_manager::post_callback (const graphics_handle& h, const std::string& name,
         busyaction = base_graphics_event::CANCEL;
 
       // The "closerequestfcn" callback must be executed once the figure has
-      // been made current. Let "close" do the job.
+      // been made current.  Let "close" do the job.
       if (cname == "closerequestfcn")
         {
           std::string cmd ("close (gcbf ());");

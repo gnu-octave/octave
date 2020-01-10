@@ -419,9 +419,9 @@ namespace octave
     // get the value from the settings file if no current encoding is given
     QString enc = current;
 
-    // Check for valid codec for the default. If this fails, "SYSTEM" (i.e.
+    // Check for valid codec for the default.  If this fails, "SYSTEM" (i.e.
     // codecForLocale) will be chosen.
-    // FIXME: The default is "SYSTEM" on all platforms. So can this fallback
+    // FIXME: The default is "SYSTEM" on all platforms.  So can this fallback
     // logic be removed completely?
     bool default_exists = false;
     if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ())

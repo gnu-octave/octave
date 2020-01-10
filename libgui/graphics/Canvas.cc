@@ -670,7 +670,7 @@ namespace QtHandles
                                       "windowbuttondownfcn",
                                       button_number (event));
 
-              // Execute the "buttondownfcn" of the selected object. If the
+              // Execute the "buttondownfcn" of the selected object.  If the
               // latter is empty then execute the figure "buttondownfcn"
               if (currentObj && ! currentObj.get ("buttondownfcn").isempty ())
                 emit gh_callback_event (currentObj.get_handle (),

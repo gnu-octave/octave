@@ -340,7 +340,7 @@ Undocumented internal function.
         options.Password = value;
 
       if (keys(i) == "ContentReader")
-        // Unimplemented. Only for MATLAB compatibility.
+        // Unimplemented.  Only for MATLAB compatibility.
         options.ContentReader = "";
 
       if (keys(i) == "RequestMethod")

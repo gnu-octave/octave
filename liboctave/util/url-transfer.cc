@@ -704,7 +704,7 @@ namespace octave
       SETOPT (CURLOPT_COOKIEFILE, filename.c_str ());
     }
 
-    // Sets the header fields in a transfer. Input should be in the form
+    // Sets the header fields in a transfer.  Input should be in the form
     // of an array of strings with pairs of keys and values together
     void set_header_fields (const Array<std::string>& param)
     {
@@ -790,15 +790,15 @@ namespace octave
           }
       }
 
-      // Unimplemented. Only for MATLAB complatiblity.
+      // Unimplemented.  Only for MATLAB compatibility.
       if (! options.ContentReader.empty ())
         temp = options.ContentReader;
 
-      // Unimplemented. Only for MATLAB complatiblity.
+      // Unimplemented.  Only for MATLAB compatibility.
       if (! options.ArrayFormat.empty ())
         temp = options.ArrayFormat;
 
-      // Unimplemented. Only for MATLAB complatiblity.
+      // Unimplemented.  Only for MATLAB compatibility.
       if (! options.CertificateFilename.empty ())
         temp = options.CertificateFilename;
     }

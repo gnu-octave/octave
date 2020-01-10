@@ -308,7 +308,7 @@ namespace octave
         (save_dialog == QMessageBox::Save))
       {
         // Ignore close event if file is saved or user cancels
-        // closing this window. In case of saving, tab is closed after
+        // closing this window.  In case of saving, tab is closed after
         // successful saving.
         e->ignore ();
       }
@@ -699,7 +699,7 @@ namespace octave
 
         bool update_apis = false;  // flag, whether update of apis files
 
-        // Get path to prepared api info (cache). Temporarily set the
+        // Get path to prepared api info (cache).  Temporarily set the
         // application name to 'octave' instead of 'GNU Octave' name for
         // not having blanks in the path.
         QString tmp_app_name = QCoreApplication::applicationName ();
@@ -753,7 +753,7 @@ namespace octave
 
             if (octave_functions)
               {
-                // Functions may change frequently. Update the apis data
+                // Functions may change frequently.  Update the apis data
                 // if the file is older than a few minutes preventing from
                 // re-preparing data when the user opens several files.
                 QDateTime apis_time = apis_file.lastModified ();
@@ -1023,7 +1023,7 @@ namespace octave
     if (step_into)
       {
         // Get current first breakpoint and set breakpoint waiting for
-        // the returned line number. Store whether to remove this breakpoint
+        // the returned line number.  Store whether to remove this breakpoint
         // afterwards.
         int first_bp_line
               = m_edit_area->markerFindNext (0, (1 << marker::breakpoint)) + 1;
@@ -2604,7 +2604,7 @@ namespace octave
         if (m_edit_area->isModified ())
           modified = tr ("\n\nWarning: The contents in the editor is modified!");
 
-        // Create a WindowModal message. The file editor tab can't be made
+        // Create a WindowModal message.  The file editor tab can't be made
         // parent because it may be deleted depending upon the response.
         // Instead, change the m_edit_area to read only.
         QMessageBox *msgBox
@@ -2848,7 +2848,7 @@ namespace octave
       {
         // Definitely close the file.
         // Set modified to false to prevent the dialog box when the close event
-        // is posted. If the user cancels the close in this dialog the tab is
+        // is posted.  If the user cancels the close in this dialog the tab is
         // left open with a non-existing file.
         m_edit_area->setModified (false);
         close ();

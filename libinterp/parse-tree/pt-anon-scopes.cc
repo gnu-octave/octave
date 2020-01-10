@@ -69,9 +69,9 @@ namespace octave
       expr->accept (*this);
   }
 
-  // The rest of visit_... methods is only for walking the tree. Many of
+  // The rest of visit_... methods is only for walking the tree.  Many of
   // them, in particular all methods for commands, are not applicable to
-  // anonymous functions. Only parts of the tree are walked which could
+  // anonymous functions.  Only parts of the tree are walked which could
   // contain further (nested) anonymous function definitions (so
   // e.g. identifiers and left hand sides of assignments are ignored).
 

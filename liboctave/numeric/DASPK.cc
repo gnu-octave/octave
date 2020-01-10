@@ -518,7 +518,7 @@ DASPK::do_integrate (double tout)
     case -14: // The Krylov linear system solver could not
               // achieve convergence.
     case -33: // The code has encountered trouble from which it cannot
-              // recover. A message is printed explaining the trouble
+              // recover.  A message is printed explaining the trouble
               // and control is returned to the calling program.  For
               // example, this occurs when invalid input is detected.
       integration_error = true;

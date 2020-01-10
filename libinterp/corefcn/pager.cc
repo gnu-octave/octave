@@ -129,7 +129,7 @@ namespace octave
   {
     output_system& output_sys = __get_output_system__ ("pager_buf::sync");
 
-    char *buf = eback ();
+    char *buf = pbase ();
 
     int len = pptr () - buf;
 
@@ -146,7 +146,7 @@ namespace octave
   void
   pager_buf::flush_current_contents_to_diary (void)
   {
-    char *buf = eback () + diary_skip;
+    char *buf = pbase () + diary_skip;
 
     size_t len = pptr () - buf;
 
@@ -158,7 +158,7 @@ namespace octave
   void
   pager_buf::set_diary_skip (void)
   {
-    diary_skip = pptr () - eback ();
+    diary_skip = pptr () - pbase ();
   }
 
   int
@@ -170,7 +170,7 @@ namespace octave
 
     if (output_sys.write_to_diary_file () && external_diary_file)
       {
-        char *buf = eback ();
+        char *buf = pbase ();
 
         int len = pptr () - buf;
 

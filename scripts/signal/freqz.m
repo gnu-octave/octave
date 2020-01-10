@@ -195,7 +195,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
 
   if (plot_output)
     ## Plot and don't return values.
-    if (whole_region)
+    if (whole_region && isscalar (n))
       h(end+1) = h(1); # Solution is periodic.  Copy first value to end.
     endif
     freqz_plot (f, h, freq_norm);

@@ -1161,11 +1161,12 @@ function XY = textcoordinates (hte, pos)
     pt = rem (pt, 8);
   endif
 
-  ## Compute the text actual "position" property
+  ## Compute the actual text "position" property and move the text object
+  ## 2 points away from the arrow.
   dx = ext(3)/2;
   dy = ext(4)/2;
-  XY = [-dx -dx 0 dx dx dx 0 -dx;
-        0 -dy -dy -dy 0 dy dy dy];
+  XY = [-dx-2, -dx-2, 0, dx+2, dx+2, dx+2, 0, -dx-2;
+        0, -dy-2, -dy-2, -dy-2, 0, dy+2, dy+2, dy+2];
 
   switch (get (hte, "horizontalalignment"))
     case "left"

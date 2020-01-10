@@ -464,6 +464,7 @@ rotations:
 $p' = R \cdot p = R_z \cdot R_y \cdot R_x \cdot p$
 @end tex
 @ifnottex
+
 @example
 p' = Rp = Rz*Ry*Rx*p
 @end example

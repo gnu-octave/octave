@@ -75,7 +75,7 @@
 ## @deftypefn  {} {@var{a} =} gallery ("condex", @var{n})
 ## @deftypefnx {} {@var{a} =} gallery ("condex", @var{n}, @var{k})
 ## @deftypefnx {} {@var{a} =} gallery ("condex", @var{n}, @var{k}, @var{theta})
-## Create a 'counterexample' matrix to a condition estimator.
+## Create a @nospell{"counterexample"} matrix to a condition estimator.
 ##
 ## @end deftypefn
 ##
@@ -341,7 +341,7 @@
 ##
 ## @deftypefn  {} {@var{a} =} gallery ("smoke", @var{n})
 ## @deftypefnx {} {@var{a} =} gallery ("smoke", @var{n}, @var{k})
-## Create a complex matrix, with a 'smoke ring' pseudospectrum.
+## Create a complex matrix, with a @nospell{"smoke ring"} pseudospectrum.
 ##
 ## @end deftypefn
 ##

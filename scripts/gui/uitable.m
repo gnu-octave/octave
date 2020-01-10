@@ -163,6 +163,7 @@
 ##        @@(x, y) update_point_table (y.Indices, t_point_table));
 ## endfunction
 ##
+## @group
 ## function validate_point_table (h, dat, t_data_table)
 ##   if (! (dat.NewData > 0 && ...
 ##     dat.NewData < size (get (t_data_table, "Data"), dat.Indices(1, 1)) + 1))
@@ -172,7 +173,9 @@
 ##     set (h, "Data", d);
 ##   endif
 ## endfunction
+## @end group
 ##
+## @group
 ## function update_column_format (format, indices, t_data_table, ...
 ##                                popup_options)
 ##   cf = get (t_data_table, "ColumnFormat");
@@ -184,14 +187,18 @@
 ##   cf@{indices(1,2)@} = format;
 ##   set (t_data_table, "ColumnFormat", cf);
 ## endfunction
+## @end group
 ##
+## @group
 ## function update_point_table (indices, t_point_table)
 ##   if (isempty (indices))
 ##     indices = [1, 1];
 ##   endif
 ##   set (t_point_table, "Data", indices(1,:));
 ## endfunction
+## @end group
 ##
+## @group
 ## function update_data (b_add, t_point_table, t_type_table, ...
 ##                       t_data_table)
 ##   indices = get (b_add, "UserData");
@@ -204,6 +211,7 @@
 ##   d(p(1,2), p(1,1)) = t_type_table_data(indices(1,2));
 ##   set (t_data_table, "Data", d);
 ## endfunction
+## @end group
 ## @end example
 ##
 ## @seealso{figure, uicontrol}

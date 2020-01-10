@@ -361,7 +361,7 @@ overridden by the environment variable @w{@env{OCTAVE_VERSION_INITFILE}}.
 @item @var{config-dir}/octave/octaverc
 @cindex personal startup file
 where @code{@var{config-dir}} is the platform-dependent location for user
-local configuration files (e.g. @w{@env{$XDG_CONFIG_HOME}} on many Unix-like
+local configuration files (e.g., @w{@env{$XDG_CONFIG_HOME}} on many Unix-like
 operating systems or @w{@env{%APPDATA%}} on Windows).
 
 @item ~/.octaverc

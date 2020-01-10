@@ -240,8 +240,8 @@
 ##
 ## @item -d@var{device}
 ##   The available output format is specified by the option @var{device}, and
-## is one of the following (devices marked with a "*" are only available with
-## the Gnuplot toolkit):
+## is one of the following (devices marked with a @qcode{'*'} are only
+## available with the Gnuplot toolkit):
 ##
 ## Vector Formats
 ##

@@ -71,7 +71,7 @@
 ## Default is NULL@.  It must be a string or character vector.
 ## Programming Note: If you display a @code{weboption} object with the Password
 ## property set, the value is displayed as a string containing
-## @qcode{\"*\"}.  However, the object stores the value of the Password
+## @qcode{'*'}.  However, the object stores the value of the Password
 ## property as plain text.
 ##
 ## @item

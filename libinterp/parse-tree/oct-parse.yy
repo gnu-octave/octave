@@ -5489,20 +5489,6 @@ Like @code{eval}, except that the expressions are evaluated in the context
   return interp.evalin (context, try_code, nargout);
 }
 
-static void
-restore_octave_stdout (std::streambuf *buf)
-{
-  octave_stdout.flush ();
-  octave_stdout.rdbuf (buf);
-}
-
-static void
-restore_octave_stderr (std::streambuf *buf)
-{
-  std::cerr.flush ();
-  std::cerr.rdbuf (buf);
-}
-
 DEFMETHOD (evalc, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} evalc (@var{try})
@@ -5532,44 +5518,44 @@ s = evalc ("t = 42"), t
 @seealso{eval, diary}
 @end deftypefn */)
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin == 0 || nargin > 2)
     print_usage ();
 
-  // redirect stdout/stderr to capturing buffer
-  std::ostringstream buffer;
+  // Flush pending output and redirect stdout/stderr to capturing
+  // buffer.
 
-  std::ostream& out_stream = octave_stdout;
-  std::ostream& err_stream = std::cerr;
+  octave_stdout.flush ();
+  std::cerr.flush ();
 
-  out_stream.flush ();
-  err_stream.flush ();
+  std::stringbuf buffer;
 
-  std::streambuf* old_out_buf = out_stream.rdbuf (buffer.rdbuf ());
-  std::streambuf* old_err_buf = err_stream.rdbuf (buffer.rdbuf ());
+  std::streambuf *old_out_buf = octave_stdout.rdbuf (&buffer);
+  std::streambuf *old_err_buf = std::cerr.rdbuf (&buffer);
 
-  octave::unwind_protect frame;
+  // Restore previous output buffers no matter how control exits this
+  // function.  There's no need to flush here.  That has already
+  // happened for the normal execution path.  If an error happens during
+  // the eval, then the message is stored in the exception object and we
+  // will display it later, after the buffers have been restored.
 
-  frame.add_fcn (restore_octave_stdout, old_out_buf);
-  frame.add_fcn (restore_octave_stderr, old_err_buf);
+  octave::unwind_action act ([old_out_buf, old_err_buf] (void)
+                             {
+                               octave_stdout.rdbuf (old_out_buf);
+                               std::cerr.rdbuf (old_err_buf);
+                             });
 
-  // call standard eval function
+  // Call standard eval function.
 
   int eval_nargout = std::max (0, nargout - 1);
 
-  try
-    {
-      retval = Feval (interp, args, eval_nargout);
-    }
-  catch (const octave::execution_exception& ee)
-    {
-      buffer << "error: " << ee.message () << std::endl;
+  octave_value_list retval = Feval (interp, args, eval_nargout);
 
-      throw;
-    }
+  // Make sure we capture all pending output.
+
+  octave_stdout.flush ();
+  std::cerr.flush ();
 
   retval.prepend (buffer.str ());
 

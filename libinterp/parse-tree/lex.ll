@@ -2301,21 +2301,18 @@ namespace octave
 static bool
 looks_like_copyright (const std::string& s)
 {
-  bool retval = false;
+  if (s.empty ())
+    return false;
 
-  if (! s.empty ())
-    {
-      // Comment characters have been stripped but whitespace
-      // (including newlines) remains.
+  // Comment characters have been stripped but whitespace
+  // (including newlines) remains.
 
-      size_t offset = s.find_first_not_of (" \t\n\r");
+  size_t offset = s.find_first_not_of (" \t\n\r");
 
-      retval = (s.substr (offset, 9) == "Copyright"
-                || s.substr (offset, 6) == "Author"
-                || s.substr (offset, 23) == "SPDX-License-Identifier");
-    }
-
-  return retval;
+  return (offset != std::string::npos
+          && (s.substr (offset, 9) == "Copyright"
+              || s.substr (offset, 6) == "Author"
+              || s.substr (offset, 23) == "SPDX-License-Identifier"));
 }
 
 static bool

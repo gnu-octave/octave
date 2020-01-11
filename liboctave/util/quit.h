@@ -200,9 +200,9 @@ namespace octave
 
 #endif
 
-  // The following enum values are deprecated and will eventually be
-  // removed from Octave, but there seems to be no universally good way
-  // to tag them with an attribute that will generate a warning.
+// The following enum values are deprecated and will eventually be
+// removed from Octave, but there seems to be no universally good way
+// to tag them with an attribute that will generate a warning.
 
 enum
 octave_exception

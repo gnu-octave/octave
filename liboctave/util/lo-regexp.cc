@@ -200,7 +200,7 @@ namespace octave
                         buf << m_pattern.substr (new_pos, tmp_pos3 - new_pos)
                             << '{' << i << '}';
                         buf << m_pattern.substr (tmp_pos3 + 1,
-                                               tmp_pos1 - tmp_pos3 - 1);
+                                                 tmp_pos1 - tmp_pos3 - 1);
                         if (i != max_length)
                           buf << '|';
                       }
@@ -239,7 +239,7 @@ namespace octave
          | PCRE_UTF8);
 
     m_data = pcre_compile (buf_str.c_str (), pcre_options,
-                         &err, &erroffset, nullptr);
+                           &err, &erroffset, nullptr);
 
     if (! m_data)
       (*current_liboctave_error_handler)

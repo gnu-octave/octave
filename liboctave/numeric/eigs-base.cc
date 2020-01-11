@@ -448,7 +448,7 @@ LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
                   tmp.xcidx (n) = n;
 
                   AminusSigmaB -= sigma * tmp *
-                    b.transpose () * b * tmp.transpose ();
+                                  b.transpose () * b * tmp.transpose ();
                 }
               else
                 AminusSigmaB -= sigma * b.transpose () * b;
@@ -629,7 +629,7 @@ LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
                   tmp.xcidx (n) = n;
 
                   AminusSigmaB -= tmp * b.hermitian () * b *
-                    tmp.transpose () * sigma;
+                                  tmp.transpose () * sigma;
                 }
               else
                 AminusSigmaB -= sigma * b.hermitian () * b;
@@ -1641,7 +1641,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                       ip2 = workd + iptr(1) - 1;
                       for (F77_INT i = 0; i < n; i++)
                         *ip2++ = y(i);
-                     }
+                    }
                 }
             }
           else
@@ -1746,7 +1746,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
             }
           if (note3)
             eig_vec = utsolve (bt, permB, eig_vec);
-         }
+        }
     }
   else
     (*current_liboctave_error_handler)
@@ -2577,7 +2577,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
           if (have_b)
             bmat = 'G';
         }
-   }
+    }
   else if (! std::abs (sigmar))
     {
       typ = "SM";
@@ -2750,7 +2750,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                       ip2 = workd + iptr(1) - 1;
                       for (F77_INT i = 0; i < n; i++)
                         *ip2++ = y(i);
-                     }
+                    }
                 }
             }
           else
@@ -2905,7 +2905,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                     = Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
           if (note3)
-              eig_vec = utsolve (bt, permB, eig_vec);
+            eig_vec = utsolve (bt, permB, eig_vec);
         }
       if (k0 < k)
         {

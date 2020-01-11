@@ -40,7 +40,7 @@ plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char *op_name)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nr != b_nr || a_nc != b_nc)
-    octave::err_nonconformant (op_name , a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
 
   r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ()));
 

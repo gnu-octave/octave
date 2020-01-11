@@ -287,7 +287,7 @@ public:
   {
     if (&dv != this)
       {
-       if (decrement_count () == 0)
+        if (decrement_count () == 0)
           freerep ();
 
         rep = dv.rep;

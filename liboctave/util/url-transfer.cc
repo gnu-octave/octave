@@ -94,7 +94,7 @@ namespace octave
           {
             m_ok = false;
             m_errmsg = "__ftp_mget__: can not create directory '"
-                     + target + sep + directory + "': " + msg;
+                       + target + sep + directory + "': " + msg;
             return;
           }
       }
@@ -194,7 +194,7 @@ namespace octave
                 {
                   m_ok = false;
                   m_errmsg = "__ftp__mput: file '" + realfile
-                           + "' does not exist";
+                             + "' does not exist";
                   break;
                 }
 
@@ -217,7 +217,7 @@ namespace octave
                     {
                       m_ok = false;
                       m_errmsg = "__ftp_mput__: unable to open file '"
-                               + realfile + "'";
+                                 + realfile + "'";
                       break;
                     }
 
@@ -235,7 +235,7 @@ namespace octave
           {
             m_ok = false;
             m_errmsg = "__ftp_mput__: can not read the directory '"
-                     + realdir + "'";
+                       + realdir + "'";
           }
       }
 
@@ -715,16 +715,16 @@ namespace octave
       frame.add_fcn (curl_slist_free_all, slist);
 
       if (param.numel () >= 2)
-      {
-        for (int i = 0; i < param.numel (); i += 2)
         {
-          std::string header = param(i) + ": " + param(i+1);
+          for (int i = 0; i < param.numel (); i += 2)
+            {
+              std::string header = param(i) + ": " + param(i+1);
 
-          slist = curl_slist_append (slist, header.c_str ());
+              slist = curl_slist_append (slist, header.c_str ());
+            }
+
+          SETOPT (CURLOPT_HTTPHEADER, slist);
         }
-
-        SETOPT (CURLOPT_HTTPHEADER, slist);
-      }
     }
 
     // Sets and sends the form data associated with a transfer.
@@ -743,22 +743,22 @@ namespace octave
       frame.add_fcn (curl_formfree, post);
 
       if (param.numel () >= 2)
-      {
-        for (int i = 0; i < param.numel (); i += 2)
-          {
-            std::string name = param(i);
-            std::string data = param(i+1);
+        {
+          for (int i = 0; i < param.numel (); i += 2)
+            {
+              std::string name = param(i);
+              std::string data = param(i+1);
 
-            if (name == "file")
-               curl_formadd (&post, &last, CURLFORM_COPYNAME, name.c_str (),
-                             CURLFORM_FILE, data.c_str (), CURLFORM_END);
-            else
-               curl_formadd(&post, &last, CURLFORM_COPYNAME, name.c_str (),
-                            CURLFORM_COPYCONTENTS, data.c_str (), CURLFORM_END);
-          }
+              if (name == "file")
+                curl_formadd (&post, &last, CURLFORM_COPYNAME, name.c_str (),
+                              CURLFORM_FILE, data.c_str (), CURLFORM_END);
+              else
+                curl_formadd(&post, &last, CURLFORM_COPYNAME, name.c_str (),
+                             CURLFORM_COPYCONTENTS, data.c_str (), CURLFORM_END);
+            }
 
-        SETOPT (CURLOPT_HTTPPOST, post);
-      }
+          SETOPT (CURLOPT_HTTPPOST, post);
+        }
 
       perform ();
     }
@@ -777,18 +777,18 @@ namespace octave
         SETOPT (CURLOPT_USERAGENT, options.UserAgent.c_str ());
 
       if (! options.Username.empty ())
-      {
-        if (! options.Password.empty ())
-          {
-            std::string tmp = options.Username + ":" + options.Password;
-            SETOPT (CURLOPT_USERPWD, tmp.c_str ());
-          }
-        else
-          {
-            std::string tmp = options.Username + ":";
-            SETOPT (CURLOPT_USERPWD, tmp.c_str ());
-          }
-      }
+        {
+          if (! options.Password.empty ())
+            {
+              std::string tmp = options.Username + ":" + options.Password;
+              SETOPT (CURLOPT_USERPWD, tmp.c_str ());
+            }
+          else
+            {
+              std::string tmp = options.Username + ":";
+              SETOPT (CURLOPT_USERPWD, tmp.c_str ());
+            }
+        }
 
       // Unimplemented.  Only for MATLAB compatibility.
       if (! options.ContentReader.empty ())

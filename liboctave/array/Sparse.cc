@@ -1235,7 +1235,7 @@ Sparse<T>::delete_elements (const idx_vector& idx)
           octave_idx_type new_nz = nz - (ubi - lbi);
           *this = Sparse<T> (1, nc - (ub - lb), new_nz);
           std::copy_n (tmp.data (), lbi, data ());
-          std::copy (tmp.data () + ubi, tmp.data () + nz , xdata () + lbi);
+          std::copy (tmp.data () + ubi, tmp.data () + nz, xdata () + lbi);
           std::fill_n (ridx (), new_nz, static_cast<octave_idx_type> (0));
           std::copy_n (tmp.cidx () + 1, lb, cidx () + 1);
           mx_inline_sub (nc - ub, xcidx () + 1, tmp.cidx () + ub + 1,

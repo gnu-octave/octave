@@ -32,7 +32,7 @@
 extern "C" {
 #endif
 
-extern octave_idx_type octave_atomic_increment (octave_idx_type *x);
+  extern octave_idx_type octave_atomic_increment (octave_idx_type *x);
 
   extern octave_idx_type octave_atomic_decrement (octave_idx_type *x);
 

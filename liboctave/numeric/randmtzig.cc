@@ -224,7 +224,7 @@ namespace octave
     for (; k; k--)
       {
         state[i] = (state[i] ^ ((state[i-1] ^ (state[i-1] >> 30)) * 1664525UL))
-          + init_key[j] + j; /* non linear */
+                   + init_key[j] + j; /* non linear */
         state[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
         i++;
         j++;
@@ -239,7 +239,7 @@ namespace octave
     for (k = MT_N - 1; k; k--)
       {
         state[i] = (state[i] ^ ((state[i-1] ^ (state[i-1] >> 30)) * 1566083941UL))
-          - i; /* non linear */
+                   - i; /* non linear */
         state[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
         i++;
         if (i >= MT_N)
@@ -269,7 +269,7 @@ namespace octave
             if (std::fread (word, 4, 1, urandom) != 1)
               break;
             entropy[n++] = word[0] + (word[1]<<8) + (word[2]<<16)
-              + (static_cast<uint32_t> (word[3])<<24);
+                           + (static_cast<uint32_t> (word[3])<<24);
           }
         std::fclose (urandom);
       }

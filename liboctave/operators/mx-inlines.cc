@@ -540,8 +540,8 @@ do_sm_binary_op (const X& x, const Array<Y>& y,
 template <typename R, typename X>
 inline Array<R>&
 do_mm_inplace_op (Array<R>& r, const Array<X>& x,
-                  void (*op) (size_t, R *, const X *) ,
-                  void (*op1) (size_t, R *, X) ,
+                  void (*op) (size_t, R *, const X *),
+                  void (*op1) (size_t, R *, X),
                   const char *opname)
 {
   dim_vector dr = r.dims ();

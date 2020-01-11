@@ -648,7 +648,7 @@ public:
                ? octave_int_base<T>::max_val ()
                : x - y)
             : (x < octave_int_base<T>::min_val () + y
-                ? octave_int_base<T>::min_val ()
+               ? octave_int_base<T>::min_val ()
                : x - y));
   }
 

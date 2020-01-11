@@ -353,7 +353,7 @@ octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t x, uint64_t y)
 
   return res;
 
- overflow:
+overflow:
   return max_val ();
 }
 
@@ -429,7 +429,7 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
         return -static_cast<int64_t> (res);
     }
 
- overflow:
+overflow:
   return positive ? max_val () : min_val ();
 
 }

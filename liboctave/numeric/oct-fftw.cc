@@ -241,8 +241,8 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (Complex, itmp, nn * howmany + 32);
             itmp = reinterpret_cast<Complex *>
-              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-               ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p
               = fftw_plan_many_dft (rank, tmp, howmany,
@@ -360,8 +360,8 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (double, itmp, nn + 32);
             itmp = reinterpret_cast<double *>
-              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-               ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p
               = fftw_plan_many_dft_r2c (rank, tmp, howmany, itmp,
@@ -593,8 +593,8 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (FloatComplex, itmp, nn * howmany + 32);
             itmp = reinterpret_cast<FloatComplex *>
-              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-               ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p
               = fftwf_plan_many_dft (rank, tmp, howmany,
@@ -712,8 +712,8 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (float, itmp, nn + 32);
             itmp = reinterpret_cast<float *>
-              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-               ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p
               = fftwf_plan_many_dft_r2c (rank, tmp, howmany, itmp,

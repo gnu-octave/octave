@@ -68,8 +68,8 @@ F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DEF (s_arg, len),
   std::cerr << std::string (s, slen) << ": parameter number " << info
             << " is invalid" << std::endl;
 
-   if (xerbla_handler)
-     (*xerbla_handler) ();
+  if (xerbla_handler)
+    (*xerbla_handler) ();
 
   F77_RETURN (0)
 }

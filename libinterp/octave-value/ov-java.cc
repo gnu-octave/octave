@@ -519,15 +519,17 @@ get_jvm_lib_path_in_subdir (std::string java_home_path)
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::string subdirs[] = {"bin/client", "bin/server"};
 #else
-  std::string subdirs[] = {"jre/lib/server", "jre/lib", "lib/client",
-    "lib/server", "jre/lib/amd64/client", "jre/lib/amd64/server",
-    "jre/lib/i386/client", "jre/lib/i386/server"};
+  std::string subdirs[] = {"jre/lib/server", "jre/lib",
+                           "lib/client", "lib/server",
+                           "jre/lib/amd64/client", "jre/lib/amd64/server",
+                           "jre/lib/i386/client", "jre/lib/i386/server"
+                          };
 #endif
 
   for (size_t i = 0; i < sizeof (subdirs) / sizeof (subdirs[0]); i++)
     {
       std::string candidate = java_home_path + "/" + subdirs[i]
-                            + "/" LIBJVM_FILE_NAME;
+                              + "/" LIBJVM_FILE_NAME;
       if (octave::sys::file_stat (candidate))
         return candidate;
     }
@@ -679,7 +681,7 @@ initialize_jvm (void)
               // time?  Or is it OK for the options to be fixed here?
 
               std::string java_home_cmd = std::string (JAVA_HOME_CMD)
-                + " --failfast --version 1.6+ 2>/dev/null";
+                                          + " --failfast --version 1.6+ 2>/dev/null";
 
               octave::process_execution_result rslt
                 = octave::run_command_and_return_output (java_home_cmd);
@@ -1075,7 +1077,7 @@ make_java_index (JNIEnv *jni_env, const octave_value_list& idx)
 {
   jclass_ref ocls (jni_env, jni_env->FindClass ("[I"));
   jobjectArray retval = jni_env->NewObjectArray (idx.length (), ocls, nullptr);
- // Here retval has the same length as idx
+  // Here retval has the same length as idx
 
   // Fill in entries of idx into retval
   for (int i = 0; i < idx.length (); i++)
@@ -1705,7 +1707,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
       // into a String[], not into a char array
 
       if (val.is_double_type ())
-        UNBOX_PRIMITIVE_ARRAY ( , , jdouble,  Double);
+        UNBOX_PRIMITIVE_ARRAY ( , , jdouble, Double);
       else if (val.islogical ())
         UNBOX_PRIMITIVE_ARRAY (bool_, bool, jboolean, Boolean);
       else if (val.isfloat ())

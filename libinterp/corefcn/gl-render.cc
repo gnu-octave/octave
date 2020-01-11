@@ -2631,7 +2631,7 @@ namespace octave
             if ((fl_mode > 0) && do_lighting)
               m_glfcns.glEnable (GL_LIGHTING);
             m_glfcns.glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD)
-                          ? GL_SMOOTH : GL_FLAT);
+                                   ? GL_SMOOTH : GL_FLAT);
             set_polygon_offset (true, 1.0);
             if (fc_mode == TEXTURE)
               m_glfcns.glEnable (GL_TEXTURE_2D);
@@ -2837,7 +2837,7 @@ namespace octave
             if ((el_mode > 0) && do_lighting)
               m_glfcns.glEnable (GL_LIGHTING);
             m_glfcns.glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
-                          ? GL_SMOOTH : GL_FLAT);
+                                   ? GL_SMOOTH : GL_FLAT);
 
             set_linestyle (props.get_linestyle (), false,
                            props.get_linewidth ());
@@ -3528,7 +3528,7 @@ namespace octave
                     bool flag = false;
 
                     m_glfcns.glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
-                                  ? GL_SMOOTH : GL_FLAT);
+                                           ? GL_SMOOTH : GL_FLAT);
 
                     // Add vertices in reverse order for Matlab compatibility
                     for (int j = count_f(i)-1; j >= 0; j--)
@@ -4142,11 +4142,12 @@ namespace octave
           pattern = 0x1111;
       }
     else if (s == "--")
+      {
         if (factor > 1)
           pattern = 0x0F0F;
         else
           pattern = 0x01FF;
-
+      }
     else if (s == "-.")
       {
         if (factor > 1)
@@ -4685,7 +4686,7 @@ namespace octave
         m_glfcns.glRasterPos3d (x, y, z);
         m_glfcns.glBitmap(0, 0, 0, 0, bbox(0), bbox(1), nullptr);
         m_glfcns.glDrawPixels (bbox(2), bbox(3),
-                      GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
+                               GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
         m_glfcns.glDisable (GL_ALPHA_TEST);
 
         if (! blend)

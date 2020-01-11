@@ -235,7 +235,8 @@ namespace octave
     std::string m_cls_name;
   };
 
-  class tree_classdef_superclass_list : public base_list<tree_classdef_superclass *>
+  class tree_classdef_superclass_list
+    : public base_list<tree_classdef_superclass *>
   {
   public:
 
@@ -636,17 +637,23 @@ namespace octave
   {
   public:
 
-    typedef std::list<tree_classdef_properties_block *>::iterator properties_list_iterator;
-    typedef std::list<tree_classdef_properties_block *>::const_iterator properties_list_const_iterator;
+    typedef std::list<tree_classdef_properties_block *>::iterator
+      properties_list_iterator;
+    typedef std::list<tree_classdef_properties_block *>::const_iterator
+      properties_list_const_iterator;
 
-    typedef std::list<tree_classdef_methods_block *>::iterator methods_list_iterator;
-    typedef std::list<tree_classdef_methods_block *>::const_iterator methods_list_const_iterator;
+    typedef std::list<tree_classdef_methods_block *>::iterator
+      methods_list_iterator;
+    typedef std::list<tree_classdef_methods_block *>::const_iterator
+      methods_list_const_iterator;
 
     typedef std::list<tree_classdef_events_block *>::iterator events_list_iterator;
-    typedef std::list<tree_classdef_events_block *>::const_iterator events_list_const_iterator;
+    typedef std::list<tree_classdef_events_block *>::const_iterator
+      events_list_const_iterator;
 
     typedef std::list<tree_classdef_enum_block *>::iterator enum_list_iterator;
-    typedef std::list<tree_classdef_enum_block *>::const_iterator enum_list_const_iterator;
+    typedef std::list<tree_classdef_enum_block *>::const_iterator
+      enum_list_const_iterator;
 
     tree_classdef_body (void)
       : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()

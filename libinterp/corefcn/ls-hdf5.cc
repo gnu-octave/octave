@@ -724,14 +724,14 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
             }
           else if (hdf5_types_compatible (type_id, range_type))
             {
-               // If it's not a complex, check if it's a range
-               d->tc = octave_value_typeinfo::lookup_type ("range");
+              // If it's not a complex, check if it's a range
+              d->tc = octave_value_typeinfo::lookup_type ("range");
             }
           else // Otherwise, just ignore it with a warning.
             {
-               warning ("load: can't read '%s' (unknown datatype)", name);
-               retval = 0;  // unknown datatype; skip
-               return retval;
+              warning ("load: can't read '%s' (unknown datatype)", name);
+              retval = 0;  // unknown datatype; skip
+              return retval;
             }
 
           H5Tclose (range_type);
@@ -1192,7 +1192,7 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
     goto error_cleanup;
 
   dims[0] = 0;
-  space_id = H5Screate_simple (0 , dims, nullptr);
+  space_id = H5Screate_simple (0, dims, nullptr);
   if (space_id < 0)
     goto error_cleanup;
 #if defined (HAVE_HDF5_18)

@@ -232,7 +232,7 @@ public:
         const octave_value_list& args,
         octave::stack_frame *closure_context);
 
- protected:
+protected:
 
   octave_function (const std::string& nm,
                    const std::string& ds = "")

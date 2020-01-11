@@ -545,7 +545,7 @@ namespace octave
 
     if (file.empty ())
       file = sys::file_ops::concat (sys::env::get_home_directory (),
-                                            ".octave_hist");
+                                    ".octave_hist");
 
     return file;
   }

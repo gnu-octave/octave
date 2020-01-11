@@ -964,7 +964,7 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
                "libiconv and then re-compiling Octave could fix this.");
       else
         error ("unicode2native: converting from UTF-8 to codepage '%s': %s",
-                codepage, std::strerror (errno));
+               codepage, std::strerror (errno));
     }
 
   frame.add_fcn (::free, static_cast<void *> (native_bytes));
@@ -1014,13 +1014,13 @@ unicode_idx ("aäbc")
   Array<octave_idx_type> p (dim_vector (str.ndims (), 1));
   charNDArray str_p;
   if (str.ndims () > 1)
-  {
-    for (octave_idx_type i=0; i < str.ndims (); i++)
-      p(i) = i;
-    p(0) = 1;
-    p(1) = 0;
-    str_p = str.permute (p);
-  }
+    {
+      for (octave_idx_type i=0; i < str.ndims (); i++)
+        p(i) = i;
+      p(0) = 1;
+      p(1) = 0;
+      str_p = str.permute (p);
+    }
 
   const uint8_t *src = reinterpret_cast<const uint8_t *> (str_p.data ());
   octave_idx_type srclen = str.numel ();
@@ -1029,14 +1029,14 @@ unicode_idx ("aäbc")
 
   octave_idx_type u8_char_num = 1;
   for (octave_idx_type i = 0; i < srclen; u8_char_num++)
-  {
-    int mblen = octave_u8_strmblen_wrapper (src + i);
-    if (mblen < 1)
-      mblen = 1;
-    for (octave_idx_type j = 0; j < mblen; j++)
-      idx (i+j) = u8_char_num;
-    i += mblen;
-  }
+    {
+      int mblen = octave_u8_strmblen_wrapper (src + i);
+      if (mblen < 1)
+        mblen = 1;
+      for (octave_idx_type j = 0; j < mblen; j++)
+        idx (i+j) = u8_char_num;
+      i += mblen;
+    }
 
   return ovl(str.ndims () > 1 ? idx.permute (p, true) : idx);
 }
@@ -1104,7 +1104,7 @@ line2
 @end deftypefn */)
 {
   if (args.length () != 0)
-  print_usage ();
+    print_usage ();
 
   static octave_value_list retval = ovl ("\n");
 

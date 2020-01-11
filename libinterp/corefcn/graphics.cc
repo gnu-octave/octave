@@ -2918,7 +2918,7 @@ gh_manager::renumber_figure (const graphics_handle& old_gh,
 
   if (old_gh.value () < 0)
     m_handle_free_list.insert (std::ceil (old_gh.value ())
-                             - make_handle_fraction ());
+                               - make_handle_fraction ());
 
   for (auto& hfig : m_figure_list)
     {
@@ -5708,8 +5708,7 @@ axes::properties::delete_text_child (handle_property& hp, bool from_root)
 
   if (! is_beingdeleted ())
     {
-      hp = gh_mgr.make_graphics_handle ("text", __myhandle__,
-                                             false, false);
+      hp = gh_mgr.make_graphics_handle ("text", __myhandle__, false, false);
 
       xset (hp.handle_value (), "handlevisibility", "off");
 
@@ -13091,7 +13090,7 @@ make_graphics_object (const std::string& go_name,
   try
     {
       h = gh_mgr.make_graphics_handle (go_name, parent,
-                                          integer_figure_handle, false, false);
+                                       integer_figure_handle, false, false);
     }
   catch (octave::execution_exception& e)
     {
@@ -13178,7 +13177,7 @@ Undocumented internal function.
             }
 
           h = gh_mgr.make_graphics_handle ("figure", 0, int_fig_handle,
-                                              false, false);
+                                           false, false);
 
           if (! int_fig_handle)
             {

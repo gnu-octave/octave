@@ -97,8 +97,7 @@ public:
 
 // Callback data structure for passing data to hdf5_read_next_data, below.
 
-struct
-hdf5_callback_data
+struct hdf5_callback_data
 {
   hdf5_callback_data (void)
     : name (), global (false), tc (), doc () { }

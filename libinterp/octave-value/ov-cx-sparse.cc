@@ -360,7 +360,8 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
 }
 
 bool
-octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id,
+                                         const char *name,
                                          bool save_as_floats)
 {
   bool retval = false;

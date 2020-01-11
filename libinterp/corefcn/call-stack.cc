@@ -1070,9 +1070,8 @@ namespace octave
                     bool is_global = true;
                     bool is_persistent = false;
 
-                    symbol_info
-                      syminf (nm, value, is_formal,
-                              is_global, is_persistent);
+                    symbol_info syminf (nm, value, is_formal, is_global,
+                                        is_persistent);
 
                     symbol_stats.append (syminf);
                   }

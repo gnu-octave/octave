@@ -395,18 +395,18 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
   std::transform (encoding.begin (), encoding.end (), encoding.begin (),
                   ::tolower);
   if (encoding.compare ("utf-8"))
-  {
-    // check if encoding is valid
-    void *codec = octave_iconv_open_wrapper (encoding.c_str (), "utf-8");
-    if (codec == reinterpret_cast<void *> (-1))
-      {
-        if (errno == EINVAL)
-          error ("fopen: conversion from codepage '%s' not supported",
-                 encoding.c_str ());
-      }
-    else
-      octave_iconv_close_wrapper (codec);
-  }
+    {
+      // check if encoding is valid
+      void *codec = octave_iconv_open_wrapper (encoding.c_str (), "utf-8");
+      if (codec == reinterpret_cast<void *> (-1))
+        {
+          if (errno == EINVAL)
+            error ("fopen: conversion from codepage '%s' not supported",
+                   encoding.c_str ());
+        }
+      else
+        octave_iconv_close_wrapper (codec);
+    }
 
   std::string mode = mode_arg;
   bool use_zlib = false;

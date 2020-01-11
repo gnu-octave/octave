@@ -664,8 +664,7 @@ namespace octave
       return m_static_link->varref (sym);
     }
 
-    void mark_scope (const symbol_record& sym,
-                                               scope_flags flag)
+    void mark_scope (const symbol_record& sym, scope_flags flag)
     {
       // Look in closest stack frame that contains values (either the
       // top scope, or a user-defined function or script).
@@ -731,7 +730,8 @@ namespace octave
 
     void set_script_offsets (void);
 
-    void set_script_offsets_internal (const std::map<std::string, symbol_record>& symbols);
+    void set_script_offsets_internal (const std::map<std::string,
+                                                     symbol_record>& symbols);
 
     void resize_and_update_script_offsets (const symbol_record& sym);
 

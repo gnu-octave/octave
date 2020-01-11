@@ -846,7 +846,7 @@ namespace octave
 
           // ISO 8601 format date
           const char *matlab_format = "MATLAB 5.0 MAT-file, written by Octave "
-            OCTAVE_VERSION ", %Y-%m-%d %T UTC";
+                                      OCTAVE_VERSION ", %Y-%m-%d %T UTC";
           std::string comment_string = now.strftime (matlab_format);
 
           size_t len = std::min (comment_string.length (), static_cast<size_t> (124));
@@ -1071,7 +1071,7 @@ namespace octave
   {
     return
       (std::string ("# Created by Octave " OCTAVE_VERSION
-                   ", %a %b %d %H:%M:%S %Y %Z <")
+                    ", %a %b %d %H:%M:%S %Y %Z <")
        + sys::env::get_user_name ()
        + '@'
        + sys::env::get_host_name ()

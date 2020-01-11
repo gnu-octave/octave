@@ -310,49 +310,49 @@ Undocumented internal function.
   string_vector keys = object.map_keys ();
 
   for (int i = 0; i < keys.numel (); i++)
-  {
-    if (keys(i) == "Timeout")
     {
-      float timeout = object.get (keys(i)).float_value ();
-      options.Timeout = static_cast<long>(timeout * 1000);
+      if (keys(i) == "Timeout")
+        {
+          float timeout = object.get (keys(i)).float_value ();
+          options.Timeout = static_cast<long>(timeout * 1000);
+        }
+
+      if (keys(i) == "HeaderFields")
+        {
+          options.HeaderFields = object.get (keys(i)).cellstr_value ();
+        }
+
+      // FIXME: 'delete' and 'display', auto-generated, probably by cdef_object
+      // class?  Remaining fields have already been adjusted elsewhere in the
+      // m-script.  Set 'value' as the Value of the Key wherever it's a string.
+      if (keys(i) != "Timeout" && keys(i) != "HeaderFields"
+          && keys(i) != "delete" && keys(i) != "display")
+        {
+          std::string value = object.get (keys(i)).string_value ();
+
+          if (keys(i) == "UserAgent")
+            options.UserAgent = value;
+
+          if (keys(i) == "Username")
+            options.Username = value;
+
+          if (keys(i) == "Password")
+            options.Password = value;
+
+          if (keys(i) == "ContentReader")
+            // Unimplemented.  Only for MATLAB compatibility.
+            options.ContentReader = "";
+
+          if (keys(i) == "RequestMethod")
+            method = value;
+
+          if (keys(i) == "ArrayFormat")
+            options.ArrayFormat = value;
+
+          if (keys(i) == "CertificateFilename")
+            options.CertificateFilename = "";
+        }
     }
-
-    if (keys(i) == "HeaderFields")
-    {
-      options.HeaderFields = object.get (keys(i)).cellstr_value ();
-    }
-
-    // FIXME: 'delete' and 'display', auto-generated, probably by cdef_object
-    // class?  Remaining fields have already been adjusted elsewhere in the
-    // m-script.  Set 'value' as the Value of the Key wherever it's a string.
-    if (keys(i) != "Timeout" && keys(i) != "HeaderFields"
-        && keys(i) != "delete" && keys(i) != "display")
-    {
-      std::string value = object.get (keys(i)).string_value ();
-
-      if (keys(i) == "UserAgent")
-        options.UserAgent = value;
-
-      if (keys(i) == "Username")
-        options.Username = value;
-
-      if (keys(i) == "Password")
-        options.Password = value;
-
-      if (keys(i) == "ContentReader")
-        // Unimplemented.  Only for MATLAB compatibility.
-        options.ContentReader = "";
-
-      if (keys(i) == "RequestMethod")
-        method = value;
-
-      if (keys(i) == "ArrayFormat")
-        options.ArrayFormat = value;
-
-      if (keys(i) == "CertificateFilename")
-        options.CertificateFilename = "";
-    }
-  }
 
   url_xfer.set_weboptions (options);
 

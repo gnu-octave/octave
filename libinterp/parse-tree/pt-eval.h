@@ -139,7 +139,7 @@ namespace octave
         m_breaking (0), m_continuing (0), m_returning (0),
         m_indexed_object (nullptr), m_index_position (0),
         m_num_indices (0)
-      { }
+    { }
 
     // No copying!
 

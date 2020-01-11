@@ -790,6 +790,7 @@ namespace octave
           {
             all_handle_compatible = all_handle_compatible
               && cl.get ("HandleCompatible").bool_value ();
+
             has_handle_class = has_handle_class || cl.is_handle_class ();
           }
 

@@ -313,7 +313,7 @@ Undocumented internal function.
 
   std::pair<std::list<int>, int> result
     = evmgr.list_dialog (list_lst, mode, width, height, initial_lst,
-                        name, prompt_lst, ok_string, cancel_string);
+                         name, prompt_lst, ok_string, cancel_string);
 
   std::list<int> items_lst = result.first;
   nel = items_lst.size ();
@@ -398,7 +398,7 @@ Undocumented internal function.
 }
 
 DEFMETHOD (__event_manager_show_preferences__, interp, , ,
-       doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __event_manager_show_preferences__ ()
 Undocumented internal function.
 @end deftypefn */)
@@ -409,7 +409,7 @@ Undocumented internal function.
 }
 
 DEFMETHOD (__event_manager_apply_preferences__, interp, , ,
-       doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __event_manager_apply_preferences__ ()
 Undocumented internal function.
 @end deftypefn */)

@@ -126,14 +126,14 @@ namespace octave
     }
 
     ~text_element_list (void)
-      {
-        while (! empty ())
-          {
-            auto it = begin ();
-            delete (*it);
-            erase (it);
-          }
-      }
+    {
+      while (! empty ())
+        {
+          auto it = begin ();
+          delete (*it);
+          erase (it);
+        }
+    }
 
     void accept (text_processor& p);
   };
@@ -148,10 +148,10 @@ namespace octave
 
     text_element_subscript (char c)
       : text_element ()
-      { elem = new text_element_string (std::string (1, c)); }
+    { elem = new text_element_string (std::string (1, c)); }
 
     ~text_element_subscript (void)
-      { delete elem; }
+    { delete elem; }
 
     void accept (text_processor& p);
 
@@ -174,10 +174,10 @@ namespace octave
 
     text_element_superscript (char c)
       : text_element ()
-      { elem = new text_element_string (std::string (1, c)); }
+    { elem = new text_element_string (std::string (1, c)); }
 
     ~text_element_superscript (void)
-      { delete elem; }
+    { delete elem; }
 
     void accept (text_processor& p);
 
@@ -200,7 +200,7 @@ namespace octave
 
     text_element_combined (text_element *e1, text_element *e2)
       : text_element_list(e1)
-      { push_back (e2); }
+    { push_back (e2); }
 
     void accept (text_processor& p);
   };
@@ -283,29 +283,29 @@ namespace octave
   public:
     text_element_color (double r, double g, double b)
       : text_element (), rgb (1, 3, 0.0)
-      {
-        rgb(0) = r;
-        rgb(1) = g;
-        rgb(2) = b;
-      }
+    {
+      rgb(0) = r;
+      rgb(1) = g;
+      rgb(2) = b;
+    }
 
     text_element_color (const std::string& cname)
       : text_element (), rgb (1, 3, 0.0)
-      {
+    {
 #define ASSIGN_COLOR(r,g,b) { rgb(0) = r; rgb(1) = g; rgb(2) = b; }
-        if (cname == "red") ASSIGN_COLOR(1, 0, 0)
-        else if (cname == "green") ASSIGN_COLOR(0, 1, 0)
-        else if (cname == "yellow") ASSIGN_COLOR(1, 1, 0)
-        else if (cname == "magenta") ASSIGN_COLOR(1, 0, 1)
-        else if (cname == "blue") ASSIGN_COLOR(0, 0, 1)
-        else if (cname == "black") ASSIGN_COLOR(0, 0, 0)
-        else if (cname == "white") ASSIGN_COLOR(1, 1, 1)
-        else if (cname == "gray") ASSIGN_COLOR(.5, .5, .5)
-        else if (cname == "darkGreen") ASSIGN_COLOR(0, .5, 0)
-        else if (cname == "orange") ASSIGN_COLOR(1, .65, 0)
-        else if (cname == "lightBlue") ASSIGN_COLOR(0.68, .85, .9)
+      if (cname == "red") ASSIGN_COLOR(1, 0, 0)
+      else if (cname == "green") ASSIGN_COLOR(0, 1, 0)
+      else if (cname == "yellow") ASSIGN_COLOR(1, 1, 0)
+      else if (cname == "magenta") ASSIGN_COLOR(1, 0, 1)
+      else if (cname == "blue") ASSIGN_COLOR(0, 0, 1)
+      else if (cname == "black") ASSIGN_COLOR(0, 0, 0)
+      else if (cname == "white") ASSIGN_COLOR(1, 1, 1)
+      else if (cname == "gray") ASSIGN_COLOR(.5, .5, .5)
+      else if (cname == "darkGreen") ASSIGN_COLOR(0, .5, 0)
+      else if (cname == "orange") ASSIGN_COLOR(1, .65, 0)
+      else if (cname == "lightBlue") ASSIGN_COLOR(0.68, .85, .9)
 #undef ASSIGN_COLOR
-      }
+    }
 
     ~text_element_color (void) = default;
 
@@ -419,10 +419,10 @@ namespace octave
   public:
     text_parser_tex (void)
       : text_parser (), scanner (nullptr), buffer_state (nullptr), result (nullptr)
-      { }
+    { }
 
     ~text_parser_tex (void)
-      { destroy_lexer (); }
+    { destroy_lexer (); }
 
     text_element * parse (const std::string& s);
 

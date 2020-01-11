@@ -80,7 +80,8 @@ namespace octave
             // is the first return value.
 
             tree_parameter_list *pl = uf->is_classdef_constructor ()
-              ? uf->return_list () : uf->parameter_list ();
+                                      ? uf->return_list ()
+                                      : uf->parameter_list ();
 
             if (pl && pl->size () > 0)
               {

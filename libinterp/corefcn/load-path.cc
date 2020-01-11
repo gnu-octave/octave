@@ -172,7 +172,8 @@ namespace octave
         if (! dir_name.empty ())
           {
             std::string pfname = dir_name + sys::file_ops::dir_sep_str ()
-              + "private" + sys::file_ops::dir_sep_str () + fname;
+                                 + "private" + sys::file_ops::dir_sep_str ()
+                                 + fname;
 
             sys::file_stat fs (pfname);
 
@@ -447,8 +448,8 @@ namespace octave
 
         // get base name, allowing "@class/method.m" (bug #41514)
         std::string base_file = (file.length () > dir.length ())
-          ? file.substr (dir.length () + 1)
-          : sys::env::base_pathname (file);
+                                ? file.substr (dir.length () + 1)
+                                : sys::env::base_pathname (file);
 
         std::string lp_file = find_file (base_file);
 

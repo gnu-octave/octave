@@ -1414,7 +1414,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     goto error_cleanup;
 
   hdims[0] = 0;
-  space_hid = H5Screate_simple (0 , hdims, nullptr);
+  space_hid = H5Screate_simple (0, hdims, nullptr);
   if (space_hid < 0)
     goto error_cleanup;
 #if defined (HAVE_HDF5_18)

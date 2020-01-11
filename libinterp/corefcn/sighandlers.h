@@ -45,8 +45,7 @@ namespace octave
   // This type must match the typedef in signal-wrappers.h.
   typedef void sig_handler (int);
 
-  struct
-  interrupt_handler
+  struct interrupt_handler
   {
     sig_handler *int_handler;
     sig_handler *brk_handler;

@@ -93,10 +93,11 @@ namespace octave
   typedef jit_const<Complex, jit_typeinfo::get_complex> jit_const_complex;
   typedef jit_const<octave_idx_type, jit_typeinfo::get_index> jit_const_index;
 
-  typedef jit_const<std::string, jit_typeinfo::get_string, const std::string&,
-                    true> jit_const_string;
+  typedef jit_const<std::string, jit_typeinfo::get_string,
+                    const std::string&, true>
+    jit_const_string;
   typedef jit_const<jit_range, jit_typeinfo::get_range, const jit_range&>
-  jit_const_range;
+    jit_const_range;
 
   class jit_ir_walker;
   class jit_use;

@@ -393,7 +393,7 @@ namespace octave
       {
         octave_set_xerbla_handler_ptr octave_set_xerbla_handler
           = reinterpret_cast<octave_set_xerbla_handler_ptr>
-          (libs.search ("octave_set_xerbla_handler"));
+              (libs.search ("octave_set_xerbla_handler"));
 
         if (octave_set_xerbla_handler)
           octave_set_xerbla_handler (xerbla_abort);
@@ -902,7 +902,7 @@ namespace octave
         std::string user_config_dir = sys::env::get_user_config_directory ();
 
         std::string cfg_dir = user_config_dir + sys::file_ops::dir_sep_str ()
-                            + "octave";
+                              + "octave";
 
         std::string cfg_rc = sys::env::make_absolute ("octaverc", cfg_dir);
 

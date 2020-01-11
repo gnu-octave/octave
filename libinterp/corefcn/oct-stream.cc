@@ -536,8 +536,8 @@ namespace octave
               }
             goto fini;
 
-            // We accept E and G for compatibility with undocumented
-            // Matlab behavior.
+          // We accept E and G for compatibility with undocumented
+          // Matlab behavior.
           case 'e': case 'f': case 'g':
           case 'E': case 'G':
             if (modifier == 'h')
@@ -3504,7 +3504,7 @@ namespace octave
         // delimiters at the start of the conversion, or can those be skipped?
         if (elem->type != textscan_format_elt::literal_conversion
             // && elem->type != '[' && elem->type != '^' && elem->type != 'c'
-            )
+           )
           skip_delim (is);
 
         if (is.eof ())
@@ -3535,9 +3535,9 @@ namespace octave
       is.setstate (std::ios::eofbit);
 
     return no_conversions
-      + (is.eof () ? 2 : 0)
-      + (conversion_failed ? 4 : 0)
-      + (nothing_worked ? 8 : 0);
+           + (is.eof () ? 2 : 0)
+           + (conversion_failed ? 4 : 0)
+           + (nothing_worked ? 8 : 0);
 
   }
 
@@ -3590,7 +3590,7 @@ namespace octave
                           delim_list(j) = do_string_escapes (delim_list(j)
                                                              .string_value ());
                         octave_idx_type len = delim_list(j).string_value ()
-                          .length ();
+                                              .length ();
                         delim_len = std::max (static_cast<int> (len), delim_len);
                       }
                   }

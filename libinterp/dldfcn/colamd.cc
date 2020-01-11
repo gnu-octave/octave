@@ -281,7 +281,8 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
   int spumoni = 0;
 
   // Get knobs
-  static_assert (COLAMD_KNOBS <= 40, "colamd: # of COLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  static_assert (COLAMD_KNOBS <= 40,
+                 "colamd: # of COLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
   double knob_storage[COLAMD_KNOBS];
   double *knobs = &knob_storage[0];
   COLAMD_NAME (_set_defaults) (knobs);
@@ -383,7 +384,8 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
     A[i] = ridx[i];
 
   // Order the columns (destroys A)
-  static_assert (COLAMD_STATS <= 40, "colamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  static_assert (COLAMD_STATS <= 40,
+                 "colamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
   octave::suitesparse_integer stats_storage[COLAMD_STATS];
   octave::suitesparse_integer *stats = &stats_storage[0];
   if (! COLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats))
@@ -523,7 +525,8 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
   int spumoni = 0;
 
   // Get knobs
-  static_assert (COLAMD_KNOBS <= 40, "symamd: # of COLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  static_assert (COLAMD_KNOBS <= 40,
+                 "symamd: # of COLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
   double knob_storage[COLAMD_KNOBS];
   double *knobs = &knob_storage[0];
   COLAMD_NAME (_set_defaults) (knobs);
@@ -587,7 +590,8 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
 
   // Allocate workspace for symamd
   OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
-  static_assert (COLAMD_STATS <= 40, "symamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  static_assert (COLAMD_STATS <= 40,
+                 "symamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
   octave::suitesparse_integer stats_storage[COLAMD_STATS];
   octave::suitesparse_integer *stats = &stats_storage[0];
   if (! SYMAMD_NAME () (n_col, octave::to_suitesparse_intptr (ridx),

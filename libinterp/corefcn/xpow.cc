@@ -67,7 +67,7 @@ static void
 err_nonsquare_matrix (void)
 {
   error ("for x^y, only square matrix arguments are permitted and one " \
-    "argument must be scalar.  Use .^ for elementwise power.");
+         "argument must be scalar.  Use .^ for elementwise power.");
 }
 
 template <typename T>

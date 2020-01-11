@@ -95,7 +95,8 @@ namespace octave
       return val;
     }
 
-    octave_value discard_warning_messages (const octave_value_list& args, int nargout);
+    octave_value discard_warning_messages (const octave_value_list& args,
+                                           int nargout);
 
     void set_discard_warning_messages (bool flag) { m_discard_warning_messages = flag; }
 

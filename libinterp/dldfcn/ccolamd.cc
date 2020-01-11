@@ -147,7 +147,8 @@ csymamd, amd, colamd, symamd, and other related orderings.
   int spumoni = 0;
 
   // Get knobs
-  static_assert (CCOLAMD_KNOBS <= 40, "ccolamd: # of CCOLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  static_assert (CCOLAMD_KNOBS <= 40,
+                 "ccolamd: # of CCOLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
   double knob_storage[CCOLAMD_KNOBS];
   double *knobs = &knob_storage[0];
   CCOLAMD_NAME (_set_defaults) (knobs);
@@ -262,7 +263,8 @@ csymamd, amd, colamd, symamd, and other related orderings.
   for (octave_idx_type i = 0; i < nnz; i++)
     A[i] = ridx[i];
 
-  static_assert (CCOLAMD_STATS <= 40, "ccolamd: # of CCOLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  static_assert (CCOLAMD_STATS <= 40,
+                 "ccolamd: # of CCOLAMD_STATS exceeded.  Please report this to bugs.octave.org");
   octave::suitesparse_integer stats_storage[CCOLAMD_STATS];
   octave::suitesparse_integer *stats = &stats_storage[0];
 
@@ -412,7 +414,8 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
   int spumoni = 0;
 
   // Get knobs
-  static_assert (CCOLAMD_KNOBS <= 40, "csymamd: # of CCOLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
+  static_assert (CCOLAMD_KNOBS <= 40,
+                 "csymamd: # of CCOLAMD_KNOBS exceeded.  Please report this to bugs.octave.org");
   double knob_storage[CCOLAMD_KNOBS];
   double *knobs = &knob_storage[0];
   CCOLAMD_NAME (_set_defaults) (knobs);
@@ -501,7 +504,8 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
 
   // Allocate workspace for symamd
   OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, perm, n_col+1);
-  static_assert (CCOLAMD_STATS <= 40, "csymamd: # of CCOLAMD_STATS exceeded.  Please report this to bugs.octave.org");
+  static_assert (CCOLAMD_STATS <= 40,
+                 "csymamd: # of CCOLAMD_STATS exceeded.  Please report this to bugs.octave.org");
   octave::suitesparse_integer stats_storage[CCOLAMD_STATS];
   octave::suitesparse_integer *stats = &stats_storage[0];
 

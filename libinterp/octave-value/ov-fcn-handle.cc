@@ -988,7 +988,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, 2);
   hdims[0] = 0;
   hdims[1] = 0;
-  space_hid = H5Screate_simple (0 , hdims, nullptr);
+  space_hid = H5Screate_simple (0, hdims, nullptr);
   if (space_hid < 0)
     {
       H5Tclose (type_hid);
@@ -1052,7 +1052,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       octave_user_function *f = m_fcn.user_function_value ();
 
       octave_user_function::local_vars_map local_vars
-                     = f->local_var_init_vals ();
+        = f->local_var_init_vals ();
 
       size_t varlen = local_vars.size ();
 
@@ -1118,7 +1118,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Sclose (space_hid);
       hdims[0] = 1;
       hdims[1] = octaveroot.length ();
-      space_hid = H5Screate_simple (0 , hdims, nullptr);
+      space_hid = H5Screate_simple (0, hdims, nullptr);
       if (space_hid < 0)
         {
           H5Tclose (type_hid);
@@ -1154,7 +1154,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Sclose (space_hid);
       hdims[0] = 1;
       hdims[1] = fpath.length ();
-      space_hid = H5Screate_simple (0 , hdims, nullptr);
+      space_hid = H5Screate_simple (0, hdims, nullptr);
       if (space_hid < 0)
         {
           H5Tclose (type_hid);

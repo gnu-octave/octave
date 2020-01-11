@@ -76,12 +76,12 @@ Undocumented internal function
   std::string host = args(0).xstring_value ("__ftp__: HOST must be a string");
 
   std::string user = (nargin > 1)
-    ? args(1).xstring_value ("__ftp__: USER must be a string")
-    : "anonymous";
+                     ? args(1).xstring_value ("__ftp__: USER must be a string")
+                     : "anonymous";
 
   std::string passwd = (nargin > 2)
-    ? args(2).xstring_value ("__ftp__: PASSWD must be a string")
-    : "";
+                       ? args(2).xstring_value ("__ftp__: PASSWD must be a string")
+                       : "";
 
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
@@ -471,7 +471,7 @@ Undocumented internal function
 
   if (nargin == 3 && ! args(2).isempty ())
     target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string")
-                        + octave::sys::file_ops::dir_sep_str ();
+             + octave::sys::file_ops::dir_sep_str ();
 
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 

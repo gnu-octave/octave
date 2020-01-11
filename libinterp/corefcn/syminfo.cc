@@ -76,10 +76,10 @@ namespace octave
                 if (param.command == 's')
                   {
                     int front = param.first_parameter_length
-                      - dims_str.find ('x');
+                                - dims_str.find ('x');
                     int back = param.parameter_length
-                      - dims_str.length ()
-                      - front;
+                               - dims_str.length ()
+                               - front;
                     front = (front > 0) ? front : 0;
                     back = (back > 0) ? back : 0;
 

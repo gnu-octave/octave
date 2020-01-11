@@ -314,7 +314,8 @@ namespace octave
 
   void
   cdef_class::cdef_class_rep::find_methods (std::map<std::string, cdef_method>& meths,
-                                            bool only_inherited, bool include_ctor)
+                                            bool only_inherited,
+                                            bool include_ctor)
   {
     load_all_methods ();
 

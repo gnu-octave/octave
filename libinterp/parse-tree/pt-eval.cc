@@ -1013,7 +1013,7 @@ namespace octave
 
   void
   tree_evaluator::top_level_assign (const std::string& name,
-                                const octave_value& val)
+                                    const octave_value& val)
   {
     m_call_stack.set_top_level_value (name, val);
   }

@@ -580,7 +580,8 @@ attribute is public and if the @code{Hidden} attribute is false.
   if (! cls.ok ())
     error ("invalid class: %s", class_name.c_str ());
 
-  std::map<std::string, octave::cdef_property> property_map = cls.get_property_map ();
+  std::map<std::string, octave::cdef_property> property_map =
+    cls.get_property_map ();
 
   std::list<std::string> property_names;
 

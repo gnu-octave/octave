@@ -642,11 +642,13 @@ namespace octave
         switch (m_type[i])
           {
           case '(':
-            idx_list.push_back (make_value_list (tw, *p_args, *p_arg_nm, &partial_expr_val));
+            idx_list.push_back (make_value_list (tw, *p_args, *p_arg_nm,
+                                                 &partial_expr_val));
             break;
 
           case '{':
-            idx_list.push_back (make_value_list (tw, *p_args, *p_arg_nm, &partial_expr_val));
+            idx_list.push_back (make_value_list (tw, *p_args, *p_arg_nm,
+                                                 &partial_expr_val));
             break;
 
           case '.':

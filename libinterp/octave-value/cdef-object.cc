@@ -377,9 +377,9 @@ namespace octave
             // array.index doesn't create a new blank entry (bug #46660).
             const octave_idx_type one = static_cast<octave_idx_type> (1);
             const octave_value_list& ival = ivl.length () >= 2
-              ? ivl : ((array.dims ()(0) == 1)
-                       ? ovl (one, ivl(0))
-                       : ovl (ivl(0), one));
+                                            ? ivl : ((array.dims ()(0) == 1)
+                                                     ? ovl (one, ivl(0))
+                                                     : ovl (ivl(0), one));
 
             bool is_scalar = true;
 

@@ -551,7 +551,8 @@ namespace octave
   // If END_LINE != 0, *END_LINE is set to last line of the returned function.
 
   static octave_user_code * find_fcn_by_line (octave_user_code *main_fcn,
-                                              int lineno, int *end_line = nullptr)
+                                              int lineno,
+                                              int *end_line = nullptr)
   {
     octave_user_code *retval = nullptr;
     octave_user_code *next_fcn = nullptr;  // 1st function starting after lineno

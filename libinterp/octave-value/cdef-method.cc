@@ -97,7 +97,7 @@ namespace octave
               {
                 octave_value ov_fcn
                   = load_fcn_from_file (file_name, dir_name,
-                                                dispatch_type, pack_name);
+                                        dispatch_type, pack_name);
 
                 if (ov_fcn.is_defined ())
                   {

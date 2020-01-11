@@ -50,7 +50,7 @@ namespace octave
 
     url_handle_manager (void)
       : handle_map (), handle_free_list (),
-      next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)) { }
+        next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)) { }
 
     url_handle_manager (const url_handle_manager&) = delete;
 

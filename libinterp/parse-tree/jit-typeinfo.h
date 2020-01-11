@@ -432,7 +432,7 @@ namespace octave
     };
 
     typedef std::map<const signature_vec *, jit_function *, signature_cmp>
-    generated_map;
+      generated_map;
 
     mutable generated_map m_generated;
 

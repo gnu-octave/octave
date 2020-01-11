@@ -246,7 +246,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
   max_len += (0.1 * max_len) > n ? 0.1 * max_len : n;
   Array <octave_idx_type> cidx_out_l (dim_vector (n + 1, 1));
   octave_idx_type *cidx_l = cidx_out_l.fortran_vec ();
-  Array <octave_idx_type> ridx_out_l (dim_vector (max_len ,1));
+  Array <octave_idx_type> ridx_out_l (dim_vector (max_len, 1));
   octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
   Array <T> data_out_l (dim_vector (max_len, 1));
   T* data_l = data_out_l.fortran_vec ();

@@ -123,9 +123,11 @@ namespace octave
       typedef std::map<std::string, cdef_class>::iterator class_iterator;
       typedef std::map<std::string, cdef_class>::const_iterator class_const_iterator;
       typedef std::map<std::string, octave_value>::iterator function_iterator;
-      typedef std::map<std::string, octave_value>::const_iterator function_const_iterator;
+      typedef std::map<std::string, octave_value>::const_iterator
+        function_const_iterator;
       typedef std::map<std::string, cdef_package>::iterator package_iterator;
-      typedef std::map<std::string, cdef_package>::const_iterator package_const_iterator;
+      typedef std::map<std::string, cdef_package>::const_iterator
+        package_const_iterator;
 
       cdef_package_rep (const cdef_package_rep& p)
         : cdef_meta_object_rep (p), full_name (p.full_name),

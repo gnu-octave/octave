@@ -364,8 +364,9 @@ namespace octave
                 else
                   retval = name;
 
-                char prev_char = command_editor::get_prev_char
-                  (text.length ());
+                char prev_char =
+                  command_editor::get_prev_char (text.length ());
+
                 if (matches == 1 && looks_like_struct (retval, prev_char))
                   {
                     // Don't append anything, since we don't know
@@ -402,38 +403,38 @@ namespace octave
   {
   }
 
-    void input_system::initialize (bool line_editing)
-    {
-      // Force default line editor if we don't want readline editing.
-      if (! line_editing)
-        {
-          command_editor::force_default_editor ();
-          return;
-        }
+  void input_system::initialize (bool line_editing)
+  {
+    // Force default line editor if we don't want readline editing.
+    if (! line_editing)
+      {
+        command_editor::force_default_editor ();
+        return;
+      }
 
-      // If we are using readline, this allows conditional parsing of the
-      // .inputrc file.
+    // If we are using readline, this allows conditional parsing of the
+    // .inputrc file.
 
-      command_editor::set_name ("Octave");
+    command_editor::set_name ("Octave");
 
-      // FIXME: this needs to include a comma too, but that
-      // causes trouble for the new struct element completion code.
+    // FIXME: this needs to include a comma too, but that
+    // causes trouble for the new struct element completion code.
 
-      static const char *s = "\t\n !\"\'*+-/:;<=>(){}[\\]^`~";
+    static const char *s = "\t\n !\"\'*+-/:;<=>(){}[\\]^`~";
 
-      command_editor::set_basic_word_break_characters (s);
+    command_editor::set_basic_word_break_characters (s);
 
-      command_editor::set_completer_word_break_characters (s);
+    command_editor::set_completer_word_break_characters (s);
 
-      command_editor::set_basic_quote_characters (R"(")");
+    command_editor::set_basic_quote_characters (R"(")");
 
-      command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
+    command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
 
-      command_editor::set_completer_quote_characters (R"('")");
+    command_editor::set_completer_quote_characters (R"('")");
 
-      command_editor::set_completion_function (generate_completion);
+    command_editor::set_completion_function (generate_completion);
 
-      command_editor::set_quoting_function (quoting_filename);
+    command_editor::set_quoting_function (quoting_filename);
   }
 
   octave_value

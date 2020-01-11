@@ -1421,7 +1421,7 @@ namespace octave
        << " (" << m_fcn->type_name () << ")" << std::endl;
 
     display_scope (os, get_scope ());
- }
+  }
 
   void user_fcn_stack_frame::accept (stack_frame_walker& sfw)
   {

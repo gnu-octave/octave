@@ -1761,8 +1761,8 @@ private:
               {
                 graphics_object ax
                   = gh_mgr.get_object (pixel2axes_or_ca (Fl::event_x (),
-                                                            Fl::event_y ()
-                                                            - menu_dy ()));
+                                                         Fl::event_y ()
+                                                         - menu_dy ()));
                 if (ax && ax.isa ("axes"))
                   {
                     axes::properties& ap

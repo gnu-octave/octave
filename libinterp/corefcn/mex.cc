@@ -672,7 +672,9 @@ class mxArray_matlab : public mxArray_base
 protected:
 
   mxArray_matlab (mxClassID id_arg = mxUNKNOWN_CLASS)
-    : mxArray_base (), class_name (nullptr), id (id_arg), ndims (0), dims (nullptr) { }
+    : mxArray_base (), class_name (nullptr), id (id_arg), ndims (0),
+      dims (nullptr)
+  { }
 
   mxArray_matlab (mxClassID id_arg, mwSize ndims_arg, const mwSize *dims_arg)
     : mxArray_base (), class_name (nullptr), id (id_arg),

@@ -163,7 +163,8 @@ get_octave_bindir (void)
 
   std::string obd = octave_getenv ("OCTAVE_BINDIR");
 
-  return obd.empty () ? prepend_octave_exec_home (std::string (OCTAVE_BINDIR)) : obd;
+  return obd.empty () ? prepend_octave_exec_home (std::string (OCTAVE_BINDIR))
+                      : obd;
 }
 
 static std::string
@@ -290,14 +291,14 @@ main (int argc, char **argv)
           for (size_t j = 1; j < len; j++)
             switch (argv[i][j])
               {
-                case 'W':
-                  no_display = true;
-                  break;
-                case 'q':
-                  warn_display = false;
-                  break;
-                default:
-                  break;
+              case 'W':
+                no_display = true;
+                break;
+              case 'q':
+                warn_display = false;
+                break;
+              default:
+                break;
               }
 
           new_argv[k++] = argv[i];

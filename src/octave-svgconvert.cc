@@ -317,7 +317,7 @@ public:
   void add (QPolygonF p)
   {
     if (m_polygons.count () == 0)
-        m_polygons.push_back (p);
+      m_polygons.push_back (p);
     else
       {
         QPolygonF tmp = mergepoly (m_polygons.back (), p);
@@ -619,7 +619,7 @@ void replace_polygons (QDomElement& parent_elt, QList<QDomNode> orig,
       for (int jj = 0; jj < polygon.count (); jj++)
         {
           pts += QString ("%1,%2 ").arg (polygon[jj].x ())
-            .arg (polygon[jj].y ());
+                 .arg (polygon[jj].y ());
         }
 
       node.toElement ().setAttribute ("points", pts.trimmed ());
@@ -759,7 +759,7 @@ read from stdin\n\
   // Create a DOM document and load the svg file
   QDomDocument document;
   QString msg;
-  if(! document.setContent (&file, false, &msg))
+  if (! document.setContent (&file, false, &msg))
     {
       std::cerr << "Failed to parse XML contents" << std::endl
                 << msg.toStdString ();
@@ -809,7 +809,7 @@ read from stdin\n\
               int id = QFontDatabase::addApplicationFont (fontpath);
               if (id < 0)
                 std::cerr << "warning: print: "
-                  "Unable to add default font to database\n";
+                             "Unable to add default font to database\n";
             }
           else
             std::cerr << "warning: print: FreeSans font not found\n";

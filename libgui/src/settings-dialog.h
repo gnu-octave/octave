@@ -46,7 +46,7 @@ namespace octave
 
   class settings_dialog : public QDialog, private Ui::settings_dialog
   {
-    Q_OBJECT public:
+  Q_OBJECT public:
 
     explicit settings_dialog (QWidget *parent, base_qobject& octave_qobj,
                               const QString& desired_tab = QString ());

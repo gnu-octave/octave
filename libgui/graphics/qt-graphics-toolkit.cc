@@ -242,9 +242,9 @@ namespace QtHandles
 
   void
   qt_graphics_toolkit::print_figure (const graphics_object& go,
-                         const std::string& term,
-                         const std::string& file_cmd,
-                         const std::string& /*debug_file*/) const
+                                     const std::string& term,
+                                     const std::string& file_cmd,
+                                     const std::string& /*debug_file*/) const
   {
     ObjectProxy *proxy = toolkitObjectProxy (go);
 

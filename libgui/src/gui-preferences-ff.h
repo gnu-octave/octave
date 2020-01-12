@@ -61,7 +61,8 @@ const gui_pref
 ff_sort_files_by_column ("findfiles/sort_files_by_column", QVariant (0));
 
 const gui_pref
-ff_sort_files_by_order ("findfiles/sort_files_by_order", QVariant (Qt::AscendingOrder));
+ff_sort_files_by_order ("findfiles/sort_files_by_order",
+                        QVariant (Qt::AscendingOrder));
 
 
 #endif

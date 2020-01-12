@@ -84,12 +84,12 @@ static void disable_app_nap (void)
 
   begin_activity_with_options_selector = sel_getUid ("beginActivityWithOptions:reason:");
   if (class_getInstanceMethod (process_info_class,
-                                begin_activity_with_options_selector)
+                               begin_activity_with_options_selector)
       == nullptr)
     return;
 
   process_info = objc_msgSend (reinterpret_cast<id> (process_info_class),
-                                process_info_selector);
+                               process_info_selector);
   if (process_info == nil)
     return;
 
@@ -142,7 +142,7 @@ namespace octave
            });
       }
 
-   return false;
+    return false;
   }
 
   // We will create a QApplication object, even if START_GUI is false,

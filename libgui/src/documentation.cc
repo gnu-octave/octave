@@ -505,7 +505,7 @@ namespace octave
                     emit show_single_result (url);
                   }
               }
-           }
+          }
 
         m_internal_search = QString ();
       }
@@ -712,16 +712,16 @@ namespace octave
       find_flags = QTextDocument::FindBackward;
 
     if (! m_doc_browser->find (m_find_line_edit->text (), find_flags))
-    {
-      // Nothing was found, restart search from the begin or end of text
-      QTextCursor textcur = m_doc_browser->textCursor ();
-      if (backward)
-        textcur.movePosition (QTextCursor::End);
-      else
-        textcur.movePosition (QTextCursor::Start);
-      m_doc_browser->setTextCursor (textcur);
-      m_doc_browser->find (m_find_line_edit->text (), find_flags);
-    }
+      {
+        // Nothing was found, restart search from the begin or end of text
+        QTextCursor textcur = m_doc_browser->textCursor ();
+        if (backward)
+          textcur.movePosition (QTextCursor::End);
+        else
+          textcur.movePosition (QTextCursor::Start);
+        m_doc_browser->setTextCursor (textcur);
+        m_doc_browser->find (m_find_line_edit->text (), find_flags);
+      }
 
     record_anchor_position ();
   }

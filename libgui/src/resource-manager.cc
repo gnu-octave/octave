@@ -87,7 +87,7 @@ namespace octave
     m_settings_directory = sfile.absolutePath ();
 
     QString xdg_config_home
-        = QString::fromLocal8Bit (qgetenv ("XDG_CONFIG_HOME"));
+      = QString::fromLocal8Bit (qgetenv ("XDG_CONFIG_HOME"));
 
     if ((! sfile.exists ()) && xdg_config_home.isEmpty ())
       {
@@ -99,10 +99,10 @@ namespace octave
         // indicate a first run of octave with new config file locations.
 #if defined (HAVE_QSTANDARDPATHS)
         QString home_path
-            = QStandardPaths::writableLocation (QStandardPaths::HomeLocation);
+          = QStandardPaths::writableLocation (QStandardPaths::HomeLocation);
 #else
         QString home_path
-            = QDesktopServices::storageLocation (QDesktopServices::HomeLocation);
+          = QDesktopServices::storageLocation (QDesktopServices::HomeLocation);
 #endif
 
         QString old_settings_directory = home_path + "/.config/octave";
@@ -346,7 +346,7 @@ namespace octave
         if (m_settings->value (global_use_proxy.key, global_use_proxy.def).toBool ())
           {
             QString proxyTypeString
-                = m_settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
+              = m_settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
 
             if (proxyTypeString == "Socks5Proxy")
               proxyType = QNetworkProxy::Socks5Proxy;
@@ -479,16 +479,16 @@ namespace octave
 
     // Create temp. file
     QPointer<QTemporaryFile> tmp_file
-        = new QTemporaryFile (tmp_dir + QDir::separator() +
-                              "octave_XXXXXX" + ext, this);
+      = new QTemporaryFile (tmp_dir + QDir::separator() +
+                            "octave_XXXXXX" + ext, this);
 
     if (tmp_file->open ())
-    {
-      tmp_file->write (contents.toUtf8 ());
-      tmp_file->close ();
+      {
+        tmp_file->write (contents.toUtf8 ());
+        tmp_file->close ();
 
-      m_temporary_files << tmp_file;
-    }
+        m_temporary_files << tmp_file;
+      }
 
     return tmp_file;
   }

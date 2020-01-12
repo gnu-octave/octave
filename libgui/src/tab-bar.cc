@@ -120,7 +120,7 @@ namespace octave
                 moveTab (tab, title);
 
                 if (tab_texts.at (title) == current_title)
-                    tab_with_focus = title;
+                  tab_with_focus = title;
 
                 break;
               }

@@ -843,8 +843,7 @@ namespace octave
 
     // Get desired style from preferences or take the default one if
     // the desired one is not found
-    QString preferred_style
-          = settings->value (global_style).toString ();
+    QString preferred_style = settings->value (global_style).toString ();
 
     if (preferred_style == global_style.def.toString ())
       preferred_style = m_default_style;
@@ -1680,8 +1679,7 @@ namespace octave
                                        global_ov_startup_dir.def).toString ());
           }
 
-        update_default_encoding
-          (settings->value (ed_default_enc).toString ());
+        update_default_encoding (settings->value (ed_default_enc).toString ());
       }
 
     if (! startup_dir.exists ())

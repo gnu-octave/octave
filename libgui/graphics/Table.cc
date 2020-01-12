@@ -380,7 +380,7 @@ namespace QtHandles
     SCANF_AND_CONVERT(int64, int64_t, "%" PRId64 " %n")
     SCANF_AND_CONVERT(uint64, uint64_t, "%" PRIu64 " %n")
 
-  #undef SCANF_AND_CONVERT
+#undef SCANF_AND_CONVERT
 
     else if (old_value.isnumeric () && ! old_value.isinteger ())
       {

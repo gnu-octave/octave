@@ -317,7 +317,8 @@ namespace octave
     Qt::SortOrder sort_order = m_file_tree_view->header ()->sortIndicatorOrder ();
     settings->setValue (fb_sort_column.key, sort_column);
     settings->setValue (fb_sort_order.key, sort_order);
-    settings->setValue (fb_column_state.key, m_file_tree_view->header ()->saveState ());
+    settings->setValue (fb_column_state.key,
+                        m_file_tree_view->header ()->saveState ());
 
     QStringList dirs;
     for (int i=0; i< m_current_directory->count (); i++)
@@ -380,7 +381,8 @@ namespace octave
       display_directory (m_octave_dir,false);  // false: no sync of octave dir
   }
 
-  void files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
+  void files_dock_widget::display_directory (const QString& dir,
+                                             bool set_octave_dir)
   {
     QFileInfo fileInfo (dir);
     if (fileInfo.exists ())
@@ -549,16 +551,16 @@ namespace octave
             QMenu *add_path_menu = menu.addMenu (tr ("Add to Path"));
 
             add_path_menu->addAction (tr ("Selected Directories"),
-                            this, SLOT (contextmenu_add_to_path (bool)));
+                                      this, SLOT (contextmenu_add_to_path (bool)));
             add_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
-                            this, SLOT (contextmenu_add_to_path_subdirs (bool)));
+                                      this, SLOT (contextmenu_add_to_path_subdirs (bool)));
 
             QMenu *rm_path_menu = menu.addMenu (tr ("Remove from Path"));
 
-            rm_path_menu->addAction (tr ("Selected Directories"),
-                            this, SLOT (contextmenu_rm_from_path (bool)));
+            rm_path_menu->addAction (tr ("Selected Directories"), this,
+                                     SLOT (contextmenu_rm_from_path (bool)));
             rm_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
-                            this, SLOT (contextmenu_rm_from_path_subdirs (bool)));
+                                     this, SLOT (contextmenu_rm_from_path_subdirs (bool)));
 
             menu.addSeparator ();
 
@@ -772,7 +774,7 @@ namespace octave
         QFileInfo info = m_file_system_model->fileInfo (index);
 
         if (info.exists () &&
-              ((dir & info.isDir ()) || (! dir && info.isFile ())))
+            ((dir & info.isDir ()) || (! dir && info.isFile ())))
           infos.append (info);
       }
 

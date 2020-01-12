@@ -397,8 +397,9 @@ namespace octave
                 QString line;
                 QString match_str = m_contains_text_edit->text ();
 
-                Qt::CaseSensitivity cs = m_content_case_check->isChecked () ?
-                  Qt::CaseInsensitive : Qt::CaseSensitive;
+                Qt::CaseSensitivity cs = m_content_case_check->isChecked ()
+                                         ? Qt::CaseInsensitive
+                                         : Qt::CaseSensitive;
 
                 do
                   {

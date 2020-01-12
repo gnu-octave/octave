@@ -867,7 +867,7 @@ namespace octave
     m_find_dialog->set_visible (true);
   }
 
- void file_editor::request_find_next (bool)
+  void file_editor::request_find_next (bool)
   {
     if (m_find_dialog)
       m_find_dialog->find_next ();
@@ -1183,10 +1183,10 @@ namespace octave
         else
           {
             request_open_file (m_tmp_closed_files.at (i).file_name,
-                                 m_tmp_closed_files.at (i).encoding,
-                                 m_tmp_closed_files.at (i).line,
-                                 false, false, true, "",
-                                 m_tmp_closed_files.at (i).index);
+                               m_tmp_closed_files.at (i).encoding,
+                               m_tmp_closed_files.at (i).line,
+                               false, false, true, "",
+                               m_tmp_closed_files.at (i).index);
           }
 
       }
@@ -1235,7 +1235,7 @@ namespace octave
 
     // Style sheet for tab height
     QString style_sheet = QString ("QTabBar::tab {max-" + height_str + ": %1px;}")
-                                   .arg (height);
+                          .arg (height);
 
     // Style sheet for tab height together with width
     if (settings->value (ed_long_window_title).toBool ())
@@ -1244,7 +1244,7 @@ namespace octave
                                " {max-" + height_str + ": %1px;"
                                "  min-" + width_str + ": %2px;"
                                "  max-" + width_str + ": %3px;}")
-                              .arg (height).arg (tab_width_min).arg (tab_width_max);
+                      .arg (height).arg (tab_width_min).arg (tab_width_max);
         m_tab_widget->setElideMode (Qt::ElideLeft);
       }
     else
@@ -1499,7 +1499,8 @@ namespace octave
                   emit fetab_do_breakpoint_marker (insert, tab, line, cond);
               }
 
-            if (show_dbg_file && ! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
+            if (show_dbg_file && ! ((breakpoint_marker || debug_pointer)
+                                    && is_editor_console_tabbed ()))
               {
                 emit fetab_set_focus (tab);
                 activate ();

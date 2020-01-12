@@ -314,11 +314,11 @@ namespace octave
     activateWindow ();
 
     if (vis)
-    {
-      show ();
-      setFocus ();
-      set_style (true);
-    }
+      {
+        show ();
+        setFocus ();
+        set_style (true);
+      }
 
     emit topLevelChanged (true);  // Be sure signal is emitted
   }
@@ -408,7 +408,8 @@ namespace octave
     // low-level check of whether docked-widget became a window via
     // double-click or via drag-and-drop
     if ( (event->type () == QEvent::MouseButtonDblClick && ! isFloating ())
-        || (event->type () == QEvent::ActivationChange && m_waiting_for_mouse_button_release))
+         || (event->type () == QEvent::ActivationChange
+             && m_waiting_for_mouse_button_release))
       {
         bool retval = QDockWidget::event (event);
         if (isFloating () && parent () != 0)
@@ -605,7 +606,7 @@ namespace octave
       setFocus ();
   }
 
- void
+  void
   octave_dock_widget::toplevel_change (bool toplevel)
   {
     QObject *dockobj;

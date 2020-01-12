@@ -169,7 +169,7 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     restoreGeometry (
-            settings->value(pd_geometry.key).toByteArray());
+      settings->value(pd_geometry.key).toByteArray());
   }
 
   set_path_dialog::~set_path_dialog (void)
@@ -193,17 +193,17 @@ namespace octave
     if (! dir.isEmpty ())
       {
         if (subdirs)
-        {
-          // Use existing method mofifying load path and updating dialog
-          // instead of adding string and updating load path
-          octave_value_list dirlist = ovl ();
-          dirlist.append (dir.toStdString ());
-          emit modify_path_signal (dirlist, false, true);
-        }
+          {
+            // Use existing method mofifying load path and updating dialog
+            // instead of adding string and updating load path
+            octave_value_list dirlist = ovl ();
+            dirlist.append (dir.toStdString ());
+            emit modify_path_signal (dirlist, false, true);
+          }
         else
           {
             set_path_model *m
-                = static_cast<set_path_model *> (m_path_list->model ());
+              = static_cast<set_path_model *> (m_path_list->model ());
             m->add_dir (dir);
           }
       }

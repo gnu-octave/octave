@@ -45,8 +45,7 @@ namespace octave
 {
   class base_qobject;
 
-  class workspace_model
-    : public QAbstractTableModel
+  class workspace_model : public QAbstractTableModel
   {
     Q_OBJECT
 

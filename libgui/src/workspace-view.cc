@@ -131,10 +131,10 @@ namespace octave
         m_view->horizontalHeader ()->setMovable (true);
 #endif
         m_view->horizontalHeader ()->setSortIndicator (
-            settings->value (ws_sort_column).toInt (),
-            static_cast<Qt::SortOrder> (settings->value (ws_sort_order).toUInt ()));
-            // FIXME: use value<Qt::SortOrder> instead of static cast after
-            //        dropping support of Qt 5.4
+          settings->value (ws_sort_column).toInt (),
+          static_cast<Qt::SortOrder> (settings->value (ws_sort_order).toUInt ()));
+          // FIXME: use value<Qt::SortOrder> instead of static cast after
+          //        dropping support of Qt 5.4
 
         m_view->horizontalHeader ()->setSortIndicatorShown (true);
 

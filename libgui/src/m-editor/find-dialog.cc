@@ -249,14 +249,14 @@ namespace octave
 
     // Store dialog's options
     int opts = 0
-          + _extension->isVisible () * FIND_DLG_MORE
-          + _case_check_box->isChecked () * FIND_DLG_CASE
-          + _from_start_check_box->isChecked () * FIND_DLG_START
-          + _wrap_check_box->isChecked () * FIND_DLG_WRAP
-          + _regex_check_box->isChecked () * FIND_DLG_REGX
-          + _whole_words_check_box->isChecked () * FIND_DLG_WORDS
-          + _backward_check_box->isChecked () * FIND_DLG_BACK
-          + _search_selection_check_box->isChecked () * FIND_DLG_SEL;
+               + _extension->isVisible () * FIND_DLG_MORE
+               + _case_check_box->isChecked () * FIND_DLG_CASE
+               + _from_start_check_box->isChecked () * FIND_DLG_START
+               + _wrap_check_box->isChecked () * FIND_DLG_WRAP
+               + _regex_check_box->isChecked () * FIND_DLG_REGX
+               + _whole_words_check_box->isChecked () * FIND_DLG_WORDS
+               + _backward_check_box->isChecked () * FIND_DLG_BACK
+               + _search_selection_check_box->isChecked () * FIND_DLG_SEL;
     s->setValue (ed_fdlg_opts.key, opts);
 
     s->sync ();
@@ -325,8 +325,7 @@ namespace octave
   void find_dialog::handle_replace_text_changed (void)
   {
     // Return if nothing has changed
-    if (_replace_line_edit->currentText ()
-            == _replace_line_edit->itemText (0))
+    if (_replace_line_edit->currentText () == _replace_line_edit->itemText (0))
       return;
 
     mru_update (_replace_line_edit);
@@ -385,17 +384,17 @@ namespace octave
 #if defined (HAVE_QCOMBOBOX_SETCURRENTTEXT)
           _search_line_edit->setCurrentText (_edit_area->selectedText ());
 #else
-        if (_search_line_edit->isEditable ())
-          {
-            _search_line_edit->setEditText (_edit_area->selectedText ());
-          }
-        else
-          {
-            int i = _search_line_edit->findText (_edit_area->selectedText ());
+          if (_search_line_edit->isEditable ())
+            {
+              _search_line_edit->setEditText (_edit_area->selectedText ());
+            }
+          else
+            {
+              int i = _search_line_edit->findText (_edit_area->selectedText ());
 
-            if (i > -1)
-              _search_line_edit->setCurrentIndex (i);
-          }
+              if (i > -1)
+                _search_line_edit->setCurrentIndex (i);
+            }
 #endif
       }
 
@@ -528,7 +527,7 @@ namespace octave
 #if defined (HAVE_QSCI_VERSION_2_6_0)
                                , true
 #endif
-                               );
+                              );
 
     if (_find_result_available)
       {

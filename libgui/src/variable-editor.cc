@@ -326,7 +326,8 @@ namespace octave
         m_waiting_for_mouse_move = false;
         m_waiting_for_mouse_button_release = true;
       }
-    if (event->type () == QEvent::MouseButtonRelease && m_waiting_for_mouse_button_release)
+    if (event->type () == QEvent::MouseButtonRelease
+        && m_waiting_for_mouse_button_release)
       {
         m_waiting_for_mouse_button_release = false;
         bool retval = QDockWidget::event (event);
@@ -364,11 +365,11 @@ namespace octave
 
   void
   variable_dock_widget::unfloat_float (void)
-  {}
+  { }
 
   void
   variable_dock_widget::refloat (void)
-  {}
+  { }
 
 #endif
 
@@ -1113,7 +1114,7 @@ namespace octave
       {
         // Activating a floating window causes problems.
         if (! m_focus_widget_vdw->isFloating ())
-            activateWindow ();
+          activateWindow ();
         m_focus_widget->setFocus ();
       }
     else
@@ -1386,12 +1387,12 @@ namespace octave
         // The default colors are given as color roles for
         // the application's palette
         QColor default_color = qApp->palette ().color
-                              (static_cast<QPalette::ColorRole> (ve_colors[i].def.toInt ()));
-                  // FIXME: use value<QPalette::ColorRole> instead of static cast after
-                  //        dropping support of Qt 5.4
+                               (static_cast<QPalette::ColorRole> (ve_colors[i].def.toInt ()));
+        // FIXME: use value<QPalette::ColorRole> instead of static cast after
+        //        dropping support of Qt 5.4
 
         QColor setting_color =
-            settings->value (ve_colors[i].key, default_color).value<QColor> ();
+          settings->value (ve_colors[i].key, default_color).value<QColor> ();
 
         m_table_colors.replace (i, setting_color);
       }
@@ -1549,13 +1550,11 @@ namespace octave
 
     if (m_table_colors.length () > 4 && m_alternate_rows)
       {
-        m_stylesheet
-          += "QTableView::item:alternate{ background-color: "
-          + m_table_colors[4].name () +" }";
+        m_stylesheet += "QTableView::item:alternate{ background-color: "
+                        + m_table_colors[4].name () +" }";
 
-        m_stylesheet
-          += "QTableView::item:alternate:selected{ background-color: "
-          + m_table_colors[3].name () +" }";
+        m_stylesheet += "QTableView::item:alternate:selected{ background-color: "
+                        + m_table_colors[3].name () +" }";
       }
 
     QList<QTableView *> viewlist = findChildren<QTableView *> ();
@@ -1668,7 +1667,7 @@ namespace octave
 #if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
                                                      , Qt::FindDirectChildrenOnly
 #endif
-                                                     );
+                                                    );
     for (int i = 0; i < hbuttonlist.size (); i++)
       {
         connect (hbuttonlist.at (i), SIGNAL (hovered_signal ()),
@@ -1682,7 +1681,7 @@ namespace octave
 #if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
                                                            , Qt::FindDirectChildrenOnly
 #endif
-                                                           );
+                                                          );
     for (int i = 0; i < rfbuttonlist.size (); i++)
       {
         connect (rfbuttonlist.at (i), SIGNAL (about_to_activate ()),

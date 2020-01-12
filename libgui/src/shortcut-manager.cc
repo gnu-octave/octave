@@ -302,12 +302,11 @@ namespace octave
 
   // write one or all actual shortcut set(s) into a settings file
   void shortcut_manager::write_shortcuts (gui_settings *settings,
-                                             bool closing)
+                                          bool closing)
   {
     bool sc_ctrld = false;
 
-    QString sc_main
-        = sc_main_file.mid (0, sc_main_file.indexOf ('_') + 1);
+    QString sc_main = sc_main_file.mid (0, sc_main_file.indexOf ('_') + 1);
 
     for (int i = 0; i < m_sc.count (); i++)  // loop over all shortcuts
       {
@@ -630,7 +629,7 @@ namespace octave
 
     // check whether ctrl+d is used from main window, i.e. is a global shortcut
     QString main_group_prefix
-        = sc_main_file.mid (0, sc_main_file.indexOf ('_') + 1);
+      = sc_main_file.mid (0, sc_main_file.indexOf ('_') + 1);
     if (sc.key.startsWith (main_group_prefix)
         && actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
       settings->setValue (sc_main_ctrld.key, true);

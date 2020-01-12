@@ -70,7 +70,7 @@ namespace octave
 
   protected:
 
-     void wheelEvent (QWheelEvent *we);
+    void wheelEvent (QWheelEvent *we);
 
   private:
 

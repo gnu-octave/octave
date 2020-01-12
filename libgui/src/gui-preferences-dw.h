@@ -29,7 +29,8 @@
 #include "gui-preferences.h"
 
 const gui_pref
-dw_title_custom_style ("DockWidgets/widget_title_custom_style", QVariant (false));
+dw_title_custom_style ("DockWidgets/widget_title_custom_style",
+                       QVariant (false));
 
 const gui_pref dw_title_3d ("DockWidgets/widget_title_3d", QVariant (50));
 

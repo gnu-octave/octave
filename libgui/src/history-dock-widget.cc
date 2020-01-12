@@ -327,8 +327,7 @@ namespace octave
       = settings->value (hw_filter_shown).toBool ();
     m_filter_widget->setVisible (m_filter_shown);
 
-    m_filter->addItems
-      (settings->value (hw_mru_list).toStringList ());
+    m_filter->addItems (settings->value (hw_mru_list).toStringList ());
 
     bool filter_state
       = settings->value (hw_filter_active).toBool ();

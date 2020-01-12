@@ -179,16 +179,17 @@ namespace octave
     m_edit_area->setMarkerBackgroundColor (QColor (192,0,0), marker::breakpoint);
     m_edit_area->markerDefine (QsciScintilla::Circle, marker::cond_break);
     m_edit_area->setMarkerBackgroundColor (QColor (255,127,0), marker::cond_break);
-    m_edit_area->markerDefine (QsciScintilla::RightArrow, marker::debugger_position);
-    m_edit_area->setMarkerBackgroundColor (QColor (255,255,0),
-                                          marker::debugger_position);
     m_edit_area->markerDefine (QsciScintilla::RightArrow,
-                              marker::unsure_debugger_position);
+                               marker::debugger_position);
+    m_edit_area->setMarkerBackgroundColor (QColor (255,255,0),
+                                           marker::debugger_position);
+    m_edit_area->markerDefine (QsciScintilla::RightArrow,
+                               marker::unsure_debugger_position);
     m_edit_area->setMarkerBackgroundColor (QColor (192,192,192),
-                                          marker::unsure_debugger_position);
+                                           marker::unsure_debugger_position);
 
     connect (m_edit_area, SIGNAL (marginClicked (int, int,
-                                                Qt::KeyboardModifiers)),
+                                  Qt::KeyboardModifiers)),
              this, SLOT (handle_margin_clicked (int, int,
                                                 Qt::KeyboardModifiers)));
 
@@ -1263,7 +1264,8 @@ namespace octave
        });
   }
 
-  void file_editor_tab::scintilla_command (const QWidget *ID, unsigned int sci_msg)
+  void file_editor_tab::scintilla_command (const QWidget *ID,
+                                           unsigned int sci_msg)
   {
     if (ID != this)
       return;
@@ -1271,7 +1273,8 @@ namespace octave
     m_edit_area->SendScintilla (sci_msg);
   }
 
-  void file_editor_tab::comment_selected_text (const QWidget *ID, bool input_str)
+  void file_editor_tab::comment_selected_text (const QWidget *ID,
+                                               bool input_str)
   {
     if (ID != this)
       return;
@@ -1484,7 +1487,7 @@ namespace octave
           }
         //set selection on (un)indented section
         m_edit_area->setSelection (lineFrom, 0, lineTo,
-                                  m_edit_area->text (lineTo).length ()-1);
+                                   m_edit_area->text (lineTo).length ()-1);
       }
     else
       {
@@ -1930,7 +1933,7 @@ namespace octave
         rmgr.combo_encoding (enc_combo);
         m_new_encoding = enc_combo->currentText ();
         connect (enc_combo, SIGNAL (currentTextChanged (const QString&)),
-                 this , SLOT (handle_current_enc_changed (const QString&)));
+                 this, SLOT (handle_current_enc_changed (const QString&)));
 
         QDialogButtonBox *buttons
           = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
@@ -2638,7 +2641,7 @@ namespace octave
     if (settings->value (ed_code_folding).toBool ())
       {
         m_edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
-        m_edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
+        m_edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle, 3);
       }
     else
       {
@@ -2727,7 +2730,7 @@ namespace octave
       m_ind_char_width = m_edit_area->tabWidth ();
 
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
-                               settings->value (ed_show_hscroll_bar).toBool ());
+                                settings->value (ed_show_hscroll_bar).toBool ());
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTHTRACKING,true);
 
@@ -3046,7 +3049,7 @@ namespace octave
             // Obviously, we have a newline here
             if (m_smart_indent || m_auto_endif)
               m_edit_area->smart_indent (m_smart_indent, m_auto_endif,
-                                        m_line, m_ind_char_width);
+                                         m_line, m_ind_char_width);
           }
       }
 
@@ -3159,17 +3162,17 @@ namespace octave
                 // search for first occurrence of the detected word
                 bool find_result_available
                   = m_edit_area->findFirst (word,
-                                           false,   // no regexp
-                                           true,    // case sensitive
-                                           true,    // whole words only
-                                           false,   // do not wrap
-                                           true,    // forward
-                                           0,0,     // from the beginning
-                                           false
+                                            false,   // no regexp
+                                            true,    // case sensitive
+                                            true,    // whole words only
+                                            false,   // do not wrap
+                                            true,    // forward
+                                            0,0,     // from the beginning
+                                            false
 #if defined (HAVE_QSCI_VERSION_2_6_0)
-                                           , true
+                                            , true
 #endif
-                                          );
+                                           );
 
                 // loop over all occurrences and set the related indicator
                 int oline, ocol;

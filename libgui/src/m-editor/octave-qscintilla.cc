@@ -418,7 +418,8 @@ namespace octave
                 comment_string = settings->value (ed_comment_str).toInt ();
               else
                 // old version (combo box)
-                comment_string = settings->value (ed_comment_str_old.key,                                                  ed_comment_str.def).toInt ();
+                comment_string = settings->value (ed_comment_str_old.key,
+                                                  ed_comment_str.def).toInt ();
 
               return (QStringList (ed_comment_strings.at (comment_string)));
             }
@@ -699,7 +700,7 @@ namespace octave
           }
 
         if (mid_block_regexp.indexIn (line_text) > -1)
-            indent_column -= indent_increment;
+          indent_column -= indent_increment;
 
         if (case_block_regexp.indexIn (line_text) > -1)
           {
@@ -782,10 +783,10 @@ namespace octave
   void octave_qscintilla::contextmenu_run_temp_error (void)
   {
     QMessageBox::critical (this, tr ("Octave Editor"),
-                        tr ("Creating temporary files failed.\n"
-                            "Make sure you have write access to temp. directory\n"
-                             "%1\n\n"
-                             "\"Run Selection\" requires temporary files.").arg (QDir::tempPath ()));
+                           tr ("Creating temporary files failed.\n"
+                               "Make sure you have write access to temp. directory\n"
+                               "%1\n\n"
+                               "\"Run Selection\" requires temporary files.").arg (QDir::tempPath ()));
   }
 
   void octave_qscintilla::contextmenu_run (bool)
@@ -879,14 +880,14 @@ namespace octave
         // %3 : command line (eval and display)
         // %4 : command line for history (via fprintf)
         code += QString ("%1 (%2, '%3', '%4');\n"
-                          + next_bp_quiet
-                          + "%3\n"
-                          + next_bp_quiet_reset
-                          + "\n")
-                         .arg (tmp_script_name)
-                         .arg (i)
-                         .arg (line)
-                         .arg (line_history);
+                         + next_bp_quiet
+                         + "%3\n"
+                         + next_bp_quiet_reset
+                         + "\n")
+                .arg (tmp_script_name)
+                .arg (i)
+                .arg (line)
+                .arg (line_history);
       }
 
     code += QString ("munlock (\"%1\"); clear %1;\n").arg (tmp_script_name);

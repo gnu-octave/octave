@@ -41,11 +41,11 @@
 // definition and value method for the settings class.
 
 #if defined (Q_OS_MAC)
-    // Use CMD key as an equivalent of Ctrl key on other platforms
+// Use CMD key as an equivalent of Ctrl key on other platforms
 const Qt::KeyboardModifier CTRL = Qt::MetaModifier;
-    // Some of octave default shortcuts on windows/linux are already defined
-    // as system wide shortcuts on Mac Os X (almost all Function keys).
-    // Prefix those with Option (Alt) modifier to avoid conflicts.
+// Some of octave default shortcuts on windows/linux are already defined
+// as system wide shortcuts on Mac Os X (almost all Function keys).
+// Prefix those with Option (Alt) modifier to avoid conflicts.
 const int PRE = Qt::AltModifier;
 #else
 const Qt::KeyboardModifier CTRL = Qt::ControlModifier;

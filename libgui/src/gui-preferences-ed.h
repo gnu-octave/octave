@@ -37,10 +37,12 @@
 // Code completion
 
 const gui_pref
-ed_code_completion_octave_builtins ("editor/codeCompletion_octave_builtins", QVariant (true));
+ed_code_completion_octave_builtins ("editor/codeCompletion_octave_builtins",
+                                    QVariant (true));
 
 const gui_pref
-ed_code_completion_octave_functions ("editor/codeCompletion_octave_functions", QVariant (true));
+ed_code_completion_octave_functions ("editor/codeCompletion_octave_functions",
+                                     QVariant (true));
 
 const gui_pref
 ed_code_completion_keywords ("editor/codeCompletion_keywords", QVariant (true));
@@ -72,7 +74,8 @@ const gui_pref
 ed_tab_indents_line ("editor/tab_indents_line", QVariant (false));
 
 const gui_pref
-ed_backspace_unindents_line ("editor/backspace_unindents_line", QVariant (false));
+ed_backspace_unindents_line ("editor/backspace_unindents_line",
+                             QVariant (false));
 
 const gui_pref
 ed_show_indent_guides ("editor/show_indent_guides", QVariant (false));
@@ -101,7 +104,8 @@ const gui_pref
 ed_long_line_marker_line ("editor/long_line_marker_line", QVariant (true));
 
 const gui_pref
-ed_long_line_marker_background ("editor/long_line_marker_background", QVariant (false));
+ed_long_line_marker_background ("editor/long_line_marker_background",
+                                QVariant (false));
 
 const gui_pref
 ed_wrap_lines ("editor/wrap_lines", QVariant (false));
@@ -113,7 +117,8 @@ const gui_pref
 ed_break_lines_comments ("editor/break_lines_comments", QVariant (false));
 
 const gui_pref
-ed_highlight_all_occurrences ("editor/highlight_all_occurrences", QVariant (true));
+ed_highlight_all_occurrences ("editor/highlight_all_occurrences",
+                              QVariant (true));
 
 const gui_pref
 ed_show_Line_numbers ("editor/showLineNumbers", QVariant (true));
@@ -128,7 +133,8 @@ const gui_pref
 ed_highlight_current_line ("editor/highlightCurrentLine", QVariant (true));
 
 const gui_pref
-ed_highlight_current_line_color ("editor/highlight_current_line_color", QVariant (QColor (240, 240, 240)));
+ed_highlight_current_line_color ("editor/highlight_current_line_color",
+                                 QVariant (QColor (240, 240, 240)));
 
 const gui_pref
 ed_show_white_space ("editor/show_white_space", QVariant (false));
@@ -235,7 +241,8 @@ const gui_pref
 ed_hiding_closes_files ("editor/hiding_closes_files", QVariant (false));
 
 const gui_pref
-ed_always_reload_changed_files ("editor/always_reload_changed_files", QVariant (false));
+ed_always_reload_changed_files ("editor/always_reload_changed_files",
+                                QVariant (false));
 
 const gui_pref
 ed_mru_file_list ("editor/mru_file_list", QVariant ());

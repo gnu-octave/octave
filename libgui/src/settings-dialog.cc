@@ -113,7 +113,8 @@ namespace octave
     // look for available language files and the actual settings
     QString qm_dir_name = rmgr.get_gui_translation_dir ();
     QDir qm_dir (qm_dir_name);
-    QFileInfoList qm_files = qm_dir.entryInfoList (QStringList ("*.qm"), QDir::Files | QDir::Readable, QDir::Name);
+    QFileInfoList qm_files = qm_dir.entryInfoList (QStringList ("*.qm"),
+                             QDir::Files | QDir::Readable, QDir::Name);
 
     for (int i = 0; i < qm_files.length (); i++)   // insert available languages
       comboBox_language->addItem (qm_files.at (i).baseName ());
@@ -200,7 +201,8 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_fg_color_active, SLOT (setEnabled (bool)));
 
-    sb_3d_title->setValue (settings->value (dw_title_3d.key,                                            dw_title_3d.def).toInt ());
+    sb_3d_title->setValue (settings->value (dw_title_3d.key,
+                                            dw_title_3d.def).toInt ());
     cb_widget_custom_style->setChecked (settings->value (dw_title_custom_style).toBool ());
 
     // Native file dialogs.
@@ -373,10 +375,10 @@ namespace octave
     for (unsigned int i = 0; i < cs_cursor_types.size (); i++)
       {
         if (cursor_type.toStdString () == cs_cursor_types[i])
-        {
-          terminal_cursorType->setCurrentIndex (i);
-          break;
-        }
+          {
+            terminal_cursorType->setCurrentIndex (i);
+            break;
+          }
       }
 
     // file browser
@@ -1086,7 +1088,7 @@ namespace octave
 
     // Load enable settings at the end for having signals already connected
     bool colors_enabled =
-        settings->value (ws_enable_colors).toBool ();
+      settings->value (ws_enable_colors).toBool ();
     m_ws_enable_colors->setChecked (colors_enabled);
     m_ws_hide_tool_tips->setEnabled (colors_enabled);
 

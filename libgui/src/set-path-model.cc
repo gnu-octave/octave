@@ -114,7 +114,7 @@ namespace octave
     clear ();
 
     beginInsertRows (QModelIndex (), 0, m_orig_dirs.size () - 1);
-      m_dirs = m_orig_dirs;
+    m_dirs = m_orig_dirs;
     endInsertRows ();
 
     model_to_path ();
@@ -125,7 +125,7 @@ namespace octave
     clear ();
 
     beginInsertRows (QModelIndex (), 0, m_last_dirs.size () - 1);
-      m_dirs = m_last_dirs;
+    m_dirs = m_last_dirs;
     endInsertRows ();
 
     model_to_path ();
@@ -155,7 +155,7 @@ namespace octave
         const QModelIndex& idx = indices.at (i);
 
         beginRemoveRows (idx, idx.row (), idx.row ());
-          m_dirs.removeAt (idx.row ());
+        m_dirs.removeAt (idx.row ());
         endRemoveRows ();
       }
 
@@ -176,7 +176,7 @@ namespace octave
         beginMoveRows (idx, idx.row (), idx.row (),
                        this->index (idx.row () - 1), idx.row () - 1);
 
-          m_dirs.move (idx.row (), idx.row () - 1);
+        m_dirs.move (idx.row (), idx.row () - 1);
 
         endMoveRows ();
       }
@@ -199,7 +199,7 @@ namespace octave
         beginMoveRows (idx, idx.row (), idx.row (),
                        this->index (idx.row () + 1), idx.row () + 1);
 
-          m_dirs.move (idx.row (), idx.row () + 1);
+        m_dirs.move (idx.row (), idx.row () + 1);
 
         endMoveRows ();
       }
@@ -220,7 +220,7 @@ namespace octave
 
         beginMoveRows (idx, idx.row (), idx.row (), this->index (i), i);
 
-          m_dirs.move (idx.row (), i);
+        m_dirs.move (idx.row (), i);
 
         endMoveRows ();
       }
@@ -243,7 +243,7 @@ namespace octave
         beginMoveRows (idx, idx.row (), idx.row (),
                        this->index (target), target);
 
-          m_dirs.move (idx.row (), target);
+        m_dirs.move (idx.row (), target);
 
         endMoveRows ();
       }

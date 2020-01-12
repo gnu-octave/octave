@@ -65,10 +65,10 @@ const gui_pref cs_colors[cs_colors_count] =
 };
 const QStringList
 cs_color_names (QStringList ()
-             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "foreground")
-             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "background")
-             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "selection")
-             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "cursor"));
+                << QT_TRANSLATE_NOOP ("octave::settings_dialog", "foreground")
+                << QT_TRANSLATE_NOOP ("octave::settings_dialog", "background")
+                << QT_TRANSLATE_NOOP ("octave::settings_dialog", "selection")
+                << QT_TRANSLATE_NOOP ("octave::settings_dialog", "cursor"));
 
 const gui_pref
 cs_focus_cmd ("terminal/focus_after_command", QVariant (false));

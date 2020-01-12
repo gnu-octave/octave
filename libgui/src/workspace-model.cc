@@ -198,8 +198,7 @@ namespace octave
   void
   workspace_model::notice_settings (const gui_settings *settings)
   {
-    m_enable_colors =
-        settings->value (ws_enable_colors).toBool ();
+    m_enable_colors = settings->value (ws_enable_colors).toBool ();
 
     for (int i = 0; i < ws_colors_count; i++)
       {

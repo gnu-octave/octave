@@ -39,6 +39,7 @@
 #include "gui-preferences-dw.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-mw.h"
+#include "gui-preferences-sc.h"
 #include "gui-settings.h"
 #include "octave-dock-widget.h"
 #include "octave-qobject.h"
@@ -213,12 +214,14 @@ namespace octave
     connect (this, SIGNAL (queue_make_widget ()),
              this, SLOT (make_widget ()), Qt::QueuedConnection);
 
-    m_dock_action->setShortcut (QKeySequence (Qt::CTRL + Qt::ALT + Qt::Key_U));
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    scmgr.set_shortcut (m_dock_action, sc_dock_widget_dock);
     m_dock_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     addAction (m_dock_action);
     connect (m_dock_action, SIGNAL (triggered (bool)),
              this, SLOT (make_window (bool)));
-    m_close_action->setShortcut (QKeySequence (Qt::CTRL + Qt::ALT + Qt::Key_C));
+
+    scmgr.set_shortcut (m_close_action, sc_dock_widget_close);
     m_close_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     addAction (m_close_action);
     connect (m_close_action, SIGNAL (triggered (bool)),
@@ -299,11 +302,12 @@ namespace octave
                                            : m_recent_float_geom;
     setGeometry (geom);
 
-    // adjust the (un)dock icon
-    m_dock_action->setShortcut (QKeySequence (Qt::CTRL + Qt::ALT + Qt::Key_D));
+    // adjust the (un)dock action
     disconnect (m_dock_action, 0, this, 0);
     connect (m_dock_action, SIGNAL (triggered (bool)),
              this, SLOT (make_widget (bool)));
+
+    // adjust the (un)dock icon
     if (titleBarWidget ())
       {
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock"
@@ -350,8 +354,6 @@ namespace octave
     setFloating (false);
 
     // adjust the (un)dock icon
-    m_dock_action->setShortcut (QKeySequence (Qt::CTRL + Qt::ALT + Qt::Key_U));
-    m_dock_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     connect (m_dock_action, SIGNAL (triggered (bool)),
              this, SLOT (make_window (bool)));
     if (titleBarWidget ())

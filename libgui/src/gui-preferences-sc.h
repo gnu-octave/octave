@@ -55,6 +55,13 @@ const int PRE = Qt::NoModifier;
 const Qt::KeyboardModifiers CTRL_SHIFT = CTRL | Qt::ShiftModifier;
 const Qt::KeyboardModifiers CTRL_ALT = CTRL | Qt::AltModifier;
 
+// Shortcuts not related to specific Menus
+
+// Dock widgets
+const QString sc_dock_widget ("dock_widget");
+const sc_pref sc_dock_widget_dock (sc_dock_widget + ":dock", CTRL_ALT + Qt::Key_D);
+const sc_pref sc_dock_widget_close (sc_dock_widget + ":close", CTRL_ALT + Qt::Key_C);
+
 // Main window menu
 
 // file

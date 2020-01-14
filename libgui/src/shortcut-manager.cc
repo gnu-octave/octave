@@ -126,12 +126,18 @@ namespace octave
 
   void shortcut_manager::init_data (void)
   {
-    // actions of the main window
-
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
 
     settings->setValue (sc_main_ctrld.key, false); // reset use fo ctrl-d
+
+    // actions not related to specific menus or widgets
+
+    // dock widgets
+    init (tr ("Undock/Dock Widget"), sc_dock_widget_dock);
+    init (tr ("Close Widget"), sc_dock_widget_close);
+
+    // actions of the main window
 
     // file
     init (tr ("New File"), sc_main_file_new_file);
@@ -387,6 +393,8 @@ namespace octave
     main_help->setText (0, tr ("Help Menu"));
     QTreeWidgetItem *main_news = new QTreeWidgetItem (main);
     main_news->setText (0, tr ("News Menu"));
+    QTreeWidgetItem *main_dock_widgets = new QTreeWidgetItem (main);
+    main_dock_widgets->setText (0, tr ("Handling of Dock Widgets"));
     QTreeWidgetItem *main_tabs = new QTreeWidgetItem (main);
     main_tabs->setText (0, tr ("Tab Handling in Dock Widgets"));
     QTreeWidgetItem *main_find = new QTreeWidgetItem (main);
@@ -400,6 +408,7 @@ namespace octave
     m_level_hash[sc_main_window]   = main_window;
     m_level_hash[sc_main_help]   = main_help;
     m_level_hash[sc_main_news]   = main_news;
+    m_level_hash[sc_dock_widget] = main_dock_widgets;
     m_level_hash[sc_edit_tabs]   = main_tabs;
     m_level_hash[sc_edit_find]   = main_find;
     m_level_hash[sc_edit_zoom]   = main_zoom;

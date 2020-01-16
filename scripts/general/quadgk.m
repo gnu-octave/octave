@@ -31,7 +31,7 @@
 ## @deftypefnx {} {[@var{q}, @var{err}] =} quadgk (@dots{})
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
-## using adaptive @nospell{Gauss-Konrod} quadrature.
+## using adaptive @nospell{Gauss-Kronrod} quadrature.
 ##
 ## @var{f} is a function handle, inline function, or string containing the name
 ## of the function to evaluate.  The function @var{f} must be vectorized and
@@ -60,8 +60,9 @@
 ## subintervals at this step, (2) the current estimate of the error @var{err},
 ## (3) the current estimate for the integral @var{q}.
 ##
-## Alternatively, properties of @code{quadgk} can be passed to the function as
-## pairs @qcode{"@var{prop}", @var{val}}.  Valid properties are
+## The behavior of the algorithm can be configured by passing arguments
+## to @code{quadgk} as pairs @qcode{"@var{prop}", @var{val}}.  Valid properties
+## are
 ##
 ## @table @code
 ## @item AbsTol
@@ -102,24 +103,26 @@
 ##
 ## If any of @var{a}, @var{b}, or @var{waypoints} is complex then the
 ## quadrature is treated as a contour integral along a piecewise continuous
-## path defined by the above.  In this case the integral is assumed to have no
-## edge singularities.  For example,
+## path defined by
+## @code{[@var{a}, @var{waypoints}(1), @var{waypoints}(2), @dots{}, @var{b}]}.
+## In this case the integral is assumed to have no edge singularities.  For
+## example,
 ##
 ## @example
 ## @group
 ## quadgk (@@(z) log (z), 1+1i, 1+1i, "WayPoints",
-##         [1-1i, -1,-1i, -1+1i])
+##         [-1+1i, -1-1i, +1-1i])
 ## @end group
 ## @end example
 ##
 ## @noindent
 ## integrates @code{log (z)} along the square defined by
-## @code{[1+1i, 1-1i, -1-1i, -1+1i]}.
+## @code{[1+1i, -1+1i, -1-1i, +1-1i]}.
 ##
 ## The result of the integration is returned in @var{q}.
 ##
 ## @var{err} is an approximate bound on the error in the integral
-## @code{abs (@var{q} - @var{I})}, where @var{I} is the exact value of the
+## @w{@code{abs (@var{q} - @var{I})}}, where @var{I} is the exact value of the
 ## integral.
 ##
 ## Reference: @nospell{L.F. Shampine},
@@ -321,7 +324,7 @@ function [q, err] = quadgk (f, a, b, varargin)
   ## Split interval into at least 10 subinterval with a 15 point
   ## Gauss-Kronrod rule giving a minimum of 150 function evaluations.
   while (length (subs) < 11)
-    subs = [subs' ; subs(1:end-1)' + diff(subs') ./ 2, NaN](:)(1 : end - 1);
+    subs = [subs.' ; subs(1:end-1).' + diff(subs.') ./ 2, NaN](:)(1 : end - 1);
   endwhile
   subs = [subs(1:end-1), subs(2:end)];
 
@@ -342,7 +345,7 @@ function [q, err] = quadgk (f, a, b, varargin)
   while (true)
     ## Quit if any evaluations are not finite (Inf or NaN).
     if (any (! isfinite (q_subs)))
-      warning (warn_id, "quadgk: non finite integrand encountered");
+      warning (warn_id, "quadgk: non-finite integrand encountered");
       q = q0;
       err = err0;
       break;
@@ -360,13 +363,13 @@ function [q, err] = quadgk (f, a, b, varargin)
     ## Accept the subintervals that meet the convergence criteria.
     idx = find (abs (q_errs) < tol .* abs (diff (subs, [], 2)) ./ h);
     if (first)
-      q = sum (q_subs (idx));
+      q = sum (q_subs(idx));
       err = sum (q_errs(idx));
       first = false;
     else
       q0 = q + sum (q_subs);
       err0 = err + sum (q_errs);
-      q += sum (q_subs (idx));
+      q += sum (q_subs(idx));
       err += sum (q_errs(idx));
     endif
     subs(idx,:) = [];
@@ -404,6 +407,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 
 endfunction
 
+## FIXME: too_close output is never used in function that calls this one.
 function [q, err, too_close] = __quadgk_eval__ (f, subs, eps1, trans)
   ## A (15,7) point pair of Gauss-Kronrod quadrature rules.
   ## The abscissa and weights are copied directly from dqk15w.f from quadpack.
@@ -476,13 +480,19 @@ endfunction
 %!assert (quadgk (@(x) 1./sqrt (x),0,1), 2, 1e-10)
 %!assert (quadgk (@(x) abs (1 - x.^2),0,2, "Waypoints", 1), 2, 1e-10)
 %!assert (quadgk (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-10)
+%!assert <*57614> (quadgk (@(z) exp(z)./z, 1, 1,
+%!                        "Waypoints", [1+i, -1+i, -1-i, 1-i]),
+%!                 complex (0, 2*pi), 1e-10) 
+%!assert <*57614> (quadgk (@(z) exp(z)./z, 1, 1,
+%!                        "Waypoints", [1-i, -1-i, -1+i, 1+i]),
+%!                 complex (0, -2*pi), 1e-10) 
 %!assert (quadgk (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]),
-%!        -pi * 1i, 1e-10)
+%!        complex (0, pi), 1e-10)
 %!assert (quadgk (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), -1e-6)
 %!assert (quadgk (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, -1e-6)
 %!test
 %! f = @(x) x .^ 5 .* exp (-x) .* sin (x);
-%! assert (quadgk (f, 0, inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, -1e-8);
+%! assert (quadgk (f, 0, Inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, -1e-8);
 
 ## Test input validation
 %!error quadgk (@sin)

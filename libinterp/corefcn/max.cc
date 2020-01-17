@@ -452,7 +452,8 @@ If the optional third argument @var{dim} is present then operate along
 this dimension.  In this case the second argument is ignored and should be
 set to the empty matrix.
 
-For two matrices (or a matrix and a scalar), return the pairwise minimum.
+For two inputs (@var{x} and @var{y}), return the pairwise minimum according to
+the rules for @ref{Broadcasting}.
 
 Thus,
 
@@ -673,7 +674,8 @@ If the optional third argument @var{dim} is present then operate along
 this dimension.  In this case the second argument is ignored and should be
 set to the empty matrix.
 
-For two matrices (or a matrix and a scalar), return the pairwise maximum.
+For two inputs (@var{x} and @var{y}), return the pairwise maximum according to
+the rules for @ref{Broadcasting}.
 
 Thus,
 

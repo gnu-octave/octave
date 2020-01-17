@@ -216,6 +216,9 @@ namespace octave
       }
 
     m_file_system_model = new QFileSystemModel (this);
+    m_file_system_model->setResolveSymlinks (false);
+    m_file_system_model->setFilter (
+        QDir::System | QDir::NoDotAndDotDot | QDir::AllEntries);
     QModelIndex rootPathIndex
       = m_file_system_model->setRootPath (startup_dir.absolutePath ());
 
@@ -733,8 +736,9 @@ namespace octave
               {
                 // see if directory is empty
                 QDir path (info.absoluteFilePath ());
-                QList<QFileInfo> fileLst = path.entryInfoList (QDir::AllEntries |
-                                                               QDir::NoDotAndDotDot);
+                QList<QFileInfo> fileLst = path.entryInfoList (
+                                          QDir::Hidden | QDir::AllEntries |
+                                          QDir::NoDotAndDotDot | QDir::System);
 
                 if (fileLst.count () != 0)
                   QMessageBox::warning (this, tr ("Delete file/directory"),
@@ -883,11 +887,11 @@ namespace octave
       m_file_tree_view->setColumnHidden (i + 1,
                                          ! settings->value (m_columns_shown_keys.at (i),false).toBool ());
 
+    QDir::Filters current_filter = m_file_system_model->filter ();
     if (settings->value (m_columns_shown_keys.at (3),false).toBool ())
-      m_file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries
-                                      | QDir::Hidden);
+      m_file_system_model->setFilter (current_filter | QDir::Hidden);
     else
-      m_file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
+      m_file_system_model->setFilter (current_filter & (~QDir::Hidden));
 
     m_file_tree_view->setAlternatingRowColors
       (settings->value (m_columns_shown_keys.at (4),true).toBool ());

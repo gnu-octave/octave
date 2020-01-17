@@ -670,6 +670,14 @@ endfunction
 %!   assert (! isempty (regexp (errmsg, '\(2,1\).*Rel err 2 exceeds tol 0.2')));
 %! end_try_catch
 
+%!test <*57615>
+%! try
+%!   assert (complex (pi*1e-17,2*pi), 0, 1e-1);
+%! catch
+%!   errmsg = lasterr ();
+%!   assert (isempty (strfind (errmsg, "sprintf: invalid field width")));
+%! end_try_catch
+
 ## test input validation
 %!error assert ()
 %!error assert (1,2,3,4)
@@ -703,10 +711,10 @@ function str = pprint (argin, err)
     leno = length (err.observed{i});
     lene = length (err.expected{i});
     str = [str, sprintf("%*s%*s %*s%*s %*s%*s   %s\n",
-                        6+fix(leni/2), err.index{i}   , 6-fix(leni/2), "",
-                        6+fix(leno/2), err.observed{i}, 6-fix(leno/2), "",
-                        6+fix(lene/2), err.expected{i}, 6-fix(lene/2), "",
-                        err.reason{i})];
+                  6+fix(leni/2), err.index{i}   , max (6-fix(leni/2), 0), "",
+                  6+fix(leno/2), err.observed{i}, max (6-fix(leno/2), 0), "",
+                  6+fix(lene/2), err.expected{i}, max (6-fix(lene/2), 0), "",
+                  err.reason{i})];
   endfor
 
 endfunction

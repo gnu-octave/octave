@@ -340,7 +340,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   OCTAVE_LOCAL_BUFFER (char, s, m_args.numel () * (len + 1));
 
-  // Save the args as a null teminated list
+  // Save the args as a null terminated list
   for (int i = 0; i < m_args.numel (); i++)
     {
       const char *cptr = m_args(i).c_str ();

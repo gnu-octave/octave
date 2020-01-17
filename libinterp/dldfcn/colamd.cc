@@ -738,7 +738,7 @@ permutations on the tree.
   NDArray tree (dim_vector (1, n_col));
   for (octave_idx_type i = 0; i < n_col; i++)
     // We flag a root with n_col while Matlab does it with zero
-    // Convert for matlab compatiable output
+    // Convert for matlab compatible output
     if (etree[i] == n_col)
       tree(i) = 0;
     else

@@ -914,7 +914,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             if (isfield (obj, "edgecolor"))
               ## FIXME: This is the wrong thing to do as edgecolor,
               ## markeredgecolor and markerfacecolor can have different values
-              ## and we should treat them seperately.  However, the code below
+              ## and we should treat them separately.  However, the code below
               ## allows the scatter functions to work as expected, where only
               ## one of these values is set.
               if (strcmp (obj.edgecolor, "none"))

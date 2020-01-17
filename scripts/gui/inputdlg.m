@@ -145,7 +145,7 @@ function cstr = inputdlg (prompt, varargin)
       if (numel (linespec) == numel (prompt))
         ## only one column in lineTo, copy from vector linespec and add defaults
         rowscols = zeros (numel (prompt), 2);
-        ## rows from colum vector linespec, columns are set to default
+        ## rows from column vector linespec, columns are set to default
         rowscols(:,2) = 25;
         rowscols(:,1) = linespec(:);
       else

@@ -729,10 +729,10 @@ namespace octave
 
         if (m_is_octave_file)
           {
-            // Keywords and Builtins do not change, these informations can be
-            // stored in prepared form in a file.  Informations on functions
-            // are changing frequently, then if functions should also be
-            // auto-completed, the date of any existing file is checked.
+            // Keywords and Builtins do not change, this information can be
+            // stored in prepared form in a file. Information on function are
+            // changing frequently, then if functions should also be auto-
+            // completed, the date of any existing file is checked.
 
             // Keywords are always used
             m_prep_apis_file = m_prep_apis_path + lexer->lexer () + "_k";
@@ -3098,7 +3098,7 @@ namespace octave
         int col_space = col;
         int indentation = m_edit_area->indentation (line);
 
-        // Search the first occurence of space or tab backwards starting from
+        // Search the first occurrence of space or tab backwards starting from
         // the current column (col_space).
         while (c != ' ' && c != '\t' && col_space > indentation)
           {

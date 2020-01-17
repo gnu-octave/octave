@@ -158,7 +158,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
   octave_idx_type n = idx_arg.length ();
 
   // If we catch an indexing error in index_vector, we flag an error
-  // in index k.  Ensure it is the right value befor each idx_vector
+  // in index k.  Ensure it is the right value before each idx_vector
   // call.  Same variable as used in for loop in default case.
 
   octave_idx_type k = 0;

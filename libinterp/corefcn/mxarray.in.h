@@ -228,8 +228,8 @@ public:
 
   virtual void set_class_name (const char *name_arg) = 0;
 
-  // The following functions aren't pure virtual becuase they are only
-  // valid for one type.  Making them pure virtual would mean tha they
+  // The following functions aren't pure virtual because they are only
+  // valid for one type.  Making them pure virtual would mean that they
   // have to be implemented for all derived types, and all of those
   // would need to throw errors instead of just doing it once here.
 

@@ -80,7 +80,7 @@ namespace octave
 
       std::string oh = sys::env::getenv ("OCTAVE_HOME");
 
-      // If OCTAVE_HOME is set in the enviornment, use that.  Otherwise,
+      // If OCTAVE_HOME is set in the environment, use that.  Otherwise,
       // default to ${prefix} from configure.
 
       return oh.empty () ? op : oh;
@@ -97,7 +97,7 @@ namespace octave
       // If OCTAVE_EXEC_HOME is set in the environment, use that.
       // Otherwise, if ${prefix} and ${exec_prefix} from configure are set
       // to the same value, use OCTAVE_HOME from the environment if it is set.
-      // Othewise, default to ${exec_prefix} from configure.
+      // Otherwise, default to ${exec_prefix} from configure.
 
       if (! oeh.empty ())
         return oeh;

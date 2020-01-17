@@ -93,7 +93,7 @@ SparseBoolMatrix
 SparseBoolMatrix::concat (const SparseBoolMatrix& rb,
                           const Array<octave_idx_type>& ra_idx)
 {
-  // Don't use numel to avoid all possiblity of an overflow
+  // Don't use numel to avoid all possibility of an overflow
   if (rb.rows () > 0 && rb.cols () > 0)
     insert (rb, ra_idx(0), ra_idx(1));
   return *this;

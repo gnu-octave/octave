@@ -50,7 +50,7 @@
 #include "op-int.h"
 #include "ops.h"
 
-// Concatentation of mixed integer types:
+// Concatenation of mixed integer types:
 
 OCTAVE_CONCAT_FN2 (int8, int16)
 OCTAVE_CONCAT_FN2 (int8, int32)

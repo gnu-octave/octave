@@ -813,7 +813,7 @@ namespace octave
     int m_echo;
 
     // Are we currently echoing commands?  This state is set by the
-    // functions that execute fucntions and scripts.
+    // functions that execute functions and scripts.
     bool m_echo_state;
 
     std::string m_echo_file_name;

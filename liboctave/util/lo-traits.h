@@ -88,7 +88,7 @@ public:
   static const bool value = true;
 };
 
-// Determine whether a template paramter is a class type.
+// Determine whether a template parameter is a class type.
 
 template <typename T1>
 class is_class_type

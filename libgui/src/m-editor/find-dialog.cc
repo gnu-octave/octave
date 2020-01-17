@@ -545,7 +545,7 @@ namespace octave
             _edit_area->lineIndexFromPosition (m_sel_end, &l2, &c2);
             _edit_area->show_selection_markers (l1, c1, l2, c2);
 
-            // Check if new start position is still wihtin the selection
+            // Check if new start position is still within the selection
             _find_result_available =  pos >= m_sel_beg && pos <= m_sel_end;
           }
       }

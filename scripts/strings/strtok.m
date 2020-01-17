@@ -201,7 +201,7 @@ endfunction
 %! assert (t{7}, "");
 %! assert (r{7}, "");
 
-## Simple check for 2, 3, and 4 delimeters
+## Simple check for 2, 3, and 4 delimiters
 %!assert (strtok ("this is", "i "), "th")
 %!assert (strtok ("this is", "ij "), "th")
 %!assert (strtok ("this is", "ijk "), "th")

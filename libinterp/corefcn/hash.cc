@@ -25,7 +25,7 @@
 
 /*
 Implementation note (Dec, 2015): All supported cryptographic hash
-functions are calling "low-level" inplementations of the GNULIB.
+functions are calling "low-level" implementations of the GNULIB.
 
 The GNULIB, contains even more HMAC based algorithms, c.f.
 https://www.gnu.org/software/gnulib/MODULES.html#module=crypto/hmac-md5

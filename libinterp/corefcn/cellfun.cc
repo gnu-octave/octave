@@ -785,7 +785,7 @@ nevermind:
 %! y = true;
 %! A = cellfun (@(x) islogical (x) && y, {false, 0.3});
 %! assert (A, [true, false]);
-%!test  # Three ouptut arguments of different type
+%!test  # Three output arguments of different type
 %! [A, B, C] = cellfun (@find, {10, 11; 0, 12}, "UniformOutput", false);
 %! assert (isequal (A, {true, true; [], true}));
 %! assert (isequal (B, {true, true; [], true}));
@@ -802,7 +802,7 @@ nevermind:
 %!test
 %! A = cellfun (@(x) x, {false, true; false, true}, "UniformOutput", false);
 %! assert (A, {false, true; false, true});
-%!test  # Three ouptut arguments of same type
+%!test  # Three output arguments of same type
 %! [A, B, C] = cellfun (@find, {true, false; false, true}, ...
 %!                      "UniformOutput", false);
 %! assert (isequal (A, {true, []; [], true}));
@@ -837,7 +837,7 @@ nevermind:
 %! A = cellfun (@(x,y) x:y, {1.1, 4}, {3.1, 6}, "UniformOutput", false);
 %! assert (isequal (A{1}, [1.1, 2.1, 3.1]));
 %! assert (isequal (A{2}, [4, 5, 6]));
-%!test  # Three ouptut arguments of different type
+%!test  # Three output arguments of different type
 %! [A, B, C] = cellfun (@find, {10, 11; 0, 12}, "UniformOutput", false);
 %! assert (isequal (A, {true, true; [], true}));
 %! assert (isequal (B, {true, true; [], true}));
@@ -1461,7 +1461,7 @@ arrayfun (@@str2num, [1234],
 %! y = true;
 %! A = arrayfun (@(x) islogical (x && y), false);
 %! assert (A, true);
-%!test  # Three ouptut arguments of different type
+%!test  # Three output arguments of different type
 %! [A, B, C] = arrayfun (@find, [10, 11; 0, 12], "UniformOutput", false);
 %! assert (isequal (A, {true, true; [], true}));
 %! assert (isequal (B, {true, true; [], true}));
@@ -1477,7 +1477,7 @@ arrayfun (@@str2num, [1234],
 %!test
 %! A = arrayfun (@(x) x, [false, true, false, true], "UniformOutput", false);
 %! assert (A, {false, true, false, true});
-%!test  # Three ouptut arguments of same type
+%!test  # Three output arguments of same type
 %! [A, B, C] = arrayfun (@find, [true, false; false, true], "UniformOutput", false);
 %! assert (isequal (A, {true, []; [], true}));
 %! assert (isequal (B, {true, []; [], true}));
@@ -1510,7 +1510,7 @@ arrayfun (@@str2num, [1234],
 %! A = arrayfun (@(x,y) x:y, [1.1, 4], [3.1, 6], "UniformOutput", false);
 %! assert (isequal (A{1}, [1.1, 2.1, 3.1]));
 %! assert (isequal (A{2}, [4, 5, 6]));
-%!test  # Three ouptut arguments of different type
+%!test  # Three output arguments of different type
 %! [A, B, C] = arrayfun (@find, [10, 11; 0, 12], "UniformOutput", false);
 %! assert (isequal (A, {true, true; [], true}));
 %! assert (isequal (B, {true, true; [], true}));

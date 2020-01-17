@@ -255,7 +255,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
           warning ("gnuplot_set_term: size is zero");
         endif
       else
-        ## A specified size take priority over the figure properies.
+        ## A specified size take priority over the figure properties.
         size_str = "";
       endif
     else

@@ -1202,7 +1202,7 @@ textscan_internal (octave::interpreter& interp, const std::string& who,
 
   if (args.length () == 1)
     {
-      // ommited format = %f.  explicit "" = width from file
+      // omitted format = %f.  explicit "" = width from file
       fmt = "%f";
     }
   else if (args(1).is_string ())
@@ -1436,7 +1436,7 @@ The default is NaN@.  When the data type does not support NaN (int32 for
 example), then the default is zero.
 
 @item @qcode{"EndOfLine"}
-@var{value} can be either an emtpy or one character specifying the
+@var{value} can be either an empty or one character specifying the
 end-of-line character, or the pair
 @qcode{"@xbackslashchar{}r@xbackslashchar{}n"} (CRLF).
 In the latter case, any of

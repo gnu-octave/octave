@@ -95,7 +95,7 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
   // vectors.
   if (! resize_ok && idx.length () == 2 && matrix.is_multiple_of_identity (1))
     {
-      int k = 0;        // index we're accesing when index_vector throws
+      int k = 0;        // index we're accessing when index_vector throws
       try
         {
           idx_vector idx0 = idx(0).index_vector ();

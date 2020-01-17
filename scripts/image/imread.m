@@ -183,7 +183,7 @@ endfunction
 %! assert (error_thrown, true);
 
 ## make one of the formats read, return what it received as input to
-## confirm that the input parsing is working correcly
+## confirm that the input parsing is working correctly
 %!testif HAVE_MAGICK
 %! fname = [tempname() ".jpg"];
 %! def_fmt = imformats ();

@@ -290,7 +290,7 @@ function [pnum, pden, e] = rresidue (r, p, k = [], tol = [], e = [])
   ## N is the order of the resulting numerator
   ## pnum(1:(N+1)) is the numerator's polynomial
   ## pden(1:(D+1)) is the denominator's polynomial
-  ## pm is the multible pole for the nth residue
+  ## pm is the multiple pole for the nth residue
   ## pn is the numerator contribution for the nth residue
 
   D = numel (pden) - 1;

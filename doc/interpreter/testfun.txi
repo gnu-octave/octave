@@ -44,7 +44,7 @@ divide your tests up into blocks, with anything in a separate
 block evaluated separately.  Blocks are introduced by valid keywords like
 @code{test}, @code{function}, or @code{assert} immediately following @samp{%!}.
 A block is defined by indentation as in Python.  Lines beginning with
-@samp{%!<whitespace>} are part of the preceeding block.
+@samp{%!<whitespace>} are part of the preceding block.
 
 For example:
 

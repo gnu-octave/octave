@@ -93,7 +93,7 @@ function retval = specular (sx, sy, sz, lv, vv, se)
   ## Set reflectance to zero if light is on the other side
   retval(l_dot_n < 0) = 0;
 
-  ## Allow postive values only
+  ## Allow positive values only
   retval(retval < 0) = 0;
   retval .^= se;
 

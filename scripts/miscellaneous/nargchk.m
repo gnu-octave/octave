@@ -64,7 +64,7 @@ function msg = nargchk (minargs, maxargs, nargs, outtype = "string")
   if (strcmpi (outtype, "string"))
     msg = msg.message;
   elseif (isempty (msg.message))
-    ## Compatability: Matlab returns a 0x1 empty struct when nargchk passes
+    ## Compatibility: Matlab returns a 0x1 empty struct when nargchk passes
     msg = resize (msg, 0, 1);
   endif
 

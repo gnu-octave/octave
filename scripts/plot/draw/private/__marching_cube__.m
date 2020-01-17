@@ -32,7 +32,7 @@
 ## @var{iso}.  It is considered that the volume data @var{val} is given at
 ## the points @var{x}, @var{y} and @var{z} which are of type
 ## three-dimensional numeric arrays.  The orientation of the triangles is
-## choosen such that the normals point from the higher values to the lower
+## chosen such that the normals point from the higher values to the lower
 ## values.
 ##
 ## Optionally the color data @var{col} can be passed to this function

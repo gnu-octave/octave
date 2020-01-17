@@ -27,7 +27,7 @@
 ## @deftypefn  {} {[@var{Y}, @var{newmap}] =} cmunique (@var{X}, @var{map})
 ## @deftypefnx {} {[@var{Y}, @var{newmap}] =} cmunique (@var{RGB})
 ## @deftypefnx {} {[@var{Y}, @var{newmap}] =} cmunique (@var{I})
-## Convert an input image @var{X} to an ouput indexed image @var{Y} which uses
+## Convert an input image @var{X} to an output indexed image @var{Y} which uses
 ## the smallest colormap possible @var{newmap}.
 ##
 ## When the input is an indexed image (@var{X} with colormap @var{map}) the

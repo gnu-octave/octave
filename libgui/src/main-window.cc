@@ -1695,7 +1695,7 @@ namespace octave
 #if defined (HAVE_QSCINTILLA)
         // Octave ready, determine whether to create an empty script.
         // This can not be done when the editor is created because all functions
-        // must be known for the lexer's auto completion informations
+        // must be known for the lexer's auto completion information
         m_editor_window->empty_script (true, false);
         m_editor_window->restore_session (settings);
 #endif

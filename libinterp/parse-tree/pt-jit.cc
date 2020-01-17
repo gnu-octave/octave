@@ -378,7 +378,7 @@ namespace octave
   void
   jit_convert::visit_colon_expression (tree_colon_expression& expr)
   {
-    // in the futher we need to add support for classes and deal with rvalues
+    // in the further we need to add support for classes and deal with rvalues
     jit_value *base = visit (expr.base ());
     jit_value *limit = visit (expr.limit ());
     jit_value *increment;
@@ -421,7 +421,7 @@ namespace octave
   void
   jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   {
-    // Note we do an initial check to see if the loop will run atleast once.
+    // Note we do an initial check to see if the loop will run at least once.
     // This allows us to get better type inference bounds on variables defined
     // and used only inside the for loop (e.g., the index variable)
 
@@ -1275,7 +1275,7 @@ namespace octave
         jit_value *new_object = resolve (*idx, rhs, true);
         do_assign (idx->expression (), new_object, true);
 
-        // FIXME: Will not work for values that must be release/grabed
+        // FIXME: Will not work for values that must be released/grabbed
         return rhs;
       }
     else
@@ -2339,7 +2339,7 @@ namespace octave
     jit::ModuleOwner module_owner = tree_jit::open_new_module (module_name);
     // FIXME: what if this fails? exception?
 
-    // Get a pointer to the module before ownership is transfered to engine
+    // Get a pointer to the module before ownership is transferred to engine
     m_module = module_owner.get ();
 
     jit::EngineOwner engine_owner = std::move

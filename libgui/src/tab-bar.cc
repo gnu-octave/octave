@@ -136,7 +136,7 @@ namespace octave
     QPoint click_pos;
     int clicked_idx = -1;
 
-    // detect the tab where the click occured
+    // detect the tab where the click occurred
     for (int i = 0; i < count (); i++)
       {
         click_pos = mapToGlobal (me->pos ());

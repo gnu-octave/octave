@@ -711,7 +711,7 @@ read_images (std::vector<Magick::Image>& imvec,
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
             // Note that for CMYKColorspace + matte (CMYKA), the opacity is
-            // stored in the assocated IndexPacket.
+            // stored in the associated IndexPacket.
             const Magick::IndexPacket *apix
               = imvec[frameidx(frame)].getConstIndexes ();
 

@@ -103,7 +103,7 @@ endfunction
 %!assert (addtodate (d, 1, "minute"), d+1/1440)
 %!assert (addtodate (d, 1, "second"), d+1/86400)
 %!assert (addtodate (d, 1, "millisecond"), d+1/86400000)
-## substract one of each
+## subtract one of each
 %!assert (addtodate (d, -1, "year"), d-365)
 %!assert (addtodate (d, -1, "month"), d-31)
 %!assert (addtodate (d, -1, "day"), d-1)

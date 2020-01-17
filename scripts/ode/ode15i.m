@@ -381,7 +381,7 @@ endfunction
 %! [t, y] = ode15i ("rob", [0, 100, 200], [1; 0; 0], [-1e-4; 1e-4; 0]);
 %! assert ([t(2), y(2,:)], fref, 1e-3);
 
-##  solve in intermidiate step
+##  solve in intermediate step
 %!testif HAVE_SUNDIALS
 %! [t, y] = ode15i (@rob, [0, 100, 200], [1; 0; 0], [-1e-4; 1e-4; 0]);
 %! assert ([t(2), y(2,:)], fref, 1e-3);

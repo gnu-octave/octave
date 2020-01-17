@@ -103,8 +103,8 @@ namespace octave
   class jit_use;
 
   // Creates and tracks memory for jit_value and subclasses.
-  // Memory managment is simple, all values that are created live as long as the
-  // factory.
+  // Memory management is simple, all values that are created live as
+  // long as the factory.
   class
   jit_factory
   {
@@ -290,7 +290,7 @@ namespace octave
   public:
 
     // some compilers don't allow us to use jit_internal_node without template
-    // paremeters
+    // parameters
     typedef jit_internal_node<jit_value, jit_use> PARENT_T;
 
     jit_use (void) : m_user (0), m_index (0) { }

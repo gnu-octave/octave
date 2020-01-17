@@ -346,7 +346,7 @@ Undocumented internal function.
   if (args.length () != 9)
     print_usage ();
 
-  // 1nd Input.  A column array containing the objective function coefficients.
+  // 1st Input.  A column array containing the objective function coefficients.
   int mrowsc = args(0).rows ();
 
   Matrix C = args(0).xmatrix_value ("__glpk__: invalid value of C");

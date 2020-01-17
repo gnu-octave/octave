@@ -263,12 +263,12 @@ namespace octave
   }
 
   extern "C" double
-  octave_jit_paren_scalar (jit_matrix *mat, double *indicies,
+  octave_jit_paren_scalar (jit_matrix *mat, double *indices,
                            octave_idx_type idx_count)
   {
     // FIXME: Replace this with a more optimal version
     Array<idx_vector> idx;
-    make_indices (indicies, idx_count, idx);
+    make_indices (indices, idx_count, idx);
 
     Array<double> ret = mat->m_array->index (idx);
 
@@ -1395,7 +1395,7 @@ namespace octave
     m_binary_ops[octave_value::op_el_pow].add_overload (fn);
 
     // now for unary scalar operations
-    // FIXME: Impelment not
+    // FIXME: Implement not
     fn = create_internal ("octave_jit_++", m_scalar, m_scalar);
     body = fn.new_block ();
     m_builder.SetInsertPoint (body);
@@ -1598,7 +1598,7 @@ namespace octave
     }
     m_for_check_fn.add_overload (fn);
 
-    // index variabe for for loop
+    // index variable for for loop
     fn = create_internal ("octave_jit_for_range_idx", m_scalar, m_range,
                           m_index);
     body = fn.new_block ();
@@ -1650,7 +1650,7 @@ namespace octave
     m_logically_true_fn.add_overload (fn);
 
     // make_range
-    // FIXME: May be benificial to implement all in LLVM
+    // FIXME: May be beneficial to implement all in LLVM
     jit_function compute_nelem
       = create_external (JIT_FN (octave_jit_compute_nelem),
                          m_index, m_scalar, m_scalar, m_scalar);

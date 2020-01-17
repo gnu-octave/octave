@@ -813,7 +813,7 @@ function varargout = strread (str, format = "%f", varargin)
           ## skip the word
         otherwise
           ## Ensure descriptive content is consistent.
-          ## Test made a bit lax to accomodate for incomplete last lines
+          ## Test made a bit lax to accommodate for incomplete last lines
           n = find (! cellfun ("isempty", data));
           if (numel (unique (data(n))) > 1
               || ! strcmpi (unique (data), fmt_words{m}))

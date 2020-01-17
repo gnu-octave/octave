@@ -242,7 +242,7 @@ tsearch (@var{x}, @var{y}, @var{tri}, 2, 2)
 The @code{dsearch} and @code{dsearchn} find the closest point in a
 tessellation to the desired point.  The desired point does not
 necessarily have to be in the tessellation, and even if it the returned
-point of the tessellation does not have to be one of the vertexes of the
+point of the tessellation does not have to be one of the vertices of the
 N-simplex within which the desired point is found.
 
 @DOCSTRING(dsearch)
@@ -282,7 +282,7 @@ an N-dimensional space, is the tessellation of the N-dimensional space
 such that all points in @code{@var{v}(@var{p})}, a partitions of the
 tessellation where @var{p} is a member of @var{s}, are closer to @var{p}
 than any other point in @var{s}.  The Voronoi diagram is related to the
-Delaunay triangulation of a set of points, in that the vertexes of the
+Delaunay triangulation of a set of points, in that the vertices of the
 Voronoi tessellation are the centers of the circum-circles of the
 simplices of the Delaunay tessellation.
 

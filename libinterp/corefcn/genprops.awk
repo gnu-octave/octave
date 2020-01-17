@@ -838,7 +838,7 @@ BEGIN {
         if (index (quals, "f"))
           factory[idx] = 0;
 
-##        ## emmit an asignment set function
+##        ## emit an assignment set function
 ##        if (index (quals, "a"))
 ##          emit_ov_set[idx] = "assignment";
 ##

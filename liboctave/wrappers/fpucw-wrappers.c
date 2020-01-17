@@ -65,7 +65,7 @@ unsigned int
 octave_begin_long_double_rounding (void)
 {
   // Don't use DECL_LONG_DOUBLE_ROUNDING here because on some systems,
-  // it is defind to be empty.
+  // it is defined to be empty.
 
   fpucw_t oldcw = 0;
 

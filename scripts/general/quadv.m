@@ -67,6 +67,9 @@
 ##          integral2, integral3}
 ## @end deftypefn
 
+## Algorithm: See https://en.wikipedia.org/wiki/Adaptive_Simpson%27s_method
+## for basic explanation.  See NOTEs and FIXME for Octave modifications.
+
 function [q, nfun] = quadv (f, a, b, tol = [], trace = false, varargin)
 
   if (nargin < 3)
@@ -84,27 +87,67 @@ function [q, nfun] = quadv (f, a, b, tol = [], trace = false, varargin)
     error ("quadv: TOL must be a scalar >=0");
   endif
 
-  ## Split the interval into 3 abscissa, and apply a 3-point Simpson's rule
-  c = (a + b) / 2;
-  fa = feval (f, a, varargin{:});
-  fc = feval (f, c, varargin{:});
-  fb = feval (f, b, varargin{:});
-  nfun = 3;
+  if (trace)
+    ## Print column headers once above trace display.
+    printf ("  nfun          a            (b - a)         q_interval\n");
+  endif
 
-  ## If there are edge singularities, move edge point by eps*(b-a) as
+  ## NOTE: Split the interval into 3 parts which avoids problems with periodic
+  ## functions when a, b, and (a + b)/2 fall on boundaries such as 0, 2*pi.
+  ## For compatibility with Matlab, split in to two equal size regions on the
+  ## left and right, and one larger central region.
+  alpha = 0.27158;   # factor for region 1 & region 3 size (~27%)
+  b1 = a + alpha * (b - a);
+  b2 = b - alpha * (b - a);
+  c1 = (a + b1) / 2;
+  c2 = (a + b)  / 2;
+  c3 = (b2 + b) / 2;
+
+  fa  = feval (f, a,  varargin{:});
+  fc1 = feval (f, c1, varargin{:});
+  fb1 = feval (f, b1, varargin{:});
+  fc2 = feval (f, c2, varargin{:});
+  fb2 = feval (f, b2, varargin{:});
+  fc3 = feval (f, c3, varargin{:});
+  fb  = feval (f, b,  varargin{:});
+  nfun = 7;
+
+  ## NOTE: If there are edge singularities, move edge point by eps*(b-a) as
   ## discussed in Shampine paper used to implement quadgk.
   if (any (isinf (fa(:))))
     fa = feval (f, a + eps * (b-a), varargin{:});
+    nfun++;
   endif
   if (any (isinf (fb(:))))
     fb = feval (f, b - eps * (b-a), varargin{:});
+    nfun++;
   endif
 
-  h = (b - a);
-  q = h / 6 * (fa + 4 * fc + fb);
+  ## Region 1
+  h = (b1 - a);
+  q1 = h / 6 * (fa + 4*fc1 + fb1);
 
-  [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q, nfun, abs (h),
-                                tol, trace, varargin{:});
+  [q1, nfun, hmin1] = simpsonstp (f, a, b1, c1, fa, fb1, fc1, q1, tol,
+                                  nfun, abs (h), trace, varargin{:});
+
+  ## Region 2
+  h = (b2 - b1);
+  q2 = h / 6 * (fb1 + 4*fc2 + fb2);
+
+  [q2, nfun, hmin2] = simpsonstp (f, b1, b2, c2, fb1, fb2, fc2, q2, tol,
+                                  nfun, abs (h), trace, varargin{:});
+
+  ## Region 3
+  h = (b - b2);
+  q3 = h / 6 * (fb2 + 4*fc3 + fb);
+
+  [q3, nfun, hmin3] = simpsonstp (f, b2, b, c3, fb2, fb, fc3, q3, tol,
+                                  nfun, abs (h), trace, varargin{:});
+
+  ## Total integral over all 3 regions and verify results
+  q = q1 + q2 + q3;
+
+  hmin = min ([hmin1, hmin2, hmin3]);
 
   if (nfun > 10_000)
     warning ("quadv: maximum iteration count reached -- possible singular integral");
@@ -116,39 +159,48 @@ function [q, nfun] = quadv (f, a, b, tol = [], trace = false, varargin)
 
 endfunction
 
-function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, nfun, hmin,
-                                       tol, trace, varargin)
+function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, tol,
+                                       nfun, hmin, trace, varargin)
 
-  if (nfun > 10_000)
+  if (nfun > 10_000)   # stop endless recursion
     q = q0;
-  else
-    d = (a + c) / 2;
-    e = (c + b) / 2;
-    fd = feval (f, d, varargin{:});
-    fe = feval (f, e, varargin{:});
-    nfun += 2;
-    q1 = (c - a) / 6 * (fa + 4 * fd + fc);
-    q2 = (b - c) / 6 * (fc + 4 * fe + fb);
+    return;
+  endif
+
+  d = (a + c) / 2;
+  e = (c + b) / 2;
+  fd = feval (f, d, varargin{:});
+  fe = feval (f, e, varargin{:});
+  nfun += 2;
+  q1 = (c - a) / 6 * (fa + 4*fd + fc);
+  q2 = (b - c) / 6 * (fc + 4*fe + fb);
+  q = q1 + q2;
+
+  if (abs (a - c) < hmin)
+    hmin = abs (a - c);
+  endif
+
+  delta = q - q0;   # error term between new estimate and old estimate
+
+  if (trace)
+    printf ("%5d   %#14.11g   %16.10e   %-16.11g\n",
+            nfun,  a,         b-a,      q + delta/15);
+  endif
+
+  ## NOTE: Not vectorizing q-q0 in the norm provides a more rigid criterion
+  ##       for matrix-valued functions.
+  if (norm (delta, Inf) > 15*tol)
+    ## FIXME: To keep sum of sub-interval integrands within overall tolerance
+    ## each bisection interval should use tol/2.  However, Matlab does not
+    ## do this, and it would also profoundly increase the number of function
+    ## evaluations required.
+    [q1, nfun, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, q1, tol,
+                                   nfun, hmin, trace, varargin{:});
+    [q2, nfun, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, q2, tol,
+                                   nfun, hmin, trace, varargin{:});
     q = q1 + q2;
-
-    if (abs (a - c) < hmin)
-      hmin = abs (a - c);
-    endif
-
-    if (trace)
-      disp ([nfun, a, b-a, q]);
-    endif
-
-    ## Force at least one adaptive step (nfun == 5 test).
-    ## Not vectorizing q-q0 in the norm provides a more rigid criterion for
-    ## matrix-valued functions.
-    if (norm (q - q0, Inf) > tol || nfun == 5)
-      [q1, nfun, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, q1, nfun, hmin,
-                                     tol, trace, varargin{:});
-      [q2, nfun, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, q2, nfun, hmin,
-                                     tol, trace, varargin{:});
-      q = q1 + q2;
-    endif
+  else
+    q += delta / 15;   # NOTE: Richardson extrapolation correction
   endif
 
 endfunction
@@ -158,14 +210,17 @@ endfunction
 %!assert (quadv (@sin, 0, pi), 2, 1e-6)
 
 ## Test weak singularities at the edge
-%!assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 2e-6);
+%!assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 15*1e-6);
 
 ## Test vector-valued functions
 %!assert (quadv (@(x) [(sin (x)), (sin (2 * x))], 0, pi), [2, 0], 1e-6)
 
 ## Test matrix-valued functions
 %!assert (quadv (@(x) [ x,x,x; x,1./sqrt(x),x; x,x,x ], 0, 1),
-%!        [0.5,0.5,0.5; 0.5,2,0.5; 0.5,0.5,0.5], 2e-6);
+%!        [0.5,0.5,0.5; 0.5,2,0.5; 0.5,0.5,0.5], 15*1e-6);
+
+## Test periodic function
+%!assert <*57603> (quadv (@(t) sin (t) .^ 2, 0, 8*pi), 4*pi, 1e-6)
 
 ## Test input validation
 %!error quadv ()

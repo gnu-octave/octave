@@ -27,6 +27,13 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   uniform density (# of random integers / length along real number
   line).
 
+- Numerical integration has been improved.  The `quadv` function has
+  been re-written so that it can compute integrands of periodic
+  functions.  At the same time, performance is better with ~3.5X fewer
+  function evaluations required.  A bug in `quadgk` that caused complex
+  path integrals specified with `"Waypoints"` to occasionally be
+  calculated in the opposite direction was fixed.
+
 - The `edit` function option `"editinplace"` now defaults to `true` and
   the option `"home"` now defaults to the empty matrix `[]`.  Files will
   no longer be copied to the user's HOME directory for editing.  The old

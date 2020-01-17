@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 //!
 //! For detailed information, see \ref Macros.
 //!
-//! @param name The **unqouted** name of the function that should be installed
+//! @param name The **unquoted** name of the function that should be installed
 //!             on the `octave::symbol_table` and can be called by the
 //!             interpreter.  Internally, the function name is prepended by an
 //!             `F`.
@@ -64,9 +64,9 @@ along with Octave; see the file COPYING.  If not, see
 //! quoted string (thus unaffected by macros), and the internal name of the
 //! function is given by @p fname.
 //!
-//! @param name The **qouted** name of the function that should be callable
+//! @param name The **quoted** name of the function that should be callable
 //!             by the interpreter.
-//! @param fname The internal **unqouted** name of the function.  This internal
+//! @param fname The internal **unquoted** name of the function.  This internal
 //!              name is by convention prepended by an `F`.
 //! @param args_name The name of the octave_value_list variable used to pass
 //!                  the argument list to this function.  If this value is
@@ -91,7 +91,7 @@ along with Octave; see the file COPYING.  If not, see
 //! The function gets installed to the `octave::symbol_table` in a way, such
 //! that no variable is allowed to hide this function name.
 //!
-//! @param name The **unqouted** name of the function that should be installed
+//! @param name The **unquoted** name of the function that should be installed
 //!             on the `octave::symbol_table` and can be called by the
 //!             interpreter.  Internally, the function name is prepended by an
 //!             `F`.
@@ -113,7 +113,7 @@ along with Octave; see the file COPYING.  If not, see
 //!
 //! For detailed information, see \ref Macros.
 //!
-//! @param name The **unqouted** name of the method that should be installed
+//! @param name The **unquoted** name of the method that should be installed
 //!             on the `octave::symbol_table` and can be called by the
 //!             interpreter.  Internally, the method name is prepended by an
 //!             `F`.
@@ -146,9 +146,9 @@ along with Octave; see the file COPYING.  If not, see
 //! quoted string (thus unaffected by macros), and the internal name of the
 //! method is given by @p fname.
 //!
-//! @param name The **qouted** name of the method that should be callable
+//! @param name The **quoted** name of the method that should be callable
 //!             by the interpreter.
-//! @param fname The internal **unqouted** name of the method.  This internal
+//! @param fname The internal **unquoted** name of the method.  This internal
 //!              name is by convention prepended by an `F`.
 //! @param interp_name The name of the `octave::interpreter` reference that can
 //!                    be used by this method.  If this value is omitted,
@@ -177,7 +177,7 @@ along with Octave; see the file COPYING.  If not, see
 //! The method gets installed to the `octave::symbol_table` in a way, such
 //! that no variable is allowed to hide this method name.
 //!
-//! @param name The **unqouted** name of the method that should be installed
+//! @param name The **unquoted** name of the method that should be installed
 //!             on the `octave::symbol_table` and can be called by the
 //!             interpreter.  Internally, the method name is prepended by an
 //!             `F`.

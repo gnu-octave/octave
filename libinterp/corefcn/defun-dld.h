@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 //!
 //! For detailed information, see \ref Macros.
 //!
-//! @param name The **unqouted** name of the function that should be installed
+//! @param name The **unquoted** name of the function that should be installed
 //!             on the `octave::symbol_table` and can be called by the
 //!             interpreter.  Internally, the function name is prepended by an
 //!             `F`.
@@ -69,7 +69,7 @@ along with Octave; see the file COPYING.  If not, see
 //!
 //! For detailed information, see \ref Macros.
 //!
-//! @param name The **unqouted** name of the method that should be installed
+//! @param name The **unquoted** name of the method that should be installed
 //!             on the `octave::symbol_table` and can be called by the
 //!             interpreter.  Internally, the method name is prepended by an
 //!             `F`.

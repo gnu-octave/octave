@@ -93,7 +93,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
   octave_idx_type len = idx.length ();
 
   // If we catch an indexing error in index_vector, we flag an error in
-  // index k.  Ensure it is the right value befor each idx_vector call.
+  // index k.  Ensure it is the right value before each idx_vector call.
   // Same variable as used in the for loop in the default case.
 
   octave_idx_type k = 0;

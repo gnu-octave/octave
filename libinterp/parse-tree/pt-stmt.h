@@ -107,7 +107,7 @@ namespace octave
     bool is_end_of_file (void) const;
 
     // Allow modification of this statement.  Note that there is no
-    // checking.  If you use these, are you sure you knwo what you are
+    // checking.  If you use these, are you sure you know what you are
     // doing?
 
     void set_command (tree_command *c) { m_command = c; }

@@ -693,7 +693,7 @@ namespace octave
       double *info = Info.fortran_vec ();
       int status;
 
-      // Null loop so that qinit is imediately deallocated when not needed
+      // Null loop so that qinit is immediately deallocated when not needed
       do
         {
           OCTAVE_LOCAL_BUFFER (octave_idx_type, qinit, nc);

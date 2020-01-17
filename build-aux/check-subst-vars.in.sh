@@ -33,7 +33,7 @@ trap "rm -f $awk_script; exit 1" 1 2 15
 make_vars="$1"
 config_vars="$2"
 
-## Generate awk script to check variable consitency.
+## Generate awk script to check variable consistency.
 
 cat << EOF > $awk_script
 BEGIN {

@@ -130,7 +130,7 @@ install_range_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_bool_matrix, octave_range, bm_r);
   INSTALL_CATOP_TI (ti, octave_char_matrix, octave_range, chm_r);
 
-  // FIXME: this would be unneccessary if
+  // FIXME: this would be unnecessary if
   // octave_base_value::numeric_assign always tried converting lhs
   // before rhs.
 

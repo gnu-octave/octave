@@ -139,7 +139,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
   const MT& cmatrix = matrix;
 
   // If we catch an indexing error in index_vector, we flag an error in
-  // index k.  Ensure it is the right value befor each idx_vector call.
+  // index k.  Ensure it is the right value before each idx_vector call.
   // Same variable as used in the for loop in the default case.
 
   octave_idx_type k = 0;
@@ -217,7 +217,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
   octave_idx_type n_idx = idx.length ();
 
   // If we catch an indexing error in index_vector, we flag an error in
-  // index k.  Ensure it is the right value befor each idx_vector call.
+  // index k.  Ensure it is the right value before each idx_vector call.
   // Same variable as used in the for loop in the default case.
 
   octave_idx_type k = 0;
@@ -291,7 +291,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
   MT mrhs (dim_vector (1, 1), rhs);
 
   // If we catch an indexing error in index_vector, we flag an error in
-  // index k.  Ensure it is the right value befor each idx_vector call.
+  // index k.  Ensure it is the right value before each idx_vector call.
   // Same variable as used in the for loop in the default case.
 
   octave_idx_type k = 0;

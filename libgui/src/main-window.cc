@@ -341,7 +341,7 @@ namespace octave
         if (dock)
           break;
 
-        // If not yet found (in case w_new is not a childs of its dock widget),
+        // If not yet found (in case w_new is not a child of its dock widget),
         // test next widget in the focus chain
         w_new = qobject_cast<QWidget *> (w_new->previousInFocusChain ());
 
@@ -1495,7 +1495,7 @@ namespace octave
 #if defined (HAVE_QSCINTILLA)
         // Octave ready, determine whether to create an empty script.
         // This can not be done when the editor is created because all functions
-        // must be known for the lexer's auto completion informations
+        // must be known for the lexer's auto completion information
         m_editor_window->empty_script (true, false);
         m_editor_window->restore_session (settings);
 #endif
@@ -2253,7 +2253,7 @@ namespace octave
       {
         if (checkable)
           {
-            // action for visibilty of dock widget
+            // action for visibility of dock widget
             connect (action, SIGNAL (toggled (bool)),
                      widget, SLOT (setVisible (bool)));
 

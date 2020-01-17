@@ -317,7 +317,7 @@ function [faces_reduced, vertices_reduced] = ...
       vertices(end_point_idx,:) = Inf; # mark vertex for later removal
     endif
 
-    ## Pretty print a row of dots while performing calulation
+    ## Pretty print a row of dots while performing calculation
     if (verbose && ++verbose_counter > verbose_stepwidth)
       printf (".");
       verbose_counter = 0;

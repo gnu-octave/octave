@@ -351,7 +351,7 @@ namespace octave
         // Default sort order optimizes for 3D plots
         GLint gl2ps_sort = GL2PS_BSP_SORT;
 
-        // FIXME: gl2ps does not provide a way to change the sorting algorythm
+        // FIXME: gl2ps does not provide a way to change the sorting algorithm
         // on a viewport basis, we thus disable sorting only if all axes are 2D
         if (has_2D_axes (go.get ("__myhandle__")))
           gl2ps_sort = GL2PS_NO_SORT;

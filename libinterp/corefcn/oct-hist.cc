@@ -449,7 +449,7 @@ namespace octave
 
     set_interrupt_handler (old_interrupt_handler);
 
-    // Check if text edition was successfull.  Abort the operation
+    // Check if text edition was successful.  Abort the operation
     // in case of failure.
     if (status != EXIT_SUCCESS)
       error ("edit_history: text editor command failed");

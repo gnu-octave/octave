@@ -283,7 +283,7 @@ namespace octave
     do_set_settings (m_settings_file);
 
     // Write the default monospace font into the settings for later use by
-    // console and editor as fallbacks of their font prefernces.
+    // console and editor as fallbacks of their font preferences.
     if (m_settings)
       m_settings->setValue (global_mono_font.key, default_family);
 

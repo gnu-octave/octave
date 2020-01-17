@@ -271,7 +271,7 @@ function str = do_escape_special_chars (str)
   ## Escape \, {, }, &, %, #, _, ~, ^, <, >
   str = regexprep (str, '\\', "\\ensuremath{\\backslash}");
   str = regexprep (str, '(?<!\\)(\{|\}|&|%|#|_)', '\\$1');
-  ## Revert accidential {} replacements for backslashes
+  ## Revert accidental {} replacements for backslashes
   str = strrep (str, '\ensuremath\{\backslash\}', '\ensuremath{\backslash}');
   str = regexprep (str, '(?<!\\)~', "\\ensuremath{\\tilde{\\;}}");
   str = regexprep (str, '(?<!\\)\^', "\\^{}");

@@ -175,7 +175,7 @@ Options:\n\
   exit (0);
 }
 
-// Terse usage messsage.
+// Terse usage message.
 
 static void
 octave_print_terse_usage_and_exit (void)

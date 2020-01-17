@@ -444,7 +444,7 @@ endfunction
 %! ddyc = diff (diff (interp1 (t,y,ti, 'cubic')) ./dti)./dti;
 %! plot (ti(2:end-1),ddys,'b*', ti(2:end-1),ddyp,'c^', ti(2:end-1),ddyc,'g+');
 %! title ({'Second derivative of interpolated "sin (4*t + 0.3) .* cos (3*t - 0.1)"', ...
-%!         'Note: "spline" has continous 2nd derivative, others do not'});
+%!         'Note: "spline" has continuous 2nd derivative, others do not'});
 %! legend ('spline', 'pchip', 'cubic');
 
 %!demo

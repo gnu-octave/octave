@@ -629,7 +629,7 @@ namespace octave
 
       retval = buf.str ();
 
-      // Can I assume that the path is alway in "" on the last line
+      // Can I assume that the path is always in "" on the last line
       size_t pos2 = retval.rfind ('"');
       size_t pos1 = retval.rfind ('"', pos2 - 1);
       retval = retval.substr (pos1 + 1, pos2 - pos1 - 1);

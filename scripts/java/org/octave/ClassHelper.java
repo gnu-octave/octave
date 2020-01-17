@@ -38,7 +38,7 @@ public class ClassHelper
 
   /**
    * Add the given path to the classpath.
-   * @param name String - path to addd to the classpath
+   * @param name String - path to add to the classpath
    * @return boolean - true if the given path exists and was added to the classpath.
    * @throws Exception if an error occurs
    */

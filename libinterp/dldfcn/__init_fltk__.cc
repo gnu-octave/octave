@@ -1980,7 +1980,7 @@ private:
 
   static figure_manager *instance;
 
-  // Singelton -- hide all of the above.
+  // Singleton -- hide all of the above.
 
   static int curr_index;
 

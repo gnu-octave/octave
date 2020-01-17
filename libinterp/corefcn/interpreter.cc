@@ -426,7 +426,7 @@ namespace octave
 
     if (m_app_context)
       {
-        // Embedded interpeters don't execute command line options.
+        // Embedded interpreters don't execute command line options.
         const cmdline_options& options = m_app_context->options ();
 
         // Make all command-line arguments available to startup files,
@@ -595,7 +595,7 @@ namespace octave
         // not stop executing PKG_ADD files at the first exception.
         // It's also better than changing the default execute_pkg_add
         // function to use safe_source file because that will normally
-        // be evaluated from the normal intepreter loop where exceptions
+        // be evaluated from the normal interpreter loop where exceptions
         // are already handled.
 
         unwind_protect frame;

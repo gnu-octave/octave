@@ -295,7 +295,7 @@ namespace octave
 
     setFocusProxy (m_current_directory);
 
-    m_sync_octave_dir = true;   // default, overwirtten with notice_settings ()
+    m_sync_octave_dir = true;   // default, overwritten with notice_settings ()
     m_octave_dir = "";
   }
 
@@ -700,7 +700,7 @@ namespace octave
           {
             if (info.isDir ())
               {
-                // see if direcory is empty
+                // see if directory is empty
                 QDir path (info.absoluteFilePath ());
                 QList<QFileInfo> fileLst = path.entryInfoList (QDir::AllEntries |
                                                                QDir::NoDotAndDotDot);

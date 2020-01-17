@@ -1892,7 +1892,7 @@ namespace octave
   //  * Obtain the initial value from the expression component of the
   //    tree_index_expression object.  If it is a tree_identifier object
   //    indexed by '(args)' and the identifier is not a variable, then
-  //    peform a function call.  Use the (optional) arguments to perform
+  //    perform a function call.  Use the (optional) arguments to perform
   //    the function lookup so we choose the correct function or class
   //    method to call.  Otherwise, evaluate the first expression
   //    without any additional arguments.

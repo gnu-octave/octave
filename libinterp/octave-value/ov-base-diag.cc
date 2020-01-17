@@ -104,7 +104,7 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
 
   if (idx.length () == 2 && ! resize_ok)
     {
-      int k = 0;        // index we're accesing when index_vector throws
+      int k = 0;        // index we're accessing when index_vector throws
       try
         {
           idx_vector idx0 = idx(0).index_vector ();

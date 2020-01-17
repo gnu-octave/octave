@@ -19,7 +19,7 @@
 %!test
 %! try
 %! catch
-%!   error ("Shoudn't get here");
+%!   error ("Shouldn't get here");
 %! end  # "end" is part of test, check not using "end_try_catch"
 
 %!test
@@ -56,7 +56,7 @@
 %! try
 %!   clear a;
 %!   a;
-%!   error ("Shoudn't get here");
+%!   error ("Shouldn't get here");
 %! catch
 %!   assert (lasterr()(1:13), "'a' undefined");
 %! end_try_catch
@@ -77,7 +77,7 @@
 %! try
 %!   clear a;
 %!   a;
-%!   error ("Shoudn't get here");
+%!   error ("Shouldn't get here");
 %! catch
 %!   assert (mangle (lasterr)(1:14), "<'a' undefined");
 %! end_try_catch
@@ -87,13 +87,13 @@
 %!   try
 %!     clear a;
 %!     a;
-%!     error ("Shoudn't get here");
+%!     error ("Shouldn't get here");
 %!   catch
 %!     assert (lasterr()(1:13), "'a' undefined");
 %!   end_try_catch
 %!   clear b;
 %!   b;
-%!   error ("Shoudn't get here");
+%!   error ("Shouldn't get here");
 %! catch
 %!   assert (lasterr()(1:13), "'b' undefined");
 %! end_try_catch
@@ -102,13 +102,13 @@
 %! try
 %!   clear a;
 %!   a;
-%!   error ("Shoudn't get here");
+%!   error ("Shouldn't get here");
 %! catch
 %!   try
 %!     assert (lasterr()(1:13), "'a' undefined");
 %!     clear b;
 %!     b;
-%!     error ("Shoudn't get here");
+%!     error ("Shouldn't get here");
 %!   catch
 %!     assert (lasterr()(1:13), "'b' undefined");
 %!   end_try_catch
@@ -119,7 +119,7 @@
 %!   try
 %!     clear a;
 %!     a;
-%!     error ("Shoudn't get here");
+%!     error ("Shouldn't get here");
 %!   catch
 %!     error (["rethrow: " lasterr]);
 %!   end_try_catch

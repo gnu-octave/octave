@@ -155,7 +155,7 @@ namespace octave
 
     void reset (void);
 
-    // Error mesages for mismatched end tokens.
+    // Error messages for mismatched end tokens.
     void end_token_error (token *tok, token::end_tok_type expected);
 
     // Check to see that end tokens are properly matched.

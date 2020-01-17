@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// Use the GNU readline library for command line editing and hisory.
+// Use the GNU readline library for command line editing and history.
 
 #if ! defined (octave_input_h)
 #define octave_input_h 1

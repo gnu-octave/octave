@@ -172,7 +172,7 @@ H_insert (CMK_Node *H, octave_idx_type& h, const CMK_Node& o)
   while (i > 0);
 }
 
-// Heap operation remove-min.  Removes the smalles element in O(1) and
+// Heap operation remove-min.  Removes the smallest element in O(1) and
 // reorganizes the heap optionally in O(log(n))
 
 inline static CMK_Node
@@ -657,7 +657,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.
               // entered the BFS a new level?
               if (v.dist > level)
                 {
-                  // adjustment of bandwith:
+                  // adjustment of bandwidth:
                   // "[...] the minimum bandwidth that
                   // can be obtained [...] is the
                   //  maximum number of nodes per level"

@@ -1190,7 +1190,7 @@ namespace octave
       }
   }
 
-  // For ressetting print_code state.
+  // For resetting print_code state.
 
   void
   tree_print_code::reset (void)

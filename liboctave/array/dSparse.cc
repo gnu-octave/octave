@@ -56,8 +56,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Sparse-perm-op-defs.h"
 
 // Define whether to use a basic QR solver or one that uses a Dulmange
-// Mendelsohn factorization to seperate the problem into under-determined,
-// well-determined and over-determined parts and solves them seperately
+// Mendelsohn factorization to separate the problem into under-determined,
+// well-determined and over-determined parts and solves them separately
 #if ! defined (USE_QRSOLVE)
 #  include "sparse-dmsolve.h"
 #endif
@@ -534,7 +534,7 @@ SparseMatrix
 SparseMatrix::concat (const SparseMatrix& rb,
                       const Array<octave_idx_type>& ra_idx)
 {
-  // Don't use numel to avoid all possiblity of an overflow
+  // Don't use numel to avoid all possibility of an overflow
   if (rb.rows () > 0 && rb.cols () > 0)
     insert (rb, ra_idx(0), ra_idx(1));
   return *this;
@@ -735,7 +735,7 @@ SparseMatrix::tinverse (MatrixType& mattype, octave_idx_type& info,
           retval.xdata (cx) = 1.0;
           cx++;
 
-          // iterate accross columns of input matrix
+          // iterate across columns of input matrix
           for (octave_idx_type j = i+1; j < nr; j++)
             {
               double v = 0.;
@@ -841,7 +841,7 @@ SparseMatrix::tinverse (MatrixType& mattype, octave_idx_type& info,
           // place the 1 in the identity position
           work[iidx] = 1.0;
 
-          // iterate accross columns of input matrix
+          // iterate across columns of input matrix
           for (octave_idx_type j = iidx+1; j < nr; j++)
             {
               double v = 0.;

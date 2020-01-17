@@ -1112,8 +1112,8 @@ namespace octave
 
   void file_editor::set_shortcuts (void)
   {
-    // Shortcuts also available in the main window, as well as the realted
-    // ahotcuts, are defined in main_window and added to the editor
+    // Shortcuts also available in the main window, as well as the related
+    // shortcuts, are defined in main_window and added to the editor
 
     // File menu
     shortcut_manager::set_shortcut (m_edit_function_action, "editor_file:edit_function");
@@ -1269,7 +1269,7 @@ namespace octave
 
     if (openFileName.isEmpty ())
       {
-        // This happens if edit is calles without an argument
+        // This happens if edit is called without an argument
         // Open eitor with empty edit area instead (as new file would do)
         request_new_file ("");
       }
@@ -2428,7 +2428,7 @@ namespace octave
         // 1. The path of the file rel. to the dir is not equal to the
         //    its absolute one.
         //    If both are equal, then there is no relative path and removed
-        //    directoy and file are on different drives (e.g.on windows)
+        //    directory and file are on different drives (e.g.on windows)
         // 2. The (real) relative path does not start with "../", i.e.,
         //    the file can be reached from the directory by descending only
         if ((rel_path_to_file != abs_path_to_file)

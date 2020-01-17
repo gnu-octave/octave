@@ -63,7 +63,7 @@ y = cos(x)
 % TEXT(TM)
 % TEXT(R)
 %
-% Good inlining shoud work
+% Good inlining should work
 % *BOLD _ITALIC |MONOSPACED| TEXT_*
 % _ITALIC *BOLD |MONOSPACED| TEXT*_
 % |MONOSPACED *BOLD _ITALIC_ TEXT*|
@@ -86,7 +86,7 @@ plot (y,x)
 # TEXT(TM)
 # TEXT(R)
 #
-# Good inlining shoud work
+# Good inlining should work
 # *BOLD _ITALIC |MONOSPACED| TEXT_*
 # _ITALIC *BOLD |MONOSPACED| TEXT*_
 # |MONOSPACED *BOLD _ITALIC_ TEXT*|

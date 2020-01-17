@@ -99,7 +99,7 @@ along with Octave; see the file COPYING.  If not, see
 //! length should it return?  Octave length() function returns the length
 //! of the longest dimension which is an odd definition, only useful for
 //! vectors and square matrices.  The alternatives numel(), rows(),
-//! columns(), and size(d) are more explict and recommended.
+//! columns(), and size(d) are more explicit and recommended.
 //!
 //! ### size_type
 //!

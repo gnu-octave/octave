@@ -110,7 +110,7 @@ function msg = javachk (feature, caller = "")
   endif
 
   if (isempty (msg.message))
-    ## Compatability: Matlab returns a 0x1 empty struct when javachk passes
+    ## Compatibility: Matlab returns a 0x1 empty struct when javachk passes
     msg = resize (msg, 0, 1);
   endif
 

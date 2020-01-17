@@ -222,7 +222,7 @@ namespace octave
     llvm::Type *m_packed_type[jit_convention::length];
   };
 
-  // seperate print function to allow easy printing if type is null
+  // separate print function to allow easy printing if type is null
   std::ostream& jit_print (std::ostream& os, jit_type *atype);
 
   // Find common type
@@ -255,7 +255,7 @@ namespace octave
 
     jit_function (const jit_function& fn);
 
-    // erase the interal LLVM function (if it exists).  Will become invalid.
+    // erase the internal LLVM function (if it exists).  Will become invalid.
     void erase (void);
 
     bool valid (void) const { return m_llvm_function; }
@@ -345,8 +345,8 @@ namespace octave
 
   std::ostream& operator << (std::ostream& os, const jit_function& fn);
 
-  // Keeps track of information about how to implement operations (+, -, *, ect)
-  // and their resulting types.
+  // Keeps track of information about how to implement operations (+, -,
+  // *, etc.) and their resulting types.
   class
   jit_operation
   {

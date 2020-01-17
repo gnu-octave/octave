@@ -487,7 +487,7 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
           QPen pen;
           pen.setColor (c);
 
-          // Line properies
+          // Line properties
           str = elt.attribute ("stroke-width");
           if (! str.isEmpty ())
             {
@@ -530,7 +530,7 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
         }
       else if (elt.tagName () == "image")
         {
-          // Images are represented as a base64 stream of png formated data
+          // Images are represented as a base64 stream of png formatted data
           QString href_att = elt.attribute ("xlink:href");
           QString prefix ("data:image/png;base64,");
           QByteArray data =
@@ -716,7 +716,7 @@ read from stdin\n\
 * fmt: format of the output file. May be one of pdf or svg\n\
 * dpi: device dependent resolution in screen pixel per inch\n\
 * font: specify a file name for the default FreeSans font\n\
-* reconstruct: specify wether to reconstruct triangle to polygons (0 or 1)\n\
+* reconstruct: specify whether to reconstruct triangle to polygons (0 or 1)\n\
 * outfile: output file name\n";
 
   if (strcmp (argv[1], "-h") == 0)

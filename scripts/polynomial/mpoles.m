@@ -84,7 +84,7 @@ function [multp, indx] = mpoles (p, tol, reorder)
     ordr = 1:Np;
   endif
 
-  ## Find pole multiplicty by comparing the relative differnce in the
+  ## Find pole multiplicity by comparing the relative difference in the
   ## poles.
 
   multp = zeros (Np, 1);

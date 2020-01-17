@@ -248,7 +248,7 @@ function [q, err, iter] = quad2d (f, xa, xb, ya, yb, varargin)
     ##   dx = - (a - b) * sin(t) / 2 dt
     ## Now our integral is
     ##   \int_a^b \int_0^1 f(x,y) dydx
-    ## as we already subsitute for "y", so
+    ## as we already substitute for "y", so
     ##   gx(tx) = ((a - b) * cos(tx) + (a + b)) / 2
     ##   gy(ty) = (1 - cos(ty)) / 2
     ##   dydx = (b - a) * sin(tx) * sin(ty) / 4 dtydtx

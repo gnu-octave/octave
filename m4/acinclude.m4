@@ -1749,7 +1749,7 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
       ## If some modules were found for $ver, then warn about possible
       ## incomplete or broken Qt installation instead of checking for
       ## next version in the list.  Don't attempt a similar check for
-      ## tools here becuase Qt4 and Qt5 tools may be installed with
+      ## tools here because Qt4 and Qt5 tools may be installed with
       ## the same name so determining whether there is a mix of versions
       ## will require more work than just looking which tools are installed.
       warn_qt_modules="Your installation of Qt version $ver appears incomplete or broken in some way.  Fix that or use --with-qt=VER to use another version."

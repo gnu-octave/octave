@@ -232,7 +232,7 @@ DEFINE_BLAS_ENUM(blas, BLAS_LIST)
 DEFINE_LAPACK_ENUM(lapack, LAPACK_LIST)
 
 /*
- * BLAS wrappers, F2C convention passes retuned complex as an extra first
+ * BLAS wrappers, F2C convention passes returned complex as an extra first
  * argument
  */
 typedef struct { float r, i; } complex;

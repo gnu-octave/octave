@@ -142,7 +142,7 @@ function [nest, v, w, iter] = normest1 (A, t = [], x0 = [], varargin)
     ## There are at most 2^(n-1) unparallel columns, see later.
     while (i <= imax)
       if (any (abs (X(:,i)' * X(:,1:i-1)) == n))
-        ## column i is parallel to a colum 1:i-1.  Change it.
+        ## column i is parallel to a column 1:i-1.  Change it.
         X(:,i) = sign (2 * rand (n, 1) - 1);
       else
         i++;

@@ -658,7 +658,7 @@ namespace octave
 
         if (_is_octave_file)
           {
-            // Keywords and Builtins do not change, these informations can be
+            // Keywords and Builtins do not change, this information can be
             // stored in prepared form in a file. Information on function are
             // changing frequently, then if functions should also be auto-
             // completed, the date of any existing file is checked.
@@ -666,7 +666,7 @@ namespace octave
             // Keywords are always used
             _prep_apis_file = prep_apis_path + lexer->lexer () + "_k";
 
-            // Buitlins are only used if the user settings say so
+            // Builtins are only used if the user settings say so
             if (octave_builtins)
               _prep_apis_file += 'b';
 
@@ -3001,7 +3001,7 @@ namespace octave
         int col_space = col;
         int indentation = _edit_area->indentation (line);
 
-        // Search the first occurence of space or tab backwards starting from
+        // Search the first occurrence of space or tab backwards starting from
         // the current column (col_space).
         while (c != ' ' && c != '\t' && col_space > indentation)
           {

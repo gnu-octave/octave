@@ -112,7 +112,7 @@ set_octave_home (void)
     oh = w32_get_octave_home ();
 #endif
 
-  // If OCTAVE_HOME is set in the enviornment, use that.  Otherwise,
+  // If OCTAVE_HOME is set in the environment, use that.  Otherwise,
   // default to ${prefix} from configure.
 
   Voctave_home = (oh.empty () ? op : oh);
@@ -120,7 +120,7 @@ set_octave_home (void)
   // If OCTAVE_EXEC_HOME is set in the environment, use that.
   // Otherwise, if ${prefix} and ${exec_prefix} from configure are set
   // to the same value, use OCTAVE_HOME from the environment if it is set.
-  // Othewise, default to ${exec_prefix} from configure.
+  // Otherwise, default to ${exec_prefix} from configure.
 
   if (! oeh.empty ())
     Voctave_exec_home = oeh;

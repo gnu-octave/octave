@@ -304,7 +304,7 @@ namespace octave
       }
 #endif
 
-    // finaly show the menu
+    // finally show the menu
     context_menu->exec (global_pos);
 #endif
   }
@@ -498,7 +498,7 @@ namespace octave
     return ST_NONE;
   }
 
-  // Do smart indendation after if, for, ...
+  // Do smart indentation after if, for, ...
   void octave_qscintilla::smart_indent (bool do_smart_indent,
                                         int do_auto_close, int line)
   {
@@ -599,7 +599,7 @@ namespace octave
       }
   }
 
-  // Do smart indendation of current selection or line.
+  // Do smart indentation of current selection or line.
   void octave_qscintilla::smart_indent_line_or_selected_text (int lineFrom,
                                                               int lineTo)
   {

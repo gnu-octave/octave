@@ -558,7 +558,7 @@ namespace octave
       };
 
     // We don't care if mkdir fails.  Maybe it failed because it already
-    // exists, or maybe it can't bre created.  If the first, then there's
+    // exists, or maybe it can't be created.  If the first, then there's
     // nothing to do, if the later, then it will be handled later.  Any
     // is to be handled by not listing files in the output.
     sys::mkdir (out_dir, 0777);

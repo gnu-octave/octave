@@ -337,7 +337,7 @@ namespace octave
 
     QModelIndex index = m_view->indexAt (qpos);
 
-    // if it isnt Local, Glocal etc, allow the ctx menu
+    // if it isn't Local, Glocal etc, allow the ctx menu
     if (index.isValid () && index.column () == 0)
       {
         QString var_name = get_var_name (index);

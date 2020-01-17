@@ -584,6 +584,6 @@ rational_approx (T val, int len)
   return s;
 }
 
-// instanciate the template for float and double
+// instantiate the template for float and double
 template std::string rational_approx <float> (float val, int len);
 template std::string rational_approx <double> (double val, int len);

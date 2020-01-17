@@ -208,7 +208,7 @@ namespace octave
 
     // Add the time elapsed since last_time to the function we're currently in.
     // This is called from two different positions, thus it is useful to have
-    // it as a seperate function.
+    // it as a separate function.
     void add_current_time (void);
   };
 }

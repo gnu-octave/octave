@@ -1310,7 +1310,7 @@ namespace octave
     // Position after last character in buffer.
     char *eob;
 
-    // True if there is delimiter in the bufer after idx.
+    // True if there is delimiter in the buffer after idx.
     bool delimited;
 
     // Longest lookahead required.

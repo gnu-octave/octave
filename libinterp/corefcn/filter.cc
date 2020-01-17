@@ -50,7 +50,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   octave_idx_type ab_len = (a_len > b_len ? a_len : b_len);
 
-  // FIXME: The two lines below should be unecessary because
+  // FIXME: The two lines below should be unnecessary because
   //        this template is called with a and b as column vectors
   //        already.  However the a.resize line is currently (2011/04/26)
   //        necessary to stop bug #33164.

@@ -2679,7 +2679,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
             break;
         }
 
-      // Don't skip any initial aguments if they are all empty.
+      // Don't skip any initial arguments if they are all empty.
       if (istart >= n)
         istart = 0;
     }

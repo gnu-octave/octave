@@ -1663,7 +1663,7 @@ namespace octave
       return FloatComplex (ret.real (), ret.imag ());
     }
 
-    // The algorthim for erfcinv is an adaptation of the erfinv algorithm
+    // The algorithm for erfcinv is an adaptation of the erfinv algorithm
     // above from P. J. Acklam.  It has been modified to run over the
     // different input domain of erfcinv.  See the notes for erfinv for an
     // explanation.

@@ -72,7 +72,7 @@ skip_until_newline (std::istream& is, bool keep_newline)
         }
       else
         {
-          // No newline charater peeked, so read it and proceed to next
+          // No newline character peeked, so read it and proceed to next
           // character.
           char d;
           is.get (d);
@@ -118,7 +118,7 @@ skip_preceeding_newline (std::istream& is)
     }
 }
 
-// Read charaters from stream IS until a newline is reached.
+// Read characters from stream IS until a newline is reached.
 // Depending on KEEP_NEWLINE, either eat newline from stream or keep
 // it unread.  Characters read are stored and returned as
 // std::string.
@@ -161,7 +161,7 @@ read_until_newline (std::istream& is, bool keep_newline)
         }
       else
         {
-          // No newline charater peeked, so read it, store it, and
+          // No newline character peeked, so read it, store it, and
           // proceed to next.
           char d;
           is.get (d);

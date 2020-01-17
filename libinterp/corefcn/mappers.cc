@@ -522,7 +522,7 @@ ceil ([-2.7, 2.7])
 ## double precision
 %!assert (ceil ([2, 1.1, -1.1, -1]), [2, 2, -1, -1])
 
-## complex double precison
+## complex double precision
 %!assert (ceil ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i]), [2+2i, 2+2i, -1-i, -1-i])
 
 ## single precision

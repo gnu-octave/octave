@@ -308,7 +308,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %left '(' '.' '{'
 
 // How to clean up if there is a parse error.  We handle deleting tokens
-// and comments seperately and separators are just characters.  The
+// and comments separately and separators are just characters.  The
 // remaining items are dynamically allocated parse tree objects that
 // must be deleted.  Use the wildcard case (<*>) to detect unhandled
 // cases (for example, a new semantic type is added but not handled
@@ -975,9 +975,9 @@ command         : declaration
                   { $$ = $1; }
                 ;
 
-// =====================
-// Declaration statemnts
-// =====================
+// ======================
+// Declaration statements
+// ======================
 
 declaration     : GLOBAL decl1
                   {
@@ -2228,7 +2228,7 @@ namespace octave
     m_parser_state = yypstate_new ();
   }
 
-  // Error mesages for mismatched end tokens.
+  // Error messages for mismatched end tokens.
 
   static std::string
   end_token_as_string (token::end_tok_type ettype)

@@ -517,11 +517,11 @@ and width and height of the figure.  \
         s.valid = valid_4elvec;
 
       case "renderer"
-        s.doc = "Renderering engine used for printing when @code{renderermode} \
+        s.doc = "Rendering engine used for printing when @code{renderermode} \
 is \"manual\".  __modemsg__.";
 
       case "renderermode"
-        s.doc = "Control whether the renderering engine used for printing is \
+        s.doc = "Control whether the rendering engine used for printing is \
 chosen automatically or specified by the @code{renderer} property.  \
 @xref{XREFprint, , @w{print function}}.";
 

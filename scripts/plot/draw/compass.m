@@ -87,7 +87,7 @@ function h = compass (varargin)
     endif
   endif
 
-  ## Matlab draws compass plots with the arrow head as one continous line,
+  ## Matlab draws compass plots with the arrow head as one continuous line,
   ## and each arrow separately.  This is completely different from quiver
   ## and quite ugly.
   n = length (u);

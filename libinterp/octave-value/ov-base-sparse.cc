@@ -59,7 +59,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
   octave_idx_type n_idx = idx.length ();
 
   // If we catch an indexing error in index_vector, we flag an error in
-  // index k.  Ensure it is the right value befor each idx_vector call.
+  // index k.  Ensure it is the right value before each idx_vector call.
   // Same variable as used in the for loop in the default case.
 
   octave_idx_type k = 0;
@@ -186,7 +186,7 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
   octave_idx_type len = idx.length ();
 
   // If we catch an indexing error in index_vector, we flag an error in
-  // index k.  Ensure it is the right value befor each idx_vector call.
+  // index k.  Ensure it is the right value before each idx_vector call.
   // Same variable as used in the for loop in the default case.
 
   octave_idx_type k = 0;
@@ -238,7 +238,7 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
   octave_idx_type len = idx.length ();
 
   // If we catch an indexing error in index_vector, we flag an error in
-  // index k.  Ensure it is the right value befor each idx_vector call.
+  // index k.  Ensure it is the right value before each idx_vector call.
   // Same variable as used in the for loop in the default case.
 
   octave_idx_type k = 0;

@@ -847,7 +847,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         if (! is)
           goto data_read_error;
 
-        // Octave can handle both "/" and "\" as a directory seperator
+        // Octave can handle both "/" and "\" as a directory separator
         // and so can ignore the separator field of m0.  I think the
         // sentinel field is also save to ignore.
         octave_scalar_map m0 = tc2.scalar_map_value ();

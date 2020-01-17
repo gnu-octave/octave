@@ -94,7 +94,7 @@ namespace octave
      *  not have any return values
      * @param Ff Pointer to the builtin function
      * @param argin Input parameters for Ff as octave value list (default empty)
-     * @param update A memeber of cmd_upd for possibly required updates after
+     * @param update A member of cmd_upd for possibly required updates after
      *               the executing Ff
      */
     octave_cmd_builtin (

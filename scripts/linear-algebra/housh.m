@@ -67,7 +67,7 @@ function [housv, beta, zer] = housh (x, j, z)
   if (! isvector (x) && ! isscalar (x))
     error ("housh: first input must be a vector");
   elseif (! isscalar (j))
-    error ("housh: second argment must be an integer scalar");
+    error ("housh: second argument must be an integer scalar");
   else
     housv = x;
     m = max (abs (housv));

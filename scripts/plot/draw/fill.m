@@ -181,7 +181,7 @@ function retval = iscolorspec (arg)
     endif
   elseif (isnumeric (arg))
     ## Assume any numeric argument is correctly formatted cdata.
-    ## Let patch worry about the multple different input formats.
+    ## Let patch worry about the multiple different input formats.
     retval = true;
   endif
 

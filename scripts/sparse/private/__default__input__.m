@@ -34,7 +34,7 @@
 ##
 ## @itemize @minus
 ## @item @var{varargout} all the input argument with filled the empty
-## or missing paramenters.
+## or missing parameters.
 ##
 ## @end itemize
 ##

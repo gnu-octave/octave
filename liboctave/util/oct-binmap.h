@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bsxfun.h"
 
-// This source file implements a general binary maping function for arrays.
+// This source file implements a general binary mapping function for arrays.
 // The syntax is binmap<type> (a, b, f,[name]).
 // type denotes the expected return type of the operation.
 // a, b, should be one of the 6 combinations:

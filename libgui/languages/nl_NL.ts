@@ -538,92 +538,92 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location filename="../../../octave-qt/qplatformtheme.cpp" line="+710"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Save</source>
-        <translation type="unfinished">Bewaar</translation>
+        <translation>Bewaar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Save All</source>
-        <translation type="unfinished">Bewaar alles</translation>
+        <translation>Bewaar alles</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open</source>
-        <translation type="unfinished">Open</translation>
+        <translation>Open</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Yes to &amp;All</source>
-        <translation type="unfinished">Ja op &amp;Alles</translation>
+        <translation>Ja op &amp;Alles</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Nee</translation>
+        <translation>&amp;Nee</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>N&amp;o to All</source>
-        <translation type="unfinished">Nee &amp;op alles</translation>
+        <translation>Nee &amp;op alles</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Abort</source>
-        <translation type="unfinished">Afbreken</translation>
+        <translation>Afbreken</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Retry</source>
-        <translation type="unfinished">Opnieuw</translation>
+        <translation>Opnieuw</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Ignore</source>
-        <translation type="unfinished">Negeren</translation>
+        <translation>Negeren</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Close</source>
-        <translation type="unfinished">Sluiten</translation>
+        <translation>Sluiten</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
+        <translation>Annuleren</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Discard</source>
-        <translation type="unfinished">Vergeet</translation>
+        <translation>Vergeet</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Hulp</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Apply</source>
-        <translation type="unfinished">Toepassen</translation>
+        <translation>Toepassen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Reset</source>
-        <translation type="unfinished">Reset</translation>
+        <translation>Reset</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished">Herstellen</translation>
+        <translation>Herstellen</translation>
     </message>
 </context>
 <context>
@@ -1454,72 +1454,72 @@ Wil je die overschrijven?</translation>
     <message>
         <location line="+3"/>
         <source>Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Vala tekst tussen driedubbele aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactieve Vala tekst tussen driedubbele aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Pike tekst tussen hashtekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactieve Pike tekst tussen hashtekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre-processor C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Pre-processor C-commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactief pre-processor C-commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style pre-processor comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Javadoc-stijl preprocessor-commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style pre-processor comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactief Javadoc-stijl preprocessor-commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>User-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation>Door gebruiker gedefineerde tekst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive user-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactieve door gebruiker gedefineerde tekst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Task marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Taakmarkering</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive task marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactieve taakmarkering</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Stuurcode</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactieve stuurcoe</translation>
     </message>
 </context>
 <context>
@@ -1567,22 +1567,22 @@ Wil je die overschrijven?</translation>
     <message>
         <location line="+3"/>
         <source>Added adding patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Toegevoegde uitbreidingspatch</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed adding patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderde uitbreidingspatch</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added removing patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Toegevoegde verwijderpatch</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed removing patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijdere verwijderpatch</translation>
     </message>
 </context>
 <context>
@@ -3513,7 +3513,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+16"/>
         <source>Set search directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Stel zoekmap in</translation>
     </message>
 </context>
 <context>
@@ -4362,82 +4362,82 @@ De Octave GUI moet nu gesloten worden.</translation>
     <message>
         <location filename="../src/gui-preferences-ed.h" line="+198"/>
         <source>Top</source>
-        <translation type="unfinished">Bovenaan</translation>
+        <translation>Bovenaan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom</source>
-        <translation type="unfinished">Onderaan</translation>
+        <translation>Onderaan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left</source>
-        <translation type="unfinished">Links</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Right</source>
-        <translation type="unfinished">Rechts</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-cs.h" line="+68"/>
         <source>foreground</source>
-        <translation type="unfinished">voorgrond</translation>
+        <translation>voorgrond</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>background</source>
-        <translation type="unfinished">achtergrond</translation>
+        <translation>achtergrond</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>selection</source>
-        <translation type="unfinished">selectie</translation>
+        <translation>selectie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>cursor</source>
-        <translation type="unfinished">aanwijzer</translation>
+        <translation>aanwijzer</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ve.h" line="+67"/>
         <source>Foreground</source>
-        <translation type="unfinished">Voorgrond</translation>
+        <translation>Voorgrond</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation type="unfinished">Achtergrond</translation>
+        <translation>Achtergrond</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished">Gekozen Voorgrond</translation>
+        <translation>Gekozen Voorgrond</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished">Gekozen achtergrond</translation>
+        <translation>Gekozen achtergrond</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished">Andere Achtergrond</translation>
+        <translation>Andere Achtergrond</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ws.h" line="+85"/>
         <source>argument</source>
-        <translation type="unfinished">argument</translation>
+        <translation>argument</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>global</source>
-        <translation type="unfinished">globaal</translation>
+        <translation>globaal</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>persistant</source>
-        <translation type="unfinished">blijvend</translation>
+        <translation>blijvend</translation>
     </message>
 </context>
 <context>
@@ -4523,12 +4523,12 @@ Wil je de sneltoets toch instellen door hem van de vorige ingestelde actie te wi
     <message>
         <location line="-6"/>
         <source>Undock/Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Undock/Dock widget</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Sluit widget</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -5042,7 +5042,7 @@ Wil je de sneltoets toch instellen door hem van de vorige ingestelde actie te wi
     <message>
         <location line="+111"/>
         <source>Handling of Dock Widgets</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik van Dock widgets</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -5569,22 +5569,22 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location filename="../src/gui-preferences-ws.h" line="-29"/>
         <source>Class</source>
-        <translation type="unfinished">Klasse</translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dimension</source>
-        <translation type="unfinished">Dimensie</translation>
+        <translation>Dimensie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished">Waarde</translation>
+        <translation>Waarde</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Attribute</source>
-        <translation type="unfinished">Eigenschap</translation>
+        <translation>Eigenschap</translation>
     </message>
 </context>
 <context>

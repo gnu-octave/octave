@@ -245,14 +245,14 @@ endfunction
 ## tests from quadgk
 %!assert (integral (@sin,-pi,pi, "WayPoints",0, "AbsTol",1e-6, "RelTol",1e-3),
 %!        0, 1e-6)
-%!assert (integral (@(x) abs (1 - x.^2), 0, 2, "Waypoints", 1), 2, 1e-10);
-%!assert (integral (@(z) log (z),1+i,1+i, "WayPoints", [1-i, -1,-i, -1+i]),
-%!        -pi * 1i, 1e-10);
+%!assert (integral (@(x) abs (1 - x.^2), 0, 2, "Waypoints", 1), 2, 1e-10)
+%!assert (integral (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]),
+%!        complex (0, pi), 1e-10)
 
 ## tests from quadv
 ## Test vector-valued functions
 %!assert (integral (@(x) [(sin (x)), (sin (2*x))], 0, pi, "ArrayValued", 1),
-%!        [2, 0], 1e-10);
+%!        [2, 0], 1e-10)
 
 ## Test matrix-valued functions
 %!test

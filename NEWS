@@ -167,6 +167,9 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 - An undocumented function `gui_mainfcn` has been added, for compatibility
   with figures created with Matlab's GUIDE.
 
+- Several validator functions of type `mustBe*` have been added.  See
+  the list of new functions below.
+
 ### Alphabetical list of new functions added in Octave 6
 
 * `commandhistory`
@@ -174,6 +177,24 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 * `filebrowser`
 * `is_same_file`
 * `lightangle`
+* `mustBeFinite`
+* `mustBeGreaterThan`
+* `mustBeGreaterThanOrEqual`
+* `mustBeInteger`
+* `mustBeLessThan`
+* `mustBeLessThanOrEqual`
+* `mustBeMember`
+* `mustBeNegative`
+* `mustBeNonempty`
+* `mustBeNonNan`
+* `mustBeNonnegative`
+* `mustBeNonpositive`
+* `mustBeNonsparse`
+* `mustBeNonzero`
+* `mustBeNumeric`
+* `mustBeNumericOrLogical`
+* `mustBePositive`
+* `mustBeReal`
 * `namedargs2cell`
 * `newline`
 * `rescale`

@@ -52,6 +52,24 @@ FCN_FILE_DIRS += \
   %reldir%/mkdir.m \
   %reldir%/mkoctfile.m \
   %reldir%/movefile.m \
+  %reldir%/mustBeFinite.m \
+  %reldir%/mustBeGreaterThan.m \
+  %reldir%/mustBeGreaterThanOrEqual.m \
+  %reldir%/mustBeInteger.m \
+  %reldir%/mustBeLessThan.m \
+  %reldir%/mustBeLessThanOrEqual.m \
+  %reldir%/mustBeMember.m \
+  %reldir%/mustBeNegative.m \
+  %reldir%/mustBeNonempty.m \
+  %reldir%/mustBeNonNan.m \
+  %reldir%/mustBeNonnegative.m \
+  %reldir%/mustBeNonpositive.m \
+  %reldir%/mustBeNonsparse.m \
+  %reldir%/mustBeNonzero.m \
+  %reldir%/mustBeNumeric.m \
+  %reldir%/mustBeNumericOrLogical.m \
+  %reldir%/mustBePositive.m \
+  %reldir%/mustBeReal.m \
   %reldir%/namedargs2cell.m \
   %reldir%/namelengthmax.m \
   %reldir%/nargchk.m \

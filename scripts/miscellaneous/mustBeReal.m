@@ -42,3 +42,15 @@ function x = mustBeReal (x)
     error ("%s must be real; got a complex value", label);
   endif
 endfunction
+
+%!test
+%! mustBeReal ([])
+%! mustBeReal (42)
+%! mustBeReal (Inf)
+%! mustBeReal (NaN)
+%! mustBeReal (1:100)
+%! mustBeReal (int32(42))
+
+%!error mustBeReal ()
+%!error mustBeReal (i)
+%!error mustBeReal (2 + i)

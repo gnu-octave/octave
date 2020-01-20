@@ -55,3 +55,13 @@ function x = mustBeGreaterThanOrEqual (x, c)
     error (errmsg);
   endif
 endfunction
+
+%!test
+%! mustBeGreaterThanOrEqual (42, 0)
+%! mustBeGreaterThanOrEqual (Inf, 9999)
+%! mustBeGreaterThanOrEqual (42, 42)
+%! mustBeGreaterThanOrEqual (Inf, Inf)
+
+%!error mustBeGreaterThanOrEqual ()
+%!error mustBeGreaterThanOrEqual (42)
+%!error mustBeGreaterThanOrEqual (NaN, 0)

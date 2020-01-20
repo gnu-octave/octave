@@ -42,3 +42,14 @@ function x = mustBeNonempty (x)
     error ("%s must be nonempty; got an empty", label);
   endif
 endfunction
+
+%!test
+%! mustBeNonempty (42)
+%! mustBeNonempty ('Hello')
+%! mustBeNonempty (Inf)
+%! mustBeNonempty (NaN)
+
+%!error mustBeNonempty ()
+%!error mustBeNonempty ([])
+%!error mustBeNonempty ('')
+%!error mustBeNonempty (reshape([], [0 3 3 3]))

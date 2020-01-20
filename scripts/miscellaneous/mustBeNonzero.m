@@ -33,6 +33,10 @@
 ##
 ## @end deftypefn
 
+# TODO: Should NaN be considered nonzero? It fits the formal definition above,
+# but that may not be the spirit of the test. And it's not equal to any non-zero
+# value.
+
 function x = mustBeNonzero (x)
   tf = x != 0;
   tf = tf(:);
@@ -48,3 +52,16 @@ function x = mustBeNonzero (x)
     error (errmsg);
   endif
 endfunction
+
+%!test
+%! mustBeNonzero (1)
+%! mustBeNonzero (-1)
+%! mustBeNonzero ([-5:-1 1:5])
+%! mustBeNonzero (Inf)
+%! mustBeNonzero (-Inf)
+%! mustBeNonzero (NaN)
+%! mustBeNonzero (eps)
+
+%!error mustBeNonzero ()
+%!error mustBeNonzero (0)
+%!error mustBeNonzero (-10:10)

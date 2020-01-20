@@ -45,3 +45,14 @@ function x = mustBeFinite (x)
       label, numel (ix_bad), mat2str (ix_bad));
   endif
 endfunction
+
+%!test
+%! mustBeFinite ([]);
+%! mustBeFinite (42);
+%! mustBeFinite (-100:.1:100);
+%! mustBeFinite (int32(42))
+
+%!error mustBeFinite ();
+%!error mustBeFinite (Inf);
+%!error mustBeFinite ([1 2 3 Inf]);
+%!error mustBeFinite ([-Inf -1 0 1]);

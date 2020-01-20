@@ -55,3 +55,16 @@ function x = mustBeLessThanOrEqual (x, c)
     error (errmsg);
   endif
 endfunction
+
+
+%!test
+%! mustBeLessThanOrEqual (0, 1)
+%! mustBeLessThanOrEqual (-Inf, 42)
+%! mustBeLessThanOrEqual (42, Inf)
+%! mustBeLessThanOrEqual (1:41, 42)
+%! mustBeLessThanOrEqual (1:42, 42)
+%! mustBeLessThanOrEqual (1, 1)
+%! mustBeLessThanOrEqual (Inf, Inf)
+
+%!error mustBeLessThanOrEqual ()
+%!error mustBeLessThanOrEqual (1, 0)

@@ -55,3 +55,12 @@ function x = mustBeNegative (x)
     error (errmsg);
   endif
 endfunction
+
+%!test
+%! mustBeNegative (-42)
+%! mustBeNegative ([])
+%! mustBeNegative (-10:-2)
+
+%!error mustBeNegative ()
+%!error mustBeNegative (42)
+%!error mustBeNegative (-5:5)

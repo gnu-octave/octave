@@ -55,3 +55,14 @@ function x = mustBeNonpositive (x)
     error (errmsg);
   endif
 endfunction
+
+%!test
+%! mustBeNonpositive (0)
+%! mustBeNonpositive (-1)
+%! mustBeNonpositive (-5:-1)
+%! mustBeNonpositive (-Inf)
+
+%!error mustBeNonpositive ()
+%!error mustBeNonpositive (NaN)
+%!error mustBeNonpositive (1)
+%!error mustBeNonpositive (-10:1)

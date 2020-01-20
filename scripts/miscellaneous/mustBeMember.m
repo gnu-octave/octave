@@ -52,3 +52,14 @@ function x = mustBeMember (x, valid)
       label, n_bad);
   endif
 endfunction
+
+%!test
+%! mustBeMember (42, 38:50)
+%! mustBeMember ('foo', {'foo', 'bar', 'baz'})
+%! mustBeMember (38:42, 37:43)
+%! mustBeMember ({'foo','bar'}, {'foo', 'bar', 'baz'})
+
+%!error mustBeMember ()
+%!error mustBeMember (42)
+%!error mustBeMember (42, 1:5)
+%!error mustBeMember ('nope', {'foo', 'bar', 'baz'})

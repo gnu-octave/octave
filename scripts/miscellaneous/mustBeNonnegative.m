@@ -55,3 +55,17 @@ function x = mustBeNonnegative (x)
     error (errmsg);
   endif
 endfunction
+
+%!test
+%! mustBeNonnegative (0)
+%! mustBeNonnegative (1)
+%! mustBeNonnegative (123.456)
+%! mustBeNonnegative (Inf)
+%! mustBeNonnegative (0:10)
+%! mustBeNonnegative (eps)
+
+%!error mustBeNonnegative ()
+%!error mustBeNonnegative (-1)
+%!error mustBeNonnegative ([0 1 2 3 -4])
+%!error mustBeNonnegative (-Inf)
+%!error mustBeNonnegative (NaN)

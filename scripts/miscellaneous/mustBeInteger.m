@@ -56,3 +56,15 @@ function x = mustBeInteger (x)
     error ("%s must be integer-valued; but %s", label, but);
   endif
 endfunction
+
+%!test
+%! mustBeInteger ([])
+%! mustBeInteger (42)
+%! mustBeInteger (1:1000)
+%! mustBeInteger (int32(42))
+
+%!error mustBeInteger ()
+%!error mustBeInteger (1.23)
+%!error mustBeInteger ([1 2 3 4.4])
+%!error mustBeInteger (Inf)
+%!error mustBeInteger (NaN)

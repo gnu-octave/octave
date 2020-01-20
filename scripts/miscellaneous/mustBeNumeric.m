@@ -42,3 +42,15 @@ function x = mustBeNumeric (x)
     error ("%s must be numeric; got a %s", label, class (x));
   endif
 endfunction
+
+%!test
+%! mustBeNumeric ([])
+%! mustBeNumeric (42)
+%! mustBeNumeric (int32(42))
+%! mustBeNumeric (NaN)
+
+%!error mustBeNumeric ()
+%!error mustBeNumeric ('foo')
+%!error mustBeNumeric (struct)
+%!error mustBeNumeric ({})
+%!error mustBeNumeric (true)

@@ -42,3 +42,15 @@ function x = mustBeNumericOrLogical (x)
     error ("%s must be numeric or logical; got a %s", label, class (x));
   endif
 endfunction
+
+%!test
+%! mustBeNumericOrLogical ([])
+%! mustBeNumericOrLogical (true)
+%! mustBeNumericOrLogical (false)
+%! mustBeNumericOrLogical (42)
+%! mustBeNumericOrLogical (int32(42))
+
+%!error mustBeNumericOrLogical ()
+%!error mustBeNumericOrLogical ('foo')
+%!error mustBeNumericOrLogical ({})
+%!error mustBeNumericOrLogical (struct)

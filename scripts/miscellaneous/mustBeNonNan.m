@@ -48,3 +48,14 @@ function x = mustBeNonNan (x)
     error (errmsg);
   endif
 endfunction
+
+%!test
+%! mustBeNonNan (42)
+%! mustBeNonNan ('foo')
+%! mustBeNonNan (1:10)
+%! mustBeNonNan (Inf)
+%! mustBeNonNan (-Inf)
+
+%!error mustBeNonNan ()
+%!error mustBeNonNan (NaN)
+%!error mustBeNonNan ([1 2 3 NaN])

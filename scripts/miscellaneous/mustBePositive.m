@@ -55,3 +55,17 @@ function x = mustBePositive (x)
     error (errmsg);
   endif
 endfunction
+
+%!test
+%! mustBePositive (1)
+%! mustBePositive (123.456)
+%! mustBePositive (Inf)
+%! mustBePositive (eps)
+
+%!error mustBePositive ()
+%!error mustBePositive (0)
+%!error mustBePositive (0:10)
+%!error mustBePositive (-1)
+%!error mustBePositive ([0 1 2 3 -4])
+%!error mustBePositive (-Inf)
+%!error mustBePositive (NaN)

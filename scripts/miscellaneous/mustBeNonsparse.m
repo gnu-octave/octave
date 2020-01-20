@@ -42,3 +42,12 @@ function x = mustBeNonsparse (x)
     error ("%s must be nonsparse; got a sparse array", label);
   endif
 endfunction
+
+%!test
+%! mustBeNonsparse ([])
+%! mustBeNonsparse (42)
+%! mustBeNonsparse (1:100)
+%! mustBeNonsparse (Inf)
+
+%!error mustBeNonsparse (sparse(42))
+%!error mustBeNonsparse ()

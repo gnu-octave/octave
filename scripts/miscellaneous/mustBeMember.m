@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeMember (@var{x}, @var{valid})
+## @deftypefn {} {} mustBeMember (@var{x}, @var{valid})
 ##
 ## Requires that input @var{x} is a member of a set of given valid values.
 ##
@@ -37,7 +37,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeMember (x, valid)
+function mustBeMember (x, valid)
   tf = ismember (x, valid);
   if ! all (tf)
     label = inputname (1);

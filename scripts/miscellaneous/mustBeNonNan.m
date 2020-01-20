@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeNonNan (@var{x})
+## @deftypefn {} {} mustBeNonNan (@var{x})
 ##
 ## Requires that input @var{x} is non-NaN.
 ##
@@ -33,7 +33,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeNonNan (x)
+function mustBeNonNan (x)
   tf = ! isnan (x);
   tf = tf(:);
   if ! all (tf)

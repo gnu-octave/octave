@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeFinite (@var{x})
+## @deftypefn {} {} mustBeFinite (@var{x})
 ##
 ## Requires that input @var{x} is finite.
 ##
@@ -33,7 +33,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeFinite (x)
+function mustBeFinite (x)
   tf = isfinite (x);
   if ! all (tf)
     label = inputname (1);

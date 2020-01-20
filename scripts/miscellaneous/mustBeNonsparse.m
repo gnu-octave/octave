@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeNonsparse (@var{x})
+## @deftypefn {} {} mustBeNonsparse (@var{x})
 ##
 ## Requires that input @var{x} is not sparse.
 ##
@@ -33,7 +33,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeNonsparse (x)
+function mustBeNonsparse (x)
   if issparse (x)
     label = inputname (1);
     if isempty (label)

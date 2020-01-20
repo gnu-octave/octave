@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeNumeric (@var{x})
+## @deftypefn {} {} mustBeNumeric (@var{x})
 ##
 ## Requires that input @var{x} is numeric.
 ##
@@ -33,7 +33,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeNumeric (x)
+function mustBeNumeric (x)
   if ! isnumeric (x)
     label = inputname (1);
     if isempty (label)

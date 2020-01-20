@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeLessThanOrEqual (@var{x}, @var{c})
+## @deftypefn {} {} mustBeLessThanOrEqual (@var{x}, @var{c})
 ##
 ## Requires that input is less than or equal to a given value.
 ##
@@ -33,7 +33,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeLessThanOrEqual (x, c)
+function mustBeLessThanOrEqual (x, c)
   tf = x <= c;
   tf = tf(:);
   if ! all (tf)

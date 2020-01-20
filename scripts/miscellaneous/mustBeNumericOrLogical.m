@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeNumericOrLogical (@var{x})
+## @deftypefn {} {} mustBeNumericOrLogical (@var{x})
 ##
 ## Requires that input @var{x} is numeric or logical.
 ##
@@ -33,7 +33,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeNumericOrLogical (x)
+function mustBeNumericOrLogical (x)
   if ! (isnumeric (x) || islogical (x))
     label = inputname (1);
     if isempty (label)

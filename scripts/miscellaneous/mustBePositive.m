@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBePositive (@var{x})
+## @deftypefn {} {} mustBePositive (@var{x})
 ##
 ## Requires that input @var{x} is positive.
 ##
@@ -33,7 +33,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBePositive (x)
+function mustBePositive (x)
   tf = x > 0;
   tf = tf(:);
   if ! all (tf)

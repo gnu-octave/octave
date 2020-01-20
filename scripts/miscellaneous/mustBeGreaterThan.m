@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeGreaterThan (@var{x}, @var{c})
+## @deftypefn {} {} mustBeGreaterThan (@var{x}, @var{c})
 ##
 ## Requires that input @var{x} is greater than @var{c}.
 ##
@@ -33,7 +33,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeGreaterThan (x, c)
+function mustBeGreaterThan (x, c)
   tf = x > c;
   tf = tf(:);
   if ! all (tf)

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeReal (@var{x})
+## @deftypefn {} {} mustBeReal (@var{x})
 ##
 ## Requires that input @var{x} is real.
 ##
@@ -33,7 +33,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeReal (x)
+function mustBeReal (x)
   if ! isreal (x)
     label = inputname (1);
     if isempty (label)

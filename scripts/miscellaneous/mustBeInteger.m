@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeInteger (@var{x})
+## @deftypefn {} {} mustBeInteger (@var{x})
 ##
 ## Requires that input @var{x} is integer-valued (but not necessarily
 ## integer-typed).
@@ -34,7 +34,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeInteger (x)
+function mustBeInteger (x)
   if isinteger (x) || islogical (x)
     return
   endif

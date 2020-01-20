@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeNonempty (@var{x})
+## @deftypefn {} {} mustBeNonempty (@var{x})
 ##
 ## Requires that input @var{x} is nonempty.
 ##
@@ -33,7 +33,7 @@
 ##
 ## @end deftypefn
 
-function x = mustBeNonempty (x)
+function mustBeNonempty (x)
   if isempty (x)
     label = inputname (1);
     if isempty (label)

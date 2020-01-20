@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{x} =} mustBeNonzero (@var{x})
+## @deftypefn {} {} {mustBeNonzero (@var{x})
 ##
 ## Requires that input @var{x} is not zero.
 ##
@@ -37,7 +37,7 @@
 # but that may not be the spirit of the test. And it's not equal to any non-zero
 # value.
 
-function x = mustBeNonzero (x)
+function mustBeNonzero (x)
   tf = x != 0;
   tf = tf(:);
   if ! all (tf)

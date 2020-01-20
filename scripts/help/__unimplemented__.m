@@ -78,8 +78,8 @@ function txt = __unimplemented__ (fcn)
       txt = ["polarplot is not implemented.  Consider using polar."];
 
     case "startup"
-      txt = ["startup is not implemented.  ", ...
-             'Octave uses the file ".octaverc" instead.'];
+      txt = ["'startup.m' is a user startup and configuration script.  ", ...
+             "Try @code{doc startup} for more information."];
 
     case {"xlsread", "xlsfinfo", "xlswrite", "wk1read", "wk1finfo", "wk1write"}
       txt = ["Functions for spreadsheet style I/O ", ...

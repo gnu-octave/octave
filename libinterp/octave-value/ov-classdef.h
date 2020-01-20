@@ -48,7 +48,7 @@ namespace octave
   class type_info;
 }
 
-// This is mainly a boostrap class to declare the expected interface.
+// This is mainly a bootstrap class to declare the expected interface.
 // The actual base class is cdef_class_base, which is declared after
 // cdef_object, such that it can contain cdef_object objects.
 class
@@ -893,7 +893,7 @@ public:
   //! Classdef attribute values can be given in the form of
   //! expressions.  These expressions must be evaluated before
   //! assigning them as attribute values.  Evaluating them as they are
-  //! parsed causes trouble with possible recusion in the parser so we
+  //! parsed causes trouble with possible recursion in the parser so we
   //! do it here.  For example
   //!
   //! @code

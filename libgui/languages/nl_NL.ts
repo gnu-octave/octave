@@ -6,7 +6,7 @@
     <message>
         <location filename="../../../octave-qt/qcolordialog.cpp" line="+1378"/>
         <source>Hu&amp;e:</source>
-        <translation>Tint:</translation>
+        <translation>&amp;Tint:</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -16,7 +16,7 @@
     <message>
         <location line="+1"/>
         <source>&amp;Val:</source>
-        <translation>Waarde:</translation>
+        <translation>&amp;Waarde:</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -51,7 +51,7 @@
     <message>
         <location line="+1"/>
         <source>&amp;Custom colors</source>
-        <translation>Aangepaste kleuren</translation>
+        <translation>&amp;Aangepaste kleuren</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -101,7 +101,7 @@
     <message>
         <location line="+208"/>
         <source>&amp;Show this message again</source>
-        <translation>Toon deze melding opnieuw</translation>
+        <translation>&amp;Toon deze melding opnieuw</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -151,7 +151,7 @@
     <message>
         <location line="+1"/>
         <source>Show &amp;hidden files</source>
-        <translation>Toon verborgen bestanden</translation>
+        <translation>Toon &amp;verborgen bestanden</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -181,7 +181,7 @@
         <location line="-1637"/>
         <location line="+55"/>
         <source>&amp;Save</source>
-        <translation>Bewaar</translation>
+        <translation>&amp;Bewaar</translation>
     </message>
     <message>
         <location line="-52"/>
@@ -192,7 +192,7 @@
         <location line="+7"/>
         <location line="+43"/>
         <source>&amp;Choose</source>
-        <translation>Kies</translation>
+        <translation>&amp;Kies</translation>
     </message>
     <message>
         <location line="+789"/>
@@ -328,17 +328,17 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+585"/>
         <source>&amp;Font</source>
-        <translation>Lettertype</translation>
+        <translation>Letter&amp;type</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Font st&amp;yle</source>
-        <translation>Letter stijl</translation>
+        <translation>Letter &amp;stijl</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Size</source>
-        <translation>Grootte</translation>
+        <translation>&amp;Grootte</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -348,12 +348,12 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+2"/>
         <source>Stri&amp;keout</source>
-        <translation>Doorhalen</translation>
+        <translation>Door&amp;halen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Underline</source>
-        <translation>Onderstrepen</translation>
+        <translation>&amp;Onderstrepen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -363,7 +363,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+1"/>
         <source>Wr&amp;iting System</source>
-        <translation>Schrijfsysteem</translation>
+        <translation>&amp;Schrijfsysteem</translation>
     </message>
 </context>
 <context>
@@ -558,7 +558,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation>Ja</translation>
+        <translation>&amp;Ja</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -979,7 +979,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="-63"/>
         <source>&amp;Print</source>
-        <translation>Druk af</translation>
+        <translation>&amp;Druk af</translation>
     </message>
     <message>
         <location line="+67"/>
@@ -1846,7 +1846,7 @@ Wil je die overschrijven?</translation>
     <message>
         <location filename="../../../qsci/qsciscintilla.cpp" line="+4475"/>
         <source>&amp;Undo</source>
-        <translation>Ongedaan maken</translation>
+        <translation>&amp;Ongedaan maken</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1856,12 +1856,12 @@ Wil je die overschrijven?</translation>
     <message>
         <location line="+6"/>
         <source>Cu&amp;t</source>
-        <translation>Knippen</translation>
+        <translation>Kni&amp;ppen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Copy</source>
-        <translation>Kopiëren</translation>
+        <translation>&amp;Kopiëren</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2095,7 +2095,7 @@ documentation viewer. Only help texts in
 the Command Window will be available.</source>
         <translation>Kon de gegevens voor de
 documentatielezer niet instellen. Er is alleen helptekst in
-het Opdrachtvenster beschikbaar</translation>
+het Opdrachtvenster beschikbaar.</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2315,7 +2315,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+233"/>
         <source>&amp;File</source>
-        <translation>Bestand</translation>
+        <translation>&amp;Bestand</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2325,7 +2325,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+9"/>
         <source>&amp;Edit Function</source>
-        <translation>Pas Functie Aan</translation>
+        <translation>&amp;Pas Functie Aan</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2340,7 +2340,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+7"/>
         <source>&amp;Close</source>
-        <translation>Sluit bestand</translation>
+        <translation>&amp;Sluit bestand</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2370,12 +2370,12 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+7"/>
         <source>Cu&amp;t</source>
-        <translation>Knippen</translation>
+        <translation>Kni&amp;ppen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Find and Replace...</source>
-        <translation>Zoek en Vervang...</translation>
+        <translation>&amp;Zoek en Vervang...</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2385,12 +2385,12 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+4"/>
         <source>Find &amp;Previous...</source>
-        <translation>Zoek Vorige...</translation>
+        <translation>Zoek &amp;Vorige...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Commands</source>
-        <translation>Opdrachten</translation>
+        <translation>&amp;Opdrachten</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2440,7 +2440,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+6"/>
         <source>&amp;Show Completion List</source>
-        <translation>Toon aanvullijst</translation>
+        <translation>&amp;Toon aanvullijst</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2450,7 +2450,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+3"/>
         <source>&amp;Uppercase Selection</source>
-        <translation>Hoofdletters</translation>
+        <translation>&amp;Hoofdletters</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2465,7 +2465,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+4"/>
         <source>&amp;Uncomment</source>
-        <translation>Zet om naar code</translation>
+        <translation>Zet om &amp;naar code</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2475,12 +2475,12 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+6"/>
         <source>&amp;Indent Selection Rigidly</source>
-        <translation>Laat selectie inspringen</translation>
+        <translation>Laat selectie &amp;inspringen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Unindent Selection Rigidly</source>
-        <translation>Laat selectie terug inspringen</translation>
+        <translation>Laat selectie &amp;terug inspringen</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2505,12 +2505,12 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+3"/>
         <source>Navi&amp;gation</source>
-        <translation>Navigeer</translation>
+        <translation>Navi&amp;geer</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Go &amp;to Line...</source>
-        <translation>Ga naar regel...</translation>
+        <translation>Ga naar &amp;regel...</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2545,7 +2545,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+7"/>
         <source>&amp;Preferences...</source>
-        <translation>Voorkeuren...</translation>
+        <translation>&amp;Voorkeuren...</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2555,7 +2555,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+5"/>
         <source>&amp;View</source>
-        <translation>Weergave</translation>
+        <translation>&amp;Weergave</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2575,7 +2575,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Show Line &amp;Endings</source>
-        <translation>Toon regeleindes</translation>
+        <translation>Toon &amp;regeleindes</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2605,12 +2605,12 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+7"/>
         <source>Zoom &amp;In</source>
-        <translation>Inzoomen</translation>
+        <translation>&amp;Inzoomen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Zoom &amp;Out</source>
-        <translation>Uitzoomen</translation>
+        <translation>&amp;Uitzoomen</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2620,7 +2620,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+5"/>
         <source>&amp;Sort Tabs Alphabetically</source>
-        <translation>Tabs alfabetisch sorteren</translation>
+        <translation>Tabs alfabetisch &amp;sorteren</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2670,7 +2670,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Run &amp;Selection</source>
-        <translation>Geselecteerde tekst uitvoeren</translation>
+        <translation>Geselecteerde tekst &amp;uitvoeren</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2728,7 +2728,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+56"/>
         <source>ERROR: </source>
-        <translation>FOUT</translation>
+        <translation>FOUT: </translation>
     </message>
     <message>
         <location line="+61"/>
@@ -2769,7 +2769,8 @@ Opslaan en onderbrekingspunt toevoegen, of Terug?</translation>
         <location line="+1"/>
         <source>Comment string to use:
 </source>
-        <translation>Te gebruiken commentaar string</translation>
+        <translation>Te gebruiken commentaar string:
+</translation>
     </message>
     <message>
         <location line="+136"/>
@@ -2806,7 +2807,9 @@ Modifying and saving the file might cause data loss!</source>
 
   %1
  
- met de gekozen codering %2.</translation>
+ met de gekozen codering %2
+
+Het wijzigen en opslaan van het bestand kan leiden tot gegevensverlies!</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2840,7 +2843,8 @@ This does not change the default encoding.
         <translation>Kies een andere codering
 om het bestand opnieuw mee te lezen.
 
-Dit heeft geen invloed op de standaard codering.</translation>
+Dit heeft geen invloed op de standaard codering.
+</translation>
     </message>
     <message>
         <location line="+161"/>
@@ -3039,7 +3043,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     <message>
         <location line="-354"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation>Dubbelklik om map te openen, rechts-klik voor andere opties </translation>
+        <translation>Dubbelklik om map te openen, rechts-klik voor andere opties</translation>
     </message>
     <message>
         <location line="+291"/>
@@ -3260,7 +3264,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Find &amp;what:</source>
-        <translation>Zoek naar:</translation>
+        <translation>Zoek &amp;naar:</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3270,7 +3274,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+6"/>
         <source>Re&amp;place with:</source>
-        <translation>Vervang door:</translation>
+        <translation>Vervang &amp;door:</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3280,27 +3284,27 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+10"/>
         <source>Match &amp;case</source>
-        <translation>Hoofdlettergevoelig</translation>
+        <translation>&amp;Hoofdlettergevoelig</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search from &amp;start</source>
-        <translation>Zoek vanaf het begin</translation>
+        <translation>Zoek vanaf het &amp;begin</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Wrap while searching</source>
-        <translation>Na bestandseinde doorgaan aan begin</translation>
+        <translation>Na bestandseinde &amp;doorgaan aan begin</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Find Next</source>
-        <translation>Volgende zoeken</translation>
+        <translation>&amp;Volgende zoeken</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find &amp;Previous</source>
-        <translation>Vorige zoeken</translation>
+        <translation>Vori&amp;ge zoeken</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3330,7 +3334,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>Search &amp;backward</source>
-        <translation>Terug zoeken</translation>
+        <translation>&amp;Terug zoeken</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3717,7 +3721,7 @@ functie en kan niet worden bewerkt.</translation>
     <message>
         <location line="+911"/>
         <source>&amp;File</source>
-        <translation>Bestand</translation>
+        <translation>&amp;Bestand</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3857,7 +3861,7 @@ functie en kan niet worden bewerkt.</translation>
     <message>
         <location line="+49"/>
         <source>&amp;Window</source>
-        <translation>Venster</translation>
+        <translation>&amp;Venster</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4315,7 +4319,7 @@ De Octave GUI moet nu gesloten worden.</translation>
     <message>
         <location line="+1"/>
         <source>Unable to save preferences.  Missing preferences file or unknown directory.</source>
-        <translation>Kon voorkeuren niet bewaren.  Voorkeurenbestand ontbreekt of onbekende map</translation>
+        <translation>Kon voorkeuren niet bewaren.  Voorkeurenbestand ontbreekt of onbekende map.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -5311,7 +5315,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+1"/>
         <source>Edit variables.</source>
-        <translation>Variabelen bewerken</translation>
+        <translation>Variabelen bewerken.</translation>
     </message>
     <message>
         <location line="+532"/>
@@ -5434,22 +5438,22 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+50"/>
         <source> columns</source>
-        <translation>kolommen</translation>
+        <translation> kolommen</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> column</source>
-        <translation>kolom</translation>
+        <translation> kolom</translation>
     </message>
     <message>
         <location line="+47"/>
         <source> rows</source>
-        <translation>rijen</translation>
+        <translation> rijen</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> row</source>
-        <translation>rij</translation>
+        <translation> rij</translation>
     </message>
 </context>
 <context>

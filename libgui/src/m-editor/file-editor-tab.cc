@@ -1885,24 +1885,6 @@ namespace octave
 
     m_edit_area->setCursorPosition (line, col);
 
-    // FIXME: (BREAKPOINTS) At this point it would be nice to put any set
-    // breakpoints on the margin.  In order to do this, somehow the
-    // "dbstatus" command needs to be accessed.  All it would require is a
-    // routine that does "res = feval ("dbstatus") and signals that result
-    // to some slot.
-    //
-    // See patch #8016 for a general way to get Octave results from
-    // commands processed in the background.
-
-    /*
-      connect (event_manager, SIGNAL (fileSelected (QObject *, const QString&, const octave_value_list&)),
-      this, SLOT (handle_feval_result (QObject *, const QString&, const octave_value_list&)));
-      connect (this, SIGNAL (evaluate_octave_command (const QString&)),
-      event_manager, SLOT (queue_octave_command (const QString&)));
-
-      emit evaluate_octave_command ("dbstatus");
-    */
-
     return QString ();
   }
 

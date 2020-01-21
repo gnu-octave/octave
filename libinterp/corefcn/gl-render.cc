@@ -324,7 +324,7 @@ namespace octave
   }
 
   class
-  opengl_tesselator
+  opengl_tessellator
   {
   public:
 #if defined (HAVE_FRAMEWORK_OPENGL) && defined (HAVE_GLUTESSCALLBACK_THREEDOTS)
@@ -335,15 +335,15 @@ namespace octave
 
   public:
 
-    opengl_tesselator (void) : glu_tess (nullptr), fill () { init (); }
+    opengl_tessellator (void) : glu_tess (nullptr), fill () { init (); }
 
     // No copying!
 
-    opengl_tesselator (const opengl_tesselator&) = delete;
+    opengl_tessellator (const opengl_tessellator&) = delete;
 
-    opengl_tesselator operator = (const opengl_tesselator&) = delete;
+    opengl_tessellator operator = (const opengl_tessellator&) = delete;
 
-    virtual ~opengl_tesselator (void)
+    virtual ~opengl_tessellator (void)
     { if (glu_tess) gluDeleteTess (glu_tess); }
 
     void begin_polygon (bool filled = true)
@@ -379,7 +379,7 @@ namespace octave
     virtual void edge_flag (GLboolean /*flag*/) { }
 
     virtual void error (GLenum err)
-    { ::error ("OpenGL tesselation error (%d)", err); }
+    { ::error ("OpenGL tessellation error (%d)", err); }
 
     virtual void init (void)
     {
@@ -403,23 +403,23 @@ namespace octave
 
   private:
     static void CALLBACK tess_begin (GLenum type, void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->begin (type); }
+    { reinterpret_cast<opengl_tessellator *> (t)->begin (type); }
 
     static void CALLBACK tess_end (void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->end (); }
+    { reinterpret_cast<opengl_tessellator *> (t)->end (); }
 
     static void CALLBACK tess_vertex (void *v, void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->vertex (v); }
+    { reinterpret_cast<opengl_tessellator *> (t)->vertex (v); }
 
     static void CALLBACK tess_combine (GLdouble c[3], void *v[4], GLfloat w[4],
                                        void **out,  void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->combine (c, v, w, out); }
+    { reinterpret_cast<opengl_tessellator *> (t)->combine (c, v, w, out); }
 
     static void CALLBACK tess_edge_flag (GLboolean flag, void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->edge_flag (flag); }
+    { reinterpret_cast<opengl_tessellator *> (t)->edge_flag (flag); }
 
     static void CALLBACK tess_error (GLenum err, void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->error (err); }
+    { reinterpret_cast<opengl_tessellator *> (t)->error (err); }
 
   private:
 
@@ -511,11 +511,11 @@ namespace octave
   };
 
   class
-  opengl_renderer::patch_tesselator : public opengl_tesselator
+  opengl_renderer::patch_tessellator : public opengl_tessellator
   {
   public:
-    patch_tesselator (opengl_renderer *r, int cmode, int lmode, float idx = 0.0)
-      : opengl_tesselator (), renderer (r),
+    patch_tessellator (opengl_renderer *r, int cmode, int lmode, float idx = 0.0)
+      : opengl_tessellator (), renderer (r),
         color_mode (cmode), light_mode (lmode), index (idx),
         first (true), tmp_vdata ()
     { }
@@ -525,7 +525,7 @@ namespace octave
     {
       opengl_functions& glfcns = renderer->get_opengl_functions ();
 
-      //printf ("patch_tesselator::begin (%d)\n", type);
+      //printf ("patch_tessellator::begin (%d)\n", type);
       first = true;
 
       if (color_mode == INTERP || light_mode == GOURAUD)
@@ -543,7 +543,7 @@ namespace octave
     {
       opengl_functions& glfcns = renderer->get_opengl_functions ();
 
-      //printf ("patch_tesselator::end\n");
+      //printf ("patch_tessellator::end\n");
       glfcns.glEnd ();
       renderer->set_polygon_offset (false);
     }
@@ -554,7 +554,7 @@ namespace octave
 
       vertex_data::vertex_data_rep *v
         = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
-      //printf ("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
+      //printf ("patch_tessellator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
 
       // NOTE: OpenGL can re-order vertices.  For "flat" coloring of FaceColor
       // the first vertex must be identified in the draw_patch routine.
@@ -599,7 +599,7 @@ namespace octave
 
     void combine (GLdouble xyz[3], void *data[4], GLfloat w[4], void **out_data)
     {
-      //printf ("patch_tesselator::combine\n");
+      //printf ("patch_tessellator::combine\n");
 
       vertex_data::vertex_data_rep *v[4];
       int vmax = 4;
@@ -659,9 +659,9 @@ namespace octave
 
     // No copying!
 
-    patch_tesselator (const patch_tesselator&) = delete;
+    patch_tessellator (const patch_tessellator&) = delete;
 
-    patch_tesselator& operator = (const patch_tesselator&) = delete;
+    patch_tessellator& operator = (const patch_tessellator&) = delete;
 
     opengl_renderer *renderer;
     int color_mode;
@@ -674,7 +674,7 @@ namespace octave
 #else
 
   class
-  opengl_renderer::patch_tesselator
+  opengl_renderer::patch_tessellator
   {
     // Dummy class.
   };
@@ -3367,10 +3367,10 @@ namespace octave
               m_glfcns.glEnable (GL_LIGHTING);
 
             // NOTE: Push filled part of patch backwards to avoid Z-fighting
-            // with tesselator outline.  A value of 1.0 seems to work fine.
+            // with tessellator outline.  A value of 1.0 seems to work fine.
             // Value can't be too large or the patch will be pushed below the
             // axes planes at +2.5.
-            patch_tesselator tess (this, fc_mode, fl_mode, 1.0);
+            patch_tessellator tess (this, fc_mode, fl_mode, 1.0);
 
             std::vector<octave_idx_type>::const_iterator it;
             octave_idx_type i_start, i_end;
@@ -3509,11 +3509,11 @@ namespace octave
             set_linejoin ("miter");
 
             // NOTE: patch contour cannot be offset.  Offset must occur with the
-            // filled portion of the patch above.  The tesselator uses
+            // filled portion of the patch above.  The tessellator uses
             // GLU_TESS_BOUNDARY_ONLY to get the outline of the patch and OpenGL
             // automatically sets the glType to GL_LINE_LOOP.  This primitive is
             // not supported by glPolygonOffset which is used to do Z offsets.
-            patch_tesselator tess (this, ec_mode, el_mode);
+            patch_tessellator tess (this, ec_mode, el_mode);
 
             for (int i = 0; i < nf; i++)
               {
@@ -3579,7 +3579,7 @@ namespace octave
                     if (flag)
                       m_glfcns.glEnd ();
                   }
-                else  // Normal edge contour drawn with tesselator
+                else  // Normal edge contour drawn with tessellator
                   {
                     tess.begin_polygon (false);
                     tess.begin_contour ();

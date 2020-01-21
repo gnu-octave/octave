@@ -241,7 +241,7 @@ namespace octave
     bool selecting;
 
   private:
-    class patch_tesselator;
+    class patch_tessellator;
   };
 }
 

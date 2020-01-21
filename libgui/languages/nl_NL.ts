@@ -583,7 +583,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+2"/>
         <source>Retry</source>
-        <translation>Opnieuw</translation>
+        <translation>Opnieuw proberen</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -623,7 +623,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+2"/>
         <source>Restore Defaults</source>
-        <translation>Herstellen</translation>
+        <translation>Standaardwaarden herstellen</translation>
     </message>
 </context>
 <context>
@@ -1494,12 +1494,12 @@ Wil je die overschrijven?</translation>
     <message>
         <location line="+3"/>
         <source>User-defined literal</source>
-        <translation>Door gebruiker gedefineerde tekst</translation>
+        <translation>Door gebruiker gedefinieerde tekst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive user-defined literal</source>
-        <translation>Inactieve door gebruiker gedefineerde tekst</translation>
+        <translation>Inactieve door gebruiker gedefinieerde tekst</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1519,7 +1519,7 @@ Wil je die overschrijven?</translation>
     <message>
         <location line="+3"/>
         <source>Inactive escape sequence</source>
-        <translation>Inactieve stuurcoe</translation>
+        <translation>Inactieve stuurcode</translation>
     </message>
 </context>
 <context>
@@ -1582,7 +1582,7 @@ Wil je die overschrijven?</translation>
     <message>
         <location line="+3"/>
         <source>Removed removing patch</source>
-        <translation>Verwijdere verwijderpatch</translation>
+        <translation>Verwijderde verwijderpatch</translation>
     </message>
 </context>
 <context>
@@ -4426,7 +4426,7 @@ De Octave GUI moet nu gesloten worden.</translation>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation>Andere Achtergrond</translation>
+        <translation>Andere achtergrond</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ws.h" line="+85"/>

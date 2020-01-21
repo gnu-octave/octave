@@ -45,8 +45,6 @@
 ## @seealso{polyarea}
 ## @end deftypefn
 
-## Author: 2015 Carnë Draug <carandraug@octave.org>
-
 function dists = rectint (a, b)
 
   if (nargin != 2)

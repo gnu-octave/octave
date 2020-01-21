@@ -61,8 +61,6 @@
 ## @seealso{caxis, shading, meshgrid, contour, imagesc}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function h = pcolor (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("pcolor", varargin{:});

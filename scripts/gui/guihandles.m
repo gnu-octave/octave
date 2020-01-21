@@ -40,8 +40,6 @@
 ## @seealso{guidata, findobj, findall, allchild}
 ## @end deftypefn
 
-## Author: goffioul
-
 function hdata = guihandles (h)
 
   if (nargin > 2)

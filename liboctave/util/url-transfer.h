@@ -23,8 +23,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// Author: Alexander Barth <abarth@marine.usf.edu>
-
 #if ! defined (octave_url_transfer_h)
 #define octave_url_transfer_h 1
 

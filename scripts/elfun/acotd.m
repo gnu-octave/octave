@@ -29,8 +29,6 @@
 ## @seealso{cotd, acot}
 ## @end deftypefn
 
-## Author: David Bateman <dbateman@free.fr>
-
 function y = acotd (x)
 
   if (nargin != 1)

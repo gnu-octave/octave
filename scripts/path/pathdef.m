@@ -86,8 +86,6 @@ endfunction
 ## @file{savepath.m}.  If successful, @code{__extractpath__} returns the path
 ## specified in @var{file}.
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function path = __extractpath__ (savefile)
 
   [filelines, startline, endline] = getsavepath (savefile);

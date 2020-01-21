@@ -257,8 +257,6 @@
 ##
 ## @end deftypefn
 
-## Author: Carnë Draug <carandraug@octave.org>
-
 classdef inputParser < handle
   properties
     ## FIXME: set input checking for these properties

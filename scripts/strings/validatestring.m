@@ -63,8 +63,6 @@
 ## @seealso{strcmp, strcmpi, validateattributes, inputParser}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-
 function str = validatestring (str, strarray, varargin)
 
   if (nargin < 2 || nargin > 5)

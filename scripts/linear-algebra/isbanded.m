@@ -33,8 +33,6 @@
 ## @seealso{isdiag, istril, istriu, bandwidth}
 ## @end deftypefn
 
-## Author: Massimiliano Fasi
-
 function retval = isbanded (A, lower, upper)
 
   if (nargin != 3)

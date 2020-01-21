@@ -33,8 +33,6 @@
 ## @qcode{"off"}.
 ## @end deftypefn
 
-## Author: Kai Habel
-
 function __add_default_menu__ (hf, hmenu = [], htb = [])
 
   ## Gnuplot doesn't handle uimenu and uitoolbar objects

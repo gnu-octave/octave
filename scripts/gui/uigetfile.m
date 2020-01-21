@@ -87,8 +87,6 @@
 ## @seealso{uiputfile, uigetdir}
 ## @end deftypefn
 
-## Author: Kai Habel
-
 function [retfile, retpath, retindex] = uigetfile (varargin)
 
   if (nargin > 7)

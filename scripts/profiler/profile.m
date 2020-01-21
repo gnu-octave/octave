@@ -66,8 +66,6 @@
 ## @end deftypefn
 
 ## Built-in profiler.
-## Author: Daniel Kraft <d@domob.eu>
-
 function retval = profile (option)
 
   if (nargin != 1)

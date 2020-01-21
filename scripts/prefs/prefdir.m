@@ -48,8 +48,6 @@
 ## @seealso{getpref, setpref, addpref, rmpref, ispref}
 ## @end deftypefn
 
-## Author: John Donoghue
-
 function dir = prefdir ()
 
   dir = get_home_directory ();

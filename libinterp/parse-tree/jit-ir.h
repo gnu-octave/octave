@@ -23,8 +23,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// Author: Max Brister <max@2bass.com>
-
 #if ! defined (octave_jit_ir_h)
 #define octave_jit_ir_h 1
 

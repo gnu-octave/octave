@@ -129,8 +129,6 @@
 ## @seealso{EDITOR, path}
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
 
@@ -418,8 +416,6 @@ function retval = edit (varargin)
     copyright = [strftime("Copyright (C) %Y ",now) FUNCTION.AUTHOR];
 
     ## Fill in the author tag field.
-    author = ["Author: " FUNCTION.AUTHOR " " FUNCTION.EMAIL];
-
     ## Fill in the header.
     uclicense = toupper (FUNCTION.LICENSE);
     switch (uclicense)

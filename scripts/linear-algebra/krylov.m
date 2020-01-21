@@ -63,8 +63,6 @@
 ## the 42nd IEEE Conference on Decision and Control, December 2003.
 ## @end deftypefn
 
-## Author: A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
-
 function [Uret, H, nu] = krylov (A, V, k, eps1, pflg)
 
   if (isa (A, "single") || isa (V, "single"))

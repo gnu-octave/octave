@@ -60,8 +60,6 @@
 ## @seealso{figure, uimenu}
 ## @end deftypefn
 
-## Author: goffioul
-
 function hui = uicontextmenu (varargin)
 
   [h, args] = __uiobject_split_args__ ("uicontextmenu", varargin, {"figure"});

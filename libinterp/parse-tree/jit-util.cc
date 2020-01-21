@@ -23,8 +23,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// Author: Max Brister <max@2bass.com>
-
 // defines required by llvm
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS

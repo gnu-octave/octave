@@ -65,8 +65,6 @@
 ## @seealso{assert, error}
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-
 function retval = fail (code, pattern, warning_pattern)
 
   if (nargin < 1 || nargin > 3)

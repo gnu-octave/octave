@@ -40,8 +40,6 @@
 ## @seealso{nargoutchk, error, nargout, nargin}
 ## @end deftypefn
 
-## Author: Carnë Draug <carandraug+dev@gmail.com>
-
 function narginchk (minargs, maxargs)
 
   if (nargin != 2)

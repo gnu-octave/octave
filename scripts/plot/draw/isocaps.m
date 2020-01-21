@@ -110,8 +110,6 @@
 ## @seealso{isosurface, isonormals, patch}
 ## @end deftypefn
 
-## Author: mmuetzel
-
 function varargout = isocaps (varargin)
 
   if (nargin < 1 || nargin > 8)

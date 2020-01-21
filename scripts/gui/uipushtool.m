@@ -67,8 +67,6 @@
 ## @seealso{figure, uitoolbar, uitoggletool}
 ## @end deftypefn
 
-## Author: goffioul
-
 function hui = uipushtool (varargin)
 
   [h, args] = __uiobject_split_args__ ("uipushtool", varargin,

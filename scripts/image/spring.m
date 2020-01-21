@@ -33,8 +33,6 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-## Author:  Kai Habel <kai.habel@gmx.de>
-
 function map = spring (n)
 
   if (nargin > 1)

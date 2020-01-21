@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Michael Goffioul
-
 function [retval, retpath, retindex] = __uiputfile_fltk__ (filters, title, defval, position, tag, defdir)
 
   if (exist ("__fltk_uigetfile__") != 3)

@@ -32,8 +32,6 @@
 ## @seealso{atand, tan}
 ## @end deftypefn
 
-## Author: David Bateman <dbateman@free.fr>
-
 function y = tand (x)
 
   if (nargin != 1)

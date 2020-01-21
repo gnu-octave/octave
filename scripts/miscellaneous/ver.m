@@ -57,8 +57,6 @@
 ## @seealso{version, usejava, pkg}
 ## @end deftypefn
 
-## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
-
 function retval = ver (package = "")
 
   if (nargin > 1)

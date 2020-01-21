@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Michael Goffioul
-
 function retval = __fltk_file_filter__ (file_filter)
 
   retval = "";

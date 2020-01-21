@@ -65,8 +65,6 @@
 ##
 ## @end deftypefn
 
-## Author: Shai Ayal <shaiay@users.sourceforge.net>
-
 function [c, h] = contour (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("contour", varargin{:});

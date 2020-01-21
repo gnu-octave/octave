@@ -38,8 +38,6 @@
 ## @seealso{setfield, rmfield, orderfields, isfield, fieldnames, isstruct, struct}
 ## @end deftypefn
 
-## Author: Etienne Grossmann <etienne@cs.uky.edu>
-
 function val = getfield (s, varargin)
 
   if (nargin < 2)

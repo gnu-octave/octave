@@ -122,8 +122,6 @@
 ## @seealso{stem3, bar, hist, plot, stairs}
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-
 function h = stem (varargin)
 
   if (nargin < 1)

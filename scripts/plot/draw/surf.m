@@ -63,8 +63,6 @@
 ## @seealso{ezsurf, surfc, surfl, surfnorm, trisurf, contour, mesh, surface, meshgrid, hidden, shading, colormap, caxis}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function h = surf (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("surf", varargin{:});

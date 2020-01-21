@@ -41,8 +41,6 @@
 ## @seealso{hsv2rgb, rgb2ind, rgb2gray}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function hsv = rgb2hsv (rgb)
 
   if (nargin != 1)

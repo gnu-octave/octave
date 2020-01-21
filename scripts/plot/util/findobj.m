@@ -93,8 +93,6 @@
 ## @seealso{findall, allchild, get, set}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function h = findobj (varargin)
 
   depth = NaN;

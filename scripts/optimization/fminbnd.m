@@ -22,8 +22,6 @@
 ## <https://www.gnu.org/licenses/>.
 ##
 ########################################################################
-##
-## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} fminbnd (@var{fun}, @var{a}, @var{b})

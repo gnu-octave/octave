@@ -28,8 +28,6 @@
 ## configured to.  It is also needed so that imformats can create a
 ## function handle for it.
 
-## Author: Soren Hauberg <hauberg@gmail.com>
-
 function info = __imfinfo__ (filename)
 
   if (nargin != 1)

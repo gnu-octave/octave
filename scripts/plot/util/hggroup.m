@@ -47,8 +47,6 @@
 ## @seealso{addproperty, addlistener}
 ## @end deftypefn
 
-## Author: goffioul
-
 function h = hggroup (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("hggroup", varargin{:});

@@ -45,8 +45,6 @@
 ## @end deftypefn
 
 ## Built-in profiler.
-## Author: Daniel Kraft <dkraft@google.com>
-
 function profexport (dir, name = "", data)
 
   if (nargin < 1 || nargin > 3)

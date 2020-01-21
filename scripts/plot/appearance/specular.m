@@ -40,8 +40,6 @@
 ## @seealso{diffuse, surfl}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function retval = specular (sx, sy, sz, lv, vv, se)
 
   if (nargin < 5 || nargin > 6)

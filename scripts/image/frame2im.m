@@ -38,8 +38,6 @@
 ## @seealso{im2frame, getframe}
 ## @end deftypefn
 
-## Author: Carnë Draug <carandraug@octave.org>
-
 function [x, map] = frame2im (frame)
 
   if (nargin != 1)

@@ -23,8 +23,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// Author: James R. Van Zandt <jrv@vanzandt.mv.com>
-
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif

@@ -31,8 +31,6 @@
 ## @seealso{acosd, cos}
 ## @end deftypefn
 
-## Author: David Bateman <dbateman@free.fr>
-
 function y = cosd (x)
 
   if (nargin != 1)

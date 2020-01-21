@@ -33,8 +33,6 @@
 ## @seealso{specular, surfl}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function retval = diffuse (sx, sy, sz, lv)
 
   if (nargin != 4)

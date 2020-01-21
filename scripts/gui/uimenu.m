@@ -86,8 +86,6 @@
 ## @seealso{figure}
 ## @end deftypefn
 
-## Author: Kai Habel
-
 function hui = uimenu (varargin)
 
   [h, args] = __uiobject_split_args__ ("uimenu", varargin,

@@ -39,8 +39,6 @@
 ## @seealso{frame2im}
 ## @end deftypefn
 
-## Author: Carnë Draug <carandraug@octave.org>
-
 function frame = im2frame (x, map = [])
 
   if (nargin < 1 || nargin > 2)

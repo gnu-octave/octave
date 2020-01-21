@@ -48,8 +48,6 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-## Author: Carnë Draug <carandraug@octave.org>
-
 function map = cubehelix (n, start = 0.5, rots = -1.5, hue = 1, gamma = 1)
 
   if (nargin > 5)

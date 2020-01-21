@@ -163,8 +163,6 @@
 ## @end ifnottex
 ## @end deftypefn
 
-## Author: Marco Caliari <marco.caliari@univr.it>
-
 function retval = legendre (n, x, normalization)
 
   persistent warned_overflow = false;

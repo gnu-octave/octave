@@ -29,8 +29,6 @@
 ## @seealso{tand, atan}
 ## @end deftypefn
 
-## Author: David Bateman <dbateman@free.fr>
-
 function y = atand (x)
 
   if (nargin != 1)

@@ -99,8 +99,6 @@
 ## @seealso{errordlg, msgbox, questdlg, warndlg, figure, uiwait}
 ## @end deftypefn
 
-## Author: jdonoghue
-
 function h = dialog (varargin)
 
   h = figure ( ...

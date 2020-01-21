@@ -43,8 +43,6 @@
 ## @seealso{uiresume, waitfor}
 ## @end deftypefn
 
-## Author: goffioul
-
 function uiwait (varargin)
 
   h = [];

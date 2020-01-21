@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Michael Goffioul
-
 function result = __is_function__ (func)
 
   existval = exist (func);

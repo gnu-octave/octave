@@ -482,8 +482,6 @@
 ## @end example
 ## @end deftypefn
 
-## Author: Nicolo' Giorgetti <giorgetti@dii.unisi.it>
-
 function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, sense, param)
 
   ## If there is no input output the version and syntax

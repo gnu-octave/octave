@@ -46,8 +46,6 @@
 ## @seealso{path, addpath, rmpath, genpath, pathdef}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@givebillmoney.com>
-
 function retval = savepath (file)
 
   beginstring = "## Begin savepath auto-created section, do not edit";

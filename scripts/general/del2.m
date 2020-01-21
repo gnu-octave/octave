@@ -80,8 +80,6 @@
 ## @seealso{gradient, diff}
 ## @end deftypefn
 
-## Author:  Kai Habel <kai.habel@gmx.de>
-
 function L = del2 (M, varargin)
 
   if (nargin < 1)

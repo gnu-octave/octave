@@ -69,8 +69,6 @@
 ## @seealso{strrep, regexprep}
 ## @end deftypefn
 
-## Author: Sahil Yadav <yadavsahil5198@gmail.com>
-
 
 function newstr = erase (str, ptn)
 

@@ -153,8 +153,6 @@
 ## @seealso{imread, imwrite, imshow, imformats}
 ## @end deftypefn
 
-## Author: Soren Hauberg <hauberg@gmail.com>
-
 function info = imfinfo (filename, varargin)
 
   if (nargin < 1 || nargin > 2)

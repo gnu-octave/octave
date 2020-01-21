@@ -29,8 +29,6 @@
 ## @seealso{isbanded, istril, istriu, diag, bandwidth}
 ## @end deftypefn
 
-## Author: Massimiliano Fasi
-
 function retval = isdiag (A)
 
   if (nargin != 1)

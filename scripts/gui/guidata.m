@@ -38,8 +38,6 @@
 ## @seealso{getappdata, setappdata, get, set, getpref, setpref}
 ## @end deftypefn
 
-## Author: goffioul
-
 function dataout = guidata (h, data)
 
   if (nargin < 1 || nargin > 2)

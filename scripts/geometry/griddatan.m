@@ -43,8 +43,6 @@
 ## @seealso{griddata, griddata3, delaunayn}
 ## @end deftypefn
 
-## Author: David Bateman <dbateman@free.fr>
-
 function yi = griddatan (x, y, xi, method = "linear", varargin)
 
   if (nargin < 3)

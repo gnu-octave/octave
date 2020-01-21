@@ -37,8 +37,6 @@
 ## @end deftypefn
 
 ## Built-in profiler.
-## Author: Daniel Kraft <d@domob.eu>
-
 function profexplore (data)
 
   if (nargin == 0)

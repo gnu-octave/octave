@@ -67,8 +67,6 @@
 ## @seealso{textscan, dlmread, csvread, load}
 ## @end deftypefn
 
-## Author: Erik Kjellson <erikiiofph7@users.sourceforge.net>
-
 function [output, delimiter, header_rows] = importdata (fname, delimiter = "", header_rows = -1)
 
   if (nargin < 1 || nargin > 3)

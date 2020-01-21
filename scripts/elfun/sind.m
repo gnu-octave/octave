@@ -31,8 +31,6 @@
 ## @seealso{asind, sin}
 ## @end deftypefn
 
-## Author: David Bateman <dbateman@free.fr>
-
 function y = sind (x)
 
   if (nargin != 1)

@@ -47,8 +47,6 @@
 ## @seealso{sprand, sprandsym, randn}
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-
 function s = sprandn (m, n, d, rc)
 
   if (nargin == 1 )

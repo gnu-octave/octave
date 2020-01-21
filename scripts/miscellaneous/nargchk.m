@@ -38,8 +38,6 @@
 ## @seealso{narginchk, nargoutchk, error, nargin, nargout}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-
 function msg = nargchk (minargs, maxargs, nargs, outtype = "string")
 
   if (nargin < 3 || nargin > 4)

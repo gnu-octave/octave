@@ -82,8 +82,6 @@
 ##
 ## @end deftypefn
 
-## Author: Martin Helm <martin@mhelm.de>
-
 function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
 
   persistent edge_table = [];

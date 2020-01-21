@@ -57,8 +57,6 @@
 ## @seealso{rgb2hsv, ind2rgb}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function rgb = hsv2rgb (hsv)
 
   ## Each color value x = (r,g,b) is calculated with

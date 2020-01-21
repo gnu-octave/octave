@@ -61,8 +61,6 @@
 ## @seealso{strncmp, strcmp, regexp, strfind, validatestring}
 ## @end deftypefn
 
-## Author: Paul Kienzle, Alois Schloegl
-
 function idx = strmatch (s, A, exact)
 
   persistent warned = false;

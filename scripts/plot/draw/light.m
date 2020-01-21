@@ -73,8 +73,6 @@
 ## @seealso{lighting, material, patch, surface}
 ## @end deftypefn
 
-## Author: mmuetzel
-
 function h = light (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("light", varargin{:});

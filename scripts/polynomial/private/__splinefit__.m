@@ -101,8 +101,6 @@ function pp = __splinefit__(varargin)
 %
 %   See also SPLINE, PPVAL, PPDIFF, PPINT
 
-%   Author: Jonas Lundgren <splinefit@gmail.com> 2010
-
 %   2009-05-06  Original SPLINEFIT.
 %   2010-06-23  New version of SPLINEFIT based on B-splines.
 %   2010-09-01  Robust fitting scheme added.

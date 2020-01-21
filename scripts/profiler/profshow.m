@@ -44,8 +44,6 @@
 ## @end deftypefn
 
 ## Built-in profiler.
-## Author: Daniel Kraft <d@domob.eu>
-
 function profshow (data, n = 20)
 
   if (nargin > 2)

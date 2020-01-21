@@ -86,8 +86,6 @@
 ## @seealso{diffuse, specular, surf, shading, colormap, caxis}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function h = surfl (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("surfl", varargin{:});

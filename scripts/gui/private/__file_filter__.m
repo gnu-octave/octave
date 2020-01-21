@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Kai Habel
-
 function [retval, defname, defdir] = __file_filter__ (caller, file_filter)
 
   #keyboard;

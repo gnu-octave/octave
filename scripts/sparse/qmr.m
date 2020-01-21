@@ -92,8 +92,6 @@
 ## @seealso{bicg, bicgstab, cgs, gmres, pcg}
 ## @end deftypefn
 
-## Author: Nathan Podlich <nathan.podlich@gmail.com>
-
 function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
 
   if (nargin >= 2 && isvector (full (b)))

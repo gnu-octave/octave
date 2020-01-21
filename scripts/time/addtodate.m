@@ -34,8 +34,6 @@
 ## @seealso{datenum, datevec, etime}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-
 function d = addtodate (d, q, f)
 
   persistent mult = struct ("day", 1, "hour", 1/24, "minute", 1/1440, ...

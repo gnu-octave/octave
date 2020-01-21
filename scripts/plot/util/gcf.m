@@ -58,8 +58,6 @@
 ## @seealso{gca, gco, gcbf, gcbo, get, set}
 ## @end deftypefn
 
-## Author: jwe, Bill Denney
-
 function h = gcf ()
 
   if (nargin == 0)

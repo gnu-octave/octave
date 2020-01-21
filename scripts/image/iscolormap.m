@@ -38,8 +38,6 @@
 ## @seealso{colormap, rgbplot}
 ## @end deftypefn
 
-## Author: Carnë Draug <carandraug+dev@gmail.com>
-
 function retval = iscolormap (cmap)
 
   if (nargin != 1)

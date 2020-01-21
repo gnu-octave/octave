@@ -59,8 +59,6 @@
 ## @seealso{rand}
 ## @end deftypefn
 
-## Author: Rik Wehbring
-
 function ri = randi (bounds, varargin)
 
   if (nargin < 1)

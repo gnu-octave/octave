@@ -35,8 +35,6 @@
 ## @seealso{uigetfile, uiputfile}
 ## @end deftypefn
 
-## Author: Kai Habel
-
 function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to Open")
 
   if (nargin > 2)

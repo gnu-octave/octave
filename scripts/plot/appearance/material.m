@@ -76,8 +76,6 @@
 ## @seealso{light, fill, mesh, patch, pcolor, surf, surface}
 ## @end deftypefn
 
-## Author: mmuetzel
-
 function retval = material (varargin)
 
   if (! ((nargout == 0 && (nargin == 1 || nargin == 2))

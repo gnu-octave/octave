@@ -23,8 +23,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// Author: A. S. Hodel <scotte@eng.auburn.edu>
-
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif

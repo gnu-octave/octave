@@ -34,8 +34,6 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-## Author:  Kai Habel <kai.habel@gmx.de>
-
 ## this colormap is not part of matlab, it is like the prism
 ## colormap map but with a continuous map
 

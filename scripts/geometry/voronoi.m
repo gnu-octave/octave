@@ -65,8 +65,6 @@
 ## @seealso{voronoin, delaunay, convhull}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function [vx, vy] = voronoi (varargin)
 
   if (nargin < 1)

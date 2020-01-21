@@ -55,8 +55,6 @@
 ## @seealso{fntests, test, demo}
 ## @end deftypefn
 
-## Author: Søren Hauberg  <soren@hauberg.org>
-
 function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, mfile="dump_plot_demos.m", fmt="png")
 
   if (nargin > 3)

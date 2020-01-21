@@ -32,8 +32,6 @@
 ## @seealso{isdiag, isbanded, istril, triu, bandwidth}
 ## @end deftypefn
 
-## Author: Massimiliano Fasi
-
 function retval = istriu (A)
 
   if (nargin != 1)

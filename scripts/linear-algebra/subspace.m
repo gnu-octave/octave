@@ -29,8 +29,6 @@
 ## spanned by the columns of matrices @var{A} and @var{B}.
 ## @end deftypefn
 
-## Author: Jaroslav Hajek <highegg@gmail.com>
-
 ## reference:
 ## [1]  Andrew V. Knyazev, Merico E. Argentati:
 ## Principal Angles between Subspaces in an A-Based Scalar Product:

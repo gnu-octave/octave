@@ -71,8 +71,6 @@
 ## @seealso{print, hgsave, orient}
 ## @end deftypefn
 
-## Author: Kai Habel
-
 function saveas (h, filename, fmt)
 
   if (nargin != 2 && nargin != 3)

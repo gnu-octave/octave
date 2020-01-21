@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Michael Goffioul
-
 function dirname = __uigetdir_fltk__ (start_path, dialog_title)
 
   if (exist ("__fltk_uigetfile__") != 3)

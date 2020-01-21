@@ -92,8 +92,6 @@
 
 ## Author: Rolf Fabian  <fabian@tu-cottbus.de>
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
-## Author: Jaroslav Hajek
-
 function C = nchoosek (v, k)
 
   if (nargin != 2

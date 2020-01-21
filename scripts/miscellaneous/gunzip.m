@@ -39,8 +39,6 @@
 ## @seealso{gzip, unpack, bunzip2, unzip, untar}
 ## @end deftypefn
 
-## Author: Bill Denney <denney@seas.upenn.edu>
-
 function filelist = gunzip (gzfile, dir = [])
 
   if (nargin < 1 || nargin > 2)

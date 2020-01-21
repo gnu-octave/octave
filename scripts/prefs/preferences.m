@@ -28,8 +28,6 @@
 ## Display the GUI preferences dialog window for Octave.
 ## @end deftypefn
 
-## Author: John Donoghue
-
 function preferences ()
 
   if (isguirunning ())

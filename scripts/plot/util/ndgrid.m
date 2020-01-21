@@ -44,8 +44,6 @@
 ## @seealso{meshgrid}
 ## @end deftypefn
 
-## Author: Alexander Barth <abarth@marine.usf.edu>
-
 function varargout = ndgrid (varargin)
 
   if (nargin == 0)

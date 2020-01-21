@@ -76,8 +76,6 @@
 ## @seealso{bunzip2, gunzip, unzip, untar, bzip2, gzip, zip, tar}
 ## @end deftypefn
 
-## Author: Bill Denney <denney@seas.upenn.edu>
-
 function filelist = unpack (file, dir = [], filetype = "")
 
   if (nargin < 1 || nargin > 3)

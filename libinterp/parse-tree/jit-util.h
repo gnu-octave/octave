@@ -23,8 +23,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// Author: Max Brister <max@2bass.com>
-
 // Some utility classes and functions used throughout jit
 
 #if ! defined (octave_jit_util_h)

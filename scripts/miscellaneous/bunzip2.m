@@ -36,8 +36,6 @@
 ## @seealso{bzip2, unpack, gunzip, unzip, untar}
 ## @end deftypefn
 
-## Author: Bill Denney <denney@seas.upenn.edu>
-
 function filelist = bunzip2 (bzfile, dir = [])
 
   if (nargin < 1 || nargin > 2)

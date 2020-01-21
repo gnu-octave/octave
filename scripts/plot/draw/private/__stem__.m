@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-
 function h = __stem__ (have_z, varargin)
 
   if (have_z)

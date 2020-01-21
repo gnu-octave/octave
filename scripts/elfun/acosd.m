@@ -29,8 +29,6 @@
 ## @seealso{cosd, acos}
 ## @end deftypefn
 
-## Author: David Bateman <dbateman@free.fr>
-
 function y = acosd (x)
 
   if (nargin != 1)

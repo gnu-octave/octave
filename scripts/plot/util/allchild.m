@@ -36,8 +36,6 @@
 ## @seealso{findall, findobj, get, set}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-
 function h = allchild (handles)
 
   if (nargin != 1)

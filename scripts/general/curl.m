@@ -54,8 +54,6 @@
 ## @seealso{divergence, gradient, del2, cross}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function varargout = curl (varargin)
 
   fidx = 1;

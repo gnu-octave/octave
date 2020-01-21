@@ -66,8 +66,6 @@
 ## @seealso{pkg, ver, version}
 ## @end deftypefn
 
-## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
-
 function [retval, errmsg] = license (cmd, feature, toggle)
 
   if (nargin > 3)

@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: goffioul
-
 function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {}, use_gcf = 1)
 
   parent = [];

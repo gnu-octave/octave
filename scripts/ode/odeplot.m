@@ -23,8 +23,6 @@
 ##
 ########################################################################
 
-## Author: Thomas Treichl <treichl@users.sourceforge.net>
-
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{stop_solve} =} odeplot (@var{t}, @var{y}, @var{flag})
 ##

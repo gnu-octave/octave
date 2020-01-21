@@ -84,8 +84,6 @@
 ## @seealso{isosurface, isonormals, reducevolume, patch}
 ## @end deftypefn
 
-## Author: mmuetzel
-
 ## FIXME: Convert faces to only triangles if necessary
 
 function varargout = reducepatch (varargin)

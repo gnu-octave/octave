@@ -63,8 +63,6 @@
 ## @seealso{meshz, mesh, meshc, contour, surf, surface, ribbon, meshgrid, hidden, shading, colormap, caxis}
 ## @end deftypefn
 
-## Author: Mike Miller <mtmiller@ieee.org>
-
 function h = waterfall (varargin)
 
   htmp = meshz (varargin{:});

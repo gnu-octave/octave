@@ -38,8 +38,6 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-## Author:  Kai Habel <kai.habel@gmx.de>
-
 function map = hsv (n)
 
   if (nargin > 1)

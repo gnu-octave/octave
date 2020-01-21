@@ -23,8 +23,6 @@
 ##
 ########################################################################
 
-## Author: Michele Ginesi <michele.ginesi@gmail.com>
-
 ## -*- texinfo -*-
 ## @deftypefn  {} {} gammaincinv (@var{y}, @var{a})
 ## @deftypefnx {} {} gammaincinv (@var{y}, @var{a}, @var{tail})

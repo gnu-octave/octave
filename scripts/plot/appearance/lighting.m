@@ -52,8 +52,6 @@
 ## @seealso{light, fill, mesh, patch, pcolor, surf, surface, shading}
 ## @end deftypefn
 
-## Author: mmuetzel
-
 function lighting (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("lighting", varargin{:});

@@ -75,8 +75,6 @@
 ## @seealso{mldivide, matrix_type, rcond}
 ## @end deftypefn
 
-## Author: Nir Krakauer <nkrakauer@ccny.cuny.edu>
-
 function [x, R] = linsolve (A, b, opts)
 
   if (nargin < 2 || nargin > 3)

@@ -57,8 +57,6 @@
 ## @seealso{fileparts, filesep}
 ## @end deftypefn
 
-## Author: Carnë Draug <carandraug@octave.org>
-
 function filename = fullfile (varargin)
 
   if (nargin && iscell (varargin{end}))

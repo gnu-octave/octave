@@ -38,8 +38,6 @@
 ## @seealso{isbanded, isdiag, istril, istriu}
 ## @end deftypefn
 
-## Author: Massimiliano Fasi
-
 function [lower, upper] = bandwidth (A, type)
 
   if (! ((nargin == 1 && nargout == 2) || (nargin == 2 && nargout <= 1)))

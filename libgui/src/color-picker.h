@@ -26,8 +26,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// Author: Torsten <ttl@justmail.de>
-
 #if ! defined (octave_color_picker_h)
 #define octave_color_picker_h 1
 

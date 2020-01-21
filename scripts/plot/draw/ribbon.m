@@ -47,8 +47,6 @@
 ## @seealso{surface, waterfall}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel at gmx.de>
-
 function h = ribbon (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("ribbon", varargin{:});

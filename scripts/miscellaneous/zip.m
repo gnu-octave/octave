@@ -42,8 +42,6 @@
 ## @seealso{unzip, unpack, bzip2, gzip, tar}
 ## @end deftypefn
 
-## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
-
 function filelist = zip (zipfile, files, rootdir = ".")
 
   if (nargin < 2 || nargin > 3)

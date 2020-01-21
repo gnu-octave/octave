@@ -23,8 +23,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// Author: Torsten <ttl@justmail.de>
-
 #if ! defined (octave_octave_txt_lexer_h)
 #define octave_octave_txt_lexer_h 1
 

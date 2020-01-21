@@ -42,8 +42,6 @@
 ## @seealso{untar, unpack, bzip2, gzip, zip}
 ## @end deftypefn
 
-## Author: Søren Hauberg <hauberg@gmail.com>
-
 function filelist = tar (tarfile, files, rootdir = ".")
 
   if (nargin < 2 || nargin > 3)

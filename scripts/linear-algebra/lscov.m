@@ -58,8 +58,6 @@
 ## @seealso{ols, gls, lsqnonneg}
 ## @end deftypefn
 
-## Author: Nir Krakauer
-
 function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
 
   if (nargin < 2 || nargin > 4)

@@ -63,8 +63,6 @@
 ## @seealso{hankel}
 ## @end deftypefn
 
-## Author: jwe && jh
-
 function retval = toeplitz (c, r)
 
   if (nargin < 1 || nargin > 2)

@@ -110,8 +110,6 @@
 ## @seealso{figure, uipanel}
 ## @end deftypefn
 
-## Author: goffioul
-
 function hui = uicontrol (varargin)
 
   if (nargin == 1 && isgraphics (varargin{1}, "uicontrol"))

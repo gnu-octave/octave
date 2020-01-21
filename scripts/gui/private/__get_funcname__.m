@@ -31,8 +31,6 @@
 ## __[basename]_[graphics_toolkit]__, use fltk as default.
 ## @end deftypefn
 
-## Author: Andreas Weber
-
 function funcname = __get_funcname__ (basename)
 
   if (! __event_manager_enabled__ ())

@@ -37,8 +37,6 @@
 ## is unspecified it defaults to the first non-singleton dimension.
 ## @end deftypefn
 
-## Author: Bill Lash <lash@tellabs.com>
-
 function retval = unwrap (x, tol, dim)
 
   if (nargin < 1 || nargin > 3)

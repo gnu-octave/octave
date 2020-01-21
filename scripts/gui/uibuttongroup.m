@@ -71,8 +71,6 @@
 ## @seealso{figure, uipanel}
 ## @end deftypefn
 
-## Author: zeripath
-
 function hui = uibuttongroup (varargin)
 
   if (nargin == 1 && isgraphics (varargin{1}, "uibuttongroup"))

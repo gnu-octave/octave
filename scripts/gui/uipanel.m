@@ -64,8 +64,6 @@
 ## @seealso{figure, uicontrol}
 ## @end deftypefn
 
-## Author: goffioul
-
 function hui = uipanel (varargin)
 
   [h, args] = __uiobject_split_args__ ("uipanel", varargin,

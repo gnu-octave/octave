@@ -23,8 +23,6 @@
 ##
 ########################################################################
 
-## Author: Michele Ginesi <michele.ginesi@gmail.com>
-
 ## -*- texinfo -*-
 ## @deftypefn {} {} cosint (@var{x})
 ## Compute the cosine integral function:

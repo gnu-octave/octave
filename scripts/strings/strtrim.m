@@ -45,8 +45,6 @@
 ## @seealso{deblank}
 ## @end deftypefn
 
-## Author: John Swensen <jpswensen@jhu.edu>
-
 ## This function was derived from deblank.
 
 function s = strtrim (s)

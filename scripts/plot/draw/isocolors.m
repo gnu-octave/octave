@@ -58,8 +58,6 @@
 ## @seealso{isosurface, isonormals}
 ## @end deftypefn
 
-## Author: Martin Helm <martin@mhelm.de>
-
 function cdat = isocolors (varargin)
 
   calc_rgb = false;

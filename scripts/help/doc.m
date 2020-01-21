@@ -39,8 +39,6 @@
 ## @seealso{help}
 ## @end deftypefn
 
-## Author: Soren Hauberg <soren@hauberg.org>
-
 function retval = doc (function_name)
 
   if (nargin > 1)

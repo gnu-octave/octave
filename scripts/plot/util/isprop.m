@@ -35,8 +35,6 @@
 ## @seealso{get, set, ismethod, isobject}
 ## @end deftypefn
 
-## Author: Ben Abbott  <bpabbott@mac.com>
-
 function res = isprop (obj, prop)
 
   if (nargin != 2)

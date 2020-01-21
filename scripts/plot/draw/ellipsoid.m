@@ -45,8 +45,6 @@
 ## @seealso{cylinder, rectangle, sphere}
 ## @end deftypefn
 
-## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
-
 function [xx, yy, zz] = ellipsoid (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("ellipsoid", varargin{:});

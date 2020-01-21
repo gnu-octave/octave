@@ -73,8 +73,6 @@
 ## @seealso{isosurface, isonormals}
 ## @end deftypefn
 
-## Author: mmuetzel
-
 function [nx, ny, nz, nv] = reducevolume (varargin)
 
   if (nargin < 2 || nargin > 5)

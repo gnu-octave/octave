@@ -87,8 +87,6 @@
 ## @seealso{interp3, surface, pcolor}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function h = slice (varargin)
 
   [hax, varargin, nargs] = __plt_get_axis_arg__ ("slice", varargin{:});

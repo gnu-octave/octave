@@ -80,8 +80,6 @@
 ## @seealso{freqz_plot}
 ## @end deftypefn
 
-## Author: jwe ???
-
 function [h_r, f_r] = freqz (b, a, n, region, Fs)
 
   if (nargin < 1 || nargin > 5)

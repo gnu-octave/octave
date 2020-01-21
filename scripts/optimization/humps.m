@@ -23,8 +23,6 @@
 ##
 ########################################################################
 
-## Author: Nicholas R. Jankowski <jankowskin@asme.org>
-
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} humps (@var{x})
 ## @deftypefnx {} {[@var{x}, @var{y}] =} humps (@var{x})

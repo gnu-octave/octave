@@ -40,8 +40,6 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel at gmx.de>
-
 function spinmap (t = 5, inc = 2)
 
   if (nargin > 2)

@@ -32,8 +32,6 @@
 ## Create patch object from x and y with color c and parent p.
 ## Return handle to patch object.
 
-## Author: Kai Habel
-
 function [h, failed] = __patch__ (p, varargin)
 
   h = NaN;

@@ -22,8 +22,6 @@
 ## <https://www.gnu.org/licenses/>.
 ##
 ########################################################################
-##
-## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} fsolve (@var{fcn}, @var{x0})

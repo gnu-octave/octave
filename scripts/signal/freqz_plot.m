@@ -34,8 +34,6 @@
 ## @seealso{freqz}
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-
 function freqz_plot (w, h, freq_norm = false)
 
   if (nargin < 2 || nargin > 3)

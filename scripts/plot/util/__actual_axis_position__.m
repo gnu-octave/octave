@@ -29,8 +29,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Ben Abbott
-
 function pos = __actual_axis_position__ (h)
 
   if (ishghandle (h))

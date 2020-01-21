@@ -58,8 +58,6 @@
 ## @end deftypefn
 
 
-## Author:  Josep Mones i Teixidor <jmones@puntbarra.com>
-
 function [Y, newmap] = cmunique (X, map)
 
   if (nargin < 1 || nargin > 2)

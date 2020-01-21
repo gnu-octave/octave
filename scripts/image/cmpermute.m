@@ -41,8 +41,6 @@
 ##
 ## @end deftypefn
 
-## Author:  Josep Mones i Teixidor <jmones@puntbarra.com>
-
 function [Y, newmap] = cmpermute (X, map, index)
 
   if (nargin < 2 || nargin > 3)

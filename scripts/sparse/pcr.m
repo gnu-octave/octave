@@ -177,8 +177,6 @@
 ## @seealso{sparse, pcg}
 ## @end deftypefn
 
-## Author: Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
-
 function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, m, x0, varargin)
 
   breakdown = false;

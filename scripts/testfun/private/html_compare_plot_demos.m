@@ -59,8 +59,6 @@
 ## @seealso{compare_plot_demos, dump_demos, demo}
 ## @end deftypefn
 
-## Author: Ben Abbott  <bpabbott@mac.com>
-
 function html_compare_plot_demos (toolkits, varargin)
 
   ## Set defaults

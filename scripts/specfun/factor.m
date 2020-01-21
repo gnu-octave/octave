@@ -41,8 +41,6 @@
 ## @seealso{gcd, lcm, isprime, primes}
 ## @end deftypefn
 
-## Author: Paul Kienzle
-
 function [pf, n] = factor (q)
 
   if (nargin != 1)

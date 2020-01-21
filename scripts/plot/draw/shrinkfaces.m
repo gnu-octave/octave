@@ -71,8 +71,6 @@
 ## @seealso{patch}
 ## @end deftypefn
 
-## Author: Martin Helm <martin@mhelm.de>
-
 function [nf, nv] = shrinkfaces (varargin)
 
   if (nargin < 1 || nargin > 3 || nargout > 2)

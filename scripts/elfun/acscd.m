@@ -29,8 +29,6 @@
 ## @seealso{cscd, acsc}
 ## @end deftypefn
 
-## Author: David Bateman <dbateman@free.fr>
-
 function y = acscd (x)
 
   if (nargin != 1)

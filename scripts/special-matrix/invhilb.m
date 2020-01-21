@@ -79,8 +79,6 @@
 ## @seealso{hilb}
 ## @end deftypefn
 
-## Author: Dirk Laurie <dlaurie@na-net.ornl.gov>
-
 function retval = invhilb (n)
 
   if (nargin != 1)

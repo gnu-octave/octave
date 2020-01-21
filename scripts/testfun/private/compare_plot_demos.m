@@ -48,8 +48,6 @@
 ##
 ## @end deftypefn
 
-## Author: Ben Abbott  <bpabbott@mac.com>
-
 function compare_plot_demos (varargin)
 
   arg.toolkits = available_graphics_toolkits ();

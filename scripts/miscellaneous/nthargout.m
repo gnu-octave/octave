@@ -71,8 +71,6 @@
 ## @seealso{nargin, nargout, varargin, varargout, isargout}
 ## @end deftypefn
 
-## Author: Jordi Gutiérrez Hermoso
-
 function out = nthargout (n, varargin)
 
   if (nargin < 2)

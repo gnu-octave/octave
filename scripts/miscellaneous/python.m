@@ -36,8 +36,6 @@
 ## @seealso{system, perl}
 ## @end deftypefn
 
-## Author: Carnë Draug <carandraug+dev@gmail.com>
-
 function [output, status] = python (scriptfile = "-c ''", varargin)
 
   if (ischar (scriptfile)

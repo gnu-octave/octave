@@ -29,8 +29,6 @@
 ## @seealso{sind, asin}
 ## @end deftypefn
 
-## Author: David Bateman <dbateman@free.fr>
-
 function y = asind (x)
 
   if (nargin != 1)

@@ -42,8 +42,6 @@
 ## @seealso{findobj, allchild, get, set}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-
 function h = findall (varargin)
 
   unwind_protect

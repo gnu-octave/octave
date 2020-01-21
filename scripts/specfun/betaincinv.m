@@ -23,8 +23,6 @@
 ##
 ########################################################################
 
-## Author: Michele Ginesi <michele.ginesi@gmail.com>
-
 ## -*- texinfo -*-
 ## @deftypefn  {} {} betaincinv (@var{y}, @var{a}, @var{b})
 ## @deftypefnx {} {} betaincinv (@var{y}, @var{a}, @var{b}, "lower")

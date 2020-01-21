@@ -144,8 +144,6 @@
 ## @seealso{isonormals, isocolors, isocaps, smooth3, reducevolume, reducepatch, patch}
 ## @end deftypefn
 
-## Author: Martin Helm <martin@mhelm.de>
-
 ## FIXME: Add support for string input argument "verbose"
 ##        (needs changes to __marching_cube__.m)
 

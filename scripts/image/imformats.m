@@ -75,8 +75,6 @@
 ## @seealso{imfinfo, imread, imwrite}
 ## @end deftypefn
 
-## Author: Carnë Draug <carandraug@octave.org>
-
 function varargout = imformats (arg1, arg2, arg3)
 
   if (nargin > 3)

@@ -23,8 +23,6 @@
 ##
 ########################################################################
 
-## Author: Max Brister <max@2bass.com>
-
 ## Note: unit tests involving try/catch blocks are currently disabled since
 ##   the JIT in its current form is not compatible with exception handling.
 

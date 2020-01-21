@@ -53,8 +53,6 @@
 ## @seealso{curl, gradient, del2, dot}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function retval = divergence (varargin)
 
   fidx = 1;

@@ -59,8 +59,6 @@
 ## @seealso{fliplr, flipud, rot90, rotdim, permute, transpose}
 ## @end deftypefn
 
-## Author: David Bateman, Jaroslav Hajek
-
 function y = flip (x, dim)
 
   if (nargin < 1 || nargin > 2)

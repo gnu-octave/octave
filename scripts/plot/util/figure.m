@@ -49,8 +49,6 @@
 ## @seealso{axes, gcf, shg, clf, close}
 ## @end deftypefn
 
-## Author: jwe, Bill Denney
-
 function h = figure (varargin)
 
   nargs = nargin;

@@ -36,8 +36,6 @@
 ## @end ifnottex
 ## @end deftypefn
 
-## Author: jwe ???
-
 function result = sinc (x)
 
   if (nargin != 1)

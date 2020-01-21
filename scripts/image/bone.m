@@ -34,8 +34,6 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-## Author:  Kai Habel <kai.habel@gmx.de>
-
 function map = bone (n)
 
   if (nargin > 1)

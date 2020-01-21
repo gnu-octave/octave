@@ -33,8 +33,6 @@
 ## @seealso{uiwait}
 ## @end deftypefn
 
-## Author: goffioul
-
 function uiresume (h)
 
   if (nargin < 1)

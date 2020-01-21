@@ -54,8 +54,6 @@
 ## @seealso{trimesh, delaunay, delaunayn, patch}
 ## @end deftypefn
 
-## Author: Martin Helm <martin@mhelm.de>
-
 function h = tetramesh (varargin)
 
   [reg, prop] = parseparams (varargin);

@@ -63,8 +63,6 @@
 ## @seealso{sprintf, num2str, int2str}
 ## @end deftypefn
 
-## Author: Rolf Fabian <fabian@tu-cottbus.de>
-
 function s = mat2str (x, n = 15, cls = "")
 
   if (nargin < 1 || nargin > 3 || ! (isnumeric (x) || islogical (x)))

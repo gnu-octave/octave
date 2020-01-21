@@ -53,8 +53,6 @@
 ## @seealso{unique, union, intersect, setxor, ismember}
 ## @end deftypefn
 
-## Author: Paul Kienzle
-
 function [c, ia] = setdiff (a, b, varargin)
 
   if (nargin < 2 || nargin > 4)

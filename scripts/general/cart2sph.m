@@ -45,8 +45,6 @@
 ## @seealso{sph2cart, cart2pol, pol2cart}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function [theta, phi, r] = cart2sph (x, y, z)
 
   if (nargin != 1 && nargin != 3)

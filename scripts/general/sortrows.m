@@ -51,8 +51,6 @@
 ## @seealso{sort}
 ## @end deftypefn
 
-## Author: Daniel Calvelo, Paul Kienzle
-
 function [s, i] = sortrows (A, c)
 
   if (nargin < 1 || nargin > 2)

@@ -47,8 +47,6 @@
 ## @seealso{fill, mesh, patch, pcolor, surf, surface, hidden, lighting}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-
 function shading (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("shading", varargin{:});

@@ -72,8 +72,6 @@
 ## @code{double ("1").}
 ## @end deftypefn
 
-## Author: Bill Denney <denney@seas.upenn.edu>
-
 function out = compare_versions (v1, v2, operator)
 
   if (nargin != 3)

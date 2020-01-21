@@ -47,8 +47,6 @@
 
 ## Author: Paul Kienzle
 ## Author: Francesco Potortì
-## Author: Dirk Laurie
-
 function p = primes (n)
 
   if (nargin != 1)

@@ -169,9 +169,9 @@
 ## @end group
 ## @end example
 ##
-## References:
+## Reference:
 ##
-## [1] @nospell{W. Hackbusch}, @cite{Iterative Solution of Large Sparse
+## @nospell{W. Hackbusch}, @cite{Iterative Solution of Large Sparse
 ## Systems of Equations}, section 9.5.4; @nospell{Springer}, 1994
 ##
 ## @seealso{sparse, pcg}

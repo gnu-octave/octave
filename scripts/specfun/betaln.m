@@ -48,9 +48,6 @@
 ## @seealso{beta, betainc, betaincinv, gammaln}
 ## @end deftypefn
 
-## Author:   Nicol N. Schraudolph <nic@idsia.ch>
-## Keywords: log beta special function
-
 function retval = betaln (a, b)
 
   if (nargin != 2)

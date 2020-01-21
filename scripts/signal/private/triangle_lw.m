@@ -29,9 +29,6 @@
 ## estimation.
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Triangular lag window
-
 function retval = triangle_lw (n, b)
 
   retval = 1 - (0 : n-1)' * b;

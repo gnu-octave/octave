@@ -56,9 +56,6 @@
 ## @seealso{errorbar, semilogxerr, loglogerr}
 ## @end deftypefn
 
-## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
-## Keywords: errorbar, plotting
-
 function h = semilogyerr (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("semilogyerr", varargin{:});

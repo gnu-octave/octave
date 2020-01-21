@@ -51,8 +51,6 @@
 
 ## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
 
-## Author: pkienzle <pkienzle@users.sf.net>
-
 ## The function __date_str2vec__ is based on datesplit by Bill Denney.
 
 function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])

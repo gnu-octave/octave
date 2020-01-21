@@ -29,9 +29,6 @@
 ## estimation.
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Triangular spectral window
-
 function retval = triangle_sw (n, b)
 
   retval = zeros (n,1);

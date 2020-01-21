@@ -55,9 +55,6 @@
 ## @seealso{var, std, moment}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Compute mean square
-
 function y = meansq (x, dim)
 
   if (nargin != 1 && nargin != 2)

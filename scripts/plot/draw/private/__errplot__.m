@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
-## Keywords: errorbar, plotting
 function retval = __errplot__ (caller, hax, varargin)
 
   if (nargin < 4)

@@ -91,9 +91,6 @@
 ## @seealso{ranks, spearman}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Kendall's rank correlation tau
-
 function tau = kendall (x, y = [])
 
   if (nargin < 1 || nargin > 2)

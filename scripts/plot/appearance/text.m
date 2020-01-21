@@ -85,8 +85,8 @@
 ## @seealso{gtext, title, xlabel, ylabel, zlabel}
 ## @end deftypefn
 
-## Note: The following code is rigged for Matlab compatibility and is
-##       full of hidden assumptions.  Be very wary when modifying.
+## Caution: The following code is rigged for Matlab compatibility and is
+##          full of hidden assumptions.  Be very wary when modifying.
 
 function h = text (varargin)
 

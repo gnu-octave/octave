@@ -44,9 +44,6 @@
 ## @seealso{quantile}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-## Description: Matlab style prctile function.
-
 function q = prctile (x, p = [], dim)
 
   if (nargin < 1 || nargin > 3)

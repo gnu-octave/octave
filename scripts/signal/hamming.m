@@ -39,9 +39,6 @@
 ## @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description: Coefficients of the Hamming window
-
 function c = hamming (m, opt)
 
   if (nargin < 1 || nargin > 2)

@@ -64,10 +64,8 @@
 ## @seealso{spline, ppval, mkpp, unmkpp}
 ## @end deftypefn
 
-## Author:  Kai Habel <kai.habel@gmx.de>
-## Date: 9. mar 2001
-##
-## S_k = a_k + b_k*x + c_k*x^2 + d_k*x^3; (spline polynom)
+## Algorithm:
+## S_k = a_k + b_k*x + c_k*x^2 + d_k*x^3; (spline polynomial)
 ##
 ## 4 conditions:
 ## S_k(x_k) = y_k;

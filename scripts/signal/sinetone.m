@@ -34,9 +34,6 @@
 ## @seealso{sinewave}
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Compute a sine tone
-
 function retval = sinetone (freq, rate = 8000, sec = 1, ampl = 64)
 
   if (nargin < 1 || nargin > 4)

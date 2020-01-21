@@ -33,9 +33,6 @@
 ## @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description: Coefficients of the Bartlett (triangular) window
-
 function c = bartlett (m)
 
   if (nargin != 1)

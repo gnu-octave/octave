@@ -116,15 +116,6 @@
 ## @seealso{pchip, spline, interpft, interp2, interp3, interpn}
 ## @end deftypefn
 
-## Author: Paul Kienzle
-## Date: 2000-03-25
-##    added 'nearest' as suggested by Kai Habel
-## 2000-07-17 Paul Kienzle
-##    added '*' methods and matrix y
-##    check for proper table lengths
-## 2002-01-23 Paul Kienzle
-##    fixed extrapolation
-
 function yi = interp1 (x, y, varargin)
 
   if (nargin < 2 || nargin > 6)

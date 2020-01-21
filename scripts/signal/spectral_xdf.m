@@ -39,9 +39,6 @@
 ## @seealso{spectral_adf}
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Spectral density estimation
-
 function retval = spectral_xdf (x, win, b)
 
   if (nargin < 1 || nargin > 3)

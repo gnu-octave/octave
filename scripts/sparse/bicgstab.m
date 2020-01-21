@@ -197,14 +197,10 @@
 ## @end group
 ## @end example
 ##
-## References:
+## Reference:
 ##
-## @enumerate
-##
-## @item @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear
+## @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear
 ## Systems}, Second edition, 2003, SIAM
-##
-## @end enumerate
 ##
 ## @seealso{bicg, cgs, gmres, pcg, qmr, tfqmr}
 ##

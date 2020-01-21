@@ -30,9 +30,6 @@
 ## @var{v} with probabilities @var{p}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Quantile function of a discrete distribution
-
 function inv = discrete_inv (x, v, p)
 
   if (nargin != 3)

@@ -29,9 +29,6 @@
 ## estimation.
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Rectangular lag window
-
 function retval = rectangle_lw (n, b)
 
   retval = zeros (n, 1);

@@ -38,11 +38,7 @@
 ## @seealso{delaunay}
 ## @end deftypefn
 
-## Author: Frederick (Rick) A Niles <niles@rickniles.com>
-
-## Vectorized by Søren Hauberg <soren@hauberg.org>
-
-## The method for determining if a point is in a polygon is based on
+## Algorithm: The method for determining if a point is in a polygon is based on
 ## the algorithm shown on
 ## http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
 ## and is credited to Randolph Franklin.

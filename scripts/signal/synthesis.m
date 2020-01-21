@@ -36,9 +36,6 @@
 ## @seealso{stft}
 ## @end deftypefn
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description: Recover a signal from its short-term Fourier transform
-
 function x = synthesis (y, c)
 
   if (nargin != 2)

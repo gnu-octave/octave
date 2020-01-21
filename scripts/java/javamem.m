@@ -63,12 +63,6 @@
 ## Java's own cleaning up and your operating system's memory management.
 ## @end deftypefn
 
-## Author: Philip Nienhuis
-## Updates:
-## 2010-03-26 Changed name to javamem & indentation to double spaces
-## 2010-08-25 Corrected text on java memory assignments
-## 2010-09-05 Further overhauled help text
-
 function jmem = javamem ()
 
   rt = javaMethod ("getRuntime", "java.lang.Runtime");

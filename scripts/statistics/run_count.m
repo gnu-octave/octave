@@ -34,9 +34,6 @@
 ## @seealso{runlength}
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Count upward runs
-
 function retval = run_count (x, n, dim)
 
   if (nargin != 2 && nargin != 3)

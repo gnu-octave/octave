@@ -40,9 +40,6 @@
 ## @seealso{bounds, iqr, mad, std}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Compute range
-
 function y = range (x, dim)
 
   if (nargin < 1 || nargin > 2)

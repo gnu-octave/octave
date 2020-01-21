@@ -34,8 +34,8 @@
 ## condition.  @var{AbsTol} and @var{RelTol} are the absolute and relative
 ## tolerance on the ODE integration taken from an ode options structure.
 ##
-## References:
-## [1] E. Hairer, S.P. Norsett and G. Wanner,
+## Reference:
+## E. Hairer, S.P. Norsett and G. Wanner,
 ## @cite{Solving Ordinary Differential Equations I: Nonstiff Problems},
 ## Springer.
 ## @end deftypefn

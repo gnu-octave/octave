@@ -33,9 +33,6 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-## Author:  Kai Habel <kai.habel@gmx.de>
-## Date:  06/03/2000
-
 function map = summer (n)
 
   if (nargin > 1)

@@ -29,9 +29,6 @@
 ## estimation.
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Rectangular spectral window
-
 function retval = rectangle_sw (n, b)
 
   retval = zeros (n, 1);

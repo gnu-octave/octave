@@ -47,9 +47,6 @@
 ## @seealso{size, size_equal, numel, ndims}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Optimized-By: Jaroslav Hajek
-
 function [err, varargout] = common_size (varargin)
 
   if (nargin < 2)

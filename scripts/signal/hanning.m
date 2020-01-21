@@ -39,9 +39,6 @@
 ## @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description: Coefficients of the Hanning window
-
 function c = hanning (m, opt)
 
   if (nargin < 1 || nargin > 2)

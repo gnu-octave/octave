@@ -57,12 +57,11 @@
 ## @seealso{compan, hankel, toeplitz}
 ## @end deftypefn
 
-
 ## Reference [1] contains a list of Hadamard matrices up to n=256.
 ## See code for h28 in hadamard.m for an example of how to extend
 ## this function for additional p.
 ##
-## References:
+## Reference:
 ## [1] A Library of Hadamard Matrices, N. J. A. Sloane
 ##     http://www.research.att.com/~njas/hadamard/
 

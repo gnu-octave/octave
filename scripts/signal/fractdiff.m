@@ -29,9 +29,6 @@
 ## denotes the lag-operator and @math{d} is greater than -1.
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Compute fractional differences
-
 function retval = fractdiff (x, d)
 
   if (nargin != 2)

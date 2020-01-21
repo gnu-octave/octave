@@ -31,9 +31,6 @@
 ## If @var{x} is a matrix, the parameter is estimated for every column.
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Estimate the Hurst parameter
-
 function H = hurst (x)
 
   if (nargin != 1)

@@ -41,9 +41,6 @@
 ## of the sample @var{data}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Bootstrap samples from the empirical distribution
-
 function rnd = empirical_rnd (data, varargin)
 
   if (nargin < 1)

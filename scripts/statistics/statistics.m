@@ -37,9 +37,6 @@
 ## @seealso{min, max, median, mean, std, skewness, kurtosis}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Compute basic statistics
-
 function stats = statistics (x, dim)
 
   if (nargin != 1 && nargin != 2)

@@ -45,9 +45,6 @@
 ## @end smallexample
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Simulate an ARCH process
-
 function y = arch_rnd (a, b, t)
 
   if (nargin != 3)

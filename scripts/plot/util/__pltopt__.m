@@ -114,10 +114,6 @@ function [options, valid] = __pltopt__ (caller, opt, err_on_invalid = true)
 endfunction
 
 ## Really decode plot option strings.
-
-## Author: Rick Niles <niles@axp745.gsfc.nasa.gov>
-## Maintainer: jwe
-
 function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
 
   options = __default_plot_options__ ();

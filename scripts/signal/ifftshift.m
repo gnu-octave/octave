@@ -33,10 +33,6 @@
 ## @seealso{fftshift}
 ## @end deftypefn
 
-## Author: Vincent Cautaerts <vincent@comf5.comm.eng.osaka-u.ac.jp>
-## Modified-By: Paul Kienzle, converted from fftshift
-## Modified-By: David Bateman, add NDArray capability and option dim arg
-
 function retval = ifftshift (x, dim)
 
   if (nargin != 1 && nargin != 2)

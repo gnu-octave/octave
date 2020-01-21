@@ -65,9 +65,6 @@
 ## Calculus with Applications in Statistics and Econometrics}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Adapged-By: jwe
-
 function d = duplication_matrix (n)
 
   if (nargin != 1)

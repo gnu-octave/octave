@@ -40,9 +40,6 @@
 ## @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description: Coefficients of the Blackman window
-
 function c = blackman (m, opt)
 
   if (nargin < 1 || nargin > 2)

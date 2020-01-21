@@ -30,9 +30,6 @@
 ## in @var{v} with probabilities @var{p}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: PDF of a discrete distribution
-
 function pdf = discrete_pdf (x, v, p)
 
   if (nargin != 3)

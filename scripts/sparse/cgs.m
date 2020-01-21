@@ -187,12 +187,8 @@
 ##
 ## References:
 ##
-## @enumerate
-##
-## @item @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear Systems},
+## @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear Systems},
 ## Second edition, 2003, SIAM
-##
-## @end enumerate
 ##
 ## @seealso{pcg, bicgstab, bicg, gmres, qmr, tfqmr}
 ## @end deftypefn

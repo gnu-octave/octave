@@ -89,9 +89,6 @@
 ## @seealso{median, mode}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Compute arithmetic, geometric, and harmonic mean
-
 function y = mean (x, varargin)
 
   if (nargin < 1 || nargin > 4)

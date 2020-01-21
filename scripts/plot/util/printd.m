@@ -38,9 +38,6 @@
 ## @seealso{stemleaf}
 ## @end deftypefn
 
-## Author: Michael D. Godfrey <michaeldgodfrey@gmail.com>
-## Description: Convert objects into other file formats.
-
 function pr_out = printd (obj, filename)
   ## Convert any object acceptable to disp() into various display formats.
   ## obj is the input object.

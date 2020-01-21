@@ -47,9 +47,6 @@
 ## is omitted, @var{n} = 100 is used.
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Simulate an ARMA process
-
 function x = arma_rnd (a, b, v, t, n)
 
   if (nargin == 4)

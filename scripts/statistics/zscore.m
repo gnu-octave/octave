@@ -47,9 +47,6 @@
 ## @seealso{mean, std, center}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Subtract mean and divide by standard deviation
-
 function [z, mu, sigma] = zscore (x, opt = 0, dim)
 
   if (nargin < 1 || nargin > 3 )

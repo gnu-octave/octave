@@ -30,9 +30,6 @@
 ## the univariate sample @var{data}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: CDF of the empirical distribution
-
 function cdf = empirical_cdf (x, data)
 
   if (nargin != 2)

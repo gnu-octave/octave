@@ -25,12 +25,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} spencer (@var{x})
-## Return @nospell{Spencer's} 15 point moving average of each column of
+## Return @nospell{Spencer's} 15-point moving average of each column of
 ## @var{x}.
 ## @end deftypefn
-
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Apply Spencer's 15-point MA filter
 
 function retval = spencer (x)
 

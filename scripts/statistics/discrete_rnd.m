@@ -41,9 +41,6 @@
 ## @var{v} and @var{p}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Random deviates from a discrete distribution
-
 function rnd = discrete_rnd (v, p, varargin)
 
   if (nargin < 2)

@@ -56,9 +56,6 @@
 ## for the scoring algorithm.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Fit an ARCH regression model
-
 function [a, b] = arch_fit (y, x, p, iter, gamma, a0, b0)
 
   if (nargin < 3 || nargin == 6 || nargin > 7)

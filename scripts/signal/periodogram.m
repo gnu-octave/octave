@@ -79,9 +79,6 @@
 ## @seealso{fft}
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Compute the periodogram
-
 function [pxx, f] = periodogram (x, varargin)
 
   ## check input arguments

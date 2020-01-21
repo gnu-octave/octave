@@ -74,7 +74,7 @@
 ## @seealso{stream3, streamline}
 ## @end deftypefn
 
-## References:
+## Reference:
 ##
 ## @inproceedings{
 ##    title = {Visualization of 3-D vector fields - Variations on a stream},

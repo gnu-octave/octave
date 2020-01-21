@@ -64,9 +64,6 @@
 ## @seealso{synthesis}
 ## @end deftypefn
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description: Short-Time Fourier Transform
-
 function [y, c] = stft (x, win_size = 80, inc = 24, num_coef = 64, win_type = 1)
 
   if (nargin < 1 || nargin > 5)

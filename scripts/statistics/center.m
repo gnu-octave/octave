@@ -42,9 +42,6 @@
 ## @seealso{zscore}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Center by subtracting means
-
 function retval = center (x, dim)
 
   if (nargin != 1 && nargin != 2)

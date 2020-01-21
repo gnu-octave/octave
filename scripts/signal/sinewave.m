@@ -33,9 +33,6 @@
 ## @seealso{sinetone}
 ## @end deftypefn
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description: Compute a sine wave
-
 function x = sinewave (m, n, d)
 
   if (nargin > 0 && nargin < 4)

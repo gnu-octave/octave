@@ -205,7 +205,7 @@ function x = betaincinv (y, a, b, tail = "lower")
 endfunction
 
 
-## Subfunctions: Bisection and Newton Methods
+## subfunctions: Bisection and Newton Methods
 function xc = bisection_method (F, xl, xr, a, b, y, maxit)
   F_l = F (xl, a, b, y);
   F_r = F (xr, a, b, y);

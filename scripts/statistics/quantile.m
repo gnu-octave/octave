@@ -154,10 +154,6 @@
 ## @seealso{prctile}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-## Description: Matlab style quantile function of a discrete/continuous
-##              distribution.
-
 function q = quantile (x, p = [], dim, method = 5)
 
   if (nargin < 1 || nargin > 4)
@@ -406,10 +402,7 @@ endfunction
 ## (https://www.r-project.org/).  The default is @var{method} = 7.
 ## @seealso{prctile, quantile, statistics}
 
-## Author: Ben Abbott <bpabbott@mac.com>
-## Vectorized version: Jaroslav Hajek <highegg@gmail.com>
 ## Description: Quantile function of empirical samples
-
 function inv = __quantile__ (x, p, method = 5)
 
   if (nargin < 2 || nargin > 3)

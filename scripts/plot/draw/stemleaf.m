@@ -80,9 +80,6 @@
 ## @seealso{hist, printd}
 ## @end deftypefn
 
-## Author: Michael D. Godfrey <michaeldgodfrey@gmail.com>
-## Description: Compute stem and leaf plot
-
 function plotstr = stemleaf (x, caption, stem_sz)
   ## Compute and display a stem and leaf plot of the vector x.  The x
   ## vector is converted to integer by x = fix(x).  If an output argument

@@ -36,9 +36,6 @@
 ## the algorithm are performed.
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Perform one step of the Durbin-Levinson algorithm
-
 function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
 
   if (nargin != 1 && nargin != 3)

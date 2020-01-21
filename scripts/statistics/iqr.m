@@ -39,9 +39,6 @@
 ## @seealso{bounds, mad, range, std}
 ## @end deftypefn
 
-## Author KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Interquartile range
-
 function y = iqr (x, dim)
 
   if (nargin != 1 && nargin != 2)

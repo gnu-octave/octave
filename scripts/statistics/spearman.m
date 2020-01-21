@@ -66,9 +66,6 @@
 ## @seealso{ranks, kendall}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Spearman's rank correlation rho
-
 function rho = spearman (x, y = [])
 
   if (nargin < 1 || nargin > 2)

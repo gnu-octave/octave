@@ -72,9 +72,6 @@
 ## @seealso{cov, std, skewness, kurtosis, moment}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Compute variance
-
 function retval = var (x, opt = 0, dim)
 
   if (nargin < 1 || nargin > 3)

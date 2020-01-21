@@ -65,11 +65,6 @@
 ## @seealso{cumtrapz}
 ## @end deftypefn
 
-## Author:      Kai Habel <kai.habel@gmx.de>
-##
-## also: June 2000 - Paul Kienzle (fixes,suggestions)
-## 2006-05-12 David Bateman - Modified for NDArrays
-
 function z = trapz (x, y, dim)
 
   if (nargin < 1) || (nargin > 3)

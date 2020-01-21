@@ -102,6 +102,7 @@
 ## @end deftypefn
 
 ## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
+
 function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 0, second = 0)
 
   ## Days until start of month assuming year starts March 1.

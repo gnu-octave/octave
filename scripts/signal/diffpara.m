@@ -44,9 +44,6 @@
 ## Theory and Methods}. @nospell{Springer} 1987.
 ## @end deftypefn
 
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Estimate the fractional differencing parameter
-
 function [d, dd] = diffpara (x, a, b)
 
   if (nargin < 1 || nargin > 3)

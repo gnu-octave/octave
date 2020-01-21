@@ -29,8 +29,8 @@
 ## spanned by the columns of matrices @var{A} and @var{B}.
 ## @end deftypefn
 
-## reference:
-## [1]  Andrew V. Knyazev, Merico E. Argentati:
+## Reference:
+## Andrew V. Knyazev, Merico E. Argentati:
 ## Principal Angles between Subspaces in an A-Based Scalar Product:
 ## Algorithms and Perturbation Estimates.
 ## SIAM Journal on Scientific Computing, Vol. 23 no. 6, pp. 2008-2040

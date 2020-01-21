@@ -37,6 +37,7 @@ functions.
 * Variable-length Argument Lists::
 * Ignoring Arguments::
 * Default Arguments::
+* Validating Arguments::
 * Function Files::
 * Script Files::
 * Function Handles Anonymous Functions Inline Functions::
@@ -426,48 +427,12 @@ along with a warning.
 
 @DOCSTRING(nargout)
 
-It is good practice at the head of a function to verify that it has been called
-correctly.  In Octave the following idiom is seen frequently
-
-@example
-@group
-if (nargin < min_#_inputs || nargin > max_#_inputs)
-  print_usage ();
-endif
-@end group
-@end example
-
-@noindent
-which stops the function execution and prints a message about the correct
-way to call the function whenever the number of inputs is wrong.
-
-For compatibility with @sc{matlab}, @code{narginchk} and @code{nargoutchk} are
-available which provide similar error checking.
-
-@DOCSTRING(narginchk)
-
-@DOCSTRING(nargoutchk)
-
-Besides the number of arguments, inputs can be checked for various properties.
-@code{validatestring} is used for string arguments and
-@code{validateattributes} for numeric arguments.
-
-@DOCSTRING(validatestring)
-
-@DOCSTRING(validateattributes)
-
-If none of the preceding functions is sufficient there is also the class
-@code{inputParser} which can perform extremely complex input checking for
-functions.
-
-@DOCSTRING(inputParser)
-
-@anchor{XREFvarargin} @anchor{XREFvarargout}
-
 @node Variable-length Return Lists
 @section Variable-length Return Lists
 @cindex variable-length return lists
 @cindex @code{varargout}
+
+@anchor{XREFvarargout}
 
 It is possible to return a variable number of output arguments from a
 function using a syntax that's similar to the one used with the
@@ -511,6 +476,8 @@ and is handled the same as any other parameter name.
 @section Variable-length Argument Lists
 @cindex variable-length argument lists
 @cindex @code{varargin}
+
+@anchor{XREFvarargin}
 
 Sometimes the number of input arguments is not known when the function
 is defined.  As an example think of a function that returns the smallest
@@ -677,6 +644,7 @@ endfunction
 @end example
 
 @DOCSTRING(isargout)
+
 @node Default Arguments
 @section Default Arguments
 @cindex default arguments
@@ -739,6 +707,108 @@ hello (:);
      @print{} Hello, World!
 @end group
 @end example
+
+@node Validating Arguments
+@section Validating Arguments
+@cindex validating arguments
+
+Octave is a weakly typed programming language.  Thus it is possible to
+call a function with arguments, that probably cause errors or might have
+undesirable side effects.  For example calling a string processing function
+with a huge sparse matrix.
+
+It is good practice at the head of a function to verify that it has been
+called correctly.  Octave offers several functions for this purpose.
+
+@menu
+* Validating the number of Arguments::
+* Validating the type of Arguments::
+* Parsing Arguments::
+@end menu
+
+@node Validating the number of Arguments
+@subsection Validating the number of Arguments
+
+In Octave the following idiom is seen frequently at the beginning of a
+function definition:
+
+@example
+@group
+if (nargin < min_#_inputs || nargin > max_#_inputs)
+  print_usage ();
+endif
+@end group
+@end example
+
+@noindent
+which stops the function execution and prints a message about the correct
+way to call the function whenever the number of inputs is wrong.
+
+Similar error checking is provided by @code{narginchk} and
+@code{nargoutchk}.
+
+@DOCSTRING(narginchk)
+
+@DOCSTRING(nargoutchk)
+
+@node Validating the type of Arguments
+@subsection Validating the type of Arguments
+
+Besides the number of arguments, inputs can be checked for various
+properties.  @code{validatestring} is used for string arguments and
+@code{validateattributes} for numeric arguments.
+
+@DOCSTRING(validatestring)
+
+@DOCSTRING(validateattributes)
+
+As alternative to @code{validateattributes} there are several shorter
+convenience functions to check for individual properties.
+
+@DOCSTRING(mustBeFinite)
+
+@DOCSTRING(mustBeGreaterThan)
+
+@DOCSTRING(mustBeGreaterThanOrEqual)
+
+@DOCSTRING(mustBeInteger)
+
+@DOCSTRING(mustBeLessThan)
+
+@DOCSTRING(mustBeLessThanOrEqual)
+
+@DOCSTRING(mustBeMember)
+
+@DOCSTRING(mustBeNegative)
+
+@DOCSTRING(mustBeNonempty)
+
+@DOCSTRING(mustBeNonNan)
+
+@DOCSTRING(mustBeNonnegative)
+
+@DOCSTRING(mustBeNonpositive)
+
+@DOCSTRING(mustBeNonsparse)
+
+@DOCSTRING(mustBeNonzero)
+
+@DOCSTRING(mustBeNumeric)
+
+@DOCSTRING(mustBeNumericOrLogical)
+
+@DOCSTRING(mustBePositive)
+
+@DOCSTRING(mustBeReal)
+
+@node Parsing Arguments
+@subsection Parsing Arguments
+
+If none of the preceding validation functions is sufficient there is also
+the class @code{inputParser} which can perform extremely complex input
+checking for functions.
+
+@DOCSTRING(inputParser)
 
 @node Function Files
 @section Function Files

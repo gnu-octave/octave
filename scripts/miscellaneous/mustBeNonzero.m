@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} {mustBeNonzero (@var{x})
+## @deftypefn {} {} mustBeNonzero (@var{x})
 ##
 ## Requires that input @var{x} is not zero.
 ##

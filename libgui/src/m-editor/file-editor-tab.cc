@@ -618,7 +618,7 @@ namespace octave
     else
       {
         // Otherwise, delete the newly created lexer and
-        // use the old, exisiting one
+        // use the old, existing one
         if (lexer)
           delete lexer;
       }
@@ -724,7 +724,7 @@ namespace octave
 
             if (_is_octave_file)
               {
-                // octave: get keywords from internal informations depending on
+                // octave: get keywords from internal information depending on
                 //         user preferences
 
                 // keywords are always used

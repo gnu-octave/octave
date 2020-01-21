@@ -31,7 +31,7 @@
 
 function [output, status] = perl (scriptfile = "-e ''", varargin)
 
-  ## VARARGIN is intialized to {}(1x0) if no additional arguments are
+  ## VARARGIN is initialized to {}(1x0) if no additional arguments are
   ## supplied, so there is no need to check for it, or provide an
   ## initial value in the argument list of the function definition.
 

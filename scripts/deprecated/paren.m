@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} (
 ## @deftypefnx {} {} )
-## Array index or function argument delimeter.
+## Array index or function argument delimiter.
 ## @end deftypefn
 
 

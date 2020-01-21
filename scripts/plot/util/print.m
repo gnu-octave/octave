@@ -1063,7 +1063,7 @@ function cmd = svgconvert (opts, devopt)
   if (isempty (opts.svgconvert_binary))
     warning ("octave:print:nosvgconvert", ...
              ["print.m: unale to find octave-svgconvert, ", ...
-              "falling back to eps convertion"]);
+              "falling back to eps conversion"]);
   else
     fontdir = getenv ("OCTAVE_FONTS_DIR");
 

@@ -1780,7 +1780,7 @@ namespace octave
   {
     m_error_system.save_exception (e);
 
-    // FIXME: use a separate stream instad of std::cerr directly so that
+    // FIXME: use a separate stream instead of std::cerr directly so that
     // error messages can be redirected more easily?  Pass the message
     // to an event manager function?
     m_error_system.display_exception (e, std::cerr);

@@ -68,7 +68,7 @@ namespace octave
   // multiple times.  In that way, it would be more flexible and
   // decentralized, similar to the Qt signal/slot connection mechanism
   // and would allow the GUI to connect multiple signals to a single
-  // action or multiple actions to a singal signal.
+  // action or multiple actions to a single signal.
 
   // FIXME: audit this list of functions and determine whether they are
   // all necessary and whether there might be better names for them.
@@ -307,7 +307,7 @@ namespace octave
 
     // The following functions correspond to the virtual fuunctions in
     // the interpreter_events class.  They provide a way for the
-    // interperter to notify the GUI that some event has occurred
+    // interpreter to notify the GUI that some event has occurred
     // (directory or workspace changed, for example) or to request the
     // GUI to perform some action (display a dialog, for example).
 

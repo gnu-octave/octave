@@ -1031,7 +1031,7 @@ namespace octave
                             const std::string& name, const octave_value& val)
   {
     // FIXME: Can this be done without an unwind-protect frame, simply
-    // by geting a reference to the caller or base stack frame and
+    // by getting a reference to the caller or base stack frame and
     // calling assign on that?
 
     unwind_action act ([this] (size_t frm)

@@ -311,7 +311,7 @@ namespace octave
     //! Classdef attribute values can be given in the form of
     //! expressions.  These expressions must be evaluated before
     //! assigning them as attribute values.  Evaluating them as they are
-    //! parsed causes trouble with possible recusion in the parser so we
+    //! parsed causes trouble with possible recursion in the parser so we
     //! do it here.  For example
     //!
     //! @code

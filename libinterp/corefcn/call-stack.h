@@ -320,7 +320,7 @@ namespace octave
     // individual stack frames?
     stack_frames m_cs;
 
-    // FIXME: Could we eliminate this varaible and manage the current
+    // FIXME: Could we eliminate this variable and manage the current
     // frame in the evaluator class instead?  The current frame might
     // always be the top of the stack.  Restoring the previous/current
     // frame would be managed by other means, such as an

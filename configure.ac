@@ -3135,7 +3135,7 @@ Octave is now configured for $canonical_host_type
   Build shared libraries:               $SHARED_LIBS
   Dynamic Linking API:                  $DL_API_MSG
   Include support for GNU readline:     $USE_READLINE
-  Use push parser in comand line REPL:  $ENABLE_COMMAND_LINE_PUSH_PARSER
+  Use push parser in command line REPL: $ENABLE_COMMAND_LINE_PUSH_PARSER
   64-bit array dims and indexing:       $ENABLE_64
   64-bit BLAS array dims and indexing:  $HAVE_64_BIT_BLAS
   OpenMP SMP multithreading:            $ENABLE_OPENMP

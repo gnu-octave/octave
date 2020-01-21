@@ -822,7 +822,8 @@ namespace octave
     m_find_dialog->init_search_text ();
   }
 
-  // This methos creates the find dialog
+  // This method creates the find dialog.
+
   void file_editor::find_create ()
   {
     if (m_find_dialog)

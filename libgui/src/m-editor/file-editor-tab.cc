@@ -410,7 +410,7 @@ namespace octave
     emit dbstop_if ("dbstop if", linenr+1, cond);
   }
 
-  // Display dialog in GUI thread to get condtition, then emit
+  // Display dialog in GUI thread to get condition, then emit
   // interpreter_event signal to check it in the interpreter thread.
   // If the dialog returns a valid condition, then either emit a signal
   // to add the breakpoint in the editor tab or a signal to display a

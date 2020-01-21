@@ -43,7 +43,7 @@ namespace octave
   class cdef_object;
   class cdef_class;
 
-  // This is mainly a boostrap class to declare the expected interface.
+  // This is mainly a bootstrap class to declare the expected interface.
   // The actual base class is cdef_class_base, which is declared after
   // cdef_object, such that it can contain cdef_object objects.
 

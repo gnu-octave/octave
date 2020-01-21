@@ -84,6 +84,6 @@ const QStringList
 ws_color_names (QStringList ()
              << QT_TRANSLATE_NOOP ("octave::settings_dialog", "argument")
              << QT_TRANSLATE_NOOP ("octave::settings_dialog", "global")
-             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "persistant"));
+             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "persistent"));
 
 #endif

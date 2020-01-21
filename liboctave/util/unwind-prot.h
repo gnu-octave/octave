@@ -160,7 +160,7 @@ namespace octave
   //
   // then the destructor for the temporary anonymous object will be
   // called immediately after the object is constructed instead of at
-  // the end of teh current scope.
+  // the end of the current scope.
 
   class unwind_action
   {
@@ -210,7 +210,7 @@ namespace octave
   //
   // then the destructor for the temporary anonymous object will be
   // called immediately after the object is constructed instead of at
-  // the end of teh current scope.
+  // the end of the current scope.
   //
   // FIXME: Once we are able to use C++17, class template argument
   // deduction will allow us to omit the explicit template type from the

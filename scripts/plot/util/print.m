@@ -275,7 +275,7 @@
 ##
 ##   @item  ps(2)
 ##   @itemx psc(2)
-##     Same as @code{eps} except that the figure is formated for printing on
+##     Same as @code{eps} except that the figure is formatted for printing on
 ## paper.  The size of the surrounding page and position of the figure inside
 ## the page are defined by the
 ## @ref{XREFfigurepaperorientation,, paper* figure properties}.

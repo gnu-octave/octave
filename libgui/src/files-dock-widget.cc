@@ -763,7 +763,8 @@ namespace octave
       }
   }
 
-  // Get the currently selectd files/dirs and return their file infos in a list
+  // Get the currently selected files/dirs and return their file info
+  // in a list.
   QList<QFileInfo> files_dock_widget::get_selected_items_info (bool dir)
   {
     QItemSelectionModel *m = m_file_tree_view->selectionModel ();

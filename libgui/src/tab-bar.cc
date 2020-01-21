@@ -109,9 +109,9 @@ namespace octave
     // Move tab into the order of the generated string list
     for (int title = 0; title < tab_texts.count (); title++)
       {
-        // Target tab is same as palce of title in QStringList.
+        // Target tab is same as place of title in QStringList.
         // Find index of next title in string list, leaving out the
-        // tabs (or titles) that were alredy moved
+        // tabs (or titles) that were already moved.
         for (int tab = title; tab < count (); tab++)
           {
             if (tabText (tab) == tab_texts.at (title))

@@ -267,7 +267,7 @@ namespace octave
     dbstop_none
   };
 
-  // FIXME: This function probalby needs to be completely overhauled to
+  // FIXME: This function probably needs to be completely overhauled to
   // correctly parse the full syntax of the dbstop command and properly
   // reject incorrect forms.
 

@@ -38,7 +38,6 @@
 ## applications in statistics and econometrics.
 
 ## Author KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 8 May 1995
 ## Adapted-By: jwe
 
 function v = vech (x)

@@ -37,7 +37,6 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2010-07-15
 
 function value = getappdata (h, name)
 

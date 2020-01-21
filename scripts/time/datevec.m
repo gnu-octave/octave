@@ -53,7 +53,6 @@
 
 ## Author: pkienzle <pkienzle@users.sf.net>
 ## Modified: bdenney <bill@givebillmoney.com>
-## Created: 10 October 2001 (CVS)
 ## Adapted-By: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
 ## The function __date_str2vec__ is based on datesplit by Bill Denney.

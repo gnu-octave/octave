@@ -48,7 +48,6 @@
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
-## Created: May 1995
 ## Nov 1998: Correctly handles complex coefficients
 
 function y = polyout (c, x)

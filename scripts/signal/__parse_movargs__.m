@@ -24,7 +24,6 @@
 ########################################################################
 
 ## Author: Juan Pablo Carbajal <ajuanpi+dev@gmail.com>
-## Created: 2018-08-13
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{args} =} __parse_movargs__ (@var{varargin})

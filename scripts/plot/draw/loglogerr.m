@@ -54,7 +54,6 @@
 ## @seealso{errorbar, semilogxerr, semilogyerr}
 ## @end deftypefn
 
-## Created: 20.2.2001
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 

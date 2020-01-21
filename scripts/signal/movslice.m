@@ -24,7 +24,6 @@
 ########################################################################
 
 ## Author: Juan Pablo Carbajal <ajuanpi+dev@gmail.com>
-## Created: 2018-12-08
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{slcidx} =} movslice (@var{N}, @var{wlen})

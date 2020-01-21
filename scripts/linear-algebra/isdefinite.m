@@ -48,7 +48,6 @@
 ## @end deftypefn
 
 ## Author: Gabriele Pannocchia <g.pannocchia@ing.unipi.it>
-## Created: November 2003
 ## Adapted-By: jwe
 
 function retval = isdefinite (A, tol)

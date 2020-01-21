@@ -63,7 +63,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 8 October 1994
 ## Adapted-By: jwe
 
 function b = bincoeff (n, k)

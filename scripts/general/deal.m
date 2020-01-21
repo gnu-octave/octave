@@ -86,7 +86,6 @@
 
 ## Author: Ariel Tankus
 ## Author: Paul Kienzle and Etienne Grossman
-## Created: 13.11.98
 
 function [varargout] = deal (varargin)
 

@@ -170,7 +170,6 @@
 ## @seealso{semilogxerr, semilogyerr, loglogerr, plot}
 ## @end deftypefn
 
-## Created: 18.7.2000
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 

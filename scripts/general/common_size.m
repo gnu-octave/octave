@@ -48,7 +48,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 15 October 1994
 ## Adapted-By: jwe
 ## Optimized-By: Jaroslav Hajek
 

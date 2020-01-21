@@ -43,7 +43,6 @@
 ## @end deftypefn
 
 ## Author: pdiribarne <pdiribarne@new-host.home>
-## Created: 2012-04-01
 
 function hnew = copyobj (horig, hparent = 0)
 

@@ -49,7 +49,6 @@
 ## @end deftypefn
 
 ## Author:   Nicol N. Schraudolph <nic@idsia.ch>
-## Created:  06 Aug 1998
 ## Keywords: log beta special function
 
 function retval = betaln (a, b)

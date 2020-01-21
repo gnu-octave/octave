@@ -29,7 +29,6 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2010-07-26
 
 function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
 

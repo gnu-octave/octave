@@ -42,7 +42,6 @@
 ## @end deftypefn
 
 ## Author: pkienzle <pkienzle@users.sf.net>
-## Created: 25 July 2004
 ## Adapted-By: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
 function varargout = calendar (varargin)

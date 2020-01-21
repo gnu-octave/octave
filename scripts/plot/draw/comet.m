@@ -43,7 +43,6 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott bpabbott@mac.com
-## Created: 2008-09-21
 
 function comet (varargin)
 

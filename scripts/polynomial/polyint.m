@@ -35,7 +35,6 @@
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Created: June 1994
 ## Adapted-By: jwe
 
 function retval = polyint (p, k)

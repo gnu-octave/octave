@@ -40,7 +40,6 @@
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-## Created: 3 September 1994
 ## Adapted-By: jwe
 
 function y = fftfilt (b, x, n)

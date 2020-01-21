@@ -49,7 +49,6 @@
 ## @end deftypefn
 
 ## Author: Nicholas Jankowski <jankowskin@asme.org>
-## Created: 2017-08-24
 
 function retval = rticks (varargin)
 

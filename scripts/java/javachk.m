@@ -68,7 +68,6 @@
 ## @end deftypefn
 
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
-## Created: 2014-04-19
 
 function msg = javachk (feature, caller = "")
 

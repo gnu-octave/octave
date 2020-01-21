@@ -39,7 +39,6 @@
 ## @end deftypefn
 
 ## Author: Frederick (Rick) A Niles <niles@rickniles.com>
-## Created: 14 November 2006
 
 ## Vectorized by Søren Hauberg <soren@hauberg.org>
 

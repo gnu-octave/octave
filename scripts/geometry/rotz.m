@@ -82,7 +82,6 @@
 ## @end deftypefn
 
 ## Author: Nicholas Jankowski <jankowskin@asme.org>
-## Created: 2017-04-09
 
 function retmat = rotz (angle_in_deg)
 

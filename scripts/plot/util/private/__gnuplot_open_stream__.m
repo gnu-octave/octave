@@ -29,7 +29,6 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2009-04-11
 
 function plot_stream = __gnuplot_open_stream__ (npipes, h)
 

@@ -30,7 +30,6 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2010-09-13
 
 function gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream)
 

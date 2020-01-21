@@ -49,7 +49,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 13 June 1993
 ## Adapted-By: jwe
 
 function retval = beta (a, b)

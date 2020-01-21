@@ -66,7 +66,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 8 May 1995
 ## Adapged-By: jwe
 
 function d = duplication_matrix (n)

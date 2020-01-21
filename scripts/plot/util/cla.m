@@ -48,7 +48,6 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2008-10-03
 
 function cla (hax, do_reset = false)
 

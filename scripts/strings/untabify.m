@@ -56,7 +56,6 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2010-10-15
 
 function s = untabify (t, tw = 8, deblank_arg = false)
 

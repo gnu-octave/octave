@@ -46,7 +46,6 @@
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Created: 17 October 1994
 ## Adapted-By: jwe
 
 function y = pow2 (f, e)

@@ -29,7 +29,6 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2009-02-07
 
 function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
 

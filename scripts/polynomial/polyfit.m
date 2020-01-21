@@ -79,7 +79,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 13 December 1994
 ## Adapted-By: jwe
 ## Modified on 20120204 by P. Dupuis; added the ability to specify a
 ## polynomial mask instead of a polynomial degree.

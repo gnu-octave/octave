@@ -55,7 +55,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 16 September 1994
 ## Adapted-By: jwe
 
 function z = xor (x, y, varargin)

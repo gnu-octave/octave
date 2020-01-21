@@ -41,7 +41,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 11 October 1994
 ## Adapted-By: jwe
 
 function y = detrend (x, p = 1)

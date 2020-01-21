@@ -44,7 +44,6 @@
 ## @end deftypefn
 
 ## Author: pdiribarne <pdiribarne@new-host.home>
-## Created: 2012-03-04
 
 function [h, pout] = struct2hdl (s, p=[], hilev = false)
 

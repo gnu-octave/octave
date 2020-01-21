@@ -24,7 +24,6 @@
 ########################################################################
 
 ## Author: Juan Pablo Carbajal <ajuanpi+dev@gmail.com>
-## Created: 2018-08-09
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movfun (@var{fcn}, @var{x}, @var{wlen})

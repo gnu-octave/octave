@@ -36,7 +36,6 @@
 ## @end deftypefn
 
 ## Author:  Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
-## Created: 18 October 1994
 ## Adapted-By: jwe
 
 function y = mu2lin (x, n = 0)

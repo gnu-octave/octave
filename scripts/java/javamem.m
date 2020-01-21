@@ -64,7 +64,6 @@
 ## @end deftypefn
 
 ## Author: Philip Nienhuis
-## Created: 2010-03-25
 ## Updates:
 ## 2010-03-26 Changed name to javamem & indentation to double spaces
 ## 2010-08-25 Corrected text on java memory assignments

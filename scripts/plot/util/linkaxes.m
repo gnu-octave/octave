@@ -58,7 +58,6 @@
 ## @end deftypefn
 
 ## Author: Willem Atsma willem.atsma at tanglebridge.com
-## Created: 2014-03-18
 
 function linkaxes (hax, optstr = "xy")
 

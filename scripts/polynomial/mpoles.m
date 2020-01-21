@@ -56,7 +56,6 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Created: Sept 30, 2007
 
 function [multp, indx] = mpoles (p, tol, reorder)
 

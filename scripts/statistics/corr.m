@@ -50,7 +50,6 @@
 ## @end deftypefn
 
 ## Author: Kurt Hornik <hornik@wu-wien.ac.at>
-## Created: March 1993
 ## Adapted-By: jwe
 
 function retval = corr (x, y = [])

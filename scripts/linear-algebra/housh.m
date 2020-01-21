@@ -62,7 +62,6 @@
 ## @end deftypefn
 
 ## Author: A. S. Hodel
-## Created: August 1995
 
 function [housv, beta, zer] = housh (x, j, z)
 

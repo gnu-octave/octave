@@ -51,7 +51,6 @@
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
-## Created: August 1993
 ## Adapted-By: jwe
 
 function retval = ishermitian (A, skewopt = "nonskew", tol = 0)

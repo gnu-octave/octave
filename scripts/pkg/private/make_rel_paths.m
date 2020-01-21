@@ -24,7 +24,6 @@
 ## @end deftypefn
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
-## Created: 2019-10-28
 
 function pkg_list = make_rel_paths (pkg_list)
 

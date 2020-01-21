@@ -51,7 +51,6 @@
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2010-01-26
 
 function daratio = daspect (varargin)
 

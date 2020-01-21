@@ -43,7 +43,6 @@
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-## Created: July 2000
 
 function x = repmat (A, m, varargin)
 

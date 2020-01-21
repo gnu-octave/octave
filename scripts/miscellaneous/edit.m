@@ -416,6 +416,8 @@ function retval = edit (varargin)
     copyright = [strftime("Copyright (C) %Y ",now) FUNCTION.AUTHOR];
 
     ## Fill in the author tag field.
+    author = ["Author: " FUNCTION.AUTHOR " " FUNCTION.EMAIL];
+
     ## Fill in the header.
     uclicense = toupper (FUNCTION.LICENSE);
     switch (uclicense)

@@ -34,7 +34,6 @@
 ## @end deftypefn
 
 ## Author: Vincent Cautaerts <vincent@comf5.comm.eng.osaka-u.ac.jp>
-## Adapted-By: jwe
 ## Modified-By: Paul Kienzle, converted from fftshift
 ## Modified-By: David Bateman, add NDArray capability and option dim arg
 

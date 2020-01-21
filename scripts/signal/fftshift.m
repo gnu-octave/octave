@@ -50,7 +50,6 @@
 ## @end deftypefn
 
 ## Author: Vincent Cautaerts <vincent@comf5.comm.eng.osaka-u.ac.jp>
-## Adapted-By: jwe
 
 function retval = fftshift (x, dim)
 

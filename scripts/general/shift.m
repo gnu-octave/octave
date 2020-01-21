@@ -35,7 +35,6 @@
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Adapted-By: jwe
 
 function y = shift (x, b, dim)
 

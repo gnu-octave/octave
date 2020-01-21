@@ -62,7 +62,6 @@
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
-## Adapted-By: jwe
 
 function [aa, bb, q, z] = qzhess (A, B)
 

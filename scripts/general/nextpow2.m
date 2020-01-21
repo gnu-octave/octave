@@ -40,7 +40,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Adapted-By: jwe
 
 function n = nextpow2 (x)
 

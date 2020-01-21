@@ -68,7 +68,6 @@
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Adapted-By: jwe
 
 function h = image (varargin)
 
@@ -148,7 +147,6 @@ endfunction
 ## @var{x} and @var{y}.
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Adapted-By: jwe
 
 function h = __img__ (hax, do_new, x, y, img, varargin)
 

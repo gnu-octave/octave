@@ -43,7 +43,6 @@
 ## @end deftypefn
 
 ## Author:      Kai Habel <kai.habel@gmx.de>
-## Adapted-by:  Alexander Barth <barth.alexander@gmail.com>
 ##              xi and yi are not "meshgridded" if both are vectors
 ##              of the same size (for compatibility)
 

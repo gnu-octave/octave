@@ -50,7 +50,6 @@
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
-## Adapted-By: jwe
 
 function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
 

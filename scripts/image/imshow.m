@@ -76,7 +76,6 @@
 
 ## Author: Stefan van der Walt  <stefan@sun.ac.za>
 ## Author: Soren Hauberg <hauberg at gmail dot com>
-## Adapted-By: jwe
 
 function h = imshow (im, varargin)
 

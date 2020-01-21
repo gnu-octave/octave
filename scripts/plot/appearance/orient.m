@@ -52,7 +52,6 @@
 ## @end deftypefn
 
 ## Author: Paul Kienzle
-## Adapted-By: jwe
 
 function retval = orient (varargin)
 

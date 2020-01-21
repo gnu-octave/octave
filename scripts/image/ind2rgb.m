@@ -45,7 +45,6 @@
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Adapted-By: jwe
 
 function [R, G, B] = ind2rgb (x, map)
 

@@ -53,7 +53,6 @@
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-## Adapted-By: jwe
 
 function t = substr (s, offset, len)
 

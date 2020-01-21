@@ -54,7 +54,6 @@
 ## @end deftypefn
 
 ## Author: pkienzle <pkienzle@users.sf.net>
-## Adapted-By: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
 function [d, s] = weekday (d, format = "short")
 

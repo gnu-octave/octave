@@ -29,7 +29,6 @@
 ## @end deftypefn
 
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
-## Adapted-By: jwe
 
 function opts = __gnuplot_print__ (opts)
 

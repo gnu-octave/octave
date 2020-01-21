@@ -47,7 +47,6 @@
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-## Adapted-By: jwe
 ## This is patterned after the AWK function of the same name.
 
 function n = rindex (s, t)

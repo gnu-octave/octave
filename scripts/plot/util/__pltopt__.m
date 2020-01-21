@@ -116,7 +116,6 @@ endfunction
 ## Really decode plot option strings.
 
 ## Author: Rick Niles <niles@axp745.gsfc.nasa.gov>
-## Adapted-By: jwe
 ## Maintainer: jwe
 
 function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)

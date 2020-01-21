@@ -148,7 +148,6 @@
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Author: Ben Abbott <bpabbott@mac.com>
-## Adapted-By: jwe
 
 function [r, p, k, e] = residue (b, a, varargin)
 

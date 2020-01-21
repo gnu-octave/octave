@@ -103,7 +103,6 @@
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
-## Adapted-By: jwe
 
 function [sout, p] = orderfields (s1, s2)
 

@@ -86,7 +86,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Adapted-By: jwe
 
 function y = skewness (x, flag, dim)
 

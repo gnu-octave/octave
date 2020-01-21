@@ -88,7 +88,6 @@
 ## @end deftypefn
 
 ## Author: Teresa Twaroch <twaroch@ci.tuwien.ac.at>
-## Adapted-By: jwe
 
 function [beta, v, r] = gls (y, x, o)
 

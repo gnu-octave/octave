@@ -57,7 +57,6 @@
 ## @end deftypefn
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
-## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 function retval = dec2base (d, base, len)
 

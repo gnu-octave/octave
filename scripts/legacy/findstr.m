@@ -53,7 +53,6 @@
 ## than the first, so try to put the longer one first.
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-## Adapted-By: jwe
 
 function v = findstr (s, t, overlap = true)
 

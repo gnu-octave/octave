@@ -101,7 +101,6 @@
 ## @end deftypefn
 
 ## Author: Teresa Twaroch <twaroch@ci.tuwien.ac.at>
-## Adapted-By: jwe
 
 function [beta, sigma, r] = ols (y, x)
 

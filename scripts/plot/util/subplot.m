@@ -102,7 +102,6 @@
 ## @end deftypefn
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
-## Adapted-By: jwe
 
 function h = subplot (varargin)
 

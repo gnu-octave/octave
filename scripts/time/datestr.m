@@ -133,7 +133,6 @@
 ##    concatenate.
 
 ## Author: pkienzle <pkienzle@users.sf.net>
-## Adapted-By: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
 function retval = datestr (date, f = [], p = [])
 

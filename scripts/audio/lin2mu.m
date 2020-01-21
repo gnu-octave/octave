@@ -38,7 +38,6 @@
 
 
 ## Author: Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
-## Adapted-By: jwe
 
 function y = lin2mu (x, n)
 

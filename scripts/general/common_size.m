@@ -48,7 +48,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Adapted-By: jwe
 ## Optimized-By: Jaroslav Hajek
 
 function [err, varargout] = common_size (varargin)

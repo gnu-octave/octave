@@ -36,7 +36,6 @@
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Adapted-By: jwe
 
 function y = polyvalm (c, x)
 

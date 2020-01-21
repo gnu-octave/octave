@@ -37,7 +37,6 @@
 ## @end deftypefn
 
 ## Author: Søren Hauberg <hauberg@gmail.com>
-## Adapted-By: jwe, Bill Denney
 
 function filelist = unzip (zipfile, dir = [])
 

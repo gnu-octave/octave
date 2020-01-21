@@ -75,7 +75,6 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Adapted-By: jwe
 
 function k = commutation_matrix (m, n)
 

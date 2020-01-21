@@ -51,7 +51,6 @@
 ##        Octave function does not support N, MAP, DITHER, or TOL arguments.
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Adapted-By: jwe
 
 function [x, map] = rgb2ind (R, G, B)
 

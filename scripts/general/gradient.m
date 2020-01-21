@@ -68,7 +68,6 @@
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
-## Modified: David Bateman <dbateman@free.fr> Added NDArray support
 
 function varargout = gradient (m, varargin)
 

@@ -52,7 +52,6 @@
 ## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
 
 ## Author: pkienzle <pkienzle@users.sf.net>
-## Modified: bdenney <bill@givebillmoney.com>
 
 ## The function __date_str2vec__ is based on datesplit by Bill Denney.
 

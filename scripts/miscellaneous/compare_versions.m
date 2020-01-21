@@ -60,13 +60,9 @@
 ## @qcode{">="}
 ## greater than or equal to
 ##
-## @item
-## @qcode{"!="}
+## @item @qcode{"!="}, @qcode{"~="}
 ## not equal
 ##
-## @item
-## @qcode{"~="}
-## not equal
 ## @end itemize
 ##
 ## Note that version @qcode{"1.1-test2"} will compare as greater than

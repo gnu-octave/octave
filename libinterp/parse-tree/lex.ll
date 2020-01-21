@@ -1590,8 +1590,8 @@ ANY_INCLUDING_NL (.|{NL})
 ".**" { CMD_OR_OP (".**", EPOW, false); }
 "<="  { CMD_OR_OP ("<=", EXPR_LE, true); }
 "=="  { CMD_OR_OP ("==", EXPR_EQ, true); }
-"~="  { CMD_OR_OP ("~=", EXPR_NE, true); }
 "!="  { CMD_OR_OP ("!=", EXPR_NE, false); }
+"~="  { CMD_OR_OP ("~=", EXPR_NE, true); }
 ">="  { CMD_OR_OP (">=", EXPR_GE, true); }
 "&"   { CMD_OR_OP ("&", EXPR_AND, true); }
 "|"   { CMD_OR_OP ("|", EXPR_OR, true); }

@@ -3,8 +3,6 @@ c
 c See the file COPYRIGHT.md in the top-level directory of this
 c distribution or <https://octave.org/copyright/>.
 c
-c Author: Jaroslav Hajek <highegg@gmail.com>
-c
 c This file is part of Octave.
 c
 c Octave is free software: you can redistribute it and/or modify it

@@ -65,9 +65,6 @@
 ## @seealso{varargin, inputParser}
 ## @end deftypefn
 
-## Author: Alexander Barth <abarth93@users.sourceforge.net>
-## Author: Aida Alvera Azcarate <aida@netecho.info>
-
 function [reg, varargout] = parseparams (params, varargin)
 
   strs = cellfun ("isclass", params, "char");

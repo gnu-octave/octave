@@ -35,8 +35,6 @@
 ## @seealso{setappdata, getappdata, isappdata}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function rmappdata (h, varargin)
 
   if (nargin < 2)

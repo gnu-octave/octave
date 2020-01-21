@@ -38,9 +38,6 @@
 ##
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-##         (based on an anonymous source from the public domain)
-
 function [A, k] = rref (A, tol)
 
   if (nargin < 1 || nargin > 2)

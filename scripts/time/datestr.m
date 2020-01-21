@@ -132,8 +132,6 @@
 ##    fixed width.  Just generate the parts in separate arrays and
 ##    concatenate.
 
-## Author: pkienzle <pkienzle@users.sf.net>
-
 function retval = datestr (date, f = [], p = [])
 
   persistent dateform names_mmmm names_m names_d;

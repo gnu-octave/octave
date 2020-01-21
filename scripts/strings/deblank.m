@@ -45,8 +45,6 @@
 ## @seealso{strtrim}
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-
 function s = deblank (s)
 
   if (nargin != 1)

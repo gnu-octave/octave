@@ -23,8 +23,6 @@
 ##
 ########################################################################
 
-## Author: Juan Pablo Carbajal <ajuanpi+dev@gmail.com>
-
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{args} =} __parse_movargs__ (@var{varargin})
 ##

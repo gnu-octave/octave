@@ -50,8 +50,6 @@
 ##        one of the same name.
 ##        Octave function does not support N, MAP, DITHER, or TOL arguments.
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function [x, map] = rgb2ind (R, G, B)
 
   if (nargin != 1 && nargin != 3)

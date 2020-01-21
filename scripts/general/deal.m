@@ -84,9 +84,6 @@
 ## @seealso{cell2struct, struct2cell, repmat}
 ## @end deftypefn
 
-## Author: Ariel Tankus
-## Author: Paul Kienzle and Etienne Grossman
-
 function [varargout] = deal (varargin)
 
   if (nargin == 0)

@@ -42,8 +42,6 @@
 ## @seealso{repmat}
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-
 function s = blanks (n)
 
   if (nargin != 1)

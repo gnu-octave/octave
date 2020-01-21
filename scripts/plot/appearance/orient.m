@@ -51,8 +51,6 @@
 ## @seealso{print, saveas}
 ## @end deftypefn
 
-## Author: Paul Kienzle
-
 function retval = orient (varargin)
 
   nargs = nargin;

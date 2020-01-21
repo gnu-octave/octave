@@ -100,8 +100,6 @@
 ## @seealso{gls, pinv}
 ## @end deftypefn
 
-## Author: Teresa Twaroch <twaroch@ci.tuwien.ac.at>
-
 function [beta, sigma, r] = ols (y, x)
 
   if (nargin != 2)

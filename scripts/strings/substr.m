@@ -52,8 +52,6 @@
 ## This function is patterned after the equivalent function in Perl.
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-
 function t = substr (s, offset, len)
 
   if (nargin < 2 || nargin > 3)

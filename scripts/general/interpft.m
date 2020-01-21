@@ -41,14 +41,6 @@
 ## @seealso{interp1}
 ## @end deftypefn
 
-## Author: Paul Kienzle
-## 2001-02-11
-##    * initial version
-## 2002-03-17 aadler
-##    * added code to work on matrices as well
-## 2006-05-25 dbateman
-##    * Make it matlab compatible, cutting out the 2-D interpolation
-
 function z = interpft (x, n, dim)
 
   if (nargin < 2 || nargin > 3)

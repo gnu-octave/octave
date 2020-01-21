@@ -55,8 +55,6 @@
 ## @seealso{strjust, strsplit, deblank}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function s = untabify (t, tw = 8, deblank_arg = false)
 
   if (nargin < 1 || nargin > 3)

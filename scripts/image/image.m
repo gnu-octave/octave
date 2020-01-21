@@ -67,8 +67,6 @@
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function h = image (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
@@ -145,8 +143,6 @@ endfunction
 ##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}.
-
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
 
 function h = __img__ (hax, do_new, x, y, img, varargin)
 

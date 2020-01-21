@@ -85,8 +85,6 @@
 ## @seealso{var, kurtosis, moment}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function y = skewness (x, flag, dim)
 
   if (nargin < 1) || (nargin > 3)

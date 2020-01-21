@@ -50,8 +50,6 @@
 ## @seealso{axis, pbaspect, xlim, ylim, zlim}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function daratio = daspect (varargin)
 
   ## Grab axes handle if present

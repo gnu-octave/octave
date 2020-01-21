@@ -49,9 +49,6 @@
 ## @seealso{strsplit}
 ## @end deftypefn
 
-## Author: Muthiah Annamalai <muthiah.annamalai@uta.edu>
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function rval = strjoin (cstr, delimiter)
 
   if (nargin == 1)

@@ -44,8 +44,6 @@
 ## @seealso{rgb2ind, ind2gray, hsv2rgb}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function [R, G, B] = ind2rgb (x, map)
 
   if (nargin != 2)

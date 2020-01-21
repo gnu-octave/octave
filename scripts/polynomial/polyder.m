@@ -39,8 +39,6 @@
 ## @seealso{polyint, polyval, polyreduce}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function [q, d] = polyder (p, a)
 
   if (nargin == 1 || nargin == 2)

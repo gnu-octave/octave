@@ -35,8 +35,6 @@
 ## @seealso{clock, date, datenum}
 ## @end deftypefn
 
-## Author: pkienzle <pkienzle@users.sf.net>
-
 function t = now ()
 
   if (nargin != 0)

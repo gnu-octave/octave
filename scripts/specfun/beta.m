@@ -48,8 +48,6 @@
 ## @seealso{betaln, betainc, betaincinv}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function retval = beta (a, b)
 
   if (nargin != 2)

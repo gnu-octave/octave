@@ -45,9 +45,6 @@
 ## @seealso{chol}
 ## @end deftypefn
 
-## Author: Peter Ekberg
-##         (peda)
-
 function retval = pascal (n, t = 0)
 
   if (nargin < 1 || nargin > 2)

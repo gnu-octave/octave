@@ -47,9 +47,6 @@
 ## @seealso{polyreduce}
 ## @end deftypefn
 
-## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
-## Nov 1998: Correctly handles complex coefficients
-
 function y = polyout (c, x)
 
   if (nargin < 1) || (nargin > 2) || (nargout < 0) || (nargout > 1)

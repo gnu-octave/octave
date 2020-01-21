@@ -36,8 +36,6 @@
 ## @seealso{zip, unpack, bunzip2, gunzip, untar}
 ## @end deftypefn
 
-## Author: Søren Hauberg <hauberg@gmail.com>
-
 function filelist = unzip (zipfile, dir = [])
 
   if (nargin < 1 || nargin > 2)

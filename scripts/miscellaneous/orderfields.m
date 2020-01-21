@@ -102,8 +102,6 @@
 ## @seealso{fieldnames, getfield, setfield, rmfield, isfield, isstruct, struct}
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-
 function [sout, p] = orderfields (s1, s2)
 
   if (nargin < 1 || nargin > 2)

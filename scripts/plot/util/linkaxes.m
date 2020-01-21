@@ -57,8 +57,6 @@
 ## @seealso{linkprop, addproperty}
 ## @end deftypefn
 
-## Author: Willem Atsma willem.atsma at tanglebridge.com
-
 function linkaxes (hax, optstr = "xy")
 
   if (nargin < 1 || nargin > 2)

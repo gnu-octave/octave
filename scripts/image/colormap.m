@@ -86,8 +86,6 @@
 ## @seealso{viridis, jet, cubehelix, hsv, rainbow, hot, cool, spring, summer, autumn, winter, gray, bone, copper, pink, ocean, colorcube, flag, lines, prism, white}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function cmap = colormap (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("colormap", varargin{:});

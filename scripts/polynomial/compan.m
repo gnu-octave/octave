@@ -61,8 +61,6 @@
 ## @seealso{roots, poly, eig}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function A = compan (c)
 
   if (nargin != 1)

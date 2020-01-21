@@ -34,8 +34,6 @@
 ## @seealso{polyder, polyval}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function retval = polyint (p, k)
 
   if (nargin < 1 || nargin > 2)

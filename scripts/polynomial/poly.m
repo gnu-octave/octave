@@ -55,8 +55,6 @@
 ## @seealso{roots, eig}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function y = poly (x)
 
   if (nargin != 1)

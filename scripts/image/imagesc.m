@@ -57,8 +57,6 @@
 ## @seealso{image, imshow, caxis}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function h = imagesc (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("imagesc", varargin{:});

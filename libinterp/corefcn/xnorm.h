@@ -23,8 +23,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// author: Jaroslav Hajek <highegg@gmail.com>
-
 #if ! defined (octave_xnorm_h)
 #define octave_xnorm_h 1
 

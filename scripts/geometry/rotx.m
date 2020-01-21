@@ -81,8 +81,6 @@
 ## @seealso{roty, rotz}
 ## @end deftypefn
 
-## Author: Nicholas Jankowski <jankowskin@asme.org>
-
 function retmat = rotx (angle_in_deg)
 
   if ((nargin != 1) || ! isscalar (angle_in_deg))

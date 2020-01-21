@@ -47,9 +47,6 @@
 ## @seealso{narginchk, error, nargout, nargin}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-## Author: Carnë Draug <carandraug+dev@gmail.com>
-
 function msg = nargoutchk (minargs, maxargs, nargs, outtype)
 
   ## before matlab's 2011b, nargoutchk would return an error message (just the

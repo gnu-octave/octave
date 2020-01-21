@@ -146,9 +146,6 @@
 ## @seealso{mpoles, poly, roots, conv, deconv}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function [r, p, k, e] = residue (b, a, varargin)
 
   if (nargin < 2 || nargin > 4)

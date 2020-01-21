@@ -30,9 +30,6 @@
 ## @seealso{allchild, figure, get, set}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-## Modified by: Carnë Draug <carandraug+dev@gmail.com>
-
 function findfigs ()
 
   hfigs = allchild (0);

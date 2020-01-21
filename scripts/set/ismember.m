@@ -74,11 +74,6 @@
 ## @seealso{lookup, unique, union, intersect, setdiff, setxor}
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-## Author: Søren Hauberg <hauberg@gmail.com>
-## Author: Ben Abbott <bpabbott@mac.com>
-## Reimplemented using lookup & unique: Jaroslav Hajek <highegg@gmail.com>
-
 function [tf, s_idx] = ismember (a, s, varargin)
 
   if (nargin < 2 || nargin > 3)

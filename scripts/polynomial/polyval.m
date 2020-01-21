@@ -46,8 +46,6 @@
 ## @seealso{polyvalm, polyaffine, polyfit, roots, poly}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function [y, dy] = polyval (p, x, s = [], mu)
 
   if (nargin < 2 || nargin > 4 || (nargout == 2 && nargin < 3))

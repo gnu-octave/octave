@@ -62,8 +62,6 @@
 ## @seealso{nchoosek}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function b = bincoeff (n, k)
 
   if (nargin != 2)

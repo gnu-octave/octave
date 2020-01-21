@@ -82,8 +82,6 @@
 ## @seealso{poly, compan, fzero}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function r = roots (c)
 
   if (nargin != 1 || (! isvector (c) && ! isempty (c)))

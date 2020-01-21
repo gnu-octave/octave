@@ -90,8 +90,6 @@
 ## @seealso{bincoeff, perms}
 ## @end deftypefn
 
-## Author: Rolf Fabian  <fabian@tu-cottbus.de>
-## Author: Paul Kienzle <pkienzle@users.sf.net>
 function C = nchoosek (v, k)
 
   if (nargin != 2

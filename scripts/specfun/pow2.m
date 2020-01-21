@@ -45,8 +45,6 @@
 ## @seealso{log2, nextpow2, power}
 ## @end deftypefn
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-
 function y = pow2 (f, e)
 
   if (nargin == 1)

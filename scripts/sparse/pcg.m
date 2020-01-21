@@ -259,11 +259,6 @@
 ## @seealso{sparse, pcr, gmres, bicg, bicgstab, cgs}
 ## @end deftypefn
 
-## Author: Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
-## Modified by: Vittoria Rezzonico <vittoria.rezzonico@epfl.ch>
-##  - Add the ability to provide the pre-conditioner as two separate matrices
-
-
 function [x_min, flag, relres, iter_min, resvec, eigest] =...
          pcg (A, b, tol = [], maxit = [], M1 = [], M2 = [], x0 = [], varargin)
 

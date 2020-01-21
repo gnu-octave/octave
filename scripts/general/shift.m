@@ -34,8 +34,6 @@
 ## If the optional @var{dim} argument is given, operate along this dimension.
 ## @end deftypefn
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-
 function y = shift (x, b, dim)
 
   if (nargin != 2 && nargin != 3)

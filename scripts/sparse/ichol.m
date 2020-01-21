@@ -158,9 +158,6 @@
 ## @seealso{chol, ilu, pcg}
 ## @end deftypefn
 
-## Author: Eduardo Ramos Fernández <eduradical951@gmail.com>
-## Author: Kai T. Ohlhus <k.ohlhus@gmail.com>
-
 function L = ichol (A, opts = struct ())
 
   if (nargin < 1 || nargin > 2 || nargout > 1)

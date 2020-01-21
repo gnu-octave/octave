@@ -90,13 +90,6 @@
 ## @seealso{imwrite, imfinfo, imformats}
 ## @end deftypefn
 
-## Author: Carnë Draug <carandraug@octave.org>
-## Author: Thomas L. Scofield <scofield@calvin.edu>
-## Author: Kristian Rumberg <kristianrumberg@gmail.com>
-## Author: Thomas Weber <thomas.weber.mail@gmail.com>
-## Author: Stefan van der Walt <stefan@sun.ac.za>
-## Author: Andy Adler
-
 function [img, varargout] = imread (filename, varargin)
 
   if (nargin < 1)

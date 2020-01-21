@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
 
   dos_shell = (ispc () && ! isunix ());

@@ -47,10 +47,6 @@
 ## @seealso{conv2}
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-## 2001-02-08
-##    * initial release
-
 function y = filter2 (b, x, shape)
 
   if (nargin < 2 || nargin > 3)

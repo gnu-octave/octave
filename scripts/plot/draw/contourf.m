@@ -64,9 +64,6 @@
 ## @seealso{ezcontourf, contour, contourc, contour3, clabel, meshc, surfc, caxis, colormap, plot}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-## Author: Shai Ayal <shaiay@users.sourceforge.net>
-
 function [c, h] = contourf (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("contour", varargin{:});

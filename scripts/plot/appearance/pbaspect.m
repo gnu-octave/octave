@@ -51,8 +51,6 @@
 ## @seealso{axis, daspect, xlim, ylim, zlim}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function pbratio = pbaspect (varargin)
 
   ## Grab axes handle if present

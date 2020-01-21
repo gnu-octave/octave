@@ -55,13 +55,6 @@
 ## @seealso{voronoi, convhulln, delaunayn}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
-## First Release: 20/08/2000
-
-## 2003-12-14 Rafael Laboissiere <rafael@laboissiere.net>
-## Added optional second argument to pass options to the underlying
-## qhull command
-
 function [C, F] = voronoin (pts, options)
 
   if (nargin != 1 && nargin != 2)

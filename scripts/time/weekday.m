@@ -53,8 +53,6 @@
 ## @seealso{eomday, is_leap_year, calendar, datenum, datevec}
 ## @end deftypefn
 
-## Author: pkienzle <pkienzle@users.sf.net>
-
 function [d, s] = weekday (d, format = "short")
 
   if (nargin < 1 || nargin > 2)

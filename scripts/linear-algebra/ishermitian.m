@@ -50,8 +50,6 @@
 ## @seealso{issymmetric, isdefinite}
 ## @end deftypefn
 
-## Author: A. S. Hodel <scotte@eng.auburn.edu>
-
 function retval = ishermitian (A, skewopt = "nonskew", tol = 0)
 
   if (nargin < 1 || nargin > 3)

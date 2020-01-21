@@ -40,8 +40,6 @@
 ## @seealso{ind2gray, rgb2ind}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function [I, map] = gray2ind (I, n = 64)
 
   if (nargin < 1 || nargin > 2)

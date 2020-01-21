@@ -105,9 +105,6 @@
 ## @seealso{ezplot3, plot}
 ## @end deftypefn
 
-## Author: Paul Kienzle
-##         (modified from __plt__.m)
-
 function h = plot3 (varargin)
 
   [hax, varargin, nargs] = __plt_get_axis_arg__ ("plot3", varargin{:});

@@ -74,9 +74,6 @@
 ## @seealso{image, imagesc, colormap, gray2ind, rgb2ind}
 ## @end deftypefn
 
-## Author: Stefan van der Walt  <stefan@sun.ac.za>
-## Author: Soren Hauberg <hauberg at gmail dot com>
-
 function h = imshow (im, varargin)
 
   if (nargin == 0)

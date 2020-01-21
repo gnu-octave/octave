@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function plot_stream = __gnuplot_open_stream__ (npipes, h)
 
   [prog, args] = gnuplot_binary ();

@@ -32,9 +32,6 @@
 ## @seealso{diag, horzcat, vertcat, sparse}
 ## @end deftypefn
 
-## Author: Daniel Calvelo
-## Modified by: William Poetra Yoga Hadisoeseno
-
 function retval = blkdiag (varargin)
 
   if (nargin < 1)

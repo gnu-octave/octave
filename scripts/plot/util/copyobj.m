@@ -42,8 +42,6 @@
 ## @seealso{struct2hdl, hdl2struct, findobj}
 ## @end deftypefn
 
-## Author: pdiribarne <pdiribarne@new-host.home>
-
 function hnew = copyobj (horig, hparent = 0)
 
   partypes = {"root", "figure", "axes", "hggroup"};

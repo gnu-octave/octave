@@ -74,8 +74,6 @@
 ## Calculus with Applications in Statistics and Econometrics}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function k = commutation_matrix (m, n)
 
   if (nargin < 1 || nargin > 2)

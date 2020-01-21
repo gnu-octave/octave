@@ -52,8 +52,6 @@
 ## @seealso{deconv, conv2, convn, fftconv}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function y = conv (a, b, shape = "full")
 
   if (nargin < 2 || nargin > 3)

@@ -46,9 +46,6 @@
 ## @seealso{find, rindex}
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-## This is patterned after the AWK function of the same name.
-
 function n = index (s, t, direction = "first")
 
   if (nargin < 2 || nargin > 3)

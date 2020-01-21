@@ -23,8 +23,6 @@
 ## Internal undocumented function.
 ## @end deftypefn
 
-## Author: Philip Nienhuis <prnienhuis@users.sf.net>
-
 function pkg_list = expand_rel_paths (pkg_list)
 
   ## Prepend location of OCTAVE_HOME to install directories

@@ -52,9 +52,6 @@
 ## @seealso{javachk}
 ## @end deftypefn
 
-## Author: Rik Wehbring
-## Author: Philip Nienhuis <prnienhuis@users.sf.net>
-
 function retval = usejava (feature)
 
   if (nargin != 1 || ! ischar (feature))

@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
 
   if (numel (h) == 1 && isfigure (h))

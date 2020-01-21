@@ -23,8 +23,6 @@
 ## Internal undocumented function.
 ## @end deftypefn
 
-## Author: Philip Nienhuis <prnienhuis@users.sf.net>
-
 function pkg_list = make_rel_paths (pkg_list)
 
   ptn = ["^" strrep(canonicalize_file_name (OCTAVE_HOME), '\', '\\')];

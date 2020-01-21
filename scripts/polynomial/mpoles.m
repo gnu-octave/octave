@@ -55,8 +55,6 @@
 ## @seealso{residue, poly, roots, conv, deconv}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function [multp, indx] = mpoles (p, tol, reorder)
 
   if (nargin < 1 || nargin > 3)

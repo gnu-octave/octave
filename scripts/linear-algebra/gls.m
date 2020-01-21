@@ -87,8 +87,6 @@
 ## @seealso{ols}
 ## @end deftypefn
 
-## Author: Teresa Twaroch <twaroch@ci.tuwien.ac.at>
-
 function [beta, v, r] = gls (y, x, o)
 
   if (nargin != 3)

@@ -48,8 +48,6 @@
 ## @seealso{dot, curl, divergence}
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-
 function z = cross (x, y, dim)
 
   if (nargin != 2 && nargin != 3)

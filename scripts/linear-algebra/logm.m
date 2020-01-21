@@ -49,6 +49,7 @@
 
 ## Author: N. J. Higham
 ## Author: Richard T. Guy <guyrt7@wfu.edu>
+
 function [s, iters] = logm (A, opt_iters = 100)
 
   if (nargin == 0 || nargin > 2)

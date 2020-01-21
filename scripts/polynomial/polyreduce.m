@@ -30,8 +30,6 @@
 ## @seealso{polyout}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function p = polyreduce (c)
 
   if (nargin != 1)

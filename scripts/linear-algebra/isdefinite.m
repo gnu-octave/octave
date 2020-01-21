@@ -47,8 +47,6 @@
 ## @seealso{issymmetric, ishermitian}
 ## @end deftypefn
 
-## Author: Gabriele Pannocchia <g.pannocchia@ing.unipi.it>
-
 function retval = isdefinite (A, tol)
 
   if (nargin < 1 || nargin > 2)

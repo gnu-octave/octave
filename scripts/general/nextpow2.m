@@ -39,8 +39,6 @@
 ## @seealso{pow2, log2}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function n = nextpow2 (x)
 
   if (nargin != 1)

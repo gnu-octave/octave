@@ -47,8 +47,6 @@
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis <prnienhuis@users.sf.net>
-
 function mingwpath = __w2mpth__ (winpath)
 
   ## Check for platform

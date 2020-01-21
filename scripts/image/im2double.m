@@ -55,9 +55,6 @@
 ## @seealso{double}
 ## @end deftypefn
 
-## Author: Søren Hauberg <soren@hauberg.org>
-## Author: Carnë Draug <carandraug@octave.org>
-
 function img = im2double (img, im_type)
 
   if (nargin < 1 || nargin > 2)

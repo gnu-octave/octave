@@ -42,9 +42,8 @@
 ## @seealso{griddata3, griddatan, delaunay}
 ## @end deftypefn
 
-## Author:      Kai Habel <kai.habel@gmx.de>
-##              xi and yi are not "meshgridded" if both are vectors
-##              of the same size (for compatibility)
+## Algorithm: xi and yi are not "meshgridded" if both are vectors
+##            of the same size (for compatibility)
 
 function [rx, ry, rz] = griddata (x, y, z, xi, yi, method = "linear")
 

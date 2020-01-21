@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
-
 function opts = __gnuplot_print__ (opts)
 
   dos_shell = (ispc () && ! isunix ());

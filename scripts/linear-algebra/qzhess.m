@@ -61,8 +61,6 @@
 ## @seealso{lu, chol, hess, qr, qz, schur, svd}
 ## @end deftypefn
 
-## Author: A. S. Hodel <scotte@eng.auburn.edu>
-
 function [aa, bb, q, z] = qzhess (A, B)
 
   if (nargin != 2)

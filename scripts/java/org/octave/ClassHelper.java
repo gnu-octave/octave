@@ -588,8 +588,6 @@ public class ClassHelper
           modified into a more strict check to avoid char to string matching
           to avoid matching method signatureslike
           java_method(char) with octave_call('a String')
-          Date: 28-08-2010
-          Author: Martin Hepperle
         */
         return true;
       }
@@ -600,8 +598,6 @@ public class ClassHelper
           java_method(String) with octave_call('a String')
           but not
           java_method(char) with octave_call('a String')
-          Date: 28-08-2010
-          Author: Martin Hepperle
         */
         return true;
       }
@@ -647,9 +643,7 @@ public class ClassHelper
   /**
    * Check whether the supplied class is a String class.
    *
-   * Added for more strict char/string mathicng of method signatures
-   * Date: 28-08-2010
-   * Author: Martin Hepperle
+   * Added for more strict char/string matching of method signatures
    * @param cls Class - the class to check
    * @return boolean - true if clas is of class java.lang.String
    */

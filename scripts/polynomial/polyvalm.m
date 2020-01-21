@@ -35,8 +35,6 @@
 ## @seealso{polyval, roots, poly}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function y = polyvalm (c, x)
 
   if (nargin != 2)

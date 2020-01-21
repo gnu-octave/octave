@@ -43,8 +43,6 @@
 ## @seealso{hdl2struct, hgload, findobj}
 ## @end deftypefn
 
-## Author: pdiribarne <pdiribarne@new-host.home>
-
 function [h, pout] = struct2hdl (s, p=[], hilev = false)
 
   fields = {"handle", "type", "children", "properties", "special"};

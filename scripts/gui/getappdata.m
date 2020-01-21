@@ -36,8 +36,6 @@
 ## @seealso{setappdata, isappdata, rmappdata, guidata, get, set, getpref, setpref}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function value = getappdata (h, name)
 
   if (nargin < 1 || nargin > 2)

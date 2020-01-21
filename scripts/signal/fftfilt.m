@@ -39,8 +39,6 @@
 ## @seealso{filter, filter2}
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-
 function y = fftfilt (b, x, n)
 
   ## If N is not specified explicitly, we do not use the overlap-add

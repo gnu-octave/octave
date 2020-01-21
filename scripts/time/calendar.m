@@ -41,8 +41,6 @@
 ## @seealso{datenum, datestr}
 ## @end deftypefn
 
-## Author: pkienzle <pkienzle@users.sf.net>
-
 function varargout = calendar (varargin)
 
   switch (nargin)

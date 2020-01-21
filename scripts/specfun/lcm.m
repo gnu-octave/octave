@@ -33,8 +33,6 @@
 ## @seealso{factor, gcd, isprime}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function l = lcm (varargin)
 
   if (nargin < 2)

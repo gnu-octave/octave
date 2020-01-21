@@ -42,8 +42,6 @@
 ## @seealso{bsxfun, kron, repelems}
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-
 function x = repmat (A, m, varargin)
 
   if (nargin < 2)

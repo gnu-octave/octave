@@ -53,8 +53,6 @@
 ## @seealso{zticklabels, xticks, yticks, rticks, thetaticks, get, set}
 ## @end deftypefn
 
-## Author: Nicholas Jankowski <jankowskin@asme.org>
-
 function retval = zticks (varargin)
 
   hax = [];

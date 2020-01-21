@@ -35,8 +35,6 @@
 ## @seealso{lin2mu}
 ## @end deftypefn
 
-## Author:  Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
-
 function y = mu2lin (x, n = 0)
 
   if (nargin == 2)

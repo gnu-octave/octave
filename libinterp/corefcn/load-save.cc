@@ -23,10 +23,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// Author: John W. Eaton.
-// HDF5 support by Steven G. Johnson <stevenj@alum.mit.edu>
-// Matlab v5 support by James R. Van Zandt <jrv@vanzandt.mv.com>
-
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif

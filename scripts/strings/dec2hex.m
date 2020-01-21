@@ -46,8 +46,6 @@
 ## @seealso{hex2dec, dec2base, dec2bin}
 ## @end deftypefn
 
-## Author: Daniel Calvelo <dcalvelo@yahoo.com>
-
 function h = dec2hex (d, len)
 
   if (nargin == 1)

@@ -61,8 +61,6 @@
 ## @end table
 ## @end deftypefn
 
-## Author: A. S. Hodel
-
 function [housv, beta, zer] = housh (x, j, z)
 
   if (nargin != 3)

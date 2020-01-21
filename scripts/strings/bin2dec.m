@@ -55,8 +55,6 @@
 ## @seealso{dec2bin, base2dec, hex2dec}
 ## @end deftypefn
 
-## Author: Daniel Calvelo <dcalvelo@yahoo.com>
-
 function d = bin2dec (s)
 
   if (nargin != 1)

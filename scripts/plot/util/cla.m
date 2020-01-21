@@ -47,8 +47,6 @@
 ## @seealso{clf, delete, reset}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function cla (hax, do_reset = false)
 
   if (nargin > 2)

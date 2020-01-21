@@ -29,8 +29,6 @@
 ## @seealso{weekday, datenum, datevec, is_leap_year, calendar}
 ## @end deftypefn
 
-## Author: pkienzle <pkienzle@users.sf.net>
-
 function e = eomday (y, m)
 
   if (nargin != 2)

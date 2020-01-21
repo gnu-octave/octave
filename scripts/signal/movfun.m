@@ -23,8 +23,6 @@
 ##
 ########################################################################
 
-## Author: Juan Pablo Carbajal <ajuanpi+dev@gmail.com>
-
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movfun (@var{fcn}, @var{x}, @var{wlen})
 ## @deftypefnx {} {@var{y} =} movfun (@var{fcn}, @var{x}, @var{[@var{nb}, @var{na}}])

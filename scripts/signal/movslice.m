@@ -23,8 +23,6 @@
 ##
 ########################################################################
 
-## Author: Juan Pablo Carbajal <ajuanpi+dev@gmail.com>
-
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{slcidx} =} movslice (@var{N}, @var{wlen})
 ## @deftypefnx {} {[@var{slcidx}, @var{C}, @var{Cpre}, @var{Cpost}, @var{win}] =} movslice (@dots{})

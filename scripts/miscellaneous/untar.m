@@ -36,8 +36,6 @@
 ## @seealso{tar, unpack, bunzip2, gunzip, unzip}
 ## @end deftypefn
 
-## Author: Søren Hauberg <hauberg@gmail.com>
-
 function filelist = untar (tarfile, dir = [])
 
   if (nargin < 1 || nargin > 2)

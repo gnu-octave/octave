@@ -37,8 +37,6 @@
 ## @seealso{conv, residue}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function [b, r] = deconv (y, a)
 
   if (nargin != 2)

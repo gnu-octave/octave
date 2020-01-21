@@ -28,8 +28,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function res = __gnuplot_has_feature__ (feature)
   persistent features = {"minimum_version",
                          "needs_color_with_postscript",

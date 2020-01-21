@@ -45,8 +45,6 @@
 ## @seealso{list_primes, isprime}
 ## @end deftypefn
 
-## Author: Paul Kienzle
-## Author: Francesco Potortì
 function p = primes (n)
 
   if (nargin != 1)

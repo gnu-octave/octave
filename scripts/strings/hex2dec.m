@@ -48,8 +48,6 @@
 ## @seealso{dec2hex, base2dec, bin2dec}
 ## @end deftypefn
 
-## Author: Daniel Calvelo <dcalvelo@yahoo.com>
-
 function d = hex2dec (s)
 
   if (nargin != 1)

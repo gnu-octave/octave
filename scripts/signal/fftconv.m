@@ -38,8 +38,6 @@
 ## @seealso{deconv, conv, conv2}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function c = fftconv (x, y, n)
 
   if (nargin < 2 || nargin > 3)

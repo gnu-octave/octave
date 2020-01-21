@@ -38,8 +38,6 @@
 ## @seealso{orth}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function retval = null (A, tol)
 
   if (nargin < 1 || nargin > 2)

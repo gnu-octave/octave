@@ -54,8 +54,6 @@
 ## @seealso{dec2base, bin2dec, hex2dec}
 ## @end deftypefn
 
-## Author: Daniel Calvelo <dcalvelo@yahoo.com>
-
 function out = base2dec (s, base)
 
   if (nargin != 2)

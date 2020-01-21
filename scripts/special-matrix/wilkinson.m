@@ -34,9 +34,6 @@
 ## @seealso{rosser, eig}
 ## @end deftypefn
 
-## Author: Peter Ekberg
-##         (peda)
-
 function retval = wilkinson (n)
 
   if (nargin != 1)

@@ -48,8 +48,6 @@
 ## @seealso{rticks, xticks, yticks, zticks, polar, get, set}
 ## @end deftypefn
 
-## Author: Nicholas Jankowski <jankowskin@asme.org>
-
 function retval = thetaticks (varargin)
 
   ## FIXME: Update function to work with polaraxes objects once that function

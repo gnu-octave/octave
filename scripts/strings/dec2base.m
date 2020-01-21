@@ -56,8 +56,6 @@
 ## @seealso{base2dec, dec2bin, dec2hex}
 ## @end deftypefn
 
-## Author: Daniel Calvelo <dcalvelo@yahoo.com>
-
 function retval = dec2base (d, base, len)
 
   if (nargin < 2 || nargin > 3)

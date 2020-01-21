@@ -46,9 +46,6 @@
 ## @seealso{find, index}
 ## @end deftypefn
 
-## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-## This is patterned after the AWK function of the same name.
-
 function n = rindex (s, t)
 
   if (nargin != 2)

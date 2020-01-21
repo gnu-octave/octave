@@ -42,8 +42,6 @@
 ## @seealso{postpad, cat, resize}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-
 function y = prepad (x, l, c, dim)
 
   if (nargin < 2 || nargin > 4)

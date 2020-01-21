@@ -28,13 +28,6 @@
 ## configured to.  It is also needed so that imformats can create a
 ## function handle for it.
 
-## Author: Carnë Draug <carandraug@octave.org>
-## Author: Thomas L. Scofield <scofield@calvin.edu>
-## Author: Kristian Rumberg <kristianrumberg@gmail.com>
-## Author: Thomas Weber <thomas.weber.mail@gmail.com>
-## Author: Stefan van der Walt <stefan@sun.ac.za>
-## Author: Andy Adler
-
 function varargout = __imread__ (filename, varargin)
 
   ## keep track of the varargin offset we're looking at each moment

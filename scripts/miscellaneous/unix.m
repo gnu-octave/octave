@@ -39,9 +39,6 @@
 ## @seealso{dos, system, isunix, ismac, ispc}
 ## @end deftypefn
 
-## Author: Octave Forge ???
-## Adapted by: jwe
-
 function [status, text] = unix (command, echo_arg)
 
   if (nargin < 1 || nargin > 2)

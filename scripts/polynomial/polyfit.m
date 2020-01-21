@@ -78,10 +78,6 @@
 ## @seealso{polyval, polyaffine, roots, vander, zscore}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Modified on 20120204 by P. Dupuis; added the ability to specify a
-## polynomial mask instead of a polynomial degree.
-
 function [p, s, mu] = polyfit (x, y, n)
 
   if (nargin < 3 || nargin > 4)

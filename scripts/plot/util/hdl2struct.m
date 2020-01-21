@@ -33,8 +33,6 @@
 ## @seealso{struct2hdl, hgsave, findobj}
 ## @end deftypefn
 
-## Author: pdiribarne <pdiribarne@new-host.home>
-
 function s = hdl2struct (h)
 
   if (nargin != 1 || ! ishghandle (h))

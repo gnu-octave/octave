@@ -88,8 +88,6 @@
 ## @seealso{ellipj}
 ## @end deftypefn
 
-## Author: David Billinghurst <David.Billinghurst@riotinto.com>
-## Author: Paul Kienzle <pkienzle@users.sf.net>
 function [k, e] = ellipke (m, tol = [])
 
   if (nargin < 1 || nargin > 2)

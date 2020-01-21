@@ -101,8 +101,6 @@
 ## @seealso{axes, plot, gca, set}
 ## @end deftypefn
 
-## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
-
 function h = subplot (varargin)
 
   align_axes = false;

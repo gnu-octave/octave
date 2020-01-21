@@ -40,8 +40,6 @@
 ## @seealso{getappdata, isappdata, rmappdata, guidata, get, set, getpref, setpref}
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function setappdata (h, varargin)
 
   if (nargin < 3)

@@ -29,8 +29,6 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream)
 
   term = strtrim (term);

@@ -67,8 +67,6 @@
 ## @seealso{usejava, error}
 ## @end deftypefn
 
-## Author: Philip Nienhuis <prnienhuis at users.sf.net>
-
 function msg = javachk (feature, caller = "")
 
   if (nargin < 1 || nargin > 2)

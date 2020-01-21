@@ -49,8 +49,6 @@
 ## @seealso{cov}
 ## @end deftypefn
 
-## Author: Kurt Hornik <hornik@wu-wien.ac.at>
-
 function retval = corr (x, y = [])
 
   if (nargin < 1 || nargin > 2)

@@ -54,8 +54,6 @@
 ## @seealso{and, or, not}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function z = xor (x, y, varargin)
 
   if (nargin < 2)

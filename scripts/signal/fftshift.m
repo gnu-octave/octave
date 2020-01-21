@@ -49,8 +49,6 @@
 ## @seealso{ifftshift}
 ## @end deftypefn
 
-## Author: Vincent Cautaerts <vincent@comf5.comm.eng.osaka-u.ac.jp>
-
 function retval = fftshift (x, dim)
 
   if (nargin != 1 && nargin != 2)

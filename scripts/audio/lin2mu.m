@@ -37,8 +37,6 @@
 ## @end deftypefn
 
 
-## Author: Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
-
 function y = lin2mu (x, n)
 
   if (nargin == 1)

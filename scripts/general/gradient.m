@@ -67,8 +67,6 @@
 ## @seealso{diff, del2}
 ## @end deftypefn
 
-## Author:  Kai Habel <kai.habel@gmx.de>
-
 function varargout = gradient (m, varargin)
 
   if (nargin < 1)

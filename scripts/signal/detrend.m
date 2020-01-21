@@ -40,8 +40,6 @@
 ## @seealso{polyfit}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-
 function y = detrend (x, p = 1)
 
   if (nargin < 1 || nargin > 2)

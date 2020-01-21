@@ -57,7 +57,7 @@ system ("aspell --conf=$aspell_conf list < $fname > $tmp_fname");
 if ($?)
 {
   unlink ($tmp_fname);
-  die ("aspell command unsuccesful.  Cannot continue\n");
+  die ("aspell command unsuccessful.  Cannot continue\n");
 }
 
 open (FH, "<$tmp_fname")

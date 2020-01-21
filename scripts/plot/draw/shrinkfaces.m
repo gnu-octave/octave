@@ -203,7 +203,7 @@ endfunction
 %! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! grid on;
-%! title ("shrinkfaces() on 2-D complex shapes tesselated with triangles");
+%! title ("shrinkfaces() on 2-D complex shapes tessellated with triangles");
 
 %!demo
 %! clf;

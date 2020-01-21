@@ -217,7 +217,7 @@ An overview of the directory layout of Octave's source files:
        Classes that define the parse tree for the interpreter.
   - `corefcn`
        statically linked `DEFUN` functions (callable from the
-       scripting langauge) as well as internal C++ functions used by
+       scripting language) as well as internal C++ functions used by
        the interpreter.
   - `dldfcn`
        dynamically linked `DEFUN` functions (callable from the

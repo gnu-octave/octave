@@ -1860,7 +1860,7 @@ function idx = do_border_tick_3d (obj, plot_stream, idx)
       if (length (color) == 3)
         colorspec = sprintf ('rgb "#%02x%02x%02x"', round (255*color));
       else
-        colorspec = sprintf ("palatte %d", round (color));
+        colorspec = sprintf ("palette %d", round (color));
       endif
     else
       colorspec = sprintf ('"%s"', color);

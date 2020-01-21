@@ -1657,7 +1657,7 @@ if test $check_magick = yes; then
   PKG_CHECK_EXISTS([$magick++], [
     dnl Make sure we only get -I, -L, and -l flags.
     dnl Some Graphics/ImageMagick++ dnl packages add extra flags that are
-    dnl useful when building Graphics/ImageMagick++ extentions.  These extra
+    dnl useful when building Graphics/ImageMagick++ extensions.  These extra
     dnl flags break the Octave build.
     MAGICK_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $magick++ | $SED -e 's/^ *$//')"
     MAGICK_LDFLAGS="$($PKG_CONFIG --libs-only-L $magick++ | $SED -e 's/^ *$//')"

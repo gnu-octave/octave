@@ -90,7 +90,7 @@ namespace octave
   };
 
 
-  //! The documenztation main class derived from QSplitter
+  //! The documentation main class derived from QSplitter
 
   class documentation : public QSplitter
   {

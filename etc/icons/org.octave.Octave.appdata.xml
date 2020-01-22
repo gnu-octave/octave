@@ -60,6 +60,17 @@ along with Octave; see the file COPYING.  If not, see
       Programme verwendet werden. Die Octave-Programmiersprache ist sehr
       ähnlich zu Matlab, so dass die meisten Programme leicht übertragbar sind.
     </p>
+    <p xml:lang="es">
+      GNU Octave es un lenguaje interpretado de alto nivel, destinado
+      principalmente a cálculos numéricos. Dispone capacidades para
+      la solución numérica de problemas lineales y no lineales, y para
+      realizar otros experimentos numéricos. También proporciona amplias
+      funcionalidades gráficas para la visualización y manipulación de datos.
+      Octave se usa normalmente a través de su interfaz de línea de comandos
+      interactiva, pero también se puede usar para escribir programas no
+      interactivos. El lenguaje Octave es muy similar a Matlab,
+      por lo que la mayoría de los programas son fáciles de portar.
+    </p>
     <p xml:lang="fr">
       GNU Octave est un langage de programmation interprété, destiné
       principalement au calcul numérique. Il fournit des fonctionnalités
@@ -101,6 +112,16 @@ along with Octave; see the file COPYING.  If not, see
       Funktionen, die in Octaves eigener Programmiersprache geschrieben wurden,
       oder über dynamisch geladene, in C++, C, Fortran oder anderen Sprachen
       geschriebene Module.
+    </p>
+    <p xml:lang="es">
+      Octave dispone de una amplia variedad de herramientas para resolver
+      problemas comunes de álgebra lineal numérica, encontrar
+      las raíces de ecuaciones no lineales, integrar funciones ordinarias,
+      manipular polinomios e integrar ecuaciones diferenciales ordinarias
+      y algebraicas diferenciales. Es fácilmente extensible y personalizable
+      a través de funciones definidas por el usuario escritas en el propio
+      lenguaje de Octave, o utilizando módulos cargados dinámicamente
+      escritos en C ++, C, Fortran u otros idiomas.
     </p>
     <p xml:lang="fr">
       Octave dispose de nombreux outils pour résoudre les problèmes classiques

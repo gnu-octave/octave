@@ -49,6 +49,17 @@
     interactifs. Le langage Octave est très similaire à Matlab de telle sorte
     que les programmes Matlab sont très faciles à porter sous Octave.
   </description>
+  <description xml:lang="nl">
+    GNU Octave is een geínterpreteerde programmeertaal bedoeld voor numerieke
+    berekeningen. Het biedt mogelijkheden voor het numeriek oplossen van
+    lineaire en niet-lineaire problemen en andere numerieke experimenten. Ook
+    biedt het uitgebreide mogelijkheden for grafische visualisatie en
+    -manipulatie van data. Octave wordt meestal gebruikt door middel van zijn
+    interactieve opdrachtregelinterface (terminal) maar kan ook gebruikt
+    worden voor het schrijven van niet-interactieve programma's. Octave's taal
+    lijkt zeer veel op die van Matlab zodat de meeste Matlabcode simpel te
+    draaien is in Octave.
+  </description>
 
   <homepage rdf:resource="https://www.octave.org" />
   <license rdf:resource="https://www.gnu.org/licenses/gpl-3.0.txt" />

@@ -71,6 +71,17 @@ along with Octave; see the file COPYING.  If not, see
       interactifs. Le langage Octave est très similaire à Matlab de telle sorte
       que les programmes Matlab sont très faciles à porter sous Octave.
     </p>
+    <p xml:lang="nl">
+      GNU Octave is een hogere geïnterpreteerde taal, primair bedoeld voor
+      numerieke berekeningen. Het biedt mogelijkheden voor het numeriek
+      oplossen van lineaire en niet-lineaire problemen en andere numerieke
+      experimenten. Ook biedt het uitgebreide mogelijkheden for grafische
+      visualisatie en -manipulatie van data. Octave wordt meestal gebruikt
+      door middel van zijn interactieve opdrachtregelinterface (terminal)
+      maar kan ook gebruikt worden voor het schrijven van niet-interactieve
+      programma's. Octave's taal lijkt zeer veel op die van Matlab zodat de
+      meeste Matlabcode simpel te draaien is in Octave.
+    </p>
     <p>
       Octave has extensive tools for solving common numerical linear algebra
       problems, finding the roots of nonlinear equations, integrating ordinary
@@ -98,6 +109,16 @@ along with Octave; see the file COPYING.  If not, see
       Il peut très facilement être étendu en définissant de nouvelles
       fonctions écrites en langage Octave ou en utilisant des modules
       chargés dynamiquement, écrits en C++, C, Fortran ou autres langages.
+    </p>
+    <p xml:lang="nl">
+      Octave heeft een uitgebreide verzameling gereedschappen for het oplossen
+      van numerieke lineaire-algebra vraagstukken, vinden van wortels van
+      niet-lineaire vergelijkingen, integreren van gewone functies, manipuleren
+      van polynomen en integreren van gewone differentiaal- en algebrïsche
+      differentiaalvergelijkingen. Het is makkelijk uit te breiden en aan te
+      passen met behulp van door zelfgemaakte functies geschreven in Octave's
+      eigen taal en/of met dynamische te laden modules gechreven in C++, C,
+      Fortran of andere programmeertalen.
     </p>
   </description>
 

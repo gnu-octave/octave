@@ -56,7 +56,6 @@
 #include "ovl.h"
 #include "pager.h"
 #include "sysdep.h"
-#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
@@ -444,8 +443,6 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   if (tc.is_string ())
     {
-      octave::unwind_protect frame;
-
       charMatrix chm = tc.char_matrix_value ();
 
       octave_idx_type nrow = chm.rows ();

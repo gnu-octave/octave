@@ -4095,6 +4095,8 @@ namespace octave
     //        pts2pix and m_devpixratio should eventually be combined in to a
     //        a single conversion factor so that only one multiplication per
     //        function call is required.
+    // FIXME: Should this be static?  What happens if window is moved to a second
+    //        monitor with a different screenpixelsperinch?
     const static double pts2pix
       = (gh_mgr.get_object (0).get ("screenpixelsperinch").double_value ()
          / 72.0);
@@ -4469,6 +4471,8 @@ namespace octave
     unsigned int ID = m_glfcns.glGenLists (1);
 
     // FIXME: See bug #53056 (measure LineWidth in points).
+    // FIXME: Should this be static?  What happens if window is moved to a second
+    //        monitor with a different screenpixelsperinch?
     const static double pts2pix
       = (gh_mgr.get_object (0).get ("screenpixelsperinch").double_value ()
          / 72.0);

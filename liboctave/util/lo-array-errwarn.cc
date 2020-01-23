@@ -125,8 +125,7 @@ namespace octave
   std::string
   index_exception::message (void) const
   {
-    std::string msg = expression () + ": " + details ();
-    return msg.c_str ();
+    return expression () + ": " + details ();
   }
 
   // Show the expression that caused the error, e.g.,  "A(-1,_)",

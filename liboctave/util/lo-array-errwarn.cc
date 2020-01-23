@@ -128,6 +128,13 @@ namespace octave
     return expression () + ": " + details ();
   }
 
+  const char * index_exception::what (void) const noexcept
+  {
+    std::string tmp = message ();
+
+    return tmp.c_str ();
+   }
+
   // Show the expression that caused the error, e.g.,  "A(-1,_)",
   // "A(0+1i)", "A(_,3)".  Show how many indices come before/after the
   // offending one, e.g., (<error>), (<error>,_), or (_,<error>,...[x5]...)

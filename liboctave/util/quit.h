@@ -33,6 +33,7 @@
 #  include <csignal>
 #  include <iosfwd>
 #  include <list>
+#  include <stdexcept>
 #  include <string>
 extern "C" {
 #else
@@ -88,8 +89,7 @@ namespace octave
             && a.column () == b.column ());
   }
 
-  class
-  execution_exception
+  class execution_exception : std::runtime_error
   {
   public:
 
@@ -99,8 +99,8 @@ namespace octave
                          const std::string& id = "",
                          const std::string& message = "unspecified error",
                          const stack_info_type& stack_info = stack_info_type ())
-      : m_err_type (err_type), m_id (id), m_message (message),
-        m_stack_info (stack_info)
+      : runtime_error (message), m_err_type (err_type), m_id (id),
+        m_message (message), m_stack_info (stack_info)
     { }
 
     execution_exception (const execution_exception&) = default;
@@ -132,6 +132,9 @@ namespace octave
 
     virtual std::string message (void) const { return m_message; }
 
+    // Provided for std::exception interface.
+    const char * what (void) const noexcept { return m_message.c_str (); }
+
     virtual stack_info_type stack_info (void) const
     {
       return m_stack_info;
@@ -155,8 +158,9 @@ namespace octave
     stack_info_type m_stack_info;
   };
 
-  class
-  exit_exception
+  // Intentionally not derived from std::exception.
+
+  class exit_exception
   {
   public:
 
@@ -192,8 +196,9 @@ namespace octave
     bool m_safe_to_return;
   };
 
-  class
-  interrupt_exception
+  // Intentionally not derived from std::exception.
+
+  class interrupt_exception
   {
   };
 }

@@ -52,8 +52,8 @@ namespace octave
 
     ~index_exception (void) = default;
 
-    // Erroneous index value.  Called in what, and by external code
-    // (e.g., nth_element) to make a custom error message.
+    // Erroneous index value.  Called in message method and by external
+    // code (e.g., nth_element) to make a custom error message.
     std::string idx (void) const { return m_index; }
 
     // details set by subclass.
@@ -63,6 +63,9 @@ namespace octave
     virtual const char * err_id (void) const = 0;
 
     virtual std::string message (void) const;
+
+    // Provided for std::exception interface.
+    const char * what (void) const noexcept;
 
     // Position of error: dimension in error, and number of dimensions.
     void set_pos (octave_idx_type nd_arg, octave_idx_type dim_arg)

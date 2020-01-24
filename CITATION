@@ -10,7 +10,7 @@ A BibTeX entry for LaTeX users is:
   @manual{,
     title     = {{GNU Octave} version 5.2.0 manual: a high-level interactive language for numerical computations},
     author    = {John W. Eaton and David Bateman and S{\o}ren Hauberg and Rik Wehbring},
-    year      = {2019},
+    year      = {2020},
     url       = {https://www.gnu.org/software/octave/doc/v5.2.0/},
   }
 

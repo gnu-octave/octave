@@ -169,7 +169,7 @@ along with Octave; see the file COPYING.  If not, see
   <developer_name>John W. Eaton and others</developer_name>
   <content_rating type="oars-1.0"/>
   <releases>
-    <release date="2019-12-14" version="5.1.90"/>
+    <release date="2020-01-31" version="5.2.0"/>
     <release date="2019-02-23" version="5.1.0"/>
     <release date="2018-08-09" version="4.4.1"/>
     <release date="2018-04-30" version="4.4.0"/>

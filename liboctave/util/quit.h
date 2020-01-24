@@ -158,32 +158,22 @@ namespace octave
     stack_info_type m_stack_info;
   };
 
-  // Intentionally not derived from std::exception.
-
-  class exit_exception
+  class exit_exception : public std::exception
   {
   public:
 
     exit_exception (int exit_status = 0, bool safe_to_return = false)
-      : m_exit_status (exit_status), m_safe_to_return (safe_to_return)
+      : std::exception (), m_exit_status (exit_status),
+        m_safe_to_return (safe_to_return)
     { }
 
-    exit_exception (const exit_exception& ex)
-      : m_exit_status (ex.m_exit_status), m_safe_to_return (ex.m_safe_to_return)
-    { }
+    exit_exception (const exit_exception&) = default;
 
-    exit_exception& operator = (exit_exception& ex)
-    {
-      if (this != &ex)
-        {
-          m_exit_status = ex.m_exit_status;
-          m_safe_to_return = ex.m_safe_to_return;
-        }
-
-      return *this;
-    }
+    exit_exception& operator = (exit_exception&) = default;
 
     ~exit_exception (void) = default;
+
+    const char * what (void) const noexcept { return "exit exception"; }
 
     int exit_status (void) const { return m_exit_status; }
 
@@ -196,10 +186,19 @@ namespace octave
     bool m_safe_to_return;
   };
 
-  // Intentionally not derived from std::exception.
-
-  class interrupt_exception
+  class interrupt_exception : public std::exception
   {
+  public:
+
+    interrupt_exception (void) = default;
+
+    interrupt_exception (const interrupt_exception&) = default;
+
+    interrupt_exception& operator = (const interrupt_exception&) = default;
+
+    ~interrupt_exception (void) = default;
+
+    const char * what (void) const noexcept { return "interrupt exception"; }
   };
 }
 

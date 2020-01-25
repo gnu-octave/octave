@@ -3472,8 +3472,6 @@ namespace octave
   {
     std::string extra_message;
 
-    symbol_scope scope = get_current_scope ();
-
     if (is_variable (expr))
       {
         std::string var = expr->name ();

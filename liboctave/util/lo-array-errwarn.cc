@@ -223,9 +223,7 @@ namespace octave
   err_invalid_index (octave_idx_type n, octave_idx_type nd,
                      octave_idx_type dim, const std::string& var)
   {
-    std::ostringstream buf;
-    buf << n + 1;
-    err_invalid_index (buf.str (), nd, dim, var);
+    err_invalid_index (std::to_string (n + 1), nd, dim, var);
   }
 
   void
@@ -271,11 +269,7 @@ namespace octave
           expl = expl + m_size.str ('x');
         }
       else
-        {
-          std::ostringstream buf;
-          buf << m_extent;
-          expl = "out of bound " + buf.str ();
-        }
+        expl = "out of bound " + std::to_string (m_extent);
 
       return expl;
     }
@@ -304,9 +298,7 @@ namespace octave
   err_index_out_of_range (int nd, int dim, octave_idx_type idx,
                           octave_idx_type ext)
   {
-    std::ostringstream buf;
-    buf << idx;
-    out_of_range e (buf.str (), nd, dim);
+    out_of_range e (std::to_string (idx), nd, dim);
 
     e.set_extent (ext);
     // ??? Make details method give extent not size.
@@ -320,9 +312,7 @@ namespace octave
   err_index_out_of_range (int nd, int dim, octave_idx_type idx,
                           octave_idx_type ext, const dim_vector& d)
   {
-    std::ostringstream buf;
-    buf << idx;
-    out_of_range e (buf.str (), nd, dim);
+    out_of_range e (std::to_string (idx), nd, dim);
 
     e.set_extent (ext);
     e.set_size (d);

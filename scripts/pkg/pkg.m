@@ -133,9 +133,32 @@
 ## @noindent
 ## adds the @code{image} package to the path.
 ##
+## Note: When loading a package, @code{pkg} will automatically try to load
+## any unloaded dependencies as well, unless the @option{-nodeps} flag has
+## been specified.  For example,
+##
+## @example
+## pkg load signal
+## @end example
+##
+## @noindent
+## adds the @code{signal} package and also tries to load its dependency: the
+## @code{control} package.  Be aware that the functionality of package(s)
+## loaded will probably be impacted by use of the @option{-nodeps} flag.  Even
+## if necessary dependencies are loaded later, the functionality of depender
+## packages can still be affected because the optimal loading order of may
+## not have been followed.
+##
 ## @item unload
 ## Remove named packages from the path.  After unloading a package it is
-## no longer possible to use the functions provided by the package.
+## no longer possible to use the functions provided by the package.  Trying
+## to unload a package that other loaded packages still depend on will result
+## in an error; no packages will be unloaded in this case.  A package can
+## be forcibly removed with the @option{-nodeps} flag, but be aware that the
+## functionality of depender packages will likely be affected.  As when loading
+## packages, reloading dependencies after having unloaded them with the
+## @option{-nodeps} flag may not restore all functionality of the depender
+## packages as the required loading order may be incorrect.
 ##
 ## @item list
 ## Show the list of currently installed packages.  For example,

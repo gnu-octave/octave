@@ -13,6 +13,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/get_description.m \
   %reldir%/private/get_forge_download.m \
   %reldir%/private/get_forge_pkg.m \
+  %reldir%/private/get_inverse_dependencies.m \
   %reldir%/private/get_unsatisfied_deps.m \
   %reldir%/private/getarch.m \
   %reldir%/private/getarchdir.m \

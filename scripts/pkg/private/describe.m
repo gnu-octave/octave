@@ -31,8 +31,10 @@
 function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global_list)
 
   ## Get the list of installed packages.
-  installed_pkgs_lst = installed_packages(local_list, global_list);
+  installed_pkgs_lst = installed_packages (local_list, global_list);
   num_packages = length (installed_pkgs_lst);
+  ## Add inverse dependencies to "installed_pkgs_lst"
+  installed_pkgs_lst = get_inverse_dependencies (installed_pkgs_lst);
 
   if (isempty (pkgnames))
     describe_all = true;
@@ -64,6 +66,7 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global
       pkg_desc_list{name_pos}.description = installed_pkgs_lst{i}.description;
       pkg_desc_list{name_pos}.depends = installed_pkgs_lst{i}.depends;
       pkg_desc_list{name_pos}.provides = parse_pkg_idx (installed_pkgs_lst{i}.dir);
+      pkg_desc_list{name_pos}.invdeps = unique (installed_pkgs_lst{i}.invdeps);
 
     endif
   endfor
@@ -86,6 +89,7 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global
                                  pkg_desc_list{i}.provides,
                                  pkg_desc_list{i}.description,
                                  pkg_desc_list{i}.depends,
+                                 pkg_desc_list{i}.invdeps,
                                  flag{i}, verbose);
     endfor
   endif
@@ -148,7 +152,8 @@ endfunction
 
 
 function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
-                                    pkg_desc, pkg_deps, status, verbose)
+                                    pkg_desc, pkg_deps, pkg_invd, status,
+                                    verbose)
 
   printf ("---\nPackage name:\n\t%s\n", pkg_name);
   printf ("Version:\n\t%s\n", pkg_ver);
@@ -157,6 +162,10 @@ function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
                       "UniformOutput", false);
   pkg_deps = strjoin (pkg_deps, "\n\t");
   printf ("Depends on:\n\t%s\n", pkg_deps);
+
+  pkg_invd = strjoin (pkg_invd, "\n\t");
+  printf ("Depended on by:\n\t%s\n", pkg_invd);
+
   printf ("Status:\n\t%s\n", status);
   if (verbose)
     printf ("---\nProvides:\n");

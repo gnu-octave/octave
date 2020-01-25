@@ -31,15 +31,13 @@
 function unload_packages (files, handle_deps, local_list, global_list)
 
   installed_pkgs_lst = installed_packages (local_list, global_list);
-  num_packages = length (installed_pkgs_lst);
+  num_packages = numel (installed_pkgs_lst);
+  ## Add inverse dependencies to field "invdeps" of installed_pkgs_lst
+  installed_pkgs_lst = get_inverse_dependencies (installed_pkgs_lst);
 
   ## Read package names and installdirs into a more convenient format.
-  pnames = pdirs = cell (1, num_packages);
-  for i = 1:num_packages
-    pnames{i} = installed_pkgs_lst{i}.name;
-    pdirs{i} = installed_pkgs_lst{i}.dir;
-    pdeps{i} = installed_pkgs_lst{i}.depends;
-  endfor
+  pnames = cellfun (@(x) x.name, installed_pkgs_lst, "UniformOutput", false);
+  pdirs = cellfun (@(x) x.dir, installed_pkgs_lst, "UniformOutput", false);
 
   ## Get the current octave path.
   p = strtrim (ostrsplit (path (), pathsep ()));
@@ -47,18 +45,45 @@ function unload_packages (files, handle_deps, local_list, global_list)
   ## Unload package_name1 ...
   dirs = {};
   desc = {};
-  for i = 1:length (files)
-    idx = strcmp (pnames, files{i});
-    if (! any (idx))
-      error ("package %s is not installed", files{i});
+  idx = find (ismember (pnames, files));
+  missing_pkgs = setdiff (files, pnames(idx));
+  if (! isempty (missing_pkgs))
+    missing_pkgs = strjoin (missing_pkgs, " & ");
+    error ("pkg: package(s): %s not installed", missing_pkgs);
+  endif
+  dirs = pdirs(idx);
+  desc = installed_pkgs_lst(idx);
+
+  if (handle_deps)
+    ## Check for loaded inverse dependencies of packages to be unloaded.
+    ## First create a list of loaded packages.
+    jdx = find (cellfun (@(x) x.loaded, installed_pkgs_lst));
+
+    ## Exclude packages requested to be unloaded
+    jdx = setdiff (jdx, idx);
+    loaded_pkgs = installed_pkgs_lst(jdx);
+    lpnames = pnames(jdx);
+    p2unload = pnames(idx);
+    linvdeps = {};
+    for i = 1:numel (desc)
+      ## Which inverse dependencies depend on this package-to-be-unloaded?
+      linvdeps = [linvdeps, get_inv_deps(desc{i}, loaded_pkgs, lpnames){:}];
+    endfor
+    if (! isempty (linvdeps))
+      linvdeps = unique (linvdeps);
+      txt = strjoin (linvdeps, "\n\t - ");
+      error (["pkg: the following loaded package(s):\n", ...
+              "\t - %s\n", ...
+              "depend on the one(s) you want to unload.\n", ...
+              "Either unload any depender package(s), or use the '-nodeps' flag.\n", ...
+              "Note: the '-nodeps' flag may affect functionality of these packages.\n"],
+             txt);
     endif
-    dirs{end+1} = pdirs{idx};
-    desc{end+1} = installed_pkgs_lst{idx};
-  endfor
+  endif
 
   ## Check for architecture dependent directories.
   archdirs = {};
-  for i = 1:length (dirs)
+  for i = 1:numel (dirs)
     tmpdir = getarchdir (desc{i});
     if (isfolder (tmpdir))
       archdirs{end+1} = dirs{i};
@@ -69,13 +94,26 @@ function unload_packages (files, handle_deps, local_list, global_list)
   endfor
 
   ## Unload the packages.
-  for i = 1:length (archdirs)
+  for i = 1:numel (archdirs)
     d = archdirs{i};
     idx = strcmp (p, d);
     if (any (idx))
       rmpath (d);
       ## FIXME: We should also check if we need to remove items from EXEC_PATH.
     endif
+  endfor
+
+endfunction
+
+
+function linvdeps = get_inv_deps (desc, loaded_pkgs, lpnames)
+
+  ## Which nested loaded inverse dependencies depend on the package in desc?
+  linvdeps = intersect (desc.invdeps, lpnames);
+  for i = 1:numel (linvdeps)
+    kdx = find (ismember (lpnames, linvdeps{i}));
+    linvdeps = [ linvdeps (get_inv_deps (loaded_pkgs{kdx}, ...
+                                         loaded_pkgs, lpnames)){:} ];
   endfor
 
 endfunction

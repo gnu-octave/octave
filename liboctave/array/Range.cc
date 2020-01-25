@@ -113,7 +113,7 @@ double
 Range::checkelem (octave_idx_type i) const
 {
   if (i < 0 || i >= rng_numel)
-    octave::err_index_out_of_range (2, 2, i+1, rng_numel);
+    octave::err_index_out_of_range (2, 2, i+1, rng_numel, dims ());
 
   if (i == 0)
     return rng_base;
@@ -128,7 +128,7 @@ Range::checkelem (octave_idx_type i, octave_idx_type j) const
 {
   // Ranges are *always* row vectors.
   if (i != 0)
-    octave::err_index_out_of_range (1, 1, i+1, rng_numel);
+    octave::err_index_out_of_range (1, 1, i+1, rng_numel, dims ());
 
   return checkelem (j);
 }
@@ -182,7 +182,7 @@ Range::index (const idx_vector& i) const
   else
     {
       if (i.extent (n) != n)
-        octave::err_index_out_of_range (1, 1, i.extent (n), n); // throws
+        octave::err_index_out_of_range (1, 1, i.extent (n), n, dims ()); // throws
 
       dim_vector rd = i.orig_dimensions ();
       octave_idx_type il = i.length (n);

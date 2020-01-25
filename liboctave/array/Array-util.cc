@@ -559,7 +559,7 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
               ("sub2ind: lengths of indices must match");
 
           if (idx.extent (n) > n)
-            octave::err_index_out_of_range (len, i+1, idx.extent (n), n);
+            octave::err_index_out_of_range (len, i+1, idx.extent (n), n, dv);
         }
       catch (octave::index_exception& e)
         {

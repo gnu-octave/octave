@@ -250,28 +250,18 @@ namespace octave
   {
   public:
 
-    out_of_range (const std::string& value, octave_idx_type nd_in,
-                  octave_idx_type dim_in)
-      : index_exception (value, nd_in, dim_in), m_size (), m_extent (0)
+    out_of_range (const std::string& value, octave_idx_type nd,
+                  octave_idx_type dim, octave_idx_type ext,
+                  const dim_vector& size)
+      : index_exception (value, nd, dim), m_size (size), m_extent (ext)
     { }
 
     std::string details (void) const
     {
       std::string expl;
 
-      if (m_nd >= m_size.ndims ())   // if not an index slice
-        {
-          if (m_var != "")
-            expl = "but " + m_var + " has size ";
-          else
-            expl = "but object has size ";
-
-          expl = expl + m_size.str ('x');
-        }
-      else
-        expl = "out of bound " + std::to_string (m_extent);
-
-      return expl;
+      return "out of bound " + std::to_string (m_extent)
+        + " (dimensions are " + m_size.str ('x') + ")";
     }
 
     // ID of error to throw.
@@ -279,10 +269,6 @@ namespace octave
     {
       return error_id_index_out_of_bounds;
     }
-
-    void set_size (const dim_vector& size_in) { m_size = size_in; }
-
-    void set_extent (octave_idx_type ext) { m_extent = ext; }
 
   private:
 
@@ -293,31 +279,12 @@ namespace octave
     octave_idx_type m_extent;
   };
 
-  // Complain of an index that is out of range, but we don't know matrix size
-  void
-  err_index_out_of_range (int nd, int dim, octave_idx_type idx,
-                          octave_idx_type ext)
-  {
-    out_of_range e (std::to_string (idx), nd, dim);
-
-    e.set_extent (ext);
-    // ??? Make details method give extent not size.
-    e.set_size (dim_vector (1, 1, 1, 1, 1, 1,1));
-
-    throw e;
-  }
-
   // Complain of an index that is out of range
   void
   err_index_out_of_range (int nd, int dim, octave_idx_type idx,
-                          octave_idx_type ext, const dim_vector& d)
+                          octave_idx_type ext, const dim_vector& dv)
   {
-    out_of_range e (std::to_string (idx), nd, dim);
-
-    e.set_extent (ext);
-    e.set_size (d);
-
-    throw e;
+    throw out_of_range (std::to_string (idx), nd, dim, ext, dv);
   }
 
   void
@@ -343,6 +310,21 @@ namespace octave
           (warning_id_nearly_singular_matrix,
            "matrix singular to machine precision, rcond = %g", rcond);
       }
+  }
+
+  // DEPRECATED in Octave 6.
+
+  // Complain of an index that is out of range, but we don't know matrix size
+  void
+  err_index_out_of_range (int nd, int dim, octave_idx_type idx,
+                          octave_idx_type ext)
+  {
+    // The dim_vector setting here doesn't really make sense.  However,
+    // this function has been deprecated and will be removed in version
+    // 8, so there's no need to attempt to fix it.
+
+    throw out_of_range (std::to_string (idx), nd, dim, ext,
+                        dim_vector (1, 1, 1, 1, 1, 1, 1));
   }
 }
 

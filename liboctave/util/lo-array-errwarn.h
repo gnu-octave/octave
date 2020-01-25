@@ -130,11 +130,12 @@ namespace octave
                      const dim_vector& op1_dims, const dim_vector& op2_dims);
 
   OCTAVE_NORETURN OCTAVE_API extern void
-  err_index_out_of_range (int nd, int dim, octave_idx_type iext,
-                          octave_idx_type ext, const dim_vector& d);
+  err_index_out_of_range (int ndims, int dim, octave_idx_type idx,
+                          octave_idx_type ext, const dim_vector& dv);
 
+  OCTAVE_DEPRECATED (6, "use err_index_out_of_range (int, int, octave_idx_type, octave_idx_type, const dim_vector&) instead")
   OCTAVE_NORETURN OCTAVE_API extern void
-  err_index_out_of_range (int nd, int dim, octave_idx_type iext,
+  err_index_out_of_range (int ndims, int dim, octave_idx_type idx,
                           octave_idx_type ext);
 
   OCTAVE_NORETURN OCTAVE_API extern void

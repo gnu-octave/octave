@@ -31,6 +31,7 @@
 #include <iosfwd>
 
 #include "dMatrix.h"
+#include "dim-vector.h"
 #include "oct-sort.h"
 
 class
@@ -84,6 +85,8 @@ public:
   double inc (void) const { return rng_inc; }
 
   octave_idx_type numel (void) const { return rng_numel; }
+
+  dim_vector dims (void) const { return dim_vector (1, rng_numel); }
 
   octave_idx_type rows (void) const { return 1; }
 

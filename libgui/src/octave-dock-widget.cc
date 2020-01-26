@@ -290,7 +290,10 @@ namespace octave
     if (isFloating ())
       setFloating (false);
 
-// Remove after thorough testing 3/20/18    m_parent->removeDockWidget (this);
+    // Before making it a separate (no more parent) floating widget, remove
+    // the dock widget from the main window. This ensures that tabbed widgets
+    // keep their focus when it is re-docked later
+    m_parent->removeDockWidget (this);
 
     setParent (0, Qt::CustomizeWindowHint | Qt::WindowTitleHint |
                Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::Window);

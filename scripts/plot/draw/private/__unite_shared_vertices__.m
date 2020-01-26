@@ -40,6 +40,7 @@
 
 function [faces, vertices, J] = __unite_shared_vertices__ (faces, vertices)
 
+  nan_vertices = any (isnan (vertices), 2);
   lut = (1:rows (vertices))';
   J = lut;
   for di = 1:3
@@ -54,6 +55,11 @@ function [faces, vertices, J] = __unite_shared_vertices__ (faces, vertices)
   [J, idx] = sort (J);
   j(idx) = 1:length (idx);
   vertices = vertices(idx,:);
+  if any (nan_vertices)
+    j(end+1) = length (idx) + 1;
+    vertices(end+1,:) = NaN;
+    lut(nan_vertices) = rows (vertices);
+  endif
   faces = j(lut(faces));
 
   ## Eliminate faces with zero area

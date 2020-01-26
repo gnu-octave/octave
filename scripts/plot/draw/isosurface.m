@@ -168,6 +168,12 @@ function varargout = isosurface (varargin)
     warning ("isosurface: triangulation is empty");
   endif
 
+  # remove faces for which at least one of the vertices is NaN
+  vert_nan = 1:size (fvc.vertices, 1);
+  vert_nan(any (isnan (fvc.vertices), 2)) = NaN;
+  fvc.faces = vert_nan(fvc.faces);
+  fvc.faces(any (isnan (fvc.faces), 2), :) = [];
+
   if (! noshare)
     [fvc.faces, fvc.vertices, J] = __unite_shared_vertices__ (fvc.faces,
                                                               fvc.vertices);

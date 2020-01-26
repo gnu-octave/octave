@@ -514,9 +514,10 @@ namespace octave
   opengl_renderer::patch_tessellator : public opengl_tessellator
   {
   public:
-    patch_tessellator (opengl_renderer *r, int cmode, int lmode, float idx = 0.0)
+    patch_tessellator (opengl_renderer *r, int cmode, int lmode, bool fl,
+                       float idx = 0.0)
       : opengl_tessellator (), renderer (r),
-        color_mode (cmode), light_mode (lmode), index (idx),
+        color_mode (cmode), light_mode (lmode), face_lighting (fl), index (idx),
         first (true), tmp_vdata ()
     { }
 
@@ -568,21 +569,23 @@ namespace octave
               glfcns.glColor4d (col(0), col(1), col(2), v->alpha);
               if (light_mode > 0)
                 {
-                  float buf[4] = { 0, 0, 0, 1 };
+                  // edge lighting only uses ambient light
+                  float buf[4] = { 0.0f, 0.0f, 0.0f, 1.0f };;
+
+                  if (face_lighting)
+                    for (int k = 0; k < 3; k++)
+                      buf[k] = v->specular * (v->specular_color_refl +
+                                              (1 - v->specular_color_refl) * col(k));
+                  glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
+
+                  if (face_lighting)
+                    for (int k = 0; k < 3; k++)
+                      buf[k] = (v->diffuse * col(k));
+                  glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, buf);
 
                   for (int k = 0; k < 3; k++)
                     buf[k] = (v->ambient * col(k));
                   glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
-
-                  for (int k = 0; k < 3; k++)
-                    buf[k] = (v->diffuse * col(k));
-                  glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, buf);
-
-                  for (int k = 0; k < 3; k++)
-                    buf[k] = v->specular * (v->specular_color_refl +
-                                            (1 - v->specular_color_refl) * col(k));
-                  glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
-
                 }
             }
         }
@@ -666,6 +669,7 @@ namespace octave
     opengl_renderer *renderer;
     int color_mode;
     int light_mode;
+    bool face_lighting;
     int index;
     bool first;
     std::list<vertex_data> tmp_vdata;
@@ -2818,7 +2822,7 @@ namespace octave
             if (ec_mode == UNIFORM)
               {
                 m_glfcns.glColor3dv (ecolor.data ());
-                if (fl_mode > 0)
+                if (el_mode > 0)
                   {
                     for (int i = 0; i < 3; i++)
                       cb[i] = as * ecolor(i);
@@ -3347,7 +3351,7 @@ namespace octave
                 m_glfcns.glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
                 if (fl_mode > 0)
                   {
-                    float cb[4] = { 0, 0, 0, 1 };
+                    float cb[4] = { 0.0f, 0.0f, 0.0f, 1.0f };;
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = as * fcolor(i);
@@ -3370,7 +3374,7 @@ namespace octave
             // with tessellator outline.  A value of 1.0 seems to work fine.
             // Value can't be too large or the patch will be pushed below the
             // axes planes at +2.5.
-            patch_tessellator tess (this, fc_mode, fl_mode, 1.0);
+            patch_tessellator tess (this, fc_mode, fl_mode, true, 1.0);
 
             std::vector<octave_idx_type>::const_iterator it;
             octave_idx_type i_start, i_end;
@@ -3435,7 +3439,7 @@ namespace octave
                                 m_glfcns.glColor4d (col(0), col(1), col(2), fa);
                                 if (fl_mode > 0)
                                   {
-                                    float cb[4] = { 0, 0, 0, 1 };
+                                    float cb[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
                                     for (int k = 0; k < 3; k++)
                                       cb[k] = (vv->ambient * col(k));
@@ -3483,19 +3487,14 @@ namespace octave
                 m_glfcns.glColor3dv (ecolor.data ());
                 if (el_mode > 0)
                   {
-                    float cb[4] = { 0, 0, 0, 1 };
+                    // edge lighting only uses ambient light
+                    float cb[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = (as * ecolor(i));
                     m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-
-                    for (int i = 0; i < 3; i++)
-                      cb[i] = ds * ecolor(i);
-                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-
-                    for (int i = 0; i < 3; i++)
-                      cb[i] = ss * (scr + (1-scr) * ecolor(i));
-                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                   }
               }
 
@@ -3513,7 +3512,7 @@ namespace octave
             // GLU_TESS_BOUNDARY_ONLY to get the outline of the patch and OpenGL
             // automatically sets the glType to GL_LINE_LOOP.  This primitive is
             // not supported by glPolygonOffset which is used to do Z offsets.
-            patch_tessellator tess (this, ec_mode, el_mode);
+            patch_tessellator tess (this, ec_mode, el_mode, false);
 
             for (int i = 0; i < nf; i++)
               {

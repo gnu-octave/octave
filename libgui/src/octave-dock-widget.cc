@@ -403,6 +403,8 @@ namespace octave
   {
     emit active_changed (false);
     set_focus_predecessor ();
+    save_settings ();
+
     QDockWidget::closeEvent (e);
   }
 

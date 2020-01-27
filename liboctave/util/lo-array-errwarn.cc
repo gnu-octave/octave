@@ -118,23 +118,6 @@ namespace octave
        is1d ? "I" : "..,I,..", idx, ext);
   }
 
-  // Common procedures of base class index_exception, thrown whenever an
-  // object is indexed incorrectly, such as by an index that is out of
-  // range, negative, fractional, complex, or of a non-numeric type.
-
-  std::string
-  index_exception::message (void) const
-  {
-    return expression () + ": " + details ();
-  }
-
-  const char * index_exception::what (void) const noexcept
-  {
-    std::string tmp = message ();
-
-    return tmp.c_str ();
-   }
-
   // Show the expression that caused the error, e.g.,  "A(-1,_)",
   // "A(0+1i)", "A(_,3)".  Show how many indices come before/after the
   // offending one, e.g., (<error>), (<error>,_), or (_,<error>,...[x5]...)
@@ -164,7 +147,7 @@ namespace octave
           buf << "(...[x" << m_dim - 1 << "]...";
       }
 
-    buf << idx ();
+    buf << m_index;
 
     if (show_parens)
       {
@@ -190,15 +173,19 @@ namespace octave
     invalid_index (const std::string& value, octave_idx_type ndim,
                    octave_idx_type dimen)
       : index_exception (value, ndim, dimen)
-    { }
-
-    std::string details (void) const
     {
-#if defined (OCTAVE_ENABLE_64)
-      return "subscripts must be either integers 1 to (2^63)-1 or logicals";
-#else
-      return "subscripts must be either integers 1 to (2^31)-1 or logicals";
-#endif
+      // Virtual, but the one we want to call is defined in this class.
+      update_message ();
+    }
+
+    void update_message (void)
+    {
+      static std::string exp
+        = std::to_string (std::numeric_limits<octave_idx_type>::digits);
+
+      set_message (expression ()
+                   + ": subscripts must be either integers 1 to (2^" + exp
+                   + ")-1 or logicals");
     }
 
     // ID of error to throw
@@ -254,14 +241,16 @@ namespace octave
                   octave_idx_type dim, octave_idx_type ext,
                   const dim_vector& size)
       : index_exception (value, nd, dim), m_size (size), m_extent (ext)
-    { }
-
-    std::string details (void) const
     {
-      std::string expl;
+      // Virtual, but the one we want to call is defined in this class.
+      update_message ();
+    }
 
-      return "out of bound " + std::to_string (m_extent)
-        + " (dimensions are " + m_size.str ('x') + ")";
+    void update_message (void)
+    {
+      set_message (expression () + ": out of bound "
+                   + std::to_string (m_extent)
+                   + " (dimensions are " + m_size.str ('x') + ")");
     }
 
     // ID of error to throw.

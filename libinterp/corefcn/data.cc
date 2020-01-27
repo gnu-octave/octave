@@ -66,12 +66,6 @@
 #include "variables.h"
 #include "xnorm.h"
 
-static void
-index_error (const char *fmt, const std::string& idx, const std::string& msg)
-{
-  error (fmt, idx.c_str (), msg.c_str ());
-}
-
 DEFUN (all, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} all (@var{x})
@@ -7118,8 +7112,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
     }
   catch (const octave::index_exception& e)
     {
-      index_error ("nth_element: invalid N value %s. %s",
-                   e.idx (), e.details ());
+      error ("nth_element: invalid index %s", e.what ());
     }
 
   return retval;
@@ -7218,8 +7211,7 @@ Undocumented internal function.
     }
   catch (const octave::index_exception& e)
     {
-      index_error ("__accumarray_sum__: invalid IDX %s. %s",
-                   e.idx (), e.details ());
+      error ("__accumarray_sum__: invalid index %s", e.what ());
     }
 
   return retval;
@@ -7330,8 +7322,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
     }
   catch (const octave::index_exception& e)
     {
-      index_error ("do_accumarray_minmax_fun: invalid index %s. %s",
-                   e.idx (), e.details ());
+      error ("do_accumarray_minmax_fun: invalid index %s", e.what ());
     }
 
   return retval;
@@ -7438,8 +7429,7 @@ Undocumented internal function.
     }
   catch (const octave::index_exception& e)
     {
-      index_error ("__accumdim_sum__: invalid IDX %s. %s",
-                   e.idx (), e.details ());
+      error ("__accumdim_sum__: invalid index %s", e.what ());
     }
 
   return retval;

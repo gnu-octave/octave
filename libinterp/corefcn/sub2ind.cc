@@ -272,8 +272,7 @@ r = ind2sub (dims, ind)
     }
   catch (const octave::index_exception& e)
     {
-      error ("ind2sub: Invalid index %s. %s", e.idx ().c_str (),
-             e.details ().c_str ());
+      error ("ind2sub: invalid index %s", e.what ());
     }
 
   return retval;
@@ -316,5 +315,5 @@ r = ind2sub (dims, ind)
 
 %!error <DIMS must contain integers> ind2sub ([2, -2], 3);
 %!error <index out of range> ind2sub ([2, 2, 2], 1:9);
-%!error <Invalid index> ind2sub ([2, 2, 2], -1:8);
+%!error <invalid index> ind2sub ([2, 2, 2], -1:8);
 */

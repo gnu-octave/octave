@@ -130,7 +130,7 @@ namespace octave
       m_message = msg;
     }
 
-    virtual std::string message (void) const { return m_message; }
+    std::string message (void) const { return m_message; }
 
     // Provided for std::exception interface.
     const char * what (void) const noexcept { return m_message.c_str (); }

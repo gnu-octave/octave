@@ -45,33 +45,28 @@ namespace octave
   {
   public:
 
-    index_exception (const std::string& index_arg, octave_idx_type nd_arg = 0,
-                     octave_idx_type dim_arg = -1, const char *var_arg = "")
-      : m_index (index_arg), m_nd (nd_arg), m_dim (dim_arg), m_var (var_arg)
-    { }
+    index_exception (const std::string& index, octave_idx_type nd = 0,
+                     octave_idx_type dim = -1, const char *var = "")
+      : m_index (index), m_nd (nd), m_dim (dim), m_var (var)
+    {
+      set_message (expression ());
+    }
 
     ~index_exception (void) = default;
-
-    // Erroneous index value.  Called in message method and by external
-    // code (e.g., nth_element) to make a custom error message.
-    std::string idx (void) const { return m_index; }
-
-    // details set by subclass.
-    virtual std::string details (void) const = 0;
 
     // ID of error to throw.
     virtual const char * err_id (void) const = 0;
 
-    virtual std::string message (void) const;
-
-    // Provided for std::exception interface.
-    const char * what (void) const noexcept;
+    // By default, update message to show the erroneous index expression.
+    virtual void update_message (void) { set_message (expression ()); }
 
     // Position of error: dimension in error, and number of dimensions.
     void set_pos (octave_idx_type nd_arg, octave_idx_type dim_arg)
     {
       m_nd = nd_arg;
       m_dim = dim_arg;
+
+      update_message ();
     }
 
     void set_pos_if_unset (octave_idx_type nd_arg, octave_idx_type dim_arg)
@@ -80,6 +75,8 @@ namespace octave
         {
           m_nd  = nd_arg;
           m_dim = dim_arg;
+
+          update_message ();
         }
     }
 
@@ -87,6 +84,8 @@ namespace octave
     void set_var (const std::string& var_arg = "")
     {
       m_var = var_arg;
+
+      update_message ();
     }
 
   private:
@@ -107,7 +106,6 @@ namespace octave
 
     // Name of variable being indexed.
     std::string m_var;
-
   };
 
   OCTAVE_NORETURN OCTAVE_API extern void

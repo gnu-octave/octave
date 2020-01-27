@@ -271,9 +271,11 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
           break;
         }
     }
-  catch (const octave::index_exception& e)
+  catch (octave::index_exception& e)
     {
-      octave::err_invalid_index (e.idx (), n_idx, k+1);
+      // Rethrow to allow more info to be reported later.
+      e.set_pos_if_unset (n_idx, k+1);
+      throw;
     }
 
   // Clear cache.
@@ -375,9 +377,11 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
           break;
         }
     }
-  catch (const octave::index_exception& e)
+  catch (octave::index_exception& e)
     {
-      octave::err_invalid_index (e.idx (), n_idx, k+1);
+      // Rethrow to allow more info to be reported later.
+      e.set_pos_if_unset (n_idx, k+1);
+      throw;
     }
 
   // Clear cache.

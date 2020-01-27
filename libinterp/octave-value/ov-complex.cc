@@ -74,13 +74,18 @@ namespace octave
   public:
 
     complex_index_exception (const std::string& value)
-      : index_exception (value) { }
+      : index_exception (value)
+    {
+      // Virtual, but the one we want to call is defined in this class.
+      update_message ();
+    }
 
     ~complex_index_exception (void) = default;
 
-    std::string details (void) const
+    void update_message (void)
     {
-      return "subscripts must be real (forgot to initialize i or j?)";
+      set_message (expression ()
+                   + ": subscripts must be real (forgot to initialize i or j?)");
     }
 
     // ID of error to throw.

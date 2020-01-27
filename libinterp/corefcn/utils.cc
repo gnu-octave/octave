@@ -1286,11 +1286,7 @@ namespace octave
                   }
                 catch (const index_exception& e)
                   {
-                    std::string idx = e.idx ();
-                    std::string msg = e.details ();
-
-                    error ("dims_to_numel: Invalid IDX %s. %s",
-                           idx.c_str (), msg.c_str ());
+                    error ("dims_to_numel: invalid index %s", e.what ());
                   }
               }
           }

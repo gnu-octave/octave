@@ -223,6 +223,20 @@ endfunction
 %!   endif
 %! end_unwind_protect
 
+%!testif ; isunix () <*57666>
+%! orig_dir = pwd ();
+%! tmp_dir = tempname ();
+%! unwind_protect
+%!   assert (mkdir (tmp_dir));
+%!   list = dir (tmp_dir);
+%!   assert (list(1).name, ".");
+%!   assert (list(1).folder, canonicalize_file_name (tmp_dir));
+%! unwind_protect_cleanup
+%!   if (exist (tmp_dir))
+%!     rmdir (tmp_dir);
+%!   endif
+%! end_unwind_protect
+
 ## Test input validation
 %!error <DIRECTORY argument must be a string> dir (1)
 %!warning <nonexistent directory> dir ("_%UNLIKELY_DIR_NAME%_");

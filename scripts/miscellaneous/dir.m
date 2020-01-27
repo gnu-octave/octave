@@ -144,10 +144,15 @@ function retval = dir (directory)
         tmpdir = regexprep (fn, re, '$1');
         if (is_same_file (fn, tmpdir))
           ## regexrep failed to match, no directory component.
-          tmpdir = ".";
+          no_dir = true;
+        else
+          no_dir = false;
         endif
         fn = regexprep (fn, re, '$2$3');
         info(++cnt).name = fn;
+        if (no_dir && fn != ".")
+          tmpdir = ".";
+        endif
         if (! is_same_file (last_dir, tmpdir))
           ## Caching mechanism to speed up function
           last_dir = tmpdir;

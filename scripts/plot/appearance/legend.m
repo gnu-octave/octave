@@ -1910,7 +1910,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test bugs in previous implementation
-%!test <39697>
+%!test <*39697>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   axes ("units", "normalized");
@@ -1926,7 +1926,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!test <40333>
+%!test <*40333>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   axes ("units", "normalized");

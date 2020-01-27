@@ -1,4 +1,4 @@
-%!test <53956>
+%!test <*53956>
 %! global dtor2_called dtor4_called
 %!
 %! dtor2_called = dtor4_called = 0;

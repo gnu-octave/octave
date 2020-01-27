@@ -3287,7 +3287,7 @@ x = str2num (r)
 }
 
 /*
-%!test <56941>
+%!test <*56941>
 %! [old_fmt, old_spacing] = format ();
 %! unwind_protect
 %!   format short;
@@ -3305,14 +3305,14 @@ x = str2num (r)
 %!   format (old_spacing);
 %! end_unwind_protect
 
-%!test <57003>
+%!test <*57003>
 %! x = ones (2,1,3);
 %! s = rats (x,4);
 %! assert (ndims (s) == 2);
 %! assert (rows (s) == 2);
 %! assert (columns (s) == 3 * 6);
 
-%!assert <57004> (rats ([]), '')
+%!assert <*57004> (rats ([]), '')
 
 */
 

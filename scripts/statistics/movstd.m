@@ -170,7 +170,7 @@ endfunction
 # test for bug #55241
 %!assert ([1/sqrt(2); ones(8,1); 1/sqrt(2)], movstd ((1:10).', 3), 1e-8)
 
-%!test <56765>
+%!test <*56765>
 %! x = 1:10;
 %! y = movstd (x, 4);
 %! y0 = movstd (x, 4, 0);

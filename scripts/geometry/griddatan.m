@@ -121,7 +121,7 @@ endfunction
 %! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2),"nearest");
 %! assert (zz, zz2, 1e-10);
 
-%!testif HAVE_QHULL <56515>
+%!testif HAVE_QHULL <*56515>
 %! x = [ 0, 0; 1, 1; 0, 1; 1, 0 ];
 %! y = [ 1; 2; 3; 4 ];
 %! xi = [ .5, .5 ];

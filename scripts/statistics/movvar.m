@@ -169,7 +169,7 @@ endfunction
 # test for bug #55241
 %!assert ([0.5; ones(8,1); 0.5], movvar ((1:10).', 3))
 
-%!test <56765>
+%!test <*56765>
 %! x = 1:10;
 %! y = movvar (x, 4);
 %! y0 = movvar (x, 4, 0);

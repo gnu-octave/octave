@@ -32,6 +32,10 @@
 ## If @var{init_path} is not given the current working directory is used.
 ##
 ## @var{dialog_name} may be used to customize the dialog title.
+##
+## The output @var{dirname} is a character string with the name of the selected
+## directory.  However, if the @samp{Cancel} button is clicked the output is of
+## type double with the value @code{0}.
 ## @seealso{uigetfile, uiputfile}
 ## @end deftypefn
 

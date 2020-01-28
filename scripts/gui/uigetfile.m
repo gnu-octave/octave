@@ -80,7 +80,9 @@
 ## @qcode{"MultiSelect"} key to @qcode{"on"}.  In that case @var{fname} is a
 ## cell array containing the files.
 ##
-## @var{fname} and @var{fpath} return the chosen name and path, respectively.
+## The outputs @var{fname} and @var{fpath} are strings returning the chosen
+## name and path, respectively.  However, if the @samp{Cancel} button is
+## clicked the outputs are of type double with a value of @code{0}.
 ## @var{fltidx} is the index in the list of filter extensions @var{flt} that
 ## was selected.
 ##

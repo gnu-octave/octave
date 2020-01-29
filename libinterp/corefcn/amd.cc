@@ -38,7 +38,7 @@
 #include "oct-locbuf.h"
 #include "oct-sparse.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "oct-map.h"
@@ -46,8 +46,8 @@
 #include "ovl.h"
 #include "parse.h"
 
-DEFMETHOD_DLD (amd, interp, args, nargout,
-               doc: /* -*- texinfo -*-
+DEFUN (amd, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} amd (@var{S})
 @deftypefnx {} {@var{p} =} amd (@var{S}, @var{opts})
 
@@ -146,9 +146,6 @@ The author of the code itself is Timothy A. Davis
   OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, P, n_col);
   Matrix xinfo (AMD_INFO, 1);
   double *Info = xinfo.fortran_vec ();
-
-  // Lock the function to not loose the SuiteSparse_config structure
-  interp.mlock ();
 
   // FIXME: how can we manage the memory allocation of amd
   //        in a cleaner manner?

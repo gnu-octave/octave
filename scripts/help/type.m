@@ -150,7 +150,7 @@ endfunction
 %! txt = type ("ls", "-q");
 %! assert (regexp (txt{1}, '[#\s]*Copyright \(C\) 2006'));
 
-%!assert (type ("amd"){1}, "amd is a dynamically-linked function")
+%!assert (type ("fftw"){1}, "fftw is a dynamically-linked function")
 %!assert (type ("cat"){1}, "cat is a built-in function")
 %!assert (type ("+"){1}, "+ is an operator")
 %!assert (type ("end"){1}, "end is a keyword")

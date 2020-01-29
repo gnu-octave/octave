@@ -67,7 +67,7 @@ Written by Michael Weitzel <michael.weitzel@@uni-siegen.de>
 #include "oct-sparse.h"
 #include "quit.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "errwarn.h"
 #include "ov.h"
 #include "ovl.h"
@@ -420,8 +420,8 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
 }
 
 // An implementation of the Cuthill-McKee algorithm.
-DEFUN_DLD (symrcm, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (symrcm, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {@var{p} =} symrcm (@var{S})
 Return the symmetric reverse @nospell{Cuthill-McKee} permutation of @var{S}.
 

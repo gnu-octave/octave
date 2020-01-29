@@ -32,7 +32,7 @@
 #include "dSparse.h"
 #include "oct-sparse.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "errwarn.h"
 #include "ov.h"
 #include "ovl.h"
@@ -116,8 +116,8 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
 
 #endif
 
-DEFUN_DLD (dmperm, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (dmperm, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} dmperm (@var{S})
 @deftypefnx {} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})
 
@@ -173,8 +173,8 @@ The method used is described in: @nospell{A. Pothen & C.-J. Fan.}
 %! assert (tril (a(p,q), -1), sparse (n, n));
 */
 
-DEFUN_DLD (sprank, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (sprank, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {@var{p} =} sprank (@var{S})
 @cindex structural rank
 

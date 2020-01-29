@@ -91,8 +91,8 @@ endfunction
 %! str = which ("ls");
 %! assert (str(end-17:end), fullfile ("miscellaneous", "ls.m"));
 %!test
-%! str = which ("amd");
-%! assert (str(end-6:end), "amd.oct");
+%! str = which ("fftw");
+%! assert (str(end-7:end), "fftw.oct");
 %!test
 %! str = which ("inputParser");
 %! assert (str, "built-in function");
@@ -104,14 +104,14 @@ endfunction
 %!assert (which ("__NO_SUCH_NAME__"), "")
 
 %!test
-%! str = which ("amd");
-%! assert (str(end-6:end), "amd.oct");
-%! amd = 12;
-%! str = which ("amd");
+%! str = which ("fftw");
+%! assert (str(end-7:end), "fftw.oct");
+%! fftw = 12;
+%! str = which ("fftw");
 %! assert (str, "variable");
-%! clear amd;
-%! str = which ("amd");
-%! assert (str(end-6:end), "amd.oct");
+%! clear fftw;
+%! str = which ("fftw");
+%! assert (str(end-7:end), "fftw.oct");
 
 %!error which ()
 %!error which (1)

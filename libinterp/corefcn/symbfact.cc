@@ -41,15 +41,15 @@
 #include "oct-spparms.h"
 #include "sparse-util.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
 #include "parse.h"
 #include "utils.h"
 
-DEFMETHOD_DLD (symbfact, interp, args, nargout,
-               doc: /* -*- texinfo -*-
+DEFUN (symbfact, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{R}] =} symbfact (@var{S})
 @deftypefnx {} {[@dots{}] =} symbfact (@var{S}, @var{typ})
 @deftypefnx {} {[@dots{}] =} symbfact (@var{S}, @var{typ}, @var{mode})
@@ -211,9 +211,6 @@ Cholesky@tie{}factorization as determined by @var{typ}.
   cholmod_common Common;
   cholmod_common *cm = &Common;
   CHOLMOD_NAME(start) (cm);
-
-  // Lock the function to not loose the SuiteSparse_config structure
-  interp.mlock ();
 
   double spu = octave_sparse_params::get_key ("spumoni");
   if (spu == 0.0)

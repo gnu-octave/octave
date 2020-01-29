@@ -40,7 +40,7 @@
 #include "oct-locbuf.h"
 #include "oct-sparse.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
@@ -200,8 +200,8 @@ coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
     }
 }
 
-DEFUN_DLD (colamd, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (colamd, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} colamd (@var{S})
 @deftypefnx {} {@var{p} =} colamd (@var{S}, @var{knobs})
 @deftypefnx {} {[@var{p}, @var{stats}] =} colamd (@var{S})
@@ -449,8 +449,8 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
 #endif
 }
 
-DEFUN_DLD (symamd, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (symamd, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} symamd (@var{S})
 @deftypefnx {} {@var{p} =} symamd (@var{S}, @var{knobs})
 @deftypefnx {} {[@var{p}, @var{stats}] =} symamd (@var{S})
@@ -650,8 +650,8 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
 #endif
 }
 
-DEFUN_DLD (etree, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (etree, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} etree (@var{S})
 @deftypefnx {} {@var{p} =} etree (@var{S}, @var{typ})
 @deftypefnx {} {[@var{p}, @var{q}] =} etree (@var{S}, @var{typ})

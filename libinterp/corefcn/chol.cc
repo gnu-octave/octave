@@ -35,7 +35,7 @@
 #include "sparse-chol.h"
 #include "sparse-util.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "ov.h"
@@ -64,8 +64,8 @@ get_chol_l (const CHOLT& fact)
                        MatrixType (MatrixType::Lower));
 }
 
-DEFUN_DLD (chol, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (chol, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{R} =} chol (@var{A})
 @deftypefnx {} {[@var{R}, @var{p}] =} chol (@var{A})
 @deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{A})
@@ -354,8 +354,8 @@ sparse matrices.
 %!error <A must be sparse> [L, p] = chol ([1, 2; 3, 4], "vector")
 */
 
-DEFUN_DLD (cholinv, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (cholinv, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {} cholinv (@var{A})
 Compute the inverse of the symmetric positive definite matrix @var{A} using
 the Cholesky@tie{}factorization.
@@ -478,8 +478,8 @@ the Cholesky@tie{}factorization.
 %! assert (norm (Ainv-Ainv3), 0, 1e-10);
 */
 
-DEFUN_DLD (chol2inv, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (chol2inv, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {} chol2inv (@var{U})
 Invert a symmetric, positive definite square matrix from its Cholesky
 decomposition, @var{U}.
@@ -590,8 +590,8 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
 
 */
 
-DEFUN_DLD (cholupdate, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (cholupdate, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})
 Update or downdate a Cholesky@tie{}factorization.
 
@@ -793,8 +793,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
 %! assert (norm (R1 - R, Inf) < 2e1*eps ("single"));
 */
 
-DEFUN_DLD (cholinsert, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (cholinsert, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{R1} =} cholinsert (@var{R}, @var{j}, @var{u})
 @deftypefnx {} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})
 Update a Cholesky factorization given a row or column to insert in the
@@ -1048,8 +1048,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
 %! assert (cca, ccau2,  16*eps);
 */
 
-DEFUN_DLD (choldelete, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (choldelete, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {@var{R1} =} choldelete (@var{R}, @var{j})
 Update a Cholesky factorization given a row or column to delete from the
 original factored matrix.
@@ -1173,8 +1173,8 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
 %! assert (norm (R1'*R1 - single (Ac(p,p)), Inf) < 1e1*eps ("single"));
 */
 
-DEFUN_DLD (cholshift, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (cholshift, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})
 Update a Cholesky factorization given a range of columns to shift in the
 original factored matrix.

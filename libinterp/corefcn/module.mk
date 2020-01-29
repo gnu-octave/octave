@@ -113,6 +113,7 @@ COREFCN_SRC = \
   %reldir%/__betainc__.cc \
   %reldir%/__contourc__.cc \
   %reldir%/__dsearchn__.cc \
+  %reldir%/__eigs__.cc \
   %reldir%/__expint__.cc \
   %reldir%/__ftp__.cc \
   %reldir%/__gammainc__.cc \
@@ -122,16 +123,20 @@ COREFCN_SRC = \
   %reldir%/__magick_read__.cc \
   %reldir%/__pchip_deriv__.cc \
   %reldir%/__qp__.cc \
+  %reldir%/amd.cc \
   %reldir%/balance.cc \
   %reldir%/besselj.cc \
   %reldir%/bitfcns.cc \
   %reldir%/bsxfun.cc \
   %reldir%/c-file-ptr-stream.cc \
   %reldir%/call-stack.cc \
+  %reldir%/ccolamd.cc \
   %reldir%/cdisplay.c \
   %reldir%/cellfun.cc \
-  %reldir%/colloc.cc \
+  %reldir%/chol.cc \
   %reldir%/coct-hdf5-types.c \
+  %reldir%/colamd.cc \
+  %reldir%/colloc.cc \
   %reldir%/conv2.cc \
   %reldir%/daspk.cc \
   %reldir%/dasrt.cc \
@@ -144,6 +149,7 @@ COREFCN_SRC = \
   %reldir%/dirfns.cc \
   %reldir%/display.cc \
   %reldir%/dlmread.cc \
+  %reldir%/dmperm.cc \
   %reldir%/dot.cc \
   %reldir%/dynamic-ld.cc \
   %reldir%/eig.cc \
@@ -178,9 +184,9 @@ COREFCN_SRC = \
   %reldir%/hex2num.cc \
   %reldir%/hook-fcn.cc \
   %reldir%/input.cc \
-  %reldir%/inv.cc \
   %reldir%/interpreter-private.cc \
   %reldir%/interpreter.cc \
+  %reldir%/inv.cc \
   %reldir%/kron.cc \
   %reldir%/load-path.cc \
   %reldir%/load-save.cc \
@@ -190,8 +196,8 @@ COREFCN_SRC = \
   %reldir%/ls-mat-ascii.cc \
   %reldir%/ls-mat4.cc \
   %reldir%/ls-mat5.cc \
-  %reldir%/ls-oct-text.cc \
   %reldir%/ls-oct-binary.cc \
+  %reldir%/ls-oct-text.cc \
   %reldir%/ls-utils.cc \
   %reldir%/lsode.cc \
   %reldir%/lu.cc \
@@ -221,6 +227,7 @@ COREFCN_SRC = \
   %reldir%/pr-output.cc \
   %reldir%/procstream.cc \
   %reldir%/psi.cc \
+  %reldir%/qr.cc \
   %reldir%/quad.cc \
   %reldir%/quadcc.cc \
   %reldir%/qz.cc \
@@ -242,21 +249,23 @@ COREFCN_SRC = \
   %reldir%/sub2ind.cc \
   %reldir%/svd.cc \
   %reldir%/sylvester.cc \
+  %reldir%/symbfact.cc \
   %reldir%/syminfo.cc \
+  %reldir%/symrcm.cc \
   %reldir%/symrec.cc \
   %reldir%/symscope.cc \
   %reldir%/symtab.cc \
   %reldir%/syscalls.cc \
   %reldir%/sysdep.cc \
-  %reldir%/time.cc \
   %reldir%/text-engine.cc \
   %reldir%/text-renderer.cc \
+  %reldir%/time.cc \
   %reldir%/toplev.cc \
   %reldir%/tril.cc \
   %reldir%/tsearch.cc \
   %reldir%/typecast.cc \
-  %reldir%/urlwrite.cc \
   %reldir%/url-handle-manager.cc \
+  %reldir%/urlwrite.cc \
   %reldir%/utils.cc \
   %reldir%/variables.cc \
   %reldir%/xdiv.cc \

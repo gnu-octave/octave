@@ -35,7 +35,7 @@
 #include "qrp.h"
 #include "sparse-qr.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "ov.h"
@@ -96,8 +96,8 @@ qr_type (int nargout, bool economy)
 // qr (X) alone returns the output of the LAPACK routine dgeqrf, such
 // that R = triu (qr (X))
 
-DEFUN_DLD (qr, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (qr, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{Q}, @var{R}] =} qr (@var{A})
 @deftypefnx {} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A})  # non-sparse A
 @deftypefnx {} {@var{X} =} qr (@var{A})  # non-sparse A
@@ -976,8 +976,8 @@ bool check_index (const octave_value& i, bool vector_allowed = false)
           && (i.is_scalar_type () || vector_allowed));
 }
 
-DEFUN_DLD (qrupdate, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (qrupdate, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrupdate (@var{Q}, @var{R}, @var{u}, @var{v})
 Update a QR factorization given update vectors or matrices.
 
@@ -1140,8 +1140,8 @@ economized (R is square).
 %! assert (norm (vec (Q*R - single (Ac) - single (uc)*single (vc)'), Inf) < norm (single (Ac))*1e1*eps ("single"));
 */
 
-DEFUN_DLD (qrinsert, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (qrinsert, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrinsert (@var{Q}, @var{R}, @var{j}, @var{x}, @var{orient})
 Update a QR factorization given a row or column to insert in the original
 factored matrix.
@@ -1337,8 +1337,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! assert (norm (vec (Q*R - single ([Ac(1:2,:);x;Ac(3:5,:)])), Inf) < norm (single (Ac))*1e1*eps ("single"));
 */
 
-DEFUN_DLD (qrdelete, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (qrdelete, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrdelete (@var{Q}, @var{R}, @var{j}, @var{orient})
 Update a QR factorization given a row or column to delete from the original
 factored matrix.
@@ -1583,8 +1583,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
 */
 
-DEFUN_DLD (qrshift, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (qrshift, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrshift (@var{Q}, @var{R}, @var{i}, @var{j})
 Update a QR factorization given a range of columns to shift in the original
 factored matrix.

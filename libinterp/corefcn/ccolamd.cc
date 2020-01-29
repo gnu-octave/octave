@@ -38,14 +38,14 @@
 #include "oct-locbuf.h"
 #include "oct-sparse.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "ov.h"
 #include "pager.h"
 
-DEFUN_DLD (ccolamd, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (ccolamd, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} ccolamd (@var{S})
 @deftypefnx {} {@var{p} =} ccolamd (@var{S}, @var{knobs})
 @deftypefnx {} {@var{p} =} ccolamd (@var{S}, @var{knobs}, @var{cmember})
@@ -337,8 +337,8 @@ csymamd, amd, colamd, symamd, and other related orderings.
 #endif
 }
 
-DEFUN_DLD (csymamd, args, nargout,
-           doc: /* -*- texinfo -*-
+DEFUN (csymamd, args, nargout,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} csymamd (@var{S})
 @deftypefnx {} {@var{p} =} csymamd (@var{S}, @var{knobs})
 @deftypefnx {} {@var{p} =} csymamd (@var{S}, @var{knobs}, @var{cmember})

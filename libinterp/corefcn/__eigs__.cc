@@ -34,7 +34,7 @@
 #include "eigs-base.h"
 #include "unwind-prot.h"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
@@ -132,8 +132,8 @@ eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
 
 #endif
 
-DEFMETHOD_DLD (__eigs__, interp, args, nargout,
-               doc: /* -*- texinfo -*-
+DEFMETHOD (__eigs__, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{d} =} __eigs__ (@var{A})
 @deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k})
 @deftypefnx {} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma})

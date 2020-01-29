@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movmedian (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movmedian (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movmedian (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movmedian (@dots{}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movmedian (@dots{}, "@var{nancond}")
 ## @deftypefnx {} {@var{y} =} movmedian (@dots{}, @var{property}, @var{value})

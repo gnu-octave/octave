@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movprod (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movprod (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movprod (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movprod (@dots{}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movprod (@dots{}, "@var{nancond}")
 ## @deftypefnx {} {@var{y} =} movprod (@dots{}, @var{property}, @var{value})

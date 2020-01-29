@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movmax (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movmax (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movmax (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movmax (@dots{}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movmax (@dots{}, "@var{nancond}")
 ## @deftypefnx {} {@var{y} =} movmax (@dots{}, @var{property}, @var{value})

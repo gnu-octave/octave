@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movmean (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movmean (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movmean (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movmean (@dots{}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movmean (@dots{}, "@var{nancond}")
 ## @deftypefnx {} {@var{y} =} movmean (@dots{}, @var{property}, @var{value})

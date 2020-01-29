@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movmin (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movmin (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movmin (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movmin (@dots{}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movmin (@dots{}, "@var{nancond}")
 ## @deftypefnx {} {@var{y} =} movmin (@dots{}, @var{property}, @var{value})

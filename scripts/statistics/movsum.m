@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movsum (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movsum (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movsum (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movsum (@dots{}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movsum (@dots{}, "@var{nancond}")
 ## @deftypefnx {} {@var{y} =} movsum (@dots{}, @var{property}, @var{value})

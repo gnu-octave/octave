@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movvar (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movvar (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movvar (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movvar (@dots{}, @var{opt})
 ## @deftypefnx {} {@var{y} =} movvar (@dots{}, @var{opt}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movvar (@dots{}, "@var{nancond}")

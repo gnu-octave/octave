@@ -86,7 +86,7 @@ namespace octave
 
     tmpfcn->mark_as_private_function (class_name);
 
-    private_functions[dir_name] = ov_fcn;
+    private_functions[octave::sys::canonicalize_file_name (dir_name)] = ov_fcn;
 
     return ov_fcn;
   }
@@ -628,26 +628,20 @@ namespace octave
   fcn_info::fcn_info_rep::xfind (const symbol_scope& search_scope,
                                  const octave_value_list& args)
   {
-    octave_user_code *curr_code
-      = search_scope ? search_scope.user_code () : nullptr;
-
-    // Subfunction.  I think it only makes sense to check for
-    // subfunctions if we are currently executing a function defined
-    // from a .m file.
+    // Subfunction, local function, or private function.
 
     if (search_scope)
       {
+        // Subfunction.
+
         octave_value fcn = search_scope.find_subfunction (name);
 
         if (fcn.is_defined ())
           return fcn;
-      }
 
-    // Local function.
+        // Local function.
 
-    if (curr_code)
-      {
-        std::string fcn_file = curr_code->fcn_file_name ();
+        std::string fcn_file = search_scope.fcn_file_name ();
 
         // For anonymous functions we look at the parent scope so that if
         // they were defined within class methods and use local functions
@@ -667,13 +661,10 @@ namespace octave
                 return r->second;
               }
           }
-      }
 
-    // Private function.
+        // Private function.
 
-    if (curr_code)
-      {
-        std::string dir_name = curr_code->dir_name ();
+        std::string dir_name = search_scope.dir_name ();
 
         if (! dir_name.empty ())
           {
@@ -847,14 +838,13 @@ namespace octave
     if (cmdline_function.is_defined ())
       return cmdline_function;
 
-    // Private function.
+    // Private function, local function, or subfunction.
 
-    octave_user_code *curr_code
-      = search_scope ? search_scope.user_code () : nullptr;
-
-    if (curr_code)
+    if (search_scope)
       {
-        std::string dir_name = curr_code->dir_name ();
+        // Private function.
+
+        std::string dir_name = search_scope.dir_name ();
 
         if (! dir_name.empty ())
           {
@@ -885,13 +875,10 @@ namespace octave
                   }
               }
           }
-      }
 
-    // Local function.
+        // Local function.
 
-    if (curr_code)
-      {
-        std::string fcn_file = curr_code->fcn_file_name ();
+        std::string fcn_file = search_scope.fcn_file_name ();
 
         if (! fcn_file.empty ())
           {
@@ -906,14 +893,11 @@ namespace octave
                 return r->second;
               }
           }
-      }
 
-    // Subfunction.  I think it only makes sense to check for
-    // subfunctions if we are currently executing a function defined
-    // from a .m file.
+        // Subfunction.  I think it only makes sense to check for
+        // subfunctions if we are currently executing a function defined
+        // from a .m file.
 
-    if (search_scope)
-      {
         octave_value val = search_scope.find_subfunction (name);
 
         if (val.is_defined ())

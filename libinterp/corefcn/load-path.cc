@@ -185,6 +185,46 @@ namespace octave
     return retval;
   }
 
+  static std::string find_private_fcn_file (const std::string& dir,
+                                            const std::string& fcn,
+                                            int type)
+  {
+    std::string nm
+      = sys::file_ops::concat (sys::file_ops::concat (dir, "private"), fcn);
+
+    if (type & load_path::OCT_FILE)
+      {
+        std::string fnm = nm + ".oct";
+
+        sys::file_stat fs (fnm);
+
+        if (fs.exists () && fs.is_reg ())
+          return fnm;
+      }
+
+    if (type & load_path::MEX_FILE)
+      {
+        std::string fnm = nm + ".mex";
+
+        sys::file_stat fs (fnm);
+
+        if (fs.exists () && fs.is_reg ())
+          return fnm;
+      }
+
+    if (type & load_path::M_FILE)
+      {
+        std::string fnm = nm + ".m";
+
+        sys::file_stat fs (fnm);
+
+        if (fs.exists () && fs.is_reg ())
+          return fnm;
+      }
+
+    return "";
+  }
+
   // True if a path is contained in a path list separated by path_sep_char
 
   static bool
@@ -1525,7 +1565,7 @@ namespace octave
 
     remove_fcn_map (dir, fcn_files);
 
-    remove_private_fcn_map (dir);
+    remove_private_fcn_map (sys::canonicalize_file_name (dir));
 
     remove_method_map (dir);
   }
@@ -1656,25 +1696,28 @@ namespace octave
     std::string retval;
 
     //  update ();
+    std::string canon_dir = sys::canonicalize_file_name (dir);
 
-    const_private_fcn_map_iterator q = private_fcn_map.find (dir);
+    const_private_fcn_map_iterator q = private_fcn_map.find (canon_dir);
 
     if (q != private_fcn_map.end ())
       {
-        const dir_info::fcn_file_map_type& m = q->second;
+        const dir_info::fcn_file_map_type& fcn_file_map = q->second;
 
-        dir_info::const_fcn_file_map_iterator p = m.find (fcn);
+        dir_info::const_fcn_file_map_iterator p = fcn_file_map.find (fcn);
 
-        if (p != m.end ())
+        if (p != fcn_file_map.end ())
           {
             std::string fname
-              = sys::file_ops::concat (sys::file_ops::concat (dir, "private"), fcn);
+              = sys::file_ops::concat (sys::file_ops::concat (canon_dir, "private"), fcn);
 
             if (check_file_type (fname, type, p->second, fcn,
                                  "load_path::find_private_fcn"))
               retval = fname;
           }
       }
+    else
+      retval = find_private_fcn_file (canon_dir, fcn, type);
 
     return retval;
   }
@@ -1892,7 +1935,8 @@ namespace octave
     dir_info::fcn_file_map_type private_file_map = di.private_file_map;
 
     if (! private_file_map.empty ())
-      private_fcn_map[di.dir_name] = private_file_map;
+      private_fcn_map[sys::canonicalize_file_name (di.dir_name)]
+        = private_file_map;
   }
 
   void
@@ -1955,7 +1999,8 @@ namespace octave
         dir_info::fcn_file_map_type private_file_map = ci.private_file_map;
 
         if (! private_file_map.empty ())
-          private_fcn_map[full_dir_name] = private_file_map;
+          private_fcn_map[sys::canonicalize_file_name (full_dir_name)]
+            = private_file_map;
       }
   }
 
@@ -2094,7 +2139,7 @@ namespace octave
   void
   load_path::package_info::remove_private_fcn_map (const std::string& dir)
   {
-    auto p = private_fcn_map.find (dir);
+    auto p = private_fcn_map.find (sys::canonicalize_file_name (dir));
 
     if (p != private_fcn_map.end ())
       private_fcn_map.erase (p);

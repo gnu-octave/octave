@@ -158,6 +158,9 @@ namespace octave
         af->stash_parent_fcn_name (curr_fcn->name ());
         af->stash_dir_name (curr_fcn->dir_name ());
 
+        new_scope.cache_fcn_file_name (curr_fcn->fcn_file_name ());
+        new_scope.cache_dir_name (curr_fcn->dir_name ());
+
         // The following is needed so that class method dispatch works
         // properly for anonymous functions that wrap class methods.
 

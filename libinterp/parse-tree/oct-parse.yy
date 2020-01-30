@@ -3424,6 +3424,8 @@ namespace octave
     symbol_scope script_scope = m_lexer.m_symtab_context.curr_scope ();
 
     script_scope.cache_name (m_lexer.m_fcn_file_full_name);
+    script_scope.cache_fcn_file_name (m_lexer.m_fcn_file_full_name);
+    script_scope.cache_dir_name (m_lexer.m_dir_name);
 
     octave_user_script *script
       = new octave_user_script (m_lexer.m_fcn_file_full_name,
@@ -3666,6 +3668,8 @@ namespace octave
 
         symbol_scope fcn_scope = fcn->scope ();
         fcn_scope.cache_name (tmp);
+        fcn_scope.cache_fcn_file_name (file);
+        fcn_scope.cache_dir_name (m_lexer.m_dir_name);
 
         if (lc)
           fcn->stash_leading_comment (lc);

@@ -29,6 +29,8 @@
 
 #include <sstream>
 
+#include "file-ops.h"
+
 #include "fcn-info.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
@@ -167,6 +169,12 @@ namespace octave
   symbol_scope_rep::set_primary_parent (const std::shared_ptr<symbol_scope_rep>& parent)
   {
     m_primary_parent = std::weak_ptr<symbol_scope_rep> (parent);
+  }
+
+  void
+  symbol_scope_rep::cache_dir_name (const std::string& name)
+  {
+    m_dir_name = octave::sys::canonicalize_file_name (name);
   }
 
   bool

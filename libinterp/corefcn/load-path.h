@@ -209,11 +209,11 @@ namespace octave
 
     std::string system_path (void) const { return sys_path; }
 
-  private:
-
     static const int M_FILE = 1;
     static const int OCT_FILE = 2;
     static const int MEX_FILE = 4;
+
+  private:
 
     class dir_info
     {

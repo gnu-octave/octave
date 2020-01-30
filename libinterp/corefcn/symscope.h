@@ -40,7 +40,7 @@
 #include "oct-refcount.h"
 
 class tree_argument_list;
-class octave_user_function;
+class octave_user_code;
 
 #include "ov.h"
 #include "ovl.h"
@@ -67,9 +67,9 @@ namespace octave
 
     symbol_scope_rep (const std::string& name = "")
       : m_name (name), m_symbols (), m_subfunctions (),
-        m_persistent_values (), m_code (nullptr), m_parent (),
-        m_primary_parent (), m_children (), m_nesting_depth (0),
-        m_is_static (false)
+        m_persistent_values (), m_code (nullptr), m_fcn_file_name (),
+        m_dir_name (), m_parent (), m_primary_parent (), m_children (),
+        m_nesting_depth (0), m_is_static (false)
     {
       // All scopes have ans as the first symbol, initially undefined.
 
@@ -126,6 +126,8 @@ namespace octave
       new_sid->m_persistent_values = m_persistent_values;
       new_sid->m_subfunction_names = m_subfunction_names;
       new_sid->m_code = m_code;
+      new_sid->m_fcn_file_name = m_fcn_file_name;
+      new_sid->m_dir_name = m_dir_name;
       new_sid->m_parent = m_parent;
       new_sid->m_primary_parent = m_primary_parent;
       new_sid->m_children = m_children;
@@ -252,6 +254,17 @@ namespace octave
 
     void set_primary_parent (const std::shared_ptr<symbol_scope_rep>& parent);
 
+    void cache_fcn_file_name (const std::string& name)
+    {
+      m_fcn_file_name = name;
+    }
+
+    void cache_dir_name (const std::string& name);
+
+    std::string fcn_file_name (void) const { return m_fcn_file_name; }
+
+    std::string dir_name (void) const { return m_dir_name; }
+
     bool is_relative (const std::shared_ptr<symbol_scope_rep>& scope) const;
 
     void update_nest (void);
@@ -299,6 +312,14 @@ namespace octave
     //! The associated user code (may be null).
 
     octave_user_code *m_code;
+
+    //! The file name associated with m_code.
+
+    std::string m_fcn_file_name;
+
+    //! The directory associated with m_code.
+
+    std::string m_dir_name;
 
     //! Parent of nested function (may be null).
 
@@ -548,6 +569,28 @@ namespace octave
     {
       if (m_rep)
         m_rep->set_primary_parent (p.get_rep ());
+    }
+
+    void cache_fcn_file_name (const std::string& name)
+    {
+      if (m_rep)
+        m_rep->cache_fcn_file_name (name);
+    }
+
+    void cache_dir_name (const std::string& name)
+    {
+      if (m_rep)
+        m_rep->cache_dir_name (name);
+    }
+
+    std::string fcn_file_name (void) const
+    {
+      return m_rep ? m_rep->fcn_file_name () : "";
+    }
+
+    std::string dir_name (void) const
+    {
+      return m_rep ? m_rep->dir_name () : "";
     }
 
     bool is_relative (const symbol_scope& scope) const

@@ -3291,15 +3291,10 @@ x = str2num (r)
 %! [old_fmt, old_spacing] = format ();
 %! unwind_protect
 %!   format short;
-%!   assert (rats (2.0005, 9), "4001/2000");
 %!   assert (rats (-2.0005, 10), "-4001/2000");
 %!   assert (strtrim (rats (2.0005, 30)), "4001/2000");
 %!   assert (pi - str2num (rats (pi, 30)), 0, 4 * eps);
 %!   assert (e - str2num (rats (e, 30)), 0, 4 * eps);
-%!   assert (rats (123, 2), " *");
-%!   v = 1 / double (intmax);
-%!   err = v - str2num (rats (v, 12));
-%!   assert (err, 0, 4 * eps);
 %! unwind_protect_cleanup
 %!   format (old_fmt);
 %!   format (old_spacing);
@@ -3313,6 +3308,17 @@ x = str2num (r)
 %! assert (columns (s) == 3 * 6);
 
 %!assert <*57004> (rats ([]), '')
+
+%!xtest <57704>
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format short;
+%!   assert (rats (2.0005, 9), "4001/2000");
+%!   assert (rats (123, 2), " *");
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
 
 */
 

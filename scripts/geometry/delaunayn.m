@@ -45,10 +45,14 @@
 ## The default options depend on the dimension of the input:
 ##
 ## @itemize
-## @item 2-D and 3-D: @var{options} = @code{@{"Qt", "Qbb", "Qc", "Qz"@}}
+## @item 2-D and 3-D: @var{options} = @code{@{"Qt", "Qbb", "Qc"@}}
 ##
 ## @item 4-D and higher: @var{options} = @code{@{"Qt", "Qbb", "Qc", "Qx"@}}
 ## @end itemize
+##
+## If QHull fails for 2-D input the triangulation is attempted again with
+## the options @code{@{"Qt", "Qbb", "Qc", "Qz"@}} which may result in
+## reduced accuracy.
 ##
 ## If @var{options} is not present or @code{[]} then the default arguments are
 ## used.  Otherwise, @var{options} replaces the default argument list.
@@ -64,7 +68,17 @@ function T = delaunayn (pts, varargin)
     print_usage ();
   endif
 
-  T = __delaunayn__ (pts, varargin{:});
+  if (isempty (varargin) || isempty (varargin{1}))
+    try
+      T = __delaunayn__ (pts);
+    catch
+      if (columns (pts) <= 2)
+        T = __delaunayn__ (pts, "Qt Qbb Qc Qz");
+      endif
+    end_try_catch
+  else
+    T = __delaunayn__ (pts, varargin{:});
+  endif
 
   if (isa (pts, "single"))
     tol = 1e3 * eps ("single");

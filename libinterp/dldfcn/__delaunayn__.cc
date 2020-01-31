@@ -133,7 +133,7 @@ Undocumented internal function.
   // Default options
   std::string options;
   if (dim <= 3)
-    options = "Qt Qbb Qc Qz";
+    options = "Qt Qbb Qc";
   else
     options = "Qt Qbb Qc Qx";
 

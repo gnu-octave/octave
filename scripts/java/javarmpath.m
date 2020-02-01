@@ -78,7 +78,7 @@ endfunction
 ##        been added to the Java class path.
 
 ## Basic test with single string
-%!test
+%!testif HAVE_JAVA
 %! pth = tempdir ();
 %! unwind_protect
 %!   javaaddpath (pth);
@@ -92,7 +92,7 @@ endfunction
 %! end_unwind_protect
 
 ## Remove two strings
-%!test
+%!testif HAVE_JAVA
 %! pth1 = tempdir ();
 %! pth2 = tilde_expand ("~");
 %! unwind_protect
@@ -107,7 +107,7 @@ endfunction
 %! end_unwind_protect
 
 ## Remove cell array of two strings
-%!test
+%!testif HAVE_JAVA
 %! pth1 = tempdir ();
 %! pth2 = tilde_expand ("~");
 %! unwind_protect

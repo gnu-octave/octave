@@ -156,7 +156,12 @@ function retval = dir (directory)
         if (! is_same_file (last_dir, tmpdir))
           ## Caching mechanism to speed up function
           last_dir = tmpdir;
-          last_absdir = canonicalize_file_name (last_dir);
+          if (ispc () && strncmp (last_dir, '\\', 2))
+            ## Windows UNC network file name is used as is
+            last_absdir = last_dir;
+          else
+            last_absdir = canonicalize_file_name (last_dir);
+          endif
         endif
         info(cnt).folder = last_absdir;
         lt = localtime (st.mtime);

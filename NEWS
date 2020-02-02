@@ -79,6 +79,15 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   ${XDG_CONFIG_HOME}/octave/octaverc on Unix-like operating systems or
   %APPDATA%\octave\octaverc on Windows).
 
+- `pkg describe` now lists dependencies and inverse dependencies
+  (i.e., other installed packages that depend on the package in
+  question).
+
+- When unloading a package, `pkg` now checks if any remaining loaded
+  packages depend on the one to be removed.  If this is the case `pkg`
+  aborts with an explanatory error message.  This behavior can be
+  overridden with the `-nodeps` option.
+
 #### Graphics backend
 
 - The use of Qt4 for graphics and the GUI is deprecated in Octave

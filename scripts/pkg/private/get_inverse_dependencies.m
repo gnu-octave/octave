@@ -37,7 +37,6 @@ function installed_pkgs_lst = get_inverse_dependencies (installed_pkgs_lst)
   endfor
 
   for i = 1:numel (installed_pkgs_lst)
-#    keyboard;
     pdeps = installed_pkgs_lst{i}.depends;
     for j = 1:numel (pdeps)
       pdep_nm = pdeps{j}.package;

@@ -3669,9 +3669,11 @@ Logical and character arrays are not considered to be numeric.
 DEFUN (isscalar, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isscalar (@var{x})
-Return true if @var{x} is a scalar, i.e., @code{size (@var{x})} returns
-@code{[1 1]}.
-@seealso{isvector, ismatrix}
+Return true if @var{x} is a scalar.
+
+A scalar is an object with two dimensions for which @code{size (@var{x})}
+returns @w{@code{[1, 1]}}.
+@seealso{isvector, ismatrix, size}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3708,9 +3710,10 @@ DEFUN (isvector, args, ,
 @deftypefn {} {} isvector (@var{x})
 Return true if @var{x} is a vector.
 
-A vector is a 2-D array where one of the dimensions is equal to 1.  As a
-consequence a 1x1 array, or scalar, is also a vector.
-@seealso{isscalar, ismatrix, size, rows, columns, length}
+A vector is a 2-D array where one of the dimensions is equal to 1 (either 1xN
+or Nx1).  As a consequence of this definition, a 1x1 array (a scalar) is also a
+vector.
+@seealso{isscalar, ismatrix, iscolumn, isrow, size}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3746,9 +3749,11 @@ consequence a 1x1 array, or scalar, is also a vector.
 DEFUN (isrow, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isrow (@var{x})
-Return true if @var{x} is a row vector, i.e., @code{size (@var{x})} returns
-@code{[1 N]} with non-negative N.
-@seealso{iscolumn, isscalar, isvector, ismatrix}
+Return true if @var{x} is a row vector.
+
+A row vector is a 2-D array for which @code{size (@var{x})} returns
+@w{@code{[1, N]}} with non-negative N.
+@seealso{iscolumn, isscalar, isvector, ismatrix, size}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3793,9 +3798,11 @@ Return true if @var{x} is a row vector, i.e., @code{size (@var{x})} returns
 DEFUN (iscolumn, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} iscolumn (@var{x})
-Return true if @var{x} is a column vector, i.e., @code{size (@var{x})} returns
-@code{[N 1]} with non-negative N.
-@seealso{isrow, isscalar, isvector, ismatrix}
+Return true if @var{x} is a column vector.
+
+A column vector is a 2-D array for which @code{size (@var{x})} returns
+@w{@code{[N, 1]}} with non-negative N.
+@seealso{isrow, isscalar, isvector, ismatrix, size}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3839,9 +3846,12 @@ Return true if @var{x} is a column vector, i.e., @code{size (@var{x})} returns
 
 DEFUN (ismatrix, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} ismatrix (@var{a})
-Return true if @var{a} is a 2-D array, i.e., @code{size (@var{a})} returns
-@code{[M N]} with non-negative M and N.
+@deftypefn {} {} ismatrix (@var{x})
+Return true if @var{x} is a 2-D array.
+
+A matrix is an object with two dimensions (@code{ndims (@var{x}) == 2}) for
+which @code{size (@var{x})} returns @w{@code{[M, N]}} with non-negative M and
+N.
 @seealso{isscalar, isvector, iscell, isstruct, issparse, isa}
 @end deftypefn */)
 {
@@ -3886,8 +3896,10 @@ Return true if @var{a} is a 2-D array, i.e., @code{size (@var{a})} returns
 DEFUN (issquare, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} issquare (@var{x})
-Return true if @var{x} is a square matrix, i.e., @code{size (@var{x})} returns
-@code{[N N]} with non-negative N.
+Return true if @var{x} is a 2-D square array.
+
+A square array is a 2-D object for which @code{size (@var{x})} returns
+@w{@code{[N, N]}} where N is a non-negative integer.
 @seealso{isscalar, isvector, ismatrix, size}
 @end deftypefn */)
 {

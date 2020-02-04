@@ -117,44 +117,43 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
 
   if (! isempty (options.Jacobian))
     if (ischar (options.Jacobian))
-      try
-        options.Jacobian = str2func (options.Jacobian);
-      catch
-        warning (lasterr);
-      end_try_catch
-      if (! is_function_handle (options.Jacobian))
+      if (! exist (options.Jacobian))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Jacobian'"]);
+               [solver ": function '" options.Jacobian "' not found"]);
       endif
+      options.Jacobian = str2func (options.Jacobian);
+    endif
+    if (! is_function_handle (options.Jacobian))
+      error ("Octave:invalid-input-arg",
+             [solver ": invalid value assigned to field 'Jacobian'"]);
     endif
   endif
 
   if (! isempty (options.OutputFcn))
     if (ischar (options.OutputFcn))
-      try
-        options.OutputFcn = str2func (options.OutputFcn);
-      catch
-        warning (lasterr);
-      end_try_catch
-      if (! is_function_handle (options.OutputFcn))
+      if (! exist (options.OutputFcn))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'OutputFcn'"]);
+               [solver ": function '" options.OutputFcn "' not found"]);
       endif
+      options.OutputFcn = str2func (options.OutputFcn);
+    endif
+    if (! is_function_handle (options.OutputFcn))
+      error ("Octave:invalid-input-arg",
+             [solver ": invalid value assigned to field 'OutputFcn'"]);
     endif
   endif
 
   if (! isempty (options.Events))
     if (ischar (options.Events))
-      try
-        options.Events = str2func (options.Events);
-      catch
-        warning (lasterr);
-      end_try_catch
-      if (! is_function_handle (options.Events)
-          && ! ismatrix (options.Events))
+      if (! exist (options.Events))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Events'"]);
+               [solver ": function '" options.Events "' not found"]);
       endif
+      options.Events = str2func (options.Events);
+    endif
+    if (! is_function_handle (options.Events))
+      error ("Octave:invalid-input-arg",
+             [solver ": invalid value assigned to field 'Events'"]);
     endif
   endif
 

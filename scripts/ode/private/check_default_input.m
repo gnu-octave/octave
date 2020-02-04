@@ -30,30 +30,30 @@ function [fun] = check_default_input (fun, trange, solver, varargin);
 
   if (! (nargin (fun) == nargin - 2))
     error ("Octave:invalid-input-arg",
-           [solver ": invalid value assigned to field '%s'"], "fun");
+           [solver ": invalid value assigned to field 'fun'"]);
   endif
 
   if (ischar (fun))
-    try
-      fun = str2func (fun);
-    catch
-      warning (lasterr);
-    end_try_catch
+    if (! exist (fun))
+      error ("Octave:invalid-input-arg",
+             [solver ": function '" fun "' not found"]);
+    endif
+    fun = str2func (fun);
   endif
   if (! is_function_handle (fun))
     error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "fun");
+           [solver ": invalid value assigned to field '" fun "'"]);
   endif
 
   ## Check trange
   validateattributes (trange, {"float"}, {"vector", "real"}, solver, "trange");
 
   if (numel (trange) < 2)
-       error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "trange");
+    error ("Octave:invalid-input-arg",
+           [solver ": invalid value assigned to field 'trange'"]);
   elseif (! ((all (diff (trange) > 0)) || all (diff (-trange) > 0)))
-        error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "trange");
+    error ("Octave:invalid-input-arg",
+           [solver ": invalid value assigned to field 'trange'"]);
   endif
 
   ## Check y0 and yp0

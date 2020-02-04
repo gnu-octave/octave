@@ -142,15 +142,15 @@ function varargout = ode23 (fun, trange, init, varargin)
   init = init(:);
 
   if (ischar (fun))
-    try
-      fun = str2func (fun);
-    catch
-      warning (lasterr);
-    end_try_catch
+    if (! exist (fun))
+      error ("Octave:invalid-input-arg",
+             [solver ": function '" fun "' not found"]);
+    endif
+    fun = str2func (fun);
   endif
   if (! is_function_handle (fun))
     error ("Octave:invalid-input-arg",
-           "ode23: FUN must be a valid function handle");
+           [solver ": FUN must be a valid function handle"]);
   endif
 
   ## Start preprocessing, have a look which options are set in odeopts,

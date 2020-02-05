@@ -533,7 +533,7 @@ endfunction
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", @jacwrong);
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "ode15i: invalid value assigned to field 'Jacobian'");
+%!       '"Jacobian" function must evaluate to a real square matrix');
 
 ## Jacobian cell dense wrong dimension
 %!testif HAVE_SUNDIALS
@@ -544,7 +544,7 @@ endfunction
 %!           0,  0, 0];
 %! opt = odeset ("Jacobian", {DFDY, DFDYP});
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'");
+%!       '"Jacobian" matrices must be real square matrices');
 
 ## Jacobian cell sparse wrong dimension
 %!testif HAVE_SUNDIALS_SUNLINSOL_KLU
@@ -555,38 +555,32 @@ endfunction
 %!                   0,  0, 0]);
 %! opt = odeset ("Jacobian", {DFDY, DFDYP});
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'");
+%!       '"Jacobian" matrices must be real square matrices');
 
 ## Jacobian cell wrong number of matrices
 %!testif HAVE_SUNDIALS
 %! A = [1 2 3; 4 5 6; 7 8 9];
 %! opt = odeset ("Jacobian", {A,A,A});
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'");
+%!       'invalid value assigned to field "Jacobian"');
 
 ## Jacobian single matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", [1 2 3; 4 5 6; 7 8 9]);
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'");
+%!       '"Jacobian" field must be a function handle or 2-element cell array of square matrices');
 
 ## Jacobian single matrix wrong dimension
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", [1 2 3; 4 5 6]);
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'");
+%!       '"Jacobian" field must be a function handle or 2-element cell array of square matrices');
 
 ## Jacobian strange field
-## FIXME: for compatibility with Matlab, it is no longer an error to
-## create a handle to a nonexistent function and ode15i just checks that
-## the argument is a function handle (it is) so there is no error for
-## this case now.  If this check really must be done early, before
-## attempting to use the invalid function handle, then one way is to
-## call "functions" on it and catch the error if it is invalid.
-##%!testif HAVE_SUNDIALS
-##%! opt = odeset ("Jacobian", "_5yVNhWVJWJn47RKnzxPsyb_");
-##%! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-##%!       "invalid value assigned to field 'Jacobian'");
+%!testif HAVE_SUNDIALS
+%! opt = odeset ("Jacobian", "_5yVNhWVJWJn47RKnzxPsyb_");
+%! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
+%!       '"Jacobian" function "_5yVNhWVJWJn47RKnzxPsyb_" not found');
 
 %!function ydot = fun (t, y, yp)
 %!  ydot = [y - yp];

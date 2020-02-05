@@ -119,7 +119,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
     if (ischar (options.Jacobian))
       if (! exist (options.Jacobian))
         error ("Octave:invalid-input-arg",
-               [solver ": function '" options.Jacobian "' not found"]);
+               ['ode15i: "Jacobian" function "' options.Jacobian '" not found']);
       endif
       options.Jacobian = str2func (options.Jacobian);
     endif
@@ -129,13 +129,13 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
     if (ischar (options.OutputFcn))
       if (! exist (options.OutputFcn))
         error ("Octave:invalid-input-arg",
-               [solver ": function '" options.OutputFcn "' not found"]);
+               ['ode15i: "OutputFcn" function "' options.OutputFcn '" not found']);
       endif
       options.OutputFcn = str2func (options.OutputFcn);
     endif
     if (! is_function_handle (options.OutputFcn))
       error ("Octave:invalid-input-arg",
-             [solver ": invalid value assigned to field 'OutputFcn'"]);
+             'ode15i: "OutputFcn" must be a valid function handle');
     endif
   endif
 
@@ -143,13 +143,13 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
     if (ischar (options.Events))
       if (! exist (options.Events))
         error ("Octave:invalid-input-arg",
-               [solver ": function '" options.Events "' not found"]);
+               ['ode15i: "Events" function "' options.Events '" not found']);
       endif
       options.Events = str2func (options.Events);
     endif
     if (! is_function_handle (options.Events))
       error ("Octave:invalid-input-arg",
-             [solver ": invalid value assigned to field 'Events'"]);
+             'ode15i: "Events" must be a valid function handle');
     endif
   endif
 
@@ -178,45 +178,45 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
     options.havejac = true;
     if (iscell (options.Jacobian))
       if (numel (options.Jacobian) == 2)
-        if (issparse (options.Jacobian{1}) && issparse (options.Jacobian{2}))
-          options.havejacsparse = true;  # Jac is sparse cell
-        endif
-
-        if (any (size (options.Jacobian{1}) != [n n])
-            || any (size (options.Jacobian{2}) != [n n])
-            || ! isnumeric (options.Jacobian{1})
-            || ! isnumeric (options.Jacobian{2})
-            || ! isreal (options.Jacobian{1})
-            || ! isreal (options.Jacobian{2}))
+        J1 = options.Jacobian{1};
+        J2 = options.Jacobian{2};
+        if (   ! issquare (J1) || ! issquare (J2)
+            || rows (J1) != n || rows (J2) != n  
+            || ! isnumeric (J1) || ! isnumeric (J2)
+            || ! isreal (J1) || ! isreal (J2))
           error ("Octave:invalid-input-arg",
-                 [solver ": invalid value assigned to field 'Jacobian'"]);
+                 'ode15i: "Jacobian" matrices must be real square matrices');
+        endif
+        if (issparse (J1) && issparse (J2))
+          options.havejacsparse = true;  # Jac is sparse cell
         endif
       else
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Jacobian'"]);
+               'ode15i: invalid value assigned to field "Jacobian"');
       endif
 
     elseif (is_function_handle (options.Jacobian))
       options.havejacfun = true;
       if (nargin (options.Jacobian) == 3)
-        [A, B] = options.Jacobian (trange(1), y0, yp0);
-        if (issparse (A) && issparse (B))
-          options.havejacsparse = true;  # Jac is sparse fun
-        endif
+        [J1, J2] = options.Jacobian (trange(1), y0, yp0);
 
-        if (any (size (A) != [n n]) || any (size (B) != [n n])
-            || ! isnumeric (A) || ! isnumeric (B) || ! isreal (A)
-            || ! isreal (B))
+        if (   ! issquare (J1) || rows (J1) != n
+            || ! isnumeric (J1) || ! isreal (J1)
+            || ! issquare (J2) || rows (J2) != n
+            || ! isnumeric (J2) || ! isreal (J2))
           error ("Octave:invalid-input-arg",
-                 [solver ": invalid value assigned to field 'Jacobian'"]);
+                 'ode15i: "Jacobian" function must evaluate to a real square matrix');
+        endif
+        if (issparse (J1) && issparse (J2))
+          options.havejacsparse = true;  # Jac is sparse fun
         endif
       else
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Jacobian'"]);
+               'ode15i: invalid value assigned to field "Jacobian"');
       endif
     else
-        error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Jacobian'"]);
+      error ("Octave:invalid-input-arg",
+             'ode15i: "Jacobian" field must be a function handle or 2-element cell array of square matrices');
     endif
   endif
 
@@ -225,7 +225,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
 
   if (numel (options.AbsTol) != 1 && numel (options.AbsTol) != n)
     error ("Octave:invalid-input-arg",
-           [solver ": invalid value assigned to field 'AbsTol'"]);
+           'ode15i: invalid value assigned to field "AbsTol"');
 
   elseif (numel (options.AbsTol) == n)
     options.haveabstolvec = true;

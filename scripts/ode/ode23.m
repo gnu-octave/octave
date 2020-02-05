@@ -98,8 +98,8 @@ function varargout = ode23 (fun, trange, init, varargin)
     print_usage ();
   endif
 
-  order  = 3;
   solver = "ode23";
+  order  = 3;
 
   if (nargin >= 4)
     if (! isstruct (varargin{1}))
@@ -110,7 +110,8 @@ function varargout = ode23 (fun, trange, init, varargin)
       ## varargin{1} is an ODE options structure opt
       odeopts = varargin{1};
       funarguments = {varargin{2:numel (varargin)}};
-    else  # if (isstruct (varargin{1}))
+    else
+      ## varargin{1} is an ODE options structure opt
       odeopts = varargin{1};
       funarguments = {};
     endif
@@ -144,13 +145,13 @@ function varargout = ode23 (fun, trange, init, varargin)
   if (ischar (fun))
     if (! exist (fun))
       error ("Octave:invalid-input-arg",
-             [solver ": function '" fun "' not found"]);
+             ['ode23: function "' fun '" not found']);
     endif
     fun = str2func (fun);
   endif
   if (! is_function_handle (fun))
     error ("Octave:invalid-input-arg",
-           [solver ": FUN must be a valid function handle"]);
+           "ode23: FUN must be a valid function handle");
   endif
 
   ## Start preprocessing, have a look which options are set in odeopts,
@@ -199,13 +200,18 @@ function varargout = ode23 (fun, trange, init, varargin)
                                              odeopts.funarguments);
   endif
 
-  if (! isempty (odeopts.Mass) && isnumeric (odeopts.Mass))
-    havemasshandle = false;
-    mass = odeopts.Mass;    # constant mass
-  elseif (is_function_handle (odeopts.Mass))
-    havemasshandle = true;  # mass defined by a function handle
-  else  # no mass matrix - creating a diag-matrix of ones for mass
-    havemasshandle = false; # mass = diag (ones (length (init), 1), 0);
+  if (! isempty (odeopts.Mass))
+    if (isnumeric (odeopts.Mass))
+      havemasshandle = false;
+      mass = odeopts.Mass;  # constant mass
+    elseif (is_function_handle (odeopts.Mass))
+      havemasshandle = true;    # mass defined by a function handle
+    else
+      error ("Octave:invalid-input-arg",
+             'ode45: "Mass" field must be a function handle or square matrix');
+    endif
+  else  # no mass matrix - create a diag-matrix of ones for mass
+    havemasshandle = false;   # mass = diag (ones (length (init), 1), 0);
   endif
 
   ## Starting the initialization of the core solver ode23
@@ -262,8 +268,8 @@ function varargout = ode23 (fun, trange, init, varargin)
     varargout{1} = solution.t;      # Time stamps are first output argument
     varargout{2} = solution.x;      # Results are second output argument
   elseif (nargout == 1)
-    varargout{1}.x = solution.t.';   # Time stamps are saved in field x (row vector)
-    varargout{1}.y = solution.x.';   # Results are saved in field y (row vector)
+    varargout{1}.x = solution.t.';  # Time stamps saved in field x (row vector)
+    varargout{1}.y = solution.x.';  # Results are saved in field y (row vector)
     varargout{1}.solver = solver;   # Solver name is saved in field solver
     if (! isempty (odeopts.Events))
       varargout{1}.xe = solution.event{3};  # Time info when an event occurred

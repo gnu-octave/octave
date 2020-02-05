@@ -123,10 +123,6 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
       endif
       options.Jacobian = str2func (options.Jacobian);
     endif
-    if (! is_function_handle (options.Jacobian))
-      error ("Octave:invalid-input-arg",
-             [solver ": invalid value assigned to field 'Jacobian'"]);
-    endif
   endif
 
   if (! isempty (options.OutputFcn))

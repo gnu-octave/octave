@@ -117,7 +117,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
       endif
       options.Mass = str2func (options.Mass);
     endif
-    if (! is_function_handle (options.Mass))
+    if (! is_function_handle (options.Mass) && ! isnumeric (options.Mass))
       error ("Octave:invalid-input-arg",
              [solver ": invalid value assigned to field 'Mass'"]);
     endif
@@ -131,7 +131,8 @@ function varargout = ode15s (fun, trange, y0, varargin)
       endif
       options.Jacobian = str2func (options.Jacobian);
     endif
-    if (! is_function_handle (options.Jacobian))
+    if (! is_function_handle (options.Jacobian)
+        && ! isnumeric (options.Jacobian))
       error ("Octave:invalid-input-arg",
              [solver ": invalid value assigned to field 'Jacobian'"]);
     endif

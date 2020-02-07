@@ -1128,6 +1128,11 @@ main (int argc, char **argv)
            + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
            + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
 
+#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
+      if (! f77files.empty () && ! vars["FLIBS"].empty ())
+        cmd += ' ' + vars["FLIBS"];
+#endif
+
       int status = run_command (cmd, printonly);
 
       clean_up_tmp_files (tmp_objfiles);

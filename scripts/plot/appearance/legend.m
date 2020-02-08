@@ -1938,7 +1938,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test bugs in previous implementation
-%!test <*39697>
+%!testif ; any (strcmp (graphics_toolkit (), {"fltk", "qt"})) <*39697>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   axes ("units", "normalized");

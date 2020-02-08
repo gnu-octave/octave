@@ -711,14 +711,37 @@ namespace octave
 #endif
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-      // Get a more canonical name wrt case and full names
-      std::wstring w_tmp = L"\\\\?\\" + u8_to_wstring (retval);
-      wchar_t w_long[32767] = L"";
-      int w_len = GetLongPathNameW (w_tmp.c_str (), w_long, 32767);
-      if (w_len > 4)
-        retval = u8_from_wstring (std::wstring (w_long+4, w_len-4));
-      if (retval[1] == ':')
-        retval[0] = toupper (retval[0]);
+      std::wstring w_tmp;
+      bool strip_marker = true;
+      if (retval.empty ())
+        {
+          // For UNC paths, take the input as is.
+          // Also translate forward slashes.
+          retval = name;
+          std::replace (retval.begin (), retval.end (), '/', '\\');
+          if (retval.compare (0, 2, "\\\\") == 0)
+            {
+              w_tmp = u8_to_wstring (retval);
+              strip_marker = false;
+            }
+        }
+      else
+        w_tmp = L"\\\\?\\" + u8_to_wstring (retval);
+
+      if (! w_tmp.empty ())
+        {
+          // Get a more canonical name wrt case and full names
+          wchar_t w_long[32767] = L"";
+          int w_len = GetLongPathNameW (w_tmp.c_str (), w_long, 32767);
+
+          if (! strip_marker)
+            retval = u8_from_wstring (std::wstring (w_long, w_len));
+          else if (w_len > 4)
+            retval = u8_from_wstring (std::wstring (w_long+4, w_len-4));
+
+          if (retval.length () > 1 && retval[1] == ':')
+            retval[0] = toupper (retval[0]);
+        }
 #endif
 
       if (retval.empty ())

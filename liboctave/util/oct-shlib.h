@@ -28,9 +28,10 @@
 
 #include "octave-config.h"
 
+#include <functional>
 #include <list>
-#include <string>
 #include <map>
+#include <string>
 
 #include "oct-time.h"
 #include "oct-refcount.h"
@@ -43,7 +44,7 @@ namespace octave
   {
   public: // FIXME: make this class private?
 
-    typedef std::string (*name_mangler) (const std::string&);
+    typedef std::function<std::string (const std::string&)> name_mangler;
 
     class dynlib_rep
     {
@@ -68,7 +69,8 @@ namespace octave
       virtual bool is_open (void) const
       { return false; }
 
-      virtual void * search (const std::string&, name_mangler = nullptr)
+      virtual void * search (const std::string&,
+                             const name_mangler& = name_mangler ())
       { return nullptr; }
 
       bool is_out_of_date (void) const;
@@ -170,7 +172,8 @@ namespace octave
       return removed_fcns;
     }
 
-    void * search (const std::string& nm, name_mangler mangler = nullptr) const
+    void * search (const std::string& nm,
+                   const name_mangler& mangler = name_mangler ()) const
     {
       void *f = m_rep->search (nm, mangler);
       if (f)

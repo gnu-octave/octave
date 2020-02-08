@@ -172,7 +172,8 @@ namespace octave
     ~octave_dlopen_shlib (void);
 
     void * search (const std::string& name,
-                   dynamic_library::name_mangler mangler = nullptr);
+                   const dynamic_library::name_mangler& mangler
+                     = dynamic_library::name_mangler ());
 
     // FIXME: this is possibly redundant because failure to open a library will
     // normally throw an exception, avoiding the construction of an invalid
@@ -236,7 +237,7 @@ namespace octave
 
   void *
   octave_dlopen_shlib::search (const std::string& name,
-                               dynamic_library::name_mangler mangler)
+                               const dynamic_library::name_mangler& mangler)
   {
     void *function = nullptr;
 
@@ -275,7 +276,8 @@ namespace octave
     ~octave_w32_shlib (void);
 
     void * search (const std::string& name,
-                   dynamic_library::name_mangler mangler = nullptr);
+                   const dynamic_library::name_mangler& mangler
+                     = dynamic_library::name_mangler ());
 
     void * global_search (const std::string& sym_name);
 
@@ -390,7 +392,7 @@ namespace octave
 
   void *
   octave_w32_shlib::search (const std::string& name,
-                            dynamic_library::name_mangler mangler)
+                            const dynamic_library::name_mangler& mangler)
   {
     void *function = nullptr;
 

@@ -37,6 +37,7 @@
 #endif
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
+#  include <shlwapi.h>
 #endif
 
 #include <vector>
@@ -723,6 +724,9 @@ namespace octave
             {
               w_tmp = u8_to_wstring (retval);
               strip_marker = false;
+              wchar_t canon_path[MAX_PATH];
+              if (PathCanonicalizeW (canon_path, w_tmp.c_str ()))
+                w_tmp = std::wstring (canon_path);
             }
         }
       else

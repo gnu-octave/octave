@@ -1267,6 +1267,16 @@ case $host_os in
   ;;
 esac
 
+## Windows-specific module used for canonical UNC paths
+case $host_os in
+  msdosmsvc | mingw*)
+    AC_CHECK_HEADERS([shlwapi.h],
+      [LIBS="-lshlwapi $LIBS"],
+      [AC_MSG_ERROR([Missing SHLWAPI required to build for Windows target.])],
+      [#include <windows.h>])
+  ;;
+esac
+
 ## Cygwin kluge for getrusage.
 AC_CHECK_FUNCS([getrusage])
 case $host_os in

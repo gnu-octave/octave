@@ -36,6 +36,10 @@
 #include "stat-wrappers.h"
 #include "strmode-wrapper.h"
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include "lo-regexp.h"
+#endif
+
 namespace octave
 {
   namespace sys
@@ -189,12 +193,21 @@ namespace octave
 
           std::string full_file_name = sys::file_ops::tilde_expand (file_name);
 
-#if defined (__WIN32__)
-          // Remove trailing slash.
-          if (full_file_name.length () > 1
-              && sys::file_ops::is_dir_sep (full_file_name.back ())
-              && ! (full_file_name.length () == 3 && full_file_name[1] == ':'))
+#if defined (OCTAVE_USE_WINDOWS_API)
+          full_file_name = sys::canonicalize_file_name (full_file_name);
+
+          // Remove trailing slashes
+          while (full_file_name.length () > 1
+              && sys::file_ops::is_dir_sep (full_file_name.back ()))
             full_file_name.pop_back ();
+
+          // If path is a root (like "C:" or "\\SERVER\share"), add a
+          // trailing backslash.
+          // FIXME: Does this pattern match all possible UNC roots?
+          octave::regexp pat (R"(^\\\\[\w-]*\\[\w-]*$)");
+          if ((full_file_name.length () == 2 && full_file_name[1] == ':')
+              || pat.is_match (full_file_name))
+            full_file_name += "\\";
 #endif
 
           const char *cname = full_file_name.c_str ();

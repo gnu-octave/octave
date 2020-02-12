@@ -93,16 +93,22 @@ endfunction
 %!test
 %! s = sprand (1e6, 1e6, 1e-7);
 
+## Test empty array creation
+%!assert (size (sprand (0, 0, 0.5)), [0, 0])
+%!assert (size (sprand (0, 3, 0.5)), [0, 3])
+%!assert (size (sprand (3, 0, 0.5)), [3, 0])
+
 ## Test input validation
 %!error sprand ()
 %!error sprand (1, 2)
 %!error sprand (1, 2, 3, 4)
-%!error <M must be an integer greater than 0> sprand (ones (3), 3, 0.5)
-%!error <M must be an integer greater than 0> sprand (3.5, 3, 0.5)
-%!error <M must be an integer greater than 0> sprand (0, 3, 0.5)
-%!error <N must be an integer greater than 0> sprand (3, ones (3), 0.5)
-%!error <N must be an integer greater than 0> sprand (3, 3.5, 0.5)
-%!error <N must be an integer greater than 0> sprand (3, 0, 0.5)
+%!error <M must be a non-negative integer> sprand (-1, -1, 0.5)
+%!error <M must be a non-negative integer> sprand (ones (3), 3, 0.5)
+%!error <M must be a non-negative integer> sprand (3.5, 3, 0.5)
+%!error <M must be a non-negative integer> sprand (-1, 3, 0.5)
+%!error <N must be a non-negative integer> sprand (3, ones (3), 0.5)
+%!error <N must be a non-negative integer> sprand (3, 3.5, 0.5)
+%!error <N must be a non-negative integer> sprand (3, -1, 0.5)
 %!error <D must be between 0 and 1> sprand (3, 3, -1)
 %!error <D must be between 0 and 1> sprand (3, 3, 2)
 %!error <RC must be a scalar or vector> sprand (2, 2, 0.2, ones (3,3))

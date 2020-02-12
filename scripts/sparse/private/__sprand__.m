@@ -49,14 +49,19 @@ function S = __sprand__ (varargin)
       [m, n, d, rc, fcnname, randfun] = deal (varargin{:});
     endif
 
-    if (! (isscalar (m) && m == fix (m) && m > 0))
-      error ("%s: M must be an integer greater than 0", fcnname);
+    if (! (isscalar (m) && m == fix (m) && m >= 0))
+      error ("%s: M must be a non-negative integer", fcnname);
     endif
-    if (! (isscalar (n) && n == fix (n) && n > 0))
-      error ("%s: N must be an integer greater than 0", fcnname);
+    if (! (isscalar (n) && n == fix (n) && n >= 0))
+      error ("%s: N must be a non-negative integer", fcnname);
     endif
     if (d < 0 || d > 1)
       error ("%s: density D must be between 0 and 1", fcnname);
+    endif
+
+    if (m == 0 || n == 0)
+      S = sparse (m, n);
+      return;
     endif
 
     if (nargin == 5)

@@ -1,4 +1,4 @@
-FCN_FILE_DIRS += scripts/deprecated
+FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/output_max_field_width.m \

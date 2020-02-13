@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/testfun
+FCN_FILE_DIRS += \
+  %reldir% \
+  %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/compare_plot_demos.m \

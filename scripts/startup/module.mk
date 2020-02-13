@@ -1,4 +1,4 @@
-FCN_FILE_DIRS += scripts/startup
+FCN_FILE_DIRS += %reldir%
 
 SITE_STARTUP_FILE_SRC  = %reldir%/site-rcfile
 

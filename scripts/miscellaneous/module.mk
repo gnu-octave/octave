@@ -1,5 +1,5 @@
 FCN_FILE_DIRS += \
-  scripts/miscellaneous \
+  %reldir% \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \

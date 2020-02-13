@@ -1,5 +1,5 @@
 FCN_FILE_DIRS += \
-  scripts/plot/util \
+  %reldir% \
   %reldir%/private
 
 %canon_reldir%_GEN_FCN_FILES = \

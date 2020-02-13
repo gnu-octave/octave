@@ -1,4 +1,4 @@
-FCN_FILE_DIRS += scripts/geometry
+FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/convhull.m \

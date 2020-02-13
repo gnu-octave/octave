@@ -4,7 +4,8 @@ FCN_FILE_DIRS += \
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/__axis_label__.m \
-  %reldir%/private/__axis_limits__.m
+  %reldir%/private/__axis_limits__.m \
+  %reldir%/private/__gnuplot_legend__.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/__clabel__.m \

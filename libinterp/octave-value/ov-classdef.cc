@@ -204,6 +204,32 @@ octave_classdef::undef_subsasgn (const std::string& type,
   return octave_value ();
 }
 
+Matrix
+octave_classdef::size (void)
+{
+  octave::cdef_class cls = object.get_class ();
+
+  if (! in_class_method (cls) && ! called_from_builtin ())
+    {
+      octave::cdef_method meth = cls.find_method ("size");
+
+      if (meth.ok ())
+        {
+          count++;
+          octave_value_list args (1, octave_value (this));
+
+          octave_value_list lv = meth.execute (args, 1, true, "size");
+          if (lv.length () <= 0
+              || ! lv(0).is_matrix_type () || ! lv(0).dims ().isvector ())
+            error ("%s.size: invalid return value", class_name ().c_str ());
+
+          return lv(0).matrix_value ();
+        }
+    }
+
+  return octave_base_value::size ();
+}
+
 octave_idx_type
 octave_classdef::xnumel (const octave_value_list& idx)
 {

@@ -69,7 +69,15 @@ function [status, msg, msgid] = mkdir (parent, dirname)
   ## Move leading directory names from dirname to parent
   [parent, dirname, ext] = fileparts ([parent, dirname]);
 
-  [status, msg, msgid] = mkdir_recur (parent, [dirname, ext]);
+  [sts, msg, msgid] = mkdir_recur (parent, [dirname, ext]);
+
+  if (nargout == 0)
+    if (! sts)
+      error ("mkdir: failed to create directory");
+    endif
+  else
+    status = sts;
+  endif
 
 endfunction
 

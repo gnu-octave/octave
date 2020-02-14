@@ -88,25 +88,29 @@ static void disable_app_nap (void)
       == nullptr)
     return;
 
-  process_info = objc_msgSend (reinterpret_cast<id> (process_info_class),
-                               process_info_selector);
+  process_info = reinterpret_cast<id (*) (id, SEL)> (objc_msgSend)
+                   (reinterpret_cast<id> (process_info_class),
+                    process_info_selector);
   if (process_info == nil)
     return;
 
-  reason_string = objc_msgSend (reinterpret_cast<id> (objc_getClass ("NSString")),
-                                sel_getUid ("alloc"));
-  reason_string = objc_msgSend (reason_string,
-                                sel_getUid ("initWithUTF8String:"),
-                                "App Nap causes pause() malfunction");
+  reason_string = reinterpret_cast<id (*) (id, SEL)> (objc_msgSend)
+                    (reinterpret_cast<id> (objc_getClass ("NSString")),
+                     sel_getUid ("alloc"));
+  reason_string = reinterpret_cast<id (*) (id, SEL, const char *)> (objc_msgSend)
+                    (reason_string, sel_getUid ("initWithUTF8String:"),
+                     "App Nap causes pause() malfunction");
 
   // Start an Activity that suppresses App Nap.  This Activity will run for
   // the entire duration of the Octave process.  This is intentional,
   // not a leak.
-  osx_latencycritical_activity = objc_msgSend (process_info,
-      begin_activity_with_options_selector,
-      NSActivityUserInitiatedAllowingIdleSystemSleep
-      | NSActivityLatencyCritical,
-      reason_string);
+  osx_latencycritical_activity =
+    reinterpret_cast<id (*) (id, SEL, unsigned long long, id)> (objc_msgSend)
+      (process_info,
+       begin_activity_with_options_selector,
+       NSActivityUserInitiatedAllowingIdleSystemSleep
+       | NSActivityLatencyCritical,
+       reason_string);
 }
 #endif
 

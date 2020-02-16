@@ -315,6 +315,14 @@
 ## Rebuild the package database from the installed directories.  This can
 ## be used in cases where the package database has been corrupted.
 ##
+## @item test
+## Perform the built-in self tests contained in all functions provided by
+## the named packages.  For example,
+##
+## @example
+## pkg test image
+## @end example
+##
 ## @end table
 ## @seealso{ver, news}
 ## @end deftypefn
@@ -346,7 +354,7 @@ function [local_packages, global_packages] = pkg (varargin)
   # valid actions in alphabetical order
   available_actions = {"build", "describe", "global_list",  "install", ...
                        "list", "load", "local_list", "prefix", "rebuild", ...
-                       "uninstall", "unload", "update"};
+                       "test", "uninstall", "unload", "update"};
 
   ## Parse input arguments
   if (isempty (varargin) || ! iscellstr (varargin))
@@ -664,6 +672,33 @@ function [local_packages, global_packages] = pkg (varargin)
           feval (@pkg, "install", "-forge", installed_pkg_name);
         endif
       endfor
+
+    case "test"
+      if (isempty (files))
+        error ("pkg: test action requires at least one package name");
+      endif
+      ## Make sure the requested packages are loaded
+      orig_path = path ();
+      load_packages (files, deps, local_list, global_list);
+      ## Test packages one by one
+      installed_pkgs_lst = installed_packages (local_list, global_list, files);
+      unwind_protect
+        for i = 1:numel (installed_pkgs_lst)
+          printf ("Testing functions in package '%s':\n", files{i});
+          installed_pkgs_dirs = {installed_pkgs_lst{i}.dir, ...
+                                 installed_pkgs_lst{i}.archprefix};
+          ## For local installs installed_pkgs_dirs contains the same subdirs
+          installed_pkgs_dirs = unique (installed_pkgs_dirs);
+          if (! isempty (installed_pkgs_dirs))
+            ## FIXME invoke another test routine once that is available.
+            ## Until then __run_test_suite__.m will do the job fine enough
+            __run_test_suite__ ({installed_pkgs_dirs{:}}, {});
+          endif
+        endfor
+      unwind_protect_cleanup
+        ## Restore load path back to its original value before loading packages
+        path (orig_path);
+      end_unwind_protect
 
     otherwise
       error ("pkg: invalid action.  See 'help pkg' for available actions");

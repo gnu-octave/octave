@@ -30,5 +30,6 @@
 
 function [url, local_file] = get_forge_download (name)
   [ver, url] = get_forge_pkg (name);
-  local_file = [name "-" ver ".tar.gz"];
+  local_file = tempname (tempdir (), [name "-" ver "-"]);
+  local_file = [local_file ".tar.gz"];
 endfunction

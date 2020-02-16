@@ -73,7 +73,7 @@ function [status, msg, msgid] = mkdir (parent, dirname)
 
   if (nargout == 0)
     if (! sts)
-      error ("mkdir: failed to create directory");
+      error ("mkdir: operation failed: %s", msg);
     endif
   else
     status = sts;

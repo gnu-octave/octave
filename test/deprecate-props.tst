@@ -37,25 +37,3 @@
 %!    endif
 %!  endif
 %!endfunction
-
-## text/uicontrol/uipanel/uibuttongroup/uitable  "oblique" value for
-## "fontangle" property was deprecated in 5.0, remove from version 7:
-##   * remove "oblique" options in graphics.in.h, QtHandlesUtils.cc,
-##     and ft-text-renderer.cc
-##   * remove warnings from update_fontangle in graphics.in.h
-%!test
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   ht = text ();
-%!   testprop (ht, "fontangle", "7.0", "oblique");
-%!   hui = uicontrol ();
-%!   testprop (hui, "fontangle", "7.0", "oblique");
-%!   hui = uipanel ();
-%!   testprop (hui, "fontangle", "7.0", "oblique");
-%!   hui = uibuttongroup ();
-%!   testprop (hui, "fontangle", "7.0", "oblique");
-%!   hui = uitable ();
-%!   testprop (hui, "fontangle", "7.0", "oblique");
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect

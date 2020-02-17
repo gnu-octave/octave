@@ -4364,8 +4364,7 @@ public:
       color_property edgecolor , color_property (radio_values ("{none}"), color_values (0, 0, 0))
       bool_property editing , "off"
       array_property extent rG , Matrix (1, 4, 0.0)
-      // FIXME: DEPRECATED: Remove "oblique" in version 7.
-      radio_property fontangle u , "{normal}|italic|oblique"
+      radio_property fontangle u , "{normal}|italic"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
       bool_property fontsmoothing u , "on"
@@ -4472,11 +4471,6 @@ public:
     {
       update_font ();
       update_text_extent ();
-      // FIXME: DEPRECATED: Remove warning for "oblique" in version 7.
-      if (fontangle.is ("oblique"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontangle' to '%s' is deprecated, \
-use 'italic' or 'normal'.", fontangle.current_value ().c_str ());
     }
     void update_fontweight (void) { update_font (); update_text_extent (); }
 
@@ -5502,8 +5496,7 @@ public:
       bool_property clipping , "on"
       radio_property enable , "{on}|inactive|off"
       array_property extent rG , Matrix (1, 4, 0.0)
-      // FIXME: DEPRECATED: Remove "oblique" in version 7.
-      radio_property fontangle u , "{normal}|italic|oblique"
+      radio_property fontangle u , "{normal}|italic"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
@@ -5553,11 +5546,6 @@ public:
     void update_fontangle (void)
     {
       update_text_extent ();
-      // FIXME: DEPRECATED: Remove warning for "oblique" in version 7.
-      if (fontangle.is ("oblique"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontangle' to '%s' is deprecated, \
-use 'italic' or 'normal'.", fontangle.current_value ().c_str ());
     }
     void update_fontweight (void) { update_text_extent (); }
 
@@ -5618,8 +5606,7 @@ public:
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
       bool_property clipping , "on"
-      // FIXME: DEPRECATED: Remove "oblique" in version 7.
-      radio_property fontangle , "{normal}|italic|oblique"
+      radio_property fontangle , "{normal}|italic"
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
@@ -5710,8 +5697,7 @@ public:
       color_property backgroundcolor , color_values (0.94, 0.94, 0.94)
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
-      // FIXME: DEPRECATED: Remove "oblique" in version 7.
-      radio_property fontangle , "{normal}|italic|oblique"
+      radio_property fontangle , "{normal}|italic"
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
@@ -5804,8 +5790,7 @@ public:
       any_property data u , Matrix ()
       bool_property enable , "on"
       array_property extent rG , Matrix (1, 4, 0.0)
-      // FIXME: DEPRECATED: Remove "oblique" in version 7.
-      radio_property fontangle u , "{normal}|italic|oblique"
+      radio_property fontangle u , "{normal}|italic"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
@@ -5846,11 +5831,6 @@ public:
     void update_fontangle (void)
     {
       update_table_extent ();
-      // FIXME: DEPRECATED: Remove warning for "oblique" in version 7.
-      if (fontangle.is ("oblique"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontangle' to '%s' is deprecated, \
-use 'italic' or 'normal'.", fontangle.current_value ().c_str ());
     }
     void update_fontweight (void) { update_table_extent (); }
   };

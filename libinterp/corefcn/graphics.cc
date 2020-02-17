@@ -524,10 +524,11 @@ default_figure_paperposition (void)
 {
   Matrix m (1, 4);
 
-  m(0) = 0.25;
-  m(1) = 2.50;
-  m(2) = 8.00;
-  m(3) = 6.00;
+  // Update if default_figure_position or default_figure_papersize change
+  m(0) = 1.3421852580027660;
+  m(1) = 3.3191389435020748;
+  m(2) = 5.8156294839944680;
+  m(3) = 4.3617221129958503;
 
   return m;
 }

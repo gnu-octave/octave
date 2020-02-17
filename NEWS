@@ -15,7 +15,6 @@ Summary of important user-visible changes for version 7 (yyyy-mm-dd):
 
 * `XXX`
 
-
 ### Deprecated functions and properties
 
 The following functions and properties have been deprecated in Octave 7
@@ -41,15 +40,20 @@ and have been removed from Octave 7.
 
 - Functions
 
-  Function             | Replacement
-  ---------------------|------------------
-                       | 
+  Function                 | Replacement
+  -------------------------|------------------
+  `output_max_field_width` | `output_precision`
+  `is_keyword`             | `iskeyword`
 
 - Properties
 
-  Object               | Property                  | Value
-  ---------------------|---------------------------|-----------------------
-                       |                           |
+  Object           | Property      | Value
+  -----------------|---------------|------------
+  `text`           | `fontangle`   | `"oblique"`
+  `uibuttongroup`  | `fontangle`   | `"oblique"`
+  `uicontrol`      | `fontangle`   | `"oblique"`
+  `uipanel`        | `fontangle`   | `"oblique"`
+  `uitable`        | `fontangle`   | `"oblique"`
 
 ### Old release news
 

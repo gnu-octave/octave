@@ -27,7 +27,7 @@ dnl
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])
-AC_INIT([GNU Octave], [6.0.0], [https://octave.org/bugs.html], [octave],
+AC_INIT([GNU Octave], [6.0.1], [https://octave.org/bugs.html], [octave],
         [https://www.gnu.org/software/octave/])
 
 ### Declare version numbers
@@ -41,14 +41,14 @@ dnl AC_INIT requires it to be static, not computed from shell variables.
 
 OCTAVE_MAJOR_VERSION=6
 OCTAVE_MINOR_VERSION=0
-OCTAVE_PATCH_VERSION=0
+OCTAVE_PATCH_VERSION=1
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
 OCTAVE_COPYRIGHT="Copyright (C) 2020 The Octave Project Developers."
 
-OCTAVE_RELEASE_DATE="2019-02-23"
+OCTAVE_RELEASE_DATE="2020-02-17"
 
 ## The "API version" is used as a way of checking that interfaces in the
 ## liboctave and libinterp libraries haven't changed in a backwardly

@@ -44,6 +44,15 @@ functional form---parentheses and '=' for assignment of return values.
 - The function `griddata` now accepts 3-D inputs by passing data
 directly to `griddata3`.
 
+- Coordinate transformation functions `cart2sph`, `sph2cart`,
+`cart2pol`, and `pol2cart` can now accept either row or column vectors
+for coordinate inputs.  A single coordinate matrix with one variable per
+column can still be used as function input, but a single output variable
+will now contain just the first output coordinate, and will no longer
+return the full output coordinate matrix.  Output size matches the
+size of input vectors, or in the case of an input matrix will be column
+vectors with rows corresponding to the input coordinate matrix.
+
 ### Alphabetical list of new functions added in Octave 7
 
 * `rng`

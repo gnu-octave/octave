@@ -122,7 +122,7 @@ function varargout = lightangle (varargin)
     pos -= get (hax, "CameraTarget");
   endif
 
-  pos = sph2cart (az, el, norm (pos));
+  [pos(1), pos(2), pos(3)] = sph2cart (az, el, norm (pos));
 
   if (strcmp (get (hl, "Style"), "local"))
     pos += get (hax, "CameraTarget");

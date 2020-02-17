@@ -26,22 +26,45 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{C})
-## @deftypefnx {} {@var{S} =} cart2sph (@dots{})
 ## Transform Cartesian coordinates to spherical coordinates.
 ##
 ## The inputs @var{x}, @var{y}, and @var{z} must be the same shape, or scalar.
-## If called with a single matrix argument then each row of @var{C} represents
-## the Cartesian coordinate (@var{x}, @var{y}, @var{z}).
+## If called with a single matrix argument then each row of @var{C} must
+## represent a Cartesian coordinate triplet (@var{x}, @var{y}, @var{z}).
 ##
-## @var{theta} describes the angle relative to the positive x-axis.
+## The outputs @var{theta}, @var{phi}, @var{r} match the shape of the inputs.
+## For a matrix input @var{C} the outputs will be column vectors with rows
+## corresponding to the rows of the input matrix.
 ##
-## @var{phi} is the angle relative to the xy-plane.
+## @var{theta} describes the azimuth angle relative to the positive x-axis
+## measured in the xy-plane.
+##
+## @var{phi} is the elevation angle measured relative to the xy-plane.
 ##
 ## @var{r} is the distance to the origin @w{(0, 0, 0)}.
 ##
-## If only a single return argument is requested then return a matrix @var{S}
-## where each row represents one spherical coordinate
-## (@var{theta}, @var{phi}, @var{r}).
+## The coordinate transformation is computed using:
+##
+## @tex
+## $$ \theta = \arctan \left ({y \over x} \right ) $$
+## $$ \phi = \arctan \left ( {z \over {\sqrt{x^2+y^2}}} \right ) $$
+## $$ r = \sqrt{x^2 + y^2 + z^2} $$
+## @end tex
+## @ifnottex
+##
+## @example
+## @group
+## @var{theta} = arctan (@var{y} / @var{x})
+## @var{phi} = arctan (@var{z} / sqrt (@var{x}^2 + @var{y}^2))
+## @var{r} = sqrt (@var{x}^2 + @var{y}^2 + @var{z}^2)
+## @end group
+## @end example
+##
+## @end ifnottex
+##
+## @c FIXME: Remove this note in Octave 9.1 (two releases after 7.1).
+## Note: For @sc{matlab} compatibility, this function no longer returns a full
+## coordinate matrix when called with a single return argument.
 ## @seealso{sph2cart, cart2pol, pol2cart}
 ## @end deftypefn
 
@@ -52,29 +75,35 @@ function [theta, phi, r] = cart2sph (x, y, z)
   endif
 
   if (nargin == 1)
-    if (! (isnumeric (x) && ismatrix (x) && columns (x) == 3))
-      error ("cart2sph: matrix input must have 3 columns [X, Y, Z]");
+    if (! (isnumeric (x) && ismatrix (x)))
+      error ("cart2sph: matrix input C must be a 2-D numeric array");
+    elseif (columns (x) != 3 && numel (x) != 3)
+      error ("cart2sph: matrix input C must be a 3-element vector or 3-column array");
     endif
-    z = x(:,3);
-    y = x(:,2);
-    x = x(:,1);
+
+    if (numel (x) == 3)
+      z = x(3);
+      y = x(2);
+      x = x(1);
+    else
+      z = x(:,3);
+      y = x(:,2);
+      x = x(:,1);
+    endif
+
   else
-    if (! isnumeric (x) || ! isnumeric (y) || ! isnumeric (z))
-      error ("cart2sph: X, Y, Z must be numeric arrays of the same size, or scalar");
+    if (! (isnumeric (x) && isnumeric (y) && isnumeric (z)))
+      error ("cart2sph: X, Y, Z must be numeric arrays or scalars");
     endif
     [err, x, y, z] = common_size (x, y, z);
     if (err)
-      error ("cart2sph: X, Y, Z must be numeric arrays of the same size, or scalar");
+      error ("cart2sph: X, Y, Z must be the same size or scalars");
     endif
   endif
 
   theta = atan2 (y, x);
   phi = atan2 (z, sqrt (x .^ 2 + y .^ 2));
   r = sqrt (x .^ 2 + y .^ 2 + z .^ 2);
-
-  if (nargout <= 1)
-    theta = [theta(:), phi(:), r(:)];
-  endif
 
 endfunction
 
@@ -89,13 +118,22 @@ endfunction
 %! assert (r, [0, 1, 2]*sqrt (3), eps);
 
 %!test
+%! x = [0; 1; 2];
+%! y = [0; 1; 2];
+%! z = [0; 1; 2];
+%! [t, p, r] = cart2sph (x, y, z);
+%! assert (t, [0; pi/4; pi/4], eps);
+%! assert (p, [0; 1; 1] * atan (sqrt (0.5)), eps);
+%! assert (r, [0; 1; 2] * sqrt (3), eps);
+
+%!test
 %! x = 0;
 %! y = [0, 1, 2];
 %! z = [0, 1, 2];
-%! S = cart2sph (x, y, z);
-%! assert (S(:,1), [0; 1; 1] * pi/2, eps);
-%! assert (S(:,2), [0; 1; 1] * pi/4, eps);
-%! assert (S(:,3), [0; 1; 2] * sqrt (2), eps);
+%! [t, p, r] = cart2sph (x, y, z);
+%! assert (t, [0, 1, 1] * pi/2, eps);
+%! assert (p, [0, 1, 1] * pi/4, eps);
+%! assert (r, [0, 1, 2] * sqrt (2), eps);
 
 %!test
 %! x = [0, 1, 2];
@@ -103,17 +141,17 @@ endfunction
 %! z = [0, 1, 2];
 %! [t, p, r] = cart2sph (x, y, z);
 %! assert (t, [0, 0, 0]);
-%! assert (p, [0, 1, 1] * pi/4);
-%! assert (r, [0, 1, 2] * sqrt (2));
+%! assert (p, [0, 1, 1] * pi/4, eps);
+%! assert (r, [0, 1, 2] * sqrt (2), eps);
 
 %!test
 %! x = [0, 1, 2];
 %! y = [0, 1, 2];
 %! z = 0;
 %! [t, p, r] = cart2sph (x, y, z);
-%! assert (t, [0, 1, 1] * pi/4);
+%! assert (t, [0, 1, 1] * pi/4, eps);
 %! assert (p, [0, 0, 0]);
-%! assert (r, [0, 1, 2] * sqrt (2));
+%! assert (r, [0, 1, 2] * sqrt (2), eps);
 
 %!test
 %! x = 0;
@@ -121,13 +159,22 @@ endfunction
 %! z = [0, 1, 2];
 %! [t, p, r] = cart2sph (x, y, z);
 %! assert (t, [0, 0, 0]);
-%! assert (p, [0, 1, 1] * pi/2);
+%! assert (p, [0, 1, 1] * pi/2, eps);
 %! assert (r, [0, 1, 2]);
 
 %!test
 %! C = [0, 0, 0; 1, 0, 1; 2, 0, 2];
-%! S = [0, 0, 0; 0, pi/4, sqrt(2); 0, pi/4, 2*sqrt(2)];
-%! assert (cart2sph (C), S, eps);
+%! [t, p, r] = cart2sph (C);
+%! assert (t, [0; 0; 0]);
+%! assert (p, [0; 1; 1] * pi/4, eps);
+%! assert (r, [0; 1; 2] * sqrt (2), eps);
+
+%!test
+%! C = [0, 0, 0; 1, 0, 1; 2, 0, 2; 1, 0, 1];
+%! [t, p, r] = cart2sph (C);
+%! assert (t, [0; 0; 0; 0]);
+%! assert (p, [0; 1; 1; 1] * pi/4, eps);
+%! assert (r, [0; 1; 2; 1] * sqrt (2), eps);
 
 %!test
 %! [x, y, z] = meshgrid ([0, 1], [0, 1], [0, 1]);
@@ -145,11 +192,13 @@ endfunction
 %!error cart2sph ()
 %!error cart2sph (1,2)
 %!error cart2sph (1,2,3,4)
-%!error <matrix input must have 3 columns> cart2sph ({1,2,3})
-%!error <matrix input must have 3 columns> cart2sph (ones (3,3,2))
-%!error <matrix input must have 3 columns> cart2sph ([1,2,3,4])
-%!error <numeric arrays of the same size> cart2sph ({1,2,3}, [1,2,3], [1,2,3])
-%!error <numeric arrays of the same size> cart2sph ([1,2,3], {1,2,3}, [1,2,3])
-%!error <numeric arrays of the same size> cart2sph ([1,2,3], [1,2,3], {1,2,3})
-%!error <numeric arrays of the same size> cart2sph (ones (3,3,3), 1, ones (3,2,3))
-%!error <numeric arrays of the same size> cart2sph (ones (3,3,3), ones (3,2,3), 1)
+%!error <matrix input C must be a 2-D numeric array> cart2sph ({1,2,3})
+%!error <matrix input C must be a 2-D numeric array> cart2sph (ones (3,3,2))
+%!error <matrix input C must be a 3-element> cart2sph ([1,2,3,4])
+%!error <matrix input C must be a 3-element> cart2sph ([1,2,3,4; 1,2,3,4; 1,2,3,4])
+%!error <must be numeric arrays or scalars> cart2sph ({1,2,3}, [1,2,3], [1,2,3])
+%!error <must be numeric arrays or scalars> cart2sph ([1,2,3], {1,2,3}, [1,2,3])
+%!error <must be numeric arrays or scalars> cart2sph ([1,2,3], [1,2,3], {1,2,3})
+%!error <must be the same size or scalars> cart2sph ([1,2,3], [1,2,3], [1,2,3]')
+%!error <must be the same size or scalars> cart2sph (ones (3,3,3), 1, ones (3,2,3))
+%!error <must be the same size or scalars> cart2sph (ones (3,3,3), ones (3,2,3), 1)

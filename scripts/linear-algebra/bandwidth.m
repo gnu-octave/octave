@@ -40,7 +40,7 @@
 
 function [lower, upper] = bandwidth (A, type)
 
-  if (! ((nargin == 1 && nargout == 2) || (nargin == 2 && nargout <= 1)))
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
@@ -55,17 +55,17 @@ function [lower, upper] = bandwidth (A, type)
     if (isempty (i))
       lower = upper = 0;
     else
-      lower = max (i - j);
-      upper = max (j - i);
+      lower = max (0, max (i - j));
+      upper = max (0, max (j - i));
     endif
   else
     [i, j] = find (A);
     if (isempty (i))
       lower = 0;
     elseif (strcmp (type, "lower"))
-      lower = max (i - j);
+      lower = max (0, max (i - j));
     else
-      lower = max (j - i);
+      lower = max (0, max (j - i));
     endif
   endif
 
@@ -74,39 +74,42 @@ endfunction
 
 %!test
 %! [a,b] = bandwidth (speye (100));
-%! assert ([a,b] == [0,0]);
+%! assert ([a,b], [0,0]);
 %! assert (bandwidth (speye (100), "upper"), 0);
 %! assert (bandwidth (speye (100), "lower"), 0);
 
 %!test
 %! A = [2 3 0 0 0; 1 2 3 0 0; 0 1 2 3 0; 0 0 1 2 3; 0 0 0 1 2];
 %! [a,b] = bandwidth (A);
-%! assert ([a,b] == [1,1]);
+%! assert ([a,b], [1,1]);
 %! assert (bandwidth (A, "lower"), 1);
 %! assert (bandwidth (A, "upper"), 1);
 
 %!assert (bandwidth ([], "lower"), 0)
 %!assert (bandwidth ([], "upper"), 0)
+%!assert (bandwidth ([]), 0)
 %!assert (bandwidth (zeros (3,3), "lower"), 0)
 %!assert (bandwidth (zeros (3,3), "upper"), 0)
+%!assert (bandwidth (zeros (3,3)), 0)
 %!assert (bandwidth (ones (5,5), "lower"), 4)
 %!assert (bandwidth (ones (5,5), "upper"), 4)
+%!assert (bandwidth (ones (5,5)), 4)
+
+%!assert (bandwidth ([0,1,2,0]), 0)
 
 %!test
 %! [a,b] = bandwidth ([]);
-%! assert ([a,b] == [0,0]);
+%! assert ([a,b], [0,0]);
 %!test
 %! [a,b] = bandwidth (zeros (3,3));
-%! assert ([a,b] == [0,0]);
+%! assert ([a,b], [0,0]);
 %!test
 %! [a,b] = bandwidth (ones (5,5));
-%! assert ([a,b] == [4,4]);
+%! assert ([a,b], [4,4]);
 
 ## Test input validation
 %!error bandwidth ()
 %!error bandwidth (1,2,3)
-%!error [a,b,c] = bandwidth (ones (2))
-%!error [a,b] = bandwidth (ones (2), "upper")
 %!error <A must be a 2-D numeric or logical> bandwidth ("string", "lower")
 %!error <A must be a 2-D numeric or logical> bandwidth (ones (3,3,3), "lower")
 %!error <TYPE must be "lower" or "upper"> bandwidth (ones (2), "uper")

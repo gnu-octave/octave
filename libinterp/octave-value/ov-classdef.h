@@ -113,6 +113,8 @@ public:
                   const std::list<octave_value_list>& idx,
                   const octave_value& rhs);
 
+  Matrix size (void);
+
   octave_idx_type xnumel (const octave_value_list&);
 
   string_vector map_keys (void) const { return object.map_keys (); }

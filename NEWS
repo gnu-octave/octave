@@ -41,6 +41,8 @@ functional form---parentheses and '=' for assignment of return values.
 
 ### Matlab compatibility
 
+- The function `griddata` now accepts 3-D inputs by passing data
+directly to `griddata3`.
 
 ### Alphabetical list of new functions added in Octave 7
 

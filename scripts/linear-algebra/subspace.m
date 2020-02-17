@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 VZLU Prague, a.s., Czech Republic
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{angle} =} subspace (@var{A}, @var{B})
@@ -22,10 +29,8 @@
 ## spanned by the columns of matrices @var{A} and @var{B}.
 ## @end deftypefn
 
-## Author: Jaroslav Hajek <highegg@gmail.com>
-
-## reference:
-## [1]  Andrew V. Knyazev, Merico E. Argentati:
+## Reference:
+## Andrew V. Knyazev, Merico E. Argentati:
 ## Principal Angles between Subspaces in an A-Based Scalar Product:
 ## Algorithms and Perturbation Estimates.
 ## SIAM Journal on Scientific Computing, Vol. 23 no. 6, pp. 2008-2040

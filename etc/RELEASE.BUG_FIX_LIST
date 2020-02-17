@@ -1,4 +1,4 @@
-The following bugs must be fixed prior to the next release.  See also the [[5.0.0 Release Checklist]].
+The following bugs must be fixed prior to the next release.  See also the [[6.0.0 Release Checklist]].
 
 <p>Sign up for a bug by filling in the Owner field so people won't duplicate each other's work.</p>
 
@@ -21,4 +21,4 @@ The following bugs must be fixed prior to the next release.  See also the [[5.0.
 == Other Bugs ==
 
 == Potentially excluded bugs ==
-These bugs have been provisionally decided not to be blockers for 5.0.0.  That doesn't mean they can't be fixed, if someone wants to fix them.
+These bugs have been provisionally decided not to be blockers for 6.0.0.  That doesn't mean they can't be fixed, if someone wants to fix them.

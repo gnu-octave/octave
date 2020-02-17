@@ -1,4 +1,9 @@
-## Copyright (C) 2013-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2013-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 %%  Test script for classdef OOP.
 %%  Requires the path to contain the test classes.
@@ -48,19 +55,20 @@
 %!assert (p.principle == 50e3)
 %!assert (p.amount, amt, eps ())
 %!assert (amount (p), amt, eps ())
-%!xtest <53614>
+%!xtest <55961>
 %! assert (properties (p), {'rate'; 'term'; 'principle'});
-%!xtest <42510>
+%!xtest <*55858>
 %! assert (methods (p), {'amount'; 'foo_value_class'});
 %!assert (isempty (foo_value_class().rate))
-%!error <property `rate' is not constant> foo_value_class.rate
+%!error <property 'rate' is not constant> foo_value_class.rate
+%!shared  # clear all shared variables for remainder of tests
 
 %%  Static method and Constant Property
 %!assert (foo_static_method_constant_property.radians_per_cycle == 2*pi)
 %!assert (foo_static_method_constant_property().radians_per_cycle == 2*pi)
 %!assert (foo_static_method_constant_property().pie == pi)
-%!error <property `frequency' is not constant> foo_static_method_constant_property.frequency
-%!error <method `cosine' is not static> foo_static_method_constant_property.cosine
+%!error <property 'frequency' is not constant> foo_static_method_constant_property.frequency
+%!error <method 'cosine' is not static> foo_static_method_constant_property.cosine
 %!test
 %! obj = foo_static_method_constant_property;
 %! obj.frequency = 10;
@@ -185,3 +193,15 @@
 %! assert (isequal (obj{1:2}(1:2), ones (2)));
 %! obj{3:4}(3:4) = 4 * ones (2);
 %! assert (isequal (obj{3:4}(3:4), 4 * ones (2)));
+
+%!test <*52614>
+%! A = class_bug52614A ();
+%! assert (A.a, 1);
+%! B = class_bug52614B ();
+%! assert (B.a, 1);
+%! assert (B.b, 2);
+
+%!test <*55766>
+%! x = class_bug55766 ();
+%! props = {"notahiddentestprop"; "publictestprop"; "testprop"};
+%! assert (properties (x), props);

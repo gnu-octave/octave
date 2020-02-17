@@ -1,5 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
-## Copyright (C) 2012 Carnë Draug
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{x}, @var{map}] =} rgb2ind (@var{rgb})
@@ -43,10 +49,6 @@
 ## FIXME: This function has a very different syntax than the Matlab
 ##        one of the same name.
 ##        Octave function does not support N, MAP, DITHER, or TOL arguments.
-
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Created: July 1994
-## Adapted-By: jwe
 
 function [x, map] = rgb2ind (R, G, B)
 

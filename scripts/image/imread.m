@@ -1,9 +1,9 @@
-## Copyright (C) 2013-2019 Carnë Draug
-## Copyright (C) 2008-2019 Thomas L. Scofield
-## Copyright (C) 2008 Kristian Rumberg
-## Copyright (C) 2006 Thomas Weber
-## Copyright (C) 2005 Stefan van der Walt
-## Copyright (C) 2002 Andy Adler
+########################################################################
+##
+## Copyright (C) 2002-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -20,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{img}, @var{map}, @var{alpha}] =} imread (@var{filename})
@@ -87,13 +89,6 @@
 ##
 ## @seealso{imwrite, imfinfo, imformats}
 ## @end deftypefn
-
-## Author: Carnë Draug <carandraug@octave.org>
-## Author: Thomas L. Scofield <scofield@calvin.edu>
-## Author: Kristian Rumberg <kristianrumberg@gmail.com>
-## Author: Thomas Weber <thomas.weber.mail@gmail.com>
-## Author: Stefan van der Walt <stefan@sun.ac.za>
-## Author: Andy Adler
 
 function [img, varargout] = imread (filename, varargin)
 

@@ -1,4 +1,9 @@
-## Copyright (C) 2005-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,13 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __gnuplot_draw_axes__ (@var{h}, @var{plot_stream}, @var{enhanced}, @var{bg_is_set}, @var{fg_is_set}, @var{hlgnd})
 ## Undocumented internal function.
 ## @end deftypefn
-
-## Author: jwe
 
 function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                                 fg_is_set, hlgnd)
@@ -154,8 +159,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       ## Change meaning of "normalized", but it at least gives user some control
       if (! strcmp (get (axis_obj.title, "units"), "normalized"))
         unwind_protect
-          set (axis_obj.title, "units", "normalized");
-          set (axis_obj.title, "position", [0.5 1.02 0.5]);
+          set (axis_obj.title, "units", "normalized",
+                               "position", [0.5 1.02 0.5]);
         unwind_protect_cleanup
         end_unwind_protect
       endif
@@ -2254,8 +2259,12 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
     endfor
   elseif (strcmp (interpreter, "latex"))
     if (! warned_latex)
-      warning ("latex markup not supported for tick marks");
-      warned_latex = true;
+      do_warn = (warning ("query", "Octave:text_interpreter")).state;
+      if (strcmp (do_warn, "on"))
+        warning ("Octave:text_interpreter",
+                 "latex markup not supported for tick marks");
+        warned_latex = true;
+      endif
     endif
   endif
   if (strcmp (scale, "log"))
@@ -2421,8 +2430,12 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld, ntrp)
       endif
     elseif (strcmp (ntrp, "latex"))
       if (! warned_latex)
-        warning ("latex markup not supported for text objects");
-        warned_latex = true;
+        do_warn = (warning ("query", "Octave:text_interpreter")).state;
+        if (strcmp (do_warn, "on"))
+          warning ("Octave:text_interpreter",
+                   "latex markup not supported for text objects");
+          warned_latex = true;
+        endif
       endif
     endif
   endif

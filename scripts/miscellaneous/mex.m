@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,24 +20,39 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} mex [options] file @dots{}
+## @deftypefn  {} {} mex [-options] file @dots{}
+## @deftypefnx {} {@code{status} =} mex (@dots{})
 ## Compile source code written in C, C++, or Fortran, to a MEX file.
 ##
-## This is equivalent to @code{mkoctfile --mex [options] file}.
+## @var{status} is the return status of the @code{mkoctfile} function.
+##
+## If the compilation fails, and the output argument is not requested,
+## an error is raised.  If the programmer requests @var{status}, however,
+## Octave will merely issue a warning and it is the programmer's responsibility
+## to verify the command was successful.
+##
+## This is equivalent to @code{mkoctfile --mex [-options] file}.
+##
 ## @seealso{mkoctfile, mexext}
 ## @end deftypefn
 
-function retval = mex (varargin)
+function status = mex (varargin)
 
-  [output, status] = mkoctfile ("--mex", varargin{:});
+  [out, sts] = mkoctfile ("--mex", varargin{:});
 
-  if (! isempty (output))
-    printf ("%s", output);
+  if (! isempty (out))
+    printf ("%s", out);
   endif
   if (nargout > 0)
-    retval = status;
+    status = sts;
+  else
+    if (sts != 0)
+      error ("mex: building exited with failure status\n");
+    endif
   endif
 
 endfunction

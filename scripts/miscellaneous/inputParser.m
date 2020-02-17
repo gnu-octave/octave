@@ -1,4 +1,9 @@
-## Copyright (C) 2011-2019 Carnë Draug
+########################################################################
+##
+## Copyright (C) 2011-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{p} =} inputParser ()
@@ -123,7 +130,7 @@
 ## check ("mech", "~/dev", [0 1 0 0], "verbose", "tolerance", "high");
 ##
 ## ## following returns an error since not all optional arguments,
-## ## `path' and `mat', were given before the named argument `type'.
+## ## 'path' and 'mat', were given before the named argument 'type'.
 ## check ("mech", "~/dev", "type", "linear");
 ## @end group
 ## @end example
@@ -249,8 +256,6 @@
 ## accessor.  See @code{help inputParser} for a more complete description.
 ##
 ## @end deftypefn
-
-## Author: Carnë Draug <carandraug@octave.org>
 
 classdef inputParser < handle
   properties

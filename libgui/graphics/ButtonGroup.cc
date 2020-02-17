@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2016-2019 Andrew Thornton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2016-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -39,9 +42,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "ButtonGroup.h"
 #include "ToggleButtonControl.h"
 #include "RadioButtonControl.h"
-#include "Backend.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
 
+#include "octave-qobject.h"
+
+#include "interpreter.h"
 #include "ov-struct.h"
 
 namespace QtHandles
@@ -93,9 +99,10 @@ namespace QtHandles
   }
 
   ButtonGroup*
-  ButtonGroup::create (const graphics_object& go)
+  ButtonGroup::create (octave::base_qobject& oct_qobj,
+                       octave::interpreter& interp, const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
@@ -104,17 +111,20 @@ namespace QtHandles
         if (container)
           {
             QFrame *frame = new QFrame (container);
-            return new ButtonGroup (go, new QButtonGroup (frame), frame);
+            return new ButtonGroup (oct_qobj, interp, go,
+                                    new QButtonGroup (frame), frame);
           }
       }
 
     return nullptr;
   }
 
-  ButtonGroup::ButtonGroup (const graphics_object& go, QButtonGroup *buttongroup,
-                            QFrame *frame)
-    : Object (go, frame), m_hiddenbutton(nullptr), m_container (nullptr),
-      m_title (nullptr), m_blockUpdates (false)
+  ButtonGroup::ButtonGroup (octave::base_qobject& oct_qobj,
+                            octave::interpreter& interp,
+                            const graphics_object& go,
+                            QButtonGroup *buttongroup, QFrame *frame)
+    : Object (oct_qobj, interp, go, frame), m_hiddenbutton (nullptr),
+      m_container (nullptr), m_title (nullptr), m_blockUpdates (false)
   {
     uibuttongroup::properties& pp = properties<uibuttongroup> ();
 
@@ -133,14 +143,20 @@ namespace QtHandles
     m_hiddenbutton->hide ();
     m_buttongroup->addButton (m_hiddenbutton);
 
-    m_container = new Container (frame);
+    m_container = new Container (frame, oct_qobj, interp);
     m_container->canvas (m_handle);
+
+    connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),
+             this, SIGNAL (interpeter_event (const fcn_callback&)));
+
+    connect (m_container, SIGNAL (interpeter_event (const meth_callback&)),
+             this, SIGNAL (interpeter_event (const meth_callback&)));
 
     if (frame->hasMouseTracking ())
       {
-        foreach (QWidget *w, frame->findChildren<QWidget*> ())
+        for (auto *w : frame->findChildren<QWidget*> ())
           w->setMouseTracking (true);
-        foreach (QWidget *w, buttongroup->findChildren<QWidget*> ())
+        for (auto *w : buttongroup->findChildren<QWidget*> ())
           w->setMouseTracking (true);
       }
 
@@ -177,13 +193,16 @@ namespace QtHandles
   {
     if (! m_blockUpdates)
       {
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
         if (watched == qObject ())
           {
             switch (xevent->type ())
               {
               case QEvent::Resize:
                 {
-                  gh_manager::auto_lock lock;
+                  octave::autolock guard (gh_mgr.graphics_lock ());
+
                   graphics_object go = object ();
 
                   if (go.valid_object ())
@@ -213,9 +232,10 @@ namespace QtHandles
 
                   if (m->button () == Qt::RightButton)
                     {
-                      gh_manager::auto_lock lock;
+                      octave::autolock guard (gh_mgr.graphics_lock ());
 
-                      ContextMenu::executeAt (properties (), m->globalPos ());
+                      ContextMenu::executeAt (m_interpreter, properties (),
+                                              m->globalPos ());
                     }
                 }
                 break;
@@ -231,7 +251,7 @@ namespace QtHandles
               case QEvent::Resize:
                 if (qWidget<QWidget> ()->isVisible ())
                   {
-                    gh_manager::auto_lock lock;
+                    octave::autolock guard (gh_mgr.graphics_lock ());
 
                     properties ().update_boundingbox ();
                   }
@@ -347,9 +367,14 @@ namespace QtHandles
       case uibuttongroup::properties::ID_SELECTEDOBJECT:
         {
           graphics_handle h = pp.get_selectedobject ();
-          gh_manager::auto_lock lock;
-          graphics_object go = gh_manager::get_object (h);
-          Object *selectedObject = Backend::toolkitObject (go);
+
+          gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+          octave::autolock guard (gh_mgr.graphics_lock ());
+
+          graphics_object go = gh_mgr.get_object (h);
+
+          Object *selectedObject = qt_graphics_toolkit::toolkitObject (go);
           ToggleButtonControl *toggle = static_cast<ToggleButtonControl *>
                                         (selectedObject);
           RadioButtonControl *radio = static_cast<RadioButtonControl *>(selectedObject);
@@ -378,6 +403,9 @@ namespace QtHandles
   void
   ButtonGroup::redraw (void)
   {
+    update (uibuttongroup::properties::ID_POSITION);
+
+    // FIXME: is it really necessary to update the opengl canvas here?
     Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
@@ -445,7 +473,10 @@ namespace QtHandles
     Q_UNUSED (toggled);
     if (! m_blockUpdates)
       {
-        gh_manager::auto_lock lock;
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
         uibuttongroup::properties& bp = properties<uibuttongroup> ();
 
         graphics_handle oldValue = bp.get_selectedobject ();
@@ -460,8 +491,8 @@ namespace QtHandles
           }
 
         if (oldValue != newValue)
-          gh_manager::post_set (m_handle, "selectedobject", newValue.as_octave_value (),
-                                false);
+          emit gh_set_event (m_handle, "selectedobject",
+                             newValue.as_octave_value (), false);
       }
   }
 
@@ -470,7 +501,10 @@ namespace QtHandles
   {
     Q_UNUSED (btn);
 
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
     uibuttongroup::properties& bp = properties<uibuttongroup> ();
 
     graphics_handle oldValue = bp.get_selectedobject ();
@@ -486,10 +520,9 @@ namespace QtHandles
         eventData.setfield ("NewValue", newValue.as_octave_value ());
         eventData.setfield ("Source", bp.get___myhandle__ ().as_octave_value ());
         eventData.setfield ("EventName", "SelectionChanged");
-        octave_value selectionChangedEventObject = octave_value (new octave_struct (
-              eventData));
-        gh_manager::post_callback (m_handle, "selectionchangedfcn",
-                                   selectionChangedEventObject);
+        octave_value selectionChangedEventObject (new octave_struct (eventData));
+        emit gh_callback_event (m_handle, "selectionchangedfcn",
+                                selectionChangedEventObject);
       }
   }
 

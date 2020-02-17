@@ -1,61 +1,57 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_workspace_view_h)
 #define octave_workspace_view_h 1
 
-#include <QItemDelegate>
-#include <QTableView>
-#include <QSemaphore>
-#include <QComboBox>
-#include <QSortFilterProxyModel>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QItemDelegate>
+#include <QSemaphore>
 #include <QSignalMapper>
-
-#include "ov.h"
+#include <QSortFilterProxyModel>
+#include <QTableView>
 
 #include "octave-dock-widget.h"
 #include "workspace-model.h"
 
+class octave_value;
+
 namespace octave
 {
+  class base_qobject;
+
   class workspace_view : public octave_dock_widget
   {
     Q_OBJECT
 
   public:
 
-    workspace_view (QWidget *parent = nullptr);
+    workspace_view (QWidget *parent, base_qobject& oct_qobj);
 
     ~workspace_view (void) = default;
-
-  public slots:
-
-    void setModel (workspace_model *model);
-
-    void notice_settings (const QSettings *);
-
-    void save_settings (void);
 
   signals:
 
@@ -63,9 +59,21 @@ namespace octave
 
     void command_requested (const QString& cmd);
 
+    //! Signal that user wants to rename a variable.
+
+    void rename_variable_signal (const QString&, const QString&);
+
     //! Signal that user wants to edit a variable.
 
     void edit_variable_signal (const QString&, const octave_value&);
+
+  public slots:
+
+    void setModel (workspace_model *model);
+
+    void notice_settings (const gui_settings *);
+
+    void save_settings (void);
 
   protected slots:
 
@@ -113,12 +121,6 @@ namespace octave
     QComboBox *m_filter;
     QWidget *m_filter_widget;
     bool m_filter_shown;
-
-    enum { MaxFilterHistory = 10 };
-
-    QStringList m_columns_shown;
-    QStringList m_columns_shown_keys;
-    QSignalMapper *m_sig_mapper;
   };
 }
 

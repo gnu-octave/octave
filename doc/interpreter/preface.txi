@@ -42,7 +42,7 @@ Texas, and the math department at the University of Texas has been using
 it for teaching differential equations and linear algebra as well.
 More recently, Octave has been used as the primary computational tool
 for teaching Stanford's online Machine Learning class
-(@url{ml-class.org}) taught by Andrew Ng.  Tens of thousands of students
+(@url{http://ml-class.org}) taught by Andrew Ng.  Tens of thousands of students
 participated in the course.
 
 If you find Octave useful, please let us know.  We are always interested
@@ -135,7 +135,7 @@ Noel Bell, Senior Engineer, Texaco Chemical Company, Austin Texas.
 @item
 John A. Turner, Group Leader, Continuum Dynamics @nospell{(CCS-2)},
 @nospell{Los Alamos} National Laboratory, for registering the
-@url{octave.org} domain name.
+@url{https://octave.org} domain name.
 
 @item
 @nospell{James B. Rawlings}, Professor, University of Wisconsin-Madison,

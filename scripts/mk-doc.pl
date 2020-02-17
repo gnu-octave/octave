@@ -1,7 +1,12 @@
 #! /usr/bin/perl
 use utf8;
 
-# Copyright (C) 2012-2019 Rik Wehbring
+########################################################################
+#
+# Copyright (C) 2012-2020 The Octave Project Developers
+#
+# See the file COPYRIGHT.md in the top-level directory of this
+# distribution or <https://octave.org/copyright/>.
 #
 # This file is part of Octave.
 #
@@ -18,6 +23,8 @@ use utf8;
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <https://www.gnu.org/licenses/>.
+#
+########################################################################
 
 use strict;
 use warnings;
@@ -99,7 +106,7 @@ sub gethelp
   my @help_txt;
   while (my $line = <$fh>)
     {
-      next if $line =~ m/^\s*$/;      # skip empty lines
+      next if $line =~ m/^[\s#%]*$/;  # skip empty lines
       last if $line !~ m/^\s*(#|%)/;  # out of here once code starts
 
       my $reading_block = sub {defined ($line = <$fh>) && $line !~ m/^\s*$/};

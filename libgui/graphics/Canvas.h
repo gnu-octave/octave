@@ -1,30 +1,35 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_Canvas_h)
 #define octave_Canvas_h 1
 
+#include <QObject>
 #include <QPoint>
 
+#include "event-manager.h"
 #include "graphics.h"
 
 #include "Figure.h"
@@ -36,11 +41,19 @@ class QWidget;
 
 class octave_value_list;
 
+namespace octave
+{
+  class base_qobject;
+  class interpreter;
+}
+
 namespace QtHandles
 {
 
-  class Canvas
+  class Canvas : public QObject
   {
+    Q_OBJECT
+
   public:
     enum EventMask
     {
@@ -63,19 +76,37 @@ namespace QtHandles
     void clearEventMask (int m) { m_eventMask &= (~m); }
     void setEventMask (int m) { m_eventMask = m; }
 
-    void setCursor (MouseMode mode);
+    void setCursor (MouseMode mode, std::string fallback,
+                    QImage cdata, Matrix hotspot);
 
     virtual QWidget * qWidget (void) = 0;
 
-    static Canvas * create (const std::string& name, QWidget *parent,
-                            const graphics_handle& handle);
-
-    virtual void toggleAxes (const graphics_handle& handle) = 0;
-    virtual void toggleGrid (const graphics_handle& handle) = 0;
-    virtual void autoAxes (const graphics_handle& handle) = 0;
+    static Canvas *
+    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+            const graphics_handle& handle, QWidget *parent,
+            const std::string& name);
 
     virtual uint8NDArray getPixels (void) { return do_getPixels (m_handle); };
 
+  signals:
+
+    void interpreter_event (const octave::fcn_callback& fcn);
+    void interpreter_event (const octave::meth_callback& meth);
+
+    void gh_callback_event (const graphics_handle& h, const std::string& name);
+
+    void gh_callback_event (const graphics_handle& h, const std::string& name,
+                            const octave_value& data);
+
+    void gh_set_event (const graphics_handle& h, const std::string& name,
+                       const octave_value& value);
+
+    void gh_set_event (const graphics_handle& h, const std::string& name,
+                       const octave_value& value, bool notify_toolkit);
+
+    void gh_set_event (const graphics_handle& h, const std::string& name,
+                       const octave_value& value, bool notify_toolkit,
+                       bool redraw_figure);
   protected:
     virtual void draw (const graphics_handle& handle) = 0;
     virtual void drawZoomBox (const QPoint& p1, const QPoint& p2) = 0;
@@ -87,8 +118,11 @@ namespace QtHandles
                            const graphics_handle& handle) = 0;
 
   protected:
-    Canvas (const graphics_handle& handle)
-      : m_handle (handle),
+    Canvas (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+            const graphics_handle& handle)
+      : m_octave_qobj (oct_qobj),
+        m_interpreter (interp),
+        m_handle (handle),
         m_redrawBlocked (false),
         m_mouseMode (NoMode),
         m_clickMode (false),
@@ -113,13 +147,19 @@ namespace QtHandles
     void updateCurrentPoint (const graphics_object& fig,
                              const graphics_object& obj);
 
-    void annotation_callback (const octave_value_list& args);
     void select_object (graphics_object obj, QMouseEvent *event,
                         graphics_object& currentObj, graphics_object& axesObj,
                         bool axes_only = false,
                         std::vector<std::string> omit = std::vector<std::string> ());
 
+  protected:
+    octave::base_qobject& m_octave_qobj;
+    octave::interpreter& m_interpreter;
+
   private:
+
+    QCursor make_cursor (const QString& name, int hot_x  = -1, int hot_y = -1);
+
     graphics_handle m_handle;
     bool m_redrawBlocked;
     MouseMode m_mouseMode;

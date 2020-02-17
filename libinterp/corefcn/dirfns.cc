@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -44,18 +47,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "dir-ops.h"
-#include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
+#include "event-manager.h"
 #include "input.h"
 #include "load-path.h"
 #include "octave.h"
-#include "octave-link.h"
 #include "ovl.h"
 #include "pager.h"
 #include "procstream.h"
 #include "sysdep.h"
-#include "interpreter-private.h"
 #include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -65,44 +66,17 @@ along with Octave; see the file COPYING.  If not, see
 // directory tree.
 static bool Vconfirm_recursive_rmdir = true;
 
-// The time we last time we changed directories.
-octave::sys::time Vlast_chdir_time = 0.0;
-
-static int
-octave_change_to_directory (const std::string& newdir)
-{
-  std::string xdir = octave::sys::file_ops::tilde_expand (newdir);
-
-  int cd_ok = octave::sys::env::chdir (xdir);
-
-  if (! cd_ok)
-    error ("%s: %s", newdir.c_str (), std::strerror (errno));
-
-  Vlast_chdir_time.stamp ();
-
-  // FIXME: should these actions be handled as a list of functions
-  // to call so users can add their own chdir handlers?
-
-  octave::load_path& lp =
-    octave::__get_load_path__ ("octave_change_to_directory");
-
-  lp.update ();
-
-  octave_link::change_directory (octave::sys::env::get_current_directory ());
-
-  return cd_ok;
-}
-
-DEFUN (cd, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (cd, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} cd @var{dir}
 @deftypefnx {} {} cd
+@deftypefnx {} {@var{old_dir} =} cd
 @deftypefnx {} {@var{old_dir} =} cd (@var{dir})
 @deftypefnx {} {} chdir @dots{}
 Change the current working directory to @var{dir}.
 
-If @var{dir} is omitted, the current directory is changed to the user's home
-directory (@qcode{"~"}).
+If called with no input or output arguments, the current directory is
+changed to the user's home directory (@qcode{"~"}).
 
 For example,
 
@@ -138,14 +112,14 @@ present working directory rather than changing to the user's home directory.
       std::string dirname = args(0).xstring_value ("cd: DIR must be a string");
 
       if (! dirname.empty ())
-        octave_change_to_directory (dirname);
+        interp.chdir (dirname);
     }
-  else
+  else if (nargout == 0)
     {
       std::string home_dir = octave::sys::env::get_home_directory ();
 
       if (! home_dir.empty ())
-        octave_change_to_directory (home_dir);
+        interp.chdir (home_dir);
     }
 
   return retval;
@@ -279,6 +253,8 @@ identifier.
   int status = -1;
   std::string msg;
 
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
   if (nargin == 2)
     {
       if (args(1).string_value () != "s")
@@ -286,7 +262,7 @@ identifier.
 
       bool doit = true;
 
-      if (octave::application::interactive ()
+      if (interp.interactive ()
           && ! octave::application::forced_interactive ()
           && Vconfirm_recursive_rmdir)
         {
@@ -299,17 +275,17 @@ identifier.
 
       if (doit)
         {
-          octave_link::file_remove (fulldir, "");
+          evmgr.file_remove (fulldir, "");
           status = octave::sys::recursive_rmdir (fulldir, msg);
         }
     }
   else
     {
-      octave_link::file_remove (fulldir, "");
+      evmgr.file_remove (fulldir, "");
       status = octave::sys::rmdir (fulldir, msg);
     }
 
-  octave_link::file_renamed (status >= 0);
+  evmgr.file_renamed (status >= 0);
 
   if (status < 0)
     return ovl (false, msg, "rmdir");
@@ -409,8 +385,8 @@ error message.
     return ovl (result, status, "");
 }
 
-DEFUNX ("rename", Frename, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("rename", Frename, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn  {} {} rename @var{old} @var{new}
 @deftypefnx {} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})
 Change the name of file @var{old} to @var{new}.
@@ -432,18 +408,20 @@ error message.
 
   std::string msg;
 
-  octave_link::file_remove (from, to);
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.file_remove (from, to);
 
   int status = octave::sys::rename (from, to, msg);
 
   if (status < 0)
     {
-      octave_link::file_renamed (false);
+      evmgr.file_renamed (false);
       return ovl (-1.0, msg);
     }
   else
     {
-      octave_link::file_renamed (true);
+      evmgr.file_renamed (true);
       return ovl (status, "");
     }
 }

@@ -1,4 +1,9 @@
-## Copyright (C) 2000-2019 Teemu Ikonen
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,15 +20,14 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{h} =} __errplot__ (@var{caller}, @var{hax}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Created: 18.7.2000
-## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
-## Keywords: errorbar, plotting
 function retval = __errplot__ (caller, hax, varargin)
 
   if (nargin < 4)
@@ -106,7 +110,7 @@ function h = __do_errplot__ (fstr, hax, varargin)
     if (isempty (fmt.color))
       lc = __next_line_color__ ();
     else
-      lc = fmt.color ();
+      lc = fmt.color;
     endif
     if (isempty (fmt.marker) && isempty (fmt.linestyle))
       [ls, mk] = __next_line_style__ ();
@@ -116,7 +120,8 @@ function h = __do_errplot__ (fstr, hax, varargin)
     endif
 
     ## Must occur after __next_line_color__ in order to work correctly.
-    hg = hggroup ("parent", hax);
+    hg = hggroup ("parent", hax, ...
+                  "__appdata__", struct ("__creator__", "__errplot__"));
     h = [h; hg];
     args = __add_datasource__ ("__do_errplot__", hg,
                                {"x", "y", "l", "u", "xl", "xu"});
@@ -389,14 +394,12 @@ function update_data (hg, ~, hl)
   xudata = get (hg, "xudata");
   ifmt = get (hg, "format");
 
-  set (hl(2), "xdata", xdata);
-  set (hl(2), "ydata", ydata);
+  set (hl(2), "xdata", xdata, "ydata", ydata);
 
   [errorbar_xdata, errorbar_ydata] = ...
           errorbar_data (xdata, ydata, ldata, udata, xldata, xudata, ...
                          ifmt, xscale, yscale);
 
-  set (hl(1), "xdata", errorbar_xdata);
-  set (hl(1), "ydata", errorbar_ydata);
+  set (hl(1), "xdata", errorbar_xdata, "ydata", errorbar_ydata);
 
 endfunction

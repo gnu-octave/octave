@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 2012-2019 Max Brister
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-// Author: Max Brister <max@2bass.com>
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2012-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS
@@ -580,14 +581,6 @@ namespace octave
   }
 
   void
-  jit_convert::visit_if_command (tree_if_command& cmd)
-  {
-    tree_if_command_list *lst = cmd.cmd_list ();
-    assert (lst); // jwe: Can this be null?
-    lst->accept (*this);
-  }
-
-  void
   jit_convert::visit_if_command_list (tree_if_command_list& lst)
   {
     tree_if_clause *last = lst.back ();
@@ -741,12 +734,6 @@ namespace octave
   }
 
   void
-  jit_convert::visit_funcall (tree_funcall&)
-  {
-    throw jit_fail_exception ();
-  }
-
-  void
   jit_convert::visit_parameter_list (tree_parameter_list&)
   {
     throw jit_fail_exception ("No visit_parameter_list implementation");
@@ -851,18 +838,6 @@ namespace octave
             m_block->append (m_factory.create<jit_call> (fn, name,
                                                          expr_result));
           }
-      }
-  }
-
-  void
-  jit_convert::visit_statement_list (tree_statement_list& lst)
-  {
-    for (auto iter = lst.begin (); iter != lst.end(); ++iter)
-      {
-        tree_statement *elt = *iter;
-        // jwe: Can this ever be null?
-        assert (elt);
-        elt->accept (*this);
       }
   }
 
@@ -2334,7 +2309,7 @@ namespace octave
     bp_table& bptab = __get_bp_table__ ("tree_jit::enabled");
 
     // Ideally, we should only disable JIT if there is a breakpoint in the code
-    // we are about to run. However, we can't figure this out in O(1) time, so
+    // we are about to run.  However, we can't figure this out in O(1) time, so
     // we conservatively check for the existence of any breakpoints.
     return (Vjit_enable && ! bptab.have_breakpoints ()
             && ! Vdebug_on_interrupt && ! Vdebug_on_error);

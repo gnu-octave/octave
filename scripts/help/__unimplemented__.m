@@ -1,6 +1,9 @@
-## Copyright (C) 2010-2019 John W. Eaton
-## Copyright (C) 2010 VZLU Prague
-## Copyright (C) 2017-2019 Colin B. Macdonald
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -17,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{txt} =} __unimplemented__ (@var{fcn})
@@ -46,10 +51,6 @@ function txt = __unimplemented__ (fcn)
       txt = ["Basic video file support is provided in the video package.  ", ...
              "See @url{https://octave.sourceforge.io/video/}."];
 
-    case "exifread"
-      txt = ["exifread is deprecated.  " ...
-             "The functionality is available in the imfinfo function."];
-
     case "funm"
       txt = ["funm is not currently part of core Octave.  ", ...
              "See the linear-algebra package at ", ...
@@ -68,8 +69,8 @@ function txt = __unimplemented__ (fcn)
       txt = ["matlabrc is not implemented.  ", ...
              "Octave uses the file '.octaverc' instead."];
 
-    case {"ode113", "ode15i", "ode15s", "ode23s", "ode23t", "ode23tb"}
-      txt = ["Octave provides lsode and ode45 for solving differential equations. ", ...
+    case {"ode113", "ode23s", "ode23t", "ode23tb"}
+      txt = ["Octave provides lsode and ode15i, ode15s, ode23, and ode45 for solving differential equations. ", ...
              "For more information try @code{help lsode}, @code{help ode45}.  ", ...
              "Matlab-compatible ODE functions are provided by the odepkg ", ...
              "package.  See @url{https://octave.sourceforge.io/odepkg/}."];
@@ -508,7 +509,7 @@ function txt = __unimplemented__ (fcn)
 
     otherwise
       if (ismember (fcn, missing_functions ()))
-        txt = ["the '" fcn "' function is not yet implemented in Octave"];
+        txt = ["The '" fcn "' function is not yet implemented in Octave."];
       else
         is_matlab_function = false;
         txt = "";
@@ -523,7 +524,7 @@ function txt = __unimplemented__ (fcn)
   endif
 
   if (nargout == 0)
-    warning ("Octave:missing-function", "%s\n", txt);
+    error ("Octave:missing-function", "%s\n", txt);
   endif
 
 endfunction
@@ -534,7 +535,7 @@ function txt = check_package (fcn, name, classes)
     classes = {};
   endif
 
-  txt = sprintf ("the '%s' function belongs to the %s package from Octave Forge",
+  txt = sprintf ("The '%s' function belongs to the %s package from Octave Forge",
                  fcn, name);
 
   [~, status] = pkg ("describe", name);
@@ -557,7 +558,7 @@ function txt = check_package (fcn, name, classes)
       txt = sprintf ("%s but has not yet been implemented.", txt);
     case "not loaded",
       txt = sprintf (["%s which you have installed but not loaded.  To ", ...
-                      "load the package, run `pkg load %s' from the ", ...
+                      "load the package, run 'pkg load %s' from the ", ...
                       "Octave prompt."], txt, name);
     otherwise
       ## this includes "not installed" and anything else if pkg changes
@@ -658,8 +659,6 @@ function rlist = missing_functions ()
   "collapse",
   "colordef",
   "colormapeditor",
-  "commandhistory",
-  "commandwindow",
   "compose",
   "condensation",
   "coneplot",
@@ -747,7 +746,6 @@ function rlist = missing_functions ()
   "Feval",
   "fewerbins",
   "figurepalette",
-  "filebrowser",
   "FileDatastore",
   "filemarker",
   "fileMode",
@@ -967,7 +965,6 @@ function rlist = missing_functions ()
   "libisloaded",
   "libpointer",
   "libstruct",
-  "lightangle",
   "linkdata",
   "listfonts",
   "loadlibrary",
@@ -1016,24 +1013,6 @@ function rlist = missing_functions ()
   "mput",
   "multibandread",
   "multibandwrite",
-  "mustBeFinite",
-  "mustBeGreaterThan",
-  "mustBeGreaterThanOrEqual",
-  "mustBeInteger",
-  "mustBeLessThan",
-  "mustBeLessThanOrEqual",
-  "mustBeMember",
-  "mustBeNegative",
-  "mustBeNonempty",
-  "mustBeNonNan",
-  "mustBeNonnegative",
-  "mustBeNonpositive",
-  "mustBeNonsparse",
-  "mustBeNonzero",
-  "mustBeNumeric",
-  "mustBeNumericOrLogical",
-  "mustBePositive",
-  "mustBeReal",
   "NaT",
   "nccreate",
   "ncdisp",
@@ -1047,7 +1026,6 @@ function rlist = missing_functions ()
   "nearestNeighbor",
   "neighbors",
   "netcdf",
-  "newline",
   "noanimate",
   "notebook",
   "notify",
@@ -1212,13 +1190,9 @@ function rlist = missing_functions ()
   "step",
   "stopasync",
   "str2mat",
-  "stream2",
-  "stream3",
-  "streamline",
   "streamparticles",
   "streamribbon",
   "streamslice",
-  "streamtube",
   "string",
   "strings",
   "strip",
@@ -1300,7 +1274,6 @@ function rlist = missing_functions ()
   "uiradiobutton",
   "uisave",
   "uisetcolor",
-  "uisetfont",
   "uisetpref",
   "uislider",
   "uispinner",
@@ -1325,7 +1298,6 @@ function rlist = missing_functions ()
   "varfun",
   "vartype",
   "verctrl",
-  "verLessThan",
   "vertexAttachments",
   "vertexNormal",
   "VideoReader",
@@ -1335,18 +1307,13 @@ function rlist = missing_functions ()
   "volume",
   "volumebounds",
   "voronoiDiagram",
-  "web",
-  "weboptions",
-  "webread",
   "websave",
-  "webwrite",
   "week",
   "whatsnew",
   "width",
   "winopen",
   "withtol",
   "wordcloud",
-  "workspace",
   "write",
   "writeChecksum",
   "writeCol",
@@ -1377,10 +1344,15 @@ function rlist = missing_functions ()
   rlist = list;
 endfunction
 
+
 %!test
 %! str = __unimplemented__ ("no_name_function");
 %! assert (isempty (str));
+
+%!test
 %! str = __unimplemented__ ("matlabrc");
 %! assert (str(1:71), "matlabrc is not implemented.  Octave uses the file '.octaverc' instead.");
+
+%!test
 %! str = __unimplemented__ ("MException");
-%! assert (str(1:58), "the 'MException' function is not yet implemented in Octave");
+%! assert (str(1:58), "The 'MException' function is not yet implemented in Octave");

@@ -1,4 +1,9 @@
-## Copyright (C) 1996-2019 Daniel Calvelo
+########################################################################
+##
+## Copyright (C) 1996-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} dec2hex (@var{d}, @var{len})
@@ -38,9 +45,6 @@
 ## digits in the result.
 ## @seealso{hex2dec, dec2base, dec2bin}
 ## @end deftypefn
-
-## Author: Daniel Calvelo <dcalvelo@yahoo.com>
-## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 function h = dec2hex (d, len)
 

@@ -1,5 +1,9 @@
-## Copyright (C) 2012-2019 Rik Wehbring
-## Copyright (C) 2012-2019 Carnë Draug
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} rgbplot (@var{cmap})
@@ -60,8 +66,7 @@ function h = rgbplot (cmap, style = "profile")
     case "profile"
       x = 1:rows (cmap);
       htmp = plot (x,cmap(:,1),"r", x,cmap(:,2),"g", x,cmap(:,3),"b");
-      set (gca (), "ytick", 0:0.1:1);
-      set (gca (), "xlim", [0 rows(cmap)]);
+      set (gca, "ytick", 0:0.1:1, "xlim", [0 rows(cmap)]);
     case "composite"
       htmp = image (1:rows (cmap));
       set (gca, "ytick", []);

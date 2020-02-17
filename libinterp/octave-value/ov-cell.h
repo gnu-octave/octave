@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1999-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1999-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ov_cell_h)
 #define octave_ov_cell_h 1
@@ -90,6 +92,13 @@ public:
                          const std::list<octave_value_list>& idx,
                          const octave_value& rhs);
 
+  // FIXME: should we import the functions from the base class and
+  // overload them here, or should we use a different name so we don't
+  // have to do this?  Without the using declaration or a name change,
+  // the base class functions will be hidden.  That may be OK, but it
+  // can also cause some confusion.
+  using octave_base_value::assign;
+
   void assign (const octave_value_list& idx, const Cell& rhs);
 
   void assign (const octave_value_list& idx, const octave_value& rhs);
@@ -152,7 +161,7 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& save_as_floats);
+  bool save_binary (std::ostream& os, bool save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format fmt);

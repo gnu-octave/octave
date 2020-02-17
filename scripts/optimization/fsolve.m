@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,7 +21,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 ##
-## Author: Jaroslav Hajek <highegg@gmail.com>
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} fsolve (@var{fcn}, @var{x0})
@@ -24,11 +29,12 @@
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
 ##
-## @var{fcn} should accept a vector (array) defining the unknown variables,
-## and return a vector of left-hand sides of the equations.  Right-hand sides
-## are defined to be zeros.  In other words, this function attempts to
-## determine a vector @var{x} such that @code{@var{fcn} (@var{x})} gives
-## (approximately) all zeros.
+## @var{fun} is a function handle, inline function, or string containing the
+## name of the function to evaluate.  @var{fcn} should accept a vector (array)
+## defining the unknown variables, and return a vector of left-hand sides of
+## the equations.  Right-hand sides are defined to be zeros.  In other words,
+## this function attempts to determine a vector @var{x} such that
+## @code{@var{fcn} (@var{x})} gives (approximately) all zeros.
 ##
 ## @var{x0} is an initial guess for the solution.  The shape of @var{x0} is
 ## preserved in all calls to @var{fcn}, but otherwise is treated as a column
@@ -499,13 +505,13 @@ function [fx, jx] = guarded_eval (fun, x, complexeqn)
   endif
 
   if (! complexeqn && ! (isreal (fx) && isreal (jx)))
-    error ("fsolve:notreal", "fsolve: non-real value encountered");
+    error ("Octave:fsolve:notreal", "fsolve: non-real value encountered");
   elseif (complexeqn && ! (isnumeric (fx) && isnumeric (jx)))
-    error ("fsolve:notnum", "fsolve: non-numeric value encountered");
+    error ("Octave:fsolve:notnum", "fsolve: non-numeric value encountered");
   elseif (any (isnan (fx(:))))
-    error ("fsolve:isnan", "fsolve: NaN value encountered");
+    error ("Octave:fsolve:isnan", "fsolve: NaN value encountered");
   elseif (any (isinf (fx(:))))
-    error ("fsolve:isinf", "fsolve: Inf value encountered");
+    error ("Octave:fsolve:isinf", "fsolve: Inf value encountered");
   endif
 
 endfunction

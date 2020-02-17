@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -32,6 +35,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "BaseControl.h"
 #include "ContextMenu.h"
 #include "QtHandlesUtils.h"
+
+#include "graphics.h"
+#include "interpreter.h"
 
 namespace QtHandles
 {
@@ -90,9 +96,13 @@ namespace QtHandles
     w->setPalette (p);
   }
 
-  BaseControl::BaseControl (const graphics_object& go, QWidget *w)
-    : Object (go, w), m_normalizedFont (false), m_keyPressHandlerDefined (false)
+  BaseControl::BaseControl (octave::base_qobject& oct_qobj,
+                            octave::interpreter& interp,
+                            const graphics_object& go, QWidget *w)
+    : Object (oct_qobj, interp, go, w), m_normalizedFont (false),
+      m_keyPressHandlerDefined (false)
   {
+    qObject ()->setObjectName ("UIControl");
     init (w);
   }
 
@@ -121,6 +131,12 @@ namespace QtHandles
 
   BaseControl::~BaseControl (void)
   { }
+
+  void
+  BaseControl::redraw (void)
+  {
+    update (uicontrol::properties::ID_POSITION);
+  }
 
   void
   BaseControl::update (int pId)
@@ -188,12 +204,14 @@ namespace QtHandles
   bool
   BaseControl::eventFilter (QObject *watched, QEvent *xevent)
   {
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
     switch (xevent->type ())
       {
       case QEvent::Resize:
         if (m_normalizedFont)
           {
-            gh_manager::auto_lock lock;
+            octave::autolock guard (gh_mgr.graphics_lock ());
 
             qWidget<QWidget> ()->setFont (Utils::computeFont<uicontrol>
                                           (properties<uicontrol> ()));
@@ -202,7 +220,7 @@ namespace QtHandles
 
       case QEvent::MouseButtonPress:
         {
-          gh_manager::auto_lock lock;
+          octave::autolock guard (gh_mgr.graphics_lock ());
 
           QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
           graphics_object go = object ();
@@ -210,32 +228,32 @@ namespace QtHandles
           graphics_object fig = go.get_ancestor ("figure");
           if (fig)
             {
-              gh_manager::post_set (fig.get_handle (), "currentobject",
-                                    m_handle.value (), false);
+              emit gh_set_event (fig.get_handle (), "currentobject",
+                                 m_handle.value (), false);
 
               if (m->button () != Qt::LeftButton || ! up.enable_is ("on"))
                 {
-                  gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                        Utils::figureSelectionType (m), false);
-                  gh_manager::post_set (fig.get_handle (), "currentpoint",
-                                        Utils::figureCurrentPoint (fig, m),
-                                        false);
-                  gh_manager::post_callback (fig.get_handle (),
-                                             "windowbuttondownfcn");
-                  gh_manager::post_callback (m_handle, "buttondownfcn");
+                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                                     Utils::figureSelectionType (m), false);
+                  emit gh_set_event (fig.get_handle (), "currentpoint",
+                                     Utils::figureCurrentPoint (fig, m),
+                                     false);
+                  emit gh_callback_event (fig.get_handle (),
+                                          "windowbuttondownfcn");
+                  emit gh_callback_event (m_handle, "buttondownfcn");
 
                   if (m->button () == Qt::RightButton)
-                    ContextMenu::executeAt (up, m->globalPos ());
+                    ContextMenu::executeAt (m_interpreter, up, m->globalPos ());
                 }
               else
                 {
                   if (up.style_is ("listbox"))
-                    gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                          Utils::figureSelectionType (m),
-                                          false);
+                    emit gh_set_event (fig.get_handle (), "selectiontype",
+                                       Utils::figureSelectionType (m),
+                                       false);
                   else
-                    gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                          octave_value ("normal"), false);
+                    emit gh_set_event (fig.get_handle (), "selectiontype",
+                                       octave_value ("normal"), false);
                 }
             }
         }
@@ -244,7 +262,7 @@ namespace QtHandles
       case QEvent::MouseMove:
         if (qWidget<QWidget> ()->hasMouseTracking ())
           {
-            gh_manager::auto_lock lock;
+            octave::autolock guard (gh_mgr.graphics_lock ());
 
             QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
             graphics_object go = object ();
@@ -252,10 +270,10 @@ namespace QtHandles
 
             if (fig)
               {
-                gh_manager::post_set (fig.get_handle (), "currentpoint",
-                                      Utils::figureCurrentPoint (fig, m), false);
-                gh_manager::post_callback (fig.get_handle (),
-                                           "windowbuttonmotionfcn");
+                emit gh_set_event (fig.get_handle (), "currentpoint",
+                                   Utils::figureCurrentPoint (fig, m), false);
+                emit gh_callback_event (fig.get_handle (),
+                                        "windowbuttonmotionfcn");
               }
           }
         break;
@@ -263,24 +281,24 @@ namespace QtHandles
       case QEvent::KeyPress:
         if (m_keyPressHandlerDefined)
           {
-            gh_manager::auto_lock lock;
+            octave::autolock guard (gh_mgr.graphics_lock ());
 
             octave_scalar_map keyData =
               Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent *> (xevent));
             graphics_object fig = object ().get_ancestor ("figure");
 
-            gh_manager::post_set (fig.get_handle (), "currentcharacter",
-                                  keyData.getfield ("Character"), false);
-            gh_manager::post_callback (m_handle, "keypressfcn", keyData);
+            emit gh_set_event (fig.get_handle (), "currentcharacter",
+                               keyData.getfield ("Character"), false);
+            emit gh_callback_event (m_handle, "keypressfcn", keyData);
           }
         break;
 
       case QEvent::FocusIn:
-        gh_manager::post_set (m_handle, "__focus__", "on", false);
+        emit gh_set_event (m_handle, "__focus__", "on", false);
         break;
 
       case QEvent::FocusOut:
-        gh_manager::post_set (m_handle, "__focus__", "off", false);
+        emit gh_set_event (m_handle, "__focus__", "off", false);
         break;
 
       default:

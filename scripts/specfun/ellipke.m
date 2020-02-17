@@ -1,6 +1,9 @@
-## Copyright (C) 2001-2019 David Billinghurst
-## Copyright (C) 2001-2019 Paul Kienzle
-## Copyright (C) 2003-2019 Jaakko Ruohio
+########################################################################
+##
+## Copyright (C) 2001-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -17,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{k} =} ellipke (@var{m})
@@ -82,10 +87,6 @@
 ## @cite{Handbook of Mathematical Functions}, Chapter 17, Dover, 1965.
 ## @seealso{ellipj}
 ## @end deftypefn
-
-## Author: David Billinghurst <David.Billinghurst@riotinto.com>
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-## Author: Jaakko Ruohio
 
 function [k, e] = ellipke (m, tol = [])
 

@@ -1,4 +1,9 @@
-## Copyright (C) 1993-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1993-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,19 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
+
+## FIXME: Can't have duplicate DOCSTRING entries.  The function properties
+##        already has a docstring which overrides this keyword definition.
+##        If this is ever fixed this entry can be re-inserted after the
+##        keyword "persistent".
+## properties
+##  libinterp/parse-tree/oct-parse.yy
+## -*- texinfo -*-
+## @deftypefn {} {} properties
+## Begin a properties block in a classdef definition.
+## @end deftypefn
 
 !
 @c libinterp/parse-tree/oct-parse.yy
@@ -706,12 +724,6 @@ difference between persistent variables and global variables is that persistent
 variables are local in scope to a particular function and are not visible
 elsewhere.
 @seealso{global}
-@end deftypefn
-properties
-@c libinterp/parse-tree/oct-parse.yy
--*- texinfo -*-
-@deftypefn {} {} properties
-Begin a properties block in a classdef definition.
 @end deftypefn
 return
 @c libinterp/parse-tree/oct-parse.yy

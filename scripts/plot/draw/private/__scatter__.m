@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{hg} =} __scatter__ (@dots{})
@@ -167,7 +174,7 @@ function hg = __scatter__ (varargin)
   endif
 
   ## Must occur after __next_line_color__ in order to work correctly.
-  hg = hggroup ();
+  hg = hggroup ("__appdata__", struct ("__creator__", "__scatter__"));
   newargs = __add_datasource__ (fcn, hg, {"x", "y", "z", "c", "size"},
                                 newargs{:});
 
@@ -245,32 +252,10 @@ function hg = __scatter__ (varargin)
 
   else
 
-    ## For larger numbers of points, we split the points by common color.
-
+    ## For larger numbers of points, we use one single object.
     vert = [x, y, z];
-    if (one_explicit_color)
-      render_size_color (hg, vert, s, c, marker, filled, true);
-    else
-      if (rows (c) == 1)
-        c = repmat (c, rows (x), 1);
-      endif
-      ## We want to group points by color.  So first get all the unique colors
-      [cc, ~, c_to_cc] = unique (c, "rows");
+    render_size_color (hg, vert, s, c, marker, filled, true);
 
-      for i = 1 : rows (cc)
-        ## Now for each possible unique color, get the logical index of
-        ## points that correspond to that color
-        idx = (i == c_to_cc);
-        if (isscalar (s))
-          render_size_color (hg, vert(idx, :), s, c(idx,:),
-                                 marker, filled, true);
-        else
-          render_size_color (hg, vert(idx, :), s(idx), c(idx,:),
-                                 marker, filled, true);
-        endif
-      endfor
-
-    endif
   endif
 
   if (! ischar (c) && rows (c) > 1)

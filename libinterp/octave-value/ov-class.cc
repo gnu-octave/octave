@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2007-2019 John W. Eaton
-Copyright (C) 2009 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2007-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -34,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 
 #include "Cell.h"
-#include "call-stack.h"
 #include "defun.h"
 #include "error.h"
 #include "file-ops.h"
@@ -229,10 +230,10 @@ octave_class::get_current_method_class (void)
 
   if (nparents () > 0)
     {
-      octave::call_stack& cs
-        = octave::__get_call_stack__ ("octave_class::get_current_method_class");
+      octave::tree_evaluator& tw
+        = octave::__get_evaluator__ ("octave_class::get_current_method_class");
 
-      octave_function *fcn = cs.current ();
+      octave_function *fcn = tw.current_function ();
 
       // Here we are just looking to see if FCN is a method or constructor
       // for any class, not specifically this one.
@@ -299,8 +300,8 @@ octave_class::size (void)
 
   Matrix retval (1, 2, 1.0);
 
-  octave::symbol_table& symtab =
-    octave::__get_symbol_table__ ("octave_class::size");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("octave_class::size");
 
   octave_value meth = symtab.find_method ("size", class_name ());
 
@@ -332,16 +333,16 @@ octave_class::size (void)
 }
 
 octave_idx_type
-octave_class::numel (const octave_value_list& idx)
+octave_class::xnumel (const octave_value_list& idx)
 {
   if (in_class_method () || called_from_builtin ())
-    return octave_base_value::numel (idx);
+    return octave_base_value::xnumel (idx);
 
   octave_idx_type retval = -1;
   const std::string cn = class_name ();
 
-  octave::symbol_table& symtab =
-    octave::__get_symbol_table__ ("octave_class::numel");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("octave_class::numel");
 
   octave_value meth = symtab.find_method ("numel", cn);
 
@@ -362,7 +363,7 @@ octave_class::numel (const octave_value_list& idx)
       retval = lv(0).idx_type_value (true);
     }
   else
-    retval = octave_base_value::numel (idx);
+    retval = octave_base_value::xnumel (idx);
 
   return retval;
 }
@@ -436,8 +437,8 @@ octave_class::subsref (const std::string& type,
     }
   else
     {
-      octave::symbol_table& symtab =
-        octave::__get_symbol_table__ ("octave_class::subsref");
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_class::subsref");
 
       octave_value meth = symtab.find_method ("subsref", class_name ());
 
@@ -466,7 +467,7 @@ octave_class::subsref (const std::string& type,
               // Set up a proper nargout for the subsref call by calling numel.
               octave_value_list tmp;
               if (type[0] != '.') tmp = idx.front ();
-              true_nargout = numel (tmp);
+              true_nargout = xnumel (tmp);
             }
 
           retval = octave::feval (meth.function_value (), args, true_nargout);
@@ -815,8 +816,8 @@ octave_class::subsasgn_common (const octave_value& obj,
 idx_vector
 octave_class::index_vector (bool require_integers) const
 {
-  octave::symbol_table& symtab =
-    octave::__get_symbol_table__ ("octave_class::index_vector");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("octave_class::index_vector");
 
   octave_value meth = symtab.find_method ("subsindex", class_name ());
 
@@ -864,8 +865,8 @@ octave_class::is_true (void) const
 {
   bool retval = false;
 
-  octave::symbol_table& symtab =
-    octave::__get_symbol_table__ ("octave_class::is_true");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("octave_class::is_true");
 
   octave_value meth = symtab.find_method ("logical", class_name ());
 
@@ -1023,19 +1024,6 @@ octave_class::print_raw (std::ostream& os, bool) const
   newline (os);
 }
 
-bool
-octave_class::print_name_tag (std::ostream& os, const std::string& name) const
-{
-  return octave_base_value::print_name_tag (os, name);
-}
-
-void
-octave_class::print_with_name (std::ostream& os, const std::string& name,
-                               bool print_padding)
-{
-  octave_base_value::print_with_name (os, name, print_padding);
-}
-
 // Loading a class properly requires an exemplar map entry for success.
 // If we don't have one, we attempt to create one by calling the constructor
 // with no arguments.
@@ -1051,8 +1039,10 @@ octave_class::reconstruct_exemplar (void)
     retval = true;
   else
     {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_class::reconstruct_exemplar");
+      octave::interpreter& interp
+        = octave::__get_interpreter__  ("octave_class::reconstruct_exemplar");
+
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
       octave_value ctor = symtab.find_method (c_name, c_name);
 
@@ -1089,7 +1079,7 @@ octave_class::reconstruct_exemplar (void)
             }
           catch (const octave::execution_exception&)
             {
-              octave::interpreter::recover_from_exception ();
+              interp.recover_from_exception ();
 
               execution_error = true;
             }
@@ -1270,7 +1260,7 @@ octave_class::load_ascii (std::istream& is)
 }
 
 bool
-octave_class::save_binary (std::ostream& os, bool& save_as_floats)
+octave_class::save_binary (std::ostream& os, bool save_as_floats)
 {
   int32_t classname_len = class_name ().length ();
 
@@ -1424,7 +1414,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     goto error_cleanup;
 
   hdims[0] = 0;
-  space_hid = H5Screate_simple (0 , hdims, nullptr);
+  space_hid = H5Screate_simple (0, hdims, nullptr);
   if (space_hid < 0)
     goto error_cleanup;
 #if defined (HAVE_HDF5_18)
@@ -1655,10 +1645,10 @@ octave_class::as_mxArray (void) const
 bool
 octave_class::in_class_method (void)
 {
-  octave::call_stack& cs
-    = octave::__get_call_stack__ ("octave_class::in_class_method");
+  octave::tree_evaluator& tw
+    = octave::__get_evaluator__ ("octave_class::in_class_method");
 
-  octave_function *fcn = cs.current ();
+  octave_function *fcn = tw.current_function ();
 
   return (fcn
           && (fcn->is_class_method ()
@@ -1750,9 +1740,9 @@ is derived.
       // Called as class constructor
       std::string id = args(1).xstring_value ("class: ID (class name) must be a string");
 
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
-      octave_function *fcn = cs.caller ();
+      octave_function *fcn = tw.caller_function ();
 
       if (! fcn)
         error ("class: invalid call from outside class constructor or method");
@@ -1937,66 +1927,6 @@ Return true if @var{x} is a class object.
   return ovl (args(0).isobject ());
 }
 
-DEFMETHOD (ismethod, interp, args, ,
-           doc: /* -*- texinfo -*-
-@deftypefn  {} {} ismethod (@var{obj}, @var{method})
-@deftypefnx {} {} ismethod (@var{clsname}, @var{method})
-Return true if the string @var{method} is a valid method of the object
-@var{obj} or of the class @var{clsname}.
-@seealso{isprop, isobject}
-@end deftypefn */)
-{
-  if (args.length () != 2)
-    print_usage ();
-
-  octave_value arg = args(0);
-
-  std::string class_name;
-
-  if (arg.isobject ())
-    class_name = arg.class_name ();
-  else if (arg.is_string ())
-    class_name = arg.string_value ();
-  else
-    error ("ismethod: first argument must be object or class name");
-
-  std::string method = args(1).string_value ();
-
-  octave::load_path& lp = interp.get_load_path ();
-
-  if (lp.find_method (class_name, method) != "")
-    return ovl (true);
-  else
-    return ovl (false);
-}
-
-DEFMETHOD (__methods__, interp, args, ,
-           doc: /* -*- texinfo -*-
-@deftypefn  {} {} __methods__ (@var{x})
-@deftypefnx {} {} __methods__ ("classname")
-Internal function.
-
-Implements @code{methods} for Octave class objects and classnames.
-@seealso{methods}
-@end deftypefn */)
-{
-  // Input validation has already been done in methods.m.
-  octave_value arg = args(0);
-
-  std::string class_name;
-
-  if (arg.isobject ())
-    class_name = arg.class_name ();
-  else if (arg.is_string ())
-    class_name = arg.string_value ();
-
-  octave::load_path& lp = interp.get_load_path ();
-
-  string_vector sv = lp.methods (class_name);
-
-  return ovl (Cell (sv));
-}
-
 static bool
 is_built_in_class (const std::string& cn)
 {
@@ -2035,9 +1965,9 @@ may @emph{only} be called from a class constructor.
 @seealso{inferiorto}
 @end deftypefn */)
 {
-  octave::call_stack& cs = interp.get_call_stack ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  octave_function *fcn = cs.caller ();
+  octave_function *fcn = tw.caller_function ();
 
   if (! fcn || ! fcn->is_class_constructor ())
     error ("superiorto: invalid call from outside class constructor");
@@ -2073,9 +2003,9 @@ may @emph{only} be called from a class constructor.
 @seealso{superiorto}
 @end deftypefn */)
 {
-  octave::call_stack& cs = interp.get_call_stack ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  octave_function *fcn = cs.caller ();
+  octave_function *fcn = tw.caller_function ();
 
   if (! fcn || ! fcn->is_class_constructor ())
     error ("inferiorto: invalid call from outside class constructor");

@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 John W. Eaton, Shai Ayal, Kai Habel
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{h}, @var{fail}] =} __patch__ (@var{p}, @dots{})
@@ -24,8 +31,6 @@
 ## __patch__ (p, x, y, c)
 ## Create patch object from x and y with color c and parent p.
 ## Return handle to patch object.
-
-## Author: Kai Habel
 
 function [h, failed] = __patch__ (p, varargin)
 
@@ -110,7 +115,7 @@ function [h, failed] = __patch__ (p, varargin)
           else
             error ("patch: color data C must be numeric");
           endif
-        elseif (isvector (c) && numel (c) == 3)
+        elseif (isrow (c) && numel (c) == 3)
           args{7} = "facecolor";
           args{8} = c;
           args{9} = "cdata";

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -31,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-cell.h"
@@ -43,10 +47,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "DASSL-opts.cc"
 
 // Global pointer for user defined function required by dassl.
-static octave_function *dassl_fcn;
+static octave_value dassl_fcn;
 
 // Global pointer for optional user defined jacobian function.
-static octave_function *dassl_jac;
+static octave_value dassl_jac;
 
 // Have we warned about imaginary values returned from user function?
 static bool warned_fcn_imaginary = false;
@@ -69,7 +73,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
   args(1) = xdot;
   args(0) = x;
 
-  if (dassl_fcn)
+  if (dassl_fcn.is_defined ())
     {
       octave_value_list tmp;
 
@@ -119,7 +123,7 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
   args(1) = xdot;
   args(0) = x;
 
-  if (dassl_jac)
+  if (dassl_jac.is_defined ())
     {
       octave_value_list tmp;
 
@@ -273,13 +277,15 @@ parameters for @code{dassl}.
   if (call_depth > 1)
     error ("dassl: invalid recursive call");
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
   std::string fcn_name, fname, jac_name, jname;
-  dassl_fcn = nullptr;
-  dassl_jac = nullptr;
+
+  dassl_fcn = octave_value ();
+  dassl_jac = octave_value ();
 
   octave_value f_arg = args(0);
+
+  std::list<std::string> fcn_param_names ({"x", "xdot", "t"});
+  std::list<std::string> jac_param_names ({"x", "xdot", "t", "cj"});
 
   if (f_arg.iscell ())
     {
@@ -288,100 +294,61 @@ parameters for @code{dassl}.
         f_arg = c(0);
       else if (c.numel () == 2)
         {
-          if (c(0).is_function_handle () || c(0).is_inline_function ())
-            dassl_fcn = c(0).function_value ();
-          else
-            {
-              fcn_name = unique_symbol_name ("__dassl_fcn__");
-              fname = "function y = ";
-              fname.append (fcn_name);
-              fname.append (" (x, xdot, t) y = ");
-              dassl_fcn = extract_function (c(0), "dassl", fcn_name, fname,
-                                            "; endfunction");
-            }
+          dassl_fcn = octave::get_function_handle (interp, c(0),
+                                                   fcn_param_names);
 
-          if (dassl_fcn)
+          if (dassl_fcn.is_defined ())
             {
-              if (c(1).is_function_handle () || c(1).is_inline_function ())
-                dassl_jac = c(1).function_value ();
-              else
-                {
-                  jac_name = unique_symbol_name ("__dassl_jac__");
-                  jname = "function jac = ";
-                  jname.append (jac_name);
-                  jname.append (" (x, xdot, t, cj) jac = ");
-                  dassl_jac = extract_function (c(1), "dassl", jac_name,
-                                                jname, "; endfunction");
+              dassl_jac = octave::get_function_handle (interp, c(1),
+                                                       jac_param_names);
 
-                  if (! dassl_jac)
-                    {
-                      if (fcn_name.length ())
-                        symtab.clear_function (fcn_name);
-                      dassl_fcn = nullptr;
-                    }
-                }
+              if (dassl_jac.is_undefined ())
+                dassl_fcn = octave_value ();
             }
         }
       else
         error ("dassl: incorrect number of elements in cell array");
     }
 
-  if (! dassl_fcn && ! f_arg.iscell ())
+  if (dassl_fcn.is_undefined () && ! f_arg.iscell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
-        dassl_fcn = f_arg.function_value ();
+        dassl_fcn = f_arg;
       else
         {
           switch (f_arg.rows ())
             {
             case 1:
-              do
-                {
-                  fcn_name = unique_symbol_name ("__dassl_fcn__");
-                  fname = "function y = ";
-                  fname.append (fcn_name);
-                  fname.append (" (x, xdot, t) y = ");
-                  dassl_fcn = extract_function (f_arg, "dassl", fcn_name,
-                                                fname, "; endfunction");
-                }
-              while (0);
+              dassl_fcn = octave::get_function_handle (interp, f_arg,
+                                                       fcn_param_names);
               break;
 
             case 2:
               {
                 string_vector tmp = f_arg.string_vector_value ();
 
-                fcn_name = unique_symbol_name ("__dassl_fcn__");
-                fname = "function y = ";
-                fname.append (fcn_name);
-                fname.append (" (x, xdot, t) y = ");
-                dassl_fcn = extract_function (tmp(0), "dassl", fcn_name,
-                                              fname, "; endfunction");
+                dassl_fcn = octave::get_function_handle (interp, tmp(0),
+                                                         fcn_param_names);
 
-                if (dassl_fcn)
+                if (dassl_fcn.is_defined ())
                   {
-                    jac_name = unique_symbol_name ("__dassl_jac__");
-                    jname = "function jac = ";
-                    jname.append (jac_name);
-                    jname.append (" (x, xdot, t, cj) jac = ");
-                    dassl_jac = extract_function (tmp(1), "dassl",
-                                                  jac_name, jname,
-                                                  "; endfunction");
+                    dassl_jac = octave::get_function_handle (interp, tmp(1),
+                                                             jac_param_names);
 
-                    if (! dassl_jac)
-                      {
-                        if (fcn_name.length ())
-                          symtab.clear_function (fcn_name);
-                        dassl_fcn = nullptr;
-                      }
+                    if (dassl_jac.is_undefined ())
+                      dassl_fcn = octave_value ();
                   }
               }
+              break;
+
+            default:
+              error ("dassl: first arg should be a string or 2-element string array");
             }
         }
     }
 
-  if (! dassl_fcn)
-    return retval;
+  if (dassl_fcn.is_undefined ())
+    error ("dassl: FCN argument is not a valid function name or handle");
 
   ColumnVector state = args(1).xvector_value ("dassl: initial state X_0 must be a vector");
 
@@ -404,7 +371,7 @@ parameters for @code{dassl}.
   double tzero = out_times (0);
 
   DAEFunc func (dassl_user_function);
-  if (dassl_jac)
+  if (dassl_jac.is_defined ())
     func.set_jacobian_function (dassl_user_jacobian);
 
   DASSL dae (state, deriv, tzero, func);
@@ -418,11 +385,6 @@ parameters for @code{dassl}.
     output = dae.integrate (out_times, deriv_output, crit_times);
   else
     output = dae.integrate (out_times, deriv_output);
-
-  if (fcn_name.length ())
-    symtab.clear_function (fcn_name);
-  if (jac_name.length ())
-    symtab.clear_function (jac_name);
 
   std::string msg = dae.error_message ();
 

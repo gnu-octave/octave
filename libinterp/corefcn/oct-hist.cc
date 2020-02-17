@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 /*
 
@@ -44,7 +47,6 @@ Software Foundation, Inc.
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "lo-mappers.h"
-#include "octave-link.h"
 #include "oct-env.h"
 #include "oct-time.h"
 #include "str-vec.h"
@@ -53,6 +55,7 @@ Software Foundation, Inc.
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "event-manager.h"
 #include "input.h"
 #include "oct-hist.h"
 #include "ovl.h"
@@ -61,6 +64,7 @@ Software Foundation, Inc.
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "interpreter.h"
+#include "interpreter-private.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -134,8 +138,15 @@ namespace octave
           tmp.resize (len - 1);
 
         if (! tmp.empty ())
-          if (octave::command_history::add (tmp))
-            octave_link::append_history (tmp);
+          {
+            if (command_history::add (tmp))
+              {
+                event_manager& evmgr
+                  = __get_event_manager__ ("edit_history_add_hist");
+
+                evmgr.append_history (tmp);
+              }
+          }
       }
   }
 
@@ -162,7 +173,7 @@ namespace octave
   mk_tmp_hist_file (const octave_value_list& args,
                     bool insert_curr, const char *warn_for)
   {
-    string_vector hlist = octave::command_history::list ();
+    string_vector hlist = command_history::list ();
 
     int hist_count = hlist.numel () - 1;  // switch to zero-based indexing
 
@@ -172,7 +183,7 @@ namespace octave
     // but the actual commands performed will.
 
     if (! insert_curr)
-      octave::command_history::remove (hist_count);
+      command_history::remove (hist_count);
 
     hist_count--;  // skip last entry in history list
 
@@ -225,7 +236,7 @@ namespace octave
         reverse = true;
       }
 
-    std::string name = octave::sys::tempnam ("", "oct-");
+    std::string name = sys::tempnam ("", "oct-");
 
     std::fstream file (name.c_str (), std::ios::out);
 
@@ -266,7 +277,9 @@ namespace octave
                                  default_size (),
                                  sys::env::getenv ("OCTAVE_HISTCONTROL"));
 
-    octave_link::set_history (command_history::list ());
+    event_manager& evmgr = m_interpreter.get_event_manager ();
+
+    evmgr.set_history (command_history::list ());
   }
 
   void history_system::write_timestamp (void)
@@ -276,8 +289,14 @@ namespace octave
     std::string timestamp = now.strftime (m_timestamp_format_string);
 
     if (! timestamp.empty ())
-      if (command_history::add (timestamp))
-        octave_link::append_history (timestamp);
+      {
+        if (command_history::add (timestamp))
+          {
+            event_manager& evmgr = m_interpreter.get_event_manager ();
+
+            evmgr.append_history (timestamp);
+          }
+      }
   }
 
   octave_value
@@ -336,6 +355,8 @@ namespace octave
         else
           err_wrong_type_arg ("history", arg);
 
+        event_manager& evmgr = m_interpreter.get_event_manager ();
+
         if (option == "-r" || option == "-w" || option == "-a"
             || option == "-n")
           {
@@ -362,14 +383,14 @@ namespace octave
               {
                 // Read entire file.
                 command_history::read ();
-                octave_link::set_history (command_history::list ());
+                evmgr.set_history (command_history::list ());
               }
 
             else if (option == "-n")
               {
                 // Read 'new' history from file.
                 command_history::read_range ();
-                octave_link::set_history (command_history::list ());
+                evmgr.set_history (command_history::list ());
               }
 
             else
@@ -380,7 +401,7 @@ namespace octave
         else if (option == "-c")
           {
             command_history::clear ();
-            octave_link::clear_history ();
+            evmgr.clear_history ();
           }
         else if (option == "-q")
           numbered_output = false;
@@ -524,7 +545,7 @@ namespace octave
 
     if (file.empty ())
       file = sys::file_ops::concat (sys::env::get_home_directory (),
-                                            ".octave_hist");
+                                    ".octave_hist");
 
     return file;
   }

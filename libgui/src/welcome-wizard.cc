@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -27,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QPushButton>
 #include <QHBoxLayout>
+#include <QPushButton>
 #include <QVBoxLayout>
 
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -36,24 +38,27 @@ along with Octave; see the file COPYING.  If not, see
   #include <windows.h>
 #endif
 
+#include "gui-preferences-nr.h"
+#include "octave-qobject.h"
 #include "welcome-wizard.h"
-#include "resource-manager.h"
-
-static QLabel *
-make_octave_logo (QWidget *p = nullptr, int height = 100)
-{
-  QLabel *logo = new QLabel (p);
-  QPixmap logo_pixmap (":/actions/icons/logo.png");
-  logo->setPixmap (logo_pixmap.scaledToHeight (height));
-  return logo;
-};
 
 namespace octave
 {
-  welcome_wizard::welcome_wizard (QWidget *p)
-    : QDialog (p), m_page_ctor_list (), m_page_list_iterator (),
-      m_current_page (initial_page::create (this)),
-      m_allow_web_connect_state (false)
+  static QLabel *
+  make_octave_logo (QWidget *p = nullptr, int height = 100)
+  {
+    QLabel *logo = new QLabel (p);
+    QPixmap logo_pixmap (":/actions/icons/logo.png");
+    logo->setPixmap (logo_pixmap.scaledToHeight (height));
+    return logo;
+  };
+
+  welcome_wizard::welcome_wizard (base_qobject& oct_qobj, QWidget *p)
+    : QDialog (p), m_octave_qobj (oct_qobj), m_page_ctor_list (),
+      m_page_list_iterator (),
+      m_current_page (initial_page::create (oct_qobj, this)),
+      m_allow_web_connect_state (false),
+      m_max_height (0), m_max_width (0)
   {
     m_page_ctor_list.push_back (initial_page::create);
     m_page_ctor_list.push_back (setup_community_news::create);
@@ -65,24 +70,41 @@ namespace octave
 
     setEnabled (true);
 
-    QDesktopWidget *m_desktop = QApplication::desktop ();
-    int screen = m_desktop->screenNumber (this);  // screen of the main window
-    QRect screen_geo = m_desktop->availableGeometry (screen);
+    setSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
-    int win_x = screen_geo.width ();        // width of the screen
-    int win_y = screen_geo.height ();       // height of the screen
-    int ww_x = std::max (win_x/2, 600);    // desired width
-    int ww_y = std::max (win_y*2/3, 480);  // desired height
-
-    resize (ww_x, ww_y);
-    setMinimumSize (QSize (ww_x, ww_y));
-
+    // Create all pages for pre-setting the minimal required size for all pages
     show_page ();
+    adjust_size ();
+    next_page ();
+    adjust_size ();
+    next_page ();
+    adjust_size ();
+    // now go back to the first page
+    previous_page ();
+    previous_page ();
+
+    // Set the size determined above
+    resize (m_max_width, m_max_height);
 
 #if defined (OCTAVE_USE_WINDOWS_API)
     // HACK to forceshow of dialog if started minimized
     ShowWindow (reinterpret_cast<HWND> (winId ()), SW_SHOWNORMAL);
 #endif
+  }
+
+  void welcome_wizard::adjust_size (void)
+  {
+    // Get adjusted size for the current page
+    adjustSize ();
+    QSize sz = size ();
+
+    // Update the max. size of the three pages if required
+
+    if (sz.height () > m_max_height)
+      m_max_height = sz.height ();
+
+    if (sz.width () > m_max_width)
+      m_max_width = sz.width ();
   }
 
   void welcome_wizard::handle_web_connect_option (int state)
@@ -95,7 +117,7 @@ namespace octave
     delete m_current_page;
     delete layout ();
 
-    m_current_page = (*m_page_list_iterator) (this);
+    m_current_page = (*m_page_list_iterator) (m_octave_qobj, this);
 
     QVBoxLayout *new_layout = new QVBoxLayout ();
     setLayout (new_layout);
@@ -121,13 +143,14 @@ namespace octave
   {
     // Create default settings file.
 
-    resource_manager::reload_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    rmgr.reload_settings ();
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = rmgr.get_settings ();
 
     if (settings)
       {
-        settings->setValue ("news/allow_web_connection",
+        settings->setValue (nr_allow_connection.key,
                             m_allow_web_connect_state);
 
         settings->sync ();
@@ -136,7 +159,7 @@ namespace octave
     QDialog::accept ();
   }
 
-  initial_page::initial_page (welcome_wizard *wizard)
+  initial_page::initial_page (base_qobject& oct_qobj, welcome_wizard *wizard)
     : QWidget (wizard),
       m_title (new QLabel (tr ("Welcome to Octave!"), this)),
       m_message (new QLabel (this)),
@@ -148,13 +171,15 @@ namespace octave
     ft.setPointSize (20);
     m_title->setFont (ft);
 
+    resource_manager& rmgr = oct_qobj.get_resource_manager ();
+
     m_message->setText
       (tr ("<html><body>\n"
            "<p>You seem to be using the Octave graphical interface for the first time on this computer.\n"
            "Click 'Next' to create a configuration file and launch Octave.</p>\n"
            "<p>The configuration file is stored in<br>%1.</p>\n"
            "</body></html>").
-       arg (resource_manager::get_settings_file ()));
+       arg (rmgr.get_settings_file ()));
     m_message->setWordWrap (true);
     m_message->setMinimumWidth (400);
 
@@ -180,7 +205,10 @@ namespace octave
 
     page_layout->addLayout (message_and_logo);
     page_layout->addStretch (10);
+    page_layout->addSpacing (20);
     page_layout->addLayout (button_bar);
+
+    setSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
     m_next->setDefault (true);
     m_next->setFocus ();
@@ -189,7 +217,8 @@ namespace octave
     connect (m_cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
   }
 
-  setup_community_news::setup_community_news (welcome_wizard *wizard)
+  setup_community_news::setup_community_news (base_qobject&,
+                                              welcome_wizard *wizard)
     : QWidget (wizard),
       m_title (new QLabel (tr ("Community News"), this)),
       m_message (new QLabel (this)),
@@ -228,9 +257,11 @@ namespace octave
 
     QHBoxLayout *checkbox_layout = new QHBoxLayout;
 
-    // FIXME: Synchronize the initial state of this checkbox with the default
-    // value of "news/allow_web_connection" stored elsewhere.
-    m_checkbox->setCheckState (Qt::Unchecked);
+    bool allow_connection = nr_allow_connection.def.toBool ();
+    if (allow_connection)
+      m_checkbox->setCheckState (Qt::Checked);
+    else
+      m_checkbox->setCheckState (Qt::Unchecked);
 
     m_checkbox_message->setText
       (tr ("<html><head>\n"
@@ -267,7 +298,10 @@ namespace octave
 
     page_layout->addLayout (message_logo_and_checkbox);
     page_layout->addStretch (10);
+    page_layout->addSpacing (20);
     page_layout->addLayout (button_bar);
+
+    setSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
     m_next->setDefault (true);
     m_next->setFocus ();
@@ -280,7 +314,7 @@ namespace octave
     connect (m_cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
   }
 
-  final_page::final_page (welcome_wizard *wizard)
+  final_page::final_page (base_qobject&, welcome_wizard *wizard)
     : QWidget (wizard),
       m_title (new QLabel (tr ("Enjoy!"), this)),
       m_message (new QLabel (this)),
@@ -345,7 +379,10 @@ namespace octave
     page_layout->addSpacing (20);
     page_layout->addWidget (m_links);
     page_layout->addStretch (10);
+    page_layout->addSpacing (20);
     page_layout->addLayout (button_bar);
+
+    setSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
     m_finish->setDefault (true);
     m_finish->setFocus ();

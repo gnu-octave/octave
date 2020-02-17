@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 %!test
 %! for i = 1
@@ -123,7 +130,7 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1234"));
 
-%!test <50893>
+%!test <*50893>
 %! cnt = 0;
 %! for k = zeros (0,3);
 %!   cnt++;
@@ -131,7 +138,7 @@
 %! assert (cnt, 0);
 %! assert (k, zeros (0,3));
 
-%!test <50893>
+%!test <*50893>
 %! cnt = 0;
 %! for k = zeros (3,0);
 %!   cnt++;
@@ -139,7 +146,7 @@
 %! assert (cnt, 0);
 %! assert (k, zeros (3,0));
 
-%!test <50893>
+%!test <*50893>
 %! cnt = 0;
 %! for k = zeros (3,0, "uint32");
 %!   cnt++;
@@ -147,7 +154,7 @@
 %! assert (cnt, 0);
 %! assert (k, zeros (3,0, "uint32"));
 
-%!test <50893>
+%!test <*50893>
 %! cnt = 0;
 %! for k = cell (0,3);
 %!   cnt++;

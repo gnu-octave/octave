@@ -1,4 +1,9 @@
-## Copyright (C) 2004-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2004-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} delete (@var{file})
@@ -31,8 +38,6 @@
 ## features from a plot without clearing the entire figure.
 ## @seealso{clf, cla, unlink, rmdir}
 ## @end deftypefn
-
-## Author: jwe
 
 function delete (varargin)
 

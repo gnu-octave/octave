@@ -1,4 +1,9 @@
-## Copyright (C) 2013-2019 Michael D. Godfrey
+########################################################################
+##
+## Copyright (C) 2013-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} printd (@var{obj}, @var{filename})
@@ -30,9 +37,6 @@
 ## functions such as @code{stemleaf}.
 ## @seealso{stemleaf}
 ## @end deftypefn
-
-## Author: Michael D. Godfrey <michaeldgodfrey@gmail.com>
-## Description: Convert objects into other file formats.
 
 function pr_out = printd (obj, filename)
   ## Convert any object acceptable to disp() into various display formats.

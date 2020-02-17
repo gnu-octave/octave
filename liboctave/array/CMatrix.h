@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_CMatrix_h)
 #define octave_CMatrix_h 1
@@ -57,7 +60,13 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcon);
 
-  ComplexMatrix (void) : ComplexNDArray () { }
+  ComplexMatrix (void) = default;
+
+  ComplexMatrix (const ComplexMatrix& a) = default;
+
+  ComplexMatrix& operator = (const ComplexMatrix& a) = default;
+
+  ~ComplexMatrix (void) = default;
 
   ComplexMatrix (octave_idx_type r, octave_idx_type c)
     : ComplexNDArray (dim_vector (r, c)) { }
@@ -69,8 +78,6 @@ public:
 
   ComplexMatrix (const dim_vector& dv, const Complex& val)
     : ComplexNDArray (dv.redim (2), val) { }
-
-  ComplexMatrix (const ComplexMatrix& a) : ComplexNDArray (a) { }
 
   template <typename U>
   ComplexMatrix (const MArray<U>& a) : ComplexNDArray (a.as_matrix ()) { }
@@ -110,10 +117,6 @@ public:
   bool operator != (const ComplexMatrix& a) const;
 
   bool ishermitian (void) const;
-
-  OCTAVE_DEPRECATED (4.4, "use 'ishermitian' instead")
-  bool is_hermitian (void) const
-  { return ishermitian (); }
 
   // destructive insert/delete/reorder operations
 

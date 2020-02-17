@@ -1,5 +1,9 @@
-## Copyright (C) 2018-2019 Stefan Schlögl
-## Copyright (C) 2018-2019 Michele Ginesi
+########################################################################
+##
+## Copyright (C) 2018-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} betainc (@var{x}, @var{a}, @var{b})
@@ -194,14 +200,14 @@ endfunction
 %! assert (v1, v2, sqrt (eps ("single")));
 %! assert (v3, v4, sqrt (eps ("single")));
 
-%!test <51157>
+%!test <*51157>
 %! y = betainc ([0.00780;0.00782;0.00784],250.005,49750.995);
 %! y_ex = [0.999999999999989; 0.999999999999992; 0.999999999999995];
 %! assert (y, y_ex, -1e-14);
 
 %!assert (betainc (0.001, 20, 30), 2.750687665855991e-47, -3e-14);
 %!assert (betainc (0.0001, 20, 30), 2.819953178893307e-67, -7e-14);
-%!assert <54383> (betainc (0.99, 20, 30, "upper"), 1.5671643161872703e-47, -7e-14);
+%!assert <*54383> (betainc (0.99, 20, 30, "upper"), 1.5671643161872703e-47, -7e-14);
 %!assert (betainc (0.999, 20, 30, "upper"), 1.850806276141535e-77, -7e-14);
 %!assert (betainc (0.5, 200, 300), 0.9999964565197356, -1e-15);
 %!assert (betainc (0.5, 200, 300, "upper"), 3.54348026439253e-06, -3e-13);
@@ -212,7 +218,7 @@ endfunction
 %! assert (betainc (0, a, b), zeros (20));
 %! assert (betainc (1, a, b), ones (20));
 
-%!test <34405>
+%!test <*34405>
 %! assert (betainc (NaN, 1, 2), NaN);
 %! assert (betainc (0.5, 1, Inf), NaN);
 

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_procstream_h)
 #define octave_procstream_h 1
@@ -38,7 +41,7 @@ procstreambase : virtual public std::ios
 {
 public:
 
-  procstreambase (void) : pb () { pb_init (); }
+  procstreambase (void) : m_pb () { pb_init (); }
 
   procstreambase (const std::string& name, int mode);
 
@@ -47,23 +50,30 @@ public:
   ~procstreambase (void) { close (); }
 
   void open (const std::string& name, int mode)
-  { open (name.c_str (), mode); }
+  {
+    open (name.c_str (), mode);
+  }
 
   void open (const char *name, int mode);
 
-  int is_open (void) const { return pb.is_open (); }
+  int is_open (void) const { return m_pb.is_open (); }
 
   int close (void);
 
-  pid_t pid (void) const { return pb.pid (); }
+  pid_t pid (void) const { return m_pb.pid (); }
 
-  int file_number (void) const { return pb.file_number (); }
+  int file_number (void) const { return m_pb.file_number (); }
 
 private:
 
-  octave_procbuf pb;
+  octave_procbuf m_pb;
 
-  void pb_init (void) { init (&pb); }
+  void pb_init (void)
+  {
+    // Explicit initialization of the std::ios object is needed.
+    // FIXME: is there a better way to organize these classes?
+    init (&m_pb);
+  }
 
   procstreambase (const procstreambase&);
 
@@ -73,25 +83,30 @@ private:
 class
 OCTINTERP_API
 iprocstream : public std::istream, public procstreambase
-// iprocstream : public procstreambase, public std::istream
 {
 public:
 
   iprocstream (void) : std::istream (nullptr), procstreambase () { }
 
   iprocstream (const std::string& name, int mode = std::ios::in)
-    : std::istream (nullptr), procstreambase (name, mode) { }
+    : std::istream (nullptr), procstreambase (name, mode)
+  { }
 
   iprocstream (const char *name, int mode = std::ios::in)
-    : std::istream (nullptr), procstreambase (name, mode) { }
+    : std::istream (nullptr), procstreambase (name, mode)
+  { }
 
   ~iprocstream (void) = default;
 
   void open (const std::string& name, int mode = std::ios::in)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
   void open (const char *name, int mode = std::ios::in)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
 private:
 
@@ -103,7 +118,6 @@ private:
 class
 OCTINTERP_API
 oprocstream : public std::ostream, public procstreambase
-// oprocstream : public procstreambase, public std::ostream
 {
 public:
 
@@ -118,10 +132,14 @@ public:
   ~oprocstream (void) = default;
 
   void open (const std::string& name, int mode = std::ios::out)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
   void open (const char *name, int mode = std::ios::out)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
 private:
 
@@ -133,25 +151,30 @@ private:
 class
 OCTINTERP_API
 procstream : public std::iostream, public procstreambase
-// procstream : public procstreambase, public std::iostream
 {
 public:
 
   procstream (void) : std::iostream (nullptr), procstreambase () { }
 
   procstream (const std::string& name, int mode)
-    : std::iostream (nullptr), procstreambase (name, mode) { }
+    : std::iostream (nullptr), procstreambase (name, mode)
+  { }
 
   procstream (const char *name, int mode)
-    : std::iostream (nullptr), procstreambase (name, mode) { }
+    : std::iostream (nullptr), procstreambase (name, mode)
+  { }
 
   ~procstream (void) = default;
 
   void open (const std::string& name, int mode)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
   void open (const char *name, int mode)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
 private:
 

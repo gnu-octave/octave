@@ -233,6 +233,12 @@ variety of data.
 
 @DOCSTRING(importdata)
 
+After importing, the data may need to be transformed before further analysis.
+The @code{rescale} function can shift and normalize a data set to a specified
+range.
+
+@DOCSTRING(rescale)
+
 @menu
 * Saving Data on Unexpected Exits::
 @end menu
@@ -818,8 +824,33 @@ For example, most @code{scanf} conversions skip over any amount of
 file, and there is no concept of precision for the numeric input
 conversions as there is for the corresponding output conversions.
 Ordinarily, non-whitespace characters in the template are expected to
-match characters in the input stream exactly.
+match characters in the input stream exactly.  For example, note that
+@code{sscanf} parses the string and whitespace differently when using
+mixed numeric and string output types:
 @cindex conversion specifications (@code{scanf})
+
+@example
+@group
+teststr = "1 is a lonely number";
+sscanf (teststr, "%s is a %s")
+@result{} 1lonelynumber
+
+sscanf (teststr, "%g is a %s")
+@result{}
+     1
+   108
+   111
+   110
+   101
+   108
+   121
+
+[a, b, c] = sscanf ("1 is a lonely number", "%g is a %s %s", "C")
+@result{} a =  1
+@result{} b = lonely
+@result{} c = number
+@end group
+@end example
 
 When a @dfn{matching failure} occurs, @code{scanf} returns immediately,
 leaving the first non-matching character as the next character to be
@@ -831,6 +862,10 @@ The formatted input functions are not used as frequently as the
 formatted output functions.  Partly, this is because it takes some care
 to use them properly.  Another reason is that it is difficult to recover
 from a matching error.
+
+The specific flags and modifiers that are permitted in the template string
+and their interpretation are all described in more detail in the following
+sections.
 
 @node Input Conversion Syntax
 @subsection Input Conversion Syntax
@@ -891,8 +926,8 @@ A character that specifies the conversion to be applied.
 
 The exact options that are permitted and how they are interpreted vary
 between the different conversion specifiers.  See the descriptions of the
-individual conversions for information about the particular options that
-they allow.
+individual conversions in @ref{Table of Input Conversions} for
+information about the particular options that they allow.
 
 @node Table of Input Conversions
 @subsection Table of Input Conversions
@@ -973,6 +1008,11 @@ both permit either uppercase or lowercase letters to be used as digits.
 By default, integers are read as 32-bit quantities.  With the @samp{h}
 modifier, 16-bit integers are used, and with the @samp{l} modifier,
 64-bit integers are used.
+
+The @samp{%e}, @samp{%f}, @samp{%g}, @samp{%E}, and @samp{%G} conversions
+match optionally signed floating-point numbers.  All five conversion
+specifications behave identically, and will read in numerical values of
+any floating point display style.
 
 @node String Input Conversions
 @subsection String Input Conversions

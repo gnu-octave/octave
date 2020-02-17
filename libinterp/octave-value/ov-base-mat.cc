@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // This file should not include config.h.  It is only included in other
 // C++ source files that should have included config.h before including
@@ -149,6 +151,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
       switch (n_idx)
         {
         case 0:
+          warn_empty_index (type_name ());
           retval = matrix;
           break;
 
@@ -210,6 +213,13 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
   return retval;
 }
 
+/*
+%% This behavior is required for Matlab compatibility.
+%!test
+%! a = [1, 2; 3, 4];
+%! assert (a(), a);
+*/
+
 template <typename MT>
 void
 octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
@@ -261,9 +271,11 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
           break;
         }
     }
-  catch (const octave::index_exception& e)
+  catch (octave::index_exception& e)
     {
-      octave::err_invalid_index (e.idx (), n_idx, k+1);
+      // Rethrow to allow more info to be reported later.
+      e.set_pos_if_unset (n_idx, k+1);
+      throw;
     }
 
   // Clear cache.
@@ -365,9 +377,11 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
           break;
         }
     }
-  catch (const octave::index_exception& e)
+  catch (octave::index_exception& e)
     {
-      octave::err_invalid_index (e.idx (), n_idx, k+1);
+      // Rethrow to allow more info to be reported later.
+      e.set_pos_if_unset (n_idx, k+1);
+      throw;
     }
 
   // Clear cache.

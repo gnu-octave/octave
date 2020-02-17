@@ -1,5 +1,9 @@
-## Copyright (C) 2012-2019 Rik Wehbring
-## Parts Copyright (C) 2012-2019 Philip Nienhuis
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} usejava (@var{feature})
@@ -45,9 +51,6 @@
 ## Java Interface and Java is installed.
 ## @seealso{javachk}
 ## @end deftypefn
-
-## Author: Rik Wehbring
-## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 
 function retval = usejava (feature)
 

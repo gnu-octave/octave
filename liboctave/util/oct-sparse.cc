@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2017-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2017-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -31,19 +34,19 @@ along with Octave; see the file COPYING.  If not, see
      || defined (HAVE_CHOLMOD) || defined (HAVE_COLAMD)         \
      || defined (HAVE_CXSPARSE) || defined (HAVE_UMFPACK))
 
-static inline void
-check_suitesparse_integer_size (void)
-{
-  // FIXME: maybe it would be better to make this a configure check and
-  // disable suitesparse if it fails?
-
-  if (sizeof (octave::suitesparse_integer) != sizeof (octave_idx_type))
-    (*current_liboctave_error_handler)
-      ("size of suitesparse integer does not match octave_idx_type!");
-}
-
 namespace octave
 {
+  static inline void
+  check_suitesparse_integer_size (void)
+  {
+    // FIXME: maybe it would be better to make this a configure check and
+    // disable suitesparse if it fails?
+
+    if (sizeof (suitesparse_integer) != sizeof (octave_idx_type))
+      (*current_liboctave_error_handler)
+        ("size of suitesparse integer does not match octave_idx_type!");
+  }
+
   suitesparse_integer *
   to_suitesparse_intptr (octave_idx_type *i)
   {

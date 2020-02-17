@@ -1,84 +1,88 @@
-/*
-Copyright (C) 2003-2019 David Bateman
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-Code stolen in large part from Python's, listobject.c, which itself had
-no license header.  However, thanks to Tim Peters for the parts of the
-code I ripped-off.
-
-As required in the Python license the short description of the changes
-made are
-
-* convert the sorting code in listobject.cc into a generic class,
-  replacing PyObject* with the type of the class T.
-
-The Python license is
-
-  PSF LICENSE AGREEMENT FOR PYTHON 2.3
-  --------------------------------------
-
-  1. This LICENSE AGREEMENT is between the Python Software Foundation
-  ("PSF"), and the Individual or Organization ("Licensee") accessing and
-  otherwise using Python 2.3 software in source or binary form and its
-  associated documentation.
-
-  2. Subject to the terms and conditions of this License Agreement, PSF
-  hereby grants Licensee a nonexclusive, royalty-free, world-wide
-  license to reproduce, analyze, test, perform and/or display publicly,
-  prepare derivative works, distribute, and otherwise use Python 2.3
-  alone or in any derivative version, provided, however, that PSF's
-  License Agreement and PSF's notice of copyright, i.e., "Copyright (c)
-  2001, 2002, 2003 Python Software Foundation; All Rights Reserved" are
-  retained in Python 2.3 alone or in any derivative version prepared by
-  Licensee.
-
-  3. In the event Licensee prepares a derivative work that is based on
-  or incorporates Python 2.3 or any part thereof, and wants to make
-  the derivative work available to others as provided herein, then
-  Licensee hereby agrees to include in any such work a brief summary of
-  the changes made to Python 2.3.
-
-  4. PSF is making Python 2.3 available to Licensee on an "AS IS"
-  basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
-  IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
-  DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
-  FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 2.3 WILL NOT
-  INFRINGE ANY THIRD PARTY RIGHTS.
-
-  5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
-  2.3 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
-  A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 2.3,
-  OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-
-  6. This License Agreement will automatically terminate upon a material
-  breach of its terms and conditions.
-
-  7. Nothing in this License Agreement shall be deemed to create any
-  relationship of agency, partnership, or joint venture between PSF and
-  Licensee.  This License Agreement does not grant permission to use PSF
-  trademarks or trade name in a trademark sense to endorse or promote
-  products or services of Licensee, or any third party.
-
-  8. By copying, installing or otherwise using Python 2.3, Licensee
-  agrees to be bound by the terms and conditions of this License
-  Agreement.
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+// Code stolen in large part from Python's, listobject.c, which itself had
+// no license header.  However, thanks to Tim Peters for the parts of the
+// code I ripped-off.
+//
+// As required in the Python license the short description of the changes
+// made are
+//
+// * convert the sorting code in listobject.cc into a generic class,
+//   replacing PyObject* with the type of the class T.
+//
+// The Python license is
+//
+//   PSF LICENSE AGREEMENT FOR PYTHON 2.3
+//   --------------------------------------
+//
+//   1. This LICENSE AGREEMENT is between the Python Software Foundation
+//   ("PSF"), and the Individual or Organization ("Licensee") accessing and
+//   otherwise using Python 2.3 software in source or binary form and its
+//   associated documentation.
+//
+//   2. Subject to the terms and conditions of this License Agreement, PSF
+//   hereby grants Licensee a nonexclusive, royalty-free, world-wide
+//   license to reproduce, analyze, test, perform and/or display publicly,
+//   prepare derivative works, distribute, and otherwise use Python 2.3
+//   alone or in any derivative version, provided, however, that PSF's
+//   License Agreement and PSF's notice of copyright, i.e., "Copyright (c)
+//   2001, 2002, 2003 Python Software Foundation; All Rights Reserved" are
+//   retained in Python 2.3 alone or in any derivative version prepared by
+//   Licensee.
+//
+//   3. In the event Licensee prepares a derivative work that is based on
+//   or incorporates Python 2.3 or any part thereof, and wants to make
+//   the derivative work available to others as provided herein, then
+//   Licensee hereby agrees to include in any such work a brief summary of
+//   the changes made to Python 2.3.
+//
+//   4. PSF is making Python 2.3 available to Licensee on an "AS IS"
+//   basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+//   IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
+//   DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+//   FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 2.3 WILL NOT
+//   INFRINGE ANY THIRD PARTY RIGHTS.
+//
+//   5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+//   2.3 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
+//   A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 2.3,
+//   OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+//
+//   6. This License Agreement will automatically terminate upon a material
+//   breach of its terms and conditions.
+//
+//   7. Nothing in this License Agreement shall be deemed to create any
+//   relationship of agency, partnership, or joint venture between PSF and
+//   Licensee.  This License Agreement does not grant permission to use PSF
+//   trademarks or trade name in a trademark sense to endorse or promote
+//   products or services of Licensee, or any third party.
+//
+//   8. By copying, installing or otherwise using Python 2.3, Licensee
+//   agrees to be bound by the terms and conditions of this License
+//   Agreement.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_oct_sort_h)
 #define octave_oct_sort_h 1
@@ -111,7 +115,7 @@ public:
 
   ~octave_sort (void);
 
-  void set_compare (compare_fcn_type comp) { compare = comp; }
+  void set_compare (compare_fcn_type comp) { m_compare = comp; }
 
   void set_compare (sortmode mode);
 
@@ -123,10 +127,6 @@ public:
 
   // Check whether an array is sorted.
   bool issorted (const T *data, octave_idx_type nel);
-
-  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
-  bool is_sorted (const T *data, octave_idx_type nel)
-  { return issorted (data, nel); }
 
   // Sort a matrix by rows, return a permutation
   // vector.
@@ -189,13 +189,13 @@ private:
 
   struct s_slice
   {
-    octave_idx_type base, len;
+    octave_idx_type m_base, m_len;
   };
 
   struct MergeState
   {
     MergeState (void)
-      : min_gallop (), a (nullptr), ia (nullptr), alloced (0), n (0)
+      : m_min_gallop (), m_a (nullptr), m_ia (nullptr), m_alloced (0), m_n (0)
     { reset (); }
 
     // No copying!
@@ -205,10 +205,10 @@ private:
     MergeState& operator = (const MergeState&) = delete;
 
     ~MergeState (void)
-    { delete [] a; delete [] ia; }
+    { delete [] m_a; delete [] m_ia; }
 
     void reset (void)
-    { min_gallop = MIN_GALLOP; n = 0; }
+    { m_min_gallop = MIN_GALLOP; m_n = 0; }
 
     void getmem (octave_idx_type need);
 
@@ -218,13 +218,13 @@ private:
     // initialized to MIN_GALLOP.  merge_lo and merge_hi tend to nudge
     // it higher for random data, and lower for highly structured
     // data.
-    octave_idx_type min_gallop;
+    octave_idx_type m_min_gallop;
 
     // 'a' is temp storage to help with merges.  It contains room for
     // alloced entries.
-    T *a;               // may point to temparray below
-    octave_idx_type *ia;
-    octave_idx_type alloced;
+    T *m_a;               // may point to temparray below
+    octave_idx_type *m_ia;
+    octave_idx_type m_alloced;
 
     // A stack of n pending runs yet to be merged.  Run #i starts at
     // address base[i] and extends for len[i] elements.  It's always
@@ -234,13 +234,13 @@ private:
     //
     // so we could cut the storage for this, but it's a minor amount,
     // and keeping all the info explicit simplifies the code.
-    octave_idx_type n;
-    struct s_slice pending[MAX_MERGE_PENDING];
+    octave_idx_type m_n;
+    struct s_slice m_pending[MAX_MERGE_PENDING];
   };
 
-  compare_fcn_type compare;
+  compare_fcn_type m_compare;
 
-  MergeState *ms;
+  MergeState *m_ms;
 
   template <typename Comp>
   void binarysort (T *data, octave_idx_type nel,
@@ -312,11 +312,6 @@ private:
   bool issorted (const T *data, octave_idx_type nel, Comp comp);
 
   template <typename Comp>
-  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
-  bool is_sorted (const T *data, octave_idx_type nel, Comp comp)
-  { return issorted (data, nel, comp); }
-
-  template <typename Comp>
   void sort_rows (const T *data, octave_idx_type *idx,
                   octave_idx_type rows, octave_idx_type cols,
                   Comp comp);
@@ -350,7 +345,7 @@ class
 vec_index
 {
 public:
-  T vec;
-  octave_idx_type indx;
+  T m_vec;
+  octave_idx_type m_indx;
 };
 #endif

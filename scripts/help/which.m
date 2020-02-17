@@ -1,4 +1,9 @@
-## Copyright (C) 2009-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2009-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} which name @dots{}
@@ -37,7 +44,7 @@ function varargout = which (varargin)
   ## functions in name resolution.
   for i = 1:nargin
     m(i).is_variable = evalin ("caller",
-                               ['exist ("' undo_string_escapes(m(i).name) '", "var")'], false);
+                               ['exist ("' undo_string_escapes(m(i).name) '", "var")'], "");
     if (m(i).is_variable)
       m(i).file = "variable";
     endif
@@ -84,8 +91,8 @@ endfunction
 %! str = which ("ls");
 %! assert (str(end-17:end), fullfile ("miscellaneous", "ls.m"));
 %!test
-%! str = which ("amd");
-%! assert (str(end-6:end), "amd.oct");
+%! str = which ("fftw");
+%! assert (str(end-7:end), "fftw.oct");
 %!test
 %! str = which ("inputParser");
 %! assert (str, "built-in function");
@@ -97,14 +104,14 @@ endfunction
 %!assert (which ("__NO_SUCH_NAME__"), "")
 
 %!test
-%! str = which ("amd");
-%! assert (str(end-6:end), "amd.oct");
-%! amd = 12;
-%! str = which ("amd");
+%! str = which ("fftw");
+%! assert (str(end-7:end), "fftw.oct");
+%! fftw = 12;
+%! str = which ("fftw");
 %! assert (str, "variable");
-%! clear amd;
-%! str = which ("amd");
-%! assert (str(end-6:end), "amd.oct");
+%! clear fftw;
+%! str = which ("fftw");
+%! assert (str(end-7:end), "fftw.oct");
 
 %!error which ()
 %!error which (1)

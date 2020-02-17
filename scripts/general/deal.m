@@ -1,4 +1,9 @@
-## Copyright (C) 1998-2019 Ariel Tankus
+########################################################################
+##
+## Copyright (C) 1998-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a})
@@ -76,11 +83,6 @@
 ## @end example
 ## @seealso{cell2struct, struct2cell, repmat}
 ## @end deftypefn
-
-## Author: Ariel Tankus
-## Author: Paul Kienzle and Etienne Grossman
-## Created: 13.11.98
-## Adapted-by: jwe
 
 function [varargout] = deal (varargin)
 

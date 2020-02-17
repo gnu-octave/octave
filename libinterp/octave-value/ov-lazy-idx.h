@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2010-2019 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2010-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ov_lazy_idx_h)
 #define octave_ov_lazy_idx_h 1
@@ -74,6 +77,11 @@ public:
   bool is_double_type (void) const { return true; }
 
   bool isfloat (void) const { return true; }
+
+  // We don't need to override all three forms of subsref.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_value::subsref;
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
@@ -177,6 +185,11 @@ public:
   FORWARD_VALUE_QUERY1 (SparseMatrix, sparse_matrix_value)
   FORWARD_VALUE_QUERY1 (SparseComplexMatrix, sparse_complex_matrix_value)
 
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_value::diag;
+
   octave_value diag (octave_idx_type k = 0) const
   {
     return make_value ().diag (k);
@@ -209,7 +222,7 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& save_as_floats);
+  bool save_binary (std::ostream& os, bool save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format fmt);

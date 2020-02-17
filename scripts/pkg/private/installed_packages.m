@@ -1,5 +1,9 @@
-## Copyright (C) 2005-2019 Søren Hauberg
-## Copyright (C) 2010 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{out1}, @var{out2}] =} installed_packages (@var{local_list}, @var{global_list}, @var{pkgname})
@@ -32,6 +38,11 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
   end_try_catch
   try
     global_packages = load (global_list).global_packages;
+    global_packages = expand_rel_paths (global_packages);
+    if (ispc)
+      ## On Windows ensure 8.3 style paths are turned into LFN paths
+      global_packages = standardize_paths (global_packages);
+    endif
   catch
     global_packages = {};
   end_try_catch
@@ -47,7 +58,10 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
 
   ## Check whether info on a particular package was requested
   if (! isempty (pkgname))
-    idx = find (strcmp (pkgname{1}, installed_names));
+    idx = [];
+    for i = 1 : numel (pkgname)
+      idx = [idx, find(strcmp (pkgname{i}, installed_names))];
+    endfor
     if (isempty (idx))
       installed_names = {};
       installed_pkgs_lst = {};
@@ -59,23 +73,23 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
 
   ## Now check if the package is loaded.
   ## FIXME: Couldn't dir_in_loadpath() be used here?
-  tmppath = strrep (path (), '\', '/');
+  tmppath = path ();
   for i = 1:numel (installed_pkgs_lst)
-    if (strfind (tmppath, strrep (installed_pkgs_lst{i}.dir, '\', '/')))
+    if (strfind (tmppath, installed_pkgs_lst{i}.dir))
       installed_pkgs_lst{i}.loaded = true;
     else
       installed_pkgs_lst{i}.loaded = false;
     endif
   endfor
   for i = 1:numel (local_packages)
-    if (strfind (tmppath, strrep (local_packages{i}.dir, '\', '/')))
+    if (strfind (tmppath, local_packages{i}.dir))
       local_packages{i}.loaded = true;
     else
       local_packages{i}.loaded = false;
     endif
   endfor
   for i = 1:numel (global_packages)
-    if (strfind (tmppath, strrep (global_packages{i}.dir, '\', '/')))
+    if (strfind (tmppath, global_packages{i}.dir))
       global_packages{i}.loaded = true;
     else
       global_packages{i}.loaded = false;

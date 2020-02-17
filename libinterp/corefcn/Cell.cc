@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1999-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1999-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -166,6 +168,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
       switch (n)
         {
         case 0:
+          warn_empty_index ("cell array");
           retval = *this;
           break;
 
@@ -211,9 +214,11 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 }
 
 /*
-%!test
+%% This behavior is required for Matlab compatibility.
+%!shared a
 %! a = {"foo", "bar"};
-%! assert (a(), a);
+%!assert (a(), a);
+%!error <invalid empty index expression> a{}
 */
 
 void

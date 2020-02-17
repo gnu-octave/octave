@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 /* The C++ standard is evolving to allow attribute hints in a
    compiler-independent manner.  In C++ 2011 support for noreturn was
@@ -56,6 +59,12 @@ along with Octave; see the file COPYING.  If not, see
    * either gnu_printf or ms_printf depending on where we are compiling
    * to avoid warnings on format specifiers that are legal.
    * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1331349  */
+#  if defined (__cplusplus)
+#    include <cstdio>
+#  else
+#    include <stdio.h>
+#  endif
+
 #  define OCTAVE_FORMAT_PRINTF(stringIndex, firstToCheck) \
      __attribute__ ((format (__MINGW_PRINTF_FORMAT, stringIndex, firstToCheck)))
 
@@ -122,6 +131,11 @@ typedef unsigned long ino_t;
 
 #if defined (__APPLE__) && defined (__MACH__)
 #  define OCTAVE_USE_OS_X_API 1
+#endif
+
+/* Silence deprecated API warning from Apple OS > 10.14 */
+#if defined (__APPLE__) && defined (__MACH__) && defined (HAVE_OPENGL)
+#  define GL_SILENCE_DEPRECATION 1
 #endif
 
 /* Define to 1 if we expect to have <windows.h>, Sleep, etc. */
@@ -198,10 +212,6 @@ typedef unsigned long ino_t;
 
 /* Backward compatibility */
 
-#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT)
-#  define USE_ATOMIC_REFCOUNT 1
-#endif
-
 #if defined (OCTAVE_ENABLE_64)
 #  define USE_64_BIT_IDX_T 1
 #endif
@@ -217,9 +227,9 @@ typedef unsigned long ino_t;
 #endif
 
 #if defined (__cplusplus)
-#  include <cstdint>
+#  include <cinttypes>
 #else
-#  include <stdint.h>
+#  include <inttypes.h>
 #endif
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;

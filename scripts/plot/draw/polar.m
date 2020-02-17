@@ -1,4 +1,9 @@
-## Copyright (C) 1993-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1993-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} polar (@var{theta}, @var{rho})
@@ -26,7 +33,7 @@
 ## Create a 2-D plot from polar coordinates @var{theta} and @var{rho}.
 ##
 ## The input @var{theta} is assumed to be radians and is converted to degrees
-## for plotting. If you have degrees then you must convert
+## for plotting.  If you have degrees then you must convert
 ## (@pxref{XREFcart2pol,,cart2pol}) to radians before passing the data to this
 ## function.
 ##
@@ -51,8 +58,6 @@
 ## angular (theta) direction specified in degrees, i.e., in the range 0--359.
 ## @seealso{rose, compass, plot, cart2pol}
 ## @end deftypefn
-
-## Author: jwe
 
 function h = polar (varargin)
 
@@ -329,7 +334,7 @@ function __update_polar_grid__ (hax, ~, hg)
   rtick = unique (get (hax, "rtick")(:)');
   rtick = rtick(rtick > 0);
   if (isempty (rtick))
-    rtick = [0.5 1];
+    rtick = [0.5, 1];
   endif
 
   ttick = unique (get (hax, "ttick")(:)');
@@ -340,7 +345,7 @@ function __update_polar_grid__ (hax, ~, hg)
 
   lprops = {"linestyle", get(hax, "gridlinestyle"), ...
             "linewidth", get(hax, "linewidth"), ...
-            "color", get(hax, "xcolor")};
+            "color", min(5.8167 * get(hax, "xcolor"), 1)};
   ## "fontunits" should be first because it affects "fontsize" property.
   tprops(1:2:12) = {"fontunits", "fontangle", "fontname", "fontsize", ...
                     "fontweight", "ticklabelinterpreter"};
@@ -358,30 +363,31 @@ function __update_polar_grid__ (hax, ~, hg)
   patch (x(:,end), y(:,end), -ones (circle_points, 1),
          get (hax, "color"), "parent", hg);
 
-  ## Plot dotted circles
+  ## Plot grid circles
   line (x(:,1:end-1), y(:,1:end-1), lprops{:}, "parent", hg);
 
-  ## Outer circle is drawn solid
+  ## Outer circle (axes "box") is always drawn solid
   line (x(:,end), y(:,end), lprops{:}, "linestyle", "-", "parent", hg);
 
   ## Add radial labels
-  [x, y] = pol2cart (0.42 * pi, rtick);
+  ## Labels are arranged along a radius with an angle of 75 degrees.
+  ## 2% addition puts a small visual gap between grid circle and label.
+  [x, y] = pol2cart (0.42 * pi, rtick + (.02 * max (rtick(:))));
   text (x, y, num2cell (rtick), "verticalalignment", "bottom", tprops{:},
         "parent", hg);
 
-  ## add radial lines
-  s = rtick(end) * sin (ttick * pi / 180);
-  c = rtick(end) * cos (ttick * pi / 180);
-  x = [zeros(1, numel (ttick)); c];
-  y = [zeros(1, numel (ttick)); s];
+  ## Add radial lines
+  [x, y] = pol2cart (deg2rad (ttick), rtick(end));
+  x = [zeros(1, numel (ttick)); x];
+  y = [zeros(1, numel (ttick)); y];
   line (x, y, "linestyle", ":", lprops{:}, "parent", hg);
 
-  ## add angular labels
+  ## Add angular labels
   tticklabel = num2cell (ttick);
-  ## FIXME: This tm factor does not work as fontsize increases
-  tm = 1.08;
-  text (tm * c, tm * s, tticklabel, "horizontalalignment", "center",
-        tprops{:}, "parent", hg);
+  ## FIXME: The 1.08 factor does not work as fontsize increases
+  [x, y] = pol2cart (deg2rad (ttick), 1.08 * rtick(end));
+  text (x, y, tticklabel, "horizontalalignment", "center", tprops{:},
+        "parent", hg);
 
   lim = 1.1 * rtick(end);
   set (hax, "xlim", [-lim, lim], "ylim", [-lim, lim]);

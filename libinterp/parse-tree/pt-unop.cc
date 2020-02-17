@@ -1,30 +1,35 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
+#include "interpreter.h"
 #include "ov.h"
+#include "profiler.h"
 #include "pt-unop.h"
 
 namespace octave
@@ -51,6 +56,53 @@ namespace octave
     return new_pe;
   }
 
+  octave_value
+  tree_prefix_expression::evaluate (tree_evaluator& tw, int)
+  {
+    octave_value val;
+
+    if (m_op)
+      {
+        if (m_etype == octave_value::op_incr
+            || m_etype == octave_value::op_decr)
+          {
+            octave_lvalue op_ref = m_op->lvalue (tw);
+
+            profiler::enter<tree_prefix_expression>
+              block (tw.get_profiler (), *this);
+
+            op_ref.do_unary_op (m_etype);
+
+            val = op_ref.value ();
+          }
+        else
+          {
+            octave_value op_val = m_op->evaluate (tw);
+
+            if (op_val.is_defined ())
+              {
+                profiler::enter<tree_prefix_expression>
+                  block (tw.get_profiler (), *this);
+
+                // Attempt to do the operation in-place if it is unshared
+                // (a temporary expression).
+                if (op_val.get_count () == 1)
+                  val = op_val.do_non_const_unary_op (m_etype);
+                else
+                  {
+                    interpreter& interp = tw.get_interpreter ();
+
+                    type_info& ti = interp.get_type_info ();
+
+                    val = ::do_unary_op (ti, m_etype, op_val);
+                  }
+              }
+          }
+      }
+
+    return val;
+  }
+
   // Postfix expressions.
 
   tree_expression *
@@ -63,5 +115,45 @@ namespace octave
     new_pe->copy_base (*this);
 
     return new_pe;
+  }
+
+  octave_value
+  tree_postfix_expression::evaluate (tree_evaluator& tw, int)
+  {
+    octave_value val;
+
+    if (m_op)
+      {
+        if (m_etype == octave_value::op_incr
+            || m_etype == octave_value::op_decr)
+          {
+            octave_lvalue ref = m_op->lvalue (tw);
+
+            val = ref.value ();
+
+            profiler::enter<tree_postfix_expression>
+              block (tw.get_profiler (), *this);
+
+            ref.do_unary_op (m_etype);
+          }
+        else
+          {
+            octave_value op_val = m_op->evaluate (tw);
+
+            if (op_val.is_defined ())
+              {
+                profiler::enter<tree_postfix_expression>
+                  block (tw.get_profiler (), *this);
+
+                interpreter& interp = tw.get_interpreter ();
+
+                type_info& ti = interp.get_type_info ();
+
+                val = ::do_unary_op (ti, m_etype, op_val);
+              }
+          }
+      }
+
+    return val;
   }
 }

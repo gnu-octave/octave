@@ -1,51 +1,51 @@
-/*
-
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_file_editor_tab_h)
 #define octave_file_editor_tab_h 1
 
 #include <QAbstractButton>
-#include <QWidget>
 #include <QCloseEvent>
 #include <QDateTime>
-#include <QFileSystemWatcher>
-#include <QSettings>
 #include <QFileInfo>
-#include <Qsci/qsciapis.h>
-#include <QStatusBar>
+#include <QFileSystemWatcher>
 #include <QLabel>
+#include <QStatusBar>
+#include <QWidget>
+#include <Qsci/qsciapis.h>
 
-#include "find-dialog.h"
+#include "gui-settings.h"
+#include "marker.h"
 #include "octave-qscintilla.h"
-#include "octave-cmd.h"
-#include "builtin-defun-decls.h"
-
-#include "marker.h" /* Only needed for typedef of "QIntList", which may be
-                       typedefed elsewhere.  Could use common location. */
+#include "qt-interpreter-events.h"
 
 class octave_value_list;
 
 namespace octave
 {
+  class base_qobject;
   class file_editor;
 
   class file_editor_tab : public QWidget
@@ -54,19 +54,76 @@ namespace octave
 
   public:
 
-    file_editor_tab (const QString& directory = "");
+    file_editor_tab (base_qobject& oct_qobj, const QString& directory = "");
 
     ~file_editor_tab (void);
 
-    octave_qscintilla * qsci_edit_area (void) { return _edit_area; }
+    octave_qscintilla * qsci_edit_area (void) { return m_edit_area; }
 
     // Will initiate close if associated with the identifier tag.
     bool conditional_close (void);
 
-    static void reset_cancel (void) {_cancelled = false;}
-    static bool was_cancelled (void) {return _cancelled;}
-
     void update_breakpoints ();
+
+    QString file_name (void) const { return m_file_name; }
+    QString encoding (void) const { return m_encoding; }
+
+  signals:
+
+    void tab_ready_to_close (void);
+    void file_name_changed (const QString& fileName,
+                            const QString& toolTip,
+                            bool modified);
+    void editor_state_changed (bool copy_available, bool is_octave_file);
+    void set_focus_editor_signal (QWidget *);
+    void edit_area_changed (octave_qscintilla *edit_area);
+    void tab_remove_request (void);
+    void mru_add_file (const QString& file_name, const QString& encoding);
+    void editor_check_conflict_save (const QString& saveFileName,
+                                     bool remove_on_success);
+    void run_file_signal (const QFileInfo& info);
+    void request_open_file (const QString&, const QString& = QString ());
+    void edit_mfile_request (const QString&, const QString&,
+                             const QString&, int);
+
+    void update_breakpoints_signal (const octave_value_list& args);
+
+    void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
+    void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
+    void remove_all_breakpoints (void);
+    void find_translated_line_number (int original_linenr,
+                                      int& translated_linenr, marker*&);
+    void find_linenr_just_before (int linenr, int& original_linenr,
+                                  int& editor_linenr);
+    void report_marker_linenr (QIntList& lines, QStringList& conditions);
+    void remove_position_via_debugger_linenr (int debugger_linenr);
+    void remove_all_positions (void);
+
+    void debug_quit_signal (void);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
+
+    void maybe_remove_next (int remove_line);
+
+    void dbstop_if (const QString& prompt, int line, const QString& cond);
+    void request_add_breakpoint (int line, const QString& cond);
+    void request_add_octave_apis (const QStringList&);
+    void api_entries_added (void);
+
+    void do_save_file_signal (const QString& file_to_save,
+                              bool remove_on_success, bool restore_breakpoints);
+
+    void confirm_dbquit_and_save_signal (const QString& file_to_save,
+                                         const QString& base_name,
+                                         bool remove_on_success,
+                                         bool restore_breakpoints);
+
+    // FIXME: The following is similar to "process_octave_code" signal.
+    // However, currently that signal is connected to something that simply
+    // focuses a window and does not actually communicate with Octave.
+    //
+    // void evaluate_octave_command (const QString& command);
 
   public slots:
 
@@ -76,25 +133,21 @@ namespace octave
                                 Qt::KeyboardModifiers state);
 
     // Tells the editor tab to react on changed settings.
-    void notice_settings (const QSettings *settings, bool init = false);
+    void notice_settings (const gui_settings *settings, bool init = false);
 
     // Change to a different editor tab by identifier tag.
     void change_editor_state (const QWidget *ID);
-
-    // Simply transmit filename.
-    void file_name_query (const QWidget *ID);
 
     void set_focus (const QWidget *ID);
     void set_current_directory (const QString& dir);
     void context_help (const QWidget *ID, bool);
     void context_edit (const QWidget *ID);
-    void check_modified_file (void);
     void save_file (const QWidget *ID);
     void save_file (const QWidget *ID, const QString& fileName,
                     bool remove_on_success);
     void save_file_as (const QWidget *ID);
     void print_file (const QWidget *ID);
-    void run_file (const QWidget *ID);
+    void run_file (const QWidget *ID, bool step_into = false);
     void context_run (const QWidget *ID);
     void toggle_bookmark (const QWidget *ID);
     void next_bookmark (const QWidget *ID);
@@ -120,9 +173,6 @@ namespace octave
     void zoom_out (const QWidget *ID);
     void zoom_normal (const QWidget *ID);
 
-    void find (const QWidget *ID, QList<QAction *>);
-    void find_next (const QWidget *ID);
-    void find_previous (const QWidget *ID);
     void goto_line (const QWidget *ID, int line = -1);
     void move_match_brace (const QWidget *ID, bool select);
     void show_auto_completion (const QWidget *ID);
@@ -152,48 +202,6 @@ namespace octave
 
     void update_breakpoints_handler (const octave_value_list& argout);
 
-  signals:
-
-    void file_name_changed (const QString& fileName, const QString& toolTip);
-    void editor_state_changed (bool copy_available, bool is_octave_file);
-    void set_focus_editor_signal (QWidget *);
-    void tab_remove_request (void);
-    void add_filename_to_list (const QString&, const QString&, QWidget *);
-    void mru_add_file (const QString& file_name, const QString& encoding);
-    void editor_check_conflict_save (const QString& saveFileName,
-                                     bool remove_on_success);
-    void run_file_signal (const QFileInfo& info);
-    void request_open_file (const QString&, const QString& = QString ());
-    void edit_mfile_request (const QString&, const QString&,
-                             const QString&, int);
-
-    void request_find_next (void);
-    void request_find_previous (void);
-
-    void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
-    void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
-    void remove_all_breakpoints (void);
-    void find_translated_line_number (int original_linenr,
-                                      int& translated_linenr, marker*&);
-    void find_linenr_just_before (int linenr, int& original_linenr,
-                                  int& editor_linenr);
-    void report_marker_linenr (QIntList& lines, QStringList& conditions);
-    void remove_position_via_debugger_linenr (int debugger_linenr);
-    void remove_all_positions (void);
-    void request_queue_cmd (octave_cmd *);
-
-    // FIXME: The following is similar to "process_octave_code"
-    // signal.  However, currently that signal is connected to
-    // something that simply focuses a window and not actually
-    // communicate with Octave.
-    //
-    // void evaluate_octave_command (const QString& command);
-
-  protected:
-
-    void closeEvent (QCloseEvent *event);
-    void set_file_name (const QString& fileName);
-
   private slots:
 
     // When user closes message box for decoding problems
@@ -205,19 +213,13 @@ namespace octave
     // When user closes message box for resave question.
     void handle_file_resave_answer (int decision);
 
-    // When user closes message box for modified question.
-    void handle_file_modified_answer (int decision);
-
-    // When user closes find_dialog box.
-    void handle_find_dialog_finished (int decision);
-
     // When user closes QFileDialog box.
     void handle_save_file_as_answer (const QString& fileName);
     void handle_save_file_as_answer_close (const QString& fileName);
     void handle_save_file_as_answer_cancel (void);
     void handle_save_as_filter_selected (const QString& filter);
 
-    // When user changes encoding after decoding errors where found
+    // When user changes encoding after decoding errors were found
     void handle_current_enc_changed (const QString& enc);
 
     // When apis preparation has finished and is ready to save
@@ -231,7 +233,28 @@ namespace octave
     void handle_double_click (int p, int l, int modifier);
     void handle_lines_changed (void);
 
+    void handle_remove_next (int remove_line);
+    void handle_dbstop_if (const QString& prompt, int line,
+                           const QString& cond);
+    void handle_add_octave_apis (const QStringList& api_entries);
+    void handle_api_entries_added (void);
+
+    void do_save_file (const QString& file_to_save, bool remove_on_success,
+                       bool restore_breakpoints);
+
+    void confirm_dbquit_and_save (const QString& file_to_save,
+                                  const QString& base_name,
+                                  bool remove_on_success,
+                                  bool restore_breakpoints);
+
+  protected:
+
+    void closeEvent (QCloseEvent *event);
+    void set_file_name (const QString& fileName);
+
   private:
+
+    base_qobject& m_octave_qobj;
 
     struct bp_info
     {
@@ -244,9 +267,9 @@ namespace octave
       std::string condition;
     };
 
+    void add_breakpoint_event (const bp_info& info);
+
     bool valid_file_name (const QString& file = QString ());
-    bool exit_debug_and_clear (const QString& full_name,
-                               const QString& base_name);
     void save_file (const QString& saveFileName, bool remove_on_success = false,
                     bool restore_breakpoints = true);
     void save_file_as (bool remove_on_success = false);
@@ -259,68 +282,71 @@ namespace octave
     void update_lexer_settings (void);
 
     void show_dialog (QDialog *dlg, bool modal);
-    int check_file_modified (void);
+  public:
+    int check_file_modified (bool remove = false);
+  private:
     void do_comment_selected_text (bool comment, bool input_str = false);
     void do_indent_selected_text (bool indent);
     void do_smart_indent_line_or_selected_text (void);
 
-    void add_breakpoint_callback (const bp_info& info);
-    void remove_breakpoint_callback (const bp_info& info);
-    void remove_all_breakpoints_callback (const bp_info& info);
     void check_restore_breakpoints (void);
     void center_current_line (bool always=true);
 
-    void add_octave_apis (octave_value_list key_ovl);
     QString get_function_name (void);
 
     QsciScintilla::EolMode detect_eol_mode (void);
     void update_eol_indicator (void);
 
-    octave_qscintilla *_edit_area;
+    octave_qscintilla *m_edit_area;
 
-    QStatusBar *_status_bar;
-    QLabel *_row_indicator;
-    QLabel *_col_indicator;
-    QLabel *_eol_indicator;
-    QLabel *_enc_indicator;
+    QStatusBar *m_status_bar;
+    QLabel *m_row_indicator;
+    QLabel *m_col_indicator;
+    QLabel *m_eol_indicator;
+    QLabel *m_enc_indicator;
 
-    QsciScintilla::EolMode _save_as_desired_eol;
+    QsciScintilla::EolMode m_save_as_desired_eol;
 
-    QString _file_name;
-    QString _file_name_short;
-    QString _ced;
-    QString _encoding;
-    QString _new_encoding;
+    QString m_file_name;
+    QString m_file_name_short;
+    QString m_ced;
+    QString m_encoding;
+    QString m_new_encoding;
     QDateTime m_last_modified;
 
-    bool _long_title;
-    bool _copy_available;
-    bool _is_octave_file;
-    bool _always_reload_changed_files;
-    bool _smart_indent;
-    int _auto_endif;
+    bool m_long_title;
+    bool m_copy_available;
+    bool m_is_octave_file;
+    bool m_always_reload_changed_files;
+    bool m_smart_indent;
+    int m_auto_endif;
+    int m_ind_char_width;
 
-    QFileSystemWatcher _file_system_watcher;
+    QFileSystemWatcher m_file_system_watcher;
 
-    QIntList _bp_lines;
-    QStringList _bp_conditions;
+    QIntList m_bp_lines;
+    QStringList m_bp_conditions;
 
-    find_dialog *_find_dialog;
-    bool _find_dialog_is_visible;
-    QRect _find_dialog_geometry;
+    QsciAPIs *m_lexer_apis;
+    QString m_prep_apis_path;
+    QString m_prep_apis_file;
 
-    QsciAPIs *_lexer_apis;
-    QString _prep_apis_file;
-
-    static bool _cancelled;
-
-    int _line_break;
-    bool _line_break_comments;
-    int _line;
-    int _col;
-    bool _lines_changed;
-    bool _highlight_all_occurrences;
+    int m_line_break;
+    bool m_line_break_comments;
+    int m_line;
+    int m_col;
+    bool m_lines_changed;
+    bool m_highlight_all_occurrences;
     int m_bp_restore_count;
+
+    struct breakpoint_info
+    {
+      bool remove_next;
+      int remove_line;
+      int do_not_remove_line;
+    };
+
+    breakpoint_info m_breakpoint_info;
   };
 }
 

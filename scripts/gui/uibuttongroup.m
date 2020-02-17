@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Andrew Thornton
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{hui} =} uibuttongroup (@var{property}, @var{value}, @dots{})
@@ -64,8 +71,6 @@
 ## @seealso{figure, uipanel}
 ## @end deftypefn
 
-## Author: zeripath
-
 function hui = uibuttongroup (varargin)
 
   if (nargin == 1 && isgraphics (varargin{1}, "uibuttongroup"))
@@ -81,29 +86,130 @@ endfunction
 
 
 %!demo
-%! f = figure;
-%! gp = uibuttongroup (f, "Position", [ 0 0.5 1 1], ...
+%! f = clf ();
+%! gp = uibuttongroup (f, "position", [0 0.5 1 0.5], ...
 %!                     "selectionchangedfcn", ...
-%!                     @(x, y) display (['Selection Changed: ' get(y.NewValue, 'String')]));
+%!                     @(h, e) fprintf ("Selection changed: %s\n", get (e.NewValue, "string")));
 %! b1 = uicontrol (gp, "style", "radiobutton", ...
-%!                 "string", "Choice 1", ...
-%!                 "Position", [ 10 150 100 50 ]);
+%!                     "string", "Choice 1", ...
+%!                     "units", "normalized", ...
+%!                     "position", [0.01 0.5 0.98 0.5]);
 %! b2 = uicontrol (gp, "style", "radiobutton", ...
-%!                 "string", "Choice 2", ...
-%!                 "Position", [ 10 50 100 30 ]);
+%!                     "string", "Choice 2", ...
+%!                     "units", "normalized", ...
+%!                     "position", [0.01 0 0.98 0.5]);
 %! b3 = uicontrol (f, "style", "radiobutton", ...
-%!                 "string", "Not in the group", ...
-%!                 "Position", [ 10 50 100 50 ]);
-%! disp (['Current selected: ' get(get(gp, 'selectedobject'), 'String')]);
+%!                    "string", "Not in the group", ...
+%!                    "units", "normalized", ...
+%!                    "position", [ 0.01 0 0.98 0.5 ]);
+%! fprintf ("Current selected: %s\n", get (get (gp, "selectedobject"), "string"));
 %! pause (0.5);
-%! disp (['Select None']);
-%! set (gp, 'selectedobject', []);
+%! disp ("Select b2");
+%! set (gp, "selectedobject", b2);
+%! fprintf ("Current selected: %s\n", get (get (gp, "selectedobject"), "string"));
+%! pause (0.5);
+%! disp ("Select None");
+%! set (gp, "selectedobject", []);
 %! pause (0.1);
-%! disp (['Current selected: ' get(get(gp, 'selectedobject'), 'String')]);
-%! pause (0.5);
-%! disp (['Select b1']);
-%! set (gp, 'selectedobject', b1);
-%! disp (['Current selected: ' get(get(gp, 'selectedobject'), 'String')]);
+%! fprintf ("Current selected: %s\n", get (get (gp, "selectedobject"), "string"));
 
-## Uncertain if tests can be performed
-%!assert (1)
+## Test mutual selection logic for radiobuttons
+## FIXME: commented out until a test can be found that doesn't rely on
+##        long values for pause() which still can occasionally fail.
+%!#test <*55230>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   bg = uibuttongroup (hf);
+%!   b1 = uicontrol (bg, "style", "radiobutton", "units", "normalized", ...
+%!                       "position", [0, 0, 1, 0.5]);
+%!   b2 = uicontrol (bg, "style", "radiobutton", "units", "normalized", ...
+%!                       "position", [0, 0.5, 1, 0.5]);
+%!   assert (get (bg, "selectedobject"), b1);
+%!   assert (get (b1, "value"), 1);
+%!   assert (get (b2, "value"), 0);
+%!   ## select radiobutton 2
+%!   set (bg, "selectedobject", b2);
+%!   pause (0.5);
+%!   assert (get (b1, "value"), 0);
+%!   assert (get (b2, "value"), 1);
+%!   ## set radiobutton 1
+%!   set (b1, "value", 1);
+%!   pause (0.5);
+%!   assert (get (bg, "selectedobject"), b1);
+%!   assert (get (b1, "value"), 1);
+%!   assert (get (b2, "value"), 0);
+%!   ## unset all radiobuttons
+%!   set (bg, "selectedobject", []);
+%!   pause (0.5);
+%!   assert (get (b1, "value"), 0);
+%!   assert (get (b2, "value"), 0);
+%!   ## change style of selected button
+%!   set (b1, "value", 1);
+%!   pause (0.5);
+%!   assert (get (bg, "selectedobject"), b1);
+%!   set (b1, "style", "pushbutton");
+%!   pause (0.5);
+%!   assert (get (bg, "selectedobject"), []);
+%!   ## add new button
+%!   b3 = uicontrol (bg, "style", "togglebutton");
+%!   pause (0.5);
+%!   assert (get (bg, "selectedobject"), b3);
+%!   assert (get (b2, "value"), 0);
+%!   assert (get (b3, "value"), 1);
+%!   ## remove selected button
+%!   delete (b3);
+%!   pause (0.5);
+%!   assert (get (bg, "selectedobject"), []);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Test mutual selection logic for togglebuttons
+## FIXME: commented out until a test can be found that doesn't rely on
+##        long values for pause() which still can occasionally fail.
+%!#test <*55230>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   bg = uibuttongroup (hf);
+%!   b1 = uicontrol (bg, "style", "togglebutton", "units", "normalized", ...
+%!                       "position", [0, 0, 1, 0.5]);
+%!   b2 = uicontrol (bg, "style", "togglebutton", "units", "normalized", ...
+%!                       "position", [0, 0.5, 1, 0.5]);
+%!   assert (get (bg, "selectedobject"), b1);
+%!   assert (get (b1, "value"), 1);
+%!   assert (get (b2, "value"), 0);
+%!   ## select togglebutton 2
+%!   set (bg, "selectedobject", b2);
+%!   pause (0.5);
+%!   assert (get (b1, "value"), 0);
+%!   assert (get (b2, "value"), 1);
+%!   ## set togglebutton 1
+%!   set (b1, "value", 1);
+%!   pause (0.5);
+%!   assert (get (bg, "selectedobject"), b1);
+%!   assert (get (b1, "value"), 1);
+%!   assert (get (b2, "value"), 0);
+%!   ## unset all togglebuttons
+%!   set (bg, "selectedobject", []);
+%!   pause (0.5);
+%!   assert (get (b1, "value"), 0);
+%!   assert (get (b2, "value"), 0);
+%!   ## change style of selected button
+%!   set (b1, "value", 1);
+%!   pause (0.5);
+%!   assert (get (bg, "selectedobject"), b1);
+%!   set (b1, "style", "pushbutton");
+%!   assert (get (bg, "selectedobject"), []);
+%!   ## add new button
+%!   b3 = uicontrol (bg, "style", "togglebutton");
+%!   pause (0.5);
+%!   assert (get (bg, "selectedobject"), b3);
+%!   assert (get (b2, "value"), 0);
+%!   assert (get (b3, "value"), 1);
+%!   ## remove selected button
+%!   delete (b3);
+%!   pause (0.5);
+%!   assert (get (bg, "selectedobject"), []);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

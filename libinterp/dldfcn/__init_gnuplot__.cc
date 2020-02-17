@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2007-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2007-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 /*
 
@@ -52,13 +55,11 @@ To initialize:
 
 // PKG_ADD: if (__have_gnuplot__ ()) register_graphics_toolkit ("gnuplot"); endif
 
-static bool toolkit_loaded = false;
-
-class gnuplot_graphics_toolkit : public base_graphics_toolkit
+class gnuplot_graphics_toolkit : public octave::base_graphics_toolkit
 {
 public:
   gnuplot_graphics_toolkit (octave::interpreter& interp)
-    : base_graphics_toolkit ("gnuplot"), m_interpreter (interp) { }
+    : octave::base_graphics_toolkit ("gnuplot"), m_interpreter (interp) { }
 
   ~gnuplot_graphics_toolkit (void) = default;
 
@@ -73,8 +74,8 @@ public:
   {
     if (go.isa ("figure"))
       {
-        const figure::properties& props =
-          dynamic_cast<const figure::properties&> (go.get_properties ());
+        const figure::properties& props
+          = dynamic_cast<const figure::properties&> (go.get_properties ());
 
         send_quit (props.get___plot_stream__ ());
       }
@@ -86,8 +87,8 @@ public:
       {
         graphics_object obj (go);
 
-        figure::properties& props =
-          dynamic_cast<figure::properties&> (obj.get_properties ());
+        figure::properties& props
+          = dynamic_cast<figure::properties&> (obj.get_properties ());
 
         switch (id)
           {
@@ -147,12 +148,8 @@ public:
 
   void close (void)
   {
-    if (toolkit_loaded)
-      {
-        m_interpreter.munlock ("__init_gnuplot__");
-
-        toolkit_loaded = false;
-      }
+    if (m_interpreter.mislocked ("__init_gnuplot__"))
+      m_interpreter.munlock ("__init_gnuplot__");
   }
 
 private:
@@ -231,16 +228,14 @@ Undocumented internal function.
 {
   if (! have_gnuplot_binary ())
     error ("__init_gnuplot__: the gnuplot program is not available, see 'gnuplot_binary'");
-  else if (! toolkit_loaded)
+  else if (! interp.mislocked ("__init_gnuplot__"))
     {
-      interp.mlock ();
-
       octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
-      graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
+      octave::graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
       gtk_mgr.load_toolkit (tk);
 
-      toolkit_loaded = true;
+      interp.mlock ();
     }
 
   return octave_value_list ();

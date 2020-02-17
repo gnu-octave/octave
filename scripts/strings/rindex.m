@@ -1,4 +1,9 @@
-## Copyright (C) 1996-2019 Kurt Hornik
+########################################################################
+##
+## Copyright (C) 1996-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} rindex (@var{s}, @var{t})
@@ -38,10 +45,6 @@
 ##
 ## @seealso{find, index}
 ## @end deftypefn
-
-## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-## Adapted-By: jwe
-## This is patterned after the AWK function of the same name.
 
 function n = rindex (s, t)
 

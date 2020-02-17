@@ -1,40 +1,45 @@
-/*
-
-Copyright (C) 2017-2019 Torsten
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2017-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#include <QSettings>
 #include <QMessageBox>
 #include <QProcess>
 
 #include "external-editor-interface.h"
-#include "resource-manager.h"
+#include "gui-settings.h"
+#include "gui-preferences-global.h"
+#include "octave-qobject.h"
 
 namespace octave
 {
-  external_editor_interface::external_editor_interface (QWidget *p)
-    : QWidget (p)
+  external_editor_interface::external_editor_interface (QWidget *p,
+                                                        base_qobject& oct_qobj)
+    : QWidget (p), m_octave_qobj (oct_qobj)
   { }
 
   // Calling the external editor
@@ -97,8 +102,10 @@ namespace octave
   // Get and verify the settings of the external editor program
   QString external_editor_interface::external_editor (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
-    QString editor = settings->value ("customFileEditor").toString ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    QString editor = settings->value (global_custom_editor.key,
+                                      global_custom_editor.def).toString ();
 
     // check the settings (avoid an empty string)
     if (editor.trimmed ().isEmpty ())

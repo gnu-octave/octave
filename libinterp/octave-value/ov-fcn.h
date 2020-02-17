@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ov_fcn_h)
 #define octave_ov_fcn_h 1
@@ -37,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class stack_frame;
   class tree_evaluator;
   class tree_walker;
 }
@@ -93,16 +97,32 @@ public:
   virtual octave::sys::time time_checked (void) const
   { return octave::sys::time (static_cast<time_t> (0)); }
 
+  virtual int call_depth (void) const { return 0; }
+
   virtual bool is_subfunction (void) const { return false; }
 
-  virtual bool is_class_constructor (const std::string& = "") const
+  bool is_class_constructor (const std::string& cname = "") const
+  {
+    return (is_classdef_constructor (cname) || is_legacy_constructor (cname));
+  }
+
+  bool is_class_method (const std::string& cname = "") const
+  {
+    return (is_classdef_method (cname) || is_legacy_method (cname));
+  }
+
+  virtual bool
+  is_legacy_constructor (const std::string& = "") const
   { return false; }
 
   virtual bool
   is_classdef_constructor (const std::string& = "") const
   { return false; }
 
-  virtual bool is_class_method (const std::string& = "") const
+  virtual bool is_legacy_method (const std::string& = "") const
+  { return false; }
+
+  virtual bool is_classdef_method (const std::string& = "") const
   { return false; }
 
   virtual bool takes_varargs (void) const { return false; }
@@ -157,7 +177,10 @@ public:
     locked = false;
   }
 
-  bool islocked (void) const { return locked; }
+  bool islocked (void) const
+  {
+    return locked;
+  }
 
   virtual void lock_subfunctions (void) { }
 
@@ -203,6 +226,11 @@ public:
   virtual octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
         const octave_value_list& args = octave_value_list ()) = 0;
+
+  virtual octave_value_list
+  call (octave::tree_evaluator& tw, int nargout,
+        const octave_value_list& args,
+        octave::stack_frame *closure_context);
 
 protected:
 

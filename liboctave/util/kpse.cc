@@ -1,30 +1,32 @@
 // This file is not compiled to a separate object file.
 // It is included in pathsearch.cc.
 
-/* Look up a filename in a path.
+//////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1991-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
-Copyright (C) 2003-2019 John W. Eaton
-Copyright (C) 1993, 94, 95, 96, 97, 98 Karl Berry.
-Copyright (C) 1993, 94, 95, 96, 97 Karl Berry & O. Weber.
-Copyright (C) 1992, 93, 94, 95, 96, 97 Free Software Foundation, Inc.
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+//  Look up a filename in a path.
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -52,6 +54,8 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
+
+#  include "lo-sysdep.h"
 #endif
 
 // Define the characters which separate components of filenames and
@@ -90,33 +94,33 @@ unsigned int kpse_debug = 0;
 void
 kpse_path_iterator::set_end (void)
 {
-  e = b + 1;
+  m_e = m_b + 1;
 
-  if (e == len)
+  if (m_e == m_len)
     ; // OK, we have found the last element.
-  else if (e > len)
-    b = e = std::string::npos;
+  else if (m_e > m_len)
+    m_b = m_e = std::string::npos;
   else
     {
       // Find the next colon not enclosed by braces (or the end of the
       // path).
 
-      while (e < len && ! octave::directory_path::is_path_sep (path[e]))
-        e++;
+      while (m_e < m_len && ! octave::directory_path::is_path_sep (m_path[m_e]))
+        m_e++;
     }
 }
 
 void
 kpse_path_iterator::next (void)
 {
-  b = e + 1;
+  m_b = m_e + 1;
 
   // Skip any consecutive colons.
-  while (b < len && octave::directory_path::is_path_sep (path[b]))
-    b++;
+  while (m_b < m_len && octave::directory_path::is_path_sep (m_path[m_b]))
+    m_b++;
 
-  if (b >= len)
-    b = e = std::string::npos;
+  if (m_b >= m_len)
+    m_b = m_e = std::string::npos;
   else
     set_end ();
 }
@@ -132,9 +136,9 @@ kpse_truncate_filename (const std::string& name)
 
   std::string ret = name;
 
-  size_t len = name.length ();
+  size_t m_len = name.length ();
 
-  for (size_t i = 0; i < len; i++)
+  for (size_t i = 0; i < m_len; i++)
     {
       if (IS_DIR_SEP (name[i]) || IS_DEVICE_SEP (name[i]))
         {
@@ -162,18 +166,19 @@ kpse_truncate_filename (const std::string& name)
    regular file, as it is potentially useful to read fifo's or some
    kinds of devices.  */
 
+static inline bool
+READABLE (const std::string& fn)
+{
 #if defined (OCTAVE_USE_WINDOWS_API)
-static inline bool
-READABLE (const std::string& fn)
-{
-  const char *t = fn.c_str ();
-  return (GetFileAttributes (t) != 0xFFFFFFFF
-          && ! (GetFileAttributes (t) & FILE_ATTRIBUTE_DIRECTORY));
-}
+
+  std::wstring w_fn = octave::sys::u8_to_wstring (fn);
+
+  DWORD f_attr = GetFileAttributesW (w_fn.c_str ());
+
+  return (f_attr != 0xFFFFFFFF && ! (f_attr & FILE_ATTRIBUTE_DIRECTORY));
+
 #else
-static inline bool
-READABLE (const std::string& fn)
-{
+
   bool retval = false;
 
   const char *t = fn.c_str ();
@@ -186,8 +191,9 @@ READABLE (const std::string& fn)
     }
 
   return retval;
-}
+
 #endif
+}
 
 /* POSIX invented the brain-damage of not necessarily truncating
    filename components; the system's behavior is defined by the value of

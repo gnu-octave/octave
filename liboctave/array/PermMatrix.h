@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2008-2019 Jaroslav Hajek
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_PermMatrix_h)
 #define octave_PermMatrix_h 1
@@ -35,13 +38,17 @@ class OCTAVE_API PermMatrix : protected Array<octave_idx_type>
 {
 public:
 
-  PermMatrix (void) : Array<octave_idx_type> () { }
+  PermMatrix (void) = default;
+
+  PermMatrix (const PermMatrix& m) = default;
+
+  PermMatrix& operator = (const PermMatrix& m) = default;
+
+  ~PermMatrix (void) = default;
 
   PermMatrix (octave_idx_type n);
 
   PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check = true);
-
-  PermMatrix (const PermMatrix& m) : Array<octave_idx_type> (m) { }
 
   PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n = 0);
 
@@ -59,9 +66,6 @@ public:
   // FIXME: a dangerous ambiguity?
   octave_idx_type length (void) const
   { return perm_length (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type nelem (void) const { return numel (); }
 
   octave_idx_type numel (void) const { return dim1 () * dim2 (); }
 

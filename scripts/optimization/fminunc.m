@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,7 +21,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 ##
-## Author: Jaroslav Hajek <highegg@gmail.com>
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} fminunc (@var{fcn}, @var{x0})
@@ -25,10 +30,13 @@
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.
 ##
-## @var{fcn} should accept a vector (array) defining the unknown variables, and
-## return the objective function value, optionally with gradient.
 ## @code{fminunc} attempts to determine a vector @var{x} such that
 ## @code{@var{fcn} (@var{x})} is a local minimum.
+##
+## @var{fun} is a function handle, inline function, or string containing the
+## name of the function to evaluate.  @var{fcn} should accept a vector (array)
+## defining the unknown variables, and return the objective function value,
+## optionally with gradient.
 ##
 ## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved in
 ## all calls to @var{fcn}, but otherwise is treated as a column vector.
@@ -410,11 +418,11 @@ function [fx, gx] = guarded_eval (fun, x)
   endif
 
   if (! (isreal (fx) && isreal (gx)))
-    error ("fminunc:notreal", "fminunc: non-real value encountered");
+    error ("Octave:fminunc:notreal", "fminunc: non-real value encountered");
   elseif (any (isnan (fx(:))))
-    error ("fminunc:isnan", "fminunc: NaN value encountered");
+    error ("Octave:fminunc:isnan", "fminunc: NaN value encountered");
   elseif (any (isinf (fx(:))))
-    error ("fminunc:isinf", "fminunc: Inf value encountered");
+    error ("Octave:fminunc:isinf", "fminunc: Inf value encountered");
   endif
 
 endfunction

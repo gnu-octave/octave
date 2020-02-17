@@ -1,25 +1,29 @@
 // %NO_EDIT_WARNING%
-/*
 
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -107,8 +111,6 @@ namespace octave
 
     const char *DEFS = %OCTAVE_CONF_DEFS%;
 
-    const char *DL_LD = %OCTAVE_CONF_DL_LD%;
-
     const char *DL_LDFLAGS = %OCTAVE_CONF_DL_LDFLAGS%;
 
     const char *EXEEXT = %OCTAVE_CONF_EXEEXT%;
@@ -180,8 +182,6 @@ namespace octave
     const char *LAPACK_LIBS = %OCTAVE_CONF_LAPACK_LIBS%;
 
     const char *LDFLAGS = %OCTAVE_CONF_LDFLAGS%;
-
-    const char *LD_CXX = %OCTAVE_CONF_LD_CXX%;
 
     const char *LD_STATIC_FLAG = %OCTAVE_CONF_LD_STATIC_FLAG%;
 
@@ -267,8 +267,6 @@ namespace octave
 
     const char *SHARED_LIBS = %OCTAVE_CONF_SHARED_LIBS%;
 
-    const char *SH_LD = %OCTAVE_CONF_SH_LD%;
-
     const char *SH_LDFLAGS = %OCTAVE_CONF_SH_LDFLAGS%;
 
     const char *STATIC_LIBS = %OCTAVE_CONF_STATIC_LIBS%;
@@ -281,13 +279,17 @@ namespace octave
 
     const char *SUNDIALS_IDA_LIBS = %OCTAVE_CONF_SUNDIALS_IDA_LIBS%;
 
-    const char *SUNDIALS_NVECSERIAL_CPPFLAGS =
-      %OCTAVE_CONF_SUNDIALS_NVECSERIAL_CPPFLAGS%;
+    const char *SUNDIALS_NVECSERIAL_CPPFLAGS = %OCTAVE_CONF_SUNDIALS_NVECSERIAL_CPPFLAGS%;
 
-    const char *SUNDIALS_NVECSERIAL_LDFLAGS =
-      %OCTAVE_CONF_SUNDIALS_NVECSERIAL_LDFLAGS%;
+    const char *SUNDIALS_NVECSERIAL_LDFLAGS = %OCTAVE_CONF_SUNDIALS_NVECSERIAL_LDFLAGS%;
 
     const char *SUNDIALS_NVECSERIAL_LIBS = %OCTAVE_CONF_SUNDIALS_NVECSERIAL_LIBS%;
+
+    const char *SUNDIALS_SUNLINSOLKLU_CPPFLAGS = %OCTAVE_CONF_SUNDIALS_SUNLINSOLKLU_CPPFLAGS%;
+
+    const char *SUNDIALS_SUNLINSOLKLU_LDFLAGS = %OCTAVE_CONF_SUNDIALS_SUNLINSOLKLU_LDFLAGS%;
+
+    const char *SUNDIALS_SUNLINSOLKLU_LIBS = %OCTAVE_CONF_SUNDIALS_SUNLINSOLKLU_LIBS%;
 
     const char *TERM_LIBS = %OCTAVE_CONF_TERM_LIBS%;
 

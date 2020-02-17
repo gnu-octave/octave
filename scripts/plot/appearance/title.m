@@ -1,4 +1,9 @@
-## Copyright (C) 1993-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1993-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} title (@var{string})
@@ -26,22 +33,28 @@
 ## An optional list of @var{property}/@var{value} pairs can be used to change
 ## the appearance of the created title text object.
 ##
-## If the first argument @var{hax} is an axes handle, then plot into this axes,
-## rather than the current axes returned by @code{gca}.
+## If the first argument @var{hax} is an axes or legend handle, then add a
+## title to this object, rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created text
 ## object.
 ## @seealso{xlabel, ylabel, zlabel, text}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = title (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("title", varargin{:});
 
   if (isempty (hax))
-    hax = gca ();
+    if (! isempty (varargin) && isscalar (varargin{1})
+        && ishghandle (varargin{1})
+        && strcmp (get (varargin{1}, "tag"), "legend"))
+        hax = varargin{1};
+        varargin(1) = [];
+        nargin--;
+    else
+      hax = gca ();
+    endif
   endif
 
   if (rem (nargin, 2) != 1)
@@ -121,6 +134,18 @@ endfunction
 %!   set (gca, "fontsize", 13)
 %!   assert (get (ht, "fontname"), "Liberation Serif");
 %!   assert (get (ht, "fontsize"), 13 * get (gca, "titlefontsizemultiplier"));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test <*57372>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot (1:10);
+%!   hl = legend ("legend text");
+%!   ht = title (hl, "Legend Title");
+%!   assert (get (ht, "string"), "Legend Title");
+%!   assert (get (ht, "parent"), hl);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

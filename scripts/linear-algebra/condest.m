@@ -1,5 +1,9 @@
-## Copyright (C) 2007-2019 Regents of the University of California
-## Copyright (C) 2016-2019 Marco Caliari
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{cest} =} condest (@var{A})
@@ -89,13 +95,13 @@
 ## @item
 ## @nospell{N.J. Higham and F. Tisseur}, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
-## Pseudospectra}. SIMAX vol 21, no 4, pp 1185--1201.
+## Pseudospectra}.  SIMAX vol 21, no 4, pp 1185--1201.
 ## @url{https://dx.doi.org/10.1137/S0895479899356080}
 ##
 ## @item
 ## @nospell{N.J. Higham and F. Tisseur}, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
-## Pseudospectra}. @url{https://citeseer.ist.psu.edu/223007.html}
+## Pseudospectra}.  @url{https://citeseer.ist.psu.edu/223007.html}
 ## @end itemize
 ##
 ## @seealso{cond, norm, normest1, normest}

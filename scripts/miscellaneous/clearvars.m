@@ -1,5 +1,9 @@
-## Copyright (C) 2018-2019 Rik Wehbring
-## Copyright (C) 2013 David Turner
+########################################################################
+##
+## Copyright (C) 2013-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} clearvars
@@ -127,9 +133,9 @@ function clearvars (varargin)
   endfor
 
   if (global_mode)
-    varlist = evalin ("caller", "who global");
+    varlist = evalin ("caller", "who ('global')");
   else
-    varlist = evalin ("caller", "who");
+    varlist = evalin ("caller", "who ()");
   endif
 
   ## evalin will cause the automatic creation of 'ans' variable (bug #53339).
@@ -151,19 +157,19 @@ function clearvars (varargin)
   endif
 
   varlist = varlist(idx_clear);
-  names = strjoin (varlist, " ");
+  names = strjoin (varlist, "', '");
 
   if (! isempty (names))
     if (global_mode)
-      evalin ("caller", ["clear -global " names]);
+      evalin ("caller", ["clear ('-global', '", names, "')"]);
     else
-      evalin ("caller", ["clear " names]);
+      evalin ("caller", ["clear ('", names, "')"]);
     endif
   endif
 
   ## Clean up automatic variable "ans" if necessary
   if (clear_ans)
-    evalin ("caller", "clear ans");
+    evalin ("caller", "clear ('ans')");
   endif
 
 endfunction

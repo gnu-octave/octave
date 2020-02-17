@@ -1,4 +1,9 @@
-## Copyright (C) 1995-2019 Kurt Hornik
+########################################################################
+##
+## Copyright (C) 1995-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} mean (@var{x})
@@ -82,9 +89,6 @@
 ## @seealso{median, mode}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Compute arithmetic, geometric, and harmonic mean
-
 function y = mean (x, varargin)
 
   if (nargin < 1 || nargin > 4)
@@ -141,10 +145,6 @@ function y = mean (x, varargin)
     otherwise
       print_usage ();
   endswitch
-
-  ## FIXME: Delete this when the "divide-by-zero" warning is
-  ##        removed in Octave 6.0.
-  warning ("off", "Octave:divide-by-zero", "local");
 
   ## The actual mean computation
   n = size (x, dim);

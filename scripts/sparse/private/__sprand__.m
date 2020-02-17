@@ -1,5 +1,9 @@
-## Copyright (C) 2004-2019 Paul Kienzle
-## Copyright (C) 2012 Jordi Gutiérrez Hermoso
+########################################################################
+##
+## Copyright (C) 2004-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 ##
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
@@ -43,14 +49,19 @@ function S = __sprand__ (varargin)
       [m, n, d, rc, fcnname, randfun] = deal (varargin{:});
     endif
 
-    if (! (isscalar (m) && m == fix (m) && m > 0))
-      error ("%s: M must be an integer greater than 0", fcnname);
+    if (! (isscalar (m) && m == fix (m) && m >= 0))
+      error ("%s: M must be a non-negative integer", fcnname);
     endif
-    if (! (isscalar (n) && n == fix (n) && n > 0))
-      error ("%s: N must be an integer greater than 0", fcnname);
+    if (! (isscalar (n) && n == fix (n) && n >= 0))
+      error ("%s: N must be a non-negative integer", fcnname);
     endif
     if (d < 0 || d > 1)
       error ("%s: density D must be between 0 and 1", fcnname);
+    endif
+
+    if (m == 0 || n == 0)
+      S = sparse (m, n);
+      return;
     endif
 
     if (nargin == 5)

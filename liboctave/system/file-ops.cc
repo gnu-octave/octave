@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -31,6 +34,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
 #  include <algorithm>
+#endif
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <windows.h>
+#  include <shlwapi.h>
 #endif
 
 #include <vector>
@@ -50,164 +57,164 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 #include "unistd-wrappers.h"
 
-// The following tilde-expansion code was stolen and adapted from
-// readline.
-
-// The default value of tilde_additional_prefixes.  This is set to
-// whitespace preceding a tilde so that simple programs which do not
-// perform any word separation get desired behavior.
-static const char *default_prefixes[] = { " ~", "\t~", ":~", nullptr };
-
-// The default value of tilde_additional_suffixes.  This is set to
-// whitespace or newline so that simple programs which do not perform
-// any word separation get desired behavior.
-static const char *default_suffixes[] = { " ", "\n", ":", nullptr };
-
-static size_t
-tilde_find_prefix (const std::string& s, size_t& len)
-{
-  len = 0;
-
-  size_t s_len = s.length ();
-
-  if (s_len == 0 || s[0] == '~')
-    return 0;
-
-  string_vector prefixes = octave::sys::file_ops::tilde_additional_prefixes;
-
-  if (! prefixes.empty ())
-    {
-      for (size_t i = 0; i < s_len; i++)
-        {
-          for (int j = 0; j < prefixes.numel (); j++)
-            {
-              size_t pfx_len = prefixes[j].length ();
-
-              if (prefixes[j] == s.substr (i, pfx_len))
-                {
-                  len = pfx_len - 1;
-                  return i + len;
-                }
-            }
-        }
-    }
-
-  return s_len;
-}
-
-// Find the end of a tilde expansion in S, and return the index
-// of the character which ends the tilde definition.
-
-static size_t
-tilde_find_suffix (const std::string& s)
-{
-  size_t s_len = s.length ();
-
-  string_vector suffixes = octave::sys::file_ops::tilde_additional_suffixes;
-
-  size_t i = 0;
-
-  for ( ; i < s_len; i++)
-    {
-      if (octave::sys::file_ops::is_dir_sep (s[i]))
-        break;
-
-      if (! suffixes.empty ())
-        {
-          for (int j = 0; j < suffixes.numel (); j++)
-            {
-              size_t sfx_len = suffixes[j].length ();
-
-              if (suffixes[j] == s.substr (i, sfx_len))
-                return i;
-            }
-        }
-    }
-
-  return i;
-}
-
-// Take FNAME and return the tilde prefix we want expanded.
-
-static std::string
-isolate_tilde_prefix (const std::string& fname)
-{
-  size_t f_len = fname.length ();
-
-  size_t len = 1;
-
-  while (len < f_len && ! octave::sys::file_ops::is_dir_sep (fname[len]))
-    len++;
-
-  return fname.substr (1, len);
-}
-
-// Do the work of tilde expansion on FILENAME.  FILENAME starts with a
-// tilde.
-
-static std::string
-tilde_expand_word (const std::string& filename)
-{
-  size_t f_len = filename.length ();
-
-  if (f_len == 0 || filename[0] != '~')
-    return std::string (filename);
-
-  // A leading '~/' or a bare '~' is *always* translated to the value
-  // of $HOME or the home directory of the current user, regardless of
-  // any preexpansion hook.
-
-  if (f_len == 1 || octave::sys::file_ops::is_dir_sep (filename[1]))
-    return octave::sys::env::get_home_directory () + filename.substr (1);
-
-  std::string username = isolate_tilde_prefix (filename);
-
-  size_t user_len = username.length ();
-
-  std::string dirname;
-
-  if (octave::sys::file_ops::tilde_expansion_preexpansion_hook)
-    {
-      std::string expansion
-        = octave::sys::file_ops::tilde_expansion_preexpansion_hook (username);
-
-      if (! expansion.empty ())
-        return expansion + filename.substr (user_len+1);
-    }
-
-  // No preexpansion hook, or the preexpansion hook failed.  Look in the
-  // password database.
-
-  octave::sys::password pw = octave::sys::password::getpwnam (username);
-
-  if (! pw)
-    {
-      // If the calling program has a special syntax for expanding tildes,
-      // and we couldn't find a standard expansion, then let them try.
-
-      if (octave::sys::file_ops::tilde_expansion_failure_hook)
-        {
-          std::string expansion
-            = octave::sys::file_ops::tilde_expansion_failure_hook (username);
-
-          if (! expansion.empty ())
-            dirname = expansion + filename.substr (user_len+1);
-        }
-
-      // If we don't have a failure hook, or if the failure hook did not
-      // expand the tilde, return a copy of what we were passed.
-
-      if (dirname.empty ())
-        dirname = filename;
-    }
-  else
-    dirname = pw.dir () + filename.substr (user_len+1);
-
-  return dirname;
-}
-
 namespace octave
 {
+  // The following tilde-expansion code was stolen and adapted from
+  // readline.
+
+  // The default value of tilde_additional_prefixes.  This is set to
+  // whitespace preceding a tilde so that simple programs which do not
+  // perform any word separation get desired behavior.
+  static const char *default_prefixes[] = { " ~", "\t~", ":~", nullptr };
+
+  // The default value of tilde_additional_suffixes.  This is set to
+  // whitespace or newline so that simple programs which do not perform
+  // any word separation get desired behavior.
+  static const char *default_suffixes[] = { " ", "\n", ":", nullptr };
+
+  static size_t
+  tilde_find_prefix (const std::string& s, size_t& len)
+  {
+    len = 0;
+
+    size_t s_len = s.length ();
+
+    if (s_len == 0 || s[0] == '~')
+      return 0;
+
+    string_vector prefixes = sys::file_ops::tilde_additional_prefixes;
+
+    if (! prefixes.empty ())
+      {
+        for (size_t i = 0; i < s_len; i++)
+          {
+            for (int j = 0; j < prefixes.numel (); j++)
+              {
+                size_t pfx_len = prefixes[j].length ();
+
+                if (prefixes[j] == s.substr (i, pfx_len))
+                  {
+                    len = pfx_len - 1;
+                    return i + len;
+                  }
+              }
+          }
+      }
+
+    return s_len;
+  }
+
+  // Find the end of a tilde expansion in S, and return the index
+  // of the character which ends the tilde definition.
+
+  static size_t
+  tilde_find_suffix (const std::string& s)
+  {
+    size_t s_len = s.length ();
+
+    string_vector suffixes = sys::file_ops::tilde_additional_suffixes;
+
+    size_t i = 0;
+
+    for ( ; i < s_len; i++)
+      {
+        if (sys::file_ops::is_dir_sep (s[i]))
+          break;
+
+        if (! suffixes.empty ())
+          {
+            for (int j = 0; j < suffixes.numel (); j++)
+              {
+                size_t sfx_len = suffixes[j].length ();
+
+                if (suffixes[j] == s.substr (i, sfx_len))
+                  return i;
+              }
+          }
+      }
+
+    return i;
+  }
+
+  // Take FNAME and return the tilde prefix we want expanded.
+
+  static std::string
+  isolate_tilde_prefix (const std::string& fname)
+  {
+    size_t f_len = fname.length ();
+
+    size_t len = 1;
+
+    while (len < f_len && ! sys::file_ops::is_dir_sep (fname[len]))
+      len++;
+
+    return fname.substr (1, len);
+  }
+
+  // Do the work of tilde expansion on FILENAME.  FILENAME starts with a
+  // tilde.
+
+  static std::string
+  tilde_expand_word (const std::string& filename)
+  {
+    size_t f_len = filename.length ();
+
+    if (f_len == 0 || filename[0] != '~')
+      return std::string (filename);
+
+    // A leading '~/' or a bare '~' is *always* translated to the value
+    // of $HOME or the home directory of the current user, regardless of
+    // any preexpansion hook.
+
+    if (f_len == 1 || sys::file_ops::is_dir_sep (filename[1]))
+      return sys::env::get_home_directory () + filename.substr (1);
+
+    std::string username = isolate_tilde_prefix (filename);
+
+    size_t user_len = username.length ();
+
+    std::string dirname;
+
+    if (sys::file_ops::tilde_expansion_preexpansion_hook)
+      {
+        std::string expansion
+          = sys::file_ops::tilde_expansion_preexpansion_hook (username);
+
+        if (! expansion.empty ())
+          return expansion + filename.substr (user_len+1);
+      }
+
+    // No preexpansion hook, or the preexpansion hook failed.  Look in the
+    // password database.
+
+    sys::password pw = sys::password::getpwnam (username);
+
+    if (! pw)
+      {
+        // If the calling program has a special syntax for expanding tildes,
+        // and we couldn't find a standard expansion, then let them try.
+
+        if (sys::file_ops::tilde_expansion_failure_hook)
+          {
+            std::string expansion
+              = sys::file_ops::tilde_expansion_failure_hook (username);
+
+            if (! expansion.empty ())
+              dirname = expansion + filename.substr (user_len+1);
+          }
+
+        // If we don't have a failure hook, or if the failure hook did not
+        // expand the tilde, return a copy of what we were passed.
+
+        if (dirname.empty ())
+          dirname = filename;
+      }
+    else
+      dirname = pw.dir () + filename.substr (user_len+1);
+
+    return dirname;
+  }
+
   namespace sys
   {
     namespace file_ops
@@ -702,6 +709,43 @@ namespace octave
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
       // Canonical Windows file separator is backslash.
       std::replace (retval.begin (), retval.end (), '/', '\\');
+#endif
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+      std::wstring w_tmp;
+      bool strip_marker = true;
+      if (retval.empty ())
+        {
+          // For UNC paths, take the input as is.
+          // Also translate forward slashes.
+          retval = name;
+          std::replace (retval.begin (), retval.end (), '/', '\\');
+          if (retval.compare (0, 2, "\\\\") == 0)
+            {
+              w_tmp = u8_to_wstring (retval);
+              strip_marker = false;
+              wchar_t canon_path[MAX_PATH];
+              if (PathCanonicalizeW (canon_path, w_tmp.c_str ()))
+                w_tmp = std::wstring (canon_path);
+            }
+        }
+      else
+        w_tmp = L"\\\\?\\" + u8_to_wstring (retval);
+
+      if (! w_tmp.empty ())
+        {
+          // Get a more canonical name wrt case and full names
+          wchar_t w_long[32767] = L"";
+          int w_len = GetLongPathNameW (w_tmp.c_str (), w_long, 32767);
+
+          if (! strip_marker)
+            retval = u8_from_wstring (std::wstring (w_long, w_len));
+          else if (w_len > 4)
+            retval = u8_from_wstring (std::wstring (w_long+4, w_len-4));
+
+          if (retval.length () > 1 && retval[1] == ':')
+            retval[0] = toupper (retval[0]);
+        }
 #endif
 
       if (retval.empty ())

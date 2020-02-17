@@ -1,4 +1,9 @@
-## Copyright (C) 2013-2019 Roberto Porcu' <roberto.porcu@polimi.it>
+########################################################################
+##
+## Copyright (C) 2013-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{h} =} starting_stepsize (@var{order}, @var{func}, @var{t0}, @var{x0}, @var{AbsTol}, @var{RelTol}, @var{normcontrol}, @var{args})
@@ -27,8 +34,8 @@
 ## condition.  @var{AbsTol} and @var{RelTol} are the absolute and relative
 ## tolerance on the ODE integration taken from an ode options structure.
 ##
-## References:
-## [1] E. Hairer, S.P. Norsett and G. Wanner,
+## Reference:
+## E. Hairer, S.P. Norsett and G. Wanner,
 ## @cite{Solving Ordinary Differential Equations I: Nonstiff Problems},
 ## Springer.
 ## @end deftypefn

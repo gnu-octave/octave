@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ov_usr_fcn_h)
 #define octave_ov_usr_fcn_h 1
@@ -28,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <ctime>
 
 #include <string>
-#include <stack>
 
 #include "comment-list.h"
 #include "ovl.h"
@@ -44,6 +46,7 @@ class octave_value;
 namespace octave
 {
   class file_info;
+  class stack_frame;
   class tree_parameter_list;
   class tree_statement_list;
   class tree_evaluator;
@@ -67,9 +70,11 @@ protected:
     : octave_function (nm, ds), m_scope (scope), file_name (fnm),
       t_parsed (static_cast<time_t> (0)),
       t_checked (static_cast<time_t> (0)),
-      m_call_depth (-1), m_file_info (nullptr),
-      cmd_list (cmds)
-  { }
+      m_file_info (nullptr), cmd_list (cmds)
+  {
+    if (m_scope)
+      m_scope.set_user_code (this);
+  }
 
 public:
 
@@ -113,13 +118,6 @@ public:
     return octave_value ();
   }
 
-  // XXX FIXME
-  int call_depth (void) const { return m_call_depth; }
-
-  void set_call_depth (int val) { m_call_depth = val; }
-
-  void increment_call_depth (void) { ++m_call_depth; }
-
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
   octave::tree_statement_list * body (void) { return cmd_list; }
@@ -142,9 +140,6 @@ protected:
   // The time the file was last checked to see if it needs to be
   // parsed again.
   octave::sys::time t_checked;
-
-  // Used to keep track of recursion depth.
-  int m_call_depth;
 
   // Cached text of function or script code with line offsets
   // calculated.
@@ -191,14 +186,16 @@ public:
 
   bool is_user_script (void) const { return true; }
 
+  // We don't need to override both forms of the call method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_user_code::call;
+
   octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
         const octave_value_list& args = octave_value_list ());
 
   void accept (octave::tree_walker& tw);
-
-  // XXX FIXME
-  void set_call_depth (int val) { octave_user_code::set_call_depth (val); }
 
 private:
 
@@ -212,10 +209,13 @@ octave_user_function : public octave_user_code
 {
 public:
 
+  typedef std::map<std::string, octave_value> local_vars_map;
+
   octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope (),
                         octave::tree_parameter_list *pl = nullptr,
                         octave::tree_parameter_list *rl = nullptr,
-                        octave::tree_statement_list *cl = nullptr);
+                        octave::tree_statement_list *cl = nullptr,
+                        const local_vars_map& lviv = local_vars_map ());
 
   // No copying!
 
@@ -224,12 +224,6 @@ public:
   octave_user_function& operator = (const octave_user_function& fn) = delete;
 
   ~octave_user_function (void);
-
-  octave::symbol_record::context_id active_context () const
-  {
-    return is_anonymous_function ()
-      ? 0 : static_cast<octave::symbol_record::context_id>(m_call_depth);
-  }
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -340,37 +334,54 @@ public:
     return is_inline_function () || is_anonymous_function ();
   }
 
-  bool is_nested_function (void) const { return nested_function; }
-
   void mark_as_nested_function (void) { nested_function = true; }
 
-  void mark_as_class_constructor (void) { class_constructor = legacy; }
+  bool is_nested_function (void) const { return nested_function; }
+
+  bool is_parent_function (void) const { return m_scope.is_parent (); }
+
+  void mark_as_legacy_constructor (void) { class_constructor = legacy; }
+
+  bool is_legacy_constructor (const std::string& cname = "") const
+  {
+    return (class_constructor == legacy
+            ? (cname.empty () ? true : cname == dispatch_class ()) : false);
+  }
 
   void mark_as_classdef_constructor (void) { class_constructor = classdef; }
 
-  bool is_class_constructor (const std::string& cname = "") const
-  {
-    return class_constructor == legacy
-      ? (cname.empty () ? true : cname == dispatch_class ()) : false;
-  }
-
   bool is_classdef_constructor (const std::string& cname = "") const
   {
-    return class_constructor == classdef
-      ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+    return (class_constructor == classdef
+            ? (cname.empty () ? true : cname == dispatch_class ()) : false);
   }
 
-  void mark_as_class_method (void) { class_method = true; }
+  void mark_as_legacy_method (void) { class_method = legacy; }
 
-  bool is_class_method (const std::string& cname = "") const
+  bool is_legacy_method (const std::string& cname = "") const
   {
-    return class_method
-           ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+    return (class_method == legacy
+            ? (cname.empty () ? true : cname == dispatch_class ()) : false);
+  }
+
+  void mark_as_classdef_method (void) { class_method = classdef; }
+
+  bool is_classdef_method (const std::string& cname = "") const
+  {
+    return (class_method == classdef
+            ? (cname.empty () ? true : cname == dispatch_class ()) : false);
   }
 
   octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
-        const octave_value_list& args = octave_value_list ());
+        const octave_value_list& args = octave_value_list ())
+  {
+    return call (tw, nargout, args, nullptr);
+  }
+
+  octave_value_list
+  call (octave::tree_evaluator& tw, int nargout,
+        const octave_value_list& args, octave::stack_frame *);
 
   octave::tree_parameter_list * parameter_list (void) { return param_list; }
 
@@ -379,6 +390,11 @@ public:
   octave::comment_list * leading_comment (void) { return lead_comm; }
 
   octave::comment_list * trailing_comment (void) { return trail_comm; }
+
+  const local_vars_map& local_var_init_vals (void) const
+  {
+    return m_local_var_init_vals;
+  }
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
@@ -396,12 +412,9 @@ public:
 
   octave_value dump (void) const;
 
-  // XXX FIXME
-  void set_call_depth (int val) { octave_user_code::set_call_depth (val); }
-
 private:
 
-  enum class_ctor_type
+  enum class_method_type
   {
     none,
     legacy,
@@ -409,6 +422,7 @@ private:
   };
 
   std::string ctor_type_str (void) const;
+  std::string method_type_str (void) const;
 
   // List of arguments for this function.  These are local variables.
   octave::tree_parameter_list *param_list;
@@ -416,6 +430,9 @@ private:
   // List of parameters we return.  These are also local variables in
   // this function.
   octave::tree_parameter_list *ret_list;
+
+  // For anonymous function values inherited from parent scope.
+  local_vars_map m_local_var_init_vals;
 
   // The comments preceding the FUNCTION token.
   octave::comment_list *lead_comm;
@@ -449,14 +466,17 @@ private:
   // TRUE means this is an anonymous function.
   bool anonymous_function;
 
-  // TRUE means this is a nested function. (either a child or parent)
+  // TRUE means this is a nested function.
   bool nested_function;
 
-  // Enum describing whether this function is the constructor for class object.
-  class_ctor_type class_constructor;
+  // TRUE means this function contains a nested function.
+  bool parent_function;
 
-  // TRUE means this function is a method for a class.
-  bool class_method;
+  // Enum describing whether this function is the constructor for class object.
+  class_method_type class_constructor;
+
+  // Enum describing whether this function is a method for a class.
+  class_method_type class_method;
 
 #if defined (HAVE_LLVM)
   octave::jit_function_info *jit_info;

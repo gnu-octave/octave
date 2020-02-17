@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_lo_mappers_h)
 #define octave_lo_mappers_h 1
@@ -39,20 +41,9 @@ namespace octave
   namespace math
   {
     extern OCTAVE_API bool isna (double x);
-    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
-    inline bool is_NA (double x) { return math::isna (x); }
-
     extern OCTAVE_API bool isna (float x);
-    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
-    inline bool is_NA (float x) { return math::isna (x); }
-
     extern OCTAVE_API bool isna (const Complex& x);
-    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
-    inline bool is_NA (const Complex& x) { return math::isna (x); }
-
     extern OCTAVE_API bool isna (const FloatComplex& x);
-    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
-    inline bool is_NA (const FloatComplex& x) { return math::isna (x); }
 
     extern OCTAVE_API bool is_NaN_or_NA (const Complex& x);
     extern OCTAVE_API bool is_NaN_or_NA (const FloatComplex& x);
@@ -207,19 +198,6 @@ namespace octave
     isfinite (const std::complex<T>& x)
     {
       return (isfinite (std::real (x)) && isfinite (std::imag (x)));
-    }
-
-    OCTAVE_DEPRECATED (4.4, "use 'math::isfinite' instead")
-    inline bool finite (double x) { return math::isfinite (x); }
-    OCTAVE_DEPRECATED (4.4, "use 'math::isfinite' instead")
-    inline bool finite (float x) { return math::isfinite (x); }
-
-    template <typename T>
-    OCTAVE_DEPRECATED (4.4, "use 'math::isfinite' instead")
-    bool
-    finite (const std::complex<T>& x)
-    {
-      return math::isfinite (x);
     }
 
     inline bool isinf (double x) { return std::isinf (x); }
@@ -478,22 +456,5 @@ namespace octave
     extern OCTAVE_API FloatComplex rc_sqrt (float);
   }
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::math::isfinite' instead")
-inline bool xfinite (double x) { return octave::math::isfinite (x); }
-OCTAVE_DEPRECATED (4.4, "use 'octave::math::isfinite' instead")
-inline bool xfinite (float x) { return octave::math::isfinite (x); }
-
-template <typename T>
-OCTAVE_DEPRECATED (4.4, "use 'octave::math::isfinite' instead")
-bool
-xfinite (const std::complex<T>& x)
-{
-  return octave::math::isfinite (x);
-}
-
-#endif
 
 #endif

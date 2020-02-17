@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} plotyy (@var{x1}, @var{y1}, @var{x2}, @var{y2})
@@ -79,7 +86,8 @@ function [ax, h1, h2] = plotyy (varargin)
         && isaxes (get (hax, "__plotyy_axes__")) == [true; true])
       hax = get (hax, "__plotyy_axes__");
     else
-      hax = [hax; axes("nextplot", get (hax(1), "nextplot"))];
+      hax = [hax; axes("nextplot", get (hax(1), "nextplot"), ...
+                       "parent", get(hax(1), "parent"))];
     endif
 
     [axtmp, h1tmp, h2tmp] = __plotyy__ (hax, varargin{:});
@@ -127,8 +135,10 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
 
   if (strcmp (get (ax(1), "__autopos_tag__"), "subplot"))
     set (ax(2), "__autopos_tag__", "subplot");
-  else
+  elseif (strcmp (graphics_toolkit (), "gnuplot"))
     set (ax, "activepositionproperty", "position");
+  else
+    set (ax, "activepositionproperty", "outerposition");
   endif
 
   ## Don't replace axis which has colororder property already modified
@@ -170,20 +180,13 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   set (t2, "deletefcn", {@deleteplotyy, ax(1), t1});
 
   ## Add cross-listeners so a change in one axes' attributes updates the other.
-  addlistener (ax(1), "position", {@update_position, ax(2)});
-  addlistener (ax(2), "position", {@update_position, ax(1)});
-  addlistener (ax(1), "outerposition", {@update_position, ax(2)});
-  addlistener (ax(2), "outerposition", {@update_position, ax(1)});
-  addlistener (ax(1), "looseinset", {@update_position, ax(2)});
-  addlistener (ax(2), "looseinset", {@update_position, ax(1)});
-  addlistener (ax(1), "view", {@update_position, ax(2)});
-  addlistener (ax(2), "view", {@update_position, ax(1)});
-  addlistener (ax(1), "plotboxaspectratio", {@update_position, ax(2)});
-  addlistener (ax(2), "plotboxaspectratio", {@update_position, ax(1)});
-  addlistener (ax(1), "plotboxaspectratiomode", {@update_position, ax(2)});
-  addlistener (ax(2), "plotboxaspectratiomode", {@update_position, ax(1)});
-  addlistener (ax(1), "nextplot", {@update_nextplot, ax(2)});
-  addlistener (ax(2), "nextplot", {@update_nextplot, ax(1)});
+  props = {"units", "looseinset", "position", "xlim", "view", ...
+           "plotboxaspectratio", "plotboxaspectratiomode", "nextplot"};
+
+  for ii = 1:numel (props)
+    addlistener (ax(1), props{ii}, {@update_prop, ax(2), props{ii}});
+    addlistener (ax(2), props{ii}, {@update_prop, ax(1), props{ii}});
+  endfor
 
   ## Store the axes handles for the sister axes.
   if (! isprop (ax(1), "__plotyy_axes__"))
@@ -222,40 +225,14 @@ function update_nextplot (h, ~, ax2)
 
 endfunction
 
-function update_position (h, ~, ax2)
+function update_prop (h, ~, ax2, prop)
   persistent recursion = false;
-
   ## Don't allow recursion
-  if (! recursion)
+  if (! recursion && all (ishghandle ([h, ax2])))
     unwind_protect
       recursion = true;
-      view = get (h, "view");
-      oldview = get (ax2, "view");
-      plotboxaspectratio = get (h, "plotboxaspectratio");
-      oldplotboxaspectratio = get (ax2, "plotboxaspectratio");
-      plotboxaspectratiomode = get (h, "plotboxaspectratiomode");
-      oldplotboxaspectratiomode = get (ax2, "plotboxaspectratiomode");
-
-      if (strcmp (get (h, "activepositionproperty"), "position"))
-        position = get (h, "position");
-        oldposition = get (ax2, "position");
-        if (! (isequal (position, oldposition) && isequal (view, oldview)))
-          set (ax2, "position", position, "view", view);
-        endif
-      else
-        outerposition = get (h, "outerposition");
-        oldouterposition = get (ax2, "outerposition");
-        if (! (isequal (outerposition, oldouterposition)
-               && isequal (view, oldview)))
-          set (ax2, "outerposition", outerposition, "view", view);
-        endif
-      endif
-
-      if (! (isequal (plotboxaspectratio, oldplotboxaspectratio)
-             && isequal (plotboxaspectratiomode, oldplotboxaspectratiomode)))
-        set (ax2, "plotboxaspectratio", plotboxaspectratio,
-                  "plotboxaspectratiomode", plotboxaspectratiomode);
-      endif
+      val = get (h, prop);
+      set (ax2, prop, get (h, prop));
     unwind_protect_cleanup
       recursion = false;
     end_unwind_protect
@@ -288,8 +265,9 @@ endfunction
 %! xlabel ("X");
 %! ylabel (ax(1), "Axis 1");
 %! ylabel (ax(2), "Axis 2");
-%! lcolor = get (gca, "ColorOrder")(1,:);
-%! rcolor = get (gca, "ColorOrder")(2,:);
+%! colororder = get (gca, "ColorOrder");
+%! lcolor = colororder(1,:);
+%! rcolor = colororder(2,:);
 %! text (0.5, 0.5, "Left Axis", ...
 %!       "color", lcolor, "horizontalalignment", "center", "parent", ax(1));
 %! text (4.5, 80, "Right Axis", ...

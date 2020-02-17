@@ -1,4 +1,9 @@
-## Copyright (C) 2012-2019 pdiribarne
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{h} =} struct2hdl (@var{s})
@@ -35,9 +42,6 @@
 ## hggroups.  The default is false.
 ## @seealso{hdl2struct, hgload, findobj}
 ## @end deftypefn
-
-## Author: pdiribarne <pdiribarne@new-host.home>
-## Created: 2012-03-04
 
 function [h, pout] = struct2hdl (s, p=[], hilev = false)
 
@@ -122,7 +126,14 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   ## Silence deprecation warnings
   warning ("off", "Octave:deprecated-property", "local");
 
-  ## create object
+  ## Translate field names for Matlab .fig files
+  ## FIXME: Is it ok to do this unconditionally?
+  if isfield (s.properties, "applicationdata")
+    s.properties.__appdata__ = s.properties.applicationdata;
+    s.properties = rmfield (s.properties, "applicationdata");
+  endif
+
+  ## Create object
   if (strcmp (s.type, "root"))
     h = 0;
     s.properties = rmfield (s.properties, ...
@@ -163,6 +174,8 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     h = createimage (s, par);
   elseif (strcmp (s.type, "surface"))
     h = createsurface (s, par);
+  elseif (strcmp (s.type, "light"))
+    h = createlight (s, par);
   elseif (strcmp (s.type, "hggroup"))
     [h, s, p] = createhg (s, p, par, hilev);
   elseif (any (strcmp (s.type, {"uimenu", "uicontextmenu",...
@@ -172,6 +185,9 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
       s.properties = rmfield (s.properties, "extent");
     endif
     [h, s] = createui (s, par);
+    if (strcmp (s.type, "uicontextmenu"))
+      set (p(2, ismember (p(1,:), s.special)), 'UIContextMenu', h);
+    endif
   else
     error ("struct2hdl: %s objects are not implemented yet", s.type);
   endif
@@ -364,6 +380,11 @@ endfunction
 
 function h = createsurface (s, par)
   h = surface ("parent", par);
+  addmissingprops (h, s.properties);
+endfunction
+
+function h = createlight (s, par)
+  h = light ("parent", par);
   addmissingprops (h, s.properties);
 endfunction
 

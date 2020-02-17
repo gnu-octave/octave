@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -35,6 +38,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ContextMenu.h"
 #include "Panel.h"
 #include "QtHandlesUtils.h"
+
+#include "octave-qobject.h"
+
+#include "graphics.h"
+#include "interpreter.h"
 
 namespace QtHandles
 {
@@ -85,24 +93,27 @@ namespace QtHandles
   }
 
   Panel*
-  Panel::create (const graphics_object& go)
+  Panel::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                 const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new Panel (go, new QFrame (container));
+          return new Panel (oct_qobj, interp, go, new QFrame (container));
       }
 
     return nullptr;
   }
 
-  Panel::Panel (const graphics_object& go, QFrame *frame)
-    : Object (go, frame), m_container (nullptr), m_title (nullptr),
-      m_blockUpdates (false)
+  Panel::Panel (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                const graphics_object& go, QFrame *frame)
+    : Object (oct_qobj, interp, go, frame), m_container (nullptr),
+      m_title (nullptr), m_blockUpdates (false),
+      m_previous_bbox (Matrix (1, 4, 0))
   {
     uipanel::properties& pp = properties<uipanel> ();
 
@@ -117,12 +128,18 @@ namespace QtHandles
     setupPalette (pp, pal);
     frame->setPalette (pal);
 
-    m_container = new Container (frame);
+    m_container = new Container (frame, oct_qobj, interp);
     m_container->canvas (m_handle);
+
+    connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),
+             this, SIGNAL (interpeter_event (const fcn_callback&)));
+
+    connect (m_container, SIGNAL (interpeter_event (const meth_callback&)),
+             this, SIGNAL (interpeter_event (const meth_callback&)));
 
     if (frame->hasMouseTracking ())
       {
-        foreach (QWidget *w, frame->findChildren<QWidget*> ())
+        for (auto *w : frame->findChildren<QWidget*> ())
           w->setMouseTracking (true);
       }
 
@@ -139,6 +156,13 @@ namespace QtHandles
     frame->installEventFilter (this);
     m_container->installEventFilter (this);
 
+    graphics_object fig (go.get_ancestor ("figure"));
+    if (! fig.get ("keypressfcn").isempty ())
+      m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
+
+    if (! fig.get ("keyreleasefcn").isempty ())
+      m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
+
     if (pp.is_visible ())
       QTimer::singleShot (0, frame, SLOT (show (void)));
     else
@@ -153,13 +177,16 @@ namespace QtHandles
   {
     if (! m_blockUpdates)
       {
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
         if (watched == qObject ())
           {
             switch (xevent->type ())
               {
               case QEvent::Resize:
                 {
-                  gh_manager::auto_lock lock;
+                  octave::autolock guard (gh_mgr.graphics_lock ());
+
                   graphics_object go = object ();
 
                   if (go.valid_object ())
@@ -189,12 +216,13 @@ namespace QtHandles
 
                   if (m->button () == Qt::RightButton)
                     {
-                      gh_manager::auto_lock lock;
+                      octave::autolock guard (gh_mgr.graphics_lock ());
 
                       graphics_object go = object ();
 
                       if (go.valid_object ())
-                        ContextMenu::executeAt (go.get_properties (),
+                        ContextMenu::executeAt (m_interpreter,
+                                                go.get_properties (),
                                                 m->globalPos ());
                     }
                 }
@@ -211,7 +239,7 @@ namespace QtHandles
               case QEvent::Resize:
                 if (qWidget<QWidget> ()->isVisible ())
                   {
-                    gh_manager::auto_lock lock;
+                    octave::autolock guard (gh_mgr.graphics_lock ());
 
                     graphics_object go = object ();
 
@@ -242,10 +270,16 @@ namespace QtHandles
       case uipanel::properties::ID_POSITION:
         {
           Matrix bb = pp.get_boundingbox (false);
-
-          frame->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
-                              octave::math::round (bb(2)), octave::math::round (bb(3)));
-          updateLayout ();
+          if (m_previous_bbox(0) != bb(0) || m_previous_bbox(1) != bb(1)
+              || m_previous_bbox(2) != bb(2) || m_previous_bbox(3) != bb(3))
+            {
+              frame->setGeometry (octave::math::round (bb(0)),
+                                  octave::math::round (bb(1)),
+                                  octave::math::round (bb(2)),
+                                  octave::math::round (bb(3)));
+              updateLayout ();
+            }
+          m_previous_bbox = bb;
         }
         break;
 
@@ -337,6 +371,8 @@ namespace QtHandles
   void
   Panel::redraw (void)
   {
+    update (uipanel::properties::ID_POSITION);
+
     Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
@@ -382,6 +418,13 @@ namespace QtHandles
           m_title->move (frame->width () / 2 - sz.width () / 2,
                          frame->height () - sz.height ());
       }
+  }
+
+  void
+  Panel::do_connections (const QObject *receiver, const QObject* /* emitter */)
+  {
+    Object::do_connections (receiver);
+    Object::do_connections (receiver, m_container->canvas (m_handle));
   }
 
 };

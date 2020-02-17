@@ -1,4 +1,9 @@
-## Copyright (C) 2013-2019 Michael D. Godfrey
+########################################################################
+##
+## Copyright (C) 2013-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} stemleaf (@var{x}, @var{caption})
@@ -72,9 +79,6 @@
 ## Addison-Wesley, 1977.
 ## @seealso{hist, printd}
 ## @end deftypefn
-
-## Author: Michael D. Godfrey <michaeldgodfrey@gmail.com>
-## Description: Compute stem and leaf plot
 
 function plotstr = stemleaf (x, caption, stem_sz)
   ## Compute and display a stem and leaf plot of the vector x.  The x

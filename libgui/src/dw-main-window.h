@@ -1,34 +1,38 @@
-/*
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
-Copyright (C) 2013-2019 Torsten <mttl@mailbox.org>
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-#if ! defined (dw_main_window_h)
-#define dw_main_window_h 1
+#if ! defined (octave_dw_main_window_h)
+#define octave_dw_main_window_h 1
 
 #include <QMainWindow>
-#include <QSettings>
 
+#include "gui-settings.h"
 
 namespace octave
 {
+  class base_qobject;
 
   class dw_main_window : public QMainWindow
   {
@@ -36,7 +40,7 @@ namespace octave
 
   public:
 
-    dw_main_window (QWidget *parent = nullptr);
+    dw_main_window (base_qobject& oct_qboj, QWidget *parent = nullptr);
 
     ~dw_main_window (void) = default;
 
@@ -48,7 +52,7 @@ namespace octave
 
   public slots:
 
-    void notice_settings (const QSettings*);
+    void notice_settings (const gui_settings *);
 
   protected slots:
 
@@ -69,10 +73,12 @@ namespace octave
 
     void request_switch (int direction);
 
-    QList<QDockWidget *> m_dw_list;
-
     QAction *add_action (QMenu *menu, const QIcon& icon, const QString& text,
                          const char *member, QWidget *receiver);
+
+    base_qobject& m_octave_qobj;
+
+    QList<QDockWidget *> m_dw_list;
 
     QAction *m_close_action;
     QAction *m_close_all_action;

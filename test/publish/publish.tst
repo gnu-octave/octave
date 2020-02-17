@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Kai T. Ohlhus
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## test for publish
 
@@ -22,11 +29,12 @@
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
-%!   if (ispc () || ! __have_feature__ ("OSMESA"))
+%!   if (! __have_feature__ ("QT_OFFSCREEN")
+%!       || ! strcmp (graphics_toolkit (), "qt"))
 %!     try
 %!       graphics_toolkit ("gnuplot");
 %!     catch
-%!       ## The system doesn't support OSMESA or gnuplot for drawing hidden
+%!       ## The system doesn't support gnuplot for drawing hidden
 %!       ## figures.  Just return and have test marked as passing.
 %!       return;
 %!     end_try_catch
@@ -53,11 +61,12 @@
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
-%!   if (ispc () || ! __have_feature__ ("OSMESA"))
+%!   if (! __have_feature__ ("QT_OFFSCREEN")
+%!       || ! strcmp (graphics_toolkit (), "qt"))
 %!     try
 %!       graphics_toolkit ("gnuplot");
 %!     catch
-%!       ## The system doesn't support OSMESA or gnuplot for drawing hidden
+%!       ## The system doesn't support gnuplot for drawing hidden
 %!       ## figures.  Just return and have test marked as passing.
 %!       return;
 %!     end_try_catch

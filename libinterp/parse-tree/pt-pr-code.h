@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pt_pr_code_h)
 #define octave_pt_pr_code_h 1
@@ -117,8 +120,6 @@ namespace octave
 
     void visit_fcn_handle (tree_fcn_handle&);
 
-    void visit_funcall (tree_funcall&);
-
     void visit_parameter_list (tree_parameter_list&);
 
     void visit_postfix_expression (tree_postfix_expression&);
@@ -137,8 +138,6 @@ namespace octave
 
     void visit_switch_case (tree_switch_case&);
 
-    void visit_switch_case_list (tree_switch_case_list&);
-
     void visit_switch_command (tree_switch_command&);
 
     void visit_try_catch_command (tree_try_catch_command&);
@@ -148,6 +147,10 @@ namespace octave
     void visit_while_command (tree_while_command&);
 
     void visit_do_until_command (tree_do_until_command&);
+
+    void visit_superclass_ref (tree_superclass_ref&);
+
+    void visit_metaclass_query (tree_metaclass_query&);
 
     void print_fcn_handle_body (tree_expression *);
 
@@ -195,12 +198,5 @@ namespace octave
     tree_print_code (void);
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_print_code' instead")
-typedef octave::tree_print_code tree_print_code;
-
-#endif
 
 #endif

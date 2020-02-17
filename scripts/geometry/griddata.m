@@ -1,4 +1,9 @@
-## Copyright (C) 1999-2019 Kai Habel
+########################################################################
+##
+## Copyright (C) 1999-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
@@ -35,10 +42,8 @@
 ## @seealso{griddata3, griddatan, delaunay}
 ## @end deftypefn
 
-## Author:      Kai Habel <kai.habel@gmx.de>
-## Adapted-by:  Alexander Barth <barth.alexander@gmail.com>
-##              xi and yi are not "meshgridded" if both are vectors
-##              of the same size (for compatibility)
+## Algorithm: xi and yi are not "meshgridded" if both are vectors
+##            of the same size (for compatibility)
 
 function [rx, ry, rz] = griddata (x, y, z, xi, yi, method = "linear")
 

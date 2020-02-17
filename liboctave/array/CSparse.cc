@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 2004-2019 David Bateman
-Copyright (C) 1998-2004 Andy Adler
-Copyright (C) 2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1998-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -49,7 +50,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "CSparse.h"
 #include "boolSparse.h"
 #include "dSparse.h"
-#include "functor.h"
 #include "oct-spparms.h"
 #include "sparse-lu.h"
 #include "oct-sparse.h"
@@ -985,6 +985,12 @@ SparseComplexMatrix
 SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
                               double& rcond, bool, bool calc_cond) const
 {
+  if (nnz () == 0)
+    {
+      (*current_liboctave_error_handler)
+        ("inverse of the null matrix not defined");
+    }
+
   int typ = mattype.type (false);
   SparseComplexMatrix ret;
 
@@ -1035,6 +1041,18 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
                                                              Qinit, Matrix (),
                                                              false, false);
           rcond = fact.rcond ();
+          if (rcond == 0.0)
+            {
+              // Return all Inf matrix with sparsity pattern of input.
+              octave_idx_type nz = nnz ();
+              ret = SparseComplexMatrix (rows (), cols (), nz);
+              std::fill (ret.xdata (), ret.xdata () + nz,
+                         octave::numeric_limits<double>::Inf ());
+              std::copy_n (ridx (), nz, ret.xridx ());
+              std::copy_n (cidx (), cols () + 1, ret.xcidx ());
+
+              return ret;
+            }
           double rcond2;
           SparseComplexMatrix InvL = fact.L ().transpose ().
                                      tinverse (tmp_typ, info, rcond2,
@@ -5707,7 +5725,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
 
           cholmod_sparse Astore;
           cholmod_sparse *A = &Astore;
-          double dummy;
           A->nrow = nr;
           A->ncol = nc;
 
@@ -5727,8 +5744,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           A->xtype = CHOLMOD_COMPLEX;
 
           A->x = data ();
-          if (A->x == nullptr)
-            A->x = &dummy;
 
           cholmod_dense Bstore;
           cholmod_dense *B = &Bstore;
@@ -5740,8 +5755,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           B->xtype = CHOLMOD_REAL;
 
           B->x = const_cast<double *>(b.fortran_vec ());
-          if (B->x == nullptr)
-            B->x = &dummy;
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -5959,7 +5972,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
 
           cholmod_sparse Astore;
           cholmod_sparse *A = &Astore;
-          double dummy;
           A->nrow = nr;
           A->ncol = nc;
 
@@ -5979,8 +5991,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
           A->xtype = CHOLMOD_COMPLEX;
 
           A->x = data ();
-          if (A->x == nullptr)
-            A->x = &dummy;
 
           cholmod_sparse Bstore;
           cholmod_sparse *B = &Bstore;
@@ -6002,8 +6012,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
           B->xtype = CHOLMOD_REAL;
 
           B->x = b.data ();
-          if (B->x == nullptr)
-            B->x = &dummy;
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -6262,7 +6270,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
 
           cholmod_sparse Astore;
           cholmod_sparse *A = &Astore;
-          double dummy;
           A->nrow = nr;
           A->ncol = nc;
 
@@ -6282,8 +6289,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           A->xtype = CHOLMOD_COMPLEX;
 
           A->x = data ();
-          if (A->x == nullptr)
-            A->x = &dummy;
 
           cholmod_dense Bstore;
           cholmod_dense *B = &Bstore;
@@ -6295,8 +6300,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           B->xtype = CHOLMOD_COMPLEX;
 
           B->x = const_cast<Complex *>(b.fortran_vec ());
-          if (B->x == nullptr)
-            B->x = &dummy;
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -6391,16 +6394,16 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
 
               for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
                 {
-                  status =
-                    UMFPACK_ZNAME (solve) (UMFPACK_A,
-                                           octave::to_suitesparse_intptr (Ap),
-                                           octave::to_suitesparse_intptr (Ai),
-                                           reinterpret_cast<const double *> (Ax),
-                                           nullptr,
-                                           reinterpret_cast<double *> (&Xx[iidx]),
-                                           nullptr,
-                                           reinterpret_cast<const double *> (&Bx[iidx]),
-                                           nullptr, Numeric, control, info);
+                  status
+                    = UMFPACK_ZNAME (solve) (UMFPACK_A,
+                                             octave::to_suitesparse_intptr (Ap),
+                                             octave::to_suitesparse_intptr (Ai),
+                                             reinterpret_cast<const double *> (Ax),
+                                             nullptr,
+                                             reinterpret_cast<double *> (&Xx[iidx]),
+                                             nullptr,
+                                             reinterpret_cast<const double *> (&Bx[iidx]),
+                                             nullptr, Numeric, control, info);
 
                   if (status < 0)
                     {
@@ -6493,7 +6496,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
           cholmod_sparse Astore;
           cholmod_sparse *A = &Astore;
-          double dummy;
           A->nrow = nr;
           A->ncol = nc;
 
@@ -6513,8 +6515,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           A->xtype = CHOLMOD_COMPLEX;
 
           A->x = data ();
-          if (A->x == nullptr)
-            A->x = &dummy;
 
           cholmod_sparse Bstore;
           cholmod_sparse *B = &Bstore;
@@ -6536,8 +6536,6 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           B->xtype = CHOLMOD_COMPLEX;
 
           B->x = b.data ();
-          if (B->x == nullptr)
-            B->x = &dummy;
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;

@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-Copyright (C) 2008 Jaroslav Hajek
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -35,14 +37,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
 
-static inline char
-get_job (bool noperm, bool noscal)
-{
-  return noperm ? (noscal ? 'N' : 'S') : (noscal ? 'P' : 'B');
-}
-
 namespace octave
 {
+  static inline char
+  get_job (bool noperm, bool noscal)
+  {
+    return noperm ? (noscal ? 'N' : 'S') : (noscal ? 'P' : 'B');
+  }
+
   namespace math
   {
     template <>
@@ -128,7 +130,7 @@ namespace octave
 
       FloatMatrix balancing_mat (n, n, 0.0);
       for (F77_INT i = 0; i < n; i++)
-        balancing_mat.elem (i ,i) = 1.0;
+        balancing_mat.elem (i,i) = 1.0;
 
       F77_INT info;
       F77_INT t_ilo = to_f77_int (ilo);

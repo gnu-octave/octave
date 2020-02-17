@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pt_select_h)
 #define octave_pt_select_h 1
@@ -291,25 +294,5 @@ namespace octave
     comment_list *m_trail_comm;
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_if_clause' instead")
-typedef octave::tree_if_clause tree_if_clause;
-
-// tree_if_command_list is derived from a template.
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_if_command' instead")
-typedef octave::tree_if_command tree_if_command;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_switch_case' instead")
-typedef octave::tree_switch_case tree_switch_case;
-
-// tree_switch_case_list is derived from a template.
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_switch_command' instead")
-typedef octave::tree_switch_command tree_switch_command;
-
-#endif
 
 #endif

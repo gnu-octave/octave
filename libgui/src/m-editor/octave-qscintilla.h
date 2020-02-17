@@ -1,46 +1,52 @@
-/*
-
-Copyright (C) 2013-2019 Torsten
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-// Author: Torsten <ttl@justmail.de>
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_octave_qscintilla_h)
 #define octave_octave_qscintilla_h 1
-
-#include <Qsci/qsciscintilla.h>
 
 #include <QContextMenuEvent>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
+#include <Qsci/qsciscintilla.h>
+#include <QTemporaryFile>
+
+#include "gui-settings.h"
+#include "qt-interpreter-events.h"
 
 namespace octave
 {
+  class base_qobject;
+
   class octave_qscintilla : public QsciScintilla
   {
     Q_OBJECT
 
   public:
 
-    octave_qscintilla (QWidget *p);
+    octave_qscintilla (QWidget *p, base_qobject& oct_qobj);
 
     ~octave_qscintilla (void) = default;
 
@@ -63,7 +69,8 @@ namespace octave
     QStringList comment_string (bool comment = true);
     int get_style (int pos = -1);
     int is_style_comment (int pos = -1);
-    void smart_indent (bool do_smart_indent, int do_auto_close, int line);
+    void smart_indent (bool do_smart_indent, int do_auto_close,
+                       int line, int ind_char_width);
 
     void smart_indent_line_or_selected_text (int lineFrom, int lineTo);
 
@@ -83,14 +90,22 @@ namespace octave
     void show_doc_signal (const QString&);
     void context_menu_break_condition_signal (int);
     void context_menu_break_once (int);
+    void interpreter_event (const meth_callback& meth);
+    void ctx_menu_run_finished_signal (bool, QTemporaryFile*,
+                                       QTemporaryFile*, QTemporaryFile*);
+    void focus_console_after_command_signal (void);
 
   private slots:
+
+    void ctx_menu_run_finished (bool, QTemporaryFile*,
+                                QTemporaryFile*, QTemporaryFile*);
 
     void contextmenu_help (bool);
     void contextmenu_doc (bool);
     void contextmenu_help_doc (bool);
     void contextmenu_edit (bool);
     void contextmenu_run (bool);
+    void contextmenu_run_temp_error (void);
 
     void contextmenu_break_condition (bool);
     void contextmenu_break_once (const QPoint&);
@@ -112,6 +127,8 @@ namespace octave
 
     void auto_close (int auto_endif, int l,
                      const QString& line, QString& first_word);
+
+    base_qobject& m_octave_qobj;
 
     QString m_word_at_cursor;
 

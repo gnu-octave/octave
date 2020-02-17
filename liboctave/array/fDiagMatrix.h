@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_fDiagMatrix_h)
 #define octave_fDiagMatrix_h 1
@@ -39,15 +42,19 @@ public:
 
   typedef FloatMatrix full_matrix_type;
 
-  FloatDiagMatrix (void) : MDiagArray2<float> () { }
+  FloatDiagMatrix (void) = default;
+
+  FloatDiagMatrix (const FloatDiagMatrix& a) = default;
+
+  FloatDiagMatrix& operator = (const FloatDiagMatrix& a) = default;
+
+  ~FloatDiagMatrix (void) = default;
 
   FloatDiagMatrix (octave_idx_type r, octave_idx_type c)
     : MDiagArray2<float> (r, c) { }
 
   FloatDiagMatrix (octave_idx_type r, octave_idx_type c, float val)
     : MDiagArray2<float> (r, c, val) { }
-
-  FloatDiagMatrix (const FloatDiagMatrix& a) : MDiagArray2<float> (a) { }
 
   FloatDiagMatrix (const MDiagArray2<float>& a) : MDiagArray2<float> (a) { }
 
@@ -58,12 +65,6 @@ public:
 
   FloatDiagMatrix (const Array<float>& a, octave_idx_type r, octave_idx_type c)
     : MDiagArray2<float> (a, r, c) { }
-
-  FloatDiagMatrix& operator = (const FloatDiagMatrix& a)
-  {
-    MDiagArray2<float>::operator = (a);
-    return *this;
-  }
 
   bool operator == (const FloatDiagMatrix& a) const;
   bool operator != (const FloatDiagMatrix& a) const;

@@ -1,4 +1,9 @@
-## Copyright (C) 2005-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} test @var{name}
@@ -118,7 +125,7 @@
 ## @end deftypefn
 
 ## Programming Note: All variables for test() must use the internal prefix "__".
-## Shared variables are eval'ed into the current workspace and therefore might
+## %!share variables are eval'ed into the current workspace and therefore might
 ## collide with the names used in the test.m function itself.
 
 function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = test (__name, __flag = "normal", __fid = [])
@@ -740,9 +747,6 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
     end_unwind_protect
   endfor
 
-  ## Clear any functions created during test run.
-  eval (__clearfcn, "");
-
   ## Verify test file did not leak file descriptors.
   if (! isempty (setdiff (fopen ("all"), __fid_list_orig)))
     warning ("test: file %s leaked file descriptors\n", __file);
@@ -761,6 +765,16 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
     warning ("test: file %s leaked global variables:%s\n",
              __file, sprintf (" %s", __leaked_vars{:}));
   endif
+
+  ## Clear any shared variables
+  ## This is necessary in case any onCleanup actions need to be triggered.
+  __shared_vars = strtrim (ostrsplit (__shared, ","));
+  if (! isempty (__shared_vars))
+    clear (__shared_vars{:});
+  endif
+
+  ## Clear any functions created during test run.
+  eval (__clearfcn, "");
 
   if (nargout == 0)
     if (__tests || __xfail || __xbug || __xskip || __xrtskip)

@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Kai Habel
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{dirname} =} uigetdir ()
@@ -25,10 +32,12 @@
 ## If @var{init_path} is not given the current working directory is used.
 ##
 ## @var{dialog_name} may be used to customize the dialog title.
+##
+## The output @var{dirname} is a character string with the name of the selected
+## directory.  However, if the @samp{Cancel} button is clicked the output is of
+## type double with the value @code{0}.
 ## @seealso{uigetfile, uiputfile}
 ## @end deftypefn
-
-## Author: Kai Habel
 
 function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to Open")
 
@@ -44,14 +53,14 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
     init_path = fileparts (init_path);
   endif
 
-  if (__octave_link_enabled__ ())
+  if (__event_manager_enabled__ ())
     file_filter = cell (0, 2);
     default_file_name = "";
     dialog_position = [240, 120];
     dialog_mode = "dir";
 
     [filename, dirname, filterindex] ...
-      = __octave_link_file_dialog__ (file_filter, dialog_name,
+      = __event_manager_file_dialog__ (file_filter, dialog_name,
                                      default_file_name, dialog_position,
                                      dialog_mode, init_path);
   else

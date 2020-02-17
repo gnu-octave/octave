@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2001-2019 Ben Sapp
-Copyright (C) 2007-2009 John Swensen
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2001-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -36,12 +38,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "defun-int.h"
-#include "call-stack.h"
 #include "error.h"
+#include "event-manager.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
 #include "oct-map.h"
-#include "octave-link.h"
 #include "ov-usr-fcn.h"
 #include "ov.h"
 #include "ovl.h"
@@ -58,13 +59,16 @@ namespace octave
 
   void bp_table::dbclear_all_signals (void)
   {
-    Vdebug_on_error = false;
+    interpreter& interp = m_evaluator.get_interpreter ();
+    error_system& es = interp.get_error_system ();
+
+    es.debug_on_error (false);
     bp_table::m_errors_that_stop.clear ();
 
-    Vdebug_on_caught = false;
+    es.debug_on_caught (false);
     bp_table::m_caught_that_stop.clear ();
 
-    Vdebug_on_warning = false;
+    es.debug_on_warning (false);
     bp_table::m_warnings_that_stop.clear ();
 
     Vdebug_on_interrupt = false;
@@ -75,6 +79,9 @@ namespace octave
 
   void bp_table::dbstop_process_map_args (const octave_map& mv)
   {
+    interpreter& interp = m_evaluator.get_interpreter ();
+    error_system& es = interp.get_error_system ();
+
     // process errs
     // why so many levels of indirection needed?
     bool fail = false;
@@ -85,7 +92,7 @@ namespace octave
       {
         Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
         if (W.isempty () || W(0).isempty ())
-          Vdebug_on_error = 1;    // like "dbstop if error" with no identifier
+          es.debug_on_error (true);    // like "dbstop if error" with no identifier
         else if (! W(0).iscell ())
           fail = true;
         else
@@ -94,7 +101,7 @@ namespace octave
             for (int i = 0; i < V.numel (); i++)
               {
                 m_errors_that_stop.insert (V(i).string_value ());
-                Vdebug_on_error = 1;
+                es.debug_on_error (true);
               }
           }
       }
@@ -112,7 +119,7 @@ namespace octave
       {
         Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
         if (W.isempty () || W(0).isempty ())
-          Vdebug_on_caught = 1;    // like "dbstop if caught error" with no ID
+          es.debug_on_caught (true);    // like "dbstop if caught error" with no ID
         else if (! W(0).iscell ())
           fail = true;
         else
@@ -121,7 +128,7 @@ namespace octave
             for (int i = 0; i < V.numel (); i++)
               {
                 m_caught_that_stop.insert (V(i).string_value ());
-                Vdebug_on_caught = 1;
+                es.debug_on_caught (true);
               }
           }
       }
@@ -139,7 +146,7 @@ namespace octave
       {
         Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
         if (W.isempty () || W(0).isempty ())
-          Vdebug_on_warning = 1;    // like "dbstop if warning" with no identifier
+          es.debug_on_warning (true);    // like "dbstop if warning" with no identifier
         else if (! W(0).iscell ())
           fail = true;
         else
@@ -148,7 +155,7 @@ namespace octave
             for (int i = 0; i < V.numel (); i++)
               {
                 m_warnings_that_stop.insert (V(i).string_value ());
-                Vdebug_on_warning = 1;
+                es.debug_on_warning (true);
               }
           }
       }
@@ -158,7 +165,7 @@ namespace octave
 
     // process interrupt
     if (mv.isfield ("intr"))
-      Vdebug_on_interrupt = 1;
+      Vdebug_on_interrupt = true;
   }
 
   // Insert a breakpoint in function fcn at line within file fname,
@@ -179,7 +186,11 @@ namespace octave
 
     if (cmds)
       {
-        retval = cmds->add_breakpoint (file, line, condition);
+        interpreter& interp = m_evaluator.get_interpreter ();
+
+        event_manager& evmgr = interp.get_event_manager ();
+
+        retval = cmds->add_breakpoint (evmgr, file, line, condition);
 
         for (auto& idx_line_p : retval)
           {
@@ -221,13 +232,17 @@ namespace octave
         else
           {
             tree_statement *stmt = nullptr;
-            if (! parser.m_stmt_list)
+
+            std::shared_ptr<tree_statement_list> stmt_list
+              = parser.statement_list ();
+
+            if (! stmt_list)
               error ("dbstop: "
                      "condition is not empty, but has nothing to evaluate");
             else
               {
-                if (parser.m_stmt_list->length () == 1
-                    && (stmt = parser.m_stmt_list->front ())
+                if (stmt_list->length () == 1
+                    && (stmt = stmt_list->front ())
                     && stmt->is_expression ())
                   {
                     tree_expression *expr = stmt->expression ();
@@ -252,29 +267,38 @@ namespace octave
     dbstop_none
   };
 
+  // FIXME: This function probably needs to be completely overhauled to
+  // correctly parse the full syntax of the dbstop command and properly
+  // reject incorrect forms.
+
   // Parse parameters (args) of dbstop and dbclear commands.
   // For dbstop, who=="dbstop"; for dbclear, who=="dbclear".
-  // The syntax is: dbstop [[in] symbol] [[at] line [line [...]]] [if condition]
+  // The syntax is: dbstop [[in] symbol] [[at] [method | line [line [...]]]] [if condition]
   // where the form of condition depends on whether or not a file or line has
-  // been seen.
+  // been seen.  IF symbol and method are specified, then symbol should
+  // be a class name.  Otherwise it should be a function name.
   // Also execute "if [error|warning|interrupt|naninf]" clauses.
 
   void bp_table::parse_dbfunction_params (const char *who,
                                           const octave_value_list& args,
-                                          std::string& symbol_name,
+                                          std::string& func_name,
+                                          std::string& class_name,
                                           bp_table::intmap& lines,
                                           std::string& cond)
   {
     int nargin = args.length ();
     int list_idx = 0;
-    symbol_name = "";
+    func_name = "";
+    class_name = "";
     lines = bp_table::intmap ();
 
     if (nargin == 0 || ! args(0).is_string ())
       print_usage (who);
 
     // elements already processed
-    bool seen_in = false, seen_at = false, seen_if = false;
+    bool seen_in = false;
+    bool seen_at = false;
+    bool seen_if = false;
     int pos = 0;
     dbstop_args tok = dbstop_none;
     while (pos < nargin)
@@ -315,10 +339,10 @@ namespace octave
         switch (tok)
           {
           case dbstop_in:
-            symbol_name = args(pos).string_value ();
+            func_name = args(pos).string_value ();
             if (seen_in)
               error ("%s: Too many function names specified -- %s",
-                     who, symbol_name.c_str ());
+                     who, func_name.c_str ());
             else if (seen_at || seen_if)
               error ("%s: function name must come before line number and 'if'",
                      who);
@@ -334,18 +358,36 @@ namespace octave
               error ("%s: line number must come before 'if' clause\n", who);
             seen_at = true;
 
-            if (! seen_in)
+            if (seen_if)
+              error ("%s: line number must come before 'if' clause\n", who);
+            else if (seen_in)
+              {
+                std::string arg = args(pos).string_value ();
+
+                // FIXME: we really want to distinguish number
+                // vs. method name here.
+
+                if (atoi (arg.c_str ()) == 0)
+                  {
+                    // We have class and function names but already
+                    // stored the class name in func_name.
+                    class_name = func_name;
+                    func_name = arg;
+                    pos++;
+                    break;
+                  }
+
+              }
+            else
               {
                 // It was a line number.  Get function name from debugger.
-                if (Vdebugging)
-                  symbol_name = m_evaluator.get_user_code ()->profiler_name ();
+                if (m_evaluator.in_debug_repl ())
+                  func_name = m_evaluator.get_user_code ()->profiler_name ();
                 else
                   error ("%s: function name must come before line number "
                          "and 'if'", who);
                 seen_in = true;
               }
-            else if (seen_if)
-              error ("%s: line number must come before 'if' clause\n", who);
 
             // Read a list of line numbers (or arrays thereof)
             for ( ; pos < nargin; pos++)
@@ -357,7 +399,7 @@ namespace octave
                     if (line > 0)
                       lines[list_idx++] = line;
                     else
-                      break;        // may be "if"
+                      break;        // may be "if" or a method name
                   }
                 else if (args(pos).isnumeric ())
                   {
@@ -389,28 +431,23 @@ namespace octave
             else    // stop on event (error, warning, interrupt, NaN/inf)
               {
                 std::string condition = args(pos).string_value ();
-                int on_off = ! strcmp(who, "dbstop");
+                bool on_off = ! strcmp (who, "dbstop");
 
-                // list of error/warning IDs to update
-                std::set<std::string> *id_list = nullptr;
-                bool *stop_flag = nullptr;         // Vdebug_on_... flag
+                // FIXME: the following seems a bit messy in the way it
+                // duplicates checks on CONDITION.
 
                 if (condition == "error")
-                  {
-                    id_list = &m_errors_that_stop;
-                    stop_flag = &Vdebug_on_error;
-                  }
+                  process_id_list (who, condition, args, nargin, pos, on_off,
+                                   m_errors_that_stop);
                 else if (condition == "warning")
-                  {
-                    id_list = &m_warnings_that_stop;
-                    stop_flag = &Vdebug_on_warning;
-                  }
+                  process_id_list (who, condition, args, nargin, pos, on_off,
+                                   m_warnings_that_stop);
                 else if (condition == "caught" && nargin > pos+1
                          && args(pos+1).string_value () == "error")
                   {
-                    id_list = &m_caught_that_stop;
-                    stop_flag = &Vdebug_on_caught;
                     pos++;
+                    process_id_list (who, condition, args, nargin, pos, on_off,
+                                     m_caught_that_stop);
                   }
                 else if (condition == "interrupt")
                   {
@@ -430,38 +467,6 @@ namespace octave
                   error ("%s: invalid condition %s",
                          who, condition.c_str ());
 
-                // process ID list for "dbstop if error <error_ID>" etc
-                if (id_list)
-                  {
-                    pos++;
-                    if (pos < nargin)       // only affect a single error ID
-                      {
-                        if (! args(pos).is_string () || nargin > pos+1)
-                          error ("%s: ID must be a single string", who);
-                        else if (on_off == 1)
-                          {
-                            id_list->insert (args(pos).string_value ());
-                            *stop_flag = true;
-                          }
-                        else
-                          {
-                            id_list->erase (args(pos).string_value ());
-                            if (id_list->empty ())
-                              *stop_flag = false;
-                          }
-                      }
-                    else   // unqualified.  Turn all on or off
-                      {
-                        id_list->clear ();
-                        *stop_flag = on_off;
-                        if (stop_flag == &Vdebug_on_error)
-                          {
-                            // Matlab stops on both.
-                            Vdebug_on_interrupt = on_off;
-                          }
-                      }
-                  }
-
                 pos = nargin;
               }
             break;
@@ -477,23 +482,77 @@ namespace octave
 %! dbclear all;   # Clear out breakpoints before test
 %! dbstop help;
 %! dbstop in ls;
-%! dbstop help at 100;
-%! dbstop in ls 100;    ## 100 is a comment; code line is at 103
-%! dbstop help 201 if a==5;
+%! dbstop help at 104;
+%! dbstop in ls 102;     ## 102 is a comment; code line is at 105
+%! dbstop help 204 if a==5;
 %! dbstop if error Octave:undefined-function;
 %! s = dbstatus;
 %! dbclear all;
 %! assert ({s.bkpt(:).name}, {"help", "help", "help>do_contents", "ls", "ls"});
-%! assert ([s.bkpt(:).line], [48, 100, 201, 58, 103]);
+%! assert ([s.bkpt(:).line], [55, 105, 207, 63, 102]);
 %! assert (s.errs, {"Octave:undefined-function"});
 */
+
+  void bp_table::set_stop_flag (const char *who, const std::string& condition,
+                                bool on_off)
+  {
+    interpreter& interp = m_evaluator.get_interpreter ();
+    error_system& es = interp.get_error_system ();
+
+    if (condition == "error")
+      es.debug_on_error (on_off);
+    else if (condition == "warning")
+      es.debug_on_warning (on_off);
+    else if (condition == "caught")
+      es.debug_on_caught (on_off);
+    else
+      error ("%s: internal error in set_stop_flag", who);
+  }
+
+  void bp_table::process_id_list (const char *who,
+                                  const std::string& condition,
+                                  const octave_value_list& args,
+                                  int nargin, int& pos, bool on_off,
+                                  std::set<std::string>& id_list)
+  {
+    pos++;
+
+    if (nargin > pos)       // only affect a single error ID
+      {
+        if (! args(pos).is_string () || nargin > pos+1)
+          error ("%s: ID must be a single string", who);
+        else if (on_off)
+          {
+            id_list.insert (args(pos).string_value ());
+            set_stop_flag (who, condition, true);
+          }
+        else
+          {
+            id_list.erase (args(pos).string_value ());
+            if (id_list.empty ())
+              set_stop_flag (who, condition, false);
+          }
+      }
+    else   // unqualified.  Turn all on or off
+      {
+        id_list.clear ();
+        set_stop_flag (who, condition, on_off);
+
+        if (condition == "error")
+          {
+            // Matlab stops on both.
+            Vdebug_on_interrupt = on_off;
+          }
+      }
+  }
 
   // Return the sub/nested/main function of MAIN_FCN that contains
   // line number LINENO of the source file.
   // If END_LINE != 0, *END_LINE is set to last line of the returned function.
 
   static octave_user_code * find_fcn_by_line (octave_user_code *main_fcn,
-                                              int lineno, int *end_line = nullptr)
+                                              int lineno,
+                                              int *end_line = nullptr)
   {
     octave_user_code *retval = nullptr;
     octave_user_code *next_fcn = nullptr;  // 1st function starting after lineno
@@ -554,10 +613,11 @@ namespace octave
   // Given file name fname, find the subfunction at line and create
   // a breakpoint there.  Put the system into debug_mode.
   bp_table::intmap bp_table::add_breakpoint (const std::string& fname,
+                                             const std::string& class_name,
                                              const bp_table::intmap& line,
                                              const std::string& condition)
   {
-    octave_user_code *main_fcn = m_evaluator.get_user_code (fname);
+    octave_user_code *main_fcn = m_evaluator.get_user_code (fname, class_name);
 
     if (! main_fcn)
       error ("add_breakpoint: unable to find function '%s'\n", fname.c_str ());
@@ -588,7 +648,7 @@ namespace octave
           }
       }
 
-    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
+    m_evaluator.reset_debug_state ();
 
     return retval;
   }
@@ -611,6 +671,10 @@ namespace octave
 
         if (results.length () > 0)
           {
+            interpreter& interp = m_evaluator.get_interpreter ();
+
+            event_manager& evmgr = interp.get_event_manager ();
+
             octave_idx_type len = line.size ();
 
             for (int i = 0; i < len; i++)
@@ -624,7 +688,7 @@ namespace octave
                     cmds->delete_breakpoint (lineno);
 
                     if (! file.empty ())
-                      octave_link::update_breakpoint (false, file, lineno);
+                      evmgr.update_breakpoint (false, file, lineno);
                   }
               }
 
@@ -684,7 +748,7 @@ namespace octave
           }
       }
 
-    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
+    m_evaluator.reset_debug_state ();
 
     return retval;
   }
@@ -707,7 +771,11 @@ namespace octave
 
         if (cmds)
           {
-            retval = cmds->remove_all_breakpoints (file);
+            interpreter& interp = m_evaluator.get_interpreter ();
+
+            event_manager& evmgr = interp.get_event_manager ();
+
+            retval = cmds->remove_all_breakpoints (evmgr, file);
 
             auto it = m_bp_set.find (fname);
             if (it != m_bp_set.end ())
@@ -718,7 +786,7 @@ namespace octave
       error ("remove_all_breakpoint_in_file: "
              "unable to find function %s\n", fname.c_str ());
 
-    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
+    m_evaluator.reset_debug_state ();
 
     return retval;
   }
@@ -735,7 +803,7 @@ namespace octave
         remove_all_breakpoints_in_file (*it);
       }
 
-    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
+    m_evaluator.reset_debug_state ();
   }
 
   std::string find_bkpt_list (octave_value_list slist, std::string match)
@@ -834,8 +902,11 @@ namespace octave
   {
     octave_map retval;
 
+    interpreter& interp = m_evaluator.get_interpreter ();
+    error_system& es = interp.get_error_system ();
+
     // print dbstop if error information
-    if (Vdebug_on_error)
+    if (es.debug_on_error ())
       {
         if (m_errors_that_stop.empty ())
           {
@@ -862,7 +933,7 @@ namespace octave
       }
 
     // print dbstop if caught error information
-    if (Vdebug_on_caught)
+    if (es.debug_on_caught ())
       {
         if (m_caught_that_stop.empty ())
           {
@@ -889,7 +960,7 @@ namespace octave
       }
 
     // print dbstop if warning information
-    if (Vdebug_on_warning)
+    if (es.debug_on_warning ())
       {
         if (m_warnings_that_stop.empty ())
           {

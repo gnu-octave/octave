@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} rundemos ()
@@ -26,10 +33,8 @@
 ##
 ## If no directory is specified, operate on all directories in Octave's search
 ## path for functions.
-## @seealso{demo, runtests, path}
+## @seealso{demo, oruntests, path}
 ## @end deftypefn
-
-## Author: jwe
 
 function rundemos (directory)
 

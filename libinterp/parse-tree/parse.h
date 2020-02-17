@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_parse_h)
 #define octave_parse_h 1
@@ -27,11 +30,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdio>
 
-#include <string>
-
 #include <deque>
 #include <map>
+#include <memory>
 #include <set>
+#include <string>
 
 #include "lex.h"
 #include "pt-misc.h"
@@ -68,7 +71,6 @@ namespace octave
   class tree_decl_init_list;
   class tree_expression;
   class tree_fcn_handle;
-  class tree_funcall;
   class tree_function_def;
   class tree_identifier;
   class tree_if_clause;
@@ -153,7 +155,51 @@ namespace octave
 
     ~base_parser (void);
 
+    base_lexer& get_lexer (void) const { return m_lexer; }
+
+    bool at_end_of_input (void) const { return m_lexer.m_end_of_input; }
+
     void reset (void);
+
+    void classdef_object (const std::shared_ptr<tree_classdef>& obj)
+    {
+      m_classdef_object = obj;
+    }
+
+    std::shared_ptr<tree_classdef> classdef_object (void) const
+    {
+      return m_classdef_object;
+    }
+
+    void statement_list (const std::shared_ptr<tree_statement_list>& lst)
+    {
+      m_stmt_list = lst;
+    }
+
+    std::shared_ptr<tree_statement_list> statement_list (void) const
+    {
+      return m_stmt_list;
+    }
+
+    void parsing_local_functions (bool flag)
+    {
+      m_parsing_local_functions = flag;
+    }
+
+    bool parsing_local_functions (void) const
+    {
+      return m_parsing_local_functions;
+    }
+
+    void endfunction_found (bool flag)
+    {
+      m_endfunction_found = flag;
+    }
+
+    bool endfunction_found (void) const
+    {
+      return m_endfunction_found;
+    }
 
     // Error messages for mismatched end tokens.
     void end_token_error (token *tok, token::end_tok_type expected);
@@ -161,12 +207,8 @@ namespace octave
     // Check to see that end tokens are properly matched.
     bool end_token_ok (token *tok, token::end_tok_type expected);
 
-    // Maybe print a warning if an assignment expression is used as the
-    // test in a logical expression.
-    void maybe_warn_assign_as_truth_value (tree_expression *expr);
-
-    // Maybe print a warning about switch labels that aren't constants.
-    void maybe_warn_variable_switch_label (tree_expression *expr);
+    // Handle pushing symbol table for new function scope.
+    bool push_fcn_symtab (void);
 
     // Build a constant.
     tree_constant * make_constant (int op, token *tok_val);
@@ -177,7 +219,7 @@ namespace octave
     // Build an anonymous function handle.
     tree_anon_fcn_handle *
     make_anon_fcn_handle (tree_parameter_list *param_list,
-                          tree_expression * expr);
+                          tree_expression * expr, const filepos& at_pos);
 
     // Build a colon expression.
     tree_expression *
@@ -275,6 +317,10 @@ namespace octave
     // Define a script.
     void make_script (tree_statement_list *cmds, tree_statement *end_script);
 
+    // Handle identifier that is recognized as a function name.
+    tree_identifier *
+    make_fcn_name (tree_identifier *id);
+
     // Define a function.
     tree_function_def *
     make_function (token *fcn_tok, tree_parameter_list *ret_list,
@@ -288,7 +334,8 @@ namespace octave
                     tree_statement_list *body, tree_statement *end_function);
 
     // Create a no-op statement for end_function.
-    tree_statement * make_end (const std::string& type, bool eof, int l, int c);
+    tree_statement * make_end (const std::string& type, bool eof,
+                               const filepos& beg_pos, const filepos& end_pos);
 
     // Do most of the work for defining a function.
     octave_user_function *
@@ -303,13 +350,6 @@ namespace octave
     // Reset state after parsing function.
     void
     recover_from_parsing_function (void);
-
-    tree_funcall *
-    make_superclass_ref (const std::string& method_nm,
-                         const std::string& class_nm);
-
-    tree_funcall *
-    make_meta_class_query (const std::string& class_nm);
 
     tree_classdef *
     make_classdef (token *tok_val, tree_classdef_attribute_list *a,
@@ -382,16 +422,16 @@ namespace octave
 
     // Finish building an array_list (common action for finish_matrix
     // and finish_cell).
-    tree_expression * finish_array_list (tree_array_list *a);
+    tree_expression * finish_array_list (tree_array_list *a, token *open_delim,
+                                         token *close_delim);
 
     // Finish building a matrix list.
-    tree_expression * finish_matrix (tree_matrix *m);
+    tree_expression * finish_matrix (tree_matrix *m, token *open_delim,
+                                     token *close_delim);
 
     // Finish building a cell list.
-    tree_expression * finish_cell (tree_cell *c);
-
-    // Maybe print a warning.  Duh.
-    void maybe_warn_missing_semi (tree_statement_list *);
+    tree_expression * finish_cell (tree_cell *c, token *open_delim,
+                                   token *close_delim);
 
     // Set the print flag for a statement based on the separator type.
     tree_statement_list *
@@ -409,8 +449,24 @@ namespace octave
     append_statement_list (tree_statement_list *list, char sep,
                            tree_statement *stmt, bool warn_missing_semi);
 
+    // Don't allow parsing command syntax.  If the parser/lexer is
+    // reset, this setting is also reset to the default (allow command
+    // syntax).
+    void disallow_command_syntax (void);
+
     // Generic error messages.
-    void bison_error (const std::string& s, int l = -1, int c = -1);
+    void bison_error (const std::string& s);
+    void bison_error (const std::string& s, const filepos& pos);
+    void bison_error (const std::string& s, int line, int column);
+
+    friend octave_value
+    parse_fcn_file (interpreter& interp, const std::string& full_file,
+                    const std::string& file, const std::string& dir_name,
+                    const std::string& dispatch_type,
+                    const std::string& package_name, bool require_file,
+                    bool force_script, bool autoload, bool relative_lookup);
+
+  protected:
 
     // Contains error message if Bison-generated parser returns non-zero
     // status.
@@ -462,7 +518,7 @@ namespace octave
     parent_scope_info m_function_scopes;
 
     // Pointer to the primary user function or user script function.
-    octave_function *m_primary_fcn_ptr;
+    octave_value m_primary_fcn;
 
     // List of subfunction names, initially in the order they are
     // installed in the symbol table, then ordered as they appear in the
@@ -470,17 +526,38 @@ namespace octave
     std::list<std::string> m_subfunction_names;
 
     // Pointer to the classdef object we just parsed, if any.
-    tree_classdef *m_classdef_object;
+    std::shared_ptr<tree_classdef> m_classdef_object;
 
     // Result of parsing input.
-    tree_statement_list *m_stmt_list;
+    std::shared_ptr <tree_statement_list> m_stmt_list;
 
     // State of the lexer.
     base_lexer& m_lexer;
 
     // Internal state of the Bison parser.
     void *m_parser_state;
+
+  private:
+
+    // Maybe print a warning if an assignment expression is used as the
+    // test in a logical expression.
+    void maybe_warn_assign_as_truth_value (tree_expression *expr);
+
+    // Maybe print a warning about switch labels that aren't constants.
+    void maybe_warn_variable_switch_label (tree_expression *expr);
+
+    // Maybe print a warning.
+    void maybe_warn_missing_semi (tree_statement_list *);
   };
+
+  // Publish externally used friend functions.
+
+  extern OCTAVE_API octave_value
+  parse_fcn_file (interpreter& interp, const std::string& full_file,
+                  const std::string& file, const std::string& dir_name,
+                  const std::string& dispatch_type,
+                  const std::string& package_name, bool require_file,
+                  bool force_script, bool autoload, bool relative_lookup);
 
   class parser : public base_parser
   {
@@ -543,15 +620,6 @@ namespace octave
   extern OCTINTERP_API std::string
   get_help_from_file (const std::string& nm, bool& symbol_found);
 
-  extern OCTINTERP_API
-  std::string lookup_autoload (const std::string& nm);
-
-  extern OCTINTERP_API string_vector
-  autoloaded_functions (void);
-
-  extern OCTINTERP_API string_vector
-  reverse_lookup_autoload (const std::string& nm);
-
   extern OCTINTERP_API octave_value
   load_fcn_from_file (const std::string& file_name,
                       const std::string& dir_name = "",
@@ -563,8 +631,12 @@ namespace octave
   extern OCTINTERP_API void
   source_file (const std::string& file_name,
                const std::string& context = "",
-               bool verbose = false, bool require_file = true,
-               const std::string& warn_for = "");
+               bool verbose = false, bool require_file = true);
+
+  extern OCTINTERP_API octave_value_list
+  feval (const char *name,
+         const octave_value_list& args = octave_value_list (),
+         int nargout = 0);
 
   extern OCTINTERP_API octave_value_list
   feval (const std::string& name,
@@ -577,7 +649,7 @@ namespace octave
          int nargout = 0);
 
   extern OCTINTERP_API octave_value_list
-  feval (octave_value& val,
+  feval (const octave_value& val,
          const octave_value_list& args = octave_value_list (),
          int nargout = 0);
 
@@ -595,96 +667,5 @@ namespace octave
   extern OCTINTERP_API void
   cleanup_statement_list (tree_statement_list **lst);
 }
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::eval_string' instead")
-extern OCTINTERP_API octave_value_list
-eval_string (const std::string& str, bool silent, int& parse_status,
-             int nargout);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::eval_string' instead")
-extern OCTINTERP_API octave_value
-eval_string (const std::string& str, bool silent, int& parse_status);
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::get_help_from_file' instead")
-static inline std::string
-get_help_from_file (const std::string& nm, bool& symbol_found,
-                    std::string& file)
-{
-  return octave::get_help_from_file (nm, symbol_found, file);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::get_help_from_file' instead")
-static inline std::string
-get_help_from_file (const std::string& nm, bool& symbol_found)
-{
-  return octave::get_help_from_file (nm, symbol_found);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::lookup_autoload' instead")
-static inline std::string
-lookup_autoload (const std::string& nm)
-{
-  return octave::lookup_autoload (nm);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::autoloaded_functions' instead")
-static inline string_vector
-autoloaded_functions (void)
-{
-  return octave::autoloaded_functions ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::reverse_lookup_autoload' instead")
-static inline string_vector
-reverse_lookup_autoload (const std::string& nm)
-{
-  return octave::reverse_lookup_autoload (nm);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::source_file' instead")
-static inline void
-source_file (const std::string& file_name,
-             const std::string& context = "",
-             bool verbose = false, bool require_file = true,
-             const std::string& warn_for = "")
-{
-  octave::source_file (file_name, context, verbose, require_file, warn_for);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::feval' instead")
-static inline octave_value_list
-feval (const std::string& name,
-       const octave_value_list& args = octave_value_list (),
-       int nargout = 0)
-{
-  return octave::feval (name, args, nargout);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::feval' instead")
-static inline octave_value_list
-feval (octave_function *fcn,
-       const octave_value_list& args = octave_value_list (),
-       int nargout = 0)
-{
-  return octave::feval (fcn, args, nargout);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::feval' instead")
-static inline octave_value_list
-feval (const octave_value_list& args, int nargout = 0)
-{
-  return octave::feval (args, nargout);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::cleanup_statement_list' instead")
-static inline void
-cleanup_statement_list (octave::tree_statement_list **lst)
-{
-  octave::cleanup_statement_list (lst);
-}
-
-#endif
 
 #endif

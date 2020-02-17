@@ -1,5 +1,9 @@
-## Copyright (C) 2005-2019 Søren Hauberg
-## Copyright (C) 2010 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} install (@var{files}, @var{handle_deps}, @var{prefix}, @var{archprefix}, @var{verbose}, @var{local_list}, @var{global_list}, @var{global_install})
@@ -257,11 +263,19 @@ function install (files, handle_deps, prefix, archprefix, verbose,
     if (global_install)
       idx = setdiff (1:length (global_packages), packages_to_uninstall);
       global_packages = save_order ({global_packages{idx}, descriptions{:}});
+      if (ispc)
+        ## On Windows ensure LFN paths are saved rather than 8.3 style paths
+        global_packages = standardize_paths (global_packages);
+      endif
+      global_packages = make_rel_paths (global_packages);
       save (global_list, "global_packages");
       installed_pkgs_lst = {local_packages{:}, global_packages{:}};
     else
       idx = setdiff (1:length (local_packages), packages_to_uninstall);
       local_packages = save_order ({local_packages{idx}, descriptions{:}});
+      if (ispc)
+        local_packages = standardize_paths (local_packages);
+      endif
       save (local_list, "local_packages");
       installed_pkgs_lst = {local_packages{:}, global_packages{:}};
     endif
@@ -304,11 +318,15 @@ endfunction
 
 function pkg = extract_pkg (nm, pat)
 
-  fid = fopen (nm, "rt");
+  mfile_encoding = __mfile_encoding__ ();
+  if (strcmp (mfile_encoding, "system"))
+    mfile_encoding = __locale_charset__ ();
+  endif
+  fid = fopen (nm, "rt", "n", mfile_encoding);
   pkg = "";
   if (fid >= 0)
     while (! feof (fid))
-      ln = fgetl (fid);
+      ln = __u8_validate__ (fgetl (fid));
       if (ln > 0)
         t = regexp (ln, pat, "tokens");
         if (! isempty (t))
@@ -503,8 +521,7 @@ function copy_files (desc, packdir, global_install)
       error ("couldn't copy files to the installation directory");
     endif
     if (isfolder (fullfile (desc.dir, getarch ()))
-        && ! strcmp (canonicalize_file_name (fullfile (desc.dir, getarch ())),
-                     canonicalize_file_name (octfiledir)))
+        && ! is_same_file (fullfile (desc.dir, getarch ()), octfiledir))
       if (! isfolder (octfiledir))
         ## Can be required to create up to three levels of dirs.
         octm1 = fileparts (octfiledir);
@@ -796,6 +813,9 @@ endfunction
 function generate_lookfor_cache (desc)
 
   dirs = strtrim (ostrsplit (genpath (desc.dir), pathsep ()));
+  if (ispc)
+    dirs = cellfun (@canonicalize_file_name, dirs, "uniformoutput", false);
+  endif
   for i = 1 : length (dirs)
     doc_cache_create (fullfile (dirs{i}, "doc-cache"), dirs{i});
   endfor

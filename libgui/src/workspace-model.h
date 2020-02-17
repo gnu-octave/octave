@@ -1,37 +1,40 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_workspace_model_h)
 #define octave_workspace_model_h 1
 
 #include <QAbstractTableModel>
-#include <QVector>
+#include <QChar>
+#include <QColor>
+#include <QList>
 #include <QSemaphore>
 #include <QStringList>
-#include <QChar>
-#include <QList>
-#include <QColor>
-#include <QSettings>
+#include <QVector>
+
+#include "gui-settings.h"
 
 #include "syminfo.h"
 
@@ -40,20 +43,17 @@ typedef QList<int> QIntList;
 
 namespace octave
 {
-  class workspace_model
-    : public QAbstractTableModel
+  class base_qobject;
+
+  class workspace_model : public QAbstractTableModel
   {
     Q_OBJECT
 
   public:
 
-    workspace_model (QObject *parent = nullptr);
+    workspace_model (base_qobject& oct_qobj, QObject *parent = nullptr);
 
     ~workspace_model (void) = default;
-
-    static QList<QColor> storage_class_default_colors (void);
-
-    static QStringList storage_class_names (void);
 
     int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 
@@ -66,9 +66,6 @@ namespace octave
 
     QVariant data (const QModelIndex& index, int role) const;
 
-    bool setData (const QModelIndex& index, const QVariant& value,
-                  int role = Qt::EditRole);
-
     bool is_top_level (void) const { return m_top_level; }
 
     QColor storage_class_color (int s_class)
@@ -78,6 +75,11 @@ namespace octave
 
     symbol_info_list get_symbol_info (void) const { return m_syminfo_list; }
 
+  signals:
+
+    void model_changed (void);
+    void prompt_variable_editor(void);
+
   public slots:
 
     void set_workspace (bool top_level, bool debug,
@@ -85,19 +87,14 @@ namespace octave
 
     void clear_workspace (void);
 
-    void notice_settings (const QSettings *);
-
-  signals:
-
-    void model_changed (void);
-    void prompt_variable_editor(void);
-
-    void rename_variable (const QString& old_name, const QString& new_name);
+    void notice_settings (const gui_settings *);
 
   private:
 
     void clear_data (void);
     void update_table (void);
+
+    base_qobject& m_octave_qobj;
 
     bool m_top_level;
     symbol_info_list m_syminfo_list;

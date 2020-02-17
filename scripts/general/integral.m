@@ -1,4 +1,9 @@
-## Copyright (C) 2017-2019 Nicholas Jankowski
+########################################################################
+##
+## Copyright (C) 2017-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{q} =} integral (@var{f}, @var{a}, @var{b})
@@ -238,14 +245,14 @@ endfunction
 ## tests from quadgk
 %!assert (integral (@sin,-pi,pi, "WayPoints",0, "AbsTol",1e-6, "RelTol",1e-3),
 %!        0, 1e-6)
-%!assert (integral (@(x) abs (1 - x.^2), 0, 2, "Waypoints", 1), 2, 1e-10);
-%!assert (integral (@(z) log (z),1+i,1+i, "WayPoints", [1-i, -1,-i, -1+i]),
-%!        -pi * 1i, 1e-10);
+%!assert (integral (@(x) abs (1 - x.^2), 0, 2, "Waypoints", 1), 2, 1e-10)
+%!assert (integral (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]),
+%!        complex (0, pi), 1e-10)
 
 ## tests from quadv
 ## Test vector-valued functions
 %!assert (integral (@(x) [(sin (x)), (sin (2*x))], 0, pi, "ArrayValued", 1),
-%!        [2, 0], 1e-10);
+%!        [2, 0], 1e-10)
 
 ## Test matrix-valued functions
 %!test

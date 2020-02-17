@@ -1,4 +1,9 @@
-## Copyright (C) 2003-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2003-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,14 +20,14 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} isstr (@var{x})
 ## This function is obsolete.  Use @code{ischar} instead.
 ## @seealso{ischar}
 ## @end deftypefn
-
-## Author: jwe
 
 ## At one time, Matlab docs stated that this function is obsolete and would be
 ## removed in some future version.  Now users are told that it should be

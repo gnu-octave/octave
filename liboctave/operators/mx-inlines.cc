@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2009 Jaroslav Hajek
-Copyright (C) 2009 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_mx_inlines_h)
 #define octave_mx_inlines_h 1
@@ -539,8 +540,8 @@ do_sm_binary_op (const X& x, const Array<Y>& y,
 template <typename R, typename X>
 inline Array<R>&
 do_mm_inplace_op (Array<R>& r, const Array<X>& x,
-                  void (*op) (size_t, R *, const X *) ,
-                  void (*op1) (size_t, R *, X) ,
+                  void (*op) (size_t, R *, const X *),
+                  void (*op1) (size_t, R *, X),
                   const char *opname)
 {
   dim_vector dr = r.dims ();

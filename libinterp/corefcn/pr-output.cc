@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -104,8 +107,8 @@ static bool print_e = false;
 // TRUE means use a g format.
 static bool print_g = false;
 
-// TRUE means print E instead of e for exponent field.
-static bool print_big_e = false;
+// TRUE means print uppercase E in exponent field and A-F in hex format.
+static bool uppercase_format = false;
 
 // TRUE means use an engineering format.
 static bool print_eng = false;
@@ -124,8 +127,7 @@ calc_scale_exp (const int& x)
   // compiler dependent if any of the arguments are negative.  Since
   // this function will need to work on negative arguments, and we want
   // to avoid portability issues, we re-implement the modulo function to
-  // the desired behavior (truncation).  There may be a gnulib
-  // replacement.
+  // the desired behavior (truncation).  There may be a gnulib replacement.
 
   // ISO/IEC 14882:2003 : Programming languages -- C++. 5.6.4: ISO,
   // IEC. 2003 . "the binary % operator yields the remainder from the
@@ -188,27 +190,35 @@ operator << (std::ostream& os, const pr_engineering_float<T>& pef)
 
   float_format real_fmt = pef.m_ff;
 
-  if (real_fmt.fw >= 0)
-    os << std::setw (real_fmt.fw - real_fmt.ex);
+  if (real_fmt.width () >= 0)
+    os << std::setw (real_fmt.width () - real_fmt.exponent_width ());
 
-  if (real_fmt.prec >= 0)
-    os << std::setprecision (real_fmt.prec);
+  if (real_fmt.precision () >= 0)
+    os << std::setprecision (real_fmt.precision ());
 
-  os.flags (static_cast<std::ios::fmtflags>
-            (real_fmt.fmt | real_fmt.up | real_fmt.sp));
+  os.flags (real_fmt.format_flags ());
 
   os << pef.mantissa ();
 
   int ex = pef.exponent ();
   if (ex < 0)
     {
-      os << std::setw (0) << "e-";
+      if (uppercase_format)
+        os << std::setw (0) << "E-";
+      else
+        os << std::setw (0) << "e-";
       ex = -ex;
     }
   else
-    os << std::setw (0) << "e+";
+    {
+      if (uppercase_format)
+        os << std::setw (0) << "E+";
+      else
+        os << std::setw (0) << "e+";
+    }
 
-  os << std::setw (real_fmt.ex - 2) << std::setfill ('0') << ex;
+  os << std::setw (real_fmt.exponent_width () - 2)
+     << std::setfill ('0') << ex;
 
   return os;
 }
@@ -221,14 +231,13 @@ operator << (std::ostream& os, const pr_formatted_float<T>& pff)
 
   float_format real_fmt = pff.m_ff;
 
-  if (real_fmt.fw >= 0)
-    os << std::setw (real_fmt.fw);
+  if (real_fmt.width () >= 0)
+    os << std::setw (real_fmt.width ());
 
-  if (real_fmt.prec >= 0)
-    os << std::setprecision (real_fmt.prec);
+  if (real_fmt.precision () >= 0)
+    os << std::setprecision (real_fmt.precision ());
 
-  os.flags (static_cast<std::ios::fmtflags>
-            (real_fmt.fmt | real_fmt.up | real_fmt.sp));
+  os.flags (real_fmt.format_flags ());
 
   os << pff.m_val;
 
@@ -242,20 +251,46 @@ operator << (std::ostream& os, const pr_rational_float<T>& prf)
   octave::preserve_stream_state stream_state (os);
 
   float_format real_fmt = prf.m_ff;
+  bool have_neg_sign = prf.m_val < 0;
 
-  int fw = (rat_string_len > 0 ? rat_string_len : real_fmt.fw);
-  std::string s = rational_approx (prf.m_val, fw);
+  int fw = (rat_string_len > 0 ? rat_string_len : real_fmt.width ());
+  std::string s;
+
+  if (have_neg_sign)
+    s = rational_approx (prf.m_val, fw);
+  else
+    s = rational_approx (prf.m_val, fw-1);
 
   if (fw >= 0)
     os << std::setw (fw);
 
-  os.flags (static_cast<std::ios::fmtflags>
-            (real_fmt.fmt | real_fmt.up | real_fmt.sp));
+  os.flags (real_fmt.format_flags ());
 
-  if (fw > 0 && s.length () > static_cast<unsigned int> (fw))
-    os << '*';
-  else
-    os << s;
+  if (s == "0")
+    s = '*';
+  else if (fw > 0)
+    {
+      if (s.find ('/') != std::string::npos)
+        {
+          if (s.length () > (static_cast<unsigned int> (fw)))
+            s = '*';
+        }
+      else
+        {
+          if (have_neg_sign)
+            {
+              if (s.length () > (static_cast<unsigned int> (fw) - 2))
+                s = '*';
+            }
+          else
+            {
+              if (s.length () > (static_cast<unsigned int> (fw) - 3))
+                s = '*';
+            }
+        }
+    }
+
+  os << s;
 
   return os;
 }
@@ -371,9 +406,9 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
     }
   else if (bank_format)
     {
-      fw = (digits < 0 ? 5 : digits + 4);
-      if (inf_or_nan && fw < 5)
-        fw = 5;
+      fw = (digits < 0 ? 4 : digits + 3);
+      if (inf_or_nan)
+        fw = 3;
       rd = 2;
     }
   else if (hex_format)
@@ -386,17 +421,15 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
       fw = 8 * sizeof (T);
       rd = 0;
     }
-  else if (inf_or_nan || int_only)
+  else if (inf_or_nan)
     {
-      fw = 1 + digits;
-      if (inf_or_nan && fw < 4)
-        fw = 4;
-
-      if (int_only)
-        {
-          ld = digits;
-          rd = 0;
-        }
+      fw = 3;
+    }
+  else if (int_only)
+    {
+      fw = digits;
+      ld = digits;
+      rd = 0;
     }
   else
     {
@@ -405,22 +438,28 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
           ld = digits;
           rd = (prec > digits ? prec - digits : prec);
         }
-      else
+      else if (digits < 0)
         {
           ld = 1;
           rd = (prec > digits ? prec - digits : prec);
         }
+      else
+        {
+          ld = 1;
+          rd = (prec > digits ? prec - 1 : prec);
+        }
 
-      fw = 1 + ld + 1 + rd;
+      fw = ld + 1 + rd;
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e || print_g || print_eng
           || ld + rd > pr_output_traits<T>::digits10
-          || fw > pr_output_traits<T>::max_field_width))
+          || fw > pr_output_traits<T>::max_field_width
+          || ld + rd > (1.5 * prec)))
     {
       if (print_g)
-        fmt = float_format ();
+        fmt = float_format (prec, prec);
       else
         {
           // e+ddd
@@ -429,28 +468,34 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
           if (print_eng)
             {
               // -ddd.
-              fw = 5 + prec + ex;
-              if (inf_or_nan && fw < 6)
-                fw = 6;
+              fw = 1 + prec + ex;
+              if (inf_or_nan)
+                {
+                  fw = 3;
+                  ex = 0;
+                }
               fmt = float_format (fw, ex, prec - 1, std::ios::fixed);
             }
           else
             {
               // -d.
-              fw = 3 + prec + ex;
-              if (inf_or_nan && fw < 4)
-                fw = 4;
+              fw = prec + ex;
+              if (inf_or_nan)
+                {
+                  fw = 3;
+                  ex = 0;
+                }
               fmt = float_format (fw, ex, prec - 1, std::ios::scientific);
             }
         }
-
-      if (print_big_e)
-        fmt.uppercase ();
     }
   else if (! bank_format && (inf_or_nan || int_only))
     fmt = float_format (fw, ld);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
+
+  if (uppercase_format)
+    fmt.uppercase ();
 
   return float_display_format (fmt);
 }
@@ -526,7 +571,7 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
     }
   else if (Vfixed_point_format && ! print_g)
     {
-      rd = prec;
+      rd = prec - 1;
       fw = rd + 3;
       if (inf_or_nan && fw < 4)
         fw = 4;
@@ -548,11 +593,17 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
-      else
+      else if (x_max < 0)
         {
           ld_max = 1;
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
+        }
+      else
+        {
+          ld_max = 1;
+          rd_max = (prec > 1 ? prec - 1 : prec);
+          x_max = 1;
         }
 
       int ld_min, rd_min;
@@ -562,11 +613,17 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
-      else
+      else if (x_min < 0)
         {
           ld_min = 1;
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
+        }
+      else
+        {
+          ld_min = 1;
+          rd_min = (prec > 1 ? prec - 1 : prec);
+          x_min = 1;
         }
 
       ld = (ld_max > ld_min ? ld_max : ld_min);
@@ -581,10 +638,11 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
       && (print_e || print_eng || print_g
           || (! Vfixed_point_format
               && (ld + rd > pr_output_traits<T>::digits10
-                  || fw > pr_output_traits<T>::max_field_width))))
+                  || fw > pr_output_traits<T>::max_field_width
+                  || ld + rd > (1.5 * prec)))))
     {
       if (print_g)
-        fmt = float_format ();
+        fmt = float_format (prec+6, prec);
       else
         {
           int ex = 4;
@@ -606,14 +664,14 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
               fmt = float_format (fw, prec - 1, std::ios::scientific);
             }
         }
-
-      if (print_big_e)
-        fmt.uppercase ();
     }
   else if (! bank_format && int_or_inf_or_nan)
     fmt = float_format (fw, rd);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
+
+  if (uppercase_format)
+    fmt.uppercase ();
 
   return float_display_format (scale, fmt);
 }
@@ -723,11 +781,17 @@ make_complex_format (int x_max, int x_min, int r_x,
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
-      else
+      else if (x_max < 0)
         {
           ld_max = 1;
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
+        }
+      else
+        {
+          ld_max = 1;
+          rd_max = (prec > 1 ? prec - 1 : prec);
+          x_max = 1;
         }
 
       int ld_min, rd_min;
@@ -737,11 +801,17 @@ make_complex_format (int x_max, int x_min, int r_x,
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
-      else
+      else if (x_min < 0)
         {
           ld_min = 1;
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
+        }
+      else
+        {
+          ld_min = 1;
+          rd_min = (prec > 1 ? prec - 1 : prec);
+          x_min = 1;
         }
 
       ld = (ld_max > ld_min ? ld_max : ld_min);
@@ -755,12 +825,14 @@ make_complex_format (int x_max, int x_min, int r_x,
       && (print_e || print_eng || print_g
           || ld + rd > pr_output_traits<T>::digits10
           || r_fw > pr_output_traits<T>::max_field_width
-          || i_fw > pr_output_traits<T>::max_field_width))
+          || i_fw > pr_output_traits<T>::max_field_width
+          || ld + rd > (1.5 * prec)))
     {
       if (print_g)
         {
-          r_fmt = float_format ();
-          i_fmt = float_format ();
+          int width = prec + 6;
+          r_fmt = float_format (width, prec);
+          i_fmt = float_format (width, prec);
         }
       else
         {
@@ -794,7 +866,7 @@ make_complex_format (int x_max, int x_min, int r_x,
             }
         }
 
-      if (print_big_e)
+      if (uppercase_format)
         {
           r_fmt.uppercase ();
           i_fmt.uppercase ();
@@ -911,9 +983,9 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
     }
   else if (Vfixed_point_format && ! print_g)
     {
-      rd = prec;
+      rd = prec - 1;
       i_fw = rd + 1;
-      r_fw = i_fw + 1;
+      r_fw = i_fw + 2;
       if (inf_or_nan && i_fw < 3)
         {
           i_fw = 3;
@@ -941,11 +1013,17 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
-      else
+      else if (x_max < 0)
         {
           ld_max = 1;
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
+        }
+      else
+        {
+          ld_max = 1;
+          rd_max = (prec > 1 ? prec - 1 : prec);
+          x_max = 1;
         }
 
       int ld_min, rd_min;
@@ -955,11 +1033,17 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
-      else
+      else if (x_min < 0)
         {
           ld_min = 1;
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
+        }
+      else
+        {
+          ld_min = 1;
+          rd_min = (prec > 1 ? prec - 1 : prec);
+          x_min = 1;
         }
 
       ld = (ld_max > ld_min ? ld_max : ld_min);
@@ -979,12 +1063,14 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
           || (! Vfixed_point_format
               && (ld + rd > pr_output_traits<T>::digits10
                   || r_fw > pr_output_traits<T>::max_field_width
-                  || i_fw > pr_output_traits<T>::max_field_width))))
+                  || i_fw > pr_output_traits<T>::max_field_width
+                  || ld + rd > (1.5 * prec)))))
     {
       if (print_g)
         {
-          r_fmt = float_format ();
-          i_fmt = float_format ();
+          int width = prec + 6;
+          r_fmt = float_format (width, prec);
+          i_fmt = float_format (width, prec);
         }
       else
         {
@@ -1018,7 +1104,7 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
             }
         }
 
-      if (print_big_e)
+      if (uppercase_format)
         {
           r_fmt.uppercase ();
           i_fmt.uppercase ();
@@ -1142,7 +1228,7 @@ make_range_format (int x_max, int x_min, int all_ints)
     }
   else if (Vfixed_point_format && ! print_g)
     {
-      rd = prec;
+      rd = prec - 1;
       fw = rd + 3;
     }
   else
@@ -1154,11 +1240,17 @@ make_range_format (int x_max, int x_min, int all_ints)
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
-      else
+      else if (x_max < 0)
         {
           ld_max = 1;
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
+        }
+      else
+        {
+          ld_max = 1;
+          rd_max = (prec > 1 ? prec - 1 : prec);
+          x_max = 1;
         }
 
       int ld_min, rd_min;
@@ -1168,11 +1260,17 @@ make_range_format (int x_max, int x_min, int all_ints)
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
-      else
+      else if (x_min < 0)
         {
           ld_min = 1;
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
+        }
+      else
+        {
+          ld_min = 1;
+          rd_min = (prec > 1 ? prec - 1 : prec);
+          x_min = 1;
         }
 
       ld = (ld_max > ld_min ? ld_max : ld_min);
@@ -1185,10 +1283,11 @@ make_range_format (int x_max, int x_min, int all_ints)
       && (print_e || print_eng || print_g
           || (! Vfixed_point_format
               && (ld + rd > pr_output_traits<T>::digits10
-                  || fw > pr_output_traits<T>::max_field_width))))
+                  || fw > pr_output_traits<T>::max_field_width
+                  || ld + rd > (1.5 * prec)))))
     {
       if (print_g)
-        fmt = float_format ();
+        fmt = float_format (prec+6, prec);
       else
         {
           int ex = 4;
@@ -1206,14 +1305,14 @@ make_range_format (int x_max, int x_min, int all_ints)
               fmt = float_format (fw, prec - 1, std::ios::scientific);
             }
         }
-
-      if (print_big_e)
-        fmt.uppercase ();
     }
   else if (! bank_format && all_ints)
     fmt = float_format (fw, rd);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
+
+  if (uppercase_format)
+    fmt.uppercase ();
 
   return float_display_format (scale, fmt);
 }
@@ -1300,7 +1399,7 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
   //   {bit,hex}_format == 1: print big-endian
   //   {bit,hex}_format == 2: print native
 
-  int fw = fmt.fw;
+  int fw = fmt.width ();
 
   if (hex_format)
     {
@@ -1314,11 +1413,14 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
       // FIXME: Will bad things happen if we are interrupted before resetting
       //        the format flags and fill character?
 
-      octave::mach_info::float_format flt_fmt =
-        octave::mach_info::native_float_format ();
+      octave::mach_info::float_format flt_fmt
+        = octave::mach_info::native_float_format ();
 
       os.fill ('0');
-      os.flags (std::ios::right | std::ios::hex);
+      if (uppercase_format)
+        os.flags (std::ios::right | std::ios::hex | std::ios::uppercase);
+      else
+        os.flags (std::ios::right | std::ios::hex);
 
       if (hex_format > 1
           || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
@@ -1337,8 +1439,8 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
       equiv<T> tmp;
       tmp.val = val;
 
-      octave::mach_info::float_format flt_fmt =
-        octave::mach_info::native_float_format ();
+      octave::mach_info::float_format flt_fmt
+        = octave::mach_info::native_float_format ();
 
       if (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
         {
@@ -1358,6 +1460,15 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
                 PRINT_CHAR_BITS (os, tmp.i[i]);
             }
         }
+    }
+  else if (val == 0)
+    {
+      octave::preserve_stream_state stream_state (os);
+
+      if (fw > 0)
+        os << std::setw (fw) << "0";
+      else
+        os << "0";
     }
   else if (octave::math::isna (val))
     {
@@ -1406,7 +1517,7 @@ pr_float (std::ostream& os, const float_display_format& fmt, T val)
 {
   double scale = fmt.scale_factor ();
 
-  if (Vfixed_point_format && ! print_g && scale != 1)
+  if (Vfixed_point_format && ! (print_g || print_e) && scale != 1)
     val /= scale;
 
   pr_any_float (os, fmt.real_format (), val);
@@ -1416,6 +1527,11 @@ template <typename T>
 static inline void
 pr_imag_float (std::ostream& os, const float_display_format& fmt, T val)
 {
+  double scale = fmt.scale_factor ();
+
+  if (Vfixed_point_format && ! (print_g || print_e) && scale != 1)
+    val /= scale;
+
   pr_any_float (os, fmt.imag_format (), val);
 }
 
@@ -1424,24 +1540,13 @@ static inline void
 pr_float (std::ostream& os, const float_display_format& fmt,
           const std::complex<T>& cval)
 {
-  // FIXME: should we range check this value?  It is stored as a double
-  // to simplify the implementation, but should always correspond to the
-  // type of value we are displaying.
-
-  double dscale = fmt.scale_factor ();
-  T scale = static_cast<T> (dscale);
-
-  std::complex<T> tmp
-    = ((Vfixed_point_format && ! print_g && scale != 1)
-       ? cval / scale : cval);
-
-  T r = tmp.real ();
+  T r = cval.real ();
 
   pr_float (os, fmt, r);
 
   if (! bank_format)
     {
-      T i = tmp.imag ();
+      T i = cval.imag ();
       if (! (hex_format || bit_format) && lo_ieee_signbit (i))
         {
           os << " - ";
@@ -1503,7 +1608,7 @@ print_empty_nd_array (std::ostream& os, const dim_vector& dims,
 static inline void
 pr_scale_header (std::ostream& os, double scale)
 {
-  if (Vfixed_point_format && ! print_g && scale != 1)
+  if (Vfixed_point_format && ! (print_g || print_e) && scale != 1)
     {
       octave::preserve_stream_state stream_state (os);
 
@@ -1754,8 +1859,8 @@ pr_plus_format_matrix (std::ostream& os, const MT& m)
 static inline int
 get_column_width (const float_display_format& fmt)
 {
-  int r_fw = fmt.real_format().fw;
-  int i_fw = fmt.imag_format().fw;
+  int r_fw = fmt.real_format().width ();
+  int i_fw = fmt.imag_format().width ();
 
   int retval = r_fw + i_fw + 2;
 
@@ -2721,7 +2826,10 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
       octave::preserve_stream_state stream_state (os);
 
       os.fill ('0');
-      os.flags (std::ios::right | std::ios::hex);
+      if (uppercase_format)
+        os.flags (std::ios::right | std::ios::hex | std::ios::uppercase);
+      else
+        os.flags (std::ios::right | std::ios::hex);
 
       if (hex_format > 1 || octave::mach_info::words_big_endian ())
         {
@@ -2807,7 +2915,7 @@ octave_print_internal_template (std::ostream& os,
         {
           float_format r_fmt = fmt.real_format ();
 
-          pr_int (os, val, r_fmt.fw);
+          pr_int (os, val, r_fmt.width ());
         }
     }
 }
@@ -3128,6 +3236,16 @@ x = str2num (r)
   if (! arg.isnumeric ())
     error ("rats: X must be numeric");
 
+  if (arg.isempty ())
+    return ovl (octave_value (""));
+
+  // Convert to N-D arrays to 2-D arrays for Matlab compatibility
+  if (arg.ndims () > 2)
+    {
+      dim_vector dv (arg.rows (), arg.numel () / arg.rows ());
+      arg = arg.reshape (dv);
+    }
+
   octave::unwind_protect frame;
 
   frame.protect_var (rat_string_len);
@@ -3169,17 +3287,39 @@ x = str2num (r)
 }
 
 /*
-%!assert (rats (2.0005, 9), "4001/2000")
-%!assert (rats (-2.0005, 10), "-4001/2000")
-%!assert (strtrim (rats (2.0005, 30)), "4001/2000")
-%!assert (pi - str2num (rats (pi, 30)), 0, 4 * eps)
-%!assert (e - str2num (rats (e, 30)), 0, 4 * eps)
-%!assert (rats (123, 2), " *")
+%!test <*56941>
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format short;
+%!   assert (rats (-2.0005, 10), "-4001/2000");
+%!   assert (strtrim (rats (2.0005, 30)), "4001/2000");
+%!   assert (pi - str2num (rats (pi, 30)), 0, 4 * eps);
+%!   assert (e - str2num (rats (e, 30)), 0, 4 * eps);
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
 
-%!test
-%! v = 1 / double (intmax);
-%! err = v - str2num (rats(v, 12));
-%! assert (err, 0, 4 * eps);
+%!test <*57003>
+%! x = ones (2,1,3);
+%! s = rats (x,4);
+%! assert (ndims (s) == 2);
+%! assert (rows (s) == 2);
+%! assert (columns (s) == 3 * 6);
+
+%!assert <*57004> (rats ([]), '')
+
+%!xtest <57704>
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format short;
+%!   assert (rats (2.0005, 9), "4001/2000");
+%!   assert (rats (123, 2), " *");
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
+
 */
 
 DEFUN (disp, args, nargout,
@@ -3397,7 +3537,7 @@ of properly displaying the object's name.  This can be done by using the
 %! unwind_protect
 %!   format short;
 %!   str = evalc ("x = 1.1; display (x)");
-%!   assert (str, "x =  1.1000\n");
+%!   assert (str, "x = 1.1000\n");
 %! unwind_protect_cleanup
 %!   format (old_fmt);
 %!   format (old_spacing);
@@ -3408,7 +3548,7 @@ of properly displaying the object's name.  This can be done by using the
 %! unwind_protect
 %!   format short;
 %!   str = evalc ("display (1.1)");
-%!   assert (str, " 1.1000\n");
+%!   assert (str, "1.1000\n");
 %! unwind_protect_cleanup
 %!   format (old_fmt);
 %!   format (old_spacing);
@@ -3429,7 +3569,6 @@ init_format_state (void)
   hex_format = 0;
   bit_format = 0;
   print_e = false;
-  print_big_e = false;
   print_g = false;
   print_eng = false;
 }
@@ -3439,249 +3578,237 @@ static std::string format_string ("short");
 static inline void
 set_format_style (int argc, const string_vector& argv)
 {
+  if (--argc == 0)
+    {
+      // Special case of no options, reset to default values
+      init_format_state ();
+      set_output_prec (5);
+      format_string = "short";
+      Vcompact_format = false;
+      uppercase_format = false;
+      return;
+    }
+
   int idx = 1;
   std::string format;
 
-  if (--argc > 0)
+  octave::unwind_protect frame;
+
+  frame.protect_var (bank_format);
+  frame.protect_var (bit_format);
+  frame.protect_var (free_format);
+  frame.protect_var (hex_format);
+  frame.protect_var (plus_format);
+  frame.protect_var (plus_format_chars);
+  frame.protect_var (rat_format);
+  frame.protect_var (print_e);
+  frame.protect_var (print_eng);
+  frame.protect_var (print_g);
+  frame.protect_var (format_string);
+  frame.protect_var (Vcompact_format);
+  frame.protect_var (uppercase_format);
+  int prec = output_precision ();
+  frame.add ([prec] (void) { set_output_prec (prec); });
+
+  format = format_string;   // Initialize with existing value
+  while (argc-- > 0)
     {
       std::string arg = argv[idx++];
-      format = arg;
+      std::transform (arg.begin (), arg.end (), arg.begin (), tolower);
 
       if (arg == "short")
         {
-          if (--argc > 0)
+          format = arg;
+          init_format_state ();
+          if (argc > 0)
             {
-              arg = argv[idx++];
-              format.append (arg);
-
+              arg = argv[idx];
               if (arg == "e")
                 {
-                  init_format_state ();
                   print_e = true;
-                }
-              else if (arg == "E")
-                {
-                  init_format_state ();
-                  print_e = true;
-                  print_big_e = true;
+                  format.append (arg);
+                  argc--; idx++;
                 }
               else if (arg == "g")
                 {
                   init_format_state ();
                   print_g = true;
-                }
-              else if (arg == "G")
-                {
-                  init_format_state ();
-                  print_g = true;
-                  print_big_e = true;
+                  format.append (arg);
+                  argc--; idx++;
                 }
               else if (arg == "eng")
                 {
                   init_format_state ();
                   print_eng = true;
+                  format.append (arg);
+                  argc--; idx++;
                 }
-              else
-                error ("format: unrecognized option 'short %s'", arg.c_str ());
             }
-          else
-            init_format_state ();
-
           set_output_prec (5);
         }
       else if (arg == "shorte")
         {
+          format = arg;
           init_format_state ();
           print_e = true;
-          set_output_prec (5);
-        }
-      else if (arg == "shortE")
-        {
-          init_format_state ();
-          print_e = true;
-          print_big_e = true;
           set_output_prec (5);
         }
       else if (arg == "shortg")
         {
+          format = arg;
           init_format_state ();
           print_g = true;
           set_output_prec (5);
         }
-      else if (arg == "shortG")
+      else if (arg == "shorteng")
         {
-          init_format_state ();
-          print_g = true;
-          print_big_e = true;
-          set_output_prec (5);
-        }
-      else if (arg == "shortEng")
-        {
+          format = arg;
           init_format_state ();
           print_eng = true;
           set_output_prec (5);
         }
       else if (arg == "long")
         {
-          if (--argc > 0)
+          format = arg;
+          init_format_state ();
+          if (argc > 0)
             {
-              arg = argv[idx++];
-              format.append (arg);
+              arg = argv[idx];
 
               if (arg == "e")
                 {
-                  init_format_state ();
                   print_e = true;
-                }
-              else if (arg == "E")
-                {
-                  init_format_state ();
-                  print_e = true;
-                  print_big_e = true;
+                  format.append (arg);
+                  argc--; idx++;
                 }
               else if (arg == "g")
                 {
-                  init_format_state ();
                   print_g = true;
-                }
-              else if (arg == "G")
-                {
-                  init_format_state ();
-                  print_g = true;
-                  print_big_e = true;
+                  format.append (arg);
+                  argc--; idx++;
                 }
               else if (arg == "eng")
                 {
-                  init_format_state ();
                   print_eng = true;
+                  format.append (arg);
+                  argc--; idx++;
                 }
-              else
-                error ("format: unrecognized option 'long %s'", arg.c_str ());
             }
-          else
-            init_format_state ();
-
           set_output_prec (16);
         }
       else if (arg == "longe")
         {
+          format = arg;
           init_format_state ();
           print_e = true;
-          set_output_prec (16);
-        }
-      else if (arg == "longE")
-        {
-          init_format_state ();
-          print_e = true;
-          print_big_e = true;
           set_output_prec (16);
         }
       else if (arg == "longg")
         {
+          format = arg;
           init_format_state ();
           print_g = true;
           set_output_prec (16);
         }
-      else if (arg == "longG")
+      else if (arg == "longeng")
         {
-          init_format_state ();
-          print_g = true;
-          print_big_e = true;
-          set_output_prec (16);
-        }
-      else if (arg == "longEng")
-        {
+          format = arg;
           init_format_state ();
           print_eng = true;
           set_output_prec (16);
         }
       else if (arg == "hex")
         {
+          format = arg;
           init_format_state ();
           hex_format = 1;
         }
       else if (arg == "native-hex")
         {
+          format = arg;
           init_format_state ();
           hex_format = 2;
         }
       else if (arg == "bit")
         {
+          format = arg;
           init_format_state ();
           bit_format = 1;
         }
       else if (arg == "native-bit")
         {
+          format = arg;
           init_format_state ();
           bit_format = 2;
         }
       else if (arg == "+" || arg == "plus")
         {
-          if (--argc > 0)
+          format = arg;
+          init_format_state ();
+          plus_format = true;
+          if (argc > 0)
             {
-              arg = argv[idx++];
-              format.append (arg);
+              arg = argv[idx];
 
               if (arg.length () == 3)
-                plus_format_chars = arg;
+                {
+                  plus_format_chars = arg;
+                  format.append (arg);
+                  argc--; idx++;
+                }
               else
-                error ("format: invalid option for plus format");
+                plus_format_chars = "+- ";
             }
           else
             plus_format_chars = "+- ";
-
-          init_format_state ();
-          plus_format = true;
         }
       else if (arg == "rat")
         {
+          format = arg;
           init_format_state ();
           rat_format = true;
         }
       else if (arg == "bank")
         {
+          format = arg;
           init_format_state ();
           bank_format = true;
         }
       else if (arg == "free")
         {
+          format = arg;
           init_format_state ();
           free_format = true;
         }
       else if (arg == "none")
         {
+          format = arg;
           init_format_state ();
           free_format = true;
         }
       else if (arg == "compact")
-        {
-          Vcompact_format = true;
-          return;
-        }
+        Vcompact_format = true;
       else if (arg == "loose")
-        {
-          Vcompact_format = false;
-          return;
-        }
+        Vcompact_format = false;
+      else if (arg == "lowercase")
+        uppercase_format = false;
+      else if (arg == "uppercase")
+        uppercase_format = true;
       else
         error ("format: unrecognized format state '%s'", arg.c_str ());
     }
-  else
-    {
-      init_format_state ();
-      set_output_prec (5);
-      format = "short";
-      Vcompact_format = false;
-    }
 
   format_string = format;
+
+  // If successful, discard unwind state information
+  frame.discard ();
 }
 
 DEFUN (format, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} format
 @deftypefnx {} {} format options
-@deftypefnx {} {[@var{format}, @var{formatspacing}] =} format
+@deftypefnx {} {[@var{format}, @var{formatspacing}, @var{uppercase}] =} format
 Reset or specify the format of the output produced by @code{disp} and Octave's
 normal echoing mechanism.
 
@@ -3691,10 +3818,11 @@ one of the conversion functions such as @code{single}, @code{uint8},
 @code{int64}, etc.
 
 By default, Octave displays 5 significant digits in a human readable form
-(option @samp{short} paired with @samp{loose} format for matrices).  If
-@code{format} is invoked without any options, this default format is restored.
+(option @samp{short}, option @samp{lowercase}, and option @samp{loose} format
+for matrices).  If @code{format} is invoked without any options, this default
+format is restored.
 
-Valid formats for floating point numbers are listed in the following
+Valid format options for floating point numbers are listed in the following
 table.
 
 @table @code
@@ -3714,12 +3842,6 @@ and an exponent (power of 10).  The mantissa has 5 significant digits in the
 short format.  In the long format, double values are displayed with 16
 significant digits and single values are displayed with 8.  For example,
 with the @samp{short e} format, @code{pi} is displayed as @code{3.1416e+00}.
-
-@item  short E
-@itemx long E
-Identical to @samp{short e} or @samp{long e} but displays an uppercase @samp{E}
-to indicate the exponent.  For example, with the @samp{long E} format,
-@code{pi} is displayed as @code{3.141592653589793E+00}.
 
 @item  short g
 @itemx long g
@@ -3744,11 +3866,6 @@ ans =
 Identical to @samp{short e} or @samp{long e} but displays the value using an
 engineering format, where the exponent is divisible by 3.  For example, with
 the @samp{short eng} format, @code{10 * pi} is displayed as @code{31.416e+00}.
-
-@item  long G
-@itemx short G
-Identical to @samp{short g} or @samp{long g} but displays an uppercase @samp{E}
-to indicate the exponent.
 
 @item  free
 @itemx none
@@ -3829,6 +3946,18 @@ small integers.  For example, with the @samp{rat} format, @code{pi} is
 displayed as @code{355/113}.
 @end table
 
+The following two options affect the display of scientific and hex notations.
+
+@table @code
+@item lowercase (default)
+Use a lowercase @samp{e} for the exponent character in scientific notation and
+lowercase @samp{a-f} for the hex digits representing 10-15.
+
+@item uppercase
+Use an uppercase @samp{E} for the exponent character in scientific notation and
+uppercase @samp{A-F} for the hex digits representing 10-15.
+@end table
+
 The following two options affect the display of all matrices.
 
 @table @code
@@ -3836,22 +3965,27 @@ The following two options affect the display of all matrices.
 Remove blank lines around column number labels and between matrices producing
 more compact output with more data per page.
 
-@item loose
+@item loose (default)
 Insert blank lines above and below column number labels and between matrices to
-produce a more readable output with less data per page.  (default).
+produce a more readable output with less data per page.
 @end table
 
-If called with one or two output arguments, and no inputs, return the current
-format and format spacing.
+If @code{format} is called with multiple competing options, the rightmost one
+is used.  In case of an error the format remains unchanged.
+
+If called with one to three output arguments, and no inputs, return the current
+format, format spacing, and uppercase preference.
 
 @seealso{fixed_point_format, output_precision, split_long_rows, print_empty_dimensions, rats}
 @end deftypefn */)
 {
   octave_value_list retval (std::min (nargout, 2));
 
+  int nargin = args.length ();
+
   if (nargout == 0)
     {
-      int argc = args.length () + 1;
+      int argc = nargin + 1;
 
       string_vector argv = args.make_argv ("format");
 
@@ -3859,8 +3993,11 @@ format and format spacing.
     }
   else
     {
-      if (args.length () > 0)
+      if (nargin > 0)
         warning ("format: cannot query and set format at the same time, ignoring set operation");
+
+      if (nargout >= 3)
+        retval(2) = (uppercase_format ? "uppercase" : "lowercase");
 
       if (nargout >= 2)
         retval(1) = (Vcompact_format ? "compact" : "loose");
@@ -3873,27 +4010,30 @@ format and format spacing.
 
 /*
 %!test
-%! [old_fmt, old_spacing] = format ();
+%! [old_fmt, old_spacing, old_uppercase] = format ();
 %! unwind_protect
 %!   ## Test one of the formats
-%!   format long;
+%!   format long e;
+%!   format uppercase;
 %!   str = disp (pi);
-%!   assert (str, " 3.141592653589793\n");
+%!   assert (str, "3.141592653589793E+00\n");
 %!   str = disp (single (pi));
-%!   assert (str, " 3.1415927\n");
+%!   assert (str, "3.1415927E+00\n");
 %!   new_fmt = format ();
-%!   assert (new_fmt, "long");
+%!   assert (new_fmt, "longe");
 %!   ## Test resetting format
 %!   format compact;
 %!   [~, new_spacing] = format ();
 %!   assert (new_spacing, "compact");
 %!   format;
-%!   [new_fmt, new_spacing] = format ();
+%!   [new_fmt, new_spacing, new_case] = format ();
 %!   assert (new_fmt, "short");
 %!   assert (new_spacing, "loose");
+%!   assert (new_case, "lowercase");
 %! unwind_protect_cleanup
 %!   format (old_fmt);
 %!   format (old_spacing);
+%!   format (old_uppercase);
 %! end_unwind_protect
 
 %!test <*53427>

@@ -1,29 +1,33 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
+#include <list>
 #include <string>
 
 #include "LSODE.h"
@@ -32,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-cell.h"
@@ -45,10 +50,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "LSODE-opts.cc"
 
 // Global pointer for user defined function required by lsode.
-static octave_function *lsode_fcn;
+static octave_value lsode_fcn;
 
 // Global pointer for optional user defined jacobian function used by lsode.
-static octave_function *lsode_jac;
+static octave_value lsode_jac;
 
 // Have we warned about imaginary values returned from user function?
 static bool warned_fcn_imaginary = false;
@@ -66,7 +71,7 @@ lsode_user_function (const ColumnVector& x, double t)
   args(1) = t;
   args(0) = x;
 
-  if (lsode_fcn)
+  if (lsode_fcn.is_defined ())
     {
       octave_value_list tmp;
 
@@ -106,7 +111,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
   args(1) = t;
   args(0) = x;
 
-  if (lsode_jac)
+  if (lsode_jac.is_defined ())
     {
       octave_value_list tmp;
 
@@ -275,10 +280,13 @@ parameters for @code{lsode}.
   octave::symbol_table& symtab = interp.get_symbol_table ();
 
   std::string fcn_name, fname, jac_name, jname;
-  lsode_fcn = nullptr;
-  lsode_jac = nullptr;
+
+  lsode_fcn = octave_value ();
+  lsode_jac = octave_value ();
 
   octave_value f_arg = args(0);
+
+  std::list<std::string> parameter_names ({"x", "t"});
 
   if (f_arg.iscell ())
     {
@@ -287,92 +295,49 @@ parameters for @code{lsode}.
         f_arg = c(0);
       else if (c.numel () == 2)
         {
-          if (c(0).is_function_handle () || c(0).is_inline_function ())
-            lsode_fcn = c(0).function_value ();
-          else
-            {
-              fcn_name = unique_symbol_name ("__lsode_fcn__");
-              fname = "function y = ";
-              fname.append (fcn_name);
-              fname.append (" (x, t) y = ");
-              lsode_fcn = extract_function (c(0), "lsode", fcn_name, fname,
-                                            "; endfunction");
-            }
+          lsode_fcn = octave::get_function_handle (interp, c(0),
+                                                   parameter_names);
 
-          if (lsode_fcn)
+          if (lsode_fcn.is_defined ())
             {
-              if (c(1).is_function_handle () || c(1).is_inline_function ())
-                lsode_jac = c(1).function_value ();
-              else
-                {
-                  jac_name = unique_symbol_name ("__lsode_jac__");
-                  jname = "function jac = ";
-                  jname.append (jac_name);
-                  jname.append (" (x, t) jac = ");
-                  lsode_jac = extract_function (c(1), "lsode", jac_name,
-                                                jname, "; endfunction");
+              lsode_jac = octave::get_function_handle (interp, c(1),
+                                                       parameter_names);
 
-                  if (! lsode_jac)
-                    {
-                      if (fcn_name.length ())
-                        symtab.clear_function (fcn_name);
-                      lsode_fcn = nullptr;
-                    }
-                }
+              if (lsode_jac.is_undefined ())
+                lsode_fcn = octave_value ();
             }
         }
       else
         error ("lsode: incorrect number of elements in cell array");
     }
 
-  if (! lsode_fcn && ! f_arg.iscell ())
+  if (lsode_fcn.is_undefined () && ! f_arg.iscell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
-        lsode_fcn = f_arg.function_value ();
+        lsode_fcn = f_arg;
       else
         {
           switch (f_arg.rows ())
             {
             case 1:
-              do
-                {
-                  fcn_name = unique_symbol_name ("__lsode_fcn__");
-                  fname = "function y = ";
-                  fname.append (fcn_name);
-                  fname.append (" (x, t) y = ");
-                  lsode_fcn = extract_function (f_arg, "lsode", fcn_name,
-                                                fname, "; endfunction");
-                }
-              while (0);
+              lsode_fcn = octave::get_function_handle (interp, f_arg,
+                                                       parameter_names);
               break;
 
             case 2:
               {
                 string_vector tmp = f_arg.string_vector_value ();
 
-                fcn_name = unique_symbol_name ("__lsode_fcn__");
-                fname = "function y = ";
-                fname.append (fcn_name);
-                fname.append (" (x, t) y = ");
-                lsode_fcn = extract_function (tmp(0), "lsode", fcn_name,
-                                              fname, "; endfunction");
+                lsode_fcn = octave::get_function_handle (interp, tmp(0),
+                                                         parameter_names);
 
-                if (lsode_fcn)
+                if (lsode_fcn.is_defined ())
                   {
-                    jac_name = unique_symbol_name ("__lsode_jac__");
-                    jname = "function jac = ";
-                    jname.append (jac_name);
-                    jname.append (" (x, t) jac = ");
-                    lsode_jac = extract_function (tmp(1), "lsode",
-                                                  jac_name, jname,
-                                                  "; endfunction");
+                    lsode_jac = octave::get_function_handle (interp, tmp(1),
+                                                             parameter_names);
 
-                    if (! lsode_jac)
-                      {
-                        if (fcn_name.length ())
-                          symtab.clear_function (fcn_name);
-                        lsode_fcn = nullptr;
-                      }
+                    if (lsode_jac.is_undefined ())
+                      lsode_fcn = octave_value ();
                   }
               }
               break;
@@ -383,7 +348,7 @@ parameters for @code{lsode}.
         }
     }
 
-  if (! lsode_fcn)
+  if (lsode_fcn.is_undefined ())
     error ("lsode: FCN argument is not a valid function name or handle");
 
   ColumnVector state = args(1).xvector_value ("lsode: initial state X_0 must be a vector");
@@ -402,7 +367,8 @@ parameters for @code{lsode}.
   double tzero = out_times (0);
 
   ODEFunc func (lsode_user_function);
-  if (lsode_jac)
+
+  if (lsode_jac.is_defined ())
     func.set_jacobian_function (lsode_user_jacobian);
 
   LSODE ode (state, tzero, func);

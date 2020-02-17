@@ -1,5 +1,9 @@
-## Copyright (C) 1999-2019 Daniel Heiserer
-## Copyright (C) 2001 Laurent Mazet
+########################################################################
+##
+## Copyright (C) 1999-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,14 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __gnuplot_print__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
-
-## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
-## Adapted-By: jwe
 
 function opts = __gnuplot_print__ (opts)
 
@@ -93,7 +96,7 @@ function opts = __gnuplot_print__ (opts)
           suffix = ext;  # If user provides eps/ps/pdf suffix, use it.
         endif
       else
-        error ("print:invalid-suffix",
+        error ("Octave:print:invalid-suffix",
                "invalid suffix '%s' for device '%s'.",
                ext, lower (opts.devopt));
       endif
@@ -114,7 +117,7 @@ function opts = __gnuplot_print__ (opts)
         local_drawnow (["tikz " gp_opts], opts.name, opts);
       else
         error (sprintf ("print:no%soutput", opts.devopt),
-               "print.m: '%s' output is not available for gnuplot-%s",
+               "print: '%s' output is not available for gnuplot-%s",
                upper (opts.devopt), __gnuplot_version__ ());
       endif
     case "svg"
@@ -144,7 +147,7 @@ function opts = __gnuplot_print__ (opts)
         local_drawnow ([term " " gp_opts], opts.name, opts);
       else
         error (sprintf ("print:no%soutput", opts.devopt),
-               "print.m: '%s' output is not available for gnuplot-%s",
+               "print: '%s' output is not available for gnuplot-%s",
                upper (opts.devopt), __gnuplot_version__ ());
       endif
     case {"canvas", "cgm", "dxf", "hpgl", "latex", "mf", "gif", ...
@@ -153,7 +156,7 @@ function opts = __gnuplot_print__ (opts)
         local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
       else
         error (sprintf ("print:no%soutput", opts.devopt),
-               "print.m: '%s' output is not available for gnuplot-%s",
+               "print: '%s' output is not available for gnuplot-%s",
                upper (opts.devopt), __gnuplot_version__ ());
       endif
     case "dumb"
@@ -187,7 +190,7 @@ function opts = __gnuplot_print__ (opts)
       endif
     otherwise
       error (sprintf ("print:no%soutput", opts.devopt),
-             "print.m: %s output is not available for the Gnuplot graphics toolkit",
+             "print: %s output is not available for the Gnuplot graphics toolkit",
              upper (opts.devopt));
   endswitch
 
@@ -204,7 +207,7 @@ function opts = __gnuplot_print__ (opts)
                "---------- output begin ----------",
                output,
                "----------- output end -----------");
-      error ("gnuplot:failedpipe", "print: failed to print");
+      error ("Octave:gnuplot:failedpipe", "print: failed to print");
     endif
   endfor
 

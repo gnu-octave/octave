@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2002-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2002-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -64,8 +67,6 @@ static F77_INT
 ddasrt_f (const double& t, const double *state, const double *deriv,
           double *delta, F77_INT& ires, double *, F77_INT *)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
 
@@ -89,8 +90,6 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
         delta[i] = tmp_fval(i);
     }
 
-  END_INTERRUPT_WITH_EXCEPTIONS;
-
   return 0;
 }
 
@@ -98,8 +97,6 @@ F77_INT
 ddasrt_j (const double& time, const double *state, const double *deriv,
           double *pd, const double& cj, double *, F77_INT *)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   // FIXME: would be nice to avoid copying the data.
 
   ColumnVector tmp_state (nn);
@@ -117,8 +114,6 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
     for (F77_INT i = 0; i < nn; i++)
       pd[nn * j + i] = tmp_pd.elem (i, j);
 
-  END_INTERRUPT_WITH_EXCEPTIONS;
-
   return 0;
 }
 
@@ -126,8 +121,6 @@ static F77_INT
 ddasrt_g (const F77_INT& neq, const double& t, const double *state,
           const F77_INT& ng, double *gout, double *, F77_INT *)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   F77_INT n = neq;
 
   ColumnVector tmp_state (n);
@@ -138,8 +131,6 @@ ddasrt_g (const F77_INT& neq, const double& t, const double *state,
 
   for (F77_INT i = 0; i < ng; i++)
     gout[i] = tmp_fval(i);
-
-  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

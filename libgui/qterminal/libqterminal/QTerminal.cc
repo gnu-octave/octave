@@ -21,9 +21,27 @@ see <https://www.gnu.org/licenses/>.
 
 */
 
-#include "QTerminal.h"
-#include "gui-preferences.h"
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
 
+#include <QKeySequence>
+#include <QWidget>
+#include <QStringList>
+#include <QColor>
+#include <QList>
+#include <QMenu>
+#include <QClipboard>
+#include <QApplication>
+#include <QAction>
+
+#include "gui-preferences-global.h"
+#include "gui-preferences-cs.h"
+#include "gui-preferences-sc.h"
+#include "octave-qobject.h"
+#include "resource-manager.h"
+
+#include "QTerminal.h"
 #if defined (Q_OS_WIN32)
 # include "win32/QWinTerminalImpl.h"
 #else
@@ -31,45 +49,23 @@ see <https://www.gnu.org/licenses/>.
 #endif
 
 QTerminal *
-QTerminal::create (QWidget *xparent)
+QTerminal::create (octave::base_qobject& oct_qobj, QWidget *xparent)
 {
 #if defined (Q_OS_WIN32)
-  return new QWinTerminalImpl (xparent);
+  QTerminal *terminal = new QWinTerminalImpl (xparent);
 #else
-  return new QUnixTerminalImpl (xparent);
+  QTerminal *terminal = new QUnixTerminalImpl (xparent);
 #endif
-}
 
-QList<QColor>
-QTerminal::default_colors (void)
-{
-  static QList<QColor> colors;
+  // FIXME: this function should probably be called from or part of the
+  // QTerminal constructor, but I think that would mean some major
+  // surgery because then the constructor for QTerminal and the derived
+  // Unix- and Windows-specific versions would need access to the
+  // base_qobject object, or the design would have to change significantly.
 
-  if (colors.isEmpty ())
-    {
-      colors << QColor(0,0,0)
-             << QColor(255,255,255)
-             << QColor(192,192,192)
-             << QColor(128,128,128);
-    }
+  terminal->construct (oct_qobj, xparent);
 
-  return colors;
-}
-
-QStringList
-QTerminal::color_names (void)
-{
-  static QStringList names;
-
-  if (names.isEmpty ())
-    {
-      names << QObject::tr ("foreground")
-            << QObject::tr ("background")
-            << QObject::tr ("selection")
-            << QObject::tr ("cursor");
-    }
-
-  return names;
+  return terminal;
 }
 
 // slot for disabling the interrupt action when terminal loses focus
@@ -83,10 +79,11 @@ QTerminal::set_global_shortcuts (bool focus_out)
       }
     else
       {
-        _interrupt_action->setShortcut (
-              QKeySequence (Qt::ControlModifier | Qt::Key_C));
-        _nop_action->setShortcut (
-              QKeySequence (Qt::ControlModifier | Qt::Key_D));
+        _interrupt_action->setShortcut
+          (QKeySequence (Qt::ControlModifier | Qt::Key_C));
+
+        _nop_action->setShortcut
+          (QKeySequence (Qt::ControlModifier | Qt::Key_D));
       }
   }
 
@@ -99,6 +96,9 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
     bool has_selected_text = ! selected_text.isEmpty ();
 
     _edit_action->setVisible (false);
+    m_edit_selected_action->setVisible (false);
+    m_help_selected_action->setVisible (false);
+    m_doc_selected_action->setVisible (false);
 
 #if defined (Q_OS_WIN32)
     // include this when in windows because there is no filter for
@@ -125,9 +125,34 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
       }
 #endif
 
+    if (has_selected_text)
+      {
+        QRegExp expr (".*\b*(\\w+)\b*.*");
+
+        int pos = expr.indexIn (selected_text);
+
+        if (pos > -1)
+          {
+            QString expr_found = expr.cap (1);
+
+            m_edit_selected_action->setVisible (true);
+            m_edit_selected_action->setText (tr ("Edit %1").arg (expr_found));
+            m_edit_selected_action->setData (expr_found);
+
+            m_help_selected_action->setVisible (true);
+            m_help_selected_action->setText (tr ("Help on %1").arg (expr_found));
+            m_help_selected_action->setData (expr_found);
+
+            m_doc_selected_action->setVisible (true);
+            m_doc_selected_action->setText (tr ("Documentation on %1")
+                                            .arg (expr_found));
+            m_doc_selected_action->setData (expr_found);
+          }
+      }
+
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (has_selected_text);
-    _run_selection_action->setEnabled (has_selected_text);
+    _run_selection_action->setVisible (has_selected_text);
 
     // Get the actions of any hotspots the filters may have found
     QList<QAction*> actions = get_hotspot_actions (at);
@@ -165,76 +190,190 @@ QTerminal::edit_file ()
   emit edit_mfile_request (file,line);
 }
 
-void
-QTerminal::notice_settings (const QSettings *settings)
+// slot for edit selected function names
+void QTerminal::edit_selected ()
 {
-  // QSettings pointer is checked before emitting.
+  QString file = m_edit_selected_action->data ().toString ();
+
+  emit edit_mfile_request (file,0);
+}
+
+// slot for showing help on selected epxression
+void QTerminal::help_on_expression ()
+{
+  QString expr = m_help_selected_action->data ().toString ();
+
+  emit execute_command_in_terminal_signal ("help " + expr);
+}
+
+// slot for showing documentation on selected epxression
+void QTerminal::doc_on_expression ()
+{
+  QString expr = m_doc_selected_action->data ().toString ();
+
+  emit show_doc_signal (expr);
+}
+
+void
+QTerminal::notice_settings (const gui_settings *settings)
+{
+  if (! settings)
+    return;
 
   // Set terminal font:
   QFont term_font = QFont ();
   term_font.setStyleHint (QFont::TypeWriter);
-  QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+  QString default_font = settings->value (global_mono_font).toString ();
   term_font.setFamily
     (settings->value (cs_font.key, default_font).toString ());
-  term_font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
+  term_font.setPointSize
+    (settings->value (cs_font_size).toInt ());
   setTerminalFont (term_font);
 
   QFontMetrics metrics (term_font);
   setMinimumSize (metrics.maxWidth ()*16, metrics.height ()*3);
 
-  QString cursorType
-    = settings->value ("terminal/cursorType", "ibeam").toString ();
+  QString cursor_type
+    = settings->value (cs_cursor).toString ();
 
-  bool cursorBlinking;
-  if (settings->contains ("cursor_blinking"))
-    cursorBlinking = settings->value ("cursor_blinking",true).toBool ();
+  bool cursor_blinking;
+  if (settings->contains (global_cursor_blinking.key))
+    cursor_blinking = settings->value (global_cursor_blinking).toBool ();
   else
-    cursorBlinking = settings->value ("terminal/cursorBlinking",true).toBool ();
+    cursor_blinking = settings->value (cs_cursor_blinking).toBool ();
 
-  if (cursorType == "ibeam")
-    setCursorType (QTerminal::IBeamCursor, cursorBlinking);
-  else if (cursorType == "block")
-    setCursorType (QTerminal::BlockCursor, cursorBlinking);
-  else if (cursorType == "underline")
-    setCursorType (QTerminal::UnderlineCursor, cursorBlinking);
+  for (int ct = IBeamCursor; ct <= UnderlineCursor; ct++)
+    {
+      if (cursor_type.toStdString () == cs_cursor_types[ct])
+        {
+          setCursorType ((CursorType) ct, cursor_blinking);
+          break;
+        }
+    }
 
   bool cursorUseForegroundColor
-    = settings->value ("terminal/cursorUseForegroundColor", true).toBool ();
-
-  QList<QColor> colors = default_colors ();
+    = settings->value (cs_cursor_use_fgcol).toBool ();
 
   setForegroundColor
-    (settings->value ("terminal/color_f",
-                      QVariant (colors.at (0))).value<QColor> ());
+    (settings->value (cs_colors[0].key, cs_colors[0].def).value<QColor> ());
 
   setBackgroundColor
-    (settings->value ("terminal/color_b",
-                      QVariant (colors.at (1))).value<QColor> ());
+    (settings->value (cs_colors[1].key, cs_colors[1].def).value<QColor> ());
 
   setSelectionColor
-    (settings->value ("terminal/color_s",
-                      QVariant (colors.at (2))).value<QColor> ());
+    (settings->value (cs_colors[2].key, cs_colors[2].def).value<QColor> ());
 
-  setCursorColor
-    (cursorUseForegroundColor,
-     settings->value ("terminal/color_c",
-                      QVariant (colors.at (3))).value<QColor> ());
-  setScrollBufferSize (settings->value ("terminal/history_buffer",1000).toInt () );
+  setCursorColor (cursorUseForegroundColor,
+     settings->value (cs_colors[3].key, cs_colors[3].def).value<QColor> ());
 
-  // check whether Copy shortcut is Ctrl-C
-  QKeySequence sc;
-  sc = QKeySequence (settings->value ("shortcuts/main_edit:copy").toString ());
+  setScrollBufferSize (settings->value (cs_hist_buffer).toInt ());
 
-  // if sc is empty, shortcuts are not yet in the settings (take the default)
-  if (sc.isEmpty ())         // QKeySequence::Copy as second argument in
-    sc = QKeySequence::Copy; // settings->value () does not work!
+  // If the Copy shortcut is Ctrl+C, then the Copy action also emits
+  // a signal for interrupting the current code executed by the worker.
+  // If the Copy shortcut is not Ctrl+C, an extra interrupt action is
+  // set up for emitting the interrupt signal.
 
-  //  dis- or enable extra interrupt action
-  bool extra_ir_action = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C));
+  QString sc = settings->sc_value (sc_main_edit_copy);
+
+  //  Dis- or enable extra interrupt action depending on the Copy shortcut
+  bool extra_ir_action
+      = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C).toString ());
+
   _interrupt_action->setEnabled (extra_ir_action);
   has_extra_interrupt (extra_ir_action);
 
   // check whether shortcut Ctrl-D is in use by the main-window
-  bool ctrld = settings->value ("shortcuts/main_ctrld",false).toBool ();
+  bool ctrld = settings->value (sc_main_ctrld).toBool ();
   _nop_action->setEnabled (! ctrld);
+}
+
+void
+QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
+{
+  octave::resource_manager& rmgr = oct_qobj.get_resource_manager ();
+
+  // context menu
+  setContextMenuPolicy (Qt::CustomContextMenu);
+
+  _contextMenu = new QMenu (this);
+
+  _copy_action
+    = _contextMenu->addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
+                               SLOT (copyClipboard ()));
+
+  _paste_action
+    = _contextMenu->addAction (rmgr.icon ("edit-paste"), tr ("Paste"), this,
+                               SLOT (pasteClipboard ()));
+
+  _contextMenu->addSeparator ();
+
+  _selectall_action
+    = _contextMenu->addAction (tr ("Select All"), this, SLOT (selectAll ()));
+
+  _run_selection_action
+    = _contextMenu->addAction (tr ("Run Selection"), this,
+                               SLOT (run_selection ()));
+
+  m_edit_selected_action
+    = _contextMenu->addAction (tr ("Edit selection"), this,
+                               SLOT (edit_selected ()));
+  m_help_selected_action
+    = _contextMenu->addAction (tr ("Help on selection"), this,
+                               SLOT (help_on_expression ()));
+  m_doc_selected_action
+    = _contextMenu->addAction (tr ("Documentation on selection"), this,
+                               SLOT (doc_on_expression ()));
+
+  _edit_action = _contextMenu->addAction (tr (""), this, SLOT (edit_file ()));
+
+  _contextMenu->addSeparator ();
+
+  _contextMenu->addAction (tr ("Clear Window"), parent (),
+                           SLOT (handle_clear_command_window_request ()));
+
+  connect (this, SIGNAL (customContextMenuRequested (QPoint)),
+           this, SLOT (handleCustomContextMenuRequested (QPoint)));
+
+  connect (this, SIGNAL (report_status_message (const QString&)),
+           xparent, SLOT (report_status_message (const QString&)));
+
+  connect (this, SIGNAL (show_doc_signal (const QString&)),
+           xparent, SLOT (handle_show_doc (const QString&)));
+
+  connect (this, SIGNAL (edit_mfile_request (const QString&, int)),
+           xparent, SLOT (edit_mfile (const QString&, int)));
+
+  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           xparent, SLOT (execute_command_in_terminal (const QString&)));
+
+  connect (xparent, SIGNAL (settings_changed (const gui_settings *)),
+           this, SLOT (notice_settings (const gui_settings *)));
+
+  connect (xparent, SIGNAL (init_terminal_size_signal ()),
+           this, SLOT (init_terminal_size ()));
+
+  connect (xparent, SIGNAL (copyClipboard_signal ()),
+           this, SLOT (copyClipboard ()));
+
+  connect (xparent, SIGNAL (pasteClipboard_signal ()),
+           this, SLOT (pasteClipboard ()));
+
+  connect (xparent, SIGNAL (selectAll_signal ()),
+           this, SLOT (selectAll ()));
+
+  // extra interrupt action
+  _interrupt_action = new QAction (this);
+  addAction (_interrupt_action);
+
+  _interrupt_action->setShortcut
+    (QKeySequence (Qt::ControlModifier + Qt::Key_C));
+
+  connect (_interrupt_action, SIGNAL (triggered ()),
+           this, SLOT (terminal_interrupt ()));
+
+  // dummy (nop) action catching Ctrl-D in terminal, no connection
+  _nop_action = new QAction (this);
+  addAction (_nop_action);
+
+  _nop_action->setShortcut (QKeySequence (Qt::ControlModifier + Qt::Key_D));
 }

@@ -1,34 +1,37 @@
-/*
-
-Copyright (C) 1999-2019 John W. Eaton
-Copyright (C) 2009 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1999-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_oct_shlib_h)
 #define octave_oct_shlib_h 1
 
 #include "octave-config.h"
 
+#include <functional>
 #include <list>
-#include <string>
 #include <map>
+#include <string>
 
 #include "oct-time.h"
 #include "oct-refcount.h"
@@ -41,15 +44,15 @@ namespace octave
   {
   public: // FIXME: make this class private?
 
-    typedef std::string (*name_mangler) (const std::string&);
+    typedef std::function<std::string (const std::string&)> name_mangler;
 
     class dynlib_rep
     {
     public:
 
       dynlib_rep (void)
-        : count (1), file (), tm_loaded (time_t ()), fcn_names (),
-          search_all_loaded (false)
+        : m_count (1), m_fcn_names (), m_file (), m_time_loaded (time_t ()),
+          m_search_all_loaded (false)
       { }
 
     protected:
@@ -60,13 +63,14 @@ namespace octave
 
       virtual ~dynlib_rep (void)
       {
-        instances.erase (file);
+        s_instances.erase (m_file);
       }
 
       virtual bool is_open (void) const
       { return false; }
 
-      virtual void * search (const std::string&, name_mangler = nullptr)
+      virtual void * search (const std::string&,
+                             const name_mangler& = name_mangler ())
       { return nullptr; }
 
       bool is_out_of_date (void) const;
@@ -77,12 +81,12 @@ namespace octave
       static dynlib_rep * get_instance (const std::string& f, bool fake);
 
       sys::time time_loaded (void) const
-      { return tm_loaded; }
+      { return m_time_loaded; }
 
       std::string file_name (void) const
-      { return file; }
+      { return m_file; }
 
-      size_t num_fcn_names (void) const { return fcn_names.size (); }
+      size_t num_fcn_names (void) const { return m_fcn_names.size (); }
 
       std::list<std::string> function_names (void) const;
 
@@ -90,115 +94,115 @@ namespace octave
 
       bool remove_fcn_name (const std::string&);
 
-      void clear_fcn_names (void) { fcn_names.clear (); }
+      void clear_fcn_names (void) { m_fcn_names.clear (); }
 
     public:
 
-      refcount<int> count;
+      refcount<octave_idx_type> m_count;
 
     protected:
 
       void fake_reload (void);
 
-      std::string file;
-      sys::time tm_loaded;
+      static std::map<std::string, dynlib_rep *> s_instances;
 
       // Set of hooked function names.
       typedef std::map<std::string, size_t>::iterator fcn_names_iterator;
       typedef std::map<std::string, size_t>::const_iterator fcn_names_const_iterator;
 
-      std::map<std::string, size_t> fcn_names;
-
-      static std::map<std::string, dynlib_rep *> instances;
-      bool search_all_loaded;
+      std::map<std::string, size_t> m_fcn_names;
+      std::string m_file;
+      sys::time m_time_loaded;
+      bool m_search_all_loaded;
     };
 
   private:
 
-    static dynlib_rep nil_rep;
+    static dynlib_rep s_nil_rep;
 
   public:
 
-    dynamic_library (void) : rep (&nil_rep) { rep->count++; }
+    dynamic_library (void) : m_rep (&s_nil_rep) { m_rep->m_count++; }
 
     dynamic_library (const std::string& f, bool fake = true)
-      : rep (dynlib_rep::get_instance (f, fake)) { }
+      : m_rep (dynlib_rep::get_instance (f, fake)) { }
 
     ~dynamic_library (void)
     {
-      if (--rep->count == 0)
-        delete rep;
+      if (--m_rep->m_count == 0)
+        delete m_rep;
     }
 
     dynamic_library (const dynamic_library& sl)
-      : rep (sl.rep)
+      : m_rep (sl.m_rep)
     {
-      rep->count++;
+      m_rep->m_count++;
     }
 
     dynamic_library& operator = (const dynamic_library& sl)
     {
-      if (rep != sl.rep)
+      if (m_rep != sl.m_rep)
         {
-          if (--rep->count == 0)
-            delete rep;
+          if (--m_rep->m_count == 0)
+            delete m_rep;
 
-          rep = sl.rep;
-          rep->count++;
+          m_rep = sl.m_rep;
+          m_rep->m_count++;
         }
 
       return *this;
     }
 
     bool operator == (const dynamic_library& sl) const
-    { return (rep == sl.rep); }
+    { return (m_rep == sl.m_rep); }
 
-    operator bool () const { return rep->is_open (); }
+    operator bool () const { return m_rep->is_open (); }
 
     void open (const std::string& f)
     { *this = dynamic_library (f); }
 
     std::list<std::string> close (void)
     {
-      std::list<std::string> removed_fcns = rep->function_names ();
+      std::list<std::string> removed_fcns = m_rep->function_names ();
 
-      rep->clear_fcn_names ();
+      m_rep->clear_fcn_names ();
 
       *this = dynamic_library ();
 
       return removed_fcns;
     }
 
-    void * search (const std::string& nm, name_mangler mangler = nullptr) const
+    void * search (const std::string& nm,
+                   const name_mangler& mangler = name_mangler ()) const
     {
-      void *f = rep->search (nm, mangler);
+      void *f = m_rep->search (nm, mangler);
       if (f)
-        rep->add_fcn_name (nm);
+        m_rep->add_fcn_name (nm);
 
       return f;
     }
 
     void add (const std::string& name)
-    { rep->add_fcn_name (name); }
+    { m_rep->add_fcn_name (name); }
 
     bool remove (const std::string& name)
-    { return rep->remove_fcn_name (name); }
+    { return m_rep->remove_fcn_name (name); }
 
     size_t number_of_functions_loaded (void) const
-    { return rep->num_fcn_names (); }
+    { return m_rep->num_fcn_names (); }
 
     bool is_out_of_date (void) const
-    { return rep->is_out_of_date (); }
+    { return m_rep->is_out_of_date (); }
 
     std::string file_name (void) const
-    { return rep->file_name (); }
+    { return m_rep->file_name (); }
 
     sys::time time_loaded (void) const
-    { return rep->time_loaded (); }
+    { return m_rep->time_loaded (); }
 
   private:
 
-    dynlib_rep *rep;
+    dynlib_rep *m_rep;
   };
 }
 

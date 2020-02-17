@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -26,9 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <istream>
 #include <ostream>
+#include <type_traits>
 
 #include "Array-util.h"
-#include "functor.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "mx-base.h"
@@ -424,22 +427,39 @@ operator * (const FloatComplexRowVector& v, const FloatComplexColumnVector& a)
 // other operations
 
 FloatComplexRowVector
-linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n)
+linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n_in)
 {
-  NoAlias<FloatComplexRowVector> retval;
+  FloatComplexRowVector retval;
 
-  if (n < 1)
+  if (n_in < 1)
     return retval;
-  else
-    retval.clear (n);
+  else if (n_in == 1)
+    {
+      retval.resize (1, x2);
+      return retval;
+    }
 
-  retval(0) = x1;
+  // Use unsigned type (guaranteed n_in > 1 at this point) so that divisions
+  // by 2 can be replaced by compiler with shift right instructions.
+  typedef std::make_unsigned<octave_idx_type>::type unsigned_octave_idx_type;
 
-  FloatComplex delta = (x1 == x2) ? 0 : (x2 - x1) / (n - 1.0f);
-  for (octave_idx_type i = 1; i < n-1; i++)
-    retval(i) = x1 + static_cast<float> (i)*delta;
+  unsigned_octave_idx_type n = n_in;
 
-  retval(n-1) = x2;
+  // Set endpoints, rather than calculate, for maximum accuracy.
+  retval.clear (n);
+  retval.xelem (0) = x1;
+  retval.xelem (n-1) = x2;
+
+  // Construct linspace symmetrically from both ends.
+  FloatComplex delta = (x2 - x1) / (n - 1.0f);
+  unsigned_octave_idx_type n2 = n/2;
+  for (unsigned_octave_idx_type i = 1; i < n2; i++)
+    {
+      retval.xelem (i) = x1 + static_cast<float> (i)*delta;
+      retval.xelem (n-1-i) = x2 - static_cast<float> (i)*delta;
+    }
+  if (n % 2 == 1)  // Middle element if number of elements is odd.
+    retval.xelem (n2) = (x1 == -x2 ? 0 : (x1 + x2) / 2.0f);
 
   return retval;
 }

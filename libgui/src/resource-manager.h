@@ -1,34 +1,38 @@
-/*
-
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_resource_manager_h)
 #define octave_resource_manager_h 1
 
-#include <QDesktopServices>
-#include <QIcon>
 #include <QComboBox>
-#include <QMap>
-#include <QSettings>
+#include <QIcon>
+#include <QPointer>
 #include <QTranslator>
+#include <QTemporaryFile>
+
+#include "gui-settings.h"
 
 namespace octave
 {
@@ -50,130 +54,54 @@ namespace octave
 
     ~resource_manager ();
 
-    static QSettings * get_settings (void)
-    {
-      return instance_ok () ? instance->do_get_settings () : nullptr;
-    }
+    QString get_gui_translation_dir (void);
 
-    static QIcon icon (const QString& icon_name, bool fallback = true)
-    {
-      if (instance_ok ())
-        return instance->do_icon (icon_name, fallback);
+    void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
+                             QTranslator *gui_tr);
 
-      return QIcon ();
-    }
+    gui_settings * get_settings (void) const;
 
-    static QSettings * get_default_settings (void)
-    {
-      return instance_ok () ? instance->do_get_default_settings () : nullptr;
-    }
+    gui_settings * get_default_settings (void) const;
 
-    static QString get_settings_file (void)
-    {
-      return instance_ok () ? instance->do_get_settings_file () : QString ();
-    }
+    QString get_settings_directory (void);
 
-    static void reload_settings (void)
-    {
-      if (instance_ok ())
-        instance->do_reload_settings ();
-    }
+    QString get_settings_file (void);
 
-    static void set_settings (const QString& file)
-    {
-      if (instance_ok ())
-        instance->do_set_settings (file);
-    }
+    QString get_default_font_family (void);
 
-    static bool update_settings_key (const QString& new_key,
-                                     const QString& old_key)
-    {
-      return (instance_ok ()
-              ? instance->do_update_settings_key (new_key, old_key)
-              : false);
-    }
+    QPointer<QTemporaryFile>
+    create_tmp_file (const QString& extension = QString (),
+                     const QString& contents = QString ());
 
-    static void get_codecs (QStringList *codecs)
-    {
-      if (instance_ok ())
-        instance->do_get_codecs (codecs);
-    }
+    void remove_tmp_file (QPointer<QTemporaryFile> tmp_file);
 
-    static void combo_encoding (QComboBox *combo, QString current = QString ())
-    {
-      if (instance_ok ())
-        instance->do_combo_encoding (combo, current);
-    }
+    void reload_settings (void);
 
-    static QString get_gui_translation_dir (void);
+    void set_settings (const QString& file);
 
-    static void config_translators (QTranslator*, QTranslator*, QTranslator*);
+    bool update_settings_key (const QString& new_key, const QString& old_key);
 
-    static void update_network_settings (void)
-    {
-      if (instance_ok ())
-        instance->do_update_network_settings ();
-    }
+    bool is_first_run (void) const;
 
-    static bool is_first_run (void)
-    {
-      return instance_ok () ? instance->do_is_first_run () : true;
-    }
+    void update_network_settings (void);
 
-    static QString storage_class_chars (void) { return "afghip"; }
-    static QStringList storage_class_names (void);
-    static QList<QColor> storage_class_default_colors (void);
+    QIcon icon (const QString& icon_name, bool fallback = true);
 
-    static QString terminal_color_chars (void) { return "fbsc"; }
-    static QStringList terminal_color_names (void);
-    static QList<QColor> terminal_default_colors (void);
+    void get_codecs (QStringList *codecs);
 
-    static resource_manager *instance;
-
-  public slots:
-
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
-
-    static QString varedit_color_chars (void) {return "fbsha"; }
-    static QStringList varedit_color_names (void);
-    static QList<QColor> varedit_default_colors (void);
+    void combo_encoding (QComboBox *combo, const QString& current = QString ());
 
   private:
-
-    static bool instance_ok (void);
-
-    QSettings * do_get_settings (void) const;
-
-    QSettings * do_get_default_settings (void) const;
-
-    QString do_get_settings_directory (void);
-
-    QString do_get_settings_file (void);
-
-    QString do_get_default_font_family (void);
-
-    void do_reload_settings (void);
-
-    void do_set_settings (const QString& file);
-
-    bool do_update_settings_key (const QString& new_key, const QString& old_key);
-
-    bool do_is_first_run (void) const;
-
-    void do_update_network_settings (void);
-
-    QIcon do_icon (const QString& icon, bool fallback);
-
-    void do_get_codecs (QStringList *codecs);
-    void do_combo_encoding (QComboBox *combo, QString current);
 
     QString m_settings_directory;
 
     QString m_settings_file;
 
-    QSettings *m_settings;
+    gui_settings *m_settings;
 
-    QSettings *m_default_settings;
+    gui_settings *m_default_settings;
+
+    QList<QTemporaryFile *> m_temporary_files;
   };
 }
 

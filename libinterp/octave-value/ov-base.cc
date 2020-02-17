@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -32,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 
-#include "call-stack.h"
 #include "defun.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
@@ -191,7 +192,7 @@ octave_base_value::size (void)
 }
 
 octave_idx_type
-octave_base_value::numel (const octave_value_list& idx)
+octave_base_value::xnumel (const octave_value_list& idx)
 {
   return octave::dims_to_numel (dims (), idx);
 }
@@ -941,7 +942,7 @@ octave_base_value::load_ascii (std::istream&)
 }
 
 bool
-octave_base_value::save_binary (std::ostream&, bool&)
+octave_base_value::save_binary (std::ostream&, bool)
 {
   err_wrong_type_arg ("octave_base_value::save_binary()", type_name ());
 }
@@ -1464,9 +1465,10 @@ make_idx_args (const std::string& type,
 bool
 called_from_builtin (void)
 {
-  octave::call_stack& cs = octave::__get_call_stack__ ("called_from_builtin");
+  octave::tree_evaluator& tw
+    = octave::__get_evaluator__ ("called_from_builtin");
 
-  octave_function *fcn = cs.caller ();
+  octave_function *fcn = tw.caller_function ();
 
   // FIXME: we probably need a better check here, or some other
   // mechanism to avoid overloaded functions when builtin is used.

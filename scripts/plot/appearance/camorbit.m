@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Colin B. Macdonald
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} camorbit (@var{theta}, @var{phi})
@@ -88,7 +95,7 @@
 ## (Note: the rotation by @var{phi} is unaffected by @qcode{"camera"}.)
 ##
 ## The @code{camorbit} command modifies two camera properties:
-## @pxref{XREFcampos,,campos} and @pxref{XREFcamup,,camup}.
+## @ref{XREFcampos,,campos} and @ref{XREFcamup,,camup}.
 ##
 ## By default, this command affects the current axis; alternatively, an axis
 ## can be specified by the optional argument @var{hax}.

@@ -27,12 +27,12 @@ COREFCN_INC = \
   %reldir%/defun-dld.h \
   %reldir%/defun-int.h \
   %reldir%/defun.h \
-  %reldir%/dirfns.h \
   %reldir%/display.h \
   %reldir%/dynamic-ld.h \
   %reldir%/environment.h \
   %reldir%/error.h \
   %reldir%/errwarn.h \
+  %reldir%/event-manager.h \
   %reldir%/event-queue.h \
   %reldir%/fcn-info.h \
   %reldir%/file-io.h \
@@ -65,15 +65,14 @@ COREFCN_INC = \
   %reldir%/oct-hist.h \
   %reldir%/oct-iostrm.h \
   %reldir%/oct-map.h \
-  %reldir%/oct-obj.h \
   %reldir%/oct-prcstrm.h \
   %reldir%/oct-procbuf.h \
+  %reldir%/oct-process.h \
   %reldir%/oct-stdstrm.h \
   %reldir%/oct-stream.h \
   %reldir%/oct-strstrm.h \
   %reldir%/oct.h \
   %reldir%/octave-default-image.h \
-  %reldir%/octave-link.h \
   %reldir%/pager.h \
   %reldir%/pr-flt-fmt.h \
   %reldir%/pr-output.h \
@@ -82,14 +81,16 @@ COREFCN_INC = \
   %reldir%/sighandlers.h \
   %reldir%/sparse-xdiv.h \
   %reldir%/sparse-xpow.h \
+  %reldir%/stack-frame.h \
+  %reldir%/stack-frame-walker.h \
   %reldir%/syminfo.h \
+  %reldir%/syminfo-accumulator.h \
   %reldir%/symrec.h \
   %reldir%/symscope.h \
   %reldir%/symtab.h \
   %reldir%/sysdep.h \
   %reldir%/text-engine.h \
   %reldir%/text-renderer.h \
-  %reldir%/toplev.h \
   %reldir%/txt-eng.h \
   %reldir%/url-handle-manager.h \
   %reldir%/utils.h \
@@ -112,7 +113,9 @@ COREFCN_SRC = \
   %reldir%/__betainc__.cc \
   %reldir%/__contourc__.cc \
   %reldir%/__dsearchn__.cc \
+  %reldir%/__eigs__.cc \
   %reldir%/__expint__.cc \
+  %reldir%/__ftp__.cc \
   %reldir%/__gammainc__.cc \
   %reldir%/__ichol__.cc \
   %reldir%/__ilu__.cc \
@@ -120,16 +123,20 @@ COREFCN_SRC = \
   %reldir%/__magick_read__.cc \
   %reldir%/__pchip_deriv__.cc \
   %reldir%/__qp__.cc \
+  %reldir%/amd.cc \
   %reldir%/balance.cc \
   %reldir%/besselj.cc \
   %reldir%/bitfcns.cc \
   %reldir%/bsxfun.cc \
   %reldir%/c-file-ptr-stream.cc \
   %reldir%/call-stack.cc \
+  %reldir%/ccolamd.cc \
   %reldir%/cdisplay.c \
   %reldir%/cellfun.cc \
-  %reldir%/colloc.cc \
+  %reldir%/chol.cc \
   %reldir%/coct-hdf5-types.c \
+  %reldir%/colamd.cc \
+  %reldir%/colloc.cc \
   %reldir%/conv2.cc \
   %reldir%/daspk.cc \
   %reldir%/dasrt.cc \
@@ -142,6 +149,7 @@ COREFCN_SRC = \
   %reldir%/dirfns.cc \
   %reldir%/display.cc \
   %reldir%/dlmread.cc \
+  %reldir%/dmperm.cc \
   %reldir%/dot.cc \
   %reldir%/dynamic-ld.cc \
   %reldir%/eig.cc \
@@ -149,6 +157,7 @@ COREFCN_SRC = \
   %reldir%/environment.cc \
   %reldir%/error.cc \
   %reldir%/errwarn.cc \
+  %reldir%/event-manager.cc \
   %reldir%/event-queue.cc \
   %reldir%/fcn-info.cc \
   %reldir%/fft.cc \
@@ -175,9 +184,9 @@ COREFCN_SRC = \
   %reldir%/hex2num.cc \
   %reldir%/hook-fcn.cc \
   %reldir%/input.cc \
-  %reldir%/inv.cc \
   %reldir%/interpreter-private.cc \
   %reldir%/interpreter.cc \
+  %reldir%/inv.cc \
   %reldir%/kron.cc \
   %reldir%/load-path.cc \
   %reldir%/load-save.cc \
@@ -187,8 +196,8 @@ COREFCN_SRC = \
   %reldir%/ls-mat-ascii.cc \
   %reldir%/ls-mat4.cc \
   %reldir%/ls-mat5.cc \
-  %reldir%/ls-oct-text.cc \
   %reldir%/ls-oct-binary.cc \
+  %reldir%/ls-oct-text.cc \
   %reldir%/ls-utils.cc \
   %reldir%/lsode.cc \
   %reldir%/lu.cc \
@@ -205,12 +214,12 @@ COREFCN_SRC = \
   %reldir%/oct-map.cc \
   %reldir%/oct-prcstrm.cc \
   %reldir%/oct-procbuf.cc \
+  %reldir%/oct-process.cc \
   %reldir%/oct-stream.cc \
   %reldir%/oct-strstrm.cc \
   %reldir%/oct-tex-lexer.ll \
   %reldir%/oct-tex-parser.h \
   %reldir%/oct-tex-parser.yy \
-  %reldir%/octave-link.cc \
   %reldir%/ordschur.cc \
   %reldir%/pager.cc \
   %reldir%/pinv.cc \
@@ -218,6 +227,7 @@ COREFCN_SRC = \
   %reldir%/pr-output.cc \
   %reldir%/procstream.cc \
   %reldir%/psi.cc \
+  %reldir%/qr.cc \
   %reldir%/quad.cc \
   %reldir%/quadcc.cc \
   %reldir%/qz.cc \
@@ -232,26 +242,30 @@ COREFCN_SRC = \
   %reldir%/sparse.cc \
   %reldir%/spparms.cc \
   %reldir%/sqrtm.cc \
+  %reldir%/stack-frame.cc \
+  %reldir%/stream-euler.cc \
   %reldir%/strfind.cc \
   %reldir%/strfns.cc \
   %reldir%/sub2ind.cc \
   %reldir%/svd.cc \
   %reldir%/sylvester.cc \
+  %reldir%/symbfact.cc \
   %reldir%/syminfo.cc \
+  %reldir%/symrcm.cc \
   %reldir%/symrec.cc \
   %reldir%/symscope.cc \
   %reldir%/symtab.cc \
   %reldir%/syscalls.cc \
   %reldir%/sysdep.cc \
-  %reldir%/time.cc \
   %reldir%/text-engine.cc \
   %reldir%/text-renderer.cc \
+  %reldir%/time.cc \
   %reldir%/toplev.cc \
   %reldir%/tril.cc \
   %reldir%/tsearch.cc \
   %reldir%/typecast.cc \
-  %reldir%/urlwrite.cc \
   %reldir%/url-handle-manager.cc \
+  %reldir%/urlwrite.cc \
   %reldir%/utils.cc \
   %reldir%/variables.cc \
   %reldir%/xdiv.cc \

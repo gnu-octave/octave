@@ -1,4 +1,9 @@
-## Copyright (C) 1993-2019 Shai Ayal
+########################################################################
+##
+## Copyright (C) 1993-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} contour (@var{z})
@@ -57,8 +64,6 @@
 ## @seealso{ezcontour, contourc, contourf, contour3, clabel, meshc, surfc, caxis, colormap, plot}
 ##
 ## @end deftypefn
-
-## Author: Shai Ayal <shaiay@users.sourceforge.net>
 
 function [c, h] = contour (varargin)
 

@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{q} =} prctile (@var{x})
@@ -36,9 +43,6 @@
 ## Programming Note: All non-numeric values (NaNs) of @var{x} are ignored.
 ## @seealso{quantile}
 ## @end deftypefn
-
-## Author: Ben Abbott <bpabbott@mac.com>
-## Description: Matlab style prctile function.
 
 function q = prctile (x, p = [], dim)
 

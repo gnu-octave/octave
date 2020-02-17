@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_GenericEventNotify_h)
 #define octave_GenericEventNotify_h 1
@@ -68,7 +71,7 @@ namespace QtHandles
   bool GenericEventNotifySender::notifyReceiversBefore (QObject *obj,
       QEvent *evt)
   {
-    foreach (GenericEventNotifyReceiver *r, m_receivers)
+    for (auto *r : m_receivers)
       if (r->eventNotifyBefore (obj, evt))
         return true;
 
@@ -79,7 +82,7 @@ namespace QtHandles
   void GenericEventNotifySender::notifyReceiversAfter (QObject *obj,
       QEvent *evt)
   {
-    foreach (GenericEventNotifyReceiver *r, m_receivers)
+    for (auto *r : m_receivers)
       r->eventNotifyAfter (obj, evt);
   }
 

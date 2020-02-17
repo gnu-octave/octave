@@ -1,5 +1,9 @@
-## Copyright (C) 2005-2019 Søren Hauberg
-## Copyright (C) 2010 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} configure_make (@var{desc}, @var{packdir}, @var{verbose})
@@ -96,7 +102,7 @@ function configure_make (desc, packdir, verbose)
       if (status != 0)
         rmdir (desc.dir, "s");
         disp (output);
-        error ("pkg: error running `make' for the %s package.", desc.name);
+        error ("pkg: error running 'make' for the %s package.", desc.name);
       endif
     endif
   endif
@@ -129,7 +135,7 @@ function [status, output] = shell (cmd, verbose)
     endif
   endif
   ## if verbose, we want to display the output in real time.  To do this, we
-  ## must call system with 1 output argument.  But then the variable `output'
+  ## must call system with 1 output argument.  But then the variable 'output'
   ## won't exist.  So we initialize it empty.  If an error does occur, and we
   ## are verbose we will return an empty string but it's all fine since
   ## the error message has already been displayed.

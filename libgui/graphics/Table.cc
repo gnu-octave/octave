@@ -1,51 +1,57 @@
-/*
-
-Copyright (C) 2016 Andrew Thornton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2016-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#include <QEvent>
-#include <QFrame>
-#include <QLabel>
-#include <QMouseEvent>
-#include <QTimer>
-
 #include <QCheckBox>
 #include <QComboBox>
+#include <QEvent>
+#include <QFrame>
+#include <QHBoxLayout>
 #include <QHeaderView>
+#include <QLabel>
 #include <QLineEdit>
 #include <QModelIndexList>
+#include <QMouseEvent>
 #include <QString>
 #include <QStringList>
 #include <QTableWidget>
 #include <QTableWidgetItem>
-#include <QHBoxLayout>
+#include <QTimer>
 
 #include "Container.h"
 #include "ContextMenu.h"
 #include "Table.h"
 #include "QtHandlesUtils.h"
 
+#include "octave-qobject.h"
+
+#include "graphics.h"
+#include "interpreter.h"
 #include "oct-stream.h"
 #include "oct-string.h"
 #include "oct-strstrm.h"
@@ -183,8 +189,8 @@ namespace QtHandles
         text = Utils::fromStdString ("");      \
     }
 
-  static std::pair<Qt::AlignmentFlag, QString> qStringValueFor (
-    octave_value val, std::string format = "")
+  static std::pair<Qt::AlignmentFlag, QString>
+  qStringValueFor (octave_value val, std::string format = "")
   {
     Qt::AlignmentFlag flag = Qt::AlignRight;
     QString text;
@@ -374,7 +380,7 @@ namespace QtHandles
     SCANF_AND_CONVERT(int64, int64_t, "%" PRId64 " %n")
     SCANF_AND_CONVERT(uint64, uint64_t, "%" PRIu64 " %n")
 
-  #undef SCANF_AND_CONVERT
+#undef SCANF_AND_CONVERT
 
     else if (old_value.isnumeric () && ! old_value.isinteger ())
       {
@@ -423,25 +429,28 @@ namespace QtHandles
   }
 
   Table*
-  Table::create (const graphics_object& go)
+  Table::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                 const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new Table (go, new QTableWidget (container));
+          return new Table (oct_qobj, interp, go, new QTableWidget (container));
       }
 
     return 0;
   }
 
-  Table::Table (const graphics_object& go, QTableWidget *tableWidget)
-    : Object (go, tableWidget), m_tableWidget (tableWidget), m_curData (),
-      m_blockUpdates (false)
+  Table::Table (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                const graphics_object& go, QTableWidget *tableWidget)
+    : Object (oct_qobj, interp, go, tableWidget), m_tableWidget (tableWidget),
+      m_curData (), m_blockUpdates (false)
   {
+    qObject ()->setObjectName ("UItable");
     uitable::properties& tp = properties<uitable> ();
 
     m_curData = octave_value (tp.get_data ());
@@ -496,9 +505,8 @@ namespace QtHandles
         eventData.setfield ("Indices", indices);
         octave_value cellSelectionCallbackEventObject =
           octave_value (new octave_struct (eventData));
-        gh_manager::post_callback (m_handle,
-                                   "cellselectioncallback",
-                                   cellSelectionCallbackEventObject);
+        emit gh_callback_event (m_handle, "cellselectioncallback",
+                                cellSelectionCallbackEventObject);
       }
   }
 
@@ -506,18 +514,17 @@ namespace QtHandles
   Table::cellClicked (int row, int col)
   {
     QCheckBox *checkBox = nullptr;
-    QWidget *widget = qobject_cast<QWidget *> (
-                        m_tableWidget->cellWidget (row, col));
+    QWidget *widget
+      = qobject_cast<QWidget *> (m_tableWidget->cellWidget (row, col));
     if (widget && ! widget->children ().isEmpty ())
       {
-        QHBoxLayout *layout = qobject_cast<QHBoxLayout *> (
-                                widget->children ().first ());
+        QHBoxLayout *layout
+          = qobject_cast<QHBoxLayout *> (widget->children ().first ());
+
         if (layout && layout->count () > 0)
-          {
-            checkBox = qobject_cast<QCheckBox *> (
-                         layout->itemAt (0)-> widget ());
-          }
+          checkBox = qobject_cast<QCheckBox *> (layout->itemAt (0)-> widget ());
       }
+
     if (checkBox && checkBox->property ("Enabled").toBool ())
       checkBoxClicked (row, col, checkBox);
   }
@@ -547,9 +554,8 @@ namespace QtHandles
         octave_value cellEditCallbackEventObject =
           octave_value (new octave_struct (eventData));
 
-        gh_manager::post_callback (m_handle,
-                                   "celleditcallback",
-                                   cellEditCallbackEventObject);
+        emit gh_callback_event (m_handle, "celleditcallback",
+                                cellEditCallbackEventObject);
       }
     else if (error.string_value ().length () > 0)
       warning ("%s", error.string_value ().c_str ());
@@ -562,7 +568,11 @@ namespace QtHandles
       return;
 
     m_blockUpdates = true;
-    gh_manager::auto_lock lock;
+
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
     octave_value data = octave_value (m_curData);
     bool ok = false;
 
@@ -584,10 +594,8 @@ namespace QtHandles
                 if (edit_data.string_value () != old_data.string_value ())
                   {
                     m_curData = octave_value (cell);
-                    gh_manager::post_set (m_handle,
-                                          "data",
-                                          octave_value (cell),
-                                          false);
+                    emit gh_set_event (m_handle, "data", octave_value (cell),
+                                       false);
                   }
 
                 octave_value error = octave_value ("");
@@ -607,7 +615,8 @@ namespace QtHandles
                             columnformat (col), columneditable (col));
 
                 m_curData = octave_value (cell);
-                gh_manager::post_set (m_handle, "data", octave_value (cell), false);
+                emit gh_set_event (m_handle, "data", octave_value (cell),
+                                   false);
 
                 octave_value error = octave_value ("");
                 sendCellEditCallback (row,
@@ -635,7 +644,7 @@ namespace QtHandles
                         columneditable (col));
 
             m_curData = octave_value (data);
-            gh_manager::post_set (m_handle, "data", data, false);
+            emit gh_set_event (m_handle, "data", data, false);
 
             octave_value error = octave_value ("");
             sendCellEditCallback (row,
@@ -679,7 +688,10 @@ namespace QtHandles
     if (m_blockUpdates)
       return;
     m_blockUpdates = true;
-    gh_manager::auto_lock lock;
+
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     bool new_value = ! checkBox->isChecked ();
 
@@ -696,8 +708,8 @@ namespace QtHandles
             if (new_value != old_value)
               {
                 m_curData = octave_value (matrix);
-                gh_manager::post_set (m_handle, "data",
-                                      octave_value (matrix), false);
+                emit gh_set_event (m_handle, "data", octave_value (matrix),
+                                   false);
               }
 
             sendCellEditCallback (row, col,
@@ -730,7 +742,8 @@ namespace QtHandles
                 if (new_value != old_value)
                   {
                     m_curData = octave_value (cell);
-                    gh_manager::post_set (m_handle, "data", octave_value (cell), false);
+                    emit gh_set_event (m_handle, "data", octave_value (cell),
+                                       false);
                   }
 
                 sendCellEditCallback (row,
@@ -791,7 +804,11 @@ namespace QtHandles
     if (m_blockUpdates)
       return;
     m_blockUpdates = true;
-    gh_manager::auto_lock lock;
+
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
     octave_value data = octave_value (m_curData);
 
     int row = item->row ();
@@ -836,7 +853,7 @@ namespace QtHandles
             new_data = data;
           }
         m_curData = octave_value (new_data);
-        gh_manager::post_set (m_handle, "data", new_data, false);
+        emit gh_set_event (m_handle, "data", new_data, false);
 
         sendCellEditCallback (row,
                               col,
@@ -860,6 +877,12 @@ namespace QtHandles
       }
 
     m_blockUpdates = false;
+  }
+
+  void
+  Table::redraw (void)
+  {
+    update (uitable::properties::ID_POSITION);
   }
 
   void
@@ -1061,8 +1084,9 @@ namespace QtHandles
     uitable::properties& tp = properties<uitable> ();
 
     octave_value columnwidth = tp.get_columnwidth ();
-    if (columnwidth.isempty () ||
-        (columnwidth.is_string () && columnwidth.string_value (false) == "auto"))
+    if (columnwidth.isempty ()
+        || (columnwidth.is_string ()
+            && columnwidth.string_value (false) == "auto"))
       for (int i = 0; i < m_tableWidget->columnCount (); i++)
         m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
     else if (columnwidth.is_string ()
@@ -1230,8 +1254,8 @@ namespace QtHandles
         int index = -1;
         for (int k = 0; k < format_value.numel (); k++)
           {
-            QString popup_item = Utils::fromStdString (
-                                   format_value.fast_elem_extract (k).string_value ());
+            QString popup_item
+              = Utils::fromStdString (format_value.fast_elem_extract (k).string_value ());
 
             comboBox->addItem (popup_item);
 
@@ -1324,21 +1348,20 @@ namespace QtHandles
               QCheckBox *checkBox = nullptr;
               if (widget && ! widget->children ().isEmpty ())
                 {
-                  QHBoxLayout *layout = qobject_cast<QHBoxLayout *> (
-                                          widget->children ().first ());
+                  QHBoxLayout *layout
+                    = qobject_cast<QHBoxLayout *> (widget->children ().first ());
+
                   if (layout && layout->count () > 0)
-                    {
-                      checkBox = qobject_cast<QCheckBox *> (
-                                   layout->itemAt (0)-> widget ());
-                    }
+                    checkBox = qobject_cast<QCheckBox *> (layout->itemAt (0)-> widget ());
                 }
+
               if (checkBox)
-                {
-                  widget->setProperty ("Enabled", QVariant (enabled & editable));
-                }
+                widget->setProperty ("Enabled", QVariant (enabled & editable));
               else
                 {
-                  widget->setAttribute (Qt::WA_TransparentForMouseEvents, !(editable & enabled));
+                  widget->setAttribute (Qt::WA_TransparentForMouseEvents,
+                                        !(editable & enabled));
+
                   widget->setFocusPolicy (Qt::NoFocus);
                 }
             }
@@ -1355,7 +1378,7 @@ namespace QtHandles
     extent(0, 2) = s.width ();
     extent(0, 3) = s.height () ;
     graphics_object go = object ();
-    gh_manager::post_set (go.get_handle (), "extent", extent, false);
+    emit gh_set_event (go.get_handle (), "extent", extent, false);
   }
 
   void
@@ -1493,6 +1516,8 @@ namespace QtHandles
   bool
   Table::eventFilter (QObject *watched, QEvent *xevent)
   {
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
     //uitable::properties& tp = properties<uitable> ();
     if (qobject_cast<QTableWidget *> (watched))
       {
@@ -1500,7 +1525,8 @@ namespace QtHandles
           {
           case QEvent::Resize:
             {
-              gh_manager::auto_lock lock;
+              octave::autolock guard (gh_mgr.graphics_lock ());
+
               graphics_object go = object ();
               if (go.valid_object ())
                 {
@@ -1514,7 +1540,8 @@ namespace QtHandles
 
           case QEvent::MouseButtonPress:
             {
-              gh_manager::auto_lock lock;
+              octave::autolock guard (gh_mgr.graphics_lock ());
+
               QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
               graphics_object go = object ();
               const uitable::properties& tp =
@@ -1523,22 +1550,23 @@ namespace QtHandles
 
               if (m->button () != Qt::LeftButton || ! tp.is_enable ())
                 {
-                  gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                        Utils::figureSelectionType (m), false);
-                  gh_manager::post_set (fig.get_handle (), "currentpoint",
-                                        Utils::figureCurrentPoint (fig, m),
-                                        false);
-                  gh_manager::post_callback (fig.get_handle (),
-                                             "windowbuttondownfcn");
-                  gh_manager::post_callback (m_handle, "buttondownfcn");
+                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                                     Utils::figureSelectionType (m), false);
+                  emit gh_set_event (fig.get_handle (), "currentpoint",
+                                     Utils::figureCurrentPoint (fig, m),
+                                     false);
+                  emit gh_callback_event (fig.get_handle (),
+                                          "windowbuttondownfcn");
+                  emit gh_callback_event (m_handle, "buttondownfcn");
 
                   if (m->button () == Qt::RightButton)
-                    ContextMenu::executeAt (properties (), m->globalPos ());
+                    ContextMenu::executeAt (m_interpreter, properties (),
+                                            m->globalPos ());
                 }
               else
                 {
-                  gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                        octave_value ("normal"), false);
+                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                                     octave_value ("normal"), false);
                 }
             }
             break;
@@ -1548,14 +1576,14 @@ namespace QtHandles
               QKeyEvent *k = dynamic_cast<QKeyEvent *> (xevent);
               if (m_keyPressHandlerDefined)
                 {
-                  gh_manager::auto_lock lock;
+                  octave::autolock guard (gh_mgr.graphics_lock ());
 
                   octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
                   graphics_object fig = object ().get_ancestor ("figure");
 
-                  gh_manager::post_set (fig.get_handle (), "currentcharacter",
-                                        keyData.getfield ("Character"), false);
-                  gh_manager::post_callback (m_handle, "keypressfcn", keyData);
+                  emit gh_set_event (fig.get_handle (), "currentcharacter",
+                                     keyData.getfield ("Character"), false);
+                  emit gh_callback_event (m_handle, "keypressfcn", keyData);
                 }
               int row = m_tableWidget->currentRow ();
               int col = m_tableWidget->currentColumn ();
@@ -1564,24 +1592,25 @@ namespace QtHandles
                 case Qt::Key_Space:
                   {
                     QCheckBox *checkBox = nullptr;
-                    QWidget *widget = qobject_cast<QWidget *> (
-                                        m_tableWidget->cellWidget (row, col));
+
+                    QWidget *widget
+                      = qobject_cast<QWidget *> (m_tableWidget->cellWidget (row, col));
+
                     if (widget && ! widget->children ().isEmpty ())
                       {
-                        QHBoxLayout *layout = qobject_cast<QHBoxLayout *> (
-                                                widget->children ().first ());
+                        QHBoxLayout *layout
+                          = qobject_cast<QHBoxLayout *> (widget->children ().first ());
+
                         if (layout && layout->count () > 0)
-                          {
-                            checkBox = qobject_cast<QCheckBox *> (
-                                         layout->itemAt (0)-> widget ());
-                          }
+                          checkBox = qobject_cast<QCheckBox *> (layout->itemAt (0)-> widget ());
                       }
+
                     if (checkBox && checkBox->property ("Enabled").toBool ())
                       checkBoxClicked (row, col, checkBox);
 
-                    QComboBox *comboBox = qobject_cast<QComboBox *> (
-                                            m_tableWidget->cellWidget (row,
-                                                                       col));
+                    QComboBox *comboBox
+                      = qobject_cast<QComboBox *> (m_tableWidget->cellWidget (row, col));
+
                     if (comboBox)
                       comboBox->showPopup ();
                   }
@@ -1631,16 +1660,16 @@ namespace QtHandles
             {
               if (m_keyReleaseHandlerDefined)
                 {
-                  gh_manager::auto_lock lock;
+                  octave::autolock guard (gh_mgr.graphics_lock ());
+
                   QKeyEvent *k = dynamic_cast<QKeyEvent *> (xevent);
 
                   octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
                   graphics_object fig = object ().get_ancestor ("figure");
 
-                  gh_manager::post_set (fig.get_handle (), "currentcharacter",
-                                        keyData.getfield ("Character"), false);
-                  gh_manager::post_callback (m_handle, "keyreleasefcn",
-                                             keyData);
+                  emit gh_set_event (fig.get_handle (), "currentcharacter",
+                                     keyData.getfield ("Character"), false);
+                  emit gh_callback_event (m_handle, "keyreleasefcn", keyData);
                 }
             }
             break;
@@ -1655,7 +1684,8 @@ namespace QtHandles
           {
           case QEvent::MouseButtonPress:
             {
-              gh_manager::auto_lock lock;
+              octave::autolock guard (gh_mgr.graphics_lock ());
+
               QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
               graphics_object go = object ();
               const uitable::properties& tp = Utils::properties<uitable> (go);
@@ -1663,30 +1693,31 @@ namespace QtHandles
 
               if (m->button () != Qt::LeftButton || ! tp.is_enable ())
                 {
-                  gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                        Utils::figureSelectionType (m), false);
-                  gh_manager::post_set (fig.get_handle (), "currentpoint",
-                                        Utils::figureCurrentPoint (fig, m),
-                                        false);
-                  gh_manager::post_callback (fig.get_handle (),
-                                             "windowbuttondownfcn");
-                  gh_manager::post_callback (m_handle, "buttondownfcn");
+                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                                     Utils::figureSelectionType (m), false);
+                  emit gh_set_event (fig.get_handle (), "currentpoint",
+                                     Utils::figureCurrentPoint (fig, m),
+                                     false);
+                  emit gh_callback_event (fig.get_handle (),
+                                          "windowbuttondownfcn");
+                  emit gh_callback_event (m_handle, "buttondownfcn");
 
                   if (m->button () == Qt::RightButton)
-                    ContextMenu::executeAt (tp, m->globalPos ());
+                    ContextMenu::executeAt (m_interpreter, tp, m->globalPos ());
                 }
               else
                 {
-                  gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                        Utils::figureSelectionType (m), false);
+                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                                     Utils::figureSelectionType (m), false);
 
                   QComboBox *comboBox_0 = qobject_cast<QComboBox *> (watched);
                   for (int row = 0; row < m_tableWidget->rowCount (); row++)
                     {
                       for (int col = 0; col < m_tableWidget->columnCount (); col++)
                         {
-                          QComboBox *comboBox_1 = qobject_cast<QComboBox *> (
-                                                    m_tableWidget->cellWidget (row, col));
+                          QComboBox *comboBox_1
+                            = qobject_cast<QComboBox *> (m_tableWidget->cellWidget (row, col));
+
                           if (comboBox_0 == comboBox_1)
                             m_tableWidget->setCurrentCell (row, col);
                         }

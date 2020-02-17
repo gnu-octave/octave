@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // Originally written by John C. Campbell <jcc@bevo.che.wisc.edu>
 //
@@ -42,9 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdio>
 
 #include <iomanip>
-#include <stack>
 #include <string>
-#include <vector>
 
 #if defined (HAVE_ZLIB_H)
 #  include <zlib.h>
@@ -52,8 +53,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-ops.h"
 #include "file-stat.h"
+#include "iconv-wrappers.h"
 #include "lo-ieee.h"
 #include "lo-sysdep.h"
+#include "localcharset-wrapper.h"
 #include "mkostemp-wrapper.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
@@ -65,6 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "file-io.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
 #include "oct-fstrm.h"
@@ -79,29 +83,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
-
-// List of files to delete when we exit or crash.
-//
-// FIXME: this should really be static,
-//        but that causes problems on some systems.
-std::stack <std::string> tmp_files;
-
-void
-mark_for_deletion (const std::string& file)
-{
-  tmp_files.push (file);
-}
-
-void
-cleanup_tmp_files (void)
-{
-  while (! tmp_files.empty ())
-    {
-      std::string filename = tmp_files.top ();
-      tmp_files.pop ();
-      octave_unlink_wrapper (filename.c_str ());
-    }
-}
 
 static void
 normalize_fopen_mode (std::string& mode, bool& use_zlib)
@@ -296,7 +277,7 @@ To read a line and return the terminating newline see @code{fgets}.
 @seealso{fgets, fscanf, fread, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fgetl";
+  static const std::string who = "fgetl";
 
   int nargin = args.length ();
 
@@ -338,7 +319,7 @@ To read a line and discard the terminating newline see @code{fgetl}.
 @seealso{fputs, fgetl, fscanf, fread, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fgets";
+  static const std::string who = "fgets";
 
   int nargin = args.length ();
 
@@ -380,7 +361,7 @@ Returns the number of lines skipped (end-of-line sequences encountered).
 @seealso{fgetl, fgets, fscanf, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fskipl";
+  static const std::string who = "fskipl";
 
   int nargin = args.length ();
 
@@ -405,11 +386,28 @@ Returns the number of lines skipped (end-of-line sequences encountered).
 
 static octave::stream
 do_stream_open (const std::string& name, const std::string& mode_arg,
-                const std::string& arch, int& fid)
+                const std::string& arch, std::string encoding, int& fid)
 {
   octave::stream retval;
 
   fid = -1;
+
+  // Valid names for encodings consist of ASCII characters only.
+  std::transform (encoding.begin (), encoding.end (), encoding.begin (),
+                  ::tolower);
+  if (encoding.compare ("utf-8"))
+    {
+      // check if encoding is valid
+      void *codec = octave_iconv_open_wrapper (encoding.c_str (), "utf-8");
+      if (codec == reinterpret_cast<void *> (-1))
+        {
+          if (errno == EINVAL)
+            error ("fopen: conversion from codepage '%s' not supported",
+                   encoding.c_str ());
+        }
+      else
+        octave_iconv_close_wrapper (codec);
+    }
 
   std::string mode = mode_arg;
   bool use_zlib = false;
@@ -417,8 +415,8 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
   std::ios::openmode md = fopen_mode_to_ios_mode (mode);
 
-  octave::mach_info::float_format flt_fmt =
-    octave::mach_info::string_to_float_format (arch);
+  octave::mach_info::float_format flt_fmt
+    = octave::mach_info::string_to_float_format (arch);
 
   std::string fname = octave::sys::file_ops::tilde_expand (name);
 
@@ -440,8 +438,8 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
               gzFile gzf = ::gzdopen (fd, mode.c_str ());
 
-              retval = octave_zstdiostream::create (fname, gzf, fd,
-                                                    md, flt_fmt);
+              retval = octave_zstdiostream::create (fname, gzf, fd, md,
+                                                    flt_fmt, encoding);
             }
           else
             retval.error (std::strerror (errno));
@@ -451,8 +449,8 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
         {
           FILE *fptr = octave::sys::fopen (fname.c_str (), mode.c_str ());
 
-          retval = octave_stdiostream::create (fname, fptr, md,
-                                               flt_fmt);
+          retval = octave_stdiostream::create (fname, fptr, md, flt_fmt,
+                                               encoding);
 
           if (! fptr)
             retval.error (std::strerror (errno));
@@ -465,7 +463,8 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
 static octave::stream
 do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
-                const octave_value& tc_arch, const char *fcn, int& fid)
+                const octave_value& tc_arch, const octave_value& tc_encoding,
+                const char *fcn, int& fid)
 {
   octave::stream retval;
 
@@ -474,8 +473,9 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
   std::string name = tc_name.xstring_value ("%s: filename must be a string", fcn);
   std::string mode = tc_mode.xstring_value ("%s: file mode must be a string", fcn);
   std::string arch = tc_arch.xstring_value ("%s: architecture type must be a string", fcn);
+  std::string encoding = tc_encoding.xstring_value ("%s: ENCODING must be a string", fcn);
 
-  retval = do_stream_open (name, mode, arch, fid);
+  retval = do_stream_open (name, mode, arch, encoding, fid);
 
   return retval;
 }
@@ -485,19 +485,23 @@ DEFMETHOD (fopen, interp, args, nargout,
 @deftypefn  {} {@var{fid} =} fopen (@var{name})
 @deftypefnx {} {@var{fid} =} fopen (@var{name}, @var{mode})
 @deftypefnx {} {@var{fid} =} fopen (@var{name}, @var{mode}, @var{arch})
+@deftypefnx {} {@var{fid} =} fopen (@var{name}, @var{mode}, @var{arch}, @var{encoding})
 @deftypefnx {} {[@var{fid}, @var{msg}] =} fopen (@dots{})
 @deftypefnx {} {@var{fid_list} =} fopen ("all")
-@deftypefnx {} {[@var{file}, @var{mode}, @var{arch}] =} fopen (@var{fid})
+@deftypefnx {} {[@var{file}, @var{mode}, @var{arch}, @var{encoding}] =} fopen (@var{fid})
 Open a file for low-level I/O or query open files and file descriptors.
 
 The first form of the @code{fopen} function opens the named file with
-the specified mode (read-write, read-only, etc.@:) and architecture
-interpretation (IEEE big endian, IEEE little endian, etc.), and returns
-an integer value that may be used to refer to the file later.  If an
-error occurs, @var{fid} is set to @minus{}1 and @var{msg} contains the
+the specified mode (read-write, read-only, etc.@:), architecture
+interpretation (IEEE big endian, IEEE little endian, etc.@:) and file encoding,
+and returns an integer value that may be used to refer to the file later.  If
+an error occurs, @var{fid} is set to @minus{}1 and @var{msg} contains the
 corresponding system error message.  The @var{mode} is a one or two
 character string that specifies whether the file is to be opened for
-reading, writing, or both.
+reading, writing, or both.  The @var{encoding} is a character string with a
+valid encoding identifier.  This encoding is used when strings are read from
+or written to the file.  By default, the same encoding is used like for reading
+.m files.
 
 The second form of the @code{fopen} function returns a vector of file ids
 corresponding to all the currently open files, excluding the
@@ -571,10 +575,6 @@ IEEE big endian format.
 IEEE little endian format.
 @end table
 
-@noindent
-However, conversions are currently only supported for @samp{native},
-@samp{ieee-be}, and @samp{ieee-le} formats.
-
 When opening a new file that does not yet exist, permissions will be set to
 @code{0666 - @var{umask}}.
 
@@ -590,7 +590,7 @@ after data has been written then the write should be followed by a call to
 {
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1 || nargin > 4)
     print_usage ();
 
   octave_value_list retval = ovl (-1.0);
@@ -612,21 +612,26 @@ after data has been written then the write should be followed by a call to
         {
           string_vector tmp = streams.get_info (args(0));
 
-          retval = ovl (tmp(0), tmp(1), tmp(2));
+          retval = ovl (tmp(0), tmp(1), tmp(2), tmp(3));
 
           return retval;
         }
     }
 
-  octave_value mode = (nargin == 2 || nargin == 3)
-                      ? args(1) : octave_value ("r");
+  octave_value mode = (nargin > 1) ? args(1) : octave_value ("r");
 
-  octave_value arch = (nargin == 3)
-                      ? args(2) : octave_value ("native");
+  octave_value arch = (nargin > 2) ? args(2) : octave_value ("native");
+
+  octave::input_system& input_sys = interp.get_input_system ();
+  octave_value encoding = (nargin > 3) ? args(3)
+                          : octave_value (input_sys.mfile_encoding ());
+  if (encoding.string_value () == "system")
+    encoding = octave_value (octave_locale_charset_wrapper ());
 
   int fid = -1;
 
-  octave::stream os = do_stream_open (args(0), mode, arch, "fopen", fid);
+  octave::stream os = do_stream_open (args(0), mode, arch, encoding, "fopen",
+                                      fid);
 
   if (os)
     retval = ovl (streams.insert (os), "");
@@ -641,11 +646,12 @@ after data has been written then the write should be followed by a call to
 }
 
 /*
-## FIXME: Only have tests for query mode.  Need others for regular fopen call.
+## Further tests are in io.tst
 %!test   # Uses hardcoded value of 1 for stdout
-%! [name, mode, arch] = fopen (1);
+%! [name, mode, arch, encoding] = fopen (1);
 %! assert (name, "stdout");
 %! assert (mode, "w");
+%! assert (encoding, "utf-8");
 
 %!test   # Query of non-existent stream returns all ""
 %! [name, mode, arch] = fopen (-1);
@@ -831,7 +837,7 @@ expanded even when the template string is defined with single quotes.
 @seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fprintf";
+  static const std::string who = "fprintf";
 
   return printf_internal (interp, who, args, nargout);
 }
@@ -854,7 +860,7 @@ expanded even when the template string is defined with single quotes.
 @seealso{fprintf, sprintf, scanf}
 @end deftypefn */)
 {
-  static std::string who = "printf";
+  static const std::string who = "printf";
 
   octave_value_list tmp_args = args;
 
@@ -890,7 +896,7 @@ Return a non-negative number on success or EOF on error.
 @seealso{fdisp, fprintf, fwrite, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fputs";
+  static const std::string who = "fputs";
 
   return puts_internal (interp, who, args);
 }
@@ -908,7 +914,7 @@ Return a non-negative number on success and EOF on error.
 @seealso{fputs, disp}
 @end deftypefn */)
 {
-  static std::string who = "puts";
+  static const std::string who = "puts";
 
   octave_value_list tmp_args = args;
 
@@ -931,7 +937,7 @@ expanded even when the template string is defined with single quotes.
 @seealso{printf, fprintf, sscanf}
 @end deftypefn */)
 {
-  static std::string who = "sprintf";
+  static const std::string who = "sprintf";
 
   int nargin = args.length ();
 
@@ -1067,7 +1073,7 @@ complete description of the syntax of the template string.
 @seealso{fgets, fgetl, fread, scanf, sscanf, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fscanf";
+  static const std::string who = "fscanf";
 
   return scanf_internal (interp, who, args);
 }
@@ -1100,7 +1106,7 @@ character to be read is returned in @var{pos}.
 @seealso{fscanf, scanf, sprintf}
 @end deftypefn */)
 {
-  static std::string who = "sscanf";
+  static const std::string who = "sscanf";
 
   int nargin = args.length ();
 
@@ -1145,6 +1151,15 @@ character to be read is returned in @var{pos}.
   return retval;
 }
 
+/*
+%!test <*56396>
+%! [val, count, errmsg, nextpos] = sscanf ('1234a6', '%2d', 3);
+%! assert (val, [12; 34]);
+%! assert (count, 2);
+%! assert (errmsg, "sscanf: format failed to match");
+%! assert (nextpos, 5);
+*/
+
 DEFMETHOD (scanf, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})
@@ -1155,7 +1170,7 @@ It is currently not useful to call @code{scanf} in interactive programs.
 @seealso{fscanf, sscanf, printf}
 @end deftypefn */)
 {
-  static std::string who = "scanf";
+  static const std::string who = "scanf";
 
   octave_value_list tmp_args = args;
 
@@ -1500,7 +1515,7 @@ from the beginning of the file or string, where processing stopped.
 @seealso{dlmread, fscanf, load, strread, textread}
 @end deftypefn */)
 {
-  static std::string who = "textscan";
+  static const std::string who = "textscan";
 
   return textscan_internal (interp, who, args);
 }
@@ -2214,45 +2229,63 @@ as the name of the function when reporting errors.
 %! ret = textscan (str, "%s", "delimiter", "\t");
 %! assert (ret, { {''; ''; 'a'; 'b'; 'c'} });
 
-%!test <52479>
+%!test <*52479>
 %! str = "\t\ta\tb\tc\n";
 %! ret = textscan (str, "%s", "delimiter", {"\t"});
 %! assert (ret, { {''; ''; 'a'; 'b'; 'c'} });
 
-%!test <52550>
+%!test <*52550>
 %! str = ",,1,2,3\n";
 %! obs = textscan (str, "%d", "delimiter", ",");
 %! assert (obs, { [0; 0; 1; 2; 3] });
 %! obs = textscan (str, "%d", "delimiter", {","});
 %! assert (obs, { [0; 0; 1; 2; 3] });
 
-%!test <52550>
+%!test <*52550>
 %! str = " , ,1,2,3\n";
 %! obs = textscan (str, "%d", "delimiter", ",");
 %! assert (obs, { [0; 0; 1; 2; 3] });
 %! textscan (str, "%d", "delimiter", {","});
 %! assert (obs, { [0; 0; 1; 2; 3] });
 
-%!test <52550>
+%!test <*52550>
 %! str = " 0 , 5+6j , -INF+INFj ,NaN,3\n";
 %! obs = textscan (str, "%f", "delimiter", ",");
 %! assert (obs, { [0; 5+6i; complex(-Inf,Inf); NaN; 3] });
 %! obs = textscan (str, "%f", "delimiter", {","});
 %! assert (obs, { [0; 5+6i; complex(-Inf,Inf); NaN; 3] });
 
-%!test <52550>
+%!test <*52550>
 %! str = " 0;,;,1;,2;,3\n";
 %! assert (textscan (str, "%f", "delimiter", {";,"}), { [0; NaN; 1; 2; 3] });
 
-%!test <52550>
+%!test <*52550>
 %! str = " 0 ;1 , $ 2 ;3\n";
 %! obs = textscan (str, "%f", "delimiter", ",;$");
 %! assert (obs, { [0; 1; NaN; 2; 3] });
 %! obs = textscan (str, "%f", "delimiter", {",",";","$"});
 %! assert (obs, { [0; 1; NaN; 2; 3] });
 
-*/
+## file stream with encoding
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+", "n", "iso-8859-1");
+%! unwind_protect
+%!   fprintf (fid, "abc,äöü\n");
+%!   fseek (fid, 0, "bof");
+%!   obs = textscan (fid, "%s", "delimiter", ",");
+%!   fclose (fid);
+%!   assert (obs, { {"abc"; "äöü"} });
+%! unwind_protect_cleanup
+%!   unlink (f);
+%! end_unwind_protect
 
+%!test <*56917>
+%! str = '"a,b","c"';
+%! obs = textscan (str, "%q", "delimiter", ",");
+%! assert (obs, { { "a,b"; "c" } });
+
+*/
 // These tests have end-comment sequences, so can't just be in a comment
 #if 0
 ## Test unfinished comment
@@ -2986,7 +3019,7 @@ message.
           retval(1) = nm;
 
           if (nargin == 2 && args(1).is_true ())
-            mark_for_deletion (nm);
+            interp.mark_for_deletion (nm);
         }
     }
 
@@ -3173,4 +3206,26 @@ It is useful for error messages and prompts.
   octave::stream_list& streams = interp.get_stream_list ();
 
   return const_value ("stderr", args, streams.stderr_file ());
+}
+
+// Deprecated variables and functions.
+
+// Deprecated in Octave 6.
+void
+mark_for_deletion (const std::string& file)
+{
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("mark_for_deletion");
+
+  interp.mark_for_deletion (file);
+}
+
+// Deprecated in Octave 6.
+void
+cleanup_tmp_files (void)
+{
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("cleanup_tmp_files");
+
+  interp.cleanup_tmp_files ();
 }

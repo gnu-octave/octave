@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 /*
 
@@ -27,12 +30,12 @@ from GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991
 Free Software Foundation, Inc.
 
   octave::sys::env::do_absolute_pathname
-  octave::sys:env::do_base_pathname
-  octave::sys:env::do_chdir
-  octave::sys:env::do_getcwd
-  octave::sys:env::do_make_absolute
-  octave::sys:env::do_polite_directory_format
-  octave::sys:env::pathname_backup
+  octave::sys::env::do_base_pathname
+  octave::sys::env::do_chdir
+  octave::sys::env::do_getcwd
+  octave::sys::env::do_make_absolute
+  octave::sys::env::do_polite_directory_format
+  octave::sys::env::pathname_backup
 
 */
 
@@ -56,6 +59,13 @@ Free Software Foundation, Inc.
 #include "set-program-name-wrapper.h"
 #include "singleton-cleanup.h"
 #include "unistd-wrappers.h"
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include "uniconv-wrappers.h"
+
+#  include <windows.h>
+#  include <shlobj.h>
+#endif
 
 namespace octave
 {
@@ -85,14 +95,8 @@ namespace octave
       if (! instance)
         {
           instance = new env ();
-
-          if (instance)
-            singleton_cleanup_list::add (cleanup_instance);
+          singleton_cleanup_list::add (cleanup_instance);
         }
-
-      if (! instance)
-        (*current_liboctave_error_handler)
-          ("unable to create current working directory object!");
 
       return retval;
     }
@@ -151,6 +155,13 @@ namespace octave
     {
       return (instance_ok ())
         ? instance->do_get_temp_directory () : "";
+    }
+
+    std::string
+    env::get_user_config_directory ()
+    {
+      return (instance_ok ())
+        ? instance->do_get_user_config_directory () : "";
     }
 
     std::string
@@ -225,6 +236,31 @@ namespace octave
 #endif
 
       return tempd;
+    }
+
+    std::string
+    env::do_get_user_config_directory (void) const
+    {
+      std::string cfg_dir;
+
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && defined (OCTAVE_USE_WINDOWS_API)
+      wchar_t path[MAX_PATH+1];
+      if (SHGetFolderPathW (nullptr, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY,
+                            nullptr, SHGFP_TYPE_CURRENT, path) == S_OK)
+        {
+          char *local_app_data = u8_from_wchar (path);
+          cfg_dir = local_app_data;
+          free (local_app_data);
+        }
+#else
+      cfg_dir = do_getenv ("XDG_CONFIG_HOME");
+
+      if (cfg_dir.empty ())
+        cfg_dir = do_get_home_directory () + sys::file_ops::dir_sep_str ()
+             + ".config";
+#endif
+
+      return cfg_dir;
     }
 
     // FIXME: this leaves no way to distinguish between a
@@ -490,8 +526,7 @@ namespace octave
 
       if (hd.empty ())
         {
-          sys::password pw = sys::password::getpwuid (
-                                       sys::getuid ());
+          sys::password pw = sys::password::getpwuid (sys::getuid ());
 
           hd = (pw ? pw.dir () : std::string (sys::file_ops::dir_sep_str ()));
         }
@@ -504,8 +539,7 @@ namespace octave
     {
       if (user_name.empty ())
         {
-          sys::password pw = sys::password::getpwuid (
-                                       sys::getuid ());
+          sys::password pw = sys::password::getpwuid (sys::getuid ());
 
           user_name = (pw ? pw.name () : "unknown");
         }
@@ -584,6 +618,16 @@ namespace octave
         {
           while (sys::file_ops::is_dir_sep (path[i]) && i > 0)
             i--;
+
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
+          // Don't strip file letter part.
+          if (i == 1 && path[i] == ':')
+            {
+              // Keep path separator if present.
+              i = std::min (i+2, path.length ());
+              break;
+            }
+#endif
 
           while (! sys::file_ops::is_dir_sep (path[i]) && i > 0)
             i--;

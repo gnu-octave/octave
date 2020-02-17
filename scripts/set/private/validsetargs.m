@@ -1,5 +1,9 @@
-## Copyright (C) 2000-2019 Paul Kienzle
-## Copyright (C) 2009-2010 Jaroslav Hajek
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,10 +20,12 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## Validate arguments for binary set operation.
 
-function [x, y] = validsetargs (caller, x, y, byrows_arg)
+function [x, y] = validsetargs (caller, x, y, varargin)
 
   isallowedarraytype = @(x) isnumeric (x) || ischar (x) || islogical (x);
 
@@ -41,25 +47,49 @@ function [x, y] = validsetargs (caller, x, y, byrows_arg)
     elseif (! (isallowedarraytype (x) && isallowedarraytype (y)))
       error ("%s: A and B must be arrays or cell arrays of strings", caller);
     endif
-  elseif (nargin == 4)
-    if (! strcmpi (byrows_arg, "rows"))
-      error ("%s: invalid option: %s", caller, byrows_arg);
+  else
+    optlegacy = false;
+    optsorted = false;
+    optstable = false;
+
+    for arg = varargin
+      switch (arg{1})
+        case "legacy"
+          optlegacy = true;
+
+        case "rows"
+          if (iscell (x) || iscell (y))
+            error ('%s: cells not supported with "rows" flag', caller);
+          elseif (! (isallowedarraytype (x) && isallowedarraytype (y)))
+            error ("%s: A and B must be arrays or cell arrays of strings", caller);
+          else
+            if (ndims (x) > 2 || ndims (y) > 2)
+              error ('%s: A and B must be 2-dimensional matrices with "rows" flag', caller);
+            elseif (columns (x) != columns (y) && ! (isempty (x) || isempty (y)))
+              error ("%s: number of columns in A and B must match", caller);
+            endif
+          endif
+
+        case "sorted"
+          optsorted = true;
+
+        case "stable"
+          optstable = true;
+
+        otherwise
+          error ("%s: invalid option: %s", caller, arg{1});
+
+      endswitch
+    endfor
+
+    if (optsorted + optstable + optlegacy > 1)
+      error ('%s: only one of "sorted", "stable", or "legacy" may be specified',
+             caller);
     endif
 
-    if (iscell (x) || iscell (y))
-      error ('%s: cells not supported with "rows"', caller);
-    elseif (! (isallowedarraytype (x) && isallowedarraytype (y)))
-      error ("%s: A and B must be arrays or cell arrays of strings", caller);
-    else
-      if (ndims (x) > 2 || ndims (y) > 2)
-        error ('%s: A and B must be 2-dimensional matrices for "rows"', caller);
-      elseif (columns (x) != columns (y) && ! (isempty (x) || isempty (y)))
-        error ("%s: number of columns in A and B must match", caller);
-      endif
-    endif
   endif
 
 endfunction
 
 
-## %!tests for function are in union.m
+## BIST tests for function are in union.m

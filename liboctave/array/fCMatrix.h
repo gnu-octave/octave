@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_fCMatrix_h)
 #define octave_fCMatrix_h 1
@@ -57,7 +60,13 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatComplexMatrix (void) : FloatComplexNDArray () { }
+  FloatComplexMatrix (void) = default;
+
+  FloatComplexMatrix (const FloatComplexMatrix& a) = default;
+
+  FloatComplexMatrix& operator = (const FloatComplexMatrix& a) = default;
+
+  ~FloatComplexMatrix (void) = default;
 
   FloatComplexMatrix (octave_idx_type r, octave_idx_type c)
     : FloatComplexNDArray (dim_vector (r, c)) { }
@@ -71,9 +80,6 @@ public:
 
   FloatComplexMatrix (const dim_vector& dv, const FloatComplex& val)
     : FloatComplexNDArray (dv.redim (2), val) { }
-
-  FloatComplexMatrix (const FloatComplexMatrix& a)
-    : FloatComplexNDArray (a) { }
 
   template <typename U>
   FloatComplexMatrix (const MArray<U>& a)
@@ -115,10 +121,6 @@ public:
   bool operator != (const FloatComplexMatrix& a) const;
 
   bool ishermitian (void) const;
-
-  OCTAVE_DEPRECATED (4.4, "use 'ishermitian' instead")
-  bool is_hermitian (void) const
-  { return ishermitian (); }
 
   // destructive insert/delete/reorder operations
 

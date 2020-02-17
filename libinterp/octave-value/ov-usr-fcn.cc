@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -31,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "builtin-defun-decls.h"
-#include "call-stack.h"
 #include "defaults.h"
 #include "Cell.h"
 #include "defun.h"
@@ -64,9 +66,20 @@ static bool Voptimize_subsasgn_calls = true;
 
 octave_user_code::~octave_user_code (void)
 {
+  // This function is no longer valid, so remove the pointer to it from
+  // the corresponding scope.
+  // FIXME: would it be better to use shared/weak pointers for this job
+  // instead of storing a bare pointer in the scope object?
+  m_scope.set_user_code (nullptr);
+
   // FIXME: shouldn't this happen automatically when deleting cmd_list?
   if (cmd_list)
-    cmd_list->remove_all_breakpoints (file_name);
+    {
+      octave::event_manager& evmgr
+        = octave::__get_event_manager__ ("octave_user_code::~octave_user_code");
+
+      cmd_list->remove_all_breakpoints (evmgr, file_name);
+    }
 
   delete cmd_list;
   delete m_file_info;
@@ -128,8 +141,7 @@ octave_user_code::dump (void) const
     = {{ "scope_info", m_scope ? m_scope.dump () : "0x0" },
        { "file_name", file_name },
        { "time_parsed", t_parsed },
-       { "time_checked", t_checked },
-       { "call_depth", m_call_depth }};
+       { "time_checked", t_checked }};
 
   return octave_value (m);
 }
@@ -185,25 +197,24 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 
 octave_user_function::octave_user_function
   (const octave::symbol_scope& scope, octave::tree_parameter_list *pl,
-   octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
+   octave::tree_parameter_list *rl, octave::tree_statement_list *cl,
+   const local_vars_map& lviv)
   : octave_user_code ("", "", scope, cl, ""),
     param_list (pl), ret_list (rl),
+    m_local_var_init_vals (lviv),
     lead_comm (), trail_comm (),
     location_line (0), location_column (0),
     parent_name (), system_fcn_file (false),
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
     anonymous_function (false), nested_function (false),
-    class_constructor (none), class_method (false)
+    class_constructor (none), class_method (none)
 #if defined (HAVE_LLVM)
     , jit_info (0)
 #endif
 {
   if (cmd_list)
     cmd_list->mark_as_function_body ();
-
-  if (m_scope)
-    m_scope.set_function (this);
 }
 
 octave_user_function::~octave_user_function (void)
@@ -450,9 +461,10 @@ octave_user_function::all_va_args (const octave_value_list& args)
 
 octave_value_list
 octave_user_function::call (octave::tree_evaluator& tw, int nargout,
-                            const octave_value_list& args)
+                            const octave_value_list& args,
+                            octave::stack_frame *closure_frames)
 {
-  return tw.execute_user_function (*this, nargout, args);
+  return tw.execute_user_function (*this, nargout, args, closure_frames);
 }
 
 void
@@ -515,6 +527,33 @@ octave_user_function::ctor_type_str (void) const
   return retval;
 }
 
+std::string
+octave_user_function::method_type_str (void) const
+{
+  std::string retval;
+
+  switch (class_method)
+    {
+    case none:
+      retval = "none";
+      break;
+
+    case legacy:
+      retval = "legacy";
+      break;
+
+    case classdef:
+      retval = "classdef";
+      break;
+
+    default:
+      retval = "unrecognized enum value";
+      break;
+    }
+
+  return retval;
+}
+
 octave_value
 octave_user_function::dump (void) const
 {
@@ -556,11 +595,17 @@ octave_user_function::print_code_function_trailer (const std::string& prefix)
 void
 octave_user_function::restore_warning_states (void)
 {
-  octave_value val = m_scope.varval (".saved_warning_states.");
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("octave_user_function::restore_warning_states");
+
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  octave_value val
+    = tw.get_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES);
 
   if (val.is_defined ())
     {
-      // Fail spectacularly if .saved_warning_states. is not an
+      // Fail spectacularly if SAVED_WARNING_STATES is not an
       // octave_map (or octave_scalar_map) object.
 
       if (! val.isstruct ())
@@ -570,9 +615,6 @@ octave_user_function::restore_warning_states (void)
 
       Cell ids = m.contents ("identifier");
       Cell states = m.contents ("state");
-
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("octave_user_function::restore_warning_states");
 
       for (octave_idx_type i = 0; i < m.numel (); i++)
         Fwarning (interp, ovl (states(i), ids(i)));
@@ -619,14 +661,14 @@ Programming Note: @code{nargin} does not work on compiled functions
 
   octave_value retval;
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
   if (nargin == 1)
     {
       octave_value func = args(0);
 
       if (func.is_string ())
         {
+          octave::symbol_table& symtab = interp.get_symbol_table ();
+
           std::string name = func.string_value ();
           func = symtab.find_function (name);
           if (func.is_undefined ())
@@ -657,8 +699,9 @@ Programming Note: @code{nargin} does not work on compiled functions
     }
   else
     {
-      octave::symbol_scope scope = symtab.require_current_scope ("nargin");
-      retval = scope.varval (".nargin.");
+      octave::tree_evaluator& tw = interp.get_evaluator ();
+
+      retval = tw.get_auto_fcn_var (octave::stack_frame::NARGIN);
 
       if (retval.is_undefined ())
         retval = 0;
@@ -729,14 +772,14 @@ returns -1 for all anonymous functions.
 
   octave_value retval;
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
   if (nargin == 1)
     {
       octave_value func = args(0);
 
       if (func.is_string ())
         {
+          octave::symbol_table& symtab = interp.get_symbol_table ();
+
           std::string name = func.string_value ();
           func = symtab.find_function (name);
           if (func.is_undefined ())
@@ -780,11 +823,12 @@ returns -1 for all anonymous functions.
     }
   else
     {
-      if (symtab.at_top_level ())
+      if (interp.at_top_level ())
         error ("nargout: invalid call at top level");
 
-      octave::symbol_scope scope = symtab.require_current_scope ("nargout");
-      retval = scope.varval (".nargout.");
+      octave::tree_evaluator& tw = interp.get_evaluator ();
+
+      retval = tw.get_auto_fcn_var (octave::stack_frame::NARGOUT);
 
       if (retval.is_undefined ())
         retval = 0;
@@ -851,17 +895,20 @@ element-by-element and a logical array is returned.  At the top level,
   if (args.length () != 1)
     print_usage ();
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
-  if (symtab.at_top_level ())
+  if (interp.at_top_level ())
     error ("isargout: invalid call at top level");
 
-  octave::symbol_scope scope = symtab.require_current_scope ("isargout");
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  int nargout1 = scope.varval (".nargout.").int_value ();
+  octave_value tmp;
+
+  int nargout1 = 0;
+  tmp = tw.get_auto_fcn_var (octave::stack_frame::NARGOUT);
+  if (tmp.is_defined ())
+    nargout1 = tmp.int_value ();
 
   Matrix ignored;
-  octave_value tmp = scope.varval (".ignored.");
+  tmp = tw.get_auto_fcn_var (octave::stack_frame::IGNORED);
   if (tmp.is_defined ())
     ignored = tmp.matrix_value ();
 

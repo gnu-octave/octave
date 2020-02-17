@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 %!test
 %! m = [3 2];
@@ -176,15 +183,9 @@
 %! warning (watv.state, "Octave:assign-as-truth-value");
 
 %!test
-%! wdbz = warning ("query", "Octave:divide-by-zero");
-%! warning ("off", "Octave:divide-by-zero");
 %! assert (isinf (1/0));
-%! warning (wdbz.state, "Octave:divide-by-zero");
 
 %!test
-%! wdbz = warning ("query", "Octave:divide-by-zero");
-%! warning ("on", "Octave:divide-by-zero");
 %! a = 1;
 %! b = 0;
-%! fail ("isinf (a/b);", "warning", "division by zero");
-%! warning (wdbz.state, "Octave:divide-by-zero");
+%! assert (isinf (a/b));

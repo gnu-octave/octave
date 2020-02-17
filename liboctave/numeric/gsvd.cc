@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 2016-2019 Barbara Lócsi
-Copyright (C) 2006 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
-Copyright (C) 1996, 1997 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1997-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -39,52 +40,54 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-lapack-proto.h"
 #include "oct-shlib.h"
 
-static std::map<std::string, void *> gsvd_fcn;
+namespace octave
+{
+  static std::map<std::string, void *> gsvd_fcn;
 
-static bool have_DGGSVD3 = false;
-static bool gsvd_initialized = false;
+  static bool have_DGGSVD3 = false;
+  static bool gsvd_initialized = false;
 
-/* Hack to stringize macro results. */
+  /* Hack to stringize macro results. */
 #define xSTRINGIZE(x) #x
 #define STRINGIZE(x) xSTRINGIZE(x)
 
-void initialize_gsvd (void)
-{
-  if (gsvd_initialized)
-    return;
-
-  octave::dynamic_library libs ("");
-  if (! libs)
-    {
-      // FIXME: Should we throw an error if we cannot check the libraries?
-      have_DGGSVD3 = false;
+  static void initialize_gsvd (void)
+  {
+    if (gsvd_initialized)
       return;
-    }
 
-  have_DGGSVD3 = (libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3)))
-                  != nullptr);
+    dynamic_library libs ("");
+    if (! libs)
+      {
+        // FIXME: Should we throw an error if we cannot check the libraries?
+        have_DGGSVD3 = false;
+        return;
+      }
 
-  if (have_DGGSVD3)
-    {
-      gsvd_fcn["dg"] = libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3)));
-      gsvd_fcn["sg"] = libs.search (STRINGIZE (F77_FUNC (sggsvd3, SGGSVD3)));
-      gsvd_fcn["zg"] = libs.search (STRINGIZE (F77_FUNC (zggsvd3, ZGGSVD3)));
-      gsvd_fcn["cg"] = libs.search (STRINGIZE (F77_FUNC (cggsvd3, CGGSVD3)));
-    }
-  else
-    {
-      gsvd_fcn["dg"] = libs.search (STRINGIZE (F77_FUNC (dggsvd, DGGSVD)));
-      gsvd_fcn["sg"] = libs.search (STRINGIZE (F77_FUNC (sggsvd, SGGSVD)));
-      gsvd_fcn["zg"] = libs.search (STRINGIZE (F77_FUNC (zggsvd, ZGGSVD)));
-      gsvd_fcn["cg"] = libs.search (STRINGIZE (F77_FUNC (cggsvd, CGGSVD)));
-    }
-  gsvd_initialized = true;
-}
+    have_DGGSVD3 = (libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3)))
+                    != nullptr);
 
-template<class T1>
-struct real_ggsvd_ptr
-{
-  typedef F77_RET_T (*type)
+    if (have_DGGSVD3)
+      {
+        gsvd_fcn["dg"] = libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3)));
+        gsvd_fcn["sg"] = libs.search (STRINGIZE (F77_FUNC (sggsvd3, SGGSVD3)));
+        gsvd_fcn["zg"] = libs.search (STRINGIZE (F77_FUNC (zggsvd3, ZGGSVD3)));
+        gsvd_fcn["cg"] = libs.search (STRINGIZE (F77_FUNC (cggsvd3, CGGSVD3)));
+      }
+    else
+      {
+        gsvd_fcn["dg"] = libs.search (STRINGIZE (F77_FUNC (dggsvd, DGGSVD)));
+        gsvd_fcn["sg"] = libs.search (STRINGIZE (F77_FUNC (sggsvd, SGGSVD)));
+        gsvd_fcn["zg"] = libs.search (STRINGIZE (F77_FUNC (zggsvd, ZGGSVD)));
+        gsvd_fcn["cg"] = libs.search (STRINGIZE (F77_FUNC (cggsvd, CGGSVD)));
+      }
+    gsvd_initialized = true;
+  }
+
+  template<class T1>
+  struct real_ggsvd_ptr
+  {
+    typedef F77_RET_T (*type)
     (F77_CONST_CHAR_ARG_DECL,   // JOBU
      F77_CONST_CHAR_ARG_DECL,   // JOBV
      F77_CONST_CHAR_ARG_DECL,   // JOBQ
@@ -111,12 +114,12 @@ struct real_ggsvd_ptr
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL);
-};
+  };
 
-template<class T1>
-struct real_ggsvd3_ptr
-{
-  typedef F77_RET_T (*type)
+  template<class T1>
+  struct real_ggsvd3_ptr
+  {
+    typedef F77_RET_T (*type)
     (F77_CONST_CHAR_ARG_DECL,   // JOBU
      F77_CONST_CHAR_ARG_DECL,   // JOBV
      F77_CONST_CHAR_ARG_DECL,   // JOBQ
@@ -144,12 +147,12 @@ struct real_ggsvd3_ptr
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL);
-};
+  };
 
-template<class T1, class T2>
-struct comp_ggsvd_ptr
-{
-  typedef F77_RET_T (*type)
+  template<class T1, class T2>
+  struct comp_ggsvd_ptr
+  {
+    typedef F77_RET_T (*type)
     (F77_CONST_CHAR_ARG_DECL,   // JOBU
      F77_CONST_CHAR_ARG_DECL,   // JOBV
      F77_CONST_CHAR_ARG_DECL,   // JOBQ
@@ -177,12 +180,12 @@ struct comp_ggsvd_ptr
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL);
-};
+  };
 
-template<class T1, class T2>
-struct comp_ggsvd3_ptr
-{
-  typedef F77_RET_T (*type)
+  template<class T1, class T2>
+  struct comp_ggsvd3_ptr
+  {
+    typedef F77_RET_T (*type)
     (F77_CONST_CHAR_ARG_DECL,   // JOBU
      F77_CONST_CHAR_ARG_DECL,   // JOBV
      F77_CONST_CHAR_ARG_DECL,   // JOBQ
@@ -211,20 +214,18 @@ struct comp_ggsvd3_ptr
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL);
-};
+  };
 
-// template specializations
-typedef real_ggsvd3_ptr<F77_DBLE>::type dggsvd3_type;
-typedef real_ggsvd_ptr<F77_DBLE>::type dggsvd_type;
-typedef real_ggsvd3_ptr<F77_REAL>::type sggsvd3_type;
-typedef real_ggsvd_ptr<F77_REAL>::type sggsvd_type;
-typedef comp_ggsvd3_ptr<F77_DBLE_CMPLX, F77_DBLE>::type zggsvd3_type;
-typedef comp_ggsvd_ptr<F77_DBLE_CMPLX, F77_DBLE>::type zggsvd_type;
-typedef comp_ggsvd3_ptr<F77_CMPLX, F77_REAL>::type cggsvd3_type;
-typedef comp_ggsvd_ptr<F77_CMPLX, F77_REAL>::type cggsvd_type;
+  // template specializations
+  typedef real_ggsvd3_ptr<F77_DBLE>::type dggsvd3_type;
+  typedef real_ggsvd_ptr<F77_DBLE>::type dggsvd_type;
+  typedef real_ggsvd3_ptr<F77_REAL>::type sggsvd3_type;
+  typedef real_ggsvd_ptr<F77_REAL>::type sggsvd_type;
+  typedef comp_ggsvd3_ptr<F77_DBLE_CMPLX, F77_DBLE>::type zggsvd3_type;
+  typedef comp_ggsvd_ptr<F77_DBLE_CMPLX, F77_DBLE>::type zggsvd_type;
+  typedef comp_ggsvd3_ptr<F77_CMPLX, F77_REAL>::type cggsvd3_type;
+  typedef comp_ggsvd_ptr<F77_CMPLX, F77_REAL>::type cggsvd_type;
 
-namespace octave
-{
   namespace math
   {
     template <>

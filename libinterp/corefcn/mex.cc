@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2006-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2006-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -40,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "Cell.h"
-#include "call-stack.h"
 #include "error.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
@@ -50,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ovl.h"
 #include "ov.h"
+#include "ov-classdef.h"
 #include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
@@ -669,7 +672,9 @@ class mxArray_matlab : public mxArray_base
 protected:
 
   mxArray_matlab (mxClassID id_arg = mxUNKNOWN_CLASS)
-    : mxArray_base (), class_name (nullptr), id (id_arg), ndims (0), dims (nullptr) { }
+    : mxArray_base (), class_name (nullptr), id (id_arg), ndims (0),
+      dims (nullptr)
+  { }
 
   mxArray_matlab (mxClassID id_arg, mwSize ndims_arg, const mwSize *dims_arg)
     : mxArray_base (), class_name (nullptr), id (id_arg),
@@ -1490,12 +1495,15 @@ public:
 
   mxArray_sparse (mxClassID id_arg, mwSize m, mwSize n, mwSize nzmax_arg,
                   mxComplexity flag = mxREAL)
-    : mxArray_matlab (id_arg, m, n), nzmax (nzmax_arg),
-      pr (mxArray::calloc (nzmax, get_element_size ())),
-      pi (flag == mxCOMPLEX ? mxArray::calloc (nzmax, get_element_size ()) : nullptr),
-      ir (static_cast<mwIndex *> (mxArray::calloc (nzmax, sizeof (mwIndex)))),
-      jc (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex))))
-  { }
+    : mxArray_matlab (id_arg, m, n)
+  {
+    nzmax = (nzmax_arg > 0 ? nzmax_arg : 1);
+    pr = mxArray::calloc (nzmax, get_element_size ());
+    pi = (flag == mxCOMPLEX ? mxArray::calloc (nzmax, get_element_size ())
+                            : nullptr);
+    ir = (static_cast<mwIndex *> (mxArray::calloc (nzmax, sizeof (mwIndex))));
+    jc = (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex))));
+  }
 
 private:
 
@@ -1560,7 +1568,11 @@ public:
 
   void set_jc (mwIndex *jc_arg) { jc = jc_arg; }
 
-  void set_nzmax (mwSize nzmax_arg) { nzmax = nzmax_arg; }
+  void set_nzmax (mwSize nzmax_arg)
+  {
+    /* Require storage for at least 1 element */
+    nzmax = (nzmax_arg > 0 ? nzmax_arg : 1);
+  }
 
   octave_value as_octave_value (void) const
   {
@@ -2155,10 +2167,10 @@ public:
   {
     if (! fname)
       {
-        octave::call_stack& cs
-          = octave::__get_call_stack__ ("mex::function_name");
+        octave::tree_evaluator& tw
+          = octave::__get_evaluator__ ("mex::function_name");
 
-        octave_function *fcn = cs.current ();
+        octave_function *fcn = tw.current_function ();
 
         if (fcn)
           {
@@ -3234,6 +3246,8 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
   for (int i = 0; i < nargin; i++)
     args(i) = mxArray::as_octave_value (argin[i]);
 
+  octave::interpreter& interp = octave::__get_interpreter__ ("mexCallMATLAB");
+
   bool execution_error = false;
 
   octave_value_list retval;
@@ -3246,7 +3260,11 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
     {
       if (mex_context->trap_feval_error)
         {
-          octave::interpreter::recover_from_exception ();
+          // FIXME: is there a way to indicate what error occurred?
+          // Should the error message be displayed here?  Do we need to
+          // save the exception info for lasterror?
+
+          interp.recover_from_exception ();
 
           execution_error = true;
         }
@@ -3315,6 +3333,8 @@ mexEvalString (const char *s)
 {
   int retval = 0;
 
+  octave::interpreter& interp = octave::__get_interpreter__ ("mexEvalString");
+
   int parse_status;
   bool execution_error = false;
 
@@ -3322,14 +3342,11 @@ mexEvalString (const char *s)
 
   try
     {
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("mexEvalString");
-
       ret = interp.eval_string (std::string (s), false, parse_status, 0);
     }
   catch (const octave::execution_exception&)
     {
-      octave::interpreter::recover_from_exception ();
+      interp.recover_from_exception ();
 
       execution_error = true;
     }
@@ -3345,6 +3362,8 @@ mexEvalStringWithTrap (const char *s)
 {
   mxArray *mx = nullptr;
 
+  octave::interpreter& interp = octave::__get_interpreter__ ("mexEvalString");
+
   int parse_status;
   bool execution_error = false;
 
@@ -3352,14 +3371,11 @@ mexEvalStringWithTrap (const char *s)
 
   try
     {
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("mexEvalString");
-
       ret = interp.eval_string (std::string (s), false, parse_status, 0);
     }
   catch (const octave::execution_exception&)
     {
-      octave::interpreter::recover_from_exception ();
+      interp.recover_from_exception ();
 
       execution_error = true;
     }
@@ -3484,13 +3500,10 @@ mexGetVariable (const char *space, const char *name)
 
   octave_value val;
 
-  if (! strcmp (space, "global"))
-    {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("mexGetVariable");
+  octave::interpreter& interp = octave::__get_interpreter__ ("mexGetVariable");
 
-      val = symtab.global_varval (name);
-    }
+  if (! strcmp (space, "global"))
+    val = interp.global_varval (name);
   else
     {
       // FIXME: should this be in variables.cc?
@@ -3507,18 +3520,15 @@ mexGetVariable (const char *space, const char *name)
 
           if (base)
             {
-              octave::call_stack& cs
-                = octave::__get_call_stack__ ("mexGetVariable");
+              octave::tree_evaluator& tw = interp.get_evaluator ();
 
-              cs.goto_base_frame ();
+              frame.add_method (tw, &octave::tree_evaluator::restore_frame,
+                                tw.current_call_stack_frame_number ());
 
-              frame.add_method (cs, &octave::call_stack::pop);
+              tw.goto_base_frame ();
             }
 
-          octave::symbol_scope scope
-            = octave::__require_current_scope__ ("mexGetVariable");
-
-          val = scope.varval (name);
+          val = interp.varval (name);
         }
       else
         mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
@@ -3555,13 +3565,10 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
   if (! name || name[0] == '\0')
     return 1;
 
-  if (! strcmp (space, "global"))
-    {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("mexPutVariable");
+  octave::interpreter& interp = octave::__get_interpreter__ ("mexPutVariable");
 
-      symtab.global_assign (name, mxArray::as_octave_value (ptr));
-    }
+  if (! strcmp (space, "global"))
+    interp.global_assign (name, mxArray::as_octave_value (ptr));
   else
     {
       // FIXME: should this be in variables.cc?
@@ -3578,18 +3585,15 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
 
           if (base)
             {
-              octave::call_stack& cs
-                = octave::__get_call_stack__ ("mexPutVariable");
+              octave::tree_evaluator& tw = interp.get_evaluator ();
 
-              cs.goto_base_frame ();
+              frame.add_method (tw, &octave::tree_evaluator::restore_frame,
+                                tw.current_call_stack_frame_number ());
 
-              frame.add_method (cs, &octave::call_stack::pop);
+              tw.goto_base_frame ();
             }
 
-          octave::symbol_scope scope
-            = octave::__require_current_scope__ ("mexPutVariable");
-
-          scope.assign (name, mxArray::as_octave_value (ptr));
+          interp.assign (name, mxArray::as_octave_value (ptr));
         }
       else
         mexErrMsgTxt ("mexPutVariable: symbol table does not exist");
@@ -3684,9 +3688,9 @@ mexLock (void)
 int
 mexSet (double handle, const char *property, mxArray *val)
 {
-  bool ret =
-    set_property_in_handle (handle, property, mxArray::as_octave_value (val),
-                            "mexSet");
+  bool ret
+    = set_property_in_handle (handle, property, mxArray::as_octave_value (val),
+                              "mexSet");
   return (ret ? 0 : 1);
 }
 

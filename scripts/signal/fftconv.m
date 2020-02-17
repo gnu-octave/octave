@@ -1,4 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} fftconv (@var{x}, @var{y})
@@ -30,10 +37,6 @@
 ## the optional argument @var{n} is specified, an N-point FFT is used.
 ## @seealso{deconv, conv, conv2}
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 3 September 1994
-## Adapted-By: jwe
 
 function c = fftconv (x, y, n)
 

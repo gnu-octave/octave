@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -732,18 +735,6 @@ namespace octave
   }
 
   void
-  tree_print_code::visit_funcall (tree_funcall& fc)
-  {
-    indent ();
-
-    print_parens (fc, "(");
-
-    fc.print_raw (m_os, true, m_print_original_text);
-
-    print_parens (fc, ")");
-  }
-
-  void
   tree_print_code::visit_parameter_list (tree_parameter_list& lst)
   {
     auto p = lst.begin ();
@@ -920,20 +911,6 @@ namespace octave
         newline ();
 
         decrement_indent_level ();
-      }
-  }
-
-  void
-  tree_print_code::visit_switch_case_list (tree_switch_case_list& lst)
-  {
-    auto p = lst.begin ();
-
-    while (p != lst.end ())
-      {
-        tree_switch_case *elt = *p++;
-
-        if (elt)
-          elt->accept (*this);
       }
   }
 
@@ -1142,6 +1119,18 @@ namespace octave
       expr->accept (*this);
 
     newline ();
+  }
+
+  void
+  tree_print_code::visit_superclass_ref (tree_superclass_ref& scr)
+  {
+    m_os << scr.method_name () << "@" << scr.class_name ();
+  }
+
+  void
+  tree_print_code::visit_metaclass_query (tree_metaclass_query& mcq)
+  {
+    m_os << "?" << mcq.class_name ();
   }
 
   void

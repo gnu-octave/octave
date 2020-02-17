@@ -1,4 +1,9 @@
-## Copyright (C) 2012-2019 pdiribarne
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{s} =} hdl2struct (@var{h})
@@ -25,9 +32,6 @@
 ## @qcode{"properties"}, @qcode{"children"}, and @qcode{"special"}.
 ## @seealso{struct2hdl, hgsave, findobj}
 ## @end deftypefn
-
-## Author: pdiribarne <pdiribarne@new-host.home>
-## Created: 2012-03-04
 
 function s = hdl2struct (h)
 

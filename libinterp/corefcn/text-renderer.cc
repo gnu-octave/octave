@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2016-2019 John W. Eaton
-Copyright (C) 2009-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2009-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -30,17 +32,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "ft-text-renderer.h"
 #include "text-renderer.h"
 
-static octave::base_text_renderer *
-make_text_renderer (void)
-{
-  // Allow the possibility of choosing different text rendering
-  // implementations.
-
-  return octave::make_ft_text_renderer ();
-}
-
 namespace octave
 {
+  static base_text_renderer *
+  make_text_renderer (void)
+  {
+    // Allow the possibility of choosing different text rendering
+    // implementations.
+
+    return make_ft_text_renderer ();
+  }
+
   text_renderer::text_renderer (void)
     : rep (make_text_renderer ())
   { }
@@ -84,6 +86,24 @@ namespace octave
     static Matrix empty_extent (1, 4, 0.0);
 
     return ok () ? rep->get_extent (txt, rotation, interpreter) : empty_extent;
+  }
+
+  void
+  text_renderer::set_anti_aliasing (bool val)
+  {
+    if (ok ())
+      rep->set_anti_aliasing (val);
+  }
+
+  octave_map
+  text_renderer::get_system_fonts (void)
+  {
+    octave_map retval;
+
+    if (ok ())
+      retval = rep->get_system_fonts ();
+
+    return retval;
   }
 
   void

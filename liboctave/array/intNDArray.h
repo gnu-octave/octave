@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2004-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2004-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_intNDArray_h)
 #define octave_intNDArray_h 1
@@ -38,7 +41,13 @@ public:
 
   using typename MArray<T>::element_type;
 
-  intNDArray (void) : MArray<T> () { }
+  intNDArray (void) = default;
+
+  intNDArray (const intNDArray<T>& a) = default;
+
+  intNDArray& operator = (const intNDArray<T>& a) = default;
+
+  ~intNDArray (void) = default;
 
   intNDArray (T val) : MArray<T> (dim_vector (1, 1), val) { }
 
@@ -55,12 +64,6 @@ public:
 
   template <typename U>
   intNDArray (const intNDArray<U>& a) : MArray<T> (a) { }
-
-  intNDArray& operator = (const intNDArray<T>& a)
-  {
-    MArray<T>::operator = (a);
-    return *this;
-  }
 
   boolNDArray operator ! (void) const;
 

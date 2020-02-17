@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 Jaroslav Hajek
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,19 +20,21 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{idx} =} strchr (@var{str}, @var{chars})
 ## @deftypefnx {} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n})
 ## @deftypefnx {} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n}, @var{direction})
 ## @deftypefnx {} {[@var{i}, @var{j}] =} strchr (@dots{})
-## Search for the string @var{str} for occurrences of characters from
-## the set @var{chars}.
+## Search through the string @var{str} for occurrences of characters from the
+## set @var{chars}.
 ##
 ## The return value(s), as well as the @var{n} and @var{direction} arguments
 ## behave identically as in @code{find}.
 ##
-## This will be faster than using regexp in most cases.
+## This will be faster than using @code{regexp} in most cases.
 ##
 ## @seealso{find}
 ## @end deftypefn

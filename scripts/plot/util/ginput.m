@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{x}, @var{y}, @var{buttons}] =} ginput (@var{n})
@@ -72,14 +79,14 @@ function varargout = ginput (n = -1)
   orig_keypressfcn = get (fig, "keypressfcn");
   orig_closerequestfcn = get (fig, "closerequestfcn");
   orig_mousemode = get (fig, "__mouse_mode__");
+  orig_pointer = get (fig, "pointer");
 
   unwind_protect
 
-    set (fig, "windowbuttondownfcn", @ginput_windowbuttondownfcn);
-    set (fig, "keypressfcn", @ginput_keypressfcn);
-    set (fig, "closerequestfcn", {@ginput_closerequestfcn,
-                                  orig_closerequestfcn});
-    set (fig, "__mouse_mode__", "none");
+    set (fig, "windowbuttondownfcn", @ginput_windowbuttondownfcn, ...
+         "keypressfcn", @ginput_keypressfcn, ...
+         "closerequestfcn", {@ginput_closerequestfcn, orig_closerequestfcn}, ...
+         "pointer", "crosshair", "__mouse_mode__", "none");
 
     do
       if (strcmp (toolkit, "fltk"))
@@ -102,10 +109,10 @@ function varargout = ginput (n = -1)
   unwind_protect_cleanup
     if (isfigure (fig))
       ## Only execute if window still exists
-      set (fig, "windowbuttondownfcn", orig_windowbuttondownfcn);
-      set (fig, "keypressfcn", orig_keypressfcn);
-      set (fig, "closerequestfcn", orig_closerequestfcn);
-      set (fig, "__mouse_mode__", orig_mousemode);
+      set (fig, "windowbuttondownfcn", orig_windowbuttondownfcn, ...
+           "keypressfcn", orig_keypressfcn, ...
+           "closerequestfcn", orig_closerequestfcn, ...
+           "pointer", orig_pointer, "__mouse_mode__", orig_mousemode);
     endif
   end_unwind_protect
 
@@ -146,8 +153,8 @@ endfunction
 function ginput_keypressfcn (~, evt)
 
   point = get (gca (), "currentpoint");
-  if (strcmp (evt.Key, "return"))
-    ## Enter key stops ginput.
+  if (strcmp (evt.Key, "return") || strcmp (evt.Key, "enter"))
+    ## <Return> or <Enter> on numeric keypad stops ginput.
     ginput_accumulator (2, NaN, NaN, NaN);
   else
     character = evt.Character;

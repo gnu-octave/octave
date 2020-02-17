@@ -1,4 +1,9 @@
-## Copyright (C) 2000-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} assert (@var{cond})
@@ -225,7 +232,7 @@ function assert (cond, varargin)
             err.observed{end+1} = "O";
             err.expected{end+1} = "E";
             err.reason{end+1} = ["Class " class(cond) " != " class(expected)];
-          elseif (isnumeric (cond))
+          elseif (isnumeric (cond) || islogical (cond))
             if (issparse (cond) != issparse (expected))
               err.index{end+1} = "()";
               err.observed{end+1} = "O";
@@ -663,6 +670,14 @@ endfunction
 %!   assert (! isempty (regexp (errmsg, '\(2,1\).*Rel err 2 exceeds tol 0.2')));
 %! end_try_catch
 
+%!test <*57615>
+%! try
+%!   assert (complex (pi*1e-17,2*pi), 0, 1e-1);
+%! catch
+%!   errmsg = lasterr ();
+%!   assert (isempty (strfind (errmsg, "sprintf: invalid field width")));
+%! end_try_catch
+
 ## test input validation
 %!error assert ()
 %!error assert (1,2,3,4)
@@ -696,10 +711,10 @@ function str = pprint (argin, err)
     leno = length (err.observed{i});
     lene = length (err.expected{i});
     str = [str, sprintf("%*s%*s %*s%*s %*s%*s   %s\n",
-                        6+fix(leni/2), err.index{i}   , 6-fix(leni/2), "",
-                        6+fix(leno/2), err.observed{i}, 6-fix(leno/2), "",
-                        6+fix(lene/2), err.expected{i}, 6-fix(lene/2), "",
-                        err.reason{i})];
+                  6+fix(leni/2), err.index{i}   , max (6-fix(leni/2), 0), "",
+                  6+fix(leno/2), err.observed{i}, max (6-fix(leno/2), 0), "",
+                  6+fix(lene/2), err.expected{i}, max (6-fix(lene/2), 0), "",
+                  err.reason{i})];
   endfor
 
 endfunction

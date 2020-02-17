@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -110,7 +113,7 @@ double
 Range::checkelem (octave_idx_type i) const
 {
   if (i < 0 || i >= rng_numel)
-    octave::err_index_out_of_range (2, 2, i+1, rng_numel);
+    octave::err_index_out_of_range (2, 2, i+1, rng_numel, dims ());
 
   if (i == 0)
     return rng_base;
@@ -125,7 +128,7 @@ Range::checkelem (octave_idx_type i, octave_idx_type j) const
 {
   // Ranges are *always* row vectors.
   if (i != 0)
-    octave::err_index_out_of_range (1, 1, i+1, rng_numel);
+    octave::err_index_out_of_range (1, 1, i+1, rng_numel, dims ());
 
   return checkelem (j);
 }
@@ -179,7 +182,7 @@ Range::index (const idx_vector& i) const
   else
     {
       if (i.extent (n) != n)
-        octave::err_index_out_of_range (1, 1, i.extent (n), n); // throws
+        octave::err_index_out_of_range (1, 1, i.extent (n), n, dims ()); // throws
 
       dim_vector rd = i.orig_dimensions ();
       octave_idx_type il = i.length (n);

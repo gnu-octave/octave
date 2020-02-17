@@ -1,5 +1,9 @@
-## Copyright (C) 2005-2019 Søren Hauberg
-## Copyright (C) 2010 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{pkg_desc_list}, @var{flag}] =} describe (@var{pkgnames}, @var{verbose}, @var{local_list}, @var{global_list})
@@ -25,8 +31,10 @@
 function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global_list)
 
   ## Get the list of installed packages.
-  installed_pkgs_lst = installed_packages(local_list, global_list);
+  installed_pkgs_lst = installed_packages (local_list, global_list);
   num_packages = length (installed_pkgs_lst);
+  ## Add inverse dependencies to "installed_pkgs_lst"
+  installed_pkgs_lst = get_inverse_dependencies (installed_pkgs_lst);
 
   if (isempty (pkgnames))
     describe_all = true;
@@ -56,7 +64,9 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global
       pkg_desc_list{name_pos}.name = installed_pkgs_lst{i}.name;
       pkg_desc_list{name_pos}.version = installed_pkgs_lst{i}.version;
       pkg_desc_list{name_pos}.description = installed_pkgs_lst{i}.description;
+      pkg_desc_list{name_pos}.depends = installed_pkgs_lst{i}.depends;
       pkg_desc_list{name_pos}.provides = parse_pkg_idx (installed_pkgs_lst{i}.dir);
+      pkg_desc_list{name_pos}.invdeps = unique (installed_pkgs_lst{i}.invdeps);
 
     endif
   endfor
@@ -78,6 +88,8 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global
                                  pkg_desc_list{i}.version,
                                  pkg_desc_list{i}.provides,
                                  pkg_desc_list{i}.description,
+                                 pkg_desc_list{i}.depends,
+                                 pkg_desc_list{i}.invdeps,
                                  flag{i}, verbose);
     endfor
   endif
@@ -140,11 +152,20 @@ endfunction
 
 
 function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
-                                    pkg_desc, status, verbose)
+                                    pkg_desc, pkg_deps, pkg_invd, status,
+                                    verbose)
 
   printf ("---\nPackage name:\n\t%s\n", pkg_name);
   printf ("Version:\n\t%s\n", pkg_ver);
   printf ("Short description:\n\t%s\n", pkg_desc);
+  pkg_deps = cellfun (@(d) sprintf ("%s %s %s", struct2cell (d){:}), pkg_deps,
+                      "UniformOutput", false);
+  pkg_deps = strjoin (pkg_deps, "\n\t");
+  printf ("Depends on:\n\t%s\n", pkg_deps);
+
+  pkg_invd = strjoin (pkg_invd, "\n\t");
+  printf ("Depended on by:\n\t%s\n", pkg_invd);
+
   printf ("Status:\n\t%s\n", status);
   if (verbose)
     printf ("---\nProvides:\n");

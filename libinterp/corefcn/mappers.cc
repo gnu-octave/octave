@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -131,7 +133,7 @@ Compute the inverse cosine in radians for each element of @var{x}.
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
 
-%!xtest <52627>
+%!xtest <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
 %! if (! ismac ()), return; endif
@@ -162,7 +164,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
 
-%!xtest <52627>
+%!xtest <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! ## Mac trig/hyperbolic functions have huge tolerances.
 %! if (! ismac ()), return; endif
@@ -185,7 +187,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
 
-%!xtest <52627>
+%!xtest <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! ## Mac trig/hyperbolic functions have huge tolerances.
 %! if (! ismac ()), return; endif
@@ -206,7 +208,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
 
-%!xtest <52627>
+%!xtest <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
 %! if (! ismac ()), return; endif
@@ -334,7 +336,7 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
 
-%!xtest <52627>
+%!xtest <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows. Their trig/hyperbolic functions have huge tolerances.
 %! if (! ismac ()), return; endif
@@ -377,7 +379,7 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);
 
-%!xtest <52627>
+%!xtest <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
 %! if (! ismac ()), return; endif

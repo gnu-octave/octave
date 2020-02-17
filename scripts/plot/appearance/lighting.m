@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Markus Muetzel
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} lighting (@var{type})
@@ -45,8 +52,6 @@
 ## @seealso{light, fill, mesh, patch, pcolor, surf, surface, shading}
 ## @end deftypefn
 
-## Author: mmuetzel
-
 function lighting (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("lighting", varargin{:});
@@ -76,13 +81,15 @@ function lighting (varargin)
     hlist = [hlist; kids(strcmp(types, "surface"))];
     parents = kids(strcmp (types, "axes"));
     hglist = kids(strcmp (types, "hggroup"));
+
+    kids = get (parents, "children");
     for i = 1 : numel (hglist)
       props = get (hglist(i));
       if (! isfield (props, "levelstep"))
-        parents(end+1) = hglist(i);
+        kids = [kids; get(hglist(i), "children")];
       endif
     endfor
-    kids = get (parents, "children");
+
   endwhile
 
   ## FIXME: This is the old, simple code.

@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2009 VZLU Prague, a.s.
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ops_h)
 #define octave_ops_h 1
@@ -74,42 +76,6 @@ extern void install_ops (octave::type_info&);
 
 #define INSTALL_WIDENOP_TI(ti, t1, t2, f)                               \
   ti.install_widening_op                                                \
-  (t1::static_type_id (), t2::static_type_id (), CONCAT2 (oct_conv_, f));
-
-// The following INSTALL_* macros are obsolete.
-
-#define INSTALL_UNOP(op, t, f)                                          \
-  octave_value_typeinfo::register_unary_op                              \
-  (octave_value::op, t::static_type_id (), CONCAT2 (oct_unop_, f));
-
-#define INSTALL_NCUNOP(op, t, f)                                        \
-  octave_value_typeinfo::register_non_const_unary_op                    \
-  (octave_value::op, t::static_type_id (), CONCAT2 (oct_unop_, f));
-
-#define INSTALL_BINOP(op, t1, t2, f)                                    \
-  octave_value_typeinfo::register_binary_op                             \
-  (octave_value::op, t1::static_type_id (), t2::static_type_id (),      \
-   CONCAT2 (oct_binop_, f));
-
-#define INSTALL_CATOP(t1, t2, f)                                        \
-  octave_value_typeinfo::register_cat_op                                \
-  (t1::static_type_id (), t2::static_type_id (), CONCAT2 (oct_catop_, f));
-
-#define INSTALL_ASSIGNOP(op, t1, t2, f)                                 \
-  octave_value_typeinfo::register_assign_op                             \
-  (octave_value::op, t1::static_type_id (), t2::static_type_id (),      \
-   CONCAT2 (oct_assignop_, f));
-
-#define INSTALL_ASSIGNANYOP(op, t1, f)                                  \
-  octave_value_typeinfo::register_assignany_op                          \
-  (octave_value::op, t1::static_type_id (), CONCAT2 (oct_assignop_, f));
-
-#define INSTALL_ASSIGNCONV(t1, t2, tr)                                  \
-  octave_value_typeinfo::register_pref_assign_conv                      \
-  (t1::static_type_id (), t2::static_type_id (), tr::static_type_id ());
-
-#define INSTALL_WIDENOP(t1, t2, f)                                      \
-  octave_value_typeinfo::register_widening_op                           \
   (t1::static_type_id (), t2::static_type_id (), CONCAT2 (oct_conv_, f));
 
 #define DEFASSIGNOP(name, t1, t2)                               \

@@ -1,4 +1,9 @@
-## Copyright (C) 1999-2019 Kai Habel
+########################################################################
+##
+## Copyright (C) 1999-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{tri} =} delaunay (@var{x}, @var{y})
@@ -48,7 +55,10 @@
 ## contains options passed to the underlying qhull command.
 ## See the documentation for the Qhull library for details
 ## @url{http://www.qhull.org/html/qh-quick.htm#options}.
-## The default options are @code{@{"Qt", "Qbb", "Qc", "Qz"@}}.
+## The default options are @code{@{"Qt", "Qbb", "Qc"@}}.
+## If QHull fails for 2-D input the triangulation is attempted again with
+## the options @code{@{"Qt", "Qbb", "Qc", "Qz"@}} which may result in
+## reduced accuracy.
 ##
 ## If @var{options} is not present or @code{[]} then the default arguments are
 ## used.  Otherwise, @var{options} replaces the default argument list.

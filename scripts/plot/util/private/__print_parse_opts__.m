@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Shai Ayal
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{args} =} __print_parse_opts__ (@var{propname}, @var{propvalue})
@@ -34,7 +41,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.epstool_binary = __quote_path__ (__find_binary__ ("epstool"));
   arg_st.figure = get (0, "currentfigure");
   arg_st.fig2dev_binary = __quote_path__ (__find_binary__ ("fig2dev"));
-  arg_st.fontsize = "";
+  arg_st.fontsize = [];
   arg_st.font = "";
   arg_st.scalefontsize = 1;
   arg_st.force_solid = 0; # 0=default, -1=dashed, +1=solid
@@ -64,7 +71,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.special_flag = "textnormal";
   arg_st.svgconvert = false;
   arg_st.svgconvert_binary = __quote_path__ (__svgconv_binary__ ());
-  arg_st.tight = false;
+  arg_st.tight = true;
   arg_st.use_color = 0; # 0=default, -1=mono, +1=color
 
   if (isunix ())
@@ -210,6 +217,16 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
+  ## Warn about deprecated output formats
+  persistent unsupported = {"aifm", "ill","cdr", "corel", ...
+                            "hpgl", "mf", "cgm", "dxf"}
+
+  if (any (strcmp (unsupported, arg_st.devopt)))
+    warning ('Octave:print:deprecated-format',
+             'print: "%s" format is no more officially supported', ...
+             arg_st.devopt);
+  endif
+
   ## By default, postprocess svg files using svgconvert.
   if (strcmp (arg_st.devopt, "svg"))
     arg_st.svgconvert = true;
@@ -345,10 +362,10 @@ function arg_st = __print_parse_opts__ (varargin)
         endif
       else
         arg_st.append_to_file = false;
-        warning ("print.m: appended output requires Ghostscript to be installed");
+        warning ("print: appended output requires Ghostscript to be installed");
       endif
     else
-      warning ("print.m: appended output is not supported for device '%s'",
+      warning ("print: appended output is not supported for device '%s'",
                arg_st.devopt);
       arg_st.append_to_file = false;
     endif
@@ -356,7 +373,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (arg_st.rgb_output)
     if (! isempty (arg_st.printer) || ! isempty (arg_st.name))
-      warning ("octave:print:ignored_argument",
+      warning ("Octave:print:ignored_argument",
                "print: ignoring file name and printer argument when using -RGBImage option");
     endif
   elseif (! isempty (arg_st.printer) || isempty (arg_st.name))
@@ -367,7 +384,7 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.formatted_for_printing = true;
   endif
 
-  aliases = gs_aliases ();
+  aliases = gs_aliases (arg_st.svgconvert);
   if (any (strcmp (arg_st.devopt, fieldnames (aliases)))
       && ! strcmp (arg_st.renderer, "opengl"))
     arg_st.devopt = aliases.(arg_st.devopt);
@@ -464,11 +481,12 @@ function arg_st = __print_parse_opts__ (varargin)
       arg_st.ghostscript.pageoffset = paperposition(1:2);
     endif
   else
-    ## Convert canvas size to points from pixels.
-    if (! isempty (arg_st.fontsize))
-      ## Work around the eps bbox having whole numbers (both gnuplot & gl2ps).
-      arg_st.scalefontsize = arg_st.ghostscript.resolution / 72;
+    ## Size specified with -S option
+    if (arg_st.ghostscript.resolution != 150)
+      warning ("print: '-Sxsize,ysize' overrides resolution option -r\n");
     endif
+    arg_st.scalefontsize = arg_st.canvas_size(1) / ...
+                           6 / get (0, "screenpixelsperinch");
     arg_st.ghostscript.resolution = 72;
     arg_st.ghostscript.papersize = arg_st.canvas_size;
     arg_st.ghostscript.epscrop = true;
@@ -484,9 +502,8 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (warn_on_missing_ghostscript)
     if (isempty (arg_st.ghostscript.binary))
-      warning ("octave:print:missing_gs", ...
-               ["print.m: Ghostscript binary is not available.  ", ...
-                "Only eps output is possible"]);
+      warning ("print:nogs", ...
+               "print: 'gs' (Ghostscript) binary is not available.  Many formats may not be available\n");
     endif
     warn_on_missing_ghostscript = false;
   endif
@@ -580,8 +597,8 @@ function gs = __ghostscript_binary__ ()
         || (! isempty (GSC) && file_in_path (getenv ("PATH"), GSC)))
       gs_binaries = {GSC};
     elseif (! isempty (GSC) && warn_on_bad_gsc)
-      warning ("octave:print:badgscenv",
-               "print.m: GSC environment variable not set properly");
+      warning ("Octave:print:badgscenv",
+               "print: GSC environment variable not set properly");
       warn_on_bad_gsc = false;
       gs_binaries = {};
     else
@@ -734,8 +751,8 @@ function value = convert2points (value, units)
     case "centimeters"
       value *= (72 / 2.54);
     case "normalized"
-      error ("print:customnormalized",
-             "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined");
+      error ("Octave:print:customnormalized",
+             "print: papersize=='<custom>' and paperunits='normalized' may not be combined");
   endswitch
 
 endfunction
@@ -757,12 +774,9 @@ function device_list = gs_device_list ()
 
 endfunction
 
-function aliases = gs_aliases ()
-  ## Aliases for other devices: "bmp", "png", "tiff", "tiffn", "pdf",
-  ##                            "ps", "ps2", "psc", "psc2"
-  ##
-  ## eps, epsc, eps2, epsc2 are not included here because those are
-  ## are generated by the graphics toolkit.
+function aliases = gs_aliases (do_eps)
+
+  ## Ghostscript device names
   aliases.bmp   = "bmp32b";
   aliases.pdf   = "pdfwrite";
   aliases.png   = "png16m";
@@ -772,4 +786,12 @@ function aliases = gs_aliases ()
   aliases.psc2  = "ps2write";
   aliases.tiff  = "tiffscaled24";
   aliases.tiffn = "tiff24nc";
+
+  if (do_eps)
+    aliases.eps   = "ps2write";
+    aliases.eps2  = "ps2write";
+    aliases.epsc  = "ps2write";
+    aliases.epsc2 = "ps2write";
+  endif
+
 endfunction

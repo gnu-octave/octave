@@ -111,10 +111,12 @@ A summary view of a data set can be generated quickly with the
 @node Statistics on Sliding Windows of Data
 @section Statistics on Sliding Windows of Data
 
-It is often useful to calculate descriptive statistics over a subsection (i.e., window) of a full dataset.  Octave provides the function @code{movfun} which
-will call an arbitrary function handle with windows of data and accumulate
-the results.  Many of the most commonly desired functions, such as the moving
-average over a window of data (@code{movmean}), are already provided.
+It is often useful to calculate descriptive statistics over a subsection
+(i.e., window) of a full dataset.  Octave provides the function @code{movfun}
+which will call an arbitrary function handle with windows of data and
+accumulate the results.  Many of the most commonly desired functions, such as
+the moving average over a window of data (@code{movmean}), are already
+provided.
 
 @DOCSTRING(movfun)
 

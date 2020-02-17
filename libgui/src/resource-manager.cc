@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -26,33 +29,36 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include <QFile>
 #include <QDir>
-#include <QNetworkProxy>
+#include <QFile>
 #include <QLibraryInfo>
 #include <QMessageBox>
+#include <QNetworkProxy>
 #if defined (HAVE_QSTANDARDPATHS)
 #  include <QStandardPaths>
+#else
+#  include <QDesktopServices>
 #endif
+
 #include <QTextCodec>
 
-#include "error.h"
+#include "QTerminal.h"
+#include "gui-preferences-ed.h"
+#include "gui-preferences-global.h"
+#include "octave-qobject.h"
+#include "resource-manager.h"
+#include "variable-editor.h"
+#include "workspace-model.h"
+
 #include "file-ops.h"
-#include "help.h"
 #include "oct-env.h"
 
 #include "defaults.h"
-
-#include "QTerminal.h"
-#include "workspace-model.h"
-#include "variable-editor.h"
-#include "resource-manager.h"
-#include "gui-preferences.h"
+#include "error.h"
+#include "help.h"
 
 namespace octave
 {
-  resource_manager *resource_manager::instance = nullptr;
-
   static QString
   default_qt_settings_file (void)
   {
@@ -68,28 +74,65 @@ namespace octave
 
   resource_manager::resource_manager (void)
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
-      m_default_settings (nullptr)
+      m_default_settings (nullptr), m_temporary_files ()
   {
+    // Let gui_settings decide where to put the ini file with gui preferences
+    m_default_settings
+      = new gui_settings (QSettings::IniFormat, QSettings::UserScope,
+                          "octave", "octave-gui");
+
+    m_settings_file = m_default_settings->fileName ();
+
+    QFileInfo sfile (m_settings_file);
+    m_settings_directory = sfile.absolutePath ();
+
+    QString xdg_config_home
+      = QString::fromLocal8Bit (qgetenv ("XDG_CONFIG_HOME"));
+
+    if ((! sfile.exists ()) && xdg_config_home.isEmpty ())
+      {
+        // File does not exist yet: Look for a settings file at the old
+        // location ($HOME/.config/octave/qt-settings) for impoting all
+        // available keys into the new settings file.
+        // Do not look for an old settings file if XDG_CONFIG_HOME is set,
+        // since then a nonexistent new settings file does not necessarily
+        // indicate a first run of octave with new config file locations.
 #if defined (HAVE_QSTANDARDPATHS)
-    QString home_path
-      = QStandardPaths::writableLocation (QStandardPaths::HomeLocation);
+        QString home_path
+          = QStandardPaths::writableLocation (QStandardPaths::HomeLocation);
 #else
-    QString home_path
-      = QDesktopServices::storageLocation (QDesktopServices::HomeLocation);
+        QString home_path
+          = QDesktopServices::storageLocation (QDesktopServices::HomeLocation);
 #endif
 
-    m_settings_directory = home_path + "/.config/octave";
+        QString old_settings_directory = home_path + "/.config/octave";
+        QString old_settings_file = old_settings_directory + "/qt-settings";
 
-    m_settings_file = m_settings_directory + "/qt-settings";
+        QFile ofile (old_settings_file);
 
-    m_default_settings = new QSettings (default_qt_settings_file (),
-                                        QSettings::IniFormat);
+        if (ofile.exists ())
+          {
+            // Old settings file exists; create a gui_settings object related
+            // to it and copy all available keys to the new settings
+            gui_settings old_settings (old_settings_file, QSettings::IniFormat);
+
+            QStringList keys = old_settings.allKeys ();
+            for (int i = 0; i < keys.count(); i++)
+              m_default_settings->setValue (keys.at(i),
+                                            old_settings.value(keys.at(i)));
+
+            m_default_settings->sync ();  // Done, make sure keys are written
+          }
+      }
   }
 
   resource_manager::~resource_manager (void)
   {
     delete m_settings;
     delete m_default_settings;
+
+    for (int i = m_temporary_files.count () - 1; i >=0; i--)
+      remove_tmp_file (m_temporary_files.at (i));
   }
 
   QString resource_manager::get_gui_translation_dir (void)
@@ -112,101 +155,64 @@ namespace octave
 
     QString language = "SYSTEM";  // take system language per default
 
-    QSettings *settings = resource_manager::get_settings ();
+    // FIXME: can we somehow ensure that the settings object will always
+    // be initialize and valid?
 
-    if (settings)
+    if (m_settings)
       {
         // get the locale from the settings if already available
-        language = settings->value ("language", "SYSTEM").toString ();
+        language = m_settings->value (global_language.key,
+                                      global_language.def).toString ();
       }
 
+    // load the translations depending on the settings
     if (language == "SYSTEM")
-      language = QLocale::system ().name ();    // get system wide locale
-
-    // load the translator file for qt strings
-    loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
-
-    if (! loaded) // try lower case
-      qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
-
-    // load the translator file for qscintilla settings
-    loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
-
-    if (! loaded) // try lower case
-      qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
-
-    // load the translator file for gui strings
-    gui_tr->load (language, get_gui_translation_dir ());
-  }
-
-  QStringList resource_manager::storage_class_names (void)
-  {
-    return workspace_model::storage_class_names ();
-  }
-
-  QList<QColor> resource_manager::storage_class_default_colors (void)
-  {
-    return workspace_model::storage_class_default_colors ();
-  }
-
-  QStringList resource_manager::terminal_color_names (void)
-  {
-    return QTerminal::color_names ();
-  }
-
-  QList<QColor> resource_manager::terminal_default_colors (void)
-  {
-    return QTerminal::default_colors ();
-  }
-
-  QList<QColor> resource_manager::varedit_default_colors(void)
-  {
-    return variable_editor::default_colors ();
-  }
-
-  QStringList resource_manager::varedit_color_names(void)
-  {
-    return variable_editor::color_names ();
-  }
-
-  bool resource_manager::instance_ok (void)
-  {
-    bool retval = true;
-
-    if (! instance)
-      instance = new resource_manager ();
-
-    if (! instance)
       {
-        error ("unable to create resource_manager object!");
+        // get the system locale and pass it to the translators for loading
+        // the suitable translation files
+        QLocale sys_locale = QLocale::system ();
 
-        retval = false;
+        qt_tr->load (sys_locale, "qt", "_", qt_trans_dir);
+        qsci_tr->load (sys_locale, "qscintilla", "_", qt_trans_dir);
+        gui_tr->load (sys_locale, "", "", get_gui_translation_dir ());
+      }
+    else
+      {
+        // load the translation files depending on the given locale name
+        loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
+        if (! loaded) // try lower case
+          qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
+
+        loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
+        if (! loaded) // try lower case
+          qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
+
+        gui_tr->load (language, get_gui_translation_dir ());
       }
 
-    return retval;
   }
 
-  QSettings * resource_manager::do_get_settings (void) const
+  gui_settings * resource_manager::get_settings (void) const
   {
     return m_settings;
   }
 
-  QSettings * resource_manager::do_get_default_settings (void) const
+  gui_settings * resource_manager::get_default_settings (void) const
   {
     return m_default_settings;
   }
 
-  QString resource_manager::do_get_settings_directory (void)
+  QString resource_manager::get_settings_directory (void)
   {
     return m_settings_directory;
   }
 
-  QString resource_manager::do_get_settings_file (void)
+  QString resource_manager::get_settings_file (void)
   {
     return m_settings_file;
   }
 
-  QString resource_manager::do_get_default_font_family (void)
+  QString resource_manager::get_default_font_family (void)
   {
     // Get the default monospaced font
 #if defined (HAVE_QFONT_MONOSPACE)
@@ -224,9 +230,9 @@ namespace octave
     return default_family;
   }
 
-  void resource_manager::do_reload_settings (void)
+  void resource_manager::reload_settings (void)
   {
-    QString default_family = do_get_default_font_family ();
+    QString default_family = get_default_font_family ();
 
     if (! QFile::exists (m_settings_file))
       {
@@ -240,7 +246,7 @@ namespace octave
         QString settings_text = in.readAll ();
         qt_settings.close ();
 
-        default_family = do_get_default_font_family ();
+        default_family = get_default_font_family ();
 
         QString default_font_size = "10";
 
@@ -280,7 +286,7 @@ namespace octave
         user_settings.close ();
       }
 
-    do_set_settings (m_settings_file);
+    set_settings (m_settings_file);
 
     // Write the default monospace font into the settings for later use by
     // console and editor as fallbacks of their font preferences.
@@ -289,29 +295,31 @@ namespace octave
 
   }
 
-  void resource_manager::do_set_settings (const QString& file)
+  void resource_manager::set_settings (const QString& file)
   {
     delete m_settings;
-    m_settings = new QSettings (file, QSettings::IniFormat);
+    m_settings = new gui_settings (file, QSettings::IniFormat);
 
-    if (! (m_settings
-           && QFile::exists (m_settings->fileName ())
+    if (! (QFile::exists (m_settings->fileName ())
            && m_settings->isWritable ()
            && m_settings->status () == QSettings::NoError))
       {
-        QString msg = QString (QT_TR_NOOP (
-                                           "The settings file\n%1\n"
-                                           "does not exist and can not be created.\n"
-                                           "Make sure you have read and write permissions to\n%2\n\n"
-                                           "Octave GUI must be closed now."));
-        QMessageBox::critical (nullptr, QString (QT_TR_NOOP ("Octave Critical Error")),
-                               msg.arg (do_get_settings_file ()).arg (do_get_settings_directory ()));
+        QString msg
+          = QString (QT_TR_NOOP ("The settings file\n%1\n"
+                                 "does not exist and can not be created.\n"
+                                 "Make sure you have read and write permissions to\n%2\n\n"
+                                 "Octave GUI must be closed now."));
+
+        QMessageBox::critical (nullptr,
+                               QString (QT_TR_NOOP ("Octave Critical Error")),
+                               msg.arg (get_settings_file ()).arg (get_settings_directory ()));
+
         exit (1);
       }
   }
 
-  bool resource_manager::do_update_settings_key (const QString& old_key,
-                                                 const QString& new_key)
+  bool resource_manager::update_settings_key (const QString& old_key,
+                                              const QString& new_key)
   {
     if (m_settings->contains (old_key))
       {
@@ -324,20 +332,21 @@ namespace octave
     return false;
   }
 
-  bool resource_manager::do_is_first_run (void) const
+  bool resource_manager::is_first_run (void) const
   {
     return ! QFile::exists (m_settings_file);
   }
 
-  void resource_manager::do_update_network_settings (void)
+  void resource_manager::update_network_settings (void)
   {
     if (m_settings)
       {
         QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
 
-        if (m_settings->value ("useProxyServer",false).toBool ())
+        if (m_settings->value (global_use_proxy.key, global_use_proxy.def).toBool ())
           {
-            QString proxyTypeString = m_settings->value ("proxyType").toString ();
+            QString proxyTypeString
+              = m_settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
 
             if (proxyTypeString == "Socks5Proxy")
               proxyType = QNetworkProxy::Socks5Proxy;
@@ -348,10 +357,14 @@ namespace octave
         QNetworkProxy proxy;
 
         proxy.setType (proxyType);
-        proxy.setHostName (m_settings->value ("proxyHostName").toString ());
-        proxy.setPort (m_settings->value ("proxyPort",80).toInt ());
-        proxy.setUser (m_settings->value ("proxyUserName").toString ());
-        proxy.setPassword (m_settings->value ("proxyPassword").toString ());
+        proxy.setHostName (m_settings->value (global_proxy_host.key,
+                                              global_proxy_host.def).toString ());
+        proxy.setPort (m_settings->value (global_proxy_port.key,
+                                          global_proxy_port.def).toInt ());
+        proxy.setUser (m_settings->value (global_proxy_user.key,
+                                          global_proxy_user.def).toString ());
+        proxy.setPassword (m_settings->value (global_proxy_pass.key,
+                                              global_proxy_pass.def).toString ());
 
         QNetworkProxy::setApplicationProxy (proxy);
       }
@@ -361,14 +374,14 @@ namespace octave
       }
   }
 
-  QIcon resource_manager::do_icon (const QString& icon_name, bool fallback)
+  QIcon resource_manager::icon (const QString& icon_name, bool fallback)
   {
     // If system icon theme is not desired, take own icon files
-    if (! m_settings->value (global_icon_theme.key, global_icon_theme.def).toBool ())
+    if (! m_settings->value (global_icon_theme).toBool ())
       return QIcon (":/actions/icons/" + icon_name + ".png");
 
-    // Use system icon theme with own files as fallback except the fallback is
-    // explicitly disabled (fallback=false)
+    // Use system icon theme with own files as fallback except when the
+    // fallback is explicitly disabled (fallback=false)
     if (fallback)
       return QIcon::fromTheme (icon_name,
                                QIcon (":/actions/icons/" + icon_name + ".png"));
@@ -377,19 +390,19 @@ namespace octave
   }
 
   // get a list of all available encodings
-  void resource_manager::do_get_codecs (QStringList *codecs)
+  void resource_manager::get_codecs (QStringList *codecs)
   {
     // get the codec name for each mib
     QList<int> all_mibs = QTextCodec::availableMibs ();
-    foreach (int mib, all_mibs)
+    for (auto mib : all_mibs)
       {
         QTextCodec *c = QTextCodec::codecForMib (mib);
         codecs->append (c->name ().toUpper ());
       }
 
-    // If on windows append SYSTEM even if not supported
-    if (ed_default_enc.def.toString () == "SYSTEM")
-      codecs->append (ed_default_enc.def.toString ());
+    // Append SYSTEM
+    codecs->append (QTextCodec::codecForLocale ()->name ().toUpper ().prepend
+                      ("SYSTEM (").append (")"));
 
     // Clean up and sort list of codecs
     codecs->removeDuplicates ();
@@ -397,36 +410,42 @@ namespace octave
   }
 
   // initialize a given combo box with available text encodings
-  void resource_manager::do_combo_encoding (QComboBox *combo, QString current)
+  void resource_manager::combo_encoding (QComboBox *combo,
+                                         const QString& current)
   {
     QStringList all_codecs;
-    do_get_codecs (&all_codecs);
+    get_codecs (&all_codecs);
 
     // get the value from the settings file if no current encoding is given
     QString enc = current;
 
-    // Check for valid codec for the default. Allow "SYSTEM" even no valid
-    // codec exists, since codecForLocale will be chosen in this case
+    // Check for valid codec for the default.  If this fails, "SYSTEM" (i.e.
+    // codecForLocale) will be chosen.
+    // FIXME: The default is "SYSTEM" on all platforms.  So can this fallback
+    // logic be removed completely?
     bool default_exists = false;
     if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ())
-        || (ed_default_enc.def.toString () == "SYSTEM"))
+        || (ed_default_enc.def.toString ().startsWith ("SYSTEM")))
       default_exists = true;
 
+    QString default_enc =
+      QTextCodec::codecForLocale ()->name ().toUpper ().prepend
+        ("SYSTEM (").append (")");
     if (enc.isEmpty ())
       {
-        enc = m_settings->value (ed_default_enc.key, ed_default_enc.def).toString ();
+        enc = m_settings->value (ed_default_enc).toString ();
 
         if (enc.isEmpty ())  // still empty?
           {
             if (default_exists)
               enc = ed_default_enc.def.toString ();
             else
-              enc = QTextCodec::codecForLocale ()->name ().toUpper ();
+              enc = default_enc;
           }
       }
 
     // fill the combo box
-    foreach (QString c, all_codecs)
+    for (const auto& c : all_codecs)
       combo->addItem (c);
 
     // prepend the default item
@@ -434,7 +453,7 @@ namespace octave
     if (default_exists)
       combo->insertItem (0, ed_default_enc.def.toString ());
     else
-      combo->insertItem (0, QTextCodec::codecForLocale ()->name ().toUpper ());
+      combo->insertItem (0, default_enc);
 
     // select the default or the current one
     int idx = combo->findText (enc, Qt::MatchExactly);
@@ -444,5 +463,44 @@ namespace octave
       combo->setCurrentIndex (0);
 
     combo->setMaxVisibleItems (12);
+  }
+
+  QPointer<QTemporaryFile>
+  resource_manager::create_tmp_file (const QString& extension,
+                                     const QString& contents)
+  {
+    QString ext = extension;
+    if ((! ext.isEmpty ()) && (! ext.startsWith ('.')))
+      ext = QString (".") + ext;
+
+    // Create octave dir within temp. dir
+    QString tmp_dir = QDir::tempPath () + QDir::separator() + "octave";
+    QDir::temp ().mkdir ("octave");
+
+    // Create temp. file
+    QPointer<QTemporaryFile> tmp_file
+      = new QTemporaryFile (tmp_dir + QDir::separator() +
+                            "octave_XXXXXX" + ext, this);
+
+    if (tmp_file->open ())
+      {
+        tmp_file->write (contents.toUtf8 ());
+        tmp_file->close ();
+
+        m_temporary_files << tmp_file;
+      }
+
+    return tmp_file;
+  }
+
+  void resource_manager::remove_tmp_file (QPointer<QTemporaryFile> tmp_file)
+  {
+    if (tmp_file)
+      {
+        if (tmp_file->exists ())
+          tmp_file->remove ();
+
+        m_temporary_files.removeAll (tmp_file);
+      }
   }
 }

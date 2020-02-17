@@ -1,4 +1,9 @@
-## Copyright (C) 1998-2019 Walter Gautschi
+########################################################################
+##
+## Copyright (C) 1998-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{q} =} quadl (@var{f}, @var{a}, @var{b})
@@ -52,7 +59,7 @@
 ## evaluations performed.
 ##
 ## Reference: @nospell{W. Gander and W. Gautschi}, @cite{Adaptive Quadrature -
-## Revisited}, BIT Vol. 40, No. 1, March 2000, pp. 84--101.
+## Revisited}, BIT Vol.@: 40, No.@: 1, March 2000, pp.@: 84--101.
 ## @url{https://www.inf.ethz.ch/personal/gander/}
 ## @seealso{quad, quadv, quadgk, quadcc, trapz, dblquad, triplequad, integral,
 ##          integral2, integral3}

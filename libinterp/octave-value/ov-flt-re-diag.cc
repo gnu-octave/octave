@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2008-2019 Jaroslav Hajek
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -41,8 +44,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_diag_matrix,
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  const octave_float_diag_matrix& v =
-    dynamic_cast<const octave_float_diag_matrix&> (a);
+  const octave_float_diag_matrix& v
+    = dynamic_cast<const octave_float_diag_matrix&> (a);
 
   return new octave_float_matrix (v.float_matrix_value ());
 }
@@ -176,7 +179,7 @@ octave_float_diag_matrix::map (unary_mapper_t umap) const
 
 bool
 octave_float_diag_matrix::save_binary (std::ostream& os,
-                                       bool& /* save_as_floats*/)
+                                       bool /* save_as_floats*/)
 {
 
   int32_t r = matrix.rows ();

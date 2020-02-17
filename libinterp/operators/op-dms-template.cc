@@ -1,31 +1,33 @@
-/*
-
-Copyright (C) 2008-2019 Jaroslav Hajek
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
 #include "ops.h"
-#include "errwarn.h"
 #include "xpow.h"
 #include SINCLUDE
 #include MINCLUDE
@@ -48,22 +50,12 @@ DEFNDBINOP_OP (dmsmul, MATRIX, SCALAR, MATRIXV, SCALARV, *)
 #define MATRIX_VALUE CONCAT2(MATRIXV, _value)
 #define SCALAR_VALUE CONCAT2(SCALARV, _value)
 
-template <typename T>
-static T
-gripe_if_zero (T x)
-{
-  if (x == T ())
-    warn_divide_by_zero ();
-
-  return x;
-}
-
 DEFBINOP (dmsdiv, MATRIX, SCALAR)
 {
   const OCTAVE_MATRIX& v1 = dynamic_cast<const OCTAVE_MATRIX&> (a1);
   const OCTAVE_SCALAR& v2 = dynamic_cast<const OCTAVE_SCALAR&> (a2);
 
-  return v1.MATRIX_VALUE () / gripe_if_zero (v2.SCALAR_VALUE ());
+  return v1.MATRIX_VALUE () / v2.SCALAR_VALUE ();
 }
 
 DEFBINOP (sdmldiv, SCALAR, MATRIX)
@@ -71,7 +63,7 @@ DEFBINOP (sdmldiv, SCALAR, MATRIX)
   const OCTAVE_SCALAR& v1 = dynamic_cast<const OCTAVE_SCALAR&> (a1);
   const OCTAVE_MATRIX& v2 = dynamic_cast<const OCTAVE_MATRIX&> (a2);
 
-  return v2.MATRIX_VALUE () / gripe_if_zero (v1.SCALAR_VALUE ());
+  return v2.MATRIX_VALUE () / v1.SCALAR_VALUE ();
 }
 
 DEFBINOP (dmspow, MATRIX, SCALAR)

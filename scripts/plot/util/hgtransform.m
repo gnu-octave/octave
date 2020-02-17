@@ -1,4 +1,9 @@
-## Copyright (C) 2017-2019 Rik Wehbring
+########################################################################
+##
+## Copyright (C) 2017-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{h} =} hgtransform ()
@@ -145,8 +152,8 @@ function xform_data (hgt, hlist)
     if (strcmp (type, "text"))
       set (hk, "position", [data(1), data(2), data(3)]);
     else
-      set (hk, "xdata", reshape (data(1,:), xsz));
-      set (hk, "ydata", reshape (data(2,:), ysz));
+      set (hk, "xdata", reshape (data(1,:), xsz),
+               "ydata", reshape (data(2,:), ysz));
       if (! z_empty)
         set (hk, "zdata", reshape (data(3,:), zsz));
       endif
@@ -172,13 +179,13 @@ function children_cb (hgt, ~)
         switch (get (hk, "type"))
 
           case {"line", "patch", "surface"}
-            set (hk, "xdata", orig_data(idx).xdata);
-            set (hk, "ydata", orig_data(idx).ydata);
-            set (hk, "zdata", orig_data(idx).zdata);
+            set (hk, "xdata", orig_data(idx).xdata,
+                     "ydata", orig_data(idx).ydata,
+                     "zdata", orig_data(idx).zdata);
 
           case "image"
-            set (hk, "xdata", orig_data(idx).xdata);
-            set (hk, "ydata", orig_data(idx).ydata);
+            set (hk, "xdata", orig_data(idx).xdata,
+                     "ydata", orig_data(idx).ydata);
 
           case "text"
             set (hk, "position", orig_data(idx).position);

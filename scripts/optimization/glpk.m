@@ -1,5 +1,9 @@
-## Copyright (C) 2005-2019 Nicolo' Giorgetti
-## Copyright (C) 2013-2019 Sébastien Villemot <sebastien@debian.org>
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{xopt}, @var{fmin}, @var{errnum}, @var{extra}] =} glpk (@var{c}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{ctype}, @var{vartype}, @var{sense}, @var{param})
@@ -475,9 +481,6 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-
-## Author: Nicolo' Giorgetti <giorgetti@dii.unisi.it>
-## Adapted-by: jwe
 
 function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, sense, param)
 

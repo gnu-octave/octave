@@ -576,9 +576,6 @@ private:
     // draws the characters or line graphics in a text fragment
     void drawCharacters(QPainter& painter, const QRect& rect,  const QString& text,
                                            const Character* style, bool invertCharacterColor);
-    // draws a string of line graphics
-   void drawLineCharString(QPainter& painter, int x, int y,
-                            const QString& str, const Character* attributes);
 
     // draws the preedit string for input methods
     void drawInputMethodPreeditString(QPainter& painter , const QRect& rect);

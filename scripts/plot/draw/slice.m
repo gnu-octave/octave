@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 Kai Habel, David Bateman
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} slice (@var{x}, @var{y}, @var{z}, @var{v}, @var{sx}, @var{sy}, @var{sz})
@@ -79,8 +86,6 @@
 ## @end example
 ## @seealso{interp3, surface, pcolor}
 ## @end deftypefn
-
-## Author: Kai Habel <kai.habel@gmx.de>
 
 function h = slice (varargin)
 

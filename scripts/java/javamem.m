@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Philip Nienhuis
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} javamem ()
@@ -55,13 +62,6 @@
 ## Octave functions the amount of Total and Free memory will vary, due to
 ## Java's own cleaning up and your operating system's memory management.
 ## @end deftypefn
-
-## Author: Philip Nienhuis
-## Created: 2010-03-25
-## Updates:
-## 2010-03-26 Changed name to javamem & indentation to double spaces
-## 2010-08-25 Corrected text on java memory assignments
-## 2010-09-05 Further overhauled help text
 
 function jmem = javamem ()
 

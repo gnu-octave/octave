@@ -1,4 +1,9 @@
-## Copyright (C) 2004-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 2004-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 ##
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
@@ -39,8 +46,6 @@
 ##
 ## @seealso{sprand, sprandsym, randn}
 ## @end deftypefn
-
-## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function s = sprandn (m, n, d, rc)
 
@@ -87,16 +92,22 @@ endfunction
 %!test
 %! s = sprandn (1e6,1e6,1e-7);
 
+## Test empty array creation
+%!assert (size (sprandn (0, 0, 0.5)), [0, 0])
+%!assert (size (sprandn (0, 3, 0.5)), [0, 3])
+%!assert (size (sprandn (3, 0, 0.5)), [3, 0])
+
 ## Test input validation
 %!error sprandn ()
 %!error sprandn (1, 2)
 %!error sprandn (1, 2, 3, 4)
-%!error <M must be an integer greater than 0> sprandn (ones (3), 3, 0.5)
-%!error <M must be an integer greater than 0> sprandn (3.5, 3, 0.5)
-%!error <M must be an integer greater than 0> sprandn (0, 3, 0.5)
-%!error <N must be an integer greater than 0> sprandn (3, ones (3), 0.5)
-%!error <N must be an integer greater than 0> sprandn (3, 3.5, 0.5)
-%!error <N must be an integer greater than 0> sprandn (3, 0, 0.5)
+%!error <M must be a non-negative integer> sprand (-1, -1, 0.5)
+%!error <M must be a non-negative integer> sprandn (ones (3), 3, 0.5)
+%!error <M must be a non-negative integer> sprandn (3.5, 3, 0.5)
+%!error <M must be a non-negative integer> sprandn (-1, 3, 0.5)
+%!error <N must be a non-negative integer> sprandn (3, ones (3), 0.5)
+%!error <N must be a non-negative integer> sprandn (3, 3.5, 0.5)
+%!error <N must be a non-negative integer> sprandn (3, -1, 0.5)
 %!error <D must be between 0 and 1> sprandn (3, 3, -1)
 %!error <D must be between 0 and 1> sprandn (3, 3, 2)
 %!error <RC must be a scalar or vector> sprandn (2, 2, 0.2, ones (3,3))

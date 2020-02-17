@@ -1,4 +1,9 @@
-## Copyright (C) 2009-2019 Søren Hauberg
+########################################################################
+##
+## Copyright (C) %!-2019 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} type @var{name} @dots{}
@@ -130,21 +137,20 @@ endfunction
 
 %!test
 %! var = 1;
-%! text = type ("var");
-%! typestr = text{1}(1:17);
+%! txt = type ("var");
+%! typestr = txt{1}(1:17);
 %! assert (typestr, "var is a variable");
 
 %!test
-%! text = type ("ls");
-%! typestr = text{1}(1:31);
+%! txt = type ("ls");
+%! typestr = txt{1}(1:31);
 %! assert (typestr, "ls is the user-defined function");
 
 %!test
-%! text = type ("ls", "-q");
-%! typestr = text{1}(1:21);
-%! assert (typestr, "## Copyright (C) 2006");
+%! txt = type ("ls", "-q");
+%! assert (regexp (txt{1}, '[#\s]*Copyright \(C\) 2006'));
 
-%!assert (type ("amd"){1}, "amd is a dynamically-linked function")
+%!assert (type ("fftw"){1}, "fftw is a dynamically-linked function")
 %!assert (type ("cat"){1}, "cat is a built-in function")
 %!assert (type ("+"){1}, "+ is an operator")
 %!assert (type ("end"){1}, "end is a keyword")

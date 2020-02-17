@@ -1,5 +1,9 @@
-## Copyright (C) 2005-2019 John W. Eaton
-## Copyright (C) 2013-2019 Arun Giridhar
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x0}, @var{phi})
@@ -417,7 +423,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     old_lambda = lambda;
     [p, obj_qp, INFO, lambda] = qp (x, B, c, F, g, [], [], d, C,
-                                    Inf (size (d)));
+                                    Inf (size (d)), struct ("TolX", tol));
 
     info = INFO.info;
 

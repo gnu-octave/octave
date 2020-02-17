@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_Range_h)
 #define octave_Range_h 1
@@ -28,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 
 #include "dMatrix.h"
+#include "dim-vector.h"
 #include "oct-sort.h"
 
 class
@@ -39,9 +43,11 @@ public:
   Range (void)
     : rng_base (0), rng_limit (0), rng_inc (0), rng_numel (0), cache (1, 0) { }
 
-  Range (const Range& r)
-    : rng_base (r.rng_base), rng_limit (r.rng_limit), rng_inc (r.rng_inc),
-      rng_numel (r.rng_numel), cache (r.cache) { }
+  Range (const Range& r) = default;
+
+  Range& operator = (const Range& r) = default;
+
+  ~Range (void) = default;
 
   Range (double b, double l)
     : rng_base (b), rng_limit (l), rng_inc (1),
@@ -80,8 +86,7 @@ public:
 
   octave_idx_type numel (void) const { return rng_numel; }
 
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type nelem (void) const { return numel (); }
+  dim_vector dims (void) const { return dim_vector (1, rng_numel); }
 
   octave_idx_type rows (void) const { return 1; }
 
@@ -89,10 +94,6 @@ public:
   octave_idx_type columns (void) const { return numel (); }
 
   bool isempty (void) const { return numel () == 0; }
-
-  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
-  bool is_empty (void) const
-  { return isempty (); }
 
   bool all_elements_are_ints (void) const;
 
@@ -111,10 +112,6 @@ public:
               sortmode mode = ASCENDING) const;
 
   sortmode issorted (sortmode mode = ASCENDING) const;
-
-  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
-  sortmode is_sorted (sortmode mode = ASCENDING) const
-  { return issorted (mode); }
 
   octave_idx_type nnz (void) const;
 

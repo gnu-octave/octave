@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pt_decl_h)
 #define octave_pt_decl_h 1
@@ -33,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-cmd.h"
 #include "pt-id.h"
 #include "pt-walk.h"
-#include "symrec.h"
 
 namespace octave
 {
@@ -55,8 +57,7 @@ namespace octave
       persistent
     };
 
-    tree_decl_elt (tree_identifier *i = nullptr, tree_expression *e = nullptr)
-      : type (unknown), m_id (i), m_expr (e) { }
+    tree_decl_elt (tree_identifier *i, tree_expression *e = nullptr);
 
     // No copying!
 
@@ -66,27 +67,16 @@ namespace octave
 
     ~tree_decl_elt (void);
 
-    bool is_defined (symbol_record::context_id context)
-    {
-      return m_id ? m_id->is_defined (context) : false;
-    }
-
-    bool is_variable (symbol_record::context_id context)
-    {
-      return m_id ? m_id->is_variable (context) : false;
-    }
-
     void mark_as_formal_parameter (void)
     {
-      if (m_id)
-        m_id->mark_as_formal_parameter ();
+      m_id->mark_as_formal_parameter ();
     }
 
-    bool lvalue_ok (void) { return m_id ? m_id->lvalue_ok () : false; }
+    bool lvalue_ok (void) { return m_id->lvalue_ok (); }
 
     octave_lvalue lvalue (tree_evaluator& tw)
     {
-      return m_id ? m_id->lvalue (tw) : octave_lvalue ();
+      return m_id->lvalue (tw);
     }
 
     void mark_global (void) { type = global; }
@@ -97,7 +87,7 @@ namespace octave
 
     tree_identifier * ident (void) { return m_id; }
 
-    std::string name (void) const { return m_id ? m_id->name () : ""; }
+    std::string name (void) const { return m_id->name (); }
 
     tree_expression * expression (void) { return m_expr; }
 
@@ -226,17 +216,5 @@ namespace octave
     tree_decl_init_list *m_init_list;
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_decl_elt' instead")
-typedef octave::tree_decl_elt tree_decl_elt;
-
-// tree_decl_init_list is derived from a template.
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_decl_command' instead")
-typedef octave::tree_decl_command tree_decl_command;
-
-#endif
 
 #endif

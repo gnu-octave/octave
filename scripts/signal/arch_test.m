@@ -1,4 +1,9 @@
-## Copyright (C) 1995-2019 Kurt Hornik
+########################################################################
+##
+## Copyright (C) 1995-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{pval}, @var{lm}] =} arch_test (@var{y}, @var{x}, @var{p})
@@ -62,8 +69,7 @@
 ## If no output argument is given, the @math{p}-value is displayed.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Test for conditional heteroscedascity
+## Description: Test for conditional heteroscedascity.
 
 function [pval, lm] = arch_test (y, x, p)
 

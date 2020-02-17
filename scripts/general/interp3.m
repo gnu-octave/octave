@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{vi} =} interp3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
@@ -88,7 +95,7 @@ function vi = interp3 (varargin)
   extrapval = [];
   nargs = nargin;
 
-  if (nargin < 1 || ! isnumeric (varargin{1}))
+  if (! isnumeric (varargin{1}))
     print_usage ();
   endif
 
@@ -108,8 +115,7 @@ function vi = interp3 (varargin)
     warning ("interp3: ignoring unsupported '*' flag to METHOD");
     method(1) = [];
   endif
-  method = validatestring (method, ...
-    {"nearest", "linear", "cubic", "spline"});
+  method = validatestring (method, {"nearest", "linear", "cubic", "spline"});
 
   if (nargs < 3)
     ## Calling form interp3 (v) OR interp3 (v, n)
@@ -124,7 +130,6 @@ function vi = interp3 (varargin)
     else
       vi = interpn (v, n{:}, method, extrapval);
     endif
-    vi = ipermute (vi, [2, 1, 3]);
 
   elseif (nargs == 4 && ! isvector (varargin{1}))
     ## Calling form interp3 (v, xi, yi, zi)
@@ -148,7 +153,6 @@ function vi = interp3 (varargin)
     else
       vi = interpn (v, xi{:}, method, extrapval);
     endif
-    vi = ipermute (vi, [2, 1, 3]);
 
   elseif (nargs == 7)
     ## Calling form interp3 (x, y, z, v, xi, yi, zi)
@@ -182,10 +186,13 @@ function vi = interp3 (varargin)
     else
       vi = interpn (x{:}, v, xi{:}, method, extrapval);
     endif
-    vi = ipermute (vi, [2, 1, 3]);
 
   else
     error ("interp3: wrong number or incorrectly formatted input arguments");
+  endif
+
+  if (! isvector (vi))
+    vi = ipermute (vi, [2, 1, 3]);
   endif
 
 endfunction
@@ -220,7 +227,7 @@ endfunction
 %! v = ones ([3,2,2]);  v(:,2,1) = [7;5;4];  v(:,1,2) = [2;3;5];
 %! xi = zi = .6:1.6;  yi = 1;
 %! vi = interp3 (x, y, z, v, xi, yi, zi, "nearest");
-%! vi2 = interpn (y, x, z, v, yi, xi, zi,"nearest");
+%! vi2 = interpn (y, x, z, v, yi, xi, zi, "nearest");
 %! assert (vi, vi2);
 
 %!test  # vector xi+1 with extrap value
@@ -236,7 +243,7 @@ endfunction
 %! v = ones ([3,2,2]);  v(:,2,1) = [7;5;4];  v(:,1,2) = [2;3;5];
 %! xi = zi = .6:1.6;  yi = 1;
 %! vi = interp3 (v, xi, yi, zi, "nearest");
-%! vi2 = interpn (v, yi, xi, zi,"nearest");
+%! vi2 = interpn (v, yi, xi, zi, "nearest");
 %! assert (vi, vi2);
 
 %!test  # input value matrix--no x,y,z, with extrap value
@@ -247,18 +254,18 @@ endfunction
 %! vi2 = interpn (v, yi, xi, zi, "nearest", 3);
 %! assert (vi, vi2);
 
-%!test # extrapolation
+%!test  # extrapolation
 %! X=[0,0.5,1]; Y=X; Z=X;
 %! V = zeros (3,3,3);
 %! V(:,:,1) = [1 3 5; 3 5 7; 5 7 9];
 %! V(:,:,2) = V(:,:,1) + 2;
 %! V(:,:,3) = V(:,:,2) + 2;
 %! tol = 10 * eps;
-%! x=[-0.1,0,0.1]; y=x; z=x;
-%! assert(interp3(X,Y,Z,V,x,y,z,"spline"), [-0.2, 1.0, 2.2]',tol);
-%! assert(interp3(X,Y,Z,V,x,y,z,"linear"), [NA, 1.0, 2.2]',tol);
-%! assert(interp3(X,Y,Z,V,x,y,z,"spline", 0), [0, 1.0, 2.2]',tol);
-%! assert(interp3(X,Y,Z,V,x,y,z,"linear", 0), [0, 1.0, 2.2]',tol);
+%! x = y = z = [-0.1,0,0.1];
+%! assert (interp3 (X,Y,Z,V,x,y,z,"spline"), [-0.2, 1.0, 2.2], tol);
+%! assert (interp3 (X,Y,Z,V,x,y,z,"linear"), [NA, 1.0, 2.2], tol);
+%! assert (interp3 (X,Y,Z,V,x,y,z,"spline", 0), [0, 1.0, 2.2], tol);
+%! assert (interp3 (X,Y,Z,V,x,y,z,"linear", 0), [0, 1.0, 2.2], tol);
 
 %!shared z, zout, tol
 %! z = zeros (3, 3, 3);
@@ -272,22 +279,30 @@ endfunction
 %!                  3 4 5 6 7;
 %!                  4 5 6 7 8;
 %!                  5 6 7 8 9] + (n-1);
-%! end
+%! endfor
 %! tol = 10 * eps;
 %!
 %!assert (interp3 (z), zout, tol)
 %!assert (interp3 (z, "linear"), zout, tol)
 %!assert (interp3 (z, "spline"), zout, tol)
 
+%!test <*57450>
+%! [x, y, z] = meshgrid (1:10);
+%! v = x;
+%! xi = yi = zi = linspace (1, 10, 20).';
+%! vi = interp3 (x, y, z, v, xi, yi, zi);
+%! assert (size (vi), [20, 1]);
+
 ## Test input validation
-%!error interp3 ()
-%!error interp3 ({1})
+%!error <not enough input arguments> interp3 ()
+%!error <Invalid call> interp3 ({1})
 %!error <EXTRAPVAL must be a numeric scalar> interp3 (1,2,3,4,1,2,3,"linear", {1})
 %!error <EXTRAPVAL must be a numeric scalar> interp3 (1,2,3,4,1,2,3,"linear", ones (2,2))
 %!warning <ignoring unsupported '\*' flag> interp3 (rand (3,3,3), 1, "*linear");
-%!error <V must be a 3-D array> interp3 (rand (2,2))
-%!error <V must be a 3-D array> interp3 (rand (2,2), 1,1,1)
-%!error <XI, YI, and ZI dimensions must be equal> interp3 (rand (2,2,2), 1,1, ones (2,2))
-%!error <V must be a 3-D array> interp3 (1:2, 1:2, 1:2, rand (2,2), 1,1,1)
-%!error <X, Y, Z, and V dimensions must be equal> interp3 (ones(1,2,2), ones(2,2,2), ones(2,2,2), rand (2,2,2), 1,1,1)
+%!error <V must be a 3-D array> interp3 (ones (2,2))
+%!error <V must be a 3-D array> interp3 (ones (2,2), 1,1,1)
+%!error <XI, YI, and ZI dimensions must be equal> interp3 (ones (2,2,2), 1,1, ones (2,2))
+%!error <V must be a 3-D array> interp3 (1:2, 1:2, 1:2, ones (2,2), 1,1,1)
+%!error <X, Y, Z, and V dimensions must be equal> interp3 (ones (1,2,2), ones (2,2,2), ones (2,2,2), ones (2,2,2), 1,1,1)
 %!error <XI, YI, and ZI dimensions must be equal> interp3 (1:2, 1:2, 1:2, rand (2,2,2), 1,1, ones (2,2))
+%!error <wrong number .* input arguments> interp3 (1:2, 1:2, 1:2)

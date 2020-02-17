@@ -1,5 +1,5 @@
 FCN_FILE_DIRS += \
-  scripts/plot/util \
+  %reldir% \
   %reldir%/private
 
 %canon_reldir%_GEN_FCN_FILES = \
@@ -53,6 +53,7 @@ GEN_FCN_FILES += $(%canon_reldir%_GEN_FCN_FILES)
   %reldir%/ginput.m \
   %reldir%/graphics_toolkit.m \
   %reldir%/groot.m \
+  %reldir%/gui_mainfcn.m \
   %reldir%/hdl2struct.m \
   %reldir%/hggroup.m \
   %reldir%/hgload.m \

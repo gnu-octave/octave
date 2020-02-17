@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pt_idx_h)
 #define octave_pt_idx_h 1
@@ -89,6 +92,10 @@ namespace octave
 
     std::list<tree_expression *> dyn_fields (void) { return m_dyn_field; }
 
+    void mark_word_list_cmd (void) { m_word_list_cmd = true; }
+
+    bool is_word_list_cmd (void) const { return m_word_list_cmd; }
+
     bool lvalue_ok (void) const { return m_expr->lvalue_ok (); }
 
     bool rvalue_ok (void) const { return true; }
@@ -96,6 +103,15 @@ namespace octave
     octave_lvalue lvalue (tree_evaluator& tw);
 
     tree_index_expression * dup (symbol_scope& scope) const;
+
+    octave_value evaluate (tree_evaluator& tw, int nargout = 1)
+    {
+      octave_value_list retval = evaluate_n (tw, nargout);
+
+      return retval.length () > 0 ? retval(0) : octave_value ();
+    }
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1);
 
     void accept (tree_walker& tw)
     {
@@ -125,17 +141,13 @@ namespace octave
     // The list of dynamic field names, if any.
     std::list<tree_expression *> m_dyn_field;
 
+    // TRUE if this expression was parsed as a word list command.
+    bool m_word_list_cmd;
+
     tree_index_expression (int l, int c);
 
     octave_map make_arg_struct (void) const;
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_index_expression' instead")
-typedef octave::tree_index_expression tree_index_expression;
-
-#endif
 
 #endif

@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -1104,10 +1106,6 @@ octave_value::octave_value (const octave_map& m, const std::string& id,
 octave_value::octave_value (const octave_scalar_map& m, const std::string& id,
                             const std::list<std::string>& plist)
   : rep (new octave_class (m, id, plist))
-{ }
-
-octave_value::octave_value (const octave_value_list& l, bool)
-  : rep (new octave_cs_list (l))
 { }
 
 octave_value::octave_value (const octave_value_list& l)
@@ -2217,12 +2215,12 @@ do_binary_op (octave::type_info& ti, octave_value::binary_op op,
       else
         {
           octave_value tv1;
-          octave_base_value::type_conv_info cf1 =
-            v1.numeric_conversion_function ();
+          octave_base_value::type_conv_info cf1
+            = v1.numeric_conversion_function ();
 
           octave_value tv2;
-          octave_base_value::type_conv_info cf2 =
-            v2.numeric_conversion_function ();
+          octave_base_value::type_conv_info cf2
+            = v2.numeric_conversion_function ();
 
           // Try biased (one-sided) conversions first.
           if (cf2.type_id () >= 0
@@ -2553,6 +2551,16 @@ do_colon_op (const octave_value& base, const octave_value& increment,
     {
       bool result_is_str = (base.is_string () && limit.is_string ());
       bool dq_str = (base.is_dq_string () || limit.is_dq_string ());
+
+      if (base.numel () > 1 || limit.numel () > 1
+          || (increment.is_defined () && increment.numel () > 1))
+        warning_with_id ("Octave:colon-nonscalar-argument",
+                         "colon arguments should be scalars");
+
+      if (base.iscomplex () || limit.iscomplex ()
+          || (increment.is_defined () && increment.iscomplex ()))
+        warning_with_id ("Octave:colon-complex-argument",
+                         "imaginary part of complex colon arguments is ignored");
 
       Matrix m_base, m_limit, m_increment;
 

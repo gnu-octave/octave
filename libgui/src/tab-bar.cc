@@ -1,27 +1,30 @@
-/*
-
-Copyright (C) 2018-2019 Torsten <mttl@mailbox.org>
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2018-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // This file implements a tab bar derived from QTabBar with a contextmenu
-// and possibility to close a tab via double-left and middle mouse click.
+// and possibility to close a tab via double-left or middle mouse click.
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -90,6 +93,43 @@ namespace octave
       setCurrentIndex (new_pos);
   }
 
+  void tab_bar::sort_tabs_alph (void)
+  {
+    QString current_title = tabText (currentIndex ());
+    int tab_with_focus = 0;
+
+    // Get all tab title and sort
+    QStringList tab_texts;
+
+    for (int i = 0; i < count (); i++)
+      tab_texts.append (tabText (i));
+
+    tab_texts.sort ();
+
+    // Move tab into the order of the generated string list
+    for (int title = 0; title < tab_texts.count (); title++)
+      {
+        // Target tab is same as place of title in QStringList.
+        // Find index of next title in string list, leaving out the
+        // tabs (or titles) that were already moved.
+        for (int tab = title; tab < count (); tab++)
+          {
+            if (tabText (tab) == tab_texts.at (title))
+              {
+                // Index of next tile found, so move tab into next position
+                moveTab (tab, title);
+
+                if (tab_texts.at (title) == current_title)
+                  tab_with_focus = title;
+
+                break;
+              }
+          }
+      }
+
+    setCurrentIndex (tab_with_focus);
+  }
+
   // Reimplement mouse event for filtering out the desired mouse clicks
   void tab_bar::mousePressEvent (QMouseEvent *me)
   {
@@ -111,6 +151,8 @@ namespace octave
     if (clicked_idx >= 0)
       {
         int current_idx = currentIndex ();
+        int current_count = count ();
+
         // detect the mouse click
         if ((me->type () == QEvent::MouseButtonDblClick
              && me->button() == Qt::LeftButton)
@@ -138,12 +180,13 @@ namespace octave
                 // No action selected, back to previous tab
                 setCurrentIndex (current_idx);
               }
-            else
+            else if (count () < current_count)
               {
+                // A tab was closed:
                 // Was the possibly only closed tab before or after the
                 // previously current tab? According to the result, use previous
-                // index or reduce it by one. Also prevent using a too large
-                // if other or all files were closed.
+                // index or reduce it by one.  Also prevent using a too large
+                // index if other or all files were closed.
                 int new_idx = count () - 1;
                 if (new_idx > 0)
                   {

@@ -1,4 +1,9 @@
-## Copyright (C) 2017-2019 Michele Ginesi
+########################################################################
+##
+## Copyright (C) 2017-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,8 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
-
-## Author: Michele Ginesi <michele.ginesi@gmail.com>
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} cosint (@var{x})
@@ -63,8 +68,7 @@
 ## Reference:
 ##
 ## @nospell{M. Abramowitz and I.A. Stegun},
-## @cite{Handbook of Mathematical Functions}
-## 1964.
+## @cite{Handbook of Mathematical Functions}, 1964.
 ##
 ## @seealso{sinint, expint, cos}
 ##

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -32,6 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Figure.h"
 #include "Menu.h"
 #include "QtHandlesUtils.h"
+
+#include "octave-qobject.h"
 
 namespace QtHandles
 {
@@ -58,23 +63,27 @@ namespace QtHandles
   }
 
   Menu*
-  Menu::create (const graphics_object& go)
+  Menu::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                const graphics_object& go)
   {
-    Object *parent_obj = Object::parentObject (go);
+    Object *parent_obj = parentObject (interp, go);
 
     if (parent_obj)
       {
         QObject *qObj = parent_obj->qObject ();
 
         if (qObj)
-          return new Menu (go, new QAction (qObj), parent_obj);
+          return new Menu (oct_qobj, interp, go, new QAction (qObj),
+                           parent_obj);
       }
 
     return nullptr;
   }
 
-  Menu::Menu (const graphics_object& go, QAction *action, Object *xparent)
-    : Object (go, action), m_parent (nullptr), m_separator (nullptr)
+  Menu::Menu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+              const graphics_object& go, QAction *action, Object *xparent)
+    : Object (oct_qobj, interp, go, action), m_parent (nullptr),
+      m_separator (nullptr)
   {
     uimenu::properties& up = properties<uimenu> ();
 
@@ -114,7 +123,7 @@ namespace QtHandles
 
             int count = 0;
 
-            foreach (QAction *a, m_parent->actions ())
+            for (auto *a : m_parent->actions ())
               if (! a->isSeparator ())
                 count++;
 
@@ -127,7 +136,7 @@ namespace QtHandles
             int count = 0;
             QAction *before = nullptr;
 
-            foreach (QAction *a, m_parent->actions ())
+            for (auto *a : m_parent->actions ())
               {
                 if (! a->isSeparator ())
                   {
@@ -232,7 +241,7 @@ namespace QtHandles
             {
               int count = 0;
 
-              foreach (QAction *a, m_parent->actions ())
+              for (auto *a : m_parent->actions ())
                 {
                   if (! a->isSeparator ())
                     {
@@ -286,13 +295,13 @@ namespace QtHandles
 
     if (action->isCheckable ())
       action->setChecked (! action->isChecked ());
-    gh_manager::post_callback (m_handle, "callback");
+    emit gh_callback_event (m_handle, "callback");
   }
 
   void
   Menu::actionHovered (void)
   {
-    gh_manager::post_callback (m_handle, "callback");
+    emit gh_callback_event (m_handle, "callback");
   }
 
   void
@@ -302,7 +311,7 @@ namespace QtHandles
       {
         double count = 1.0;
 
-        foreach (QAction *a, m_parent->actions ())
+        for (auto *a : m_parent->actions ())
           {
             if (! a->isSeparator ())
               {

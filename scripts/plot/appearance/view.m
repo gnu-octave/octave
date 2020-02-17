@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} view (@var{azimuth}, @var{elevation})
@@ -43,32 +50,33 @@
 ## @var{elevation}.
 ## @end deftypefn
 
-## Author: jwe
-
 function [azimuth, elevation] = view (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("view", varargin{:});
+
+  if (nargin > 2)
+    print_usage ();
+  endif
+
   if (isempty (hax))
     hax = gca ();
   endif
 
-  if (nargin > 3)
-    print_usage ();
-  endif
-
   if (nargin == 0)
-    x = get (hax, "view");
-    az = x(1);
-    el = x(2);
-  elseif (length (varargin) == 1)
+    vw = get (hax, "view");
+    az = vw(1);
+    el = vw(2);
+  elseif (numel (varargin) == 1)
     x = varargin{1};
-    if (length (x) == 2)
+    if (numel (x) == 2)
       az = x(1);
       el = x(2);
-    elseif (length (x) == 3)
+    elseif (numel (x) == 3)
       [az, el] = cart2sph (x(1), x(2), x(3));
       az *= 180/pi;
-      az += 90;
+      if (az != 0)
+        az += 90;  # Special fix for bug #57800
+      endif
       el *= 180/pi;
     elseif (x == 2)
       az = 0;
@@ -79,7 +87,7 @@ function [azimuth, elevation] = view (varargin)
     else
       print_usage ();
     endif
-  elseif (length (varargin) == 2)
+  elseif (numel (varargin) == 2)
     az = varargin{1};
     el = varargin{2};
   endif
@@ -126,3 +134,6 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+## Test input validation
+%!error <Invalid call> view (0, 0, 1)

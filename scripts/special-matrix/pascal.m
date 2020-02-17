@@ -1,5 +1,9 @@
-## Copyright (C) 1999-2019 Peter Ekberg
-## Copyright (C) 2009 VZLU Prague
+########################################################################
+##
+## Copyright (C) 1999-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} pascal (@var{n})
@@ -38,9 +44,6 @@
 ##
 ## @seealso{chol}
 ## @end deftypefn
-
-## Author: Peter Ekberg
-##         (peda)
 
 function retval = pascal (n, t = 0)
 

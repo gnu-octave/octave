@@ -1,5 +1,9 @@
-## Copyright (C) 2000-2019 Paul Kienzle
-## Copyright (C) 2009 Jaroslav Hajek
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{tf} =} ismember (@var{a}, @var{s})
@@ -68,12 +74,6 @@
 ## @seealso{lookup, unique, union, intersect, setdiff, setxor}
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-## Author: Søren Hauberg <hauberg@gmail.com>
-## Author: Ben Abbott <bpabbott@mac.com>
-## Adapted-by: jwe
-## Reimplemented using lookup & unique: Jaroslav Hajek <highegg@gmail.com>
-
 function [tf, s_idx] = ismember (a, s, varargin)
 
   if (nargin < 2 || nargin > 3)
@@ -115,9 +115,14 @@ function [tf, s_idx] = ismember (a, s, varargin)
     a = double (a);
   endif
 
+  if (any (strcmp ("stable", varargin)) || any (strcmp ("sorted", varargin)))
+    error ('ismember: "stable" or "sorted" are not valid options');
+  endif
   [a, s] = validsetargs ("ismember", a, s, varargin{:});
 
-  by_rows = nargin == 3;
+  by_rows = any (strcmp ("rows", varargin));
+  ## FIXME: uncomment if bug #56692 is addressed.
+  ##optlegacy = any (strcmp ("legacy", varargin));
 
   if (! by_rows)
     s = s(:);
@@ -130,7 +135,7 @@ function [tf, s_idx] = ismember (a, s, varargin)
 
     ## Remove NaNs from table because lookup can't handle them
     if (isreal (s) && ! isempty (s) && isnan (s(end)))
-      s = s(1:end - sum (isnan (s)));
+      s = s(1:(end - sum (isnan (s))));
     endif
 
     if (nargout > 1)
@@ -296,3 +301,10 @@ endfunction
 %! [tf, s_idx] = ismember (-1-1j, [-1-1j, -1+3j, -1+1j]);
 %! assert (tf, true);
 %! assert (s_idx, 1);
+
+## Test input validation
+%!error ismember ()
+%!error ismember (1)
+%!error ismember (1,2,3,4)
+%!error <"stable" or "sorted" are not valid options> ismember (1,2, "sorted")
+%!error <"stable" or "sorted" are not valid options> ismember (1,2, "stable")

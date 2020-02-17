@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2010-2019 Pedro Gonnet
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2010-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -33,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
+#include "interpreter-private.h"
 #include "ovl.h"
 #include "parse.h"
 #include "utils.h"
@@ -1468,9 +1472,8 @@ downdate (double *c, int n, int d, int *nans, int nnans)
       b_new[n + 1] = b_new[n + 1] / Lalpha[n];
       b_new[n] = (b_new[n] + xi[nans[i]] * b_new[n + 1]) / Lalpha[n - 1];
       for (j = n - 1; j > 0; j--)
-        b_new[j] =
-          (b_new[j] + xi[nans[i]] * b_new[j + 1] -
-           Lgamma[j + 1] * b_new[j + 2]) / Lalpha[j - 1];
+        b_new[j] = (b_new[j] + xi[nans[i]] * b_new[j + 1]
+                    - Lgamma[j + 1] * b_new[j + 2]) / Lalpha[j - 1];
       for (j = 0; j <= n; j++)
         b_new[j] = b_new[j + 1];
       alpha = c[n] / b_new[n];
@@ -1483,8 +1486,8 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 
 // The actual integration routine.
 
-DEFUN (quadcc, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (quadcc, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})
 @deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})
 @deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
@@ -1551,18 +1554,9 @@ error estimate is computed from the L2-norm of the difference between two
 successive interpolations of the integrand over the nodes of the respective
 quadrature rules.
 
-@c FIXME: DEPRECATED: Remove in Octave version 6.
-Implementation Note: For Octave versions @leq{} 4.2, @code{quadcc} accepted a
-single tolerance argument which specified the relative tolerance.  For
-versions 4.4 and 5, @code{quadcc} will issue a warning when called with a
-single tolerance argument indicating that the meaning of this input has
-changed from relative tolerance to absolute tolerance.  The warning ID for this
-message is @qcode{"Octave:quadcc:RelTol-conversion"}.  The warning may be
-disabled with @code{warning ("off", "Octave:quadcc:RelTol-conversion")}.
-
 Reference: @nospell{P. Gonnet}, @cite{Increasing the Reliability of Adaptive
 Quadrature Using Explicit Interpolants}, @nospell{ACM} Transactions on
-Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
+Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
 @seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}
 @end deftypefn */)
 {
@@ -1575,7 +1569,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
 
   // Arguments left and right.
   int nargin = args.length ();
-  octave_function *fcn;
+  octave_value fcn;
   double a, b, abstol, reltol, *sing;
   bool issingle;
 
@@ -1600,17 +1594,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
   if (nargin < 3)
     print_usage ();
 
-  if (args(0).is_function_handle () || args(0).is_inline_function ())
-    fcn = args(0).function_value ();
-  else
-    {
-      std::string fcn_name = unique_symbol_name ("__quadcc_fcn__");
-      std::string fname = "function y = ";
-      fname.append (fcn_name);
-      fname.append ("(x) y = ");
-      fcn = extract_function (args(0), "quadcc", fcn_name, fname,
-                              "; endfunction");
-    }
+  fcn = octave::get_function_handle (interp, args(0), "x");
 
   if (! args(1).is_real_scalar ())
     error ("quadcc: lower limit of integration (A) must be a real scalar");
@@ -1647,15 +1631,6 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
 
       if (tol.numel () == 1)
         {
-          // FIXME: DEPRECATED: Remove warning in Octave version 6.
-          static bool do_warn = true;
-          if (do_warn)
-            {
-              warning_with_id ("Octave:quadcc:RelTol-conversion",
-                               "A single tolerance input now sets AbsTol, not RelTol");
-              do_warn = false;
-            }
-
           if (issingle)
             reltol = 1.0e-4;
           else

@@ -1,4 +1,9 @@
-## Copyright (C) 1995-2019 Friedrich Leisch
+########################################################################
+##
+## Copyright (C) 1995-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{d}, @var{dd}] =} diffpara (@var{x}, @var{a}, @var{b})
@@ -36,9 +43,6 @@
 ## Reference: @nospell{P.J. Brockwell & R.A. Davis}. @cite{Time Series:
 ## Theory and Methods}. @nospell{Springer} 1987.
 ## @end deftypefn
-
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Estimate the fractional differencing parameter
 
 function [d, dd] = diffpara (x, a, b)
 

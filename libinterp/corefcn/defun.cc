@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -26,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "call-stack.h"
 #include "defun.h"
 #include "dynamic-ld.h"
 #include "error.h"
@@ -40,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "oct-lvalue.h"
 #include "pager.h"
-#include "pt-eval.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "symtab.h"
@@ -51,9 +52,9 @@ along with Octave; see the file COPYING.  If not, see
 void
 print_usage (void)
 {
-  octave::call_stack& cs = octave::__get_call_stack__ ("print_usage");
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("print_usage");
 
-  const octave_function *cur = cs.current ();
+  const octave_function *cur = tw.current_function ();
 
   if (cur)
     print_usage (cur->name ());
@@ -81,32 +82,6 @@ check_version (const std::string& version, const std::string& fcn)
 }
 
 // Install variables and functions in the symbol tables.
-
-void
-install_builtin_function (octave_builtin::fcn f, const std::string& name,
-                          const std::string& file, const std::string& doc,
-                          bool /* can_hide_function -- not yet implemented */)
-{
-  octave_value fcn (new octave_builtin (f, name, file, doc));
-
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("install_builtin_function");
-
-  symtab.install_built_in_function (name, fcn);
-}
-
-void
-install_builtin_function (octave_builtin::meth m, const std::string& name,
-                          const std::string& file, const std::string& doc,
-                          bool /* can_hide_function -- not yet implemented */)
-{
-  octave_value fcn (new octave_builtin (m, name, file, doc));
-
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("install_builtin_function");
-
-  symtab.install_built_in_function (name, fcn);
-}
 
 void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
@@ -161,31 +136,14 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
   symtab.install_built_in_function (name, fval);
 }
 
-void
-alias_builtin (const std::string& alias, const std::string& name)
-{
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("alias_builtin");
-
-  symtab.alias_built_in_function (alias, name);
-}
-
-void
-install_builtin_dispatch (const std::string& name, const std::string& klass)
-{
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("install_builtin_dispatch");
-
-  symtab.install_built_in_dispatch (name, klass);
-}
-
 octave::dynamic_library
 get_current_shlib (void)
 {
   octave::dynamic_library retval;
 
-  octave::call_stack& cs = octave::__get_call_stack__ ("get_current_shlib");
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("get_current_shlib");
 
-  octave_function *curr_fcn = cs.current ();
+  octave_function *curr_fcn = tw.current_function ();
 
   if (curr_fcn)
     {
@@ -204,20 +162,4 @@ get_current_shlib (void)
     }
 
   return retval;
-}
-
-bool
-defun_isargout (int nargout, int iout)
-{
-  octave::tree_evaluator& tw = octave::__get_evaluator__ ("defun_isargout");
-
-  return tw.isargout (nargout, iout);
-}
-
-void
-defun_isargout (int nargout, int nout, bool *isargout)
-{
-  octave::tree_evaluator& tw = octave::__get_evaluator__ ("defun_isargout");
-
-  return tw.isargout (nargout, nout, isargout);
 }

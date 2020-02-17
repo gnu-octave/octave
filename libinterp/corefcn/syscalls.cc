@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // Thomas Baier <baier@ci.tuwien.ac.at> added the original versions of
 // the following functions:
@@ -42,30 +44,31 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-syscalls.h"
 #include "oct-uname.h"
+
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "event-manager.h"
+#include "input.h"
 #include "interpreter.h"
 #include "oct-hist.h"
 #include "oct-map.h"
-#include "ovl.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
-#include "octave-link.h"
+#include "ovl.h"
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
-#include "input.h"
 
 static octave_scalar_map
 mk_stat_map (const octave::sys::base_file_stat& fs)
 {
-  static bool have_rdev =
-    octave::sys::base_file_stat::have_struct_stat_st_rdev ();
-  static bool have_blksize =
-    octave::sys::base_file_stat::have_struct_stat_st_blksize ();
-  static bool have_blocks =
-    octave::sys::base_file_stat::have_struct_stat_st_blocks ();
+  static bool have_rdev
+    = octave::sys::base_file_stat::have_struct_stat_st_rdev ();
+  static bool have_blksize
+    = octave::sys::base_file_stat::have_struct_stat_st_blksize ();
+  static bool have_blocks
+    = octave::sys::base_file_stat::have_struct_stat_st_blocks ();
 
   static double nan = octave::numeric_limits<double>::NaN ();
 
@@ -484,9 +487,7 @@ action.  A system dependent error message will be waiting in @var{msg}.
   if (args.length () != 0)
     print_usage ();
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
-  if (symtab.at_top_level ())
+  if (interp.at_top_level ())
     error ("fork: cannot be called from command line");
 
   std::string msg;
@@ -1064,7 +1065,7 @@ system-dependent error message.
 }
 
 /*
-%!test <51869>
+%!test <*51869>
 %! [info, status, msg] = uname ();
 %! if (status == 0)
 %!   assert (isstruct (info))
@@ -1072,8 +1073,8 @@ system-dependent error message.
 %! endif
 */
 
-DEFUNX ("unlink", Funlink, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("unlink", Funlink, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{err}, @var{msg}] =} unlink (@var{file})
 Delete the file named @var{file}.
 
@@ -1090,11 +1091,13 @@ error message.
 
   std::string msg;
 
-  octave_link::file_remove (name, "");
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.file_remove (name, "");
 
   int status = octave::sys::unlink (name, msg);
 
-  octave_link::file_renamed (status == 0);
+  evmgr.file_renamed (status == 0);
 
   return ovl (status, msg);
 }
@@ -1332,7 +1335,7 @@ DEFUNX ("canonicalize_file_name", Fcanonicalize_file_name, args, ,
 Return the canonical name of file @var{fname}.
 
 If the file does not exist the empty string ("") is returned.
-@seealso{make_absolute_filename, is_absolute_filename, is_rooted_relative_filename}
+@seealso{make_absolute_filename, is_absolute_filename, is_rooted_relative_filename, is_same_file}
 @end deftypefn */)
 {
   if (args.length () != 1)

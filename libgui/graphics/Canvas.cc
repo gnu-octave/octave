@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -33,18 +36,20 @@ along with Octave; see the file COPYING.  If not, see
 #include <QWheelEvent>
 #include <QRectF>
 
-#include "Backend.h"
 #include "Canvas.h"
 #include "ContextMenu.h"
 #include "GLCanvas.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
 
 #include "annotation-dialog.h"
-
-#include "oct-opengl.h"
-#include "octave-qt-link.h"
+#include "octave-qobject.h"
+#include "qt-interpreter-events.h"
 
 #include "builtin-defun-decls.h"
+#include "graphics.h"
+#include "interpreter.h"
+#include "oct-opengl.h"
 
 namespace QtHandles
 {
@@ -69,34 +74,101 @@ namespace QtHandles
     m_redrawBlocked = block;
   }
 
+  QCursor
+  Canvas::make_cursor (const QString& name, int hot_x, int hot_y)
+  {
+    octave::resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    QIcon icon = rmgr.icon (name);
+
+    return QCursor (icon.pixmap (22, 22), hot_x, hot_y);
+  }
+
   void
-  Canvas::setCursor (MouseMode mode)
+  Canvas::setCursor (MouseMode mode, std::string fallback,
+                     QImage cdata, Matrix hotspot)
   {
     QWidget *w = qWidget ();
-
+    QCursor cursor = Qt::ArrowCursor;
     if (w)
       {
-        static QCursor origCursor = w->cursor ();
-
         switch (mode)
           {
+          case NoMode:
+            {
+              cursor = Qt::ArrowCursor;
+
+              if (fallback == "arrow")
+                cursor = Qt::ArrowCursor;
+              else if (fallback == "botl")
+                cursor = make_cursor ("bottom_left_corner", 5, 16);
+              else if (fallback == "botr")
+                cursor = make_cursor ("bottom_right_corner", 16, 16);
+              else if (fallback == "bottom")
+                cursor = make_cursor ("bottom_side", 11, 16);
+              else if (fallback == "circle")
+                cursor = make_cursor ("circle", 10, 10);
+              else if (fallback == "cross" || fallback == "crosshair")
+                cursor = make_cursor ("cross", 10, 10);
+              else if (fallback == "custom")
+                {
+                  if (hotspot(0) > cdata.width () || hotspot(0) < 1.0
+                      || hotspot(1) > cdata.height () || hotspot(1) < 1.0)
+                    hotspot = Matrix (1, 2, 1);
+
+                  cursor = QCursor (QPixmap::fromImage (cdata),
+                                    static_cast<int> (hotspot(1) - 1),
+                                    static_cast<int> (hotspot(0) - 1));
+                }
+              else if (fallback == "fleur")
+                cursor = make_cursor ("fleur", 10, 4);
+              else if (fallback == "hand")
+                cursor = make_cursor ("hand2", 7, 3);
+              else if (fallback == "ibeam")
+                cursor = Qt::IBeamCursor;
+              else if (fallback == "left")
+                cursor = make_cursor ("left_side", 4, 10);
+              else if (fallback == "right")
+                cursor = make_cursor ("right_side", 17, 10);
+              else if (fallback == "top")
+                cursor = make_cursor ("top_side", 11, 4);
+              else if (fallback == "topl")
+                cursor = make_cursor ("top_left_corner", 4, 4);
+              else if (fallback == "topr")
+                cursor = make_cursor ("top_right_corner", 16, 4);
+              else if (fallback == "watch")
+                cursor = Qt::BusyCursor;
+            }
+            break;
+          case SelectMode:
+            cursor = Qt::ArrowCursor;
+            break;
+
           case PanMode:
+            cursor = make_cursor ("figure-pan");
+            break;
+
           case RotateMode:
-            w->setCursor (Qt::OpenHandCursor);
+            cursor = make_cursor ("figure-rotate");
+            break;
+
+          case TextMode:
+            cursor = Qt::IBeamCursor;
             break;
 
           case ZoomInMode:
-            w->setCursor (QPixmap (":/images/zoom-in.png"));
+            cursor = make_cursor ("figure-zoom-in", 9, 9);
             break;
 
           case ZoomOutMode:
-            w->setCursor (QPixmap (":/images/zoom-out.png"));
+            cursor = make_cursor ("figure-zoom-out", 9, 9);
             break;
 
           default:
-            w->setCursor (origCursor);
+            cursor = Qt::ArrowCursor;
             break;
           }
+        w->setCursor (cursor);
       }
   }
 
@@ -109,17 +181,19 @@ namespace QtHandles
   Canvas::updateCurrentPoint (const graphics_object& fig,
                               const graphics_object& obj, QMouseEvent *event)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
-    gh_manager::post_set (fig.get_handle (), "currentpoint",
-                          Utils::figureCurrentPoint (fig, event), false);
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
+    emit gh_set_event (fig.get_handle (), "currentpoint",
+                       Utils::figureCurrentPoint (fig, event), false);
 
     Matrix children = obj.get_properties ().get_children ();
     octave_idx_type num_children = children.numel ();
 
     for (int i = 0; i < num_children; i++)
       {
-        graphics_object childObj (gh_manager::get_object (children(i)));
+        graphics_object childObj (gh_mgr.get_object (children(i)));
 
         if (childObj.isa ("axes"))
           {
@@ -137,8 +211,8 @@ namespace QtHandles
             cp(0,0) = p1(0); cp(0,1) = p1(1); cp(0,2) = p1(2);
             cp(1,0) = p2(0); cp(1,1) = p2(1); cp(1,2) = p2(2);
 
-            gh_manager::post_set (childObj.get_handle (), "currentpoint", cp,
-                                  false);
+            emit gh_set_event (childObj.get_handle (), "currentpoint", cp,
+                               false);
           }
       }
   }
@@ -147,17 +221,19 @@ namespace QtHandles
   Canvas::updateCurrentPoint (const graphics_object& fig,
                               const graphics_object& obj)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
-    gh_manager::post_set (fig.get_handle (), "currentpoint",
-                          Utils::figureCurrentPoint (fig), false);
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
+    emit gh_set_event (fig.get_handle (), "currentpoint",
+                       Utils::figureCurrentPoint (fig), false);
 
     Matrix children = obj.get_properties ().get_children ();
     octave_idx_type num_children = children.numel ();
 
     for (int i = 0; i < num_children; i++)
       {
-        graphics_object childObj (gh_manager::get_object (children(i)));
+        graphics_object childObj (gh_mgr.get_object (children(i)));
 
         if (childObj.isa ("axes"))
           {
@@ -177,91 +253,16 @@ namespace QtHandles
             cp(0,0) = p1(0); cp(0,1) = p1(1); cp(0,2) = p1(2);
             cp(1,0) = p2(0); cp(1,1) = p2(1); cp(1,2) = p2(2);
 
-            gh_manager::post_set (childObj.get_handle (), "currentpoint", cp,
-                                  false);
-          }
-      }
-  }
-
-  void
-  Canvas::annotation_callback (const octave_value_list& args)
-  {
-    Ffeval (ovl ("annotation").append (args));
-
-    redraw ();
-  }
-
-  void
-  Canvas::canvasToggleAxes (const graphics_handle& handle)
-  {
-    gh_manager::auto_lock lock;
-
-    graphics_object go = gh_manager::get_object (handle);
-
-    if (go.valid_object ())
-      {
-        figure::properties& fp = Utils::properties<figure> (go);
-
-        graphics_handle ah = fp.get_currentaxes ();
-
-        graphics_object ax = gh_manager::get_object (ah);
-
-        if (ax.valid_object ())
-          {
-            axes::properties& ap = Utils::properties<axes> (ax);
-
-            if (ap.handlevisibility_is ("on"))
-              {
-                ap.set_visible (! ap.is_visible ());
-
-                redraw (true);
-              }
-          }
-      }
-  }
-
-  void
-  Canvas::canvasToggleGrid (const graphics_handle& handle)
-  {
-    gh_manager::auto_lock lock;
-
-    graphics_object go = gh_manager::get_object (handle);
-
-    if (go.valid_object ())
-      {
-        figure::properties& fp = Utils::properties<figure> (go);
-
-        graphics_handle ah = fp.get_currentaxes ();
-
-        graphics_object ax = gh_manager::get_object (ah);
-
-        if (ax.valid_object ())
-          {
-            axes::properties& ap = Utils::properties<axes> (ax);
-
-            std::string tmp;
-
-            // If any grid is off, then turn them all on.  If they are all
-            // on, then turn them off.
-
-            std::string state = ((ap.get_xgrid () == "off"
-                                  || ap.get_ygrid () == "off"
-                                  || ap.get_zgrid () == "off")
-                                 ? "on" : "off");
-
-            ap.set_xgrid (state);
-            ap.set_ygrid (state);
-            ap.set_zgrid (state);
-
-            redraw (true);
+            emit gh_set_event (childObj.get_handle (), "currentpoint", cp,
+                               false);
           }
       }
   }
 
   static void
-  autoscale_axes (axes::properties& ap)
+  autoscale_axes (gh_manager& gh_mgr, axes::properties& ap)
   {
-    gh_manager::auto_lock lock;
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     // Reset zoom stack
     ap.clear_zoom_stack (false);
@@ -272,37 +273,13 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasAutoAxes (const graphics_handle& handle)
-  {
-    gh_manager::auto_lock lock;
-
-    graphics_object go = gh_manager::get_object (handle);
-
-    if (go.valid_object ())
-      {
-        figure::properties& fp = Utils::properties<figure> (go);
-
-        graphics_handle ah = fp.get_currentaxes ();
-
-        graphics_object ax = gh_manager::get_object (ah);
-
-        if (ax.valid_object ())
-          {
-            axes::properties& ap = Utils::properties<axes> (ax);
-
-            autoscale_axes (ap);
-
-            redraw (true);
-          }
-      }
-  }
-
-  void
   Canvas::canvasPaintEvent (void)
   {
     if (! m_redrawBlocked)
       {
-        gh_manager::auto_lock lock;
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+        octave::autolock guard (gh_mgr.graphics_lock ());
 
         draw (m_handle);
 
@@ -368,9 +345,11 @@ namespace QtHandles
     Matrix children = obj.get_properties ().get_all_children ();
     octave_idx_type num_children = children.numel ();
 
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
     for (int i = 0; i < num_children; i++)
       {
-        graphics_object childObj (gh_manager::get_object (children(i)));
+        graphics_object childObj (gh_mgr.get_object (children(i)));
 
         if (childObj.isa ("axes"))
           {
@@ -446,6 +425,10 @@ namespace QtHandles
                 Matrix bb = it->get_properties ().get_boundingbox (true);
                 QRectF r (bb(0), bb(1), bb(2), bb(3));
 
+                // Allow a rectangle (e.g., Zoom box) to be slightly outside
+                // the axes and still select it.
+                r.adjust (-20, -20, 20, 20);
+
 #if defined (HAVE_QMOUSEEVENT_LOCALPOS)
                 bool rect_contains_pos = r.contains (event->localPos ());
 #else
@@ -464,8 +447,11 @@ namespace QtHandles
   void
   Canvas::canvasMouseMoveEvent (QMouseEvent *event)
   {
-    gh_manager::auto_lock lock;
-    graphics_object ax = gh_manager::get_object (m_mouseAxes);
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
+    graphics_object ax = gh_mgr.get_object (m_mouseAxes);
 
     if (m_mouseMode != NoMode && (ax.valid_object () || m_mouseMode == TextMode))
       {
@@ -520,7 +506,7 @@ namespace QtHandles
       }
     else if (m_mouseMode == NoMode)
       {
-        graphics_object obj = gh_manager::get_object (m_handle);
+        graphics_object obj = gh_mgr.get_object (m_handle);
 
         if (obj.valid_object ())
           {
@@ -530,14 +516,14 @@ namespace QtHandles
                 && ! figObj.get ("windowbuttonmotionfcn").isempty ())
               {
                 updateCurrentPoint (figObj, obj, event);
-                gh_manager::post_callback (figObj.get_handle (),
-                                           "windowbuttonmotionfcn");
+                emit gh_callback_event (figObj.get_handle (),
+                                        "windowbuttonmotionfcn");
               }
           }
       }
 
     // Update mouse coordinates in the figure window status bar
-    graphics_object obj = gh_manager::get_object (m_handle);
+    graphics_object obj = gh_mgr.get_object (m_handle);
     graphics_object figObj = obj.get_ancestor ("figure");
 
     if (figObj.valid_object () && obj.valid_object ())
@@ -551,7 +537,7 @@ namespace QtHandles
             // FIXME: should we use signal/slot mechanism instead of
             //        directly calling parent fig methods
             Figure *fig =
-              dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
+              dynamic_cast<Figure *> (qt_graphics_toolkit::toolkitObject (figObj));
             axes::properties& ap = Utils::properties<axes> (axesObj);
 
             if (fig)
@@ -596,8 +582,11 @@ namespace QtHandles
   void
   Canvas::canvasMousePressEvent (QMouseEvent *event)
   {
-    gh_manager::auto_lock lock;
-    graphics_object obj = gh_manager::get_object (m_handle);
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
+    graphics_object obj = gh_mgr.get_object (m_handle);
 
     bool isdblclick = (event->type () == QEvent::MouseButtonDblClick);
 
@@ -608,7 +597,7 @@ namespace QtHandles
         // Any click in a figure canvas makes it current
         if (figObj)
           {
-            graphics_object root = gh_manager::get_object (0);
+            graphics_object root = gh_mgr.get_object (0);
             Utils::properties<root_figure> (root)
               .set_currentfigure (figObj.get_handle ().as_octave_value ());
           }
@@ -629,9 +618,9 @@ namespace QtHandles
             // Objects with "hittest"->"off" pass the mouse event to their
             // parent and so on.
             graphics_object tmpgo;
-            tmpgo = gh_manager::get_object (currentObj.get_parent ());
+            tmpgo = gh_mgr.get_object (currentObj.get_parent ());
             while (tmpgo && ! tmpgo.get_properties ().is_hittest ())
-              tmpgo = gh_manager::get_object (tmpgo.get_parent ());
+              tmpgo = gh_mgr.get_object (tmpgo.get_parent ());
 
             if (tmpgo && tmpgo.get_handle () != 0.0)
               currentObj = tmpgo;
@@ -639,16 +628,17 @@ namespace QtHandles
               currentObj = graphics_object ();
           }
 
-        if (axesObj)
-          {
-            if (axesObj.get_properties ().handlevisibility_is ("on")
-                && axesObj.get_properties ().get_tag () != "legend"
-                && axesObj.get_properties ().get_tag () != "colorbar")
-              Utils::properties<figure> (figObj)
-              .set_currentaxes (axesObj.get_handle ().as_octave_value ());
-          }
+        // Make selected axes current
+        bool valid_axes = axesObj.valid_object ()
+          && axesObj.get_properties ().handlevisibility_is ("on")
+          && axesObj.get_properties ().get_tag () != "legend"
+          && axesObj.get_properties ().get_tag () != "colorbar";
 
-        Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
+        if (valid_axes)
+          Utils::properties<figure> (figObj)
+            .set_currentaxes (axesObj.get_handle ().as_octave_value ());
+
+        Figure *fig = dynamic_cast<Figure *> (qt_graphics_toolkit::toolkitObject (figObj));
 
         MouseMode newMouseMode = NoMode;
 
@@ -670,30 +660,29 @@ namespace QtHandles
                 fprop.set_currentobject (Matrix ());
 
               // Update figure "selectiontype" and "currentpoint"
-              gh_manager::post_set (
-                                    figObj.get_handle (), "selectiontype",
-                                    Utils::figureSelectionType (event, isdblclick), false);
+              emit gh_set_event (figObj.get_handle (), "selectiontype",
+                                 Utils::figureSelectionType (event, isdblclick),
+                                 false);
 
               updateCurrentPoint (figObj, obj, event);
 
-              gh_manager::post_callback (figObj.get_handle (),
-                                         "windowbuttondownfcn",
-                                         button_number (event));
+              emit gh_callback_event (figObj.get_handle (),
+                                      "windowbuttondownfcn",
+                                      button_number (event));
 
-              // Execute the "buttondownfcn" of the selected object. If the
+              // Execute the "buttondownfcn" of the selected object.  If the
               // latter is empty then execute the figure "buttondownfcn"
               if (currentObj && ! currentObj.get ("buttondownfcn").isempty ())
-                gh_manager::post_callback (currentObj.get_handle (),
-                                           "buttondownfcn",
-                                           button_number (event));
+                emit gh_callback_event (currentObj.get_handle (),
+                                        "buttondownfcn", button_number (event));
               else if (figObj && ! figObj.get ("buttondownfcn").isempty ())
-                gh_manager::post_callback (figObj.get_handle (),
-                                           "buttondownfcn",
-                                           button_number (event));
+                emit gh_callback_event (figObj.get_handle (),
+                                        "buttondownfcn", button_number (event));
 
               // Show context menu of the selected object
               if (currentObj && event->button () == Qt::RightButton)
-                ContextMenu::executeAt (currentObj.get_properties (),
+                ContextMenu::executeAt (m_interpreter,
+                                        currentObj.get_properties (),
                                         event->globalPos ());
             }
             break;
@@ -718,7 +707,7 @@ namespace QtHandles
           case RotateMode:
           case ZoomInMode:
           case ZoomOutMode:
-            if (axesObj && axesObj.get_properties ().handlevisibility_is ("on"))
+            if (valid_axes)
               {
                 bool redraw_figure = true;
 
@@ -728,7 +717,7 @@ namespace QtHandles
                       {
                         axes::properties& ap = Utils::properties<axes> (axesObj);
 
-                        autoscale_axes (ap);
+                        autoscale_axes (gh_mgr, ap);
                       }
                     else
                       {
@@ -762,7 +751,7 @@ namespace QtHandles
                           axes::properties& ap =
                             Utils::properties<axes> (axesObj);
 
-                          autoscale_axes (ap);
+                          autoscale_axes (gh_mgr, ap);
                         }
                         break;
 
@@ -806,17 +795,20 @@ namespace QtHandles
   void
   Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
   {
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
     if ((m_mouseMode == ZoomInMode || m_mouseMode == ZoomOutMode)
         && m_mouseAxes.ok ())
       {
-        gh_manager::auto_lock lock;
-        graphics_object ax = gh_manager::get_object (m_mouseAxes);
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
+        graphics_object ax = gh_mgr.get_object (m_mouseAxes);
 
         if (ax.valid_object ())
           {
             axes::properties& ap = Utils::properties<axes> (ax);
 
-            graphics_object obj = gh_manager::get_object (m_handle);
+            graphics_object obj = gh_mgr.get_object (m_handle);
 
             graphics_object figObj (obj.get_ancestor ("figure"));
 
@@ -853,24 +845,25 @@ namespace QtHandles
       }
     else if (m_mouseMode == NoMode)
       {
-        gh_manager::auto_lock lock;
-        graphics_object obj = gh_manager::get_object (m_handle);
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
+        graphics_object obj = gh_mgr.get_object (m_handle);
 
         if (obj.valid_object ())
           {
             graphics_object figObj (obj.get_ancestor ("figure"));
 
             updateCurrentPoint (figObj, obj, event);
-            gh_manager::post_callback (figObj.get_handle (),
-                                       "windowbuttonupfcn");
+            emit gh_callback_event (figObj.get_handle (), "windowbuttonupfcn");
           }
       }
     else if (m_mouseMode == TextMode)
       {
-        gh_manager::auto_lock lock;
+        octave::autolock guard (gh_mgr.graphics_lock ());
 
-        graphics_object figObj =
-          gh_manager::get_object (m_handle).get_ancestor ("figure");
+        graphics_object figObj
+          = gh_mgr.get_object (m_handle).get_ancestor ("figure");
+
         if (figObj.valid_object ())
           {
             QWidget *w = qWidget ();
@@ -884,15 +877,22 @@ namespace QtHandles
 
                 octave_value_list props = ovl ("textbox", bb);
 
-                annotation_dialog anno_dlg (w, props);
+                annotation_dialog anno_dlg (m_octave_qobj, w, props);
 
                 if (anno_dlg.exec () == QDialog::Accepted)
                   {
                     props = anno_dlg.get_properties ();
                     props.prepend (figObj.get_handle ().as_octave_value ());
 
-                    octave_link::post_event (this, &Canvas::annotation_callback,
-                                             props);
+                    emit interpreter_event
+                      ([this, props] (octave::interpreter& interp)
+                       {
+                         // INTERPRETER THREAD
+
+                         interp.feval ("annotation", props);
+
+                         redraw ();
+                       });
                   }
               }
           }
@@ -905,12 +905,17 @@ namespace QtHandles
   void
   Canvas::canvasWheelEvent (QWheelEvent *event)
   {
-    gh_manager::auto_lock lock;
-    graphics_object obj = gh_manager::get_object (m_handle);
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
+    graphics_object obj = gh_mgr.get_object (m_handle);
 
     if (obj.valid_object ())
       {
         std::string mode;
+
+        graphics_object figObj (obj.get_ancestor ("figure"));
 
         graphics_object axesObj;
 
@@ -919,7 +924,7 @@ namespace QtHandles
 
         for (int i = 0; i < num_children; i++)
           {
-            graphics_object childObj (gh_manager::get_object (children(i)));
+            graphics_object childObj (gh_mgr.get_object (children(i)));
 
             if (childObj.isa ("axes"))
               {
@@ -937,9 +942,7 @@ namespace QtHandles
           {
             MouseMode newMouseMode = NoMode;
 
-            graphics_object figObj (obj.get_ancestor ("figure"));
-
-            Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
+            Figure *fig = dynamic_cast<Figure *> (qt_graphics_toolkit::toolkitObject (figObj));
 
             if (fig)
               newMouseMode = fig->mouseMode ();
@@ -1012,6 +1015,13 @@ namespace QtHandles
             if (redrawFigure)
               redraw (false);
           }
+
+        if (! figObj.get ("windowscrollwheelfcn").isempty ())
+          {
+            octave_scalar_map eventData = Utils::makeScrollEventStruct (event);
+            emit gh_callback_event (m_handle, "windowscrollwheelfcn",
+                                    eventData);
+          }
       }
   }
 
@@ -1020,21 +1030,25 @@ namespace QtHandles
   {
     if (m_eventMask & KeyPress)
       {
-        gh_manager::auto_lock lock;
-        graphics_object obj = gh_manager::get_object (m_handle);
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
+        graphics_object obj = gh_mgr.get_object (m_handle);
 
         if (obj.valid_object ())
           {
             graphics_object figObj (obj.get_ancestor ("figure"));
 
             updateCurrentPoint (figObj, obj);
+
+            octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
+
+            emit gh_set_event (figObj.get_handle (), "currentcharacter",
+                               eventData.getfield ("Character"), false);
+            emit gh_callback_event (figObj.get_handle (), "keypressfcn",
+                                    eventData);
           }
-
-        octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
-
-        gh_manager::post_set (m_handle, "currentcharacter",
-                              eventData.getfield ("Character"), false);
-        gh_manager::post_callback (m_handle, "keypressfcn", eventData);
 
         return true;
       }
@@ -1047,8 +1061,18 @@ namespace QtHandles
   {
     if (! event->isAutoRepeat () && (m_eventMask & KeyRelease))
       {
-        gh_manager::post_callback (m_handle, "keyreleasefcn",
-                                   Utils::makeKeyEventStruct (event));
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
+        graphics_object obj = gh_mgr.get_object (m_handle);
+
+        if (obj.valid_object ())
+          {
+            graphics_object figObj (obj.get_ancestor ("figure"));
+            emit gh_callback_event (figObj.get_handle (), "keyreleasefcn",
+                                    Utils::makeKeyEventStruct (event));
+          }
 
         return true;
       }
@@ -1056,12 +1080,13 @@ namespace QtHandles
     return false;
   }
 
-  Canvas*
-  Canvas::create (const std::string& /* name */, QWidget *parent,
-                  const graphics_handle& handle)
+  Canvas *
+  Canvas::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                  const graphics_handle& handle, QWidget *parent,
+                  const std::string& /* name */)
   {
     // Only OpenGL
-    return new GLCanvas (parent, handle);
+    return new GLCanvas (oct_qobj, interp, handle, parent);
   }
 
 }

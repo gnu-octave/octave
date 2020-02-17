@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Martin Hepperle
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{btn} =} questdlg (@var{msg})
@@ -117,8 +124,8 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
 
   endswitch
 
-  if (__octave_link_enabled__ ())
-    btn = __octave_link_question_dialog__ (msg, title, options{1}, options{2},
+  if (__event_manager_enabled__ ())
+    btn = __event_manager_question_dialog__ (msg, title, options{1}, options{2},
                                            options{3}, options{4});
   else
     error ("questdlg is not available in this version of Octave");

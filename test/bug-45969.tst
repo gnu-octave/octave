@@ -1,5 +1,5 @@
 %!test
-%! ascii_filename = tempname ();
+%! text_filename = tempname ();
 %! binary_filename = tempname ();
 %! a = 2;
 %! b = 10;
@@ -9,14 +9,14 @@
 %! f2_arg = 5;
 %! save_default_options ("-text", "local");
 %! unwind_protect
-%!   save (ascii_filename, "f2");
+%!   save (text_filename, "f2");
 %!   save ("-binary", binary_filename, "f2");
-%!   ascii = load (ascii_filename);
+%!   text = load (text_filename);
 %!   binary = load (binary_filename);
-%!   assert (f2 (f2_arg), ascii.f2 (f2_arg));
+%!   assert (f2 (f2_arg), text.f2 (f2_arg));
 %!   assert (f2 (f2_arg), binary.f2 (f2_arg));
 %! unwind_protect_cleanup
-%!   unlink (ascii_filename);
+%!   unlink (text_filename);
 %!   unlink (binary_filename);
 %! end_unwind_protect
 

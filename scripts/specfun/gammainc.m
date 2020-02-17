@@ -1,7 +1,9 @@
-## Copyright (C) 2016-2019 Marco Caliari
-## Copyright (C) 2016-2019 Nir Krakauer
-## Copyright (C) 2018-2019 Stefan Schlögl
-## Copyright (C) 2018-2019 Michele Ginesi
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -18,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} gammainc (@var{x}, @var{a})
@@ -78,7 +82,7 @@
 ##
 ## @nospell{W. Gautschi},
 ## @cite{A computational procedure for incomplete gamma functions},
-## @nospell{ACM Trans. Math Software}, pp. 466--481, Vol 5, No. 4, 2012.
+## @nospell{ACM Trans.@: Math Software}, pp.@: 466--481, Vol 5, No.@: 4, 2012.
 ##
 ## @nospell{W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery},
 ## @cite{Numerical Recipes in Fortran 77}, ch.@: 6.2, Vol 1, 1992.
@@ -484,7 +488,7 @@ endfunction
 %!assert (gammainc (709, 1000, "upper"), 0.99999999999999999999999954358, -eps)
 
 ## Test: case 9
-%!test <47800>
+%!test <*47800>
 %! assert (gammainc (60, 6, "upper"), 6.18022358081160257327264261e-20,
 %!         -10*eps);
 ## Matlab is better here than Octave

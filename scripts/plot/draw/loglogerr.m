@@ -1,4 +1,9 @@
-## Copyright (C) 2000-2019 Teemu Ikonen
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} loglogerr (@var{y}, @var{ey})
@@ -46,10 +53,6 @@
 ## rather than the current axes returned by @code{gca}.
 ## @seealso{errorbar, semilogxerr, semilogyerr}
 ## @end deftypefn
-
-## Created: 20.2.2001
-## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
-## Keywords: errorbar, plotting
 
 function h = loglogerr (varargin)
 

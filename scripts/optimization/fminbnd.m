@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,7 +21,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 ##
-## Author: Jaroslav Hajek <highegg@gmail.com>
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} fminbnd (@var{fun}, @var{a}, @var{b})
@@ -24,7 +29,8 @@
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@dots{})
 ## Find a minimum point of a univariate function.
 ##
-## @var{fun} must be a function handle or name.
+## @var{fun} is a function handle, inline function, or string containing the
+## name of the function to evaluate.
 ##
 ## The starting interval is specified by @var{a} (left boundary) and @var{b}
 ## (right boundary).  The endpoints must be finite.
@@ -272,9 +278,9 @@ function fx = guarded_eval (fun, x)
   fx = fun (x);
   fx = fx(1);
   if (! isreal (fx))
-    error ("fminbnd:notreal", "fminbnd: non-real value encountered");
+    error ("Octave:fmindbnd:notreal", "fminbnd: non-real value encountered");
   elseif (isnan (fx))
-    error ("fminbnd:isnan", "fminbnd: NaN value encountered");
+    error ("Octave:fmindbnd:isnan", "fminbnd: NaN value encountered");
   endif
 endfunction
 

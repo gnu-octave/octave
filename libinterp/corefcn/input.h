@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // Use the GNU readline library for command line editing and history.
 
@@ -29,10 +32,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdio>
 
+#include <memory>
 #include <string>
 
 #include "hook-fcn.h"
-#include "oct-refcount.h"
 #include "oct-time.h"
 #include "ovl.h"
 #include "pager.h"
@@ -44,10 +47,7 @@ extern bool octave_completion_matches_called;
 // the next user prompt.
 extern OCTINTERP_API bool Vdrawnow_requested;
 
-// TRUE if we are in debugging mode.
-extern OCTINTERP_API bool Vdebugging;
-
-// TRUE if we are not executing a command direct from debug> prompt.
+OCTAVE_DEPRECATED (6, "'Vtrack_line_num' is an obsolete internal variable; any uses should be removed")
 extern OCTINTERP_API bool Vtrack_line_num;
 
 extern octave::sys::time Vlast_prompt_time;
@@ -57,7 +57,6 @@ class octave_value;
 namespace octave
 {
   class interpreter;
-  class base_lexer;
 
   class input_system
   {
@@ -155,9 +154,6 @@ namespace octave
     octave_value_list
     get_user_input (const octave_value_list& args, int nargout);
 
-    octave_value
-    keyboard (const octave_value_list& args = octave_value_list ());
-
     bool have_input_event_hooks (void) const;
 
     void add_input_event_hook (const hook_function& hook_fcn);
@@ -196,8 +192,6 @@ namespace octave
     hook_function_list m_input_event_hook_functions;
 
     std::string gnu_readline (const std::string& s, bool& eof) const;
-
-    void get_debug_input (const std::string& prompt);
   };
 
   class base_reader
@@ -206,42 +200,21 @@ namespace octave
 
     friend class input_reader;
 
-    base_reader (base_lexer *lxr)
-      : m_count (1), m_pflag (0), m_lexer (lxr)
+    base_reader (interpreter& interp)
+      : m_interpreter (interp)
     { }
 
     base_reader (const base_reader& x)
-      : m_count (1), m_pflag (x.m_pflag), m_lexer (x.m_lexer)
+      : m_interpreter (x.m_interpreter)
     { }
 
     virtual ~base_reader (void) = default;
 
-    virtual std::string get_input (bool& eof) = 0;
+    virtual std::string get_input (const std::string& prompt, bool& eof) = 0;
 
     virtual std::string input_source (void) const { return s_in_src; }
 
-    void reset (void) { promptflag (1); }
-
-    void increment_promptflag (void) { m_pflag++; }
-
-    void decrement_promptflag (void) { m_pflag--; }
-
-    int promptflag (void) const { return m_pflag; }
-
-    int promptflag (int n)
-    {
-      int retval = m_pflag;
-      m_pflag = n;
-      return retval;
-    }
-
-    std::string octave_gets (bool& eof);
-
-    virtual bool reading_fcn_file (void) const;
-
-    virtual bool reading_classdef_file (void) const;
-
-    virtual bool reading_script_file (void) const;
+    std::string octave_gets (const std::string& prompt, bool& eof);
 
     virtual bool input_from_terminal (void) const { return false; }
 
@@ -249,13 +222,11 @@ namespace octave
 
     virtual bool input_from_eval_string (void) const { return false; }
 
+  protected:
+
+    interpreter& m_interpreter;
+
   private:
-
-    refcount<int> m_count;
-
-    int m_pflag;
-
-    base_lexer *m_lexer;
 
     static const std::string s_in_src;
   };
@@ -264,48 +235,21 @@ namespace octave
   {
   public:
 
-    input_reader (base_lexer *lxr = nullptr);
+    input_reader (interpreter& interp);
 
-    input_reader (FILE *file, base_lexer *lxr = nullptr);
+    input_reader (interpreter& interp, FILE *file);
 
-    input_reader (const std::string& str, base_lexer *lxr = nullptr);
+    input_reader (interpreter& interp, const std::string& str);
 
-    input_reader (const input_reader& ir)
+    input_reader (const input_reader& ir) = default;
+
+    input_reader& operator = (const input_reader& ir) = default;
+
+    ~input_reader (void) = default;
+
+    std::string get_input (const std::string& prompt, bool& eof)
     {
-      m_rep = ir.m_rep;
-      m_rep->m_count++;
-    }
-
-    input_reader& operator = (const input_reader& ir)
-    {
-      if (&ir != this)
-        {
-          m_rep = ir.m_rep;
-          m_rep->m_count++;
-        }
-
-      return *this;
-    }
-
-    ~input_reader (void)
-    {
-      if (--m_rep->m_count == 0)
-        delete m_rep;
-    }
-
-    void reset (void) { return m_rep->reset (); }
-
-    void increment_promptflag (void) { m_rep->increment_promptflag (); }
-
-    void decrement_promptflag (void) { m_rep->decrement_promptflag (); }
-
-    int promptflag (void) const { return m_rep->promptflag (); }
-
-    int promptflag (int n) { return m_rep->promptflag (n); }
-
-    std::string get_input (bool& eof)
-    {
-      return m_rep->get_input (eof);
+      return m_rep->get_input (prompt, eof);
     }
 
     std::string input_source (void) const
@@ -330,7 +274,7 @@ namespace octave
 
   private:
 
-    base_reader *m_rep;
+    std::shared_ptr<base_reader> m_rep;
   };
 }
 
@@ -338,10 +282,6 @@ namespace octave
 
 OCTAVE_DEPRECATED (5, "use 'octave::input_system::yes_or_no' instead")
 extern bool octave_yes_or_no (const std::string& prompt);
-
-OCTAVE_DEPRECATED (5, "use 'octave::input_system::keyboard' instead")
-extern octave_value do_keyboard (const octave_value_list& args
-                                 = octave_value_list ());
 
 OCTAVE_DEPRECATED (5, "use 'octave::input_system::clear_input_event_hooks' instead")
 extern void remove_input_event_hook_functions (void);

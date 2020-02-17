@@ -1,4 +1,9 @@
-## Copyright (C) 2018-2019 Rik Wehbring
+########################################################################
+##
+## Copyright (C) 2018-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,10 +20,12 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movmean (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movmean (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movmean (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movmean (@dots{}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movmean (@dots{}, "@var{nancond}")
 ## @deftypefnx {} {@var{y} =} movmean (@dots{}, @var{property}, @var{value})
@@ -116,7 +123,7 @@
 ## @end table
 ##
 ## Programming Note: This function is a wrapper which calls @code{movfun}.
-## For additional options and documentation, @xref{XREFmovfun,,movfun}.
+## For additional options and documentation, @pxref{XREFmovfun,,movfun}.
 ##
 ## @seealso{movfun, movslice, movmad, movmax, movmedian, movmin, movprod, movstd, movsum, movvar}
 ## @end deftypefn

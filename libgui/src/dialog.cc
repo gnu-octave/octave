@@ -1,62 +1,95 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2013-2019 Daniel J. Sebald
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#include "dialog.h"
-#include "resource-manager.h"
-
+#include <QFileInfo>
+#include <QListView>
 #include <QString>
 #include <QStringList>
 #include <QStringListModel>
-#include <QListView>
-#include <QFileInfo>
 // Could replace most of these with #include <QtGui>
-#include <QMessageBox>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QGroupBox>
 #include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
+#include "dialog.h"
+#include "octave-qobject.h"
+#include "gui-preferences-global.h"
 
 namespace octave
 {
-  QUIWidgetCreator uiwidget_creator;
-
-  QUIWidgetCreator::QUIWidgetCreator (void)
-    : QObject (), m_dialog_result (-1), m_dialog_button (),
-      m_string_list (new QStringList ()), m_list_index (new QIntList ()),
-      m_path_name (new QString ())
-  { }
-
-  QUIWidgetCreator::~QUIWidgetCreator (void)
+  QUIWidgetCreator::QUIWidgetCreator (base_qobject& oct_qobj)
+    : QObject (), m_octave_qobj (oct_qobj), m_dialog_result (-1),
+      m_dialog_button (), m_string_list (), m_list_index (), m_path_name ()
   {
-    delete m_string_list;
-    delete m_list_index;
-    delete m_path_name;
+    connect (this,
+             SIGNAL (create_dialog (const QString&, const QString&,
+                                    const QString&, const QStringList&,
+                                    const QString&, const QStringList&)),
+             this,
+             SLOT (handle_create_dialog (const QString&, const QString&,
+                                         const QString&, const QStringList&,
+                                         const QString&, const QStringList&)));
+
+    connect (this,
+             SIGNAL (create_listview (const QStringList&, const QString&,
+                                      int, int, const QIntList&,
+                                      const QString&, const QStringList&,
+                                      const QString&, const QString&)),
+             this,
+             SLOT (handle_create_listview (const QStringList&, const QString&,
+                                           int, int, const QIntList&,
+                                           const QString&, const QStringList&,
+                                           const QString&, const QString&)));
+
+    connect (this,
+             SIGNAL (create_inputlayout (const QStringList&, const QString&,
+                                         const QFloatList&, const QFloatList&,
+                                         const QStringList&)),
+             this,
+             SLOT (handle_create_inputlayout (const QStringList&,
+                                              const QString&,
+                                              const QFloatList&,
+                                              const QFloatList&,
+                                              const QStringList&)));
+
+    connect (this,
+             SIGNAL (create_filedialog (const QStringList&,const QString&,
+                                        const QString&, const QString&,
+                                        const QString&)),
+             this,
+             SLOT (handle_create_filedialog (const QStringList&, const QString&,
+                                             const QString&, const QString&,
+                                             const QString&)));
   }
 
   QString QUIWidgetCreator::rm_amp (const QString& text)
@@ -66,21 +99,142 @@ namespace octave
     return text_wo_amp;
   }
 
+  QString QUIWidgetCreator::message_dialog (const QString& message,
+                                            const QString& title,
+                                            const QString& icon,
+                                            const QStringList& buttons,
+                                            const QString& defbutton,
+                                            const QStringList& role)
+  {
+    QMutexLocker autolock (&m_mutex);
+
+    // Store button text before a window-manager adds accelerators.
+
+    m_button_list = buttons;
+
+    // Use the last button in the list as the reject result, i.e., when
+    // no button is pressed such as in the case of the upper right close
+    // tab.
+    if (! buttons.isEmpty ())
+      m_dialog_button = buttons.last ();
+
+    QString xicon = icon;
+    if (xicon.isEmpty ())
+      xicon = "none";
+
+    emit create_dialog (message, title, xicon, buttons, defbutton, role);
+
+    // Wait while the user is responding to message box.
+    wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+    return m_dialog_button;
+  };
+
+  QPair<QIntList, int>
+  QUIWidgetCreator::list_dialog (const QStringList& list, const QString& mode,
+                                 int wd, int ht, const QList<int>& initial,
+                                 const QString& name,
+                                 const QStringList& prompt,
+                                 const QString& ok_string,
+                                 const QString& cancel_string)
+  {
+    if (list.isEmpty ())
+      return QPair<QIntList, int> ();
+
+    QMutexLocker autolock (&m_mutex);
+
+    emit create_listview (list, mode, wd, ht, initial, name,
+                          prompt, ok_string, cancel_string);
+
+    // Wait while the user is responding to message box.
+    wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+    return QPair<QIntList, int> (m_list_index, m_dialog_result);
+  };
+
+  // Create a message dialog with specified string, buttons and
+  // decorative text.
+
+  QStringList QUIWidgetCreator::input_dialog (const QStringList& prompt,
+                                              const QString& title,
+                                              const QFloatList& nr,
+                                              const QFloatList& nc,
+                                              const QStringList& defaults)
+  {
+    if (prompt.isEmpty ())
+      return QStringList ();
+
+    QMutexLocker autolock (&m_mutex);
+
+    emit create_inputlayout (prompt, title, nr, nc, defaults);
+
+    // Wait while the user is responding to message box.
+    wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+    return m_string_list;
+  };
+
+  QStringList QUIWidgetCreator::file_dialog (const QStringList& filters,
+                                             const QString& title,
+                                             const QString& filename,
+                                             const QString& dirname,
+                                             const QString& multimode)
+  {
+    QMutexLocker autolock (&m_mutex);
+
+    emit create_filedialog (filters, title, filename, dirname, multimode);
+
+    // Wait while the user is responding to dialog.
+    wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+    // Add all the file dialog results to a string list.
+    QStringList retval;
+    retval << m_string_list
+           << m_path_name
+           << QString::number (m_dialog_result);
+
+    return retval;
+  }
+
+  void QUIWidgetCreator::handle_create_dialog (const QString& message,
+                                               const QString& title,
+                                               const QString& icon,
+                                               const QStringList& button,
+                                               const QString& defbutton,
+                                               const QStringList& role)
+  {
+    MessageDialog *message_dialog
+      = new MessageDialog (m_octave_qobj, message, title, icon,
+                           button, defbutton, role);
+
+    connect (message_dialog, SIGNAL (buttonClicked (QAbstractButton *)),
+             this, SLOT (dialog_button_clicked (QAbstractButton *)));
+
+    message_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    message_dialog->show ();
+  }
+
   void QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
   {
-    // Wait for link thread to go to sleep state.
-    lock ();
-
-    if (button)   // button is NULL when dialog is closed
+    // button is NULL when dialog is closed.
+    if (button)
       {
-        // Check for a matching button text while ignoring accelerators because
-        // the window manager may have added one in the passed button
+        // Check for a matching button text while ignoring accelerators
+        // because the window manager may have added one in the passed
+        // button.
+
         QString text_clean = rm_amp (button->text ());
+
         for (int i = 0; i < m_button_list.count (); i++)
           {
             if (rm_amp (m_button_list.at (i)) == text_clean)
               {
-                m_dialog_button = m_button_list.at (i); // text w/o extra accelerator
+                // Text w/o extra accelerator.
+                m_dialog_button = m_button_list.at (i);
                 break;
               }
           }
@@ -89,65 +243,111 @@ namespace octave
     // The value should always be 1 for the Octave functions.
     m_dialog_result = 1;
 
-    unlock ();
-
     // Wake up Octave process so that it continues.
     wake_all ();
+  }
+
+  // Create a list dialog with specified list, initially selected, mode,
+  // view size and decorative text.
+
+  void QUIWidgetCreator::handle_create_listview (const QStringList& list,
+                                                 const QString& mode,
+                                                 int wd, int ht,
+                                                 const QIntList& initial,
+                                                 const QString& name,
+                                                 const QStringList& prompt,
+                                                 const QString& ok_string,
+                                                 const QString& cancel_string)
+  {
+    ListDialog *list_dialog
+      = new ListDialog (m_octave_qobj, list, mode, wd, ht, initial,
+                        name, prompt, ok_string, cancel_string);
+
+    connect (list_dialog, SIGNAL (finish_selection (const QIntList&, int)),
+             this, SLOT (list_select_finished (const QIntList&, int)));
+
+    list_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    list_dialog->show ();
   }
 
   void QUIWidgetCreator::list_select_finished (const QIntList& selected,
                                                int button_pressed)
   {
-    // Wait for link thread to go to sleep state.
-    lock ();
-
     // Store the value so that builtin functions can retrieve.
-    *m_list_index = selected;
-    m_dialog_result = button_pressed;
 
-    unlock ();
+    m_list_index = selected;
+    m_dialog_result = button_pressed;
 
     // Wake up Octave process so that it continues.
     wake_all ();
   }
 
+  // Create an input dialog with specified prompts and defaults, title
+  // and row/column size specifications.
+
+  void QUIWidgetCreator::handle_create_inputlayout (const QStringList& prompt,
+                                                    const QString& title,
+                                                    const QFloatList& nr,
+                                                    const QFloatList& nc,
+                                                    const QStringList& defaults)
+  {
+    InputDialog *input_dialog
+      = new InputDialog (m_octave_qobj, prompt, title, nr, nc, defaults);
+
+    connect (input_dialog, SIGNAL (finish_input (const QStringList&, int)),
+             this, SLOT (input_finished (const QStringList&, int)));
+
+    input_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    input_dialog->show ();
+  }
+
   void QUIWidgetCreator::input_finished (const QStringList& input,
                                          int button_pressed)
   {
-    // Wait for link thread to go to sleep state.
-    lock ();
-
     // Store the value so that builtin functions can retrieve.
-    *m_string_list = input;
-    m_dialog_result = button_pressed;
 
-    unlock ();
+    m_string_list = input;
+    m_dialog_result = button_pressed;
 
     // Wake up Octave process so that it continues.
     wake_all ();
+  }
+
+  void QUIWidgetCreator::handle_create_filedialog (const QStringList& filters,
+                                                   const QString& title,
+                                                   const QString& filename,
+                                                   const QString& dirname,
+                                                   const QString& multimode)
+  {
+    FileDialog *file_dialog
+      = new FileDialog (m_octave_qobj, filters, title, filename,
+                        dirname, multimode);
+
+    connect (file_dialog, SIGNAL (finish_input (const QStringList&,
+                                                const QString&, int)),
+             this, SLOT (filedialog_finished (const QStringList&,
+                                              const QString&, int)));
+
+    file_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    file_dialog->show ();
   }
 
   void QUIWidgetCreator::filedialog_finished (const QStringList& files,
                                               const QString& path,
                                               int filterindex)
   {
-    // Wait for link thread to go to sleep state.
-    lock ();
-
     // Store the value so that builtin functions can retrieve.
-    *m_string_list = files;
-    m_dialog_result = filterindex;
-    *m_path_name = path;
 
-    unlock ();
+    m_string_list = files;
+    m_dialog_result = filterindex;
+    m_path_name = path;
 
     // Wake up Octave process so that it continues.
     wake_all ();
   }
 
-  MessageDialog::MessageDialog (const QString& message,
-                                const QString& title,
-                                const QString& qsicon,
+  MessageDialog::MessageDialog (base_qobject&, const QString& message,
+                                const QString& title, const QString& qsicon,
                                 const QStringList& qsbutton,
                                 const QString& defbutton,
                                 const QStringList& role)
@@ -159,7 +359,9 @@ namespace octave
 
     // Interpret the icon string, because enumeration QMessageBox::Icon can't
     // easily be made to pass through a signal.
+
     QMessageBox::Icon eicon = QMessageBox::NoIcon;
+
     if (qsicon == "error")
       eicon = QMessageBox::Critical;
     else if (qsicon == "warn")
@@ -168,9 +370,11 @@ namespace octave
       eicon = QMessageBox::Information;
     else if (qsicon == "quest")
       eicon = QMessageBox::Question;
+
     setIcon (eicon);
 
     int N = (qsbutton.size () < role.size () ? qsbutton.size () : role.size ());
+
     if (N == 0)
       addButton (QMessageBox::Ok);
     else
@@ -178,7 +382,9 @@ namespace octave
         for (int i = 0; i < N; i++)
           {
             // Interpret the button role string, because enumeration
-            // QMessageBox::ButtonRole can't be made to pass through a signal.
+            // QMessageBox::ButtonRole can't be made to pass through a
+            // signal.
+
             QString srole = role.at (i);
             QMessageBox::ButtonRole erole = QMessageBox::InvalidRole;
             if (srole == "ResetRole")
@@ -195,6 +401,7 @@ namespace octave
             QPushButton *pbutton = addButton (qsbutton.at (i), erole);
             if (qsbutton.at (i) == defbutton)
               setDefaultButton (pbutton);
+
             // Make the last button the button pressed when <esc> key activated.
             if (i == N-1)
               {
@@ -209,15 +416,12 @@ namespace octave
               }
           }
       }
-
-    connect (this, SIGNAL (buttonClicked (QAbstractButton *)),
-             &uiwidget_creator,
-             SLOT (dialog_button_clicked (QAbstractButton *)));
   }
 
-  ListDialog::ListDialog (const QStringList& list, const QString& mode,
-                          int wd, int ht, const QList<int>& initial,
-                          const QString& title, const QStringList& prompt,
+  ListDialog::ListDialog (base_qobject&, const QStringList& list,
+                          const QString& mode, int wd, int ht,
+                          const QList<int>& initial, const QString& title,
+                          const QStringList& prompt,
                           const QString& ok_string,
                           const QString& cancel_string)
     : QDialog (), m_model (new QStringListModel (list))
@@ -308,10 +512,6 @@ namespace octave
     connect (buttonCancel, SIGNAL (clicked ()),
              this, SLOT (buttonCancel_clicked ()));
 
-    connect (this, SIGNAL (finish_selection (const QIntList&, int)),
-             &uiwidget_creator,
-             SLOT (list_select_finished (const QIntList&, int)));
-
     connect (view, SIGNAL (doubleClicked (const QModelIndex&)),
              this, SLOT (item_double_clicked (const QModelIndex&)));
   }
@@ -325,6 +525,7 @@ namespace octave
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
+
     QModelIndexList selected_index = selector->selectedIndexes ();
     QIntList selected_int;
 
@@ -340,6 +541,7 @@ namespace octave
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
+
     QIntList empty;
 
     emit finish_selection (empty, 0);
@@ -357,9 +559,9 @@ namespace octave
     buttonOk_clicked ();
   }
 
-  InputDialog::InputDialog (const QStringList& prompt, const QString& title,
-                            const QFloatList& nr, const QFloatList& nc,
-                            const QStringList& defaults)
+  InputDialog::InputDialog (base_qobject&, const QStringList& prompt,
+                            const QString& title, const QFloatList& nr,
+                            const QFloatList& nc, const QStringList& defaults)
     : QDialog ()
   {
 
@@ -422,16 +624,13 @@ namespace octave
 
     connect (buttonCancel, SIGNAL (clicked ()),
              this, SLOT (buttonCancel_clicked ()));
-
-    connect (this, SIGNAL (finish_input (const QStringList&, int)),
-             &uiwidget_creator,
-             SLOT (input_finished (const QStringList&, int)));
   }
 
   void InputDialog::buttonOk_clicked (void)
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
+
     QStringList string_result;
     for (int i = 0; i < input_line.size (); i++)
       string_result << input_line.at (i)->text ();
@@ -443,6 +642,7 @@ namespace octave
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
+
     QStringList empty;
     emit finish_input (empty, 0);
     done (QDialog::Rejected);
@@ -453,9 +653,10 @@ namespace octave
     buttonCancel_clicked ();
   }
 
-  FileDialog::FileDialog (const QStringList& name_filters, const QString& title,
-                          const QString& filename, const QString& dirname,
-                          const QString& multimode)
+  FileDialog::FileDialog (base_qobject& oct_qobj,
+                          const QStringList& name_filters,
+                          const QString& title, const QString& filename,
+                          const QString& dirname, const QString& multimode)
     : QFileDialog ()
   {
     // Create a NonModal message.
@@ -465,8 +666,10 @@ namespace octave
     setDirectory (dirname);
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    resource_manager& rmgr = oct_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (! settings->value (global_use_native_dialogs.key,
+                           global_use_native_dialogs.def).toBool ())
       setOption(QFileDialog::DontUseNativeDialog);
 
     if (multimode == "on")         // uigetfile multiselect=on
@@ -498,12 +701,8 @@ namespace octave
 
     selectFile (filename);
 
-    connect (this,
-             SIGNAL (finish_input (const QStringList&, const QString&, int)),
-             &uiwidget_creator,
-             SLOT (filedialog_finished (const QStringList&, const QString&,
-                                        int)));
     connect (this, SIGNAL (accepted ()), this, SLOT (acceptSelection ()));
+
     connect (this, SIGNAL (rejected ()), this, SLOT (rejectSelection ()));
   }
 
@@ -532,17 +731,17 @@ namespace octave
     for (int i = 0; i < string_result.size (); i++)
       string_result[i] = QFileInfo (string_result[i]).fileName ();
 
-    // if not showing only dirs, add end slash for the path component
+    // If not showing only dirs, add end slash for the path component.
     if (testOption (QFileDialog::ShowDirsOnly)  == false)
       path += '/';
 
-    // convert to native slashes
+    // Convert to native slashes.
     path = QDir::toNativeSeparators (path);
 
     QStringList name_filters = nameFilters ();
     idx = name_filters.indexOf (selectedNameFilter ()) + 1;
 
-    // send the selected info
+    // Send the selected info.
     emit finish_input (string_result, path, idx);
   }
 }

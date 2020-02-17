@@ -1,5 +1,9 @@
-## Copyright (C) 2000-2019 Etienne Grossmann
-## Copyright (C) 2009 VZLU Prague
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{sout} =} setfield (@var{s}, @var{field}, @var{val})
@@ -108,8 +114,6 @@
 ## @end example
 ## @seealso{getfield, rmfield, orderfields, isfield, fieldnames, isstruct, struct}
 ## @end deftypefn
-
-## Author:  Etienne Grossmann <etienne@cs.uky.edu>
 
 function sout = setfield (s, varargin)
 

@@ -1,5 +1,9 @@
-## Copyright (C) 2008-2019 John W. Eaton
-## Copyright (C) 2013-2019 Carnë Draug
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} imwrite (@var{img}, @var{filename})
@@ -106,7 +112,7 @@ function imwrite (varargin)
 
   fmt = imformats (ext);
   ## When there is no match, fmt will be a 1x1 structure with
-  ## no fields, so we can't just use `isempty (fmt)'.
+  ## no fields, so we can't just use 'isempty (fmt)'.
   if (numfields (fmt) == 0)
     if (isempty (ext))
       error ("imwrite: no extension found for %s to identify the image format",

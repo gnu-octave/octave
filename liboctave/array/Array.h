@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2008-2009 Jaroslav Hajek
-Copyright (C) 2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_Array_h)
 #define octave_Array_h 1
@@ -103,8 +104,8 @@ along with Octave; see the file COPYING.  If not, see
 //!
 //! ### size_type
 //!
-//! Array::size_type is `octave_idx_type` which is a typedef for `int`
-//! or `long int`, depending whether Octave was configured for 64-bit
+//! Array::size_type is 'octave_idx_type' which is a typedef for 'int'
+//! or 'long int', depending whether Octave was configured for 64-bit
 //! indexing.
 //!
 //! This is a signed integer which may cause problems when mixed with
@@ -134,7 +135,7 @@ protected:
 
     T *data;
     octave_idx_type len;
-    octave::refcount<int> count;
+    octave::refcount<octave_idx_type> count;
 
     ArrayRep (T *d, octave_idx_type l)
       : data (new T [l]), len (l), count (1)
@@ -300,11 +301,24 @@ public:
     rep->count++;
   }
 
+  Array (Array<T>&& a)
+    : dimensions (std::move (a.dimensions)), rep (a.rep),
+      slice_data (a.slice_data), slice_len (a.slice_len)
+  {
+    a.rep = nullptr;
+    a.slice_data = nullptr;
+    a.slice_len = 0;
+  }
+
 public:
 
   virtual ~Array (void)
   {
-    if (--rep->count == 0)
+    // Because we define a move constructor and a move assignment
+    // operator, rep may be a nullptr here.  We should only need to
+    // protect the move assignment operator in a similar way.
+
+    if (rep && --rep->count == 0)
       delete rep;
   }
 
@@ -326,6 +340,31 @@ public:
     return *this;
   }
 
+  Array<T>& operator = (Array<T>&& a)
+  {
+    if (this != &a)
+      {
+        dimensions = std::move (a.dimensions);
+
+        // Because we define a move constructor and a move assignment
+        // operator, rep may be a nullptr here.  We should only need to
+        // protect the destructor in a similar way.
+
+        if (rep && --rep->count == 0)
+          delete rep;
+
+        rep = a.rep;
+        slice_data = a.slice_data;
+        slice_len = a.slice_len;
+
+        a.rep = nullptr;
+        a.slice_data = nullptr;
+        a.slice_len = 0;
+      }
+
+    return *this;
+  }
+
   void fill (const T& val);
 
   void clear (void);
@@ -333,34 +372,6 @@ public:
 
   void clear (octave_idx_type r, octave_idx_type c)
   { clear (dim_vector (r, c)); }
-
-  // Number of elements in the array.  These are all synonyms.
-  //@{
-  //! Number of elements in the array.
-  //! Synonymous with numel().
-  //! @note This method is deprecated in favour of numel().
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type capacity (void) const { return numel (); }
-
-  //! Number of elements in the array.
-  //!
-  //! Synonymous with numel().
-  //! @note This method is deprecated in favour of numel().
-  //!
-  //! @note
-  //! This is @em not the same as @c %length() at the Octave interpreter.
-  //! At the Octave interpreter, the function @c %length() returns the
-  //! length of the greatest dimension.  This method returns the total
-  //! number of elements.
-
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type length (void) const { return numel (); }
-
-  //! Number of elements in the array.
-  //! Synonymous with numel().
-  //! @note This method is deprecated in favour of numel().
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type nelem (void) const { return numel (); }
 
   //! Number of elements in the array.
   octave_idx_type numel (void) const { return slice_len; }
@@ -426,7 +437,7 @@ public:
   //! Dimensions beyond the Array number of dimensions return 1 as
   //! those are implicit singleton dimensions.
   //!
-  //! Equivalent to Octave's `size (A, DIM)`
+  //! Equivalent to Octave's 'size (A, DIM)'
 
   size_type size (const size_type d) const
   {
@@ -558,21 +569,9 @@ public:
 
   bool issquare (void) const { return (dim1 () == dim2 ()); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'issquare' instead")
-  bool is_square (void) const
-  { return issquare (); }
-
   bool isempty (void) const { return numel () == 0; }
 
-  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
-  bool is_empty (void) const
-  { return isempty (); }
-
   bool isvector (void) const { return dimensions.isvector (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'isvector' instead")
-  bool is_vector (void) const
-  { return isvector (); }
 
   bool is_nd_vector (void) const { return dimensions.is_nd_vector (); }
 
@@ -712,10 +711,6 @@ public:
   //! Ordering is auto-detected or can be specified.
   sortmode issorted (sortmode mode = UNSORTED) const;
 
-  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
-  sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return issorted (mode); }
-
   //! Sort by rows returns only indices.
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const;
 
@@ -845,7 +840,7 @@ public:
   //@{
   //! WARNING: Only call these functions from jit
 
-  int * jit_ref_count (void) { return rep->count.get (); }
+  int jit_ref_count (void) { return rep->count.value (); }
 
   T * jit_slice_data (void) const { return slice_data; }
 
@@ -882,38 +877,6 @@ Array<T>::Array (const Container<T>& a, const dim_vector& dv)
 
   dimensions.chop_trailing_singletons ();
 }
-
-//! This is a simple wrapper template that will subclass an Array<T>
-//! type or any later type derived from it and override the default
-//! non-const operator() to not check for the array's uniqueness.  It
-//! is, however, the user's responsibility to ensure the array is
-//! actually unaliased whenever elements are accessed.
-template <typename ArrayClass>
-class NoAlias : public ArrayClass
-{
-  typedef typename ArrayClass::element_type T;
-public:
-  NoAlias () : ArrayClass () { }
-
-  // FIXME: this would be simpler once C++0x is available
-  template <typename X>
-    explicit NoAlias (X x) : ArrayClass (x) { }
-
-  template <typename X, typename Y>
-    explicit NoAlias (X x, Y y) : ArrayClass (x, y) { }
-
-  template <typename X, typename Y, typename Z>
-    explicit NoAlias (X x, Y y, Z z) : ArrayClass (x, y, z) { }
-
-  T& operator () (octave_idx_type n)
-  { return ArrayClass::xelem (n); }
-  T& operator () (octave_idx_type i, octave_idx_type j)
-  { return ArrayClass::xelem (i, j); }
-  T& operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k)
-  { return ArrayClass::xelem (i, j, k); }
-  T& operator () (const Array<octave_idx_type>& ra_idx)
-  { return ArrayClass::xelem (ra_idx); }
-};
 
 template <typename T>
 std::ostream&

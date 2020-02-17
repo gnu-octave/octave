@@ -1,4 +1,9 @@
-## Copyright (C) 2002-2019 Rolf Fabian
+########################################################################
+##
+## Copyright (C) 2002-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{s} =} mat2str (@var{x}, @var{n})
@@ -55,8 +62,6 @@
 ##
 ## @seealso{sprintf, num2str, int2str}
 ## @end deftypefn
-
-## Author: Rolf Fabian <fabian@tu-cottbus.de>
 
 function s = mat2str (x, n = 15, cls = "")
 

@@ -1,25 +1,29 @@
 // %NO_EDIT_WARNING%
-/*
 
-Copyright (C) 2012-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2012-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // NOTE: This program is supposed to be a small wrapper that exists
 // primarily to give up the controlling TTY and then exec Octave with
@@ -159,7 +163,8 @@ get_octave_bindir (void)
 
   std::string obd = octave_getenv ("OCTAVE_BINDIR");
 
-  return obd.empty () ? prepend_octave_exec_home (std::string (OCTAVE_BINDIR)) : obd;
+  return obd.empty () ? prepend_octave_exec_home (std::string (OCTAVE_BINDIR))
+                      : obd;
 }
 
 static std::string
@@ -286,14 +291,14 @@ main (int argc, char **argv)
           for (size_t j = 1; j < len; j++)
             switch (argv[i][j])
               {
-                case 'W':
-                  no_display = true;
-                  break;
-                case 'q':
-                  warn_display = false;
-                  break;
-                default:
-                  break;
+              case 'W':
+                no_display = true;
+                break;
+              case 'q':
+                warn_display = false;
+                break;
+              default:
+                break;
               }
 
           new_argv[k++] = argv[i];
@@ -369,6 +374,7 @@ main (int argc, char **argv)
   // so we can forward them to the child.
 
   octave_block_async_signals ();
+  octave_block_signal_by_name ("SIGTSTP");
 
 #if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
 
@@ -412,6 +418,7 @@ main (int argc, char **argv)
           install_signal_handlers ();
 
           octave_unblock_async_signals ();
+          octave_unblock_signal_by_name ("SIGTSTP");
 
           int status;
 

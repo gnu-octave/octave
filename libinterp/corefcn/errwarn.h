@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2016-2019 Rik Wehbring
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2016-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_errwarn_h)
 #define octave_errwarn_h 1
@@ -164,10 +167,10 @@ warn_disabled_feature (const std::string& fcn, const std::string& feature,
                        const std::string& pkg = "Octave");
 
 OCTINTERP_API extern void
-warn_divide_by_zero (void);
+warn_empty_arg (const char *name);
 
 OCTINTERP_API extern void
-warn_empty_arg (const char *name);
+warn_empty_index (const std::string& type_name);
 
 OCTINTERP_API extern void
 warn_implicit_conversion (const char *id, const char *from, const char *to);
@@ -184,5 +187,14 @@ warn_logical_conversion (void);
 
 OCTINTERP_API extern void
 warn_wrong_type_arg (const char *name, const octave_value& tc);
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED (6, "this function will be removed in a future version of Octave")
+inline void
+warn_divide_by_zero (void)
+{ }
+
+#endif
 
 #endif

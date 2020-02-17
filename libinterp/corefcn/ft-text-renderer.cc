@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2016-2019 John W. Eaton
-Copyright (C) 2009-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2009-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -149,13 +151,8 @@ namespace octave
       if (! instance)
         {
           instance = new ft_manager ();
-
-          if (instance)
-            singleton_cleanup_list::add (cleanup_instance);
+          singleton_cleanup_list::add (cleanup_instance);
         }
-
-      if (! instance)
-        error ("unable to create ft_manager!");
 
       return retval;
     }
@@ -168,6 +165,13 @@ namespace octave
       return (instance_ok ()
               ? instance->do_get_font (name, weight, angle, size)
               : nullptr);
+    }
+
+    static octave_map get_system_fonts (void)
+    {
+      return (instance_ok ()
+              ? instance->do_get_system_fonts ()
+              : octave_map ());
     }
 
     static void font_destroyed (FT_Face face)
@@ -187,6 +191,88 @@ namespace octave
     // weak references to the fonts, strong references are only present
     // in class text_renderer.
     ft_cache cache;
+
+    static octave_map do_get_system_fonts (void)
+    {
+      static octave_map font_map;
+
+      if (font_map.isempty ())
+        {
+          FcConfig *config = FcConfigGetCurrent();
+          FcPattern *pat = FcPatternCreate ();
+          FcObjectSet *os = FcObjectSetBuild (FC_FAMILY, FC_SLANT, FC_WEIGHT,
+                                              FC_CHARSET, nullptr);
+          FcFontSet *fs = FcFontList (config, pat, os);
+
+          if (fs->nfont > 0)
+            {
+              // Mark fonts that have at least all printable ASCII chars
+              FcCharSet *minimal_charset =  FcCharSetCreate ();
+              for (int i = 32; i < 127; i++)
+                FcCharSetAddChar (minimal_charset, static_cast<FcChar32> (i));
+
+              string_vector fields (4);
+              fields(0) = "family";
+              fields(1) = "angle";
+              fields(2) = "weight";
+              fields(3) = "suitable";
+
+              dim_vector dv (1, fs->nfont);
+              Cell families (dv);
+              Cell angles (dv);
+              Cell weights (dv);
+              Cell suitable (dv);
+
+              unsigned char *family;
+              int val;
+              for (int i = 0; fs && i < fs->nfont; i++)
+                {
+                  FcPattern *font = fs->fonts[i];
+                  if (FcPatternGetString (font, FC_FAMILY, 0, &family)
+                      == FcResultMatch)
+                    families(i) = std::string (reinterpret_cast<char*> (family));
+                  else
+                    families(i) = "unknown";
+
+                  if (FcPatternGetInteger (font, FC_SLANT, 0, &val)
+                      == FcResultMatch)
+                    angles(i) = (val == FC_SLANT_ITALIC
+                                 || val == FC_SLANT_OBLIQUE)
+                                ? "italic" : "normal";
+                  else
+                    angles(i) = "unknown";
+
+                  if (FcPatternGetInteger (font, FC_WEIGHT, 0, &val)
+                      == FcResultMatch)
+                    weights(i) = (val == FC_WEIGHT_BOLD
+                                  || val == FC_WEIGHT_DEMIBOLD)
+                                 ? "bold" : "normal";
+                  else
+                    weights(i) = "unknown";
+
+                  FcCharSet *cset;
+                  if (FcPatternGetCharSet (font, FC_CHARSET, 0, &cset)
+                      == FcResultMatch)
+                    suitable(i) = (FcCharSetIsSubset (minimal_charset, cset)
+                                   ? true : false);
+                  else
+                    suitable(i) = false;
+                }
+
+              font_map = octave_map (dv, fields);
+
+              font_map.assign ("family", families);
+              font_map.assign ("angle", angles);
+              font_map.assign ("weight", weights);
+              font_map.assign ("suitable", suitable);
+
+              if (fs)
+                FcFontSetDestroy (fs);
+            }
+        }
+
+      return font_map;
+    }
 
     FT_Face do_get_font (const std::string& name, const std::string& weight,
                          const std::string& angle, double size)
@@ -245,10 +331,6 @@ namespace octave
 
           if (weight == "bold")
             fc_weight = FC_WEIGHT_BOLD;
-          else if (weight == "light")
-            fc_weight = FC_WEIGHT_LIGHT;
-          else if (weight == "demi")
-            fc_weight = FC_WEIGHT_DEMIBOLD;
           else
             fc_weight = FC_WEIGHT_NORMAL;
 
@@ -378,7 +460,7 @@ namespace octave
         xoffset (0), line_yoffset (0), yoffset (0), mode (MODE_BBOX),
         color (dim_vector (1, 3), 0), m_do_strlist (false), m_strlist (),
         line_xoffset (0), m_ymin (0), m_ymax (0), m_deltax (0),
-        m_max_fontsize (0)
+        m_max_fontsize (0), m_antialias (true)
     { }
 
     // No copying!
@@ -422,8 +504,12 @@ namespace octave
     Matrix get_extent (const std::string& txt, double rotation,
                        const caseless_str& interpreter);
 
+    void set_anti_aliasing (bool val) { m_antialias = val; };
+
     void set_font (const std::string& name, const std::string& weight,
                    const std::string& angle, double size);
+
+    octave_map get_system_fonts (void);
 
     void set_color (const Matrix& c);
 
@@ -547,15 +633,24 @@ namespace octave
     // Used for computing the distance between lines.
     double m_max_fontsize;
 
+    // Anti-aliasing.
+    bool m_antialias;
+
   };
 
   void
-  ft_text_renderer::set_font (const std::string& name, const std::string& weight,
+  ft_text_renderer::set_font (const std::string& name,
+                              const std::string& weight,
                               const std::string& angle, double size)
   {
     // FIXME: take "fontunits" into account
-
     font = ft_font (name, weight, angle, size, nullptr);
+  }
+
+  octave_map
+  ft_text_renderer::get_system_fonts (void)
+  {
+    return ft_manager::get_system_fonts ();
   }
 
   void
@@ -712,6 +807,16 @@ namespace octave
         break;
       }
   }
+  bool is_opaque (const FT_GlyphSlot &glyph, const int x, const int y)
+  {
+    // Borrowed from https://stackoverflow.com/questions/14800827/
+    //    indexing-pixels-in-a-monochrome-freetype-glyph-buffer
+    int pitch = std::abs (glyph->bitmap.pitch);
+    unsigned char *row = &glyph->bitmap.buffer[pitch * y];
+    char cvalue = row[x >> 3];
+
+    return ((cvalue & (128 >> (x & 7))) != 0);
+  }
 
   FT_UInt
   ft_text_renderer::process_character (FT_ULong code, FT_UInt previous)
@@ -754,7 +859,9 @@ namespace octave
             switch (mode)
               {
               case MODE_RENDER:
-                if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
+                if (FT_Render_Glyph (face->glyph, (m_antialias
+                                                   ? FT_RENDER_MODE_NORMAL
+                                                   : FT_RENDER_MODE_MONO)))
                   {
                     glyph_index = 0;
                     warn_glyph_render (code);
@@ -786,7 +893,11 @@ namespace octave
                     for (int r = 0; static_cast<unsigned int> (r) < bitmap.rows; r++)
                       for (int c = 0; static_cast<unsigned int> (c) < bitmap.width; c++)
                         {
-                          unsigned char pix = bitmap.buffer[r*bitmap.width+c];
+                          unsigned char pix
+                            = (m_antialias
+                               ? bitmap.buffer[r*bitmap.width+c]
+                               : (is_opaque (face->glyph, c, r) ? 255 : 0));
+
                           if (x0+c < 0 || x0+c >= pixels.dim2 ()
                               || y0-r < 0 || y0-r >= pixels.dim3 ())
                             {
@@ -866,7 +977,7 @@ namespace octave
 
     m_strlist = std::list<text_renderer::string> ();
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
     frame.protect_var (m_do_strlist);
     frame.protect_var (m_strlist);
     m_do_strlist = true;
@@ -908,7 +1019,7 @@ namespace octave
                 mblen = 1;
                 u32_c = 0xFFFD;
               }
-                
+
             n -= mblen;
 
             if (m_do_strlist && mode == MODE_RENDER)

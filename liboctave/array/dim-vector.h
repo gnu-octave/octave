@@ -1,25 +1,29 @@
-/*
-
-Copyright (C) 2003-2019 John W. Eaton
-Copyirght (C) 2009, 2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// or <https://octave.org/copyright/>.
+//
+// Copyirght (C) 2009, 2010 VZLU Prague
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_dim_vector_h)
 #define octave_dim_vector_h 1
@@ -32,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <initializer_list>
 #include <string>
 
+#include "oct-atomic.h"
 #include "oct-refcount.h"
 
 template <typename T> class Array;
@@ -94,6 +99,16 @@ private:
 
   octave_idx_type& count (void) const { return rep[-2]; }
 
+  octave_idx_type increment_count (void)
+  {
+    return octave_atomic_increment (&(count ()));
+  }
+
+  octave_idx_type decrement_count (void)
+  {
+    return octave_atomic_decrement (&(count ()));
+  }
+
   //! Construct a new rep with count = 1 and ndims given.
 
   static octave_idx_type * newrep (int ndims)
@@ -153,7 +168,7 @@ private:
       {
         octave_idx_type *new_rep = clonerep ();
 
-        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+        if (decrement_count () == 0)
           freerep ();
 
         rep = new_rep;
@@ -253,12 +268,14 @@ public:
   static octave_idx_type dim_max (void);
 
   explicit dim_vector (void) : rep (nil_rep ())
-  { OCTAVE_ATOMIC_INCREMENT (&(count ())); }
+  { increment_count (); }
 
   dim_vector (const dim_vector& dv) : rep (dv.rep)
-  { OCTAVE_ATOMIC_INCREMENT (&(count ())); }
+  { increment_count (); }
 
-  // FIXME: Should be private, but required by array constructor for jit
+  dim_vector (dim_vector&& dv) : rep (dv.rep) { dv.rep = nullptr; }
+
+// FIXME: Should be private, but required by array constructor for jit
   explicit dim_vector (octave_idx_type *r) : rep (r) { }
 
   static dim_vector alloc (int n)
@@ -270,11 +287,29 @@ public:
   {
     if (&dv != this)
       {
-        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+        if (decrement_count () == 0)
           freerep ();
 
         rep = dv.rep;
-        OCTAVE_ATOMIC_INCREMENT (&(count ()));
+        increment_count ();
+      }
+
+    return *this;
+  }
+
+  dim_vector& operator = (dim_vector&& dv)
+  {
+    if (&dv != this)
+      {
+        // Because we define a move constructor and a move assignment
+        // operator, rep may be a nullptr here.  We should only need to
+        // protect the destructor in a similar way.
+
+        if (rep && decrement_count () == 0)
+          freerep ();
+
+        rep = dv.rep;
+        dv.rep = nullptr;
       }
 
     return *this;
@@ -282,7 +317,11 @@ public:
 
   ~dim_vector (void)
   {
-    if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+    // Because we define a move constructor and a move assignment
+    // operator, rep may be a nullptr here.  We should only need to
+    // protect the move assignment operator in a similar way.
+
+    if (rep && decrement_count () == 0)
       freerep ();
   }
 
@@ -315,7 +354,7 @@ public:
       {
         octave_idx_type *r = resizerep (n, fill_value);
 
-        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+        if (decrement_count () == 0)
           freerep ();
 
         rep = r;
@@ -423,10 +462,6 @@ public:
   {
     return (ndims () == 2 && (xelem (0) == 1 || xelem (1) == 1));
   }
-
-  OCTAVE_DEPRECATED (4.4, "use 'isvector' instead")
-  bool is_vector (void) const
-  { return isvector (); }
 
   bool is_nd_vector (void) const
   {

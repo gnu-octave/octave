@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Markus Muetzel
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{smoothed_data} =} smooth3 (@var{data})
@@ -23,40 +30,38 @@
 ## @deftypefnx {} {@var{smoothed_data} =} smooth3 (@var{data}, @var{method}, @var{sz}, @var{std_dev})
 ## Smooth values of 3-dimensional matrix @var{data}.
 ##
-## This function can be used, for example, to reduce the impact of noise in
+## This function may be used, for example, to reduce the impact of noise in
 ## @var{data} before calculating isosurfaces.
 ##
-## @var{data} must be a non-singleton 3-dimensional matrix.  The smoothed data
-## from this matrix is returned in @var{smoothed_data} which is of the same
-## size as @var{data}.
+## @var{data} must be a non-singleton 3-dimensional matrix.  The output
+## @var{smoothed_data} is a matrix of the same size as @var{data}.
 ##
 ## The option input @var{method} determines which convolution kernel is used
 ## for the smoothing process.  Possible choices:
 ##
 ## @table @asis
 ## @item @qcode{"box"}, @qcode{"b"} (default)
-## to use a convolution kernel with sharp edges.
+## a convolution kernel with sharp edges.
 ##
 ## @item @qcode{"gaussian"}, @qcode{"g"}
-## to use a convolution kernel that is represented by a non-correlated
-## trivariate normal distribution function.
+## a convolution kernel that is represented by a non-correlated trivariate
+## normal distribution function.
 ## @end table
 ##
-## @var{sz} is either a vector of 3 elements representing the size of the
-## convolution kernel in x-, y- and z-direction or a scalar, in which case
-## the same size is used in all three dimensions.  The default value is 3.
+## @var{sz} is either a 3-element vector specifying the size of the
+## convolution kernel in the x-, y- and z-directions, or a scalar.  In the
+## scalar case the same size is used for all three dimensions
+## (@code{[@var{sz}, @var{sz}, @var{sz}]}).  The default value is 3.
 ##
-## When @var{method} is @qcode{"gaussian"}, @var{std_dev} defines the standard
-## deviation of the trivariate normal distribution function.  @var{std_dev} is
-## either a vector of 3 elements representing the standard deviation of the
-## Gaussian convolution kernel in x-, y- and z-directions or a scalar, in which
-## case the same value is used in all three dimensions.  The default value is
-## 0.65.
+## If @var{method} is @qcode{"gaussian"} then the optional input @var{std_dev}
+## defines the standard deviation of the trivariate normal distribution
+## function.  @var{std_dev} is either a 3-element vector specifying the
+## standard deviation of the Gaussian convolution kernel in x-, y- and
+## z-directions, or a scalar.  In the scalar case the same value is used for
+## all three dimensions.  The default value is 0.65.
 ##
 ## @seealso{isosurface, isonormals, patch}
 ## @end deftypefn
-
-## Author: mmuetzel
 
 function smoothed_data = smooth3 (data, method = "box", sz = 3, std_dev = 0.65)
 
@@ -64,8 +69,8 @@ function smoothed_data = smooth3 (data, method = "box", sz = 3, std_dev = 0.65)
     print_usage ();
   endif
 
-  [data, conv_kernel, sz, std_dev] = ...
-                        __get_check_smooth3_args__ (data, method, sz, std_dev);
+  [data, kernel, sz, std_dev] = ...
+                        __parse_smooth3_args__ (data, method, sz, std_dev);
 
   ## Manually pad data by replicating the values at the edges.
   ## (convn would pad with zeros)
@@ -77,14 +82,22 @@ function smoothed_data = smooth3 (data, method = "box", sz = 3, std_dev = 0.65)
   endfor
   data_padded = data(idx{:});
 
-  smoothed_data = convn (data_padded, conv_kernel, "valid");
+  smoothed_data = convn (data_padded, kernel, "valid");
 
 endfunction
 
-function [data, conv_kernel, sz, std_dev] = __get_check_smooth3_args__ (data, method, sz, std_dev)
+function [data, conv_kernel, sz, std_dev] = __parse_smooth3_args__ (data, method, sz, std_dev)
 
-  if (! isnumeric (data) || ndims (data) != 3)
+  if (ndims (data) != 3)
     error ("smooth3: DATA must be a 3-D numeric matrix");
+  endif
+
+  if (! isnumeric (data))
+    if (isinteger (data) || islogical (data))
+      data = double (data);
+    else
+      error ("smooth3: DATA must be a 3-D numeric matrix");
+    endif
   endif
 
   if (! ischar (method))
@@ -105,6 +118,9 @@ function [data, conv_kernel, sz, std_dev] = __get_check_smooth3_args__ (data, me
   endif
 
   switch (tolower (method))
+    case {"b", "box"}
+      conv_kernel = ones (sz) / prod (sz);
+
     case {"g", "gaussian"}
       ## check std_dev
       if (! isreal (std_dev))
@@ -117,9 +133,6 @@ function [data, conv_kernel, sz, std_dev] = __get_check_smooth3_args__ (data, me
       endif
 
       conv_kernel = __smooth3_gaussian3__ (sz, std_dev);
-
-    case {"b", "box"}
-      conv_kernel = ones (sz) / prod (sz);
 
     otherwise
       error ("smooth3: invalid METHOD '%s'", method);
@@ -164,6 +177,18 @@ endfunction
 %! a = rand (10, 8, 7);
 %! b = smooth3 (a);
 %! assert (size_equal (a, b), true);
+
+## data type of first input argument
+%!test <*57276>
+%! dt_a = {"double", "single", "uint8", "int8", "uint16", "int16", ...
+%!         "uint32", "int32", "uint64", "int64", "logical"};
+%! dt_b = {"double", "single", "double", "double", "double", "double", ...
+%!         "double", "double", "double", "double", "double"};
+%! for i = 1 : numel (dt_a)
+%!   a = ones (3, 4, 5, dt_a{i});
+%!   b = smooth3 (a);
+%!   assert (class (b), dt_b{i});
+%! endfor
 
 ## two input argument (method: "gaussian")
 %!test

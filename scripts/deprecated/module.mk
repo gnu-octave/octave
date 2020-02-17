@@ -1,15 +1,8 @@
-FCN_FILE_DIRS += scripts/deprecated
+FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/chop.m \
-  %reldir%/comma.m \
-  %reldir%/desktop.m \
-  %reldir%/java2mat.m \
   %reldir%/output_max_field_width.m \
-  %reldir%/paren.m \
-  %reldir%/semicolon.m \
-  %reldir%/tmpnam.m \
-  %reldir%/toascii.m
+  %reldir%/runtests.m
 
 %canon_reldir%dir = $(fcnfiledir)/deprecated
 

@@ -1,4 +1,9 @@
-## Copyright (C) 1993-2019 Dirk Laurie
+########################################################################
+##
+## Copyright (C) 1993-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} invhilb (@var{n})
@@ -64,15 +71,13 @@
 ## The validity of this formula can easily be checked by expanding the binomial
 ## coefficients in both formulas as factorials.  It can be derived more
 ## directly via the theory of Cauchy matrices.  See @nospell{J. W. Demmel},
-## @cite{Applied Numerical Linear Algebra}, p. 92.
+## @cite{Applied Numerical Linear Algebra}, p.@: 92.
 ##
 ## Compare this with the numerical calculation of @code{inv (hilb (n))},
 ## which suffers from the ill-conditioning of the Hilbert matrix, and the
 ## finite precision of your computer's floating point arithmetic.
 ## @seealso{hilb}
 ## @end deftypefn
-
-## Author: Dirk Laurie <dlaurie@na-net.ornl.gov>
 
 function retval = invhilb (n)
 

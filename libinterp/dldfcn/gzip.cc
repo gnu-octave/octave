@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2016-2019 Carnë Draug
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2016-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 //! @file gzip.cc
 //! Octave interface to the compression and uncompression libraries.
@@ -98,7 +101,7 @@ namespace octave
     CFile (void) = delete;
 
     CFile (const std::string& path, const std::string& mode)
-      : m_fp (octave::sys::fopen (path, mode))
+      : m_fp (sys::fopen (path, mode))
     {
       if (! m_fp)
         throw std::runtime_error ("unable to open file");
@@ -221,10 +224,10 @@ namespace octave
   //
   //      Note that you cannot specify special gzip header contents (e.g.
   //      a file name or modification date), nor will inflate tell you what
-  //      was in the gzip header. If you need to customize the header or
+  //      was in the gzip header.  If you need to customize the header or
   //      see what's in it, you can use the raw deflate and inflate
   //      operations and the crc32() function and roll your own gzip
-  //      encoding and decoding. Read the gzip RFC 1952 for details of the
+  //      encoding and decoding.  Read the gzip RFC 1952 for details of the
   //      header and trailer format.
   //                                                          zlib FAQ
   //

@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 %!test
 %! a = [];
@@ -505,9 +512,9 @@
 %!error <index \(...\[x9\]...-1,_\): subscript>      1(1,1,1,1,1,1,1,1,1,-1,1)
 %!error <index \(2\): out of bound 1>                1(2)
 %!error <index \(1\): out of bound 0>                [](1)
-%!error <index \(_,1\): but object has size 5x0>     zeros(5,0)(3,1)
-%!error <index \(3,_\): but object has size 0x5>     zeros(0,5)(3,1)
 %!error <index \(-1\): subscripts>                   1(1)(-1)(1)
+%!error <index \(_,1\): out of bound 0 \(dimensions are 5x0\)> zeros(5,0)(3,1)
+%!error <index \(3,_\): out of bound 0 \(dimensions are 0x5\)> zeros(0,5)(3,1)
 %!
 %!shared abc
 %! abc = [1, 2];
@@ -519,20 +526,20 @@
 %!shared abc
 %! abc = [1 2; 3 4];
 %!error <abc\(5\): out of bound 4>         abc(5)
-%!error <abc\(_,3\): but abc has size 2x2> abc(2,3)
+%!error <abc\(_,3\): out of bound 2 \(dimensions are 2x2\)> abc(2,3)
 %!error <abc\(_,_,0.5\): subscripts>       exp (abc(2,3,0.5))
 
 %!shared abc
 %! abc = [1 2; 3 4]; abc(1,1,2) = 1;
 %!error <abc\(_,5\): out of bound 4>                            abc(2,5)
-%!error <abc\(_,3,_\): but abc has size 2x2x2>                  abc(2,3,2)
+%!error <abc\(_,3,_\): out of bound 2 \(dimensions are 2x2x2\)> abc(2,3,2)
 %!error <A\(..,I,..\) = \[\]: .* value 3 out of bound 2>        abc(3,:) = []
 %!error <A\(I\) = \[\]: .* value 50 out of bound 8>             abc(3:50) = []
 %!error <a null assignment can only have one non-colon index>   abc(3,5) = []
 %!error <=: nonconformant arguments \(op1 is 1x1, op2 is 1x5\)> abc(3,5) = 1:5
 
 ##  Test diagonal matrices, and access of function results
-%!error <index \(_,_,5\): but object has size 3x3> eye(3)(2,3,5)
+%!error <index \(_,_,5\): out of bound 1 \(dimensions are 3x3\)> eye(3)(2,3,5)
 %!error <index \(-2,_\): subscripts>               eye(4)(-2,3)
 
 ##  Test cells
@@ -557,14 +564,14 @@
 %!error <abc\(-1,_\): subscripts>              abc(-1,1)
 %!error <abc\(-1,_\): subscripts>              abc(-1,1) = 1
 %!error <sparse indexing needs 1 or 2 indices> abc(0,0,0,0)
-%!error <abc\(4,_\): but abc has size 3x3>     abc(4,1)
+%!error <abc\(4,_\): out of bound 3 \(dimensions are 3x3\)> abc(4,1)
 
 ##  Test ranges
 %!shared abc
 %! abc = 1:10;
 %!error <abc\(-1\): subscripts>             abc(-1)
 %!error <abc\(-1,_\): subscripts>           abc(-1,1)
-%!error <abc\(4,_\): but abc has size 1x10> abc(4,1)
+%!error <abc\(4,_\): out of bound 1 \(dimensions are 1x10\)> abc(4,1)
 
 ##  Test complex
 %!shared abc, z

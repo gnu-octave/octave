@@ -1,4 +1,9 @@
-## Copyright (C) 2012-2019 Ben Abbott, Jonas Lundgren
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
@@ -111,7 +118,7 @@ function pp = splinefit (x, y, breaks, varargin)
   for f = 1:numel (fields)
     if (! any (strcmp (fields{f},
                        {"periodic", "robust", "beta", "order", "constraints"})))
-      error ("splinefit:invalidproperty",
+      error ("Octave:splinefit:invalidproperty",
              "unrecognized property '%s'", fields{f});
     endif
   endfor
@@ -127,14 +134,14 @@ function pp = splinefit (x, y, breaks, varargin)
     if (0 < props.beta && props.beta < 1)
       args{end+1} = props.beta;
     else
-      error ("splinefit:invalidbeta", "invalid beta parameter (0 < BETA < 1)");
+      error ("Octave:splinefit:invalidbeta", "invalid beta parameter (0 < BETA < 1)");
     endif
   endif
   if (isfield (props, "order"))
     if (props.order >= 0)
       args{end+1} = props.order + 1;
     else
-      error ("splinefit:invalidorder", "invalid ORDER");
+      error ("Octave:splinefit:invalidorder", "invalid ORDER");
     endif
   endif
   if (isfield (props, "constraints"))

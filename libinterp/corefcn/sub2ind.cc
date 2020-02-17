@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2009-2019 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2009-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -111,7 +114,8 @@ ind = sub2ind ([3, 3], s1, s2)
   if (nargin < 2)
     print_usage ();
 
-  dim_vector dv = get_dim_vector (args(0), "sub2ind").redim (nargin - 1);
+  dim_vector dv = get_dim_vector (args(0), "sub2ind");
+
   Array<idx_vector> idxa (dim_vector (nargin-1, 1));
 
   for (int j = 0; j < nargin - 1; j++)
@@ -268,8 +272,7 @@ r = ind2sub (dims, ind)
     }
   catch (const octave::index_exception& e)
     {
-      error ("ind2sub: Invalid index %s. %s", e.idx ().c_str (),
-             e.details ().c_str ());
+      error ("ind2sub: invalid index %s", e.what ());
     }
 
   return retval;
@@ -312,5 +315,5 @@ r = ind2sub (dims, ind)
 
 %!error <DIMS must contain integers> ind2sub ([2, -2], 3);
 %!error <index out of range> ind2sub ([2, 2, 2], 1:9);
-%!error <Invalid index> ind2sub ([2, 2, 2], -1:8);
+%!error <invalid index> ind2sub ([2, 2, 2], -1:8);
 */

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -41,6 +44,13 @@ namespace octave
 {
   // Declarations (global, static, etc.).
 
+  tree_decl_elt::tree_decl_elt (tree_identifier *i, tree_expression *e)
+    : type (unknown), m_id (i), m_expr (e)
+  {
+    if (! m_id)
+      error ("tree_decl_elt: invalid ID");
+  }
+
   tree_decl_elt::~tree_decl_elt (void)
   {
     delete m_id;
@@ -50,7 +60,7 @@ namespace octave
   tree_decl_elt *
   tree_decl_elt::dup (symbol_scope& scope) const
   {
-    return new tree_decl_elt (m_id ? m_id->dup (scope) : nullptr,
+    return new tree_decl_elt (m_id->dup (scope),
                               m_expr ? m_expr->dup (scope) : nullptr);
   }
 

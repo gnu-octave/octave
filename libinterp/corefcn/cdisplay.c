@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2009-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2009-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -55,6 +58,9 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
 
   *dpy_avail = 0;
 
+  double ht_mm = 0.0;
+  double wd_mm = 0.0;
+
 #if defined (OCTAVE_USE_WINDOWS_API)
 
   octave_unused_parameter (dpy_name);
@@ -68,11 +74,8 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
       *ht = GetDeviceCaps (hdc, VERTRES);
       *wd = GetDeviceCaps (hdc, HORZRES);
 
-      double ht_mm = GetDeviceCaps (hdc, VERTSIZE);
-      double wd_mm = GetDeviceCaps (hdc, HORZSIZE);
-
-      *rx = *wd * 25.4 / wd_mm;
-      *ry = *ht * 25.4 / ht_mm;
+      ht_mm = GetDeviceCaps (hdc, VERTSIZE);
+      wd_mm = GetDeviceCaps (hdc, HORZSIZE);
 
       *dpy_avail = 1;
     }
@@ -118,11 +121,8 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
          values, but the CGFloat typedef is not present on older
          systems, so use double instead.  */
 
-      double ht_mm = sz_mm.height;
-      double wd_mm = sz_mm.width;
-
-      *rx = *wd * 25.4 / wd_mm;
-      *ry = *ht * 25.4 / ht_mm;
+      ht_mm = sz_mm.height;
+      wd_mm = sz_mm.width;
 
       *dpy_avail = 1;
     }
@@ -149,18 +149,15 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
 
           int screen_number = XScreenNumberOfScreen (screen);
 
-          double ht_mm = DisplayHeightMM (display, screen_number);
-          double wd_mm = DisplayWidthMM (display, screen_number);
+          ht_mm = DisplayHeightMM (display, screen_number);
+          wd_mm = DisplayWidthMM (display, screen_number);
 
-          *rx = *wd * 25.4 / wd_mm;
-          *ry = *ht * 25.4 / ht_mm;
+          *dpy_avail = 1;
         }
       else
         msg = "X11 display has no default screen";
 
       XCloseDisplay (display);
-
-      *dpy_avail = 1;
     }
   else
     msg = "unable to open X11 DISPLAY";
@@ -177,6 +174,27 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
   msg = "no graphical display found";
 
 #endif
+
+  if (*dpy_avail)
+    {
+      if (wd_mm == 0 || ht_mm == 0)
+        {
+          msg = "screen width or height reported to be zero";
+
+          // Sizes reported as zero have been found on some systems.
+          // For example, X/Wayland running inside virtualbox.
+
+          // Guess a DPI.
+
+          *rx = 96.0;
+          *ry = 96.0;
+        }
+      else
+        {
+          *rx = *wd * 25.4 / wd_mm;
+          *ry = *ht * 25.4 / ht_mm;
+        }
+    }
 
   return msg;
 }

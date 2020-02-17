@@ -1,12 +1,13 @@
 FCN_FILE_DIRS += \
-  scripts/miscellaneous \
+  %reldir% \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/__publish_html_output__.m \
   %reldir%/private/__publish_latex_output__.m \
   %reldir%/private/__w2mpth__.m \
-  %reldir%/private/display_info_file.m
+  %reldir%/private/display_info_file.m \
+  %reldir%/private/tar_is_bsd.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/bug_report.m \
@@ -36,6 +37,7 @@ FCN_FILE_DIRS += \
   %reldir%/isfile.m \
   %reldir%/isfolder.m \
   %reldir%/ismac.m \
+  %reldir%/ismethod.m \
   %reldir%/ispc.m \
   %reldir%/isunix.m \
   %reldir%/license.m \
@@ -50,6 +52,25 @@ FCN_FILE_DIRS += \
   %reldir%/mkdir.m \
   %reldir%/mkoctfile.m \
   %reldir%/movefile.m \
+  %reldir%/mustBeFinite.m \
+  %reldir%/mustBeGreaterThan.m \
+  %reldir%/mustBeGreaterThanOrEqual.m \
+  %reldir%/mustBeInteger.m \
+  %reldir%/mustBeLessThan.m \
+  %reldir%/mustBeLessThanOrEqual.m \
+  %reldir%/mustBeMember.m \
+  %reldir%/mustBeNegative.m \
+  %reldir%/mustBeNonempty.m \
+  %reldir%/mustBeNonNan.m \
+  %reldir%/mustBeNonnegative.m \
+  %reldir%/mustBeNonpositive.m \
+  %reldir%/mustBeNonsparse.m \
+  %reldir%/mustBeNonzero.m \
+  %reldir%/mustBeNumeric.m \
+  %reldir%/mustBeNumericOrLogical.m \
+  %reldir%/mustBePositive.m \
+  %reldir%/mustBeReal.m \
+  %reldir%/namedargs2cell.m \
   %reldir%/namelengthmax.m \
   %reldir%/nargchk.m \
   %reldir%/narginchk.m \
@@ -78,6 +99,7 @@ FCN_FILE_DIRS += \
   %reldir%/unzip.m \
   %reldir%/validateattributes.m \
   %reldir%/ver.m \
+  %reldir%/verLessThan.m \
   %reldir%/version.m \
   %reldir%/what.m \
   %reldir%/zip.m

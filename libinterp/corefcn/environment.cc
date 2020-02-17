@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2017-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2017-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -38,35 +41,35 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "variables.h"
 
-static void append_to_shell_path (const std::string& exec_path)
-{
-  // FIXME: should there be a way to remove a previous setting from
-  // PATH?
-
-  if (exec_path.empty ())
-    return;
-
-  // FIXME: should we really be modifying PATH in the environment?
-
-  std::string shell_path = octave::sys::env::getenv ("PATH");
-
-  if (shell_path.empty ())
-    octave::sys::env::putenv ("PATH", exec_path);
-  else
-    {
-      // If PATH doesn't already have exec_path, append it.
-      // FIXME: should we search for the elements individually, and
-      // only append those that are missing?
-
-      std::string path_sep = octave::directory_path::path_sep_str ();
-
-      if (shell_path.find (exec_path) == std::string::npos)
-        octave::sys::env::putenv ("PATH", shell_path + path_sep + exec_path);
-    }
-}
-
 namespace octave
 {
+  static void append_to_shell_path (const std::string& exec_path)
+  {
+    // FIXME: should there be a way to remove a previous setting from
+    // PATH?
+
+    if (exec_path.empty ())
+      return;
+
+    // FIXME: should we really be modifying PATH in the environment?
+
+    std::string shell_path = sys::env::getenv ("PATH");
+
+    if (shell_path.empty ())
+      sys::env::putenv ("PATH", exec_path);
+    else
+      {
+        // If PATH doesn't already have exec_path, append it.
+        // FIXME: should we search for the elements individually, and
+        // only append those that are missing?
+
+        std::string path_sep = directory_path::path_sep_str ();
+
+        if (shell_path.find (exec_path) == std::string::npos)
+          sys::env::putenv ("PATH", shell_path + path_sep + exec_path);
+      }
+  }
+
   octave_value
   environment::editor (const octave_value_list& args, int nargout)
   {

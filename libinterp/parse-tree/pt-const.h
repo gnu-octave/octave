@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pt_const_h)
 #define octave_pt_const_h 1
@@ -30,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value_list;
 
+#include "error.h"
 #include "ov.h"
 #include "pt-bp.h"
 #include "pt-exp.h"
@@ -38,6 +42,7 @@ class octave_value_list;
 namespace octave
 {
   class symbol_scope;
+  class tree_evaluator;
 
   class tree_constant : public tree_expression
   {
@@ -96,6 +101,19 @@ namespace octave
 
     std::string original_text (void) const { return m_orig_text; }
 
+    octave_value evaluate (tree_evaluator&, int nargout = 1)
+    {
+      if (nargout > 1)
+        error ("invalid number of output arguments for constant expression");
+
+      return value ();
+    }
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
+
   private:
 
     // The actual value that this constant refers to.
@@ -105,12 +123,5 @@ namespace octave
     std::string m_orig_text;
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_constant' instead")
-typedef octave::tree_constant tree_constant;
-
-#endif
 
 #endif

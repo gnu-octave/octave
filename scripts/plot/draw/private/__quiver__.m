@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{hg} =} __quiver__ (@dots{})
@@ -51,7 +58,17 @@ function hg = __quiver__ (varargin)
     if (is3d)
       w = varargin{ioff++};
     endif
+    if (is3d)
+      if (! size_equal (z, u, v, w))
+        error ("quiver3: Z, U, V, and W must be the same size");
+      endif
+    else
+      if (! size_equal (u, v))
+        error ("quiver: U and V must be the same size");
+      endif
+    endif
     [x, y] = meshgrid (1:columns (u), 1:rows (u));
+
     if (nargin >= ioff && isnumeric (varargin{ioff})
         && isscalar (varargin{ioff}))
       autoscale = varargin{ioff++};
@@ -75,6 +92,16 @@ function hg = __quiver__ (varargin)
         [x, y] = meshgrid (x, y);
       endif
     endif
+    if (is3d)
+      if (! size_equal (x, y, z, u, v, w))
+        error ("quiver3: X, Y, Z, U, V, and W must be the same size");
+      endif
+    else
+      if (! size_equal (x, y, u, v))
+        error ("quiver: X, Y, U, and V must be the same size");
+      endif
+    endif
+
     if (nargin >= ioff && isnumeric (varargin{ioff})
         && isscalar (varargin{ioff}))
       autoscale = varargin{ioff++};
@@ -162,7 +189,7 @@ function hg = __quiver__ (varargin)
     endif
 
     ## Must occur after __next_line_color__ in order to work correctly.
-    hg = hggroup ();
+    hg = hggroup ("__appdata__", struct ("__creator__", "__quiver__"));
     if (is3d)
       args = __add_datasource__ ("quiver3", hg,
                                  {"x", "y", "z", "u", "v", "w"}, args{:});
@@ -373,8 +400,8 @@ function update_data (h, ~)
     zend = z + w(:);
   endif
 
-  set (kids(3), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
-  set (kids(3), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
+  set (kids(3), "xdata", [x.'; xend.'; NaN(1, length (x))](:),
+                "ydata", [y.'; yend.'; NaN(1, length (y))](:));
   if (is3d)
     set (kids(3), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
   endif
@@ -397,20 +424,19 @@ function update_data (h, ~)
     yarrw2 = ytmp + u(:) * arrowsize / 3;
   endif
 
-  set (kids(2), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
-  set (kids(2), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
+  set (kids(2), "xdata", [x.'; xend.'; NaN(1, length (x))](:),
+                "ydata", [y.'; yend.'; NaN(1, length (y))](:));
   if (is3d)
     set (kids(2), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
   endif
 
-  set (kids(2), "xdata", [xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:));
-  set (kids(2), "ydata", [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:));
+  set (kids(2), "xdata", [xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
+                "ydata", [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:));
   if (is3d)
     set (kids(2), "zdata", [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:));
   endif
 
-  set (kids(1), "xdata", x);
-  set (kids(1), "ydata", y);
+  set (kids(1), "xdata", x, "ydata", y);
   if (is3d)
     set (kids(1), "zdata", z);
   endif

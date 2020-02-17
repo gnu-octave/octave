@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Markus Muetzel
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{fvc} =} isocaps (@var{v}, @var{isoval})
@@ -103,8 +110,6 @@
 ## @seealso{isosurface, isonormals, patch}
 ## @end deftypefn
 
-## Author: mmuetzel
-
 function varargout = isocaps (varargin)
 
   if (nargin < 1 || nargin > 8)
@@ -162,7 +167,7 @@ function varargout = isocaps (varargin)
   if (! isempty (vertices))
     ## interpolate data at the vertices for coloring of the end-cap
     fvcdata = interp3 (x, y, z, v,
-                       vertices(:,1), vertices(:,2), vertices(:,3))';
+                       vertices(:,1), vertices(:,2), vertices(:,3));
   endif
 
   switch (nargout)
@@ -366,11 +371,10 @@ endfunction
 
 
 %!demo
-%! clf;
 %! isoval = .4;
 %! lin = linspace (0, 1.2, 15);
 %! [x, y, z] = meshgrid (lin, lin, lin);
-%! v = abs ((x-.45).^2 + (y-.55).^2 + (z-.8).^2);
+%! v = abs ((x-0.45).^2 + (y-0.55).^2 + (z-0.8).^2);
 %! hf = clf;
 %! ha = axes;
 %! view (3);  box off;
@@ -381,22 +385,18 @@ endfunction
 %! isonormals (x, y, z, v, p_iso);
 %! fvc_xmin = isocaps (x, y, z, v, isoval, "xmin", "b");
 %! patch (fvc_xmin, "FaceColor", "interp", "EdgeColor", "none", ...
-%!        "FaceLighting", "gouraud", ...
-%!        "VertexNormals", repmat([-1 0 0], size (fvc_xmin.vertices, 1), 1));
+%!        "FaceLighting", "gouraud");
 %! fvc_ymin = isocaps (x, y, z, v, isoval, "ymin", "b");
 %! patch (fvc_ymin, "FaceColor", "interp", "EdgeColor", "none", ...
-%!        "FaceLighting", "gouraud", ...
-%!        "VertexNormals", repmat([0 -1 0], size (fvc_ymin.vertices, 1), 1));
+%!        "FaceLighting", "gouraud");
 %! fvc_zmax = isocaps (x, y, z, v, isoval, "zmax", "b");
 %! patch (fvc_zmax, "FaceColor", "interp", "EdgeColor", "none", ...
-%!        "FaceLighting", "gouraud", ...
-%!        "VertexNormals", repmat([0 -1 0], size (fvc_zmax.vertices, 1), 1));
+%!        "FaceLighting", "gouraud");
 %! axis equal;
 %! light ();
-%! title ({"isocaps()", "sphere with 6 end-caps"});
+%! title ({"isocaps()", "sphere with 3 end-caps"});
 
 %!demo
-%! clf;
 %! v = smooth3 (rand (6, 8, 4));
 %! isoval = .5;
 %! x = 1:3:22;  y = -14:5:11;  z = linspace (16, 18, 4);

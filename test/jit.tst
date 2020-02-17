@@ -1,4 +1,9 @@
-## Copyright (C) 2012-2019 Max Brister
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,8 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
-
-## Author: Max Brister <max@2bass.com>
+##
+########################################################################
 
 ## Note: unit tests involving try/catch blocks are currently disabled since
 ##   the JIT in its current form is not compatible with exception handling.
@@ -377,16 +382,10 @@
 %! assert (jit_failcnt, 0);
 
 %!function test_divide ()
-%! state = warning ("query", "Octave:divide-by-zero").state;
-%! unwind_protect
-%!   warning ("error", "Octave:divide-by-zero");
-%!   for i=1:1e5
-%!     a = 1;
-%!     a / 0;
-%!   endfor
-%! unwind_protect_cleanup
-%!   warning (state, "Octave:divide-by-zero");
-%! end_unwind_protect
+%! for i=1:1e5
+%!   a = 1;
+%!   a / 0;
+%! endfor
 %!endfunction
 
 # %!testif HAVE_LLVM

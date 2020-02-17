@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi})
@@ -35,8 +42,6 @@
 ## values.
 ## @seealso{griddata, griddata3, delaunayn}
 ## @end deftypefn
-
-## Author: David Bateman <dbateman@free.fr>
 
 function yi = griddatan (x, y, xi, method = "linear", varargin)
 
@@ -72,16 +77,17 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
 
     ## only keep the points within triangles.
     valid = ! isnan (tri_list);
-    tri_list = tri_list(! isnan (tri_list));
-    bary_list = bary_list(! isnan (tri_list), :);
+    tri_list = tri_list(valid);
+    bary_list = bary_list(valid, :);
     nr_t = rows (tri_list);
 
-    ## assign x,y for each point of simplex
-    xt = reshape (x(tri(tri_list,:),:), [nr_t, n+1, n]);
-    yt = y(tri(tri_list,:));
-
     ## Use barycentric coordinate of point to calculate yi
-    yi(valid) = sum (y(tri(tri_list,:)) .* bary_list, 2);
+    if (isscalar (tri_list))
+      ## Special case required by orientation rules for vector/vector index.
+      yi(valid) = sum (y(tri(tri_list,:)).' .* bary_list, 2);
+    else
+      yi(valid) = sum (y(tri(tri_list,:)) .* bary_list, 2);
+    endif
 
   else
     error ("griddatan: unknown interpolation METHOD");
@@ -109,3 +115,9 @@ endfunction
 %! zz = griddatan (x,y,xi,"nearest");
 %! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2),"nearest");
 %! assert (zz, zz2, 1e-10);
+
+%!testif HAVE_QHULL <*56515>
+%! x = [ 0, 0; 1, 1; 0, 1; 1, 0 ];
+%! y = [ 1; 2; 3; 4 ];
+%! xi = [ .5, .5 ];
+%! yi = griddatan (x, y, xi);

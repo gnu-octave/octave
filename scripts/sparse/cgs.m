@@ -1,6 +1,9 @@
-## Copyright (C) 2016-2019 Cristiano Dorigo, Octave Arena
-## Copyright (C) 2008-2019 Radek Salac
-## Copyright (C) 2012 Carlo de Falco
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -17,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} cgs (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0}, @dots{})
@@ -182,12 +187,8 @@
 ##
 ## References:
 ##
-## @enumerate
-##
-## @item @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear Systems},
+## @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear Systems},
 ## Second edition, 2003, SIAM
-##
-## @end enumerate
 ##
 ## @seealso{pcg, bicgstab, bicg, gmres, qmr, tfqmr}
 ## @end deftypefn

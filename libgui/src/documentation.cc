@@ -1,36 +1,36 @@
-/*
-
-Copyright (C) 2018-2019 Torsten <mttl@maibox.org>
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2018-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#include "defaults.h"
-#include "file-ops.h"
-#include "oct-env.h"
-
 #include <QAction>
 #include <QApplication>
 #include <QCompleter>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -46,17 +46,22 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 
 #include "documentation.h"
-#include "resource-manager.h"
+#include "gui-preferences-global.h"
+#include "gui-preferences-sc.h"
+#include "octave-qobject.h"
 #include "shortcut-manager.h"
-#include "gui-preferences.h"
+
+#include "defaults.h"
+#include "file-ops.h"
+#include "oct-env.h"
 
 namespace octave
 {
   // The documentation splitter, which is the main widget
   // of the doc dock widget
-  documentation::documentation (QWidget *p)
+  documentation::documentation (QWidget *p, base_qobject& oct_qobj)
     : QSplitter (Qt::Horizontal, p),
-      m_doc_widget (p),
+      m_octave_qobj (oct_qobj), m_doc_widget (p),
       m_tool_bar (new QToolBar (p)),
       m_query_string (QString ()),
       m_prev_pages_menu (new QMenu (p)),
@@ -133,19 +138,20 @@ namespace octave
     QLabel *find_label = new QLabel (tr ("Find:"), find_footer);
     m_find_line_edit = new QLineEdit (find_footer);
     connect (m_find_line_edit, SIGNAL (returnPressed (void)),
-             this, SLOT(find_forward (void)));
+             this, SLOT(find (void)));
     connect (m_find_line_edit, SIGNAL (textEdited (const QString&)),
              this, SLOT(find_forward_from_anchor (const QString&)));
     QToolButton *forward_button = new QToolButton (find_footer);
     forward_button->setText (tr ("Search forward"));
     forward_button->setToolTip (tr ("Search forward"));
-    forward_button->setIcon (resource_manager::icon ("go-down"));
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    forward_button->setIcon (rmgr.icon ("go-down"));
     connect (forward_button, SIGNAL (pressed (void)),
-             this, SLOT(find_forward (void)));
+             this, SLOT(find (void)));
     QToolButton *backward_button = new QToolButton (find_footer);
     backward_button->setText (tr ("Search backward"));
     backward_button->setToolTip (tr ("Search backward"));
-    backward_button->setIcon (resource_manager::icon ("go-up"));
+    backward_button->setIcon (rmgr.icon ("go-up"));
     connect (backward_button, SIGNAL (pressed (void)),
              this, SLOT(find_backward (void)));
     QHBoxLayout *h_box_find_footer = new QHBoxLayout (find_footer);
@@ -162,11 +168,11 @@ namespace octave
     v_box_browser_find->addWidget (find_footer);
     browser_find->setLayout (v_box_browser_find);
 
-    notice_settings (resource_manager::get_settings ());
+    notice_settings (rmgr.get_settings ());
 
     m_findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (m_findnext_shortcut, SIGNAL (activated (void)),
-             this, SLOT(find_forward (void)));
+             this, SLOT(find (void)));
     m_findprev_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (m_findprev_shortcut, SIGNAL (activated (void)),
              this, SLOT(find_backward (void)));
@@ -199,8 +205,7 @@ namespace octave
         m_filter->setInsertPolicy (QComboBox::NoInsert);
         m_filter->setMaxCount (10);
         m_filter->setMaxVisibleItems (10);
-        m_filter->setSizeAdjustPolicy (
-                                       QComboBox::AdjustToMinimumContentsLengthWithIcon);
+        m_filter->setSizeAdjustPolicy (QComboBox::AdjustToMinimumContentsLengthWithIcon);
         QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
         m_filter->setSizePolicy (sizePol);
         m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
@@ -265,8 +270,8 @@ namespace octave
       }
 
     // Initial view: Contents
-    m_doc_browser->setSource (QUrl (
-        "qthelp://org.octave.interpreter-1.0/doc/octave.html/index.html"));
+    m_doc_browser->setSource
+      (QUrl ("qthelp://org.octave.interpreter-1.0/doc/octave.html/index.html"));
   }
 
   documentation::~documentation (void)
@@ -284,7 +289,7 @@ namespace octave
         dir.setFilter (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden);
         QStringList namefilter;
         namefilter.append ("*" + bname + "*");
-        foreach (QFileInfo fi, dir.entryInfoList (namefilter))
+        for (const auto& fi : dir.entryInfoList (namefilter))
           {
             std::string file_name = fi.absoluteFilePath ().toStdString ();
             sys::recursive_rmdir (file_name);
@@ -318,12 +323,13 @@ namespace octave
   void documentation::construct_tool_bar (void)
   {
     // Home, Previous, Next
-    m_action_go_home = add_action (resource_manager::icon ("go-home"),
-                                   tr ("Go home"), SLOT (home (void)),
-                                   m_doc_browser, m_tool_bar);
-    m_action_go_prev = add_action (resource_manager::icon ("go-previous"),
-                                   tr ("Go back"), SLOT (backward (void)),
-                                   m_doc_browser, m_tool_bar);
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    m_action_go_home
+      = add_action (rmgr.icon ("go-home"), tr ("Go home"), SLOT (home (void)),
+                    m_doc_browser, m_tool_bar);
+    m_action_go_prev
+      = add_action (rmgr.icon ("go-previous"), tr ("Go back"),
+                    SLOT (backward (void)), m_doc_browser, m_tool_bar);
     m_action_go_prev->setEnabled (false);
 
     // popdown menu with prev pages files
@@ -335,9 +341,9 @@ namespace octave
     popdown_button_prev_pages->setCheckable (false);
     popdown_button_prev_pages->setArrowType(Qt::DownArrow);
     m_tool_bar->addWidget (popdown_button_prev_pages);
-    m_action_go_next = add_action (resource_manager::icon ("go-next"),
-                                   tr ("Go forward"), SLOT (forward (void)),
-                                   m_doc_browser, m_tool_bar);
+    m_action_go_next
+      = add_action (rmgr.icon ("go-next"), tr ("Go forward"),
+                    SLOT (forward (void)), m_doc_browser, m_tool_bar);
     m_action_go_next->setEnabled (false);
 
     // popdown menu with prev pages files
@@ -378,21 +384,21 @@ namespace octave
 
     // Find
     m_tool_bar->addSeparator ();
-    m_action_find = add_action (resource_manager::icon ("edit-find"),
-                                   tr ("Find"), SLOT (activate_find (void)),
-                                   this, m_tool_bar);
+    m_action_find
+      = add_action (rmgr.icon ("edit-find"), tr ("Find"),
+                    SLOT (activate_find (void)), this, m_tool_bar);
 
     // Zoom
     m_tool_bar->addSeparator ();
-    m_action_zoom_in = add_action (resource_manager::icon ("zoom-in"),
-                                   tr ("Zoom in"), SLOT (zoom_in (void)),
-                                   m_doc_browser, m_tool_bar);
-    m_action_zoom_out = add_action (resource_manager::icon ("zoom-out"),
-                                    tr ("Zoom out"), SLOT (zoom_out (void)),
-                                    m_doc_browser, m_tool_bar);
-    m_action_zoom_original = add_action (resource_manager::icon ("zoom-original"),
-                                   tr ("Zoom original"), SLOT (zoom_original (void)),
-                                   m_doc_browser, m_tool_bar);
+    m_action_zoom_in
+      = add_action (rmgr.icon ("zoom-in"), tr ("Zoom in"),
+                    SLOT (zoom_in (void)), m_doc_browser, m_tool_bar);
+    m_action_zoom_out
+      = add_action (rmgr.icon ("zoom-out"), tr ("Zoom out"),
+                    SLOT (zoom_out (void)), m_doc_browser, m_tool_bar);
+    m_action_zoom_original
+      = add_action (rmgr.icon ("zoom-original"), tr ("Zoom original"),
+                    SLOT (zoom_original (void)), m_doc_browser, m_tool_bar);
   }
 
   void documentation::global_search (void)
@@ -499,7 +505,7 @@ namespace octave
                     emit show_single_result (url);
                   }
               }
-           }
+          }
 
         m_internal_search = QString ();
       }
@@ -524,7 +530,7 @@ namespace octave
       m_doc_browser->moveCursor (QTextCursor::Start);
     else
       {
-        // Go to to first occurrence of search text. Going to the end and then
+        // Go to to first occurrence of search text.  Going to the end and then
         // search backwards until the last occurrence ensures the search text
         // is visible in the first line of the visible part of the text.
         m_doc_browser->moveCursor (QTextCursor::End);
@@ -556,21 +562,20 @@ namespace octave
         selected.append (selected_item);
       }
 
-      // Apply selection and move back to the beginning
-      m_doc_browser->setExtraSelections (selected);
-      m_doc_browser->moveCursor (QTextCursor::Start);
+    // Apply selection and move back to the beginning
+    m_doc_browser->setExtraSelections (selected);
+    m_doc_browser->moveCursor (QTextCursor::Start);
   }
 
-  void documentation::notice_settings (const QSettings *settings)
+  void documentation::notice_settings (const gui_settings *settings)
   {
-    // If m_help_engine is not defined, the object accessed by this method
-    // are not valid. Thus, just return in this case
+    // If m_help_engine is not defined, the objects accessed by this method
+    // are not valid.  Thus, just return in this case.
     if (! m_help_engine)
       return;
 
     // Icon size in the toolbar.
-    int size_idx = settings->value (global_icon_size.key,
-                                    global_icon_size.def).toInt ();
+    int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -578,15 +583,17 @@ namespace octave
     m_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
     // Shortcuts
-    shortcut_manager::set_shortcut (m_action_find, "editor_edit:find_replace");
-    shortcut_manager::shortcut (m_findnext_shortcut, "editor_edit:find_next");
-    shortcut_manager::shortcut (m_findprev_shortcut, "editor_edit:find_previous");
-    shortcut_manager::set_shortcut (m_action_zoom_in, "editor_view:zoom_in");
-    shortcut_manager::set_shortcut (m_action_zoom_out, "editor_view:zoom_out");
-    shortcut_manager::set_shortcut (m_action_zoom_original, "editor_view:zoom_normal");
-    shortcut_manager::set_shortcut (m_action_go_home, "doc_browser:go_home");
-    shortcut_manager::set_shortcut (m_action_go_prev, "doc_browser:go_back");
-    shortcut_manager::set_shortcut (m_action_go_next, "doc_browser:go_next");
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
+    scmgr.set_shortcut (m_action_find, sc_edit_edit_find_replace);
+    scmgr.shortcut (m_findnext_shortcut, sc_edit_edit_find_next);
+    scmgr.shortcut (m_findprev_shortcut, sc_edit_edit_find_previous);
+    scmgr.set_shortcut (m_action_zoom_in, sc_edit_view_zoom_in);
+    scmgr.set_shortcut (m_action_zoom_out, sc_edit_view_zoom_out);
+    scmgr.set_shortcut (m_action_zoom_original, sc_edit_view_zoom_normal);
+    scmgr.set_shortcut (m_action_go_home, sc_doc_go_home);
+    scmgr.set_shortcut (m_action_go_prev, sc_doc_go_back);
+    scmgr.set_shortcut (m_action_go_next, sc_doc_go_next);
   }
 
   void documentation::copyClipboard (void)
@@ -690,21 +697,32 @@ namespace octave
     m_filter->setCurrentIndex (0);
   }
 
-  void documentation::find_forward (void)
-  {
-    if (! m_help_engine)
-      return;
-
-    m_doc_browser->find (m_find_line_edit->text ());
-    record_anchor_position ();
-  }
-
   void documentation::find_backward (void)
   {
+    find (true);
+  }
+
+  void documentation::find (bool backward)
+  {
     if (! m_help_engine)
       return;
 
-    m_doc_browser->find (m_find_line_edit->text (), QTextDocument::FindBackward);
+    QTextDocument::FindFlags find_flags = 0;
+    if (backward)
+      find_flags = QTextDocument::FindBackward;
+
+    if (! m_doc_browser->find (m_find_line_edit->text (), find_flags))
+      {
+        // Nothing was found, restart search from the begin or end of text
+        QTextCursor textcur = m_doc_browser->textCursor ();
+        if (backward)
+          textcur.movePosition (QTextCursor::End);
+        else
+          textcur.movePosition (QTextCursor::Start);
+        m_doc_browser->setTextCursor (textcur);
+        m_doc_browser->find (m_find_line_edit->text (), find_flags);
+      }
+
     record_anchor_position ();
   }
 
@@ -713,10 +731,18 @@ namespace octave
     if (! m_help_engine)
       return;
 
+    // Search from the current position
     QTextCursor textcur = m_doc_browser->textCursor ();
     textcur.setPosition (m_search_anchor_position);
     m_doc_browser->setTextCursor (textcur);
-    m_doc_browser->find (text);
+
+    if (! m_doc_browser->find (text))
+      {
+        // Nothing was found, restart search from the beginning
+        textcur.movePosition (QTextCursor::Start);
+        m_doc_browser->setTextCursor (textcur);
+        m_doc_browser->find (text);
+      }
   }
 
   void documentation::record_anchor_position (void)
@@ -817,7 +843,7 @@ namespace octave
         QString title = m_doc_browser->historyTitle (prev_next*(i+1));
         title.remove (QRegExp ("\\s*\\(*GNU Octave \\(version [^\\)]*\\)[: \\)]*"));
 
-        // Sinve the title only contains the section name and not the
+        // Since the title only contains the section name and not the
         // specific anchor, extract the latter from the url and append
         // it to the title
         QString url = m_doc_browser->historyUrl (prev_next*(i+1)).toString ();
@@ -833,7 +859,7 @@ namespace octave
             anchor.remove ("Concept-Index_cp_letter-");
             anchor.replace ("-"," ");
 
-            // replace encoded special chars by there unencoded versions
+            // replace encoded special chars by their unencoded versions
             QRegExp rx = QRegExp ("_00([0-7][0-9a-f])");
             int pos = 0;
             while ((pos = rx.indexIn(anchor, pos)) != -1)
@@ -890,7 +916,7 @@ namespace octave
       QDesktopServices::openUrl (url);
   }
 
-  void documentation_browser::notice_settings (const QSettings *)
+  void documentation_browser::notice_settings (const gui_settings *)
   { }
 
   QVariant documentation_browser::loadResource (int type, const QUrl &url)

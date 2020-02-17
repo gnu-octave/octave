@@ -1,4 +1,9 @@
-## Copyright (C) 2014-2019 Pantxo Diribarne
+########################################################################
+##
+## Copyright (C) 2014-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{retval} =} genpropdoc (@var{OBJNAME}, @var{FILENAME})
@@ -503,11 +510,24 @@ units (ex: @code{\"inches\"}) and @code{\"pixels\"} is dependent on the \
 @code{screenpixelsperinch} property of the root object.";
 
       case "pointer"
-        s.doc = doc_unused;
+        s.doc = "Name of the mouse pointer shape associated with the canvas \
+of the figure.  When __prop__ is \"custom\", the shape is determined by \
+the @code{pointershapecdata} property.\n\n\
+__prop__ has no effect when the figure is in zoom, pan, or rotate mode. \
+In this case, Octave automatically uses a pointer shape appropriate \
+to the mode.";
+
       case "pointershapecdata"
-        s.doc = doc_unused;
+        s.doc ="m-by-m matrix defining a custom pointer.  Each \
+element defines a pixel with the element (1,1) representing the \
+top-left pixel.  A value of 1 is colored black, a value of 2 is colored white, \
+and all other values are rendered as transparent.";
+        s.valid = "16-by-16 or 32-by-32 Matrix";
+
       case "pointershapehotspot"
-        s.doc = doc_unused;
+        s.doc ="For custom pointers only __prop__ defines the row and column \
+of the pixel in @code{pointershapecdata} that is used as the pointer location.";
+        s.valid = valid_2elvec;
 
       case "position"
         s.doc = "Specify the position and size of the figure canvas.  \
@@ -536,7 +556,19 @@ changing its @qcode{\"position\"} property.";
         s.valid = valid_fcn;
 
       case "selectiontype"
-        ## FIXME: docstring explaining what "{normal}|open|alt|extend" mean.
+        s.doc = "Selection type of the latest mouse click.\n\n\
+__prop__ may take different values depending on the combination of mouse \
+button and keyboard modifier that were used:\n\
+@table @code\n\
+@item normal:\n\
+Left-click.\n\
+@item alt:\n\
+Right-click or Ctrl+Left-click.\n\
+@item extend:\n\
+Shitf+Left-click, Middle click, or combined Left-click and Right-click.\n\
+@item open:\n\
+Double Left-click.\n\
+@end table";
 
       case "sizechangedfcn"
         s.doc = "Callback triggered when the figure window size is changed.\
@@ -581,7 +613,21 @@ the figure has focus.\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "windowscrollwheelfcn"
-        s.doc = doc_unused;
+        s.doc = "Function that is executed when a user manipulates \
+the mouse wheel over this figure.  \
+The function is called with two input arguments.  The first \
+argument holds the handle of the calling figure.  The second argument holds \
+an event structure which has the following members:\n\
+@table @code\n\
+@item VerticalScrollCount:\n\
+The number of wheel steps, typically 1 when scrolling down and -1 when \
+scrolling up.\n\
+@item VerticalScrollAmount:\n\
+The number of lines a wheel step should scroll.  This value is always 3.\n\
+@item EventName:\n\
+The event name which is \"WindowScrollWheel\".\n\
+@end table\
+\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "windowstyle"
@@ -696,11 +742,11 @@ to be the same as the length of 2 units on the y-axis.  \
         s.doc = doc_fontsize;
         s.valid = "scalar";
 
+      case "fontsmoothing"
+        s.doc = "Control whether any text associated with __objname__ is anti-aliased.";
+
       case "fontunits"
         s.doc = doc_fontunits;
-
-      case "fontsmoothing"
-        s.doc = doc_unused;
 
       case "fontweight"
         s.doc = doc_fontweight;
@@ -1081,6 +1127,9 @@ and location of the text string.";
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
+
+      case "fontsmoothing"
+        s.doc = "Control whether anti-aliasing is used when rendering text.";
 
       case "fontsize"
         s.doc = doc_fontsize;
@@ -1641,6 +1690,11 @@ point source (@qcode{\"local\"}).";
       case "cdata"
       case "enable"
       case "extent"
+        s.doc = "Size of the text string associated to the uicontrol \
+ returned in the form @code{[0 0 width height]} (the two first elements \
+are always zero).\n\n\
+For multi-line strings the returned @code{width} and @code{height} \
+indicate the size of the rectangle enclosing all lines.";
         s.valid = valid_4elvec;
         s.printdefault = false;
 

@@ -1,4 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,14 +20,14 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} acot (@var{x})
 ## Compute the inverse cotangent in radians for each element of @var{x}.
 ## @seealso{cot, acotd}
 ## @end deftypefn
-
-## Author: jwe
 
 function y = acot (x)
 

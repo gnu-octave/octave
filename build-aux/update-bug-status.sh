@@ -1,6 +1,11 @@
 #! /bin/sh
 #
-# Copyright (C) 2017-2019 John W. Eaton
+########################################################################
+#
+# Copyright (C) 2017-2020 The Octave Project Developers
+#
+# See the file COPYRIGHT.md in the top-level directory of this
+# distribution or <https://octave.org/copyright/>.
 #
 # This file is part of Octave.
 #
@@ -17,13 +22,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <https://www.gnu.org/licenses/>.
+#
+########################################################################
 
 bug_numbers=$(for file in "$@"; do
   sed -n "s/.*<\([0-9][0-9][0-9][0-9]*\)>.*/\1/p" "$file"
 done | sort -u)
 
 fixed_bug_numbers=$(for num in $bug_numbers; do
-  status=$(wget -q -O - https://octave.org/testfailure/?$num | sed -n 's/.*>Status:<\/span><\/span>&nbsp;<\/td><td valign="middle" width="35%">\([^<]*\)<.*/\1/p');
+  status=$(wget -q -O - https://octave.org/testfailure/?$num | tr -d '\n' | sed -n 's/.*>Status:<\/span><\/span>&nbsp;<\/td> *<td valign="middle" width="35%">\([^<]*\)<.*/\1/p');
   if [ "$status" = "Fixed" ]; then echo "$num"; fi
 done)
 

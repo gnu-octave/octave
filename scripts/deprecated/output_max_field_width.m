@@ -1,4 +1,9 @@
-## Copyright (C) 2018-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2018-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{val} =} output_max_field_width ()
@@ -41,7 +48,7 @@ function retval = output_max_field_width (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "output_max_field_width is obsolete and will be removed from a future version of Octave, please use output_precision instead");
+             "output_max_field_width is obsolete and will be removed from a future version of Octave, please use output_precision instead\n");
   endif
 
   retval = 20;

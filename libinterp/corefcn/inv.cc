@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -86,13 +89,17 @@ sparse matrix if possible.
           if (isfloat)
             {
               result = arg.float_complex_diag_matrix_value ().inverse (info);
-              if (nargout > 1)
+              if (info == -1)
+                frcond = 0.0f;
+              else if (nargout > 1)
                 frcond = arg.float_complex_diag_matrix_value ().rcond ();
             }
           else
             {
               result = arg.complex_diag_matrix_value ().inverse (info);
-              if (nargout > 1)
+              if (info == -1)
+                rcond = 0.0;
+              else if (nargout > 1)
                 rcond = arg.complex_diag_matrix_value ().rcond ();
             }
         }
@@ -101,13 +108,17 @@ sparse matrix if possible.
           if (isfloat)
             {
               result = arg.float_diag_matrix_value ().inverse (info);
-              if (nargout > 1)
+              if (info == -1)
+                frcond = 0.0f;
+              else if (nargout > 1)
                 frcond = arg.float_diag_matrix_value ().rcond ();
             }
           else
             {
               result = arg.diag_matrix_value ().inverse (info);
-              if (nargout > 1)
+              if (info == -1)
+                rcond = 0.0;
+              else if (nargout > 1)
                 rcond = arg.diag_matrix_value ().rcond ();
             }
         }
@@ -192,7 +203,7 @@ sparse matrix if possible.
   if (isfloat)
     {
       volatile float xrcond = frcond;
-      rcond_plus_one_eq_one = xrcond + 1.0F == 1.0F;
+      rcond_plus_one_eq_one = xrcond + 1.0f == 1.0f;
     }
   else
     {
@@ -228,10 +239,29 @@ sparse matrix if possible.
 %! assert (isa (xinv, "double"));
 %! assert (isa (rcond, "double"));
 
+%!testif HAVE_UMFPACK <*56232>
+%! fail ("A = inv (sparse ([1, 2;0 ,0]))", "warning", "matrix singular");
+%! assert (A, sparse ([Inf, Inf; 0, 0]));
+
+%!testif HAVE_UMFPACK <*56232>
+%! fail ("A = inv (sparse ([1i, 2;0 ,0]))", "warning", "matrix singular");
+%! assert (A, sparse ([Inf, Inf; 0, 0]));
+
+%!test
+%! fail ("A = inv (diag ([1, 0, 1]))", "warning", "matrix singular");
+%! assert (A, diag ([Inf, Inf, Inf]));
+
+%!error <inverse of the null matrix not defined> inv (diag ([0, 0]))
+%!error <inverse of the null matrix not defined> inv (diag (complex ([0, 0])))
+
+%!testif HAVE_UMFPACK <*56232>
+%! fail ("A = inv (sparse ([1, 0, 0; 0, 0, 0; 0, 0, 1]))", "warning", "matrix singular");
+%! assert (A, sparse ([Inf, 0, 0; 0, 0, 0; 0, 0, Inf]));
+
 %!error inv ()
 %!error inv ([1, 2; 3, 4], 2)
 %!error <must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
-
+%!error <inverse of the null matrix not defined> inv (sparse (2, 2, 0))
 */
 
 DEFALIAS (inverse, inv);

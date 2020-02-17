@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -31,11 +34,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "Container.h"
 #include "QtHandlesUtils.h"
 
+#include "graphics.h"
+#include "interpreter.h"
+
 namespace QtHandles
 {
 
-  ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton *btn)
-    : BaseControl (go, btn), m_blockCallback (false)
+  ButtonControl::ButtonControl (octave::base_qobject& oct_qobj,
+                                octave::interpreter& interp,
+                                const graphics_object& go,
+                                QAbstractButton *btn)
+    : BaseControl (oct_qobj, interp, go, btn), m_blockCallback (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 
@@ -92,8 +101,9 @@ namespace QtHandles
                     btn->setChecked (false);
                     if (up.style_is ("radiobutton") || up.style_is ("togglebutton"))
                       {
-                        Object *parent = Object::parentObject (gh_manager::get_object (
-                            up.get___myhandle__ ()));
+                        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+                        Object *parent = Object::parentObject (m_interpreter, gh_mgr.get_object (up.get___myhandle__ ()));
                         ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
                         if (btnGroup)
                           btnGroup->selectNothing ();
@@ -119,7 +129,9 @@ namespace QtHandles
 
     if (! m_blockCallback && btn->isCheckable ())
       {
-        gh_manager::auto_lock lock;
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+        octave::autolock guard (gh_mgr.graphics_lock ());
 
         uicontrol::properties& up = properties<uicontrol> ();
 
@@ -127,8 +139,8 @@ namespace QtHandles
         double newValue = (checked ? up.get_max () : up.get_min ());
 
         if (oldValue.numel () != 1 || (newValue != oldValue(0)))
-          gh_manager::post_set (m_handle, "value", newValue, false);
-        gh_manager::post_callback (m_handle, "callback");
+          emit gh_set_event (m_handle, "value", newValue, false);
+        emit gh_callback_event (m_handle, "callback");
       }
   }
 
@@ -138,7 +150,7 @@ namespace QtHandles
     QAbstractButton *btn = qWidget<QAbstractButton> ();
 
     if (! btn->isCheckable ())
-      gh_manager::post_callback (m_handle, "callback");
+      emit gh_callback_event (m_handle, "callback");
   }
 
 };

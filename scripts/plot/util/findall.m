@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 Bill Denney
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{h} =} findall ()
@@ -35,8 +42,6 @@
 ## @seealso{findobj, allchild, get, set}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-
 function h = findall (varargin)
 
   unwind_protect
@@ -50,15 +55,26 @@ function h = findall (varargin)
 endfunction
 
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
-%! toolkit = graphics_toolkit ("fltk");
+%!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h = findall (hf);
-%!   all_handles(1) = {"figure"};
-%!   all_handles(2:24,1) = {"uimenu"};
-%!   assert (get (h, "type"), all_handles);
+%!   types = {"uitoolbar"};
+%!   htb = uitoolbar (hf);
+%!   types = [types {"uimenu", "uimenu", "uimenu", ...
+%!                   "uimenu", "uimenu", "uimenu"}];
+%!   hm1 = uimenu (hf, "label", "menu1", "handlevisibility", "off");
+%!   uimenu (hm1, "label", "menu1");
+%!   hm2 = uimenu (hf, "label", "menu2", "handlevisibility", "off");
+%!   uimenu (hm2, "label", "menu2");
+%!   hm3 = uimenu (hf, "label", "menu3");
+%!   uimenu (hm3, "label", "menu3");
+%!   types = [types {"uipushtool", "uitoggletool", "uipushtool"}];
+%!   uipushtool (htb, "handlevisibility", "off");
+%!   uitoggletool (htb);
+%!   uipushtool (htb);
+%!   h = setxor (findall (hf), h);
+%!   assert (get (h, "type"), types(:));
 %! unwind_protect_cleanup
 %!   close (hf);
-%!   graphics_toolkit (toolkit);
 %! end_unwind_protect

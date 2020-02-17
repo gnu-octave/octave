@@ -1550,8 +1550,7 @@ These operators group right to left.
 @samp{:}
 
 @item relational
-@samp{<} @samp{<=} @samp{==} @samp{>=} @samp{>} @samp{!=}
-@samp{~=}
+@samp{<} @samp{<=} @samp{==} @samp{>=} @samp{>} @samp{!=} @samp{~=}
 
 @item element-wise "and"
 @samp{&}

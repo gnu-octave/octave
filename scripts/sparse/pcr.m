@@ -1,4 +1,9 @@
-## Copyright (C) 2004-2019 Piotr Krzyzanowski
+########################################################################
+##
+## Copyright (C) 2004-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} pcr (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
@@ -162,15 +169,13 @@
 ## @end group
 ## @end example
 ##
-## References:
+## Reference:
 ##
-## [1] @nospell{W. Hackbusch}, @cite{Iterative Solution of Large Sparse
+## @nospell{W. Hackbusch}, @cite{Iterative Solution of Large Sparse
 ## Systems of Equations}, section 9.5.4; @nospell{Springer}, 1994
 ##
 ## @seealso{sparse, pcg}
 ## @end deftypefn
-
-## Author: Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
 
 function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, m, x0, varargin)
 

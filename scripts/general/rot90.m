@@ -1,4 +1,9 @@
-## Copyright (C) 1993-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1993-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} rot90 (@var{A})
@@ -55,8 +62,6 @@
 ##
 ## @seealso{rotdim, fliplr, flipud, flip}
 ## @end deftypefn
-
-## Author: jwe
 
 function B = rot90 (A, k = 1)
 

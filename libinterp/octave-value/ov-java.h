@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2007-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2007-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ov_java_h)
 #define octave_ov_java_h 1
@@ -81,7 +84,7 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& save_as_floats);
+  bool save_binary (std::ostream& os, bool save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format fmt);
@@ -90,6 +93,11 @@ public:
                   bool save_as_floats);
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+
+  // We don't need to override all three forms of subsref.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_value::subsref;
 
   octave_value_list
   subsref (const std::string& type,

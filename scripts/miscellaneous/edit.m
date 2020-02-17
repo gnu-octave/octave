@@ -1,4 +1,9 @@
-## Copyright (C) 2001-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 2001-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} edit @var{name}
@@ -28,31 +35,27 @@
 ##
 ## @itemize @bullet
 ## @item
-## If the function @var{name} is available in a file on your path and that
-## file is modifiable, then it will be edited in place.  If it is a system
-## function, then it will first be copied to the directory @env{HOME} (see
-## below) and then edited.  If no file is found, then the m-file variant,
-## ending with @qcode{".m"}, will be considered.  If still no file is found,
-## then variants with a leading @qcode{"@@"} and then with both a leading
-## @qcode{"@@"} and trailing @qcode{".m"} will be considered.
+## If the function @var{name} is available in a file on your path, then it
+## will be opened in the editor.  If no file is found, then the m-file
+## variant, ending with @qcode{".m"}, will be considered.  If still no file is
+## found, then variants with a leading @qcode{"@@"} and then with both a
+## leading @qcode{"@@"} and trailing @qcode{".m"} will be considered.
 ##
 ## @item
-## If @var{name} is the name of a function defined in the interpreter but not
-## in an m-file, then an m-file will be created in @env{HOME} to contain that
-## function along with its current definition.
+## If @var{name} is the name of a command-line function, then an m-file will
+## be created to contain that function along with its current definition.
 ##
 ## @item
 ## If @code{@var{name}.cc} is specified, then it will search for
-## @code{@var{name}.cc} in the path and try to modify it, otherwise it will
-## create a new @file{.cc} file in the current directory.  If @var{name}
-## happens to be an m-file or interpreter defined function, then the text of
-## that function will be inserted into the .cc file as a comment.
+## @file{@var{name}.cc} in the path and open it in the editor.  If the file is
+## not found, then a new @file{.cc} file will be created.  If @var{name}
+## happens to be an m-file or command-line function, then the text of that
+## function will be inserted into the .cc file as a comment.
 ##
 ## @item
 ## If @file{@var{name}.ext} is on your path then it will be edited, otherwise
 ## the editor will be started with @file{@var{name}.ext} in the current
-## directory as the filename.  If @file{@var{name}.ext} is not modifiable,
-## it will be copied to @env{HOME} before editing.
+## directory as the filename.
 ##
 ## @strong{Warning:} You may need to clear @var{name} before the new definition
 ## is available.  If you are editing a .cc file, you will need to execute
@@ -72,10 +75,6 @@
 ## The following control fields are used:
 ##
 ## @table @samp
-## @item home
-## This is the location of user local m-files.  Be sure it is in your path.
-## The default is @file{~/octave}.
-##
 ## @item author
 ## This is the name to put after the "## Author:" field of new functions.  By
 ## default it guesses from the @code{gecos} field of the password database.
@@ -114,11 +113,21 @@
 ##
 ## @item editinplace
 ## Determines whether files should be edited in place, without regard to
-## whether they are modifiable or not.  The default is @code{false}.
+## whether they are modifiable or not.  The default is @code{true}.
+## Set it to @code{false} to have read-only function files automatically
+## copied to @samp{home}, if it exists, when editing them.
+##
+## @item home
+## This value indicates a directory that system m-files should be copied into
+## before opening them in the editor.  The intent is that this directory is
+## also in the path, so that the edited copy of a system function file shadows
+## the original.  This setting only has an effect when @samp{editinplace} is
+## set to @code{false}.  The default is the empty matrix (@code{[]}), which
+## means it is not used.  The default in previous versions of Octave was
+## @file{~/octave}.
 ## @end table
+## @seealso{EDITOR, path}
 ## @end deftypefn
-
-## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
@@ -127,13 +136,12 @@ function retval = edit (varargin)
 
   ## Pick up globals or default them.
 
-  persistent FUNCTION = struct ("HOME",
-                                fullfile (get_home_directory (), "octave"),
+  persistent FUNCTION = struct ("HOME", [],
                                 "AUTHOR", default_user(1),
                                 "EMAIL", [],
                                 "LICENSE", "GPL",
                                 "MODE", "async",
-                                "EDITINPLACE", false);
+                                "EDITINPLACE", true);
   ## Make sure the stateval variables survive "clear functions".
   mlock;
 
@@ -165,9 +173,6 @@ function retval = edit (varargin)
         error ("Octave:deprecated-function",
                "The EDITOR option of edit has been removed.  Use EDITOR() directly.");
       case "HOME"
-        if (! isempty (stateval) && stateval(1) == "~")
-          stateval = [ get_home_directory, stateval(2:end) ];
-        endif
         FUNCTION.HOME = stateval;
         return;
       case "AUTHOR"
@@ -218,15 +223,23 @@ function retval = edit (varargin)
     endif
   endif
 
+  ## Only use the legacy "HOME" directory if the user explicitly configured
+  ## it and if the directory exists.  In previous versions of Octave, HOME
+  ## was ~/octave by default and edited functions were copied into ~/octave.
+  ## Now 'edit_file_in_place' should be true by default unless the user
+  ## opts in by setting "EDITINPLACE" to false and "HOME" to a directory.
+  edit_file_in_place = (FUNCTION.EDITINPLACE || isempty (FUNCTION.HOME)
+                        || ! isfolder (FUNCTION.HOME));
+
   ## Start the editor without a file if no file is given.
   if (nargin == 0)
-    if (isfolder (FUNCTION.HOME))
+    if (! edit_file_in_place && ! strcmp (FUNCTION.HOME, "."))
       curr_dir = pwd ();
       unwind_protect
-        cd (FUNCTION.HOME);
+        chdir (FUNCTION.HOME);
         do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
       unwind_protect_cleanup
-        cd (curr_dir);
+        chdir (curr_dir);
       end_unwind_protect
     else
       do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
@@ -307,7 +320,7 @@ function retval = edit (varargin)
 
     if (! isempty (fileandpath))
       ## If the file exists, then edit it.
-      if (FUNCTION.EDITINPLACE)
+      if (edit_file_in_place)
         ## Edit in place even if it is protected.
         do_edit (FUNCTION.EDITOR, fileandpath, FUNCTION.MODE);
         return;
@@ -317,7 +330,8 @@ function retval = edit (varargin)
         fid = fopen (fileandpath, "r+t");
         if (fid < 0)
           from = fileandpath;
-          fileandpath = [FUNCTION.HOME, from(rindex(from, filesep):end)];
+          [~, fname, ext] = fileparts (from);
+          fileandpath = fullfile (tilde_expand (FUNCTION.HOME), [fname, ext]);
           [status, msg] = copyfile (from, fileandpath, 1);
           if (status == 0)
             error (msg);
@@ -332,7 +346,7 @@ function retval = edit (varargin)
 
     ## If editing a new file, prompt for creation if GUI is running
     if (isguirunning ())
-      if (! __octave_link_edit_file__ (file, "prompt"))
+      if (! __event_manager_edit_file__ (file, "prompt"))
         return;
       endif
     endif
@@ -409,33 +423,31 @@ function retval = edit (varargin)
     switch (uclicense)
       case "GPL"
         head = cstrcat (copyright, "\n\n", "\
-This program is free software: you can redistribute it and/or modify it\n\
-under the terms of the GNU General Public License as published by\n\
+This program is free software: you can redistribute it and/or modify\n\
+it under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation, either version 3 of the License, or\n\
 (at your option) any later version.\n\
 \n\
-This program is distributed in the hope that it will be useful, but\n\
-WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+This program is distributed in the hope that it will be useful,\n\
+but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
 GNU General Public License for more details.\n\
 \n\
 You should have received a copy of the GNU General Public License\n\
-along with this program.  If not, see\n\
-<https://www.gnu.org/licenses/>.\
+along with this program.  If not, see <https://www.gnu.org/licenses/>.\
 ");
         tail = [author, "\n", revs];
 
       case "BSD"
         head = cstrcat (copyright, "\n\n", "\
-This program is free software; redistribution and use in source and\n\
+This program is free software: redistribution and use in source and\n\
 binary forms, with or without modification, are permitted provided that\n\
 the following conditions are met:\n\
-\n\
-   1.Redistributions of source code must retain the above copyright\n\
-     notice, this list of conditions and the following disclaimer.\n\
-   2.Redistributions in binary form must reproduce the above copyright\n\
-     notice, this list of conditions and the following disclaimer in the\n\
-     documentation and/or other materials provided with the distribution.\n\
+1. Redistributions of source code must retain the above copyright\n\
+   notice, this list of conditions and the following disclaimer.\n\
+2. Redistributions in binary form must reproduce the above copyright\n\
+   notice, this list of conditions and the following disclaimer in the\n\
+   documentation and/or other materials provided with the distribution.\n\
 \n\
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND\n\
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n\
@@ -504,12 +516,13 @@ SUCH DAMAGE.\
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];
         else
           comment = ["## " strrep(head,"\n","\n## ") "\n\n"                ...
-                     "## -*- texinfo -*- \n## @deftypefn {} " ...
+                     "## -*- texinfo -*-\n## @deftypefn {} " ...
                      "{@var{retval} =} " basename                          ...
                      " (@var{input1}, @var{input2})\n##\n"                 ...
                      "## @seealso{}\n## @end deftypefn\n\n"                ...
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];
         endif
+        comment = strrep (comment, " \n", "\n");
         text = [comment, body];
     endswitch
 
@@ -545,7 +558,7 @@ function retval = default_user (long_form)
     retval = ent.gecos;
     pos = strfind (retval, ",");
     if (! isempty (pos))
-      retval = retval(1:pos-1);
+      retval = retval(1:pos(1)-1);
     endif
   else
     retval = ent.name;
@@ -556,7 +569,7 @@ endfunction
 function do_edit (editor, file, mode)
 
   if (isguirunning ())
-    __octave_link_edit_file__ (file);
+    __event_manager_edit_file__ (file);
   else
     system (sprintf (undo_string_escapes (editor), ['"' file '"']), [], mode);
   endif

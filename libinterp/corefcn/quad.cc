@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -32,10 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "pager.h"
 #include "parse.h"
+#include "ov.h"
 #include "ovl.h"
-#include "ov-fcn.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -43,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Quad-opts.cc"
 
 // Global pointer for user defined function required by quadrature functions.
-static octave_function *quad_fcn;
+static octave_value quad_fcn;
 
 // Have we warned about imaginary values returned from user function?
 static bool warned_imaginary = false;
@@ -59,7 +63,7 @@ quad_user_function (double x)
   octave_value_list args;
   args(0) = x;
 
-  if (quad_fcn)
+  if (quad_fcn.is_defined ())
     {
       octave_value_list tmp;
 
@@ -95,7 +99,7 @@ quad_float_user_function (float x)
   octave_value_list args;
   args(0) = x;
 
-  if (quad_fcn)
+  if (quad_fcn.is_defined ())
     {
       octave_value_list tmp;
 
@@ -184,24 +188,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
   if (call_depth > 1)
     error ("quad: invalid recursive call");
 
-  std::string fcn_name;
-
-  if (args(0).is_function_handle () || args(0).is_inline_function ())
-    quad_fcn = args(0).function_value ();
-  else
-    {
-      fcn_name = unique_symbol_name ("__quad_fcn__");
-      std::string fname = "function y = ";
-      fname.append (fcn_name);
-      fname.append ("(x) y = ");
-      quad_fcn = extract_function (args(0), "quad", fcn_name, fname,
-                                   "; endfunction");
-      octave::symbol_table& symtab = interp.get_symbol_table ();
-      frame.add_method (symtab, &octave::symbol_table::clear_function, fcn_name);
-    }
-
-  if (! quad_fcn)
-    error ("quad: FCN argument is not a valid function name or handle");
+  quad_fcn = octave::get_function_handle (interp, args(0), "x");
 
   octave_value_list retval;
 
@@ -425,6 +412,33 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
 %!test
 %!  [v, ier, nfun, err] = quad ("__f", 0.001, 3);
+%! assert (ier == 0 || ier == 1);
+%! assert (v, 1.98194120273598, sqrt (eps));
+%! assert (nfun > 0);
+
+%!test
+%!  [v, ier, nfun, err] = quad (@__f, 0.001, 3);
+%! assert (ier == 0 || ier == 1);
+%! assert (v, 1.98194120273598, sqrt (eps));
+%! assert (nfun > 0);
+
+%!test
+%!  fstr = "x .* sin (1 ./ x) .* sqrt (abs (1 - x))";
+%!  [v, ier, nfun, err] = quad (fstr, 0.001, 3);
+%! assert (ier == 0 || ier == 1);
+%! assert (v, 1.98194120273598, sqrt (eps));
+%! assert (nfun > 0);
+
+%!test
+%!  anon_fcn = @(x) x .* sin (1 ./ x) .* sqrt (abs (1 - x));
+%!  [v, ier, nfun, err] = quad (anon_fcn, 0.001, 3);
+%! assert (ier == 0 || ier == 1);
+%! assert (v, 1.98194120273598, sqrt (eps));
+%! assert (nfun > 0);
+
+%!test
+%!  inline_fcn = inline ("x .* sin (1 ./ x) .* sqrt (abs (1 - x))", "x");
+%!  [v, ier, nfun, err] = quad (inline_fcn, 0.001, 3);
 %! assert (ier == 0 || ier == 1);
 %! assert (v, 1.98194120273598, sqrt (eps));
 %! assert (nfun > 0);

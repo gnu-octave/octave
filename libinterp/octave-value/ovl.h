@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-Copyright (C) 2009 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ovl_h)
 #define octave_ovl_h 1
@@ -42,48 +44,63 @@ octave_value_list
 {
 public:
 
-  octave_value_list (void)
-    : data (), names () { }
+  octave_value_list (void) = default;
 
   explicit octave_value_list (octave_idx_type n)
-    : data (dim_vector (1, n)), names () { }
+    : m_data (n), m_names () { }
 
   octave_value_list (octave_idx_type n, const octave_value& val)
-    : data (dim_vector (1, n), val), names () { }
+    : m_data (n, val), m_names () { }
 
   octave_value_list (const octave_value& tc)
-    : data (dim_vector (1, 1), tc), names () { }
+    : m_data (1, tc), m_names () { }
 
   template<template <typename...> class OV_Container>
   octave_value_list (const OV_Container<octave_value>& args)
-    : data (args, dim_vector (1, args.size ())), names () { }
+    : m_data (args.begin (), args.end ()), m_names () { }
 
-  octave_value_list (const Array<octave_value>& d)
-    : data (d.as_row ()), names () { }
+  octave_value_list (const Array<octave_value>& a)
+    : m_data (a.numel ()), m_names ()
+  {
+    for (octave_idx_type i = 0; i < a.numel (); i++)
+      m_data[i] = a(i);
+  }
 
-  octave_value_list (const Cell& tc)
-    : data (tc.as_row ()), names () { }
+  octave_value_list (const Cell& c)
+    : m_data (c.numel ()), m_names ()
+  {
+    for (octave_idx_type i = 0; i < c.numel (); i++)
+      m_data[i] = c(i);
+  }
 
-  octave_value_list (const octave_value_list& obj)
-    : data (obj.data), names (obj.names) { }
+  octave_value_list (const octave_value_list& obj) = default;
 
-  // Concatenation constructor.
+  octave_value_list (octave_value_list&& obj) = default;
+
+  // Concatenation constructors.
+  octave_value_list (const std::list<octave_value>&);
   octave_value_list (const std::list<octave_value_list>&);
 
   ~octave_value_list (void) = default;
 
-  octave_value_list& operator = (const octave_value_list& obj)
+  octave_value_list& operator = (const octave_value_list& obj) = default;
+
+  octave_value_list& operator = (octave_value_list&& obj) = default;
+
+  Array<octave_value> array_value (void) const
   {
-    if (this != &obj)
+    Array<octave_value> retval;
+
+    if (! m_data.empty ())
       {
-        data = obj.data;
-        names = obj.names;
+        retval.resize (dim_vector (1, length ()));
+
+        for (octave_idx_type i = 0; i < retval.numel (); i++)
+          retval.xelem (i) = m_data[i];
       }
 
-    return *this;
+    return retval;
   }
-
-  Array<octave_value> array_value (void) const { return data; }
 
   Cell cell_value (void) const { return array_value (); }
 
@@ -93,13 +110,13 @@ public:
 
   const octave_value& operator () (octave_idx_type n) const { return elem (n); }
 
-  octave_idx_type length (void) const { return data.numel (); }
+  octave_idx_type length (void) const { return m_data.size (); }
 
   bool empty (void) const { return length () == 0; }
 
   void resize (octave_idx_type n, const octave_value& rfv = octave_value ())
   {
-    data.resize (dim_vector (1, n), rfv);
+    m_data.resize (n, rfv);
   }
 
   octave_value_list& prepend (const octave_value& val);
@@ -115,14 +132,18 @@ public:
   {
     // linear_slice uses begin/end indices instead of offset and length.
     // Avoid calling with upper bound out of range.
-    // linear_slice handles the case of len < 0.
 
-    octave_value_list retval
-      = data.linear_slice (offset, std::min (offset + len, length ()));
+    octave_idx_type tlen = len > 0 ? len : 0;
+    std::vector<octave_value> slice_data (tlen);
+    auto beg = m_data.begin () + offset;
+    auto end = beg + len;
+    std::copy (beg, end, slice_data.begin ());
 
-    if (tags && len > 0 && names.numel () > 0)
-      retval.names = names.linear_slice (offset, std::min (offset + len,
-                                                           names.numel ()));
+    octave_value_list retval = slice_data;
+
+    if (tags && len > 0 && m_names.numel () > 0)
+      retval.m_names = m_names.linear_slice (offset, std::min (offset + len,
+                                                               m_names.numel ()));
 
     return retval;
   }
@@ -141,34 +162,34 @@ public:
 
   string_vector make_argv (const std::string& = "") const;
 
-  void stash_name_tags (const string_vector& nm) { names = nm; }
+  void stash_name_tags (const string_vector& nm) { m_names = nm; }
 
-  string_vector name_tags (void) const { return names; }
+  string_vector name_tags (void) const { return m_names; }
 
   void make_storable_values (void);
 
-  octave_value& xelem (octave_idx_type i) { return data.xelem (i); }
+  octave_value& xelem (octave_idx_type i) { return m_data[i]; }
 
-  void clear (void) { data.clear (); }
+  void clear (void) { m_data.clear (); }
 
 private:
 
-  Array<octave_value> data;
+  std::vector<octave_value> m_data;
 
-  // This list of strings can be used to tag each element of data with a name.
+  // The list of strings can be used to tag each element of m_data with a name.
   // By default, it is empty.
-  string_vector names;
+  string_vector m_names;
 
+  // elem will automatically resize array for out-of-bounds requests.
   octave_value& elem (octave_idx_type n)
   {
     if (n >= length ())
       resize (n + 1);
 
-    return data(n);
+    return m_data[n];
   }
 
-  const octave_value& elem (octave_idx_type n) const
-  { return data(n); }
+  const octave_value& elem (octave_idx_type n) const { return m_data[n]; }
 
 };
 

@@ -1,5 +1,9 @@
-## Copyright (C) 2008-2019 Soren Hauberg
-## Copyright (C) 2013-2019 Carnë Draug
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,13 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## This function does all the work of imfinfo.  It exists here as private
 ## function so that imfinfo can use other functions if imformats is
 ## configured to.  It is also needed so that imformats can create a
 ## function handle for it.
-
-## Author: Soren Hauberg <hauberg@gmail.com>
 
 function info = __imfinfo__ (filename)
 

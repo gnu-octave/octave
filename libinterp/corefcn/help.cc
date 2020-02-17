@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -44,10 +47,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "builtin-defun-decls.h"
-#include "call-stack.h"
 #include "defaults.h"
 #include "defun.h"
-#include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
 #include "help.h"
@@ -72,86 +73,86 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "default-defs.h"
 
-const static char * const operators[] =
-{
-  "!",
-  "~",
-  "!=",
-  "~=",
-  R"(")",
-  "#",
-  "%",
-  "#{",
-  "%{",
-  "#}",
-  "%}",
-  "...",
-  "&",
-  "&&",
-  "'",
-  "(",
-  ")",
-  "*",
-  "**",
-  "^",
-  "+",
-  "++",
-  ",",
-  "-",
-  "--",
-  ".'",
-  ".*",
-  ".**",
-  ".^",
-  "./",
-  "/",
-  R"(.\)",
-  R"(\)",
-  ":",
-  ";",
-  "<",
-  "<=",
-  "=",
-  "==",
-  ">",
-  ">=",
-  "[",
-  "]",
-  "|",
-  "||",
-  nullptr
-};
-
-const static string_vector operator_names (operators);
-
-static bool
-looks_like_html (const std::string& msg)
-{
-  const size_t p1 = msg.find ('\n');
-  std::string t = msg.substr (0, p1);
-  // FIXME: this comparison should be case-insensitive
-  const size_t p2 = t.find ("<html");
-
-  return (p2 != std::string::npos);
-}
-
-static bool
-looks_like_texinfo (const std::string& msg, size_t& p1)
-{
-  p1 = msg.find ('\n');
-
-  std::string t = msg.substr (0, p1);
-
-  if (p1 == std::string::npos)
-    p1 = 0;
-
-  size_t p2 = t.find ("-*- texinfo -*-");
-
-  return (p2 != std::string::npos);
-}
-
 namespace octave
 {
+  const static char * const operators[] =
+  {
+    "!",
+    "~",
+    "!=",
+    "~=",
+    R"(")",
+    "#",
+    "%",
+    "#{",
+    "%{",
+    "#}",
+    "%}",
+    "...",
+    "&",
+    "&&",
+    "'",
+    "(",
+    ")",
+    "*",
+    "**",
+    "^",
+    "+",
+    "++",
+    ",",
+    "-",
+    "--",
+    ".'",
+    ".*",
+    ".**",
+    ".^",
+    "./",
+    "/",
+    R"(.\)",
+    R"(\)",
+    ":",
+    ";",
+    "<",
+    "<=",
+    "=",
+    "==",
+    ">",
+    ">=",
+    "[",
+    "]",
+    "|",
+    "||",
+    nullptr
+  };
+
+  const static string_vector operator_names (operators);
+
+  static bool
+  looks_like_html (const std::string& msg)
+  {
+    const size_t p1 = msg.find ('\n');
+    std::string t = msg.substr (0, p1);
+    // FIXME: this comparison should be case-insensitive
+    const size_t p2 = t.find ("<html");
+
+    return (p2 != std::string::npos);
+  }
+
+  static bool
+  looks_like_texinfo (const std::string& msg, size_t& p1)
+  {
+    p1 = msg.find ('\n');
+
+    std::string t = msg.substr (0, p1);
+
+    if (p1 == std::string::npos)
+      p1 = 0;
+
+    size_t p2 = t.find ("-*- texinfo -*-");
+
+    return (p2 != std::string::npos);
+  }
+
   octave_value
   help_system::built_in_docstrings_file (const octave_value_list& args,
                                          int nargout)
@@ -319,7 +320,7 @@ namespace octave
     const string_vector cfl = symtab.cmdline_function_names ();
     const int cfl_len = cfl.numel ();
 
-    const string_vector lcl = symtab.variable_names ();
+    const string_vector lcl = m_interpreter.variable_names ();
     const int lcl_len = lcl.numel ();
 
     load_path& lp = m_interpreter.get_load_path ();
@@ -327,7 +328,7 @@ namespace octave
     const string_vector ffl = lp.fcn_names ();
     const int ffl_len = ffl.numel ();
 
-    const string_vector afl = autoloaded_functions ();
+    const string_vector afl = m_interpreter.autoloaded_functions ();
     const int afl_len = afl.numel ();
 
     const string_vector lfl = local_functions ();
@@ -487,9 +488,9 @@ namespace octave
   {
     string_vector retval;
 
-    call_stack& cs = m_interpreter.get_call_stack ();
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-    octave_user_code *curr_fcn = cs.caller_user_code ();
+    octave_user_code *curr_fcn = tw.current_user_code ();
 
     if (! curr_fcn)
       return retval;
@@ -501,7 +502,7 @@ namespace octave
     while (curr_fcn->is_subfunction ())
       {
         symbol_scope pscope = curr_fcn->parent_fcn_scope ();
-        curr_fcn = pscope.function ();
+        curr_fcn = pscope.user_code ();
       }
 
     // Get subfunctions.
@@ -586,7 +587,7 @@ namespace octave
     if (! initialized)
       {
         std::string ascii_fname
-          = octave::sys::get_ASCII_filename (m_built_in_docstrings_file);
+          = sys::get_ASCII_filename (m_built_in_docstrings_file);
 
         std::ifstream file (ascii_fname.c_str (),
                             std::ios::in | std::ios::binary);
@@ -672,7 +673,7 @@ namespace octave
         std::streamoff len = txt_limits.second;
 
         std::string ascii_fname
-          = octave::sys::get_ASCII_filename (m_built_in_docstrings_file);
+          = sys::get_ASCII_filename (m_built_in_docstrings_file);
 
         std::ifstream file (ascii_fname.c_str (),
                             std::ios::in | std::ios::binary);
@@ -766,7 +767,7 @@ DEFUN (__operators__, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  return ovl (Cell (operator_names));
+  return ovl (Cell (octave::operator_names));
 }
 
 // Return a cell array of strings containing the names of all keywords.
@@ -812,8 +813,8 @@ the return value is an empty cell array.
   Cell retval;
 
   // Find the main function we are in.
-  octave::call_stack& cs = interp.get_call_stack ();
-  octave_user_code *parent_fcn = cs.debug_user_code ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+  octave_user_code *parent_fcn = tw.debug_user_code ();
 
   if (! parent_fcn)
     return ovl (retval);
@@ -841,11 +842,12 @@ the return value is an empty cell array.
 
 /*
 %!test
-%! old_dir = cd (tempdir ());
-%! f = tempname (".", "oct_");
+%! f = tempname (tempdir (), "oct_");
 %! [~, fcn_name] = fileparts (f);
 %! f = [f ".m"];
+%! save_path = path ();
 %! unwind_protect
+%!   addpath (tempdir ());
 %!   fid = fopen (f, "w+");
 %!   fprintf (fid, "function z = %s\n z = localfunctions; end\n", fcn_name);
 %!   fprintf (fid, "function z = b(x)\n z = x+1; end\n");
@@ -857,7 +859,7 @@ the return value is an empty cell array.
 %!   assert (d{2} (3), 6);
 %! unwind_protect_cleanup
 %!   unlink (f);
-%!   cd (old_dir);
+%!   path (save_path);
 %! end_unwind_protect
 */
 
@@ -922,7 +924,7 @@ in that directory.
     {
       // Get list of all functions
       string_vector ffl = lp.fcn_names ();
-      string_vector afl = octave::autoloaded_functions ();
+      string_vector afl = interp.autoloaded_functions ();
 
       retval = Cell (ffl.append (afl));
     }

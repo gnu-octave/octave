@@ -1,5 +1,9 @@
-## Copyright (C) 2012-2019 Rik Wehbring
-## Copyright (C) 2004 Josep Mones i Teixidor
+########################################################################
+##
+## Copyright (C) 2004-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{Y}, @var{newmap}] =} cmpermute (@var{X}, @var{map})
@@ -34,8 +40,6 @@
 ## function will fail.
 ##
 ## @end deftypefn
-
-## Author:  Josep Mones i Teixidor <jmones@puntbarra.com>
 
 function [Y, newmap] = cmpermute (X, map, index)
 

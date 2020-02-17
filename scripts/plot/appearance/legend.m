@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,27 +20,28 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} legend ()
+## @deftypefnx {} {} legend @var{command}
 ## @deftypefnx {} {} legend (@var{str1}, @var{str2}, @dots{})
 ## @deftypefnx {} {} legend (@var{charmat})
 ## @deftypefnx {} {} legend (@{@var{cellstr}@})
-## @deftypefnx {} {} legend (@dots{}, "location", @var{pos})
-## @deftypefnx {} {} legend (@dots{}, "orientation", @var{orient})
-## @deftypefnx {} {} legend (@var{hax}, @dots{})
+## @deftypefnx {} {} legend (@dots{}, @var{property}, @var{value}, @dots{})
 ## @deftypefnx {} {} legend (@var{hobjs}, @dots{})
-## @deftypefnx {} {} legend (@var{hax}, @var{hobjs}, @dots{})
-## @deftypefnx {} {} legend ("@var{option}")
-## @deftypefnx {} {} legend (@dots{}, @{@var{cellstr}@}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {} {[@var{hleg}, @var{hleg_obj}, @var{hplot}, @var{labels}] =} legend (@dots{})
+## @deftypefnx {} {} legend ("@var{command}")
+## @deftypefnx {} {} legend (@var{hax}, @dots{})
+## @deftypefnx {} {@var{hleg, hplt} =} legend (@dots{})
 ##
 ## Display a legend for the current axes using the specified strings as labels.
 ##
 ## Legend entries may be specified as individual character string arguments,
 ## a character array, or a cell array of character strings.  When label names
-## might be confused with options to @code{legend}, the labels should be
-## protected by specifying them as a cell array of strings.
+## might be confused with legend properties, or @var{command} arguments,
+## the labels should be protected by specifying them as a cell array of
+## strings.
 ##
 ## If the first argument @var{hax} is an axes handle, then add a legend to this
 ## axes, rather than the current axes returned by @code{gca}.
@@ -46,11 +52,11 @@
 ## labeling all objects, provide their graphic handles in the input
 ## @var{hobjs}.
 ##
-## The optional parameter @var{pos} specifies the location of the legend as
-## follows:
+## The optional parameter @nospell{@var{loc}} specifies the location of the
+## legend as follows:
 ##
 ## @multitable @columnfractions 0.06 0.14 0.80
-## @headitem @tab pos @tab location of the legend
+## @headitem @tab @nospell{loc} @tab location of the legend
 ## @item @tab north @tab center top
 ## @item @tab south @tab center bottom
 ## @item @tab east @tab right center
@@ -64,11 +70,7 @@
 ## @item @tab         @tab which will place the legend outside the axes
 ## @end multitable
 ##
-## The optional parameter @var{orient} determines if the legend elements are
-## placed vertically or horizontally.  The allowed values are
-## @qcode{"vertical"} (default) or @qcode{"horizontal"}.
-##
-## The following customizations are available using @var{option}:
+## The following customizations are available using @var{command}:
 ##
 ## @table @asis
 ## @item @qcode{"show"}
@@ -102,22 +104,7 @@
 ## including @var{property}/@var{value} pairs.  If using this calling form, the
 ## labels must be specified as a cell array of strings.
 ##
-## The optional output values are
-##
-## @table @var
-## @item hleg
-##   The graphics handle of the legend object.
-##
-## @item hleg_obj
-##   Graphics handles to the text, patch, and line objects which form the
-##   legend.
-##
-## @item hplot
-##   Graphics handles to the plot objects which were used in making the legend.
-##
-## @item labels
-##   A cell array of strings of the labels in the legend.
-## @end table
+## The optional output value @var{hleg} is a handle to the legend object.
 ##
 ## Implementation Note: The legend label text is either provided in the call to
 ## @code{legend} or is taken from the @code{DisplayName} property of the
@@ -125,9 +112,7 @@
 ## this property whereas axes, figures, etc.@: do not so they are never present
 ## in a legend.  If no labels or @code{DisplayName} properties are available,
 ## then the label text is simply @qcode{"data1"}, @qcode{"data2"}, @dots{},
-## @nospell{@qcode{"dataN"}}.  No more than 20 data labels will be
-## automatically generated.  To label more, call @code{legend} explicitly and
-## provide all labels.
+## @nospell{@qcode{"dataN"}}.
 ##
 ## The legend @code{FontSize} property is initially set to 90% of the axes
 ## @code{FontSize} to which it is attached.  Use @code{set} to override this
@@ -140,1215 +125,1348 @@
 
 function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
-  if (nargin > 0
+  ## Use the old legend code to handle gnuplot toolkit
+  if (strcmp (graphics_toolkit (), "gnuplot"))
+    [hleg, hleg_obj, hplot, labels] = __gnuplot_legend__ (varargin{:});
+    return;
+  endif
+
+  opts = parse_opts (varargin{:});
+
+  hl = opts.legend_handle;
+
+  ## Fix property/value pairs
+  pval = opts.propval(:)';
+
+  if (! isempty (opts.action))
+
+    do_set_box = isempty (hl);
+
+    switch (opts.action)
+      case "boxoff"
+        tmp_pval = {"box", "off"};
+        do_set_box = false;
+
+      case "boxon"
+        tmp_pval = {"box", "on"};
+        do_set_box = false;
+
+      case "hide"
+        tmp_pval = {"visible", "off"};
+
+      case "show"
+        tmp_pval = {"visible", "on"};
+
+      case "toggle"
+        if (! isempty (hl))
+          if (strcmp (get (hl, "visible"), "on"))
+            tmp_pval = {"visible", "off"};
+          else
+            tmp_pval = {"visible", "on"};
+          endif
+        endif
+
+      case "left"
+          tmp_pval = {"textposition", "left"};
+
+      case "right"
+          tmp_pval = {"textposition", "right"};
+
+      case "off"
+        if (! isempty (hl))
+          delete (hl);
+        endif
+        return;
+
+    endswitch
+
+    pval = [tmp_pval, pval];
+    if (do_set_box)
+      pval = [pval, "box", "on"];
+    endif
+
+  endif
+
+  if (isempty (hl))
+
+    hl = axes ("parent", get (opts.axes_handles(1), "parent"), ...
+               "tag", "legend", "handlevisibility", "off", ...
+               "ydir", "reverse", "position", [.5 .5 .3 .3], ...
+               "fontsize", 0.9 * get (opts.axes_handles(1), "fontsize"), ...
+               "clim", get (opts.axes_handles(1), "clim"), ...
+               "colormap", get (opts.axes_handles(1), "colormap"), ...
+               "xtick", [], "ytick", [], "box", "on");
+
+    ## FIXME: Use the axes appdata to store its peer legend handle
+    ## rather that adding a public property and change all uses.
+    for htmp = opts.axes_handles
+      try
+        addproperty ("__legend_handle__", htmp, "handle", hl);
+      catch
+        set (htmp, "__legend_handle__", hl);
+      end_try_catch
+    endfor
+
+    ## Add and update legend specific properties
+    addproperties (hl);
+    try
+      set (hl, "string", opts.obj_labels, pval{:});
+    catch ee
+      delete (hl);
+      set (opts.axes_handles, "__legend_handle__", []);
+      rethrow (ee);
+    end_try_catch
+
+    ## Update legend layout
+    setappdata (hl, "__axes_handle__", opts.axes_handles,
+                    "__next_label_index__", opts.next_idx,
+                    "__peer_objects__", opts.obj_handles);
+    update_location_cb (hl, [], false);
+    update_edgecolor_cb (hl);
+    update_numchild_cb (hl);
+    update_layout_cb (hl, [], true);
+
+    ## Dummy invisible object that deletes the legend when "newplot" is called
+    ht = __go_text__ (opts.axes_handles(1), "tag", "__legend_watcher__",
+                      "visible", "off", "handlevisibility", "off",
+                      "deletefcn", {@reset_cb, hl});
+
+    ## Listeners to foreign objects properties are stored for later
+    ## deletion in "delfunction"
+    hax = opts.axes_handles(1);
+    hf = ancestor (hax, "figure");
+
+    add_safe_listener (hl, hf, "colormap", ...
+                       @() set (hl, "colormap", get (hax, "colormap")));
+
+    add_safe_listener (hl, hax, "position", {@maybe_update_layout_cb, hl});
+    add_safe_listener (hl, hax, "tightinset", ...
+                       @(h) update_layout_cb (get (h, "__legend_handle__")));
+    add_safe_listener (hl, hax, "clim", ...
+                       @(hax) set (hl, "clim", get (hax, "clim")));
+    add_safe_listener (hl, hax, "colormap", ...
+                       @(hax) set (hl, "colormap", get (hax, "colormap")));
+    add_safe_listener (hl, hax, "fontsize", ...
+                       @(hax) set (hl, "fontsize", 0.9*get (hax, "fontsize")));
+    add_safe_listener (hl, hax, "children", {@legend_autoupdate_cb, hl});
+
+    ## Listeners to legend properties
+    props = {"fontsize", "fontweight", "fontname", "interpreter", ...
+             "textposition", "numcolumnsmode", "numcolumns", "orientation"};
+
+    for ii = 1:numel (props)
+      addlistener (hl, props{ii}, {@update_layout_cb, true});
+    endfor
+
+    addlistener (hl, "autoupdate", @update_numchild_cb);
+
+    addlistener (hl, "beingdeleted", @delete_legend_cb);
+
+    addlistener (hl, "box", @update_box_cb);
+
+    addlistener (hl, "edgecolor", @update_edgecolor_cb);
+
+    addlistener (hl, "location", @update_location_cb);
+
+    addlistener (hl, "position", @update_position_cb);
+
+    addlistener (hl, "string", @update_string_cb);
+
+    addlistener (hl, "textcolor", ...
+                 @(h) set (findobj (h, "type", "text"), ...
+                           "color", get (hl, "textcolor")));
+
+    addlistener (hl, "visible", @update_visible_cb);
+
+  else
+
+    ## FIXME: This will trigger the execution of update_layout_cb for each
+    ## watched property.  Should we suspend its execution with yet another
+    ## appdata bool property for performance?
+
+    ## Update properties
+    setappdata (hl, "__peer_objects__", opts.obj_handles);
+    if (! isempty (opts.obj_labels))
+      set (hl ,"string", opts.obj_labels, pval{:})
+    elseif (! isempty (pval))
+      set (hl, pval{:});
+    endif
+
+  endif
+
+  if (nargout > 0)
+    hleg = hl;
+    ## These ones are needed for backward compatibility
+    hleg_obj = get (hl, "children");
+    hplot = getappdata (hl, "__peer_objects__");
+    labels = get (hl, "string");
+  endif
+
+  set (hl, "handlevisibility", "on");
+
+endfunction
+
+function update_box_cb (hl)
+
+  if (strcmp (get (hl, "box"), "on"))
+    if (strcmp (get (hl, "color"), "none"))
+      set (hl, "color", "w");
+    endif
+  else
+    set (hl, "color", "none");
+  endif
+
+endfunction
+
+function update_location_cb (hl, ~, do_layout = true)
+
+  if (strcmp (get (hl, "location"), "best"))
+    warning ("Octave:legend:unimplemented-location",
+             ["legend: 'best' not yet implemented for location ", ...
+              "specifier, using 'northeast' instead\n"]);
+  endif
+
+  if (do_layout)
+    update_layout_cb (hl);
+  endif
+
+endfunction
+
+function update_edgecolor_cb (hl)
+
+  ecolor = get (hl, "edgecolor");
+  set (hl, "xcolor", ecolor, "ycolor", ecolor);
+
+endfunction
+
+function update_position_cb (hl)
+
+  updating = getappdata (hl, "__updating_layout__");
+  if (isempty (updating) || ! updating)
+    set (hl, "location", "none");
+  endif
+
+endfunction
+
+function update_string_cb (hl)
+
+  ## Check that the number of legend item and the number of labels match
+  ## before calling update_layout_cb.
+  persistent updating = false;
+
+  if (! updating)
+    updating = true;
+    unwind_protect
+      str = get (hl, "string");
+      nstr = numel (str);
+
+      obj = getappdata (hl, "__peer_objects__");
+      nobj = numel (obj);
+
+      if (ischar (str) && nobj != 1)
+        setappdata (hl, "__peer_objects__", obj(1));
+      elseif (iscellstr (str) && nobj != nstr)
+        if (nobj > nstr)
+          setappdata (hl, "__peer_objects__", obj(1:nstr));
+        elseif (nobj == 1)
+          set (hl, "string", str{1});
+        else
+          set (hl, "string", str(1:nobj));
+        endif
+      endif
+      update_layout_cb (hl, [], true);
+    unwind_protect_cleanup
+      updating = false;
+    end_unwind_protect
+  endif
+
+endfunction
+
+function update_visible_cb (hl)
+
+  location = get (hl, "location");
+  if (strcmp (location(end:-1:end-3), "edis"))
+    update_layout_cb (hl);
+  endif
+
+endfunction
+
+function reset_cb (ht, evt, hl, deletelegend = true)
+
+  if (ishghandle (hl))
+    listeners = getappdata (hl, "__listeners__");
+    for ii = 1:numel (listeners)
+      if (ishghandle (listeners{ii}{1}))
+        dellistener (listeners{ii}{:});
+      endif
+    endfor
+
+    if (deletelegend)
+      delete (hl);
+    endif
+  endif
+
+endfunction
+
+function delete_legend_cb (hl)
+
+  reset_cb ([], [], hl, false);
+
+  hax = getappdata (hl, "__axes_handle__");
+  for h = hax(:)'
+    units = get (h, "units");
+    set (h, "units", getappdata (hl, "__original_units__"), ...
+            "looseinset", getappdata (hl, "__original_looseinset__"), ...
+            "units", units, "__legend_handle__", []);
+  endfor
+
+endfunction
+
+function add_safe_listener (hl, varargin)
+
+  addlistener (varargin{:});
+
+  lsn = getappdata (hl, "__listeners__");
+  lsn = [lsn, {varargin}];
+  setappdata (hl, "__listeners__", lsn);
+
+endfunction
+
+function addproperties (hl)
+
+  persistent default = {"north", "northoutside", ...
+                        "south", "southoutside", ...
+                        "east", "eastoutside", ...
+                        "west", "westoutside", ...
+                        "{northeast}", "northeastoutside", ...
+                        "northwest", "northwestoutside", ...
+                        "southeast", "southeastoutside", ...
+                        "southwest", "southwestoutside", ...
+                        "best", "bestoutside", ...
+                        "none"};
+
+  addproperty ("location", hl, "radio", strjoin (default(:), "|"));
+
+  addproperty ("orientation", hl, "radio", "{vertical}|horizontal");
+
+  addproperty ("numcolumns", hl, "double", 1);
+
+  addproperty ("numcolumnsmode", hl, "radio", "{auto}|manual");
+
+  addlistener (hl, "numcolumns", @(h) set (h, "numcolumnsmode", "manual"));
+
+  addproperty ("autoupdate", hl, "radio", "{on}|off");
+
+  addproperty ("string", hl, "textstring", {});
+
+  addproperty ("interpreter", hl, "textinterpreter");
+
+  addproperty ("edgecolor", hl, "color", [.15 .15 .15]);
+
+  addproperty ("textcolor", hl, "color", "k");
+
+  addproperty ("textposition", hl, "radio", "left|{right}");
+
+  addproperty ("itemhitfcn", hl, "axesbuttondownfcn");
+
+endfunction
+
+function maybe_update_layout_cb (h, d, hl)
+
+  persistent updating = false;
+
+  if (! updating)
+
+    unwind_protect
+      updating = true;
+      units = get (h, "units");
+      set (h, "units", "points");
+      pos = get (h, "position");
+      set (h, "units", units);
+      old_pos = getappdata (hl, "__peer_axes_position__");
+
+      if (! all (pos == old_pos))
+        update_layout_cb (hl);
+        setappdata (hl, "__peer_axes_position__", pos);
+      endif
+    unwind_protect_cleanup
+      updating = false;
+    end_unwind_protect
+
+  endif
+
+endfunction
+
+function update_numchild_cb (hl)
+
+  if (strcmp (get (hl, "autoupdate"), "on"))
+
+    hax = getappdata (hl, "__axes_handle__");
+    kids = get (hax, "children");
+    if (iscell (kids))
+      nkids = numel (cell2mat (get (hax, "children")));
+    else
+      nkids = numel (get (hax, "children"));
+    endif
+
+    setappdata (hl, "__total_num_children__", nkids);
+
+  endif
+
+endfunction
+
+function legend_autoupdate_cb (hax, d, hl)
+
+  ## Get all current children including eventual peer plotyy axes children
+  try
+    hax = get (hax, "__plotyy_axes__");
+    kids = cell2mat (get (hax, "children"));
+  catch
+    kids = get (hax, "children");
+  end_try_catch
+
+  is_deletion = (getappdata (hl, "__total_num_children__") > numel (kids));
+  setappdata (hl, "__total_num_children__", numel (kids));
+
+  ## Remove item for deleted object
+  current_obj = getappdata (hl, "__peer_objects__");
+  [~, iold, inew] = setxor (current_obj, kids);
+  current_obj(iold) = [];
+
+  if (isempty (current_obj))
+    delete (hl);
+    return;
+  endif
+
+  if (! is_deletion && strcmp (get (hl, "autoupdate"), "on"))
+
+    ## We only expect 1 new child
+    kids = kids(min (inew));
+
+    ## FIXME: if the latest child is an hggroup, we cannot label it since this
+    ## function is called before the hggroup has been properly populated.
+    persistent valid_types = {"line", "patch", "surface"};
+    if (! any (strcmp (get (kids, "type"), valid_types)))
+      kids = [];
+    endif
+
+  else
+    kids = [];
+  endif
+
+  if (any (iold) || any (kids))
+    setappdata (hl, "__peer_objects__", [current_obj; kids]);
+    set (hl, "string", displayname_or_default ([current_obj; kids], hl));
+  endif
+
+endfunction
+
+function opts = parse_opts (varargin)
+
+  action = "";
+  legend_handle = [];
+  axes_handles = [];
+  obj_handles = [];
+  obj_labels = {};
+
+  nargs = numel (varargin);
+
+  ## Find peer axes
+  if (nargs > 0
       && (! ishghandle (varargin{1})
           || (strcmp (get (varargin{1}, "type"), "axes")
               && ! strcmp (get (varargin{1}, "tag"), "legend"))))
-    [ca, varargin, nargin] = __plt_get_axis_arg__ ("legend", varargin{:});
-    if (isempty (ca))
-      ca = gca ();
+    [axes_handles, varargin, nargs] = __plt_get_axis_arg__ ("legend",
+                                                            varargin{:});
+    if (isempty (axes_handles))
+      axes_handles = gca ();
     endif
-    hfig = ancestor (ca, "figure");
   else
-    hfig = get (0, "currentfigure");
-    if (isempty (hfig))
-      hfig = gcf ();
-    endif
-    ca = gca ();
+    axes_handles = gca ();
   endif
 
   ## Special handling for plotyy which has two axes objects
-  if (isprop (ca, "__plotyy_axes__"))
-    plty = get (ca, "__plotyy_axes__");
-    ca = [ca, plty.'];
+  if (isprop (axes_handles, "__plotyy_axes__"))
+    axes_handles = [axes_handles get(axes_handles, "__plotyy_axes__").'];
     ## Remove duplicates while preserving order
-    [~, n] = unique (ca, "first");
-    ca = ca(sort (n));
+    [~, n] = unique (axes_handles, "first");
+    axes_handles = axes_handles(sort (n));
   endif
-
-  if (nargin > 0 && all (ishghandle (varargin{1})))
-    ## List of plot objects to label given as first argument
-    kids = flipud (varargin{1}(:));
-    varargin(1) = [];
-  else
-    ## Find list of plot objects from axes "children"
-    kids = ca;
-    kids(strcmp (get (ca, "tag"), "legend")) = [];
-    if (isscalar (kids))
-      kids = get (kids, "children")(:);
-    else
-      kids = vertcat (flipud (get (kids, "children")){:});
-    endif
-  endif
-  nargs = numel (varargin);
-  nkids = numel (kids);
 
   ## Find any existing legend object associated with axes
-  hlegend = [];
-  for hax = ca
-    try
-      hlegend = get (hax, "__legend_handle__");
-      if (! isempty (hlegend))
-        break;
-      endif
-    end_try_catch
-  endfor
+  try
+    legend_handle = get (axes_handles, "__legend_handle__");
+    if (iscell (legend_handle))
+      legend_handle = unique (cell2mat (legend_handle));
+    endif
+  catch
+  end_try_catch
 
-  orientation = "default";
-  location = "default";
-  show = "create";
-  textpos = "default";
-  box = "default";
-  delete_leg = false;
-  find_leg_hdl = (nargs == 0);  # possibly overridden
-  propvals = {};
+  ## Legend actions
+  actions = {"show", "hide", "toggle", "boxon", ...
+             "boxoff", "right", "left", "off"};
+  if (nargs > 0 && ischar (varargin{1})
+      && any (strcmp (varargin{1}, actions)))
+    action = varargin{1};
+    if (nargs > 1)
+      warning ("Octave:legend:ignoring-extra-argument",
+               'legend: ignoring extra arguments after "%s"', action);
+    endif
+    nargs = 0;
+  endif
 
-  ## Process old way of specifying location with a number rather than a string.
-  ## FIXME: When can this be deleted?
+  ## Now remove property-value pairs for compatibility.
+  propval = {};
+  warn_propval = "";
+  persistent legend_props = {"location", "orientation", "numcolumns", ...
+                             "numcolumnsmode", "textposition", ...
+                             "position", "units", "autoupdate", ...
+                             "string", "title", "interpreter", ...
+                             "fontname", "fontsize", "fontweight", ...
+                             "fontangle", "textcolor", "color", ...
+                             "edgecolor", "box", "linewidth", ...
+                             "visible", "uicontextmenu", "selected", ...
+                             "selectionhighlight", "itemhitfcn", ...
+                             "buttondownfcn", "createfcn", "deletefcn" ...
+                             "interruptible", "busyaction", ...
+                             "pickableparts", "hittest", ...
+                             "beingdeleted", "parent", "children", ...
+                             "handlevisibility", "tag", "type", ...
+                             "userdata"};
+  isprp = @(prop) (ischar (prop) && any (strcmpi (legend_props, prop)));
+  idx = find (cellfun (isprp, varargin));
+  if (! isempty (idx))
+    idx = idx(1);
+    propval = varargin(idx:end);
+    warn_propval = varargin{idx};
+    varargin(idx:end) = [];
+    nargs = idx-1;
+  endif
+
+  ## List plot objects that can be handled
+  warn_extra_obj = false;
+  persistent valid_types = {"line", "patch", "surface", "hggroup"};
+
+  if (nargs > 0 && all (ishghandle (varargin{1})))
+
+    ## List of plot objects to label given as first argument
+    obj_handles = varargin{1};
+    types = get (obj_handles, "type");
+    if (! iscell (types))
+      types = {types};
+    endif
+
+    idx = cellfun (@(s) any (strcmp (s, valid_types)), types);
+    if (! all (idx))
+      error ("Octave:legend:bad-object",
+             "legend: objects of type \"%s\" can't be labeled",
+             types(! idx){1});
+    endif
+    varargin(1) = [];
+    nargs--;
+    warn_extra_obj = true;
+
+  elseif (nargs > 0 || isempty (legend_handle))
+
+    ## Find list of plot objects from axes "children"
+    if (isscalar (axes_handles))
+      obj_handles = flipud (get (axes_handles, "children")(:));
+    else
+      tmp = get (axes_handles(:), "children");
+      obj_handles = [flipud(tmp{1}); flipud(tmp{2})];
+    endif
+
+    if (isempty (obj_handles))
+      error ("Octave:legend:no-object", "legend: no valid object to label");
+    endif
+
+    idx = arrayfun (@(h) any (strcmp (get (h, "type"), valid_types)), ...
+                              obj_handles);
+    obj_handles(! idx) = [];
+
+    if (isempty (obj_handles))
+      error ("Octave:legend:no-object", "legend: no valid object to label");
+    endif
+
+  else
+    obj_handles = getappdata (legend_handle, "__peer_objects__");
+  endif
+
+  nobj = numel (obj_handles);
+
+  ## List labels
+  next_idx = 1;
   if (nargs > 0)
-    pos = varargin{nargs};
-    if (isnumeric (pos) && isscalar (pos) && pos == fix (pos))
-      warning ("legend: specifying location with a numeric argument is obsolete and will be removed from a future version of Octave, use a string specification instead");
-      if (pos >= -1 && pos <= 4)
-        location = [{"northeastoutside", "best", "northeast",
-                     "northwest", "southwest", "southeast"}] {pos + 2};
-        varargin(nargs) = [];
-        nargs -= 1;
-      else
-        error ("legend: invalid location specified");
-      endif
+
+    if (iscellstr (varargin{1}))
+      obj_labels = varargin{1};
+      varargin(1) = [];
+      nargs--;
+    elseif (ischar (varargin{1}) && rows (varargin{1}) > 1)
+      obj_labels = cellstr (varargin{1});
+      varargin(1) = [];
+      nargs--;
+    elseif (all (cellfun (@ischar, varargin)))
+      obj_labels = varargin;
+      varargin = {};
+      nargs = 0;
     endif
-  endif
 
-  ## Find "location" and "orientation" property/value pairs
-  while (nargs > 1)
-    pos = varargin{nargs-1};
-    str = varargin{nargs};
-    if (strcmpi (pos, "location") && ischar (str))
-      location = lower (str);
-      varargin(nargs-1:nargs) = [];
-      nargs -= 2;
-    elseif (strcmpi (pos, "orientation") && ischar (str))
-      orientation = lower (str);
-      varargin(nargs-1:nargs) = [];
-      nargs -= 2;
-    else
-      break;
+    if (nargs > 0)
+      print_usage ("legend");
     endif
-  endwhile
 
-  ## Validate the orientation
-  if (! any (strcmp (orientation, {"vertical", "horizontal", "default"})))
-    error ("legend: unrecognized legend orientation");
-  endif
+    nlab = numel (obj_labels);
+    if (nlab != nobj)
+      if (nobj > nlab)
+        obj_handles = obj_handles(1:nlab);
 
-  ## Validate the location type
-  outside = false;
-  inout = strfind (location, "outside");
-  if (! isempty (inout))
-    outside = true;
-    location = location(1:inout-1);
-  else
-    outside = false;
-  endif
-
-  switch (location)
-    case {"north", "south", "east", "west", "northeast", "northwest", ...
-          "southeast", "southwest", "default"}
-      ## These are all valid locations, do nothing.
-
-    case "best"
-      if (outside)
-        if (strcmp (orientation, "horizontal"))
-          location = "south";
-        else
-          location = "northeast";
+        msg = "legend: ignoring extra objects.";
+        if (! isempty (warn_propval))
+          msg = [msg ' "' warn_propval '" interpreted as a property ' , ...
+                 "name. Use a cell array of strings to specify labels ", ...
+                 "that match a legend property name."];
+        endif
+        if (warn_extra_obj)
+          warning ("Octave:legend:object-label-mismatch", msg);
         endif
       else
-        warning ("legend: 'best' not yet implemented for location specifier, using 'northeast' instead\n");
-        location = "northeast";
-      endif
-
-    case "none"
-      ## FIXME: Should there be any more error checking on this?
-
-    otherwise
-      error ("legend: unrecognized legend location");
-  endswitch
-
-  ## Finish input processing based on number of inputs
-  if (nargs == 0)
-    ## No labels given, create a new legend or return existing one
-    if (isempty (hlegend))
-      show = "create";
-      textpos = "right";
-      find_leg_hdl = false;
-    endif
-
-  elseif (nargs == 1)
-    ## Either OPTION value, single string label, or cellstr of labels.
-    arg = varargin{1};
-    if (ischar (arg))
-      if (rows (arg) == 1)
-        str = lower (strtrim (arg));
-        switch (str)
-          case "off"
-            delete_leg = true;
-          case "hide"
-            show = "off";
-            nargs -= 1;
-          case "show"
-            if (! isempty (hlegend))
-              show = "on";
-            else
-              show = "create";
-              textpos = "right";
-            endif
-            nargs -= 1;
-          case "toggle"
-            if (isempty (hlegend))
-              show = "create";
-              textpos = "right";
-            elseif (strcmp (get (hlegend, "visible"), "off"))
-              show = "on";
-            else
-              show = "off";
-            endif
-            nargs -= 1;
-          case "boxon"
-            box = "on";
-            nargs -= 1;
-          case "boxoff"
-            box = "off";
-            nargs -= 1;
-          case "left"
-            textpos = "left";
-            nargs -= 1;
-          case "right"
-            textpos = "right";
-            nargs -= 1;
-        endswitch
-      else
-        ## Character matrix of labels
-        varargin = cellstr (arg);
-        nargs = numel (varargin);
-      endif
-    elseif (iscellstr (arg))
-      ## Cell array of labels
-      varargin = arg;
-      nargs = numel (varargin);
-    else
-      error ("legend: single argument must be a string or cellstr");
-    endif
-
-  elseif (nargs > 1 && iscellstr (varargin{1}))
-    ## Cell array of labels followed by property/value pairs
-    propvals = varargin(2:end);
-    if (rem (numel (propvals), 2) != 0)
-      error ("legend: PROPERTY/VALUE arguments must occur in pairs");
-    endif
-    varargin = {varargin{1}{:}};
-    nargs = numel (varargin);
-  endif
-
-  have_labels = (nargs > 0);
-  hobjects = [];
-  hplots = [];
-  text_strings = {};
-
-  if (delete_leg)
-    delete (hlegend);
-    hlegend = [];
-  elseif (find_leg_hdl)
-    ## Don't change anything about legend.
-    ## hleg output will be assigned hlegend value at end of function.
-  elseif (strcmp (show, "off"))
-    if (! isempty (hlegend))
-      set (hlegend, "visible", "off");
-      hlegend = [];
-    endif
-  elseif (strcmp (show, "on"))
-    if (! isempty (hlegend))
-      set (hlegend, "visible", "on");
-      ## NOTE: Matlab sets both "visible" and "box" to "on" for "show on"
-      ## set (hlegend, "box", "on");
-    endif
-  elseif (strcmp (box, "on"))
-    if (! isempty (hlegend))
-      set (hlegend, "box", "on");
-    endif
-  elseif (strcmp (box, "off"))
-    if (! isempty (hlegend))
-      set (hlegend, "box", "off");
-    endif
-  elseif (! have_labels && ! isempty (hlegend)
-          && ! (strcmp (location, "default")
-                && strcmp (orientation, "default")))
-    ## Changing location or orientation of existing legend
-    if (strcmp (location, "default"))
-      set (hlegend, "orientation", orientation);
-    elseif (strcmp (orientation, "default"))
-      if (outside)
-        set (hlegend, "location", [location "outside"]);
-      else
-        set (hlegend, "location", location);
-      endif
-    else
-      if (outside)
-        set (hlegend, "location", [location "outside"],
-                      "orientation", orientation);
-      else
-        set (hlegend, "location", location,
-                      "orientation", orientation);
+        obj_labels = obj_labels(1:nobj);
+        warning ("Octave:legend:object-label-mismatch",
+                 "legend: ignoring extra labels.");
       endif
     endif
   else
-    ## Create or modify legend object
-
-    if (! isempty (hlegend))
-      ## Disable callbacks while modifying an existing legend
-      setappdata (hlegend, "nocallbacks", true);
+    [tmp_labels, next_idx] = displayname_or_default (obj_handles,
+                                                     legend_handle);
+    if (isempty (legend_handle)
+        || ! isequal (tmp_labels, get (legend_handle, "string")))
+      obj_labels = tmp_labels;
     endif
 
-    if (have_labels)
-      ## Check for valid data that can be labeled.
-      have_data = false;
-      have_dname = false;
-      for hkid = kids.'
-        typ = get (hkid, "type");
-        if (any (strcmp (typ, {"line", "patch", "surface", "hggroup"})))
-          have_data = true;
-          break;
-        endif
-      endfor
+  endif
 
-      if (! have_data)
-        warning ("legend: plot data is empty; setting key labels has no effect");
-      endif
-    else
-      ## No labels.  Search for DisplayName property.
-      have_dname = false;
-      n_dname = 0;
-      for hkid = kids.'
-        typ = get (hkid, "type");
-        if (any (strcmp (typ, {"line", "patch", "surface", "hggroup"})))
-          n_dname += 1;  # count of objects which could be labeled
-          if (! isempty (get (hkid, "displayname")))
-            have_dname = true;
-            break;
-          endif
-        endif
-      endfor
-      have_data = n_dname > 0;
+  opts.action = action;
+  opts.axes_handles = axes_handles;
+  opts.obj_handles = obj_handles;
+  opts.obj_labels = obj_labels;
+  opts.legend_handle = legend_handle;
+  opts.propval = propval;
+  opts.next_idx = next_idx;
+
+endfunction
+
+function [labels, next_idx] = displayname_or_default (hplots, hl = [])
+
+  next_idx = 1;
+  if (! isempty (hl))
+    next_idx = getappdata (hl, "__next_label_index__");
+  endif
+
+  ## Use the displayname property
+  labels = get (hplots, "displayname");
+  if (! iscell (labels))
+    labels = {labels};
+  endif
+
+  ## Fallback to automatic names for empty labels
+  empty_label_idx = cellfun (@isempty, labels);
+
+  if (any (empty_label_idx) && ! isempty (hl))
+    ## Empty strings must not be blindly replaced by data%d. If there exist
+    ## an old text object that was affected an empty string, keep it as is.
+    kids = get (hl, "children");
+    htext = kids(strcmp (get (kids, "type"), "text"));
+    old_objects = get (htext, "peer_object");
+    if (iscell (old_objects))
+      old_objects = cell2mat (old_objects);
     endif
 
-    if (have_labels || ! have_dname)
-      k = nkids;
-      if (! have_labels)
-        ## No labels or DisplayName.  Create set of "dataX" labels.
-        if (n_dname > 20)
-          warning ("legend: labeling only first 20 data objects");
-          n_dname = 20;
-        endif
-        nargs = n_dname;
-        varargin = arrayfun (@(x) sprintf ("data%d", x), [1:nargs]',
-                             "uniformoutput", false);
-        have_labels = true;
-      endif
-      for i = 1 : nargs
-        label = varargin{i};
-        if (! ischar (label))
-          error ("legend: expecting label to be a string");
-        endif
-        ## Locate an object which can be labeled
-        while (k > 0)
-          typ = get (kids(k), "type");
-          if (any (strcmp (typ, {"line","patch","surface","hggroup"})))
-            break;
-          endif
-          k--;
-        endwhile
-        if (k > 0)
-          set (kids(k), "displayname", label);
-          hplots(end+1) = kids(k);
-          text_strings(end+1) = label;
-          k--;
-        else
-          if (have_data)
-            warning ("legend: ignoring extra labels");
-          endif
-          break;  # k = 0, no further handles to process
-        endif
-      endfor
-
-    else
-      ## No labels specified but objects have DisplayName property set.
-      k = nkids;
-      while (k > 0)
-        ## Locate object to label
-        while (k > 0)
-          typ = get (kids(k), "type");
-          if (any (strcmp (typ, {"line","patch","surface","hggroup"})))
-            break;
-          endif
-          k--;
-        endwhile
-        if (k > 0)
-          dname = get (kids(k), "displayname");
-          if (! isempty (dname))
-            hplots(end+1) = kids(k);
-            text_strings(end+1) = dname;
-          endif
-          k--;
-        endif
-      endwhile
-    endif
-
-    if (isempty (hplots))
-      ## Nothing to label
-      if (! isempty (hlegend))
-        delete (hlegend);
-        hlegend = [];
-        hobjects = [];
-        hplots = [];
-        text_strings = {};
-      endif
-    else
-      ## Preserve the old legend if it exists
-      if (! isempty (hlegend))
-        if (strcmp (textpos, "default"))
-          textpos = get (hlegend, "textposition");
-        endif
-        if (strcmp (location, "default"))
-          location = get (hlegend, "location");
-          inout = strfind (location, "outside");
-          if (! isempty (inout))
-            outside = true;
-            location = location(1:inout-1);
-          else
-            outside = false;
-          endif
-        endif
-        if (strcmp (orientation, "default"))
-          orientation = get (hlegend, "orientation");
-        endif
-        box = get (hlegend, "box");
-      else
-        if (strcmp (textpos, "default"))
-          textpos = "right";
-        endif
-        if (strcmp (location, "default"))
-          location = "northeast";
-        endif
-        if (strcmp (orientation, "default"))
-          orientation = "vertical";
-        endif
-        box = "on";
-      endif
-
-      ## Use axis which is appropriate for legend location.
-      ## This is only necessary for plotyy figures where there are two axes.
-      if (numel (ca) == 1)
-        cax = ca(1);
-      elseif (strfind (location, "east"))
-        cax = ca(2);
-      else
-        cax = ca(1);
-      endif
-      ## Get axis size and fontsize in points.
-      ## Rely on listener to handle conversion.
-      units = get (cax, "units");
-      unwind_protect
-        set (cax, "units", "points");
-        set (cax, "fontunits", "points");
-        if (isempty (hlegend) || ! isprop (hlegend, "unmodified_axes_position"))
-          unmodified_axes_position = get (cax, "position");
-          unmodified_axes_outerposition = get (cax, "outerposition");
-        else
-          unmodified_axes_position = get (hlegend, "unmodified_axes_position");
-          unmodified_axes_outerposition = get (hlegend, ...
-                                               "unmodified_axes_outerposition");
-        endif
-        ca_pos = unmodified_axes_position;
-        ca_outpos = unmodified_axes_outerposition;
-        tightinset = get (ca(1), "tightinset");
-        for i = 2 : numel (ca)
-          tightinset = max (tightinset, get (ca(i), "tightinset"));
-        endfor
-      unwind_protect_cleanup
-        set (cax, "units", units);
-      end_unwind_protect
-
-      ## Padding between legend entries horizontally and vertically
-      ## measured in points.
-      ## FIXME: 3*xpad must be integer or strange off-by-1 pixel issues
-      ##        with lines in OpenGL.
-      xpad = 2 + 1/3;
-      ypad = 4;
-
-      bpad = 8;  # padding of legend box from surrounding axes
-
-      linelength = 15;
-
-      ## Preamble code to restore figure and axes after legend creation
-      origfig = get (0, "currentfigure");
-      if (origfig != hfig)
-        set (0, "currentfigure", hfig);
-      else
-        origfig = [];
-      endif
-      origaxes = get (hfig, "currentaxes");
-      unwind_protect
-        ud = ancestor (hplots, "axes");
-        if (! isscalar (ud))
-          ud = unique ([ud{:}]);
-        endif
-        hpar = get (ud(1), "parent");
-
-        if (isempty (hlegend))
-          ## Create a legend object (axes + new properties)
-          addprops = true;
-          hlegend = axes ("parent", hpar, "tag", "legend",
-                          "box", box,
-                          "xtick", [], "ytick", [],
-                          "xlim", [0, 1], "ylim", [0, 1],
-                          "activepositionproperty", "position");
-          setappdata (hlegend, "__axes_handle__", ud);
-          try
-            addproperty ("__legend_handle__", ud(1), "handle", hlegend);
-          catch
-            set (ud(1), "__legend_handle__", hlegend);
-          end_try_catch
-
-          ## Inherit fontsize from current axis
-          ## "fontunits" should be first because it affects interpretation
-          ## of "fontsize" property.
-          [fontunits, fontsz] = get (ca(1), {"fontunits", "fontsize"}){:};
-          fontsz *= 0.90;  # Reduce legend fontsize to 90% of axes fontsize
-          set (hlegend, {"fontunits", "fontsize"}, {fontunits, fontsz});
-          set (hlegend, "fontunits", "points");  # legend always works in pts.
-          old_hplots = [];
-        else
-          ## Re-use existing legend.
-          addprops = false;
-          axes (hlegend);
-          delete (get (hlegend, "children"));
-          ## Hack: get list of hplots for which addlistener has been called.
-          old_hplots = get (hlegend, "deletefcn"){6};
-        endif
-
-        if (addprops)
-          ## Only required for a newly created legend object
-          ## FIXME: "autoupdate" is not implemented.
-          addproperty ("autoupdate", hlegend, "radio", "{on}|off");
-          addproperty ("edgecolor", hlegend, "color", [0.15, 0.15, 0.15]);
-          addproperty ("textcolor", hlegend, "color", [0, 0, 0]);
-          locations = {"north", "south", "east", "west", ...
-                       "{northeast}", "southeast", "northwest", "southwest", ...
-                       "northoutside", "southoutside", ...
-                       "eastoutside", "westoutside", ...
-                       "northeastoutside", "southeastoutside", ...
-                       "northwestoutside", "southwestoutside", "best", ...
-                       "bestoutside", "none"};
-          addproperty ("location", hlegend, "radio", strjoin (locations, "|"));
-          addproperty ("orientation", hlegend, "radio",
-                       "{vertical}|horizontal");
-          addproperty ("string", hlegend, "any", text_strings);
-          addproperty ("interpreter", hlegend, "textinterpreter");
-          addproperty ("textposition", hlegend, "radio", "left|{right}");
-        endif
-
-        ## Apply any PROPERTY/VALUE pairs given as arguments
-        if (! isempty (propvals))
-          set (hlegend, propvals{:});
-        endif
-
-        ## Text objects in key inherit visual properties from legend object
-        legprops = { "fontunits", "fontangle", "fontname", "fontsize", ...
-                     "fontweight", "interpreter", "textcolor" };
-
-        txtprops = { "fontunits", [], "fontangle", [] "fontname", [], ...
-                     "fontsize", [], "fontweight", [] "interpreter", [], ...
-                     "color", [] };
-        propvals = get (hlegend, legprops);
-        txtprops(2:2:end) = propvals;
-
-        ## Add text labels to the axes first and check their extents
-        nentries = numel (hplots);
-        texthandle = [];
-        maxwidth = maxheight = 0;
-        for k = 1 : nentries
-          halign = ifelse (strcmp (textpos, "right"), "left", "right");
-          texthandle(k) = text (0, 0, text_strings{k},
-                                "units", "points",
-                                "horizontalalignment", halign,
-                                txtprops{:});
-          setappdata (texthandle(k), "handle", hplots(k));
-          extents = get (texthandle(k), "extent");
-          maxwidth = max (maxwidth, extents(3));
-          maxheight = max (maxheight, extents(4));
-        endfor
-        ## Restore units which were forced to points
-        set (texthandle, "units", get (0, "DefaultTextUnits"));
-
-        num1 = nentries;
-        if (strcmp (orientation, "vertical"))
-          height = nentries * (ypad + maxheight);
-          if (outside)
-            if (height > ca_pos(4))
-              ## Avoid shrinking the height of the axis to zero if outside
-              num1 = ca_pos(4) / (maxheight + ypad) / 2;
-            endif
-          else
-            if (height > 0.9 * ca_pos(4))
-              num1 = 0.9 * ca_pos(4) / (maxheight + ypad);
-            endif
-          endif
-        else
-          width = nentries * (ypad + maxwidth);
-          if (outside)
-            if (width > ca_pos(3))
-              ## Avoid shrinking the width of the axis to zero if outside
-              num1 = ca_pos(3) / (maxwidth + ypad) / 2;
-            endif
-          else
-            if (width > 0.9 * ca_pos(3))
-              num1 = 0.9 * ca_pos(3) / (maxwidth + ypad);
-            endif
-          endif
-        endif
-        num2 = ceil (nentries / num1);
-
-        ## Layout is [xpad, linelength, xpad, maxwidth, xpad]
-        xstep = 3 * xpad + (maxwidth + linelength);
-        if (strcmp (textpos, "right"))
-          xoffset = xpad;
-          txoffset = 2 * xpad + linelength;
-        else
-          xoffset = 2 * xpad + maxwidth;
-          txoffset = xpad + maxwidth;
-        endif
-        ystep = (ypad + maxheight);
-        yoffset = ystep / 2;
-
-        ## Place the legend in the desired location
-        if (strcmp (orientation, "vertical"))
-          lpos = [0, 0, num2 * xstep, num1 * ystep];
-        else
-          lpos = [0, 0, num1 * xstep, num2 * ystep];
-        endif
-
-        gnuplot = strcmp (get (hfig, "__graphics_toolkit__"), "gnuplot");
-        if (gnuplot)
-          ## gnuplot places the key (legend) at edge of the figure window.
-          ## OpenGL places the legend box at edge of the unmodified axes
-          ## position.
-          if (isempty (strfind (location, "east")))
-            gnuplot_offset = unmodified_axes_outerposition(1) ...
-                           + unmodified_axes_outerposition(3) ...
-                           - unmodified_axes_position(1) ...
-                           - unmodified_axes_position(3);
-          else
-            gnuplot_offset = unmodified_axes_position(1) ...
-                           - unmodified_axes_outerposition(1);
-          endif
-          ## FIXME: The "fontsize" is added to match the behavior of OpenGL.
-          ## This implies that a change in fontsize should trigger a listener
-          ## to update the legend.  The "2" was determined using a long legend
-          ## key in the absence of any subplots.
-          gnuplot_offset -= 2 * get (hlegend, "fontsize");
-        else
-          gnuplot_offset = 0;
-        endif
-
-        ## For legend's outside the associated axes position,
-        ## align their edge to the unmodified_axes_outerposition,
-        ## and adjust the axes position accordingly.
-        switch (location)
-          case "north"
-            if (outside)
-              lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
-                      ca_outpos(2) + ca_outpos(4) - lpos(4) - bpad/2, ...
-                      lpos(3), lpos(4)];
-
-              new_pos = [ca_pos(1), ca_pos(2), ca_pos(3), ca_pos(4) - lpos(4)];
-            else
-              lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
-                      ca_pos(2) + ca_pos(4) - lpos(4) - bpad, ...
-                      lpos(3), lpos(4)];
-            endif
-          case "south"
-            if (outside)
-              lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
-                      ca_outpos(2) + bpad/2, lpos(3), lpos(4)];
-              new_pos = [ca_pos(1), ...
-                         lpos(2) + lpos(4) + bpad/2 + tightinset(2), ...
-                         ca_pos(3), ca_pos(4) - lpos(4)];
-            else
-              lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
-                      ca_pos(2) + bpad, lpos(3), lpos(4)];
-            endif
-          case "east"
-            if (outside)
-              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - bpad/2, ...
-                      ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, ...
-                      lpos(3), lpos(4)];
-              new_pos = [ca_pos(1), ca_pos(2), ...
-                         lpos(1) - bpad - tightinset(3) - ca_pos(1), ...
-                         ca_pos(4)];
-              new_pos(3) += gnuplot_offset;
-            else
-              lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - bpad, ...
-                      ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
-            endif
-          case "west"
-            if (outside)
-              lpos = [ca_outpos(1) + bpad/2, ...
-                      ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, ...
-                      lpos(3), lpos(4)];
-              new_pos = [lpos(1) + lpos(3) + bpad/2 + tightinset(1), ...
-                         ca_pos(2), ca_pos(3) - lpos(3) - bpad/2, ca_pos(4)];
-              new_pos([1, 3]) += [-gnuplot_offset, gnuplot_offset];
-            else
-              lpos = [ca_pos(1) + bpad, ...
-                      ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
-            endif
-          case "northeast"
-            if (outside)
-              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - bpad/2, ...
-                      ca_pos(2) + ca_pos(4) - lpos(4), ...
-                      lpos(3), lpos(4)];
-              new_pos = [ca_pos(1), ca_pos(2), ...
-                         lpos(1) - bpad - tightinset(3) - ca_pos(1), ...
-                         ca_pos(4)];
-              new_pos(3) += gnuplot_offset;
-            else
-              lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - bpad, ...
-                      ca_pos(2) + ca_pos(4) - lpos(4) - bpad, ...
-                      lpos(3), lpos(4)];
-            endif
-          case "northwest"
-            if (outside)
-              lpos = [ca_outpos(1) + bpad/2, ...
-                      ca_pos(2) + ca_pos(4) - lpos(4), ...
-                      lpos(3), lpos(4)];
-              new_pos = [lpos(1) + lpos(3) + bpad/2 + tightinset(1), ...
-                         ca_pos(2), ca_pos(3) - lpos(3) - bpad/2, ca_pos(4)];
-              new_pos([1, 3]) += [-gnuplot_offset, gnuplot_offset];
-            else
-              lpos = [ca_pos(1) + bpad, ...
-                      ca_pos(2) + ca_pos(4) - lpos(4) - bpad, ...
-                      lpos(3), lpos(4)];
-            endif
-          case "southeast"
-            if (outside)
-              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - bpad/2, ...
-                      ca_pos(2), lpos(3), lpos(4)];
-              new_pos = [ca_pos(1), ca_pos(2), ...
-                         lpos(1) - bpad - ca_pos(1) - tightinset(3), ...
-                         ca_pos(4)];
-              new_pos(3) += gnuplot_offset;
-            else
-              lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - bpad, ...
-                      ca_pos(2) + bpad, lpos(3), lpos(4)];
-            endif
-          case "southwest"
-            if (outside)
-              lpos = [ca_outpos(1) + bpad/2, ca_pos(2), lpos(3), lpos(4)];
-              new_pos = [lpos(1) + lpos(3) + bpad/2 + tightinset(1), ...
-                         ca_pos(2), ca_pos(3) - lpos(3) - bpad/2, ca_pos(4)];
-              new_pos([1, 3]) += [-gnuplot_offset, gnuplot_offset];
-            else
-              lpos = [ca_pos(1) + bpad, ca_pos(2) + bpad, lpos(3), lpos(4)];
-            endif
-        endswitch
-
-        units = get (hlegend, "units");
-        unwind_protect
-          set (hlegend, "units", "points");
-          set (hlegend, "position", lpos);
-        unwind_protect_cleanup
-          set (hlegend, "units", units);
-        end_unwind_protect
-
-        ## Now write the line segments and place the text objects correctly
-        xk = yk = 0;
-        for k = 1 : numel (hplots)
-          hobjects(end+1) = texthandle(k);
-          hplt = hplots(k);
-          typ = get (hplt, "type");
-          ## For an hggroup, find an underlying primitive object
-          if (strcmp (typ, "hggroup"))
-            for hgkid = get (hplt, "children").'
-              hgkid_type = get (hgkid, "type");
-              if (any (strcmp (hgkid_type, {"line","patch","surface"})))
-                typ = hgkid_type;
-                hplt = hgkid;
-                break;
-              endif
-            endfor
-          endif
-
-          switch (typ)
-
-            case "line"
-              color = get (hplt, "color");
-              style = get (hplt, "linestyle");
-              lwidth = min (get (hplt, "linewidth"), 5);
-              if (! strcmp (style, "none"))
-                l1 = __go_line__ (hlegend, ...
-                       "xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3), ...
-                       "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4), ...
-                       "color", color, "linestyle", style, ...
-                       "linewidth", lwidth, "marker", "none");
-                setappdata (l1, "handle", hplt);
-                hobjects(end+1) = l1;
-              endif
-              marker = get (hplt, "marker");
-              if (! strcmp (marker, "none"))
-                l1 = __go_line__ (hlegend, ...
-                       "xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3), ...
-                       "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4), ...
-                       "color", color, "linestyle", "none", ...
-                       "linewidth", lwidth, "marker", marker, ...
-                       "markeredgecolor", get (hplt, "markeredgecolor"), ...
-                       "markerfacecolor", get (hplt, "markerfacecolor"), ...
-                       "markersize", min (get (hplt, "markersize"),10));
-                setappdata (l1, "handle", hplt);
-                hobjects(end+1) = l1;
-              endif
-
-              ## Newly labeled objects have listeners added
-              if (! any (hplt == old_hplots))
-                addlistener (hplt, "color",
-                             {@cb_line_listener, hlegend, linelength, false});
-                addlistener (hplt, "linestyle",
-                             {@cb_line_listener, hlegend, linelength, false});
-                addlistener (hplt, "linewidth",
-                             {@cb_line_listener, hlegend, linelength, false});
-                addlistener (hplt, "marker",
-                             {@cb_line_listener, hlegend, linelength, false});
-                addlistener (hplt, "markeredgecolor",
-                             {@cb_line_listener, hlegend, linelength, false});
-                addlistener (hplt, "markerfacecolor",
-                             {@cb_line_listener, hlegend, linelength, false});
-                addlistener (hplt, "markersize",
-                             {@cb_line_listener, hlegend, linelength, false});
-                addlistener (hplt, "displayname",
-                             {@cb_line_listener, hlegend, linelength, true});
-              endif
-
-            case "patch"
-              facecolor = get (hplt, "facecolor");
-              edgecolor = get (hplt, "edgecolor");
-              cdata = get (hplt, "cdata");
-              if (! strcmp (facecolor, "none") || ! strcmp (edgecolor, "none"))
-                p1 = patch ("xdata", ([0, linelength, linelength, 0] +
-                                      xoffset + xk * xstep) / lpos(3),
-                            "ydata", (lpos(4) - yoffset -
-                                      [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
-                            "facecolor", facecolor, "edgecolor", edgecolor,
-                            "cdata", cdata);
-                setappdata (p1, "handle", hplt);
-              else
-                ## non-standard patch only making use of marker styles
-                ## such as scatter plot.
-                p1 = patch ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
-                            "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                            "marker", get (hplt, "marker"),
-                            "markeredgecolor",get (hplt,"markeredgecolor"),
-                            "markerfacecolor",get (hplt,"markerfacecolor"),
-                            "markersize", min (get (hplt,"markersize"),10),
-                            "cdata", cdata);
-                setappdata (p1, "handle", hplt);
-              endif
-              hobjects(end+1) = p1;
-              ## Copy clim from axes so that colors work out.
-              set (hlegend, "clim", get (ca(1), "clim"));
-
-              ## FIXME: Need listeners, as for line objects.
-              ##        Changing clim, for example, won't update colors
-
-            case "surface"
-              facecolor = get (hplt, "facecolor");
-              edgecolor = get (hplt, "edgecolor");
-              cdata = sum (get (ca(1), "clim")) / 2;
-              if (! strcmp (facecolor, "none") || ! strcmp (edgecolor, "none"))
-                p1 = patch ("xdata", ([0, linelength, linelength, 0] +
-                                      xoffset + xk * xstep) / lpos(3),
-                            "ydata", (lpos(4) - yoffset -
-                                      [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
-                            "facecolor", facecolor, "edgecolor", edgecolor,
-                            "cdata", cdata);
-                setappdata (p1, "handle", hplt);
-                hobjects(end+1) = p1;
-              endif
-              ## FIXME: Need listeners, as for line objects.
-
-          endswitch
-
-          set (texthandle(k), "position",
-                              [(txoffset + xk * xstep) / lpos(3), ...
-                               (lpos(4) - yoffset - yk * ystep) / lpos(4)]);
-          if (strcmp (orientation, "vertical"))
-            yk += 1;
-            if (yk > num1)
-              yk = 0;
-              xk += 1;
-            endif
-          else
-            xk += 1;
-            if (xk > num1)
-              xk = 0;
-              yk += 1;
-            endif
-          endif
-        endfor
-
-        ## Add an invisible text object to original axis
-        ## that, when it is destroyed, will remove the legend.
-        htdel = findall (ca(1), "-depth", 1, "tag", "deletelegend",
-                                "type", "text");
-        if (isempty (htdel))
-          htdel = text (0, 0, "", "parent", ca(1), "tag", "deletelegend",
-                        "visible", "off", "handlevisibility", "off",
-                        "xliminclude", "off", "yliminclude", "off",
-                        "zliminclude", "off");
-          set (htdel, "deletefcn", {@cb_axes_deleted, ca, hlegend});
-        endif
-        if (isprop (hlegend, "unmodified_axes_position"))
-          set (hlegend, "unmodified_axes_position",
-                         unmodified_axes_position,
-                        "unmodified_axes_outerposition",
-                         unmodified_axes_outerposition);
-        else
-          addproperty ("unmodified_axes_position", hlegend,
-                       "data", unmodified_axes_position);
-          addproperty ("unmodified_axes_outerposition", hlegend,
-                       "data", unmodified_axes_outerposition);
-        endif
-
-        ## Resize the axis that the legend is attached to if the legend is
-        ## "outside" the plot and create a listener to resize axis to original
-        ## size if the legend is deleted, hidden, or shown.
-        if (outside)
-          for i = 1 : numel (ca)
-            units = get (ca(i), "units");
-            unwind_protect
-              set (ca(i), "units", "points");
-              if (gnuplot && numel (ca) == 1)
-                ## Let gnuplot handle the positioning of the keybox.
-                ## This violates strict Matlab compatibility, but reliably
-                ## renders an aesthetic result.
-                set (ca(i), "position",  unmodified_axes_position);
-                set (ca(i), "activepositionproperty", "outerposition");
-              else
-                ## numel (ca) > 1 for axes overlays (like plotyy)
-                set (ca(i), "position", new_pos);
-              endif
-            unwind_protect_cleanup
-              set (ca(i), "units", units);
-            end_unwind_protect
-          endfor
-
-          set (hlegend, "deletefcn", {@cb_restore_axes, ca, ...
-                                      unmodified_axes_position, ...
-                                      unmodified_axes_outerposition, ...
-                                      htdel, hplots});
-          addlistener (hlegend, "visible", {@cb_legend_hideshow, ca, ...
-                                            unmodified_axes_position, ...
-                                            new_pos});
-        else
-          set (hlegend, "deletefcn", {@cb_restore_axes, ca, [], [], ...
-                                      htdel, hplots});
-        endif
-
-        if (! addprops)
-          ## Remove listeners on existing legend temporarily to stop recursion.
-          dellistener (hlegend, "location");
-          dellistener (hlegend, "orientation");
-          dellistener (hlegend, "string");
-          dellistener (hlegend, "textposition");
-        endif
-
-        if (! addprops)
-          set (hlegend, "string", text_strings);
-        endif
-
-        if (outside)
-          set (hlegend, "location", [location "outside"],
-                        "orientation", orientation, "textposition", textpos);
-        else
-          set (hlegend, "location", location, "orientation", orientation,
-                        "textposition", textpos);
-        endif
-
-        if (addprops)
-          addlistener (hlegend, "edgecolor", @cb_legend_text_update);
-          addlistener (hlegend, "fontangle", @cb_legend_text_update);
-          addlistener (hlegend, "fontname", @cb_legend_text_update);
-          addlistener (hlegend, "fontweight", @cb_legend_text_update);
-          addlistener (hlegend, "textcolor", @cb_legend_text_update);
-          ## Properties which could change size of box, such as fontsize,
-          ## require legend to be redrawn.
-          ## FIXME: fontsize is changed by print.m function during the
-          ##        production of a plot for output.  This screws things up
-          ##        because legend tries to return the axes size to what it
-          ##        was when the figure was created, versus what it is now
-          ##        when the figure is being printed.  Temporary hack is
-          ##        good enough for generating the Octave manual which still
-          ##        relies on gnuplot for generating images.  See bug #40333.
-          if (! gnuplot)
-            addlistener (hlegend, "fontsize", @cb_legend_update);
-          endif
-          addlistener (hlegend, "fontunits", @cb_legend_update);
-          addlistener (hlegend, "interpreter", @cb_legend_update);
-          addlistener (hlegend, "location", @cb_legend_location);
-          addlistener (hlegend, "orientation", @cb_legend_update);
-          addlistener (hlegend, "string", @cb_legend_update);
-          addlistener (hlegend, "textposition", @cb_legend_update);
-          ## FIXME: need to add listeners for tightinset and position
-          ##        addlistener (ca, "tightinset", @update????);
-          ##        addlistener (ca, "position", @update????);
-        else
-          ## Restore listeners temporarily disabled during reconstruction.
-          addlistener (hlegend, "location", @cb_legend_update);
-          addlistener (hlegend, "orientation", @cb_legend_update);
-          addlistener (hlegend, "string", @cb_legend_update);
-          addlistener (hlegend, "textposition", @cb_legend_update);
-        endif
-
-      unwind_protect_cleanup
-        set (hfig, "currentaxes", origaxes);
-        if (! isempty (origfig))
-          set (0, "currentfigure", origfig);
-        endif
-      end_unwind_protect
-    endif
-  endif
-
-  ## Restore operation of callbacks
-  setappdata (hlegend, "nocallbacks", false);
-
-  if (nargout > 0)
-    hleg = hlegend;
-    hleg_obj = hobjects;
-    hplot = hplots;
-    labels = text_strings;
-  endif
-
-endfunction
-
-## A non-text property of legend has changed requiring an update.
-function cb_legend_update (hleg, ~)
-  persistent recursive = false;
-
-  if (! recursive)
-    recursive = true;
-    unwind_protect
-      hax = getappdata (hleg, "__axes_handle__");
-      ## Hack.  Maybe store this somewhere else such as appdata.
-      hplots = get (hleg, "deletefcn"){6};
-      text_strings = get (hleg, "string");
-      position = get (hleg, "unmodified_axes_position");
-      outerposition = get (hleg, "unmodified_axes_outerposition");
-      units = get (hax, "units");
-      set (hax, "units", "points");
-      switch (get (hax, "activepositionproperty"))
-        case "position"
-          set (hax, "outerposition", outerposition);
-          set (hax, "position", position);
-        case "outerposition"
-          set (hax, "position", position);
-          set (hax, "outerposition", outerposition);
-      endswitch
-      if (isscalar (hax))
-        set (hax, "units", units);
-      else
-        set (hax, {"units"}, units);
-      endif
-
-      hleg = legend (hax(1), hplots, text_strings);
-    unwind_protect_cleanup
-      recursive = false;
-    end_unwind_protect
-  endif
-
-endfunction
-
-## A text property of legend, such as fontname, has changed.
-function cb_legend_text_update (hleg, ~)
-
-  kids = get (hleg, "children");
-  htext = kids(strcmp (get (kids, "type"), "text"));
-
-  tprops = {"fontangle", "fontname", "fontweight", "color"};
-  lprops = {"fontangle", "fontname", "fontweight", "textcolor"};
-  set (htext, tprops, get (hleg, lprops));
-
-  ec = get (hleg, "edgecolor");
-  set (hleg, "xcolor", ec, "ycolor", ec);
-
-endfunction
-
-## The legend "visible" property has changed.
-function cb_legend_hideshow (hleg, ~, ca, orig_pos, new_pos)
-
-  isvisible = strcmp (get (hleg, "visible"), "on");
-
-  ## FIXME: Can't use a single set() call because of linked axes and
-  ##        listeners on plotyy graphs.
-  ca = ca(isaxes (ca));
-  for cax = ca(:).'
-    units = get (cax, "units");
-    unwind_protect
-      set (cax, "units", "points");
-      if (isvisible)
-        set (cax, "position", new_pos);
-      else
-        set (cax, "position", orig_pos);
-      endif
-    unwind_protect_cleanup
-      set (cax, "units", units);
-    end_unwind_protect
-  endfor
-
-endfunction
-
-## The legend "location" property has changed.
-function cb_legend_location (hleg, d)
-
-  ## If it isn't "none", which means manual positioning, then rebuild .
-  if (! strcmp (get (hleg, "location"), "none"))
-    cb_legend_update (hleg, d);
-  endif
-
-endfunction
-
-## Axes to which legend was attached is being deleted/reset.  Delete legend.
-function cb_axes_deleted (~, ~, ca, hlegend)
-  if (isaxes (hlegend))
-    if (strcmp (get (ca(1), "beingdeleted"), "on"))
-      ## Axes are being deleted.  Disable call to cb_restore_axes.
-      set (hlegend, "deletefcn", []);
-    endif
-    delete (hlegend);
-  endif
-endfunction
-
-## Restore position of axes object when legend is deleted.
-function cb_restore_axes (~, ~, ca, pos, outpos, htdel, hplots)
-
-  hf = ancestor (ca(1), "figure");
-  if (strcmp (get (hf, "beingdeleted"), "on")
-      || strcmp (get (ca(1), "beingdeleted"), "on"))
-    ## Skip restoring axes if entire figure or axes is being destroyed.
-    return;
-  endif
-
-  ## Remove text object used to trigger legend delete when axes is deleted
-  if (ishghandle (htdel))
-    set (htdel, "deletefcn", []);
-    delete (htdel);
-  endif
-
-  ## Restore original axes positions
-  if (! isempty (pos))
-    ## FIXME: can't use single call to set() because of weirdness w/plotyy
-    for cax = ca(:).'
-      if (isaxes (cax))
-        units = get (cax, "units");
-        unwind_protect
-          set (cax, "units", "points");
-          set (cax, "position", pos);
-        unwind_protect_cleanup
-          set (cax, "units", units);
-        end_unwind_protect
+    for h = hplots(empty_label_idx).'
+      idx = (h == old_objects);
+      if (any (idx))
+        labels(hplots == h) = get (htext(idx), "string");
+        empty_label_idx(hplots == h) = false;
       endif
     endfor
+
   endif
 
-  ## Remove listeners from plot objects
-  for i = 1 : numel (hplots)
-    if (isgraphics (hplots(i), "line"))
-      dellistener (hplots(i), "color");
-      dellistener (hplots(i), "linestyle");
-      dellistener (hplots(i), "linewidth");
-      dellistener (hplots(i), "marker");
-      dellistener (hplots(i), "markeredgecolor");
-      dellistener (hplots(i), "markerfacecolor");
-      dellistener (hplots(i), "markersize");
-      dellistener (hplots(i), "displayname");
-    endif
-  endfor
+  if (any (empty_label_idx))
+    default = arrayfun (@(ii) sprintf ("data%d", ii), ...
+                        [next_idx:(next_idx + sum (empty_label_idx) - 1)], ...
+                        "uniformoutput", false)(:);
+    labels(empty_label_idx) = default;
+  endif
 
-  ## Nullify legend link (can't delete properties yet)
-  set (ca(1), "__legend_handle__", []);
+  next_idx += sum (empty_label_idx);
+
+  if (! isempty (hl))
+    setappdata (hl, "__next_label_index__", next_idx);
+  endif
 
 endfunction
 
-## Update legend item because underlying plot line object has changed.
-function cb_line_listener (h, ~, hlegend, linelength, update_name)
-
-  ## Don't execute callbacks when legend is under construction
-  legdata = getappdata (hlegend);
-  if (legdata.nocallbacks)
+function update_layout_cb (hl, ~, update_item = false)
+  updating = getappdata (hl, "__updating_layout__");
+  if (! isempty (updating) && updating)
     return;
   endif
 
-  if (update_name)
-    ## When string changes, have to rebuild legend completely
-    [hplots, text_strings] = __getlegenddata__ (hlegend);
-    if (isempty (hplots))
-      delete (hlegend);
+  setappdata(hl, "__updating_layout__", true);
+
+  ## Scale limits so that item positions are expressed in points, from
+  ## top to bottom and from left to right or reverse depending on textposition
+  units = get (hl, "units");
+  set (hl, "units", "points");
+
+  unwind_protect
+
+    if (update_item)
+      pos = get (hl, "position")(3:4);
+      set (hl, "xlim",  [0, pos(1)], "ylim",  [0, pos(2)]);
+
+      textright = strcmp (get (hl, "textposition"), "right");
+      set (hl, "ydir", "reverse", ...
+               "xdir", ifelse (textright, "normal", "reverse"));
+
+      ## Create or reuse text and icon graphics objects
+      objlist = texticon_objects (hl, textright);
+      nitem = rows (objlist);
+
+      ## Prepare the array of text/icon pairs and update their position
+      sz = update_texticon_position (hl, objlist);
     else
-      legend (legdata.handle(1), hplots, text_strings);
+      sz = [diff(get (hl, "xlim")), diff(get (hl, "ylim"))];
     endif
-  else
-    kids = get (hlegend, "children");
-    kids = kids([getappdata(kids, "handle"){:}] == h);
-    kids = kids(strcmp (get (kids, "type"), "line"));
-    idx = strcmp (get (kids, "marker"), "none");
-    ll = kids (idx);
-    lm = kids (! idx);
 
-    [linestyle, marker, displayname] = ...
-      get (h, {"linestyle", "marker", "displayname"}){:};
+    ## Place the legend
+    update_legend_position (hl, sz);
 
-    if (! isempty (ll))
-      [xpos1, ypos1] = get (ll, {"xdata", "ydata"}){:};
-      xpos2 = sum (xpos1) / 2;
-      ypos2 = ypos1(1);
-      delete (ll);
-      if (! isempty (lm))
-        delete (lm);
+  unwind_protect_cleanup
+    set (hl, "units", units);
+    setappdata(hl, "__updating_layout__", false);
+  end_unwind_protect
+
+endfunction
+
+function objlist = texticon_objects (hl, textright)
+
+  ## Delete or set invisible obsolete or unused text/icon objects.
+  old_kids = get (hl, "children")(:).';
+  old_peer_objects = cell2mat (get (old_kids, "peer_object"))(:).';
+  unused = ! ishghandle (old_peer_objects);
+  delete (old_kids(unused));
+  old_kids(unused) = [];
+  old_peer_objects(unused) = [];
+
+  new_peer_objects = getappdata (hl, "__peer_objects__")(:).';
+
+  unused = arrayfun (@(h) ! any (h == new_peer_objects), old_peer_objects);
+  set (old_kids(unused), "visible", "off");
+
+  ## Text properties
+  string = get (hl , "string");
+  if (! iscell (string))
+    string = {string};
+  endif
+
+  txtprops = {"textcolor", "fontsize", "fontweight", "fontname", ...
+              "interpreter"};
+  txtvals = get (hl, txtprops);
+  txtprops{1} = "color";
+  txtprops = [txtprops, "horizontalalignment"];
+  txtvals = [txtvals, ifelse(textright, "left", "right")];
+
+  ## Create or reuse text/icon objects as needed
+  nitem = numel (new_peer_objects);
+  objlist = NaN (nitem, 2);
+
+  for ii = 1:nitem
+
+    str = string{ii};
+    hplt = new_peer_objects(ii);
+
+    idx = (old_peer_objects == hplt);
+
+    if (any (idx))
+      tmp = old_kids(idx);
+      idx = strcmp (get (tmp, "type"), "text");
+
+      htxt = tmp(idx);
+      hicon = tmp(! idx);
+
+      set (htxt, "visible", "on", "string", str, ...
+                 [txtprops(:)'; txtvals(:)']{:});
+      set (hicon, "visible", "on");
+
+    else
+      [htxt, hicon] = create_item (hl, str, [txtprops(:)'; txtvals(:)'], hplt);
+      add_safe_listener (hl, hplt, "displayname", {@update_displayname_cb, hl});
+    endif
+
+    set (hplt, "displayname", str);
+
+    objlist(ii,:) = [htxt, hicon];
+  endfor
+
+endfunction
+
+function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
+
+  typ = get (hplt, "type");
+
+  ## For unknown hggroups use the first child that can be labeled
+  persistent known_creators = {"__contour__", "__errplot__", "__quiver__", ...
+                               "__scatter__", "__stem__"};
+  base_hplt = hplt;
+
+  if (strcmp (typ, "hggroup"))
+    creator = getappdata (hplt, "__creator__");
+    kids = get (hplt, "children");
+    if (any (strcmp (known_creators, creator)))
+      typ = creator;
+      switch (creator)
+        case "__contour__"
+          hplt = [kids(end), kids(1)];
+        case {"__errplot__", "__quiver__", "__stem__"}
+          hplt = kids(2:-1:1);
+        otherwise
+          hplt = kids(1);
+      endswitch
+    else
+      types = get (kids, "type");
+      if (! iscell (types))
+        types = {types};
       endif
-    else
-      [xpos2, ypos2] = get (lm, {"xdata", "ydata"}){:};
-      xpos1 = xpos2 + [-0.5, 0.5] * linelength;
-      ypos1 = [ypos2, ypos2];
-      delete (lm);
-    endif
 
-    if (! strcmp (linestyle, "none"))
-      hl = __go_line__ (hlegend, "xdata", xpos1, "ydata", ypos1,
-                        "color", get (h, "color"),
-                        "linestyle", get (h, "linestyle"),
-                        "linewidth", min (get (h, "linewidth"), 5),
-                        "marker", "none");
-      setappdata (hl, "handle", h);
-    endif
-    if (! strcmp (marker, "none"))
-      hl = __go_line__ (hlegend, "xdata", xpos2, "ydata", ypos2, ...
-                        "color", get (h, "color"), ...
-                        "marker", marker, "markeredgecolor", get (h, "markeredgecolor"), ...
-                        "markerfacecolor", get (h, "markerfacecolor"), ...
-                        "markersize", min (get (h, "markersize"), 10), ...
-                        "linestyle", "none", ...
-                        "linewidth", min (get (h, "linewidth"), 5));
-      setappdata (hl, "handle", h);
+      idx = cellfun (@(s) any (strcmp (s, {"line", "patch", "surface"})), ...
+                     types);
+      hplt = kids(idx)(1);
+      typ = types(idx){1};
     endif
   endif
+
+  persistent lprops = {"color", "linestyle", "linewidth"};
+  persistent mprops = {"color", "marker", "markeredgecolor", ...
+                       "markerfacecolor", "markersize"};
+  persistent pprops = {"edgecolor", "facecolor", "cdata", ...
+                       "linestyle", "linewidth", ...
+                       "marker", "markeredgecolor", ...
+                       "markerfacecolor", "markersize"};
+
+  switch (typ)
+    case {"line", "__errplot__", "__quiver__", "__stem__"}
+
+      ## Main line
+      vals = get (hplt(1), lprops);
+      hicon = __go_line__ (hl, [lprops; vals]{:});
+      addproperty ("markerxdata", hicon, "double", 0);
+      addproperty ("markerydata", hicon, "double", 0);
+
+      ## Additional line for the marker
+      vals = get (hplt(end), mprops);
+      hmarker = __go_line__ (hl, "handlevisibility", "off", ...
+                             "xdata", 0, "ydata", 0, [mprops; vals]{:});
+      update_marker_cb (hmarker);
+
+      ## Listeners
+      safe_property_link (hplt(1), hicon, lprops);
+      safe_property_link (hplt(end), hmarker, mprops);
+      addlistener (hicon, "ydata", ...
+                   @(h) set (hmarker, "ydata", get (h, "markerydata")));
+      addlistener (hicon, "xdata", ...
+                   @(h) set (hmarker, "xdata", get (h, "markerxdata")));
+      addlistener (hmarker, "markersize", @update_marker_cb);
+      add_safe_listener (hl, hplt(1), "beingdeleted",
+                         @() delete ([hicon hmarker]))
+      if (! strcmp (typ, "__errplot__"))
+        setappdata (hicon, "__creator__", typ);
+      else
+        setappdata (hicon, "__creator__", typ, ...
+                    "__format__", get (base_hplt, "format"));
+      endif
+
+    case {"patch", "surface", "__scatter__"}
+
+      vals = get (hplt, pprops);
+
+      hicon = __go_patch__ (hl, [pprops; vals]{:});
+
+      ## Listeners
+      safe_property_link (hplt(1), hicon, pprops);
+
+      setappdata (hicon, "__creator__", typ);
+
+    case "__contour__"
+
+      ## Main patch
+
+      vals = get (hplt(1), pprops);
+      hicon = __go_patch__ (hl, [pprops; vals]{:});
+
+      addproperty ("innerxdata", hicon, "any", 0);
+      addproperty ("innerydata", hicon, "any", 0);
+
+      ## Additional patch for the inner contour
+      vals = get (hplt(end), pprops);
+      htmp =  __go_patch__ (hl, "handlevisibility", "off", ...
+                            "xdata", 0, "ydata", 0, [pprops; vals]{:});
+
+      ## Listeners
+      safe_property_link (hplt(1), hicon, pprops);
+      safe_property_link (hplt(end), htmp, pprops);
+      addlistener (hicon, "ydata", ...
+                   @(h) set (htmp, "ydata", get (h, "innerydata")));
+      addlistener (hicon, "xdata", ...
+                   @(h) set (htmp, "xdata", get (h, "innerxdata")));
+      add_safe_listener (hl, hplt(1), "beingdeleted",
+                         @() delete ([hicon htmp]))
+
+      setappdata (hicon, "__creator__", typ);
+
+  endswitch
+
+  htxt = __go_text__ (hl, "string", str, txtpval{:});
+
+  addproperty ("peer_object", htxt, "double", base_hplt);
+  addproperty ("peer_object", hicon, "double", base_hplt);
+
+endfunction
+
+function safe_property_link (h1, h2, props)
+  for ii = 1:numel (props)
+    prop = props{ii};
+    lsn = {h1, prop, @(h) set (h2, prop, get (h, prop))};
+    addlistener (lsn{:});
+    addlistener (h2, "beingdeleted", @() dellistener (lsn{:}));
+  endfor
+endfunction
+
+function update_displayname_cb (h, ~, hl)
+
+  updating = getappdata (hl, "__updating_layout__");
+  if (! isempty (updating) && updating)
+    return;
+  endif
+
+  str = get (hl, "string");
+  if (! iscell (str))
+    str = {str};
+  endif
+
+  str{h == getappdata (hl, "__peer_objects__")} = get (h, "displayname");
+
+  set (hl ,"string", str);
+
+endfunction
+
+function update_marker_cb (h)
+
+  if (get (h, "markersize") > 3)
+    set (h, "markersize", 3);
+  endif
+
+endfunction
+
+function sz = update_texticon_position (hl, objlist)
+
+  ## margins in points
+  persistent hmargin = 3;
+  persistent vmargin = 3;
+  persistent icon_width = 15;
+
+  units = get (hl, "fontunits");
+  set (hl, "fontunits", "points");
+  icon_height = 0.7 * get (hl, "fontsize");
+  set (hl, "fontunits", units);
+
+  ext = get (objlist(:,1), "extent");
+  markers = get (objlist(:,2), "marker");
+  markersz = get (objlist(:,2), "markersize");
+  types = get (objlist(:,2), "type");
+
+  ## Simple case of 1 text/icon pair
+  nitem = rows (objlist);
+  txticon = zeros (nitem, 4);
+  if (nitem == 1)
+    ext = abs (ext(:,3:4));
+    types = {types};
+    markers = {markers};
+    markersz = {markersz};
+  else
+    ext = abs (cell2mat (ext)(:,3:4));
+  endif
+
+  autolayout = strcmp (get (hl, "numcolumnsmode"), "auto");
+  xmax = ymax = 0;
+  iter = 1;
+
+  if (strcmp (get (hl, "orientation"), "vertical"))
+
+    if (autolayout)
+      ncol = 1;
+    else
+      ncol = min (nitem, get (hl, "numcolumns"));
+    endif
+
+    nrow = ceil (nitem / ncol);
+
+    rowheights = arrayfun (@(idx) max([icon_height; ext(idx:nrow:end, 2)]), ...
+                           1:nrow);
+    x = hmargin;
+    for ii = 1:ncol
+      y = vmargin;
+      for jj = 1:nrow
+        if (iter > nitem)
+          continue;
+        endif
+
+        hg = rowheights(jj);
+        dx = 0;
+        if (! strcmp (markers{iter}, "none"))
+          dx = markersz{iter}/2;
+        endif
+
+        ybase = y + hg / 2;
+        y0 = y + hg/2 - icon_height/2 + dx;
+        y1 = y + hg/2 + icon_height/2 - dx;
+
+        update_icon_position (objlist(iter,2), [x+dx, x+icon_width-dx], ...
+                              [y0, y1]);
+
+        set (objlist(iter,1), "position", [x+icon_width+hmargin, ybase, 0]);
+
+        xmax = max ([xmax, x+icon_width+2*hmargin+ext(iter,1)]);
+        y += (vmargin + hg);
+        iter++;
+      endfor
+      ymax = max ([ymax, y]);
+      x = xmax + 2*hmargin;
+    endfor
+
+  else
+
+    if (autolayout)
+      ncol = nitem;
+    else
+      ncol = min (nitem, get (hl, "numcolumns"));
+    endif
+
+    nrow = ceil (nitem / ncol);
+
+    colwidth = arrayfun (@(idx) max(ext(idx:ncol:end, 1)),
+                         1:ncol);
+    y = vmargin;
+    for ii = 1:nrow
+      x = hmargin;
+
+      endidx = min (iter+ncol-1, nitem);
+      hg = max ([icon_height; ext(iter:endidx,2)]);
+
+      for jj = 1:ncol
+        if (iter > nitem)
+          continue;
+        endif
+
+        wd = colwidth(jj);
+
+        dx = 0;
+        if (! strcmp (markers{iter}, "none"))
+          dx = markersz{iter}/2;
+        endif
+
+        ybase = y + hg / 2;
+        y0 = y + hg/2 - icon_height/2 + dx;
+        y1 = y + hg/2 + icon_height/2 - dx;
+
+        update_icon_position (objlist(iter,2), [x+dx, x+icon_width-dx], ...
+                              [y0, y1]);
+
+        set (objlist(iter,1), "position", [x+icon_width+hmargin, ybase, 0]);
+
+        ymax = max ([ymax, ybase+hg/2+vmargin]);
+        x += (3*hmargin + icon_width + wd);
+        iter++;
+      endfor
+      xmax = max ([xmax, x-hmargin]);
+      y = ymax + vmargin;
+    endfor
+
+  endif
+
+  sz = [xmax, ymax];
+
+endfunction
+
+function update_icon_position (hicon, xdata, ydata)
+  creator = getappdata (hicon, "__creator__");
+  switch (creator)
+    case "line"
+      set (hicon, "markerxdata", mean (xdata), "markerydata", mean (ydata), ...
+           "xdata", xdata, "ydata", [mean(ydata), mean(ydata)]);
+    case {"patch", "surface"}
+      set (hicon, ...
+           "xdata", [xdata, fliplr(xdata)], ...
+           "ydata", [ydata; ydata](:).');
+    case "__contour__"
+      ## Draw two patches
+      x0 = xdata(1);
+      x1 = xdata(2);
+      xm = mean (xdata);
+      y0 = ydata(1);
+      y1 = ydata(2);
+      ym = mean (ydata);
+
+      xdata = [x0, x1, x1, x0];
+      ydata = [y0, y0, y1, y1];
+      set (hicon, ...
+           "innerxdata", (xdata-xm) * 0.6 + xm, ...
+           "innerydata", (ydata-ym) * 0.4 + ym, ...
+           "xdata", xdata, "ydata", ydata);
+    case "__errplot__"
+      x0 = xdata(1);
+      x1 = xdata(2);
+      xm = mean (xdata);
+      y0 = ydata(1);
+      y1 = ydata(2);
+      ym = mean (ydata);
+
+      fmt = getappdata (hicon, "__format__");
+      if (strcmp (fmt, "yerr"))
+        xdata = [xm, xm, xm-2, xm+2, xm, xm, xm-2, xm+2];
+        ydata = [ym, y0, y0, y0, y0, y1, y1, y1];
+      elseif (strcmp (fmt, "xerr"))
+        xdata = [x0+2, x0+2, x0+2, x1-2, x1-2, x1-2, x1-2];
+        ydata = [ym+2, ym-2, ym, ym, ym+2, ym-2, ym];
+      else # "both"
+        xdata = [x0+2, x0+2, x0+2, x1-2, x1-2, x1-2, x1-2, ...
+                 xm, xm, xm-2, xm+2, xm, xm, xm-2, xm+2];
+        ydata = [ym+2, ym-2, ym, ym, ym+2, ym-2, ym, ...
+                 ym, y0, y0, y0, y0, y1, y1, y1];
+      endif
+      set (hicon, "markerxdata", xm, "markerydata", ym, ...
+           "xdata", xdata, "ydata", ydata);
+
+    case "__quiver__"
+      ## Draw an arrow
+      x0 = xdata(1);
+      x1 = xdata(2);
+      y0 = mean (ydata);
+      xdata = [x0, x1, x1-2, x1, x1-2];
+      ydata = [y0, y0, y0+2, y0, y0-2];
+      set (hicon, "markerxdata", x0, "markerydata", y0, ...
+           "xdata", xdata, "ydata", ydata);
+    case "__scatter__"
+      set (hicon, "xdata", mean(xdata), "ydata", mean(ydata));
+    case "__stem__"
+      xdata(2) -= (get (get (hicon, "peer_object"), "markersize") / 2);
+      set (hicon, "markerxdata", xdata(2), "markerydata", mean (ydata), ...
+           "xdata", xdata, "ydata", [mean(ydata), mean(ydata)]);
+  endswitch
+endfunction
+
+function pos = boxposition (axpos, pbam, pba)
+  pos = axpos;
+  pbratio = pba(1)/pba(2);
+  posratio = axpos(3)/axpos(4);
+  if (strcmp (pbam, "manual") && pbratio != posratio)
+    if (posratio < pbratio)
+      pos(4) = pos(3) / pbratio;
+      pos(2) += (axpos(4) - pos(4)) / 2;
+    else
+      pos(3) = pos(4) * pbratio;
+      pos(1) += (axpos(3) - pos(3)) / 2;
+    endif
+  endif
+endfunction
+
+function update_legend_position (hl, sz)
+
+  persistent hmargin = 6;
+  persistent vmargin = 6;
+
+  location = get (hl, "location");
+  outside = strcmp (location(end-3:end), "side");
+  if (outside)
+    location = location(1:end-7);
+  endif
+
+  if (strcmp (location, "best"))
+    orientation = get (hl, "orientation");
+    if (outside)
+      if (strcmp (orientation, "vertical"))
+        location = "northeast";
+      else
+        location = "south";
+      endif
+    else
+      ## FIXME: implement "best" inside properly
+      location = "northeast";
+    endif
+  endif
+
+  haxes = getappdata (hl, "__axes_handle__");
+  hax = haxes(end);
+  units = get (hax, "units");
+
+  unwind_protect
+    ## Restore the original looseinset first and set units to points.
+    li = getappdata (hl, "__original_looseinset__");
+    if (isempty (li))
+      li = get (hax, "looseinset");
+      setappdata (hl, "__original_looseinset__", li);
+      setappdata (hl, "__original_units__", units);
+    endif
+
+    if (strcmp (get (hl, "visible"), "on"))
+      set (hax, "units", getappdata (hl, "__original_units__"),
+                "looseinset", li,
+                "units", "points");
+    else
+      ## Return early for invible legends
+      set (hax, "units", getappdata (hl, "__original_units__"),
+                "looseinset", li,
+                "units", units);
+      return;
+    endif
+
+    [li, axpos, pbam, pba] = get (hax, {"looseinset", "position", ...
+                                        "plotboxaspectratiomode", ...
+                                        "plotboxaspectratio"}){:};
+    axpos = boxposition (axpos, pbam, pba);
+    lpos = [get(hl, "position")(1:2), sz];
+
+    if (! outside)
+
+      switch (location)
+        case "southwest"
+          lpos(1) = axpos(1) + hmargin;
+          lpos(2) = axpos(2) + vmargin;
+        case "west"
+          lpos(1) = axpos(1) + hmargin;
+          lpos(2) = axpos(2) + axpos(4)/2 - lpos(4)/2;
+        case "northwest"
+          lpos(1) = axpos(1) + hmargin;
+          lpos(2) = axpos(2) + axpos(4) - lpos(4) - vmargin;
+        case "north"
+          lpos(1) = axpos(1) + axpos(3)/2 - lpos(3)/2;
+          lpos(2) = axpos(2) + axpos(4) - lpos(4) - vmargin;
+        case "northeast"
+          lpos(1) = axpos(1) + axpos(3) - lpos(3) - hmargin;
+          lpos(2) = axpos(2) + axpos(4) - lpos(4) - vmargin;
+        case "east"
+          lpos(1) = axpos(1) + axpos(3) - lpos(3) - hmargin;
+          lpos(2) = axpos(2) + axpos(4)/2 - lpos(4)/2;
+        case "southeast"
+          lpos(1) = axpos(1) + axpos(3) - lpos(3) - hmargin;
+          lpos(2) = axpos(2) + vmargin;
+        case "south"
+          lpos(1) = axpos(1) + axpos(3)/2 - lpos(3)/2;
+          lpos(2) = axpos(2) + vmargin;
+      endswitch
+
+    else
+
+      ## FIXME: Is there a simpler way to know the size of the box
+      ##        enclosing labels than temporarily changing the
+      ##        plotboxaspectratiomode
+      if (strcmp (pbam, "auto"))
+        ti = get (haxes, "tightinset");
+      else
+        set (haxes, "plotboxaspectratiomode", "auto");
+        ti = get (haxes, "tightinset");
+        set (haxes, "plotboxaspectratio", pba);
+      endif
+
+      if (iscell (ti))
+        ti = max (cell2mat (ti));
+      endif
+
+      switch (location)
+        case "southwest"
+          dx = lpos(3) + hmargin + ti(1);
+          if (axpos(1) < (dx + hmargin))
+            li(1) = min (dx + hmargin, 0.95 * (axpos(1) + axpos(3)));
+            set (hax, "looseinset", li);
+            axpos = boxposition (get (hax, "position"), pbam, pba);
+          endif
+          lpos(1) = axpos(1) - dx;
+          lpos(2) = axpos(2);
+        case "west"
+          dx = lpos(3) + hmargin + ti(1);
+          if (axpos(1) < (dx + hmargin))
+            li(1) = min (dx + hmargin, 0.95 * (axpos(1) + axpos(3)));
+            set (hax, "looseinset", li);
+            axpos = boxposition (get (hax, "position"), pbam, pba);
+          endif
+          lpos(1) = axpos(1) - dx;
+          lpos(2) = axpos(2) + axpos(4)/2 - lpos(4)/2;
+        case "northwest"
+          dx = lpos(3) + hmargin + ti(1);
+          if (axpos(1) < (dx + hmargin))
+            li(1) = min (dx + hmargin, 0.95 * (axpos(1) + axpos(3)));
+            set (hax, "looseinset", li);
+            axpos = boxposition (get (hax, "position"), pbam, pba);
+          endif
+          lpos(1) = axpos(1) - dx;
+          lpos(2) = axpos(2) + axpos(4) - lpos(4);
+        case "north"
+          dy = lpos(4) + vmargin + ti(4);
+          if (li(4) < (dy + vmargin))
+            li(4) = min (dy + vmargin, axpos(4));
+            set (hax, "looseinset", li);
+            axpos = boxposition (get (hax, "position"), pbam, pba);
+          endif
+          lpos(1) = axpos(1) + axpos(3)/2 - lpos(3)/2;
+          lpos(2) = axpos(2) + axpos(4) + vmargin + ti(4);
+        case "northeast"
+          dx = lpos(3) + hmargin + ti(3);
+          if (li(3) < (dx + hmargin))
+            li(3) = min (dx + hmargin, axpos(3));
+            set (hax, "looseinset", li);
+            axpos = boxposition (get (hax, "position"), pbam, pba);
+          endif
+          lpos(1) = axpos(1) + axpos(3) + hmargin + ti(3);
+          lpos(2) = axpos(2) + axpos(4) - lpos(4);
+        case "east"
+          dx = lpos(3) + hmargin + ti(3);
+          if (li(3) < (dx + hmargin))
+            li(3) = min (dx + hmargin, axpos(3));
+            set (hax, "looseinset", li);
+            axpos = boxposition (get (hax, "position"), pbam, pba);
+          endif
+          lpos(1) = axpos(1) + axpos(3) + hmargin + ti(3);
+          lpos(2) = axpos(2) + axpos(4)/2 - lpos(4)/2;
+        case "southeast"
+          dx = lpos(3) + hmargin + ti(3);
+          if (li(3) < (dx + hmargin))
+            li(3) = min (dx + hmargin, axpos(3));
+            set (hax, "looseinset", li);
+            axpos = boxposition (get (hax, "position"), pbam, pba);
+          endif
+          lpos(1) = axpos(1) + axpos(3) + hmargin + ti(3);
+          lpos(2) = axpos(2);
+        case "south"
+          dy = lpos(4) + vmargin + ti(2);
+          if (li(2) < (dy + vmargin))
+            li(2) = min (dy + vmargin, 0.95 * (axpos(2) + axpos(4)));
+            set (hax, "looseinset", li);
+            axpos = boxposition (get (hax, "position"), pbam, pba);
+          endif
+          lpos(1) = axpos(1) + axpos(3)/2 - lpos(3)/2;
+          lpos(2) = axpos(2) - lpos(4) - vmargin - ti(2);
+      endswitch
+    endif
+
+    set (hl, "xlim", [0, sz(1)], "ylim", [0, sz(2)], ...
+             "position", lpos);
+
+    setappdata (hl, "__peer_axes_position__", axpos);
+
+  unwind_protect_cleanup
+    set (hax, "units", units);
+  end_unwind_protect
 
 endfunction
 
@@ -1358,16 +1476,14 @@ endfunction
 %! plot (rand (2));
 %! title ("legend called with string inputs for labels");
 %! h = legend ("foo", "bar");
-%! legend (h, "location", "northeastoutside");
-%! set (h, "fontsize", 20);
+%! set (h, "fontsize", 20, "location", "northeastoutside");
 
 %!demo
 %! clf;
 %! plot (rand (2));
 %! title ("legend called with cell array of strings");
 %! h = legend ({"cellfoo", "cellbar"});
-%! legend (h, "location", "northeast");
-%! set (h, "fontsize", 20);
+%! set (h, "fontsize", 20, "location", "northeast");
 
 %!demo
 %! clf;
@@ -1378,10 +1494,11 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:1;
-%! plot (x,x,";I am Blue;", x,2*x, x,3*x,";I am yellow;");
-%! h = legend ("location", "northeastoutside");
+%! hline = plot (x,x,";I am Blue;", x,2*x, x,3*x,";I am yellow;");
+%! h = legend ();
+%! set (h, "location", "northeastoutside");
 %! ## Placing legend inside returns axes to original size
-%! legend (h, "location", "northeast");
+%! set (h, "location", "northeast");
 %! title ("Blue and Yellow keys, with Orange missing");
 
 %!demo
@@ -1423,7 +1540,7 @@ endfunction
 %! h = legend ({"I am blue", "I am orange"}, "location", "east");
 %! legend ("right");
 %! set (h, "textposition", "left");
-%! set (h, "textcolor", [1 0 1]);
+%! set (h, "textcolor", [1, 0, 1]);
 
 %!demo
 %! clf;
@@ -1501,15 +1618,15 @@ endfunction
 %! subplot (2,1,1);
 %! rand_2x3_data1 = [0.341447, 0.171220, 0.284370; 0.039773, 0.731725, 0.779382];
 %! bar (rand_2x3_data1);
-%! ylim ([0 1.0]);
+%! ylim ([0, 1.0]);
 %! title ("legend() works for bar graphs (hggroups)");
 %! legend ({"1st Bar", "2nd Bar", "3rd Bar"}, "location", "northwest");
 %! subplot (2,1,2);
 %! x = linspace (0, 10, 20);
-%! stem (x, 0.5+x.*rand (size (x))/max (x), "markeredgecolor", [0 0.7 0]);
+%! stem (x, 0.5+x.*rand (size (x))/max (x), "markeredgecolor", [0, 0.7, 0]);
 %! hold on;
 %! stem (x+10/(2*20), x.*(1.0+rand (size (x)))/max (x));
-%! xlim ([0 10+10/(2*20)]);
+%! xlim ([0, 10+10/(2*20)]);
 %! title ("legend() works for stem plots (hggroups)");
 %! legend ({"Multicolor", "Unicolor"}, "location", "northwest");
 
@@ -1524,7 +1641,7 @@ endfunction
 %! clf reset;  # needed to undo colormap assignment in previous demo
 %! rand_2x3_data2 = [0.44804, 0.84368, 0.23012; 0.72311, 0.58335, 0.90531];
 %! bar (rand_2x3_data2);
-%! ylim ([0 1.2]);
+%! ylim ([0, 1.2]);
 %! title ('"left" option places colors to the left of text label');
 %! legend ("1st Bar", "2nd Bar", "3rd Bar");
 %! legend left;
@@ -1588,7 +1705,7 @@ endfunction
 %! clf;
 %! plot (rand (2));
 %! title ("legend() will warn if extra labels are specified");
-%! legend ("Hello", "World", "interpreter", "foobar");
+%! legend ("Hello", "World", "foo", "bar");
 
 %!demo
 %! clf;
@@ -1630,47 +1747,38 @@ endfunction
 
 %!demo  # bug 36408
 %! clf;
-%! option = "right";
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
 %!  xlabel xlabel;
 %!  ylabel ylabel;
 %!  title ("Subplots adjust to the legend placed outside");
 %!  legend ({"1"}, "location", "northeastoutside");
-%!  legend (option);
 %! subplot (3,1,2);
 %!  plot (rand (1,4));
 %!  xlabel xlabel;
 %!  ylabel ylabel;
 %!  legend ({"1234567890"}, "location", "eastoutside");
-%!  legend (option);
 %! subplot (3,1,3);
 %!  plot (rand (1,4));
 %!  xlabel xlabel;
 %!  ylabel ylabel;
 %!  legend ({"12345678901234567890"}, "location", "southeastoutside");
-%!  legend (option);
 
 %!demo  # bug 36408
 %! clf;
-%! option = "right";
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
 %!  title ("Subplots adjust to the legend placed outside");
 %!  legend ({"1"}, "location", "northwestoutside");
-%!  legend (option);
 %! subplot (3,1,2);
 %!  plot (rand (1,4));
 %!  legend ({"1234567890"}, "location", "westoutside");
-%!  legend (option);
 %! subplot (3,1,3);
 %!  plot (rand (1,4));
 %!  legend ({"12345678901234567890"}, "location", "southwestoutside");
-%!  legend (option);
 
 %!demo  # bug 36408
 %! clf;
-%! option = "right";
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
 %!  set (gca (), "yaxislocation", "right");
@@ -1678,25 +1786,21 @@ endfunction
 %!  ylabel ("ylabel");
 %!  title ("Subplots adjust to the legend placed outside");
 %!  legend ({"1"}, "location", "northeastoutside");
-%!  legend (option);
 %! subplot (3,1,2);
 %!  plot (rand (1,4));
 %!  set (gca (), "yaxislocation", "right");
 %!  xlabel ("xlabel");
 %!  ylabel ("ylabel");
 %!  legend ({"1234567890"}, "location", "eastoutside");
-%!  legend (option);
 %! subplot (3,1,3);
 %!  plot (rand (1,4));
 %!  set (gca (), "yaxislocation", "right");
 %!  xlabel ("xlabel");
 %!  ylabel ("ylabel");
 %!  legend ({"12345678901234567890"}, "location", "southeastoutside");
-%!  legend (option);
 
 %!demo  # bug 36408
 %! clf;
-%! option = "right";
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
 %!  set (gca (), "yaxislocation", "right");
@@ -1704,25 +1808,21 @@ endfunction
 %!  ylabel ("ylabel");
 %!  title ("Subplots adjust to the legend placed outside");
 %!  legend ({"1"}, "location", "northwestoutside");
-%!  legend (option);
 %! subplot (3,1,2);
 %!  plot (rand (1,4));
 %!  set (gca (), "yaxislocation", "right");
 %!  xlabel ("xlabel");
 %!  ylabel ("ylabel");
 %!  legend ({"1234567890"}, "location", "westoutside");
-%!  legend (option);
 %! subplot (3,1,3);
 %!  plot (rand (1,4));
 %!  set (gca (), "yaxislocation", "right");
 %!  xlabel ("xlabel");
 %!  ylabel ("ylabel");
 %!  legend ({"12345678901234567890"}, "location", "southwestoutside");
-%!  legend (option);
 
 %!demo  # bug 36408;
 %! clf;
-%! option = "right";
 %! subplot (3,1,1);
 %!  plot (rand (1,4));
 %!  set (gca (), "xaxislocation", "top");
@@ -1730,103 +1830,140 @@ endfunction
 %!  ylabel ("ylabel");
 %!  title ("Subplots adjust to the legend placed outside");
 %!  legend ({"1"}, "location", "northwestoutside");
-%!  legend (option);
 %! subplot (3,1,2);
 %!  plot (rand (1,4));
 %!  set (gca (), "xaxislocation", "top");
 %!  xlabel ("xlabel");
 %!  ylabel ("ylabel");
 %!  legend ({"1234567890"}, "location", "westoutside");
-%!  legend (option);
 %! subplot (3,1,3);
 %!  plot (rand (1,4));
 %!  set (gca (), "xaxislocation", "top");
 %!  xlabel ("xlabel");
 %!  ylabel ("ylabel");
 %!  legend ({"12345678901234567890"}, "location", "southwestoutside");
-%!  legend (option);
 
 %!demo  # bug 39697
 %! clf;
 %! plot (1:10);
 %! legend ("Legend Text");
-%! title ({"Multi-line", "titles", "are a", "problem", "See bug #39697"});
+%! title ({"Multi-line", "titles", "are *not* a", "problem"});
 
-%!testif ; any (strcmp ("gnuplot", available_graphics_toolkits ()))
-%! toolkit = graphics_toolkit ("gnuplot");
-%! h = figure ("visible", "off");
-%! unwind_protect
-%!   position = get (h, "position");
-%!   plot (rand (3));
-%!   legend ();
-%!   filename = sprintf ("%s.eps", tempname ());
-%!   print (filename);
-%!   unlink (filename);
-%!   assert (get (h, "position"), position);
-%! unwind_protect_cleanup
-%!   close (h);
-%!   graphics_toolkit (toolkit);
-%! end_unwind_protect
-
-%!test <*42035>
-%! h = figure ("visible", "off");
-%! unwind_protect
-%!   hax1 = subplot (1,2,1);
-%!   plot (1:10);
-%!   hax2 = subplot (1,2,2);
-%!   plot (1:10);
-%!   hleg1 = legend (hax1, "foo");
-%!   assert (getappdata (hleg1, "__axes_handle__"), hax1);
-%!   assert (gca (), hax2);
-%!   hleg2 = legend ("bar");
-%!   assert (getappdata (hleg2, "__axes_handle__"), gca ());
-%! unwind_protect_cleanup
-%!   close (h);
-%! end_unwind_protect
-
+## Test input validation
 %!test
-%! ## Difficult example from plotyy demo #1
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   x = 0:0.1:2*pi;
-%!   y1 = sin (x);
-%!   y2 = exp (x - 1);
-%!   hax = plotyy (x,y1, x-1,y2, @plot, @semilogy);
-%!   text (0.5, 0.5, "Left Axis", "parent", hax(1));
-%!   text (4.5, 80, "Right Axis", "parent", hax(2));
-%!   hleg = legend ("show");
-%!   assert (get (hleg, "string"), {"data1", "data2"});
-%!   fail ("legend ('foo', 'bar', 'baz')", "warning", "ignoring extra labels");
+%!   try
+%!     legend ();
+%!   catch
+%!     [~, id] = lasterr ();
+%!     assert (id, "Octave:legend:no-object");
+%!   end_try_catch
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
 %!test
-%! ## Test warnings about objects to label
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   hax = gca ();
-%!   fail ("legend ('foobar')", "warning", "plot data is empty");
-%!   ht = text (0.5, 0.5, "Hello World");
-%!   fail ("legend ('foobar')", "warning", "plot data is empty");
-%!   lastwarn ("");   # clear warning
-%!   hleg = legend ();
-%!   assert (isempty (hleg) && isempty (lastwarn ()));
-%!   fail ("legend ('foobar')", "warning", "plot data is empty");
-%!   hln = line ([0 1], [0 1]);
-%!   fail ("legend ('foo', 'bar')", "warning", "ignoring extra labels");
-%!   plot (rand (2, 21));
-%!   fail ("legend ()", "warning", "labeling only first 20 data objects");
+%!   axes ();
+%!   try
+%!     legend ();
+%!   catch
+%!     [~, id] = lasterr ();
+%!     assert (id, "Octave:legend:no-object");
+%!   end_try_catch
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
 %!test
-%! ## Test warnings about unsupported features
 %! hf = figure ("visible", "off");
 %! unwind_protect
+%!   axes ();
+%!   light ();
+%!   try
+%!     legend ();
+%!   catch
+%!     [~, id] = lasterr ();
+%!     assert (id, "Octave:legend:no-object");
+%!   end_try_catch
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   axes ();
+%!   hli = light ();
+%!   try
+%!     legend (hli);
+%!   catch
+%!     [~, id] = lasterr ();
+%!     assert (id, "Octave:legend:bad-object");
+%!   end_try_catch
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   axes ();
+%!   hplot = plot (rand (3));
+%!   try
+%!     legend (hplot, struct);
+%!   catch
+%!     [~, id] = lasterr ();
+%!     assert (id, "Octave:invalid-fun-call");
+%!   end_try_catch
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   axes ();
+%!   hplot = plot (rand (3));
+%!   try
+%!     legend ("a", "b", "c", hplot);
+%!   catch
+%!     [~, id] = lasterr ();
+%!     assert (id, "Octave:invalid-fun-call");
+%!   end_try_catch
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Test bugs in previous implementation
+%!testif ; any (strcmp (graphics_toolkit (), {"fltk", "qt"})) <*39697>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   axes ("units", "normalized");
 %!   plot (1:10);
-%!   fail ("legend ('location','best')", "warning", "'best' not yet implemented");
+%!   hl = legend ("Legend Text", "units", "normalized");
+%!   title ({'Multi-line', 'titles', 'are a', 'problem'});
+%!   pos = get (gca, 'position');
+%!   axtop = sum (pos(2:2:4));
+%!   pos = get (hl, 'position');
+%!   legtop = sum (pos(2:2:4));
+%!   assert (legtop < axtop);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test <*40333>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   axes ("units", "normalized");
+%!   plot (1:10);
+%!   hl = legend ("Legend Text", "units", "normalized");
+%!   pos = get (gca, 'position');
+%!   set (hf, 'position', [0, 0, 200, 200]);
+%!   set (hl, 'fontsize', 20);
+%!   assert (get (gca, 'position'), pos, 2*eps);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Marco Caliari
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{nest} =} normest1 (@var{A})
@@ -88,8 +95,8 @@
 ## Reference: @nospell{N. J. Higham and F. Tisseur},
 ## @cite{A block algorithm for matrix 1-norm estimation, with and
 ## application to 1-norm @nospell{pseudospectra}},
-## @nospell{SIAM J. Matrix Anal. Appl.},
-## pp. 1185--1201, Vol 21, No. 4, 2000.
+## @nospell{SIAM J. Matrix Anal.@: Appl.@:},
+## pp.@: 1185--1201, Vol 21, No.@: 4, 2000.
 ##
 ## @seealso{normest, norm, cond, condest}
 ## @end deftypefn

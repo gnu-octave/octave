@@ -1,28 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2007-2010 D. Martin
-Copyright (C) 2010 Jaroslav Hajek
-Copyright (C) 2010 VZLU Prague
-Copyright (C) 2016-2019 Carnë Draug
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -2025,13 +2024,13 @@ namespace octave
       // gamma functions -1/12, 3/360,-5/1260, 7/1680,-9/1188,
       // 11*691/360360,-13/156, 15*3617/122400, ? , ?
       static const T dg_coeff[10] =
-      {
-        -0.83333333333333333e-1, 0.83333333333333333e-2,
-        -0.39682539682539683e-2, 0.41666666666666667e-2,
-        -0.75757575757575758e-2, 0.21092796092796093e-1,
-        -0.83333333333333333e-1, 0.4432598039215686,
-        -0.3053954330270122e+1,  0.125318899521531e+2
-      };
+        {
+         -0.83333333333333333e-1, 0.83333333333333333e-2,
+         -0.39682539682539683e-2, 0.41666666666666667e-2,
+         -0.75757575757575758e-2, 0.21092796092796093e-1,
+         -0.83333333333333333e-1, 0.4432598039215686,
+         -0.3053954330270122e+1,  0.125318899521531e+2
+        };
 
       T overz2  = T (1.0) / (zc * zc);
       T overz2k = overz2;
@@ -2047,8 +2046,8 @@ namespace octave
     T
     xpsi (T z)
     {
-      static const double euler_mascheroni =
-        0.577215664901532860606512090082402431042;
+      static const double euler_mascheroni
+        = 0.577215664901532860606512090082402431042;
 
       const bool is_int = (std::floor (z) == z);
 

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_cmd_edit_h)
 #define octave_cmd_edit_h 1
@@ -41,7 +44,9 @@ namespace octave
   protected:
 
     command_editor (void)
-      : command_number (0), interrupted (false), initial_input () { }
+      : m_command_number (1), m_rows (24), m_cols (80), m_interrupted (false),
+        m_interrupt_event_loop (false), m_initial_input ()
+    { }
 
   public:
 
@@ -185,6 +190,10 @@ namespace octave
 
     static bool interrupt (bool = true);
 
+    static void interrupt_event_loop (bool flag = true);
+
+    static bool event_loop_interrupted (void);
+
     static int current_command_number (void);
 
     static void reset_current_command_number (int n);
@@ -216,9 +225,13 @@ namespace octave
     static std::set<event_hook_fcn> event_hook_set;
 
     // The real thing.
-    static command_editor *instance;
+    static command_editor *s_instance;
 
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    static void cleanup_instance (void)
+    {
+      delete s_instance;
+      s_instance = nullptr;
+    }
 
     static void handle_interrupt_signal (void);
 
@@ -249,15 +262,19 @@ namespace octave
 
     virtual void do_redisplay (void) { }
 
-    virtual int do_terminal_rows (void) { return 24; }
+    virtual int do_terminal_rows (void) { return m_rows; }
 
-    virtual int do_terminal_cols (void) { return 80; }
+    virtual int do_terminal_cols (void) { return m_cols; }
 
     virtual void do_clear_screen (bool) { }
 
     virtual void do_resize_terminal (void) { }
 
-    virtual void do_set_screen_size (int, int) { }
+    virtual void do_set_screen_size (int ht, int wd)
+    {
+      m_rows = ht;
+      m_cols = wd;
+    }
 
     virtual std::string do_decode_prompt_string (const std::string&);
 
@@ -354,6 +371,13 @@ namespace octave
 
     virtual void do_handle_interrupt_signal (void) { }
 
+    void do_interrupt_event_loop (bool arg) { m_interrupt_event_loop = arg; }
+
+    bool do_event_loop_interrupted (void) const
+    {
+      return m_interrupt_event_loop;
+    }
+
     int do_insert_initial_input (void);
 
     int read_octal (const std::string& s);
@@ -363,11 +387,16 @@ namespace octave
     void error (const std::string&);
 
     // The current command number.
-    int command_number;
+    int m_command_number;
 
-    bool interrupted;
+    int m_rows;
+    int m_cols;
 
-    std::string initial_input;
+    bool m_interrupted;
+
+    bool m_interrupt_event_loop;
+
+    std::string m_initial_input;
   };
 }
 

@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2005-2019 David Bateman
-Copyright (C) 2002-2005 Paul Kienzle
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2002-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -58,7 +60,7 @@ do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
   size_t j = 0;
   size_t len = s.length ();
 
-  retval.resize (len);
+  retval.resize (len+i);
 
   while (j < len)
     {
@@ -662,8 +664,8 @@ DEFUN (regexp, args, nargout,
 @deftypefnx {} {[@dots{}] =} regexp (@var{str}, @var{pat}, "@var{opt1}", @dots{})
 Regular expression string matching.
 
-Search for @var{pat} in @var{str} and return the positions and substrings of
-any matches, or empty values if there are none.
+Search for @var{pat} in UTF-8 encoded @var{str} and return the positions and
+substrings of any matches, or empty values if there are none.
 
 The matched pattern @var{pat} can include any of the standard regex
 operators, including:
@@ -1195,9 +1197,9 @@ DEFUN (regexpi, args, nargout,
 
 Case insensitive regular expression string matching.
 
-Search for @var{pat} in @var{str} and return the positions and substrings of
-any matches, or empty values if there are none.  @xref{XREFregexp,,regexp},
-for details on the syntax of the search pattern.
+Search for @var{pat} in UTF-8 encoded @var{str} and return the positions and
+substrings of any matches, or empty values if there are none.
+@xref{XREFregexp,,regexp}, for details on the syntax of the search pattern.
 @seealso{regexp}
 @end deftypefn */)
 {
@@ -1395,6 +1397,8 @@ Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.
 
 The pattern is a regular expression as documented for @code{regexp}.
 @xref{XREFregexp,,regexp}.
+
+All strings must be UTF-8 encoded.
 
 The replacement string may contain @code{$i}, which substitutes for the ith
 set of parentheses in the match string.  For example,

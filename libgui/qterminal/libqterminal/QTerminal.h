@@ -24,18 +24,25 @@ see <https://www.gnu.org/licenses/>.
 #ifndef QTERMINAL_H
 #define QTERMINAL_H
 
-#include <QSettings>
-#include <QKeySequence>
-#include <QWidget>
-#include <QStringList>
 #include <QColor>
 #include <QList>
-#include <QMenu>
-#include <QClipboard>
-#include <QApplication>
-#include <QAction>
+#include <QPoint>
+#include <QString>
+#include <QWidget>
 
-#include "resource-manager.h"
+// For now, we need to use the following #include and using statement
+// for the signal/slot macros.  Could maybe change later when using
+// Qt5-style signal/slot connections.
+#include "gui-settings.h"
+using octave::gui_settings;
+
+namespace octave
+{
+  class base_qobject;
+}
+
+class QMenu;
+class QAction;
 
 class QTerminal : public QWidget
 {
@@ -43,11 +50,8 @@ class QTerminal : public QWidget
 
 public:
 
-  static QTerminal *create (QWidget *xparent = nullptr);
-
-  static QList<QColor> default_colors (void);
-
-  static QStringList color_names (void);
+  static QTerminal *
+  create (octave::base_qobject& oct_qobj, QWidget *xparent = nullptr);
 
   virtual ~QTerminal (void) = default;
 
@@ -66,9 +70,9 @@ public:
 
   enum CursorType
   {
-    UnderlineCursor,
+    IBeamCursor,
     BlockCursor,
-    IBeamCursor
+    UnderlineCursor
   };
 
   virtual void setCursorType (CursorType type, bool blinking)
@@ -99,6 +103,8 @@ signals:
 
   void edit_mfile_request (const QString&, int);
 
+  void show_doc_signal (const QString&);
+
   void execute_command_in_terminal_signal (const QString&);
 
 public slots:
@@ -111,7 +117,7 @@ public slots:
 
   virtual void handleCustomContextMenuRequested (const QPoint& at);
 
-  void notice_settings (const QSettings *settings);
+  void notice_settings (const gui_settings *settings);
 
   virtual void init_terminal_size (void) { }
 
@@ -123,85 +129,19 @@ public slots:
 
   void edit_file (void);
 
+  void edit_selected (void);
+
+  void help_on_expression (void);
+
+  void doc_on_expression (void);
+
   virtual void handle_visibility_changed (bool) { };
 
 protected:
 
-  QTerminal (QWidget *xparent = nullptr) : QWidget (xparent)
-  {
-    // context menu
-    setContextMenuPolicy (Qt::CustomContextMenu);
+  QTerminal (QWidget *xparent = nullptr) : QWidget (xparent) { }
 
-    _contextMenu = new QMenu (this);
-
-    _copy_action = _contextMenu->addAction
-      (octave::resource_manager::icon ("edit-copy"),
-       tr ("Copy"), this, SLOT (copyClipboard ()));
-
-    _paste_action = _contextMenu->addAction
-     (octave::resource_manager::icon ("edit-paste"),
-      tr ("Paste"), this, SLOT (pasteClipboard ()));
-
-    _contextMenu->addSeparator ();
-
-    _selectall_action = _contextMenu->addAction (
-                          tr ("Select All"), this, SLOT (selectAll ()));
-
-    _run_selection_action = _contextMenu->addAction (
-                     tr ("Run Selection"), this, SLOT (run_selection ()));
-
-    _edit_action = _contextMenu->addAction (
-                     tr (""), this, SLOT (edit_file ()));
-
-    _contextMenu->addSeparator ();
-
-    _contextMenu->addAction (tr ("Clear Window"), parent (),
-                             SLOT (handle_clear_command_window_request ()));
-
-    connect (this, SIGNAL (customContextMenuRequested (QPoint)),
-             this, SLOT (handleCustomContextMenuRequested (QPoint)));
-
-    connect (this, SIGNAL (report_status_message (const QString&)),
-             xparent, SLOT (report_status_message (const QString&)));
-
-    connect (this, SIGNAL (edit_mfile_request (const QString&, int)),
-             xparent, SLOT (edit_mfile (const QString&, int)));
-
-    connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
-             xparent, SLOT (execute_command_in_terminal (const QString&)));
-
-    connect (xparent, SIGNAL (settings_changed (const QSettings *)),
-             this, SLOT (notice_settings (const QSettings *)));
-
-    connect (xparent, SIGNAL (init_terminal_size_signal ()),
-             this, SLOT (init_terminal_size ()));
-
-    connect (xparent, SIGNAL (copyClipboard_signal ()),
-             this, SLOT (copyClipboard ()));
-
-    connect (xparent, SIGNAL (pasteClipboard_signal ()),
-             this, SLOT (pasteClipboard ()));
-
-    connect (xparent, SIGNAL (selectAll_signal ()),
-             this, SLOT (selectAll ()));
-
-    // extra interrupt action
-    _interrupt_action = new QAction (this);
-    addAction (_interrupt_action);
-
-    _interrupt_action->setShortcut (
-      QKeySequence (Qt::ControlModifier + Qt::Key_C));
-
-    connect (_interrupt_action, SIGNAL (triggered ()),
-             this, SLOT (terminal_interrupt ()));
-
-    // dummy (nop) action catching Ctrl-D in terminal, no connection
-    _nop_action = new QAction (this);
-    addAction (_nop_action);
-
-    _nop_action->setShortcut (
-      QKeySequence (Qt::ControlModifier + Qt::Key_D));
-  }
+  void construct (octave::base_qobject& oct_qobj, QWidget *xparent);
 
 private:
 
@@ -211,6 +151,9 @@ private:
   QAction * _selectall_action;
   QAction * _edit_action;
   QAction * _run_selection_action;
+  QAction * m_edit_selected_action;
+  QAction * m_help_selected_action;
+  QAction * m_doc_selected_action;
 
   QAction *_interrupt_action;
   QAction *_nop_action;

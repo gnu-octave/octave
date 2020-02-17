@@ -1,27 +1,27 @@
-/*
-
-Copyright (C) 2013-2019 Carnë Draug
-Copyright (C) 2002-2019 Andy Adler
-Copyright (C) 2008 Thomas L. Scofield
-Copyright (C) 2010 David Grundberg
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2002-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -93,8 +93,8 @@ is_indexed (const Magick::Image& img)
           // always has a value in libpng so if we get nothing, we assume this
           // GM version does not store them and we have to go with whatever
           // GM PseudoClass says.
-          const std::string color_type =
-            const_cast<Magick::Image&> (img).attribute ("PNG:IHDR.color-type-orig");
+          const std::string color_type
+            = const_cast<Magick::Image&> (img).attribute ("PNG:IHDR.color-type-orig");
           if (! color_type.empty () && color_type != "3")
             indexed = false;
         }
@@ -144,12 +144,21 @@ static Range
 get_region_range (const octave_value& region)
 {
   Range output;
+
   if (region.is_range ())
     output = region.range_value ();
   else if (region.is_scalar_type ())
     {
       double value = region.scalar_value ();
       output = Range (value, value);
+    }
+  else if (region.is_matrix_type ())
+    {
+      NDArray array = region.array_value ();
+      double base = array(0);
+      double limit = array(array.numel () - 1);
+      double incr = array(1) - base;
+      output = Range (base, limit, incr);
     }
   else
     error ("__magick_read__: unknown datatype for Region option");
@@ -331,8 +340,8 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
       // return the colormap of the first frame.  To obtain the colormaps
       // of different frames, one needs can either use imfinfo or a for
       // loop around imread.
-      const octave_value_list maps =
-        read_maps (const_cast<Magick::Image&> (imvec[frameidx(def_elem)]));
+      const octave_value_list maps
+        = read_maps (const_cast<Magick::Image&> (imvec[frameidx(def_elem)]));
 
       retval(1) = maps(0);
 
@@ -959,8 +968,8 @@ static octave_idx_type
 bitdepth_from_class ()
 {
   typedef typename T::element_type P;
-  const octave_idx_type bitdepth =
-    sizeof (P) * std::numeric_limits<unsigned char>::digits;
+  const octave_idx_type bitdepth
+    = sizeof (P) * std::numeric_limits<unsigned char>::digits;
   return bitdepth;
 }
 
@@ -1550,10 +1559,10 @@ Use @code{imwrite} instead.
   const octave_idx_type nFrames = imvec.size ();
 
   const octave_idx_type quality = options.getfield ("quality").int_value ();
-  const ColumnVector delaytime =
-    options.getfield ("delaytime").column_vector_value ();
-  const Array<std::string> disposalmethod =
-    options.getfield ("disposalmethod").cellstr_value ();
+  const ColumnVector delaytime
+    = options.getfield ("delaytime").column_vector_value ();
+  const Array<std::string> disposalmethod
+    = options.getfield ("disposalmethod").cellstr_value ();
   for (octave_idx_type i = 0; i < nFrames; i++)
     {
       imvec[i].quality (quality);
@@ -2014,8 +2023,7 @@ Use @code{imfinfo} instead.
         if (is_indexed (img))
           {
             color_type = "indexed";
-            cmap =
-              read_maps (const_cast<Magick::Image&> (img))(0).matrix_value ();
+            cmap = read_maps (const_cast<Magick::Image&> (img))(0).matrix_value ();
           }
         else
           {

@@ -1,4 +1,9 @@
-## Copyright (C) 2014-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2014-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} open @var{file}
@@ -33,10 +40,10 @@
 ## Open the data file with @code{load}.  If no return value @var{output}
 ## is requested, variables are loaded in the base workspace.  Otherwise
 ## @var{output} will be a structure containing loaded data.
-## @xref{XREFload, , load function}.
+## @xref{XREFload,,load function}.
 ##
 ## @item .ofig
-## Open the figure with hgload.  @xref{XREFhgload, , hgload function}.
+## Open the figure with @code{hgload}.  @xref{XREFhgload,,hgload function}.
 ##
 ## @item .fig, .ofig
 ## Load the figure
@@ -77,6 +84,8 @@ function output = open (file)
   if (! exist (file, "file"))
     error ("open: unable to find file %s", file);
   endif
+
+  file = tilde_expand (file);
 
   [~, fname, ext] = fileparts (file);
 

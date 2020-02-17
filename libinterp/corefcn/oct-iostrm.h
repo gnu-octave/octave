@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_oct_iostrm_h)
 #define octave_oct_iostrm_h 1
@@ -38,7 +41,7 @@ public:
                         std::ios::openmode m = std::ios::in | std::ios::out,
                         octave::mach_info::float_format ff
                           = octave::mach_info::native_float_format ())
-    : octave::base_stream (m, ff), nm (n) { }
+    : octave::base_stream (m, ff), m_name (n) { }
 
   // No copying!
 
@@ -66,7 +69,7 @@ public:
 
   // The name of the file.
 
-  std::string name (void) const { return nm; }
+  std::string name (void) const { return m_name; }
 
 protected:
 
@@ -74,7 +77,7 @@ protected:
 
 private:
 
-  std::string nm;
+  std::string m_name;
 
   virtual const char * stream_type (void) const = 0;
 };
@@ -87,7 +90,7 @@ public:
   octave_istream (std::istream *arg = nullptr, const std::string& n = "")
     : octave_base_iostream (n, std::ios::in,
                             octave::mach_info::native_float_format ()),
-      is (arg)
+      m_istream (arg)
   { }
 
   static octave::stream
@@ -97,7 +100,7 @@ public:
 
   bool eof (void) const;
 
-  std::istream * input_stream (void) { return is; }
+  std::istream * input_stream (void) { return m_istream; }
 
   std::ostream * output_stream (void) { return nullptr; }
 
@@ -107,7 +110,7 @@ protected:
 
 private:
 
-  std::istream *is;
+  std::istream *m_istream;
 
   const char * stream_type (void) const { return "octave_istream"; }
 
@@ -126,7 +129,7 @@ public:
   octave_ostream (std::ostream *arg, const std::string& n = "")
     : octave_base_iostream (n, std::ios::out,
                             octave::mach_info::native_float_format ()),
-      os (arg)
+      m_ostream (arg)
   { }
 
   static octave::stream
@@ -138,7 +141,7 @@ public:
 
   std::istream * input_stream (void) { return nullptr; }
 
-  std::ostream * output_stream (void) { return os; }
+  std::ostream * output_stream (void) { return m_ostream; }
 
 protected:
 
@@ -146,7 +149,7 @@ protected:
 
 private:
 
-  std::ostream *os;
+  std::ostream *m_ostream;
 
   const char * stream_type (void) const { return "octave_ostream"; }
 

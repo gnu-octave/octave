@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // Programming Note: this file has many lines longer than 80 characters
 // due to long function, variable, and property names.  Please don't
@@ -28,22 +31,16 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "resource-manager.h"
-#include "shortcut-manager.h"
-#include "variable-editor.h"
-#include "workspace-model.h"
-#include "settings-dialog.h"
-
 #include <QButtonGroup>
 #include <QDir>
-#include <QFileInfo>
 #include <QFileDialog>
-#include <QVector>
+#include <QFileInfo>
 #include <QHash>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QStyleFactory>
 #include <QTextCodec>
+#include <QVector>
 
 #if defined (HAVE_QSCINTILLA)
 #  include "octave-qscintilla.h"
@@ -64,6 +61,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include <Qsci/qscilexerbatch.h>
 #  include <Qsci/qscilexerdiff.h>
 #endif
+
+#include "gui-preferences-all.h"
+#include "octave-qobject.h"
+#include "settings-dialog.h"
+#include "variable-editor.h"
+#include "workspace-model.h"
 
 namespace octave
 {
@@ -87,12 +90,14 @@ namespace octave
 
 #endif
 
-  settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
-    : QDialog (p), Ui::settings_dialog ()
+  settings_dialog::settings_dialog (QWidget *p, base_qobject& oct_qobj,
+                                    const QString& desired_tab)
+    : QDialog (p), Ui::settings_dialog (), m_octave_qobj (oct_qobj)
   {
     setupUi (this);
 
-    QSettings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     if (! settings)
       {
@@ -106,17 +111,19 @@ namespace octave
       }
 
     // look for available language files and the actual settings
-    QString qm_dir_name = resource_manager::get_gui_translation_dir ();
+    QString qm_dir_name = rmgr.get_gui_translation_dir ();
     QDir qm_dir (qm_dir_name);
-    QFileInfoList qm_files = qm_dir.entryInfoList (QStringList ("*.qm"), QDir::Files | QDir::Readable, QDir::Name);
+    QFileInfoList qm_files = qm_dir.entryInfoList (QStringList ("*.qm"),
+                             QDir::Files | QDir::Readable, QDir::Name);
 
     for (int i = 0; i < qm_files.length (); i++)   // insert available languages
       comboBox_language->addItem (qm_files.at (i).baseName ());
     // System at beginning
     comboBox_language->insertItem (0, tr ("System setting"));
     comboBox_language->insertSeparator (1);    // separator after System
-    QString language = settings->value ("language", "SYSTEM").toString ();
-    if (language == "SYSTEM")
+    QString language = settings->value (global_language.key,
+                                        global_language.def).toString ();
+    if (language == global_language.def.toString ())
       language = tr ("System setting");
     int selected = comboBox_language->findText (language);
     if (selected >= 0)
@@ -129,7 +136,7 @@ namespace octave
     combo_styles->addItems (styles);
     combo_styles->insertItem (0, global_style.def.toString ());
     combo_styles->insertSeparator (1);
-    QString current_style = settings->value (global_style.key, global_style.def).toString ();
+    QString current_style = settings->value (global_style).toString ();
     if (current_style == global_style.def.toString ())
       current_style = global_style.def.toString ();
     selected = combo_styles->findText (current_style);
@@ -143,11 +150,11 @@ namespace octave
     icon_size_group->addButton (icon_size_small);
     icon_size_group->addButton (icon_size_normal);
     icon_size_group->addButton (icon_size_large);
-    int icon_size = settings->value (global_icon_size.key, global_icon_size.def).toInt ();
+    int icon_size = settings->value (global_icon_size).toInt ();
     icon_size_normal->setChecked (true);  // the default
     icon_size_small->setChecked (icon_size < 0);
     icon_size_large->setChecked (icon_size > 0);
-    cb_system_icon_theme->setChecked (settings->value (global_icon_theme.key, global_icon_theme.def).toBool ());
+    cb_system_icon_theme->setChecked (settings->value (global_icon_theme).toBool ());
 
     // which icon has to be selected
     QButtonGroup *icon_group = new QButtonGroup (this);
@@ -155,16 +162,14 @@ namespace octave
     icon_group->addButton (general_icon_graphic);
     icon_group->addButton (general_icon_letter);
     QString widget_icon_set =
-      settings->value ("DockWidgets/widget_icon_set", "NONE").toString ();
+      settings->value (dw_icon_set).toString ();
     general_icon_octave->setChecked (true);  // the default (if invalid set)
     general_icon_octave->setChecked (widget_icon_set == "NONE");
     general_icon_graphic->setChecked (widget_icon_set == "GRAPHIC");
     general_icon_letter->setChecked (widget_icon_set == "LETTER");
 
     // custom title bar of dock widget
-    QVariant default_var = QColor (255, 255, 255);
-    QColor bg_color = settings->value ("DockWidgets/title_bg_color",
-                                       default_var).value<QColor> ();
+    QColor bg_color = settings->value (dw_title_bg_color).value<QColor> ();
     m_widget_title_bg_color = new color_picker (bg_color);
     m_widget_title_bg_color->setEnabled (false);
     layout_widget_bgtitle->addWidget (m_widget_title_bg_color, 0);
@@ -172,9 +177,7 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_bg_color, SLOT (setEnabled (bool)));
 
-    default_var = QColor (192, 192, 192);
-    QColor bg_color_active = settings->value ("DockWidgets/title_bg_color_active",
-                                              default_var).value<QColor> ();
+    QColor bg_color_active = settings->value (dw_title_bg_color_active).value<QColor> ();
     m_widget_title_bg_color_active = new color_picker (bg_color_active);
     m_widget_title_bg_color_active->setEnabled (false);
     layout_widget_bgtitle_active->addWidget (m_widget_title_bg_color_active, 0);
@@ -182,9 +185,7 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_bg_color_active, SLOT (setEnabled (bool)));
 
-    default_var = QColor (0, 0, 0);
-    QColor fg_color = settings->value ("DockWidgets/title_fg_color",
-                                       default_var).value<QColor> ();
+    QColor fg_color = settings->value (dw_title_fg_color).value<QColor> ();
     m_widget_title_fg_color = new color_picker (fg_color);
     m_widget_title_fg_color->setEnabled (false);
     layout_widget_fgtitle->addWidget (m_widget_title_fg_color, 0);
@@ -192,9 +193,7 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_fg_color, SLOT (setEnabled (bool)));
 
-    default_var = QColor (0, 0, 0);
-    QColor fg_color_active = settings->value ("DockWidgets/title_fg_color_active",
-                                              default_var).value<QColor> ();
+    QColor fg_color_active = settings->value (dw_title_fg_color_active).value<QColor> ();
     m_widget_title_fg_color_active = new color_picker (fg_color_active);
     m_widget_title_fg_color_active->setEnabled (false);
     layout_widget_fgtitle_active->addWidget (m_widget_title_fg_color_active, 0);
@@ -202,38 +201,45 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_fg_color_active, SLOT (setEnabled (bool)));
 
-    sb_3d_title->setValue (settings->value ("DockWidgets/widget_title_3d", 50).toInt ());
-    cb_widget_custom_style->setChecked (settings->value ("DockWidgets/widget_title_custom_style", false).toBool ());
+    sb_3d_title->setValue (settings->value (dw_title_3d.key,
+                                            dw_title_3d.def).toInt ());
+    cb_widget_custom_style->setChecked (settings->value (dw_title_custom_style).toBool ());
 
     // Native file dialogs.
     // FIXME: This preference can be deprecated / removed if all display
     //       managers, especially KDE, run those dialogs without hangs or
     //       delays from the start (bug #54607).
-    cb_use_native_file_dialogs->setChecked (settings->value ("use_native_file_dialogs", true).toBool ());
+    cb_use_native_file_dialogs->setChecked (settings->value (global_use_native_dialogs).toBool ());
 
     // Cursor blinking: consider old terminal related setting if not yet set
     // FIXME: This pref. can be deprecated / removed if Qt adds support for
     //       getting the cursor blink preferences from all OS environments
-    if (settings->contains ("cursor_blinking"))
+    if (settings->contains (global_cursor_blinking.key))
       {
         // Preference exists, read its value
-        cb_cursor_blinking->setChecked (settings->value ("cursor_blinking", true).toBool ());
+        cb_cursor_blinking->setChecked (settings->value
+            (global_cursor_blinking.key, global_cursor_blinking.def).toBool ());
       }
     else
       {
         // Pref. does not exist, so take old terminal related pref.
-        cb_cursor_blinking->setChecked (settings->value ("terminal/cursorBlinking", true).toBool ());
+        cb_cursor_blinking->setChecked (settings->value
+                    (cs_cursor_blinking.key, cs_cursor_blinking.def).toBool ());
       }
 
     // prompt on exit
-    cb_prompt_to_exit->setChecked (settings->value ("prompt_to_exit", false).toBool ());
+    cb_prompt_to_exit->setChecked (
+        settings->value (global_prompt_to_exit.key, global_prompt_to_exit.def).toBool ());
 
     // Main status bar
-    cb_status_bar->setChecked (settings->value ("show_status_bar", true).toBool ());
+    cb_status_bar->setChecked (
+        settings->value (global_status_bar.key, global_status_bar.def).toBool ());
 
     // Octave startup
-    cb_restore_octave_dir->setChecked (settings->value ("restore_octave_dir", false).toBool ());
-    le_octave_dir->setText (settings->value ("octave_startup_dir").toString ());
+    cb_restore_octave_dir->setChecked (
+        settings->value (global_restore_ov_dir.key, global_restore_ov_dir.def).toBool ());
+    le_octave_dir->setText (settings->value (global_ov_startup_dir.key,
+                                             global_ov_startup_dir.def).toString ());
 
     connect (pb_octave_dir, SIGNAL (pressed (void)),
              this, SLOT (get_octave_dir (void)));
@@ -241,15 +247,16 @@ namespace octave
     //
     // editor
     //
-    useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor", false).toBool ());
-    customFileEditor->setText (settings->value ("customFileEditor").toString ());
-    editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers", true).toBool ());
-    editor_linenr_size->setValue (settings->value ("editor/line_numbers_size", 0).toInt ());
+    useCustomFileEditor->setChecked (
+      settings->value (global_use_custom_editor.key, global_use_custom_editor.def).toBool ());
+    customFileEditor->setText (
+      settings->value (global_custom_editor.key, global_custom_editor.def).toString ());
+    editor_showLineNumbers->setChecked (settings->value (ed_show_line_numbers).toBool ());
+    editor_linenr_size->setValue (settings->value (ed_line_numbers_size).toInt ());
 
-    resource_manager::combo_encoding (editor_combo_encoding);
+    rmgr.combo_encoding (editor_combo_encoding);
 
-    default_var = QColor (240, 240, 240);
-    QColor setting_color = settings->value ("editor/highlight_current_line_color", default_var).value<QColor> ();
+    QColor setting_color = settings->value (ed_highlight_current_line_color).value<QColor> ();
     m_editor_current_line_color = new color_picker (setting_color);
     editor_grid_current_line->addWidget (m_editor_current_line_color, 0, 3);
     m_editor_current_line_color->setMinimumSize (20, 10);
@@ -258,52 +265,55 @@ namespace octave
     connect (editor_highlightCurrentLine, SIGNAL (toggled (bool)),
              m_editor_current_line_color, SLOT (setEnabled (bool)));
 
-    editor_highlightCurrentLine->setChecked (settings->value ("editor/highlightCurrentLine", true).toBool ());
-    editor_long_line_marker->setChecked (settings->value ("editor/long_line_marker", true).toBool ());
+    editor_highlightCurrentLine->setChecked (settings->value (ed_highlight_current_line).toBool ());
+    editor_long_line_marker->setChecked (settings->value (ed_long_line_marker).toBool ());
     bool long_line =
-      settings->value ("editor/long_line_marker_line", true).toBool ();
+      settings->value (ed_long_line_marker_line).toBool ();
     editor_long_line_marker_line->setChecked (long_line);
     bool long_back =
-      settings->value ("editor/long_line_marker_background", false).toBool ();
+      settings->value (ed_long_line_marker_background).toBool ();
     editor_long_line_marker_background->setChecked (long_back);
     if (! (long_line || long_back))
       editor_long_line_marker_line->setChecked (true);
-    editor_long_line_column->setValue (settings->value ("editor/long_line_column", 80).toInt ());
-    editor_break_checkbox->setChecked (settings->value ("editor/break_lines", false).toBool ());
-    editor_break_checkbox->setChecked (settings->value ("editor/break_lines_comments", false).toBool ());
-    editor_wrap_checkbox->setChecked (settings->value ("editor/wrap_lines", false).toBool ());
-    cb_edit_status_bar->setChecked (settings->value ("editor/show_edit_status_bar", true).toBool ());
-    cb_edit_tool_bar->setChecked (settings->value ("editor/show_toolbar", true).toBool ());
-    cb_code_folding->setChecked (settings->value ("editor/code_folding", true).toBool ());
-    editor_highlight_all_occurrences->setChecked (settings->value ("editor/highlight_all_occurrences", true).toBool ());
+    editor_long_line_column->setValue (settings->value (ed_long_line_column).toInt ());
+    editor_break_checkbox->setChecked (settings->value (ed_break_lines).toBool ());
+    editor_break_checkbox->setChecked (settings->value (ed_break_lines_comments).toBool ());
+    editor_wrap_checkbox->setChecked (settings->value (ed_wrap_lines).toBool ());
+    cb_edit_status_bar->setChecked (settings->value (ed_show_edit_status_bar).toBool ());
+    cb_edit_tool_bar->setChecked (settings->value (ed_show_toolbar).toBool ());
+    cb_code_folding->setChecked (settings->value (ed_code_folding).toBool ());
+    editor_highlight_all_occurrences->setChecked (settings->value (ed_highlight_all_occurrences).toBool ());
 
-    editor_auto_endif->setCurrentIndex (settings->value ("editor/auto_endif", 1).toInt () );
-    editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion", true).toBool ());
-    editor_spinbox_ac_threshold->setValue (settings->value ("editor/codeCompletion_threshold", 2).toInt ());
-    editor_checkbox_ac_keywords->setChecked (settings->value ("editor/codeCompletion_keywords", true).toBool ());
+    editor_auto_endif->setCurrentIndex (settings->value (ed_auto_endif).toInt () );
+    editor_codeCompletion->setChecked (settings->value (ed_code_completion).toBool ());
+    editor_spinbox_ac_threshold->setValue (settings->value (ed_code_completion_threshold).toInt ());
+    editor_checkbox_ac_keywords->setChecked (settings->value (ed_code_completion_keywords).toBool ());
     editor_checkbox_ac_builtins->setEnabled (editor_checkbox_ac_keywords->isChecked ());
     editor_checkbox_ac_functions->setEnabled (editor_checkbox_ac_keywords->isChecked ());
-    editor_checkbox_ac_builtins->setChecked (settings->value ("editor/codeCompletion_octave_builtins", true).toBool ());
-    editor_checkbox_ac_functions->setChecked (settings->value ("editor/codeCompletion_octave_functions", true).toBool ());
-    editor_checkbox_ac_document->setChecked (settings->value ("editor/codeCompletion_document", false).toBool ());
-    editor_checkbox_ac_case->setChecked (settings->value ("editor/codeCompletion_case", true).toBool ());
-    editor_checkbox_ac_replace->setChecked (settings->value ("editor/codeCompletion_replace", false).toBool ());
-    editor_ws_checkbox->setChecked (settings->value ("editor/show_white_space", false).toBool ());
-    editor_ws_indent_checkbox->setChecked (settings->value ("editor/show_white_space_indent", false).toBool ());
-    cb_show_eol->setChecked (settings->value ("editor/show_eol_chars", false).toBool ());
-    cb_show_hscrollbar->setChecked (settings->value ("editor/show_hscroll_bar", true).toBool ());
+    editor_checkbox_ac_builtins->setChecked (settings->value (ed_code_completion_octave_builtins).toBool ());
+    editor_checkbox_ac_functions->setChecked (settings->value (ed_code_completion_octave_functions).toBool ());
+    editor_checkbox_ac_document->setChecked (settings->value (ed_code_completion_document).toBool ());
+    editor_checkbox_ac_case->setChecked (settings->value (ed_code_completion_case).toBool ());
+    editor_checkbox_ac_replace->setChecked (settings->value (ed_code_completion_replace).toBool ());
+    editor_ws_checkbox->setChecked (settings->value (ed_show_white_space).toBool ());
+    editor_ws_indent_checkbox->setChecked (settings->value (ed_show_white_space_indent).toBool ());
+    cb_show_eol->setChecked (settings->value (ed_show_eol_chars).toBool ());
+    cb_show_hscrollbar->setChecked (settings->value (ed_show_hscroll_bar).toBool ());
+
+    for (int i = 0; i < ed_tab_position_names.length (); i++)
+      editor_combox_tab_pos->insertItem (i,
+              tr (ed_tab_position_names.at (i).toStdString ().data ()));
+    editor_combox_tab_pos->setCurrentIndex
+      (settings->value (ed_tab_position).toInt ());
 
     int selected_comment_string, selected_uncomment_string;
 
     if (settings->contains (ed_comment_str.key))   // new version (radio buttons)
-      selected_comment_string = settings->value (ed_comment_str.key,
-                                                 ed_comment_str.def).toInt ();
+      selected_comment_string = settings->value (ed_comment_str).toInt ();
     else                                         // old version (combo box)
-      selected_comment_string = settings->value (ed_comment_str_old.key,
-                                                 ed_comment_str.def).toInt ();
+      selected_comment_string = settings->value (ed_comment_str_old.key,                                                 ed_comment_str.def).toInt ();
 
-    selected_uncomment_string = settings->value (ed_uncomment_str.key,
-                                                 ed_uncomment_str.def).toInt ();
+    selected_uncomment_string = settings->value (ed_uncomment_str).toInt ();
 
     for (int i = 0; i < ed_comment_strings_count; i++)
       {
@@ -326,43 +336,34 @@ namespace octave
       }
 
 
-#if defined (HAVE_QSCINTILLA)
-#  if defined (Q_OS_WIN32)
-    int eol_mode = QsciScintilla::EolWindows;
-#  else
-    int eol_mode = QsciScintilla::EolUnix;
-#  endif
-#else
-    int eol_mode = 2;
-#endif
-    combo_eol_mode->setCurrentIndex (settings->value ("editor/default_eol_mode", eol_mode).toInt ());
-    editor_auto_ind_checkbox->setChecked (settings->value ("editor/auto_indent", true).toBool ());
-    editor_tab_ind_checkbox->setChecked (settings->value ("editor/tab_indents_line", false).toBool ());
-    editor_bs_unind_checkbox->setChecked (settings->value ("editor/backspace_unindents_line", false).toBool ());
-    editor_ind_guides_checkbox->setChecked (settings->value ("editor/show_indent_guides", false).toBool ());
-    editor_ind_width_spinbox->setValue (settings->value ("editor/indent_width", 2).toInt ());
-    editor_ind_uses_tabs_checkbox->setChecked (settings->value ("editor/indent_uses_tabs", false).toBool ());
-    editor_tab_width_spinbox->setValue (settings->value ("editor/tab_width", 2).toInt ());
-    editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle", false).toBool ());
-    editor_notebook_tab_width_min->setValue (settings->value ("editor/notebook_tab_width_min", 160).toInt ());
-    editor_notebook_tab_width_max->setValue (settings->value ("editor/notebook_tab_width_max", 300).toInt ());
-    editor_restoreSession->setChecked (settings->value ("editor/restoreSession", true).toBool ());
-    editor_create_new_file->setChecked (settings->value ("editor/create_new_file", false).toBool ());
-    editor_reload_changed_files->setChecked (settings->value ("editor/always_reload_changed_files", false).toBool ());
-    editor_hiding_closes_files->setChecked (settings->value ("editor/hiding_closes_files", false).toBool ());
-    editor_show_dbg_file->setChecked (settings->value (ed_show_dbg_file.key, ed_show_dbg_file.def).toBool ());
+    combo_eol_mode->setCurrentIndex (settings->value (ed_default_eol_mode).toInt ());
+    editor_auto_ind_checkbox->setChecked (settings->value (ed_auto_indent).toBool ());
+    editor_tab_ind_checkbox->setChecked (settings->value (ed_tab_indents_line).toBool ());
+    editor_bs_unind_checkbox->setChecked (settings->value (ed_backspace_unindents_line).toBool ());
+    editor_ind_guides_checkbox->setChecked (settings->value (ed_show_indent_guides).toBool ());
+    editor_ind_width_spinbox->setValue (settings->value (ed_indent_width).toInt ());
+    editor_ind_uses_tabs_checkbox->setChecked (settings->value (ed_indent_uses_tabs).toBool ());
+    editor_tab_width_spinbox->setValue (settings->value (ed_tab_width).toInt ());
+    editor_longWindowTitle->setChecked (settings->value (ed_long_window_title).toBool ());
+    editor_notebook_tab_width_min->setValue (settings->value (ed_notebook_tab_width_min).toInt ());
+    editor_notebook_tab_width_max->setValue (settings->value (ed_notebook_tab_width_max).toInt ());
+    editor_restoreSession->setChecked (settings->value (ed_restore_session).toBool ());
+    editor_create_new_file->setChecked (settings->value (ed_create_new_file).toBool ());
+    editor_reload_changed_files->setChecked (settings->value (ed_always_reload_changed_files).toBool ());
+    editor_hiding_closes_files->setChecked (settings->value (ed_hiding_closes_files).toBool ());
+    editor_show_dbg_file->setChecked (settings->value (ed_show_dbg_file).toBool ());
 
     // terminal
-    QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+    QString default_font = settings->value (global_mono_font).toString ();
     terminal_fontName->setCurrentFont (QFont (settings->value (cs_font.key, default_font).toString ()));
-    terminal_fontSize->setValue (settings->value ("terminal/fontSize", 10).toInt ());
-    terminal_history_buffer->setValue (settings->value ("terminal/history_buffer", 1000).toInt ());
-    terminal_cursorUseForegroundColor->setChecked (settings->value ("terminal/cursorUseForegroundColor", true).toBool ());
-    terminal_focus_command->setChecked (settings->value ("terminal/focus_after_command", false).toBool ());
-    terminal_print_dbg_location->setChecked (settings->value ("terminal/print_debug_location", false).toBool ());
+    terminal_fontSize->setValue (settings->value (cs_font_size).toInt ());
+    terminal_history_buffer->setValue (settings->value (cs_hist_buffer).toInt ());
+    terminal_cursorUseForegroundColor->setChecked (settings->value (cs_cursor_use_fgcol).toBool ());
+    terminal_focus_command->setChecked (settings->value (cs_focus_cmd).toBool ());
+    terminal_print_dbg_location->setChecked (settings->value (cs_dbg_location).toBool ());
 
-    QString cursorType
-      = settings->value ("terminal/cursorType", "ibeam").toString ();
+    QString cursor_type
+      = settings->value (cs_cursor).toString ();
 
     QStringList items;
     items << QString ("0") << QString ("1") << QString ("2");
@@ -371,42 +372,44 @@ namespace octave
     terminal_cursorType->setItemText (1, tr ("Block Cursor"));
     terminal_cursorType->setItemText (2, tr ("Underline Cursor"));
 
-    if (cursorType == "ibeam")
-      terminal_cursorType->setCurrentIndex (0);
-    else if (cursorType == "block")
-      terminal_cursorType->setCurrentIndex (1);
-    else if (cursorType == "underline")
-      terminal_cursorType->setCurrentIndex (2);
+    for (unsigned int i = 0; i < cs_cursor_types.size (); i++)
+      {
+        if (cursor_type.toStdString () == cs_cursor_types[i])
+          {
+            terminal_cursorType->setCurrentIndex (i);
+            break;
+          }
+      }
 
     // file browser
     connect (sync_octave_directory, SIGNAL (toggled (bool)),
              this, SLOT (set_disabled_pref_file_browser_dir (bool)));
 
-    sync_octave_directory->setChecked (settings->value (fb_sync_octdir.key, fb_sync_octdir.def).toBool ());
-    cb_restore_file_browser_dir->setChecked (settings->value (fb_restore_last_dir.key, fb_restore_last_dir.def).toBool ());
+    sync_octave_directory->setChecked (settings->value (fb_sync_octdir).toBool ());
+    cb_restore_file_browser_dir->setChecked (settings->value (fb_restore_last_dir).toBool ());
     le_file_browser_dir->setText (settings->value (fb_startup_dir.key).toString ());
 
     connect (pb_file_browser_dir, SIGNAL (pressed (void)),
              this, SLOT (get_file_browser_dir (void)));
 
-    le_file_browser_extensions->setText (settings->value (fb_txt_file_ext.key, fb_txt_file_ext.def).toString ());
+    le_file_browser_extensions->setText (settings->value (fb_txt_file_ext).toString ());
 
-    checkbox_allow_web_connect->setChecked (settings->value ("news/allow_web_connection", false).toBool ());
-    useProxyServer->setChecked (settings->value ("useProxyServer", false).toBool ());
-    proxyHostName->setText (settings->value ("proxyHostName").toString ());
+    checkbox_allow_web_connect->setChecked (settings->value (nr_allow_connection).toBool ());
+    useProxyServer->setChecked (
+        settings->value (global_use_proxy.key, global_use_proxy.def).toBool ());
+    proxyHostName->setText (settings->value (global_proxy_host.key, global_proxy_host.def).toString ());
 
     int currentIndex = 0;
-    QString proxyTypeString = settings->value ("proxyType").toString ();
+    QString proxyTypeString = settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
     while ((currentIndex < proxyType->count ())
            && (proxyType->currentText () != proxyTypeString))
       {
         currentIndex++;
         proxyType->setCurrentIndex (currentIndex);
       }
-
-    proxyPort->setText (settings->value ("proxyPort").toString ());
-    proxyUserName->setText (settings->value ("proxyUserName").toString ());
-    proxyPassword->setText (settings->value ("proxyPassword").toString ());
+    proxyPort->setText (settings->value (global_proxy_port.key, global_proxy_port.def).toString ());
+    proxyUserName->setText (settings->value (global_proxy_user.key, global_proxy_user.def).toString ());
+    proxyPassword->setText (settings->value (global_proxy_pass.key, global_proxy_pass.def).toString ());
 
     // Workspace
     read_workspace_colors (settings);
@@ -415,33 +418,35 @@ namespace octave
     read_terminal_colors (settings);
 
     // variable editor
-    varedit_columnWidth->setValue (settings->value ("variable_editor/column_width", 100).toInt ());
-    varedit_autoFitColumnWidth->setChecked (settings->value ("variable_editor/autofit_column_width", false).toBool ());
-    varedit_autofitType->setCurrentIndex (settings->value ("autofit_type", 0).toInt ());
-    varedit_rowHeight->setValue (settings->value ("variable_editor/row_height", 10).toInt ());
-    varedit_rowAutofit->setChecked (settings->value ("variable_editor/autofit_row_height", true).toBool ());
+    varedit_columnWidth->setValue (settings->value (ve_column_width).toInt ());
+    varedit_rowHeight->setValue (settings->value (ve_row_height).toInt ());
 
-    varedit_font->setCurrentFont (QFont (settings->value ("variable_editor/font_name", settings->value (cs_font.key, default_font)).toString ()));
-    varedit_fontSize->setValue (settings->value ("variable_editor/font_size", QVariant (10)).toInt ());
+    varedit_font->setCurrentFont (QFont (settings->value (ve_font_name.key,
+                                                          settings->value (cs_font.key, default_font)).toString ()));
+    varedit_fontSize->setValue (settings->value (ve_font_size).toInt ());
     connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
              varedit_font, SLOT (setDisabled (bool)));
     connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
              varedit_fontSize, SLOT (setDisabled (bool)));
-    varedit_useTerminalFont->setChecked (settings->value ("variable_editor/use_terminal_font", false).toBool ());
+    varedit_useTerminalFont->setChecked (settings->value (ve_use_terminal_font).toBool ());
     varedit_font->setDisabled (varedit_useTerminalFont->isChecked ());
     varedit_fontSize->setDisabled (varedit_useTerminalFont->isChecked ());
 
-    varedit_alternate->setChecked (settings->value ("variable_editor/alternate_rows", QVariant (false)).toBool ());
+    varedit_alternate->setChecked (settings->value (ve_alternate_rows).toBool ());
 
     // variable editor colors
     read_varedit_colors (settings);
 
     // shortcuts
 
-    cb_prevent_readline_conflicts->setChecked (settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ());
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
+    cb_prevent_readline_conflicts->setChecked (
+          settings->value (sc_prevent_rl_conflicts.key,
+                           sc_prevent_rl_conflicts.def).toBool ());
 
     // initialize the tree view with all shortcut data
-    shortcut_manager::fill_treewidget (shortcuts_treewidget);
+    scmgr.fill_treewidget (shortcuts_treewidget);
 
     // connect the buttons for import/export of the shortcut sets
     connect (btn_import_shortcut_set, SIGNAL (clicked (void)),
@@ -492,7 +497,7 @@ namespace octave
     read_lexer_settings (lexer, settings);
     delete lexer;
 
-    lexer = new octave::octave_txt_lexer ();
+    lexer = new octave_txt_lexer ();
     read_lexer_settings (lexer, settings);
     delete lexer;
 
@@ -506,8 +511,8 @@ namespace octave
              this, SLOT (button_clicked (QAbstractButton *)));
 
     // restore last geometry
-    if (settings->contains ("settings/geometry"))
-      restoreGeometry (settings->value ("settings/geometry").toByteArray ());
+    if (settings->contains (sd_geometry.key))
+      restoreGeometry (settings->value (sd_geometry).toByteArray ());
     else
       setGeometry (QRect (10,50,1000,600));
   }
@@ -516,9 +521,10 @@ namespace octave
   {
     if (tab.isEmpty ())
       {
-        QSettings *settings = resource_manager::get_settings ();
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings *settings = rmgr.get_settings ();
         if (settings)
-          tabWidget->setCurrentIndex (settings->value ("settings/last_tab", 0).toInt ());
+          tabWidget->setCurrentIndex (settings->value (sd_last_tab).toInt ());
       }
     else
       {
@@ -545,8 +551,9 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
-    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (! settings->value (global_use_native_dialogs).toBool ())
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory
@@ -591,21 +598,27 @@ namespace octave
 
   void settings_dialog::import_shortcut_set (void)
   {
-    shortcut_manager::import_export (shortcut_manager::OSC_IMPORT);
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
+    scmgr.import_export (shortcut_manager::OSC_IMPORT);
   }
 
   void settings_dialog::export_shortcut_set (void)
   {
-    shortcut_manager::import_export (shortcut_manager::OSC_EXPORT);
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
+    scmgr.import_export (shortcut_manager::OSC_EXPORT);
   }
 
   void settings_dialog::default_shortcut_set (void)
   {
-    shortcut_manager::import_export (shortcut_manager::OSC_DEFAULT);
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
+    scmgr.import_export (shortcut_manager::OSC_DEFAULT);
   }
 
   void settings_dialog::read_lexer_settings (QsciLexer *lexer,
-                                             QSettings *settings)
+                                             gui_settings *settings)
   {
 #if defined (HAVE_QSCINTILLA)
 
@@ -696,7 +709,7 @@ namespace octave
     scroll_area->setWidget (scroll_area_contents);
     tabs_editor_lexers->addTab (scroll_area, lexer->language ());
 
-    tabs_editor_lexers->setCurrentIndex (settings->value ("settings/last_editor_styles_tab", 0).toInt ());
+    tabs_editor_lexers->setCurrentIndex (settings->value (sd_last_editor_styles_tab).toInt ());
 
 #else
 
@@ -707,7 +720,7 @@ namespace octave
   }
 
   void settings_dialog::write_lexer_settings (QsciLexer *lexer,
-                                              QSettings *settings)
+                                              gui_settings *settings)
   {
 #if defined (HAVE_QSCINTILLA)
 
@@ -724,7 +737,7 @@ namespace octave
     int default_size = 10;
 
     QString default_font_name
-      = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+      = settings->value (global_mono_font).toString ();
     QFont default_font = QFont (default_font_name, 10, -1, 0);
     QColor default_color = QColor ();
     QColor dummy_color = QColor (255, 0, 255);
@@ -789,7 +802,7 @@ namespace octave
 
     lexer->writeSettings (*settings);
 
-    settings->setValue ("settings/last_editor_styles_tab",
+    settings->setValue (sd_last_editor_styles_tab.key,
                         tabs_editor_lexers->currentIndex ());
     settings->sync ();
 
@@ -803,7 +816,8 @@ namespace octave
 
   void settings_dialog::write_changed_settings (bool closing)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     // the icon set
     QString widget_icon_set = "NONE";
@@ -811,13 +825,13 @@ namespace octave
       widget_icon_set = "LETTER";
     else if (general_icon_graphic->isChecked ())
       widget_icon_set = "GRAPHIC";
-    settings->setValue ("DockWidgets/widget_icon_set", widget_icon_set);
+    settings->setValue (dw_icon_set.key, widget_icon_set);
 
     // language
     QString language = comboBox_language->currentText ();
     if (language == tr ("System setting"))
-      language = "SYSTEM";
-    settings->setValue ("language", language);
+      language = global_language.def.toString ();
+    settings->setValue (global_language.key, language);
 
     // style
     QString selected_style = combo_styles->currentText ();
@@ -826,12 +840,12 @@ namespace octave
     settings->setValue (global_style.key, selected_style);
 
     // dock widget title bar
-    settings->setValue ("DockWidgets/widget_title_custom_style", cb_widget_custom_style->isChecked ());
-    settings->setValue ("DockWidgets/widget_title_3d", sb_3d_title->value ());
-    settings->setValue ("DockWidgets/title_bg_color", m_widget_title_bg_color->color ());
-    settings->setValue ("DockWidgets/title_bg_color_active", m_widget_title_bg_color_active->color ());
-    settings->setValue ("DockWidgets/title_fg_color", m_widget_title_fg_color->color ());
-    settings->setValue ("DockWidgets/title_fg_color_active", m_widget_title_fg_color_active->color ());
+    settings->setValue (dw_title_custom_style.key, cb_widget_custom_style->isChecked ());
+    settings->setValue (dw_title_3d.key, sb_3d_title->value ());
+    settings->setValue (dw_title_bg_color.key, m_widget_title_bg_color->color ());
+    settings->setValue (dw_title_bg_color_active.key, m_widget_title_bg_color_active->color ());
+    settings->setValue (dw_title_fg_color.key, m_widget_title_fg_color->color ());
+    settings->setValue (dw_title_fg_color_active.key, m_widget_title_fg_color_active->color ());
 
     // icon size and theme
     int icon_size = icon_size_large->isChecked () - icon_size_small->isChecked ();
@@ -839,53 +853,55 @@ namespace octave
     settings->setValue (global_icon_theme.key, cb_system_icon_theme->isChecked ());
 
     // native file dialogs
-    settings->setValue ("use_native_file_dialogs", cb_use_native_file_dialogs->isChecked ());
+    settings->setValue (global_use_native_dialogs.key, cb_use_native_file_dialogs->isChecked ());
 
     // cursor blinking
-    settings->setValue ("cursor_blinking", cb_cursor_blinking->isChecked ());
+    settings->setValue (global_cursor_blinking.key, cb_cursor_blinking->isChecked ());
 
     // promp to exit
-    settings->setValue ("prompt_to_exit", cb_prompt_to_exit->isChecked ());
+    settings->setValue (global_prompt_to_exit.key, cb_prompt_to_exit->isChecked ());
 
     // status bar
-    settings->setValue ("show_status_bar", cb_status_bar->isChecked ());
+    settings->setValue (global_status_bar.key, cb_status_bar->isChecked ());
 
     // Octave startup
-    settings->setValue ("restore_octave_dir", cb_restore_octave_dir->isChecked ());
-    settings->setValue ("octave_startup_dir", le_octave_dir->text ());
+    settings->setValue (global_restore_ov_dir.key, cb_restore_octave_dir->isChecked ());
+    settings->setValue (global_ov_startup_dir.key, le_octave_dir->text ());
 
     //editor
-    settings->setValue ("useCustomFileEditor", useCustomFileEditor->isChecked ());
-    settings->setValue ("customFileEditor", customFileEditor->text ());
-    settings->setValue ("editor/showLineNumbers", editor_showLineNumbers->isChecked ());
-    settings->setValue ("editor/line_numbers_size", editor_linenr_size->value ());
-    settings->setValue ("editor/highlightCurrentLine", editor_highlightCurrentLine->isChecked ());
-    settings->setValue ("editor/highlight_current_line_color", m_editor_current_line_color->color ());
-    settings->setValue ("editor/long_line_marker", editor_long_line_marker->isChecked ());
-    settings->setValue ("editor/long_line_marker_line", editor_long_line_marker_line->isChecked ());
-    settings->setValue ("editor/long_line_marker_background", editor_long_line_marker_background->isChecked ());
-    settings->setValue ("editor/long_line_column", editor_long_line_column->value ());
-    settings->setValue ("editor/break_lines", editor_break_checkbox->isChecked ());
-    settings->setValue ("editor/break_lines_comments", editor_break_comments_checkbox->isChecked ());
-    settings->setValue ("editor/wrap_lines", editor_wrap_checkbox->isChecked ());
-    settings->setValue ("editor/code_folding", cb_code_folding->isChecked ());
-    settings->setValue ("editor/show_edit_status_bar", cb_edit_status_bar->isChecked ());
-    settings->setValue ("editor/show_toolbar", cb_edit_tool_bar->isChecked ());
-    settings->setValue ("editor/highlight_all_occurrences", editor_highlight_all_occurrences->isChecked ());
-    settings->setValue ("editor/codeCompletion", editor_codeCompletion->isChecked ());
-    settings->setValue ("editor/codeCompletion_threshold", editor_spinbox_ac_threshold->value ());
-    settings->setValue ("editor/codeCompletion_keywords", editor_checkbox_ac_keywords->isChecked ());
-    settings->setValue ("editor/codeCompletion_octave_builtins", editor_checkbox_ac_builtins->isChecked ());
-    settings->setValue ("editor/codeCompletion_octave_functions", editor_checkbox_ac_functions->isChecked ());
-    settings->setValue ("editor/codeCompletion_document", editor_checkbox_ac_document->isChecked ());
-    settings->setValue ("editor/codeCompletion_case", editor_checkbox_ac_case->isChecked ());
-    settings->setValue ("editor/codeCompletion_replace", editor_checkbox_ac_replace->isChecked ());
-    settings->setValue ("editor/auto_endif", editor_auto_endif->currentIndex ());
-    settings->setValue ("editor/show_white_space", editor_ws_checkbox->isChecked ());
-    settings->setValue ("editor/show_white_space_indent", editor_ws_indent_checkbox->isChecked ());
-    settings->setValue ("editor/show_eol_chars", cb_show_eol->isChecked ());
-    settings->setValue ("editor/show_hscroll_bar", cb_show_hscrollbar->isChecked ());
-    settings->setValue ("editor/default_eol_mode", combo_eol_mode->currentIndex ());
+    settings->setValue (global_use_custom_editor.key, useCustomFileEditor->isChecked ());
+    settings->setValue (global_custom_editor.key, customFileEditor->text ());
+    settings->setValue (ed_show_line_numbers.key, editor_showLineNumbers->isChecked ());
+    settings->setValue (ed_line_numbers_size.key, editor_linenr_size->value ());
+    settings->setValue (ed_highlight_current_line.key, editor_highlightCurrentLine->isChecked ());
+    settings->setValue (ed_highlight_current_line_color.key, m_editor_current_line_color->color ());
+    settings->setValue (ed_long_line_marker.key, editor_long_line_marker->isChecked ());
+    settings->setValue (ed_long_line_marker_line.key, editor_long_line_marker_line->isChecked ());
+    settings->setValue (ed_long_line_marker_background.key, editor_long_line_marker_background->isChecked ());
+    settings->setValue (ed_long_line_column.key, editor_long_line_column->value ());
+    settings->setValue (ed_break_lines.key, editor_break_checkbox->isChecked ());
+    settings->setValue (ed_break_lines_comments.key, editor_break_comments_checkbox->isChecked ());
+    settings->setValue (ed_wrap_lines.key, editor_wrap_checkbox->isChecked ());
+    settings->setValue (ed_code_folding.key, cb_code_folding->isChecked ());
+    settings->setValue (ed_show_edit_status_bar.key, cb_edit_status_bar->isChecked ());
+    settings->setValue (ed_show_toolbar.key, cb_edit_tool_bar->isChecked ());
+    settings->setValue (ed_highlight_all_occurrences.key, editor_highlight_all_occurrences->isChecked ());
+    settings->setValue (ed_code_completion.key, editor_codeCompletion->isChecked ());
+    settings->setValue (ed_code_completion_threshold.key, editor_spinbox_ac_threshold->value ());
+    settings->setValue (ed_code_completion_keywords.key, editor_checkbox_ac_keywords->isChecked ());
+    settings->setValue (ed_code_completion_octave_builtins.key, editor_checkbox_ac_builtins->isChecked ());
+    settings->setValue (ed_code_completion_octave_functions.key, editor_checkbox_ac_functions->isChecked ());
+    settings->setValue (ed_code_completion_document.key, editor_checkbox_ac_document->isChecked ());
+    settings->setValue (ed_code_completion_case.key, editor_checkbox_ac_case->isChecked ());
+    settings->setValue (ed_code_completion_replace.key, editor_checkbox_ac_replace->isChecked ());
+    settings->setValue (ed_auto_endif.key, editor_auto_endif->currentIndex ());
+    settings->setValue (ed_show_white_space.key, editor_ws_checkbox->isChecked ());
+    settings->setValue (ed_show_white_space_indent.key, editor_ws_indent_checkbox->isChecked ());
+    settings->setValue (ed_show_eol_chars.key, cb_show_eol->isChecked ());
+    settings->setValue (ed_show_hscroll_bar.key, cb_show_hscrollbar->isChecked ());
+    settings->setValue (ed_default_eol_mode.key, combo_eol_mode->currentIndex ());
+
+    settings->setValue (ed_tab_position.key, editor_combox_tab_pos->currentIndex ());
 
     // Comment strings
     int rb_uncomment = 0;
@@ -904,25 +920,25 @@ namespace octave
       }
     settings->setValue (ed_uncomment_str.key, rb_uncomment);
 
-    settings->setValue ("editor/default_encoding", editor_combo_encoding->currentText ());
-    settings->setValue ("editor/auto_indent", editor_auto_ind_checkbox->isChecked ());
-    settings->setValue ("editor/tab_indents_line", editor_tab_ind_checkbox->isChecked ());
-    settings->setValue ("editor/backspace_unindents_line", editor_bs_unind_checkbox->isChecked ());
-    settings->setValue ("editor/show_indent_guides", editor_ind_guides_checkbox->isChecked ());
-    settings->setValue ("editor/indent_width", editor_ind_width_spinbox->value ());
-    settings->setValue ("editor/indent_uses_tabs", editor_ind_uses_tabs_checkbox->isChecked ());
-    settings->setValue ("editor/tab_width", editor_tab_width_spinbox->value ());
-    settings->setValue ("editor/longWindowTitle", editor_longWindowTitle->isChecked ());
-    settings->setValue ("editor/notebook_tab_width_min", editor_notebook_tab_width_min->value ());
-    settings->setValue ("editor/notebook_tab_width_max", editor_notebook_tab_width_max->value ());
-    settings->setValue ("editor/restoreSession", editor_restoreSession->isChecked ());
-    settings->setValue ("editor/create_new_file", editor_create_new_file->isChecked ());
-    settings->setValue ("editor/hiding_closes_files", editor_hiding_closes_files->isChecked ());
-    settings->setValue ("editor/always_reload_changed_files", editor_reload_changed_files->isChecked ());
+    settings->setValue (ed_default_enc.key, editor_combo_encoding->currentText ());
+    settings->setValue (ed_auto_indent.key, editor_auto_ind_checkbox->isChecked ());
+    settings->setValue (ed_tab_indents_line.key, editor_tab_ind_checkbox->isChecked ());
+    settings->setValue (ed_backspace_unindents_line.key, editor_bs_unind_checkbox->isChecked ());
+    settings->setValue (ed_show_indent_guides.key, editor_ind_guides_checkbox->isChecked ());
+    settings->setValue (ed_indent_width.key, editor_ind_width_spinbox->value ());
+    settings->setValue (ed_indent_uses_tabs.key, editor_ind_uses_tabs_checkbox->isChecked ());
+    settings->setValue (ed_tab_width.key, editor_tab_width_spinbox->value ());
+    settings->setValue (ed_long_window_title.key, editor_longWindowTitle->isChecked ());
+    settings->setValue (ed_notebook_tab_width_min.key, editor_notebook_tab_width_min->value ());
+    settings->setValue (ed_notebook_tab_width_max.key, editor_notebook_tab_width_max->value ());
+    settings->setValue (ed_restore_session.key, editor_restoreSession->isChecked ());
+    settings->setValue (ed_create_new_file.key, editor_create_new_file->isChecked ());
+    settings->setValue (ed_hiding_closes_files.key, editor_hiding_closes_files->isChecked ());
+    settings->setValue (ed_always_reload_changed_files.key, editor_reload_changed_files->isChecked ());
     settings->setValue (ed_show_dbg_file.key, editor_show_dbg_file->isChecked ());
 
-    settings->setValue ("terminal/fontSize", terminal_fontSize->value ());
-    settings->setValue ("terminal/fontName", terminal_fontName->currentFont ().family ());
+    settings->setValue (cs_font_size.key, terminal_fontSize->value ());
+    settings->setValue (cs_font.key, terminal_fontName->currentFont ().family ());
 
     // file browser
     settings->setValue (fb_sync_octdir.key, sync_octave_directory->isChecked ());
@@ -930,27 +946,27 @@ namespace octave
     settings->setValue (fb_startup_dir.key, le_file_browser_dir->text ());
     settings->setValue (fb_txt_file_ext.key, le_file_browser_extensions->text ());
 
-    settings->setValue ("news/allow_web_connection", checkbox_allow_web_connect->isChecked ());
-    settings->setValue ("useProxyServer", useProxyServer->isChecked ());
-    settings->setValue ("proxyType", proxyType->currentText ());
-    settings->setValue ("proxyHostName", proxyHostName->text ());
-    settings->setValue ("proxyPort", proxyPort->text ());
-    settings->setValue ("proxyUserName", proxyUserName->text ());
-    settings->setValue ("proxyPassword", proxyPassword->text ());
-    settings->setValue ("terminal/cursorUseForegroundColor", terminal_cursorUseForegroundColor->isChecked ());
-    settings->setValue ("terminal/focus_after_command", terminal_focus_command->isChecked ());
-    settings->setValue ("terminal/print_debug_location", terminal_print_dbg_location->isChecked ());
-    settings->setValue ("terminal/history_buffer", terminal_history_buffer->value ());
+    settings->setValue (nr_allow_connection.key, checkbox_allow_web_connect->isChecked ());
+    settings->setValue (global_use_proxy.key, useProxyServer->isChecked ());
+    settings->setValue (global_proxy_type.key, proxyType->currentText ());
+    settings->setValue (global_proxy_host.key, proxyHostName->text ());
+    settings->setValue (global_proxy_port.key, proxyPort->text ());
+    settings->setValue (global_proxy_user.key, proxyUserName->text ());
+    settings->setValue (global_proxy_pass.key, proxyPassword->text ());
+    settings->setValue (cs_cursor_use_fgcol.key, terminal_cursorUseForegroundColor->isChecked ());
+    settings->setValue (mw_dir_list.key, terminal_focus_command->isChecked ());
+    settings->setValue (cs_dbg_location.key, terminal_print_dbg_location->isChecked ());
+    settings->setValue (cs_hist_buffer.key, terminal_history_buffer->value ());
 
     // the cursor
-    QString cursorType;
-    switch (terminal_cursorType->currentIndex ())
-      {
-      case 0: cursorType = "ibeam"; break;
-      case 1: cursorType = "block"; break;
-      case 2: cursorType = "underline";  break;
-      }
-    settings->setValue ("terminal/cursorType", cursorType);
+    QString cursor_type;
+    unsigned int cursor_int = terminal_cursorType->currentIndex ();
+    if ((cursor_int > 0) && (cursor_int < cs_cursor_types.size ()))
+      cursor_type = QString (cs_cursor_types[cursor_int].data ());
+    else
+      cursor_type = cs_cursor.def.toString ();
+
+    settings->setValue (cs_cursor.key, cursor_type);
 
 #if defined (HAVE_QSCINTILLA)
     // editor styles: create lexer, get dialog contents, and write settings
@@ -990,7 +1006,7 @@ namespace octave
     write_lexer_settings (lexer, settings);
     delete lexer;
 
-    lexer = new octave::octave_txt_lexer ();
+    lexer = new octave_txt_lexer ();
     write_lexer_settings (lexer, settings);
     delete lexer;
 
@@ -1003,40 +1019,33 @@ namespace octave
     write_terminal_colors (settings);
 
     // Variable editor
-    settings->setValue ("variable_editor/autofit_column_width", varedit_autoFitColumnWidth->isChecked ());
-    settings->setValue ("variable_editor/autofit_type", varedit_autofitType->currentIndex ());
-    settings->setValue ("variable_editor/column_width", varedit_columnWidth->value ());
-    settings->setValue ("variable_editor/row_height", varedit_rowHeight->value ());
-    settings->setValue ("variable_editor/autofit_row_height", varedit_rowAutofit->isChecked ());
-    settings->setValue ("variable_editor/use_terminal_font", varedit_useTerminalFont->isChecked ());
-    settings->setValue ("variable_editor/alternate_rows", varedit_alternate->isChecked ());
-    settings->setValue ("variable_editor/font_name", varedit_font->currentFont ().family ());
-    settings->setValue ("variable_editor/font_size", varedit_fontSize->value ());
+    settings->setValue (ve_column_width.key, varedit_columnWidth->value ());
+    settings->setValue (ve_row_height.key, varedit_rowHeight->value ());
+    settings->setValue (ve_use_terminal_font.key, varedit_useTerminalFont->isChecked ());
+    settings->setValue (ve_alternate_rows.key, varedit_alternate->isChecked ());
+    settings->setValue (ve_font_name.key, varedit_font->currentFont ().family ());
+    settings->setValue (ve_font_size.key, varedit_fontSize->value ());
     write_varedit_colors (settings);
 
     // shortcuts
-    settings->setValue ("shortcuts/prevent_readline_conflicts", cb_prevent_readline_conflicts->isChecked ());
-    shortcut_manager::write_shortcuts (settings, closing);
+
+    settings->setValue (sc_prevent_rl_conflicts.key, cb_prevent_readline_conflicts->isChecked ());
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    scmgr.write_shortcuts (settings, closing);
 
     // settings dialog's geometry
-    settings->setValue ("settings/last_tab", tabWidget->currentIndex ());
-    settings->setValue ("settings/geometry", saveGeometry ());
+    settings->setValue (sd_last_tab.key, tabWidget->currentIndex ());
+    settings->setValue (sd_geometry.key, saveGeometry ());
 
     settings->sync ();
   }
 
-  void settings_dialog::read_workspace_colors (QSettings *settings)
+  void settings_dialog::read_workspace_colors (gui_settings *settings)
   {
     // Construct the grid with all color related settings
-    QList<QColor> default_colors =
-      resource_manager::storage_class_default_colors ();
-    QStringList class_names = resource_manager::storage_class_names ();
-    QString class_chars = resource_manager::storage_class_chars ();
-    int nr_of_classes = class_chars.length ();
-
     QGridLayout *style_grid = new QGridLayout ();
-    QVector<QLabel*> description (nr_of_classes);
-    QVector<color_picker*> color (nr_of_classes);
+    QVector<QLabel*> description (ws_colors_count);
+    QVector<color_picker*> color (ws_colors_count);
 
     int column = 0;
     int row = 0;
@@ -1048,20 +1057,21 @@ namespace octave
     style_grid->addWidget (m_ws_hide_tool_tips, row++, column, 1, 4);
     connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
              m_ws_hide_tool_tips, SLOT(setEnabled (bool)));
-    m_ws_hide_tool_tips->setChecked (
-      settings->value (ws_hide_tool_tips.key, ws_hide_tool_tips.def).toBool ());
+    m_ws_hide_tool_tips->setChecked
+      (settings->value (ws_hide_tool_tips).toBool ());
 
-    for (int i = 0; i < nr_of_classes; i++)
+    for (int i = 0; i < ws_colors_count; i++)
       {
-        description[i] = new QLabel ("    " + class_names.at (i));
+        description[i] = new QLabel ("    "
+          + tr (ws_color_names.at (i).toStdString ().data ()));
         description[i]->setAlignment (Qt::AlignRight);
         connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
                  description[i], SLOT(setEnabled (bool)));
 
-        QVariant default_var = default_colors.at (i);
-        QColor setting_color = settings->value ("workspaceview/color_" + class_chars.mid (i, 1), default_var).value<QColor> ();
+        QColor setting_color = settings->value (ws_colors[i].key,
+                                                ws_colors[i].def).value<QColor> ();
         color[i] = new color_picker (setting_color);
-        color[i]->setObjectName ("color_" + class_chars.mid (i, 1));
+        color[i]->setObjectName (ws_colors[i].key);
         color[i]->setMinimumSize (30, 10);
         connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
                  color[i], SLOT(setEnabled (bool)));
@@ -1078,7 +1088,7 @@ namespace octave
 
     // Load enable settings at the end for having signals already connected
     bool colors_enabled =
-        settings->value (ws_enable_colors.key, ws_enable_colors.def).toBool ();
+      settings->value (ws_enable_colors).toBool ();
     m_ws_enable_colors->setChecked (colors_enabled);
     m_ws_hide_tool_tips->setEnabled (colors_enabled);
 
@@ -1086,45 +1096,39 @@ namespace octave
     workspace_colors_box->setLayout (style_grid);
   }
 
-  void settings_dialog::write_workspace_colors (QSettings *settings)
+  void settings_dialog::write_workspace_colors (gui_settings *settings)
   {
     settings->setValue (ws_enable_colors.key, m_ws_enable_colors->isChecked ());
     settings->setValue (ws_hide_tool_tips.key, m_ws_hide_tool_tips->isChecked ());
 
-    QString class_chars = resource_manager::storage_class_chars ();
     color_picker *color;
 
-    for (int i = 0; i < class_chars.length (); i++)
+    for (int i = 0; i < ws_colors_count; i++)
       {
-        color = workspace_colors_box->findChild <color_picker *> ("color_" + class_chars.mid (i, 1));
+        color = workspace_colors_box->findChild <color_picker *> (ws_colors[i].key);
         if (color)
-          settings->setValue ("workspaceview/color_" + class_chars.mid (i, 1), color->color ());
+          settings->setValue (ws_colors[i].key, color->color ());
       }
     settings->sync ();
   }
 
-  void settings_dialog::read_terminal_colors (QSettings *settings)
+  void settings_dialog::read_terminal_colors (gui_settings *settings)
   {
-
-    QList<QColor> default_colors = resource_manager::terminal_default_colors ();
-    QStringList class_names = resource_manager::terminal_color_names ();
-    QString class_chars = resource_manager::terminal_color_chars ();
-    int nr_of_classes = class_chars.length ();
-
     QGridLayout *style_grid = new QGridLayout ();
-    QVector<QLabel*> description (nr_of_classes);
-    QVector<color_picker*> color (nr_of_classes);
+    QVector<QLabel*> description (cs_colors_count);
+    QVector<color_picker*> color (cs_colors_count);
 
     int column = 0;
     int row = 0;
-    for (int i = 0; i < nr_of_classes; i++)
+    for (unsigned int i = 0; i < cs_colors_count; i++)
       {
-        description[i] = new QLabel ("    " + class_names.at (i));
+        description[i] = new QLabel ("    "
+            + tr (cs_color_names.at (i).toStdString ().data ()));
         description[i]->setAlignment (Qt::AlignRight);
-        QVariant default_var = default_colors.at (i);
-        QColor setting_color = settings->value ("terminal/color_" + class_chars.mid (i, 1), default_var).value<QColor> ();
+        QVariant default_var = cs_colors[i].def;
+        QColor setting_color = settings->value (cs_colors[i].key, cs_colors[i].def).value<QColor> ();
         color[i] = new color_picker (setting_color);
-        color[i]->setObjectName ("terminal_color_" + class_chars.mid (i, 1));
+        color[i]->setObjectName (cs_colors[i].key);
         color[i]->setMinimumSize (30, 10);
         style_grid->addWidget (description[i], row, 2*column);
         style_grid->addWidget (color[i], row, 2*column+1);
@@ -1140,42 +1144,46 @@ namespace octave
     terminal_colors_box->setLayout (style_grid);
   }
 
-  void settings_dialog::write_terminal_colors (QSettings *settings)
+  void settings_dialog::write_terminal_colors (gui_settings *settings)
   {
-    QString class_chars = resource_manager::terminal_color_chars ();
     color_picker *color;
 
-    for (int i = 0; i < class_chars.length (); i++)
+    for (int i = 0; i < cs_color_names.size (); i++)
       {
-        color = terminal_colors_box->findChild <color_picker *> ("terminal_color_" + class_chars.mid (i, 1));
+        color = terminal_colors_box->findChild <color_picker *> (cs_colors[i].key);
         if (color)
-          settings->setValue ("terminal/color_" + class_chars.mid (i, 1), color->color ());
+          settings->setValue (cs_colors[i].key, color->color ());
       }
 
     settings->sync ();
   }
 
-  void settings_dialog::read_varedit_colors (QSettings *settings)
+  void settings_dialog::read_varedit_colors (gui_settings *settings)
   {
-    QList<QColor> default_colors = octave::variable_editor::default_colors ();
-    QStringList class_names = octave::variable_editor::color_names ();
-    QString class_chars = resource_manager::varedit_color_chars ();
-    int nr_of_classes = class_chars.length ();
-
     QGridLayout *style_grid = new QGridLayout ();
-    QVector<QLabel*> description (nr_of_classes);
-    QVector<color_picker*> color (nr_of_classes);
+    QVector<QLabel*> description (ve_colors_count);
+    QVector<color_picker*> color (ve_colors_count);
 
     int column = 0;
     int row = 0;
-    for (int i = 0; i < nr_of_classes; i++)
+    for (int i = 0; i < ve_colors_count; i++)
       {
-        description[i] = new QLabel ("    " + class_names.at (i));
+        description[i] = new QLabel ("    "
+            + tr (ve_color_names.at (i).toStdString ().data ()));
         description[i]->setAlignment (Qt::AlignRight);
-        QVariant default_var = default_colors.at (i);
-        QColor setting_color = settings->value ("variable_editor/color_" + class_chars.mid (i, 1), default_var).value<QColor> ();
+
+        // The default colors are given as color roles for
+        // the application's palette
+        QColor default_color = qApp->palette ().color
+                              (static_cast<QPalette::ColorRole> (ve_colors[i].def.toInt ()));
+                  // FIXME: use value<QPalette::ColorRole> instead of static cast after
+                  //        dropping support of Qt 5.4
+
+        QColor setting_color =
+            settings->value (ve_colors[i].key, default_color).value<QColor> ();
+
         color[i] = new color_picker (setting_color);
-        color[i]->setObjectName ("varedit_color_" + class_chars.mid (i, 1));
+        color[i]->setObjectName (ve_colors[i].key);
         color[i]->setMinimumSize (30, 10);
         style_grid->addWidget (description[i], row, 2*column);
         style_grid->addWidget (color[i], row, 2*column+1);
@@ -1191,16 +1199,15 @@ namespace octave
     varedit_colors_box->setLayout (style_grid);
   }
 
-  void settings_dialog::write_varedit_colors (QSettings *settings)
+  void settings_dialog::write_varedit_colors (gui_settings *settings)
   {
-    QString class_chars = resource_manager::varedit_color_chars ();
     color_picker *color;
 
-    for (int i = 0; i < class_chars.length (); i++)
+    for (int i = 0; i < ve_colors_count; i++)
       {
-        color = varedit_colors_box->findChild <color_picker *> ("varedit_color_" + class_chars.mid (i, 1));
+        color = varedit_colors_box->findChild <color_picker *> (ve_colors[i].key);
         if (color)
-          settings->setValue ("variable_editor/color_" + class_chars.mid (i, 1), color->color ());
+          settings->setValue (ve_colors[i].key, color->color ());
       }
 
     settings->sync ();

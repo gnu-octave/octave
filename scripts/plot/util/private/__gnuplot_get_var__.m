@@ -1,4 +1,9 @@
-## Copyright (C) 2009-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2009-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,14 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{value} =} __gnuplot_get_var__ (@var{h}, @var{gp_var_name}, @var{fmt})
 ## Undocumented internal function.
 ## @end deftypefn
-
-## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2009-02-07
 
 function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
 

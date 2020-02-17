@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{h}, @var{needusage}] =} __ezplot__ (@var{pltfunc}, @var{varargin})
@@ -445,10 +452,10 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       endif
     elseif (isplot3)
       if (animate)
-        ## draw animation, then replace with true plot3
-        comet3 (hax, X, Y, Z, .05);
+        comet3 (hax, X, Y, Z);
+      else
+        h = feval (pltfunc, hax, X, Y, Z);
       endif
-      h = feval (pltfunc, hax, X, Y, Z);
       grid (hax, "on");
       zlabel (hax, "z");
     else  # mesh and surf plots

@@ -1,4 +1,9 @@
-## Copyright (C) 2012-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} addpref ("@var{group}", "@var{pref}", @var{val})
@@ -33,8 +40,6 @@
 ## @var{pref}.
 ## @seealso{setpref, getpref, ispref, rmpref}
 ## @end deftypefn
-
-## Author: jwe
 
 function addpref (group, pref, val)
 
@@ -77,6 +82,7 @@ endfunction
 
 %!test
 %! HOME = getenv ("HOME");
+%! save_default_options ("-binary", "local");
 %! unwind_protect
 %!   setenv ("HOME", P_tmpdir ());
 %!

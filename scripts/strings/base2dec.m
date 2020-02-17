@@ -1,4 +1,9 @@
-## Copyright (C) 2000-2019 Daniel Calvelo
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} base2dec (@var{s}, @var{base})
@@ -46,9 +53,6 @@
 ## @end example
 ## @seealso{dec2base, bin2dec, hex2dec}
 ## @end deftypefn
-
-## Author: Daniel Calvelo <dcalvelo@yahoo.com>
-## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 function out = base2dec (s, base)
 

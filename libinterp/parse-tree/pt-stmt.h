@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pt_stmt_h)
 #define octave_pt_stmt_h 1
@@ -33,6 +36,8 @@ class octave_value_list;
 #include "bp-table.h"
 #include "pt.h"
 #include "pt-walk.h"
+
+class event_manager;
 
 namespace octave
 {
@@ -183,11 +188,13 @@ namespace octave
 
     std::list<bp_type> breakpoints_and_conds (void);
 
-    bp_table::intmap add_breakpoint (const std::string& file,
+    bp_table::intmap add_breakpoint (event_manager& evmgr,
+                                     const std::string& file,
                                      const bp_table::intmap& line,
                                      const std::string& condition);
 
-    bp_table::intmap remove_all_breakpoints (const std::string& file);
+    bp_table::intmap remove_all_breakpoints (event_manager& evmgr,
+                                             const std::string& file);
 
     void accept (tree_walker& tw)
     {
@@ -206,15 +213,5 @@ namespace octave
     bool m_script_body;
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_statement' instead")
-typedef octave::tree_statement tree_statement;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_statement_list' instead")
-typedef octave::tree_statement_list tree_statement_list;
-
-#endif
 
 #endif

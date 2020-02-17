@@ -8,8 +8,6 @@ TEST_FILES += \
   %reldir%/fntests.m \
   %reldir%/args.tst \
   %reldir%/bug-31371.tst \
-  %reldir%/bug-38565.tst \
-  %reldir%/bug-38576.tst \
   %reldir%/bug-45969.tst \
   %reldir%/bug-45972.tst \
   %reldir%/bug-46330.tst \
@@ -27,6 +25,7 @@ TEST_FILES += \
   %reldir%/diag-perm.tst \
   %reldir%/error.tst \
   %reldir%/eval-catch.tst \
+  %reldir%/eval-command.tst \
   %reldir%/for.tst \
   %reldir%/func.tst \
   %reldir%/global.tst \
@@ -62,8 +61,10 @@ include %reldir%/bug-36025/module.mk
 include %reldir%/bug-38236/module.mk
 include %reldir%/bug-38691/module.mk
 include %reldir%/bug-41723/module.mk
+include %reldir%/bug-45351/module.mk
 include %reldir%/bug-44940/module.mk
 include %reldir%/bug-46660/module.mk
+include %reldir%/bug-47680/module.mk
 include %reldir%/bug-49379/module.mk
 include %reldir%/bug-50014/module.mk
 include %reldir%/bug-50035/module.mk
@@ -76,21 +77,24 @@ include %reldir%/bug-52075/module.mk
 include %reldir%/bug-52722/module.mk
 include %reldir%/bug-53027/module.mk
 include %reldir%/bug-53468/module.mk
+include %reldir%/bug-53956/module.mk
 include %reldir%/bug-54995/module.mk
+include %reldir%/bug-55758/module.mk
 include %reldir%/class-concat/module.mk
 include %reldir%/classdef/module.mk
 include %reldir%/classdef-multiple-inheritance/module.mk
 include %reldir%/classes/module.mk
 include %reldir%/ctor-vs-method/module.mk
-include %reldir%/fcn-handle-derived-resolution/module.mk
+include %reldir%/fcn-handle/module.mk
 include %reldir%/local-functions/module.mk
 include %reldir%/mex/module.mk
 include %reldir%/nest/module.mk
+include %reldir%/private-functions/module.mk
 include %reldir%/publish/module.mk
 include %reldir%/pkg/module.mk
 
 define run-octave-tests
-  ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history -p $(abs_top_builddir)/%reldir%/mex $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ) && \
+  ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --no-init-file --silent --no-history -p $(abs_top_builddir)/%reldir%/mex $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ) && \
   if $(AM_V_P); then \
     echo ""; \
     if [ -f %reldir%/fntests.log ]; then \

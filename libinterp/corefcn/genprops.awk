@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 ##
 ## Generate the graphics.h file from graphics.h.in and write the
 ## output to stdout.
@@ -397,7 +404,7 @@ function emit_declarations ()
         if (limits[i])
           printf ("        update_axis_limits (\"%s\");\n", name[i]);
         if (has_builtin_listeners)
-          printf ("        %s.run_listeners (POSTSET);\n", name[i]);
+          printf ("        %s.run_listeners (GCB_POSTSET);\n", name[i]);
         if (! mutable[i])
           printf ("        mark_modified ();\n");
         printf ("      }\n");

@@ -1,4 +1,4 @@
-FCN_FILE_DIRS += scripts/statistics
+FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/bounds.m \
@@ -50,9 +50,7 @@ FCN_FILE_DIRS += scripts/statistics
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += \
-  $(%canon_reldir%_FCN_FILES) \
-  $(%canon_reldir%_PRIVATE_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
 PKG_ADD_FILES += %reldir%/PKG_ADD
 

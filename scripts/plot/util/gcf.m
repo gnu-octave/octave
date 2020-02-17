@@ -1,4 +1,9 @@
-## Copyright (C) 2005-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{h} =} gcf ()
@@ -50,8 +57,6 @@
 ##
 ## @seealso{gca, gco, gcbf, gcbo, get, set}
 ## @end deftypefn
-
-## Author: jwe, Bill Denney
 
 function h = gcf ()
 

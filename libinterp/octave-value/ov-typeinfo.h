@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ov_typeinfo_h)
 #define octave_ov_typeinfo_h 1
@@ -47,20 +50,20 @@ namespace octave
     typedef void (*non_const_unary_op_fcn) (octave_base_value&);
 
     typedef octave_value (*binary_class_op_fcn)
-    (const octave_value&, const octave_value&);
+      (const octave_value&, const octave_value&);
 
     typedef octave_value (*binary_op_fcn)
-    (const octave_base_value&, const octave_base_value&);
+      (const octave_base_value&, const octave_base_value&);
 
     typedef octave_value (*cat_op_fcn)
-    (octave_base_value&, const octave_base_value&,
+      (octave_base_value&, const octave_base_value&,
      const Array<octave_idx_type>& ra_idx);
 
     typedef octave_value (*assign_op_fcn)
-    (octave_base_value&, const octave_value_list&, const octave_base_value&);
+      (octave_base_value&, const octave_value_list&, const octave_base_value&);
 
     typedef octave_value (*assignany_op_fcn)
-    (octave_base_value&, const octave_value_list&, const octave_value&);
+      (octave_base_value&, const octave_value_list&, const octave_value&);
 
     explicit type_info (int init_tab_sz = 16);
 
@@ -285,52 +288,6 @@ namespace octave_value_typeinfo
   extern int register_type (const std::string& t_name,
                             const std::string& c_name,
                             const octave_value& val);
-
-  OCTAVE_DEPRECATED(4.4, "use octave::type_info::register_unary_class_op instead")
-  extern bool register_unary_class_op (octave_value::unary_op op,
-                                       unary_class_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_unary_op instead")
-  extern bool register_unary_op (octave_value::unary_op op,
-                                 int t, unary_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_non_const_unary_op instead")
-  extern bool register_non_const_unary_op (octave_value::unary_op op,
-                                           int t, non_const_unary_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_class_op instead")
-  extern bool register_binary_class_op (octave_value::binary_op op,
-                                        binary_class_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_op instead")
-  extern bool register_binary_op (octave_value::binary_op op,
-                                  int t1, int t2, binary_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_class_op instead")
-  extern bool register_binary_class_op (octave_value::compound_binary_op op,
-                                        binary_class_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_op instead")
-  extern bool register_binary_op (octave_value::compound_binary_op op,
-                                  int t1, int t2, binary_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_cat_op instead")
-  extern bool register_cat_op (int t1, int t2, cat_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_assign_op instead")
-  extern bool register_assign_op (octave_value::assign_op op,
-                                  int t_lhs, int t_rhs, assign_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_assignany_op instead")
-  extern bool register_assignany_op (octave_value::assign_op op,
-                                     int t_lhs, assignany_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_pref_assign_conv instead")
-  extern bool register_pref_assign_conv (int t_lhs, int t_rhs, int t_result);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_widening_op instead")
-  extern bool register_widening_op (int t, int t_result,
-                                    octave_base_value::type_conv_fcn f);
 
   extern octave_value lookup_type (const std::string& nm);
 

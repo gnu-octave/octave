@@ -1,4 +1,9 @@
-## Copyright (C) 2000-2019 Daniel Calvelo
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} blkdiag (@var{A}, @var{B}, @var{C}, @dots{})
@@ -24,9 +31,6 @@
 ## scalars.  If any argument is of type sparse, the output will also be sparse.
 ## @seealso{diag, horzcat, vertcat, sparse}
 ## @end deftypefn
-
-## Author: Daniel Calvelo
-## Modified by: William Poetra Yoga Hadisoeseno
 
 function retval = blkdiag (varargin)
 

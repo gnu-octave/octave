@@ -1,39 +1,39 @@
-/*
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2015 Michael Barnes
-Copyright (C) 2013 Rüdiger Sonderfeld
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-#if ! defined (variable_editor_h)
-#define variable_editor_h 1
+#if ! defined (octave_variable_editor_h)
+#define octave_variable_editor_h 1
 
 #include <QHeaderView>
-#include <QSettings>
 #include <QStackedWidget>
 #include <QTableView>
 
+#include "dw-main-window.h"
+#include "gui-settings.h"
 #include "octave-dock-widget.h"
 #include "tab-bar.h"
-#include "dw-main-window.h"
-
 
 class octave_value;
 
@@ -43,9 +43,10 @@ class QToolBar;
 
 namespace octave
 {
+  class base_qobject;
+
   class variable_editor_model;
   class variable_editor_view;
-
 
   // The individual variable subwindow class
 
@@ -55,7 +56,7 @@ namespace octave
 
   public:
 
-    variable_dock_widget (QWidget *p = nullptr);
+    variable_dock_widget (QWidget *p, base_qobject& oct_qobj);
 
   signals:
 
@@ -130,7 +131,7 @@ namespace octave
 
   public:
 
-    variable_editor_stack (QWidget *p = nullptr);
+    variable_editor_stack (QWidget *p, base_qobject& oct_qobj);
 
     variable_editor_view *edit_view (void) {return m_edit_view;};
 
@@ -154,6 +155,8 @@ namespace octave
 
     QTextEdit *make_disp_view (QWidget *parent);
 
+    base_qobject& m_octave_qobj;
+
     variable_editor_view *m_edit_view;
 
     QTextEdit *m_disp_view;
@@ -166,7 +169,7 @@ namespace octave
 
   public:
 
-    variable_editor_view (QWidget *p = nullptr);
+    variable_editor_view (QWidget *p, base_qobject& oct_qobj);
 
     void setModel (QAbstractItemModel *model);
 
@@ -213,12 +216,13 @@ namespace octave
 
     void add_edit_actions (QMenu *menu, const QString& qualifier_string);
 
+    base_qobject& m_octave_qobj;
+
     variable_editor_model *m_var_model;
   };
 
-  // Gadgets to keep track and restore what variable window
-  // was in focus just prior to selecting something on the
-  // menu bar
+  // Gadgets to keep track of and restore what variable window was in focus
+  // just prior to selecting something on the menu bar.
 
   class HoverToolButton : public QToolButton
   {
@@ -281,7 +285,7 @@ namespace octave
 
   public:
 
-    variable_editor (QWidget *parent = nullptr);
+    variable_editor (QWidget *parent, base_qobject& oct_qobj);
 
     ~variable_editor (void) = default;
 
@@ -293,17 +297,37 @@ namespace octave
 
     void refresh (void);
 
-    static QList<QColor> default_colors (void);
-
-    static QStringList color_names (void);
-
     void tab_to_front (void);
+
+  signals:
+
+    void updated (void);
+
+    void finished (void);
+
+    void command_signal (const QString& cmd);
+
+    void refresh_signal (void);
+
+    void clear_content_signal (void);
+
+    void copy_clipboard_signal (void);
+
+    void paste_clipboard_signal (void);
+
+    void level_up_signal (void);
+
+    void save_signal (void);
+
+    void delete_selected_signal (void);
+
+    void selected_command_signal (const QString& cmd);
 
   public slots:
 
     void callUpdate (const QModelIndex&, const QModelIndex&);
 
-    void notice_settings (const QSettings *);
+    void notice_settings (const gui_settings *);
 
     void edit_variable (const QString& name, const octave_value& val);
 
@@ -332,30 +356,6 @@ namespace octave
     // Send command to Octave interpreter.
     // %1 in CMD is replaced with the value of selected_to_octave.
     void relay_selected_command (const QString& cmd);
-
-  signals:
-
-    void updated (void);
-
-    void finished (void);
-
-    void command_signal (const QString& cmd);
-
-    void refresh_signal (void);
-
-    void clear_content_signal (void);
-
-    void copy_clipboard_signal (void);
-
-    void paste_clipboard_signal (void);
-
-    void level_up_signal (void);
-
-    void save_signal (void);
-
-    void delete_selected_signal (void);
-
-    void selected_command_signal (const QString& cmd);
 
   protected:
 

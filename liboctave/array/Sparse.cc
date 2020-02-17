@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 2004-2019 David Bateman
-Copyright (C) 1998-2004 Andy Adler
-Copyright (C) 2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1998-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // This file should not include config.h.  It is only included in other
 // C++ source files that should have included config.h before including
@@ -1234,7 +1235,7 @@ Sparse<T>::delete_elements (const idx_vector& idx)
           octave_idx_type new_nz = nz - (ubi - lbi);
           *this = Sparse<T> (1, nc - (ub - lb), new_nz);
           std::copy_n (tmp.data (), lbi, data ());
-          std::copy (tmp.data () + ubi, tmp.data () + nz , xdata () + lbi);
+          std::copy (tmp.data () + ubi, tmp.data () + nz, xdata () + lbi);
           std::fill_n (ridx (), new_nz, static_cast<octave_idx_type> (0));
           std::copy_n (tmp.cidx () + 1, lb, cidx () + 1);
           mx_inline_sub (nc - ub, xcidx () + 1, tmp.cidx () + ub + 1,
@@ -1507,9 +1508,9 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 
           // Lookup.
           // FIXME: Could specialize for sorted idx?
-          NoAlias< Array<octave_idx_type>> lidx (dim_vector (new_nr, new_nc));
+          Array<octave_idx_type> lidx (dim_vector (new_nr, new_nc));
           for (octave_idx_type i = 0; i < new_nr*new_nc; i++)
-            lidx(i) = lblookup (ridx (), nz, idxa(i));
+            lidx.xelem (i) = lblookup (ridx (), nz, idxa(i));
 
           // Count matches.
           retval = Sparse<T> (idxa.rows (), idxa.cols ());
@@ -1518,11 +1519,11 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
               octave_idx_type nzj = 0;
               for (octave_idx_type i = 0; i < new_nr; i++)
                 {
-                  octave_idx_type l = lidx(i, j);
+                  octave_idx_type l = lidx.xelem (i, j);
                   if (l < nz && ridx (l) == idxa(i, j))
                     nzj++;
                   else
-                    lidx(i, j) = nz;
+                    lidx.xelem (i, j) = nz;
                 }
               retval.xcidx (j+1) = retval.xcidx (j) + nzj;
             }
@@ -1534,7 +1535,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           for (octave_idx_type j = 0; j < new_nc; j++)
             for (octave_idx_type i = 0; i < new_nr; i++)
               {
-                octave_idx_type l = lidx(i, j);
+                octave_idx_type l = lidx.xelem (i, j);
                 if (l < nz)
                   {
                     retval.data (k) = data (l);
@@ -2686,21 +2687,21 @@ template <typename T>
 Array<T>
 Sparse<T>::array_value () const
 {
-  NoAlias< Array<T>> retval (dims (), T ());
+  Array<T> retval (dims (), T ());
   if (rows () == 1)
     {
       octave_idx_type i = 0;
       for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
         {
           if (cidx (j+1) > i)
-            retval(j) = data (i++);
+            retval.xelem (j) = data (i++);
         }
     }
   else
     {
       for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
         for (octave_idx_type i = cidx (j), iu = cidx (j+1); i < iu; i++)
-          retval(ridx (i), j) = data (i);
+          retval.xelem (ridx (i), j) = data (i);
     }
 
   return retval;

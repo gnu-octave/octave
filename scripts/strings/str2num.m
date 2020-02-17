@@ -1,4 +1,9 @@
-## Copyright (C) 1996-2019 Kurt Hornik
+########################################################################
+##
+## Copyright (C) 1996-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} str2num (@var{s})
@@ -46,8 +53,6 @@
 ## @seealso{str2double, eval}
 ## @end deftypefn
 
-## Author: jwe
-
 function [m, state] = str2num (s)
 
   if (nargin != 1)
@@ -59,7 +64,14 @@ function [m, state] = str2num (s)
   s(:, end+1) = ";";
   s = sprintf ("m = [%s];", reshape (s', 1, numel (s)));
   state = true;
-  eval (s, "m = []; state = false;");
+  ## Swallow any errors from eval (bug #55939).
+  try
+    eval (s);
+  catch
+    m = [];
+    state = false;
+  end_try_catch
+
   if (ischar (m))
     m = [];
     state = false;

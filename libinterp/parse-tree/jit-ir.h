@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 2012-2019 Max Brister
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-// Author: Max Brister <max@2bass.com>
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2012-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_jit_ir_h)
 #define octave_jit_ir_h 1
@@ -90,10 +91,11 @@ namespace octave
   typedef jit_const<Complex, jit_typeinfo::get_complex> jit_const_complex;
   typedef jit_const<octave_idx_type, jit_typeinfo::get_index> jit_const_index;
 
-  typedef jit_const<std::string, jit_typeinfo::get_string, const std::string&,
-                    true> jit_const_string;
+  typedef jit_const<std::string, jit_typeinfo::get_string,
+                    const std::string&, true>
+    jit_const_string;
   typedef jit_const<jit_range, jit_typeinfo::get_range, const jit_range&>
-  jit_const_range;
+    jit_const_range;
 
   class jit_ir_walker;
   class jit_use;

@@ -1,25 +1,29 @@
 // %NO_EDIT_WARNING%
-/*
 
-Copyright (C) 2008-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -197,7 +201,8 @@ initialize (void)
     = get_variable ("LIBDIR", prepend_octave_exec_home (%OCTAVE_CONF_LIBDIR%));
 
   vars["OCTLIBDIR"]
-    = get_variable ("OCTLIBDIR", prepend_octave_exec_home (%OCTAVE_CONF_OCTLIBDIR%));
+    = get_variable ("OCTLIBDIR",
+                    prepend_octave_exec_home (%OCTAVE_CONF_OCTLIBDIR%));
 
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::string DEFAULT_INCFLAGS
@@ -244,6 +249,8 @@ initialize (void)
 
   vars["CXXFLAGS"] = get_variable ("CXXFLAGS", %OCTAVE_CONF_CXXFLAGS%);
 
+  vars["CXXLD"] = get_variable ("CXXLD", vars["CXX"]);
+
   vars["CXXPICFLAG"] = get_variable ("CXXPICFLAG", %OCTAVE_CONF_CXXPICFLAG%);
 
   vars["XTRA_CFLAGS"] = get_variable ("XTRA_CFLAGS", %OCTAVE_CONF_XTRA_CFLAGS%);
@@ -261,8 +268,6 @@ initialize (void)
   vars["DEPEND_EXTRA_SED_PATTERN"]
     = get_variable ("DEPEND_EXTRA_SED_PATTERN",
                     %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
-
-  vars["DL_LD"] = get_variable ("DL_LD", %OCTAVE_CONF_MKOCTFILE_DL_LD%);
 
   vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS",
                                      %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
@@ -308,8 +313,6 @@ initialize (void)
 
   vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
 
-  vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_MKOCTFILE_LD_CXX%);
-
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
                                          %OCTAVE_CONF_LD_STATIC_FLAG%);
 
@@ -346,148 +349,151 @@ static std::string version_msg = "mkoctfile, version " OCTAVE_VERSION;
 static bool debug = false;
 
 static std::string help_msg =
-"\n"
-"Options:\n"
-"\n"
-"  -h, -?, --help          Print this message.\n"
-"\n"
-"  -IDIR                   Add -IDIR to compile commands.\n"
-"\n"
-"  -idirafter DIR          Add -idirafter DIR to compile commands.\n"
-"\n"
-"  -DDEF                   Add -DDEF to compile commands.\n"
-"\n"
-"  -lLIB                   Add library LIB to link command.\n"
-"\n"
-"  -LDIR                   Add -LDIR to link command.\n"
-"\n"
-"  -M, --depend            Generate dependency files (.d) for C and C++\n"
-"                          source files.\n"
+  "\n"
+  "Options:\n"
+  "\n"
+  "  -h, -?, --help          Print this message.\n"
+  "\n"
+  "  -IDIR                   Add -IDIR to compile commands.\n"
+  "\n"
+  "  -idirafter DIR          Add -idirafter DIR to compile commands.\n"
+  "\n"
+  "  -DDEF                   Add -DDEF to compile commands.\n"
+  "\n"
+  "  -lLIB                   Add library LIB to link command.\n"
+  "\n"
+  "  -LDIR                   Add -LDIR to link command.\n"
+  "\n"
+  "  -M, --depend            Generate dependency files (.d) for C and C++\n"
+  "                          source files.\n"
 #if ! defined (OCTAVE_USE_WINDOWS_API)
-"\n"
-"  -pthread                Add -pthread to link command.\n"
+  "\n"
+  "  -pthread                Add -pthread to link command.\n"
 #endif
-"\n"
-"  -RDIR                   Add -RDIR to link command.\n"
-"\n"
-"  -Wl,...                 Pass flags though the linker like -Wl,-rpath=...\n"
-"\n"
-"  -W...                   Pass flags though the compiler like -Wa,OPTION.\n"
-"\n"
-"  -c, --compile           Compile, but do not link.\n"
-"\n"
-"  -o FILE, --output FILE  Output filename.  Default extension is .oct\n"
-"                          (or .mex if --mex is specified) unless linking\n"
-"                          a stand-alone executable.\n"
-"\n"
-"  -g                      Enable debugging options for compilers.\n"
-"\n"
-"  -p VAR, --print VAR     Print configuration variable VAR.  There are\n"
-"                          three categories of variables:\n"
-"\n"
-"                          Octave configuration variables that users may\n"
-"                          override with environment variables.  These are\n"
-"                          used in commands that mkoctfile executes.\n"
-"\n"
-"                            ALL_CFLAGS                  INCLUDEDIR\n"
-"                            ALL_CXXFLAGS                LAPACK_LIBS\n"
-"                            ALL_FFLAGS                  LDFLAGS\n"
-"                            ALL_LDFLAGS                 LD_CXX\n"
-"                            BLAS_LIBS                   LD_STATIC_FLAG\n"
-"                            CC                          LIBDIR\n"
-"                            CFLAGS                      LIBOCTAVE\n"
-"                            CPICFLAG                    LIBOCTINTERP\n"
-"                            CPPFLAGS                    OCTAVE_LINK_OPTS\n"
-"                            CXX                         OCTINCLUDEDIR\n"
-"                            CXXFLAGS                    OCTAVE_LIBS\n"
-"                            CXXPICFLAG                  OCTAVE_LINK_DEPS\n"
-"                            DL_LD                       OCTLIBDIR\n"
-"                            DL_LDFLAGS                  OCT_LINK_DEPS\n"
-"                            F77                         OCT_LINK_OPTS\n"
-"                            F77_INTEGER8_FLAG           RDYNAMIC_FLAG\n"
-"                            FFLAGS                      SPECIAL_MATH_LIB\n"
-"                            FPICFLAG                    XTRA_CFLAGS\n"
-"                            INCFLAGS                    XTRA_CXXFLAGS\n"
-"\n"
-"                          Octave configuration variables as above, but\n"
-"                          currently unused by mkoctfile.\n"
-"\n"
-"                            AR\n"
-"                            DEPEND_EXTRA_SED_PATTERN\n"
-"                            DEPEND_FLAGS\n"
-"                            FFTW3F_LDFLAGS\n"
-"                            FFTW3F_LIBS\n"
-"                            FFTW3_LDFLAGS\n"
-"                            FFTW3_LIBS\n"
-"                            FFTW_LIBS\n"
-"                            FLIBS\n"
-"                            LIBS\n"
-"                            RANLIB\n"
-"                            READLINE_LIBS\n"
-"\n"
-"                          Octave configuration variables that are provided\n"
-"                          for informational purposes only.  Except for\n"
-"                          OCTAVE_HOME and OCTAVE_EXEC_HOME, users may not\n"
-"                          override these variables.\n"
-"\n"
-"                          If OCTAVE_HOME or OCTAVE_EXEC_HOME are set in\n"
-"                          the environment, then other variables are adjusted\n"
-"                          accordingly with OCTAVE_HOME or OCTAVE_EXEC_HOME\n"
-"                          substituted for the original value of the directory\n"
-"                          specified by the --prefix or --exec-prefix options\n"
-"                          that were used when Octave was configured.\n"
-"\n"
-"                            API_VERSION                 LOCALFCNFILEDIR\n"
-"                            ARCHLIBDIR                  LOCALOCTFILEDIR\n"
-"                            BINDIR                      LOCALSTARTUPFILEDIR\n"
-"                            CANONICAL_HOST_TYPE         LOCALVERARCHLIBDIR\n"
-"                            DATADIR                     LOCALVERFCNFILEDIR\n"
-"                            DATAROOTDIR                 LOCALVEROCTFILEDIR\n"
-"                            DEFAULT_PAGER               MAN1DIR\n"
-"                            EXEC_PREFIX                 MAN1EXT\n"
-"                            EXEEXT                      MANDIR\n"
-"                            FCNFILEDIR                  OCTAVE_EXEC_HOME\n"
-"                            IMAGEDIR                    OCTAVE_HOME\n"
-"                            INFODIR                     OCTAVE_VERSION\n"
-"                            INFOFILE                    OCTDATADIR\n"
-"                            LIBEXECDIR                  OCTDOCDIR\n"
-"                            LOCALAPIARCHLIBDIR          OCTFILEDIR\n"
-"                            LOCALAPIFCNFILEDIR          OCTFONTSDIR\n"
-"                            LOCALAPIOCTFILEDIR          STARTUPFILEDIR\n"
-"                            LOCALARCHLIBDIR\n"
-"\n"
-"  --link-stand-alone      Link a stand-alone executable file.\n"
-"\n"
-"  --mex                   Assume we are creating a MEX file.  Set the\n"
-"                          default output extension to \".mex\".\n"
-"\n"
-"  -s, --strip             Strip output file.\n"
-"\n"
-"  -n, --just-print, --dry-run\n"
-"                          Print commands, but do not execute them.\n"
-"\n"
-"  -v, --verbose           Echo commands as they are executed.\n"
-"\n"
-"  FILE                    Compile or link FILE.  Recognized file types are:\n"
-"\n"
-"                            .c    C source\n"
-"                            .cc   C++ source\n"
-"                            .cp   C++ source\n"
-"                            .cpp  C++ source\n"
-"                            .CPP  C++ source\n"
-"                            .cxx  C++ source\n"
-"                            .c++  C++ source\n"
-"                            .C    C++ source\n"
-"                            .f    Fortran source (fixed form)\n"
-"                            .F    Fortran source (fixed form)\n"
-"                            .f90  Fortran source (free form)\n"
-"                            .F90  Fortran source (free form)\n"
-"                            .o    object file\n"
-"                            .a    library file\n"
+  "\n"
+  "  -RDIR                   Add -RDIR to link command.\n"
+  "\n"
+  "  -Wl,...                 Pass flags though the linker like -Wl,-rpath=...\n"
+  "\n"
+  "  -W...                   Pass flags though the compiler like -Wa,OPTION.\n"
+  "\n"
+  "  -c, --compile           Compile, but do not link.\n"
+  "\n"
+  "  -o FILE, --output FILE  Output filename.  Default extension is .oct\n"
+  "                          (or .mex if --mex is specified) unless linking\n"
+  "                          a stand-alone executable.\n"
+  "\n"
+  "  -g                      Enable debugging options for compilers.\n"
+  "\n"
+  "  -p VAR, --print VAR     Print configuration variable VAR.  There are\n"
+  "                          three categories of variables:\n"
+  "\n"
+  "                          Octave configuration variables that users may\n"
+  "                          override with environment variables.  These are\n"
+  "                          used in commands that mkoctfile executes.\n"
+  "\n"
+  "                            ALL_CFLAGS                  INCLUDEDIR\n"
+  "                            ALL_CXXFLAGS                LAPACK_LIBS\n"
+  "                            ALL_FFLAGS                  LDFLAGS\n"
+  "                            ALL_LDFLAGS                 LD_STATIC_FLAG\n"
+  "                            BLAS_LIBS                   LIBDIR\n"
+  "                            CC                          LIBOCTAVE\n"
+  "                            CFLAGS                      LIBOCTINTERP\n"
+  "                            CPICFLAG                    OCTAVE_LINK_OPTS\n"
+  "                            CPPFLAGS                    OCTINCLUDEDIR\n"
+  "                            CXX                         OCTAVE_LIBS\n"
+  "                            CXXFLAGS                    OCTAVE_LINK_DEPS\n"
+  "                            CXXLD                       OCTLIBDIR\n"
+  "                            CXXPICFLAG                  OCT_LINK_DEPS\n"
+  "                            DL_LDFLAGS                  OCT_LINK_OPTS\n"
+  "                            F77                         RDYNAMIC_FLAG\n"
+  "                            F77_INTEGER8_FLAG           SPECIAL_MATH_LIB\n"
+  "                            FFLAGS                      XTRA_CFLAGS\n"
+  "                            FPICFLAG                    XTRA_CXXFLAGS\n"
+  "                            INCFLAGS\n"
+  "\n"
+  "                          Octave configuration variables as above, but\n"
+  "                          currently unused by mkoctfile.\n"
+  "\n"
+  "                            AR\n"
+  "                            DEPEND_EXTRA_SED_PATTERN\n"
+  "                            DEPEND_FLAGS\n"
+  "                            FFTW3F_LDFLAGS\n"
+  "                            FFTW3F_LIBS\n"
+  "                            FFTW3_LDFLAGS\n"
+  "                            FFTW3_LIBS\n"
+  "                            FFTW_LIBS\n"
+  "                            FLIBS\n"
+  "                            LIBS\n"
+  "                            RANLIB\n"
+  "                            READLINE_LIBS\n"
+  "\n"
+  "                          Octave configuration variables that are provided\n"
+  "                          for informational purposes only.  Except for\n"
+  "                          OCTAVE_HOME and OCTAVE_EXEC_HOME, users may not\n"
+  "                          override these variables.\n"
+  "\n"
+  "                          If OCTAVE_HOME or OCTAVE_EXEC_HOME are set in\n"
+  "                          the environment, then other variables are adjusted\n"
+  "                          accordingly with OCTAVE_HOME or OCTAVE_EXEC_HOME\n"
+  "                          substituted for the original value of the directory\n"
+  "                          specified by the --prefix or --exec-prefix options\n"
+  "                          that were used when Octave was configured.\n"
+  "\n"
+  "                            API_VERSION                 LOCALFCNFILEDIR\n"
+  "                            ARCHLIBDIR                  LOCALOCTFILEDIR\n"
+  "                            BINDIR                      LOCALSTARTUPFILEDIR\n"
+  "                            CANONICAL_HOST_TYPE         LOCALVERARCHLIBDIR\n"
+  "                            DATADIR                     LOCALVERFCNFILEDIR\n"
+  "                            DATAROOTDIR                 LOCALVEROCTFILEDIR\n"
+  "                            DEFAULT_PAGER               MAN1DIR\n"
+  "                            EXEC_PREFIX                 MAN1EXT\n"
+  "                            EXEEXT                      MANDIR\n"
+  "                            FCNFILEDIR                  OCTAVE_EXEC_HOME\n"
+  "                            IMAGEDIR                    OCTAVE_HOME\n"
+  "                            INFODIR                     OCTAVE_VERSION\n"
+  "                            INFOFILE                    OCTDATADIR\n"
+  "                            LIBEXECDIR                  OCTDOCDIR\n"
+  "                            LOCALAPIARCHLIBDIR          OCTFILEDIR\n"
+  "                            LOCALAPIFCNFILEDIR          OCTFONTSDIR\n"
+  "                            LOCALAPIOCTFILEDIR          STARTUPFILEDIR\n"
+  "                            LOCALARCHLIBDIR\n"
+  "\n"
+  "  --link-stand-alone      Link a stand-alone executable file.\n"
+  "\n"
+  "  --mex                   Assume we are creating a MEX file.  Set the\n"
+  "                          default output extension to \".mex\".\n"
+  "\n"
+  "  -s, --strip             Strip output file.\n"
+  "\n"
+  "  -n, --just-print, --dry-run\n"
+  "                          Print commands, but do not execute them.\n"
+  "\n"
+  "  -v, --verbose           Echo commands as they are executed.\n"
+  "\n"
+  "  --silent                Ignored.  Intended to suppress output from\n"
+  "                          compiler steps.\n"
+  "\n"
+  "  FILE                    Compile or link FILE.  Recognized file types are:\n"
+  "\n"
+  "                            .c    C source\n"
+  "                            .cc   C++ source\n"
+  "                            .cp   C++ source\n"
+  "                            .cpp  C++ source\n"
+  "                            .CPP  C++ source\n"
+  "                            .cxx  C++ source\n"
+  "                            .c++  C++ source\n"
+  "                            .C    C++ source\n"
+  "                            .f    Fortran source (fixed form)\n"
+  "                            .F    Fortran source (fixed form)\n"
+  "                            .f90  Fortran source (free form)\n"
+  "                            .F90  Fortran source (free form)\n"
+  "                            .o    object file\n"
+  "                            .a    library file\n"
 #if defined (_MSC_VER)
-"                            .lib  library file\n"
+  "                            .lib  library file\n"
 #endif
-"\n";
+  "\n";
 
 static std::string
 basename (const std::string& s, bool strip_path = false)
@@ -695,8 +701,12 @@ main (int argc, char **argv)
             vars["CC"] += " -d";
           if (vars["CXX"] == "cc-msvc")
             vars["CXX"] += " -d";
-          if (vars["DL_LD"] == "cc-msvc")
-            vars["DL_LD"] += " -d";
+          if (vars["CXXLD"] == "cc-msvc")
+            vars["CXXLD"] += " -d";
+        }
+      else if (arg == "-silent" ||  arg == "--silent")
+        {
+          // Ignored for now.
         }
       else if (arg == "-h" || arg == "-?" || arg == "-help" || arg == "--help")
         {
@@ -898,10 +908,10 @@ main (int argc, char **argv)
               if ((pos = line.rfind (".o:")) != std::string::npos)
                 {
                   size_t spos = line.rfind ('/', pos);
-                  std::string ofile =
-                    (spos == std::string::npos
-                     ? line.substr (0, pos+2)
-                     : line.substr (spos+1, pos-spos+1));
+                  std::string ofile
+                    = (spos == std::string::npos
+                       ? line.substr (0, pos+2)
+                       : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << ' ' << ofile << ' '
                      << dfile << line.substr (pos) << std::endl;
                 }
@@ -932,10 +942,10 @@ main (int argc, char **argv)
               if ((pos = line.rfind (".o:")) != std::string::npos)
                 {
                   size_t spos = line.rfind ('/', pos);
-                  std::string ofile =
-                    (spos == std::string::npos
-                     ? line.substr (0, pos+2)
-                     : line.substr (spos+1, pos-spos+1));
+                  std::string ofile
+                    = (spos == std::string::npos
+                       ? line.substr (0, pos+2)
+                       : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << ' ' << ofile << ' '
                      << dfile << line.substr (pos+2) << std::endl;
                 }
@@ -1083,13 +1093,13 @@ main (int argc, char **argv)
 
   if (link_stand_alone)
     {
-      if (! vars["LD_CXX"].empty ())
+      if (! vars["CXXLD"].empty ())
         {
           octave_libs = "-L" + quote_path (vars["OCTLIBDIR"])
-                      + ' ' + vars["OCTAVE_LIBS"];
+                        + ' ' + vars["OCTAVE_LIBS"];
 
           std::string cmd
-            = (vars["LD_CXX"] + ' ' + vars["CPPFLAGS"] + ' '
+            = (vars["CXXLD"] + ' ' + vars["CPPFLAGS"] + ' '
                + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
                + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
                + output_option + ' ' + objfiles + ' ' + libfiles + ' '
@@ -1115,15 +1125,20 @@ main (int argc, char **argv)
     {
 #if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
       octave_libs = "-L" + quote_path (vars["OCTLIBDIR"])
-                  + ' ' + vars["OCTAVE_LIBS"];
+                    + ' ' + vars["OCTAVE_LIBS"];
 #endif
 
       std::string cmd
-        = (vars["DL_LD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
+        = (vars["CXXLD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
            + vars["DL_LDFLAGS"] + ' ' + vars["LDFLAGS"] + ' ' + pass_on_options
            + " -o " + octfile + ' ' + objfiles + ' ' + libfiles + ' '
            + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
            + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
+
+#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
+      if (! f77files.empty () && ! vars["FLIBS"].empty ())
+        cmd += ' ' + vars["FLIBS"];
+#endif
 
       int status = run_command (cmd, printonly);
 

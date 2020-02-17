@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2001-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2001-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -79,7 +82,7 @@ namespace octave
 
     // Use number of processors available to the current process
     // This can be later changed with fftw ("threads", nthreads).
-    nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT);
+    nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT_OVERRIDABLE);
     fftw_plan_with_nthreads (nthreads);
 #endif
 
@@ -112,14 +115,8 @@ namespace octave
     if (! instance)
       {
         instance = new fftw_planner ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
+        singleton_cleanup_list::add (cleanup_instance);
       }
-
-    if (! instance)
-      (*current_liboctave_error_handler)
-        ("unable to create fftw_planner object!");
 
     return retval;
   }
@@ -244,24 +241,24 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (Complex, itmp, nn * howmany + 32);
             itmp = reinterpret_cast<Complex *>
-              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-               ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
-            *cur_plan_p =
-              fftw_plan_many_dft (rank, tmp, howmany,
-                                  reinterpret_cast<fftw_complex *> (itmp),
-                                  nullptr, stride, dist,
-                                  reinterpret_cast<fftw_complex *> (out),
-                                  nullptr, stride, dist, dir, plan_flags);
+            *cur_plan_p
+              = fftw_plan_many_dft (rank, tmp, howmany,
+                                    reinterpret_cast<fftw_complex *> (itmp),
+                                    nullptr, stride, dist,
+                                    reinterpret_cast<fftw_complex *> (out),
+                                    nullptr, stride, dist, dir, plan_flags);
           }
         else
           {
-            *cur_plan_p =
-              fftw_plan_many_dft (rank, tmp, howmany,
-                                  reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
-                                  nullptr, stride, dist,
-                                  reinterpret_cast<fftw_complex *> (out),
-                                  nullptr, stride, dist, dir, plan_flags);
+            *cur_plan_p
+              = fftw_plan_many_dft (rank, tmp, howmany,
+                                    reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
+                                    nullptr, stride, dist,
+                                    reinterpret_cast<fftw_complex *> (out),
+                                    nullptr, stride, dist, dir, plan_flags);
           }
 
         if (*cur_plan_p == nullptr)
@@ -363,23 +360,23 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (double, itmp, nn + 32);
             itmp = reinterpret_cast<double *>
-              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-               ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
-            *cur_plan_p =
-              fftw_plan_many_dft_r2c (rank, tmp, howmany, itmp,
-                                      nullptr, stride, dist,
-                                      reinterpret_cast<fftw_complex *> (out),
-                                      nullptr, stride, dist, plan_flags);
+            *cur_plan_p
+              = fftw_plan_many_dft_r2c (rank, tmp, howmany, itmp,
+                                        nullptr, stride, dist,
+                                        reinterpret_cast<fftw_complex *> (out),
+                                        nullptr, stride, dist, plan_flags);
           }
         else
           {
-            *cur_plan_p =
-              fftw_plan_many_dft_r2c (rank, tmp, howmany,
-                                      (const_cast<double *> (in)),
-                                      nullptr, stride, dist,
-                                      reinterpret_cast<fftw_complex *> (out),
-                                      nullptr, stride, dist, plan_flags);
+            *cur_plan_p
+              = fftw_plan_many_dft_r2c (rank, tmp, howmany,
+                                        (const_cast<double *> (in)),
+                                        nullptr, stride, dist,
+                                        reinterpret_cast<fftw_complex *> (out),
+                                        nullptr, stride, dist, plan_flags);
           }
 
         if (*cur_plan_p == nullptr)
@@ -439,7 +436,7 @@ namespace octave
 
     // Use number of processors available to the current process
     // This can be later changed with fftw ("threads", nthreads).
-    nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT);
+    nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT_OVERRIDABLE);
     fftwf_plan_with_nthreads (nthreads);
 #endif
 
@@ -472,14 +469,8 @@ namespace octave
     if (! instance)
       {
         instance = new float_fftw_planner ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
+        singleton_cleanup_list::add (cleanup_instance);
       }
-
-    if (! instance)
-      (*current_liboctave_error_handler)
-        ("unable to create fftw_planner object!");
 
     return retval;
   }
@@ -602,24 +593,24 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (FloatComplex, itmp, nn * howmany + 32);
             itmp = reinterpret_cast<FloatComplex *>
-              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-               ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
-            *cur_plan_p =
-              fftwf_plan_many_dft (rank, tmp, howmany,
-                                   reinterpret_cast<fftwf_complex *> (itmp),
-                                   nullptr, stride, dist,
-                                   reinterpret_cast<fftwf_complex *> (out),
-                                   nullptr, stride, dist, dir, plan_flags);
+            *cur_plan_p
+              = fftwf_plan_many_dft (rank, tmp, howmany,
+                                     reinterpret_cast<fftwf_complex *> (itmp),
+                                     nullptr, stride, dist,
+                                     reinterpret_cast<fftwf_complex *> (out),
+                                     nullptr, stride, dist, dir, plan_flags);
           }
         else
           {
-            *cur_plan_p =
-              fftwf_plan_many_dft (rank, tmp, howmany,
-                                   reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *> (in)),
-                                   nullptr, stride, dist,
-                                   reinterpret_cast<fftwf_complex *> (out),
-                                   nullptr, stride, dist, dir, plan_flags);
+            *cur_plan_p
+              = fftwf_plan_many_dft (rank, tmp, howmany,
+                                     reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *> (in)),
+                                     nullptr, stride, dist,
+                                     reinterpret_cast<fftwf_complex *> (out),
+                                     nullptr, stride, dist, dir, plan_flags);
           }
 
         if (*cur_plan_p == nullptr)
@@ -721,23 +712,23 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (float, itmp, nn + 32);
             itmp = reinterpret_cast<float *>
-              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-               ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
-            *cur_plan_p =
-              fftwf_plan_many_dft_r2c (rank, tmp, howmany, itmp,
-                                       nullptr, stride, dist,
-                                       reinterpret_cast<fftwf_complex *> (out),
-                                       nullptr, stride, dist, plan_flags);
+            *cur_plan_p
+              = fftwf_plan_many_dft_r2c (rank, tmp, howmany, itmp,
+                                         nullptr, stride, dist,
+                                         reinterpret_cast<fftwf_complex *> (out),
+                                         nullptr, stride, dist, plan_flags);
           }
         else
           {
-            *cur_plan_p =
-              fftwf_plan_many_dft_r2c (rank, tmp, howmany,
-                                       (const_cast<float *> (in)),
-                                       nullptr, stride, dist,
-                                       reinterpret_cast<fftwf_complex *> (out),
-                                       nullptr, stride, dist, plan_flags);
+            *cur_plan_p
+              = fftwf_plan_many_dft_r2c (rank, tmp, howmany,
+                                         (const_cast<float *> (in)),
+                                         nullptr, stride, dist,
+                                         reinterpret_cast<fftwf_complex *> (out),
+                                         nullptr, stride, dist, plan_flags);
           }
 
         if (*cur_plan_p == nullptr)

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pt_mat_h)
 #define octave_pt_mat_h 1
@@ -65,6 +68,13 @@ namespace octave
 
     tree_expression * dup (symbol_scope& scope) const;
 
+    octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
+
     void accept (tree_walker& tw)
     {
       tw.visit_matrix (*this);
@@ -77,26 +87,5 @@ namespace octave
   extern void
   maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p);
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_matrix' instead")
-typedef octave::tree_matrix tree_matrix;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::get_concat_class' instead")
-static inline std::string
-get_concat_class (const std::string& c1, const std::string& c2)
-{
-  return octave::get_concat_class (c1, c2);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::maybe_warn_string_concat' instead")
-static inline void
-maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
-{
-  octave::maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
-}
-
-#endif
 
 #endif

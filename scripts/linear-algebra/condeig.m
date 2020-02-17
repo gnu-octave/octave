@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 Arno Onken <asnelt@asnelt.org>
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{c} =} condeig (@var{a})
@@ -101,7 +108,7 @@ function [v, lambda, c] = condeig (a)
 
     ## Condition numbers
     ## Definition: cos (angle) = (norm (v1) * norm (v2)) / dot (v1, v2)
-    ## Eigenvectors have been normalized so `norm (v1) * norm (v2)' = 1
+    ## Eigenvectors have been normalized so 'norm (v1) * norm (v2)' = 1
     c = abs (1 ./ dot (vl, v)');
   endif
 

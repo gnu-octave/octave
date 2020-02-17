@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 Bill Denney
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{files} =} unpack (@var{file})
@@ -68,8 +75,6 @@
 ## The optional return value is a list of @var{files} unpacked.
 ## @seealso{bunzip2, gunzip, unzip, untar, bzip2, gzip, zip, tar}
 ## @end deftypefn
-
-## Author: Bill Denney <denney@seas.upenn.edu>
 
 function filelist = unpack (file, dir = [], filetype = "")
 
@@ -221,6 +226,17 @@ function filelist = unpack (file, dir = [], filetype = "")
     file = __w2mpth__ (file);
   endif
 
+  ## Create the output directory if necessary.
+  s = stat (dir);
+  if (isempty (s))
+    [status, msg] = mkdir (dir);
+    if (! status)
+      error ("unpack: mkdir failed to create %s: %s", dir, msg);
+    endif
+  elseif (! S_ISDIR (s.mode))
+    error ("unpack: %s: not a directory", dir);
+  endif
+
   if (isfield (commandlist, tolower (nodotext)))
     [commandv, commandq, parsefcn, move] = deal (commandlist.(nodotext){:});
     origdir = pwd ();
@@ -234,7 +250,7 @@ function filelist = unpack (file, dir = [], filetype = "")
     if (cenddir(end) == filesep)
       cenddir(end) = [];
     endif
-    needmove = move && ! strcmp (cstartdir, cenddir);
+    needmove = move && ! is_same_file (cstartdir, cenddir);
     if (nargout > 0 || needmove)
       command = commandv;
     else
@@ -244,17 +260,6 @@ function filelist = unpack (file, dir = [], filetype = "")
     warning ("unpack: unrecognized FILETYPE <%s>", nodotext);
     filelist = {};
     return;
-  endif
-
-  ## Create the directory if necessary.
-  s = stat (dir);
-  if (isempty (s))
-    [status, msg] = mkdir (dir);
-    if (! status)
-      error ("unpack: mkdir failed to create %s: %s", dir, msg);
-    endif
-  elseif (! S_ISDIR (s.mode))
-    error ("unpack: %s: not a directory", dir);
   endif
 
   ## Save and restore the TAR_OPTIONS environment variable used by GNU tar.
@@ -308,7 +313,11 @@ function files = __parse_zip__ (output)
 endfunction
 
 function output = __parse_tar__ (output)
-  ## This is a no-op, but it makes things simpler for other cases.
+  ## BSD tar emits file actions in the first 2 columns
+
+  if (tar_is_bsd ())
+    output = cellfun (@(x) x(3:end), output, 'UniformOutput', false);
+  endif
 endfunction
 
 function files = __parse_gzip__ (output)

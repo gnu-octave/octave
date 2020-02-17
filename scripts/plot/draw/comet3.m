@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Ben Abbott and John W. Eaton
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} comet3 (@var{z})
@@ -29,15 +36,12 @@
 ##
 ## The speed of the comet may be controlled by @var{p}, which represents the
 ## time each point is displayed before moving to the next one.  The default for
-## @var{p} is 0.1 seconds.
+## @var{p} is @code{5 / numel (@var{z})}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ## @seealso{comet}
 ## @end deftypefn
-
-## Author: jwe
-## Created: 2010-12-17
 
 function comet3 (varargin)
 
@@ -48,12 +52,12 @@ function comet3 (varargin)
   elseif (nargin == 1)
     z = varargin{1};
     x = y = 1:numel (z);
-    p = 0.1;
+    p = 5 / numel (z);
   elseif (nargin == 3)
     x = varargin{1};
     y = varargin{2};
     z = varargin{3};
-    p = 0.1;
+    p = 5 / numel (z);
   elseif (nargin == 4)
     x = varargin{1};
     y = varargin{2};
@@ -76,6 +80,10 @@ function comet3 (varargin)
                 x(1), y(1), z(1), "color", "b", "marker", "o");
     axis (limits);  # set manual limits to speed up plotting
 
+    ## Initialize the timer
+    t = p;
+    timerid = tic ();
+
     for n = 2:(num+dn)
       m = n - dn;
       m = max ([m, 1]);
@@ -83,8 +91,9 @@ function comet3 (varargin)
       set (hl(1), "xdata", x(1:m), "ydata", y(1:m), "zdata", z(1:m));
       set (hl(2), "xdata", x(m:k), "ydata", y(m:k), "zdata", z(m:k));
       set (hl(3), "xdata", x(k)  , "ydata", y(k)  , "zdata", z(k));
-      drawnow ();
-      pause (p);
+
+      pause (t - toc (timerid));
+      t += p;
     endfor
   unwind_protect_cleanup
     if (! isempty (oldfig))
@@ -100,5 +109,5 @@ endfunction
 %! title ("comet3() animation");
 %! view (3); hold on;
 %! t = 0:pi/20:5*pi;
-%! comet3 (cos (t), sin (t), t, 0.05);
+%! comet3 (cos (t), sin (t), t);
 %! hold off;

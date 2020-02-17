@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2009 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_fcn_info_h)
 #define octave_fcn_info_h 1
@@ -33,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov.h"
 #include "ovl.h"
+#include "symscope.h"
 
 namespace octave
 {
@@ -81,9 +84,10 @@ namespace octave
 
       octave_value load_class_method (const std::string& dispatch_type);
 
-      octave_value find (const octave_value_list& args);
+      octave_value find (const symbol_scope& search_scope,
+                         const octave_value_list& args);
 
-      octave_value builtin_find (void);
+      octave_value builtin_find (const symbol_scope& search_scope);
 
       octave_value find_method (const std::string& dispatch_type);
 
@@ -98,9 +102,10 @@ namespace octave
         return function_on_path.is_defined ();
       }
 
-      octave_value find_function (const octave_value_list& args)
+      octave_value find_function (const symbol_scope& search_scope,
+                                  const octave_value_list& args)
       {
-        return find (args);
+        return find (search_scope, args);
       }
 
       void install_cmdline_function (const octave_value& f)
@@ -221,9 +226,10 @@ namespace octave
 
     private:
 
-      octave_value xfind (const octave_value_list& args);
+      octave_value xfind (const symbol_scope& search_scope,
+                          const octave_value_list& args);
 
-      octave_value x_builtin_find (void);
+      octave_value x_builtin_find (const symbol_scope& search_scope);
     };
 
   public:
@@ -237,14 +243,16 @@ namespace octave
 
     ~fcn_info (void) = default;
 
-    octave_value find (const octave_value_list& args = octave_value_list ())
+    octave_value find (const symbol_scope& search_scope,
+                       const octave_value_list& args = octave_value_list ())
     {
-      return m_rep->find (args);
+      return m_rep->find (search_scope, args);
     }
 
-    octave_value builtin_find (void)
+    octave_value
+    builtin_find (const symbol_scope& search_scope)
     {
-      return m_rep->builtin_find ();
+      return m_rep->builtin_find (search_scope);
     }
 
     octave_value find_method (const std::string& dispatch_type) const
@@ -267,6 +275,7 @@ namespace octave
       return m_rep->find_autoload ();
     }
 
+    // FIXME: find_function_on_path might be a better name?
     octave_value find_user_function (void)
     {
       return m_rep->find_user_function ();
@@ -277,10 +286,11 @@ namespace octave
       return m_rep->is_user_function_defined ();
     }
 
-    octave_value find_function (const octave_value_list& args
-                                = octave_value_list ())
+    octave_value
+    find_function (const symbol_scope& search_scope,
+                   const octave_value_list& args = octave_value_list ())
     {
-      return m_rep->find_function (args);
+      return m_rep->find_function (search_scope, args);
     }
 
     void install_cmdline_function (const octave_value& f)

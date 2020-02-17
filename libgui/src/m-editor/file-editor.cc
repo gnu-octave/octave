@@ -1,34 +1,33 @@
-/*
-
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
 #if defined (HAVE_QSCINTILLA)
-
-#include "file-editor.h"
-#include "resource-manager.h"
-#include "shortcut-manager.h"
 
 #include <QApplication>
 #include <QFile>
@@ -44,11 +43,20 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <Qsci/qscicommandset.h>
 
+#include "file-editor.h"
+#include "gui-preferences-ed.h"
+#include "gui-preferences-sc.h"
+#include "gui-preferences-global.h"
 #include "main-window.h"
-#include "gui-preferences.h"
+#include "octave-qobject.h"
+#include "shortcut-manager.h"
+
 #include "oct-env.h"
+
+#include "event-manager.h"
+#include "interpreter.h"
 #include "oct-map.h"
-#include "octave-link.h"
+#include "pt-eval.h"
 #include "utils.h"
 
 namespace octave
@@ -66,6 +74,7 @@ namespace octave
     this->setTabBar (bar);
 
     setTabsClosable (true);
+    setUsesScrollButtons (true);
 #if defined (HAVE_QTABWIDGET_SETMOVABLE)
     setMovable (true);
 #endif
@@ -76,30 +85,40 @@ namespace octave
     return qobject_cast<tab_bar *> (tabBar ());
   }
 
+  std::list<file_editor_tab *>
+  file_editor_tab_widget::tab_list (void) const
+  {
+    std::list<file_editor_tab *> retval;
+    for (int i = 0; i < count (); i++)
+      retval.push_back (static_cast<file_editor_tab *> (widget (i)));
+    return retval;
+  }
 
   // File editor
 
-  file_editor::file_editor (QWidget *p)
-    : file_editor_interface (p)
+  file_editor::file_editor (QWidget *p, base_qobject& oct_qobj)
+    : file_editor_interface (p, oct_qobj)
   {
-    // Set current editing directory before construct because loaded
+    // Set current editing directory before construction because loaded
     // files will change ced accordingly.
     m_ced = QDir::currentPath ();
 
-    // set action that are later added by the main window to null,
-    // preventing access to them when they are still undefined
+    // Set actions that are later added by the main window to null,
+    // preventing access to them when they are still undefined.
     m_undo_action = nullptr;
     m_copy_action = nullptr;
     m_paste_action = nullptr;
     m_selectall_action = nullptr;
+
+    m_find_dialog = nullptr;
+
     m_closed = false;
     m_no_focus = false;
 
-    construct ();
+    m_copy_action_enabled = false;
+    m_undo_action_enabled = false;
 
-    // actions that should also be available in the find dialog
-    m_fetab_actions << m_find_next_action;
-    m_fetab_actions << m_find_previous_action;
+    construct ();
 
     setVisible (false);
     setAcceptDrops (true);
@@ -129,10 +148,6 @@ namespace octave
     m_undo_action = shared_actions.at (UNDO_ACTION);
     m_tool_bar->insertAction (m_redo_action,m_undo_action);
     m_edit_menu->insertAction (m_redo_action,m_undo_action);
-    // copy
-    m_copy_action = shared_actions.at (COPY_ACTION);
-    m_tool_bar->insertAction (m_cut_action,m_copy_action);
-    m_edit_menu->insertAction (m_cut_action,m_copy_action);
     // select all
     m_selectall_action = shared_actions.at (SELECTALL_ACTION);
     m_edit_menu->insertAction (m_find_action,m_selectall_action);
@@ -142,6 +157,10 @@ namespace octave
     m_tool_bar->insertAction (m_find_action,m_paste_action);
     m_edit_menu->insertAction (m_selectall_action,m_paste_action);
     m_edit_menu->insertSeparator (m_selectall_action);
+    // copy
+    m_copy_action = shared_actions.at (COPY_ACTION);
+    m_tool_bar->insertAction (m_paste_action,m_copy_action);
+    m_edit_menu->insertAction (m_paste_action,m_copy_action);
     // find files
     m_find_files_action = shared_actions.at (FIND_FILES_ACTION);
     m_edit_menu->insertAction (m_find_action, m_find_files_action);
@@ -149,14 +168,22 @@ namespace octave
 
   void file_editor::handle_enter_debug_mode (void)
   {
-    m_run_action->setEnabled (false);
-    m_run_action->setShortcut (QKeySequence ());
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    QString sc_run = settings->sc_value (sc_edit_run_run_file);
+    QString sc_cont = settings->sc_value (sc_main_debug_continue);
+
+    if (sc_run == sc_cont)
+      m_run_action->setShortcut (QKeySequence ());  // prevent ambiguous shortcuts
+
+    m_run_action->setToolTip (tr ("Continue"));   // update tool tip
   }
 
   void file_editor::handle_exit_debug_mode (void)
   {
-    m_run_action->setEnabled (true);
-    shortcut_manager::set_shortcut (m_run_action, "editor_run:run_file");
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    scmgr.set_shortcut (m_run_action, sc_edit_run_run_file);
+    m_run_action->setToolTip (tr ("Save File and Run"));  // update tool tip
   }
 
   void file_editor::check_actions (void)
@@ -194,6 +221,9 @@ namespace octave
     m_close_action->setEnabled (have_tabs);
     m_close_all_action->setEnabled (have_tabs);
     m_close_others_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
+    m_sort_tabs_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
+
+    emit editor_tabs_changed_signal (have_tabs);
   }
 
   // empty_script determines whether we have to create an empty script
@@ -202,8 +232,10 @@ namespace octave
   // 2. When the editor becomes visible when octave is running
   void file_editor::empty_script (bool startup, bool visible)
   {
-    QSettings *settings = resource_manager::get_settings ();
-    if (settings->value ("useCustomFileEditor",false).toBool ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (settings->value (global_use_custom_editor.key,
+                         global_use_custom_editor.def).toBool ())
       return;  // do not open an empty script in the external editor
 
     bool real_visible;
@@ -218,7 +250,7 @@ namespace octave
 
     if (startup && ! isFloating ())
       {
-        // check is editor is really visible or hidden between tabbed widgets
+        // check if editor is really visible or hidden between tabbed widgets
         QList<QTabBar *> tab_list = main_win ()->findChildren<QTabBar *>();
 
         bool in_tab = false;
@@ -248,28 +280,24 @@ namespace octave
     request_new_file ("");
   }
 
-  void file_editor::restore_session (QSettings *settings)
+  void file_editor::restore_session (gui_settings *settings)
   {
     //restore previous session
-    if (! settings->value ("editor/restoreSession", true).toBool ())
+    if (! settings->value (ed_restore_session).toBool ())
       return;
 
     // get the data from the settings file
     QStringList sessionFileNames
-      = settings->value (ed_session_names.key, ed_session_names.def)
-                         .toStringList ();
+      = settings->value (ed_session_names).toStringList ();
 
     QStringList session_encodings
-      = settings->value (ed_session_enc.key, ed_session_enc.def)
-                        .toStringList ();
+      = settings->value (ed_session_enc).toStringList ();
 
     QStringList session_index
-      = settings->value (ed_session_ind.key, ed_session_ind.def)
-                         .toStringList ();
+      = settings->value (ed_session_ind).toStringList ();
 
     QStringList session_lines
-      = settings->value (ed_session_lines.key, ed_session_lines.def)
-                         .toStringList ();
+      = settings->value (ed_session_lines).toStringList ();
 
     // fill a list of the struct and sort it (depending on index)
     QList<session_data> s_data;
@@ -298,18 +326,18 @@ namespace octave
 
     qSort (s_data);
 
-    // finally open the file with the desired encoding in the desired order
+    // finally open the files with the desired encoding in the desired order
     for (int n = 0; n < s_data.count (); ++n)
       request_open_file (s_data.at (n).file_name, s_data.at (n).encoding,
                          s_data.at (n).line);
   }
 
-  void file_editor::focus (void)
+  void file_editor::activate (void)
   {
     if (m_no_focus)
       return;  // No focus for the editor if external open/close request
 
-    octave_dock_widget::focus ();
+    octave_dock_widget::activate ();
 
     // set focus to current tab
     QWidget *fileEditorTab = m_tab_widget->currentWidget ();
@@ -319,7 +347,7 @@ namespace octave
 
   void file_editor::set_focus (QWidget *fet)
   {
-    octave_dock_widget::focus ();
+    setFocus ();
 
     // set focus to desired tab
     if (fet)
@@ -330,6 +358,13 @@ namespace octave
   // focus of the editor
   void file_editor::enable_menu_shortcuts (bool enable)
   {
+    // Hide or show the find dialog together with the focus of the
+    // editor widget depending on the overall visibility of the find dialog.
+    // Do not change internal visibility state.
+    if (m_find_dialog)
+      m_find_dialog->set_visible (enable);
+
+    // Take care of the shortcuts
     QHash<QMenu*, QStringList>::const_iterator i = m_hash_menu_text.constBegin ();
 
     while (i != m_hash_menu_text.constEnd ())
@@ -340,44 +375,84 @@ namespace octave
 
     // when editor loses focus, enable the actions, which are always active
     // in the main window due to missing info on selected text and undo actions
-    if (! enable && m_copy_action && m_undo_action)
+    if (m_copy_action && m_undo_action)
       {
-        m_copy_action->setEnabled (true);
-        m_undo_action->setEnabled (true);
+        if (enable)
+          {
+            m_copy_action->setEnabled (m_copy_action_enabled);
+            m_undo_action->setEnabled (m_undo_action_enabled);
+          }
+        else
+          {
+            m_copy_action_enabled = m_copy_action->isEnabled ();
+            m_undo_action_enabled = m_undo_action->isEnabled ();
+            m_copy_action->setEnabled (true);
+            m_undo_action->setEnabled (true);
+          }
       }
   }
 
   bool file_editor::check_closing (void)
   {
-    // When the application or the editor is closing and the user wants to close
-    // all files in the latter case all editor tabs are checked whether
-    // they need to be saved. During these ckecked the tabs are not closed
-    // since the user might cancel closing octave during one of these saving
-    // dialogs. Therefore, saving the session for restoring at next start
-    // is not done before the application is definitely closing
+    // When the application or the editor is closing and the user wants to
+    // close all files, in the latter case all editor tabs are checked whether
+    // they need to be saved.  During these checks tabs are not closed since
+    // the user might cancel closing Octave during one of these saving dialogs.
+    // Therefore, saving the session for restoring at next start is not done
+    // before the application is definitely closing.
 
-    // Have all file editor tabs signal what their filenames are.
-    m_editor_tab_map.clear ();
-    emit fetab_file_name_query (nullptr);
+    std::list<file_editor_tab *> fe_tab_lst = m_tab_widget->tab_list ();
+    m_number_of_tabs = fe_tab_lst.size ();
 
-    // Save all tabs with confirmation.
-    file_editor_tab::reset_cancel ();
-    emit fetab_check_modified_file ();
-
-    // If there was a cancellation, make the already saved/discarded tabs
-    // recovering from the exit by removing the read-only state and by
-    // recovering the debugger breakpoints. Finally return false in order to
-    // cancel closing the application or the editor
-    if (file_editor_tab::was_cancelled ())
+    for (auto fe_tab : fe_tab_lst)
       {
-        emit fetab_recover_from_exit ();
-        return false;
+        // Wait for all editor tabs to have saved their files if required
+
+        connect (fe_tab, SIGNAL (tab_ready_to_close (void)),
+                 this, SLOT (handle_tab_ready_to_close (void)),
+                 Qt::UniqueConnection);
       }
+
+    m_closing_canceled = false;
+
+    for (auto fe_tab : fe_tab_lst)
+      {
+        // If there was a cancellation, make the already saved/discarded tabs
+        // recover from the exit by removing the read-only state and by
+        // recovering the debugger breakpoints.  Finally return false in order
+        // to cancel closing the application or the editor.
+
+        if (fe_tab->check_file_modified (false) == QMessageBox::Cancel)
+          {
+            emit fetab_recover_from_exit ();
+
+            m_closing_canceled = true;
+
+            for (auto fet : fe_tab_lst)
+              disconnect (fet, SIGNAL (tab_ready_to_close (void)), 0, 0 );
+
+            return false;
+          }
+      }
+
+    return true;
+  }
+
+  void file_editor::handle_tab_ready_to_close (void)
+  {
+    if (m_closing_canceled)
+      return;
+
+    m_number_of_tabs--;
+
+    if (m_number_of_tabs > 0)
+      return;
 
     // Here, the application or the editor will be closed -> store the session
 
     // Save open files for restoring in next session; this only is possible
-    QSettings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     // save filenames (even if last session will not be restored next time)
     // together with encoding and the tab index
@@ -387,20 +462,22 @@ namespace octave
     QStringList fet_lines;
 
     // save all open tabs before they are definitely closed
-    for (auto p = m_editor_tab_map.cbegin ();
-         p != m_editor_tab_map.cend (); p++)
+
+    std::list<file_editor_tab *> editor_tab_lst = m_tab_widget->tab_list ();
+
+    for (auto editor_tab : editor_tab_lst)
       {
-        QString file_name = p->first;   // get file name of tab
-        if (! file_name.isEmpty ())      // do not append unnamed files
+        QString file_name = editor_tab->file_name ();
+
+        // Don't append unnamed files.
+
+        if (! file_name.isEmpty ())
           {
             fetFileNames.append (file_name);
-            fet_encodings.append (m_editor_tab_map[file_name].encoding);
+            fet_encodings.append (editor_tab->encoding ());
 
             QString index;
-            file_editor_tab *editor_tab
-              = static_cast<file_editor_tab *> (m_editor_tab_map[file_name].fet_ID);
-            fet_index.append (index.setNum
-                              (m_tab_widget->indexOf (editor_tab)));
+            fet_index.append (index.setNum (m_tab_widget->indexOf (editor_tab)));
 
             int l, c;
             editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
@@ -414,22 +491,22 @@ namespace octave
     settings->setValue (ed_session_lines.key, fet_lines);
     settings->sync ();
 
+    // Take care of the find dialog
+    if (m_find_dialog)
+      m_find_dialog->close ();
+
     // Finally close all the tabs and return indication that we can exit
     // the application or close the editor.
-    // Closing and deleting the tabs makes the editor visible. In case it was
-    // hidden before, this state has to be restored afterwards
+    // Closing and deleting the tabs makes the editor visible.  In case it was
+    // hidden before, this state has to be restored afterwards.
     bool vis = isVisible ();
 
-    for (int i = m_tab_widget->count () - 1; i >= 0; i--)
-      {
-        // backwards loop since m_tab_widget->count () changes during the loop
-        delete m_tab_widget->widget (i);
-        m_tab_widget->removeTab (i);
-      }
+    for (auto editor_tab : editor_tab_lst)
+      delete editor_tab;
+
+    m_tab_widget->clear ();
 
     setVisible (vis);
-
-    return true;
   }
 
   void file_editor::request_new_file (const QString& commands)
@@ -443,13 +520,10 @@ namespace octave
     // editor tab has yet to be created and there is no object to
     // pass a signal to.  Hence, functionality is here.
 
-    file_editor_tab *fileEditorTab = new file_editor_tab (m_ced);
-    if (fileEditorTab)
-      {
-        add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
-        fileEditorTab->new_file (commands);       // title is updated here
-        focus ();                                 // focus editor and new tab
-      }
+    file_editor_tab *fileEditorTab = make_file_editor_tab (m_ced);
+    add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
+    fileEditorTab->new_file (commands);       // title is updated here
+    activate ();                              // focus editor and new tab
   }
 
   void file_editor::request_close_file (bool)
@@ -542,7 +616,23 @@ namespace octave
 
   void file_editor::request_run_file (bool)
   {
-    emit fetab_run_file (m_tab_widget->currentWidget ());
+    emit interpreter_event
+      ([this] (interpreter& interp)
+       {
+         // INTERPRETER THREAD
+
+         tree_evaluator& tw = interp.get_evaluator ();
+
+         if (tw.in_debug_repl ())
+           emit request_dbcont_signal ();
+         else
+           emit fetab_run_file (m_tab_widget->currentWidget ());
+       });
+  }
+
+  void file_editor::request_step_into_file ()
+  {
+    emit fetab_run_file (m_tab_widget->currentWidget (), true);
   }
 
   void file_editor::request_context_run (bool)
@@ -717,19 +807,77 @@ namespace octave
                             QsciScintilla::EolMac);
   }
 
+  // Slot for initially creating and showing the find dialog
   void file_editor::request_find (bool)
   {
-    emit fetab_find (m_tab_widget->currentWidget (), m_fetab_actions);
+    // Create the dialog
+    find_create ();
+
+    // Since find_create shows the dialog without activating the widget
+    // (which is reuqired in other cases) do this manually here
+    m_find_dialog->activateWindow ();
+
+    // Initiate search text from possible selection and save the initial
+    // data from the dialog on the defined structure
+    m_find_dialog->init_search_text ();
+  }
+
+  // This method creates the find dialog.
+
+  void file_editor::find_create ()
+  {
+    if (m_find_dialog)
+      m_find_dialog->close ();
+
+    if (isFloating ())
+      m_find_dialog = new find_dialog (m_octave_qobj, this, this);
+    else
+      m_find_dialog = new find_dialog (m_octave_qobj, this, main_win ());
+
+    // Add required actions
+    m_find_dialog->addAction (m_find_next_action);
+    m_find_dialog->addAction (m_find_previous_action);
+
+    // Update edit area
+    file_editor_tab* fet
+      = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
+    m_find_dialog->update_edit_area (fet->qsci_edit_area ());
+
+    // Icon is the same as the editor
+    m_find_dialog->setWindowIcon (windowIcon ());
+
+    // Position:  lower right of editor's position
+    int xp = x () + frameGeometry ().width ();
+    int yp = y () + frameGeometry ().height ();
+
+    if (! isFloating ())
+      {
+        // Fix position if editor is docked
+        xp = xp + main_win ()->x();
+        yp = yp + main_win ()->y();
+      }
+
+    if (yp < 0)
+      yp = 0;
+
+    // The size of the find dialog is considered in restore_settings
+    // since its size might change depending on the options
+    m_find_dialog->restore_settings (QPoint (xp, yp));
+
+    // Set visible
+    m_find_dialog->set_visible (true);
   }
 
   void file_editor::request_find_next (bool)
   {
-    emit fetab_find_next (m_tab_widget->currentWidget ());
+    if (m_find_dialog)
+      m_find_dialog->find_next ();
   }
 
   void file_editor::request_find_previous (bool)
   {
-    emit fetab_find_previous (m_tab_widget->currentWidget ());
+    if (m_find_dialog)
+      m_find_dialog->find_prev ();
   }
 
   void file_editor::request_goto_line (bool)
@@ -743,17 +891,24 @@ namespace octave
   }
 
   void file_editor::handle_file_name_changed (const QString& fname,
-                                              const QString& tip)
+                                              const QString& tip,
+                                              bool modified)
   {
     QObject *fileEditorTab = sender ();
     if (fileEditorTab)
       {
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
         for (int i = 0; i < m_tab_widget->count (); i++)
           {
             if (m_tab_widget->widget (i) == fileEditorTab)
               {
                 m_tab_widget->setTabText (i, fname);
                 m_tab_widget->setTabToolTip (i, tip);
+                if (modified)
+                  m_tab_widget->setTabIcon (i, rmgr.icon ("document-save"));
+                else
+                  m_tab_widget->setTabIcon (i, QIcon ());
               }
           }
       }
@@ -779,6 +934,7 @@ namespace octave
                 m_tab_widget->removeTab (i);
                 // Deleting sender is dodgy, but works because the signal
                 // is the last item in the sender's routines.
+                // FIXME: can we use deleteLater here?
                 delete fileEditorTab;
                 break;
               }
@@ -786,23 +942,15 @@ namespace octave
       }
     check_actions ();
 
-    focus ();     // focus stays in editor when tab is closed
+    activate ();     // focus stays in editor when tab is closed
 
-  }
-
-  void file_editor::handle_add_filename_to_list (const QString& fileName,
-                                                 const QString& encoding, QWidget *ID)
-  {
-    // Should we allow multiple tabs for a single file?
-    m_editor_tab_map[fileName].fet_ID = ID;
-    m_editor_tab_map[fileName].encoding = encoding;
   }
 
   // context menu of edit area
   void file_editor::active_tab_changed (int index)
   {
     emit fetab_change_request (m_tab_widget->widget (index));
-    focus ();
+    activate ();
   }
 
   void file_editor::handle_editor_state_changed (bool copy_available,
@@ -820,6 +968,9 @@ namespace octave
 
         setFocusProxy (m_tab_widget->currentWidget ());
       }
+
+    m_copy_action_enabled = m_copy_action->isEnabled ();
+    m_undo_action_enabled = m_undo_action->isEnabled ();
   }
 
   void file_editor::handle_mru_add_file (const QString& file_name,
@@ -842,13 +993,13 @@ namespace octave
                                          bool remove_on_success)
   {
     // Check whether this file is already open in the editor.
-    QWidget *tab = find_tab_widget (saveFileName);
+    file_editor_tab *tab = find_tab_widget (saveFileName);
 
     if (tab)
       {
         // Note: to overwrite the contents of some other file editor tab
         // with the same name requires identifying which file editor tab
-        // that is (not too difficult) then close that tab.  Of course,
+        // that is (not too difficult) then closing that tab.  Of course,
         // that could trigger another dialog box if the file editor tab
         // with the same name has modifications in it.  This could become
         // somewhat confusing to the user.  For now, opt to do nothing.
@@ -910,7 +1061,7 @@ namespace octave
     if (! file.isEmpty ())
       {
         // Check whether this file is already open in the editor.
-        QWidget *tab = find_tab_widget (file);
+        file_editor_tab *tab = find_tab_widget (file);
 
         if (tab)
           {
@@ -937,7 +1088,7 @@ namespace octave
     request_open_file (file);
   }
 
-  // Slot used for signals indicating that a file was changed/rename or
+  // Slot used for signals indicating that a file was changed/renamed or
   // is going to be deleted/renamed
   void file_editor::handle_file_remove (const QString& old_name,
                                         const QString& new_name)
@@ -950,8 +1101,8 @@ namespace octave
     QString old_name_clean = old_name.trimmed ();
     int s = old_name_clean.size ();
 
-    if (old_name_clean.at (0) == QChar ('\"') &&
-        old_name_clean.at (s - 1) == QChar ('\"'))
+    if (old_name_clean.at (0) == QChar ('\"')
+        && old_name_clean.at (s - 1) == QChar ('\"'))
       old_name_clean = old_name_clean.mid (1, s - 2);
 
     QStringList old_names = old_name_clean.split ("\" \"");
@@ -973,27 +1124,18 @@ namespace octave
           }
         else
           {
-            // It is a single file. Is it open?
-            file_editor_tab *editor_tab
-              = static_cast<file_editor_tab *> (find_tab_widget (old_names.at (i)));
+            // It is a single file.  Is it open?
+            file_editor_tab *editor_tab = find_tab_widget (old_names.at (i));
 
             if (editor_tab)
               {
-                // YES: Get and store the related encoding
-                for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
-                      p != m_editor_tab_map.end (); p++)
-                  {
-                    if (editor_tab == p->second.fet_ID)
-                      {
-                        // Get index and line
-                        f_data.encoding = p->second.encoding;
-                        f_data.index = m_tab_widget->indexOf (editor_tab);
-                        int l, c;
-                        editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
-                        f_data.line = l + 1;
-                        break;
-                      }
-                  }
+                // Get index and line.
+
+                f_data.encoding = editor_tab->encoding ();
+                f_data.index = m_tab_widget->indexOf (editor_tab);
+                int l, c;
+                editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
+                f_data.line = l + 1;
 
                 // Close it silently
                 m_no_focus = true;  // Remember for not focussing editor
@@ -1007,8 +1149,8 @@ namespace octave
                   {
                     std::string ndir = new_name.toStdString ();
                     std::string ofile = old.fileName ().toStdString ();
-                    f_data.new_file_name = QString::fromStdString (
-                      octave::sys::env::make_absolute (ofile, ndir));
+                    f_data.new_file_name
+                      = QString::fromStdString (sys::env::make_absolute (ofile, ndir));
                   }
                 else
                   f_data.new_file_name = new_name;
@@ -1025,8 +1167,8 @@ namespace octave
   {
     m_no_focus = true;  // Remember for not focussing editor
 
-    // Loop over all file that have to be reloaded. Start at the end of the
-    // list, otherwise the stored indexes are not correct
+    // Loop over all files that have to be reloaded.  Start at the end of the
+    // list, otherwise the stored indexes are not correct.
     for (int i = m_tmp_closed_files.count () - 1; i >= 0; i--)
       {
         // Load old or new file
@@ -1042,10 +1184,10 @@ namespace octave
         else
           {
             request_open_file (m_tmp_closed_files.at (i).file_name,
-                                 m_tmp_closed_files.at (i).encoding,
-                                 m_tmp_closed_files.at (i).line,
-                                 false, false, true, "",
-                                 m_tmp_closed_files.at (i).index);
+                               m_tmp_closed_files.at (i).encoding,
+                               m_tmp_closed_files.at (i).line,
+                               false, false, true, "",
+                               m_tmp_closed_files.at (i).index);
           }
 
       }
@@ -1056,55 +1198,100 @@ namespace octave
     m_tmp_closed_files.clear ();
   }
 
-  void file_editor::notice_settings (const QSettings *settings)
+  void file_editor::notice_settings (const gui_settings *settings)
   {
-    int size_idx = settings->value (global_icon_size.key,
-                                    global_icon_size.def).toInt ();
+    int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
-    int tab_width_min = settings->value ("editor/notebook_tab_width_min", 160)
+    // Tab position
+    QTabWidget::TabPosition pos
+      = static_cast<QTabWidget::TabPosition> (settings->value (ed_tab_position).toInt ());
+
+    m_tab_widget->setTabPosition (pos);
+
+    // Update style sheet properties depending on position
+    QString width_str ("width");
+    QString height_str ("height");
+    if (pos == QTabWidget::West || pos == QTabWidget::East)
+      {
+        width_str = QString ("height");
+        height_str = QString ("width");
+      }
+
+    // Min and max width for full path titles
+    int tab_width_min = settings->value (ed_notebook_tab_width_min)
                         .toInt ();
-    int tab_width_max = settings->value ("editor/notebook_tab_width_max", 300)
+    int tab_width_max = settings->value (ed_notebook_tab_width_max)
                         .toInt ();
 
-    if (settings->value ("editor/longWindowTitle", false).toBool ())
+    // Get suitable height of a tab related to font and icon size
+    int height = 1.5*QFontMetrics (m_tab_widget->font ()).height ();
+    int is = 1.5*m_tab_widget->iconSize ().height ();
+    if (is > height)
+      height = is;
+
+    // Style sheet for tab height
+    QString style_sheet = QString ("QTabBar::tab {max-" + height_str + ": %1px;}")
+                          .arg (height);
+
+    // Style sheet for tab height together with width
+    if (settings->value (ed_long_window_title).toBool ())
       {
-        QString style_sheet = QString ("QTabBar::tab "
-                                       "{min-width: %1px; max-width: %2px;}")
-                              .arg (tab_width_min).arg (tab_width_max);
+        style_sheet = QString ("QTabBar::tab "
+                               " {max-" + height_str + ": %1px;"
+                               "  min-" + width_str + ": %2px;"
+                               "  max-" + width_str + ": %3px;}")
+                      .arg (height).arg (tab_width_min).arg (tab_width_max);
         m_tab_widget->setElideMode (Qt::ElideLeft);
-        m_tab_widget->setStyleSheet (style_sheet);
       }
     else
-      m_tab_widget->setElideMode (Qt::ElideNone);
+      {
+        m_tab_widget->setElideMode (Qt::ElideNone);
+      }
 
-    m_tab_widget->setUsesScrollButtons (true);
+#if defined (Q_OS_MAC)
+    // FIXME: This is a workaround for missing tab close buttons on MacOS
+    // in several Qt versions (https://bugreports.qt.io/browse/QTBUG-61092)
+    QString close_button_css
+      ("QTabBar::close-button"
+       "  { width: 6px; image: url(:/actions/icons/widget-close.png);}\n"
+       "QTabBar::close-button:hover"
+       "  { background-color: #cccccc; }");
+
+    style_sheet = style_sheet + close_button_css;
+#endif
+
+    m_tab_widget->setStyleSheet (style_sheet);
 
     bool show_it;
-    show_it = settings->value ("editor/showLineNumbers",true).toBool ();
+    show_it = settings->value (ed_show_line_numbers).toBool ();
     m_show_linenum_action->setChecked (show_it);
-    show_it = settings->value ("editor/show_white_space",false).toBool ();
+    show_it = settings->value (ed_show_white_space).toBool ();
     m_show_whitespace_action->setChecked (show_it);
-    show_it = settings->value ("editor/show_eol_chars",false).toBool ();
+    show_it = settings->value (ed_show_eol_chars).toBool ();
     m_show_eol_action->setChecked (show_it);
-    show_it = settings->value ("editor/show_indent_guides",false).toBool ();
+    show_it = settings->value (ed_show_indent_guides).toBool ();
     m_show_indguide_action->setChecked (show_it);
-    show_it = settings->value ("editor/long_line_marker",true).toBool ();
+    show_it = settings->value (ed_long_line_marker).toBool ();
     m_show_longline_action->setChecked (show_it);
 
-    show_it = settings->value ("editor/show_toolbar",true).toBool ();
+    show_it = settings->value (ed_show_toolbar).toBool ();
     m_show_toolbar_action->setChecked (show_it);
     m_tool_bar->setVisible (show_it);
-    show_it = settings->value ("editor/show_edit_status_bar",true).toBool ();
+    show_it = settings->value (ed_show_edit_status_bar).toBool ();
     m_show_statusbar_action->setChecked (show_it);
-    show_it = settings->value ("editor/show_hscroll_bar",true).toBool ();
+    show_it = settings->value (ed_show_hscroll_bar).toBool ();
     m_show_hscrollbar_action->setChecked (show_it);
 
     set_shortcuts ();
+
+    // Find dialog with the same icon as the editor
+    if (m_find_dialog)
+      m_find_dialog->setWindowIcon (windowIcon ());
 
     // Relay signal to file editor tabs.
     emit fetab_settings_changed (settings);
@@ -1115,107 +1302,125 @@ namespace octave
     // Shortcuts also available in the main window, as well as the related
     // shortcuts, are defined in main_window and added to the editor
 
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
     // File menu
-    shortcut_manager::set_shortcut (m_edit_function_action, "editor_file:edit_function");
-    shortcut_manager::set_shortcut (m_save_action, "editor_file:save");
-    shortcut_manager::set_shortcut (m_save_as_action, "editor_file:save_as");
-    shortcut_manager::set_shortcut (m_close_action, "editor_file:close");
-    shortcut_manager::set_shortcut (m_close_all_action, "editor_file:close_all");
-    shortcut_manager::set_shortcut (m_close_others_action, "editor_file:close_other");
-    shortcut_manager::set_shortcut (m_print_action, "editor_file:print");
+    scmgr.set_shortcut (m_edit_function_action, sc_edit_file_edit_function);
+    scmgr.set_shortcut (m_save_action, sc_edit_file_save);
+    scmgr.set_shortcut (m_save_as_action, sc_edit_file_save_as);
+    scmgr.set_shortcut (m_close_action, sc_edit_file_close);
+    scmgr.set_shortcut (m_close_all_action, sc_edit_file_close_all);
+    scmgr.set_shortcut (m_close_others_action, sc_edit_file_close_other);
+    scmgr.set_shortcut (m_print_action, sc_edit_file_print);
 
     // Edit menu
-    shortcut_manager::set_shortcut (m_redo_action, "editor_edit:redo");
-    shortcut_manager::set_shortcut (m_cut_action, "editor_edit:cut");
-    shortcut_manager::set_shortcut (m_find_action, "editor_edit:find_replace");
-    shortcut_manager::set_shortcut (m_find_next_action, "editor_edit:find_next");
-    shortcut_manager::set_shortcut (m_find_previous_action, "editor_edit:find_previous");
+    scmgr.set_shortcut (m_redo_action, sc_edit_edit_redo);
+    scmgr.set_shortcut (m_cut_action, sc_edit_edit_cut);
+    scmgr.set_shortcut (m_find_action, sc_edit_edit_find_replace);
+    scmgr.set_shortcut (m_find_next_action, sc_edit_edit_find_next);
+    scmgr.set_shortcut (m_find_previous_action, sc_edit_edit_find_previous);
 
-    shortcut_manager::set_shortcut (m_delete_start_word_action, "editor_edit:delete_start_word");
-    shortcut_manager::set_shortcut (m_delete_end_word_action, "editor_edit:delete_end_word");
-    shortcut_manager::set_shortcut (m_delete_start_line_action, "editor_edit:delete_start_line");
-    shortcut_manager::set_shortcut (m_delete_end_line_action, "editor_edit:delete_end_line");
-    shortcut_manager::set_shortcut (m_delete_line_action, "editor_edit:delete_line");
-    shortcut_manager::set_shortcut (m_copy_line_action, "editor_edit:copy_line");
-    shortcut_manager::set_shortcut (m_cut_line_action, "editor_edit:cut_line");
-    shortcut_manager::set_shortcut (m_duplicate_selection_action, "editor_edit:duplicate_selection");
-    shortcut_manager::set_shortcut (m_transpose_line_action, "editor_edit:transpose_line");
-    shortcut_manager::set_shortcut (m_comment_selection_action, "editor_edit:comment_selection");
-    shortcut_manager::set_shortcut (m_uncomment_selection_action, "editor_edit:uncomment_selection");
-    shortcut_manager::set_shortcut (m_comment_var_selection_action, "editor_edit:comment_var_selection");
+    scmgr.set_shortcut (m_delete_start_word_action, sc_edit_edit_delete_start_word);
+    scmgr.set_shortcut (m_delete_end_word_action, sc_edit_edit_delete_end_word);
+    scmgr.set_shortcut (m_delete_start_line_action, sc_edit_edit_delete_start_line);
+    scmgr.set_shortcut (m_delete_end_line_action, sc_edit_edit_delete_end_line);
+    scmgr.set_shortcut (m_delete_line_action, sc_edit_edit_delete_line);
+    scmgr.set_shortcut (m_copy_line_action, sc_edit_edit_copy_line);
+    scmgr.set_shortcut (m_cut_line_action, sc_edit_edit_cut_line);
+    scmgr.set_shortcut (m_duplicate_selection_action, sc_edit_edit_duplicate_selection);
+    scmgr.set_shortcut (m_transpose_line_action, sc_edit_edit_transpose_line);
+    scmgr.set_shortcut (m_comment_selection_action, sc_edit_edit_comment_selection);
+    scmgr.set_shortcut (m_uncomment_selection_action, sc_edit_edit_uncomment_selection);
+    scmgr.set_shortcut (m_comment_var_selection_action, sc_edit_edit_comment_var_selection);
 
-    shortcut_manager::set_shortcut (m_upper_case_action, "editor_edit:upper_case");
-    shortcut_manager::set_shortcut (m_lower_case_action, "editor_edit:lower_case");
-    shortcut_manager::set_shortcut (m_indent_selection_action, "editor_edit:indent_selection");
-    shortcut_manager::set_shortcut (m_unindent_selection_action, "editor_edit:unindent_selection");
-    shortcut_manager::set_shortcut (m_smart_indent_line_or_selection_action, "editor_edit:smart_indent_line_or_selection");
-    shortcut_manager::set_shortcut (m_completion_action, "editor_edit:completion_list");
-    shortcut_manager::set_shortcut (m_goto_line_action, "editor_edit:goto_line");
-    shortcut_manager::set_shortcut (m_move_to_matching_brace, "editor_edit:move_to_brace");
-    shortcut_manager::set_shortcut (m_sel_to_matching_brace, "editor_edit:select_to_brace");
-    shortcut_manager::set_shortcut (m_toggle_bookmark_action, "editor_edit:toggle_bookmark");
-    shortcut_manager::set_shortcut (m_next_bookmark_action, "editor_edit:next_bookmark");
-    shortcut_manager::set_shortcut (m_previous_bookmark_action, "editor_edit:previous_bookmark");
-    shortcut_manager::set_shortcut (m_remove_bookmark_action, "editor_edit:remove_bookmark");
-    shortcut_manager::set_shortcut (m_preferences_action, "editor_edit:preferences");
-    shortcut_manager::set_shortcut (m_styles_preferences_action, "editor_edit:styles_preferences");
+    scmgr.set_shortcut (m_upper_case_action, sc_edit_edit_upper_case);
+    scmgr.set_shortcut (m_lower_case_action, sc_edit_edit_lower_case);
+    scmgr.set_shortcut (m_indent_selection_action, sc_edit_edit_indent_selection);
+    scmgr.set_shortcut (m_unindent_selection_action, sc_edit_edit_unindent_selection);
+    scmgr.set_shortcut (m_smart_indent_line_or_selection_action, sc_edit_edit_smart_indent_line_or_selection);
+    scmgr.set_shortcut (m_completion_action, sc_edit_edit_completion_list);
+    scmgr.set_shortcut (m_goto_line_action, sc_edit_edit_goto_line);
+    scmgr.set_shortcut (m_move_to_matching_brace, sc_edit_edit_move_to_brace);
+    scmgr.set_shortcut (m_sel_to_matching_brace, sc_edit_edit_select_to_brace);
+    scmgr.set_shortcut (m_toggle_bookmark_action, sc_edit_edit_toggle_bookmark);
+    scmgr.set_shortcut (m_next_bookmark_action, sc_edit_edit_next_bookmark);
+    scmgr.set_shortcut (m_previous_bookmark_action, sc_edit_edit_previous_bookmark);
+    scmgr.set_shortcut (m_remove_bookmark_action, sc_edit_edit_remove_bookmark);
+    scmgr.set_shortcut (m_preferences_action, sc_edit_edit_preferences);
+    scmgr.set_shortcut (m_styles_preferences_action, sc_edit_edit_styles_preferences);
 
-    shortcut_manager::set_shortcut (m_conv_eol_windows_action, "editor_edit:conv_eol_winows");
-    shortcut_manager::set_shortcut (m_conv_eol_unix_action,    "editor_edit:conv_eol_unix");
-    shortcut_manager::set_shortcut (m_conv_eol_mac_action,     "editor_edit:conv_eol_mac");
+    scmgr.set_shortcut (m_conv_eol_windows_action, sc_edit_edit_conv_eol_winows);
+    scmgr.set_shortcut (m_conv_eol_unix_action,    sc_edit_edit_conv_eol_unix);
+    scmgr.set_shortcut (m_conv_eol_mac_action,     sc_edit_edit_conv_eol_mac);
 
     // View menu
-    shortcut_manager::set_shortcut (m_show_linenum_action, "editor_view:show_line_numbers");
-    shortcut_manager::set_shortcut (m_show_whitespace_action, "editor_view:show_white_spaces");
-    shortcut_manager::set_shortcut (m_show_eol_action, "editor_view:show_eol_chars");
-    shortcut_manager::set_shortcut (m_show_indguide_action, "editor_view:show_ind_guides");
-    shortcut_manager::set_shortcut (m_show_longline_action, "editor_view:show_long_line");
-    shortcut_manager::set_shortcut (m_show_toolbar_action, "editor_view:show_toolbar");
-    shortcut_manager::set_shortcut (m_show_statusbar_action, "editor_view:show_statusbar");
-    shortcut_manager::set_shortcut (m_show_hscrollbar_action, "editor_view:show_hscrollbar");
-    shortcut_manager::set_shortcut (m_zoom_in_action, "editor_view:zoom_in");
-    shortcut_manager::set_shortcut (m_zoom_out_action, "editor_view:zoom_out");
-    shortcut_manager::set_shortcut (m_zoom_normal_action, "editor_view:zoom_normal");
+    scmgr.set_shortcut (m_show_linenum_action, sc_edit_view_show_line_numbers);
+    scmgr.set_shortcut (m_show_whitespace_action, sc_edit_view_show_white_spaces);
+    scmgr.set_shortcut (m_show_eol_action, sc_edit_view_show_eol_chars);
+    scmgr.set_shortcut (m_show_indguide_action, sc_edit_view_show_ind_guides);
+    scmgr.set_shortcut (m_show_longline_action, sc_edit_view_show_long_line);
+    scmgr.set_shortcut (m_show_toolbar_action, sc_edit_view_show_toolbar);
+    scmgr.set_shortcut (m_show_statusbar_action, sc_edit_view_show_statusbar);
+    scmgr.set_shortcut (m_show_hscrollbar_action, sc_edit_view_show_hscrollbar);
+    scmgr.set_shortcut (m_zoom_in_action, sc_edit_view_zoom_in);
+    scmgr.set_shortcut (m_zoom_out_action, sc_edit_view_zoom_out);
+    scmgr.set_shortcut (m_zoom_normal_action, sc_edit_view_zoom_normal);
+    scmgr.set_shortcut (m_sort_tabs_action, sc_edit_view_sort_tabs);
 
     // Debug menu
-    shortcut_manager::set_shortcut (m_toggle_breakpoint_action, "editor_debug:toggle_breakpoint");
-    shortcut_manager::set_shortcut (m_next_breakpoint_action, "editor_debug:next_breakpoint");
-    shortcut_manager::set_shortcut (m_previous_breakpoint_action, "editor_debug:previous_breakpoint");
-    shortcut_manager::set_shortcut (m_remove_all_breakpoints_action, "editor_debug:remove_breakpoints");
+    scmgr.set_shortcut (m_toggle_breakpoint_action, sc_edit_debug_toggle_breakpoint);
+    scmgr.set_shortcut (m_next_breakpoint_action, sc_edit_debug_next_breakpoint);
+    scmgr.set_shortcut (m_previous_breakpoint_action, sc_edit_debug_previous_breakpoint);
+    scmgr.set_shortcut (m_remove_all_breakpoints_action, sc_edit_debug_remove_breakpoints);
 
     // Run menu
-    shortcut_manager::set_shortcut (m_run_action, "editor_run:run_file");
-    shortcut_manager::set_shortcut (m_run_selection_action, "editor_run:run_selection");
+    scmgr.set_shortcut (m_run_action, sc_edit_run_run_file);
+    scmgr.set_shortcut (m_run_selection_action, sc_edit_run_run_selection);
 
     // Help menu
-    shortcut_manager::set_shortcut (m_context_help_action, "editor_help:help_keyword");
-    shortcut_manager::set_shortcut (m_context_doc_action,  "editor_help:doc_keyword");
+    scmgr.set_shortcut (m_context_help_action, sc_edit_help_help_keyword);
+    scmgr.set_shortcut (m_context_doc_action,  sc_edit_help_doc_keyword);
 
     // Tab navigation without menu entries
-    shortcut_manager::set_shortcut (m_switch_left_tab_action, "editor_tabs:switch_left_tab");
-    shortcut_manager::set_shortcut (m_switch_right_tab_action, "editor_tabs:switch_right_tab");
-    shortcut_manager::set_shortcut (m_move_tab_left_action, "editor_tabs:move_tab_left");
-    shortcut_manager::set_shortcut (m_move_tab_right_action, "editor_tabs:move_tab_right");
+    scmgr.set_shortcut (m_switch_left_tab_action, sc_edit_tabs_switch_left_tab);
+    scmgr.set_shortcut (m_switch_right_tab_action, sc_edit_tabs_switch_right_tab);
+    scmgr.set_shortcut (m_move_tab_left_action, sc_edit_tabs_move_tab_left);
+    scmgr.set_shortcut (m_move_tab_right_action, sc_edit_tabs_move_tab_right);
 
   }
 
   // This slot is a reimplementation of the virtual slot in octave_dock_widget.
-  // We need this for creating an empty script when the editor has no open files
-  // and is made visible
+  // We need this for creating an empty script when the editor has no open
+  // files and is made visible.
   void file_editor::handle_visibility (bool visible)
   {
     if (m_closed && visible)
       {
         m_closed = false;
-        QSettings *settings = resource_manager::get_settings ();
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings *settings = rmgr.get_settings ();
         restore_session (settings);
       }
 
     empty_script (false, visible);
 
     if (visible && ! isFloating ())
-      focus ();
+      setFocus ();
+  }
 
+  // This slot is a reimplementation of the virtual slot in octave_dock_widget.
+  // We need this for updating the parent of the find dialog
+  void file_editor::toplevel_change (bool)
+  {
+    if (m_find_dialog)
+      {
+        // close current dialog
+        m_find_dialog->close ();
+
+        // re-create dialog with the new parent (editor or main-win)
+        find_create ();
+        m_find_dialog->activateWindow ();
+      }
   }
 
   void file_editor::update_octave_directory (const QString& dir)
@@ -1263,20 +1468,21 @@ namespace octave
     if (call_custom_editor (openFileName, line))
       return;   // custom editor called
 
-    QSettings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     bool show_dbg_file
-      = settings->value (ed_show_dbg_file.key, ed_show_dbg_file.def).toBool ();
+      = settings->value (ed_show_dbg_file).toBool ();
 
     if (openFileName.isEmpty ())
       {
         // This happens if edit is called without an argument
-        // Open eitor with empty edit area instead (as new file would do)
+        // Open editor with empty edit area instead (as new file would do)
         request_new_file ("");
       }
     else
       {
         // Check whether this file is already open in the editor.
-        QWidget *tab = find_tab_widget (openFileName);
+        file_editor_tab *tab = find_tab_widget (openFileName);
 
         if (tab)
           {
@@ -1294,10 +1500,11 @@ namespace octave
                   emit fetab_do_breakpoint_marker (insert, tab, line, cond);
               }
 
-            if (show_dbg_file && ! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
+            if (show_dbg_file && ! ((breakpoint_marker || debug_pointer)
+                                    && is_editor_console_tabbed ()))
               {
                 emit fetab_set_focus (tab);
-                focus ();
+                activate ();
               }
           }
         else
@@ -1314,7 +1521,7 @@ namespace octave
             tab = find_tab_widget ("");
             if (tab)
               {
-                fileEditorTab = static_cast<file_editor_tab *>(tab);
+                fileEditorTab = tab;
                 if (fileEditorTab->qsci_edit_area ()->isModified ())
                   fileEditorTab = nullptr;
                 else
@@ -1323,105 +1530,102 @@ namespace octave
 
             // If <unnamed> was absent or modified, create a new tab.
             if (! fileEditorTab)
-              fileEditorTab = new file_editor_tab ();
+              fileEditorTab = make_file_editor_tab ();
 
-            if (fileEditorTab)
+            fileEditorTab->set_encoding (encoding);
+            QString result = fileEditorTab->load_file (openFileName);
+            if (result == "")
               {
-                fileEditorTab->set_encoding (encoding);
-                QString result = fileEditorTab->load_file (openFileName);
-                if (result == "")
+                // Supply empty title then have the file_editor_tab update
+                // with full or short name.
+                if (! reusing)
+                  add_file_editor_tab (fileEditorTab, "", index);
+                fileEditorTab->update_window_title (false);
+                // file already loaded, add file to mru list here
+                QFileInfo file_info = QFileInfo (openFileName);
+                handle_mru_add_file (file_info.canonicalFilePath (),
+                                     encoding);
+
+                if (line > 0)
                   {
-                    // Supply empty title then have the file_editor_tab update
-                    // with full or short name.
-                    if (! reusing)
-                      add_file_editor_tab (fileEditorTab, "", index);
-                    fileEditorTab->update_window_title (false);
-                    // file already loaded, add file to mru list here
-                    QFileInfo file_info = QFileInfo (openFileName);
-                    handle_mru_add_file (file_info.canonicalFilePath (),
-                                         encoding);
+                    if (insert)
+                      emit fetab_goto_line (fileEditorTab, line);
 
-                    if (line > 0)
-                      {
-                        if (insert)
-                          emit fetab_goto_line (fileEditorTab, line);
+                    if (debug_pointer)
+                      emit fetab_insert_debugger_pointer (fileEditorTab,
+                                                          line);
+                    if (breakpoint_marker)
+                      emit fetab_do_breakpoint_marker (insert, fileEditorTab,
+                                                       line, cond);
+                  }
+              }
+            else
+              {
+                delete fileEditorTab;
+                fileEditorTab = nullptr;
 
-                        if (debug_pointer)
-                          emit fetab_insert_debugger_pointer (fileEditorTab,
-                                                              line);
-                        if (breakpoint_marker)
-                          emit fetab_do_breakpoint_marker (insert, fileEditorTab,
-                                                           line, cond);
-                      }
+                if (QFile::exists (openFileName))
+                  {
+                    // File not readable:
+                    // create a NonModal message about error.
+                    QMessageBox *msgBox
+                      = new QMessageBox (QMessageBox::Critical,
+                                         tr ("Octave Editor"),
+                                         tr ("Could not open file\n%1\nfor read: %2.").
+                                         arg (openFileName).arg (result),
+                                         QMessageBox::Ok, this);
+
+                    msgBox->setWindowModality (Qt::NonModal);
+                    msgBox->setAttribute (Qt::WA_DeleteOnClose);
+                    msgBox->show ();
                   }
                 else
                   {
-                    delete fileEditorTab;
-                    fileEditorTab = nullptr;
+                    // File does not exist, should it be created?
+                    bool create_file = true;
+                    QMessageBox *msgBox;
 
-                    if (QFile::exists (openFileName))
+                    if (! settings->value (ed_create_new_file).toBool ())
                       {
-                        // File not readable:
-                        // create a NonModal message about error.
-                        QMessageBox *msgBox
-                          = new QMessageBox (QMessageBox::Critical,
-                                             tr ("Octave Editor"),
-                                             tr ("Could not open file\n%1\nfor read: %2.").
-                                             arg (openFileName).arg (result),
-                                             QMessageBox::Ok, this);
+                        msgBox = new QMessageBox (QMessageBox::Question,
+                                                  tr ("Octave Editor"),
+                                                  tr ("File\n%1\ndoes not exist. "
+                                                      "Do you want to create it?").arg (openFileName),
+                                                  QMessageBox::NoButton,nullptr);
+                        QPushButton *create_button =
+                          msgBox->addButton (tr ("Create"), QMessageBox::YesRole);
+                        msgBox->addButton (tr ("Cancel"), QMessageBox::RejectRole);
+                        msgBox->setDefaultButton (create_button);
+                        msgBox->exec ();
 
-                        msgBox->setWindowModality (Qt::NonModal);
-                        msgBox->setAttribute (Qt::WA_DeleteOnClose);
-                        msgBox->show ();
+                        QAbstractButton *clicked_button = msgBox->clickedButton ();
+                        if (clicked_button != create_button)
+                          create_file = false;
+
+                        delete msgBox;
                       }
-                    else
+
+                    if (create_file)
                       {
-                        // File does not exist, should it be created?
-                        bool create_file = true;
-                        QMessageBox *msgBox;
-
-                        if (! settings->value ("editor/create_new_file", false).toBool ())
+                        // create the file and call the editor again
+                        QFile file (openFileName);
+                        if (! file.open (QIODevice::WriteOnly))
                           {
-                            msgBox = new QMessageBox (QMessageBox::Question,
+                            // error opening the file
+                            msgBox = new QMessageBox (QMessageBox::Critical,
                                                       tr ("Octave Editor"),
-                                                      tr ("File\n%1\ndoes not exist. "
-                                                          "Do you want to create it?").arg (openFileName),
-                                                      QMessageBox::NoButton,nullptr);
-                            QPushButton *create_button =
-                              msgBox->addButton (tr ("Create"), QMessageBox::YesRole);
-                            msgBox->addButton (tr ("Cancel"), QMessageBox::RejectRole);
-                            msgBox->setDefaultButton (create_button);
-                            msgBox->exec ();
+                                                      tr ("Could not open file\n%1\nfor write: %2.").
+                                                      arg (openFileName).arg (file.errorString ()),
+                                                      QMessageBox::Ok, this);
 
-                            QAbstractButton *clicked_button = msgBox->clickedButton ();
-                            if (clicked_button != create_button)
-                              create_file = false;
-
-                            delete msgBox;
+                            msgBox->setWindowModality (Qt::NonModal);
+                            msgBox->setAttribute (Qt::WA_DeleteOnClose);
+                            msgBox->show ();
                           }
-
-                        if (create_file)
+                        else
                           {
-                            // create the file and call the editor again
-                            QFile file (openFileName);
-                            if (! file.open (QIODevice::WriteOnly))
-                              {
-                                // error opening the file
-                                msgBox = new QMessageBox (QMessageBox::Critical,
-                                                          tr ("Octave Editor"),
-                                                          tr ("Could not open file\n%1\nfor write: %2.").
-                                                          arg (openFileName).arg (file.errorString ()),
-                                                          QMessageBox::Ok, this);
-
-                                msgBox->setWindowModality (Qt::NonModal);
-                                msgBox->setAttribute (Qt::WA_DeleteOnClose);
-                                msgBox->show ();
-                              }
-                            else
-                              {
-                                file.close ();
-                                request_open_file (openFileName);
-                              }
+                            file.close ();
+                            request_open_file (openFileName);
                           }
                       }
                   }
@@ -1433,7 +1637,7 @@ namespace octave
                 // and the current editor tab
                 if (fileEditorTab)
                   fileEditorTab->update_breakpoints ();
-                focus ();
+                activate ();
                 emit file_loaded_signal ();
               }
           }
@@ -1452,42 +1656,42 @@ namespace octave
 
   void file_editor::show_line_numbers (bool)
   {
-    toggle_preference ("editor/showLineNumbers",true);
+    toggle_preference (ed_show_line_numbers);
   }
 
   void file_editor::show_white_space (bool)
   {
-    toggle_preference ("editor/show_white_space",false);
+    toggle_preference (ed_show_white_space);
   }
 
   void file_editor::show_eol_chars (bool)
   {
-    toggle_preference ("editor/show_eol_chars",false);
+    toggle_preference (ed_show_eol_chars);
   }
 
   void file_editor::show_indent_guides (bool)
   {
-    toggle_preference ("editor/show_indent_guides",false);
+    toggle_preference (ed_show_indent_guides);
   }
 
   void file_editor::show_long_line (bool)
   {
-    toggle_preference ("editor/long_line_marker",true);
+    toggle_preference (ed_long_line_marker);
   }
 
   void file_editor::show_toolbar (bool)
   {
-    toggle_preference ("editor/show_toolbar",true);
+    toggle_preference (ed_show_toolbar);
   }
 
   void file_editor::show_statusbar (bool)
   {
-    toggle_preference ("editor/show_edit_status_bar",true);
+    toggle_preference (ed_show_edit_status_bar);
   }
 
   void file_editor::show_hscrollbar (bool)
   {
-    toggle_preference ("editor/show_hscroll_bar",true);
+    toggle_preference (ed_show_hscroll_bar);
   }
 
   void file_editor::zoom_in (bool)
@@ -1509,9 +1713,8 @@ namespace octave
   {
     // remove all standard actions from scintilla
     QList<QAction *> all_actions = menu->actions ();
-    QAction *a;
 
-    foreach (a, all_actions)
+    for (auto *a : all_actions)
       menu->removeAction (a);
 
     // add editor's actions with icons and customized shortcuts
@@ -1543,15 +1746,17 @@ namespace octave
   // handler for the close event
   void file_editor::closeEvent (QCloseEvent *e)
   {
-    QSettings *settings = resource_manager::get_settings ();
-    if (settings->value ("editor/hiding_closes_files",false).toBool ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (settings->value (ed_hiding_closes_files).toBool ())
       {
         if (check_closing ())
           {
-            // all tabs are closed without cancelling,
-            // store closing state for restoring session when shown again
+            // All tabs are closed without cancelling,
+            // store closing state for restoring session when shown again.
+            // Editor is closing when session data is stored in preferences
             m_closed = true;
-            e->accept ();
+            e->ignore ();
           }
         else
           {
@@ -1577,7 +1782,7 @@ namespace octave
   {
     if (e->mimeData ()->hasUrls ())
       {
-        foreach (QUrl url, e->mimeData ()->urls ())
+        for (const auto& url : e->mimeData ()->urls ())
           request_open_file (url.toLocalFile ());
       }
   }
@@ -1605,8 +1810,8 @@ namespace octave
     // FIXME: what was the intended purpose of this unused variable?
     // QStyle *editor_style = QApplication::style ();
 
-    // Menu bar: do not set it native, required in MacOS and Ubuntu Unity (Qt5)
-    // for a visible menu bar in the editor widget. This property is ignored
+    // Menu bar: do not set it native, required in macOS and Ubuntu Unity (Qt5)
+    // for a visible menu bar in the editor widget.  This property is ignored
     // on other platforms.
     m_menu_bar = new QMenuBar (editor_widget);
     m_menu_bar->setNativeMenuBar (false);
@@ -1616,10 +1821,12 @@ namespace octave
 
     m_tab_widget = new file_editor_tab_widget (editor_widget);
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     // the mru-list and an empty array of actions
-    QSettings *settings = resource_manager::get_settings ();
-    m_mru_files = settings->value ("editor/mru_file_list").toStringList ();
-    m_mru_files_encodings = settings->value ("editor/mru_file_encodings")
+    gui_settings *settings = rmgr.get_settings ();
+    m_mru_files = settings->value (ed_mru_file_list).toStringList ();
+    m_mru_files_encodings = settings->value (ed_mru_file_encodings)
                             .toStringList ();
 
     if (m_mru_files_encodings.count () != m_mru_files.count ())
@@ -1658,79 +1865,61 @@ namespace octave
     m_fileMenu->addSeparator ();
 
     m_save_action
-      = add_action (m_fileMenu,
-                    resource_manager::icon ("document-save"),
-                    tr ("&Save File"),
-                    SLOT (request_save_file (bool)));
+      = add_action (m_fileMenu, rmgr.icon ("document-save"),
+                    tr ("&Save File"), SLOT (request_save_file (bool)));
 
     m_save_as_action
-      = add_action (m_fileMenu,
-                    resource_manager::icon ("document-save-as"),
+      = add_action (m_fileMenu, rmgr.icon ("document-save-as"),
                     tr ("Save File &As..."),
                     SLOT (request_save_file_as (bool)));
 
     m_fileMenu->addSeparator ();
 
     m_close_action
-      = add_action (m_fileMenu,
-                    resource_manager::icon ("window-close",false),
-                    tr ("&Close"),
-                    SLOT (request_close_file (bool)));
+      = add_action (m_fileMenu, rmgr.icon ("window-close",false),
+                    tr ("&Close"), SLOT (request_close_file (bool)));
 
     m_close_all_action
-      = add_action (m_fileMenu,
-                    resource_manager::icon ("window-close",false),
-                    tr ("Close All"),
-                    SLOT (request_close_all_files (bool)));
+      = add_action (m_fileMenu, rmgr.icon ("window-close",false),
+                    tr ("Close All"), SLOT (request_close_all_files (bool)));
 
     m_close_others_action
-      = add_action (m_fileMenu,
-                    resource_manager::icon ("window-close",false),
+      = add_action (m_fileMenu, rmgr.icon ("window-close",false),
                     tr ("Close Other Files"),
                     SLOT (request_close_other_files (bool)));
 
     m_fileMenu->addSeparator ();
 
     m_print_action
-      = add_action (m_fileMenu,
-                    resource_manager::icon ("document-print"),
-                    tr ("Print..."),
-                    SLOT (request_print_file (bool)));
+      = add_action (m_fileMenu, rmgr.icon ("document-print"),
+                    tr ("Print..."), SLOT (request_print_file (bool)));
 
     // edit menu (undo, copy, paste and select all later via main window)
 
     m_edit_menu = add_menu (m_menu_bar, tr ("&Edit"));
 
     m_redo_action
-      = add_action (m_edit_menu,
-                    resource_manager::icon ("edit-redo"),
-                    tr ("&Redo"),
-                    SLOT (request_redo (bool)));
+      = add_action (m_edit_menu, rmgr.icon ("edit-redo"),
+                    tr ("&Redo"), SLOT (request_redo (bool)));
     m_redo_action->setEnabled (false);
 
     m_edit_menu->addSeparator ();
 
     m_cut_action
-      = add_action (m_edit_menu,
-                    resource_manager::icon ("edit-cut"),
-                    tr ("Cu&t"),
-                    SLOT (request_cut (bool)));
+      = add_action (m_edit_menu, rmgr.icon ("edit-cut"),
+                    tr ("Cu&t"), SLOT (request_cut (bool)));
     m_cut_action->setEnabled (false);
 
     m_find_action
-      = add_action (m_edit_menu,
-                    resource_manager::icon ("edit-find-replace"),
-                    tr ("&Find and Replace..."),
-                    SLOT (request_find (bool)));
+      = add_action (m_edit_menu, rmgr.icon ("edit-find-replace"),
+                    tr ("&Find and Replace..."), SLOT (request_find (bool)));
 
     m_find_next_action
-      = add_action (m_edit_menu,
-                    tr ("Find &Next..."),
+      = add_action (m_edit_menu, tr ("Find &Next..."),
                     SLOT (request_find_next (bool)));
 
     m_find_previous_action
-      = add_action (m_edit_menu,
-                    tr ("Find &Previous..."),
+      = add_action (m_edit_menu, tr ("Find &Previous..."),
                     SLOT (request_find_previous (bool)));
 
     m_edit_menu->addSeparator ();
@@ -1738,105 +1927,87 @@ namespace octave
     m_edit_cmd_menu = m_edit_menu->addMenu (tr ("&Commands"));
 
     m_delete_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Delete Line"),
+      = add_action (m_edit_cmd_menu, tr ("Delete Line"),
                     SLOT (request_delete_line (bool)));
 
     m_copy_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Copy Line"),
+      = add_action (m_edit_cmd_menu, tr ("Copy Line"),
                     SLOT (request_copy_line (bool)));
 
     m_cut_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Cut Line"),
+      = add_action (m_edit_cmd_menu, tr ("Cut Line"),
                     SLOT (request_cut_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
     m_delete_start_word_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Delete to Start of Word"),
+      = add_action (m_edit_cmd_menu, tr ("Delete to Start of Word"),
                     SLOT (request_delete_start_word (bool)));
 
     m_delete_end_word_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Delete to End of Word"),
+      = add_action (m_edit_cmd_menu, tr ("Delete to End of Word"),
                     SLOT (request_delete_end_word (bool)));
 
     m_delete_start_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Delete to Start of Line"),
+      = add_action (m_edit_cmd_menu, tr ("Delete to Start of Line"),
                     SLOT (request_delete_start_line (bool)));
 
     m_delete_end_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Delete to End of Line"),
+      = add_action (m_edit_cmd_menu, tr ("Delete to End of Line"),
                     SLOT (request_delete_end_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
     m_duplicate_selection_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Duplicate Selection/Line"),
+      = add_action (m_edit_cmd_menu, tr ("Duplicate Selection/Line"),
                     SLOT (request_duplicate_selection (bool)));
 
     m_transpose_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Transpose Line"),
+      = add_action (m_edit_cmd_menu, tr ("Transpose Line"),
                     SLOT (request_transpose_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
     m_completion_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("&Show Completion List"),
+      = add_action (m_edit_cmd_menu, tr ("&Show Completion List"),
                     SLOT (request_completion (bool)));
 
     m_edit_fmt_menu = m_edit_menu->addMenu (tr ("&Format"));
 
     m_upper_case_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Uppercase Selection"),
+      = add_action (m_edit_fmt_menu, tr ("&Uppercase Selection"),
                     SLOT (request_upper_case (bool)));
 
     m_lower_case_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Lowercase Selection"),
+      = add_action (m_edit_fmt_menu, tr ("&Lowercase Selection"),
                     SLOT (request_lower_case (bool)));
 
     m_edit_fmt_menu->addSeparator ();
 
     m_comment_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Comment"),
+      = add_action (m_edit_fmt_menu, tr ("&Comment"),
                     SLOT (request_comment_selected_text (bool)));
 
     m_uncomment_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Uncomment"),
+      = add_action (m_edit_fmt_menu, tr ("&Uncomment"),
                     SLOT (request_uncomment_selected_text (bool)));
 
     m_comment_var_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("Comment (Choosing String)"),
+      = add_action (m_edit_fmt_menu, tr ("Comment (Choosing String)"),
                     SLOT (request_comment_var_selected_text (bool)));
 
     m_edit_fmt_menu->addSeparator ();
 
     m_indent_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Indent Selection Rigidly"),
+      = add_action (m_edit_fmt_menu, tr ("&Indent Selection Rigidly"),
                     SLOT (request_indent_selected_text (bool)));
 
     m_unindent_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Unindent Selection Rigidly"),
+      = add_action (m_edit_fmt_menu, tr ("&Unindent Selection Rigidly"),
                     SLOT (request_unindent_selected_text (bool)));
 
     m_smart_indent_line_or_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("Indent Code"),
+      = add_action (m_edit_fmt_menu, tr ("Indent Code"),
                     SLOT (request_smart_indent_line_or_selected_text (void)));
 
     m_edit_fmt_menu->addSeparator ();
@@ -1847,8 +2018,7 @@ namespace octave
                     SLOT (request_conv_eol_windows (bool)));
 
     m_conv_eol_unix_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("Convert Line Endings to &Unix (LF)"),
+      = add_action (m_edit_fmt_menu, tr ("Convert Line Endings to &Unix (LF)"),
                     SLOT (request_conv_eol_unix (bool)));
 
     m_conv_eol_mac_action
@@ -1859,54 +2029,46 @@ namespace octave
     m_edit_nav_menu = m_edit_menu->addMenu (tr ("Navi&gation"));
 
     m_goto_line_action
-      = add_action (m_edit_nav_menu,
-                    tr ("Go &to Line..."),
+      = add_action (m_edit_nav_menu, tr ("Go &to Line..."),
                     SLOT (request_goto_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
     m_move_to_matching_brace
-      = add_action (m_edit_nav_menu,
-                    tr ("Move to Matching Brace"),
+      = add_action (m_edit_nav_menu, tr ("Move to Matching Brace"),
                     SLOT (request_move_match_brace (bool)));
 
     m_sel_to_matching_brace
-      = add_action (m_edit_nav_menu,
-                    tr ("Select to Matching Brace"),
+      = add_action (m_edit_nav_menu, tr ("Select to Matching Brace"),
                     SLOT (request_sel_match_brace (bool)));
 
     m_edit_nav_menu->addSeparator ();
 
     m_next_bookmark_action
-      = add_action (m_edit_nav_menu,
-                    tr ("&Next Bookmark"),
+      = add_action (m_edit_nav_menu, tr ("&Next Bookmark"),
                     SLOT (request_next_bookmark (bool)));
 
     m_previous_bookmark_action
-      = add_action (m_edit_nav_menu,
-                    tr ("Pre&vious Bookmark"),
+      = add_action (m_edit_nav_menu, tr ("Pre&vious Bookmark"),
                     SLOT (request_previous_bookmark (bool)));
 
     m_toggle_bookmark_action
-      = add_action (m_edit_nav_menu,
-                    tr ("Toggle &Bookmark"),
+      = add_action (m_edit_nav_menu, tr ("Toggle &Bookmark"),
                     SLOT (request_toggle_bookmark (bool)));
 
     m_remove_bookmark_action
-      = add_action (m_edit_nav_menu,
-                    tr ("&Remove All Bookmarks"),
+      = add_action (m_edit_nav_menu, tr ("&Remove All Bookmarks"),
                     SLOT (request_remove_bookmark (bool)));
 
     m_edit_menu->addSeparator ();
 
     m_preferences_action
-      = add_action (m_edit_menu,
-                    resource_manager::icon ("preferences-system"),
+      = add_action (m_edit_menu, rmgr.icon ("preferences-system"),
                     tr ("&Preferences..."),
                     SLOT (request_preferences (bool)));
 
     m_styles_preferences_action
-      = add_action (m_edit_menu,  resource_manager::icon ("preferences-system"),
+      = add_action (m_edit_menu, rmgr.icon ("preferences-system"),
                     tr ("&Styles Preferences..."),
                     SLOT (request_styles_preferences (bool)));
 
@@ -1917,71 +2079,66 @@ namespace octave
     m_view_editor_menu = view_menu->addMenu (tr ("&Editor"));
 
     m_show_linenum_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Line Numbers"),
+      = add_action (m_view_editor_menu, tr ("Show &Line Numbers"),
                     SLOT (show_line_numbers (bool)));
     m_show_linenum_action->setCheckable (true);
 
     m_show_whitespace_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Whitespace Characters"),
+      = add_action (m_view_editor_menu, tr ("Show &Whitespace Characters"),
                     SLOT (show_white_space (bool)));
     m_show_whitespace_action->setCheckable (true);
 
     m_show_eol_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show Line &Endings"),
+      = add_action (m_view_editor_menu, tr ("Show Line &Endings"),
                     SLOT (show_eol_chars (bool)));
     m_show_eol_action->setCheckable (true);
 
     m_show_indguide_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Indentation Guides"),
+      = add_action (m_view_editor_menu, tr ("Show &Indentation Guides"),
                     SLOT (show_indent_guides (bool)));
     m_show_indguide_action->setCheckable (true);
 
     m_show_longline_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show Long Line &Marker"),
+      = add_action (m_view_editor_menu, tr ("Show Long Line &Marker"),
                     SLOT (show_long_line (bool)));
     m_show_longline_action->setCheckable (true);
 
     m_view_editor_menu->addSeparator ();
 
     m_show_toolbar_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Toolbar"),
+      = add_action (m_view_editor_menu, tr ("Show &Toolbar"),
                     SLOT (show_toolbar (bool)));
     m_show_toolbar_action->setCheckable (true);
 
     m_show_statusbar_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Statusbar"),
+      = add_action (m_view_editor_menu, tr ("Show &Statusbar"),
                     SLOT (show_statusbar (bool)));
     m_show_statusbar_action->setCheckable (true);
 
     m_show_hscrollbar_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Horizontal Scrollbar"),
+      = add_action (m_view_editor_menu, tr ("Show &Horizontal Scrollbar"),
                     SLOT (show_hscrollbar (bool)));
     m_show_hscrollbar_action->setCheckable (true);
 
     view_menu->addSeparator ();
 
     m_zoom_in_action
-      = add_action (view_menu, resource_manager::icon ("zoom-in"),
-                    tr ("Zoom &In"),
+      = add_action (view_menu, rmgr.icon ("zoom-in"), tr ("Zoom &In"),
                     SLOT (zoom_in (bool)));
 
     m_zoom_out_action
-      = add_action (view_menu, resource_manager::icon ("zoom-out"),
-                    tr ("Zoom &Out"),
+      = add_action (view_menu, rmgr.icon ("zoom-out"), tr ("Zoom &Out"),
                     SLOT (zoom_out (bool)));
 
     m_zoom_normal_action
-      = add_action (view_menu,
-                    tr ("&Normal Size"),
-                    SLOT (zoom_normal (bool)));
+      = add_action (view_menu, tr ("&Normal Size"), SLOT (zoom_normal (bool)));
+
+    view_menu->addSeparator ();
+
+    m_sort_tabs_action
+      = add_action (view_menu, tr ("&Sort Tabs Alphabetically"),
+                    SLOT (sort_tabs_alph (void)),
+                    m_tab_widget->get_tab_bar ());
 
     m_menu_bar->addMenu (view_menu);
 
@@ -1990,26 +2147,22 @@ namespace octave
     m_debug_menu = add_menu (m_menu_bar, tr ("&Debug"));
 
     m_toggle_breakpoint_action
-      = add_action (m_debug_menu,
-                    resource_manager::icon ("bp-toggle"),
+      = add_action (m_debug_menu, rmgr.icon ("bp-toggle"),
                     tr ("Toggle &Breakpoint"),
                     SLOT (request_toggle_breakpoint (bool)));
 
     m_next_breakpoint_action
-      = add_action (m_debug_menu,
-                    resource_manager::icon ("bp-next"),
+      = add_action (m_debug_menu, rmgr.icon ("bp-next"),
                     tr ("&Next Breakpoint"),
                     SLOT (request_next_breakpoint (bool)));
 
     m_previous_breakpoint_action
-      = add_action (m_debug_menu,
-                    resource_manager::icon ("bp-prev"),
+      = add_action (m_debug_menu, rmgr.icon ("bp-prev"),
                     tr ("Pre&vious Breakpoint"),
                     SLOT (request_previous_breakpoint (bool)));
 
     m_remove_all_breakpoints_action
-      = add_action (m_debug_menu,
-                    resource_manager::icon ("bp-rm-all"),
+      = add_action (m_debug_menu, rmgr.icon ("bp-rm-all"),
                     tr ("&Remove All Breakpoints"),
                     SLOT (request_remove_breakpoint (bool)));
 
@@ -2023,8 +2176,8 @@ namespace octave
 
     m_run_action
       = add_action (_run_menu,
-                    resource_manager::icon ("system-run"),
-                    tr ("Save File and Run"),
+                    rmgr.icon ("system-run"),
+                    tr ("Save File and Run / Continue"),
                     SLOT (request_run_file (bool)));
 
     m_run_selection_action
@@ -2084,8 +2237,8 @@ namespace octave
     // m_undo_action: later via main window
     m_tool_bar->addAction (m_redo_action);
     m_tool_bar->addSeparator ();
-    // m_copy_action: later via the main window
     m_tool_bar->addAction (m_cut_action);
+    // m_copy_action: later via the main window
     // m_paste_action: later via the main window
     m_tool_bar->addAction (m_find_action);
     //m_tool_bar->addAction (m_find_next_action);
@@ -2104,6 +2257,7 @@ namespace octave
     vbox_layout->addWidget (m_tool_bar);
     vbox_layout->addWidget (m_tab_widget);
     vbox_layout->setMargin (0);
+    vbox_layout->setSpacing (0);
     editor_widget->setLayout (vbox_layout);
     setWidget (editor_widget);
 
@@ -2113,11 +2267,16 @@ namespace octave
     ctx_men->addAction (m_close_action);
     ctx_men->addAction (m_close_all_action);
     ctx_men->addAction (m_close_others_action);
+    ctx_men->addSeparator ();
+    ctx_men->addAction (m_sort_tabs_action);
 
     // signals
     connect (this, SIGNAL (request_settings_dialog (const QString&)),
              main_win (),
              SLOT (process_settings_dialog_request (const QString&)));
+
+    connect (this, SIGNAL (request_dbcont_signal (void)),
+             main_win (), SLOT (debug_continue (void)));
 
     connect (m_mru_file_menu, SIGNAL (triggered (QAction *)),
              this, SLOT (request_mru_open_file (QAction *)));
@@ -2137,13 +2296,10 @@ namespace octave
     check_actions ();
   }
 
-  void file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn,
-                                         int index)
+  file_editor_tab *
+  file_editor::make_file_editor_tab (const QString& directory)
   {
-    if (index == -1)
-      m_tab_widget->addTab (f, fn);
-    else
-      m_tab_widget->insertTab (index, f, fn);
+    file_editor_tab *f = new file_editor_tab (m_octave_qobj, directory);
 
     // signals from the qscintilla edit area
     connect (f->qsci_edit_area (), SIGNAL (status_update (bool, bool)),
@@ -2159,22 +2315,20 @@ namespace octave
              SIGNAL (execute_command_in_terminal_signal (const QString&)),
              main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
+    connect (f->qsci_edit_area (),
+             SIGNAL (focus_console_after_command_signal (void)),
+             main_win (), SLOT (focus_console_after_command (void)));
+
     // Signals from the file editor_tab
-    connect (f, SIGNAL (file_name_changed (const QString&, const QString&)),
+    connect (f, SIGNAL (file_name_changed (const QString&, const QString&, bool)),
              this, SLOT (handle_file_name_changed (const QString&,
-                                                   const QString&)));
+                                                   const QString&, bool)));
 
     connect (f, SIGNAL (editor_state_changed (bool, bool)),
              this, SLOT (handle_editor_state_changed (bool, bool)));
 
     connect (f, SIGNAL (tab_remove_request ()),
              this, SLOT (handle_tab_remove_request ()));
-
-    connect (f, SIGNAL (add_filename_to_list (const QString&,
-                                              const QString&, QWidget*)),
-             this, SLOT (handle_add_filename_to_list (const QString&,
-                                                      const QString&,
-                                                      QWidget*)));
 
     connect (f, SIGNAL (editor_check_conflict_save (const QString&, bool)),
              this, SLOT (check_conflict_save (const QString&, bool)));
@@ -2194,28 +2348,22 @@ namespace octave
                                                            const QString&,
                                                            const QString&, int)));
 
+    connect (f, SIGNAL (edit_area_changed (octave_qscintilla*)),
+             this, SIGNAL (edit_area_changed (octave_qscintilla*)));
+
     connect (f, SIGNAL (set_focus_editor_signal (QWidget*)),
              this, SLOT (set_focus (QWidget*)));
 
-    connect (f, SIGNAL (request_queue_cmd (octave_cmd*)),
-             main_win (), SLOT (queue_cmd (octave_cmd*)));
-
     // Signals from the file_editor non-trivial operations
-    connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
-             f, SLOT (notice_settings (const QSettings *)));
+    connect (this, SIGNAL (fetab_settings_changed (const gui_settings *)),
+             f, SLOT (notice_settings (const gui_settings *)));
 
     connect (this, SIGNAL (fetab_change_request (const QWidget*)),
              f, SLOT (change_editor_state (const QWidget*)));
 
-    connect (this, SIGNAL (fetab_file_name_query (const QWidget*)),
-             f, SLOT (file_name_query (const QWidget*)));
-
     connect (this, SIGNAL (fetab_save_file (const QWidget*, const QString&,
                                             bool)),
              f, SLOT (save_file (const QWidget*, const QString&, bool)));
-
-    connect (this, SIGNAL (fetab_check_modified_file (void)),
-             f, SLOT (check_modified_file (void)));
 
     // Signals from the file_editor trivial operations
     connect (this, SIGNAL (fetab_recover_from_exit (void)),
@@ -2246,8 +2394,8 @@ namespace octave
     connect (this, SIGNAL (fetab_print_file (const QWidget*)),
              f, SLOT (print_file (const QWidget*)));
 
-    connect (this, SIGNAL (fetab_run_file (const QWidget*)),
-             f, SLOT (run_file (const QWidget*)));
+    connect (this, SIGNAL (fetab_run_file (const QWidget*, bool)),
+             f, SLOT (run_file (const QWidget*, bool)));
 
     connect (this, SIGNAL (fetab_context_run (const QWidget*)),
              f, SLOT (context_run (const QWidget*)));
@@ -2299,15 +2447,6 @@ namespace octave
              SIGNAL (fetab_convert_eol (const QWidget*, QsciScintilla::EolMode)),
              f, SLOT (convert_eol (const QWidget*, QsciScintilla::EolMode)));
 
-    connect (this, SIGNAL (fetab_find (const QWidget*, QList<QAction *>)),
-             f, SLOT (find (const QWidget*, QList<QAction *>)));
-
-    connect (this, SIGNAL (fetab_find_next (const QWidget*)),
-             f, SLOT (find_next (const QWidget*)));
-
-    connect (this, SIGNAL (fetab_find_previous (const QWidget*)),
-             f, SLOT (find_previous (const QWidget*)));
-
     connect (this, SIGNAL (fetab_goto_line (const QWidget*, int)),
              f, SLOT (goto_line (const QWidget*, int)));
 
@@ -2326,10 +2465,33 @@ namespace octave
     connect (this, SIGNAL (fetab_delete_debugger_pointer (const QWidget*, int)),
              f, SLOT (delete_debugger_pointer (const QWidget*, int)));
 
+    connect (f, SIGNAL (debug_quit_signal (void)),
+             main_win (), SLOT (debug_quit (void)));
+
     connect (this, SIGNAL (fetab_do_breakpoint_marker (bool, const QWidget*,
                                                        int, const QString&)),
              f, SLOT (do_breakpoint_marker (bool, const QWidget*, int,
                                             const QString&)));
+
+    // Any interpreter_event signal from a file_editor_tab_widget is
+    // handled the same as for the parent main_window object.
+
+    connect (f, SIGNAL (interpreter_event (const fcn_callback&)),
+             this, SIGNAL (interpreter_event (const fcn_callback&)));
+
+    connect (f, SIGNAL (interpreter_event (const meth_callback&)),
+             this, SIGNAL (interpreter_event (const meth_callback&)));
+
+    return f;
+  }
+
+  void file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn,
+                                         int index)
+  {
+    if (index == -1)
+      m_tab_widget->addTab (f, fn);
+    else
+      m_tab_widget->insertTab (index, f, fn);
 
     m_tab_widget->setCurrentWidget (f);
 
@@ -2366,19 +2528,22 @@ namespace octave
       }
 
     // save actual mru-list in settings
-    QSettings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
-    settings->setValue ("editor/mru_file_list", m_mru_files);
-    settings->setValue ("editor/mru_file_encodings", m_mru_files_encodings);
+    settings->setValue (ed_mru_file_list.key,  m_mru_files);
+    settings->setValue (ed_mru_file_encodings.key,  m_mru_files_encodings);
     settings->sync ();
   }
 
   bool file_editor::call_custom_editor (const QString& file_name, int line)
   {
     // Check if the user wants to use a custom file editor.
-    QSettings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
-    if (settings->value ("useCustomFileEditor",false).toBool ())
+    if (settings->value (global_use_custom_editor.key,
+                         global_use_custom_editor.def).toBool ())
       {
         // use the external editor interface for handling the call
         emit request_open_file_external (file_name, line);
@@ -2393,11 +2558,13 @@ namespace octave
     return false;
   }
 
-  void file_editor::toggle_preference (const QString& preference, bool def)
+  void file_editor::toggle_preference (const gui_pref& preference)
   {
-    QSettings *settings = resource_manager::get_settings ();
-    bool old = settings->value (preference,def).toBool ();
-    settings->setValue (preference,! old);
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    bool old = settings->value (preference).toBool ();
+    settings->setValue (preference.key, ! old);
     notice_settings (settings);
   }
 
@@ -2408,27 +2575,25 @@ namespace octave
     QDir old_dir (old_name);
     session_data f_data;
 
-    // Have all file editor tabs signal what their filenames are.
-    m_editor_tab_map.clear ();
-    emit fetab_file_name_query (nullptr);
+    std::list<file_editor_tab *> editor_tab_lst = m_tab_widget->tab_list ();
 
-    // Loop over all open files and pick those within old_dir
-    for (auto p = m_editor_tab_map.cbegin ();
-         p != m_editor_tab_map.cend (); p++)
+    for (auto editor_tab : editor_tab_lst)
       {
-        if (p->first.isEmpty ())
+        QString file_name = editor_tab->file_name ();
+
+        if (file_name.isEmpty ())
           continue;   // Nothing to do, no valid file name
 
         // Get abs. file path and its path relative to the removed directory
-        QString rel_path_to_file = old_dir.relativeFilePath (p->first);
-        QString abs_path_to_file = old_dir.absoluteFilePath (p->first);
+        QString rel_path_to_file = old_dir.relativeFilePath (file_name);
+        QString abs_path_to_file = old_dir.absoluteFilePath (file_name);
 
         // Test whether the file is located within the directory that will
-        // be removed. For this, two conditions must be met:
+        // be removed.  For this, two conditions must be met:
         // 1. The path of the file rel. to the dir is not equal to the
         //    its absolute one.
         //    If both are equal, then there is no relative path and removed
-        //    directory and file are on different drives (e.g.on windows)
+        //    directory and file are on different drives (e.g. on windows)
         // 2. The (real) relative path does not start with "../", i.e.,
         //    the file can be reached from the directory by descending only
         if ((rel_path_to_file != abs_path_to_file)
@@ -2437,22 +2602,21 @@ namespace octave
             // The currently considered file is included in the
             // removed/renamed diectory: Delete it.
             m_no_focus = true;  // Remember for not focussing editor
-            file_editor_tab *editor_tab
-              = static_cast<file_editor_tab *> (p->second.fet_ID);
+
             if (editor_tab)
               {
                 // Get index and line
                 int l, c;
                 editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
                 f_data.line = l + 1;
-                f_data.index = m_tab_widget->indexOf (p->second.fet_ID);
+                f_data.index = m_tab_widget->indexOf (editor_tab);
                 // Close
                 editor_tab->file_has_changed (QString (), true);
               }
             m_no_focus = false;  // Back to normal
 
             // Store file for possible later reload
-            f_data.file_name = p->first;
+            f_data.file_name = file_name;
 
             // Add the new file path and the encoding for later reloading
             // if new_name is given
@@ -2466,19 +2630,19 @@ namespace octave
                     // This means, we have to add the name (not the path)
                     // of the old dir and the relative path to the file
                     // to new dir.
-                    append_to_new_dir = old_dir.dirName () +
-                                        "/" + rel_path_to_file;
+                    append_to_new_dir
+                      = old_dir.dirName () + "/" + rel_path_to_file;
                   }
                 else
                   append_to_new_dir = rel_path_to_file;
 
                 f_data.new_file_name
-                        = new_dir.absoluteFilePath (append_to_new_dir);
+                  = new_dir.absoluteFilePath (append_to_new_dir);
               }
             else
               f_data.new_file_name = ""; // no new name, just removing this file
 
-            f_data.encoding = p->second.encoding; // store the encoding
+            f_data.encoding = editor_tab->encoding (); // store the encoding
 
             // Store data in list for later reloading
             m_tmp_closed_files << f_data;
@@ -2495,28 +2659,27 @@ namespace octave
   }
 
   // Check whether this file is already open in the editor.
-  QWidget * file_editor::find_tab_widget (const QString& file)
+  file_editor_tab * file_editor::find_tab_widget (const QString& file)
   {
-    // Have all file editor tabs signal what their filenames are.
-    m_editor_tab_map.clear ();
-    emit fetab_file_name_query (nullptr);
+    std::string std_file = file.toStdString ();
 
-    // Check all tabs for the given file name
-    QWidget *retval = nullptr;
+    std::list<file_editor_tab *> fe_tab_lst = m_tab_widget->tab_list ();
 
-    for (auto p = m_editor_tab_map.cbegin ();
-         p != m_editor_tab_map.cend (); p++)
+    for (auto fe_tab : fe_tab_lst)
       {
-        QString tab_file = p->first;
-        if (same_file (file.toStdString (), tab_file.toStdString ())
-            || file == tab_file)     // needed as same_file ("","") is false.
-          {
-            retval = p->second.fet_ID;
-            break;
-          }
+        QString tab_file = fe_tab->file_name ();
+
+        // We check file == tab_file because
+        //
+        //   same_file ("", "")
+        //
+        // is false
+
+        if (same_file (std_file, tab_file.toStdString ()) || file == tab_file)
+          return fe_tab;
       }
 
-    return retval;
+    return nullptr;
   }
 
   QAction * file_editor::add_action (QMenu *menu, const QString& text,

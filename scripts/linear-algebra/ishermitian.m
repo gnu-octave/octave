@@ -1,5 +1,9 @@
-## Copyright (C) 1996-2019 John W. Eaton
-## Copyright (C) 2009 VZLU Prague
+########################################################################
+##
+## Copyright (C) 1996-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} ishermitian (@var{A})
@@ -43,10 +49,6 @@
 ## @code{norm (@var{A} + @var{A}', Inf) / norm (@var{A}, Inf) < @var{tol}}.
 ## @seealso{issymmetric, isdefinite}
 ## @end deftypefn
-
-## Author: A. S. Hodel <scotte@eng.auburn.edu>
-## Created: August 1993
-## Adapted-By: jwe
 
 function retval = ishermitian (A, skewopt = "nonskew", tol = 0)
 
@@ -82,7 +84,7 @@ function retval = ishermitian (A, skewopt = "nonskew", tol = 0)
   if (strcmp (skewopt, "nonskew"))
     if (tol == 0)
       ## check for exact symmetry
-      retval = ! any ((A != A')(:));
+      retval = full (! any ((A != A')(:)));
     else
       if (islogical (A))
         ## Hack to allow norm to work.  Choose single to minimize memory.
@@ -94,7 +96,7 @@ function retval = ishermitian (A, skewopt = "nonskew", tol = 0)
   else
     ## skew-Hermitian
     if (tol == 0)
-      retval = ! any ((A != -A')(:));
+      retval = full (! any ((A != -A')(:)));
     else
       if (islogical (A))
         ## Hack to allow norm to work.  Choose single to minimize memory.
@@ -114,7 +116,7 @@ endfunction
 %!assert (ishermitian ([1, 2; 2, 1]))
 %!assert (ishermitian ([1, 2.1; 2, 1.1], 0.2))
 %!assert (ishermitian ([1, -2i; 2i, 1]))
-%!assert (ishermitian (speye (100)))
+%!assert (ishermitian (speye (100)), true)  # Return full logical value.
 %!assert (ishermitian (logical (eye (2))))
 %!assert (! ishermitian (logical ([1 1; 0 1])))
 %!assert (ishermitian (logical ([1 1; 0 1]), 0.5))

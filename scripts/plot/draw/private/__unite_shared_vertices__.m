@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Markus Muetzel
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{faces}, @var{vertices}, @var{J}] =} __unite_shared_vertices__ (@var{faces}, @var{vertices})
@@ -26,66 +33,36 @@
 ## calculated.  If all coordinates are closer than
 ## @code{2 * eps (max (abs (vertices(:))))}, the vertices are united to one.
 ##
-## @var{J} holds the indices of the deleted vertices.
+## @var{J} holds the indices of the remaining vertices.
 ##
 ## @seealso{isosurface, reducepatch}
 ## @end deftypefn
 
-## Author: mmuetzel
-
 function [faces, vertices, J] = __unite_shared_vertices__ (faces, vertices)
 
-  J = [];
-
-  ## Calculate the mutual differences of all vertex coordinates
-  close_points = zeros (0, 2);
-  num_vertices = rows (vertices);
-  skip_point = false (num_vertices, 1);
-  ## FIXME: Can this be vectorized in some way to increase performance?
-  ##        Regardless, should probably allocate close_points to be the
-  ##        same size as the number of vertices and then truncate the
-  ##        array at the end of the calculation.  Extending an array
-  ##        involves a copy operation every time.
-  for (i_point1 = 1:num_vertices - 1)
-    if (skip_point(i_point1))
-      ## points already detected as duplicates can be skipped
-      continue;
-    endif
-
-    diff = vertices(i_point1,:) - vertices(i_point1 + 1:end,:);
-    is_close_point = all (abs (diff) <= sqrt (3) * eps * ...
-        (max (abs (vertices(i_point1,:)), abs (vertices(i_point1 + 1:end,:)))), 2);
-
-    if (any (is_close_point))
-      close_points_idx = find (is_close_point) + i_point1;
-      new_close_points_num = rows (close_points_idx);
-      close_points(end + 1:end + new_close_points_num,1) = i_point1;
-      close_points(end - new_close_points_num + 1:end,2) = close_points_idx;
-      skip_point(close_points_idx) = true;
-    endif
+  nan_vertices = any (isnan (vertices), 2);
+  lut = (1:rows (vertices))';
+  J = lut;
+  for di = 1:3
+    [v, idx] = sortrows (vertices, 1 + mod ((0:2)+di, 3));
+    Js = [true;
+          any(abs (diff (v, 1, 1)) > eps * abs (v(2:end,:)+v(1:end-1,:)), 2)];
+    vertices = v(Js,:);
+    J = J(idx(Js));
+    l(idx) = cumsum (Js);
+    lut = l(lut);
   endfor
-
-  if (! isempty (close_points))
-    vertices(close_points(:,2),:) = []; # delete multiple shared vertices
-    ## renumber deleted vertices in faces to the one it is replaced by
-    vertex_renum = 1:num_vertices;
-    vertex_renum(close_points(:,2)) = close_points(:,1);
-    faces = vertex_renum(faces);
-    ## renumber vertices in faces with subsequent numbers
-    vertex_renum2 = ones (1, num_vertices);
-    vertex_renum2(close_points(:,2)) = 0;
-    vertex_renum2 = cumsum (vertex_renum2);
-    faces = vertex_renum2(faces);
-
-    ## eliminate identical faces
-    faces = sort (faces, 2);
-    faces = unique (faces, "rows");
-
-    ## eliminate faces with zero area.  Vertices in faces are sorted.
-    is_zero_area = (faces(:,1) == faces(:,2)) | (faces(:,2) == faces(:,3));
-    faces = faces(! is_zero_area, :);
-
-    J = close_points(:,2);
+  [J, idx] = sort (J);
+  j(idx) = 1:length (idx);
+  vertices = vertices(idx,:);
+  if any (nan_vertices)
+    j(end+1) = length (idx) + 1;
+    vertices(end+1,:) = NaN;
+    lut(nan_vertices) = rows (vertices);
   endif
+  faces = j(lut(faces));
+
+  ## Eliminate faces with zero area
+  faces = faces(all (faces - faces(:, [2 3 1]) != 0, 2), :);
 
 endfunction

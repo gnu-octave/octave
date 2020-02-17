@@ -1,4 +1,9 @@
-## Copyright (C) 2005-2019 Søren Hauberg
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} doc @var{function_name}
@@ -31,9 +38,6 @@
 ## the command @kbd{C-h}.
 ## @seealso{help}
 ## @end deftypefn
-
-## Author: Soren Hauberg <soren@hauberg.org>
-## Adapted-by: jwe
 
 function retval = doc (function_name)
 
@@ -53,7 +57,7 @@ function retval = doc (function_name)
 
   ## if GUI is running, let it display the function
   if (isguirunning ())
-    status = ! __octave_link_show_doc__ (function_name);
+    status = ! __event_manager_show_doc__ (function_name);
   else
     if (ftype == 2 || ftype == 3)
       ffile = which (function_name);

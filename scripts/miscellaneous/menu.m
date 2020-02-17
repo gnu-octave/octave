@@ -1,4 +1,9 @@
-## Copyright (C) 1993-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1993-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{choice} =} menu (@var{title}, @var{opt1}, @dots{})
@@ -39,8 +46,6 @@
 ## @seealso{input, listdlg}
 ## @end deftypefn
 
-## Author: jwe
-
 function choice = menu (title, varargin)
 
   if (nargin < 2)
@@ -55,7 +60,7 @@ function choice = menu (title, varargin)
     error ("menu: OPTIONS must be string or cell array of strings");
   endif
 
-  if (__octave_link_enabled__ ())  # GUI menu
+  if (__event_manager_enabled__ ())  # GUI menu
     [choice, ok] = listdlg ("Name", "menu", "PromptString", title,
                             "ListString", varargin, "SelectionMode", "Single");
     if (! ok)

@@ -1,29 +1,27 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2006-2019 Alexander Barth
-Copyright (C) 2009 David Bateman
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-// Author: Alexander Barth <abarth@marine.usf.edu>
-// Author: jwe
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2006-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -40,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "unwind-prot.h"
 #include "url-transfer.h"
+#include "version.h"
 
 #if defined (HAVE_CURL)
 #  include <curl/curl.h>
@@ -50,23 +49,26 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   base_url_transfer::base_url_transfer (void)
-    : host_or_url (), valid (false), ftp (false),
-      ascii_mode (false), ok (true), errmsg (),
-      curr_istream (&std::cin), curr_ostream (&std::cout) { }
+    : m_host_or_url (), m_valid (false), m_ftp (false),
+      m_ascii_mode (false), m_ok (true), m_errmsg (),
+      m_curr_istream (&std::cin), m_curr_ostream (&std::cout)
+  { }
 
   base_url_transfer::base_url_transfer (const std::string& host,
                                         const std::string& /* user_arg */,
                                         const std::string& /* passwd */,
                                         std::ostream& os)
-    : host_or_url (host), valid (false), ftp (true),
-      ascii_mode (false), ok (true), errmsg (), curr_istream (&std::cin),
-      curr_ostream (&os) { }
+    : m_host_or_url (host), m_valid (false), m_ftp (true),
+      m_ascii_mode (false), m_ok (true), m_errmsg (),
+      m_curr_istream (&std::cin), m_curr_ostream (&os)
+  { }
 
   base_url_transfer::base_url_transfer (const std::string& url,
                                         std::ostream& os)
-    : host_or_url (url), valid (false), ftp (false),
-      ascii_mode (false), ok (true), errmsg (),
-      curr_istream (&std::cin), curr_ostream (&os) { }
+    : m_host_or_url (url), m_valid (false), m_ftp (false),
+      m_ascii_mode (false), m_ok (true), m_errmsg (),
+      m_curr_istream (&std::cin), m_curr_ostream (&os)
+  { }
 
   void
   base_url_transfer::delete_file (const std::string& file)
@@ -88,9 +90,9 @@ namespace octave
 
         if (status < 0)
           {
-            ok = false;
-            errmsg = "__ftp_mget__: can not create directory '"
-                     + target + sep + directory + "': " + msg;
+            m_ok = false;
+            m_errmsg = "__ftp_mget__: can not create directory '"
+                       + target + sep + directory + "': " + msg;
             return;
           }
       }
@@ -124,8 +126,8 @@ namespace octave
 
                 if (! ofile.is_open ())
                   {
-                    ok = false;
-                    errmsg = "__ftp_mget__: unable to open file";
+                    m_ok = false;
+                    m_errmsg = "__ftp_mget__: unable to open file";
                     break;
                   }
 
@@ -181,14 +183,16 @@ namespace octave
               if (file == "." || file == "..")
                 continue;
 
-              std::string realfile = realdir + sys::file_ops::dir_sep_str () + file;
+              std::string realfile
+                = realdir + sys::file_ops::dir_sep_str () + file;
+
               sys::file_stat fs (realfile);
 
               if (! fs.exists ())
                 {
-                  ok = false;
-                  errmsg = "__ftp__mput: file '" + realfile
-                           + "' does not exist";
+                  m_ok = false;
+                  m_errmsg = "__ftp__mput: file '" + realfile
+                             + "' does not exist";
                   break;
                 }
 
@@ -202,17 +206,16 @@ namespace octave
               else
                 {
                   // FIXME: Does ascii mode need to be flagged here?
-                  std::string ascii_fname
-                    = octave::sys::get_ASCII_filename (realfile);
+                  std::string ascii_fname = sys::get_ASCII_filename (realfile);
 
                   std::ifstream ifile (ascii_fname.c_str (),
                                        std::ios::in | std::ios::binary);
 
                   if (! ifile.is_open ())
                     {
-                      ok = false;
-                      errmsg = "__ftp_mput__: unable to open file '"
-                               + realfile + "'";
+                      m_ok = false;
+                      m_errmsg = "__ftp_mput__: unable to open file '"
+                                 + realfile + "'";
                       break;
                     }
 
@@ -228,9 +231,9 @@ namespace octave
             }
         else
           {
-            ok = false;
-            errmsg = "__ftp_mput__: can not read the directory '"
-                     + realdir + "'";
+            m_ok = false;
+            m_errmsg = "__ftp_mput__: can not read the directory '"
+                       + realdir + "'";
           }
       }
 
@@ -270,11 +273,11 @@ namespace octave
 #define SETOPT(option, parameter)                                       \
   do                                                                    \
     {                                                                   \
-      CURLcode res = curl_easy_setopt (curl, option, parameter);        \
+      CURLcode res = curl_easy_setopt (m_curl, option, parameter);      \
       if (res != CURLE_OK)                                              \
         {                                                               \
-          ok = false;                                                   \
-          errmsg = curl_easy_strerror (res);                            \
+          m_ok = false;                                                 \
+          m_errmsg = curl_easy_strerror (res);                          \
           return;                                                       \
         }                                                               \
     }                                                                   \
@@ -284,11 +287,11 @@ namespace octave
 #define SETOPTR(option, parameter)                                      \
   do                                                                    \
     {                                                                   \
-      CURLcode res = curl_easy_setopt (curl, option, parameter);        \
+      CURLcode res = curl_easy_setopt (m_curl, option, parameter);      \
       if (res != CURLE_OK)                                              \
         {                                                               \
-          ok = false;                                                   \
-          errmsg = curl_easy_strerror (res);                            \
+          m_ok = false;                                                 \
+          m_errmsg = curl_easy_strerror (res);                          \
           return retval;                                                \
         }                                                               \
     }                                                                   \
@@ -299,46 +302,46 @@ namespace octave
   public:
 
     curl_transfer (void)
-      : base_url_transfer (), curl (curl_easy_init ()), errnum (), url (),
-        userpwd ()
+      : base_url_transfer (), m_curl (curl_easy_init ()), m_errnum (), m_url (),
+        m_userpwd ()
     {
-      if (curl)
-        valid = true;
+      if (m_curl)
+        m_valid = true;
       else
-        errmsg = "can not create curl object";
+        m_errmsg = "can not create curl object";
     }
 
     curl_transfer (const std::string& host, const std::string& user_arg,
                    const std::string& passwd, std::ostream& os)
       : base_url_transfer (host, user_arg, passwd, os),
-        curl (curl_easy_init ()), errnum (), url (), userpwd ()
+        m_curl (curl_easy_init ()), m_errnum (), m_url (), m_userpwd ()
     {
-      if (curl)
-        valid = true;
+      if (m_curl)
+        m_valid = true;
       else
         {
-          errmsg = "can not create curl object";
+          m_errmsg = "can not create curl object";
           return;
         }
 
       init (user_arg, passwd, std::cin, os);
 
-      url = "ftp://" + host;
-      SETOPT (CURLOPT_URL, url.c_str ());
+      m_url = "ftp://" + host;
+      SETOPT (CURLOPT_URL, m_url.c_str ());
 
       // Set up the link, with no transfer.
       perform ();
     }
 
     curl_transfer (const std::string& url_str, std::ostream& os)
-      : base_url_transfer (url_str, os), curl (curl_easy_init ()), errnum (),
-        url (), userpwd ()
+      : base_url_transfer (url_str, os), m_curl (curl_easy_init ()),
+        m_errnum (), m_url (), m_userpwd ()
     {
-      if (curl)
-        valid = true;
+      if (m_curl)
+        m_valid = true;
       else
         {
-          errmsg = "can not create curl object";
+          m_errmsg = "can not create curl object";
           return;
         }
 
@@ -369,20 +372,20 @@ namespace octave
 
     ~curl_transfer (void)
     {
-      if (curl)
-        curl_easy_cleanup (curl);
+      if (m_curl)
+        curl_easy_cleanup (m_curl);
     }
 
     void perform (void)
     {
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-      errnum = curl_easy_perform (curl);
+      m_errnum = curl_easy_perform (m_curl);
 
-      if (errnum != CURLE_OK)
+      if (m_errnum != CURLE_OK)
         {
-          ok = false;
-          errmsg = curl_easy_strerror (errnum);
+          m_ok = false;
+          m_errmsg = curl_easy_strerror (m_errnum);
         }
 
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -390,34 +393,34 @@ namespace octave
 
     std::string lasterror (void) const
     {
-      return std::string (curl_easy_strerror (errnum));
+      return std::string (curl_easy_strerror (m_errnum));
     }
 
     std::ostream& set_ostream (std::ostream& os)
     {
-      std::ostream& retval = *curr_ostream;
-      curr_ostream = &os;
-      SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (curr_ostream));
+      std::ostream& retval = *m_curr_ostream;
+      m_curr_ostream = &os;
+      SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (m_curr_ostream));
       return retval;
     }
 
     std::istream& set_istream (std::istream& is)
     {
-      std::istream& retval = *curr_istream;
-      curr_istream = &is;
-      SETOPTR (CURLOPT_READDATA, static_cast<void *> (curr_istream));
+      std::istream& retval = *m_curr_istream;
+      m_curr_istream = &is;
+      SETOPTR (CURLOPT_READDATA, static_cast<void *> (m_curr_istream));
       return retval;
     }
 
     void ascii (void)
     {
-      ascii_mode = true;
+      m_ascii_mode = true;
       SETOPT (CURLOPT_TRANSFERTEXT, 1);
     }
 
     void binary (void)
     {
-      ascii_mode = false;
+      m_ascii_mode = false;
       SETOPT (CURLOPT_TRANSFERTEXT, 0);
     }
 
@@ -463,8 +466,8 @@ namespace octave
 
     void put (const std::string& file, std::istream& is)
     {
-      url = "ftp://" + host_or_url + '/' + file;
-      SETOPT (CURLOPT_URL, url.c_str ());
+      m_url = "ftp://" + m_host_or_url + '/' + file;
+      SETOPT (CURLOPT_URL, m_url.c_str ());
       SETOPT (CURLOPT_UPLOAD, 1);
       SETOPT (CURLOPT_NOBODY, 0);
       std::istream& old_is = set_istream (is);
@@ -476,14 +479,14 @@ namespace octave
       set_istream (old_is);
       SETOPT (CURLOPT_NOBODY, 1);
       SETOPT (CURLOPT_UPLOAD, 0);
-      url = "ftp://" + host_or_url;
-      SETOPT (CURLOPT_URL, url.c_str ());
+      m_url = "ftp://" + m_host_or_url;
+      SETOPT (CURLOPT_URL, m_url.c_str ());
     }
 
     void get (const std::string& file, std::ostream& os)
     {
-      url = "ftp://" + host_or_url + '/' + file;
-      SETOPT (CURLOPT_URL, url.c_str ());
+      m_url = "ftp://" + m_host_or_url + '/' + file;
+      SETOPT (CURLOPT_URL, m_url.c_str ());
       SETOPT (CURLOPT_NOBODY, 0);
       std::ostream& old_os = set_ostream (os);
 
@@ -493,14 +496,14 @@ namespace octave
 
       set_ostream (old_os);
       SETOPT (CURLOPT_NOBODY, 1);
-      url = "ftp://" + host_or_url;
-      SETOPT (CURLOPT_URL, url.c_str ());
+      m_url = "ftp://" + m_host_or_url;
+      SETOPT (CURLOPT_URL, m_url.c_str ());
     }
 
     void dir (void)
     {
-      url = "ftp://" + host_or_url + '/';
-      SETOPT (CURLOPT_URL, url.c_str ());
+      m_url = "ftp://" + m_host_or_url + '/';
+      SETOPT (CURLOPT_URL, m_url.c_str ());
       SETOPT (CURLOPT_NOBODY, 0);
 
       perform ();
@@ -508,8 +511,8 @@ namespace octave
         return;
 
       SETOPT (CURLOPT_NOBODY, 1);
-      url = "ftp://" + host_or_url;
-      SETOPT (CURLOPT_URL, url.c_str ());
+      m_url = "ftp://" + m_host_or_url;
+      SETOPT (CURLOPT_URL, m_url.c_str ());
     }
 
     string_vector list (void)
@@ -517,9 +520,9 @@ namespace octave
       string_vector retval;
 
       std::ostringstream buf;
-      url = "ftp://" + host_or_url + '/';
+      m_url = "ftp://" + m_host_or_url + '/';
       SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (&buf));
-      SETOPTR (CURLOPT_URL, url.c_str ());
+      SETOPTR (CURLOPT_URL, m_url.c_str ());
       SETOPTR (CURLOPT_DIRLISTONLY, 1);
       SETOPTR (CURLOPT_NOBODY, 0);
 
@@ -528,10 +531,10 @@ namespace octave
         return retval;
 
       SETOPTR (CURLOPT_NOBODY, 1);
-      url = "ftp://" + host_or_url;
-      SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (curr_ostream));
+      m_url = "ftp://" + m_host_or_url;
+      SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (m_curr_ostream));
       SETOPTR (CURLOPT_DIRLISTONLY, 0);
-      SETOPTR (CURLOPT_URL, url.c_str ());
+      SETOPTR (CURLOPT_URL, m_url.c_str ());
 
       // Count number of directory entries
       std::string str = buf.str ();
@@ -565,8 +568,8 @@ namespace octave
     {
       std::string path = pwd ();
 
-      url = "ftp://" + host_or_url + '/' + path + '/' + filename;
-      SETOPT (CURLOPT_URL, url.c_str ());
+      m_url = "ftp://" + m_host_or_url + '/' + path + '/' + filename;
+      SETOPT (CURLOPT_URL, m_url.c_str ());
       SETOPT (CURLOPT_FILETIME, 1);
       SETOPT (CURLOPT_HEADERFUNCTION, throw_away);
       SETOPT (CURLOPT_WRITEFUNCTION, throw_away);
@@ -588,17 +591,17 @@ namespace octave
 
       fileisdir = false;
       time_t ft;
-      curl_easy_getinfo (curl, CURLINFO_FILETIME, &ft);
+      curl_easy_getinfo (m_curl, CURLINFO_FILETIME, &ft);
       filetime = ft;
       double fs;
-      curl_easy_getinfo (curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
+      curl_easy_getinfo (m_curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
       filesize = fs;
 
       SETOPT (CURLOPT_WRITEFUNCTION, write_data);
       SETOPT (CURLOPT_HEADERFUNCTION, 0);
       SETOPT (CURLOPT_FILETIME, 0);
-      url = "ftp://" + host_or_url;
-      SETOPT (CURLOPT_URL, url.c_str ());
+      m_url = "ftp://" + m_host_or_url;
+      SETOPT (CURLOPT_URL, m_url.c_str ());
 
       // The MDTM command seems to reset the path to the root with the
       // servers I tested with, so cd again into the correct path.  Make
@@ -643,49 +646,168 @@ namespace octave
 
     void http_get (const Array<std::string>& param)
     {
-      url = host_or_url;
-
-      std::string query_string = form_query_string (param);
-
-      if (! query_string.empty ())
-        url += '?' + query_string;
-
-      SETOPT (CURLOPT_URL, url.c_str ());
-
-      perform ();
+      http_action (param, "get");
     }
 
     void http_post (const Array<std::string>& param)
     {
-      SETOPT (CURLOPT_URL, host_or_url.c_str ());
-
-      std::string query_string = form_query_string (param);
-
-      SETOPT (CURLOPT_POSTFIELDS, query_string.c_str ());
-
-      perform ();
+      http_action (param, "post");
     }
 
     void http_action (const Array<std::string>& param, const std::string& action)
     {
+      m_url = m_host_or_url;
+
+      std::string query_string;
+
+      query_string = form_query_string (param);
+
       if (action.empty () || action == "get")
-        http_get (param);
-      else if (action == "post")
-        http_post (param);
+        {
+          if (! query_string.empty ())
+            m_url += '?' + query_string;
+
+          SETOPT (CURLOPT_URL, m_url.c_str ());
+        }
+      else if (action == "post" || action == "put" || action == "delete")
+        {
+          SETOPT (CURLOPT_POSTFIELDS, query_string.c_str ());
+
+          if (action == "put")
+            {
+              SETOPT (CURLOPT_CUSTOMREQUEST, "PUT");
+            }
+
+          if (action == "delete")
+            {
+              SETOPT (CURLOPT_CUSTOMREQUEST, "DELETE");
+            }
+
+          SETOPT (CURLOPT_URL, m_url.c_str ());
+        }
       else
         {
-          ok = false;
-          errmsg = "curl_transfer: unknown http action";
+          m_ok = false;
+          m_errmsg = "curl_transfer: unknown http action";
         }
+
+      if (m_ok)
+        perform ();
+    }
+
+    void cookie_jar (const std::string& filename)
+    {
+      SETOPT (CURLOPT_COOKIEJAR, filename.c_str ());
+
+      SETOPT (CURLOPT_COOKIEFILE, filename.c_str ());
+    }
+
+    // Sets the header fields in a transfer.  Input should be in the form
+    // of an array of strings with pairs of keys and values together
+    void set_header_fields (const Array<std::string>& param)
+    {
+      struct curl_slist *slist = nullptr;
+
+      unwind_protect frame;
+
+      frame.add_fcn (curl_slist_free_all, slist);
+
+      if (param.numel () >= 2)
+        {
+          for (int i = 0; i < param.numel (); i += 2)
+            {
+              std::string header = param(i) + ": " + param(i+1);
+
+              slist = curl_slist_append (slist, header.c_str ());
+            }
+
+          SETOPT (CURLOPT_HTTPHEADER, slist);
+        }
+    }
+
+    // Sets and sends the form data associated with a transfer.
+    // Input should be an array of strings with each pair of strings
+    // corresponding to the fieldname and it's value.
+    // To attach a file, you should use 'file' as the fieldname with the
+    // path of the file as its value.
+    void form_data_post (const Array<std::string>& param)
+    {
+      struct curl_httppost *post = NULL, *last = NULL;
+
+      SETOPT (CURLOPT_URL, m_host_or_url.c_str ());
+
+      unwind_protect frame;
+
+      frame.add_fcn (curl_formfree, post);
+
+      if (param.numel () >= 2)
+        {
+          for (int i = 0; i < param.numel (); i += 2)
+            {
+              std::string name = param(i);
+              std::string data = param(i+1);
+
+              if (name == "file")
+                curl_formadd (&post, &last, CURLFORM_COPYNAME, name.c_str (),
+                              CURLFORM_FILE, data.c_str (), CURLFORM_END);
+              else
+                curl_formadd(&post, &last, CURLFORM_COPYNAME, name.c_str (),
+                             CURLFORM_COPYCONTENTS, data.c_str (), CURLFORM_END);
+            }
+
+          SETOPT (CURLOPT_HTTPPOST, post);
+        }
+
+      perform ();
+    }
+
+    // Sets the various options specified by weboptions object.
+    void set_weboptions (const struct weboptions& options)
+    {
+      // Remove this after completing fixmes.
+      std::string temp = "";
+
+      set_header_fields (options.HeaderFields);
+
+      SETOPT (CURLOPT_TIMEOUT, options.Timeout);
+
+      if (! options.UserAgent.empty ())
+        SETOPT (CURLOPT_USERAGENT, options.UserAgent.c_str ());
+
+      if (! options.Username.empty ())
+        {
+          if (! options.Password.empty ())
+            {
+              std::string tmp = options.Username + ":" + options.Password;
+              SETOPT (CURLOPT_USERPWD, tmp.c_str ());
+            }
+          else
+            {
+              std::string tmp = options.Username + ":";
+              SETOPT (CURLOPT_USERPWD, tmp.c_str ());
+            }
+        }
+
+      // Unimplemented.  Only for MATLAB compatibility.
+      if (! options.ContentReader.empty ())
+        temp = options.ContentReader;
+
+      // Unimplemented.  Only for MATLAB compatibility.
+      if (! options.ArrayFormat.empty ())
+        temp = options.ArrayFormat;
+
+      // Unimplemented.  Only for MATLAB compatibility.
+      if (! options.CertificateFilename.empty ())
+        temp = options.CertificateFilename;
     }
 
   private:
 
     // Pointer to cURL object.
-    CURL *curl;
+    CURL *m_curl;
 
     // cURL error code.
-    CURLcode errnum;
+    CURLcode m_errnum;
 
     // The cURL library changed the curl_easy_setopt call to make an
     // internal copy of string parameters in version 7.17.0.  Prior
@@ -700,8 +822,8 @@ namespace octave
     // the handle is released.  The curl_handle::curl_handle_rep class
     // contains the pointer to the CURL handle and so is the best
     // candidate for storing the strings as well. (bug #36717)
-    std::string url;
-    std::string userpwd;
+    std::string m_url;
+    std::string m_userpwd;
 
     void init (const std::string& user, const std::string& passwd,
                std::istream& is, std::ostream& os)
@@ -710,11 +832,11 @@ namespace octave
       SETOPT (CURLOPT_NOBODY, 1);
 
       // Set the username and password
-      userpwd = user;
+      m_userpwd = user;
       if (! passwd.empty ())
-        userpwd += ':' + passwd;
-      if (! userpwd.empty ())
-        SETOPT (CURLOPT_USERPWD, userpwd.c_str ());
+        m_userpwd += ':' + passwd;
+      if (! m_userpwd.empty ())
+        SETOPT (CURLOPT_USERPWD, m_userpwd.c_str ());
 
       // Define our callback to get called when there's data to be written.
       SETOPT (CURLOPT_WRITEFUNCTION, write_data);
@@ -736,6 +858,18 @@ namespace octave
       // instead.
       SETOPT (CURLOPT_FTP_USE_EPSV, false);
 
+      // Set the user agent for the curl request
+      // Needed by mediaWiki API.
+      curl_version_info_data * data = curl_version_info(CURLVERSION_NOW);
+      const char *lib_ver = data->version;
+      std::string user_agent
+        ("GNU Octave/"
+         + std::string (OCTAVE_VERSION)
+         + " (https://www.gnu.org/software/octave/ ; help@octave.org) libcurl/"
+         + std::string (lib_ver));
+
+      SETOPT (CURLOPT_USERAGENT, user_agent.c_str ());
+
       SETOPT (CURLOPT_NOPROGRESS, true);
       SETOPT (CURLOPT_FAILONERROR, true);
 
@@ -747,25 +881,26 @@ namespace octave
     {
       std::ostringstream query;
 
-      for (int i = 0; i < param.numel (); i += 2)
-        {
-          std::string name = param(i);
-          std::string text = param(i+1);
+      if (param.numel () >= 2)
+        for (int i = 0; i < param.numel (); i += 2)
+          {
+            std::string name = param(i);
+            std::string text = param(i+1);
 
-          // Encode strings.
-          char *enc_name = curl_easy_escape (curl, name.c_str (),
-                                             name.length ());
-          char *enc_text = curl_easy_escape (curl, text.c_str (),
-                                             text.length ());
+            // Encode strings.
+            char *enc_name = curl_easy_escape (m_curl, name.c_str (),
+                                               name.length ());
+            char *enc_text = curl_easy_escape (m_curl, text.c_str (),
+                                               text.length ());
 
-          query << enc_name << '=' << enc_text;
+            query << enc_name << '=' << enc_text;
 
-          curl_free (enc_name);
-          curl_free (enc_text);
+            curl_free (enc_name);
+            curl_free (enc_text);
 
-          if (i < param.numel ()-1)
-            query << '&';
-        }
+            if (i < param.numel ()-2)
+              query << '&';
+          }
 
       query.flush ();
 
@@ -806,16 +941,16 @@ namespace octave
 #  define REP_CLASS base_url_transfer
 #endif
 
-  url_transfer::url_transfer (void) : rep (new REP_CLASS ())
+  url_transfer::url_transfer (void) : m_rep (new REP_CLASS ())
   { }
 
   url_transfer::url_transfer (const std::string& host, const std::string& user,
                               const std::string& passwd, std::ostream& os)
-    : rep (new REP_CLASS (host, user, passwd, os))
+    : m_rep (new REP_CLASS (host, user, passwd, os))
   { }
 
   url_transfer::url_transfer (const std::string& url, std::ostream& os)
-    : rep (new REP_CLASS (url, os))
+    : m_rep (new REP_CLASS (url, os))
   { }
 
 #undef REP_CLASS

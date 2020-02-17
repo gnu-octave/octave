@@ -1,5 +1,9 @@
-## Copyright (C) 2014-2019 Jacopo Corno <jacopo.corno@gmail.com>
-## Copyright (C) 2013 Roberto Porcu' <roberto.porcu@polimi.it>
+########################################################################
+##
+## Copyright (C) 2013-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {retval =} AbsRel_norm (@var{x}, @var{x_old}, @var{AbsTol}, @var{RelTol}, @var{normcontrol}, @var{y})

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_str_vec_h)
 #define octave_str_vec_h 1
@@ -33,22 +36,21 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-string_vector : public Array<std::string>
+string_vector
 {
 public:
 
-  string_vector (void) : Array<std::string> () { }
+  string_vector (void) = default;
 
-  explicit string_vector (octave_idx_type n)
-    : Array<std::string> (dim_vector (n, 1)) { }
+  explicit string_vector (octave_idx_type n) : m_data (dim_vector (n, 1)) { }
 
-  string_vector (const char *s)
-    : Array<std::string> (dim_vector (1, 1), s) { }
+  string_vector (const char *s) : m_data (dim_vector (1, 1), s) { }
 
-  string_vector (const std::string& s)
-    : Array<std::string> (dim_vector (1, 1), s) { }
+  string_vector (const std::string& s) : m_data (dim_vector (1, 1), s) { }
 
-  string_vector (const string_vector& s) : Array<std::string> (s) { }
+  string_vector (const string_vector&) = default;
+
+  string_vector (string_vector&&) = default;
 
   //! Constructor for STL containers of std::string.
   //!
@@ -60,19 +62,15 @@ public:
   string_vector (const String_Container<std::string, Other...>& lst);
 
   string_vector (const Array<std::string>& s)
-    : Array<std::string> (s.as_column ()) { }
+    : m_data (s.as_column ()) { }
 
   string_vector (const char * const *s);
 
   string_vector (const char * const *s, octave_idx_type n);
 
-  string_vector& operator = (const string_vector& s)
-  {
-    if (this != &s)
-      Array<std::string>::operator = (s);
+  string_vector& operator = (const string_vector&) = default;
 
-    return *this;
-  }
+  string_vector& operator = (string_vector&&) = default;
 
   ~string_vector (void) = default;
 
@@ -96,14 +94,28 @@ public:
 
   void resize (octave_idx_type n, const std::string& rfv = "")
   {
-    Array<std::string>::resize (dim_vector (n, 1), rfv);
+    m_data.resize (dim_vector (n, 1), rfv);
   }
 
-  std::string& operator[] (octave_idx_type i)
-  { return Array<std::string>::elem (i); }
+  octave_idx_type numel (void) const { return m_data.numel (); }
 
-  std::string operator[] (octave_idx_type i) const
-  { return Array<std::string>::elem (i); }
+  bool isempty (void) const { return m_data.isempty (); }
+
+  std::string& elem (octave_idx_type i) { return m_data.elem (i); }
+
+  std::string elem (octave_idx_type i) const { return m_data.elem (i); }
+
+  std::string& xelem (octave_idx_type i) { return m_data.xelem (i); }
+
+  std::string xelem (octave_idx_type i) const { return m_data.xelem (i); }
+
+  std::string& operator[] (octave_idx_type i) { return elem (i); }
+
+  std::string operator[] (octave_idx_type i) const { return elem (i); }
+
+  std::string& operator () (octave_idx_type i) { return elem (i); }
+
+  std::string operator () (octave_idx_type i) const { return elem (i); }
 
   string_vector& sort (bool make_uniq = false);
 
@@ -124,19 +136,33 @@ public:
   std::ostream&
   list_in_columns (std::ostream&, int width = 0,
                    const std::string& prefix = "") const;
+
+  string_vector linear_slice (octave_idx_type lo, octave_idx_type up) const
+  {
+    return string_vector (m_data.linear_slice (lo, up));
+  }
+
+  template <typename U, typename F> Array<U> map (F fcn) const
+  {
+    return m_data.map<U> (fcn);
+  }
+
+private:
+
+  Array<std::string> m_data;
 };
 
 
 template<template <typename...> class String_Container, typename... Other>
 string_vector::string_vector (const String_Container<std::string, Other...>&
                               lst)
-  : Array<std::string> ()
+  : m_data ()
 {
   resize (lst.size ());
 
   octave_idx_type i = 0;
   for (const std::string& s : lst)
-    elem(i++) = s;
+    elem (i++) = s;
 }
 
 #endif

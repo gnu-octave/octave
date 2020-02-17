@@ -119,7 +119,6 @@ to the structure @code{x}.  The value of field @code{d} is itself a data
 structure containing the single field @code{a}, which has a value of 3.
 
 @example
-@group
 x.d.a = 3;
 x.d
      @result{} ans =
@@ -145,7 +144,6 @@ x
              scalar structure containing the fields:
 
                a =  3
-@end group
 @end example
 
 Note that when Octave prints the value of a structure that contains
@@ -548,6 +546,8 @@ Alternatively, to process the data in a structure, the structure might
 be converted to another type of container before being treated.
 
 @DOCSTRING(struct2cell)
+
+@DOCSTRING(namedargs2cell)
 
 @node containers.Map
 @section containers.Map

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1997-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1997-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -158,8 +161,8 @@ do_bessel (enum bessel_type type, const char *fn,
             {
               FloatRowVector ralpha = args(0).xfloat_row_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
 
-              FloatComplexColumnVector cx =
-                x_arg.xfloat_complex_column_vector_value ("%s: X must be a scalar or matrix", fn);
+              FloatComplexColumnVector cx
+                = x_arg.xfloat_complex_column_vector_value ("%s: X must be a scalar or matrix", fn);
 
               Array<octave_idx_type> ierr;
               octave_value result;
@@ -248,8 +251,8 @@ do_bessel (enum bessel_type type, const char *fn,
             {
               RowVector ralpha = args(0).xrow_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
 
-              ComplexColumnVector cx =
-                x_arg.xcomplex_column_vector_value ("%s: X must be a scalar or matrix", fn);
+              ComplexColumnVector cx
+                = x_arg.xcomplex_column_vector_value ("%s: X must be a scalar or matrix", fn);
 
               Array<octave_idx_type> ierr;
               octave_value result;

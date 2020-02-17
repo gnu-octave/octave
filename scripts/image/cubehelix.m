@@ -1,4 +1,9 @@
-## Copyright (C) 2014-2019 Carnë Draug
+########################################################################
+##
+## Copyright (C) 2014-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{map} =} cubehelix ()
@@ -35,13 +42,11 @@
 ## If unspecified, the length of the current colormap, or 64, is used.
 ##
 ## Reference: Green, D. A., 2011,
-## @cite{"A @nospell{colour} scheme for the display of astronomical intensity
-## images"}, Bulletin of the Astronomical Society of India, 39, 289.
+## @cite{A @nospell{colour} scheme for the display of astronomical intensity
+## images}, Bulletin of the Astronomical Society of India, 39, 289.
 ##
 ## @seealso{colormap}
 ## @end deftypefn
-
-## Author: Carnë Draug <carandraug@octave.org>
 
 function map = cubehelix (n, start = 0.5, rots = -1.5, hue = 1, gamma = 1)
 

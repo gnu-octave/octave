@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ov_str_mat_h)
 #define octave_ov_str_mat_h 1
@@ -106,6 +108,11 @@ public:
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_char_matrix::diag;
+
   octave_value diag (octave_idx_type k = 0) const
   { return octave_value (matrix.diag (k)); }
 
@@ -153,7 +160,7 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& save_as_floats);
+  bool save_binary (std::ostream& os, bool save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format fmt);
@@ -236,6 +243,11 @@ public:
     retval.resize (dv);
     return octave_value (retval, '\'');
   }
+
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_char_matrix_str::diag;
 
   octave_value diag (octave_idx_type k = 0) const
   { return octave_value (matrix.diag (k), '\''); }

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2009-2019 Shai Ayal
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2009-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -44,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 
 #include "gl-render.h"
+#include "interpreter-private.h"
 #include "oct-opengl.h"
 #include "sighandlers.h"
 #include "sysdep.h"
@@ -99,7 +103,10 @@ namespace octave
     static bool has_alpha (const graphics_handle& h)
     {
       bool retval = false;
-      graphics_object go = gh_manager::get_object (h);
+
+      gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::has_alpha");
+
+      graphics_object go = gh_mgr.get_object (h);
 
       if (! go.valid_object ())
         return retval;
@@ -141,7 +148,7 @@ namespace octave
           opts &= ~GL2PS_OCCLUSION_CULL;
           // FIXME: currently the GL2PS_BLEND (which is more an equivalent of
           // GL_ALPHA_TEST than GL_BLEND) is not working on a per primitive
-          // basis. We thus set it once per viewport.
+          // basis.  We thus set it once per viewport.
           gl2psEnable (GL2PS_BLEND);
         }
       else
@@ -175,15 +182,24 @@ namespace octave
 
     void draw_text (const text::properties& props);
 
+    void draw_image (const image::properties& props);
     void draw_pixels (int w, int h, const float *data);
     void draw_pixels (int w, int h, const uint8_t *data);
     void draw_pixels (int w, int h, const uint16_t *data);
 
     void init_marker (const std::string& m, double size, float width)
     {
-      opengl_renderer::init_marker (m, size, width);
+      // FIXME: Undo scaling that will take place in opengl_renderer::make_marker_list
+      gh_manager& gh_mgr
+        = __get_gh_manager__ ("gl2ps_renderer::init_marker");
+      // FIXME: Should this be static?  What happens if window is moved to a second
+      //        monitor with a different screenpixelsperinch?
+      const static double rescale
+        = 72.0 / gh_mgr.get_object (0).get ("screenpixelsperinch").double_value ();
 
-      // FIXME: gl2ps can't handle closed contours and we set linecap/linejoin
+      opengl_renderer::init_marker (m, size * rescale, width);
+
+      // FIXME: gl2ps can't handle closed contours so we set linecap/linejoin
       //        round to obtain a better looking result for some markers.
       if (m == "o" || m == "v" || m == "^" || m == ">" || m == "<" || m == "h"
           || m == "hexagram" || m == "p" || m == "pentagram")
@@ -287,7 +303,10 @@ namespace octave
   has_2D_axes (const graphics_handle& h)
   {
     bool retval = true;
-    graphics_object go = gh_manager::get_object (h);
+
+    gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::has_2D_axes");
+
+    graphics_object go = gh_mgr.get_object (h);
 
     if (! go.valid_object ())
       return retval;
@@ -395,11 +414,11 @@ namespace octave
             else
               include_graph = old_print_cmd;
 
-            size_t n_begin = include_graph.find_first_not_of (' ');
+            size_t n_begin = include_graph.find_first_not_of (" \"'");
 
             if (n_begin != std::string::npos)
               {
-                size_t n_end = include_graph.find_last_not_of (' ');
+                size_t n_end = include_graph.find_last_not_of (" \"'");
                 include_graph = include_graph.substr (n_begin,
                                                       n_end - n_begin + 1);
               }
@@ -921,8 +940,8 @@ namespace octave
 
             // Check that the string is composed of single byte characters
             const std::string tmpstr = txtobj.get_string ();
-            const uint8_t *c =
-              reinterpret_cast<const uint8_t *> (tmpstr.c_str ());
+            const uint8_t *c
+              = reinterpret_cast<const uint8_t *> (tmpstr.c_str ());
 
             for (size_t i = 0; i < tmpstr.size ();)
               {
@@ -1033,12 +1052,275 @@ namespace octave
     fontsize = props.get ("__fontsize_points__").double_value ();
 
     caseless_str fn = props.get ("fontname").xtolower ().string_value ();
-    bool isbold =
-      (props.get ("fontweight").xtolower ().string_value () == "bold");
-    bool isitalic =
-      (props.get ("fontangle").xtolower ().string_value () == "italic");
+    bool isbold
+      =(props.get ("fontweight").xtolower ().string_value () == "bold");
+    bool isitalic
+      = (props.get ("fontangle").xtolower ().string_value () == "italic");
 
     fontname = select_font (fn, isbold, isitalic);
+  }
+
+  void
+  gl2ps_renderer::draw_image (const image::properties& props)
+  {
+    octave_value cdata = props.get_color_data ();
+    dim_vector dv (cdata.dims ());
+    int h = dv(0);
+    int w = dv(1);
+
+    Matrix x = props.get_xdata ().matrix_value ();
+    Matrix y = props.get_ydata ().matrix_value ();
+
+    // Someone wants us to draw an empty image?  No way.
+    if (x.isempty () || y.isempty ())
+      return;
+
+    // Sort x/ydata and mark flipped dimensions
+    bool xflip = false;
+    if (x(0) > x(1))
+      {
+        std::swap (x(0), x(1));
+        xflip = true;
+      }
+    else if (w > 1 && x(1) == x(0))
+      x(1) = x(1) + (w-1);
+
+    bool yflip = false;
+    if (y(0) > y(1))
+      {
+        std::swap (y(0), y(1));
+        yflip = true;
+      }
+    else if (h > 1 && y(1) == y(0))
+      y(1) = y(1) + (h-1);
+
+
+    const ColumnVector p0 = xform.transform (x(0), y(0), 0);
+    const ColumnVector p1 = xform.transform (x(1), y(1), 0);
+
+    if (math::isnan (p0(0)) || math::isnan (p0(1))
+        || math::isnan (p1(0)) || math::isnan (p1(1)))
+      {
+        warning ("opengl_renderer: image X,Y data too large to draw");
+        return;
+      }
+
+    // image pixel size in screen pixel units
+    float pix_dx, pix_dy;
+    // image pixel size in normalized units
+    float nor_dx, nor_dy;
+
+    if (w > 1)
+      {
+        pix_dx = (p1(0) - p0(0)) / (w-1);
+        nor_dx = (x(1) - x(0)) / (w-1);
+      }
+    else
+      {
+        const ColumnVector p1w = xform.transform (x(1) + 1, y(1), 0);
+        pix_dx = p1w(0) - p0(0);
+        nor_dx = 1;
+      }
+
+    if (h > 1)
+      {
+        pix_dy = (p1(1) - p0(1)) / (h-1);
+        nor_dy = (y(1) - y(0)) / (h-1);
+      }
+    else
+      {
+        const ColumnVector p1h = xform.transform (x(1), y(1) + 1, 0);
+        pix_dy = p1h(1) - p0(1);
+        nor_dy = 1;
+      }
+
+    // OpenGL won't draw any of the image if its origin is outside the
+    // viewport/clipping plane so we must do the clipping ourselves.
+
+    int j0, j1, jj, i0, i1, ii;
+    j0 = 0, j1 = w;
+    i0 = 0, i1 = h;
+
+    float im_xmin = x(0) - nor_dx/2;
+    float im_xmax = x(1) + nor_dx/2;
+    float im_ymin = y(0) - nor_dy/2;
+    float im_ymax = y(1) + nor_dy/2;
+
+    // Clip to axes or viewport
+    bool do_clip = props.is_clipping ();
+    Matrix vp = get_viewport_scaled ();
+
+    ColumnVector vp_lim_min
+      = xform.untransform (std::numeric_limits <float>::epsilon (),
+                           std::numeric_limits <float>::epsilon ());
+    ColumnVector vp_lim_max = xform.untransform (vp(2), vp(3));
+
+    if (vp_lim_min(0) > vp_lim_max(0))
+      std::swap (vp_lim_min(0), vp_lim_max(0));
+
+    if (vp_lim_min(1) > vp_lim_max(1))
+      std::swap (vp_lim_min(1), vp_lim_max(1));
+
+    float clip_xmin
+      = do_clip ? (vp_lim_min(0) > xmin ? vp_lim_min(0) : xmin) : vp_lim_min(0);
+
+    float clip_ymin
+      = do_clip ? (vp_lim_min(1) > ymin ? vp_lim_min(1) : ymin) : vp_lim_min(1);
+
+    float clip_xmax
+      = do_clip ? (vp_lim_max(0) < xmax ? vp_lim_max(0) : xmax) : vp_lim_max(0);
+
+    float clip_ymax
+      = do_clip ? (vp_lim_max(1) < ymax ? vp_lim_max(1) : ymax) : vp_lim_max(1);
+
+    if (im_xmin < clip_xmin)
+      j0 += (clip_xmin - im_xmin)/nor_dx + 1;
+
+    if (im_xmax > clip_xmax)
+      j1 -= (im_xmax - clip_xmax)/nor_dx;
+
+    if (im_ymin < clip_ymin)
+      i0 += (clip_ymin - im_ymin)/nor_dy + 1;
+
+    if (im_ymax > clip_ymax)
+      i1 -= (im_ymax - clip_ymax)/nor_dy;
+
+    if (i0 >= i1 || j0 >= j1)
+      return;
+
+    float zoom_x;
+    m_glfcns.glGetFloatv (GL_ZOOM_X, &zoom_x);
+    float zoom_y;
+    m_glfcns.glGetFloatv (GL_ZOOM_Y, &zoom_y);
+
+    m_glfcns.glPixelZoom (m_devpixratio * pix_dx, - m_devpixratio * pix_dy);
+    m_glfcns.glRasterPos3d (im_xmin + nor_dx*j0, im_ymin + nor_dy*i0, 0);
+
+    // Expect RGB data
+    if (dv.ndims () == 3 && dv(2) == 3)
+      {
+        if (cdata.is_double_type ())
+          {
+            const NDArray xcdata = cdata.array_value ();
+
+            OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
+
+            for (int i = i0; i < i1; i++)
+              {
+                for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
+                  {
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
+                  }
+              }
+
+            draw_pixels (j1-j0, i1-i0, a);
+
+          }
+        else if (cdata.is_single_type ())
+          {
+            const FloatNDArray xcdata = cdata.float_array_value ();
+
+            OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
+
+            for (int i = i0; i < i1; i++)
+              {
+                for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
+                  {
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
+                  }
+              }
+
+            draw_pixels (j1-j0, i1-i0, a);
+
+          }
+        else if (cdata.is_uint8_type ())
+          {
+            const uint8NDArray xcdata = cdata.uint8_array_value ();
+
+            OCTAVE_LOCAL_BUFFER (GLubyte, a, 3*(j1-j0)*(i1-i0));
+
+            for (int i = i0; i < i1; i++)
+              {
+                for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
+                  {
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
+                  }
+              }
+
+            draw_pixels (j1-j0, i1-i0, a);
+
+          }
+        else if (cdata.is_uint16_type ())
+          {
+            const uint16NDArray xcdata = cdata.uint16_array_value ();
+
+            OCTAVE_LOCAL_BUFFER (GLushort, a, 3*(j1-j0)*(i1-i0));
+
+            for (int i = i0; i < i1; i++)
+              {
+                for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
+                  {
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
+                  }
+              }
+
+            draw_pixels (j1-j0, i1-i0, a);
+
+          }
+        else
+          warning ("opengl_renderer: invalid image data type (expected double, single, uint8, or uint16)");
+
+        m_glfcns.glPixelZoom (zoom_x, zoom_y);
+
+      }
   }
 
   void
@@ -1154,7 +1436,7 @@ namespace octave
 
         std::string cmd = stream.substr (1);
 
-        fp = octave::popen (cmd.c_str (), "w");
+        fp = popen (cmd.c_str (), "w");
 
         if (! fp)
           error (R"(print: failed to open pipe "%s")", stream.c_str ());
@@ -1165,7 +1447,7 @@ namespace octave
       {
         // Write gl2ps output directly to file.
 
-        fp = octave::sys::fopen (stream.c_str (), "w");
+        fp = sys::fopen (stream.c_str (), "w");
 
         if (! fp)
           error (R"(gl2ps_print: failed to create file "%s")", stream.c_str ());

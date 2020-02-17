@@ -1,4 +1,9 @@
-## Copyright (C) 1993-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1993-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} num2str (@var{x})
@@ -30,7 +37,6 @@
 ## Examples:
 ##
 ## @example
-## @group
 ## num2str (123.456)
 ##   @result{} 123.456
 ##
@@ -50,7 +56,6 @@
 ##
 ## num2str (1.234 + 27.3i)
 ##   @result{} 1.234+27.3i
-## @end group
 ## @end example
 ##
 ## The @code{num2str} function is not very flexible.  For better control
@@ -72,8 +77,6 @@
 ## @var{format} based on internal heuristics.
 ## @seealso{sprintf, int2str, mat2str}
 ## @end deftypefn
-
-## Author: jwe
 
 function retval = num2str (x, arg)
 

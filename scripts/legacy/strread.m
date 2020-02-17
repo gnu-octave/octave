@@ -1,4 +1,10 @@
-## Copyright (C) 2009-2019 Eric Chassande-Mottin, CNRS (France)
+########################################################################
+##
+## Copyright (C) 2009-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## or <https://octave.org/copyright/>.
+##
 ## Parts Copyright (C) 2012-2019 Philip Nienhuis
 ##
 ## This file is part of Octave.
@@ -16,6 +22,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{a}, @dots{}] =} strread (@var{str})

@@ -1,5 +1,9 @@
-## Copyright (C) 2013-2019 Julien Bect
-## Copyright (C) 2000-2019 Gabriele Pannocchia.
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H})
@@ -69,18 +75,19 @@
 ## the number of constraints.  The algorithm is faster if the initial guess is
 ## feasible.
 ##
-## @table @var
-## @item options
-## An optional structure containing the following parameter(s) used to define
-## the behavior of the solver.  Missing elements in the structure take on
-## default values, so you only need to set the elements that you wish to
-## change from the default.
+## @var{options} is a structure specifying additional parameters which
+## control the algorithm.  Currently, @code{qp} recognizes these options:
+## @qcode{"MaxIter"}, @qcode{"TolX"}.
 ##
-## @table @code
-## @item MaxIter (default: 200)
-## Maximum number of iterations.
-## @end table
-## @end table
+## @qcode{"MaxIter"} proscribes the maximum number of algorithm iterations
+## before optimization is halted.  The default value is 200.
+## The value must be a positive integer.
+##
+## @qcode{"TolX"} specifies the termination tolerance for the unknown variables
+## @var{x}.  The default is @code{sqrt (eps)} or approximately 1e-8.
+##
+## On return, @var{x} is the location of the minimum and @var{fval} contains
+## the value of the objective function at @var{x}.
 ##
 ## @table @var
 ## @item info
@@ -112,6 +119,7 @@
 ## @end table
 ## @end table
 ## @end table
+## @seealso{sqp}
 ## @end deftypefn
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
@@ -120,7 +128,7 @@
 function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
   if (nargin == 1 && ischar (x0) && strcmp (x0, "defaults"))
-    x = struct ("MaxIter", 200);
+    x = struct ("MaxIter", 200, "TolX", sqrt (eps));
     return;
   endif
 
@@ -169,6 +177,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
   endif
 
   maxit = optimget (options, "MaxIter", 200);
+  tol = optimget (options, "TolX", sqrt (eps));
 
   ## Validate the quadratic penalty.
   if (! issquare (H))
@@ -243,7 +252,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
     endif
 
     if (! isempty (lb) && ! isempty (ub))
-      rtol = sqrt (eps);
+      rtol = tol;
       for i = 1:n
         if (abs (lb (i) - ub(i)) < rtol*(1 + max (abs (lb(i) + ub(i)))))
           ## These are actually an equality constraint
@@ -291,7 +300,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       endif
 
       if (! isempty (A_lb) && ! isempty (A_ub))
-        rtol = sqrt (eps);
+        rtol = tol;
         for i = 1:dimA_in
           if (abs (A_lb(i) - A_ub(i))
               < rtol*(1 + max (abs (A_lb(i) + A_ub(i)))))
@@ -331,7 +340,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       || isa (A, "single") || isa (b, "single"))
     rtol = sqrt (eps ("single"));
   else
-    rtol = sqrt (eps);
+    rtol = tol;
   endif
 
   eq_infeasible = (n_eq > 0 && norm (A*x0-b) > rtol*(1+abs (b)));
@@ -410,7 +419,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
   if (info == 0)
     ## The initial (or computed) guess is feasible.  Call the solver.
-    [x, lambda, info, iter] = __qp__ (x0, H, q, A, b, Ain, bin, maxit);
+    [x, lambda, info, iter] = __qp__ (x0, H, q, A, b, Ain, bin, maxit, rtol);
   else
     iter = 0;
     x = x0;

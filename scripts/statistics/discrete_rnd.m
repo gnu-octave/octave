@@ -1,5 +1,9 @@
-## Copyright (C) 1996-2019 Kurt Hornik
-## Copyright (C) 2012 Rik Wehbring
+########################################################################
+##
+## Copyright (C) 1996-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} discrete_rnd (@var{v}, @var{p})
@@ -34,9 +40,6 @@
 ## If no size arguments are given then the result matrix is the common size of
 ## @var{v} and @var{p}.
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Random deviates from a discrete distribution
 
 function rnd = discrete_rnd (v, p, varargin)
 

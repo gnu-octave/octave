@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{valid} =} isappdata (@var{h}, @var{name})
@@ -24,9 +31,6 @@
 ## @var{h} may also be a vector of graphics handles.
 ## @seealso{getappdata, setappdata, rmappdata, guidata, get, set, getpref, setpref}
 ## @end deftypefn
-
-## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2010-07-15
 
 function valid = isappdata (h, name)
 
@@ -42,12 +46,10 @@ function valid = isappdata (h, name)
 
   valid = false (size (h));
   for i = 1:numel (h)
-    try
-      appdata = get (h(i), "__appdata__");
-      if (isfield (appdata, name))
-        valid(i) = true;
-      endif
-    end_try_catch
+    appdata = get (h(i), "__appdata__");
+    if (isfield (appdata, name))
+      valid(i) = true;
+    endif
   endfor
 
 endfunction

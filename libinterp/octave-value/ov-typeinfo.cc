@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -36,33 +39,31 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "ov.h"
 
-// FIXME: we should also store all class names and provide a
-// way to list them (calling class with nargin == 0?).
-
-static NDArray
-as_nd_array (const Array<int>& x)
-{
-  NDArray retval (x.dims ());
-
-  for (int i = 0; i < x.numel (); i++)
-    retval.xelem(i) = x(i);
-
-  return retval;
-}
-
-static boolNDArray
-as_bool_nd_array (const Array<void *>& x)
-{
-  boolNDArray retval (x.dims ());
-
-  for (octave_idx_type i = 0; i < x.numel (); i++)
-    retval.xelem (i) = x(i);
-
-  return retval;
-}
-
 namespace octave
 {
+  // FIXME: we should also store all class names and provide a
+  // way to list them (calling class with nargin == 0?).
+
+  static NDArray as_nd_array (const Array<int>& x)
+  {
+    NDArray retval (x.dims ());
+
+    for (int i = 0; i < x.numel (); i++)
+      retval.xelem(i) = x(i);
+
+    return retval;
+  }
+
+  static boolNDArray as_bool_nd_array (const Array<void *>& x)
+  {
+    boolNDArray retval (x.dims ());
+
+    for (octave_idx_type i = 0; i < x.numel (); i++)
+      retval.xelem (i) = x(i);
+
+    return retval;
+  }
+
   type_info::type_info (int init_tab_sz)
     : num_types (0), types (dim_vector (init_tab_sz, 1), ""),
       vals (dim_vector (init_tab_sz, 1)),
@@ -768,112 +769,6 @@ namespace octave_value_typeinfo
       = octave::__get_type_info__ ("register_type");
 
     return type_info.register_type (t_name, c_name, val);
-  }
-
-  bool register_unary_class_op (octave_value::unary_op op,
-                                unary_class_op_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_unary_class_op");
-
-    return type_info.register_unary_class_op (op, f);
-  }
-
-  bool register_unary_op (octave_value::unary_op op,
-                          int t, unary_op_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_unary_op");
-
-    return type_info.register_unary_op (op, t, f);
-  }
-
-  bool register_non_const_unary_op (octave_value::unary_op op,
-                                    int t, non_const_unary_op_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_non_const_unary_op");
-
-    return type_info.register_non_const_unary_op (op, t, f);
-  }
-
-  bool register_binary_class_op (octave_value::binary_op op,
-                                 binary_class_op_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_binary_class_op");
-
-    return type_info.register_binary_class_op (op, f);
-  }
-
-  bool register_binary_op (octave_value::binary_op op,
-                           int t1, int t2, binary_op_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_binary_op");
-
-    return type_info.register_binary_op (op, t1, t2, f);
-  }
-
-  bool register_binary_class_op (octave_value::compound_binary_op op,
-                                 binary_class_op_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_binary_class_op");
-
-    return type_info.register_binary_class_op (op, f);
-  }
-
-  bool register_binary_op (octave_value::compound_binary_op op,
-                           int t1, int t2, binary_op_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_binary_op");
-
-    return type_info.register_binary_op (op, t1, t2, f);
-  }
-
-  bool register_cat_op (int t1, int t2, cat_op_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_cat_op");
-
-    return type_info.register_cat_op (t1, t2, f);
-  }
-
-  bool register_assign_op (octave_value::assign_op op,
-                           int t_lhs, int t_rhs, assign_op_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_assign_op");
-
-    return type_info.register_assign_op (op, t_lhs, t_rhs, f);
-  }
-
-  bool register_assignany_op (octave_value::assign_op op,
-                              int t_lhs, assignany_op_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_assignany_op");
-
-    return type_info.register_assignany_op (op, t_lhs, f);
-  }
-
-  bool register_pref_assign_conv (int t_lhs, int t_rhs, int t_result)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_pref_assign_conv");
-
-    return type_info.register_pref_assign_conv (t_lhs, t_rhs, t_result);
-  }
-
-  bool register_widening_op (int t, int t_result,
-                             octave_base_value::type_conv_fcn f)
-  {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_widening_op");
-
-    return type_info.register_widening_op (t, t_result, f);
   }
 
   octave_value lookup_type (const std::string& nm)

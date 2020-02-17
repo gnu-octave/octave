@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -58,7 +61,7 @@ namespace octave
 
     if (pid > 0)
       {
-        if (octave::sys::wifexited (status) || octave::sys::wifsignaled (status))
+        if (sys::wifexited (status) || sys::wifsignaled (status))
           {
             // Avoid warning() since that will put us back in the pager,
             // which would be bad news.
@@ -85,9 +88,9 @@ namespace octave
   {
     if (s)
       {
-        int available_rows = octave::command_editor::terminal_rows () - 2;
+        int available_rows = command_editor::terminal_rows () - 2;
 
-        int cols = octave::command_editor::terminal_cols ();
+        int cols = command_editor::terminal_cols ();
 
         int count = 0;
 
@@ -124,10 +127,9 @@ namespace octave
   int
   pager_buf::sync (void)
   {
-    octave::output_system& output_sys
-      = octave::__get_output_system__ ("pager_buf::sync");
+    output_system& output_sys = __get_output_system__ ("pager_buf::sync");
 
-    char *buf = eback ();
+    char *buf = pbase ();
 
     int len = pptr () - buf;
 
@@ -144,7 +146,7 @@ namespace octave
   void
   pager_buf::flush_current_contents_to_diary (void)
   {
-    char *buf = eback () + diary_skip;
+    char *buf = pbase () + diary_skip;
 
     size_t len = pptr () - buf;
 
@@ -156,7 +158,7 @@ namespace octave
   void
   pager_buf::set_diary_skip (void)
   {
-    diary_skip = pptr () - eback ();
+    diary_skip = pptr () - pbase ();
   }
 
   int
@@ -168,7 +170,7 @@ namespace octave
 
     if (output_sys.write_to_diary_file () && external_diary_file)
       {
-        char *buf = eback ();
+        char *buf = pbase ();
 
         int len = pptr () - buf;
 
@@ -377,13 +379,13 @@ namespace octave
 
   bool output_system::sync (const char *buf, int len)
   {
-    if (! application::interactive ()
+    if (! m_interpreter.interactive ()
         || application::forced_interactive ()
         || m_really_flush_to_pager
         || (m_page_screen_output && m_page_output_immediately)
         || ! m_page_screen_output)
       {
-        bool bypass_pager = (! application::interactive ()
+        bool bypass_pager = (! m_interpreter.interactive ()
                              || application::forced_interactive ()
                              || ! m_page_screen_output
                              || (m_really_flush_to_pager
@@ -426,13 +428,10 @@ namespace octave
       {
         m_external_pager = new oprocstream (pgr.c_str ());
 
-        if (m_external_pager)
-          {
-            octave::child_list& kids = m_interpreter.get_child_list ();
+        child_list& kids = m_interpreter.get_child_list ();
 
-            kids.insert (m_external_pager->pid (),
-                         pager_event_handler);
-          }
+        kids.insert (m_external_pager->pid (),
+                     pager_event_handler);
       }
   }
 
@@ -494,8 +493,8 @@ namespace octave
   }
 }
 
-DEFUN (diary, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (diary, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} diary
 @deftypefnx {} {} diary on
 @deftypefnx {} {} diary off
@@ -533,7 +532,7 @@ stored.
   if (nargin > 1)
     print_usage ();
 
-  octave::output_system& output_sys = octave::__get_output_system__ ("Fdiary");
+  octave::output_system& output_sys = interp.get_output_system ();
 
   if (nargout > 0)
     {
@@ -612,18 +611,43 @@ The current state can be determined via @code{page_screen_output}.
   return ovl ();
 }
 
-DEFUN (terminal_size, , ,
+DEFUN (terminal_size, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} terminal_size ()
-Return a two-element row vector containing the current size of the terminal
-window in characters (rows and columns).
+Query or set the size of the terminal window.  If called with no
+arguments, return a two-element row vector containing the current size
+of the terminal window in characters (rows and columns).  If called with
+a two-element vector of integer values, set the terminal size and return
+the previous setting.  Setting the size manually should not be needed
+when using readline for command-line editing.
 @seealso{list_in_columns}
 @end deftypefn */)
 {
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
   RowVector size (2, 0.0);
 
   size(0) = octave::command_editor::terminal_rows ();
   size(1) = octave::command_editor::terminal_cols ();
+
+  if (nargin == 1)
+    {
+      Matrix m = args(0).xmatrix_value ("argument must be a 2-element array");
+
+      if (m.numel () != 2)
+        error ("terminal_size: argument must be a 2-element array");
+
+      int rows = octave::math::x_nint (m(0));
+      int cols = octave::math::x_nint (m(1));
+
+      if (rows <= 0 || cols <= 0)
+        error ("terminal_size: rows and columns must be positive integers");
+
+      octave::command_editor::set_screen_size (rows, cols);
+    }
 
   return ovl (size);
 }

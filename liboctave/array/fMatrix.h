@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_fMatrix_h)
 #define octave_fMatrix_h 1
@@ -56,7 +59,13 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatMatrix (void) : FloatNDArray () { }
+  FloatMatrix (void) = default;
+
+  FloatMatrix (const FloatMatrix& a) = default;
+
+  FloatMatrix& operator = (const FloatMatrix& a) = default;
+
+  ~FloatMatrix (void) = default;
 
   FloatMatrix (octave_idx_type r, octave_idx_type c)
     : FloatNDArray (dim_vector (r, c)) { }
@@ -68,8 +77,6 @@ public:
 
   FloatMatrix (const dim_vector& dv, float val)
     : FloatNDArray (dv.redim (2), val) { }
-
-  FloatMatrix (const FloatMatrix& a) : FloatNDArray (a) { }
 
   template <typename U>
   FloatMatrix (const MArray<U>& a) : FloatNDArray (a.as_matrix ()) { }
@@ -97,10 +104,6 @@ public:
   bool operator != (const FloatMatrix& a) const;
 
   bool issymmetric (void) const;
-
-  OCTAVE_DEPRECATED (4.4, "use 'issymmetric' instead")
-  bool is_symmetric (void) const
-  { return issymmetric (); }
 
   // destructive insert/delete/reorder operations
 

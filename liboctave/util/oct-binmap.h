@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2010-2019 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2010-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_oct_binmap_h)
 #define octave_oct_binmap_h 1
@@ -66,40 +69,42 @@ template <typename R, typename X, typename Y, typename F>
 class bsxfun_wrapper
 {
 private:
-  static F f;
+
+  static F s_fcn;
 
 public:
+
   static void
   set_f (const F& f_in)
   {
-    f = f_in;
+    s_fcn = f_in;
   }
 
   static void
-  op_mm (size_t n, R *r, const X *x , const Y *y)
+  op_mm (size_t n, R *r, const X *x, const Y *y)
   {
     for (size_t i = 0; i < n; i++)
-      r[i] = f (x[i], y[i]);
+      r[i] = s_fcn (x[i], y[i]);
   }
 
   static void
   op_sm (size_t n, R *r, X x, const Y *y)
   {
     for (size_t i = 0; i < n; i++)
-      r[i] = f (x, y[i]);
+      r[i] = s_fcn (x, y[i]);
   }
 
   static void
-  op_ms (size_t n , R *r, const X *x, Y y)
+  op_ms (size_t n, R *r, const X *x, Y y)
   {
     for (size_t i = 0; i < n; i++)
-      r[i] = f (x[i], y);
+      r[i] = s_fcn (x[i], y);
   }
 };
 
 // Static init
 template <typename R, typename X, typename Y, typename F>
-F bsxfun_wrapper<R, X, Y, F>::f;
+F bsxfun_wrapper<R, X, Y, F>::s_fcn;
 
 // scalar-Array
 template <typename U, typename T, typename R, typename F>

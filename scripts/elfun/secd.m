@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,14 +20,14 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} secd (@var{x})
 ## Compute the secant for each element of @var{x} in degrees.
 ## @seealso{asecd, sec}
 ## @end deftypefn
-
-## Author: David Bateman <dbateman@free.fr>
 
 function y = secd (x)
 

@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1999-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1999-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -128,8 +130,7 @@ bool
 octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
                                             const octave_value& x)
 {
-  const octave_cell *xrep =
-    dynamic_cast<const octave_cell *> (&x.get_rep ());
+  const octave_cell *xrep = dynamic_cast<const octave_cell *> (&x.get_rep ());
 
   bool retval = xrep && xrep->matrix.numel () == 1 && n < matrix.numel ();
   if (retval)
@@ -157,6 +158,9 @@ octave_cell::subsref (const std::string& type,
 
     case '{':
       {
+        if (idx.front ().empty ())
+          error ("invalid empty index expression");
+
         octave_value tmp = do_index_op (idx.front ());
 
         Cell tcell = tmp.cell_value ();
@@ -887,7 +891,7 @@ octave_cell::load_ascii (std::istream& is)
 }
 
 bool
-octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
+octave_cell::save_binary (std::ostream& os, bool save_as_floats)
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 1)
@@ -1353,7 +1357,7 @@ c(2,1,:)(:)
 @end group
 @end example
 
-@seealso{cell2struct, fieldnames}
+@seealso{cell2struct, namedargs2cell, fieldnames}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1380,7 +1384,7 @@ c(2,1,:)(:)
   for (int i = 1; i < result_dv.ndims (); i++)
     result_dv(i) = m_dv(i-1);
 
-  NoAlias<Cell> c (result_dv);
+  Cell c (result_dv);
 
   octave_idx_type n_elts = m.numel ();
 
@@ -1388,7 +1392,7 @@ c(2,1,:)(:)
   // we don't need a key lookup at all.
   for (octave_idx_type j = 0; j < n_elts; j++)
     for (octave_idx_type i = 0; i < num_fields; i++)
-      c(i,j) = m.contents(i)(j);
+      c.xelem (i,j) = m.contents(i)(j);
 
   return ovl (c);
 }

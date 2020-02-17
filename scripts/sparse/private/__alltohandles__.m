@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Cristiano Dorigo, Octave Arena
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{Afun}, @var{M1fun}, @var{M2fun}] =} __alltohandles__ (@var{A}, @var{b}, @var{M1}, @var{M2}, @var{solver_name})

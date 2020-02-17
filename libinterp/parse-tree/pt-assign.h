@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pt_assign_h)
 #define octave_pt_assign_h 1
@@ -78,6 +81,13 @@ namespace octave
     tree_expression * right_hand_side (void) { return m_rhs; }
 
     tree_expression * dup (symbol_scope& scope) const;
+
+    octave_value evaluate (tree_evaluator& tw, int nargout = 1);
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
 
     void accept (tree_walker& tw)
     {
@@ -148,6 +158,15 @@ namespace octave
 
     tree_expression * dup (symbol_scope& scope) const;
 
+    octave_value evaluate (tree_evaluator& tw, int nargout = 1)
+    {
+      octave_value_list retval = evaluate_n (tw, nargout);
+
+      return retval.length () > 0 ? retval(0) : octave_value ();
+    }
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1);
+
     void accept (tree_walker& tw)
     {
       tw.visit_multi_assignment (*this);
@@ -170,15 +189,5 @@ namespace octave
     bool m_preserve;
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_simple_assignment' instead")
-typedef octave::tree_simple_assignment tree_simple_assignment;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_multi_assignment' instead")
-typedef octave::tree_multi_assignment tree_multi_assignment;
-
-#endif
 
 #endif

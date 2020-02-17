@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## FIXME: we should skip (or mark as a known bug) the test for
 ## saving sparse matrices to MAT files when using 64-bit indexing since
@@ -233,6 +240,8 @@
 %! STR.struct_fld.y = 1;
 %!
 %! struct_dat = fullfile (P_tmpdir, "struct.dat");
+%! save_default_options ("-text", "local");
+%! save_precision (17, "local");
 %! save (struct_dat, "-struct", "STR");
 %! STR = load (struct_dat);
 %!
@@ -334,7 +343,7 @@
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
-%! assert (msg, "");
+%! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
 %!xtest <47413>
@@ -343,14 +352,14 @@
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
-%! assert (msg, "");
+%! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
 %!testif ; ! ismac ()
 %! [val, count, msg, pos] = sscanf ("3In2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
-%! assert (msg, "");
+%! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
 %!xtest <47413>
@@ -494,7 +503,7 @@
 %! assert (__prog_output_assert__ ("error:"));
 
 %!error <Invalid call to fopen> fopen ()
-%!error <Invalid call to fopen> fopen ("foo", "wb", "native", 1)
+%!error <Invalid call to fopen> fopen ("foo", "wb", "native", "utf-8", 1)
 
 %!error fclose (0)
 %!error <Invalid call to fclose> fclose (1, 2)
@@ -648,6 +657,34 @@
 %!   endif
 %!   unlink (nm);
 %! endif
+
+%!test   # write to and read from file with encoding
+%! temp_file = [tempname(), ".txt"];
+%! fid = fopen (temp_file, "wt", "n", "iso-8859-1");
+%! unwind_protect
+%!   [name, mode, arch, codepage] = fopen (fid);
+%!   assert (name, temp_file);
+%!   assert (mode, "w");
+%!   assert (codepage, "iso-8859-1");
+%!   fprintf (fid, "aäu %s", "AÄU");
+%!   fclose (fid);
+%!   # open in binary mode
+%!   fid2 = fopen (temp_file, "rb");
+%!   [name, mode, arch, codepage] = fopen (fid2);
+%!   assert (name, temp_file);
+%!   assert (mode, "rb");
+%!   assert (codepage, "utf-8");
+%!   read_binary = fread (fid2);
+%!   fclose (fid2);
+%!   assert (read_binary, [97 228 117 32 65 196 85].');
+%!   # open in text mode with correct encoding
+%!   fid3 = fopen (temp_file, "rt", "n", "iso-8859-1");
+%!   read_text = fscanf (fid3, "%s");
+%!   fclose (fid3);
+%!   assert (read_text, "aäuAÄU");
+%! unwind_protect_cleanup
+%!   unlink (temp_file);
+%! end_unwind_protect
 
 %!assert (fputs (1, 1),-1)
 

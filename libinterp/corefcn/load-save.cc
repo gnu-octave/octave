@@ -1,28 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-// Author: John W. Eaton.
-// HDF5 support by Steven G. Johnson <stevenj@alum.mit.edu>
-// Matlab v5 support by James R. Van Zandt <jrv@vanzandt.mv.com>
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -66,7 +65,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cell.h"
 #include "pager.h"
 #include "syminfo.h"
-#include "symtab.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -685,17 +683,10 @@ namespace octave
 
         std::string struct_name = argv[argv_idx];
 
-        symbol_scope scope = m_interpreter.get_current_scope ();
+        if (! m_interpreter.is_variable (struct_name))
+          error ("save: no such variable: '%s'", struct_name.c_str ());
 
-        octave_value struct_var;
-
-        if (scope)
-          {
-            if (! scope.is_variable (struct_name))
-              error ("save: no such variable: '%s'", struct_name.c_str ());
-
-            struct_var = scope.varval (struct_name);
-          }
+        octave_value struct_var = m_interpreter.varval (struct_name);
 
         if (! struct_var.isstruct () || struct_var.numel () != 1)
           error ("save: '%s' is not a scalar structure", struct_name.c_str ());
@@ -834,8 +825,7 @@ namespace octave
           os << (mach_info::words_big_endian ()
                  ? "Octave-1-B" : "Octave-1-L");
 
-          mach_info::float_format flt_fmt =
-            mach_info::native_float_format ();
+          mach_info::float_format flt_fmt = mach_info::native_float_format ();
 
           char tmp = static_cast<char> (float_format_to_mopt_digit (flt_fmt));
 
@@ -852,7 +842,7 @@ namespace octave
 
           // ISO 8601 format date
           const char *matlab_format = "MATLAB 5.0 MAT-file, written by Octave "
-            OCTAVE_VERSION ", %Y-%m-%d %T UTC";
+                                      OCTAVE_VERSION ", %Y-%m-%d %T UTC";
           std::string comment_string = now.strftime (matlab_format);
 
           size_t len = std::min (comment_string.length (), static_cast<size_t> (124));
@@ -914,9 +904,9 @@ namespace octave
                                       const load_save_format& fmt,
                                       bool save_as_floats)
   {
-    call_stack& cs = m_interpreter.get_call_stack ();
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-    symbol_info_list syminfo_list = cs.glob_symbol_info (pattern);
+    symbol_info_list syminfo_list = tw.glob_symbol_info (pattern);
 
     size_t saved = 0;
 
@@ -1032,9 +1022,9 @@ namespace octave
   {
     write_header (os, fmt);
 
-    call_stack& cs = m_interpreter.get_call_stack ();
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-    symbol_info_list syminfo_list = cs.top_scope_symbol_info ();
+    symbol_info_list syminfo_list = tw.top_scope_symbol_info ();
 
     double save_mem_size = 0;
 
@@ -1070,31 +1060,14 @@ namespace octave
                                                   bool global,
                                                   const std::string& /*doc*/)
   {
-    symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-    symbol_scope scope = symtab.require_current_scope ("load_save_system::install_loaded_variable");
-
-    if (global)
-      {
-        symbol_record sym = scope.find_symbol (name);
-
-        if (! sym.is_global ())
-          {
-            symbol_scope global_scope = symtab.global_scope ();
-            symbol_record global_sym = global_scope.find_symbol (name);
-
-            sym.bind_fwd_rep (global_scope.get_rep (), global_sym);
-          }
-      }
-
-    scope.assign (name, val);
+    m_interpreter.install_variable (name, val, global);
   }
 
   std::string load_save_system::init_save_header_format (void)
   {
     return
       (std::string ("# Created by Octave " OCTAVE_VERSION
-                   ", %a %b %d %H:%M:%S %Y %Z <")
+                    ", %a %b %d %H:%M:%S %Y %Z <")
        + sys::env::get_user_name ()
        + '@'
        + sys::env::get_host_name ()

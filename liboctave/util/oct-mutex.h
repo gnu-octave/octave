@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2008-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_oct_mutex_h)
 #define octave_oct_mutex_h 1
@@ -37,7 +40,7 @@ namespace octave
   public:
     friend class mutex;
 
-    base_mutex (void) : count (1) { }
+    base_mutex (void) : m_count (1) { }
 
     virtual ~base_mutex (void) = default;
 
@@ -48,7 +51,7 @@ namespace octave
     virtual bool try_lock (void);
 
   private:
-    refcount<int> count;
+    refcount<octave_idx_type> m_count;
   };
 
   class
@@ -59,26 +62,26 @@ namespace octave
     mutex (void);
 
     mutex (const mutex& m)
-      : rep (m.rep)
+      : m_rep (m.m_rep)
     {
-      rep->count++;
+      m_rep->m_count++;
     }
 
     ~mutex (void)
     {
-      if (--rep->count == 0)
-        delete rep;
+      if (--m_rep->m_count == 0)
+        delete m_rep;
     }
 
     mutex& operator = (const mutex& m)
     {
-      if (rep != m.rep)
+      if (m_rep != m.m_rep)
         {
-          if (--rep->count == 0)
-            delete rep;
+          if (--m_rep->m_count == 0)
+            delete m_rep;
 
-          rep = m.rep;
-          rep->count++;
+          m_rep = m.m_rep;
+          m_rep->m_count++;
         }
 
       return *this;
@@ -86,21 +89,21 @@ namespace octave
 
     void lock (void)
     {
-      rep->lock ();
+      m_rep->lock ();
     }
 
     void unlock (void)
     {
-      rep->unlock ();
+      m_rep->unlock ();
     }
 
     bool try_lock (void)
     {
-      return rep->try_lock ();
+      return m_rep->try_lock ();
     }
 
   protected:
-    base_mutex *rep;
+    base_mutex *m_rep;
   };
 
   class
@@ -152,26 +155,7 @@ namespace octave
     static void init (void);
 
     static bool is_thread (void);
-
-    OCTAVE_DEPRECATED (4.4, "use 'is_thread' instead")
-    static bool is_octave_thread (void) { return is_thread (); }
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::mutex' instead")
-typedef octave::mutex octave_mutex;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::base_mutex' instead")
-typedef octave::base_mutex octave_base_mutex;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::autolock' instead")
-typedef octave::autolock octave_autolock;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::thread' instead")
-typedef octave::thread octave_thread;
-
-#endif
 
 #endif

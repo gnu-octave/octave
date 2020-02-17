@@ -1,4 +1,9 @@
-## Copyright (C) 1995-2019 Kurt Hornik
+########################################################################
+##
+## Copyright (C) 1995-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} commutation_matrix (@var{m}, @var{n})
@@ -64,12 +71,8 @@
 ## is returned.
 ##
 ## See @nospell{Magnus and Neudecker} (1988), @cite{Matrix Differential
-## Calculus with Applications in Statistics and Econometrics.}
+## Calculus with Applications in Statistics and Econometrics}.
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 8 May 1995
-## Adapted-By: jwe
 
 function k = commutation_matrix (m, n)
 

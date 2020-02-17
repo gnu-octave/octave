@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2015-2019 Lachlan Andrew, Monash University
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -50,10 +52,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "octave.h"
 #include "oct-iostrm.h"
 #include "oct-stdstrm.h"
+#include "oct-string.h"
 #include "oct-stream.h"
 #include "ov.h"
 #include "ovl.h"
@@ -64,7 +68,7 @@ namespace octave
 {
   // Programming Note: There are two very different error functions used
   // in the stream code.  When invoked with "error (...)" the member
-  // function from octave::stream or octave::base_stream is called.  This
+  // function from stream or base_stream is called.  This
   // function sets the error state on the stream AND returns control to
   // the caller.  The caller must then return a value at the end of the
   // function.  When invoked with "::error (...)" the exception-based
@@ -93,7 +97,10 @@ namespace octave
       }
     catch (const execution_exception&)
       {
-        interpreter::recover_from_exception ();
+        octave::interpreter& interp
+          = __get_interpreter__ ("convert_to_valid_int");
+
+        interp.recover_from_exception ();
 
         conv_err = 1;
       }
@@ -519,7 +526,9 @@ namespace octave
               modifier = s[i++];
             break;
 
+          // We accept X for compatibility with undocumented Matlab behavior.
           case 'd': case 'i': case 'o': case 'u': case 'x':
+          case 'X':
             if (modifier == 'L')
               {
                 nconv = -1;
@@ -527,7 +536,10 @@ namespace octave
               }
             goto fini;
 
+          // We accept E and G for compatibility with undocumented
+          // Matlab behavior.
           case 'e': case 'f': case 'g':
+          case 'E': case 'G':
             if (modifier == 'h')
               {
                 nconv = -1;
@@ -714,8 +726,8 @@ namespace octave
 
             switch (elt->type)
               {
-              case 'd': case 'i': case 'o': case 'u': case 'x':
-              case 'e': case 'f': case 'g':
+              case 'd': case 'i': case 'o': case 'u': case 'x': case 'X':
+              case 'e': case 'f': case 'g': case 'E': case 'G':
                 break;
 
               default:
@@ -1240,6 +1252,9 @@ namespace octave
     int get_undelim (void);
 
     // Read character that will be got by the next get.
+    // FIXME: This will not set EOF if delimited stream is at EOF and a peek
+    // is attempted.  This does *NOT* behave like C++ input stream.
+    // For a compatible peek function, use peek_undelim.  See bug #56917.
     int peek (void) { return eof () ? std::istream::traits_type::eof () : *idx; }
 
     // Read character that will be got by the next get.
@@ -1640,11 +1655,11 @@ namespace octave
     // or 64.  For floating point values, bitwidth may be 32 or 64.
     int bitwidth;
 
-    // The class of characters in a `[' or `^' format.
+    // The class of characters in a '[' or '^' format.
     std::string char_class;
 
     // Type of conversion
-    //  -- `d', `u', `f', `n', `s', `q', `c', `%', `C', `D', `[' or `^'.
+    //  -- 'd', 'u', 'f', 'n', 's', 'q', 'c', '%', 'C', 'D', '[' or '^'.
     char type;
 
     // TRUE if we are not storing the result of this conversion.
@@ -1774,7 +1789,8 @@ namespace octave
   {
   public:
 
-    textscan (const std::string& who_arg = "textscan");
+    textscan (const std::string& who_arg = "textscan",
+              const std::string& encoding = "utf-8");
 
     // No copying!
 
@@ -1795,6 +1811,8 @@ namespace octave
 
     // What function name should be shown when reporting errors.
     std::string who;
+
+    std::string m_encoding;
 
     std::string buf;
 
@@ -2302,13 +2320,13 @@ namespace octave
             if (mask[ch]++ == 0)
               retval[out++] = ch;
             else if (ch != '-')
-              warning_with_id ("octave:textscan-pattern",
+              warning_with_id ("Octave:textscan-pattern",
                                "%s: [...] contains two '%c's",
                                who.c_str (), ch);
 
             if (prev == '-' && mask['-'] >= 2)
               warning_with_id
-                ("octave:textscan-pattern",
+                ("Octave:textscan-pattern",
                  "%s: [...] contains two '-'s outside range expressions",
                  who.c_str ());
           }
@@ -2421,8 +2439,8 @@ namespace octave
           std::cerr << elt->type << "\n";
 
         std::cerr
-          << "char_class: `" << undo_string_escapes (elt->char_class) << "'\n"
-          << "text:       `" << undo_string_escapes (elt->text) << "'\n\n";
+          << "char_class: '" << undo_string_escapes (elt->char_class) << "'\n"
+          << "text:       '" << undo_string_escapes (elt->text) << "'\n\n";
       }
   }
 
@@ -2505,13 +2523,13 @@ namespace octave
     return retval;             // May have returned 4 above.
   }
 
-  textscan::textscan (const std::string& who_arg)
-    : who (who_arg), buf (), whitespace_table (), delim_table (),
-      delims (), comment_style (), comment_len (0), comment_char (-2),
-      buffer_size (0), date_locale (), inf_nan (init_inf_nan ()),
-      empty_value (numeric_limits<double>::NaN ()), exp_chars ("edED"),
-      header_lines (0), treat_as_empty (), treat_as_empty_len (0),
-      whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
+  textscan::textscan (const std::string& who_arg, const std::string& encoding)
+    : who (who_arg), m_encoding (encoding), buf (), whitespace_table (),
+      delim_table (), delims (), comment_style (), comment_len (0),
+      comment_char (-2), buffer_size (0), date_locale (),
+      inf_nan (init_inf_nan ()), empty_value (numeric_limits<double>::NaN ()),
+      exp_chars ("edED"), header_lines (0), treat_as_empty (),
+      treat_as_empty_len (0), whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
       return_on_error (1), collect_output (false),
       multiple_delims_as_one (false), default_exp (true), lines (0)
   { }
@@ -3038,7 +3056,7 @@ namespace octave
                         std::string& val) const
   {
     int c1 = std::istream::traits_type::eof ();
-    std::ostringstream obuf;              // Is this optimized for growing?
+    std::ostringstream obuf;   // FIXME: is this optimized for growing?
 
     while (is && ((c1 = (is && ! is.eof ())
                    ? is.get_undelim ()
@@ -3147,6 +3165,10 @@ namespace octave
         ends[i++] = eol2;
         val = textscan::read_until (is, delim_list, ends);
       }
+
+    // convert from codepage
+    if (m_encoding.compare ("utf-8"))
+      val = string::u8_from_encoding ("textscan", val, m_encoding);
   }
 
   // Return in VAL the run of characters from IS contained in PATTERN.
@@ -3185,15 +3207,19 @@ namespace octave
         scan_caret (is, R"(")", val);     // read everything until "
         is.get ();                        // swallow "
 
-        while (is && is.peek () == '"')  // if double ", insert one in stream,
-          {                               // and keep looking for single "
-            is.get ();
+        while (is && is.peek_undelim () == '"')  // if double ",
+          {                                      // insert one in stream,
+            is.get ();                           // keep looking for single "
             std::string val1;
             scan_caret (is, R"(")", val1);
             val = val + '"' + val1;
             is.get_undelim ();
           }
       }
+
+    // convert from codepage
+    if (m_encoding.compare ("utf-8"))
+      val = string::u8_from_encoding ("textscan", val, m_encoding);
   }
 
   // Read from IS into VAL a string of the next fmt.width characters,
@@ -3216,6 +3242,10 @@ namespace octave
             break;
           }
       }
+
+    // convert from codepage
+    if (m_encoding.compare ("utf-8"))
+      val = string::u8_from_encoding ("textscan", val, m_encoding);
   }
 
   //  Read a single '%...' conversion and place it in position ROW of OV.
@@ -3474,7 +3504,7 @@ namespace octave
         // delimiters at the start of the conversion, or can those be skipped?
         if (elem->type != textscan_format_elt::literal_conversion
             // && elem->type != '[' && elem->type != '^' && elem->type != 'c'
-            )
+           )
           skip_delim (is);
 
         if (is.eof ())
@@ -3505,9 +3535,9 @@ namespace octave
       is.setstate (std::ios::eofbit);
 
     return no_conversions
-      + (is.eof () ? 2 : 0)
-      + (conversion_failed ? 4 : 0)
-      + (nothing_worked ? 8 : 0);
+           + (is.eof () ? 2 : 0)
+           + (conversion_failed ? 4 : 0)
+           + (nothing_worked ? 8 : 0);
 
   }
 
@@ -3560,7 +3590,7 @@ namespace octave
                           delim_list(j) = do_string_escapes (delim_list(j)
                                                              .string_value ());
                         octave_idx_type len = delim_list(j).string_value ()
-                          .length ();
+                                              .length ();
                         delim_len = std::max (static_cast<int> (len), delim_len);
                       }
                   }
@@ -3813,6 +3843,7 @@ namespace octave
 
     if (c1 != std::istream::traits_type::eof ())
       is.putback (c1);
+
     return c1;
   }
 
@@ -3956,22 +3987,22 @@ namespace octave
   void
   base_stream::error (const std::string& msg)
   {
-    fail = true;
-    errmsg = msg;
+    m_fail = true;
+    m_errmsg = msg;
   }
 
   void
   base_stream::error (const std::string& who, const std::string& msg)
   {
-    fail = true;
-    errmsg = who + ": " + msg;
+    m_fail = true;
+    m_errmsg = who + ": " + msg;
   }
 
   void
   base_stream::clear (void)
   {
-    fail = false;
-    errmsg = "";
+    m_fail = false;
+    m_errmsg = "";
   }
 
   void
@@ -3994,7 +4025,9 @@ namespace octave
   base_stream::do_gets (octave_idx_type max_len, bool& err,
                         bool strip_newline, const std::string& who)
   {
-    if (application::interactive () && file_number () == 0)
+    interpreter& interp = __get_interpreter__ ("base_stream::do_gets");
+
+    if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -4073,7 +4106,11 @@ namespace octave
           }
 
         if (is.good () || (is.eof () && char_count > 0))
-          retval = buf.str ();
+          {
+            retval = buf.str ();
+            if (encoding ().compare ("utf-8"))
+              retval = string::u8_from_encoding (who, retval, encoding ());
+          }
         else
           {
             err = true;
@@ -4105,7 +4142,9 @@ namespace octave
   off_t
   base_stream::skipl (off_t num, bool& err, const std::string& who)
   {
-    if (application::interactive () && file_number () == 0)
+    interpreter& interp = __get_interpreter__ ("base_stream::skipl");
+
+    if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -4171,6 +4210,7 @@ namespace octave
         break;
 
       case 'x':
+      case 'X':
         is >> std::hex >> value >> std::dec;
         break;
 
@@ -4253,14 +4293,40 @@ namespace octave
       {
         // Limit input to fmt.width characters by reading into a
         // temporary stringstream buffer.
-        std::string tmp;
+        std::string strbuf;
+
+        auto orig_pos = is.tellg ();
 
         is.width (fmt.width);
-        is >> tmp;
+        is >> strbuf;
 
-        std::istringstream ss (tmp);
+        std::istringstream ss (strbuf);
 
         octave_scan_1 (ss, fmt, valptr);
+
+        if (! ss.eof ())
+          {
+            // If fewer characters than width were used to read a number then
+            // the original istream object positioning is incorrect.
+            // Rather than attempt to update istream state and positioning,
+            // just redo the '>>' operation with the correct width so that
+            // all flags get set correctly.
+
+            is.clear ();  // Clear EOF, FAILBIT, BADBIT
+            is.seekg (orig_pos, is.beg);
+
+            int chars_read = ss.tellg ();
+            if (chars_read > 0)
+              {
+                is.width (chars_read);
+                is >> strbuf;
+              }
+          }
+
+        // If pattern failed to match then propagate fail bit to 'is' stream.
+        if (ss.fail ())
+          is.setstate (std::ios::failbit);
+
       }
     else
       octave_scan_1 (is, fmt, valptr);
@@ -4290,6 +4356,8 @@ namespace octave
       case 'e':
       case 'f':
       case 'g':
+      case 'E':
+      case 'G':
         {
           int c1 = std::istream::traits_type::eof ();
 
@@ -4529,6 +4597,8 @@ namespace octave
 #define FINISH_CHARACTER_CONVERSION()                                   \
   do                                                                    \
     {                                                                   \
+      if (encoding ().compare ("utf-8"))                                \
+        tmp = string::u8_from_encoding (who, tmp, encoding ());         \
       width = tmp.length ();                                            \
                                                                         \
       if (is)                                                           \
@@ -4577,7 +4647,9 @@ namespace octave
                          octave_idx_type& conversion_count,
                          const std::string& who)
   {
-    if (application::interactive () && file_number () == 0)
+    interpreter& interp = __get_interpreter__ ("base_stream::do_scanf");
+
+    if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -4776,7 +4848,7 @@ namespace octave
                     }
                     break;
 
-                  case 'o': case 'u': case 'x':
+                  case 'o': case 'u': case 'x': case 'X':
                     {
                       switch (elt->modifier)
                         {
@@ -4811,6 +4883,7 @@ namespace octave
                     break;
 
                   case 'e': case 'f': case 'g':
+                  case 'E': case 'G':
                     {
                       double tmp;
 
@@ -4847,11 +4920,11 @@ namespace octave
                     break;
 
                   case 'p':
-                    error ("%s: unsupported format specifier", who.c_str ());
+                    error (who, "unsupported format specifier");
                     break;
 
                   default:
-                    error ("%s: internal format error", who.c_str ());
+                    error (who, "internal format error");
                     break;
                   }
 
@@ -4859,7 +4932,7 @@ namespace octave
                   {
                     break;
                   }
-                else if (! is)
+                else if (is.eof () || ! is)
                   {
                     if (all_char_conv)
                       {
@@ -4901,10 +4974,13 @@ namespace octave
                     // If it looks like we have a matching failure, then
                     // reset the failbit in the stream state.
                     if (is.rdstate () & std::ios::failbit)
-                      is.clear (is.rdstate () & (~std::ios::failbit));
+                      {
+                        error (who, "format failed to match");
+                        is.clear (is.rdstate () & (~std::ios::failbit));
+                      }
 
                     // FIXME: is this the right thing to do?
-                    if (application::interactive ()
+                    if (interp.interactive ()
                         && ! application::forced_interactive ()
                         && name () == "stdin")
                       {
@@ -4920,7 +4996,7 @@ namespace octave
               }
             else
               {
-                error ("%s: internal format error", who.c_str ());
+                error (who, "internal format error");
                 break;
               }
 
@@ -4952,15 +5028,12 @@ namespace octave
           }
       }
 
-    if (ok ())
-      {
-        mval.resize (final_nr, final_nc, 0.0);
+    mval.resize (final_nr, final_nc, 0.0);
 
-        retval = mval;
+    retval = mval;
 
-        if (all_char_conv)
-          retval = retval.convert_to_str (false, true);
-      }
+    if (all_char_conv)
+      retval = retval.convert_to_str (false, true);
 
     return retval;
   }
@@ -5085,7 +5158,7 @@ namespace octave
             }
             break;
 
-          case 'o': case 'u': case 'x':
+          case 'o': case 'u': case 'x': case 'X':
             {
               switch (elt->modifier)
                 {
@@ -5132,6 +5205,7 @@ namespace octave
             break;
 
           case 'e': case 'f': case 'g':
+          case 'E': case 'G':
             {
               double tmp;
 
@@ -5185,11 +5259,11 @@ namespace octave
             break;
 
           case 'p':
-            error ("%s: unsupported format specifier", who.c_str ());
+            error (who, "unsupported format specifier");
             break;
 
           default:
-            error ("%s: internal format error", who.c_str ());
+            error (who, "internal format error");
             break;
           }
       }
@@ -5200,8 +5274,9 @@ namespace octave
 
         // FIXME: is this the right thing to do?
 
-        if (application::interactive ()
-            && ! application::forced_interactive ()
+        interpreter& interp = __get_interpreter__ ("base_stream::do_oscanf");
+
+        if (interp.interactive () && ! application::forced_interactive ()
             && name () == "stdin")
           {
             // Skip to end of line.
@@ -5294,7 +5369,9 @@ namespace octave
                             const std::string& who,
                             octave_idx_type& read_count)
   {
-    if (application::interactive () && file_number () == 0)
+    interpreter& interp = __get_interpreter__ ("base_stream::do_textscan");
+
+    if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -5306,7 +5383,7 @@ namespace octave
       invalid_operation (who, "reading");
     else
       {
-        textscan scanner (who);
+        textscan scanner (who, encoding ());
 
         retval = scanner.scan (*isp, fmt, ntimes, options, read_count);
       }
@@ -5369,7 +5446,10 @@ namespace octave
     // Get the current value as a double and advance the internal pointer.
     octave_value get_next_value (char type = 0);
 
-    // Get the current value as an int and advance the internal pointer.
+    // Get the current value as an int and advance the internal
+    // pointer.  Value before conversion to int must be >= 0 and less
+    // than std::numeric_limits<int>::max ().
+
     int int_value (void);
 
     operator bool () const { return (curr_state == ok); }
@@ -5509,41 +5589,42 @@ namespace octave
   int
   printf_value_cache::int_value (void)
   {
-    int retval = 0;
-
     octave_value val = get_next_value ();
 
     double dval = val.double_value (true);
 
-    if (math::x_nint (dval) == dval)
-      retval = math::nint (dval);
-    else
-      curr_state = conversion_error;
+    if (dval < 0 || dval > std::numeric_limits<int>::max ()
+        || math::x_nint (dval) != dval)
+      {
+        curr_state = conversion_error;
+        return -1;
+      }
 
-    return retval;
+    return math::nint (dval);
   }
 
   // Ugh again and again.
 
   template <typename T>
   int
-  do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
-                  int sa_2, T arg, const std::string& who)
+  do_printf_conv (std::ostream& os, const std::string& encoding,
+                  const char *fmt, int nsa, int sa_1, int sa_2, T arg,
+                  const std::string& who)
   {
     int retval = 0;
 
     switch (nsa)
       {
       case 2:
-        retval = octave::format (os, fmt, sa_1, sa_2, arg);
+        retval = format (os, encoding, fmt, sa_1, sa_2, arg);
         break;
 
       case 1:
-        retval = octave::format (os, fmt, sa_1, arg);
+        retval = format (os, encoding, fmt, sa_1, arg);
         break;
 
       case 0:
-        retval = octave::format (os, fmt, arg);
+        retval = format (os, encoding, fmt, arg);
         break;
 
       default:
@@ -5557,7 +5638,7 @@ namespace octave
   static size_t
   do_printf_string (std::ostream& os, const printf_format_elt *elt,
                     int nsa, int sa_1, int sa_2, const std::string& arg,
-                    const std::string& who)
+                    const std::string& encoding, const std::string& who)
   {
     if (nsa > 2)
       ::error ("%s: internal error handling format", who.c_str ());
@@ -5568,12 +5649,19 @@ namespace octave
 
     size_t len = arg.length ();
 
-    size_t fw = (nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw));
     size_t prec = (nsa > 1 ? sa_2 : (elt->prec == -1 ? len : elt->prec));
 
-    os << std::setw (fw)
-       << (left ? std::left : std::right)
-       << (prec < len ? arg.substr (0, prec) : arg);
+    std::string print_str = prec < arg.length () ? arg.substr (0, prec) : arg;
+    if (encoding.compare ("utf-8"))
+      {
+        size_t src_len = print_str.length ();
+        print_str = string::u8_to_encoding (who, print_str, encoding);
+        len -= src_len - print_str.length ();
+      }
+
+    size_t fw = (nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw));
+
+    os << std::setw (fw) << (left ? std::left : std::right) << print_str;
 
     return len > fw ? len : fw;
   }
@@ -5696,7 +5784,8 @@ namespace octave
               tval = (lo_ieee_is_NA (dval) ? "NA" : "NaN");
           }
 
-        retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2, tval, who);
+        retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa, sa_1,
+                                  sa_2, tval, who);
       }
     else
       {
@@ -5715,8 +5804,8 @@ namespace octave
                 // Insert "long" modifier.
                 tfmt.replace (tfmt.rfind (type), 1, llmod + type);
 
-                retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
-                                          tval.value (), who);
+                retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa,
+                                          sa_1, sa_2, tval.value (), who);
               }
             else
               {
@@ -5724,7 +5813,7 @@ namespace octave
 
                 double dval = val.double_value (true);
 
-                retval += do_printf_conv (os, tfmt.c_str (), nsa,
+                retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa,
                                           sa_1, sa_2, dval, who);
               }
             break;
@@ -5737,8 +5826,8 @@ namespace octave
                 // Insert "long" modifier.
                 tfmt.replace (tfmt.rfind (type), 1, llmod + type);
 
-                retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
-                                          tval.value (), who);
+                retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa,
+                                          sa_1, sa_2, tval.value (), who);
               }
             else
               {
@@ -5746,7 +5835,7 @@ namespace octave
 
                 double dval = val.double_value (true);
 
-                retval += do_printf_conv (os, tfmt.c_str (), nsa,
+                retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa,
                                           sa_1, sa_2, dval, who);
               }
             break;
@@ -5756,21 +5845,28 @@ namespace octave
             {
               double dval = val.double_value (true);
 
-              retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
-                                        dval, who);
+              retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa,
+                                        sa_1, sa_2, dval, who);
             }
             break;
 
           default:
             // Note: error is member fcn from base_stream, not ::error.
             // This error does not halt execution so "return ..." must exist.
-            error ("%s: invalid format specifier", who.c_str ());
+            error (who, "invalid format specifier");
             return -1;
             break;
           }
       }
 
     return retval;
+  }
+
+  void
+  base_stream::field_width_error (const std::string& who) const
+  {
+    ::error ("%s: invalid field width, must be integer >= 0 and <= INT_MAX",
+             who.c_str ());
   }
 
   int
@@ -5812,7 +5908,10 @@ namespace octave
                 sa_1 = val_cache.int_value ();
 
                 if (! val_cache)
-                  break;
+                  {
+                    field_width_error (who);
+                    break;
+                  }
                 else
                   {
                     if (nsa > 1)
@@ -5820,19 +5919,28 @@ namespace octave
                         sa_2 = val_cache.int_value ();
 
                         if (! val_cache)
-                          break;
+                          {
+                            field_width_error (who);
+                            break;
+                          }
                       }
                   }
               }
 
             if (elt->type == '%')
               {
-                os << '%';
+                if (encoding ().compare ("utf-8"))
+                  os << string::u8_to_encoding (who, "%", encoding ());
+                else
+                  os << '%';
                 retval++;
               }
             else if (elt->args == 0 && ! elt->text.empty ())
               {
-                os << elt->text;
+                if (encoding ().compare ("utf-8"))
+                  os << string::u8_to_encoding (who, elt->text, encoding ());
+                else
+                  os << elt->text;
                 retval += (elt->text.length ());
               }
             else if (elt->type == 's' || elt->type == 'c')
@@ -5846,7 +5954,8 @@ namespace octave
                         std::string sval = val.string_value ();
 
                         retval += do_printf_string (os, elt, nsa, sa_1,
-                                                    sa_2, sval, who);
+                                                    sa_2, sval, encoding (),
+                                                    who);
                       }
                     else
                       retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
@@ -5871,7 +5980,7 @@ namespace octave
 
             if (! os)
               {
-                error ("%s: write error", who.c_str ());
+                error (who, "write error");
                 break;
               }
 
@@ -5914,7 +6023,7 @@ namespace octave
         os << s;
 
         if (! os)
-          error ("%s: write error", who.c_str ());
+          error (who, "write error");
         else
           {
             // FIXME: why does this seem to be necessary?
@@ -5928,7 +6037,7 @@ namespace octave
             if (os)
               retval = 0;
             else
-              error ("%s: write error", who.c_str ());
+              error (who, "write error");
           }
       }
 
@@ -5940,9 +6049,9 @@ namespace octave
   std::string
   base_stream::error (bool clear_err, int& err_num)
   {
-    err_num = (fail ? -1 : 0);
+    err_num = (m_fail ? -1 : 0);
 
-    std::string tmp = errmsg;
+    std::string tmp = m_errmsg;
 
     if (clear_err)
       clear ();
@@ -5957,50 +6066,13 @@ namespace octave
     error (who, std::string ("stream not open for ") + rw);
   }
 
-  stream::stream (base_stream *bs)
-    : rep (bs)
-  {
-    if (rep)
-      rep->count = 1;
-  }
-
-  stream::~stream (void)
-  {
-    if (rep && --rep->count == 0)
-      delete rep;
-  }
-
-  stream::stream (const stream& s)
-    : rep (s.rep)
-  {
-    if (rep)
-      rep->count++;
-  }
-
-  stream&
-  stream::operator = (const stream& s)
-  {
-    if (rep != s.rep)
-      {
-        if (rep && --rep->count == 0)
-          delete rep;
-
-        rep = s.rep;
-
-        if (rep)
-          rep->count++;
-      }
-
-    return *this;
-  }
-
   int
   stream::flush (void)
   {
     int retval = -1;
 
     if (stream_ok ())
-      retval = rep->flush ();
+      retval = m_rep->flush ();
 
     return retval;
   }
@@ -6011,7 +6083,7 @@ namespace octave
     std::string retval;
 
     if (stream_ok ())
-      retval = rep->getl (max_len, err, who);
+      retval = m_rep->getl (max_len, err, who);
 
     return retval;
   }
@@ -6046,7 +6118,7 @@ namespace octave
     std::string retval;
 
     if (stream_ok ())
-      retval = rep->gets (max_len, err, who);
+      retval = m_rep->gets (max_len, err, who);
 
     return retval;
   }
@@ -6081,7 +6153,7 @@ namespace octave
     off_t retval = -1;
 
     if (stream_ok ())
-      retval = rep->skipl (count, err, who);
+      retval = m_rep->skipl (count, err, who);
 
     return retval;
   }
@@ -6126,31 +6198,31 @@ namespace octave
         clearerr ();
 
         // Find current position so we can return to it if needed.
-        off_t orig_pos = rep->tell ();
+        off_t orig_pos = m_rep->tell ();
 
         // Move to end of file.  If successful, find the offset of the end.
-        status = rep->seek (0, SEEK_END);
+        status = m_rep->seek (0, SEEK_END);
 
         if (status == 0)
           {
-            off_t eof_pos = rep->tell ();
+            off_t eof_pos = m_rep->tell ();
 
             if (origin == SEEK_CUR)
               {
                 // Move back to original position, otherwise we will be seeking
                 // from the end of file which is probably not the original
                 // location.
-                rep->seek (orig_pos, SEEK_SET);
+                m_rep->seek (orig_pos, SEEK_SET);
               }
 
             // Attempt to move to desired position; may be outside bounds of
             // existing file.
-            status = rep->seek (offset, origin);
+            status = m_rep->seek (offset, origin);
 
             if (status == 0)
               {
                 // Where are we after moving to desired position?
-                off_t desired_pos = rep->tell ();
+                off_t desired_pos = m_rep->tell ();
 
                 // I don't think save_pos can be less than zero,
                 // but we'll check anyway...
@@ -6158,7 +6230,7 @@ namespace octave
                   {
                     // Seek outside bounds of file.
                     // Failure should leave position unchanged.
-                    rep->seek (orig_pos, SEEK_SET);
+                    m_rep->seek (orig_pos, SEEK_SET);
 
                     status = -1;
                   }
@@ -6167,7 +6239,7 @@ namespace octave
               {
                 // Seeking to the desired position failed.
                 // Move back to original position and return failure status.
-                rep->seek (orig_pos, SEEK_SET);
+                m_rep->seek (orig_pos, SEEK_SET);
 
                 status = -1;
               }
@@ -6239,7 +6311,7 @@ namespace octave
     off_t retval = -1;
 
     if (stream_ok ())
-      retval = rep->tell ();
+      retval = m_rep->tell ();
 
     return retval;
   }
@@ -6256,7 +6328,7 @@ namespace octave
     bool retval = false;
 
     if (stream_ok ())
-      retval = rep->is_open ();
+      retval = m_rep->is_open ();
 
     return retval;
   }
@@ -6265,7 +6337,7 @@ namespace octave
   stream::close (void)
   {
     if (stream_ok ())
-      rep->close ();
+      m_rep->close ();
   }
 
   // FIXME: maybe these should be defined in lo-ieee.h?
@@ -6589,8 +6661,8 @@ namespace octave
     octave_idx_type input_elt_size
       = oct_data_conv::data_type_size (input_type);
 
-    ptrdiff_t input_buf_size =
-      static_cast<ptrdiff_t> (input_buf_elts) * input_elt_size;
+    ptrdiff_t input_buf_size
+      = static_cast<ptrdiff_t> (input_buf_elts) * input_elt_size;
 
     assert (input_buf_size >= 0);
 
@@ -7050,7 +7122,7 @@ namespace octave
     octave_value retval;
 
     if (stream_ok ())
-      retval = rep->scanf (fmt, size, count, who);
+      retval = m_rep->scanf (fmt, size, count, who);
 
     return retval;
   }
@@ -7085,7 +7157,7 @@ namespace octave
     octave_value_list retval;
 
     if (stream_ok ())
-      retval = rep->oscanf (fmt, who);
+      retval = m_rep->oscanf (fmt, who);
 
     return retval;
   }
@@ -7119,7 +7191,7 @@ namespace octave
                     const std::string& who, octave_idx_type& count)
   {
     return (stream_ok ()
-            ? rep->do_textscan (fmt, ntimes, options, who, count)
+            ? m_rep->do_textscan (fmt, ntimes, options, who, count)
             : octave_value ());
   }
 
@@ -7130,7 +7202,7 @@ namespace octave
     int retval = -1;
 
     if (stream_ok ())
-      retval = rep->printf (fmt, args, who);
+      retval = m_rep->printf (fmt, args, who);
 
     return retval;
   }
@@ -7165,7 +7237,7 @@ namespace octave
     int retval = -1;
 
     if (stream_ok ())
-      retval = rep->puts (s, who);
+      retval = m_rep->puts (s, who);
 
     return retval;
   }
@@ -7197,7 +7269,7 @@ namespace octave
     int retval = -1;
 
     if (stream_ok ())
-      retval = rep->eof ();
+      retval = m_rep->eof ();
 
     return retval;
   }
@@ -7208,7 +7280,7 @@ namespace octave
     std::string retval = "invalid stream object";
 
     if (stream_ok (false))
-      retval = rep->error (clear, err_num);
+      retval = m_rep->error (clear, err_num);
 
     return retval;
   }
@@ -7219,7 +7291,7 @@ namespace octave
     std::string retval;
 
     if (stream_ok ())
-      retval = rep->name ();
+      retval = m_rep->name ();
 
     return retval;
   }
@@ -7230,7 +7302,7 @@ namespace octave
     int retval = 0;
 
     if (stream_ok ())
-      retval = rep->mode ();
+      retval = m_rep->mode ();
 
     return retval;
   }
@@ -7241,7 +7313,7 @@ namespace octave
     mach_info::float_format retval = mach_info::flt_fmt_unknown;
 
     if (stream_ok ())
-      retval = rep->float_format ();
+      retval = m_rep->float_format ();
 
     return retval;
   }
@@ -7285,7 +7357,7 @@ namespace octave
   }
 
   stream_list::stream_list (interpreter& interp)
-    : list (), lookup_cache (list.end ()), m_stdin_file (-1),
+    : m_list (), m_lookup_cache (m_list.end ()), m_stdin_file (-1),
       m_stdout_file (-1), m_stderr_file (-1)
   {
     stream stdin_stream = octave_istream::create (&std::cin, "stdin");
@@ -7323,8 +7395,8 @@ namespace octave
 
     // Should we test for
     //
-    //  (list.find (stream_number) != list.end ()
-    //   && list[stream_number].is_open ())
+    //  (m_list.find (stream_number) != m_list.end ()
+    //   && m_list[stream_number].is_open ())
     //
     // and respond with "error ("internal error: ...")"?  It should not
     // happen except for some bug or if the user has opened a stream with
@@ -7334,10 +7406,10 @@ namespace octave
     // overwrite this entry, although the wrong entry might have done harm
     // before.
 
-    if (list.size () >= list.max_size ())
+    if (m_list.size () >= m_list.max_size ())
       ::error ("could not create file id");
 
-    list[stream_number] = os;
+    m_list[stream_number] = os;
 
     return stream_number;
   }
@@ -7359,17 +7431,17 @@ namespace octave
     if (fid < 0)
       err_invalid_file_id (fid, who);
 
-    if (lookup_cache != list.end () && lookup_cache->first == fid)
-      retval = lookup_cache->second;
+    if (m_lookup_cache != m_list.end () && m_lookup_cache->first == fid)
+      retval = m_lookup_cache->second;
     else
       {
-        ostrl_map::const_iterator iter = list.find (fid);
+        ostrl_map::const_iterator iter = m_list.find (fid);
 
-        if (iter == list.end ())
+        if (iter == m_list.end ())
           err_invalid_file_id (fid, who);
 
         retval = iter->second;
-        lookup_cache = iter;
+        m_lookup_cache = iter;
       }
 
     return retval;
@@ -7389,14 +7461,14 @@ namespace octave
     if (fid < 3)
       err_invalid_file_id (fid, who);
 
-    auto iter = list.find (fid);
+    auto iter = m_list.find (fid);
 
-    if (iter == list.end ())
+    if (iter == m_list.end ())
       err_invalid_file_id (fid, who);
 
     stream os = iter->second;
-    list.erase (iter);
-    lookup_cache = list.end ();
+    m_list.erase (iter);
+    m_lookup_cache = m_list.end ();
 
     // FIXME: is this check redundant?
     if (! os.is_valid ())
@@ -7432,11 +7504,11 @@ namespace octave
     if (flush)
       {
         // Flush stdout and stderr.
-        list[1].flush ();
-        list[2].flush ();
+        m_list[1].flush ();
+        m_list[2].flush ();
       }
 
-    for (auto iter = list.begin (); iter != list.end (); )
+    for (auto iter = m_list.begin (); iter != m_list.end (); )
       {
         int fid = iter->first;
         if (fid < 3)  // Don't delete stdin, stdout, stderr
@@ -7458,35 +7530,35 @@ namespace octave
             continue;
           }
 
-        // Normal file handle.  Close and delete from list.
+        // Normal file handle.  Close and delete from m_list.
         if (os.is_valid ())
           os.close ();
 
-        list.erase (iter++);
+        m_list.erase (iter++);
       }
 
-    lookup_cache = list.end ();
+    m_lookup_cache = m_list.end ();
   }
 
   string_vector stream_list::get_info (int fid) const
   {
-    string_vector retval (3);
+    string_vector retval (4);
 
     if (fid < 0)
       return retval;
 
     stream os;
-    if (lookup_cache != list.end () && lookup_cache->first == fid)
-      os = lookup_cache->second;
+    if (m_lookup_cache != m_list.end () && m_lookup_cache->first == fid)
+      os = m_lookup_cache->second;
     else
       {
-        ostrl_map::const_iterator iter = list.find (fid);
+        ostrl_map::const_iterator iter = m_list.find (fid);
 
-        if (iter == list.end ())
+        if (iter == m_list.end ())
           return retval;
 
         os = iter->second;
-        lookup_cache = iter;
+        m_lookup_cache = iter;
       }
 
     if (! os.is_valid ())
@@ -7495,6 +7567,7 @@ namespace octave
     retval(0) = os.name ();
     retval(1) = stream::mode_as_string (os.mode ());
     retval(2) = mach_info::float_format_as_string (os.float_format ());
+    retval(3) = os.encoding ();
 
     return retval;
   }
@@ -7522,7 +7595,7 @@ namespace octave
         << "  number  mode  arch       name\n"
         << "  ------  ----  ----       ----\n";
 
-    for (const auto& fid_strm : list)
+    for (const auto& fid_strm : m_list)
       {
         stream os = fid_strm.second;
 
@@ -7548,11 +7621,11 @@ namespace octave
 
   octave_value stream_list::open_file_numbers (void) const
   {
-    Matrix retval (1, list.size (), 0.0);
+    Matrix retval (1, m_list.size (), 0.0);
 
     int num_open = 0;
 
-    for (const auto& fid_strm : list)
+    for (const auto& fid_strm : m_list)
       {
         // Skip stdin, stdout, and stderr.
         if (fid_strm.first > 2 && fid_strm.second)
@@ -7572,7 +7645,7 @@ namespace octave
       {
         std::string nm = fid.string_value ();
 
-        for (const auto& fid_strm : list)
+        for (const auto& fid_strm : m_list)
           {
             // stdin, stdout, and stderr are unnamed.
             if (fid_strm.first > 2)

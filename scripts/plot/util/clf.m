@@ -1,4 +1,9 @@
-## Copyright (C) 2005-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} clf
@@ -39,8 +46,6 @@
 ## window that was cleared.
 ## @seealso{cla, close, delete, reset}
 ## @end deftypefn
-
-## Author: jwe
 
 function h = clf (varargin)
 
@@ -71,15 +76,28 @@ function h = clf (varargin)
 
   if (do_reset)
     ## Delete all the children, including the ones with hidden handles,
-    ## except default menus.
+    ## except default menus and toolbar.
+
     kids = allchild (hfig);
-    ismenu = cellfun (@(s) strncmp (s, "__default_menu_", 15), ...
-                      get (kids, "tag"));
-    delete (kids(! ismenu));
+
+    if (! isempty (kids))
+      tags = get (kids, "tag");
+      ## It's possible for a figure to have just one child and then get
+      ## will return a single value instead of a cell array.
+      if (! iscell (tags))
+        tags = {tags};
+      endif
+      ismenu = cellfun (@(s) strncmp (s, "__default_menu_", 15), tags);
+      istoolbar = cellfun (@(s) strncmp (s, "__default_toolbar_menu_", 18), tags);
+      delete (kids(! ismenu & ! istoolbar));
+    endif
+
     reset (hfig);
 
-    ## Recover figure listeners which have been deleted
-    __add_default_menu__ (hfig, kids(ismenu));
+    if (! isempty (kids))
+      ## Recover figure listeners which have been deleted
+      __add_default_menu__ (hfig, kids(ismenu), kids(istoolbar));
+    endif
 
     __set_default_mouse_modes__ (hfig);
   else

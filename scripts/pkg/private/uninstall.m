@@ -1,5 +1,9 @@
-## Copyright (C) 2005-2019 Søren Hauberg
-## Copyright (C) 2010 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} uninstall (@var{pkgnames}, @var{handle_deps}, @var{verbose}, @var{local_list}, @var{global_list}, @var{global_install})
@@ -74,13 +80,14 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
     ## Compute the packages that will remain installed.
     idx = setdiff (1:num_packages, delete_idx);
     remaining_packages = {installed_pkgs_lst{idx}};
+    to_delete_packages = {installed_pkgs_lst{delete_idx}};
 
     ## Check dependencies.
     if (handle_deps)
       error_text = "";
       for i = 1:length (remaining_packages)
         desc = remaining_packages{i};
-        bad_deps = get_unsatisfied_deps (desc, remaining_packages);
+        bad_deps = get_unsatisfied_deps (desc, to_delete_packages, true);
 
         ## Will the uninstallation break any dependencies?
         if (! isempty (bad_deps))
@@ -137,6 +144,11 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
         unlink (global_list);
       else
         global_packages = save_order (remaining_packages);
+        if (ispc)
+          ## On Windows ensure LFN paths are saved rather than 8.3 style paths
+          global_packages = standardize_paths (global_packages);
+        endif
+        global_packages = make_rel_paths (global_packages);
         save (global_list, "global_packages");
       endif
     else
@@ -144,6 +156,9 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
         unlink (local_list);
       else
         local_packages = save_order (remaining_packages);
+        if (ispc)
+          local_packages = standardize_paths (local_packages);
+        endif
         save (local_list, "local_packages");
       endif
     endif

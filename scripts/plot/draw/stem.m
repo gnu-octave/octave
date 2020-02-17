@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 Michel D. Schmid
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} stem (@var{y})
@@ -114,9 +121,6 @@
 ## @end table
 ## @seealso{stem3, bar, hist, plot, stairs}
 ## @end deftypefn
-
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## Adapted-by: jwe
 
 function h = stem (varargin)
 

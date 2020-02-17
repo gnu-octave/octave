@@ -1,4 +1,9 @@
-## Copyright (C) 2005-2019 Søren Hauberg
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} untar (@var{tarfile})
@@ -23,23 +30,16 @@
 ## Unpack the TAR archive @var{tarfile}.
 ##
 ## If @var{dir} is specified the files are unpacked in this directory rather
-## than the one where @var{tarfile} is located.
+## than the current directory.
 ##
 ## The optional output @var{filelist} is a list of the uncompressed files.
 ## @seealso{tar, unpack, bunzip2, gunzip, unzip}
 ## @end deftypefn
 
-## Author: Søren Hauberg <hauberg@gmail.com>
-## Adapted-By: jwe, Bill Denney
-
 function filelist = untar (tarfile, dir = [])
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  endif
-
-  if (isempty (dir))
-    dir = fileparts (tarfile);
   endif
 
   if (nargout > 0)

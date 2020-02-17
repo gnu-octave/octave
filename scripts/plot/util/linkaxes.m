@@ -1,4 +1,9 @@
-## Copyright (C) 2014-2019 Willem Atsma
+########################################################################
+##
+## Copyright (C) 2014-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} linkaxes (@var{hax})
@@ -49,9 +56,6 @@
 ##
 ## @seealso{linkprop, addproperty}
 ## @end deftypefn
-
-## Author: Willem Atsma willem.atsma at tanglebridge.com
-## Created: 2014-03-18
 
 function linkaxes (hax, optstr = "xy")
 

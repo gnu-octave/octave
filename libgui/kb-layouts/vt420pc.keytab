@@ -4,7 +4,7 @@
 #
 ################################################################
 #
-# The escape sequences emmited by the
+# The escape sequences emitted by the
 # keys Shift+F1 to Shift+F12 might not fit your needs
 #
 ################# IMPORTANT NOTICE #############################
@@ -57,7 +57,7 @@ keyboard "DEC VT420 Terminal"
 #
 # If the key is not found here, the text of the
 # key event as provided by QT is emitted, possibly
-# preceeded by ESC if the Alt key is pressed.
+# preceded by ESC if the Alt key is pressed.
 #
 # --------------------------------------------------------------
 

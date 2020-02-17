@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 Bill Denney
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{msgstr} =} nargchk (@var{minargs}, @var{maxargs}, @var{nargs})
@@ -30,8 +37,6 @@
 ## @code{narginchk} in all new code.
 ## @seealso{narginchk, nargoutchk, error, nargin, nargout}
 ## @end deftypefn
-
-## Author: Bill Denney <bill@denney.ws>
 
 function msg = nargchk (minargs, maxargs, nargs, outtype = "string")
 

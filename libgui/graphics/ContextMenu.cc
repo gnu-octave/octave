@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -26,30 +29,37 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QMenu>
 
-#include "Backend.h"
 #include "ContextMenu.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
+
+#include "octave-qobject.h"
+
+#include "interpreter.h"
 
 namespace QtHandles
 {
 
   ContextMenu*
-  ContextMenu::create (const graphics_object& go)
+  ContextMenu::create (octave::base_qobject& oct_qobj,
+                       octave::interpreter& interp, const graphics_object& go)
   {
-    Object *xparent = Object::parentObject (go);
+    Object *xparent = parentObject (interp, go);
 
     if (xparent)
       {
         QWidget *w = xparent->qWidget<QWidget> ();
 
-        return new ContextMenu (go, new QMenu (w));
+        return new ContextMenu (oct_qobj, interp, go, new QMenu (w));
       }
 
     return nullptr;
   }
 
-  ContextMenu::ContextMenu (const graphics_object& go, QMenu *xmenu)
-    : Object (go, xmenu)
+  ContextMenu::ContextMenu (octave::base_qobject& oct_qobj,
+                            octave::interpreter& interp,
+                            const graphics_object& go, QMenu *xmenu)
+    : Object (oct_qobj, interp, go, xmenu)
   {
     xmenu->setAutoFillBackground (true);
 
@@ -93,14 +103,14 @@ namespace QtHandles
   void
   ContextMenu::aboutToShow (void)
   {
-    gh_manager::post_callback (m_handle, "callback");
-    gh_manager::post_set (m_handle, "visible", "on", false);
+    emit gh_callback_event (m_handle, "callback");
+    emit gh_set_event (m_handle, "visible", "on", false);
   }
 
   void
   ContextMenu::aboutToHide (void)
   {
-    gh_manager::post_set (m_handle, "visible", "off", false);
+    emit gh_set_event (m_handle, "visible", "off", false);
   }
 
   QWidget*
@@ -110,19 +120,22 @@ namespace QtHandles
   }
 
   void
-  ContextMenu::executeAt (const base_properties& props, const QPoint& pt)
+  ContextMenu::executeAt (octave::interpreter& interp,
+                          const base_properties& props, const QPoint& pt)
   {
     graphics_handle h = props.get_uicontextmenu ();
 
     if (h.ok ())
       {
-        gh_manager::auto_lock lock;
-        graphics_object go = gh_manager::get_object (h);
+        gh_manager& gh_mgr = interp.get_gh_manager ();
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
+        graphics_object go = gh_mgr.get_object (h);
 
         if (go.valid_object ())
           {
             ContextMenu *cMenu =
-              dynamic_cast<ContextMenu *> (Backend::toolkitObject (go));
+              dynamic_cast<ContextMenu *> (qt_graphics_toolkit::toolkitObject (go));
 
             if (cMenu)
               {

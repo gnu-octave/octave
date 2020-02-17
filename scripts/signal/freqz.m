@@ -1,4 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
@@ -72,8 +79,6 @@
 ##
 ## @seealso{freqz_plot}
 ## @end deftypefn
-
-## Author: jwe ???
 
 function [h_r, f_r] = freqz (b, a, n, region, Fs)
 
@@ -188,7 +193,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
 
   if (plot_output)
     ## Plot and don't return values.
-    if (whole_region)
+    if (whole_region && isscalar (n))
       h(end+1) = h(1); # Solution is periodic.  Copy first value to end.
     endif
     freqz_plot (f, h, freq_norm);

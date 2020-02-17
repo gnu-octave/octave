@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2003-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -27,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <ostream>
 
 #include "interpreter-private.h"
+#include "pt-anon-scopes.h"
 #include "pt-fcn-handle.h"
 
 namespace octave
@@ -55,6 +59,12 @@ namespace octave
     return new_fh;
   }
 
+  octave_value
+  tree_fcn_handle::evaluate (tree_evaluator& tw, int)
+  {
+    return make_fcn_handle (tw.get_interpreter (), m_name);
+  }
+
   tree_anon_fcn_handle::~tree_anon_fcn_handle (void)
   {
     delete m_parameter_list;
@@ -70,20 +80,10 @@ namespace octave
     symbol_scope af_scope = m_scope;
     symbol_scope af_parent_scope = m_parent_scope;
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("tree_anon_fcn_handle::dup");
-
     symbol_scope new_scope;
 
     if (af_scope)
       new_scope = af_scope.dup ();
-
-    // FIXME: why should we inherit from the current scope here?  That
-    // doesn't seem right, but with the way things work now it appears
-    // to be required for bug-31371.tst to pass.
-
-    if (new_scope)
-      symtab.inherit (new_scope);
 
     // FIXME: if new scope is nullptr, then we are in big trouble here...
 
@@ -95,6 +95,89 @@ namespace octave
     new_afh->copy_base (*this);
 
     return new_afh;
+  }
+
+  octave_value
+  tree_anon_fcn_handle::evaluate (tree_evaluator& tw, int)
+  {
+    // FIXME: should CMD_LIST be limited to a single expression?
+    // I think that is what Matlab does.
+
+    symbol_scope new_scope;
+    if (m_scope)
+      new_scope = m_scope.dup ();
+
+    tree_parameter_list *param_list_dup
+      = m_parameter_list ? m_parameter_list->dup (new_scope) : nullptr;
+
+    tree_parameter_list *ret_list = nullptr;
+
+    tree_statement_list *stmt_list = nullptr;
+
+    symbol_scope parent_scope = tw.get_current_scope ();
+
+    new_scope.set_parent (parent_scope);
+    new_scope.set_primary_parent (parent_scope);
+
+    if (m_expression)
+      {
+        tree_expression *expr_dup = m_expression->dup (new_scope);
+        tree_statement *stmt = new tree_statement (expr_dup, nullptr);
+        stmt_list = new tree_statement_list (stmt);
+      }
+
+    tree_anon_scopes anon_fcn_ctx (*this);
+
+    std::set<std::string> free_vars = anon_fcn_ctx.free_variables ();
+
+    octave_user_function::local_vars_map local_var_init_vals;
+
+    call_stack& cs = tw.get_call_stack ();
+
+    stack_frame& frame = cs.get_current_stack_frame ();
+
+    for (auto& name : free_vars)
+      {
+        octave_value val = frame.varval (name);
+
+        if (val.is_defined ())
+          local_var_init_vals[name] = val;
+      }
+
+    octave_user_function *af
+      = new octave_user_function (new_scope, param_list_dup, ret_list,
+                                  stmt_list, local_var_init_vals);
+
+    octave_function *curr_fcn = cs.current_function ();
+
+    if (curr_fcn)
+      {
+        // FIXME: maybe it would be better to just stash curr_fcn
+        // instead of individual bits of info about it?
+
+        af->stash_parent_fcn_name (curr_fcn->name ());
+        af->stash_dir_name (curr_fcn->dir_name ());
+
+        new_scope.cache_fcn_file_name (curr_fcn->fcn_file_name ());
+        new_scope.cache_dir_name (curr_fcn->dir_name ());
+
+        // The following is needed so that class method dispatch works
+        // properly for anonymous functions that wrap class methods.
+
+        if (curr_fcn->is_class_method () || curr_fcn->is_class_constructor ())
+          af->stash_dispatch_class (curr_fcn->dispatch_class ());
+
+        af->stash_fcn_file_name (curr_fcn->fcn_file_name ());
+      }
+
+    af->mark_as_anonymous_function ();
+
+    octave_value ov_fcn (af);
+
+    // octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, m_interpreter));
+
+    return octave_value (new octave_fcn_handle
+                         (ov_fcn, octave_fcn_handle::anonymous));
   }
 }
 

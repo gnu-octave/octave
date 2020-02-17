@@ -1,4 +1,9 @@
-## Copyright (C) 2012-2019 Michael Goffioul
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,13 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @var{in_args}, @var{parent_type}, @var{use_gcf})
 ## Undocumented internal function.
 ## @end deftypefn
-
-## Author: goffioul
 
 function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {}, use_gcf = 1)
 

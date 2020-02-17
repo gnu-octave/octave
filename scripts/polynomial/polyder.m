@@ -1,4 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} polyder (@var{p})
@@ -31,10 +38,6 @@
 ## in @var{q} and the denominator in @var{d}.
 ## @seealso{polyint, polyval, polyreduce}
 ## @end deftypefn
-
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Created: June 1994
-## Adapted-By: jwe
 
 function [q, d] = polyder (p, a)
 

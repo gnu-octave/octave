@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Markus Mützel
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} light ()
@@ -65,8 +72,6 @@
 ## @ref{Light Properties,,Light Properties}.
 ## @seealso{lighting, material, patch, surface}
 ## @end deftypefn
-
-## Author: mmuetzel
 
 function h = light (varargin)
 
@@ -198,7 +203,8 @@ endfunction
 %! ## Diffuse and specular reflection
 %! clf;
 %! h_axes = axes ();
-%! [x,y,z] = meshgrid (-.2:0.04:.2, -.2:0.04:.2, -.2:0.04:.2);
+%! rng = linspace (-0.2, +0.2, 12);
+%! [x,y,z] = meshgrid (rng);
 %! val = (x.^2 + y.^2 + z.^2);
 %!
 %! fv = isosurface (x, y, z, val, .039);

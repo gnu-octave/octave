@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2004-2019 David Bateman
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2004-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ov_fcn_inline_h)
 #define octave_ov_fcn_inline_h 1
@@ -43,13 +46,13 @@ octave_fcn_inline : public octave_fcn_handle
 public:
 
   octave_fcn_inline (void)
-    : octave_fcn_handle (), iftext (), ifargs () { }
+    : octave_fcn_handle (), m_text (), m_args () { }
 
   octave_fcn_inline (const std::string& f, const string_vector& a,
                      const std::string& n = "");
 
   octave_fcn_inline (const octave_fcn_inline& fi)
-    : octave_fcn_handle (fi), iftext (fi.iftext), ifargs (fi.ifargs) { }
+    : octave_fcn_handle (fi), m_text (fi.m_text), m_args (fi.m_args) { }
 
   ~octave_fcn_inline (void) = default;
 
@@ -62,9 +65,9 @@ public:
 
   octave_fcn_inline * fcn_inline_value (bool = false) { return this; }
 
-  std::string fcn_text (void) const { return iftext; }
+  std::string fcn_text (void) const { return m_text; }
 
-  string_vector fcn_arg_names (void) const { return ifargs; }
+  string_vector fcn_arg_names (void) const { return m_args; }
 
   octave_value convert_to_str_internal (bool, bool, char) const;
 
@@ -74,7 +77,7 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& save_as_floats);
+  bool save_binary (std::ostream& os, bool save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format fmt);
@@ -92,10 +95,10 @@ private:
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 
   // The expression of an inline function.
-  std::string iftext;
+  std::string m_text;
 
   // The args of an inline function.
-  string_vector ifargs;
+  string_vector m_args;
 };
 
 #endif

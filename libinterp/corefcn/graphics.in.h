@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2007-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2007-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_graphics_h)
 #define octave_graphics_h 1
@@ -35,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "caseless-str.h"
 
@@ -266,7 +270,12 @@ private:
 
 class property;
 
-enum listener_mode { POSTSET, PERSISTENT, PREDELETE };
+// FIXME: These values should probably be defined inside a namespace or
+// class, but which one is most appropriate?  For now, prefix with
+// "GCB_" to avoid conflict with PERSISTENT token ID used in the lexer.
+// The lexer token IDs should probably also be fixed...
+
+enum listener_mode { GCB_POSTSET, GCB_PERSISTENT, GCB_PREDELETE };
 
 class base_property
 {
@@ -335,14 +344,14 @@ public:
     return *this;
   }
 
-  void add_listener (const octave_value& v, listener_mode mode = POSTSET)
+  void add_listener (const octave_value& v, listener_mode mode = GCB_POSTSET)
   {
     octave_value_list& l = listeners[mode];
     l.resize (l.length () + 1, v);
   }
 
   void delete_listener (const octave_value& v = octave_value (),
-                        listener_mode mode = POSTSET)
+                        listener_mode mode = GCB_POSTSET)
   {
     octave_value_list& l = listeners[mode];
 
@@ -369,12 +378,12 @@ public:
       }
     else
       {
-        if (mode == PERSISTENT)
+        if (mode == GCB_PERSISTENT)
           l.resize (0);
         else
           {
             octave_value_list lnew (0);
-            octave_value_list& lp = listeners[PERSISTENT];
+            octave_value_list& lp = listeners[GCB_PERSISTENT];
             for (int i = l.length () - 1; i >= 0 ; i--)
               {
                 for (int j = 0; j < lp.length (); j++)
@@ -392,7 +401,7 @@ public:
 
   }
 
-  OCTINTERP_API void run_listeners (listener_mode mode = POSTSET);
+  OCTINTERP_API void run_listeners (listener_mode mode = GCB_POSTSET);
 
   virtual base_property * clone (void) const
   { return new base_property (*this); }
@@ -412,7 +421,7 @@ private:
 
 private:
   int id;
-  octave::refcount<int> count;
+  octave::refcount<octave_idx_type> count;
   std::string name;
   graphics_handle parent;
   bool hidden;
@@ -1759,12 +1768,7 @@ public:
     return octave_value (get_children ());
   }
 
-  void delete_children (bool clear = false)
-  {
-    do_delete_children (clear);
-  }
-
-  void delete_children (bool clear, bool from_root)
+  void delete_children (bool clear = false, bool from_root = false)
   {
     do_delete_children (clear, from_root);
   }
@@ -1889,8 +1893,6 @@ private:
   {
     children_list.push_front (val);
   }
-
-  void do_delete_children (bool clear);
 
   void do_delete_children (bool clear, bool from_root);
 };
@@ -2025,14 +2027,14 @@ public:
     return *this;
   }
 
-  void add_listener (const octave_value& v, listener_mode mode = POSTSET)
+  void add_listener (const octave_value& v, listener_mode mode = GCB_POSTSET)
   { rep->add_listener (v, mode); }
 
   void delete_listener (const octave_value& v = octave_value (),
-                        listener_mode mode = POSTSET)
+                        listener_mode mode = GCB_POSTSET)
   { rep->delete_listener (v, mode); }
 
-  void run_listeners (listener_mode mode = POSTSET)
+  void run_listeners (listener_mode mode = GCB_POSTSET)
   { rep->run_listeners (mode); }
 
   OCTINTERP_API static
@@ -2241,16 +2243,7 @@ public:
 
   bool is_modified (void) const { return is___modified__ (); }
 
-  virtual void remove_child (const graphics_handle& h)
-  {
-    if (children.remove_child (h.value ()))
-      {
-        children.run_listeners ();
-        mark_modified ();
-      }
-  }
-
-  virtual void remove_child (const graphics_handle& h, bool)
+  virtual void remove_child (const graphics_handle& h, bool = false)
   {
     if (children.remove_child (h.value ()))
       {
@@ -2266,7 +2259,7 @@ public:
     mark_modified ();
   }
 
-  virtual graphics_toolkit get_toolkit (void) const;
+  virtual octave::graphics_toolkit get_toolkit (void) const;
 
   virtual Matrix
   get_boundingbox (bool /* finternal */ = false,
@@ -2278,10 +2271,15 @@ public:
   virtual void update_autopos (const std::string& elem_type);
 
   virtual void add_listener (const caseless_str&, const octave_value&,
-                             listener_mode = POSTSET);
+                             listener_mode = GCB_POSTSET);
 
   virtual void delete_listener (const caseless_str&, const octave_value&,
-                                listener_mode = POSTSET);
+                                listener_mode = GCB_POSTSET);
+
+  void set_beingdeleted (const octave_value& val)
+  {
+    beingdeleted.set (val, true, false);
+  }
 
   void set_tag (const octave_value& val) { tag = val; }
 
@@ -2322,12 +2320,7 @@ public:
 
   virtual void update_uicontextmenu (void) const;
 
-  virtual void delete_children (bool clear = false)
-  {
-    children.delete_children (clear);
-  }
-
-  virtual void delete_children (bool clear, bool from_root)
+  virtual void delete_children (bool clear = false, bool from_root = false)
   {
     children.delete_children (clear, from_root);
   }
@@ -2380,7 +2373,7 @@ protected:
 
   BEGIN_BASE_PROPERTIES
     // properties common to all objects
-    bool_property beingdeleted , "off"
+    bool_property beingdeleted s , "off"
     radio_property busyaction , "{queue}|cancel"
     callback_property buttondownfcn , Matrix ()
     children_property children gf , Matrix ()
@@ -2401,6 +2394,7 @@ protected:
     bool_property visible u , "on"
 
     // Octave-specific properties
+    any_property __appdata__ h , Matrix ()
     bool_property __modified__ hs , "on"
     graphics_handle __myhandle__ fhrs , mh
   END_PROPERTIES
@@ -2489,7 +2483,10 @@ public:
     error ("base_graphics_object::set_defaults: invalid graphics object");
   }
 
-  virtual octave_value get (bool all = false) const
+  // The following version of the get method is not declared virtual
+  // because no derived class overrides it.
+
+  octave_value get (bool all = false) const
   {
     if (! valid_object ())
       error ("base_graphics_object::get: invalid graphics object");
@@ -2559,15 +2556,7 @@ public:
     return get_properties ().get___myhandle__ ();
   }
 
-  virtual void remove_child (const graphics_handle& h)
-  {
-    if (! valid_object ())
-      error ("base_graphics_object::remove_child: invalid graphics object");
-
-    get_properties ().remove_child (h);
-  }
-
-  virtual void remove_child (const graphics_handle& h, bool from_root)
+  virtual void remove_child (const graphics_handle& h, bool from_root = false)
   {
     if (! valid_object ())
       error ("base_graphics_object::remove_child: invalid graphics object");
@@ -2634,7 +2623,7 @@ public:
     return type () == go_name;
   }
 
-  virtual graphics_toolkit get_toolkit (void) const
+  virtual octave::graphics_toolkit get_toolkit (void) const
   {
     if (! valid_object ())
       error ("base_graphics_object::get_toolkit: invalid graphics object");
@@ -2644,7 +2633,7 @@ public:
 
   virtual void add_property_listener (const std::string& nm,
                                       const octave_value& v,
-                                      listener_mode mode = POSTSET)
+                                      listener_mode mode = GCB_POSTSET)
   {
     if (valid_object ())
       get_properties ().add_listener (nm, v, mode);
@@ -2652,7 +2641,7 @@ public:
 
   virtual void delete_property_listener (const std::string& nm,
                                          const octave_value& v,
-                                         listener_mode mode = POSTSET)
+                                         listener_mode mode = GCB_POSTSET)
   {
     if (valid_object ())
       get_properties ().delete_listener (nm, v, mode);
@@ -2881,14 +2870,14 @@ public:
   bool is_handle_visible (void) const
   { return get_properties ().is_handle_visible (); }
 
-  graphics_toolkit get_toolkit (void) const { return rep->get_toolkit (); }
+  octave::graphics_toolkit get_toolkit (void) const { return rep->get_toolkit (); }
 
   void add_property_listener (const std::string& nm, const octave_value& v,
-                              listener_mode mode = POSTSET)
+                              listener_mode mode = GCB_POSTSET)
   { rep->add_property_listener (nm, v, mode); }
 
   void delete_property_listener (const std::string& nm, const octave_value& v,
-                                 listener_mode mode = POSTSET)
+                                 listener_mode mode = GCB_POSTSET)
   { rep->delete_property_listener (nm, v, mode); }
 
   void remove_all_listeners (void) { rep->remove_all_listeners (); }
@@ -2921,9 +2910,7 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h);
-
-    void remove_child (const graphics_handle& h, bool from_root);
+    void remove_child (const graphics_handle& h, bool from_root = false);
 
     Matrix get_boundingbox (bool internal = false,
                             const Matrix& parent_pix_size = Matrix ()) const;
@@ -2958,12 +2945,6 @@ public:
       // Hide base properties which don't make sense for root object
       //radio_property beingdeleted h , "{off}|on"
     END_PROPERTIES
-
-  private:
-
-    // Even though this data member is now unused, keep it for now to
-    // ensure backward compatibility.  It will be removed in version 6.
-    std::list<graphics_handle> cbo_stack;
   };
 
 private:
@@ -3106,15 +3087,13 @@ public:
       integerhandle = val;
     }
 
-    void remove_child (const graphics_handle& h);
-
-    void remove_child (const graphics_handle& h, bool from_root);
+    void remove_child (const graphics_handle& h, bool from_root = false);
 
     void set_visible (const octave_value& val);
 
-    graphics_toolkit get_toolkit (void) const;
+    octave::graphics_toolkit get_toolkit (void) const;
 
-    void set_toolkit (const graphics_toolkit& b);
+    void set_toolkit (const octave::graphics_toolkit& b);
 
     void set___graphics_toolkit__ (const octave_value& val);
 
@@ -3174,13 +3153,13 @@ public:
       radio_property paperorientation U , "{portrait}|landscape"
       array_property paperposition m , default_figure_paperposition ()
       // FIXME: Matlab default is "auto", but this messes up hgsave BIST test.
-      radio_property paperpositionmode au , "auto|{manual}"
+      radio_property paperpositionmode au , "{auto}|manual"
       array_property papersize U , default_figure_papersize ()
       radio_property papertype SU , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
       radio_property paperunits Su , "{inches}|centimeters|normalized|points"
-      radio_property pointer , "crosshair|fullcrosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
-      array_property pointershapecdata , Matrix (16, 16, 0)
-      array_property pointershapehotspot , Matrix (1, 2, 0)
+      radio_property pointer , "crosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
+      array_property pointershapecdata , Matrix (16, 16, 1)
+      array_property pointershapehotspot , Matrix (1, 2, 1)
       array_property position s , default_figure_position ()
       radio_property renderer m , "{opengl}|painters"
       radio_property renderermode , "{auto}|manual"
@@ -3222,16 +3201,6 @@ public:
       any_property __zoom_mode__ h , Matrix ()
       double_property __device_pixel_ratio__ hU , 1.0
 
-      // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
-      //                      xdisplay, xvisual, xvisualmode
-      // FIXME: DEPRECATED: Remove in version 6.
-      bool_property doublebuffer hd , "on"
-      double_property mincolormap hd , 64
-      string_property wvisual hmd , ""
-      radio_property wvisualmode hd , "{auto}|manual"
-      string_property xdisplay hd , ""
-      string_property xvisual hmd , ""
-      radio_property xvisualmode hd , "{auto}|manual"
     END_PROPERTIES
 
   protected:
@@ -3247,9 +3216,12 @@ public:
       papersize.add_constraint (dim_vector (1, 2));
       papersize.add_constraint (FINITE);
       pointershapecdata.add_constraint (dim_vector (16, 16));
+      pointershapecdata.add_constraint (dim_vector (32, 32));
       pointershapehotspot.add_constraint (dim_vector (1, 2));
       position.add_constraint (dim_vector (1, 4));
       position.add_constraint (FINITE);
+
+      init_toolkit ();
     }
 
   private:
@@ -3263,7 +3235,9 @@ public:
 
     void update_handlevisibility (void);
 
-    mutable graphics_toolkit toolkit;
+    void init_toolkit (void);
+
+    octave::graphics_toolkit toolkit;
   };
 
 private:
@@ -3443,9 +3417,7 @@ public:
   public:
     void set_defaults (base_graphics_object& obj, const std::string& mode);
 
-    void remove_child (const graphics_handle& h);
-
-    void remove_child (const graphics_handle& h, bool from_root);
+    void remove_child (const graphics_handle& h, bool from_root = false);
 
     void adopt (const graphics_handle& h);
 
@@ -3643,9 +3615,7 @@ public:
     void set_text_child (handle_property& h, const std::string& who,
                          const octave_value& v);
 
-    void delete_text_child (handle_property& h);
-
-    void delete_text_child (handle_property& h, bool from_root);
+    void delete_text_child (handle_property& h, bool from_root = false);
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -3676,16 +3646,15 @@ public:
       array_property currentpoint , Matrix (2, 3, 0.0)
       row_vector_property dataaspectratio mu , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode u , "{auto}|manual"
-      radio_property drawmode hd , "{normal}|fast"
       radio_property fontangle u , "{normal}|italic"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
+      bool_property fontsmoothing u , "on"
       radio_property fontunits SU , "{points}|inches|centimeters|normalized|pixels"
-      bool_property fontsmoothing , "on"
       radio_property fontweight u , "{normal}|bold"
       double_property gridalpha m , 0.15
       radio_property gridalphamode , "{auto}|manual"
-      color_property gridcolor , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
+      color_property gridcolor m , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property gridcolormode , "{auto}|manual"
       radio_property gridlinestyle , "{-}|--|:|-.|none"
       double_property labelfontsizemultiplier u , 1.1
@@ -3712,18 +3681,18 @@ public:
       radio_property ticklabelinterpreter u , "{tex}|latex|none"
       array_property ticklength u , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
-      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property title SOf , make_graphics_handle ("text", __myhandle__, false, false, false)
       double_property titlefontsizemultiplier u , 1.1
       radio_property titlefontweight u , "{bold}|normal"
       // FIXME: uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
       radio_property xaxislocation u , "{bottom}|top|origin"
-      color_property xcolor mu , color_values (0.15, 0.15, 0.15)
+      color_property xcolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property xcolormode , "{auto}|manual"
       radio_property xdir u , "{normal}|reverse"
       bool_property xgrid , "off"
-      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property xlabel SOf , make_graphics_handle ("text", __myhandle__, false, false, false)
       row_vector_property xlim mu , default_lim ()
       radio_property xlimmode al , "{auto}|manual"
       bool_property xminorgrid , "off"
@@ -3736,11 +3705,11 @@ public:
       double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
       radio_property yaxislocation u , "{left}|right|origin"
-      color_property ycolor mu , color_values (0.15, 0.15, 0.15)
+      color_property ycolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property ycolormode , "{auto}|manual"
       radio_property ydir u , "{normal}|reverse"
       bool_property ygrid , "off"
-      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property ylabel SOf , make_graphics_handle ("text", __myhandle__, false, false, false)
       row_vector_property ylim mu , default_lim ()
       radio_property ylimmode al , "{auto}|manual"
       bool_property yminorgrid , "off"
@@ -3751,11 +3720,11 @@ public:
       radio_property yticklabelmode u , "{auto}|manual"
       double_property yticklabelrotation , 0.0
       radio_property ytickmode u , "{auto}|manual"
-      color_property zcolor mu , color_values (0.15, 0.15, 0.15)
+      color_property zcolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property zcolormode , "{auto}|manual"
       radio_property zdir u , "{normal}|reverse"
       bool_property zgrid , "off"
-      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property zlabel SOf , make_graphics_handle ("text", __myhandle__, false, false, false)
       row_vector_property zlim mu , default_lim ()
       radio_property zlimmode al , "{auto}|manual"
       bool_property zminorgrid , "off"
@@ -4018,6 +3987,10 @@ public:
       update_font ("fontsize");
       sync_positions ();
     }
+    void update_fontsmoothing (void)
+    {
+      update_font ("fontsmoothing");
+    }
     void update_fontangle (void)
     {
       update_font ("fontangle");
@@ -4094,7 +4067,7 @@ public:
 
     void update___colormap__ (void)
     {
-      colormap.run_listeners (POSTSET);
+      colormap.run_listeners (GCB_POSTSET);
     }
 
     octave_value get_colormap (void) const;
@@ -4279,8 +4252,6 @@ public:
     BEGIN_PROPERTIES (line)
       color_property color , color_property (color_values (0, 0, 0), radio_values ("none"))
       string_property displayname , ""
-      // FIXME: DEPRECATED: Remove interpreter property in version 6.
-      radio_property interpreter hd , "{tex}|none|latex"
       radio_property linejoin , "{round}|miter|chamfer"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
@@ -4296,12 +4267,12 @@ public:
       string_property zdatasource , ""
 
       // hidden properties for limit computation
-      row_vector_property xlim hlr , Matrix ()
-      row_vector_property ylim hlr , Matrix ()
+      row_vector_property xlim hlr , default_data_lim ()
+      row_vector_property ylim hlr , default_data_lim ()
       row_vector_property zlim hlr , Matrix ()
       bool_property xliminclude hl , "on"
       bool_property yliminclude hl , "on"
-      bool_property zliminclude hl , "off"
+      bool_property zliminclude hl , "on"
     END_PROPERTIES
 
   protected:
@@ -4319,11 +4290,7 @@ public:
 
     void update_ydata (void) { set_ylim (compute_ylim ()); }
 
-    void update_zdata (void)
-    {
-      set_zlim (zdata.get_limits ());
-      set_zliminclude (get_zdata ().numel () > 0);
-    }
+    void update_zdata (void) { set_zlim (zdata.get_limits ()); }
   };
 
 private:
@@ -4380,7 +4347,7 @@ public:
         {
           set_positionmode ("manual");
           update_position ();
-          position.run_listeners (POSTSET);
+          position.run_listeners (GCB_POSTSET);
           mark_modified ();
         }
       else
@@ -4393,7 +4360,7 @@ public:
 
     BEGIN_PROPERTIES (text)
       color_property backgroundcolor , color_property (radio_values ("{none}"), color_values (1, 1, 1))
-      color_property color u , color_values (0, 0, 0)
+      color_property color u , color_property (color_values (0, 0, 0), radio_values ("none"))
       color_property edgecolor , color_property (radio_values ("{none}"), color_values (0, 0, 0))
       bool_property editing , "off"
       array_property extent rG , Matrix (1, 4, 0.0)
@@ -4401,8 +4368,9 @@ public:
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
+      bool_property fontsmoothing u , "on"
       radio_property fontunits SU , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property fontweight u , "{normal}|bold"
       radio_property horizontalalignment mu , "{left}|center|right"
       radio_property interpreter u , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
@@ -4455,19 +4423,23 @@ public:
       Matrix pos = get_data_position ();
       Matrix lim;
 
-      lim = Matrix (1, 3, pos(0));
+      lim = Matrix (1, 4, pos(0));
       lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2));
+      lim(3) = (lim(3) >= 0 ? -octave::numeric_limits<double>::Inf () : lim(3));
       set_xlim (lim);
 
-      lim = Matrix (1, 3, pos(1));
+      lim = Matrix (1, 4, pos(1));
       lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2));
+      lim(3) = (lim(3) >= 0 ? -octave::numeric_limits<double>::Inf () : lim(3));
       set_ylim (lim);
 
       if (pos.numel () == 3)
         {
-          lim = Matrix (1, 3, pos(2));
+          lim = Matrix (1, 4, pos(2));
           lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf ()
                                 : lim(2));
+          lim(3) = (lim(3) >= 0 ? -octave::numeric_limits<double>::Inf ()
+                                : lim(3));
           set_zliminclude ("on");
           set_zlim (lim);
         }
@@ -4483,21 +4455,30 @@ public:
 
     void update_string (void) { request_autopos (); update_text_extent (); }
     void update_rotation (void) { update_text_extent (); }
-    void update_color (void) { update_font (); update_text_extent (); }
     void update_fontname (void) { update_font (); update_text_extent (); }
     void update_fontsize (void) { update_font (); update_text_extent (); }
-    void update_fontangle (void) { update_font (); update_text_extent (); }
+    void update_fontsmoothing (void) { update_font (); update_text_extent (); }
 
-    void update_fontweight (void)
+    void update_color (void)
+    {
+      if (! color.is ("none"))
+        {
+          update_font ();
+          update_text_extent ();
+        }
+    }
+
+    void update_fontangle (void)
     {
       update_font ();
       update_text_extent ();
-      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
-      if (fontweight.is ("demi") || fontweight.is ("light"))
+      // FIXME: DEPRECATED: Remove warning for "oblique" in version 7.
+      if (fontangle.is ("oblique"))
         warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontweight' to '%s' is deprecated, \
-use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
+                         "Setting 'fontangle' to '%s' is deprecated, \
+use 'italic' or 'normal'.", fontangle.current_value ().c_str ());
     }
+    void update_fontweight (void) { update_font (); update_text_extent (); }
 
     void update_interpreter (void) { update_text_extent (); }
     void update_horizontalalignment (void) { update_text_extent (); }
@@ -4594,9 +4575,14 @@ public:
       cdata.add_constraint ("double");
       cdata.add_constraint ("single");
       cdata.add_constraint ("logical");
+      cdata.add_constraint ("int8");
+      cdata.add_constraint ("int16");
+      cdata.add_constraint ("int32");
+      cdata.add_constraint ("int64");
       cdata.add_constraint ("uint8");
       cdata.add_constraint ("uint16");
-      cdata.add_constraint ("int16");
+      cdata.add_constraint ("uint32");
+      cdata.add_constraint ("uint64");
       cdata.add_constraint ("real");
       cdata.add_constraint (dim_vector (-1, -1));
       cdata.add_constraint (dim_vector (-1, -1, 3));
@@ -4831,7 +4817,7 @@ public:
 
     bool get_do_lighting (void) const;
 
-    std::list<std::list<octave_idx_type>> coplanar_last_idx;
+    std::vector<std::vector<octave_idx_type>> coplanar_last_idx;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -4856,8 +4842,6 @@ public:
       array_property faces u , default_patch_faces ()
       array_property facevertexalphadata , Matrix ()
       array_property facevertexcdata u , Matrix ()
-      // FIXME: DEPRECATED: Remove interpreter property in version 6.
-      radio_property interpreter hd , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
@@ -4896,6 +4880,18 @@ public:
       faces.add_constraint (dim_vector (-1, -1));
       vertices.add_constraint (dim_vector (-1, 2));
       vertices.add_constraint (dim_vector (-1, 3));
+      cdata.add_constraint ("double");
+      cdata.add_constraint ("single");
+      cdata.add_constraint ("logical");
+      cdata.add_constraint ("int8");
+      cdata.add_constraint ("int16");
+      cdata.add_constraint ("int32");
+      cdata.add_constraint ("int64");
+      cdata.add_constraint ("uint8");
+      cdata.add_constraint ("uint16");
+      cdata.add_constraint ("uint32");
+      cdata.add_constraint ("uint64");
+      cdata.add_constraint ("real");
       cdata.add_constraint (dim_vector (-1, -1));
       cdata.add_constraint (dim_vector (-1, -1, 3));
       facevertexcdata.add_constraint (dim_vector (-1, 1));
@@ -5106,8 +5102,6 @@ public:
       radio_property facelighting u , "none|{flat}|gouraud|phong"
       array_property facenormals m , Matrix ()
       radio_property facenormalsmode u , "{auto}|manual"
-      // FIXME: DEPRECATED: Remove interpreter property in version 6.
-      radio_property interpreter hd , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
@@ -5148,6 +5142,16 @@ public:
       zdata.add_constraint (dim_vector (-1, -1));
       cdata.add_constraint ("double");
       cdata.add_constraint ("single");
+      cdata.add_constraint ("logical");
+      cdata.add_constraint ("int8");
+      cdata.add_constraint ("int16");
+      cdata.add_constraint ("int32");
+      cdata.add_constraint ("int64");
+      cdata.add_constraint ("uint8");
+      cdata.add_constraint ("uint16");
+      cdata.add_constraint ("uint32");
+      cdata.add_constraint ("uint64");
+      cdata.add_constraint ("real");
       cdata.add_constraint (dim_vector (-1, -1));
       cdata.add_constraint (dim_vector (-1, -1, 3));
       alphadata.add_constraint ("double");
@@ -5270,9 +5274,7 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h);
-
-    void remove_child (const graphics_handle& h, bool from_root);
+    void remove_child (const graphics_handle& h, bool from_root = false);
 
     void adopt (const graphics_handle& h);
 
@@ -5346,12 +5348,7 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h)
-    {
-      base_properties::remove_child (h);
-    }
-
-    void remove_child (const graphics_handle& h, bool from_root)
+    void remove_child (const graphics_handle& h, bool from_root = false)
     {
       base_properties::remove_child (h, from_root);
     }
@@ -5510,7 +5507,7 @@ public:
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property fontweight u , "{normal}|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       radio_property horizontalalignment , "left|{center}|right"
       callback_property keypressfcn , Matrix ()
@@ -5553,17 +5550,16 @@ public:
     void update_string (void) { update_text_extent (); }
     void update_fontname (void) { update_text_extent (); }
     void update_fontsize (void) { update_text_extent (); }
-    void update_fontangle (void) { update_text_extent (); }
-
-    void update_fontweight (void)
+    void update_fontangle (void)
     {
       update_text_extent ();
-      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
-      if (fontweight.is ("demi") || fontweight.is ("light"))
+      // FIXME: DEPRECATED: Remove warning for "oblique" in version 7.
+      if (fontangle.is ("oblique"))
         warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontweight' to '%s' is deprecated, \
-use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
+                         "Setting 'fontangle' to '%s' is deprecated, \
+use 'italic' or 'normal'.", fontangle.current_value ().c_str ());
     }
+    void update_fontweight (void) { update_text_extent (); }
 
     void update_fontunits (const caseless_str& old_units);
 
@@ -5604,6 +5600,10 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
+    void remove_child (const graphics_handle& h, bool from_root = false);
+
+    void adopt (const graphics_handle& h);
+
     Matrix get_boundingbox (bool internal = false,
                             const Matrix& parent_pix_size = Matrix ()) const;
 
@@ -5623,7 +5623,7 @@ public:
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property fontweight , "{normal}|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
       array_property position S , default_panel_position ()
@@ -5656,15 +5656,7 @@ public:
     // void update_fontname (void) { update_text_extent (); }
     // void update_fontsize (void) { update_text_extent (); }
     // void update_fontangle (void) { update_text_extent (); }
-
-    void update_fontweight (void)
-    {
-      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
-      if (fontweight.is ("demi") || fontweight.is ("light"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontweight' to '%s' is deprecated, \
-use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
-    }
+    // void update_fontweight (void) { update_fontweight (); }
 
     void update_units (const caseless_str& old_units);
     void update_fontunits (const caseless_str& old_units);
@@ -5723,7 +5715,7 @@ public:
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property fontweight , "{normal}|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
       array_property position S , default_panel_position ()
@@ -5751,14 +5743,6 @@ public:
     void update_units (const caseless_str& old_units);
     void update_fontunits (const caseless_str& old_units);
 
-    void update_fontweight (void)
-    {
-      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
-      if (fontweight.is ("demi") || fontweight.is ("light"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontweight' to '%s' is deprecated, \
-use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
-    }
   };
 
 private:
@@ -5825,7 +5809,7 @@ public:
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property fontweight u , "{normal}|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       callback_property keypressfcn , Matrix ()
       callback_property keyreleasefcn , Matrix ()
@@ -5859,18 +5843,16 @@ public:
     void update_data (void) { update_table_extent (); }
     void update_fontname (void) { update_table_extent (); }
     void update_fontsize (void) { update_table_extent (); }
-    void update_fontangle (void) { update_table_extent (); }
-
-    void update_fontweight (void)
+    void update_fontangle (void)
     {
-      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
-      if (fontweight.is ("demi") || fontweight.is ("light"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontweight' to '%s' is deprecated, \
-use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
-
       update_table_extent ();
+      // FIXME: DEPRECATED: Remove warning for "oblique" in version 7.
+      if (fontangle.is ("oblique"))
+        warning_with_id ("Octave:deprecated-property",
+                         "Setting 'fontangle' to '%s' is deprecated, \
+use 'italic' or 'normal'.", fontangle.current_value ().c_str ());
     }
+    void update_fontweight (void) { update_table_extent (); }
   };
 
 private:
@@ -6019,6 +6001,7 @@ public:
       string_property tooltipstring , ""
 
       // Octave-specific properties
+      string_property __named_icon__ , ""
       any_property __object__ h , Matrix ()
     END_PROPERTIES
 
@@ -6082,6 +6065,7 @@ public:
       string_property tooltipstring , ""
 
       // Octave-specific properties
+      string_property __named_icon__ , ""
       any_property __object__ h , Matrix ()
     END_PROPERTIES
 
@@ -6224,333 +6208,78 @@ private:
 
 class OCTINTERP_API gh_manager
 {
-protected:
-
-  gh_manager (void);
-
 public:
 
-  static void create_instance (void);
+  gh_manager (octave::interpreter& interp);
 
-  static bool instance_ok (void)
+  // FIXME: eventually eliminate these static functions and access
+  // gh_manager object through the interpreter.
+
+  graphics_handle get_handle (bool integer_figure_handle);
+
+  void free (const graphics_handle& h, bool from_root = false);
+
+  void renumber_figure (const graphics_handle& old_gh,
+                           const graphics_handle& new_gh);
+
+  graphics_handle lookup (double val) const
   {
-    bool retval = true;
+    const_iterator p = (octave::math::isnan (val)
+                        ? m_handle_map.end () : m_handle_map.find (val));
 
-    if (! instance)
-      create_instance ();
-
-    if (! instance)
-      error ("unable to create gh_manager!");
-
-    return retval;
+    return (p != m_handle_map.end ()) ? p->first : graphics_handle ();
   }
 
-  static void cleanup_instance (void) { delete instance; instance = nullptr; }
-
-  static graphics_handle get_handle (bool integer_figure_handle)
+  graphics_handle lookup (const octave_value& val) const
   {
-    return instance_ok ()
-           ? instance->do_get_handle (integer_figure_handle)
-           : graphics_handle ();
+    return (val.is_real_scalar ()
+            ? lookup (val.double_value ()) : graphics_handle ());
   }
 
-  static void free (const graphics_handle& h)
-  {
-    if (instance_ok ())
-      instance->do_free (h);
-  }
-
-  static void free (const graphics_handle& h, bool from_root)
-  {
-    if (instance_ok ())
-      instance->do_free (h, from_root);
-  }
-
-  static void renumber_figure (const graphics_handle& old_gh,
-                               const graphics_handle& new_gh)
-  {
-    if (instance_ok ())
-      instance->do_renumber_figure (old_gh, new_gh);
-  }
-
-  static graphics_handle lookup (double val)
-  {
-    return instance_ok () ? instance->do_lookup (val) : graphics_handle ();
-  }
-
-  static graphics_handle lookup (const octave_value& val)
-  {
-    return val.is_real_scalar ()
-           ? lookup (val.double_value ()) : graphics_handle ();
-  }
-
-  static graphics_object get_object (double val)
+  graphics_object get_object (double val) const
   {
     return get_object (lookup (val));
   }
 
-  static graphics_object get_object (const graphics_handle& h)
+  graphics_object get_object (const graphics_handle& h) const
   {
-    return instance_ok () ? instance->do_get_object (h) : graphics_object ();
+    const_iterator p = (h.ok () ? m_handle_map.find (h) : m_handle_map.end ());
+
+    return (p != m_handle_map.end ()) ? p->second : graphics_object ();
   }
 
-  static graphics_handle
-  make_graphics_handle (const std::string& go_name,
-                        const graphics_handle& parent,
-                        bool integer_figure_handle = false,
-                        bool do_createfcn = true,
-                        bool do_notify_toolkit = true)
-  {
-    return instance_ok ()
-           ? instance->do_make_graphics_handle (go_name, parent,
-               integer_figure_handle,
-               do_createfcn, do_notify_toolkit)
-           : graphics_handle ();
-  }
+graphics_handle make_graphics_handle (const std::string& go_name,
+                                      const graphics_handle& p,
+                                      bool integer_figure_handle = false,
+                                      bool call_createfcn = true,
+                                      bool notify_toolkit = true);
 
-  static graphics_handle make_figure_handle (double val,
-                                             bool do_notify_toolkit = true)
-  {
-    return instance_ok ()
-           ? instance->do_make_figure_handle (val, do_notify_toolkit)
-           : graphics_handle ();
-  }
+  graphics_handle make_figure_handle (double val,
+                                      bool notify_toolkit = true);
 
-  static void push_figure (const graphics_handle& h)
-  {
-    if (instance_ok ())
-      instance->do_push_figure (h);
-  }
+  void push_figure (const graphics_handle& h);
 
-  static void pop_figure (const graphics_handle& h)
-  {
-    if (instance_ok ())
-      instance->do_pop_figure (h);
-  }
+  void pop_figure (const graphics_handle& h);
 
-  static graphics_handle current_figure (void)
+  graphics_handle current_figure (void) const
   {
-    return instance_ok ()
-           ? instance->do_current_figure () : graphics_handle ();
-  }
+    graphics_handle retval;
 
-  static Matrix handle_list (bool show_hidden = false)
-  {
-    return instance_ok ()
-           ? instance->do_handle_list (show_hidden) : Matrix ();
-  }
-
-  static void lock (void)
-  {
-    if (instance_ok ())
-      instance->do_lock ();
-  }
-
-  static bool try_lock (void)
-  {
-    if (instance_ok ())
-      return instance->do_try_lock ();
-    else
-      return false;
-  }
-
-  static void unlock (void)
-  {
-    if (instance_ok ())
-      instance->do_unlock ();
-  }
-
-  static Matrix figure_handle_list (bool show_hidden = false)
-  {
-    return instance_ok ()
-           ? instance->do_figure_handle_list (show_hidden) : Matrix ();
-  }
-
-  static void execute_listener (const graphics_handle& h,
-                                const octave_value& l)
-  {
-    if (instance_ok ())
-      instance->do_execute_listener (h, l);
-  }
-
-  static void execute_callback (const graphics_handle& h,
-                                const std::string& name,
-                                const octave_value& data = Matrix ())
-  {
-    octave_value cb;
-
-    if (true)
+    for (const auto& hfig : m_figure_list)
       {
-        gh_manager::auto_lock lock;
-
-        graphics_object go = get_object (h);
-
-        if (go.valid_object ())
-          cb = go.get (name);
+        if (is_handle_visible (hfig))
+          retval = hfig;
       }
-
-    execute_callback (h, cb, data);
-  }
-
-  static void execute_callback (const graphics_handle& h,
-                                const octave_value& cb,
-                                const octave_value& data = Matrix ())
-  {
-    if (instance_ok ())
-      instance->do_execute_callback (h, cb, data);
-  }
-
-  static void post_callback (const graphics_handle& h,
-                             const std::string& name,
-                             const octave_value& data = Matrix ())
-  {
-    if (instance_ok ())
-      instance->do_post_callback (h, name, data);
-  }
-
-  static void post_function (graphics_event::event_fcn fcn, void *data = nullptr)
-  {
-    if (instance_ok ())
-      instance->do_post_function (fcn, data);
-  }
-
-  static void post_set (const graphics_handle& h, const std::string& name,
-                        const octave_value& value, bool notify_toolkit = true,
-                        bool redraw_figure = false)
-  {
-    if (instance_ok ())
-      instance->do_post_set (h, name, value, notify_toolkit, redraw_figure);
-  }
-
-  static int process_events (void)
-  {
-    return (instance_ok () ?  instance->do_process_events () : 0);
-  }
-
-  static int flush_events (void)
-  {
-    return (instance_ok () ?  instance->do_process_events (true) : 0);
-  }
-
-  static void enable_event_processing (bool enable = true)
-  {
-    if (instance_ok ())
-      instance->do_enable_event_processing (enable);
-  }
-
-  static bool is_handle_visible (const graphics_handle& h)
-  {
-    bool retval = false;
-
-    graphics_object go = get_object (h);
-
-    if (go.valid_object ())
-      retval = go.is_handle_visible ();
 
     return retval;
   }
 
-  static void close_all_figures (void)
+  Matrix handle_list (bool show_hidden = false)
   {
-    if (instance_ok ())
-      instance->do_close_all_figures ();
-  }
-
-public:
-  class auto_lock : public octave::autolock
-  {
-  public:
-    auto_lock (bool wait = true)
-      : octave::autolock (instance_ok ()
-                          ? instance->graphics_lock
-                          : octave::mutex (),
-                          wait)
-    { }
-
-    // No copying!
-
-    auto_lock (const auto_lock&) = delete;
-
-    auto_lock& operator = (const auto_lock&) = delete;
-  };
-
-private:
-
-  static gh_manager *instance;
-
-  typedef std::map<graphics_handle, graphics_object>::iterator iterator;
-  typedef std::map<graphics_handle, graphics_object>::const_iterator
-    const_iterator;
-
-  typedef std::set<graphics_handle>::iterator free_list_iterator;
-  typedef std::set<graphics_handle>::const_iterator const_free_list_iterator;
-
-  typedef std::list<graphics_handle>::iterator figure_list_iterator;
-  typedef std::list<graphics_handle>::const_iterator const_figure_list_iterator;
-
-  // A map of handles to graphics objects.
-  std::map<graphics_handle, graphics_object> handle_map;
-
-  // The available graphics handles.
-  std::set<graphics_handle> handle_free_list;
-
-  // The next handle available if handle_free_list is empty.
-  double next_handle;
-
-  // The allocated figure handles.  Top of the stack is most recently
-  // created.
-  std::list<graphics_handle> figure_list;
-
-  // The lock for accessing the graphics sytsem.
-  octave::mutex graphics_lock;
-
-  // The list of events queued by graphics toolkits.
-  std::list<graphics_event> event_queue;
-
-  // The stack of callback objects.
-  std::list<graphics_object> callback_objects;
-
-  // A flag telling whether event processing must be constantly on.
-  int event_processing;
-
-  graphics_handle do_get_handle (bool integer_figure_handle);
-
-  void do_free (const graphics_handle& h);
-
-  void do_free (const graphics_handle& h, bool from_root);
-
-  void do_renumber_figure (const graphics_handle& old_gh,
-                           const graphics_handle& new_gh);
-
-  graphics_handle do_lookup (double val)
-  {
-    iterator p = (octave::math::isnan (val) ? handle_map.end ()
-                                            : handle_map.find (val));
-
-    return (p != handle_map.end ()) ? p->first : graphics_handle ();
-  }
-
-  graphics_object do_get_object (const graphics_handle& h)
-  {
-    iterator p = (h.ok () ? handle_map.find (h) : handle_map.end ());
-
-    return (p != handle_map.end ()) ? p->second : graphics_object ();
-  }
-
-  graphics_handle do_make_graphics_handle (const std::string& go_name,
-                                           const graphics_handle& p,
-                                           bool integer_figure_handle,
-                                           bool do_createfcn,
-                                           bool do_notify_toolkit);
-
-  graphics_handle do_make_figure_handle (double val, bool do_notify_toolkit);
-
-  Matrix do_handle_list (bool show_hidden)
-  {
-    Matrix retval (1, handle_map.size ());
+    Matrix retval (1, m_handle_map.size ());
 
     octave_idx_type i = 0;
-    for (const auto& h_iter : handle_map)
+    for (const auto& h_iter : m_handle_map)
       {
         graphics_handle h = h_iter.first;
 
@@ -6563,12 +6292,18 @@ private:
     return retval;
   }
 
-  Matrix do_figure_handle_list (bool show_hidden)
+  void lock (void) { m_graphics_lock.lock (); }
+
+  bool try_lock (void) { return m_graphics_lock.try_lock (); }
+
+  void unlock (void) { m_graphics_lock.unlock (); }
+
+  Matrix figure_handle_list (bool show_hidden = false)
   {
-    Matrix retval (1, figure_list.size ());
+    Matrix retval (1, m_figure_list.size ());
 
     octave_idx_type i = 0;
-    for (const auto& hfig : figure_list)
+    for (const auto& hfig : m_figure_list)
       {
         if (show_hidden || is_handle_visible (hfig))
           retval(i++) = hfig.value ();
@@ -6579,58 +6314,104 @@ private:
     return retval;
   }
 
-  void do_push_figure (const graphics_handle& h);
+  void execute_listener (const graphics_handle& h, const octave_value& l);
 
-  void do_pop_figure (const graphics_handle& h);
-
-  graphics_handle do_current_figure (void) const
+  void execute_callback (const graphics_handle& h,
+                         const std::string& name,
+                         const octave_value& data = Matrix ())
   {
-    graphics_handle retval;
+    octave_value cb;
 
-    for (const auto& hfig : figure_list)
+    if (true)
       {
-        if (is_handle_visible (hfig))
-          retval = hfig;
+        octave::autolock guard (graphics_lock ());
+
+        graphics_object go = get_object (h);
+
+        if (go.valid_object ())
+          cb = go.get (name);
       }
+
+    execute_callback (h, cb, data);
+  }
+
+  void execute_callback (const graphics_handle& h, const octave_value& cb,
+                         const octave_value& data = Matrix ());
+
+  void post_callback (const graphics_handle& h, const std::string& name,
+                      const octave_value& data = Matrix ());
+
+  void post_function (graphics_event::event_fcn fcn, void *fcn_data = nullptr);
+
+  void post_set (const graphics_handle& h, const std::string& name,
+                 const octave_value& value, bool notify_toolkit = true,
+                 bool redraw_figure = false);
+
+  int process_events (bool force = false);
+
+  void enable_event_processing (bool enable = true);
+
+  bool is_handle_visible (const graphics_handle& h) const
+  {
+    bool retval = false;
+
+    graphics_object go = get_object (h);
+
+    if (go.valid_object ())
+      retval = go.is_handle_visible ();
 
     return retval;
   }
 
-  void do_lock (void) { graphics_lock.lock (); }
+  void close_all_figures (void);
 
-  bool do_try_lock (void) { return graphics_lock.try_lock (); }
+  void restore_gcbo (void);
 
-  void do_unlock (void) { graphics_lock.unlock (); }
+  void post_event (const graphics_event& e);
 
-  void do_execute_listener (const graphics_handle& h, const octave_value& l);
-
-  void do_execute_callback (const graphics_handle& h, const octave_value& cb,
-                            const octave_value& data);
-
-  void do_post_callback (const graphics_handle& h, const std::string& name,
-                         const octave_value& data);
-
-  void do_post_function (graphics_event::event_fcn fcn, void *fcn_data);
-
-  void do_post_set (const graphics_handle& h, const std::string& name,
-                    const octave_value& value, bool notify_toolkit = true,
-                    bool redraw_figure = false);
-
-  int do_process_events (bool force = false);
-
-  void do_close_all_figures (void);
-
-  static void restore_gcbo (void)
+  octave::mutex graphics_lock (void)
   {
-    if (instance_ok ())
-      instance->do_restore_gcbo ();
+    return m_graphics_lock;
   }
 
-  void do_restore_gcbo (void);
+private:
 
-  void do_post_event (const graphics_event& e);
+  typedef std::map<graphics_handle, graphics_object>::iterator iterator;
+  typedef std::map<graphics_handle, graphics_object>::const_iterator
+    const_iterator;
 
-  void do_enable_event_processing (bool enable = true);
+  typedef std::set<graphics_handle>::iterator free_list_iterator;
+  typedef std::set<graphics_handle>::const_iterator const_free_list_iterator;
+
+  typedef std::list<graphics_handle>::iterator figure_list_iterator;
+  typedef std::list<graphics_handle>::const_iterator const_figure_list_iterator;
+
+  octave::interpreter& m_interpreter;
+
+  // A map of handles to graphics objects.
+  std::map<graphics_handle, graphics_object> m_handle_map;
+
+  // The available graphics handles.
+  std::set<graphics_handle> m_handle_free_list;
+
+  // The next handle available if m_handle_free_list is empty.
+  double m_next_handle;
+
+  // The allocated figure handles.  Top of the stack is most recently
+  // created.
+  std::list<graphics_handle> m_figure_list;
+
+  // The lock for accessing the graphics sytsem.
+  octave::mutex m_graphics_lock;
+
+  // The list of events queued by graphics toolkits.
+  std::list<graphics_event> m_event_queue;
+
+  // The stack of callback objects.
+  std::list<graphics_object> m_callback_objects;
+
+  // A flag telling whether event processing must be constantly on.
+  int m_event_processing;
 };
 
 void get_children_limits (double& min_val, double& max_val,

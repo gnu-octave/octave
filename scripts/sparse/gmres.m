@@ -1,5 +1,9 @@
-## Copyright (C) 2009-2019 Carlo de Falco
-## Copyright (C) 2016-2019 Cristiano Dorigo
+########################################################################
+##
+## Copyright (C) 2009-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} gmres (@var{A}, @var{b}, @var{restart}, @var{tol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0}, @dots{})
@@ -223,14 +229,11 @@
 ## @end group
 ## @end example
 ##
-## References:
+## Reference:
 ##
-## @enumerate
-##
-## @item @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear
+## @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear
 ## Systems}, Second edition, 2003, SIAM
 ##
-## @end enumerate
 ## @seealso{bicg, bicgstab, cgs, pcg, pcr, qmr, tfqmr}
 ## @end deftypefn
 

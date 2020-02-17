@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2004-2019 David Bateman
-Copyright (C) 2010 Jaroslav Hajek, Jordi Gutiérrez Hermoso
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2004-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -443,12 +445,11 @@ DEFUN (gcd, args, nargout,
 @deftypefnx {} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})
 Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}.
 
-If more than one argument is given then all arguments must be the same size
-or scalar.  In this case the greatest common divisor is calculated for each
-element individually.  All elements must be ordinary or Gaussian (complex)
-integers.  Note that for Gaussian integers, the gcd is only unique up to a
-phase factor (multiplication by 1, -1, i, or -i), so an arbitrary greatest
-common divisor among the four possible is returned.
+All arguments must be the same size or scalar.  For arrays, the greatest common
+divisor is calculated for each element individually.  All elements must be
+ordinary or Gaussian (complex) integers.  Note that for Gaussian integers, the
+gcd is only unique up to a phase factor (multiplication by 1, -1, i, or -i), so
+an arbitrary greatest common divisor among the four possible is returned.
 
 Optional return arguments @var{v1}, @dots{}, contain integer vectors such
 that,

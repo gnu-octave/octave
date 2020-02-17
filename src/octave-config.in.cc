@@ -1,25 +1,29 @@
 // %NO_EDIT_WARNING%
-/*
 
-Copyright (C) 2008-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -50,43 +54,43 @@ static std::map<std::string,std::string> vars;
 static std::string usage_msg = "usage: octave-config [options]";
 
 static std::string help_msg =
-"\n"
-"Options:\n"
-"\n"
-"  -h, -?, --help        Print this message.\n"
-"\n"
-"  --m-site-dir          Print the name of the directory where Octave\n"
-"                        expects to find locally installed .m files.\n"
-"\n"
-"  --oct-site-dir        Print the name of the directory where Octave\n"
-"                        expects to find locally installed .oct files.\n"
-"\n"
-"  -p VAR, --print VAR   Print the value of the given configuration\n"
-"                        variable VAR.  Recognized variables are:\n"
-"\n"
-"                          API_VERSION            LOCALFCNFILEDIR\n"
-"                          ARCHLIBDIR             LOCALOCTFILEDIR\n"
-"                          BINDIR                 LOCALSTARTUPFILEDIR\n"
-"                          CANONICAL_HOST_TYPE    LOCALVERARCHLIBDIR\n"
-"                          DATADIR                LOCALVERFCNFILEDIR\n"
-"                          DATAROOTDIR            LOCALVEROCTFILEDIR\n"
-"                          DEFAULT_PAGER          MAN1DIR\n"
-"                          EXEC_PREFIX            MAN1EXT\n"
-"                          EXEEXT                 MANDIR\n"
-"                          FCNFILEDIR             OCTAVE_EXEC_HOME\n"
-"                          IMAGEDIR               OCTAVE_HOME\n"
-"                          INCLUDEDIR             OCTDATADIR\n"
-"                          INFODIR                OCTDOCDIR\n"
-"                          INFOFILE               OCTFILEDIR\n"
-"                          LIBDIR                 OCTFONTSDIR\n"
-"                          LIBEXECDIR             OCTINCLUDEDIR\n"
-"                          LOCALAPIARCHLIBDIR     OCTLIBDIR\n"
-"                          LOCALAPIFCNFILEDIR     STARTUPFILEDIR\n"
-"                          LOCALAPIOCTFILEDIR     VERSION\n"
-"                          LOCALARCHLIBDIR\n"
-"\n"
-"  -v, --version         Print the Octave version number.\n"
-"\n";
+  "\n"
+  "Options:\n"
+  "\n"
+  "  -h, -?, --help        Print this message.\n"
+  "\n"
+  "  --m-site-dir          Print the name of the directory where Octave\n"
+  "                        expects to find locally installed .m files.\n"
+  "\n"
+  "  --oct-site-dir        Print the name of the directory where Octave\n"
+  "                        expects to find locally installed .oct files.\n"
+  "\n"
+  "  -p VAR, --print VAR   Print the value of the given configuration\n"
+  "                        variable VAR.  Recognized variables are:\n"
+  "\n"
+  "                          API_VERSION            LOCALFCNFILEDIR\n"
+  "                          ARCHLIBDIR             LOCALOCTFILEDIR\n"
+  "                          BINDIR                 LOCALSTARTUPFILEDIR\n"
+  "                          CANONICAL_HOST_TYPE    LOCALVERARCHLIBDIR\n"
+  "                          DATADIR                LOCALVERFCNFILEDIR\n"
+  "                          DATAROOTDIR            LOCALVEROCTFILEDIR\n"
+  "                          DEFAULT_PAGER          MAN1DIR\n"
+  "                          EXEC_PREFIX            MAN1EXT\n"
+  "                          EXEEXT                 MANDIR\n"
+  "                          FCNFILEDIR             OCTAVE_EXEC_HOME\n"
+  "                          IMAGEDIR               OCTAVE_HOME\n"
+  "                          INCLUDEDIR             OCTDATADIR\n"
+  "                          INFODIR                OCTDOCDIR\n"
+  "                          INFOFILE               OCTFILEDIR\n"
+  "                          LIBDIR                 OCTFONTSDIR\n"
+  "                          LIBEXECDIR             OCTINCLUDEDIR\n"
+  "                          LOCALAPIARCHLIBDIR     OCTLIBDIR\n"
+  "                          LOCALAPIFCNFILEDIR     STARTUPFILEDIR\n"
+  "                          LOCALAPIOCTFILEDIR     VERSION\n"
+  "                          LOCALARCHLIBDIR\n"
+  "\n"
+  "  -v, --version         Print the Octave version number.\n"
+  "\n";
 
 static void
 initialize (void)

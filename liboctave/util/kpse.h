@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2016-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2016-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_kpse_h)
 #define octave_kpse_h 1
@@ -36,10 +39,18 @@ class kpse_path_iterator
 public:
 
   kpse_path_iterator (const std::string& p)
-    : path (p), b (0), e (0), len (path.length ()) { set_end (); }
+    : m_path (p), m_b (0), m_e (0), m_len (m_path.length ())
+  {
+    set_end ();
+  }
 
-  kpse_path_iterator (const kpse_path_iterator& pi)
-    : path (pi.path), b (pi.b), e (pi.e), len (pi.len) { }
+  kpse_path_iterator (const kpse_path_iterator&) = default;
+
+  // No assignment!
+
+  kpse_path_iterator& operator = (const kpse_path_iterator&) = delete;
+
+  ~kpse_path_iterator (void) = default;
 
   kpse_path_iterator operator ++ (int)
   {
@@ -48,22 +59,19 @@ public:
     return retval;
   }
 
-  std::string operator * (void) { return path.substr (b, e-b); }
+  std::string operator * (void) { return m_path.substr (m_b, m_e-m_b); }
 
-  bool operator != (const size_t sz) { return b != sz; }
+  bool operator != (const size_t sz) { return m_b != sz; }
 
 private:
 
-  const std::string& path;
-  size_t b;
-  size_t e;
-  size_t len;
+  const std::string& m_path;
+  size_t m_b;
+  size_t m_e;
+  size_t m_len;
 
   void set_end (void);
   void next (void);
-
-  // No assignment.
-  kpse_path_iterator& operator = (const kpse_path_iterator&);
 };
 
 extern unsigned int kpse_debug;

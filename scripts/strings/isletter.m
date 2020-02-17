@@ -1,4 +1,9 @@
-## Copyright (C) 1998-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1998-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} isletter (@var{s})
@@ -24,8 +31,6 @@
 ## This is an alias for the @code{isalpha} function.
 ## @seealso{isalpha, isdigit, ispunct, isspace, iscntrl, isalnum}
 ## @end deftypefn
-
-## Author: jwe
 
 function retval = isletter (s)
 

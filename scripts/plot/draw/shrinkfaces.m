@@ -1,4 +1,9 @@
-## Copyright (C) 2012-2019 Martin Helm
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} shrinkfaces (@var{p}, @var{sf})
@@ -63,8 +70,6 @@
 ##
 ## @seealso{patch}
 ## @end deftypefn
-
-## Author: Martin Helm <martin@mhelm.de>
 
 function [nf, nv] = shrinkfaces (varargin)
 
@@ -135,8 +140,8 @@ function [nf, nv] = shrinkfaces (varargin)
     case 0
       if (ishghandle (p))
         ## avoid exceptions
-        set (p, "FaceVertexCData", [], "CData", []);
-        set (p, "Vertices", v, "Faces", f, "FaceVertexCData", c);
+        set (p, "FaceVertexCData", [], "CData", [],
+                "Vertices", v, "Faces", f, "FaceVertexCData", c);
       else
         nf = struct ("faces", f, "vertices", v, "facevertexcdata", c);
       endif

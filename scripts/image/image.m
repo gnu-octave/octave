@@ -1,4 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} image (@var{img})
@@ -59,10 +66,6 @@
 ## @ref{Image Properties,,Image Properties}.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
-
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Created: July 1994
-## Adapted-By: jwe
 
 function h = image (varargin)
 
@@ -140,10 +143,6 @@ endfunction
 ##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}.
-
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Created: July 1994
-## Adapted-By: jwe
 
 function h = __img__ (hax, do_new, x, y, img, varargin)
 

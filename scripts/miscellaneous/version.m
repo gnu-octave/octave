@@ -1,4 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{v} =} version ()
@@ -54,12 +61,14 @@
 ## the mercurial ID of the sources used to build Octave.
 ## @end table
 ##
+## The information returned for the @qcode{"-blas"} and @qcode{"-lapack"}
+## options might be unreliable.  It might report which library was linked in
+## when Octave was built instead of which library is currently used.
+##
 ## The variant with no input and output argument is an alias for the function
 ## @w{@env{OCTAVE_VERSION}} provided for compatibility.
 ## @seealso{OCTAVE_VERSION, ver}
 ## @end deftypefn
-
-## Author: jwe
 
 function [v, d] = version (feature)
 
@@ -92,8 +101,9 @@ function [v, d] = version (feature)
           jjitmode = javaMethod ("getProperty", "java.lang.System", ...
                                  "java.vm.info");
           v = ["Java " jversion " with " jvendor " " jname " " jjitmode];
-        catch
-          v = "no Java available";
+        catch err
+          v = sprintf ("no usable Java Runtime Environment (%s) found:\n%s", ...
+                       uname ().machine, err.message);
         end_try_catch
       case "-fftw"
         v = __octave_config_info__ ("fftw_version");

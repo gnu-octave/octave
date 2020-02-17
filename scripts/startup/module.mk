@@ -1,7 +1,4 @@
-FCN_FILE_DIRS += scripts/startup
-
-%canon_reldir%_FCN_FILES = \
-  %reldir%/__finish__.m
+FCN_FILE_DIRS += %reldir%
 
 SITE_STARTUP_FILE_SRC  = %reldir%/site-rcfile
 
@@ -15,10 +12,6 @@ STARTUP_FILE_SRC = \
   $(SYSTEM_INPUTRC_FILE_SRC)
 
 %canon_reldir%dir = $(fcnfiledir)/startup
-
-%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
-
-FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
 PKG_ADD_FILES += %reldir%/PKG_ADD
 

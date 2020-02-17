@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 Kai Habel
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} shading (@var{type})
@@ -39,8 +46,6 @@
 ## rather than the current axes returned by @code{gca}.
 ## @seealso{fill, mesh, patch, pcolor, surf, surface, hidden, lighting}
 ## @end deftypefn
-
-## Author: Kai Habel <kai.habel@gmx.de>
 
 function shading (varargin)
 

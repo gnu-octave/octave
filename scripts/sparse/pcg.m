@@ -1,5 +1,9 @@
-## Copyright (C) 2004-2019 Piotr Krzyzanowski
-## Copyright (C) 2016-2019 Cristiano Dorigo
+########################################################################
+##
+## Copyright (C) 2004-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} pcg (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
@@ -252,11 +258,6 @@
 ##
 ## @seealso{sparse, pcr, gmres, bicg, bicgstab, cgs}
 ## @end deftypefn
-
-## Author: Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
-## Modified by: Vittoria Rezzonico <vittoria.rezzonico@epfl.ch>
-##  - Add the ability to provide the pre-conditioner as two separate matrices
-
 
 function [x_min, flag, relres, iter_min, resvec, eigest] =...
          pcg (A, b, tol = [], maxit = [], M1 = [], M2 = [], x0 = [], varargin)

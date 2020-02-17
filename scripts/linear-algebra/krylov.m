@@ -1,4 +1,9 @@
-## Copyright (C) 1993-2019 Auburn University.  All rights reserved.
+########################################################################
+##
+## Copyright (C) 1993-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{u}, @var{h}, @var{nu}] =} krylov (@var{A}, @var{V}, @var{k}, @var{eps1}, @var{pflg})
@@ -55,8 +62,6 @@
 ## Computation of Krylov Subspaces of Large Sparse Systems}, Proceedings of
 ## the 42nd IEEE Conference on Decision and Control, December 2003.
 ## @end deftypefn
-
-## Author: A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
 
 function [Uret, H, nu] = krylov (A, V, k, eps1, pflg)
 

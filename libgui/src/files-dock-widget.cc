@@ -1,51 +1,56 @@
-/*
-
-Copyright (C) 2013-2019 John P. Swensen
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#include "gui-preferences.h"
-#include "resource-manager.h"
-#include "files-dock-widget.h"
-
 #include <QApplication>
 #include <QClipboard>
-#include <QFileInfo>
 #include <QCompleter>
-#include <QProcess>
 #include <QDebug>
-#include <QHeaderView>
-#include <QLineEdit>
-#include <QSizePolicy>
-#include <QMenu>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QToolButton>
-#include <QUrl>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QHeaderView>
+#include <QInputDialog>
+#include <QLineEdit>
+#include <QMenu>
+#include <QMessageBox>
+#include <QProcess>
+#include <QSizePolicy>
+#include <QToolButton>
+#include <QUrl>
 
+#include "files-dock-widget.h"
+#include "gui-preferences-fb.h"
+#include "gui-preferences-global.h"
+#include "octave-qobject.h"
+#include "qt-interpreter-events.h"
+
+#include "interpreter.h"
 #include "load-save.h"
 #include "oct-env.h"
 
@@ -66,8 +71,8 @@ namespace octave
     }
   };
 
-  files_dock_widget::files_dock_widget (QWidget *p)
-    : octave_dock_widget ("FilesDockWidget", p)
+  files_dock_widget::files_dock_widget (QWidget *p, base_qobject& oct_qobj)
+    : octave_dock_widget ("FilesDockWidget", p, oct_qobj)
   {
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     set_title (tr ("File Browser"));
@@ -107,6 +112,11 @@ namespace octave
              main_win (),
              SLOT (set_current_working_directory (const QString&)));
 
+    connect (this,
+             SIGNAL (modify_path_signal (const octave_value_list&, bool, bool)),
+             main_win (),
+             SLOT (modify_path (const octave_value_list&, bool, bool)));
+
     // Create a toolbar
     m_navigation_tool_bar = new QToolBar ("", container);
     m_navigation_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
@@ -117,56 +127,54 @@ namespace octave
     m_current_directory->setEditable (true);
     m_current_directory->setMaxCount (MaxMRUDirs);
     m_current_directory->setInsertPolicy (QComboBox::NoInsert);
-    m_current_directory->setSizeAdjustPolicy (
-                                              QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    m_current_directory->setSizeAdjustPolicy (QComboBox::AdjustToMinimumContentsLengthWithIcon);
     QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_current_directory->setSizePolicy (sizePol);
 
-    QAction *directory_up_action = new QAction (resource_manager::icon ("go-up"),
-                                                "", m_navigation_tool_bar);
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    QAction *directory_up_action
+      = new QAction (rmgr.icon ("go-up"), "", m_navigation_tool_bar);
     directory_up_action->setToolTip (tr ("One directory up"));
 
     m_sync_browser_directory_action
-      = new QAction (resource_manager::icon ("go-first"),
-                     tr ("Show Octave directory"), m_navigation_tool_bar);
-    m_sync_browser_directory_action->setToolTip (
-                                                 tr ("Go to current Octave directory"));
+      = new QAction (rmgr.icon ("go-first"), tr ("Show Octave directory"),
+                     m_navigation_tool_bar);
+    m_sync_browser_directory_action->setToolTip (tr ("Go to current Octave directory"));
     m_sync_browser_directory_action->setEnabled (false);
 
     m_sync_octave_directory_action
-      = new QAction (resource_manager::icon ("go-last"),
-                     tr ("Set Octave directory"), m_navigation_tool_bar);
-    m_sync_octave_directory_action->setToolTip (
-                                                tr ("Set Octave directory to current browser directory"));
+      = new QAction (rmgr.icon ("go-last"), tr ("Set Octave directory"),
+                     m_navigation_tool_bar);
+    m_sync_octave_directory_action->setToolTip (tr ("Set Octave directory to current browser directory"));
     m_sync_octave_directory_action->setEnabled (false);
 
     QToolButton *popdown_button = new QToolButton ();
     popdown_button->setToolTip (tr ("Actions on current directory"));
     QMenu *popdown_menu = new QMenu ();
-    popdown_menu->addAction (resource_manager::icon ("user-home"),
-                             tr ("Show Home Directory"),
-                             this, SLOT (popdownmenu_home (bool)));
+    popdown_menu->addAction (rmgr.icon ("user-home"),
+                             tr ("Show Home Directory"), this,
+                             SLOT (popdownmenu_home (bool)));
     popdown_menu->addAction (m_sync_browser_directory_action);
     popdown_menu->addAction (m_sync_octave_directory_action);
     popdown_button->setMenu (popdown_menu);
     popdown_button->setPopupMode (QToolButton::InstantPopup);
-    popdown_button->setDefaultAction (new QAction (
-                                                   resource_manager::icon ("applications-system"), "",
-                                                   m_navigation_tool_bar));
+    popdown_button->setDefaultAction (new QAction (rmgr.icon ("applications-system"),
+                                                   "", m_navigation_tool_bar));
 
     popdown_menu->addSeparator ();
-    popdown_menu->addAction (resource_manager::icon ("folder"),
+    popdown_menu->addAction (rmgr.icon ("folder"),
                              tr ("Set Browser Directory..."),
                              this, SLOT (popdownmenu_search_dir (bool)));
     popdown_menu->addSeparator ();
-    popdown_menu->addAction (resource_manager::icon ("edit-find"),
+    popdown_menu->addAction (rmgr.icon ("edit-find"),
                              tr ("Find Files..."),
                              this, SLOT (popdownmenu_findfiles (bool)));
     popdown_menu->addSeparator ();
-    popdown_menu->addAction (resource_manager::icon ("document-new"),
+    popdown_menu->addAction (rmgr.icon ("document-new"),
                              tr ("New File..."),
                              this, SLOT (popdownmenu_newfile (bool)));
-    popdown_menu->addAction (resource_manager::icon ("folder-new"),
+    popdown_menu->addAction (rmgr.icon ("folder-new"),
                              tr ("New Directory..."),
                              this, SLOT (popdownmenu_newdir (bool)));
 
@@ -181,14 +189,13 @@ namespace octave
     connect (m_sync_browser_directory_action, SIGNAL (triggered ()), this,
              SLOT (do_sync_browser_directory ()));
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = rmgr.get_settings ();
     // FIXME: what should happen if settings is 0?
 
     // Create the QFileSystemModel starting in the desired directory
     QDir startup_dir;  // take current dir
 
-    if (settings->value (fb_restore_last_dir.key,
-                         fb_restore_last_dir.def).toBool ())
+    if (settings->value (fb_restore_last_dir).toBool ())
       {
         // restore last dir from previous session
         QStringList last_dirs
@@ -196,12 +203,10 @@ namespace octave
         if (last_dirs.length () > 0)
           startup_dir = QDir (last_dirs.at (0));  // last dir in previous session
       }
-    else if (! settings->value (fb_startup_dir.key, fb_startup_dir.def)
-               .toString ().isEmpty ())
+    else if (! settings->value (fb_startup_dir).toString ().isEmpty ())
       {
         // do not restore but there is a startup dir configured
-        startup_dir
-          = QDir (settings->value (fb_startup_dir.key).toString ());
+        startup_dir = QDir (settings->value (fb_startup_dir.key).toString ());
       }
 
     if (! startup_dir.exists ())
@@ -211,8 +216,11 @@ namespace octave
       }
 
     m_file_system_model = new QFileSystemModel (this);
-    QModelIndex rootPathIndex = m_file_system_model->setRootPath (
-                                                                  startup_dir.absolutePath ());
+    m_file_system_model->setResolveSymlinks (false);
+    m_file_system_model->setFilter (
+        QDir::System | QDir::NoDotAndDotDot | QDir::AllEntries);
+    QModelIndex rootPathIndex
+      = m_file_system_model->setRootPath (startup_dir.absolutePath ());
 
     // Attach the model to the QTreeView and set the root index
     m_file_tree_view = new FileTreeViewer (container);
@@ -224,16 +232,17 @@ namespace octave
     m_file_tree_view->setAnimated (true);
     m_file_tree_view->setToolTip (tr ("Double-click to open file/folder, right click for alternatives"));
 
-    // get sort column and order as well as cloumn state (order and width)
+    // get sort column and order as well as column state (order and width)
 
-    m_file_tree_view->sortByColumn (
-          settings->value (fb_sort_column.key, fb_sort_column.def).toInt (),
-          static_cast<Qt::SortOrder> (
-            settings->value (fb_sort_order.key, fb_sort_order.def).toUInt ()));
+    m_file_tree_view->sortByColumn
+      (settings->value (fb_sort_column).toInt (),
+       static_cast<Qt::SortOrder> (settings->value (fb_sort_order).toUInt ()));
+       // FIXME: use value<Qt::SortOrder> instead of static cast after
+       //        dropping support of Qt 5.4
 
     if (settings->contains (fb_column_state.key))
-      m_file_tree_view->header ()->restoreState (
-                          settings->value (fb_column_state.key).toByteArray ());
+      m_file_tree_view->header ()->restoreState
+        (settings->value (fb_column_state.key).toByteArray ());
 
     // Set header properties for sorting
 #if defined (HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE)
@@ -252,8 +261,8 @@ namespace octave
       settings->value (fb_mru_list.key).toStringList ();
     m_current_directory->addItems (mru_dirs);
 
-    m_current_directory->setEditText (
-                                      m_file_system_model->fileInfo (rootPathIndex).  absoluteFilePath ());
+    m_current_directory->setEditText
+      (m_file_system_model->fileInfo (rootPathIndex). absoluteFilePath ());
 
     connect (m_file_tree_view, SIGNAL (activated (const QModelIndex &)),
              this, SLOT (item_double_clicked (const QModelIndex &)));
@@ -301,7 +310,8 @@ namespace octave
 
   void files_dock_widget::save_settings (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     if (! settings)
       return;
@@ -310,7 +320,8 @@ namespace octave
     Qt::SortOrder sort_order = m_file_tree_view->header ()->sortIndicatorOrder ();
     settings->setValue (fb_sort_column.key, sort_column);
     settings->setValue (fb_sort_order.key, sort_order);
-    settings->setValue (fb_column_state.key, m_file_tree_view->header ()->saveState ());
+    settings->setValue (fb_column_state.key,
+                        m_file_tree_view->header ()->saveState ());
 
     QStringList dirs;
     for (int i=0; i< m_current_directory->count (); i++)
@@ -373,7 +384,8 @@ namespace octave
       display_directory (m_octave_dir,false);  // false: no sync of octave dir
   }
 
-  void files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
+  void files_dock_widget::display_directory (const QString& dir,
+                                             bool set_octave_dir)
   {
     QFileInfo fileInfo (dir);
     if (fileInfo.exists ())
@@ -386,8 +398,8 @@ namespace octave
             if (m_sync_octave_dir && set_octave_dir)
               process_set_current_dir (fileInfo.absoluteFilePath ());
 
-            // see if its in the list, and if it is,
-            // remove it and then, put at top of the list
+            // see if it's in the list, and if it is,
+            // remove it and then put at top of the list
             int index
               = m_current_directory->findText (fileInfo.absoluteFilePath ());
             if (index != -1)
@@ -402,9 +414,9 @@ namespace octave
             QString abs_fname = fileInfo.absoluteFilePath ();
 
             QString suffix = fileInfo.suffix ().toLower ();
-            QSettings *settings = resource_manager::get_settings ();
-            QString ext = settings->value (fb_txt_file_ext.key,
-                                           fb_txt_file_ext.def).toString ();
+            resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+            gui_settings *settings = rmgr.get_settings ();
+            QString ext = settings->value (fb_txt_file_ext).toString ();
             QStringList extensions = ext.split (";", QString::SkipEmptyParts);
 
             if (QFile::exists (abs_fname))
@@ -430,7 +442,8 @@ namespace octave
 
   void files_dock_widget::toggle_header (int col)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     QString key = m_columns_shown_keys.at (col);
     bool shown = settings->value (key,false).toBool ();
@@ -461,7 +474,8 @@ namespace octave
       delete m_sig_mapper;
     m_sig_mapper = new QSignalMapper (this);
 
-    QSettings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     for (int i = 0; i < m_columns_shown.size (); i++)
       {
@@ -469,8 +483,9 @@ namespace octave
                                           m_sig_mapper, SLOT (map ()));
         m_sig_mapper->setMapping (action, i);
         action->setCheckable (true);
-        action->setChecked (settings->value (
-          m_columns_shown_keys.at (i), m_columns_shown_defs.at (i)).toBool ());
+        action->setChecked
+          (settings->value (m_columns_shown_keys.at (i),
+                            m_columns_shown_defs.at (i)).toBool ());
       }
 
     connect (m_sig_mapper, SIGNAL (mapped (int)),
@@ -503,8 +518,10 @@ namespace octave
                                 | QItemSelectionModel::Rows);
           }
 
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
         // construct the context menu depending on item
-        menu.addAction (resource_manager::icon ("document-open"), tr ("Open"),
+        menu.addAction (rmgr.icon ("document-open"), tr ("Open"),
                         this, SLOT (contextmenu_open (bool)));
 
         if (info.isDir ())
@@ -521,7 +538,7 @@ namespace octave
                         this, SLOT (contextmenu_copy_selection (bool)));
 
         if (info.isFile () && info.suffix () == "m")
-          menu.addAction (resource_manager::icon ("media-playback-start"),
+          menu.addAction (rmgr.icon ("media-playback-start"),
                           tr ("Run"), this, SLOT (contextmenu_run (bool)));
 
         if (info.isFile ())
@@ -530,27 +547,43 @@ namespace octave
         if (info.isDir ())
           {
             menu.addSeparator ();
-            menu.addAction (resource_manager::icon ("go-first"),
+            menu.addAction (rmgr.icon ("go-first"),
                             tr ("Set Current Directory"),
                             this, SLOT (contextmenu_setcurrentdir (bool)));
+
+            QMenu *add_path_menu = menu.addMenu (tr ("Add to Path"));
+
+            add_path_menu->addAction (tr ("Selected Directories"),
+                                      this, SLOT (contextmenu_add_to_path (bool)));
+            add_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
+                                      this, SLOT (contextmenu_add_to_path_subdirs (bool)));
+
+            QMenu *rm_path_menu = menu.addMenu (tr ("Remove from Path"));
+
+            rm_path_menu->addAction (tr ("Selected Directories"), this,
+                                     SLOT (contextmenu_rm_from_path (bool)));
+            rm_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
+                                     this, SLOT (contextmenu_rm_from_path_subdirs (bool)));
+
             menu.addSeparator ();
-            menu.addAction (resource_manager::icon ("edit-find"),
+
+            menu.addAction (rmgr.icon ("edit-find"),
                             tr ("Find Files..."), this,
                             SLOT (contextmenu_findfiles (bool)));
           }
 
         menu.addSeparator ();
         menu.addAction (tr ("Rename..."), this, SLOT (contextmenu_rename (bool)));
-        menu.addAction (resource_manager::icon ("edit-delete"),
+        menu.addAction (rmgr.icon ("edit-delete"),
                         tr ("Delete..."), this, SLOT (contextmenu_delete (bool)));
 
         if (info.isDir ())
           {
             menu.addSeparator ();
-            menu.addAction (resource_manager::icon ("document-new"),
+            menu.addAction (rmgr.icon ("document-new"),
                             tr ("New File..."),
                             this, SLOT (contextmenu_newfile (bool)));
-            menu.addAction (resource_manager::icon ("folder-new"),
+            menu.addAction (rmgr.icon ("folder-new"),
                             tr ("New Directory..."),
                             this, SLOT (contextmenu_newdir (bool)));
           }
@@ -671,7 +704,8 @@ namespace octave
             // editor: close old
             emit file_remove_signal (old_name, new_name);
             // Do the renaming
-            bool st = path.rename (old_name, new_name);
+            QFile f (old_name);  // Must use QFile, not QDir (bug #56298)
+            bool st = f.rename (new_name);
             // editor: load new/old file depending on success
             emit file_renamed_signal (st);
             // Clear cache of file browser
@@ -702,8 +736,9 @@ namespace octave
               {
                 // see if directory is empty
                 QDir path (info.absoluteFilePath ());
-                QList<QFileInfo> fileLst = path.entryInfoList (QDir::AllEntries |
-                                                               QDir::NoDotAndDotDot);
+                QList<QFileInfo> fileLst = path.entryInfoList (
+                                          QDir::Hidden | QDir::AllEntries |
+                                          QDir::NoDotAndDotDot | QDir::System);
 
                 if (fileLst.count () != 0)
                   QMessageBox::warning (this, tr ("Delete file/directory"),
@@ -717,7 +752,7 @@ namespace octave
                 emit file_remove_signal (info.filePath (), QString ());
                 // Remove the file.
                 bool st = m_file_system_model->remove (index);
-                // reload the old file if removing was not successful
+                // Reload the old file if removing was not successful
                 if (! st)
                   emit file_renamed_signal (false);
               }
@@ -726,6 +761,29 @@ namespace octave
 
           }
       }
+  }
+
+  // Get the currently selected files/dirs and return their file info
+  // in a list.
+  QList<QFileInfo> files_dock_widget::get_selected_items_info (bool dir)
+  {
+    QItemSelectionModel *m = m_file_tree_view->selectionModel ();
+    QModelIndexList rows = m->selectedRows ();
+
+    QList<QFileInfo> infos;
+
+    for (auto it = rows.begin (); it != rows.end (); it++)
+      {
+        QModelIndex index = *it;
+
+        QFileInfo info = m_file_system_model->fileInfo (index);
+
+        if (info.exists () &&
+            ((dir & info.isDir ()) || (! dir && info.isFile ())))
+          infos.append (info);
+      }
+
+    return infos;
   }
 
   void files_dock_widget::contextmenu_newfile (bool)
@@ -762,20 +820,38 @@ namespace octave
 
   void files_dock_widget::contextmenu_setcurrentdir (bool)
   {
-    QItemSelectionModel *m = m_file_tree_view->selectionModel ();
-    QModelIndexList rows = m->selectedRows ();
+    QList<QFileInfo> infos = get_selected_items_info (true);
 
-    if (rows.size () > 0)
-      {
-        QModelIndex index = rows[0];
+    if (infos.length () > 0 && infos.first ().isDir ())
+      process_set_current_dir (infos.first ().absoluteFilePath ());
+  }
 
-        QFileInfo info = m_file_system_model->fileInfo (index);
+  void files_dock_widget::contextmenu_add_to_path (bool, bool rm, bool subdirs)
+  {
+    QList<QFileInfo> infos = get_selected_items_info (true);
 
-        if (info.isDir ())
-          {
-            process_set_current_dir (info.absoluteFilePath ());
-          }
-      }
+    octave_value_list dir_list = ovl ();
+
+    for (int i = 0; i < infos.length (); i++)
+      dir_list.append (infos.at (i).absoluteFilePath ().toStdString ());
+
+    if (infos.length () > 0)
+      emit modify_path_signal (dir_list, rm, subdirs);
+  }
+
+  void files_dock_widget::contextmenu_add_to_path_subdirs (bool)
+  {
+    contextmenu_add_to_path (true, false, true);
+  }
+
+  void files_dock_widget::contextmenu_rm_from_path (bool)
+  {
+    contextmenu_add_to_path (true, true, false);
+  }
+
+  void files_dock_widget::contextmenu_rm_from_path_subdirs (bool)
+  {
+    contextmenu_add_to_path (true, true, true);
   }
 
   void files_dock_widget::contextmenu_findfiles (bool)
@@ -796,12 +872,11 @@ namespace octave
       }
   }
 
-  void files_dock_widget::notice_settings (const QSettings *settings)
+  void files_dock_widget::notice_settings (const gui_settings *settings)
   {
-    // Qsettings pointer is checked before emitting.
+    // QSettings pointer is checked before emitting.
 
-    int size_idx = settings->value (global_icon_size.key,
-                                    global_icon_size.def).toInt ();
+    int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -813,20 +888,20 @@ namespace octave
       m_file_tree_view->setColumnHidden (i + 1,
                                          ! settings->value (m_columns_shown_keys.at (i),false).toBool ());
 
+    QDir::Filters current_filter = m_file_system_model->filter ();
     if (settings->value (m_columns_shown_keys.at (3),false).toBool ())
-      m_file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries
-                                      | QDir::Hidden);
+      m_file_system_model->setFilter (current_filter | QDir::Hidden);
     else
-      m_file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
+      m_file_system_model->setFilter (current_filter & (~QDir::Hidden));
 
-    m_file_tree_view->setAlternatingRowColors (
-                                               settings->value (m_columns_shown_keys.at (4),true).toBool ());
+    m_file_tree_view->setAlternatingRowColors
+      (settings->value (m_columns_shown_keys.at (4),true).toBool ());
     m_file_tree_view->setModel (m_file_system_model);
 
     // enable the buttons to sync octave/browser dir
     // only if this is not done by default
     m_sync_octave_dir
-      = settings->value (fb_sync_octdir.key, fb_sync_octdir.def).toBool ();
+      = settings->value (fb_sync_octdir).toBool ();
     m_sync_octave_directory_action->setEnabled (! m_sync_octave_dir);
     m_sync_browser_directory_action->setEnabled (! m_sync_octave_dir);
 
@@ -854,8 +929,9 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = QFileDialog::ShowDirsOnly;
-    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (! settings->value (global_use_native_dialogs).toBool ())
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory (this,

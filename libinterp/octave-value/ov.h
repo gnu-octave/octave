@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ov_h)
 #define octave_ov_h 1
@@ -291,9 +293,6 @@ public:
   octave_value (const octave_scalar_map& m, const std::string& id,
                 const std::list<std::string>& plist);
 
-  OCTAVE_DEPRECATED (4.4, "note: second argument is always ignored; use octave_value (const octave_value_list&) instead")
-  octave_value (const octave_value_list& m, bool);
-
   // This one is explicit because it can cause some trouble to
   // accidentally create a cs-list when one was not intended.
   explicit octave_value (const octave_value_list& m);
@@ -305,9 +304,15 @@ public:
   // Copy constructor.
 
   octave_value (const octave_value& a)
+    : rep (a.rep)
   {
-    rep = a.rep;
     rep->count++;
+  }
+
+  octave_value (octave_value&& a)
+    : rep (a.rep)
+  {
+    a.rep = nullptr;
   }
 
   // This should only be called for derived types.
@@ -321,7 +326,11 @@ public:
 
   ~octave_value (void)
   {
-    if (--rep->count == 0)
+    // Because we define a move constructor and a move assignment
+    // operator, rep may be a nullptr here.  We should only need to
+    // protect the move assignment operator in a similar way.
+
+    if (rep && --rep->count == 0)
       delete rep;
   }
 
@@ -370,6 +379,24 @@ public:
     return *this;
   }
 
+  octave_value& operator = (octave_value&& a)
+  {
+    // Because we define a move constructor and a move assignment
+    // operator, rep may be a nullptr here.  We should only need to
+    // protect the destructor in a similar way.
+
+    if (this != &a)
+      {
+        if (rep && --rep->count == 0)
+          delete rep;
+
+        rep = a.rep;
+        a.rep = nullptr;
+      }
+
+    return *this;
+  }
+
   octave_idx_type get_count (void) const { return rep->count; }
 
   octave_base_value::type_conv_info numeric_conversion_function (void) const
@@ -409,8 +436,13 @@ public:
   Matrix size (void)
   { return rep->size (); }
 
-  octave_idx_type numel (const octave_value_list& idx)
-  { return rep->numel (idx); }
+  // FIXME: should this function be deprecated and removed?  It supports
+  // an undocumented feature of Matlab.
+  octave_idx_type xnumel (const octave_value_list& idx)
+  { return rep->xnumel (idx); }
+
+  // FIXME: Do we really need all these different versions of subsref
+  // and related functions?
 
   octave_value single_subsref (const std::string& type,
                                const octave_value_list& idx);
@@ -487,10 +519,6 @@ public:
   octave_idx_type numel (void) const
   { return rep->numel (); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type capacity (void) const
-  { return rep->numel (); }
-
   size_t byte_size (void) const
   { return rep->byte_size (); }
 
@@ -530,22 +558,10 @@ public:
   bool isempty (void) const
   { return rep->isempty (); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
-  bool is_empty (void) const
-  { return rep->isempty (); }
-
   bool iscell (void) const
   { return rep->iscell (); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'iscell' instead")
-  bool is_cell (void) const
-  { return rep->iscell (); }
-
   bool iscellstr (void) const
-  { return rep->iscellstr (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'iscellstr' instead")
-  bool is_cellstr (void) const
   { return rep->iscellstr (); }
 
   bool is_real_scalar (void) const
@@ -590,10 +606,6 @@ public:
   bool isstruct (void) const
   { return rep->isstruct (); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'isstruct' instead")
-  bool is_map (void) const
-  { return rep->isstruct (); }
-
   bool is_classdef_meta (void) const
   { return rep->is_classdef_meta (); }
 
@@ -609,15 +621,7 @@ public:
   bool isobject (void) const
   { return rep->isobject (); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'isobject' instead")
-  bool is_object (void) const
-  { return rep->isobject (); }
-
   bool isjava (void) const
-  { return rep->isjava (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'isjava' instead")
-  bool is_java (void) const
   { return rep->isjava (); }
 
   bool is_cs_list (void) const
@@ -627,10 +631,6 @@ public:
   { return rep->is_magic_colon (); }
 
   bool isnull (void) const
-  { return rep->isnull (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'isnull' instead")
-  bool is_null_value (void) const
   { return rep->isnull (); }
 
   // Are any or all of the elements in this constant nonzero?
@@ -653,10 +653,6 @@ public:
   { return rep->is_single_type (); }
 
   bool isfloat (void) const
-  { return rep->isfloat (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'isfloat' instead")
-  bool is_float_type (void) const
   { return rep->isfloat (); }
 
   // Integer types.
@@ -688,31 +684,15 @@ public:
   bool isinteger (void) const
   { return rep->isinteger (); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'isinteger' instead")
-  bool is_integer_type (void) const
-  { return rep->isinteger (); }
-
   // Other type stuff.
 
   bool islogical (void) const
   { return rep->islogical (); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'islogical' instead")
-  bool is_bool_type (void) const
-  { return rep->islogical (); }
-
   bool isreal (void) const
   { return rep->isreal (); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'isreal' instead")
-  bool is_real_type (void) const
-  { return rep->isreal (); }
-
   bool iscomplex (void) const
-  { return rep->iscomplex (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'iscomplex' instead")
-  bool is_complex_type (void) const
   { return rep->iscomplex (); }
 
   bool is_scalar_type (void) const
@@ -724,15 +704,7 @@ public:
   bool isnumeric (void) const
   { return rep->isnumeric (); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'isnumeric' instead")
-  bool is_numeric_type (void) const
-  { return rep->isnumeric (); }
-
   bool issparse (void) const
-  { return rep->issparse (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'issparse' instead")
-  bool is_sparse_type (void) const
   { return rep->issparse (); }
 
   // Does this constant correspond to a truth value?
@@ -958,10 +930,6 @@ public:
 
   string_vector string_vector_value (bool pad = false) const
   { return rep->string_vector_value (pad); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'string_vector_value' instead")
-  string_vector all_strings (bool pad = false) const
-  { return string_vector_value (pad); }
 
   Cell cell_value (void) const;
 
@@ -1336,7 +1304,7 @@ public:
 
   bool load_ascii (std::istream& is) { return rep->load_ascii (is); }
 
-  bool save_binary (std::ostream& os, bool& save_as_floats)
+  bool save_binary (std::ostream& os, bool save_as_floats)
   { return rep->save_binary (os, save_as_floats); }
 
   bool load_binary (std::istream& is, bool swap,
@@ -1381,10 +1349,6 @@ public:
   sortmode issorted (sortmode mode = UNSORTED) const
   { return rep->issorted (mode); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
-  sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return rep->issorted (mode); }
-
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
   { return rep->sort_rows_idx (mode); }
 
@@ -1396,6 +1360,8 @@ public:
   void unlock (void) { rep->unlock (); }
 
   bool islocked (void) const { return rep->islocked (); }
+
+  void call_object_destructor (void) { return rep->call_object_destructor (); }
 
   octave_value dump (void) const { return rep->dump (); }
 
@@ -1474,9 +1440,9 @@ public:
   octave_value map (octave_base_value::unary_mapper_t umap) const
   { return rep->map (umap); }
 
-  //! Extract the n-th element, aka `val(n)`.
+  //! Extract the n-th element, aka 'val(n)'.
   //!
-  //! @return Result is undefined if `val` is not an array type
+  //! @return Result is undefined if 'val' is not an array type
   //!         or @p n is out of range.
   //!
   //! @warning Function calls should never error.
@@ -1485,9 +1451,9 @@ public:
   fast_elem_extract (octave_idx_type n) const
   { return rep->fast_elem_extract (n); }
 
-  //! Assign the n-th element, aka `val(n) = x`.
+  //! Assign the n-th element, aka 'val(n) = x'.
   //!
-  //! @returns false if `val` is not an array type,
+  //! @returns false if 'val' is not an array type,
   //!          @p x is not a matching scalar type,
   //!          or @p n is out of range.
   //!

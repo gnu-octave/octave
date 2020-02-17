@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2008-2019 Jaroslav Hajek
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -42,15 +45,15 @@ DEFUNOP_OP (uminus, complex_diag_matrix, -)
 
 DEFUNOP (transpose, complex_diag_matrix)
 {
-  const octave_complex_diag_matrix& v =
-    dynamic_cast<const octave_complex_diag_matrix&> (a);
+  const octave_complex_diag_matrix& v
+    = dynamic_cast<const octave_complex_diag_matrix&> (a);
   return octave_value (v.complex_diag_matrix_value ().transpose ());
 }
 
 DEFUNOP (hermitian, complex_diag_matrix)
 {
-  const octave_complex_diag_matrix& v =
-    dynamic_cast<const octave_complex_diag_matrix&> (a);
+  const octave_complex_diag_matrix& v
+    = dynamic_cast<const octave_complex_diag_matrix&> (a);
   return octave_value (v.complex_diag_matrix_value ().hermitian ());
 }
 
@@ -62,10 +65,10 @@ DEFBINOP_OP (mul, complex_diag_matrix, complex_diag_matrix, *)
 
 DEFBINOP (div, complex_diag_matrix, complex_diag_matrix)
 {
-  const octave_complex_diag_matrix& v1 =
-    dynamic_cast<const octave_complex_diag_matrix&> (a1);
-  const octave_complex_diag_matrix& v2 =
-    dynamic_cast<const octave_complex_diag_matrix&> (a2);
+  const octave_complex_diag_matrix& v1
+    = dynamic_cast<const octave_complex_diag_matrix&> (a1);
+  const octave_complex_diag_matrix& v2
+    = dynamic_cast<const octave_complex_diag_matrix&> (a2);
 
   return xdiv (v1.complex_diag_matrix_value (),
                v2.complex_diag_matrix_value ());
@@ -73,10 +76,10 @@ DEFBINOP (div, complex_diag_matrix, complex_diag_matrix)
 
 DEFBINOP (ldiv, complex_diag_matrix, complex_diag_matrix)
 {
-  const octave_complex_diag_matrix& v1 =
-    dynamic_cast<const octave_complex_diag_matrix&> (a1);
-  const octave_complex_diag_matrix& v2 =
-    dynamic_cast<const octave_complex_diag_matrix&> (a2);
+  const octave_complex_diag_matrix& v1
+    = dynamic_cast<const octave_complex_diag_matrix&> (a1);
+  const octave_complex_diag_matrix& v2
+    = dynamic_cast<const octave_complex_diag_matrix&> (a2);
 
   return xleftdiv (v1.complex_diag_matrix_value (),
                    v2.complex_diag_matrix_value ());
@@ -84,8 +87,8 @@ DEFBINOP (ldiv, complex_diag_matrix, complex_diag_matrix)
 
 CONVDECL (complex_diag_matrix_to_complex_matrix)
 {
-  const octave_complex_diag_matrix& v =
-    dynamic_cast<const octave_complex_diag_matrix&> (a);
+  const octave_complex_diag_matrix& v
+    = dynamic_cast<const octave_complex_diag_matrix&> (a);
 
   return new octave_complex_matrix (v.complex_matrix_value ());
 }

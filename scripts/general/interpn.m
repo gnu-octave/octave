@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{vi} =} interpn (@var{x1}, @var{x2}, @dots{}, @var{v}, @var{y1}, @var{y2}, @dots{})
@@ -30,7 +37,7 @@
 ## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}.
 ## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either
 ## @var{n}-dimensional arrays of the same size as the array @var{v} in
-## the @qcode{"ndgrid"} format or vectors.  The parameters @var{y1}, etc.
+## the @qcode{"ndgrid"} format or vectors.  The parameters @var{y1}, etc.@:
 ## respect a similar format to @var{x1}, etc., and they represent the points
 ## at which the array @var{vi} is interpolated.
 ##

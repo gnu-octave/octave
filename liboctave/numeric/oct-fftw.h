@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2001-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2001-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_oct_fftw_h)
 #define octave_oct_fftw_h 1
@@ -375,32 +378,5 @@ namespace octave
   extern OCTAVE_API std::string fftw_version (void);
   extern OCTAVE_API std::string fftwf_version (void);
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::fftw_version' instead")
-static inline std::string
-octave_fftw_version (void)
-{
-  return octave::fftw_version ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::fftwf_version' instead")
-static inline std::string
-octave_fftwf_version (void)
-{
-  return octave::fftwf_version ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::fftw_planner' instead")
-typedef octave::fftw_planner octave_fftw_planner;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::float_fftw_planner' instead")
-typedef octave::float_fftw_planner octave_float_fftw_planner;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::fftw' instead")
-typedef octave::fftw octave_fftw;
-
-#endif
 
 #endif

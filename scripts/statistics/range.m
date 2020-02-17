@@ -1,5 +1,9 @@
-## Copyright (C) 1995-2019 Kurt Hornik
-## Copyright (C) 2009 Jaroslav Hajek
+########################################################################
+##
+## Copyright (C) 1995-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} range (@var{x})
@@ -33,9 +39,6 @@
 ## is less accurate than @code{iqr} if there are outlying data points.
 ## @seealso{bounds, iqr, mad, std}
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Compute range
 
 function y = range (x, dim)
 

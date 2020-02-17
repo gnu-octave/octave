@@ -1,5 +1,9 @@
-## Copyright (C) 2013-2019 Ben Abbott
-## Copyright (C) 2007 Muthiah Annamalai
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{str} =} strjoin (@var{cstr})
@@ -43,9 +49,6 @@
 ## @seealso{strsplit}
 ## @end deftypefn
 
-## Author: Muthiah Annamalai <muthiah.annamalai@uta.edu>
-## Author: Ben Abbott <bpabbott@mac.com>
-
 function rval = strjoin (cstr, delimiter)
 
   if (nargin == 1)
@@ -71,7 +74,7 @@ function rval = strjoin (cstr, delimiter)
     delimiter = repmat (delimiter, 1, num);
     delimiter(end) = {""};
   elseif (num > 0 && numel (delimiter) != num - 1)
-    error ("strjoin:cellstring_delimiter_mismatch",
+    error ("Octave:strjoin:cellstring_delimiter_mismatch",
       "strjoin: the number of delimiters does not match the number of strings");
   else
     delimiter(end+1) = {""};

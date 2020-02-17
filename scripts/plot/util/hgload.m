@@ -1,4 +1,9 @@
-## Copyright (C) 2014-2019 Massimiliano Fasi
+########################################################################
+##
+## Copyright (C) 2014-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{h} =} hgload (@var{filename})
@@ -64,12 +71,11 @@ function [h, old_prop] = hgload (filename, prop_struct = struct ())
   ## Load the handle structure
   hgs = {"s_oct40", "hgS_050200", "hgS_070000"};
   hg = load (filename);
-  i = isfield (hg, hgs);
-  if (nnz (i) == 1)
-    hg = hg.(hgs{i});
-  else
+  fig_file_version = isfield (hg, hgs);
+  if (nnz (fig_file_version) != 1)
     error ("hgload: could not load hgsave-formatted object in file %s", filename);
   endif
+  hg = hg.(hgs{fig_file_version});
 
   ## Override properties of top-level objects
   calc_old_prop = false;

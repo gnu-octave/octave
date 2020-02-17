@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,7 +21,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 ##
-## Author: Jaroslav Hajek <highegg@gmail.com>
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} fzero (@var{fun}, @var{x0})
@@ -42,8 +47,8 @@
 ##
 ## @var{options} is a structure specifying additional options.  Currently,
 ## @code{fzero} recognizes these options:
-## @qcode{"FunValCheck"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"},
-## @qcode{"OutputFcn"}, and @qcode{"TolX"}.
+## @qcode{"Display"}, @qcode{"FunValCheck"}, @qcode{"MaxFunEvals"},
+## @qcode{"MaxIter"}, @qcode{"OutputFcn"}, and @qcode{"TolX"}.
 ##
 ## @qcode{"MaxFunEvals"} proscribes the maximum number of function evaluations
 ## before the search is halted.  The default value is @code{Inf}.
@@ -137,8 +142,18 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     fun = str2func (fun);
   endif
 
-  ## FIXME: Display is not yet implemented
-  ## displev = optimget (options, "Display", "notify");
+  displev = optimget (options, "Display", "notify");
+  switch (displev)
+    case "iter"
+      displev = 1;
+    case "final"
+      displev = 2;
+    case "notify"
+      displev = 3;
+    otherwise  # "none"
+      displev = 0;
+  endswitch
+
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
   maxfev = optimget (options, "MaxFunEvals", Inf);
   maxiter = optimget (options, "MaxIter", Inf);
@@ -168,6 +183,13 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     nfev += 1;
   else
     ## Try to find a value for b which brackets a zero-crossing
+    if (displev == 1)
+      printf ( ...
+        "\nSearch for an interval around %g containing a sign change:\n", a);
+      printf (" Func-count    a          f(a)             b          ");
+      printf ("f(b)        Procedure\n");
+      fmt_str = " %4d   %13.6g %13.6g %13.6g %13.6g   %s\n";
+    endif
 
     ## For very small values, switch to absolute rather than relative search
     if (abs (a) < .001)
@@ -175,11 +197,17 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     else
       aa = a;
     endif
+    if (displev == 1)
+      printf (fmt_str, nfev, a, fa, a, fa, "initial interval");
+    endif
     ## Search in an ever-widening range around the initial point.
     for srch = [-.01 +.025 -.05 +.10 -.25 +.50 -1 +2.5 -5 +10 -50 +100 -500 +1000]
       b = aa + aa*srch;
       fb = fun (b);
       nfev += 1;
+      if (displev == 1)
+        printf (fmt_str, nfev, a, fa, b, fb, "search");
+      endif
       if (sign (fa) * sign (fb) <= 0)
         break;
       endif
@@ -197,7 +225,13 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   endif
 
   if (! (sign (fa) * sign (fb) <= 0))
-    error ("fzero:bracket", "fzero: not a valid initial bracketing");
+    error ("Octave:fzero:bracket", "fzero: not a valid initial bracketing");
+  endif
+
+  if (displev == 1)
+    printf ("\nSearch for a zero in the interval [%g, %g]:\n", a, b);
+    disp (" Func-count    x          f(x)             Procedure");
+    fmt_str = " %4d   %13.6g %13.6g        %s\n";
   endif
 
   slope0 = (fb - fa) / (b - a);
@@ -216,6 +250,9 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     u = a; fu = fa;
   else
     u = b; fu = fb;
+  endif
+  if (displev == 1)
+    printf (fmt_str, nfev, u, fu, "initial");
   endif
 
   if (isa (x0, "single") || isa (fa, "single"))
@@ -307,6 +344,9 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     x = c;
     fval = fc = fun (c);
     niter += 1; nfev += 1;
+    if (displev == 1)
+      printf (fmt_str, nfev, x, fc, "interpolation");
+    endif
 
     ## Modification 2: skip inverse cubic interpolation if
     ## nonmonotonicity is detected.
@@ -331,7 +371,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       break;
     else
       ## This should never happen.
-      error ("fzero:bracket", "fzero: zero point is not bracketed");
+      error ("Octave:fzero:bracket", "fzero: zero point is not bracketed");
     endif
 
     ## If there's an output function, use it now.
@@ -372,6 +412,22 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     endif
   endif
 
+  if (displev != 0)
+    switch (info)
+      case 1
+        if (displev != 3)
+          disp ("\nAlgorithm converged.\n");
+        endif
+      case -1
+        disp ("\nAlgorithm has been terminated by user.\n");
+      case -5
+        disp ("\nAlgorithm seemingly converged to a singular point.\n");
+      otherwise
+        disp ( ...
+          "\nMaximum number of iterations or function evaluations reached.\n");
+    endswitch
+  endif
+
   output.iterations = niter;
   output.funcCount = nfev;
   output.algorithm = "bisection, interpolation";
@@ -385,9 +441,9 @@ function fx = guarded_eval (fun, x)
   fx = fun (x);
   fx = fx(1);
   if (! isreal (fx))
-    error ("fzero:notreal", "fzero: non-real value encountered");
+    error ("Octave:fzero:notreal", "fzero: non-real value encountered");
   elseif (isnan (fx))
-    error ("fzero:isnan", "fzero: NaN value encountered");
+    error ("Octave:fzero:isnan", "fzero: NaN value encountered");
   endif
 endfunction
 

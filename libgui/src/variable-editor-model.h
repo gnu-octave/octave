@@ -1,39 +1,44 @@
-/*
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2015 Michael Barnes
-Copyright (C) 2013 Rüdiger Sonderfeld
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-#if ! defined (variable_editor_model_h)
-#define variable_editor_model_h 1
+#if ! defined (octave_variable_editor_model_h)
+#define octave_variable_editor_model_h 1
 
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QString>
+
+#include "qt-interpreter-events.h"
 
 #include "ov.h"
 #include "pr-flt-fmt.h"
 
 namespace octave
 {
+  class interpreter;
+
   class base_ve_model
   {
   public:
@@ -281,6 +286,9 @@ namespace octave
 
     void edit_variable_signal (const QString& name, const octave_value& val);
 
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
+
   public slots:
 
     void update_data (const octave_value& val);
@@ -299,14 +307,11 @@ namespace octave
 
     base_ve_model *rep;
 
-    void set_data_oct (const std::string& name, const std::string& expr,
-                       const QModelIndex&);
+    void init_from_oct (interpreter& interp);
 
-    void init_from_oct (const std::string& str);
+    void eval_expr_event (const QString& expr);
 
-    void eval_oct (const std::string& name, const std::string& expr);
-
-    octave_value retrieve_variable (const std::string& name);
+    octave_value retrieve_variable (interpreter&, const std::string& name);
 
     bool is_valid (void) const
     {

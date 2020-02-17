@@ -1,35 +1,41 @@
-/*
-
-Copyright (C) 2017-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2017-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
+#include <list>
 #include <string>
 
 #include "bp-table.h"
-#include "call-stack.h"
+#include "cdef-manager.h"
 #include "child-list.h"
+#include "display.h"
 #include "error.h"
+#include "event-manager.h"
 #include "gtk-manager.h"
 #include "help.h"
 #include "input.h"
@@ -37,8 +43,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "load-path.h"
 #include "load-save.h"
-#include "oct-hist.h"
-#include "ov-classdef.h"
+#include "ov.h"
+#include "ov-fcn-inline.h"
 #include "pager.h"
 #include "symtab.h"
 
@@ -64,18 +70,25 @@ namespace octave
     return interp.get_dynamic_loader ();
   }
 
+  error_system& __get_error_system__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_error_system ();
+  }
+
+  gh_manager& __get_gh_manager__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_gh_manager ();
+  }
+
   help_system& __get_help_system__ (const std::string& who)
   {
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_help_system ();
-  }
-
-  history_system& __get_history_system__ (const std::string& who)
-  {
-    interpreter& interp = __get_interpreter__ (who);
-
-    return interp.get_history_system ();
   }
 
   input_system& __get_input_system__ (const std::string& who)
@@ -104,6 +117,13 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_load_save_system ();
+  }
+
+  event_manager& __get_event_manager__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_event_manager ();
   }
 
   type_info& __get_type_info__ (const std::string& who)
@@ -151,13 +171,6 @@ namespace octave
     return tw.get_bp_table ();
   }
 
-  call_stack& __get_call_stack__ (const std::string& who)
-  {
-    interpreter& interp = __get_interpreter__ (who);
-
-    return interp.get_call_stack ();
-  }
-
   child_list& __get_child_list__ (const std::string& who)
   {
     interpreter& interp = __get_interpreter__ (who);
@@ -172,10 +185,57 @@ namespace octave
     return interp.get_cdef_manager ();
   }
 
+  display_info& __get_display_info__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_display_info ();
+  }
+
   gtk_manager& __get_gtk_manager__ (const std::string& who)
   {
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_gtk_manager ();
+  }
+
+  octave_value
+  get_function_handle (interpreter& interp, const octave_value& arg,
+                       const std::string& parameter_name)
+  {
+    std::list<std::string> parameter_names;
+    parameter_names.push_back (parameter_name);
+    return get_function_handle (interp, arg, parameter_names);
+  }
+
+  octave_value
+  get_function_handle (interpreter& interp, const octave_value& arg,
+                       const std::list<std::string>& parameter_names)
+  {
+    if (arg.is_function_handle () || arg.is_inline_function ())
+      return arg;
+    else if (arg.is_string ())
+      {
+        std::string fstr = arg.string_value ();
+
+        if (fstr.empty ())
+          return octave_value ();
+
+        symbol_table& symtab = interp.get_symbol_table ();
+
+        octave_value fcn = symtab.find_function (fstr);
+
+        if (fcn.is_defined ())
+          return fcn;
+
+        fcn = octave_value (new octave_fcn_inline (fstr, parameter_names));
+
+        // Possibly warn here that passing the function body in a
+        // character string is discouraged.
+
+        return fcn;
+      }
+
+    return octave_value ();
   }
 }

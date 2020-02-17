@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{value} =} getappdata (@var{h}, @var{name})
@@ -28,9 +35,6 @@
 ##
 ## @seealso{setappdata, isappdata, rmappdata, guidata, get, set, getpref, setpref}
 ## @end deftypefn
-
-## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2010-07-15
 
 function value = getappdata (h, name)
 
@@ -62,11 +66,11 @@ function value = getappdata (h, name)
     if (numel (h) != 1)
       error ("getappdata: Only one handle H may be used when fetching appdata");
     endif
-    try
-      value = get (h, "__appdata__");
-    catch
+
+    value = get (h, "__appdata__");
+    if (isempty (value))
       value = struct ();
-    end_try_catch
+    endif
   endif
 
 endfunction

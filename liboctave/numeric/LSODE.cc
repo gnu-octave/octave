@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -57,8 +60,6 @@ static F77_INT
 lsode_f (const F77_INT& neq, const double& time, double *, double *deriv,
          F77_INT& ierr)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   ColumnVector tmp_deriv;
 
   // NOTE: this won't work if LSODE passes copies of the state vector.
@@ -75,8 +76,6 @@ lsode_f (const F77_INT& neq, const double& time, double *, double *deriv,
         deriv[i] = tmp_deriv.elem (i);
     }
 
-  END_INTERRUPT_WITH_EXCEPTIONS;
-
   return 0;
 }
 
@@ -84,8 +83,6 @@ static F77_INT
 lsode_j (const F77_INT& neq, const double& time, double *, const F77_INT&,
          const F77_INT&, double *pd, const F77_INT& nrowpd)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   Matrix tmp_jac (neq, neq);
 
   // NOTE: this won't work if LSODE passes copies of the state vector.
@@ -97,8 +94,6 @@ lsode_j (const F77_INT& neq, const double& time, double *, const F77_INT&,
   for (F77_INT j = 0; j < neq; j++)
     for (F77_INT i = 0; i < neq; i++)
       pd[nrowpd * j + i] = tmp_jac (i, j);
-
-  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -31,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Container.h"
 #include "ListBoxControl.h"
 #include "QtHandlesUtils.h"
+
+#include "octave-qobject.h"
 
 namespace QtHandles
 {
@@ -65,23 +70,29 @@ namespace QtHandles
   }
 
   ListBoxControl*
-  ListBoxControl::create (const graphics_object& go)
+  ListBoxControl::create (octave::base_qobject& oct_qobj,
+                          octave::interpreter& interp,
+                          const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new ListBoxControl (go, new QListWidget (container));
+          return new ListBoxControl (oct_qobj, interp, go,
+                                     new QListWidget (container));
       }
 
     return nullptr;
   }
 
-  ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget *list)
-    : BaseControl (go, list), m_blockCallback (false), m_selectionChanged (false)
+  ListBoxControl::ListBoxControl (octave::base_qobject& oct_qobj,
+                                  octave::interpreter& interp,
+                                  const graphics_object& go, QListWidget *list)
+    : BaseControl (oct_qobj, interp, go, list), m_blockCallback (false),
+      m_selectionChanged (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 
@@ -172,11 +183,11 @@ namespace QtHandles
         Matrix value (dim_vector (1, l.size ()));
         int i = 0;
 
-        foreach (const QModelIndex& idx, l)
+        for (const auto& idx : l)
           value(i++) = idx.row () + 1;
 
-        gh_manager::post_set (m_handle, "value", octave_value (value), false);
-        gh_manager::post_callback (m_handle, "callback");
+        emit gh_set_event (m_handle, "value", octave_value (value), false);
+        emit gh_callback_event (m_handle, "callback");
       }
 
     m_selectionChanged = false;

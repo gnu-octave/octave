@@ -1,31 +1,35 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2009 VZLU Prague, a.s.
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
 #include <sstream>
+
+#include "file-ops.h"
 
 #include "fcn-info.h"
 #include "interpreter-private.h"
@@ -34,66 +38,30 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "symrec.h"
 #include "symscope.h"
-#include "symtab.h"
 #include "utils.h"
 
 namespace octave
 {
-  void symbol_scope_rep::install_auto_fcn_vars (void)
+  symbol_record symbol_scope_rep::insert_local (const std::string& name)
   {
-    install_auto_fcn_var (".argn.");
-    install_auto_fcn_var (".ignored.");
-    install_auto_fcn_var (".nargin.");
-    install_auto_fcn_var (".nargout.");
-    install_auto_fcn_var (".saved_warning_states.");
+    symbol_record sym (name);
+
+    insert_symbol_record (sym);
+
+    return sym;
   }
 
-  void symbol_scope_rep::install_auto_fcn_var (const std::string& name)
+  void symbol_scope_rep::insert_symbol_record (symbol_record& sr)
   {
-    insert (name, true);
-    mark_hidden (name);
-    mark_automatic (name);
+    size_t data_offset = num_symbols ();
+    std::string name = sr.name ();
+
+    sr.set_data_offset (data_offset);
+
+    m_symbols[name] = sr;
   }
 
-  octave_value
-  symbol_scope_rep::find (const std::string& name)
-  {
-    symbol_table& symtab
-      = __get_symbol_table__ ("symbol_scope_rep::find");
-
-    // Variable.
-
-    table_iterator p = m_symbols.find (name);
-
-    if (p != m_symbols.end ())
-      {
-        symbol_record sr = p->second;
-
-        if (sr.is_global ())
-          return symtab.global_varval (name);
-        else
-          {
-            octave_value val = sr.varval (m_context);
-
-            if (val.is_defined ())
-              return val;
-          }
-      }
-
-    // Subfunction.  I think it only makes sense to check for
-    // subfunctions if we are currently executing a function defined
-    // from a .m file.
-
-    octave_value fcn = find_subfunction (name);
-
-    if (fcn.is_defined ())
-      return fcn;
-
-    return symtab.fcn_table_find (name, ovl ());
-  }
-
-  symbol_record&
-  symbol_scope_rep::insert (const std::string& name, bool force_add)
+  symbol_record symbol_scope_rep::insert (const std::string& name)
   {
     table_iterator p = m_symbols.find (name);
 
@@ -101,13 +69,20 @@ namespace octave
       {
         symbol_record ret (name);
 
+        size_t data_offset = num_symbols ();
+
+        ret.set_data_offset (data_offset);
+
         auto t_parent = m_parent.lock ();
 
-        if (is_nested () && t_parent && t_parent->look_nonlocal (name, ret))
+        size_t offset = 0;
+
+        if (is_nested () && t_parent
+            && t_parent->look_nonlocal (name, offset, ret))
           return m_symbols[name] = ret;
         else
           {
-            if (m_is_static && ! force_add)
+            if (m_is_static)
               ret.mark_added_static ();
 
             return m_symbols[name] = ret;
@@ -139,11 +114,21 @@ namespace octave
     for (const auto& nm_sr : m_symbols)
       {
         std::string nm = nm_sr.first;
-        const symbol_record& sr = nm_sr.second;
-        info_map[nm] = sr.dump (m_context);
+        symbol_record sr = nm_sr.second;
+        info_map[nm] = sr.dump ();
       }
 
     return octave_value (info_map);
+  }
+
+  std::list<symbol_record> symbol_scope_rep::symbol_list (void) const
+  {
+    std::list<symbol_record> retval;
+
+    for (const auto& nm_sr : m_symbols)
+      retval.push_back (nm_sr.second);
+
+    return retval;
   }
 
   octave_value
@@ -186,6 +171,12 @@ namespace octave
     m_primary_parent = std::weak_ptr<symbol_scope_rep> (parent);
   }
 
+  void
+  symbol_scope_rep::cache_dir_name (const std::string& name)
+  {
+    m_dir_name = octave::sys::canonicalize_file_name (name);
+  }
+
   bool
   symbol_scope_rep::is_relative (const std::shared_ptr<symbol_scope_rep>& scope) const
   {
@@ -194,18 +185,30 @@ namespace octave
         // Since is_nested is true, the following should always return a
         // valid scope.
 
+        auto t_parent = m_parent.lock ();
+
+        if (t_parent)
+          {
+            // SCOPE is the parent of this scope: this scope is a child
+            // of SCOPE.
+
+            if (t_parent == scope)
+              return true;
+          }
+
         auto t_primary_parent = m_primary_parent.lock ();
 
         if (t_primary_parent)
           {
             // SCOPE is the primary parent of this scope: this scope is a
-            // child of SCOPE.
+            // child (or grandchild) of SCOPE.
             if (t_primary_parent == scope)
               return true;
 
             // SCOPE and this scope share the same primary parent: they are
-            // siblings.
-            if (t_primary_parent == scope->primary_parent_scope_rep ())
+            // siblings (or cousins)
+            auto scope_primary_parent = scope->primary_parent_scope_rep ();
+            if (t_primary_parent == scope_primary_parent)
               return true;
           }
       }
@@ -213,8 +216,7 @@ namespace octave
     return false;
   }
 
-  void
-  symbol_scope_rep::update_nest (void)
+  void symbol_scope_rep::update_nest (void)
   {
     auto t_parent = m_parent.lock ();
 
@@ -225,12 +227,10 @@ namespace octave
           {
             symbol_record& ours = nm_sr.second;
 
-            if (! ours.is_formal ()
-                && is_nested () && t_parent->look_nonlocal (nm_sr.first, ours))
-              {
-                if (ours.is_global () || ours.is_persistent ())
-                  error ("global and persistent may only be used in the topmost level in which a nested variable is used");
-              }
+            size_t offset = 0;
+
+            if (! ours.is_formal () && is_nested ())
+              t_parent->look_nonlocal (nm_sr.first, offset, ours);
           }
 
         // The scopes of nested functions are static.
@@ -247,40 +247,37 @@ namespace octave
       scope_obj.update_nest ();
   }
 
-  bool
-  symbol_scope_rep::look_nonlocal (const std::string& name,
-                                   symbol_record& result)
+  bool symbol_scope_rep::look_nonlocal (const std::string& name,
+                                        size_t offset, symbol_record& result)
   {
+    offset++;
+
     table_iterator p = m_symbols.find (name);
+
     if (p == m_symbols.end ())
       {
         auto t_parent = m_parent.lock ();
 
         if (is_nested () && t_parent)
-          return t_parent->look_nonlocal (name, result);
+          return t_parent->look_nonlocal (name, offset, result);
       }
-    else if (! p->second.is_automatic ())
+    else
       {
-        result.bind_fwd_rep (shared_from_this (), p->second);
+        // Add scope offsets because the one we found may be used in
+        // this scope but initially from another parent scope beyond
+        // that.  The parent offset will already point to the first
+        // occurrence because we do the overall nesting update from the
+        // parent function down through the lists of all children.
+
+        size_t t_frame_offset = offset + p->second.frame_offset ();
+        size_t t_data_offset = p->second.data_offset ();
+
+        result.set_frame_offset (t_frame_offset);
+        result.set_data_offset (t_data_offset);
+
         return true;
       }
 
     return false;
-  }
-
-  void
-  symbol_scope_rep::bind_script_symbols
-    (const std::shared_ptr<symbol_scope_rep>& curr_scope)
-  {
-    for (auto& nm_sr : m_symbols)
-      nm_sr.second.bind_fwd_rep (curr_scope,
-                                 curr_scope->find_symbol (nm_sr.first));
-  }
-
-  void
-  symbol_scope_rep::unbind_script_symbols (void)
-  {
-    for (auto& nm_sr : m_symbols)
-      nm_sr.second.unbind_fwd_rep ();
   }
 }

@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} html_compare (@var{toolkits})
@@ -51,8 +58,6 @@
 ##
 ## @seealso{compare_plot_demos, dump_demos, demo}
 ## @end deftypefn
-
-## Author: Ben Abbott  <bpabbott@mac.com>
 
 function html_compare_plot_demos (toolkits, varargin)
 

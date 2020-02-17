@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2006-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2006-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 /*
    A C-program for MT19937, with initialization improved 2002/2/10.
@@ -113,125 +116,6 @@ namespace octave
 
   template <> void
   rand_exponential<float> (octave_idx_type n, float *p);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::init_mersenne_twister' instead")
-inline void
-oct_init_by_entropy (void)
-{
-  octave::init_mersenne_twister ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::init_mersenne_twister' instead")
-inline void
-oct_init_by_int (const uint32_t seed)
-{
-  octave::init_mersenne_twister (seed);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::init_mersenne_twister' instead")
-inline void
-oct_init_by_array (const uint32_t *init_key, const int key_length)
-{
-  octave::init_mersenne_twister (init_key, key_length);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::set_mersenne_twister_state' instead")
-inline void
-oct_set_state (const uint32_t *save)
-{
-  octave::set_mersenne_twister_state (save);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::get_mersenne_twister_state' instead")
-inline void
-oct_get_state (uint32_t *save)
-{
-  octave::get_mersenne_twister_state (save);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_uniform<double>' instead")
-inline double
-oct_randu (void)
-{
-  return octave::rand_uniform<double> ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_normal<double>' instead")
-inline double
-oct_randn (void)
-{
-  return octave::rand_normal<double> ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_exponential<double>' instead")
-inline double
-oct_rande (void)
-{
-  return octave::rand_exponential<double> ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_uniform' instead")
-inline void
-oct_fill_randu (octave_idx_type n, double *p)
-{
-  octave::rand_uniform (n, p);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_normal' instead")
-inline void
-oct_fill_randn (octave_idx_type n, double *p)
-{
-  octave::rand_normal (n, p);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_exponential' instead")
-inline void
-oct_fill_rande (octave_idx_type n, double *p)
-{
-  octave::rand_exponential (n, p);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_uniform<float>' instead")
-inline float
-oct_float_randu (void)
-{
-  return octave::rand_uniform<float> ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_normal<float>' instead")
-inline float
-oct_float_randn (void)
-{
-  return octave::rand_normal<float> ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_exponential<float>' instead")
-inline float
-oct_float_rande (void)
-{
-  return octave::rand_exponential<float> ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_uniform' instead")
-inline void
-oct_fill_float_randu (octave_idx_type n, float *p)
-{
-  octave::rand_uniform (n, p);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_normal' instead")
-inline void
-oct_fill_float_randn (octave_idx_type n, float *p)
-{
-  octave::rand_normal (n, p);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_exponential' instead")
-inline void
-oct_fill_float_rande (octave_idx_type n, float *p)
-{
-  octave::rand_exponential (n, p);
 }
 
 #endif

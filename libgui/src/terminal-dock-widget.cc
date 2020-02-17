@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -27,20 +29,22 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDesktopWidget>
 
+#include "gui-preferences-cs.h"
+#include "gui-preferences-global.h"
+#include "octave-qobject.h"
+#include "terminal-dock-widget.h"
+
 #include "quit.h"
 #include "signal-wrappers.h"
 
 #include "sighandlers.h"
 
-#include "terminal-dock-widget.h"
-#include "resource-manager.h"
-#include "gui-preferences.h"
-
 namespace octave
 {
-  terminal_dock_widget::terminal_dock_widget (QWidget *p)
-    : octave_dock_widget ("TerminalDockWidget", p),
-      m_terminal (QTerminal::create (p))
+  terminal_dock_widget::terminal_dock_widget (QWidget *p,
+                                              base_qobject& oct_qobj)
+    : octave_dock_widget ("TerminalDockWidget", p, oct_qobj),
+      m_terminal (QTerminal::create (oct_qobj, p))
   {
     m_terminal->setObjectName ("OctaveTerminal");
     m_terminal->setFocusPolicy (Qt::StrongFocus);
@@ -60,14 +64,16 @@ namespace octave
 
     // Chose a reasonable size at startup in order to avoid truncated
     // startup messages
-    QSettings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     QFont font = QFont ();
     font.setStyleHint (QFont::TypeWriter);
-    QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+    QString default_font = settings->value (global_mono_font).toString ();
     font.setFamily
       (settings->value (cs_font.key, default_font).toString ());
-    font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
+    font.setPointSize
+      (settings->value (cs_font_size).toInt ());
 
     QFontMetrics metrics(font);
 
@@ -95,17 +101,6 @@ namespace octave
     QWidget *w = widget ();
 
     return w->hasFocus ();
-  }
-
-  void terminal_dock_widget::focus (void)
-  {
-    octave_dock_widget::focus ();
-
-    QWidget *w = widget ();
-
-    w->setFocus ();
-    w->activateWindow ();
-    w->raise ();
   }
 
   void terminal_dock_widget::terminal_interrupt (void)

@@ -1,4 +1,9 @@
-## Copyright (C) 2005-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} __run_test_suite__ (@var{fcndirs}, @var{fixedtestdirs})
@@ -45,6 +52,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
   endif
 
   pso = page_screen_output ();
+  orig_wquiet = warning ("query", "quiet");
   orig_wstate = warning ();
   logfile = make_absolute_filename ("fntests.log");
   unwind_protect
@@ -137,6 +145,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
   unwind_protect_cleanup
     warning ("off", "all");
     warning (orig_wstate);
+    warning (orig_wquiet.state, "quiet");
     page_screen_output (pso);
   end_unwind_protect
 
@@ -178,13 +187,17 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
         nm = lst(i).name;
         ## Ignore hidden files
         if (nm(1) == '.')
-          continue
+          continue;
         endif
         if ((! is_fixed && length (nm) > 2 && strcmpi (nm((end-1):end), ".m"))
             || (! is_fixed && length (nm) > 4 && strcmpi (nm((end-3):end), "-tst"))
             || (is_fixed && length (nm) > 4 && strcmpi (nm((end-3):end), ".tst")))
           p = n = xf = xb = sk = rtsk = rgrs = 0;
           ffnm = fullfile (d, nm);
+          if (! isfile (ffnm))
+            continue;
+          endif
+
           ## Only run if contains %!test, %!assert, %!error, %!fail, or %!warning
           if (has_tests (ffnm))
             tmp = reduce_test_file_name (ffnm, topbuilddir, topsrcdir);
@@ -226,7 +239,7 @@ endfunction
 function print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
 
   if ((n + sk + rtsk + rgrs) > 0)
-    printf (" PASS %4d/%-4d", p, n);
+    printf (" pass %4d/%-4d", p, n);
     nfail = n - p - xf - xb - rgrs;
     if (nfail > 0)
       printf ("\n%72s %3d", "FAIL ", nfail);

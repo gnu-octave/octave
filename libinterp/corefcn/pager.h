@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pager_h)
 #define octave_pager_h 1
@@ -306,29 +309,6 @@ namespace octave
 
   extern std::ostream& __diary__ (void);
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::diary_buf' instead")
-typedef octave::diary_buf octave_diary_buf;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::diary_stream' instead")
-typedef octave::diary_stream octave_diary_stream;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::pager_buf' instead")
-typedef octave::pager_buf octave_pager_buf;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::pager_stream' instead")
-typedef octave::pager_stream octave_pager_stream;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::flush_stdout' instead")
-static inline void
-flush_octave_stdout (void)
-{
-  return octave::flush_stdout ();
-}
-
-#endif
 
 #define octave_stdout (octave::__stdout__ ())
 

@@ -1,45 +1,47 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_main_window_h)
 #define octave_main_window_h 1
 
 // Qt includes
-#include <QMainWindow>
-#include <QThread>
-#include <QTabWidget>
-#include <QStatusBar>
-#include <QToolBar>
-#include <QQueue>
 #include <QCloseEvent>
+#include <QComboBox>
+#include <QMainWindow>
+#include <QPointer>
+#include <QQueue>
+#include <QStatusBar>
+#include <QTabWidget>
+#include <QThread>
+#include <QToolBar>
 #include <QToolButton>
 #include <QTranslator>
-#include <QComboBox>
-#include <QPointer>
 
 // Editor includes
-#include "file-editor-interface.h"
 #include "external-editor-interface.h"
+#include "file-editor-interface.h"
 
 // QTerminal includes
 #include "QTerminal.h"
@@ -50,11 +52,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "files-dock-widget.h"
 #include "find-files-dialog.h"
 #include "history-dock-widget.h"
-#include "octave-cmd.h"
+#include "interpreter-qobject.h"
 #include "octave-dock-widget.h"
-#include "octave-gui.h"
-#include "octave-qt-link.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
+#include "qt-interpreter-events.h"
+#include "set-path-dialog.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"
 #include "workspace-model.h"
@@ -64,35 +66,9 @@ class octave_value;
 
 namespace octave
 {
+  class interpreter;
+
   class settings_dialog;
-
-  class octave_interpreter : public QObject
-  {
-    Q_OBJECT
-
-  public:
-
-    octave_interpreter (gui_application& app_context);
-
-    ~octave_interpreter (void) = default;
-
-  signals:
-
-    void octave_ready_signal (void);
-    void octave_finished_signal (int);
-
-  public slots:
-
-    //! Initialize and execute the octave interpreter.
-
-    void execute (void);
-
-  private:
-
-    gui_application& m_app_context;
-  };
-
-  class octave_qt_app;
 
   //! Represents the main window.
 
@@ -105,7 +81,7 @@ namespace octave
     typedef std::pair <std::string, std::string> name_pair;
     typedef std::pair <int, int> int_pair;
 
-    main_window (octave_qt_app& oct_qt_app, octave_qt_link *oct_qt_lnk);
+    main_window (base_qobject& oct_qobj);
 
     ~main_window (void);
 
@@ -113,16 +89,19 @@ namespace octave
 
     void focus_command_window (void);
 
+    bool confirm_shutdown (void);
+
   signals:
 
     void active_dock_changed (octave_dock_widget *, octave_dock_widget *);
     void editor_focus_changed (bool);
 
-    void settings_changed (const QSettings *);
+    void settings_changed (const gui_settings *);
     void init_terminal_size_signal (void);
     void new_file_signal (const QString&);
     void open_file_signal (const QString&);
     void open_file_signal (const QString& file, const QString& enc, int line);
+    void step_into_file_signal (void);
 
     void show_doc_signal (const QString&);
     void register_doc_signal (const QString&);
@@ -140,9 +119,15 @@ namespace octave
 
     void add_actions_signal (QList <QAction *> action_list);
 
+    void warning_function_not_found_signal (const QString& message);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
+
   public slots:
 
     void focus_changed (QWidget *w_old, QWidget *w_new);
+    void focus_window (const QString& win_name);
     void request_reload_settings (void);
 
     void report_status_message (const QString& statusMessage);
@@ -155,6 +140,7 @@ namespace octave
     void handle_undo_request (void);
     void handle_rename_variable_request (const QString& old_name,
                                          const QString& new_name);
+    void modify_path (const octave_value_list& dir_list, bool rm, bool subdirs);
     void new_file (const QString& commands = QString ());
     void open_file (const QString& file_name = QString (), int line = -1);
     void edit_mfile (const QString&, int);
@@ -171,12 +157,12 @@ namespace octave
                                           = QString ());
 
     void show_about_octave (void);
-    void notice_settings (const QSettings *settings);
-    bool confirm_shutdown_octave (void);
+    void notice_settings (const gui_settings *settings);
     void prepare_to_exit (void);
+    void go_to_previous_widget (void);
     void reset_windows (void);
 
-    void change_directory (const QString& dir);
+    void update_octave_directory (const QString& dir);
     void browse_for_directory (void);
     void set_current_working_directory (const QString& dir);
     void change_directory_up (void);
@@ -194,6 +180,7 @@ namespace octave
     void debug_step_over (void);
     void debug_step_out (void);
     void debug_quit (void);
+    void editor_tabs_changed (bool);
 
     void request_open_file (void);
     void request_new_script (const QString& commands = QString ());
@@ -209,7 +196,7 @@ namespace octave
 
     void read_settings (void);
     void init_terminal_size (void);
-    void set_window_layout (QSettings *settings);
+    void set_window_layout (gui_settings *settings);
     void write_settings (void);
     void connect_visibility_changed (void);
 
@@ -217,13 +204,14 @@ namespace octave
     void pasteClipboard (void);
     void selectAll (void);
 
-    void gui_preference (const QString& key, const QString& value,
-                         QString* read_value);
+    void focus_console_after_command (void);
     void handle_show_doc (const QString& file);
     void handle_register_doc (const QString& file);
     void handle_unregister_doc (const QString& file);
 
     void handle_octave_ready ();
+
+    void handle_set_path_dialog_request (void);
 
     //! Find files dialog.
     //!@{
@@ -243,13 +231,6 @@ namespace octave
     void clear_clipboard ();
     //!@}
 
-    //! Queue a command into the worker thread's command queue
-
-    void queue_cmd (octave_cmd *cmd)
-    {
-      m_cmd_queue.add_cmd (cmd);
-    }
-
     //! Returns a list of dock widgets.
 
     QList<octave_dock_widget *> get_dock_widget_list (void)
@@ -263,6 +244,8 @@ namespace octave
     void restore_create_file_setting (void);
     void set_file_encoding (const QString& new_encoding);
     void request_open_files (const QStringList& open_file_names);
+
+    void warning_function_not_found (const QString& message);
 
     //! Opens the variable editor for @p name.
 
@@ -306,35 +289,13 @@ namespace octave
 
     void construct_tool_bar (void);
 
-    QString gui_preference_adjust (const QString& key, const QString& value);
-
-    void open_any_callback (const std::string& file);
-
-    void rename_variable_callback (const name_pair& names);
-
-    void command_window_undo_callback (void);
-
-    void clear_command_window_callback (void);
-
-    void resize_command_window_callback (void);
-
-    void set_screen_size_callback (const int_pair&);
-
-    void clear_history_callback (void);
-
-    void refresh_workspace_callback (void);
-
-    bool focus_console_after_command (void);
-
-    void new_figure_callback (void);
-
     void configure_shortcuts (void);
 
     QList<octave_dock_widget *> dock_widget_list (void);
 
-    QApplication *m_qt_app;
+    void update_default_encoding (const QString& default_encoding);
 
-    octave_qt_link *m_octave_qt_link;
+    base_qobject& m_octave_qobj;
 
     workspace_model *m_workspace_model;
 
@@ -362,6 +323,7 @@ namespace octave
     external_editor_interface *m_external_editor;
     QWidget *m_active_editor;
 
+    octave_dock_widget *m_previous_dock;
     octave_dock_widget *m_active_dock;
 
     QString m_release_notes_icon;
@@ -382,6 +344,7 @@ namespace octave
     QAction *m_new_figure_action;
     QAction *m_load_workspace_action;
     QAction *m_save_workspace_action;
+    QAction *m_set_path_action;
     QAction *m_preferences_action;
     QAction *m_exit_action;
 
@@ -409,6 +372,7 @@ namespace octave
     QAction *m_editor_action;
     QAction *m_documentation_action;
     QAction *m_variable_editor_action;
+    QAction *m_previous_dock_action;
     QAction *m_reset_windows_action;
 
     QAction *m_ondisk_doc_action;
@@ -438,6 +402,9 @@ namespace octave
 
     find_files_dialog *m_find_files_dlg;
 
+    //! Set path dialog
+    QPointer<set_path_dialog> m_set_path_dlg;
+
     //! Release notes window.
 
     QWidget *m_release_notes_window;
@@ -446,15 +413,11 @@ namespace octave
 
     QClipboard *m_clipboard;
 
-    //! Command queue and semaphore to synchronize execution signals and
-    //! related callbacks.
-
-    octave_command_queue m_cmd_queue;
-
     //! Some class global flags.
     //!@{
     bool m_prevent_readline_conflicts;
     bool m_suppress_dbg_location;
+    bool m_editor_has_tabs;
 
     //! Flag for closing the whole application.
 
@@ -462,127 +425,6 @@ namespace octave
     //!@}
 
     QString m_file_encoding;
-  };
-
-  class news_reader : public QObject
-  {
-    Q_OBJECT
-
-  public:
-
-    news_reader (const QString& base_url, const QString& page,
-                 int serial = -1, bool connect_to_web = false)
-      : QObject (), m_base_url (base_url), m_page (page), m_serial (serial),
-        m_connect_to_web (connect_to_web)
-    { }
-
-  public slots:
-
-    void process (void);
-
-  signals:
-
-    void display_news_signal (const QString& news);
-
-    void finished (void);
-
-  private:
-
-    QString m_base_url;
-    QString m_page;
-    int m_serial;
-    bool m_connect_to_web;
-  };
-
-  class octave_qapplication : public QApplication
-  {
-  public:
-
-    octave_qapplication (int& argc, char **argv)
-    : QApplication (argc, argv)
-    { }
-
-    virtual bool notify (QObject *receiver, QEvent *e) override;
-
-    ~octave_qapplication (void) { };
-  };
-
-  class octave_qt_app : public QObject
-  {
-    Q_OBJECT
-
-  public:
-
-    octave_qt_app (gui_application& app_context);
-
-    ~octave_qt_app (void);
-
-    void config_translators (void);
-
-    void create_main_window (void);
-
-    int exec (void);
-
-    QApplication *qt_app (void) { return m_qt_app; };
-
-  public slots:
-
-    void handle_octave_finished (int);
-
-    void confirm_shutdown_octave (void);
-
-    void copy_image_to_clipboard (const QString& file, bool remove_file);
-
-    void handle_create_dialog (const QString& message, const QString& title,
-                               const QString& icon, const QStringList& button,
-                               const QString& defbutton,
-                               const QStringList& role);
-
-    void handle_create_listview (const QStringList& list, const QString& mode,
-                                 int width, int height,
-                                 const QIntList& initial,
-                                 const QString& name,
-                                 const QStringList& prompt,
-                                 const QString& ok_string,
-                                 const QString& cancel_string);
-
-    void handle_create_inputlayout (const QStringList&, const QString&,
-                                    const QFloatList&, const QFloatList&,
-                                    const QStringList&);
-
-    void handle_create_filedialog (const QStringList& filters,
-                                   const QString& title,
-                                   const QString& filename,
-                                   const QString& dirname,
-                                   const QString& multimode);
-
-  private:
-
-    gui_application& m_app_context;
-
-    // Use these to ensure that argc and argv exist for as long as the
-    // QApplication object.
-
-    int m_argc;
-    char **m_argv;
-
-    octave_qapplication *m_qt_app;
-
-    QTranslator *m_qt_tr;
-    QTranslator *m_gui_tr;
-    QTranslator *m_qsci_tr;
-
-    bool m_translators_installed;
-
-    octave_qt_link *m_octave_qt_link;
-
-    octave_interpreter *m_interpreter;
-
-    QThread *m_main_thread;
-
-    main_window *m_main_window;
-
-    void connect_uiwidget_links (void);
   };
 }
 

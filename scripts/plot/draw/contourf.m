@@ -1,5 +1,9 @@
-## Copyright (C) 2007-2019 Kai Habel
-## Copyright (C) 2003 Shai Ayal
+########################################################################
+##
+## Copyright (C) 2003-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} contourf (@var{z})
@@ -57,9 +63,6 @@
 ## @end example
 ## @seealso{ezcontourf, contour, contourc, contour3, clabel, meshc, surfc, caxis, colormap, plot}
 ## @end deftypefn
-
-## Author: Kai Habel <kai.habel@gmx.de>
-## Author: Shai Ayal <shaiay@users.sourceforge.net>
 
 function [c, h] = contourf (varargin)
 

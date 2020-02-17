@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-// Author: James R. Van Zandt <jrv@vanzandt.mv.com>
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -51,7 +52,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "Cell.h"
-#include "call-stack.h"
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
@@ -70,6 +70,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "pager.h"
 #include "parse.h"
+#include "pt-eval.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -861,11 +862,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           {
             if (fpath.empty ())
               // We have a builtin function
-              tc = make_fcn_handle (fname);
+              tc = make_fcn_handle (interp, fname);
             else
               {
-                std::string mroot =
-                  m0.contents ("matlabroot").string_value ();
+                std::string mroot = m0.contents ("matlabroot").string_value ();
 
                 if ((fpath.length () >= mroot.length ())
                     && fpath.substr (0, mroot.length ()) == mroot
@@ -910,8 +910,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         octave::directory_path p (lp.system_path ());
 
-                        str =
-                          octave::sys::env::make_absolute (p.find_first_of (names));
+                        str = octave::sys::env::make_absolute (p.find_first_of (names));
 
                         size_t xpos
                           = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
@@ -976,15 +975,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             // Set up temporary scope to use for evaluating the text
             // that defines the anonymous function.
 
-            octave::symbol_table& symtab = interp.get_symbol_table ();
-
-            octave::symbol_scope local_scope;
-
-            symtab.set_scope (local_scope);
-
-            octave::call_stack& cs = interp.get_call_stack ();
-            cs.push (local_scope, 0);
-            frame.add_method (cs, &octave::call_stack::pop);
+            octave::tree_evaluator& tw = interp.get_evaluator ();
+            tw.push_dummy_scope ("read_mat5_binary_element");
+            frame.add_method (tw, &octave::tree_evaluator::pop_scope);
 
             if (m2.nfields () > 0)
               {
@@ -995,7 +988,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string key = m2.key (p0);
                     octave_value val = m2.contents (p0);
 
-                    local_scope.assign (key, val, 0);
+                    interp.assign (key, val);
                   }
               }
 
@@ -1006,15 +999,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             if (parse_status != 0)
               error ("load: failed to load anonymous function handle");
 
-            octave_fcn_handle *fh =
-              anon_fcn_handle.fcn_handle_value ();
+            octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
 
             if (! fh)
               error ("load: failed to load anonymous function handle");
 
             tc = new octave_fcn_handle (fh->fcn_val (), "@<anonymous>");
-
-            frame.run ();
           }
         else
           error ("load: invalid function handle type");
@@ -1185,13 +1175,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               {
                 // inline is not an object in Octave but rather an
                 // overload of a function handle.  Special case.
-                tc =
-                  new octave_fcn_inline (m.contents ("expr")(0).string_value (),
-                                         m.contents ("args")(0).string_value ());
+                tc = new octave_fcn_inline (m.contents ("expr")(0).string_value (),
+                                            m.contents ("args")(0).string_value ());
               }
             else
               {
-                cdef_manager& cdm = interp.get_cdef_manager ();
+                octave::cdef_manager& cdm = interp.get_cdef_manager ();
 
                 if (cdm.find_class (classname, false, true).ok ())
                   {
@@ -1495,9 +1484,9 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
   is.read (reinterpret_cast<char *> (&magic), 2);
 
   if (magic == 0x4d49)
-    swap = 0;
+    swap = false;
   else if (magic == 0x494d)
-    swap = 1;
+    swap = true;
   else
     {
       if (! quiet)

@@ -1,4 +1,4 @@
-## The `oregonator'.
+## The 'oregonator'.
 ##
 ## Reference:
 ##

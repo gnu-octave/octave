@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} setappdata (@var{h}, @var{name}, @var{value})
@@ -32,9 +39,6 @@
 ##
 ## @seealso{getappdata, isappdata, rmappdata, guidata, get, set, getpref, setpref}
 ## @end deftypefn
-
-## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2010-07-15
 
 function setappdata (h, varargin)
 
@@ -73,12 +77,7 @@ function setappdata (h, varargin)
   endif
 
   for hg = h
-    try
-      appdata = get (hg, "__appdata__");
-    catch
-      appdata = struct ();
-      addproperty ("__appdata__", hg, "any", appdata);
-    end_try_catch
+    appdata = get (hg, "__appdata__");
 
     ## Slow, but not likely to be that many elements in loop
     for narg = 1:2:numel (varargin)

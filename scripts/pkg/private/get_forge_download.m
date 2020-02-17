@@ -1,5 +1,9 @@
-## Copyright (C) 2005-2019 Søren Hauberg
-## Copyright (C) 2010 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{url}, @var{local_file}] =} get_forge_download (@var{name})
@@ -24,5 +30,6 @@
 
 function [url, local_file] = get_forge_download (name)
   [ver, url] = get_forge_pkg (name);
-  local_file = [name "-" ver ".tar.gz"];
+  local_file = tempname (tempdir (), [name "-" ver "-"]);
+  local_file = [local_file ".tar.gz"];
 endfunction

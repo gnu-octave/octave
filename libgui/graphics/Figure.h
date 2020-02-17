@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_Figure_h)
 #define octave_Figure_h 1
@@ -34,28 +37,30 @@ class QMainWindow;
 class QToolBar;
 class QScreen;
 
+namespace octave
+{
+  class base_qobject;
+  class interpreter;
+}
+
 namespace QtHandles
 {
 
   enum MouseMode
   {
-    // NOTE: These values must match the order of the buttons in the
-    // MouseModeActionGroup object.
-
-    NoMode      = 0,
-    RotateMode  = 1,
-    ZoomInMode  = 2,
-    ZoomOutMode = 3,
-    PanMode     = 4,
-    TextMode    = 5
+    NoMode,
+    RotateMode,
+    ZoomInMode,
+    ZoomOutMode,
+    PanMode,
+    SelectMode,
+    TextMode
   };
 
   class Container;
   class FigureWindow;
   class MenuBar;
   class ToolBar;
-
-  class MouseModeActionGroup;
 
   class Figure :
   public Object,
@@ -67,10 +72,13 @@ namespace QtHandles
     friend class ToolBar;
 
   public:
-    Figure (const graphics_object& go, FigureWindow *win);
+    Figure (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+            const graphics_object& go, FigureWindow *win);
     ~Figure (void);
 
-    static Figure * create (const graphics_object& go);
+    static Figure *
+    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+            const graphics_object& go);
 
     QString fileName (void);
     void setFileName (const QString& name);
@@ -80,6 +88,9 @@ namespace QtHandles
     Container * innerContainer (void);
     QWidget * menu (void);
     void updateStatusBar (ColumnVector pt);
+
+    void do_connections (const QObject *receiver,
+                         const QObject *emitter = nullptr);
 
     bool eventNotifyBefore (QObject *watched, QEvent *event);
     void eventNotifyAfter (QObject *watched, QEvent *event);
@@ -101,22 +112,16 @@ namespace QtHandles
     void beingDeleted (void);
 
   private:
-    void createFigureToolBarAndMenuBar (void);
-    void showFigureToolBar (bool visible);
-    void addCustomToolBar (QToolBar *bar, bool visible);
+    void showFigureStatusBar (bool visible);
+    void addCustomToolBar (QToolBar *bar, bool visible, bool isdefault);
     void showCustomToolBar (QToolBar *bar, bool visible);
-    void updateFigureToolBarAndMenuBar (void);
     void set_geometry (QRect r);
 
     void enableMouseTracking (void);
 
   private slots:
-    void setMouseMode (MouseMode mode);
     void updateFigureHeight (int delta_h);
     void updateContainer (void);
-    void toggleAxes (void);
-    void toggleGrid (void);
-    void autoAxes (void);
     void figureWindowShown ();
     void screenChanged (QScreen*);
 
@@ -134,7 +139,7 @@ namespace QtHandles
     QStatusBar *m_statusBar;
     QRect m_innerRect;
     QRect m_outerRect;
-    MouseModeActionGroup *m_mouseModeGroup;
+    QImage m_pointer_cdata;
     int m_previousHeight;
     bool m_resizable;
   };

@@ -1,44 +1,49 @@
-/*
-
-Copyright (C) 2016-2019 John Donoghue
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2016-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#include "annotation-dialog.h"
-#include "ui-annotation-dialog.h"
-
-#include "QtHandlesUtils.h"
-
-#include "resource-manager.h"
-
 #include <QColorDialog>
 #include <QPushButton>
 #include <QPalette>
 
+#include "gui-settings.h"
+#include "gui-preferences-gp.h"
+#include "octave-qobject.h"
+
+#include "QtHandlesUtils.h"
+#include "annotation-dialog.h"
+#include "ui-annotation-dialog.h"
+
 using namespace QtHandles;
 
-annotation_dialog::annotation_dialog (QWidget *p, const octave_value_list& pr):
-  QDialog (p), ui (new Ui::annotation_dialog)
+annotation_dialog::annotation_dialog (octave::base_qobject& oct_qobj,
+                                      QWidget *p, const octave_value_list& pr):
+  QDialog (p), m_octave_qobj (oct_qobj), ui (new Ui::annotation_dialog)
 {
   props = pr;
 
@@ -50,11 +55,13 @@ annotation_dialog::init ()
 {
   ui->setupUi (this);
 
-  QSettings *settings = octave::resource_manager::get_settings ();
+  octave::resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+  octave::gui_settings *settings = rmgr.get_settings ();
 
   // restore last geometry
-  if (settings)
-    restoreGeometry (settings->value ("annotation/geometry").toByteArray ());
+  if (settings && settings->contains (gp_annotation_geometry.key))
+    restoreGeometry (settings->value (gp_annotation_geometry).toByteArray ());
 
   // connect signals
   connect (ui->button_box, SIGNAL (clicked (QAbstractButton *)),
@@ -94,11 +101,13 @@ annotation_dialog::button_clicked (QAbstractButton *button)
   QDialogButtonBox::ButtonRole button_role
     = ui->button_box->buttonRole (button);
 
-  QSettings *settings = octave::resource_manager::get_settings ();
+  octave::resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+  octave::gui_settings *settings = rmgr.get_settings ();
 
   // save position
   if (settings)
-    settings->setValue ("annotation/geometry",saveGeometry ());
+    settings->setValue (gp_annotation_geometry.key, saveGeometry ());
 
   if (button_role == QDialogButtonBox::ApplyRole
       || button_role == QDialogButtonBox::AcceptRole)
@@ -206,23 +215,23 @@ annotation_dialog::set_gui_props ()
         }
       else if (name == "units")
         {
-          ui->cb_units->setCurrentIndex (ui->cb_units->findText (props(
-                                            1*i +1).string_value ().c_str ()));
+          ui->cb_units->setCurrentIndex
+            (ui->cb_units->findText (props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "horizontalalignment")
         {
-          ui->cb_horz_align->setCurrentIndex (ui->cb_horz_align->findText (props(
-                                                 1*i +1).string_value ().c_str ()));
+          ui->cb_horz_align->setCurrentIndex
+            (ui->cb_horz_align->findText (props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "verticalalignment")
         {
-          ui->cb_vert_align->setCurrentIndex (ui->cb_vert_align->findText (props(
-                                                 1*i +1).string_value ().c_str ()));
+          ui->cb_vert_align->setCurrentIndex
+            (ui->cb_vert_align->findText (props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "fontname")
         {
-          ui->cb_vert_align->setCurrentIndex (ui->cb_font_name->findText (props(
-                                                 1*i +1).string_value ().c_str ()));
+          ui->cb_vert_align->setCurrentIndex
+            (ui->cb_font_name->findText (props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "fontsize")
         {

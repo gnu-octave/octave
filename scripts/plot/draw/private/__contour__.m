@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{c}, @var{hg}] =} __contour__ (@dots{})
@@ -139,7 +146,7 @@ function [c, hg] = __contour__ (varargin)
     [c, lev] = contourc (x1, y1, z1, lvl);
   endif
 
-  hg = hggroup ();
+  hg = hggroup ("__appdata__", struct ("__creator__", "__contour__"));
   opts = __add_datasource__ ("__countour__", hg, {"x", "y", "z"}, opts{:});
 
   addproperty ("xdata", hg, "data", x1);
@@ -470,8 +477,7 @@ function update_data (h, ~, prop = "")
       else
         lvl = lvl(1) : lvs : lvl(2);
       endif
-      set (h, "levellist", lvl);
-      set (h, "levellistmode", "auto");
+      set (h, "levellist", lvl, "levellistmode", "auto");
     else
       z = get (h, "zdata");
       ## FIXME: The levels should be determined similarly to {x,y,z}ticks

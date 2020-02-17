@@ -232,6 +232,7 @@ if test x$ax_blas_ok = xyes ; then
         [ax_blas_ok=no; BLAS_LIBS=])
 fi
 if test x$ax_blas_ok = xno ; then
+        :
         $2
 fi
 ])dnl AX_BLAS_WITH_F77_FUNC

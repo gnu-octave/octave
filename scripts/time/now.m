@@ -1,4 +1,9 @@
-## Copyright (C) 2000-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {t =} now ()
@@ -27,10 +34,6 @@
 ## The fractional part, @code{rem (now, 1)} corresponds to the current time.
 ## @seealso{clock, date, datenum}
 ## @end deftypefn
-
-## Author: pkienzle <pkienzle@users.sf.net>
-## Created: 10 October 2001 (CVS)
-## Adapted-By: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
 function t = now ()
 

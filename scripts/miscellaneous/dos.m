@@ -1,4 +1,9 @@
-## Copyright (C) 2004-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2004-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} dos ("@var{command}")
@@ -31,9 +38,6 @@
 ## given, then @var{text} is also sent to standard output.
 ## @seealso{unix, system, isunix, ismac, ispc}
 ## @end deftypefn
-
-## Author: Octave Forge ???
-## Adapted by: jwe
 
 function [status, text] = dos (command, echo_arg)
 

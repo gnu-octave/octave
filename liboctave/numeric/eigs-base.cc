@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2005-2019 David Bateman
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2005-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -109,11 +112,11 @@ arpack_errno2str (const octave_idx_type& errnum, const std::string& fcn_name)
       break;
 
     case -10:
-      if (fcn_name.compare ("dneupd") == 0 ||
-          fcn_name.compare ("dnaupd") == 0)
+      if (fcn_name.compare ("dneupd") == 0
+          || fcn_name.compare ("dnaupd") == 0)
         msg = "IPARAM(7) must be 1,2,3,4";
-      else if (fcn_name.compare ("zneupd") == 0 ||
-               fcn_name.compare ("znaupd") == 0)
+      else if (fcn_name.compare ("zneupd") == 0
+               || fcn_name.compare ("znaupd") == 0)
         msg = "IPARAM(7) must be 1,2,3";
       else
         msg = "IPARAM(7) must be 1,2,3,4,5";
@@ -125,12 +128,12 @@ arpack_errno2str (const octave_idx_type& errnum, const std::string& fcn_name)
       break;
 
     case -12:
-      if (fcn_name.compare ("dnaupd") == 0 ||
-          fcn_name.compare ("znaupd") == 0 ||
-          fcn_name.compare ("dsaupd") == 0)
+      if (fcn_name.compare ("dnaupd") == 0
+          || fcn_name.compare ("znaupd") == 0
+          || fcn_name.compare ("dsaupd") == 0)
         msg = std::string ("IPARAM(1) must be equal to 0 or 1");
-      else if (fcn_name.compare ("dneupd") == 0 ||
-               fcn_name.compare ("zneupd") == 0)
+      else if (fcn_name.compare ("dneupd") == 0
+               || fcn_name.compare ("zneupd") == 0)
         msg = "HOWMNY = 'S' not yet implemented";
       else
         msg = "NEV and WHICH = 'BE' are incompatible";
@@ -138,8 +141,8 @@ arpack_errno2str (const octave_idx_type& errnum, const std::string& fcn_name)
       break;
 
     case -13:
-      if (fcn_name.compare ("dneupd") == 0 ||
-          fcn_name.compare ("zneupd") == 0)
+      if (fcn_name.compare ("dneupd") == 0
+          || fcn_name.compare ("zneupd") == 0)
         msg = "HOWMNY must be one of 'A' or 'P' if RVEC = .true.";
       else if (fcn_name.compare ("dsaupd") == 0)
         msg = "NEV and WHICH = 'BE' are incompatible";
@@ -177,9 +180,9 @@ arpack_errno2str (const octave_idx_type& errnum, const std::string& fcn_name)
     case 1:
       if (fcn_name.compare ("dneupd") == 0)
         msg = "The Schur form computed by LAPACK routine dlahqr could not be reordered by LAPACK routine dtrsen.  Re-enter subroutine DNEUPD with IPARAM(5)=NCV and increase the size of the arrays DR and DI to have dimension at least dimension NCV and allocate at least NCV columns for Z.  NOTE: Not necessary if Z and V share the same space.  Please notify the authors if this error occurs.";
-      else if (fcn_name.compare ("dnaupd") == 0 ||
-               fcn_name.compare ("znaupd") == 0 ||
-               fcn_name.compare ("dsaupd") == 0)
+      else if (fcn_name.compare ("dnaupd") == 0
+               || fcn_name.compare ("znaupd") == 0
+               || fcn_name.compare ("dsaupd") == 0)
         msg = "Maximum number of iterations taken.  All possible eigenvalues of OP has been found.  IPARAM(5) returns the number of wanted converged Ritz values";
       else if (fcn_name.compare ("znaupd") == 0)
         msg = "The Schur form computed by LAPACK routine csheqr could not be reordered by LAPACK routine ztrsen.  Re-enter subroutine ZNEUPD with IPARAM(5)=NCV and increase the size of the array D to have dimension at least dimension NCV and allocate at least NCV columns for Z.  NOTE: Not necessary if Z and V share the same space.  Please notify the authors if this error occurs.";
@@ -187,17 +190,17 @@ arpack_errno2str (const octave_idx_type& errnum, const std::string& fcn_name)
       break;
 
     case 2:
-      if (fcn_name.compare ("dnaupd") == 0 ||
-          fcn_name.compare ("znaupd") == 0 ||
-          fcn_name.compare ("dsaupd") == 0)
+      if (fcn_name.compare ("dnaupd") == 0
+          || fcn_name.compare ("znaupd") == 0
+          || fcn_name.compare ("dsaupd") == 0)
         msg = "No longer an informational error.  Deprecated starting with release 2 of ARPACK.";
 
       break;
 
     case 3:
-      if (fcn_name.compare ("dnaupd") == 0 ||
-          fcn_name.compare ("znaupd") == 0 ||
-          fcn_name.compare ("dsaupd") == 0)
+      if (fcn_name.compare ("dnaupd") == 0
+          || fcn_name.compare ("znaupd") == 0
+          || fcn_name.compare ("dsaupd") == 0)
         msg = "No shifts could be applied during a cycle of the implicitly restarted Arnoldi iteration.  One possibility is to increase the size of NCV relative to NEV.";
 
       break;
@@ -270,8 +273,8 @@ utsolve (const SM& U, const ColumnVector& Q, const M& m)
       for (octave_idx_type j = 0; j < b_nc; j++)
         {
           for (octave_idx_type i = 0; i < n; i++)
-            retval.elem (static_cast<octave_idx_type> (qv[i]), j) =
-              tmp.elem (i,j);
+            retval.elem (static_cast<octave_idx_type> (qv[i]), j)
+              = tmp.elem (i,j);
         }
     }
 
@@ -439,14 +442,13 @@ LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
                   for (octave_idx_type i = 0; i < n; i++)
                     {
                       tmp.xcidx (i) = i;
-                      tmp.xridx (i) =
-                        static_cast<octave_idx_type> (permB(i));
+                      tmp.xridx (i) = static_cast<octave_idx_type> (permB(i));
                       tmp.xdata (i) = 1;
                     }
                   tmp.xcidx (n) = n;
 
                   AminusSigmaB -= sigma * tmp *
-                    b.transpose () * b * tmp.transpose ();
+                                  b.transpose () * b * tmp.transpose ();
                 }
               else
                 AminusSigmaB -= sigma * b.transpose () * b;
@@ -621,14 +623,13 @@ LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
                   for (octave_idx_type i = 0; i < n; i++)
                     {
                       tmp.xcidx (i) = i;
-                      tmp.xridx (i) =
-                        static_cast<octave_idx_type> (permB(i));
+                      tmp.xridx (i) = static_cast<octave_idx_type> (permB(i));
                       tmp.xdata (i) = 1;
                     }
                   tmp.xcidx (n) = n;
 
                   AminusSigmaB -= tmp * b.hermitian () * b *
-                    tmp.transpose () * sigma;
+                                  tmp.transpose () * sigma;
                 }
               else
                 AminusSigmaB -= sigma * b.hermitian () * b;
@@ -1640,7 +1641,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                       ip2 = workd + iptr(1) - 1;
                       for (F77_INT i = 0; i < n; i++)
                         *ip2++ = y(i);
-                     }
+                    }
                 }
             }
           else
@@ -1745,7 +1746,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
             }
           if (note3)
             eig_vec = utsolve (bt, permB, eig_vec);
-         }
+        }
     }
   else
     (*current_liboctave_error_handler)
@@ -2060,19 +2061,16 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
               if (std::imag (eig_val(i)) == 0)
                 {
                   for (F77_INT j = 0; j < n; j++)
-                    eig_vec(j,i) =
-                      Complex (z[j+off1], 0.);
+                    eig_vec(j,i) = Complex (z[j+off1], 0.);
                   i++;
                 }
               else
                 {
                   for (F77_INT j = 0; j < n; j++)
                     {
-                      eig_vec(j,i) =
-                        Complex (z[j+off1],z[j+off2]);
+                      eig_vec(j,i) = Complex (z[j+off1],z[j+off2]);
                       if (i < ip(4) - 1)
-                        eig_vec(j,i+1) =
-                          Complex (z[j+off1],-z[j+off2]);
+                        eig_vec(j,i+1) = Complex (z[j+off1],-z[j+off2]);
                     }
                   i+=2;
                 }
@@ -2081,16 +2079,16 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii) =
-                    Complex (octave::numeric_limits<double>::NaN (),
-                             octave::numeric_limits<double>::NaN ());
+                  eig_vec(jj,ii)
+                    = Complex (octave::numeric_limits<double>::NaN (),
+                               octave::numeric_limits<double>::NaN ());
             }
           else
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii) =
-                    Complex (octave::numeric_limits<double>::NaN (), 0.);
+                  eig_vec(jj,ii)
+                    = Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
           if (note3)
             eig_vec = utsolve (bt, permB, eig_vec);
@@ -2437,19 +2435,16 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
               if (std::imag (eig_val(i)) == 0)
                 {
                   for (F77_INT j = 0; j < n; j++)
-                    eig_vec(j,i) =
-                      Complex (z[j+off1], 0.);
+                    eig_vec(j,i) = Complex (z[j+off1], 0.);
                   i++;
                 }
               else
                 {
                   for (F77_INT j = 0; j < n; j++)
                     {
-                      eig_vec(j,i) =
-                        Complex (z[j+off1],z[j+off2]);
+                      eig_vec(j,i) = Complex (z[j+off1],z[j+off2]);
                       if (i < ip(4) - 1)
-                        eig_vec(j,i+1) =
-                          Complex (z[j+off1],-z[j+off2]);
+                        eig_vec(j,i+1) = Complex (z[j+off1],-z[j+off2]);
                     }
                   i+=2;
                 }
@@ -2458,16 +2453,16 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii) =
-                    Complex (octave::numeric_limits<double>::NaN (),
-                             octave::numeric_limits<double>::NaN ());
+                  eig_vec(jj,ii)
+                    = Complex (octave::numeric_limits<double>::NaN (),
+                               octave::numeric_limits<double>::NaN ());
             }
           else
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii) =
-                    Complex (octave::numeric_limits<double>::NaN (), 0.);
+                  eig_vec(jj,ii)
+                    = Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
         }
       if (k0 < k)
@@ -2582,7 +2577,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
           if (have_b)
             bmat = 'G';
         }
-   }
+    }
   else if (! std::abs (sigmar))
     {
       typ = "SM";
@@ -2755,7 +2750,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                       ip2 = workd + iptr(1) - 1;
                       for (F77_INT i = 0; i < n; i++)
                         *ip2++ = y(i);
-                     }
+                    }
                 }
             }
           else
@@ -2880,19 +2875,16 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
               if (std::imag (eig_val(i)) == 0)
                 {
                   for (F77_INT j = 0; j < n; j++)
-                    eig_vec(j,i) =
-                      Complex (z[j+off1], 0.);
+                    eig_vec(j,i) = Complex (z[j+off1], 0.);
                   i++;
                 }
               else
                 {
                   for (F77_INT j = 0; j < n; j++)
                     {
-                      eig_vec(j,i) =
-                        Complex (z[j+off1],z[j+off2]);
+                      eig_vec(j,i) = Complex (z[j+off1],z[j+off2]);
                       if (i < ip(4) - 1)
-                        eig_vec(j,i+1) =
-                          Complex (z[j+off1],-z[j+off2]);
+                        eig_vec(j,i+1) = Complex (z[j+off1],-z[j+off2]);
                     }
                   i+=2;
                 }
@@ -2901,19 +2893,19 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii) =
-                    Complex (octave::numeric_limits<double>::NaN (),
-                             octave::numeric_limits<double>::NaN ());
+                  eig_vec(jj,ii)
+                    = Complex (octave::numeric_limits<double>::NaN (),
+                               octave::numeric_limits<double>::NaN ());
             }
           else
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii) =
-                    Complex (octave::numeric_limits<double>::NaN (), 0.);
+                  eig_vec(jj,ii)
+                    = Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
           if (note3)
-              eig_vec = utsolve (bt, permB, eig_vec);
+            eig_vec = utsolve (bt, permB, eig_vec);
         }
       if (k0 < k)
         {

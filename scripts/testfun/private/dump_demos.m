@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Søren Hauberg
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} dump_demos ()
@@ -48,8 +55,6 @@
 ## @seealso{fntests, test, demo}
 ## @end deftypefn
 
-## Author: Søren Hauberg  <soren@hauberg.org>
-
 function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, mfile="dump_plot_demos.m", fmt="png")
 
   if (nargin > 3)
@@ -76,13 +81,79 @@ function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}
   fprintf (fid, "%% DO NOT EDIT!  Generated automatically by dump_demos.m\n");
   fprintf (fid, "function %s ()\n", funcname);
   fprintf (fid, "set (0, 'DefaultAxesColorOrder', ...\n");
-  fprintf (fid, "  [ 0.00000   0.00000   1.00000 ;\n");
-  fprintf (fid, "    0.00000   0.50000   0.00000 ;\n");
-  fprintf (fid, "    1.00000   0.00000   0.00000 ;\n");
-  fprintf (fid, "    0.00000   0.75000   0.75000 ;\n");
-  fprintf (fid, "    0.75000   0.00000   0.75000 ;\n");
-  fprintf (fid, "    0.75000   0.75000   0.00000 ;\n");
-  fprintf (fid, "    0.25000   0.25000   0.25000 ]);\n");
+  fprintf (fid, "  [ 0.00000   0.44700   0.74100 ;\n");
+  fprintf (fid, "    0.85000   0.32500   0.09800 ;\n");
+  fprintf (fid, "    0.92900   0.69400   0.12500 ;\n");
+  fprintf (fid, "    0.49400   0.18400   0.55600 ;\n");
+  fprintf (fid, "    0.46600   0.67400   0.18800 ;\n");
+  fprintf (fid, "    0.30100   0.74500   0.93300 ;\n");
+  fprintf (fid, "    0.63500   0.07800   0.18400 ]);\n");
+  fprintf (fid, "set (0, 'DefaultFigureColorMap', ...\n");
+  fprintf (fid, "  [ 0.2670040   0.0048743   0.3294152 ;\n");
+  fprintf (fid, "    0.2726517   0.0258457   0.3533673 ;\n");
+  fprintf (fid, "    0.2771063   0.0509139   0.3762361 ;\n");
+  fprintf (fid, "    0.2803562   0.0742015   0.3979015 ;\n");
+  fprintf (fid, "    0.2823900   0.0959536   0.4182508 ;\n");
+  fprintf (fid, "    0.2832046   0.1168933   0.4371789 ;\n");
+  fprintf (fid, "    0.2828093   0.1373502   0.4545959 ;\n");
+  fprintf (fid, "    0.2812308   0.1574799   0.4704339 ;\n");
+  fprintf (fid, "    0.2785162   0.1773480   0.4846539 ;\n");
+  fprintf (fid, "    0.2747355   0.1969692   0.4972505 ;\n");
+  fprintf (fid, "    0.2699818   0.2163303   0.5082545 ;\n");
+  fprintf (fid, "    0.2643686   0.2354047   0.5177319 ;\n");
+  fprintf (fid, "    0.2580262   0.2541617   0.5257802 ;\n");
+  fprintf (fid, "    0.2510987   0.2725732   0.5325222 ;\n");
+  fprintf (fid, "    0.2437329   0.2906195   0.5380971 ;\n");
+  fprintf (fid, "    0.2360733   0.3082910   0.5426518 ;\n");
+  fprintf (fid, "    0.2282632   0.3255865   0.5463354 ;\n");
+  fprintf (fid, "    0.2204250   0.3425172   0.5492871 ;\n");
+  fprintf (fid, "    0.2126666   0.3591022   0.5516350 ;\n");
+  fprintf (fid, "    0.2050791   0.3753661   0.5534932 ;\n");
+  fprintf (fid, "    0.1977219   0.3913409   0.5549535 ;\n");
+  fprintf (fid, "    0.1906314   0.4070615   0.5560891 ;\n");
+  fprintf (fid, "    0.1838194   0.4225638   0.5569522 ;\n");
+  fprintf (fid, "    0.1772724   0.4378855   0.5575761 ;\n");
+  fprintf (fid, "    0.1709575   0.4530630   0.5579740 ;\n");
+  fprintf (fid, "    0.1648329   0.4681295   0.5581427 ;\n");
+  fprintf (fid, "    0.1588454   0.4831171   0.5580587 ;\n");
+  fprintf (fid, "    0.1529512   0.4980530   0.5576847 ;\n");
+  fprintf (fid, "    0.1471316   0.5129595   0.5569733 ;\n");
+  fprintf (fid, "    0.1414022   0.5278543   0.5558645 ;\n");
+  fprintf (fid, "    0.1358330   0.5427501   0.5542887 ;\n");
+  fprintf (fid, "    0.1305821   0.5576525   0.5521757 ;\n");
+  fprintf (fid, "    0.1258984   0.5725631   0.5494454 ;\n");
+  fprintf (fid, "    0.1221631   0.5874763   0.5460234 ;\n");
+  fprintf (fid, "    0.1198724   0.6023824   0.5418306 ;\n");
+  fprintf (fid, "    0.1196266   0.6172658   0.5367956 ;\n");
+  fprintf (fid, "    0.1220459   0.6321070   0.5308480 ;\n");
+  fprintf (fid, "    0.1276677   0.6468818   0.5239242 ;\n");
+  fprintf (fid, "    0.1368349   0.6615629   0.5159668 ;\n");
+  fprintf (fid, "    0.1496433   0.6761197   0.5069243 ;\n");
+  fprintf (fid, "    0.1659673   0.6905190   0.4967519 ;\n");
+  fprintf (fid, "    0.1855384   0.7047252   0.4854121 ;\n");
+  fprintf (fid, "    0.2080305   0.7187010   0.4728733 ;\n");
+  fprintf (fid, "    0.2331273   0.7324064   0.4591059 ;\n");
+  fprintf (fid, "    0.2605315   0.7458020   0.4440959 ;\n");
+  fprintf (fid, "    0.2900007   0.7588465   0.4278259 ;\n");
+  fprintf (fid, "    0.3213300   0.7714979   0.4102927 ;\n");
+  fprintf (fid, "    0.3543553   0.7837140   0.3914876 ;\n");
+  fprintf (fid, "    0.3889303   0.7954531   0.3714207 ;\n");
+  fprintf (fid, "    0.4249331   0.8066739   0.3500988 ;\n");
+  fprintf (fid, "    0.4622468   0.8173376   0.3275447 ;\n");
+  fprintf (fid, "    0.5007536   0.8274091   0.3037990 ;\n");
+  fprintf (fid, "    0.5403370   0.8368582   0.2789167 ;\n");
+  fprintf (fid, "    0.5808612   0.8456634   0.2530009 ;\n");
+  fprintf (fid, "    0.6221708   0.8538156   0.2262237 ;\n");
+  fprintf (fid, "    0.6640873   0.8613210   0.1988794 ;\n");
+  fprintf (fid, "    0.7064038   0.8682063   0.1714949 ;\n");
+  fprintf (fid, "    0.7488853   0.8745222   0.1450376 ;\n");
+  fprintf (fid, "    0.7912731   0.8803462   0.1212910 ;\n");
+  fprintf (fid, "    0.8333021   0.8857801   0.1033262 ;\n");
+  fprintf (fid, "    0.8747175   0.8909453   0.0953508 ;\n");
+  fprintf (fid, "    0.9152963   0.8959735   0.1004700 ;\n");
+  fprintf (fid, "    0.9548396   0.9010058   0.1178764 ;\n");
+  fprintf (fid, "    0.9932479   0.9061566   0.1439362 ]);\n");
+
   fprintf (fid, "close all\n");
   fprintf (fid, "more off\n");
   fprintf (fid, "diary diary.log\n");

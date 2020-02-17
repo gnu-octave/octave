@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Kai Habel
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uigetfile ()
@@ -33,8 +40,9 @@
 ## @table @asis
 ## @item @qcode{"/path/to/filename.ext"}
 ## If a filename is given then the file extension is extracted and used as
-## filter.  In addition, the path is selected as current path and the filename
-## is selected as default file.  Example: @code{uigetfile ("myfun.m")}
+## filter.  In addition, the path is selected as current path in the dialog and
+## the filename is selected as default file.
+## Example: @code{uigetfile ("myfun.m")}
 ##
 ## @item A single file extension @qcode{"*.ext"}
 ## Example: @code{uigetfile ("*.ext")}
@@ -56,7 +64,7 @@
 ## is present the parent directory is listed.  The substring to the right of
 ## the rightmost file separator (if any) will be interpreted as a file or
 ## directory name and if that file or directory exists it will be highlighted.
-## If the path name or directory name is wholly or partly nonexistent, the
+## If the path name or directory name is entirely or partly nonexistent, the
 ## current working directory will be displayed.
 ## No filter will be active.
 ## @end table
@@ -71,10 +79,15 @@
 ## coordinates.  Two or more files can be selected when setting the
 ## @qcode{"MultiSelect"} key to @qcode{"on"}.  In that case @var{fname} is a
 ## cell array containing the files.
+##
+## The outputs @var{fname} and @var{fpath} are strings returning the chosen
+## name and path, respectively.  However, if the @samp{Cancel} button is
+## clicked the outputs are of type double with a value of @code{0}.
+## @var{fltidx} is the index in the list of filter extensions @var{flt} that
+## was selected.
+##
 ## @seealso{uiputfile, uigetdir}
 ## @end deftypefn
-
-## Author: Kai Habel
 
 function [retfile, retpath, retindex] = uigetfile (varargin)
 
@@ -170,8 +183,8 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     endfor
   endif
 
-  if (__octave_link_enabled__ ())
-    [retfile, retpath, retindex] = __octave_link_file_dialog__ (outargs{:});
+  if (__event_manager_enabled__ ())
+    [retfile, retpath, retindex] = __event_manager_file_dialog__ (outargs{:});
   else
     funcname = __get_funcname__ (mfilename ());
     [retfile, retpath, retindex] = feval (funcname, outargs{:});

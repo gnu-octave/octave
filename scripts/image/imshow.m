@@ -1,4 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} imshow (@var{im})
@@ -67,10 +74,6 @@
 ## @seealso{image, imagesc, colormap, gray2ind, rgb2ind}
 ## @end deftypefn
 
-## Author: Stefan van der Walt  <stefan@sun.ac.za>
-## Author: Soren Hauberg <hauberg at gmail dot com>
-## Adapted-By: jwe
-
 function h = imshow (im, varargin)
 
   if (nargin == 0)
@@ -86,8 +89,12 @@ function h = imshow (im, varargin)
   ## Get the image.
   if (ischar (im))
     [im, map] = imread (im);
-    indexed = true;
-    colormap (gca, map);
+    if (isempty (map))
+      indexed = false;
+    else
+      indexed = true;
+      colormap (gca, map);
+    endif
   endif
 
   nd = ndims (im);

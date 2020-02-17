@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Martin Hepperle
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{cstr} =} inputdlg (@var{prompt})
@@ -156,8 +163,8 @@ function cstr = inputdlg (prompt, varargin)
   ## convert numeric values in defaults cell array to strings
   defs = cellfun (@num2str, defaults, "UniformOutput", false);
 
-  if (__octave_link_enabled__ ())
-    cstr = __octave_link_input_dialog__ (prompt, title, rowscols, defs);
+  if (__event_manager_enabled__ ())
+    cstr = __event_manager_input_dialog__ (prompt, title, rowscols, defs);
   else
     error ("inputdlg is not available in this version of Octave");
   endif

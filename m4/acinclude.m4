@@ -1,6 +1,12 @@
 dnl aclocal.m4 -- extra macros for configuring Octave
 dnl
-dnl Copyright (C) 1995-2019 John W. Eaton
+dnl --------------------------------------------------------------------
+dnl
+dnl Copyright (C) 1995-2020 The Octave Project Developers
+dnl
+dnl See the file COPYRIGHT.md in the top-level directory of this
+dnl or <https://octave.org/copyright/>.
+dnl
 dnl
 dnl This file is part of Octave.
 dnl
@@ -17,11 +23,11 @@ dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, see
 dnl <https://www.gnu.org/licenses/>.
-
+dnl
+dnl --------------------------------------------------------------------
 dnl
 dnl Alphabetical list of macros in the OCTAVE_ namespace
 dnl
-
 dnl
 dnl Figure out the hardware-vendor-os info.
 dnl
@@ -344,6 +350,37 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
   fi
 ])
 dnl
+dnl Check whether the Qt QComboBox class has the setCurrentText
+dnl function.  This function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QCOMBOBOX_SETCURRENTTEXT], [
+  AC_CACHE_CHECK([for QComboBox::setCurrentText],
+    [octave_cv_func_qcombobox_setcurrenttext],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QComboBox>
+        ]], [[
+        QComboBox combo_box (nullptr);
+        combo_box.setCurrentText ("text");
+        ]])],
+      octave_cv_func_qcombobox_setcurrenttext=yes,
+      octave_cv_func_qcombobox_setcurrenttext=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qcombobox_setcurrenttext = yes; then
+    AC_DEFINE(HAVE_QCOMBOBOX_SETCURRENTTEXT, 1,
+      [Define to 1 if you have the `QComboBox::setCurrentText' member function.])
+  fi
+])
+dnl
 dnl Check whether the Qt QGuiApplication class has the setDesktopFileName
 dnl static member function.  This function was introduced in Qt 5.7.
 dnl
@@ -592,46 +629,6 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QMOUSEEVENT_LOCALPOS], [
   fi
 ])
 dnl
-dnl Check whether the QScintilla class QsciScintilla has the
-dnl findFirstInSelection member function.  This member function was introduced
-dnl in QScintilla 2.7.
-dnl
-dnl FIXME: Delete this entirely when we can safely assume that QScintilla 2.7
-dnl or later is in use everywhere, or when we drop support for Qt 4 (Qt 5 only
-dnl works with QScintilla 2.7.1 or later).
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
-  AC_CACHE_CHECK([for QsciScintilla::findFirstInSelection in <Qsci/qsciscintilla.h>],
-    [octave_cv_func_qsci_findfirstinselection],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <Qsci/qsciscintilla.h>
-        class qsci : public QsciScintilla
-        {
-        public:
-          qsci (QWidget *parent = 0) : QsciScintilla (parent)
-          { this->findFirstInSelection (QString ("x"),true,true,true,true,true); }
-          ~qsci () {}
-        };
-        ]], [[
-        qsci edit;
-        ]])],
-      octave_cv_func_qsci_findfirstinselection=yes,
-      octave_cv_func_qsci_findfirstinselection=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_func_qsci_findfirstinselection = yes; then
-    AC_DEFINE(HAVE_QSCI_FINDSELECTION, 1,
-      [Define to 1 if you have the `QsciScintilla::findFirstInSelection' member function.])
-  fi
-])
-dnl
 dnl Check whether QObject::findChildren accepts Qt::FindChildOptions
 dnl argument.
 dnl
@@ -730,6 +727,42 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
   if test $octave_cv_func_qtabwidget_setmovable = yes; then
     AC_DEFINE(HAVE_QTABWIDGET_SETMOVABLE, 1,
       [Define to 1 if you have the `QTabWidget::setMovable' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt class QWheelEvent has the angleDelta member function.
+dnl This member function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA], [
+  AC_CACHE_CHECK([for QWheelEvent::angleDelta in <QWheelEvent>],
+    [octave_cv_func_qwheelevent_angledelta],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QWheelEvent>
+        class wheel_event : public QWheelEvent
+        {
+        public:
+          wheel_event (QWidget *parent = 0) : QWheelEvent (parent) { this->angleDelta (); }
+          ~wheel_event () {}
+        };
+        ]], [[
+        wheel_event tw;
+        ]])],
+      octave_cv_func_qwheelevent_angledelta=yes,
+      octave_cv_func_qwheelevent_angledelta=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qwheelevent_angledelta = yes; then
+    AC_DEFINE(HAVE_QWHEELEVENT_ANGLEDELTA, 1,
+      [Define to 1 if you have the `QWheelEvent::angleDelta' member function.])
   fi
 ])
 dnl
@@ -1460,6 +1493,40 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
   fi
 ])
 dnl
+dnl Check whether PCRE is compiled with --enable-utf.
+dnl
+AC_DEFUN([OCTAVE_CHECK_LIB_PCRE_OK], [
+  AC_CACHE_CHECK([whether PCRE library was compiled with UTF support],
+    [octave_cv_lib_pcre_ok],
+    [AC_LANG_PUSH(C++)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        #include <stdio.h>
+        #if defined (HAVE_PCRE_H)
+        #  include <pcre.h>
+        #elif defined (HAVE_PCRE_PCRE_H)
+        #  include <pcre/pcre.h>
+        #endif
+        ]], [[
+        const char *pattern = "test";
+        const char *err;
+        int erroffset;
+        pcre *data = pcre_compile (pattern, PCRE_UTF8, &err, &erroffset, nullptr);
+        return (! data);
+      ]])],
+      octave_cv_lib_pcre_ok=yes,
+      octave_cv_lib_pcre_ok=no,
+      octave_cv_lib_pcre_ok=yes)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_lib_pcre_ok = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
+dnl
 dnl Check whether sndfile library is modern enough to include things like Ogg
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_OK], [
@@ -1695,8 +1762,6 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
       CPPFLAGS="$save_CPPFLAGS"
       CXXFLAGS="$save_CXXFLAGS"
 
-      OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION
-
       use_qscintilla=yes
     fi
   fi
@@ -1761,6 +1826,8 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
     BUILD_QT_SUMMARY_MSG="yes (version: $have_qt_version)"
     if test x"$have_qt_version" = x4; then
       AC_DEFINE(HAVE_QT4, 1, [Define to 1 if using Qt version 4.])
+      warn_qt_ver="Use of Qt version 4 is deprecated.  Support will be removed in Octave version 7."
+      OCTAVE_CONFIGURE_WARNING([warn_qt_ver])
     fi
     if test x"$have_qt_version" = x5; then
       AC_DEFINE(HAVE_QT5, 1, [Define to 1 if using Qt version 5.])
@@ -1779,13 +1846,10 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
       OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
     fi
     if test -n "$warn_qt_version"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_version])
+      OCTAVE_CONFIGURE_WARNING([warn_qt_version])
     fi
     if test -n "$warn_qt_tools"; then
-        OCTAVE_CONFIGURE_WARNING([warn_qt_tools])
-    fi
-    if test -n "$warn_qt_setlocale"; then
-      OCTAVE_CONFIGURE_WARNING([warn_qt_setlocale])
+      OCTAVE_CONFIGURE_WARNING([warn_qt_tools])
     fi
     if test -n "$warn_qt_setvbuf"; then
       OCTAVE_CONFIGURE_WARNING([warn_qt_setvbuf])
@@ -1965,7 +2029,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   warn_qt_libraries=""
   warn_qt_version=""
   warn_qt_tools=""
-  warn_qt_setlocale=""
   warn_qt_setvbuf=""
   warn_qt_lib_fcns=""
   warn_qt_abstract_item_model=""
@@ -2082,12 +2145,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   fi
 
   if test $build_qt_gui = yes; then
-    AC_CHECK_FUNCS([setlocale], [],
-      [build_qt_gui=no
-       warn_qt_setlocale="setlocale not found; disabling Qt GUI"])
-  fi
-
-  if test $build_qt_gui = yes; then
     case $host_os in
       mingw* | msdosmsvc*)
         AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
@@ -2135,6 +2192,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ## tests if they fail because we have already decided that the Qt
     ## version that we are testing now will be the one used.
 
+    OCTAVE_CHECK_FUNC_QCOMBOBOX_SETCURRENTTEXT
     OCTAVE_CHECK_FUNC_QGUIAPPLICATION_SETDESKTOPFILENAME
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONRESIZEMODE
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSCLICKABLE
@@ -2147,6 +2205,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
     OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
     OCTAVE_CHECK_FUNC_QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT
+    OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA
     OCTAVE_CHECK_MEMBER_QFONT_FORCE_INTEGER_METRICS
     OCTAVE_CHECK_MEMBER_QFONT_MONOSPACE
     OCTAVE_HAVE_QGUIAPPLICATION
@@ -2211,18 +2270,51 @@ c assume the default integer size is 32-bits.
   ])
 ])
 dnl
+dnl Check whether SUNDIALS libraries provide a compatible interface.
+dnl The current recommended interface was introduced in SUNDIALS version 4.
+dnl The deprecated interface that Octave currently works to be compatible with
+dnl was introduced in SUNDIALS version 3.
+dnl
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
+  ac_octave_save_LIBS=$LIBS
+  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $LIBS"
+  dnl Current API functions present in SUNDIALS version 4
+  AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense])
+  dnl FIXME: The purpose of the following tests is to detect the deprecated
+  dnl API from SUNDIALS version 3, which should only be used if the current
+  dnl API tests above failed. For now, always test for ida_direct.h.
+  AC_CHECK_HEADERS([ida/ida_direct.h ida_direct.h])
+  dnl Each of these is a deprecated analog to the functions listed above.
+  AC_CHECK_FUNCS([IDADlsSetJacFn IDADlsSetLinearSolver SUNDenseLinearSolver])
+  LIBS=$ac_octave_save_LIBS
+  AC_MSG_CHECKING([whether SUNDIALS API provides the necessary functions])
+  if test "x$ac_cv_func_IDASetJacFn" = xyes \
+     && test "x$ac_cv_func_IDASetLinearSolver" = xyes \
+     && test "x$ac_cv_func_SUNLinSol_Dense" = xyes; then
+    octave_have_sundials_compatible_api=yes
+  elif test "x$ac_cv_func_IDADlsSetJacFn" = xyes \
+     && test "x$ac_cv_func_IDADlsSetLinearSolver" = xyes \
+     && test "x$ac_cv_func_SUNDenseLinearSolver" = xyes; then
+    octave_have_sundials_compatible_api=yes
+  else
+    octave_have_sundials_compatible_api=no
+  fi
+  AC_MSG_RESULT([$octave_have_sundials_compatible_api])
+  if test $octave_have_sundials_compatible_api = no; then
+    warn_sundials_disabled="SUNDIALS libraries do not provide an API that is compatible with Octave.  The solvers ode15i and ode15s will be disabled."
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
+  fi
+])
+dnl
 dnl Check whether SUNDIALS IDA library is configured with double
 dnl precision realtype.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
-  AC_CHECK_HEADERS([ida/ida.h ida.h])
   AC_CACHE_CHECK([whether SUNDIALS IDA is configured with double precision realtype],
     [octave_cv_sundials_realtype_is_double],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #if defined (HAVE_IDA_IDA_H)
-        #include <ida/ida.h>
-        #else
-        #include <ida.h>
+        #  include <ida/ida.h>
         #endif
         #include <assert.h>
         ]], [[
@@ -2233,66 +2325,100 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
       octave_cv_sundials_realtype_is_double=no)
   ])
   if test $octave_cv_sundials_realtype_is_double = no; then
-    warn_sundials_realtype="SUNDIALS IDA library not configured with double precision realtype, ode15i and ode15s will be disabled"
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_realtype])
+    warn_sundials_disabled="SUNDIALS IDA library not configured with double precision realtype.  The solvers ode15i and ode15s will be disabled."
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
   fi
 ])
 dnl
-dnl Check whether SUNDIALS IDA library is configured with IDAKLU
+dnl Check whether SUNDIALS IDA library is configured with SUNLINSOL_KLU
 dnl enabled.
 dnl
-AC_DEFUN([OCTAVE_CHECK_SUNDIALS_IDAKLU], [
-  AC_CHECK_HEADERS([ida/ida_klu.h ida_klu.h])
-  AC_CACHE_CHECK([whether SUNDIALS IDA is configured with IDAKLU enabled],
-    [octave_cv_sundials_idaklu],
-    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-         #if defined (HAVE_IDA_IDA_KLU_H)
-         #include <ida/ida_klu.h>
-         #else
-         #include <ida_klu.h>
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
+  ## Including <sunlinsol/sunlinsol_klu.h> may depend on including klu.h
+  ## first.  So perform the check as follows using several different
+  ## possible locations for klu.h instead of using OCTAVE_CHECK_LIB to
+  ## check for sunlinsol_klu.h.
+  AC_CHECK_HEADERS([klu.h klu/klu.h suitesparse/klu.h ufsparse/klu.h])
+  AC_CHECK_HEADERS([sunlinsol/sunlinsol_klu.h], [], [],
+    [#if defined (HAVE_KLU_H)
+     #  include <klu.h>
+     #elif  defined (HAVE_KLU_KLU_H)
+     #  include <klu/klu.h>
+     #elif  defined (HAVE_SUITESPARSE_KLU_H)
+     #  include <suitesparse/klu.h>
+     #elif  defined (HAVE_UFSPARSE_KLU_H)
+     #  include <ufsparse/klu.h>
+     #endif
+    ])
+  OCTAVE_CHECK_LIB(sundials_sunlinsolklu, SUNLINSOL_KLU, [],
+    [], [SUNKLU], [],
+    [don't use SUNDIALS SUNLINSOL_KLU library, disable ode15i and ode15s sparse Jacobian],
+    [AC_CHECK_FUNCS([SUNLinSol_KLU SUNKLU])
+     AC_CACHE_CHECK([whether compiling a program that calls SUNKLU works],
+      [octave_cv_sundials_sunlinsol_klu],
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+         #if defined (HAVE_IDA_IDA_H)
+         #include <ida/ida.h>
+         #endif
+         #if defined (HAVE_KLU_H)
+         #include <klu.h>
+         #endif
+         #if defined (HAVE_KLU_KLU_H)
+         #include <klu/klu.h>
+         #endif
+         #if defined (HAVE_SUITESPARSE_KLU_H)
+         #include <suitesparse/klu.h>
+         #endif
+         #if defined (HAVE_UFPARSE_KLU_H)
+         #include <ufsparse/klu.h>
+         #endif
+         #if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
+         #include <sunlinsol/sunlinsol_klu.h>
          #endif
          ]], [[
-         IDAKLU (0, 0, 0, 0);
+         SUNKLU (0, 0);
       ]])],
-      octave_cv_sundials_idaklu=yes,
-      octave_cv_sundials_idaklu=no)
-    ])
-  if test $octave_cv_sundials_idaklu = yes; then
-    AC_DEFINE(HAVE_SUNDIALS_IDAKLU, 1,
-      [Define to 1 if SUNDIALS IDA is configured with IDAKLU enabled.])
+      octave_cv_sundials_sunlinsol_klu=yes,
+      octave_cv_sundials_sunlinsol_klu=no)
+    ])])
+  if test "x$ac_cv_header_sunlinsol_sunlinsol_klu_h" = xyes \
+     && test "x$octave_cv_sundials_sunlinsol_klu" = xyes; then
+    AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_KLU, 1,
+      [Define to 1 if SUNDIALS IDA is configured with SUNLINSOL_KLU enabled.])
   else
-    warn_sundials_idaklu="SUNDIALS IDA library not configured with IDAKLU, ode15i and ode15s will not support the sparse Jacobian feature"
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_idaklu])
+    warn_sundials_sunlinsol_klu="SUNDIALS IDA library not configured with SUNLINSOL_KLU or sunlinksol_klu.h is not usable.  The solvers ode15i and ode15s will not support the sparse Jacobian feature."
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_klu])
   fi
 ])
 dnl
-dnl Check whether SUNDIALS IDA library has the IDADENSE linear solver.
+dnl Check whether SUNDIALS IDA library has the SUNLINSOL_DENSE linear solver.
 dnl The IDADENSE API was removed in SUNDIALS version 3.0.0.
 dnl
-AC_DEFUN([OCTAVE_CHECK_SUNDIALS_IDA_DENSE], [
-  AC_CHECK_HEADERS([ida/ida_dense.h ida_dense.h])
-  AC_CACHE_CHECK([whether SUNDIALS IDA includes the IDADENSE linear solver],
-    [octave_cv_sundials_ida_dense],
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE], [
+  AC_CHECK_HEADERS([sunlinsol/sunlinsol_dense.h])
+  AC_CACHE_CHECK([whether SUNDIALS IDA includes the SUNLINSOL_DENSE linear solver],
+    [octave_cv_sundials_sunlinsol_dense],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-         #if defined (HAVE_IDA_IDA_DENSE_H)
-         #include <ida/ida_dense.h>
-         #else
-         #include <ida_dense.h>
+         #if defined (HAVE_IDA_IDA_H)
+         #  include <ida/ida.h>
+         #endif
+         #if defined (HAVE_SUNLINSOL_SUNLINSOL_DENSE_H)
+         #  include <sunlinsol/sunlinsol_dense.h>
          #endif
          ]], [[
          void *mem = 0;
          long int num = 0;
          IDADense (mem, num);
       ]])],
-      octave_cv_sundials_ida_dense=yes,
-      octave_cv_sundials_ida_dense=no)
+      octave_cv_sundials_sunlinsol_dense=yes,
+      octave_cv_sundials_sunlinsol_dense=no)
     ])
-  if test $octave_cv_sundials_ida_dense = yes; then
-    AC_DEFINE(HAVE_SUNDIALS_IDADENSE, 1,
-      [Define to 1 if SUNDIALS IDA includes the IDADENSE linear solver.])
+  if test $octave_cv_sundials_sunlinsol_dense = yes; then
+    AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_DENSE, 1,
+      [Define to 1 if SUNDIALS IDA includes the SUNLINSOL_DENSE linear solver.])
   else
-    warn_sundials_ida_dense="SUNDIALS IDA library does not include the IDADENSE linear solver, ode15i and ode15s will be disabled"
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_ida_dense])
+    warn_sundials_disabled="SUNDIALS IDA library does not include the SUNLINSOL_DENSE linear solver.  The solvers ode15i and ode15s will be disabled."
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
   fi
 ])
 dnl
@@ -2951,9 +3077,7 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
   CPICFLAG=-fPIC
   CXXPICFLAG=-fPIC
   FPICFLAG=-fPIC
-  SH_LD="${CXX}"
   SH_LDFLAGS=-shared
-  DL_LD="${SH_LD}"
   DL_LDFLAGS="${SH_LDFLAGS}"
   MKOCTFILE_DL_LDFLAGS="${DL_LDFLAGS}"
   NO_OCT_FILE_STRIP=false
@@ -2968,7 +3092,6 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
   ldpreloadsep=" "
   case $canonical_host_type in
     *-*-386bsd* | *-*-netbsd*)
-      SH_LD=ld
       SH_LDFLAGS=-Bshareable
     ;;
     *-*-openbsd*)
@@ -3093,7 +3216,6 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
       else
         FPICFLAG=-PIC
       fi
-      SH_LD=ld
       SH_LDFLAGS="-assert nodefinitions"
     ;;
     sparc-sun-solaris2* | i386-pc-solaris2*)
@@ -3125,9 +3247,7 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
   AC_MSG_NOTICE([defining FPICFLAG to be $FPICFLAG])
   AC_MSG_NOTICE([defining CPICFLAG to be $CPICFLAG])
   AC_MSG_NOTICE([defining CXXPICFLAG to be $CXXPICFLAG])
-  AC_MSG_NOTICE([defining SH_LD to be $SH_LD])
   AC_MSG_NOTICE([defining SH_LDFLAGS to be $SH_LDFLAGS])
-  AC_MSG_NOTICE([defining DL_LD to be $DL_LD])
   AC_MSG_NOTICE([defining DL_LDFLAGS to be $DL_LDFLAGS])
   AC_MSG_NOTICE([defining MKOCTFILE_DL_LDFLAGS to be $MKOCTFILE_DL_LDFLAGS])
   AC_MSG_NOTICE([defining NO_OCT_FILE_STRIP to be $NO_OCT_FILE_STRIP])
@@ -3142,9 +3262,7 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
   AC_SUBST(FPICFLAG)
   AC_SUBST(CPICFLAG)
   AC_SUBST(CXXPICFLAG)
-  AC_SUBST(SH_LD)
   AC_SUBST(SH_LDFLAGS)
-  AC_SUBST(DL_LD)
   AC_SUBST(DL_LDFLAGS)
   AC_SUBST(MKOCTFILE_DL_LDFLAGS)
   AC_SUBST(NO_OCT_FILE_STRIP)

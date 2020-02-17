@@ -1,5 +1,9 @@
-## Copyright (C) 2014-2019 John W. Eaton
-## Copyright (C) 2016-2019 Colin B. Macdonald
+########################################################################
+##
+## Copyright (C) 2014-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{xr}, @var{yr}, @var{zr}] =} __rotate_around_axis__ (@var{x}, @var{y}, @var{z}, @var{angle}, @var{dir}, @var{origin})

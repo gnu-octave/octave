@@ -1,9 +1,14 @@
 octave_gui_ICONS = \
   %reldir%/icons/applications-system.png \
+  %reldir%/icons/bottom_left_corner.png \
+  %reldir%/icons/bottom_right_corner.png \
+  %reldir%/icons/bottom_side.png \
   %reldir%/icons/bp-next.png \
   %reldir%/icons/bp-prev.png \
   %reldir%/icons/bp-rm-all.png \
   %reldir%/icons/bp-toggle.png \
+  %reldir%/icons/circle.png \
+  %reldir%/icons/cross.png \
   %reldir%/icons/db-cont.png \
   %reldir%/icons/db-step-in.png \
   %reldir%/icons/db-step-out.png \
@@ -25,6 +30,15 @@ octave_gui_ICONS = \
   %reldir%/icons/edit-paste.png \
   %reldir%/icons/edit-redo.png \
   %reldir%/icons/edit-undo.png \
+  %reldir%/icons/figure-axes.png \
+  %reldir%/icons/figure-grid.png \
+  %reldir%/icons/figure-pan.png \
+  %reldir%/icons/figure-rotate.png \
+  %reldir%/icons/figure-text.png \
+  %reldir%/icons/figure-zoom-in.png \
+  %reldir%/icons/figure-zoom-original.png \
+  %reldir%/icons/figure-zoom-out.png \
+  %reldir%/icons/fleur.png \
   %reldir%/icons/folder.png \
   %reldir%/icons/folder-new.png \
   %reldir%/icons/go-down.png \
@@ -52,7 +66,9 @@ octave_gui_ICONS = \
   %reldir%/icons/graphic_logo_WorkspaceView.svg \
   %reldir%/icons/graphic_logo_ReleaseWidget.svg \
   %reldir%/icons/graphic_logo_VariableEditor.svg \
+  %reldir%/icons/hand2.png \
   %reldir%/icons/icons_license \
+  %reldir%/icons/left_side.png \
   %reldir%/icons/letter_logo_DocumentationDockWidget.png \
   %reldir%/icons/letter_logo_FileEditor.png \
   %reldir%/icons/letter_logo_FilesDockWidget.png \
@@ -74,7 +90,11 @@ octave_gui_ICONS = \
   %reldir%/icons/logo.png \
   %reldir%/icons/plot-xy-curve.png \
   %reldir%/icons/preferences-system.png \
+  %reldir%/icons/right_side.png \
   %reldir%/icons/system-run.png \
+  %reldir%/icons/top_left_corner.png \
+  %reldir%/icons/top_right_corner.png \
+  %reldir%/icons/top_side.png \
   %reldir%/icons/user-home.png \
   %reldir%/icons/view-refresh.png \
   %reldir%/icons/widget-close.png \
@@ -117,14 +137,17 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-documentation.cc \
   %reldir%/moc-dw-main-window.cc \
   %reldir%/moc-files-dock-widget.cc \
+  %reldir%/moc-gui-settings.cc \
   %reldir%/moc-history-dock-widget.cc \
+  %reldir%/moc-interpreter-qobject.cc \
   %reldir%/moc-main-window.cc \
-  %reldir%/moc-octave-cmd.cc \
-  %reldir%/moc-octave-qt-link.cc \
+  %reldir%/moc-news-reader.cc \
+  %reldir%/moc-octave-qobject.cc \
   %reldir%/moc-settings-dialog.cc \
   %reldir%/moc-terminal-dock-widget.cc \
   %reldir%/moc-color-picker.cc \
   %reldir%/moc-tab-bar.cc \
+  %reldir%/moc-qt-interpreter-events.cc \
   %reldir%/moc-resource-manager.cc \
   %reldir%/moc-shortcut-manager.cc \
   %reldir%/moc-welcome-wizard.cc \
@@ -134,7 +157,9 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-variable-editor-model.cc \
   %reldir%/moc-find-files-dialog.cc \
   %reldir%/moc-find-files-model.cc \
-  %reldir%/moc-octave-dock-widget.cc
+  %reldir%/moc-octave-dock-widget.cc \
+  %reldir%/moc-set-path-dialog.cc \
+  %reldir%/moc-set-path-model.cc
 
 octave_gui_MOC += \
   $(OCTAVE_GUI_SRC_MOC) \
@@ -162,11 +187,29 @@ noinst_HEADERS += \
   %reldir%/documentation-dock-widget.h \
   %reldir%/documentation.h \
   %reldir%/dw-main-window.h \
-  %reldir%/gui-preferences.h \
+  %reldir%/gui-preferences-all.h \
+  %reldir%/gui-preferences-cs.h \
+  %reldir%/gui-preferences-dw.h \
+  %reldir%/gui-preferences-ed.h \
+  %reldir%/gui-preferences-fb.h \
+  %reldir%/gui-preferences-ff.h \
+  %reldir%/gui-preferences-global.h \
+  %reldir%/gui-preferences-gp.h \
+  %reldir%/gui-preferences-hw.h \
   %reldir%/gui-preferences-mw.h \
+  %reldir%/gui-preferences-nr.h \
+  %reldir%/gui-preferences-pd.h \
+  %reldir%/gui-preferences-sc.h \
+  %reldir%/gui-preferences-sd.h \
+  %reldir%/gui-preferences-ve.h \
+  %reldir%/gui-preferences-ws.h \
+  %reldir%/gui-preferences.h \
+  %reldir%/gui-settings.h \
   %reldir%/external-editor-interface.h \
   %reldir%/files-dock-widget.h \
+  %reldir%/graphics-init.h \
   %reldir%/history-dock-widget.h \
+  %reldir%/interpreter-qobject.h \
   %reldir%/m-editor/file-editor-interface.h \
   %reldir%/m-editor/file-editor-tab.h \
   %reldir%/m-editor/file-editor.h \
@@ -175,9 +218,10 @@ noinst_HEADERS += \
   %reldir%/m-editor/octave-txt-lexer.h \
   %reldir%/m-editor/marker.h \
   %reldir%/main-window.h \
-  %reldir%/octave-gui.h \
-  %reldir%/octave-cmd.h \
-  %reldir%/octave-qt-link.h \
+  %reldir%/news-reader.h \
+  %reldir%/octave-qobject.h \
+  %reldir%/qt-application.h \
+  %reldir%/qt-interpreter-events.h \
   %reldir%/resource-manager.h \
   %reldir%/settings-dialog.h \
   %reldir%/shortcut-manager.h \
@@ -190,7 +234,10 @@ noinst_HEADERS += \
   %reldir%/workspace-model.h \
   %reldir%/workspace-view.h \
   %reldir%/variable-editor.h \
-  %reldir%/variable-editor-model.h
+  %reldir%/variable-editor-model.h \
+  %reldir%/set-path-dialog.h \
+  %reldir%/set-path-model.h
+
 
 %canon_reldir%_%canon_reldir%_la_SOURCES = \
   %reldir%/dialog.cc \
@@ -199,7 +246,10 @@ noinst_HEADERS += \
   %reldir%/dw-main-window.cc \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
+  %reldir%/graphics-init.cc \
+  %reldir%/gui-settings.cc \
   %reldir%/history-dock-widget.cc \
+  %reldir%/interpreter-qobject.cc \
   %reldir%/m-editor/file-editor-tab.cc \
   %reldir%/m-editor/file-editor.cc \
   %reldir%/m-editor/find-dialog.cc \
@@ -207,10 +257,11 @@ noinst_HEADERS += \
   %reldir%/m-editor/octave-txt-lexer.cc \
   %reldir%/m-editor/marker.cc \
   %reldir%/main-window.cc \
-  %reldir%/octave-cmd.cc \
+  %reldir%/news-reader.cc \
   %reldir%/octave-dock-widget.cc \
-  %reldir%/octave-gui.cc \
-  %reldir%/octave-qt-link.cc \
+  %reldir%/octave-qobject.cc \
+  %reldir%/qt-interpreter-events.cc \
+  %reldir%/qt-application.cc \
   %reldir%/resource-manager.cc \
   %reldir%/settings-dialog.cc \
   %reldir%/shortcut-manager.cc \
@@ -223,7 +274,9 @@ noinst_HEADERS += \
   %reldir%/workspace-model.cc \
   %reldir%/workspace-view.cc \
   %reldir%/variable-editor.cc \
-  %reldir%/variable-editor-model.cc
+  %reldir%/variable-editor-model.cc \
+  %reldir%/set-path-dialog.cc \
+  %reldir%/set-path-model.cc
 
 nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   $(octave_gui_MOC) \
@@ -237,6 +290,7 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   @QT_CPPFLAGS@ \
   -I$(srcdir)/libgui/qterminal/libqterminal \
   -Ilibgui/src -I$(srcdir)/libgui/src \
+  -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
   -I$(srcdir)/%reldir%/m-editor \
   -Iliboctave \
   -I$(srcdir)/liboctave/array \

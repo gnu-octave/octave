@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Kai Habel
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile ()
@@ -29,8 +36,8 @@
 ## @table @asis
 ## @item @qcode{"/path/to/filename.ext"}
 ## If a filename is given the file extension is extracted and used as filter.
-## In addition the path is selected as current path and the filename is
-## selected as default file.  Example: @code{uiputfile ("myfun.m")}
+## In addition the path is selected as current path in the dialog and the
+## filename is selected as default file.  Example: @code{uiputfile ("myfun.m")}
 ##
 ## @item @qcode{"*.ext"}
 ## A single file extension.
@@ -51,10 +58,13 @@
 ## @var{dialog_name} can be used to customize the dialog title.
 ## If @var{default_file} is given it is preselected in the GUI dialog.
 ## If, in addition, a path is given it is also used as current path.
+##
+## @var{fname} and @var{fpath} return the chosen name and path, respectively.
+## @var{fltidx} is the index in the list of filter extensions @var{flt} that
+## was selected.
+##
 ## @seealso{uigetfile, uigetdir}
 ## @end deftypefn
-
-## Author: Kai Habel
 
 function [retfile, retpath, retindex] = uiputfile (varargin)
 
@@ -107,8 +117,8 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     endif
   endif
 
-  if (__octave_link_enabled__ ())
-    [retfile, retpath, retindex] = __octave_link_file_dialog__ (outargs{:});
+  if (__event_manager_enabled__ ())
+    [retfile, retpath, retindex] = __event_manager_file_dialog__ (outargs{:});
   else
     funcname = __get_funcname__ (mfilename ());
     [retfile, retpath, retindex] = feval (funcname, outargs{:});

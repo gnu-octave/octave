@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_build_env_h)
 #define octave_build_env_h 1
@@ -71,7 +74,6 @@ namespace octave
     extern const char *CXX;
     extern const char *DEFAULT_PAGER;
     extern const char *DEFS;
-    extern const char *DL_LD;
     extern const char *DL_LDFLAGS;
     extern const char *EXEEXT;
     extern const char *GCC_VERSION;
@@ -108,7 +110,6 @@ namespace octave
     extern const char *KLU_LIBS;
     extern const char *LAPACK_LIBS;
     extern const char *LDFLAGS;
-    extern const char *LD_CXX;
     extern const char *LD_STATIC_FLAG;
     extern const char *LEXLIB;
     extern const char *LEX;
@@ -151,7 +152,6 @@ namespace octave
     extern const char *RDYNAMIC_FLAG;
     extern const char *READLINE_LIBS;
     extern const char *SHARED_LIBS;
-    extern const char *SH_LD;
     extern const char *SH_LDFLAGS;
     extern const char *STATIC_LIBS;
     extern const char *SUITESPARSECONFIG_LIBS;
@@ -161,6 +161,9 @@ namespace octave
     extern const char *SUNDIALS_NVECSERIAL_CPPFLAGS;
     extern const char *SUNDIALS_NVECSERIAL_LDFLAGS;
     extern const char *SUNDIALS_NVECSERIAL_LIBS;
+    extern const char *SUNDIALS_SUNLINSOLKLU_CPPFLAGS;
+    extern const char *SUNDIALS_SUNLINSOLKLU_LDFLAGS;
+    extern const char *SUNDIALS_SUNLINSOLKLU_LIBS;
     extern const char *TERM_LIBS;
     extern const char *UMFPACK_CPPFLAGS;
     extern const char *UMFPACK_LDFLAGS;

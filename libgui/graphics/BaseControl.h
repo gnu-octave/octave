@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_BaseControl_h)
 #define octave_BaseControl_h 1
@@ -28,13 +31,20 @@ along with Octave; see the file COPYING.  If not, see
 class QEvent;
 class QObject;
 
+namespace octave
+{
+  class base_qobject;
+  class interpreter;
+}
+
 namespace QtHandles
 {
 
   class BaseControl : public Object
   {
   public:
-    BaseControl (const graphics_object& go, QWidget *w);
+    BaseControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                 const graphics_object& go, QWidget *w);
     ~BaseControl (void);
 
     Container * innerContainer (void) { return nullptr; }
@@ -43,6 +53,7 @@ namespace QtHandles
 
   protected:
     void init (QWidget *w, bool callBase = false);
+    void redraw (void);
     void update (int pId);
 
   private:

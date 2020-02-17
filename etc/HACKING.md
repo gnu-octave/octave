@@ -343,7 +343,7 @@ each library using the variables
 
 The rules for updating these version numbers are:
 
-  * Start with version information of ‘0:0:0’ for each libtool library.
+  * Start with version information of `0:0:0` for each libtool library.
 
   * Update the version information only immediately before a public
     release of your software.  More frequent updates are unnecessary,
@@ -351,7 +351,7 @@ The rules for updating these version numbers are:
     faster.
 
   * If the library source code has changed at all since the last update,
-    then increment revision (‘c:r:a’ becomes ‘c:r+1:a’).
+    then increment revision (`c:r:a` becomes `c:r+1:a`).
 
   * If any interfaces have been added, removed, or changed since the
     last update, increment current, and set revision to 0.
@@ -392,7 +392,10 @@ https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 
 ################################################################################
 
-Copyright (C) 2009-2019 John W. Eaton
+Copyright (C) 2009-2020 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this
+distribution or <https://octave.org/copyright/>.
 
 This file is part of Octave.
 

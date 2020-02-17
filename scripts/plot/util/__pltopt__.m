@@ -1,4 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __pltopt__ (@var{caller}, @var{opt}, @var{err_on_invalid})
@@ -84,8 +91,6 @@
 ## plotted in some future version of Octave.
 ## @end deftypefn
 
-## Author: jwe
-
 function [options, valid] = __pltopt__ (caller, opt, err_on_invalid = true)
 
   options = __default_plot_options__ ();
@@ -109,11 +114,6 @@ function [options, valid] = __pltopt__ (caller, opt, err_on_invalid = true)
 endfunction
 
 ## Really decode plot option strings.
-
-## Author: Rick Niles <niles@axp745.gsfc.nasa.gov>
-## Adapted-By: jwe
-## Maintainer: jwe
-
 function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
 
   options = __default_plot_options__ ();

@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Markus Mützel
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{utf8_str} =} native2unicode (@var{native_bytes}, @var{codepage})
@@ -65,8 +72,8 @@ function utf8_str = native2unicode (native_bytes, codepage = "")
 
   utf8_str = __native2unicode__ (native_bytes, codepage);
 
-  if (iscolumn (native_bytes))
-    utf8_str = utf8_str';
+  if (! isrow (native_bytes))
+    utf8_str = utf8_str.';
   endif
 
 endfunction
@@ -82,7 +89,7 @@ endfunction
 %!         [208 132 208 133 208 134 0 208 135 208 136 208 137 208 138]);
 
 %!assert (native2unicode ("foobar"), "foobar");
-%!assert <54384> (double (native2unicode ([0 0 120.3 0 0 122.6 0 0])),
+%!assert <*54384> (double (native2unicode ([0 0 120.3 0 0 122.6 0 0])),
 %!        [0 0 120 0 0 123 0 0]);
 
 %!error <Invalid call> native2unicode ()

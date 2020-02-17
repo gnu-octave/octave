@@ -1,5 +1,5 @@
 FCN_FILE_DIRS += \
-  scripts/plot/draw \
+  %reldir% \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
@@ -54,6 +54,7 @@ FCN_FILE_DIRS += \
   %reldir%/isonormals.m \
   %reldir%/isosurface.m \
   %reldir%/light.m \
+  %reldir%/lightangle.m \
   %reldir%/line.m \
   %reldir%/loglog.m \
   %reldir%/loglogerr.m \
@@ -93,6 +94,10 @@ FCN_FILE_DIRS += \
   %reldir%/stem.m \
   %reldir%/stem3.m \
   %reldir%/stemleaf.m \
+  %reldir%/stream2.m \
+  %reldir%/stream3.m \
+  %reldir%/streamline.m \
+  %reldir%/streamtube.m \
   %reldir%/surf.m \
   %reldir%/surface.m \
   %reldir%/surfc.m \

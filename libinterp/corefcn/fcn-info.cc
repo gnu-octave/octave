@@ -1,32 +1,37 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2009 VZLU Prague, a.s.
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
 #include "file-ops.h"
+#include "file-stat.h"
+#include "oct-env.h"
 
+#include "defun.h"
 #include "fcn-info.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
@@ -34,9 +39,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "parse.h"
-#include "symrec.h"
 #include "symscope.h"
 #include "symtab.h"
+#include "utils.h"
+
+// Should Octave always check to see if function files have changed
+// since they were last compiled?
+static int Vignore_function_time_stamp = 1;
 
 namespace octave
 {
@@ -77,7 +86,7 @@ namespace octave
 
     tmpfcn->mark_as_private_function (class_name);
 
-    private_functions[dir_name] = ov_fcn;
+    private_functions[octave::sys::canonicalize_file_name (dir_name)] = ov_fcn;
 
     return ov_fcn;
   }
@@ -153,10 +162,7 @@ namespace octave
         cdef_manager& cdm
           = __get_cdef_manager__ ("fcn_info::fcn_info_rep::load_class_method");
 
-        octave_function *cm = cdm.find_method_symbol (name, dispatch_type);
-
-        if (cm)
-          retval = octave_value (cm);
+        retval = cdm.find_method_symbol (name, dispatch_type);
 
         if (! retval.is_defined ())
           {
@@ -193,8 +199,8 @@ namespace octave
                 symbol_table& symtab
                   = __get_symbol_table__ ("fcn_info::fcn_info_rep::load_class_method");
 
-                const std::list<std::string>& plist =
-                  symtab.parent_classes (dispatch_type);
+                const std::list<std::string>& plist
+                  = symtab.parent_classes (dispatch_type);
 
                 auto it = plist.begin ();
 
@@ -248,15 +254,15 @@ namespace octave
           builtin_type_t ityp = static_cast<builtin_type_t> (i);
           builtin_type_t jtyp = static_cast<builtin_type_t> (j);
           // FIXME: Is this really right?
-          bool use_j =
-            (jtyp == btyp_func_handle || ityp == btyp_bool
-             || (btyp_isarray (ityp)
-                 && (! btyp_isarray (jtyp)
-                     || (btyp_isinteger (jtyp) && ! btyp_isinteger (ityp))
-                     || ((ityp == btyp_double || ityp == btyp_complex
-                          || ityp == btyp_char)
-                         && (jtyp == btyp_float
-                             || jtyp == btyp_float_complex)))));
+          bool use_j
+            = (jtyp == btyp_func_handle || ityp == btyp_bool
+               || (btyp_isarray (ityp)
+                   && (! btyp_isarray (jtyp)
+                       || (btyp_isinteger (jtyp) && ! btyp_isinteger (ityp))
+                       || ((ityp == btyp_double || ityp == btyp_complex
+                            || ityp == btyp_char)
+                           && (jtyp == btyp_float
+                               || jtyp == btyp_float_complex)))));
 
           sup_table[i][j] = (use_j ? jtyp : ityp);
         }
@@ -333,21 +339,26 @@ namespace octave
 
   // Find function definition according to the following precedence list:
   //
+  //   nested functions (and subfunctions)
+  //   local functions in the current file
   //   private function
   //   class method
   //   class constructor
   //   command-line function
   //   autoload function
-  //   function on the path
+  //   functions on the load_path (current directory is always first)
+  //   package (FIXME: does this belong here?)
   //   built-in function
-  //
-  // Matlab documentation states that constructors have higher precedence
-  // than methods, but that does not seem to be the case.
 
   octave_value
-  fcn_info::fcn_info_rep::find (const octave_value_list& args)
+  fcn_info::fcn_info_rep::find (const symbol_scope& scope,
+                                const octave_value_list& args)
   {
-    octave_value retval = xfind (args);
+    symbol_scope search_scope
+      = (scope
+         ? scope : __get_current_scope__("fcn_info::fcn_info_rep::find"));
+
+    octave_value retval = xfind (search_scope, args);
 
     if (retval.is_undefined ())
       {
@@ -359,39 +370,282 @@ namespace octave
 
         lp.update ();
 
-        retval = xfind (args);
+        retval = xfind (search_scope, args);
+      }
+
+    return retval;
+  }
+
+
+  static void
+  split_name_with_package (const std::string& name, std::string& fname,
+                           std::string& pname)
+  {
+    size_t pos = name.rfind ('.');
+
+    fname.clear ();
+    pname.clear ();
+
+    if (pos != std::string::npos)
+      {
+        fname = name.substr (pos + 1);
+        pname = name.substr (0, pos);
+      }
+    else
+      fname = name;
+  }
+
+  // Check the load path to see if file that defined this is still
+  // visible.  If the file is no longer visible, then erase the
+  // definition and move on.  If the file is visible, then we also
+  // need to check to see whether the file has changed since the
+  // function was loaded/parsed.  However, this check should only
+  // happen once per prompt (for files found from relative path
+  // elements, we also check if the working directory has changed
+  // since the last time the function was loaded/parsed).
+  //
+  // FIXME: perhaps this should be done for all loaded functions when
+  // the prompt is printed or the directory has changed, and then we
+  // would not check for it when finding symbol definitions.
+
+  static inline bool
+  load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
+                        octave_value& function,
+                        const std::string& dispatch_type = "",
+                        const std::string& package_name = "")
+  {
+    bool retval = false;
+
+    octave_value ov_fcn
+      = load_fcn_from_file (ff, dir_name, dispatch_type,
+                            package_name);
+
+    if (ov_fcn.is_defined ())
+      {
+        retval = true;
+
+        function = ov_fcn;
+      }
+    else
+      function = octave_value ();
+
+    return retval;
+  }
+
+  static bool
+  out_of_date_check (octave_value& function,
+                     const std::string& dispatch_type = "",
+                     bool check_relative = true)
+  {
+    bool retval = false;
+
+    octave_function *fcn = function.function_value (true);
+
+    if (fcn)
+      {
+        // FIXME: we need to handle subfunctions properly here.
+
+        if (! (fcn->is_subfunction () || fcn->is_anonymous_function ()))
+          {
+            std::string ff = fcn->fcn_file_name ();
+
+            if (! ff.empty ())
+              {
+                sys::time tc = fcn->time_checked ();
+
+                bool relative = check_relative && fcn->is_relative ();
+
+                if (tc <= Vlast_prompt_time
+                    || (relative && tc < Vlast_chdir_time))
+                  {
+                    bool clear_breakpoints = false;
+                    std::string nm = fcn->name ();
+                    std::string pack = fcn->package_name ();
+                    std::string canonical_nm = fcn->canonical_name ();
+
+                    bool is_same_file = false;
+
+                    std::string file;
+                    std::string dir_name;
+
+                    if (check_relative)
+                      {
+                        int nm_len = nm.length ();
+
+                        if (sys::env::absolute_pathname (nm)
+                            && ((nm_len > 4
+                                 && (nm.substr (nm_len-4) == ".oct"
+                                     || nm.substr (nm_len-4) == ".mex"))
+                                || (nm_len > 2
+                                    && nm.substr (nm_len-2) == ".m")))
+                          file = nm;
+                        else
+                          {
+                            // We don't want to make this an absolute name,
+                            // because load_fcn_file looks at the name to
+                            // decide whether it came from a relative lookup.
+
+                            if (! dispatch_type.empty ())
+                              {
+                                load_path& lp
+                                  = __get_load_path__ ("out_of_date_check");
+
+                                file = lp.find_method (dispatch_type, nm,
+                                                       dir_name, pack);
+
+                                if (file.empty ())
+                                  {
+                                    std::string s_name;
+                                    std::string s_pack;
+
+                                    symbol_table& symtab
+                                      = __get_symbol_table__ ("out_of_date_check");
+
+                                    const std::list<std::string>& plist
+                                      = symtab.parent_classes (dispatch_type);
+
+                                    std::list<std::string>::const_iterator it
+                                      = plist.begin ();
+
+                                    while (it != plist.end ())
+                                      {
+                                        split_name_with_package (*it, s_name,
+                                                                 s_pack);
+
+                                        file = lp.find_method (*it, nm, dir_name,
+                                                               s_pack);
+                                        if (! file.empty ())
+                                          {
+                                            pack = s_pack;
+                                            break;
+                                          }
+
+                                        it++;
+                                      }
+                                  }
+                              }
+
+                            // Maybe it's an autoload?
+                            if (file.empty ())
+                              {
+                                tree_evaluator& tw
+                                  = __get_evaluator__ ("out_of_data_check");
+
+                                file = tw.lookup_autoload (nm);
+                              }
+
+                            if (file.empty ())
+                              {
+                                load_path& lp
+                                  = __get_load_path__ ("out_of_date_check");
+                                file = lp.find_fcn (nm, dir_name, pack);
+                              }
+                          }
+
+                        if (! file.empty ())
+                          is_same_file = same_file (file, ff);
+                      }
+                    else
+                      {
+                        is_same_file = true;
+                        file = ff;
+                      }
+
+                    if (file.empty ())
+                      {
+                        // Can't see this function from current
+                        // directory, so we should clear it.
+
+                        function = octave_value ();
+
+                        clear_breakpoints = true;
+                      }
+                    else if (is_same_file)
+                      {
+                        // Same file.  If it is out of date, then reload it.
+
+                        sys::time ottp = fcn->time_parsed ();
+                        time_t tp = ottp.unix_time ();
+
+                        fcn->mark_fcn_file_up_to_date (sys::time ());
+
+                        if (! (Vignore_function_time_stamp == 2
+                               || (Vignore_function_time_stamp
+                                   && fcn->is_system_fcn_file ())))
+                          {
+                            sys::file_stat fs (ff);
+
+                            if (fs)
+                              {
+                                if (fs.is_newer (tp))
+                                  {
+                                    retval = load_out_of_date_fcn (ff, dir_name,
+                                                                   function,
+                                                                   dispatch_type,
+                                                                   pack);
+
+                                    clear_breakpoints = true;
+                                  }
+                              }
+                            else
+                              {
+                                function = octave_value ();
+
+                                clear_breakpoints = true;
+                              }
+                          }
+                      }
+                    else
+                      {
+                        // Not the same file, so load the new file in
+                        // place of the old.
+
+                        retval = load_out_of_date_fcn (file, dir_name, function,
+                                                       dispatch_type, pack);
+
+                        clear_breakpoints = true;
+                      }
+
+                    // If the function has been replaced then clear any
+                    // breakpoints associated with it
+                    if (clear_breakpoints)
+                      {
+                        bp_table& bptab
+                          = __get_bp_table__ ("out_of_date_check");
+
+                        bptab.remove_all_breakpoints_in_file (canonical_nm,
+                                                              true);
+                      }
+                  }
+              }
+          }
       }
 
     return retval;
   }
 
   octave_value
-  fcn_info::fcn_info_rep::xfind (const octave_value_list& args)
+  fcn_info::fcn_info_rep::xfind (const symbol_scope& search_scope,
+                                 const octave_value_list& args)
   {
-    symbol_scope curr_scope
-      = __get_current_scope__ ("fcn_info::fcn_info_rep::xfind");
+    // Subfunction, local function, or private function.
 
-    octave_user_function *current_fcn
-      = curr_scope ? curr_scope.function () : nullptr;
-
-    // Local function.
-
-    if (current_fcn)
+    if (search_scope)
       {
-        std::string fcn_file = current_fcn->fcn_file_name ();
+        // Subfunction.
+
+        octave_value fcn = search_scope.find_subfunction (name);
+
+        if (fcn.is_defined ())
+          return fcn;
+
+        // Local function.
+
+        std::string fcn_file = search_scope.fcn_file_name ();
 
         // For anonymous functions we look at the parent scope so that if
         // they were defined within class methods and use local functions
         // (helper functions) we can still use those anonymous functions
-
-        if (current_fcn->is_anonymous_function ())
-          {
-            if (fcn_file.empty ()
-                && curr_scope.parent_scope ()
-                && curr_scope.parent_scope ()->function () != nullptr)
-              fcn_file
-                = curr_scope.parent_scope ()->function ()->fcn_file_name();
-          }
 
         if (! fcn_file.empty ())
           {
@@ -407,13 +661,10 @@ namespace octave
                 return r->second;
               }
           }
-      }
 
-    // Private function.
+        // Private function.
 
-    if (current_fcn)
-      {
-        std::string dir_name = current_fcn->dir_name ();
+        std::string dir_name = search_scope.dir_name ();
 
         if (! dir_name.empty ())
           {
@@ -537,9 +788,13 @@ namespace octave
   // so class methods and constructors are skipped.
 
   octave_value
-  fcn_info::fcn_info_rep::builtin_find (void)
+  fcn_info::fcn_info_rep::builtin_find (const symbol_scope& scope)
   {
-    octave_value retval = x_builtin_find ();
+    symbol_scope search_scope
+      = (scope
+         ? scope : __get_current_scope__("fcn_info::fcn_info_rep::find"));
+
+    octave_value retval = x_builtin_find (search_scope);
 
     if (! retval.is_defined ())
       {
@@ -551,14 +806,14 @@ namespace octave
 
         lp.update ();
 
-        retval = x_builtin_find ();
+        retval = x_builtin_find (search_scope);
       }
 
     return retval;
   }
 
   octave_value
-  fcn_info::fcn_info_rep::x_builtin_find (void)
+  fcn_info::fcn_info_rep::x_builtin_find (const symbol_scope& search_scope)
   {
     // Built-in function.
     if (built_in_function.is_defined ())
@@ -583,17 +838,13 @@ namespace octave
     if (cmdline_function.is_defined ())
       return cmdline_function;
 
-    // Private function.
+    // Private function, local function, or subfunction.
 
-    symbol_scope curr_scope
-      = __get_current_scope__ ("fcn_info::fcn_info_rep::x_builtin_find");
-
-    octave_user_function *current_fcn = curr_scope ? curr_scope.function ()
-                                                   : nullptr;
-
-    if (current_fcn)
+    if (search_scope)
       {
-        std::string dir_name = current_fcn->dir_name ();
+        // Private function.
+
+        std::string dir_name = search_scope.dir_name ();
 
         if (! dir_name.empty ())
           {
@@ -624,13 +875,10 @@ namespace octave
                   }
               }
           }
-      }
 
-    // Local function.
+        // Local function.
 
-    if (current_fcn)
-      {
-        std::string fcn_file = current_fcn->fcn_file_name ();
+        std::string fcn_file = search_scope.fcn_file_name ();
 
         if (! fcn_file.empty ())
           {
@@ -645,15 +893,12 @@ namespace octave
                 return r->second;
               }
           }
-      }
 
-    // Subfunction.  I think it only makes sense to check for
-    // subfunctions if we are currently executing a function defined
-    // from a .m file.
+        // Subfunction.  I think it only makes sense to check for
+        // subfunctions if we are currently executing a function defined
+        // from a .m file.
 
-    if (curr_scope)
-      {
-        octave_value val = curr_scope.find_subfunction (name);
+        octave_value val = search_scope.find_subfunction (name);
 
         if (val.is_defined ())
           return val;
@@ -707,7 +952,10 @@ namespace octave
 
     if (! autoload_function.is_defined ())
       {
-        std::string file_name = lookup_autoload (name);
+        tree_evaluator& tw
+          = __get_evaluator__ ("fcn_info::fcn_info_rep::x_builtin_find");
+
+        std::string file_name = tw.lookup_autoload (name);
 
         if (! file_name.empty ())
           {
@@ -738,16 +986,16 @@ namespace octave
       {
         std::string dir_name;
 
-        load_path& lp =
-          __get_load_path__ ("fcn_info::fcn_info_rep::find_user_function");
+        load_path& lp
+          = __get_load_path__ ("fcn_info::fcn_info_rep::find_user_function");
 
 
         std::string file_name = lp.find_fcn (name, dir_name, package_name);
 
         if (! file_name.empty ())
           {
-            octave_value ov_fcn =
-              load_fcn_from_file (file_name, dir_name, "", package_name);
+            octave_value ov_fcn
+              = load_fcn_from_file (file_name, dir_name, "", package_name);
 
             if (ov_fcn.is_defined ())
               function_on_path = ov_fcn;
@@ -769,10 +1017,7 @@ namespace octave
         cdef_manager& cdm
           = __get_cdef_manager__ ("fcn_info::fcn_info_rep::find_package");
 
-        octave_function *fcn = cdm.find_package_symbol (full_name ());
-
-        if (fcn)
-          package = octave_value (fcn);
+        package = cdm.find_package_symbol (full_name ());
       }
 
     return package;
@@ -835,3 +1080,82 @@ namespace octave
     return octave_value (info_map);
   }
 }
+
+DEFUN (ignore_function_time_stamp, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} ignore_function_time_stamp ()
+@deftypefnx {} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})
+Query or set the internal variable that controls whether Octave checks
+the time stamp on files each time it looks up functions defined in
+function files.
+
+If the internal variable is set to @qcode{"system"}, Octave will not
+automatically recompile function files in subdirectories of
+@file{@var{octave-home}/lib/@var{version}} if they have changed since they were last compiled, but will recompile other function files in the search path if they change.
+
+If set to @qcode{"all"}, Octave will not recompile any function files
+unless their definitions are removed with @code{clear}.
+
+If set to @qcode{"none"}, Octave will always check time stamps on files to
+determine whether functions defined in function files need to recompiled.
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
+  octave_value retval;
+
+  if (nargout > 0 || nargin == 0)
+    {
+      switch (Vignore_function_time_stamp)
+        {
+        case 1:
+          retval = "system";
+          break;
+
+        case 2:
+          retval = "all";
+          break;
+
+        default:
+          retval = "none";
+          break;
+        }
+    }
+
+  if (nargin == 1)
+    {
+      std::string sval = args(0).xstring_value ("ignore_function_time_stamp: first argument must be a string");
+
+      if (sval == "all")
+        Vignore_function_time_stamp = 2;
+      else if (sval == "system")
+        Vignore_function_time_stamp = 1;
+      else if (sval == "none")
+        Vignore_function_time_stamp = 0;
+      else
+        error (R"(ignore_function_time_stamp: argument must be one of "all", "system", or "none")");
+    }
+
+  return retval;
+}
+
+/*
+%!shared old_state
+%! old_state = ignore_function_time_stamp ();
+%!test
+%! state = ignore_function_time_stamp ("all");
+%! assert (state, old_state);
+%! assert (ignore_function_time_stamp (), "all");
+%! state = ignore_function_time_stamp ("system");
+%! assert (state, "all");
+%! assert (ignore_function_time_stamp (), "system");
+%! ignore_function_time_stamp (old_state);
+
+## Test input validation
+%!error (ignore_function_time_stamp ("all", "all"))
+%!error (ignore_function_time_stamp ("UNKNOWN_VALUE"))
+%!error (ignore_function_time_stamp (42))
+*/

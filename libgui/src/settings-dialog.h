@@ -1,49 +1,54 @@
-/*
-
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_settings_dialog_h)
 #define octave_settings_dialog_h 1
 
 #include <QCheckBox>
 #include <QDialog>
-#include <QSettings>
 #include <QLineEdit>
 #include <QRadioButton>
 
 #include "color-picker.h"
-#include "gui-preferences.h"
+#include "gui-preferences-ed.h"
+#include "gui-settings.h"
 #include "ui-settings-dialog.h"
 
 class QsciLexer;
 
 namespace octave
 {
+  class base_qobject;
+
   // Ui::settings_dialog is a generated class.
 
   class settings_dialog : public QDialog, private Ui::settings_dialog
   {
-    Q_OBJECT public:
+  Q_OBJECT public:
 
-    explicit settings_dialog (QWidget *parent,
+    explicit settings_dialog (QWidget *parent, base_qobject& octave_qobj,
                               const QString& desired_tab = QString ());
 
     ~settings_dialog (void) = default;
@@ -71,19 +76,21 @@ namespace octave
 
   private:
 
-    void read_lexer_settings (QsciLexer *lexer, QSettings *settings);
-    void write_lexer_settings (QsciLexer *lexer, QSettings *settings);
+    void read_lexer_settings (QsciLexer *lexer, gui_settings *settings);
+    void write_lexer_settings (QsciLexer *lexer, gui_settings *settings);
 
     void write_changed_settings (bool closing);
 
-    void read_workspace_colors (QSettings *settings);
-    void write_workspace_colors (QSettings *settings);
+    void read_workspace_colors (gui_settings *settings);
+    void write_workspace_colors (gui_settings *settings);
 
-    void read_terminal_colors (QSettings *settings);
-    void write_terminal_colors (QSettings *settings);
+    void read_terminal_colors (gui_settings *settings);
+    void write_terminal_colors (gui_settings *settings);
 
-    void read_varedit_colors (QSettings *settings);
-    void write_varedit_colors (QSettings *settings);
+    void read_varedit_colors (gui_settings *settings);
+    void write_varedit_colors (gui_settings *settings);
+
+    base_qobject& m_octave_qobj;
 
     color_picker *m_widget_title_bg_color;
     color_picker *m_widget_title_bg_color_active;

@@ -1,29 +1,33 @@
-/*
-
-Copyright (C) 2002-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2002-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
+#include <list>
 #include <string>
 
 #include "DASRT.h"
@@ -32,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-cell.h"
@@ -44,9 +49,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "DASRT-opts.cc"
 
 // Global pointers for user defined function required by dasrt.
-static octave_function *dasrt_f;
-static octave_function *dasrt_j;
-static octave_function *dasrt_cf;
+static octave_value dasrt_fcn;
+static octave_value dasrt_jac;
+static octave_value dasrt_cf;
 
 // Have we warned about imaginary values returned from user function?
 static bool warned_fcn_imaginary = false;
@@ -70,13 +75,13 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
   args(1) = xdot;
   args(0) = x;
 
-  if (dasrt_f)
+  if (dasrt_fcn.is_defined ())
     {
       octave_value_list tmp;
 
       try
         {
-          tmp = octave::feval (dasrt_f, args, 1);
+          tmp = octave::feval (dasrt_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -111,7 +116,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
   args(1) = t;
   args(0) = x;
 
-  if (dasrt_cf)
+  if (dasrt_cf.is_defined ())
     {
       octave_value_list tmp;
 
@@ -157,13 +162,13 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
   args(1) = xdot;
   args(0) = x;
 
-  if (dasrt_j)
+  if (dasrt_jac.is_defined ())
     {
       octave_value_list tmp;
 
       try
         {
-          tmp = octave::feval (dasrt_j, args, 1);
+          tmp = octave::feval (dasrt_jac, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -353,17 +358,19 @@ parameters for @code{dasrt}.
 
   int argp = 0;
   std::string fcn_name, fname, jac_name, jname;
-  dasrt_f = nullptr;
-  dasrt_j = nullptr;
-  dasrt_cf = nullptr;
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  dasrt_fcn = octave_value ();
+  dasrt_jac = octave_value ();
+  dasrt_cf = octave_value ();
 
   // Check all the arguments.  Are they the right animals?
 
   // Here's where I take care of f and j in one shot:
 
   octave_value f_arg = args(0);
+
+  std::list<std::string> fcn_param_names ({"x", "xdot", "t"});
+  std::list<std::string> jac_param_names ({"x", "xdot", "t", "cj"});
 
   if (f_arg.iscell ())
     {
@@ -372,83 +379,49 @@ parameters for @code{dasrt}.
         f_arg = c(0);
       else if (c.numel () == 2)
         {
-          if (c(0).is_function_handle () || c(0).is_inline_function ())
-            dasrt_f = c(0).function_value ();
-          else
-            {
-              fcn_name = unique_symbol_name ("__dasrt_fcn__");
-              fname = "function y = ";
-              fname.append (fcn_name);
-              fname.append (" (x, xdot, t) y = ");
-              dasrt_f = extract_function (c(0), "dasrt", fcn_name, fname,
-                                          "; endfunction");
-            }
+          dasrt_fcn = octave::get_function_handle (interp, c(0),
+                                                   fcn_param_names);
 
-          if (dasrt_f)
+          if (dasrt_fcn.is_defined ())
             {
-              if (c(1).is_function_handle () || c(1).is_inline_function ())
-                dasrt_j = c(1).function_value ();
-              else
-                {
-                  jac_name = unique_symbol_name ("__dasrt_jac__");
-                  jname = "function jac = ";
-                  jname.append (jac_name);
-                  jname.append (" (x, xdot, t, cj) jac = ");
-                  dasrt_j = extract_function (c(1), "dasrt", jac_name, jname,
-                                              "; endfunction");
+              dasrt_jac = octave::get_function_handle (interp, c(1),
+                                                       jac_param_names);
 
-                  if (! dasrt_j)
-                    {
-                      if (fcn_name.length ())
-                        symtab.clear_function (fcn_name);
-                      dasrt_f = nullptr;
-                    }
-                }
+              if (dasrt_jac.is_undefined ())
+                dasrt_fcn = octave_value ();
             }
         }
       else
         error ("dasrt: incorrect number of elements in cell array");
     }
 
-  if (! dasrt_f && ! f_arg.iscell ())
+  if (dasrt_fcn.is_undefined () && ! f_arg.iscell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
-        dasrt_f = f_arg.function_value ();
+        dasrt_fcn = f_arg;
       else
         {
           switch (f_arg.rows ())
             {
             case 1:
-              fcn_name = unique_symbol_name ("__dasrt_fcn__");
-              fname = "function y = ";
-              fname.append (fcn_name);
-              fname.append (" (x, xdot, t) y = ");
-              dasrt_f = extract_function (f_arg, "dasrt", fcn_name, fname,
-                                          "; endfunction");
+              dasrt_fcn = octave::get_function_handle (interp, f_arg,
+                                                       fcn_param_names);
               break;
 
             case 2:
               {
-                string_vector tmp = args(0).string_vector_value ();
+                string_vector tmp = f_arg.string_vector_value ();
 
-                fcn_name = unique_symbol_name ("__dasrt_fcn__");
-                fname = "function y = ";
-                fname.append (fcn_name);
-                fname.append (" (x, xdot, t) y = ");
-                dasrt_f = extract_function (tmp(0), "dasrt", fcn_name,
-                                            fname, "; endfunction");
+                dasrt_fcn = octave::get_function_handle (interp, tmp(0),
+                                                         fcn_param_names);
 
-                if (dasrt_f)
+                if (dasrt_fcn.is_defined ())
                   {
-                    jac_name = unique_symbol_name ("__dasrt_jac__");
-                    jname = "function jac = ";
-                    jname.append (jac_name);
-                    jname.append (" (x, xdot, t, cj) jac = ");
-                    dasrt_j = extract_function (tmp(1), "dasrt", jac_name,
-                                                jname, "; endfunction");
+                    dasrt_jac = octave::get_function_handle (interp, tmp(1),
+                                                             jac_param_names);
 
-                    if (! dasrt_j)
-                      dasrt_f = nullptr;
+                    if (dasrt_jac.is_undefined ())
+                      dasrt_fcn = octave_value ();
                   }
               }
               break;
@@ -459,8 +432,8 @@ parameters for @code{dasrt}.
         }
     }
 
-  if (! dasrt_f)
-    return retval;
+  if (dasrt_fcn.is_undefined ())
+    error ("dasrt: FCN argument is not a valid function name or handle");
 
   DAERTFunc func (dasrt_user_f);
 
@@ -475,19 +448,15 @@ parameters for @code{dasrt}.
     }
   else
     {
-      if (args(1).is_function_handle () || args(1).is_inline_function ())
-        dasrt_cf = args(1).function_value ();
-      else if (args(1).is_string ())
+      if (args(1).is_function_handle () || args(1).is_inline_function ()
+          || args(1).is_string ())
         {
-          fcn_name = unique_symbol_name ("__dasrt_constraint_fcn__");
-          fname = "function g_out = ";
-          fname.append (fcn_name);
-          fname.append (" (x, t) g_out = ");
-          dasrt_cf = extract_function (args(1), "dasrt", fcn_name, fname,
-                                       "; endfunction");
+          std::list<std::string> cf_param_names ({"x", "t"});
+
+          dasrt_cf = octave::get_function_handle (interp, args(1), cf_param_names);
         }
 
-      if (dasrt_cf)
+      if (dasrt_cf.is_defined ())
         {
           argp++;
 
@@ -518,7 +487,7 @@ parameters for @code{dasrt}.
       crit_times_set = true;
     }
 
-  if (dasrt_j)
+  if (dasrt_jac.is_defined ())
     func.set_jacobian_function (dasrt_user_j);
 
   DASRT_result output;
@@ -531,11 +500,6 @@ parameters for @code{dasrt}.
     output = dae.integrate (out_times, crit_times);
   else
     output = dae.integrate (out_times);
-
-  if (fcn_name.length ())
-    symtab.clear_function (fcn_name);
-  if (jac_name.length ())
-    symtab.clear_function (jac_name);
 
   std::string msg = dae.error_message ();
 

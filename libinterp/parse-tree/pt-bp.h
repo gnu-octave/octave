@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2001-2019 Ben Sapp
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2001-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pt_bp_h)
 #define octave_pt_bp_h 1
@@ -81,21 +84,14 @@ namespace octave
 
     void visit_complex_for_command (tree_complex_for_command&);
 
-    void visit_octave_user_script (octave_user_script&);
-
-    void visit_octave_user_function (octave_user_function&);
-
     void visit_octave_user_function_header (octave_user_function&);
 
     void visit_octave_user_function_trailer (octave_user_function&);
 
-    void visit_function_def (tree_function_def&);
 
     void visit_identifier (tree_identifier&);
 
     void visit_if_clause (tree_if_clause&);
-
-    void visit_if_command (tree_if_command&);
 
     void visit_if_command_list (tree_if_command_list&);
 
@@ -114,8 +110,6 @@ namespace octave
     void visit_constant (tree_constant&);
 
     void visit_fcn_handle (tree_fcn_handle&);
-
-    void visit_funcall (tree_funcall&);
 
     void visit_parameter_list (tree_parameter_list&);
 
@@ -174,12 +168,5 @@ namespace octave
     octave_value_list m_bp_cond_list;
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_breakpoint' instead")
-typedef octave::tree_breakpoint tree_breakpoint;
-
-#endif
 
 #endif

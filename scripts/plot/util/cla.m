@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} cla
@@ -39,9 +46,6 @@
 ## this axes rather than the current axes returned by @code{gca}.
 ## @seealso{clf, delete, reset}
 ## @end deftypefn
-
-## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2008-10-03
 
 function cla (hax, do_reset = false)
 

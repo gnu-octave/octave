@@ -1,4 +1,9 @@
-## Copyright (C) 2014-2019 Massimiliano Fasi
+########################################################################
+##
+## Copyright (C) 2014-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} isbanded (@var{A}, @var{lower}, @var{upper})
@@ -25,8 +32,6 @@
 ## @var{lower} and @var{upper} must be non-negative integers.
 ## @seealso{isdiag, istril, istriu, bandwidth}
 ## @end deftypefn
-
-## Author: Massimiliano Fasi
 
 function retval = isbanded (A, lower, upper)
 

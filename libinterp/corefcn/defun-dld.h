@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_defun_dld_h)
 #define octave_defun_dld_h 1
@@ -36,13 +39,13 @@ along with Octave; see the file COPYING.  If not, see
 //! For detailed information, see \ref Macros.
 //!
 //! @param name The **unquoted** name of the function that should be installed
-//!             on the `octave::symbol_table` and can be called by the
+//!             on the 'octave::symbol_table' and can be called by the
 //!             interpreter.  Internally, the function name is prepended by an
-//!             `F`.
+//!             'F'.
 //! @param args_name The name of the octave_value_list variable used to pass
 //!                  the argument list to this function.  If this value is
 //!                  omitted, the function cannot access the argument list.
-//! @param nargout_name The name of the `int` variable used to pass the number
+//! @param nargout_name The name of the 'int' variable used to pass the number
 //!                     of output arguments this function is expected to
 //!                     produce from the caller.  If this value is
 //!                     omitted, the function cannot access this number.
@@ -70,17 +73,17 @@ along with Octave; see the file COPYING.  If not, see
 //! For detailed information, see \ref Macros.
 //!
 //! @param name The **unquoted** name of the method that should be installed
-//!             on the `octave::symbol_table` and can be called by the
+//!             on the 'octave::symbol_table' and can be called by the
 //!             interpreter.  Internally, the method name is prepended by an
-//!             `F`.
-//! @param interp_name The name of the `octave::interpreter` reference that can
+//!             'F'.
+//! @param interp_name The name of the 'octave::interpreter' reference that can
 //!                    be used by this method.  If this value is omitted,
 //!                    there is no access to the interpreter and one should
 //!                    use #DEFUN to define a function instead.
 //! @param args_name The name of the octave_value_list variable used to pass
 //!                  the argument list to this method.  If this value is
 //!                  omitted, the method cannot access the argument list.
-//! @param nargout_name The name of the `int` variable used to pass the number
+//! @param nargout_name The name of the 'int' variable used to pass the number
 //!                     of output arguments this method is expected to
 //!                     produce from the caller.  If this value is
 //!                     omitted, the method cannot access this number.

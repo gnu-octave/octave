@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -42,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
+#include "oct-string.h"
 #include "pathsearch.h"
 #include "quit.h"
 #include "str-vec.h"
@@ -49,7 +52,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "defun.h"
-#include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
 #include "graphics.h"
@@ -137,7 +139,121 @@ namespace octave
   {
     return same_file_internal (f, g);
   }
+}
 
+DEFUN (is_same_file, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{same} =} is_same_file (@var{filepath1}, @var{filepath2})
+Return true if @var{filepath1} and @var{filepath2} refer to the same file.
+
+If either @var{filepath1} or @var{filepath2} is a cell array of strings, then
+an array of the same size is returned, containing the values described above
+for every member of the cell array.  The other argument may also be a cell
+array of strings (of the same size) or a string.
+
+Programming Notes: Depending on the operating system and file system, the same
+file or folder can be referred to with different paths.  In particular, paths
+on the Windows platform may differ in case (@file{file1} vs.@: @file {FILE1}),
+file separator (@samp{\} vs.@: @samp{/}), and format (@file{A~spaces.txt} (8.3
+convention) vs.@: @file{A filename with spaces.txt}).  This function returns
+true if the paths in @var{filepath1} and @var{filepath2} actually refer to the
+same file or folder, and false otherwise.
+
+Note that unlike @code{strcmp}, this function requires that @var{filepath1}
+and @var{filepath2} exist, as well as point to the same location, in order to
+return true.
+
+@seealso{canonicalize_file_name, strcmp}
+@end deftypefn */)
+{
+  if (args.length () != 2)
+    print_usage ();
+
+  octave_value retval;
+
+  bool s1_string = args(0).is_string ();
+  bool s1_cellstr = args(0).iscellstr ();
+  bool s2_string = args(1).is_string ();
+  bool s2_cellstr = args(1).iscellstr ();
+
+  if (s1_string && s2_string)
+    {
+      std::string file1 = args(0).string_value ();
+      std::string file2 = args(1).string_value ();
+
+      retval = octave::same_file (file1, file2);
+    }
+  else if ((s1_string && s2_cellstr) || (s1_cellstr && s2_string))
+    {
+      octave_value str_arg, cellstr_arg;
+
+      if (s1_string)
+        {
+          str_arg = args(0);
+          cellstr_arg = args(1);
+        }
+      else
+        {
+          str_arg = args(1);
+          cellstr_arg = args(0);
+        }
+
+      const Array<std::string> cellstr = cellstr_arg.cellstr_value ();
+      const std::string str = str_arg.string_value ();
+
+      boolNDArray output (cellstr.dims (), false);
+
+      for (octave_idx_type idx = 0; idx < cellstr.numel (); idx++)
+        output(idx) = octave::same_file (str, cellstr(idx));
+
+      retval = output;
+    }
+  else if (s1_cellstr && s2_cellstr)
+    {
+      const Array<std::string> cellstr1 = args(0).cellstr_value ();
+      const Array<std::string> cellstr2 = args(1).cellstr_value ();
+
+      const dim_vector size1 = cellstr1.dims ();
+      const dim_vector size2 = cellstr2.dims ();
+
+      if (size1 != size2)
+        error ("is_same_file: cellstr arrays FILEPATH1 and FILEPATH2 must be the same size");
+
+      boolNDArray output (size1, false);
+
+      for (octave_idx_type idx = 0; idx < cellstr1.numel (); idx++)
+        output(idx) = octave::same_file (cellstr1(idx), cellstr2(idx));
+
+      retval = output;
+    }
+  else
+    error ("is_same_file: FILEPATH1 and FILEPATH2 must be strings or cell arrays of strings");
+
+  return retval;
+}
+
+/*
+%!testif ; ! ispc ()
+%! assert (is_same_file ("~", tilde_expand ("~")));
+%!testif ; ispc ()
+%! assert (is_same_file (tolower (getenv ("OCTAVE_HOME")),
+%!                       toupper (getenv ("OCTAVE_HOME"))), true);
+%!assert (is_same_file ({pwd(), ".", tempdir()}, canonicalize_file_name (".")),
+%!        [true, true, false])
+
+%!error is_same_file ()
+%!error is_same_file ("foo")
+%!error is_same_file ("foo", "bar", "baz")
+%!error <must be strings or cell arrays of strings> is_same_file ("foo", 1)
+%!error <must be strings or cell arrays of strings> is_same_file (1, "foo")
+%!error <must be strings or cell arrays of strings> is_same_file ("foo", {1})
+%!error <must be strings or cell arrays of strings> is_same_file ({1}, "foo")
+%!error <arrays .* must be the same size> is_same_file ({"1", "2"}, {"1"; "2"})
+*/
+
+
+namespace octave
+{
   int almost_match (const std::string& std, const std::string& s,
                     int min_match_len, int case_sens)
   {
@@ -453,12 +569,10 @@ namespace octave
 
         if (! local_file_ok)
           {
-            load_path& lp =
-              __get_load_path__ ("find_data_file_in_load_path");
+            load_path& lp = __get_load_path__ ("find_data_file_in_load_path");
 
             // Not directly found; search load path.
-            std::string tmp
-              = sys::env::make_absolute (lp.find_file (fname));
+            std::string tmp = sys::env::make_absolute (lp.find_file (fname));
 
             if (! tmp.empty ())
               {
@@ -1106,7 +1220,7 @@ namespace octave
       for (octave_idx_type i = 0; i < n; i++)
         dim(i) = v(i);
 
-    octave::check_dimensions (dim, warn_for);
+    check_dimensions (dim, warn_for);
   }
 
   void get_dimensions (const octave_value& a, const char *warn_for,
@@ -1129,7 +1243,7 @@ namespace octave
         nc = v(1);
       }
 
-    octave::check_dimensions (nr, nc, warn_for);
+    check_dimensions (nr, nc, warn_for);
   }
 
   void get_dimensions (const octave_value& a, const octave_value& b,
@@ -1139,7 +1253,7 @@ namespace octave
     nr = (a.isempty () ? 0 : a.idx_type_value (true));
     nc = (b.isempty () ? 0 : b.idx_type_value (true));
 
-    octave::check_dimensions (nr, nc, warn_for);
+    check_dimensions (nr, nc, warn_for);
   }
 
   octave_idx_type dims_to_numel (const dim_vector& dims,
@@ -1172,11 +1286,7 @@ namespace octave
                   }
                 catch (const index_exception& e)
                   {
-                    std::string idx = e.idx ();
-                    std::string msg = e.details ();
-
-                    error ("dims_to_numel: Invalid IDX %s. %s",
-                           idx.c_str (), msg.c_str ());
+                    error ("dims_to_numel: invalid index %s", e.what ());
                   }
               }
           }
@@ -1238,6 +1348,33 @@ namespace octave
     return s.length ();
   }
 
+  size_t format (std::ostream& os, const std::string& enc, const char *fmt, ...)
+  {
+    size_t retval;
+
+    va_list args;
+    va_start (args, fmt);
+
+    retval = vformat (os, enc, fmt, args);
+
+    va_end (args);
+
+    return retval;
+  }
+
+  size_t vformat (std::ostream& os, const std::string& enc, const char *fmt,
+                  va_list args)
+  {
+    std::string s = vasprintf (fmt, args);
+
+    if (enc.compare ("utf-8"))
+      os << string::u8_to_encoding ("printf", s, enc);
+    else
+      os << s;
+
+    return s.length ();
+  }
+
   std::string vasprintf (const char *fmt, va_list args)
   {
     std::string retval;
@@ -1281,14 +1418,17 @@ namespace octave
 
     // Allow free access to graphics resources while the interpreter thread
     // is asleep
-    if (do_graphics_events)
-      gh_manager::unlock ();
 
-    if (octave::math::isinf (seconds))
+    gh_manager& gh_mgr = __get_gh_manager__ ("sleep");
+
+    if (do_graphics_events)
+      gh_mgr.unlock ();
+
+    if (math::isinf (seconds))
       {
         // Wait for kbhit
         int c = -1;
-        octave::flush_stdout ();
+        flush_stdout ();
 
         struct timespec one_tenth = { 0, 100000000 };
 
@@ -1299,71 +1439,53 @@ namespace octave
             octave_quit ();
 
             if (do_graphics_events)
-              gh_manager::process_events ();
+              gh_mgr.process_events ();
 
-            c = octave::kbhit (false);
+            c = kbhit (false);
           }
       }
     else
       {
-        // Split delay into whole seconds and the remainder as a decimal
-        // fraction.
+        sys::time now;
+        double end_time = now.double_value () + seconds;
+        double remaining_time = seconds;
 
-        double fraction = std::modf (seconds, &seconds);
+        // Split pause into 100 ms time steps to allow the execution of
+        // graphics events and interrupts.
+        struct timespec nano_laps = { 0, 100000000 };
 
-        // Further split the fractional seconds into whole tenths and the
-        // nearest number of nanoseconds remaining.
-
-        double tenths = 0;
-        fraction = std::modf (fraction * 10, &tenths) / 10;
-        fraction = std::round (fraction * 1000000000);
-
-        // Sleep for the hundredths portion.
-
-        struct timespec hundredths_delay = { 0, static_cast<long> (fraction) };
-
-        octave_nanosleep_wrapper (&hundredths_delay, nullptr);
-
-        // Sleep for the whole tenths portion, allowing interrupts every
-        // tenth.
-
-        struct timespec one_tenth = { 0, 100000000 };
-
-        for (int i = 0; i < static_cast<int> (tenths); i++)
+        while (remaining_time > 0.1)
           {
-            octave_nanosleep_wrapper (&one_tenth, nullptr);
-
             octave_quit ();
 
             if (do_graphics_events)
-              gh_manager::process_events ();
+              {
+                gh_mgr.process_events ();
+
+                now.stamp ();
+                remaining_time = end_time - now.double_value ();
+
+                if (remaining_time < 0.1)
+                  break;
+              }
+
+            octave_nanosleep_wrapper (&nano_laps, nullptr);
+
+            now.stamp ();
+            remaining_time = end_time - now.double_value ();
           }
 
-        // Sleep for the whole seconds portion, allowing interrupts every
-        // tenth.
-
-        time_t sec = ((seconds > std::numeric_limits<time_t>::max ())
-                      ? std::numeric_limits<time_t>::max ()
-                      : static_cast<time_t> (seconds));
-
-        for (time_t s = 0; s < sec; s++)
+        if (remaining_time > 0.0)
           {
-            for (int i = 0; i < 10; i++)
-              {
-                octave_nanosleep_wrapper (&one_tenth, nullptr);
-
-                octave_quit ();
-
-                if (do_graphics_events)
-                  gh_manager::process_events ();
-              }
+            nano_laps = { 0, static_cast<int> (remaining_time * 1e9) };
+            octave_nanosleep_wrapper (&nano_laps, nullptr);
           }
       }
   }
 }
 
-DEFUN (isindex, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (isindex, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} isindex (@var{ind})
 @deftypefnx {} {} isindex (@var{ind}, @var{n})
 Return true if @var{ind} is a valid index.
@@ -1391,11 +1513,6 @@ character @nospell{"@xbackslashchar{}0"}, it will always be a valid index.
 
   octave_value retval;
 
-  octave::unwind_protect frame;
-
-  frame.protect_var (discard_error_messages);
-  discard_error_messages = true;
-
   try
     {
       idx_vector idx = args(0).index_vector (true);
@@ -1407,7 +1524,7 @@ character @nospell{"@xbackslashchar{}0"}, it will always be a valid index.
     }
   catch (const octave::execution_exception&)
     {
-      octave::interpreter::recover_from_exception ();
+      interp.recover_from_exception ();
 
       retval = false;
     }
@@ -1501,7 +1618,7 @@ namespace octave
   {
     octave_value retval;
 
-    const octave_value_list tmp = octave::do_simple_cellfun (fun, fun_name, args, 1);
+    const octave_value_list tmp = do_simple_cellfun (fun, fun_name, args, 1);
 
     if (tmp.length () > 0)
       retval = tmp(0);

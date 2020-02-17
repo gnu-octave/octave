@@ -1,4 +1,9 @@
-## Copyright (C) 2018-2019 Juan Pablo Carbajal
+########################################################################
+##
+## Copyright (C) 2018-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,9 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
-
-## Author: Juan Pablo Carbajal <ajuanpi+dev@gmail.com>
-## Created: 2018-08-09
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movfun (@var{fcn}, @var{x}, @var{wlen})

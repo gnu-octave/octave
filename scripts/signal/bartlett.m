@@ -1,4 +1,9 @@
-## Copyright (C) 1995-2019 Andreas Weingessel
+########################################################################
+##
+## Copyright (C) 1995-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} bartlett (@var{m})
@@ -25,9 +32,6 @@
 ## @nospell{A.V. Oppenheim & R. W. Schafer},
 ## @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn
-
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Description: Coefficients of the Bartlett (triangular) window
 
 function c = bartlett (m)
 

@@ -1,8 +1,9 @@
 FCN_FILE_DIRS += \
-  scripts/set \
+  %reldir% \
   %reldir%/private
 
-%canon_reldir%_PRIVATE_FCN_FILES = %reldir%/private/validsetargs.m
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/validsetargs.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/intersect.m \

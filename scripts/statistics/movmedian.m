@@ -1,4 +1,9 @@
-## Copyright (C) 2018-2019 Rik Wehbring
+########################################################################
+##
+## Copyright (C) 2018-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,10 +20,12 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movmedian (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movmedian (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movmedian (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movmedian (@dots{}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movmedian (@dots{}, "@var{nancond}")
 ## @deftypefnx {} {@var{y} =} movmedian (@dots{}, @var{property}, @var{value})
@@ -49,9 +56,9 @@
 ##
 ## The optional string argument @qcode{"@var{nancond}"} controls whether
 ## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
-## or excluded (@qcode{"omitnan"}), from the data passed to @code{movmedian}.  The
-## default is @qcode{"includenan"}.  Caution: the @qcode{"omitnan"} option is
-## not yet implemented.
+## or excluded (@qcode{"omitnan"}), from the data passed to
+## @code{movmedian}.  The default is @qcode{"includenan"}.  Caution: the
+## @qcode{"omitnan"} option is not yet implemented.
 ##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
 ## pairs.  Valid properties are
@@ -85,8 +92,8 @@
 ## @code{@var{y}(1) = movmedian ([NaN, @var{x}(1:2)])}, and
 ## @code{@var{y}(end) = movmedian ([@var{x}(end-1:end), NaN])}.
 ## This option usually results in @var{y} having @code{NaN} values at the
-## boundaries, although it is influenced by how @code{movmedian} handles @code{NaN},
-## and also by the property @qcode{"nancond"}.
+## boundaries, although it is influenced by how @code{movmedian} handles
+## @code{NaN}, and also by the property @qcode{"nancond"}.
 ##
 ## @item @var{user_value}
 ## Any window elements outside the data array are replaced by the specified
@@ -116,7 +123,7 @@
 ## @end table
 ##
 ## Programming Note: This function is a wrapper which calls @code{movfun}.
-## For additional options and documentation, @xref{XREFmovfun,,movfun}.
+## For additional options and documentation, @pxref{XREFmovfun,,movfun}.
 ##
 ## @seealso{movfun, movslice, movmad, movmax, movmean, movmin, movprod, movstd, movsum, movvar}
 ## @end deftypefn

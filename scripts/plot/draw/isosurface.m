@@ -1,4 +1,9 @@
-## Copyright (C) 2009-2019 Martin Helm
+########################################################################
+##
+## Copyright (C) 2009-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{fv} =} isosurface (@var{v}, @var{isoval})
@@ -62,8 +69,7 @@
 ##
 ## If given the string input argument @qcode{"noshare"}, vertices may be
 ## returned multiple times for different faces.  The default behavior is to
-## eliminate vertices shared by adjacent faces with @code{unique} which may be
-## time consuming.
+## eliminate vertices shared by adjacent faces.
 ##
 ## The string input argument @qcode{"verbose"} is supported for @sc{matlab}
 ## compatibility, but has no effect.
@@ -138,8 +144,6 @@
 ## @seealso{isonormals, isocolors, isocaps, smooth3, reducevolume, reducepatch, patch}
 ## @end deftypefn
 
-## Author: Martin Helm <martin@mhelm.de>
-
 ## FIXME: Add support for string input argument "verbose"
 ##        (needs changes to __marching_cube__.m)
 
@@ -164,12 +168,18 @@ function varargout = isosurface (varargin)
     warning ("isosurface: triangulation is empty");
   endif
 
+  # remove faces for which at least one of the vertices is NaN
+  vert_nan = 1:size (fvc.vertices, 1);
+  vert_nan(any (isnan (fvc.vertices), 2)) = NaN;
+  fvc.faces = vert_nan(fvc.faces);
+  fvc.faces(any (isnan (fvc.faces), 2), :) = [];
+
   if (! noshare)
     [fvc.faces, fvc.vertices, J] = __unite_shared_vertices__ (fvc.faces,
                                                               fvc.vertices);
 
     if (calc_colors)
-      fvc.facevertexcdata(J) = [];  # share very close vertices
+      fvc.facevertexcdata = fvc.facevertexcdata(J);  # share very close vertices
     endif
   endif
 

@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2015 Michael Barnes
-Copyright (C) 2013 Rüdiger Sonderfeld
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -40,54 +41,57 @@ along with Octave; see the file COPYING.  If not, see
 #include <QScrollBar>
 #include <QSignalMapper>
 #include <QStackedWidget>
+#include <QTabWidget>
 #include <QTableView>
 #include <QTextEdit>
-#include <QTabWidget>
 #include <QToolBar>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "dw-main-window.h"
-#include "resource-manager.h"
+#include "gui-preferences-cs.h"
+#include "gui-preferences-global.h"
+#include "gui-preferences-ve.h"
+#include "octave-qobject.h"
 #include "shortcut-manager.h"
-#include "variable-editor.h"
 #include "variable-editor-model.h"
-#include "gui-preferences.h"
-
-// Code reuse functions
-
-static QString
-idx_to_expr (int32_t from, int32_t to)
-{
-  return (from == to
-          ? QString ("%1").arg (from)
-          : QString ("%1:%2").arg (from).arg (to));
-}
-
-static QSignalMapper *
-make_plot_mapper (QMenu *menu)
-{
-  QList<QString> list;
-  list << "plot" << "bar" << "stem" << "stairs" << "area" << "pie" << "hist";
-
-  QSignalMapper *plot_mapper = new QSignalMapper (menu);
-
-  for (int i = 0; i < list.size(); ++i)
-    {
-      plot_mapper->setMapping
-        (menu->addAction (list.at (i), plot_mapper, SLOT (map ())),
-         "figure (); " + list.at (i) + " (%1); title (\"%1\");");
-    }
-
-  return plot_mapper;
-}
+#include "variable-editor.h"
 
 namespace octave
 {
+  // Code reuse functions
+
+  static QString
+  idx_to_expr (int32_t from, int32_t to)
+  {
+    return (from == to
+            ? QString ("%1").arg (from)
+            : QString ("%1:%2").arg (from).arg (to));
+  }
+
+  static QSignalMapper *
+  make_plot_mapper (QMenu *menu)
+  {
+    QList<QString> list;
+    list << "plot" << "bar" << "stem" << "stairs" << "area" << "pie" << "hist";
+
+    QSignalMapper *plot_mapper = new QSignalMapper (menu);
+
+    for (int i = 0; i < list.size(); ++i)
+      {
+        plot_mapper->setMapping
+          (menu->addAction (list.at (i), plot_mapper, SLOT (map ())),
+           "figure (); " + list.at (i) + " (%1); title (\"%1\");");
+      }
+
+    return plot_mapper;
+  }
+
   // Variable dock widget
 
-  variable_dock_widget::variable_dock_widget (QWidget *p)
-    : label_dock_widget (p)
+  variable_dock_widget::variable_dock_widget (QWidget *p,
+                                              base_qobject& oct_qobj)
+    : label_dock_widget (p, oct_qobj)
 // See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
       , m_waiting_for_mouse_move (false)
@@ -117,8 +121,9 @@ namespace octave
     m_prev_geom = QRect (0, 0, 0, 0);
 
     QHBoxLayout *h_layout = m_title_widget->findChild<QHBoxLayout *> ();
-    m_fullscreen_action = new QAction
-      (resource_manager::icon ("view-fullscreen", false), "", this);
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    m_fullscreen_action
+      = new QAction (rmgr.icon ("view-fullscreen", false), "", this);
     m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
     QToolButton *fullscreen_button = new QToolButton (m_title_widget);
     fullscreen_button->setDefaultAction (m_fullscreen_action);
@@ -153,7 +158,8 @@ namespace octave
         if (m_full_screen)
           {
             setGeometry (m_prev_geom);
-            m_fullscreen_action->setIcon (resource_manager::icon ("view-fullscreen", false));
+            resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+            m_fullscreen_action->setIcon (rmgr.icon ("view-fullscreen", false));
             m_full_screen = false;
           }
         m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
@@ -180,6 +186,10 @@ namespace octave
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock.png"));
         m_dock_action->setToolTip (tr ("Dock widget"));
 
+        setWindowFlags (Qt::Window);
+        setWindowTitle (tr ("Variable Editor: ") + objectName ());
+
+        show ();
         activateWindow ();
         setFocus ();
 
@@ -207,10 +217,12 @@ namespace octave
   variable_dock_widget::change_fullscreen (void)
   {
 #if defined (HAVE_QGUIAPPLICATION)
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     if (! m_full_screen)
       {
         m_prev_floating = isFloating ();
-        m_fullscreen_action->setIcon (resource_manager::icon ("view-restore", false));
+        m_fullscreen_action->setIcon (rmgr.icon ("view-restore", false));
         if (m_prev_floating)
           m_fullscreen_action->setToolTip (tr ("Restore geometry"));
         else
@@ -230,7 +242,7 @@ namespace octave
       }
     else
       {
-        m_fullscreen_action->setIcon (resource_manager::icon ("view-fullscreen", false));
+        m_fullscreen_action->setIcon (rmgr.icon ("view-fullscreen", false));
         setGeometry (m_prev_geom);
         if (m_prev_floating)
           m_fullscreen_action->setToolTip (tr (UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP));
@@ -314,7 +326,8 @@ namespace octave
         m_waiting_for_mouse_move = false;
         m_waiting_for_mouse_button_release = true;
       }
-    if (event->type () == QEvent::MouseButtonRelease && m_waiting_for_mouse_button_release)
+    if (event->type () == QEvent::MouseButtonRelease
+        && m_waiting_for_mouse_button_release)
       {
         m_waiting_for_mouse_button_release = false;
         bool retval = QDockWidget::event (event);
@@ -352,18 +365,20 @@ namespace octave
 
   void
   variable_dock_widget::unfloat_float (void)
-  {}
+  { }
 
   void
   variable_dock_widget::refloat (void)
-  {}
+  { }
 
 #endif
 
   // Variable editor stack
 
-  variable_editor_stack::variable_editor_stack (QWidget *p)
-    : QStackedWidget (p), m_edit_view (new variable_editor_view (this))
+  variable_editor_stack::variable_editor_stack (QWidget *p,
+                                                base_qobject& oct_qobj)
+    : QStackedWidget (p), m_octave_qobj (oct_qobj),
+      m_edit_view (new variable_editor_view (this, m_octave_qobj))
   {
     setFocusPolicy (Qt::StrongFocus);
 
@@ -433,7 +448,7 @@ namespace octave
 
     if (name.endsWith (')') || name.endsWith ('}'))
       {
-        name.remove (QRegExp ("(\\(|\\{)[^({]*(\\)|\\})$"));
+        name.remove ( QRegExp ("[({][^({]*[)}]$)") );
         emit edit_variable_signal (name, octave_value ());
       }
   }
@@ -446,8 +461,9 @@ namespace octave
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = 0;  // No options by default.
-    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (! settings->value (global_use_native_dialogs).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString name = objectName ();
@@ -470,8 +486,9 @@ namespace octave
 
   // Custom editable variable table view
 
-  variable_editor_view::variable_editor_view (QWidget *p)
-    : QTableView (p), m_var_model (nullptr)
+  variable_editor_view::variable_editor_view (QWidget *p,
+                                              base_qobject& oct_qobj)
+    : QTableView (p), m_octave_qobj (oct_qobj), m_var_model (nullptr)
   {
     setWordWrap (false);
     setContextMenuPolicy (Qt::CustomContextMenu);
@@ -577,29 +594,31 @@ namespace octave
   variable_editor_view::add_edit_actions (QMenu *menu,
                                           const QString& qualifier_string)
   {
-    menu->addAction (resource_manager::icon ("edit-cut"),
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    menu->addAction (rmgr.icon ("edit-cut"),
                      tr ("Cut") + qualifier_string,
                      this, SLOT (cutClipboard ()));
 
-    menu->addAction (resource_manager::icon ("edit-copy"),
+    menu->addAction (rmgr.icon ("edit-copy"),
                      tr ("Copy") + qualifier_string,
                      this, SLOT (copyClipboard ()));
 
-    menu->addAction (resource_manager::icon ("edit-paste"),
+    menu->addAction (rmgr.icon ("edit-paste"),
                      tr ("Paste"),
                      this, SLOT (pasteClipboard ()));
 
     menu->addSeparator ();
 
-    menu->addAction (resource_manager::icon ("edit-delete"),
+    menu->addAction (rmgr.icon ("edit-delete"),
                      tr ("Clear") + qualifier_string,
                      this, SLOT (clearContent ()));
 
-    menu->addAction (resource_manager::icon ("edit-delete"),
+    menu->addAction (rmgr.icon ("edit-delete"),
                      tr ("Delete") + qualifier_string,
                      this, SLOT (delete_selected ()));
 
-    menu->addAction (resource_manager::icon ("document-new"),
+    menu->addAction (rmgr.icon ("document-new"),
                      tr ("Variable from Selection"),
                      this, SLOT (createVariable ()));
   }
@@ -831,7 +850,7 @@ namespace octave
     QModelIndex previous = indices.first ();
     QString copy = mod->data (previous).toString ();
     indices.removeFirst ();
-    foreach (QModelIndex idx, indices)
+    for (auto idx : indices)
       {
         copy.push_back (previous.row () != idx.row () ? '\n' : '\t');
         copy.append (mod->data (idx).toString ());
@@ -1027,9 +1046,9 @@ namespace octave
 
   // Variable editor.
 
-  variable_editor::variable_editor (QWidget *p)
-    : octave_dock_widget ("VariableEditor", p),
-      m_main (new dw_main_window ()),
+  variable_editor::variable_editor (QWidget *p, base_qobject& oct_qobj)
+    : octave_dock_widget ("VariableEditor", p, oct_qobj),
+      m_main (new dw_main_window (oct_qobj)),
       m_tool_bar (new QToolBar (m_main)),
       m_default_width (30),
       m_default_height (100),
@@ -1067,7 +1086,7 @@ namespace octave
 
     // Colors.
 
-    for (int i = 0; i < resource_manager::varedit_color_chars ().length (); i++)
+    for (int i = 0; i < ve_colors_count; i++)
       m_table_colors.append (QColor (Qt::white));
 
     // Use an MDI area that is shrunk to nothing as the central widget.
@@ -1095,7 +1114,7 @@ namespace octave
       {
         // Activating a floating window causes problems.
         if (! m_focus_widget_vdw->isFloating ())
-            activateWindow ();
+          activateWindow ();
         m_focus_widget->setFocus ();
       }
     else
@@ -1146,9 +1165,11 @@ namespace octave
   void
   variable_editor::edit_variable (const QString& name, const octave_value& val)
   {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     if (m_stylesheet.isEmpty ())
       {
-        QSettings *settings = resource_manager::get_settings ();
+        gui_settings *settings = rmgr.get_settings ();
         notice_settings (settings);
       }
 
@@ -1175,7 +1196,9 @@ namespace octave
         return;
       }
 
-    variable_dock_widget *page = new variable_dock_widget (this);
+    variable_dock_widget *page
+      = new variable_dock_widget (this, m_octave_qobj);
+
     page->setObjectName (name);
     m_main->addDockWidget (Qt::LeftDockWidgetArea, page);
 
@@ -1193,7 +1216,9 @@ namespace octave
              page, SLOT (refloat ()), Qt::QueuedConnection);
 #endif
 
-    variable_editor_stack *stack = new variable_editor_stack (page);
+    variable_editor_stack *stack
+      = new variable_editor_stack (page, m_octave_qobj);
+
     stack->setObjectName (name);
     page->setWidget (stack);
     page->setFocusProxy (stack);
@@ -1257,9 +1282,18 @@ namespace octave
     connect (edit_view, SIGNAL (doubleClicked (const QModelIndex&)),
              model, SLOT (double_click (const QModelIndex&)));
 
+    // Any interpreter_event signal from a variable_editor_model object is
+    // handled the same as for the parent variable_editor object.
+
+    connect (model, SIGNAL (interpreter_event (const fcn_callback&)),
+             this, SIGNAL (interpreter_event (const fcn_callback&)));
+
+    connect (model, SIGNAL (interpreter_event (const meth_callback&)),
+             this, SIGNAL (interpreter_event (const meth_callback&)));
+
     // Must supply a title for a QLabel to be created.  Calling set_title()
     // more than once will add more QLabels.  Could change octave_dock_widget
-    // to always supply a QLabl (initially empty) and then simply update its
+    // to always supply a QLabel (initially empty) and then simply update its
     // contents.
     page->set_title (name);
     if (page->titleBarWidget () != nullptr)
@@ -1292,7 +1326,7 @@ namespace octave
         QList<QTabBar *> barlist = main_win ()->findChildren<QTabBar *> ();
         QVariant this_value (reinterpret_cast<quintptr> (this));
 
-        foreach (QTabBar *tbar, barlist)
+        for (auto *tbar : barlist)
           for (int i = 0; i < tbar->count (); i++)
             if (tbar->tabData (i) == this_value)
               {
@@ -1308,34 +1342,6 @@ namespace octave
     emit refresh_signal ();
   }
 
-  QList<QColor>
-  variable_editor::default_colors (void)
-  {
-    QList<QColor> colorlist;
-
-    colorlist << qApp->palette ().color (QPalette::WindowText);
-    colorlist << qApp->palette ().color (QPalette::Base);
-    colorlist << qApp->palette ().color (QPalette::HighlightedText);
-    colorlist << qApp->palette ().color (QPalette::Highlight);
-    colorlist << qApp->palette ().color (QPalette::AlternateBase);
-
-    return colorlist;
-  }
-
-  QStringList
-  variable_editor::color_names (void)
-  {
-    QStringList output;
-
-    output << tr("Foreground");
-    output << tr("Background");
-    output << tr("Selected Foreground");
-    output << tr("Selected Background");
-    output << tr("Alternate Background");
-
-    return output;
-  }
-
   void
   variable_editor::callUpdate (const QModelIndex&, const QModelIndex&)
   {
@@ -1343,40 +1349,31 @@ namespace octave
   }
 
   void
-  variable_editor::notice_settings (const QSettings *settings)
+  variable_editor::notice_settings (const gui_settings *settings)
   {
     m_main->notice_settings (settings); // update settings in parent main win
 
-    m_default_width = settings->value ("variable_editor/column_width",
-                                       100).toInt ();
+    m_default_width = settings->value (ve_column_width).toInt ();
 
-    m_default_height = settings->value ("variable_editor/row_height",
-                                        10).toInt ();
+    m_default_height = settings->value (ve_row_height).toInt ();
 
-    m_alternate_rows = settings->value ("variable_editor/alternate_rows",
-                                        false).toBool ();
+    m_alternate_rows = settings->value (ve_alternate_rows).toBool ();
 
-    QList<QColor> default_colors = resource_manager::varedit_default_colors ();
-
-    QString class_chars = resource_manager::varedit_color_chars ();
-
-    m_use_terminal_font = settings->value ("variable_editor/use_terminal_font",
-                                           true).toBool ();
+    m_use_terminal_font = settings->value (ve_use_terminal_font).toBool ();
 
     QString font_name;
     int font_size;
-    QString default_font = settings->value (global_mono_font.key,
-                                            global_mono_font.def).toString ();
+    QString default_font = settings->value (global_mono_font).toString ();
 
     if (m_use_terminal_font)
       {
         font_name = settings->value (cs_font.key, default_font).toString ();
-        font_size = settings->value ("terminal/fontSize", 10).toInt ();
+        font_size = settings->value (cs_font_size).toInt ();
       }
     else
       {
-        font_name = settings->value (ve_font.key, default_font).toString ();
-        font_size = settings->value ("variable_editor/font_size", 10).toInt ();
+        font_name = settings->value (ve_font_name.key, default_font).toString ();
+        font_size = settings->value (ve_font_size).toInt ();
       }
 
     m_font = QFont (font_name, font_size);
@@ -1385,28 +1382,26 @@ namespace octave
 
     m_add_font_height = fm.height ();
 
-    for (int i = 0; i < class_chars.length (); i++)
+    for (int i = 0; i < ve_colors_count; i++)
       {
-        QVariant default_var;
-        if (i < default_colors.length ())
-          default_var = default_colors.at (i);
-        else
-          default_var = QColor ();
+        // The default colors are given as color roles for
+        // the application's palette
+        QColor default_color = qApp->palette ().color
+                               (static_cast<QPalette::ColorRole> (ve_colors[i].def.toInt ()));
+        // FIXME: use value<QPalette::ColorRole> instead of static cast after
+        //        dropping support of Qt 5.4
 
-        QColor setting_color = settings->value ("variable_editor/color_"
-                                                + class_chars.mid (i, 1),
-                                                default_var).value<QColor> ();
+        QColor setting_color =
+          settings->value (ve_colors[i].key, default_color).value<QColor> ();
 
-        if (i < m_table_colors.length ())
-          m_table_colors.replace (i, setting_color);
+        m_table_colors.replace (i, setting_color);
       }
 
     update_colors ();
 
     // Icon size in the toolbar.
 
-    int size_idx = settings->value (global_icon_size.key,
-                                    global_icon_size.def).toInt ();
+    int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -1555,13 +1550,11 @@ namespace octave
 
     if (m_table_colors.length () > 4 && m_alternate_rows)
       {
-        m_stylesheet
-          += "QTableView::item:alternate{ background-color: "
-          + m_table_colors[4].name () +" }";
+        m_stylesheet += "QTableView::item:alternate{ background-color: "
+                        + m_table_colors[4].name () +" }";
 
-        m_stylesheet
-          += "QTableView::item:alternate:selected{ background-color: "
-          + m_table_colors[3].name () +" }";
+        m_stylesheet += "QTableView::item:alternate:selected{ background-color: "
+                        + m_table_colors[3].name () +" }";
       }
 
     QList<QTableView *> viewlist = findChildren<QTableView *> ();
@@ -1606,9 +1599,11 @@ namespace octave
 
     m_tool_bar->setWindowTitle (tr ("Variable Editor Toolbar"));
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     QAction *action;
-    action = add_tool_bar_button (resource_manager::icon ("document-save"),
-                                  tr ("Save"), this, SLOT (save ()));
+    action = add_tool_bar_button (rmgr.icon ("document-save"), tr ("Save"),
+                                  this, SLOT (save ()));
     addAction (action);
     action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     action->setShortcuts (QKeySequence::Save);
@@ -1616,16 +1611,16 @@ namespace octave
 
     m_tool_bar->addSeparator ();
 
-    action = add_tool_bar_button (resource_manager::icon ("edit-cut"),
-                                  tr ("Cut"), this, SLOT (cutClipboard ()));
+    action = add_tool_bar_button (rmgr.icon ("edit-cut"), tr ("Cut"),
+                                  this, SLOT (cutClipboard ()));
     action->setStatusTip(tr("Cut data to clipboard"));
 
-    action = add_tool_bar_button (resource_manager::icon ("edit-copy"),
-                                  tr ("Copy"), this, SLOT (copyClipboard ()));
+    action = add_tool_bar_button (rmgr.icon ("edit-copy"), tr ("Copy"),
+                                  this, SLOT (copyClipboard ()));
     action->setStatusTip(tr("Copy data to clipboard"));
 
-    action = add_tool_bar_button (resource_manager::icon ("edit-paste"),
-                                  tr ("Paste"), this, SLOT (pasteClipboard ()));
+    action = add_tool_bar_button (rmgr.icon ("edit-paste"), tr ("Paste"),
+                                  this, SLOT (pasteClipboard ()));
     action->setStatusTip(tr("Paste clipboard into variable data"));
 
     m_tool_bar->addSeparator ();
@@ -1634,15 +1629,14 @@ namespace octave
     // QAction *print_action; /icons/fileprint.png
     // m_tool_bar->addSeparator ();
 
-    action = new QAction (resource_manager::icon ("plot-xy-curve"),
-                          tr ("Plot"), m_tool_bar);
+    action = new QAction (rmgr.icon ("plot-xy-curve"), tr ("Plot"), m_tool_bar);
     action->setToolTip (tr ("Plot Selected Data"));
     QToolButton *plot_tool_button = new HoverToolButton (m_tool_bar);
     plot_tool_button->setDefaultAction (action);
 
     plot_tool_button->setText (tr ("Plot"));
     plot_tool_button->setToolTip (tr ("Plot selected data"));
-    plot_tool_button->setIcon (resource_manager::icon ("plot-xy-curve"));
+    plot_tool_button->setIcon (rmgr.icon ("plot-xy-curve"));
 
     plot_tool_button->setPopupMode (QToolButton::InstantPopup);
 
@@ -1661,19 +1655,19 @@ namespace octave
 
     m_tool_bar->addSeparator ();
 
-    action = add_tool_bar_button (resource_manager::icon ("go-up"),
-                                  tr ("Up"), this, SLOT (levelUp ()));
+    action = add_tool_bar_button (rmgr.icon ("go-up"), tr ("Up"), this,
+                                  SLOT (levelUp ()));
     action->setStatusTip(tr("Go one level up in variable hierarchy"));
 
     // The QToolButton mouse-clicks change active window, so connect all
-    // HoverToolButton and RuternFocusToolButton objects to the mechanism
+    // HoverToolButton and ReturnFocusToolButton objects to the mechanism
     // that restores active window and focus before acting.
     QList<HoverToolButton *> hbuttonlist
       = m_tool_bar->findChildren<HoverToolButton *> (""
 #if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
                                                      , Qt::FindDirectChildrenOnly
 #endif
-                                                     );
+                                                    );
     for (int i = 0; i < hbuttonlist.size (); i++)
       {
         connect (hbuttonlist.at (i), SIGNAL (hovered_signal ()),
@@ -1687,7 +1681,7 @@ namespace octave
 #if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
                                                            , Qt::FindDirectChildrenOnly
 #endif
-                                                           );
+                                                          );
     for (int i = 0; i < rfbuttonlist.size (); i++)
       {
         connect (rfbuttonlist.at (i), SIGNAL (about_to_activate ()),

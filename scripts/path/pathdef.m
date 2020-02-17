@@ -1,5 +1,9 @@
-## Copyright (C) 2005-2019 Bill Denney
-## Copyright (C) 2007-2009 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{val} =} pathdef ()
@@ -79,8 +85,6 @@ endfunction
 ## Extract the path information from the script/function @var{file}, created by
 ## @file{savepath.m}.  If successful, @code{__extractpath__} returns the path
 ## specified in @var{file}.
-
-## Author: Ben Abbott <bpabbott@mac.com>
 
 function path = __extractpath__ (savefile)
 

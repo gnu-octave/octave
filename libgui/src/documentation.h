@@ -1,31 +1,33 @@
-/*
-
-Copyright (C) 2018-2019 Torsten <mttl@maibox.org>
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2018-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_documentation_h)
 #define octave_documentation_h 1
 
 #include <QComboBox>
 #include <QMenu>
-#include <QSettings>
 #include <QShortcut>
 #include <QSplitter>
 #include <QTextBrowser>
@@ -34,8 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <QWidget>
 #include <QtHelp/QHelpEngine>
 
+#include "gui-settings.h"
+
 namespace octave
 {
+  class base_qobject;
+
   //! Documentation browser derived from Textbrowser
 
   class documentation_browser : public QTextBrowser
@@ -53,7 +59,7 @@ namespace octave
 
     void handle_index_clicked (const QUrl& url,
                                const QString& keyword = QString ());
-    void notice_settings (const QSettings *settings);
+    void notice_settings (const gui_settings *settings);
 
     //! Zooming in and out while taking care of the zoom level
     //!@{
@@ -64,7 +70,7 @@ namespace octave
 
   protected:
 
-     void wheelEvent (QWheelEvent *we);
+    void wheelEvent (QWheelEvent *we);
 
   private:
 
@@ -92,12 +98,16 @@ namespace octave
 
   public:
 
-    documentation (QWidget *parent = nullptr);
+    documentation (QWidget *parent, base_qobject& oct_qobj);
     ~documentation (void);
+
+  signals:
+
+    void show_single_result (const QUrl&);
 
   public slots:
 
-    void notice_settings (const QSettings *settings);
+    void notice_settings (const gui_settings *settings);
 
     void copyClipboard (void);
     void pasteClipboard (void);
@@ -115,7 +125,7 @@ namespace octave
     void global_search_finished (int hits);
     void filter_update (const QString& expression);
     void filter_update_history (void);
-    void find_forward (void);
+    void find (bool backward = false);
     void find_backward (void);
     void find_forward_from_anchor (const QString& text);
     void record_anchor_position (void);
@@ -124,10 +134,6 @@ namespace octave
 
     void update_history_menus (void);
     void open_hist_url (QAction *a);
-
-  signals:
-
-    void show_single_result (const QUrl&);
 
   private:
 
@@ -139,6 +145,8 @@ namespace octave
 
     //! Select all occurrences of a string in the doc browser
     void select_all_occurrences (const QString& text);
+
+    base_qobject& m_octave_qobj;
 
     QHelpEngine *m_help_engine;
     QString m_internal_search;

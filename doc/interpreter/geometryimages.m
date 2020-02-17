@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 function geometryimages (d, nm, typ)
   set_graphics_toolkit ();
@@ -146,8 +153,7 @@ function set_graphics_toolkit ()
   elseif (strcmp ("qt", graphics_toolkit ())
           && __have_feature__ ("QT_OFFSCREEN"))
     ## Use qt with QOffscreenSurface for plot
-  elseif (! strcmp ("gnuplot", graphics_toolkit ()) ...
-          && ! __have_feature__ ("OSMESA"))
+  elseif (! strcmp ("gnuplot", graphics_toolkit ()))
     if (! any (strcmp ("gnuplot", available_graphics_toolkits ())))
       error ("no graphics toolkit available for offscreen plotting");
     else

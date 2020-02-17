@@ -1,4 +1,9 @@
-## Copyright (C) 2000-2019 Kai Habel
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{C}, @var{F}] =} voronoin (@var{pts})
@@ -47,13 +54,6 @@
 ##
 ## @seealso{voronoi, convhulln, delaunayn}
 ## @end deftypefn
-
-## Author: Kai Habel <kai.habel@gmx.de>
-## First Release: 20/08/2000
-
-## 2003-12-14 Rafael Laboissiere <rafael@laboissiere.net>
-## Added optional second argument to pass options to the underlying
-## qhull command
 
 function [C, F] = voronoin (pts, options)
 

@@ -1,5 +1,9 @@
-## Copyright (C) 2001-2019 Rolf Fabian and Paul Kienzle
-## Copyright (C) 2008 Jaroslav Hajek
+########################################################################
+##
+## Copyright (C) 2001-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{c} =} nchoosek (@var{n}, @var{k})
@@ -83,10 +89,6 @@
 ##
 ## @seealso{bincoeff, perms}
 ## @end deftypefn
-
-## Author: Rolf Fabian  <fabian@tu-cottbus.de>
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-## Author: Jaroslav Hajek
 
 function C = nchoosek (v, k)
 

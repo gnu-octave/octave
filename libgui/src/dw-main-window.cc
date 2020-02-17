@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2013-2019 Torsten <mttl@mailbox.org>
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 /* This is the main window derived from QMainWindow for being used
    as the main window in dock widgets like the variable editor or
@@ -29,37 +32,34 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QMenu>
 #include <QDockWidget>
+#include <QMenu>
 
-#include "resource-manager.h"
-#include "shortcut-manager.h"
 #include "dw-main-window.h"
+#include "octave-qobject.h"
+#include "shortcut-manager.h"
+#include "gui-preferences-sc.h"
 
 namespace octave
 {
 
-  dw_main_window::dw_main_window (QWidget *p)
-    : QMainWindow (p)
+  dw_main_window::dw_main_window (base_qobject& oct_qobj, QWidget *p)
+    : QMainWindow (p), m_octave_qobj (oct_qobj)
   {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     // Adding the actions for closing the dock widgets
     m_close_action
-      = add_action (nullptr,
-                    resource_manager::icon ("window-close",false),
-                    tr ("&Close"),
-                    SLOT (request_close ()), this);
+      = add_action (nullptr, rmgr.icon ("window-close", false),
+                    tr ("&Close"), SLOT (request_close ()), this);
 
     m_close_all_action
-      = add_action (nullptr,
-                    resource_manager::icon ("window-close",false),
-                    tr ("Close &All"),
-                    SLOT (request_close_all ()), this);
+      = add_action (nullptr, rmgr.icon ("window-close", false),
+                    tr ("Close &All"), SLOT (request_close_all ()), this);
 
     m_close_others_action
-      = add_action (nullptr,
-                    resource_manager::icon ("window-close",false),
-                    tr ("Close &Other"),
-                    SLOT (request_close_other ()), this);
+      = add_action (nullptr, rmgr.icon ("window-close", false),
+                    tr ("Close &Other"), SLOT (request_close_other ()), this);
 
     m_switch_left_action
       = add_action (nullptr, QIcon (), tr ("Switch to &Left Widget"),
@@ -76,7 +76,7 @@ namespace octave
     m_actions_list << m_switch_left_action;
     m_actions_list << m_switch_right_action;
 
-    notice_settings (resource_manager::get_settings ());
+    notice_settings (rmgr.get_settings ());
   }
 
 
@@ -130,14 +130,16 @@ namespace octave
   }
 
   // Update the settings
-  void dw_main_window::notice_settings (const QSettings*)
+  void dw_main_window::notice_settings (const gui_settings *)
   {
-    shortcut_manager::set_shortcut (m_close_action, "editor_file:close");
-    shortcut_manager::set_shortcut (m_close_all_action, "editor_file:close_all");
-    shortcut_manager::set_shortcut (m_close_others_action, "editor_file:close_other");
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
 
-    shortcut_manager::set_shortcut (m_switch_left_action, "editor_tabs:switch_left_tab");
-    shortcut_manager::set_shortcut (m_switch_right_action, "editor_tabs:switch_right_tab");
+    scmgr.set_shortcut (m_close_action, sc_edit_file_close);
+    scmgr.set_shortcut (m_close_all_action, sc_edit_file_close_all);
+    scmgr.set_shortcut (m_close_others_action, sc_edit_file_close_other);
+
+    scmgr.set_shortcut (m_switch_left_action, sc_edit_tabs_switch_left_tab);
+    scmgr.set_shortcut (m_switch_right_action, sc_edit_tabs_switch_right_tab);
   }
 
 
@@ -220,8 +222,8 @@ namespace octave
   // Reimplemented Event
   bool dw_main_window::event (QEvent *ev)
   {
-    if (ev->type () == QEvent::ChildAdded ||
-        ev->type () == QEvent::ChildRemoved)
+    if (ev->type () == QEvent::ChildAdded
+        || ev->type () == QEvent::ChildRemoved)
       {
         // Adding or Removing a child indicates that a dock widget was
         // created or removed.
@@ -232,7 +234,7 @@ namespace octave
     if (ev->type () == QEvent::StyleChange)
       {
         // This might indicate un- or re-docking a widget: Make sure
-        // floating widget get a copy of our actions
+        // floating widgets get a copy of our actions
         for (int i = m_dw_list.length () - 1; i >= 0; i--)
           {
             // First remove possibly existing actions

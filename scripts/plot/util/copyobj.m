@@ -1,4 +1,9 @@
-## Copyright (C) 2012-2019 pdiribarne
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{hnew} =} copyobj (@var{horig})
@@ -34,9 +41,6 @@
 ## @code{@var{hparent}(i)}.
 ## @seealso{struct2hdl, hdl2struct, findobj}
 ## @end deftypefn
-
-## Author: pdiribarne <pdiribarne@new-host.home>
-## Created: 2012-04-01
 
 function hnew = copyobj (horig, hparent = 0)
 
@@ -132,7 +136,7 @@ endfunction
 %! scrn = get (0, "screensize");
 %! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
-%! hnew = copyobj (hobj);
+%! hnew = copyobj (hobj, groot);
 %! drawnow ();
 %! set (hnew, "name", "Copyobj");
 %! drawnow ();
@@ -162,7 +166,7 @@ endfunction
 %! scrn = get (0, "screensize");
 %! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
-%! hnew = copyobj (hobj);
+%! hnew = copyobj (hobj, groot);
 %! drawnow ();
 %! set (hnew, "name", "Copyobj");
 %! drawnow ();
@@ -179,8 +183,9 @@ endfunction
 %! xlabel ("X");
 %! ylabel (ax(1), "Axis 1");
 %! ylabel (ax(2), "Axis 2");
-%! lcolor = get (gca, "ColorOrder")(1,:);
-%! rcolor = get (gca, "ColorOrder")(2,:);
+%! colororder = get (gca, "ColorOrder");
+%! lcolor = colororder(1,:);
+%! rcolor = colororder(2,:);
 %! text (0.5, 0.5, "Left Axis", ...
 %!       "color", lcolor, "horizontalalignment", "center", "parent", ax(1));
 %! text (4.5, 80, "Right Axis", ...
@@ -191,7 +196,7 @@ endfunction
 %! scrn = get (0, "screensize");
 %! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
-%! hnew = copyobj (hobj);
+%! hnew = copyobj (hobj, groot);
 %! drawnow ();
 %! set (hnew, "name", "Copyobj");
 %! drawnow ();
@@ -202,7 +207,7 @@ endfunction
 %! toolkit = graphics_toolkit ();
 %! graphics_toolkit ("gnuplot");
 %! unwind_protect
-%!   h1 = figure ("visible", "off");
+%!   h1 = figure ("visible", "off", "paperposition", [0.25, 2.5, 8.0, 6.0]);
 %!   x = 0:0.1:2*pi;
 %!   y1 = sin (x);
 %!   y2 = exp (x - 1);

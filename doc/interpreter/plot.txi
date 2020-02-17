@@ -245,6 +245,14 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(quiver3)
 
+@DOCSTRING(streamtube)
+
+@DOCSTRING(streamline)
+
+@DOCSTRING(stream2)
+
+@DOCSTRING(stream3)
+
 @DOCSTRING(compass)
 
 @DOCSTRING(feather)
@@ -458,6 +466,8 @@ three-dimensional plots.
 @DOCSTRING(material)
 
 @DOCSTRING(camlight)
+
+@DOCSTRING(lightangle)
 
 @DOCSTRING(meshgrid)
 
@@ -2641,7 +2651,7 @@ In addition, the gnuplot program usually provides a number of different
 interfaces, known as terminals.  Octave normally chooses a default terminal,
 but you can override this with the environment variable @env{GNUTERM}.  This
 variable may be set in the shell before starting Octave or from within Octave
-before plotting for the first time.  For example,
+before plotting for the first time.  For example:
 
 @example
 @group

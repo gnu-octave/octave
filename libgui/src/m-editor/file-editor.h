@@ -1,47 +1,53 @@
-/*
-
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_file_editor_h)
 #define octave_file_editor_h 1
 
-#include <QToolBar>
-#include <QAction>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QCloseEvent>
-#include <QTabWidget>
-#include <QStackedWidget>
+#include <list>
+#include <map>
 
+#include <QAction>
+#include <QCloseEvent>
 #include <QDragEnterEvent>
 #include <QDropEvent>
-
-#include <map>
+#include <QMenuBar>
+#include <QStackedWidget>
+#include <QStatusBar>
+#include <QTabWidget>
+#include <QToolBar>
 
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"
+#include "find-dialog.h"
 #include "tab-bar.h"
 
 namespace octave
 {
+  class base_qobject;
+
   // subclassed QTabWidget for using custom tabbar
 
   class file_editor_tab_widget : public QTabWidget
@@ -55,6 +61,8 @@ namespace octave
     ~file_editor_tab_widget (void) = default;
 
     tab_bar * get_tab_bar (void) const;
+
+    std::list<file_editor_tab *> tab_list (void) const;
   };
 
   // the class for the file editor
@@ -64,15 +72,6 @@ namespace octave
     Q_OBJECT
 
   public:
-
-    struct tab_info
-    {
-      QWidget *fet_ID;
-      QString encoding;
-    };
-
-    typedef std::map<QString, tab_info>::iterator editor_tab_map_iterator;
-    typedef std::map<QString, tab_info>::const_iterator editor_tab_map_const_iterator;
 
     // struct that allows to sort with respect to the tab index
     struct session_data
@@ -89,7 +88,7 @@ namespace octave
       }
     };
 
-    file_editor (QWidget *p);
+    file_editor (QWidget *p, base_qobject& oct_qobj);
 
     ~file_editor (void);
 
@@ -118,13 +117,12 @@ namespace octave
 
     void check_actions (void);
     void empty_script (bool startup, bool visible);
-    void restore_session (QSettings *settings);
+    void restore_session (gui_settings *settings);
 
   signals:
 
-    void fetab_settings_changed (const QSettings *settings);
+    void fetab_settings_changed (const gui_settings *settings);
     void fetab_change_request (const QWidget *ID);
-    void fetab_file_name_query (const QWidget *ID);
     // Save is a ping-pong type of communication
     void fetab_save_file (const QWidget *ID, const QString& fileName,
                           bool remove_on_success);
@@ -132,11 +130,10 @@ namespace octave
     // No fetab_new, functionality in editor
     void fetab_context_help (const QWidget *ID, bool);
     void fetab_context_edit (const QWidget *ID);
-    void fetab_check_modified_file (void);
     void fetab_save_file (const QWidget *ID);
     void fetab_save_file_as (const QWidget *ID);
     void fetab_print_file (const QWidget *ID);
-    void fetab_run_file (const QWidget *ID);
+    void fetab_run_file (const QWidget *ID, bool step_into = false);
     void fetab_context_run (const QWidget *ID);
     void fetab_toggle_bookmark (const QWidget *ID);
     void fetab_next_bookmark (const QWidget *ID);
@@ -152,9 +149,6 @@ namespace octave
     void fetab_unindent_selected_text (const QWidget *ID);
     void fetab_smart_indent_line_or_selected_text (const QWidget *ID);
     void fetab_convert_eol (const QWidget *ID, QsciScintilla::EolMode eol_mode);
-    void fetab_find (const QWidget *ID, QList<QAction *>);
-    void fetab_find_next (const QWidget *ID);
-    void fetab_find_previous (const QWidget *ID);
     void fetab_goto_line (const QWidget *ID, int line = -1);
     void fetab_move_match_brace (const QWidget *ID, bool select);
     void fetab_completion (const QWidget*);
@@ -172,16 +166,22 @@ namespace octave
     void fetab_set_directory (const QString& dir);
     void fetab_recover_from_exit (void);
 
+    void edit_area_changed (octave_qscintilla *edit_area);
+
     void request_settings_dialog (const QString&);
     void request_open_file_external (const QString& file_name, int line);
     void file_loaded_signal (void);
 
+    void editor_tabs_changed_signal (bool);
+    void request_dbcont_signal (void);
+
   public slots:
 
-    void focus (void);
+    void activate (void);
     void set_focus (QWidget *fet);
     void enable_menu_shortcuts (bool);
     bool check_closing (void);
+    void handle_tab_ready_to_close (void);
 
     void request_new_file (const QString& commands);
     void request_close_file (bool);
@@ -198,6 +198,7 @@ namespace octave
     void request_save_file (bool);
     void request_save_file_as (bool);
     void request_run_file (bool);
+    void request_step_into_file ();
     void request_context_run (bool);
     void request_toggle_bookmark (bool);
     void request_next_bookmark (bool);
@@ -242,11 +243,10 @@ namespace octave
     void request_completion (bool);
 
     void handle_file_name_changed (const QString& fileName,
-                                   const QString& toolTip);
+                                   const QString& toolTip,
+                                   bool modified);
     void handle_tab_close_request (int index);
     void handle_tab_remove_request (void);
-    void handle_add_filename_to_list (const QString& fileName,
-                                      const QString& encoding, QWidget *ID);
     void active_tab_changed (int index);
     void handle_editor_state_changed (bool enableCopy, bool is_octave_file);
     void handle_mru_add_file (const QString& file_name, const QString& encoding);
@@ -264,13 +264,15 @@ namespace octave
     void handle_file_renamed (bool load_new = true);
 
     // Tells the editor to react on changed settings.
-    void notice_settings (const QSettings *settings);
+    void notice_settings (const gui_settings *settings);
 
     void set_shortcuts (void);
 
     void handle_visibility (bool visible);
 
     void update_octave_directory (const QString& dir);
+
+    void toplevel_change (bool toplevel);
 
   protected slots:
 
@@ -312,6 +314,8 @@ namespace octave
 
   private:
 
+    file_editor_tab * make_file_editor_tab (const QString& directory = "");
+
     bool is_editor_console_tabbed (void);
     void construct (void);
     void add_file_editor_tab (file_editor_tab *f, const QString& fn,
@@ -319,13 +323,15 @@ namespace octave
     void mru_menu_update (void);
     bool call_custom_editor (const QString& file_name = QString (), int line = -1);
 
-    void toggle_preference (const QString& preference, bool def);
+    void toggle_preference (const gui_pref& preference);
 
     void handle_dir_remove (const QString& old_name, const QString& new_name);
 
     bool editor_tab_has_focus (void);
 
-    QWidget * find_tab_widget (const QString& openFileName);
+    void find_create (void);
+
+    file_editor_tab * find_tab_widget (const QString& openFileName);
     QAction * add_action (QMenu *menu, const QString& text,
                           const char *member, QWidget *receiver = nullptr);
     QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
@@ -333,7 +339,7 @@ namespace octave
 
     QMenu * add_menu (QMenuBar *p, QString text);
 
-    std::map<QString, tab_info> m_editor_tab_map;
+    int m_number_of_tabs;
     QHash<QMenu*, QStringList> m_hash_menu_text;
 
     QString m_ced;
@@ -423,11 +429,15 @@ namespace octave
     QAction *m_switch_right_tab_action;
     QAction *m_move_tab_left_action;
     QAction *m_move_tab_right_action;
+    QAction *m_sort_tabs_action;
 
     QAction *m_toggle_breakpoint_action;
     QAction *m_next_breakpoint_action;
     QAction *m_previous_breakpoint_action;
     QAction *m_remove_all_breakpoints_action;
+
+    bool m_copy_action_enabled;
+    bool m_undo_action_enabled;
 
     QMenu *m_edit_menu;
     QMenu *m_edit_cmd_menu;
@@ -436,12 +446,11 @@ namespace octave
     QMenu *m_fileMenu;
     QMenu *m_view_editor_menu;
 
-    QList<QAction*> m_fetab_actions;
-
     file_editor_tab_widget *m_tab_widget;
 
     int m_marker_breakpoint;
 
+    bool m_closing_canceled;
     bool m_closed;
     bool m_no_focus;
 
@@ -450,6 +459,8 @@ namespace octave
     QAction *m_mru_file_actions[MaxMRUFiles];
     QStringList m_mru_files;
     QStringList m_mru_files_encodings;
+
+    QPointer<find_dialog> m_find_dialog;
 
     // List of data on temporarily closed files for later reloading.
     QList<session_data> m_tmp_closed_files;

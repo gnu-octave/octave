@@ -1,39 +1,43 @@
-/*
-
-Copyright (C) 2012-2019 Richard Crozier
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2012-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_octave_dock_widget_h)
 #define octave_octave_dock_widget_h 1
 
 #include <QDockWidget>
-#include <QSettings>
 #include <QIcon>
 #include <QMainWindow>
-#include <QToolButton>
 #include <QMouseEvent>
+#include <QToolButton>
 
-#include "octave-cmd.h"
+#include "gui-settings.h"
+#include "qt-interpreter-events.h"
 
 namespace octave
 {
+  class base_qobject;
 
   // The few decoration items common to both main window and variable editor.
 
@@ -43,7 +47,7 @@ namespace octave
 
   public:
 
-    label_dock_widget (QWidget *p = nullptr);
+    label_dock_widget (QWidget *p, base_qobject& oct_qobj);
 
     // set_title() uses the custom title bar while setWindowTitle() uses
     // the default title bar (with style sheets)
@@ -64,6 +68,8 @@ namespace octave
 
   protected:
 
+    base_qobject& m_octave_qobj;
+
     int m_icon_size;
     QWidget *m_title_widget;
     QToolButton *m_dock_button;
@@ -81,7 +87,8 @@ namespace octave
 
   public:
 
-    octave_dock_widget (const QString& obj_name, QWidget *p = nullptr);
+    octave_dock_widget (const QString& obj_name, QWidget *p,
+                        base_qobject& oct_qobj);
 
     virtual ~octave_dock_widget (void) = default;
 
@@ -92,7 +99,7 @@ namespace octave
   signals:
 
     //! Custom signal that tells whether a user has clicked away that dock
-    //! widget, i.e the active dock widget has changed.
+    //! widget, i.e. the active dock widget has changed.
 
     void active_changed (bool active);
 
@@ -100,7 +107,8 @@ namespace octave
 
     void queue_make_widget (void);
 
-    void request_queue_cmd (octave_cmd *);
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
   protected:
 
@@ -112,25 +120,13 @@ namespace octave
 
   public slots:
 
-    virtual void focus (void)
-    {
-      if (! isVisible ())
-        setVisible (true);
+    virtual void activate (void);
 
-      setFocus ();
-      activateWindow ();
-      raise ();
-    }
+    virtual void handle_visibility (bool visible);
 
-    virtual void handle_visibility (bool visible)
-    {
-      if (visible && ! isFloating ())
-        focus ();
-    }
+    virtual void notice_settings (const gui_settings *) { }
 
-    virtual void notice_settings (const QSettings*) { }
-
-    void handle_settings (const QSettings*);
+    void handle_settings (const gui_settings *);
 
     void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
 
@@ -150,6 +146,8 @@ namespace octave
 
   protected slots:
 
+    virtual void toplevel_change (bool);
+
     //! Slot to steer changing visibility from outside.
 
     virtual void handle_visibility_changed (bool visible)
@@ -165,7 +163,6 @@ namespace octave
   private slots:
 
     void change_visibility (bool);
-    void toplevel_change (bool);
 
   private:
 

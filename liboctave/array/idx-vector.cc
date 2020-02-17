@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2008-2009 Jaroslav Hajek
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -468,8 +469,8 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
     }
 
   // This is wrapped in unique_ptr so that we don't leak on out-of-memory.
-  std::unique_ptr<idx_vector_rep> new_rep (
-    new idx_vector_rep (nullptr, len, ext, orig_dims, DIRECT));
+  std::unique_ptr<idx_vector_rep> new_rep
+    (new idx_vector_rep (nullptr, len, ext, orig_dims, DIRECT));
 
   if (ext > len*octave::math::log2 (1.0 + len))
     {
@@ -541,8 +542,8 @@ idx_vector::idx_base_rep *
 idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
 {
   // This is wrapped in unique_ptr so that we don't leak on out-of-memory.
-  std::unique_ptr<idx_vector_rep> new_rep (
-    new idx_vector_rep (nullptr, len, ext, orig_dims, DIRECT));
+  std::unique_ptr<idx_vector_rep> new_rep
+    (new idx_vector_rep (nullptr, len, ext, orig_dims, DIRECT));
 
   if (ext > len*octave::math::log2 (1.0 + len))
     {

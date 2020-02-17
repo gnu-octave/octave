@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -31,13 +34,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "TextEdit.h"
 #include "QtHandlesUtils.h"
 
+#include "octave-qobject.h"
+
 namespace QtHandles
 {
 
   EditControl*
-  EditControl::create (const graphics_object& go)
+  EditControl::create (octave::base_qobject& oct_qobj,
+                       octave::interpreter& interp, const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
@@ -48,17 +54,22 @@ namespace QtHandles
             uicontrol::properties& up = Utils::properties<uicontrol> (go);
 
             if ((up.get_max () - up.get_min ()) > 1)
-              return new EditControl (go, new TextEdit (container));
+              return new EditControl (oct_qobj, interp, go,
+                                      new TextEdit (container));
             else
-              return new EditControl (go, new QLineEdit (container));
+              return new EditControl (oct_qobj, interp, go,
+                                      new QLineEdit (container));
           }
       }
 
     return nullptr;
   }
 
-  EditControl::EditControl (const graphics_object& go, QLineEdit *edit)
-    : BaseControl (go, edit), m_multiLine (false), m_textChanged (false)
+  EditControl::EditControl (octave::base_qobject& oct_qobj,
+                            octave::interpreter& interp,
+                            const graphics_object& go, QLineEdit *edit)
+    : BaseControl (oct_qobj, interp, go, edit), m_multiLine (false),
+      m_textChanged (false)
   {
     init (edit);
   }
@@ -86,8 +97,11 @@ namespace QtHandles
              SLOT (returnPressed (void)));
   }
 
-  EditControl::EditControl (const graphics_object& go, TextEdit *edit)
-    : BaseControl (go, edit), m_multiLine (true), m_textChanged (false)
+  EditControl::EditControl (octave::base_qobject& oct_qobj,
+                            octave::interpreter& interp,
+                            const graphics_object& go, TextEdit *edit)
+    : BaseControl (oct_qobj, interp, go, edit), m_multiLine (true),
+      m_textChanged (false)
   {
     init (edit);
   }
@@ -104,8 +118,8 @@ namespace QtHandles
     uicontrol::properties& up = properties<uicontrol> ();
 
     edit->setAcceptRichText (false);
-    edit->setPlainText (Utils::fromStringVector (
-                          up.get_string_vector ()).join ("\n"));
+    edit->setPlainText (Utils::fromStringVector
+                        (up.get_string_vector ()).join ("\n"));
 
     connect (edit, SIGNAL (textChanged (void)),
              SLOT (textChanged (void)));
@@ -190,8 +204,8 @@ namespace QtHandles
     switch (pId)
       {
       case uicontrol::properties::ID_STRING:
-        edit->setPlainText (Utils::fromStringVector (
-                              up.get_string_vector ()).join ("\n"));
+        edit->setPlainText (Utils::fromStringVector
+                            (up.get_string_vector ()).join ("\n"));
         return true;
 
       case uicontrol::properties::ID_MIN:
@@ -228,17 +242,17 @@ namespace QtHandles
     if (m_textChanged)
       {
         if (m_multiLine)
-          gh_manager::post_set (m_handle, "string",
-                                Utils::toCellString (txt.split ("\n")), false);
+          emit gh_set_event (m_handle, "string",
+                             Utils::toCellString (txt.split ("\n")), false);
         else
-          gh_manager::post_set (m_handle, "string",
-                                Utils::toStdString (txt), false);
+          emit gh_set_event (m_handle, "string",
+                             Utils::toStdString (txt), false);
 
         m_textChanged = false;
       }
 
     if (txt.length () > 0)
-      gh_manager::post_callback (m_handle, "callback");
+      emit gh_callback_event (m_handle, "callback");
   }
 
   void
@@ -250,12 +264,12 @@ namespace QtHandles
                        ? qWidget<TextEdit> ()->toPlainText ()
                        : qWidget<QLineEdit> ()->text ());
         if (m_multiLine)
-          gh_manager::post_set (m_handle, "string",
-                                Utils::toCellString (txt.split ("\n")), false);
+          emit gh_set_event (m_handle, "string",
+                             Utils::toCellString (txt.split ("\n")), false);
         else
-          gh_manager::post_set (m_handle, "string",
-                                Utils::toStdString (txt), false);
-        gh_manager::post_callback (m_handle, "callback");
+          emit gh_set_event (m_handle, "string", Utils::toStdString (txt),
+                             false);
+        emit gh_callback_event (m_handle, "callback");
 
         m_textChanged = false;
       }

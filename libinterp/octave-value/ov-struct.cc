@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -157,12 +160,10 @@ octave_struct::subsref (const std::string& type,
 
     case '.':
       {
-        if (map.numel () > 0)
-          {
-            const Cell t = dotref (idx.front ());
+        const Cell t = dotref (idx.front ());
 
-            retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
-          }
+        if (! map.isempty ())
+          retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
       }
       break;
 
@@ -446,8 +447,7 @@ octave_struct::subsasgn (const std::string& type,
               }
             else
               {
-                const octave_map& cmap =
-                  const_cast<const octave_map &> (map);
+                const octave_map& cmap = const_cast<const octave_map &> (map);
                 // cast to const reference, avoid forced key insertion.
                 if (idxf.all_scalars ()
                     || cmap.contents (key).index (idxf, true).numel () == 1)
@@ -539,7 +539,10 @@ octave_value
 octave_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
   if (idx.length () == 0)
-    return map;
+    {
+      warn_empty_index (type_name ());
+      return map;
+    }
   else  // octave_map handles indexing itself.
     return map.index (idx, resize_ok);
 }
@@ -791,7 +794,7 @@ octave_struct::load_ascii (std::istream& is)
 }
 
 bool
-octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
+octave_struct::save_binary (std::ostream& os, bool save_as_floats)
 {
   octave_map m = map_value ();
 
@@ -1451,7 +1454,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
 }
 
 bool
-octave_scalar_struct::save_binary (std::ostream& os, bool& save_as_floats)
+octave_scalar_struct::save_binary (std::ostream& os, bool save_as_floats)
 {
   octave_map m = map_value ();
 

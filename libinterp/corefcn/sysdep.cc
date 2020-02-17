@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -73,6 +76,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "octave.h"
 #include "ov.h"
 #include "ovl.h"
@@ -88,20 +92,6 @@ along with Octave; see the file COPYING.  If not, see
 #  define STDIN_FILENO 1
 #endif
 
-#if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
-static void
-BSD_init (void)
-{
-#  if defined (HAVE_FLOATINGPOINT_H)
-  // Disable trapping on common exceptions.
-#    if ! defined (FP_X_DNML)
-#      define FP_X_DNML 0
-#    endif
-  fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
-#  endif
-}
-#endif
-
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
 #define WIN32_LEAN_AND_MEAN
@@ -109,65 +99,85 @@ BSD_init (void)
 #include <tlhelp32.h>
 #include <shellapi.h>
 
-static void
-w32_set_octave_home (void)
-{
-  std::string bin_dir;
-
-  HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
-#if defined (TH32CS_SNAPMODULE32)
-                                       | TH32CS_SNAPMODULE32
-#endif
-                                       , 0);
-
-  if (h != INVALID_HANDLE_VALUE)
-    {
-      MODULEENTRY32W mod_info;
-
-      ZeroMemory (&mod_info, sizeof (mod_info));
-      mod_info.dwSize = sizeof (mod_info);
-
-      if (Module32FirstW (h, &mod_info))
-        {
-          do
-            {
-              std::string mod_name (octave::sys::u8_from_wstring (mod_info.szModule));
-
-              if (mod_name.find ("octinterp") != std::string::npos)
-                {
-                  bin_dir = octave::sys::u8_from_wstring (mod_info.szExePath);
-                  if (! bin_dir.empty () && bin_dir.back () != '\\')
-                    bin_dir.push_back ('\\');
-                  break;
-                }
-            }
-          while (Module32NextW (h, &mod_info));
-        }
-
-      CloseHandle (h);
-    }
-
-  if (! bin_dir.empty ())
-    {
-      size_t pos = bin_dir.rfind (R"(\bin\)");
-
-      if (pos != std::string::npos)
-        octave::sys::env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
-    }
-}
-
-static void
-w32_init (void)
-{
-  w32_set_octave_home ();
-
-  octave::command_editor::prefer_env_winsize (true);
-}
-
 #endif
 
 namespace octave
 {
+#if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
+
+  static void
+  BSD_init (void)
+  {
+#  if defined (HAVE_FLOATINGPOINT_H)
+    // Disable trapping on common exceptions.
+#    if ! defined (FP_X_DNML)
+#      define FP_X_DNML 0
+#    endif
+    fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
+#  endif
+  }
+
+#endif
+
+#if defined (__MINGW32__) || defined (_MSC_VER)
+
+  static void
+  w32_set_octave_home (void)
+  {
+    std::string bin_dir;
+
+    HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
+#if defined (TH32CS_SNAPMODULE32)
+                                         | TH32CS_SNAPMODULE32
+#endif
+                                         , 0);
+
+    if (h != INVALID_HANDLE_VALUE)
+      {
+        MODULEENTRY32W mod_info;
+
+        ZeroMemory (&mod_info, sizeof (mod_info));
+        mod_info.dwSize = sizeof (mod_info);
+
+        if (Module32FirstW (h, &mod_info))
+          {
+            do
+              {
+                std::string mod_name (sys::u8_from_wstring (mod_info.szModule));
+
+                if (mod_name.find ("octinterp") != std::string::npos)
+                  {
+                    bin_dir = sys::u8_from_wstring (mod_info.szExePath);
+                    if (! bin_dir.empty () && bin_dir.back () != '\\')
+                      bin_dir.push_back ('\\');
+                    break;
+                  }
+              }
+            while (Module32NextW (h, &mod_info));
+          }
+
+        CloseHandle (h);
+      }
+
+    if (! bin_dir.empty ())
+      {
+        size_t pos = bin_dir.rfind (R"(\bin\)");
+
+        if (pos != std::string::npos)
+          sys::env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
+      }
+  }
+
+  static void
+  w32_init (void)
+  {
+    w32_set_octave_home ();
+
+    command_editor::prefer_env_winsize (true);
+  }
+
+#endif
+
   // Set app id if we have the SetCurrentProcessExplicitAppUserModelID
   // available (>= Win7).  FIXME: Could we check for existence of this
   // function in the configure script instead of dynamically loading
@@ -183,9 +193,8 @@ namespace octave
 
     if (hShell)
       {
-        SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
-          reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell,
-                                                             "SetCurrentProcessExplicitAppUserModelID"));
+        SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID
+          = reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell, "SetCurrentProcessExplicitAppUserModelID"));
 
         if (pfnSetCurrentProcessExplicitAppUserModelID)
           pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave." VERSION);
@@ -200,7 +209,7 @@ namespace octave
 DEFUN (__open_with_system_app__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __open_with_system_app__ (@var{file})
-Undocumented internal function.
+Internal function.  Returns 1 on successful system call and 0 otherwise.
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -208,52 +217,56 @@ Undocumented internal function.
 
   std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a filename");
 
-  octave_value retval;
-
 #if defined (OCTAVE_USE_WINDOWS_API)
-  HINSTANCE status = ShellExecuteW (0, 0,
-                                    octave::sys::u8_to_wstring (file).c_str (),
-                                    0, 0, SW_SHOWNORMAL);
+  HINSTANCE status
+    = ShellExecuteW (0, 0, octave::sys::u8_to_wstring (file).c_str (),
+                     0, 0, SW_SHOWNORMAL);
 
   // ShellExecute returns a value greater than 32 if successful.
-  retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
-#elif defined (__APPLE__)
-  octave_value_list tmp
-    = Fsystem (ovl ("open " + file + " 2> /dev/null",
-                    false, "async"),
-               1);
-
-  retval = (tmp(0).double_value () == 0);
+  return octave_value (reinterpret_cast<ptrdiff_t> (status) > 32);
 #else
+  // Quote file path
+  file = "\"" + file + "\"";
+
+#  if defined (__APPLE__)
+#    define FSYSTEM_OPEN_STR "open "
+#  else
+#    define FSYSTEM_OPEN_STR "xdg-open "
+#  endif
   octave_value_list tmp
-    = Fsystem (ovl ("xdg-open " + file + " 2> /dev/null",
+    = Fsystem (ovl (FSYSTEM_OPEN_STR + file + " 2> /dev/null",
                     false, "async"),
                1);
+#  undef FSYSTEM_OPEN_STR
 
-  retval = (tmp(0).double_value () == 0);
+  // Asynchronous Fsystem calls return the new child process identifier,
+  // which must be greater than 1 if successful.
+  return octave_value (tmp(0).double_value () > 1);
 #endif
-
-  return retval;
 }
-
-#if defined (__MINGW32__)
-static void
-MINGW_init (void)
-{
-  w32_init ();
-}
-#endif
-
-#if defined (_MSC_VER)
-static void
-MSVC_init (void)
-{
-  w32_init ();
-}
-#endif
 
 namespace octave
 {
+#if defined (__MINGW32__)
+
+  static void
+  MINGW_init (void)
+  {
+    w32_init ();
+  }
+
+#endif
+
+#if defined (_MSC_VER)
+
+  static void
+  MSVC_init (void)
+  {
+    w32_init ();
+  }
+
+#endif
+
   // Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
 
   bool same_file_internal (const std::string& file1, const std::string& file2)
@@ -265,8 +278,8 @@ namespace octave
 
     bool retval = false;
 
-    std::wstring file1w = octave::sys::u8_to_wstring (file1);
-    std::wstring file2w = octave::sys::u8_to_wstring (file2);
+    std::wstring file1w = sys::u8_to_wstring (file1);
+    std::wstring file2w = sys::u8_to_wstring (file2);
     const wchar_t *f1 = file1w.c_str ();
     const wchar_t *f2 = file2w.c_str ();
 
@@ -319,12 +332,63 @@ namespace octave
 
     // POSIX Code
 
-    octave::sys::file_stat fs_file1 (file1);
-    octave::sys::file_stat fs_file2 (file2);
+    sys::file_stat fs_file1 (file1);
+    sys::file_stat fs_file2 (file2);
 
     return (fs_file1 && fs_file2
             && fs_file1.ino () == fs_file2.ino ()
             && fs_file1.dev () == fs_file2.dev ());
+
+#endif
+  }
+
+  // Return TRUE if NAME refers to an existing drive letter or UNC share
+
+  bool drive_or_unc_share (const std::string& name)
+  {
+#if defined (OCTAVE_USE_WINDOWS_API)
+    size_t len = name.length ();
+    bool candidate = false;
+    if (len > 1 && isalpha(name[0]) && name[1]==':'
+        && (len == 2 || (len == 3 && name[2] == '\\')))
+      candidate = true;
+    if (len > 4 && name[0] == '\\' && name[1] == '\\')
+      {
+        // It starts with two slashes.  Find the next slash.
+        size_t next_slash = name.find ("\\", 3);
+        if (next_slash != std::string::npos && len > next_slash+1)
+          {
+            // Check if it ends with the share
+            size_t last_slash = name.find ("\\", next_slash+1);
+            if (last_slash == std::string::npos
+                || (len > next_slash+2 && last_slash == len-1))
+              candidate = true;
+          }
+      }
+
+    if (candidate)
+      {
+        // Open a handle to the file.
+        std::wstring wname = sys::u8_to_wstring (name);
+        HANDLE h
+          = CreateFileW (wname.c_str (), FILE_READ_ATTRIBUTES,
+                         FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                         nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS,
+                         nullptr);
+        if (h != INVALID_HANDLE_VALUE)
+          {
+            CloseHandle (h);
+            return true;
+          }
+      }
+
+    return false;
+
+#else
+
+    octave_unused_parameter (name);
+
+    return false;
 
 #endif
   }
@@ -374,8 +438,9 @@ namespace octave
     int tty_fd = STDIN_FILENO;
     if (! octave_isatty_wrapper (tty_fd))
       {
-        if (octave::application::interactive ()
-            && ! octave::application::forced_interactive ())
+        interpreter& interp = __get_interpreter__ ("raw_mode");
+
+        if (interp.interactive () && ! application::forced_interactive ())
           error ("stdin is not a tty!");
       }
 
@@ -520,7 +585,7 @@ namespace octave
     wchar_t *wcommand = u8_to_wchar (command);
     wchar_t *wmode = u8_to_wchar (mode);
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
     frame.add_fcn (::free, static_cast<void *> (wcommand));
     frame.add_fcn (::free, static_cast<void *> (wmode));
 
@@ -568,13 +633,13 @@ namespace octave
     raw_mode (true, wait);
 
     // Get current handler.
-    octave::interrupt_handler saved_interrupt_handler
-      = octave::ignore_interrupts ();
+    interrupt_handler saved_interrupt_handler
+      = ignore_interrupts ();
 
     // Restore it, disabling system call restarts (if possible) so the
     // read can be interrupted.
 
-    octave::set_interrupt_handler (saved_interrupt_handler, false);
+    set_interrupt_handler (saved_interrupt_handler, false);
 
     int c = std::cin.get ();
 
@@ -585,7 +650,7 @@ namespace octave
       }
 
     // Restore it, enabling system call restarts (if possible).
-    octave::set_interrupt_handler (saved_interrupt_handler, true);
+    set_interrupt_handler (saved_interrupt_handler, true);
 
     raw_mode (false, true);
 #endif
@@ -609,10 +674,10 @@ namespace octave
 
     if (retval.empty () || retval == R"(\)")
       {
-        retval = octave::sys::env::getenv ("TEMP");
+        retval = sys::env::getenv ("TEMP");
 
         if (retval.empty ())
-          retval = octave::sys::env::getenv ("TMP");
+          retval = sys::env::getenv ("TMP");
 
         if (retval.empty ())
           retval = R"(c:\temp)";
@@ -738,91 +803,97 @@ occurred.
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-static void
-reg_close_key_wrapper (HKEY key)
+namespace octave
 {
-  RegCloseKey (key);
-}
+  static void
+  reg_close_key_wrapper (HKEY key)
+  {
+    RegCloseKey (key);
+  }
 
-LONG
-get_regkey_value (HKEY h_rootkey, const std::string subkey,
-                  const std::string name, octave_value& value)
-{
-  LONG result;
-  HKEY h_subkey;
+  // This function is also used in ov-java.cc, so don't declare static.
+  // Maybe the functions that use it should be here instead?
 
-  result = RegOpenKeyExW (h_rootkey,
-                          octave::sys::u8_to_wstring (subkey).c_str (), 0,
-                          KEY_READ, &h_subkey);
-  if (result != ERROR_SUCCESS)
+  LONG
+  get_regkey_value (HKEY h_rootkey, const std::string subkey,
+                    const std::string name, octave_value& value)
+  {
+    LONG result;
+    HKEY h_subkey;
+
+    result = RegOpenKeyExW (h_rootkey,
+                            sys::u8_to_wstring (subkey).c_str (), 0,
+                            KEY_READ, &h_subkey);
+    if (result != ERROR_SUCCESS)
+      return result;
+
+    unwind_protect frame;
+
+    frame.add_fcn (reg_close_key_wrapper, h_subkey);
+
+    DWORD length = 0;
+    result = RegQueryValueExW (h_subkey,
+                               sys::u8_to_wstring (name).c_str (),
+                               nullptr, nullptr, nullptr, &length);
+    if (result != ERROR_SUCCESS)
+      return result;
+
+    DWORD type = 0;
+    OCTAVE_LOCAL_BUFFER (BYTE, data, length);
+    result = RegQueryValueExW (h_subkey,
+                               sys::u8_to_wstring (name).c_str (),
+                               nullptr, &type, data, &length);
+    if (result != ERROR_SUCCESS)
+      return result;
+
+    if (type == REG_DWORD)
+      value = octave_int32 (*(reinterpret_cast<DWORD *> (data)));
+    else if (type == REG_SZ || type == REG_EXPAND_SZ)
+      value = string_vector (sys::u8_from_wstring (reinterpret_cast<wchar_t *> (data)));
+
     return result;
+  }
 
-  octave::unwind_protect frame;
+  static LONG
+  get_regkey_names (HKEY h_rootkey, const std::string subkey,
+                    std::list<std::string> &fields)
+  {
+    LONG retval;
+    HKEY h_subkey;
 
-  frame.add_fcn (reg_close_key_wrapper, h_subkey);
+    fields.clear ();
 
-  DWORD length = 0;
-  result = RegQueryValueExW (h_subkey,
-                             octave::sys::u8_to_wstring (name).c_str (),
-                             nullptr, nullptr, nullptr, &length);
-  if (result != ERROR_SUCCESS)
-    return result;
+    retval = RegOpenKeyExW (h_rootkey,
+                            sys::u8_to_wstring (subkey).c_str (), 0,
+                            KEY_READ, &h_subkey);
+    if (retval != ERROR_SUCCESS)
+      return retval;
 
-  DWORD type = 0;
-  OCTAVE_LOCAL_BUFFER (BYTE, data, length);
-  result = RegQueryValueExW (h_subkey,
-                             octave::sys::u8_to_wstring (name).c_str (),
-                             nullptr, &type, data, &length);
-  if (result != ERROR_SUCCESS)
-    return result;
+    DWORD idx = 0;
+    const int MAX_VALUE_NAME_SIZE = 32766;
+    wchar_t value_name[MAX_VALUE_NAME_SIZE+1];
+    DWORD value_name_size = MAX_VALUE_NAME_SIZE;
 
-  if (type == REG_DWORD)
-    value = octave_int32 (*(reinterpret_cast<DWORD *>(data)));
-  else if (type == REG_SZ || type == REG_EXPAND_SZ)
-    value = string_vector (octave::sys::u8_from_wstring (
-                                        reinterpret_cast<wchar_t *> (data)));
+    while (true)
+      {
+        retval = RegEnumValueW (h_subkey, idx, value_name, &value_name_size,
+                                nullptr, nullptr, nullptr, nullptr);
+        if (retval != ERROR_SUCCESS)
+          break;
+        fields.push_back (sys::u8_from_wstring (value_name));
+        value_name_size = MAX_VALUE_NAME_SIZE;
+        idx++;
+      }
 
-  return result;
-}
+    if (retval == ERROR_NO_MORE_ITEMS)
+      retval = ERROR_SUCCESS;
 
-static LONG
-get_regkey_names (HKEY h_rootkey, const std::string subkey,
-                  std::list<std::string> &fields)
-{
-  LONG retval;
-  HKEY h_subkey;
+    RegCloseKey (h_subkey);
 
-  fields.clear ();
-
-  retval = RegOpenKeyExW (h_rootkey,
-                          octave::sys::u8_to_wstring (subkey).c_str (), 0,
-                          KEY_READ, &h_subkey);
-  if (retval != ERROR_SUCCESS)
     return retval;
-
-  DWORD idx = 0;
-  const int MAX_VALUE_NAME_SIZE = 32766;
-  wchar_t value_name[MAX_VALUE_NAME_SIZE+1];
-  DWORD value_name_size = MAX_VALUE_NAME_SIZE;
-
-  while (true)
-    {
-      retval = RegEnumValueW (h_subkey, idx, value_name, &value_name_size,
-                              nullptr, nullptr, nullptr, nullptr);
-      if (retval != ERROR_SUCCESS)
-        break;
-      fields.push_back (octave::sys::u8_from_wstring (value_name));
-      value_name_size = MAX_VALUE_NAME_SIZE;
-      idx++;
-    }
-
-  if (retval == ERROR_NO_MORE_ITEMS)
-    retval = ERROR_SUCCESS;
-
-  RegCloseKey (h_subkey);
-
-  return retval;
+  }
 }
+
 #endif
 
 DEFUN (winqueryreg, args, ,
@@ -900,9 +971,9 @@ On non-Windows platforms this function fails with an error.
     print_usage ();
 
   // Input check
-  std::string rootkey_name =
-    args(0).xstring_value ("winqueryreg: the first argument must be 'name' "
-                           "or a valid ROOTKEY identifier");
+  std::string rootkey_name
+    = args(0).xstring_value ("winqueryreg: the first argument must be 'name' "
+                             "or a valid ROOTKEY identifier");
   std::string subkey_name = "";
   std::string value_name = "";
   bool get_names = false;
@@ -912,18 +983,19 @@ On non-Windows platforms this function fails with an error.
         error ("winqueryreg: if the first argument is 'name', "
                "ROOTKEY and SUBKEY must be given");
       get_names = true;
-      rootkey_name =
-        args(1).xstring_value ("winqueryreg: ROOTKEY must be a string");
-      subkey_name =
-        args(2).xstring_value ("winqueryreg: SUBKEY must be a string");
+      rootkey_name
+        = args(1).xstring_value ("winqueryreg: ROOTKEY must be a string");
+      subkey_name
+        = args(2).xstring_value ("winqueryreg: SUBKEY must be a string");
     }
   else
     {
-      subkey_name =
-        args(1).xstring_value ("winqueryreg: SUBKEY must be a string");
+      subkey_name
+        = args(1).xstring_value ("winqueryreg: SUBKEY must be a string");
+
       if (args.length () == 3)
-        value_name =
-          args(2).xstring_value ("winqueryreg: VALUENAME must be a string");
+        value_name
+          = args(2).xstring_value ("winqueryreg: VALUENAME must be a string");
     }
 
   // Get rootkey handle
@@ -947,7 +1019,7 @@ On non-Windows platforms this function fails with an error.
     {
       std::list<std::string> fields;
 
-      LONG retval = get_regkey_names (h_rootkey, subkey_name, fields);
+      LONG retval = octave::get_regkey_names (h_rootkey, subkey_name, fields);
       if (retval != ERROR_SUCCESS)
         error ("winqueryreg: error %ld reading names from registry", retval);
 
@@ -962,8 +1034,8 @@ On non-Windows platforms this function fails with an error.
   else
     {
       octave_value key_val;
-      LONG retval = get_regkey_value (h_rootkey, subkey_name, value_name,
-                                      key_val);
+      LONG retval = octave::get_regkey_value (h_rootkey, subkey_name,
+                                              value_name, key_val);
       if (retval == ERROR_FILE_NOT_FOUND)
         error ("winqueryreg: no value found for '%s' at %s\\%s.",
                value_name.c_str (), rootkey_name.c_str (),
@@ -1028,8 +1100,8 @@ On non-Windows platforms this function fails with an error.
 
 // FIXME: perhaps kbhit should also be able to print a prompt?
 
-DEFUN (kbhit, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (kbhit, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} kbhit ()
 @deftypefnx {} {} kbhit (1)
 Read a single keystroke from the keyboard.
@@ -1058,7 +1130,7 @@ returning the empty string if no key is available.
 {
   // FIXME: add timeout and default value args?
 
-  Fdrawnow ();
+  Fdrawnow (interp);
 
   int c = octave::kbhit (args.length () == 0);
 
@@ -1073,8 +1145,8 @@ returning the empty string if no key is available.
 // State of the pause system
 static bool Vpause_enabled = true;
 
-DEFUN (pause, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (pause, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} pause ()
 @deftypefnx {} {} pause (@var{n})
 @deftypefnx {} {@var{old_state} =} pause ("on")
@@ -1162,7 +1234,7 @@ graphics callbacks execution.
         warning ("pause: NaN is an invalid delay");
       else
         {
-          Fdrawnow ();
+          Fdrawnow (interp);
 
           octave::sleep (dval, true);
         }
@@ -1190,8 +1262,8 @@ for floating point calculations.
 No actual tests are performed.
 @end deftypefn */)
 {
-  octave::mach_info::float_format flt_fmt =
-    octave::mach_info::native_float_format ();
+  octave::mach_info::float_format flt_fmt
+    = octave::mach_info::native_float_format ();
 
   return ovl (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian
               || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
@@ -1207,8 +1279,8 @@ DEFUN (native_float_format, , ,
 Return the native floating point format as a string.
 @end deftypefn */)
 {
-  octave::mach_info::float_format flt_fmt =
-    octave::mach_info::native_float_format ();
+  octave::mach_info::float_format flt_fmt
+    = octave::mach_info::native_float_format ();
 
   return ovl (octave::mach_info::float_format_as_string (flt_fmt));
 }

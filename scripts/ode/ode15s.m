@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Francesco Faccio <francesco.faccio@mail.polimi.it>
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{t}, @var{y}] =} ode15s (@var{fun}, @var{trange}, @var{y0})
@@ -104,57 +111,58 @@ function varargout = ode15s (fun, trange, y0, varargin)
 
   if (! isempty (options.Mass))
     if (ischar (options.Mass))
-      try
-        options.Mass = str2func (options.Mass);
-      catch
-        warning (lasterr);
-      end_try_catch
-      if (! is_function_handle (options.Mass))
+      if (! exist (options.Mass))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Mass'"]);
+               ['ode15s: "Mass" function "' options.Mass '" not found']);
       endif
+      options.Mass = str2func (options.Mass);
+    endif
+    if (! is_function_handle (options.Mass) && ! isnumeric (options.Mass))
+      error ("Octave:invalid-input-arg",
+             'ode15s: "Mass" field must be a function handle or square matrix');
     endif
   endif
 
   if (! isempty (options.Jacobian))
     if (ischar (options.Jacobian))
-      try
-        options.Jacobian = str2func (options.Jacobian);
-      catch
-        warning (lasterr);
-      end_try_catch
-      if (! is_function_handle (options.Jacobian))
+      if (! exist (options.Jacobian))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Jacobian'"]);
+               ['ode15s: "Jacobian" function "' options.Jacobian '" not found']);
       endif
+      options.Jacobian = str2func (options.Jacobian);
+    endif
+    if (! is_function_handle (options.Jacobian)
+        && ! isnumeric (options.Jacobian))
+      error ("Octave:invalid-input-arg",
+             'ode15s: "Jacobian" field must be a function handle or square matrix');
     endif
   endif
 
   if (! isempty (options.OutputFcn))
     if (ischar (options.OutputFcn))
-      try
-        options.OutputFcn = str2func (options.OutputFcn);
-      catch
-        warning (lasterr);
-      end_try_catch
-      if (! is_function_handle (options.OutputFcn))
+      if (! exist (options.OutputFcn))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "OutputFcn");
+               ['ode15s: "OutputFcn" function "' options.OutputFcn '" not found']);
       endif
+      options.OutputFcn = str2func (options.OutputFcn);
+    endif
+    if (! is_function_handle (options.OutputFcn))
+      error ("Octave:invalid-input-arg",
+             'ode15s: "OutputFcn" must be a valid function handle');
     endif
   endif
 
   if (! isempty (options.Events))
     if (ischar (options.Events))
-      try
-        options.Events = str2func (options.Events);
-      catch
-        warning (lasterr);
-      end_try_catch
-      if (! is_function_handle (options.Events))
+      if (! exist (options.Events))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Events'"]);
+               ['ode15s: "Events" function "' options.Events '" not found']);
       endif
+      options.Events = str2func (options.Events);
+    endif
+    if (! is_function_handle (options.Events))
+      error ("Octave:invalid-input-arg",
+             'ode15s: "Events" must be a valid function handle');
     endif
   endif
 
@@ -178,33 +186,30 @@ function varargout = ode15s (fun, trange, y0, varargin)
       if (nargin (options.Mass) == 2)
         options.havestatedep = true;
         M = options.Mass (trange(1), y0);
-        options.havemasssparse = issparse (M);
-        if (any (size (M) != [n n]) || ! isnumeric (M) || ! isreal (M))
+        if (! issquare (M) || rows (M) != n || ! isnumeric (M) || ! isreal (M))
           error ("Octave:invalid-input-arg",
-                 [solver ": invalid value assigned to field 'Mass'"]);
+                 'ode15s: "Mass" function must evaluate to a real square matrix');
         endif
+        options.havemasssparse = issparse (M);
       elseif (nargin (options.Mass) == 1)
         options.havetimedep = true;
         M = options.Mass (trange(1));
-        options.havemasssparse = issparse (M);
-        if (any (size (M) != [n n]) || ! isnumeric (M) || ! isreal (M))
+        if (! issquare (M) || rows (M) != n || ! isnumeric (M) || ! isreal (M))
           error ("Octave:invalid-input-arg",
-                 [solver ": invalid value assigned to field 'Mass'"]);
+                 'ode15s: "Mass" function must evaluate to a real square matrix');
         endif
+        options.havemasssparse = issparse (M);
       else
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Mass'"]);
+               'ode15s: invalid value assigned to field "Mass"');
       endif
-    elseif (ismatrix (options.Mass))
-      options.havemasssparse = issparse (options.Mass);
-      if (any (size (options.Mass) != [n n])
+    else    # matrix Mass input
+      if (! issquare (options.Mass) || rows (options.Mass) != n
           || ! isnumeric (options.Mass) || ! isreal (options.Mass))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Mass'"]);
+               'ode15s: "Mass" matrix must be a real square matrix');
       endif
-    else
-      error ("Octave:invalid-input-arg",
-             [solver ": invalid value assigned to field 'Mass'"]);
+      options.havemasssparse = issparse (options.Mass);
     endif
   endif
 
@@ -218,29 +223,23 @@ function varargout = ode15s (fun, trange, y0, varargin)
     if (is_function_handle (options.Jacobian))
       options.havejacfun = true;
       if (nargin (options.Jacobian) == 2)
-        [A] = options.Jacobian (trange(1), y0);
-        if (issparse (A))
-          options.havejacsparse = true;  # Jac is sparse fun
-        endif
-        if (any (size (A) != [n n]) || ! isnumeric (A) || ! isreal (A))
+        A = options.Jacobian (trange(1), y0);
+        if (! issquare (A) || rows (A) != n || ! isnumeric (A) || ! isreal (A))
           error ("Octave:invalid-input-arg",
-                 [solver ": invalid value assigned to field 'Jacobian'"]);
+                 'ode15s: "Jacobian" function must evaluate to a real square matrix');
         endif
+        options.havejacsparse = issparse (A);  # Jac is sparse fun
       else
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Jacobian'"]);
+               'ode15s: invalid value assigned to field "Jacobian"');
       endif
-    elseif (ismatrix (options.Jacobian))
-      if (issparse (options.Jacobian))
-        options.havejacsparse = true;    # Jac is sparse matrix
-      endif
-      if (! issquare (options.Jacobian))
+    else  # matrix input 
+      if (! issquare (options.Jacobian) || rows (options.Jacobian) != n
+          || ! isnumeric (options.Jacobian) || ! isreal (options.Jacobian))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Jacobian'"]);
+               'ode15s: "Jacobian" matrix must be a real square matrix');
       endif
-    else
-      error ("Octave:invalid-input-arg",
-             [solver ": invalid value assigned to field 'Jacobian'"]);
+      options.havejacsparse = issparse (options.Jacobian);
     endif
   endif
 
@@ -251,8 +250,8 @@ function varargout = ode15s (fun, trange, y0, varargin)
       options.Jacobian = [];
       warning ("ode15s:mass_state_dependent_provided",
               ["with MStateDependence != 'none' an internal", ...
-               " approximation of Jacobian Matrix will be used.", ...
-               " Set MStateDependence equal to 'none' if you want ", ...
+               " approximation of the Jacobian Matrix will be used.", ...
+               "  Set MStateDependence equal to 'none' if you want", ...
                " to provide a constant or time-dependent Jacobian"]);
     endif
   endif
@@ -282,7 +281,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
 
   if (numel (options.AbsTol) != 1 && numel (options.AbsTol) != n)
     error ("Octave:invalid-input-arg",
-           [solver ": invalid value assigned to field 'AbsTol'"]);
+           'ode15s: invalid value assigned to field "AbsTol"');
   elseif (numel (options.AbsTol) == n)
     options.haveabstolvec = true;
   endif
@@ -545,21 +544,21 @@ endfunction
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
-%!testif HAVE_SUNDIALS_IDAKLU
+%!testif HAVE_SUNDIALS_SUNLINSOL_KLU
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", [1, 0, 0; 0, 1, 0; 0, 0, 0],
 %!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
-%!testif HAVE_SUNDIALS_IDAKLU
+%!testif HAVE_SUNDIALS_SUNLINSOL_KLU
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", sparse ([1, 0, 0; 0, 1, 0; 0, 0, 0]),
 %!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
-%!testif HAVE_SUNDIALS_IDAKLU
+%!testif HAVE_SUNDIALS_SUNLINSOL_KLU
 %! warning ("off", "ode15s:mass_state_dependent_provided", "local");
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @massdensefunstate,
@@ -575,14 +574,14 @@ endfunction
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
-%!testif HAVE_SUNDIALS_IDAKLU
+%!testif HAVE_SUNDIALS_SUNLINSOL_KLU
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @massdensefuntime,
 %!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
-%!testif HAVE_SUNDIALS_IDAKLU
+%!testif HAVE_SUNDIALS_SUNLINSOL_KLU
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @masssparsefuntime,
 %!               "Jacobian", @jacfunsparse);

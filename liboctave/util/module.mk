@@ -7,7 +7,6 @@ UTIL_INC = \
   %reldir%/cmd-hist.h \
   %reldir%/data-conv.h \
   %reldir%/file-info.h \
-  %reldir%/functor.h \
   %reldir%/glob-match.h \
   %reldir%/lo-array-errwarn.h \
   %reldir%/lo-cutils.h \
@@ -20,6 +19,7 @@ UTIL_INC = \
   %reldir%/lo-error.h \
   %reldir%/octave-preserve-stream-state.h \
   %reldir%/quit.h \
+  %reldir%/oct-atomic.h \
   %reldir%/oct-base64.h \
   %reldir%/oct-binmap.h \
   %reldir%/oct-cmplx.h \
@@ -55,13 +55,13 @@ UTIL_C_SRC = \
   %reldir%/f2c-main.c \
   %reldir%/lo-cutils.c \
   %reldir%/blaswrap.c \
-  %reldir%/cquit.c \
   %reldir%/f77-fcn.c \
   %reldir%/lo-error.c \
   %reldir%/oct-rl-edit.c \
   %reldir%/oct-rl-hist.c
 
 UTIL_SRC = \
+  %reldir%/action-container.cc \
   %reldir%/cmd-edit.cc \
   %reldir%/cmd-hist.cc \
   %reldir%/data-conv.cc \
@@ -74,6 +74,7 @@ UTIL_SRC = \
   %reldir%/lo-regexp.cc \
   %reldir%/lo-utils.cc \
   %reldir%/quit.cc \
+  %reldir%/oct-atomic.c \
   %reldir%/oct-base64.cc \
   %reldir%/oct-glob.cc \
   %reldir%/oct-inttypes.cc \

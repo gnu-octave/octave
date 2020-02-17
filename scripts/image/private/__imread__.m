@@ -1,9 +1,9 @@
-## Copyright (C) 2013-2019 Carnë Draug
-## Copyright (C) 2008-2019 Thomas L. Scofield
-## Copyright (C) 2008 Kristian Rumberg
-## Copyright (C) 2006 Thomas Weber
-## Copyright (C) 2005 Stefan van der Walt
-## Copyright (C) 2002 Andy Adler
+########################################################################
+##
+## Copyright (C) 2002-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -20,18 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## This function does all the work of imread.  It exists here as private
 ## function so that imread can use other functions if imformats is
 ## configured to.  It is also needed so that imformats can create a
 ## function handle for it.
-
-## Author: Carnë Draug <carandraug@octave.org>
-## Author: Thomas L. Scofield <scofield@calvin.edu>
-## Author: Kristian Rumberg <kristianrumberg@gmail.com>
-## Author: Thomas Weber <thomas.weber.mail@gmail.com>
-## Author: Stefan van der Walt <stefan@sun.ac.za>
-## Author: Andy Adler
 
 function varargout = __imread__ (filename, varargin)
 
@@ -68,7 +63,7 @@ function varargout = __imread__ (filename, varargin)
     endif
     val = varargin{shift (idx, 1)};
     if (! is_valid_index_option (val) && ! strcmpi (val, "all"))
-      error ("imread: %s must be a vector or the string `all'", varargin{idx});
+      error ("imread: %s must be a vector or the string 'all'", varargin{idx});
     endif
     options.index = val;
   endif
@@ -123,7 +118,7 @@ function varargout = __imread__ (filename, varargin)
         ## we allow to load multiple pages with one command.
 
       otherwise
-        error ("imread: invalid PARAMETER `%s'", varargin{idx});
+        error ("imread: invalid PARAMETER '%s'", varargin{idx});
 
     endswitch
   endfor

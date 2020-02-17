@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_defun_int_h)
 #define octave_defun_int_h 1
@@ -79,41 +82,6 @@ namespace octave
     auto_shlib (const dynamic_library& shl) : dynamic_library (shl) { }
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::auto_shlib' instead")
-typedef octave::auto_shlib octave_auto_shlib;
-
-OCTAVE_DEPRECATED (4.4, "use 'tree_evaluator::isargout' instead")
-extern OCTINTERP_API bool
-defun_isargout (int, int);
-
-OCTAVE_DEPRECATED (4.4, "use 'tree_evaluator::isargout' instead")
-extern OCTINTERP_API void
-defun_isargout (int, int, bool *);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::install_built_in_function' instead")
-extern OCTINTERP_API void
-install_builtin_function (octave_builtin::fcn f, const std::string& name,
-                          const std::string& file, const std::string& doc,
-                          bool can_hide_function = true);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::install_built_in_function' instead")
-extern OCTINTERP_API void
-install_builtin_function (octave_builtin::meth m, const std::string& name,
-                          const std::string& file, const std::string& doc,
-                          bool can_hide_function = true);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::alias_built_in_function' instead")
-extern OCTINTERP_API void
-alias_builtin (const std::string& alias, const std::string& name);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::install_built_in_dispatch' instead")
-extern OCTINTERP_API void
-install_builtin_dispatch (const std::string& name, const std::string& klass);
-
-#endif
 
 #define FORWARD_DECLARE_FUNX(name)              \
   extern OCTAVE_EXPORT octave_value_list        \

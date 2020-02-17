@@ -31,12 +31,13 @@ functions.
 @menu
 * Introduction to Function and Script Files::
 * Defining Functions::
+* Returning from a Function::
 * Multiple Return Values::
+* Variable-length Return Lists::
 * Variable-length Argument Lists::
 * Ignoring Arguments::
-* Variable-length Return Lists::
-* Returning from a Function::
 * Default Arguments::
+* Validating Arguments::
 * Function Files::
 * Script Files::
 * Function Handles Anonymous Functions Inline Functions::
@@ -276,6 +277,54 @@ possibilities and issue our own error message.
 
 @DOCSTRING(silent_functions)
 
+@node Returning from a Function
+@section Returning from a Function
+
+The body of a user-defined function can contain a @code{return} statement.
+This statement returns control to the rest of the Octave program.  It
+looks like this:
+
+@example
+return
+@end example
+
+Unlike the @code{return} statement in C, Octave's @code{return}
+statement cannot be used to return a value from a function.  Instead,
+you must assign values to the list of return variables that are part of
+the @code{function} statement.  The @code{return} statement simply makes
+it easier to exit a function from a deeply nested loop or conditional
+statement.
+
+Here is an example of a function that checks to see if any elements of a
+vector are nonzero.
+
+@example
+@group
+function retval = any_nonzero (v)
+  retval = 0;
+  for i = 1:length (v)
+    if (v (i) != 0)
+      retval = 1;
+      return;
+    endif
+  endfor
+  printf ("no nonzero elements found\n");
+endfunction
+@end group
+@end example
+
+Note that this function could not have been written using the
+@code{break} statement to exit the loop once a nonzero value is found
+without adding extra logic to avoid printing the message if the vector
+does contain a nonzero element.
+
+@deftypefn {} {} return
+When Octave encounters the keyword @code{return} inside a function or
+script, it returns control to the caller immediately.  At the top level,
+the return statement is ignored.  A @code{return} statement is assumed
+at the end of every function definition.
+@end deftypefn
+
 @node Multiple Return Values
 @section Multiple Return Values
 
@@ -378,47 +427,57 @@ along with a warning.
 
 @DOCSTRING(nargout)
 
-It is good practice at the head of a function to verify that it has been called
-correctly.  In Octave the following idiom is seen frequently
+@node Variable-length Return Lists
+@section Variable-length Return Lists
+@cindex variable-length return lists
+@cindex @code{varargout}
+
+@anchor{XREFvarargout}
+
+It is possible to return a variable number of output arguments from a
+function using a syntax that's similar to the one used with the
+special @code{varargin} parameter name.  To let a function return a
+variable number of output arguments the special output parameter name
+@code{varargout} is used.  As with @code{varargin}, @code{varargout} is
+a cell array that will contain the requested output arguments.
+
+As an example the following function sets the first output argument to
+1, the second to 2, and so on.
 
 @example
 @group
-if (nargin < min_#_inputs || nargin > max_#_inputs)
-  print_usage ();
-endif
+function varargout = one_to_n ()
+  for i = 1:nargout
+    varargout@{i@} = i;
+  endfor
+endfunction
 @end group
 @end example
 
 @noindent
-which stops the function execution and prints a message about the correct
-way to call the function whenever the number of inputs is wrong.
+When called this function returns values like this
 
-For compatibility with @sc{matlab}, @code{narginchk} and @code{nargoutchk} are
-available which provide similar error checking.
+@example
+@group
+[a, b, c] = one_to_n ()
+     @result{} a =  1
+     @result{} b =  2
+     @result{} c =  3
+@end group
+@end example
 
-@DOCSTRING(narginchk)
+If @code{varargin} (@code{varargout}) does not appear as the last
+element of the input (output) parameter list, then it is not special,
+and is handled the same as any other parameter name.
 
-@DOCSTRING(nargoutchk)
+@DOCSTRING(deal)
 
-Besides the number of arguments, inputs can be checked for various properties.
-@code{validatestring} is used for string arguments and
-@code{validateattributes} for numeric arguments.
-
-@DOCSTRING(validatestring)
-
-@DOCSTRING(validateattributes)
-
-If none of the preceding functions is sufficient there is also the class
-@code{inputParser} which can perform extremely complex input checking for
-functions.
-
-@DOCSTRING(inputParser)
-
-@anchor{XREFvarargin} @anchor{XREFvarargout}
 @node Variable-length Argument Lists
 @section Variable-length Argument Lists
 @cindex variable-length argument lists
 @cindex @code{varargin}
+
+@anchor{XREFvarargin}
 
 Sometimes the number of input arguments is not known when the function
 is defined.  As an example think of a function that returns the smallest
@@ -586,97 +645,6 @@ endfunction
 
 @DOCSTRING(isargout)
 
-@node Variable-length Return Lists
-@section Variable-length Return Lists
-@cindex variable-length return lists
-@cindex @code{varargout}
-
-It is possible to return a variable number of output arguments from a
-function using a syntax that's similar to the one used with the
-special @code{varargin} parameter name.  To let a function return a
-variable number of output arguments the special output parameter name
-@code{varargout} is used.  As with @code{varargin}, @code{varargout} is
-a cell array that will contain the requested output arguments.
-
-As an example the following function sets the first output argument to
-1, the second to 2, and so on.
-
-@example
-@group
-function varargout = one_to_n ()
-  for i = 1:nargout
-    varargout@{i@} = i;
-  endfor
-endfunction
-@end group
-@end example
-
-@noindent
-When called this function returns values like this
-
-@example
-@group
-[a, b, c] = one_to_n ()
-     @result{} a =  1
-     @result{} b =  2
-     @result{} c =  3
-@end group
-@end example
-
-If @code{varargin} (@code{varargout}) does not appear as the last
-element of the input (output) parameter list, then it is not special,
-and is handled the same as any other parameter name.
-
-@DOCSTRING(deal)
-
-@node Returning from a Function
-@section Returning from a Function
-
-The body of a user-defined function can contain a @code{return} statement.
-This statement returns control to the rest of the Octave program.  It
-looks like this:
-
-@example
-return
-@end example
-
-Unlike the @code{return} statement in C, Octave's @code{return}
-statement cannot be used to return a value from a function.  Instead,
-you must assign values to the list of return variables that are part of
-the @code{function} statement.  The @code{return} statement simply makes
-it easier to exit a function from a deeply nested loop or conditional
-statement.
-
-Here is an example of a function that checks to see if any elements of a
-vector are nonzero.
-
-@example
-@group
-function retval = any_nonzero (v)
-  retval = 0;
-  for i = 1:length (v)
-    if (v (i) != 0)
-      retval = 1;
-      return;
-    endif
-  endfor
-  printf ("no nonzero elements found\n");
-endfunction
-@end group
-@end example
-
-Note that this function could not have been written using the
-@code{break} statement to exit the loop once a nonzero value is found
-without adding extra logic to avoid printing the message if the vector
-does contain a nonzero element.
-
-@deftypefn {} {} return
-When Octave encounters the keyword @code{return} inside a function or
-script, it returns control to the caller immediately.  At the top level,
-the return statement is ignored.  A @code{return} statement is assumed
-at the end of every function definition.
-@end deftypefn
-
 @node Default Arguments
 @section Default Arguments
 @cindex default arguments
@@ -739,6 +707,108 @@ hello (:);
      @print{} Hello, World!
 @end group
 @end example
+
+@node Validating Arguments
+@section Validating Arguments
+@cindex validating arguments
+
+Octave is a weakly typed programming language.  Thus it is possible to
+call a function with arguments, that probably cause errors or might have
+undesirable side effects.  For example calling a string processing function
+with a huge sparse matrix.
+
+It is good practice at the head of a function to verify that it has been
+called correctly.  Octave offers several functions for this purpose.
+
+@menu
+* Validating the number of Arguments::
+* Validating the type of Arguments::
+* Parsing Arguments::
+@end menu
+
+@node Validating the number of Arguments
+@subsection Validating the number of Arguments
+
+In Octave the following idiom is seen frequently at the beginning of a
+function definition:
+
+@example
+@group
+if (nargin < min_#_inputs || nargin > max_#_inputs)
+  print_usage ();
+endif
+@end group
+@end example
+
+@noindent
+which stops the function execution and prints a message about the correct
+way to call the function whenever the number of inputs is wrong.
+
+Similar error checking is provided by @code{narginchk} and
+@code{nargoutchk}.
+
+@DOCSTRING(narginchk)
+
+@DOCSTRING(nargoutchk)
+
+@node Validating the type of Arguments
+@subsection Validating the type of Arguments
+
+Besides the number of arguments, inputs can be checked for various
+properties.  @code{validatestring} is used for string arguments and
+@code{validateattributes} for numeric arguments.
+
+@DOCSTRING(validatestring)
+
+@DOCSTRING(validateattributes)
+
+As alternative to @code{validateattributes} there are several shorter
+convenience functions to check for individual properties.
+
+@DOCSTRING(mustBeFinite)
+
+@DOCSTRING(mustBeGreaterThan)
+
+@DOCSTRING(mustBeGreaterThanOrEqual)
+
+@DOCSTRING(mustBeInteger)
+
+@DOCSTRING(mustBeLessThan)
+
+@DOCSTRING(mustBeLessThanOrEqual)
+
+@DOCSTRING(mustBeMember)
+
+@DOCSTRING(mustBeNegative)
+
+@DOCSTRING(mustBeNonempty)
+
+@DOCSTRING(mustBeNonNan)
+
+@DOCSTRING(mustBeNonnegative)
+
+@DOCSTRING(mustBeNonpositive)
+
+@DOCSTRING(mustBeNonsparse)
+
+@DOCSTRING(mustBeNonzero)
+
+@DOCSTRING(mustBeNumeric)
+
+@DOCSTRING(mustBeNumericOrLogical)
+
+@DOCSTRING(mustBePositive)
+
+@DOCSTRING(mustBeReal)
+
+@node Parsing Arguments
+@subsection Parsing Arguments
+
+If none of the preceding validation functions is sufficient there is also
+the class @code{inputParser} which can perform extremely complex input
+checking for functions.
+
+@DOCSTRING(inputParser)
 
 @node Function Files
 @section Function Files

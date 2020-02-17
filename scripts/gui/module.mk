@@ -1,5 +1,5 @@
 FCN_FILE_DIRS += \
-  scripts/gui \
+  %reldir% \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
@@ -7,6 +7,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__fltk_file_filter__.m \
   %reldir%/private/__get_funcname__.m \
   %reldir%/private/__is_function__.m \
+  %reldir%/private/__ok_cancel_dlg__.m \
   %reldir%/private/__uigetdir_fltk__.m \
   %reldir%/private/__uigetfile_fltk__.m \
   %reldir%/private/__uiobject_split_args__.m \
@@ -37,6 +38,7 @@ FCN_FILE_DIRS += \
   %reldir%/uipushtool.m \
   %reldir%/uiputfile.m \
   %reldir%/uiresume.m \
+  %reldir%/uisetfont.m \
   %reldir%/uitable.m \
   %reldir%/uitoggletool.m \
   %reldir%/uitoolbar.m \

@@ -1,4 +1,9 @@
-## Copyright (C) 1995-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1995-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{y} =} mu2lin (@var{x}, @var{n})
@@ -27,10 +34,6 @@
 ## If @var{n} is not specified it defaults to 0.
 ## @seealso{lin2mu}
 ## @end deftypefn
-
-## Author:  Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
-## Created: 18 October 1994
-## Adapted-By: jwe
 
 function y = mu2lin (x, n = 0)
 

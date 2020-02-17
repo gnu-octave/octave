@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2013-2019 Vytautas Jančauskas
-Copyright (C) 2016-2019 Damjan Angelovski
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -298,9 +300,11 @@ Comment.
 
   Matrix audio = args(1).matrix_value ();
 
-  // FIXME: SampleRate is supposed to be a positive scalar greater than 0
-  //        Need check for that, and possibly convert to uint.
+  if (! args(2).is_scalar_type () || ! args(2).isnumeric ())
+    error ("audiowrite: sample rate FS must be a positive scalar integer");
   int samplerate = args(2).int_value ();
+  if (samplerate < 1)
+    error ("audiowrite: sample rate FS must be a positive scalar integer");
 
   std::string ext;
   size_t dotpos = filename.find_last_of ('.');
@@ -546,6 +550,9 @@ Comment.
 %!testif HAVE_SNDFILE
 %! fail ("audiowrite (1, 1, 8e3)", "FILENAME must be a string");
 %! fail ("audiowrite ('foo', int64 (1), 8e3)", "wrong type argument 'int64 scalar'");
+%! fail ("audiowrite ('foo', [0 1], [8e3, 8e3])", "FS must be a positive scalar");
+%! fail ("audiowrite ('foo', 1, {8e3})", "FS must be a .* integer");
+%! fail ("audiowrite ('foo', 1, -8e3)", "FS must be a positive");
 %! fail ("audiowrite ('foo', 1, 8e3, 'bitspersample')", "invalid number of arguments");
 %! fail ("audiowrite ('foo', 1, 8e3, 'bitspersample', 48)", "wrong number of bits specified");
 %! fail ("audiowrite ('foo', 1, 8e3, 'quality', [2 3 4])", "Quality value must be a scalar");

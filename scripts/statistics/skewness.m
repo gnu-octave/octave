@@ -1,5 +1,9 @@
-## Copyright (C) 2013-2019 Julien Bect
-## Copyright (C) 1996-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1996-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} skewness (@var{x})
@@ -78,10 +84,6 @@
 ##
 ## @seealso{var, kurtosis, moment}
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 29 July 1994
-## Adapted-By: jwe
 
 function y = skewness (x, flag, dim)
 
@@ -152,9 +154,8 @@ endfunction
 %!assert (skewness (single ([1:5 10])), single (1.0513283), eps ("single"))
 %!assert (skewness (single ([1 2]), 0), single (NaN))
 
-## Verify no "divide-by-zero" warnings
+## Verify no warnings
 %!test
-%! warning ("on", "Octave:divide-by-zero", "local");
 %! lastwarn ("");  # clear last warning
 %! skewness (1);
 %! assert (lastwarn (), "");

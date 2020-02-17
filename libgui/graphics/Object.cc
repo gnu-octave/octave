@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -27,19 +30,27 @@ along with Octave; see the file COPYING.  If not, see
 #include <QString>
 #include <QVariant>
 
-#include "Backend.h"
 #include "Object.h"
 #include "QtHandlesUtils.h"
+#include "octave-qobject.h"
+#include "qt-graphics-toolkit.h"
+
+#include "graphics.h"
+#include "interpreter.h"
 
 namespace QtHandles
 {
 
-  Object::Object (const graphics_object& go, QObject *obj)
-    : QObject (), m_go (go), m_handle (go.get_handle ()), m_qobject (nullptr)
+  Object::Object (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                  const graphics_object& go, QObject *obj)
+    : QObject (), m_octave_qobj (oct_qobj), m_interpreter (interp),
+      m_go (go), m_handle (go.get_handle ()), m_qobject (nullptr)
   {
-    gh_manager::auto_lock lock (false);
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
-    if (! lock)
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
+    if (! guard)
       qCritical ("QtHandles::Object::Object: "
                  "creating Object (h=%g) without a valid lock!!!",
                  m_handle.value ());
@@ -71,9 +82,11 @@ namespace QtHandles
   graphics_object
   Object::object (void) const
   {
-    gh_manager::auto_lock lock (false);
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
-    if (! lock)
+    octave::autolock guard (gh_mgr.graphics_lock (), false);
+
+    if (! guard)
       qCritical ("QtHandles::Object::object: "
                  "accessing graphics object (h=%g) without a valid lock!!!",
                  m_handle.value ());
@@ -84,7 +97,9 @@ namespace QtHandles
   void
   Object::slotUpdate (int pId)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     switch (pId)
       {
@@ -105,7 +120,9 @@ namespace QtHandles
   void
   Object::slotFinalize (void)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     finalize ();
   }
@@ -113,7 +130,9 @@ namespace QtHandles
   void
   Object::slotRedraw (void)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     if (object ().valid_object ())
       redraw ();
@@ -122,7 +141,9 @@ namespace QtHandles
   void
   Object::slotShow (void)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     if (object ().valid_object ())
       show ();
@@ -131,7 +152,9 @@ namespace QtHandles
   void
   Object::slotPrint (const QString& file_cmd, const QString& term)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     if (object ().valid_object ())
       print (file_cmd, term);
@@ -175,12 +198,14 @@ namespace QtHandles
   }
 
   Object*
-  Object::parentObject (const graphics_object& go)
+  Object::parentObject (octave::interpreter& interp, const graphics_object& go)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = interp.get_gh_manager ();
 
-    Object *parent = Backend::toolkitObject
-                     (gh_manager::get_object (go.get_parent ()));
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
+    Object *parent = qt_graphics_toolkit::toolkitObject
+                     (gh_mgr.get_object (go.get_parent ()));
 
     return parent;
   }
@@ -194,6 +219,68 @@ namespace QtHandles
       return reinterpret_cast<Object *> (qvariant_cast<void*> (v));
 
     return nullptr;
+  }
+
+  void
+  Object::do_connections (const QObject *receiver, const QObject *emitter)
+  {
+    if (! emitter)
+      emitter = this;
+
+    connect (emitter,
+             SIGNAL (interpreter_event (const octave::fcn_callback&)),
+             receiver,
+             SLOT (interpreter_event (const octave::fcn_callback&)));
+
+    connect (emitter,
+             SIGNAL (interpreter_event (const octave::meth_callback&)),
+             receiver,
+             SLOT (interpreter_event (const octave::meth_callback&)));
+
+    connect (emitter,
+             SIGNAL (gh_callback_event (const graphics_handle&,
+                                        const std::string&)),
+             receiver,
+             SLOT (gh_callback_event (const graphics_handle&,
+                                      const std::string&)));
+
+    connect (emitter,
+             SIGNAL (gh_callback_event (const graphics_handle&,
+                                        const std::string&,
+                                        const octave_value&)),
+             receiver,
+             SLOT (gh_callback_event (const graphics_handle&,
+                                      const std::string&,
+                                      const octave_value&)));
+
+    connect (emitter,
+             SIGNAL (gh_set_event (const graphics_handle&,
+                                   const std::string&,
+                                   const octave_value&)),
+             receiver,
+             SLOT (gh_set_event (const graphics_handle&,
+                                 const std::string&,
+                                 const octave_value&)));
+
+    connect (emitter,
+             SIGNAL (gh_set_event (const graphics_handle&,
+                                   const std::string&,
+                                   const octave_value&, bool)),
+             receiver,
+             SLOT (gh_set_event (const graphics_handle&,
+                                 const std::string&,
+                                 const octave_value&, bool)));
+
+    connect (emitter,
+             SIGNAL (gh_set_event (const graphics_handle&,
+                                   const std::string&,
+                                   const octave_value&,
+                                   bool, bool)),
+             receiver,
+             SLOT (gh_set_event (const graphics_handle&,
+                                 const std::string&,
+                                 const octave_value&,
+                                 bool, bool)));
   }
 
 }

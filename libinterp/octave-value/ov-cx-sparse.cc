@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2004-2019 David Bateman
-Copyright (C) 1998-2004 Andy Adler
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1998-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -177,8 +179,8 @@ octave_sparse_complex_matrix::char_array_value (bool frc_str_conv) const
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = matrix.cidx (j); i < matrix.cidx (j+1); i++)
-          retval(matrix.ridx (i) + nr * j) =
-            static_cast<char> (std::real (matrix.data (i)));
+          retval(matrix.ridx (i) + nr * j)
+            = static_cast<char> (std::real (matrix.data (i)));
     }
 
   return retval;
@@ -219,7 +221,7 @@ octave_sparse_complex_matrix::as_double (void) const
 
 bool
 octave_sparse_complex_matrix::save_binary (std::ostream& os,
-                                           bool& save_as_floats)
+                                           bool save_as_floats)
 {
   dim_vector dv = this->dims ();
   if (dv.ndims () < 1)
@@ -358,7 +360,8 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
 }
 
 bool
-octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id,
+                                         const char *name,
                                          bool save_as_floats)
 {
   bool retval = false;

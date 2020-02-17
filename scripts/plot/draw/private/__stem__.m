@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 Michel D. Schmid
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,14 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{h} =} __stem__ (@var{have_z}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
-
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## Adapted-by: jwe
 
 function h = __stem__ (have_z, varargin)
 
@@ -84,7 +88,7 @@ function h = __stem__ (have_z, varargin)
       endif
 
       ## Must occur after __next_line_color__ in order to work correctly.
-      hg = hggroup ();
+      hg = hggroup ("__appdata__", struct ("__creator__", "__stem__"));
       h = [h; hg];
       args = __add_datasource__ (caller, hg, {"x", "y", "z"}, varargin{:});
 
@@ -155,7 +159,10 @@ function h = __stem__ (have_z, varargin)
 
     ## baseline listeners
     if (! isempty (h_baseline))
-      addlistener (hax, "xlim", @update_xlim);
+      fcn_handle = @update_xlim;
+      addlistener (hax, "xlim", fcn_handle);
+      set (h_baseline, "deletefcn", {@rm_xlim_listener, hax, fcn_handle});
+
       for hg = h'
         addlistener (hg, "showbaseline", @show_baseline);
         addlistener (hg, "visible", {@show_baseline, h});
@@ -173,9 +180,13 @@ function h = __stem__ (have_z, varargin)
         set (h, args{:});
     endif
 
-    if (! strcmp (hold_state, "add") && have_z)
-      set (hax, "view", [-37.5 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on");
+    if (! strcmp (hold_state, "add"))
+      if (! have_z)
+        set (hax, "box", "on");
+      else
+        set (hax, "view", [-37.5 30],
+                  "xgrid", "on", "ygrid", "on", "zgrid", "on");
+      endif
     endif
     set (hax, "nextplot", hold_state);
 
@@ -367,6 +378,12 @@ function update_xlim (h, ~)
 
 endfunction
 
+## Good practice to remove listeners when object is deleted.
+## In this case, required to avoid error in update_xlim callback (bug #57391).
+function rm_xlim_listener (~, ~, hax, fcn_handle)
+  dellistener (hax, "xlim", fcn_handle);
+endfunction
+
 function update_baseline (h, ~, src)
 
   visible = get (h, "visible");
@@ -412,8 +429,7 @@ function move_baseline (h, ~)
   b0 = get (h, "basevalue");
   bl = get (h, "baseline");
 
-  set (bl, "ydata", [b0, b0]);
-  set (bl, "basevalue", b0);
+  set (bl, "ydata", [b0, b0], "basevalue", b0);
 
   kids = get (h, "children");
   yt = get (h, "ydata")(:)';

@@ -1,4 +1,9 @@
-## Copyright (C) 2001-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 2001-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} orient (@var{orientation})
@@ -43,9 +50,6 @@
 ## returned by @code{gcf}.
 ## @seealso{print, saveas}
 ## @end deftypefn
-
-## Author: Paul Kienzle
-## Adapted-By: jwe
 
 function retval = orient (varargin)
 
@@ -85,9 +89,9 @@ function retval = orient (varargin)
           ##        set the papersize and paperposition here.
           papersize = get (cf, "papersize");
           paperposition = get (cf, "paperposition");
-          set (cf, "paperorientation", orientation);
-          set (cf, "papersize", papersize([2, 1]));
-          set (cf, "paperposition", paperposition([2, 1, 4, 3]));
+          set (cf, "paperorientation", orientation,
+                   "papersize", papersize([2, 1]),
+                   "paperposition", paperposition([2, 1, 4, 3]));
         endif
         if (strcmpi (orientation, "portrait"))
           ## portrait restores the default

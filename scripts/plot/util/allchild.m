@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 Bill Denney
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{h} =} allchild (@var{handles})
@@ -28,8 +35,6 @@
 ## cell will contain a vector of handles.
 ## @seealso{findall, findobj, get, set}
 ## @end deftypefn
-
-## Author: Bill Denney <bill@denney.ws>
 
 function h = allchild (handles)
 
@@ -48,13 +53,14 @@ function h = allchild (handles)
 endfunction
 
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
-%! toolkit = graphics_toolkit ("fltk");
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
+%! toolkit = graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   l = line;
 %!   kids = allchild (hf);
-%!   assert (get (kids, "type"), {"axes"; "uimenu"; "uimenu"; "uimenu"});
+%!   assert (get (kids, "type"), ...
+%!           {"axes"; "uitoolbar"; "uimenu"; "uimenu"; "uimenu"});
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   graphics_toolkit (toolkit);

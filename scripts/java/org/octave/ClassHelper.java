@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2007-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2007-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 package org.octave;
 
@@ -39,19 +42,44 @@ public class ClassHelper
   /**
    * Add the given path to the classpath.
    * @param name String - path to add to the classpath
+   * @param append boolean - if true, append path to classpath, otherwise prepend it.
    * @return boolean - true if the given path exists and was added to the classpath.
    * @throws Exception if an error occurs
    */
-  public static boolean addClassPath (String name)
+  public static boolean addClassPath (String name, boolean append)
     throws Exception
   {
     boolean found = false;
     java.io.File f = new java.io.File (name);
     if (f.exists ())
       {
-        loader.addClassPath (name);
         found = true;
+
+        if (append)
+          {
+            loader.addClassPath (name);
+          }
+        else
+          {
+            // create a completely new class loader because java.net.URLClassLoader appears to have no method to prepend directories to the existing classpath
+
+            // FIXME: is there a more efficient way to do this job?
+
+            java.net.URL[] urls = loader.getURLs ();
+
+            ClassLoader l = ClassHelper.class.getClassLoader ();
+            loader = (l instanceof OctClassLoader ? (OctClassLoader) l :
+                      new OctClassLoader (l));
+
+            loader.addClassPath (name);
+
+            for (int i = 0; i < urls.length; i++)
+              {
+                loader.addURL (urls[i]);
+              }
+          }
       }
+
     return (found);
   }
 
@@ -143,11 +171,57 @@ public class ClassHelper
   public static String getMethods (Class klass)
   {
     StringBuilder sb = new StringBuilder();
+    boolean first = true;
+
+    Constructor theConstructor[] = klass.getConstructors ();
+    for (int i = 0; i < theConstructor.length; i++)
+      {
+        if (first)
+          {
+            first = false;
+          }
+        else
+          {
+            sb.append (";");
+          }
+
+        sb.append (theConstructor[i].getName ());
+        sb.append ("(");
+
+        Class theParameter[] = theConstructor[i].getParameterTypes ();
+        for (int j = 0; j < theParameter.length; j++)
+          {
+            if (j > 0)
+              {
+                sb.append (", ");
+              }
+            sb.append (theParameter[j].getCanonicalName ());
+          }
+        sb.append (")");
+
+        Class theExceptions[] = theConstructor[i].getExceptionTypes ();
+        if (theExceptions.length > 0)
+          {
+            sb.append (" throws ");
+            for (int j = 0; j < theExceptions.length; j++)
+              {
+                if (j > 0)
+                  {
+                    sb.append (", ");
+                  }
+                sb.append (theExceptions[j].getCanonicalName ());
+              }
+          }
+      }
 
     Method theMethod[] = klass.getMethods ();
     for (int i = 0; i < theMethod.length; i++)
       {
-        if (i > 0)
+        if (first)
+          {
+            first = false;
+          }
+        else
           {
             sb.append (";");
           }
@@ -514,8 +588,6 @@ public class ClassHelper
           modified into a more strict check to avoid char to string matching
           to avoid matching method signatureslike
           java_method(char) with octave_call('a String')
-          Date: 28-08-2010
-          Author: Martin Hepperle
         */
         return true;
       }
@@ -526,8 +598,6 @@ public class ClassHelper
           java_method(String) with octave_call('a String')
           but not
           java_method(char) with octave_call('a String')
-          Date: 28-08-2010
-          Author: Martin Hepperle
         */
         return true;
       }
@@ -573,9 +643,7 @@ public class ClassHelper
   /**
    * Check whether the supplied class is a String class.
    *
-   * Added for more strict char/string mathicng of method signatures
-   * Date: 28-08-2010
-   * Author: Martin Hepperle
+   * Added for more strict char/string matching of method signatures
    * @param cls Class - the class to check
    * @return boolean - true if clas is of class java.lang.String
    */

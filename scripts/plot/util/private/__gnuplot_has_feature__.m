@@ -1,4 +1,9 @@
-## Copyright (C) 2009-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2009-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,14 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{has_feature} =} __gnuplot_has_feature__ (@var{feature})
 ## Undocumented internal function.
 ## @end deftypefn
-
-## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2009-01-27
 
 function res = __gnuplot_has_feature__ (feature)
   persistent features = {"minimum_version",
@@ -37,12 +41,7 @@ function res = __gnuplot_has_feature__ (feature)
   persistent has_features;
 
   if (isempty (has_features))
-    try
-      gnuplot_version = __gnuplot_version__ ();
-    catch
-      ## Don't throw an error if gnuplot isn't installed
-      gnuplot_version = "0.0.0";
-    end_try_catch
+    gnuplot_version = __gnuplot_version__ ();
     versions  = {"4.4", "4.6", "5.0", "4.6", "4.6", "5.0", "5.0", "5.0"};
     operators = {">=" , ">=" , ">=" , ">=" , ">=" , ">=" , ">=" , ">=" };
     have_features = false (size (features));

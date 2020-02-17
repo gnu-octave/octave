@@ -15,5 +15,5 @@ A BibTeX entry for LaTeX users is:
   }
 
 We have invested a lot of time and effort in creating GNU Octave, please
-cite it when using it.  See also `citation pkgname' for citing Octave
+cite it when using it.  See also 'citation pkgname' for citing Octave
 packages.

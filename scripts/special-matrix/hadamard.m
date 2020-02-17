@@ -1,4 +1,9 @@
-## Copyright (C) 1993-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 1993-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 ##
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
@@ -50,12 +57,11 @@
 ## @seealso{compan, hankel, toeplitz}
 ## @end deftypefn
 
-
 ## Reference [1] contains a list of Hadamard matrices up to n=256.
 ## See code for h28 in hadamard.m for an example of how to extend
 ## this function for additional p.
 ##
-## References:
+## Reference:
 ## [1] A Library of Hadamard Matrices, N. J. A. Sloane
 ##     http://www.research.att.com/~njas/hadamard/
 

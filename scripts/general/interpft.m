@@ -1,4 +1,9 @@
-## Copyright (C) 2001-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 2001-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} interpft (@var{x}, @var{n})
@@ -33,14 +40,6 @@
 ## assumptions are made about the endpoints of the interpolation.
 ## @seealso{interp1}
 ## @end deftypefn
-
-## Author: Paul Kienzle
-## 2001-02-11
-##    * initial version
-## 2002-03-17 aadler
-##    * added code to work on matrices as well
-## 2006-05-25 dbateman
-##    * Make it matlab compatible, cutting out the 2-D interpolation
 
 function z = interpft (x, n, dim)
 

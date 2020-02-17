@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## Tests for parser problems belong in this file.
 ## We need many more tests here!
@@ -352,3 +359,9 @@
 %!test <*54465>
 %! fail ("x = matlab_short_circuit ()", "warning", "Matlab-style short-circuit operation performed for operator |");
 %! assert (x == 0);
+
+%!test <*56959>
+%! fail ("i:5", "warning", "imaginary part of complex colon arguments is ignored");
+%! fail ("1:5*i", "warning", "imaginary part of complex colon arguments is ignored");
+%! fail ("1:i:5", "warning", "imaginary part of complex colon arguments is ignored");
+

@@ -1,4 +1,9 @@
-## Copyright (C) 2009-2019 Søren Hauberg
+########################################################################
+##
+## Copyright (C) 2009-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} print_usage ()
@@ -37,9 +44,9 @@ function print_usage (name)
     else
       error ("Octave:invalid-context", "print_usage: invalid function\n");
     endif
-    fullpath = evalin ("caller", 'mfilename ("fullpath")');
-    if (strcmp (fullpath(end-length(name)+1:end), name))
-      fullname = [fullpath ".m"];
+    fullname = evalin ("caller", 'mfilename ("fullpath")');
+    if (strcmp (fullname(end-length(name)+1:end), name))
+      fullname = [fullname ".m"];
     endif
   elseif (! ischar (name))
     error ("Octave:invalid-input-arg",

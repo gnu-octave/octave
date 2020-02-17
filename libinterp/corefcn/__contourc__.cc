@@ -1,36 +1,41 @@
-/* Contour lines for function evaluated on a grid.
-
-Copyright (C) 2007-2019 Kai Habel
-Copyright (C) 2004, 2007 Shai Ayal
-
-Adapted to an oct file from the stand alone contourl by Victro Munoz
-Copyright (C) 2004 Victor Munoz
-
-Based on contour plot routine (plcont.c) in PLPlot package
-http://plplot.org/
-
-Copyright (C) 1995, 2000, 2001 Maurice LeBrun
-Copyright (C) 2000, 2002 Joao Cardoso
-Copyright (C) 2000, 2001, 2002, 2004 Alan W. Irwin
-Copyright (C) 2004 Andrew Ross
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Contour lines for function evaluated on a grid.
+//
+// Copyright (C) 2001-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// Adapted to an oct file from the stand alone contourl by Victro Munoz
+// Copyright (C) 2004 Victor Munoz
+//
+// Based on contour plot routine (plcont.c) in PLPlot package
+// http://plplot.org/
+//
+// Copyright (C) 1995, 2000, 2001 Maurice LeBrun
+// Copyright (C) 2000, 2002 Joao Cardoso
+// Copyright (C) 2000, 2001, 2002, 2004 Alan W. Irwin
+// Copyright (C) 2004 Andrew Ross
+//
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"

@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -461,7 +463,7 @@ octave_float_matrix::load_ascii (std::istream& is)
 }
 
 bool
-octave_float_matrix::save_binary (std::ostream& os, bool&)
+octave_float_matrix::save_binary (std::ostream& os, bool)
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 1)
@@ -738,7 +740,7 @@ static octave_value
 do_rc_map (const FloatNDArray& a, FloatComplex (&fcn) (float))
 {
   octave_idx_type n = a.numel ();
-  NoAlias<FloatNDArray> rr (a.dims ());
+  FloatNDArray rr (a.dims ());
 
   for (octave_idx_type i = 0; i < n; i++)
     {
@@ -746,21 +748,21 @@ do_rc_map (const FloatNDArray& a, FloatComplex (&fcn) (float))
 
       FloatComplex tmp = fcn (a(i));
       if (tmp.imag () == 0.0)
-        rr(i) = tmp.real ();
+        rr.xelem (i) = tmp.real ();
       else
         {
-          NoAlias<FloatComplexNDArray> rc (a.dims ());
+          FloatComplexNDArray rc (a.dims ());
 
           for (octave_idx_type j = 0; j < i; j++)
-            rc(j) = rr(j);
+            rc.xelem (j) = rr.xelem (j);
 
-          rc(i) = tmp;
+          rc.xelem (i) = tmp;
 
           for (octave_idx_type j = i+1; j < n; j++)
             {
               octave_quit ();
 
-              rc(j) = fcn (a(j));
+              rc.xelem (j) = fcn (a(j));
             }
 
           return new octave_float_complex_matrix (rc);

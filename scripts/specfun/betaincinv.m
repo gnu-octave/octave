@@ -1,4 +1,9 @@
-## Copyright (C) 2017-2019 Michele Ginesi
+########################################################################
+##
+## Copyright (C) 2017-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,8 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
-
-## Author: Michele Ginesi <michele.ginesi@gmail.com>
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} betaincinv (@var{y}, @var{a}, @var{b})
@@ -200,7 +205,7 @@ function x = betaincinv (y, a, b, tail = "lower")
 endfunction
 
 
-## Subfunctions: Bisection and Newton Methods
+## subfunctions: Bisection and Newton Methods
 function xc = bisection_method (F, xl, xr, a, b, y, maxit)
   F_l = F (xl, a, b, y);
   F_r = F (xr, a, b, y);

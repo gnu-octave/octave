@@ -1,4 +1,9 @@
-## Copyright (C) 1995-2019 Kurt Hornik
+########################################################################
+##
+## Copyright (C) 1995-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{a}, @var{b}] =} arch_fit (@var{y}, @var{x}, @var{p}, @var{iter}, @var{gamma}, @var{a0}, @var{b0})
@@ -48,9 +55,6 @@
 ## updating factor @var{gamma}, and initial values @math{a0} and @math{b0}
 ## for the scoring algorithm.
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Fit an ARCH regression model
 
 function [a, b] = arch_fit (y, x, p, iter, gamma, a0, b0)
 

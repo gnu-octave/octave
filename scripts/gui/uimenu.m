@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Kai Habel
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{hui} =} uimenu (@var{property}, @var{value}, @dots{})
@@ -79,8 +86,6 @@
 ## @seealso{figure}
 ## @end deftypefn
 
-## Author: Kai Habel
-
 function hui = uimenu (varargin)
 
   [h, args] = __uiobject_split_args__ ("uimenu", varargin,
@@ -105,8 +110,8 @@ endfunction
 %! uimenu (f, 'label', 'Close', 'accelerator', 'q', 'callback', 'close (gcf)');
 %! uimenu (e, 'label', 'Toggle &Grid', 'accelerator', 'g', 'callback', 'grid (gca)');
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
-%! toolkit = graphics_toolkit ("fltk");
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
+%! toolkit = graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ui = uimenu ("label", "mylabel");
@@ -115,15 +120,15 @@ endfunction
 %!   assert (get (ui, "checked"), "off");
 %!   assert (get (ui, "separator"), "off");
 %!   assert (get (ui, "enable"), "on");
-%!   assert (get (ui, "position"), 0);
+%!   assert (get (ui, "position"), 4);
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
 ## check for top level menus file and edit
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
-%! toolkit = graphics_toolkit ("fltk");
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
+%! toolkit = graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   uif = findall (hf, "label", "&file");
@@ -135,8 +140,8 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
-%! toolkit = graphics_toolkit ("fltk");
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
+%! toolkit = graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   uie = findall (hf, "label", "&edit");

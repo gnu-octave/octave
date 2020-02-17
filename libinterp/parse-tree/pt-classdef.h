@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2012-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2012-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_tree_classdef_h)
 #define octave_tree_classdef_h 1
@@ -40,6 +43,98 @@ class octave_value;
 namespace octave
 {
   class interpreter;
+
+  class tree_superclass_ref : public tree_expression
+  {
+  public:
+
+    tree_superclass_ref (void) = delete;
+
+    tree_superclass_ref (const std::string& meth, const std::string& cls,
+                         int l = -1, int c = -1)
+      : tree_expression (l, c), m_method_name (meth), m_class_name (cls)
+    { }
+
+    // No copying!
+
+    tree_superclass_ref (const tree_superclass_ref&) = delete;
+
+    tree_superclass_ref& operator = (const tree_superclass_ref&) = delete;
+
+    std::string method_name (void) const
+    {
+      return m_method_name;
+    }
+
+    std::string class_name (void) const { return m_class_name; }
+
+    bool has_magic_end (void) const { return false; }
+
+    tree_superclass_ref * dup (symbol_scope& scope) const;
+
+    octave_value evaluate (tree_evaluator& tw, int nargout = 1)
+    {
+      octave_value_list retval = evaluate_n (tw, nargout);
+
+      return retval.length () > 0 ? retval(0) : octave_value ();
+    }
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1);
+
+    void accept (tree_walker& tw)
+    {
+      tw.visit_superclass_ref (*this);
+    }
+
+  private:
+
+    // The name of the method to call.  This is the text before the
+    // "@" and may be of the form "object.method".
+    std::string m_method_name;
+
+    // The name of the superclass.  This is the text after the "@"
+    // and may be of the form "object.method".
+    std::string m_class_name;
+  };
+
+  class tree_metaclass_query : public tree_expression
+  {
+  public:
+
+    tree_metaclass_query (void) = delete;
+
+    tree_metaclass_query (const std::string& cls, int l = -1, int c = -1)
+      : tree_expression (l, c), m_class_name (cls)
+    { }
+
+    // No copying!
+
+    tree_metaclass_query (const tree_metaclass_query&) = delete;
+
+    tree_metaclass_query& operator = (const tree_metaclass_query&) = delete;
+
+    std::string class_name (void) const { return m_class_name; }
+
+    bool has_magic_end (void) const { return false; }
+
+    tree_metaclass_query * dup (symbol_scope& scope) const;
+
+    octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
+
+    void accept (tree_walker& tw)
+    {
+      tw.visit_metaclass_query (*this);
+    }
+
+  private:
+
+    std::string m_class_name;
+  };
 
   class tree_classdef_attribute
   {
@@ -140,7 +235,8 @@ namespace octave
     std::string m_cls_name;
   };
 
-  class tree_classdef_superclass_list : public base_list<tree_classdef_superclass *>
+  class tree_classdef_superclass_list
+    : public base_list<tree_classdef_superclass *>
   {
   public:
 
@@ -541,17 +637,23 @@ namespace octave
   {
   public:
 
-    typedef std::list<tree_classdef_properties_block *>::iterator properties_list_iterator;
-    typedef std::list<tree_classdef_properties_block *>::const_iterator properties_list_const_iterator;
+    typedef std::list<tree_classdef_properties_block *>::iterator
+      properties_list_iterator;
+    typedef std::list<tree_classdef_properties_block *>::const_iterator
+      properties_list_const_iterator;
 
-    typedef std::list<tree_classdef_methods_block *>::iterator methods_list_iterator;
-    typedef std::list<tree_classdef_methods_block *>::const_iterator methods_list_const_iterator;
+    typedef std::list<tree_classdef_methods_block *>::iterator
+      methods_list_iterator;
+    typedef std::list<tree_classdef_methods_block *>::const_iterator
+      methods_list_const_iterator;
 
     typedef std::list<tree_classdef_events_block *>::iterator events_list_iterator;
-    typedef std::list<tree_classdef_events_block *>::const_iterator events_list_const_iterator;
+    typedef std::list<tree_classdef_events_block *>::const_iterator
+      events_list_const_iterator;
 
     typedef std::list<tree_classdef_enum_block *>::iterator enum_list_iterator;
-    typedef std::list<tree_classdef_enum_block *>::const_iterator enum_list_const_iterator;
+    typedef std::list<tree_classdef_enum_block *>::const_iterator
+      enum_list_const_iterator;
 
     tree_classdef_body (void)
       : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
@@ -651,13 +753,14 @@ namespace octave
   {
   public:
 
-    tree_classdef (tree_classdef_attribute_list *a, tree_identifier *i,
+    tree_classdef (const octave::symbol_scope& scope,
+                   tree_classdef_attribute_list *a, tree_identifier *i,
                    tree_classdef_superclass_list *sc,
                    tree_classdef_body *b, comment_list *lc,
                    comment_list *tc,
                    const std::string& pn = "", int l = -1,
                    int c = -1)
-      : tree_command (l, c), m_attr_list (a), m_id (i),
+      : tree_command (l, c), m_scope (scope), m_attr_list (a), m_id (i),
         m_supclass_list (sc), m_element_list (b), m_lead_comm (lc),
         m_trail_comm (tc), m_pack_name (pn)
     { }
@@ -678,6 +781,8 @@ namespace octave
       delete m_trail_comm;
     }
 
+    octave::symbol_scope scope (void) { return m_scope; }
+
     tree_classdef_attribute_list *
     attribute_list (void) { return m_attr_list; }
 
@@ -693,8 +798,8 @@ namespace octave
 
     const std::string& package_name (void) const { return m_pack_name; }
 
-    octave_function * make_meta_class (interpreter& interp,
-                                       bool is_at_folder = false);
+    octave_value make_meta_class (interpreter& interp,
+                                  bool is_at_folder = false);
 
     void accept (tree_walker& tw)
     {
@@ -702,6 +807,12 @@ namespace octave
     }
 
   private:
+
+    // The scope that was used when parsing the classdef object and that
+    // corresponds to any identifiers that were found in attribute lists
+    // (for example).  Used again when computing the meta class object.
+
+    octave::symbol_scope m_scope;
 
     tree_classdef_attribute_list *m_attr_list;
 

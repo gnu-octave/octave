@@ -1,4 +1,6 @@
-FCN_FILE_DIRS += scripts/testfun
+FCN_FILE_DIRS += \
+  %reldir% \
+  %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/compare_plot_demos.m \
@@ -16,7 +18,7 @@ FCN_FILE_DIRS += scripts/testfun
   %reldir%/example.m \
   %reldir%/fail.m \
   %reldir%/rundemos.m \
-  %reldir%/runtests.m \
+  %reldir%/oruntests.m \
   %reldir%/speed.m \
   %reldir%/test.m
 

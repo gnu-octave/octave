@@ -1,29 +1,33 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
+#include <list>
 #include <string>
 
 #include "DASPK.h"
@@ -31,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-cell.h"
@@ -43,10 +48,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "DASPK-opts.cc"
 
 // Global pointer for user defined function required by daspk.
-static octave_function *daspk_fcn;
+static octave_value daspk_fcn;
 
 // Global pointer for optional user defined jacobian function.
-static octave_function *daspk_jac;
+static octave_value daspk_jac;
 
 // Have we warned about imaginary values returned from user function?
 static bool warned_fcn_imaginary = false;
@@ -69,7 +74,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
   args(1) = xdot;
   args(0) = x;
 
-  if (daspk_fcn)
+  if (daspk_fcn.is_defined ())
     {
       octave_value_list tmp;
 
@@ -119,7 +124,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
   args(1) = xdot;
   args(0) = x;
 
-  if (daspk_jac)
+  if (daspk_jac.is_defined ())
     {
       octave_value_list tmp;
 
@@ -269,16 +274,18 @@ parameters for @code{daspk}.
   frame.protect_var (call_depth);
   call_depth++;
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
   if (call_depth > 1)
     error ("daspk: invalid recursive call");
 
   std::string fcn_name, fname, jac_name, jname;
-  daspk_fcn = nullptr;
-  daspk_jac = nullptr;
+
+  daspk_fcn = octave_value ();
+  daspk_jac = octave_value ();
 
   octave_value f_arg = args(0);
+
+  std::list<std::string> fcn_param_names ({"x", "xdot", "t"});
+  std::list<std::string> jac_param_names ({"x", "xdot", "t", "cj"});
 
   if (f_arg.iscell ())
     {
@@ -287,99 +294,61 @@ parameters for @code{daspk}.
         f_arg = c(0);
       else if (c.numel () == 2)
         {
-          if (c(0).is_function_handle () || c(0).is_inline_function ())
-            daspk_fcn = c(0).function_value ();
-          else
-            {
-              fcn_name = unique_symbol_name ("__daspk_fcn__");
-              fname = "function y = ";
-              fname.append (fcn_name);
-              fname.append (" (x, xdot, t) y = ");
-              daspk_fcn = extract_function (c(0), "daspk", fcn_name,
-                                            fname, "; endfunction");
-            }
+          daspk_fcn = octave::get_function_handle (interp, c(0),
+                                                   fcn_param_names);
 
-          if (daspk_fcn)
+          if (daspk_fcn.is_defined ())
             {
-              if (c(1).is_function_handle () || c(1).is_inline_function ())
-                daspk_jac = c(1).function_value ();
-              else
-                {
-                  jac_name = unique_symbol_name ("__daspk_jac__");
-                  jname = "function jac = ";
-                  jname.append (jac_name);
-                  jname.append (" (x, xdot, t, cj) jac = ");
-                  daspk_jac = extract_function (c(1), "daspk", jac_name,
-                                                jname, "; endfunction");
+              daspk_jac = octave::get_function_handle (interp, c(1),
+                                                       jac_param_names);
 
-                  if (! daspk_jac)
-                    {
-                      if (fcn_name.length ())
-                        symtab.clear_function (fcn_name);
-                      daspk_fcn = nullptr;
-                    }
-                }
+              if (daspk_jac.is_undefined ())
+                daspk_fcn = octave_value ();
             }
         }
       else
         error ("daspk: incorrect number of elements in cell array");
     }
 
-  if (! daspk_fcn && ! f_arg.iscell ())
+  if (daspk_fcn.is_undefined () && ! f_arg.iscell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
-        daspk_fcn = f_arg.function_value ();
+        daspk_fcn = f_arg;
       else
         {
           switch (f_arg.rows ())
             {
             case 1:
-              do
-                {
-                  fcn_name = unique_symbol_name ("__daspk_fcn__");
-                  fname = "function y = ";
-                  fname.append (fcn_name);
-                  fname.append (" (x, xdot, t) y = ");
-                  daspk_fcn = extract_function (f_arg, "daspk", fcn_name,
-                                                fname, "; endfunction");
-                }
-              while (0);
+              daspk_fcn = octave::get_function_handle (interp, f_arg,
+                                                       fcn_param_names);
               break;
 
             case 2:
               {
                 string_vector tmp = f_arg.string_vector_value ();
 
-                fcn_name = unique_symbol_name ("__daspk_fcn__");
-                fname = "function y = ";
-                fname.append (fcn_name);
-                fname.append (" (x, xdot, t) y = ");
-                daspk_fcn = extract_function (tmp(0), "daspk", fcn_name,
-                                              fname, "; endfunction");
+                daspk_fcn = octave::get_function_handle (interp, tmp(0),
+                                                         fcn_param_names);
 
-                if (daspk_fcn)
+                if (daspk_fcn.is_defined ())
                   {
-                    jac_name = unique_symbol_name ("__daspk_jac__");
-                    jname = "function jac = ";
-                    jname.append (jac_name);
-                    jname.append (" (x, xdot, t, cj) jac = ");
-                    daspk_jac = extract_function (tmp(1), "daspk", jac_name,
-                                                  jname, "; endfunction");
+                    daspk_jac = octave::get_function_handle (interp, tmp(1),
+                                                             jac_param_names);
 
-                    if (! daspk_jac)
-                      {
-                        if (fcn_name.length ())
-                          symtab.clear_function (fcn_name);
-                        daspk_fcn = nullptr;
-                      }
+                    if (daspk_jac.is_undefined ())
+                      daspk_fcn = octave_value ();
                   }
               }
+              break;
+
+            default:
+              error ("daspk: first arg should be a string or 2-element string array");
             }
         }
     }
 
-  if (! daspk_fcn)
-    return retval;
+  if (daspk_fcn.is_undefined ())
+    error ("daspk: FCN argument is not a valid function name or handle");
 
   ColumnVector state = args(1).xvector_value ("daspk: initial state X_0 must be a vector");
 
@@ -402,7 +371,7 @@ parameters for @code{daspk}.
   double tzero = out_times (0);
 
   DAEFunc func (daspk_user_function);
-  if (daspk_jac)
+  if (daspk_jac.is_defined ())
     func.set_jacobian_function (daspk_user_jacobian);
 
   DASPK dae (state, deriv, tzero, func);
@@ -415,11 +384,6 @@ parameters for @code{daspk}.
     output = dae.integrate (out_times, deriv_output, crit_times);
   else
     output = dae.integrate (out_times, deriv_output);
-
-  if (fcn_name.length ())
-    symtab.clear_function (fcn_name);
-  if (jac_name.length ())
-    symtab.clear_function (jac_name);
 
   std::string msg = dae.error_message ();
 

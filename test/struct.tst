@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 %!test
 %! s.a = 1;
@@ -231,7 +238,7 @@
 %! assert (s(3), struct ("foo", 42));
 
 ## empty index should return entire struct
-%!test <51633>
+%!test <*51633>
 %! x.a = 1:10;
 %! y = x;
 %! assert (! isempty (y));
@@ -242,7 +249,7 @@
 %! assert (z, y);
 
 ## test assigning to multi-dim struct with trailing singleton dimensions,
-%!test <35841>
+%!test <*35841>
 %! a(1,1,1).b(1) = 1;
 %! a(1,1,1).b(1) = 2;
 %! a(1,1,:).b(1) = 3;

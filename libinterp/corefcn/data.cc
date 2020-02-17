@@ -1,27 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-Copyright (C) 2009 Jaroslav Hajek
-Copyright (C) 2009-2010 VZLU Prague
-Copyright (C) 2012 Carlo de Falco
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -65,12 +65,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 #include "xnorm.h"
-
-static void
-index_error (const char *fmt, const std::string& idx, const std::string& msg)
-{
-  error (fmt, idx.c_str (), msg.c_str ());
-}
 
 DEFUN (all, args, ,
        doc: /* -*- texinfo -*-
@@ -1231,8 +1225,8 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
       if (arg0.ndims () != 2 || (arg0.rows () != 1 && arg0.columns () != 1))
         error ("diag: V must be a vector");
 
-      octave_idx_type m = args(1).xidx_type_value ("diag: invalid dimensions");
-      octave_idx_type n = args(2).xidx_type_value ("diag: invalid dimensions");
+      octave_idx_type m = args(1).xidx_type_value ("diag: invalid dimension M");
+      octave_idx_type n = args(2).xidx_type_value ("diag: invalid dimension N");
 
       retval = arg0.diag (m, n);
     }
@@ -1274,6 +1268,15 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 %!assert (diag (int8 ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8 ([1; 2; 3]))
 %!assert (diag (int8 ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8 ([1; 2; 3]))
 
+%!assert (diag (1, 3, 3), diag ([1, 0, 0]))
+%!assert (diag (i, 3, 3), diag ([i, 0, 0]))
+%!assert (diag (single (1), 3, 3), diag ([single(1), 0, 0]))
+%!assert (diag (single (i), 3, 3), diag ([single(i), 0, 0]))
+%!assert (diag ([1, 2], 3, 3), diag ([1, 2, 0]))
+%!assert (diag ([1, 2]*i, 3, 3), diag ([1, 2, 0]*i))
+%!assert (diag (single ([1, 2]), 3, 3), diag (single ([1, 2, 0])))
+%!assert (diag (single ([1, 2]*i), 3, 3), diag (single ([1, 2, 0]*i)))
+
 %!assert <*37411> (diag (diag ([5, 2, 3])(:,1)), diag([5 0 0 ]))
 %!assert <*37411> (diag (diag ([5, 2, 3])(:,1), 2),  [0 0 5 0 0; zeros(4, 5)])
 %!assert <*37411> (diag (diag ([5, 2, 3])(:,1), -2), [[0 0 5 0 0]', zeros(5, 4)])
@@ -1293,17 +1296,10 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 ## Test input validation
 %!error <Invalid call to diag> diag ()
 %!error <Invalid call to diag> diag (1,2,3,4)
-%!error diag (ones (2), 3, 3)
+%!error <V must be a vector> diag (ones (2), 3, 3)
 %!error diag (1:3, -4, 3)
+%!error diag (1:3, 4, -3)
 
-%!assert (diag (1, 3, 3), diag ([1, 0, 0]))
-%!assert (diag (i, 3, 3), diag ([i, 0, 0]))
-%!assert (diag (single (1), 3, 3), diag ([single(1), 0, 0]))
-%!assert (diag (single (i), 3, 3), diag ([single(i), 0, 0]))
-%!assert (diag ([1, 2], 3, 3), diag ([1, 2, 0]))
-%!assert (diag ([1, 2]*i, 3, 3), diag ([1, 2, 0]*i))
-%!assert (diag (single ([1, 2]), 3, 3), diag (single ([1, 2, 0])))
-%!assert (diag (single ([1, 2]*i), 3, 3), diag (single ([1, 2, 0]*i)))
 */
 
 DEFUN (prod, args, ,
@@ -1639,8 +1635,8 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   std::string cname = ov.class_name ();
 
-  octave::symbol_table& symtab =
-    octave::__get_symbol_table__ ("attempt_type_conversion");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("attempt_type_conversion");
 
   octave_value fcn = symtab.find_method (dtype, cname);
 
@@ -2720,10 +2716,10 @@ Example 4: number of output arguments < number of dimensions
         {
           int ndims = dimensions.ndims ();
 
-          NoAlias<Matrix> m (1, ndims);
+          Matrix m (1, ndims);
 
           for (int i = 0; i < ndims; i++)
-            m(i) = dimensions(i);
+            m.xelem (i) = dimensions(i);
 
           retval(0) = m;
         }
@@ -3399,8 +3395,8 @@ complex ([1, 2], [3, 4])
                       octave_idx_type off = j * nr;
                       for (octave_idx_type i = im_val.cidx (j);
                            i < im_val.cidx (j + 1); i++)
-                        result.data (im_val.ridx (i) + off) +=
-                          Complex (0, im_val.data (i));
+                        result.data (im_val.ridx (i) + off)
+                          += Complex (0, im_val.data (i));
                     }
                 }
               retval = octave_value (new octave_sparse_complex_matrix (result));
@@ -3422,8 +3418,8 @@ complex ([1, 2], [3, 4])
                       octave_idx_type off = j * nr;
                       for (octave_idx_type i = re_val.cidx (j);
                            i < re_val.cidx (j + 1); i++)
-                        result.data (re_val.ridx (i) + off) +=
-                          re_val.data (i);
+                        result.data (re_val.ridx (i) + off)
+                          += re_val.data (i);
                     }
                 }
               retval = octave_value (new octave_sparse_complex_matrix (result));
@@ -3673,9 +3669,11 @@ Logical and character arrays are not considered to be numeric.
 DEFUN (isscalar, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isscalar (@var{x})
-Return true if @var{x} is a scalar, i.e., @code{size (@var{x})} returns
-@code{[1 1]}.
-@seealso{isvector, ismatrix}
+Return true if @var{x} is a scalar.
+
+A scalar is an object with two dimensions for which @code{size (@var{x})}
+returns @w{@code{[1, 1]}}.
+@seealso{isvector, ismatrix, size}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3712,9 +3710,10 @@ DEFUN (isvector, args, ,
 @deftypefn {} {} isvector (@var{x})
 Return true if @var{x} is a vector.
 
-A vector is a 2-D array where one of the dimensions is equal to 1.  As a
-consequence a 1x1 array, or scalar, is also a vector.
-@seealso{isscalar, ismatrix, size, rows, columns, length}
+A vector is a 2-D array where one of the dimensions is equal to 1 (either 1xN
+or Nx1).  As a consequence of this definition, a 1x1 array (a scalar) is also a
+vector.
+@seealso{isscalar, ismatrix, iscolumn, isrow, size}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3750,9 +3749,11 @@ consequence a 1x1 array, or scalar, is also a vector.
 DEFUN (isrow, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isrow (@var{x})
-Return true if @var{x} is a row vector, i.e., @code{size (@var{x})} returns
-@code{[1 N]} with non-negative N.
-@seealso{iscolumn, isscalar, isvector, ismatrix}
+Return true if @var{x} is a row vector.
+
+A row vector is a 2-D array for which @code{size (@var{x})} returns
+@w{@code{[1, N]}} with non-negative N.
+@seealso{iscolumn, isscalar, isvector, ismatrix, size}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3797,9 +3798,11 @@ Return true if @var{x} is a row vector, i.e., @code{size (@var{x})} returns
 DEFUN (iscolumn, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} iscolumn (@var{x})
-Return true if @var{x} is a column vector, i.e., @code{size (@var{x})} returns
-@code{[N 1]} with non-negative N.
-@seealso{isrow, isscalar, isvector, ismatrix}
+Return true if @var{x} is a column vector.
+
+A column vector is a 2-D array for which @code{size (@var{x})} returns
+@w{@code{[N, 1]}} with non-negative N.
+@seealso{isrow, isscalar, isvector, ismatrix, size}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3843,9 +3846,12 @@ Return true if @var{x} is a column vector, i.e., @code{size (@var{x})} returns
 
 DEFUN (ismatrix, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} ismatrix (@var{a})
-Return true if @var{a} is a 2-D array, i.e., @code{size (@var{a})} returns
-@code{[M N]} with non-negative M and N.
+@deftypefn {} {} ismatrix (@var{x})
+Return true if @var{x} is a 2-D array.
+
+A matrix is an object with two dimensions (@code{ndims (@var{x}) == 2}) for
+which @code{size (@var{x})} returns @w{@code{[M, N]}} with non-negative M and
+N.
 @seealso{isscalar, isvector, iscell, isstruct, issparse, isa}
 @end deftypefn */)
 {
@@ -3890,8 +3896,10 @@ Return true if @var{a} is a 2-D array, i.e., @code{size (@var{a})} returns
 DEFUN (issquare, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} issquare (@var{x})
-Return true if @var{x} is a square matrix, i.e., @code{size (@var{x})} returns
-@code{[N N]} with non-negative N.
+Return true if @var{x} is a 2-D square array.
+
+A square array is a 2-D object for which @code{size (@var{x})} returns
+@w{@code{[N, N]}} where N is a non-negative integer.
 @seealso{isscalar, isvector, ismatrix, size}
 @end deftypefn */)
 {
@@ -4014,8 +4022,8 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
     case oct_data_conv::dt_double:
       {
-        if (val == 1 && dims.ndims () == 2 && dims(0) == 1)
-          retval = Range (1.0, 0.0, dims(1));  // packed form
+        if (dims.ndims () == 2 && dims(0) == 1)
+          retval = Range (static_cast<double> (val), 0.0, dims(1));
         else
           retval = NDArray (dims, val);
       }
@@ -4086,7 +4094,10 @@ fill_matrix (const octave_value_list& args, double val, float fval,
       break;
 
     case oct_data_conv::dt_double:
-      retval = NDArray (dims, val);
+      if (dims.ndims () == 2 && dims(0) == 1 && octave::math::isfinite (val))
+        retval = Range (val, 0.0, dims(1));  // Packed form
+      else
+        retval = NDArray (dims, val);
       break;
 
     default:
@@ -4149,7 +4160,10 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
       break;
 
     case oct_data_conv::dt_double:
-      retval = NDArray (dims, val);
+      if (dims.ndims () == 2 && dims(0) == 1 && octave::math::isfinite (val))
+        retval = Range (val, 0.0, dims(1));  // Packed form
+      else
+        retval = NDArray (dims, val);
       break;
 
     default:
@@ -5285,6 +5299,31 @@ only a single value (@var{n} = 1) is requested.
 %!assert (class (linspace (single (1), 2)), "single")
 %!assert (class (linspace (1, single (2))), "single")
 
+## Test symmetry
+%!test <*56659>
+%! x = linspace (-1, 1, 10);
+%! assert (all (x == -fliplr (x)));
+%! x = linspace (-1, 1, 11);
+%! assert (all (x == -fliplr (x)));
+
+%!test <*56659>
+%! x = linspace (-1-1i, 1+1i, 10);
+%! assert (all (x == -fliplr (x)));
+%! x = linspace (-1-1i, 1+1i, 11);
+%! assert (all (x == -fliplr (x)));
+
+%!test <*56659>
+%! x = linspace (single (-1), 1, 10);
+%! assert (all (x == -fliplr (x)));
+%! x = linspace (single (-1), 1, 11);
+%! assert (all (x == -fliplr (x)));
+
+%!test <*56659>
+%! x = linspace (single (-1-1i), 1+1i, 10);
+%! assert (all (x == -fliplr (x)));
+%! x = linspace (single (-1-1i), 1+1i, 11);
+%! assert (all (x == -fliplr (x)));
+
 ## Test obscure Matlab compatibility options
 %!assert (linspace (0, 1, []), 1)
 %!assert (linspace (10, 20, 2), [10 20])
@@ -5298,14 +5337,21 @@ only a single value (@var{n} = 1) is requested.
 %!assert (1 ./ linspace (-0, 0, 4), [-Inf, Inf, Inf, Inf])
 %!assert (linspace (Inf, Inf, 3), [Inf, Inf, Inf])
 %!assert (linspace (-Inf, -Inf, 3), [-Inf, -Inf, -Inf])
-%!assert (linspace (-Inf, Inf, 3), [-Inf, NaN, Inf])
+%!assert (linspace (-Inf, Inf, 3), [-Inf, 0, Inf])
 %!assert (linspace (Inf + 1i, Inf + 1i, 3), [Inf + 1i, Inf + 1i, Inf + 1i])
 %!assert (linspace (-Inf + 1i, Inf + 1i, 3), [-Inf + 1i, NaN + 1i, Inf + 1i])
-%!assert (linspace (0, Inf, 3), [0, Inf, Inf])
-%!assert (linspace (0, -Inf, 3), [0, -Inf, -Inf])
-%!assert (linspace (-Inf, 0, 3), [-Inf, NaN, 0])
-%!assert (linspace (Inf, 0, 3), [Inf, NaN, 0])
-%!assert (linspace (Inf, -Inf, 3), [Inf, NaN, -Inf])
+
+## FIXME: Octave is not fully Matlab-compatible for some combinations of
+##        Inf/-Inf endpoints.  See bug #56933.  This was dubbed "Won't Fix"
+##        so these tests have been removed from the test suite by commenting
+##        them out.  If the behavior in the future is made compatible these
+##        tests can be re-instated.
+##%!assert <56933> (linspace (-Inf, Inf, 4), [-Inf, -Inf, Inf, Inf])
+##%!assert <56933> (linspace (-Inf, Inf, 5), [-Inf, -Inf, 0, Inf, Inf])
+##%!assert <56933> (linspace (0, Inf, 4), [0, Inf, Inf, Inf])
+##%!assert <56933> (linspace (0, -Inf, 4), [0, -Inf, -Inf, -Inf])
+##%!assert <56933> (linspace (-Inf, 0, 4), [-Inf, NaN, NaN, 0])
+##%!assert <56933> (linspace (Inf, 0, 4), [Inf, NaN, NaN, 0])
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)
@@ -7078,8 +7124,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
     }
   catch (const octave::index_exception& e)
     {
-      index_error ("nth_element: invalid N value %s. %s",
-                   e.idx (), e.details ());
+      error ("nth_element: invalid index %s", e.what ());
     }
 
   return retval;
@@ -7178,8 +7223,7 @@ Undocumented internal function.
     }
   catch (const octave::index_exception& e)
     {
-      index_error ("__accumarray_sum__: invalid IDX %s. %s",
-                   e.idx (), e.details ());
+      error ("__accumarray_sum__: invalid index %s", e.what ());
     }
 
   return retval;
@@ -7200,8 +7244,8 @@ do_accumarray_minmax (const idx_vector& idx, const NDT& vals,
   NDT retval (dim_vector (n, 1), zero_val);
 
   // Pick minimizer or maximizer.
-  void (MArray<T>::*op) (const idx_vector&, const MArray<T>&) =
-    ismin ? (&MArray<T>::idx_min) : (&MArray<T>::idx_max);
+  void (MArray<T>::*op) (const idx_vector&, const MArray<T>&)
+    = ismin ? (&MArray<T>::idx_min) : (&MArray<T>::idx_max);
 
   octave_idx_type l = idx.length (n);
   if (vals.numel () == 1)
@@ -7290,8 +7334,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
     }
   catch (const octave::index_exception& e)
     {
-      index_error ("do_accumarray_minmax_fun: invalid index %s. %s",
-                   e.idx (), e.details ());
+      error ("do_accumarray_minmax_fun: invalid index %s", e.what ());
     }
 
   return retval;
@@ -7398,8 +7441,7 @@ Undocumented internal function.
     }
   catch (const octave::index_exception& e)
     {
-      index_error ("__accumdim_sum__: invalid IDX %s. %s",
-                   e.idx (), e.details ());
+      error ("__accumdim_sum__: invalid index %s", e.what ());
     }
 
   return retval;
@@ -7847,7 +7889,7 @@ endfor
 
   octave_value x = args(0);
 
-  NoAlias< Array<octave_idx_type>> r (rm.dims ());
+  Array<octave_idx_type> r (rm.dims ());
 
   for (octave_idx_type i = 0; i < rm.numel (); i++)
     {
@@ -7855,7 +7897,7 @@ endfor
       if (static_cast<double> (rx) != rm(i))
         error ("repelems: R must be a matrix of integers");
 
-      r(i) = rx;
+      r.xelem (i) = rx;
     }
 
   switch (x.builtin_type ())
@@ -8023,8 +8065,8 @@ dimensions of the decoded array.
     {
       dim_vector dims;
 
-      const Array<octave_idx_type> size =
-        args(1).octave_idx_type_vector_value ();
+      const Array<octave_idx_type> size
+        = args(1).octave_idx_type_vector_value ();
 
       dims = dim_vector::alloc (size.numel ());
       for (octave_idx_type i = 0; i < size.numel (); i++)

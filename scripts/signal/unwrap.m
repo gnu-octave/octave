@@ -1,4 +1,9 @@
-## Copyright (C) 2000-2019 Bill Lash
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{b} =} unwrap (@var{x})
@@ -29,8 +36,6 @@
 ## Unwrap will work along the dimension @var{dim}.  If @var{dim}
 ## is unspecified it defaults to the first non-singleton dimension.
 ## @end deftypefn
-
-## Author: Bill Lash <lash@tellabs.com>
 
 function retval = unwrap (x, tol, dim)
 

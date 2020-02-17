@@ -1,5 +1,9 @@
-## Copyright (C) 2000-2019 Paul Kienzle
-## Copyright (C) 2010 VZLU Prague
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} isprime (@var{x})
@@ -56,7 +62,7 @@
 ## @var{x} is not too large (< 1e15).  For larger values special purpose
 ## factorization code should be used.
 ##
-## Compatibility Note: @var{matlab} does not extend the definition of prime
+## Compatibility Note: @sc{matlab} does not extend the definition of prime
 ## numbers and will produce an error if given negative or complex inputs.
 ## @seealso{primes, factor, gcd, lcm}
 ## @end deftypefn

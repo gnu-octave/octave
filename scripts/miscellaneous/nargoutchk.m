@@ -1,5 +1,9 @@
-## Copyright (C) 2008-2019 Bill Denney
-## Copyright (C) 2012 Carnë Draug
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} nargoutchk (@var{minargs}, @var{maxargs})
@@ -40,9 +46,6 @@
 ## to a function is within an acceptable range.
 ## @seealso{narginchk, error, nargout, nargin}
 ## @end deftypefn
-
-## Author: Bill Denney <bill@denney.ws>
-## Author: Carnë Draug <carandraug+dev@gmail.com>
 
 function msg = nargoutchk (minargs, maxargs, nargs, outtype)
 

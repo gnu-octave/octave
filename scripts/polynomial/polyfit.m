@@ -1,4 +1,9 @@
-## Copyright (C) 1996-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1996-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{p} =} polyfit (@var{x}, @var{y}, @var{n})
@@ -70,12 +77,6 @@
 ## the fit.
 ## @seealso{polyval, polyaffine, roots, vander, zscore}
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 13 December 1994
-## Adapted-By: jwe
-## Modified on 20120204 by P. Dupuis; added the ability to specify a
-## polynomial mask instead of a polynomial degree.
 
 function [p, s, mu] = polyfit (x, y, n)
 

@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-Copyright (C) 2008 Jaroslav Hajek
-Copyright (C) 2009 VZLU Prague, a.s.
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -44,7 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "dDiagMatrix.h"
 #include "dMatrix.h"
 #include "dRowVector.h"
-#include "functor.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
@@ -3003,7 +3003,7 @@ Matrix linspace (const ColumnVector& x1,
     (*current_liboctave_error_handler)
       ("linspace: vectors must be of equal length");
 
-  NoAlias<Matrix> retval;
+  Matrix retval;
 
   if (n < 1)
     {
@@ -3013,19 +3013,19 @@ Matrix linspace (const ColumnVector& x1,
 
   retval.clear (m, n);
   for (octave_idx_type i = 0; i < m; i++)
-    retval(i, 0) = x1(i);
+    retval.xelem (i, 0) = x1(i);
 
   // The last column is unused so temporarily store delta there
-  double *delta = &retval(0, n-1);
+  double *delta = &retval.xelem (0, n-1);
   for (octave_idx_type i = 0; i < m; i++)
     delta[i] = (x1(i) == x2(i)) ? 0 : (x2(i) - x1(i)) / (n - 1);
 
   for (octave_idx_type j = 1; j < n-1; j++)
     for (octave_idx_type i = 0; i < m; i++)
-      retval(i, j) = x1(i) + j*delta[i];
+      retval.xelem (i, j) = x1(i) + j*delta[i];
 
   for (octave_idx_type i = 0; i < m; i++)
-    retval(i, n-1) = x2(i);
+    retval.xelem (i, n-1) = x2(i);
 
   return retval;
 }

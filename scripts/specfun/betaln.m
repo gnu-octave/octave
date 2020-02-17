@@ -1,4 +1,9 @@
-## Copyright (C) 1998-2019 Nicol N. Schraudolph
+########################################################################
+##
+## Copyright (C) 1998-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} betaln (@var{a}, @var{b})
@@ -40,10 +47,6 @@
 ## with the logarithm of the output rather than the function directly.
 ## @seealso{beta, betainc, betaincinv, gammaln}
 ## @end deftypefn
-
-## Author:   Nicol N. Schraudolph <nic@idsia.ch>
-## Created:  06 Aug 1998
-## Keywords: log beta special function
 
 function retval = betaln (a, b)
 

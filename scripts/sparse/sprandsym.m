@@ -1,5 +1,9 @@
-## Copyright (C) 2004-2019 David Bateman and Andy Adler
-## Copyright (C) 2012 Jordi Gutiérrez Hermoso
+########################################################################
+##
+## Copyright (C) 2004-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} sprandsym (@var{n}, @var{d})
@@ -45,8 +51,13 @@ function S = sprandsym (n, d)
     return;
   endif
 
-  if (!(isscalar (n) && n == fix (n) && n > 0))
-    error ("sprandsym: N must be an integer greater than 0");
+  if (!(isscalar (n) && n == fix (n) && n >= 0))
+    error ("sprandsym: N must be a non-negative integer 0");
+  endif
+
+  if (n == 0)
+    S = sparse (n, n);
+    return;
   endif
 
   if (d < 0 || d > 1)
@@ -166,11 +177,14 @@ endfunction
 %! assert (sort (i), [2 3]');
 %! assert (sort (j), [2 3]');
 
+## Test empty array creation
+%!assert (size (sprandsym (0, 0.5)), [0, 0])
+
 ## Test input validation
 %!error sprandsym ()
 %!error sprandsym (1, 2, 3)
 %!error sprandsym (ones (3), 0.5)
 %!error sprandsym (3.5, 0.5)
-%!error sprandsym (0, 0.5)
+%!error sprandsym (-1, 0.5)
 %!error sprandsym (3, -1)
 %!error sprandsym (3, 2)

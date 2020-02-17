@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -886,7 +889,7 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
   if (args(0).is_string ())
     return ovl (args(0));
 
-  std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
+  std::string tmp = args(1).string_value ();
   const char *codepage
     = (tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ());
 
@@ -938,11 +941,11 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
   if (nargin != 2)
     print_usage ();
 
-  std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
+  std::string tmp = args(1).string_value ();
   const char *codepage
     = (tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ());
 
-  charNDArray utf8_str = args(0).xchar_array_value ("UTF8_STR must be a string");
+  charNDArray utf8_str = args(0).char_array_value ();
 
   const uint8_t *src = reinterpret_cast<const uint8_t *> (utf8_str.data ());
   size_t srclen = utf8_str.numel ();
@@ -961,7 +964,7 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
                "libiconv and then re-compiling Octave could fix this.");
       else
         error ("unicode2native: converting from UTF-8 to codepage '%s': %s",
-                codepage, std::strerror (errno));
+               codepage, std::strerror (errno));
     }
 
   frame.add_fcn (::free, static_cast<void *> (native_bytes));
@@ -974,6 +977,18 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
     retval.xelem(i) = native_bytes[i];
 
   return ovl (retval);
+}
+
+DEFUN (__locale_charset__, , ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{charset} =} __locale_charset__ ()
+Return the identifier for the charset used if the encoding is set to
+@qcode{"locale"}.
+@end deftypefn */)
+{
+  const char *charset = octave_locale_charset_wrapper ();
+  std::string charset_str (charset);
+  return ovl (charset_str);
 }
 
 DEFUN (unicode_idx, args, ,
@@ -999,13 +1014,13 @@ unicode_idx ("aäbc")
   Array<octave_idx_type> p (dim_vector (str.ndims (), 1));
   charNDArray str_p;
   if (str.ndims () > 1)
-  {
-    for (octave_idx_type i=0; i < str.ndims (); i++)
-      p(i) = i;
-    p(0) = 1;
-    p(1) = 0;
-    str_p = str.permute (p);
-  }
+    {
+      for (octave_idx_type i=0; i < str.ndims (); i++)
+        p(i) = i;
+      p(0) = 1;
+      p(1) = 0;
+      str_p = str.permute (p);
+    }
 
   const uint8_t *src = reinterpret_cast<const uint8_t *> (str_p.data ());
   octave_idx_type srclen = str.numel ();
@@ -1014,20 +1029,93 @@ unicode_idx ("aäbc")
 
   octave_idx_type u8_char_num = 1;
   for (octave_idx_type i = 0; i < srclen; u8_char_num++)
-  {
-    int mblen = octave_u8_strmblen_wrapper (src + i);
-    if (mblen < 1)
-      mblen = 1;
-    for (octave_idx_type j = 0; j < mblen; j++)
-      idx (i+j) = u8_char_num;
-    i += mblen;
-  }
+    {
+      int mblen = octave_u8_strmblen_wrapper (src + i);
+      if (mblen < 1)
+        mblen = 1;
+      for (octave_idx_type j = 0; j < mblen; j++)
+        idx (i+j) = u8_char_num;
+      i += mblen;
+    }
 
   return ovl(str.ndims () > 1 ? idx.permute (p, true) : idx);
 }
 
 /*
 %!assert (unicode_idx (["aäou"; "Ä∞"]), [1 2 2 3 4; 5 5 6 6 6]);
+*/
+
+DEFUN (__u8_validate__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{out_str} =} __u8_validate__ (in_str, mode)
+Return string with valid UTF-8.
+
+On encountering invalid UTF-8 in @var{in_str}, the bytes are either replaced by
+the replacement character "�" (if @var{mode} is omitted or the string
+"replace") or interpreted as the Unicode code points U+0080–U+00FF with the
+same value as the byte (if @var{mode} is the string "unicode"), thus
+interpreting the bytes according to ISO-8859-1.
+
+@end deftypefn */)
+{
+  if (args.length () < 1 || args.length () > 2)
+    print_usage ();
+
+  // Input check
+  std::string in_str =
+      args(0).xstring_value ("__u8_validate__: IN_STR must be a string.");
+
+  std::string mode = "replace";
+  if (args.length () > 1)
+    mode = args(1).xstring_value ("__u8_validate__: MODE must be a string.");
+
+  octave::string::u8_fallback_type fb_type;
+  if (mode == "replace")
+    fb_type = octave::string::U8_REPLACEMENT_CHAR;
+  else if (mode == "unicode")
+    fb_type = octave::string::U8_ISO_8859_1;
+  else
+    error ("__u8_validate__: MODE must either be \"replace\" or \"unicode\".");
+
+  octave::string::u8_validate ("__u8_validate__", in_str, fb_type);
+
+  return ovl (in_str);
+}
+
+DEFUN (newline, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} newline
+Return the character corresponding to a newline.
+
+This is equivalent to @qcode{"@xbackslashchar{}n"}.
+
+Example Code
+
+@example
+@group
+joined_string = [newline "line1" newline "line2"]
+@result{}
+line1
+line2
+@end group
+@end example
+
+@seealso{strcat, strjoin, strsplit}
+@end deftypefn */)
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  static octave_value_list retval = ovl ("\n");
+
+  return retval;
+}
+
+/*
+%!assert (newline (), "\n")
+
+%!error newline (1)
+%!error [a, b] = newline ();
 */
 
 DEFUN (list_in_columns, args, ,

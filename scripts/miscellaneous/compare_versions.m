@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 Bill Denney
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} compare_versions (@var{v1}, @var{v2}, @var{operator})
@@ -53,13 +60,9 @@
 ## @qcode{">="}
 ## greater than or equal to
 ##
-## @item
-## @qcode{"!="}
+## @item @qcode{"!="}, @qcode{"~="}
 ## not equal
 ##
-## @item
-## @qcode{"~="}
-## not equal
 ## @end itemize
 ##
 ## Note that version @qcode{"1.1-test2"} will compare as greater than
@@ -68,8 +71,6 @@
 ## starts with a numeric part even though @code{double ("a")} is greater than
 ## @code{double ("1").}
 ## @end deftypefn
-
-## Author: Bill Denney <denney@seas.upenn.edu>
 
 function out = compare_versions (v1, v2, operator)
 

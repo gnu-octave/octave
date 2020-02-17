@@ -1,4 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} hist (@var{y})
@@ -72,8 +79,6 @@
 ## @seealso{histc, bar, pie, rose}
 ## @end deftypefn
 
-## Author: jwe
-
 function [nn, xx] = hist (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("hist", varargin{:});
@@ -104,6 +109,9 @@ function [nn, xx] = hist (varargin)
     min_val = double (min_val);
   endif
 
+  ## Equidistant entries allow much more efficient algorithms.
+  equal_bin_spacing = true;
+
   ## Process possible second argument
   if (nargin == 1 || ischar (varargin{iarg}))
     n = 10;
@@ -122,8 +130,8 @@ function [nn, xx] = hist (varargin)
       error ("hist: bin specification must be a numeric scalar or vector");
     endif
 
-    ## Do not convert if input is of class single (or if already is double).
-    if (! isfloat (x))
+    ## Convert integer types or a single specification of N bins to double
+    if (! isfloat (x) || isscalar (x))
       x = double (x);
     endif
 
@@ -141,6 +149,13 @@ function [nn, xx] = hist (varargin)
       endif
       x = x.';  # Convert to matrix;
     elseif (isvector (x))
+      equal_bin_spacing = strcmp (typeinfo (x), "range");
+      if (! equal_bin_spacing)
+        diffs = diff (x);
+        if (all (diffs == diffs(1)))
+          equal_bin_spacing = true;
+        endif
+      endif
       x = x(:);
       if (! issorted (x))
         warning ("hist: bin values X not sorted on input");
@@ -162,35 +177,54 @@ function [nn, xx] = hist (varargin)
 
   ## Perform histogram calculation
   cutoff = (x(1:end-1,:) + x(2:end,:)) / 2;
-  if (isinteger (y))
-    cutoff = floor (cutoff);
-  endif
 
   n = rows (x);
   y_nc = columns (y);
-  if (n < 30 && columns (x) == 1)
-    ## The following algorithm works fastest for n less than about 30.
+
+  if (n < 11 * (1 + (! equal_bin_spacing)))
+    ## The following algorithm works fastest for small n.
+    nanidx = isnan (y);
     chist = zeros (n+1, y_nc);
     for i = 1:n-1
       chist(i+1,:) = sum (y <= cutoff(i));
     endfor
-    chist(n+1,:) = sum (! isnan (y));
-  else
-    ## The following algorithm works fastest for n greater than about 30.
-    ## Put cutoff elements between boundaries, integrate over all
-    ## elements, keep totals at boundaries.
-    m = (nthargout (2, @sort, [y; repmat(cutoff, 1, y_nc)]) <= rows (y));
-    chist = cumsum (m);
-    chist = [(zeros (1, y_nc));
-             (reshape (chist(! m), rows (cutoff), y_nc));
-             (chist(end,:) - sum (isnan (y)))];
-  endif
+    chist(n+1,:) = sum (! nanidx);
 
-  freq = diff (chist);
+    freq = diff (chist);
+  else
+    ## Lookup is more efficient if y is sorted, but sorting costs.
+    if (! equal_bin_spacing && n > sqrt (rows (y) * 1e4))
+      y = sort (y);
+    end
+
+    nanidx = isnan (y);
+    y(nanidx) = 0;
+    freq = zeros (n, y_nc);
+    if (equal_bin_spacing)
+      if (n < 3)
+        d = 1;
+      else
+        d = (x(end) - x(1)) / (length (x) - 1);
+      end
+      cutlen = length (cutoff);
+      for j = 1:y_nc
+        freq(:,j) = accumarray (1 + max (0, min (cutlen, ceil ((double (y(:,j))
+                                                         - cutoff(1)) / d))),
+                                double (! nanidx(:,j)),
+                                [n, 1]);
+      end
+    else
+      for j = 1:y_nc
+        i = lookup (cutoff, y(:,j));
+        i = 1 + i - (cutoff(max (i, 1)) == y(:,j));
+        freq(:,j) = accumarray (i, double (! nanidx(:,j)), [n, 1]);
+      end
+    end
+  endif
 
   if (norm)
     ## Normalize the histogram
-    freq = freq .* norm ./ sum (! isnan (y));
+    freq .*= norm ./ sum (! nanidx);
   endif
 
   if (nargout == 0)
@@ -257,9 +291,9 @@ endfunction
 %! assert (nn, n);
 %! assert (xx, x);
 %!
-%! ## test again with N > 30 because there's a special case for it
-%! [n, x] = hist (y, 35);
-%! [nn, xx] = hist (uint8 (y), 35);
+%! ## test again with N > 26 because there's a special case for it
+%! [n, x] = hist (y, 30);
+%! [nn, xx] = hist (uint8 (y), 30);
 %! assert (nn, n);
 %! assert (xx, x);
 
@@ -271,9 +305,9 @@ endfunction
 %! assert (nn, n);
 %! assert (xx, x);
 %!
-%! ## test again with N > 30 because there's a special case for it
-%! [n, x] = hist (y, 35);
-%! [nn, xx] = hist (logical (y), 35);
+%! ## test again with N > 26 because there's a special case for it
+%! [n, x] = hist (y, 30);
+%! [nn, xx] = hist (logical (y), 30);
 %! assert (nn, n);
 %! assert (xx, x);
 
@@ -336,6 +370,17 @@ endfunction
 %! [nn, xx] = hist (y);
 %! assert (nn, [2 0 0 0 0 0 0 0 0 2]);
 %! assert (xx, 0.5:10);
+
+## Test return class of second output
+%!test <*56465>
+%! [nn, xx] = hist (double (1:10), single (7));
+%! assert (isa (xx, "double"));
+%! [nn, xx] = hist (single (1:10), double (7));
+%! assert (isa (xx, "single"));
+%! [nn, xx] = hist (single (1:10), double ([1, 5, 10]));
+%! assert (isa (xx, "double"));
+%! [nn, xx] = hist (double (1:10), single ([1, 5, 10]));
+%! assert (isa (xx, "single"));
 
 ## Test input validation
 %!error hist ()

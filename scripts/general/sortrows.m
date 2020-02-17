@@ -1,5 +1,9 @@
-## Copyright (C) 2000-2019 Daniel Calvelo
-## Copyright (C) 2009 Jaroslav Hajek
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{s}, @var{i}] =} sortrows (@var{A})
@@ -44,9 +50,6 @@
 ##
 ## @seealso{sort}
 ## @end deftypefn
-
-## Author: Daniel Calvelo, Paul Kienzle
-## Adapted-by: jwe
 
 function [s, i] = sortrows (A, c)
 

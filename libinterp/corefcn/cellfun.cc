@@ -1,27 +1,27 @@
-/*
-
-Copyright (C) 2005-2019 Mohamed Kamoun
-Copyright (C) 2006-2019 Bill Denney
-Copyright (C) 2009 Jaroslav Hajek
-Copyright (C) 2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2005-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "oct-map.h"
 #include "defun.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "parse.h"
 #include "variables.h"
@@ -65,7 +66,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 
 static octave_value_list
-get_output_list (octave_idx_type count, octave_idx_type nargout,
+get_output_list (octave::error_system& es,
+                 octave_idx_type count, octave_idx_type nargout,
                  const octave_value_list& inputlist,
                  octave_value& func,
                  octave_value& error_handler)
@@ -82,7 +84,10 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
     {
       if (error_handler.is_defined ())
         {
-          octave::interpreter::recover_from_exception ();
+          octave::interpreter& interp
+            = octave::__get_interpreter__ ("get_output_list");
+
+          interp.recover_from_exception ();
 
           execution_error = true;
         }
@@ -95,16 +100,14 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
       if (error_handler.is_defined ())
         {
           octave_scalar_map msg;
-          msg.assign ("identifier", last_error_id ());
-          msg.assign ("message", last_error_message ());
+          msg.assign ("identifier", es.last_error_id ());
+          msg.assign ("message", es.last_error_message ());
           msg.assign ("index",
                       static_cast<double> (count
                                            + static_cast<octave_idx_type> (1)));
 
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
-
-          buffer_error_messages--;
 
           tmp = octave::feval (error_handler, errlist, nargout);
         }
@@ -426,17 +429,7 @@ v = cellfun (@@det, a); # faster
       std::string name = args(0).string_value ();
 
       if (! octave::valid_identifier (name))
-        {
-          std::string fcn_name = unique_symbol_name ("__cellfun_fcn__");
-          std::string fname = "function y = " + fcn_name + "(x) y = ";
-
-          octave_function *ptr_func
-            = extract_function (args(0), "cellfun", fcn_name,
-                                fname, "; endfunction");
-
-          if (ptr_func)
-            func = octave_value (ptr_func, true);
-        }
+        func = octave::get_function_handle (interp, args(0), "x");
       else
         {
           func = symtab.find_function (name);
@@ -461,6 +454,11 @@ v = cellfun (@@det, a); # faster
   {
     if (func.is_function_handle ())
       {
+        // We can't check for overloads now.  Is there something else we
+        // should be doing instead?
+        goto nevermind;
+
+#if 0
         octave_fcn_handle *f = func.fcn_handle_value ();
 
         // Overloaded function handles need to check the type of the
@@ -468,6 +466,7 @@ v = cellfun (@@det, a); # faster
         // optimized this way.
         if (f -> is_overloaded ())
           goto nevermind;
+#endif
       }
 
     std::string name = func.function_value () -> name ();
@@ -483,12 +482,9 @@ v = cellfun (@@det, a); # faster
             tmp_args(0) = name;
 
             if (uniform_output)
-              retval =
-                try_cellfun_internal_ops<boolNDArray, NDArray> (tmp_args,
-                                                                nargin);
+              retval = try_cellfun_internal_ops<boolNDArray, NDArray> (tmp_args, nargin);
             else
-              retval =
-                try_cellfun_internal_ops<Cell, Cell> (tmp_args, nargin);
+              retval = try_cellfun_internal_ops<Cell, Cell> (tmp_args, nargin);
 
             if (! retval.empty ())
               return retval;
@@ -544,11 +540,7 @@ nevermind:
         }
     }
 
-  octave::unwind_protect frame;
-  frame.protect_var (buffer_error_messages);
-
-  if (error_handler.is_defined ())
-    buffer_error_messages++;
+  octave::error_system& es = interp.get_error_system ();
 
   // Apply functions.
 
@@ -569,7 +561,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (count, nargout, inputlist, func,
+            = get_output_list (es, count, nargout, inputlist, func,
                                error_handler);
 
           if (nargout > 0 && tmp.length () < nargout)
@@ -650,7 +642,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (count, nargout, inputlist, func,
+            = get_output_list (es, count, nargout, inputlist, func,
                                error_handler);
 
           if (nargout > 0 && tmp.length () < nargout)
@@ -1141,17 +1133,7 @@ arrayfun (@@str2num, [1234],
       std::string name = args(0).string_value ();
 
       if (! octave::valid_identifier (name))
-        {
-          std::string fcn_name = unique_symbol_name ("__arrayfun_fcn__");
-          std::string fname = "function y = " + fcn_name + "(x) y = ";
-
-          octave_function *ptr_func
-            = extract_function (args(0), "arrayfun", fcn_name,
-                                fname, "; endfunction");
-
-          if (ptr_func)
-            func = octave_value (ptr_func, true);
-        }
+        func = octave::get_function_handle (interp, args(0), "x");
       else
         {
           func = symtab.find_function (name);
@@ -1176,6 +1158,11 @@ arrayfun (@@str2num, [1234],
         {
           if (func.is_function_handle ())
             {
+              // We can't check for overloads now.  Is there something
+              // else we should be doing instead?
+              goto nevermind;
+
+#if 0
               octave_fcn_handle *f = func.fcn_handle_value ();
 
               // Overloaded function handles need to check the type of the
@@ -1183,7 +1170,9 @@ arrayfun (@@str2num, [1234],
               // optimized this way.
               if (f -> is_overloaded ())
                 goto nevermind;
+#endif
             }
+
           octave_value f
             = symtab.find_function (func.function_value () -> name ());
 
@@ -1236,11 +1225,7 @@ arrayfun (@@str2num, [1234],
             }
         }
 
-      octave::unwind_protect frame;
-      frame.protect_var (buffer_error_messages);
-
-      if (error_handler.is_defined ())
-        buffer_error_messages++;
+      octave::error_system& es = interp.get_error_system ();
 
       // Apply functions.
 
@@ -1263,7 +1248,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (count, nargout, inputlist, func,
+                = get_output_list (es, count, nargout, inputlist, func,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
@@ -1355,7 +1340,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (count, nargout, inputlist, func,
+                = get_output_list (es, count, nargout, inputlist, func,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
@@ -1940,7 +1925,7 @@ template <typename Array2D>
 static Cell
 do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
 {
-  NoAlias<Cell> retval;
+  Cell retval;
   assert (nd == 1 || nd == 2);
   assert (a.ndims () == 2);
 
@@ -1965,7 +1950,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
       for (octave_idx_type i = 0; i < nidx; i++)
         {
           octave_idx_type u = l + d[ivec](i);
-          retval(i) = a.index (idx_vector (l, u));
+          retval.xelem (i) = a.index (idx_vector (l, u));
           l = u;
         }
     }
@@ -1983,7 +1968,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
           {
             octave_quit ();
 
-            retval(i,j) = a.index (ridx[i], cidx[j]);
+            retval.xelem (i,j) = a.index (ridx[i], cidx[j]);
           }
     }
 
@@ -1997,7 +1982,7 @@ template <typename ArrayND>
 Cell
 do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 {
-  NoAlias<Cell> retval;
+  Cell retval;
   assert (nd >= 1);
 
   if (mat2cell_mismatch (a.dims (), d, nd))
@@ -2026,7 +2011,7 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
     }
 
   OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, nd, 0);
-  NoAlias< Array<idx_vector>> ra_idx
+  Array<idx_vector> ra_idx
     (dim_vector (1, std::max (nd, a.ndims ())), idx_vector::colon);
 
   for (octave_idx_type j = 0; j < retval.numel (); j++)
@@ -2034,9 +2019,9 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
       octave_quit ();
 
       for (int i = 0; i < nd; i++)
-        ra_idx(i) = idx[i][ridx[i]];
+        ra_idx.xelem (i) = idx[i][ridx[i]];
 
-      retval(j) = a.index (ra_idx);
+      retval.xelem (j) = a.index (ra_idx);
 
       rdv.increment_index (ridx);
     }
@@ -2061,7 +2046,7 @@ do_mat2cell (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 Cell
 do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 {
-  NoAlias<Cell> retval;
+  Cell retval;
   assert (nd >= 1);
 
   if (mat2cell_mismatch (a.dims (), d, nd))
@@ -2100,7 +2085,7 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
       for (int i = 0; i < nd; i++)
         ra_idx(i) = idx[i][ridx[i]];
 
-      retval(j) = a.do_index_op (ra_idx);
+      retval.xelem (j) = a.do_index_op (ra_idx);
 
       rdv.increment_index (ridx);
     }
@@ -2300,7 +2285,7 @@ do_cellslices_nda (const NDA& array,
                             || (dim == 1 && array.rows () == 1)))
     {
       for (octave_idx_type i = 0; i < n; i++)
-        retval(i) = array.index (idx_vector (lb(i) - 1, ub(i)));
+        retval.xelem (i) = array.index (idx_vector (lb(i) - 1, ub(i)));
     }
   else
     {
@@ -2315,7 +2300,7 @@ do_cellslices_nda (const NDA& array,
       for (octave_idx_type i = 0; i < n; i++)
         {
           idx(dim) = idx_vector (lb(i) - 1, ub(i));
-          retval(i) = array.index (idx);
+          retval.xelem (i) = array.index (idx);
         }
     }
 
@@ -2435,7 +2420,7 @@ slicing is done along the first non-singleton dimension.
       for (octave_idx_type i = 0; i < n; i++)
         {
           idx(dim) = Range (lb(i), ub(i));
-          retcell(i) = x.do_index_op (idx);
+          retcell.xelem (i) = x.do_index_op (idx);
         }
     }
 
@@ -2476,7 +2461,7 @@ indexing keyword @code{end} is not available.
 
   const Cell x = args(0).xcell_value ("cellindexmat: X must be a cell");
 
-  NoAlias<Cell> y (x.dims ());
+  Cell y (x.dims ());
   octave_idx_type nel = x.numel ();
   octave_value_list idx = args.slice (1, args.length () - 1);
 
@@ -2486,7 +2471,7 @@ indexing keyword @code{end} is not available.
 
       octave_value tmp = x(i);
 
-      y(i) = tmp.do_index_op (idx);
+      y.xelem (i) = tmp.do_index_op (idx);
     }
 
   return octave_value (y);

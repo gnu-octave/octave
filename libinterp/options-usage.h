@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_options_usage_h)
 #define octave_options_usage_h 1
@@ -59,8 +62,6 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define DOC_CACHE_FILE_OPTION 2
 #define EVAL_OPTION 3
 #define EXEC_PATH_OPTION 4
-// FIXME: DEPRECATED: ignored since Octave 4.4, remove for version 6.
-#define FORCE_GUI_OPTION 5
 #define GUI_OPTION 5
 #define IMAGE_PATH_OPTION 6
 #define INFO_FILE_OPTION 7
@@ -86,7 +87,6 @@ struct octave_getopt_options long_opts[] =
   { "echo-commands",            octave_no_arg,       0, 'x' },
   { "eval",                     octave_required_arg, 0, EVAL_OPTION },
   { "exec-path",                octave_required_arg, 0, EXEC_PATH_OPTION },
-  { "force-gui",                octave_no_arg,       0, FORCE_GUI_OPTION },
   { "gui",                      octave_no_arg,       0, GUI_OPTION },
   { "help",                     octave_no_arg,       0, 'h' },
   { "image-path",               octave_required_arg, 0, IMAGE_PATH_OPTION },

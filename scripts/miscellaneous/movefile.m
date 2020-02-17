@@ -1,4 +1,9 @@
-## Copyright (C) 2005-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} movefile @var{f1}
@@ -118,7 +125,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       endif
 
       ## Close old file(s) in editor
-      __octave_link_file_remove__ (p1, p2);
+      __event_manager_file_remove__ (p1, p2);
       ## Move the file(s).
       [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
       if (err != 0)
@@ -126,7 +133,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
         msgid = "movefile";
       endif
       ## Load new file(s) in editor
-      __octave_link_file_renamed__ (status);
+      __event_manager_file_renamed__ (status);
     endwhile
   else
     if (ispc () && ! isunix ()
@@ -136,7 +143,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     endif
 
     ## Close old file(s) in editor
-    __octave_link_file_remove__ (p1, p2);
+    __event_manager_file_remove__ (p1, p2);
     ## Move the file(s).
     [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
     if (err != 0)
@@ -144,7 +151,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       msgid = "movefile";
     endif
     ## Load new file(s) in editor
-    __octave_link_file_renamed__ (status);
+    __event_manager_file_renamed__ (status);
   endif
 
 endfunction

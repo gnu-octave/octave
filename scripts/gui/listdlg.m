@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Martin Hepperle
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{sel}, @var{ok}] =} listdlg (@var{key}, @var{value}, @dots{})
@@ -147,11 +154,11 @@ function [sel, ok] = listdlg (varargin)
     error ('listdlg: "SelectionMode" must be "single" or "multiple"');
   endif
 
-  if (! __octave_link_enabled__ ())
+  if (! __event_manager_enabled__ ())
     error ("listdlg is not available in this version of Octave");
   endif
 
-  [sel, ok] = __octave_link_list_dialog__ (listcell, selmode, listsize,
+  [sel, ok] = __event_manager_list_dialog__ (listcell, selmode, listsize,
                                            initialvalue, name, prompt,
                                            okstring, cancelstring);
 

@@ -1,4 +1,9 @@
-## Copyright (C) 2014-2019 Massimiliano Fasi
+########################################################################
+##
+## Copyright (C) 2014-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} hgsave (@var{filename})
@@ -88,7 +95,7 @@ endfunction
 %! toolkit = graphics_toolkit ();
 %! graphics_toolkit ("gnuplot");
 %! unwind_protect
-%!   h1 = figure ("visible", "off");
+%!   h1 = figure ("visible", "off", "paperposition", [0.25, 2.5, 8.0, 6.0]);
 %!   x = 0:0.1:2*pi;
 %!   y1 = sin (x);
 %!   y2 = exp (x - 1);

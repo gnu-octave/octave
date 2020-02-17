@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 2004-2019 David Bateman
-Copyright (C) 1998-2004 Andy Adler
-Copyright (C) 2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1998-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_Sparse_h)
 #define octave_Sparse_h 1
@@ -65,7 +66,7 @@ protected:
     octave_idx_type nzmx;
     octave_idx_type nrows;
     octave_idx_type ncols;
-    octave::refcount<int> count;
+    octave::refcount<octave_idx_type> count;
 
     SparseRep (void)
       : d (new T [1]), r (new octave_idx_type [1] {}),
@@ -233,11 +234,6 @@ public:
   //! This may differ from the actual number of elements, see nnz().
   octave_idx_type nzmax (void) const { return rep->length (); }
 
-  //! Amount of storage for nonzero elements.
-  //! Synonymous with nzmax().
-  OCTAVE_DEPRECATED (4.4, "use 'nzmax' instead")
-  octave_idx_type capacity (void) const { return nzmax (); }
-
   //! Actual number of nonzero terms.
   octave_idx_type nnz (void) const { return rep->nnz (); }
 
@@ -247,12 +243,6 @@ public:
   {
     return dimensions.safe_numel ();
   }
-
-  OCTAVE_DEPRECATED (4.4, "use 'nzmax' instead")
-  octave_idx_type nelem (void) const { return nzmax (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type length (void) const { return numel (); }
 
   octave_idx_type dim1 (void) const { return dimensions(0); }
   octave_idx_type dim2 (void) const { return dimensions(1); }
@@ -473,15 +463,7 @@ public:
 
   bool issquare (void) const { return (dim1 () == dim2 ()); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'issquare' instead")
-  bool is_square (void) const
-  { return issquare (); }
-
   bool isempty (void) const { return (rows () < 1 || cols () < 1); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
-  bool is_empty (void) const
-  { return isempty (); }
 
   Sparse<T> transpose (void) const;
 

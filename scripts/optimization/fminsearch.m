@@ -1,5 +1,9 @@
-## Copyright (C) 2003-2019 Andy Adler
-## Copyright (C) 2002, 2013 N.J.Higham
+########################################################################
+##
+## Copyright (C) 2003-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} fminsearch (@var{fun}, @var{x0})
@@ -25,6 +31,9 @@
 ##
 ## Find a value of @var{x} which minimizes the multi-variable function
 ## @var{fun}.
+##
+## @var{fun} is a function handle, inline function, or string containing the
+## name of the function to evaluate.
 ##
 ## The search begins at the point @var{x0} and iterates using the
 ## @nospell{Nelder & Mead} Simplex algorithm (a derivative-free method).  This
@@ -158,6 +167,10 @@ function [x, fval, exitflag, output] = fminsearch (varargin)
     endif
   endif
 
+  if (ischar (fun))
+    fun = str2func (fun);
+  endif
+
   if (isempty (options))
     options = struct ();
   endif
@@ -263,7 +276,9 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
 
   if (strcmpi (optimget (options, "FunValCheck", "off"), "on"))
     ## Replace fcn with a guarded version.
-    fun = @(x) guarded_eval (fun, x);
+    fun = @(x) guarded_eval (fun, x, varargin{:});
+  else
+    fun = @(x) real (fun (x, varargin{:}));
   endif
 
   x0 = x(:);  # Work with column vector internally.
@@ -272,7 +287,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
   V = [zeros(n,1) eye(n)];
   f = zeros (n+1,1);
   V(:,1) = x0;
-  f(1) = dirn * fun (x, varargin{:});
+  f(1) = dirn * fun (x);
   fmax_old = f(1);
   nf = 1;
 
@@ -292,7 +307,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
     for j = 2:n+1
       V(j-1,j) = x0(j-1) + alpha(1);
       x(:) = V(:,j);
-      f(j) = dirn * feval (fun,x,varargin{:});
+      f(j) = dirn * fun (x);
     endfor
   else
     ## Right-angled simplex based on co-ordinate axes.
@@ -300,7 +315,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
     for j = 2:n+1
       V(:,j) = x0 + alpha(j)*V(:,j);
       x(:) = V(:,j);
-      f(j) = dirn * feval (fun,x,varargin{:});
+      f(j) = dirn * fun (x);
     endfor
   endif
   nf += n;
@@ -403,14 +418,14 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
     vbar = (sum (V(:,1:n)')/n)';  # Mean value
     vr = (1 + alpha)*vbar - alpha*V(:,n+1);
     x(:) = vr;
-    fr = dirn * feval (fun,x,varargin{:});
+    fr = dirn * fun (x);
     nf += 1;
     vk = vr;  fk = fr; how = "reflect";
     if (fr > f(n))
       if (fr > f(1))
         ve = gamma*vr + (1-gamma)*vbar;
         x(:) = ve;
-        fe = dirn * feval (fun,x,varargin{:});
+        fe = dirn * fun (x);
         nf += 1;
         if (fe > f(1))
           vk = ve;
@@ -427,7 +442,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
       endif
       vc = beta*vt + (1-beta)*vbar;
       x(:) = vc;
-      fc = dirn * feval (fun,x,varargin{:});
+      fc = dirn * fun (x);
       nf += 1;
       if (fc > f(n))
         vk = vc; fk = fc;
@@ -436,12 +451,12 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
         for j = 2:n
           V(:,j) = (V(:,1) + V(:,j))/2;
           x(:) = V(:,j);
-          f(j) = dirn * feval (fun,x,varargin{:});
+          f(j) = dirn * fun (x);
         endfor
         nf += n-1;
         vk = (V(:,1) + V(:,n+1))/2;
         x(:) = vk;
-        fk = dirn * feval (fun,x,varargin{:});
+        fk = dirn * fun (x);
         nf += 1;
         how = "shrink";
       endif
@@ -481,9 +496,9 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
 endfunction
 
 ## A helper function that evaluates a function and checks for bad results.
-function y = guarded_eval (fun, x)
+function y = guarded_eval (fun, x, varargin)
 
-  y = fun (x);
+  y = fun (x, varargin{:});
 
   if (! (isreal (y)))
     error ("fminsearch:notreal", "fminsearch: non-real value encountered");

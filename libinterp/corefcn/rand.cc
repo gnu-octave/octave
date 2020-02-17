@@ -1,26 +1,27 @@
-
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-Copyright (C) 2009 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+/////////////////////////////////////////////////////////////////////////*
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -170,14 +171,11 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           }
         else if (tmp.is_scalar_type ())
           {
-            double dval = tmp.double_value ();
-
-            if (octave::math::isnan (dval))
-              error ("%s: NaN is invalid matrix dimension", fcn);
+            octave_idx_type n = tmp.idx_type_value (true);
 
             dims.resize (2);
 
-            dims(0) = dims(1) = octave::math::nint_big (dval);
+            dims(0) = dims(1) = n;
 
             goto gen_matrix;
           }
@@ -264,8 +262,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                   octave::rand::reset (fcn);
                 else
                   {
-                    ColumnVector s =
-                      ColumnVector (args(idx+1).vector_value (false, true));
+                    ColumnVector s
+                      = ColumnVector (args(idx+1).vector_value (false, true));
 
                     // Backwards compatibility with previous versions of
                     // Octave which mapped Inf to 0.
@@ -402,8 +400,8 @@ Twister with a period of @math{2^{19937}-1}
 (See @nospell{M. Matsumoto and T. Nishimura},
 @cite{Mersenne Twister: A 623-dimensionally equidistributed uniform
 pseudorandom number generator},
-@nospell{ACM} Trans. on Modeling and Computer Simulation Vol. 8, No. 1,
-pp. 3--30, January 1998,
+@nospell{ACM} Trans.@: on Modeling and Computer Simulation Vol.@: 8, No.@: 1,
+pp.@: 3--30, January 1998,
 @url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).
 Do @strong{not} use for cryptography without securely hashing several
 returned values together, otherwise the generator state can be learned after

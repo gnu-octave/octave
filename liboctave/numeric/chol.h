@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1994-2019 John W. Eaton
-Copyright (C) 2008-2009 Jaroslav Hajek
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1994-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_chol_h)
 #define octave_chol_h 1
@@ -39,7 +41,7 @@ namespace octave
       typedef typename T::column_vector_type VT;
       typedef typename T::real_elt_type COND_T;
 
-      chol (void) : chol_mat (), xrcond (0) { }
+      chol (void) : chol_mat (), xrcond (0), is_upper (true) { }
 
       chol (const T& a, bool upper = true, bool calc_cond = false)
         : chol_mat (), xrcond (0)
@@ -55,7 +57,7 @@ namespace octave
       }
 
       chol (const chol& a)
-        : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
+        : chol_mat (a.chol_mat), xrcond (a.xrcond), is_upper (a.is_upper) { }
 
       chol& operator = (const chol& a)
       {
@@ -63,6 +65,7 @@ namespace octave
           {
             chol_mat = a.chol_mat;
             xrcond = a.xrcond;
+            is_upper = a.is_upper;
           }
 
         return *this;

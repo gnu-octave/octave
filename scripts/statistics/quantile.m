@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 Ben Abbott and Jaroslav Hajek
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{q} =} quantile (@var{x})
@@ -146,10 +153,6 @@
 ## @end smallexample
 ## @seealso{prctile}
 ## @end deftypefn
-
-## Author: Ben Abbott <bpabbott@mac.com>
-## Description: Matlab style quantile function of a discrete/continuous
-##              distribution.
 
 function q = quantile (x, p = [], dim, method = 5)
 
@@ -399,14 +402,11 @@ endfunction
 ## (https://www.r-project.org/).  The default is @var{method} = 7.
 ## @seealso{prctile, quantile, statistics}
 
-## Author: Ben Abbott <bpabbott@mac.com>
-## Vectorized version: Jaroslav Hajek <highegg@gmail.com>
 ## Description: Quantile function of empirical samples
-
 function inv = __quantile__ (x, p, method = 5)
 
   if (nargin < 2 || nargin > 3)
-    print_usage ();
+    print_usage ("quantile");
   endif
 
   if (isinteger (x) || islogical (x))

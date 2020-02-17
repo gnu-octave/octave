@@ -1,7 +1,10 @@
 GNU Octave -- a high-level language for numerical computations
 ==============================================================
 
-Copyright (C) 1996-2020 John W. Eaton
+Copyright (C) 1996-2020 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this
+distribution or <https://octave.org/copyright/>.
 
 Overview
 --------
@@ -62,8 +65,7 @@ other versions of make.  If you use `f2c`, you will need a script
 like `fort77` that works like a normal Fortran compiler by combining
 `f2c` with your C compiler in a single script.
 
-See the notes in the files `INSTALL.OCTAVE` and the system-specific
-`README` files in the `etc` directory of the Octave source
+See the notes in the file `INSTALL.OCTAVE` of the Octave source
 distribution for more detailed installation instructions.
 
 Bugs and Patches

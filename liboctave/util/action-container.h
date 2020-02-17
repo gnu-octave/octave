@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_action_container_h)
 #define octave_action_container_h 1
@@ -88,7 +90,7 @@ namespace octave
     public:
 
       restore_var_elem (T& ref, const T& val)
-        : e_ptr (&ref), e_val (val) { }
+        : m_ptr (&ref), m_val (val) { }
 
       // No copying!
 
@@ -96,11 +98,11 @@ namespace octave
 
       restore_var_elem& operator = (const restore_var_elem&) = delete;
 
-      void run (void) { *e_ptr = e_val; }
+      void run (void) { *m_ptr = m_val; }
 
     private:
 
-      T *e_ptr, e_val;
+      T *m_ptr, m_val;
     };
 
     // Deletes a class allocated using new.
@@ -111,7 +113,7 @@ namespace octave
     public:
 
       delete_ptr_elem (T *ptr)
-        : e_ptr (ptr) { }
+        : m_ptr (ptr) { }
 
       // No copying!
 
@@ -119,11 +121,11 @@ namespace octave
 
       delete_ptr_elem operator = (const delete_ptr_elem&) = delete;
 
-      void run (void) { delete e_ptr; }
+      void run (void) { delete m_ptr; }
 
     private:
 
-      T *e_ptr;
+      T *m_ptr;
     };
 
     action_container (void) { }
@@ -191,14 +193,7 @@ namespace octave
 
     virtual void run_first (void) = 0;
 
-    void run (size_t num)
-    {
-      if (num > size ())
-        num = size ();
-
-      for (size_t i = 0; i < num; i++)
-        run_first ();
-    }
+    void run (size_t num);
 
     void run (void) { run (size ()); }
 
@@ -224,12 +219,5 @@ namespace octave
     virtual void add_action (elem *new_elem) = 0;
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::action_container' instead")
-typedef octave::action_container action_container;
-
-#endif
 
 #endif

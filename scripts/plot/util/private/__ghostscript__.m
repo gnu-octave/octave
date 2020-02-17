@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,14 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __ghostscript__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
-
-## Author: Ben Abbott <bpabbott@mac.com>
-## Created: 2010-07-26
 
 function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
 
@@ -61,7 +65,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
   endfor
 
   if (isempty (opts.binary))
-    error ("print:no_ghostscript", "__ghostscript__.m: Ghostscript binary is required for specified output format, but binary is not available in PATH");
+    error ("Octave:print:nogs", "__ghostscript__: 'gs' (Ghostscript) binary is required for specified output format, but binary is not available in PATH");
   endif
 
   if (isempty (opts.papersize))
@@ -111,7 +115,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
         gs_opts = sprintf ("%s -dNORANGEPAGESIZE", gs_opts);
       endif
     else
-      error ("print:badpapersize", "__ghostscript__.m: invalid 'papersize'");
+      error ("Octave:print:badpapersize", "__ghostscript__.m: invalid 'papersize'");
     endif
     gs_opts = sprintf ("%s -dFIXEDMEDIA", gs_opts);
     ## "pageoffset" is relative to the coordinates, not the BBox LLHC.
@@ -124,21 +128,21 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
     else
       offsetfile = [tempname() ".ps"];
       if (dos_shell)
-        cleanup_cmd = ["del " strrep(offsetfile, '/', '\')];
+        cleanup_cmd = sprintf ('del "%s"', strrep (offsetfile, '/', '\'));
       else
-        cleanup_cmd = ["rm " offsetfile];
+        cleanup_cmd = sprintf ('rm "%s"', offsetfile);
       endif
     endif
     unwind_protect
       fid = fopen (offsetfile, "w");
       if (fid == -1)
-        error ("print:fopenfailed", "__ghostscript__.m: fopen () failed");
+        error ("Octave:print:fopenfailed", "__ghostscript__.m: fopen () failed");
       endif
       fprintf (fid, "%s\n", offset_ps{:});
     unwind_protect_cleanup
       status = fclose (fid);
       if (status == -1)
-        error ("print:fclosefailed", "__ghostscript__.m: fclose () failed");
+        error ("Octave:print:fclosefailed", "__ghostscript__.m: fclose () failed");
       endif
     end_unwind_protect
     if (opts.debug)
@@ -176,7 +180,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
     endif
   endif
   if (! isempty (offsetfile) && format_for_printer)
-    cmd = sprintf ("%s %s", cmd, offsetfile);
+    cmd = sprintf ('%s "%s"', cmd, offsetfile);
   endif
   if (! isempty (opts.source))
     cmd = sprintf ("%s %s", cmd, opts.source);

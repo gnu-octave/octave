@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2000-2019 Gabriele Pannocchia
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2000-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -101,14 +104,12 @@ static int
 qp (const Matrix& H, const ColumnVector& q,
     const Matrix& Aeq, const ColumnVector& beq,
     const Matrix& Ain, const ColumnVector& bin,
-    int maxit,
+    int maxit, double rtol,
     ColumnVector& x, ColumnVector& lambda, int& iter)
 {
   int info = 0;
 
   iter = 0;
-
-  double rtol = sqrt (std::numeric_limits<double>::epsilon ());
 
   // Problem dimension.
   octave_idx_type n = x.numel ();
@@ -489,7 +490,7 @@ DEFUN (__qp__, args, ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  if (args.length () != 8)
+  if (args.length () != 9)
     print_usage ();
 
   const ColumnVector x0  (args(0).vector_value ());
@@ -500,6 +501,7 @@ Undocumented internal function.
   const Matrix Ain       (args(5).matrix_value ());
   const ColumnVector bin (args(6).vector_value ());
   const int maxit        (args(7).int_value ());
+  const double rtol      (args(8).double_value());
 
   int iter = 0;
 
@@ -509,7 +511,7 @@ Undocumented internal function.
   // Reordering the Lagrange multipliers
   ColumnVector lambda;
 
-  int info = qp (H, q, Aeq, beq, Ain, bin, maxit, x, lambda, iter);
+  int info = qp (H, q, Aeq, beq, Ain, bin, maxit, rtol, x, lambda, iter);
 
   return ovl (x, lambda, info, iter);
 }

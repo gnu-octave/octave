@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2001-2019 Ben Sapp
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2001-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_bp_table_h)
 #define octave_bp_table_h 1
@@ -75,6 +78,7 @@ namespace octave
 
     // Add a breakpoint at the nearest executable line.
     intmap add_breakpoint (const std::string& fname = "",
+                           const std::string& class_name = "",
                            const intmap& lines = intmap (),
                            const std::string& condition = "");
 
@@ -121,9 +125,9 @@ namespace octave
 
     bool condition_valid (const std::string& cond);
 
-    void parse_dbfunction_params (const char *, const octave_value_list&,
-                                  std::string&, bp_table::intmap&,
-                                  std::string&);
+    void parse_dbfunction_params (const char *who, const octave_value_list& args,
+                                  std::string& func_name, std::string& class_name,
+                                  bp_table::intmap& lines, std::string& cond);
 
   private:
 
@@ -141,6 +145,14 @@ namespace octave
     std::set<std::string> m_errors_that_stop;
     std::set<std::string> m_caught_that_stop;
     std::set<std::string> m_warnings_that_stop;
+
+    void set_stop_flag (const char *who, const std::string& condition,
+                        bool on_off);
+
+    void process_id_list (const char *who, const std::string& condition,
+                          const octave_value_list& args,
+                          int nargin, int& pos, bool on_off,
+                          std::set<std::string>& id_list);
 
     bool add_breakpoint_1 (octave_user_code *fcn, const std::string& fname,
                            const intmap& line, const std::string& condition,

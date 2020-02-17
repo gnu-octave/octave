@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_token_h)
 #define octave_token_h 1
@@ -27,12 +30,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "filepos.h"
 #include "symrec.h"
 
 namespace octave
 {
-  class
-  token
+  class token
   {
   public:
 
@@ -65,17 +68,28 @@ namespace octave
       while_end,
     };
 
-    token (int tv, int l = -1, int c = -1);
-    token (int tv, bool is_keyword, int l = -1, int c = -1);
-    token (int tv, const char *s, int l = -1, int c = -1);
-    token (int tv, const std::string& s, int l = -1, int c = -1);
-    token (int tv, double d, const std::string& s = "",
-           int l = -1, int c = -1);
-    token (int tv, end_tok_type t, int l = -1, int c = -1);
-    token (int tv, const symbol_record& s,
-           int l = -1, int c = -1);
+    token (int tv, const filepos& beg_pos, const filepos& end_pos);
+
+    token (int tv, bool is_keyword, const filepos& beg_pos
+           , const filepos& end_pos);
+
+    token (int tv, const char *s, const filepos& beg_pos,
+           const filepos& end_pos);
+
+    token (int tv, const std::string& s, const filepos& beg_pos,
+           const filepos& end_pos);
+
+    token (int tv, double d, const std::string& s, const filepos& beg_pos,
+           const filepos& end_pos);
+
+    token (int tv, end_tok_type t, const filepos& beg_pos,
+           const filepos& end_pos);
+
+    token (int tv, const symbol_record& s, const filepos& beg_pos,
+           const filepos& end_pos);
+
     token (int tv, const std::string& mth, const std::string& cls,
-           int l = -1, int c = -1);
+           const filepos& beg_pos, const filepos& end_pos);
 
     // No copying!
 
@@ -94,8 +108,15 @@ namespace octave
     int token_value (void) const { return m_tok_val; }
     bool token_value_is (int tv) const { return tv == m_tok_val; }
 
-    int line (void) const { return m_line_num; }
-    int column (void) const { return m_column_num; }
+    filepos beg_pos (void) const { return m_beg_pos; }
+    filepos end_pos (void) const { return m_end_pos; }
+
+    void beg_pos (const filepos& pos) { m_beg_pos = pos; }
+    void end_pos (const filepos& pos) { m_end_pos = pos; }
+
+    // These will probably be removed.
+    int line (void) const { return m_beg_pos.line (); }
+    int column (void) const { return m_beg_pos.column (); }
 
     bool iskeyword (void) const
     {
@@ -131,9 +152,8 @@ namespace octave
 
     bool m_tspc;
 
-    int m_line_num;
-
-    int m_column_num;
+    filepos m_beg_pos;
+    filepos m_end_pos;
 
     int m_tok_val;
 
@@ -155,8 +175,8 @@ namespace octave
         : m_sr (new symbol_record (sr))
       { }
 
-      tok_info (const std::string& method_nm, const std::string& class_nm)
-        : m_superclass_info (new superclass_info (method_nm, class_nm))
+      tok_info (const std::string& meth, const std::string& cls)
+        : m_superclass_info (new superclass_info (meth, cls))
       { }
 
       tok_info (const tok_info&) = delete;
@@ -177,9 +197,9 @@ namespace octave
       {
         superclass_info (void) = delete;
 
-        superclass_info (const std::string& method_nm,
-                         const std::string& class_nm)
-          : m_method_nm (method_nm), m_class_nm (class_nm)
+        superclass_info (const std::string& meth,
+                         const std::string& cls)
+          : m_method_name (meth), m_class_name (cls)
         { }
 
         superclass_info (const superclass_info&) = delete;
@@ -188,8 +208,13 @@ namespace octave
 
         ~superclass_info (void) = default;
 
-        std::string m_method_nm;
-        std::string m_class_nm;
+        // The name of the method to call.  This is the text before the
+        // "@" and may be of the form "object.method".
+        std::string m_method_name;
+
+        // The name of the superclass.  This is the text after the "@"
+        // and may be of the form "object.method".
+        std::string m_class_name;
       };
 
       superclass_info *m_superclass_info;
@@ -200,12 +225,5 @@ namespace octave
     std::string m_orig_text;
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::token' instead")
-typedef octave::token token;
-
-#endif
 
 #endif

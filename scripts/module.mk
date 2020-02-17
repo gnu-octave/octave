@@ -39,6 +39,7 @@ include %reldir%/statistics/module.mk
 include %reldir%/strings/module.mk
 include %reldir%/testfun/module.mk
 include %reldir%/time/module.mk
+include %reldir%/web/module.mk
 
 ## include %reldir%/@ftp/module.mk
 ## The include above fails because Automake cannot process the '@' character.

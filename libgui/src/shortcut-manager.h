@@ -1,35 +1,39 @@
-/*
-
-Copyright (C) 2014-2019 Torsten <ttl@justmail.de>
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2014-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_shortcut_manager_h)
 #define octave_shortcut_manager_h 1
 
-#include <QWidget>
-#include <QTreeWidget>
-#include <QLineEdit>
 #include <QKeyEvent>
 #include <QLabel>
-#include <QSettings>
+#include <QLineEdit>
 #include <QShortcut>
+#include <QTreeWidget>
+#include <QWidget>
+
+#include "gui-settings.h"
 
 namespace octave
 {
@@ -48,12 +52,16 @@ namespace octave
   public slots:
 
     void handle_direct_shortcut (int);
+    void handle_shift_modifier (int);
 
   private:
 
     bool m_direct_shortcut;
+    bool m_shift_modifier;
 
   };
+
+  class base_qobject;
 
   class shortcut_manager : public QWidget
   {
@@ -68,7 +76,7 @@ namespace octave
       OSC_DEFAULT = 2
     };
 
-    shortcut_manager (void);
+    shortcut_manager (base_qobject& oct_qobj);
 
     // No copying!
 
@@ -78,47 +86,17 @@ namespace octave
 
     ~shortcut_manager (void) = default;
 
-    static void init_data (void)
-    {
-      if (instance_ok ())
-        instance->do_init_data ();
-    }
+    void init_data (void);
 
-    static void write_shortcuts (QSettings *settings, bool closing)
-    {
-      if (instance_ok ())
-        instance->do_write_shortcuts (settings, closing);
-    }
+    void write_shortcuts (gui_settings *settings, bool closing);
 
-    static void set_shortcut (QAction *action, const QString& key)
-    {
-      if (instance_ok ())
-        instance->do_set_shortcut (action, key);
-    }
+    void set_shortcut (QAction *action, const sc_pref& scpref);
 
-    static void shortcut (QShortcut *sc, const QString& key)
-    {
-      if (instance_ok () && sc)
-        instance->do_shortcut (sc, key);
-    }
+    void shortcut (QShortcut *sc, const sc_pref& scpref);
 
-    static void fill_treewidget (QTreeWidget *tree_view)
-    {
-      if (instance_ok ())
-        instance->do_fill_treewidget (tree_view);
-    }
+    void fill_treewidget (QTreeWidget *tree_view);
 
-    static void import_export (int action)
-    {
-      if (instance_ok ())
-        instance->do_import_export (action);
-    }
-
-    static shortcut_manager *instance;
-
-  public slots:
-
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    bool import_export (int action);
 
   protected slots:
 
@@ -128,17 +106,9 @@ namespace octave
 
   private:
 
-    static bool instance_ok (void);
-
-    void init (const QString&, const QString&, const QKeySequence&);
-    void do_init_data ();
-    void do_write_shortcuts (QSettings *settings, bool closing);
-    void do_set_shortcut (QAction *action, const QString& key);
-    void do_shortcut (QShortcut *sc, const QString& key);
-    void do_fill_treewidget (QTreeWidget *tree_view);
-    bool do_import_export (int action);
+    void init (const QString&, const sc_pref& scpref);
     void shortcut_dialog (int);
-    void import_shortcuts (QSettings *settings);
+    void import_shortcuts (gui_settings *settings);
     bool overwrite_all_shortcuts (void);
 
     class shortcut_t
@@ -185,6 +155,8 @@ namespace octave
       QKeySequence m_default_sc;
     };
 
+    base_qobject& m_octave_qobj;
+
     QList<shortcut_t> m_sc;
     QHash<QString, int> m_shortcut_hash;
     QHash<QString, int> m_action_hash;
@@ -196,8 +168,6 @@ namespace octave
     enter_shortcut *m_edit_actual;
     QLabel *m_label_default;
     int m_handled_index;
-
-    QSettings *m_settings;
   };
 }
 

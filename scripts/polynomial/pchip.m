@@ -1,4 +1,9 @@
-## Copyright (C) 2001-2019 Kai Habel
+########################################################################
+##
+## Copyright (C) 2001-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{pp} =} pchip (@var{x}, @var{y})
@@ -57,10 +64,8 @@
 ## @seealso{spline, ppval, mkpp, unmkpp}
 ## @end deftypefn
 
-## Author:  Kai Habel <kai.habel@gmx.de>
-## Date: 9. mar 2001
-##
-## S_k = a_k + b_k*x + c_k*x^2 + d_k*x^3; (spline polynom)
+## Algorithm:
+## S_k = a_k + b_k*x + c_k*x^2 + d_k*x^3; (spline polynomial)
 ##
 ## 4 conditions:
 ## S_k(x_k) = y_k;

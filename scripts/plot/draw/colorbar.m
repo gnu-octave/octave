@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} colorbar
@@ -31,9 +38,9 @@
 ## A colorbar displays the current colormap along with numerical rulings
 ## so that the color scale can be interpreted.
 ##
-## The optional input @var{loc} determines the location of the colorbar.  If
-## present, it must be the last argument to @code{colorbar}.  Valid values for
-## @var{loc} are
+## The optional input @nospell{@var{loc}} determines the location of the
+## colorbar.  If present, it must be the last argument to @code{colorbar}.
+## Valid values for @nospell{@var{loc}} are
 ##
 ## @table @asis
 ## @item @qcode{"EastOutside"}
@@ -209,8 +216,8 @@ function h = colorbar (varargin)
     ## Restore original axes position before applying new colorbar settings
     orig_props = get (hcb, "deletefcn"){3};
     units = get (hax, "units");
-    set (hax, "units", orig_props.units);
-    set (hax, "position", orig_props.position,
+    set (hax, "units", orig_props.units,
+              "position", orig_props.position,
               "outerposition", orig_props.outerposition,
               "activepositionproperty", orig_props.activepositionproperty);
     set (hax, "units", units);
@@ -428,8 +435,8 @@ function cb_restore_axes (hcb, ~, hax, orig_props)
 
     ## Restore original axes position
     units = get (hax, "units");
-    set (hax, "units", orig_props.units);
-    set (hax, "position", orig_props.position,
+    set (hax, "units", orig_props.units,
+              "position", orig_props.position,
               "outerposition", orig_props.outerposition,
               "activepositionproperty", orig_props.activepositionproperty);
     set (hax, "units", units);

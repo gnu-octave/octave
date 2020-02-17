@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2011-2019 Jacob Dawid
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -28,19 +30,19 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include <QTreeWidget>
-#include <QSettings>
+
+#include "gui-preferences-ws.h"
+#include "gui-settings.h"
+#include "octave-qobject.h"
+#include "workspace-model.h"
 
 #include "syminfo.h"
 #include "utils.h"
 
-#include "resource-manager.h"
-#include "gui-preferences.h"
-#include "workspace-model.h"
-
 namespace octave
 {
-  workspace_model::workspace_model (QObject *p)
-    : QAbstractTableModel (p)
+  workspace_model::workspace_model (base_qobject& oct_qobj, QObject *p)
+    : QAbstractTableModel (p), m_octave_qobj (oct_qobj)
   {
     m_columnNames.append (tr ("Name"));
     m_columnNames.append (tr ("Class"));
@@ -48,45 +50,13 @@ namespace octave
     m_columnNames.append (tr ("Value"));
     m_columnNames.append (tr ("Attribute"));
 
-    for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+    // Initialize the background and foreground colors of special
+    // classes in the workspace view.  The structure is
+    // m_storage_class_colors(1,2,...,colors):        background colors
+    // m_storage_class_colors(colors+1,...,2*colors): foreground colors
+    for (unsigned int i = 0; i < 2*ws_colors_count; i++)
       m_storage_class_colors.append (QColor (Qt::white));
 
-  }
-
-  QList<QColor>
-  workspace_model::storage_class_default_colors (void)
-  {
-    QList<QColor> colors;
-
-    if (colors.isEmpty ())
-      {
-        colors << QColor (190, 255, 255)
-               << QColor (220, 255, 220)
-               << QColor (220, 220, 255)
-               << QColor (255, 255, 190)
-               << QColor (255, 220, 220)
-               << QColor (255, 190, 255);
-      }
-
-    return colors;
-  }
-
-  QStringList
-  workspace_model::storage_class_names (void)
-  {
-    QStringList names;
-
-    if (names.isEmpty ())
-      {
-        names << QObject::tr ("automatic")
-              << QObject::tr ("function")
-              << QObject::tr ("global")
-              << QObject::tr ("hidden")
-              << QObject::tr ("inherited")
-              << QObject::tr ("persistent");
-      }
-
-    return names;
   }
 
   int
@@ -134,13 +104,20 @@ namespace octave
 
     if (idx.isValid ())
       {
-        if (role == Qt::BackgroundColorRole && m_enable_colors)
+        if ((role == Qt::BackgroundColorRole || role == Qt::ForegroundRole)
+            && m_enable_colors)
           {
-            QString class_chars = resource_manager::storage_class_chars ();
             int actual_class
-              = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
+              = ws_class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
             if (actual_class >= 0)
-              return QVariant (m_storage_class_colors.at (actual_class));
+              {
+                // Valid class: Get background (normal indexes) or foreground
+                // color (indexes with offset)
+                if (role == Qt::ForegroundRole)
+                  actual_class += ws_colors_count;
+
+                return QVariant (m_storage_class_colors.at (actual_class));
+              }
             else
               return retval;
           }
@@ -175,18 +152,11 @@ namespace octave
                 {
                   QString sclass;
 
-                  QString class_chars = resource_manager::storage_class_chars ();
-
                   int actual_class
-                    = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
+                    = ws_class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
 
                   if (actual_class >= 0)
-                    {
-                      QStringList class_names
-                        = resource_manager::storage_class_names ();
-
-                      sclass = class_names.at (actual_class);
-                    }
+                    sclass = ws_color_names.at (actual_class);
 
                   if (m_complex_flags[idx.row ()])
                     {
@@ -200,31 +170,6 @@ namespace octave
                 }
                 break;
               }
-          }
-      }
-
-    return retval;
-  }
-
-  bool
-  workspace_model::setData (const QModelIndex& idx, const QVariant& value,
-                            int role)
-  {
-    bool retval = false;
-
-    if (idx.column () == 0 && role == Qt::EditRole)
-      {
-        QString qold_name = m_symbols[idx.row ()];
-
-        QString qnew_name = value.toString ();
-
-        std::string new_name = qnew_name.toStdString ();
-
-        if (valid_identifier (new_name))
-          {
-            emit rename_variable (qold_name, qnew_name);
-
-            retval = true;
           }
       }
 
@@ -251,22 +196,21 @@ namespace octave
   }
 
   void
-  workspace_model::notice_settings (const QSettings *settings)
+  workspace_model::notice_settings (const gui_settings *settings)
   {
-    QList<QColor> default_colors =
-      resource_manager::storage_class_default_colors ();
-    QString class_chars = resource_manager::storage_class_chars ();
+    m_enable_colors = settings->value (ws_enable_colors).toBool ();
 
-    m_enable_colors =
-        settings->value (ws_enable_colors.key, ws_enable_colors.key).toBool ();
-
-    for (int i = 0; i < class_chars.length (); i++)
+    for (int i = 0; i < ws_colors_count; i++)
       {
-        QVariant default_var = default_colors.at (i);
-        QColor setting_color = settings->value ("workspaceview/color_"
-                                                + class_chars.mid (i,1),
-                                                default_var).value<QColor> ();
+        QColor setting_color = settings->value (ws_colors[i].key,
+                                                ws_colors[i].def).value<QColor> ();
+
+        QPalette p (setting_color);
         m_storage_class_colors.replace (i,setting_color);
+
+        QColor fg_color = p.color (QPalette::WindowText);
+        m_storage_class_colors.replace (i + ws_colors_count, fg_color);
+
       }
   }
 
@@ -301,14 +245,12 @@ namespace octave
           dv(i) = sz(i);
 
         char storage = ' ';
-        if (syminfo.is_global ())
+        if (syminfo.is_formal ())
+          storage = 'a';
+        else if (syminfo.is_global ())
           storage = 'g';
         else if (syminfo.is_persistent ())
           storage = 'p';
-        else if (syminfo.is_automatic ())
-          storage = 'a';
-        else if (syminfo.is_formal ())
-          storage = 'f';
 
         std::ostringstream buf;
         val.short_disp (buf);

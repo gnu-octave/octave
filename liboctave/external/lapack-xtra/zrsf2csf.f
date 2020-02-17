@@ -1,6 +1,7 @@
-c Copyright (C) 2010-2019  VZLU Prague, a.s., Czech Republic
+c Copyright (C) 2010-2020 The Octave Project Developers
 c
-c Author: Jaroslav Hajek <highegg@gmail.com>
+c See the file COPYRIGHT.md in the top-level directory of this
+c distribution or <https://octave.org/copyright/>.
 c
 c This file is part of Octave.
 c

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1995-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1995-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -48,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "build-env.h"
 #include "liboctinterp-build-info.h"
-#include "call-stack.h"
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
@@ -285,6 +287,7 @@ systems.
   frame.add_fcn (restore_signal_mask, get_signal_mask ());
 
   octave_unblock_async_signals ();
+  octave_unblock_signal_by_name ("SIGTSTP");
 
   if (type == et_async)
     retval(0) = octave_async_system_wrapper (cmd_str.c_str ());
@@ -364,10 +367,10 @@ specified option.
            { "ENABLE_64", false },
 #endif
 
-#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT)
-           { "ENABLE_ATOMIC_REFCOUNT", true },
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+           { "ENABLE_COMMAND_LINE_PUSH_PARSER", true },
 #else
-           { "ENABLE_ATOMIC_REFCOUNT", false },
+           { "ENABLE_COMMAND_LINE_PUSH_PARSER", false },
 #endif
 
 #if defined (ENABLE_DOCS)
@@ -475,7 +478,6 @@ specified option.
            { "CXXFLAGS", octave::build_env::CXXFLAGS },
            { "CXXPICFLAG", octave::build_env::CXXPICFLAG },
            { "DEFS", octave::build_env::DEFS },
-           { "DL_LD", octave::build_env::DL_LD },
            { "DL_LDFLAGS", octave::build_env::DL_LDFLAGS },
            { "GCC_VERSION", octave::build_env::GCC_VERSION },
            { "GXX_VERSION", octave::build_env::GXX_VERSION },
@@ -508,7 +510,6 @@ specified option.
            { "HDF5_LIBS", octave::build_env::HDF5_LIBS },
            { "LAPACK_LIBS", octave::build_env::LAPACK_LIBS },
            { "LDFLAGS", octave::build_env::LDFLAGS },
-           { "LD_CXX", octave::build_env::LD_CXX },
            { "LD_STATIC_FLAG", octave::build_env::LD_STATIC_FLAG },
            { "LEX", octave::build_env::LEX },
            { "LEXLIB", octave::build_env::LEXLIB },
@@ -548,7 +549,6 @@ specified option.
            { "RDYNAMIC_FLAG", octave::build_env::RDYNAMIC_FLAG },
            { "READLINE_LIBS", octave::build_env::READLINE_LIBS },
            { "SHARED_LIBS", octave::build_env::SHARED_LIBS },
-           { "SH_LD", octave::build_env::SH_LD },
            { "SH_LDFLAGS", octave::build_env::SH_LDFLAGS },
            { "STATIC_LIBS", octave::build_env::STATIC_LIBS },
            { "SUITESPARSECONFIG_LIBS", octave::build_env::SUITESPARSECONFIG_LIBS },

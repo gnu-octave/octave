@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2007-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2007-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 
 //! @file ov-java.cc
@@ -56,6 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "lo-sysdep.h"
 #include "oct-env.h"
+#include "oct-process.h"
 #include "oct-shlib.h"
 #include "ov-java.h"
 #include "parse.h"
@@ -67,10 +71,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_JAVA)
 
+// FIXME: Should these values be configurable at run time?
+
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  define LIBJVM_FILE_NAME "jvm.dll"
 #elif defined (__APPLE__)
 #  define LIBJVM_FILE_NAME "libjvm.dylib"
+#  define JAVA_HOME_CMD "/usr/libexec/java_home"
 #else
 #  define LIBJVM_FILE_NAME "libjvm.so"
 #endif
@@ -247,7 +254,7 @@ namespace octave
 
     void read_java_opts (const std::string& filename)
     {
-      std::string ascii_fname = octave::sys::get_ASCII_filename (filename);
+      std::string ascii_fname = sys::get_ASCII_filename (filename);
 
       std::ifstream js (ascii_fname.c_str ());
 
@@ -361,7 +368,7 @@ initial_java_dir (void)
 //!
 //! @returns A string consisting of the lines of @c filepath which are neither
 //!   comments nor empty without trailing whitespace separated by
-//!   `octave::directory_path::path_sep_str()`.  The returned string also
+//!   'octave::directory_path::path_sep_str()'.  The returned string also
 //!   starts with that path separator.
 
 static std::string
@@ -512,15 +519,17 @@ get_jvm_lib_path_in_subdir (std::string java_home_path)
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::string subdirs[] = {"bin/client", "bin/server"};
 #else
-  std::string subdirs[] = {"jre/lib/server", "jre/lib", "lib/client",
-    "lib/server", "jre/lib/amd64/client", "jre/lib/amd64/server",
-    "jre/lib/i386/client", "jre/lib/i386/server"};
+  std::string subdirs[] = {"jre/lib/server", "jre/lib",
+                           "lib/client", "lib/server",
+                           "jre/lib/amd64/client", "jre/lib/amd64/server",
+                           "jre/lib/i386/client", "jre/lib/i386/server"
+                          };
 #endif
 
   for (size_t i = 0; i < sizeof (subdirs) / sizeof (subdirs[0]); i++)
     {
       std::string candidate = java_home_path + "/" + subdirs[i]
-                            + "/" LIBJVM_FILE_NAME;
+                              + "/" LIBJVM_FILE_NAME;
       if (octave::sys::file_stat (candidate))
         return candidate;
     }
@@ -528,10 +537,14 @@ get_jvm_lib_path_in_subdir (std::string java_home_path)
 }
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-// Declare function defined in sysdep.cc
-extern LONG
-get_regkey_value (HKEY h_rootkey, const std::string subkey,
-                  const std::string name, octave_value& value);
+
+namespace octave
+{
+  // Declare function defined in sysdep.cc
+  extern LONG
+  get_regkey_value (HKEY h_rootkey, const std::string subkey,
+                    const std::string name, octave_value& value);
+}
 
 static std::string
 get_jvm_lib_path_from_registry ()
@@ -549,42 +562,40 @@ get_jvm_lib_path_from_registry ()
   if (jversion.empty ())
     {
       value = "CurrentVersion";
-      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+      retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
 
       if (retval != ERROR_SUCCESS)
         {
           // Search for JRE < 9
           key = R"(software\javasoft\java runtime environment)";
-          retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
-                                     regval);
+          retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
         }
 
       if (retval != ERROR_SUCCESS)
         error ("unable to find Java Runtime Environment: %s::%s",
                key.c_str (), value.c_str ());
 
-      jversion = regval.xstring_value (
-        "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
-        value.c_str (), key.c_str ());
+      jversion = regval.xstring_value ("initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+                                       value.c_str (), key.c_str ());
     }
 
   key = key + '\\' + jversion;
   value = "RuntimeLib";
-  retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+  retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
   if (retval != ERROR_SUCCESS)
     {
       // Search for JRE < 9
       key = R"(software\javasoft\java runtime environment\)" + jversion;
-      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+      retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
     }
 
   if (retval != ERROR_SUCCESS)
     error ("unable to find Java Runtime Environment: %s::%s",
            key.c_str (), value.c_str ());
 
-  std::string jvm_lib_path = regval.xstring_value (
-        "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
-        value.c_str (), key.c_str ());
+  std::string jvm_lib_path
+    = regval.xstring_value ("initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+                            value.c_str (), key.c_str ());
 
   if (jvm_lib_path.empty ())
     error ("unable to find Java Runtime Environment: %s::%s",
@@ -593,6 +604,7 @@ get_jvm_lib_path_from_registry ()
   return jvm_lib_path;
 }
 #endif
+
 
 //! Initialize the java virtual machine (jvm) and field #jvm if necessary.
 //!
@@ -603,10 +615,10 @@ get_jvm_lib_path_from_registry ()
 //! it by setting #jvm_attached.  Otherwise, create a #jvm with some hard-
 //! coded options:
 //!
-//! - `-Djava.class.path=classpath`, where @c classpath is given by
+//! - '-Djava.class.path=classpath', where @c classpath is given by
 //!   #initial_class_path().
-//! - `-Djava.system.class.loader=org.octave.OctClassLoader`.
-//! - `-Xrs`
+//! - '-Djava.system.class.loader=org.octave.OctClassLoader'.
+//! - '-Xrs'
 //!
 //! Further options are read from the file @c java.opts in the directory given
 //! by #java_init_dir().
@@ -634,7 +646,7 @@ initialize_jvm (void)
     locale = std::string (static_locale);
 
   octave::dynamic_library lib ("");
-  std::string jvm_lib_path = "linked in or loaded libraries";
+  std::string jvm_lib_path;
 
   // Check whether the Java VM library is already loaded or linked in.
   JNI_CreateJavaVM_t create_vm = reinterpret_cast<JNI_CreateJavaVM_t>
@@ -642,7 +654,9 @@ initialize_jvm (void)
   JNI_GetCreatedJavaVMs_t get_vm = reinterpret_cast<JNI_GetCreatedJavaVMs_t>
                                    (lib.search ("JNI_GetCreatedJavaVMs"));
 
-  if (! create_vm || ! get_vm)
+  if (create_vm && get_vm)
+    jvm_lib_path = "linked in or loaded libraries";
+  else
     {
       // JAVA_HOME environment variable takes precedence
       std::string java_home_env = octave::sys::env::getenv ("JAVA_HOME");
@@ -655,7 +669,36 @@ initialize_jvm (void)
           if (jvm_lib_path.empty ())
             jvm_lib_path = java_home_env + "/" LIBJVM_FILE_NAME;
         }
-      else
+
+#  if defined (__APPLE__)
+      // Use standard /usr/libexec/java_home if available.
+      if (jvm_lib_path.empty ())
+        {
+          octave::sys::file_stat libexec_java_home_exists (JAVA_HOME_CMD);
+          if (libexec_java_home_exists)
+            {
+              // FIXME: Should this command be fully configurable at run
+              // time?  Or is it OK for the options to be fixed here?
+
+              std::string java_home_cmd = std::string (JAVA_HOME_CMD)
+                                          + " --failfast --version 1.6+ 2>/dev/null";
+
+              octave::process_execution_result rslt
+                = octave::run_command_and_return_output (java_home_cmd);
+
+              if (rslt.exit_status () == 0)
+                {
+                  std::string output = rslt.stdout_output ();
+                  std::string found_path = output.substr (0, output.length() - 1);
+                  std::string jvm_lib_found = get_jvm_lib_path_in_subdir (found_path);
+                  if (!jvm_lib_found.empty ())
+                    jvm_lib_path = jvm_lib_found;
+                }
+            }
+        }
+#  endif
+
+      if (jvm_lib_path.empty ())
         {
 #if defined (OCTAVE_USE_WINDOWS_API)
           jvm_lib_path = get_jvm_lib_path_from_registry ();
@@ -1034,7 +1077,7 @@ make_java_index (JNIEnv *jni_env, const octave_value_list& idx)
 {
   jclass_ref ocls (jni_env, jni_env->FindClass ("[I"));
   jobjectArray retval = jni_env->NewObjectArray (idx.length (), ocls, nullptr);
- // Here retval has the same length as idx
+  // Here retval has the same length as idx
 
   // Fill in entries of idx into retval
   for (int i = 0; i < idx.length (); i++)
@@ -1664,7 +1707,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
       // into a String[], not into a char array
 
       if (val.is_double_type ())
-        UNBOX_PRIMITIVE_ARRAY ( , , jdouble,  Double);
+        UNBOX_PRIMITIVE_ARRAY ( , , jdouble, Double);
       else if (val.islogical ())
         UNBOX_PRIMITIVE_ARRAY (bool_, bool, jboolean, Boolean);
       else if (val.isfloat ())
@@ -1991,8 +2034,6 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
           oct_args(i) = box (env, jobj, nullptr);
         }
 
-      BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
       if (val.is_function_handle ())
         {
           octave_function *fcn = val.function_value ();
@@ -2012,8 +2053,6 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
         }
       else
         error ("trying to invoke non-invocable object");
-
-      END_INTERRUPT_WITH_EXCEPTIONS;
     }
 }
 
@@ -2340,7 +2379,7 @@ octave_java::load_ascii (std::istream& /* is */)
 }
 
 bool
-octave_java::save_binary (std::ostream& /* os */, bool& /* save_as_floats */)
+octave_java::save_binary (std::ostream& /* os */, bool /* save_as_floats */)
 {
   warning ("save: unable to save java objects, skipping");
 

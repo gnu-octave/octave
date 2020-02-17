@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2018-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2018-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -30,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 
 #include "Cell.h"
+#include "error.h"
 #include "octave-preserve-stream-state.h"
 #include "ov.h"
 #include "oct-map.h"
@@ -46,7 +50,7 @@ namespace octave
 
     auto i = params.begin ();
 
-    octave::preserve_stream_state stream_state (os);
+    preserve_stream_state stream_state (os);
 
     while (i != params.end ())
       {
@@ -72,10 +76,10 @@ namespace octave
                 if (param.command == 's')
                   {
                     int front = param.first_parameter_length
-                      - dims_str.find ('x');
+                                - dims_str.find ('x');
                     int back = param.parameter_length
-                      - dims_str.length ()
-                      - front;
+                               - dims_str.length ()
+                               - front;
                     front = (front > 0) ? front : 0;
                     back = (back > 0) ? back : 0;
 
@@ -105,14 +109,13 @@ namespace octave
               {
               case 'a':
                 {
-                  char tmp[6];
+                  char tmp[5];
 
-                  tmp[0] = (m_is_automatic ? 'a' : ' ');
-                  tmp[1] = (m_is_complex ? 'c' : ' ');
-                  tmp[2] = (m_is_formal ? 'f' : ' ');
-                  tmp[3] = (m_is_global ? 'g' : ' ');
-                  tmp[4] = (m_is_persistent ? 'p' : ' ');
-                  tmp[5] = 0;
+                  tmp[0] = (m_is_complex ? 'c' : ' ');
+                  tmp[1] = (m_is_formal ? 'f' : ' ');
+                  tmp[2] = (m_is_global ? 'g' : ' ');
+                  tmp[3] = (m_is_persistent ? 'p' : ' ');
+                  tmp[4] = 0;
 
                   os << tmp;
                 }
@@ -171,6 +174,16 @@ namespace octave
       }
 
     return octave_value ();
+  }
+
+  std::list<std::string> symbol_info_list::names (void) const
+  {
+    std::list<std::string> retval;
+
+    for (const auto& syminfo : m_lst)
+      retval.push_back (syminfo.name ());
+
+    return retval;
   }
 
   octave_map
@@ -235,7 +248,7 @@ namespace octave
   {
     std::ostringstream param_buf;
 
-    octave::preserve_stream_state stream_state (os);
+    preserve_stream_state stream_state (os);
 
     for (const auto& param : params)
       {
@@ -314,7 +327,8 @@ namespace octave
     os << param_buf.str ();
   }
 
-  void symbol_info_list::display (std::ostream& os, const std::string& format)
+  void symbol_info_list::display (std::ostream& os,
+                                  const std::string& format) const
   {
     if (! m_lst.empty ())
       {
@@ -345,7 +359,7 @@ namespace octave
   }
 
   std::list<whos_parameter>
-  symbol_info_list::parse_whos_line_format (const std::string& format)
+  symbol_info_list::parse_whos_line_format (const std::string& format) const
   {
     int idx;
     size_t format_len = format.length ();

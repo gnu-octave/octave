@@ -1,11 +1,6 @@
 ((nil .
       ((c-file-style . "gnu")
        (indent-tabs-mode . nil)
-       (fill-column . 72)
-       (eval . (when (and (buffer-file-name)
-                          (string-match-p "\\.h\\'" (buffer-file-name))
-                          (not (string-match-p "/gnulib/" (buffer-file-name))))
-                 (c++-mode)
-                 (c-set-style "gnu")))))
+       (fill-column . 72)))
  (change-log-mode . ((indent-tabs-mode . t)))
  (makefile-mode . ((indent-tabs-mode . t))))

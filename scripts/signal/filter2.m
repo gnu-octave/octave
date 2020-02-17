@@ -1,4 +1,9 @@
-## Copyright (C) 2001-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 2001-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} filter2 (@var{b}, @var{x})
@@ -39,10 +46,6 @@
 ## and @var{b} rotated 180 degrees.
 ## @seealso{conv2}
 ## @end deftypefn
-
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-## 2001-02-08
-##    * initial release
 
 function y = filter2 (b, x, shape)
 

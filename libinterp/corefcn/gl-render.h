@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2008-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_gl_render_h)
 #define octave_gl_render_h 1
@@ -52,18 +55,10 @@ namespace octave
 
     virtual void draw (const graphics_object& go, bool toplevel = true);
 
-    virtual void draw (const Matrix& hlist, bool toplevel = false)
-    {
-      int len = hlist.numel ();
+    // The following version of the draw method is not declared virtual
+    // because no derived class overrides it.
 
-      for (int i = len-1; i >= 0; i--)
-        {
-          graphics_object obj = gh_manager::get_object (hlist(i));
-
-          if (obj)
-            draw (obj, toplevel);
-        }
-    }
+    void draw (const Matrix& hlist, bool toplevel = false);
 
     virtual void set_viewport (int w, int h);
     virtual void set_device_pixel_ratio (double dpr) { m_devpixratio = dpr; }
@@ -140,10 +135,6 @@ namespace octave
                                 double x, double y, double z,
                                 int halign, int valign, double rotation = 0.0);
 
-    virtual void draw_pixels (int w, int h, const float *data);
-    virtual void draw_pixels (int w, int h, const uint8_t *data);
-    virtual void draw_pixels (int w, int h, const uint16_t *data);
-
     virtual void render_grid (const double linewidth,
                               const std::string& gridstyle,
                               const Matrix& gridcolor, const double gridalpha,
@@ -212,18 +203,21 @@ namespace octave
 
     opengl_functions& m_glfcns;
 
-  private:
-
-    // The graphics toolkit associated with the figure being rendered.
-    graphics_toolkit toolkit;
-
-    // axes transformation data
-    graphics_xform xform;
-
     // axis limits in model scaled coordinate
     double xmin, xmax;
     double ymin, ymax;
     double zmin, zmax;
+
+    // Factor used for translating Octave pixels to actual device pixels
+    double m_devpixratio;
+
+    // axes transformation data
+    graphics_xform xform;
+
+  private:
+
+    // The graphics toolkit associated with the figure being rendered.
+    graphics_toolkit toolkit;
 
     // Z projection limits in windows coordinate
     double xZ1, xZ2;
@@ -246,11 +240,8 @@ namespace octave
     // Indicate we are drawing for selection purpose
     bool selecting;
 
-    // Factor used for translating Octave pixels to actual device pixels
-    double m_devpixratio;
-
   private:
-    class patch_tesselator;
+    class patch_tessellator;
   };
 }
 

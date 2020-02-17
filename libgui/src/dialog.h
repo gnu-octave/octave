@@ -1,38 +1,40 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2013-2019 Daniel J. Sebald
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_dialog_h)
 #define octave_dialog_h 1
 
+#include <QAbstractButton>
+#include <QDialog>
+#include <QFileDialog>
+#include <QItemSelectionModel>
+#include <QLineEdit>
+#include <QList>
+#include <QMessageBox>
 #include <QMutex>
 #include <QWaitCondition>
-#include <QAbstractButton>
-#include <QList>
-#include <QItemSelectionModel>
-#include <QDialog>
-#include <QMessageBox>
-#include <QLineEdit>
-#include <QFileDialog>
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
@@ -42,83 +44,52 @@ typedef QList<float> QFloatList;
 
 namespace octave
 {
+  class base_qobject;
+
   class QUIWidgetCreator : public QObject
   {
     Q_OBJECT
 
   public:
 
-    QUIWidgetCreator (void);
+    QUIWidgetCreator (base_qobject& oct_qobj);
 
-    ~QUIWidgetCreator (void);
+    ~QUIWidgetCreator (void) = default;
 
   public:
 
     QString rm_amp (const QString& text);
 
-    void signal_dialog (const QString& message, const QString& title,
-                        const QString& icon, const QStringList& button,
-                        const QString& defbutton, const QStringList& role)
-    {
-      // Store button text before a window-manager adds accelerators
-      m_button_list = button;
-
-      // Use the last button in the list as the reject result, i.e., when no
-      // button is pressed such as in the case of the upper right close tab.
-      if (! button.isEmpty ())
-        m_dialog_button = button.last ();
-
-      QString xicon = icon;
-      if (xicon.isEmpty ())
-        xicon = "none";
-
-      emit create_dialog (message, title, xicon, button, defbutton, role);
-    };
+    QString message_dialog (const QString& message, const QString& title,
+                            const QString& icon, const QStringList& button,
+                            const QString& defbutton, const QStringList& role);
 
     int get_dialog_result (void) { return m_dialog_result; }
 
     QString get_dialog_button (void) { return m_dialog_button; }
 
-    bool signal_listview (const QStringList& list, const QString& mode,
-                          int wd, int ht, const QList<int>& initial,
-                          const QString& name, const QStringList& prompt,
-                          const QString& ok_string,
-                          const QString& cancel_string)
-    {
-      if (list.isEmpty ())
-        return false;
+    QPair<QIntList, int> list_dialog (const QStringList& list,
+                                      const QString& mode,
+                                      int wd, int ht,
+                                      const QList<int>& initial,
+                                      const QString& name,
+                                      const QStringList& prompt,
+                                      const QString& ok_string,
+                                      const QString& cancel_string);
 
-      emit create_listview (list, mode, wd, ht, initial, name,
-                            prompt, ok_string, cancel_string);
+    QIntList get_list_index (void) const { return m_list_index; }
 
-      return true;
-    };
+    QStringList input_dialog (const QStringList& prompt, const QString& title,
+                              const QFloatList& nr, const QFloatList& nc,
+                              const QStringList& defaults);
 
-    const QIntList * get_list_index (void) { return m_list_index; }
+    QStringList get_string_list (void) const { return m_string_list; }
 
-    bool signal_inputlayout (const QStringList& prompt, const QString& title,
-                             const QFloatList& nr, const QFloatList& nc,
-                             const QStringList& defaults)
-    {
-      if (prompt.isEmpty ())
-        return false;
+    QStringList file_dialog (const QStringList& filters, const QString& title,
+                             const QString& filename, const QString& dirname,
+                             const QString& multimode);
 
-      emit create_inputlayout (prompt, title, nr, nc, defaults);
-
-      return true;
-    };
-
-    const QStringList * get_string_list (void) { return m_string_list; }
-
-    bool signal_filedialog (const QStringList& filters, const QString& title,
-                            const QString& filename, const QString& dirname,
-                            const QString& multimode)
-    {
-      emit create_filedialog (filters, title, filename, dirname, multimode);
-      return true;
-    }
-
-    const QString * get_dialog_path (void) { return m_path_name; }
+    QString get_dialog_path (void) const { return m_path_name; }
 
     void lock (void) { m_mutex.lock (); }
     void wait (void) { m_waitcondition.wait (&m_mutex); }
@@ -143,16 +114,41 @@ namespace octave
                             const QString& multimode);
   public slots:
 
+    void handle_create_dialog (const QString& message, const QString& title,
+                               const QString& icon, const QStringList& button,
+                               const QString& defbutton,
+                               const QStringList& role);
+
     void dialog_button_clicked (QAbstractButton *button);
+
+    void handle_create_listview (const QStringList& list, const QString& mode,
+                                 int width, int height,
+                                 const QIntList& initial,
+                                 const QString& name,
+                                 const QStringList& prompt,
+                                 const QString& ok_string,
+                                 const QString& cancel_string);
 
     void list_select_finished (const QIntList& selected, int button_pressed);
 
+    void handle_create_inputlayout (const QStringList&, const QString&,
+                                    const QFloatList&, const QFloatList&,
+                                    const QStringList&);
+
     void input_finished (const QStringList& input, int button_pressed);
+
+    void handle_create_filedialog (const QStringList& filters,
+                                   const QString& title,
+                                   const QString& filename,
+                                   const QString& dirname,
+                                   const QString& multimode);
 
     void filedialog_finished (const QStringList& files, const QString& path,
                               int filterindex);
 
   private:
+
+    base_qobject& m_octave_qobj;
 
     int m_dialog_result;
     QString m_dialog_button;
@@ -162,10 +158,10 @@ namespace octave
 
     // The list could conceivably be big.  Not sure how things are
     // stored internally, so keep off of the stack.
-    QStringList *m_string_list;
-    QIntList *m_list_index;
+    QStringList m_string_list;
+    QIntList m_list_index;
 
-    QString *m_path_name;
+    QString m_path_name;
 
     // GUI objects cannot be accessed in the non-GUI thread.  However,
     // signals can be sent to slots across threads with proper
@@ -174,18 +170,16 @@ namespace octave
     QWaitCondition m_waitcondition;
   };
 
-  extern QUIWidgetCreator uiwidget_creator;
-
   class MessageDialog : public QMessageBox
   {
     Q_OBJECT
 
   public:
 
-    explicit MessageDialog (const QString& message, const QString& title,
-                            const QString& icon, const QStringList& button,
-                            const QString& defbutton,
-                            const QStringList& role);
+    MessageDialog (base_qobject& oct_qobj, const QString& message,
+                   const QString& title, const QString& icon,
+                   const QStringList& button, const QString& defbutton,
+                   const QStringList& role);
 
   private:
 
@@ -205,11 +199,11 @@ namespace octave
 
   public:
 
-    explicit ListDialog (const QStringList& list, const QString& mode,
-                         int width, int height, const QList<int>& initial,
-                         const QString& name, const QStringList& prompt,
-                         const QString& ok_string,
-                         const QString& cancel_string);
+    ListDialog (base_qobject& oct_qobj, const QStringList& list,
+                const QString& mode, int width, int height,
+                const QList<int>& initial, const QString& name,
+                const QStringList& prompt, const QString& ok_string,
+                const QString& cancel_string);
 
     ~ListDialog (void);
 
@@ -240,9 +234,9 @@ namespace octave
 
   public:
 
-    explicit InputDialog (const QStringList& prompt, const QString& title,
-                          const QFloatList& nr, const QFloatList& nc,
-                          const QStringList& defaults);
+    InputDialog (base_qobject& oct_qobj, const QStringList& prompt,
+                 const QString& title, const QFloatList& nr,
+                 const QFloatList& nc, const QStringList& defaults);
 
   signals:
 
@@ -263,9 +257,9 @@ namespace octave
 
   public:
 
-    explicit FileDialog (const QStringList& filters,
-                         const QString& title, const QString& filename,
-                         const QString& dirname, const QString& multimode);
+    FileDialog (base_qobject& oct_qobj, const QStringList& filters,
+                const QString& title, const QString& filename,
+                const QString& dirname, const QString& multimode);
 
   signals:
 

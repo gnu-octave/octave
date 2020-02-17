@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2008-2019 Jaroslav Hajek
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_ov_perm_h)
 #define octave_ov_perm_h 1
@@ -56,6 +59,11 @@ public:
 
   octave_value full_value (void) const { return to_dense (); }
 
+  // We don't need to override all three forms of subsref.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_value::subsref;
+
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx);
 
@@ -85,6 +93,11 @@ public:
   MatrixType matrix_type (void) const { return MatrixType::Permuted_Diagonal; }
   MatrixType matrix_type (const MatrixType&) const
   { return matrix_type (); }
+
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_value::diag;
 
   octave_value diag (octave_idx_type k = 0) const
   { return to_dense () .diag (k); }
@@ -218,7 +231,7 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& save_as_floats);
+  bool save_binary (std::ostream& os, bool save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format fmt);

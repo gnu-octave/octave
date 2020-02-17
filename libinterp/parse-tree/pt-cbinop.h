@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2008-2019 Jaroslav Hajek
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pt_cbinop_h)
 #define octave_pt_cbinop_h 1
@@ -58,6 +61,13 @@ namespace octave
     tree_expression * clhs (void) { return m_lhs; }
     tree_expression * crhs (void) { return m_rhs; }
 
+    octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
+
     void accept (tree_walker& tw)
     {
       tw.visit_compound_binary_expression (*this);
@@ -74,8 +84,8 @@ namespace octave
 
     tree_compound_binary_expression (const tree_compound_binary_expression&) = delete;
 
-    tree_compound_binary_expression& operator =
-    (const tree_compound_binary_expression&) = delete;
+    tree_compound_binary_expression&
+    operator = (const tree_compound_binary_expression&) = delete;
   };
 
   // a "virtual constructor"
@@ -86,12 +96,5 @@ namespace octave
                                     octave_value::binary_op t
                                     = octave_value::unknown_binary_op);
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_compound_binary_expression' instead")
-typedef octave::tree_compound_binary_expression tree_compound_binary_expression;
-
-#endif
 
 #endif

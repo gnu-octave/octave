@@ -1,4 +1,9 @@
-## Copyright (C) 2014-2019 Nathan Podlich
+########################################################################
+##
+## Copyright (C) 2014-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} qmr (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
@@ -73,7 +80,7 @@
 ## @item
 ## @nospell{R. Freund and N. Nachtigal}, @cite{QMR: a quasi-minimal residual
 ## method for non-Hermitian linear systems}, @nospell{Numerische Mathematik},
-## 1991, 60, pp. 315--339.
+## 1991, 60, pp.@: 315--339.
 ##
 ## @item
 ## @nospell{ R. Barrett, M. Berry, T. Chan, J. Demmel, J. Donato, J. Dongarra},
@@ -84,8 +91,6 @@
 ##
 ## @seealso{bicg, bicgstab, cgs, gmres, pcg}
 ## @end deftypefn
-
-## Author: Nathan Podlich <nathan.podlich@gmail.com>
 
 function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
 

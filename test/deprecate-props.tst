@@ -1,4 +1,9 @@
-## Copyright (C) 2017-2019 Pantxo Diribarne
+########################################################################
+##
+## Copyright (C) 2017-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## Put graphics properties here that should be removed, or for which some
 ## values (radio strings only) should not be accepted, in a given future
@@ -31,62 +38,24 @@
 %!  endif
 %!endfunction
 
-## annotation rectangle "edgecolor" deprecated in 4.4, remove from version 6.
-%!test
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   ha = annotation ("rectangle");
-%!   testprop (ha, "edgecolor", "6.0");
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect
-
-## figure "doublebuffer, mincolormap, wvisual, wvisualmode, xdisplay,
-## xvisual, xvisualmode" deprecated in 4.4, remove from version 6.
-%!test
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   testprop (hf, "doublebuffer", "6.0");
-%!   testprop (hf, "mincolormap", "6.0");
-%!   testprop (hf, "wvisual", "6.0");
-%!   testprop (hf, "wvisualmode", "6.0");
-%!   testprop (hf, "xdisplay", "6.0");
-%!   testprop (hf, "xvisual", "6.0");
-%!   testprop (hf, "xvisualmode", "6.0");
-%! unwind_protect_cleanup
-%!   close (hf)
-%! end_unwind_protect
-
-## axes "drawmode" deprecated in 4.4, remove from version 6.
-%!test
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   hax = axes ();
-%!   testprop (hax, "drawmode", "6.0");
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect
-
-## text/uicontrol/uipanel/uibuttongroup  "demi" and "light" values for
-## "fontweight" property are deprecated in 4.4, remove from version 6:
-##   * remove "demi" and "light" options in graphics.in.h,
-##   QtHandlesUtils.cc and ft-text-renderer.cc
-##   * remove warnings from update_fontweight in graphics.in.h
+## text/uicontrol/uipanel/uibuttongroup/uitable  "oblique" value for
+## "fontangle" property was deprecated in 5.0, remove from version 7:
+##   * remove "oblique" options in graphics.in.h, QtHandlesUtils.cc,
+##     and ft-text-renderer.cc
+##   * remove warnings from update_fontangle in graphics.in.h
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ht = text ();
-%!   testprop (ht, "fontweight", "6.0", "demi");
-%!   testprop (ht, "fontweight", "6.0", "light");
+%!   testprop (ht, "fontangle", "7.0", "oblique");
 %!   hui = uicontrol ();
-%!   testprop (hui, "fontweight", "6.0", "demi");
-%!   testprop (hui, "fontweight", "6.0", "light");
+%!   testprop (hui, "fontangle", "7.0", "oblique");
 %!   hui = uipanel ();
-%!   testprop (hui, "fontweight", "6.0", "demi");
-%!   testprop (hui, "fontweight", "6.0", "light");
+%!   testprop (hui, "fontangle", "7.0", "oblique");
 %!   hui = uibuttongroup ();
-%!   testprop (hui, "fontweight", "6.0", "demi");
-%!   testprop (hui, "fontweight", "6.0", "light");
+%!   testprop (hui, "fontangle", "7.0", "oblique");
+%!   hui = uitable ();
+%!   testprop (hui, "fontangle", "7.0", "oblique");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

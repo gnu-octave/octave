@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 2013-2019 Torsten
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-// Author: Torsten <ttl@justmail.de>
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -30,6 +31,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <Qsci/qscilexer.h>
 
+#include <QDir>
+#include <QKeySequence>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QShortcut>
+#include <QToolTip>
+#include <QVBoxLayout>
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
 #  define HAVE_LEXER_OCTAVE 1
 #  include <Qsci/qscilexeroctave.h>
@@ -37,76 +45,73 @@ along with Octave; see the file COPYING.  If not, see
 #  define HAVE_LEXER_MATLAB 1
 #  include <Qsci/qscilexermatlab.h>
 #endif
-#include <Qsci/qscilexercpp.h>
-#include <Qsci/qscilexerbash.h>
-#include <Qsci/qscilexerperl.h>
-#include <Qsci/qscilexerbatch.h>
-#include <Qsci/qscilexerdiff.h>
-
 #include <Qsci/qscicommandset.h>
+#include <Qsci/qscilexerbash.h>
+#include <Qsci/qscilexerbatch.h>
+#include <Qsci/qscilexercpp.h>
+#include <Qsci/qscilexerdiff.h>
+#include <Qsci/qscilexerperl.h>
 
-#include <QKeySequence>
-#include <QMimeData>
-#include <QShortcut>
-#include <QToolTip>
-#include <QVBoxLayout>
-
-#include "gui-preferences.h"
-#include "resource-manager.h"
-#include "shortcut-manager.h"
-
-#include "octave-qscintilla.h"
 #include "file-editor-tab.h"
+#include "gui-preferences-ed.h"
 // FIXME: hardwired marker numbers?
 #include "marker.h"
+#include "octave-qobject.h"
+#include "octave-qscintilla.h"
+#include "shortcut-manager.h"
+
+#include "builtin-defun-decls.h"
+#include "cmd-edit.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 
 // Return true if CANDIDATE is a "closing" that matches OPENING,
 // such as "end" or "endif" for "if", or "catch" for "try".
 // Used for testing the last word of an "if" etc. line,
 // or the first word of the following line.
 
-static bool
-is_end (const QString& candidate, const QString& opening)
-{
-  bool retval = false;
-
-  if (opening == "do")          // The only one that can't be ended by "end"
-    {
-      if (candidate == "until")
-        retval = true;
-    }
-  else
-    {
-      if (candidate == "end")
-        retval =  true;
-      else
-        {
-          if (opening == "try")
-            {
-              if (candidate == "catch" || candidate == "end_try_catch")
-                retval = true;
-            }
-          else if (opening == "unwind_protect")
-            {
-              if (candidate == "unwind_protect_cleanup"
-                  || candidate == "end_unwind_protect")
-                retval = true;
-            }
-          else if (candidate == "end" + opening)
-            retval = true;
-          else if (opening == "if" && candidate == "else")
-            retval = true;
-        }
-    }
-
-  return retval;
-}
-
 namespace octave
 {
-  octave_qscintilla::octave_qscintilla (QWidget *p)
-    : QsciScintilla (p), m_word_at_cursor (), m_selection (),
-      m_selection_replacement (), m_selection_line (-1),
+  static bool
+  is_end (const QString& candidate, const QString& opening)
+  {
+    bool retval = false;
+
+    if (opening == "do")          // The only one that can't be ended by "end"
+      {
+        if (candidate == "until")
+          retval = true;
+      }
+    else
+      {
+        if (candidate == "end")
+          retval =  true;
+        else
+          {
+            if (opening == "try")
+              {
+                if (candidate == "catch" || candidate == "end_try_catch")
+                  retval = true;
+              }
+            else if (opening == "unwind_protect")
+              {
+                if (candidate == "unwind_protect_cleanup"
+                    || candidate == "end_unwind_protect")
+                  retval = true;
+              }
+            else if (candidate == "end" + opening)
+              retval = true;
+            else if (opening == "if" && candidate == "else")
+              retval = true;
+          }
+      }
+
+    return retval;
+  }
+
+  octave_qscintilla::octave_qscintilla (QWidget *p, base_qobject& oct_qobj)
+    : QsciScintilla (p), m_octave_qobj (oct_qobj), m_word_at_cursor (),
+      m_selection (), m_selection_replacement (), m_selection_line (-1),
       m_selection_col (-1), m_indicator_id (1)
   {
     connect (this, SIGNAL (textChanged (void)),
@@ -114,6 +119,12 @@ namespace octave
 
     connect (this, SIGNAL (cursorPositionChanged (int, int)),
              this, SLOT (cursor_position_changed (int, int)));
+
+    connect (this, SIGNAL (ctx_menu_run_finished_signal (bool, QTemporaryFile*,
+                                                         QTemporaryFile*, QTemporaryFile*)),
+             this, SLOT (ctx_menu_run_finished (bool, QTemporaryFile*,
+                                                QTemporaryFile*, QTemporaryFile*)),
+             Qt::QueuedConnection);
 
     // clear scintilla edit shortcuts that are handled by the editor
     QsciCommandSet *cmd_set = standardCommands ();
@@ -178,7 +189,7 @@ namespace octave
 
 #if defined (Q_OS_MAC)
     // Octave interprets Cmd key as Meta whereas Qscintilla interprets it
-    // as Ctrl. We thus invert Meta/Ctrl in Qscintilla's shortcuts list.
+    // as Ctrl.  We thus invert Meta/Ctrl in Qscintilla's shortcuts list.
     QList< QsciCommand * > cmd_list_mac = cmd_set->commands ();
     for (int i = 0; i < cmd_list_mac.length (); i++)
       {
@@ -293,14 +304,14 @@ namespace octave
       {
         // remove all standard actions from scintilla
         QList<QAction *> all_actions = context_menu->actions ();
-        QAction *a;
 
-        foreach (a, all_actions)
+        for (auto *a : all_actions)
           context_menu->removeAction (a);
 
-        a = context_menu->addAction (tr ("dbstop if ..."), this,
+        QAction *act
+          = context_menu->addAction (tr ("dbstop if ..."), this,
                                      SLOT (contextmenu_break_condition (bool)));
-        a->setData (local_pos);
+        act->setData (local_pos);
       }
 #endif
 
@@ -329,7 +340,13 @@ namespace octave
   void octave_qscintilla::context_run (void)
   {
     if (hasSelectedText ())
-      contextmenu_run (true);
+      {
+        contextmenu_run (true);
+
+        emit interpreter_event
+          ([] (interpreter&)
+            { command_editor::erase_empty_line (false); });
+      }
   }
 
   void octave_qscintilla::get_global_textcursor_pos (QPoint *global_pos,
@@ -387,7 +404,8 @@ namespace octave
       case SCLEX_MATLAB:
 #endif
         {
-          QSettings *settings = resource_manager::get_settings ();
+          resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+          gui_settings *settings = rmgr.get_settings ();
           int comment_string;
 
           if (comment)
@@ -395,8 +413,7 @@ namespace octave
               // The commenting string is requested
               if (settings->contains (ed_comment_str.key))
                 // new version (radio buttons)
-                comment_string = settings->value (ed_comment_str.key,
-                                                  ed_comment_str.def).toInt ();
+                comment_string = settings->value (ed_comment_str).toInt ();
               else
                 // old version (combo box)
                 comment_string = settings->value (ed_comment_str_old.key,
@@ -409,8 +426,7 @@ namespace octave
               QStringList c_str;
 
               // The possible uncommenting string(s) are requested
-              comment_string = settings->value (ed_uncomment_str.key,
-                                                ed_uncomment_str.def).toInt ();
+              comment_string = settings->value (ed_uncomment_str).toInt ();
 
               for (int i = 0; i < ed_comment_strings_count; i++)
                 {
@@ -462,15 +478,12 @@ namespace octave
     switch (lexer)
       {
       case SCLEX_CPP:
-        return (ST_LINE_COMMENT * (
-                                   style == QsciLexerCPP::CommentLine
+        return (ST_LINE_COMMENT * (style == QsciLexerCPP::CommentLine
                                    || style == QsciLexerCPP::CommentLineDoc)
-                + ST_BLOCK_COMMENT * (
-                                      style == QsciLexerCPP::Comment
+                + ST_BLOCK_COMMENT * (style == QsciLexerCPP::Comment
                                       || style == QsciLexerCPP::CommentDoc
                                       || style == QsciLexerCPP::CommentDocKeyword
-                                      || style == QsciLexerCPP::CommentDocKeywordError)
-                );
+                                      || style == QsciLexerCPP::CommentDocKeywordError));
 
 #if defined (HAVE_LEXER_MATLAB)
       case SCLEX_MATLAB:
@@ -499,8 +512,8 @@ namespace octave
   }
 
   // Do smart indentation after if, for, ...
-  void octave_qscintilla::smart_indent (bool do_smart_indent,
-                                        int do_auto_close, int line)
+  void octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
+                                        int line, int ind_char_width)
   {
     QString prevline = text (line);
 
@@ -514,9 +527,9 @@ namespace octave
 
     // last word except for comments,
     // allowing % and # in single or double quoted strings
-    // FIXME This will get confused by transpose.
+    // FIXME: This will get confused by transpose.
     QRegExp ekey = QRegExp ("(?:(?:['\"][^'\"]*['\"])?[^%#]*)*"
-                            "(\\w+)[ \t;\r\n]*([%#].*)?$");
+                            "(\\w+)[ \t;\r\n]*(?:[%#].*)?$");
 
     int bpos = bkey.indexIn (prevline, 0);
     int epos;
@@ -534,13 +547,12 @@ namespace octave
           {
             // Do smart indent in the current line (line+1)
             indent (line+1);
-            setCursorPosition (line+1, indentation (line) + indentationWidth ());
+            setCursorPosition (line+1, indentation (line+1) / ind_char_width);
           }
 
         if (do_auto_close
             && ! inline_end
-            && ! first_word.contains (
-                                      QRegExp ("(case|otherwise|unwind_protect_cleanup)")))
+            && ! first_word.contains (QRegExp ("(?:case|otherwise|unwind_protect_cleanup)")))
           {
             // Do auto close
             auto_close (do_auto_close, line, prevline, first_word);
@@ -549,7 +561,7 @@ namespace octave
         return;
       }
 
-    QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch|unwind_protect_cleanup)"
+    QRegExp mkey = QRegExp ("^[\t ]*(?:else|elseif|catch|unwind_protect_cleanup)"
                             "[\r]?[\t #%\n]");
     if (prevline.contains (mkey))
       {
@@ -566,7 +578,7 @@ namespace octave
         return;
       }
 
-    QRegExp case_key = QRegExp ("^[\t ]*(case|otherwise)[\r]?[\t #%\n]");
+    QRegExp case_key = QRegExp ("^[\t ]*(?:case|otherwise)[\r]?[\t #%\n]");
     if (prevline.contains (case_key) && do_smart_indent)
       {
         QString last_line = text (line-1);
@@ -584,7 +596,7 @@ namespace octave
         setCursorPosition (line+1, act_ind);
       }
 
-    ekey = QRegExp ("^[\t ]*(end|endif|endfor|endwhile|until|endfunction"
+    ekey = QRegExp ("^[\t ]*(?:end|endif|endfor|endwhile|until|endfunction"
                     "|end_try_catch|end_unwind_protect)[\r]?[\t #%\n(;]");
     if (prevline.contains (ekey))
       {
@@ -605,8 +617,13 @@ namespace octave
   {
     QRegExp blank_line_regexp = QRegExp ("^[\t ]*$");
 
+    // end[xxxxx] [# comment] at end of a line
+    QRegExp end_word_regexp
+      = QRegExp ("(?:(?:['\"][^'\"]*['\"])?[^%#]*)*"
+                 "(?:end\\w*)[\r\n\t ;]*(?:[%#].*)?$");
+
     QRegExp begin_block_regexp
-      = QRegExp ("^([\t ]*)(if|elseif|else"
+      = QRegExp ("^[\t ]*(?:if|elseif|else"
                  "|for|while|do|parfor"
                  "|switch|case|otherwise"
                  "|function"
@@ -615,13 +632,13 @@ namespace octave
                  "[\r\n\t #%]");
 
     QRegExp mid_block_regexp
-      = QRegExp ("^([\t ]*)(elseif|else"
+      = QRegExp ("^[\t ]*(?:elseif|else"
                  "|otherwise"
                  "|unwind_protect_cleanup|catch)"
                  "[\r\n\t #%]");
 
     QRegExp end_block_regexp
-      = QRegExp ("^([\t ]*)(end"
+      = QRegExp ("^[\t ]*(?:end"
                  "|end(for|function|if|parfor|switch|while"
                  "|classdef|enumeration|events|methods|properties)"
                  "|end_(try_catch|unwind_protect)"
@@ -629,7 +646,7 @@ namespace octave
                  "[\r\n\t #%]");
 
     QRegExp case_block_regexp
-      = QRegExp ("^([\t ]*)(case|otherwise)"
+      = QRegExp ("^[\t ]*(?:case|otherwise)"
                  "[\r\n\t #%]");
 
     int indent_column = -1;
@@ -681,20 +698,26 @@ namespace octave
           }
 
         if (mid_block_regexp.indexIn (line_text) > -1)
-            indent_column -= indent_increment;
+          indent_column -= indent_increment;
 
         if (case_block_regexp.indexIn (line_text) > -1)
           {
-            if (case_block_regexp.indexIn (prev_line) < 0 && !prev_line.contains("switch"))
+            if (case_block_regexp.indexIn (prev_line) < 0
+                && !prev_line.contains("switch"))
               indent_column -= indent_increment;
             in_switch = true;
           }
 
         setIndentation (line, indent_column);
 
-        if (begin_block_regexp.indexIn (line_text) > -1)
+
+        int bpos = begin_block_regexp.indexIn (line_text);
+        if (bpos > -1)
           {
-            indent_column += indent_increment;
+            // Check for existing end statement in the same line
+            int epos = end_word_regexp.indexIn (line_text, bpos);
+            if (epos == -1)
+              indent_column += indent_increment;
             if (line_text.contains ("switch"))
               in_switch = true;
           }
@@ -755,13 +778,223 @@ namespace octave
     emit context_menu_edit_signal (m_word_at_cursor);
   }
 
+  void octave_qscintilla::contextmenu_run_temp_error (void)
+  {
+    QMessageBox::critical (this, tr ("Octave Editor"),
+                           tr ("Creating temporary files failed.\n"
+                               "Make sure you have write access to temp. directory\n"
+                               "%1\n\n"
+                               "\"Run Selection\" requires temporary files.").arg (QDir::tempPath ()));
+  }
+
   void octave_qscintilla::contextmenu_run (bool)
   {
-    QStringList commands = selectedText ().split (QRegExp ("[\r\n]"),
-                                                  QString::SkipEmptyParts);
-    for (int i = 0; i < commands.size (); i++)
-      emit execute_command_in_terminal_signal (commands.at (i));
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    // Create tmp file required for adding command to history
+    QPointer<QTemporaryFile> tmp_hist
+      = rmgr.create_tmp_file (); // empty tmp file for history
+
+    // Create tmp file required for the script echoing and adding cmd to hist
+    QPointer<QTemporaryFile> tmp_script
+      = rmgr.create_tmp_file ("m"); // tmp script file
+
+    bool tmp = (tmp_hist && tmp_hist->open () &&
+                tmp_script && tmp_script->open());
+    if (! tmp)
+      {
+        // tmp files not working: use old way to run selection
+        contextmenu_run_temp_error ();
+        return;
+      }
+
+    tmp_hist->close ();
+
+    QString tmp_hist_name = QFileInfo (tmp_hist->fileName ()).baseName ();
+    QString tmp_script_name = QFileInfo (tmp_script->fileName ()).baseName ();
+
+    // Create tmp file with script for echoing a command and adding
+    // the the history
+    QString echo_hist = QString (
+        "function %2 (i, command, line)\n"
+        "   persistent cnt;\n"
+        "   mlock ();\n"
+        "   if (i == 0)\n"
+        "     cnt = -1;\n"
+        "   end\n"
+        "   if cnt < i\n"
+        "       cnt = i;\n"
+        "       prompt = PS1;\n"
+        "       if (i == 0)\n"
+        "         prompt = '';\n"
+        "       end\n"
+        "       disp ([prompt, command]);\n"
+        "       if (history_save ())\n"
+        "           fid = fopen ('%1','w');\n"
+        "           if (fid != -1)\n"
+        "               fprintf (fid, [line,'\\n']);\n"
+        "               fclose (fid);\n"
+        "           end;\n"
+        "           history -r '%1'\n"
+        "       end\n"
+        "   end\n"
+        " end\n").arg (tmp_hist->fileName ()).arg (tmp_script_name);
+
+    tmp_script->write (echo_hist.toUtf8 ());
+    tmp_script->close ();
+
+    // Take selected code and extend it by commands for echoing each
+    // evaluated line and for adding the line to the history (use script)
+
+    QString tmp_dir = QFileInfo (tmp_script->fileName ()).absolutePath ();
+    QString code = QString ();
+
+    // Split contents into single lines and complete commands
+    QStringList lines = selectedText ().split (QRegExp ("[\r\n]"),
+                                               QString::SkipEmptyParts);
+
+    for (int i = 0; i < lines.count (); i++)
+      {
+        QString line = lines.at (i);
+        QString line_history = line;
+        line_history.replace (QString ("\\"), QString ("\\\\"));
+        line_history.replace (QString ("\""), QString ("\\\""));
+        line_history.replace (QString ("%"), QString ("%%"));
+
+        // Prevent output of breakpoint in temp. file for keyboard
+        QString next_bp_quiet;
+        QString next_bp_quiet_reset;
+        if (line.contains ("keyboard"))
+          {
+            // Define commands for not showing bp location and for resetting
+            // thisin case "keyboard" was within a comment
+            next_bp_quiet = "__db_next_breakpoint_quiet__;\n";
+            next_bp_quiet_reset = "__db_next_breakpoint_quiet__(false);\n";
+          }
+
+        // Add codeline togetcher with call to echo/hitory function to tmp
+        // %1 : function name for displaying and adding to history
+        // %2 : line number
+        // %3 : command line (eval and display)
+        // %4 : command line for history (via fprintf)
+        code += QString ("%1 (%2, '%3', '%4');\n"
+                         + next_bp_quiet
+                         + "%3\n"
+                         + next_bp_quiet_reset
+                         + "\n")
+                .arg (tmp_script_name)
+                .arg (i)
+                .arg (line)
+                .arg (line_history);
+      }
+
+    code += QString ("munlock (\"%1\"); clear %1;\n").arg (tmp_script_name);
+
+    // Create tmp file with the code to be executed by the interpreter
+    QPointer<QTemporaryFile> tmp_file
+      = rmgr.create_tmp_file ("m", code);
+
+    tmp = (tmp_file && tmp_file->open ());
+    if (! tmp)
+      {
+        // tmp files not working: use old way to run selection
+        contextmenu_run_temp_error ();
+        return;
+      }
+    tmp_file->close ();
+
+    // Disable opening a file at a breakpoint in case keyboard () is used
+    gui_settings* settings = rmgr.get_settings ();
+    bool show_dbg_file = settings->value (ed_show_dbg_file).toBool ();
+    settings->setValue (ed_show_dbg_file.key, false);
+
+    emit focus_console_after_command_signal ();
+
+    // Let the interpreter execute the tmp file
+    emit interpreter_event
+      ([this, tmp_file, tmp_hist, tmp_script, show_dbg_file] (interpreter& interp)
+       {
+         // INTERPRETER THREAD
+
+         std::string file = tmp_file->fileName ().toStdString ();
+
+         std::string pending_input = command_editor::get_current_line ();
+
+         // Add tmp dir to the path for echo/hist script
+         octave_value_list path =
+            ovl (QFileInfo (tmp_script->fileName ()).absolutePath ().toStdString ());
+
+         // Add tmp dir to the path
+         Faddpath (interp, path);
+
+         try
+           {
+             // Do the job
+             interp.source_file (file);
+           }
+         catch (const execution_exception& e)
+           {
+             // Catch errors otherwise the rest of the interpreter
+             // will not be executed (cleaning up).  Clean up before.
+             Frmpath (interp, path);
+             emit ctx_menu_run_finished_signal (show_dbg_file,
+                                                tmp_file, tmp_hist, tmp_script);
+
+             // New error message and error stack
+             QString new_msg = QString::fromStdString (e.message ());
+             std::list<frame_info> stack = e.stack_info ();
+
+             // Remove line and column from first line of error message only
+             // if it is related to the tmp itself, i.e. only if the
+             // the error stack size is 0 or 1
+             if (stack.size () < 2)
+               {
+                 new_msg = new_msg.replace (
+                               QRegExp ("near line [^\n]*\n"), QString ("\n"));
+                 new_msg = new_msg.replace (
+                               QRegExp ("near line [^\n]*$"), QString (""));
+               }
+
+             // Drop first stack level, i.e. temporary function file
+             if (stack.size () > 0)
+               stack.pop_back ();
+
+             // New exception with updated message and stack
+             octave::execution_exception ee (e.err_type (),e.identifier (),
+                                             new_msg.toStdString (), stack);
+
+             // Throw
+             throw (ee);
+           }
+
+         // Clean up
+         Frmpath (interp, path);
+         emit ctx_menu_run_finished_signal (show_dbg_file,
+                                            tmp_file, tmp_hist, tmp_script);
+
+         command_editor::erase_empty_line (true);
+         command_editor::replace_line ("");
+         command_editor::set_initial_input (pending_input);
+         command_editor::redisplay ();
+         command_editor::interrupt_event_loop ();
+         command_editor::accept_line ();
+         command_editor::erase_empty_line (true);
+       });
   }
+
+  void octave_qscintilla::ctx_menu_run_finished (bool show_dbg_file,
+                                                 QTemporaryFile* tmp_file,
+                                                 QTemporaryFile* tmp_hist,
+                                                 QTemporaryFile* tmp_script)
+  {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    settings->setValue (ed_show_dbg_file.key, show_dbg_file);
+    rmgr.remove_tmp_file (tmp_file);
+    rmgr.remove_tmp_file (tmp_hist);
+    rmgr.remove_tmp_file (tmp_script);
+  }
+
 
   // wrappers for dbstop related context menu items
 
@@ -952,7 +1185,7 @@ namespace octave
   void octave_qscintilla::auto_close (int auto_endif, int linenr,
                                       const QString& line, QString& first_word)
   {
-    // Insert and "end" for an "if" etc., if needed.
+    // Insert an "end" for an "if" etc., if needed.
     // (Use of "while" allows "return" to skip the rest.
     // It may be clearer to use "if" and "goto",
     // but that violates the coding standards.)
@@ -966,9 +1199,11 @@ namespace octave
     //       end* (until) (catch)
     if (linenr < lines () - 1)
       {
-        int offset = 1;
+        int offset = 2;     // linenr is the old line, thus, linnr+1 is the
+                            // new one and can not be taken into account
         size_t next_start;
         QString next_line;
+
         do                            // find next non-blank line
           {
             next_line = text (linenr + offset++);
@@ -976,8 +1211,11 @@ namespace octave
           }
         while (linenr + offset < lines ()
                && next_start == std::string::npos);
+
         if (next_start == std::string::npos)
           next_start = 0;
+        if (start == 0 && next_start == 0)
+          return;                     // bug #56160, don't add at 0
         if (next_start > start)       // more indented => don't add "end"
           return;
         if (next_start == start)      // same => check if already is "end"
@@ -1023,7 +1261,9 @@ namespace octave
         next_line = "end" + first_word + "\n";
       }
 
-    insertAt (QString (start, ' ') + next_line, linenr + 2, 0);
+    //insertAt (QString (start, ' ') + next_line, linenr + 2, 0);
+    insertAt (next_line, linenr + 2, 0);
+    setIndentation (linenr + 2, indentation (linenr));
   }
 
   void octave_qscintilla::dragEnterEvent (QDragEnterEvent *e)

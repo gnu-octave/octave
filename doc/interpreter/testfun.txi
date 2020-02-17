@@ -470,8 +470,8 @@ path and the user will have to remember to type
 
 @DOCSTRING(example)
 
-@DOCSTRING(rundemos)
+@DOCSTRING(oruntests)
 
-@DOCSTRING(runtests)
+@DOCSTRING(rundemos)
 
 @DOCSTRING(speed)

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2003-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_oct_rand_h)
 #define octave_oct_rand_h 1
@@ -53,8 +56,8 @@ namespace octave
     // Return the current seed.
     static double seed (void)
     {
-      return instance_ok () ? instance->do_seed ()
-        : octave::numeric_limits<double>::NaN ();
+      return (instance_ok ()
+              ? instance->do_seed () : numeric_limits<double>::NaN ());
     }
 
     // Set the seed.
@@ -139,15 +142,15 @@ namespace octave
     // Return the next number from the sequence.
     static double scalar (double a = 1.0)
     {
-      return instance_ok () ? instance->do_scalar (a)
-        : octave::numeric_limits<double>::NaN ();
+      return (instance_ok ()
+              ? instance->do_scalar (a) : numeric_limits<double>::NaN ());
     }
 
     // Return the next number from the sequence.
     static float float_scalar (float a = 1.0)
     {
-      return instance_ok () ? instance->do_scalar (a)
-        : octave::numeric_limits<float>::NaN ();
+      return (instance_ok ()
+              ? instance->do_scalar (a) : numeric_limits<float>::NaN ());
     }
 
     // Return an array of numbers from the sequence.
@@ -173,8 +176,8 @@ namespace octave
     // filled in column major order.
     static FloatNDArray float_nd_array (const dim_vector& dims, float a = 1.0)
     {
-      return instance_ok () ? instance->do_float_nd_array (dims, a)
-        : FloatNDArray ();
+      return (instance_ok ()
+              ? instance->do_float_nd_array (dims, a) : FloatNDArray ());
     }
 
   private:
@@ -286,12 +289,5 @@ namespace octave
     void fill (octave_idx_type len, float *v, float a);
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand' instead")
-typedef octave::rand octave_rand;
-
-#endif
 
 #endif

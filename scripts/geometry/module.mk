@@ -1,4 +1,4 @@
-FCN_FILE_DIRS += scripts/geometry
+FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/convhull.m \
@@ -11,6 +11,9 @@ FCN_FILE_DIRS += scripts/geometry
   %reldir%/griddatan.m \
   %reldir%/inpolygon.m \
   %reldir%/rectint.m \
+  %reldir%/rotx.m \
+  %reldir%/roty.m \
+  %reldir%/rotz.m \
   %reldir%/tsearchn.m \
   %reldir%/voronoi.m \
   %reldir%/voronoin.m

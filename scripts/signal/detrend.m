@@ -1,4 +1,9 @@
-## Copyright (C) 1995-2019 Kurt Hornik
+########################################################################
+##
+## Copyright (C) 1995-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} detrend (@var{x}, @var{p})
@@ -33,36 +40,35 @@
 ## @seealso{polyfit}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Created: 11 October 1994
-## Adapted-By: jwe
-
 function y = detrend (x, p = 1)
 
-  if (nargin > 0 && isreal (x) && ndims (x) <= 2)
-    ## Check p
-    if (ischar (p) && strcmpi (p, "constant"))
-      p = 0;
-    elseif (ischar (p) && strcmpi (p, "linear"))
-      p = 1;
-    elseif (! isscalar (p) || p < 0 || p != fix (p))
-      error ("detrend: second input argument must be 'constant', 'linear' or a positive integer");
-    endif
-  else
-    error ("detrend: first input argument must be a real vector or matrix");
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
+  if (! isnumeric (x) || ndims (x) > 2)
+    error ("detrend: X must be a numeric vector or matrix");
+  endif
+
+  if (ischar (p) && strcmpi (p, "constant"))
+    p = 0;
+  elseif (ischar (p) && strcmpi (p, "linear"))
+    p = 1;
+  elseif (! isscalar (p) || p < 0 || p != fix (p))
+    error ("detrend: P must be \"constant\", \"linear\", or a positive integer");
   endif
 
   [m, n] = size (x);
   if (m == 1)
-    x = x';
+    x = x.';
   endif
 
   r = rows (x);
-  b = ((1 : r)' * ones (1, p + 1)) .^ (ones (r, 1) * (0 : p));
+  b = ((1 : r).' * ones (1, p + 1)) .^ (ones (r, 1) * (0 : p));
   y = x - b * (b \ x);
 
   if (m == 1)
-    y = y';
+    y = y.';
   endif
 
 endfunction
@@ -84,6 +90,22 @@ endfunction
 %!test
 %! N = 32;
 %! t = (0:1:N-1)/N;
-%! x = [t;4*t-3]';
+%! x = [t;4*t-3].';
 %! y = detrend (x);
 %! assert (abs (y(:)) < 20*eps);
+
+%!test
+%! N = 32;
+%! x = ((0:1:N-1)/N + 2) * 1i;
+%! y = detrend (x);
+%! assert (abs (y(:)) < 20*eps);
+
+## Test input validation
+%!error detrend ()
+%!error detrend (1, 2, 3)
+%!error detrend ("a")
+%!error detrend (true)
+%!error detrend (1, "invalid")
+%!error detrend (1, -1)
+%!error detrend (1, 1.25)
+

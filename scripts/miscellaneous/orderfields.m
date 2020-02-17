@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{sout} =} orderfields (@var{s1})
@@ -94,9 +101,6 @@
 ##
 ## @seealso{fieldnames, getfield, setfield, rmfield, isfield, isstruct, struct}
 ## @end deftypefn
-
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-## Adapted-By: jwe
 
 function [sout, p] = orderfields (s1, s2)
 

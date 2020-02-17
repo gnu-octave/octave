@@ -1,6 +1,11 @@
 #!/usr/bin/perl -w
 
-## Copyright (C) 2012-2019 Rik Wehbring
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -17,6 +22,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 # Validate program call
 die "usage: munge-texi TOP-SRCDIR DOCSTRING-FILE < file" if (@ARGV < 2);
@@ -34,8 +41,8 @@ keys(%help_text) = 1800;
 # Load DOCSTRINGS into memory while expanding @seealso references
 foreach $DOCSTRING_file (@ARGV)
 {
-  ## DOCSTRINGS files may exist in the current (build) directory or in the
-  ## source directory when building from a release.
+  ## DOCSTRINGS files may exist in the current (build) directory OR
+  ## in the source directory when building from a release.
   $DOCSTRING_file_srcdir = "$top_srcdir/$DOCSTRING_file";
 
   open (DOCFH, $DOCSTRING_file) or open (DOCFH, $DOCSTRING_file_srcdir)
@@ -50,7 +57,7 @@ foreach $DOCSTRING_file (@ARGV)
   do
   {
     s/\s*$//;   # strip EOL character(s)
-    $symbol = substr ($_,1);
+    $symbol = substr ($_, 1);
     $docstring = extract_docstring ();
     if ($help_text{$symbol})
     {
@@ -73,7 +80,7 @@ print '@c DO NOT EDIT!  Generated automatically by munge-texi.pl.',"\n\n";
 
 TXI_LINE: while (<STDIN>)
 {
-  s/\@seealso/\@xseealso/g;
+  s'@seealso'@xseealso'g;
 
   if (/^\s*\@DOCSTRING\((\S+)\)/)
   {
@@ -125,7 +132,7 @@ sub extract_docstring
     # expand any @seealso references
     if (m'^@seealso\{')
     {
-      # Join multiple lines until full macro body found
+      # join multiple lines until full macro body found
       while (! /}/m) { $_ .= <DOCFH>; }
 
       ($arg_list, $rest_of_line) = m'^@seealso\{(.*)\}(.*)?'s;
@@ -135,9 +142,9 @@ sub extract_docstring
       $repl = "";
       foreach $func (split (/,/, $func_list))
       {
-        $func =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
+        $func =~ s/^@/@@/;     # Texinfo uses @@ to produce '@'
         $node = $func;
-        $node =~ s/\./_/g;  # Texinfo doesn't like '.' in node names
+        $node =~ s/\./_/g;     # Texinfo doesn't like '.' in node names
         $repl .= "\@ref{XREF$node,,$func}, ";
       }
       substr($repl,-2) = "";   # Remove last ', '

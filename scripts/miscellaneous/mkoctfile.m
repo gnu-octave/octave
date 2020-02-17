@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2020 Keith Goodman
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} mkoctfile [-options] file @dots{}
@@ -27,8 +34,12 @@
 ##
 ## @code{mkoctfile} can be called from the shell prompt or from the Octave
 ## prompt.  Calling it from the Octave prompt simply delegates the call to
-## the shell prompt.  The output is stored in the @var{output} variable and
-## the exit status in the @var{status} variable.
+## the shell prompt.  Any output is stored in the @var{output} variable and
+## the exit status in the @var{status} variable.  If called with no outputs
+## and the compilation fails then Octave will emit an error.  If the programmer
+## requests @var{output} or @var{status}, however, Octave will merely issue
+## a warning and it is the programmer's responsibility to verify the command
+## was successful.
 ##
 ## @code{mkoctfile} accepts the following options, all of which are optional
 ## except for the filename of the code you wish to compile:
@@ -69,8 +80,8 @@
 ##
 ## @item  -o FILE
 ## @itemx --output FILE
-## Output filename.  Default extension is .oct (or .mex if @samp{--mex} is
-## specified) unless linking a stand-alone executable.
+## Output filename.  Default extension is @file{.oct} (or @file{.mex} if
+## @samp{--mex} is specified) unless linking a stand-alone executable.
 ##
 ## @item  -p VAR
 ## @itemx --print VAR
@@ -81,9 +92,9 @@
 ## variables.  These are used in commands that @code{mkoctfile} executes.
 ##
 ## @example
-##    ALL_CFLAGS                  LAPACK_LIBS
-##    ALL_CXXFLAGS                LDFLAGS
-##    ALL_FFLAGS                  LD_CXX
+##    ALL_CFLAGS                  INCLUDEDIR
+##    ALL_CXXFLAGS                LAPACK_LIBS
+##    ALL_FFLAGS                  LDFLAGS
 ##    ALL_LDFLAGS                 LD_STATIC_FLAG
 ##    BLAS_LIBS                   LFLAGS
 ##    CC                          LIBDIR
@@ -92,15 +103,14 @@
 ##    CPPFLAGS                    OCTAVE_LINK_OPTS
 ##    CXX                         OCTINCLUDEDIR
 ##    CXXFLAGS                    OCTAVE_LIBS
-##    CXXPICFLAG                  OCTAVE_LINK_DEPS
-##    DL_LD                       OCTLIBDIR
+##    CXXLD                       OCTAVE_LINK_DEPS
+##    CXXPICFLAG                  OCTLIBDIR
 ##    DL_LDFLAGS                  OCT_LINK_DEPS
 ##    F77                         OCT_LINK_OPTS
 ##    F77_INTEGER8_FLAG           RDYNAMIC_FLAG
 ##    FFLAGS                      SPECIAL_MATH_LIB
 ##    FPICFLAG                    XTRA_CFLAGS
 ##    INCFLAGS                    XTRA_CXXFLAGS
-##    INCLUDEDIR
 ## @end example
 ##
 ## Octave configuration variables as above, but currently unused by
@@ -160,8 +170,8 @@
 ## Link a stand-alone executable file.
 ##
 ## @item --mex
-## Assume we are creating a MEX file.  Set the default output extension to
-## ".mex".
+## Assume creation of a MEX file.  Set the default output extension to
+## @file{.mex}.
 ##
 ## @item  -s
 ## @itemx --strip
@@ -218,16 +228,18 @@ function [output, status] = mkoctfile (varargin)
     cmd = [cmd ' "' varargin{i} '"'];
   endfor
 
-  [sys, out] = system (cmd);
+  [sts, out] = system (cmd);
 
   if (nargout > 0)
-    [output, status] = deal (out, sys);
+    [output, status] = deal (out, sts);
+    if (sts != 0)
+      warning ("mkoctfile: building exited with failure status\n");
+    endif
   else
     printf ("%s", out);
-  endif
-
-  if (sys != 0)
-    warning ("mkoctfile: building exited with failure status\n");
+    if (sts != 0)
+      error ("mkoctfile: building exited with failure status\n");
+    endif
   endif
 
 endfunction

@@ -1,38 +1,49 @@
-/*
-
-Copyright (C) 2002-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2002-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_interpreter_h)
 #define octave_interpreter_h 1
 
 #include "octave-config.h"
 
+#include <map>
+#include <stack>
 #include <string>
 
 #include "child-list.h"
+#include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
 
+#include "cdef-manager.h"
+#include "display.h"
 #include "dynamic-ld.h"
 #include "environment.h"
+#include "error.h"
+#include "event-manager.h"
+#include "graphics.h"
 #include "gtk-manager.h"
 #include "help.h"
 #include "input.h"
@@ -40,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-save.h"
 #include "oct-hist.h"
 #include "oct-stream.h"
-#include "ov-classdef.h"
 #include "ov-typeinfo.h"
 #include "pager.h"
 #include "pt-eval.h"
@@ -57,11 +67,15 @@ extern OCTINTERP_API bool octave_interpreter_ready;
 // TRUE means we've processed all the init code and we are good to go.
 extern OCTINTERP_API bool octave_initialized;
 
+#include "oct-time.h"
+
 namespace octave
 {
   class profiler;
-  class call_stack;
   class child_list;
+
+  // The time we last time we changed directories.
+  extern sys::time Vlast_chdir_time;
 
   // The application object contains a pointer to the current
   // interpreter and the interpreter contains a pointer back to the
@@ -69,6 +83,31 @@ namespace octave
   // both) of them...
 
   class application;
+
+  class temporary_file_list
+  {
+  public:
+
+    temporary_file_list (void) : m_files () { }
+
+    // No copying!
+
+    temporary_file_list (const temporary_file_list&) = delete;
+
+    temporary_file_list& operator = (const temporary_file_list&) = delete;
+
+    ~temporary_file_list (void);
+
+    void insert (const std::string& file);
+
+    void cleanup (void);
+
+  private:
+
+    // List of temporary files to delete when we exit.
+    std::set<std::string> m_files;
+
+  };
 
   class OCTINTERP_API interpreter
   {
@@ -144,9 +183,19 @@ namespace octave
       m_inhibit_startup_message = flag;
     }
 
+    bool in_top_level_repl (void) const
+    {
+      return m_in_top_level_repl;
+    }
+
     bool initialized (void) const
     {
       return m_initialized;
+    }
+
+    display_info& get_display_info (void)
+    {
+      return m_display_info;
     }
 
     environment& get_environment (void)
@@ -157,6 +206,11 @@ namespace octave
     settings& get_settings (void)
     {
       return m_settings;
+    }
+
+    error_system& get_error_system (void)
+    {
+      return m_error_system;
     }
 
     help_system& get_help_system (void)
@@ -194,24 +248,23 @@ namespace octave
       return m_load_save_system;
     }
 
-    symbol_table& get_symbol_table (void)
-    {
-      return m_symbol_table;
-    }
-
     type_info& get_type_info (void)
     {
       return m_type_info;
     }
 
-    symbol_scope get_current_scope (void);
-    symbol_scope require_current_scope (const std::string& who);
-
-    call_stack& get_call_stack (void);
-
-    profiler& get_profiler (void);
+    symbol_table& get_symbol_table (void)
+    {
+      return m_symbol_table;
+    }
 
     tree_evaluator& get_evaluator (void);
+
+    symbol_scope get_top_scope (void) const;
+    symbol_scope get_current_scope (void) const;
+    symbol_scope require_current_scope (const std::string& who) const;
+
+    profiler& get_profiler (void);
 
     stream_list& get_stream_list (void);
 
@@ -232,11 +285,36 @@ namespace octave
       return m_gtk_manager;
     }
 
-    void mlock (void);
+    event_manager& get_event_manager (void)
+    {
+      return m_event_manager;
+    }
 
+    gh_manager& get_gh_manager (void)
+    {
+      return *m_gh_manager;
+    }
+
+    // Any Octave code that needs to change the current directory should
+    // call this function instead of calling the system chdir function
+    // directly so that the  load-path and GUI may be notified of the
+    // change.
+
+    int chdir (const std::string& dir);
+
+    void mlock (bool skip_first = false) const;
+    void munlock (bool skip_first = false) const;
+    bool mislocked (bool skip_first = false) const;
+
+    // NOTE: since we have a version that accepts a bool argument, we
+    // can't rely on automatic conversion from char* to std::string.
+    void munlock (const char *nm);
     void munlock (const std::string& nm);
 
+    bool mislocked (const char *nm);
     bool mislocked (const std::string& nm);
+
+    std::string mfilename (const std::string& opt = "") const;
 
     octave_value_list eval_string (const std::string& eval_str, bool silent,
                                    int& parse_status, int nargout);
@@ -247,10 +325,146 @@ namespace octave
     octave_value_list eval_string (const octave_value& arg, bool silent,
                                    int& parse_status, int nargout);
 
-    static void recover_from_exception (void);
+    octave_value_list eval (const std::string& try_code, int nargout);
 
+    octave_value_list eval (const std::string& try_code,
+                            const std::string& catch_code, int nargout);
+
+    octave_value_list evalin (const std::string& context,
+                              const std::string& try_code, int nargout);
+
+    octave_value_list evalin (const std::string& context,
+                              const std::string& try_code,
+                              const std::string& catch_code, int nargout);
+
+    octave_value_list
+    feval (const char *name,
+           const octave_value_list& args = octave_value_list (),
+           int nargout = 0);
+
+    octave_value_list
+    feval (const std::string& name,
+           const octave_value_list& args = octave_value_list (),
+           int nargout = 0);
+
+    octave_value_list
+    feval (octave_function *fcn,
+           const octave_value_list& args = octave_value_list (),
+           int nargout = 0);
+
+    octave_value_list
+    feval (const octave_value& f_arg,
+           const octave_value_list& args = octave_value_list (),
+           int nargout = 0);
+
+    octave_value_list feval (const octave_value_list& args, int nargout = 0);
+
+    void install_variable (const std::string& name, const octave_value& value,
+                           bool global);
+
+    void set_global_value (const std::string& name, const octave_value& value);
+
+    octave_value global_varval (const std::string& name) const;
+
+    void global_assign (const std::string& name,
+                        const octave_value& val = octave_value ());
+
+    octave_value top_level_varval (const std::string& name) const;
+
+    void top_level_assign (const std::string& name,
+                           const octave_value& val = octave_value ());
+
+    bool is_variable (const std::string& name) const;
+
+    bool is_local_variable (const std::string& name) const;
+
+    octave_value varval (const std::string& name) const;
+
+    void assign (const std::string& name,
+                 const octave_value& val = octave_value ());
+
+    void assignin (const std::string& context, const std::string& varname,
+                   const octave_value& val = octave_value ());
+
+    void source_file (const std::string& file_name,
+                      const std::string& context = "",
+                      bool verbose = false, bool require_file = true);
+
+    bool at_top_level (void) const;
+
+    bool isglobal (const std::string& name) const;
+
+    octave_value find (const std::string& name);
+
+    void clear_all (bool force = false);
+
+    void clear_objects (void);
+
+    void clear_variable (const std::string& name);
+
+    void clear_variable_pattern (const std::string& pattern);
+
+    void clear_variable_regexp (const std::string& pattern);
+
+    void clear_variables (void);
+
+    void clear_global_variable (const std::string& name);
+
+    void clear_global_variable_pattern (const std::string& pattern);
+
+    void clear_global_variable_regexp (const std::string& pattern);
+
+    void clear_global_variables (void);
+
+    void clear_functions (bool force = false);
+
+    void clear_function (const std::string& name);
+
+    void clear_symbol (const std::string& name);
+
+    void clear_function_pattern (const std::string& pat);
+
+    void clear_function_regexp (const std::string& pat);
+
+    void clear_symbol_pattern (const std::string& pat);
+
+    void clear_symbol_regexp (const std::string& pat);
+
+    std::list<std::string> variable_names (void);
+
+    std::list<std::string> top_level_variable_names (void);
+
+    std::list<std::string> global_variable_names (void);
+
+    std::list<std::string> user_function_names (void);
+
+    std::list<std::string> autoloaded_functions (void) const;
+
+    void handle_exception (const execution_exception& e);
+
+    void recover_from_exception (void);
+
+    void mark_for_deletion (const std::string& file);
+
+    void cleanup_tmp_files (void);
+
+    void quit (int exit_status, bool force = false, bool confirm = true);
+
+    void cancel_quit (bool flag) { m_cancel_quit = flag; }
+
+    bool executing_finish_script (void) const
+    {
+      return m_executing_finish_script;
+    }
+
+    void add_atexit_fcn (const std::string& fname);
+
+    bool remove_atexit_fcn (const std::string& fname);
+
+    OCTAVE_DEPRECATED (6, "use interpreter::add_atexit_fcn member function instead")
     static void add_atexit_function (const std::string& fname);
 
+    OCTAVE_DEPRECATED (6, "use interpreter::remove_atexit_fcn member function instead")
     static bool remove_atexit_function (const std::string& fname);
 
     static interpreter * the_interpreter (void) { return instance; }
@@ -267,11 +481,9 @@ namespace octave
 
     OCTAVE_THREAD_LOCAL static interpreter *instance;
 
-    static std::list<std::string> atexit_functions;
-
     void display_startup_message (void) const;
 
-    int execute_startup_files (void) const;
+    int execute_startup_files (void);
 
     int execute_eval_option_code (void);
 
@@ -281,11 +493,21 @@ namespace octave
 
     void cleanup (void);
 
+    void execute_atexit_fcns (void);
+
     application *m_app_context;
+
+    temporary_file_list m_tmp_files;
+
+    std::list<std::string> m_atexit_fcns;
+
+    display_info m_display_info;
 
     environment m_environment;
 
     settings m_settings;
+
+    error_system m_error_system;
 
     help_system m_help_system;
 
@@ -317,6 +539,10 @@ namespace octave
 
     gtk_manager m_gtk_manager;
 
+    event_manager m_event_manager;
+
+    gh_manager *m_gh_manager;
+
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;
 
@@ -332,6 +558,15 @@ namespace octave
 
     bool m_history_initialized;
 
+    // TRUE if we are in the top level interactive read eval print loop.
+    bool m_in_top_level_repl;
+
+    bool m_cancel_quit;
+
+    bool m_executing_finish_script;
+
+    bool m_executing_atexit;
+
     bool m_initialized;
 
     void maximum_braindamage (void);
@@ -339,30 +574,5 @@ namespace octave
     void execute_pkg_add (const std::string& dir);
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::recover_from_exception' instead")
-static inline void
-recover_from_exception (void)
-{
-  octave::interpreter::recover_from_exception ();
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::add_atexit_function' instead")
-static inline void
-add_atexit_function (const std::string& fname)
-{
-  octave::interpreter::add_atexit_function (fname);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::remove_atexit_function' instead")
-static inline bool
-remove_atexit_function (const std::string& fname)
-{
-  return octave::interpreter::remove_atexit_function (fname);
-}
-
-#endif
 
 #endif

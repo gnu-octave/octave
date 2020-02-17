@@ -1,4 +1,9 @@
-## Copyright (C) 2009-2019 Martin Helm
+########################################################################
+##
+## Copyright (C) 2009-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,8 +21,8 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 ##
-## Author: Martin Helm <martin@mhelm.de>
-
+########################################################################
+##
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{vxyz}, @var{idx}, @var{frac}] =} __interp_cube__ (@var{caller}, @var{x}, @var{y}, @var{z}, @var{val}, @var{v}, @var{req})
 ## Undocumented internal function.

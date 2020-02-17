@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_singleton_cleanup_h)
 #define octave_singleton_cleanup_h 1
@@ -33,7 +36,7 @@ singleton_cleanup_list
 {
 protected:
 
-  singleton_cleanup_list (void) : fcn_list () { }
+  singleton_cleanup_list (void) : m_fcn_list () { }
 
 public:
 
@@ -50,24 +53,32 @@ public:
   static void add (fptr f)
   {
     if (instance_ok ())
-      instance->do_add (f);
+      s_instance->do_add (f);
   }
 
-  static void cleanup (void) { delete instance; instance = nullptr; }
+  static void cleanup (void)
+  {
+    delete s_instance;
+    s_instance = nullptr;
+  }
 
 private:
 
-  static singleton_cleanup_list *instance;
+  static singleton_cleanup_list *s_instance;
 
   static bool instance_ok (void);
 
-  static void cleanup_instance (void) { delete instance; instance = nullptr; }
+  static void cleanup_instance (void)
+  {
+    delete s_instance;
+    s_instance = nullptr;
+  }
 
-  std::set<fptr> fcn_list;
+  std::set<fptr> m_fcn_list;
 
   void do_add (fptr f)
   {
-    fcn_list.insert (f);
+    m_fcn_list.insert (f);
   }
 };
 

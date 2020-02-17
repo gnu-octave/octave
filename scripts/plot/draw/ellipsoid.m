@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 Sylvain Pelissier
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} ellipsoid (@var{xc}, @var{yc}, @var{zc}, @var{xr}, @var{yr}, @var{zr}, @var{n})
@@ -37,8 +44,6 @@
 ## generates the ellipsoid.
 ## @seealso{cylinder, rectangle, sphere}
 ## @end deftypefn
-
-## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
 
 function [xx, yy, zz] = ellipsoid (varargin)
 

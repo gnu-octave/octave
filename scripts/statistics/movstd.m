@@ -1,4 +1,9 @@
-## Copyright (C) 2018-2019 Rik Wehbring
+########################################################################
+##
+## Copyright (C) 2018-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,11 +20,14 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movstd (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movstd (@var{x}, [@var{na}, @var{nb}])
-## @deftypefnx {} {@var{y} =} movstd (@dots{}, @var{dim})
+## @deftypefnx {} {@var{y} =} movstd (@var{x}, [@var{nb}, @var{na}])
+## @deftypefnx {} {@var{y} =} movstd (@dots{}, @var{opt})
+## @deftypefnx {} {@var{y} =} movstd (@dots{}, @var{opt}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movstd (@dots{}, "@var{nancond}")
 ## @deftypefnx {} {@var{y} =} movstd (@dots{}, @var{property}, @var{value})
 ## Calculate the moving standard deviation over a sliding window of length
@@ -45,7 +53,21 @@
 ## @w{@code{@var{wlen} = [3, 0]}}, the data used to calculate index 5 is
 ## @w{@code{[2, 3, 4, 5]}}.
 ##
+## The optional argument @var{opt} determines the type of normalization to use.
+## Valid values are
+##
+## @table @asis
+## @item 0:
+##   normalize with @math{N-1}, provides the square root of the best unbiased
+## estimator of the variance [default]
+##
+## @item 1:
+##   normalize with @math{N}, this provides the square root of the second
+## moment around the mean
+## @end table
+##
 ## If the optional argument @var{dim} is given, operate along this dimension.
+## The normalization argument @var{opt} must be given before the dimension.
 ##
 ## The optional string argument @qcode{"@var{nancond}"} controls whether
 ## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
@@ -85,8 +107,8 @@
 ## @code{@var{y}(1) = movstd ([NaN, @var{x}(1:2)])}, and
 ## @code{@var{y}(end) = movstd ([@var{x}(end-1:end), NaN])}.
 ## This option usually results in @var{y} having @code{NaN} values at the
-## boundaries, although it is influenced by how @code{movstd} handles @code{NaN},
-## and also by the property @qcode{"nancond"}.
+## boundaries, although it is influenced by how @code{movstd} handles
+## @code{NaN}, and also by the property @qcode{"nancond"}.
 ##
 ## @item @var{user_value}
 ## Any window elements outside the data array are replaced by the specified
@@ -116,7 +138,7 @@
 ## @end table
 ##
 ## Programming Note: This function is a wrapper which calls @code{movfun}.
-## For additional options and documentation, @xref{XREFmovfun,,movfun}.
+## For additional options and documentation, @pxref{XREFmovfun,,movfun}.
 ##
 ## @seealso{movfun, movslice, movmad, movmax, movmean, movmedian, movmin, movprod, movsum, movvar}
 ## @end deftypefn
@@ -127,7 +149,19 @@ function y = movstd (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@std, x, wlen, __parse_movargs__ ("movstd", varargin{:}){:});
+  ## Process "opt" normalization argument
+  if (nargin > 2 && isnumeric (varargin{1}))
+    if (! varargin{1})
+      fcn = @std;
+    else
+      fcn = @(x) std (x, 1);
+    endif
+    varargin(1) = [];
+  else
+    fcn = @std;
+  endif
+
+  y = movfun (fcn, x, wlen, __parse_movargs__ ("movstd", varargin{:}){:});
 
 endfunction
 
@@ -135,6 +169,14 @@ endfunction
 ## FIXME: Need functional BIST tests
 # test for bug #55241
 %!assert ([1/sqrt(2); ones(8,1); 1/sqrt(2)], movstd ((1:10).', 3), 1e-8)
+
+%!test <*56765>
+%! x = 1:10;
+%! y = movstd (x, 4);
+%! y0 = movstd (x, 4, 0);
+%! assert (y, y0);
+%! y1 = movstd (x, 4, 1);
+%! assert (y1(1:3), sqrt ([1/4, 2/3, 5/4]));
 
 ## Test input validation
 %!error movstd ()

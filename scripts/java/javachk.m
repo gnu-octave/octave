@@ -1,5 +1,9 @@
-## Copyright (C) 2019 Mike Miller
-## Copyright (C) 2014-2019 Philip Nienhuis
+########################################################################
+##
+## Copyright (C) 2014-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} javachk (@var{feature})
@@ -61,9 +67,6 @@
 ## @seealso{usejava, error}
 ## @end deftypefn
 
-## Author: Philip Nienhuis <prnienhuis at users.sf.net>
-## Created: 2014-04-19
-
 function msg = javachk (feature, caller = "")
 
   if (nargin < 1 || nargin > 2)
@@ -74,39 +77,52 @@ function msg = javachk (feature, caller = "")
     error ("javachk: CALLER must be a string");
   endif
 
-  chk = false;
-  switch (feature)
-    ## For each feature, try methods() on a Java class of a feature
-    case "awt"
-      try
-        dum = methods ("java.awt.Frame");
-        chk = true;
-      end_try_catch
-    case "desktop"
-      ## Octave has no Java based GUI/desktop, leave chk = false
-    case "jvm"
-      try
-        dum = methods ("java.lang.Runtime");
-        chk = true;
-      end_try_catch
-    case "swing"
-      try
-        dum = methods ("javax.swing.Popup");
-        chk = true;
-      end_try_catch
-    otherwise
-      ## For compatibility, unrecognized feature is the same as disabled feature
-  endswitch
-
   if (isempty (caller))
     caller = "this function";
   endif
 
   msg = struct ("message", "", "identifier", "");
+
+  ## Check that Octave was compiled with Java support
+  chk = logical (__octave_config_info__ ("build_features").JAVA);
   if (! chk)
-    msg.message = sprintf (["javachk: %s is not supported, Java feature " ...
-                            "\"%s\" is not available"], caller, feature);
-    msg.identifier = "Octave:javachk:feature-not-available";
+    msg.message = sprintf (["javachk: %s is not supported, " ...
+                            "Octave was not compiled with Java support"],
+                            caller);
+    msg.identifier = "Octave:javachk:java-not-supported";
+  endif
+
+  if (chk)
+    chk = false;
+    ## For each feature, try methods() on a Java class of a feature
+    switch (feature)
+      case "awt"
+        try
+          dum = methods ("java.awt.Frame");
+          chk = true;
+        end_try_catch
+      case "desktop"
+        ## Octave has no Java based GUI/desktop, leave chk = false
+      case "jvm"
+        try
+          dum = methods ("java.lang.Runtime");
+          chk = true;
+        end_try_catch
+      case "swing"
+        try
+          dum = methods ("javax.swing.Popup");
+          chk = true;
+        end_try_catch
+      otherwise
+        ## Unrecognized feature is the same as disabled feature
+    endswitch
+
+    if (! chk)
+      msg.message = sprintf (['javachk: %s is not supported, Java feature '...
+                              '"%s" is not available'], caller, feature);
+      msg.identifier = "Octave:javachk:feature-not-available";
+    endif
+
   endif
 
   if (isempty (msg.message))
@@ -117,17 +133,24 @@ function msg = javachk (feature, caller = "")
 endfunction
 
 
-%!test
+%!testif ; ! __octave_config_info__().build_features.JAVA
 %! msg = javachk ("desktop");
-%! assert (msg.message, "javachk: this function is not supported, Java feature \"desktop\" is not available");
+%! assert (msg.message, "javachk: this function is not supported, Octave was not compiled with Java support");
+%! assert (msg.identifier, "Octave:javachk:java-not-supported");
+
+%!testif HAVE_JAVA
+%! msg = javachk ("desktop");
+%! assert (msg.message, 'javachk: this function is not supported, Java feature "desktop" is not available');
 %! assert (msg.identifier, "Octave:javachk:feature-not-available");
-%!test
+
+%!testif HAVE_JAVA
 %! msg = javachk ("desktop", "Java DESKTOP");
-%! assert (msg.message, "javachk: Java DESKTOP is not supported, Java feature \"desktop\" is not available");
+%! assert (msg.message, 'javachk: Java DESKTOP is not supported, Java feature "desktop" is not available');
 %! assert (msg.identifier, "Octave:javachk:feature-not-available");
-%!test
+
+%!testif HAVE_JAVA
 %! msg = javachk ("nosuchfeature");
-%! assert (msg.message, "javachk: this function is not supported, Java feature \"nosuchfeature\" is not available");
+%! assert (msg.message, 'javachk: this function is not supported, Java feature "nosuchfeature" is not available');
 %! assert (msg.identifier, "Octave:javachk:feature-not-available");
 
 %!testif HAVE_JAVA; usejava ("jvm")

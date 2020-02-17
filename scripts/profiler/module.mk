@@ -1,5 +1,4 @@
-FCN_FILE_DIRS += \
-  scripts/profiler
+FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/profexplore.m \

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 /*
 
@@ -42,7 +45,7 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 // Create a string vector from a NULL terminated list of C strings.
 
 string_vector::string_vector (const char * const *s)
-  : Array<std::string> ()
+  : m_data ()
 {
   octave_idx_type n = 0;
 
@@ -64,7 +67,7 @@ string_vector::string_vector (const char * const *s)
 // nonnegative.
 
 string_vector::string_vector (const char * const *s, octave_idx_type n)
-  : Array<std::string> (dim_vector (n, 1))
+  : m_data (dim_vector (n, 1))
 {
   for (octave_idx_type i = 0; i < n; i++)
     elem (i) = s[i];
@@ -75,7 +78,7 @@ string_vector::sort (bool make_uniq)
 {
   // Don't use Array<std::string>::sort () to allow sorting in place.
   octave_sort<std::string> lsort;
-  lsort.sort (Array<std::string>::fortran_vec (), numel ());
+  lsort.sort (m_data.fortran_vec (), numel ());
 
   if (make_uniq)
     uniq ();

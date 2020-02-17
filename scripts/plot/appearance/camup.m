@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Colin B. Macdonald
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{up} =} camup ()
@@ -64,7 +71,7 @@
 ## A consequence is that ``pulling back'' on the up vector does not pitch the
 ## camera view (as that would require changing the target).  Setting the up
 ## vector is thus typically used only to roll the camera.  A more intuitive
-## command for this purpose is @pxref{XREFcamroll,,camroll}.
+## command for this purpose is @ref{XREFcamroll,,camroll}.
 ##
 ## Finally, we can reset the up vector to automatic mode:
 ##

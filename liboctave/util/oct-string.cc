@@ -1,23 +1,27 @@
-/*
-Copyright (C) 2016-2019 Carnë Draug
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2016-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -34,6 +38,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+#include "uniconv-wrappers.h"
+#include "unistr-wrappers.h"
+#include "unwind-prot.h"
 
 template <typename T>
 static bool
@@ -484,6 +491,122 @@ octave::string::str2double (const std::string& str_arg)
   return val;
 }
 
+std::string
+octave::string::u8_to_encoding (const std::string& who,
+                                const std::string& u8_string,
+                                const std::string& encoding)
+{
+  const uint8_t *src = reinterpret_cast<const uint8_t *>
+                       (u8_string.c_str ());
+  size_t srclen = u8_string.length ();
+
+  size_t length;
+  char *native_str = octave_u8_conv_to_encoding (encoding.c_str (), src,
+                                                 srclen, &length);
+
+  if (! native_str)
+    {
+      if (errno == ENOSYS)
+        (*current_liboctave_error_handler)
+          ("%s: iconv() is not supported. Installing GNU libiconv and then "
+           "re-compiling Octave could fix this.", who.c_str ());
+      else
+        (*current_liboctave_error_handler)
+          ("%s: converting from UTF-8 to codepage '%s' failed: %s",
+           who.c_str (), encoding.c_str (), std::strerror (errno));
+    }
+
+  octave::unwind_protect frame;
+  frame.add_fcn (::free, static_cast<void *> (native_str));
+
+  std::string retval = std::string (native_str, length);
+
+  return retval;
+}
+
+std::string
+octave::string::u8_from_encoding (const std::string& who,
+                                  const std::string& native_string,
+                                  const std::string& encoding)
+{
+  const char *src = native_string.c_str ();
+  size_t srclen = native_string.length ();
+
+  size_t length;
+  uint8_t *utf8_str = octave_u8_conv_from_encoding (encoding.c_str (), src,
+                                                    srclen, &length);
+  if (! utf8_str)
+    {
+      if (errno == ENOSYS)
+        (*current_liboctave_error_handler)
+          ("%s: iconv() is not supported. Installing GNU libiconv and then "
+           "re-compiling Octave could fix this.", who.c_str ());
+      else
+        (*current_liboctave_error_handler)
+          ("%s: converting from codepage '%s' to UTF-8 failed: %s",
+           who.c_str (), encoding.c_str (), std::strerror (errno));
+    }
+
+  octave::unwind_protect frame;
+  frame.add_fcn (::free, static_cast<void *> (utf8_str));
+
+  std::string retval = std::string (reinterpret_cast<char *> (utf8_str), length);
+
+  return retval;
+}
+
+unsigned int
+octave::string::u8_validate (const std::string& who,
+                             std::string& in_str,
+                             const octave::string::u8_fallback_type type)
+{
+  std::string out_str;
+
+  unsigned int num_replacements = 0;
+  const char *in_chr = in_str.c_str ();
+  const char *inv_utf8 = in_chr;
+  const char * const in_end = in_chr + in_str.length ();
+  while (inv_utf8 && in_chr < in_end)
+    {
+      inv_utf8 = reinterpret_cast<const char *>
+          (octave_u8_check_wrapper (reinterpret_cast<const uint8_t *> (in_chr),
+                                    in_end - in_chr));
+
+      if (inv_utf8 == nullptr)
+        out_str.append (in_chr, in_end - in_chr);
+      else
+        {
+          num_replacements++;
+          out_str.append (in_chr, inv_utf8 - in_chr);
+          in_chr = inv_utf8 + 1;
+
+          if (type == U8_REPLACEMENT_CHAR)
+            out_str.append ("\xef\xbf\xbd");
+          else if (type == U8_ISO_8859_1)
+            {
+              std::string fallback = "iso-8859-1";
+              size_t lengthp;
+              uint8_t *val_utf8 = octave_u8_conv_from_encoding
+                                    (fallback.c_str (), inv_utf8, 1, &lengthp);
+
+              if (! val_utf8)
+                (*current_liboctave_error_handler)
+                  ("%s: converting from codepage '%s' to UTF-8 failed: %s",
+                   who.c_str (), fallback.c_str (), std::strerror (errno));
+
+              octave::unwind_protect frame;
+              frame.add_fcn (::free, static_cast<void *> (val_utf8));
+
+              out_str.append (reinterpret_cast<const char *> (val_utf8),
+                              lengthp);
+            }
+        }
+    }
+
+  in_str = out_str;
+  return num_replacements;
+}
+
 template <typename T>
 std::string
 rational_approx (T val, int len)
@@ -520,10 +643,10 @@ rational_approx (T val, int len)
       T frac = val - n;
       int m = 0;
 
-      std::ostringstream buf2;
-      buf2.flags (std::ios::fixed);
-      buf2 << std::setprecision (0) << static_cast<int> (n);
-      s = buf2.str ();
+      std::ostringstream init_buf;
+      init_buf.flags (std::ios::fixed);
+      init_buf << std::setprecision (0) << static_cast<int> (n);
+      s = init_buf.str ();
 
       while (true)
         {
@@ -558,8 +681,11 @@ rational_approx (T val, int len)
               if (buf.str ().length () > static_cast<unsigned int> (len + 2))
                 break;
             }
-          else if (buf.str ().length () > static_cast<unsigned int> (len))
-            break;
+          else
+            {
+              if (buf.str ().length () > static_cast<unsigned int> (len))
+                break;
+            }
 
           if (std::abs (n) > std::numeric_limits<int>::max ()
               || std::abs (d) > std::numeric_limits<int>::max ())
@@ -570,7 +696,7 @@ rational_approx (T val, int len)
 
       if (lastd < 0)
         {
-          // Move sign to the top
+          // Move negative sign from denominator to numerator
           lastd = - lastd;
           lastn = - lastn;
           std::ostringstream buf;

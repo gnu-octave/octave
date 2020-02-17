@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2007-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2007-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 package org.octave;
 
@@ -96,7 +99,7 @@ public class Matrix
     if (data instanceof DoubleBuffer)
       return ((DoubleBuffer)data).array ();
     else
-      throw new ClassCastException ("matrix is not of type `double'");
+      throw new ClassCastException ("matrix is not of type 'double'");
   }
 
   public byte[] toByte ()
@@ -104,7 +107,7 @@ public class Matrix
     if (data instanceof ByteBuffer)
       return ((ByteBuffer)data).array ();
     else
-      throw new ClassCastException ("matrix is not of type `byte'");
+      throw new ClassCastException ("matrix is not of type 'byte'");
   }
 
   public int[] toInt ()
@@ -112,7 +115,7 @@ public class Matrix
     if (data instanceof IntBuffer)
       return ((IntBuffer)data).array ();
     else
-      throw new ClassCastException ("matrix is not of type `integer'");
+      throw new ClassCastException ("matrix is not of type 'integer'");
   }
 
   public int getNDims ()
@@ -330,7 +333,7 @@ public class Matrix
             val = buf[i];
       }
     else
-      System.out.println ("Warning: cannot compute min value for array of type `" + getClassName () + "'");
+      System.out.println ("Warning: cannot compute min value for array of type '" + getClassName () + "'");
 
     return val;
   }
@@ -354,7 +357,7 @@ public class Matrix
             val = buf[i];
       }
     else
-      System.out.println ("Warning: cannot compute max value for array of type `" + getClassName () + "'");
+      System.out.println ("Warning: cannot compute max value for array of type '" + getClassName () + "'");
 
     return val;
   }

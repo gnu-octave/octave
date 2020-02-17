@@ -1,35 +1,43 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
+#include <cstdio>
+
+#include <set>
 #include <string>
 #include <iostream>
 
 #include "cmd-edit.h"
 #include "cmd-hist.h"
+#include "file-ops.h"
 #include "file-stat.h"
+#include "file-ops.h"
 #include "fpucw-wrappers.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
@@ -41,10 +49,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 #include "defaults.h"
 #include "Cell.h"
-#include "call-stack.h"
 #include "defun.h"
 #include "display.h"
 #include "error.h"
+#include "event-manager.h"
 #include "file-io.h"
 #include "graphics.h"
 #include "help.h"
@@ -53,7 +61,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "load-path.h"
 #include "load-save.h"
-#include "octave-link.h"
 #include "octave.h"
 #include "oct-hist.h"
 #include "oct-map.h"
@@ -62,6 +69,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ov-classdef.h"
 #include "parse.h"
+#include "pt-classdef.h"
 #include "pt-eval.h"
 #include "pt-jump.h"
 #include "pt-stmt.h"
@@ -127,13 +135,18 @@ Undocumented internal function.
   return retval;
 }
 
-DEFUN (quit, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {} exit
-@deftypefnx {} {} exit (@var{status})
-@deftypefnx {} {} quit
+DEFMETHOD (quit, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {} quit
+@deftypefnx {} {} quit cancel
+@deftypefnx {} {} quit force
+@deftypefnx {} {} quit ("cancel")
+@deftypefnx {} {} quit ("force")
 @deftypefnx {} {} quit (@var{status})
-Exit the current Octave session.
+@deftypefnx {} {} quit (@var{status}, "force")
+Quit the current Octave session.
+
+The @code{exit} function is an alias for @code{quit}.
 
 If the optional integer value @var{status} is supplied, pass that value to
 the operating system as Octave's exit status.  The default value is zero.
@@ -141,38 +154,83 @@ the operating system as Octave's exit status.  The default value is zero.
 When exiting, Octave will attempt to run the m-file @file{finish.m} if it
 exists.  User commands to save the workspace or clean up temporary files
 may be placed in that file.  Alternatively, another m-file may be scheduled
-to run using @code{atexit}.
+to run using @code{atexit}.  If an error occurs while executing the
+@file{finish.m} file, Octave does not exit and control is returned to
+the command prompt.
+
+If the optional argument @qcode{"cancel"} is provided, Octave does not
+exit and control is returned to the command prompt.  This feature allows
+the @code{finish.m} file to cancel the quit process.
+
+If the user preference to request confirmation before exiting, Octave
+will display a dialog and give the user an option to cancel the exit
+process.
+
+If the optional argument @qcode{"force"} is provided, no confirmation is
+requested, and the execution of the @file{finish.m} file is skipped.
 @seealso{atexit}
 @end deftypefn */)
 {
-  // Confirm OK to shutdown.  Note: A dynamic function installation similar
-  // to overriding polymorphism for which the GUI can install its own "quit"
-  // yet call this base "quit" could be nice.  No link would be needed here.
-  if (! octave_link::confirm_shutdown ())
-    return ovl ();
+  int numel = args.length ();
 
-  if (! quit_allowed)
-    error ("quit: not supported in embedded mode");
+  if (numel > 2)
+    print_usage ();
 
   int exit_status = 0;
 
-  if (args.length () > 0)
-    exit_status = args(0).nint_value ();
+  bool force = false;
+  bool cancel = false;
 
-  // Instead of simply calling exit, we thrown an exception so that no
-  // matter where the call to quit occurs, we will run the
-  // unwind_protect stack, clear the OCTAVE_LOCAL_BUFFER allocations,
-  // etc. before exiting.
+  if (numel == 2)
+    {
+      exit_status = args(0).xnint_value ("quit: STATUS must be an integer");
+      std::string frc
+        = args(1).xstring_value ("quit: second argument must be a string");
 
-  throw octave::exit_exception (exit_status);
+      if (frc == "force")
+        force = true;
+      else
+        error (R"(quit: second argument must be string "force")");
+    }
+  else if (numel == 1)
+    {
+      if (args(0).is_string ())
+        {
+          const char *msg
+            = R"(quit: option must be string "cancel" or "force")";
+
+          std::string opt = args(0).xstring_value (msg);
+
+          if (opt == "cancel")
+            cancel = true;
+          else if (opt == "force")
+            force = true;
+          else
+            error ("%s", msg);
+        }
+      else
+        exit_status = args(0).xnint_value ("quit: STATUS must be an integer");
+    }
+
+  if (cancel)
+    {
+      // No effect if "quit cancel" appears outside of finish script.
+
+      if (interp.executing_finish_script ())
+        interp.cancel_quit (true);
+
+      return ovl ();
+    }
+
+  interp.quit (exit_status, force);
 
   return ovl ();
 }
 
 DEFALIAS (exit, quit);
 
-DEFUN (atexit, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (atexit, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} atexit (@var{fcn})
 @deftypefnx {} {} atexit (@var{fcn}, @var{flag})
 Register a function to be called when Octave exits.
@@ -225,10 +283,10 @@ from the list, so if a function was placed in the list multiple times with
   octave_value_list retval;
 
   if (add_mode)
-    octave::interpreter::add_atexit_function (arg);
+    interp.add_atexit_fcn (arg);
   else
     {
-      bool found = octave::interpreter::remove_atexit_function (arg);
+      bool found = interp.remove_atexit_fcn (arg);
 
       if (nargout > 0)
         retval = ovl (found);
@@ -239,6 +297,31 @@ from the list, so if a function was placed in the list multiple times with
 
 namespace octave
 {
+  temporary_file_list::~temporary_file_list (void)
+  {
+    cleanup ();
+  }
+
+  void temporary_file_list::insert (const std::string& file)
+  {
+    m_files.insert (file);
+  }
+
+  void temporary_file_list::cleanup (void)
+  {
+    while (! m_files.empty ())
+      {
+        auto it = m_files.begin ();
+
+        octave_unlink_wrapper (it->c_str ());
+
+        m_files.erase (it);
+      }
+  }
+
+  // The time we last time we changed directories.
+  sys::time Vlast_chdir_time = 0.0;
+
   // Execute commands from a file and catch potential exceptions in a consistent
   // way.  This function should be called anywhere we might parse and execute
   // commands from a file before we have entered the main loop in
@@ -247,27 +330,23 @@ namespace octave
   static int safe_source_file (const std::string& file_name,
                                const std::string& context = "",
                                bool verbose = false,
-                               bool require_file = true,
-                               const std::string& warn_for = "")
+                               bool require_file = true)
   {
+    interpreter& interp = __get_interpreter__ ("safe_source_file");
+
     try
       {
-        source_file (file_name, context, verbose, require_file, warn_for);
+        source_file (file_name, context, verbose, require_file);
       }
     catch (const interrupt_exception&)
       {
-        interpreter::recover_from_exception ();
+        interp.recover_from_exception ();
 
         return 1;
       }
     catch (const execution_exception& e)
       {
-        std::string stack_trace = e.info ();
-
-        if (! stack_trace.empty ())
-          std::cerr << stack_trace;
-
-        interpreter::recover_from_exception ();
+        interp.handle_exception (e);
 
         return 1;
       }
@@ -314,7 +393,7 @@ namespace octave
       {
         octave_set_xerbla_handler_ptr octave_set_xerbla_handler
           = reinterpret_cast<octave_set_xerbla_handler_ptr>
-          (libs.search ("octave_set_xerbla_handler"));
+              (libs.search ("octave_set_xerbla_handler"));
 
         if (octave_set_xerbla_handler)
           octave_set_xerbla_handler (xerbla_abort);
@@ -329,7 +408,7 @@ namespace octave
     verror_with_cfn (fmt, args);
     va_end (args);
 
-    octave_throw_execution_exception ();
+    throw execution_exception ();
   }
 
   OCTAVE_NORETURN static void
@@ -340,7 +419,7 @@ namespace octave
     verror_with_id_cfn (id, fmt, args);
     va_end (args);
 
-    octave_throw_execution_exception ();
+    throw execution_exception ();
   }
 
   static void initialize_error_handlers (void)
@@ -357,23 +436,29 @@ namespace octave
 
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context),
+      m_tmp_files (),
+      m_atexit_fcns (),
+      m_display_info (),
       m_environment (),
       m_settings (),
+      m_error_system (*this),
       m_help_system (*this),
       m_input_system (*this),
       m_output_system (*this),
       m_history_system (*this),
       m_dynamic_loader (*this),
-      m_load_path (),
+      m_load_path (*this),
       m_load_save_system (*this),
       m_type_info (),
-      m_symbol_table (),
+      m_symbol_table (*this),
       m_evaluator (*this),
       m_stream_list (*this),
       m_child_list (),
       m_url_handle_manager (),
       m_cdef_manager (*this),
       m_gtk_manager (),
+      m_event_manager (*this),
+      m_gh_manager (nullptr),
       m_interactive (false),
       m_read_site_files (true),
       m_read_init_files (m_app_context != nullptr),
@@ -381,6 +466,10 @@ namespace octave
       m_inhibit_startup_message (false),
       m_load_path_initialized (false),
       m_history_initialized (false),
+      m_in_top_level_repl (false),
+      m_cancel_quit (false),
+      m_executing_finish_script (false),
+      m_executing_atexit (false),
       m_initialized (false)
   {
     // FIXME: When thread_local storage is used by default, this message
@@ -395,6 +484,7 @@ namespace octave
     instance = this;
 
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
+    setlocale (LC_ALL, "");
     setlocale (LC_NUMERIC, "C");
     setlocale (LC_TIME, "C");
     sys::env::putenv ("LC_NUMERIC", "C");
@@ -405,11 +495,6 @@ namespace octave
 
     thread::init ();
 
-    // Initialize default warning state before --traditional option
-    // that may reset them.
-
-    initialize_default_warning_state ();
-
     octave_ieee_init ();
 
     initialize_xerbla_error_handler ();
@@ -417,9 +502,15 @@ namespace octave
     initialize_error_handlers ();
 
     if (m_app_context)
-      install_signal_handlers ();
+      {
+        install_signal_handlers ();
+        octave_unblock_signal_by_name ("SIGTSTP");
+      }
     else
       quit_allowed = false;
+
+    if (! m_app_context)
+      m_display_info.initialize ();
 
     bool line_editing = false;
     bool traditional = false;
@@ -452,8 +543,8 @@ namespace octave
         if (! image_path.empty ())
           m_environment.image_path (image_path);
 
-        if (options.no_window_system ())
-          display_info::no_window_system ();
+        if (! options.no_window_system ())
+          m_display_info.initialize ();
 
         // Is input coming from a terminal?  If so, we are probably
         // interactive.
@@ -511,6 +602,19 @@ namespace octave
           Ftexi_macros_file (*this, octave_value (texi_macros_file));
       }
 
+    // FIXME: we defer creation of the gh_manager object because it
+    // creates a root_figure object that requires the display_info
+    // object, but that is currently only accessible through the global
+    // interpreter object and that is not available until after the
+    // interpreter::instance pointer is set (above).  It would be better
+    // if m_gh_manager could be an object value instead of a pointer and
+    // created as part of the interpreter initialization.  To do that,
+    // we should either make the display_info object independent of the
+    // interpreter object (does it really need to cache any
+    // information?) or defer creation of the root_figure object until
+    // it is actually needed.
+    m_gh_manager = new gh_manager (*this);
+
     m_input_system.initialize (line_editing);
 
     // These can come after command line args since none of them set any
@@ -532,18 +636,13 @@ namespace octave
   interpreter::~interpreter (void)
   {
     cleanup ();
+
+    delete m_gh_manager;
   }
 
   void interpreter::intern_nargin (octave_idx_type nargs)
   {
-    // FIXME: should this explicitly be top_scope?
-    symbol_scope scope = m_symbol_table.current_scope ();
-
-    if (scope)
-      {
-        scope.assign (".nargin.", nargs);
-        scope.mark_hidden (".nargin.");
-      }
+    m_evaluator.set_auto_fcn_var (stack_frame::NARGIN, nargs);
   }
 
   // Read the history file unless a command-line option inhibits that.
@@ -635,6 +734,19 @@ namespace octave
 
     initialize_load_path ();
 
+    octave_save_signal_mask ();
+
+    can_interrupt = true;
+
+    octave_signal_hook = respond_to_pending_signals;
+    octave_interrupt_hook = nullptr;
+
+    catch_interrupts ();
+
+    // FIXME: could we eliminate this variable or make it not be global?
+    // Global used to communicate with signal handler.
+    octave_initialized = true;
+
     m_initialized = true;
   }
 
@@ -643,15 +755,13 @@ namespace octave
 
   int interpreter::execute (void)
   {
+    int exit_status = 0;
+
     try
       {
         initialize ();
 
-        // We ignore errors in startup files.
-
         execute_startup_files ();
-
-        int exit_status = 0;
 
         if (m_app_context)
           {
@@ -685,18 +795,16 @@ namespace octave
 
             if (options.forced_interactive ())
               command_editor::blink_matching_paren (false);
+
+            exit_status = main_loop ();
           }
-
-        // Avoid counting commands executed from startup or script files.
-
-        command_editor::reset_current_command_number (1);
-
-        return main_loop ();
       }
     catch (const exit_exception& ex)
       {
         return ex.exit_status ();
       }
+
+    return exit_status;
   }
 
   void interpreter::display_startup_message (void) const
@@ -718,7 +826,7 @@ namespace octave
   // occurs when reading any of them, but don't exit early because of an
   // exception.
 
-  int interpreter::execute_startup_files (void) const
+  int interpreter::execute_startup_files (void)
   {
     bool read_site_files = m_read_site_files;
     bool read_init_files = m_read_init_files;
@@ -765,6 +873,48 @@ namespace octave
 
     if (read_init_files)
       {
+        // Try to execute commands from the Matlab compatible startup.m file
+        // if it exists anywhere in the load path when starting Octave.
+        std::string ff_startup_m = file_in_path ("startup.m", "");
+
+        if (! ff_startup_m.empty ())
+          {
+            int parse_status = 0;
+
+            try
+              {
+                eval_string (std::string ("startup"), false, parse_status, 0);
+              }
+            catch (const interrupt_exception&)
+              {
+                recover_from_exception ();
+              }
+            catch (const execution_exception& e)
+              {
+                handle_exception (e);
+              }
+          }
+
+        // Try to execute commands from $CONFIG/octave/octaverc, where
+        // $CONFIG is the platform-dependent location for user local
+        // configuration files.
+
+        std::string user_config_dir = sys::env::get_user_config_directory ();
+
+        std::string cfg_dir = user_config_dir + sys::file_ops::dir_sep_str ()
+                              + "octave";
+
+        std::string cfg_rc = sys::env::make_absolute ("octaverc", cfg_dir);
+
+        if (! cfg_rc.empty ())
+          {
+            int status = safe_source_file (cfg_rc, context, verbose,
+                                           require_file);
+
+            if (status)
+              exit_status = status;
+          }
+
         // Try to execute commands from $HOME/$OCTAVE_INITFILE and
         // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set,
         // .octaverc is assumed.
@@ -828,27 +978,14 @@ namespace octave
 
   int interpreter::execute_eval_option_code (void)
   {
+    if (! m_app_context)
+      return 0;
+
     const cmdline_options& options = m_app_context->options ();
 
     std::string code_to_eval = options.code_to_eval ();
 
-    unwind_protect frame;
-
-    octave_save_signal_mask ();
-
-    can_interrupt = true;
-
-    octave_signal_hook = respond_to_pending_signals;
-    octave_interrupt_hook = nullptr;
-    octave_bad_alloc_hook = nullptr;
-
-    catch_interrupts ();
-
-    octave_initialized = true;
-
-    frame.add_method (this, &interpreter::interactive, m_interactive);
-
-    m_interactive = false;
+    unwind_protect_var<bool> upv (m_interactive, false);
 
     int parse_status = 0;
 
@@ -862,9 +999,9 @@ namespace octave
 
         return 1;
       }
-    catch (const execution_exception&)
+    catch (const execution_exception& e)
       {
-        recover_from_exception ();
+        handle_exception (e);
 
         return 1;
       }
@@ -874,21 +1011,12 @@ namespace octave
 
   int interpreter::execute_command_line_file (void)
   {
+    if (! m_app_context)
+      return 0;
+
     const cmdline_options& options = m_app_context->options ();
 
     unwind_protect frame;
-
-    octave_save_signal_mask ();
-
-    can_interrupt = true;
-
-    octave_signal_hook = respond_to_pending_signals;
-    octave_interrupt_hook = nullptr;
-    octave_bad_alloc_hook = nullptr;
-
-    catch_interrupts ();
-
-    octave_initialized = true;
 
     frame.add_method (this, &interpreter::interactive, m_interactive);
 
@@ -924,29 +1052,146 @@ namespace octave
     bool verbose = false;
     bool require_file = true;
 
-    return safe_source_file (fname, context, verbose, require_file, "octave");
+    return safe_source_file (fname, context, verbose, require_file);
   }
 
   int interpreter::main_loop (void)
   {
-    if (! m_app_context)
-      return 0;
-
-    octave_save_signal_mask ();
-
-    can_interrupt = true;
-
-    octave_signal_hook = respond_to_pending_signals;
-    octave_interrupt_hook = nullptr;
-    octave_bad_alloc_hook = nullptr;
-
-    catch_interrupts ();
-
-    octave_initialized = true;
+    int exit_status = 0;
 
     // The big loop.
 
-    return m_evaluator.repl (application::interactive ());
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+
+    input_reader reader (*this);
+
+    push_parser repl_parser (*this);
+
+#else
+
+    // The pull parser takes ownership of the lexer and will delete it
+    // when the parser goes out of scope.
+
+    parser repl_parser (m_interactive
+                        ? new lexer (*this) : new lexer (stdin, *this));
+
+#endif
+
+    do
+      {
+        try
+          {
+            unwind_protect_var<bool> upv (m_in_top_level_repl, true);
+
+            repl_parser.reset ();
+
+            if (m_evaluator.at_top_level ())
+              {
+                m_evaluator.dbstep_flag (0);
+                m_evaluator.reset_debug_state ();
+              }
+
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+
+            std::string prompt
+              = command_editor::decode_prompt_string (m_input_system.PS1 ());
+
+            do
+              {
+                // Reset status each time through the read loop so that
+                // it won't be set to -1 and cause us to exit the outer
+                // loop early if there is an exception while reading
+                // input or parsing.
+
+                exit_status = 0;
+
+                bool eof = false;
+                std::string input_line = reader.get_input (prompt, eof);
+
+                if (eof)
+                  {
+                    exit_status = EOF;
+                    break;
+                  }
+
+                exit_status = repl_parser.run (input_line, false);
+
+                prompt = command_editor::decode_prompt_string (m_input_system.PS2 ());
+              }
+            while (exit_status < 0);
+
+#else
+
+            exit_status = repl_parser.run ();
+
+#endif
+            if (exit_status == 0)
+              {
+                std::shared_ptr<tree_statement_list>
+                  stmt_list = repl_parser.statement_list ();
+
+                if (stmt_list)
+                  {
+                    command_editor::increment_current_command_number ();
+
+                    m_evaluator.eval (stmt_list, m_interactive);
+                  }
+                else if (repl_parser.at_end_of_input ())
+                  {
+                    exit_status = EOF;
+                    break;
+                  }
+              }
+          }
+        catch (const interrupt_exception&)
+          {
+            recover_from_exception ();
+
+            // Required newline when the user does Ctrl+C at the prompt.
+            if (m_interactive)
+              octave_stdout << "\n";
+          }
+        catch (const index_exception& e)
+          {
+            recover_from_exception ();
+
+            std::cerr << "error: unhandled index exception: "
+                      << e.message () << " -- trying to return to prompt"
+                      << std::endl;
+          }
+        catch (const execution_exception& ee)
+          {
+            m_error_system.save_exception (ee);
+            m_error_system.display_exception (ee, std::cerr);
+
+            if (m_interactive)
+              recover_from_exception ();
+            else
+              {
+                // We should exit with a nonzero status.
+                exit_status = 1;
+                break;
+              }
+          }
+        catch (const std::bad_alloc&)
+          {
+            recover_from_exception ();
+
+            std::cerr << "error: out of memory -- trying to return to prompt"
+                      << std::endl;
+          }
+      }
+    while (exit_status == 0);
+
+    if (exit_status == EOF)
+      {
+        if (m_interactive)
+          octave_stdout << "\n";
+
+        exit_status = 0;
+      }
+
+    return exit_status;
   }
 
   // Call a function with exceptions handled to avoid problems with
@@ -966,19 +1211,23 @@ namespace octave
     {                                                                   \
       try                                                               \
         {                                                               \
-          unwind_protect frame;                                 \
+          unwind_protect frame;                                         \
                                                                         \
-          frame.protect_var (Vdebug_on_error);                          \
-          frame.protect_var (Vdebug_on_warning);                        \
+          frame.add_method (m_error_system,                             \
+                            &error_system::set_debug_on_error,          \
+                            m_error_system.debug_on_error ());          \
+          frame.add_method (m_error_system,                             \
+                            &error_system::set_debug_on_warning,        \
+                            m_error_system.debug_on_warning ());        \
                                                                         \
-          Vdebug_on_error = false;                                      \
-          Vdebug_on_warning = false;                                    \
+          m_error_system.debug_on_error (false);                        \
+          m_error_system.debug_on_warning (false);                      \
                                                                         \
           F ARGS;                                                       \
         }                                                               \
-      OCTAVE_IGNORE_EXCEPTION (const exit_exception&)           \
-      OCTAVE_IGNORE_EXCEPTION (const interrupt_exception&)      \
-      OCTAVE_IGNORE_EXCEPTION (const execution_exception&)      \
+      OCTAVE_IGNORE_EXCEPTION (const exit_exception&)                   \
+      OCTAVE_IGNORE_EXCEPTION (const interrupt_exception&)              \
+      OCTAVE_IGNORE_EXCEPTION (const execution_exception&)              \
       OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&)                   \
     }                                                                   \
   while (0)
@@ -986,25 +1235,17 @@ namespace octave
   void interpreter::cleanup (void)
   {
     // If we are attached to a GUI, process pending events and
-    // disconnect the link.
+    // disable the link.
 
-    octave_link::process_events (true);
-    octave_link::disconnect_link ();
+    m_event_manager.process_events (true);
+    m_event_manager.disable ();
 
     OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
 
-    while (! atexit_functions.empty ())
-      {
-        std::string fcn = atexit_functions.front ();
+    // Any atexit functions added after this function call won't be
+    // executed.
 
-        atexit_functions.pop_front ();
-
-        OCTAVE_SAFE_CALL (reset_error_handler, ());
-
-        OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
-
-        OCTAVE_SAFE_CALL (flush_stdout, ());
-      }
+    execute_atexit_fcns ();
 
     // Do this explicitly so that destructors for mex file objects
     // are called, so that functions registered with mexAtExit are
@@ -1018,11 +1259,9 @@ namespace octave
     if (! command_history::ignoring_entries ())
       OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
 
-    OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
+    OCTAVE_SAFE_CALL (m_gh_manager->close_all_figures, ());
 
     m_gtk_manager.unload_all_toolkits ();
-
-    OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
 
     // FIXME:  May still need something like this to ensure that
     // destructors for class objects will run properly.  Should that be
@@ -1046,6 +1285,23 @@ namespace octave
     // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
   }
 
+  void interpreter::execute_atexit_fcns (void)
+  {
+    // Prevent atexit functions from adding new functions to the list.
+    m_executing_atexit = true;
+
+    while (! m_atexit_fcns.empty ())
+      {
+        std::string fcn = m_atexit_fcns.front ();
+
+        m_atexit_fcns.pop_front ();
+
+        OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
+
+        OCTAVE_SAFE_CALL (flush_stdout, ());
+      }
+  }
+
   tree_evaluator& interpreter::get_evaluator (void)
   {
     return m_evaluator;
@@ -1062,13 +1318,19 @@ namespace octave
   }
 
   symbol_scope
-  interpreter::get_current_scope (void)
+  interpreter::get_top_scope (void) const
   {
-    return m_symbol_table.current_scope ();
+    return m_evaluator.get_top_scope ();
   }
 
   symbol_scope
-  interpreter::require_current_scope (const std::string& who)
+  interpreter::get_current_scope (void) const
+  {
+    return m_evaluator.get_current_scope ();
+  }
+
+  symbol_scope
+  interpreter::require_current_scope (const std::string& who) const
   {
     symbol_scope scope = get_current_scope ();
 
@@ -1078,26 +1340,53 @@ namespace octave
     return scope;
   }
 
-  call_stack& interpreter::get_call_stack (void)
-  {
-    return m_evaluator.get_call_stack ();
-  }
-
   profiler& interpreter::get_profiler (void)
   {
     return m_evaluator.get_profiler ();
   }
 
-  void interpreter::mlock (void)
+  int interpreter::chdir (const std::string& dir)
   {
-    call_stack& cs = get_call_stack ();
+    std::string xdir = sys::file_ops::tilde_expand (dir);
 
-    octave_function *fcn = cs.current ();
+    int cd_ok = sys::env::chdir (xdir);
 
-    if (! fcn)
-      error ("mlock: invalid use outside a function");
+    if (! cd_ok)
+      error ("%s: %s", dir.c_str (), std::strerror (errno));
 
-    fcn->lock ();
+    Vlast_chdir_time.stamp ();
+
+    // FIXME: should these actions be handled as a list of functions
+    // to call so users can add their own chdir handlers?
+
+    m_load_path.update ();
+
+    m_event_manager.directory_changed (sys::env::get_current_directory ());
+
+    return cd_ok;
+  }
+
+  void interpreter::mlock (bool skip_first) const
+  {
+    m_evaluator.mlock (skip_first);
+  }
+
+  void interpreter::munlock (bool skip_first) const
+  {
+    m_evaluator.munlock (skip_first);
+  }
+
+  bool interpreter::mislocked (bool skip_first) const
+  {
+    return m_evaluator.mislocked (skip_first);
+  }
+
+  void interpreter::munlock (const char *nm)
+  {
+    if (! nm)
+      error ("munlock: invalid value for NAME");
+
+    munlock (std::string (nm));
   }
 
   void interpreter::munlock (const std::string& nm)
@@ -1111,6 +1400,14 @@ namespace octave
         if (fcn)
           fcn->unlock ();
       }
+  }
+
+  bool interpreter::mislocked (const char *nm)
+  {
+    if (! nm)
+      error ("mislocked: invalid value for NAME");
+
+    return mislocked (std::string (nm));
   }
 
   bool interpreter::mislocked (const std::string& nm)
@@ -1128,6 +1425,11 @@ namespace octave
       }
 
     return retval;
+  }
+
+  std::string interpreter::mfilename (const std::string& opt) const
+  {
+    return m_evaluator.mfilename (opt);
   }
 
   octave_value_list interpreter::eval_string (const std::string& eval_str,
@@ -1150,41 +1452,443 @@ namespace octave
     return m_evaluator.eval_string (arg, silent, parse_status, nargout);
   }
 
+  octave_value_list interpreter::eval (const std::string& try_code,
+                                       int nargout)
+  {
+    return m_evaluator.eval (try_code, nargout);
+  }
+
+  octave_value_list interpreter::eval (const std::string& try_code,
+                                       const std::string& catch_code,
+                                       int nargout)
+  {
+    return m_evaluator.eval (try_code, catch_code, nargout);
+  }
+
+  octave_value_list interpreter::evalin (const std::string& context,
+                                         const std::string& try_code,
+                                         int nargout)
+  {
+    return m_evaluator.evalin (context, try_code, nargout);
+  }
+
+  octave_value_list interpreter::evalin (const std::string& context,
+                                         const std::string& try_code,
+                                         const std::string& catch_code,
+                                         int nargout)
+  {
+    return m_evaluator.evalin (context, try_code, catch_code, nargout);
+  }
+
+  //! Evaluate an Octave function (built-in or interpreted) and return
+  //! the list of result values.
+  //!
+  //! @param name The name of the function to call.
+  //! @param args The arguments to the function.
+  //! @param nargout The number of output arguments expected.
+  //! @return A list of output values.  The length of the list is not
+  //!         necessarily the same as @c nargout.
+
+  octave_value_list interpreter::feval (const char *name,
+                                        const octave_value_list& args,
+                                        int nargout)
+  {
+    return feval (std::string (name), args, nargout);
+  }
+
+  octave_value_list interpreter::feval (const std::string& name,
+                                        const octave_value_list& args,
+                                        int nargout)
+  {
+    octave_value fcn = m_symbol_table.find_function (name, args);
+
+    if (fcn.is_undefined ())
+      error ("feval: function '%s' not found", name.c_str ());
+
+    octave_function *of = fcn.function_value ();
+
+    return of->call (m_evaluator, nargout, args);
+  }
+
+  octave_value_list interpreter::feval (octave_function *fcn,
+                                        const octave_value_list& args,
+                                        int nargout)
+  {
+    if (fcn)
+      return fcn->call (m_evaluator, nargout, args);
+
+    return octave_value_list ();
+  }
+
+  octave_value_list interpreter::feval (const octave_value& val,
+                                        const octave_value_list& args,
+                                        int nargout)
+  {
+    // FIXME: do we really want to silently return an empty ovl if
+    // the function object is undefined?  It's essentially what the
+    // version above that accepts a pointer to an octave_function
+    // object does and some code was apparently written to rely on it
+    // (for example, __ode15__).
+
+    if (val.is_undefined ())
+      return ovl ();
+
+    if (val.is_function ())
+      {
+        return feval (val.function_value (), args, nargout);
+      }
+    else if (val.is_function_handle ())
+      {
+        // This covers function handles, inline functions, and anonymous
+        //  functions.
+
+        std::list<octave_value_list> arg_list;
+        arg_list.push_back (args);
+
+        // FIXME: could we make octave_value::subsref a const method?
+        // It would be difficult because there are instances of
+        // incrementing the reference count inside subsref methods,
+        // which means they can't be const with the current way of
+        // handling reference counting.
+
+        octave_value xval = val;
+        return xval.subsref ("(", arg_list, nargout);
+      }
+    else if (val.is_string ())
+      {
+        return feval (val.string_value (), args, nargout);
+      }
+    else
+      error ("feval: first argument must be a string, inline function, or a function handle");
+
+    return ovl ();
+  }
+
+  //! Evaluate an Octave function (built-in or interpreted) and return
+  //! the list of result values.
+  //!
+  //! @param args The first element of @c args is the function to call.
+  //!             It may be the name of the function as a string, a function
+  //!             handle, or an inline function.  The remaining arguments are
+  //!             passed to the function.
+  //! @param nargout The number of output arguments expected.
+  //! @return A list of output values.  The length of the list is not
+  //!         necessarily the same as @c nargout.
+
+  octave_value_list interpreter::feval (const octave_value_list& args,
+                                        int nargout)
+  {
+    if (args.length () == 0)
+      error ("feval: first argument must be a string, inline function, or a function handle");
+
+    octave_value f_arg = args(0);
+
+    octave_value_list tmp_args = args.slice (1, args.length () - 1, true);
+
+    return feval (f_arg, tmp_args, nargout);
+  }
+
+  void interpreter::install_variable (const std::string& name,
+                                      const octave_value& value, bool global)
+  {
+    m_evaluator.install_variable (name, value, global);
+  }
+
+  octave_value interpreter::global_varval (const std::string& name) const
+  {
+    return m_evaluator.global_varval (name);
+  }
+
+  void interpreter::global_assign (const std::string& name,
+                                   const octave_value& val)
+  {
+    m_evaluator.global_assign (name, val);
+  }
+
+  octave_value interpreter::top_level_varval (const std::string& name) const
+  {
+    return m_evaluator.top_level_varval (name);
+  }
+
+  void interpreter::top_level_assign (const std::string& name,
+                                      const octave_value& val)
+  {
+    m_evaluator.top_level_assign (name, val);
+  }
+
+  bool interpreter::is_variable (const std::string& name) const
+  {
+    return m_evaluator.is_variable (name);
+  }
+
+  bool interpreter::is_local_variable (const std::string& name) const
+  {
+    return m_evaluator.is_local_variable (name);
+  }
+
+  octave_value interpreter::varval (const std::string& name) const
+  {
+    return m_evaluator.varval (name);
+  }
+
+  void interpreter::assign (const std::string& name,
+                            const octave_value& val)
+  {
+    m_evaluator.assign (name, val);
+  }
+
+  void interpreter::assignin (const std::string& context,
+                              const std::string& name,
+                              const octave_value& val)
+  {
+    m_evaluator.assignin (context, name, val);
+  }
+
+  void interpreter::source_file (const std::string& file_name,
+                                 const std::string& context, bool verbose,
+                                 bool require_file)
+  {
+    m_evaluator.source_file (file_name, context, verbose, require_file);
+  }
+
+  bool interpreter::at_top_level (void) const
+  {
+    return m_evaluator.at_top_level ();
+  }
+
+  bool interpreter::isglobal (const std::string& name) const
+  {
+    return m_evaluator.is_global (name);
+  }
+
+  octave_value interpreter::find (const std::string& name)
+  {
+    return m_evaluator.find (name);
+  }
+
+  void interpreter::clear_all (bool force)
+  {
+    m_evaluator.clear_all (force);
+  }
+
+  void interpreter::clear_objects (void)
+  {
+    m_evaluator.clear_objects ();
+  }
+
+  void interpreter::clear_variable (const std::string& name)
+  {
+    m_evaluator.clear_variable (name);
+  }
+
+  void interpreter::clear_variable_pattern (const std::string& pattern)
+  {
+    m_evaluator.clear_variable_pattern (pattern);
+  }
+
+  void interpreter::clear_variable_regexp (const std::string& pattern)
+  {
+    m_evaluator.clear_variable_regexp (pattern);
+  }
+
+  void interpreter::clear_variables (void)
+  {
+    m_evaluator.clear_variables ();
+  }
+
+  void interpreter::clear_global_variable (const std::string& name)
+  {
+    m_evaluator.clear_global_variable (name);
+  }
+
+  void interpreter::clear_global_variable_pattern (const std::string& pattern)
+  {
+    m_evaluator.clear_global_variable_pattern (pattern);
+  }
+
+  void interpreter::clear_global_variable_regexp (const std::string& pattern)
+  {
+    m_evaluator.clear_global_variable_regexp (pattern);
+  }
+
+  void interpreter::clear_global_variables (void)
+  {
+    m_evaluator.clear_global_variables ();
+  }
+
+  void interpreter::clear_functions (bool force)
+  {
+    m_symbol_table.clear_functions (force);
+  }
+
+  void interpreter::clear_function (const std::string& name)
+  {
+    m_symbol_table.clear_function (name);
+  }
+
+  void interpreter::clear_symbol (const std::string& name)
+  {
+    m_evaluator.clear_symbol (name);
+  }
+
+  void interpreter::clear_function_pattern (const std::string& pat)
+  {
+    m_symbol_table.clear_function_pattern (pat);
+  }
+
+  void interpreter::clear_function_regexp (const std::string& pat)
+  {
+    m_symbol_table.clear_function_regexp (pat);
+  }
+
+  void interpreter::clear_symbol_pattern (const std::string& pat)
+  {
+    return m_evaluator.clear_symbol_pattern (pat);
+  }
+
+  void interpreter::clear_symbol_regexp (const std::string& pat)
+  {
+    return m_evaluator.clear_symbol_regexp (pat);
+  }
+
+  std::list<std::string> interpreter::global_variable_names (void)
+  {
+    return m_evaluator.global_variable_names ();
+  }
+
+  std::list<std::string> interpreter::top_level_variable_names (void)
+  {
+    return m_evaluator.top_level_variable_names ();
+  }
+
+  std::list<std::string> interpreter::variable_names (void)
+  {
+    return m_evaluator.variable_names ();
+  }
+
+  std::list<std::string> interpreter::user_function_names (void)
+  {
+    return m_symbol_table.user_function_names ();
+  }
+
+  std::list<std::string> interpreter::autoloaded_functions (void) const
+  {
+    return m_evaluator.autoloaded_functions ();
+  }
+
+  void interpreter::handle_exception (const execution_exception& e)
+  {
+    m_error_system.save_exception (e);
+
+    // FIXME: use a separate stream instead of std::cerr directly so that
+    // error messages can be redirected more easily?  Pass the message
+    // to an event manager function?
+    m_error_system.display_exception (e, std::cerr);
+
+    recover_from_exception ();
+  }
+
   void interpreter::recover_from_exception (void)
   {
     can_interrupt = true;
     octave_interrupt_state = 0;
     octave_signal_caught = 0;
-    octave_exception_state = octave_no_exception;
     octave_restore_signal_mask ();
     catch_interrupts ();
   }
 
-  // Functions to call when the interpreter exits.
-
-  std::list<std::string> interpreter::atexit_functions;
-
-  void interpreter::add_atexit_function (const std::string& fname)
+  void interpreter::mark_for_deletion (const std::string& file)
   {
-    atexit_functions.push_front (fname);
+    m_tmp_files.insert (file);
   }
 
-  bool interpreter::remove_atexit_function (const std::string& fname)
+  void interpreter::cleanup_tmp_files (void)
+  {
+    m_tmp_files.cleanup ();
+  }
+
+  void interpreter::quit (int exit_status, bool force, bool confirm)
+  {
+    if (! force)
+      {
+        try
+          {
+            bool cancel = false;
+
+            if (symbol_exist ("finish.m", "file"))
+              {
+                unwind_protect_var<bool> upv1 (m_executing_finish_script, true);
+                unwind_protect_var<bool> upv2 (m_cancel_quit);
+
+                evalin ("base", "finish", 0);
+
+                cancel = m_cancel_quit;
+              }
+
+            if (cancel)
+              return;
+
+            // Check for confirmation.
+
+            if (confirm && ! m_event_manager.confirm_shutdown ())
+              return;
+          }
+        catch (const execution_exception&)
+          {
+            // Catch execution_exceptions so we don't throw an
+            // exit_exception if there is an in finish.m.  But throw it
+            // again so that will be handled as any other
+            // execution_exception by the evaluator.  This way, errors
+            // will be ignored properly and we won't exit if quit is
+            // called recursively from finish.m.
+
+            throw;
+          }
+      }
+
+    throw exit_exception (exit_status);
+  }
+
+  void interpreter::add_atexit_fcn (const std::string& fname)
+  {
+    if (m_executing_atexit)
+      return;
+
+    m_atexit_fcns.push_front (fname);
+  }
+
+  bool interpreter::remove_atexit_fcn (const std::string& fname)
   {
     bool found = false;
 
-    for (auto it = atexit_functions.begin ();
-         it != atexit_functions.end (); it++)
+    for (auto it = m_atexit_fcns.begin ();
+         it != m_atexit_fcns.end (); it++)
       {
         if (*it == fname)
           {
-            atexit_functions.erase (it);
+            m_atexit_fcns.erase (it);
             found = true;
             break;
           }
       }
 
     return found;
+  }
+
+  void interpreter::add_atexit_function (const std::string& fname)
+  {
+    interpreter& interp
+      = __get_interpreter__ ("interpreter::add_atexit_function");
+
+    interp.add_atexit_fcn (fname);
+  }
+
+  bool interpreter::remove_atexit_function (const std::string& fname)
+  {
+    interpreter& interp
+      = __get_interpreter__ ("interpreter::remove_atexit_function");
+
+    return interp.remove_atexit_fcn (fname);
   }
 
   // What internal options get configured by --traditional.
@@ -1201,7 +1905,7 @@ namespace octave
 
     m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
 
-    Fbeep_on_error (octave_value (true));
+    m_error_system.beep_on_error (true);
     Fconfirm_recursive_rmdir (octave_value (false));
 
     Fdisable_diagonal_matrix (octave_value (true));
@@ -1212,6 +1916,7 @@ namespace octave
     Fstruct_levels_to_print (octave_value (0));
 
     disable_warning ("Octave:abbreviated-property-match");
+    disable_warning ("Octave:colon-nonscalar-argument");
     disable_warning ("Octave:data-file-in-path");
     disable_warning ("Octave:function-name-clash");
     disable_warning ("Octave:possible-matlab-short-circuit-operator");
@@ -1223,13 +1928,13 @@ namespace octave
       {
         m_load_path.execute_pkg_add (dir);
       }
-    catch (const octave::interrupt_exception&)
+    catch (const interrupt_exception&)
       {
-        octave::interpreter::recover_from_exception ();
+        recover_from_exception ();
       }
-    catch (const octave::execution_exception&)
+    catch (const execution_exception& e)
       {
-        octave::interpreter::recover_from_exception ();
+        handle_exception (e);
       }
   }
 }

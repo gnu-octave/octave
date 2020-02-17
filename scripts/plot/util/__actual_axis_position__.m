@@ -1,4 +1,9 @@
-## Copyright (C) 2009-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2009-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,14 +20,14 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} __actual_axis_position__ (@var{h})
 ## @deftypefnx {} {} __actual_axis_position__ (@var{axis_struct})
 ## Undocumented internal function.
 ## @end deftypefn
-
-## Author: Ben Abbott
 
 function pos = __actual_axis_position__ (h)
 
@@ -40,8 +45,8 @@ function pos = __actual_axis_position__ (h)
     set (axis_obj.parent, "units", "pixels");
     fig_position = get (axis_obj.parent, "position");
   unwind_protect_cleanup
-    set (axis_obj.parent, "units", orig_fig_units);
-    set (axis_obj.parent, "position", orig_fig_position);
+    set (axis_obj.parent, "units", orig_fig_units,
+                          "position", orig_fig_position);
   end_unwind_protect
   ## Get axes size in pixels
   if (strcmp (get (axis_obj.parent, "__graphics_toolkit__"), "gnuplot")

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_pr_flt_fmt_h)
 #define octave_pr_flt_fmt_h 1
@@ -47,10 +50,10 @@ float_format
 public:
 
   float_format (int w = 0, int p = output_precision (), int f = 0)
-    : fw (w), ex (0), prec (p), fmt (f), up (0), sp (0) { }
+    : m_fw (w), m_ex (0), m_prec (p), m_fmt (f), m_up (0), m_sp (0) { }
 
   float_format (int w, int e, int p, int f)
-    : fw (w), ex (e), prec (p), fmt (f), up (0), sp (0) { }
+    : m_fw (w), m_ex (e), m_prec (p), m_fmt (f), m_up (0), m_sp (0) { }
 
   float_format (const float_format&) = default;
 
@@ -60,51 +63,112 @@ public:
 
   float_format& scientific (void)
   {
-    fmt = std::ios::scientific;
+    m_fmt = std::ios::scientific;
     return *this;
   }
 
   float_format& fixed (void)
   {
-    fmt = std::ios::fixed;
+    m_fmt = std::ios::fixed;
     return *this;
   }
 
   float_format& general (void)
   {
-    fmt = 0;
+    m_fmt = 0;
     return *this;
   }
 
   float_format& uppercase (void)
   {
-    up = std::ios::uppercase;
+    m_up = std::ios::uppercase;
     return *this;
   }
 
   float_format& lowercase (void)
   {
-    up = 0;
+    m_up = 0;
     return *this;
   }
 
   float_format& precision (int p)
   {
-    prec = p;
+    m_prec = p;
     return *this;
   }
 
   float_format& width (int w)
   {
-    fw = w;
+    m_fw = w;
+    return *this;
+  }
+
+  float_format& exponent_width (int w)
+  {
+    m_ex = w;
     return *this;
   }
 
   float_format& trailing_zeros (bool tz = true)
 
   {
-    sp = (tz ? std::ios::showpoint : 0);
+    m_sp = (tz ? std::ios::showpoint : 0);
     return *this;
+  }
+
+  std::ios::fmtflags format_flags (void) const
+  {
+    return static_cast<std::ios::fmtflags> (m_fmt | m_up | m_sp);
+  }
+
+  int format (void) const
+  {
+    return m_fmt;
+  }
+
+  bool is_scientific (void) const
+  {
+    return m_fmt == std::ios::scientific;
+  }
+
+  bool is_fixed (void) const
+  {
+    return m_fmt == std::ios::fixed;
+  }
+
+  bool is_general (void) const
+  {
+    return m_fmt == 0;
+  }
+
+  bool is_uppercase (void) const
+  {
+    return m_up == std::ios::uppercase;
+  }
+
+  bool is_lowercase (void) const
+  {
+    return m_up == 0;
+  }
+
+  int precision (void) const
+  {
+    return m_prec;
+  }
+
+  int width (void) const
+  {
+    return m_fw;
+  }
+
+  int exponent_width (void) const
+  {
+    return m_ex;
+  }
+
+  bool show_trailing_zeros (void) const
+  {
+    return m_sp == std::ios::showpoint;
   }
 
   template <typename T>
@@ -119,23 +183,25 @@ public:
   friend std::ostream&
   operator << (std::ostream& os, const pr_rational_float<T>& prf);
 
+private:
+
   // Field width.  Zero means as wide as necessary.
-  int fw;
+  int m_fw;
 
   // Exponent Field width.  Zero means as wide as necessary.
-  int ex;
+  int m_ex;
 
   // Precision.
-  int prec;
+  int m_prec;
 
   // Format.
-  int fmt;
+  int m_fmt;
 
   // E or e.
-  int up;
+  int m_up;
 
   // Show trailing zeros.
-  int sp;
+  int m_sp;
 };
 
 class
@@ -169,8 +235,8 @@ public:
 
   void set_precision (int prec)
   {
-    m_real_fmt.prec = prec;
-    m_imag_fmt.prec = prec;
+    m_real_fmt.precision (prec);
+    m_imag_fmt.precision (prec);
   }
 
 private:

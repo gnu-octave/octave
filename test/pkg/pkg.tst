@@ -1,4 +1,9 @@
-## Copyright (C) 2018-2019 JuanPi Carbajal
+########################################################################
+##
+## Copyright (C) 2018-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ############################################################
 ## Test suite for pkg.m
@@ -91,6 +98,7 @@
 
 ## Action load/unload (within install/uninstall)
 %!testif HAVE_Z
+%! save_default_options ("-binary", "local");
 %! for i = 1:numel (mfile_pkg_name)
 %!   name = mfile_pkg_name{i};
 %!   silent_pkg_install ("-local", mfile_pkg_tgz{i});

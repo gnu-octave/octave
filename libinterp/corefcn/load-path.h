@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 2006-2019 John W. Eaton
-Copyright (C) 2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2006-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_load_path_h)
 #define octave_load_path_h 1
@@ -45,7 +47,7 @@ namespace octave
   {
   public:
 
-    load_path (void);
+    load_path (interpreter& interp);
 
     typedef void (*hook_fcn_ptr) (const std::string& dir);
 
@@ -70,6 +72,9 @@ namespace octave
     void update (void) const;
 
     bool contains_canonical (const std::string& dir_name) const;
+
+    bool contains_file_in_dir (const std::string& file_name,
+                               const std::string& dir_name);
 
     std::string find_method (const std::string& class_name,
                              const std::string& meth,
@@ -204,11 +209,11 @@ namespace octave
 
     std::string system_path (void) const { return sys_path; }
 
-  private:
-
     static const int M_FILE = 1;
     static const int OCT_FILE = 2;
     static const int MEX_FILE = 4;
+
+  private:
 
     class dir_info
     {
@@ -506,6 +511,8 @@ namespace octave
 
     typedef package_map_type::const_iterator const_package_map_iterator;
     typedef package_map_type::iterator package_map_iterator;
+
+    interpreter& m_interpreter;
 
     mutable package_map_type package_map;
 

@@ -1,4 +1,9 @@
-## Copyright (C) 2004-2019 Paul Kienzle
+########################################################################
+##
+## Copyright (C) 2004-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 ##
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
@@ -39,16 +46,6 @@
 ##
 ## @seealso{sprandn, sprandsym, rand}
 ## @end deftypefn
-
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-##
-## Changelog:
-##
-## Piotr Krzyzanowski <przykry2004@users.sf.net>
-##      2004-09-27      use Paul's hint to allow larger random matrices
-##                      at the price of sometimes lower density than desired
-## David Bateman
-##      2004-10-20      Texinfo help and copyright message
 
 function s = sprand (m, n, d, rc)
 
@@ -96,16 +93,22 @@ endfunction
 %!test
 %! s = sprand (1e6, 1e6, 1e-7);
 
+## Test empty array creation
+%!assert (size (sprand (0, 0, 0.5)), [0, 0])
+%!assert (size (sprand (0, 3, 0.5)), [0, 3])
+%!assert (size (sprand (3, 0, 0.5)), [3, 0])
+
 ## Test input validation
 %!error sprand ()
 %!error sprand (1, 2)
 %!error sprand (1, 2, 3, 4)
-%!error <M must be an integer greater than 0> sprand (ones (3), 3, 0.5)
-%!error <M must be an integer greater than 0> sprand (3.5, 3, 0.5)
-%!error <M must be an integer greater than 0> sprand (0, 3, 0.5)
-%!error <N must be an integer greater than 0> sprand (3, ones (3), 0.5)
-%!error <N must be an integer greater than 0> sprand (3, 3.5, 0.5)
-%!error <N must be an integer greater than 0> sprand (3, 0, 0.5)
+%!error <M must be a non-negative integer> sprand (-1, -1, 0.5)
+%!error <M must be a non-negative integer> sprand (ones (3), 3, 0.5)
+%!error <M must be a non-negative integer> sprand (3.5, 3, 0.5)
+%!error <M must be a non-negative integer> sprand (-1, 3, 0.5)
+%!error <N must be a non-negative integer> sprand (3, ones (3), 0.5)
+%!error <N must be a non-negative integer> sprand (3, 3.5, 0.5)
+%!error <N must be a non-negative integer> sprand (3, -1, 0.5)
 %!error <D must be between 0 and 1> sprand (3, 3, -1)
 %!error <D must be between 0 and 1> sprand (3, 3, 2)
 %!error <RC must be a scalar or vector> sprand (2, 2, 0.2, ones (3,3))

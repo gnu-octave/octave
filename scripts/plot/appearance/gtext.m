@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} gtext (@var{s})
@@ -24,16 +31,33 @@
 ## @deftypefnx {} {@var{h} =} gtext (@dots{})
 ## Place text on the current figure using the mouse.
 ##
-## The text is defined by the string @var{s}.  If @var{s} is a cell string
-## organized as a row vector then each string of the cell array is written to a
-## separate line.  If @var{s} is organized as a column vector then one string
-## element of the cell array is placed for every mouse click.
+## The string argument @var{s} may be a character array or a cell array
+## of strings.  If @var{s} has more than one row, each row is used
+## to create a separate text object after a mouse click.  For example:
 ##
-## Optional property/value pairs are passed directly to the underlying text
-## objects.
+## Place a single string after one mouse click
 ##
-## The optional return value @var{h} is a graphics handle to the created
-## text object(s).
+## @example
+## gtext ("I clicked here")
+## @end example
+##
+## Place two strings after two mouse clicks
+##
+## @example
+## gtext (@{"I clicked here"; "and there"@})
+## @end example
+##
+## Place two strings, each with two lines, after two mouse clicks
+##
+## @example
+## gtext (@{"I clicked", "here"; "and", "there"@})
+## @end example
+##
+## Optional @var{property}/@var{value} pairs are passed directly to the
+## underlying text objects.
+##
+## The optional return value @var{h} holds the graphics handle(s) to the
+## created text object(s).
 ## @seealso{ginput, text}
 ## @end deftypefn
 
@@ -44,20 +68,15 @@ function h = gtext (s, varargin)
   endif
 
   if (! (ischar (s) || iscellstr (s)))
-    error ("gtext: S must be a string or cell array of strings");
+    error ("gtext: S must a character array or cell array of strings");
   endif
 
-  htmp = -1;
+  htmp = [];
   if (! isempty (s))
-    if (ischar (s) || isrow (s))
+    for i = 1:rows (s)
       [x, y] = ginput (1);
-      htmp = text (x, y, s, varargin{:});
-    else
-      for i = 1:numel (s)
-        [x, y] = ginput (1);
-        htmp = text (x, y, s{i}, varargin{:});
-      endfor
-    endif
+      htmp = [htmp, text(x, y, s(i,:), varargin{:})];
+    endfor
   endif
 
   if (nargout > 0)

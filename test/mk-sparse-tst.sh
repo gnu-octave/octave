@@ -1,6 +1,11 @@
 #! /bin/sh
 
-# Copyright (C) 2006-2019 David Bateman
+########################################################################
+#
+# Copyright (C) 2006-2020 The Octave Project Developers
+#
+# See the file COPYRIGHT.md in the top-level directory of this
+# distribution or <https://octave.org/copyright/>.
 #
 # This file is part of Octave.
 #
@@ -17,6 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <https://www.gnu.org/licenses/>.
+#
+########################################################################
 
 # Some tests are commented out because they are known to be broken!
 # Search for "# fails"
@@ -209,12 +216,7 @@ gen_specific_tests() {
 %!assert (nnz (sparse (1,1,0)), 0)
 %!assert (nnz (sparse (eye (3))*0), 0)
 %!assert (nnz (sparse (eye (3))-sparse (eye (3))), 0)
-
-%!test
-%! wdbz = warning ("query", "Octave:divide-by-zero");
-%! warning ("off", "Octave:divide-by-zero");
-%! assert (full (sparse (eye (3))/0), full (eye (3)/0));
-%! warning (wdbz.state, "Octave:divide-by-zero");
+%!assert (full (sparse (eye (3))/0), full (eye (3)/0));
 
 EOF
 }

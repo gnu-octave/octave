@@ -1,5 +1,9 @@
-## Copyright (C) 2005-2019 Søren Hauberg
-## Copyright (C) 2010 VZLU Prague, a.s.
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} load_packages_and_dependencies (@var{idx}, @var{handle_deps}, @var{installed_pkgs_lst}, @var{global_install})
@@ -43,10 +49,12 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
     endif
   endfor
 
-  ## Load the packages.
-  if (length (dirs) > 0)
-    addpath (dirs{:});
-  endif
+  ## Dependencies are sorted before their dependers in "dirs". Add them
+  ## consecutively in a for loop to the path to make sure dependencies are
+  ## added before their dependers (bug #57403).
+  for ii = 1:numel (dirs)
+    addpath (dirs{ii});
+  endfor
 
   ## Add the binaries to exec_path.
   if (! strcmp (EXEC_PATH, execpath))

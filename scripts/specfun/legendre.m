@@ -1,5 +1,9 @@
-## Copyright (C) 2000-2019 Kai Habel
-## Copyright (C) 2008 Marco Caliari
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{l} =} legendre (@var{n}, @var{x})
@@ -157,8 +163,6 @@
 ## @end ifnottex
 ## @end deftypefn
 
-## Author: Marco Caliari <marco.caliari@univr.it>
-
 function retval = legendre (n, x, normalization)
 
   persistent warned_overflow = false;
@@ -196,9 +200,9 @@ function retval = legendre (n, x, normalization)
 
   ## Based on the recurrence relation below
   ##            m                 m              m
-  ## (n-m+1) * P (x) = (2*n+1)*x*P (x)  - (n+1)*P (x)
+  ## (n-m+1) * P (x) = (2*n+1)*x*P (x)  - (n+m)*P (x)
   ##            n+1               n              n-1
-  ## http://en.wikipedia.org/wiki/Associated_Legendre_function
+  ## https://en.wikipedia.org/wiki/Associated_Legendre_polynomials
 
   overflow = false;
   retval = zeros ([n+1, size(x)]);

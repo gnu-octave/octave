@@ -1,4 +1,9 @@
-## Copyright (C) 2006-2019 Daniel Sebald
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{version} =} __gnuplot_version__ ()
@@ -36,7 +43,7 @@ function version = __gnuplot_version__ ()
       ## are skipped and people might actually see the message, read it,
       ## comprehend it, take the advice it gives, and stop asking us
       ## why plotting fails when gnuplot is not found.
-      error ("you must have gnuplot installed to display graphics; if you have gnuplot installed in a non-standard location, see the 'gnuplot_binary' function\n");
+      error ("The gnuplot executable '%s' was not found or does not work.  If you have gnuplot installed in a non-standard location, see the 'gnuplot_binary' function\n", gnuplot_binary ());
     endif
     output = strrep (output, "gnuplot", "");
     output = strrep (output, "patchlevel", ".");

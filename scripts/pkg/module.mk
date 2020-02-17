@@ -1,5 +1,5 @@
 FCN_FILE_DIRS += \
-  scripts/pkg \
+  %reldir% \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
@@ -8,9 +8,12 @@ FCN_FILE_DIRS += \
   %reldir%/private/default_prefix.m \
   %reldir%/private/describe.m \
   %reldir%/private/dirempty.m \
+  %reldir%/private/expand_rel_paths.m \
+  %reldir%/private/standardize_paths.m \
   %reldir%/private/get_description.m \
   %reldir%/private/get_forge_download.m \
   %reldir%/private/get_forge_pkg.m \
+  %reldir%/private/get_inverse_dependencies.m \
   %reldir%/private/get_unsatisfied_deps.m \
   %reldir%/private/getarch.m \
   %reldir%/private/getarchdir.m \
@@ -19,6 +22,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/list_forge_packages.m \
   %reldir%/private/load_packages.m \
   %reldir%/private/load_packages_and_dependencies.m \
+  %reldir%/private/make_rel_paths.m \
   %reldir%/private/rebuild.m \
   %reldir%/private/save_order.m \
   %reldir%/private/uninstall.m \

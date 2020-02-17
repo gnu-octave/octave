@@ -1,5 +1,9 @@
-## Copyright (C) 2006-2019 Frederick (Rick) A Niles
-##               and Søren Hauberg
+########################################################################
+##
+## Copyright (C) 2006-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -16,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{in} =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
@@ -32,12 +38,7 @@
 ## @seealso{delaunay}
 ## @end deftypefn
 
-## Author: Frederick (Rick) A Niles <niles@rickniles.com>
-## Created: 14 November 2006
-
-## Vectorized by Søren Hauberg <soren@hauberg.org>
-
-## The method for determining if a point is in a polygon is based on
+## Algorithm: The method for determining if a point is in a polygon is based on
 ## the algorithm shown on
 ## http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
 ## and is credited to Randolph Franklin.

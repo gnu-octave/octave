@@ -1,48 +1,53 @@
-/*
-
-Copyright (C) 2013-2019 John Donoghue
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 #if ! defined (octave_find_files_dialog_h)
 #define octave_find_files_dialog_h 1
 
 #include <QDialog>
-#include <QModelIndex>
 #include <QFileInfo>
+#include <QModelIndex>
 
+class QCheckBox;
+class QDirIterator;
 class QLineEdit;
 class QPushButton;
+class QStatusBar;
 class QTableView;
 class QTimer;
-class QDirIterator;
-class QCheckBox;
-class QStatusBar;
 
 namespace octave
 {
+  class base_qobject;
+
   class find_files_dialog : public QDialog
   {
     Q_OBJECT
 
   public:
 
-    find_files_dialog (QWidget *parent = nullptr);
+    find_files_dialog (QWidget *parent, base_qobject& oct_qobj);
 
     virtual ~find_files_dialog (void);
 
@@ -69,6 +74,8 @@ namespace octave
   private:
 
     bool is_match (const QFileInfo& info);
+
+    base_qobject& m_octave_qobj;
 
     QLineEdit *m_start_dir_edit;
     QLineEdit *m_file_name_edit;

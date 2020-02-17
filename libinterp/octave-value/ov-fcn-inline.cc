@@ -1,28 +1,31 @@
-/*
-
-Copyright (C) 2004-2019 David Bateman
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-In addition to the terms of the GPL, you are permitted to link
-this program with any Open Source program, as defined by the
-Open Source Initiative (www.opensource.org)
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2004-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+// In addition to the terms of the GPL, you are permitted to link
+// this program with any Open Source program, as defined by the
+// Open Source Initiative (www.opensource.org)
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -35,7 +38,6 @@ Open Source Initiative (www.opensource.org)
 
 #include "oct-locbuf.h"
 
-#include "call-stack.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -64,7 +66,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_inline,
 octave_fcn_inline::octave_fcn_inline (const std::string& f,
                                       const string_vector& a,
                                       const std::string& n)
-  : octave_fcn_handle (n), iftext (f), ifargs (a)
+  : octave_fcn_handle (n), m_text (f), m_args (a)
 {
   // Form a string representing the function.
 
@@ -72,15 +74,15 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
   buf << "@(";
 
-  for (int i = 0; i < ifargs.numel (); i++)
+  for (int i = 0; i < m_args.numel (); i++)
     {
       if (i > 0)
         buf << ", ";
 
-      buf << ifargs(i);
+      buf << m_args(i);
     }
 
-  buf << ") " << iftext;
+  buf << ") " << m_text;
 
   octave::interpreter& interp
     = octave::__get_interpreter__ ("octave_fcn_inline::octave_fcn_inline");
@@ -95,15 +97,15 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
       if (fh)
         {
-          fcn = fh->fcn_val ();
+          m_fcn = fh->fcn_val ();
 
-          octave_user_function *uf = fcn.user_function_value ();
+          octave_user_function *uf = m_fcn.user_function_value ();
 
           if (uf)
             {
-              octave::call_stack& cs = interp.get_call_stack ();
+              octave::tree_evaluator& tw = interp.get_evaluator ();
 
-              octave_function *curr_fcn = cs.current ();
+              octave_function *curr_fcn = tw.current_function ();
 
               if (curr_fcn)
                 {
@@ -119,7 +121,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
         }
     }
 
-  if (fcn.is_undefined ())
+  if (m_fcn.is_undefined ())
     error ("inline: unable to define function");
 }
 
@@ -152,15 +154,15 @@ octave_fcn_inline::map_value (void) const
 bool
 octave_fcn_inline::save_ascii (std::ostream& os)
 {
-  os << "# nargs: " <<  ifargs.numel () << "\n";
-  for (int i = 0; i < ifargs.numel (); i++)
-    os << ifargs(i) << "\n";
-  if (nm.length () < 1)
+  os << "# nargs: " <<  m_args.numel () << "\n";
+  for (int i = 0; i < m_args.numel (); i++)
+    os << m_args(i) << "\n";
+  if (m_name.length () < 1)
     // Write an invalid value to flag empty fcn handle name.
     os << "0\n";
   else
-    os << nm << "\n";
-  os << iftext << "\n";
+    os << m_name << "\n";
+  os << m_text << "\n";
   return true;
 }
 
@@ -170,12 +172,12 @@ octave_fcn_inline::load_ascii (std::istream& is)
   int nargs;
   if (extract_keyword (is, "nargs", nargs, true))
     {
-      ifargs.resize (nargs);
+      m_args.resize (nargs);
       for (int i = 0; i < nargs; i++)
-        is >> ifargs(i);
-      is >> nm;
-      if (nm == "0")
-        nm = "";
+        is >> m_args(i);
+      is >> m_name;
+      if (m_name == "0")
+        m_name = "";
 
       skip_preceeding_newline (is);
 
@@ -189,10 +191,10 @@ octave_fcn_inline::load_ascii (std::istream& is)
           buf = read_until_newline (is, true);
         }
 
-      iftext = buf;
+      m_text = buf;
 
-      octave_fcn_inline tmp (iftext, ifargs, nm);
-      fcn = tmp.fcn;
+      octave_fcn_inline tmp (m_text, m_args, m_name);
+      m_fcn = tmp.m_fcn;
 
       return true;
     }
@@ -201,22 +203,22 @@ octave_fcn_inline::load_ascii (std::istream& is)
 }
 
 bool
-octave_fcn_inline::save_binary (std::ostream& os, bool&)
+octave_fcn_inline::save_binary (std::ostream& os, bool)
 {
-  int32_t tmp = ifargs.numel ();
+  int32_t tmp = m_args.numel ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  for (int i = 0; i < ifargs.numel (); i++)
+  for (int i = 0; i < m_args.numel (); i++)
     {
-      tmp = ifargs(i).length ();
+      tmp = m_args(i).length ();
       os.write (reinterpret_cast<char *> (&tmp), 4);
-      os.write (ifargs(i).c_str (), ifargs(i).length ());
+      os.write (m_args(i).c_str (), m_args(i).length ());
     }
-  tmp = nm.length ();
+  tmp = m_name.length ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  os.write (nm.c_str (), nm.length ());
-  tmp = iftext.length ();
+  os.write (m_name.c_str (), m_name.length ());
+  tmp = m_text.length ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  os.write (iftext.c_str (), iftext.length ());
+  os.write (m_text.c_str (), m_text.length ());
   return true;
 }
 
@@ -235,7 +237,7 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
   else
     {
       int32_t tmp;
-      ifargs.resize (nargs);
+      m_args.resize (nargs);
       for (int i = 0; i < nargs; i++)
         {
           if (! is.read (reinterpret_cast<char *> (&tmp), 4))
@@ -245,7 +247,7 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
 
           OCTAVE_LOCAL_BUFFER (char, ctmp, tmp+1);
           is.read (ctmp, tmp);
-          ifargs(i) = std::string (ctmp);
+          m_args(i) = std::string (ctmp);
 
           if (! is)
             return false;
@@ -258,7 +260,7 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
 
       OCTAVE_LOCAL_BUFFER (char, ctmp1, tmp+1);
       is.read (ctmp1, tmp);
-      nm = std::string (ctmp1);
+      m_name = std::string (ctmp1);
 
       if (! is)
         return false;
@@ -270,13 +272,13 @@ octave_fcn_inline::load_binary (std::istream& is, bool swap,
 
       OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
       is.read (ctmp2, tmp);
-      iftext = std::string (ctmp2);
+      m_text = std::string (ctmp2);
 
       if (! is)
         return false;
 
-      octave_fcn_inline ftmp (iftext, ifargs, nm);
-      fcn = ftmp.fcn;
+      octave_fcn_inline ftmp (m_text, m_args, m_name);
+      m_fcn = ftmp.m_fcn;
     }
   return true;
 }
@@ -300,9 +302,9 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (group_hid < 0) return false;
 
   size_t len = 0;
-  for (int i = 0; i < ifargs.numel (); i++)
-    if (len < ifargs(i).length ())
-      len = ifargs(i).length ();
+  for (int i = 0; i < m_args.numel (); i++)
+    if (len < m_args(i).length ())
+      len = m_args(i).length ();
 
   hid_t space_hid, data_hid, type_hid;
   space_hid = data_hid = type_hid = -1;
@@ -313,7 +315,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, 2);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
-  hdims[1] = ifargs.numel ();
+  hdims[1] = m_args.numel ();
   hdims[0] = len + 1;
 
   space_hid = H5Screate_simple (2, hdims, nullptr);
@@ -336,15 +338,15 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  OCTAVE_LOCAL_BUFFER (char, s, ifargs.numel () * (len + 1));
+  OCTAVE_LOCAL_BUFFER (char, s, m_args.numel () * (len + 1));
 
   // Save the args as a null terminated list
-  for (int i = 0; i < ifargs.numel (); i++)
+  for (int i = 0; i < m_args.numel (); i++)
     {
-      const char *cptr = ifargs(i).c_str ();
-      for (size_t j = 0; j < ifargs(i).length (); j++)
+      const char *cptr = m_args(i).c_str ();
+      for (size_t j = 0; j < m_args(i).length (); j++)
         s[i*(len+1)+j] = *cptr++;
-      s[ifargs(i).length ()] = '\0';
+      s[m_args(i).length ()] = '\0';
     }
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, octave_H5S_ALL, octave_H5S_ALL,
@@ -361,7 +363,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   // attach the type of the variable
   type_hid = H5Tcopy (H5T_C_S1);
-  H5Tset_size (type_hid, nm.length () + 1);
+  H5Tset_size (type_hid, m_name.length () + 1);
   if (type_hid < 0)
     {
       H5Gclose (group_hid);
@@ -369,7 +371,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 
   hdims[0] = 0;
-  space_hid = H5Screate_simple (0 , hdims, nullptr);
+  space_hid = H5Screate_simple (0, hdims, nullptr);
   if (space_hid < 0)
     {
       H5Tclose (type_hid);
@@ -385,7 +387,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 #endif
   if (data_hid < 0
       || H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
-                   octave_H5P_DEFAULT, nm.c_str ()) < 0)
+                   octave_H5P_DEFAULT, m_name.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -395,7 +397,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   H5Dclose (data_hid);
 
   // attach the type of the variable
-  H5Tset_size (type_hid, iftext.length () + 1);
+  H5Tset_size (type_hid, m_text.length () + 1);
   if (type_hid < 0)
     {
       H5Gclose (group_hid);
@@ -411,7 +413,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 #endif
   if (data_hid < 0
       || H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
-                   octave_H5P_DEFAULT, iftext.c_str ()) < 0)
+                   octave_H5P_DEFAULT, m_text.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -471,7 +473,7 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  ifargs.resize (hdims[1]);
+  m_args.resize (hdims[1]);
 
   OCTAVE_LOCAL_BUFFER (char, s1, hdims[0] * hdims[1]);
 
@@ -488,7 +490,7 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Sclose (space_hid);
 
   for (size_t i = 0; i < hdims[1]; i++)
-    ifargs(i) = std::string (s1 + i*hdims[0]);
+    m_args(i) = std::string (s1 + i*hdims[0]);
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dopen (group_hid, "nm", octave_H5P_DEFAULT);
@@ -551,7 +553,7 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
   H5Tclose (st_id);
   H5Dclose (data_hid);
-  nm = nm_tmp;
+  m_name = nm_tmp;
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dopen (group_hid, "iftext", octave_H5P_DEFAULT);
@@ -614,10 +616,10 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
   H5Tclose (st_id);
   H5Dclose (data_hid);
-  iftext = iftext_tmp;
+  m_text = iftext_tmp;
 
-  octave_fcn_inline ftmp (iftext, ifargs, nm);
-  fcn = ftmp.fcn;
+  octave_fcn_inline ftmp (m_text, m_args, m_name);
+  m_fcn = ftmp.m_fcn;
 
   return true;
 
@@ -643,20 +645,20 @@ octave_fcn_inline::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   std::ostringstream buf;
 
-  if (nm.empty ())
+  if (m_name.empty ())
     buf << "f(";
   else
-    buf << nm << '(';
+    buf << m_name << '(';
 
-  for (int i = 0; i < ifargs.numel (); i++)
+  for (int i = 0; i < m_args.numel (); i++)
     {
       if (i)
         buf << ", ";
 
-      buf << ifargs(i);
+      buf << m_args(i);
     }
 
-  buf << ") = " << iftext;
+  buf << ") = " << m_text;
 
   octave_print_internal (os, buf.str (), pr_as_read_syntax,
                          current_print_indent_level ());

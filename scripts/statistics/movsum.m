@@ -1,4 +1,9 @@
-## Copyright (C) 2018-2019 Rik Wehbring
+########################################################################
+##
+## Copyright (C) 2018-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,10 +20,12 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movsum (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movsum (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movsum (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movsum (@dots{}, @var{dim})
 ## @deftypefnx {} {@var{y} =} movsum (@dots{}, "@var{nancond}")
 ## @deftypefnx {} {@var{y} =} movsum (@dots{}, @var{property}, @var{value})
@@ -85,8 +92,8 @@
 ## @code{@var{y}(1) = movsum ([NaN, @var{x}(1:2)])}, and
 ## @code{@var{y}(end) = movsum ([@var{x}(end-1:end), NaN])}.
 ## This option usually results in @var{y} having @code{NaN} values at the
-## boundaries, although it is influenced by how @code{movsum} handles @code{NaN},
-## and also by the property @qcode{"nancond"}.
+## boundaries, although it is influenced by how @code{movsum} handles
+## @code{NaN}, and also by the property @qcode{"nancond"}.
 ##
 ## @item @var{user_value}
 ## Any window elements outside the data array are replaced by the specified
@@ -116,7 +123,7 @@
 ## @end table
 ##
 ## Programming Note: This function is a wrapper which calls @code{movfun}.
-## For additional options and documentation, @xref{XREFmovfun,,movfun}.
+## For additional options and documentation, @pxref{XREFmovfun,,movfun}.
 ##
 ## @seealso{movfun, movslice, movmad, movmax, movmean, movmedian, movmin, movprod, movstd, movvar}
 ## @end deftypefn
@@ -127,7 +134,8 @@ function y = movsum (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@sum, x, wlen, __parse_movargs__ ("movsum", varargin{:}){:});
+  y = movfun (@sum, x, wlen, "Endpoints", 0,
+              __parse_movargs__ ("movsum", varargin{:}){:});
 
 endfunction
 

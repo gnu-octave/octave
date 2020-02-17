@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 2012-2019 Max Brister
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
-
-// Author: Max Brister <max@2bass.com>
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2012-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // defines required by llvm
 #define __STDC_LIMIT_MACROS
@@ -222,7 +223,7 @@ namespace octave
   extern "C" void
   octave_jit_ginvalid_index (void)
   {
-    // FIXME: 0-argument form of octave::err_invalid_index removed in
+    // FIXME: 0-argument form of err_invalid_index removed in
     //        cset dd6345fd8a97.  Report -1 as the bad index for all
     //        occurrences.
     err_invalid_index (static_cast<octave_idx_type> (-1));
@@ -298,7 +299,7 @@ namespace octave
     bool done = false;
 
     // optimize for the simple case (no resizing and no errors)
-    if (*array->jit_ref_count () == 1
+    if (array->jit_ref_count () == 1
         && index->all_elements_are_ints ())
       {
         // this code is similar to idx_vector::fill, but we avoid allocating an
@@ -386,10 +387,6 @@ namespace octave
   extern "C" Complex
   octave_jit_complex_div (Complex lhs, Complex rhs)
   {
-    // see src/OPERATORS/op-cs-cs.cc
-    if (rhs == 0.0)
-      warn_divide_by_zero ();
-
     return lhs / rhs;
   }
 
@@ -1297,8 +1294,8 @@ namespace octave
 
     for (int op = 0; op < octave_value::num_binary_ops; ++op)
       {
-        const llvm::Twine &fn_name =
-          "octave_jit_binary_any_any_" + llvm::Twine (op);
+        const llvm::Twine& fn_name
+          = "octave_jit_binary_any_any_" + llvm::Twine (op);
 
         fn = create_internal (fn_name, m_any, m_any, m_any);
         fn.mark_can_error ();
@@ -1355,10 +1352,6 @@ namespace octave
     add_binary_fcmp (m_scalar, octave_value::op_gt, llvm::CmpInst::FCMP_UGT);
     add_binary_fcmp (m_scalar, octave_value::op_ne, llvm::CmpInst::FCMP_UNE);
 
-    jit_function gripe_div0 = create_external (JIT_FN (warn_divide_by_zero),
-                                               nullptr);
-    gripe_div0.mark_can_error ();
-
     // divide is annoying because it might error
     fn = create_internal ("octave_jit_div_scalar_scalar", m_scalar, m_scalar,
                           m_scalar);
@@ -1376,7 +1369,6 @@ namespace octave
       m_builder.CreateCondBr (check, warn_block, normal_block);
 
       m_builder.SetInsertPoint (warn_block);
-      gripe_div0.call (m_builder);
       m_builder.CreateBr (normal_block);
 
       m_builder.SetInsertPoint (normal_block);

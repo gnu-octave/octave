@@ -1,4 +1,9 @@
-## Copyright (C) 1996-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1996-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,13 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __bar__ (@var{vertical}, @var{func}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
-
-## Author: jwe
 
 function varargout = __bar__ (vertical, func, varargin)
 
@@ -220,7 +225,7 @@ function varargout = __bar__ (vertical, func, varargin)
         else
           set (hax, "clim", [0 1], "ylimmode", "manual");
         endif
-        set (hax, "box", "on");
+        set (hax, "box", "on", "layer", "top");
       endif
     unwind_protect_cleanup
       if (! isempty (oldfig))
@@ -285,8 +290,8 @@ function hglist = bars (hax, vertical, x, y, xb, yb, width, group, have_color_sp
       h_baseline = __go_line__ (hax, "xdata", x_axis_range,
                                      "ydata", [base_value, base_value],
                                      "color", [0, 0, 0]);
-      set (h_baseline, "handlevisibility", "off", "xliminclude", "off");
-      set (h_baseline, "parent", get (hg, "parent"));
+      set (h_baseline, "handlevisibility", "off", "xliminclude", "off",
+                       "parent", get (hg, "parent"));
     endif
 
     ## Setup the hggroup and listeners

@@ -24,7 +24,7 @@ main (void)
       // Perform final initialization of interpreter, including
       // executing commands from startup files by calling
       //
-      //   int status interpreter.initialize ();
+      //   interpreter.initialize ();
       //
       //   if (! interpreter.initialized ())
       //     {

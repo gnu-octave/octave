@@ -1,4 +1,9 @@
-## Copyright (C) 1996-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1996-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{beta}, @var{v}, @var{r}] =} gls (@var{y}, @var{x}, @var{o})
@@ -79,10 +86,6 @@
 ## @end table
 ## @seealso{ols}
 ## @end deftypefn
-
-## Author: Teresa Twaroch <twaroch@ci.tuwien.ac.at>
-## Created: May 1993
-## Adapted-By: jwe
 
 function [beta, v, r] = gls (y, x, o)
 

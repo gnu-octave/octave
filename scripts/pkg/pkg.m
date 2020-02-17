@@ -1,6 +1,9 @@
-## Copyright (C) 2005-2019 Søren Hauberg
-## Copyright (C) 2010 VZLU Prague, a.s.
-## Copyright (C) 2012 Carlo de Falco
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -17,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} pkg @var{command} @var{pkg_name}
@@ -40,20 +45,20 @@
 ##
 ## @noindent
 ## installs the package found in the file @file{image-1.0.0.tar.gz}.  The
-## file containing the package can be an url, e.g.
+## file containing the package can be a URL, e.g.,
 ##
 ## @example
 ## pkg install 'http://somewebsite.org/image-1.0.0.tar.gz'
 ## @end example
 ##
 ## @noindent
-## installs the package found in the given url.  This
+## installs the package found in the given URL@.  This
 ## requires an internet connection and the cURL library.
 ##
 ## @noindent
 ## @emph{Security risk}: no verification of the package is performed
 ## before the installation.  It has the same security issues as manually
-## downloading the package from the given url and installing it.
+## downloading the package from the given URL and installing it.
 ##
 ## @noindent
 ## @emph{No support}: the GNU Octave community is not responsible for
@@ -128,9 +133,32 @@
 ## @noindent
 ## adds the @code{image} package to the path.
 ##
+## Note: When loading a package, @code{pkg} will automatically try to load
+## any unloaded dependencies as well, unless the @option{-nodeps} flag has
+## been specified.  For example,
+##
+## @example
+## pkg load signal
+## @end example
+##
+## @noindent
+## adds the @code{signal} package and also tries to load its dependency: the
+## @code{control} package.  Be aware that the functionality of package(s)
+## loaded will probably be impacted by use of the @option{-nodeps} flag.  Even
+## if necessary dependencies are loaded later, the functionality of depender
+## packages can still be affected because the optimal loading order of may
+## not have been followed.
+##
 ## @item unload
 ## Remove named packages from the path.  After unloading a package it is
-## no longer possible to use the functions provided by the package.
+## no longer possible to use the functions provided by the package.  Trying
+## to unload a package that other loaded packages still depend on will result
+## in an error; no packages will be unloaded in this case.  A package can
+## be forcibly removed with the @option{-nodeps} flag, but be aware that the
+## functionality of depender packages will likely be affected.  As when loading
+## packages, reloading dependencies after having unloaded them with the
+## @option{-nodeps} flag may not restore all functionality of the depender
+## packages as the required loading order may be incorrect.
 ##
 ## @item list
 ## Show the list of currently installed packages.  For example,
@@ -186,8 +214,10 @@
 ## Display can be limited to a set of packages:
 ##
 ## @example
+## @group
 ## ## describe control and signal packages
 ## pkg describe control signal
+## @end group
 ## @end example
 ##
 ## If one output is requested a cell of structure containing the
@@ -285,6 +315,14 @@
 ## Rebuild the package database from the installed directories.  This can
 ## be used in cases where the package database has been corrupted.
 ##
+## @item test
+## Perform the built-in self tests contained in all functions provided by
+## the named packages.  For example,
+##
+## @example
+## pkg test image
+## @end example
+##
 ## @end table
 ## @seealso{ver, news}
 ## @end deftypefn
@@ -316,7 +354,7 @@ function [local_packages, global_packages] = pkg (varargin)
   # valid actions in alphabetical order
   available_actions = {"build", "describe", "global_list",  "install", ...
                        "list", "load", "local_list", "prefix", "rebuild", ...
-                       "uninstall", "unload", "update"};
+                       "test", "uninstall", "unload", "update"};
 
   ## Parse input arguments
   if (isempty (varargin) || ! iscellstr (varargin))
@@ -411,29 +449,63 @@ function [local_packages, global_packages] = pkg (varargin)
           succ = [succ{:}];
           if (! all (succ))
             i = find (! succ, 1);
-            error ("pkg: could not download file %s from url %s",
+            error ("pkg: could not download file %s from URL %s",
                    local_files{i}, urls{i});
           endif
         else
           ## If files do not exist, maybe they are not local files.
           ## Try to download them.
-          external_files_mask = cellfun (@(x) isempty (glob (x)), files);
-          if (any (external_files_mask))
+          not_local_files = cellfun (@(x) isempty (glob (x)), files);
+          if (any (not_local_files))
             [success, msg] = mkdir (tmp_dir);
             if (success != 1)
               error ("pkg: failed to create temporary directory: %s", msg);
             endif
 
-            for file_idx = find (external_files_mask)
-
-              [~, fname, fext] = fileparts (files{file_idx});
-              local_files{end+1} = fullfile (tmp_dir, [fname fext]);
-              [~, success, msg] = urlwrite (files{file_idx}, local_files{end});
-              if (success != 1)
-                error ("pkg: failed to read package '%s': %s",
-                       files{file_idx}, msg);
+            for file = files(not_local_files)
+              file = file{1};
+              [~, fname, fext] = fileparts (file);
+              tmp_file = fullfile (tmp_dir, [fname fext]);
+              local_files{end+1} = tmp_file;
+              looks_like_url = regexp (file, '^\w+://');
+              if (looks_like_url)
+                [~, success, msg] = urlwrite (file, local_files{end});
+                if (success != 1)
+                  error ("pkg: failed downloading '%s': %s", file, msg);
+                endif
+                ## Verify that download is a tarball,
+                ## to protect against ISP DNS hijacking.
+                ## FIXME: Need a test which does not rely on external OS.
+                #{
+                if (isunix ())
+                  [ok, file_descr] = ...
+                    system (sprintf ('file "%s" | cut -d ":" -f 2', ...
+                                     local_files{end}));
+                  if (! ok)
+                    if (strfind (file_descr, "HTML"))
+                      error (["pkg: Invalid package file downloaded from " ...
+                              "%s\n" ...
+                              "File is HTML, not a tar archive."], ...
+                             file);
+                    endif
+                  else
+                    ## Ignore: maybe something went wrong with the "file" call.
+                  endif
+                endif
+                #}
+              else
+                looks_like_pkg_name = regexp (file, '^[\w-]+$');
+                if (looks_like_pkg_name)
+                  error (["pkg: file not found: %s.\n" ...
+                          "This looks like an Octave Forge package name." ...
+                          "  Did you mean:\n" ...
+                          "       pkg install -forge %s"], ...
+                         file, file);
+                else
+                  error ("pkg: file not found: %s", file);
+                endif
               endif
-              files{file_idx} = local_files{end};
+              files{strcmp (files, file)} = local_files{end};
 
             endfor
           endif
@@ -529,6 +601,11 @@ function [local_packages, global_packages] = pkg (varargin)
         global_packages = rebuild (prefix, archprefix, global_list, files,
                                    verbose);
         global_packages = save_order (global_packages);
+        if (ispc)
+          ## On Windows ensure LFN paths are saved rather than 8.3 style paths
+          global_packages = standardize_paths (global_packages);
+        endif
+        global_packages = make_rel_paths (global_packages);
         save (global_list, "global_packages");
         if (nargout)
           local_packages = global_packages;
@@ -537,6 +614,9 @@ function [local_packages, global_packages] = pkg (varargin)
         local_packages = rebuild (prefix, archprefix, local_list, files,
                                   verbose);
         local_packages = save_order (local_packages);
+        if (ispc)
+          local_packages = standardize_paths (local_packages);
+        endif
         save (local_list, "local_packages");
         if (! nargout)
           clear ("local_packages");
@@ -592,6 +672,33 @@ function [local_packages, global_packages] = pkg (varargin)
           feval (@pkg, "install", "-forge", installed_pkg_name);
         endif
       endfor
+
+    case "test"
+      if (isempty (files))
+        error ("pkg: test action requires at least one package name");
+      endif
+      ## Make sure the requested packages are loaded
+      orig_path = path ();
+      load_packages (files, deps, local_list, global_list);
+      ## Test packages one by one
+      installed_pkgs_lst = installed_packages (local_list, global_list, files);
+      unwind_protect
+        for i = 1:numel (installed_pkgs_lst)
+          printf ("Testing functions in package '%s':\n", files{i});
+          installed_pkgs_dirs = {installed_pkgs_lst{i}.dir, ...
+                                 installed_pkgs_lst{i}.archprefix};
+          ## For local installs installed_pkgs_dirs contains the same subdirs
+          installed_pkgs_dirs = unique (installed_pkgs_dirs);
+          if (! isempty (installed_pkgs_dirs))
+            ## FIXME invoke another test routine once that is available.
+            ## Until then __run_test_suite__.m will do the job fine enough
+            __run_test_suite__ ({installed_pkgs_dirs{:}}, {});
+          endif
+        endfor
+      unwind_protect_cleanup
+        ## Restore load path back to its original value before loading packages
+        path (orig_path);
+      end_unwind_protect
 
     otherwise
       error ("pkg: invalid action.  See 'help pkg' for available actions");

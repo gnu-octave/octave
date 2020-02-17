@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -30,9 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "comment-list.h"
+#include "event-manager.h"
 #include "input.h"
 #include "oct-lvalue.h"
-#include "octave-link.h"
 #include "ov.h"
 #include "pager.h"
 #include "pt-bp.h"
@@ -43,7 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-jump.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
-#include "pt-walk.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -244,11 +246,12 @@ namespace octave
 
   // Add breakpoints to  file  at multiple lines (the second arguments
   // of  line), to stop only if  condition  is true.
-  // Updates GUI via  octave_link::update_breakpoint.
+  // Updates GUI via  event_manager::update_breakpoint.
   // FIXME: COME BACK TO ME.
 
   bp_table::intmap
-  tree_statement_list::add_breakpoint (const std::string& file,
+  tree_statement_list::add_breakpoint (event_manager& evmgr,
+                                       const std::string& file,
                                        const bp_table::intmap& line,
                                        const std::string& condition)
   {
@@ -267,7 +270,7 @@ namespace octave
             retval[i] = set_breakpoint (lineno, condition);
 
             if (retval[i] != 0 && ! file.empty ())
-              octave_link::update_breakpoint (true, file, retval[i], condition);
+              evmgr.update_breakpoint (true, file, retval[i], condition);
           }
       }
 
@@ -275,7 +278,8 @@ namespace octave
   }
 
   bp_table::intmap
-  tree_statement_list::remove_all_breakpoints (const std::string& file)
+  tree_statement_list::remove_all_breakpoints (event_manager& evmgr,
+                                               const std::string& file)
   {
     bp_table::intmap retval;
 
@@ -290,7 +294,7 @@ namespace octave
         retval[i] = lineno;
 
         if (! file.empty ())
-          octave_link::update_breakpoint (false, file, lineno);
+          evmgr.update_breakpoint (false, file, lineno);
       }
 
     return retval;

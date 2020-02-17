@@ -1,4 +1,9 @@
-## Copyright (C) 1994-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 1994-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} axis ()
@@ -137,8 +144,6 @@
 ##
 ## @seealso{xlim, ylim, zlim, caxis, daspect, pbaspect, box, grid}
 ## @end deftypefn
-
-## Author: jwe
 
 function limits = axis (varargin)
 
@@ -487,6 +492,8 @@ endfunction
 
 %!demo
 %! clf;
+%! def_ticklen = get (0, "DefaultAxesTickLength");
+%! set (0, "DefaultAxesTickLength", [.028, .025]);
 %! t = 0:0.01:2*pi;
 %! x = sin (t);
 %!
@@ -534,6 +541,8 @@ endfunction
 %!  plot (t, x);
 %!  title ("all ticks and labels");
 %!  axis ("on");
+%!
+%! set (0, "DefaultAxesTickLength", def_ticklen);
 
 %!demo
 %! clf;

@@ -1,31 +1,32 @@
-/*
-
-Copyright (C) 2004-2019 David Bateman
-Copyright (C) 1998-2004 Andy Adler
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1998-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
@@ -52,14 +53,7 @@ DEFBINOP (div, complex, sparse_matrix)
   const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
-    {
-      double d = v2.scalar_value ();
-
-      if (d == 0.0)
-        warn_divide_by_zero ();
-
-      return octave_value (SparseComplexMatrix (1, 1, v1.complex_value () / d));
-    }
+    return octave_value (SparseComplexMatrix (1, 1, v1.complex_value () / v2.scalar_value ()));
   else
     {
       MatrixType typ = v2.matrix_type ();
@@ -83,15 +77,7 @@ DEFBINOP (ldiv, complex, sparse_matrix)
   const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
   const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
-  Complex d = v1.complex_value ();
-  octave_value retval;
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  retval = octave_value (v2.sparse_matrix_value () / d);
-
-  return retval;
+  return octave_value (v2.sparse_matrix_value () / v1.complex_value ());
 }
 
 DEFBINOP_FN (lt, complex, sparse_matrix, mx_el_lt)
@@ -110,15 +96,7 @@ DEFBINOP (el_ldiv, complex, sparse_matrix)
   const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
   const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
 
-  Complex d = v1.complex_value ();
-  octave_value retval;
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  retval = octave_value (v2.sparse_matrix_value () / d);
-
-  return retval;
+  return octave_value (v2.sparse_matrix_value () / v1.complex_value ());
 }
 
 DEFBINOP_FN (el_and, complex, sparse_matrix, mx_el_and)
@@ -136,8 +114,7 @@ DEFCONV (sparse_matrix_conv, complex, sparse_matrix)
 {
   const octave_complex& v = dynamic_cast<const octave_complex&> (a);
 
-  return new octave_sparse_matrix
-         (SparseMatrix (v.matrix_value ()));
+  return new octave_sparse_matrix (SparseMatrix (v.matrix_value ()));
 }
 
 void

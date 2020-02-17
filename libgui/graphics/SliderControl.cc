@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -30,30 +33,40 @@ along with Octave; see the file COPYING.  If not, see
 #include "SliderControl.h"
 #include "QtHandlesUtils.h"
 
+#include "octave-qobject.h"
+
+#include "graphics.h"
+#include "interpreter.h"
+
 #define RANGE_INT_MAX 1000000
 
 namespace QtHandles
 {
 
   SliderControl*
-  SliderControl::create (const graphics_object& go)
+  SliderControl::create (octave::base_qobject& oct_qobj,
+                         octave::interpreter& interp,
+                         const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new SliderControl (go, new QScrollBar (container));
+          return new SliderControl (oct_qobj, interp, go,
+                                    new QScrollBar (container));
       }
 
     return nullptr;
   }
 
-  SliderControl::SliderControl (const graphics_object& go,
+  SliderControl::SliderControl (octave::base_qobject& oct_qobj,
+                                octave::interpreter& interp,
+                                const graphics_object& go,
                                 QAbstractSlider *slider)
-    : BaseControl (go, slider), m_blockUpdates (false)
+    : BaseControl (oct_qobj, interp, go, slider), m_blockUpdates (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 
@@ -128,7 +141,10 @@ namespace QtHandles
   {
     if (! m_blockUpdates)
       {
-        gh_manager::auto_lock lock;
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
         graphics_object go = object ();
 
         if (go.valid_object ())
@@ -147,8 +163,8 @@ namespace QtHandles
               {
                 double dval = dmin + (ival * (dmax - dmin) / RANGE_INT_MAX);
 
-                gh_manager::post_set (m_handle, "value", octave_value (dval));
-                gh_manager::post_callback (m_handle, "callback");
+                emit gh_set_event (m_handle, "value", octave_value (dval));
+                emit gh_callback_event (m_handle, "callback");
               }
           }
       }

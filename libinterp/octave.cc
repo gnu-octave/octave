@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // Born February 20, 1992.
 
@@ -154,7 +157,7 @@ namespace octave
               m_exec_path = octave_optarg_wrapper ();
             break;
 
-          case GUI_OPTION: // same value as FORCE_GUI_OPTION
+          case GUI_OPTION:
             m_gui = true;
             break;
 
@@ -202,7 +205,7 @@ namespace octave
             break;
 
           case NO_SITE_FILE_OPTION:
-            m_read_site_files = 0;
+            m_read_site_files = false;
             break;
 
           case PERSIST_OPTION:
@@ -274,24 +277,9 @@ namespace octave
       }
   }
 
-  void application::interactive (bool arg)
-  {
-    interpreter *interp = (instance ? instance->m_interpreter : nullptr);
-
-    if (interp)
-      interp->interactive (arg);
-  }
-
   bool application::forced_interactive (void)
   {
     return instance ? instance->m_options.forced_interactive () : false;
-  }
-
-  bool application::interactive (void)
-  {
-    interpreter *interp = (instance ? instance->m_interpreter : nullptr);
-
-    return interp ? interp->interactive () : false;
   }
 
   application::~application (void)
@@ -394,28 +382,6 @@ namespace octave
 
     return status;
   }
-}
-
-// embedded is int here because octave_main is extern "C".
-
-int
-octave_main (int argc, char **argv, int embedded)
-{
-  if (embedded)
-    {
-      if (argc > 0)
-        std::cerr << "warning: ignoring command line options for embedded octave\n";
-
-      static octave::interpreter embedded_interpreter;
-      return embedded_interpreter.execute ();
-    }
-  else
-    {
-      std::cerr << "warning: octave_main should only be used to create an embedded interpreter";
-
-      static octave::cli_application app (argc, argv);
-      return app.execute ();
-    }
 }
 
 DEFUN (isguirunning, args, ,

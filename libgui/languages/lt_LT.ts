@@ -57,57 +57,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/workspace-model.cc" line="+81"/>
-        <source>automatic</source>
-        <translation>automatinis</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>function</source>
-        <translation>funkcija</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>global</source>
-        <translation>visuotinas</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>hidden</source>
-        <translation>paslėptas</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>inherited</source>
-        <translation>paveldėtas</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>persistent</source>
-        <translation>pastovioji</translation>
-    </message>
-    <message>
-        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+66"/>
-        <source>foreground</source>
-        <translation>teksto spalva</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>background</source>
-        <translation>fonas</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>selection</source>
-        <translation>pažymėta sritis</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>cursor</source>
-        <translation>žymeklis</translation>
-    </message>
-    <message>
-        <location filename="../src/settings-dialog.cc" line="+661"/>
+        <location filename="../src/settings-dialog.cc" line="+674"/>
         <source>Difference to the default size</source>
         <translation>Skirtumas nuo numatyto dydžio</translation>
     </message>
@@ -138,7 +88,22 @@
 <context>
     <name>QTerminal</name>
     <message>
-        <location filename="../qterminal/libqterminal/QTerminal.h" line="+139"/>
+        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+139"/>
+        <source>Edit %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Help on %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Documentation on %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+154"/>
         <source>Copy</source>
         <translation>Kopijuoti</translation>
     </message>
@@ -148,7 +113,7 @@
         <translation>Įklijuoti</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>Select All</source>
         <translation>Pažymėti viską</translation>
     </message>
@@ -158,12 +123,27 @@
         <translation type="unfinished">Vykdyti pažymėtą kodą</translation>
     </message>
     <message>
+        <location line="+4"/>
+        <source>Edit selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Help on selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Documentation on selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+7"/>
         <source>Clear Window</source>
         <translation>Išvalyti langą</translation>
     </message>
     <message>
-        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+49"/>
+        <location line="-213"/>
         <source>Edit %1 at line %2</source>
         <translation>%2 eilutėje tvarkyti %1</translation>
     </message>
@@ -179,7 +159,7 @@
 <context>
     <name>QsciLexerBash</name>
     <message>
-        <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
+        <location filename="../../../qsci/qscilexerbash.cpp" line="+203"/>
         <source>Default</source>
         <translation>Numatytasis teksas</translation>
     </message>
@@ -252,7 +232,7 @@
 <context>
     <name>QsciLexerBatch</name>
     <message>
-        <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
+        <location filename="../../../qsci/qscilexerbatch.cpp" line="+174"/>
         <source>Default</source>
         <translation>Numatytasis teksas</translation>
     </message>
@@ -295,7 +275,7 @@
 <context>
     <name>QsciLexerCPP</name>
     <message>
-        <location filename="../../../qsci/qscilexercpp.cpp" line="+352"/>
+        <location filename="../../../qsci/qscilexercpp.cpp" line="+364"/>
         <source>Default</source>
         <translation>Numatytasis tekstas</translation>
     </message>
@@ -504,11 +484,81 @@
         <source>Inactive C++ raw string</source>
         <translation>C++ R&quot;&quot; tipo eilutė, esanti # sakinyje</translation>
     </message>
+    <message>
+        <location line="+3"/>
+        <source>Vala triple-quoted verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive Vala triple-quoted verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Pike hash-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive Pike hash-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Pre-processor C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive pre-processor C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc style pre-processor comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc style pre-processor comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>User-defined literal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive user-defined literal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Task marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive task marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Escape sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive escape sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QsciLexerDiff</name>
     <message>
-        <location filename="../../../qsci/qscilexerdiff.cpp" line="+107"/>
+        <location filename="../../../qsci/qscilexerdiff.cpp" line="+106"/>
         <source>Default</source>
         <translation>Numatytasis teksas</translation>
     </message>
@@ -547,11 +597,31 @@
         <source>Changed line</source>
         <translation>Pakeista eilutė</translation>
     </message>
+    <message>
+        <location line="+3"/>
+        <source>Added adding patch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Removed adding patch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Added removing patch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Removed removing patch</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QsciLexerMatlab</name>
     <message>
-        <location filename="../../../qsci/qscilexermatlab.cpp" line="+138"/>
+        <location filename="../../../qsci/qscilexermatlab.cpp" line="+133"/>
         <source>Default</source>
         <translation>Numatytasis teksas</translation>
     </message>
@@ -599,7 +669,7 @@
 <context>
     <name>QsciLexerPerl</name>
     <message>
-        <location filename="../../../qsci/qscilexerperl.cpp" line="+333"/>
+        <location filename="../../../qsci/qscilexerperl.cpp" line="+328"/>
         <source>Default</source>
         <translation>Numatytasis teksas</translation>
     </message>
@@ -807,7 +877,7 @@
 <context>
     <name>QsciScintilla</name>
     <message>
-        <location filename="../../../qsci/qsciscintilla.cpp" line="+4201"/>
+        <location filename="../../../qsci/qsciscintilla.cpp" line="+4475"/>
         <source>&amp;Undo</source>
         <translation>At&amp;šaukti</translation>
     </message>
@@ -840,57 +910,6 @@
         <location line="+7"/>
         <source>Select All</source>
         <translation>Pažymėti viską</translation>
-    </message>
-</context>
-<context>
-    <name>QtHandles::Figure</name>
-    <message>
-        <location filename="../graphics/Figure.cc" line="+262"/>
-        <source>Figure ToolBar</source>
-        <translation>Braižymo lango įrankių juosta</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Axes</source>
-        <translation>Ašys</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Grid</source>
-        <translation>Tinklelis</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Autoscale</source>
-        <translation>Numatytasis mastelis</translation>
-    </message>
-</context>
-<context>
-    <name>QtHandles::MouseModeActionGroup</name>
-    <message>
-        <location filename="../graphics/MouseModeActionGroup.cc" line="+40"/>
-        <source>Rotate</source>
-        <translation>Pasukti</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Zoom In</source>
-        <translation>Padidinti</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Zoom Out</source>
-        <translation>Sumažinti</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Pan</source>
-        <translation>Pernešti</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Insert Text</source>
-        <translation>Įterpti tekstą</translation>
     </message>
 </context>
 <context>
@@ -1079,7 +1098,7 @@
 <context>
     <name>octave::ListDialog</name>
     <message>
-        <location filename="../src/dialog.cc" line="+279"/>
+        <location filename="../src/dialog.cc" line="+483"/>
         <source>Select All</source>
         <translation>Pažymėti viską</translation>
     </message>
@@ -1087,14 +1106,14 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+98"/>
+        <location filename="../src/documentation.cc" line="+103"/>
         <location line="+12"/>
-        <location line="+647"/>
+        <location line="+668"/>
         <source>Octave Documentation</source>
         <translation>Octave dokumentacija</translation>
     </message>
     <message>
-        <location line="-658"/>
+        <location line="-679"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -1121,18 +1140,18 @@ the Command Window will be available.</source>
         <translation>Ieškoti &quot;einant&quot; pirmyn</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <location line="+1"/>
         <source>Search backward</source>
         <translation>Ieškoti &quot;einant&quot; atgal</translation>
     </message>
     <message>
-        <location line="+76"/>
+        <location line="+75"/>
         <source>Function Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+99"/>
+        <location line="+100"/>
         <source>Go home</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1187,13 +1206,13 @@ the Command Window will be available.</source>
         <translation>Įveskite tekstą, kad ieškoti indeksų</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+9"/>
         <location line="+39"/>
         <source>Search</source>
         <translation>Paieška</translation>
     </message>
     <message>
-        <location line="+512"/>
+        <location line="+533"/>
         <source>Unable to register help file %1.</source>
         <translation>Nepavyksta užregistruoti pagalbos failo &quot;%1&quot;.</translation>
     </message>
@@ -1201,7 +1220,7 @@ the Command Window will be available.</source>
 <context>
     <name>octave::documentation_dock_widget</name>
     <message>
-        <location filename="../src/documentation-dock-widget.cc" line="+38"/>
+        <location filename="../src/documentation-dock-widget.cc" line="+41"/>
         <source>Documentation</source>
         <translation>Dokumentacija</translation>
     </message>
@@ -1214,22 +1233,22 @@ the Command Window will be available.</source>
 <context>
     <name>octave::dw_main_window</name>
     <message>
-        <location filename="../src/dw-main-window.cc" line="+49"/>
+        <location filename="../src/dw-main-window.cc" line="+54"/>
         <source>&amp;Close</source>
         <translation type="unfinished">&amp;Uždaryti</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Close &amp;All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Close &amp;Other</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Switch to &amp;Left Widget</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1242,20 +1261,20 @@ the Command Window will be available.</source>
 <context>
     <name>octave::external_editor_interface</name>
     <message>
-        <location filename="../src/external-editor-interface.cc" line="+63"/>
-        <location line="+45"/>
+        <location filename="../src/external-editor-interface.cc" line="+68"/>
+        <location line="+47"/>
         <source>Octave Editor</source>
         <translation>Octave tvarkyklė</translation>
     </message>
     <message>
-        <location line="-44"/>
+        <location line="-46"/>
         <source>Could not start custom file editor
 %1</source>
         <translation>Nepavyko paleisti vartotojo bylų tvarkyklės
 &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+47"/>
         <source>There is no custom editor configured yet.
 Do you want to open the preferences?</source>
         <translation>Dar nesutvarkyti vartotojo tvarkyklės nustatymai.
@@ -1265,16 +1284,16 @@ Ar norite atidaryti nustatymų langą?</translation>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+858"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+1008"/>
         <location line="+28"/>
-        <location line="+482"/>
+        <location line="+536"/>
         <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
         <translation>Octave tvarkyklė</translation>
     </message>
     <message>
-        <location line="-552"/>
+        <location line="-606"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
@@ -1287,7 +1306,7 @@ neišsaugota! Byla su nurodytu pavadinimu yra atidaryta su Octave tvarkykle</tra
         <translation>Dingo susijusių bylų tvarkyklės kortelė.</translation>
     </message>
     <message>
-        <location line="+482"/>
+        <location line="+536"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -1323,7 +1342,7 @@ for write: %2.</source>
 bylos įrašymui: %2.</translation>
     </message>
     <message>
-        <location line="+231"/>
+        <location line="+233"/>
         <source>&amp;File</source>
         <translation>&amp;Byla</translation>
     </message>
@@ -1338,62 +1357,62 @@ bylos įrašymui: %2.</translation>
         <translation>&amp;Tvarkyti funkciją</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>&amp;Save File</source>
         <translation>Iš&amp;saugoti bylą</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Save File &amp;As...</source>
         <translation>Išs&amp;augoti bylą kaip...</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>&amp;Close</source>
         <translation>&amp;Uždaryti</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Close All</source>
         <translation>Uždaryti viską</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Close Other Files</source>
         <translation>Uždaryti kitas bylas</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Print...</source>
         <translation>Spausdinti...</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Edit</source>
         <translation>&amp;Tvarkyti</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Redo</source>
         <translation>Paka&amp;rtoti</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+7"/>
         <source>Cu&amp;t</source>
         <translation>Iškirp&amp;ti</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+5"/>
         <source>&amp;Find and Replace...</source>
         <translation>&amp;Rasti ir pakeisti...</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+3"/>
         <source>Find &amp;Next...</source>
         <translation>Rasti seka&amp;ntį....</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Find &amp;Previous...</source>
         <translation>Rasti &amp;ankstesnį...</translation>
     </message>
@@ -1403,52 +1422,52 @@ bylos įrašymui: %2.</translation>
         <translation>&amp;Komandos</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Delete Line</source>
         <translation>Ištrinti eilutę</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Copy Line</source>
         <translation>Kopijuoti eilutę</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Cut Line</source>
         <translation>Iškirpti eilutę</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Delete to Start of Word</source>
         <translation>Trinti iki žodžio pradžios</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Delete to End of Word</source>
         <translation>Trinti iki žodžio pabaigos</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Delete to Start of Line</source>
         <translation>Trinti iki eilutės pradžios</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Delete to End of Line</source>
         <translation>Trinti iki eilutės pabaigos</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Duplicate Selection/Line</source>
         <translation>Dvigubinti pažymėtą sritį/eilutę</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Transpose Line</source>
         <translation>Sukeisti eilutes</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>&amp;Show Completion List</source>
         <translation>Rodyti automatinio užbaigimo &amp;sąrašą</translation>
     </message>
@@ -1458,42 +1477,42 @@ bylos įrašymui: %2.</translation>
         <translation>&amp;Formatas</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>&amp;Uppercase Selection</source>
         <translation>Pažymėtos srities raides pakeisti &amp;didžiosiomis raidėmis</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Lowercase Selection</source>
         <translation>Pažymėtos srities raides pakeisti &amp;mažosiomis raidėmis</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>&amp;Comment</source>
         <translation>&amp;Užkomentuoti</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Uncomment</source>
         <translation>&amp;Atkomentuoti</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Comment (Choosing String)</source>
         <translation>Užkomentuoti nurodant komentavimo ženklą</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>&amp;Indent Selection Rigidly</source>
         <translation>Pažymėtą sritį padaryti su &amp;įtraukomis</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Unindent Selection Rigidly</source>
         <translation>&amp;Šalinti pažymėtos srities įtraukas</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Indent Code</source>
         <translation>Kodą padaryti su įtraukomis</translation>
     </message>
@@ -1503,7 +1522,7 @@ bylos įrašymui: %2.</translation>
         <translation>Eilučių pabaigos ženklai pagal &amp;Windows OS (CR LF)</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Convert Line Endings to &amp;Unix (LF)</source>
         <translation>Eilučių pabaigos ženklai pagal &amp;Unix OS (LF)</translation>
     </message>
@@ -1518,42 +1537,42 @@ bylos įrašymui: %2.</translation>
         <translation>Teksto ž&amp;ymeklio padėtys</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Go &amp;to Line...</source>
         <translation>Perei&amp;ti į eilutę...</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Move to Matching Brace</source>
         <translation>Pereiti į priešingą skliaustelių poros pusę</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Select to Matching Brace</source>
         <translation>Pažymėti skliaustelių poros turinį</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>&amp;Next Bookmark</source>
         <translation>Seka&amp;nti eilutė su žymele</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Pre&amp;vious Bookmark</source>
         <translation>&amp;Ankstesnė eilutė su žymele</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Toggle &amp;Bookmark</source>
         <translation>Pridėti/nuimti &amp;žymelę</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Remove All Bookmarks</source>
         <translation>&amp;Pašalinti visas žymeles</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>&amp;Preferences...</source>
         <translation>&amp;Nustatymai...</translation>
     </message>
@@ -1573,82 +1592,87 @@ bylos įrašymui: %2.</translation>
         <translation>&amp;Tvarkyklė</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show &amp;Line Numbers</source>
         <translation>Rodyti eilučių &amp;numerius</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show &amp;Whitespace Characters</source>
         <translation>Rodyti &amp;tarpo ženklus</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show Line &amp;Endings</source>
         <translation>Rodyti eilutės &amp;pabaigos ženklus</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show &amp;Indentation Guides</source>
         <translation>Rodyti įtraukų l&amp;inijas</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show Long Line &amp;Marker</source>
         <translation>Rodyti &amp;lapo pločio liniją</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Show &amp;Toolbar</source>
         <translation>Rodyti į&amp;rankių juostą</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show &amp;Statusbar</source>
         <translation>Rodyti &amp;būvio eilutę</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Show &amp;Horizontal Scrollbar</source>
         <translation>Rodyti &amp;horizontalią slinkties juostą</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>Zoom &amp;In</source>
         <translation>&amp;Didinti</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Zoom &amp;Out</source>
         <translation>&amp;Mažinti</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>&amp;Normal Size</source>
         <translation>&amp;Numatytasis priartinimas</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+5"/>
+        <source>&amp;Sort Tabs Alphabetically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
         <source>&amp;Debug</source>
         <translation>&amp;Derinti</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Toggle &amp;Breakpoint</source>
         <translation>Pridėti/nuimti sustojimo &amp;tašką</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>&amp;Next Breakpoint</source>
         <translation>&amp;Sekantis sustojimo taškas</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Pre&amp;vious Breakpoint</source>
         <translation>&amp;Ankstesnis sustojimo taškas</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>&amp;Remove All Breakpoints</source>
         <translation>&amp;Pašalinti visus sustojimo taškus</translation>
     </message>
@@ -1658,9 +1682,19 @@ bylos įrašymui: %2.</translation>
         <translation>&amp;Vykdyti</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="-1988"/>
         <source>Save File and Run</source>
         <translation>Išsaugoti bylą ir vykdyti</translation>
+    </message>
+    <message>
+        <location line="-7"/>
+        <source>Continue</source>
+        <translation type="unfinished">Tęsti scenarijau vykdymą</translation>
+    </message>
+    <message>
+        <location line="+2000"/>
+        <source>Save File and Run / Continue</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1688,7 +1722,7 @@ bylos įrašymui: %2.</translation>
         <translation>Paskutinės atvertos bylos</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+69"/>
         <source>Editor</source>
         <translation>Tvarkyklė</translation>
     </message>
@@ -1696,7 +1730,7 @@ bylos įrašymui: %2.</translation>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+141"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+150"/>
         <source>line:</source>
         <translation>eilutė:</translation>
     </message>
@@ -1716,17 +1750,22 @@ bylos įrašymui: %2.</translation>
         <translation>eilutės pabaiga:</translation>
     </message>
     <message>
-        <location line="+231"/>
+        <location line="+257"/>
         <source>Breakpoint condition</source>
         <translation>Sustojimo taško būvis</translation>
     </message>
     <message>
-        <location line="+94"/>
-        <location line="+1174"/>
-        <location line="+136"/>
-        <location line="+358"/>
-        <location line="+148"/>
-        <location line="+27"/>
+        <location line="+56"/>
+        <source>ERROR: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+61"/>
+        <location line="+1204"/>
+        <location line="+116"/>
+        <location line="+394"/>
+        <location line="+158"/>
+        <location line="+26"/>
         <location line="+37"/>
         <location line="+102"/>
         <location line="+36"/>
@@ -1734,13 +1773,13 @@ bylos įrašymui: %2.</translation>
         <translation>Octave tvarkyklė</translation>
     </message>
     <message>
-        <location line="-2017"/>
+        <location line="-2072"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+847"/>
+        <location line="+878"/>
         <source>Goto line</source>
         <translation>Pereiti į eilutę</translation>
     </message>
@@ -1750,7 +1789,7 @@ Save and add breakpoint, or cancel?</source>
         <translation>Eilutės numeris</translation>
     </message>
     <message>
-        <location line="+126"/>
+        <location line="+127"/>
         <source>Comment selected text</source>
         <translation>Užkomentuoti pažymėtą sritį</translation>
     </message>
@@ -1762,8 +1801,8 @@ Save and add breakpoint, or cancel?</source>
 </translation>
     </message>
     <message>
-        <location line="+135"/>
-        <location line="+60"/>
+        <location line="+136"/>
+        <location line="+57"/>
         <source>&lt;unnamed&gt;</source>
         <translation>&lt;bevardis&gt;</translation>
     </message>
@@ -1785,7 +1824,7 @@ kurios turinys buvo pakeistas, bet neišsaugotas.
 %2</translation>
     </message>
     <message>
-        <location line="+126"/>
+        <location line="+106"/>
         <source>There were problems reading the file
 %1
 with the selected encoding %2.
@@ -1825,7 +1864,7 @@ This does not change the default encoding.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+207"/>
+        <location line="+161"/>
         <source>Debug or Save</source>
         <translation>Derinti ar saugoti</translation>
     </message>
@@ -1837,14 +1876,14 @@ Quit debugging and save?</source>
 Baigti derinimą ir išsaugoti?</translation>
     </message>
     <message>
-        <location line="+85"/>
+        <location line="+167"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Nepavyko &quot;%1&quot; bylos atidaryti įrašymui:
 %2.</translation>
     </message>
     <message>
-        <location line="+175"/>
+        <location line="+184"/>
         <source>The current encoding %1
 can not be applied.
 
@@ -1861,7 +1900,7 @@ Please select another one!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-141"/>
+        <location line="-142"/>
         <source>Octave Files (*.m)</source>
         <translation>Octave bylos (*.m)</translation>
     </message>
@@ -1871,7 +1910,7 @@ Please select another one!</source>
         <translation>Visos bylos (*)</translation>
     </message>
     <message>
-        <location line="+76"/>
+        <location line="+78"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -1887,7 +1926,7 @@ pavadinimo naudoti kaip Octave komandos.
 Ar norite pakeisti bylos pavadinimą?</translation>
     </message>
     <message>
-        <location line="+166"/>
+        <location line="+165"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Atrodo, kad bylos &quot;%1&quot; turinys buvo pakeistas naudojant kitą programą. Ar norite iš naujo įkleti bylos turinį?</translation>
     </message>
@@ -1913,7 +1952,7 @@ buvo pervadinta ar ištrinta. Ar norite ją išsaugoti?%2</translation>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+73"/>
+        <location filename="../src/files-dock-widget.cc" line="+78"/>
         <source>File Browser</source>
         <translation>Bylų naršyklė</translation>
     </message>
@@ -1948,17 +1987,17 @@ buvo pervadinta ar ištrinta. Ar norite ją išsaugoti?%2</translation>
         <translation>Kitokia kas antros eilutės fono splava</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+38"/>
         <source>Enter the path or filename</source>
         <translation>Įveskite aplanko kelią arba bylos pavadinimą</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>One directory up</source>
         <translation>Pereiti vienu aplanku auškčiau</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show Octave directory</source>
         <translation>Rodyti Octave aplanką</translation>
     </message>
@@ -1968,7 +2007,7 @@ buvo pervadinta ar ištrinta. Ar norite ją išsaugoti?%2</translation>
         <translation>Pereiti į numatytąjį Octave darbo aplanką</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Set Octave directory</source>
         <translation>Nustatyti Octave darbo aplanką</translation>
     </message>
@@ -1988,35 +2027,35 @@ buvo pervadinta ar ištrinta. Ar norite ją išsaugoti?%2</translation>
         <translation>Rodyti namų aplanką</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+11"/>
         <source>Set Browser Directory...</source>
         <translation>Parinkti naršyklės aplanką...</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+375"/>
+        <location line="+397"/>
         <source>Find Files...</source>
         <translation>Rasti bylas...</translation>
     </message>
     <message>
-        <location line="-371"/>
-        <location line="+384"/>
+        <location line="-393"/>
+        <location line="+406"/>
         <source>New File...</source>
         <translation>Nauja byla...</translation>
     </message>
     <message>
-        <location line="-381"/>
-        <location line="+384"/>
+        <location line="-403"/>
+        <location line="+406"/>
         <source>New Directory...</source>
         <translation>Naujas aplankas...</translation>
     </message>
     <message>
-        <location line="-329"/>
+        <location line="-354"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+282"/>
+        <location line="+291"/>
         <source>Open</source>
         <translation>Atidaryti</translation>
     </message>
@@ -2051,7 +2090,29 @@ buvo pervadinta ar ištrinta. Ar norite ją išsaugoti?%2</translation>
         <translation>Parinkti einamąjį aplanką</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+3"/>
+        <source>Add to Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+7"/>
+        <source>Selected Directories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-5"/>
+        <location line="+7"/>
+        <source>Selected Directories and Subdirectories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-4"/>
+        <source>Remove from Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
         <source>Rename...</source>
         <translation>Pervadinti...</translation>
     </message>
@@ -2080,7 +2141,7 @@ buvo pervadinta ar ištrinta. Ar norite ją išsaugoti?%2</translation>
  pervadinti į: </translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+31"/>
         <location line="+14"/>
         <source>Delete file/directory</source>
         <translation>Ištrinti bylą/aplanką</translation>
@@ -2098,7 +2159,7 @@ buvo pervadinta ar ištrinta. Ar norite ją išsaugoti?%2</translation>
         <translation>Negaliu ištrinti netuščio aplanko</translation>
     </message>
     <message>
-        <location line="+152"/>
+        <location line="+192"/>
         <source>Set directory of file browser</source>
         <translation>Aplanko parinkimas bylų naršyklei</translation>
     </message>
@@ -2142,7 +2203,7 @@ buvo pervadinta ar ištrinta. Ar norite ją išsaugoti?%2</translation>
 <context>
     <name>octave::final_page</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+285"/>
+        <location filename="../src/welcome-wizard.cc" line="+319"/>
         <source>Enjoy!</source>
         <translation>Mėgaukitės!</translation>
     </message>
@@ -2205,9 +2266,9 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::find_dialog</name>
     <message>
-        <location filename="../src/m-editor/find-dialog.cc" line="+87"/>
-        <source>Find and Replace</source>
-        <translation>Surasti ir pakeisti</translation>
+        <location filename="../src/m-editor/find-dialog.cc" line="+94"/>
+        <source>Editor: Find and Replace</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2215,12 +2276,22 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>&amp;Ieškoti:</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
+        <source>Enter text to search for</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>Re&amp;place with:</source>
         <translation>&amp;Pakeisti į:</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+2"/>
+        <source>Enter new text replacing search hits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Match &amp;case</source>
         <translation>Skirti didžiasias ir mažasias &amp;raides</translation>
     </message>
@@ -2280,7 +2351,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Ieškoti pa&amp;žymėtoje srityje</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+164"/>
         <source>Search from end</source>
         <translation>Paiešką pradėti nuo bylos pabaigos</translation>
     </message>
@@ -2290,7 +2361,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Paiešką pradėti nuo bylos pradžio</translation>
     </message>
     <message>
-        <location line="+257"/>
+        <location line="+320"/>
         <source>Replace Result</source>
         <translation>Pakeitimų duomenys</translation>
     </message>
@@ -2313,7 +2384,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::find_files_dialog</name>
     <message>
-        <location filename="../src/find-files-dialog.cc" line="+54"/>
+        <location filename="../src/find-files-dialog.cc" line="+61"/>
         <source>Find Files</source>
         <translation>Rasti bylas</translation>
     </message>
@@ -2328,7 +2399,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Įveskite bylos(-ų) pavadinimo(-ų) paieškos reguliariąją išraišką</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Start in:</source>
         <translation>Paiešką pradėti čia:</translation>
     </message>
@@ -2353,7 +2424,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Vidiniai aplankai</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Search recursively through directories for matching files</source>
         <translation>Bylos(-ų) su tinkamu pavadinimu ieškoti pradžios aplanko vidiniuose aplankuose</translation>
     </message>
@@ -2363,7 +2434,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Įtraukti aplankų pavadinimus</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Include matching directories in search results</source>
         <translation>Į paiešką įtraukti vidinių aplankų pavadinimus</translation>
     </message>
@@ -2373,7 +2444,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Neskirti ABC... ir abc... raidžių</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Set matching name is case insensitive</source>
         <translation>Ieškant didžiasias ir mažasias raides laikyti vienodais ženklais</translation>
     </message>
@@ -2388,17 +2459,17 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Įveskite ieškomo bylos(-ų) turinio reguliariąją išraišką</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Text to match</source>
         <translation>Paieškos tekstas</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Text case insensitive</source>
         <translation>Neskirti ABC... ir abc... raidžių</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Set text content is case insensitive</source>
         <translation>Ieškant didžiasias ir mažasias raides laikyti vienodais ženklais</translation>
     </message>
@@ -2408,7 +2479,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Paieškos suvestinė</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+20"/>
         <source>Idle.</source>
         <translation>Laukiama.</translation>
     </message>
@@ -2443,7 +2514,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Bylos turinys</translation>
     </message>
     <message>
-        <location line="+103"/>
+        <location line="+101"/>
         <source>Searching...</source>
         <translation>Vykdoma paieška...</translation>
     </message>
@@ -2453,7 +2524,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Rasta: %1</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+16"/>
         <source>Set search directory</source>
         <translation>Parinkite paieškos aplanką</translation>
     </message>
@@ -2461,7 +2532,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::find_files_model</name>
     <message>
-        <location filename="../src/find-files-model.cc" line="+88"/>
+        <location filename="../src/find-files-model.cc" line="+91"/>
         <source>Filename</source>
         <translation>Bylos pavadinimas</translation>
     </message>
@@ -2474,22 +2545,22 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::history_dock_widget</name>
     <message>
-        <location filename="../src/history-dock-widget.cc" line="+47"/>
+        <location filename="../src/history-dock-widget.cc" line="+53"/>
         <source>Browse and search the command history.</source>
         <translation>Įvykdytų komandų peržiūra ir paieška.</translation>
     </message>
     <message>
-        <location line="+94"/>
+        <location line="+95"/>
         <source>Copy</source>
         <translation>Kopijuoti</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Evaluate</source>
         <translation>Įvykdyti</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Create script</source>
         <translation>Sukurti scenarijų (script&apos;ą)</translation>
     </message>
@@ -2527,7 +2598,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::initial_page</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="-178"/>
+        <location filename="../src/welcome-wizard.cc" line="-189"/>
         <source>Welcome to Octave!</source>
         <translation>Malonu, kad naudojate Octave!</translation>
     </message>
@@ -2542,7 +2613,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Atšaukti</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+9"/>
         <source>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;You seem to be using the Octave graphical interface for the first time on this computer.
 Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
@@ -2558,7 +2629,7 @@ Nuostatų bylos sukurimui ir &quot;Octave&quot; paleidimui paspauskite &quot;Tol
 <context>
     <name>octave::label_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+71"/>
+        <location filename="../src/octave-dock-widget.cc" line="+78"/>
         <source>Undock widget</source>
         <translation>Padaryti &quot;plaukiojančiu&quot; langu</translation>
     </message>
@@ -2571,17 +2642,17 @@ Nuostatų bylos sukurimui ir &quot;Octave&quot; paleidimui paspauskite &quot;Tol
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+402"/>
+        <location filename="../src/main-window.cc" line="+403"/>
         <source>Save Workspace As</source>
         <translation>Išaugoti aplinkos kintamuosius</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+28"/>
         <source>Load Workspace</source>
         <translation>Įkelti aplinkos kintamuosius</translation>
     </message>
     <message>
-        <location line="+119"/>
+        <location line="+223"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>Byla &quot;%1&quot;, kurioje saugomos Octave laidos pastabos, yra tuščia.</translation>
     </message>
@@ -2596,18 +2667,18 @@ Nuostatų bylos sukurimui ir &quot;Octave&quot; paleidimui paspauskite &quot;Tol
         <translation>Octave laidos pastabos</translation>
     </message>
     <message>
-        <location line="+79"/>
+        <location line="+80"/>
         <source>Octave Community News</source>
         <translation>Octave bendruomenės naujienos</translation>
     </message>
     <message>
         <location line="+85"/>
-        <location line="+1627"/>
+        <location line="+1830"/>
         <source>About Octave</source>
         <translation>Apie Octave</translation>
     </message>
     <message>
-        <location line="-1488"/>
+        <location line="-2371"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -2617,18 +2688,18 @@ Nuostatų bylos sukurimui ir &quot;Octave&quot; paleidimui paspauskite &quot;Tol
         <translation>Ar tikrai norite uždaryti Octave?</translation>
     </message>
     <message>
-        <location line="+60"/>
-        <location line="+1489"/>
+        <location line="+707"/>
+        <location line="+1727"/>
         <source>Browse directories</source>
         <translation>Parinkti aplanką</translation>
     </message>
     <message>
-        <location line="-1331"/>
+        <location line="-1466"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave bylos (*.m);;Visos bylos (*)</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+39"/>
         <source>New Function</source>
         <translation>Nauja funkcija</translation>
     </message>
@@ -2640,23 +2711,23 @@ Nuostatų bylos sukurimui ir &quot;Octave&quot; paleidimui paspauskite &quot;Tol
 </translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+50"/>
         <source>%1 is a built-in, compiled or inline
 function and can not be edited.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+41"/>
         <source>Can not find function %1</source>
         <translation>Nepavyko rasti &quot;%1&quot; funkcijos</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+22"/>
         <source>Octave Editor</source>
         <translation>Octave tvarkyklė</translation>
     </message>
     <message>
-        <location line="+824"/>
+        <location line="+911"/>
         <source>&amp;File</source>
         <translation>&amp;Byla</translation>
     </message>
@@ -2686,7 +2757,7 @@ function and can not be edited.</source>
         <translation>Uždaryti</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+19"/>
         <source>New</source>
         <translation>Naujas</translation>
     </message>
@@ -2711,12 +2782,12 @@ function and can not be edited.</source>
         <translation>&amp;Tvarkyti</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>Undo</source>
         <translation>Atšaukti</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Copy</source>
         <translation>Kopijuoti</translation>
     </message>
@@ -2726,7 +2797,7 @@ function and can not be edited.</source>
         <translation>Įklijuoti</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Select All</source>
         <translation>Pažymėti viską</translation>
     </message>
@@ -2736,7 +2807,7 @@ function and can not be edited.</source>
         <translation>Išvalyti atminties mainų sritį (clipboard)</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Find Files...</source>
         <translation>Rasti bylas...</translation>
     </message>
@@ -2756,12 +2827,17 @@ function and can not be edited.</source>
         <translation>Ištrinti aplinkos kintamuosius</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
+        <source>Set Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Preferences...</source>
         <translation>Nustatymai...</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+53"/>
         <source>De&amp;bug</source>
         <translation>&amp;Derinimas</translation>
     </message>
@@ -2791,7 +2867,7 @@ function and can not be edited.</source>
         <translation>Išeiti iš derinimo būvio</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+49"/>
         <source>&amp;Window</source>
         <translation>&amp;Langas</translation>
     </message>
@@ -2857,14 +2933,19 @@ function and can not be edited.</source>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+39"/>
+        <location line="+44"/>
         <source>Documentation</source>
         <translation>Dokumentacija</translation>
     </message>
     <message>
-        <location line="-36"/>
+        <location line="-41"/>
         <source>Variable Editor</source>
         <translation>Kintamųjų tvarkyklė</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Previous Widget</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2927,17 +3008,17 @@ function and can not be edited.</source>
         <translation>Įrankių juosta</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+21"/>
         <source>Enter directory name</source>
         <translation>Įveskite aplanko pavadinimą</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+8"/>
         <source>Current Directory: </source>
         <translation>Einamasis aplankas: </translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>One directory up</source>
         <translation>Pereiti vienu aplanku aukščiau</translation>
     </message>
@@ -2945,7 +3026,7 @@ function and can not be edited.</source>
 <context>
     <name>octave::news_reader</name>
     <message>
-        <location line="+345"/>
+        <location filename="../src/news-reader.cc" line="+115"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -3002,17 +3083,17 @@ arba Octave nustatymuose įgalinkite prieigą prie interneto.
 <context>
     <name>octave::octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+138"/>
+        <location filename="../src/octave-dock-widget.cc" line="+153"/>
         <source>Hide widget</source>
         <translation>Paslėpti</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+76"/>
         <source>Dock widget</source>
         <translation>&quot;Prisegti&quot; langą</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+48"/>
         <source>Undock widget</source>
         <translation>Padaryti &quot;plaukiojantį&quot;</translation>
     </message>
@@ -3020,7 +3101,7 @@ arba Octave nustatymuose įgalinkite prieigą prie interneto.
 <context>
     <name>octave::octave_qscintilla</name>
     <message>
-        <location filename="../src/m-editor/octave-qscintilla.cc" line="+281"/>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+294"/>
         <source>Help on</source>
         <translation>Pagalba apie</translation>
     </message>
@@ -3040,77 +3121,91 @@ arba Octave nustatymuose įgalinkite prieigą prie interneto.
         <translation>dbstop() jei ...</translation>
     </message>
     <message>
-        <location line="+523"/>
+        <location line="+471"/>
+        <source>Octave Editor</source>
+        <translation type="unfinished">Octave tvarkyklė</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Creating temporary files failed.
+Make sure you have write access to temp. directory
+%1
+
+&quot;Run Selection&quot; requires temporary files.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+273"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation>Norėdami pakeisti visus &quot;%2&quot;, esančius &quot;%3&quot;, paspauskite &quot;%1&quot;.</translation>
     </message>
 </context>
 <context>
-    <name>octave::octave_qt_link</name>
-    <message>
-        <location filename="../src/octave-qt-link.cc" line="+108"/>
-        <location line="+8"/>
-        <location line="+11"/>
-        <source>Create</source>
-        <translation>Sukurti</translation>
-    </message>
-    <message>
-        <location line="-19"/>
-        <location line="+260"/>
-        <source>Cancel</source>
-        <translation>Atšaukti</translation>
-    </message>
-    <message>
-        <location line="-254"/>
-        <source>File
-%1
-does not exist. Do you want to create it?</source>
-        <translation>Nėra &quot;%1&quot; bylos.
-Ar norite ją sukurti?</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Octave Editor</source>
-        <translation>Octave tvarkyklė</translation>
-    </message>
-    <message>
-        <location line="+245"/>
-        <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation>Funkcijų aplankuose nėra &quot;%1&quot; bylos. Tvarkomos funkcijos įvykdymui ar derinimui reikia &quot;%2&quot; aplanaką padaryti darbiniu arba pridėti prie funkcijų aplankų sąrašo.</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        <translation>Funkcijų aplankuose jau yra &quot;%1&quot; byla. Tvarkomos funkcijos įvykdymui ar derinimui reikia &quot;%2&quot; aplanaką padaryti darbiniu.</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Change Directory or Add Directory to Load Path</source>
-        <translation>Aplanaką padaryti darbiniu arba pridėti prie funkcijų aplankų sąrašo</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>&amp;Change Directory</source>
-        <translation>&amp;Aplanką padaryti darbiniu</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Add Directory to Load Path</source>
-        <translation>&amp;Pridėti prie funkcijų aplankų sąrašo</translation>
-    </message>
-</context>
-<context>
     <name>octave::octave_txt_lexer</name>
     <message>
-        <location filename="../src/m-editor/octave-txt-lexer.cc" line="+40"/>
+        <location filename="../src/m-editor/octave-txt-lexer.cc" line="+43"/>
         <source>Default</source>
         <translation>Numatytasis</translation>
     </message>
 </context>
 <context>
+    <name>octave::qt_interpreter_events</name>
+    <message>
+        <location filename="../src/qt-interpreter-events.cc" line="+288"/>
+        <location line="+5"/>
+        <location line="+2"/>
+        <source>Create</source>
+        <translation type="unfinished">Sukurti</translation>
+    </message>
+    <message>
+        <location line="-7"/>
+        <location line="+31"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Atšaukti</translation>
+    </message>
+    <message>
+        <location line="-28"/>
+        <source>File
+%1
+does not exist. Do you want to create it?</source>
+        <translation type="unfinished">Nėra &quot;%1&quot;
+bylos. Ar norite tokią sukurti?</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Octave Editor</source>
+        <translation type="unfinished">Octave tvarkyklė</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
+        <translation type="unfinished">Funkcijų aplankuose nėra &quot;%1&quot; bylos. Tvarkomos funkcijos įvykdymui ar derinimui reikia &quot;%2&quot; aplanaką padaryti darbiniu arba pridėti prie funkcijų aplankų sąrašo.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
+        <translation type="unfinished">Funkcijų aplankuose jau yra &quot;%1&quot; byla. Tvarkomos funkcijos įvykdymui ar derinimui reikia &quot;%2&quot; aplanaką padaryti darbiniu.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Change Directory or Add Directory to Load Path</source>
+        <translation type="unfinished">Aplanaką padaryti darbiniu arba pridėti prie funkcijų aplankų sąrašo</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Change Directory</source>
+        <translation type="unfinished">&amp;Aplanką padaryti darbiniu</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Add Directory to Load Path</source>
+        <translation type="unfinished">&amp;Pridėti prie funkcijų aplankų sąrašo</translation>
+    </message>
+</context>
+<context>
     <name>octave::resource_manager</name>
     <message>
-        <location filename="../src/resource-manager.cc" line="+302"/>
+        <location filename="../src/resource-manager.cc" line="+308"/>
         <source>The settings file
 %1
 does not exist and can not be created.
@@ -3127,15 +3222,98 @@ Negalima sukurti šios bylos.
 Grafinė Octave aplinka bus uždaryta.</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>Octave Critical Error</source>
         <translation>Kritinė Octave klaida</translation>
     </message>
 </context>
 <context>
+    <name>octave::set_path_dialog</name>
+    <message>
+        <location filename="../src/set-path-dialog.cc" line="+64"/>
+        <source>Set Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>All changes take effect immediately.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Add Folder...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Single Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Folder with Subfolders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Move to Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move to Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Reload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save</source>
+        <translation type="unfinished">Išsaugoti</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Revert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Revert Last Change</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Revert All Changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+94"/>
+        <source>Open Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-571"/>
+        <location filename="../src/settings-dialog.cc" line="-579"/>
         <source>Octave Preferences</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3145,14 +3323,14 @@ Grafinė Octave aplinka bus uždaryta.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+15"/>
-        <location line="+4"/>
-        <location line="+698"/>
+        <location line="+16"/>
+        <location line="+5"/>
+        <location line="+705"/>
         <source>System setting</source>
         <translation type="unfinished">Numatytieji</translation>
     </message>
     <message>
-        <location line="-448"/>
+        <location line="-461"/>
         <source>IBeam Cursor</source>
         <translation type="unfinished">stačias brūkšnys</translation>
     </message>
@@ -3167,7 +3345,7 @@ Grafinė Octave aplinka bus uždaryta.</translation>
         <translation type="unfinished">gulsčias brūkšnys</translation>
     </message>
     <message>
-        <location line="+164"/>
+        <location line="+169"/>
         <source>Set Octave Startup Directory</source>
         <translation type="unfinished">Nustatyti naujai paleistos Octave darbo aplanką</translation>
     </message>
@@ -3177,7 +3355,7 @@ Grafinė Octave aplinka bus uždaryta.</translation>
         <translation type="unfinished">Nustatyti pradinį bylų naršyklės aplanką</translation>
     </message>
     <message>
-        <location line="+503"/>
+        <location line="+506"/>
         <source>Enable attribute colors</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3186,11 +3364,91 @@ Grafinė Octave aplinka bus uždaryta.</translation>
         <source>Hide tools tips</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/gui-preferences-cs.h" line="+68"/>
+        <source>foreground</source>
+        <translation type="unfinished">teksto spalva</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>background</source>
+        <translation type="unfinished">fonas</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>selection</source>
+        <translation type="unfinished">pažymėta sritis</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>cursor</source>
+        <translation type="unfinished">žymeklis</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ed.h" line="+198"/>
+        <source>Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ve.h" line="+67"/>
+        <source>Foreground</source>
+        <translation type="unfinished">Teksto spalva</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished">Pažymėto teksto spalva</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished">Pažymėto fono spalva</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished">Antroji fono spalva</translation>
+    </message>
+    <message>
+        <location filename="../src/gui-preferences-ws.h" line="+85"/>
+        <source>argument</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>global</source>
+        <translation type="unfinished">visuotinas</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>persistant</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>octave::setup_community_news</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+42"/>
+        <location filename="../src/welcome-wizard.cc" line="+46"/>
         <source>Community News</source>
         <translation>Bendruomenės naujienos</translation>
     </message>
@@ -3225,7 +3483,7 @@ Tikrinimas atliekamas ne daugiau kaip vieną kartą per dieną, o naujienos rodo
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+30"/>
         <source>&lt;html&gt;&lt;head&gt;
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
@@ -3245,7 +3503,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::shortcut_manager</name>
     <message>
-        <location filename="../src/shortcut-manager.cc" line="+131"/>
+        <location filename="../src/shortcut-manager.cc" line="+582"/>
         <source>Double Shortcut</source>
         <translation>Pasikartojantis sparčiųjų klavišų rinkinys</translation>
     </message>
@@ -3261,17 +3519,27 @@ yra naudojamas veiksmui &quot;%2&quot; atlikti.
 Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="-440"/>
         <source>New File</source>
         <translation>Nauja byla</translation>
     </message>
     <message>
+        <location line="-6"/>
+        <source>Undock/Dock Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+1"/>
+        <source>Close Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>New Function</source>
         <translation>Nauja funkcija</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>New Figure</source>
         <translation>Naujas braižymo langas</translation>
     </message>
@@ -3326,124 +3594,134 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation>Bylose rasti</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Clear Command Window</source>
         <translation>Išvalyti komandų langą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Clear Command History</source>
         <translation>Išvalyti įvykdytų komandų sąrašą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Clear Workspace</source>
         <translation>Ištrinti aplinkos kintamuosius</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+173"/>
+        <source>Set Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+112"/>
         <source>Preferences</source>
         <translation>Nustatymai</translation>
     </message>
     <message>
-        <location line="-170"/>
+        <location line="-109"/>
         <source>Step</source>
         <translation>Žengti</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Step Into</source>
         <translation>Žengti į vidų</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Step Out</source>
         <translation>Žengti į išorę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Continue</source>
         <translation>Tęsti scenarijau vykdymą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Quit Debug Mode</source>
         <translation>Išeiti iš derinimo būvio</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show Command Window</source>
         <translation>Rodyti komandų langą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Command History</source>
         <translation>Rodyti įvykdytų komandų langą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show File Browser</source>
         <translation>Rodyti bylų naršyklę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Workspace</source>
         <translation>Rodyti aplinkos kintamųjų langą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Editor</source>
         <translation>Rodyti tvarkyklės langą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Documentation</source>
         <translation>Rodyti dokumentacijos langą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Variable Editor</source>
         <translation>Rodyti kintamųjų tvarkyklės langą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Command Window</source>
         <translation>Komandų langas</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Command History</source>
         <translation>Įvykdytos komandos</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>File Browser</source>
         <translation>Bylų naršyklė</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Workspace</source>
         <translation>Aplinklos kintamieji</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <location line="+285"/>
+        <location line="+1"/>
+        <location line="+234"/>
         <source>Editor</source>
         <translation>Tvarkyklė</translation>
     </message>
     <message>
-        <location line="-283"/>
+        <location line="-233"/>
         <source>Documentation</source>
         <translation>Dokumentacija</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Variable Editor</source>
         <translation>Kintamųjų tvarkyklė</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
+        <source>Previous Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Reset Default Window Layout</source>
         <translation>СAtstatyti numatytąjį langų išdėstymą</translation>
     </message>
@@ -3453,12 +3731,12 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation>Rodyti diske esančią dokumentaciją</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Online Documentation</source>
         <translation>Rodyti internete esančią dokumentaciją</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Report Bug</source>
         <translation>Pranešti apie klaidą</translation>
     </message>
@@ -3478,7 +3756,7 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation>Octave kūrėjų ištekliai</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>About Octave</source>
         <translation>Apie Octave</translation>
     </message>
@@ -3513,27 +3791,27 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation>Pereiti į kairiąją kortelę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Switch to Right Tab</source>
         <translation>Pereiti į dešiniąją kortelę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Move Tab Left</source>
         <translation>Perstumti kortelę į kairę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Move Tab Right</source>
         <translation>Perstumti kortelę į dešinę</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+14"/>
         <source>Edit Function</source>
         <translation>Tvarkyti funkciją</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Save File</source>
         <translation>Išsaugoti  bylą</translation>
     </message>
@@ -3563,174 +3841,174 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation>Surasti ir pakeisti</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Find Next</source>
         <translation>Surasti sekantį</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Find Previous</source>
         <translation>Surasti ankstesnį</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Delete to Start of Word</source>
         <translation>Trinti iki žodžio pradžios</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Delete to End of Word</source>
         <translation>Trinti iki žodžio pabaigos</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Delete to Start of Line</source>
         <translation>Trinti iki eilutės pradžios</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Delete to End of Line</source>
         <translation>Trinti iki eilutės pabaigos</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Delete Line</source>
         <translation>Trinti eilutę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Copy Line</source>
         <translation>Kopijuoti eilutę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Cut Line</source>
         <translation>Iškirpti eilutę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Duplicate Selection/Line</source>
         <translation>Dvigubinti pažymėtą sritį/eilutę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Transpose Line</source>
         <translation>Sukeisti eilutes</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Completion List</source>
         <translation>Rodyti automatinio užbaigimo sąrašą</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Comment Selection</source>
         <translation>Užkomentuoti pažymėtą sritį</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Uncomment Selection</source>
         <translation>Atkomentuoti pažymėtą sritį</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Comment Selection (Choosing String)</source>
         <translation>Užkomentuoti pažymėtą sritį nurodant komentavimo ženklą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Uppercase Selection</source>
         <translation>Pažymėtos srities raides pakeisti didžiosiomis raidėmis</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Lowercase Selection</source>
         <translation>Pažymėtos srities raides pakeisti mažosiomis raidėmis</translation>
     </message>
     <message>
-        <location line="+4"/>
-        <location line="+5"/>
+        <location line="+3"/>
+        <location line="+3"/>
         <source>Indent Selection Rigidly</source>
         <translation>Pažymėtą sritį padaryti su įtraukomis</translation>
     </message>
     <message>
-        <location line="-3"/>
-        <location line="+5"/>
+        <location line="-2"/>
+        <location line="+3"/>
         <source>Unindent Selection Rigidly</source>
         <translation>Šalinti pažymėtos srities įtraukas</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Indent Code</source>
         <translation>Kodą padaryti su įtraukomis</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Convert Line Endings to Windows</source>
         <translation>Eilučių pabaigos ženklus perversti į Wondows formatą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Convert Line Endings to Unix</source>
         <translation>Eilučių pabaigos ženklus perversti į Unix formatą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Convert Line Endings to Mac</source>
         <translation>Eilučių pabaigos ženklus perversti į Mac formatą</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Goto Line</source>
         <translation>Pereiti į eilutę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Move to Matching Brace</source>
         <translation>Pereiti į priešingą skliaustelių poros pusę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Select to Matching Brace</source>
         <translation>Pažymėti skliaustelių poros turinį</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Toggle Bookmark</source>
         <translation>Pridėti/nuimti žymelę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Next Bookmark</source>
         <translation>Sekanti eilutė su žymele</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Previous Bookmark</source>
         <translation>Ankstesnė eilutė su žymele</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Remove All Bookmark</source>
         <translation>Pašalinti visas žymeles</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Styles Preferences</source>
         <translation>Vaizdavimo nustatymai</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show Line Numbers</source>
         <translation>Rodyti eilučių numerius</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Whitespace Characters</source>
         <translation>Rodyti tarpo ženklą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Line Endings</source>
         <translation>Rodyti eilutės pabaigos ženklus</translation>
     </message>
@@ -3740,57 +4018,67 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation>Rodyti įtraukų linijas</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Long Line Marker</source>
         <translation>Rodyti ilgos eilutės pabaigos žymę</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Toolbar</source>
         <translation>Rodyti įrankių juostą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Statusbar</source>
         <translation>Rodyti būvio juostą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Show Horizontal Scrollbar</source>
         <translation>Rodyti horizontalią slinkties juostą</translation>
     </message>
     <message>
-        <location line="+101"/>
-        <location line="+33"/>
+        <location line="+1"/>
+        <source>Sort Tabs Alphabetically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+99"/>
+        <location line="+35"/>
         <source>File Menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-31"/>
-        <location line="+33"/>
+        <location line="-33"/>
+        <location line="+35"/>
         <source>Edit Menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-31"/>
-        <location line="+35"/>
+        <location line="-33"/>
+        <location line="+37"/>
         <source>Debug Menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-33"/>
+        <location line="-35"/>
         <source>Window Menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+35"/>
+        <location line="+37"/>
         <source>Help Menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-33"/>
+        <location line="-35"/>
         <source>News Menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Handling of Dock Widgets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3824,7 +4112,7 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+79"/>
+        <location line="+80"/>
         <source>Import shortcuts from file...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3839,7 +4127,7 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-367"/>
+        <location line="-326"/>
         <source>Zoom In</source>
         <translation>Padidinti</translation>
     </message>
@@ -3850,57 +4138,57 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Zoom Normal</source>
         <translation>Įprastas mastelis</translation>
     </message>
     <message>
-        <location line="+112"/>
+        <location line="+70"/>
         <source>Toggle Breakpoint</source>
         <translation>Pridėti/nuimti sustojimo tašką</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Next Breakpoint</source>
         <translation>Sekantis sustojimo taškas</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Previous Breakpoint</source>
         <translation>Ankstesnis sustojimo taškas</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Remove All Breakpoints</source>
         <translation>Pašalinti visus sustojimo taškus</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Run File</source>
         <translation>Vykdyti bylą</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Run Selection</source>
         <translation>Vykdyti pažymėtą kodą</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Help on Keyword</source>
         <translation>Pagalba pagal raktinį žodį</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Document on Keyword</source>
         <translation>Dokumentacija pagal raktinį žodį</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Go to Homepage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Go Back one Page</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3910,28 +4198,28 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+76"/>
         <source>Global</source>
         <translation>Visuotinas</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+17"/>
         <source>Tab Handling in Dock Widgets</source>
         <translation>Koretelių tvarkymas &quot;prisegtuose&quot; languose</translation>
     </message>
     <message>
-        <location line="+125"/>
+        <location line="+126"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation>Octave sparčiųjų klavišų rinkinių byla (*.osc);;Visos bylos (*)</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+123"/>
         <source>Enter new Shortcut</source>
         <translation>Įvesti naują sparčiųjų klavišų rinkinį</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+6"/>
         <source>Apply the desired shortcut or click on the right button to reset the shortcut to its default.</source>
         <translation>Patvirtinkite norimą sparčiųjų klavišų rinkinį arba spauskite &quot;Atšaukti&quot; mygtuką, norėdami atstatyti numatytąjį vertę.</translation>
     </message>
@@ -3941,7 +4229,13 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation>Įvesti sparčiųjų klavišų rinkinį tiesiog paspaudus reikiamus klavišus</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+3"/>
+        <source>Add Shift modifier
+(allows to enter number keys)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
         <source>Actual shortcut</source>
         <translation>Einamasis sparčiųjų klavišų rinkinys</translation>
     </message>
@@ -3956,7 +4250,7 @@ Ar tirai norite pritaikyti šį sparčiųjų klavišų rinkinį?</translation>
         <translation>Padaryti numatytu</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+67"/>
         <source>Overwriting Shortcuts</source>
         <translation>Perrašomi sparčiųjų klavišų rinkiniai</translation>
     </message>
@@ -3976,7 +4270,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
 <context>
     <name>octave::terminal_dock_widget</name>
     <message>
-        <location filename="../src/terminal-dock-widget.cc" line="+49"/>
+        <location filename="../src/terminal-dock-widget.cc" line="+53"/>
         <source>Command Window</source>
         <translation>Komandų langas</translation>
     </message>
@@ -3984,17 +4278,22 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
 <context>
     <name>octave::variable_dock_widget</name>
     <message>
-        <location filename="../src/variable-editor.cc" line="+181"/>
+        <location filename="../src/variable-editor.cc" line="+187"/>
         <source>Dock widget</source>
         <translation>&quot;Prisegti&quot; langą</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+3"/>
+        <source>Variable Editor: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
         <source>Undock widget</source>
         <translation>Padaryti &quot;plaukiojantį&quot;</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>Restore geometry</source>
         <translation>Atkurti geometriją</translation>
     </message>
@@ -4007,7 +4306,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+830"/>
+        <location line="+837"/>
         <source>Variable Editor</source>
         <translation>Kintamųjų tvarkyklė</translation>
     </message>
@@ -4017,77 +4316,52 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Tvarkyti kintamuosius.</translation>
     </message>
     <message>
-        <location line="+281"/>
-        <source>Foreground</source>
-        <translation>Teksto spalva</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Background</source>
-        <translation>Fono spalva</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Selected Foreground</source>
-        <translation>Pažymėto teksto spalva</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Selected Background</source>
-        <translation>Pažymėto fono spalva</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Alternate Background</source>
-        <translation>Antroji fono spalva</translation>
-    </message>
-    <message>
-        <location line="+273"/>
+        <location line="+532"/>
         <source>Variable Editor Toolbar</source>
         <translation>Kintamųjų tvarkyklės įrankių juosta</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Save</source>
         <translation>Išsaugoti</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Save variable to a file</source>
         <translation>Kintamąjį išsaugoti byloje</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Cut</source>
         <translation>Iškirpti</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Cut data to clipboard</source>
         <translation>Iškirptus duomenis patalpinti į atminties mainų sritį (clipboard)</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Copy</source>
         <translation>Kopijuoti</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Copy data to clipboard</source>
         <translation>Duomenų kopiją patalpinti į atminties mainų sritį (clipboard)</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Paste</source>
         <translation>Įklijuoti</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Paste clipboard into variable data</source>
         <translation>Į kintamojo vetę įrašyti atminties mainų srities (clipboard) duomenis</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+8"/>
         <location line="+5"/>
         <location line="+7"/>
         <source>Plot</source>
@@ -4104,12 +4378,12 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Pažymėtus duomenis atvaizduoti garfiškai</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>Up</source>
         <translation>Vienu lygiu aukštyn</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Go one level up in variable hierarchy</source>
         <translation>Kintamojo sandaroje pereiti vienu lygiu aukščiau</translation>
     </message>
@@ -4117,7 +4391,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1210"/>
+        <location line="-1188"/>
         <source>Save Variable %1 As</source>
         <translation>Kintamąjį &quot;%1&quot; išsaugoti kaip</translation>
     </message>
@@ -4125,7 +4399,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+125"/>
+        <location line="+128"/>
         <source>Cut</source>
         <translation>Iškirpti</translation>
     </message>
@@ -4183,7 +4457,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
 <context>
     <name>octave::welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="-172"/>
+        <location filename="../src/welcome-wizard.cc" line="-198"/>
         <source>Welcome to GNU Octave</source>
         <translation>Malonu, kad naudojate GNU Octave</translation>
     </message>
@@ -4191,7 +4465,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
 <context>
     <name>octave::workspace_model</name>
     <message>
-        <location filename="../src/workspace-model.cc" line="-41"/>
+        <location filename="../src/workspace-model.cc" line="+47"/>
         <source>Name</source>
         <translation>Pavadinimas</translation>
     </message>
@@ -4216,12 +4490,12 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Savybė</translation>
     </message>
     <message>
-        <location line="+108"/>
+        <location line="+83"/>
         <source>Right click to copy, rename, or display</source>
         <translation>Kopijavimui, pervardinimui ar išvedimui spauskite dešinį pelės myguką</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+30"/>
         <location line="+2"/>
         <source>complex</source>
         <translation>kompleksinis</translation>
@@ -4230,7 +4504,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
 <context>
     <name>octave::workspace_view</name>
     <message>
-        <location filename="../src/workspace-view.cc" line="+55"/>
+        <location filename="../src/workspace-view.cc" line="+62"/>
         <source>Workspace</source>
         <translation>Aplinkos kintamieji</translation>
     </message>
@@ -4240,7 +4514,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Aplinkos kintamųjų sąrašas.</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Enter text to filter the workspace</source>
         <translation>Įveskite tekstą pagal kurį bus atrinkti kintamieji</translation>
     </message>
@@ -4250,7 +4524,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Atranka</translation>
     </message>
     <message>
-        <location line="+131"/>
+        <location line="+136"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>Aplinkos kintamųjų sąrašas.&lt;br&gt;</translation>
     </message>
@@ -4260,27 +4534,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Kintamųjų savybių spalvos paaiškinimai:</translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>Class</source>
-        <translation>Klasė</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Dimension</source>
-        <translation>Išmatavimai</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Value</source>
-        <translation>Vertė</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Attribute</source>
-        <translation>Savybė</translation>
-    </message>
-    <message>
-        <location line="+129"/>
+        <location line="+132"/>
         <source>Open in Variable Editor</source>
         <translation>Rodyti kintamųjų tvarkyklėje</translation>
     </message>
@@ -4300,7 +4554,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Pervadinti</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+8"/>
         <source>Only top-level symbols may be renamed</source>
         <translation>Gali būti pervadinti tik aukščiausio lygmens ženklai</translation>
     </message>
@@ -4314,17 +4568,37 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <source>Show filter</source>
         <translation>Rodyti atranką</translation>
     </message>
+    <message>
+        <location filename="../src/gui-preferences-ws.h" line="-29"/>
+        <source>Class</source>
+        <translation type="unfinished">Klasė</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Dimension</source>
+        <translation type="unfinished">Išmatavimai</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Value</source>
+        <translation type="unfinished">Vertė</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Attribute</source>
+        <translation type="unfinished">Savybė</translation>
+    </message>
 </context>
 <context>
     <name>settings_dialog</name>
     <message>
         <location filename="../src/settings-dialog.ui" line="+42"/>
-        <location line="+798"/>
+        <location line="+811"/>
         <source>General</source>
         <translation>Pagrindiniai</translation>
     </message>
     <message>
-        <location line="-644"/>
+        <location line="-651"/>
         <source>Octave logo only</source>
         <translation>tik Octave logotipas</translation>
     </message>
@@ -4359,28 +4633,28 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Erdvinis vaizdas</translation>
     </message>
     <message>
-        <location line="+454"/>
+        <location line="+461"/>
         <source>Editor</source>
         <translation>Tvarkyklė</translation>
     </message>
     <message>
-        <location line="+314"/>
+        <location line="+201"/>
         <source>Color</source>
         <translation>Spalva</translation>
     </message>
     <message>
-        <location line="+215"/>
+        <location line="+387"/>
         <location line="+140"/>
         <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
         <translation>Tinka tik &quot;monospaces&quot; šriftams. Linijos vieta priklauso nuo tarpo ženklo pločio.&lt;/br&gt;Linija gali nesutapti su tikrąja perkėlimo vieta, kai naudojami proporciniai šriftai arba jei naudojami įvairių dydžių ir stilių (pastorintas, pasviręs ir pan.) šriftai dydžiai.</translation>
     </message>
     <message>
-        <location line="-463"/>
+        <location line="-635"/>
         <source>Enable Code Folding</source>
         <translation>Galimas kodo blokų sutraukimas</translation>
     </message>
     <message>
-        <location line="+987"/>
+        <location line="+1159"/>
         <source>Windows (CRLF)</source>
         <translation>Windows (CRLF)</translation>
     </message>
@@ -4390,7 +4664,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Unix (LF)</translation>
     </message>
     <message>
-        <location line="-962"/>
+        <location line="-1134"/>
         <source>Show horizontal scroll bar</source>
         <translation>Rodyti horizontalią slinkties juostą</translation>
     </message>
@@ -4400,7 +4674,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Rodyti įrankių juostą</translation>
     </message>
     <message>
-        <location line="+450"/>
+        <location line="+622"/>
         <source>Wrap long lines at current window border</source>
         <translation>Perkelti eilutės turinį į sekančią eilutę ties lango riba</translation>
     </message>
@@ -4490,12 +4764,12 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Be paklausimo iš naujo įkelti bylų turinį, kuris buvo pakeistas kitų programų</translation>
     </message>
     <message>
-        <location line="-738"/>
+        <location line="-894"/>
         <source>Use custom file editor</source>
         <translation>Naudoti išorinę bylų tvarkyklę</translation>
     </message>
     <message>
-        <location line="+831"/>
+        <location line="+987"/>
         <source>Text encoding used for loading and saving</source>
         <translation>Naudojama koduotė įkeliant ir saugant bylas</translation>
     </message>
@@ -4505,7 +4779,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Vaizdavimas tvarkyklėje</translation>
     </message>
     <message>
-        <location line="-1404"/>
+        <location line="-1463"/>
         <source>(Changing buffer size clears history)</source>
         <translation>(pakeitus dydį išvalomas atliktų komandų sąrašas)</translation>
     </message>
@@ -4516,12 +4790,12 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
     </message>
     <message>
         <location line="-123"/>
-        <location line="+1821"/>
+        <location line="+1936"/>
         <source>Font</source>
         <translation>Šriftas</translation>
     </message>
     <message>
-        <location line="-1418"/>
+        <location line="-1646"/>
         <source>Show line numbers</source>
         <translation>Rodyti eilučių numerius</translation>
     </message>
@@ -4531,12 +4805,12 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Kitoks einamosios eilutės fonas</translation>
     </message>
     <message>
-        <location line="-1086"/>
+        <location line="-986"/>
         <source>Interface</source>
         <translation>Aplinka</translation>
     </message>
     <message>
-        <location line="+351"/>
+        <location line="+357"/>
         <source>Confirm before exiting</source>
         <translation>Patvirtinti Octave uždarymą</translation>
     </message>
@@ -4547,12 +4821,12 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
     </message>
     <message>
         <location line="-29"/>
-        <location line="+796"/>
+        <location line="+690"/>
         <source>Show status bar</source>
         <translation>Rodyti būvio juostą</translation>
     </message>
     <message>
-        <location line="-686"/>
+        <location line="-580"/>
         <source>Text inactive</source>
         <translation>Tekstas: nesužadinto</translation>
     </message>
@@ -4568,18 +4842,18 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Fonas: nesužadinto</translation>
     </message>
     <message>
-        <location line="+114"/>
+        <location line="+121"/>
         <source>Octave Startup</source>
         <translation>Octave paleisties nustatymai</translation>
     </message>
     <message>
         <location line="+46"/>
-        <location line="+1705"/>
+        <location line="+1764"/>
         <source>Browse</source>
         <translation>Naršyti</translation>
     </message>
     <message>
-        <location line="-1199"/>
+        <location line="-1371"/>
         <source>Show whitespace</source>
         <translation>Rodyti tarpo ženklus</translation>
     </message>
@@ -4589,43 +4863,43 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Nerodyti tarpo ženklų, kurie naudojami įtraukose</translation>
     </message>
     <message>
-        <location line="-111"/>
+        <location line="+369"/>
         <source>Tab width min.</source>
         <translation>Mažiausias koretelių plotis</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+32"/>
         <source>max.</source>
         <translation>didžiausias</translation>
     </message>
     <message>
-        <location line="+1054"/>
+        <location line="+784"/>
         <source>Create nonexistent files without prompting</source>
         <translation>Be paklausimo sukurti trūkstamas bylas</translation>
     </message>
     <message>
-        <location line="-754"/>
+        <location line="-910"/>
         <source>command line (%f=file, %l=line):</source>
         <translation>užklausos eilutė (%f=byla, %l=eilutė):</translation>
     </message>
     <message>
-        <location line="-644"/>
+        <location line="-547"/>
         <source>Cursor type:</source>
         <translation>Žymeklio tipas:</translation>
     </message>
     <message>
-        <location line="-408"/>
+        <location line="-415"/>
         <source>Cursor blinking</source>
         <translation>Mirksintis žymeklis</translation>
     </message>
     <message>
-        <location line="+397"/>
+        <location line="+404"/>
         <source>Use foreground color</source>
         <translation>Naudoti teksto spalvą</translation>
     </message>
     <message>
         <location line="+52"/>
-        <location line="+1767"/>
+        <location line="+1826"/>
         <source>Font size</source>
         <translation>Šrifto dydis</translation>
     </message>
@@ -4635,22 +4909,22 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Bylų naršyklė</translation>
     </message>
     <message>
-        <location line="-2012"/>
+        <location line="-2078"/>
         <source>Normal</source>
         <translation>įprastas</translation>
     </message>
     <message>
-        <location line="+333"/>
+        <location line="+340"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
         <translation>Šie nustatymai taikomi po bet kokių .octaverc nustatymo bylų paleisties.</translation>
     </message>
     <message>
-        <location line="+716"/>
+        <location line="+603"/>
         <source>Show EOL characters</source>
         <translation>Rodyti eilutės pabaigos ženklą</translation>
     </message>
     <message>
-        <location line="+810"/>
+        <location line="+982"/>
         <source>Default EOL mode</source>
         <translation>Numatytasis eilutės pabaigos ženklas</translation>
     </message>
@@ -4660,12 +4934,12 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Sąrašą rodyti, jei žodį sudaro sekantis ženklų kiekis: </translation>
     </message>
     <message>
-        <location line="-1807"/>
+        <location line="-1879"/>
         <source>Preferences</source>
         <translation type="unfinished">Nustatymai</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+63"/>
         <source>(requires restart)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4690,7 +4964,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+34"/>
         <source>Style</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4725,22 +4999,32 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+172"/>
+        <location line="+526"/>
         <source>Show complete path in title</source>
         <translation>Bylų koretelėse rodyti pilną pavadinimą</translation>
     </message>
     <message>
-        <location line="+131"/>
+        <location line="-336"/>
         <source>Number size as difference to editor font</source>
         <translation>Numerių ir tvarkyklės šriftų dydžių skirtumas</translation>
     </message>
     <message>
-        <location line="+124"/>
+        <location line="+140"/>
         <source>Highlight all occurrences of a word selected by a double click</source>
         <translation>Paryškinti visus žodžio, kuris pažymėtas dvigubu pelės paspaudimu, pasikartojimus</translation>
     </message>
     <message>
         <location line="+65"/>
+        <source>Tabs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+44"/>
+        <source>Tab position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+112"/>
         <source>Comments (Octave)</source>
         <translation>Komentarai (tik Octave)</translation>
     </message>
@@ -4875,7 +5159,7 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Kintamųjų savybių spalvos</translation>
     </message>
     <message>
-        <location line="+303"/>
+        <location line="+266"/>
         <source>Import shortcut set</source>
         <translation>Įkelti sparčiųjų klavišų rinkinius</translation>
     </message>
@@ -4921,47 +5205,27 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>Naudoti proxy serverį</translation>
     </message>
     <message>
-        <location line="-470"/>
+        <location line="-433"/>
         <source>Variable Editor</source>
         <translation>Kintamųjų tvarkyklė</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+43"/>
         <source>Default row height</source>
         <translation>Numatytasis eilutės auktšis</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+7"/>
         <source>Default column width</source>
         <translation>Numatytasis stulpelio plotis</translation>
     </message>
     <message>
-        <location line="+36"/>
-        <source>Autofit</source>
-        <translation>Savaime nustatyti plotį</translation>
-    </message>
-    <message>
-        <location line="-63"/>
-        <source>Plus font height</source>
-        <translation>Pridėti šrifto aukštis</translation>
-    </message>
-    <message>
-        <location line="+37"/>
+        <location line="+56"/>
         <source>Use Command Window font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+40"/>
-        <source>By Column</source>
-        <translation>Kiekvienam stulpeliui</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Uniform</source>
-        <translation>Vienodas</translation>
-    </message>
-    <message>
-        <location line="+40"/>
+        <location line="+22"/>
         <source>Variable Editor Colors</source>
         <translation>Kintamųjų tvarkyklės spalvos</translation>
     </message>
@@ -4981,17 +5245,17 @@ Norite išsaugoti esamus sparčiųjų klavišų rinkinius ar atšaukti veiksmą?
         <translation>HttpProxy</translation>
     </message>
     <message>
-        <location line="-2559"/>
+        <location line="-2588"/>
         <source>Icon set for dock widgets</source>
         <translation>Galimi &quot;prisegamų&quot; langų logotipai</translation>
     </message>
     <message>
-        <location line="+1929"/>
+        <location line="+1995"/>
         <source>Synchronize Octave working directory with file browser</source>
         <translation>Visada suvienodinti Octave darbo aplanką su einamuoju bylų naršyklės aplanku</translation>
     </message>
     <message>
-        <location line="+385"/>
+        <location line="+348"/>
         <source>Shortcuts</source>
         <translation>Sparčiųjų klavišų rinkiniai</translation>
     </message>

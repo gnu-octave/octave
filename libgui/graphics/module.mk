@@ -1,55 +1,46 @@
 if AMCOND_BUILD_QT_GRAPHICS
 
-LIBOCTGUI_GRAPHICS_LIB = %reldir%/__init_qt__.la
-
 OCTAVE_GUI_GRAPHICS_MOC = \
-  %reldir%/moc-annotation-dialog.cc \
-  %reldir%/moc-Backend.cc \
   %reldir%/moc-ButtonControl.cc \
   %reldir%/moc-ButtonGroup.cc \
+  %reldir%/moc-Canvas.cc \
+  %reldir%/moc-Container.cc \
   %reldir%/moc-ContextMenu.cc \
   %reldir%/moc-EditControl.cc \
   %reldir%/moc-Figure.cc \
   %reldir%/moc-FigureWindow.cc \
   %reldir%/moc-ListBoxControl.cc \
   %reldir%/moc-Menu.cc \
-  %reldir%/moc-MouseModeActionGroup.cc \
   %reldir%/moc-Object.cc \
-  %reldir%/moc-ObjectFactory.cc \
   %reldir%/moc-ObjectProxy.cc \
   %reldir%/moc-PopupMenuControl.cc \
   %reldir%/moc-PushTool.cc \
   %reldir%/moc-SliderControl.cc \
-  %reldir%/moc-TextEdit.cc \
   %reldir%/moc-Table.cc \
+  %reldir%/moc-TextEdit.cc \
   %reldir%/moc-ToggleTool.cc \
-  %reldir%/moc-ToolBar.cc
+  %reldir%/moc-ToolBar.cc \
+  %reldir%/moc-annotation-dialog.cc \
+  %reldir%/moc-qt-graphics-toolkit.cc
 
 $(OCTAVE_GUI_GRAPHICS_MOC): | %reldir%/$(octave_dirstamp)
 
 DIRSTAMP_FILES += \
   %reldir%/$(octave_dirstamp)
 
-__init_qt___MOC = \
+libgraphics_MOC = \
   $(OCTAVE_GUI_GRAPHICS_MOC)
 
-__init_qt___UI = \
+libgraphics_UI = \
   %reldir%/annotation-dialog.ui
 
-__init_qt___UI_H = $(patsubst %reldir%/%.ui, %reldir%/ui-%.h, $(__init_qt___UI))
+libgraphics_UI_H = $(patsubst %reldir%/%.ui, %reldir%/ui-%.h, $(libgraphics_UI))
 
-$(__init_qt___UI_H): | %reldir%/$(octave_dirstamp)
+$(libgraphics_UI_H): | %reldir%/$(octave_dirstamp)
 
-BUILT_SOURCES += $(__init_qt___UI_H)
-
-__init_qt___RC = %reldir%/qrc-qthandles.cc
-
-$(__init_qt___RC): | %reldir%/$(octave_dirstamp)
+BUILT_SOURCES += $(libgraphics_UI_H)
 
 noinst_HEADERS += \
-  %reldir%/__init_qt__.h \
-  %reldir%/annotation-dialog.h \
-  %reldir%/Backend.h \
   %reldir%/BaseControl.h \
   %reldir%/ButtonControl.h \
   %reldir%/ButtonGroup.h \
@@ -60,16 +51,14 @@ noinst_HEADERS += \
   %reldir%/EditControl.h \
   %reldir%/Figure.h \
   %reldir%/FigureWindow.h \
-  %reldir%/GenericEventNotify.h \
   %reldir%/GLCanvas.h \
+  %reldir%/GenericEventNotify.h \
   %reldir%/KeyMap.h \
   %reldir%/ListBoxControl.h \
   %reldir%/Logger.h \
   %reldir%/Menu.h \
   %reldir%/MenuContainer.h \
-  %reldir%/MouseModeActionGroup.h \
   %reldir%/Object.h \
-  %reldir%/ObjectFactory.h \
   %reldir%/ObjectProxy.h \
   %reldir%/Panel.h \
   %reldir%/PopupMenuControl.h \
@@ -85,14 +74,13 @@ noinst_HEADERS += \
   %reldir%/ToggleTool.h \
   %reldir%/ToolBar.h \
   %reldir%/ToolBarButton.h \
+  %reldir%/annotation-dialog.h \
   %reldir%/gl-select.h \
   %reldir%/qopengl-functions.h \
+  %reldir%/qt-graphics-toolkit.h \
   $(TEMPLATE_SRC)
 
-%canon_reldir%___init_qt___la_SOURCES = \
-  %reldir%/__init_qt__.cc \
-  %reldir%/annotation-dialog.cc \
-  %reldir%/Backend.cc \
+%canon_reldir%_libgraphics_la_SOURCES = \
   %reldir%/BaseControl.cc \
   %reldir%/ButtonControl.cc \
   %reldir%/ButtonGroup.cc \
@@ -108,9 +96,7 @@ noinst_HEADERS += \
   %reldir%/ListBoxControl.cc \
   %reldir%/Logger.cc \
   %reldir%/Menu.cc \
-  %reldir%/MouseModeActionGroup.cc \
   %reldir%/Object.cc \
-  %reldir%/ObjectFactory.cc \
   %reldir%/ObjectProxy.cc \
   %reldir%/Panel.cc \
   %reldir%/PopupMenuControl.cc \
@@ -125,14 +111,16 @@ noinst_HEADERS += \
   %reldir%/ToggleButtonControl.cc \
   %reldir%/ToggleTool.cc \
   %reldir%/ToolBar.cc \
-  %reldir%/gl-select.cc
+  %reldir%/annotation-dialog.cc \
+  %reldir%/gl-select.cc \
+  %reldir%/qt-graphics-toolkit.cc
 
 TEMPLATE_SRC = \
   %reldir%/ToolBarButton.cc
 
-nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC) $(__init_qt___RC)
+nodist_%canon_reldir%_libgraphics_la_SOURCES = $(libgraphics_MOC)
 
-%canon_reldir%___init_qt___la_CPPFLAGS = \
+%canon_reldir%_libgraphics_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(FT2_CPPFLAGS) \
   $(FONTCONFIG_CPPFLAGS) \
@@ -152,63 +140,15 @@ nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC) $(__init_qt___
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value
 
-%canon_reldir%___init_qt___la_LDFLAGS = \
-  -avoid-version -module $(NO_UNDEFINED_LDFLAG) \
-  $(QT_OPENGL_LDFLAGS) \
-  $(WARN_LDFLAGS)
-
-DLD_LIBOCTGUI_LIBADD = $(OCT_GUI_LINK_DEPS)
-
-%canon_reldir%___init_qt___la_LIBADD = \
-  $(DLD_LIBOCTGUI_LIBADD) \
-  $(QT_OPENGL_LIBS) \
-  $(OPENGL_LIBS)
-
-%canon_reldir%___init_qt___la_DEPENDENCIES = $(OCT_GUI_LINK_DEPS)
-
-octlib_LTLIBRARIES += $(LIBOCTGUI_GRAPHICS_LIB)
-
-GRAPHICS_DEFUN_FILES = %reldir%/__init_qt__.cc
-
-GRAPHICS_OCT_FILES = $(LIBOCTGUI_GRAPHICS_LIB:.la=.oct)
-
-OCTAVE_INTERPRETER_TARGETS += $(GRAPHICS_OCT_FILES)
-
-OCT_FILE_LIBS += $(LIBOCTGUI_GRAPHICS_LIB)
-
-OCT_FILES += $(GRAPHICS_OCT_FILES)
-
-## Use stamp files to avoid problems with checking timestamps
-## of symbolic links
-
-%reldir%/__init_qt__.oct : $(LIBOCTGUI_GRAPHICS_LIB)
-	$(AM_V_GEN)$(INSTALL_PROGRAM) %reldir%/.libs/$(shell $(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $<) $@
-
-GRAPHICS_PKG_ADD_FILE = %reldir%/PKG_ADD
-
-%reldir%/PKG_ADD: $(GRAPHICS_DEFUN_FILES) $(srcdir)/build-aux/mk-pkg-add.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/build-aux/mk-pkg-add.sh "$(srcdir)" $(GRAPHICS_DEFUN_FILES) > $@-t && \
-	mv $@-t $@
-
-OCT_FILE_PKG_ADD_FILES += \
-  $(GRAPHICS_PKG_ADD_FILE)
+noinst_LTLIBRARIES += %reldir%/libgraphics.la
 
 libgui_EXTRA_DIST += \
-  %reldir%/qthandles.qrc \
-  %reldir%/images/README \
-  %reldir%/images/pan.png \
-  %reldir%/images/rotate.png \
-  %reldir%/images/select.png \
-  %reldir%/images/zoom-in.png \
-  %reldir%/images/zoom-out.png \
-  $(__init_qt___UI)
+  $(libgraphics_UI)
 
 libgui_CLEANFILES += \
   $(GRAPHICS_OCT_FILES) \
   $(GRAPHICS_PKG_ADD_FILE) \
-  $(__init_qt___MOC) \
-  $(__init_qt___RC) \
-  $(__init_qt___UI_H)
+  $(libgraphics_MOC) \
+  $(libgraphics_UI_H)
 
 endif

@@ -1,5 +1,9 @@
-## Copyright (C) 2016-2019 Lachlan Andrew
-## Copyright (C) 2012 Carnë Draug
+########################################################################
+##
+## Copyright (C) 2012-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -14,6 +18,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} mkdir @var{dirname}
@@ -63,7 +69,15 @@ function [status, msg, msgid] = mkdir (parent, dirname)
   ## Move leading directory names from dirname to parent
   [parent, dirname, ext] = fileparts ([parent, dirname]);
 
-  [status, msg, msgid] = mkdir_recur (parent, [dirname, ext]);
+  [sts, msg, msgid] = mkdir_recur (parent, [dirname, ext]);
+
+  if (nargout == 0)
+    if (! sts)
+      error ("mkdir: operation failed: %s", msg);
+    endif
+  else
+    status = sts;
+  endif
 
 endfunction
 

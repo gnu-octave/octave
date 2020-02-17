@@ -1,4 +1,9 @@
-## Copyright (C) 2000-2019 Kai Habel
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{x}, @var{y}, @var{z})
@@ -37,9 +44,6 @@
 ## (@var{theta}, @var{phi}, @var{r}).
 ## @seealso{sph2cart, cart2pol, pol2cart}
 ## @end deftypefn
-
-## Author: Kai Habel <kai.habel@gmx.de>
-## Adapted-by: jwe
 
 function [theta, phi, r] = cart2sph (x, y, z)
 

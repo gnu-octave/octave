@@ -1,7 +1,9 @@
-## Copyright (C) 2016-2019 Eric Firing
-## Copyright (C) 2016-2019 Nathaniel J. Smith
-## Copyright (C) 2016-2019 Stefan van der Walt
-## Copyright (C) 2016-2019 Carlo de Falco
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -18,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{map} =} viridis ()
@@ -29,8 +33,6 @@
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
-
-## Author: Carlo de Falco
 
 ## This is a port to Octave of the default matplotlib colormap "viridis"
 ## by Eric Firing.  The original file is distributed under CC0:

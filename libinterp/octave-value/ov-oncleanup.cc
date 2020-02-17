@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2010-2019 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2010-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -26,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "interpreter.h"
+#include "interpreter-private.h"
 #include "ov-oncleanup.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
@@ -64,49 +68,7 @@ octave_oncleanup::octave_oncleanup (const octave_value& f)
 
 octave_oncleanup::~octave_oncleanup (void)
 {
-  if (fcn.is_undefined ())
-    return;
-
-  octave::unwind_protect frame;
-
-  // Clear interrupts.
-  frame.protect_var (octave_interrupt_state);
-  octave_interrupt_state = 0;
-
-  // Disallow quit().
-  frame.protect_var (quit_allowed);
-  quit_allowed = false;
-
-  interpreter_try (frame);
-
-  try
-    {
-      // Run the actual code.
-      octave::feval (fcn);
-    }
-  catch (const octave::interrupt_exception&)
-    {
-      octave::interpreter::recover_from_exception ();
-
-      warning ("onCleanup: interrupt occurred in cleanup action");
-    }
-  catch (const octave::execution_exception&)
-    {
-      std::string msg = last_error_message ();
-      warning ("onCleanup: error caught while executing cleanup function:\n%s\n",
-               msg.c_str ());
-
-    }
-  catch (const octave::exit_exception&)
-    {
-      // This shouldn't happen since we disabled quit above.
-      warning ("onCleanup: exit disabled while executing cleanup function");
-    }
-  catch (...) // Yes, the black hole.  We're in a d-tor.
-    {
-      // This shouldn't happen, in theory.
-      warning ("onCleanup: internal error: unhandled exception in cleanup action");
-    }
+  call_object_destructor ();
 }
 
 octave_scalar_map
@@ -134,7 +96,7 @@ octave_oncleanup::load_ascii (std::istream& /* is */)
 
 bool
 octave_oncleanup::save_binary (std::ostream& /* os */,
-                               bool& /* save_as_floats */)
+                               bool /* save_as_floats */)
 {
   warning ("save: unable to save onCleanup variables, skipping");
 
@@ -181,6 +143,63 @@ octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
   if (fcn.is_defined ())
     fcn.print_raw (os, pr_as_read_syntax);
   os << ')';
+}
+
+void
+octave_oncleanup::call_object_destructor (void)
+{
+  if (fcn.is_undefined ())
+    return;
+
+  octave_value the_fcn = fcn;
+  fcn = octave_value ();
+
+  octave::unwind_protect frame;
+
+  // Clear interrupts.
+  frame.protect_var (octave_interrupt_state);
+  octave_interrupt_state = 0;
+
+  // Disallow quit().
+  frame.protect_var (quit_allowed);
+  quit_allowed = false;
+
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("octave_oncleanup::call_object_destructor");
+
+  interpreter_try (frame);
+
+  try
+    {
+      // Run the actual code.
+      octave::feval (the_fcn);
+    }
+  catch (const octave::interrupt_exception&)
+    {
+      interp.recover_from_exception ();
+
+      warning ("onCleanup: interrupt occurred in cleanup action");
+    }
+  catch (const octave::execution_exception& ee)
+    {
+      interp.recover_from_exception ();
+
+      std::string msg = ee.message ();
+
+      warning ("onCleanup: error caught while executing cleanup function:\n%s\n",
+               msg.c_str ());
+
+    }
+  catch (const octave::exit_exception&)
+    {
+      // This shouldn't happen since we disabled quit above.
+      warning ("onCleanup: exit disabled while executing cleanup function");
+    }
+  catch (...) // Yes, the black hole.  We're in a d-tor.
+    {
+      // This shouldn't happen, in theory.
+      warning ("onCleanup: internal error: unhandled exception in cleanup action");
+    }
 }
 
 DEFUN (onCleanup, args, ,

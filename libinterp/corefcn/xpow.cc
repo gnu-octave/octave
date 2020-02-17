@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -65,7 +67,7 @@ static void
 err_nonsquare_matrix (void)
 {
   error ("for x^y, only square matrix arguments are permitted and one " \
-    "argument must be scalar.  Use .^ for elementwise power.");
+         "argument must be scalar.  Use .^ for elementwise power.");
 }
 
 template <typename T>
@@ -1192,30 +1194,30 @@ elem_xpow (const NDArray& a, double b)
     }
   else
     {
-      NoAlias<NDArray> result (a.dims ());
+      NDArray result (a.dims ());
 
       int ib = static_cast<int> (b);
       if (ib == 2)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = a(i) * a(i);
+            result.xelem (i) = a(i) * a(i);
         }
       else if (ib == 3)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = a(i) * a(i) * a(i);
+            result.xelem (i) = a(i) * a(i) * a(i);
         }
       else if (ib == -1)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = 1.0 / a(i);
+            result.xelem (i) = 1.0 / a(i);
         }
       else
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
-              result(i) = std::pow (a(i), ib);
+              result.xelem (i) = std::pow (a(i), ib);
             }
         }
 
@@ -2501,30 +2503,30 @@ elem_xpow (const FloatNDArray& a, float b)
     }
   else
     {
-      NoAlias<FloatNDArray> result (a.dims ());
+      FloatNDArray result (a.dims ());
 
       int ib = static_cast<int> (b);
       if (ib == 2)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = a(i) * a(i);
+            result.xelem (i) = a(i) * a(i);
         }
       else if (ib == 3)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = a(i) * a(i) * a(i);
+            result.xelem (i) = a(i) * a(i) * a(i);
         }
       else if (ib == -1)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = 1.0f / a(i);
+            result.xelem (i) = 1.0f / a(i);
         }
       else
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
-              result(i) = std::pow (a(i), ib);
+              result.xelem (i) = std::pow (a(i), ib);
             }
         }
 

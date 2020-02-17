@@ -1,4 +1,9 @@
-## Copyright (C) 2016-2019 Pantxo Diribarne
+########################################################################
+##
+## Copyright (C) 2016-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} annotation (@var{type})
@@ -147,39 +154,33 @@
 
 function varargout = annotation (varargin)
 
+  nargin = numel (varargin);
+  if (nargin == 0)
+    print_usage ();
+  endif
+
   objtype = "";
   hf = [];
   lims = [];
   x = y = [];
   opts = {};
 
-  nargin = numel (varargin);
-  if (nargin == 0)
-    print_usage ();
-  endif
-
-
   ## Parent figure
   if (isfigure (varargin{1}))
     hf = varargin{1};
-    varargin = varargin(2:end);
-    nargin -= 1;
+    varargin(1) = [];  nargin -= 1;
   endif
 
   ## Annotation type
-  types = {"line", "arrow", "doublearrow", "textarrow", ...
-           "textbox", "ellipse", "rectangle"};
-  if (ischar (varargin{1}))
-    objtype = varargin{1};
-    varargin(1) = [];
-    nargin -= 1;
-  else
+  if (! ischar (varargin{1}))
     print_usage ();
   endif
+  objtype = varargin{1};
+  varargin(1) = [];  nargin -= 1;
 
   switch (objtype)
-    case types(1:4)
 
+    case {"line", "arrow", "doublearrow", "textarrow"}
       if (nargin == 0)
         lims = [];
       elseif (nargin >= 2)
@@ -189,40 +190,42 @@ function varargout = annotation (varargin)
 
         if (isnumeric (x) && isnumeric (y)
             && length (x) == 2 && length (y) == 2)
-          lims = [x(1) y(1) diff(x) diff(y)];
+          lims = [x(1), y(1), diff(x), diff(y)];
         else
           error ("annotation: X and Y must be 2-element vectors");
         endif
       else
         print_usage ();
       endif
-    case types(5:end)
+
+    case {"textbox", "ellipse", "rectangle"}
       if (nargin == 0)
         lims = [];
       else
         lims = varargin{1};
         varargin(1) = [];
 
-        if (! isvector (lims) || length (lims) != 4)
+        if (! isvector (lims) || numel (lims) != 4)
           error ("annotation: POS must be a 4-element vector");
         endif
       endif
+
     otherwise
       error ("annotation: unknown annotation TYPE %s", objtype);
+
   endswitch
 
   ## options
   opts = varargin;
   nopts = numel (opts);
   if (! isempty (opts))
-    if (fix (nopts/2) != nopts/2
-        || ! all (cellfun (@ischar, opts(1:2:end))))
+    if (fix (nopts/2) != nopts/2 || ! all (cellfun (@ischar, opts(1:2:end))))
       warning ("annotation: couldn't parse PROP/VAL pairs, skipping");
       opts = {};
     endif
   endif
 
-  ## create annotation
+  ## Create annotation
   showhidden = get (0, "showhiddenhandles");
   set (0, "showhiddenhandles", "on");
 
@@ -263,16 +266,13 @@ endfunction
 
 function hax = buildoverlay (hf)
 
-  hax = axes ("parent", hf, "position", [0 0 1 1], ...
-              "visible", "off","tag", "scribeoverlay", ...
-              "xlim", [0 1], "ylim", [0 1], ...
+  hax = axes ("parent", hf, "visible", "off", "tag", "scribeoverlay", ...
+              "position", [0 0 1 1], "xlim", [0 1], "ylim", [0 1], ...
               "handlevisibility", "off");
 
-  ## hidden property to store figure size in absolute (points)
-  ## coordinates
+  ## Hidden property to store figure size in absolute (points) coordinates.
   addproperty ("figsize_points", hax, "axesxminortickvalues", []);
   update_figsize_points (hf, {}, hax);
-
 
   listener = {@update_figsize_points, hax};
   addlistener (hf, "position", listener);
@@ -282,9 +282,10 @@ function hax = buildoverlay (hf)
 
 endfunction
 
-function update_figsize_points (hf, dummy, hax)
+function update_figsize_points (hf, ~, hax)
 
   persistent recursive = false;
+
   if (! recursive)
     recursive = true;
     units = get (hf, "units");
@@ -358,9 +359,10 @@ function h = buildannot (hax, objtype, pos)
       ## create line
       hli = line ([pos(1); (pos(1) + pos(3))],
                   [pos(2); (pos(2) + pos(4))],
-                  "parent", h, "color", get (h, "color"),
+                  "color", get (h, "color"),
                   "linestyle", get (h, "linestyle"),
-                  "linewidth", get (h, "linewidth"));
+                  "linewidth", get (h, "linewidth"),
+                  "parent", h);
 
       linemenu (hui, h);
       set (hli, "uicontextmenu", hui);
@@ -368,8 +370,8 @@ function h = buildannot (hax, objtype, pos)
       ## create patch(s) and text
       if (strcmp (objtype, "arrow"))
         [x, y] = arrowcoordinates (h);
-        hpa = patch (x, y, get (h, "color"), "parent", h,
-                    "edgecolor",  get (h, "color"));
+        hpa = patch (x, y, get (h, "color"), "edgecolor", get (h, "color"),
+                     "parent", h);
         update_arrow (h, {}, "position", hpa);
 
         arrowmenu (hui, h);
@@ -377,12 +379,12 @@ function h = buildannot (hax, objtype, pos)
 
       elseif (strcmp (objtype, "doublearrow"))
         [x, y] = arrowcoordinates (h, 1);
-        hpa = patch (x, y, get (h, "color"), "parent", h,
-                    "edgecolor",  get (h, "color"));
+        hpa = patch (x, y, get (h, "color"), "edgecolor", get (h, "color"),
+                     "parent", h);
 
         [x, y] = arrowcoordinates (h, 2);
-        hpa(2) = patch (x, y, get (h, "color"), "parent", h,
-                    "edgecolor",  get (h, "color"));
+        hpa(2) = patch (x, y, get (h, "color"), "edgecolor", get (h, "color"),
+                        "parent", h);
 
         update_arrow (h, {}, "position", hpa);
 
@@ -391,17 +393,17 @@ function h = buildannot (hax, objtype, pos)
 
       elseif (strcmp (objtype, "textarrow"))
         [x, y] = arrowcoordinates (h);
-        hpa = patch (x, y, get (h, "color"), "parent", h,
-                    "edgecolor",  get (h, "color"));
+        hpa = patch (x, y, get (h, "color"), "edgecolor", get (h, "color"),
+                     "parent", h);
         update_arrow (h, {}, "position", hpa);
 
-        hte = text (get (h, "position")(1), ...
-                   get (h, "position")(2), ...
-                   get (h, "string"), "parent", h, ...
-                   "color", get (h, "color"));
+        hte = text (get (h, "position")(1),
+                    get (h, "position")(2),
+                    get (h, "string"),
+                    "color", get (h, "color"), "parent", h);
         propnames = textprops ("names");
-        for ii = 1:numel (propnames)
-          update_text (h, {}, propnames{ii}, hte);
+        for i = 1 : numel (propnames)
+          update_text (h, {}, propnames{i}, hte);
         endfor
         update_text (h, {}, "position", hte);
 
@@ -426,22 +428,23 @@ function h = buildannot (hax, objtype, pos)
         addlistener (h, "headstyle", {@update_arrow, "position", hpa});
         addlistener (h, "headlength", {@update_arrow, "position", hpa});
         addlistener (h, "color", {@update_arrow, "color", hpa});
+
       elseif (strcmp (objtype, "doublearrow"))
         addlistener (h, "position", {@update_arrow, "position", hpa});
         addlistener (h, "head1width",
-                     {@update_arrow, "position", [hpa(1) 0]});
+                     {@update_arrow, "position", [hpa(1), 0]});
         addlistener (h, "head2width",
-                     {@update_arrow, "position", [0 hpa(2)]});
+                     {@update_arrow, "position", [0, hpa(2)]});
         addlistener (h, "head1style",
-                     {@update_arrow, "position", [hpa(1) 0]});
+                     {@update_arrow, "position", [hpa(1), 0]});
         addlistener (h, "head2style",
-                     {@update_arrow, "position", [0 hpa(2)]});
+                     {@update_arrow, "position", [0, hpa(2)]});
         addlistener (h, "head1length",
-                     {@update_arrow, "position", [hpa(1) 0]});
+                     {@update_arrow, "position", [hpa(1), 0]});
         addlistener (h, "head2length",
-                     {@update_arrow, "position", [0 hpa(2)]});
-        addlistener (h, "color",
-                     {@update_arrow, "color", hpa});
+                     {@update_arrow, "position", [0, hpa(2)]});
+        addlistener (h, "color", {@update_arrow, "color", hpa});
+
       elseif (strcmp (objtype, "textarrow"))
         addlistener (h, "position", {@update_arrow, "position", hpa});
         addlistener (h, "headwidth", {@update_arrow, "position", hpa});
@@ -449,17 +452,16 @@ function h = buildannot (hax, objtype, pos)
         addlistener (h, "headlength", {@update_arrow, "position", hpa});
         addlistener (h, "color", {@update_arrow, "color", hpa});
         propnames = textprops ("names");
-        for ii = 1:numel (propnames)
-          addlistener (h, propnames{ii},
-                       {@update_text, propnames{ii}, hte});
-          if (any (strcmp (propnames{ii},
+        for i = 1 : numel (propnames)
+          addlistener (h, propnames{i},
+                       {@update_text, propnames{i}, hte});
+          if (any (strcmp (propnames{i},
                            {"fontangle", "fontname", ...
                             "fontsize", "fontweight", ...
                             "horizontalalignment", "string", ...
                             "textmargin", "textrotation", ...
                             "verticalalignment"})))
-            addlistener (h, propnames{ii}, ...
-                         {@update_text, "position", hte});
+            addlistener (h, propnames{i}, {@update_text, "position", hte});
           endif
         endfor
         addlistener (h, "position", {@update_text, "position", hte});
@@ -480,22 +482,19 @@ function h = buildannot (hax, objtype, pos)
 
       hr = patch (x, y, "parent", h);
 
-      ## FIXME: DEPRECATED: Remove warn state switching in version 6.
-      old_warn_state = warning ("off", "Octave:deprecated-property");
       propnames = rectprops ("names");
-      for ii = 1:numel (propnames)
-        update_rect (h, {}, propnames{ii}, hr, objtype);
+      for i = 1 : numel (propnames)
+        update_rect (h, {}, propnames{i}, hr, objtype);
       endfor
-      warning (old_warn_state);
 
       rectmenu (hui, h);
       set (hr, "uicontextmenu", hui);
 
       ## Updaters
       addlistener (h, "position", {@update_rect, "position", hr, objtype});
-      for ii = 1:numel (propnames)
-        addlistener (h, propnames{ii},
-                     {@update_rect, propnames{ii}, hr, objtype});
+      for i = 1 : numel (propnames)
+        addlistener (h, propnames{i},
+                     {@update_rect, propnames{i}, hr, objtype});
       endfor
 
     case "textbox"
@@ -505,13 +504,13 @@ function h = buildannot (hax, objtype, pos)
 
       ## Create textbox
       hpa = patch ("parent", h);
-      hte = text (pos(1), pos(2), get (h, "string"), "parent", h, ...
-                 "color", get (h, "color"));
+      hte = text (pos(1), pos(2), get (h, "string"),
+                  "color", get (h, "color"), "parent", h);
       update_textbox (h, {}, "position", [hte hpa]);
 
       propnames = textboxprops ("names");
-      for ii = 1:numel (propnames)
-        update_textbox (h, {}, propnames{ii}, [hte hpa]);
+      for i = 1 : numel (propnames)
+        update_textbox (h, {}, propnames{i}, [hte hpa]);
       endfor
 
       textboxmenu (hui, h);
@@ -520,9 +519,9 @@ function h = buildannot (hax, objtype, pos)
 
       ## Updaters
       addlistener (h, "position", {@update_textbox, "position", [hte hpa]});
-      for ii = 1:numel (propnames)
-        addlistener (h, propnames{ii},
-                     {@update_textbox, propnames{ii}, [hte hpa]});
+      for i = 1 : numel (propnames)
+        addlistener (h, propnames{i},
+                     {@update_textbox, propnames{i}, [hte hpa]});
       endfor
       addlistener (h, "horizontalalignment",
                    {@update_textbox, "position", [hte hpa]});
@@ -656,7 +655,7 @@ function stringdlg (hpar, prop)
 
   def = get (hpar, prop);
   if (iscell (def))
-    prompt = arrayfun (@(n) sprintf ("Line #%d:", n), 1:numel (def),
+    prompt = arrayfun (@(n) sprintf ("Line #%d:", n), 1 : numel (def),
                        "uniformoutput", false);
   else
     prompt = "";
@@ -705,7 +704,7 @@ function textmenu (hui, hpar)
   vals = set (hpar, prop);
   addbasemenu (hm, hpar, prop, vals, "Vertical Alignment");
 
-  ## FIXME: Add text background properties when they are supported
+  ## FIXME: Add text background properties (Bug #57407).
 
   prop = "interpreter";
   vals = set (hpar, prop);
@@ -800,9 +799,7 @@ endfunction
 
 function props = rectprops (varargin)
 
-  ## FIXME: DEPRECATED: Remove "edgecolor" in version 6.
   props = {"color", "patchedgecolor", "k", ...
-           "edgecolor", "patchedgecolor", "k", ...
            "facealpha", "patchfacealpha", 1, ...
            "facecolor", "patchfacecolor", "none", ...
            "linestyle", "patchlinestyle", "-", ...
@@ -835,7 +832,7 @@ function addbaseprops (h, proptable)
            proptable(1:3:end), proptable(2:3:end), proptable(3:3:end));
 endfunction
 
-function addbasemenu (hm, hpar, pname, vals, mainlabel = "" )
+function addbasemenu (hm, hpar, pname, vals, mainlabel = "")
 
   if (isempty (mainlabel))
     mainlabel = pname;
@@ -846,16 +843,16 @@ function addbasemenu (hm, hpar, pname, vals, mainlabel = "" )
   is_numeric = ! iscell (vals);
   nv = numel (vals);
   htmp = zeros (1, nv);
-  for ii = 1:nv
+  for i = 1:nv
     if (! is_numeric)
-      val = label = vals{ii};
+      val = label = vals{i};
     else
-      val = vals(ii);
-      label = num2str (val);
+      val = vals(i);
+      label = disp (val);
     endif
 
     fcn = @() set (hpar, pname, val);
-    htmp(ii) = uimenu (h, "label", label, "callback", fcn);
+    htmp(i) = uimenu (h, "label", label, "callback", fcn);
   endfor
 
   handle_check (hpar, {}, htmp, pname, is_numeric);
@@ -863,12 +860,12 @@ function addbasemenu (hm, hpar, pname, vals, mainlabel = "" )
 
 endfunction
 
-function handle_check (h, dummy, hmenus, prop, is_numeric)
+function handle_check (h, ~, hmenus, prop, is_numeric)
 
   vals = get (hmenus, "label");
   current = get (h, prop);
   if (is_numeric)
-    current = num2str (current);
+    current = disp (current);
   endif
 
   idx = strcmp (vals, current);
@@ -877,7 +874,7 @@ function handle_check (h, dummy, hmenus, prop, is_numeric)
 
 endfunction
 
-function update_position (h1, dummy, h, force = false)
+function update_position (h1, ~, h, force = false)
 
   if (! force)
     pos = convertposition (h, getappdata (h, "__former_units__"),
@@ -886,23 +883,25 @@ function update_position (h1, dummy, h, force = false)
     set (h, "position", pos);
   else
     ## FIXME: Inefficient trick to force all objects to be redrawn
-    set (h, "position", [0 0 .5 .5],
-         "position", get (h, "position"));
+    set (h, "position", [0 0 .5 .5], "position", get (h, "position"));
   endif
 
 endfunction
 
-function update_line (h, dummy, prop, hli)
+function update_line (h, ~, prop, hli)
   persistent recursive = false;
 
   if (! recursive)
     switch (prop)
       case "color"
         set (hli, "color", get (h, "color"));
+
       case "linestyle"
         set (hli, "linestyle", get (h, "linestyle"));
+
       case "linewidth"
         set (hli, "linewidth", get (h, "linewidth"));
+
       case "x"
         ## Update position
         x = get (h, "x");
@@ -932,6 +931,7 @@ function update_line (h, dummy, prop, hli)
         pos = getnormpos (h);
         y = [pos(2) (pos(2) + pos(4))];
         set (hli, "ydata", y);
+
       case "position"
         ## Update x and y
         pos = get (h, "position");
@@ -939,16 +939,14 @@ function update_line (h, dummy, prop, hli)
         y = [pos(2) (pos(2) + pos(4))];
 
         recursive = true;
-        set (h, "x", x);
-        set (h, "y", y);
+        set (h, "x", x, "y", y);
         recursive = false;
 
         ## Draw in normalized coordinates
         pos = getnormpos (h);
         x = [pos(1) (pos(1) + pos(3))];
         y = [pos(2) (pos(2) + pos(4))];
-        set (hli, "xdata", x);
-        set (hli, "ydata", y);
+        set (hli, "xdata", x, "ydata", y);
 
     endswitch
   endif
@@ -967,13 +965,13 @@ function [x, y] = arrowcoordinates (h, nar = [])
     headstyle = get (h, "headstyle");
     pos = pos(1:2) .+ pos(3:4);
   elseif (nar == 1)
-    ln = get (h, "head1length"); # in points
+    ln = get (h, "head1length");  # in points
     wd = get (h, "head1width");
     headstyle = get (h, "head1style");
     pos = pos(1:2);
     ang += pi;
   elseif (nar == 2)
-    ln = get (h, "head2length"); # in points
+    ln = get (h, "head2length");  # in points
     wd = get (h, "head2width");
     headstyle = get (h, "head2style");
     pos = pos(1:2) .+ pos(3:4);
@@ -985,34 +983,43 @@ function [x, y] = arrowcoordinates (h, nar = [])
     case "diamond"
       x = [0 -ln/2 -ln -ln/2 0];
       y = [0 -wd/2 0 wd/2 0];
+
     case "ellipse"
       pts = linspace (0, 2*pi, 12);
       x = ln/2 * (cos (pts) - 1);
       y = wd/2 * sin (pts);
+
     case "rectangle"
       x = [0 0 -ln -ln 0];
       y = [wd/2 -wd/2 -wd/2 wd/2 wd/2];
+
     case "vback1"
       x = [0 -ln -0.85*ln -ln 0];
       y = [0 wd/2 0 -wd/2 0];
+
     case "vback2"
       x = [0 -ln -0.65*ln -ln 0];
       y = [0 wd/2 0 -wd/2 0];
+
     case "vback3"
       x = [0 -ln -0.2*ln -ln 0];
       y = [0 wd/2 0 -wd/2 0];
+
     case "plain"
       x = [0 -ln -ln -ln 0];
       y = [0 wd/2 0 -wd/2 0];
+
     case "none"
       x = [0 0 0];
       y = [0 0 0];
+
     otherwise
+      ## FIXME: This code is not reachable (12/13/2019)
       error ('annotation: "%s" headstyle not implemented', headstyle);
   endswitch
 
-  R = [cos(ang) -sin(ang);
-       sin(ang) cos(ang)];
+  R = [cos(ang), -sin(ang);
+       sin(ang),  cos(ang)];
   XY = R * [x; y];
   XY = pts2norm (h, XY);
   XY = pos(1:2).' .+ XY;
@@ -1022,35 +1029,36 @@ function [x, y] = arrowcoordinates (h, nar = [])
 
 endfunction
 
-function update_arrow (h, dummy, prop, hpa = [])
+function update_arrow (h, ~, prop, hpa = [])
 
   nar = [];
-  for ii = 1:numel (hpa)
+  for i = 1 : numel (hpa)
     if (numel (hpa) == 2)
-      nar = ii;
+      nar = i;
     endif
-    if (hpa(ii))
+    if (hpa(i))
       switch (prop)
         case "position"
           [x, y] = arrowcoordinates (h, nar);
-          set (hpa(ii), "xdata", x, "ydata", y);
+          set (hpa(i), "xdata", x, "ydata", y);
+
         case "color"
-          set (hpa(ii), "facecolor", get (h, "color"));
-          set (hpa(ii), "edgecolor", get (h, "color"));
+          set (hpa(i), "facecolor", get (h, "color"),
+                        "edgecolor", get (h, "color"));
       endswitch
     endif
   endfor
 
 endfunction
 
-function update_text (h, dummy, prop, hte)
+function update_text (h, ~, prop, hte)
   persistent recursive = false;
 
   if (! recursive)
     switch (prop)
       case "position"
         if (isempty (get (h, "string")))
-          return
+          return;
         endif
 
         pos = getnormpos (h);
@@ -1063,12 +1071,13 @@ function update_text (h, dummy, prop, hte)
         else
           set (hte, prop, get (h, prop));
         endif
+
     endswitch
   endif
 
 endfunction
 
-function update_textbox (h, dummy, prop, htb)
+function update_textbox (h, ~, prop, htb)
   persistent recursive = false;
 
   hte = htb(1);
@@ -1076,11 +1085,12 @@ function update_textbox (h, dummy, prop, htb)
 
   if (! recursive)
     switch (prop)
-      case {"edgecolor", "facealpha",
-            "linestyle", "linewidth"}
+      case {"edgecolor", "facealpha", "linestyle", "linewidth"}
         set (hpa, prop, get (h, prop));
+
       case {"backgroundcolor"}
         set (hpa, "facecolor", get (h, prop));
+
       otherwise
         if (! any (strcmp (prop, {"fitboxtotext", "position"})))
           set (hte, prop, get (h, prop));
@@ -1113,6 +1123,7 @@ function update_textbox (h, dummy, prop, htb)
             y = y(2);
         endswitch
         set (hte, "position", [x y 0]);
+
     endswitch
   endif
 
@@ -1150,11 +1161,12 @@ function XY = textcoordinates (hte, pos)
     pt = rem (pt, 8);
   endif
 
-  ## Compute the text actual "position" property
+  ## Compute the actual text "position" property and move the text object
+  ## 2 points away from the arrow.
   dx = ext(3)/2;
   dy = ext(4)/2;
-  XY = [-dx -dx 0 dx dx dx 0 -dx;
-        0 -dy -dy -dy 0 dy dy dy];
+  XY = [-dx-2, -dx-2, 0, dx+2, dx+2, dx+2, 0, -dx-2;
+        0, -dy-2, -dy-2, -dy-2, 0, dy+2, dy+2, dy+2];
 
   switch (get (hte, "horizontalalignment"))
     case "left"
@@ -1170,8 +1182,8 @@ function XY = textcoordinates (hte, pos)
       XY(2,:) -= dy;
   endswitch
 
-  R = [cos(rot) -sin(rot);
-       sin(rot) cos(rot)];
+  R = [cos(rot), -sin(rot);
+       sin(rot),  cos(rot)];
   XY = R * XY;
   XY = pts2norm (get (hte, "parent"), XY);
   XY = pos(1:2) .- XY(:,pt).';
@@ -1179,14 +1191,14 @@ function XY = textcoordinates (hte, pos)
 endfunction
 
 function nXY = pts2norm (h, pXY)
-  sz = get (get (h,"parent"), "figsize_points");
+  sz = get (get (h, "parent"), "figsize_points");
 
   nXY(1,:) = pXY(1,:) ./ sz(1);
   nXY(2,:) = pXY(2,:) ./ sz(2);
 endfunction
 
 function pXY = norm2pts (h, nXY)
-  sz = get (get (h,"parent"), "figsize_points");
+  sz = get (get (h, "parent"), "figsize_points");
 
   pXY(1,:) = nXY(1,:) .* sz(1);
   pXY(2,:) = nXY(2,:) .* sz(2);
@@ -1197,22 +1209,25 @@ function pos = convertposition (h, from, to)
   pos = get (h, "position");
 
   ## First convert to normalized coordinates
-  sz = get (get (h,"parent"), "figsize_points");
+  sz = get (get (h, "parent"), "figsize_points");
   switch (from)
     case "centimeters"
       pos /= 2.54;
       pos *= 72;
       pos(1:2:end) /= sz(1);
       pos(2:2:end) /= sz(2);
+
     case "inches"
       pos *= 72;
       pos(1:2:end) /= sz(1);
       pos(2:2:end) /= sz(2);
+
     case "pixels"
       pos /= get (0, "screenpixelsperinch");
       pos *= 72;
       pos(1:2:end) /= sz(1);
       pos(2:2:end) /= sz(2);
+
   endswitch
 
   ## Then convert to requested coordinates
@@ -1222,15 +1237,18 @@ function pos = convertposition (h, from, to)
       sz *= 2.54;
       pos(1:2:end) *= sz(1);
       pos(2:2:end) *= sz(2);
+
     case "inches"
       sz /= 72;
       pos(1:2:end) *= sz(1);
       pos(2:2:end) *= sz(2);
+
     case "pixels"
       sz /= 72;
       sz *= get (0, "screenpixelsperinch");
       pos(1:2:end) *= sz(1);
       pos(2:2:end) *= sz(2);
+
   endswitch
 
 endfunction
@@ -1278,14 +1296,6 @@ function update_rect (h, ~, prop, hre, typ)
       case "color"
         set (hre, "edgecolor", get (h, prop));
 
-      case "edgecolor"
-        ## FIXME: DEPRECATED: Remove "edgecolor" in version 6.
-        warning ("Octave:deprecated-property",
-                 ['annotation: Property "edgecolor" for ' typ ' annotations'...
-                  ' is deprecated and will be removed from a future version'...
-                  ' of Octave.  Use "color" instead.']);
-        set (hre, "edgecolor", get (h, prop));
-
       otherwise
         set (hre, prop, get (h, prop));
 
@@ -1309,11 +1319,11 @@ endfunction
 %! x0 = 0.5;
 %! y0 = 0.5;
 %! r = 0.3;
-%! for ii = 1:4
-%!   x = r * cos (ang(ii)) + x0;
-%!   y = r * sin (ang(ii)) + y0;
+%! for i = 1:4
+%!   x = r * cos (ang(i)) + x0;
+%!   y = r * sin (ang(i)) + y0;
 %!   annotation ("textarrow", [x x0], [y y0], ...
-%!               "string", lab{ii},  "fontsize", 20);
+%!               "string", lab{i},  "fontsize", 20);
 %! endfor
 %!
 %! h = annotation ("doublearrow", [x0 x0], [y0-r y0+r], ...
@@ -1372,7 +1382,7 @@ endfunction
 %! y = 1 - dy/2;
 %!
 %! jj = 1;
-%! for ii = 1:nrows
+%! for i = 1:nrows
 %!   annotation ("textarrow", [0.3 0.5], [y y], ...
 %!               "string", styles{jj}, "fontsize", 15, ...
 %!               "headstyle", styles{jj}, "textcolor", "b");
@@ -1398,7 +1408,7 @@ endfunction
 %!             "horizontalalignment", "center");
 %!
 %! ## Textarrows
-%! for ii = 1:10
+%! for i = 1:10
 %!   rot = floor (rand (1) * 360 / 90) * 90;
 %!   annotation ("textarrow", 0.5 + [(0.6 * (rand(1) - .5)) 0], ...
 %!               0.5 + [(0.6 * (rand(1) - .5)) 0], ...
@@ -1418,12 +1428,12 @@ endfunction
 %!
 %! ## Textarrows
 %! halig = {"right", "center", "left"};
-%! ii = 1;
+%! i = 1;
 %! for x = .3:.2:.7
 %!   annotation ("textarrow", [x .5], [.5 .9], ...
 %!               "string", {"Multiple lines", "text"}, ...
-%!               "headstyle", "none", "horizontalalignment", halig{ii});
-%!   ii = ii + 1;
+%!               "headstyle", "none", "horizontalalignment", halig{i});
+%!   i = i + 1;
 %! endfor
 
 %!demo
@@ -1450,12 +1460,12 @@ endfunction
 %!
 %!
 %! ## Textarrows
-%! for ii = 1:2
-%!   annotation ("doublearrow", [(x0(ii) - .05) (x0(ii) + .05)], ...
-%!               [y0(ii) y0(ii)], "head1style", "vback3", ...
+%! for i = 1:2
+%!   annotation ("doublearrow", [(x0(i) - .05) (x0(i) + .05)], ...
+%!               [y0(i) y0(i)], "head1style", "vback3", ...
 %!               "head2style", "vback3", ...
 %!               "head1width", 4, "head2width", 4)
-%!   h = annotation ("textarrow", [0.5 x0(ii)], [.85 y0(ii)], ...
+%!   h = annotation ("textarrow", [0.5 x0(i)], [.85 y0(i)], ...
 %!                   "linestyle", "--", "headstyle", "none");
 %! endfor
 %! set (h, "string", "Extrema", "fontsize", 15);
@@ -1565,9 +1575,21 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error <unknown annotation TYPE foo> annotation ("foo")
-%!error annotation ([], "foo")
-%!error annotation ({})
-%!error annotation ("line", [.5 .6])
-%!error <X and Y must be 2-element vectors> annotation ("line", 1:3, 1:3)
+%!error annotation ()
+%!error <Invalid call to annotation> annotation ({"line"}, 1:2, 1:2)
+%!error <X and Y must be 2-element vectors> annotation ("line", {1:2}, 1:2)
+%!error <X and Y must be 2-element vectors> annotation ("line", 1:2, {1:2})
+%!error <X and Y must be 2-element vectors> annotation ("line", 1:3, 1:2)
+%!error <X and Y must be 2-element vectors> annotation ("line", 1:2, 1:3)
+%!error <Invalid call to annotation> annotation ("line", 1:2)
+%!error <POS must be a 4-element vector> annotation ("textbox", ones (4,4))
 %!error <POS must be a 4-element vector> annotation ("textbox", 1:3)
+%!error <unknown annotation TYPE foo> annotation ("foo")
+%!warning <couldn't parse PROP/VAL pairs, skipping>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   annotation ("line", 1:2, 1:2, "color");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%!error <unknown annotation TYPE foo> annotation ("foo")

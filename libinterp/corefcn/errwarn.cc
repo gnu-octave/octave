@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2016-2019 Rik Wehbring
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2016-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -148,7 +151,7 @@ err_user_returned_invalid (const char *name)
 void
 err_user_supplied_eval (const char *name)
 {
-  octave::execution_exception e = make_execution_exception ("error");
+  octave::execution_exception e;
 
   err_user_supplied_eval (e, name);
 }
@@ -162,7 +165,7 @@ err_user_supplied_eval (octave::execution_exception& e, const char *name)
 void
 err_wrong_type_arg (const char *name, const char *s)
 {
-  octave::execution_exception e = make_execution_exception ("error");
+  octave::execution_exception e;
 
   err_wrong_type_arg (e, name, s);
 }
@@ -177,7 +180,7 @@ err_wrong_type_arg (octave::execution_exception& e,
 void
 err_wrong_type_arg (const char *name, const std::string& s)
 {
-  octave::execution_exception e = make_execution_exception ("error");
+  octave::execution_exception e;
 
   err_wrong_type_arg (e, name, s.c_str ());
 }
@@ -192,7 +195,7 @@ err_wrong_type_arg (octave::execution_exception& e,
 void
 err_wrong_type_arg (const char *name, const octave_value& tc)
 {
-  octave::execution_exception e = make_execution_exception ("error");
+  octave::execution_exception e;
 
   err_wrong_type_arg (e, name, tc);
 }
@@ -209,7 +212,7 @@ err_wrong_type_arg (octave::execution_exception& e,
 void
 err_wrong_type_arg (const std::string& name, const octave_value& tc)
 {
-  octave::execution_exception e = make_execution_exception ("error");
+  octave::execution_exception e;
 
   err_wrong_type_arg (e, name, tc);
 }
@@ -224,7 +227,7 @@ err_wrong_type_arg (octave::execution_exception& e,
 void
 err_wrong_type_arg (const char *s)
 {
-  octave::execution_exception e = make_execution_exception ("error");
+  octave::execution_exception e;
 
   err_wrong_type_arg (e, s);
 }
@@ -238,7 +241,7 @@ err_wrong_type_arg (octave::execution_exception& e, const char *s)
 void
 err_wrong_type_arg (const std::string& s)
 {
-  octave::execution_exception e = make_execution_exception ("error");
+  octave::execution_exception e;
 
   err_wrong_type_arg (e, s);
 }
@@ -252,7 +255,7 @@ err_wrong_type_arg (octave::execution_exception& e, const std::string& s)
 void
 err_wrong_type_arg (const octave_value& tc)
 {
-  octave::execution_exception e = make_execution_exception ("error");
+  octave::execution_exception e;
 
   err_wrong_type_arg (e, tc);
 }
@@ -324,15 +327,17 @@ warn_disabled_feature (const std::string& fcn, const std::string& feature,
 }
 
 void
-warn_divide_by_zero (void)
-{
-  warning_with_id ("Octave:divide-by-zero", "division by zero");
-}
-
-void
 warn_empty_arg (const char *name)
 {
   warning ("%s: argument is empty matrix", name);
+}
+
+void
+warn_empty_index (const std::string& type_name)
+{
+  warning_with_id ("Octave:empty-index",
+                   "'%s' object indexed with empty index list",
+                   type_name.c_str ());
 }
 
 void

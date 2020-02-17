@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -38,30 +41,28 @@ namespace octave
 {
   // Symbols from the symbol table.
 
-  class tree_evaluator;
-
-  void tree_identifier::link_to_global (const symbol_scope& global_scope,
-                                        const symbol_record& global_sym)
-  {
-    if (! m_sym.is_global ())
-      m_sym.bind_fwd_rep (global_scope.get_rep (), global_sym);
-  }
-
   void
   tree_identifier::eval_undefined_error (void)
   {
     int l = line ();
     int c = column ();
 
-    maybe_missing_function_hook (name ());
+    std::string msg = "'" + name () + "' undefined";
 
-    if (l == -1 && c == -1)
-      error_with_id ("Octave:undefined-function",
-                     "'%s' undefined", name ().c_str ());
-    else
-      error_with_id ("Octave:undefined-function",
-                     "'%s' undefined near line %d column %d",
-                     name ().c_str (), l, c);
+    if (l > 0)
+      {
+        msg += " near line " + std::to_string (l);
+
+        if (c > 0)
+          msg += ", column " + std::to_string (l);
+      }
+
+    std::string missing_msg = maybe_missing_function_hook (name ());
+
+    if (! missing_msg.empty ())
+      msg += "\n\n" + missing_msg;
+
+    error_with_id ("Octave:undefined-function", "%s", msg.c_str ());
   }
 
   octave_lvalue
@@ -70,9 +71,7 @@ namespace octave
     if (m_sym.is_added_static ())
       static_workspace_error ();
 
-    symbol_scope scope = tw.get_current_scope ();
-
-    return octave_lvalue (m_sym, scope.current_context ());
+    return octave_lvalue (m_sym, tw.get_current_stack_frame ());
   }
 
   tree_identifier *
@@ -89,5 +88,75 @@ namespace octave
     new_id->copy_base (*this);
 
     return new_id;
+  }
+
+  octave_value_list
+  tree_identifier::evaluate_n (tree_evaluator& tw, int nargout)
+  {
+    octave_value_list retval;
+
+    octave_value val = tw.varval (m_sym);
+
+    if (val.is_undefined ())
+      {
+        interpreter& interp = tw.get_interpreter ();
+
+        symbol_table& symtab = interp.get_symbol_table ();
+
+        val = symtab.find_function (m_sym.name ());
+      }
+
+    if (val.is_defined ())
+      {
+        // GAGME -- this would be cleaner if we required
+        // parens to indicate function calls.
+        //
+        // If this identifier refers to a function, we need to know
+        // whether it is indexed so that we can do the same thing
+        // for 'f' and 'f()'.  If the index is present and the function
+        // object declares it can handle it, return the function object
+        // and let tree_index_expression::rvalue handle indexing.
+        // Otherwise, arrange to call the function here, so that we don't
+        // return the function definition as a value.
+
+        octave_function *fcn = nullptr;
+
+        if (val.is_function ())
+          fcn = val.function_value (true);
+
+        if (fcn && ! (is_postfix_indexed ()
+                      && fcn->accepts_postfix_index (postfix_index ())))
+          {
+            retval = fcn->call (tw, nargout);
+          }
+        else
+          {
+            if (print_result () && nargout == 0
+                && tw.statement_printing_enabled ())
+              {
+                octave_value_list args = ovl (val);
+                args.stash_name_tags (string_vector (name ()));
+                feval ("display", args);
+              }
+
+            retval = ovl (val);
+          }
+      }
+    else if (m_sym.is_added_static ())
+      static_workspace_error ();
+    else
+      eval_undefined_error ();
+
+    return retval;
+  }
+
+  octave_lvalue
+  tree_black_hole::lvalue (tree_evaluator& tw)
+  {
+    octave_lvalue retval (m_sym, tw.get_current_stack_frame ());
+
+    retval.mark_black_hole ();
+
+    return retval;
   }
 }

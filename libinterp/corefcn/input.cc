@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 // Get command input interactively or from files.
 
@@ -31,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 #include <cassert>
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -39,29 +43,27 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "iconv-wrappers.h"
 #include "localcharset-wrapper.h"
+#include "oct-string.h"
 #include "quit.h"
 #include "str-vec.h"
 #include "uniconv-wrappers.h"
 
 #include "builtin-defun-decls.h"
-#include "call-stack.h"
 #include "defun.h"
-#include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
+#include "event-manager.h"
 #include "help.h"
 #include "hook-fcn.h"
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "lex.h"
 #include "load-path.h"
 #include "octave.h"
-#include "octave-link.h"
 #include "oct-map.h"
 #include "oct-hist.h"
 #include "interpreter.h"
-#include "octave-link.h"
+#include "event-manager.h"
 #include "ovl.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
@@ -86,329 +88,309 @@ bool octave_completion_matches_called = false;
 // the next user prompt.
 bool Vdrawnow_requested = false;
 
-// TRUE if we are in debugging mode.
-bool Vdebugging = false;
-
 // TRUE if we are recording line numbers in a source file.
 // Always true except when debugging and taking input directly from
 // the terminal.
 bool Vtrack_line_num = true;
 
-static std::string
-quoting_filename (const std::string& text, int, char quote)
-{
-  if (quote)
-    return text;
-  else
-    return ("'" + text);
-}
-
-// Try to parse a partial command line in reverse, excluding trailing TEXT.
-// If it appears a variable has been indexed by () or {},
-// return that expression,
-// to allow autocomplete of field names of arrays of structures.
-static std::string
-find_indexed_expression (const std::string& text)
-{
-  std::string line = octave::command_editor::get_line_buffer ();
-
-  int pos = line.length () - text.length ();
-  int curly_count = 0;
-  int paren_count = 0;
-
-  int last = --pos;
-
-  while (pos >= 0 && (line[pos] == ')' || line[pos] == '}'))
-    {
-      if (line[pos] == ')')
-        paren_count++;
-      else
-        curly_count++;
-
-      while (curly_count + paren_count > 0 && --pos >= 0)
-        {
-          if (line[pos] == ')')
-            paren_count++;
-          else if (line[pos] == '(')
-            paren_count--;
-          else if (line[pos] == '}')
-            curly_count++;
-          else if (line[pos] == '{')
-            curly_count--;
-        }
-
-      while (--pos >= 0 && line[pos] == ' ')
-        ;
-    }
-
-  while (pos >= 0 && (isalnum (line[pos]) || line[pos] == '_'))
-    pos--;
-
-  if (++pos >= 0)
-    return (line.substr (pos, last + 1 - pos));
-  else
-    return std::string ();
-}
-
-static inline bool
-is_variable (octave::symbol_table& symtab, const std::string& name)
-{
-  bool retval = false;
-
-  if (! name.empty ())
-    {
-      octave::symbol_scope scope = symtab.current_scope ();
-
-      octave_value val = scope ? scope.varval (name) : octave_value ();
-
-      retval = val.is_defined ();
-    }
-
-  return retval;
-}
-
-static string_vector
-generate_struct_completions (const std::string& text,
-                             std::string& prefix, std::string& hint)
-{
-  string_vector names;
-
-  size_t pos = text.rfind ('.');
-  bool array = false;
-
-  if (pos != std::string::npos)
-    {
-      if (pos == text.length ())
-        hint = "";
-      else
-        hint = text.substr (pos+1);
-
-      prefix = text.substr (0, pos);
-
-      if (prefix == "")
-        {
-          array = true;
-          prefix = find_indexed_expression (text);
-        }
-
-      std::string base_name = prefix;
-
-      pos = base_name.find_first_of ("{(. ");
-
-      if (pos != std::string::npos)
-        base_name = base_name.substr (0, pos);
-
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("generate_struct_completions");
-
-      octave::symbol_table& symtab = interp.get_symbol_table ();
-
-      if (is_variable (symtab, base_name))
-        {
-          int parse_status;
-
-          octave::unwind_protect frame;
-
-          frame.protect_var (discard_error_messages);
-          frame.protect_var (discard_warning_messages);
-
-          discard_error_messages = true;
-          discard_warning_messages = true;
-
-          try
-            {
-              octave_value tmp
-                = interp.eval_string (prefix, true, parse_status);
-
-              frame.run ();
-
-              if (tmp.is_defined ()
-                  && (tmp.isstruct () || tmp.isjava () || tmp.is_classdef_object ()))
-                names = tmp.map_keys ();
-            }
-          catch (const octave::execution_exception&)
-            {
-              octave::interpreter::recover_from_exception ();
-            }
-        }
-    }
-
-  // Undo look-back that found the array expression,
-  // but insert an extra "." to distinguish from the non-struct case.
-  if (array)
-    prefix = ".";
-
-  return names;
-}
-
-// FIXME: this will have to be much smarter to work "correctly".
-static bool
-looks_like_struct (const std::string& text, char prev_char)
-{
-  bool retval = (! text.empty ()
-                 && (text != "." || prev_char == ')' || prev_char == '}')
-                 && text.find_first_of (octave::sys::file_ops::dir_sep_chars ()) == std::string::npos
-                 && text.find ("..") == std::string::npos
-                 && text.rfind ('.') != std::string::npos);
-
-  return retval;
-}
-
-// FIXME: make this generate filenames when appropriate.
-
-static string_vector
-generate_possible_completions (const std::string& text, std::string& prefix,
-                               std::string& hint, bool& deemed_struct)
-{
-  string_vector names;
-
-  prefix = "";
-
-  char prev_char = octave::command_editor::get_prev_char (text.length ());
-  deemed_struct = looks_like_struct (text, prev_char);
-
-  if (deemed_struct)
-    names = generate_struct_completions (text, prefix, hint);
-  else
-    names = octave::make_name_list ();
-
-  // Sort and remove duplicates.
-
-  names.sort (true);
-
-  return names;
-}
-
-static bool
-is_completing_dirfns (void)
-{
-  static std::string dirfns_commands[] = {"cd", "isfile", "isfolder", "ls"};
-  static const size_t dirfns_commands_length = 4;
-
-  bool retval = false;
-
-  std::string line = octave::command_editor::get_line_buffer ();
-
-  for (size_t i = 0; i < dirfns_commands_length; i++)
-    {
-      int index = line.find (dirfns_commands[i] + ' ');
-
-      if (index == 0)
-        {
-          retval = true;
-          break;
-        }
-    }
-
-  return retval;
-}
-
-static std::string
-generate_completion (const std::string& text, int state)
-{
-  std::string retval;
-
-  static std::string prefix;
-  static std::string hint;
-
-  static size_t hint_len = 0;
-
-  static int list_index = 0;
-  static int name_list_len = 0;
-  static int name_list_total_len = 0;
-  static string_vector name_list;
-  static string_vector file_name_list;
-
-  static int matches = 0;
-
-  if (state == 0)
-    {
-      list_index = 0;
-
-      prefix = "";
-
-      hint = text;
-
-      // No reason to display symbols while completing a
-      // file/directory operation.
-
-      bool deemed_struct = false;
-
-      if (is_completing_dirfns ())
-        name_list = string_vector ();
-      else
-        name_list = generate_possible_completions (text, prefix, hint,
-                                                   deemed_struct);
-
-      name_list_len = name_list.numel ();
-
-      // If the line was something like "a{1}." then text = "." but
-      // we don't want to expand all the . files.
-      if (! deemed_struct)
-        {
-
-          file_name_list = octave::command_editor::generate_filename_completions (text);
-
-          name_list.append (file_name_list);
-
-        }
-
-      name_list_total_len = name_list.numel ();
-
-      hint_len = hint.length ();
-
-      matches = 0;
-
-      for (int i = 0; i < name_list_len; i++)
-        if (hint == name_list[i].substr (0, hint_len))
-          matches++;
-    }
-
-  if (name_list_total_len > 0 && matches > 0)
-    {
-      while (list_index < name_list_total_len)
-        {
-          std::string name = name_list[list_index];
-
-          list_index++;
-
-          if (hint == name.substr (0, hint_len))
-            {
-              // Special case: array reference forces prefix="."
-              //               in generate_struct_completions ()
-              if (list_index <= name_list_len && ! prefix.empty ())
-                retval = (prefix == "." ? "" : prefix) + '.' + name;
-              else
-                retval = name;
-
-              char prev_char = octave::command_editor::get_prev_char
-                                                       (text.length ());
-              if (matches == 1 && looks_like_struct (retval, prev_char))
-                {
-                  // Don't append anything, since we don't know
-                  // whether it should be '(' or '.'.
-
-                  octave::command_editor::set_completion_append_character ('\0');
-                }
-              else
-                {
-                  octave::input_system& input_sys
-                    = octave::__get_input_system__ ("generate_completion");
-
-                  octave::command_editor::set_completion_append_character
-                    (input_sys.completion_append_char ());
-                }
-
-              break;
-            }
-        }
-    }
-
-  return retval;
-}
-
 namespace octave
 {
+  static std::string
+  quoting_filename (const std::string& text, int, char quote)
+  {
+    if (quote)
+      return text;
+    else
+      return ("'" + text);
+  }
+
+  // Try to parse a partial command line in reverse, excluding trailing TEXT.
+  // If it appears a variable has been indexed by () or {},
+  // return that expression,
+  // to allow autocomplete of field names of arrays of structures.
+  static std::string
+  find_indexed_expression (const std::string& text)
+  {
+    std::string line = command_editor::get_line_buffer ();
+
+    int pos = line.length () - text.length ();
+    int curly_count = 0;
+    int paren_count = 0;
+
+    int last = --pos;
+
+    while (pos >= 0 && (line[pos] == ')' || line[pos] == '}'))
+      {
+        if (line[pos] == ')')
+          paren_count++;
+        else
+          curly_count++;
+
+        while (curly_count + paren_count > 0 && --pos >= 0)
+          {
+            if (line[pos] == ')')
+              paren_count++;
+            else if (line[pos] == '(')
+              paren_count--;
+            else if (line[pos] == '}')
+              curly_count++;
+            else if (line[pos] == '{')
+              curly_count--;
+          }
+
+        while (--pos >= 0 && line[pos] == ' ')
+          ;
+      }
+
+    while (pos >= 0 && (isalnum (line[pos]) || line[pos] == '_'))
+      pos--;
+
+    if (++pos >= 0)
+      return (line.substr (pos, last + 1 - pos));
+    else
+      return std::string ();
+  }
+
+  static string_vector
+  generate_struct_completions (const std::string& text,
+                               std::string& prefix, std::string& hint)
+  {
+    string_vector names;
+
+    size_t pos = text.rfind ('.');
+    bool array = false;
+
+    if (pos != std::string::npos)
+      {
+        if (pos == text.length ())
+          hint = "";
+        else
+          hint = text.substr (pos+1);
+
+        prefix = text.substr (0, pos);
+
+        if (prefix == "")
+          {
+            array = true;
+            prefix = find_indexed_expression (text);
+          }
+
+        std::string base_name = prefix;
+
+        pos = base_name.find_first_of ("{(. ");
+
+        if (pos != std::string::npos)
+          base_name = base_name.substr (0, pos);
+
+        interpreter& interp
+          = __get_interpreter__ ("generate_struct_completions");
+
+        if (interp.is_variable (base_name))
+          {
+            int parse_status;
+
+            error_system& es = interp.get_error_system ();
+
+            unwind_protect frame;
+
+            frame.add_method (es, &error_system::set_discard_warning_messages,
+                              es.discard_warning_messages ());
+
+            es.discard_warning_messages (true);
+
+            try
+              {
+                octave_value tmp
+                  = interp.eval_string (prefix, true, parse_status);
+
+                frame.run ();
+
+                if (tmp.is_defined ()
+                    && (tmp.isstruct () || tmp.isjava () || tmp.is_classdef_object ()))
+                  names = tmp.map_keys ();
+              }
+            catch (const execution_exception&)
+              {
+                interp.recover_from_exception ();
+              }
+          }
+      }
+
+    // Undo look-back that found the array expression,
+    // but insert an extra "." to distinguish from the non-struct case.
+    if (array)
+      prefix = ".";
+
+    return names;
+  }
+
+  // FIXME: this will have to be much smarter to work "correctly".
+  static bool
+  looks_like_struct (const std::string& text, char prev_char)
+  {
+    bool retval = (! text.empty ()
+                   && (text != "." || prev_char == ')' || prev_char == '}')
+                   && text.find_first_of (sys::file_ops::dir_sep_chars ()) == std::string::npos
+                   && text.find ("..") == std::string::npos
+                   && text.rfind ('.') != std::string::npos);
+
+    return retval;
+  }
+
+  // FIXME: make this generate filenames when appropriate.
+
+  static string_vector
+  generate_possible_completions (const std::string& text, std::string& prefix,
+                                 std::string& hint, bool& deemed_struct)
+  {
+    string_vector names;
+
+    prefix = "";
+
+    char prev_char = command_editor::get_prev_char (text.length ());
+    deemed_struct = looks_like_struct (text, prev_char);
+
+    if (deemed_struct)
+      names = generate_struct_completions (text, prefix, hint);
+    else
+      names = make_name_list ();
+
+    // Sort and remove duplicates.
+
+    names.sort (true);
+
+    return names;
+  }
+
+  static bool
+  is_completing_dirfns (void)
+  {
+    static std::string dirfns_commands[] = {"cd", "isfile", "isfolder", "ls"};
+    static const size_t dirfns_commands_length = 4;
+
+    bool retval = false;
+
+    std::string line = command_editor::get_line_buffer ();
+
+    for (size_t i = 0; i < dirfns_commands_length; i++)
+      {
+        int index = line.find (dirfns_commands[i] + ' ');
+
+        if (index == 0)
+          {
+            retval = true;
+            break;
+          }
+      }
+
+    return retval;
+  }
+
+  static std::string
+  generate_completion (const std::string& text, int state)
+  {
+    std::string retval;
+
+    static std::string prefix;
+    static std::string hint;
+
+    static size_t hint_len = 0;
+
+    static int list_index = 0;
+    static int name_list_len = 0;
+    static int name_list_total_len = 0;
+    static string_vector name_list;
+    static string_vector file_name_list;
+
+    static int matches = 0;
+
+    if (state == 0)
+      {
+        list_index = 0;
+
+        prefix = "";
+
+        hint = text;
+
+        // No reason to display symbols while completing a
+        // file/directory operation.
+
+        bool deemed_struct = false;
+
+        if (is_completing_dirfns ())
+          name_list = string_vector ();
+        else
+          name_list = generate_possible_completions (text, prefix, hint,
+                                                     deemed_struct);
+
+        name_list_len = name_list.numel ();
+
+        // If the line was something like "a{1}." then text = "." but
+        // we don't want to expand all the . files.
+        if (! deemed_struct)
+          {
+
+            file_name_list = command_editor::generate_filename_completions (text);
+
+            name_list.append (file_name_list);
+
+          }
+
+        name_list_total_len = name_list.numel ();
+
+        hint_len = hint.length ();
+
+        matches = 0;
+
+        for (int i = 0; i < name_list_len; i++)
+          if (hint == name_list[i].substr (0, hint_len))
+            matches++;
+      }
+
+    if (name_list_total_len > 0 && matches > 0)
+      {
+        while (list_index < name_list_total_len)
+          {
+            std::string name = name_list[list_index];
+
+            list_index++;
+
+            if (hint == name.substr (0, hint_len))
+              {
+                // Special case: array reference forces prefix="."
+                //               in generate_struct_completions ()
+                if (list_index <= name_list_len && ! prefix.empty ())
+                  retval = (prefix == "." ? "" : prefix) + '.' + name;
+                else
+                  retval = name;
+
+                char prev_char =
+                  command_editor::get_prev_char (text.length ());
+
+                if (matches == 1 && looks_like_struct (retval, prev_char))
+                  {
+                    // Don't append anything, since we don't know
+                    // whether it should be '(' or '.'.
+
+                    command_editor::set_completion_append_character ('\0');
+                  }
+                else
+                  {
+                    input_system& input_sys
+                      = __get_input_system__ ("generate_completion");
+
+                    command_editor::set_completion_append_character
+                      (input_sys.completion_append_char ());
+                  }
+
+                break;
+              }
+          }
+      }
+
+    return retval;
+  }
+
   // Use literal "octave" in default setting for PS1 instead of
   // "\\s" to avoid setting the prompt to "octave.exe" or
   // "octave-gui", etc.
@@ -416,46 +398,43 @@ namespace octave
   input_system::input_system (interpreter& interp)
     : m_interpreter (interp), m_PS1 (R"(octave:\#> )"), m_PS2 ("> "),
       m_completion_append_char (' '), m_gud_mode (false),
-      m_mfile_encoding ("utf-8"), m_last_debugging_command ("\n"),
+      m_mfile_encoding ("system"), m_last_debugging_command ("\n"),
       m_input_event_hook_functions ()
   {
-#if defined (OCTAVE_USE_WINDOWS_API)
-    m_mfile_encoding = "system";
-#endif
   }
 
-    void input_system::initialize (bool line_editing)
-    {
-// Force default line editor if we don't want readline editing.
-      if (! line_editing)
-        {
-          command_editor::force_default_editor ();
-          return;
-        }
+  void input_system::initialize (bool line_editing)
+  {
+    // Force default line editor if we don't want readline editing.
+    if (! line_editing)
+      {
+        command_editor::force_default_editor ();
+        return;
+      }
 
-      // If we are using readline, this allows conditional parsing of the
-      // .inputrc file.
+    // If we are using readline, this allows conditional parsing of the
+    // .inputrc file.
 
-      octave::command_editor::set_name ("Octave");
+    command_editor::set_name ("Octave");
 
-      // FIXME: this needs to include a comma too, but that
-      // causes trouble for the new struct element completion code.
+    // FIXME: this needs to include a comma too, but that
+    // causes trouble for the new struct element completion code.
 
-      static const char *s = "\t\n !\"\'*+-/:;<=>(){}[\\]^`~";
+    static const char *s = "\t\n !\"\'*+-/:;<=>(){}[\\]^`~";
 
-      octave::command_editor::set_basic_word_break_characters (s);
+    command_editor::set_basic_word_break_characters (s);
 
-      octave::command_editor::set_completer_word_break_characters (s);
+    command_editor::set_completer_word_break_characters (s);
 
-      octave::command_editor::set_basic_quote_characters (R"(")");
+    command_editor::set_basic_quote_characters (R"(")");
 
-      octave::command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
+    command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
 
-      octave::command_editor::set_completer_quote_characters (R"('")");
+    command_editor::set_completer_quote_characters (R"('")");
 
-      octave::command_editor::set_completion_function (generate_completion);
+    command_editor::set_completion_function (generate_completion);
 
-      octave::command_editor::set_quoting_function (quoting_filename);
+    command_editor::set_quoting_function (quoting_filename);
   }
 
   octave_value
@@ -505,11 +484,7 @@ namespace octave
       {
         if (m_mfile_encoding.empty ())
           {
-#if defined (OCTAVE_USE_WINDOWS_API)
             m_mfile_encoding = "system";
-#else
-            m_mfile_encoding = "utf-8";
-#endif
           }
         else
           {
@@ -541,8 +516,8 @@ namespace octave
       }
 
     // Synchronize the related gui preference for editor encoding
-    octave::feval ("__octave_link_gui_preference__",
-                   ovl ("editor/default_encoding", m_mfile_encoding));
+    feval ("__event_manager_gui_preference__",
+           ovl ("editor/default_encoding", m_mfile_encoding));
 
     return retval;
   }
@@ -570,28 +545,22 @@ namespace octave
   {
     Vlast_prompt_time.stamp ();
 
-    if (Vdrawnow_requested && octave::application::interactive ())
+    if (Vdrawnow_requested && m_interpreter.interactive ())
       {
         bool eval_error = false;
 
         try
           {
-            Fdrawnow ();
+            Fdrawnow (m_interpreter);
           }
-        catch (const octave::execution_exception& e)
+        catch (const execution_exception& e)
           {
             eval_error = true;
 
-            std::string stack_trace = e.info ();
-
-            if (! stack_trace.empty ())
-              std::cerr << stack_trace;
-
-            if (octave::application::interactive ())
-              octave::interpreter::recover_from_exception ();
+            m_interpreter.handle_exception (e);
           }
 
-        octave::flush_stdout ();
+        flush_stdout ();
 
         // We set Vdrawnow_requested to false even if there is an error in
         // drawnow so that the error doesn't reappear at every prompt.
@@ -619,7 +588,7 @@ namespace octave
 
     std::string prompt = args(0).xstring_value ("input: unrecognized argument");
 
-    output_system& output_sys = __get_output_system__ ("do_sync");
+    output_system& output_sys = m_interpreter.get_output_system ();
 
     output_sys.reset ();
 
@@ -654,49 +623,11 @@ namespace octave
         retval
           = m_interpreter.eval_string (input_buf, true, parse_status, nargout);
 
-        if (! Vdebugging && retval.empty ())
+        tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+        if (! tw.in_debug_repl () && retval.empty ())
           retval(0) = Matrix ();
       }
-
-    return retval;
-  }
-
-  octave_value input_system::keyboard (const octave_value_list& args)
-  {
-    octave_value retval;
-
-    int nargin = args.length ();
-
-    assert (nargin == 0 || nargin == 1);
-
-    octave::unwind_protect frame;
-
-    frame.add_fcn (octave::command_history::ignore_entries,
-                   octave::command_history::ignoring_entries ());
-
-    octave::command_history::ignore_entries (false);
-
-    frame.protect_var (Vdebugging);
-
-    octave::call_stack& cs = m_interpreter.get_call_stack ();
-
-    frame.add_method (cs, &octave::call_stack::restore_frame,
-                      cs.current_frame ());
-
-    // FIXME: probably we just want to print one line, not the
-    // entire statement, which might span many lines...
-    //
-    // tree_print_code tpc (octave_stdout);
-    // stmt.accept (tpc);
-
-    Vdebugging = true;
-    Vtrack_line_num = false;
-
-    std::string prompt = "debug> ";
-    if (nargin > 0)
-      prompt = args(0).string_value ();
-
-    get_debug_input (prompt);
 
     return retval;
   }
@@ -740,7 +671,7 @@ namespace octave
 
     eof = false;
 
-    std::string retval = octave::command_editor::readline (s, eof);
+    std::string retval = command_editor::readline (s, eof);
 
     if (! eof && retval.empty ())
       retval = "\n";
@@ -748,154 +679,7 @@ namespace octave
     return retval;
   }
 
-  static void
-  execute_in_debugger_handler (const std::pair<std::string, int>& arg)
-  {
-    octave_link::execute_in_debugger_event (arg.first, arg.second);
-  }
-
-  void input_system::get_debug_input (const std::string& prompt)
-  {
-    octave::unwind_protect frame;
-
-    octave::tree_evaluator& tw = m_interpreter.get_evaluator ();
-
-    bool silent = tw.quiet_breakpoint_flag (false);
-
-    octave::call_stack& cs = m_interpreter.get_call_stack ();
-
-    octave_user_code *caller = cs.caller_user_code ();
-    std::string nm;
-    int curr_debug_line;
-
-    if (caller)
-      {
-        nm = caller->fcn_file_name ();
-
-        if (nm.empty ())
-          nm = caller->name ();
-
-        curr_debug_line = cs.caller_user_code_line ();
-      }
-    else
-      curr_debug_line = cs.current_line ();
-
-    std::ostringstream buf;
-
-    if (! nm.empty ())
-      {
-        if (m_gud_mode)
-          {
-            static char ctrl_z = 'Z' & 0x1f;
-
-            buf << ctrl_z << ctrl_z << nm << ':' << curr_debug_line;
-          }
-        else
-          {
-            // FIXME: we should come up with a clean way to detect
-            // that we are stopped on the no-op command that marks the
-            // end of a function or script.
-
-            if (! silent)
-              {
-                buf << "stopped in " << nm;
-
-                if (curr_debug_line > 0)
-                  buf << " at line " << curr_debug_line;
-              }
-
-            octave_link::enter_debugger_event (nm, curr_debug_line);
-
-            octave_link::set_workspace ();
-
-            frame.add_fcn (execute_in_debugger_handler,
-                           std::pair<std::string, int> (nm, curr_debug_line));
-
-            if (! silent)
-              {
-                std::string line_buf;
-
-                if (caller)
-                  line_buf = caller->get_code_line (curr_debug_line);
-
-                if (! line_buf.empty ())
-                  buf << "\n" << curr_debug_line << ": " << line_buf;
-              }
-          }
-      }
-
-    if (silent)
-      octave::command_editor::erase_empty_line (true);
-
-    std::string msg = buf.str ();
-
-    if (! msg.empty ())
-      std::cerr << msg << std::endl;
-
-    frame.add_method (*this, &octave::input_system::set_PS1, m_PS1);
-    m_PS1 = prompt;
-
-    // FIXME: should debugging be possible in an embedded interpreter?
-
-    octave::application *app = octave::application::app ();
-
-    if (! app->interactive ())
-      {
-
-        frame.add_method (app, &octave::application::interactive,
-                          app->interactive ());
-
-        frame.add_method (app, &octave::application::forced_interactive,
-                          app->forced_interactive ());
-
-        app->interactive (true);
-
-        app->forced_interactive (true);
-      }
-
-    octave::parser curr_parser (m_interpreter);
-
-    while (Vdebugging)
-      {
-        try
-          {
-            Vtrack_line_num = false;
-
-            reset_error_handler ();
-
-            curr_parser.reset ();
-
-            int retval = curr_parser.run ();
-
-            if (octave::command_editor::interrupt (false))
-              break;
-            else
-              {
-                if (retval == 0 && curr_parser.m_stmt_list)
-                  {
-                    curr_parser.m_stmt_list->accept (tw);
-
-                    if (octave_completion_matches_called)
-                      octave_completion_matches_called = false;
-                  }
-
-                octave_quit ();
-              }
-          }
-        catch (const octave::execution_exception& e)
-          {
-            std::string stack_trace = e.info ();
-
-            if (! stack_trace.empty ())
-              std::cerr << stack_trace;
-
-            // Ignore errors when in debugging mode;
-            octave::interpreter::recover_from_exception ();
-          }
-      }
-  }
-
-  std::string base_reader::octave_gets (bool& eof)
+  std::string base_reader::octave_gets (const std::string& prompt, bool& eof)
   {
     octave_quit ();
 
@@ -906,27 +690,27 @@ namespace octave
     // Process pre input event hook function prior to flushing output and
     // printing the prompt.
 
-    if (application::interactive ())
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+    event_manager& evmgr = m_interpreter.get_event_manager ();
+
+    if (m_interpreter.interactive ())
       {
-        if (! Vdebugging)
-          octave_link::exit_debugger_event ();
+        if (! tw.in_debug_repl ())
+          evmgr.exit_debugger_event ();
 
-        octave_link::pre_input_event ();
+        evmgr.pre_input_event ();
 
-        octave_link::set_workspace ();
+        evmgr.set_workspace ();
       }
 
     bool history_skip_auto_repeated_debugging_command = false;
 
-    input_system& input_sys = __get_input_system__ ("base_reader::octave_gets");
-
-    std::string ps = (m_pflag > 0) ? input_sys.PS1 () : input_sys.PS2 ();
-
-    std::string prompt = command_editor::decode_prompt_string (ps);
+    input_system& input_sys = m_interpreter.get_input_system ();
 
     pipe_handler_error_count = 0;
 
-    output_system& output_sys = __get_output_system__ ("do_sync");
+    output_system& output_sys = m_interpreter.get_output_system ();
 
     output_sys.reset ();
 
@@ -939,16 +723,16 @@ namespace octave
     if (retval != "\n"
         && retval.find_first_not_of (" \t\n\r") != std::string::npos)
       {
-        load_path& lp = __get_load_path__ ("base_reader::octave_gets");
+        load_path& lp = m_interpreter.get_load_path ();
 
         lp.update ();
 
-        if (Vdebugging)
+        if (tw.in_debug_repl ())
           input_sys.last_debugging_command (retval);
         else
           input_sys.last_debugging_command ("\n");
       }
-    else if (Vdebugging)
+    else if (tw.in_debug_repl ())
       {
         retval = input_sys.last_debugging_command ();
         history_skip_auto_repeated_debugging_command = true;
@@ -959,7 +743,7 @@ namespace octave
         if (! history_skip_auto_repeated_debugging_command)
           {
             if (command_history::add (retval))
-              octave_link::append_history (retval);
+              evmgr.append_history (retval);
           }
 
         octave_diary << retval;
@@ -973,25 +757,10 @@ namespace octave
     // Process post input event hook function after the internal history
     // list has been updated.
 
-    if (application::interactive ())
-      octave_link::post_input_event ();
+    if (m_interpreter.interactive ())
+      evmgr.post_input_event ();
 
     return retval;
-  }
-
-  bool base_reader::reading_fcn_file (void) const
-  {
-    return m_lexer ? m_lexer->m_reading_fcn_file : false;
-  }
-
-  bool base_reader::reading_classdef_file (void) const
-  {
-    return m_lexer ? m_lexer->m_reading_classdef_file : false;
-  }
-
-  bool base_reader::reading_script_file (void) const
-  {
-    return m_lexer ? m_lexer->m_reading_script_file : false;
   }
 
   class
@@ -999,11 +768,11 @@ namespace octave
   {
   public:
 
-    terminal_reader (base_lexer *lxr = nullptr)
-      : base_reader (lxr)
+    terminal_reader (interpreter& interp)
+      : base_reader (interp)
     { }
 
-    std::string get_input (bool& eof);
+    std::string get_input (const std::string& prompt, bool& eof);
 
     std::string input_source (void) const { return s_in_src; }
 
@@ -1019,10 +788,10 @@ namespace octave
   {
   public:
 
-    file_reader (FILE *f_arg, base_lexer *lxr = nullptr)
-      : base_reader (lxr), m_file (f_arg) { }
+    file_reader (interpreter& interp, FILE *f_arg)
+      : base_reader (interp), m_file (f_arg) { }
 
-    std::string get_input (bool& eof);
+    std::string get_input (const std::string& prompt, bool& eof);
 
     std::string input_source (void) const { return s_in_src; }
 
@@ -1040,11 +809,11 @@ namespace octave
   {
   public:
 
-    eval_string_reader (const std::string& str, base_lexer *lxr = nullptr)
-      : base_reader (lxr), m_eval_string (str)
+    eval_string_reader (interpreter& interp, const std::string& str)
+      : base_reader (interp), m_eval_string (str)
     { }
 
-    std::string get_input (bool& eof);
+    std::string get_input (const std::string& prompt, bool& eof);
 
     std::string input_source (void) const { return s_in_src; }
 
@@ -1057,16 +826,16 @@ namespace octave
     static const std::string s_in_src;
   };
 
-  input_reader::input_reader (base_lexer *lxr)
-    : m_rep (new terminal_reader (lxr))
+  input_reader::input_reader (interpreter& interp)
+    : m_rep (new terminal_reader (interp))
   { }
 
-  input_reader::input_reader (FILE *file, base_lexer *lxr)
-    : m_rep (new file_reader (file, lxr))
+  input_reader::input_reader (interpreter& interp, FILE *file)
+    : m_rep (new file_reader (interp, file))
   { }
 
-  input_reader::input_reader (const std::string& str, base_lexer *lxr)
-    : m_rep (new eval_string_reader (str, lxr))
+  input_reader::input_reader (interpreter& interp, const std::string& str)
+    : m_rep (new eval_string_reader (interp, str))
   { }
 
   const std::string base_reader::s_in_src ("invalid");
@@ -1074,19 +843,19 @@ namespace octave
   const std::string terminal_reader::s_in_src ("terminal");
 
   std::string
-  terminal_reader::get_input (bool& eof)
+  terminal_reader::get_input (const std::string& prompt, bool& eof)
   {
     octave_quit ();
 
     eof = false;
 
-    return octave_gets (eof);
+    return octave_gets (prompt, eof);
   }
 
   const std::string file_reader::s_in_src ("file");
 
   std::string
-  file_reader::get_input (bool& eof)
+  file_reader::get_input (const std::string& /*prompt*/, bool& eof)
   {
     octave_quit ();
 
@@ -1094,42 +863,55 @@ namespace octave
 
     std::string src_str = octave_fgets (m_file, eof);
 
-    octave::input_system& input_sys
-      = octave::__get_input_system__ ("get_input");
+    input_system& input_sys = m_interpreter.get_input_system ();
 
     std::string mfile_encoding = input_sys.mfile_encoding ();
 
-    std::string encoding
-      = (mfile_encoding.compare ("system") == 0
-         ? octave_locale_charset_wrapper () : mfile_encoding);
+    std::string encoding;
+    if (mfile_encoding.compare ("system") == 0)
+      {
+        encoding = octave_locale_charset_wrapper ();
+        // encoding identifiers should consist of ASCII only characters
+        std::transform (encoding.begin (), encoding.end (), encoding.begin (),
+                        ::tolower);
+      }
+    else
+      encoding = mfile_encoding;
 
     if (encoding.compare ("utf-8") == 0)
-    {
-      // Check for BOM and strip it
-      if (src_str.compare (0, 3, "\xef\xbb\xbf") == 0)
-        src_str.erase (0, 3);
-    }
+      {
+        // Check for BOM and strip it
+        if (src_str.compare (0, 3, "\xef\xbb\xbf") == 0)
+          src_str.erase (0, 3);
+
+        // replace invalid portions of the string
+        // FIXME: Include file name that corresponds to m_file.
+        if (string::u8_validate ("get_input", src_str) > 0)
+          warning_with_id ("octave:get_input:invalid_utf8",
+                           "Invalid UTF-8 byte sequences have been replaced.");
+      }
     else
-    {
-      // convert encoding to UTF-8 before returning string
-      const char *src = src_str.c_str ();
-      size_t srclen = src_str.length ();
+      {
+        // convert encoding to UTF-8 before returning string
+        const char *src = src_str.c_str ();
+        size_t srclen = src_str.length ();
 
-      size_t length;
-      uint8_t *utf8_str;
+        size_t length;
+        uint8_t *utf8_str;
 
-      utf8_str = octave_u8_conv_from_encoding (encoding.c_str (), src, srclen,
-                                               &length);
+        utf8_str = octave_u8_conv_from_encoding (encoding.c_str (), src, srclen,
+                                                 &length);
 
-      if (! utf8_str)
-        error ("file_reader::get_input: converting from codepage '%s' to UTF-8: %s",
-               encoding.c_str (), std::strerror (errno));
+        if (! utf8_str)
+          error ("file_reader::get_input: "
+                 "converting from codepage '%s' to UTF-8: %s",
+                 encoding.c_str (), std::strerror (errno));
 
-      octave::unwind_protect frame;
-      frame.add_fcn (::free, static_cast<void *> (utf8_str));
+        unwind_protect frame;
+        frame.add_fcn (::free, static_cast<void *> (utf8_str));
 
-      src_str = std::string (reinterpret_cast<char *> (utf8_str), length);
-    }
+        src_str = std::string (reinterpret_cast<char *> (utf8_str), length);
+      }
 
     return src_str;
   }
@@ -1137,7 +919,7 @@ namespace octave
   const std::string eval_string_reader::s_in_src ("eval_string");
 
   std::string
-  eval_string_reader::get_input (bool& eof)
+  eval_string_reader::get_input (const std::string& /*prompt*/, bool& eof)
   {
     octave_quit ();
 
@@ -1254,28 +1036,22 @@ If @code{keyboard} is invoked without arguments, a default prompt of
 @seealso{dbstop, dbcont, dbquit}
 @end deftypefn */)
 {
-  if (args.length () > 1)
+  int nargin = args.length ();
+
+  if (nargin > 1)
     print_usage ();
-
-  octave::unwind_protect frame;
-
-  octave::call_stack& cs = interp.get_call_stack ();
-
-  frame.add_method (cs, &octave::call_stack::restore_frame,
-                    cs.current_frame ());
-
-  // Skip the frame assigned to the keyboard function.
-  cs.goto_frame_relative (0);
 
   octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  tw.debug_mode (true);
-  tw.quiet_breakpoint_flag (false);
-  tw.current_frame (cs.current_frame ());
+  if (nargin == 1)
+    {
+      std::string prompt
+        = args(0).xstring_value ("keyboard: PROMPT must be a string");
 
-  octave::input_system& input_sys = interp.get_input_system ();
-
-  input_sys.keyboard (args);
+      tw.keyboard (prompt);
+    }
+  else
+    tw.keyboard ();
 
   return ovl ();
 }
@@ -1306,7 +1082,7 @@ a feature, not a bug.
 
   for (;;)
     {
-      std::string cmd = generate_completion (hint, k);
+      std::string cmd = octave::generate_completion (hint, k);
 
       if (! cmd.empty ())
         {
@@ -1412,18 +1188,20 @@ for details.
   return ovl ();
 }
 
-static int
-internal_input_event_hook_fcn (void)
+namespace octave
 {
-  octave::input_system& input_sys
-    = octave::__get_input_system__ ("internal_input_event_hook_fcn");
+  static int internal_input_event_hook_fcn (void)
+  {
+    input_system& input_sys
+      = __get_input_system__ ("internal_input_event_hook_fcn");
 
-  input_sys.run_input_event_hooks ();
+    input_sys.run_input_event_hooks ();
 
-  if (! input_sys.have_input_event_hooks ())
-    octave::command_editor::remove_event_hook (internal_input_event_hook_fcn);
+    if (! input_sys.have_input_event_hooks ())
+      command_editor::remove_event_hook (internal_input_event_hook_fcn);
 
-  return 0;
+    return 0;
+  }
 }
 
 DEFMETHOD (add_input_event_hook, interp, args, ,
@@ -1461,7 +1239,7 @@ list of input hook functions.
   hook_function hook_fcn (args(0), user_data);
 
   if (! input_sys.have_input_event_hooks ())
-    octave::command_editor::add_event_hook (internal_input_event_hook_fcn);
+    octave::command_editor::add_event_hook (octave::internal_input_event_hook_fcn);
 
   input_sys.add_input_event_hook (hook_fcn);
 
@@ -1494,7 +1272,7 @@ for input.
              hook_fcn_id.c_str ());
 
   if (! input_sys.have_input_event_hooks ())
-    octave::command_editor::remove_event_hook (internal_input_event_hook_fcn);
+    octave::command_editor::remove_event_hook (octave::internal_input_event_hook_fcn);
 
   return ovl ();
 }
@@ -1642,15 +1420,6 @@ octave_yes_or_no (const std::string& prompt)
     = octave::__get_input_system__ ("set_default_prompts");
 
   return input_sys.yes_or_no (prompt);
-}
-
-octave_value
-do_keyboard (const octave_value_list& args)
-{
-  octave::input_system& input_sys
-    = octave::__get_input_system__ ("do_keyboard");
-
-  return input_sys.keyboard (args);
 }
 
 void

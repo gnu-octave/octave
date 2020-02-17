@@ -1,4 +1,9 @@
-## Copyright (C) 2008-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2008-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} print ()
@@ -114,20 +121,32 @@
 ##   Specifies whether the opengl (pixel-based) or painters (vector-based)
 ## renderer is used.  This is equivalent to changing the figure's
 ## @qcode{"Renderer"} property.  When the figure @code{RendererMode} property
-## is @qcode{"auto"} Octave will use the @qcode{"opengl"} renderer for raster
-## formats (e.g., JPEG) and @qcode{"painters"} for vector formats (e.g., PDF)@.
-## Those options are only supported for the "qt" graphics tookit.
+## is @qcode{"auto"} (the default) Octave will use the @qcode{"opengl"}
+## renderer for raster formats (e.g., JPEG) and @qcode{"painters"} for
+## vector formats (e.g., PDF).  Those options are only supported for the "qt"
+## graphics toolkit.
 ##
 ## @item -svgconvert
-##   For OpenGL-based graphic toolkits, this enables a different backend
-## toolchain with enhanced characteristics.  The toolchain adds support for
-## printing arbitrary characters and fonts in PDF outputs; it avoids some
-## anti-aliasing artifacts in the rendering of patch and surface objects
-## (particularly for 2-D scenes); and it supports transparency of line, patch,
-## and surface objects.
+##   When using the -painters renderer, this enables a different backend
+## toolchain with enhanced characteristics:
 ##
-## This option only affects PDF outputs, unless it is combined with
-## @option{-painters} option, in which case raster outputs are also affected.
+## @table @asis
+## @item Font handling:
+## The actual font is embedded in the output file which allows for printing
+## arbitrary characters and fonts in all vector formats.
+##
+## @item Output Simplification:
+## By default, the @option{-painters} renders patch and surface objects
+## using assemblies of triangles.  This may lead to anti-aliasing
+## artifacts when viewing the file.  The @option{-svgconvert} option
+## reconstructs polygons in order to avoid those artifacts (particularly for
+## 2-D figures).
+##
+## @item Transparency:
+## Allows for printing transparent graphics objects in PDF format.
+## For PostScript formats the presence of any transparent object will cause the
+## output to be rasterized.
+## @end table
 ##
 ## Caution: @option{-svgconvert} may lead to inaccurate rendering of image
 ## objects.
@@ -189,9 +208,9 @@
 ## Octave interpreter from recognizing the embedded comma (',').  For example,
 ## by writing @w{"-S640,480"}.
 ##
-## @item  -loose
-## @itemx -tight
-##   Force a tight or loose bounding box for EPS files.  The default is loose.
+## @item  -tight
+## @itemx -loose
+##   Force a tight or loose bounding box for EPS files.  The default is tight.
 ##
 ## @item -@var{preview}
 ##   Add a preview to EPS files.  Supported formats are:
@@ -217,44 +236,49 @@
 ## @itemx -F@var{fontname}:@var{size}
 ## @itemx -F:@var{size}
 ##   Use @var{fontname} and/or @var{fontsize} for all text.
-## @var{fontname} is ignored for some devices: dxf, fig, hpgl, etc.
+## @var{fontname} is ignored for some devices: fig, etc.
 ##
 ## @item -d@var{device}
 ##   The available output format is specified by the option @var{device}, and
-## is one of the following (devices marked with a "*" are only available with
-## the Gnuplot toolkit):
+## is one of the following (devices marked with a @qcode{'*'} are only
+## available with the Gnuplot toolkit):
 ##
 ## Vector Formats
 ##
 ##   @table @code
+##   @item svg
+##     Scalable Vector Graphics.
+##
 ##   @item  pdf
 ##   @itemx pdfcrop
-##     Portable Document Format.  The @code{pdfcrop} device removes the default
-## surrounding page.
+##     Portable Document Format.  The @code{pdf} device formats the figure for
+## printing on paper.  The size of the surrounding page and the position of the
+## figure inside the page are defined by the
+## @ref{XREFfigurepaperorientation,, paper* figure properties}.
 ##
-## The OpenGL-based graphics toolkits have limited support for text.
+## Use @code{pdfcrop} if you don't want the surrounding page.
+##
+## By default, PDF inherits the same limitations as PostScript.
+## For an enhanced output with complete text support and basic transparency,
+## use the @option{-svgconvert} option.
+##
+##   @item  eps(2)
+##   @itemx epsc(2)
+##     Encapsulated PostScript (level 1 and 2, mono and color).
+##
+## The OpenGL-based graphics toolkits always generate PostScript level 3.0.
+## They have limited support for text unless using the @option{-svgconvert}
+## option.
 ## Limitations include using only ASCII characters (e.g., no Greek letters)
 ## and support for just three base PostScript fonts: Helvetica (the default),
 ## Times, or Courier.  Any other font will be replaced by Helvetica.
 ##
-## For an enhanced output with complete text support and basic transparency,
-## use the @option{-svgconvert} option.
-##
-##   @item  ps
-##   @itemx ps2
-##   @itemx psc
-##   @itemx psc2
-##     PostScript (level 1 and 2, mono and color).  The OpenGL-based graphics
-## toolkits always generate PostScript level 3.0 and have limited support for
-## text.
-##
-##   @item  eps
-##   @itemx eps2
-##   @itemx epsc
-##   @itemx epsc2
-##     Encapsulated PostScript (level 1 and 2, mono and color).  The
-## OpenGL-based toolkits always generate PostScript level 3.0 and have
-## limited support for text.
+##   @item  ps(2)
+##   @itemx psc(2)
+##     Same as @code{eps} except that the figure is formatted for printing on
+## paper.  The size of the surrounding page and position of the figure inside
+## the page are defined by the
+## @ref{XREFfigurepaperorientation,, paper* figure properties}.
 ##
 ##   @item  pslatex
 ##   @itemx epslatex
@@ -293,21 +317,8 @@
 ## the graph portion of the plot.  The @samp{standalone} variants behave as
 ## described for @samp{epslatexstandalone} above.
 ##
-##   @item svg
-##     Scalable Vector Graphics
-##
 ##   @item canvas*
 ##     Javascript-based drawing on an HTML5 canvas viewable in a web browser.
-##
-##   @item  cdr*
-##   @itemx @nospell{corel*}
-##     CorelDraw
-##
-##   @item cgm*
-##     Computer Graphics Metafile, Version 1, ANSI X3.122-1986
-##
-##   @item dxf
-##     AutoCAD
 ##
 ##   @item  emf
 ##   @itemx meta
@@ -319,19 +330,9 @@
 ## whether the special flag should be set for the text in the figure.
 ## (default is @option{-textnormal})
 ##
-##   @item hpgl
-##     HP plotter language
-##
-##   @item  ill
-##   @itemx @nospell{aifm}
-##     Adobe Illustrator (obsolete for Gnuplot versions > 4.2)
-##
 ##   @item  latex*
 ##   @itemx eepic*
 ##     @LaTeX{} picture environment and extended picture environment.
-##
-##   @item mf*
-##     Metafont
 ##
 ##   @item  tikz
 ##   @itemx tikzstandalone*
@@ -466,6 +467,13 @@ function rgbout = print (varargin)
 
     drawnow ();
 
+    ## Set the __printing__ property first
+    props(1).h = opts.figure;
+    props(1).name = "__printing__";
+    props(1).value = {"off"};
+    set (opts.figure, "__printing__", "on");
+    nfig += 1;
+
     ## print() requires children of axes to have units = "normalized", or "data"
     hobj = findall (opts.figure, "-not", "type", "figure", ...
                     "-not", "type", "axes", "-property", "units", ...
@@ -528,6 +536,16 @@ function rgbout = print (varargin)
           set (hax(n), "gridcolor", [0.85 0.85 0.85]);
           nfig += 2;
         endif
+        if (strcmp (get (hax(n), "gridalphamode"), "auto"))
+          props(end+1).h = hax(n);
+          props(end).name = "gridalphamode";
+          props(end).value = {"auto"};
+          props(end+1).h = hax(n);
+          props(end).name = "gridalpha";
+          props(end).value = {get(hax(n), "gridalpha")};
+          set (hax(n), "gridalpha", 1);
+          nfig += 2;
+        endif
 
         if (strcmp (get (hax(n), "minorgridcolormode"), "auto"))
           props(end+1).h = hax(n);
@@ -537,6 +555,16 @@ function rgbout = print (varargin)
           props(end).name = "minorgridcolor";
           props(end).value = {get(hax(n), "minorgridcolor")};
           set (hax(n), "minorgridcolor", [0.75 0.75 0.75]);
+          nfig += 2;
+        endif
+        if (strcmp (get (hax(n), "minorgridalphamode"), "auto"))
+          props(end+1).h = hax(n);
+          props(end).name = "minorgridalphamode";
+          props(end).value = {"auto"};
+          props(end+1).h = hax(n);
+          props(end).name = "minorgridalpha";
+          props(end).value = {get(hax(n), "minorgridalpha")};
+          set (hax(n), "minorgridalpha", 1);
           nfig += 2;
         endif
       endfor
@@ -552,13 +580,10 @@ function rgbout = print (varargin)
     ## graphics toolkit translates figure position to eps bbox (points)
     fpos = get (opts.figure, "position");
     props(end+1).h = opts.figure;
-    props(end).name = "__printing__";
-    props(end).value = {"off"};
-    props(end+1).h = opts.figure;
     props(end).name = "position";
     props(end).value = {fpos};
     fpos(3:4) = opts.canvas_size;
-    set (opts.figure, "__printing__", "on", "position", fpos);
+    set (opts.figure, "position", fpos);
     nfig += 1;
 
     ## Implement InvertHardCopy option
@@ -631,50 +656,74 @@ function rgbout = print (varargin)
       endfor
     endif
 
-    if (! isempty (opts.font) || ! isempty (opts.fontsize))
+    do_font = ! isempty (opts.font);
+    do_scalefontsize =  ! isempty (opts.scalefontsize) && opts.scalefontsize != 1;
+    do_fontsize = ! isempty (opts.fontsize) || do_scalefontsize;
+    if (do_font || do_fontsize)
       h = findall (opts.figure, "-property", "fontname");
       m = numel (props);
       for n = 1:numel (h)
         if (ishghandle (h(n)))
-          if (! isempty (opts.font))
+          if (do_font)
             props(end+1).h = h(n);
             props(end).name = "fontname";
             props(end).value = {get(h(n), "fontname")};
           endif
-        endif
-        if (ishghandle (h(n)))
-          if (! isempty (opts.fontsize))
+          if (do_fontsize)
             props(end+1).h = h(n);
             props(end).name = "fontsize";
             props(end).value = {get(h(n), "fontsize")};
           endif
         endif
       endfor
-      if (! isempty (opts.font))
+      if (do_font)
         set (h(ishghandle (h)), "fontname", opts.font);
       endif
-      if (! isempty (opts.fontsize))
-        if (ischar (opts.fontsize))
-          fontsize = str2double (opts.fontsize);
+      if (do_fontsize)
+        if (! isempty (opts.fontsize))
+          ## Changing all fontsizes to a fixed value
+          if (ischar (opts.fontsize))
+            fontsize = str2double (opts.fontsize);
+          else
+            fontsize = opts.fontsize;
+          endif
+          if (do_scalefontsize)
+            ## This is done to work around the bbox being whole numbers.
+            fontsize *= opts.scalefontsize;
+          endif
+
+          ## FIXME: legend child objects need to be acted on first.
+          ##        or legend fontsize callback will destroy them.
+          hlist = h(ishghandle (h));
+          haxes = strcmp (get (hlist, "type"), "axes");
+          set (hlist(! haxes), "fontsize", fontsize);
+          set (hlist(haxes), "fontsize", fontsize);
+
         else
-          fontsize = opts.fontsize;
+          ## Scaling fonts
+          ## FIXME: legend child objects need to be acted on first.
+          ##        or legend fontsize callback will destroy them.
+          hlist = h(ishghandle (h));
+          haxes = strcmp (get (hlist, "type"), "axes");
+          for h = hlist(! haxes).'
+            fontsz = get (h, "fontsize");
+            set (h, "fontsize", fontsz * opts.scalefontsize);
+          endfor
+          for h = hlist(haxes).'
+            fontsz = get (h, "fontsize");
+            set (h, "fontsize", fontsz * opts.scalefontsize);
+          endfor
+
         endif
-        if (! isempty (opts.scalefontsize) && ! opts.scalefontsize != 1)
-          ## This is done to work around the bbox being whole numbers.
-          fontsize *= opts.scalefontsize;
-        endif
-        ## FIXME: legend child objects need to be acted on first.
-        ##        or legend fontsize callback will destroy them.
-        hlist = h(ishghandle (h));
-        haxes = strcmp (get (hlist, "type"), "axes");
-        set (hlist(! haxes), "fontsize", fontsize);
-        set (hlist(haxes), "fontsize", fontsize);
       endif
     endif
 
     ## When exporting latex files use "latex" for the ticklabelinterpreter.
     ## It will format tick labels in log axes correctly
     if (strfind (opts.devopt, "latex"))
+      ## Disable warnings about Latex being unsupported since Octave will be
+      ## passing Latex code directly to interpreter with no rendering.
+      warning ("off", "Octave:text_interpreter", "local");
       h = findall (opts.figure, "type", "axes");
       for n = 1:numel (h)
         if (ishghandle (h(n)))
@@ -727,12 +776,15 @@ function rgbout = print (varargin)
       endfor
     endif
 
+    ## Avoid a redraw since the figure should not have changed
+    set (gcf, "__modified__", "off");
+
     ## Unlink temporary files
     for n = 1:numel (opts.unlink)
       [status, output] = unlink (opts.unlink{n});
       if (status != 0)
-        warning ("octave:print:unlinkerror", ...
-                 "print.m: %s, '%s'", output, opts.unlink{n});
+        warning ("Octave:print:unlinkerror", ...
+                 "print: %s, '%s'", output, opts.unlink{n});
       endif
     endfor
   end_unwind_protect
@@ -740,7 +792,6 @@ function rgbout = print (varargin)
   if (isfigure (orig_figure))
     set (0, "currentfigure", orig_figure);
   endif
-
 endfunction
 
 function cmd = epstool (opts, filein, fileout)
@@ -754,9 +805,16 @@ function cmd = epstool (opts, filein, fileout)
   ## Unix Shell;
   ##   cat > <filein> ; epstool -bbox -preview-tiff <filein> <fileout> ; rm <filein>
 
+  dos_shell = (ispc () && ! isunix ());
+
   ## HACK: Keep track of whether ghostscript supports epswrite or eps2write.
   persistent epsdevice;
-  if (isempty (epsdevice))
+  if (dos_shell && isempty (epsdevice))
+    if (isempty (opts.ghostscript.binary))
+      error ("Octave:print:nogs",
+             "print: 'gs' (Ghostscript) is required for specified output format, but binary is not available in PATH");
+    endif
+
     [status, devlist] = system (sprintf ("%s -h", opts.ghostscript.binary));
     if (isempty (strfind (devlist, "eps2write")))
       epsdevice = "epswrite";
@@ -764,8 +822,6 @@ function cmd = epstool (opts, filein, fileout)
       epsdevice = "eps2write";
     endif
   endif
-
-  dos_shell = (ispc () && ! isunix ());
 
   cleanup = "";
   if (nargin < 3)
@@ -778,9 +834,9 @@ function cmd = epstool (opts, filein, fileout)
     pipein = true;
     filein = [tempname() ".eps"];
     if (dos_shell)
-      cleanup = sprintf ("& del %s ", strrep (filein, '/', '\'));
+      cleanup = sprintf ('& del "%s" ', strrep (filein, '/', '\'));
     else
-      cleanup = sprintf ("; rm %s ", filein);
+      cleanup = sprintf ('; rm "%s" ', filein);
     endif
   else
     pipein = false;
@@ -790,9 +846,9 @@ function cmd = epstool (opts, filein, fileout)
     pipeout = true;
     fileout = [tempname() ".eps"];
     if (dos_shell)
-      cleanup = [cleanup, sprintf("& del %s ", strrep (fileout, '/', '\'))];
+      cleanup = [cleanup, sprintf('& del "%s" ', strrep (fileout, '/', '\'))];
     else
-      cleanup = [cleanup, sprintf("; rm %s ", fileout)];
+      cleanup = [cleanup, sprintf('; rm "%s" ', fileout)];
     endif
   else
     pipeout = false;
@@ -800,13 +856,13 @@ function cmd = epstool (opts, filein, fileout)
   endif
 
   if (! isempty (opts.preview) && opts.tight)
-    warning ("octave:print:previewandtight",
-             "print.m: eps preview may not be combined with -tight");
+    warning ("Octave:print:previewandtight",
+             "print: eps preview may not be combined with -tight");
   endif
   if (! isempty (opts.preview) || opts.tight)
 
     if (isempty (opts.epstool_binary))
-      error ("print:noepstool", "print.m: 'epstool' is required for specified output format, but binary is not available in PATH");
+      error ("Octave:print:noepstool", "print: 'epstool' is required for specified output format, but binary is not available in PATH");
     endif
 
     if (opts.tight)
@@ -822,8 +878,8 @@ function cmd = epstool (opts, filein, fileout)
         case "pict"
           cmd = sprintf ("--add-%s-preview --mac-single", opts.preview);
         otherwise
-          error ("print:invalidpreview",
-                 "print.m: epstool cannot include preview for format '%s'",
+          error ("Octave:print:invalidpreview",
+                 "print: epstool cannot include preview for format '%s'",
                  opts.preview);
       endswitch
       if (! isempty (opts.ghostscript.resolution))
@@ -857,8 +913,8 @@ function cmd = epstool (opts, filein, fileout)
     endif
     if (! isempty (cleanup))
       if (pipeout && dos_shell)
-        error ("print:epstoolpipe",
-               "print.m: cannot pipe output of 'epstool' for DOS shell");
+        error ("Octave:print:epstoolpipe",
+               "print: cannot pipe output of 'epstool' for DOS shell");
       elseif (pipeout)
         cmd = sprintf ("( %s %s )", cmd, cleanup);
       else
@@ -913,7 +969,7 @@ function cmd = fig2dev (opts, devopt)
   endif
 
   if (isempty (opts.fig2dev_binary))
-    error ("print:nofig2dev", "print.m: 'fig2dev' is required for specified output format, but binary is not available in PATH");
+    error ("Octave:print:nofig2dev", "print: 'fig2dev' is required for specified output format, but binary is not available in PATH");
   endif
 
   dos_shell = (ispc () && ! isunix ());
@@ -950,25 +1006,25 @@ function latex_standalone (opts)
       graphicsfile = [opts.name "-inc.eps"];
   endswitch
 
+  packages = {packages "\\usepackage[utf8]{inputenc}"};
+
   papersize = sprintf ("\\usepackage[papersize={%.2fbp,%.2fbp},text={%.2fbp,%.2fbp}]{geometry}",
                        fix (opts.canvas_size), fix (opts.canvas_size));
-  prepend = {"\\documentclass{minimal}";
-             packages;
-             papersize;
-             "\\begin{document}";
-             "\\centering"};
+
+  prepend = {"\\documentclass{minimal}", packages{:}, papersize, ...
+             "\\begin{document}", "\\centering"};
   postpend = {"\\end{document}"};
 
   fid = fopen (latexfile, "r");
   if (fid < 0)
-    error ("print:erroropeningfile",
-           "print.m: error opening file '%s'", latexfile);
+    error ("Octave:print:erroropeningfile",
+           "print: error opening file '%s'", latexfile);
   endif
   latex = fscanf (fid, "%c", Inf);
   status = fclose (fid);
   if (status != 0)
-    error ("print:errorclosingfile",
-           "print.m: error closing file '%s'", latexfile);
+    error ("Octave:print:errorclosingfile",
+           "print: error closing file '%s'", latexfile);
   endif
   ## FIXME: should this be fixed in GL2PS?
   latex = strrep (latex, "\\includegraphics{}",
@@ -981,12 +1037,12 @@ function latex_standalone (opts)
     fprintf (fid, "%s\n", postpend{:});
     status = fclose (fid);
     if (status != 0)
-      error ("print:errorclosingfile",
-             "print.m: error closing file '%s'", latexfile);
+      error ("Octave:print:errorclosingfile",
+             "print: error closing file '%s'", latexfile);
     endif
   else
-    error ("print:erroropeningfile",
-           "print.m: error opening file '%s'", latexfile);
+    error ("Octave:print:erroropeningfile",
+           "print: error opening file '%s'", latexfile);
   endif
 
 endfunction
@@ -1006,7 +1062,7 @@ function cmd = lpr (opts)
       cmd = sprintf ("%s %s", cmd, opts.printer);
     endif
   elseif (isempty (opts.lpr_binary))
-    error ("print:nolpr", "print.m: 'lpr' not found in PATH");
+    error ("Octave:print:nolpr", "print: 'lpr' not found in PATH");
   endif
   if (opts.debug)
     fprintf ("lpr command: '%s'\n", cmd);
@@ -1021,9 +1077,8 @@ function cmd = pstoedit (opts, devopt, do_svg = true)
   endif
 
   if (isempty (opts.pstoedit_binary))
-    error ("print:nopstoedit", ...
-           ["print.m: 'pstoedit' is required for specified output format, ", ...
-            "but binary is not available in PATH"]);
+    error ("Octave:print:nopstoedit", ...
+           "print: 'pstoedit' is required for specified output format, but binary is not available in PATH");
   endif
 
   dos_shell = (ispc () && ! isunix ());
@@ -1033,15 +1088,15 @@ function cmd = pstoedit (opts, devopt, do_svg = true)
       cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
     else
       cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
-      endi;f
     endif
   else
     cmd = svgconvert (opts, devopt);
     if (dos_shell)
-      cmd = sprintf ("%s & %s -ssp -f %s %%s 2> NUL", cmd, ...
-                     opts.pstoedit_binary, devopt);
+      cmd = sprintf ('%s & %s -ssp -f %s "%%s" 2> NUL', cmd, ...
+                     undo_string_escapes (opts.pstoedit_binary), ...
+                     undo_string_escapes (devopt));
     else
-      cmd = sprintf ("%s ; %s -ssp -f %s %%s 2> /dev/null", cmd,  ...
+      cmd = sprintf ('%s ; %s -ssp -f %s "%%s" 2> /dev/null', cmd,  ...
                      opts.pstoedit_binary, devopt);
     endif
   endif
@@ -1061,8 +1116,8 @@ function cmd = svgconvert (opts, devopt)
   endif
 
   if (isempty (opts.svgconvert_binary))
-    warning ("octave:print:nosvgconvert", ...
-             ["print.m: unale to find octave-svgconvert, ", ...
+    warning ("Octave:print:nosvgconvert", ...
+             ["print: unable to find octave-svgconvert, ", ...
               "falling back to eps conversion"]);
   else
     fontdir = getenv ("OCTAVE_FONTS_DIR");
@@ -1071,9 +1126,10 @@ function cmd = svgconvert (opts, devopt)
       fontdir = __octave_config_info__ ("octfontsdir");
     endif
 
-    cmd = sprintf ("%s - %%s %3.2f %s %d \"%%s\"", opts.svgconvert_binary, ...
+    cmd = sprintf ('%s - %%s %3.2f "%s" %d "%%s"', ...
+                   undo_string_escapes (opts.svgconvert_binary), ...
                    get (0, "screenpixelsperinch"), ...
-                   fullfile (fontdir, "FreeSans.otf"), 1);
+                   undo_string_escapes (fullfile (fontdir, "FreeSans.otf")), 1);
 
     if (opts.debug)
       fprintf ("svgconvert command: '%s'\n", cmd);

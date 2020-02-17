@@ -1,15 +1,5 @@
 [General]
-connectOnStartup=true
-showMessageOfTheDay=true
-showTopic=true
 customFileEditor=__default_custom_editor__
-autoIdentification=false
-useProxyServer=false
-proxyType=
-proxyHostName=none
-proxyPort=8080
-proxyUserName=
-proxyPassword=
 
 [editor]
 showLineNumbers=true

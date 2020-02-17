@@ -1,6 +1,11 @@
 #! /bin/sh
 #
-# Copyright (C) 2016-2019 John W. Eaton
+########################################################################
+#
+# Copyright (C) 2016-2020 The Octave Project Developers
+#
+# See the file COPYRIGHT.md in the top-level directory of this
+# distribution or <https://octave.org/copyright/>.
 #
 # This file is part of Octave.
 #
@@ -17,6 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <https://www.gnu.org/licenses/>.
+#
+########################################################################
 
 : ${SED=@SED@}
 
@@ -26,10 +33,8 @@
 ##   OCTAVE_CONF_MKOCTFILE_AR
 ##   OCTAVE_CONF_MKOCTFILE_CC
 ##   OCTAVE_CONF_MKOCTFILE_CXX
-##   OCTAVE_CONF_MKOCTFILE_DL_LD
 ##   OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS
 ##   OCTAVE_CONF_MKOCTFILE_F77
-##   OCTAVE_CONF_MKOCTFILE_LD_CXX
 ##   OCTAVE_CONF_MKOCTFILE_RANLIB
 
 canonical_host_type="@canonical_host_type@"
@@ -43,44 +48,44 @@ version="@PACKAGE_VERSION@"
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 
-archlibdir=`echo "@archlibdir@" | sed "s|^${exec_prefix}/||"`
-bindir=`echo "@bindir@" | sed "s|^${exec_prefix}/||"`
-libdir=`echo "@libdir@" | sed "s|^${exec_prefix}/||"`
-libexecdir=`echo "@libexecdir@" | sed "s|^${exec_prefix}/||"`
-localapiarchlibdir=`echo "@localapiarchlibdir@" | sed "s|^${exec_prefix}/||"`
-localapioctfiledir=`echo "@localapioctfiledir@" | sed "s|^${exec_prefix}/||"`
-localarchlibdir=`echo "@localarchlibdir@" | sed "s|^${exec_prefix}/||"`
-localoctfiledir=`echo "@localoctfiledir@" | sed "s|^${exec_prefix}/||"`
-localverarchlibdir=`echo "@localverarchlibdir@" | sed "s|^${exec_prefix}/||"`
-localveroctfiledir=`echo "@localveroctfiledir@" | sed "s|^${exec_prefix}/||"`
-octfiledir=`echo "@octfiledir@" | sed "s|^${exec_prefix}/||"`
-octlibdir=`echo "@octlibdir@" | sed "s|^${exec_prefix}/||"`
+archlibdir=`echo "@archlibdir@" | sed "s|^${exec_prefix}/\\+||"`
+bindir=`echo "@bindir@" | sed "s|^${exec_prefix}/\\+||"`
+libdir=`echo "@libdir@" | sed "s|^${exec_prefix}/\\+||"`
+libexecdir=`echo "@libexecdir@" | sed "s|^${exec_prefix}/\\+||"`
+localapiarchlibdir=`echo "@localapiarchlibdir@" | sed "s|^${exec_prefix}/\\+||"`
+localapioctfiledir=`echo "@localapioctfiledir@" | sed "s|^${exec_prefix}/\\+||"`
+localarchlibdir=`echo "@localarchlibdir@" | sed "s|^${exec_prefix}/\\+||"`
+localoctfiledir=`echo "@localoctfiledir@" | sed "s|^${exec_prefix}/\\+||"`
+localverarchlibdir=`echo "@localverarchlibdir@" | sed "s|^${exec_prefix}/\\+||"`
+localveroctfiledir=`echo "@localveroctfiledir@" | sed "s|^${exec_prefix}/\\+||"`
+octfiledir=`echo "@octfiledir@" | sed "s|^${exec_prefix}/\\+||"`
+octlibdir=`echo "@octlibdir@" | sed "s|^${exec_prefix}/\\+||"`
 
-datadir=`echo "@datadir@" | sed "s|^${prefix}/||"`
-datarootdir=`echo "@datarootdir@" | sed "s|^${prefix}/||"`
-doc_cache_file=`echo "@doc_cache_file@" | sed "s|^${prefix}/||"`
-exec_prefix=`echo "@exec_prefix@" | sed "s|^${prefix}/||"`
-fcnfiledir=`echo "@fcnfiledir@" | sed "s|^${prefix}/||"`
-imagedir=`echo "@imagedir@" | sed "s|^${prefix}/||"`
-includedir=`echo "@includedir@" | sed "s|^${prefix}/||"`
-infodir=`echo "@infodir@" | sed "s|^${prefix}/||"`
-infofile=`echo "@infofile@" | sed "s|^${prefix}/||"`
-localapifcnfiledir=`echo "@localapifcnfiledir@" | sed "s|^${prefix}/||"`
-localfcnfiledir=`echo "@localfcnfiledir@" | sed "s|^${prefix}/||"`
-localstartupfiledir=`echo "@localstartupfiledir@" | sed "s|^${prefix}/||"`
-localapiarchlibdir=`echo "@localapiarchlibdir@" | sed "s|^${prefix}/||"`
-localverfcnfiledir=`echo "@localverfcnfiledir@" | sed "s|^${prefix}/||"`
-man1dir=`echo "@man1dir@" | sed "s|^${prefix}/||"`
-mandir=`echo "@mandir@" | sed "s|^${prefix}/||"`
-octdatadir=`echo "@octdatadir@" | sed "s|^${prefix}/||"`
-octdocdir=`echo "@octdocdir@" | sed "s|^${prefix}/||"`
-octetcdir=`echo "@octetcdir@" | sed "s|^${prefix}/||"`
-octfontsdir=`echo "@octfontsdir@" | sed "s|^${prefix}/||"`
-octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
-octlocaledir=`echo "@octlocaledir@" | sed "s|^${prefix}/||"`
-octtestsdir=`echo "@octtestsdir@" | sed "s|^${prefix}/||"`
-startupfiledir=`echo "@startupfiledir@" | sed "s|^${prefix}/||"`
-texi_macros_file=`echo "@texi_macros_file@" | sed "s|^${prefix}/||"`
+datadir=`echo "@datadir@" | sed "s|^${prefix}/\\+||"`
+datarootdir=`echo "@datarootdir@" | sed "s|^${prefix}/\\+||"`
+doc_cache_file=`echo "@doc_cache_file@" | sed "s|^${prefix}/\\+||"`
+exec_prefix=`echo "@exec_prefix@" | sed "s|^${prefix}/\\+||"`
+fcnfiledir=`echo "@fcnfiledir@" | sed "s|^${prefix}/\\+||"`
+imagedir=`echo "@imagedir@" | sed "s|^${prefix}/\\+||"`
+includedir=`echo "@includedir@" | sed "s|^${prefix}/\\+||"`
+infodir=`echo "@infodir@" | sed "s|^${prefix}/\\+||"`
+infofile=`echo "@infofile@" | sed "s|^${prefix}/\\+||"`
+localapifcnfiledir=`echo "@localapifcnfiledir@" | sed "s|^${prefix}/\\+||"`
+localfcnfiledir=`echo "@localfcnfiledir@" | sed "s|^${prefix}/\\+||"`
+localstartupfiledir=`echo "@localstartupfiledir@" | sed "s|^${prefix}/\\+||"`
+localapiarchlibdir=`echo "@localapiarchlibdir@" | sed "s|^${prefix}/\\+||"`
+localverfcnfiledir=`echo "@localverfcnfiledir@" | sed "s|^${prefix}/\\+||"`
+man1dir=`echo "@man1dir@" | sed "s|^${prefix}/\\+||"`
+mandir=`echo "@mandir@" | sed "s|^${prefix}/\\+||"`
+octdatadir=`echo "@octdatadir@" | sed "s|^${prefix}/\\+||"`
+octdocdir=`echo "@octdocdir@" | sed "s|^${prefix}/\\+||"`
+octetcdir=`echo "@octetcdir@" | sed "s|^${prefix}/\\+||"`
+octfontsdir=`echo "@octfontsdir@" | sed "s|^${prefix}/\\+||"`
+octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/\\+||"`
+octlocaledir=`echo "@octlocaledir@" | sed "s|^${prefix}/\\+||"`
+octtestsdir=`echo "@octtestsdir@" | sed "s|^${prefix}/\\+||"`
+startupfiledir=`echo "@startupfiledir@" | sed "s|^${prefix}/\\+||"`
+texi_macros_file=`echo "@texi_macros_file@" | sed "s|^${prefix}/\\+||"`
 
 srcdir="@srcdir@"
 top_srcdir="@top_srcdir@"
@@ -128,7 +133,6 @@ DEFAULT_PAGER="@DEFAULT_PAGER@"
 DEFS="@DEFS@"
 DEPEND_FLAGS="@DEPEND_FLAGS@"
 DEPEND_EXTRA_SED_PATTERN="@DEPEND_EXTRA_SED_PATTERN@"
-DL_LD="@DL_LD@"
 DL_LDFLAGS="@DL_LDFLAGS@"
 EXEEXT="@EXEEXT@"
 GCC_VERSION="@GCC_VERSION@"
@@ -163,7 +167,6 @@ KLU_CPPFLAGS="@KLU_CPPFLAGS@"
 KLU_LDFLAGS="@KLU_LDFLAGS@"
 KLU_LIBS="@KLU_LIBS@"
 LAPACK_LIBS="@LAPACK_LIBS@"
-LD_CXX="@LD_CXX@"
 LDFLAGS="@LDFLAGS@"
 LD_STATIC_FLAG="@LD_STATIC_FLAG@"
 LEX="@LEX@"
@@ -205,7 +208,6 @@ RANLIB="@RANLIB@"
 RDYNAMIC_FLAG="@RDYNAMIC_FLAG@"
 READLINE_LIBS="@READLINE_LIBS@"
 SHARED_LIBS="@SHARED_LIBS@"
-SH_LD="@SH_LD@"
 SH_LDFLAGS="@SH_LDFLAGS@"
 STATIC_LIBS="@STATIC_LIBS@"
 SUITESPARSECONFIG_LIBS="@SUITESPARSECONFIG_LIBS@"
@@ -215,6 +217,9 @@ SUNDIALS_IDA_LIBS="@SUNDIALS_IDA_LIBS@"
 SUNDIALS_NVECSERIAL_CPPFLAGS="@SUNDIALS_NVECSERIAL_CPPFLAGS@"
 SUNDIALS_NVECSERIAL_LDFLAGS="@SUNDIALS_NVECSERIAL_LDFLAGS@"
 SUNDIALS_NVECSERIAL_LIBS="@SUNDIALS_NVECSERIAL_LIBS@"
+SUNDIALS_SUNLINSOLKLU_CPPFLAGS="@SUNDIALS_SUNLINSOLKLU_CPPFLAGS@"
+SUNDIALS_SUNLINSOLKLU_LDFLAGS="@SUNDIALS_SUNLINSOLKLU_LDFLAGS@"
+SUNDIALS_SUNLINSOLKLU_LIBS="@SUNDIALS_SUNLINSOLKLU_LIBS@"
 TERM_LIBS="@TERM_LIBS@"
 UMFPACK_CPPFLAGS="@UMFPACK_CPPFLAGS@"
 UMFPACK_LDFLAGS="@UMFPACK_LDFLAGS@"
@@ -281,7 +286,6 @@ $SED \
   -e "s|%OCTAVE_CONF_DEFS%|\"${DEFS}\"|" \
   -e "s|%OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%|\"${DEPEND_EXTRA_SED_PATTERN}\"|" \
   -e "s|%OCTAVE_CONF_DEPEND_FLAGS%|\"${DEPEND_FLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_DL_LD%|\"${DL_LD}\"|" \
   -e "s|%OCTAVE_CONF_DL_LDFLAGS%|\"${DL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_EXEC_PREFIX%|\"${exec_prefix}\"|" \
   -e "s|%OCTAVE_CONF_EXEEXT%|\"${EXEEXT}\"|" \
@@ -320,7 +324,6 @@ $SED \
   -e "s|%OCTAVE_CONF_KLU_LIBS%|\"${KLU_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LAPACK_LIBS%|\"${LAPACK_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LDFLAGS%|\"${LDFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_LD_CXX%|\"${LD_CXX}\"|" \
   -e "s|%OCTAVE_CONF_LD_STATIC_FLAG%|\"${LD_STATIC_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_LEX%|\"${LEX}\"|" \
   -e "s|%OCTAVE_CONF_LEXLIB%|\"${LEXLIB}\"|" \
@@ -339,10 +342,8 @@ $SED \
   -e "s|%OCTAVE_CONF_MKOCTFILE_AR%|\"${AR}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_CC%|\"${CC}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_CXX%|\"${CXX}\"|" \
-  -e "s|%OCTAVE_CONF_MKOCTFILE_DL_LD%|\"${DL_LD}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"${DL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_F77%|\"${F77}\"|" \
-  -e "s|%OCTAVE_CONF_MKOCTFILE_LD_CXX%|\"${LD_CXX}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_OCTAVE_LINK_DEPS%|\"${MKOCTFILE_OCTAVE_LINK_DEPS}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_OCT_LINK_DEPS%|\"${MKOCTFILE_OCT_LINK_DEPS}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_RANLIB%|\"${RANLIB}\"|" \
@@ -374,7 +375,6 @@ $SED \
   -e "s|%OCTAVE_CONF_READLINE_LIBS%|\"${READLINE_LIBS}\"|" | \
   $SED \
   -e "s|%OCTAVE_CONF_SHARED_LIBS%|\"${SHARED_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_SH_LD%|\"${SH_LD}\"|" \
   -e "s|%OCTAVE_CONF_SH_LDFLAGS%|\"${SH_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_STATIC_LIBS%|\"${STATIC_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_SUITESPARSECONFIG_LIBS%|\"${SUITESPARSECONFIG_LIBS}\"|" \
@@ -384,6 +384,9 @@ $SED \
   -e "s|%OCTAVE_CONF_SUNDIALS_NVECSERIAL_CPPFLAGS%|\"${SUNDIALS_NVECSERIAL_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_SUNDIALS_NVECSERIAL_LDFLAGS%|\"${SUNDIALS_NVECSERIAL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_SUNDIALS_NVECSERIAL_LIBS%|\"${SUNDIALS_NVECSERIAL_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_SUNDIALS_SUNLINSOLKLU_CPPFLAGS%|\"${SUNDIALS_SUNLINSOLKLU_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_SUNDIALS_SUNLINSOLKLU_LDFLAGS%|\"${SUNDIALS_SUNLINSOLKLU_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_SUNDIALS_SUNLINSOLKLU_LIBS%|\"${SUNDIALS_SUNLINSOLKLU_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_TERM_LIBS%|\"${TERM_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_UMFPACK_CPPFLAGS%|\"${UMFPACK_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_UMFPACK_LDFLAGS%|\"${UMFPACK_LDFLAGS}\"|" \

@@ -1,26 +1,27 @@
-/*
-
-Copyright (C) 2013-2019 John W. Eaton
-Copyright (C) 2015 Michael Barnes
-Copyright (C) 2013 Rüdiger Sonderfeld
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2013-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -35,59 +36,60 @@ along with Octave; see the file COPYING.  If not, see
 #include <QString>
 #include <QTableView>
 
-#include "octave-qt-link.h"
+#include "qt-interpreter-events.h"
 #include "variable-editor-model.h"
 
+#include "Cell.h"
 #include "interpreter.h"
-#include "interpreter-private.h"
+#include "oct-map.h"
 #include "ov.h"
 #include "parse.h"
 #include "pr-flt-fmt.h"
 #include "utils.h"
 #include "variables.h"
 
-static bool
-cell_is_editable (const octave_value& val)
-{
-  if ((val.isnumeric () || val.islogical ()) && val.numel () == 1)
-    return true;
-
-  if (val.is_string () && (val.rows () == 1 || val.is_zero_by_zero ()))
-    return true;
-
-  return false;
-}
-
-static char
-get_quote_char (const octave_value& val)
-{
-  if (val.is_sq_string ())
-    return '\'';
-
-  if (val.is_dq_string ())
-    return '"';
-
-  return 0;
-}
-
-static float_display_format
-get_edit_display_format (const octave_value& val)
-{
-  // FIXME: make this limit configurable.
-
-  return (val.numel () > 250000
-          ? float_display_format () : val.get_edit_display_format ());
-}
-
-static bool
-do_requires_sub_editor_sub (const octave_value& elt)
-{
-  return (! ((elt.numel () == 1 && (elt.isnumeric () || elt.islogical ()))
-             || (elt.is_string () && (elt.rows () == 1 || elt.isempty ()))));
-}
-
 namespace octave
 {
+  static bool
+  cell_is_editable (const octave_value& val)
+  {
+    if ((val.isnumeric () || val.islogical ()) && val.numel () == 1)
+      return true;
+
+    if (val.is_string () && (val.rows () == 1 || val.is_zero_by_zero ()))
+      return true;
+
+    return false;
+  }
+
+  static char
+  get_quote_char (const octave_value& val)
+  {
+    if (val.is_sq_string ())
+      return '\'';
+
+    if (val.is_dq_string ())
+      return '"';
+
+    return 0;
+  }
+
+  static float_display_format
+  get_edit_display_format (const octave_value& val)
+  {
+    // FIXME: make this limit configurable.
+
+    return (val.numel () > 250000
+            ? float_display_format () : val.get_edit_display_format ());
+  }
+
+  static bool
+  do_requires_sub_editor_sub (const octave_value& elt)
+  {
+    return (! ((elt.numel () == 1 && (elt.isnumeric () || elt.islogical ()))
+               || (elt.is_string () && (elt.rows () == 1 || elt.isempty ()))));
+  }
+
   base_ve_model::base_ve_model (const QString& expr, const octave_value& val)
     : m_name (expr.toStdString ()),
       m_value (val),
@@ -129,8 +131,8 @@ namespace octave
     float_format r_fmt = m_display_fmt.real_format ();
     float_format i_fmt = m_display_fmt.imag_format ();
 
-    int rw = r_fmt.fw;
-    int iw = i_fmt.fw;
+    int rw = r_fmt.width ();
+    int iw = i_fmt.width ();
 
     if (rw > 0)
       {
@@ -222,7 +224,6 @@ namespace octave
       {
       case Qt::DisplayRole:
       case Qt::EditRole:
-        return edit_display (idx, role);
         return edit_display (idx, role);
       }
 
@@ -1012,8 +1013,32 @@ namespace octave
 
     std::string expr = os.str ();
 
-    octave_link::post_event
-      (this, &variable_editor_model::set_data_oct, nm, expr, idx);
+    emit interpreter_event
+      ([this, nm, expr, idx] (interpreter& interp)
+       {
+         // INTERPRETER THREAD
+
+         try
+           {
+             int parse_status = 0;
+             interp.eval_string (expr, true, parse_status);
+
+             octave_value val = retrieve_variable (interp, nm);
+
+             emit update_data_signal (val);
+           }
+         catch (const execution_exception&)
+           {
+             clear_update_pending ();
+
+             evaluation_error (expr);
+
+             // This will cause the data in the cell to be reset
+             // from the cached octave_value object.
+
+             emit dataChanged (idx, idx);
+           }
+       });
 
     return true;
   }
@@ -1049,13 +1074,11 @@ namespace octave
   {
     // FIXME: cells?
 
-    octave_link::post_event
-      (this, &variable_editor_model::eval_oct, name (),
-       QString ("%1 = [ %1(1:%2,:) ; zeros(%3, columns(%1)) ; %1(%2+%3:end,:) ]")
+    eval_expr_event
+      (QString ("%1 = [%1(1:%2,:); zeros(%3,columns(%1)); %1(%2+%3:end,:)]")
        .arg (QString::fromStdString (name ()))
        .arg (row)
-       .arg (count)
-       .toStdString ());
+       .arg (count));
 
     return true;
   }
@@ -1071,13 +1094,11 @@ namespace octave
         return false;
       }
 
-    octave_link::post_event
-      (this, &variable_editor_model::eval_oct, name (),
-       QString ("%1(%2:%3, :) = []")
+    eval_expr_event
+      (QString ("%1(%2:%3,:) = []")
        .arg (QString::fromStdString (name ()))
        .arg (row)
-       .arg (row + count)
-       .toStdString ());
+       .arg (row + count));
 
     return true;
   }
@@ -1085,13 +1106,11 @@ namespace octave
   bool
   variable_editor_model::insertColumns (int col, int count, const QModelIndex&)
   {
-    octave_link::post_event
-      (this, &variable_editor_model::eval_oct, name (),
-       QString ("%1 = [ %1(:,1:%2) ; zeros(rows(%1), %3) %1(:,%2+%3:end) ]")
+    eval_expr_event
+      (QString ("%1 = [%1(:,1:%2); zeros(rows(%1),%3) %1(:,%2+%3:end)]")
        .arg (QString::fromStdString (name ()))
        .arg (col)
-       .arg (count)
-       .toStdString ());
+       .arg (count));
 
     return true;
   }
@@ -1107,89 +1126,59 @@ namespace octave
         return false;
       }
 
-    octave_link::post_event
-      (this, &variable_editor_model::eval_oct, name (),
-       QString ("%1(:, %2:%3) = []")
+    eval_expr_event
+      (QString ("%1(:,%2:%3) = []")
        .arg (QString::fromStdString (name ()))
        .arg (col)
-       .arg (col + count)
-       .toStdString ());
+       .arg (col + count));
 
     return true;
   }
 
   void
-  variable_editor_model::set_data_oct (const std::string& name,
-                                       const std::string& expr,
-                                       const QModelIndex& idx)
+  variable_editor_model::init_from_oct (interpreter& interp)
   {
     // INTERPRETER THREAD
 
-    try
-      {
-        interpreter& interp
-          = __get_interpreter__ ("variable_editor_model::set_data_oct");
-
-        int parse_status = 0;
-        interp.eval_string (expr, true, parse_status);
-
-        octave_value val = retrieve_variable (name);
-
-        emit update_data_signal (val);
-      }
-    catch (execution_exception&)
-      {
-        clear_update_pending ();
-
-        evaluation_error (expr);
-
-        // This will cause the data in the cell to be reset
-        // from the cached octave_value object.
-
-        emit dataChanged (idx, idx);
-      }
-  }
-
-  void
-  variable_editor_model::init_from_oct (const std::string& name)
-  {
-    // INTERPRETER THREAD
+    std::string nm = name ();
 
     try
       {
-        octave_value val = retrieve_variable (name);
+        octave_value val = retrieve_variable (interp, nm);
 
         emit update_data_signal (val);
       }
-    catch (execution_exception&)
+    catch (const execution_exception&)
       {
         QString msg = (QString ("variable '%1' is invalid or undefined")
-                       .arg (QString::fromStdString (name)));
+                       .arg (QString::fromStdString (nm)));
 
         emit data_error_signal (msg);
       }
   }
 
   void
-  variable_editor_model::eval_oct (const std::string& name,
-                                   const std::string& expr)
+  variable_editor_model::eval_expr_event (const QString& expr_arg)
   {
-    // INTERPRETER THREAD
+    std::string expr = expr_arg.toStdString ();
 
-    try
-      {
-        interpreter& interp
-          = __get_interpreter__ ("variable_editor_model::eval_oct");
+    emit interpreter_event
+      ([this, expr] (interpreter& interp)
+       {
+         // INTERPRETER THREAD
 
-        int parse_status = 0;
-        interp.eval_string (expr, true, parse_status);
+         try
+           {
+             int parse_status = 0;
+             interp.eval_string (expr, true, parse_status);
 
-        init_from_oct (name);
-      }
-    catch  (execution_exception&)
-      {
-        evaluation_error (expr);
-      }
+             init_from_oct (interp);
+           }
+         catch (const execution_exception&)
+           {
+             evaluation_error (expr);
+           }
+       });
   }
 
   // If the variable exists, load it into the data model.  If it doesn't
@@ -1201,7 +1190,8 @@ namespace octave
   // try-catch block that catches execution exceptions.
 
   octave_value
-  variable_editor_model::retrieve_variable (const std::string& x)
+  variable_editor_model::retrieve_variable (interpreter& interp,
+                                            const std::string& x)
   {
     // INTERPRETER THREAD
 
@@ -1214,9 +1204,6 @@ namespace octave
 
     if (symbol_exist (name, "var") > 0)
       {
-        interpreter& interp
-          = __get_interpreter__ ("variable_editor_model::retrieve_variable");
-
         int parse_status = 0;
         return interp.eval_string (x, true, parse_status);
       }
@@ -1241,8 +1228,13 @@ namespace octave
   void
   variable_editor_model::update_data_cache (void)
   {
-    octave_link::post_event
-      (this, &variable_editor_model::init_from_oct, name ());
+    emit interpreter_event
+      ([this] (interpreter& interp)
+       {
+         // INTERPRETER_THREAD
+
+         init_from_oct (interp);
+       });
   }
 
   void

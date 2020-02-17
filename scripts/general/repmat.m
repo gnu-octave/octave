@@ -1,6 +1,9 @@
-## Copyright (C) 2014-2019 Markus Bergholz
-## Copyright (C) 2000-2019 Paul Kienzle
-## Copyright (C) 2008 Jaroslav Hajek
+########################################################################
+##
+## Copyright (C) 2000-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -17,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} repmat (@var{A}, @var{m})
@@ -36,9 +41,6 @@
 ##
 ## @seealso{bsxfun, kron, repelems}
 ## @end deftypefn
-
-## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-## Created: July 2000
 
 function x = repmat (A, m, varargin)
 

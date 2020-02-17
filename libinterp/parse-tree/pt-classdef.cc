@@ -1,34 +1,94 @@
-/*
-
-Copyright (C) 2012-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2012-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
+#include "ov.h"
 #include "ov-classdef.h"
 #include "pt-classdef.h"
+#include "pt-eval.h"
 
 namespace octave
 {
+  tree_superclass_ref *
+  tree_superclass_ref::dup (symbol_scope&) const
+  {
+    tree_superclass_ref *new_scr
+      = new tree_superclass_ref (m_method_name, m_class_name,
+                                 line (), column ());
+
+    new_scr->copy_base (*this);
+
+    return new_scr;
+  }
+
+  octave_value_list
+  tree_superclass_ref::evaluate_n (tree_evaluator& tw, int nargout)
+  {
+    octave_value tmp
+      = octave_classdef::superclass_ref (m_method_name, m_class_name);
+
+    if (! is_postfix_indexed ())
+      {
+        // There was no index, so this superclass_ref object is not
+        // part of an index expression.  It is also not an identifier in
+        // the syntax tree but we need to handle it as if it were.  So
+        // call the function here.
+
+        octave_function *f = tmp.function_value (true);
+
+        assert (f);
+
+        return f->call (tw, nargout);
+      }
+
+    // The superclass_ref function object will be indexed as part of the
+    // enclosing index expression.
+
+    return ovl (tmp);
+  }
+
+  tree_metaclass_query *
+  tree_metaclass_query::dup (symbol_scope&) const
+  {
+    tree_metaclass_query *new_mcq
+      = new tree_metaclass_query (m_class_name, line (), column ());
+
+    new_mcq->copy_base (*this);
+
+    return new_mcq;
+  }
+
+  octave_value
+  tree_metaclass_query::evaluate (tree_evaluator&, int)
+  {
+    return octave_classdef::metaclass_query (m_class_name);
+  }
+
   // Classdef attribute
 
   // Classdef attribute_list
@@ -144,7 +204,7 @@ namespace octave
 
   // Classdef
 
-  octave_function*
+  octave_value
   tree_classdef::make_meta_class (interpreter& interp, bool is_at_folder)
   {
     cdef_class cls = cdef_class::make_meta_class (interp, this, is_at_folder);
@@ -152,6 +212,6 @@ namespace octave
     if (cls.ok ())
       return cls.get_constructor_function ();
 
-    return nullptr;
+    return octave_value ();
   }
 }

@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 2006-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2006-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 /*
    A C-program for MT19937, with initialization improved 2002/2/10.
@@ -138,7 +141,7 @@ along with Octave; see the file COPYING.  If not, see
    static uint32_t randi32 (void)   returns 32-bit unsigned int
    static uint64_t randi53 (void)   returns 53-bit unsigned int
    static uint64_t randi54 (void)   returns 54-bit unsigned int
-   static float randu32 (void)      returns 32-bit uniform in (0,1)
+   static float randu24 (void)      returns 24-bit uniform in (0,1)
    static double randu53 (void)     returns 53-bit uniform in (0,1)
 
    double rand_uniform (void)       returns M-bit uniform in (0,1)
@@ -221,7 +224,7 @@ namespace octave
     for (; k; k--)
       {
         state[i] = (state[i] ^ ((state[i-1] ^ (state[i-1] >> 30)) * 1664525UL))
-          + init_key[j] + j; /* non linear */
+                   + init_key[j] + j; /* non linear */
         state[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
         i++;
         j++;
@@ -236,7 +239,7 @@ namespace octave
     for (k = MT_N - 1; k; k--)
       {
         state[i] = (state[i] ^ ((state[i-1] ^ (state[i-1] >> 30)) * 1566083941UL))
-          - i; /* non linear */
+                   - i; /* non linear */
         state[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
         i++;
         if (i >= MT_N)
@@ -266,14 +269,14 @@ namespace octave
             if (std::fread (word, 4, 1, urandom) != 1)
               break;
             entropy[n++] = word[0] + (word[1]<<8) + (word[2]<<16)
-              + (static_cast<uint32_t> (word[3])<<24);
+                           + (static_cast<uint32_t> (word[3])<<24);
           }
         std::fclose (urandom);
       }
 
     /* If there isn't enough entropy, gather some from various sources */
 
-    octave::sys::time now;
+    sys::time now;
 
     if (n < MT_N)
       entropy[n++] = now.unix_time (); /* Current time in seconds */
@@ -377,18 +380,32 @@ namespace octave
   }
 
   /* generates a random number on (0,1)-real-interval */
-  static float randu32 (void)
+  static float randu24 (void)
   {
-    return (static_cast<float> (randi32 ()) + 0.5) * (1.0/4294967296.0);
-    /* divided by 2^32 */
+    uint32_t i;
+
+    do
+      {
+        i = randi32 () & static_cast<uint32_t> (0xFFFFFF);
+      }
+    while (i == 0);
+
+    return i * (1.0f / 16777216.0f);
   }
 
   /* generates a random number on (0,1) with 53-bit resolution */
   static double randu53 (void)
   {
-    const uint32_t a = randi32 () >> 5;
-    const uint32_t b = randi32 () >> 6;
-    return (a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
+    int32_t a, b;
+
+    do
+      {
+        a = randi32 () >> 5;
+        b = randi32 () >> 6;
+      }
+    while (a == 0 && b == 0);
+
+    return (a*67108864.0 + b) * (1.0/9007199254740992.0);
   }
 
   /* Determine mantissa for uniform doubles */
@@ -404,7 +421,7 @@ namespace octave
   float
   rand_uniform<float> (void)
   {
-    return randu32 ();
+    return randu24 ();
   }
 
   /* ===== Ziggurat normal and exponential generators ===== */
@@ -665,7 +682,7 @@ namespace octave
 #define ERANDI randi32() /* 32 bits for mantissa */
 #define NMANTISSA 2147483648.0 /* 31 bit mantissa */
 #define NRANDI randi32() /* 31 bits for mantissa + 1 bit sign */
-#define RANDU randu32()
+#define RANDU randu24()
 
   static ZIGINT fki[ZIGGURAT_TABLE_SIZE];
   static float fwi[ZIGGURAT_TABLE_SIZE], ffi[ZIGGURAT_TABLE_SIZE];

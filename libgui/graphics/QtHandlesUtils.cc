@@ -1,45 +1,48 @@
-/*
-
-Copyright (C) 2011-2019 Michael Goffioul
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
 
+#include <list>
+
 #include <QApplication>
 #include <QKeyEvent>
 #include <QMouseEvent>
 
-#include <list>
-
-#include "ov.h"
-#include "graphics.h"
-
-#include "Backend.h"
 #include "Container.h"
 #include "KeyMap.h"
 #include "Object.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
 
 #include "oct-string.h"
+
+#include "graphics.h"
+#include "ov.h"
 
 namespace QtHandles
 {
@@ -77,7 +80,7 @@ namespace QtHandles
       string_vector v (l.length ());
       int i = 0;
 
-      foreach (const QString& s, l)
+      for (const auto& s : l)
         v[i++] = toStdString (s);
 
       return v;
@@ -113,8 +116,6 @@ namespace QtHandles
       if (! mapsInitialized)
         {
           weightMap["normal"] = QFont::Normal;
-          weightMap["light"] = QFont::Light;
-          weightMap["demi"] = QFont::DemiBold;
           weightMap["bold"] = QFont::Bold;
 
           angleMap["normal"] = QFont::StyleNormal;
@@ -186,13 +187,9 @@ namespace QtHandles
                 return "normal";
               else if (buttons == Qt::RightButton)
                 return "alt";
-#if defined (Q_WS_WIN)
-              else if (buttons == (Qt::LeftButton | Qt::RightButton))
+              else if (buttons == Qt::MidButton
+                       || buttons == (Qt::LeftButton | Qt::RightButton))
                 return "extend";
-#elif defined (Q_WS_X11)
-              else if (buttons == Qt::MidButton)
-                return "extend";
-#endif
             }
           else if (buttons == Qt::LeftButton)
             {
@@ -214,7 +211,7 @@ namespace QtHandles
     Matrix
     figureCurrentPoint (const graphics_object& fig, QMouseEvent *event)
     {
-      Object *tkFig = Backend::toolkitObject (fig);
+      Object *tkFig = qt_graphics_toolkit::toolkitObject (fig);
 
       if (tkFig)
         {
@@ -235,7 +232,7 @@ namespace QtHandles
     Matrix
     figureCurrentPoint (const graphics_object& fig)
     {
-      Object *tkFig = Backend::toolkitObject (fig);
+      Object *tkFig = qt_graphics_toolkit::toolkitObject (fig);
 
       if (tkFig)
         {
@@ -386,6 +383,29 @@ namespace QtHandles
 #endif
 
       retval.setfield ("Modifier", Cell (modList));
+
+      return retval;
+    }
+
+    octave_scalar_map
+    makeScrollEventStruct (QWheelEvent *event)
+    {
+      octave_scalar_map retval;
+
+      // We assume a standard mouse with 15 degree steps and Qt returns
+      // 1/8 of a degree.
+#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
+      int ydelta = -(event->angleDelta().y ());
+#else
+      int ydelta = (event->orientation () == Qt::Vertical
+                    ? -(event->delta ()) : 0);
+#endif
+      retval.setfield ("VerticalScrollCount", octave_value (ydelta / 120));
+
+      // FIXME: Is there any way to access the number of lines a scroll step
+      // should correspond to?
+      retval.setfield ("VerticalScrollAmount", octave_value (3));
+      retval.setfield ("EventName", octave_value ("WindowScrollWheel"));
 
       return retval;
     }

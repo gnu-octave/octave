@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_lex_h)
 #define octave_lex_h 1
@@ -31,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 
 #include "comment-list.h"
+#include "filepos.h"
 #include "input.h"
 #include "symscope.h"
 #include "token.h"
@@ -55,8 +59,8 @@ namespace octave
     {
     public:
 
-      symbol_table_context (void)
-        : m_frame_stack () { }
+      symbol_table_context (interpreter& interp)
+        : m_interpreter (interp), m_frame_stack () { }
 
       ~symbol_table_context (void) { clear (); }
 
@@ -77,6 +81,8 @@ namespace octave
       symbol_scope parent_scope (void) const;
 
     private:
+
+      interpreter& m_interpreter;
 
       std::deque<symbol_scope> m_frame_stack;
     };
@@ -257,8 +263,10 @@ namespace octave
       std::deque<token *> m_buffer;
     };
 
-    lexical_feedback (void)
-      : m_end_of_input (false),
+    lexical_feedback (interpreter& interp)
+      : m_interpreter (interp),
+        m_end_of_input (false),
+        m_allow_command_syntax (true),
         m_at_beginning_of_statement (true),
         m_looking_at_anon_fcn_args (false),
         m_looking_at_return_list (false),
@@ -268,8 +276,11 @@ namespace octave
         m_looking_at_matrix_or_assign_lhs (false),
         m_looking_for_object_index (false),
         m_looking_at_indirect_ref (false),
+        m_parsing_anon_fcn_body (false),
         m_parsing_class_method (false),
         m_parsing_classdef (false),
+        m_parsing_classdef_decl (false),
+        m_parsing_classdef_superclass (false),
         m_maybe_classdef_get_set_method (false),
         m_parsing_classdef_get_method (false),
         m_parsing_classdef_set_method (false),
@@ -279,8 +290,6 @@ namespace octave
         m_reading_script_file (false),
         m_reading_classdef_file (false),
         m_buffer_function_text (false),
-        m_input_line_number (1),
-        m_current_input_column (1),
         m_bracketflag (0),
         m_braceflag (0),
         m_looping (0),
@@ -289,13 +298,14 @@ namespace octave
         m_block_comment_nesting_level (0),
         m_command_arg_paren_count (0),
         m_token_count (0),
+        m_filepos (),
+        m_tok_beg (),
+        m_tok_end (),
+        m_string_text (),
         m_current_input_line (),
         m_comment_text (),
         m_help_text (),
         m_function_text (),
-        m_string_text (),
-        m_string_line (0),
-        m_string_column (0),
         m_fcn_file_name (),
         m_fcn_file_full_name (),
         m_dir_name (),
@@ -303,7 +313,7 @@ namespace octave
         m_looking_at_object_index (),
         m_parsed_function_name (),
         m_pending_local_variables (),
-        m_symtab_context (),
+        m_symtab_context (interp),
         m_nesting_level (),
         m_tokens ()
     {
@@ -341,8 +351,13 @@ namespace octave
     void mark_as_variable (const std::string& nm);
     void mark_as_variables (const std::list<std::string>& lst);
 
+    interpreter& m_interpreter;
+
     // true means that we have encountered eof on the input stream.
     bool m_end_of_input;
+
+    // true means command syntax is allowed.
+    bool m_allow_command_syntax;
 
     // true means we are at the beginning of a statement, where a
     // command name is possible.
@@ -376,11 +391,23 @@ namespace octave
     // structure element.
     bool m_looking_at_indirect_ref;
 
+    // true means we are parsing the body of an anonymous function.
+    bool m_parsing_anon_fcn_body;
+
     // true means we are parsing a class method in function or classdef file.
     bool m_parsing_class_method;
 
     // true means we are parsing a classdef file
     bool m_parsing_classdef;
+
+    // true means we are parsing the initial classdef declaration
+    // portion of classdef file, from the "classdef" token through the
+    // optional list of superclasses.
+    bool m_parsing_classdef_decl;
+
+    // true means we are parsing the superclass part of a classdef
+    // declaration.
+    bool m_parsing_classdef_superclass;
 
     // true means we are parsing a class method declaration line in a
     // classdef file and can accept a property get or set method name.
@@ -413,12 +440,6 @@ namespace octave
     // parsing.
     bool m_buffer_function_text;
 
-    // the current input line number.
-    int m_input_line_number;
-
-    // the column of the current token.
-    int m_current_input_column;
-
     // square bracket level count.
     int m_bracketflag;
 
@@ -444,6 +465,19 @@ namespace octave
     // since the last reset.
     size_t m_token_count;
 
+    // The current position in the file (line and column).
+    filepos m_filepos;
+
+    // The positions of the beginning and end of the current token after
+    // calling update_token_positions.  Also used apart from
+    // update_token_positions to handle the beginning and end of
+    // character strings.
+    filepos m_tok_beg;
+    filepos m_tok_end;
+
+    // The current character string text.
+    std::string m_string_text;
+
     // The current line of input.
     std::string m_current_input_line;
 
@@ -455,13 +489,6 @@ namespace octave
 
     // The text of functions entered on the command line.
     std::string m_function_text;
-
-    // The current character string text.
-    std::string m_string_text;
-
-    // The position of the beginning of the current character string.
-    int m_string_line;
-    int m_string_column;
 
     // Simple name of function file we are reading.
     std::string m_fcn_file_name;
@@ -578,8 +605,8 @@ namespace octave
     };
 
     base_lexer (interpreter& interp)
-      : lexical_feedback (), m_scanner (nullptr), m_input_buf (),
-        m_comment_buf (), m_interpreter (interp)
+      : lexical_feedback (interp), m_scanner (nullptr), m_input_buf (),
+        m_comment_buf ()
     {
       init ();
     }
@@ -620,13 +647,17 @@ namespace octave
 
     void xunput (char c);
 
+    void update_token_positions (int tok_len);
+
     bool looking_at_space (void);
 
     bool inside_any_object_index (void);
 
     bool is_variable (const std::string& name, const symbol_scope& scope);
 
-    int is_keyword_token (const std::string& s);
+    bool is_keyword_token (const std::string& s);
+
+    int make_keyword_token (const std::string& s);
 
     bool fq_identifier_contains_keyword (const std::string& s);
 
@@ -689,17 +720,6 @@ namespace octave
     // Object that collects comment text.
     comment_buffer m_comment_buf;
 
-    // Interpreter that contains us, if any.
-    interpreter& m_interpreter;
-
-    virtual void increment_promptflag (void) = 0;
-
-    virtual void decrement_promptflag (void) = 0;
-
-    virtual int promptflag (void) const = 0;
-
-    virtual int promptflag (int) = 0;
-
     virtual std::string input_source (void) const { return "unknown"; }
 
     virtual bool input_from_terminal (void) const { return false; }
@@ -727,17 +747,13 @@ namespace octave
 
     bool maybe_unput_comma_before_unary_op (int tok);
 
-    int handle_unary_op (int tok, bool bos = false);
-
-    int handle_language_extension_unary_op (int tok, bool bos = false);
-
     int handle_assign_op (const char *pattern, int tok);
 
     int handle_language_extension_assign_op (const char *pattern, int tok);
 
     int handle_op_internal (int tok, bool bos, bool compat);
 
-    int handle_token (const std::string& name, int tok);
+    int finish_command_arg (void);
 
     int handle_token (int tok, token *tok_val = nullptr);
 
@@ -746,8 +762,6 @@ namespace octave
     int count_token_internal (int tok);
 
     int show_token (int tok);
-
-    void enable_fq_identifier (void);
 
   protected:
 
@@ -760,15 +774,16 @@ namespace octave
   public:
 
     lexer (interpreter& interp)
-      : base_lexer (interp), m_reader (this)
+      : base_lexer (interp), m_reader (interp), m_initial_input (true)
     { }
 
     lexer (FILE *file, interpreter& interp)
-      : base_lexer (interp), m_reader (file, this)
+      : base_lexer (interp), m_reader (interp, file), m_initial_input (true)
     { }
 
     lexer (const std::string& eval_string, interpreter& interp)
-      : base_lexer (interp), m_reader (eval_string, this)
+      : base_lexer (interp), m_reader (interp, eval_string),
+        m_initial_input (true)
     { }
 
     // No copying!
@@ -779,18 +794,10 @@ namespace octave
 
     void reset (void)
     {
-      m_reader.reset ();
+      m_initial_input = true;
 
       base_lexer::reset ();
     }
-
-    void increment_promptflag (void) { m_reader.increment_promptflag (); }
-
-    void decrement_promptflag (void) { m_reader.decrement_promptflag (); }
-
-    int promptflag (void) const { return m_reader.promptflag (); }
-
-    int promptflag (int n) { return m_reader.promptflag (n); }
 
     std::string input_source (void) const
     {
@@ -815,6 +822,13 @@ namespace octave
     int fill_flex_buffer (char *buf, unsigned int max_size);
 
     input_reader m_reader;
+
+    // TRUE means we are filling the input buffer for the first time.
+    // Otherwise, we are requesting more input to complete the parse
+    // and, if printing a prompt, should use the secondary prompt
+    // string.
+
+    bool m_initial_input;
   };
 
   class
@@ -823,25 +837,25 @@ namespace octave
   public:
 
     push_lexer (interpreter& interp)
-      : base_lexer (interp), m_pflag (1)
+      : base_lexer (interp)
     {
       append_input ("", false);
     }
 
     push_lexer (const std::string& input, interpreter& interp)
-      : base_lexer (interp), m_pflag (1)
+      : base_lexer (interp)
     {
       append_input (input, false);
     }
 
     push_lexer (bool eof, interpreter& interp)
-      : base_lexer (interp), m_pflag (1)
+      : base_lexer (interp)
     {
       append_input ("", eof);
     }
 
     push_lexer (const std::string& input, bool eof, interpreter& interp)
-      : base_lexer (interp), m_pflag (1)
+      : base_lexer (interp)
     {
       append_input (input, eof);
     }
@@ -854,35 +868,11 @@ namespace octave
 
     bool is_push_lexer (void) const { return true; }
 
-    void reset (void)
-    {
-      promptflag (1);
-
-      base_lexer::reset ();
-    }
-
     void append_input (const std::string& input, bool eof);
-
-    void increment_promptflag (void) { m_pflag++; }
-
-    void decrement_promptflag (void) { m_pflag--; }
-
-    int promptflag (void) const { return m_pflag; }
-
-    int promptflag (int n)
-    {
-      int retval = m_pflag;
-      m_pflag = n;
-      return retval;
-    }
 
     std::string input_source (void) const { return "push buffer"; }
 
     int fill_flex_buffer (char *buf, unsigned int max_size);
-
-  protected:
-
-    int m_pflag;
   };
 }
 

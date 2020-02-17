@@ -1,4 +1,9 @@
-## Copyright (C) 2007-2019 Ben Abbott
+########################################################################
+##
+## Copyright (C) 2007-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{multp}, @var{idxp}] =} mpoles (@var{p})
@@ -47,9 +54,6 @@
 ##
 ## @seealso{residue, poly, roots, conv, deconv}
 ## @end deftypefn
-
-## Author: Ben Abbott <bpabbott@mac.com>
-## Created: Sept 30, 2007
 
 function [multp, indx] = mpoles (p, tol, reorder)
 

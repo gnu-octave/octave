@@ -1,4 +1,9 @@
-## Copyright (C) 2005-2019 David Bateman
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 clear all;
 
@@ -32,7 +39,7 @@ srcdir = canonicalize_file_name (xdir);
 topsrcdir = canonicalize_file_name (fullfile (xdir, ".."));
 topbuilddir = canonicalize_file_name (fullfile (currdir, ".."));
 
-if (strcmp (currdir, srcdir))
+if (is_same_file (currdir, srcdir))
   testdirs = {srcdir};
 else
   testdirs = {currdir, srcdir};
@@ -45,7 +52,7 @@ local_script_tree = canonicalize_file_name (fullfile (currdir, "../scripts"));
 
 fundirs = {liboctave_tree, src_tree, script_tree};
 
-if (! strcmp (currdir, srcdir))
+if (! is_same_file (currdir, srcdir))
   fundirs{end+1} = local_script_tree;
 endif
 

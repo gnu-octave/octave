@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -34,11 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 
 static integrand_fcn user_fcn;
 static float_integrand_fcn float_user_fcn;
-
-// FIXME: would be nice to not have to have this global variable.
-// Nonzero means an error occurred in the calculation of the integrand
-// function, and the user wants us to quit.
-int quad_integration_error = 0;
 
 typedef F77_INT (*quad_fcn_ptr) (const double&, int&, double&);
 typedef F77_INT (*quad_float_fcn_ptr) (const float&, int&, float&);
@@ -79,35 +77,17 @@ extern "C"
 }
 
 static F77_INT
-user_function (const double& x, int& ierr, double& result)
+user_function (const double& x, int&, double& result)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
-  quad_integration_error = 0;
-
   result = (*user_fcn) (x);
-
-  if (quad_integration_error)
-    ierr = -1;
-
-  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }
 
 static F77_INT
-float_user_function (const float& x, int& ierr, float& result)
+float_user_function (const float& x, int&, float& result)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
-  quad_integration_error = 0;
-
   result = (*float_user_fcn) (x);
-
-  if (quad_integration_error)
-    ierr = -1;
-
-  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

@@ -1,4 +1,9 @@
-## Copyright (C) 2005-2019 John W. Eaton
+########################################################################
+##
+## Copyright (C) 2005-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,13 +20,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __gnuplot_draw_figure__ (@var{h}, @var{plot_stream}, @var{enhanced})
 ## Undocumented internal function.
 ## @end deftypefn
-
-## Author: jwe
 
 function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
 
@@ -166,13 +171,13 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
               unwind_protect_cleanup
                 ## Return axes "units" and "position" back to
                 ## their original values.
-                set (kids(i), "units", orig_axes_units);
-                set (kids(i), "position", orig_axes_position);
+                set (kids(i), "units", orig_axes_units,
+                              "position", orig_axes_position);
                 bg_is_set = false;
                 fg_is_set = false;
               end_unwind_protect
             endif
-          case {"uimenu", "uicontextmenu"}
+          case {"uimenu", "uicontextmenu", "uitoolbar"}
             ## ignore uimenu objects
             kids(i) = [];
           otherwise

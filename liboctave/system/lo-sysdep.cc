@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -81,7 +84,8 @@ namespace octave
     }
 
     bool
-    get_dirlist (const std::string& dirname, string_vector& dirlist, std::string& msg)
+    get_dirlist (const std::string& dirname, string_vector& dirlist,
+                 std::string& msg)
     {
       dirlist = "";
       msg = "";
@@ -99,17 +103,17 @@ namespace octave
 
       // Find first file in directory.
       HANDLE hFind = FindFirstFileW (u8_to_wstring (path_name).c_str (),
-                              &ffd);
+                                     &ffd);
       if (INVALID_HANDLE_VALUE == hFind)
         {
           DWORD errCode = GetLastError ();
           char *errorText = nullptr;
           FormatMessageA (FORMAT_MESSAGE_FROM_SYSTEM |
-                         FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                         FORMAT_MESSAGE_IGNORE_INSERTS,
-                         nullptr, errCode,
-                         MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
-                         reinterpret_cast <char *> (&errorText), 0, nullptr);
+                          FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                          FORMAT_MESSAGE_IGNORE_INSERTS,
+                          nullptr, errCode,
+                          MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
+                          reinterpret_cast <char *> (&errorText), 0, nullptr);
           if (errorText != nullptr)
             {
               msg = std::string (errorText);
@@ -179,7 +183,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_WINDOWS_API)
       wchar_t *wnew_item = u8_to_wchar (new_item);
-      octave::unwind_protect frame;
+      unwind_protect frame;
       frame.add_fcn (std::free, static_cast<void *> (new_item));
       if (_wputenv (wnew_item) < 0)
         (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
@@ -372,26 +376,26 @@ namespace octave
       std::string test_dir = canonicalize_file_name (oct_ascii_dir);
 
       if (test_dir.empty ())
-      {
-        std::string msg;
-        int status = octave::sys::mkdir (oct_ascii_dir, 0777, msg);
+        {
+          std::string msg;
+          int status = sys::mkdir (oct_ascii_dir, 0777, msg);
 
-        if (status < 0)
-          return orig_file_name;
+          if (status < 0)
+            return orig_file_name;
 
-        // Set hidden property.
-        SetFileAttributesA (oct_ascii_dir.c_str (), FILE_ATTRIBUTE_HIDDEN);
-      }
+          // Set hidden property.
+          SetFileAttributesA (oct_ascii_dir.c_str (), FILE_ATTRIBUTE_HIDDEN);
+        }
 
       // Create file from hash of full filename.
       std::string filename_hash
         = (oct_ascii_dir + file_ops::dir_sep_str ()
-           + octave::crypto::hash ("SHA1", orig_file_name));
+           + crypto::hash ("SHA1", orig_file_name));
 
       std::string abs_filename_hash = canonicalize_file_name (filename_hash);
 
       if (! abs_filename_hash.empty ())
-        octave::sys::unlink (filename_hash);
+        sys::unlink (filename_hash);
 
       wchar_t w_filename_hash[filename_hash.length ()+1] = {0};
 

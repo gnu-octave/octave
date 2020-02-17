@@ -1,5 +1,5 @@
 FCN_FILE_DIRS += \
-  scripts/audio \
+  %reldir% \
   %reldir%/@audioplayer \
   %reldir%/@audiorecorder
 

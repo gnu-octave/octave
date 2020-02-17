@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_cmd_hist_h)
 #define octave_cmd_hist_h 1
@@ -38,8 +41,10 @@ namespace octave
   protected:
 
     command_history (void)
-      : initialized (false), ignoring_additions (false), history_control (0),
-        lines_in_file (0), lines_this_session (0), xfile (), xsize (-1) { }
+      : m_initialized (false), m_ignoring_additions (false),
+        m_history_control (0), m_lines_in_file (0),
+        m_lines_this_session (0), m_file (), m_size (-1)
+    { }
 
   public:
 
@@ -130,9 +135,13 @@ namespace octave
     static void make_command_history (void);
 
     // The real thing.
-    static command_history *instance;
+    static command_history *s_instance;
 
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    static void cleanup_instance (void)
+    {
+      delete s_instance;
+      s_instance = nullptr;
+    }
 
   protected:
 
@@ -211,25 +220,25 @@ namespace octave
 
     // TRUE means we have initialized the history filename and number of
     // lines to save.
-    bool initialized;
+    bool m_initialized;
 
     // TRUE means we are ignoring new additions.
-    bool ignoring_additions;
+    bool m_ignoring_additions;
 
     // Bitmask for history control options.  See oct-rl-hist.h.
-    int history_control;
+    int m_history_control;
 
     // The number of history lines we read from the history file.
-    int lines_in_file;
+    int m_lines_in_file;
 
     // The number of history lines we've saved so far.
-    int lines_this_session;
+    int m_lines_this_session;
 
     // The default history file.
-    std::string xfile;
+    std::string m_file;
 
     // The number of lines of history to save.
-    int xsize;
+    int m_size;
   };
 }
 

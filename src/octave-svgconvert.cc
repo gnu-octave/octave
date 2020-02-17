@@ -1,23 +1,27 @@
-/*
-Copyright (C) 2017 Pantxo Diribarne
-
-This file is part of Octave.
-
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2017-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <http://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
 
@@ -251,10 +255,10 @@ public:
   static inline
   bool eq (QPointF p1, QPointF p2)
   {
-    return ((qAbs (p1.x () - p2.x ()) <=
-             0.00001 * qMin (qAbs (p1.x ()), qAbs (p2.x ())))
-            && (qAbs (p1.y () - p2.y ()) <=
-                0.00001 * qMin (qAbs (p1.y ()), qAbs (p2.y ()))));
+    return ((qAbs (p1.x () - p2.x ())
+             <= 0.00001 * qMin (qAbs (p1.x ()), qAbs (p2.x ())))
+            && (qAbs (p1.y () - p2.y ())
+                <= 0.00001 * qMin (qAbs (p1.y ()), qAbs (p2.y ()))));
   }
 
   static
@@ -313,7 +317,7 @@ public:
   void add (QPolygonF p)
   {
     if (m_polygons.count () == 0)
-        m_polygons.push_back (p);
+      m_polygons.push_back (p);
     else
       {
         QPolygonF tmp = mergepoly (m_polygons.back (), p);
@@ -533,9 +537,8 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
           // Images are represented as a base64 stream of png formatted data
           QString href_att = elt.attribute ("xlink:href");
           QString prefix ("data:image/png;base64,");
-          QByteArray data =
-            QByteArray::fromBase64(href_att.mid (prefix.length ())
-                                   .toLatin1 ());
+          QByteArray data
+            = QByteArray::fromBase64 (href_att.mid (prefix.length ()).toLatin1 ());
           QImage img;
           if (img.loadFromData (data, "PNG"))
             {
@@ -616,7 +619,7 @@ void replace_polygons (QDomElement& parent_elt, QList<QDomNode> orig,
       for (int jj = 0; jj < polygon.count (); jj++)
         {
           pts += QString ("%1,%2 ").arg (polygon[jj].x ())
-            .arg (polygon[jj].y ());
+                 .arg (polygon[jj].y ());
         }
 
       node.toElement ().setAttribute ("points", pts.trimmed ());
@@ -707,8 +710,7 @@ void reconstruct_polygons (QDomElement& parent_elt)
 int main(int argc, char *argv[])
 {
   const char *doc = "See \"octave-svgconvert -h\"";
-  const char *help =
-"Usage:\n\
+  const char *help = "Usage:\n\
 octave-svgconvert infile fmt dpi font reconstruct outfile\n\n\
 Convert svg file to pdf, or svg. All arguments are mandatory:\n\
 * infile: input svg file or \"-\" to indicate that the input svg file should be \
@@ -757,7 +759,7 @@ read from stdin\n\
   // Create a DOM document and load the svg file
   QDomDocument document;
   QString msg;
-  if(! document.setContent (&file, false, &msg))
+  if (! document.setContent (&file, false, &msg))
     {
       std::cerr << "Failed to parse XML contents" << std::endl
                 << msg.toStdString ();
@@ -807,7 +809,7 @@ read from stdin\n\
               int id = QFontDatabase::addApplicationFont (fontpath);
               if (id < 0)
                 std::cerr << "warning: print: "
-                  "Unable to add default font to database\n";
+                             "Unable to add default font to database\n";
             }
           else
             std::cerr << "warning: print: FreeSans font not found\n";

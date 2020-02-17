@@ -1,4 +1,9 @@
-## Copyright (C) 2010-2019 Shai Ayal
+########################################################################
+##
+## Copyright (C) 2010-2020 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
 ##
 ## This file is part of Octave.
 ##
@@ -15,6 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
+##
+########################################################################
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} __opengl_print__ (@var{@dots{}})
@@ -57,7 +64,7 @@ function opts = __opengl_print__ (opts)
           suffix = ext;  # If user provides eps/ps/pdf suffix, use it.
         endif
       else
-        error ("print:invalid-suffix",
+        error ("Octave:print:invalid-suffix",
                "invalid suffix '%s' for device '%s'.",
                ext, lower (opts.devopt));
       endif
@@ -65,16 +72,16 @@ function opts = __opengl_print__ (opts)
       gl2ps_device{2} = "tex";
       if (dos_shell)
         ## FIXME: this will only work on MinGW with the MSYS shell
-        pipeline = {sprintf("cat > %s-inc.%s", name, suffix)};
-        pipeline{2} = sprintf ("cat > %s.tex", name);
+        pipeline = {sprintf('cat > "%s-inc.%s"', name, suffix)};
+        pipeline{2} = sprintf ('cat > "%s.tex"', name);
       else
-        pipeline = {sprintf("cat > %s-inc.%s", name, suffix)};
-        pipeline{2} = sprintf ("cat > %s.tex", name);
+        pipeline = {sprintf('cat > "%s-inc.%s"', name, suffix)};
+        pipeline{2} = sprintf ('cat > "%s.tex"', name);
       endif
     case "tikz"
       ## format GL2PS_PGF
       gl2ps_device = {"pgf"};
-      pipeline = {sprintf("cat > %s", opts.name)};
+      pipeline = {sprintf('cat > "%s"', opts.name)};
     case "svg"
       ## format GL2PS_SVG
       gl2ps_device = {"svg"};
@@ -85,7 +92,7 @@ function opts = __opengl_print__ (opts)
       if (! isempty (svgcmd))
         pipeline = {sprintf(svgcmd, "svg", opts.name)};
       else
-        pipeline = {sprintf("cat > %s", opts.name)};
+        pipeline = {sprintf('cat > "%s"', opts.name)};
       endif
     case fig2dev_devices
       cmd_fig2dev = opts.fig2dev_cmd (opts, opts.devopt);
@@ -96,12 +103,12 @@ function opts = __opengl_print__ (opts)
           opts.name = opts.name(1:end-numel(ext));
         endif
         opts.name = [opts.name ".ps"];
-        cmd = sprintf ("%s | %s > %s", cmd_pstoedit, cmd_fig2dev, opts.name);
+        cmd = sprintf ('%s | %s > "%s"', cmd_pstoedit, cmd_fig2dev, opts.name);
         gl2ps_device = {"eps"};
         pipeline = {cmd};
         cmd_fig2dev = opts.fig2dev_cmd (opts, "pstex_t");
         gl2ps_device{2} = "eps";
-        pipeline{2} = sprintf ("%s | %s > %s", cmd_pstoedit,
+        pipeline{2} = sprintf ('%s | %s > "%s"', cmd_pstoedit,
                                cmd_fig2dev, strrep(opts.name, ".ps", ".tex"));
       else
         ## Using svgconvert
@@ -109,7 +116,7 @@ function opts = __opengl_print__ (opts)
         opts.unlink = [opts.unlink tmp];
         cmd_pstoedit = sprintf (opts.pstoedit_cmd (opts, "fig"), ...
                                 "pdf", tmp, tmp);
-        cmd = sprintf ("%s | %s > %s", cmd_pstoedit, cmd_fig2dev, opts.name);
+        cmd = sprintf ('%s | %s > "%s"', cmd_pstoedit, cmd_fig2dev, opts.name);
         gl2ps_device = {"svg"};
         pipeline = {cmd};
       endif
@@ -124,19 +131,13 @@ function opts = __opengl_print__ (opts)
       opts.unlink = [opts.unlink tmp];
       cmd = sprintf (opts.pstoedit_cmd (opts), "pdf", tmp, tmp);
       gl2ps_device = {"svg"};
-      pipeline = {sprintf("%s > %s", cmd, opts.name)};
-    case {"corel", "gif"}
-      error ("print:unsupporteddevice",
-             "print.m: %s output is not available for OpenGL graphics toolkits",
-             upper (opts.devopt));
+      pipeline = {sprintf('%s > "%s"', cmd, opts.name)};
     case opts.ghostscript.device
-      ## Except for postscript, use svg format and first convert to pdf
-      ## before going through ghostscript for final adjusments
       svgcmd = "";
       if (opts.svgconvert)
         svgcmd = opts.svgconvert_cmd (opts, opts.ghostscript.device);
       endif
-      dosvg = ! (strcmp (opts.devopt, "ps2write") || isempty (svgcmd));
+      dosvg = ! isempty (svgcmd);
       if (! dosvg)
         opts.ghostscript.source = "-";
       else
@@ -183,7 +184,7 @@ function opts = __opengl_print__ (opts)
       endif
     otherwise
       error (sprintf ("print:no%soutput", opts.devopt),
-             "print.m: %s output is not available for OpenGL toolkits",
+             "print: %s output is not available for OpenGL toolkits",
              upper (opts.devopt));
   endswitch
 
@@ -199,7 +200,11 @@ function opts = __opengl_print__ (opts)
             && (strcmp (get (opts.figure, "__gl_window__"), "on")
                 || __have_feature__ ("QT_OFFSCREEN"))))
       ## Use toolkits "print_figure" method
-      drawnow (gl2ps_device{n}, ['|' pipeline{n}]);
+      if (ispc () && ! isunix ())
+        drawnow (gl2ps_device{n}, ['| "' pipeline{n} '"']);
+      else
+        drawnow (gl2ps_device{n}, ["| " pipeline{n}]);
+      endif
     else
       error ("print: figure must be visible or qt toolkit must be used with __gl_window__ property 'on' or QT_OFFSCREEN feature available");
     endif

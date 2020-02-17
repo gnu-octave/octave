@@ -1,25 +1,27 @@
-/*
-
-Copyright (C) 1993-2019 John W. Eaton
-Copyright (C) 2009-2010 VZLU Prague
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1993-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_unwind_prot_h)
 #define octave_unwind_prot_h 1
@@ -41,7 +43,7 @@ namespace octave
   {
   public:
 
-    unwind_protect (void) : lifo () { }
+    unwind_protect (void) : m_lifo () { }
 
     // No copying!
 
@@ -62,8 +64,8 @@ namespace octave
       if (! empty ())
         {
           // No leak on exception!
-          std::unique_ptr<elem> ptr (lifo.top ());
-          lifo.pop ();
+          std::unique_ptr<elem> ptr (m_lifo.top ());
+          m_lifo.pop ();
           ptr->run ();
         }
     }
@@ -72,22 +74,22 @@ namespace octave
     {
       if (! empty ())
         {
-          elem *ptr = lifo.top ();
-          lifo.pop ();
+          elem *ptr = m_lifo.top ();
+          m_lifo.pop ();
           delete ptr;
         }
     }
 
-    size_t size (void) const { return lifo.size (); }
+    size_t size (void) const { return m_lifo.size (); }
 
   protected:
 
     virtual void add_action (elem *new_elem)
     {
-      lifo.push (new_elem);
+      m_lifo.push (new_elem);
     }
 
-    std::stack<elem *> lifo;
+    std::stack<elem *> m_lifo;
   };
 
   // Like unwind_protect, but this one will guard against the possibility
@@ -126,6 +128,133 @@ namespace octave
             }
         }
     }
+  };
+
+  // In most cases, the following are preferred for efficiency.  Some
+  // cases may require the flexibility of the general unwind_protect
+  // mechanism defined above.
+
+  // Perform action at end of the current scope when unwind_action
+  // object destructor is called.
+  //
+  // For example:
+  //
+  //   void fcn (int val) { ... }
+  //
+  // ...
+  //
+  //   {
+  //     int val = 42;
+  //
+  //     // template parameters, std::bind and std::function provide
+  //     // flexibility in calling forms:
+  //
+  //     unwind_action act1 (fcn, val);
+  //     unwind_action act2 ([val] (void) { fcn (val); });
+  //   }
+  //
+  // NOTE: Don't forget to provide a name for the unwind_action
+  // variable.  If you write
+  //
+  //   unwind_action /* NO NAME! */ (...);
+  //
+  // then the destructor for the temporary anonymous object will be
+  // called immediately after the object is constructed instead of at
+  // the end of the current scope.
+
+  class unwind_action
+  {
+  public:
+
+    template <typename F, typename... Args>
+    unwind_action (F&& fcn, Args&&... args)
+      : m_fcn (std::bind (fcn, args...))
+    { }
+
+    // No copying!
+
+    unwind_action (const unwind_action&) = delete;
+
+    unwind_action& operator = (const unwind_action&) = delete;
+
+    ~unwind_action (void) { m_fcn (); }
+
+  private:
+
+    std::function<void (void)> m_fcn;
+  };
+
+  // Reset a variable value at the end of the current scope when
+  // unwind_protect_var object destructor is called.
+  //
+  // For example:
+  //
+  //   {
+  //     int x = 42;
+  //     unwind_protect_var<int> upv (x);  // X will be reset at end of scope
+  //     x = 13;                           // Set temporary value.
+  //   }
+  //
+  // Temporary value may be set at construction:
+  //
+  //   {
+  //     int x = ...;
+  //     unwind_protect_var<int> upv (x, 13);  // X will be reset.
+  //                                           // temporary value is 13.
+  //   }
+  //
+  // NOTE: Don't forget to provide a name for the unwind_protect_var
+  // variable.  If you write
+  //
+  //   unwind_protect_var<type> /* NO NAME! */ (...);
+  //
+  // then the destructor for the temporary anonymous object will be
+  // called immediately after the object is constructed instead of at
+  // the end of the current scope.
+  //
+  // FIXME: Once we are able to use C++17, class template argument
+  // deduction will allow us to omit the explicit template type from the
+  // constructor expression:
+  //
+  //   unwind_protect_var upv (...);
+
+  template <typename T>
+  class unwind_protect_var
+  {
+  public:
+
+    // Ensure that the value referenced by REF will be reset when this
+    // unwind_protect_var object goes out of scope.
+
+    explicit unwind_protect_var (T& ref)
+      : m_ref (ref), m_val (ref)
+    { }
+
+    // Set the value referenced by REF to NEW_VAL and ensure that it
+    // will be reset to its original value when this
+    // unwind_protect_var object goes out of scope.
+
+    unwind_protect_var (T& ref, const T& new_val)
+      : m_ref (ref), m_val (ref)
+    {
+      m_ref = new_val;
+    }
+
+    // No copying!
+
+    unwind_protect_var (const unwind_protect_var&) = delete;
+
+    unwind_protect_var& operator = (const unwind_protect_var&) = delete;
+
+    ~unwind_protect_var (void)
+    {
+      m_ref = m_val;
+    }
+
+  private:
+
+    T& m_ref;
+    T m_val;
   };
 }
 

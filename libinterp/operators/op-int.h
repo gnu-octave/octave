@@ -1,24 +1,27 @@
-/*
-
-Copyright (C) 1996-2019 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
-
-*/
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 1996-2020 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
 
 #if ! defined (octave_op_int_h)
 #define octave_op_int_h 1
@@ -198,11 +201,7 @@ along with Octave; see the file COPYING.  If not, see
     const octave_ ## T1 ## scalar& v1 = dynamic_cast<const octave_ ## T1 ## scalar&> (a1); \
     const octave_ ## T2 ## scalar& v2 = dynamic_cast<const octave_ ## T2 ## scalar&> (a2); \
                                                                         \
-    if (! v2.T2 ## scalar_value ())                                     \
-      warn_divide_by_zero ();                                           \
-                                                                        \
-    octave_value retval = octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
-    return retval;                                                      \
+    return octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
   }                                                                     \
                                                                         \
   DEFINTBINOP_FN (PFX ## _pow, T1 ## scalar, T2 ## scalar, xpow, T3, ^) \
@@ -212,11 +211,7 @@ along with Octave; see the file COPYING.  If not, see
     const octave_ ## T1 ## scalar& v1 = dynamic_cast<const octave_ ## T1 ## scalar&> (a1); \
     const octave_ ## T2 ## scalar& v2 = dynamic_cast<const octave_ ## T2 ## scalar&> (a2); \
                                                                         \
-    if (! v1.T1 ## scalar_value ())                                     \
-      warn_divide_by_zero ();                                           \
-                                                                        \
-    octave_value retval = octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
-    return retval;                                                      \
+    return octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
   }                                                                     \
                                                                         \
   DEFINTBINOP_OP (PFX ## _el_mul, T1 ## scalar, T2 ## scalar, *, T3)    \
@@ -226,11 +221,7 @@ along with Octave; see the file COPYING.  If not, see
     const octave_ ## T1 ## scalar& v1 = dynamic_cast<const octave_ ## T1 ## scalar&> (a1); \
     const octave_ ## T2 ## scalar& v2 = dynamic_cast<const octave_ ## T2 ## scalar&> (a2); \
                                                                         \
-    if (! v2.T2 ## scalar_value ())                                     \
-      warn_divide_by_zero ();                                           \
-                                                                        \
-    octave_value retval = octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
-    return retval;                                                      \
+    return octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
   }                                                                     \
                                                                         \
   DEFINTBINOP_FN (PFX ## _el_pow, T1 ## scalar, T2 ## scalar, xpow, T3, .^) \
@@ -240,11 +231,7 @@ along with Octave; see the file COPYING.  If not, see
     const octave_ ## T1 ## scalar& v1 = dynamic_cast<const octave_ ## T1 ## scalar&> (a1); \
     const octave_ ## T2 ## scalar& v2 = dynamic_cast<const octave_ ## T2 ## scalar&> (a2); \
                                                                         \
-    if (! v1.T1 ## scalar_value ())                                     \
-      warn_divide_by_zero ();                                           \
-                                                                        \
-    octave_value retval = octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
-    return retval;                                                      \
+    return octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
   }
 
 #define OCTAVE_SS_INT_BOOL_OPS(PFX, T1, T2, Z1, Z2)                     \
@@ -347,11 +334,7 @@ along with Octave; see the file COPYING.  If not, see
    const octave_ ## TS ## scalar& v1 = dynamic_cast<const octave_ ## TS ## scalar&> (a1); \
    const octave_ ## TM ## matrix& v2 = dynamic_cast<const octave_ ## TM ## matrix&> (a2); \
                                                                         \
-   if (! v1.TS ## scalar_value ())                                      \
-     warn_divide_by_zero ();                                            \
-                                                                        \
-   octave_value retval = octave_value (v2.TM ## array_value () / v1.TS ## scalar_value ()); \
-   return retval;                                                       \
+   return octave_value (v2.TM ## array_value () / v1.TS ## scalar_value ()); \
    }                                                                    \
                                                                         \
   DEFINTNDBINOP_OP (PFX ## _el_mul, TS ## scalar, TM ## matrix, TS ## scalar, TM ## array, *, TI) \
@@ -371,11 +354,7 @@ along with Octave; see the file COPYING.  If not, see
    const octave_ ## TS ## scalar& v1 = dynamic_cast<const octave_ ## TS ## scalar&> (a1); \
    const octave_ ## TM ## matrix& v2 = dynamic_cast<const octave_ ## TM ## matrix&> (a2); \
                                                                         \
-   if (! v1.TS ## scalar_value ())                                      \
-     warn_divide_by_zero ();                                            \
-                                                                        \
-   octave_value retval = octave_value (v2.TM ## array_value () / v1.TS ## scalar_value ()); \
-   return retval;                                                       \
+   return octave_value (v2.TM ## array_value () / v1.TS ## scalar_value ()); \
    }
 
 #define OCTAVE_SM_INT_CMP_OPS(PFX, TS, TM)                              \
@@ -494,11 +473,7 @@ along with Octave; see the file COPYING.  If not, see
     const octave_ ## TM ## matrix& v1 = dynamic_cast<const octave_ ## TM ## matrix&> (a1); \
     const octave_ ## TS ## scalar& v2 = dynamic_cast<const octave_ ## TS ## scalar&> (a2); \
                                                                         \
-    if (! v2.TS ## scalar_value ())                                     \
-      warn_divide_by_zero ();                                           \
-                                                                        \
-    octave_value retval = octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
-    return retval;                                                      \
+    return octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
   }                                                                     \
                                                                         \
   /* DEFBINOP_FN (PFX ## _pow, TM ## matrix, TS ## scalar, xpow) */     \
@@ -521,11 +496,7 @@ along with Octave; see the file COPYING.  If not, see
     const octave_ ## TM ## matrix& v1 = dynamic_cast<const octave_ ## TM ## matrix&> (a1); \
     const octave_ ## TS ## scalar& v2 = dynamic_cast<const octave_ ## TS ## scalar&> (a2); \
                                                                         \
-    if (! v2.TS ## scalar_value ())                                     \
-      warn_divide_by_zero ();                                           \
-                                                                        \
-    octave_value retval = octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
-    return retval;                                                      \
+    return octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
   }                                                                     \
                                                                         \
   DEFINTNDBINOP_FN (PFX ## _el_pow, TM ## matrix, TS ## scalar, TM ## array, TS ## scalar, elem_xpow, TI, .^) \

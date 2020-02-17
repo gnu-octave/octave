@@ -43,7 +43,7 @@
 ## @seealso{griddata, griddatan, delaunayn}
 ## @end deftypefn
 
-function vi = griddata3 (x, y, z, v, xi, yi, zi, method, varargin)
+function vi = griddata3 (x, y, z, v, xi, yi, zi, method = "linear", varargin)
 
   if (nargin < 7)
     print_usage ();
@@ -74,7 +74,7 @@ function vi = griddata3 (x, y, z, v, xi, yi, zi, method, varargin)
     error ("griddata3: XI, YI, and ZI must be vectors or matrices of the same size");
   endif
 
-  vi = griddatan ([x(:), y(:), z(:)], v(:), [xi(:), yi(:), zi(:)], varargin{:});
+  vi = griddatan ([x(:), y(:), z(:)], v(:), [xi(:), yi(:), zi(:)], method, varargin{:});
   vi = reshape (vi, size (xi));
 
 endfunction
@@ -104,4 +104,4 @@ endfunction
 %! [xi, yi, zi] = meshgrid (-0.8:0.2:0.8);
 %! vi = griddata3 (x, y, z, v, xi, yi, zi, "nearest");
 %! vv = vi - xi.^2 - yi.^2 - zi.^2;
-%! assert (max (abs (vv(:))), 0, 0.1);
+%! assert (max (abs (vv(:))), 0.385, 0.1);

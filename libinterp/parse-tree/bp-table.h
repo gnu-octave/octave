@@ -164,9 +164,6 @@ namespace octave
     intmap remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
                                              const std::string& fname);
   };
-
-  OCTAVE_DEPRECATED (5, "use 'octave::get_user_code' instead")
-  extern octave_user_code * get_user_code (const std::string& fname = "");
 }
 
 #endif

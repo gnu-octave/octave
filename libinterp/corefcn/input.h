@@ -278,17 +278,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (5, "use 'octave::input_system::yes_or_no' instead")
-extern bool octave_yes_or_no (const std::string& prompt);
-
-OCTAVE_DEPRECATED (5, "use 'octave::input_system::clear_input_event_hooks' instead")
-extern void remove_input_event_hook_functions (void);
-
-OCTAVE_DEPRECATED (5, "this function will be removed in a future version of Octave")
-extern OCTINTERP_API FILE * get_input_from_stdin (void);
-
-#endif
-
 #endif

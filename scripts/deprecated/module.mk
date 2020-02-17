@@ -1,7 +1,6 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/output_max_field_width.m \
   %reldir%/runtests.m
 
 %canon_reldir%dir = $(fcnfiledir)/deprecated

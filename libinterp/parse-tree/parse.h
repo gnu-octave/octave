@@ -656,14 +656,6 @@ namespace octave
   extern OCTINTERP_API octave_value_list
   feval (const octave_value_list& args, int nargout = 0);
 
-  OCTAVE_DEPRECATED (5, "use 'octave::interpreter::eval_string' instead")
-  extern OCTINTERP_API octave_value_list
-  eval_string (const std::string&, bool silent, int& parse_status, int nargout);
-
-  OCTAVE_DEPRECATED (5, "use 'octave::interpreter::eval_string' instead")
-  extern OCTINTERP_API octave_value
-  eval_string (const std::string&, bool silent, int& parse_status);
-
   extern OCTINTERP_API void
   cleanup_statement_list (tree_statement_list **lst);
 }

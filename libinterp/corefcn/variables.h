@@ -116,8 +116,4 @@ set_internal_variable (int& var, const octave_value_list& args,
 extern OCTINTERP_API std::string
 maybe_missing_function_hook (const std::string& name);
 
-OCTAVE_DEPRECATED (5, "this function will be removed in a future version of Octave")
-extern OCTINTERP_API string_vector
-get_struct_elts (const std::string& text);
-
 #endif

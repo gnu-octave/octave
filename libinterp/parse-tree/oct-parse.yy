@@ -5290,23 +5290,6 @@ builtin ("sin", 0)
 
 namespace octave
 {
-  octave_value_list
-  eval_string (const std::string& eval_str, bool silent,
-               int& parse_status, int nargout)
-  {
-    interpreter& interp = __get_interpreter__ ("eval_string");
-
-    return interp.eval_string (eval_str, silent, parse_status, nargout);
-  }
-
-  octave_value
-  eval_string (const std::string& eval_str, bool silent, int& parse_status)
-  {
-    interpreter& interp = __get_interpreter__ ("eval_string");
-
-    return interp.eval_string (eval_str, silent, parse_status);
-  }
-
   void
   cleanup_statement_list (tree_statement_list **lst)
   {

@@ -997,12 +997,4 @@ namespace octave
 
     return retval;
   }
-
-  octave_user_code *
-  get_user_code (const std::string& fname)
-  {
-    tree_evaluator& tw = __get_evaluator__ ("get_user_code");
-
-    return tw.get_user_code (fname);
-  }
 }

@@ -53,25 +53,26 @@
 
 function retval = orient (varargin)
 
-  nargs = nargin;
-
-  if (nargs > 0 && numel (varargin{1}) == 1 && isfigure (varargin{1}))
+  cf = [];
+  if (nargin > 0 && isscalar (varargin{1}) && isfigure (varargin{1}))
     cf = varargin{1};
     varargin(1) = [];
-    nargs -= 1;
-  else
-    cf = gcf ();
+    nargin = nargin - 1;
   endif
 
-  if (nargs > 1)
+  if (nargin > 1)
     print_usage ();
+  endif
+
+  if (isempty (cf))
+    cf = gcf ();
   endif
 
   paperunits = get (cf, "paperunits");
   unwind_protect
     set (cf, "paperunits", "inches");  # All Matlab calculations assume inches.
 
-    if (nargs == 0)
+    if (nargin == 0)
       retval = get (cf, "paperorientation");
       if (strcmp (retval, "portrait"))
         papersize = get (cf, "papersize");
@@ -103,7 +104,7 @@ function retval = orient (varargin)
           papersize = get (cf, "papersize");
           set (cf, "paperposition", [0.25, 0.25, (papersize - 0.5)]);
         endif
-      elseif (strcmpi (varargin{1}, "tall"))
+      elseif (strcmpi (orientation, "tall"))
         orient ("portrait");
         papersize = get (cf, "papersize");
         set (cf, "paperposition", [0.25, 0.25, (papersize - 0.5)]);
@@ -119,50 +120,52 @@ function retval = orient (varargin)
 endfunction
 
 
-%!shared papersize, paperposition, fullpaperposition, hfig
+%!test
 %! papersize = [8.5, 11];
-%! paperposition = [0.25, 2.5, 8, 6];
+%! paperposition = [1.342185258002766, 3.319138943502075, 5.815629483994468, 4.361722112995850];
 %! fullpaperposition = [0.25, 0.25, (papersize-0.5)];
 %! hfig = figure ("visible", "off");
-%! set (hfig, "paperunits", "inches");
-%! set (hfig, "paperorientation", "portrait");
-%! set (hfig, "papersize", papersize);
-%! set (hfig, "paperposition", paperposition);
-
-%!test
-%! orient portrait;
-%! assert (orient, "portrait");  # default
-%! assert (get (hfig, "papersize"), papersize);
-%! assert (get (hfig, "paperposition"), paperposition);
-
-%!test
-%! orient landscape;
-%! assert (orient,"landscape");  # change to landscape
-%! assert (get (hfig, "papersize"), papersize([2, 1]));
-%! assert (get (hfig, "paperposition"), fullpaperposition([1, 2, 4, 3]));
-
-%!test
-%! orient portrait   # change back to portrait
-%! assert (orient, "portrait");
-%! assert (get (hfig, "papersize"), papersize);
-%! assert (get (hfig, "paperposition"), paperposition);
-
-%!test
-%! orient landscape;
-%! orient tall;
-%! assert (orient, "tall");
-%! assert (get (hfig, "papersize"), papersize);
-%! assert (get (hfig, "paperposition"), fullpaperposition);
-
-%!test
-%! orient portrait   # errors don't change the state
-%! assert (orient, "portrait");
-%! assert (get (hfig, "papersize"), papersize);
-%! assert (get (hfig, "paperposition"), paperposition);
+%! unwind_protect
+%!   set (hfig, "paperunits", "inches");
+%!   set (hfig, "paperorientation", "portrait");
+%!   set (hfig, "papersize", papersize);
+%!   set (hfig, "paperposition", paperposition);
+%!
+%!   orient portrait;
+%!   assert (orient, "portrait");  # default
+%!   assert (get (hfig, "papersize"), papersize);
+%!   assert (get (hfig, "paperposition"), paperposition);
+%!
+%!   orient landscape;
+%!   assert (orient,"landscape");  # change to landscape
+%!   assert (get (hfig, "papersize"), papersize([2, 1]));
+%!   assert (get (hfig, "paperposition"), fullpaperposition([1, 2, 4, 3]));
+%!
+%!   orient portrait   # change back to portrait
+%!   assert (orient, "portrait");
+%!   assert (get (hfig, "papersize"), papersize);
+%!   assert (get (hfig, "paperposition"), paperposition);
+%!
+%!   orient landscape;
+%!   orient tall;
+%!   assert (orient, "tall");
+%!   assert (get (hfig, "papersize"), papersize);
+%!   assert (get (hfig, "paperposition"), fullpaperposition);
+%!
+%!   orient portrait   # errors don't change the state
+%!   assert (orient, "portrait");
+%!   assert (get (hfig, "papersize"), papersize);
+%!   assert (get (hfig, "paperposition"), paperposition);
+%! unwind_protect_cleanup
+%!   close (hfig);
+%! end_unwind_protect
 
 ## Test input validation
 %!error orient (1.73, 2.5)
-%!error <unknown ORIENTATION> orient ("nobody")
-
-%!test
-%! close (hfig);
+%!error <unknown ORIENTATION>
+%! hfig = figure ("visible", "off");
+%! unwind_protect
+%!   orient ("nobody");
+%! unwind_protect_cleanup
+%!   close (hfig);
+%! end_unwind_protect

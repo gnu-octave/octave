@@ -409,7 +409,7 @@
 ## respectively.  Allowed values for @var{N} are 1, 2, or 4.
 ## @end table
 ##
-## @seealso{saveas, hgsave, getframe, orient, figure}
+## @seealso{saveas, getframe, savefig, hgsave, orient, figure}
 ## @end deftypefn
 
 function rgbout = print (varargin)

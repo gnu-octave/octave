@@ -76,7 +76,7 @@
 ## @end example
 ##
 ## Programming Notes: The full list of properties is documented at
-## @ref{Text Properties,,Text Properties}.
+## @ref{Text Properties}.
 ##
 ## Any numeric entries in a cell array will be converted to text using
 ## @code{sprintf ("%g")}.  For more precise control of the appearance convert

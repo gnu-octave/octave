@@ -47,7 +47,7 @@
 ## objects associated with @var{hax} so that they are also visible.
 ##
 ## Programming Note: The full list of properties is documented at
-## @ref{Axes Properties,,Axes Properties}.
+## @ref{Axes Properties}.
 ## @seealso{gca, set, get}
 ## @end deftypefn
 

@@ -69,7 +69,7 @@
 ## object.
 ##
 ## Programming Note: The full list of properties is documented at
-## @ref{Light Properties,,Light Properties}.
+## @ref{Light Properties}.
 ## @seealso{lighting, material, patch, surface}
 ## @end deftypefn
 

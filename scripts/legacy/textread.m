@@ -346,7 +346,7 @@ endfunction
 ## Read multiple lines using empty format string
 %!test
 %! f = tempname ();
-%! unlink (f);
+%! sts = unlink (f);
 %! fid = fopen (f, "w");
 %! d = rand (1, 4);
 %! fprintf (fid, "  %f %f   %f  %f ", d);
@@ -358,7 +358,7 @@ endfunction
 ## Empty format, corner case = one line w/o EOL
 %!test
 %! f = tempname ();
-%! unlink (f);
+%! sts = unlink (f);
 %! fid = fopen (f, "w");
 %! d = rand (1, 4);
 %! fprintf (fid, "  %f %f   %f  %f ", d);

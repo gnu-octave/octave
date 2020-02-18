@@ -1073,13 +1073,14 @@ system-dependent error message.
 %! endif
 */
 
-DEFMETHODX ("unlink", Funlink, interp, args, ,
+DEFMETHODX ("unlink", Funlink, interp, args, nargout,
             doc: /* -*- texinfo -*-
-@deftypefn {} {[@var{err}, @var{msg}] =} unlink (@var{file})
+@deftypefn  {} {} unlink (@var{file})
+@deftypefnx {} {[@var{status}, @var{msg}] =} unlink (@var{file})
 Delete the file named @var{file}.
 
-If successful, @var{err} is 0 and @var{msg} is an empty string.
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+If successful, @var{status} is 0 and @var{msg} is an empty string.
+Otherwise, @var{status} is -1 and @var{msg} contains a system-dependent
 error message.
 @seealso{delete, rmdir}
 @end deftypefn */)
@@ -1089,6 +1090,7 @@ error message.
 
   std::string name = args(0).xstring_value ("unlink: FILE must be a string");
 
+  octave_value_list retval;
   std::string msg;
 
   octave::event_manager& evmgr = interp.get_event_manager ();
@@ -1099,7 +1101,20 @@ error message.
 
   evmgr.file_renamed (status == 0);
 
-  return ovl (status, msg);
+  if (nargout == 0)
+    {
+      if (status < 0)
+        error ("unlink: operation failed: %s", msg.c_str ());
+    }
+  else
+    {
+      if (status < 0)
+        retval = ovl (-1.0, msg);
+      else
+        retval = ovl (0.0, "");
+    }
+
+  return retval;
 }
 
 /*
@@ -1111,13 +1126,13 @@ error message.
 %! endif
 %! fdisp (fid, pi);
 %! fclose (fid);
-%! [err, msg] = unlink (file);
-%! assert (err, 0);
+%! [status, msg] = unlink (file);
+%! assert (status, 0);
 %! assert (msg, "");
 
 ## Test input validation
-%!error unlink ()
-%!error unlink ("a", "b")
+%!error <Invalid call> unlink ()
+%!error <Invalid call> unlink ("a", "b")
 %!error <FILE must be a string> unlink (123)
 */
 

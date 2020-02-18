@@ -63,7 +63,7 @@
 ## and inserts it in the current axes.
 ##
 ## Graphic Properties: The full list of properties is documented at
-## @ref{Image Properties,,Image Properties}.
+## @ref{Image Properties}.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 

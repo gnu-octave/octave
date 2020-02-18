@@ -59,7 +59,7 @@
 ## handles) to the line objects created.
 ##
 ## Programming Note: The full list of properties is documented at
-## @ref{Line Properties,,Line Properties}.
+## @ref{Line Properties}.
 ##
 ## The function @code{line} differs from @code{plot} in that line objects are
 ## inserted in to the current axes without first clearing the plot.

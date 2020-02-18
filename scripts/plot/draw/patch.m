@@ -72,7 +72,7 @@
 ## object.
 ##
 ## Programming Note: The full list of properties is documented at
-## @ref{Patch Properties,,Patch Properties}.  Useful patch properties include:
+## @ref{Patch Properties}.  Useful patch properties include:
 ## @qcode{"cdata"}, @qcode{"edgecolor"}, @qcode{"facecolor"}, @qcode{"faces"},
 ## and @qcode{"facevertexcdata"}.
 ## @seealso{fill, get, set}

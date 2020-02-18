@@ -45,7 +45,7 @@
 ## object.
 ##
 ## Programming Note: The full list of properties is documented at
-## @ref{Figure Properties,,Figure Properties}.
+## @ref{Figure Properties}.
 ## @seealso{axes, gcf, shg, clf, close}
 ## @end deftypefn
 

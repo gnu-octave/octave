@@ -51,7 +51,7 @@
 ## surface object.
 ##
 ## Programming Note: The full list of properties is documented at
-## @ref{Surface Properties,,Surface Properties}.
+## @ref{Surface Properties}.
 ## @seealso{surf, mesh, patch, line}
 ## @end deftypefn
 

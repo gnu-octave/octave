@@ -304,14 +304,14 @@ identifier.
   return retval;
 }
 
-DEFUNX ("link", Flink, args, ,
+DEFUNX ("link", Flink, args, nargout,
         doc: /* -*- texinfo -*-
 @deftypefn  {} {} link @var{old} @var{new}
-@deftypefnx {} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})
+@deftypefnx {} {[@var{status}, @var{msg}] =} link (@var{old}, @var{new})
 Create a new link (also known as a hard link) to an existing file.
 
-If successful, @var{err} is 0 and @var{msg} is an empty string.
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+If successful, @var{status} is 0 and @var{msg} is an empty string.
+Otherwise, @var{status} is -1 and @var{msg} contains a system-dependent
 error message.
 @seealso{symlink, unlink, readlink, lstat}
 @end deftypefn */)
@@ -325,24 +325,35 @@ error message.
   from = octave::sys::file_ops::tilde_expand (from);
   to = octave::sys::file_ops::tilde_expand (to);
 
+  octave_value_list retval;
   std::string msg;
 
   int status = octave::sys::link (from, to, msg);
 
-  if (status < 0)
-    return ovl (-1.0, msg);
+  if (nargout == 0)
+    {
+      if (status < 0)
+        error ("link: operation failed: %s", msg.c_str ());
+    }
   else
-    return ovl (status, "");
+    {
+      if (status < 0)
+        retval = ovl (-1.0, msg);
+      else
+        retval = ovl (0.0, "");
+    }
+
+  return retval;
 }
 
-DEFUNX ("symlink", Fsymlink, args, ,
+DEFUNX ("symlink", Fsymlink, args, nargout,
         doc: /* -*- texinfo -*-
 @deftypefn  {} {} symlink @var{old} @var{new}
-@deftypefnx {} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})
+@deftypefnx {} {[@var{status}, @var{msg}] =} symlink (@var{old}, @var{new})
 Create a symbolic link @var{new} which contains the string @var{old}.
 
-If successful, @var{err} is 0 and @var{msg} is an empty string.
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+If successful, @var{status} is 0 and @var{msg} is an empty string.
+Otherwise, @var{status} is -1 and @var{msg} contains a system-dependent
 error message.
 @seealso{link, unlink, readlink, lstat}
 @end deftypefn */)
@@ -356,14 +367,25 @@ error message.
   from = octave::sys::file_ops::tilde_expand (from);
   to = octave::sys::file_ops::tilde_expand (to);
 
+  octave_value_list retval;
   std::string msg;
 
   int status = octave::sys::symlink (from, to, msg);
 
-  if (status < 0)
-    return ovl (-1.0, msg);
+  if (nargout == 0)
+    {
+      if (status < 0)
+        error ("symlink: operation failed: %s", msg.c_str ());
+    }
   else
-    return ovl (status, "");
+    {
+      if (status < 0)
+        retval = ovl (-1.0, msg);
+      else
+        retval = ovl (0.0, "");
+    }
+
+  return retval;
 }
 
 DEFUNX ("readlink", Freadlink, args, ,

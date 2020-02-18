@@ -296,9 +296,9 @@ identifier.
   else
     {
       if (status < 0)
-        retval = ovl (false, msg, "rmdir");
+        retval = ovl (0.0, msg, "rmdir");
       else
-        retval = ovl (true, "", "");
+        retval = ovl (1.0, "", "");
     }
 
   return retval;

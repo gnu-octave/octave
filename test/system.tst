@@ -104,7 +104,7 @@
 %!test
 %! crr = confirm_recursive_rmdir ();
 %! confirm_recursive_rmdir (0);
-%! assert (!rmdir ("foo", "s"));
+%! assert (! rmdir ("foo", "s"));
 %! confirm_recursive_rmdir (crr);
 
 %!test

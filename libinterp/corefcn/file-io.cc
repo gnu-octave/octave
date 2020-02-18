@@ -2890,7 +2890,7 @@ see @code{tmpfile}.
 %!   assert (tmpdir, tmp_tmpdir);
 %!   assert (tmpfname (1:4), "file");
 %! unwind_protect_cleanup
-%!   rmdir (tmp_tmpdir);
+%!   sts = rmdir (tmp_tmpdir);
 %!   for i = 1:numel (envvar)
 %!     if (isempty (envdir{i}))
 %!       unsetenv (envvar{i});

@@ -224,7 +224,7 @@ endfunction
 %!   chdir (orig_dir);
 %!   confirm_recursive_rmdir (false, "local");
 %!   if (exist (tmp_dir))
-%!     rmdir (tmp_dir, "s");
+%!     sts = rmdir (tmp_dir, "s");
 %!   endif
 %! end_unwind_protect
 
@@ -238,7 +238,7 @@ endfunction
 %!   assert (list(1).folder, canonicalize_file_name (tmp_dir));
 %! unwind_protect_cleanup
 %!   if (exist (tmp_dir))
-%!     rmdir (tmp_dir);
+%!     sts = rmdir (tmp_dir);
 %!   endif
 %! end_unwind_protect
 

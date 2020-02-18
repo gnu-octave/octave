@@ -230,6 +230,6 @@ endfunction
 %!   end_unwind_protect
 %! unwind_protect_cleanup
 %!   confirm_recursive_rmdir (false, "local");
-%!   rmdir (test_dir, "s");
+%!   sts = rmdir (test_dir, "s");
 %!   unlink (fname);
 %! end_unwind_protect

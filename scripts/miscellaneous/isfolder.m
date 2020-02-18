@@ -70,8 +70,8 @@ endfunction
 %!   addpath (d);
 %!   assert (! isfolder (n));
 %! unwind_protect_cleanup
-%!   try, rmdir (tmp); end_try_catch
-%!   try, rmpath (d); end_try_catch
+%!   sts = rmdir (tmp);
+%!   rmpath (d);
 %! end_unwind_protect
 
 ## Test input validation

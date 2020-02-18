@@ -145,7 +145,7 @@ function install (files, handle_deps, prefix, archprefix, verbose,
   catch
     ## Something went wrong, delete tmpdirs.
     for i = 1:length (tmpdirs)
-      rmdir (tmpdirs{i}, "s");
+      sts = rmdir (tmpdirs{i}, "s");
     endfor
     rethrow (lasterror ());
   end_try_catch
@@ -199,7 +199,7 @@ function install (files, handle_deps, prefix, archprefix, verbose,
   catch
     ## Something went wrong, delete tmpdirs.
     for i = 1:length (tmpdirs)
-      rmdir (tmpdirs{i}, "s");
+      sts = rmdir (tmpdirs{i}, "s");
     endfor
     rethrow (lasterror ());
   end_try_catch
@@ -218,7 +218,7 @@ function install (files, handle_deps, prefix, archprefix, verbose,
   catch
     ## Something went wrong, delete tmpdirs.
     for i = 1:length (tmpdirs)
-      rmdir (tmpdirs{i}, "s");
+      sts = rmdir (tmpdirs{i}, "s");
     endfor
     rethrow (lasterror ());
   end_try_catch
@@ -237,11 +237,11 @@ function install (files, handle_deps, prefix, archprefix, verbose,
   catch
     ## Something went wrong, delete tmpdirs.
     for i = 1:length (tmpdirs)
-      rmdir (tmpdirs{i}, "s");
+      sts = rmdir (tmpdirs{i}, "s");
     endfor
     for i = 1:length (descriptions)
-      rmdir (descriptions{i}.dir, "s");
-      rmdir (getarchdir (descriptions{i}), "s");
+      sts = rmdir (descriptions{i}.dir, "s");
+      sts = rmdir (getarchdir (descriptions{i}), "s");
     endfor
     rethrow (lasterror ());
   end_try_catch
@@ -252,8 +252,8 @@ function install (files, handle_deps, prefix, archprefix, verbose,
     if (dirempty (descriptions{i}.dir, {"packinfo", "doc"})
         && dirempty (getarchdir (descriptions{i})))
       warning ("package %s is empty\n", descriptions{i}.name);
-      rmdir (descriptions{i}.dir, "s");
-      rmdir (getarchdir (descriptions{i}), "s");
+      sts = rmdir (descriptions{i}.dir, "s");
+      sts = rmdir (getarchdir (descriptions{i}), "s");
       descriptions(i) = [];
     endif
   endfor
@@ -282,10 +282,10 @@ function install (files, handle_deps, prefix, archprefix, verbose,
   catch
     ## Something went wrong, delete tmpdirs.
     for i = 1:length (tmpdirs)
-      rmdir (tmpdirs{i}, "s");
+      sts = rmdir (tmpdirs{i}, "s");
     endfor
     for i = 1:length (descriptions)
-      rmdir (descriptions{i}.dir, "s");
+      sts = rmdir (descriptions{i}.dir, "s");
     endfor
     if (global_install)
       printf ("error: couldn't append to %s\n", global_list);
@@ -376,7 +376,7 @@ function prepare_installation (desc, packdir)
   if (! isfolder (inst_dir))
     [status, msg] = mkdir (inst_dir);
     if (status != 1)
-      rmdir (desc.dir, "s");
+      sts = rmdir (desc.dir, "s");
       error ("the 'inst' directory did not exist and could not be created: %s",
              msg);
     endif
@@ -450,7 +450,7 @@ function copy_built_files (desc, packdir, verbose)
         endif
         [status, output] = copyfile (archindependent, instdir);
         if (status != 1)
-          rmdir (desc.dir, "s");
+          sts = rmdir (desc.dir, "s");
           error ("Couldn't copy files from 'src' to 'inst': %s", output);
         endif
       endif
@@ -465,7 +465,7 @@ function copy_built_files (desc, packdir, verbose)
         endif
         [status, output] = copyfile (archdependent, archdir);
         if (status != 1)
-          rmdir (desc.dir, "s");
+          sts = rmdir (desc.dir, "s");
           error ("Couldn't copy files from 'src' to 'inst': %s", output);
         endif
       endif
@@ -517,7 +517,7 @@ function copy_files (desc, packdir, global_install)
   if (! dirempty (instdir))
     [status, output] = copyfile (fullfile (instdir, "*"), desc.dir);
     if (status != 1)
-      rmdir (desc.dir, "s");
+      sts = rmdir (desc.dir, "s");
       error ("couldn't copy files to the installation directory");
     endif
     if (isfolder (fullfile (desc.dir, getarch ()))
@@ -532,39 +532,39 @@ function copy_files (desc, packdir, global_install)
             if (! isfolder (octm3))
               [status, output] = mkdir (octm3);
               if (status != 1)
-                rmdir (desc.dir, "s");
+                sts = rmdir (desc.dir, "s");
                 error ("couldn't create installation directory %s : %s",
                        octm3, output);
               endif
             endif
             [status, output] = mkdir (octm2);
             if (status != 1)
-              rmdir (desc.dir, "s");
+              sts = rmdir (desc.dir, "s");
               error ("couldn't create installation directory %s : %s",
                      octm2, output);
             endif
           endif
           [status, output] = mkdir (octm1);
           if (status != 1)
-            rmdir (desc.dir, "s");
+            sts = rmdir (desc.dir, "s");
             error ("couldn't create installation directory %s : %s",
                    octm1, output);
           endif
         endif
         [status, output] = mkdir (octfiledir);
         if (status != 1)
-          rmdir (desc.dir, "s");
+          sts = rmdir (desc.dir, "s");
           error ("couldn't create installation directory %s : %s",
           octfiledir, output);
         endif
       endif
       [status, output] = movefile (fullfile (desc.dir, getarch (), "*"),
                                    octfiledir);
-      rmdir (fullfile (desc.dir, getarch ()), "s");
+      sts = rmdir (fullfile (desc.dir, getarch ()), "s");
 
       if (status != 1)
-        rmdir (desc.dir, "s");
-        rmdir (octfiledir, "s");
+        sts = rmdir (desc.dir, "s");
+        sts = rmdir (octfiledir, "s");
         error ("couldn't copy files to the installation directory");
       endif
     endif
@@ -575,8 +575,8 @@ function copy_files (desc, packdir, global_install)
   packinfo = fullfile (desc.dir, "packinfo");
   [status, msg] = mkdir (packinfo);
   if (status != 1)
-    rmdir (desc.dir, "s");
-    rmdir (octfiledir, "s");
+    sts = rmdir (desc.dir, "s");
+    sts = rmdir (octfiledir, "s");
     error ("couldn't create packinfo directory: %s", msg);
   endif
 
@@ -596,8 +596,8 @@ function copy_files (desc, packdir, global_install)
       write_index (desc, fullfile (packdir, "inst"),
                    fullfile (packinfo, "INDEX"), global_install);
     catch
-      rmdir (desc.dir, "s");
-      rmdir (octfiledir, "s");
+      sts = rmdir (desc.dir, "s");
+      sts = rmdir (octfiledir, "s");
       rethrow (lasterror ());
     end_try_catch
   endif
@@ -629,8 +629,8 @@ function packinfo_copy_file (filename, requirement, packdir, packinfo, desc, oct
   else
     [status, output] = copyfile (filepath, packinfo);
     if (status != 1)
-      rmdir (desc.dir, "s");
-      rmdir (octfiledir, "s");
+      sts = rmdir (desc.dir, "s");
+      sts = rmdir (octfiledir, "s");
       error ("Couldn't copy %s file: %s", filename, output);
     endif
   endif
@@ -801,8 +801,8 @@ function finish_installation (desc, packdir, global_install)
       cd (wd);
     catch
       cd (wd);
-      rmdir (desc.dir, "s");
-      rmdir (getarchdir (desc), "s");
+      sts = rmdir (desc.dir, "s");
+      sts = rmdir (getarchdir (desc), "s");
       rethrow (lasterror ());
     end_try_catch
   endif

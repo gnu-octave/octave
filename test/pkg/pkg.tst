@@ -31,6 +31,11 @@
 
 %!shared old_prefix, old_archprefix, old_local_list, old_global_list, prefix, restorecfg, restorecache, restoreglobalcache, rmtmpdir, mfile_pkg_name, mfile_pkg_tgz
 
+%!function test_cleanup (prefix)
+%! confirm_recursive_rmdir (0, "local");
+%! sts = rmdir (prefix, "s");
+%!endfunction
+
 %!testif HAVE_Z
 %! ## Do all tests in a temporary directory
 %! [old_prefix, old_archprefix] = pkg ("prefix");
@@ -48,7 +53,7 @@
 %! pkg ("prefix", prefix, prefix);
 %! pkg ("local_list", fullfile (prefix, "octave_packages"));
 %! pkg ("global_list", fullfile (prefix, "octave_packages"));
-%! rmtmpdir = @onCleanup (@() confirm_recursive_rmdir (0, "local") && rmdir (prefix, "s"));
+%! rmtmpdir = @onCleanup (@() test_cleanup (prefix));
 %!
 %! ## Create tar.gz file packages of testing directories in prefix directory
 %! mfile_pkg_name = {"mfile_basic_test", "mfile_minimal_test"};

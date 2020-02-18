@@ -112,7 +112,7 @@ endfunction
 %!   assert (isfolder (dir));
 %! unwind_protect_cleanup
 %!   confirm_recursive_rmdir (false, "local");
-%!   rmdir (dir1, "s");
+%!   sts = rmdir (dir1, "s");
 %! end_unwind_protect
 
 %!test <*53031>
@@ -125,8 +125,8 @@ endfunction
 %!   assert (status);
 %!   assert (isfolder (fullfile (tmp_dir, "subdir")));
 %! unwind_protect_cleanup
-%!   rmdir (fullfile (tmp_dir, "subdir"));
-%!   rmdir (tmp_dir);
+%!   sts = rmdir (fullfile (tmp_dir, "subdir"));
+%!   sts = rmdir (tmp_dir);
 %!   if (isempty (HOME))
 %!     unsetenv ("HOME");
 %!   else

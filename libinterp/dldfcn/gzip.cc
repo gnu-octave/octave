@@ -700,7 +700,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!      test_function (test_dir, z)
 %!    unwind_protect_cleanup
 %!      confirm_recursive_rmdir (false, "local");
-%!      rmdir (test_dir, "s");
+%!      sts = rmdir (test_dir, "s");
 %!    end_unwind_protect
 %!  endfor
 %!endfunction
@@ -840,7 +840,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  unwind_protect_cleanup
 %!    confirm_recursive_rmdir (false, "local");
 %!    for idx = 1:numel(out_dirs)
-%!      rmdir (out_dirs{idx}, "s");
+%!      sts = rmdir (out_dirs{idx}, "s");
 %!    endfor
 %!  end_unwind_protect
 %!endfunction

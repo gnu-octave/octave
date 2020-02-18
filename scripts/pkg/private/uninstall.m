@@ -122,6 +122,11 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
         endif
       endif
       if (isfolder (desc.dir))
+        ## FIXME: If first call to rmdir fails, then error() will 
+        ##        stop further processing of getarchdir & archprefix.
+        ##        If this is, in fact, correct, then calls should
+        ##        just be shortened to rmdir (...) and let rmdir()
+        ##        report failure and reason for failure.
         [status, msg] = rmdir (desc.dir, "s");
         if (status != 1 && isfolder (desc.dir))
           error ("couldn't delete directory %s: %s", desc.dir, msg);
@@ -131,7 +136,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
           error ("couldn't delete directory %s: %s", getarchdir (desc), msg);
         endif
         if (dirempty (desc.archprefix))
-          rmdir (desc.archprefix, "s");
+          sts = rmdir (desc.archprefix, "s");
         endif
       else
         warning ("directory %s previously lost", desc.dir);

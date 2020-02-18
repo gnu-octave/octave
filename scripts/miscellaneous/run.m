@@ -114,7 +114,7 @@ endfunction
 %!   assert (_5yVNhWVJWJn47RKnzxPsyb_, 1337);
 %! unwind_protect_cleanup
 %!   unlink (test_script);
-%!   rmdir (tmp_dir);
+%!   sts = rmdir (tmp_dir);
 %! end_unwind_protect
 
 ## Test function file execution
@@ -140,7 +140,7 @@ endfunction
 %!   assert (tstval2, true);
 %! unwind_protect_cleanup
 %!   unlink (test_function);
-%!   rmdir (tmp_dir);
+%!   sts = rmdir (tmp_dir);
 %!   path (path_orig);
 %! end_unwind_protect
 

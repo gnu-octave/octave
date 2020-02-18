@@ -151,9 +151,7 @@ endfunction
 %!
 %! unwind_protect_cleanup
 %!   unlink (fullfile (tmp_home, ".octave_prefs"));
-%!   if (isfolder (tmp_home))
-%!     rmdir (tmp_home);
-%!   endif
+%!   sts = rmdir (tmp_home);
 %!   if (isempty (HOME))
 %!     unsetenv ("HOME");
 %!   else

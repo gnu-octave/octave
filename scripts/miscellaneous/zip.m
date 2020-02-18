@@ -130,7 +130,7 @@ endfunction
 %!   unlink ([dirname, filesep, basename, ext]);
 %!   unlink (zipfile);
 %!   unlink ([zipfile ".zip"]);
-%!   rmdir (dirname);
+%!   sts = rmdir (dirname);
 %! end_unwind_protect
 
 ## Test input validation

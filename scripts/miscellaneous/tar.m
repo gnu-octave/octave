@@ -149,12 +149,8 @@ endfunction
 %!   chdir (orig_dir);
 %!   unlink (tarname);
 %!   confirm_recursive_rmdir (false, "local");
-%!   if (exist (dirname))
-%!     rmdir (dirname, "s");
-%!   endif
-%!   if (exist (outdir))
-%!     rmdir (outdir, "s");
-%!   endif
+%!   sts = rmdir (dirname, "s");
+%!   sts = rmdir (outdir, "s");
 %! end_unwind_protect
 
 ## Test input validation

@@ -372,7 +372,7 @@ endfunction
 %!     unlink (filename);
 %!     unlink ([filename ".orig"]);
 %!     confirm_recursive_rmdir (false, "local");
-%!     rmdir (dirname, "s");
+%!     sts = rmdir (dirname, "s");
 %!   end_unwind_protect
 %! unwind_protect_cleanup
 %!   ## Restore environment variables TMPDIR, TMP

@@ -224,7 +224,7 @@ Internal function called by mkdir.m.
     }
 }
 
-DEFMETHODX ("rmdir", Frmdir, interp, args, ,
+DEFMETHODX ("rmdir", Frmdir, interp, args, nargout,
             doc: /* -*- texinfo -*-
 @deftypefn  {} {} rmdir @var{dir}
 @deftypefnx {} {} rmdir (@var{dir}, "s")
@@ -250,6 +250,7 @@ identifier.
   std::string dirname = args(0).xstring_value ("rmdir: DIR must be a string");
 
   std::string fulldir = octave::sys::file_ops::tilde_expand (dirname);
+  octave_value_list retval;
   int status = -1;
   std::string msg;
 
@@ -287,10 +288,20 @@ identifier.
 
   evmgr.file_renamed (status >= 0);
 
-  if (status < 0)
-    return ovl (false, msg, "rmdir");
+  if (nargout == 0)
+    {
+      if (status < 0)
+        error ("rmdir: operation failed: %s", msg.c_str ());
+    }
   else
-    return ovl (true, "", "");
+    {
+      if (status < 0)
+        retval = ovl (false, msg, "rmdir");
+      else
+        retval = ovl (true, "", "");
+    }
+
+  return retval;
 }
 
 DEFUNX ("link", Flink, args, ,
@@ -567,8 +578,8 @@ glob ("*.*")
 %!       save (filename{n}, "a");
 %!     endfor
 %!   else
-%!     rmdir (tmpdir);
-%!     error ("Couldn't change to temporary dir");
+%!     sts = rmdir (tmpdir);
+%!     error ("Couldn't change to temporary directory");
 %!   endif
 %! else
 %!   error ("Couldn't create temporary directory");
@@ -580,7 +591,7 @@ glob ("*.*")
 %!   delete (filename{n});
 %! endfor
 %! cd (cwd);
-%! rmdir (tmpdir);
+%! sts = rmdir (tmpdir);
 %! assert (result1, {"file1"; "myfile1"});
 %! assert (result2, {"myfile1"});
 %! assert (result3, {"file1"; "file2"});

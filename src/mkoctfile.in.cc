@@ -601,6 +601,32 @@ get_temp_directory (void)
 }
 
 static std::string
+create_interleaved_complex_file (void)
+{
+  std::string tmpl = get_temp_directory () + "/oct-XXXXXX.c";
+
+  char *ctmpl = new char [tmpl.length () + 1];
+
+  ctmpl = strcpy (ctmpl, tmpl.c_str ());
+
+  // mkostemps will open the file and return a file descriptor.  We
+  // won't worry about closing it because we will need the file until we
+  // are done and then the file will be closed when mkoctfile exits.
+  int fd = octave_mkostemps_wrapper (ctmpl, 2);
+
+  // Make C++ string from filled-in template.
+  std::string retval (ctmpl);
+  delete [] ctmpl;
+
+  // Write symbol definition to file.
+  FILE *fid = fdopen (fd, "w");
+  fputs ("const int __mx_has_interleaved_complex__ = 1;\n", fid);
+  fclose (fid);
+
+  return retval;
+}
+
+static std::string
 tmp_objfile_name (void)
 {
   std::string tmpl = get_temp_directory () + "/oct-XXXXXX.o";
@@ -657,6 +683,11 @@ main (int argc, char **argv)
   bool depend = false;
   bool printonly = false;
   bool output_file_option = false;
+  bool creating_mex_file = false;
+  bool r2017b_option = false;
+  bool r2018a_option = false;
+  // The default for this may change in the future.
+  bool mx_has_interleaved_complex = false;
 
   for (int i = 1; i < argc; i++)
     {
@@ -737,6 +768,27 @@ main (int argc, char **argv)
         {
           std::cerr << "warning: -largeArrayDims and -compatibleArrayDims are accepted for compatibility, but ignored" << std::endl;
         }
+      else if (arg == "-R2017b")
+        {
+          if (r2018a_option)
+            {
+              std::cerr << "mkoctfile: only one of -R2017b and -R2018a may be used" << std::endl;
+              return 1;
+            }
+
+          r2017b_option = true;
+        }
+      else if (arg == "-R2018a")
+        {
+          if (r2017b_option)
+            {
+              std::cerr << "mkoctfile: only one of -R2017b and -R2018a may be used" << std::endl;
+              return 1;
+            }
+
+          r2018a_option = true;
+          mx_has_interleaved_complex = true;
+        }
       else if (starts_with (arg, "-Wl,") || starts_with (arg, "-l")
                || starts_with (arg, "-L") || starts_with (arg, "-R"))
         {
@@ -807,6 +859,8 @@ main (int argc, char **argv)
         }
       else if (arg == "-mex" || arg == "--mex")
         {
+          creating_mex_file = true;
+
           incflags += " -I.";
 #if defined (_MSC_VER)
           ldflags += " -Wl,-export:mexFunction";
@@ -847,10 +901,37 @@ main (int argc, char **argv)
         octfile = file;
     }
 
-  if (output_ext ==  ".mex"
-      && vars["ALL_CFLAGS"].find ("-g") != std::string::npos)
+  if (creating_mex_file)
     {
-      defs += " -DMEX_DEBUG";
+      if (vars["ALL_CFLAGS"].find ("-g") != std::string::npos)
+        defs += " -DMEX_DEBUG";
+
+      if (mx_has_interleaved_complex)
+        {
+          defs += " -DMX_HAS_INTERLEAVED_COMPLEX=1";
+
+          if (! compile_only)
+            {
+              // Create tmp C source file that defines an extern symbol
+              // that can be checked when loading the mex file to
+              // determine that the file was compiled expecting
+              // interleaved complex values.
+
+              std::string tmp_file = create_interleaved_complex_file ();
+
+              cfiles.push_back (tmp_file);
+            }
+        }
+    }
+  else
+    {
+      if (r2017b_option)
+        std::cerr << "warning: -R2017b option ignored unless creating mex file"
+                  << std::endl;
+
+      if (r2018a_option)
+        std::cerr << "warning: -R2018a option ignored unless creating mex file"
+                  << std::endl;
     }
 
   if (compile_only && output_file_option

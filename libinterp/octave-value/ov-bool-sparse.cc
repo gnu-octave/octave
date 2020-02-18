@@ -802,23 +802,34 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_sparse_bool_matrix::as_mxArray (void) const
+octave_sparse_bool_matrix::as_mxArray (bool interleaved) const
 {
   mwSize nz = nzmax ();
-  mxArray *retval = new mxArray (mxLOGICAL_CLASS, rows (), columns (),
-                                 nz, mxREAL);
-  bool *pr = static_cast<bool *> (retval->get_data ());
+  mwSize nr = rows ();
+  mwSize nc = columns ();
+
+  mxArray *retval = new mxArray (interleaved, mxLOGICAL_CLASS, nr, nc, nz,
+                                 mxREAL);
+
+  mxLogical *pd = static_cast<mxLogical *> (retval->get_data ());
   mwIndex *ir = retval->get_ir ();
-  mwIndex *jc = retval->get_jc ();
+
+  const bool *pdata = matrix.data ();
+  const octave_idx_type *pridx = matrix.ridx ();
 
   for (mwIndex i = 0; i < nz; i++)
     {
-      pr[i] = matrix.data (i);
-      ir[i] = matrix.ridx (i);
+      pd[i] = pdata[i];
+
+      ir[i] = pridx[i];
     }
 
-  for (mwIndex i = 0; i < columns () + 1; i++)
-    jc[i] = matrix.cidx (i);
+  mwIndex *jc = retval->get_jc ();
+
+  const octave_idx_type *pcidx = matrix.cidx ();
+
+  for (mwIndex i = 0; i < nc + 1; i++)
+    jc[i] = pcidx[i];
 
   return retval;
 }

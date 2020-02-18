@@ -724,21 +724,36 @@ octave_complex_matrix::print_raw (std::ostream& os,
 }
 
 mxArray *
-octave_complex_matrix::as_mxArray (void) const
+octave_complex_matrix::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxDOUBLE_CLASS, dims (), mxCOMPLEX);
-
-  double *pr = static_cast<double *> (retval->get_data ());
-  double *pi = static_cast<double *> (retval->get_imag_data ());
+  mxArray *retval = new mxArray (interleaved, mxDOUBLE_CLASS, dims (),
+                                 mxCOMPLEX);
 
   mwSize nel = numel ();
 
-  const Complex *p = matrix.data ();
+  const Complex *pdata = matrix.data ();
 
-  for (mwIndex i = 0; i < nel; i++)
+  if (interleaved)
     {
-      pr[i] = std::real (p[i]);
-      pi[i] = std::imag (p[i]);
+      mxComplexDouble *pd
+        = static_cast<mxComplexDouble *> (retval->get_data ());
+
+      for (mwIndex i = 0; i < nel; i++)
+        {
+          pd[i].real = pdata[i].real ();
+          pd[i].imag = pdata[i].imag ();
+        }
+    }
+  else
+    {
+      mxDouble *pr = static_cast<mxDouble *> (retval->get_data ());
+      mxDouble *pi = static_cast<mxDouble *> (retval->get_imag_data ());
+
+      for (mwIndex i = 0; i < nel; i++)
+        {
+          pr[i] = pdata[i].real ();
+          pi[i] = pdata[i].imag ();
+        }
     }
 
   return retval;

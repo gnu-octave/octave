@@ -90,7 +90,7 @@ class mxArray_base
 {
 protected:
 
-  mxArray_base (void) { }
+  mxArray_base (bool interleaved);
 
 public:
 
@@ -197,12 +197,12 @@ public:
   virtual void set_property (mwIndex /*idx*/, const char * /*pname*/,
                              const mxArray * /*pval*/)
   {
-    err_invalid_type ();
+    err_invalid_type ("set_property");
   }
 
   virtual mxArray * get_cell (mwIndex /*idx*/) const
   {
-    err_invalid_type ();
+    err_invalid_type ("get_cell");
   }
 
   virtual void set_cell (mwIndex idx, mxArray *val) = 0;
@@ -211,9 +211,59 @@ public:
 
   virtual void * get_data (void) const = 0;
 
+  virtual mxDouble * get_doubles (void) const = 0;
+  virtual mxSingle * get_singles (void) const = 0;
+  virtual mxInt8 * get_int8s (void) const = 0;
+  virtual mxInt16 * get_int16s (void) const = 0;
+  virtual mxInt32 * get_int32s (void) const = 0;
+  virtual mxInt64 * get_int64s (void) const = 0;
+  virtual mxUint8 * get_uint8s (void) const = 0;
+  virtual mxUint16 * get_uint16s (void) const = 0;
+  virtual mxUint32 * get_uint32s (void) const = 0;
+  virtual mxUint64 * get_uint64s (void) const = 0;
+
+  virtual mxComplexDouble * get_complex_doubles (void) const = 0;
+  virtual mxComplexSingle * get_complex_singles (void) const = 0;
+#if 0
+  /* We don't have these yet. */
+  virtual mxComplexInt8 * get_complex_int8s (void) const = 0;
+  virtual mxComplexInt16 * get_complex_int16s (void) const = 0;
+  virtual mxComplexInt32 * get_complex_int32s (void) const = 0;
+  virtual mxComplexInt64 * get_complex_int64s (void) const = 0;
+  virtual mxComplexUint8 * get_complex_uint8s (void) const = 0;
+  virtual mxComplexUint16 * get_complex_uint16s (void) const = 0;
+  virtual mxComplexUint32 * get_complex_uint32s (void) const = 0;
+  virtual mxComplexUint64 * get_complex_uint64s (void) const = 0;
+#endif
+
   virtual void * get_imag_data (void) const = 0;
 
   virtual void set_data (void *pr) = 0;
+
+  virtual int set_doubles (mxDouble *data) = 0;
+  virtual int set_singles (mxSingle *data) = 0;
+  virtual int set_int8s (mxInt8 *data) = 0;
+  virtual int set_int16s (mxInt16 *data) = 0;
+  virtual int set_int32s (mxInt32 *data) = 0;
+  virtual int set_int64s (mxInt64 *data) = 0;
+  virtual int set_uint8s (mxUint8 *data) = 0;
+  virtual int set_uint16s (mxUint16 *data) = 0;
+  virtual int set_uint32s (mxUint32 *data) = 0;
+  virtual int set_uint64s (mxUint64 *data) = 0;
+
+  virtual int set_complex_doubles (mxComplexDouble *data) = 0;
+  virtual int set_complex_singles (mxComplexSingle *data) = 0;
+#if 0
+  /* We don't have these yet. */
+  virtual int set_complex_int8s (mxComplexInt8 *data) = 0;
+  virtual int set_complex_int16s (mxComplexInt16 *data) = 0;
+  virtual int set_complex_int32s (mxComplexInt32 *data) = 0;
+  virtual int set_complex_int64s (mxComplexInt64 *data) = 0;
+  virtual int set_complex_uint8s (mxComplexUint8 *data) = 0;
+  virtual int set_complex_uint16s (mxComplexUint16 *data) = 0;
+  virtual int set_complex_uint32s (mxComplexUint32 *data) = 0;
+  virtual int set_complex_uint64s (mxComplexUint64 *data) = 0;
+#endif
 
   virtual void set_imag_data (void *pi) = 0;
 
@@ -260,11 +310,21 @@ public:
 
 protected:
 
-  mxArray_base (const mxArray_base&) { }
+  // If TRUE, we are using interleaved storage for complex numeric arrays.
+  bool m_interleaved;
 
-  OCTAVE_NORETURN void err_invalid_type (void) const
+  mxArray_base (const mxArray_base&) = default;
+
+  size_t get_numeric_element_size (size_t size) const
   {
-    error ("invalid type for operation");
+    return (m_interleaved
+            ? is_complex () ? 2 * size : size
+            : size);
+  }
+
+  OCTAVE_NORETURN void err_invalid_type (const char *op) const
+  {
+    error ("%s: invalid type for mxArray::%s", get_class_name (), op);
   }
 };
 
@@ -276,38 +336,42 @@ class mxArray
 {
 public:
 
-  mxArray (const octave_value& ov);
+  mxArray (bool interleaved, const octave_value& ov);
 
-  mxArray (mxClassID id, mwSize ndims, const mwSize *dims,
+  mxArray (bool interleaved, mxClassID id, mwSize ndims, const mwSize *dims,
            mxComplexity flag = mxREAL, bool init = true);
 
-  mxArray (mxClassID id, const dim_vector& dv, mxComplexity flag = mxREAL);
-
-  mxArray (mxClassID id, mwSize m, mwSize n,
-           mxComplexity flag = mxREAL, bool init = true);
-
-  mxArray (mxClassID id, double val);
-
-  mxArray (mxClassID id, mxLogical val);
-
-  mxArray (const char *str);
-
-  mxArray (mwSize m, const char **str);
-
-  mxArray (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
+  mxArray (bool interleaved, mxClassID id, const dim_vector& dv,
            mxComplexity flag = mxREAL);
 
-  mxArray (mwSize ndims, const mwSize *dims, int num_keys, const char **keys);
+  mxArray (bool interleaved, mxClassID id, mwSize m, mwSize n,
+           mxComplexity flag = mxREAL, bool init = true);
 
-  mxArray (const dim_vector& dv, int num_keys, const char **keys);
+  mxArray (bool interleaved, mxClassID id, double val);
 
-  mxArray (mwSize m, mwSize n, int num_keys, const char **keys);
+  mxArray (bool interleaved, mxClassID id, mxLogical val);
 
-  mxArray (mwSize ndims, const mwSize *dims);
+  mxArray (bool interleaved, const char *str);
 
-  mxArray (const dim_vector& dv);
+  mxArray (bool interleaved, mwSize m, const char **str);
 
-  mxArray (mwSize m, mwSize n);
+  mxArray (bool interleaved, mxClassID id, mwSize m, mwSize n, mwSize nzmax,
+           mxComplexity flag = mxREAL);
+
+  mxArray (bool interleaved, mwSize ndims, const mwSize *dims, int num_keys,
+           const char **keys);
+
+  mxArray (bool interleaved, const dim_vector& dv, int num_keys,
+           const char **keys);
+
+  mxArray (bool interleaved, mwSize m, mwSize n, int num_keys,
+           const char **keys);
+
+  mxArray (bool interleaved, mwSize ndims, const mwSize *dims);
+
+  mxArray (bool interleaved, const dim_vector& dv);
+
+  mxArray (bool interleaved, mwSize m, mwSize n);
 
   mxArray * dup (void) const
   {
@@ -428,10 +492,136 @@ public:
 
   void * get_data (void) const { DO_MUTABLE_METHOD (void *, get_data ()); }
 
+  mxDouble * get_doubles (void) const
+  { DO_MUTABLE_METHOD (mxDouble *, get_doubles ()); }
+
+  mxSingle * get_singles (void) const
+  { DO_MUTABLE_METHOD (mxSingle *, get_singles ()); }
+
+  mxInt8 * get_int8s (void) const
+  { DO_MUTABLE_METHOD (mxInt8 *, get_int8s ()); }
+
+  mxInt16 * get_int16s (void) const
+  { DO_MUTABLE_METHOD (mxInt16 *, get_int16s ()); }
+
+  mxInt32 * get_int32s (void) const
+  { DO_MUTABLE_METHOD (mxInt32 *, get_int32s ()); }
+
+  mxInt64 * get_int64s (void) const
+  { DO_MUTABLE_METHOD (mxInt64 *, get_int64s ()); }
+
+  mxUint8 * get_uint8s (void) const
+  { DO_MUTABLE_METHOD (mxUint8 *, get_uint8s ()); }
+
+  mxUint16 * get_uint16s (void) const
+  { DO_MUTABLE_METHOD (mxUint16 *, get_uint16s ()); }
+
+  mxUint32 * get_uint32s (void) const
+  { DO_MUTABLE_METHOD (mxUint32 *, get_uint32s ()); }
+
+  mxUint64 * get_uint64s (void) const
+  { DO_MUTABLE_METHOD (mxUint64 *, get_uint64s ()); }
+
+  mxComplexDouble * get_complex_doubles (void) const
+  { DO_MUTABLE_METHOD (mxComplexDouble *, get_complex_doubles ()); }
+
+  mxComplexSingle * get_complex_singles (void) const
+  { DO_MUTABLE_METHOD (mxComplexSingle *, get_complex_singles ()); }
+
+#if 0
+  /* We don't have these yet. */
+  mxComplexInt8 * get_complex_int8s (void) const
+  { DO_MUTABLE_METHOD (mxComplexInt8 *, get_complex_int8s ()); }
+
+  mxComplexInt16 * get_complex_int16s (void) const
+  { DO_MUTABLE_METHOD (mxComplexInt16 *, get_complex_int16s ()); }
+
+  mxComplexInt32 * get_complex_int32s (void) const
+  { DO_MUTABLE_METHOD (mxComplexInt32 *, get_complex_int32s ()); }
+
+  mxComplexInt64 * get_complex_int64s (void) const
+  { DO_MUTABLE_METHOD (mxComplexInt64 *, get_complex_int64s ()); }
+
+  mxComplexUint8 * get_complex_uint8s (void) const
+  { DO_MUTABLE_METHOD (mxComplexUint8 *, get_complex_uint8s ()); }
+
+  mxComplexUint16 * get_complex_uint16s (void) const
+  { DO_MUTABLE_METHOD (mxComplexUint16 *, get_complex_uint16s ()); }
+
+  mxComplexUint32 * get_complex_uint32s (void) const
+  { DO_MUTABLE_METHOD (mxComplexUint32 *, get_complex_uint32s ()); }
+
+  mxComplexUint64 * get_complex_uint64s (void) const
+  { DO_MUTABLE_METHOD (mxComplexUint64 *, get_complex_uint64s ()); }
+#endif
+
   void * get_imag_data (void) const
   { DO_MUTABLE_METHOD (void *, get_imag_data ()); }
 
   void set_data (void *pr) { DO_VOID_MUTABLE_METHOD (set_data (pr)); }
+
+  int set_doubles (mxDouble *data)
+  { DO_MUTABLE_METHOD (int, set_doubles (data)); }
+
+  int set_singles (mxSingle *data)
+  { DO_MUTABLE_METHOD (int, set_singles (data)); }
+
+  int set_int8s (mxInt8 *data)
+  { DO_MUTABLE_METHOD (int, set_int8s (data)); }
+
+  int set_int16s (mxInt16 *data)
+  { DO_MUTABLE_METHOD (int, set_int16s (data)); }
+
+  int set_int32s (mxInt32 *data)
+  { DO_MUTABLE_METHOD (int, set_int32s (data)); }
+
+  int set_int64s (mxInt64 *data)
+  { DO_MUTABLE_METHOD (int, set_int64s (data)); }
+
+  int set_uint8s (mxUint8 *data)
+  { DO_MUTABLE_METHOD (int, set_uint8s (data)); }
+
+  int set_uint16s (mxUint16 *data)
+  { DO_MUTABLE_METHOD (int, set_uint16s (data)); }
+
+  int set_uint32s (mxUint32 *data)
+  { DO_MUTABLE_METHOD (int, set_uint32s (data)); }
+
+  int set_uint64s (mxUint64 *data)
+  { DO_MUTABLE_METHOD (int, set_uint64s (data)); }
+
+  int set_complex_doubles (mxComplexDouble *data)
+  { DO_MUTABLE_METHOD (int, set_complex_doubles (data)); }
+
+  int set_complex_singles (mxComplexSingle *data)
+  { DO_MUTABLE_METHOD (int, set_complex_singles (data)); }
+
+#if 0
+  /* We don't have these yet. */
+  int set_complex_int8s (mxComplexInt8 *data)
+  { DO_MUTABLE_METHOD (int, set_complex_int8s (data)); }
+
+  int set_complex_int16s (mxComplexInt16 *data)
+  { DO_MUTABLE_METHOD (int, set_complex_int16s (data)); }
+
+  int set_complex_int32s (mxComplexInt32 *data)
+  { DO_MUTABLE_METHOD (int, set_complex_int32s (data)); }
+
+  int set_complex_int64s (mxComplexInt64 *data)
+  { DO_MUTABLE_METHOD (int, set_complex_int64s (data)); }
+
+  int set_complex_uint8s (mxComplexUint8 *data)
+  { DO_MUTABLE_METHOD (int, set_complex_uint8s (data)); }
+
+  int set_complex_uint16s (mxComplexUint16 *data)
+  { DO_MUTABLE_METHOD (int, set_complex_uint16s (data)); }
+
+  int set_complex_uint32s (mxComplexUint32 *data)
+  { DO_MUTABLE_METHOD (int, set_complex_uint32s (data)); }
+
+  int set_complex_uint64s (mxComplexUint64 *data)
+  { DO_MUTABLE_METHOD (int, set_complex_uint64s (data)); }
+#endif
 
   void set_imag_data (void *pi) { DO_VOID_MUTABLE_METHOD (set_imag_data (pi)); }
 
@@ -514,6 +704,37 @@ private:
 
   mxArray (mxArray_base *r, const char *n)
     : rep (r), name (mxArray::strsave (n)) { }
+
+  static mxArray_base *
+  create_rep (bool interleaved, const octave_value& ov);
+
+  static mxArray_base *
+  create_rep (bool interleaved, mxClassID id, mwSize ndims,
+              const mwSize *dims, mxComplexity flag, bool init);
+
+  static mxArray_base *
+  create_rep (bool interleaved, mxClassID id, const dim_vector& dv,
+              mxComplexity flag);
+
+  static mxArray_base *
+  create_rep (bool interleaved, mxClassID id, mwSize m, mwSize n,
+              mxComplexity flag, bool init);
+
+  static mxArray_base *
+  create_rep (bool interleaved, mxClassID id, double val);
+
+  static mxArray_base *
+  create_rep (bool interleaved, mxClassID id, mxLogical val);
+
+  static mxArray_base *
+  create_rep (bool interleaved, const char *str);
+
+  static mxArray_base *
+  create_rep (bool interleaved, mwSize m, const char **str);
+
+  static mxArray_base *
+  create_rep (bool interleaved, mxClassID id, mwSize m, mwSize n,
+              mwSize nzmax, mxComplexity flag);
 
   void maybe_mutate (void) const;
 };

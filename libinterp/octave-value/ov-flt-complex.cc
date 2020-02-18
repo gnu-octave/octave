@@ -414,15 +414,26 @@ octave_float_complex::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_float_complex::as_mxArray (void) const
+octave_float_complex::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxSINGLE_CLASS, 1, 1, mxCOMPLEX);
+  mxArray *retval = new mxArray (interleaved, mxSINGLE_CLASS, 1, 1, mxCOMPLEX);
 
-  float *pr = static_cast<float *> (retval->get_data ());
-  float *pi = static_cast<float *> (retval->get_imag_data ());
+  if (interleaved)
+    {
+      mxComplexSingle *pd
+        = static_cast<mxComplexSingle *> (retval->get_data ());
 
-  pr[0] = scalar.real ();
-  pi[0] = scalar.imag ();
+      pd[0].real = scalar.real ();
+      pd[0].imag = scalar.imag ();
+    }
+  else
+    {
+      mxSingle *pr = static_cast<mxSingle *> (retval->get_data ());
+      mxSingle *pi = static_cast<mxSingle *> (retval->get_imag_data ());
+
+      pr[0] = scalar.real ();
+      pi[0] = scalar.imag ();
+    }
 
   return retval;
 }

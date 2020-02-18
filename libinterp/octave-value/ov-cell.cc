@@ -1410,9 +1410,9 @@ c(2,1,:)(:)
 */
 
 mxArray *
-octave_cell::as_mxArray (void) const
+octave_cell::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (dims ());
+  mxArray *retval = new mxArray (interleaved, dims ());
 
   mxArray **elts = static_cast<mxArray **> (retval->get_data ());
 
@@ -1421,7 +1421,7 @@ octave_cell::as_mxArray (void) const
   const octave_value *p = matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
-    elts[i] = new mxArray (p[i]);
+    elts[i] = new mxArray (interleaved, p[i]);
 
   return retval;
 }

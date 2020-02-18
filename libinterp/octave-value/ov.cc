@@ -2626,6 +2626,75 @@ octave_value::print_info (std::ostream& os, const std::string& prefix) const
   rep->print_info (os, prefix + ' ');
 }
 
+void *
+octave_value::mex_get_data (mxClassID class_id, mxComplexity complexity) const
+{
+  // If class_id is set to mxUNKNOWN_CLASS, return data for any type.
+  // Otherwise, require that REP matches the requested type and
+  // complexity.
+
+  if (class_id != mxUNKNOWN_CLASS)
+    {
+      bool type_ok = false;
+
+      switch (class_id)
+        {
+        case mxDOUBLE_CLASS:
+          type_ok = is_double_type ();
+          break;
+
+        case mxSINGLE_CLASS:
+          type_ok = is_single_type ();
+          break;
+
+        case mxINT8_CLASS:
+          type_ok = is_int8_type ();
+          break;
+
+        case mxINT16_CLASS:
+          type_ok = is_int16_type ();
+          break;
+
+        case mxINT32_CLASS:
+          type_ok = is_int32_type ();
+          break;
+
+        case mxINT64_CLASS:
+          type_ok = is_int64_type ();
+          break;
+
+        case mxUINT8_CLASS:
+          type_ok = is_uint8_type ();
+          break;
+
+        case mxUINT16_CLASS:
+          type_ok = is_uint16_type ();
+          break;
+
+        case mxUINT32_CLASS:
+          type_ok = is_uint32_type ();
+          break;
+
+        case mxUINT64_CLASS:
+          type_ok = is_uint64_type ();
+          break;
+
+        default:
+          // We only expect to see numeric types explicitly requested.
+          error ("mex_get_data: unexpected type requested");
+          break;
+        }
+
+      if (! type_ok)
+        error ("mex_get_data: type mismatch");
+
+      if (complexity == mxCOMPLEX && ! iscomplex ())
+        error ("mex_get_data: objectis not complex as requested");
+    }
+
+  return rep->mex_get_data ();
+}
+
 OCTAVE_NORETURN static void
 err_unary_op (const std::string& on, const std::string& tn)
 {

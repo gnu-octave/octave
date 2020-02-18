@@ -241,9 +241,9 @@ public:
     return make_value ().mex_get_data ();
   }
 
-  mxArray * as_mxArray (void) const
+  mxArray * as_mxArray (bool interleaved) const
   {
-    return make_value ().as_mxArray ();
+    return make_value ().as_mxArray (interleaved);
   }
 
   octave_value map (unary_mapper_t umap) const

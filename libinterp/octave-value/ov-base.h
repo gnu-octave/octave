@@ -697,7 +697,7 @@ public:
 
   virtual octave_idx_type * mex_get_jc (void) const { return nullptr; }
 
-  virtual mxArray * as_mxArray (void) const;
+  virtual mxArray * as_mxArray (bool interleaved) const;
 
   virtual octave_value diag (octave_idx_type k = 0) const;
 

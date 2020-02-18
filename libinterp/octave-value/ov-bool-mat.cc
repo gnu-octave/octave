@@ -566,18 +566,18 @@ octave_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_bool_matrix::as_mxArray (void) const
+octave_bool_matrix::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxLOGICAL_CLASS, dims (), mxREAL);
+  mxArray *retval = new mxArray (interleaved, mxLOGICAL_CLASS, dims (), mxREAL);
 
-  bool *pr = static_cast<bool *> (retval->get_data ());
+  mxLogical *pd = static_cast<mxLogical *> (retval->get_data ());
 
   mwSize nel = numel ();
 
-  const bool *p = matrix.data ();
+  const bool *pdata = matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
-    pr[i] = p[i];
+    pd[i] = pdata[i];
 
   return retval;
 }

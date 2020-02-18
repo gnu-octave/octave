@@ -312,13 +312,13 @@ octave_bool::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_bool::as_mxArray (void) const
+octave_bool::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxLOGICAL_CLASS, 1, 1, mxREAL);
+  mxArray *retval = new mxArray (interleaved, mxLOGICAL_CLASS, 1, 1, mxREAL);
 
-  bool *pr = static_cast<bool *> (retval->get_data ());
+  mxLogical *pd = static_cast<mxLogical *> (retval->get_data ());
 
-  pr[0] = scalar;
+  pd[0] = scalar;
 
   return retval;
 }

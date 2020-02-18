@@ -974,7 +974,7 @@ octave_base_value::write (octave::stream&, int, oct_data_conv::data_type,
 }
 
 mxArray *
-octave_base_value::as_mxArray (void) const
+octave_base_value::as_mxArray (bool) const
 {
   return nullptr;
 }

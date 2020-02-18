@@ -1328,13 +1328,15 @@ public:
 
   // Unsafe.  These functions exist to support the MEX interface.
   // You should not use them anywhere else.
-  void * mex_get_data (void) const { return rep->mex_get_data (); }
+  void * mex_get_data (mxClassID class_id = mxUNKNOWN_CLASS,
+                       mxComplexity complexity = mxREAL) const;
 
   octave_idx_type * mex_get_ir (void) const { return rep->mex_get_ir (); }
 
   octave_idx_type * mex_get_jc (void) const { return rep->mex_get_jc (); }
 
-  mxArray * as_mxArray (void) const { return rep->as_mxArray (); }
+  mxArray * as_mxArray (bool interleaved = false) const
+  { return rep->as_mxArray (interleaved); }
 
   octave_value diag (octave_idx_type k = 0) const
   { return rep->diag (k); }

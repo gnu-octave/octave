@@ -472,15 +472,26 @@ octave_complex::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_complex::as_mxArray (void) const
+octave_complex::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxDOUBLE_CLASS, 1, 1, mxCOMPLEX);
+  mxArray *retval = new mxArray (interleaved, mxDOUBLE_CLASS, 1, 1, mxCOMPLEX);
 
-  double *pr = static_cast<double *> (retval->get_data ());
-  double *pi = static_cast<double *> (retval->get_imag_data ());
+  if (interleaved)
+    {
+      mxComplexDouble *pd
+        = reinterpret_cast<mxComplexDouble *> (retval->get_complex_doubles ());
 
-  pr[0] = scalar.real ();
-  pi[0] = scalar.imag ();
+      pd[0].real = scalar.real ();
+      pd[0].imag = scalar.imag ();
+    }
+  else
+    {
+      mxDouble *pr = static_cast<mxDouble *> (retval->get_data ());
+      mxDouble *pi = static_cast<mxDouble *> (retval->get_imag_data ());
+
+      pr[0] = scalar.real ();
+      pi[0] = scalar.imag ();
+    }
 
   return retval;
 }

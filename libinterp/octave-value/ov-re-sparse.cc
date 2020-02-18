@@ -861,24 +861,34 @@ octave_sparse_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_sparse_matrix::as_mxArray (void) const
+octave_sparse_matrix::as_mxArray (bool interleaved) const
 {
   mwSize nz = nzmax ();
   mwSize nr = rows ();
   mwSize nc = columns ();
-  mxArray *retval = new mxArray (mxDOUBLE_CLASS, nr, nc, nz, mxREAL);
-  double *pr = static_cast<double *> (retval->get_data ());
+
+  mxArray *retval = new mxArray (interleaved, mxDOUBLE_CLASS, nr, nc, nz,
+                                 mxREAL);
+
+  mxDouble *pd = static_cast<mxDouble *> (retval->get_data ());
   mwIndex *ir = retval->get_ir ();
-  mwIndex *jc = retval->get_jc ();
+
+  const double *pdata = matrix.data ();
+  const octave_idx_type *pridx = matrix.ridx ();
 
   for (mwIndex i = 0; i < nz; i++)
     {
-      pr[i] = matrix.data (i);
-      ir[i] = matrix.ridx (i);
+      pd[i] = pdata[i];
+
+      ir[i] = pridx[i];
     }
 
+  mwIndex *jc = retval->get_jc ();
+
+  const octave_idx_type *pcidx = matrix.cidx ();
+
   for (mwIndex i = 0; i < nc + 1; i++)
-    jc[i] = matrix.cidx (i);
+    jc[i] = pcidx[i];
 
   return retval;
 }

@@ -717,18 +717,18 @@ octave_float_matrix::print_raw (std::ostream& os,
 }
 
 mxArray *
-octave_float_matrix::as_mxArray (void) const
+octave_float_matrix::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxSINGLE_CLASS, dims (), mxREAL);
+  mxArray *retval = new mxArray (interleaved, mxSINGLE_CLASS, dims (), mxREAL);
 
-  float *pr = static_cast<float *> (retval->get_data ());
+  mxSingle *pd = static_cast<mxSingle *> (retval->get_data ());
 
   mwSize nel = numel ();
 
-  const float *p = matrix.data ();
+  const float *pdata = matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
-    pr[i] = p[i];
+    pd[i] = pdata[i];
 
   return retval;
 }

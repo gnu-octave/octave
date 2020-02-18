@@ -434,9 +434,9 @@ octave_perm_matrix::print_raw (std::ostream& os,
 }
 
 mxArray *
-octave_perm_matrix::as_mxArray (void) const
+octave_perm_matrix::as_mxArray (bool interleaved) const
 {
-  return to_dense ().as_mxArray ();
+  return to_dense ().as_mxArray (interleaved);
 }
 
 bool

@@ -543,9 +543,9 @@ octave_base_diag<DMT, MT>::print_raw (std::ostream& os,
 
 template <typename DMT, typename MT>
 mxArray *
-octave_base_diag<DMT, MT>::as_mxArray (void) const
+octave_base_diag<DMT, MT>::as_mxArray (bool interleaved) const
 {
-  return to_dense ().as_mxArray ();
+  return to_dense ().as_mxArray (interleaved);
 }
 
 template <typename DMT, typename MT>

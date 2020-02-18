@@ -61,9 +61,18 @@ extern "C" {
 #  include <stdbool.h>
 #endif
 
+#if ! defined (MX_HAS_INTERLEAVED_COMPLEX)
+#  define MX_HAS_INTERLEAVED_COMPLEX 0
+#endif
+
 #define MXARRAY_TYPEDEFS_ONLY
 #include "mxarray.h"
 #undef MXARRAY_TYPEDEFS_ONLY
+
+/* Prototype for the gateway function.  */
+
+extern void mexFunction (int nlhs, mxArray *plhs[],
+                         int nrhs, const mxArray *prhs[]);
 
 /* Interface to the interpreter.  */
 extern OCTINTERP_API const char * mexFunctionName (void);
@@ -98,8 +107,12 @@ extern OCTINTERP_API const mxArray * mexGetVariablePtr (const char *space,
 extern OCTINTERP_API int mexPutVariable (const char *space, const char *name,
                                          const mxArray *ptr);
 
+#if MX_HAS_INTERLEAVED_COMPLEX
+#  define mexGet mexGet_interleaved
+#endif
 extern OCTINTERP_API const mxArray * mexGet (double handle,
                                              const char *property);
+
 extern OCTINTERP_API int mexSet (double handle, const char *property,
                                  mxArray *val);
 
@@ -131,6 +144,27 @@ extern OCTINTERP_API void * mxRealloc (void *ptr, size_t size);
 extern OCTINTERP_API void mxFree (void *ptr);
 
 /* Constructors.  */
+#if MX_HAS_INTERLEAVED_COMPLEX
+#  define mxCreateCellArray mxCreateCellArray_interleaved
+#  define mxCreateCellMatrix mxCreateCellMatrix_interleaved
+#  define mxCreateCharArray mxCreateCharArray_interleaved
+#  define mxCreateCharMatrixFromStrings mxCreateCharMatrixFromStrings_interleaved
+#  define mxCreateDoubleMatrix mxCreateDoubleMatrix_interleaved
+#  define mxCreateDoubleScalar mxCreateDoubleScalar_interleaved
+#  define mxCreateLogicalArray mxCreateLogicalArray_interleaved
+#  define mxCreateLogicalMatrix mxCreateLogicalMatrix_interleaved
+#  define mxCreateLogicalScalar mxCreateLogicalScalar_interleaved
+#  define mxCreateNumericArray mxCreateNumericArray_interleaved
+#  define mxCreateNumericMatrix mxCreateNumericMatrix_interleaved
+#  define mxCreateUninitNumericArray mxCreateUninitNumericArray_interleaved
+#  define mxCreateUninitNumericMatrix mxCreateUninitNumericMatrix_interleaved
+#  define mxCreateSparse mxCreateSparse_interleaved
+#  define mxCreateSparseLogicalMatrix mxCreateSparseLogicalMatrix_interleaved
+#  define mxCreateString mxCreateString_interleaved
+#  define mxCreateStructArray mxCreateStructArray_interleaved
+#  define mxCreateStructMatrix mxCreateStructMatrix_interleaved
+#endif
+
 extern OCTINTERP_API mxArray * mxCreateCellArray (mwSize ndims,
                                                   const mwSize *dims);
 extern OCTINTERP_API mxArray * mxCreateCellMatrix (mwSize m, mwSize n);
@@ -227,20 +261,79 @@ extern OCTINTERP_API void mxSetN (mxArray *ptr, mwSize N);
 extern OCTINTERP_API int mxSetDimensions (mxArray *ptr, const mwSize *dims,
                                           mwSize ndims);
 
+#if MX_HAS_INTERLEAVED_COMPLEX
+extern OCTINTERP_API int mxMakeArrayReal (mxArray *ptr);
+extern OCTINTERP_API int mxMakeArrayComplex (mxArray *ptr);
+#endif
+
 /* Data extractors.  */
-extern OCTINTERP_API double * mxGetPi (const mxArray *ptr);
 extern OCTINTERP_API double * mxGetPr (const mxArray *ptr);
 extern OCTINTERP_API double mxGetScalar (const mxArray *ptr);
 extern OCTINTERP_API mxChar * mxGetChars (const mxArray *ptr);
 extern OCTINTERP_API mxLogical * mxGetLogicals (const mxArray *ptr);
 extern OCTINTERP_API void * mxGetData (const mxArray *ptr);
+#if MX_HAS_INTERLEAVED_COMPLEX
+extern OCTINTERP_API mxDouble * mxGetDoubles (const mxArray *p);
+extern OCTINTERP_API mxSingle * mxGetSingles (const mxArray *p);
+extern OCTINTERP_API mxInt8 * mxGetInt8s (const mxArray *p);
+extern OCTINTERP_API mxInt16 * mxGetInt16s (const mxArray *p);
+extern OCTINTERP_API mxInt32 * mxGetInt32s (const mxArray *p);
+extern OCTINTERP_API mxInt64 * mxGetInt64s (const mxArray *p);
+extern OCTINTERP_API mxUint8 * mxGetUint8s (const mxArray *p);
+extern OCTINTERP_API mxUint16 * mxGetUint16s (const mxArray *p);
+extern OCTINTERP_API mxUint32 * mxGetUint32s (const mxArray *p);
+extern OCTINTERP_API mxUint64 * mxGetUint64s (const mxArray *p);
+
+extern OCTINTERP_API mxComplexDouble * mxGetComplexDoubles (const mxArray *p);
+extern OCTINTERP_API mxComplexSingle * mxGetComplexSingles (const mxArray *p);
+#if 0
+/* We don't have these yet. */
+extern OCTINTERP_API mxComplexInt8 * mxGetComplexInt8s (const mxArray *p);
+extern OCTINTERP_API mxComplexInt16 * mxGetComplexInt16s (const mxArray *p);
+extern OCTINTERP_API mxComplexInt32 * mxGetComplexInt32s (const mxArray *p);
+extern OCTINTERP_API mxComplexInt64 * mxGetComplexInt64s (const mxArray *p);
+extern OCTINTERP_API mxComplexUint8 * mxGetComplexUint8s (const mxArray *p);
+extern OCTINTERP_API mxComplexUint16 * mxGetComplexUint16s (const mxArray *p);
+extern OCTINTERP_API mxComplexUint32 * mxGetComplexUint32s (const mxArray *p);
+extern OCTINTERP_API mxComplexUint64 * mxGetComplexUint64s (const mxArray *p);
+#endif
+#else
+extern OCTINTERP_API double * mxGetPi (const mxArray *ptr);
 extern OCTINTERP_API void * mxGetImagData (const mxArray *ptr);
+#endif
 
 /* Data setters.  */
 extern OCTINTERP_API void mxSetPr (mxArray *ptr, double *pr);
-extern OCTINTERP_API void mxSetPi (mxArray *ptr, double *pi);
 extern OCTINTERP_API void mxSetData (mxArray *ptr, void *data);
+#if MX_HAS_INTERLEAVED_COMPLEX
+extern OCTINTERP_API int mxSetDoubles (mxArray *p, mxDouble *d);
+extern OCTINTERP_API int mxSetSingles (mxArray *p, mxSingle *d);
+extern OCTINTERP_API int mxSetInt8s (mxArray *p, mxInt8 *d);
+extern OCTINTERP_API int mxSetInt16s (mxArray *p, mxInt16 *d);
+extern OCTINTERP_API int mxSetInt32s (mxArray *p, mxInt32 *d);
+extern OCTINTERP_API int mxSetInt64s (mxArray *p, mxInt64 *d);
+extern OCTINTERP_API int mxSetUint8s (mxArray *p, mxUint8 *d);
+extern OCTINTERP_API int mxSetUint16s (mxArray *p, mxUint16 *d);
+extern OCTINTERP_API int mxSetUint32s (mxArray *p, mxUint32 *d);
+extern OCTINTERP_API int mxSetUint64s (mxArray *p, mxUint64 *d);
+
+extern OCTINTERP_API int mxSetComplexDoubles (mxArray *p, mxComplexDouble *d);
+extern OCTINTERP_API int mxSetComplexSingles (mxArray *p, mxComplexSingle *d);
+#if 0
+/* We don't have these yet. */
+extern OCTINTERP_API int mxSetComplexInt8s (mxArray *p, mxComplexInt8 *d);
+extern OCTINTERP_API int mxSetComplexInt16s (mxArray *p, mxComplexInt16 *d);
+extern OCTINTERP_API int mxSetComplexInt32s (mxArray *p, mxComplexInt32 *d);
+extern OCTINTERP_API int mxSetComplexInt64s (mxArray *p, mxComplexInt64 *d);
+extern OCTINTERP_API int mxSetComplexUint8s (mxArray *p, mxComplexUint8 *d);
+extern OCTINTERP_API int mxSetComplexUint16s (mxArray *p, mxComplexUint16 *d);
+extern OCTINTERP_API int mxSetComplexUint32s (mxArray *p, mxComplexUint32 *d);
+extern OCTINTERP_API int mxSetComplexUint64s (mxArray *p, mxComplexUint64 *d);
+#endif
+#else
+extern OCTINTERP_API void mxSetPi (mxArray *ptr, double *pi);
 extern OCTINTERP_API void mxSetImagData (mxArray *ptr, void *pi);
+#endif
 
 /* Classes.  */
 extern OCTINTERP_API mxClassID mxGetClassID (const mxArray *ptr);

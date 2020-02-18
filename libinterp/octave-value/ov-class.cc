@@ -1637,7 +1637,7 @@ error_cleanup:
 }
 
 mxArray *
-octave_class::as_mxArray (void) const
+octave_class::as_mxArray (bool) const
 {
   err_wrong_type_arg ("octave_class::as_mxArray ()", type_name ());
 }

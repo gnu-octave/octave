@@ -222,18 +222,18 @@ octave_char_matrix::print_raw (std::ostream& os,
 }
 
 mxArray *
-octave_char_matrix::as_mxArray (void) const
+octave_char_matrix::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxCHAR_CLASS, dims (), mxREAL);
+  mxArray *retval = new mxArray (interleaved, mxCHAR_CLASS, dims (), mxREAL);
 
-  mxChar *pr = static_cast<mxChar *> (retval->get_data ());
+  mxChar *pd = static_cast<mxChar *> (retval->get_data ());
 
   mwSize nel = numel ();
 
-  const char *p = matrix.data ();
+  const char *pdata = matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
-    pr[i] = p[i];
+    pd[i] = pdata[i];
 
   return retval;
 }

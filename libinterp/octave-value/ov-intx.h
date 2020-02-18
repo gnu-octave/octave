@@ -315,19 +315,20 @@ public:
   // You should not use it anywhere else.
   void * mex_get_data (void) const { return matrix.mex_get_data (); }
 
-  mxArray * as_mxArray (void) const
+  mxArray * as_mxArray (bool interleaved) const
   {
-    mxArray *retval = new mxArray (OCTAVE_INT_MX_CLASS, dims (), mxREAL);
+    mxArray *retval = new mxArray (interleaved, OCTAVE_INT_MX_CLASS, dims (),
+                                   mxREAL);
 
-    OCTAVE_INT_T::val_type *pr = static_cast<OCTAVE_INT_T::val_type *>
-                                 (retval->get_data ());
+    OCTAVE_INT_T::val_type *pd
+      = static_cast<OCTAVE_INT_T::val_type *> (retval->get_data ());
 
     mwSize nel = numel ();
 
-    const OCTAVE_INT_T *p = matrix.data ();
+    const OCTAVE_INT_T *pdata = matrix.data ();
 
     for (mwIndex i = 0; i < nel; i++)
-      pr[i] = p[i].value ();
+      pd[i] = pdata[i].value ();
 
     return retval;
   }
@@ -637,14 +638,15 @@ public:
   // You should not use it anywhere else.
   void * mex_get_data (void) const { return scalar.mex_get_data (); }
 
-  mxArray * as_mxArray (void) const
+  mxArray * as_mxArray (bool interleaved) const
   {
-    mxArray *retval = new mxArray (OCTAVE_INT_MX_CLASS, 1, 1, mxREAL);
+    mxArray *retval = new mxArray (interleaved, OCTAVE_INT_MX_CLASS, 1, 1,
+                                   mxREAL);
 
-    OCTAVE_INT_T::val_type *pr = static_cast<OCTAVE_INT_T::val_type *>
-                                 (retval->get_data ());
+    OCTAVE_INT_T::val_type *pd
+      = static_cast<OCTAVE_INT_T::val_type *> (retval->get_data ());
 
-    pr[0] = scalar.value ();
+    pd[0] = scalar.value ();
 
     return retval;
   }

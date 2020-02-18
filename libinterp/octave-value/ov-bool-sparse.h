@@ -143,7 +143,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   // Mapper functions are converted to double for treatment
   octave_value map (unary_mapper_t umap) const

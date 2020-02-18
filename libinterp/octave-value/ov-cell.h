@@ -172,7 +172,7 @@ public:
 
   octave_value map (unary_mapper_t umap) const;
 
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.

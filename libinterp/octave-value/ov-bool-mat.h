@@ -233,7 +233,7 @@ public:
   // You should not use it anywhere else.
   void * mex_get_data (void) const { return matrix.mex_get_data (); }
 
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   // Mapper functions are converted to double for treatment
   octave_value map (unary_mapper_t umap) const

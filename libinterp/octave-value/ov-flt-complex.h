@@ -191,7 +191,7 @@ public:
                      skip, flt_fmt);
   }
 
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   octave_value map (unary_mapper_t umap) const;
 

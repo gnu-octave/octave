@@ -335,13 +335,13 @@ octave_float_scalar::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_float_scalar::as_mxArray (void) const
+octave_float_scalar::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxSINGLE_CLASS, 1, 1, mxREAL);
+  mxArray *retval = new mxArray (interleaved, mxSINGLE_CLASS, 1, 1, mxREAL);
 
-  float *pr = static_cast<float *> (retval->get_data ());
+  mxSingle *pd = static_cast<mxSingle *> (retval->get_data ());
 
-  pr[0] = scalar;
+  pd[0] = scalar;
 
   return retval;
 }

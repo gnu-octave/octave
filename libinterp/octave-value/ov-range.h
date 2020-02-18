@@ -306,7 +306,7 @@ public:
     return os.write (matrix_value (), block_size, output_type, skip, flt_fmt);
   }
 
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   octave_value map (unary_mapper_t umap) const
   {

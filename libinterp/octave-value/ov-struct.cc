@@ -1012,7 +1012,7 @@ octave_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_struct::as_mxArray (void) const
+octave_struct::as_mxArray (bool interleaved) const
 {
   int nf = nfields ();
   string_vector kv = map_keys ();
@@ -1022,7 +1022,7 @@ octave_struct::as_mxArray (void) const
   for (int i = 0; i < nf; i++)
     f[i] = kv[i].c_str ();
 
-  mxArray *retval = new mxArray (dims (), nf, f);
+  mxArray *retval = new mxArray (interleaved, dims (), nf, f);
 
   mxArray **elts = static_cast<mxArray **> (retval->get_data ());
 
@@ -1038,7 +1038,7 @@ octave_struct::as_mxArray (void) const
 
       mwIndex k = 0;
       for (mwIndex j = i; j < ntot; j += nf)
-        elts[j] = new mxArray (p[k++]);
+        elts[j] = new mxArray (interleaved, p[k++]);
     }
 
   return retval;
@@ -1630,7 +1630,7 @@ octave_scalar_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_scalar_struct::as_mxArray (void) const
+octave_scalar_struct::as_mxArray (bool interleaved) const
 {
   int nf = nfields ();
   string_vector kv = map_keys ();
@@ -1640,7 +1640,7 @@ octave_scalar_struct::as_mxArray (void) const
   for (int i = 0; i < nf; i++)
     f[i] = kv[i].c_str ();
 
-  mxArray *retval = new mxArray (dims (), nf, f);
+  mxArray *retval = new mxArray (interleaved, dims (), nf, f);
 
   mxArray **elts = static_cast<mxArray **> (retval->get_data ());
 
@@ -1656,7 +1656,7 @@ octave_scalar_struct::as_mxArray (void) const
 
       mwIndex k = 0;
       for (mwIndex j = i; j < ntot; j += nf)
-        elts[j] = new mxArray (p[k++]);
+        elts[j] = new mxArray (interleaved, p[k++]);
     }
 
   return retval;

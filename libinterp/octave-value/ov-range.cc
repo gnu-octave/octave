@@ -771,20 +771,20 @@ octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_range::as_mxArray (void) const
+octave_range::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxDOUBLE_CLASS, dims (), mxREAL);
+  mxArray *retval = new mxArray (interleaved, mxDOUBLE_CLASS, dims (), mxREAL);
 
-  double *pr = static_cast<double *> (retval->get_data ());
+  mxDouble *pd = static_cast<mxDouble *> (retval->get_data ());
 
   mwSize nel = numel ();
 
   Matrix m = matrix_value ();
 
-  const double *p = m.data ();
+  const double *pdata = m.data ();
 
   for (mwSize i = 0; i < nel; i++)
-    pr[i] = p[i];
+    pd[i] = pdata[i];
 
   return retval;
 }

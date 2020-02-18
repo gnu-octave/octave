@@ -16,495 +16,495 @@ along with Octave; see the file COPYING.  If not, see
 
 Copyright:
 
-  1987-1988, 1991-1997, 2003-2018  Free Software Foundation
-  1992-2020  John W. Eaton
-  1993  Fook Fah Yap
-  1993  Friedrich Leisch
-  1993  Gerhard Kircher
-  1993  John C. Campbell
-  1993  Per Bothner
-  1993  R. Bruce Tenison
-  1993  Teresa Twaroch
-  1993, 1995  Auburn University
-  1993, 1995, 1998-2002, 2004, 2006-2007  A. Scottedward Hodel
-  1993, 1996-1999, 2001-2002, 2005-2006  Kurt Hornik
-  1993-1997  O. Weber
-  1993-1998  Karl Berry
-  1994  Castor Fu
-  1994  Mark Odegard
-  1994  Romolo Manfredini
-  1994, 2009  Anthony Richardson
-  1994-1995  David Clem
-  1994-1997  Frederick (Rick) A Niles
-  1995  Paul Eggert
-  1995  Thomas Baier
-  1995  Vinayak Dutt
-  1995, 1997  Klaus Gebhardt
-  1997  Ram'on Garc'ia Fern'andez
-  1997  Rex A. Dieter
-  1997, 1999-2000, 2008  Rolf Fabian
-  1997-1999, 2001-2003  Mumit Khan
-  1998  Eric Norum
-  1998  Philippe Defert
-  1998  Richard Allan Holcombe
-  1998  Roman Hodek
-  1998  Tomislav Goles
-  1998, 2000  Georg Thimm
-  1998, 2000  John Smith
-  1998-2000, 2002-2006, 2012  Andy Adler
-  1999  Daniel Calvelo
-  1999  Eduardo Gallestey
-  1999  Geoff Jacobsen
-  1999  James B. Rawlings
-  1999  James Macnicol
-  1999  Massimo Lorenzin
-  1999-2000  Joao Cardoso
-  1999-2000  Stephen Eglen
-  1999-2002  Ben Sapp
-  2000  Joerg Specht
-  2000  Marcus Brinkmann
-  2000  Michael Reifenberger
-  2000  Thomas Walter
-  2000, 2002, 2012  Steven G. Johnson
-  2000, 2002-2004  Teemu Ikonen
-  2000, 2003  Cyril Humbert
-  2000, 2003, 2005  Mats Jansson
-  2000, 2003, 2007-2008  Gabriele Pannocchia
-  2000, 2004, 2006  Etienne Grossmann
-  2000, 2005  James R. Van Zandt
-  2000-2001  Matthew W. Roberts
-  2000-2002  Cai Jianming
-  2000-2002, 2007-2011  Kai Habel
-  2000-2007  Paul Kienzle
-  2001  Albert Chin-A-Young
-  2001  Christoph Spiel
-  2001  David Livings
-  2001  Heinz Bauschke
-  2001  Ondrej Popp
-  2001  Ross Lippert
-  2001  Thomas Stuart
-  2001, 2005-2009, 2012-2016  Rafael Laboissiere
-  2001, 2007  Jean-Francois Cardoso
-  2001-2003  Python Software Foundation
-  2002  David Billinghurst
-  2002  Dirk Laurie
-  2002  JD Cole
-  2002  Jeff Cunningham
-  2002  Matt Tenny
-  2002  Nicholas Piper
-  2002  Nix
-  2002  Peter Van Wieren
-  2002, 2006-2009  Francesco Potortì
-  2002, 2017  Andreas Stahel
-  2002, 2017  Bill Lash
-  2002-2003  Dirk Eddelbuettel
-  2002-2003, 2007  Joseph P. Skudlarek
-  2002-2004  Per Persson
-  2003  Aaron A. King
-  2003  Danilo Piazzalunga
-  2003  David Castelow
-  2003  Duncan Temple Lang
-  2003  Eric S. Raymond
-  2003  Heine Kolltveit
-  2003  Lute Kamstra
-  2003  Melqart
-  2003  Richard Stallman
-  2003  Roger Banks
-  2003  Russell Standish
-  2003  Stefan Monnier
-  2003  Thorsten Ohl
-  2003, 2005  Arno J. Klaassen
-  2003, 2008, 2010-2011  Alois Schlögl
-  2003, 2008-2010, 2012, 2014-2015, 2018-2019  Doug Stewart
-  2003-2004  Al Niessner
-  2003-2004  Petter Risholm
-  2003-2007  Quentin H. Spencer
-  2003-2013, 2015  David Bateman
-  2004  Balint Reczey
-  2004  Claude Lacoursiere
-  2004  David Hoover
-  2004  Federico Zenith
-  2004  Fredrik Lingvall
-  2004  Glenn Golden
-  2004  Hans Ekkehard Plesser
-  2004  Heikki Junes
-  2004  Jakub Bogusz
-  2004  Martin Dalecki
-  2004  Oyvind Kristiansen
-  2004  Volker Kuhlmann
-  2004, 2007-2010  Shai Ayal
-  2004, 2011, 2015, 2018  Orion Poplawski
-  2004-2005  Stefan van der Walt
-  2004-2006  Keith Goodman
-  2004-2006, 2008, 2010-2012  Pascal A. Dupuis
-  2005  Antoine Moreau
-  2005  Benjamin Hall
-  2005  Clinton Chee
-  2005  Daniel
-  2005  Driss Ghaddab
-  2005  Erik de Castro Lopo
-  2005  Ivana Varekova
-  2005  Joel Andersson
-  2005  Julius Smith
-  2005  Kevin Ruland
-  2005  Ludwig Schwardt
-  2005  Miroslaw Kwasniak
-  2005  Mohamed Kamoun
-  2005  Nicolo' Giorgetti
-  2005  Orestes Mas
-  2005  Shan G. Smith
-  2005  Todd Neal
-  2005  Tom Holroyd
-  2005  Toni Saarela
-  2005  Walter Landry
-  2005  cctsim
-  2005, 2007  Michael Zeising
-  2005, 2007-2009, 2012-2018  Daniel J. Sebald
-  2005, 2010  Ben Barrowes
-  2005-2006  Jorge Barros de Abreu
-  2005-2006  William Poetra Yoga Hadisoeseno
-  2005-2006, 2008, 2012  Dmitri A. Sergatskov
-  2005-2008  Bill Denney
-  2005-2010  Søren Hauberg
-  2006  Atsushi Kajita
-  2006  Christopher Hulbert
-  2006  Don Bindner
-  2006  Geoffrey Knauth
-  2006  Henry Mollet
-  2006  Jim Peterson
-  2006  Kai Labusch
-  2006  Ken Kouno
-  2006  Larrie Carr
-  2006  Martin Costabel
-  2006  Stephen Fegan
-  2006  Yozo Hida
-  2006, 2011  Michael Creel
-  2006-2007  Arno Onken
-  2006-2007  Bob Weigel
-  2006-2007  Luis F. Ortiz
-  2006-2007, 2009  Olli Saarela
-  2006-2008  Juhani Saastamoinen
-  2006-2008, 2010  Kim Hansen
-  2006-2009  Alexander Barth
-  2006-2009  Thomas Treichl
-  2006-2009, 2011  Benjamin Lindner
-  2006-2011  Thomas Weber
-  2006-2015  Michael Goffioul
-  2007  Alex Zvoleff
-  2007  Alexander Klimov
-  2007  Aquil H. Abdullah
-  2007  Baylis Shanks
-  2007  Christian Cornelssen
-  2007  Christof Zeile
-  2007  Christoph Mayer
-  2007  Claudio Belotti
-  2007  D. Martin
-  2007  Donald Parsons
-  2007  Geordie McBain
-  2007  Jim Langston
-  2007  Kristan Onu
-  2007  Laurent Mazet
-  2007  Luther Tychonievich
-  2007  Marcus W. Reble
-  2007  Matthias Drochner
-  2007  Michael Weitzel
-  2007  Moritz Borgmann
-  2007  Peter A. Gustafson
-  2007  Sebastian Schubert
-  2007  Steve M. Robbins
-  2007  Steven Mestdagh
-  2007  Tarmigan Casebolt
-  2007  Thomas Kasper
-  2007  Ulrich Tipp
-  2007  Utkarsh Upadhyay
-  2007  Vittoria Rezzonico
-  2007  Zhi Wang
-  2007, 2009  Joel Keay
-  2007, 2009-2015, 2017-2018  Olaf Till
-  2007-2008  Muthiah Annamalai
-  2007-2009  Brian Gough
-  2007-2009  Jason Riedy
-  2007-2013, 2015-2019  Marco Caliari
-  2007-2013, 2018  John P. Swensen
-  2007-2016, 2018-2019  Carlo de Falco
-  2007-2016, 2019  Ben Abbott
-  2008  Emil Lucretiu
-  2008  G. (Gert) van Antwerpen
-  2008  James Packer
-  2008  Jarkko Kaleva
-  2008  Jonathan Stickel
-  2008  Julian Schnidder
-  2008  Julien Pommier
-  2008  Krzesimir Nowak
-  2008  Maciek Gajewski
-  2008  Mark van Rossum
-  2008  Martin Weiser
-  2008  Primozz Peterlin
-  2008  Richard Bovey
-  2008  Ryan Hinton
-  2008  Sebastien Loisel
-  2008  Tetsuro KURITA
-  2008  Thomas L. Scofield
-  2008  Timo Lindfors
-  2008, 2010  Brett Stewart
-  2008, 2010-2012  Konstantinos Poulios
-  2008, 2011, 2013-2019  Andreas Weber
-  2008, 2011-2012  Kris Thielemans
-  2008, 2018  Dave Goel
-  2008-2009  Ivan Sutoris
-  2008-2009  Radek Salac
-  2008-2010  Ryan Rusaw
-  2008-2010  VZLU Prague
-  2008-2011  Jaroslav Hajek
-  2008-2011  Thorsten Meyer
-  2008-2011, 2015-2016, 2018-2019  Tatsuro Matsuoka
-  2008-2013, 2018  Marco Atzeri
-  2008-2015, 2017  Michael D. Godfrey
-  2009  Aleksej Saushev
-  2009  Alexander Mamonov
-  2009  Ansgar Burchardt
-  2009  Aravindh Krishnamoorthy
-  2009  Bernard Desgraups
-  2009  Bertrand Roessli
-  2009  Carmine Paolino
-  2009  Carsten Clark
-  2009  Christophe Tournery
-  2009  Daniel Gualberto
-  2009  E. Joshua Rigler
-  2009  Eric Chassande-Mottin
-  2009  Frederick Umminger
-  2009  Joe Rothweiler
-  2009  Kacper Kowalik
-  2009  Kai NODA
-  2009  Kristian Rumberg
-  2009  Nokia Corporation and/or its subsidiary(-ies).
-  2009  Peter L. Søndergaard
-  2009  Peter O'Gorman
-  2009  Pieter Eendebak
-  2009  Rob Mahurin
-  2009  Robert Millan
-  2009  Stefan Hepp
-  2009  Steffen Groot
-  2009  Steven Verstoep
-  2009  Thomas D. Dean
-  2009, 2011  Lukas Reichlin
-  2009, 2011-2012  Robert T. Short
-  2009-2010, 2012  Martin Helm
-  2009-2011  David Grundberg
-  2009-2011  Petr Mikulik
-  2009-2020  Rik Wehbring
-  2010  Brad Froehle
-  2010  Christos Dimitrakakis
-  2010  Daisuke TAKAGO
-  2010  David Gesswein
-  2010  Gunnar Farnebäck
-  2010  Joshua Redstone
-  2010  Judd Storrs
-  2010  Jyh-Miin Lin
-  2010  Liam Groener
-  2010  Marc Vinyals
-  2010  Pedro Gonnet
-  2010  Peter van den Biggelaar
-  2010  Qianqian Fang
-  2010-2012  Iain Murray
-  2010-2017  Jordi Gutiérrez Hermoso
-  2011  Alexander Klein
-  2011  Andriy Shinkarchuck
-  2011  Andy Buckle
-  2011  David Finkel
-  2011  David Wells
-  2011  Fabian Deutsch
-  2011  Giles Anderson
-  2011  Hannes Müller
-  2011  John Bradshaw
-  2011  Karsten Trulsen
-  2011  Matthias Jüschke
-  2011  Patrick Häcker
-  2011  Paul Boven
-  2011  Richard Campbell
-  2011  Roman Belov
-  2011  Sean Young
-  2011  Vanya Sergeev
-  2011-2012  Fotios Kasolis
-  2011-2012  Jacob Dawid
-  2011-2012  Jarno Rajahalme
-  2011-2012  John Hunt
-  2011-2012, 2014, 2016  Daniel Kraft
-  2011-2013  Júlio Hoffimann Mendes
-  2011-2018  Carnë Draug
-  2011-2019  Philip Nienhuis
-  2011-2020  Torsten Lilge
-  2012  Alexander Graf
-  2012  Alexander Hansen
-  2012  Corbin Champion
-  2012  Elias Pipping
-  2012  Fabio Rossi
-  2012  Garrett G Euler
-  2012  Israel Herraiz
-  2012  Jen Stewart
-  2012  Melvin Robinson
-  2012  Miguel Bazdresch
-  2012  Nicholas Musolino
-  2012  Ronald van der Meer
-  2012  Ryan Starret
-  2012  Sergey Dudoladov
-  2012  Stefan Husmann
-  2012  Sunghyun Cho
-  2012  Vivek Dogra
-  2012, 2014-2019  Colin Macdonald
-  2012-2013  Axel Mathéi
-  2012-2013  Ed Meyer
-  2012-2013  Erik Kjellson
-  2012-2013  Max Brister
-  2012-2013  Muhali
-  2012-2013  Richard Crozier
-  2012-2013  Thorsten Liebig
-  2012-2016, 2018-2019  Juan Pablo Carbajal
-  2012-2019  Pantxo Diribarne
-  2012-2020  Mike Miller
-  2013  Adam H Aitkenhead
-  2013  Amod Mulay
-  2013  Andre da Costa Barros
-  2013  Andy Register
-  2013  Artem Krosheninnikov
-  2013  Arun Giridhar
-  2013  Ben Kurtz
-  2013  Carl Osterwisch
-  2013  Catalin Codreanu
-  2013  Clemens Buchacher
-  2013  Corey Thomasson
-  2013  Craig Hudson
-  2013  David Turner
-  2013  FZI Forschungszentrum Informatik Karlsruhe
-  2013  Falk Tannhäuser
-  2013  Janne Olavi Paanajärvi
-  2013  Jens Restemeier
-  2013  Leopoldo Cerbaro
-  2013  Marco Cecchetti
-  2013  Patrick Noffke
-  2013  Risto Vanhanen
-  2013  Rüdiger Sonderfeld
-  2013  Serhiy Zahoriya
-  2013  Vytautas Jančauskas
-  2013, 2015-2019  Sébastien Villemot
-  2013, 2016  Sander van Rijn
-  2013, 2018  Valentin Ortega
-  2013-2014  Kyle Guinn
-  2013-2014  LYH
-  2013-2014  Markus Appel
-  2013-2014  Mike Sander
-  2013-2014  Philipp Kutin
-  2013-2014  PrasannaKumar Muralidharan
-  2013-2014, 2016-2017  Nir Krakauer
-  2013-2014, 2016-2019  Julien Bect
-  2013-2015  Stefan Mahr
-  2013-2015, 2018  Felipe G. Nievinski
-  2013-2019  Kai T. Ohlhus
-  2013-2020  John Donoghue
-  2014  Ahsan Ali Shahid
-  2014  Branden Archer
-  2014  Colin Foster
-  2014  David Spies
-  2014  Drew Abbot
-  2014  Edmund Grimley Evans
-  2014  Eduardo Ramos Fernández
-  2014  Endre Kozma
-  2014  Jason Alan Palmer
-  2014  Joachim Wiesemann
-  2014  Johannes Zarl
-  2014  José Vallet
-  2014  Lasse Schuirmann
-  2014  Marco Vitetta
-  2014  Marko Seric
-  2014  Markus Bergholz
-  2014  Nathan Podlich
-  2014  Pedro Angelo
-  2014  Pooja Rao
-  2014  Rolando Pereira
-  2014  Sergey Plotnikov
-  2014  Serviscope Minor
-  2014  Stefan Beller
-  2014  Vaibhav Gupta
-  2014  Willem Atsma
-  2014, 2019  Michael C. Grant
-  2014-2015  Allan Jacobs
-  2014-2016  Eugenio Gianniti
-  2014-2016  Stefan Miereis
-  2014-2016, 2018  Massimiliano Fasi
-  2015  Akira Noda
-  2015  Amro
-  2015  Armin Müller
-  2015  Bernardo Sulzbach
-  2015  Cillian O'Driscoll
-  2015  Claudius Zingerli
-  2015  Ederag
-  2015  Ethan Biery
-  2015  Ilya Kurdyukov
-  2015  Johannes Leuschner
-  2015  Ken Marek
-  2015  Michele Zaffalon
-  2015  Rafael Monteiro
-  2015  Sahil Badyal
-  2015  Yu Liu
-  2015, 2017  Michael Barnes
-  2015, 2017  Piotr Held
-  2015-2016  Dmitry Roshchin
-  2015-2016  Jacapo Corno
-  2015-2016  José Luis García Pallero
-  2015-2016  Oliver Heimlich
-  2015-2016, 2018  Sebastian Schöps
-  2015-2016, 2019  Hartmut Gimpel
-  2015-2017  Avinoam Kalma
-  2015-2017  Lachlan Andrew
-  2015-2019  Nicholas R. Jankowski
-  2016  Abhinav Tripathi
-  2016  Andrew Thornton
-  2016  Atri Bhattacharya
-  2016  Barbara Lócsi
-  2016  Damjan Angelovski
-  2016  Francesco Faccio
-  2016  Garrett Euler
-  2016  Joakim Andén
-  2016  NVS Abhilash
-  2016  Robert Jenssen
-  2016  Stephen Montgomery-Smith
-  2016-2017  Ernst Reissner
-  2016-2019  Lars Kindermann
-  2016-2019  Markus Mützel
-  2017  Brad Kennedy
-  2017  Georg Wiora
-  2017  Hugo Raguet
-  2017  Lasse Kliemann
-  2017  Richard Zweig
-  2017  Tejaswi D Prakash
-  2017  Victor Norton
-  2017-2019  Alexander Wilms
-  2017-2019  Guillaume Flandin
-  2017-2019  Michael Leitner
-  2017-2019  Michele Ginesi
-  2017-2019  Sahil Yadav
-  2018  Avlas
-  2018  Cristiano Dorigo
-  2018  Dildar Sk
-  2018  Gene Harvey
-  2018  Joe Winegarden
-  2018  Maor Shutman
-  2018  Ronny Standtke
-  2018  Stefan Schlögl
-  2018  Stevie Schraudner
-  2018-2019  A.R. Burgers
-  2018-2019  Andrew Janke
-  2018-2019  Jun Wang
-  2019  Anthony Morast
-  2019  Bill Greene
-  2019  Christian Himpe
-  2019  Daniel Davis
-  2019  Eddy Xiao
-  2019  Juho Iipponen
-  2019  Nguy?n Gia Phong
-  2019  Tomi Pannila
-  2019  William Greene
-  2019-2020  Markus Meisinger
+- 1987-1988, 1991-1997, 2003-2018  Free Software Foundation
+- 1992-2020  John W. Eaton
+- 1993  Fook Fah Yap
+- 1993  Friedrich Leisch
+- 1993  Gerhard Kircher
+- 1993  John C. Campbell
+- 1993  Per Bothner
+- 1993  R. Bruce Tenison
+- 1993  Teresa Twaroch
+- 1993, 1995  Auburn University
+- 1993, 1995, 1998-2002, 2004, 2006-2007  A. Scottedward Hodel
+- 1993, 1996-1999, 2001-2002, 2005-2006  Kurt Hornik
+- 1993-1997  O. Weber
+- 1993-1998  Karl Berry
+- 1994  Castor Fu
+- 1994  Mark Odegard
+- 1994  Romolo Manfredini
+- 1994, 2009  Anthony Richardson
+- 1994-1995  David Clem
+- 1994-1997  Frederick (Rick) A Niles
+- 1995  Paul Eggert
+- 1995  Thomas Baier
+- 1995  Vinayak Dutt
+- 1995, 1997  Klaus Gebhardt
+- 1997  Ram'on Garc'ia Fern'andez
+- 1997  Rex A. Dieter
+- 1997, 1999-2000, 2008  Rolf Fabian
+- 1997-1999, 2001-2003  Mumit Khan
+- 1998  Eric Norum
+- 1998  Philippe Defert
+- 1998  Richard Allan Holcombe
+- 1998  Roman Hodek
+- 1998  Tomislav Goles
+- 1998, 2000  Georg Thimm
+- 1998, 2000  John Smith
+- 1998-2000, 2002-2006, 2012  Andy Adler
+- 1999  Daniel Calvelo
+- 1999  Eduardo Gallestey
+- 1999  Geoff Jacobsen
+- 1999  James B. Rawlings
+- 1999  James Macnicol
+- 1999  Massimo Lorenzin
+- 1999-2000  Joao Cardoso
+- 1999-2000  Stephen Eglen
+- 1999-2002  Ben Sapp
+- 2000  Joerg Specht
+- 2000  Marcus Brinkmann
+- 2000  Michael Reifenberger
+- 2000  Thomas Walter
+- 2000, 2002, 2012  Steven G. Johnson
+- 2000, 2002-2004  Teemu Ikonen
+- 2000, 2003  Cyril Humbert
+- 2000, 2003, 2005  Mats Jansson
+- 2000, 2003, 2007-2008  Gabriele Pannocchia
+- 2000, 2004, 2006  Etienne Grossmann
+- 2000, 2005  James R. Van Zandt
+- 2000-2001  Matthew W. Roberts
+- 2000-2002  Cai Jianming
+- 2000-2002, 2007-2011  Kai Habel
+- 2000-2007  Paul Kienzle
+- 2001  Albert Chin-A-Young
+- 2001  Christoph Spiel
+- 2001  David Livings
+- 2001  Heinz Bauschke
+- 2001  Ondrej Popp
+- 2001  Ross Lippert
+- 2001  Thomas Stuart
+- 2001, 2005-2009, 2012-2016  Rafael Laboissiere
+- 2001, 2007  Jean-Francois Cardoso
+- 2001-2003  Python Software Foundation
+- 2002  David Billinghurst
+- 2002  Dirk Laurie
+- 2002  JD Cole
+- 2002  Jeff Cunningham
+- 2002  Matt Tenny
+- 2002  Nicholas Piper
+- 2002  Nix
+- 2002  Peter Van Wieren
+- 2002, 2006-2009  Francesco Potortì
+- 2002, 2017  Andreas Stahel
+- 2002, 2017  Bill Lash
+- 2002-2003  Dirk Eddelbuettel
+- 2002-2003, 2007  Joseph P. Skudlarek
+- 2002-2004  Per Persson
+- 2003  Aaron A. King
+- 2003  Danilo Piazzalunga
+- 2003  David Castelow
+- 2003  Duncan Temple Lang
+- 2003  Eric S. Raymond
+- 2003  Heine Kolltveit
+- 2003  Lute Kamstra
+- 2003  Melqart
+- 2003  Richard Stallman
+- 2003  Roger Banks
+- 2003  Russell Standish
+- 2003  Stefan Monnier
+- 2003  Thorsten Ohl
+- 2003, 2005  Arno J. Klaassen
+- 2003, 2008, 2010-2011  Alois Schlögl
+- 2003, 2008-2010, 2012, 2014-2015, 2018-2019  Doug Stewart
+- 2003-2004  Al Niessner
+- 2003-2004  Petter Risholm
+- 2003-2007  Quentin H. Spencer
+- 2003-2013, 2015  David Bateman
+- 2004  Balint Reczey
+- 2004  Claude Lacoursiere
+- 2004  David Hoover
+- 2004  Federico Zenith
+- 2004  Fredrik Lingvall
+- 2004  Glenn Golden
+- 2004  Hans Ekkehard Plesser
+- 2004  Heikki Junes
+- 2004  Jakub Bogusz
+- 2004  Martin Dalecki
+- 2004  Oyvind Kristiansen
+- 2004  Volker Kuhlmann
+- 2004, 2007-2010  Shai Ayal
+- 2004, 2011, 2015, 2018  Orion Poplawski
+- 2004-2005  Stefan van der Walt
+- 2004-2006  Keith Goodman
+- 2004-2006, 2008, 2010-2012  Pascal A. Dupuis
+- 2005  Antoine Moreau
+- 2005  Benjamin Hall
+- 2005  Clinton Chee
+- 2005  Daniel
+- 2005  Driss Ghaddab
+- 2005  Erik de Castro Lopo
+- 2005  Ivana Varekova
+- 2005  Joel Andersson
+- 2005  Julius Smith
+- 2005  Kevin Ruland
+- 2005  Ludwig Schwardt
+- 2005  Miroslaw Kwasniak
+- 2005  Mohamed Kamoun
+- 2005  Nicolo' Giorgetti
+- 2005  Orestes Mas
+- 2005  Shan G. Smith
+- 2005  Todd Neal
+- 2005  Tom Holroyd
+- 2005  Toni Saarela
+- 2005  Walter Landry
+- 2005  cctsim
+- 2005, 2007  Michael Zeising
+- 2005, 2007-2009, 2012-2018  Daniel J. Sebald
+- 2005, 2010  Ben Barrowes
+- 2005-2006  Jorge Barros de Abreu
+- 2005-2006  William Poetra Yoga Hadisoeseno
+- 2005-2006, 2008, 2012  Dmitri A. Sergatskov
+- 2005-2008  Bill Denney
+- 2005-2010  Søren Hauberg
+- 2006  Atsushi Kajita
+- 2006  Christopher Hulbert
+- 2006  Don Bindner
+- 2006  Geoffrey Knauth
+- 2006  Henry Mollet
+- 2006  Jim Peterson
+- 2006  Kai Labusch
+- 2006  Ken Kouno
+- 2006  Larrie Carr
+- 2006  Martin Costabel
+- 2006  Stephen Fegan
+- 2006  Yozo Hida
+- 2006, 2011  Michael Creel
+- 2006-2007  Arno Onken
+- 2006-2007  Bob Weigel
+- 2006-2007  Luis F. Ortiz
+- 2006-2007, 2009  Olli Saarela
+- 2006-2008  Juhani Saastamoinen
+- 2006-2008, 2010  Kim Hansen
+- 2006-2009  Alexander Barth
+- 2006-2009  Thomas Treichl
+- 2006-2009, 2011  Benjamin Lindner
+- 2006-2011  Thomas Weber
+- 2006-2015  Michael Goffioul
+- 2007  Alex Zvoleff
+- 2007  Alexander Klimov
+- 2007  Aquil H. Abdullah
+- 2007  Baylis Shanks
+- 2007  Christian Cornelssen
+- 2007  Christof Zeile
+- 2007  Christoph Mayer
+- 2007  Claudio Belotti
+- 2007  D. Martin
+- 2007  Donald Parsons
+- 2007  Geordie McBain
+- 2007  Jim Langston
+- 2007  Kristan Onu
+- 2007  Laurent Mazet
+- 2007  Luther Tychonievich
+- 2007  Marcus W. Reble
+- 2007  Matthias Drochner
+- 2007  Michael Weitzel
+- 2007  Moritz Borgmann
+- 2007  Peter A. Gustafson
+- 2007  Sebastian Schubert
+- 2007  Steve M. Robbins
+- 2007  Steven Mestdagh
+- 2007  Tarmigan Casebolt
+- 2007  Thomas Kasper
+- 2007  Ulrich Tipp
+- 2007  Utkarsh Upadhyay
+- 2007  Vittoria Rezzonico
+- 2007  Zhi Wang
+- 2007, 2009  Joel Keay
+- 2007, 2009-2015, 2017-2018  Olaf Till
+- 2007-2008  Muthiah Annamalai
+- 2007-2009  Brian Gough
+- 2007-2009  Jason Riedy
+- 2007-2013, 2015-2019  Marco Caliari
+- 2007-2013, 2018  John P. Swensen
+- 2007-2016, 2018-2019  Carlo de Falco
+- 2007-2016, 2019  Ben Abbott
+- 2008  Emil Lucretiu
+- 2008  G. (Gert) van Antwerpen
+- 2008  James Packer
+- 2008  Jarkko Kaleva
+- 2008  Jonathan Stickel
+- 2008  Julian Schnidder
+- 2008  Julien Pommier
+- 2008  Krzesimir Nowak
+- 2008  Maciek Gajewski
+- 2008  Mark van Rossum
+- 2008  Martin Weiser
+- 2008  Primozz Peterlin
+- 2008  Richard Bovey
+- 2008  Ryan Hinton
+- 2008  Sebastien Loisel
+- 2008  Tetsuro KURITA
+- 2008  Thomas L. Scofield
+- 2008  Timo Lindfors
+- 2008, 2010  Brett Stewart
+- 2008, 2010-2012  Konstantinos Poulios
+- 2008, 2011, 2013-2019  Andreas Weber
+- 2008, 2011-2012  Kris Thielemans
+- 2008, 2018  Dave Goel
+- 2008-2009  Ivan Sutoris
+- 2008-2009  Radek Salac
+- 2008-2010  Ryan Rusaw
+- 2008-2010  VZLU Prague
+- 2008-2011  Jaroslav Hajek
+- 2008-2011  Thorsten Meyer
+- 2008-2011, 2015-2016, 2018-2019  Tatsuro Matsuoka
+- 2008-2013, 2018  Marco Atzeri
+- 2008-2015, 2017  Michael D. Godfrey
+- 2009  Aleksej Saushev
+- 2009  Alexander Mamonov
+- 2009  Ansgar Burchardt
+- 2009  Aravindh Krishnamoorthy
+- 2009  Bernard Desgraups
+- 2009  Bertrand Roessli
+- 2009  Carmine Paolino
+- 2009  Carsten Clark
+- 2009  Christophe Tournery
+- 2009  Daniel Gualberto
+- 2009  E. Joshua Rigler
+- 2009  Eric Chassande-Mottin
+- 2009  Frederick Umminger
+- 2009  Joe Rothweiler
+- 2009  Kacper Kowalik
+- 2009  Kai NODA
+- 2009  Kristian Rumberg
+- 2009  Nokia Corporation and/or its subsidiary(-ies).
+- 2009  Peter L. Søndergaard
+- 2009  Peter O'Gorman
+- 2009  Pieter Eendebak
+- 2009  Rob Mahurin
+- 2009  Robert Millan
+- 2009  Stefan Hepp
+- 2009  Steffen Groot
+- 2009  Steven Verstoep
+- 2009  Thomas D. Dean
+- 2009, 2011  Lukas Reichlin
+- 2009, 2011-2012  Robert T. Short
+- 2009-2010, 2012  Martin Helm
+- 2009-2011  David Grundberg
+- 2009-2011  Petr Mikulik
+- 2009-2020  Rik Wehbring
+- 2010  Brad Froehle
+- 2010  Christos Dimitrakakis
+- 2010  Daisuke TAKAGO
+- 2010  David Gesswein
+- 2010  Gunnar Farnebäck
+- 2010  Joshua Redstone
+- 2010  Judd Storrs
+- 2010  Jyh-Miin Lin
+- 2010  Liam Groener
+- 2010  Marc Vinyals
+- 2010  Pedro Gonnet
+- 2010  Peter van den Biggelaar
+- 2010  Qianqian Fang
+- 2010-2012  Iain Murray
+- 2010-2017  Jordi Gutiérrez Hermoso
+- 2011  Alexander Klein
+- 2011  Andriy Shinkarchuck
+- 2011  Andy Buckle
+- 2011  David Finkel
+- 2011  David Wells
+- 2011  Fabian Deutsch
+- 2011  Giles Anderson
+- 2011  Hannes Müller
+- 2011  John Bradshaw
+- 2011  Karsten Trulsen
+- 2011  Matthias Jüschke
+- 2011  Patrick Häcker
+- 2011  Paul Boven
+- 2011  Richard Campbell
+- 2011  Roman Belov
+- 2011  Sean Young
+- 2011  Vanya Sergeev
+- 2011-2012  Fotios Kasolis
+- 2011-2012  Jacob Dawid
+- 2011-2012  Jarno Rajahalme
+- 2011-2012  John Hunt
+- 2011-2012, 2014, 2016  Daniel Kraft
+- 2011-2013  Júlio Hoffimann Mendes
+- 2011-2018  Carnë Draug
+- 2011-2019  Philip Nienhuis
+- 2011-2020  Torsten Lilge
+- 2012  Alexander Graf
+- 2012  Alexander Hansen
+- 2012  Corbin Champion
+- 2012  Elias Pipping
+- 2012  Fabio Rossi
+- 2012  Garrett G Euler
+- 2012  Israel Herraiz
+- 2012  Jen Stewart
+- 2012  Melvin Robinson
+- 2012  Miguel Bazdresch
+- 2012  Nicholas Musolino
+- 2012  Ronald van der Meer
+- 2012  Ryan Starret
+- 2012  Sergey Dudoladov
+- 2012  Stefan Husmann
+- 2012  Sunghyun Cho
+- 2012  Vivek Dogra
+- 2012, 2014-2019  Colin Macdonald
+- 2012-2013  Axel Mathéi
+- 2012-2013  Ed Meyer
+- 2012-2013  Erik Kjellson
+- 2012-2013  Max Brister
+- 2012-2013  Muhali
+- 2012-2013  Richard Crozier
+- 2012-2013  Thorsten Liebig
+- 2012-2016, 2018-2019  Juan Pablo Carbajal
+- 2012-2019  Pantxo Diribarne
+- 2012-2020  Mike Miller
+- 2013  Adam H Aitkenhead
+- 2013  Amod Mulay
+- 2013  Andre da Costa Barros
+- 2013  Andy Register
+- 2013  Artem Krosheninnikov
+- 2013  Arun Giridhar
+- 2013  Ben Kurtz
+- 2013  Carl Osterwisch
+- 2013  Catalin Codreanu
+- 2013  Clemens Buchacher
+- 2013  Corey Thomasson
+- 2013  Craig Hudson
+- 2013  David Turner
+- 2013  FZI Forschungszentrum Informatik Karlsruhe
+- 2013  Falk Tannhäuser
+- 2013  Janne Olavi Paanajärvi
+- 2013  Jens Restemeier
+- 2013  Leopoldo Cerbaro
+- 2013  Marco Cecchetti
+- 2013  Patrick Noffke
+- 2013  Risto Vanhanen
+- 2013  Rüdiger Sonderfeld
+- 2013  Serhiy Zahoriya
+- 2013  Vytautas Jančauskas
+- 2013, 2015-2019  Sébastien Villemot
+- 2013, 2016  Sander van Rijn
+- 2013, 2018  Valentin Ortega
+- 2013-2014  Kyle Guinn
+- 2013-2014  LYH
+- 2013-2014  Markus Appel
+- 2013-2014  Mike Sander
+- 2013-2014  Philipp Kutin
+- 2013-2014  PrasannaKumar Muralidharan
+- 2013-2014, 2016-2017  Nir Krakauer
+- 2013-2014, 2016-2019  Julien Bect
+- 2013-2015  Stefan Mahr
+- 2013-2015, 2018  Felipe G. Nievinski
+- 2013-2019  Kai T. Ohlhus
+- 2013-2020  John Donoghue
+- 2014  Ahsan Ali Shahid
+- 2014  Branden Archer
+- 2014  Colin Foster
+- 2014  David Spies
+- 2014  Drew Abbot
+- 2014  Edmund Grimley Evans
+- 2014  Eduardo Ramos Fernández
+- 2014  Endre Kozma
+- 2014  Jason Alan Palmer
+- 2014  Joachim Wiesemann
+- 2014  Johannes Zarl
+- 2014  José Vallet
+- 2014  Lasse Schuirmann
+- 2014  Marco Vitetta
+- 2014  Marko Seric
+- 2014  Markus Bergholz
+- 2014  Nathan Podlich
+- 2014  Pedro Angelo
+- 2014  Pooja Rao
+- 2014  Rolando Pereira
+- 2014  Sergey Plotnikov
+- 2014  Serviscope Minor
+- 2014  Stefan Beller
+- 2014  Vaibhav Gupta
+- 2014  Willem Atsma
+- 2014, 2019  Michael C. Grant
+- 2014-2015  Allan Jacobs
+- 2014-2016  Eugenio Gianniti
+- 2014-2016  Stefan Miereis
+- 2014-2016, 2018  Massimiliano Fasi
+- 2015  Akira Noda
+- 2015  Amro
+- 2015  Armin Müller
+- 2015  Bernardo Sulzbach
+- 2015  Cillian O'Driscoll
+- 2015  Claudius Zingerli
+- 2015  Ederag
+- 2015  Ethan Biery
+- 2015  Ilya Kurdyukov
+- 2015  Johannes Leuschner
+- 2015  Ken Marek
+- 2015  Michele Zaffalon
+- 2015  Rafael Monteiro
+- 2015  Sahil Badyal
+- 2015  Yu Liu
+- 2015, 2017  Michael Barnes
+- 2015, 2017  Piotr Held
+- 2015-2016  Dmitry Roshchin
+- 2015-2016  Jacapo Corno
+- 2015-2016  José Luis García Pallero
+- 2015-2016  Oliver Heimlich
+- 2015-2016, 2018  Sebastian Schöps
+- 2015-2016, 2019  Hartmut Gimpel
+- 2015-2017  Avinoam Kalma
+- 2015-2017  Lachlan Andrew
+- 2015-2019  Nicholas R. Jankowski
+- 2016  Abhinav Tripathi
+- 2016  Andrew Thornton
+- 2016  Atri Bhattacharya
+- 2016  Barbara Lócsi
+- 2016  Damjan Angelovski
+- 2016  Francesco Faccio
+- 2016  Garrett Euler
+- 2016  Joakim Andén
+- 2016  NVS Abhilash
+- 2016  Robert Jenssen
+- 2016  Stephen Montgomery-Smith
+- 2016-2017  Ernst Reissner
+- 2016-2019  Lars Kindermann
+- 2016-2019  Markus Mützel
+- 2017  Brad Kennedy
+- 2017  Georg Wiora
+- 2017  Hugo Raguet
+- 2017  Lasse Kliemann
+- 2017  Richard Zweig
+- 2017  Tejaswi D Prakash
+- 2017  Victor Norton
+- 2017-2019  Alexander Wilms
+- 2017-2019  Guillaume Flandin
+- 2017-2019  Michael Leitner
+- 2017-2019  Michele Ginesi
+- 2017-2019  Sahil Yadav
+- 2018  Avlas
+- 2018  Cristiano Dorigo
+- 2018  Dildar Sk
+- 2018  Gene Harvey
+- 2018  Joe Winegarden
+- 2018  Maor Shutman
+- 2018  Ronny Standtke
+- 2018  Stefan Schlögl
+- 2018  Stevie Schraudner
+- 2018-2019  A.R. Burgers
+- 2018-2019  Andrew Janke
+- 2018-2019  Jun Wang
+- 2019  Anthony Morast
+- 2019  Bill Greene
+- 2019  Christian Himpe
+- 2019  Daniel Davis
+- 2019  Eddy Xiao
+- 2019  Juho Iipponen
+- 2019  Nguy?n Gia Phong
+- 2019  Tomi Pannila
+- 2019  William Greene
+- 2019-2020  Markus Meisinger
 
 
 See also the list of contributors in the Octave manual (the file

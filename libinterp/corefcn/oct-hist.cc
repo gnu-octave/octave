@@ -312,7 +312,7 @@ namespace octave
                                            int nargout)
   {
     return set_internal_variable (m_timestamp_format_string, args, nargout,
-                                  "timestamp_format_string", false);
+                                  "timestamp_format_string");
   }
 
   // Display, save, or load history.  Stolen and modified from bash.
@@ -883,6 +883,15 @@ The original variable value is restored when exiting the function.
 
   return history_sys.timestamp_format_string (args, nargout);
 }
+
+/*
+%!test
+%! history_timestamp_format_string ("# Example history marker", "local");
+%! assert (history_timestamp_format_string (), "# Example history marker")
+%!test <*57843>
+%! history_timestamp_format_string ("", "local");
+%! assert (history_timestamp_format_string (), "")
+*/
 
 DEFUN (history_save, args, nargout,
        doc: /* -*- texinfo -*-

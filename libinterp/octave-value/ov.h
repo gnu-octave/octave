@@ -60,6 +60,8 @@ class octave_fcn_handle;
 class octave_fcn_inline;
 class octave_value_list;
 
+#include "mxtypes.h"
+
 #include "oct-stream.h"
 #include "ov-base.h"
 

@@ -33,7 +33,7 @@ BUILT_SOURCES += \
   %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
-  %reldir%/corefcn/mxarray.h \
+  %reldir%/corefcn/mxtypes.h \
   %reldir%/corefcn/oct-tex-parser.h \
   %reldir%/corefcn/oct-tex-symbols.cc \
   %reldir%/parse-tree/oct-gperf.h \
@@ -66,7 +66,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
-  %reldir%/corefcn/mxarray.h \
+  %reldir%/corefcn/mxtypes.h \
   %reldir%/corefcn/oct-errno.cc \
   %reldir%/liboctinterp-build-info.cc \
   %reldir%/operators/ops.cc
@@ -99,7 +99,7 @@ nodist_octinclude_HEADERS += \
   %reldir%/builtin-defun-decls.h \
   %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
-  %reldir%/corefcn/mxarray.h
+  %reldir%/corefcn/mxtypes.h
 
 DIST_SRC += \
   %reldir%/octave.cc \
@@ -129,7 +129,7 @@ nodist_%canon_reldir%_liboctinterp_la_SOURCES = \
   %reldir%/builtins.cc \
   %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics.h \
-  %reldir%/corefcn/mxarray.h \
+  %reldir%/corefcn/mxtypes.h \
   %reldir%/corefcn/oct-errno.cc \
   %reldir%/liboctinterp-build-info.cc \
   %reldir%/operators/ops.cc

@@ -58,6 +58,7 @@ COREFCN_INC = \
   %reldir%/ls-utils.h \
   %reldir%/mex.h \
   %reldir%/mexproto.h \
+  %reldir%/mxarray.h \
   %reldir%/oct-errno.h \
   %reldir%/oct-fstrm.h \
   %reldir%/oct-handle.h \
@@ -299,8 +300,8 @@ COREFCN_SRC = \
 	fi && \
 	mv $@-t $@
 
-%reldir%/mxarray.h: %reldir%/mxarray.in.h %reldir%/mk-mxarray-h.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,%reldir%/mk-mxarray-h.sh)
+%reldir%/mxtypes.h: %reldir%/mxtypes.in.h %reldir%/mk-mxtypes-h.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,%reldir%/mk-mxtypes-h.sh)
 
 %reldir%/oct-tex-lexer.ll: %reldir%/oct-tex-lexer.in.ll %reldir%/oct-tex-symbols.in | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
@@ -333,11 +334,11 @@ libinterp_EXTRA_DIST += \
   %reldir%/genprops.awk \
   %reldir%/graphics.in.h \
   %reldir%/mk-errno-list.sh \
-  %reldir%/mk-mxarray-h.in.sh \
-  %reldir%/mxarray.in.h \
+  %reldir%/mk-mxtypes-h.in.sh \
+  %reldir%/mxtypes.in.h \
   %reldir%/oct-errno.in.cc \
   %reldir%/oct-tex-lexer.in.ll \
   %reldir%/oct-tex-symbols.in
 
 GEN_CONFIG_SHELL += \
-  %reldir%/mk-mxarray-h.sh
+  %reldir%/mk-mxtypes-h.sh

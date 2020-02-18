@@ -2999,7 +2999,7 @@ OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
   libgui/mk-default-qt-settings.sh
   liboctave/external/mk-f77-def.sh
   liboctave/mk-version-h.sh
-  libinterp/corefcn/mk-mxarray-h.sh
+  libinterp/corefcn/mk-mxtypes-h.sh
   build-aux/subst-config-vals.sh
   build-aux/subst-cross-config-vals.sh
   build-aux/subst-script-vals.sh])

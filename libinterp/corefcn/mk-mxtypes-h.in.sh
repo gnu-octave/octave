@@ -30,5 +30,5 @@
 OCTAVE_IDX_TYPE="@OCTAVE_IDX_TYPE@"
 
 $SED \
-  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by mx-mxarray-h.|" \
+  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by mx-mxtypes-h.sh|" \
   -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|"

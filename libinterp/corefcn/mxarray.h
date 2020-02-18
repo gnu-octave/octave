@@ -1,5 +1,3 @@
-// %NO_EDIT_WARNING%
-
 ////////////////////////////////////////////////////////////////////////
 //
 // Copyright (C) 2001-2020 The Octave Project Developers
@@ -53,50 +51,7 @@ SUCH DAMAGE.
 
 #include "octave-config.h"
 
-typedef enum
-{
-  mxUNKNOWN_CLASS = 0,
-  mxCELL_CLASS,
-  mxSTRUCT_CLASS,
-  mxLOGICAL_CLASS,
-  mxCHAR_CLASS,
-  mxVOID_CLASS,
-  mxDOUBLE_CLASS,
-  mxSINGLE_CLASS,
-  mxINT8_CLASS,
-  mxUINT8_CLASS,
-  mxINT16_CLASS,
-  mxUINT16_CLASS,
-  mxINT32_CLASS,
-  mxUINT32_CLASS,
-  mxINT64_CLASS,
-  mxUINT64_CLASS,
-  mxFUNCTION_CLASS
-}
-mxClassID;
-
-typedef enum
-{
-  mxREAL = 0,
-  mxCOMPLEX = 1
-}
-mxComplexity;
-
-/* Matlab uses a wide char (uint16) internally, but Octave uses plain char. */
-/* typedef Uint16 mxChar; */
-typedef char mxChar;
-
-typedef unsigned char mxLogical;
-
-/*
- * FIXME: Mathworks says mwSize, mwIndex should be int generally.
- * But on 64-bit systems, or when mex -largeArrayDims is used, it is size_t.
- * mwSignedIndex is supposed to be ptrdiff_t.  All of this is confusing.
- * Its better to conform to the same indexing as the rest of Octave.
- */
-typedef %OCTAVE_IDX_TYPE% mwSize;
-typedef %OCTAVE_IDX_TYPE% mwIndex;
-typedef %OCTAVE_IDX_TYPE% mwSignedIndex;
+#include "mxtypes.h"
 
 #if ! defined (MXARRAY_TYPEDEFS_ONLY)
 

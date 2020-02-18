@@ -52,10 +52,12 @@ octave_mex_function : public octave_function
 public:
 
   octave_mex_function (void)
-    : m_mex_fcn_ptr (), m_exit_fcn_ptr (), m_is_fmex (), m_sh_lib (),
-      m_time_checked (), m_is_system_fcn_file () { }
+    : m_mex_fcn_ptr (nullptr), m_exit_fcn_ptr (nullptr), m_sh_lib (),
+      m_time_checked (), m_interleaved (false), m_is_fmex (false),
+      m_is_system_fcn_file (false)
+  { }
 
-  octave_mex_function (void *fptr, bool fmex,
+  octave_mex_function (void *fptr, bool interleaved, bool fmex,
                        const octave::dynamic_library& shl,
                        const std::string& nm = "");
 
@@ -88,6 +90,8 @@ public:
 
   bool is_mex_function (void) const { return true; }
 
+  bool use_interleaved_complex (void) const { return m_interleaved; }
+
   // We don't need to override both forms of the call method.  The using
   // declaration will avoid warnings about partially-overloaded virtual
   // functions.
@@ -111,13 +115,15 @@ private:
 
   void (*m_exit_fcn_ptr) (void);
 
-  bool m_is_fmex;
-
   octave::dynamic_library m_sh_lib;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
   mutable octave::sys::time m_time_checked;
+
+  bool m_interleaved;
+
+  bool m_is_fmex;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp

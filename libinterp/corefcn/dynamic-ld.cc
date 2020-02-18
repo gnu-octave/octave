@@ -199,13 +199,41 @@ namespace octave
     return retval;
   }
 
+  void *
+  dynamic_loader::try_load_mex (dynamic_library& mex_file,
+                                const std::string& fcn_name, bool& have_fmex)
+  {
+    // FCN_NAME is not used here, the mangler functions always return
+    // some form of "mexFunction".
+
+    have_fmex = false;
+
+    void *function = mex_file.search (fcn_name, mex_mangler);
+
+    if (! function)
+      {
+        // FIXME: Can we determine this C mangling scheme
+        //        automatically at run time or configure time?
+
+        function = mex_file.search (fcn_name, mex_uscore_mangler);
+
+        if (! function)
+          {
+            function = mex_file.search (fcn_name, mex_f77_mangler);
+
+            if (function)
+              have_fmex = true;
+          }
+      }
+
+    return function;
+  }
+
   octave_function *
   dynamic_loader::load_mex (const std::string& fcn_name,
                             const std::string& file_name,
                             bool /*relative*/)
   {
-    octave_function *retval = nullptr;
-
     unwind_protect frame;
 
     frame.protect_var (m_doing_load);
@@ -230,29 +258,17 @@ namespace octave
 
     bool have_fmex = false;
 
-    void *function = mex_file.search (fcn_name, mex_mangler);
-
-    if (! function)
-      {
-        // FIXME: Can we determine this C mangling scheme
-        //        automatically at run time or configure time?
-        function = mex_file.search (fcn_name, mex_uscore_mangler);
-
-        if (! function)
-          {
-            function = mex_file.search (fcn_name, mex_f77_mangler);
-
-            if (function)
-              have_fmex = true;
-          }
-      }
+    void *function = try_load_mex (mex_file, fcn_name, have_fmex);
 
     if (! function)
       error ("failed to install .mex file function '%s'", fcn_name.c_str ());
 
-    retval = new octave_mex_function (function, have_fmex, mex_file, fcn_name);
+    void *symbol = mex_file.search ("__mx_has_interleaved_complex__");
 
-    return retval;
+    bool interleaved = symbol != nullptr;
+
+    return new octave_mex_function (function, interleaved, have_fmex,
+                                    mex_file, fcn_name);
   }
 
   bool

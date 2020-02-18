@@ -128,6 +128,9 @@ namespace octave
     static std::string mex_uscore_mangler (const std::string& name);
 
     static std::string mex_f77_mangler (const std::string& name);
+
+    static void * try_load_mex (dynamic_library& mex_file,
+                                const std::string& fcn_name, bool& have_fmex);
   };
 }
 

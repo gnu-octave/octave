@@ -856,10 +856,13 @@ namespace octave
     for (int i = 0; i < lines.count (); i++)
       {
         QString line = lines.at (i);
+        QString line_escaped = line;
+        line_escaped.replace (QString ("'"), QString ("''"));
         QString line_history = line;
         line_history.replace (QString ("\\"), QString ("\\\\"));
         line_history.replace (QString ("\""), QString ("\\\""));
         line_history.replace (QString ("%"), QString ("%%"));
+        line_history.replace (QString ("'"), QString ("''"));
 
         // Prevent output of breakpoint in temp. file for keyboard
         QString next_bp_quiet;
@@ -867,25 +870,27 @@ namespace octave
         if (line.contains ("keyboard"))
           {
             // Define commands for not showing bp location and for resetting
-            // thisin case "keyboard" was within a comment
+            // this in case "keyboard" was within a comment
             next_bp_quiet = "__db_next_breakpoint_quiet__;\n";
             next_bp_quiet_reset = "__db_next_breakpoint_quiet__(false);\n";
           }
 
-        // Add codeline togetcher with call to echo/hitory function to tmp
+        // Add codeline together with call to echo/history function to tmp
         // %1 : function name for displaying and adding to history
         // %2 : line number
-        // %3 : command line (eval and display)
+        // %3 : command line with escaped single quotes (display)
         // %4 : command line for history (via fprintf)
+        // %5 : command line (eval)
         code += QString ("%1 (%2, '%3', '%4');\n"
                          + next_bp_quiet
-                         + "%3\n"
+                         + "%5\n"
                          + next_bp_quiet_reset
                          + "\n")
                 .arg (tmp_script_name)
                 .arg (i)
-                .arg (line)
-                .arg (line_history);
+                .arg (line_escaped)
+                .arg (line_history)
+                .arg (line);
       }
 
     code += QString ("munlock (\"%1\"); clear %1;\n").arg (tmp_script_name);

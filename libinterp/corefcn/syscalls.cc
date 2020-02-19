@@ -377,9 +377,10 @@ exit status, it will linger until Octave exits.
 
 */
 
-DEFMETHODX ("fcntl", Ffcntl, interp, args, ,
+DEFMETHODX ("fcntl", Ffcntl, interp, args, nargout,
             doc: /* -*- texinfo -*-
-@deftypefn {} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})
+@deftypefn  {} {} fcntl (@var{fid}, @var{request}, @var{arg})
+@deftypefnx {} {[@var{status}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})
 Change the properties of the open file @var{fid}.
 
 The following values may be passed as @var{request}:
@@ -430,8 +431,8 @@ Set the file status flags for @var{fid} to the value specified by @var{arg}.
 @w{@code{O_NONBLOCK}}.
 @end vtable
 
-If successful, @var{err} is 0 and @var{msg} is an empty string.  Otherwise,
-@var{err} is nonzero and @var{msg} contains a system-dependent error
+If successful, @var{status} is 0 and @var{msg} is an empty string.  Otherwise,
+@var{status} is -1 and @var{msg} contains a system-dependent error
 message.
 @seealso{fopen, dup2}
 @end deftypefn */)
@@ -454,11 +455,25 @@ message.
   if (fid < 0)
     error ("fcntl: invalid file id");
 
+  octave_value_list retval;
   std::string msg;
 
   int status = octave::sys::fcntl (fid, req, arg, msg);
 
-  return ovl (status, msg);
+  if (nargout == 0)
+    {
+      if (status < 0)
+        error ("fcntl: operation failed: %s", msg.c_str ());
+    }
+  else
+    {
+      if (status < 0)
+        retval = ovl (-1.0, msg);
+      else
+        retval = ovl (0.0, "");
+    }
+
+  return retval;
 }
 
 DEFMETHODX ("fork", Ffork, interp, args, ,

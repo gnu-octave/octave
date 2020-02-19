@@ -3798,19 +3798,30 @@ namespace octave
   {
     int status = 0;
 
-    // If the input buffer is empty or we are at the end of the buffer,
-    // insert ASCII 1 as a marker for subsequent rules.
-
     if (m_input_buf.empty () && ! m_input_buf.at_eof ())
-      m_input_buf.fill (std::string (1, static_cast<char> (1)), false);
+      {
+        // If the input buffer is empty or we are at the end of the
+        // buffer, insert ASCII 1 as a marker for subsequent rules.
+        // Don't insert a newline character in this case.  Instead of
+        // calling input_buffer::fill followed immediately by
+        // input_buffer::copy_chunk, simply insert the marker directly
+        // in BUF.
 
-    // Note that the copy_chunk function may append a newline character
-    // to the input.
+        assert (max_size > 0);
 
-    if (! m_input_buf.empty ())
-      status = m_input_buf.copy_chunk (buf, max_size);
+        buf[0] = static_cast<char> (1);
+        status = 1;
+      }
     else
-      status = YY_NULL;
+      {
+        // Note that the copy_chunk function may append a newline
+        // character to the input.
+
+        if (! m_input_buf.empty ())
+          status = m_input_buf.copy_chunk (buf, max_size);
+        else
+          status = YY_NULL;
+      }
 
     return status;
   }

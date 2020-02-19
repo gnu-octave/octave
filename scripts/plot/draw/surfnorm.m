@@ -41,7 +41,8 @@
 ## If no return arguments are requested, a surface plot with the normal
 ## vectors to the surface is plotted.
 ##
-## Any property/value input pairs are assigned to the surface object.
+## Any property/value input pairs are assigned to the surface object.  The full
+## list of properties is documented at @ref{Surface Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

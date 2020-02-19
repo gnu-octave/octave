@@ -87,6 +87,8 @@
 ## Multiple property-value pairs may be specified which will affect the line
 ## objects drawn by @code{plot3}.  If the @var{fmt} argument is supplied it
 ## will format the line objects in the same manner as @code{plot}.
+## The full list of properties is documented at
+## @ref{Line Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

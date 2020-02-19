@@ -75,7 +75,8 @@
 ##
 ##
 ## Multiple property-value pairs may be specified for the dialog object, but
-## they must appear in pairs.
+## they must appear in pairs.  The full list of properties is documented at
+## @ref{Figure Properties}.
 ##
 ## The return value @var{h} is a graphics handle to the created figure.
 ##

@@ -53,6 +53,7 @@
 ## @end example
 ##
 ## Additional property/value pairs are passed to the underlying patch command.
+## The full list of properties is documented at @ref{Patch Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

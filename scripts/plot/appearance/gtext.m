@@ -56,6 +56,9 @@
 ## Optional @var{property}/@var{value} pairs are passed directly to the
 ## underlying text objects.
 ##
+## The full list of text object properties is documented at
+## @ref{Text Properties}.
+##
 ## The optional return value @var{h} holds the graphics handle(s) to the
 ## created text object(s).
 ## @seealso{ginput, text}

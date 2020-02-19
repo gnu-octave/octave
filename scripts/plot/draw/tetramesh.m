@@ -44,6 +44,7 @@
 ##
 ## Calling @code{tetramesh (@dots{}, "property", "value", @dots{})} passes all
 ## property/value pairs directly to the patch function as additional arguments.
+## The full list of properties is documented at @ref{Patch Properties}.
 ##
 ## The optional return value @var{h} is a vector of patch handles where each
 ## handle represents one tetrahedron in the order given by @var{T}.

@@ -42,14 +42,15 @@
 ## present the markers at the top of the stems will be filled in.
 ##
 ## Optional property/value pairs may be specified to control the appearance
-## of the plot.
+## of the plot.  The full list of properties is documented at
+## @ref{Line Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a handle to the @nospell{"stem series"}
 ## hggroup containing the line and marker objects used for the plot.
-## @xref{XREFstem,,stem}, for a description of the @nospell{"stem series"}
+## @xref{XREFstem}, for a description of the @nospell{"stem series"}
 ## object.
 ##
 ## Example:

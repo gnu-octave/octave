@@ -107,7 +107,8 @@
 ## properties that can be manipulated with @code{get}/@code{set}.
 ## Alternatively, properties can be set directly when calling @code{legend} by
 ## including @var{property}/@var{value} pairs.  If using this calling form, the
-## labels must be specified as a cell array of strings.
+## labels must be specified as a cell array of strings.  Graphics object
+## properties are documented in detail at @ref{Graphics Object Properties}.
 ##
 ## The optional output values are
 ##

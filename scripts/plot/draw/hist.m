@@ -51,7 +51,8 @@
 ## the sum of the bars is equal to @var{norm}.
 ##
 ## The histogram's appearance may be modified by specifying property/value
-## pairs.  For example, the face and edge color may be modified:
+## pairs to the underlying patch object.  For example, the face and edge color
+## may be modified:
 ##
 ## @example
 ## @group
@@ -68,6 +69,8 @@
 ## colormap (summer ());
 ## @end group
 ## @end example
+##
+## The full list of patch properties is documented at @ref{Patch Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

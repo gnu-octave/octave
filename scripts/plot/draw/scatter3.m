@@ -54,7 +54,8 @@
 ## If the argument @qcode{"filled"} is given then the markers are filled.
 ##
 ## Additional property/value pairs are passed directly to the underlying
-## patch object.
+## patch object.  The full list of properties is documented at
+## @ref{Patch Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

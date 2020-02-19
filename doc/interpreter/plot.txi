@@ -245,7 +245,7 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(quiver3)
 
-@DOCSTRING(streamtube)
+@DOCSTRING(ostreamtube)
 
 @DOCSTRING(streamline)
 

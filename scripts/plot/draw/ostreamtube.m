@@ -24,12 +24,12 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} streamtube (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
-## @deftypefnx {} {} streamtube (@var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
-## @deftypefnx {} {} streamtube (@var{vertices}, @var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w})
-## @deftypefnx {} {} streamtube (@dots{}, @var{options})
-## @deftypefnx {} {} streamtube (@var{hax}, @dots{})
-## @deftypefnx {} {@var{h} =} streamtube (@dots{})
+## @deftypefn  {} {} ostreamtube (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
+## @deftypefnx {} {} ostreamtube (@var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
+## @deftypefnx {} {} ostreamtube (@var{xyz}, @var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w})
+## @deftypefnx {} {} ostreamtube (@dots{}, @var{options})
+## @deftypefnx {} {} ostreamtube (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ostreamtube (@dots{})
 ## Calculate and display streamtubes.
 ##
 ## Streamtubes are approximated by connecting circular crossflow areas
@@ -46,17 +46,17 @@
 ## The input parameter @var{options} is a 2-D vector of the form
 ## @code{[@var{scale}, @var{n}]}.  The first parameter scales the start radius
 ## of the streamtubes (default 1).  The second parameter specifies the number
-## of polygon points used for the streamtube circumference (default 20).
+## of vertices that are used to construct the tube circumference (default 20).
 ##
-## @code{streamtube} can be called with a cell array containing pre-computed
-## streamline data.  To do this, @var{vertices} must be created with the
+## @code{ostreamtube} can be called with a cell array containing pre-computed
+## streamline data.  To do this, @var{xyz} must be created with the
 ## @code{stream3} function.  This option is useful if you need to alter the
 ## integrator step size or the maximum number of vertices of the streamline.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a graphics handle to the patch plot
+## The optional return value @var{h} is a graphics handle to the plot
 ## objects created for each streamtube.
 ##
 ## Example:
@@ -67,24 +67,32 @@
 ## u = -x / 10 - y;
 ## v = x - y / 10;
 ## w = - ones (size (x)) / 10;
-## streamtube (x, y, z, u, v, w, 1, 0, 0);
+## ostreamtube (x, y, z, u, v, w, 1, 0, 0);
 ## @end group
 ## @end example
 ##
 ## @seealso{stream3, streamline}
 ## @end deftypefn
 
-## Reference:
+## References:
 ##
 ## @inproceedings{
 ##    title = {Visualization of 3-D vector fields - Variations on a stream},
 ##    author = {Dave Darmofal and Robert Haimes},
 ##    year = {1992}
 ## }
+##
+## @article{
+##    title = {Efficient streamline, streamribbon, and streamtube constructions on unstructured grids},
+##    author = {Ueng, Shyh-Kuang and Sikorski, C. and Ma, Kwan-Liu},
+##    year = {1996},
+##    month = {June},
+##    publisher = {IEEE Transactions on Visualization and Computer Graphics},
+## }
 
-function h = streamtube (varargin)
+function h = ostreamtube (varargin)
 
-  [hax, varargin, nargin] = __plt_get_axis_arg__ ("streamtube", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("ostreamtube", varargin{:});
 
   options = [];
   xyz = [];
@@ -110,29 +118,29 @@ function h = streamtube (varargin)
     case 10
       [x, y, z, u, v, w, spx, spy, spz, options] = varargin{:};
     otherwise
-      error ("streamtube: invalid number of inputs");
+      error ("ostreamtube: invalid number of inputs");
   endswitch
 
   scale = 1;
-  num_poly = 20;
+  num_circum = 20;
   if (! isempty (options))
     switch (numel (options))
       case 1
         scale = options(1);
       case 2
         scale = options(1);
-        num_poly = options(2);
+        num_circum = options(2);
       otherwise
-        error ("streamtube: invalid number of OPTIONS elements");
+        error ("ostreamtube: invalid number of OPTIONS elements");
     endswitch
 
     if (! isreal (scale) || scale <= 0)
-      error ("streamtube: SCALE must be a real scalar > 0");
+      error ("ostreamtube: SCALE must be a real scalar > 0");
     endif
-    if (! isreal (num_poly) || num_poly < 3)
-      error ("streamtube: number of polygons N must be greater than 2");
+    if (! isreal (num_circum) || num_circum < 3)
+      error ("ostreamtube: number of tube vertices N must be greater than 2");
     endif
-    num_poly = fix (num_poly);
+    num_circum = fix (num_circum);
   endif
 
   if (isempty (hax))
@@ -147,16 +155,16 @@ function h = streamtube (varargin)
 
   div = divergence (x, y, z, u, v, w);
 
-  ## Determine start radius
+  ## Use the bounding box diagonal to determine the starting radius
   mxx = mnx = mxy = mny = mxz = mnz = [];
   j = 1;
   for i = 1 : length (xyz)
     sl = xyz{i};
     if (! isempty (sl))
       slx = sl(:, 1); sly = sl(:, 2); slz = sl(:, 3);
-      mxx(j) = max (slx(:)); mnx(j) = min (slx(:));
-      mxy(j) = max (sly(:)); mny(j) = min (sly(:));
-      mxz(j) = max (slz(:)); mnz(j) = min (slz(:));
+      mxx(j) = max (slx); mnx(j) = min (slx);
+      mxy(j) = max (sly); mny(j) = min (sly);
+      mxz(j) = max (slz); mnz(j) = min (slz);
       j += 1;
     endif
   endfor
@@ -188,7 +196,7 @@ function h = streamtube (varargin)
       if (max_vertices > 2)
 
         htmp = plottube (hax, sl, div_sl, vv, max_vertices, ...
-                         rstart, num_poly);
+                         rstart, num_circum);
         h = [h; htmp];
 
       endif
@@ -197,9 +205,9 @@ function h = streamtube (varargin)
 
 endfunction
 
-function h = plottube (hax, sl, div_sl, vv, max_vertices, rstart, num_poly)
+function h = plottube (hax, sl, div_sl, vv, max_vertices, rstart, num_circum)
 
-  phi = linspace (0, 2*pi, num_poly);
+  phi = linspace (0, 2*pi, num_circum);
   cp = cos (phi);
   sp = sin (phi);
 
@@ -220,17 +228,17 @@ function h = plottube (hax, sl, div_sl, vv, max_vertices, rstart, num_poly)
   ## Guide point and its rotation to create a segment
   N = get_normal1 (R);
   K = ract * N;
-  XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_poly);
+  XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_circum);
 
-  px = zeros (num_poly, max_vertices - 1);
-  py = zeros (num_poly, max_vertices - 1);
-  pz = zeros (num_poly, max_vertices - 1);
-  pc = zeros (num_poly, max_vertices - 1);
+  px = zeros (num_circum, max_vertices - 1);
+  py = zeros (num_circum, max_vertices - 1);
+  pz = zeros (num_circum, max_vertices - 1);
+  pc = zeros (num_circum, max_vertices - 1);
 
   px(:, 1) = XS(1, :).';
   py(:, 1) = XS(2, :).';
   pz(:, 1) = XS(3, :).';
-  pc(:, 1) = vact * ones (num_poly, 1);
+  pc(:, 1) = vact * ones (num_circum, 1);
 
   for i = 3 : max_vertices
 
@@ -246,18 +254,18 @@ function h = plottube (hax, sl, div_sl, vv, max_vertices, rstart, num_poly)
     vold = vact;
     rold = ract;
 
-    ## Project K onto RE and get the difference in order to calculate the next
+    ## Project KK onto RE and get the difference in order to calculate the next
     ## guiding point
     Kp = KK - RE * dot (KK, RE);
     K = ract * Kp / norm (Kp);
 
-    ## Rotate the guiding point around R and collect patch vertices
-    XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_poly);
+    ## Rotate around RE and collect surface patches
+    XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_circum);
 
     px(:, i - 1) = XS(1, :).';
     py(:, i - 1) = XS(2, :).';
     pz(:, i - 1) = XS(3, :).';
-    pc(:, i - 1) = vact * ones (num_poly, 1);
+    pc(:, i - 1) = vact * ones (num_circum, 1);
 
   endfor
 
@@ -300,7 +308,6 @@ function Y = rotation (X, U, cp, sp)
 
 endfunction
 
-
 %!demo
 %! clf;
 %! [x, y, z] = meshgrid (-1:0.1:1, -1:0.1:1, -3.5:0.1:0);
@@ -312,7 +319,7 @@ endfunction
 %! sx = 1.0;
 %! sy = 0.0;
 %! sz = 0.0;
-%! streamtube (x, y, z, u, v, w, sx, sy, sz, [1.2, 30]);
+%! ostreamtube (x, y, z, u, v, w, sx, sy, sz, [1.2, 30]);
 %! colormap (jet);
 %! shading interp;
 %! view ([-47, 24]);
@@ -333,7 +340,7 @@ endfunction
 %! w = - z.*t;
 %! [sx, sy, sz] = meshgrid (-2:4:2);
 %! xyz = stream3 (x, y, z, u, v, w, sx, sy, sz, [0.1, 60]);
-%! streamtube (xyz, x, y, z, u, v, w, [2, 50]);
+%! ostreamtube (xyz, x, y, z, u, v, w, [2, 50]);
 %! colormap (jet);
 %! shading interp;
 %! view ([-47, 24]);
@@ -346,14 +353,14 @@ endfunction
 %! title ("Integration Towards Sink");
 
 ## Test input validation
-%!error streamtube ()
-%!error <invalid number of inputs> streamtube (1)
-%!error <invalid number of inputs> streamtube (1,2)
-%!error <invalid number of inputs> streamtube (1,2,3)
-%!error <invalid number of inputs> streamtube (1,2,3,4)
-%!error <invalid number of inputs> streamtube (1,2,3,4,5)
-%!error <invalid number of OPTIONS> streamtube (1,2,3,4,5,6, [1,2,3])
-%!error <SCALE must be a real scalar . 0> streamtube (1,2,3,4,5,6, [1i])
-%!error <SCALE must be a real scalar . 0> streamtube (1,2,3,4,5,6, [0])
-%!error <N must be greater than 2> streamtube (1,2,3,4,5,6, [1, 1i])
-%!error <N must be greater than 2> streamtube (1,2,3,4,5,6, [1, 2])
+%!error ostreamtube ()
+%!error <invalid number of inputs> ostreamtube (1)
+%!error <invalid number of inputs> ostreamtube (1,2)
+%!error <invalid number of inputs> ostreamtube (1,2,3)
+%!error <invalid number of inputs> ostreamtube (1,2,3,4)
+%!error <invalid number of inputs> ostreamtube (1,2,3,4,5)
+%!error <invalid number of OPTIONS> ostreamtube (1,2,3,4,5,6, [1,2,3])
+%!error <SCALE must be a real scalar . 0> ostreamtube (1,2,3,4,5,6, [1i])
+%!error <SCALE must be a real scalar . 0> ostreamtube (1,2,3,4,5,6, [0])
+%!error <N must be greater than 2> ostreamtube (1,2,3,4,5,6, [1, 1i])
+%!error <N must be greater than 2> ostreamtube (1,2,3,4,5,6, [1, 2])

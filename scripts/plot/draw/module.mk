@@ -61,6 +61,7 @@ FCN_FILE_DIRS += \
   %reldir%/mesh.m \
   %reldir%/meshc.m \
   %reldir%/meshz.m \
+  %reldir%/ostreamtube.m \
   %reldir%/pareto.m \
   %reldir%/patch.m \
   %reldir%/pcolor.m \
@@ -97,7 +98,6 @@ FCN_FILE_DIRS += \
   %reldir%/stream2.m \
   %reldir%/stream3.m \
   %reldir%/streamline.m \
-  %reldir%/streamtube.m \
   %reldir%/surf.m \
   %reldir%/surface.m \
   %reldir%/surfc.m \

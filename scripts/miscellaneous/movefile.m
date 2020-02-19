@@ -59,7 +59,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   endif
 
   max_cmd_line = 1024;
-  status = true;
+  sts = 1;
   msg = "";
   msgid = "";
 
@@ -96,13 +96,27 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   ## If f1 has more than 1 element f2 must be a directory
   isdir = isfolder (f2);
   if (numel (f1) > 1 && ! isdir)
-    error ("movefile: when moving multiple files, F2 must be a directory");
+    if (nargout == 0)
+      error ("movefile: when copying multiple files, F2 must be a directory");
+    else
+      status = 0;
+      msg = "when copying multiple files, F2 must be a directory";
+      msgid = "movefile";
+      return;
+    endif
   endif
 
   ## Protect the filename(s).
   f1 = glob (f1);
   if (isempty (f1))
-    error ("movefile: no files to move");
+    if (nargout == 0)
+      error ("movefile: no files to move");
+    else
+      status = 0;
+      msg = "no files to move";
+      msgid = "movefile";
+      return;
+    endif
   endif
   p1 = sprintf ('"%s" ', f1{:});
   p2 = tilde_expand (f2);
@@ -129,11 +143,11 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       ## Move the file(s).
       [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
       if (err != 0)
-        status = false;
+        sts = 0;
         msgid = "movefile";
       endif
       ## Load new file(s) in editor
-      __event_manager_file_renamed__ (status);
+      __event_manager_file_renamed__ (sts);
     endwhile
   else
     if (ispc () && ! isunix ()
@@ -147,11 +161,19 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     ## Move the file(s).
     [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
     if (err != 0)
-      status = false;
+      sts = 0;
       msgid = "movefile";
     endif
     ## Load new file(s) in editor
-    __event_manager_file_renamed__ (status);
+    __event_manager_file_renamed__ (sts);
+  endif
+
+  if (nargout == 0)
+    if (sts == 0)
+      error ("movefile: operation failed: %s", msg);
+    endif
+  else
+    status = sts;
   endif
 
 endfunction
@@ -187,3 +209,4 @@ endfunction
 %!error <F1 must be a string> movefile (1, "foobar")
 %!error <F2 must be a string> movefile ("foobar", 1)
 %!error <F2 must be a directory> movefile ({"a", "b"}, "%_NOT_A_DIR_%")
+%!error <no files to move> movefile ("%_NOT_A_FILENAME1_%", "%_NOT_A_FILENAME2_%")

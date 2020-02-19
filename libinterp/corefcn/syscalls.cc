@@ -591,26 +591,29 @@ Return the real user id of the current process.
   return ovl (octave::sys::getuid ());
 }
 
-DEFUNX ("kill", Fkill, args, ,
+DEFUNX ("kill", Fkill, args, nargout,
         doc: /* -*- texinfo -*-
-@deftypefn {} {[@var{err}, @var{msg}] =} kill (@var{pid}, @var{sig})
+@deftypefn  {} {} kill (@var{pid}, @var{sig})
+@deftypefnx {} {[@var{status}, @var{msg}] =} kill (@var{pid}, @var{sig})
 Send signal @var{sig} to process @var{pid}.
 
 If @var{pid} is positive, then signal @var{sig} is sent to @var{pid}.
 
-If @var{pid} is 0, then signal @var{sig} is sent to every process
-in the process group of the current process.
+If @var{pid} is 0, then signal @var{sig} is sent to every process in the
+process group of the current process.
 
-If @var{pid} is -1, then signal @var{sig} is sent to every process
-except process 1.
+If @var{pid} is -1, then signal @var{sig} is sent to every process except
+process 1.
 
-If @var{pid} is less than -1, then signal @var{sig} is sent to every
-process in the process group @var{-pid}.
+If @var{pid} is less than -1, then signal @var{sig} is sent to every process in
+the process group @var{-pid}.
 
 If @var{sig} is 0, then no signal is sent, but error checking is still
 performed.
 
-Return 0 if successful, otherwise return -1.
+If successful, @var{status} is 0 and @var{msg} is an empty string.
+Otherwise, @var{status} is -1 and @var{msg} contains a system-dependent
+error message.
 @end deftypefn */)
 {
   if (args.length () != 2)
@@ -620,11 +623,25 @@ Return 0 if successful, otherwise return -1.
 
   int sig = args(1).int_value (true);
 
+  octave_value_list retval;
   std::string msg;
 
   int status = octave::sys::kill (pid, sig, msg);
 
-  return ovl (status, msg);
+  if (nargout == 0)
+    {
+      if (status < 0)
+        error ("kill: operation failed: %s", msg.c_str ());
+    }
+  else
+    {
+      if (status < 0)
+        retval = ovl (-1.0, msg);
+      else
+        retval = ovl (0.0, "");
+    }
+
+  return retval;
 }
 
 DEFUNX ("lstat", Flstat, args, ,

@@ -284,5 +284,3 @@ alphabetical order).
 @DOCSTRING(discrete_rnd)
 
 @DOCSTRING(empirical_rnd)
-
-@DOCSTRING(rng)

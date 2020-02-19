@@ -3,6 +3,37 @@ Summary of important user-visible changes for version 7 (yyyy-mm-dd):
 
 ### General improvements
 
+- Many functions in Octave can be called in a command form---no
+parentheses for invocation and no return argument assignment---or in a
+functional form---parentheses and '=' for assignment of return values.
+
+    Command Form Example
+
+    `mkdir new_directory`
+
+    Function Form Example
+
+    `status = mkdir ("new_directory")`
+
+    Octave now handles errors that occur in a consistent manner.  If
+    called in command form and there is a failure, an error is thrown
+    and a message printed.  If called in functional form, no error or
+    message is printed and the failure is communicated to the programmer
+    via the output status variable.
+
+    The following list of functions have been modified.
+
+    * `copyfile`
+    * `fcntl`
+    * `fileattrib`
+    * `kill`
+    * `link`
+    * `mkfifo`
+    * `movefile`
+    * `rename`
+    * `rmdir`
+    * `symlink`
+    * `unlink`
 
 ### Graphics backend
 

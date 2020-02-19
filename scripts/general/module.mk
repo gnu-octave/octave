@@ -60,6 +60,7 @@ FCN_FILE_DIRS += \
   %reldir%/repelem.m \
   %reldir%/repmat.m \
   %reldir%/rescale.m \
+  %reldir%/rng.m \
   %reldir%/rot90.m \
   %reldir%/rotdim.m \
   %reldir%/shift.m \

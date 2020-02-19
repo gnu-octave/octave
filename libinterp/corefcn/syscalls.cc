@@ -676,17 +676,17 @@ convert (int x, int ibase, int obase)
   return retval;
 }
 
-DEFUNX ("mkfifo", Fmkfifo, args, ,
+DEFUNX ("mkfifo", Fmkfifo, args, nargout,
         doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{err} =} mkfifo (@var{name}, @var{mode})
-@deftypefnx {} {[@var{err}, @var{msg}] =} mkfifo (@var{name}, @var{mode})
+@deftypefn  {} {} mkfifo (@var{name}, @var{mode})
+@deftypefnx {} {[@var{status}, @var{msg}] =} mkfifo (@var{name}, @var{mode})
 Create a FIFO special file named @var{name} with file mode @var{mode}.
 
 @var{mode} is interpreted as an octal number and is subject to umask
 processing.  The final calculated mode is @code{@var{mode} - @var{umask}}.
 
-If successful, @var{err} is 0 and @var{msg} is an empty string.
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+If successful, @var{status} is 0 and @var{msg} is an empty string.
+Otherwise, @var{status} is -1 and @var{msg} contains a system-dependent
 error message.
 @seealso{pipe, umask}
 @end deftypefn */)
@@ -703,11 +703,25 @@ error message.
 
   int mode = convert (octal_mode, 8, 10);
 
+  octave_value_list retval;
   std::string msg;
 
   int status = octave::sys::mkfifo (name, mode, msg);
 
-  return ovl (status, msg);
+  if (nargout == 0)
+    {
+      if (status < 0)
+        error ("mkfifo: operation failed: %s", msg.c_str ());
+    }
+  else
+    {
+      if (status < 0)
+        retval = ovl (-1.0, msg);
+      else
+        retval = ovl (0.0, "");
+    }
+
+  return retval;
 }
 
 /*

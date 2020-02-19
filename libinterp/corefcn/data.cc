@@ -4248,6 +4248,18 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
   dim_vector dims (1, 1);
 
+  // The TYPE argument is required to be "logical" if present.  This
+  // feature appears to be undocumented in Matlab.
+
+  if (nargin > 0 && args(nargin-1).is_string ())
+    {
+      std::string nm = args(nargin-1).string_value ();
+      nargin--;
+
+      if (oct_data_conv::string_to_data_type (nm) != oct_data_conv::dt_logical)
+        error ("%s: invalid data type '%s'", fcn, nm.c_str ());
+    }
+
   switch (nargin)
     {
     case 0:
@@ -4908,6 +4920,12 @@ values, return an array with given dimensions.
   return fill_matrix (args, false, "false");
 }
 
+/*
+%!assert (false (2, 3), logical (zeros (2, 3)))
+%!assert (false (2, 3, "logical"), logical (zeros (2, 3)))
+%!error false (2, 3, "double")
+*/
+
 DEFUN (true, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} true (@var{x})
@@ -4925,6 +4943,12 @@ values, return an array with given dimensions.
 {
   return fill_matrix (args, true, "true");
 }
+
+/*
+%!assert (true (2, 3), logical (ones (2, 3)))
+%!assert (true (2, 3, "logical"), logical (ones (2, 3)))
+%!error true (2, 3, "double")
+*/
 
 template <typename MT>
 octave_value

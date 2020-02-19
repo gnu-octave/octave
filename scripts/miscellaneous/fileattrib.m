@@ -24,13 +24,16 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fileattrib (@var{file})
-## @deftypefnx {} {} fileattrib ()
+## @deftypefn  {} {} fileattrib ()
+## @deftypefnx {} {} fileattrib (@var{file})
+## @deftypefnx {} {[@var{status}, @var{attrib}] =} fileattrib (@dots{})
 ## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} fileattrib (@dots{})
-## Return information about @var{file}.
+## Report attribute information about @var{file}.
 ##
-## If successful, @var{status} is 1 and @var{msg} is a structure with the
-## following fields:
+## If no file or directory is specified, report information about the present
+## working directory.
+##
+## If successful, the output is a structure with the following fields:
 ##
 ## @table @code
 ## @item Name
@@ -64,17 +67,20 @@
 ## True if the user (group; other users) has execute permission for @var{file}.
 ## @end table
 ##
-## If an attribute does not apply (i.e., archive on a Unix system) then the
+## If an attribute does not apply (e.g., archive on a Unix system) then the
 ## field is set to NaN.
 ##
-## If @code{attrib} fails, @var{msg} is a non-empty string containing an
-## error message and @var{msg_id} is the non-empty string @qcode{"fileattrib"}.
+## If @var{file} contains globbing characters, information about all matching
+## files is returned in a structure array.
 ##
-## With no input arguments, return information about the current directory.
-##
-## If @var{file} contains globbing characters, return information about all
-## the matching files.
-## @seealso{glob}
+## If outputs are requested, the first is @var{status} which takes the value 1
+## when the operation was successful, and 0 otherwise.  The second output
+## contains the structure described above (@var{attrib}) if the operation was
+## successful; otherwise, the second output is a system-dependent error message
+## (@var{msg}).  The third output is an empty string ("") when the operation
+## was successful, or a unique message identifier (@var{msgid}) in the case of
+## failure.
+## @seealso{stat, glob}
 ## @end deftypefn
 
 function [status, msg, msgid] = fileattrib (file = ".")
@@ -87,7 +93,7 @@ function [status, msg, msgid] = fileattrib (file = ".")
     error ("fileattrib: FILE must be a string");
   endif
 
-  status = true;
+  sts = 1;
   msg = "";
   msgid = "";
 
@@ -108,10 +114,9 @@ function [status, msg, msgid] = fileattrib (file = ".")
         r(i).hidden = NaN;
       else
         [~, attrib] = dos (sprintf ('attrib "%s"', r(i).Name));
-        ## dos never returns error status so have to check it indirectly
+        ## DOS never returns error status so have to check it indirectly
         if (! isempty (strfind (attrib, " -")))
-          status = false;
-          msgid = "fileattrib";
+          sts = 0;
           break;
         endif
         attrib = regexprep (attrib, '\S+:.*', "");
@@ -142,15 +147,23 @@ function [status, msg, msgid] = fileattrib (file = ".")
         r(i).OtherExecute = NaN;
       endif
     else
-      status = false;
-      msgid = "fileattrib";
+      sts = 0;
       break;
     endif
   endfor
 
-  if (status)
-    if (nargout == 0)
-      status = r;
+  if (nargout == 0)
+    if (! sts)
+      error ("fileattrib: operation failed");
+    endif
+    status = r;
+  else
+    status = sts;
+    if (! sts)
+      if (isempty (msg))
+        msg = "operation failed";
+      endif
+      msgid = "fileattrib";
     else
       msg = r;
     endif

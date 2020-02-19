@@ -71,7 +71,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{stream3, streamline}
+## @seealso{stream3, streamline, streamtube}
 ## @end deftypefn
 
 ## References:

@@ -58,7 +58,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{stream2, streamline, ostreamtube}
+## @seealso{stream2, streamline, streamtube, ostreamtube}
 ## @end deftypefn
 
 ## References:

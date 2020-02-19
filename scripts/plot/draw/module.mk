@@ -98,6 +98,7 @@ FCN_FILE_DIRS += \
   %reldir%/stream2.m \
   %reldir%/stream3.m \
   %reldir%/streamline.m \
+  %reldir%/streamtube.m \
   %reldir%/surf.m \
   %reldir%/surface.m \
   %reldir%/surfc.m \

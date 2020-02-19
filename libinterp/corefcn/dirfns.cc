@@ -418,14 +418,14 @@ error message.
     return ovl (result, status, "");
 }
 
-DEFMETHODX ("rename", Frename, interp, args, ,
+DEFMETHODX ("rename", Frename, interp, args, nargout,
             doc: /* -*- texinfo -*-
 @deftypefn  {} {} rename @var{old} @var{new}
-@deftypefnx {} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})
+@deftypefnx {} {[@var{status}, @var{msg}] =} rename (@var{old}, @var{new})
 Change the name of file @var{old} to @var{new}.
 
-If successful, @var{err} is 0 and @var{msg} is an empty string.
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+If successful, @var{status} is 0 and @var{msg} is an empty string.
+Otherwise, @var{status} is -1 and @var{msg} contains a system-dependent
 error message.
 @seealso{movefile, copyfile, ls, dir}
 @end deftypefn */)
@@ -439,6 +439,7 @@ error message.
   from = octave::sys::file_ops::tilde_expand (from);
   to = octave::sys::file_ops::tilde_expand (to);
 
+  octave_value_list retval;
   std::string msg;
 
   octave::event_manager& evmgr = interp.get_event_manager ();
@@ -447,16 +448,22 @@ error message.
 
   int status = octave::sys::rename (from, to, msg);
 
-  if (status < 0)
+  evmgr.file_renamed (status >= 0);
+
+  if (nargout == 0)
     {
-      evmgr.file_renamed (false);
-      return ovl (-1.0, msg);
+      if (status < 0)
+        error ("rename: operation failed: %s", msg.c_str ());
     }
   else
     {
-      evmgr.file_renamed (true);
-      return ovl (status, "");
+      if (status < 0)
+        retval = ovl (-1.0, msg);
+      else
+        retval = ovl (0.0, "");
     }
+
+  return retval;
 }
 
 DEFUN (glob, args, ,

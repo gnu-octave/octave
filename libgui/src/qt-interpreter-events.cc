@@ -39,6 +39,7 @@
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 
+#include "localcharset-wrapper.h"
 #include "oct-env.h"
 #include "str-vec.h"
 
@@ -631,7 +632,9 @@ namespace octave
 
         if (adjusted_value == "SYSTEM")
           adjusted_value =
-            QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")");
+            QString ("SYSTEM (") +
+            QString (octave_locale_charset_wrapper ()).toUpper () +
+            QString (")");
         else if (re.indexIn (adjusted_value) > -1)
           {
             if (codecs.contains ("IBM" + re.cap (1)))

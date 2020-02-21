@@ -74,6 +74,7 @@
 
 #include "cmd-edit.h"
 #include "file-ops.h"
+#include "localcharset-wrapper.h"
 #include "uniconv-wrappers.h"
 
 #include "bp-table.h"
@@ -266,7 +267,8 @@ namespace octave
 
     // encoding, not updated with the settings
     QString locale_enc_name =
-      QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")");
+      QString ("SYSTEM (") +
+      QString (octave_locale_charset_wrapper ()).toUpper () + QString (")");
     m_encoding = settings->value (ed_default_enc.key, locale_enc_name).toString ();
     m_enc_indicator->setText (m_encoding);
     // no changes in encoding yet

@@ -51,6 +51,7 @@
 #include "workspace-model.h"
 
 #include "file-ops.h"
+#include "localcharset-wrapper.h"
 #include "oct-env.h"
 
 #include "defaults.h"
@@ -401,8 +402,9 @@ namespace octave
       }
 
     // Append SYSTEM
-    codecs->append (QTextCodec::codecForLocale ()->name ().toUpper ().prepend
-                      ("SYSTEM (").append (")"));
+    codecs->append (QString ("SYSTEM (") +
+                    QString (octave_locale_charset_wrapper ()).toUpper () +
+                    QString (")"));
 
     // Clean up and sort list of codecs
     codecs->removeDuplicates ();
@@ -420,7 +422,7 @@ namespace octave
     QString enc = current;
 
     // Check for valid codec for the default.  If this fails, "SYSTEM" (i.e.
-    // codecForLocale) will be chosen.
+    // locale_charset) will be chosen.
     // FIXME: The default is "SYSTEM" on all platforms.  So can this fallback
     // logic be removed completely?
     bool default_exists = false;
@@ -429,8 +431,9 @@ namespace octave
       default_exists = true;
 
     QString default_enc =
-      QTextCodec::codecForLocale ()->name ().toUpper ().prepend
-        ("SYSTEM (").append (")");
+      QString ("SYSTEM (") +
+      QString (octave_locale_charset_wrapper ()).toUpper () + QString (")");
+
     if (enc.isEmpty ())
       {
         enc = m_settings->value (ed_default_enc).toString ();

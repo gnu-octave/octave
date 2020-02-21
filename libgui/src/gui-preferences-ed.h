@@ -31,6 +31,7 @@
 #endif
 
 #include "gui-preferences.h"
+#include "localcharset-wrapper.h"
 
 // Editor preferences
 
@@ -232,7 +233,9 @@ ed_show_dbg_file ("editor/show_dbg_file", QVariant (true));
 
 const gui_pref
 ed_default_enc ("editor/default_encoding",
-                QVariant (QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")")));
+                QVariant (QString ("SYSTEM (") +
+                          QString (octave_locale_charset_wrapper ()).toUpper () +
+                          QString (")")));
 
 const gui_pref
 ed_create_new_file ("editor/create_new_file", QVariant (false));

@@ -30,14 +30,14 @@ see <https://www.gnu.org/licenses/>.
 QConsoleColors::QConsoleColors (void)
     : QMap<int, QColor> ()
 {
-  (*this)[0]  = Qt::black;
+  (*this)[0]  = Qt::white;
   (*this)[1]  = Qt::darkBlue;
   (*this)[2]  = Qt::darkGreen;
   (*this)[3]  = Qt::darkCyan;
   (*this)[4]  = Qt::darkRed;
   (*this)[5]  = Qt::darkMagenta;
   (*this)[6]  = Qt::darkYellow;
-  (*this)[7]  = Qt::lightGray;
+  (*this)[7]  = Qt::black;
   (*this)[8]  = Qt::darkGray;
   (*this)[9]  = Qt::blue;
   (*this)[10] = Qt::green;
@@ -45,5 +45,5 @@ QConsoleColors::QConsoleColors (void)
   (*this)[12] = Qt::red;
   (*this)[13] = Qt::magenta;
   (*this)[14] = Qt::yellow;
-  (*this)[15] = Qt::white;
+  (*this)[15] = Qt::lightGray;
 }

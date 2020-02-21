@@ -390,13 +390,13 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
       SetConsoleOutputCP (65001);
     }
 
-  // Choose 15 (0xF) as index into the Windows console color map for the
-  // background and 0 (0x0) as the index for the foreground.  This
+  // Choose 0 (0x0) as index into the Windows console color map for the
+  // background and 7 (0x7) as the index for the foreground.  This
   // selection corresponds to the indices used in the foregroundColor,
   // setForegroundColor, backgroundColor, and SetBackgroundColor
   // functions.
 
-  SetConsoleTextAttribute (m_stdOut, 0xF0);
+  SetConsoleTextAttribute (m_stdOut, 0x07);
 
   // Defaults.
   setBackgroundColor (Qt::white);
@@ -407,8 +407,6 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   // FIXME -- should we set the palette?
   QPalette palette (backgroundColor ());
   m_consoleView->setPalette (palette);
-
-  m_consoleView->setAutoFillBackground (true);
 
   m_consoleView->setFont (m_font);
   parent->setFocusPolicy (Qt::StrongFocus);
@@ -581,12 +579,12 @@ void QConsolePrivate::clearSelection (void)
 
 QColor QConsolePrivate::backgroundColor (void) const
 {
-  return m_colors[15];
+  return m_colors[0];
 }
 
 QColor QConsolePrivate::foregroundColor (void) const
 {
-  return m_colors[0];
+  return m_colors[7];
 }
 
 QColor QConsolePrivate::selectionColor (void) const
@@ -601,15 +599,16 @@ QColor QConsolePrivate::cursorColor (void) const
 
 void QConsolePrivate::setBackgroundColor (const QColor& color)
 {
-  m_colors[15] = color;
+  m_colors[0] = color;
 
   QPalette palette (color);
+  palette.setColor(QPalette::Base, color);
   m_consoleView->setPalette (palette);
 }
 
 void QConsolePrivate::setForegroundColor (const QColor& color)
 {
-  m_colors[0] = color;
+  m_colors[7] = color;
 }
 
 void QConsolePrivate::setSelectionColor (const QColor& color)
@@ -1557,6 +1556,7 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
   int ch = d->m_charSize.height ();
 
   QRect updateRect = event->rect ();
+  p.fillRect(updateRect, QBrush(d->backgroundColor()));
 
   int cx1 = updateRect.left () / cw;
   int cy1 = updateRect.top () / ch;

@@ -219,11 +219,6 @@ function [output, status] = mkoctfile (varargin)
   endif
 
   cmd = ['"' shell_script '"'];
-  if (ispc () && isguirunning ())
-    ## FIXME: Remove this branch when the MS Windows GUI terminal widget can
-    ##        properly handle colors (bug #57658).
-    cmd = [cmd ' "-fdiagnostics-color=never"'];
-  endif
   for i = 1:nargin
     cmd = [cmd ' "' varargin{i} '"'];
   endfor

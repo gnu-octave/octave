@@ -163,7 +163,7 @@ function w = __what__ (dir)
       if (isfile (fullfile (dir, nm)))
         w.oct{end+1} = nm;
       endif
-    elseif (strcmp (e, mexext ()))
+    elseif (strcmp (e, ['.' mexext]))
       if (isfile (fullfile (dir, nm)))
         w.mex{end+1} = nm;
       endif

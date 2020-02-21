@@ -31,19 +31,19 @@ QConsoleColors::QConsoleColors (void)
     : QMap<int, QColor> ()
 {
   (*this)[0]  = Qt::white;
-  (*this)[1]  = Qt::darkBlue;
-  (*this)[2]  = Qt::darkGreen;
-  (*this)[3]  = Qt::darkCyan;
-  (*this)[4]  = Qt::darkRed;
-  (*this)[5]  = Qt::darkMagenta;
-  (*this)[6]  = Qt::darkYellow;
+  (*this)[1]  = Qt::blue;
+  (*this)[2]  = Qt::green;
+  (*this)[3]  = Qt::cyan;
+  (*this)[4]  = Qt::red;
+  (*this)[5]  = Qt::magenta;
+  (*this)[6]  = Qt::yellow;
   (*this)[7]  = Qt::black;
-  (*this)[8]  = Qt::darkGray;
-  (*this)[9]  = Qt::blue;
-  (*this)[10] = Qt::green;
-  (*this)[11] = Qt::cyan;
-  (*this)[12] = Qt::red;
-  (*this)[13] = Qt::magenta;
-  (*this)[14] = Qt::yellow;
-  (*this)[15] = Qt::lightGray;
+  (*this)[8]  = Qt::lightGray;
+  (*this)[9]  = Qt::darkBlue;
+  (*this)[10] = Qt::darkGreen;
+  (*this)[11] = Qt::darkCyan;
+  (*this)[12] = Qt::darkRed;
+  (*this)[13] = Qt::darkMagenta;
+  (*this)[14] = Qt::darkYellow;
+  (*this)[15] = Qt::darkGray;
 }

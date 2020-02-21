@@ -54,6 +54,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
   pso = page_screen_output ();
   orig_wquiet = warning ("query", "quiet");
   orig_wstate = warning ();
+  orig_mfile_encoding = __mfile_encoding__ ("utf-8");
   logfile = make_absolute_filename ("fntests.log");
   unwind_protect
     page_screen_output (false);
@@ -146,6 +147,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
     warning ("off", "all");
     warning (orig_wstate);
     warning (orig_wquiet.state, "quiet");
+    __mfile_encoding__ (orig_mfile_encoding);
     page_screen_output (pso);
   end_unwind_protect
 

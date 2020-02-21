@@ -1,11 +1,13 @@
 mex_TEST_FILES = \
   %reldir%/bug-54096.tst \
   %reldir%/bug-51725.tst \
+  %reldir%/mexnumtst.tst \
   $(MEX_TEST_SRC)
 
 MEX_TEST_SRC = \
   %reldir%/bug_54096.c \
-  %reldir%/bug_51725.c
+  %reldir%/bug_51725.c \
+  %reldir%/mexnumtst.c
 
 MEX_TEST_FUNCTIONS = $(MEX_TEST_SRC:%.c=%.mex)
 

@@ -720,17 +720,38 @@ namespace octave
     QItemSelectionModel *m = m_file_tree_view->selectionModel ();
     QModelIndexList rows = m->selectedRows ();
 
+    int file_cnt = rows.size ();
+    bool multiple_files = (file_cnt > 1);
+
     for (auto it = rows.begin (); it != rows.end (); it++)
       {
         QModelIndex index = *it;
 
         QFileInfo info = m_file_system_model->fileInfo (index);
 
-        if (QMessageBox::question (this, tr ("Delete file/directory"),
-                                   tr ("Are you sure you want to delete\n")
-                                   + info.filePath (),
-                                   QMessageBox::Yes | QMessageBox::No)
-            == QMessageBox::Yes)
+        QMessageBox::StandardButton dlg_answer;
+        if (multiple_files)
+          if (it == rows.begin ())
+            {
+               dlg_answer = QMessageBox::question (this,
+                              tr ("Delete file/directory"),
+                              tr ("Are you sure you want to delete all %1 selected files?\n").arg (file_cnt),
+                              QMessageBox::Yes | QMessageBox::No);
+               if (dlg_answer != QMessageBox::Yes)
+                 return;
+            }
+          else
+            dlg_answer = QMessageBox::Yes;
+        else
+          {
+            dlg_answer = QMessageBox::question (this,
+                           tr ("Delete file/directory"),
+                           tr ("Are you sure you want to delete\n")
+                           + info.filePath (),
+                           QMessageBox::Yes | QMessageBox::No);
+          }
+
+        if (dlg_answer)
           {
             if (info.isDir ())
               {

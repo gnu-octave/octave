@@ -740,7 +740,7 @@ main (int argc, char **argv)
       else if (starts_with (arg, "-Wl,") || starts_with (arg, "-l")
                || starts_with (arg, "-L") || starts_with (arg, "-R"))
         {
-          ldflags += (' ' + arg);
+          ldflags += (' ' + quote_path (arg));
         }
 #if ! defined (OCTAVE_USE_WINDOWS_API)
       else if (arg == "-pthread")

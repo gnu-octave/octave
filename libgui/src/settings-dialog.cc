@@ -350,6 +350,8 @@ namespace octave
     editor_restoreSession->setChecked (settings->value (ed_restore_session).toBool ());
     editor_create_new_file->setChecked (settings->value (ed_create_new_file).toBool ());
     editor_reload_changed_files->setChecked (settings->value (ed_always_reload_changed_files).toBool ());
+    editor_force_newline->setChecked (settings->value (ed_force_newline).toBool ());
+    editor_remove_trailing_spaces->setChecked (settings->value (ed_rm_trailing_spaces).toBool ());
     editor_hiding_closes_files->setChecked (settings->value (ed_hiding_closes_files).toBool ());
     editor_show_dbg_file->setChecked (settings->value (ed_show_dbg_file).toBool ());
 
@@ -935,6 +937,8 @@ namespace octave
     settings->setValue (ed_create_new_file.key, editor_create_new_file->isChecked ());
     settings->setValue (ed_hiding_closes_files.key, editor_hiding_closes_files->isChecked ());
     settings->setValue (ed_always_reload_changed_files.key, editor_reload_changed_files->isChecked ());
+    settings->setValue (ed_force_newline.key, editor_force_newline->isChecked ());
+    settings->setValue (ed_rm_trailing_spaces.key, editor_remove_trailing_spaces->isChecked ());
     settings->setValue (ed_show_dbg_file.key, editor_show_dbg_file->isChecked ());
 
     settings->setValue (cs_font_size.key, terminal_fontSize->value ());

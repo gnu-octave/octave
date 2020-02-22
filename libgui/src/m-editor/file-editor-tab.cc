@@ -1990,6 +1990,21 @@ namespace octave
     return eol_mode;
   }
 
+  QString file_editor_tab::eol_string (void)
+  {
+    switch (m_edit_area->eolMode ())
+      {
+      case QsciScintilla::EolWindows:
+        return ("\r\n");
+      case QsciScintilla::EolMac:
+        return ("\r");
+      case QsciScintilla::EolUnix:
+        return ("\n");
+      }
+
+    return QString ();
+  }
+
   void file_editor_tab::update_eol_indicator (void)
   {
     switch (m_edit_area->eolMode ())
@@ -2255,6 +2270,39 @@ namespace octave
     if (! codec)
       return;   // No valid codec
 
+    // Remove trailing white spaces and force file ending with
+    // a newline if desired
+
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    bool rm_trailing_space = settings->value (ed_rm_trailing_spaces).toBool ();
+    bool force_newline = settings->value (ed_force_newline).toBool ();
+
+    if (rm_trailing_space || force_newline)
+      {
+        int line, col;
+        m_edit_area->getCursorPosition (&line,&col);
+
+        QString eol = eol_string ();
+        QString edit_text = m_edit_area->text ();
+
+        if (rm_trailing_space)
+          edit_text.replace (QRegExp ("[\\t ]+" + eol), eol);
+
+        if (force_newline)
+          {
+            int last_non_white_space = edit_text.lastIndexOf (QRegExp ("\\S"));
+            edit_text.chop (edit_text.length () - last_non_white_space - 1);
+            edit_text.append (eol);
+          }
+
+          m_edit_area->setText (edit_text);
+
+          m_edit_area->setCursorPosition (line,col);
+        }
+
+    // Save the file
     out.setCodec (codec);
 
     QApplication::setOverrideCursor (Qt::WaitCursor);

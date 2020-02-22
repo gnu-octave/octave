@@ -295,6 +295,7 @@ namespace octave
     QString get_function_name (void);
 
     QsciScintilla::EolMode detect_eol_mode (void);
+    QString eol_string (void);
     void update_eol_indicator (void);
 
     octave_qscintilla *m_edit_area;

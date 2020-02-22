@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -841,9 +841,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-898</y>
             <width>1021</width>
-            <height>1467</height>
+            <height>1529</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -2053,7 +2053,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="8" column="0">
+                  <item row="10" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <property name="topMargin">
                      <number>0</number>
@@ -2111,7 +2111,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="10" column="0">
+                  <item row="12" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_16">
                     <item>
                      <widget class="QLabel" name="label_16">
@@ -2138,10 +2138,30 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="7" column="0">
+                  <item row="9" column="0">
                    <widget class="QCheckBox" name="editor_hiding_closes_files">
                     <property name="text">
                      <string>Close all files when the editor widget is closed/hidden</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QCheckBox" name="editor_force_newline">
+                    <property name="text">
+                     <string>Force newline at end when saving file</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0">
+                   <widget class="QCheckBox" name="editor_remove_trailing_spaces">
+                    <property name="text">
+                     <string>Remove trailing spaces when saving file</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>

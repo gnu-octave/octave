@@ -215,6 +215,12 @@ ed_notebook_tab_width_min ("editor/notebook_tab_width_min", QVariant (160));
 const gui_pref
 ed_notebook_tab_width_max ("editor/notebook_tab_width_max", QVariant (300));
 
+const gui_pref
+ed_force_newline ("editor/force_newline", QVariant (true));
+
+const gui_pref
+ed_rm_trailing_spaces ("editor/rm_trailing_spaces", QVariant (true));
+
 #if defined (HAVE_QSCINTILLA)
 #if defined (Q_OS_WIN32)
 const int os_eol_mode = QsciScintilla::EolWindows;

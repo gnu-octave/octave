@@ -329,7 +329,7 @@
 
 function [local_packages, global_packages] = pkg (varargin)
 
-  ## Installation prefix (FIXME: what should these be on windows?)
+  ## Installation prefix
   persistent user_prefix = false;
   persistent prefix = false;
   persistent archprefix = -1;
@@ -337,9 +337,13 @@ function [local_packages, global_packages] = pkg (varargin)
   persistent global_list = fullfile (OCTAVE_HOME (), "share", "octave",
                                      "octave_packages");
 
-  ## If user is superuser set global_istall to true
-  ## FIXME: is it OK to set this always true on windows?
-  global_install = ((ispc () && ! isunix ()) || (geteuid () == 0));
+  ## If user is superuser (posix) or the process has elevated rights (Windows),
+  ## set global_install to true.
+  if (ispc () && ! isunix ())
+    global_install = __is_elevated_process__ ();
+  else
+    global_install = (geteuid () == 0);
+  endif
 
   if (isbool (prefix))
     [prefix, archprefix] = default_prefix (global_install);

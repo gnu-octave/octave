@@ -112,7 +112,7 @@ const sc_pref sc_main_window_workspace (sc_main_window + ":workspace", PRE + CTR
 const sc_pref sc_main_window_editor (sc_main_window + ":editor", PRE + CTRL + Qt::Key_4);
 const sc_pref sc_main_window_doc (sc_main_window + ":doc", PRE + CTRL + Qt::Key_5);
 const sc_pref sc_main_window_variable_editor (sc_main_window + ":variable_editor", PRE + CTRL + Qt::Key_6);
-const sc_pref sc_main_window_previous_dock (sc_main_window + ":previous_widget", PRE + CTRL_ALT + Qt::Key_0);
+const sc_pref sc_main_window_previous_dock (sc_main_window + ":previous_widget", PRE + CTRL_ALT + Qt::Key_P);
 const sc_pref sc_main_window_reset (sc_main_window + ":reset", QKeySequence::UnknownKey);
 
 // help

@@ -245,6 +245,44 @@ Internal function.  Returns 1 on successful system call and 0 otherwise.
 #endif
 }
 
+DEFUN (__is_elevated_process__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{retval} =} __is_elevated_process__ ()
+Check if current process has elevated rights.
+
+On Windows, return true if the current process has elevated right. Otherwise,
+return false.
+On non-Windows platforms, this function fails with an error.
+@end deftypefn */)
+{
+#if defined (OCTAVE_USE_WINDOWS_API)
+  if (args.length () != 0)
+    print_usage ();
+
+  bool retval = false;
+  HANDLE h_token = nullptr;
+
+  if (OpenProcessToken (GetCurrentProcess (), TOKEN_QUERY, &h_token))
+    {
+      TOKEN_ELEVATION elevation;
+      DWORD return_length = sizeof (TOKEN_ELEVATION);
+      if (GetTokenInformation (h_token, TokenElevation, &elevation,
+                               sizeof (elevation), &return_length))
+        retval = elevation.TokenIsElevated;
+    }
+
+  if (h_token)
+    CloseHandle (h_token);
+
+  return ovl (retval);
+
+#else
+  octave_unused_parameter (args);
+  error ("__is_elevated_process__: "
+         "Function is only supported on Windows platforms.");
+#endif
+}
+
 namespace octave
 {
 #if defined (__MINGW32__)

@@ -1833,7 +1833,23 @@ namespace octave
     QApplication::setOverrideCursor (Qt::WaitCursor);
 
     // read the file binary, decoding later
-    const QByteArray text_data = file.readAll ();
+    QByteArray text_data = file.readAll ();
+
+    // remove newline at end of file if we add one again when saving
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    if (settings->value (ed_force_newline).toBool ())
+      {
+        const QByteArray eol_lf = QByteArray (1,0x0a);
+        const QByteArray eol_cr = QByteArray (1,0x0d);
+
+        if (text_data.endsWith (eol_lf))
+          text_data.chop (1);   // remove LF
+
+        if (text_data.endsWith (eol_cr)) // remove CR (altogether CRLF, too)
+          text_data.chop (1);
+      }
 
     // decode
     QTextCodec::ConverterState st;
@@ -2270,16 +2286,11 @@ namespace octave
     if (! codec)
       return;   // No valid codec
 
-    // Remove trailing white spaces and force file ending with
-    // a newline if desired
-
+    // Remove trailing white spaces if desired
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
 
-    bool rm_trailing_space = settings->value (ed_rm_trailing_spaces).toBool ();
-    bool force_newline = settings->value (ed_force_newline).toBool ();
-
-    if (rm_trailing_space || force_newline)
+    if (settings->value (ed_rm_trailing_spaces).toBool ())
       {
         int line, col;
         m_edit_area->getCursorPosition (&line,&col);
@@ -2287,26 +2298,23 @@ namespace octave
         QString eol = eol_string ();
         QString edit_text = m_edit_area->text ();
 
-        if (rm_trailing_space)
-          edit_text.replace (QRegExp ("[\\t ]+" + eol), eol);
+        edit_text.replace (QRegExp ("[\\t ]+" + eol), eol);  // All lines
+        long int idx = edit_text.lastIndexOf (QRegExp ("[^\\t^ ]"));
+        edit_text.chop (edit_text.length () - idx - 1); // Last line
 
-        if (force_newline)
-          {
-            int last_non_white_space = edit_text.lastIndexOf (QRegExp ("\\S"));
-            edit_text.chop (edit_text.length () - last_non_white_space - 1);
-            edit_text.append (eol);
-          }
-
-          m_edit_area->setText (edit_text);
-
-          m_edit_area->setCursorPosition (line,col);
-        }
+        m_edit_area->setText (edit_text);
+        m_edit_area->setCursorPosition (line,col);
+      }
 
     // Save the file
     out.setCodec (codec);
 
     QApplication::setOverrideCursor (Qt::WaitCursor);
+
     out << m_edit_area->text ();
+    if (settings->value (ed_force_newline).toBool ())
+      out << eol_string ();   // Add newline if desired
+
     out.flush ();
     QApplication::restoreOverrideCursor ();
     file.flush ();

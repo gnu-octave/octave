@@ -61,6 +61,7 @@ FCN_FILE_DIRS += \
   %reldir%/mesh.m \
   %reldir%/meshc.m \
   %reldir%/meshz.m \
+  %reldir%/ostreamtube.m \
   %reldir%/pareto.m \
   %reldir%/patch.m \
   %reldir%/pcolor.m \

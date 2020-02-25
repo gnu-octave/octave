@@ -26,61 +26,48 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} streamtube (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
 ## @deftypefnx {} {} streamtube (@var{u}, @var{v}, @var{w}, @var{sx}, @var{sy}, @var{sz})
-## @deftypefnx {} {} streamtube (@var{vertices}, @var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w})
+## @deftypefnx {} {} streamtube (@var{xyz}, @var{x}, @var{y}, @var{z}, @var{div})
+## @deftypefnx {} {} streamtube (@var{xyz}, @var{div})
+## @deftypefnx {} {} streamtube (@var{xyz}, @var{dia})
 ## @deftypefnx {} {} streamtube (@dots{}, @var{options})
 ## @deftypefnx {} {} streamtube (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} streamtube (@dots{})
-## Calculate and display streamtubes.
+## Plot tubes scaled by the divergence along streamlines.
 ##
-## Streamtubes are approximated by connecting circular crossflow areas
-## along a streamline.  The expansion of the flow is determined by the local
-## crossflow divergence.
+## @code{streamtube} draws tubes whose diameter is scaled by the divergence of
+## a vector field.  The vector field is given by
+## @code{[@var{u}, @var{v}, @var{w}]} and is defined over a rectangular grid
+## given by @code{[@var{x}, @var{y}, @var{z}]}.  The tubes start at the
+## seed points @code{[@var{sx}, @var{sy}, @var{sz}]} and are plot along
+## streamlines.
 ##
-## The vector field is given by @code{[@var{u}, @var{v}, @var{w}]} and is
-## defined over a rectangular grid given by @code{[@var{x}, @var{y}, @var{z}]}.
-## The streamtubes start at the seed points
-## @code{[@var{sx}, @var{sy}, @var{sz}]}.
+## @code{streamtube} can also be called with a cell array containing
+## pre-computed streamline data.  To do this, @var{xyz} must be created with
+## the @code{stream3} command.  @var{div} is used to scale the tubes.
+## In order to plot tubes scaled by the vector field divergence, @var{div}
+## must be calculated with the @code{divergence} command.
 ##
-## The tubes are colored based on the local vector field strength.
+## A tube diameter of zero corresponds to the smallest scaling value along the
+## streamline and the largest tube diameter corresponds to the largest scaling
+## value.
+##
+## It is also possible to draw a tube along an arbitrary array of vertices
+## @var{xyz}.  The tube diameter can be specified by the vertex array @var{dia}
+## or by a constant.
 ##
 ## The input parameter @var{options} is a 2-D vector of the form
-## @code{[@var{scale}, @var{n}]}.  The first parameter scales the start radius
-## of the streamtubes (default 1).  The second parameter specifies the number
-## of polygon points used for the streamtube circumference (default 20).
-##
-## @code{streamtube} can be called with a cell array containing pre-computed
-## streamline data.  To do this, @var{vertices} must be created with the
-## @code{stream3} function.  This option is useful if you need to alter the
-## integrator step size or the maximum number of vertices of the streamline.
+## @code{[@var{scale}, @var{n}]}.  The first parameter scales the tube
+## diameter (default 1).  The second parameter specifies the number of vertices
+## that are used to construct the tube circumference (default 20).
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a graphics handle to the patch plot
-## objects created for each streamtube.
+## The optional return value @var{h} is a graphics handle to the plot objects
+## created for each tube.
 ##
-## Example:
-##
-## @example
-## @group
-## [x, y, z] = meshgrid (-1:0.1:1, -1:0.1:1, -3:0.1:0);
-## u = -x / 10 - y;
-## v = x - y / 10;
-## w = - ones (size (x)) / 10;
-## streamtube (x, y, z, u, v, w, 1, 0, 0);
-## @end group
-## @end example
-##
-## @seealso{stream3, streamline}
+## @seealso{stream3, streamline, ostreamtube}
 ## @end deftypefn
-
-## Reference:
-##
-## @inproceedings{
-##    title = {Visualization of 3-D vector fields - Variations on a stream},
-##    author = {Dave Darmofal and Robert Haimes},
-##    year = {1992}
-## }
 
 function h = streamtube (varargin)
 
@@ -88,23 +75,42 @@ function h = streamtube (varargin)
 
   options = [];
   xyz = [];
+  div = [];
+  dia = [];
   switch (nargin)
     case 0
       print_usage ();
-    case 6
-      [u, v, w, spx, spy, spz] = varargin{:};
-      [m, n, p] = size (u);
-      [x, y, z] = meshgrid (1:n, 1:m, 1:p);
-    case 7
-      if (iscell (varargin{1}))
-        [xyz, x, y, z, u, v, w] = varargin{:};
+    case 2
+      ## "dia" can be a cell array or a constant
+      if (iscell (varargin{2}) || numel (varargin{2}) == 1)
+        [xyz, dia] = varargin{:};
       else
-        [u, v, w, spx, spy, spz, options] = varargin{:};
+        [xyz, div] = varargin{:};
+        [m, n, p] = size (div);
+        [x, y, z] = meshgrid (1:n, 1:m, 1:p);
+      endif
+    case 3
+      if (iscell (varargin{2}))
+        [xyz, dia, options] = varargin{:};
+      else
+        [xyz, div, options] = varargin{:};
+        [m, n, p] = size (div);
+        [x, y, z] = meshgrid (1:n, 1:m, 1:p);
+      endif
+    case 5
+        [xyz, x, y, z, div] = varargin{:};
+    case 6
+      if (iscell (varargin{1}))
+        [xyz, x, y, z, div, options] = varargin{:};
+      else
+        [u, v, w, spx, spy, spz] = varargin{:};
         [m, n, p] = size (u);
         [x, y, z] = meshgrid (1:n, 1:m, 1:p);
       endif
-    case 8
-      [xyz, x, y, z, u, v, w, options] = varargin{:};
+    case 7
+      [u, v, w, spx, spy, spz, options] = varargin{:};
+      [m, n, p] = size (u);
+      [x, y, z] = meshgrid (1:n, 1:m, 1:p);
     case 9
       [x, y, z, u, v, w, spx, spy, spz] = varargin{:};
     case 10
@@ -114,14 +120,14 @@ function h = streamtube (varargin)
   endswitch
 
   scale = 1;
-  num_poly = 20;
+  num_circum = 20;
   if (! isempty (options))
     switch (numel (options))
       case 1
         scale = options(1);
       case 2
         scale = options(1);
-        num_poly = options(2);
+        num_circum = options(2);
       otherwise
         error ("streamtube: invalid number of OPTIONS elements");
     endswitch
@@ -129,10 +135,26 @@ function h = streamtube (varargin)
     if (! isreal (scale) || scale <= 0)
       error ("streamtube: SCALE must be a real scalar > 0");
     endif
-    if (! isreal (num_poly) || num_poly < 3)
-      error ("streamtube: number of polygons N must be greater than 2");
+    if (! isreal (num_circum) || num_circum < 3)
+      error ("streamtube: number of tube vertices N must be greater than 2");
     endif
-    num_poly = fix (num_poly);
+    num_circum = fix (num_circum);
+  endif
+
+  if (isempty (xyz))
+    xyz = stream3 (x, y, z, u, v, w, spx, spy, spz, 0.2);
+  endif
+
+  if (isempty (div) && isempty (dia))
+    div = divergence (x, y, z, u, v, w);
+  endif
+
+  if (! isempty (dia) && iscell (dia))
+    for i = 1 : length (xyz)
+      if (rows (dia{i}) != rows (xyz{i}))
+        error ("streamtube: DIA must have same length then XYZ");
+      endif
+    endfor
   endif
 
   if (isempty (hax))
@@ -141,54 +163,55 @@ function h = streamtube (varargin)
     hax = hax(1);
   endif
 
-  if (isempty (xyz))
-    xyz = stream3 (x, y, z, u, v, w, spx, spy, spz, 0.2);
-  endif
-
-  div = divergence (x, y, z, u, v, w);
-
-  ## Determine start radius
+  ## Derive final scale factor from the bounding box diagonal
   mxx = mnx = mxy = mny = mxz = mnz = [];
   j = 1;
   for i = 1 : length (xyz)
     sl = xyz{i};
     if (! isempty (sl))
       slx = sl(:, 1); sly = sl(:, 2); slz = sl(:, 3);
-      mxx(j) = max (slx(:)); mnx(j) = min (slx(:));
-      mxy(j) = max (sly(:)); mny(j) = min (sly(:));
-      mxz(j) = max (slz(:)); mnz(j) = min (slz(:));
+      mxx(j) = max (slx); mnx(j) = min (slx);
+      mxy(j) = max (sly); mny(j) = min (sly);
+      mxz(j) = max (slz); mnz(j) = min (slz);
       j += 1;
     endif
   endfor
   dx = max (mxx) - min (mnx);
   dy = max (mxy) - min (mny);
   dz = max (mxz) - min (mnz);
-  rstart = scale * sqrt (dx*dx + dy*dy + dz*dz) / 25;
+  clen = scale * sqrt (dx*dx + dy*dy + dz*dz) / 40;
 
   h = [];
   for i = 1 : length (xyz)
     sl = xyz{i};
     num_vertices = rows (sl);
-    if (! isempty (sl) && num_vertices > 2)
+    if (! isempty (sl) && num_vertices > 1)
+      if (isempty (dia))
 
-      usl = interp3 (x, y, z, u, sl(:, 1), sl(:, 2), sl(:, 3));
-      vsl = interp3 (x, y, z, v, sl(:, 1), sl(:, 2), sl(:, 3));
-      wsl = interp3 (x, y, z, w, sl(:, 1), sl(:, 2), sl(:, 3));
-      vv = sqrt (usl.*usl + vsl.*vsl + wsl.*wsl);
+        ## Plot a tube based on normalized divergence
+        [div_sl, max_vertices] = interp_sl (x, y, z, div, sl);
+        if (max_vertices > 1)
+          ## Nomalize the divergence along the streamline
+          mn = min (div_sl);
+          mx = max (div_sl);
+          if (mn == mx)
+            radius_sl = clen * ones (max_vertices, 1);
+          else
+            radius_sl = clen * (div_sl - mn) / (mx - mn);
+          endif
+          htmp = plottube (hax, sl, radius_sl, max_vertices, num_circum);
+          h = [h; htmp];
+        endif
 
-      div_sl = interp3 (x, y, z, div, sl(:, 1), sl(:, 2), sl(:, 3));
-      is_singular_div = find (isnan (div_sl), 1, "first");
-
-      if (! isempty (is_singular_div))
-        max_vertices = is_singular_div - 1;
       else
-        max_vertices = num_vertices;
-      endif
 
-      if (max_vertices > 2)
-
-        htmp = plottube (hax, sl, div_sl, vv, max_vertices, ...
-                         rstart, num_poly);
+        ## Plot a tube from external data (vertex array or constant)
+        if (iscell (dia))
+          radius_sl = 0.5 * scale * dia{i};
+        else
+          radius_sl = 0.5 * scale * dia * ones (1, num_vertices);
+        endif
+        htmp = plottube (hax, sl, radius_sl, num_vertices, num_circum);
         h = [h; htmp];
 
       endif
@@ -197,9 +220,9 @@ function h = streamtube (varargin)
 
 endfunction
 
-function h = plottube (hax, sl, div_sl, vv, max_vertices, rstart, num_poly)
+function h = plottube (hax, sl, radius_sl, max_vertices, num_circum)
 
-  phi = linspace (0, 2*pi, num_poly);
+  phi = linspace (0, 2*pi, num_circum);
   cp = cos (phi);
   sp = sin (phi);
 
@@ -210,58 +233,71 @@ function h = plottube (hax, sl, div_sl, vv, max_vertices, rstart, num_poly)
   R = X1 - X0;
   RE = R / norm (R);
 
-  ## Initial radius
-  vold = vv(1);
-  vact = vv(2);
-  ract = rstart * exp (0.5 * div_sl(2) * norm (R) / vact) * sqrt (vold / vact);
-  vold = vact;
-  rold = ract;
-
   ## Guide point and its rotation to create a segment
-  N = get_normal1 (R);
-  K = ract * N;
-  XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_poly);
+  KE = get_normal1 (RE);
+  K = radius_sl(1) * KE;
+  XS0 = rotation (K, RE, cp, sp) + repmat (X0.', 1, num_circum);
+  K = radius_sl(2) * KE;
+  XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_circum);
 
-  px = zeros (num_poly, max_vertices - 1);
-  py = zeros (num_poly, max_vertices - 1);
-  pz = zeros (num_poly, max_vertices - 1);
-  pc = zeros (num_poly, max_vertices - 1);
+  px = zeros (num_circum, max_vertices);
+  py = zeros (num_circum, max_vertices);
+  pz = zeros (num_circum, max_vertices);
 
-  px(:, 1) = XS(1, :).';
-  py(:, 1) = XS(2, :).';
-  pz(:, 1) = XS(3, :).';
-  pc(:, 1) = vact * ones (num_poly, 1);
+  px(:, 1) = XS0(1, :).';
+  py(:, 1) = XS0(2, :).';
+  pz(:, 1) = XS0(3, :).';
+
+  px(:, 2) = XS(1, :).';
+  py(:, 2) = XS(2, :).';
+  pz(:, 2) = XS(3, :).';
 
   for i = 3 : max_vertices
 
-    KK = K;
+    KEold = KE;
     X0 = X1;
+
     X1 = sl(i, :);
     R = X1 - X0;
     RE = R / norm (R);
 
-    ## Tube radius
-    vact = vv(i);
-    ract = rold * exp (0.5 * div_sl(i) * norm (R) / vact) * sqrt (vold / vact);
-    vold = vact;
-    rold = ract;
-
-    ## Project K onto RE and get the difference in order to calculate the next
+    ## Project KE onto RE and get the difference in order to calculate the next
     ## guiding point
-    Kp = KK - RE * dot (KK, RE);
-    K = ract * Kp / norm (Kp);
+    Kp = KEold - RE * dot (KEold, RE);
+    KE = Kp / norm (Kp);
+    K = radius_sl(i) * KE;
 
-    ## Rotate the guiding point around R and collect patch vertices
-    XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_poly);
+    ## Rotate around RE and collect surface patches
+    XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_circum);
 
-    px(:, i - 1) = XS(1, :).';
-    py(:, i - 1) = XS(2, :).';
-    pz(:, i - 1) = XS(3, :).';
-    pc(:, i - 1) = vact * ones (num_poly, 1);
+    px(:, i) = XS(1, :).';
+    py(:, i) = XS(2, :).';
+    pz(:, i) = XS(3, :).';
 
   endfor
 
-  h = surface (hax, px, py, pz, pc);
+  h = surface (hax, px, py, pz);
+
+endfunction
+
+## Interpolate onto the streamline vertices and return the first chunck of
+## valid samples until a singularity is hit (NaN or +-Inf) or
+## the streamline vertex array "sl" ends
+function [div_sl_crop, max_vertices] = interp_sl (x, y, z, div, sl)
+
+  div_sl = interp3 (x, y, z, div, sl(:, 1), sl(:, 2), sl(:, 3));
+  is_nan = find (isnan (div_sl), 1, "first");
+  is_inf = find (isinf (div_sl), 1, "first");
+
+  max_vertices = rows (sl);
+  if (! isempty (is_nan))
+    max_vertices = min (max_vertices, is_nan - 1);
+  endif
+  if (! isempty (is_inf))
+    max_vertices = min (max_vertices, is_inf - 1);
+  endif
+
+  div_sl_crop = div_sl(1 : max_vertices);
 
 endfunction
 
@@ -300,60 +336,48 @@ function Y = rotation (X, U, cp, sp)
 
 endfunction
 
+%!demo
+%! clf;
+%! [x, y, z] = meshgrid (-3:0.15:3, -1:0.1:1, -1:0.1:1);
+%! u = 2 + 8 * exp (-2.0*x.*x);
+%! v = zeros (size (x));
+%! w = zeros (size (x));
+%! h = streamtube (x, y, z, u, v, w, -3, 0, 0, [5, 60]);
+%! set (h, "facecolor", "r", "edgecolor", "none");
+%! hold on;
+%! camlight ();
+%! lighting gouraud;
+%! view (3);
+%! grid on;
+%! quiver3 (x, y, z, u, v, w);
+%! axis tight equal;
+%! title ("Divergence Plot");
 
 %!demo
 %! clf;
-%! [x, y, z] = meshgrid (-1:0.1:1, -1:0.1:1, -3.5:0.1:0);
-%! a = 0.1;
-%! b = 0.1;
-%! u = - a * x - y;
-%! v = x - a * y;
-%! w = - b * ones (size (x));
-%! sx = 1.0;
-%! sy = 0.0;
-%! sz = 0.0;
-%! streamtube (x, y, z, u, v, w, sx, sy, sz, [1.2, 30]);
+%! t = 0:.15:15;
+%! xyz{1} = [cos(t)' sin(t)' (t/3)'];
+%! dia{1} = cos(t)';
+%! streamtube (xyz, dia);
+%! grid on;
+%! axis tight equal;
 %! colormap (jet);
 %! shading interp;
-%! view ([-47, 24]);
 %! camlight ();
 %! lighting gouraud;
-%! grid on;
 %! view (3);
-%! axis equal;
-%! set (gca, "cameraviewanglemode", "manual");
-%! title ("Spiral Sink");
-
-%!demo
-%! clf;
-%! [x, y, z] = meshgrid (-2:0.5:2);
-%! t = sqrt (1.0./(x.^2 + y.^2 + z.^2)).^3;
-%! u = - x.*t;
-%! v = - y.*t;
-%! w = - z.*t;
-%! [sx, sy, sz] = meshgrid (-2:4:2);
-%! xyz = stream3 (x, y, z, u, v, w, sx, sy, sz, [0.1, 60]);
-%! streamtube (xyz, x, y, z, u, v, w, [2, 50]);
-%! colormap (jet);
-%! shading interp;
-%! view ([-47, 24]);
-%! camlight ();
-%! lighting gouraud;
-%! grid on;
-%! view (3);
-%! axis equal;
-%! set (gca, "cameraviewanglemode", "manual");
-%! title ("Integration Towards Sink");
+%! title ("Plot Arbitrary Tube");
 
 ## Test input validation
 %!error streamtube ()
 %!error <invalid number of inputs> streamtube (1)
-%!error <invalid number of inputs> streamtube (1,2)
-%!error <invalid number of inputs> streamtube (1,2,3)
 %!error <invalid number of inputs> streamtube (1,2,3,4)
-%!error <invalid number of inputs> streamtube (1,2,3,4,5)
-%!error <invalid number of OPTIONS> streamtube (1,2,3,4,5,6, [1,2,3])
-%!error <SCALE must be a real scalar . 0> streamtube (1,2,3,4,5,6, [1i])
-%!error <SCALE must be a real scalar . 0> streamtube (1,2,3,4,5,6, [0])
-%!error <N must be greater than 2> streamtube (1,2,3,4,5,6, [1, 1i])
-%!error <N must be greater than 2> streamtube (1,2,3,4,5,6, [1, 2])
+%!error <invalid number of inputs> streamtube (1,2,3,4,5,6,7,8)
+%!error <invalid number of inputs> streamtube (1,2,3,4,5,6,7,8,9,10,11)
+%!error <invalid number of OPTIONS elements> streamtube (1,2,[1,2,3])
+%!error <SCALE must be a real scalar . 0> streamtube (1,2,[1i])
+%!error <SCALE must be a real scalar . 0> streamtube (1,2,[0])
+%!error <SCALE must be a real scalar . 0> streamtube (1,2,[-1])
+%!error <N must be greater than 2> streamtube (1,2,[1,1i])
+%!error <N must be greater than 2> streamtube (1,2,[1,2])
+%!error <DIA must have same length then XYZ> streamtube ({[1,1,1;2,2,2]},{[1,1,1]})

@@ -247,6 +247,8 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(streamtube)
 
+@DOCSTRING(ostreamtube)
+
 @DOCSTRING(streamline)
 
 @DOCSTRING(stream2)

@@ -829,10 +829,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-// Hmm, a lot of these are templates, so not sure how to typedef them.
-
-#endif
-
 #endif

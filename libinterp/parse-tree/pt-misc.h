@@ -119,11 +119,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-// tree_parameter_list is derived from a template.
-// tree_return_list is derived from a template.
-
-#endif
-
 #endif

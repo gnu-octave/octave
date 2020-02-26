@@ -925,8 +925,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                           tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                         else
                           {
-                            warning ("load: can't find the file %s",
-                                     fpath.c_str ());
+                            warning_with_id ("Octave:load:file-not-found",
+                                             "load: can't find the file %s",
+                                             fpath.c_str ());
                             goto skip_ahead;
                           }
                       }
@@ -946,8 +947,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                     else
                       {
-                        warning ("load: can't find the file %s",
-                                 fpath.c_str ());
+                        warning_with_id ("Octave:load:file-not-found",
+                                         "load: can't find the file %s",
+                                         fpath.c_str ());
                         goto skip_ahead;
                       }
                   }
@@ -955,7 +957,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           }
         else if (ftype == "nested")
           {
-            warning ("load: can't load nested function");
+            warning_with_id ("Octave:load:unsupported-type",
+                             "load: can't load nested function");
             goto skip_ahead;
           }
         else if (ftype == "anonymous")
@@ -1185,7 +1188,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 if (cdm.find_class (classname, false, true).ok ())
                   {
                     tc = m;
-                    warning ("load: classdef element has been converted to a struct");
+                    warning_with_id ("Octave:load:classdef-to-struct",
+                                     "load: classdef element has been converted to a struct");
                   }
                 else
                   {
@@ -1197,7 +1201,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       {
 
                         if (! cls->reconstruct_parents ())
-                          warning ("load: unable to reconstruct object inheritance");
+                          warning_with_id ("Octave:load:classdef-object-inheritance",
+                                           "load: unable to reconstruct object inheritance");
 
                         tc = cls;
 
@@ -1220,7 +1225,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     else
                       {
                         tc = m;
-                        warning ("load: element has been converted to a structure");
+                        warning_with_id ("Octave:load:classdef-to-struct",
+                                         "load: element has been converted to a structure");
                       }
                   }
               }
@@ -1415,7 +1421,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       }
 
                     if (found_big_char)
-                      warning ("load: can not read non-ASCII portions of UTF characters; replacing unreadable characters with '?'");
+                      warning_with_id ("Octave:load:unsupported-utf-char",
+                               "load: can not read non-ASCII portions of UTF characters; replacing unreadable characters with '?'");
                   }
                 else if (type == miUTF8)
                   {
@@ -1432,7 +1439,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     if (utf8_multi_byte)
                       {
-                        warning ("load: can not read multi-byte encoded UTF8 characters; replacing unreadable characters with '?'");
+                        warning_with_id ("Octave:load:unsupported-utf-char",
+                                         "load: can not read multi-byte encoded UTF8 characters; replacing unreadable characters with '?'");
                         for (octave_idx_type i = 0; i < n; i++)
                           {
                             unsigned char a
@@ -1463,7 +1471,8 @@ data_read_error:
   error ("load: trouble reading binary file '%s'", filename.c_str ());
 
 skip_ahead:
-  warning ("load: skipping over '%s'", retval.c_str ());
+  warning_with_id ("Octave:load:skip-unsupported-element",
+                   "load: skipping over '%s'", retval.c_str ());
   is.seekg (pos + static_cast<std::streamoff> (element_length));
   return read_mat5_binary_element (is, filename, swap, global, tc);
 }
@@ -1499,8 +1508,9 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
     version = ((version >> 8) & 0xff) + ((version & 0xff) << 8);
 
   if (version != 1 && ! quiet)
-    warning ("load: found version %d binary MAT file, "
-             "but only prepared for version 1", version);
+    warning_with_id ("Octave:load:unsupported-version",
+                     "load: found version %d binary MAT file, but only prepared for version 1",
+                     version);
 
   if (swap)
     swap_bytes<8> (&subsys_offset, 1);
@@ -1594,8 +1604,8 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
     {
       if (m.too_large_for_float ())
         {
-          warning ("save: some values too large to save as floats --");
-          warning ("save: saving as doubles instead");
+          warning_with_id ("Octave:save:too-large-for-float",
+                           "save: some values too large to save as floats -- saving as doubles instead");
         }
       else
         st = LS_FLOAT;
@@ -2217,8 +2227,9 @@ write_mat5_sparse_index_vector (std::ostream& os,
 static void
 warn_dim_too_large (const std::string& name)
 {
-  warning ("save: skipping %s: dimension too large for MAT format",
-           name.c_str ());
+  warning_with_id ("Octave:save:dimension-too-large",
+                   "save: skipping %s: dimension too large for MAT format",
+                   name.c_str ());
 }
 
 // save the data from TC along with the corresponding NAME on stream

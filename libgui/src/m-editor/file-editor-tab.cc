@@ -2018,7 +2018,8 @@ namespace octave
         return ("\n");
       }
 
-    return QString ();
+    // Last resort, if the above goes wrong (should never happen)
+    return ("\r\n");
   }
 
   void file_editor_tab::update_eol_indicator (void)
@@ -2532,9 +2533,6 @@ namespace octave
 
   void file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
   {
-    if (m_save_as_desired_eol != m_edit_area->eolMode ())
-      convert_eol (this,m_save_as_desired_eol);
-
     if (saveFileName == m_file_name)
       {
         save_file (saveFileName);
@@ -2551,13 +2549,6 @@ namespace octave
 
   void file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
   {
-    if (m_save_as_desired_eol != m_edit_area->eolMode ())
-      {
-        m_edit_area->setReadOnly (false);  // was set to read-only in save_file_as
-        convert_eol (this,m_save_as_desired_eol);
-        m_edit_area->setReadOnly (true);   // restore read-only mode
-      }
-
     // saveFileName == m_file_name can not happen, because we only can get here
     // when we close a tab and m_file_name is not a valid filename yet
 

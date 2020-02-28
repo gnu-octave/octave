@@ -2313,7 +2313,8 @@ namespace octave
     QApplication::setOverrideCursor (Qt::WaitCursor);
 
     out << m_edit_area->text ();
-    if (settings->value (ed_force_newline).toBool ())
+    if (settings->value (ed_force_newline).toBool ()
+        && m_edit_area->text ().length ())
       out << eol_string ();   // Add newline if desired
 
     out.flush ();

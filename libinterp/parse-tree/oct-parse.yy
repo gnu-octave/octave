@@ -4561,6 +4561,13 @@ namespace octave
     if (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file
         || m_lexer.m_reading_classdef_file)
       curr_line = get_file_line (m_lexer.m_fcn_file_full_name, err_line);
+    else
+      curr_line = m_lexer.m_current_input_line;
+
+    // Adjust the error column for display because it is 1-based in the
+    // lexer for easier reporting and it has already been advanced to
+    // one past the end of the most recently read token.
+    err_col -= 2;
 
     if (! curr_line.empty ())
       {

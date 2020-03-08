@@ -67,7 +67,7 @@ xpow (const SparseMatrix& a, double b)
   if (nr == 0 || nc == 0 || nr != nc)
     error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
 
-  if (static_cast<int> (b) != b)
+  if (! xisint (b))
     error ("use full(a) ^ full(b)");
 
   int btmp = static_cast<int> (b);
@@ -135,7 +135,7 @@ xpow (const SparseComplexMatrix& a, double b)
   if (nr == 0 || nc == 0 || nr != nc)
     error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
 
-  if (static_cast<int> (b) != b)
+  if (! xisint (b))
     error ("use full(a) ^ full(b)");
 
   int btmp = static_cast<int> (b);
@@ -329,7 +329,7 @@ elem_xpow (const SparseMatrix& a, double b)
       octave_idx_type nr = a.rows ();
       octave_idx_type nc = a.cols ();
 
-      if (static_cast<int> (b) != b && a.any_element_is_negative ())
+      if (! xisint (b) && a.any_element_is_negative ())
         {
           ComplexMatrix result (nr, nc, Complex (std::pow (0.0, b)));
 
@@ -363,7 +363,7 @@ elem_xpow (const SparseMatrix& a, double b)
           retval = octave_value (result);
         }
     }
-  else if (static_cast<int> (b) != b && a.any_element_is_negative ())
+  else if (! xisint (b) && a.any_element_is_negative ())
     {
       SparseComplexMatrix result (a);
 
@@ -427,7 +427,7 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
         if (a.data(i) < 0.0)
           {
             double btmp = b (a.ridx (i), j);
-            if (static_cast<int> (btmp) != btmp)
+            if (! xisint (btmp))
               {
                 convert_to_complex = 1;
                 goto done;

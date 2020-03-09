@@ -237,25 +237,29 @@ and after the nested call.
      }                                                                  \
    while (0)
 
-// We can't rely on the trick used elsewhere of sticking ASCII 1 in
-// the input buffer and recognizing it as a special case because ASCII
-// 1 is a valid character for a character string.  If we are at the
-// end of the buffer, ask for more input.  If we are at the end of the
-// file, deal with it.  Otherwise, just keep going with the text from
-// the current buffer.
+#define HANDLE_EOB_OR_EOF(STATUS)                       \
+   do                                                   \
+     {                                                  \
+       if (curr_lexer->is_push_lexer ())                \
+         {                                              \
+           if (curr_lexer->at_end_of_buffer ())         \
+             return STATUS;                             \
+                                                        \
+           if (curr_lexer->at_end_of_file ())           \
+             return curr_lexer->handle_end_of_input (); \
+         }                                              \
+     }                                                  \
+   while (0)
+
+// If we are at the end of the buffer, ask for more input.
+// If we are at the end of the file, deal with it.
+// Otherwise, just keep going with the text from the current buffer.
 #define HANDLE_STRING_CONTINUATION                      \
    do                                                   \
      {                                                  \
        curr_lexer->m_filepos.next_line ();              \
                                                         \
-       if (curr_lexer->is_push_lexer ())                \
-         {                                              \
-           if (curr_lexer->at_end_of_buffer ())         \
-             return -1;                                 \
-                                                        \
-           if (curr_lexer->at_end_of_file ())           \
-             return curr_lexer->handle_end_of_input (); \
-         }                                              \
+       HANDLE_EOB_OR_EOF (-1);                          \
      }                                                  \
    while (0)
 
@@ -666,6 +670,8 @@ ANY_INCLUDING_NL (.|{NL})
       curr_lexer->m_comment_text = "\n";
 
     curr_lexer->m_block_comment_nesting_level++;
+
+    HANDLE_EOB_OR_EOF (-1);
   }
 
 %{
@@ -690,8 +696,16 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->m_block_comment_nesting_level--;
 
+    int status = -1;
+
     if (curr_lexer->m_block_comment_nesting_level == 0)
-      curr_lexer->pop_start_state ();
+      {
+        status = -2;
+
+        curr_lexer->pop_start_state ();
+      }
+
+    HANDLE_EOB_OR_EOF (status);
   }
 
 %{
@@ -703,6 +717,8 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->m_filepos.next_line ();
     curr_lexer->m_comment_text += yytext;
+
+    HANDLE_EOB_OR_EOF (-1);
   }
 
 %{
@@ -802,15 +818,17 @@ ANY_INCLUDING_NL (.|{NL})
 <LINE_COMMENT_START>{ANY_INCLUDING_NL} {
     curr_lexer->lexer_debug ("<LINE_COMMENT_START>{ANY_INCLUDING_NL}");
 
+    curr_lexer->finish_comment (octave::comment_elt::full_line);
+
+    curr_lexer->pop_start_state ();
+
+    HANDLE_EOB_OR_EOF (-2);
+
     // Restore all characters except the ASCII 1 marker that was
     // inserted by push_lexer::fill_flex_buffer.
 
     if (yytext[0] != '\001')
       curr_lexer->xunput (yytext[0]);
-
-    curr_lexer->finish_comment (octave::comment_elt::full_line);
-
-    curr_lexer->pop_start_state ();
   }
 
 %{

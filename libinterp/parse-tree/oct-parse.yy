@@ -4661,7 +4661,12 @@ namespace octave
 
         if (token < 0)
           {
-            status = -1;
+            // TOKEN == -2 means that the lexer recognized a comment
+            // and we should be at the end of the buffer but not the
+            // end of the file so we should return 0 to indicate
+            // "complete input" instead of -1 to request more input.
+
+            status = (token == -2 ? 0 : -1);
 
             if (! eof && m_lexer.at_end_of_buffer ())
               return status;

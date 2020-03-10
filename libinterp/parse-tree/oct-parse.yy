@@ -4565,9 +4565,8 @@ namespace octave
       curr_line = m_lexer.m_current_input_line;
 
     // Adjust the error column for display because it is 1-based in the
-    // lexer for easier reporting and it has already been advanced to
-    // one past the end of the most recently read token.
-    err_col -= 2;
+    // lexer for easier reporting.
+    err_col--;
 
     if (! curr_line.empty ())
       {

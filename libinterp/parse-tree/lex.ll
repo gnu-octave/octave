@@ -177,10 +177,7 @@ and after the nested call.
            curr_lexer->push_start_state (COMMAND_START);                \
          }                                                              \
        else                                                             \
-         {                                                              \
-           curr_lexer->update_token_positions (yyleng);                 \
-           return curr_lexer->handle_op_internal (TOK, false, COMPAT);  \
-         }                                                              \
+         return curr_lexer->handle_op (TOK, false, COMPAT);             \
      }                                                                  \
    while (0)
 
@@ -196,10 +193,7 @@ and after the nested call.
            curr_lexer->push_start_state (COMMAND_START);                \
          }                                                              \
        else                                                             \
-         {                                                              \
-           curr_lexer->update_token_positions (yyleng);                 \
-           return curr_lexer->handle_language_extension_op (PATTERN, TOK, false); \
-         }                                                              \
+         return curr_lexer->handle_op (TOK, false, false);              \
      }                                                                  \
    while (0)
 
@@ -216,10 +210,7 @@ and after the nested call.
                curr_lexer->push_start_state (COMMAND_START);            \
              }                                                          \
            else                                                         \
-             {                                                          \
-               curr_lexer->update_token_positions (yyleng);             \
-               return curr_lexer->handle_op_internal (TOK, false, COMPAT); \
-             }                                                          \
+             return curr_lexer->handle_op (TOK, false, COMPAT);         \
          }                                                              \
        else                                                             \
          {                                                              \
@@ -229,10 +220,7 @@ and after the nested call.
                curr_lexer->xunput (',');                                \
              }                                                          \
            else                                                         \
-             {                                                          \
-               curr_lexer->update_token_positions (yyleng);              \
-               return curr_lexer->handle_op_internal (TOK, false, COMPAT); \
-             }                                                          \
+             return curr_lexer->handle_op (TOK, false, COMPAT);         \
          }                                                              \
      }                                                                  \
    while (0)
@@ -295,12 +283,7 @@ and after the nested call.
                    curr_lexer->m_maybe_classdef_get_set_method = false; \
                  }                                                      \
                                                                         \
-               curr_lexer->update_token_positions (yyleng);             \
-                                                                        \
-               int id_tok = curr_lexer->handle_identifier ();           \
-                                                                        \
-               if (id_tok >= 0)                                         \
-                 return curr_lexer->count_token_internal (id_tok);      \
+               return curr_lexer->handle_identifier ();                 \
              }                                                          \
          }                                                              \
      }                                                                  \
@@ -1310,24 +1293,16 @@ ANY_INCLUDING_NL (.|{NL})
                   {
                     yyless (spc_pos);
                     curr_lexer->m_filepos.increment_column (spc_pos);
-                    curr_lexer->update_token_positions (yyleng);
 
                     return curr_lexer->handle_identifier ();
                   }
               }
           }
 
-        curr_lexer->update_token_positions (yyleng);
+        curr_lexer->m_looking_for_object_index = true;
+        curr_lexer->m_at_beginning_of_statement = false;
 
-        int id_tok = curr_lexer->handle_superclass_identifier ();
-
-        if (id_tok >= 0)
-          {
-            curr_lexer->m_looking_for_object_index = true;
-            curr_lexer->m_at_beginning_of_statement = false;
-
-            return curr_lexer->count_token_internal (id_tok);
-          }
+        return curr_lexer->handle_superclass_identifier ();
       }
   }
 
@@ -1622,7 +1597,11 @@ ANY_INCLUDING_NL (.|{NL})
 // In Matlab, '\' may also trigger command syntax.
 %}
 
-"\\"  { return curr_lexer->handle_op ("\\", LEFTDIV); }
+"\\" {
+    curr_lexer->lexer_debug ("\\");
+
+    return curr_lexer->handle_op (LEFTDIV);
+  }
 
 "^"   { CMD_OR_OP ("^", POW, true); }
 "**"  { CMD_OR_OP ("**", POW, false); }
@@ -1630,11 +1609,13 @@ ANY_INCLUDING_NL (.|{NL})
 "||"  { CMD_OR_OP ("||", EXPR_OR_OR, true); }
 
 ";" {
+    curr_lexer->lexer_debug (";");
+
     bool at_beginning_of_statement
       = (! (curr_lexer->whitespace_is_significant ()
             || curr_lexer->m_looking_at_object_index.front ()));
 
-    return curr_lexer->handle_op (";", ';', at_beginning_of_statement);
+    return curr_lexer->handle_op (';', at_beginning_of_statement);
   }
 
 "+" { CMD_OR_UNARY_OP ("+", '+', true); }
@@ -1644,15 +1625,19 @@ ANY_INCLUDING_NL (.|{NL})
 "!" { CMD_OR_UNARY_OP ("!", EXPR_NOT, false); }
 
 "," {
+    curr_lexer->lexer_debug (",");
+
     bool at_beginning_of_statement
       = (! (curr_lexer->whitespace_is_significant ()
             || curr_lexer->m_looking_at_object_index.front ()));
 
-    return curr_lexer->handle_op (",", ',', at_beginning_of_statement);
+    return curr_lexer->handle_op (',', at_beginning_of_statement);
   }
 
 ".'" {
-    return curr_lexer->handle_op (".'", TRANSPOSE, false);
+    curr_lexer->lexer_debug (".'");
+
+    return curr_lexer->handle_op (TRANSPOSE);
   }
 
 "++" { CMD_OR_UNARY_OP ("++", PLUS_PLUS, false); }
@@ -1748,9 +1733,11 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 "=" {
+    curr_lexer->lexer_debug ("=");
+
     curr_lexer->maybe_mark_previous_token_as_variable ();
 
-    return curr_lexer->handle_op ("=", '=');
+    return curr_lexer->handle_op ('=');
   }
 
 "+="   { CMD_OR_COMPUTED_ASSIGN_OP ("+=", ADD_EQ); }
@@ -2468,7 +2455,11 @@ namespace octave
                    m_filepos.line (), m_fcn_file_name.c_str ());
       }
 
-    return handle_token (END_OF_INPUT);
+    token *tok_val = new token (END_OF_INPUT, m_tok_beg, m_tok_end);
+
+    push_token (tok_val);
+
+    return count_token_internal (END_OF_INPUT);
   }
 
   char *
@@ -3083,6 +3074,8 @@ namespace octave
   int
   base_lexer::handle_superclass_identifier (void)
   {
+    update_token_positions (flex_yyleng ());
+
     std::string txt = flex_yytext ();
 
     txt.erase (std::remove_if (txt.begin (), txt.end (), is_space_or_tab),
@@ -3095,9 +3088,6 @@ namespace octave
 
     bool kw_token = (is_keyword_token (meth)
                      || fq_identifier_contains_keyword (cls));
-
-    // Token positions should have already been updated before this
-    // function is called.
 
     if (kw_token)
       {
@@ -3115,7 +3105,7 @@ namespace octave
 
     m_filepos.increment_column (flex_yyleng ());
 
-    return SUPERCLASSREF;
+    return count_token_internal (SUPERCLASSREF);
   }
 
   int
@@ -3186,10 +3176,9 @@ namespace octave
   int
   base_lexer::handle_identifier (void)
   {
-    // Token positions should have already been updated before this
-    // function is called.
+    update_token_positions (flex_yyleng ());
 
-   std::string ident = flex_yytext ();
+    std::string ident = flex_yytext ();
 
     // If we are expecting a structure element, avoid recognizing
     // keywords and other special names and return STRUCT_ELT, which is
@@ -3215,12 +3204,11 @@ namespace octave
 
     if (kw_token)
       {
-        if (kw_token >= 0)
-          m_looking_for_object_index = false;
+        m_looking_for_object_index = false;
 
         // The call to make_keyword_token set m_at_beginning_of_statement.
 
-        return kw_token;
+        return count_token_internal (kw_token);
       }
 
     // Find the token in the symbol table.
@@ -3257,7 +3245,7 @@ namespace octave
 
     m_at_beginning_of_statement = false;
 
-    return NAME;
+    return count_token_internal (NAME);
   }
 
   void
@@ -3601,23 +3589,6 @@ namespace octave
       }
   }
 
-  int
-  base_lexer::handle_op (const char *pattern, int tok, bool bos)
-  {
-    lexer_debug (pattern);
-
-    return handle_op_internal (tok, bos, true);
-  }
-
-  int
-  base_lexer::handle_language_extension_op (const char *pattern, int tok,
-                                                   bool bos)
-  {
-    lexer_debug (pattern);
-
-    return handle_op_internal (tok, bos, false);
-  }
-
   bool
   base_lexer::maybe_unput_comma_before_unary_op (int tok)
   {
@@ -3642,14 +3613,15 @@ namespace octave
   }
 
   int
-  base_lexer::handle_op_internal (int tok, bool bos, bool compat)
+  base_lexer::handle_op (int tok, bool bos, bool compat)
   {
     if (! compat)
       warn_language_extension_operator (flex_yytext ());
 
-    push_token (new token (tok, m_filepos, m_filepos));
+    update_token_positions (flex_yyleng ());
 
-    m_filepos.increment_column (flex_yyleng ());
+    push_token (new token (tok, m_tok_beg, m_tok_end));
+
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = bos;
 
@@ -3699,8 +3671,6 @@ namespace octave
       tok_val = new token (tok, m_tok_beg, m_tok_end);
 
     push_token (tok_val);
-
-    m_filepos.increment_column (flex_yyleng ());
 
     return count_token_internal (tok);
   }

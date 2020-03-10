@@ -740,18 +740,9 @@ namespace octave
 
     void display_start_state (void) const;
 
-    int handle_op (const char *pattern, int tok, bool bos = false);
-
-    int handle_language_extension_op (const char *pattern, int tok,
-                                      bool bos = false);
-
     bool maybe_unput_comma_before_unary_op (int tok);
 
-    int handle_assign_op (const char *pattern, int tok);
-
-    int handle_language_extension_assign_op (const char *pattern, int tok);
-
-    int handle_op_internal (int tok, bool bos, bool compat);
+    int handle_op (int tok, bool bos = false, bool compat = true);
 
     int finish_command_arg (void);
 

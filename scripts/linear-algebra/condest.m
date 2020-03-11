@@ -208,7 +208,7 @@ function [cest, v] = condest (varargin)
   warning ("off", "Octave:nearly-singular-matrix", "local");
 
   if (! have_solve_normest1)
-     ## prepare solve in normest1 form
+    ## prepare solve in normest1 form
     if (issparse (A))
       [L, U, P, Pc] = lu (A);
       solve = @(flag, x) solve_sparse (flag, x, n, real_op, L, U, P, Pc);
@@ -240,15 +240,18 @@ function [cest, v] = condest (varargin)
 endfunction
 
 function value = solve_sparse (flag, x, n, real_op, L , U , P , Pc)
+  ## FIXME: Sparse algorithm is less accurate than full matrix version
+  ##        See BIST test for non-orthogonal matrix where relative tolerance
+  ##        of 1e-12 is used for sparse, but 4e-16 for full matrix.
   switch (flag)
     case "dim"
       value = n;
     case "real"
       value = real_op;
     case "notransp"
-      value = P' * (L' \ (U' \ (Pc * x)));
-    case "transp"
       value = Pc' * (U \ (L \ (P * x)));
+    case "transp"
+      value = P' * (L' \ (U' \ (Pc * x)));
   endswitch
 endfunction
 
@@ -259,9 +262,9 @@ function value = solve_not_sparse (flag, x, n, real_op, L, U, P)
     case "real"
       value = real_op;
     case "notransp"
-      value = P' * (L' \ (U' \ x));
-    case "transp"
       value = U \ (L \ (P * x));
+    case "transp"
+      value = P' * (L' \ (U' \ x));
   endswitch
 endfunction
 
@@ -339,6 +342,7 @@ endfunction
 %! cA_test = norm (inv (A^2), 1) * norm (A^2, 1);
 %! assert (cA, cA_test, -2^-6);
 
+## Test singular matrices
 %!test <*46737>
 %! A = [ 0         0         0
 %!       0   3.33333 0.0833333
@@ -346,6 +350,19 @@ endfunction
 %! [cest, v] = condest (A);
 %! assert (cest, Inf);
 %! assert (v, []);
+
+## Test non-orthogonal matrices
+%!test <*57968>
+%! A = reshape (sqrt (0:15), 4, 4);
+%! cexp = norm (A, 1) * norm (inv (A), 1);
+%! cest = condest (A);
+%! assert (cest, cexp, -2*eps);
+
+%!test <*57968>
+%! As = sparse (reshape (sqrt (0:15), 4, 4));
+%! cexp = norm (As, 1) * norm (inv (As), 1);
+%! cest = condest (As);
+%! assert (cest, cexp, -1e-12);
 
 ## Test input validation
 %!error condest ()

@@ -65,7 +65,7 @@ DEFUN (lu, args, nargout,
 @deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} lu (@var{A})
 @deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} lu (@var{S})
 @deftypefnx {} {[@var{L}, @var{U}, @var{P}, @var{Q}, @var{R}] =} lu (@var{S})
-@deftypefnx {} {[@dots{}] =} lu (@var{S}, @var{thres})
+@deftypefnx {} {[@dots{}] =} lu (@var{S}, @var{thresh})
 @deftypefnx {} {@var{y} =} lu (@dots{})
 @deftypefnx {} {[@dots{}] =} lu (@dots{}, "vector")
 @cindex LU decomposition
@@ -75,10 +75,10 @@ If @var{A} is full then subroutines from @sc{lapack} are used, and if
 @var{A} is sparse then @sc{umfpack} is used.
 
 The result is returned in a permuted form, according to the optional return
-value @var{P}.  For example, given the matrix @code{a = [1, 2; 3, 4]},
+value @var{P}.  For example, given the matrix @code{@var{A} = [1, 2; 3, 4]},
 
 @example
-[l, u, p] = lu (@var{a})
+[@var{L}, @var{U}, @var{P}] = lu (@var{A})
 @end example
 
 @noindent
@@ -86,17 +86,17 @@ returns
 
 @example
 @group
-l =
+L =
 
   1.00000  0.00000
   0.33333  1.00000
 
-u =
+U =
 
   3.00000  4.00000
   0.00000  0.66667
 
-p =
+P =
 
   0  1
   1  0
@@ -117,10 +117,10 @@ attempts to use a scaling factor @var{R} on the input matrix such that
 @code{@var{P} * (@var{R} \ @var{A}) * @var{Q} = @var{L} * @var{U}}.
 This typically leads to a sparser and more stable factorization.
 
-An additional input argument @var{thres}, that defines the pivoting
-threshold can be given.  @var{thres} can be a scalar, in which case
+An additional input argument @var{thresh} that defines the pivoting
+threshold can be given.  @var{thresh} can be a scalar, in which case
 it defines the @sc{umfpack} pivoting tolerance for both symmetric and
-unsymmetric cases.  If @var{thres} is a 2-element vector, then the first
+unsymmetric cases.  If @var{thresh} is a 2-element vector, then the first
 element defines the pivoting tolerance for the unsymmetric @sc{umfpack}
 pivoting strategy and the second for the symmetric strategy.  By default,
 the values defined by @code{spparms} are used ([0.1, 0.001]).
@@ -147,7 +147,7 @@ permutation information.
     print_usage ();
 
   bool vecout = false;
-  Matrix thres;
+  Matrix thresh;
   int n = 1;
 
   while (n < nargin)
@@ -164,19 +164,19 @@ permutation information.
       else
         {
           if (! issparse)
-            error ("lu: can not define pivoting threshold THRES for full matrices");
+            error ("lu: can not define pivoting threshold THRESH for full matrices");
 
           Matrix tmp = args(n++).matrix_value ();
           if (tmp.numel () == 1)
             {
-              thres.resize (1,2);
-              thres(0) = tmp(0);
-              thres(1) = tmp(0);
+              thresh.resize (1,2);
+              thresh(0) = tmp(0);
+              thresh(1) = tmp(0);
             }
           else if (tmp.numel () == 2)
-            thres = tmp;
+            thresh = tmp;
           else
-            error ("lu: THRES must be a 1 or 2-element vector");
+            error ("lu: THRESH must be a 1- or 2-element vector");
         }
     }
 
@@ -205,7 +205,7 @@ permutation information.
               ColumnVector Qinit (nc);
               for (octave_idx_type i = 0; i < nc; i++)
                 Qinit(i) = i;
-              octave::math::sparse_lu<SparseMatrix> fact (m, Qinit, thres,
+              octave::math::sparse_lu<SparseMatrix> fact (m, Qinit, thresh,
                                                           false, true);
 
               if (nargout < 2)
@@ -239,7 +239,7 @@ permutation information.
           else
             {
               retval.resize (scale ? 5 : 4);
-              octave::math::sparse_lu<SparseMatrix> fact (m, thres, scale);
+              octave::math::sparse_lu<SparseMatrix> fact (m, thresh, scale);
 
               retval(0) = octave_value (fact.L (),
                                         MatrixType (MatrixType::Lower));
@@ -274,7 +274,7 @@ permutation information.
               for (octave_idx_type i = 0; i < nc; i++)
                 Qinit(i) = i;
               octave::math::sparse_lu<SparseComplexMatrix> fact (m, Qinit,
-                                                                 thres, false,
+                                                                 thresh, false,
                                                                  true);
 
               if (nargout < 2)
@@ -307,7 +307,7 @@ permutation information.
           else
             {
               retval.resize (scale ? 5 : 4);
-              octave::math::sparse_lu<SparseComplexMatrix> fact (m, thres,
+              octave::math::sparse_lu<SparseComplexMatrix> fact (m, thresh,
                                                                  scale);
 
               retval(0) = octave_value (fact.L (),

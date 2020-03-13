@@ -655,8 +655,6 @@ namespace octave
 
     bool is_variable (const std::string& name, const symbol_scope& scope);
 
-    bool is_keyword_token (const std::string& s);
-
     int make_keyword_token (const std::string& s);
 
     bool fq_identifier_contains_keyword (const std::string& s);

@@ -301,6 +301,25 @@ is_space_or_tab_or_eol (char c)
   return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
+namespace octave
+{
+  bool iskeyword (const std::string& s)
+  {
+    // Parsing function names like "set.property_name" inside
+    // classdef-style class definitions is simplified by handling the
+    // "set" and "get" portions of the names using the same mechanism
+    // as is used for keywords.  However, they are not really keywords
+    // in the language, so omit them from the list of possible
+    // keywords.  Likewise for "enumeration", "events", "methods", and
+    // "properties".
+
+    return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != nullptr
+            && ! (s == "set" || s == "get"
+                  || s == "enumeration" || s == "events"
+                  || s == "methods" || s == "properties"));
+  }
+}
+
 %}
 
 D       [0-9]
@@ -1377,11 +1396,9 @@ ANY_INCLUDING_NL (.|{NL})
                 ident.erase (std::remove_if (ident.begin (), ident.end (),
                                              is_space_or_tab), ident.end ());
 
-                bool kw_token = curr_lexer->is_keyword_token (ident);
-
                 octave::token *tok;
 
-                if (kw_token)
+                if (octave::iskeyword (ident))
                   tok = new octave::token (LEXICAL_ERROR,
                                            "function handles may not refer to keywords",
                                            curr_lexer->m_tok_beg,
@@ -2030,26 +2047,6 @@ display_character (char c)
       }
 }
 
-namespace octave
-{
-  bool
-  iskeyword (const std::string& s)
-  {
-    // Parsing function names like "set.property_name" inside
-    // classdef-style class definitions is simplified by handling the
-    // "set" and "get" portions of the names using the same mechanism
-    // as is used for keywords.  However, they are not really keywords
-    // in the language, so omit them from the list of possible
-    // keywords.  Likewise for "enumeration", "events", "methods", and
-    // "properties".
-
-    return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != nullptr
-            && ! (s == "set" || s == "get"
-                  || s == "enumeration" || s == "events"
-                  || s == "methods" || s == "properties"));
-  }
-}
-
 DEFUN (iskeyword, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} iskeyword ()
@@ -2080,7 +2077,9 @@ If @var{name} is omitted, return a list of keywords.
         {
           std::string kword = wordlist[i].name;
 
-          if (kword != "set" && kword != "get")
+          if (! (kword == "set" || kword == "get"
+                 || kword == "enumeration" || kword == "events"
+                 || kword == "methods" || kword == "properties"))
             lst[j++] = kword;
         }
 
@@ -2580,16 +2579,6 @@ bool
                 != m_pending_local_variables.end ()));
   }
 
-  // Handle keywords.  Return -1 if the keyword should be ignored.
-
-  bool
-  base_lexer::is_keyword_token (const std::string& s)
-  {
-    int len = s.length ();
-
-    return octave_kw_hash::in_word_set (s.c_str (), len);
-  }
-
   int
   base_lexer::make_keyword_token (const std::string& s)
   {
@@ -2854,7 +2843,7 @@ bool
         else
           s_part = s.substr (p1);
 
-        if (is_keyword_token (s_part))
+        if (iskeyword (s_part))
           return true;
       }
     while (p2 != std::string::npos);
@@ -3086,10 +3075,7 @@ namespace octave
     std::string meth = txt.substr (0, pos);
     std::string cls = txt.substr (pos + 1);
 
-    bool kw_token = (is_keyword_token (meth)
-                     || fq_identifier_contains_keyword (cls));
-
-    if (kw_token)
+    if (iskeyword (meth) || fq_identifier_contains_keyword (cls))
       {
         token *tok
           = new token (LEXICAL_ERROR,
@@ -3193,7 +3179,7 @@ namespace octave
         return STRUCT_ELT;
       }
 
-    // If ident is a keyword token, then is_keyword_token will set
+    // If ident is a keyword token, then make_keyword_token will set
     // m_at_beginning_of_statement.  For example, if tok is an IF
     // token, then m_at_beginning_of_statement will be false.
 

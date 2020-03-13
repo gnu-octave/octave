@@ -14,6 +14,7 @@ fcn_handle_TEST_FILES = \
   %reldir%/bug51709_c.m \
   %reldir%/derived-resolution.tst \
   %reldir%/f1.m \
+  %reldir%/keyword.tst \
   %reldir%/object-method.tst \
   %reldir%/package-function.tst \
   %reldir%/static-method.tst

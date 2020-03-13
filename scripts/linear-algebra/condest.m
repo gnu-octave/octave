@@ -26,8 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{cest} =} condest (@var{A})
 ## @deftypefnx {} {@var{cest} =} condest (@var{A}, @var{t})
-## @deftypefnx {} {@var{cest} =} condest (@var{A}, @var{solvefun}, @var{t}, @var{p1}, @var{p2}, @dots{})
-## @deftypefnx {} {@var{cest} =} condest (@var{Afcn}, @var{solvefun}, @var{t}, @var{p1}, @var{p2}, @dots{})
+## @deftypefnx {} {@var{cest} =} condest (@var{A}, @var{Ainvfcn})
+## @deftypefnx {} {@var{cest} =} condest (@var{A}, @var{Ainvfcn}, @var{t})
+## @deftypefnx {} {@var{cest} =} condest (@var{A}, @var{Ainvfcn}, @var{t}, @var{p1}, @var{p2}, @dots{})
+## @deftypefnx {} {@var{cest} =} condest (@var{Afcn}, @var{Ainvfcn})
+## @deftypefnx {} {@var{cest} =} condest (@var{Afcn}, @var{Ainvfcn}, @var{t})
+## @deftypefnx {} {@var{cest} =} condest (@var{Afcn}, @var{Ainvfcn}, @var{t}, @var{p1}, @var{p2}, @dots{})
 ## @deftypefnx {} {[@var{cest}, @var{v}] =} condest (@dots{})
 ##
 ## Estimate the 1-norm condition number of a square matrix @var{A} using
@@ -35,54 +39,56 @@
 ##
 ## The optional input @var{t} specifies the number of test vectors (default 5).
 ##
-## If the matrix is not explicit, e.g., when estimating the condition number of
-## @var{A} given an LU@tie{}factorization, @code{condest} uses the following
-## functions:
+## The input may be a matrix @var{A} (the algorithm is particularly
+## appropriate for large, sparse matrices).  Alternatively, the behavior of
+## the matrix can be defined implicitly by functions.  When using an implicit
+## definition, @code{condest} requires the following functions:
 ##
 ## @itemize @minus
-## @item @var{Afcn} which must return
+## @item @code{@var{Afcn} (@var{flag}, @var{x})} which must return
 ##
 ## @itemize @bullet
 ## @item
-## the dimension @var{n} of @var{a}, if @var{flag} is @qcode{"dim"}
+## the dimension @var{n} of @var{A}, if @var{flag} is @qcode{"dim"}
 ##
 ## @item
-## true if @var{a} is a real operator, if @var{flag} is @qcode{"real"}
+## true if @var{A} is a real operator, if @var{flag} is @qcode{"real"}
 ##
 ## @item
-## the result @code{@var{a} * @var{x}}, if @var{flag} is "notransp"
+## the result @code{@var{A} * @var{x}}, if @var{flag} is "notransp"
 ##
 ## @item
-## the result @code{@var{a}' * @var{x}}, if @var{flag} is "transp"
+## the result @code{@var{A}' * @var{x}}, if @var{flag} is "transp"
 ## @end itemize
 ##
-## @item @var{solvefun} which must return
+## @item @code{@var{Ainvfcn} (@var{flag}, @var{x})} which must return
 ##
 ## @itemize @bullet
 ## @item
-## the dimension @var{n} of @var{a}, if @var{flag} is @qcode{"dim"}
+## the dimension @var{n} of @code{inv (@var{A})}, if @var{flag} is
+## @qcode{"dim"}
 ##
 ## @item
-## true if @var{a} is a real operator, if @var{flag} is @qcode{"real"}
+## true if @code{inv (@var{A})} is a real operator, if @var{flag} is
+## @qcode{"real"}
 ##
 ## @item
-## the result @code{@var{a} \ @var{x}}, if @var{flag} is "notransp"
+## the result @code{inv (@var{A}) * @var{x}}, if @var{flag} is "notransp"
 ##
 ## @item
-## the result @code{@var{a}' \ @var{x}}, if @var{flag} is "transp"
+## the result @code{inv (@var{A})' * @var{x}}, if @var{flag} is "transp"
 ## @end itemize
 ## @end itemize
 ##
-## The parameters @var{p1}, @var{p2}, @dots{} are arguments of
+## Any parameters @var{p1}, @var{p2}, @dots{} are additional arguments of
 ## @code{@var{Afcn} (@var{flag}, @var{x}, @var{p1}, @var{p2}, @dots{})}
-## and @code{@var{solvefcn} (@var{flag}, @var{x}, @var{p1}, @var{p2},
-## @dots{})}.
+## and @code{@var{Ainvfcn} (@var{flag}, @var{x}, @var{p1}, @var{p2}, @dots{})}.
 ##
 ## The principal output is the 1-norm condition number estimate @var{cest}.
 ##
-## The optional second output is an approximate null vector when @var{cest} is
-## large; it satisfies the equation
-## @code{norm (A*v, 1) == norm (A, 1) * norm (@var{v}, 1) / @var{est}}.
+## The optional second output @var{v} is an approximate null vector; it
+## satisfies the equation @code{norm (@var{A}*@var{v}, 1) ==
+## norm (@var{A}, 1) * norm (@var{v}, 1) / @var{cest}}.
 ##
 ## Algorithm Note: @code{condest} uses a randomized algorithm to approximate
 ## the 1-norms.  Therefore, if consistent results are required, the
@@ -104,7 +110,7 @@
 ## Pseudospectra}.  @url{https://citeseer.ist.psu.edu/223007.html}
 ## @end itemize
 ##
-## @seealso{cond, norm, normest1, normest}
+## @seealso{cond, rcond, norm, normest1, normest}
 ## @end deftypefn
 
 ## Code originally licensed under:
@@ -142,10 +148,6 @@
 ## OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ## SUCH DAMAGE.
 
-## Author: Jason Riedy <ejr@cs.berkeley.edu>
-## Keywords: linear-algebra norm estimation
-## Version: 0.2
-
 function [cest, v] = condest (varargin)
 
   if (nargin < 1 || nargin > 6)
@@ -154,8 +156,8 @@ function [cest, v] = condest (varargin)
 
   have_A = false;
   have_t = false;
-  have_apply_normest1 = false;
-  have_solve_normest1 = false;
+  have_Afcn = false;
+  have_Ainvfcn = false;
 
   if (isnumeric (varargin{1}))
     A = varargin{1};
@@ -166,8 +168,8 @@ function [cest, v] = condest (varargin)
     n = rows (A);
     if (nargin > 1)
       if (is_function_handle (varargin{2}))
-        solve = varargin{2};
-        have_solve_normest1 = true;
+        Ainvfcn = varargin{2};
+        have_Ainvfcn = true;
         if (nargin > 2)
           t = varargin{3};
           have_t = true;
@@ -175,23 +177,20 @@ function [cest, v] = condest (varargin)
       else
         t = varargin{2};
         have_t = true;
-        real_op = isreal (A);
       endif
-    else
-      real_op = isreal (A);
     endif
   elseif (is_function_handle (varargin{1}))
     if (nargin == 1)
-      error("condest: must provide SOLVEFCN when using AFCN");
+      error("condest: must provide AINVFCN when using AFCN");
     endif
-    apply = varargin{1};
-    have_apply_normest1 = true;
+    Afcn = varargin{1};
+    have_Afcn = true;
     if (! is_function_handle (varargin{2}))
-      error("condest: SOLVEFCN must be a function handle");
+      error("condest: AINVFCN must be a function handle");
     endif
-    solve = varargin{2};
-    have_solve_normest1 = true;
-    n = apply ("dim", [], varargin{4:end});
+    Ainvfcn = varargin{2};
+    have_Ainvfcn = true;
+    n = Afcn ("dim", [], varargin{4:end});
     if (nargin > 2)
       t = varargin{3};
       have_t = true;
@@ -207,99 +206,131 @@ function [cest, v] = condest (varargin)
   ## Disable warnings which may be emitted during calculation process.
   warning ("off", "Octave:nearly-singular-matrix", "local");
 
-  if (! have_solve_normest1)
-    ## prepare solve in normest1 form
+  if (! have_Ainvfcn)
+    ## Prepare Ainvfcn in normest1 form
     if (issparse (A))
-      [L, U, P, Pc] = lu (A);
-      solve = @(flag, x) solve_sparse (flag, x, n, real_op, L, U, P, Pc);
+      [L, U, P, Q] = lu (A);
+      Ainvfcn = @inv_sparse_fcn;
     else
       [L, U, P] = lu (A);
-      solve = @(flag, x) solve_not_sparse (flag, x, n, real_op, L, U, P);
+      Q = [];
+      Ainvfcn = @inv_full_fcn;
     endif
 
-    ## Check for singular matrices before continuing
+    ## Check for singular matrices before continuing (bug #46737)
     if (any (diag (U) == 0))
       cest = Inf;
       v = [];
       return;
     endif
+
+    ## Initialize solver
+    Ainvfcn ("init", A, L, U, P, Q);
+    clear L U P Q;
   endif
 
   if (have_A)
     Anorm = norm (A, 1);
   else
-    Anorm = normest1 (apply, t, [], varargin{4:end});
+    Anorm = normest1 (Afcn, t, [], varargin{4:end});
   endif
-  [Ainv_norm, v, w] = normest1 (solve, t, [], varargin{4:end});
+  [Ainv_norm, v, w] = normest1 (Ainvfcn, t, [], varargin{4:end});
 
   cest = Anorm * Ainv_norm;
   if (isargout (2))
     v = w / norm (w, 1);
   endif
 
+  if (! have_Ainvfcn)
+    Ainvfcn ("clear");  # clear persistent memory in subfunction
+  endif
+
 endfunction
 
-function value = solve_sparse (flag, x, n, real_op, L , U , P , Pc)
-  ## FIXME: Sparse algorithm is less accurate than full matrix version
-  ##        See BIST test for non-orthogonal matrix where relative tolerance
+function retval = inv_sparse_fcn (flag, x, varargin)
+  ## FIXME: Sparse algorithm is less accurate than full matrix version.
+  ##        See BIST test for asymmetric matrix where relative tolerance
   ##        of 1e-12 is used for sparse, but 4e-16 for full matrix.
+  ##        BUT, does it really matter for an "estimate"?
+  persistent Ainv Ainvt n isreal_op;
+
   switch (flag)
     case "dim"
-      value = n;
+      retval = n;
     case "real"
-      value = real_op;
+      retval = isreal_op;
     case "notransp"
-      value = Pc' * (U \ (L \ (P * x)));
+      retval = Ainv * x;
     case "transp"
-      value = P' * (L' \ (U' \ (Pc * x)));
+      retval = Ainvt * x;
+    case "init"
+      n = rows (x); 
+      isreal_op = isreal (x);
+      [L, U, P, Q] = deal (varargin{1:4});
+      Ainv = Q * (U \ (L \ P));
+      Ainvt = P' * (L' \ (U' \ Q'));
+    case "clear"  # called to free memory at end of condest function
+      clear Ainv Ainvt n isreal_op;
   endswitch
+
 endfunction
 
-function value = solve_not_sparse (flag, x, n, real_op, L, U, P)
+function retval = inv_full_fcn (flag, x, varargin)
+  persistent Ainv Ainvt n isreal_op;
+
   switch (flag)
     case "dim"
-      value = n;
+      retval = n;
     case "real"
-      value = real_op;
+      retval = isreal_op;
     case "notransp"
-      value = U \ (L \ (P * x));
+      retval = Ainv * x;
     case "transp"
-      value = P' * (L' \ (U' \ x));
+      retval = Ainvt \ x;
+    case "init"
+      n = rows (x); 
+      isreal_op = isreal (x);
+      [L, U, P] = deal (varargin{1:3});
+      Ainv = U \ (L \ P);
+      Ainvt = P' * (L' \ U');
+    case "clear"  # called to free memory at end of condest function
+      clear Ainv Ainvt n isreal_op;
   endswitch
+
 endfunction
 
 
 ## Note: These test bounds are very loose.  There is enough randomization to
 ## trigger odd cases with hilb().
 
-%!function value = apply_fun (flag, x, A, m)
+%!function retval = __Afcn__ (flag, x, A, m)
 %!  if (nargin == 3)
 %!    m = 1;
 %!  endif
 %!  switch (flag)
 %!    case "dim"
-%!      value = length (A);
+%!      retval = length (A);
 %!    case "real"
-%!      value = isreal (A);
+%!      retval = isreal (A);
 %!    case "notransp"
-%!      value = x; for i = 1:m, value = A * value;, endfor
+%!      retval = x; for i = 1:m, retval = A * retval;, endfor
 %!    case "transp"
-%!      value = x; for i = 1:m, value = A' * value;, endfor
+%!      retval = x; for i = 1:m, retval = A' * retval;, endfor
 %!  endswitch
 %!endfunction
-%!function value = solve_fun (flag, x, A, m)
+%!function retval = __Ainvfcn__ (flag, x, A, m)
 %!  if (nargin == 3)
 %!    m = 1;
 %!  endif
 %!  switch (flag)
 %!    case "dim"
-%!      value = length (A);
+%!      retval = length (A);
 %!    case "real"
-%!      value = isreal (A);
+%!      retval = isreal (A);
 %!    case "notransp"
-%!      value = x; for i = 1:m, value = A \ value;, endfor
+%!      retval = x; for i = 1:m, retval = A \ retval;, endfor
 %!    case "transp"
-%!      value = x; for i = 1:m, value = A' \ value;, endfor
+%!      retval = x; for i = 1:m, retval = A' \ retval;, endfor
 %!  endswitch
 %!endfunction
 
@@ -320,25 +351,25 @@ endfunction
 %!test
 %! N = 6;
 %! A = hilb (N);
-%! solve = @(flag, x) solve_fun (flag, x, A);
-%! cA = condest (A, solve);
+%! Ainvfcn = @(flag, x) __Ainvfcn__ (flag, x, A);
+%! cA = condest (A, Ainvfcn);
 %! cA_test = norm (inv (A), 1) * norm (A, 1);
 %! assert (cA, cA_test, -2^-6);
 
 %!test
 %! N = 6;
 %! A = hilb (N);
-%! apply = @(flag, x) apply_fun (flag, x, A);
-%! solve = @(flag, x) solve_fun (flag, x, A);
-%! cA = condest (apply, solve);
+%! Afcn = @(flag, x) __Afcn__ (flag, x, A);
+%! Ainvfcn = @(flag, x) __Ainvfcn__ (flag, x, A);
+%! cA = condest (Afcn, Ainvfcn);
 %! cA_test = norm (inv (A), 1) * norm (A, 1);
 %! assert (cA, cA_test, -2^-6);
 
-%!test # parameters for apply and solve functions
+%!test # parameters for apply and Ainvfcn functions
 %! N = 6;
 %! A = hilb (N);
 %! m = 2;
-%! cA = condest (@apply_fun, @solve_fun, [], A, m);
+%! cA = condest (@__Afcn__, @__Ainvfcn__, [], A, m);
 %! cA_test = norm (inv (A^2), 1) * norm (A^2, 1);
 %! assert (cA, cA_test, -2^-6);
 
@@ -351,7 +382,7 @@ endfunction
 %! assert (cest, Inf);
 %! assert (v, []);
 
-## Test non-orthogonal matrices
+## Test asymmetric matrices
 %!test <*57968>
 %! A = reshape (sqrt (0:15), 4, 4);
 %! cexp = norm (A, 1) * norm (inv (A), 1);
@@ -365,9 +396,9 @@ endfunction
 %! assert (cest, cexp, -1e-12);
 
 ## Test input validation
-%!error condest ()
-%!error condest (1,2,3,4,5,6,7)
-%!error <A must be square> condest ([1 2])
-%!error <must provide SOLVEFCN when using AFCN> condest (@sin)
-%!error <SOLVEFCN must be a function handle> condest (@sin, 1)
+%!error <Invalid call> condest ()
+%!error <Invalid call> condest (1,2,3,4,5,6,7)
+%!error <A must be square> condest ([1, 2])
+%!error <must provide AINVFCN when using AFCN> condest (@sin)
+%!error <AINVFCN must be a function handle> condest (@sin, 1)
 %!error <argument must be a square matrix or function handle> condest ({1})

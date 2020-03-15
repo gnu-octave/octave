@@ -1,4 +1,4 @@
-#include <mex.h>
+#include "mex.h"
 
 // To be called with
 //

@@ -358,7 +358,7 @@ To save a plot once it has been displayed on the screen, use the print
 command.  For example,
 
 @example
-print -dpdf foo.pdf
+print foo.pdf
 @end example
 
 @noindent

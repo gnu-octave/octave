@@ -2378,16 +2378,24 @@ Undocumented internal function.
   recorder->set_y (args(0));
   recorder->set_fs (args(1).int_value ());
 
-  switch (args.length ())
+  if (args.length () > 2)
     {
-    case 3:
-      recorder->set_nbits (args(2).int_value ());
-      break;
+      // FIXME: Should be able to support 32-bit streams (bug #57939)
+      int nbits = args(2).int_value ();
+      if (nbits != 8 || nbits != 16 || nbits != 24)
+        error ("audioplayer: NBITS must be 8, 16, or 24");
 
-    case 4:
-      recorder->set_nbits (args(2).int_value ());
-      recorder->set_id (args(3).int_value ());
-      break;
+      switch (args.length ())
+        {
+        case 3:
+          recorder->set_nbits (nbits);
+          break;
+
+        case 4:
+          recorder->set_nbits (nbits);
+          recorder->set_id (args(3).int_value ());
+          break;
+        }
     }
 
   if (is_function)

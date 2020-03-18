@@ -50,10 +50,6 @@ class
 OCTINTERP_API
 octave_fcn_handle : public octave_base_value
 {
-private:
-
-  typedef std::map<std::string, octave_value> str_ov_map;
-
 public:
 
   static const std::string anonymous;

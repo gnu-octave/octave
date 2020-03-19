@@ -97,6 +97,8 @@ public:
 
   bool is_function_handle (void) const { return true; }
 
+  bool is_anonymous (void) const { return m_name == anonymous; }
+
   bool is_nested (void) const { return m_is_nested; }
 
   dim_vector dims (void) const;

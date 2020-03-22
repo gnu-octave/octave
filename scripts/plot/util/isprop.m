@@ -31,29 +31,42 @@
 ## logical array indicating whether each handle has the property @var{prop}.
 ##
 ## For plotting, @var{obj} is a handle to a graphics object.  Otherwise,
-## @var{obj} should be an instance of a class.
-## @seealso{get, set, ismethod, isobject}
+## @var{obj} should be an instance of a class.  @code{isprop} reports whether
+## the class defines a property, but @code{Access} permissions or visibility
+## restrictions (@code{Hidden = true}) may prevent use by the programmer.
+## @seealso{get, set, properties, ismethod, isobject}
 ## @end deftypefn
 
 function res = isprop (obj, prop)
 
   if (nargin != 2)
     print_usage ();
-  elseif (! ischar (prop))
+  endif
+
+  if (! ischar (prop))
     error ("isprop: PROP name must be a string");
   endif
 
-  warning ("error", "Octave:abbreviated-property-match", "local");
+  if (isobject (obj))
+    ## Separate code for classdef objects because Octave doesn't handle arrays
+    ## of objects and so can't use the generic code.
+    warning ("off", "Octave:classdef-to-struct", "local");
 
-  res = false (size (obj));
-  for i = 1:numel (res)
-    if (ishghandle (obj(i)))
-      try
-        v = get (obj(i), prop);
-        res(i) = true;
-      end_try_catch
-    endif
-  endfor
+    all_props = __fieldnames__ (obj);
+    res = any (strcmp (prop, all_props));
+  else
+    warning ("error", "Octave:abbreviated-property-match", "local");
+
+    res = false (size (obj));
+    for i = 1:numel (res)
+      if (ishghandle (obj(i)))
+        try
+          get (obj(i), prop);
+          res(i) = true;
+        end_try_catch
+      endif
+    endfor
+  endif
 
 endfunction
 
@@ -62,6 +75,11 @@ endfunction
 %!assert (isprop (0, "screenpixelsperinch"), true)
 %!assert (isprop (zeros (2, 3), "visible"), true (2, 3))
 %!assert (isprop ([-2, -1, 0], "visible"), [false, false, true])
+
+%!test
+%! m = containers.Map ();
+%! assert (isprop (m, "KeyType"));
+%! assert (! isprop (m, "FooBar"));
 
 %!error isprop ()
 %!error isprop (1)

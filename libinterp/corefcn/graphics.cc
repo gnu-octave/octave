@@ -8732,6 +8732,11 @@ axes::update_axis_limits (const std::string& axis_type)
           xproperties.set_has3Dkids ((max_val - min_val) >
                                      std::numeric_limits<double>::epsilon ());
 
+          // FIXME: How to correctly handle (positive or negative) log scale?
+          if ((! octave::math::isfinite (min_val)
+               || ! octave::math::isfinite (max_val))
+              && ! xproperties.zscale_is ("log"))
+            min_val = max_val = 0.;
 
           limits = xproperties.get_axis_limits (min_val, max_val,
                                                 min_pos, max_neg,

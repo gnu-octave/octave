@@ -28,19 +28,19 @@
 ## @deftypefnx {} {@var{names} =} fieldnames (@var{obj})
 ## @deftypefnx {} {@var{names} =} fieldnames (@var{javaobj})
 ## @deftypefnx {} {@var{names} =} fieldnames ("@var{javaclassname}")
-## Return a cell array of strings with the names of the fields in the
-## specified input.
+## Return a cell array of strings with the names of the fields in the specified
+## input.
 ##
-## When the input is a structure @var{struct}, the names are the elements of
-## the structure.
+## When the input is a structure @var{struct}, the @var{names} are the elements
+## of the structure.
 ##
-## When the input is an Octave object @var{obj}, the names are the public
+## When the input is an Octave object @var{obj}, the @var{names} are the public
 ## properties of the object.
 ##
 ## When the input is a Java object @var{javaobj} or a string containing the
-## name of a Java class @var{javaclassname}, the names are the public fields
-## (data members) of the object or class.
-## @seealso{numfields, isfield, orderfields, struct, methods}
+## name of a Java class @var{javaclassname}, the @var{names} are the public
+## fields (data members) of the object or class.
+## @seealso{numfields, isfield, orderfields, struct, properties}
 ## @end deftypefn
 
 function names = fieldnames (obj)
@@ -49,9 +49,10 @@ function names = fieldnames (obj)
     print_usage ();
   endif
 
-  if (isstruct (obj) || isobject (obj))
-    ## Call internal C++ function for structs or Octave objects
+  if (isstruct (obj))
     names = __fieldnames__ (obj);
+  elseif (isobject (obj))
+    names = properties (obj);
   elseif (isjava (obj) || ischar (obj))
     ## FIXME: Function prototype that accepts java obj exists, but doesn't
     ##        work if obj is java.lang.String.  Convert obj to classname.
@@ -70,22 +71,28 @@ function names = fieldnames (obj)
 endfunction
 
 
-## test preservation of fieldname order
+## Test preservation of fieldname order
 %!test
 %! x(3).d=1;  x(2).a=2;  x(1).b=3;  x(2).c=3;
 %! assert (fieldnames (x), {"d"; "a"; "b"; "c"});
 
-## test empty structure
+## Test empty structure
 %!test
 %! s = struct ();
 %! assert (fieldnames (s), cell (0, 1));
 
-## test Java classname by passing classname
+## Test classdef object
+%!test
+%! m = containers.Map (); 
+%! f = fieldnames (m);
+%! assert (f, {"Count"; "KeyType"; "ValueType"; "map"; "numeric_keys"});
+
+## Test Java classname by passing classname
 %!testif HAVE_JAVA; usejava ("jvm")
 %! names = fieldnames ("java.lang.Double");
 %! assert (any (strcmp (names, "MAX_VALUE")));
 
-## test Java classname by passing java object
+## Test Java classname by passing java object
 %!testif HAVE_JAVA; usejava ("jvm")
 %! names = fieldnames (javaObject ("java.lang.Double", 10));
 %! assert (any (strcmp (names, "MAX_VALUE")));

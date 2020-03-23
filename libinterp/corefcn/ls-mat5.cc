@@ -65,7 +65,6 @@
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "ov-class.h"
-#include "ov-fcn-inline.h"
 #include "ov.h"
 #include "ovl.h"
 #include "pager.h"
@@ -1174,60 +1173,50 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (isclass)
           {
-            if (classname == "inline")
+            octave::cdef_manager& cdm = interp.get_cdef_manager ();
+
+            if (cdm.find_class (classname, false, true).ok ())
               {
-                // inline is not an object in Octave but rather an
-                // overload of a function handle.  Special case.
-                tc = new octave_fcn_inline (m.contents ("expr")(0).string_value (),
-                                            m.contents ("args")(0).string_value ());
+                tc = m;
+                warning_with_id ("Octave:load:classdef-to-struct",
+                                 "load: classdef element has been converted to a struct");
               }
             else
               {
-                octave::cdef_manager& cdm = interp.get_cdef_manager ();
+                octave_class *cls
+                  = new octave_class (m, classname,
+                                      std::list<std::string> ());
 
-                if (cdm.find_class (classname, false, true).ok ())
+                if (cls->reconstruct_exemplar ())
                   {
-                    tc = m;
-                    warning_with_id ("Octave:load:classdef-to-struct",
-                                     "load: classdef element has been converted to a struct");
+
+                    if (! cls->reconstruct_parents ())
+                      warning_with_id ("Octave:load:classdef-object-inheritance",
+                                       "load: unable to reconstruct object inheritance");
+
+                    tc = cls;
+
+                    octave::load_path& lp = interp.get_load_path ();
+
+                    if (lp.find_method (classname, "loadobj") != "")
+                      {
+                        try
+                          {
+                            octave_value_list tmp = octave::feval ("loadobj", tc, 1);
+
+                            tc = tmp(0);
+                          }
+                        catch (const octave::execution_exception&)
+                          {
+                            goto data_read_error;
+                          }
+                      }
                   }
                 else
                   {
-                    octave_class *cls
-                      = new octave_class (m, classname,
-                                          std::list<std::string> ());
-
-                    if (cls->reconstruct_exemplar ())
-                      {
-
-                        if (! cls->reconstruct_parents ())
-                          warning_with_id ("Octave:load:classdef-object-inheritance",
-                                           "load: unable to reconstruct object inheritance");
-
-                        tc = cls;
-
-                        octave::load_path& lp = interp.get_load_path ();
-
-                        if (lp.find_method (classname, "loadobj") != "")
-                          {
-                            try
-                              {
-                                octave_value_list tmp = octave::feval ("loadobj", tc, 1);
-
-                                tc = tmp(0);
-                              }
-                            catch (const octave::execution_exception&)
-                              {
-                                goto data_read_error;
-                              }
-                          }
-                      }
-                    else
-                      {
-                        tc = m;
-                        warning_with_id ("Octave:load:classdef-to-struct",
-                                         "load: element has been converted to a structure");
-                      }
+                    tc = m;
+                    warning_with_id ("Octave:load:classdef-to-struct",
+                                     "load: element has been converted to a structure");
                   }
               }
           }

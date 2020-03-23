@@ -59,6 +59,11 @@ public:
       parent_list (), obsolete_copies (0)
   { }
 
+  octave_class (const octave_map& m, const std::string& id)
+    : octave_base_value (), map (m), c_name (id),
+      parent_list (), obsolete_copies (0)
+  { }
+
   octave_class (const octave_map& m, const std::string& id,
                 const std::list<std::string>& plist)
     : octave_base_value (), map (m), c_name (id),

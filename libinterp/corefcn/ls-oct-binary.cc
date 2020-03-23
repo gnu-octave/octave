@@ -44,6 +44,7 @@
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter.h"
 #include "interpreter-private.h"
 #include "load-save.h"
 #include "ls-oct-binary.h"
@@ -55,6 +56,78 @@
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
+
+static bool
+load_inline_fcn (std::istream& is, bool swap, octave::mach_info::float_format,
+                 octave_value& retval)
+{
+  int32_t nargs;
+  if (! is.read (reinterpret_cast<char *> (&nargs), 4))
+    return false;
+  if (swap)
+    swap_bytes<4> (&nargs);
+
+  if (nargs < 1)
+    return false;
+  else
+    {
+      int32_t tmp;
+      octave_value_list args (nargs+1);
+      for (int i = 0; i < nargs; i++)
+        {
+          if (! is.read (reinterpret_cast<char *> (&tmp), 4))
+            return false;
+          if (swap)
+            swap_bytes<4> (&tmp);
+
+          OCTAVE_LOCAL_BUFFER (char, ctmp, tmp+1);
+          is.read (ctmp, tmp);
+          args(i+1) = std::string (ctmp);
+
+          if (! is)
+            return false;
+        }
+
+      if (! is.read (reinterpret_cast<char *> (&tmp), 4))
+        return false;
+      if (swap)
+        swap_bytes<4> (&tmp);
+
+      OCTAVE_LOCAL_BUFFER (char, ctmp1, tmp+1);
+      is.read (ctmp1, tmp);
+      // NAME is obsolete and unused.
+      // std::string name (ctmp1);
+
+      if (! is)
+        return false;
+
+      if (! is.read (reinterpret_cast<char *> (&tmp), 4))
+        return false;
+      if (swap)
+        swap_bytes<4> (&tmp);
+
+      OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
+      is.read (ctmp2, tmp);
+
+      if (is)
+        {
+          args(0) = std::string (ctmp2);
+
+          octave::interpreter& interp
+            = octave::__get_interpreter__ ("load_inline_fcn");
+
+          octave_value_list tmp = interp.feval ("inline", args, 1);
+
+          if (tmp.length () > 0)
+            {
+              retval = tmp(0);
+              return true;
+            }
+        }
+    }
+
+  return false;
+}
 
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
 // place it in TC, returning the name of the variable.  If the value
@@ -238,6 +311,15 @@ read_binary_data (std::istream& is, bool swap,
           error ("load: trouble reading binary file '%s'", filename.c_str ());
         s[len] = '\0';
         std::string typ = s;
+
+        if (typ == "inline function")
+          {
+            // Special case for loading old octave_inline_fcn objects.
+            if (! load_inline_fcn (is, swap, fmt, tc))
+              error ("load: trouble reading binary file '%s'", filename.c_str ());
+            return retval;
+          }
+
         tc = type_info.lookup_type (typ);
       }
       break;

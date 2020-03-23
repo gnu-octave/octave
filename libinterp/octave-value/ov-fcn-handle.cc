@@ -2052,12 +2052,10 @@ Return true if @var{x} is a function handle.
 }
 
 /*
-%!shared fh, finline
+%!shared fh
 %! fh = @(x) x;
-%! finline = inline ("x");
 
 %!assert (is_function_handle (fh))
-%!assert (is_function_handle (finline))
 %!assert (! is_function_handle ({fh}))
 %!assert (! is_function_handle (1))
 

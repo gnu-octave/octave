@@ -914,15 +914,6 @@ octave_base_value::fcn_handle_value (bool silent)
   return nullptr;
 }
 
-octave_fcn_inline *
-octave_base_value::fcn_inline_value (bool silent)
-{
-  if (! silent)
-    err_wrong_type_arg ("octave_base_value::fcn_inline_value()", type_name ());
-
-  return nullptr;
-}
-
 octave_value_list
 octave_base_value::list_value (void) const
 {

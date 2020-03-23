@@ -452,7 +452,7 @@ v = cellfun (@@det, a); # faster
   // more specific function class, so this can result in fewer polymorphic
   // function calls as the function gets called for each value of the array.
   {
-    if (func.is_function_handle ())
+    if (func.is_function_handle () || func.is_inline_function ())
       {
         // We can't check for overloads now.  Is there something else we
         // should be doing instead?
@@ -1156,7 +1156,7 @@ arrayfun (@@str2num, [1234],
 
       if (! symbol_table_lookup)
         {
-          if (func.is_function_handle ())
+          if (func.is_function_handle () || func.class_name () == "inline")
             {
               // We can't check for overloads now.  Is there something
               // else we should be doing instead?

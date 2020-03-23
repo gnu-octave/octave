@@ -1526,7 +1526,7 @@ namespace octave
       {
         return feval (val.function_value (), args, nargout);
       }
-    else if (val.is_function_handle ())
+    else if (val.is_function_handle () || val.is_inline_function ())
       {
         // This covers function handles, inline functions, and anonymous
         //  functions.

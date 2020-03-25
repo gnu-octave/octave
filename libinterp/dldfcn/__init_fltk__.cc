@@ -2484,11 +2484,14 @@ private:
 
 #endif
 
-DEFMETHOD_DLD (__fltk_check__, interp, , ,
-               doc: /* -*- texinfo -*-
-@deftypefn {} {} __fltk_check__ ()
-Undocumented internal function.  Calls Fl::check ()
-@end deftypefn */)
+// This function has the same type signature as a builtin function so
+// that we can create a function handle from it but it is not defined
+// using a DEFMETHOD macro so that it will be omitted from the list of
+// autoloaded functions in the PKG_ADD file and will not be visible to
+// the interpreter.
+
+static octave_value_list
+F__fltk_check__ (octave::interpreter& interp, const octave_value_list&, int)
 {
 #if defined (HAVE_FLTK)
   Fl::check ();

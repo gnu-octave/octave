@@ -1,39 +1,13 @@
 ## Instructions for updating gnulib on development branch
 
-## Change directory to the local Octave repositoy and clone the gnulib git
-## repository:
-git clone git://git.savannah.gnu.org/gnulib.git gnulib-git
+## "cd" to a directory where you want to clone the gnulib repository and run:
+git clone git://git.savannah.gnu.org/gnulib.git
 
-## Convert to hg (might take some time):
-hg --config extensions.convert= convert ./gnulib-git ./gnulib-hg
+## If you already have a local gnulib git repository, pull the latest changes:
+git pull
 
-## Change directory to the gnulib sub-repo in Octave and execute the following
-## commands:
-cd ./gnulib
-hg pull default
-hg update
-hg log -rtip --template "{node}\n"
+## Query the commit id of the current head:
+git rev-parse HEAD
 
-## Take note of the SHA-1 hash (LAST_OLD_HASH) of that revision.
-
-## Locate the first new revision in the converted repository and replace it in
-## the following command:
-cd ../gnulib-hg
-hg log -r20111 --template "{node}\n"
-
-## Take note of the SHA-1 hash (FIRST_NEW_HASH) of that revision.
-
-## Change to the main directory of the local Octave repository and execute the
-## following command replacing the hashes with the information just gathered:
-cd ..
-echo FIRST_NEW_HASH LAST_OLD_HASH > splicemap
-
-## Execute the following command (having replaced FIRST_NEW_HASH):
-hg --config extensions.convert= convert ./gnulib-hg ./gnulib --splicemap ./splicemap --config convert.hg.startrev=FIRST_NEW_HASH
-
-## In the Octave repository do the following:
-cd gnulib
-hg update
-cd ..
-hg commit -m "maint: update gnulib subrepo."
-hg push default -r . 
+## Locate the line in bootstrap.conf starting with ": ${GNULIB_REVISION=" and
+## replace the git commit id with the new one.

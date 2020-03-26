@@ -52,7 +52,11 @@ function names = fieldnames (obj)
   if (isstruct (obj))
     names = __fieldnames__ (obj);
   elseif (isobject (obj))
-    names = properties (obj);
+    try
+      names = properties (obj);      ## classdef object
+    catch
+      names = __fieldnames__ (obj);  ## @class object
+    end_try_catch
   elseif (isjava (obj) || ischar (obj))
     ## FIXME: Function prototype that accepts java obj exists, but doesn't
     ##        work if obj is java.lang.String.  Convert obj to classname.
@@ -86,6 +90,12 @@ endfunction
 %! m = containers.Map (); 
 %! f = fieldnames (m);
 %! assert (f, {"Count"; "KeyType"; "ValueType"; "map"; "numeric_keys"});
+
+## Test old-style @class object
+%!test
+%! obj = ftp ();
+%! f = fieldnames (obj);
+%! assert (f, {"host"; "username"; "password"; "curlhandle"});
 
 ## Test Java classname by passing classname
 %!testif HAVE_JAVA; usejava ("jvm")

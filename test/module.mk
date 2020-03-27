@@ -61,14 +61,15 @@ include %reldir%/bug-36025/module.mk
 include %reldir%/bug-38236/module.mk
 include %reldir%/bug-38691/module.mk
 include %reldir%/bug-41723/module.mk
-include %reldir%/bug-45351/module.mk
 include %reldir%/bug-44940/module.mk
+include %reldir%/bug-45351/module.mk
 include %reldir%/bug-46660/module.mk
 include %reldir%/bug-47680/module.mk
 include %reldir%/bug-49379/module.mk
 include %reldir%/bug-50014/module.mk
 include %reldir%/bug-50035/module.mk
 include %reldir%/bug-50716/module.mk
+include %reldir%/bug-50831/module.mk
 include %reldir%/bug-51192/module.mk
 include %reldir%/bug-51532/module.mk
 include %reldir%/bug-51534/module.mk

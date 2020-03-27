@@ -375,6 +375,8 @@ $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)
 	$(AWK) -f $(srcdir)/%reldir%/mkcontrib.awk $(srcdir)/%reldir%/contributors.in > $@-t && \
 	mv $@-t $@
 
+%reldir%/preface.texi: %reldir%/contributors.texi
+
 AUTHORS: %reldir%/preface.texi %reldir%/contributors.texi | %reldir%/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -f $@-t $@ && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/%reldir%/contributors.texi ] && [ ! -f %reldir%/contributors.texi ]; then \

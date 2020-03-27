@@ -301,10 +301,12 @@ namespace octave
       }
 
     std::string dir = sys::file_ops::dirname (f);
+    std::wstring wdir = sys::u8_to_wstring (dir);
     SetDllDirectoryW (dir.empty ()
-                      ? nullptr : sys::u8_to_wstring (dir).c_str ());
+                      ? nullptr : wdir.c_str ());
 
-    m_handle = LoadLibraryW (sys::u8_to_wstring (m_file).c_str ());
+    std::wstring wfile = sys::u8_to_wstring (m_file);
+    m_handle = LoadLibraryW (wfile.c_str ());
 
     SetDllDirectoryW (nullptr);
 

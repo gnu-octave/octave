@@ -30,7 +30,7 @@
 ## @deftypefnx {} {} subplot (@var{hax})
 ## @deftypefnx {} {} subplot (@dots{}, "align")
 ## @deftypefnx {} {} subplot (@dots{}, "replace")
-## @deftypefnx {} {} subplot (@dots{}, "position", @var{pos})
+## @deftypefnx {} {} subplot ("position", @var{pos})
 ## @deftypefnx {} {} subplot (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {} {@var{hax} =} subplot (@dots{})
 ## Set up a plot grid with @var{rows} by @var{cols} subwindows and set the
@@ -94,6 +94,9 @@
 ## The values in @var{pos} are normalized in the range [0,1].
 ##
 ## Any property/value pairs are passed directly to the underlying axes object.
+##
+## Any previously existing axes that would be (partly) covered by the newly
+## created axes are deleted.
 ##
 ## If the output @var{hax} is requested, subplot returns the axes handle for
 ## the subplot.  This is useful for modifying the properties of a subplot

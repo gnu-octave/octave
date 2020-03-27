@@ -141,6 +141,7 @@ endfunction
 %! clf;
 %! sphere (36);
 %! lightangle (45, 30);
+%! title ("lightangle() demo #1");
 
 %!test
 %! hf = figure ("visible", "off");

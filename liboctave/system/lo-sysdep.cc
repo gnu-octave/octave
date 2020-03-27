@@ -102,8 +102,8 @@ namespace octave
         path_name.append (R"(\*)");
 
       // Find first file in directory.
-      HANDLE hFind = FindFirstFileW (u8_to_wstring (path_name).c_str (),
-                                     &ffd);
+      std::wstring wpath_name = u8_to_wstring (path_name);
+      HANDLE hFind = FindFirstFileW (wpath_name.c_str (), &ffd);
       if (INVALID_HANDLE_VALUE == hFind)
         {
           DWORD errCode = GetLastError ();
@@ -153,8 +153,9 @@ namespace octave
     fopen (const std::string& filename, const std::string& mode)
     {
 #if defined (OCTAVE_USE_WINDOWS_API)
-      return _wfopen (u8_to_wstring (filename).c_str (),
-                      u8_to_wstring (mode).c_str ());
+      std::wstring wfilename = u8_to_wstring (filename);
+      std::wstring wmode = u8_to_wstring (mode);
+      return _wfopen (wfilename.c_str (), wmode.c_str ());
 #else
       return std::fopen (filename.c_str (), mode.c_str ());
 #endif
@@ -197,7 +198,8 @@ namespace octave
     getenv_wrapper (const std::string& name)
     {
 #if defined (OCTAVE_USE_WINDOWS_API)
-      wchar_t *env = _wgetenv (u8_to_wstring (name).c_str ());
+      std::wstring wname = u8_to_wstring (name);
+      wchar_t *env = _wgetenv (wname.c_str ());
       return env ? u8_from_wstring (env) : "";
 #else
       char *env = ::getenv (name.c_str ());

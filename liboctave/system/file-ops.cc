@@ -516,8 +516,9 @@ namespace octave
       msg = "";
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-      status = _wrename (u8_to_wstring (from).c_str (),
-                         u8_to_wstring (to).c_str ());
+      std::wstring wfrom = u8_to_wstring (from);
+      std::wstring wto = u8_to_wstring (to);
+      status = _wrename (wfrom.c_str (), wto.c_str ());
 #else
       status = std::rename (from.c_str (), to.c_str ());
 #endif

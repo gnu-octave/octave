@@ -218,9 +218,8 @@ Internal function.  Returns 1 on successful system call and 0 otherwise.
   std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a filename");
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-  HINSTANCE status
-    = ShellExecuteW (0, 0, octave::sys::u8_to_wstring (file).c_str (),
-                     0, 0, SW_SHOWNORMAL);
+  std::wstring wfile = octave::sys::u8_to_wstring (file);
+  HINSTANCE status = ShellExecuteW (0, 0, wfile.c_str (), 0, 0, SW_SHOWNORMAL);
 
   // ShellExecute returns a value greater than 32 if successful.
   return octave_value (reinterpret_cast<ptrdiff_t> (status) > 32);
@@ -859,9 +858,10 @@ namespace octave
     LONG result;
     HKEY h_subkey;
 
-    result = RegOpenKeyExW (h_rootkey,
-                            sys::u8_to_wstring (subkey).c_str (), 0,
-                            KEY_READ, &h_subkey);
+    std::wstring wsubkey = sys::u8_to_wstring (subkey);
+    result = RegOpenKeyExW (h_rootkey, wsubkey.c_str (), 0, KEY_READ,
+                            &h_subkey);
+
     if (result != ERROR_SUCCESS)
       return result;
 
@@ -869,18 +869,17 @@ namespace octave
 
     frame.add_fcn (reg_close_key_wrapper, h_subkey);
 
+    std::wstring wname = sys::u8_to_wstring (name);
     DWORD length = 0;
-    result = RegQueryValueExW (h_subkey,
-                               sys::u8_to_wstring (name).c_str (),
-                               nullptr, nullptr, nullptr, &length);
+    result = RegQueryValueExW (h_subkey, wname.c_str (), nullptr, nullptr,
+                               nullptr, &length);
     if (result != ERROR_SUCCESS)
       return result;
 
     DWORD type = 0;
     OCTAVE_LOCAL_BUFFER (BYTE, data, length);
-    result = RegQueryValueExW (h_subkey,
-                               sys::u8_to_wstring (name).c_str (),
-                               nullptr, &type, data, &length);
+    result = RegQueryValueExW (h_subkey, wname.c_str (), nullptr, &type,
+                               data, &length);
     if (result != ERROR_SUCCESS)
       return result;
 
@@ -901,9 +900,9 @@ namespace octave
 
     fields.clear ();
 
-    retval = RegOpenKeyExW (h_rootkey,
-                            sys::u8_to_wstring (subkey).c_str (), 0,
-                            KEY_READ, &h_subkey);
+    std::wstring wsubkey = sys::u8_to_wstring (subkey);
+    retval = RegOpenKeyExW (h_rootkey, wsubkey.c_str (), 0, KEY_READ,
+                            &h_subkey);
     if (retval != ERROR_SUCCESS)
       return retval;
 

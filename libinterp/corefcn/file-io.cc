@@ -2285,6 +2285,14 @@ as the name of the function when reporting errors.
 %! obs = textscan (str, "%q", "delimiter", ",");
 %! assert (obs, { { "a,b"; "c" } });
 
+%!test <*58008>
+%! txt = sprintf ('literal_other_1_1;literal_other_1_2\nliteral_other_2_1;literal_other_2_2\nliteral_other_3_1;literal_other_3_2');
+%! nm1 = textscan (txt, 'literal%s literal%s', 'Delimiter', ';');
+%! assert (nm1{1}, {"_other_1_1" ; "_other_2_1" ; "_other_3_1"});
+%! assert (nm1{2}, {"_other_1_2" ; "_other_2_2" ; "_other_3_2"});
+%! nm2 = textscan (txt, 'literal%s;literal%s', 'Delimiter', ';');
+%! assert (nm1, nm2);
+
 */
 // These tests have end-comment sequences, so can't just be in a comment
 #if 0

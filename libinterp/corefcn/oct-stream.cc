@@ -3500,11 +3500,12 @@ namespace octave
         elem = fmt_list.next ();
         char *pos = is.tellg ();
 
-        // FIXME: these conversions "ignore delimiters".  Should they include
-        // delimiters at the start of the conversion, or can those be skipped?
-        if (elem->type != textscan_format_elt::literal_conversion
-            // && elem->type != '[' && elem->type != '^' && elem->type != 'c'
-           )
+        // Skip delimiter before reading the next fmt conversion,
+        // unless the fmt is a string literal which begins with a delimiter,
+        // in which case the literal must match everything.  Bug #58008
+        if (elem->type != textscan_format_elt::literal_conversion)
+          skip_delim (is);
+        else if (! is_delim (elem->text[0]))
           skip_delim (is);
 
         if (is.eof ())

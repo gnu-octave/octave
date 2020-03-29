@@ -1914,7 +1914,7 @@ namespace octave
 
     bool match_literal (delimited_stream& isp, const textscan_format_elt& elem);
 
-    int skip_whitespace (delimited_stream& is, bool EOLstop = false);
+    int skip_whitespace (delimited_stream& is, bool EOLstop = true);
 
     int skip_delim (delimited_stream& is);
 
@@ -2472,7 +2472,7 @@ namespace octave
     while (! ds.eof ())
       {
         bool already_skipped_delim = false;
-        ts.skip_whitespace (ds);
+        ts.skip_whitespace (ds, false);
         ds.progress_benchmark ();
         ts.scan_complex (ds, *fmt_elts[0], val);
         if (ds.fail ())
@@ -3893,8 +3893,8 @@ namespace octave
   int
   textscan::skip_delim (delimited_stream& is)
   {
-    int c1 = skip_whitespace (is, true);  // 'true': stop once EOL is read
-    if (delim_list.numel () == 0)         // single character delimiter
+    int c1 = skip_whitespace (is);  // Stop once EOL is read
+    if (delim_list.numel () == 0)   // single character delimiter
       {
         if (is_delim (c1) || c1 == eol1 || c1 == eol2)
           {
@@ -3944,7 +3944,7 @@ namespace octave
                 int prev = -1;
                 // skip multiple delims.
                 // Increment lines for each end-of-line seen; for \r\n, decrement
-                while (is && ((c1 = skip_whitespace (is, true))
+                while (is && ((c1 = skip_whitespace (is))
                               != std::istream::traits_type::eof ())
                        && (((c1 == eol1 || c1 == eol2) && ++lines)
                            || -1 != lookahead (is, delim_list, delim_len)))

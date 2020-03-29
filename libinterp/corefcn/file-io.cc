@@ -1641,8 +1641,10 @@ as the name of the function when reporting errors.
 %! c = textscan (str, "%4f %f", "delimiter", ";", "collectOutput", 1);
 %! assert (c, {[12, 34; 1234, 56789; 7, NaN]});
 
+## FIXME: Not Matlab compatible.  Matlab prioritizes precision over field width
+## so "12.234e+2", when read with "%10.2f %f", yields "12.23" and "4e+2".
 ## Ignore trailing delimiter, but use leading one
-%!test
+%!#test
 %! str = "12.234e+2,34, \n12345.789-9876j,78\n,10|3";
 %! c = textscan (str, "%10.2f %f", "delimiter", ",", "collectOutput", 1,
 %!                    "expChars", "e|");
@@ -2293,7 +2295,29 @@ as the name of the function when reporting errors.
 %! nm2 = textscan (txt, 'literal%s;literal%s', 'Delimiter', ';');
 %! assert (nm1, nm2);
 
+%!test <*57612>
+%! str = sprintf (['101,' '\n' '201,']);
+%! C = textscan (str, '%s%q', 'Delimiter', ',');
+%! assert (size (C), [1, 2]);
+%! assert (C{1}, { "101"; "201" });
+%! assert (C{2}, { ""; "" });
+
+%!test <*57612>
+%! str = sprintf (['101,' '\n' '201,']);
+%! C = textscan (str, '%s%f', 'Delimiter', ',');
+%! assert (size (C), [1, 2]);
+%! assert (C{1}, { "101"; "201" });
+%! assert (C{2}, [ NaN; NaN ]);
+
+%!test <*57612>
+%! str = sprintf (['101,' '\n' '201,']);
+%! C = textscan (str, '%s%d', 'Delimiter', ',');
+%! assert (size (C), [1, 2]);
+%! assert (C{1}, { "101"; "201" });
+%! assert (C{2}, int32 ([ 0; 0 ]));
+
 */
+
 // These tests have end-comment sequences, so can't just be in a comment
 #if 0
 ## Test unfinished comment

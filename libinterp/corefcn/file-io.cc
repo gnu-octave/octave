@@ -2316,6 +2316,11 @@ as the name of the function when reporting errors.
 %! assert (C{1}, { "101"; "201" });
 %! assert (C{2}, int32 ([ 0; 0 ]));
 
+%!test <*51093>
+%! str = sprintf ('a\t\tb\tc');
+%! C = textscan (str, '%s', 'Delimiter', '\t', 'MultipleDelimsAsOne', false);
+%! assert (C{1}, {'a'; ''; 'b'; 'c'});
+
 */
 
 // These tests have end-comment sequences, so can't just be in a comment

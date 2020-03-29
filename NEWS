@@ -56,7 +56,9 @@ vectors with rows corresponding to the input coordinate matrix.
 
 ### Alphabetical list of new functions added in Octave 7
 
+* `endsWith`
 * `rng`
+* `startsWith`
 
 ### Deprecated functions and properties
 

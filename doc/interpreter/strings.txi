@@ -416,6 +416,10 @@ corresponding functions for case-insensitive comparison.
 
 @DOCSTRING(strncmpi)
 
+@DOCSTRING(startsWith)
+
+@DOCSTRING(endsWith)
+
 @node Manipulating Strings
 @section Manipulating Strings
 

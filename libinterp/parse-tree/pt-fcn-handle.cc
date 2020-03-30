@@ -32,6 +32,7 @@
 #include "interpreter-private.h"
 #include "pt-anon-scopes.h"
 #include "pt-fcn-handle.h"
+#include "stack-frame.h"
 
 namespace octave
 {
@@ -130,7 +131,7 @@ namespace octave
 
     std::set<std::string> free_vars = anon_fcn_ctx.free_variables ();
 
-    octave_user_function::local_vars_map local_var_init_vals;
+    stack_frame::local_vars_map local_vars;
 
     call_stack& cs = tw.get_call_stack ();
 
@@ -141,12 +142,12 @@ namespace octave
         octave_value val = frame->varval (name);
 
         if (val.is_defined ())
-          local_var_init_vals[name] = val;
+          local_vars[name] = val;
       }
 
     octave_user_function *af
       = new octave_user_function (new_scope, param_list_dup, ret_list,
-                                  stmt_list, local_var_init_vals);
+                                  stmt_list);
 
     octave_function *curr_fcn = cs.current_function ();
 
@@ -176,8 +177,7 @@ namespace octave
 
     // octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, m_interpreter));
 
-    return octave_value (new octave_fcn_handle
-                         (ov_fcn, octave_fcn_handle::anonymous));
+    return octave_value (new octave_fcn_handle (ov_fcn, local_vars));
   }
 }
 

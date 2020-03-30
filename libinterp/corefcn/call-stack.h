@@ -160,6 +160,9 @@ namespace octave
     void push (octave_user_function *fcn,
                const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
 
+    void push (octave_user_function *fcn,
+               const stack_frame::local_vars_map& local_vars);
+
     void push (octave_user_script *script);
 
     void push (octave_function *fcn);

@@ -406,6 +406,20 @@ namespace octave
         m_fcn (fcn), m_unwind_protect_frame (nullptr)
     { }
 
+    user_fcn_stack_frame (tree_evaluator& tw, octave_user_function *fcn,
+                          size_t index,
+                          const std::shared_ptr<stack_frame>& static_link,
+                          const local_vars_map& local_vars)
+      : base_value_stack_frame (tw, get_num_symbols (fcn), index, static_link,
+                                get_access_link (fcn, static_link)),
+        m_fcn (fcn), m_unwind_protect_frame (nullptr)
+    {
+      // Initialize local variable values.
+
+      for (const auto& nm_ov : local_vars)
+        assign (nm_ov.first, nm_ov.second);
+    }
+
     user_fcn_stack_frame (const user_fcn_stack_frame& elt) = default;
 
     user_fcn_stack_frame&
@@ -1037,6 +1051,14 @@ namespace octave
                                      const std::shared_ptr<stack_frame>& access_link)
   {
     return new user_fcn_stack_frame (tw, fcn, index, static_link, access_link);
+  }
+
+  stack_frame * stack_frame::create (tree_evaluator& tw,
+                                     octave_user_function *fcn, size_t index,
+                                     const std::shared_ptr<stack_frame>& static_link,
+                                     const local_vars_map& local_vars)
+  {
+    return new user_fcn_stack_frame (tw, fcn, index, static_link, local_vars);
   }
 
   stack_frame * stack_frame::create (tree_evaluator& tw,

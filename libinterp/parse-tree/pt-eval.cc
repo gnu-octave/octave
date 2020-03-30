@@ -61,6 +61,7 @@
 #include "pt-anon-scopes.h"
 #include "pt-eval.h"
 #include "pt-tm-const.h"
+#include "stack-frame.h"
 #include "symtab.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -1534,6 +1535,12 @@ namespace octave
     m_call_stack.push (fcn, closure_frames);
   }
 
+  void tree_evaluator::push_stack_frame (octave_user_function *fcn,
+                                         const stack_frame::local_vars_map& local_vars)
+  {
+    m_call_stack.push (fcn, local_vars);
+  }
+
   void tree_evaluator::push_stack_frame (octave_user_script *script)
   {
     m_call_stack.push (script);
@@ -2397,9 +2404,6 @@ namespace octave
     bind_auto_fcn_vars (xargs.name_tags (), args.length (),
                         nargout, user_function.takes_varargs (),
                         user_function.all_va_args (args));
-
-    if (user_function.is_anonymous_function ())
-      init_local_fcn_vars (user_function);
 
     tree_parameter_list *param_list = user_function.parameter_list ();
 
@@ -3827,18 +3831,6 @@ namespace octave
 
     if (takes_varargs)
       assign ("varargin", va_args.cell_value ());
-  }
-
-  void tree_evaluator::init_local_fcn_vars (octave_user_function& user_fcn)
-  {
-    std::shared_ptr<stack_frame> frame
-      = m_call_stack.get_current_stack_frame ();
-
-    const octave_user_function::local_vars_map& lviv
-      = user_fcn.local_var_init_vals ();
-
-    for (const auto& nm_ov : lviv)
-      frame->assign (nm_ov.first, nm_ov.second);
   }
 
   std::string

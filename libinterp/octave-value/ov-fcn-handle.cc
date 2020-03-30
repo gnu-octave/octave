@@ -63,6 +63,7 @@
 #include "pt-misc.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
+#include "stack-frame.h"
 #include "syminfo.h"
 #include "symscope.h"
 #include "unwind-prot.h"
@@ -85,7 +86,7 @@ const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
                                       const std::string& n)
   : m_fcn (), m_obj (), m_name (n), m_scope (scope), m_is_nested (false),
-    m_closure_frames (), m_dispatch_class ()
+    m_closure_frames (), m_local_vars (nullptr), m_dispatch_class ()
 {
   if (! m_name.empty () && m_name[0] == '@')
     m_name = m_name.substr (1);
@@ -119,7 +120,7 @@ octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
                                       const octave_value& f,
                                       const std::string& n)
   : m_fcn (f), m_obj (), m_name (n), m_scope (scope), m_is_nested (false),
-    m_closure_frames (), m_dispatch_class ()
+    m_closure_frames (), m_local_vars (nullptr), m_dispatch_class ()
 {
   octave_user_function *uf = m_fcn.user_function_value (true);
 
@@ -138,7 +139,7 @@ octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
 octave_fcn_handle::octave_fcn_handle (const octave_value& f,
                                       const std::string& n)
   : m_fcn (f), m_obj (), m_name (n), m_scope (), m_is_nested (false),
-    m_closure_frames (), m_dispatch_class ()
+    m_closure_frames (), m_local_vars (nullptr), m_dispatch_class ()
 {
   octave_user_function *uf = m_fcn.user_function_value (true);
 
@@ -152,6 +153,27 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
 
   if (uf && uf->is_nested_function () && ! uf->is_subfunction ())
     m_is_nested = true;
+}
+
+octave_fcn_handle::octave_fcn_handle (const octave_value& f,
+                                      const octave::stack_frame::local_vars_map& local_vars)
+  : m_fcn (f), m_obj (), m_name (anonymous), m_scope (), m_is_nested (false),
+    m_closure_frames (), m_local_vars (new octave::stack_frame::local_vars_map (local_vars)),
+    m_dispatch_class ()
+{ }
+
+octave_fcn_handle::octave_fcn_handle (const octave_fcn_handle& fh)
+  : octave_base_value (fh), m_fcn (fh.m_fcn), m_obj (fh.m_obj),
+    m_name (fh.m_name), m_scope (fh.m_scope), m_is_nested (fh.m_is_nested),
+    m_closure_frames (fh.m_closure_frames),
+    m_local_vars (fh.m_local_vars
+                  ? new octave::stack_frame::local_vars_map (*(fh.m_local_vars)) : nullptr),
+    m_dispatch_class (fh.m_dispatch_class)
+{ }
+
+octave_fcn_handle::~octave_fcn_handle (void)
+{
+  delete m_local_vars;
 }
 
 octave_value_list
@@ -381,6 +403,23 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
 
       return oct_usr_fcn->execute (tw, nargout, args);
     }
+  else if (m_local_vars)
+    {
+      if (! fcn_to_call.is_user_function ())
+        {
+          std::string tname = fcn_to_call.type_name ();
+          error ("internal error: local vars associated with '%s' object",
+                 tname.c_str ());
+        }
+
+      octave_user_function *oct_usr_fcn = fcn_to_call.user_function_value ();
+
+      tw.push_stack_frame (oct_usr_fcn, *m_local_vars);
+
+      octave::unwind_action act1 ([&tw] () { tw.pop_stack_frame (); });
+
+      return oct_usr_fcn->execute (tw, nargout, args);
+    }
   else
     {
       octave_function *oct_fcn = fcn_to_call.function_value ();
@@ -443,13 +482,11 @@ octave_fcn_handle::workspace (void) const
 {
   if (m_name == anonymous)
     {
-      octave_user_function *fu = m_fcn.user_function_value ();
-
       octave_scalar_map ws;
 
-      if (fu)
+      if (m_local_vars)
         {
-          for (const auto& nm_val : fu->local_var_init_vals ())
+          for (const auto& nm_val : *m_local_vars)
             ws.assign (nm_val.first, nm_val.second);
         }
 
@@ -578,23 +615,18 @@ octave_fcn_handle::save_ascii (std::ostream& os)
       if (m_fcn.is_undefined ())
         return false;
 
-      octave_user_function *f = m_fcn.user_function_value ();
-
-      octave_user_function::local_vars_map local_vars
-        = f->local_var_init_vals ();
-
-      size_t varlen = local_vars.size ();
-
       os << m_name << "\n";
 
       print_raw (os, true);
       os << "\n";
 
+      size_t varlen = m_local_vars ? m_local_vars->size () : 0;
+
       if (varlen > 0)
         {
           os << "# length: " << varlen << "\n";
 
-          for (const auto& nm_val : local_vars)
+          for (const auto& nm_val : *m_local_vars)
             {
               if (! save_text_data (os, nm_val.second, nm_val.first, false, 0))
                 return ! os.fail ();
@@ -634,6 +666,9 @@ octave_fcn_handle::parse_anon_fcn_handle (const std::string& fcn_text)
       if (fh)
         {
           m_fcn = fh->m_fcn;
+
+          if (fh->m_local_vars)
+            m_local_vars = new octave::stack_frame::local_vars_map (*(fh->m_local_vars));
 
           octave_user_function *uf = m_fcn.user_function_value (true);
 
@@ -754,12 +789,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool save_as_floats)
       if (m_fcn.is_undefined ())
         return false;
 
-      octave_user_function *f = m_fcn.user_function_value ();
-
-      octave_user_function::local_vars_map local_vars
-        = f->local_var_init_vals ();
-
-      size_t varlen = local_vars.size ();
+      size_t varlen = m_local_vars ? m_local_vars->size () : 0;
 
       if (varlen > 0)
         nmbuf << m_name << ' ' << varlen;
@@ -780,7 +810,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool save_as_floats)
 
       if (varlen > 0)
         {
-          for (const auto& nm_val : local_vars)
+          for (const auto& nm_val : *m_local_vars)
             {
               if (! save_binary_data (os, nm_val.second, nm_val.first,
                                       "", 0, save_as_floats))
@@ -1002,12 +1032,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       H5Dclose (data_hid);
 
-      octave_user_function *f = m_fcn.user_function_value ();
-
-      octave_user_function::local_vars_map local_vars
-        = f->local_var_init_vals ();
-
-      size_t varlen = local_vars.size ();
+      size_t varlen = m_local_vars ? m_local_vars->size () : 0;
 
       if (varlen > 0)
         {
@@ -1052,12 +1077,13 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
               return false;
             }
 
-          for (const auto& nm_val : local_vars)
+          for (const auto& nm_val : *m_local_vars)
             {
               if (! add_hdf5_data (data_hid, nm_val.second, nm_val.first,
                                    "", false, save_as_floats))
                 break;
             }
+
           H5Gclose (data_hid);
         }
     }

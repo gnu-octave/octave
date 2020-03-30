@@ -35,12 +35,12 @@
 #include "ov-base.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
+#include "stack-frame.h"
 #include "symscope.h"
 
 namespace octave
 {
   class interpreter;
-  class stack_frame;
   class tree_evaluator;
 }
 
@@ -56,21 +56,22 @@ public:
 
   octave_fcn_handle (void)
     : m_fcn (), m_obj (), m_name (), m_scope (), m_is_nested (false),
-      m_closure_frames (), m_dispatch_class ()
+      m_closure_frames (), m_local_vars (nullptr), m_dispatch_class ()
   { }
 
   octave_fcn_handle (const octave::symbol_scope& scope, const std::string& n);
 
   octave_fcn_handle (const octave::symbol_scope& scope,
-                     const octave_value& f,
-                     const std::string& n = anonymous);
+                     const octave_value& f, const std::string& n);
+
+  octave_fcn_handle (const octave_value& f, const std::string& n);
 
   octave_fcn_handle (const octave_value& f,
-                     const std::string& n = anonymous);
+                     const octave::stack_frame::local_vars_map& local_vars);
 
-  octave_fcn_handle (const octave_fcn_handle& fh) = default;
+  octave_fcn_handle (const octave_fcn_handle& fh);
 
-  ~octave_fcn_handle (void) = default;
+  ~octave_fcn_handle (void);
 
   octave_base_value * clone (void) const
   { return new octave_fcn_handle (*this); }
@@ -185,6 +186,9 @@ protected:
   // to access non-locals and other context info when calling nested
   // functions indirectly through handles.
   std::shared_ptr<octave::stack_frame> m_closure_frames;
+
+  // List of captured variable values for anonymous fucntions.
+  octave::stack_frame::local_vars_map *m_local_vars;
 
   // The name of the class in which this handle was created, if any.
   // Used to determine access permission when the referenced function is

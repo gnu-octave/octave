@@ -40,8 +40,6 @@ class octave_value_list;
 
 #include "error.h"
 #include "ov-fcn.h"
-#include "ov-fcn.h"
-#include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "syminfo.h"
 #include "symscope.h"
@@ -111,6 +109,8 @@ namespace octave
   {
   public:
 
+    typedef std::map<std::string, octave_value> local_vars_map;
+
     // Markers indicating the type of a variable.  Values for local
     // variables are stored in the stack frame.  Values for
     // global variables are stored in the tree_evaluator object that
@@ -162,6 +162,12 @@ namespace octave
     create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
             const std::shared_ptr<stack_frame>& static_link,
             const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ());
+
+    // Anonymous user-defined function with init vars.
+    static stack_frame *
+    create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
+            const std::shared_ptr<stack_frame>& static_link,
+            const local_vars_map& local_vars);
 
     // Scope.
     static stack_frame *
@@ -216,7 +222,7 @@ namespace octave
             retval = parent_fcn_name + '>';
 
           if (fcn->is_anonymous_function ())
-            retval += octave_fcn_handle::anonymous;
+            retval += "@<anonymous>";
           else
             retval += fcn->name ();
         }

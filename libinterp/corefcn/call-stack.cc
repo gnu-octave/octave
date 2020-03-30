@@ -401,6 +401,25 @@ namespace octave
     m_cs.push_back (new_frame);
   }
 
+  void call_stack::push (octave_user_function *fcn,
+                         const stack_frame::local_vars_map& local_vars)
+  {
+    size_t prev_frame = m_curr_frame;
+    m_curr_frame = m_cs.size ();
+
+    // m_max_stack_depth should never be less than zero.
+    if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
+      error ("max_stack_depth exceeded");
+
+    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
+
+    std::shared_ptr<stack_frame>
+      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame, slink,
+                                      local_vars));
+
+    m_cs.push_back (new_frame);
+  }
+
   void call_stack::push (octave_user_script *script)
   {
     size_t prev_frame = m_curr_frame;

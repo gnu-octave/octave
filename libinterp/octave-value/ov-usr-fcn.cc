@@ -213,11 +213,9 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 
 octave_user_function::octave_user_function
   (const octave::symbol_scope& scope, octave::tree_parameter_list *pl,
-   octave::tree_parameter_list *rl, octave::tree_statement_list *cl,
-   const local_vars_map& lviv)
+   octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
   : octave_user_code ("", "", scope, cl, ""),
     param_list (pl), ret_list (rl),
-    m_local_var_init_vals (lviv),
     lead_comm (), trail_comm (),
     location_line (0), location_column (0),
     parent_name (), system_fcn_file (false),

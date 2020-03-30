@@ -42,6 +42,7 @@
 #include "ovl.h"
 #include "profiler.h"
 #include "pt-walk.h"
+#include "stack-frame.h"
 
 class octave_user_code;
 
@@ -377,6 +378,9 @@ namespace octave
 
     void push_stack_frame (octave_user_function *fcn,
                            const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
+
+    void push_stack_frame (octave_user_function *fcn,
+                           const stack_frame::local_vars_map& local_vars);
 
     void push_stack_frame (octave_user_script *script);
 
@@ -736,8 +740,6 @@ namespace octave
     void bind_auto_fcn_vars (const string_vector& arg_names, int nargin,
                              int nargout, bool takes_varargs,
                              const octave_value_list& va_args);
-
-    void init_local_fcn_vars (octave_user_function& user_fcn);
 
     std::string check_autoload_file (const std::string& nm) const;
 

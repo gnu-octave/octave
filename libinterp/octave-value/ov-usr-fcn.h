@@ -213,13 +213,10 @@ octave_user_function : public octave_user_code
 {
 public:
 
-  typedef std::map<std::string, octave_value> local_vars_map;
-
   octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope (),
                         octave::tree_parameter_list *pl = nullptr,
                         octave::tree_parameter_list *rl = nullptr,
-                        octave::tree_statement_list *cl = nullptr,
-                        const local_vars_map& lviv = local_vars_map ());
+                        octave::tree_statement_list *cl = nullptr);
 
   // No copying!
 
@@ -397,11 +394,6 @@ public:
 
   octave::comment_list * trailing_comment (void) { return trail_comm; }
 
-  const local_vars_map& local_var_init_vals (void) const
-  {
-    return m_local_var_init_vals;
-  }
-
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
   octave::tree_expression * special_expr (void);
@@ -436,9 +428,6 @@ private:
   // List of parameters we return.  These are also local variables in
   // this function.
   octave::tree_parameter_list *ret_list;
-
-  // For anonymous function values inherited from parent scope.
-  local_vars_map m_local_var_init_vals;
 
   // The comments preceding the FUNCTION token.
   octave::comment_list *lead_comm;

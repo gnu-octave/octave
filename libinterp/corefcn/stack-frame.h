@@ -154,14 +154,12 @@ namespace octave
 
     // Script.
     static stack_frame *
-    create (tree_evaluator& tw, octave_user_script *script,
-            unwind_protect *up_frame, size_t index,
+    create (tree_evaluator& tw, octave_user_script *script, size_t index,
             const std::shared_ptr<stack_frame>& static_link);
 
     // User-defined function.
     static stack_frame *
-    create (tree_evaluator& tw, octave_user_function *fcn,
-            unwind_protect *up_frame, size_t index,
+    create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
             const std::shared_ptr<stack_frame>& static_link,
             const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ());
 
@@ -232,8 +230,7 @@ namespace octave
 
     virtual octave_function * function (void) const { return nullptr; }
 
-    virtual unwind_protect *
-    unwind_protect_frame (void) const { return nullptr; }
+    virtual unwind_protect * unwind_protect_frame (void) { return nullptr; }
 
     symbol_info_list
     make_symbol_info_list (const std::list<symbol_record>& symrec_list) const;

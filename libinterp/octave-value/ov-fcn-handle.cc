@@ -360,16 +360,33 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
 
   octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  octave_function *of = fcn_to_call.function_value ();
-
-  octave::unwind_protect frame;
-
-  frame.add_method (tw, &octave::tree_evaluator::set_dispatch_class,
-                    std::string ());
+  octave::unwind_action act2 ([&tw] () { tw.set_dispatch_class (""); });
 
   tw.set_dispatch_class (m_dispatch_class);
 
-  return of->call (tw, nargout, args, m_closure_frames);
+  if (m_closure_frames)
+    {
+      if (! fcn_to_call.is_user_function ())
+        {
+          std::string tname = fcn_to_call.type_name ();
+          error ("internal error: closure frames associated with '%s' object",
+                 tname.c_str ());
+        }
+
+      octave_user_function *oct_usr_fcn = fcn_to_call.user_function_value ();
+
+      tw.push_stack_frame (oct_usr_fcn, m_closure_frames);
+
+      octave::unwind_action act1 ([&tw] () { tw.pop_stack_frame (); });
+
+      return oct_usr_fcn->execute (tw, nargout, args);
+    }
+  else
+    {
+      octave_function *oct_fcn = fcn_to_call.function_value ();
+
+      return oct_fcn->call (tw, nargout, args);
+    }
 }
 
 dim_vector

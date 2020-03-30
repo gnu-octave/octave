@@ -186,14 +186,18 @@ public:
 
   bool is_user_script (void) const { return true; }
 
-  // We don't need to override both forms of the call method.  The using
-  // declaration will avoid warnings about partially-overloaded virtual
-  // functions.
-  using octave_user_code::call;
+  // We must overload the call method so that we call the proper
+  // push_stack_frame method, which is overloaded for pointers to
+  // octave_function, octave_user_function, and octave_user_script
+  // objects.
 
   octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
         const octave_value_list& args = octave_value_list ());
+
+  octave_value_list
+  execute (octave::tree_evaluator& tw, int nargout = 0,
+           const octave_value_list& args = octave_value_list ());
 
   void accept (octave::tree_walker& tw);
 
@@ -372,17 +376,18 @@ public:
             ? (cname.empty () ? true : cname == dispatch_class ()) : false);
   }
 
-  octave_value_list
-  call (octave::tree_evaluator& tw, int nargout = 0,
-        const octave_value_list& args = octave_value_list ())
-  {
-    return call (tw, nargout, args, nullptr);
-  }
+  // We must overload the call method so that we call the proper
+  // push_stack_frame method, which is overloaded for pointers to
+  // octave_function, octave_user_function, and octave_user_script
+  // objects.
 
   octave_value_list
-  call (octave::tree_evaluator& tw, int nargout,
-        const octave_value_list& args,
-        const std::shared_ptr<octave::stack_frame>&);
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ());
+
+  octave_value_list
+  execute (octave::tree_evaluator& tw, int nargout = 0,
+           const octave_value_list& args = octave_value_list ());
 
   octave::tree_parameter_list * parameter_list (void) { return param_list; }
 

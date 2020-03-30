@@ -125,7 +125,7 @@ namespace octave
     // User code caller.
     octave_user_code * current_user_code (void) const;
 
-    unwind_protect * curr_fcn_unwind_protect_frame (void) const;
+    unwind_protect * curr_fcn_unwind_protect_frame (void);
 
     // Line in user code caller.
     int current_user_code_line (void) const;
@@ -157,10 +157,10 @@ namespace octave
 
     void push (const symbol_scope& scope);
 
-    void push (octave_user_function *fcn, unwind_protect *up_frame,
+    void push (octave_user_function *fcn,
                const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
 
-    void push (octave_user_script *script, unwind_protect *up_frame);
+    void push (octave_user_script *script);
 
     void push (octave_function *fcn);
 

@@ -223,14 +223,16 @@ public:
   virtual bool accepts_postfix_index (char type) const
   { return (type == '('); }
 
+  // Push new stack frame (if necessary) and execute function.
   virtual octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
-        const octave_value_list& args = octave_value_list ()) = 0;
+        const octave_value_list& args = octave_value_list ());
 
+  // Execute function without pushing new stack frame (assumes that has
+  // already been done).
   virtual octave_value_list
-  call (octave::tree_evaluator& tw, int nargout,
-        const octave_value_list& args,
-        const std::shared_ptr<octave::stack_frame>& closure_context);
+  execute (octave::tree_evaluator& tw, int nargout = 0,
+           const octave_value_list& args = octave_value_list ()) = 0;
 
 protected:
 

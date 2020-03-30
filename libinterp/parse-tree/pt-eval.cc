@@ -1529,16 +1529,14 @@ namespace octave
   }
 
   void tree_evaluator::push_stack_frame (octave_user_function *fcn,
-                                         unwind_protect *up_frame,
                                          const std::shared_ptr<stack_frame>& closure_frames)
   {
-    m_call_stack.push (fcn, up_frame, closure_frames);
+    m_call_stack.push (fcn, closure_frames);
   }
 
-  void tree_evaluator::push_stack_frame (octave_user_script *script,
-                                         unwind_protect *up_frame)
+  void tree_evaluator::push_stack_frame (octave_user_script *script)
   {
-    m_call_stack.push (script, up_frame);
+    m_call_stack.push (script);
   }
 
   void tree_evaluator::push_stack_frame (octave_function *fcn)
@@ -1583,7 +1581,7 @@ namespace octave
     return m_call_stack.current_user_code ();
   }
 
-  unwind_protect * tree_evaluator::curr_fcn_unwind_protect_frame (void) const
+  unwind_protect * tree_evaluator::curr_fcn_unwind_protect_frame (void)
   {
     return m_call_stack.curr_fcn_unwind_protect_frame ();
   }
@@ -2330,26 +2328,15 @@ namespace octave
     if (! cmd_list)
       return retval;
 
-    unwind_protect frame;
-
     if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
       error ("max_recursion_depth exceeded");
 
-    m_call_stack.push (&user_script, &frame);
-
-    // Set pointer to the current unwind_protect frame to allow
-    // certain builtins register simple cleanup in a very optimized manner.
-    // This is *not* intended as a general-purpose on-cleanup mechanism,
-
-    frame.add_method (m_call_stack, &call_stack::pop);
-
-    frame.protect_var (m_statement_context);
-    m_statement_context = SC_SCRIPT;
+    unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_SCRIPT);
 
     profiler::enter<octave_user_script> block (m_profiler, user_script);
 
     if (echo ())
-      push_echo_state (frame, tree_evaluator::ECHO_SCRIPTS, file_name);
+      push_echo_state (tree_evaluator::ECHO_SCRIPTS, file_name);
 
     cmd_list->accept (*this);
 
@@ -2372,8 +2359,7 @@ namespace octave
   octave_value_list
   tree_evaluator::execute_user_function (octave_user_function& user_function,
                                          int nargout,
-                                         const octave_value_list& xargs,
-                                         const std::shared_ptr<stack_frame>& closure_frames)
+                                         const octave_value_list& xargs)
   {
     octave_value_list retval;
 
@@ -2405,17 +2391,8 @@ namespace octave
       return retval;
 #endif
 
-    unwind_protect frame;
-
     if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
       error ("max_recursion_depth exceeded");
-
-    // Save old and set current symbol table context, for
-    // eval_undefined_error().
-
-    m_call_stack.push (&user_function, &frame, closure_frames);
-
-    frame.add_method (m_call_stack, &call_stack::pop);
 
     bind_auto_fcn_vars (xargs.name_tags (), args.length (),
                         nargout, user_function.takes_varargs (),
@@ -2443,37 +2420,23 @@ namespace octave
         define_parameter_list_from_arg_vector (ret_list, ret_args);
       }
 
-    // Force parameter list to be undefined when this function exits.
-    // Doing so decrements the reference counts on the values of local
-    // variables that are also named function parameters.
-
-    //    if (param_list)
-    //      frame.add_method (this, &tree_evaluator::undefine_parameter_list,
-    //                        param_list);
-
-    // Force return list to be undefined when this function exits.
-    // Doing so decrements the reference counts on the values of local
-    // variables that are also named values returned by this function.
-
-    //    if (ret_list)
-    //      frame.add_method (this, &tree_evaluator::undefine_parameter_list,
-    //                        ret_list);
-
-    frame.add_method (&user_function,
-                      &octave_user_function::restore_warning_states);
+    unwind_action act2 ([&user_function] () {
+                          user_function.restore_warning_states ();
+                        });
 
     // Evaluate the commands that make up the function.
 
-    frame.protect_var (m_statement_context);
-    m_statement_context = SC_FUNCTION;
+    unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_FUNCTION);
 
-    frame.add_method (m_call_stack, &call_stack::clear_current_frame_values);
+    unwind_action act1 ([this] () {
+                          m_call_stack.clear_current_frame_values ();
+                        });
 
     {
       profiler::enter<octave_user_function> block (m_profiler, user_function);
 
       if (echo ())
-        push_echo_state (frame, tree_evaluator::ECHO_FUNCTIONS,
+        push_echo_state (tree_evaluator::ECHO_FUNCTIONS,
                          user_function.fcn_file_name ());
 
       if (user_function.is_special_expr ())
@@ -3552,13 +3515,17 @@ namespace octave
   }
 
   void
-  tree_evaluator::push_echo_state (unwind_protect& frame, int type,
-                                   const std::string& file_name,
+  tree_evaluator::push_echo_state (int type, const std::string& file_name,
                                    size_t pos)
   {
-    push_echo_state_cleanup (frame);
+    unwind_protect *frame = m_call_stack.curr_fcn_unwind_protect_frame ();
 
-    set_echo_state (type, file_name, pos);
+    if (frame)
+      {
+        push_echo_state_cleanup (*frame);
+
+        set_echo_state (type, file_name, pos);
+      }
   }
 
   void

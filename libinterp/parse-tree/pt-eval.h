@@ -211,8 +211,7 @@ namespace octave
 
     octave_value_list
     execute_user_function (octave_user_function& user_function,
-                           int nargout, const octave_value_list& args,
-                           const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
+                           int nargout, const octave_value_list& args);
 
     void visit_octave_user_function_header (octave_user_function&);
 
@@ -377,11 +376,9 @@ namespace octave
     void push_stack_frame (const symbol_scope& scope);
 
     void push_stack_frame (octave_user_function *fcn,
-                           unwind_protect *up_frame,
                            const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
 
-    void push_stack_frame (octave_user_script *script,
-                           unwind_protect *up_frame);
+    void push_stack_frame (octave_user_script *script);
 
     void push_stack_frame (octave_function *fcn);
 
@@ -413,7 +410,7 @@ namespace octave
 
     octave_user_code * current_user_code (void) const;
 
-    unwind_protect * curr_fcn_unwind_protect_frame (void) const;
+    unwind_protect * curr_fcn_unwind_protect_frame (void);
 
     // Current function that we are debugging.
     octave_user_code * debug_user_code (void) const;
@@ -706,8 +703,8 @@ namespace octave
 
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
-    void push_echo_state (unwind_protect& frame, int type,
-                          const std::string& file_name, size_t pos = 1);
+    void push_echo_state (int type, const std::string& file_name,
+                          size_t pos = 1);
 
   private:
 

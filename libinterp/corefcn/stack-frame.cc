@@ -177,14 +177,17 @@ namespace octave
     script_stack_frame (void) = delete;
 
     script_stack_frame (tree_evaluator& tw, octave_user_script *script,
-                        unwind_protect *up_frame, size_t index,
+                        size_t index,
                         const std::shared_ptr<stack_frame>& static_link);
 
     script_stack_frame (const script_stack_frame& elt) = default;
 
     script_stack_frame& operator = (const script_stack_frame& elt) = delete;
 
-    ~script_stack_frame (void) = default;
+    ~script_stack_frame (void)
+    {
+      delete m_unwind_protect_frame;
+    }
 
     script_stack_frame * dup (void) const;
 
@@ -206,8 +209,7 @@ namespace octave
 
     octave_function * function (void) const { return m_script; }
 
-    unwind_protect *
-    unwind_protect_frame (void) const { return m_unwind_protect_frame; }
+    unwind_protect * unwind_protect_frame (void);
 
     symbol_record lookup_symbol (const std::string& name) const;
 
@@ -394,14 +396,14 @@ namespace octave
     user_fcn_stack_frame (void) = delete;
 
     user_fcn_stack_frame (tree_evaluator& tw, octave_user_function *fcn,
-                          unwind_protect *up_frame, size_t index,
+                          size_t index,
                           const std::shared_ptr<stack_frame>& static_link,
                           const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ())
       : base_value_stack_frame (tw, get_num_symbols (fcn), index, static_link,
                                 (access_link
                                  ? access_link
                                  : get_access_link (fcn, static_link))),
-        m_fcn (fcn), m_unwind_protect_frame (up_frame)
+        m_fcn (fcn), m_unwind_protect_frame (nullptr)
     { }
 
     user_fcn_stack_frame (const user_fcn_stack_frame& elt) = default;
@@ -409,7 +411,10 @@ namespace octave
     user_fcn_stack_frame&
     operator = (const user_fcn_stack_frame& elt) = delete;
 
-    ~user_fcn_stack_frame (void) = default;
+    ~user_fcn_stack_frame (void)
+    {
+      delete m_unwind_protect_frame;
+    }
 
     user_fcn_stack_frame * dup (void) const;
 
@@ -432,8 +437,7 @@ namespace octave
 
     octave_function * function (void) const { return m_fcn; }
 
-    unwind_protect *
-    unwind_protect_frame (void) const { return m_unwind_protect_frame; }
+    unwind_protect * unwind_protect_frame (void);
 
     symbol_record lookup_symbol (const std::string& name) const;
 
@@ -1021,20 +1025,18 @@ namespace octave
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
                                      octave_user_script *script,
-                                     unwind_protect *up_frame, size_t index,
+                                     size_t index,
                                      const std::shared_ptr<stack_frame>& static_link)
   {
-    return new script_stack_frame (tw, script, up_frame, index, static_link);
+    return new script_stack_frame (tw, script, index, static_link);
   }
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
-                                     octave_user_function *fcn,
-                                     unwind_protect *up_frame, size_t index,
+                                     octave_user_function *fcn, size_t index,
                                      const std::shared_ptr<stack_frame>& static_link,
                                      const std::shared_ptr<stack_frame>& access_link)
   {
-    return new user_fcn_stack_frame (tw, fcn, up_frame, index, static_link,
-                                     access_link);
+    return new user_fcn_stack_frame (tw, fcn, index, static_link, access_link);
   }
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
@@ -1430,11 +1432,10 @@ namespace octave
 
   script_stack_frame::script_stack_frame (tree_evaluator& tw,
                                           octave_user_script *script,
-                                          unwind_protect *up_frame,
                                           size_t index,
                                           const std::shared_ptr<stack_frame>& static_link)
     : stack_frame (tw, index, static_link, get_access_link (static_link)),
-      m_script (script), m_unwind_protect_frame (up_frame),
+      m_script (script), m_unwind_protect_frame (nullptr),
       m_lexical_frame_offsets (get_num_symbols (script), 1),
       m_value_offsets (get_num_symbols (script), 0)
   {
@@ -1600,6 +1601,14 @@ namespace octave
       }
 
     return alink;
+  }
+
+  unwind_protect * script_stack_frame::unwind_protect_frame (void)
+  {
+    if (! m_unwind_protect_frame)
+      m_unwind_protect_frame = new unwind_protect ();
+
+    return m_unwind_protect_frame;
   }
 
   symbol_record script_stack_frame::lookup_symbol (const std::string& name) const
@@ -2116,6 +2125,14 @@ namespace octave
               }
           }
       }
+  }
+
+  unwind_protect * user_fcn_stack_frame::unwind_protect_frame (void)
+  {
+    if (! m_unwind_protect_frame)
+      m_unwind_protect_frame = new unwind_protect ();
+
+    return m_unwind_protect_frame;
   }
 
   symbol_record user_fcn_stack_frame::lookup_symbol (const std::string& name) const

@@ -2065,14 +2065,19 @@ public:
 
   ~octave_inline_fcn (void) = default;
 
-  // We don't need to override both forms of the call method.  The using
-  // declaration will avoid warnings about partially-overloaded virtual
-  // functions.
-  using octave_function::call;
+  // Override default call method because we ultimately use feval to
+  // execute the inline function and that will push a stack frame.
 
   octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
-        const octave_value_list& args = octave_value_list ());
+        const octave_value_list& args = octave_value_list ())
+  {
+    return execute (tw, nargout, args);
+  }
+
+  octave_value_list
+  execute (octave::tree_evaluator& tw, int nargout = 0,
+           const octave_value_list& args = octave_value_list ());
 
 private:
 
@@ -2121,8 +2126,8 @@ private:
 };
 
 octave_value_list
-octave_inline_fcn::call (octave::tree_evaluator& tw, int nargout,
-                         const octave_value_list& args)
+octave_inline_fcn::execute (octave::tree_evaluator& tw, int nargout,
+                            const octave_value_list& args)
 {
   octave::interpreter& interp = tw.get_interpreter ();
 

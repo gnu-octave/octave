@@ -181,7 +181,7 @@ namespace octave
     return -1;
   }
 
-  unwind_protect * call_stack::curr_fcn_unwind_protect_frame (void) const
+  unwind_protect * call_stack::curr_fcn_unwind_protect_frame (void)
   {
     // Start at current frame.
 
@@ -382,7 +382,7 @@ namespace octave
     m_cs.push_back (new_frame);
   }
 
-  void call_stack::push (octave_user_function *fcn, unwind_protect *up_frame,
+  void call_stack::push (octave_user_function *fcn,
                          const std::shared_ptr<stack_frame>& closure_frames)
   {
     size_t prev_frame = m_curr_frame;
@@ -395,13 +395,13 @@ namespace octave
     std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, fcn, up_frame, m_curr_frame,
-                                      slink, closure_frames));
+      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame, slink,
+                                      closure_frames));
 
     m_cs.push_back (new_frame);
   }
 
-  void call_stack::push (octave_user_script *script, unwind_protect *up_frame)
+  void call_stack::push (octave_user_script *script)
   {
     size_t prev_frame = m_curr_frame;
     m_curr_frame = m_cs.size ();
@@ -413,8 +413,8 @@ namespace octave
     std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, script, up_frame,
-                                      m_curr_frame, slink));
+      new_frame (stack_frame::create (m_evaluator, script, m_curr_frame,
+                                      slink));
 
     m_cs.push_back (new_frame);
   }

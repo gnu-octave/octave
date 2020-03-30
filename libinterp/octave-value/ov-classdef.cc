@@ -410,8 +410,9 @@ bool octave_classdef_meta::is_classdef_constructor (const std::string& cname) co
 }
 
 octave_value_list
-octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
-                                      int nargout, const octave_value_list& idx)
+octave_classdef_superclass_ref::execute (octave::tree_evaluator& tw,
+                                         int nargout,
+                                         const octave_value_list& idx)
 {
   octave_value_list retval;
 

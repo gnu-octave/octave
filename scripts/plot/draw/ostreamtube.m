@@ -218,27 +218,34 @@ function h = plottube (hax, sl, div_sl, vv, max_vertices, rstart, num_circum)
   R = X1 - X0;
   RE = R / norm (R);
 
-  ## Initial radius
+  ## Guide point and its rotation to create a segment
+  KE = get_normal1 (RE);
+  K = rstart * KE;
+  XS0 = rotation (K, RE, cp, sp) + repmat (X0.', 1, num_circum);
+
+  ## End of first segment
   vold = vv(1);
   vact = vv(2);
   ract = rstart * exp (0.5 * div_sl(2) * norm (R) / vact) * sqrt (vold / vact);
   vold = vact;
   rold = ract;
-
-  ## Guide point and its rotation to create a segment
-  N = get_normal1 (R);
-  K = ract * N;
+  K = ract * KE;
   XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_circum);
 
-  px = zeros (num_circum, max_vertices - 1);
-  py = zeros (num_circum, max_vertices - 1);
-  pz = zeros (num_circum, max_vertices - 1);
-  pc = zeros (num_circum, max_vertices - 1);
+  px = zeros (num_circum, max_vertices);
+  py = zeros (num_circum, max_vertices);
+  pz = zeros (num_circum, max_vertices);
+  pc = zeros (num_circum, max_vertices);
 
-  px(:, 1) = XS(1, :).';
-  py(:, 1) = XS(2, :).';
-  pz(:, 1) = XS(3, :).';
-  pc(:, 1) = vact * ones (num_circum, 1);
+  px(:,1) = XS0(1,:).';
+  py(:,1) = XS0(2,:).';
+  pz(:,1) = XS0(3,:).';
+  pc(:,1) = vv(1) * ones (num_circum, 1);
+
+  px(:,2) = XS(1,:).';
+  py(:,2) = XS(2,:).';
+  pz(:,2) = XS(3,:).';
+  pc(:,2) = vv(2) * ones (num_circum, 1);
 
   for i = 3 : max_vertices
 
@@ -262,10 +269,10 @@ function h = plottube (hax, sl, div_sl, vv, max_vertices, rstart, num_circum)
     ## Rotate around RE and collect surface patches
     XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_circum);
 
-    px(:, i - 1) = XS(1, :).';
-    py(:, i - 1) = XS(2, :).';
-    pz(:, i - 1) = XS(3, :).';
-    pc(:, i - 1) = vact * ones (num_circum, 1);
+    px(:,i) = XS(1,:).';
+    py(:,i) = XS(2,:).';
+    pz(:,i) = XS(3,:).';
+    pc(:,i) = vv(i) * ones (num_circum, 1);
 
   endfor
 

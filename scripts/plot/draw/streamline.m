@@ -61,7 +61,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{stream2, stream3, streamtube, ostreamtube}
+## @seealso{stream2, stream3, streamribbon, streamtube, ostreamtube}
 ## @end deftypefn
 
 function h = streamline (varargin)

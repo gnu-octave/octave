@@ -1188,7 +1188,6 @@ function rlist = missing_functions ()
   "stopasync",
   "str2mat",
   "streamparticles",
-  "streamribbon",
   "streamslice",
   "string",
   "strings",

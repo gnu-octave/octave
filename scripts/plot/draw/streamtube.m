@@ -66,7 +66,7 @@
 ## The optional return value @var{h} is a graphics handle to the plot objects
 ## created for each tube.
 ##
-## @seealso{stream3, streamline, ostreamtube}
+## @seealso{stream3, streamline, streamribbon, ostreamtube}
 ## @end deftypefn
 
 function h = streamtube (varargin)

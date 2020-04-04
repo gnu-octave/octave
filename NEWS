@@ -104,6 +104,7 @@ property which is hidden now.
 * `memory`
 * `rng`
 * `startsWith`
+* `streamribbon`
 
 ### Deprecated functions and properties
 

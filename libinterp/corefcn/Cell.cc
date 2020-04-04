@@ -63,6 +63,23 @@ Cell::Cell (const string_vector& sv, bool trim)
     }
 }
 
+Cell::Cell (const std::list<std::string>& sl)
+  : Array<octave_value> ()
+{
+  octave_idx_type n = sl.size ();
+
+  if (n > 0)
+    {
+      resize (dim_vector (n, 1));
+
+      octave_value *dst = fortran_vec ();
+      auto p = sl.begin ();
+
+      for (octave_idx_type i = 0; i < n; i++)
+        dst[i] = *p++;
+    }
+}
+
 Cell::Cell (const Array<std::string>& sa)
   : Array<octave_value> (sa.dims ())
 {

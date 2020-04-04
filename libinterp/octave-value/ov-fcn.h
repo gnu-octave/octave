@@ -87,6 +87,11 @@ public:
   virtual octave::symbol_scope parent_fcn_scope (void) const
   { return octave::symbol_scope (); }
 
+  virtual std::list<std::string> parent_fcn_names (void) const
+  {
+    return std::list<std::string> ();
+  }
+
   virtual void mark_fcn_file_up_to_date (const octave::sys::time&) { }
 
   virtual octave::symbol_scope scope (void) { return octave::symbol_scope (); }

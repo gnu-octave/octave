@@ -273,6 +273,11 @@ public:
     return m_scope.parent_scope ();
   }
 
+  std::list<std::string> parent_fcn_names (void) const
+  {
+    return m_scope.parent_fcn_names ();
+  }
+
   void mark_as_system_fcn_file (void);
 
   bool is_system_fcn_file (void) const { return system_fcn_file; }

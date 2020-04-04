@@ -2141,7 +2141,6 @@ DEFUN (__inline_ctor__, args, ,
 Internal function.
 
 Implements final construction for inline objects.
-@seealso{inline}
 @end deftypefn */)
 {
   // Input validation has already been done in input.m.

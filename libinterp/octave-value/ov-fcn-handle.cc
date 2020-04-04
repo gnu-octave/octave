@@ -2016,7 +2016,7 @@ Return a function handle constructed from the string @var{fcn_name}.
 Previous versions of Octave accepted an optional second argument,
 @qcode{"global"}, that caused str2func to ignore locally visible
 functions.  This option is no longer supported.
-@seealso{func2str, inline, functions}
+@seealso{func2str, functions}
 @end deftypefn */)
 {
   int nargin = args.length ();

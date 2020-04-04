@@ -92,6 +92,43 @@ namespace octave
       return p->second;
   }
 
+  std::list<octave_value> symbol_scope_rep::localfunctions (void) const
+  {
+    std::list<octave_value> retval;
+
+    // Find the subfunctions of this function (which should be the
+    // primary parent function for this scope).
+
+    // 1) m_subfunction_names contains only valid subfunctions
+    // 2) m_subfunctions contains both nested functions and subfunctions
+
+    // loop over them.
+
+    for (const auto& nm : m_subfunction_names)
+      {
+        auto nm_fcn_iter = m_subfunctions.find (nm);
+
+        if (nm_fcn_iter != m_subfunctions.end ())
+          {
+            octave_value ov_fcn = nm_fcn_iter->second;
+            octave_user_code *fcn = ov_fcn.user_code_value ();
+
+            if (! fcn)
+              continue;
+
+            octave::symbol_scope scope = fcn->scope ();
+
+            std::list<std::string> plst = scope.parent_fcn_names ();
+
+            octave_fcn_handle *fh = new octave_fcn_handle (ov_fcn, nm, plst);
+
+            retval.push_back (octave_value (fh));
+          }
+      }
+
+    return retval;
+  }
+
   octave_value
   symbol_scope_rep::dump (void) const
   {
@@ -243,8 +280,14 @@ namespace octave
         m_is_static = true;
       }
 
+    std::list<std::string> plst = parent_fcn_names ();
+    plst.push_front (m_fcn_name);
+
     for (auto& scope_obj : m_children)
-      scope_obj.update_nest ();
+      {
+        scope_obj.cache_parent_fcn_names (plst);
+        scope_obj.update_nest ();
+      }
   }
 
   bool symbol_scope_rep::look_nonlocal (const std::string& name,
@@ -279,5 +322,22 @@ namespace octave
       }
 
     return false;
+  }
+
+  std::list<octave_value> symbol_scope::localfunctions (void) const
+  {
+    if (! m_rep)
+      return std::list<octave_value> ();
+
+    if (is_primary_fcn_scope ())
+      return m_rep->localfunctions ();
+
+    std::shared_ptr<symbol_scope_rep> ppsr
+      = m_rep->primary_parent_scope_rep ();
+
+    if (! ppsr)
+      return std::list<octave_value> ();
+
+    return ppsr->localfunctions ();
   }
 }

@@ -65,6 +65,11 @@ function configure_make (desc, packdir, verbose)
             "OCTAVE"; octave_binary};
     scenv = sprintf ("%s='%s' ", cenv{:});
 
+    if (verbose)
+      ## Add standard V=1 make argument for verbose build rules
+      scenv = [scenv, "V=1"];
+    endif
+
     ## Configure.
     if (exist (fullfile (src, "configure"), "file"))
       flags = "";

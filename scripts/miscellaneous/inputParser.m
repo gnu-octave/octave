@@ -531,15 +531,20 @@ classdef inputParser < handle
     endfunction
 
     function r = is_argname (this, type, name)
-      if (this.CaseSensitive)
-        r = isfield (this.(type), name);
-        this.last_name = name;
-      else
-        fnames = this.([type "Names"]);
-        l = strcmpi (name, fnames);
-        r = any (l(:));
-        if (r)
-          this.last_name = fnames{l};
+      r = ischar (name) && isrow (name);
+      if (r)
+        if (this.CaseSensitive)
+          r = isfield (this.(type), name);
+          if (r)
+            this.last_name = name;
+          endif
+        else
+          fnames = this.([type "Names"]);
+          l = strcmpi (name, fnames);
+          r = any (l(:));
+          if (r)
+            this.last_name = fnames{l};
+          endif
         endif
       endif
     endfunction
@@ -830,3 +835,12 @@ endclassdef
 %! p = inputParser;
 %! p.addParameter ("a", [], @ischar);
 %! p.parse ("a", 1);
+
+%!test <*58112>
+%! p = inputParser ();
+%! p.addRequired ("first");
+%! p.addOptional ("second", []);
+%! p.parse (1, {"test", 1, 2, 3});
+%! r = p.Results;
+%! assert (r.first, 1);
+%! assert (r.second, {"test", 1, 2, 3});

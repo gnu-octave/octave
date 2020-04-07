@@ -777,7 +777,8 @@ function rgbout = print (varargin)
     endif
 
     ## Avoid a redraw since the figure should not have changed
-    set (gcf, "__modified__", "off");
+    ## FIXME: Bug #57552, marker sizes, requires that redraw be done.
+    ##set (gcf, "__modified__", "off");
 
     ## Unlink temporary files
     for n = 1:numel (opts.unlink)

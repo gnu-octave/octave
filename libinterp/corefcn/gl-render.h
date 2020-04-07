@@ -183,6 +183,8 @@ namespace octave
 
     void set_normal (int bfl_mode, const NDArray& n, int j, int i);
 
+    double points_to_pixels (const double val) const;
+
     unsigned int make_marker_list (const std::string& m, double size,
                                    bool filled) const;
 
@@ -239,6 +241,9 @@ namespace octave
 
     // Indicate we are drawing for selection purpose
     bool selecting;
+
+    // Indicate we are drawing for printing purpose
+    bool m_printing;
 
   private:
     class patch_tessellator;

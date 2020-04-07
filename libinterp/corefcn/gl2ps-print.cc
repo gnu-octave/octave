@@ -189,15 +189,7 @@ namespace octave
 
     void init_marker (const std::string& m, double size, float width)
     {
-      // FIXME: Undo scaling that will take place in opengl_renderer::make_marker_list
-      gh_manager& gh_mgr
-        = __get_gh_manager__ ("gl2ps_renderer::init_marker");
-      // FIXME: Should this be static?  What happens if window is moved to a second
-      //        monitor with a different screenpixelsperinch?
-      const static double rescale
-        = 72.0 / gh_mgr.get_object (0).get ("screenpixelsperinch").double_value ();
-
-      opengl_renderer::init_marker (m, size * rescale, width);
+      opengl_renderer::init_marker (m, size, width);
 
       // FIXME: gl2ps can't handle closed contours so we set linecap/linejoin
       //        round to obtain a better looking result for some markers.

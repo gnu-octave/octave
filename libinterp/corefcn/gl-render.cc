@@ -687,10 +687,10 @@ namespace octave
 
   opengl_renderer::opengl_renderer (opengl_functions& glfcns)
     : m_glfcns (glfcns), xmin (), xmax (), ymin (), ymax (), zmin (), zmax (),
-      m_devpixratio (1.), xform (), toolkit (), xZ1 (), xZ2 (), marker_id (),
+      m_devpixratio (1.0), xform (), toolkit (), xZ1 (), xZ2 (), marker_id (),
       filled_marker_id (), camera_pos (), camera_dir (), view_vector (),
       interpreter ("none"), txt_renderer (), m_current_light (0),
-      m_max_lights (0), selecting (false)
+      m_max_lights (0), selecting (false), m_printing (false)
   {
     // This constructor will fail if we don't have OpenGL or if the data
     // types we assumed in our public interface aren't compatible with the
@@ -776,6 +776,8 @@ namespace octave
   void
   opengl_renderer::draw_figure (const figure::properties& props)
   {
+    m_printing = props.is___printing__ ();
+
     // Initialize OpenGL context
     init_gl_context (props.is_graphicssmoothing (), props.get_color_rgb ());
 
@@ -4088,19 +4090,8 @@ namespace octave
   opengl_renderer::set_linewidth (float w)
   {
 #if defined (HAVE_OPENGL)
-    gh_manager& gh_mgr = __get_gh_manager__ ("opengl_renderer::set_linewidth");
-
-    // FIXME: See bug #53056 (measure LineWidth in points).
-    //        pts2pix and m_devpixratio should eventually be combined in to a
-    //        a single conversion factor so that only one multiplication per
-    //        function call is required.
-    // FIXME: Should this be static?  What happens if window is moved to a second
-    //        monitor with a different screenpixelsperinch?
-    const static double pts2pix
-      = (gh_mgr.get_object (0).get ("screenpixelsperinch").double_value ()
-         / 72.0);
-
-    m_glfcns.glLineWidth (w * pts2pix * m_devpixratio);
+    // Measure LineWidth in points.  See bug #53056.
+    m_glfcns.glLineWidth (points_to_pixels (w) * m_devpixratio);
 
 #else
 
@@ -4119,13 +4110,8 @@ namespace octave
                                   double linewidth)
   {
 #if defined (HAVE_OPENGL)
-    gh_manager& gh_mgr = __get_gh_manager__ ("opengl_renderer::set_linestyle");
-
-    // FIXME: See bug #53056 (measure LineWidth in points).
-    const static double pts2pix
-      = (gh_mgr.get_object (0).get ("screenpixelsperinch").double_value ()
-         / 72.0);
-    int factor = math::round (linewidth * pts2pix * m_devpixratio);
+    // Measure LineWidth in points.  See bug #53056.
+    int factor = math::round (points_to_pixels (linewidth) * m_devpixratio);
     if (factor < 1)
       factor = 1;
 
@@ -4453,6 +4439,24 @@ namespace octave
 #endif
   }
 
+  double
+  opengl_renderer::points_to_pixels (const double val) const
+  {
+    gh_manager& gh_mgr = __get_gh_manager__ ("opengl_renderer::points_to_pixels");
+
+    // FIXME: Does making this static cause problems if figure is moved to a
+    //        2nd monitor with a different value for "screenpixelsperinch"?
+    static const double pix_per_pts =
+      gh_mgr.get_object (0).get ("screenpixelsperinch").double_value () / 72.0;
+
+    double retval = val;
+
+    if (! m_printing)
+      retval *= pix_per_pts;
+
+    return retval;
+  }
+
   unsigned int
   opengl_renderer::make_marker_list (const std::string& marker, double size,
                                      bool filled) const
@@ -4464,19 +4468,10 @@ namespace octave
     if (filled && (c == '+' || c == 'x' || c == '*' || c == '.'))
       return 0;
 
-    gh_manager& gh_mgr
-      = __get_gh_manager__ ("opengl_renderer::make_marker_list");
-
     unsigned int ID = m_glfcns.glGenLists (1);
 
     // FIXME: See bug #53056 (measure LineWidth in points).
-    // FIXME: Should this be static?  What happens if window is moved to a second
-    //        monitor with a different screenpixelsperinch?
-    const static double pts2pix
-      = (gh_mgr.get_object (0).get ("screenpixelsperinch").double_value ()
-         / 72.0);
-
-    double sz = size * pts2pix;
+    double sz = points_to_pixels (size);
 
     // constants for the * marker
     const double sqrt2d4 = 0.35355339059327;

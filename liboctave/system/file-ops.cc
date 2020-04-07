@@ -718,12 +718,12 @@ namespace octave
       if (retval.empty ())
         {
           // For UNC paths, take the input as is.
-          // Also translate forward slashes.
-          retval = name;
-          std::replace (retval.begin (), retval.end (), '/', '\\');
-          if (retval.compare (0, 2, "\\\\") == 0)
+          // Also translate forward slashes to backslashes.
+          std::string name_backsl = name;
+          std::replace (name_backsl.begin (), name_backsl.end (), '/', '\\');
+          if (name_backsl.compare (0, 2, "\\\\") == 0)
             {
-              w_tmp = u8_to_wstring (retval);
+              w_tmp = u8_to_wstring (name_backsl);
               strip_marker = false;
               wchar_t canon_path[MAX_PATH];
               if (PathCanonicalizeW (canon_path, w_tmp.c_str ()))

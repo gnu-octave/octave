@@ -80,6 +80,20 @@ namespace octave
     return retval;
   }
 
+  bool octave_lvalue::index_is_colon (void) const
+  {
+    bool retval = false;
+
+    if (m_idx.size () == 1)
+      {
+        octave_value_list tmp = m_idx.front ();
+
+        retval = (tmp.length () == 1 && tmp(0).is_magic_colon ());
+      }
+
+    return retval;
+  }
+
   void octave_lvalue::do_unary_op (octave_value::unary_op op)
   {
     if (! is_black_hole ())

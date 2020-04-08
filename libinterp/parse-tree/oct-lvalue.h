@@ -77,6 +77,8 @@ namespace octave
 
     bool index_is_empty (void) const;
 
+    bool index_is_colon (void) const;
+
     void do_unary_op (octave_value::unary_op op);
 
     octave_value value (void) const;

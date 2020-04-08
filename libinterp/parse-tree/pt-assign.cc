@@ -226,14 +226,24 @@ namespace octave
                 //
                 //   [varargout{1:nargout}] = fcn (args);
                 //
+                // or
+                //
+                //   varargout = cell (1, nargout);
+                //   [varargout{1:nargout}] = fcn (args);
+                //
+                // or
+                //
+                //   varargout = cell (1, nargout);
+                //   [varargout{:}] = fcn (args);
+                //
                 // Will work the same as calling fcn directly when nargout
                 // is 0 and fcn produces more than one output even when
-                // nargout is 0.  This only works if varargout has not yet
-                // been defined.  See also bug #43813.
+                // nargout is 0.  See also bug #43813.
 
                 if (lvalue_list.size () == 1 && nel == 0 && n > 0
-                    && ! ult.is_black_hole () && ult.is_undefined ()
-                    && ult.index_type () == "{" && ult.index_is_empty ())
+                    && ! ult.is_black_hole () && ult.index_type () == "{"
+                    && (ult.index_is_empty ()
+                        || (ult.is_defined () && ult.index_is_colon ())))
                   {
                     // Convert undefined lvalue with empty index to a cell
                     // array with a single value and indexed by 1 to

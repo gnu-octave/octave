@@ -124,6 +124,36 @@
 %! [s, t, u, v] = f (1, 2, 3);
 %! assert ([s t u v], [1 2 3 4]);
 
+## Wrapper functions
+%!function [x, y, z] = f (varargin)
+%!  assert (nargin, 0);
+%!  assert (nargout, 0);
+%!  x = 3;
+%!  y = 2;
+%!  z = 1;
+%!endfunction
+%!function varargout = wrapper_1 (varargin)
+%!  assert (nargout, 0);
+%!  [varargout{1:nargout}] = f ();
+%!endfunction
+%!function varargout = wrapper_2 (varargin)
+%!  assert (nargout, 0);
+%!  varargout = cell (1, nargout);
+%!  [varargout{1:nargout}] = f ();
+%!endfunction
+%!function varargout = wrapper_3 (varargin)
+%!  assert (nargout, 0);
+%!  varargout = cell (1, nargout);
+%!  [varargout{:}] = f ();
+%!endfunction
+%!test
+%! wrapper_1 ();
+%! assert (ans, 3);
+%! wrapper_2 ();
+%! assert (ans, 3);
+%! wrapper_3 ();
+%! assert (ans, 3);
+
 ## Test default arguments
 ## numeric
 %!function f (x = 0)

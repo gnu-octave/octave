@@ -792,9 +792,8 @@ returns -1 for all anonymous functions.
       if (func.is_function_handle ())
         {
           octave_fcn_handle *fh = func.fcn_handle_value ();
-          std::string fh_nm = fh->fcn_name ();
 
-          if (fh_nm == octave_fcn_handle::anonymous)
+          if (fh->is_anonymous ())
             return ovl (-1);
         }
 

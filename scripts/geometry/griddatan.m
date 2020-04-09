@@ -89,8 +89,15 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
       yi(valid) = sum (y(tri(tri_list,:)) .* bary_list, 2);
     endif
 
+  elseif (any (strcmp (method, {"cubic", "v4"})))
+    error ('griddata: "%s" METHOD only valid for 2-D inputs using "griddata"', method);
+
+  elseif (strcmp (method, "natural"))
+    ## FIXME: implement missing interpolation method 'natural' for 3-D inputs.
+    error ('griddatan: "natural" interpolation METHOD not yet implemented');
+
   else
-    error ("griddatan: unknown interpolation METHOD");
+    error ('griddatan: unknown interpolation METHOD: "%s"', method);
   endif
 
 endfunction
@@ -121,3 +128,16 @@ endfunction
 %! y = [ 1; 2; 3; 4 ];
 %! xi = [ .5, .5 ];
 %! yi = griddatan (x, y, xi);
+
+## Test input validation
+%!error griddatan ()
+%!error griddatan (1)
+%!error griddatan (1,2)
+%!error griddatan (1,2,3)
+%!error <OPTIONS argument must be a string> griddatan (1,2,3,4,5)
+%!error <unknown interpolation METHOD> griddatan (1,2,3,4)
+%!#error <"v4" METHOD only valid for 2-D inputs>
+%! griddatan (ones(2,2,2), 2*ones(2,2,2), 3, "v4")
+%!error <"cubic" METHOD only valid for> griddatan (1, 2, 3, "cubic")
+%!error <"natural" .* not yet implemented> griddatan (1, 2, 3, "natural")
+%!error <unknown interpolation METHOD: "foobar"> griddatan (1, 2, 3, "foobar")

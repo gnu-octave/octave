@@ -46,8 +46,9 @@
 ## are specified by @var{xi}, @var{yi}, @var{zi}.
 ##
 ## For both 2-D and 3-D cases, the interpolation method can be
-## @qcode{"nearest"} or @qcode{"linear"}.  If method is omitted it defaults
-## to @qcode{"linear"}.
+## @qcode{"linear"} or @qcode{"nearest"}.  For 2-D cases only, the @qcode{"v4"}
+## method is also available which implements a biharmonic spline interpolation.
+## If method is omitted it defaults to @qcode{"linear"}.
 ##
 ## For 3-D interpolation, the optional argument @var{options} is passed
 ## directly to Qhull when computing the Delaunay triangulation used for
@@ -122,15 +123,9 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
     tri = delaunay (x, y);
     zi = NaN (size (xi));
 
-    if (any (strcmp (method, {"cubic", "natural", "v4"})))
+    if (any (strcmp (method, {"cubic", "natural"})))
       ## FIXME: implement missing interpolation methods.
       error ('griddata: "%s" interpolation not yet implemented', method);
-
-    elseif (strcmp (method, "nearest"))
-      ## Search index of nearest point.
-      idx = dsearch (x, y, tri, xi, yi);
-      valid = ! isnan (idx);
-      zi(valid) = z(idx(valid));
 
     elseif (strcmp (method, "linear"))
       ## Search for every point the enclosing triangle.
@@ -166,6 +161,59 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
 
       ## Calculate zi by solving plane equation for xi, yi.
       zi(valid) = -(N(:,1).*xi(:)(valid) + N(:,2).*yi(:)(valid) + D) ./ N(:,3);
+
+    elseif (strcmp (method, "nearest"))
+      ## Search index of nearest point.
+      idx = dsearch (x, y, tri, xi, yi);
+      valid = ! isnan (idx);
+      zi(valid) = z(idx(valid));
+
+    elseif (strcmp (method, "v4"))
+      ## Use Biharmonic Spline Interpolation Green's Function method.
+      ## Compatible with Matlab v4 interpolation method, based on
+      ## D. Sandwell 1987 and Deng & Tang 2011.
+
+      ## The free space Green Function which solves the two dimensional
+      ## Biharmonic PDE
+      ##
+      ## Delta(Delta(G(X))) = delta(X)
+      ##
+      ## for a point source yields
+      ##
+      ## G(X) = |X|^2 * (ln|X|-1) / (8 * pi)
+      ##
+      ## A N-point Biharmonic Interpolation at the point X is given by
+      ##
+      ## z(X) = sum_j_N (alpha_j * G(X-Xj))
+      ##      = sum_j_N (alpha_j * G(rj))
+      ##
+      ## in which the coefficients alpha_j are the unknowns.  rj is the
+      ## Euclidian distance between X and Xj.
+      ## From N datapoints {zi, Xi} an equation system can be formed:
+      ##
+      ## zi(Xi) = sum_j_N (alpha_j * G(Xi-Xj))
+      ##        = sum_j_N (alpha_j * G(rij))
+      ##
+      ## Its inverse yields the unknowns alpha_j.
+
+      ## Step1: Solve for weight coefficients alpha_j depending on the
+      ## Euclidian distances and the training data set {x,y,z}
+      r = sqrt ((x - x.').^2 + (y - y.').^2); # size N^2
+      D = (r.^2) .* (log (r) - 1);
+      D(isnan (D)) = 0;  # Fix Green Function for r=0
+      alpha_j = D \ z;
+
+      ## Step2 - Use alphas and Green's functions to get interpolated points.
+      ## Use dim3 projection for vectorized calculation to avoid loops.  Memory
+      ## usage is proportional to Ni x N.
+      ## FIXME: if this approach is too memory intensive, revert portion to loop
+      x = permute (x, [3, 2, 1]);
+      y = permute (y, [3, 2, 1]);
+      alpha_j = permute (alpha_j, [3, 2, 1]);
+      r_i = sqrt ((xi - x).^2 + (yi - y).^2);  # size Ni x N
+      Di = (r_i.^2) .* (log (r_i) - 1);
+      Di(isnan (Di)) = 0;  # Fix Green's Function for r==0
+      zi = sum (Di .* alpha_j, 3);
 
     else
       error ('griddata: unknown interpolation METHOD: "%s"', method);
@@ -220,7 +268,7 @@ endfunction
 %!         'method = "nearest neighbor"'});
 
 %!testif HAVE_QHULL
-%! [xx,yy] = meshgrid (linspace (-1, 1, 32));
+%! [xx, yy] = meshgrid (linspace (-1, 1, 32));
 %! x = xx(:);
 %! x = x + 10*(2*round (rand (size (x))) - 1) * eps;
 %! y = yy(:);
@@ -228,6 +276,30 @@ endfunction
 %! z = sin (2*(x.^2 + y.^2));
 %! zz = griddata (x,y,z,xx,yy, "linear");
 %! zz2 = sin (2*(xx.^2 + yy.^2));
+%! zz2(isnan (zz)) = NaN;
+%! assert (zz, zz2, 100*eps);
+
+%!testif HAVE_QHULL
+%! [xx, yy] = meshgrid (linspace (-1, 1, 5));
+%! x = xx(:);
+%! x = x + 10*(2*round (rand (size (x))) - 1) * eps;
+%! y = yy(:);
+%! y = y + 10*(2*round (rand (size (y))) - 1) * eps;
+%! z = 2*(x.^2 + y.^2);
+%! zz = griddata (x,y,z,xx,yy, "v4");
+%! zz2 = 2*(xx.^2 + yy.^2);
+%! zz2(isnan (zz)) = NaN;
+%! assert (zz, zz2, 100*eps);
+
+%!testif HAVE_QHULL
+%! [xx, yy] = meshgrid (linspace (-1, 1, 5));
+%! x = xx(:);
+%! x = x + 10*(2*round (rand (size (x))) - 1) * eps;
+%! y = yy(:);
+%! y = y + 10*(2*round (rand (size (y))) - 1) * eps;
+%! z = 2*(x.^2 + y.^2);
+%! zz = griddata (x,y,z,xx,yy, "nearest");
+%! zz2 = 2*(xx.^2 + yy.^2);
 %! zz2(isnan (zz)) = NaN;
 %! assert (zz, zz2, 100*eps);
 
@@ -248,5 +320,4 @@ endfunction
 %!error <XI and YI .* matrices of same size> griddata (1:3, 1:3, 1:3, 1:3, 1:4)
 %!error <"cubic" .* not yet implemented> griddata (1,2,3,4,5, "cubic")
 %!error <"natural" .* not yet implemented> griddata (1,2,3,4,5, "natural")
-%!error <"v4" .* not yet implemented> griddata (1,2,3,4,5, "v4")
 %!error <unknown interpolation METHOD: "foobar"> griddata (1,2,3,4,5, "foobar")

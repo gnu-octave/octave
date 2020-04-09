@@ -41,8 +41,9 @@ functional form---parentheses and '=' for assignment of return values.
 
 ### Matlab compatibility
 
-- The function `griddata` now accepts 3-D inputs by passing data
-directly to `griddata3`.
+- The function `griddata` now implements the "v4" Biharmonic Spline
+Interpolation method.  In adddition, the function now accepts 3-D inputs
+by passing the data to `griddata3`.
 
 - Coordinate transformation functions `cart2sph`, `sph2cart`,
 `cart2pol`, and `pol2cart` can now accept either row or column vectors

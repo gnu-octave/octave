@@ -85,7 +85,7 @@ function configure_make (desc, packdir, verbose)
       if (isempty (getenv ("RANLIB")))
         flags = [flags ' RANLIB="' mkoctfile("-p", "RANLIB") '"'];
       endif
-      cmd = ["cd '" src "'; " scenv "./configure " flags];
+      cmd = ["cd '" src "'; " scenv " ./configure " flags];
       [status, output] = shell (cmd, verbose);
       if (status != 0)
         sts = rmdir (desc.dir, "s");

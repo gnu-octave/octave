@@ -736,14 +736,25 @@ namespace octave
       if (! w_tmp.empty ())
         {
           // Get a more canonical name wrt case and full names
-          wchar_t w_long[32767] = L"";
-          int w_len = GetLongPathNameW (w_tmp.c_str (), w_long, 32767);
+          // FIXME: To make this work on partitions that don't store short file
+          // names, use FindFirstFileW on each component of the path.
+          // Insufficient access permissions on parent folders might make this
+          // tricky.
+
+          // Parts of the path that wouldn't fit into a short 8.3 file name are
+          // copied as is by GetLongPathNameW.  To also get the correct case
+          // for these parts, first convert to short file names and than back
+          // to long.
+          wchar_t buffer[32767] = L"";
+          int w_len = GetShortPathNameW (w_tmp.c_str (), buffer, 32767);
+          w_len = GetLongPathNameW (buffer, buffer, 32767);
 
           if (! strip_marker)
-            retval = u8_from_wstring (std::wstring (w_long, w_len));
+            retval = u8_from_wstring (std::wstring (buffer, w_len));
           else if (w_len > 4)
-            retval = u8_from_wstring (std::wstring (w_long+4, w_len-4));
+            retval = u8_from_wstring (std::wstring (buffer+4, w_len-4));
 
+          // If root is a drive, use an upper case letter for the drive letter.
           if (retval.length () > 1 && retval[1] == ':')
             retval[0] = toupper (retval[0]);
         }

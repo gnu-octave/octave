@@ -890,8 +890,16 @@ function cmd = epstool (opts, filein, fileout)
       cmd = "";
     endif
     if (! isempty (cmd))
-      cmd = sprintf ("%s --quiet %s %s %s ", opts.epstool_binary,
-                     cmd, filein, fileout);
+      if (dos_shell)
+        ## ghostscript expects double, not single, quotes
+        fileout(fileout == "'") = '"';
+        ## epstool implicitly uses ghostscript and it needs the command name
+        cmd = sprintf ("%s --gs %s --quiet %s %s %s ", opts.epstool_binary,
+                       opts.ghostscript.binary, cmd, filein, fileout);
+      else
+        cmd = sprintf ("%s --quiet %s %s %s ", opts.epstool_binary,
+                       cmd, filein, fileout);
+      endif
     endif
     if (pipein)
       if (dos_shell)

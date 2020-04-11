@@ -398,8 +398,8 @@ namespace octave
               retval->generic.finalizer = ft_face_destroyed;
 
               // Insert loaded font into the cache.
-
-              cache[key] = retval;
+              if (FT_Reference_Face (retval) == 0)
+                cache[key] = retval;
             }
 #endif
         }
@@ -416,6 +416,7 @@ namespace octave
           cache.erase (*pkey);
           delete pkey;
           face->generic.data = nullptr;
+          FT_Done_Face (face);
         }
     }
 

@@ -28,18 +28,54 @@
 ## @deftypefnx {} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method})
 ## @deftypefnx {} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method}, @var{options})
 ##
-## Generate a regular mesh from irregular data using interpolation.
+## Interpolate irregular source data @var{x}, @var{y} at points specified by
+## @var{xi}.
 ##
-## The function is defined by @code{@var{y} = f (@var{x})}.
-## The interpolation points are all @var{xi}.
+## The input @var{x} is an MxN matrix representing M points in an N-dimensional
+## space.  The input @var{y} is a single-valued column vector (Mx1)
+## representing a function evaluated at the points @var{x}, i.e.,
+## @code{@var{y} = fcn (@var{x})}.  The input @var{xi} is a list of points
+## for which the function output @var{yi} should be approximated through
+## interpolation.  @var{xi} must have the same number of columns (@var{N})
+## as @var{x} so that the dimensionality matches.
 ##
-## The interpolation method can be @qcode{"nearest"} or @qcode{"linear"}.
-## If method is omitted it defaults to @qcode{"linear"}.
+## The optional input interpolation @var{method} can be @qcode{"nearest"} or
+## @qcode{"linear"}.  When the method is @qcode{"nearest"}, the output @var{yi}
+## will be the closest point in the original data @var{x} to the query point
+## @var{xi}.  When the method is @qcode{"linear"}, the output @var{yi} will
+## be a linear interpolation between the two closest points in the original
+## source data.  If @var{method} is omitted or empty, it defaults to
+## @qcode{"linear"}.
 ##
 ## The optional argument @var{options} is passed directly to Qhull when
 ## computing the Delaunay triangulation used for interpolation.  See
 ## @code{delaunayn} for information on the defaults and how to pass different
 ## values.
+##
+## Example
+##
+## @example
+## @group
+## ## Evaluate sombrero() function at irregular data points
+## x = 16*gallery ("uniformdata", [200,1], 1) - 8;
+## y = 16*gallery ("uniformdata", [200,1], 11) - 8;
+## z = sin (sqrt (x.^2 + y.^2)) ./ sqrt (x.^2 + y.^2);
+## ## Create a regular grid and interpolate data
+## [xi, yi] = ndgrid (linspace (-8, 8, 50));
+## zi = griddatan ([x, y], z, [xi(:), yi(:)]);
+## zi = reshape (zi, size (xi));
+## ## Plot results
+## clf ();
+## plot3 (x, y, z, "or");
+## hold on
+## surf (xi, yi, zi);
+## legend ("Original Data", "Interpolated Data");
+## @end group
+## @end example
+##
+## Programming Notes: If the input is complex the real and imaginary parts
+## are interpolated separately.  For 2-D and 3-D data additional interpolation
+## methods are available by using the @code{griddata} function.
 ## @seealso{griddata, griddata3, delaunayn}
 ## @end deftypefn
 
@@ -49,15 +85,40 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
     print_usage ();
   endif
 
-  if (ischar (method))
-    method = tolower (method);
-  endif
-
   [m, n] = size (x);
   [mi, ni] = size (xi);
 
-  if (n != ni || rows (y) != m || columns (y) != 1)
-    error ("griddatan: dimensional mismatch");
+  if (m < n + 1)
+    error ("griddatan: number of points in X (rows of X) must be greater than dimensionality of data + 1 (columns of X + 1)");
+  endif
+  if (! iscolumn (y) || rows (y) != m)
+    error ("griddatan: Y must be a column vector with the same number of points (rows) as X");
+  endif
+  if (n != ni)
+    error ("griddatan: dimension of query data XI (columns) must match X");
+  endif
+
+  if (nargin > 3)
+    if (isempty (method))
+      method = "linear";
+    elseif (! ischar (method))
+      error ("griddatan: METHOD must be a string");
+    endif
+
+    method = tolower (method);
+    if (strcmp (method, "linear") || strcmp (method, "nearest"))
+      ## Do nothing, these are implemented methods
+    elseif (any (strcmp (method, {"cubic", "v4"})))
+      error ('griddatan: "%s" METHOD is available for 2-D inputs by using "griddata"', method);
+
+    elseif (strcmp (method, "natural"))
+      ## FIXME: Remove when griddata.m supports "natural" method.
+      error ('griddatan: "natural" interpolation METHOD not yet implemented');
+
+    else
+      error ('griddatan: unknown interpolation METHOD: "%s"', method);
+    endif
+
   endif
 
   ## triangulate data
@@ -65,13 +126,7 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
 
   yi = NaN (mi, 1);
 
-  if (strcmp (method, "nearest"))
-    ## search index of nearest point
-    idx = dsearchn (x, tri, xi);
-    valid = ! isnan (idx);
-    yi(valid) = y(idx(valid));
-
-  elseif (strcmp (method, "linear"))
+  if (strcmp (method, "linear"))
     ## search for every point the enclosing triangle
     [tri_list, bary_list] = tsearchn (x, tri, xi);
 
@@ -89,15 +144,12 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
       yi(valid) = sum (y(tri(tri_list,:)) .* bary_list, 2);
     endif
 
-  elseif (any (strcmp (method, {"cubic", "v4"})))
-    error ('griddata: "%s" METHOD only valid for 2-D inputs using "griddata"', method);
-
-  elseif (strcmp (method, "natural"))
-    ## FIXME: implement missing interpolation method 'natural' for 3-D inputs.
-    error ('griddatan: "natural" interpolation METHOD not yet implemented');
-
   else
-    error ('griddatan: unknown interpolation METHOD: "%s"', method);
+    ## search index of nearest point
+    idx = dsearchn (x, tri, xi);
+    valid = ! isnan (idx);
+    yi(valid) = y(idx(valid));
+
   endif
 
 endfunction
@@ -109,8 +161,8 @@ endfunction
 %! x = 2*rand (100,2) - 1;
 %! x = [x;1,1;1,-1;-1,-1;-1,1];
 %! y = sin (2 * sum (x.^2,2));
-%! zz = griddatan (x,y,xi,"linear");
-%! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2),"linear");
+%! zz = griddatan (x,y,xi, "linear");
+%! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2), "linear");
 %! assert (zz, zz2, 1e-10);
 
 %!testif HAVE_QHULL
@@ -119,8 +171,8 @@ endfunction
 %! x = 2*rand (100,2) - 1;
 %! x = [x;1,1;1,-1;-1,-1;-1,1];
 %! y = sin (2*sum (x.^2,2));
-%! zz = griddatan (x,y,xi,"nearest");
-%! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2),"nearest");
+%! zz = griddatan (x,y,xi, "nearest");
+%! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2), "nearest");
 %! assert (zz, zz2, 1e-10);
 
 %!testif HAVE_QHULL <*56515>
@@ -133,11 +185,12 @@ endfunction
 %!error griddatan ()
 %!error griddatan (1)
 %!error griddatan (1,2)
-%!error griddatan (1,2,3)
-%!error <OPTIONS argument must be a string> griddatan (1,2,3,4,5)
-%!error <unknown interpolation METHOD> griddatan (1,2,3,4)
-%!#error <"v4" METHOD only valid for 2-D inputs>
-%! griddatan (ones(2,2,2), 2*ones(2,2,2), 3, "v4")
-%!error <"cubic" METHOD only valid for> griddatan (1, 2, 3, "cubic")
-%!error <"natural" .* not yet implemented> griddatan (1, 2, 3, "natural")
-%!error <unknown interpolation METHOD: "foobar"> griddatan (1, 2, 3, "foobar")
+%!error <number of points in X> griddatan (1,2,3)
+%!error <Y must be a column vector> griddatan ([1;2],[3,4], 1)
+%!error <Y must .* same number of points .* as X> griddatan ([1;2],[3;4;5], 1)
+%!error <dimension of .* XI .* must match X> griddatan ([1;2],[3;4], [1, 2])
+%!error <METHOD must be a string> griddatan ([1;2],[3;4], 1, 5)
+%!error <"v4" METHOD is available for 2-D> griddatan ([1;2],[3;4], 1, "v4")
+%!error <"cubic" METHOD is available> griddatan ([1;2],[3;4], 1, "cubic")
+%!error <"natural" .* not yet implemented> griddatan ([1;2],[3;4], 1, "natural")
+%!error <unknown .* METHOD: "foobar"> griddatan ([1;2],[3;4], 1, "foobar")

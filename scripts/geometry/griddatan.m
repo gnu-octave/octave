@@ -108,12 +108,12 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
     method = tolower (method);
     if (strcmp (method, "linear") || strcmp (method, "nearest"))
       ## Do nothing, these are implemented methods
-    elseif (any (strcmp (method, {"cubic", "v4"})))
+    elseif (strcmp (method, "v4"))
       error ('griddatan: "%s" METHOD is available for 2-D inputs by using "griddata"', method);
 
-    elseif (strcmp (method, "natural"))
-      ## FIXME: Remove when griddata.m supports "natural" method.
-      error ('griddatan: "natural" interpolation METHOD not yet implemented');
+    elseif (any (strcmp (method, {"cubic", "natural"})))
+      ## FIXME: Remove when griddata.m supports these methods.
+      error ('griddatan: "%s" interpolation METHOD not yet implemented', method);
 
     else
       error ('griddatan: unknown interpolation METHOD: "%s"', method);
@@ -191,6 +191,6 @@ endfunction
 %!error <dimension of .* XI .* must match X> griddatan ([1;2],[3;4], [1, 2])
 %!error <METHOD must be a string> griddatan ([1;2],[3;4], 1, 5)
 %!error <"v4" METHOD is available for 2-D> griddatan ([1;2],[3;4], 1, "v4")
-%!error <"cubic" METHOD is available> griddatan ([1;2],[3;4], 1, "cubic")
+%!error <"cubic" .* not yet implemented> griddatan ([1;2],[3;4], 1, "cubic")
 %!error <"natural" .* not yet implemented> griddatan ([1;2],[3;4], 1, "natural")
 %!error <unknown .* METHOD: "foobar"> griddatan ([1;2],[3;4], 1, "foobar")

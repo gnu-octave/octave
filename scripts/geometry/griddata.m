@@ -31,34 +31,50 @@
 ## @deftypefnx {} {@var{vi} =} griddata (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi}, @var{method})
 ## @deftypefnx {} {@var{vi} =} griddata (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi}, @var{method}, @var{options})
 ##
-## Generate a regular mesh from irregular data using 2-D or 3-D interpolation.
+## Interpolate irregular 2-D and 3-D source data at specified points.
 ##
-## For 2-D interpolation, the function is defined by
-## @code{@var{z} = f (@var{x}, @var{y})}.  Inputs
-## @code{@var{x}, @var{y}, @var{z}} are vectors of the same length or
-## @code{@var{x}, @var{y}} are vectors and @code{@var{z}} is a matrix.
+## For 2-D interpolation, the inputs @var{x} and @var{y} define the points
+## where the function @code{@var{z} = f (@var{x}, @var{y})} is evaluated.
+## The inputs @var{x}, @var{y}, @var{z} are either vectors of the same length,
+## or the unequal vectors @var{x}, @var{y} are expanded to a 2-D grid with
+## @code{meshgrid} and @var{z} is a 2-D matrix matching the resulting size of
+## the X-Y grid.
 ##
-## The interpolation points are all @code{(@var{xi}, @var{yi})}.  If @var{xi},
-## @var{yi} are vectors then they are made into a 2-D mesh.
+## The interpolation points are (@var{xi}, @var{yi}).  If, and only if,
+## @var{xi} is a row vector and @var{yi} is a column vector, then
+## @code{meshgrid} will be used to create a mesh of interpolation points.
 ##
-## For 3-D interpolation, the function is defined by
-## @code{@var{v} = f (@var{x}, @var{y}, @var{z})}, and the interpolation points
-## are specified by @var{xi}, @var{yi}, @var{zi}.
+## For 3-D interpolation, the inputs @var{x}, @var{y}, and @var{z} define the
+## points where the function @code{@var{v} = f (@var{x}, @var{y}, @var{z})}
+## is evaluated.  The inputs @var{x}, @var{y}, @var{z} are either vectors of
+## the same length, or if they are of unequal length, then they are expanded to
+## a 3-D grid with @code{meshgrid}.  The size of the input @var{v} must match
+## the size of the original data, either as a vector or a matrix.
 ##
-## For both 2-D and 3-D cases, the interpolation method can be
-## @qcode{"linear"} or @qcode{"nearest"}.  For 2-D cases only, the @qcode{"v4"}
-## method is also available which implements a biharmonic spline interpolation.
-## If method is omitted it defaults to @qcode{"linear"}.
+## The optional input interpolation @var{method} can be @qcode{"nearest"},
+## @qcode{"linear"}, or for 2-D data @qcode{"v4"}.  When the method is
+## @qcode{"nearest"}, the output @var{vi} will be the closest point in the
+## original data (@var{x}, @var{y}, @var{z}) to the query point (@var{xi},
+## @var{yi}, @var{zi}).  When the method is @qcode{"linear"}, the output
+## @var{vi} will be a linear interpolation between the two closest points in
+## the original source data in each dimension.  For 2-D cases only, the
+## @qcode{"v4"} method is also available which implements a biharmonic spline
+## interpolation.  If @var{method} is omitted or empty, it defaults to
+## @qcode{"linear"}.
 ##
 ## For 3-D interpolation, the optional argument @var{options} is passed
 ## directly to Qhull when computing the Delaunay triangulation used for
 ## interpolation.  See @code{delaunayn} for information on the defaults and
 ## how to pass different values.
+##
+## Programming Notes: If the input is complex the real and imaginary parts
+## are interpolated separately.  Interpolation is normally based on a
+## Delaunay triangulation.  Any query values outside the convex hull of the
+## input points will return @code{NaN}.  However, the @qcode{"v4"} method does
+## not use the triangulation and will return values outside the original data
+## (extrapolation).
 ## @seealso{griddata3, griddatan, delaunay}
 ## @end deftypefn
-
-## Algorithm: xi and yi are not "meshgridded" if both are vectors
-##            of the same size (for compatibility)
 
 function [rx, ry, rz] = griddata (x, y, z, varargin)
 
@@ -71,7 +87,7 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
     ## options are passed to the 2D algorithm. 3D algorithm requires nargin >=7
 
     if (nargout > 1)
-      error ("griddata: only one output argument valid for 3D interpolation");
+      error ("griddata: only one output argument valid for 3-D interpolation");
     endif
     rx = griddata3 (x, y, z, varargin{:});
 
@@ -79,15 +95,6 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
     ## for nargin 5 or 6, assign varargin terms to variables for 2D algorithm
     xi = varargin{1};
     yi = varargin{2};
-
-    if (nargin == 6)
-      if (! ischar (varargin{3}))
-        error ("griddata: unknown interpolation METHOD");
-      endif
-      method = tolower (varargin{3});
-    else
-      method = "linear";
-    endif
 
     ## Meshgrid if x and y are vectors but z is matrix
     if (isvector (x) && isvector (y) && all ([numel(y), numel(x)] == size (z)))
@@ -102,8 +109,9 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
       error ("griddata: lengths of X, Y must match the columns and rows of Z");
     endif
 
-    ## Meshgrid xi and yi if they are a row and column vector.
-    if (rows (xi) == 1 && columns (yi) == 1)
+    ## Meshgrid xi and yi if they are a row and column vector, but not
+    ## if they are simply vectors of the same size (for compatibility).
+    if (isrow (xi) && iscolumn (yi))
       [xi, yi] = meshgrid (xi, yi);
     elseif (isvector (xi) && isvector (yi))
       ## Otherwise, convert to column vectors
@@ -115,19 +123,38 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
       error ("griddata: XI and YI must be vectors or matrices of same size");
     endif
 
+    if (nargin == 6)
+      method = varargin{3};
+      if (isempty (method))
+        method = "linear";
+      elseif (! ischar (method))
+        error ("griddata: METHOD must be a string");
+      endif
+      method = tolower (method);
+
+      if (any (strcmp (method, {"linear", "nearest", "v4"})))
+        ## Do nothing, these are implemented methods
+      elseif (any (strcmp (method, {"cubic", "natural"})))
+        ## FIXME: implement missing interpolation methods.
+        error ('griddata: "%s" interpolation not yet implemented', method);
+      else
+        error ('griddata: unknown interpolation METHOD: "%s"', method);
+      endif
+    else
+      method = "linear";
+    endif
+
     x = x(:);
     y = y(:);
     z = z(:);
 
     ## Triangulate data.
-    tri = delaunay (x, y);
+    if (! strcmp (method, "v4"))
+      tri = delaunay (x, y);
+    endif
     zi = NaN (size (xi));
 
-    if (any (strcmp (method, {"cubic", "natural"})))
-      ## FIXME: implement missing interpolation methods.
-      error ('griddata: "%s" interpolation not yet implemented', method);
-
-    elseif (strcmp (method, "linear"))
+    if (strcmp (method, "linear"))
       ## Search for every point the enclosing triangle.
       tri_list = tsearch (x, y, tri, xi(:), yi(:));
 
@@ -182,13 +209,13 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
       ##
       ## G(X) = |X|^2 * (ln|X|-1) / (8 * pi)
       ##
-      ## A N-point Biharmonic Interpolation at the point X is given by
+      ## An N-point Biharmonic Interpolation at the point X is given by
       ##
       ## z(X) = sum_j_N (alpha_j * G(X-Xj))
       ##      = sum_j_N (alpha_j * G(rj))
       ##
       ## in which the coefficients alpha_j are the unknowns.  rj is the
-      ## Euclidian distance between X and Xj.
+      ## Euclidean distance between X and Xj.
       ## From N datapoints {zi, Xi} an equation system can be formed:
       ##
       ## zi(Xi) = sum_j_N (alpha_j * G(Xi-Xj))
@@ -197,15 +224,15 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
       ## Its inverse yields the unknowns alpha_j.
 
       ## Step1: Solve for weight coefficients alpha_j depending on the
-      ## Euclidian distances and the training data set {x,y,z}
-      r = sqrt ((x - x.').^2 + (y - y.').^2); # size N^2
+      ## Euclidean distances and the training data set {x,y,z}
+      r = sqrt ((x - x.').^2 + (y - y.').^2);  # size N^2
       D = (r.^2) .* (log (r) - 1);
       D(isnan (D)) = 0;  # Fix Green Function for r=0
       alpha_j = D \ z;
 
       ## Step2 - Use alphas and Green's functions to get interpolated points.
-      ## Use dim3 projection for vectorized calculation to avoid loops.  Memory
-      ## usage is proportional to Ni x N.
+      ## Use dim3 projection for vectorized calculation to avoid loops.
+      ## Memory usage is proportional to Ni x N.
       ## FIXME: if this approach is too memory intensive, revert portion to loop
       x = permute (x, [3, 2, 1]);
       y = permute (y, [3, 2, 1]);
@@ -215,8 +242,6 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
       Di(isnan (Di)) = 0;  # Fix Green's Function for r==0
       zi = sum (Di .* alpha_j, 3);
 
-    else
-      error ('griddata: unknown interpolation METHOD: "%s"', method);
     endif
 
     if (nargout > 1)
@@ -310,7 +335,6 @@ endfunction
 %!error griddata (1,2,3)
 %!error griddata (1,2,3,4)
 %!error <only one output argument> [xi,yi] = griddata (1,2,3,4,5,6,7)
-%!error <unknown interpolation METHOD> griddata (1,2,3,4,5, {"linear"})
 %!error <vectors of the same length> griddata (1:4, 1:3, 1:3, 1:3, 1:3)
 %!error <vectors of the same length> griddata (1:3, 1:4, 1:3, 1:3, 1:3)
 %!error <vectors of the same length> griddata (1:3, 1:3, 1:4, 1:3, 1:3)
@@ -318,6 +342,7 @@ endfunction
 %!error <the columns and rows of Z> griddata (1:4, 1:3, ones (3,5), 1:3, 1:3)
 %!error <XI and YI .* matrices of same size> griddata (1:3, 1:3, 1:3, 1:4, 1:3)
 %!error <XI and YI .* matrices of same size> griddata (1:3, 1:3, 1:3, 1:3, 1:4)
+%!error <METHOD must be a string> griddata (1,2,3,4,5, {"linear"})
 %!error <"cubic" .* not yet implemented> griddata (1,2,3,4,5, "cubic")
 %!error <"natural" .* not yet implemented> griddata (1,2,3,4,5, "natural")
 %!error <unknown interpolation METHOD: "foobar"> griddata (1,2,3,4,5, "foobar")

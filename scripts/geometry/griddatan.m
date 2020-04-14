@@ -74,8 +74,10 @@
 ## @end example
 ##
 ## Programming Notes: If the input is complex the real and imaginary parts
-## are interpolated separately.  For 2-D and 3-D data additional interpolation
-## methods are available by using the @code{griddata} function.
+## are interpolated separately.  Interpolation is based on a Delaunay
+## triangulation and any query values outside the convex hull of the input
+## points will return @code{NaN}.  For 2-D and 3-D data additional
+## interpolation methods are available by using the @code{griddata} function.
 ## @seealso{griddata, griddata3, delaunayn}
 ## @end deftypefn
 
@@ -103,9 +105,10 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
       method = "linear";
     elseif (! ischar (method))
       error ("griddatan: METHOD must be a string");
+    else
+      method = tolower (method);
     endif
 
-    method = tolower (method);
     if (strcmp (method, "linear") || strcmp (method, "nearest"))
       ## Do nothing, these are implemented methods
     elseif (strcmp (method, "v4"))

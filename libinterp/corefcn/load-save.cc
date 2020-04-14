@@ -575,21 +575,25 @@ namespace octave
             err_disabled_feature ("save", "HDF5");
 #endif
           }
-        else if (argv[i] == "-mat-binary" || argv[i] == "-mat"
-                 || argv[i] == "-m" || argv[i] == "-6" || argv[i] == "-v6"
-                 || argv[i] == "-V6")
+        else if (argv[i] == "-v7.3" || argv[i] == "-V7.3" || argv[i] == "-7.3")
           {
-            fmt.set_type (MAT5_BINARY);
+            error ("save: Matlab file format -v7.3 is not yet implemented");
           }
 #if defined (HAVE_ZLIB)
-        else if (argv[i] == "-mat7-binary" || argv[i] == "-7"
-                 || argv[i] == "-v7" || argv[i] == "-V7")
+        else if (argv[i] == "-v7" || argv[i] == "-V7" || argv[i] == "-7"
+                 || argv[i] == "-mat7-binary")
           {
             fmt.set_type (MAT7_BINARY);
           }
 #endif
-        else if (argv[i] == "-mat4-binary" || argv[i] == "-V4"
-                 || argv[i] == "-v4" || argv[i] == "-4")
+        else if (argv[i] == "-mat" || argv[i] == "-m"
+                 || argv[i] == "-v6" || argv[i] == "-V6" || argv[i] == "-6"
+                 || argv[i] == "-mat-binary")
+          {
+            fmt.set_type (MAT5_BINARY);
+          }
+        else if (argv[i] == "-v4" || argv[i] == "-V4" || argv[i] == "-4"
+                 || argv[i] == "-mat4-binary")
           {
             fmt.set_type (MAT_BINARY);
           }
@@ -1175,40 +1179,13 @@ namespace octave
 
     for (; i < argc; i++)
       {
-        if (argv[i] == "-force" || argv[i] == "-f")
+        if (argv[i] == "-text" || argv[i] == "-t")
           {
-            // Silently ignore this
-            // warning ("load: -force ignored");
-          }
-        else if (argv[i] == "-list" || argv[i] == "-l")
-          {
-            list_only = true;
-          }
-        else if (argv[i] == "-verbose" || argv[i] == "-v")
-          {
-            verbose = true;
-          }
-        else if (argv[i] == "-ascii" || argv[i] == "-a")
-          {
-            format = MAT_ASCII;
+            format = TEXT;
           }
         else if (argv[i] == "-binary" || argv[i] == "-b")
           {
             format = BINARY;
-          }
-        else if (argv[i] == "-mat-binary" || argv[i] == "-mat"
-                 || argv[i] == "-m" || argv[i] == "-6" || argv[i] == "-v6")
-          {
-            format = MAT5_BINARY;
-          }
-        else if (argv[i] == "-7" || argv[i] == "-v7")
-          {
-            format = MAT7_BINARY;
-          }
-        else if (argv[i] == "-mat4-binary" || argv[i] == "-V4"
-                 || argv[i] == "-v4" || argv[i] == "-4")
-          {
-            format = MAT_BINARY;
           }
         else if (argv[i] == "-hdf5" || argv[i] == "-h")
           {
@@ -1218,13 +1195,46 @@ namespace octave
             err_disabled_feature ("load", "HDF5");
 #endif
           }
+        else if (argv[i] == "-ascii" || argv[i] == "-a")
+          {
+            format = MAT_ASCII;
+          }
+        else if (argv[i] == "-v7.3" || argv[i] == "-V7.3" || argv[i] == "-7.3")
+          {
+            error ("load: Matlab file format -v7.3 is not yet implemented");
+          }
+        else if (argv[i] == "-v7" || argv[i] == "-V7" || argv[i] == "-7"
+                 || argv[i] == "-mat7-binary")
+          {
+            format = MAT7_BINARY;
+          }
+        else if (argv[i] == "-mat" || argv[i] == "-m"
+                 || argv[i] == "-v6" || argv[i] == "-V6" || argv[i] == "-6"
+                 || argv[i] == "-mat-binary")
+          {
+            format = MAT5_BINARY;
+          }
+        else if (argv[i] == "-v4" || argv[i] == "-V4" || argv[i] == "-4"
+                 || argv[i] == "-mat4-binary")
+          {
+            format = MAT_BINARY;
+          }
+        else if (argv[i] == "-force" || argv[i] == "-f")
+          {
+            // Silently ignore this
+            // warning ("load: -force ignored");
+          }
         else if (argv[i] == "-import" || argv[i] == "-i")
           {
             warning ("load: -import ignored");
           }
-        else if (argv[i] == "-text" || argv[i] == "-t")
+        else if (argv[i] == "-list" || argv[i] == "-l")
           {
-            format = TEXT;
+            list_only = true;
+          }
+        else if (argv[i] == "-verbose" || argv[i] == "-v")
+          {
+            verbose = true;
           }
         else
           break;
@@ -1620,24 +1630,33 @@ This option is accepted for backward compatibility but is ignored.
 Octave can now support multi-dimensional HDF data and automatically
 modifies variable names if they are invalid Octave identifiers.
 
-@item  -mat
-@itemx -mat-binary
-@itemx -6
-@itemx -v6
-@itemx -7
-@itemx -v7
-Force Octave to assume the file is in @sc{matlab}'s version 6 or 7 binary
-format.
-
-@item  -mat4-binary
-@itemx -4
-@itemx -v4
-@itemx -V4
-Force Octave to assume the file is in the binary format written by
-@sc{matlab} version 4.
-
 @item -text
 Force Octave to assume the file is in Octave's text format.
+
+@item  -v7.3
+@itemx -V7.3
+@itemx -7.3
+Octave does @strong{not} yet implement @sc{matlab}'s v7.3 binary data format.
+
+@item  -v7
+@itemx -V7
+@itemx -7
+@itemx -mat7-binary
+Force Octave to assume the file is in @sc{matlab}'s version 7 binary format.
+
+@item  -v6
+@itemx -V6
+@itemx -6
+@itemx -mat
+@itemx -mat-binary
+Force Octave to assume the file is in @sc{matlab}'s version 6 binary format. 
+
+@item  -v4
+@itemx -V4
+@itemx -4
+@itemx -mat4-binary
+Force Octave to assume the file is in @sc{matlab}'s version 4 binary format.
+
 @end table
 @seealso{save, dlmwrite, csvwrite, fwrite}
 @end deftypefn */)
@@ -1721,27 +1740,32 @@ Save the data in @sc{hdf5} format but using only single precision.  Use this
 format @strong{only} if you know that all the values to be saved can be
 represented in single precision.
 
-@item  -V7
-@itemx -v7
+@item -text
+Save the data in Octave's text data format.  (default)
+
+@item  -v7.3
+@itemx -V7.3
+@itemx -7.3
+Octave does @strong{not} yet implement @sc{matlab}'s v7.3 binary data format.
+
+@item  -v7
+@itemx -V7
 @itemx -7
 @itemx -mat7-binary
 Save the data in @sc{matlab}'s v7 binary data format.
 
-@item  -V6
-@itemx -v6
+@item  -v6
+@itemx -V6
 @itemx -6
 @itemx -mat
 @itemx -mat-binary
 Save the data in @sc{matlab}'s v6 binary data format.
 
-@item  -V4
-@itemx -v4
+@item  -v4
+@itemx -V4
 @itemx -4
 @itemx -mat4-binary
-Save the data in the binary format written by @sc{matlab} version 4.
-
-@item -text
-Save the data in Octave's text data format.  (default).
+Save the data in @sc{matlab}'s v4 binary data format.
 
 @item  -zip
 @itemx -z
@@ -1776,6 +1800,8 @@ Except when using the @sc{matlab} binary data file format or the @samp{-ascii}
 format, saving global variables also saves the global status of the variable.
 If the variable is restored at a later time using @samp{load}, it will be
 restored as a global variable.
+
+Example: 
 
 The command
 

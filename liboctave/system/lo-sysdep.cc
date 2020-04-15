@@ -43,6 +43,7 @@
 #  include <wchar.h>
 
 #  include "lo-hash.h"
+#  include "filepos-wrappers.h"
 #  include "unwind-prot.h"
 #endif
 
@@ -149,13 +150,201 @@ namespace octave
       return true;
     }
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+    static bool check_fseek_ftell_workaround_needed (bool set_nonbuffered_mode)
+    {
+      // To check whether the workaround is needed:
+      //
+      //   * Create a tmp file with LF line endings only.
+      //
+      //   * Open that file for reading in text mode.
+      //
+      //   * Read a line.
+      //
+      //   * Use ftello to record the position of the beginning of the
+      //     second line.
+      //
+      //   * Read and save the contents of the second line.
+      //
+      //   * Use fseeko to return to the saved position.
+      //
+      //   * Read the second line again and compare to the previously
+      //     saved text.
+      //
+      //   * If the lines are different, we need to set non-buffered
+      //     input mode for files opened in text mode.
+
+      std::string tmpname = sys::tempnam ("", "oct-");
+
+      if (tmpname.empty ())
+        {
+          (*current_liboctave_warning_handler)
+            ("fseek/ftell bug check failed (tmp name creation)!");
+          return false;
+        }
+
+      std::FILE *fptr = std::fopen (tmpname.c_str (), "wb");
+
+      if (! fptr)
+        {
+          (*current_liboctave_warning_handler)
+            ("fseek/ftell bug check failed (opening tmp file for writing)!");
+          return false;
+        }
+
+      fprintf (fptr, "%s", "foo\nbar\nbaz\n");
+
+      std::fclose (fptr);
+
+      fptr = std::fopen (tmpname.c_str (), "rt");
+
+      if (! fptr)
+        {
+          (*current_liboctave_warning_handler)
+            ("fseek/ftell bug check failed (opening tmp file for reading)!");
+          return false;
+        }
+
+      unwind_action act ([fptr, tmpname] () {
+                           std::fclose (fptr);
+                           sys::unlink (tmpname);
+                         });
+
+      if (set_nonbuffered_mode)
+        ::setvbuf (fptr, 0, _IONBF, 0);
+
+      while (true)
+        {
+          int c = fgetc (fptr);
+
+          if (c == EOF)
+            {
+              (*current_liboctave_warning_handler)
+                ("fseek/ftell bug check failed (skipping first line)!");
+              return false;
+            }
+
+          if (c == '\n')
+            break;
+        }
+
+      off_t pos = octave_ftello_wrapper (fptr);
+
+      char buf1[8];
+      int i = 0;
+      while (true)
+        {
+          int c = fgetc (fptr);
+
+          if (c == EOF)
+            {
+              (*current_liboctave_warning_handler)
+                ("fseek/ftell bug check failed (reading second line)!");
+              return false;
+            }
+
+          if (c == '\n')
+            break;
+
+          buf1[i++] = static_cast<char> (c);
+        }
+      buf1[i] = '\0';
+
+      octave_fseeko_wrapper (fptr, pos, SEEK_SET);
+
+      char buf2[8];
+      i = 0;
+      while (true)
+        {
+          int c = fgetc (fptr);
+
+          if (c == EOF)
+            {
+              (*current_liboctave_warning_handler)
+                ("fseek/ftell bug check failed (reading after repositioning)!");
+              return false;
+            }
+
+          if (c == '\n')
+            break;
+
+          buf2[i++] = static_cast<char> (c);
+        }
+      buf2[i] = '\0';
+
+      return strcmp (buf1, buf2);
+    }
+
+#endif
+
     std::FILE *
     fopen (const std::string& filename, const std::string& mode)
     {
 #if defined (OCTAVE_USE_WINDOWS_API)
+
       std::wstring wfilename = u8_to_wstring (filename);
       std::wstring wmode = u8_to_wstring (mode);
-      return _wfopen (wfilename.c_str (), wmode.c_str ());
+
+      std::FILE *fptr = _wfopen (wfilename.c_str (), wmode.c_str ());
+
+      static bool fseek_ftell_bug_workaround_needed = false;
+      static bool fseek_ftell_bug_checked = false;
+
+      if (! fseek_ftell_bug_checked && mode.find ('t') != std::string::npos)
+        {
+          // FIXME: Is the following workaround needed for all files
+          // opened in text mode, or only for files opened for reading?
+
+          // Try to avoid fseek/ftell bug on Windows systems by setting
+          // non-buffered input mode for files opened in text mode, but
+          // only if it appears that the workaround is needed.  See
+          // Octave bug #58055.
+
+          // To check whether the workaround is needed:
+          //
+          //   * Create a tmp file with LF line endings only.
+          //
+          //   * Open that file for reading in text mode.
+          //
+          //   * Read a line.
+          //
+          //   * Use ftello to record the position of the beginning of
+          //     the second line.
+          //
+          //   * Read and save the contents of the second line.
+          //
+          //   * Use fseeko to return to the saved position.
+          //
+          //   * Read the second line again and compare to the
+          //     previously saved text.
+          //
+          //   * If the lines are different, we need to set non-buffered
+          //     input mode for files opened in text mode.
+          //
+          //   * To verify that the workaround solves the problem,
+          //     repeat the above test with non-buffered input mode.  If
+          //     that fails, warn that there may be trouble with
+          //     ftell/fseek when reading files opened in text mode.
+
+          if (check_fseek_ftell_workaround_needed (false))
+            {
+              if (check_fseek_ftell_workaround_needed (true))
+                (*current_liboctave_warning_handler)
+                  ("fseek/ftell may fail for files opened in text mode");
+              else
+                fseek_ftell_bug_workaround_needed = true;
+            }
+
+          fseek_ftell_bug_checked = true;
+        }
+
+      if (fseek_ftell_bug_workaround_needed
+          && mode.find ('t') != std::string::npos)
+        ::setvbuf (fptr, 0, _IONBF, 0);
+
+      return fptr;
+
 #else
       return std::fopen (filename.c_str (), mode.c_str ());
 #endif

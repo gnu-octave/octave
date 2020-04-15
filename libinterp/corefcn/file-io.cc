@@ -447,7 +447,7 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
       else
 #endif
         {
-          FILE *fptr = octave::sys::fopen (fname.c_str (), mode.c_str ());
+          FILE *fptr = octave::sys::fopen (fname, mode);
 
           retval = octave_stdiostream::create (fname, fptr, md, flt_fmt,
                                                encoding);

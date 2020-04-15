@@ -933,12 +933,12 @@
 %!      r_mode = r_modes{j};
 %!      for k = 1:numel (f_texts);
 %!        f_text = f_texts{k};
-%!        fname = tempname ()
+%!        fname = tempname ();
 %!        fid = fopen (fname, w_mode);
 %!        unwind_protect
 %!          fprintf (fid, "%s", f_text);
 %!          fclose (fid);
-%!          fid = fopen (fname, r_mode)
+%!          fid = fopen (fname, r_mode);
 %!          fgetl (fid);
 %!          pos = ftell (fid);
 %!          buf1 = fgetl (fid);

@@ -732,7 +732,7 @@ namespace octave
     // path of the file as its value.
     void form_data_post (const Array<std::string>& param)
     {
-      struct curl_httppost *post = NULL, *last = NULL;
+      struct curl_httppost *post = nullptr, *last = nullptr;
 
       SETOPT (CURLOPT_URL, m_host_or_url.c_str ());
 

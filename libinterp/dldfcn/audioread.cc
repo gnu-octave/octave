@@ -435,8 +435,8 @@ Comment.
 
   frame.add_fcn (safe_close, file);
 
-  sf_command (file, SFC_SET_NORM_DOUBLE, NULL, SF_TRUE);
-  sf_command (file, SFC_SET_CLIPPING, NULL, SF_TRUE) ;
+  sf_command (file, SFC_SET_NORM_DOUBLE, nullptr, SF_TRUE);
+  sf_command (file, SFC_SET_CLIPPING, nullptr, SF_TRUE) ;
   sf_command (file, SFC_SET_VBR_ENCODING_QUALITY, &quality, sizeof (quality));
 
   if (title != "")

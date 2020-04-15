@@ -922,3 +922,34 @@
 
 %!assert <*53148> (double (sprintf ("B\0B")), [66, 0, 66])
 %!assert <*53148> (sscanf ("B\0B 13", "B\0B %d"), 13)
+
+%!test <58055>
+%!  w_modes = {"wb", "wt"};
+%!  r_modes = {"rb", "rt"};
+%!  f_texts = {"foo\nbar\nbaz\n", "foo\rbar\rbaz\r", "foo\r\nbar\r\nbaz\r\n"};
+%!  for i = 1:numel (w_modes)
+%!    w_mode = w_modes{i};
+%!    for j = 1:numel (r_modes);
+%!      r_mode = r_modes{j};
+%!      for k = 1:numel (f_texts);
+%!        f_text = f_texts{k};
+%!        fname = tempname ()
+%!        fid = fopen (fname, w_mode);
+%!        unwind_protect
+%!          fprintf (fid, "%s", f_text);
+%!          fclose (fid);
+%!          fid = fopen (fname, r_mode)
+%!          fgetl (fid);
+%!          pos = ftell (fid);
+%!          buf1 = fgetl (fid);
+%!          fgetl (fid);
+%!          fseek (fid, pos, SEEK_SET);
+%!          buf2 = fgetl (fid);
+%!          assert (buf1, buf2);
+%!        unwind_protect_cleanup
+%!          fclose (fid);
+%!          unlink (fname);
+%!        end_unwind_protect
+%!      endfor
+%!    endfor
+%!  endfor

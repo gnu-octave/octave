@@ -77,6 +77,7 @@ namespace QtHandles
     QImage img = Utils::makeImageFromCData (cdat,
                                             cdat.columns (), cdat.rows ());
     btn->setIcon (QIcon (QPixmap::fromImage (img)));
+    btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
   }
 
   ToggleButtonControl::~ToggleButtonControl (void)

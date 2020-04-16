@@ -69,7 +69,7 @@ namespace QtHandles
     btn->setAutoFillBackground (true);
     octave_value cdat = up.get_cdata ();
     QImage img = Utils::makeImageFromCData (cdat,
-                                            cdat.rows (), cdat.columns ());
+                                            cdat.columns (), cdat.rows ());
     btn->setIcon (QIcon (QPixmap::fromImage (img)));
   }
 

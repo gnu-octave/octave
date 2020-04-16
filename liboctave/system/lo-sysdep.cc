@@ -212,7 +212,7 @@ namespace octave
                          });
 
       if (set_nonbuffered_mode)
-        ::setvbuf (fptr, 0, _IONBF, 0);
+        ::setvbuf (fptr, nullptr, _IONBF, 0);
 
       while (true)
         {
@@ -341,7 +341,7 @@ namespace octave
 
       if (fseek_ftell_bug_workaround_needed
           && mode.find ('t') != std::string::npos)
-        ::setvbuf (fptr, 0, _IONBF, 0);
+        ::setvbuf (fptr, nullptr, _IONBF, 0);
 
       return fptr;
 

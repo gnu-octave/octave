@@ -50,7 +50,7 @@ w32_get_octave_home (void)
   std::string bin_dir;
 
   char namebuf[MAX_PATH+1];
-  if (GetModuleFileName (GetModuleHandle (NULL), namebuf, MAX_PATH))
+  if (GetModuleFileName (GetModuleHandle (nullptr), namebuf, MAX_PATH))
     {
       namebuf[MAX_PATH] = '\0';
 

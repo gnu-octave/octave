@@ -93,7 +93,7 @@ octave_procbuf::open (const char *command, int mode)
   open_p = true;
 
   if (mode & std::ios::out)
-    ::setvbuf (f, 0, _IOLBF, BUFSIZ);
+    ::setvbuf (f, nullptr, _IOLBF, BUFSIZ);
 
   return this;
 

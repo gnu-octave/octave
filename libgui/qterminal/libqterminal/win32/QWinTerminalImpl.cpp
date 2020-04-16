@@ -282,9 +282,9 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   : q (parent), m_command (cmd), m_auto_scroll (true), m_cursorBlinking (false),
     m_hasBlinkingCursor (true), m_cursorType (BlockCursor),
     m_beginSelection (0, 0), m_endSelection (0, 0), m_settingSelection (false),
-    m_process (NULL), m_inWheelEvent (false)
+    m_process (nullptr), m_inWheelEvent (false)
 {
-  log (NULL);
+  log (nullptr);
 
   // Possibly detach from any existing console
   log ("Detaching from existing console (if any)...\n");
@@ -299,7 +299,7 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
 
   // Create new (hidden) console
   hOrigSta = GetProcessWindowStation ();
-  hNewSta = CreateWindowStation (NULL, 0, GENERIC_ALL, NULL);
+  hNewSta = CreateWindowStation (nullptr, 0, GENERIC_ALL, nullptr);
   log ("Current Windows station: %p.\nNew Windows station: %p.\n", hOrigSta,
        hNewSta);
   if (! SetProcessWindowStation (hNewSta))
@@ -328,9 +328,9 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
 
   log ("POSIX standard streams created.\n");
 
-  setvbuf (stdin, NULL, _IONBF, 0);
-  setvbuf (stdout, NULL, _IONBF, 0);
-  setvbuf (stderr, NULL, _IONBF, 0);
+  setvbuf (stdin, nullptr, _IONBF, 0);
+  setvbuf (stdout, nullptr, _IONBF, 0);
+  setvbuf (stderr, nullptr, _IONBF, 0);
 
   log ("POSIX standard stream buffers adjusted.\n");
 
@@ -1339,14 +1339,14 @@ void QConsolePrivate::startCommand (void)
       si.cb = sizeof (si);
       ZeroMemory (&pi, sizeof (pi));
 
-      if (CreateProcessW (NULL,
+      if (CreateProcessW (nullptr,
                           (LPWSTR)cmd.unicode (),
-                          NULL,
-                          NULL,
+                          nullptr,
+                          nullptr,
                           TRUE,
                           0,
-                          NULL,
-                          NULL,
+                          nullptr,
+                          nullptr,
                           &si,
                           &pi))
         {
@@ -1354,7 +1354,7 @@ void QConsolePrivate::startCommand (void)
           m_process = pi.hProcess;
           WaitForSingleObject (m_process, INFINITE);
           CloseHandle (m_process);
-          m_process = NULL;
+          m_process = nullptr;
         }
     }
 }

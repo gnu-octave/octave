@@ -1665,7 +1665,7 @@ namespace octave
       llvm::Value *dzero = llvm::ConstantFP::get (m_scalar_t, 0);
       llvm::Value *izero = llvm::ConstantInt::get (m_index_t, 0);
       llvm::Value *rng = llvm::ConstantStruct::get (m_range_t, dzero, dzero,
-                                                    dzero, izero, NULL);
+                                                    dzero, izero, nullptr);
       rng = m_builder.CreateInsertValue (rng, base, 0);
       rng = m_builder.CreateInsertValue (rng, limit, 1);
       rng = m_builder.CreateInsertValue (rng, inc, 2);

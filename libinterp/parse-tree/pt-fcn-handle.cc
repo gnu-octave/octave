@@ -63,7 +63,8 @@ namespace octave
   octave_value
   tree_fcn_handle::evaluate (tree_evaluator& tw, int)
   {
-    return make_fcn_handle (tw.get_interpreter (), m_name);
+    // XXX FCN_HANDLE: CONTEXT DEPENDENT
+    return tw.make_fcn_handle (m_name);
   }
 
   tree_anon_fcn_handle::~tree_anon_fcn_handle (void)

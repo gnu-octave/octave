@@ -59,16 +59,29 @@ public:
       m_closure_frames (), m_local_vars (nullptr), m_dispatch_class ()
   { }
 
-  octave_fcn_handle (const octave::symbol_scope& scope, const std::string& n);
+  // OCTAVE_DEPRECATED (6, "foobar-1")
+  octave_fcn_handle (const std::string& name);
 
+  // OCTAVE_DEPRECATED (6, "foobar-2")
   octave_fcn_handle (const octave::symbol_scope& scope,
-                     const octave_value& f, const std::string& n);
+                     const std::string& name);
 
-  octave_fcn_handle (const octave_value& f, const std::string& n);
+  // OCTAVE_DEPRECATED (6, "foobar-3")
+  octave_fcn_handle (const octave::symbol_scope& scope,
+                     const octave_value& f, const std::string& name);
 
-  octave_fcn_handle (const octave_value& f,
+  // OCTAVE_DEPRECATED (6, "foobar-4")
+  octave_fcn_handle (const octave_value& f, const std::string& name);
+
+  // OCTAVE_DEPRECATED (6, "foobar-5")
+  octave_fcn_handle (const octave_value& fcn, const std::string& name,
+                     const std::list<std::string>& parentage);
+
+  // OCTAVE_DEPRECATED (6, "foobar-6")
+  octave_fcn_handle (const octave_value& fcn,
                      const octave::stack_frame::local_vars_map& local_vars);
 
+  // OCTAVE_DEPRECATED (6, "foobar-7")
   octave_fcn_handle (const octave_fcn_handle& fh);
 
   ~octave_fcn_handle (void);
@@ -202,6 +215,7 @@ protected:
 
 namespace octave
 {
+  OCTAVE_DEPRECATED (6, "use 'tree_evaluator::make_fcn_handle' instead")
   extern octave_value
   make_fcn_handle (interpreter& interp, const std::string& name);
 }

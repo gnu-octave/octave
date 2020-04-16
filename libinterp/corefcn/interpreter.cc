@@ -1577,6 +1577,11 @@ namespace octave
     return feval (f_arg, tmp_args, nargout);
   }
 
+  octave_value interpreter::make_function_handle (const std::string& name)
+  {
+    return m_evaluator.make_fcn_handle (name);
+  }
+
   void interpreter::install_variable (const std::string& name,
                                       const octave_value& value, bool global)
   {

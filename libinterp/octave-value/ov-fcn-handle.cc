@@ -83,6 +83,38 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 
 const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 
+octave_fcn_handle::octave_fcn_handle (const std::string& n)
+  : m_fcn (), m_obj (), m_name (n), m_scope (), m_is_nested (false),
+    m_closure_frames (), m_local_vars (nullptr), m_dispatch_class ()
+{
+  if (! m_name.empty () && m_name[0] == '@')
+    m_name = m_name.substr (1);
+
+  size_t pos = m_name.find ('.');
+
+  if (pos != std::string::npos)
+    {
+      // If we are looking at
+      //
+      //   obj . meth
+      //
+      // Store the object so that calling METH for OBJ will work even if
+      // it is done outside of the scope whre OBJ was initially defined
+      // or if OBJ is cleared before the method call is made through the
+      // function handle.
+
+      std::string obj_name = m_name.substr (0, pos);
+
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("octave_fcn_handle::octave_fcn_handle");
+
+      octave_value val = interp.varval (obj_name);
+
+      if (val.is_classdef_object ())
+        m_obj = val;
+    }
+}
+
 octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
                                       const std::string& n)
   : m_fcn (), m_obj (), m_name (n), m_scope (scope), m_is_nested (false),
@@ -1673,192 +1705,16 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 
 namespace octave
 {
-  // Hmm, should this function be a member of the interpreter class,
-  // possibly forwarded to an actual implementation in the
-  // tree_evaluator class?
+  // DEPRECATED in Octave 6.
 
   octave_value
   make_fcn_handle (interpreter& interp, const std::string& nm)
   {
-    octave_value retval;
-
-    // Bow to the god of compatibility.
-
-    // FIXME: it seems ugly to put this here, but there is no single
-    // function in the parser that converts from the operator name to
-    // the corresponding function name.  At least try to do it without N
-    // string compares.
-
-    std::string tnm = nm;
-
-    size_t len = nm.length ();
-
-    if (len == 3 && nm == ".**")
-      tnm = "power";
-    else if (len == 2)
-      {
-        if (nm[0] == '.')
-          {
-            switch (nm[1])
-              {
-              case '\'':
-                tnm = "transpose";
-                break;
-
-              case '+':
-                tnm = "plus";
-                break;
-
-              case '-':
-                tnm = "minus";
-                break;
-
-              case '*':
-                tnm = "times";
-                break;
-
-              case '/':
-                tnm = "rdivide";
-                break;
-
-              case '^':
-                tnm = "power";
-                break;
-
-              case '\\':
-                tnm = "ldivide";
-                break;
-              }
-          }
-        else if (nm[1] == '=')
-          {
-            switch (nm[0])
-              {
-              case '<':
-                tnm = "le";
-                break;
-
-              case '=':
-                tnm = "eq";
-                break;
-
-              case '>':
-                tnm = "ge";
-                break;
-
-              case '~':
-              case '!':
-                tnm = "ne";
-                break;
-              }
-          }
-        else if (nm == "**")
-          tnm = "mpower";
-      }
-    else if (len == 1)
-      {
-        switch (nm[0])
-          {
-          case '~':
-          case '!':
-            tnm = "not";
-            break;
-
-          case '\'':
-            tnm = "ctranspose";
-            break;
-
-          case '+':
-            tnm = "plus";
-            break;
-
-          case '-':
-            tnm = "minus";
-            break;
-
-          case '*':
-            tnm = "mtimes";
-            break;
-
-          case '/':
-            tnm = "mrdivide";
-            break;
-
-          case '^':
-            tnm = "mpower";
-            break;
-
-          case '\\':
-            tnm = "mldivide";
-            break;
-
-          case '<':
-            tnm = "lt";
-            break;
-
-          case '>':
-            tnm = "gt";
-            break;
-
-          case '&':
-            tnm = "and";
-            break;
-
-          case '|':
-            tnm = "or";
-            break;
-          }
-      }
-
     tree_evaluator& tw = interp.get_evaluator ();
 
-    symbol_scope curr_scope = tw.get_current_scope ();
-
-    octave_fcn_handle *fh = new octave_fcn_handle (curr_scope, tnm);
-
-    std::string dispatch_class;
-
-    if (tw.is_class_method_executing (dispatch_class)
-        || tw.is_class_constructor_executing (dispatch_class))
-      fh->set_dispatch_class (dispatch_class);
-
-    return octave_value (fh);
+    return tw.make_fcn_handle (nm);
   }
 }
-
-/*
-%!test
-%! x = {".**", "power";
-%!      ".'", "transpose";
-%!      ".+", "plus";
-%!      ".-", "minus";
-%!      ".*", "times";
-%!      "./", "rdivide";
-%!      ".^", "power";
-%!      ".\\", "ldivide";
-%!      "<=", "le";
-%!      "==", "eq";
-%!      ">=", "ge";
-%!      "!=", "ne";
-%!      "~=", "ne";
-%!      "**", "mpower";
-%!      "~", "not";
-%!      "!", "not";
-%!      "\'", "ctranspose";
-%!      "+", "plus";
-%!      "-", "minus";
-%!      "*", "mtimes";
-%!      "/", "mrdivide";
-%!      "^", "mpower";
-%!      "\\", "mldivide";
-%!      "<", "lt";
-%!      ">", "gt";
-%!      "&", "and";
-%!      "|", "or"};
-%! for i = 1:rows (x)
-%!   assert (functions (str2func (x{i,1})).function, x{i,2});
-%! endfor
-*/
 
 DEFUN (functions, args, ,
        doc: /* -*- texinfo -*-
@@ -2024,18 +1880,31 @@ functions.  This option is no longer supported.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string nm = args(0).xstring_value ("str2func: FCN_NAME must be a string");
+  std::string nm
+    = args(0).xstring_value ("str2func: FCN_NAME must be a string");
 
-  octave_value retval;
+  if (nm.empty ())
+    error ("str2func: invalid function name");
 
   if (nm[0] == '@')
     {
+      // Unlike the anon_fcn_handle::parse method, don't set up
+      // temporary scope to use for evaluating the text that defines
+      // the anonymous function.  Here we want
+      //
+      //   str2fun ("@(args) expr")
+      //
+      // to behave the same as if
+      //
+      //   @(args) expr
+      //
+      // were evaluated in the current scope.
+
       int parse_status;
-      octave_value anon_fcn_handle
-        = interp.eval_string (nm, true, parse_status);
+      octave_value afh = interp.eval_string (nm, true, parse_status);
 
       if (parse_status == 0)
-        retval = anon_fcn_handle;
+        return afh;
     }
   else
     {
@@ -2043,10 +1912,12 @@ functions.  This option is no longer supported.
         warning_with_id ("Octave:str2func-global-argument",
                          "str2func: second argument ignored");
 
-      retval = octave::make_fcn_handle (interp, nm);
+      octave::tree_evaluator& tw = interp.get_evaluator ();
+
+      return tw.make_fcn_handle (nm);
     }
 
-  return retval;
+  return ovl ();
 }
 
 /*

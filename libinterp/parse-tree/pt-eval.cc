@@ -882,6 +882,185 @@ namespace octave
     return retval;
   }
 
+  // If NAME is an operator (like "+", "-", ...), convert it to the
+  // corresponding function name ("plus", "minus", ...).
+
+  static std::string
+  get_operator_function_name (const std::string& name)
+  {
+    // Bow to the god of compatibility.
+
+    // FIXME: it seems ugly to put this here, but there is no single
+    // function in the parser that converts from the operator name to
+    // the corresponding function name.  At least try to do it without N
+    // string compares.
+
+    size_t len = name.length ();
+
+    if (len == 3 && name == ".**")
+      return "power";
+    else if (len == 2)
+      {
+        if (name[0] == '.')
+          {
+            switch (name[1])
+              {
+              case '\'':
+                return "transpose";
+
+              case '+':
+                return "plus";
+
+              case '-':
+                return "minus";
+
+              case '*':
+                return "times";
+
+              case '/':
+                return "rdivide";
+
+              case '^':
+                return "power";
+
+              case '\\':
+                return "ldivide";
+
+              default:
+                break;
+              }
+          }
+        else if (name[1] == '=')
+          {
+            switch (name[0])
+              {
+              case '<':
+                return "le";
+
+              case '=':
+                return "eq";
+
+              case '>':
+                return "ge";
+
+              case '~':
+              case '!':
+                return "ne";
+
+              default:
+                break;
+              }
+          }
+        else if (name == "**")
+          return "mpower";
+      }
+    else if (len == 1)
+      {
+        switch (name[0])
+          {
+          case '~':
+          case '!':
+            return "not";
+
+          case '\'':
+            return "ctranspose";
+
+          case '+':
+            return "plus";
+
+          case '-':
+            return "minus";
+
+          case '*':
+            return "mtimes";
+
+          case '/':
+            return "mrdivide";
+
+          case '^':
+            return "mpower";
+
+          case '\\':
+            return "mldivide";
+
+          case '<':
+            return "lt";
+
+          case '>':
+            return "gt";
+
+          case '&':
+            return "and";
+
+          case '|':
+            return "or";
+
+          default:
+            break;
+          }
+      }
+
+    return name;
+  }
+
+  octave_value
+  tree_evaluator::make_fcn_handle (const std::string& name)
+  {
+    octave_value retval;
+
+    std::string fcn_name = get_operator_function_name (name);
+
+    if (fcn_name != name)
+      return octave_value (new octave_fcn_handle (fcn_name));
+
+    symbol_scope curr_scope = get_current_scope ();
+
+    // FCN_HANDLE: CONTEXT DEPENDENT
+    octave_fcn_handle *fh = new octave_fcn_handle (curr_scope, name);
+
+    std::string dispatch_class;
+
+    if (is_class_method_executing (dispatch_class)
+        || is_class_constructor_executing (dispatch_class))
+      fh->set_dispatch_class (dispatch_class);
+
+    return octave_value (fh);
+  }
+
+/*
+%!test
+%! x = {".**", "power";
+%!      ".'", "transpose";
+%!      ".+", "plus";
+%!      ".-", "minus";
+%!      ".*", "times";
+%!      "./", "rdivide";
+%!      ".^", "power";
+%!      ".\\", "ldivide";
+%!      "<=", "le";
+%!      "==", "eq";
+%!      ">=", "ge";
+%!      "!=", "ne";
+%!      "~=", "ne";
+%!      "**", "mpower";
+%!      "~", "not";
+%!      "!", "not";
+%!      "\'", "ctranspose";
+%!      "+", "plus";
+%!      "-", "minus";
+%!      "*", "mtimes";
+%!      "/", "mrdivide";
+%!      "^", "mpower";
+%!      "\\", "mldivide";
+%!      "<", "lt";
+%!      ">", "gt";
+%!      "&", "and";
+%!      "|", "or"};
+%! for i = 1:rows (x)
+%!   assert (functions (str2func (x{i,1})).function, x{i,2});
+%! endfor
+*/
+
   octave_value
   tree_evaluator::evaluate (tree_decl_elt *elt)
   {

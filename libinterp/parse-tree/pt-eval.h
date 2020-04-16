@@ -298,6 +298,8 @@ namespace octave
 
     Matrix ignored_fcn_outputs (void) const;
 
+    octave_value make_fcn_handle (const std::string& nm);
+
     octave_value evaluate (tree_decl_elt *);
 
     void install_variable (const std::string& name,

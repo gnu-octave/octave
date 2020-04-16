@@ -860,8 +860,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         if (ftype == "simple" || ftype == "scopedfunction")
           {
             if (fpath.empty ())
-              // We have a builtin function
-              tc = make_fcn_handle (interp, fname);
+              {
+                octave::tree_evaluator& tw = interp.get_evaluator ();
+
+                // We have a builtin function
+                // XXX FCN_HANDLE: SIMPLE/SCOPED
+                tc = tw.make_fcn_handle (fname);
+              }
             else
               {
                 std::string mroot = m0.contents ("matlabroot").string_value ();

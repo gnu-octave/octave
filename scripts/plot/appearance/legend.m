@@ -1063,8 +1063,8 @@ endfunction
 
 function update_marker_cb (h)
 
-  if (get (h, "markersize") > 3)
-    set (h, "markersize", 3);
+  if (get (h, "markersize") > 8)
+    set (h, "markersize", 8);
   endif
 
 endfunction

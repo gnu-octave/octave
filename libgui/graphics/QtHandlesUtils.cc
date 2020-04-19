@@ -288,8 +288,12 @@ namespace QtHandles
           int w = qMin (dv(1), static_cast<octave_idx_type> (width));
           int h = qMin (dv(0), static_cast<octave_idx_type> (height));
 
-          int x_off = (w < width ? (width - w) / 2 : 0);
-          int y_off = (h < height ? (height - h) / 2 : 0);
+          // If size mismatch, take data from center of CDATA and
+          // place in in center of QImage.
+          int x_img_off = (w < width ? (width - w) / 2 : 0);
+          int y_img_off = (h < height ? (height - h) / 2 : 0);
+          int x_cdat_off = (dv(1) > w ? (dv(1) - w) / 2 : 0);
+          int y_cdat_off = (dv(0) > h ? (dv(0) - h) / 2 : 0);
 
           QImage img (width, height, QImage::Format_ARGB32);
           img.fill (qRgba (0, 0, 0, 0));
@@ -298,23 +302,25 @@ namespace QtHandles
             {
               uint8NDArray d = v.uint8_array_value ();
 
-              for (int i = 0; i < w; i++)
-                for (int j = 0; j < h; j++)
+              for (int i = x_cdat_off; i < w + x_cdat_off; i++)
+                for (int j = y_cdat_off; j < h + y_cdat_off; j++)
                   {
                     int r = d(j, i, 0);
                     int g = d(j, i, 1);
                     int b = d(j, i, 2);
                     int a = 255;
 
-                    img.setPixel (x_off + i, y_off + j, qRgba (r, g, b, a));
+                    img.setPixel (x_img_off + i - x_cdat_off,
+                                  y_img_off + j - y_cdat_off,
+                                  qRgba (r, g, b, a));
                   }
             }
           else if (v.is_single_type ())
             {
               FloatNDArray f = v.float_array_value ();
 
-              for (int i = 0; i < w; i++)
-                for (int j = 0; j < h; j++)
+              for (int i = x_cdat_off; i < w + x_cdat_off; i++)
+                for (int j = y_cdat_off; j < h + y_cdat_off; j++)
                   {
                     float r = f(j, i, 0);
                     float g = f(j, i, 1);
@@ -322,7 +328,8 @@ namespace QtHandles
                     int a = (octave::math::isnan (r) || octave::math::isnan (g)
                              || octave::math::isnan (b) ? 0 : 255);
 
-                    img.setPixel (x_off + i, y_off + j,
+                    img.setPixel (x_img_off + i - x_cdat_off,
+                                  y_img_off + j - y_cdat_off,
                                   qRgba (octave::math::round (r * 255),
                                          octave::math::round (g * 255),
                                          octave::math::round (b * 255),
@@ -333,8 +340,8 @@ namespace QtHandles
             {
               NDArray d = v.array_value ();
 
-              for (int i = 0; i < w; i++)
-                for (int j = 0; j < h; j++)
+              for (int i = x_cdat_off; i < w + x_cdat_off; i++)
+                for (int j = y_cdat_off; j < h + y_cdat_off; j++)
                   {
                     double r = d(j, i, 0);
                     double g = d(j, i, 1);
@@ -342,7 +349,8 @@ namespace QtHandles
                     int a = (octave::math::isnan (r) || octave::math::isnan (g)
                              || octave::math::isnan (b) ? 0 : 255);
 
-                    img.setPixel (x_off + i, y_off + j,
+                    img.setPixel (x_img_off + i - x_cdat_off,
+                                  y_img_off + j - y_cdat_off,
                                   qRgba (octave::math::round (r * 255),
                                          octave::math::round (g * 255),
                                          octave::math::round (b * 255),

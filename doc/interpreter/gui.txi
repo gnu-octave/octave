@@ -141,6 +141,8 @@ programs that do.  The functions @code{uiwait}, @code{uiresume}, and
 
 @DOCSTRING(isguirunning)
 
+@DOCSTRING(getpixelposition)
+
 @DOCSTRING(movegui)
 
 @DOCSTRING(openvar)

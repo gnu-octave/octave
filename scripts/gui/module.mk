@@ -17,6 +17,7 @@ FCN_FILE_DIRS += \
   %reldir%/dialog.m \
   %reldir%/errordlg.m \
   %reldir%/getappdata.m \
+  %reldir%/getpixelposition.m \
   %reldir%/guidata.m \
   %reldir%/guihandles.m \
   %reldir%/helpdlg.m \

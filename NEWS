@@ -96,6 +96,7 @@ property which is hidden now.
 
 ### Alphabetical list of new functions added in Octave 7
 
+* `getpixelposition`
 * `endsWith`
 * `rng`
 * `startsWith`

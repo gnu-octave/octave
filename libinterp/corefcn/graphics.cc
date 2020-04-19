@@ -14661,6 +14661,42 @@ uint8 array.
   return ovl (go.get_toolkit ().get_pixels (go));
 }
 
+DEFMETHOD (__get_position__, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{pos} =} __get_position__ (@var{h}, @var{units})
+Internal function.
+
+Return the position of the graphics object @var{h} in the specified
+@var{units}.
+@end deftypefn */)
+{
+  if (args.length () != 2)
+    print_usage ();
+
+  double h
+    = args(0).xdouble_value ("__get_position__: H must be a graphics handle");
+
+  std::string units
+    = args(1).xstring_value ("__get_position__: UNITS must be a string");
+
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  graphics_object go = gh_mgr.get_object (h);
+
+  if (h == 0 || ! go)
+    error ("__get_position__: H must be a handle to a valid graphics object");
+
+  graphics_object parent_go = gh_mgr.get_object (go.get_parent ());
+  Matrix bbox = parent_go.get_properties ().get_boundingbox (true)
+                .extract_n (0, 2, 1, 2);
+
+  Matrix pos = convert_position (go.get ("position").matrix_value (),
+                                 go.get ("units").string_value (),
+                                 units, bbox);
+
+  return ovl (pos);
+}
+
 DEFUN (__get_system_fonts__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{font_struct} =} __get_system_fonts__ ()

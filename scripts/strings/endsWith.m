@@ -26,101 +26,92 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{retval} =} endsWith (@var{str}, @var{pattern})
 ## @deftypefnx {} {@var{retval} =} endsWith (@var{str}, @var{pattern}, "IgnoreCase", @var{confirm_ignore})
-## Checks that a cell array of strings ends with a pattern
+## @deftypefnx {} {@var{retval} =} endsWith (@var{str}, @var{pattern}, "IgnoreCase", @var{ignore_case})
+## Check whether string(s) end with pattern(s).
 ##
-## Return an array of logical values that indicates which strings in the cell
-## array of strings --- or the string --- @var{str} ends with a string in the
-## cell array of strings --- or the string --- @var{pattern}.
+## Return an array of logical values that indicates which string(s) in the
+## input @var{str} (a single string or cell array of strings) end with
+## the input @var{pattern} (a single string or cell array of strings).
 ##
-## If the parameter @qcode{"IgnoreCase"} is set to true, then the function
-## will ignore the letter case of @var{str} and @var{pattern}.  By default, the
-## comparison is case sensitive.
+## If the value of the parameter @qcode{"IgnoreCase"} is true, then the
+## function will ignore the letter case of @var{str} and @var{pattern}.  By
+## default, the comparison is case sensitive.
 ##
 ## Examples:
 ##
 ## @example
+## @group
 ## ## one string and one pattern while considering case
 ## endsWith ("hello", "lo")
 ##       @result{}  1
+## @end group
 ##
+## @group
 ## ## one string and one pattern while ignoring case
 ## endsWith ("hello", "LO", "IgnoreCase", true)
 ##       @result{}  1
+## @end group
 ##
+## @group
 ## ## multiple strings and multiple patterns while considering case
 ## endsWith (@{"tests.txt", "mydoc.odt", "myFunc.m", "results.pptx"@},
 ##           @{".docx", ".odt", ".txt"@})
 ##       @result{}  1  1  0  0
+## @end group
 ##
+## @group
 ## ## multiple strings and one pattern while considering case
 ## endsWith (@{"TESTS.TXT", "mydoc.odt", "result.txt", "myFunc.m"@},
 ##           ".txt", "IgnoreCase", false)
 ##       @result{}  0  0  1  0
+## @end group
 ##
+## @group
 ## ## multiple strings and one pattern while ignoring case
 ## endsWith (@{"TESTS.TXT", "mydoc.odt", "result.txt", "myFunc.m"@},
 ##           ".txt", "IgnoreCase", true)
 ##       @result{}  1  0  1  0
+## @end group
 ## @end example
 ##
-## @seealso{startsWith, strcmp, strcmpi}
+## @seealso{startsWith, regexp, strncmp, strncmpi}
 ## @end deftypefn
 
-function retval = endsWith (str, pattern, ignore_case, confirm_ignore)
-  if (! (nargin == 2 || nargin == 4))
+function retval = endsWith (str, pattern, IgnoreCase, ignore_case)
+
+  if (nargin != 2 && nargin != 4)
     print_usage ();
   endif
 
-  ## check input str and pattern
-  if (! (iscellstr (str) || ischar (str))
-      || ! (iscellstr (pattern) || ischar (pattern)))
-    error ("endsWith: arguments must be strings or cell arrays of strings");
-  else
-    str = cellstr (str);
-    pattern = cellstr (pattern);
+  ## Validate input str and pattern
+  if (! (iscellstr (str) || ischar (str)))
+    error ("endsWith: STR must be a string or cell array of strings");
   endif
-
-  retval = zeros (size (str));
+  if (! (iscellstr (pattern) || ischar (pattern)))
+    error ("endsWith: PATTERN must be a string or cell array of strings");
+  endif
 
   ## reverse str and pattern
-  for j = 1:numel (str)
-    str{j} = flip (str{j});
-  endfor
-  for j = 1:numel (pattern)
-    pattern{j} = flip (pattern{j});
-  endfor
+  str = cellfun (@flip, cellstr (str), "UniformOutput", false);
+  pattern = cellfun (@flip, cellstr (pattern), "UniformOutput", false);
 
   if (nargin == 2)
-    IgnoreFlag = false;
-  endif
-
-  if (nargin == 4)
-    ## checks third input argument
-    if (! ischar (ignore_case) || isempty (ignore_case))
+    ignore_case = false;
+  else
+    ## For Matlab compatibility accept any abbreviation of 3rd argument
+    if (! ischar (IgnoreCase) || isempty (IgnoreCase)
+        || ! strncmpi (IgnoreCase, "IgnoreCase", length (IgnoreCase)))
       error ('endsWith: third input must be "IgnoreCase"');
     endif
 
-    ## to be compatible with MATLAB
-    ## (MATLAB accepts the command with "I", "i", "Ig", "IG" ..etc )
-    if (! strncmpi (ignore_case, "IgnoreCase", length (ignore_case)))
-      error (['endsWith: invalid argument "%s"; ', ...
-              'third input must be "IgnoreCase"'], ignore_case);
+    if (! isscalar (ignore_case) || ! isreal (ignore_case))
+      error ('endsWith: "IgnoreCase" value must be a logical scalar');
     endif
-
-    if (numel (confirm_ignore) != 1)
-      error ("endsWith: 'IgnoreCase' value must be a logical scalar");
-    endif
-
-    ## to be compatible with MATLAB
-    ## (MATLAB accepts the command with true, 5, 1 ..etc  )
-    try
-      IgnoreFlag = logical (confirm_ignore);
-    catch
-      error ("endsWith: 'IgnoreCase' value must be a logical scalar");
-    end_try_catch
+    ignore_case = logical (ignore_case);
   endif
 
-  if (IgnoreFlag)
+  retval = false (size (str));
+  if (ignore_case)
     for j = 1:numel (pattern)
       retval |= strncmpi (str, pattern{j}, length (pattern{j}));
     endfor
@@ -136,56 +127,48 @@ endfunction
 ## Test simple use with one string and one pattern
 %!assert (endsWith ("hello", "lo"))
 %!assert (! endsWith ("hello", "LO"))
-%!assert (endsWith ("hello", "LO", "i", 5)) #  check compatibility with MATLAB
+%!assert (endsWith ("hello", "LO", "i", 5))
 %!assert (! endsWith ("hello", "no"))
 
 ## Test multiple strings with a single pattern
 %!test
-%!  str = {"myFile.odt", "results.ppt", "myCode.m"; ...
-%!         "data-analysis.ppt", "foundations.txt", "data.odt"};
-%!  pattern = ".odt";
-%!  correct_ans = [true, false, false; false, false, true];
-%!  assert (endsWith (str, pattern), correct_ans)
+%! str = {"myFile.odt", "results.ppt", "myCode.m"; ...
+%!        "data-analysis.ppt", "foundations.txt", "data.odt"};
+%! pattern = ".odt";
+%! expected = [true, false, false; false, false, true];
+%! assert (endsWith (str, pattern), expected);
 
 ## Test multiple strings with multiple patterns
 %!test
-%!  str = {"tests.txt", "mydoc.odt", "myFunc.m", "results.pptx"};
-%!  pattern = {".docx", ".odt", ".txt"};
-%!  correct_ans = [true, true, false, false];
-%!  assert (endsWith (str, pattern), correct_ans)
+%! str = {"tests.txt", "mydoc.odt", "myFunc.m", "results.pptx"};
+%! pattern = {".docx", ".odt", ".txt"};
+%! expected = [true, true, false, false];
+%! assert (endsWith (str, pattern), expected);
 
 ## Test IgnoreCase
 %!test
-%!  str = {"TESTS.TXT", "mydoc.odt", "result.txt", "myFunc.m"};
-%!  pattern = ".txt";
-%!  correct_ans_with_ignore = [true, false, true, false];
-%!  correct_ans_without_ignore = [false, false, true, false];
-%!  assert (endsWith (str, pattern, "IgnoreCase", true), ...
-%!          correct_ans_with_ignore)
-%!  assert (endsWith (str, pattern, "IgnoreCase", false), ...
-%!          correct_ans_without_ignore)
-%!  assert (endsWith (str, pattern, "I", 500), ...
-%!          correct_ans_with_ignore) #  check compatibility with MATLAB
-%!  assert (endsWith (str, pattern, "iG", 0), ...
-%!          correct_ans_without_ignore) #  check compatibility with MATLAB
+%! str = {"TESTS.TXT", "mydoc.odt", "result.txt", "myFunc.m"};
+%! pattern = ".txt";
+%! expected_ignore = [true, false, true, false];
+%! expected_wo_ignore = [false, false, true, false];
+%! assert (endsWith (str, pattern, "IgnoreCase", true), expected_ignore);
+%! assert (endsWith (str, pattern, "IgnoreCase", false), expected_wo_ignore);
+%! assert (endsWith (str, pattern, "I", 500), expected_ignore);
+%! assert (endsWith (str, pattern, "iG", 0), expected_wo_ignore);
 
-## Test error detection
-%!error <must be strings or cell arrays of strings> endsWith (152, "hi")
-
-%!error <must be strings or cell arrays of strings> endsWith ("hello", 152)
-
-%!error <'IgnoreCase' value must be a logical scalar> ...
-%!      endsWith ("hello", "hi", "i", "true")
-
-%!error <'IgnoreCase' value must be a logical scalar> ...
-%!      endsWith ("hello", "hi", "i", [1, 2])
-
-%!error <invalid argument "ignire"; third input must be> ...
-%!      endsWith ("hello", "he", "ignire", 1)
-
-%!error <invalid argument "IgnoreCasefd"; third input must be> ...
-%!      endsWith ("hello", "he", "IgnoreCasefd", 1)
-
-%!error <third input must be "IgnoreCase"> endsWith ("hello", "he", "", 1)
-
-%!error <third input must be "IgnoreCase"> endsWith ("hello", "he", 5, 1)
+## Test input validation
+%!error endsWith ()
+%!error endsWith ("A")
+%!error endsWith ("A", "B", "C")
+%!error endsWith ("A", "B", "C", "D", "E")
+%!error <STR must be a string> endsWith (152, "hi")
+%!error <STR must be a .* cell array of strings> endsWith ({152}, "hi")
+%!error <PATTERN must be a string> endsWith ("hi", 152)
+%!error <PATTERN must be a .* cell array of strings> endsWith ("hi", {152})
+%!error <third input must be "IgnoreCase"> endsWith ("hello", "lo", 1, 1)
+%!error <third input must be "IgnoreCase"> endsWith ("hello", "lo", "", 1)
+%!error <third input must be "IgnoreCase"> endsWith ("hello", "lo", "foo", 1)
+%!error <"IgnoreCase" value must be a logical scalar>
+%! endsWith ("hello", "hi", "i", "true");
+%!error <"IgnoreCase" value must be a logical scalar>
+%! endsWith ("hello", "hi", "i", {true});

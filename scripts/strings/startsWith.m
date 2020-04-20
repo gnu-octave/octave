@@ -25,94 +25,91 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{retval} =} startsWith (@var{str}, @var{pattern})
-## @deftypefnx {} {@var{retval} =} startsWith (@var{str}, @var{pattern}, "IgnoreCase", @var{confirm_ignore})
-## Checks that a cell array of strings starts with a pattern
+## @deftypefnx {} {@var{retval} =} startsWith (@var{str}, @var{pattern}, "IgnoreCase", @var{ignore_case})
+## Check whether string(s) start with pattern(s).
 ##
-## Return an array of logical values that indicates which strings in the cell
-## array of strings --- or the string --- @var{str} starts with a string in the
-## cell array of strings --- or the string --- @var{pattern}
+## Return an array of logical values that indicates which string(s) in the
+## input @var{str} (a single string or cell array of strings) begin with
+## the input @var{pattern} (a single string or cell array of strings).
 ##
-## If the parameter @qcode{"IgnoreCase"} is set to true, then the function
-## will ignore the letter case of @var{str} and @var{pattern}.  By default, the
-## comparison is case sensitive.
+## If the value of the parameter @qcode{"IgnoreCase"} is true, then the
+## function will ignore the letter case of @var{str} and @var{pattern}.  By
+## default, the comparison is case sensitive.
 ##
 ## Examples:
 ##
 ## @example
+## @group
 ## ## one string and one pattern while considering case
 ## startsWith ("hello", "he")
 ##       @result{}  1
+## @end group
 ##
+## @group
 ## ## one string and one pattern while ignoring case
 ## startsWith ("hello", "HE", "IgnoreCase", true)
 ##       @result{}  1
+## @end group
 ##
+## @group
 ## ## multiple strings and multiple patterns while considering case
 ## startsWith (@{"lab work.pptx", "data.txt", "foundations.ppt"@},
 ##             @{"lab", "data"@})
 ##       @result{}  1  1  0
+## @end group
 ##
+## @group
 ## ## multiple strings and one pattern while considering case
 ## startsWith (@{"DATASHEET.ods", "data.txt", "foundations.ppt"@},
 ##             "data", "IgnoreCase", false)
 ##       @result{}  0  1  0
+## @end group
 ##
+## @group
 ## ## multiple strings and one pattern while ignoring case
 ## startsWith (@{"DATASHEET.ods", "data.txt", "foundations.ppt"@},
 ##             "data", "IgnoreCase", true)
 ##       @result{}  1  1  0
+## @end group
 ## @end example
 ##
-## @seealso{endsWith, strcmp, strcmpi}
+## @seealso{endsWith, regexp, strncmp, strncmpi}
 ## @end deftypefn
 
-function retval = startsWith (str, pattern, ignore_case, confirm_ignore)
-  if (! (nargin == 2 || nargin == 4))
+function retval = startsWith (str, pattern, IgnoreCase, ignore_case)
+
+  if (nargin != 2 && nargin != 4)
     print_usage ();
   endif
 
-  ## check input str and pattern
-  if (! (iscellstr (str) || ischar (str))
-      || ! (iscellstr (pattern) || ischar (pattern)))
-    error ("startsWith: arguments must be strings or cell arrays of strings");
-  else
-    str = cellstr (str);
-    pattern = cellstr (pattern);
+  ## Validate input str and pattern
+  if (! (iscellstr (str) || ischar (str)))
+    error ("startsWith: STR must be a string or cell array of strings");
+  endif
+  if (! (iscellstr (pattern) || ischar (pattern)))
+    error ("startsWith: PATTERN must be a string or cell array of strings");
   endif
 
-  retval = zeros (size (str));
+  str = cellstr (str);
+  pattern = cellstr (pattern);
 
   if (nargin == 2)
-    IgnoreFlag = false;
-  endif
-
-  if (nargin == 4)
-    ## check third input argument
-    if (! ischar (ignore_case) || isempty (ignore_case))
+    ignore_case = false;
+  else
+    ## For Matlab compatibility accept any abbreviation of 3rd argument
+    if (! ischar (IgnoreCase) || isempty (IgnoreCase)
+        || ! strncmpi (IgnoreCase, "IgnoreCase", length (IgnoreCase)))
       error ('startsWith: third input must be "IgnoreCase"');
     endif
 
-    ## to be compatible with MATLAB
-    ## (MATLAB accepts the command with "I", "i", "Ig", "IG" ..etc )
-    if (! strncmpi (ignore_case, "IgnoreCase", length (ignore_case)))
-      error (['startsWith: invalid argument "%s"; ', ...
-              'third input must be "IgnoreCase"'], ignore_case);
+    if (! isscalar (ignore_case) || ! isreal (ignore_case))
+      error ('startsWith: "IgnoreCase" value must be a logical scalar');
     endif
-
-    if (! isscalar (confirm_ignore))
-      error ("startsWith: 'IgnoreCase' value must be a logical scalar.");
-    endif
-
-    ## to be compatible with MATLAB
-    ## (MATLAB accepts the command with true, 5, 1 ..etc  )
-    try
-      IgnoreFlag = logical (confirm_ignore);
-    catch
-      error ("startsWith: 'IgnoreCase' value must be a logical scalar");
-    end_try_catch
+    ignore_case = logical (ignore_case);
   endif
 
-  if (IgnoreFlag)
+  retval = false (size (str));
+  if (ignore_case)
     for j = 1:numel (pattern)
       retval |= strncmpi (str, pattern{j}, length (pattern{j}));
     endfor
@@ -128,56 +125,48 @@ endfunction
 ## Test simple use with one string and one pattern
 %!assert (startsWith ("hello", "he"))
 %!assert (! startsWith ("hello", "HE"))
-%!assert (startsWith ("hello", "HE", "i", 5)) #  check compatibility with MATLAB
+%!assert (startsWith ("hello", "HE", "i", 5))
 %!assert (! startsWith ("hello", "no"))
 
 ## Test multiple strings with a single pattern
 %!test
-%!  str = {"data science", "dataSheet.ods", "myFunc.m"; "foundations.ppt", ...
-%!         "results.txt", "myFile.odt"};
-%!  pattern = "data";
-%!  correct_ans = [true, true, false; false, false, false];
-%!  assert (startsWith (str, pattern), correct_ans)
+%! str = {"data science", "dataSheet.ods", "myFunc.m"; "foundations.ppt", ...
+%!        "results.txt", "myFile.odt"};
+%! pattern = "data";
+%! expected = [true, true, false; false, false, false];
+%! assert (startsWith (str, pattern), expected);
 
 ## Test multiple strings with multiple patterns
 %!test
-%!  str = {"lab work.pptx", "myFile.odt", "data.txt", "foundations.ppt"};
-%!  pattern = {"lab", "data"};
-%!  correct_ans = [true, false, true, false];
-%!  assert (startsWith (str, pattern), correct_ans)
+%! str = {"lab work.pptx", "myFile.odt", "data.txt", "foundations.ppt"};
+%! pattern = {"lab", "data"};
+%! expected = [true, false, true, false];
+%! assert (startsWith (str, pattern), expected);
 
 ## Test IgnoreCase
 %!test
-%!  str = {"DATASHEET.ods", "myFile.odt", "data.txt", "foundations.ppt"};
-%!  pattern = "data";
-%!  correct_ans_with_ignore = [true, false, true, false];
-%!  correct_ans_without_ignore = [false, false, true, false];
-%!  assert (startsWith (str, pattern, "IgnoreCase", true), ...
-%!          correct_ans_with_ignore)
-%!  assert (startsWith (str, pattern, "IgnoreCase", false), ...
-%!          correct_ans_without_ignore)
-%!  assert (startsWith (str, pattern, "I", 500), ...
-%!          correct_ans_with_ignore)  #  check compatibility with MATLAB
-%!  assert (startsWith (str, pattern, "iG", 0), ...
-%!          correct_ans_without_ignore) #  check compatibility with MATLAB
+%! str = {"DATASHEET.ods", "myFile.odt", "data.txt", "foundations.ppt"};
+%! pattern = "data";
+%! expected_ignore = [true, false, true, false];
+%! expected_wo_ignore = [false, false, true, false];
+%! assert (startsWith (str, pattern, "IgnoreCase", true), expected_ignore);
+%! assert (startsWith (str, pattern, "IgnoreCase", false), expected_wo_ignore);
+%! assert (startsWith (str, pattern, "I", 500), expected_ignore);
+%! assert (startsWith (str, pattern, "iG", 0), expected_wo_ignore);
 
-## Test error detection
-%!error <must be strings or cell arrays of strings> startsWith (152, "hi")
-
-%!error <must be strings or cell arrays of strings> startsWith ("hello", 152)
-
-%!error <'IgnoreCase' value must be a logical scalar> ...
-%!      startsWith ("hello", "hi", "i", "true")
-
-%!error <'IgnoreCase' value must be a logical scalar> ...
-%!      startsWith ("hello", "hi", "i", [1, 2])
-
-%!error <invalid argument "ignire"; third input must be> ...
-%!      startsWith ("hello", "he", "ignire", 1)
-
-%!error <invalid argument "IgnoreCasefd"; third input must be> ...
-%!      startsWith ("hello", "he", "IgnoreCasefd", 1)
-
+## Test input validation
+%!error startsWith ()
+%!error startsWith ("A")
+%!error startsWith ("A", "B", "C")
+%!error startsWith ("A", "B", "C", "D", "E")
+%!error <STR must be a string> startsWith (152, "hi")
+%!error <STR must be a .* cell array of strings> startsWith ({152}, "hi")
+%!error <PATTERN must be a string> startsWith ("hi", 152)
+%!error <PATTERN must be a .* cell array of strings> startsWith ("hi", {152})
+%!error <third input must be "IgnoreCase"> startsWith ("hello", "he", 1, 1)
 %!error <third input must be "IgnoreCase"> startsWith ("hello", "he", "", 1)
-
-%!error <third input must be "IgnoreCase"> startsWith ("hello", "he", {5}, 1)
+%!error <third input must be "IgnoreCase"> startsWith ("hello", "he", "foo", 1)
+%!error <"IgnoreCase" value must be a logical scalar>
+%! startsWith ("hello", "hi", "i", "true");
+%!error <"IgnoreCase" value must be a logical scalar>
+%! startsWith ("hello", "hi", "i", {true});

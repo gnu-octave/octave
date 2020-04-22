@@ -97,6 +97,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <tlhelp32.h>
+#include <psapi.h>
 #include <shellapi.h>
 
 #endif
@@ -279,6 +280,101 @@ On non-Windows platforms, this function fails with an error.
   octave_unused_parameter (args);
   error ("__is_elevated_process__: "
          "Function is only supported on Windows platforms.");
+#endif
+}
+
+DEFUN (__wmemory__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{proc}, @var{sys}] =} __wmemory__ ()
+Return memory information on Windows.
+
+On non-Windows platforms, this function fails with an error.
+@end deftypefn */)
+{
+#if defined (OCTAVE_USE_WINDOWS_API)
+  if (args.length () != 0)
+    print_usage ();
+
+  // Get memory usage of the current process
+  octave_scalar_map proc_struct;
+
+  HANDLE h_proc = GetCurrentProcess ();
+  if (h_proc == nullptr)
+    error ("__wmemory__: Couldn't open handle to own process.");
+
+  PROCESS_MEMORY_COUNTERS proc_mem_count;
+  if (GetProcessMemoryInfo (h_proc, &proc_mem_count, sizeof (proc_mem_count)))
+    {
+      proc_struct.setfield ("PageFaultCount",
+                            proc_mem_count.PageFaultCount);
+      proc_struct.setfield ("PeakWorkingSetSize",
+                            proc_mem_count.PeakWorkingSetSize);
+      proc_struct.setfield ("WorkingSetSize",
+                            proc_mem_count.WorkingSetSize);
+      proc_struct.setfield ("QuotaPeakPagedPoolUsage",
+                            proc_mem_count.QuotaPeakPagedPoolUsage);
+      proc_struct.setfield ("QuotaPagedPoolUsage",
+                            proc_mem_count.QuotaPagedPoolUsage);
+      proc_struct.setfield ("QuotaPeakNonPagedPoolUsage",
+                            proc_mem_count.QuotaPeakNonPagedPoolUsage);
+      proc_struct.setfield ("QuotaNonPagedPoolUsage",
+                            proc_mem_count.QuotaNonPagedPoolUsage);
+      proc_struct.setfield ("PagefileUsage",
+                            proc_mem_count.PagefileUsage);
+      proc_struct.setfield ("PeakPagefileUsage",
+                            proc_mem_count.PeakPagefileUsage);
+    }
+  else
+    {
+      proc_struct.setfield ("PageFaultCount", 0);
+      proc_struct.setfield ("PeakWorkingSetSize", 0);
+      proc_struct.setfield ("WorkingSetSize", 0);
+      proc_struct.setfield ("QuotaPeakPagedPoolUsage", 0);
+      proc_struct.setfield ("QuotaPagedPoolUsage", 0);
+      proc_struct.setfield ("QuotaPeakNonPagedPoolUsage", 0);
+      proc_struct.setfield ("QuotaNonPagedPoolUsage", 0);
+      proc_struct.setfield ("PagefileUsage", 0);
+      proc_struct.setfield ("PeakPagefileUsage", 0);
+    }
+
+  CloseHandle (h_proc);
+
+  // Get system memory usage
+  octave_scalar_map sys_struct;
+
+  MEMORYSTATUSEX mem_stat;
+
+  mem_stat.dwLength = sizeof (mem_stat);
+
+  if (GlobalMemoryStatusEx (&mem_stat))
+    {
+      sys_struct.setfield ("MemoryLoad", mem_stat.dwMemoryLoad);
+      sys_struct.setfield ("TotalPhys", mem_stat.ullTotalPhys);
+      sys_struct.setfield ("AvailPhys", mem_stat.ullAvailPhys);
+      sys_struct.setfield ("TotalPageFile", mem_stat.ullTotalPageFile);
+      sys_struct.setfield ("AvailPageFile", mem_stat.ullAvailPageFile);
+      sys_struct.setfield ("TotalVirtual", mem_stat.ullTotalVirtual);
+      sys_struct.setfield ("AvailVirtual", mem_stat.ullAvailVirtual);
+      sys_struct.setfield ("AvailExtendedVirtual",
+                           mem_stat.ullAvailExtendedVirtual);
+    }
+  else
+    {
+      sys_struct.setfield ("MemoryLoad", 0);
+      sys_struct.setfield ("TotalPhys", 0);
+      sys_struct.setfield ("AvailPhys", 0);
+      sys_struct.setfield ("TotalPageFile", 0);
+      sys_struct.setfield ("AvailPageFile", 0);
+      sys_struct.setfield ("TotalVirtual", 0);
+      sys_struct.setfield ("AvailVirtual", 0);
+      sys_struct.setfield ("AvailExtendedVirtual", 0);
+    }
+
+  return ovl (proc_struct, sys_struct);
+
+#else
+  octave_unused_parameter (args);
+  error ("__wmemory__: Function is only supported on Windows platforms.");
 #endif
 }
 

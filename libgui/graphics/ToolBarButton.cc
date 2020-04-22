@@ -49,7 +49,7 @@ namespace QtHandles
     action->setVisible (tp.is_visible ());
 
     // Get the icon data from cdata or as a named icon
-    QImage img = Utils::makeImageFromCData (tp.get_cdata (), 32, 32);
+    QImage img = Utils::makeImageFromCData (tp.get_cdata (), 24, 24);
 
     if (img.width () == 0)
       {
@@ -104,7 +104,7 @@ namespace QtHandles
       case T::properties::ID_CDATA:
         {
           // Get the icon data from cdata or as a named icon
-          QImage img = Utils::makeImageFromCData (tp.get_cdata (), 32, 32);
+          QImage img = Utils::makeImageFromCData (tp.get_cdata (), 24, 24);
 
           if (img.width () == 0)
             {

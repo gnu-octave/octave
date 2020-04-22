@@ -25,7 +25,6 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{retval} =} endsWith (@var{str}, @var{pattern})
-## @deftypefnx {} {@var{retval} =} endsWith (@var{str}, @var{pattern}, "IgnoreCase", @var{confirm_ignore})
 ## @deftypefnx {} {@var{retval} =} endsWith (@var{str}, @var{pattern}, "IgnoreCase", @var{ignore_case})
 ## Check whether string(s) end with pattern(s).
 ##

@@ -120,6 +120,8 @@ namespace QtHandles
     edit->setAcceptRichText (false);
     edit->setPlainText (Utils::fromStringVector
                         (up.get_string_vector ()).join ("\n"));
+    edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
+                                            up.get_verticalalignment ()));
 
     connect (edit, SIGNAL (textChanged (void)),
              SLOT (textChanged (void)));
@@ -206,6 +208,12 @@ namespace QtHandles
       case uicontrol::properties::ID_STRING:
         edit->setPlainText (Utils::fromStringVector
                             (up.get_string_vector ()).join ("\n"));
+        return true;
+
+      case uicontrol::properties::ID_HORIZONTALALIGNMENT:
+      case uicontrol::properties::ID_VERTICALALIGNMENT:
+        edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
+                                                up.get_verticalalignment ()));
         return true;
 
       case uicontrol::properties::ID_MIN:

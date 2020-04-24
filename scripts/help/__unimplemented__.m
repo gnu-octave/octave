@@ -1044,7 +1044,6 @@ function rlist = missing_functions ()
   "odextend",
   "openFile",
   "opengl",
-  "ordqz",
   "outdegree",
   "outerjoin",
   "pad",

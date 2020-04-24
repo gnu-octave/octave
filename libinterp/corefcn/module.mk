@@ -221,6 +221,7 @@ COREFCN_SRC = \
   %reldir%/oct-tex-lexer.ll \
   %reldir%/oct-tex-parser.h \
   %reldir%/oct-tex-parser.yy \
+  %reldir%/ordqz.cc \
   %reldir%/ordschur.cc \
   %reldir%/pager.cc \
   %reldir%/pinv.cc \

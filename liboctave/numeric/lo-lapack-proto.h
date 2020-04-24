@@ -1640,6 +1640,32 @@ extern "C"
                              const F77_INT& LIWORK,
                              F77_INT& INFO);
 
+  F77_RET_T
+  F77_FUNC (ztgsen, ZTGSEN) (const F77_INT& IJOB,
+                             const F77_LOGICAL& WANTQ,
+                             const F77_LOGICAL& WANTZ,
+                             const F77_LOGICAL *SELECT,
+                             const F77_INT& N,
+                             F77_DBLE_CMPLX *A,
+                             const F77_INT& LDA,
+                             F77_DBLE_CMPLX *B,
+                             const F77_INT& LDB,
+                             F77_DBLE_CMPLX *ALPHA,
+                             F77_DBLE_CMPLX *BETA,
+                             F77_DBLE_CMPLX *Q,
+                             const F77_INT& LDQ,
+                             F77_DBLE_CMPLX *Z,
+                             const F77_INT& LDZ,
+                             F77_INT& M,
+                             F77_DBLE& PL,
+                             F77_DBLE& PR,
+                             F77_DBLE *DIF,
+                             F77_DBLE_CMPLX *WORK,
+                             const F77_INT& LWORK,
+                             F77_INT *IWORK,
+                             const F77_INT& LIWORK,
+                             F77_INT& INFO);
+
   // TRCON
 
   F77_RET_T

@@ -165,6 +165,7 @@ functionality.  By default, this warning is enabled.
 * `matlab.net.base64decode`
 * `matlab.net.base64encode`
 * `memory`
+* `ordqz`
 * `rng`
 * `startsWith`
 * `streamribbon`

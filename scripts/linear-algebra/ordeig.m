@@ -35,7 +35,7 @@
 ## appearance of the matrix @code{@var{A}-@var{lambda}*@var{B}}.  The pair
 ## @var{A}, @var{B} is usually the result of a QZ decomposition.
 ##
-## @seealso{ordschur, eig, schur, qz}
+## @seealso{ordschur, ordqz, eig, schur, qz}
 ## @end deftypefn
 
 function lambda = ordeig (A, B)

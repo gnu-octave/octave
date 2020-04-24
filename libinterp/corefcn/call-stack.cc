@@ -44,9 +44,7 @@
 #include "pager.h"
 #include "parse.h"
 #include "stack-frame.h"
-#include "stack-frame-walker.h"
 #include "syminfo.h"
-#include "syminfo-accumulator.h"
 #include "symrec.h"
 #include "symscope.h"
 #include "variables.h"
@@ -378,7 +376,7 @@ namespace octave
     stack_frame *slink = get_static_link (prev_frame);
 
     stack_frame *new_frame
-      = new scope_stack_frame (m_evaluator, scope, m_curr_frame, slink);
+      = stack_frame::create (m_evaluator, scope, m_curr_frame, slink);
 
     m_cs.push_back (new_frame);
   }
@@ -396,8 +394,8 @@ namespace octave
     stack_frame *slink = get_static_link (prev_frame);
 
     stack_frame *new_frame
-      = new user_fcn_stack_frame (m_evaluator, fcn, up_frame, m_curr_frame,
-                                  slink, closure_frames);
+      = stack_frame::create (m_evaluator, fcn, up_frame, m_curr_frame,
+                             slink, closure_frames);
 
     m_cs.push_back (new_frame);
   }
@@ -414,8 +412,8 @@ namespace octave
     stack_frame *slink = get_static_link (prev_frame);
 
     stack_frame *new_frame
-      = new script_stack_frame (m_evaluator, script, up_frame, m_curr_frame,
-                                slink);
+      = stack_frame::create (m_evaluator, script, up_frame, m_curr_frame,
+                             slink);
 
     m_cs.push_back (new_frame);
   }
@@ -432,7 +430,7 @@ namespace octave
     stack_frame *slink = get_static_link (prev_frame);
 
     stack_frame *new_frame
-      = new compiled_fcn_stack_frame (m_evaluator, fcn, m_curr_frame, slink);
+      = stack_frame::create (m_evaluator, fcn, m_curr_frame, slink);
 
     m_cs.push_back (new_frame);
   }
@@ -976,39 +974,9 @@ namespace octave
                                        bool have_regexp, bool return_list,
                                        bool verbose, const std::string& msg)
   {
-    symbol_info_accumulator sym_inf_accum (patterns, have_regexp);
-
-    m_cs[m_curr_frame]->accept (sym_inf_accum);
-
-    if (return_list)
-      {
-        if (verbose)
-          return sym_inf_accum.map_value ();
-        else
-          return Cell (string_vector (sym_inf_accum.names ()));
-      }
-    else if (! sym_inf_accum.is_empty ())
-      {
-
-        if (msg.empty ())
-          octave_stdout << "Variables visible from the current scope:\n";
-        else
-          octave_stdout << msg;
-
-        if (verbose)
-          sym_inf_accum.display (octave_stdout,
-                                 m_evaluator.whos_line_format ());
-        else
-          {
-            octave_stdout << "\n";
-            string_vector names (sym_inf_accum.names ());
-            names.list_in_columns (octave_stdout);
-          }
-
-        octave_stdout << "\n";
-      }
-
-    return octave_value ();
+    return m_cs[m_curr_frame]->who (patterns, have_regexp, return_list,
+                                    verbose, m_evaluator.whos_line_format (),
+                                    msg);
   }
 
   octave_value call_stack::do_global_who_two (const string_vector& patterns,

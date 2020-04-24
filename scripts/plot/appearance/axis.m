@@ -39,9 +39,9 @@
 ## first and second elements specify the lower and upper limits for the
 ## x-axis.  The third and fourth specify the limits for the y-axis, the fifth
 ## and sixth specify the limits for the z-axis, and the seventh and eighth
-## specify the limits for the color axis.  The special values -Inf and Inf may
-## be used to indicate that the limit should be automatically computed based
-## on the data in the axes.
+## specify the limits for the color axis.  The special values @code{-Inf} and
+## @code{Inf} may be used to indicate that the limit should be automatically
+## computed based on the data in the axes.
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.
 ##
@@ -70,8 +70,9 @@
 ## @table @asis
 ## @item  @qcode{"auto"}
 ## @itemx @qcode{"auto[xyz]"}
-## Set the specified axes to have nice limits around the data or all if no
-## axes are specified.
+## @itemx @qcode{"auto [xyz]"}
+## Set nice auto-computed limits around the data for all axes, or only
+## the specified axes.
 ##
 ## @item @qcode{"manual"}
 ## Fix the current axes limits.
@@ -90,11 +91,15 @@
 ## The following options affect the appearance of tick marks.
 ##
 ## @table @asis
-## @item @qcode{"tic[xyz]"}
+## @item  @qcode{"tic"}
+## @itemx @qcode{"tic[xyz]"}
+## @itemx @qcode{"tic [xyz]"}
 ## Turn tick marks on for all axes, or turn them on for the specified axes and
 ## off for the remainder.
 ##
-## @item @qcode{"label[xyz]"}
+## @item  @qcode{"label"}
+## @itemx @qcode{"label[xyz]"}
+## @itemx @qcode{"label [xyz]"}
 ## Turn tick labels on for all axes, or turn them on for the specified axes
 ## and off for the remainder.
 ##

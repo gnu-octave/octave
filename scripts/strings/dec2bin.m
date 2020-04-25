@@ -49,6 +49,9 @@
 ## @end group
 ## @end example
 ##
+## Programming Notes: The largest negative value that can be converted in to
+## two's complement is @code{- (flintmax () / 2)}.
+##
 ## @seealso{bin2dec, dec2base, dec2hex}
 ## @end deftypefn
 
@@ -66,10 +69,11 @@ function b = dec2bin (d, len)
   
   lt_zero_idx = (d < 0);
   if (any (lt_zero_idx))
-    if (any (d(lt_zero_idx) < intmin ("int64")))
-      error ('dec2bin: negative inputs cannot be less than intmin ("int64")');
+    ## FIXME: Need an algorithm that works with larger values such as int64.
+    if (any (d(lt_zero_idx) < -2^52))
+      error ("dec2bin: negative inputs cannot be less than -flintmax () / 2");
     elseif (any (d(lt_zero_idx) < intmin ("int32")))
-      d(lt_zero_idx) += double (intmax ("uint64")) + 1;
+      d(lt_zero_idx) += flintmax ();
     elseif (any (d < intmin ("int16")))
       d(lt_zero_idx) += double (intmax ("uint32")) + 1;
     elseif (any (d < intmin ("int8")))
@@ -101,21 +105,21 @@ endfunction
 %!assert (dec2bin (-3, 9), "011111101")
 %!assert (dec2bin (-2^7 -1), "1111111101111111")
 %!assert (dec2bin (-2^15 -1), "11111111111111110111111111111111")
-## The expected value is correct, but not what Octave generates because
-## floating point integer precision is 2^53.  Matlab gets this right.
-%!xtest
-%! assert (dec2bin (-2^31 -1),
-%!        "1111111111111111111111111111111101111111111111111111111111111111");
-%!assert (dec2bin (-2^63),
+## FIXME: Matlab generates a string that is 64 characters long
+%!assert (dec2bin (-2^31 -1),
+%!        "11111111111111111111101111111111111111111111111111111")
+%!assert (dec2bin (-2^52),
+%!        "10000000000000000000000000000000000000000000000000000")
+## FIXME: Uncomment when support for int64 is added
+%!#assert (dec2bin (-2^63),
 %!        "1000000000000000000000000000000000000000000000000000000000000000")
-## These tests also don't work because of floating point precision.
-%!xtest
+%!#test
 %! assert (dec2bin (int64 (-2^63)),
 %!        "1000000000000000000000000000000000000000000000000000000000000000");
-%!xtest
+%!#test
 %! assert (dec2bin (int64 (-2^63) -1),
 %!        "1000000000000000000000000000000000000000000000000000000000000000");
-%!xtest
+%!#test
 %! assert (dec2bin (int64 (-2^63) +1),
 %!        "1000000000000000000000000000000000000000000000000000000000000001");
 %!assert (dec2bin ([-1, -2; -3, -4]),
@@ -128,4 +132,4 @@ endfunction
 ## Test input validation
 %!error dec2bin ()
 %!error dec2bin (1, 2, 3)
-%!error <negative inputs> dec2bin (2 * double (intmin ("int64")))
+%!error <negative inputs cannot be less than> dec2bin (- flintmax ())

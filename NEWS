@@ -54,6 +54,8 @@ return the full output coordinate matrix.  Output size matches the
 size of input vectors, or in the case of an input matrix will be column
 vectors with rows corresponding to the input coordinate matrix.
 
+- The function `dec2bin` and `dec2hex` now support negative numbers.
+
 ### Alphabetical list of new functions added in Octave 7
 
 * `endsWith`

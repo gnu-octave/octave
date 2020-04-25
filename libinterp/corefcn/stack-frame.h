@@ -32,6 +32,7 @@
 #include <iosfwd>
 #include <list>
 #include <map>
+#include <memory>
 #include <string>
 
 class octave_value;
@@ -139,7 +140,8 @@ namespace octave
     stack_frame (void) = delete;
 
     stack_frame (tree_evaluator& tw, size_t index,
-                 stack_frame *static_link, stack_frame *access_link)
+                 const std::shared_ptr<stack_frame>& static_link,
+                 const std::shared_ptr<stack_frame>& access_link)
       : m_evaluator (tw), m_line (-1), m_column (-1), m_index (index),
         m_static_link (static_link), m_access_link (access_link),
         m_dispatch_class ()
@@ -148,24 +150,25 @@ namespace octave
     // Compiled function.
     static stack_frame *
     create (tree_evaluator& tw, octave_function *fcn, size_t index,
-            stack_frame *static_link);
+            const std::shared_ptr<stack_frame>& static_link);
 
     // Script.
     static stack_frame *
     create (tree_evaluator& tw, octave_user_script *script,
             unwind_protect *up_frame, size_t index,
-            stack_frame *static_link);
+            const std::shared_ptr<stack_frame>& static_link);
 
     // User-defined function.
     static stack_frame *
     create (tree_evaluator& tw, octave_user_function *fcn,
             unwind_protect *up_frame, size_t index,
-            stack_frame *static_link, stack_frame *access_link = nullptr);
+            const std::shared_ptr<stack_frame>& static_link,
+            const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ());
 
     // Scope.
     static stack_frame *
     create (tree_evaluator& tw, const symbol_scope& scope, size_t index,
-            stack_frame *static_link);
+            const std::shared_ptr<stack_frame>& static_link);
 
     stack_frame (const stack_frame& elt) = default;
 
@@ -242,6 +245,8 @@ namespace octave
 
     symbol_info_list all_variables (void);
 
+    octave_value workspace (void);
+
     std::list<std::string> variable_names (void) const;
 
     // Look for named symbol visible from current scope.  Don't
@@ -293,11 +298,13 @@ namespace octave
       mark_global (sym);
     }
 
-    stack_frame * static_link (void) const {return m_static_link; }
+    std::shared_ptr<stack_frame>
+    static_link (void) const {return m_static_link; }
 
-    stack_frame * access_link (void) const {return m_access_link; }
+    std::shared_ptr<stack_frame>
+    access_link (void) const {return m_access_link; }
 
-    void set_closure_links (stack_frame *dup_frame)
+    void set_closure_links (const std::shared_ptr<stack_frame>& dup_frame)
     {
       m_static_link = dup_frame;
       m_access_link = dup_frame;
@@ -556,12 +563,12 @@ namespace octave
 
     // Pointer to the nearest parent frame that contains variable
     // information (script, function, or scope).
-    stack_frame *m_static_link;
+    std::shared_ptr<stack_frame> m_static_link;
 
     // Pointer to the nearest lexical parent frame.  Used to access
     // non-local variables for nested and anonymous functions or as a
     // link to the parent frame in which a script is executed.
-    stack_frame *m_access_link;
+    std::shared_ptr<stack_frame> m_access_link;
 
     // Allow function handles to temporarily store their dispatch class
     // in the call stack.

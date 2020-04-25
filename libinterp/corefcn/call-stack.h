@@ -29,6 +29,7 @@
 #include "octave-config.h"
 
 #include <deque>
+#include <memory>
 #include <string>
 
 class octave_function;
@@ -55,7 +56,7 @@ namespace octave
   {
   public:
 
-    typedef std::deque<stack_frame *> stack_frames;
+    typedef std::deque<std::shared_ptr<stack_frame>> stack_frames;
 
     typedef stack_frames::iterator iterator;
     typedef stack_frames::const_iterator const_iterator;
@@ -87,14 +88,9 @@ namespace octave
 
     size_t size (void) const { return m_cs.size (); }
 
-    const stack_frame& get_current_stack_frame (void) const
+    std::shared_ptr<stack_frame> get_current_stack_frame (void) const
     {
-      return *(m_cs[m_curr_frame]);
-    }
-
-    stack_frame& get_current_stack_frame (void)
-    {
-      return *(m_cs[m_curr_frame]);
+      return m_cs[m_curr_frame];
     }
 
     symbol_scope top_scope (void) const
@@ -121,10 +117,7 @@ namespace octave
       octave_function *retval = nullptr;
 
       if (m_cs.size () > n)
-        {
-          stack_frame *elt = m_cs[n];
-          retval = elt->function ();
-        }
+        retval = m_cs[n]->function ();
 
       return retval;
     }
@@ -160,12 +153,12 @@ namespace octave
     // Return TRUE if all elements on the call stack are scripts.
     bool all_scripts (void) const;
 
-    stack_frame * get_static_link (size_t prev_frame) const;
+    std::shared_ptr<stack_frame> get_static_link (size_t prev_frame) const;
 
     void push (const symbol_scope& scope);
 
     void push (octave_user_function *fcn, unwind_protect *up_frame,
-               stack_frame *closure_frames = nullptr);
+               const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
 
     void push (octave_user_script *script, unwind_protect *up_frame);
 
@@ -175,7 +168,7 @@ namespace octave
     {
       if (! m_cs.empty ())
         {
-          stack_frame *elt = m_cs.back ();
+          std::shared_ptr<stack_frame> elt = m_cs.back ();
 
           elt->line (l);
           elt->column (c);
@@ -186,7 +179,7 @@ namespace octave
     {
       if (! m_cs.empty ())
         {
-          stack_frame *elt = m_cs.back ();
+          std::shared_ptr<stack_frame> elt = m_cs.back ();
 
           elt->line (l);
         }
@@ -196,7 +189,7 @@ namespace octave
     {
       if (! m_cs.empty ())
         {
-          stack_frame *elt = m_cs.back ();
+          std::shared_ptr<stack_frame> elt = m_cs.back ();
 
           elt->column (c);
         }
@@ -210,7 +203,8 @@ namespace octave
     }
 
     size_t find_current_user_frame (void) const;
-    stack_frame *current_user_frame (void) const;
+
+    std::shared_ptr<stack_frame> current_user_frame (void) const;
 
     size_t dbupdown (size_t start, int n, bool verbose);
     size_t dbupdown (int n = -1, bool verbose = false);
@@ -219,12 +213,12 @@ namespace octave
 
     void goto_base_frame (void);
 
-    std::list<stack_frame *>
+    std::list<std::shared_ptr<stack_frame>>
     backtrace_frames (octave_idx_type& curr_user_frame) const;
 
     // List of raw stack frames.
 
-    std::list<stack_frame *> backtrace_frames (void) const;
+    std::list<std::shared_ptr<stack_frame>> backtrace_frames (void) const;
 
     // List of stack_info objects that can be used in liboctave and
     // stored in the execution_exception object.

@@ -134,11 +134,11 @@ namespace octave
 
     call_stack& cs = tw.get_call_stack ();
 
-    stack_frame& frame = cs.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame = cs.get_current_stack_frame ();
 
     for (auto& name : free_vars)
       {
-        octave_value val = frame.varval (name);
+        octave_value val = frame->varval (name);
 
         if (val.is_defined ())
           local_var_init_vals[name] = val;

@@ -56,7 +56,7 @@ public:
 
   octave_fcn_handle (void)
     : m_fcn (), m_obj (), m_name (), m_scope (), m_is_nested (false),
-      m_closure_frames (nullptr), m_dispatch_class ()
+      m_closure_frames (), m_dispatch_class ()
   { }
 
   octave_fcn_handle (const octave::symbol_scope& scope, const std::string& n);
@@ -70,7 +70,7 @@ public:
 
   octave_fcn_handle (const octave_fcn_handle& fh) = default;
 
-  ~octave_fcn_handle (void);
+  ~octave_fcn_handle (void) = default;
 
   octave_base_value * clone (void) const
   { return new octave_fcn_handle (*this); }
@@ -184,7 +184,7 @@ protected:
   // Saved stack frames for handles to nested functions.  This allows us
   // to access non-locals and other context info when calling nested
   // functions indirectly through handles.
-  std::list<octave::stack_frame *> *m_closure_frames;
+  std::shared_ptr<octave::stack_frame> m_closure_frames;
 
   // The name of the class in which this handle was created, if any.
   // Used to determine access permission when the referenced function is

@@ -212,7 +212,7 @@ namespace octave
     octave_value_list
     execute_user_function (octave_user_function& user_function,
                            int nargout, const octave_value_list& args,
-                           stack_frame *closure_frames = nullptr);
+                           const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
 
     void visit_octave_user_function_header (octave_user_function&);
 
@@ -378,7 +378,7 @@ namespace octave
 
     void push_stack_frame (octave_user_function *fcn,
                            unwind_protect *up_frame,
-                           stack_frame *closure_frames = nullptr);
+                           const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
 
     void push_stack_frame (octave_user_script *script,
                            unwind_protect *up_frame);
@@ -387,17 +387,12 @@ namespace octave
 
     void pop_stack_frame (void);
 
-    const stack_frame& get_current_stack_frame (void) const
+    std::shared_ptr<stack_frame> get_current_stack_frame (void) const
     {
       return m_call_stack.get_current_stack_frame ();
     }
 
-    stack_frame& get_current_stack_frame (void)
-    {
-      return m_call_stack.get_current_stack_frame ();
-    }
-
-    stack_frame * current_user_frame (void) const
+    std::shared_ptr<stack_frame> current_user_frame (void) const
     {
       return m_call_stack.current_user_frame ();
     }
@@ -443,10 +438,10 @@ namespace octave
 
     bool is_class_constructor_executing (std::string& dispatch_class) const;
 
-    std::list<stack_frame *>
+    std::list<std::shared_ptr<stack_frame>>
     backtrace_frames (octave_idx_type& curr_user_frame) const;
 
-    std::list<stack_frame *> backtrace_frames () const;
+    std::list<std::shared_ptr<stack_frame>> backtrace_frames () const;
 
     std::list<frame_info> backtrace_info (octave_idx_type& curr_user_frame,
                                           bool print_subfn = true) const;

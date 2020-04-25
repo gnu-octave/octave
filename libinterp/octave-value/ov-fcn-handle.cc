@@ -85,7 +85,7 @@ const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
                                       const std::string& n)
   : m_fcn (), m_obj (), m_name (n), m_scope (scope), m_is_nested (false),
-    m_closure_frames (nullptr), m_dispatch_class ()
+    m_closure_frames (), m_dispatch_class ()
 {
   if (! m_name.empty () && m_name[0] == '@')
     m_name = m_name.substr (1);
@@ -119,7 +119,7 @@ octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
                                       const octave_value& f,
                                       const std::string& n)
   : m_fcn (f), m_obj (), m_name (n), m_scope (scope), m_is_nested (false),
-    m_closure_frames (nullptr), m_dispatch_class ()
+    m_closure_frames (), m_dispatch_class ()
 {
   octave_user_function *uf = m_fcn.user_function_value (true);
 
@@ -138,7 +138,7 @@ octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
 octave_fcn_handle::octave_fcn_handle (const octave_value& f,
                                       const std::string& n)
   : m_fcn (f), m_obj (), m_name (n), m_scope (), m_is_nested (false),
-    m_closure_frames (nullptr), m_dispatch_class ()
+    m_closure_frames (), m_dispatch_class ()
 {
   octave_user_function *uf = m_fcn.user_function_value (true);
 
@@ -152,23 +152,6 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
 
   if (uf && uf->is_nested_function () && ! uf->is_subfunction ())
     m_is_nested = true;
-}
-
-octave_fcn_handle::~octave_fcn_handle (void)
-{
-  if (m_closure_frames)
-    {
-      while (m_closure_frames->size () > 0)
-        {
-          octave::stack_frame *elt = m_closure_frames->back ();
-
-          delete elt;
-
-          m_closure_frames->pop_back ();
-        }
-
-      delete m_closure_frames;
-    }
 }
 
 octave_value_list
@@ -375,11 +358,6 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
   if (! fcn_to_call.is_defined ())
     err_invalid_fcn_handle (m_name);
 
-  octave::stack_frame *closure_context = nullptr;
-
-  if (m_closure_frames && m_closure_frames->size () > 0)
-    closure_context = m_closure_frames->front ();
-
   octave::tree_evaluator& tw = interp.get_evaluator ();
 
   octave_function *of = fcn_to_call.function_value ();
@@ -391,7 +369,7 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
 
   tw.set_dispatch_class (m_dispatch_class);
 
-  return of->call (tw, nargout, args, closure_context);
+  return of->call (tw, nargout, args, m_closure_frames);
 }
 
 dim_vector
@@ -440,26 +418,7 @@ octave_user_function * octave_fcn_handle::user_function_value (bool)
 void
 octave_fcn_handle::push_closure_context (octave::tree_evaluator& tw)
 {
-  if (! m_closure_frames)
-    m_closure_frames = new std::list<octave::stack_frame *> ();
-
-  octave::stack_frame& curr_frame = tw.get_current_stack_frame ();
-
-  octave::stack_frame *dup_frame = curr_frame.dup ();
-
-  if (! m_closure_frames->empty ())
-    {
-      octave::stack_frame *top_frame = m_closure_frames->back ();
-
-      // Arrange for static and access links in the top stack frame (the
-      // last one saved before this one) to point to the new duplicated
-      // frame.  This way we will look up through the duplicated frames
-      // when evaluating the function.
-
-      top_frame->set_closure_links (dup_frame);
-    }
-
-  m_closure_frames->push_back (dup_frame);
+  m_closure_frames = tw.get_current_stack_frame ();
 }
 
 octave_value
@@ -481,30 +440,7 @@ octave_fcn_handle::workspace (void) const
     }
   else if (m_closure_frames)
     {
-      octave_idx_type num_frames = m_closure_frames->size ();
-
-      Cell ws_frames (num_frames, 1);
-
-      octave_idx_type i = 0;
-
-      for (auto elt : *m_closure_frames)
-        {
-          octave::symbol_info_list symbols = elt->all_variables ();
-
-          octave_scalar_map ws;
-
-          for (auto sym_name : symbols.names ())
-            {
-              octave_value val = symbols.varval (sym_name);
-
-              if (val.is_defined ())
-                ws.assign (sym_name, val);
-            }
-
-          ws_frames(i++) = ws;
-        }
-
-      return ws_frames;
+      return m_closure_frames->workspace ();
     }
 
   return Cell ();

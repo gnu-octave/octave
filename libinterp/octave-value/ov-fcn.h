@@ -230,7 +230,7 @@ public:
   virtual octave_value_list
   call (octave::tree_evaluator& tw, int nargout,
         const octave_value_list& args,
-        octave::stack_frame *closure_context);
+        const std::shared_ptr<octave::stack_frame>& closure_context);
 
 protected:
 

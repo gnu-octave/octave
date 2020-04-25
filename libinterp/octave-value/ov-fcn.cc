@@ -47,7 +47,7 @@ octave_function::empty_clone (void) const
 octave_value_list
 octave_function::call (octave::tree_evaluator& tw, int nargout,
                        const octave_value_list& args,
-                       octave::stack_frame *closure_context)
+                       const std::shared_ptr<octave::stack_frame>& closure_context)
 {
   if (closure_context)
     panic_impossible ();

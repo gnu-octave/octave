@@ -381,7 +381,8 @@ public:
 
   octave_value_list
   call (octave::tree_evaluator& tw, int nargout,
-        const octave_value_list& args, octave::stack_frame *);
+        const octave_value_list& args,
+        const std::shared_ptr<octave::stack_frame>&);
 
   octave::tree_parameter_list * parameter_list (void) { return param_list; }
 

@@ -187,7 +187,7 @@ namespace octave
 
             if (! silent)
               {
-                stack_frame *frm = tw.current_user_frame ();
+                std::shared_ptr<stack_frame> frm = tw.current_user_frame ();
 
                 frm->display_stopped_in_message (buf);
               }
@@ -894,17 +894,19 @@ namespace octave
   bool
   tree_evaluator::is_variable (const std::string& name) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.is_variable (name);
+    return frame->is_variable (name);
   }
 
   bool
   tree_evaluator::is_local_variable (const std::string& name) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.is_local_variable (name);
+    return frame->is_local_variable (name);
   }
 
   bool
@@ -941,49 +943,55 @@ namespace octave
   bool
   tree_evaluator::is_variable (const symbol_record& sym) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.is_variable (sym);
+    return frame->is_variable (sym);
   }
 
   bool
   tree_evaluator::is_defined (const symbol_record& sym) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.is_defined (sym);
+    return frame->is_defined (sym);
   }
 
   bool tree_evaluator::is_global (const std::string& name) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.is_global (name);
+    return frame->is_global (name);
   }
 
   octave_value
   tree_evaluator::varval (const symbol_record& sym) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.varval (sym);
+    return frame->varval (sym);
   }
 
   octave_value
   tree_evaluator::varval (const std::string& name) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.varval (name);
+    return frame->varval (name);
   }
 
   void tree_evaluator::install_variable (const std::string& name,
                                          const octave_value& value,
                                          bool global)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.install_variable (name, value, global);
+    return frame->install_variable (name, value, global);
   }
 
   octave_value
@@ -1021,9 +1029,10 @@ namespace octave
   void
   tree_evaluator::assign (const std::string& name, const octave_value& val)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.assign (name, val);
+    frame->assign (name, val);
   }
 
   void
@@ -1521,7 +1530,7 @@ namespace octave
 
   void tree_evaluator::push_stack_frame (octave_user_function *fcn,
                                          unwind_protect *up_frame,
-                                         stack_frame *closure_frames)
+                                         const std::shared_ptr<stack_frame>& closure_frames)
   {
     m_call_stack.push (fcn, up_frame, closure_frames);
   }
@@ -1564,7 +1573,7 @@ namespace octave
 
   void tree_evaluator::debug_where (std::ostream& os) const
   {
-    stack_frame *frm = m_call_stack.current_user_frame ();
+    std::shared_ptr<stack_frame> frm = m_call_stack.current_user_frame ();
 
     frm->display_stopped_in_message (os);
   }
@@ -1636,13 +1645,13 @@ namespace octave
     return m_call_stack.is_class_constructor_executing (dclass);
   }
 
-  std::list<stack_frame *>
+  std::list<std::shared_ptr<stack_frame>>
   tree_evaluator::backtrace_frames (octave_idx_type& curr_user_frame) const
   {
     return m_call_stack.backtrace_frames (curr_user_frame);
   }
 
-  std::list<stack_frame *>
+  std::list<std::shared_ptr<stack_frame>>
   tree_evaluator::backtrace_frames (void) const
   {
     return m_call_stack.backtrace_frames ();
@@ -1782,9 +1791,10 @@ namespace octave
 
   octave_value tree_evaluator::find (const std::string& name)
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    octave_value val = frame.varval (name);
+    octave_value val = frame->varval (name);
 
     if (val.is_defined ())
       return val;
@@ -1793,7 +1803,7 @@ namespace octave
     // subfunctions if we are currently executing a function defined
     // from a .m file.
 
-    octave_value fcn = frame.find_subfunction (name);
+    octave_value fcn = frame->find_subfunction (name);
 
     if (fcn.is_defined ())
       return fcn;
@@ -1805,37 +1815,42 @@ namespace octave
 
   void tree_evaluator::clear_objects (void)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.clear_objects ();
+    frame->clear_objects ();
   }
 
   void tree_evaluator::clear_variable (const std::string& name)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.clear_variable (name);
+    frame->clear_variable (name);
   }
 
   void tree_evaluator::clear_variable_pattern (const std::string& pattern)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.clear_variable_pattern (pattern);
+    frame->clear_variable_pattern (pattern);
   }
 
   void tree_evaluator::clear_variable_regexp (const std::string& pattern)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.clear_variable_regexp (pattern);
+    frame->clear_variable_regexp (pattern);
   }
 
   void tree_evaluator::clear_variables (void)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.clear_variables ();
+    frame->clear_variables ();
   }
 
   void tree_evaluator::clear_global_variable (const std::string& name)
@@ -2358,7 +2373,7 @@ namespace octave
   tree_evaluator::execute_user_function (octave_user_function& user_function,
                                          int nargout,
                                          const octave_value_list& xargs,
-                                         stack_frame *closure_frames)
+                                         const std::shared_ptr<stack_frame>& closure_frames)
   {
     octave_value_list retval;
 
@@ -3849,13 +3864,14 @@ namespace octave
 
   void tree_evaluator::init_local_fcn_vars (octave_user_function& user_fcn)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
     const octave_user_function::local_vars_map& lviv
       = user_fcn.local_var_init_vals ();
 
     for (const auto& nm_ov : lviv)
-      frame.assign (nm_ov.first, nm_ov.second);
+      frame->assign (nm_ov.first, nm_ov.second);
   }
 
   std::string

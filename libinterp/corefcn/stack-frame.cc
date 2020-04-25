@@ -56,7 +56,8 @@ namespace octave
     compiled_fcn_stack_frame (void) = delete;
 
     compiled_fcn_stack_frame (tree_evaluator& tw, octave_function *fcn,
-                              size_t index, stack_frame *static_link)
+                              size_t index,
+                              const std::shared_ptr<stack_frame>& static_link)
       : stack_frame (tw, index, static_link, static_link->access_link ()),
         m_fcn (fcn)
     { }
@@ -177,7 +178,7 @@ namespace octave
 
     script_stack_frame (tree_evaluator& tw, octave_user_script *script,
                         unwind_protect *up_frame, size_t index,
-                        stack_frame *static_link);
+                        const std::shared_ptr<stack_frame>& static_link);
 
     script_stack_frame (const script_stack_frame& elt) = default;
 
@@ -189,7 +190,8 @@ namespace octave
 
     bool is_user_script_frame (void) const { return true; }
 
-    static stack_frame * get_access_link (stack_frame *static_link);
+    static std::shared_ptr<stack_frame>
+    get_access_link (const std::shared_ptr<stack_frame>& static_link);
 
     static size_t get_num_symbols (octave_user_script *script);
 
@@ -287,8 +289,9 @@ namespace octave
     base_value_stack_frame (void) = delete;
 
     base_value_stack_frame (tree_evaluator& tw, size_t num_symbols,
-                            size_t index, stack_frame *static_link,
-                            stack_frame *access_link)
+                            size_t index,
+                            const std::shared_ptr<stack_frame>& static_link,
+                            const std::shared_ptr<stack_frame>& access_link)
       : stack_frame (tw, index, static_link, access_link),
         m_values (num_symbols, octave_value ()),
         m_flags (num_symbols, LOCAL),
@@ -392,8 +395,8 @@ namespace octave
 
     user_fcn_stack_frame (tree_evaluator& tw, octave_user_function *fcn,
                           unwind_protect *up_frame, size_t index,
-                          stack_frame *static_link,
-                          stack_frame *access_link = nullptr)
+                          const std::shared_ptr<stack_frame>& static_link,
+                          const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ())
       : base_value_stack_frame (tw, get_num_symbols (fcn), index, static_link,
                                 (access_link
                                  ? access_link
@@ -412,8 +415,9 @@ namespace octave
 
     bool is_user_fcn_frame (void) const { return true; }
 
-    static stack_frame *
-    get_access_link (octave_user_function *fcn, stack_frame *static_link);
+    static std::shared_ptr<stack_frame>
+    get_access_link (octave_user_function *fcn,
+                     const std::shared_ptr<stack_frame>& static_link);
 
     static size_t get_num_symbols (octave_user_function *fcn)
     {
@@ -478,7 +482,8 @@ namespace octave
     scope_stack_frame (void) = delete;
 
     scope_stack_frame (tree_evaluator& tw, const symbol_scope& scope,
-                       size_t index, stack_frame *static_link)
+                       size_t index,
+                       const std::shared_ptr<stack_frame>& static_link)
       : base_value_stack_frame (tw, scope.num_symbols (), index,
                                 static_link, nullptr),
         m_scope (scope)
@@ -617,7 +622,7 @@ namespace octave
       // link for a compiled_fcn_stack_frame be the same as the static
       // link?
 
-      stack_frame *slink = frame.static_link ();
+      std::shared_ptr<stack_frame> slink = frame.static_link ();
 
       if (slink)
         slink->accept (*this);
@@ -625,7 +630,7 @@ namespace octave
 
     void visit_script_stack_frame (script_stack_frame& frame)
     {
-      stack_frame *alink = frame.access_link ();
+      std::shared_ptr<stack_frame> alink = frame.access_link ();
 
       if (alink)
         alink->accept (*this);
@@ -635,7 +640,7 @@ namespace octave
     {
       clean_frame (frame);
 
-      stack_frame *alink = frame.access_link ();
+      std::shared_ptr<stack_frame> alink = frame.access_link ();
 
       if (alink)
         alink->accept (*this);
@@ -645,7 +650,7 @@ namespace octave
     {
       clean_frame (frame);
 
-      stack_frame *alink = frame.access_link ();
+      std::shared_ptr<stack_frame> alink = frame.access_link ();
 
       if (alink)
         alink->accept (*this);
@@ -859,7 +864,7 @@ namespace octave
       // link for a compiled_fcn_stack_frame be the same as the static
       // link?
 
-      stack_frame *slink = frame.static_link ();
+      std::shared_ptr<stack_frame> slink = frame.static_link ();
 
       if (slink)
         slink->accept (*this);
@@ -867,7 +872,7 @@ namespace octave
 
     void visit_script_stack_frame (script_stack_frame& frame)
     {
-      stack_frame *alink = frame.access_link ();
+      std::shared_ptr<stack_frame> alink = frame.access_link ();
 
       if (alink)
         alink->accept (*this);
@@ -877,7 +882,7 @@ namespace octave
     {
       append_list (frame);
 
-      stack_frame *alink = frame.access_link ();
+      std::shared_ptr<stack_frame> alink = frame.access_link ();
 
       if (alink)
         alink->accept (*this);
@@ -887,7 +892,7 @@ namespace octave
     {
       append_list (frame);
 
-      stack_frame *alink = frame.access_link ();
+      std::shared_ptr<stack_frame> alink = frame.access_link ();
 
       if (alink)
         alink->accept (*this);
@@ -1008,7 +1013,8 @@ namespace octave
   };
 
   stack_frame * stack_frame::create (tree_evaluator& tw, octave_function *fcn,
-                                     size_t index, stack_frame *static_link)
+                                     size_t index,
+                                     const std::shared_ptr<stack_frame>& static_link)
   {
     return new compiled_fcn_stack_frame (tw, fcn, index, static_link);
   }
@@ -1016,7 +1022,7 @@ namespace octave
   stack_frame * stack_frame::create (tree_evaluator& tw,
                                      octave_user_script *script,
                                      unwind_protect *up_frame, size_t index,
-                                     stack_frame *static_link)
+                                     const std::shared_ptr<stack_frame>& static_link)
   {
     return new script_stack_frame (tw, script, up_frame, index, static_link);
   }
@@ -1024,8 +1030,8 @@ namespace octave
   stack_frame * stack_frame::create (tree_evaluator& tw,
                                      octave_user_function *fcn,
                                      unwind_protect *up_frame, size_t index,
-                                     stack_frame *static_link,
-                                     stack_frame *access_link)
+                                     const std::shared_ptr<stack_frame>& static_link,
+                                     const std::shared_ptr<stack_frame>& access_link)
   {
     return new user_fcn_stack_frame (tw, fcn, up_frame, index, static_link,
                                      access_link);
@@ -1033,7 +1039,7 @@ namespace octave
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
                                      const symbol_scope& scope, size_t index,
-                                     stack_frame *static_link)
+                                     const std::shared_ptr<stack_frame>& static_link)
   {
     return new scope_stack_frame (tw, scope, index, static_link);
   }
@@ -1118,6 +1124,41 @@ namespace octave
     accept (sia);
 
     return sia.symbol_info ();
+  }
+
+  octave_value stack_frame::workspace (void)
+  {
+    std::list<octave_scalar_map> ws_list;
+
+    stack_frame *frame = this;
+
+    while (frame)
+      {
+        octave::symbol_info_list symbols = frame->all_variables ();
+
+        octave_scalar_map ws;
+
+        for (const auto& sym_name : symbols.names ())
+          {
+            octave_value val = symbols.varval (sym_name);
+
+            if (val.is_defined ())
+              ws.assign (sym_name, val);
+          }
+
+        ws_list.push_back (ws);
+
+        std::shared_ptr<stack_frame> nxt = frame->access_link ();
+        frame = nxt.get ();
+      }
+
+    Cell ws_frames (ws_list.size (), 1);
+
+    octave_idx_type i = 0;
+    for (const auto& elt : ws_list)
+      ws_frames(i++) = elt;
+
+    return ws_frames;
   }
 
   // FIXME: Should this function also find any variables in parent
@@ -1333,14 +1374,14 @@ namespace octave
 
     os << "static link: ";
     if (m_static_link)
-      os << m_static_link;
+      os << m_static_link.get ();
     else
       os << "NULL";
     os << std::endl;
 
     os << "access link: ";
     if (m_access_link)
-      os << m_access_link;
+      os << m_access_link.get ();
     else
       os << "NULL";
     os << std::endl;
@@ -1355,7 +1396,7 @@ namespace octave
       return;
 
     os << "FOLLOWING ACCESS LINKS:" << std::endl;
-    const stack_frame *frm = access_link ();
+    std::shared_ptr<stack_frame> frm = access_link ();
     while (frm)
       {
         frm->display (false);
@@ -1391,7 +1432,7 @@ namespace octave
                                           octave_user_script *script,
                                           unwind_protect *up_frame,
                                           size_t index,
-                                          stack_frame *static_link)
+                                          const std::shared_ptr<stack_frame>& static_link)
     : stack_frame (tw, index, static_link, get_access_link (static_link)),
       m_script (script), m_unwind_protect_frame (up_frame),
       m_lexical_frame_offsets (get_num_symbols (script), 1),
@@ -1542,15 +1583,13 @@ namespace octave
   // If this is a nested scope, set access_link to nearest parent
   // stack frame that corresponds to the lexical parent of this scope.
 
-  stack_frame *
-  script_stack_frame::get_access_link (stack_frame *static_link)
+  std::shared_ptr<stack_frame>
+  script_stack_frame::get_access_link (const std::shared_ptr<stack_frame>& static_link)
   {
-    stack_frame *alink = nullptr;
-
     // If this script is called from another script, set access
     // link to ultimate parent stack frame.
 
-    alink = static_link;
+    std::shared_ptr<stack_frame> alink = static_link;
 
     while (alink->is_user_script_frame ())
       {
@@ -1817,7 +1856,10 @@ namespace octave
     const stack_frame *frame = this;
 
     for (size_t i = 0; i < frame_offset; i++)
-      frame = frame->access_link ();
+      {
+        std::shared_ptr<stack_frame> nxt = frame->access_link ();
+        frame = nxt.get ();
+      }
 
     if (! frame)
       error ("internal error: invalid access link in function call stack");
@@ -1844,7 +1886,10 @@ namespace octave
     const stack_frame *frame = this;
 
     for (size_t i = 0; i < frame_offset; i++)
-      frame = frame->access_link ();
+      {
+        std::shared_ptr<stack_frame> nxt = frame->access_link ();
+        frame = nxt.get ();
+      }
 
     if (! frame)
       error ("internal error: invalid access link in function call stack");
@@ -1883,7 +1928,10 @@ namespace octave
     stack_frame *frame = this;
 
     for (size_t i = 0; i < frame_offset; i++)
-      frame = frame->access_link ();
+      {
+        std::shared_ptr<stack_frame> nxt = frame->access_link ();
+        frame = nxt.get ();
+      }
 
     if (data_offset >= frame->size ())
       frame->resize (data_offset+1);
@@ -1920,7 +1968,7 @@ namespace octave
     if (frame_offset > 1)
       error ("variables must be made PERSISTENT or GLOBAL in the first scope in which they are used");
 
-    stack_frame *frame = access_link ();
+    std::shared_ptr<stack_frame> frame = access_link ();
 
     if (data_offset >= frame->size ())
       frame->resize (data_offset+1);
@@ -1988,11 +2036,11 @@ namespace octave
   // If this is a nested scope, set access_link to nearest parent
   // stack frame that corresponds to the lexical parent of this scope.
 
-  stack_frame *
+  std::shared_ptr<stack_frame>
   user_fcn_stack_frame::get_access_link (octave_user_function *fcn,
-                                         stack_frame *static_link)
+                                         const std::shared_ptr<stack_frame>& static_link)
   {
-    stack_frame *alink = nullptr;
+    std::shared_ptr<stack_frame> alink;
 
     symbol_scope fcn_scope = fcn->scope ();
 
@@ -2083,7 +2131,8 @@ namespace octave
         if (sym)
           return sym;
 
-        frame = frame->access_link ();
+        std::shared_ptr<stack_frame> nxt = frame->access_link ();
+        frame = nxt.get ();
       }
 
     return symbol_record ();
@@ -2139,7 +2188,10 @@ namespace octave
     const stack_frame *frame = this;
 
     for (size_t i = 0; i < frame_offset; i++)
-      frame = frame->access_link ();
+      {
+        std::shared_ptr<stack_frame> nxt = frame->access_link ();
+        frame = nxt.get ();
+      }
 
     if (! frame)
       error ("internal error: invalid access link in function call stack");
@@ -2161,7 +2213,10 @@ namespace octave
     const stack_frame *frame = this;
 
     for (size_t i = 0; i < frame_offset; i++)
-      frame = frame->access_link ();
+      {
+        std::shared_ptr<stack_frame> nxt = frame->access_link ();
+        frame = nxt.get ();
+      }
 
     if (! frame)
       error ("internal error: invalid access link in function call stack");
@@ -2199,7 +2254,10 @@ namespace octave
     stack_frame *frame = this;
 
     for (size_t i = 0; i < frame_offset; i++)
-      frame = frame->access_link ();
+      {
+        std::shared_ptr<stack_frame> nxt = frame->access_link ();
+        frame = nxt.get ();
+      }
 
     if (data_offset >= frame->size ())
       frame->resize (data_offset+1);

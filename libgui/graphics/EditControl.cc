@@ -85,6 +85,10 @@ namespace QtHandles
 
     uicontrol::properties& up = properties<uicontrol> ();
 
+    if (up.enable_is ("inactive"))
+      edit->setReadOnly (true);
+    else
+      edit->setEnabled (up.enable_is ("on"));
     edit->setText (Utils::fromStdString (up.get_string_string ()));
     edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
                                             up.get_verticalalignment ()));
@@ -117,6 +121,10 @@ namespace QtHandles
 
     uicontrol::properties& up = properties<uicontrol> ();
 
+    if (up.enable_is ("inactive"))
+      edit->setReadOnly (true);
+    else
+      edit->setEnabled (up.enable_is ("on"));
     edit->setAcceptRichText (false);
     edit->setPlainText (Utils::fromStringVector
                         (up.get_string_vector ()).join ("\n"));
@@ -179,6 +187,16 @@ namespace QtHandles
                                                 up.get_verticalalignment ()));
         return true;
 
+      case uicontrol::properties::ID_ENABLE:
+        if (up.enable_is ("inactive"))
+          edit->setReadOnly (true);
+        else
+          {
+            edit->setReadOnly (false);
+            edit->setEnabled (up.enable_is ("on"));
+          }
+        return true;
+
       case uicontrol::properties::ID_MIN:
       case uicontrol::properties::ID_MAX:
         if ((up.get_max () - up.get_min ()) > 1)
@@ -214,6 +232,16 @@ namespace QtHandles
       case uicontrol::properties::ID_VERTICALALIGNMENT:
         edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
                                                 up.get_verticalalignment ()));
+        return true;
+
+      case uicontrol::properties::ID_ENABLE:
+        if (up.enable_is ("inactive"))
+          edit->setReadOnly (true);
+        else
+          {
+            edit->setReadOnly (false);
+            edit->setEnabled (up.enable_is ("on"));
+          }
         return true;
 
       case uicontrol::properties::ID_MIN:

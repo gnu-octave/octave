@@ -50,14 +50,19 @@ namespace QtHandles
     if (props.style_is ("edit")
         || props.style_is ("listbox"))
       {
-        p.setColor (QPalette::Base,
+        p.setColor (QPalette::Active, QPalette::Base,
                     Utils::fromRgb (props.get_backgroundcolor_rgb ()));
-        p.setColor (QPalette::Text,
+        p.setColor (QPalette::Inactive, QPalette::Base,
+                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+        p.setColor (QPalette::Active, QPalette::Text,
+                    Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+        p.setColor (QPalette::Inactive, QPalette::Text,
                     Utils::fromRgb (props.get_foregroundcolor_rgb ()));
       }
     else if (props.style_is ("popupmenu"))
       {
-        // popumenu (QComboBox) is a listbox with a button, so needs set colors for both
+        // popupmenu (QComboBox) is a listbox with a button.
+        // This requires setting colors for both.
         QColor bcol = Utils::fromRgb (props.get_backgroundcolor_rgb ());
         QColor fcol = Utils::fromRgb (props.get_foregroundcolor_rgb ());
         QString qss = QString ("background: %1 none;\n"
@@ -119,7 +124,7 @@ namespace QtHandles
                     octave::math::round (bb(2)), octave::math::round (bb(3)));
     w->setFont (Utils::computeFont<uicontrol> (up, bb(3)));
     updatePalette (up, w);
-    w->setEnabled (up.enable_is ("on"));
+    w->setEnabled (! up.enable_is ("off"));
     w->setToolTip (Utils::fromStdString (up.get_tooltipstring ()));
     w->setVisible (up.is_visible ());
     m_keyPressHandlerDefined = ! up.get_keypressfcn ().isempty ();
@@ -174,7 +179,7 @@ namespace QtHandles
         break;
 
       case uicontrol::properties::ID_ENABLE:
-        w->setEnabled (up.enable_is ("on"));
+        w->setEnabled (! up.enable_is ("off"));
         break;
 
       case uicontrol::properties::ID_TOOLTIPSTRING:

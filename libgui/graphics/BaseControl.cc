@@ -65,8 +65,8 @@ namespace QtHandles
         // This requires setting colors for both.
         QColor bcol = Utils::fromRgb (props.get_backgroundcolor_rgb ());
         QColor fcol = Utils::fromRgb (props.get_foregroundcolor_rgb ());
-        QString qss = QString ("background: %1 none;\n"
-                               "color: %2;")
+        QString qss = QString (":enabled { background: %1 none;\n"
+                                          "color: %2; }")
                       .arg(bcol.name ()).arg (fcol.name ());
         w->setStyleSheet(qss);
         return;

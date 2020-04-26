@@ -84,8 +84,8 @@ namespace QtHandles
       {
         QColor bcol = Utils::fromRgb (props.get_backgroundcolor_rgb ());
         QColor fcol = Utils::fromRgb (props.get_foregroundcolor_rgb ());
-        QString qss = QString ("background: %1 none;\n"
-                               "color: %2;")
+        QString qss = QString (":enabled { background: %1 none;\n"
+                                          "color: %2; }")
                       .arg(bcol.name ()).arg (fcol.name ());
         w->setStyleSheet(qss);
         return;
@@ -124,7 +124,10 @@ namespace QtHandles
                     octave::math::round (bb(2)), octave::math::round (bb(3)));
     w->setFont (Utils::computeFont<uicontrol> (up, bb(3)));
     updatePalette (up, w);
-    w->setEnabled (! up.enable_is ("off"));
+    if (up.enable_is ("inactive"))
+      w->blockSignals (true);
+    else
+      w->setEnabled (up.enable_is ("on"));
     w->setToolTip (Utils::fromStdString (up.get_tooltipstring ()));
     w->setVisible (up.is_visible ());
     m_keyPressHandlerDefined = ! up.get_keypressfcn ().isempty ();
@@ -179,7 +182,13 @@ namespace QtHandles
         break;
 
       case uicontrol::properties::ID_ENABLE:
-        w->setEnabled (! up.enable_is ("off"));
+        if (up.enable_is ("inactive"))
+          w->blockSignals (true);
+        else
+        {
+          w->blockSignals (false);
+          w->setEnabled (! up.enable_is ("off"));
+        }
         break;
 
       case uicontrol::properties::ID_TOOLTIPSTRING:

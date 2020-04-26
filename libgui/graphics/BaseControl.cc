@@ -183,12 +183,15 @@ namespace QtHandles
 
       case uicontrol::properties::ID_ENABLE:
         if (up.enable_is ("inactive"))
-          w->blockSignals (true);
+          {
+            w->blockSignals (true);
+            w->setEnabled (true);
+          }
         else
-        {
-          w->blockSignals (false);
-          w->setEnabled (! up.enable_is ("off"));
-        }
+          {
+            w->blockSignals (false);
+            w->setEnabled (up.enable_is ("on"));
+          }
         break;
 
       case uicontrol::properties::ID_TOOLTIPSTRING:

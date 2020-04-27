@@ -96,9 +96,13 @@ namespace QtHandles
       }
     else
       {
-        p.setColor (QPalette::Window,
+        p.setColor (QPalette::Active, QPalette::Window,
                     Utils::fromRgb (props.get_backgroundcolor_rgb ()));
-        p.setColor (QPalette::WindowText,
+        p.setColor (QPalette::Inactive, QPalette::Window,
+                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+        p.setColor (QPalette::Active, QPalette::WindowText,
+                    Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+        p.setColor (QPalette::Inactive, QPalette::WindowText,
                     Utils::fromRgb (props.get_foregroundcolor_rgb ()));
       }
 

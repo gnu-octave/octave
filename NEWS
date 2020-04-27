@@ -56,6 +56,14 @@ vectors with rows corresponding to the input coordinate matrix.
 
 - The function `dec2bin` and `dec2hex` now support negative numbers.
 
+- `uicontrol` objects now fully implement the "Off" and "Inactive"
+values of the "Enable" property.  When the value is "Off", no
+interaction with the object occurs and the `uicontrol` changes color
+(typically to gray) to indicate it is disabled.  When the value is
+"Inactive", the object appears normally (no change in color), but it is
+not possible to change the value of the object (such as modifying text
+in an `Edit` box or clicking on a `RadioButton`).
+
 ### Alphabetical list of new functions added in Octave 7
 
 * `endsWith`

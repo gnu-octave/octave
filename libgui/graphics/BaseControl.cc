@@ -50,10 +50,17 @@ namespace QtHandles
     if (props.style_is ("edit")
         || props.style_is ("listbox"))
       {
+        Matrix bg_color = props.get_backgroundcolor_rgb ();
+        // Matlab compatibility: Default color is ignored, and rendered as
+        // white ([1.0, 1.0, 1.0]).  See bug #58261.
+        if (bg_color(0) == bg_color(1) && bg_color(0) == bg_color(2)
+            && (std::abs (bg_color(1) - 0.94) < .005))
+          bg_color.fill (1.0);
+
         p.setColor (QPalette::Active, QPalette::Base,
-                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+                    Utils::fromRgb (bg_color));
         p.setColor (QPalette::Inactive, QPalette::Base,
-                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+                    Utils::fromRgb (bg_color));
         p.setColor (QPalette::Active, QPalette::Text,
                     Utils::fromRgb (props.get_foregroundcolor_rgb ()));
         p.setColor (QPalette::Inactive, QPalette::Text,

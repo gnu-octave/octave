@@ -69,11 +69,39 @@ namespace QtHandles
     if (btnGroup)
       btnGroup->addButton (radio);
 
+    uicontrol::properties& up = properties<uicontrol> ();
+
     radio->setAutoFillBackground (true);
     radio->setAutoExclusive (false);
+    if (up.enable_is ("inactive"))
+      radio->setCheckable (false);
   }
 
   RadioButtonControl::~RadioButtonControl (void)
   { }
+
+  void
+  RadioButtonControl::update (int pId)
+  {
+    uicontrol::properties& up = properties<uicontrol> ();
+    QRadioButton *btn = qWidget<QRadioButton> ();
+
+    switch (pId)
+      {
+      case uicontrol::properties::ID_ENABLE:
+        {
+          if (up.enable_is ("inactive"))
+            btn->setCheckable (false);
+          else
+            btn->setCheckable (true);
+          ButtonControl::update (pId);
+        }
+        break;
+
+      default:
+        ButtonControl::update (pId);
+        break;
+      }
+  }
 
 };

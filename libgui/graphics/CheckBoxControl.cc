@@ -61,10 +61,37 @@ namespace QtHandles
                                     const graphics_object& go, QCheckBox *box)
     : ButtonControl (oct_obj, interp, go, box)
   {
+    uicontrol::properties& up = properties<uicontrol> ();
+
     box->setAutoFillBackground (true);
+    if (up.enable_is ("inactive"))
+      box->setCheckable (false);
   }
 
   CheckBoxControl::~CheckBoxControl (void)
   { }
 
+  void
+  CheckBoxControl::update (int pId)
+  {
+    uicontrol::properties& up = properties<uicontrol> ();
+    QCheckBox *box = qWidget<QCheckBox> ();
+
+    switch (pId)
+      {
+      case uicontrol::properties::ID_ENABLE:
+        {
+          if (up.enable_is ("inactive"))
+            box->setCheckable (false);
+          else
+            box->setCheckable (true);
+          ButtonControl::update (pId);
+        }
+        break;
+
+      default:
+        ButtonControl::update (pId);
+        break;
+      }
+  }
 };

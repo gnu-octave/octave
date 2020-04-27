@@ -50,6 +50,9 @@ namespace QtHandles
     static RadioButtonControl * create (octave::base_qobject& oct_qobj,
                                         octave::interpreter& interp,
                                         const graphics_object& go);
+
+  protected:
+    void update (int pId);
   };
 
 }

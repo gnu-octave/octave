@@ -74,9 +74,13 @@ namespace QtHandles
     else if (props.style_is ("radiobutton")
              || props.style_is ("checkbox"))
       {
-        p.setColor (QPalette::Button,
+        p.setColor (QPalette::Active, QPalette::Button,
                     Utils::fromRgb (props.get_backgroundcolor_rgb ()));
-        p.setColor (QPalette::WindowText,
+        p.setColor (QPalette::Inactive, QPalette::Button,
+                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+        p.setColor (QPalette::Active, QPalette::WindowText,
+                    Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+        p.setColor (QPalette::Inactive, QPalette::WindowText,
                     Utils::fromRgb (props.get_foregroundcolor_rgb ()));
       }
     else if (props.style_is ("pushbutton")

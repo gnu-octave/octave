@@ -680,9 +680,8 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
   else
     {
-      // This is cruft for backward compatibility and easy data
-      // importation
-      if (rank == 0) //FIXME: Does rank==0 even exist for strings in HDF5?
+      // This is cruft for backward compatibility and easy data importation
+      if (rank == 0)
         {
           // a single string:
           int slen = H5Tget_size (type_hid);
@@ -695,9 +694,8 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
             }
           else
             {
-              OCTAVE_LOCAL_BUFFER (char, s, slen);
-              // create datatype for (null-terminated) string
-              // to read into:
+              OCTAVE_LOCAL_BUFFER (char, s, slen+1);
+              // create datatype for (null-terminated) string to read into:
               hid_t st_id = H5Tcopy (H5T_C_S1);
               H5Tset_size (st_id, slen+1);
               if (H5Dread (data_hid, st_id, octave_H5S_ALL,

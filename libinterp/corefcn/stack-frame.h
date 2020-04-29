@@ -180,8 +180,6 @@ namespace octave
 
     virtual ~stack_frame (void) = default;
 
-    virtual stack_frame * dup (void) const = 0;
-
     // FIXME: It would be nice to eliminate these but there are a few
     // places where we still need to know the specific type of the
     // stack frame that we are handling.
@@ -306,12 +304,6 @@ namespace octave
 
     std::shared_ptr<stack_frame>
     access_link (void) const {return m_access_link; }
-
-    void set_closure_links (const std::shared_ptr<stack_frame>& dup_frame)
-    {
-      m_static_link = dup_frame;
-      m_access_link = dup_frame;
-    }
 
     virtual size_t size (void) const;
 

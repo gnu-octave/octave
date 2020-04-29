@@ -40,7 +40,7 @@ DEFBINOP (eq, fcn_handle, fcn_handle)
   const octave_fcn_handle& v1 = dynamic_cast<const octave_fcn_handle&> (a1);
   const octave_fcn_handle& v2 = dynamic_cast<const octave_fcn_handle&> (a2);
 
-  return v1.is_equal_to (v2);
+  return is_equal_to (v1, v2);
 }
 
 DEFBINOP (ne, fcn_handle, fcn_handle)
@@ -48,7 +48,7 @@ DEFBINOP (ne, fcn_handle, fcn_handle)
   const octave_fcn_handle& v1 = dynamic_cast<const octave_fcn_handle&> (a1);
   const octave_fcn_handle& v2 = dynamic_cast<const octave_fcn_handle&> (a2);
 
-  return ! v1.is_equal_to (v2);
+  return ! is_equal_to (v1, v2);
 }
 
 void

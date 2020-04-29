@@ -63,7 +63,6 @@ namespace octave
   octave_value
   tree_fcn_handle::evaluate (tree_evaluator& tw, int)
   {
-    // XXX FCN_HANDLE: CONTEXT DEPENDENT
     return tw.make_fcn_handle (m_name);
   }
 
@@ -175,8 +174,6 @@ namespace octave
     af->mark_as_anonymous_function ();
 
     octave_value ov_fcn (af);
-
-    // octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, m_interpreter));
 
     return octave_value (new octave_fcn_handle (ov_fcn, local_vars));
   }

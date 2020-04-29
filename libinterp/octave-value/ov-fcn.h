@@ -104,6 +104,10 @@ public:
 
   virtual int call_depth (void) const { return 0; }
 
+  virtual bool is_nested_function (void) const { return false; }
+
+  virtual bool is_parent_function (void) const { return false; }
+
   virtual bool is_subfunction (void) const { return false; }
 
   bool is_class_constructor (const std::string& cname = "") const

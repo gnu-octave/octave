@@ -1003,28 +1003,207 @@ namespace octave
     return name;
   }
 
+  // Creates a function handle that takes into account the context,
+  // finding local, nested, private, or sub functions.
+
   octave_value
   tree_evaluator::make_fcn_handle (const std::string& name)
   {
     octave_value retval;
 
+    // The str2func function can create a function handle with the name
+    // of an operator (for example, "+").  If so, it is converted to the
+    // name of the corresponding function ("+" -> "plus") and we create
+    // a simple function handle using that name.
+
     std::string fcn_name = get_operator_function_name (name);
 
-    if (fcn_name != name)
-      return octave_value (new octave_fcn_handle (fcn_name));
+    // If FCN_NAME is different from NAME, then NAME is an operator.  As
+    // of version 2020a, Matlab apparently uses the function name
+    // corresponding to the operator to search for private and local
+    // functions in the current scope but not(!) nested functions.
+
+    bool name_is_operator = fcn_name != name;
+
+    size_t pos = fcn_name.find ('.');
+
+    if (pos != std::string::npos)
+      {
+        // Recognize (some of?  which ones?) the following cases
+        // and create something other than a simple function handle?
+        // Should we just be checking for the last two when the first
+        // element of the dot-separated list is an object?  If so, then
+        // should this syntax be limited to a dot-separated list with
+        // exactly two elements?
+        //
+        //   object . method
+        //   object . static-method
+        //
+        // Code to do that duplicates some of simple_fcn_handle::call.
+
+        // Only accept expressions that contain one '.' separator.
+
+        // FIXME: The logic here is a bit complicated.  Is there a good
+        // way to simplify it?
+
+        std::string meth_nm = fcn_name.substr (pos+1);
+
+        if (meth_nm.find ('.') == std::string::npos)
+          {
+            std::string obj_nm = fcn_name.substr (0, pos);
+
+            // If obj_nm is an object in the current scope with a
+            // method named meth_nm, create a classsimple handle.
+
+            octave_value object = varval (obj_nm);
+
+            if (object.is_defined () && object.is_classdef_object ())
+              {
+                octave_classdef *cdef = object.classdef_object_value ();
+
+                if (cdef)
+                  {
+                    std::string class_nm = cdef->class_name ();
+
+                    cdef_object cdef_obj = cdef->get_object ();
+
+                    cdef_class cls = cdef_obj.get_class ();
+
+                    cdef_method meth = cls.find_method (meth_nm);
+
+                    if (meth.ok ())
+                      {
+                        // If the method we found is static, create a
+                        // new function name from the class name and
+                        // method name and create a simple function
+                        // handle below.  Otherwise, create a class
+                        // simple function handle.
+
+                        if (meth.is_static ())
+                          fcn_name = class_nm + '.' + meth_nm;
+                        else
+                          {
+                            octave_value meth_fcn = meth.get_function ();
+
+                            octave_fcn_handle *fh
+                              = new octave_fcn_handle (object, meth_fcn,
+                                                       class_nm, meth_nm);
+
+                            return octave_value (fh);
+                          }
+                      }
+                  }
+              }
+          }
+
+        // We didn't match anything above, so create handle to SIMPLE
+        // package function or static class method.  Function resolution
+        // is performed when the handle is used.
+
+        return octave_value (new octave_fcn_handle (fcn_name));
+      }
+
+    // If the function name refers to a sub/local/private function or a
+    // class method/constructor, create scoped function handle that is
+    // bound to that function.  Use the same precedence list as
+    // fcn_info::find but limit search to the following types of
+    // functions:
+    //
+    //   nested functions (and subfunctions)
+    //   local functions in the current file
+    //   private function
+    //   class method
+    //
+    // For anything else we create a simple function handle that will be
+    // resolved dynamically in the scope where it is evaluated.
 
     symbol_scope curr_scope = get_current_scope ();
 
-    // FCN_HANDLE: CONTEXT DEPENDENT
-    octave_fcn_handle *fh = new octave_fcn_handle (curr_scope, name);
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    std::string dispatch_class;
+    if (curr_scope)
+      {
+        octave_value ov_fcn
+          = symtab.find_scoped_function (fcn_name, curr_scope);
 
-    if (is_class_method_executing (dispatch_class)
-        || is_class_constructor_executing (dispatch_class))
-      fh->set_dispatch_class (dispatch_class);
+        if (ov_fcn.is_defined ())
+          {
+            octave_function *fcn = ov_fcn.function_value ();
 
-    return octave_value (fh);
+            if (fcn->is_nested_function ())
+              {
+                if (! name_is_operator)
+                  {
+                    // Get current stack frame and return handle to nested
+                    // function.
+
+                    std::shared_ptr<stack_frame> frame
+                      = m_call_stack.get_current_stack_frame ();
+
+                    octave_fcn_handle *fh
+                      = new octave_fcn_handle (ov_fcn, fcn_name, frame);
+
+                    return octave_value (fh);
+                  }
+              }
+            else if (fcn->is_subfunction ()
+                     /* || fcn->is_localfunction () */
+                     || fcn->is_private_function ())
+              {
+                // Create handle to SCOPED function (sub/local function
+                // or private function).
+
+                std::list<std::string> parentage = fcn->parent_fcn_names ();
+
+                octave_fcn_handle *fh
+                  = new octave_fcn_handle (ov_fcn, fcn_name, parentage);
+
+                return octave_value (fh);
+              }
+          }
+
+        // If name is operator, we are in Fstr2func, so skip the stack
+        // frame for that function.
+
+        bool skip_first = name_is_operator;
+        octave_function *curr_fcn = current_function (skip_first);
+
+        if (curr_fcn && (curr_fcn->is_class_method ()
+                         || curr_fcn->is_class_constructor ()))
+          {
+            std::string dispatch_class = curr_fcn->dispatch_class ();
+
+            octave_value ov_meth
+              = symtab.find_method (fcn_name, dispatch_class);
+
+            if (ov_meth.is_defined ())
+              {
+                octave_function *fcn = ov_meth.function_value ();
+
+                // FIXME: do we need to check that it is a method of
+                // dispatch_class, or is it sufficient to just check
+                // that it is a method?
+
+                if (fcn->is_class_method ())
+                  {
+                    // Create CLASSSIMPLE handle to method.
+
+                    octave_fcn_handle *fh
+                      = new octave_fcn_handle (ov_meth, dispatch_class,
+                                               fcn_name);
+
+                    return octave_value (fh);
+                  }
+              }
+          }
+      }
+
+    octave_value ov_fcn = symtab.find_user_function (fcn_name);
+
+    // Create handle to SIMPLE function.  If the function is not found
+    // now, then we will look for it again when the handle is used.
+
+    return octave_value (new octave_fcn_handle (ov_fcn, fcn_name));
   }
 
 /*
@@ -2663,25 +2842,6 @@ namespace octave
 
         retval = convert_return_list_to_const_vector (ret_list, nargout,
                                                       varargout);
-      }
-
-    if (user_function.is_nested_function ()
-        || user_function.is_parent_function ())
-      {
-        // Copy current stack frame to handles to nested functions.
-
-        for (octave_idx_type i = 0; i < retval.length (); i++)
-          {
-            octave_value val = retval(i);
-
-            if (val.is_function_handle ())
-              {
-                octave_fcn_handle *fh = val.fcn_handle_value ();
-
-                if (fh)
-                  fh->push_closure_context (*this);
-              }
-          }
       }
 
     return retval;

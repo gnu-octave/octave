@@ -39,9 +39,7 @@ namespace octave
   {
     octave_value fcn (new octave_builtin (ff, nm));
 
-    octave_value fcn_handle (new octave_fcn_handle (fcn, nm));
-
-    return fcn_handle;
+    return octave_value (new octave_fcn_handle (fcn));
   }
 
   static octave_value_list

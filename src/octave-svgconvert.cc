@@ -435,7 +435,7 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
       else if (elt.tagName () == "tspan")
         {
           // Font
-          QFont saved_font(font);
+          QFont saved_font (font);
 
           QString str = elt.attribute ("font-family");
           if (! str.isEmpty ())
@@ -448,6 +448,15 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
                 font.setWeight (QFont::Bold);
               else
                 font.setWeight (QFont::Normal);
+            }
+
+          str = elt.attribute ("font-style");
+          if (! str.isEmpty ())
+            {
+              if (str != "normal")
+                font.setStyle (QFont::StyleItalic);
+              else
+                font.setStyle (QFont::StyleNormal);
             }
 
           int sz = elt.attribute ("font-size").toInt ();

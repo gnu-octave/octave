@@ -799,25 +799,6 @@ namespace octave
   }
 
   void
-  tree_print_code::visit_return_list (tree_return_list& lst)
-  {
-    auto p = lst.begin ();
-
-    while (p != lst.end ())
-      {
-        tree_index_expression *elt = *p++;
-
-        if (elt)
-          {
-            elt->accept (*this);
-
-            if (p != lst.end ())
-              m_os << ", ";
-          }
-      }
-  }
-
-  void
   tree_print_code::visit_simple_assignment (tree_simple_assignment& expr)
   {
     indent ();

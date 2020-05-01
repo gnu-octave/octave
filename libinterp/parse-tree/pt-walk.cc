@@ -386,19 +386,6 @@ namespace octave
     // Nothing to do.
   }
 
-  void tree_walker::visit_return_list (tree_return_list& lst)
-  {
-    auto p = lst.begin ();
-
-    while (p != lst.end ())
-      {
-        tree_index_expression *elt = *p++;
-
-        if (elt)
-          elt->accept (*this);
-      }
-  }
-
   void tree_walker::visit_simple_assignment (tree_simple_assignment& expr)
   {
     tree_expression *lhs = expr.left_hand_side ();

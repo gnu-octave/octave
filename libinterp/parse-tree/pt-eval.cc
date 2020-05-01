@@ -2709,12 +2709,6 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_return_list (tree_return_list&)
-  {
-    panic_impossible ();
-  }
-
-  void
   tree_evaluator::visit_simple_assignment (tree_simple_assignment&)
   {
     panic_impossible ();

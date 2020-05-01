@@ -198,7 +198,6 @@ namespace octave
     void visit_postfix_expression (tree_postfix_expression&) { }
     void visit_prefix_expression (tree_prefix_expression&) { }
     void visit_return_command (tree_return_command&) { }
-    void visit_return_list (tree_return_list&) { }
     void visit_try_catch_command (tree_try_catch_command&) { }
     void visit_unwind_protect_command (tree_unwind_protect_command&) { }
     void visit_while_command (tree_while_command&) { }

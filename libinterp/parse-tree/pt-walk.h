@@ -72,7 +72,6 @@ namespace octave
   class tree_postfix_expression;
   class tree_prefix_expression;
   class tree_return_command;
-  class tree_return_list;
   class tree_simple_assignment;
   class tree_statement;
   class tree_statement_list;
@@ -184,8 +183,6 @@ namespace octave
     virtual void visit_prefix_expression (tree_prefix_expression&);
 
     virtual void visit_return_command (tree_return_command&);
-
-    virtual void visit_return_list (tree_return_list&);
 
     virtual void visit_simple_assignment (tree_simple_assignment&);
 

@@ -92,37 +92,11 @@ namespace octave
 
     int m_marked_for_varargs;
   };
-
-  // Return lists.  Used to hold the right hand sides of multiple
-  // assignment expressions.
-
-  class tree_return_list : public base_list<tree_index_expression *>
-  {
-  public:
-
-    tree_return_list (void) { }
-
-    tree_return_list (tree_index_expression *t) { append (t); }
-
-    // No copying!
-
-    tree_return_list (const tree_return_list&) = delete;
-
-    tree_return_list& operator = (const tree_return_list&) = delete;
-
-    ~tree_return_list (void);
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_return_list (*this);
-    }
-  };
 }
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
 // tree_parameter_list is derived from a template.
-// tree_return_list is derived from a template.
 
 #endif
 

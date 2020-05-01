@@ -74,16 +74,4 @@ namespace octave
 
     return new_list;
   }
-
-  // Return lists.
-
-  tree_return_list::~tree_return_list (void)
-  {
-    while (! empty ())
-      {
-        auto p = begin ();
-        delete *p;
-        erase (p);
-      }
-  }
 }

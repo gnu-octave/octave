@@ -625,11 +625,8 @@ namespace octave
   }
 
   octave_value
-  fcn_info::fcn_info_rep::xfind (const symbol_scope& search_scope,
-                                 const octave_value_list& args)
+  fcn_info::fcn_info_rep::find_scoped_function (const symbol_scope& search_scope)
   {
-    // Subfunction, local function, or private function.
-
     if (search_scope)
       {
         // Subfunction.
@@ -697,17 +694,41 @@ namespace octave
           }
       }
 
-    // Class methods.
+    return octave_value ();
+  }
 
+  octave_value
+  fcn_info::fcn_info_rep::find_method (const octave_value_list& args)
+  {
     if (! args.empty ())
       {
         std::string dispatch_type = get_dispatch_type (args);
 
-        octave_value fcn = find_method (dispatch_type);
-
-        if (fcn.is_defined ())
-          return fcn;
+        return find_method (dispatch_type);
       }
+
+    return octave_value ();
+  }
+
+  octave_value
+  fcn_info::fcn_info_rep::xfind (const symbol_scope& search_scope,
+                                 const octave_value_list& args)
+  {
+    // Subfunction, local function, or private function.
+
+    octave_value fcn;
+
+    fcn = find_scoped_function (search_scope);
+
+    if (fcn.is_defined ())
+      return fcn;
+
+    // Class methods.
+
+    fcn = find_method (args);
+
+    if (fcn.is_defined ())
+      return fcn;
 
     // Class constructors.  The class name and function name are the same.
 
@@ -745,7 +766,7 @@ namespace octave
 
     // Autoload?
 
-    octave_value fcn = find_autoload ();
+    fcn = find_autoload ();
 
     if (fcn.is_defined ())
       return fcn;

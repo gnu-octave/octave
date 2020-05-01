@@ -59,13 +59,16 @@ namespace octave
     for (tree_decl_elt *elt : *this)
       retval.push_back (elt->name ());
 
+    if (m_marked_for_varargs)
+      retval.push_back (varargs_symbol_name ());
+
     return retval;
   }
 
   tree_parameter_list *
   tree_parameter_list::dup (symbol_scope& scope) const
   {
-    tree_parameter_list *new_list = new tree_parameter_list ();
+    tree_parameter_list *new_list = new tree_parameter_list (m_in_or_out);
 
     new_list->m_marked_for_varargs = m_marked_for_varargs;
 

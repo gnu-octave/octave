@@ -101,6 +101,7 @@ property which is hidden now.
 
 * `getpixelposition`
 * `endsWith`
+* `memory`
 * `rng`
 * `startsWith`
 

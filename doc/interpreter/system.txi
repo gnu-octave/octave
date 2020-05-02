@@ -554,6 +554,8 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(license)
 
+@DOCSTRING(memory)
+
 @DOCSTRING(getrusage)
 
 @DOCSTRING(winqueryreg)

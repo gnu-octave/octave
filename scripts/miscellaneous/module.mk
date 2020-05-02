@@ -45,6 +45,7 @@ FCN_FILE_DIRS += \
   %reldir%/loadobj.m \
   %reldir%/ls.m \
   %reldir%/ls_command.m \
+  %reldir%/memory.m \
   %reldir%/menu.m \
   %reldir%/methods.m \
   %reldir%/mex.m \

@@ -981,7 +981,6 @@ function rlist = missing_functions ()
   "memmapfile",
   "memoize",
   "MemoizedFunction",
-  "memory",
   "mergecats",
   "meta.abstractDetails",
   "meta.class.fromName",

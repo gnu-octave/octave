@@ -1654,14 +1654,18 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 
       if (f)
         {
-          octave::tree_parameter_list *p = f->parameter_list ();
+          os << "@";
 
-          os << "@(";
+          // The parameter list should always be valid for anonymous
+          // functions, so we should always call accept for it, and it
+          // will print the parens for us.
+
+          octave::tree_parameter_list *p = f->parameter_list ();
 
           if (p)
             p->accept (tpc);
 
-          os << ") ";
+          os << " ";
 
           octave::tree_statement_list *b = f->body ();
 

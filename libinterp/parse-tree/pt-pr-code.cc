@@ -44,14 +44,12 @@ namespace octave
 
     print_parens (afh, "(");
 
-    m_os << "@(";
+    m_os << "@";
 
     tree_parameter_list *param_list = afh.parameter_list ();
 
     if (param_list)
       param_list->accept (*this);
-
-    m_os << ") ";
 
     print_fcn_handle_body (afh.expression ());
 
@@ -345,35 +343,10 @@ namespace octave
 
     if (ret_list)
       {
-        bool takes_var_return = fcn.takes_var_return ();
-
-        int len = ret_list->length ();
-
-        if (len > 1 || takes_var_return)
-          {
-            m_os << '[';
-            m_nesting.push ('[');
-          }
-
         ret_list->accept (*this);
-
-        if (takes_var_return)
-          {
-            if (len > 0)
-              m_os << ", ";
-
-            m_os << "varargout";
-          }
-
-        if (len > 1 || takes_var_return)
-          {
-            m_nesting.pop ();
-            m_os << ']';
-          }
 
         m_os << " = ";
       }
-
     std::string fcn_name = fcn.name ();
 
     m_os << (fcn_name.empty () ? "(empty)" : fcn_name) << ' ';
@@ -381,31 +354,9 @@ namespace octave
     tree_parameter_list *param_list = fcn.parameter_list ();
 
     if (param_list)
-      {
-        bool takes_varargs = fcn.takes_varargs ();
+      param_list->accept (*this);
 
-        int len = param_list->length ();
-
-        if (len > 0 || takes_varargs)
-          {
-            m_os << '(';
-            m_nesting.push ('(');
-          }
-
-        param_list->accept (*this);
-
-        if (len > 0 || takes_varargs)
-          {
-            m_nesting.pop ();
-            m_os << ')';
-            newline ();
-          }
-      }
-    else
-      {
-        m_os << "()";
-        newline ();
-      }
+    newline ();
   }
 
   void
@@ -737,6 +688,26 @@ namespace octave
   void
   tree_print_code::visit_parameter_list (tree_parameter_list& lst)
   {
+    bool is_input_list = lst.is_input_list ();
+
+    if (is_input_list)
+      {
+        m_os << '(';
+        m_nesting.push ('(');
+      }
+    else
+      {
+        int len = lst.length ();
+        if (lst.takes_varargs ())
+          len++;
+
+        if (len != 1)
+          {
+            m_os << '[';
+            m_nesting.push ('[');
+          }
+      }
+
     auto p = lst.begin ();
 
     while (p != lst.end ())
@@ -753,7 +724,25 @@ namespace octave
       }
 
     if (lst.takes_varargs ())
-      m_os << "varargin";
+      m_os << lst.varargs_symbol_name ();
+
+    if (is_input_list)
+      {
+        m_nesting.pop ();
+        m_os << ')';
+      }
+    else
+      {
+        int len = lst.length ();
+        if (lst.takes_varargs ())
+          len++;
+
+        if (len != 1)
+          {
+            m_nesting.pop ();
+            m_os << ']';
+          }
+      }
   }
 
   void
@@ -796,25 +785,6 @@ namespace octave
     indent ();
 
     m_os << "return";
-  }
-
-  void
-  tree_print_code::visit_return_list (tree_return_list& lst)
-  {
-    auto p = lst.begin ();
-
-    while (p != lst.end ())
-      {
-        tree_index_expression *elt = *p++;
-
-        if (elt)
-          {
-            elt->accept (*this);
-
-            if (p != lst.end ())
-              m_os << ", ";
-          }
-      }
   }
 
   void

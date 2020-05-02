@@ -52,14 +52,21 @@ namespace octave
       out = 2
     };
 
-    tree_parameter_list (void)
-      : m_marked_for_varargs (0) { }
+    tree_parameter_list (in_or_out io)
+      : m_in_or_out (io), m_marked_for_varargs (0)
+    { }
 
-    tree_parameter_list (tree_decl_elt *t)
-      : m_marked_for_varargs (0) { append (t); }
+    tree_parameter_list (in_or_out io, tree_decl_elt *t)
+      : m_in_or_out (io), m_marked_for_varargs (0)
+    {
+      append (t);
+    }
 
-    tree_parameter_list (tree_identifier *id)
-      : m_marked_for_varargs (0) { append (new tree_decl_elt (id)); }
+    tree_parameter_list (in_or_out io, tree_identifier *id)
+      : m_in_or_out (io), m_marked_for_varargs (0)
+    {
+      append (new tree_decl_elt (id));
+    }
 
     // No copying!
 
@@ -79,7 +86,16 @@ namespace octave
 
     bool varargs_only (void) { return (m_marked_for_varargs < 0); }
 
+    bool is_input_list (void) const { return m_in_or_out == in; }
+
+    bool is_output_list (void) const { return m_in_or_out == out; }
+
     std::list<std::string> variable_names (void) const;
+
+    std::string varargs_symbol_name (void) const
+    {
+      return m_in_or_out == in ? "varargin" : "varargout";
+    }
 
     tree_parameter_list * dup (symbol_scope& scope) const;
 
@@ -90,32 +106,12 @@ namespace octave
 
   private:
 
+    in_or_out m_in_or_out;
+
+    // 1: takes varargs
+    // -1: takes varargs only
+    // 0: does not take varargs.
     int m_marked_for_varargs;
-  };
-
-  // Return lists.  Used to hold the right hand sides of multiple
-  // assignment expressions.
-
-  class tree_return_list : public base_list<tree_index_expression *>
-  {
-  public:
-
-    tree_return_list (void) { }
-
-    tree_return_list (tree_index_expression *t) { append (t); }
-
-    // No copying!
-
-    tree_return_list (const tree_return_list&) = delete;
-
-    tree_return_list& operator = (const tree_return_list&) = delete;
-
-    ~tree_return_list (void);
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_return_list (*this);
-    }
   };
 }
 

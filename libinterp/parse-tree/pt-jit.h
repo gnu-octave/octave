@@ -142,8 +142,6 @@ namespace octave
 
     void visit_return_command (tree_return_command&);
 
-    void visit_return_list (tree_return_list&);
-
     void visit_simple_assignment (tree_simple_assignment&);
 
     void visit_statement (tree_statement&);

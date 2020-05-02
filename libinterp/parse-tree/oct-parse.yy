@@ -1429,7 +1429,7 @@ param_list      : param_list_beg param_list1 param_list_end
                 ;
 
 param_list1     : // empty
-                  { $$ = nullptr; }
+                  { $$ = new octave::tree_parameter_list (octave::tree_parameter_list::in); }
                 | param_list2
                   {
                     $1->mark_as_formal_parameters ();
@@ -1448,7 +1448,7 @@ param_list1     : // empty
                 ;
 
 param_list2     : param_list_elt
-                  { $$ = new octave::tree_parameter_list ($1); }
+                  { $$ = new octave::tree_parameter_list (octave::tree_parameter_list::in, $1); }
                 | param_list2 ',' param_list_elt
                   {
                     YYUSE ($2);
@@ -1475,13 +1475,14 @@ return_list     : '[' ']'
 
                     lexer.m_looking_at_return_list = false;
 
-                    $$ = new octave::tree_parameter_list ();
+                    $$ = new octave::tree_parameter_list (octave::tree_parameter_list::out);
                   }
                 | identifier
                   {
                     lexer.m_looking_at_return_list = false;
 
-                    octave::tree_parameter_list *tmp = new octave::tree_parameter_list ($1);
+                    octave::tree_parameter_list *tmp
+                      = new octave::tree_parameter_list (octave::tree_parameter_list::out, $1);
 
                     // Even though this parameter list can contain only
                     // a single identifier, we still need to validate it
@@ -1516,7 +1517,9 @@ return_list     : '[' ']'
                 ;
 
 return_list1    : identifier
-                  { $$ = new octave::tree_parameter_list (new octave::tree_decl_elt ($1)); }
+                  {
+                    $$ = new octave::tree_parameter_list (octave::tree_parameter_list::out, new octave::tree_decl_elt ($1));
+                  }
                 | return_list1 ',' identifier
                   {
                     YYUSE ($2);

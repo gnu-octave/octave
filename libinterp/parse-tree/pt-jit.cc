@@ -776,12 +776,6 @@ namespace octave
   }
 
   void
-  jit_convert::visit_return_list (tree_return_list&)
-  {
-    throw jit_fail_exception ("No visit_return_list implementation");
-  }
-
-  void
   jit_convert::visit_simple_assignment (tree_simple_assignment& tsa)
   {
     tree_expression *rhs = tsa.right_hand_side ();

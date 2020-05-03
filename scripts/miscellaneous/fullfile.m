@@ -25,16 +25,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
-## @deftypefnx {} {@var{filenames} =} fullfile (@dots{}, @var{files})
 ## Build complete filename from separate parts.
 ##
-## Joins any number of path components intelligently.  The return value is
-## the concatenation of each component with exactly one file separator
-## between each non empty part and at most one leading and/or trailing file
+## The function joins any number of path components intelligently.  The return
+## value is the concatenation of each component with exactly one file separator
+## between each part of the path and at most one leading and/or trailing file
 ## separator.
 ##
-## If the last component part is a cell array, returns a cell array of
-## filepaths, one for each element in the last component, e.g.:
+## The input arguments might be strings or cell strings.  Any input arguments
+## that are cell strings must contain one single string or must be equal in
+## size.  In that case, the function returns a cell string of filepaths of the
+## same dimensions as the input cell strings, e.g.:
 ##
 ## @example
 ## @group
@@ -49,7 +50,7 @@
 ## @end example
 ##
 ## On Windows systems, while forward slash file separators do work, they are
-## replaced by backslashes; in addition drive letters are stripped of leading
+## replaced by backslashes.  In addition, drive letters are stripped of leading
 ## file separators to obtain a valid file path.
 ##
 ## Note: @code{fullfile} does not perform any validation of the resulting full
@@ -59,19 +60,58 @@
 
 function filename = fullfile (varargin)
 
-  if (nargin && iscell (varargin{end}))
-    filename = cellfun (@(x) fullfile (varargin{1:end-1}, x), varargin{end},
-                                       "UniformOutput", false);
-  else
-    non_empty = cellfun ("isempty", varargin);
-    unc = 0;
-    if (ispc && ! isempty (varargin))
-      varargin = strrep (varargin, '/', filesep);
-      unc = strncmp (varargin{1}, '\\', 2);
-      varargin(1) = regexprep (varargin{1}, '[\\/]*([a-zA-Z]:[\\/]*)', "$1");
-    endif
-    filename = strjoin (varargin(! non_empty), filesep);
-    filename(unc + strfind (filename(1+unc : end), [filesep filesep])) = "";
+  ## remove empty arguments
+  varargin(cellfun (@isempty, varargin)) = [];
+
+  if (isempty (varargin))
+    ## return early for all empty or no input
+    filename = "";
+    return;
+  endif
+
+  ## check input type
+  is_cellstr = cellfun (@iscellstr, varargin);
+  if (! all (is_cellstr | cellfun (@ischar, varargin)))
+    error ("fullfile: input must either be strings or cell strings");
+  endif
+
+  ## convert regular strings to cell strings
+  varargin(! is_cellstr) = num2cell (varargin(! is_cellstr));
+
+  ## check if input size matches
+  if (numel (varargin) > 1 && common_size (varargin{:}) != 0)
+    error ("fullfile: cell string input must be scalar or of the same size");
+  endif
+
+  fs = filesep ();
+
+  if (ispc ())
+    ## replace forward slashes with backslashes
+    varargin = cellfun (@(x) strrep (x, "/", fs), varargin,
+                        "UniformOutput", false);
+
+    ## Strip fileseps preceeding drive letters
+    varargin{1} = regexprep (varargin{1}, '\\*([a-zA-Z]:\\*)', "$1");
+
+    unc = strncmp (varargin{1}, '\\', 2);
+  endif
+
+  ## insert file separator between elements
+  varargin(2,:) = {fs};
+  varargin{end} = "";
+
+  filename = strcat (varargin{:});
+
+  ## remove multiplicate file separators
+  filename = regexprep (filename, [undo_string_escapes(fs), "*"], fs);
+
+  if (ispc ())
+    ## prepend removed file separator for UNC paths
+    filename(unc) = strcat (fs, filename(unc));
+  endif
+
+  if (! any (is_cellstr))
+    filename = filename{1};
   endif
 
 endfunction
@@ -79,13 +119,14 @@ endfunction
 
 %!shared fs, fsx, xfs, fsxfs, xfsy, xfsyfs
 %! fs = filesep ();
-%! fsx = [fs "x"];
-%! xfs = ["x" fs];
-%! fsxfs = [fs "x" fs];
-%! xfsy = ["x" fs "y"];
-%! xfsyfs = ["x" fs "y" fs];
+%! fsx = [fs, "x"];
+%! xfs = ["x", fs];
+%! fsxfs = [fs, "x", fs];
+%! xfsy = ["x", fs, "y"];
+%! xfsyfs = ["x", fs, "y", fs];
 
 %!assert (fullfile (""), "")
+%!assert (fullfile ("", ""), "")
 %!assert (fullfile (fs), fs)
 %!assert (fullfile ("", fs), fs)
 %!assert (fullfile (fs, ""), fs)
@@ -105,32 +146,39 @@ endfunction
 %!assert (fullfile (fs, "x", fs), fsxfs)
 
 %!assert (fullfile ("x/", "/", "/", "y", "/", "/"), xfsyfs)
-%!assert (fullfile ("/", "x/", "/", "/", "y", "/", "/"), [fs xfsyfs])
-%!assert (fullfile ("/x/", "/", "/", "y", "/", "/"), [fs xfsyfs])
+%!assert (fullfile ("/", "x/", "/", "/", "y", "/", "/"), [fs, xfsyfs])
+%!assert (fullfile ("/x/", "/", "/", "y", "/", "/"), [fs, xfsyfs])
 
 ## different on purpose so that "fullfile (c{:})" works for empty c
 %!assert (fullfile (), "")
 
-%!assert (fullfile ("x", "y", {"c", "d"}), {[xfsyfs "c"], [xfsyfs "d"]})
+%!assert (fullfile ("x", "y", {"c", "d"}), {[xfsyfs, "c"], [xfsyfs, "d"]})
+%!assert (fullfile ({"folder1", "folder2"}, "sub", {"f1.m", "f2.m"}), ...
+%!        {["folder1", fs, "sub", fs, "f1.m"], ...
+%!         ["folder2", fs, "sub", fs, "f2.m"]});
 
 ## Windows specific - drive letters and file sep type
-%!test
-%! if (ispc)
-%!   assert (fullfile ('\/\/\//A:/\/\', "x/", "/", "/", "y", "/", "/"), ...
-%!           ['A:\' xfsyfs]);
-%! endif
+%!testif ; ispc ()
+%! assert (fullfile ('\/\/\//A:/\/\', "x/", "/", "/", "y", "/", "/"), ...
+%!         ['A:\' xfsyfs]);
 
 ## *nix specific - double backslash
-%!test
-%! if (isunix || ismac)
-%!   assert (fullfile (fs, fs), fs);
-%! endif
+%!testif ; ! ispc ()
+%! assert (fullfile (fs, fs), fs);
+
+## Windows specific - UNC path
+%!testif ; ispc ()
+%! assert (fullfile ({'\/\//server1', 'C:', '\\server2\/'}, ...
+%!                   "x/", "/", "/", "y", "/", "/"), ...
+%!         {['\\server1\', xfsyfs], ['C:\', xfsyfs], ['\\server2\', xfsyfs]});
 
 ## Windows specific - drive letters and file sep type, cell array
-%!test
-%! if (ispc)
-%!  tmp = fullfile ({"\\\/B:\//", "A://c", "\\\C:/g/h/i/j\/"});
-%!  assert (tmp{1}, 'B:\');
-%!  assert (tmp{2}, 'A:\c');
-%!  assert (tmp{3}, 'C:\g\h\i\j\');
-%! endif
+%!testif ; ispc ()
+%! tmp = fullfile ({'\\\/B:\//', 'A://c', '\\\C:/g/h/i/j\/'});
+%! assert (tmp{1}, 'B:\');
+%! assert (tmp{2}, 'A:\c');
+%! assert (tmp{3}, 'C:\g\h\i\j\');
+
+%!error <strings or cell strings> fullfile (1)
+%!error <strings or cell strings> fullfile ({1})
+%!error <same size> fullfile ({"a", "b"}, {"a", "b", "c"})

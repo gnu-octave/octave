@@ -734,6 +734,8 @@ namespace octave
       draw_surface (dynamic_cast<const surface::properties&> (props));
     else if (go.isa ("patch"))
       draw_patch (dynamic_cast<const patch::properties&> (props));
+    else if (go.isa ("scatter"))
+      draw_scatter (dynamic_cast<const scatter::properties&> (props));
     else if (go.isa ("light"))
       draw_light (dynamic_cast<const light::properties&> (props));
     else if (go.isa ("hggroup"))
@@ -3695,6 +3697,116 @@ namespace octave
   }
 
   void
+  opengl_renderer::draw_scatter (const scatter::properties& props)
+  {
+#if defined (HAVE_OPENGL)
+
+    // Do not render if the scatter object has incoherent data
+    std::string msg;
+    if (props.has_bad_data (msg))
+      {
+        warning ("opengl_renderer: %s.  Not rendering.", msg.c_str ());
+        return;
+      }
+
+    bool draw_all = selecting;
+
+    if (draw_all || (! props.marker_is ("none")
+                     && ! (props.markeredgecolor_is ("none")
+                           && props.markerfacecolor_is ("none"))))
+      {
+        bool do_edge = draw_all || ! props.markeredgecolor_is ("none");
+        bool do_face = draw_all || ! props.markerfacecolor_is ("none");
+
+        const Matrix x = props.get_xdata ().matrix_value ();
+        const Matrix y = props.get_ydata ().matrix_value ();
+        const Matrix z = props.get_zdata ().matrix_value ();
+        const Matrix c = props.get_color_data ().matrix_value ();
+        const Matrix s = props.get_sizedata ().matrix_value ();
+
+        int np = x.rows ();
+        bool has_z = ! z.isempty ();
+
+        // If markeredgecolor is "flat", mecolor is empty
+        Matrix mecolor = (draw_all ? Matrix (1, 3, 0.0) :
+                          props.get_markeredgecolor_rgb ());
+        Matrix mfcolor = (draw_all ? Matrix (1, 3, 0.0) :
+                          props.get_markerfacecolor_rgb ());
+        const double mea = props.get_markeredgealpha ();
+        const double mfa = props.get_markerfacealpha ();
+
+        if (props.markerfacecolor_is ("auto"))
+          {
+            gh_manager& gh_mgr
+              = octave::__get_gh_manager__ ("opengl_renderer::draw_scatter");
+            graphics_object go = gh_mgr.get_object (props.get___myhandle__ ());
+            graphics_object ax = go.get_ancestor ("axes");
+            const axes::properties& ax_props
+              = dynamic_cast<const axes::properties&> (ax.get_properties ());
+
+            mfcolor = ax_props.get_color ().matrix_value ();
+          }
+
+        init_marker (props.get_marker (), std::sqrt (s(0)),
+                     props.get_linewidth ());
+
+        uint8_t clip_mask = (props.is_clipping () ? 0x7F : 0x40);
+        uint8_t clip_ok = 0x40;
+
+        Matrix cc;
+        if (! c.isempty ())
+          {
+            if (c.rows () == 1)
+              cc = c;
+            else
+              {
+                cc.resize (1, 3);
+                cc(0) = c(0,0);
+                cc(1) = c(0,1);
+                cc(2) = c(0,2);
+              }
+          }
+
+        for (int i = 0; i < np; i++)
+          {
+            if ((clip_code (x(i), y(i), (has_z ? z(i) : 0.0)) & clip_mask)
+                 != clip_ok)
+              continue;
+
+            if (c.rows () > 1)
+              {
+                cc(0) = c(i,0);
+                cc(1) = c(i,1);
+                cc(2) = c(i,2);
+              }
+
+            Matrix lc = (do_edge ? (mecolor.isempty () ? cc : mecolor)
+                                 : Matrix ());
+            Matrix fc = (do_face ? (mfcolor.isempty () ? cc : mfcolor)
+                                 : Matrix ());
+
+            if (s.numel () > 1)
+              change_marker (props.get_marker (), std::sqrt (s(i)));
+
+            draw_marker (x(i), y(i), (has_z ? z(i) : 0.0), lc, fc, mea, mfa);
+          }
+
+        end_marker ();
+      }
+
+#else
+
+    octave_unused_parameter (props);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  void
   opengl_renderer::draw_light (const light::properties& props)
   {
 #if defined (HAVE_OPENGL)
@@ -4279,6 +4391,27 @@ namespace octave
   }
 
   void
+  opengl_renderer::change_marker (const std::string& m, double size)
+  {
+#if defined (HAVE_OPENGL)
+
+    marker_id = make_marker_list (m, size, false);
+    filled_marker_id = make_marker_list (m, size, true);
+
+#else
+
+    octave_unused_parameter (m);
+    octave_unused_parameter (size);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  void
   opengl_renderer::end_marker (void)
   {
 #if defined (HAVE_OPENGL)
@@ -4304,7 +4437,8 @@ namespace octave
 
   void
   opengl_renderer::draw_marker (double x, double y, double z,
-                                const Matrix& lc, const Matrix& fc)
+                                const Matrix& lc, const Matrix& fc,
+                                const double la, const double fa)
   {
 #if defined (HAVE_OPENGL)
 
@@ -4315,12 +4449,12 @@ namespace octave
 
     if (filled_marker_id > 0 && fc.numel () > 0)
       {
-        m_glfcns.glColor3dv (fc.data ());
+        m_glfcns.glColor4d (fc(0), fc(1), fc(2), fa);
         set_polygon_offset (true, -1.0);
         m_glfcns.glCallList (filled_marker_id);
         if (lc.numel () > 0)
           {
-            m_glfcns.glColor3dv (lc.data ());
+            m_glfcns.glColor4d (lc(0), lc(1), lc(2), la);
             m_glfcns.glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
             m_glfcns.glEdgeFlag (GL_TRUE);
             set_polygon_offset (true, -2.0);
@@ -4331,7 +4465,7 @@ namespace octave
       }
     else if (marker_id > 0 && lc.numel () > 0)
       {
-        m_glfcns.glColor3dv (lc.data ());
+        m_glfcns.glColor4d (lc(0), lc(1), lc(2), la);
         m_glfcns.glCallList (marker_id);
       }
 
@@ -4342,6 +4476,8 @@ namespace octave
     octave_unused_parameter (z);
     octave_unused_parameter (lc);
     octave_unused_parameter (fc);
+    octave_unused_parameter (la);
+    octave_unused_parameter (fa);
 
     // This shouldn't happen because construction of opengl_renderer
     // objects is supposed to be impossible if OpenGL is not available.

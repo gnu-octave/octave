@@ -1171,24 +1171,30 @@ at the Octave prompt should display a three-dimensional plot.
 The graphics functions use pointers, which are of class graphics_handle, in
 order to address the data structures which control visual display.  A
 graphics handle may point to any one of a number of different base object
-types and these objects are the graphics data structures themselves.  The
+types.  These objects are the graphics data structures themselves.  The
 primitive graphic object types are: @code{figure}, @code{axes}, @code{line},
-@code{text}, @code{patch}, @code{surface}, @code{text}, @code{image}, and
-@code{light}.
+@code{text}, @code{patch}, @code{scatter}, @code{surface}, @code{text},
+@code{image}, and @code{light}.
 
-Each of these objects has a function by the same name, and, each of these
+Each of these objects has a function by the same name, and each of these
 functions returns a graphics handle pointing to an object of the corresponding
-type.  In addition there are several functions which operate on properties of
-the graphics objects and which also return handles: the functions @code{plot}
-and @code{plot3} return a handle pointing to an object of type line, the
-function @code{subplot} returns a handle pointing to an object of type axes,
-the function @code{fill} returns a handle pointing to an object of type patch,
-the functions @code{area}, @code{bar}, @code{barh}, @code{contour},
-@code{contourf}, @code{contour3}, @code{surf}, @code{mesh}, @code{surfc},
-@code{meshc}, @code{errorbar}, @code{quiver}, @code{quiver3}, @code{scatter},
-@code{scatter3}, @code{stair}, @code{stem}, @code{stem3} each return a handle
-to a complex data structure as documented in
-@ref{XREFdatasources,,Data Sources}.
+type.
+
+In addition, there are several functions which operate on properties of the
+graphics objects and which also return handles.  This includes but is not
+limited to the following functions:  The functions @code{plot} and @code{plot3}
+return a handle pointing to an object of type @code{line}.  The function
+@code{subplot} returns a handle pointing to an object of type @code{axes}.
+The functions @code{fill}, @code{trimesh}, and @code{trisurf} return a handle
+pointing to an object of type patch.  The function @code{scatter3} returns a
+handle to an object of type scatter.  The functions @code{slice}, @code{surf},
+@code{surfl}, @code{mesh}, @code{meshz}, @code{pcolor}, and @code{waterfall}
+each return a handle of type surface.  The function @code{camlight} returns a
+handle to an object of type light.  The functions @code{area}, @code{bar},
+@code{barh}, @code{contour}, @code{contourf}, @code{contour3}, @code{surfc},
+@code{meshc}, @code{errorbar}, @code{quiver}, @code{quiver3}, @code{stair},
+@code{stem}, @code{stem3} each return a handle to a complex data structure as
+documented in @ref{XREFdatasources,,Data Sources}.
 
 The graphics objects are arranged in a hierarchy:
 
@@ -1200,8 +1206,12 @@ the root object.
 
 3. Below the @code{figure} objects are @code{axes} or @code{hggroup} objects.
 
-4. Below the @code{axes} objects are @code{line}, @code{text}, @code{patch},
-@code{surface}, @code{image}, and @code{light} objects.
+4. Below the @code{axes} or @code{hggroup} objects are @code{line},
+@code{text}, @code{patch}, @code{scatter}, @code{surface}, @code{image}, and
+@code{light} objects.
+
+It is possible to walk this hierarchical tree by querying the @qcode{"parent"}
+and @qcode{"children"} properties of the graphics objects.
 
 Graphics handles may be distinguished from function handles
 (@pxref{Function Handles}) by means of the function @code{ishghandle}.
@@ -1490,6 +1500,7 @@ struct2hdl (fig_struct);
 * Text Properties::
 * Image Properties::
 * Patch Properties::
+* Scatter Properties::
 * Surface Properties::
 * Light Properties::
 * Uimenu Properties::
@@ -1562,6 +1573,13 @@ In the following documentation default values are enclosed in @{ @}.
 @prindex @sortas{@ Patch Properties} Patch Properties
 
 @include plot-patchproperties.texi
+
+
+@node Scatter Properties
+@subsubsection Scatter Properties
+@prindex @sortas{@ Scatter Properties} Scatter Properties
+
+@include plot-scatterproperties.texi
 
 
 @node Surface Properties
@@ -2120,7 +2138,6 @@ corresponding hggroup elements.
 * Error Bar Series::
 * Line Series::
 * Quiver Group::
-* Scatter Group::
 * Stair Group::
 * Stem Series::
 * Surface Group::
@@ -2443,46 +2460,6 @@ The values of the vector field to plot.
 @itemx udatasource
 @itemx vdatasource
 @itemx wdatasource
-Data source variables.
-@end table
-
-@node Scatter Group
-@subsubsection Scatter Group
-@cindex group objects
-@cindex scatter group
-
-Scatter series objects are created by the @code{scatter} or @code{scatter3}
-functions.  A single hggroup element contains as many children as there are
-points in the scatter plot, with each child representing one of the points.
-The properties of the stem series are
-
-@table @code
-@item linewidth
-The line width of the line objects of the points.  @xref{Line Styles}.
-
-@item  marker
-@itemx markeredgecolor
-@itemx markerfacecolor
-The line and fill color of the markers of the points.  @xref{Colors}.
-
-@item  xdata
-@itemx ydata
-@itemx zdata
-The original x, y and z data of the stems.
-
-@item cdata
-The color data for the points of the plot.  Each point can have a separate
-color, or a unique color can be specified.
-
-@item sizedata
-The size data for the points of the plot.  Each point can its own size or a
-unique size can be specified.
-
-@item  xdatasource
-@itemx ydatasource
-@itemx zdatasource
-@itemx cdatasource
-@itemx sizedatasource
 Data source variables.
 @end table
 

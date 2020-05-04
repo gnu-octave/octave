@@ -1157,8 +1157,9 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
                 {
                   pfx = name.substr (0, 7);
 
-                  if (pfx.compare ("surface") || pfx.compare ("hggroup")
-                      || pfx.compare ("uipanel") || pfx.compare ("uitable"))
+                  if (pfx.compare ("surface") || pfx.compare ("scatter")
+                      || pfx.compare ("hggroup") || pfx.compare ("uipanel")
+                      || pfx.compare ("uitable"))
                     offset = 7;
                   else if (len >= 9)
                     {
@@ -1226,6 +1227,8 @@ make_graphics_object_from_type (const caseless_str& type,
     go = new light (h, p);
   else if (type.compare ("patch"))
     go = new patch (h, p);
+  else if (type.compare ("scatter"))
+    go = new scatter (h, p);
   else if (type.compare ("surface"))
     go = new surface (h, p);
   else if (type.compare ("hggroup"))
@@ -2297,8 +2300,9 @@ property_list::set (const caseless_str& name, const octave_value& val)
                 {
                   pfx = name.substr (0, 7);
 
-                  if (pfx.compare ("surface") || pfx.compare ("hggroup")
-                      || pfx.compare ("uipanel") || pfx.compare ("uitable"))
+                  if (pfx.compare ("surface") || pfx.compare ("scatter")
+                      || pfx.compare ("hggroup")|| pfx.compare ("uipanel")
+                      || pfx.compare ("uitable"))
                     offset = 7;
                   else if (len > 9)
                     {
@@ -2357,6 +2361,8 @@ property_list::set (const caseless_str& name, const octave_value& val)
             has_property = image::properties::has_core_property (pname);
           else if (pfx == "patch")
             has_property = patch::properties::has_core_property (pname);
+          else if (pfx == "scatter")
+            has_property = scatter::properties::has_core_property (pname);
           else if (pfx == "surface")
             has_property = surface::properties::has_core_property (pname);
           else if (pfx == "hggroup")
@@ -2439,8 +2445,9 @@ property_list::lookup (const caseless_str& name) const
                 {
                   pfx = name.substr (0, 7);
 
-                  if (pfx.compare ("surface") || pfx.compare ("hggroup")
-                      || pfx.compare ("uipanel") || pfx.compare ("uitable"))
+                  if (pfx.compare ("surface") || pfx.compare ("scatter")
+                      || pfx.compare ("hggroup") || pfx.compare ("uipanel")
+                      || pfx.compare ("uitable"))
                     offset = 7;
                   else if (len > 9)
                     {
@@ -10222,6 +10229,119 @@ patch::reset_default_properties (void)
 // ---------------------------------------------------------------------
 
 octave_value
+scatter::properties::get_color_data (void) const
+{
+  octave_value c = get_cdata ();
+  if (c.is_undefined () || c.isempty ())
+    return Matrix ();
+  else
+    return convert_cdata (*this, c, c.columns () == 1, 2);
+}
+
+void
+scatter::properties::update_data (void)
+{
+  Matrix xd = get_xdata ().matrix_value ();
+  Matrix yd = get_ydata ().matrix_value ();
+  Matrix zd = get_zdata ().matrix_value ();
+  Matrix cd = get_cdata ().matrix_value ();
+  Matrix sd = get_sizedata ().matrix_value ();
+
+  bad_data_msg = "";
+  if (xd.dims () != yd.dims ()
+      || (xd.dims () != zd.dims () && ! zd.isempty ()))
+    {
+      bad_data_msg = "x/y/zdata must have the same dimensions";
+      return;
+    }
+
+  octave_idx_type x_rows = xd.rows ();
+  octave_idx_type c_cols = cd.columns ();
+  octave_idx_type c_rows = cd.rows ();
+
+  if (! cd.isempty () && (c_rows != 1 || c_cols != 3)
+      && (c_rows != x_rows || (c_cols != 1 && c_cols != 3)))
+    {
+      bad_data_msg = "cdata must be an rgb triplet or have the same number of "
+                     "rows as X and one or three columns";
+      return;
+    }
+
+  octave_idx_type s_rows = sd.rows ();
+  if (s_rows != 1 && s_rows != x_rows)
+    {
+      bad_data_msg = "sizedata must be a scalar or a vector with the same "
+                     "dimensions as X";
+      return;
+    }
+}
+
+static bool updating_scatter_cdata = false;
+
+void
+scatter::properties::update_color (void)
+{
+  if (updating_scatter_cdata)
+    return;
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("scatter::properties::update_color");
+
+  graphics_object go = gh_mgr.get_object (get___myhandle__ ());
+
+  axes::properties& parent_axes_prop
+    = dynamic_cast<axes::properties&>
+        (go.get_ancestor ("axes").get_properties ());
+
+  Matrix color_order = parent_axes_prop.get_colororder ().matrix_value ();
+  Matrix series_idx = get_seriesindex ().matrix_value ();
+  octave_idx_type s = (static_cast<octave_idx_type> (series_idx(0)) - 1)
+                      % color_order.rows ();
+
+  Matrix color = Matrix (1, 3, 0.);
+  color(0) = color_order(s,0);
+  color(1) = color_order(s,1);
+  color(2) = color_order(s,2);
+
+  octave::unwind_protect frame;
+  frame.protect_var (updating_scatter_cdata);
+  updating_scatter_cdata = true;
+
+  set_cdata (color);
+  set_cdatamode ("auto");
+}
+
+void
+scatter::initialize (const graphics_object& go)
+{
+  base_graphics_object::initialize (go);
+
+  Matrix series_idx = xproperties.get_seriesindex ().matrix_value ();
+  if (series_idx.isempty ())
+    {
+      // Increment series index counter in parent axes
+      axes::properties& parent_axes_prop
+        = dynamic_cast<axes::properties&>
+            (go.get_ancestor ("axes").get_properties ());
+
+      if (! parent_axes_prop.nextplot_is ("add"))
+        parent_axes_prop.set_nextseriesindex (1);
+
+      series_idx.resize (1, 1);
+      series_idx(0) = parent_axes_prop.get_nextseriesindex ();
+      xproperties.set_seriesindex (series_idx);
+
+      parent_axes_prop.set_nextseriesindex
+        (parent_axes_prop.get_nextseriesindex () + 1);
+    }
+
+  if (xproperties.cdatamode_is ("auto"))
+    xproperties.update_color ();
+}
+
+// ---------------------------------------------------------------------
+
+octave_value
 surface::properties::get_color_data (void) const
 {
   return convert_cdata (*this, get_cdata (), cdatamapping_is ("scaled"), 3);
@@ -12445,6 +12565,7 @@ root_figure::init_factory_properties (void)
   plist_map["text"] = text::properties::factory_defaults ();
   plist_map["image"] = image::properties::factory_defaults ();
   plist_map["patch"] = patch::properties::factory_defaults ();
+  plist_map["scatter"] = scatter::properties::factory_defaults ();
   plist_map["surface"] = surface::properties::factory_defaults ();
   plist_map["light"] = light::properties::factory_defaults ();
   plist_map["hggroup"] = hggroup::properties::factory_defaults ();
@@ -13231,7 +13352,7 @@ calc_dimensions (const graphics_object& go)
 
   if (go.isa ("surface"))
     nd = 3;
-  else if ((go.isa ("line") || go.isa ("patch"))
+  else if ((go.isa ("line") || go.isa ("patch") || go.isa ("scatter"))
            && ! go.get ("zdata").isempty ())
     nd = 3;
   else
@@ -13332,6 +13453,15 @@ Undocumented internal function.
 @end deftypefn */)
 {
   GO_BODY (patch);
+}
+
+DEFMETHOD (__go_scatter__, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_scatter__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
+{
+  GO_BODY (scatter);
 }
 
 DEFMETHOD (__go_light__, interp, args, ,

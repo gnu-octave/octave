@@ -72,6 +72,8 @@
 ## @end group
 ## @end example
 ##
+## Programming Note: The full list of properties is documented at
+## @ref{Scatter Properties}.
 ## @seealso{scatter3, patch, plot}
 ## @end deftypefn
 
@@ -219,3 +221,20 @@ endfunction
 %!     title (str);
 %!   endfor
 %! endfor
+
+
+%!testif ; ! strcmp (graphics_toolkit (), "gnuplot")
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hs = scatter ([], []);
+%!   assert (get (hs, "type"), "scatter");
+%!   assert (isempty (get (hs, "xdata")));
+%!   assert (isempty (get (hs, "ydata")));
+%!   assert (isempty (get (hs, "zdata")));
+%!   assert (get (hs, "cdata"), [0, 0.4470, 0.7410]);
+%!   assert (get (hs, "cdatamode"), "auto");
+%!   assert (get (hs, "sizedata"), 36);
+%!   assert (get (hs, "linewidth"), 0.5);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

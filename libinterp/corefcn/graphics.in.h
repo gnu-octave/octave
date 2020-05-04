@@ -5081,6 +5081,239 @@ protected:
 
 // ---------------------------------------------------------------------
 
+class OCTINTERP_API scatter : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    octave_value get_color_data (void) const;
+
+    // Matlab allows incoherent data to be stored in scatter properties.
+    // The scatter object should then be ignored by the renderer.
+    bool has_bad_data (std::string& msg) const
+    {
+      msg = bad_data_msg;
+      return ! msg.empty ();
+    }
+
+    bool is_aliminclude (void) const
+    { return aliminclude.is_on (); }
+    std::string get_aliminclude (void) const
+    { return aliminclude.current_value (); }
+
+    bool is_climinclude (void) const
+    { return climinclude.is_on (); }
+    std::string get_climinclude (void) const
+    { return climinclude.current_value (); }
+
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
+
+    BEGIN_PROPERTIES (scatter)
+      array_property annotation , Matrix ()
+      array_property cdata mu , Matrix ()
+      radio_property cdatamode u , "{auto}|manual"
+      string_property cdatasource , ""
+      array_property contextmenu , Matrix ()
+      array_property datatiptemplate , Matrix ()
+      string_property displayname , ""
+      array_property latitudedata , Matrix ()
+      string_property latitudedatasource , ""
+      double_property linewidth , 0.5
+      array_property longitudedata , Matrix ()
+      string_property longitudedatasource , ""
+      radio_property marker , "{o}|+|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram|none"
+      double_property markeredgealpha , 1.0
+      color_property markeredgecolor , color_property (radio_values ("{flat}"), color_values (0, 0, 0))
+      double_property markerfacealpha , 1.0
+      color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
+      array_property rdata , Matrix ()
+      string_property rdatasource , ""
+      array_property seriesindex u , Matrix ()
+      array_property sizedata u , Matrix ()
+      string_property sizedatasource , ""
+      array_property thetadata , Matrix ()
+      string_property thetadatasource , ""
+      array_property xdata u , Matrix ()
+      string_property xdatasource , ""
+      array_property ydata u , Matrix ()
+      string_property ydatasource , ""
+      array_property zdata u , Matrix ()
+      string_property zdatasource , ""
+
+      // hidden properties for limit computation
+      row_vector_property alim hlr , Matrix ()
+      row_vector_property clim hlr , Matrix ()
+      row_vector_property xlim hlr , Matrix ()
+      row_vector_property ylim hlr , Matrix ()
+      row_vector_property zlim hlr , Matrix ()
+      bool_property aliminclude hlg , "on"
+      bool_property climinclude hlg , "on"
+      bool_property xliminclude hl , "on"
+      bool_property yliminclude hl , "on"
+      bool_property zliminclude hl , "on"
+    END_PROPERTIES
+
+  protected:
+    void init (void)
+    {
+      xdata.add_constraint (dim_vector (-1, 1));
+      xdata.add_constraint (dim_vector (1, -1));
+      xdata.add_constraint (dim_vector (-1, 0));
+      xdata.add_constraint (dim_vector (0, -1));
+      ydata.add_constraint (dim_vector (-1, 1));
+      ydata.add_constraint (dim_vector (1, -1));
+      ydata.add_constraint (dim_vector (-1, 0));
+      ydata.add_constraint (dim_vector (0, -1));
+      zdata.add_constraint (dim_vector (-1, 1));
+      zdata.add_constraint (dim_vector (1, -1));
+      zdata.add_constraint (dim_vector (-1, 0));
+      zdata.add_constraint (dim_vector (0, -1));
+      sizedata.add_constraint ("min", 0.0, false);
+      sizedata.add_constraint (dim_vector (-1, 1));
+      sizedata.add_constraint (dim_vector (1, -1));
+      sizedata.add_constraint (dim_vector (-1, 0));
+      sizedata.add_constraint (dim_vector (0, -1));
+      cdata.add_constraint ("double");
+      cdata.add_constraint ("single");
+      cdata.add_constraint ("logical");
+      cdata.add_constraint ("int8");
+      cdata.add_constraint ("int16");
+      cdata.add_constraint ("int32");
+      cdata.add_constraint ("int64");
+      cdata.add_constraint ("uint8");
+      cdata.add_constraint ("uint16");
+      cdata.add_constraint ("uint32");
+      cdata.add_constraint ("uint64");
+      cdata.add_constraint ("real");
+      cdata.add_constraint (dim_vector (-1, 1));
+      cdata.add_constraint (dim_vector (-1, 3));
+      cdata.add_constraint (dim_vector (-1, 0));
+      cdata.add_constraint (dim_vector (0, -1));
+
+      linewidth.add_constraint ("min", 0.0, false);
+      seriesindex.add_constraint (dim_vector (1, 1));
+      seriesindex.add_constraint (dim_vector (-1, 0));
+      seriesindex.add_constraint (dim_vector (0, -1));
+    }
+
+  public:
+    void update_color (void);
+
+  private:
+    std::string bad_data_msg;
+
+    void update_xdata (void)
+    {
+      if (get_xdata ().isempty ())
+        {
+          // For compatibility with Matlab behavior,
+          // if x/ydata are set empty, silently empty other *data properties.
+          set_ydata (Matrix ());
+          set_zdata (Matrix ());
+          bool cdatamode_auto = cdatamode.is ("auto");
+          set_cdata (Matrix ());
+          if (cdatamode_auto)
+            set_cdatamode ("auto");
+        }
+
+      set_xlim (xdata.get_limits ());
+
+      update_data ();
+    }
+
+    void update_ydata (void)
+    {
+      if (get_ydata ().isempty ())
+        {
+          set_xdata (Matrix ());
+          set_zdata (Matrix ());
+          bool cdatamode_auto = cdatamode.is ("auto");
+          set_cdata (Matrix ());
+          if (cdatamode_auto)
+            set_cdatamode ("auto");
+        }
+
+      set_ylim (ydata.get_limits ());
+
+      update_data ();
+    }
+
+    void update_zdata (void)
+    {
+      set_zlim (zdata.get_limits ());
+
+      update_data ();
+    }
+
+    void update_sizedata (void)
+    {
+      update_data ();
+    }
+
+    void update_cdata (void)
+    {
+      if (get_cdata ().matrix_value ().rows () == 1)
+        set_clim (cdata.get_limits ());
+      else
+        clim = cdata.get_limits ();
+
+      update_data ();
+    }
+
+    void update_cdatamode (void)
+    {
+      if (cdatamode.is ("auto"))
+        update_color ();
+    }
+
+    void update_seriesindex (void)
+    {
+      if (cdatamode.is ("auto"))
+        update_color ();
+    }
+
+    void update_data (void);
+
+  };
+
+private:
+  properties xproperties;
+  property_list default_properties;
+
+public:
+  scatter (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  {
+    // FIXME: seriesindex should increment by one each time a new scatter
+    // object is added to the axes.
+  }
+
+  ~scatter (void) = default;
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
+
+protected:
+  void initialize (const graphics_object& go);
+
+};
+
+// ---------------------------------------------------------------------
+
 class OCTINTERP_API surface : public base_graphics_object
 {
 public:

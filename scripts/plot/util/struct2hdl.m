@@ -47,7 +47,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
 
   fields = {"handle", "type", "children", "properties", "special"};
   partypes = {"root", "figure", "axes", "hggroup"};
-  othertypes = {"line", "patch", "surface", "image", "text"};
+  othertypes = {"line", "patch", "scatter", "surface", "image", "text"};
   alltypes = [partypes othertypes];
 
   if (nargin > 3 || ! isstruct (s))
@@ -173,6 +173,8 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     h = createline (s, par);
   elseif (strcmp (s.type, "patch"))
     [h, s] = createpatch (s, par);
+  elseif (strcmp (s.type, "scatter"))
+    [h, s] = createscatter (s, par);
   elseif (strcmp (s.type, "text"))
     if (isfield (s.properties, "extent"))
       s.properties = rmfield (s.properties, "extent");
@@ -372,6 +374,24 @@ function [h, sout] = createpatch (s, par)
   ## a segfault when 'set (h, properties)' is used to restore properties
   ## which do not match in size the ones created with from the call to patch().
   s.properties = rmfield (s.properties, {"xdata", "ydata", "zdata", "cdata"});
+  addmissingprops (h, s.properties);
+  sout = s;
+
+endfunction
+
+function [h, sout] = createscatter (s, par)
+
+  if (isempty (s.properties.zdata))
+    ## 2D scatter
+    h = scatter (s.properties.xdata, s.properties.ydata);
+  else
+    ## 3D scatter
+    h = scatter3 (s.properties.xdata, s.properties.ydata, s.properties.zdata);
+  endif
+
+  set (h, "parent", par);
+  s.properties = rmfield (s.properties,
+                          {"xdata", "ydata", "zdata"});
   addmissingprops (h, s.properties);
   sout = s;
 

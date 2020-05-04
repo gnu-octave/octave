@@ -39,9 +39,10 @@
 
 function genpropdoc (objname, fname)
   objnames = {"root", "figure", "axes", ...
-              "image", "light", "line", "patch", "surface", "text", ...
-              "uibuttongroup", "uicontextmenu", "uicontrol", "uipanel", ...
-              "uimenu", "uipushtool", "uitable", "uitoggletool" "uitoolbar"
+              "image", "light", "line", "patch", "scatter", "surface", ...
+              "text", "uibuttongroup", "uicontextmenu", "uicontrol", ...
+              "uipanel", "uimenu", "uipushtool", "uitable", ...
+              "uitoggletool", "uitoolbar"
              };
 
   ## Base properties
@@ -1529,6 +1530,117 @@ one @code{light} object is present and visible in the same axes.";
 
     endswitch
 
+  ## Scatter properties
+  elseif (strcmp (objname, "scatter"))
+    switch (field)
+      ## Overridden shared properties
+      case "children"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "cdatamode"
+        s.doc = "If @code{cdatamode} is @qcode{\"auto\"}, @code{cdata} is set \
+to the color from the @code{colororder} of the ancestor axes corresponding to \
+the @code{seriesindex}.";
+
+      case "cdatasource"
+        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
+
+      case "cdata"
+        s.doc = "Data defining the scatter object color.\n\
+\n\
+If @code{cdata} is a scalar index into the current colormap or a RGB triplet, \
+it defines the color of all scatter markers.\n\
+\n\
+If @code{cdata} is an N-by-1 vector of indices or an N-by-3 (RGB) matrix, \
+it defines the color of each one of the N scatter markers.";
+        s.valid = valid_scalmat;
+
+
+      case "displayname"
+        s.doc = "Text of the legend entry corresponding to this scatter object.";
+
+      case "linewidth"
+        s.doc = "Line width of the edge of the markers.";
+
+      case "marker"
+        s.doc = "@xref{XREFlinemarker, , @w{line marker property}}.";
+
+      case "markeredgealpha"
+        s.doc = "Transparency level of the faces of the markers where a \
+value of 0 means complete transparency and a value of 1 means solid faces \
+without transparency.  Note that the markers are not sorted from back to \
+front which might lead to unexpected results when rendering layered \
+transparent markers or in combination with other transparent objects.";
+        s.valid = "scalar";
+
+      case "markeredgecolor"
+        s.doc = "Color of the edge of the markers.  @qcode{\"none\"} means \
+that the edges are transparent and @qcode{\"flat\"} means that the value \
+from @code{cdata} is used.  @xref{XREFlinemarkeredgecolor, , \
+@w{line markeredgecolor property}}.";
+        s.valid = packopt ({markdef("@qcode{\"none\"}"), ...
+                            "@qcode{\"flat\"}", ...
+                            valid_color});
+
+      case "markerfacealpha"
+        s.doc = "Transparency level of the faces of the markers where a \
+value of 0 means complete transparency and a value of 1 means solid faces \
+without transparency.  Note that the markers are not sorted from back to \
+front which might lead to unexpected results when rendering layered \
+transparent markers or in combination with other transparent objects.";
+        s.valid = "scalar";
+
+      case "markerfacecolor"
+        s.doc = "Color of the face of the markers.  @qcode{\"none\"} means \
+that the faces are transparent, @qcode{\"flat\"} means that the value from \
+@code{cdata} is used, and @qcode{\"auto\"} uses the @code{color} property of \
+the ancestor axes. @xref{XREFlinemarkerfacecolor, , \
+@w{line markerfacecolor property}}.";
+        s.valid = packopt ({markdef("@qcode{\"none\"}"), ...
+                            "@qcode{\"flat\"}", ...
+                            "@qcode{\"auto\"}", ...
+                            valid_color});
+
+      case "seriesindex"
+        s.doc = "Each scatter object in the same axes is asigned an \
+incrementing integer.  This corresponds to the index into the \
+@code{colororder} of the ancestor axes that is used if @code{cdatamode} is \
+set to @qcode{\"auto\"}.";
+
+      case "sizedatasource"
+        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
+
+      case "sizedata"
+        s.doc = "Size of the area of the marker. A scalar value applies to \
+all markers.  If @code{cdata} is an N-by-1 vector, it defines the color of \
+each one of the N scatter markers.";
+        s.valid =  packopt ({"[]", "scalar", "vector"});
+
+      case "xdatasource"
+        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
+
+      case "xdata"
+        s.doc = "Vector with the x coordinates of the scatter object.";
+        s.valid = "vector";
+
+      case "ydatasource"
+        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
+
+      case "ydata"
+        s.doc = "Vector with the y coordinates of the scatter object.";
+        s.valid = "vector";
+
+      case "zdatasource"
+        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
+
+      case "zdata"
+        s.doc = "For 3D data, vector with the y coordinates of the scatter \
+object.";
+        s.valid = packopt ({"[]", "vector"});
+
+    endswitch
+
   ## Light properties
   elseif (strcmp (objname, "light"))
     switch (field)
@@ -1861,6 +1973,10 @@ function s = getstructure (objname, base = [])
     h = 0;
   elseif (strcmp (objname, "figure"))
     h = hf;
+  elseif (strcmp (objname, "scatter"))
+    ## Make sure to get a scatter object independent of graphics toolkit
+    hax = axes (hf);
+    h = __go_scatter__ (hax);
   else
     eval (["h = " objname " ();"]);
   endif

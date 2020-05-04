@@ -569,6 +569,7 @@ Graphics Object Properties
 * Text Properties::
 * Image Properties::
 * Patch Properties::
+* Scatter Properties::
 * Surface Properties::
 * Light Properties::
 * Uimenu Properties::
@@ -600,7 +601,6 @@ Object Groups
 * Error Bar Series::
 * Line Series::
 * Quiver Group::
-* Scatter Group::
 * Stair Group::
 * Stem Series::
 * Surface Group::

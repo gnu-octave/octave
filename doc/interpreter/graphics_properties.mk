@@ -5,6 +5,7 @@ GRAPH_PROP_TEXI_SRC= \
   interpreter/plot-lineproperties.texi \
   interpreter/plot-patchproperties.texi \
   interpreter/plot-rootproperties.texi \
+  interpreter/plot-scatterproperties.texi \
   interpreter/plot-surfaceproperties.texi \
   interpreter/plot-textproperties.texi
 
@@ -34,6 +35,9 @@ interpreter/plot-rootproperties.texi: interpreter/genpropdoc.m
 
 interpreter/plot-surfaceproperties.texi: interpreter/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,surface)
+
+interpreter/plot-scatterproperties.texi: interpreter/genpropdoc.m
+	$(AM_V_GEN)$(call gen-propdoc-texi,scatter)
 
 interpreter/plot-textproperties.texi: interpreter/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,text)

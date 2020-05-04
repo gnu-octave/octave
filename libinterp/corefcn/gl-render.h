@@ -81,6 +81,7 @@ namespace octave
     virtual void draw_line (const line::properties& props);
     virtual void draw_surface (const surface::properties& props);
     virtual void draw_patch (const patch::properties& props);
+    virtual void draw_scatter (const scatter::properties& props);
     virtual void draw_light (const light::properties& props);
     virtual void draw_hggroup (const hggroup::properties& props);
     virtual void draw_text (const text::properties& props);
@@ -115,9 +116,11 @@ namespace octave
     }
 
     virtual void init_marker (const std::string& m, double size, float width);
+    virtual void change_marker (const std::string& m, double size);
     virtual void end_marker (void);
     virtual void draw_marker (double x, double y, double z,
-                              const Matrix& lc, const Matrix& fc);
+                              const Matrix& lc, const Matrix& fc,
+                              const double la = 1.0, const double fa = 1.0);
 
     virtual void text_to_pixels (const std::string& txt,
                                  uint8NDArray& pixels,

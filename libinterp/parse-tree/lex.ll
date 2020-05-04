@@ -824,7 +824,11 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->pop_start_state ();
 
-    HANDLE_EOB_OR_EOF (-2);
+    // If yytext contains the special ASCII 1 marker inserted by
+    // push_lexer::fill_flex_buffer and we are at the end of the buffer,
+    // return -1 to indicate that we are expecting more input.
+
+    HANDLE_EOB_OR_EOF (yytext[0] == '\001' ? -1 : -2);
 
     // Restore all characters except the ASCII 1 marker that was
     // inserted by push_lexer::fill_flex_buffer.

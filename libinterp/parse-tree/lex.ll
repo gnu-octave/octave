@@ -820,21 +820,50 @@ ANY_INCLUDING_NL (.|{NL})
 <LINE_COMMENT_START>{ANY_INCLUDING_NL} {
     curr_lexer->lexer_debug ("<LINE_COMMENT_START>{ANY_INCLUDING_NL}");
 
-    curr_lexer->finish_comment (octave::comment_elt::full_line);
+    if (yytext[0] == '\001')
+      {
+        // We are here because we are using the push parser/lexer
+        // interface and we hit the end of the input buffer or file.
+        // The special ASCII 1 marker is added to the input by
+        // push_lexer::fill_flex_buffer.
 
-    curr_lexer->pop_start_state ();
+        if (curr_lexer->pending_token_count () > 0)
+          {
+            // We are in the middle of parsing a command, expresison,
+            // etc., so set the return status so that if we are at the
+            // end of the buffer we'll continue looking for more input,
+            // possibly buffering a series of line oriented comments as
+            // a single block.
 
-    // If yytext contains the special ASCII 1 marker inserted by
-    // push_lexer::fill_flex_buffer and we are at the end of the buffer,
-    // return -1 to indicate that we are expecting more input.
+            HANDLE_EOB_OR_EOF (-1);
+          }
+        else
+          {
+            // We are not in the process of parsing a command,
+            // expression, etc., so end any current sequence of comments
+            // with this full line comment, pop the start state and
+            // return as if we have just finished parsing a complete
+            // statement.
 
-    HANDLE_EOB_OR_EOF (yytext[0] == '\001' ? -1 : -2);
+            curr_lexer->finish_comment (octave::comment_elt::full_line);
 
-    // Restore all characters except the ASCII 1 marker that was
-    // inserted by push_lexer::fill_flex_buffer.
+            curr_lexer->pop_start_state ();
 
-    if (yytext[0] != '\001')
-      curr_lexer->xunput (yytext[0]);
+            HANDLE_EOB_OR_EOF (-2);
+          }
+      }
+    else
+      {
+        // End any current sequence of comments, pop the start state,
+        // and unput the pending input character that ended the series
+        // of comments.
+
+        curr_lexer->finish_comment (octave::comment_elt::full_line);
+
+        curr_lexer->pop_start_state ();
+
+        curr_lexer->xunput (yytext[0]);
+      }
   }
 
 %{
@@ -3319,6 +3348,12 @@ namespace octave
   {
     YYSTYPE *lval = yyget_lval (m_scanner);
     return lval->tok_val;
+  }
+
+  size_t
+  base_lexer::pending_token_count (void) const
+  {
+    return m_tokens.size ();
   }
 
   void

@@ -697,6 +697,8 @@ namespace octave
 
     token * current_token (void);
 
+    size_t pending_token_count (void) const;
+
     void display_token (int tok);
 
     void fatal_error (const char *msg);

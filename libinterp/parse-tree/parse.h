@@ -36,6 +36,7 @@
 #include <set>
 #include <string>
 
+#include "input.h"
 #include "lex.h"
 #include "pt-misc.h"
 #include "symscope.h"
@@ -466,6 +467,14 @@ namespace octave
                     const std::string& package_name, bool require_file,
                     bool force_script, bool autoload, bool relative_lookup);
 
+    // Thih interface allows push or pull parsers to be used
+    // equivalently, provided that the push parser also owns its input
+    // method (see below).  Alternatively, the push parser interface may
+    // use a separate run method and completely separate input from
+    // lexical analysis and parsing.
+
+    virtual int run (void) = 0;
+
   protected:
 
     // Contains error message if Bison-generated parser returns non-zero
@@ -599,7 +608,16 @@ namespace octave
   public:
 
     push_parser (interpreter& interp)
-      : base_parser (*(new push_lexer (interp)))
+      : base_parser (*(new push_lexer (interp))),
+        m_interpreter (interp), m_reader ()
+    { }
+
+    // The parser assumes ownership of READER, which must be created
+    // with new.
+
+    push_parser (interpreter& interp, input_reader *reader)
+      : base_parser (*(new push_lexer (interp))),
+        m_interpreter (interp), m_reader (reader)
     { }
 
     // No copying!
@@ -610,7 +628,22 @@ namespace octave
 
     ~push_parser (void) = default;
 
+    // Use the push parser in the same way as the pull parser.  The
+    // parser arranges for input through the M_READER object.  See, for
+    // example, interpreter::main_loop.
+
+    int run (void);
+
+    // Parse INPUT.  M_READER is not used.  The user is responsible for
+    // collecting input.
+
     int run (const std::string& input, bool eof);
+
+  private:
+
+    interpreter& m_interpreter;
+
+    std::shared_ptr<input_reader> m_reader;
   };
 
   extern OCTINTERP_API std::string

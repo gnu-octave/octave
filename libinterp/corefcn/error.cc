@@ -751,9 +751,13 @@ namespace octave
       panic_impossible ();
 
     if (nel > 1)
-      os << "\n\n";
+      {
+        os << "\n";
+        os << "Non-default warning states are:\n\n";
+        os << "  State  Warning ID\n";
+      }
 
-    // The state for all is always supposed to be first in the list.
+    // The state for "all" is always supposed to be first in the list.
 
     for (octave_idx_type i = 1; i < nel; i++)
       {
@@ -1668,25 +1672,63 @@ expansion use a second backslash before the sequence (e.g.,
       else if (arg1 == "query")
         {
           if (arg2_lc == "all")
-            retval = es.warning_options ();
+            {
+              if (nargout > 0)
+                retval = es.warning_options ();
+              else
+                es.display_warning_options (octave_stdout);
+            }
           else if (arg2_lc == "backtrace" || arg2_lc == "debug"
                    || arg2_lc == "verbose" || arg2_lc == "quiet")
             {
-              octave_scalar_map tmp;
-              tmp.assign ("identifier", arg2_lc);
-              if (arg2_lc == "backtrace")
-                tmp.assign ("state", es.backtrace_on_warning () ? "on" : "off");
-              else if (arg2_lc == "debug")
-                tmp.assign ("state", es.debug_on_warning () ? "on" : "off");
-              else if (arg2_lc == "verbose")
-                tmp.assign ("state", es.verbose_warning () ? "on" : "off");
-              else
-                tmp.assign ("state", es.quiet_warning () ? "on" : "off");
+              if (nargout > 0)
+                {
+                  octave_scalar_map tmp;
+                  tmp.assign ("identifier", arg2_lc);
+                  if (arg2_lc == "backtrace")
+                    tmp.assign ("state", es.backtrace_on_warning () ? "on" : "off");
+                  else if (arg2_lc == "debug")
+                    tmp.assign ("state", es.debug_on_warning () ? "on" : "off");
+                  else if (arg2_lc == "verbose")
+                    tmp.assign ("state", es.verbose_warning () ? "on" : "off");
+                  else
+                    tmp.assign ("state", es.quiet_warning () ? "on" : "off");
 
-              retval = tmp;
+                  retval = tmp;
+                }
+              else
+                {
+                  if (arg2_lc == "backtrace")
+                    octave_stdout << "\"backtrace\" warning state is \"" <<
+                                  (es.backtrace_on_warning () ? "on" : "off") <<
+                                  "\"\n";
+                  else if (arg2_lc == "debug")
+                    octave_stdout << "\"debug\" warning state is \"" <<
+                                  (es.debug_on_warning () ? "on" : "off") <<
+                                  "\"\n";
+                  else if (arg2_lc == "verbose")
+                    octave_stdout << "\"verbose\" warning state is \"" <<
+                                  (es.verbose_warning () ? "on" : "off") <<
+                                  "\"\n";
+                  else
+                    octave_stdout << "\"quiet\" warning state is \"" <<
+                                  (es.quiet_warning () ? "on" : "off") <<
+                                  "\"\n";
+                }
             }
           else
-            retval = es.warning_query (arg2);
+            {
+              if (nargout > 0)
+                retval = es.warning_query (arg2);
+              else
+                {
+                  octave_scalar_map tmp = es.warning_query (arg2);
+
+                  octave_stdout << "\"" << arg2 << "\" warning state is \"" <<
+                                   tmp.getfield ("state").string_value () <<
+                                   "\"\n";
+                }
+            }
 
           done = true;
         }

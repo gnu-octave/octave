@@ -4717,6 +4717,46 @@ namespace octave
     return status;
   }
 
+  int
+  push_parser::run (void)
+  {
+    if (! m_reader)
+      error ("push_parser::run requires valid input_reader");
+
+    int exit_status = 0;
+
+    input_system&  input_sys = m_interpreter.get_input_system ();
+
+    std::string prompt
+      = command_editor::decode_prompt_string (input_sys.PS1 ());
+
+    do
+      {
+        // Reset status each time through the read loop so that
+        // it won't be set to -1 and cause us to exit the outer
+        // loop early if there is an exception while reading
+        // input or parsing.
+
+        exit_status = 0;
+
+        bool eof = false;
+        std::string input_line = m_reader->get_input (prompt, eof);
+
+        if (eof)
+          {
+            exit_status = EOF;
+            break;
+          }
+
+        exit_status = run (input_line, false);
+
+        prompt = command_editor::decode_prompt_string (input_sys.PS2 ());
+      }
+    while (exit_status < 0);
+
+    return exit_status;
+  }
+
   octave_value
   parse_fcn_file (interpreter& interp, const std::string& full_file,
                   const std::string& file, const std::string& dir_name,

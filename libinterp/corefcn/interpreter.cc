@@ -1057,25 +1057,48 @@ namespace octave
 
   int interpreter::main_loop (void)
   {
+    // The big loop.  Read, Eval, Print, Loop.  Normally user
+    // interaction at the command line in a terminal session, but we may
+    // also end up here when reading from a pipe or when stdin is
+    // connected to a file by the magic of input redirection.
+
     int exit_status = 0;
 
-    // The big loop.
+    // FIXME: should this choice be a command-line option?  Note that we
+    // intend that the push parser interface only be used for
+    // interactive sessions.
 
 #if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
-
-    input_reader reader (*this);
-
-    push_parser repl_parser (*this);
-
+    static bool use_command_line_push_parser = true;
 #else
-
-    // The pull parser takes ownership of the lexer and will delete it
-    // when the parser goes out of scope.
-
-    parser repl_parser (m_interactive
-                        ? new lexer (*this) : new lexer (stdin, *this));
-
+    static bool use_command_line_push_parser = false;
 #endif
+
+    // The following logic is written as it is to allow easy transition
+    // to setting USE_COMMAND_LINE_PUSH_PARSER at run time and to
+    // simplify the logic of the main loop below by using the same
+    // base_parser::run interface for both push and pull parsers.
+
+    std::shared_ptr<base_parser> repl_parser;
+
+    if (m_interactive)
+      {
+        if (use_command_line_push_parser)
+          {
+            push_parser *pp = new push_parser (*this, new input_reader (*this));
+            repl_parser = std::shared_ptr<base_parser> (pp);
+          }
+        else
+          {
+            parser *pp = new parser (new lexer (*this));
+            repl_parser = std::shared_ptr<base_parser> (pp);
+          }
+      }
+    else
+      {
+        parser *pp = new parser (new lexer (stdin, *this));
+        repl_parser = std::shared_ptr<base_parser> (pp);
+      }
 
     do
       {
@@ -1083,7 +1106,7 @@ namespace octave
           {
             unwind_protect_var<bool> upv (m_in_top_level_repl, true);
 
-            repl_parser.reset ();
+            repl_parser->reset ();
 
             if (m_evaluator.at_top_level ())
               {
@@ -1091,44 +1114,12 @@ namespace octave
                 m_evaluator.reset_debug_state ();
               }
 
-#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+            exit_status = repl_parser->run ();
 
-            std::string prompt
-              = command_editor::decode_prompt_string (m_input_system.PS1 ());
-
-            do
-              {
-                // Reset status each time through the read loop so that
-                // it won't be set to -1 and cause us to exit the outer
-                // loop early if there is an exception while reading
-                // input or parsing.
-
-                exit_status = 0;
-
-                bool eof = false;
-                std::string input_line = reader.get_input (prompt, eof);
-
-                if (eof)
-                  {
-                    exit_status = EOF;
-                    break;
-                  }
-
-                exit_status = repl_parser.run (input_line, false);
-
-                prompt = command_editor::decode_prompt_string (m_input_system.PS2 ());
-              }
-            while (exit_status < 0);
-
-#else
-
-            exit_status = repl_parser.run ();
-
-#endif
             if (exit_status == 0)
               {
                 std::shared_ptr<tree_statement_list>
-                  stmt_list = repl_parser.statement_list ();
+                  stmt_list = repl_parser->statement_list ();
 
                 if (stmt_list)
                   {
@@ -1136,7 +1127,7 @@ namespace octave
 
                     m_evaluator.eval (stmt_list, m_interactive);
                   }
-                else if (repl_parser.at_end_of_input ())
+                else if (repl_parser->at_end_of_input ())
                   {
                     exit_status = EOF;
                     break;

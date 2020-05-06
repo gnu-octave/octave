@@ -29,10 +29,59 @@
 ## @deftypefnx {} {[@var{out1}, @dots{}] =} pkg (@var{command}, @dots{} )
 ## Manage or query packages (groups of add-on functions) for Octave.
 ##
-## Different actions are available depending on the value of @var{command}
-## and on return arguments.
+## Packages can be installed globally (i.e. for all users of the system) or
+## locally (i.e. for the current user only).
 ##
-## Available commands:
+## Global packages are by default installed in the "global packages store".
+## That is usually located in a subdirectory of the folder where Octave itself
+## is installed in.  Therefore, Octave needs write access to this folder to
+## install global packages.  That usually means that Octave has to run with root
+## access (or "Run as administrator") to be able to install packages globally.
+##
+## In contrast, local packages are by default installed in the user's profile
+## and are only available to that specific user.  Usually, they can be installed
+## without root access (or administrative privileges).
+##
+## For global and local packages, there are separate databases holding the
+## information about the installed packages.  If some package is installed
+## globally as well as locally, the local installation takes precedence over
+## ("shadows") the global one.  Which package installation (global or local) is
+## used can also be manipulated by using prefixes and/or using the
+## @samp{local_list} input argument.  Using these mechanisms, several different
+## releases of one and the same package can be installed side by side as well
+## (but cannot be loaded simultaneouly).
+##
+## Packages might dependend on external software and/or other packages.  To be
+## able to install such packages, these dependencies should be installed
+## beforehand.  A package that depends on other package(s) can still be
+## installed using the @qcode{"-nodeps"} flag.  The effects of unsatisfied
+## dependencies on external software --- like libraries --- depends on the
+## individual package.
+##
+## Packages must be loaded before they can be used.  When loading a package,
+## Octave performs the following tasks:
+## @enumerate
+## @item
+## If the package depends on other packages (and @code{pkg load} is called
+## without the @qcode{"-nodeps"} option), the package is not loaded immediately.
+## Instead, those dependencies are loaded first (recursively if needed).
+##
+## @item
+## When all dependencies are satified, the package's subdirectories are added to
+## the search path.
+## @end enumerate
+##
+## This load order leads to functions that are provided by dependencies being
+## potentially shadowed by functions of the same name that are provided by
+## dependers.
+##
+## Each time, a package is added to the search path, initialization script(s)
+## for the package are automatically executed if they are provided by the
+## package.
+##
+## Depending on the value of @var{command} and on the number of requested return
+## arguments, @code{pkg} can be used to perform several tasks.  Possible values
+## for @var{command} are:
 ##
 ## @table @samp
 ##

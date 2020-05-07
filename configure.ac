@@ -1901,8 +1901,6 @@ AC_ARG_WITH([fltk],
     [don't use FLTK libraries, disable OpenGL graphics with FLTK widgets])],
   [if test x"$withval" = xno; then
      check_fltk=no
-     warn_fltk="--without-fltk specified.  FLTK widgets will be disabled."
-     OCTAVE_CONFIGURE_WARNING([warn_fltk])
    fi])
 
 FLTK_CPPFLAGS=

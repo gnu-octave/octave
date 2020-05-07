@@ -1530,7 +1530,6 @@ expansion use a second backslash before the sequence (e.g.,
                   octave_value curr_state = val.contents ("state");
 
                   // FIXME: this might be better with a dictionary object.
-
                   octave::tree_evaluator& tw = interp.get_evaluator ();
 
                   octave_value curr_warning_states
@@ -1584,38 +1583,27 @@ expansion use a second backslash before the sequence (e.g.,
 
                   tw.set_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES, m);
 
-                  // Now ignore the "local" argument and continue to
-                  // handle the current setting.
+                  // Now ignore the "local" argument,
+                  // and continue to handle the current setting.
                   nargin--;
                 }
             }
 
-          if (nargin >= 2 && arg2_lc == "all")
+          if ((nargin == 1
+               && (arg1 == "on" || arg1 == "off" || arg1 == "error"))
+              || (nargin >= 2 && arg2_lc == "all"))
             {
-              // If "all" is explicitly given as ID.
+              // If "all" is given implicitly or explicitly as ID.
+              if (arg1 == "error")
+                error ("warning: cannot specify \"all\" warning ID with state \"error\"");
 
               octave_map tmp;
-              int is_error = (arg1 == "error");
 
-              Cell id (1, 1 + 2*is_error);
-              Cell st (1, 1 + 2*is_error);
+              Cell id (1, 1);
+              Cell st (1, 1);
 
               id(0) = "all";
               st(0) = arg1;
-
-              // Since internal Octave functions are not compatible,
-              // and "all"=="error" causes any "on" to throw an error,
-              // turning all warnings into errors should disable
-              // Octave:language-extension.
-
-              if (is_error)
-                {
-                  id(1) = "Octave:language-extension";
-                  st(1) = "off";
-
-                  id(2) = "Octave:single-quote-string";
-                  st(2) = "off";
-                }
 
               tmp.assign ("identifier", id);
               tmp.assign ("state", st);
@@ -1811,9 +1799,6 @@ expansion use a second backslash before the sequence (e.g.,
 }
 
 /*
-%!test <*45753>
-%! warning ("error");
-%! assert (! isempty (help ("warning")));
 
 %!test <*51997>
 %! id = "Octave:logical-conversion";
@@ -1835,6 +1820,8 @@ expansion use a second backslash before the sequence (e.g.,
 %! warnst = warning ("QUery", "ALL");
 %! idx = strcmp ({warnst.identifier}, "Octave:test-57290-ID");
 %! assert (warnst(idx).state, "off");
+
+%!error <cannot specify "all" warning ID> warning ("error")
 
 */
 

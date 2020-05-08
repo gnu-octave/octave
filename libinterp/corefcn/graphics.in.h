@@ -3625,6 +3625,9 @@ public:
       radio_property activepositionproperty , "{outerposition}|position"
       row_vector_property alim m , default_lim ()
       radio_property alimmode , "{auto}|manual"
+      // FIXME: not yet implemented
+      array_property alphamap , Matrix ()
+      radio_property alphascale , "{linear}|log"
       color_property ambientlightcolor , color_values (1, 1, 1)
       bool_property box u , "off"
       radio_property boxstyle , "{back}|full"
@@ -3643,12 +3646,17 @@ public:
       array_property colormap sg , Matrix ()
       array_property colororder , default_colororder ()
       double_property colororderindex , 1.0
+      radio_property colorscale , "{linear}|log"
+      // FIXME: "contextmenu" should be synonymous to "uicontextmenu". Make it read-only for now.
+      handle_property contextmenu r , graphics_handle ()
       array_property currentpoint , Matrix (2, 3, 0.0)
       row_vector_property dataaspectratio mu , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode u , "{auto}|manual"
       radio_property fontangle u , "{normal}|italic"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
-      double_property fontsize u , 10
+      double_property fontsize mu , 10
+      // FIXME: not yet implemented
+      radio_property fontsizemode , "{auto}|manual"
       bool_property fontsmoothing u , "on"
       radio_property fontunits SU , "{points}|inches|centimeters|normalized|pixels"
       radio_property fontweight u , "{normal}|bold"
@@ -3657,8 +3665,16 @@ public:
       color_property gridcolor m , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property gridcolormode , "{auto}|manual"
       radio_property gridlinestyle , "{-}|--|:|-.|none"
+      // FIXME: Should be synonymous to "position"
+      array_property innerposition , default_axes_position ()
+      // FIXME: Should be an array of "interaction objects". Make it read-only for now.
+      any_property interactions r , Matrix ()
       double_property labelfontsizemultiplier u , 1.1
       radio_property layer u , "{bottom}|top"
+      // FIXME: Should be a "layoutoptions" object. Make it read-only for now.
+      handle_property layout r , graphics_handle ()
+      // FIXME: Should be a "legend" object. Make it read-only for now.
+      handle_property legend r , graphics_handle ()
       // FIXME: should be kind of string array.
       any_property linestyleorder S , "-"
       double_property linestyleorderindex , 1.0
@@ -3669,10 +3685,13 @@ public:
       radio_property minorgridcolormode , "{auto}|manual"
       radio_property minorgridlinestyle , "{:}|-|--|-.|none"
       radio_property nextplot , "{replace}|add|replacechildren"
+      double_property nextseriesindex r , 1.0
       array_property outerposition u , default_axes_outerposition ()
       row_vector_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
       array_property position u , default_axes_position ()
+      // FIXME: "positionconstraint" should deprecate "activepositionproperty"
+      radio_property positionconstraint , "{outerposition}|innerposition"
       radio_property projection , "{orthographic}|perspective"
       radio_property sortmethod , "{depth}|childorder"
       radio_property tickdir mu , "{in}|out"
@@ -3684,9 +3703,13 @@ public:
       handle_property title SOf , make_graphics_handle ("text", __myhandle__, false, false, false)
       double_property titlefontsizemultiplier u , 1.1
       radio_property titlefontweight u , "{bold}|normal"
-      // FIXME: uicontextmenu should be moved here.
+      // FIXME: Should be a "axestoolbar" object. Make it read-only for now.
+      handle_property toolbar r , graphics_handle ()
+      // FIXME: Move the hidden property "uicontextmenu" here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
+      // FIXME: Should be a "ruler" object. Make it read-only for now.
+      handle_property xaxis r , graphics_handle ()
       radio_property xaxislocation u , "{bottom}|top|origin"
       color_property xcolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property xcolormode , "{auto}|manual"
@@ -3704,6 +3727,8 @@ public:
       radio_property xticklabelmode u , "{auto}|manual"
       double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
+      // FIXME: Should be a "ruler" object. Make it read-only for now.
+      handle_property yaxis r , graphics_handle ()
       radio_property yaxislocation u , "{left}|right|origin"
       color_property ycolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property ycolormode , "{auto}|manual"
@@ -3720,6 +3745,8 @@ public:
       radio_property yticklabelmode u , "{auto}|manual"
       double_property yticklabelrotation , 0.0
       radio_property ytickmode u , "{auto}|manual"
+      // FIXME: Should be a "ruler" object. Make it read-only for now.
+      handle_property zaxis r , graphics_handle ()
       color_property zcolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property zcolormode , "{auto}|manual"
       radio_property zdir u , "{normal}|reverse"

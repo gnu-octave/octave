@@ -965,11 +965,21 @@ namespace octave
 
     if (is_editable ())
       {
-        beginInsertRows (QModelIndex (), 0, display_rows () - 1);
-        endInsertRows ();
+        int new_rows = display_rows ();
 
-        beginInsertColumns (QModelIndex (), 0, display_columns () - 1);
-        endInsertColumns ();
+        if (new_rows > 0)
+          {
+            beginInsertRows (QModelIndex (), 0, new_rows-1);
+            endInsertRows ();
+          }
+
+        int new_cols = display_columns ();
+
+        if (new_cols > 0)
+          {
+            beginInsertColumns (QModelIndex (), 0, new_cols-1);
+            endInsertColumns ();
+          }
       }
   }
 
@@ -1264,10 +1274,12 @@ namespace octave
       change_display_size (old_rows, old_cols, new_rows, new_cols);
 
     // Even if the size doesn't change, we still need to update here
-    // because the data may have changed.
+    // because the data may have changed.  But only if we have some data
+    // to display.
 
-    emit dataChanged (QAbstractTableModel::index (0, 0),
-                      QAbstractTableModel::index (new_rows-1, new_cols-1));
+    if (new_rows > 0 && new_cols > 0)
+      emit dataChanged (QAbstractTableModel::index (0, 0),
+                        QAbstractTableModel::index (new_rows-1, new_cols-1));
 
     clear_update_pending ();
   }

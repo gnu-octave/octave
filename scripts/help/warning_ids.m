@@ -126,14 +126,6 @@
 ##
 ## By default, the @code{Octave:assign-as-truth-value} warning is enabled.
 ##
-## @item Octave:associativity-change
-## If the @code{Octave:associativity-change} warning is
-## enabled, Octave will warn about possible changes in the meaning of
-## some code due to changes in associativity for some operators.
-## Associativity changes have typically been made for @sc{matlab}
-## compatibility.
-## By default, the @code{Octave:associativity-change} warning is enabled.
-##
 ## @item Octave:autoload-relative-file-name
 ## If the @code{Octave:autoload-relative-file-name} is enabled,
 ## Octave will warn when parsing autoload() function calls with relative
@@ -220,6 +212,9 @@
 ## By default, the @code{Octave:future-time-stamp} warning is enabled.
 ##
 ## @item Octave:glyph-render
+## If the @code{Octave:glyph-render} warning is enabled, Octave will
+## print a warning if the glyph for a character couldn't be rendered with
+## the current font.
 ## By default, the @code{Octave:glyph-render} warning is enabled.
 ##
 ## @item Octave:imag-to-real
@@ -254,6 +249,9 @@
 ## By default, the @code{Octave:lu:sparse_input} warning is enabled.
 ##
 ## @item Octave:missing-glyph
+## If the @code{Octave:glyph-render} warning is enabled, Octave will
+## print a warning if the current font doesn't provide a glyph for a
+## used character.
 ## By default, the @code{Octave:missing-glyph} warning is enabled.
 ##
 ## @item Octave:missing-semicolon
@@ -284,9 +282,6 @@
 ## @noindent
 ## By default, the @code{Octave:neg-dim-as-zero} warning is disabled.
 ##
-## @item Octave:nested-functions-coerced
-## By default, the @code{Octave:nested-functions-coerced} warning is enabled.
-##
 ## @item Octave:noninteger-range-as-index
 ## By default, the @code{Octave:noninteger-range-as-index} warning is enabled.
 ##
@@ -316,14 +311,10 @@
 ## By default, the @code{Octave:possible-matlab-short-circuit-operator} warning
 ## is enabled.
 ##
-## @item Octave:precedence-change
-## If the @code{Octave:precedence-change} warning is enabled, Octave
-## will warn about possible changes in the meaning of some code due to
-## changes in precedence for some operators.  Precedence changes have
-## typically been made for @sc{matlab} compatibility.
-## By default, the @code{Octave:precedence-change} warning is enabled.
-##
 ## @item Octave:recursive-path-search
+## If the @code{Octave:recursive-path-search} warning is enabled, Octave
+## will issue a warning if @code{addpath} is used with double trailing
+## slashes.
 ## By default, the @code{Octave:recursive-path-search} warning is enabled.
 ##
 ## @item Octave:remove-init-dir
@@ -343,18 +334,15 @@
 ## functions that it is forced to clear.
 ## By default, the @code{Octave:reload-forces-clear} warning is enabled.
 ##
-## @item Octave:resize-on-range-error
-## If the @code{Octave:resize-on-range-error} warning is enabled, print a
-## warning when a matrix is resized by an indexed assignment with
-## indices outside the current bounds.
-## By default, the @code{Octave:resize-on-range-error} warning is disabled.
-##
 ## @item Octave:separator-insert
 ## Print warning if commas or semicolons might be inserted
 ## automatically in literal matrices.
 ## By default, the @code{Octave:separator-insert} warning is disabled.
 ##
 ## @item Octave:shadowed-function
+## If the @code{Octave:shadowed-function} warning is enabled, Octave will
+## warn if a path is added to the search path that contains functions
+## that shadow core functions.
 ## By default, the @code{Octave:shadowed-function} warning is enabled.
 ##
 ## @item Octave:single-quote-string

@@ -926,7 +926,7 @@ para escrita: %2.</translation>
     <message>
         <location line="+9"/>
         <source>&amp;Run</source>
-        <translation>&amp;Executar</translation>
+        <translation type="unfinished">E&amp;xecutar</translation>
     </message>
     <message>
         <location line="-1988"/>
@@ -951,7 +951,7 @@ para escrita: %2.</translation>
     <message>
         <location line="+6"/>
         <source>&amp;Help</source>
-        <translation>&amp;Ajuda</translation>
+        <translation type="unfinished">Aj&amp;uda</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2221,7 +2221,7 @@ e não pode ser editada.</translation>
     <message>
         <location line="+5"/>
         <source>&amp;Help</source>
-        <translation>&amp;Ajuda</translation>
+        <translation type="unfinished">Aj&amp;uda</translation>
     </message>
     <message>
         <location line="+7"/>

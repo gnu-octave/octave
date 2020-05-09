@@ -852,10 +852,14 @@ namespace octave
     // Split contents into single lines and complete commands
     QStringList lines = selectedText ().split (QRegExp ("[\r\n]"),
                                                QString::SkipEmptyParts);
+    QString line_code_tmp;
+    bool is_contd_line;
+    QRegExp contd_line ("\\.\\.\\.\\s*$");
 
     for (int i = 0; i < lines.count (); i++)
       {
         QString line = lines.at (i);
+        is_contd_line = line.contains (contd_line);
         QString line_escaped = line;
         line_escaped.replace (QString ("'"), QString ("''"));
         QString line_history = line;
@@ -875,6 +879,20 @@ namespace octave
             next_bp_quiet_reset = "__db_next_breakpoint_quiet__(false);\n";
           }
 
+        // Handle continued lines
+        line_code_tmp = line_code_tmp + line;
+        QString line_code;
+        if (is_contd_line)
+          {
+            line_code_tmp = line_code_tmp + "\n"; // Next line will be added
+            line_code = "";                       // No code by now
+          }
+        else
+          {
+            line_code = line_code_tmp + "\n";     // Code is ready
+            line_code_tmp = "";                   // No code to be cont'd
+          }
+
         // Add codeline together with call to echo/history function to tmp
         // %1 : function name for displaying and adding to history
         // %2 : line number
@@ -883,14 +901,14 @@ namespace octave
         // %5 : command line (eval)
         code += QString ("%1 (%2, '%3', '%4');\n"
                          + next_bp_quiet
-                         + "%5\n"
+                         + line_code
                          + next_bp_quiet_reset
                          + "\n")
                 .arg (tmp_script_name)
                 .arg (i)
                 .arg (line_escaped)
-                .arg (line_history)
-                .arg (line);
+                .arg (line_history);
+
       }
 
     code += QString ("munlock (\"%1\"); clear %1;\n").arg (tmp_script_name);
@@ -995,9 +1013,9 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     settings->setValue (ed_show_dbg_file.key, show_dbg_file);
-    rmgr.remove_tmp_file (tmp_file);
-    rmgr.remove_tmp_file (tmp_hist);
-    rmgr.remove_tmp_file (tmp_script);
+    //rmgr.remove_tmp_file (tmp_file);
+    //rmgr.remove_tmp_file (tmp_hist);
+    //rmgr.remove_tmp_file (tmp_script);
   }
 
 

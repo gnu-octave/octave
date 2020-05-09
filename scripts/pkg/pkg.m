@@ -566,7 +566,7 @@ function [local_packages, global_packages] = pkg (varargin)
       elseif (isempty (files) && nargout)
         local_packages = local_list;
       elseif (numel (files) == 1 && ! nargout && ischar (files{1}))
-        local_list = files{1};
+        local_list = tilde_expand (files{1});
         if (! exist (local_list, "file"))
           try
             ## Force file to be created

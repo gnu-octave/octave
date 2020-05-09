@@ -852,7 +852,6 @@ namespace octave
     disable_warning ("Octave:language-extension");
     disable_warning ("Octave:missing-semicolon");
     disable_warning ("Octave:neg-dim-as-zero");
-    disable_warning ("Octave:resize-on-range-error");
     disable_warning ("Octave:separator-insert");
     disable_warning ("Octave:single-quote-string");
     disable_warning ("Octave:str-to-num");

@@ -794,7 +794,7 @@ namespace octave
     // Take selected code and extend it by commands for echoing each
     // evaluated line and for adding the line to the history (use script)
     QString code = QString ();
-    QString hist = QString ();
+    QString hist = QString ("### Begin selected code\n");
 
     // Split contents into single lines and complete commands
     QStringList lines = selectedText ().split (QRegExp ("[\r\n]"),
@@ -824,6 +824,7 @@ namespace octave
         hist += line_history + "\n";
       }
 
+    hist += "### End selected code\n";
     octave_stdout << hist.toStdString () << "\n";
 
     // Create tmp file with the code to be executed by the interpreter
@@ -840,8 +841,6 @@ namespace octave
 
     tmp_file->close ();
 
-
-
     // Create tmp file required for adding command to history
     QPointer<QTemporaryFile> tmp_hist
       = rmgr.create_tmp_file ("", hist); // empty tmp file for history
@@ -855,6 +854,18 @@ namespace octave
       }
 
     tmp_hist->close ();
+
+    // Add commands to the history
+    emit interpreter_event
+      ([tmp_hist] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+
+          std::string opt = "-r";
+          std::string  path = tmp_hist->fileName ().toStdString ();
+
+          Fhistory (interp, ovl (opt, path));
+        });
 
     // Disable opening a file at a breakpoint in case keyboard () is used
     gui_settings* settings = rmgr.get_settings ();
@@ -899,7 +910,7 @@ namespace octave
                    {
                      // Selected code has syntax errors
                      new_msg.replace (rx, "error sourcing selected code");
-                     err_line = 0;  // Nothing into history
+                     err_line = 0;  // Nothing into history?
                    }
                  else
                    {
@@ -916,7 +927,7 @@ namespace octave
                      for (int i = 0; i < rx_list.length (); i++)
                        {
                          int pos = 0;
-                         QRegExp rx (rx_list.at (i));
+                         rx = QRegExp (rx_list.at (i));
                          pos = rx.indexIn (new_msg, pos);
                          if (pos != -1)
                            {
@@ -957,43 +968,19 @@ namespace octave
        });
   }
 
-  void octave_qscintilla::ctx_menu_run_finished (bool show_dbg_file, int err_line,
+  void octave_qscintilla::ctx_menu_run_finished (bool show_dbg_file, int,
                                                  QTemporaryFile* tmp_file,
                                                  QTemporaryFile* tmp_hist)
   {
-    emit interpreter_event
-      ([tmp_file, tmp_hist, err_line] (interpreter& interp)
-        {
-          // INTERPRETER THREAD
-
-          std::string opt = "-r";
-          std::string  path;
-
-          if (err_line != -1)
-            {
-              tmp_file->open ();
-              tmp_hist->open ();
-              for (int i = 1; i <= err_line; i++)
-                {
-                  QByteArray line = tmp_hist->readLine ();
-                  tmp_file->write (line);
-                }
-              tmp_file->close ();
-              tmp_hist->close ();
-              path = tmp_file->fileName ().toStdString ();
-            }
-          else
-            path = tmp_hist->fileName ().toStdString ();
-
-          Fhistory (interp, ovl (opt, path));
-        });
-
+    // TODO: Use line nr. (int argument) of possible error for removing
+    //       lines from history that were never executed. For this,
+    //       possible lines from commands at a debug prompt must be
+    //       taken into consideration.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     settings->setValue (ed_show_dbg_file.key, show_dbg_file);
     rmgr.remove_tmp_file (tmp_file);
     rmgr.remove_tmp_file (tmp_hist);
-    //rmgr.remove_tmp_file (tmp_script);
   }
 
 

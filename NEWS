@@ -64,6 +64,12 @@ interaction with the object occurs and the `uicontrol` changes color
 not possible to change the value of the object (such as modifying text
 in an `Edit` box or clicking on a `RadioButton`).
 
+- The functions `scatter` and `scatter3` now return a handle to a scatter
+graphics object.  For compatibility, they return a hg group of patch
+graphics objects when the "gnuplot" graphics toolkit is used.  In
+previous versions of Octave, these functions returned a hg group of patch
+graphics objects for all graphics toolkits.
+
 ### Alphabetical list of new functions added in Octave 7
 
 * `endsWith`

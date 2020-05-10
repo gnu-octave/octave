@@ -171,7 +171,7 @@ function hs = __scatter__ (varargin)
 
   if (strcmp ("gnuplot", graphics_toolkit ()))
     ## Legacy code using patch for gnuplot toolkit
-    hs = __gnuplot_scatter__ (hax, fcn, x, y, z, c, s, marker, newargs)
+    hs = __gnuplot_scatter__ (hax, fcn, x, y, z, c, s, marker, filled, newargs);
 
   else
     ## Use OpenGL rendering for "qt" and "fltk" graphics toolkits

@@ -9,6 +9,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__contour__.m \
   %reldir%/private/__errplot__.m \
   %reldir%/private/__ezplot__.m \
+  %reldir%/private/__gnuplot_scatter__.m \
   %reldir%/private/__interp_cube__.m \
   %reldir%/private/__line__.m \
   %reldir%/private/__marching_cube__.m \

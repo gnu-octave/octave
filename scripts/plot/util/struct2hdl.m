@@ -157,8 +157,16 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
         par = gcf;
       endif
     endif
-    if (isfield (s.properties, "tightinset"))
-      s.properties = rmfield (s.properties, {"tightinset"});
+    ## remove read only properties
+    ## FIXME: Remove "contextmenu", "interactions", "layout", "legend",
+    ## "toolbar", "xaxis", "yaxis", and "zaxis" from this list once they are
+    ## implemented.
+    ro_props = {"contextmenu", "interactions", "layout", "legend", ...
+                "nextseriesindex", "tightinset", "toolbar", "xaxis", ...
+                "yaxis", "zaxis"};
+    has_ro_props = cellfun (@(x) isfield (s.properties, x), ro_props);
+    if (any (has_ro_props))
+      s.properties = rmfield (s.properties, ro_props(has_ro_props));
     endif
     [h, s] = createaxes (s, p, par);
   elseif (strcmp (s.type, "line"))

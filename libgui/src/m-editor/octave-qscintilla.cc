@@ -120,10 +120,10 @@ namespace octave
     connect (this, SIGNAL (cursorPositionChanged (int, int)),
              this, SLOT (cursor_position_changed (int, int)));
 
-    connect (this, SIGNAL (ctx_menu_run_finished_signal (bool, QTemporaryFile*,
-                                                         QTemporaryFile*, QTemporaryFile*)),
-             this, SLOT (ctx_menu_run_finished (bool, QTemporaryFile*,
-                                                QTemporaryFile*, QTemporaryFile*)),
+    connect (this, SIGNAL (ctx_menu_run_finished_signal (bool, int, QTemporaryFile*,
+                                                         QTemporaryFile*)),
+             this, SLOT (ctx_menu_run_finished (bool, int, QTemporaryFile*,
+                                                QTemporaryFile*)),
              Qt::QueuedConnection);
 
     // clear scintilla edit shortcuts that are handled by the editor
@@ -791,82 +791,22 @@ namespace octave
   {
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
-    // Create tmp file required for adding command to history
-    QPointer<QTemporaryFile> tmp_hist
-      = rmgr.create_tmp_file (); // empty tmp file for history
-
-    // Create tmp file required for the script echoing and adding cmd to hist
-    QPointer<QTemporaryFile> tmp_script
-      = rmgr.create_tmp_file ("m"); // tmp script file
-
-    bool tmp = (tmp_hist && tmp_hist->open () &&
-                tmp_script && tmp_script->open());
-    if (! tmp)
-      {
-        // tmp files not working: use old way to run selection
-        contextmenu_run_temp_error ();
-        return;
-      }
-
-    tmp_hist->close ();
-
-    QString tmp_hist_name = QFileInfo (tmp_hist->fileName ()).baseName ();
-    QString tmp_script_name = QFileInfo (tmp_script->fileName ()).baseName ();
-
-    // Create tmp file with script for echoing a command and adding
-    // the the history
-    QString echo_hist = QString (
-        "function %2 (i, command, line)\n"
-        "   persistent cnt;\n"
-        "   mlock ();\n"
-        "   if (i == 0)\n"
-        "     cnt = -1;\n"
-        "   end\n"
-        "   if cnt < i\n"
-        "       cnt = i;\n"
-        "       prompt = PS1;\n"
-        "       if (i == 0)\n"
-        "         prompt = '';\n"
-        "       end\n"
-        "       disp ([prompt, command]);\n"
-        "       if (history_save ())\n"
-        "           fid = fopen ('%1','w');\n"
-        "           if (fid != -1)\n"
-        "               fprintf (fid, [line,'\\n']);\n"
-        "               fclose (fid);\n"
-        "           end;\n"
-        "           history -r '%1'\n"
-        "       end\n"
-        "   end\n"
-        " end\n").arg (tmp_hist->fileName ()).arg (tmp_script_name);
-
-    tmp_script->write (echo_hist.toUtf8 ());
-    tmp_script->close ();
-
     // Take selected code and extend it by commands for echoing each
     // evaluated line and for adding the line to the history (use script)
-
-    QString tmp_dir = QFileInfo (tmp_script->fileName ()).absolutePath ();
     QString code = QString ();
+    QString hist = QString ("### Begin selected code\n");
 
     // Split contents into single lines and complete commands
     QStringList lines = selectedText ().split (QRegExp ("[\r\n]"),
                                                QString::SkipEmptyParts);
-    QString line_code_tmp;
-    bool is_contd_line;
-    QRegExp contd_line ("\\.\\.\\.\\s*$");
-
     for (int i = 0; i < lines.count (); i++)
       {
         QString line = lines.at (i);
-        is_contd_line = line.contains (contd_line);
+        if (line.trimmed ().isEmpty ())
+          continue;
         QString line_escaped = line;
         line_escaped.replace (QString ("'"), QString ("''"));
         QString line_history = line;
-        line_history.replace (QString ("\\"), QString ("\\\\"));
-        line_history.replace (QString ("\""), QString ("\\\""));
-        line_history.replace (QString ("%"), QString ("%%"));
-        line_history.replace (QString ("'"), QString ("''"));
 
         // Prevent output of breakpoint in temp. file for keyboard
         QString next_bp_quiet;
@@ -879,52 +819,53 @@ namespace octave
             next_bp_quiet_reset = "__db_next_breakpoint_quiet__(false);\n";
           }
 
-        // Handle continued lines
-        line_code_tmp = line_code_tmp + line;
-        QString line_code;
-        if (is_contd_line)
-          {
-            line_code_tmp = line_code_tmp + "\n"; // Next line will be added
-            line_code = "";                       // No code by now
-          }
-        else
-          {
-            line_code = line_code_tmp + "\n";     // Code is ready
-            line_code_tmp = "";                   // No code to be cont'd
-          }
-
-        // Add codeline together with call to echo/history function to tmp
-        // %1 : function name for displaying and adding to history
-        // %2 : line number
-        // %3 : command line with escaped single quotes (display)
-        // %4 : command line for history (via fprintf)
-        // %5 : command line (eval)
-        code += QString ("%1 (%2, '%3', '%4');\n"
-                         + next_bp_quiet
-                         + line_code
-                         + next_bp_quiet_reset
-                         + "\n")
-                .arg (tmp_script_name)
-                .arg (i)
-                .arg (line_escaped)
-                .arg (line_history);
-
+        // Add codeline
+        code += next_bp_quiet + line + next_bp_quiet_reset + "\n";
+        hist += line_history + "\n";
       }
 
-    code += QString ("munlock (\"%1\"); clear %1;\n").arg (tmp_script_name);
+    hist += "### End selected code\n";
+    octave_stdout << hist.toStdString () << "\n";
 
     // Create tmp file with the code to be executed by the interpreter
     QPointer<QTemporaryFile> tmp_file
       = rmgr.create_tmp_file ("m", code);
 
-    tmp = (tmp_file && tmp_file->open ());
+    bool tmp = (tmp_file && tmp_file->open ());
     if (! tmp)
       {
         // tmp files not working: use old way to run selection
         contextmenu_run_temp_error ();
         return;
       }
+
     tmp_file->close ();
+
+    // Create tmp file required for adding command to history
+    QPointer<QTemporaryFile> tmp_hist
+      = rmgr.create_tmp_file ("", hist); // empty tmp file for history
+
+    tmp = (tmp_hist && tmp_hist->open ());
+    if (! tmp)
+      {
+        // tmp files not working: use old way to run selection
+        contextmenu_run_temp_error ();
+        return;
+      }
+
+    tmp_hist->close ();
+
+    // Add commands to the history
+    emit interpreter_event
+      ([tmp_hist] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+
+          std::string opt = "-r";
+          std::string  path = tmp_hist->fileName ().toStdString ();
+
+          Fhistory (interp, ovl (opt, path));
+        });
 
     // Disable opening a file at a breakpoint in case keyboard () is used
     gui_settings* settings = rmgr.get_settings ();
@@ -935,7 +876,7 @@ namespace octave
 
     // Let the interpreter execute the tmp file
     emit interpreter_event
-      ([this, tmp_file, tmp_hist, tmp_script, show_dbg_file] (interpreter& interp)
+      ([this, tmp_file, tmp_hist, show_dbg_file] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -943,12 +884,7 @@ namespace octave
 
          std::string pending_input = command_editor::get_current_line ();
 
-         // Add tmp dir to the path for echo/hist script
-         octave_value_list path =
-            ovl (QFileInfo (tmp_script->fileName ()).absolutePath ().toStdString ());
-
-         // Add tmp dir to the path
-         Faddpath (interp, path);
+         int err_line = -1;   // For storing the line of a poss. error
 
          try
            {
@@ -958,10 +894,7 @@ namespace octave
          catch (const execution_exception& e)
            {
              // Catch errors otherwise the rest of the interpreter
-             // will not be executed (cleaning up).  Clean up before.
-             Frmpath (interp, path);
-             emit ctx_menu_run_finished_signal (show_dbg_file,
-                                                tmp_file, tmp_hist, tmp_script);
+             // will not be executed (cleaning up).
 
              // New error message and error stack
              QString new_msg = QString::fromStdString (e.message ());
@@ -972,15 +905,46 @@ namespace octave
              // the error stack size is 0 or 1
              if (stack.size () < 2)
                {
-                 new_msg = new_msg.replace (
-                               QRegExp ("near line [^\n]*\n"), QString ("\n"));
-                 new_msg = new_msg.replace (
-                               QRegExp ("near line [^\n]*$"), QString (""));
+                 QRegExp rx ("source: error sourcing file [^\n]*$");
+                 if (new_msg.contains (rx))
+                   {
+                     // Selected code has syntax errors
+                     new_msg.replace (rx, "error sourcing selected code");
+                     err_line = 0;  // Nothing into history?
+                   }
+                 else
+                   {
+                     // Normal error, detect line and remove file
+                     // name from message
+                     QStringList rx_list;
+                     rx_list << "near line (\\d+),[^\n]*\n";
+                     rx_list << "near line (\\d+),[^\n]*$";
+
+                     QStringList replace_list;
+                     replace_list << "\n";
+                     replace_list << "";
+
+                     for (int i = 0; i < rx_list.length (); i++)
+                       {
+                         int pos = 0;
+                         rx = QRegExp (rx_list.at (i));
+                         pos = rx.indexIn (new_msg, pos);
+                         if (pos != -1)
+                           {
+                             err_line = rx.cap (1).toInt ();
+                             new_msg = new_msg.replace (rx, replace_list.at (i));
+                           }
+                       }
+                   }
                }
 
              // Drop first stack level, i.e. temporary function file
              if (stack.size () > 0)
                stack.pop_back ();
+
+             // Clean up before throwing the modified error.
+             emit ctx_menu_run_finished_signal (show_dbg_file, err_line,
+                                                tmp_file, tmp_hist);
 
              // New exception with updated message and stack
              octave::execution_exception ee (e.err_type (),e.identifier (),
@@ -991,9 +955,8 @@ namespace octave
            }
 
          // Clean up
-         Frmpath (interp, path);
-         emit ctx_menu_run_finished_signal (show_dbg_file,
-                                            tmp_file, tmp_hist, tmp_script);
+         emit ctx_menu_run_finished_signal (show_dbg_file, err_line,
+                                            tmp_file, tmp_hist);
 
          command_editor::erase_empty_line (true);
          command_editor::replace_line ("");
@@ -1005,17 +968,19 @@ namespace octave
        });
   }
 
-  void octave_qscintilla::ctx_menu_run_finished (bool show_dbg_file,
+  void octave_qscintilla::ctx_menu_run_finished (bool show_dbg_file, int,
                                                  QTemporaryFile* tmp_file,
-                                                 QTemporaryFile* tmp_hist,
-                                                 QTemporaryFile* tmp_script)
+                                                 QTemporaryFile* tmp_hist)
   {
+    // TODO: Use line nr. (int argument) of possible error for removing
+    //       lines from history that were never executed. For this,
+    //       possible lines from commands at a debug prompt must be
+    //       taken into consideration.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     settings->setValue (ed_show_dbg_file.key, show_dbg_file);
-    //rmgr.remove_tmp_file (tmp_file);
-    //rmgr.remove_tmp_file (tmp_hist);
-    //rmgr.remove_tmp_file (tmp_script);
+    rmgr.remove_tmp_file (tmp_file);
+    rmgr.remove_tmp_file (tmp_hist);
   }
 
 

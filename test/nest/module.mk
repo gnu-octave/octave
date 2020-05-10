@@ -17,7 +17,9 @@ nest_TEST_FILES = \
   %reldir%/scope2.m \
   %reldir%/scope3.m \
   %reldir%/script_nest.m \
+  %reldir%/script_nest_2.m \
   %reldir%/script_nest_script.m \
+  %reldir%/script_nest_script_2.m \
   %reldir%/varg_nest.m \
   %reldir%/varg_nest2.m
 

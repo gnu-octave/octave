@@ -79,6 +79,11 @@ same number of digits for each value such as
 - As part of GSoC 2020, Abdallah K. Elshamy implemented the
 `jsondecode` and `jsonencode` functions to read and write JSON data.
 
+- By default, the history file is now located at $DATA/octave/history, where
+$DATA is a platform dependent location for (roaming) user data files (e.g.
+${XDG_DATA_HOME} or, if that is not set, ~/.local/share on Unix-like operating
+systems or %APPDATA% on Windows).
+
 ### Graphics backend
 
 - Support for Qt4 for both graphics and the GUI has been removed.

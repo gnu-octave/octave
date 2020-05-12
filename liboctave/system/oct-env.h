@@ -70,6 +70,8 @@ namespace octave
 
       static std::string get_user_config_directory (void);
 
+      static std::string get_user_data_directory (void);
+
       static std::string get_program_name (void);
 
       static std::string get_program_invocation_name (void);
@@ -110,6 +112,8 @@ namespace octave
       std::string do_get_temp_directory (void) const;
 
       std::string do_get_user_config_directory (void) const;
+
+      std::string do_get_user_data_directory (void) const;
 
       std::string do_get_user_name (void) const;
 

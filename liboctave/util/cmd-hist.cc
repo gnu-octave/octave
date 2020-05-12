@@ -46,6 +46,7 @@
 
 #include "oct-rl-hist.h"
 
+#include "file-ops.h"
 #include "file-stat.h"
 #endif
 
@@ -364,6 +365,17 @@ namespace octave
 
         if (! f.empty ())
           {
+            // Try to create the folder if it does not exist
+            std::string hist_dir = sys::file_ops::dirname (f);
+            if (! hist_dir.empty ())
+              {
+                sys::file_stat fs (hist_dir);
+                if (! fs.is_dir () && (sys::mkdir (hist_dir, 0777) < 0))
+                  (*current_liboctave_error_handler)
+                    ("%s: Could not create directory \"%s\" for history",
+                     "gnu_history::do_write", hist_dir.c_str ());
+              }
+
             int status = ::octave_write_history (f.c_str ());
 
             if (status != 0)

@@ -547,8 +547,18 @@ namespace octave
       file = env_file;
 
     if (file.empty ())
-      file = sys::file_ops::concat (sys::env::get_home_directory (),
-                                    ".octave_hist");
+      {
+        // Default to $DATA/octave/history, where $DATA is the platform-
+        // dependent location for (roaming) user data files.
+
+        std::string user_data_dir = sys::env::get_user_data_directory ();
+
+        std::string hist_dir = user_data_dir + sys::file_ops::dir_sep_str ()
+                               + "octave";
+
+        file = sys::env::make_absolute ("history", hist_dir);
+      }
+
 
     return file;
   }
@@ -821,8 +831,11 @@ store command history.
 All future commands issued during the current Octave session will be written to
 this new file (if the current setting of @code{history_save} allows for this).
 
-The default value is @file{~/.octave_hist}, but may be overridden by the
-environment variable @w{@env{OCTAVE_HISTFILE}}.
+The default value is @file{@w{@env{$DATA}}/octave/history}, where
+@w{@env{$DATA}} is the platform-specific location for (roaming) user data files
+(e.g. @w{@env{$XDG_DATA_HOME}} or, if that is not set, @file{~/.local/share} on
+Unix-like operating systems or @w{@env{%APPDATA%}} on Windows).  The default
+value may be overridden by the environment variable @w{@env{OCTAVE_HISTFILE}}.
 
 Programming Notes:
 

@@ -128,6 +128,13 @@ namespace octave
               && fa.double_value () < 1)
             retval = true;
         }
+      else if (go.isa ("scatter"))
+        {
+          octave_value fa = go.get ("markerfacealpha");
+          if (fa.is_scalar_type () && fa.is_double_type ()
+              && fa.double_value () < 1)
+            retval = true;
+        }
 
       return retval;
     }

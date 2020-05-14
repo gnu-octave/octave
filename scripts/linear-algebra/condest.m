@@ -389,7 +389,7 @@ endfunction
 %! cest = condest (A);
 %! assert (cest, cexp, -2*eps);
 
-%!test <*57968>
+%!testif HAVE_UMFPACK <*57968>
 %! As = sparse (reshape (sqrt (0:15), 4, 4));
 %! cexp = norm (As, 1) * norm (inv (As), 1);
 %! cest = condest (As);

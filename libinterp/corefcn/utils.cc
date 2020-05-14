@@ -1002,8 +1002,9 @@ DEFUN (make_absolute_filename, args, ,
 Return the full name of @var{file} beginning from the root of the file
 system.
 
-No check is done for the existence of @var{file}.
-@seealso{canonicalize_file_name, is_absolute_filename, is_rooted_relative_filename, isfolder}
+No check is done for the existence of @var{file}.  No tilde expansion of
+@var{file} is performed.
+@seealso{canonicalize_file_name, is_absolute_filename, is_rooted_relative_filename, isfolder, tilde_expand}
 @end deftypefn */)
 {
   if (args.length () != 1)

@@ -1395,8 +1395,9 @@ DEFUNX ("canonicalize_file_name", Fcanonicalize_file_name, args, ,
 @deftypefn {} {[@var{cname}, @var{status}, @var{msg}] =} canonicalize_file_name (@var{fname})
 Return the canonical name of file @var{fname}.
 
-If the file does not exist the empty string ("") is returned.
-@seealso{make_absolute_filename, is_absolute_filename, is_rooted_relative_filename, is_same_file}
+If the file does not exist the empty string ("") is returned.  No tilde
+expansion of @var{fname} is performed.
+@seealso{make_absolute_filename, is_absolute_filename, is_rooted_relative_filename, is_same_file, tilde_expand}
 @end deftypefn */)
 {
   if (args.length () != 1)

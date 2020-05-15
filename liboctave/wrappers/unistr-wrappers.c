@@ -49,6 +49,27 @@ octave_u8_strmbtouc_wrapper (uint32_t *puc, const uint8_t *src)
   return u8_strmbtouc (puc, src);
 }
 
+uint8_t *
+octave_u16_to_u8_wrapper (const uint16_t *src, size_t src_len,
+                          uint8_t *result_buf, size_t *lengthp)
+{
+  return u16_to_u8 (src, src_len, result_buf, lengthp);
+}
+
+uint8_t *
+octave_u32_to_u8_wrapper (const uint32_t *src, size_t src_len,
+                          uint8_t *result_buf, size_t *lengthp)
+{
+  return u32_to_u8 (src, src_len, result_buf, lengthp);
+}
+
+uint16_t *
+octave_u8_to_u16_wrapper (const uint8_t *src, size_t src_len,
+                          uint16_t *result_buf, size_t *lengthp)
+{
+  return u8_to_u16 (src, src_len, result_buf, lengthp);
+}
+
 uint32_t *
 octave_u8_to_u32_wrapper (const uint8_t *src, size_t src_len,
                           uint32_t *result_buf, size_t *lengthp)

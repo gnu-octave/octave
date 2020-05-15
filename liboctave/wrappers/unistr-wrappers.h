@@ -39,6 +39,18 @@ octave_u8_strmblen_wrapper (const uint8_t *src);
 extern int
 octave_u8_strmbtouc_wrapper (uint32_t *puc, const uint8_t *src);
 
+extern uint8_t *
+octave_u16_to_u8_wrapper (const uint16_t *src, size_t src_len,
+                          uint8_t *result_buf, size_t *lengthp);
+
+extern uint8_t *
+octave_u32_to_u8_wrapper (const uint32_t *src, size_t src_len,
+                          uint8_t *result_buf, size_t *lengthp);
+
+extern uint16_t *
+octave_u8_to_u16_wrapper (const uint8_t *src, size_t src_len,
+                          uint16_t *result_buf, size_t *lengthp);
+
 extern uint32_t *
 octave_u8_to_u32_wrapper (const uint8_t *src, size_t src_len,
                           uint32_t *result_buf, size_t *lengthp);

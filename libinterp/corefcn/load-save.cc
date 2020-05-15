@@ -1820,6 +1820,46 @@ file @file{data} in Octave's binary format.
   return load_save_sys.save (args, nargout);
 }
 
+/*
+## Save and load strings with "-v6"
+%!test
+%! A = A2 = ["foo"; "bar"];
+%! B = B2 = "foobar";
+%! C = C2 = {"foo", "bar"};
+%! D = D2 = {"Saint Barthélemy", "Saint Kitts and Nevis"};
+%! mat_file = [tempname(), ".mat"];
+%! unwind_protect
+%!   save (mat_file, "A", "B", "C", "D", "-v6");
+%!   clear ("A", "B", "C", "D");
+%!   load (mat_file);
+%! unwind_protect_cleanup
+%!   unlink (mat_file);
+%! end_unwind_protect
+%! assert (A, A2);
+%! assert (B, B2);
+%! assert (C, C2);
+%! assert (D, D2);
+
+## Save and load strings with "-v7"
+%!testif HAVE_ZLIB
+%! A = A2 = ["foo"; "bar"];
+%! B = B2 = "foobar";
+%! C = C2 = {"foo", "bar"};
+%! D = D2 = {"Saint Barthélemy", "Saint Kitts and Nevis"};
+%! mat_file = [tempname(), ".mat"];
+%! unwind_protect
+%!   save (mat_file, "A", "B", "C", "D", "-v7");
+%!   clear ("A", "B", "C", "D");
+%!   load (mat_file);
+%! unwind_protect_cleanup
+%!   unlink (mat_file);
+%! end_unwind_protect
+%! assert (A, A2);
+%! assert (B, B2);
+%! assert (C, C2);
+%! assert (D, D2);
+*/
+
 DEFMETHOD (crash_dumps_octave_core, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} crash_dumps_octave_core ()

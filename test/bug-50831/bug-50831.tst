@@ -1,5 +1,5 @@
 %!test
-%! filename = "save-text.var";
+%! filename = tempname ();
 %! s.("a-b") = "bad fieldname";
 %! unwind_protect
 %!   save ("-text", filename, "s");

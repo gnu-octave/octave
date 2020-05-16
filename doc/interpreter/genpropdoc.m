@@ -166,6 +166,11 @@ indicates whether the interrupting callback is queued (@qcode{\"queue\"} \
         s.doc = "If __prop__ is @qcode{\"on\"}, the __objname__ is \
 clipped in its parent axes limits.";
 
+      case "contextmenu"
+        s.doc = "Graphics handle of the uicontextmenu object that is \
+currently associated to this __objname__ object.";
+        s.valid = valid_handle;
+
       case "createfcn"
         s.doc = "Callback function executed immediately after __objname__ \
 has been created.  Function is set by using default property on root object, \
@@ -224,11 +229,6 @@ will determine how they are processed.  \
 always @qcode{\"__objname__\"}";
         s.valid = valid_string;
         s.printdefault = false;
-
-      case "uicontextmenu"
-        s.doc = "Graphics handle of the uicontextmenu object that is \
-currently associated to this __objname__ object.";
-        s.valid = valid_handle;
 
       case "userdata"
         s.doc = "User-defined data to associate with the graphics object.";

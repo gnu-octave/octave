@@ -1787,18 +1787,18 @@ handle_property::do_set (const octave_value& v)
 }
 
 /*
-## Test validation of uicontextmenu property
+## Test validation of contextmenu property
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
 %!   hpa = patch ("parent", hax);
 %!   try
-%!     set (hax, "uicontextmenu", hpa);
+%!     set (hax, "contextmenu", hpa);
 %!   catch
 %!     err = lasterr ();
 %!   end_try_catch
-%!   assert (err, 'set: invalid graphics object type for property "uicontextmenu"');
+%!   assert (err, 'set: invalid graphics object type for property "contextmenu"');
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect
@@ -3501,15 +3501,15 @@ base_properties::update_axis_limits (const std::string& axis_type,
 }
 
 void
-base_properties::update_uicontextmenu (void) const
+base_properties::update_contextmenu (void) const
 {
-  if (uicontextmenu.get ().isempty ())
+  if (contextmenu.get ().isempty ())
     return;
 
   gh_manager& gh_mgr
-    = octave::__get_gh_manager__ ("base_properties::update_uicontextmenu");
+    = octave::__get_gh_manager__ ("base_properties::update_contextmenu");
 
-  graphics_object go = gh_mgr.get_object (uicontextmenu.get ());
+  graphics_object go = gh_mgr.get_object (contextmenu.get ());
 
   if (go && go.isa ("uicontextmenu"))
     {
@@ -10931,8 +10931,8 @@ uicontextmenu::~uicontextmenu (void)
       graphics_object go = gh_mgr.get_object (*it);
 
       if (go.valid_object ()
-          && go.get ("uicontextmenu") == xproperties.get___myhandle__ ())
-        go.set ("uicontextmenu", Matrix ());
+          && go.get ("contextmenu") == xproperties.get___myhandle__ ())
+        go.set ("contextmenu", Matrix ());
     }
 }
 

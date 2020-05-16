@@ -2308,6 +2308,18 @@ public:
 
   void set___modified__ (const octave_value& val) { __modified__ = val; }
 
+  // Redirect calls to "uicontextmenu" to "contextmenu".
+
+  graphics_handle get_uicontextmenu (void) const
+  {
+    return get_contextmenu ();
+  }
+
+  void set_uicontextmenu (const octave_value& val)
+  {
+    set_contextmenu (val);
+  }
+
   void reparent (const graphics_handle& new_parent) { parent = new_parent; }
 
   // Update data limits for AXIS_TYPE (xdata, ydata, etc.) in the parent
@@ -2318,7 +2330,7 @@ public:
   virtual void update_axis_limits (const std::string& axis_type,
                                    const graphics_handle& h) const;
 
-  virtual void update_uicontextmenu (void) const;
+  virtual void update_contextmenu (void) const;
 
   virtual void delete_children (bool clear = false, bool from_root = false)
   {
@@ -2378,6 +2390,7 @@ protected:
     callback_property buttondownfcn , Matrix ()
     children_property children gf , Matrix ()
     bool_property clipping , "on"
+    handle_property contextmenu u , graphics_handle ()
     callback_property createfcn , Matrix ()
     callback_property deletefcn , Matrix ()
     radio_property handlevisibility u , "{on}|callback|off"
@@ -2389,7 +2402,7 @@ protected:
     bool_property selectionhighlight , "on"
     string_property tag s , ""
     string_property type frs , ty
-    handle_property uicontextmenu u , graphics_handle ()
+    handle_property uicontextmenu gsh , graphics_handle ()
     any_property userdata , Matrix ()
     bool_property visible u , "on"
 
@@ -2425,7 +2438,7 @@ protected:
 
   virtual void init (void)
   {
-    uicontextmenu.add_constraint ("uicontextmenu");
+    contextmenu.add_constraint ("uicontextmenu");
   }
 };
 
@@ -3647,8 +3660,6 @@ public:
       array_property colororder , default_colororder ()
       double_property colororderindex , 1.0
       radio_property colorscale , "{linear}|log"
-      // FIXME: "contextmenu" should be synonymous to "uicontextmenu". Make it read-only for now.
-      handle_property contextmenu r , graphics_handle ()
       array_property currentpoint , Matrix (2, 3, 0.0)
       row_vector_property dataaspectratio mu , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode u , "{auto}|manual"
@@ -3705,7 +3716,6 @@ public:
       radio_property titlefontweight u , "{bold}|normal"
       // FIXME: Should be a "axestoolbar" object. Make it read-only for now.
       handle_property toolbar r , graphics_handle ()
-      // FIXME: Move the hidden property "uicontextmenu" here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
       // FIXME: Should be a "ruler" object. Make it read-only for now.
@@ -5116,7 +5126,6 @@ public:
       array_property cdata mu , Matrix ()
       radio_property cdatamode u , "{auto}|manual"
       string_property cdatasource , ""
-      array_property contextmenu , Matrix ()
       array_property datatiptemplate , Matrix ()
       string_property displayname , ""
       array_property latitudedata , Matrix ()
@@ -5666,6 +5675,7 @@ public:
 
 // ---------------------------------------------------------------------
 
+// FIXME: This class has been renamed to "contextmenu" in Matlab R2020a.
 class OCTINTERP_API uicontextmenu : public base_graphics_object
 {
 public:

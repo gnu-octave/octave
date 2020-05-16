@@ -3188,8 +3188,9 @@ namespace octave
               {
                 // word is not empty, so find all occurrences of the word
 
-                // remember first visible line for restoring the view afterwards
+                // remember first visible line and x-offset for restoring the view afterwards
                 int first_line = m_edit_area->firstVisibleLine ();
+                int x_offset = m_edit_area->SendScintilla (QsciScintillaBase::SCI_GETXOFFSET);
 
                 // search for first occurrence of the detected word
                 bool find_result_available
@@ -3224,6 +3225,7 @@ namespace octave
                 // restore the visible area of the file, the cursor position,
                 // and the selection
                 m_edit_area->setFirstVisibleLine (first_line);
+                m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETXOFFSET, x_offset);
                 m_edit_area->setCursorPosition (line, col);
                 m_edit_area->setSelection (line, col - wlen, line, col);
                 m_edit_area->set_word_selection (word);

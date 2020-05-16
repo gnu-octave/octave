@@ -1652,8 +1652,6 @@ AC_ARG_WITH([magick],
     [select library to use for image I/O (options: GraphicsMagick(default) or ImageMagick)])],
   [if test x"$withval" = xno; then
      check_magick=no
-     warn_magick_disabled="--without-magick specified.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."
-     OCTAVE_CONFIGURE_WARNING([warn_magick_disabled])
    else
      magick="$withval"
    fi], [magick="GraphicsMagick"])
@@ -1765,8 +1763,6 @@ AC_ARG_WITH([opengl],
     [don't use OpenGL libraries, disable OpenGL graphics])],
   [if test x"$withval" = xno; then
      check_opengl=no
-     warn_opengl_disabled="--without-opengl specified.  OpenGL graphics will be disabled."
-     OCTAVE_CONFIGURE_WARNING([warn_opengl_disabled])
    fi])
 
 ## Check for OpenGL library
@@ -1858,8 +1854,6 @@ AS_HELP_STRING([--without-qt], [don't use Qt libraries, disable Qt GUI])],
      ;;
      no)
        QT_VERSIONS=
-       warn_qt_disabled="--without-qt specified.  The Qt GUI will be disabled."
-       OCTAVE_CONFIGURE_WARNING([warn_qt_disabled])
      ;;
      *)
        QT_VERSIONS="$withval"
@@ -1871,8 +1865,6 @@ AC_ARG_WITH([qscintilla],
   [AS_HELP_STRING([--without-qscintilla], [disable QScintilla editor])],
   [if test x"$withval" = xno; then
      check_qscintilla=no
-     warn_qscintilla_disabled="--without-qscintilla specified.  The GUI editor will be disabled."
-     OCTAVE_CONFIGURE_WARNING([warn_qscintilla_disabled])
    fi])
 
 OCTAVE_CHECK_QT([$QT_VERSIONS])
@@ -2217,50 +2209,56 @@ OCTAVE_CHECK_LIB(sundials_nvecserial, [SUNDIALS NVECTOR],
 
 ### Check for SUNDIALS IDA library and header.
 
-save_CPPFLAGS="$CPPFLAGS"
-save_LDFLAGS="$LDFLAGS"
-save_LIBS="$LIBS"
-LIBS="$SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
-LDFLAGS="$SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
-CPPFLAGS="$SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
-OCTAVE_CHECK_LIB(sundials_ida, [SUNDIALS IDA],
-  [SUNDIALS IDA library not found.  The solvers ode15i and ode15s will be disabled.],
-  [ida/ida.h ida.h], [IDAInit],
-  [], [don't use SUNDIALS IDA library, disable solvers ode15i and ode15s])
-CPPFLAGS="$save_CPPFLAGS"
-LDFLAGS="$save_LDFLAGS"
-LIBS="$save_LIBS"
+if test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+
+  save_CPPFLAGS="$CPPFLAGS"
+  save_LDFLAGS="$LDFLAGS"
+  save_LIBS="$LIBS"
+  LIBS="$SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
+  LDFLAGS="$SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
+  CPPFLAGS="$SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
+  OCTAVE_CHECK_LIB(sundials_ida, [SUNDIALS IDA],
+    [SUNDIALS IDA library not found.  The solvers ode15i and ode15s will be disabled.],
+    [ida/ida.h ida.h], [IDAInit],
+    [], [don't use SUNDIALS IDA library, disable solvers ode15i and ode15s])
+  CPPFLAGS="$save_CPPFLAGS"
+  LDFLAGS="$save_LDFLAGS"
+  LIBS="$save_LIBS"
+fi
 
 ### Check for SUNDIALS library features, some required, some optional.
 
-CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
-LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
-LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
-if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
-  dnl Any of the following tests could determine that SUNDIALS is incompatible
-  dnl and should be disabled. In that event, they all populate the same
-  dnl variable with appropriate warning messages, and further tests should be
-  dnl skipped if a warning message has already been generated that SUNDIALS is
-  dnl disabled.
-  warn_sundials_disabled=
-  if test -z "$warn_sundials_disabled"; then
-    OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API
+if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+
+  CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
+  LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
+  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
+  if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
+    dnl Any of the following tests could determine that SUNDIALS is incompatible
+    dnl and should be disabled. In that event, they all populate the same
+    dnl variable with appropriate warning messages, and further tests should be
+    dnl skipped if a warning message has already been generated that SUNDIALS is
+    dnl disabled.
+    warn_sundials_disabled=
+    if test -z "$warn_sundials_disabled"; then
+      OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API
+    fi
+    if test -z "$warn_sundials_disabled"; then
+      OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
+    fi
+    if test -z "$warn_sundials_disabled"; then
+      OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE
+    fi
+    dnl The following tests determine whether certain optional features are
+    dnl present in the SUNDIALS libraries, but will not disable using SUNDIALS.
+    if test -z "$warn_sundials_disabled"; then
+      OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU
+    fi
   fi
-  if test -z "$warn_sundials_disabled"; then
-    OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
-  fi
-  if test -z "$warn_sundials_disabled"; then
-    OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE
-  fi
-  dnl The following tests determine whether certain optional features are
-  dnl present in the SUNDIALS libraries, but will not disable using SUNDIALS.
-  if test -z "$warn_sundials_disabled"; then
-    OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU
-  fi
+  CPPFLAGS="$save_CPPFLAGS"
+  LDFLAGS="$save_LDFLAGS"
+  LIBS="$save_LIBS"
 fi
-CPPFLAGS="$save_CPPFLAGS"
-LDFLAGS="$save_LDFLAGS"
-LIBS="$save_LIBS"
 
 dnl Define this way instead of with an #if in oct-conf-post.h so that
 dnl the build features script will get the correct value.
@@ -2269,36 +2267,36 @@ dnl The test on the sunlinsol_klu.h header is a bit of a kluge.
 dnl How can we do a better job here?  Do we need to disable sundials
 dnl any tests fail, or can we fix __ode15__.cc so that it still partially
 dnl works when some things are missing (for example, KLU)?
-if test -n "$SUNDIALS_IDA_LIBS" \
-    && test -n "$SUNDIALS_NVECSERIAL_LIBS" \
-    && test "x$octave_cv_sundials_sunlinsol_dense" = xyes \
-    && test "x$octave_cv_sundials_realtype_is_double" = xyes \
-    && test "x$octave_have_sundials_compatible_api" = xyes; then
-  AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
+if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+  if test "x$octave_cv_sundials_sunlinsol_dense" = xyes \
+      && test "x$octave_cv_sundials_realtype_is_double" = xyes \
+      && test "x$octave_have_sundials_compatible_api" = xyes; then
+    AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
 
-  ## Collections of options needed to build with SUNDIALS and its dependencies.
-  SUNDIALS_XCPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_SUNLINSOLKLU_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS"
-  SUNDIALS_XLDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_SUNLINSOLKLU_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS"
-  SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOLKLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS"
-else
-  SUNDIALS_IDA_CPPFLAGS=
-  SUNDIALS_IDA_LDFLAGS=
-  SUNDIALS_IDA_LIBS=
-  SUNDIALS_SUNLINSOLKLU_CPPFLAGS=
-  SUNDIALS_SUNLINSOLKLU_LDFLAGS=
-  SUNDIALS_SUNLINSOLKLU_LIBS=
-  SUNDIALS_NVECSERIAL_CPPFLAGS=
-  SUNDIALS_NVECSERIAL_LDFLAGS=
-  SUNDIALS_NVECSERIAL_LIBS=
-  SUNDIALS_XCPPFLAGS=
-  SUNDIALS_XLDFLAGS=
-  SUNDIALS_XLIBS=
-  dnl Emit a fallback warning message in case SUNDIALS has been disabled for
-  dnl some reason that hasn't already generated one of these known warnings.
-  if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida" \
-      && test -z "$warn_sundials_disabled"; then
-    warn_sundials_disabled="SUNDIALS libraries are missing some feature.  The solvers ode15i and ode15s will be disabled."
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
+    ## Options needed to build with SUNDIALS and its dependencies.
+    SUNDIALS_XCPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_SUNLINSOLKLU_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS"
+    SUNDIALS_XLDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_SUNLINSOLKLU_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS"
+    SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOLKLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS"
+  else
+    SUNDIALS_IDA_CPPFLAGS=
+    SUNDIALS_IDA_LDFLAGS=
+    SUNDIALS_IDA_LIBS=
+    SUNDIALS_SUNLINSOLKLU_CPPFLAGS=
+    SUNDIALS_SUNLINSOLKLU_LDFLAGS=
+    SUNDIALS_SUNLINSOLKLU_LIBS=
+    SUNDIALS_NVECSERIAL_CPPFLAGS=
+    SUNDIALS_NVECSERIAL_LDFLAGS=
+    SUNDIALS_NVECSERIAL_LIBS=
+    SUNDIALS_XCPPFLAGS=
+    SUNDIALS_XLDFLAGS=
+    SUNDIALS_XLIBS=
+    dnl Emit a fallback warning message in case SUNDIALS has been disabled for
+    dnl some reason that hasn't already generated one of these known warnings.
+    if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida" \
+        && test -z "$warn_sundials_disabled"; then
+      warn_sundials_disabled="SUNDIALS libraries are missing some feature.  The solvers ode15i and ode15s will be disabled."
+      OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
+    fi
   fi
 fi
 

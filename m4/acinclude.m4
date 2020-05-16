@@ -852,7 +852,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     no)
       ifelse([$#], 10,
         [AC_MSG_ERROR([--without-m4_tolower($1) specified but $2 is required.])],
-        [warn_$1="--without-m4_tolower($1) specified.  Functions or features that depend on $2 will be disabled."
+        [warn_$1=""
          m4_toupper([$1])_LIBS=])
     ;;
     yes | "")

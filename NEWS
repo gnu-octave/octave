@@ -140,6 +140,10 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   when using those devices, and the code for supporting those formats
   will eventually be removed from a future version of Octave.
 
+- The placement of text subscripts and superscripts has been
+re-engineered and now produces visually attractive results similar to
+Latex.
+
 ### Matlab compatibility
 
 - The function `unique` now returns column index vectors for the second

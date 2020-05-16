@@ -1099,16 +1099,16 @@ namespace octave
     int saved_line_yoffset = line_yoffset;
     int saved_yoffset = yoffset;
 
+    double sz = font.get_size ();
+
+    // Reducing font size by 70% produces decent results.
     set_font (font.get_name (), font.get_weight (), font.get_angle (),
-              font.get_size () - 2);
+              std::max (5.0, sz * 0.7));
 
     if (font.is_valid ())
       {
-        int h = font.get_face ()->size->metrics.height >> 6;
-
-        // Shifting the baseline by 2/3 the font height seems to produce
-        // decent result.
-        yoffset -= (h * 2) / 3;
+        // Shifting the baseline by 15% of the font size gives decent results.
+        yoffset -= std::ceil (sz * 0.15);
 
         if (mode == MODE_BBOX)
           update_line_bbox ();
@@ -1130,16 +1130,16 @@ namespace octave
     int saved_line_yoffset = line_yoffset;
     int saved_yoffset = yoffset;
 
+    double sz = font.get_size ();
+
+    // Reducing font size by 70% produces decent results.
     set_font (font.get_name (), font.get_weight (), font.get_angle (),
-              font.get_size () - 2);
+              std::max (5.0, sz * 0.7));
 
     if (saved_font.is_valid ())
       {
-        int s_asc = saved_font.get_face ()->size->metrics.ascender >> 6;
-
-        // Shifting the baseline by 2/3 base font ascender seems to produce
-        // decent result.
-        yoffset += (s_asc * 2) / 3;
+        // Shifting the baseline by 40% of the font size gives decent results.
+        yoffset += std::ceil (sz * 0.4);
 
         if (mode == MODE_BBOX)
           update_line_bbox ();

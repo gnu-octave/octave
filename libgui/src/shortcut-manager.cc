@@ -75,11 +75,7 @@ namespace octave
         if (key == Qt::Key_unknown || key == 0)
           return;
 
-#if defined (HAVE_QGUIAPPLICATION)
         Qt::KeyboardModifiers modifiers = QGuiApplication::keyboardModifiers (); //e->modifiers ();
-#else
-        Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers (); //e->modifiers ();
-#endif
 
         if (m_shift_modifier || (modifiers & Qt::ShiftModifier))
           key += Qt::SHIFT;
@@ -372,11 +368,7 @@ namespace octave
     m_dialog = nullptr;
     m_level_hash.clear ();
 
-#if defined (HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE)
     tree_view->header ()->setSectionResizeMode (QHeaderView::ResizeToContents);
-#else
-    tree_view->header ()->setResizeMode (QHeaderView::ResizeToContents);
-#endif
 
     QTreeWidgetItem *main = new QTreeWidgetItem (tree_view);
     main->setText (0, tr ("Global"));

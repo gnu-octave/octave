@@ -216,13 +216,9 @@ namespace octave
   QString resource_manager::get_default_font_family (void)
   {
     // Get the default monospaced font
-#if defined (HAVE_QFONT_MONOSPACE)
     QFont fixed_font;
     fixed_font.setStyleHint (QFont::Monospace);
     QString default_family = fixed_font.defaultFamily ();
-#else
-    QString default_family = global_font_family;
-#endif
 
     std::string env_default_family = sys::env::getenv ("OCTAVE_DEFAULT_FONT");
     if (! env_default_family.empty ())

@@ -245,16 +245,8 @@ namespace octave
         (settings->value (fb_column_state.key).toByteArray ());
 
     // Set header properties for sorting
-#if defined (HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE)
     m_file_tree_view->header ()->setSectionsClickable (true);
-#else
-    m_file_tree_view->header ()->setClickable (true);
-#endif
-#if defined (HAVE_QHEADERVIEW_SETSECTIONSMOVABLE)
     m_file_tree_view->header ()->setSectionsMovable (true);
-#else
-    m_file_tree_view->header ()->setMovable (true);
-#endif
     m_file_tree_view->header ()->setSortIndicatorShown (true);
 
     QStringList mru_dirs =

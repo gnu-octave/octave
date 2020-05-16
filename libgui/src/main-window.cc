@@ -767,9 +767,7 @@ namespace octave
         QTextBrowser *browser
 
           = m_community_news_window->findChild<QTextBrowser *>("OctaveNews"
-#if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
                                                                , Qt::FindDirectChildrenOnly
-#endif
                                                               );
         if (browser)
           browser->setHtml (news);

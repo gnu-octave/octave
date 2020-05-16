@@ -110,7 +110,6 @@ namespace octave
     connect (p, SIGNAL (visibilityChanged (bool)),
              this, SLOT (setVisible (bool)));
 
-#if defined (HAVE_QGUIAPPLICATION)
 #define DOCKED_FULLSCREEN_BUTTON_TOOLTIP "Fullscreen undock"
 #define UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP "Fullscreen"
     // Add a fullscreen button
@@ -140,7 +139,6 @@ namespace octave
     if (first != nullptr)
       index = h_layout->indexOf (first);
     h_layout->insertWidget (index, fullscreen_button);
-#endif
 
     // Custom title bars cause loss of decorations, add a frame
     m_frame = new QFrame (this);
@@ -152,7 +150,6 @@ namespace octave
   void
   variable_dock_widget::change_floating (bool)
   {
-#if defined (HAVE_QGUIAPPLICATION)
     if (isFloating ())
       {
         if (m_full_screen)
@@ -166,7 +163,6 @@ namespace octave
       }
     else
       m_fullscreen_action->setToolTip (tr (UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP));
-#endif
 
     setFloating (! isFloating ());
   }
@@ -216,7 +212,6 @@ namespace octave
   void
   variable_dock_widget::change_fullscreen (void)
   {
-#if defined (HAVE_QGUIAPPLICATION)
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
     if (! m_full_screen)
@@ -256,7 +251,6 @@ namespace octave
       }
 #undef DOCKED_FULLSCREEN_BUTTON_TOOLTIP
 #undef UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP
-#endif
   }
 
   void
@@ -500,11 +494,7 @@ namespace octave
     setHorizontalScrollMode (QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode (QAbstractItemView::ScrollPerPixel);
 
-#if defined (HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE)
     verticalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
-#else
-    verticalHeader ()->setResizeMode (QHeaderView::Interactive);
-#endif
   }
 
   void
@@ -512,11 +502,7 @@ namespace octave
   {
     QTableView::setModel (model);
 
-#if defined (HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE)
     horizontalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
-#else
-    horizontalHeader ()->setResizeMode (QHeaderView::Interactive);
-#endif
 
     m_var_model = parent ()->findChild<variable_editor_model *> ();
 
@@ -1664,9 +1650,7 @@ namespace octave
     // that restores active window and focus before acting.
     QList<HoverToolButton *> hbuttonlist
       = m_tool_bar->findChildren<HoverToolButton *> (""
-#if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
                                                      , Qt::FindDirectChildrenOnly
-#endif
                                                     );
     for (int i = 0; i < hbuttonlist.size (); i++)
       {
@@ -1678,9 +1662,7 @@ namespace octave
 
     QList<ReturnFocusToolButton *> rfbuttonlist
       = m_tool_bar->findChildren<ReturnFocusToolButton *> (""
-#if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
                                                            , Qt::FindDirectChildrenOnly
-#endif
                                                           );
     for (int i = 0; i < rfbuttonlist.size (); i++)
       {

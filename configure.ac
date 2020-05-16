@@ -1843,7 +1843,7 @@ AC_SUBST(GL2PS_LIBS)
 
 ### GUI/Qt related tests.
 
-QT_VERSIONS="5 4"
+QT_VERSIONS="5"
 
 AC_ARG_WITH([qt],
   [AS_HELP_STRING([--with-qt=VER], [use the Qt major version VER])

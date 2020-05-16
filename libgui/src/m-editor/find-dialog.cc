@@ -381,21 +381,7 @@ namespace octave
         int lbeg, lend, cbeg, cend;
         _edit_area->getSelection (&lbeg,&cbeg,&lend,&cend);
         if (lbeg == lend)
-#if defined (HAVE_QCOMBOBOX_SETCURRENTTEXT)
           _search_line_edit->setCurrentText (_edit_area->selectedText ());
-#else
-          if (_search_line_edit->isEditable ())
-            {
-              _search_line_edit->setEditText (_edit_area->selectedText ());
-            }
-          else
-            {
-              int i = _search_line_edit->findText (_edit_area->selectedText ());
-
-              if (i > -1)
-                _search_line_edit->setCurrentIndex (i);
-            }
-#endif
       }
 
     // set focus to "Find what" and select all text

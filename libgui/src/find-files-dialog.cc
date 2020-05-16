@@ -126,11 +126,7 @@ namespace octave
     m_file_list->setSortingEnabled (true);
     m_file_list->horizontalHeader ()->restoreState (settings->value (ff_column_state.key).toByteArray ());
     m_file_list->horizontalHeader ()->setSortIndicatorShown (true);
-#if defined (HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE)
     m_file_list->horizontalHeader ()->setSectionsClickable (true);
-#else
-    m_file_list->horizontalHeader ()->setClickable (true);
-#endif
     m_file_list->horizontalHeader ()->setStretchLastSection (true);
     m_file_list->sortByColumn (settings->value (ff_sort_files_by_column).toInt (),
                                static_cast<Qt::SortOrder>

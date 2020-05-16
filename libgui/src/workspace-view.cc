@@ -120,16 +120,8 @@ namespace octave
           (settings->value (ws_column_state.key).toByteArray ());
 
         // Set header properties for sorting
-#if defined (HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE)
         m_view->horizontalHeader ()->setSectionsClickable (true);
-#else
-        m_view->horizontalHeader ()->setClickable (true);
-#endif
-#if defined (HAVE_QHEADERVIEW_SETSECTIONSMOVABLE)
         m_view->horizontalHeader ()->setSectionsMovable (true);
-#else
-        m_view->horizontalHeader ()->setMovable (true);
-#endif
         m_view->horizontalHeader ()->setSortIndicator (
           settings->value (ws_sort_column).toInt (),
           static_cast<Qt::SortOrder> (settings->value (ws_sort_order).toUInt ()));

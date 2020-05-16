@@ -402,12 +402,7 @@ namespace QtHandles
 
       // We assume a standard mouse with 15 degree steps and Qt returns
       // 1/8 of a degree.
-#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
       int ydelta = -(event->angleDelta().y ());
-#else
-      int ydelta = (event->orientation () == Qt::Vertical
-                    ? -(event->delta ()) : 0);
-#endif
       retval.setfield ("VerticalScrollCount", octave_value (ydelta / 120));
 
       // FIXME: Is there any way to access the number of lines a scroll step

@@ -1321,11 +1321,7 @@ namespace QtHandles
                                      : QAbstractItemView::NoSelection);
 
     // Set rearrangeablecolumns
-    #if defined (HAVE_QT4)
-      m_tableWidget->horizontalHeader ()->setMovable (enabled && rearrangeableColumns);
-    #elif defined (HAVE_QT5)
-      m_tableWidget->horizontalHeader ()->setSectionsMovable (enabled && rearrangeableColumns);
-    #endif
+    m_tableWidget->horizontalHeader ()->setSectionsMovable (enabled && rearrangeableColumns);
     m_tableWidget->horizontalHeader ()->setDragEnabled (enabled && rearrangeableColumns);
     m_tableWidget->horizontalHeader ()->setDragDropMode (QAbstractItemView::InternalMove);
 
@@ -1504,11 +1500,7 @@ namespace QtHandles
     bool rearrangeableColumns = tp.is_rearrangeablecolumns ();
     bool enabled = tp.is_enable ();
 
-  #if defined (HAVE_QT4)
-    m_tableWidget->horizontalHeader ()->setMovable (enabled && rearrangeableColumns);
-  #elif defined (HAVE_QT5)
     m_tableWidget->horizontalHeader ()->setSectionsMovable (enabled && rearrangeableColumns);
-  #endif
     m_tableWidget->horizontalHeader ()->setDragEnabled (enabled && rearrangeableColumns);
     m_tableWidget->horizontalHeader ()->setDragDropMode (QAbstractItemView::InternalMove);
   }

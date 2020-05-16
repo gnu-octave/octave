@@ -86,8 +86,6 @@ namespace octave
 
     QFrame *m_frame;
 
-#if defined (HAVE_QGUIAPPLICATION)
-
     QAction *m_fullscreen_action;
 
     bool m_full_screen;
@@ -95,8 +93,6 @@ namespace octave
     bool m_prev_floating;
 
     QRect m_prev_geom;
-
-#endif
 
 // See Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #define QTBUG_44813_FIX_VERSION 0x999999

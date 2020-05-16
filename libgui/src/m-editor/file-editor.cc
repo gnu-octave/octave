@@ -75,9 +75,7 @@ namespace octave
 
     setTabsClosable (true);
     setUsesScrollButtons (true);
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
     setMovable (true);
-#endif
   }
 
   tab_bar * file_editor_tab_widget::get_tab_bar (void) const

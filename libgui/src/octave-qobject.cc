@@ -119,11 +119,7 @@ namespace octave
   // Disable all Qt messages by default.
 
   static void
-#if defined (QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT)
   message_handler (QtMsgType, const QMessageLogContext &, const QString &)
-#else
-  message_handler (QtMsgType, const char *)
-#endif
   { }
 
   //! Reimplement QApplication::notify.  Octave's own exceptions are
@@ -177,20 +173,12 @@ namespace octave
 
     if (show_gui_msgs.empty ())
       {
-#if defined (HAVE_QINSTALLMESSAGEHANDLER)
         qInstallMessageHandler (message_handler);
-#else
-        qInstallMsgHandler (message_handler);
-#endif
       }
 
     // Set the codec for all strings (before wizard or any GUI object)
 #if ! defined (Q_OS_WIN32)
     QTextCodec::setCodecForLocale (QTextCodec::codecForName ("UTF-8"));
-#endif
-
-#if defined (HAVE_QT4)
-    QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
 #endif
 
     // Initialize global Qt application metadata.
@@ -201,7 +189,6 @@ namespace octave
     // Register octave_value_list for connecting thread crossing signals.
 
     qRegisterMetaType<octave_value_list> ("octave_value_list");
-
 
 // Bug #55940 (Disable App Nap on Mac)
 #if defined (Q_OS_MAC)

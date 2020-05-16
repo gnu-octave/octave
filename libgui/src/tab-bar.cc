@@ -56,16 +56,12 @@ namespace octave
 
   void tab_bar::move_tab_left (void)
   {
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
     switch_tab (-1, true);
-#endif
   }
 
   void tab_bar::move_tab_right (void)
   {
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
     switch_tab (1, true);
-#endif
   }
 
   void tab_bar::switch_tab (int direction, bool movetab)
@@ -83,11 +79,9 @@ namespace octave
 
     if (movetab)
       {
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
         moveTab (old_pos, new_pos);
         setCurrentIndex (old_pos);
         setCurrentIndex (new_pos);
-#endif
       }
     else
       setCurrentIndex (new_pos);

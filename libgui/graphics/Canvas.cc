@@ -371,11 +371,7 @@ namespace QtHandles
 
             r.adjust (-5, -5, 5, 5);
 
-#if defined (HAVE_QMOUSEEVENT_LOCALPOS)
             bool rect_contains_pos = r.contains (event->localPos ());
-#else
-            bool rect_contains_pos = r.contains (event->posF ());
-#endif
             if (rect_contains_pos)
               {
                 currentObj = childObj;
@@ -429,11 +425,7 @@ namespace QtHandles
                 // the axes and still select it.
                 r.adjust (-20, -20, 20, 20);
 
-#if defined (HAVE_QMOUSEEVENT_LOCALPOS)
                 bool rect_contains_pos = r.contains (event->localPos ());
-#else
-                bool rect_contains_pos = r.contains (event->posF ());
-#endif
                 if (rect_contains_pos)
                   axesObj = *it;
               }

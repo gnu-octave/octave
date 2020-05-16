@@ -396,9 +396,9 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
           if (! str.isEmpty () && str != "normal")
             font.setStyle (QFont::StyleItalic);
 
-          int sz = elt.attribute ("font-size").toInt ();
-          if (sz > 0)
-            font.setPixelSize (sz);
+          str = elt.attribute ("font-size");
+          if (! str.isEmpty ())
+            font.setPixelSize (str.toDouble ());
 
           painter.setFont (font);
 
@@ -459,9 +459,9 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
                 font.setStyle (QFont::StyleNormal);
             }
 
-          int sz = elt.attribute ("font-size").toInt ();
-          if (sz > 0)
-            font.setPixelSize (sz);
+          str = elt.attribute ("font-size");
+          if (! str.isEmpty ())
+            font.setPixelSize (str.toDouble ());
 
           painter.setFont (font);
 

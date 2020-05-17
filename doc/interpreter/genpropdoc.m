@@ -766,6 +766,11 @@ to be the same as the length of 2 units on the y-axis.  \
 
       case "gridlinestyle"
 
+      case "innerposition"
+        s.doc = "The @qcode{\"innerposition\"} property is the same as the \
+@ref{XREFaxesposition, , @w{@qcode{\"position\"} property}}.";
+        s.valid = valid_4elvec;
+
       case "labelfontsizemultiplier"
         s.doc = "Ratio between the x/y/zlabel fontsize and the tick \
 label fontsize";

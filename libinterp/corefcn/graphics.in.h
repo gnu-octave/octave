@@ -3466,6 +3466,18 @@ public:
 
     void sync_positions (void);
 
+    // Redirect calls to "innerposition" to "position".
+
+    octave_value get_innerposition (void) const
+    {
+      return get_position ();
+    }
+
+    void set_innerposition (const octave_value& val)
+    {
+      set_position (val);
+    }
+
     void update_autopos (const std::string& elem_type);
     void update_xlabel_position (void);
     void update_ylabel_position (void);
@@ -3676,8 +3688,7 @@ public:
       color_property gridcolor m , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property gridcolormode , "{auto}|manual"
       radio_property gridlinestyle , "{-}|--|:|-.|none"
-      // FIXME: Should be synonymous to "position"
-      array_property innerposition , default_axes_position ()
+      array_property innerposition sg , default_axes_position ()
       // FIXME: Should be an array of "interaction objects". Make it read-only for now.
       any_property interactions r , Matrix ()
       double_property labelfontsizemultiplier u , 1.1

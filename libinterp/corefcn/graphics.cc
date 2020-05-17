@@ -5285,7 +5285,7 @@ void
 axes::properties::sync_positions (void)
 {
   // First part is equivalent to 'update_tightinset ()'
-  if (activepositionproperty.is ("position"))
+  if (positionconstraint.is ("innerposition"))
     update_position ();
   else
     update_outerposition ();
@@ -5302,7 +5302,7 @@ axes::properties::sync_positions (void)
   tightinset = tinset;
   set_units (old_units);
   update_transform ();
-  if (activepositionproperty.is ("position"))
+  if (positionconstraint.is ("innerposition"))
     update_position ();
   else
     update_outerposition ();
@@ -5353,7 +5353,7 @@ axes::properties::sync_positions (void)
 %! hf = figure ("visible", "off");
 %! graphics_toolkit (hf, "qt");
 %! fpos = get (hf, "position");
-%! set (gca, "activepositionproperty", "position");
+%! set (gca, "positionconstraint", "innerposition");
 %! unwind_protect
 %!   plot (rand (3));
 %!   position = get (gca, "position");
@@ -7521,7 +7521,7 @@ magform (double x, double& a, int& b)
 void
 axes::properties::update_outerposition (void)
 {
-  set_activepositionproperty ("outerposition");
+  set_positionconstraint ("outerposition");
   caseless_str old_units = get_units ();
   set_units ("normalized");
 
@@ -7580,7 +7580,7 @@ axes::properties::update_outerposition (void)
 void
 axes::properties::update_position (void)
 {
-  set_activepositionproperty ("position");
+  set_positionconstraint ("innerposition");
   caseless_str old_units = get_units ();
   set_units ("normalized");
 
@@ -7639,7 +7639,7 @@ axes::properties::update_looseinset (void)
   double right_margin = std::max (linset(2), tinset(2));
   double top_margin = std::max (linset(3), tinset(3));
 
-  if (activepositionproperty.is ("position"))
+  if (positionconstraint.is ("innerposition"))
     {
       Matrix innerbox = position.get ().matrix_value ();
 

@@ -3466,6 +3466,31 @@ public:
 
     void sync_positions (void);
 
+    // Redirect calls to "activepositionproperty" to "positionconstraint".
+
+    std::string get_activepositionproperty (void) const 
+    {
+      std::string cur_val;
+
+      if (positionconstraint.is ("innerposition"))
+        cur_val = "position";
+      else
+        cur_val = "outerposition";
+
+      return cur_val;
+    }
+
+    void set_activepositionproperty (const octave_value& val)
+    {
+      // call set method to validate the input
+      activepositionproperty.set (val);
+
+      if (val.char_matrix_value ().row_as_string (0) == "position")
+        set_positionconstraint ("innerposition");
+      else
+        set_positionconstraint (val);
+    }
+
     // Redirect calls to "innerposition" to "position".
 
     octave_value get_innerposition (void) const
@@ -3647,7 +3672,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (axes)
-      radio_property activepositionproperty , "{outerposition}|position"
+      radio_property activepositionproperty gsh , "{outerposition}|position"
       row_vector_property alim m , default_lim ()
       radio_property alimmode , "{auto}|manual"
       // FIXME: not yet implemented

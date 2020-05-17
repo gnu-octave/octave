@@ -654,12 +654,6 @@ Changing modes of a visible figure may cause the figure to close and reopen.";
         s.doc = doc_unused;
 
       ## Specific properties
-      case "activepositionproperty"
-        s.doc = "Specify which of @qcode{\"position\"} or \
-@qcode{\"outerposition\"} properties takes precedence when axes \
-annotations extent changes.  @xref{XREFaxesposition, , @w{position property}}, \
-and @ref{XREFaxesposition, , @w{outerposition property}}.";
-
       case "alim"
         s.doc = sprintf (doc_notimpl, "Transparency");
 
@@ -838,6 +832,13 @@ left corner of the axes at @math{(0.2, 0.3)} and the width and \
 height to be 0.4 and 0.5 respectively.  \
 @xref{XREFaxesouterposition, , @w{outerposition property}}.";
         s.valid = valid_4elvec;
+
+      case "positionconstraint"
+        s.doc = "Specify which of @qcode{\"innerposition\"} or \
+@qcode{\"outerposition\"} properties takes precedence when axes \
+annotations extent changes.  \
+@xref{XREFaxesinnerposition, , @w{@qcode{\"innerposition\"} property}}, \
+and @ref{XREFaxesouterposition, , @w{@qcode{\"outerposition\"} property}}.";
 
       case "projection"
         s.doc = doc_unused;

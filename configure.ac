@@ -1365,7 +1365,7 @@ OCTAVE_CHECK_LIB(z, ZLIB,
   [zlib.h], [gzclearerr])
 
 ## Also define HAVE_ZLIB if libz is found.
-if test -z "$warn_z"; then
+if test -n "$Z_LIBS"; then
   AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if ZLIB is available.])
 fi
 
@@ -1604,7 +1604,7 @@ LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(curl, cURL,
   [cURL library not found.  The ftp objects, urlread, and urlwrite functions will be disabled.],
   [curl/curl.h], [curl_easy_escape])
-if test -z "$warn_curl"; then
+if test -n "$CURL_LIBS"; then
   ## Additional check on cURL library that was found
   AC_CACHE_CHECK([for CURLOPT_DIRLISTONLY in curl/curl.h],
     [octave_cv_curl_has_curlopt_dirlistonly],
@@ -2018,7 +2018,7 @@ OCTAVE_CHECK_LIB(qrupdate, qrupdate,
   [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
 
 ## Additional check to see if qrupdate lib found supports LU updates
-if test -z "$warn_qrupdate"; then
+if test -n "$QRUPDATE_LIBS"; then
   AC_CACHE_CHECK([for slup1up in $QRUPDATE_LIBS],
     [octave_cv_func_slup1up],
     [LIBS="$LIBS $QRUPDATE_LIBS"
@@ -2116,7 +2116,7 @@ OCTAVE_CHECK_LIB(cxsparse, CXSparse,
   [cs${CXSPARSE_TAG}sqr],
   [C++], [don't use CXSparse library, disable some sparse matrix functionality])
 
-if test -z "$warn_cxsparse"; then
+if test -n "$CXSPARSE_LIBS"; then
   ## Additional check for CXSparse version >= 2.2
   if test $octave_cv_lib_cxsparse = yes; then
     OCTAVE_CHECK_CXSPARSE_VERSION_OK
@@ -2317,7 +2317,7 @@ OCTAVE_CHECK_LIB([arpack], ARPACK,
    OCTAVE_CHECK_LIB_ARPACK_OK_1(
      [AC_DEFINE(HAVE_ARPACK, 1, [Define to 1 if ARPACK is available.])],
      [warn_arpack="ARPACK library found, but does not seem to work properly; disabling eigs function"])
-   if test -z "$warn_arpack"; then
+   if test -n "$ARPACK_LIBS"; then
      OCTAVE_CHECK_LIB_ARPACK_OK_2([],
        [AC_MSG_WARN([ARPACK library found, but is buggy; upgrade library (>= v3.3.0) for better results])])
    fi

@@ -39,10 +39,6 @@ functional form---parentheses and '=' for assignment of return values.
 
 - Support for Qt4 for graphics and the GUI has been removed.
 
-- The placement of text subscripts and superscripts has been
-re-engineered and now produces visually attractive results similar to
-Latex.
-
 ### Matlab compatibility
 
 - The function `griddata` now implements the "v4" Biharmonic Spline

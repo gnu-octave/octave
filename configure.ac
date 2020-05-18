@@ -1783,7 +1783,6 @@ AC_ARG_WITH([freetype],
     [don't use FreeType library, OpenGL graphics will not be fully functional])],
   [if test x"$withval" = xno; then
      check_freetype=no
-     warn_freetype="--without-freetype specified.  OpenGL graphics will not be fully functional."
    fi])
 
 if test $check_freetype = yes; then

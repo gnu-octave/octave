@@ -112,12 +112,18 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   names = [names(! n); names(n)];
   n_pos = find (strcmp (names, "position") | strcmp (names, "outerposition"));
   if (strcmp (s.type, "axes") && numel (n_pos) == 2)
-    if (strcmp (s.properties.positionconstraint, "innerposition"))
-      names{n_pos(1)} = "outerposition";
-      names{n_pos(2)} = "position";
+    if (isfield (s.properties, "positionconstraint"))
+      positionconstraint = s.properties.positionconstraint;
     else
+      ## loading old figure file before "positionconstraint" property was added
+      positionconstraint = s.properties.activepositionproperty;
+    endif
+    if (strcmp (positionconstraint, "outerposition"))
       names{n_pos(1)} = "position";
       names{n_pos(2)} = "outerposition";
+    else
+      names{n_pos(1)} = "outerposition";
+      names{n_pos(2)} = "position";
     endif
   endif
   ## Reorder the properties with the mode properties coming last

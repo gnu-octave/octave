@@ -33,6 +33,14 @@
 ## are:
 ##
 ## @table @code
+##
+##   @item ofig
+##     Octave figure file format (default)
+##
+##   @item mfig
+##     Two files: Octave m-file @file{filename.m} containing code
+##     to open Octave figure file @file{filename.ofig}
+##
 ##   @item ps
 ##     PostScript
 ##
@@ -58,7 +66,7 @@
 ##
 ## If @var{fmt} is omitted it is extracted from the extension of
 ## @var{filename}.  The default format when there is no extension is
-## @qcode{"pdf"}.
+## @qcode{"ofig"}.
 ##
 ## @example
 ## @group
@@ -68,7 +76,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{print, hgsave, orient}
+## @seealso{print, savefig, hgsave, orient}
 ## @end deftypefn
 
 function saveas (h, filename, fmt)
@@ -90,31 +98,56 @@ function saveas (h, filename, fmt)
     fig = ancestor (h, "figure");
   endif
 
+  default_fmt = "ofig";
+
   if (nargin == 2)
     ## Attempt to infer format from filename
     [~, ~, ext] = fileparts (filename);
-    if (! isempty (ext))
-      fmt = ext(2:end);
-    else
-      fmt = "pdf";
+    if (isempty (ext))
+      ext = ["." default_fmt];
+      filename = [filename ext];
     endif
+    fmt = ext(2:end);
   endif
 
   if (nargin == 3)
     if (! ischar (fmt))
       error ("saveas: FMT must be a string");
+    elseif (isempty (fmt))
+      fmt = default_fmt;
     endif
     [~, ~, ext] = fileparts (filename);
     if (isempty (ext))
-      filename = [filename "." fmt];
+      ext = ["." fmt];
+      filename = [filename ext];
     endif
   endif
 
-  prt_opt = ["-d" tolower(fmt)];
+  fmt = tolower (fmt);
 
-  print (fig, filename, prt_opt);
+  if (any (strcmp (fmt, {"ofig", "fig"})))
+    savefig (fig, filename);
+  elseif (any (strcmp (fmt, {"m", "mfig"})))
+    [d, n] = fileparts (filename);
+    mfilename = fullfile (d, [n ".m"]);
+    figfilename = fullfile (d, [n ".ofig"]);
+
+    savefig (fig, figfilename);
+
+    fid = fopen (mfilename, "wt");
+    if (fid < 0)
+      error ("saveas: could not open '%s' for writing", mfilename);
+    endif
+    fprintf (fid, ['h = openfig ("' figfilename '");' "\n"]);
+    fclose (fid);
+  else
+    prt_opt = ["-d" fmt];
+
+    print (fig, filename, prt_opt);
+  endif
 
 endfunction
+
 
 ## Test input validation
 %!error saveas ()

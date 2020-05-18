@@ -74,6 +74,9 @@ graphics objects when the "gnuplot" graphics toolkit is used.  In
 previous versions of Octave, these functions returned a hg group of patch
 graphics objects for all graphics toolkits.
 
+- The function `saveas` now defaults to saving in Octave figure format
+(.ofig) rather than PDF (.pdf).
+
 ### Alphabetical list of new functions added in Octave 7
 
 * `endsWith`

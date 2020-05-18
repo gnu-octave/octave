@@ -483,11 +483,13 @@ namespace octave
     std::list<tree_argument_list *> arg_lists = expr.arg_lists ();
     std::string type_tags = expr.type_tags ();
     std::list<string_vector> arg_names = expr.arg_names ();
+    std::list<tree_expression *> dyn_fields = expr.dyn_fields ();
 
     int n = type_tags.length ();
 
     auto p_arg_lists = arg_lists.begin ();
     auto p_arg_names = arg_names.begin ();
+    auto p_dyn_fields = dyn_fields.begin ();
 
     for (int i = 0; i < n; i++)
       {
@@ -533,9 +535,22 @@ namespace octave
 
           case '.':
             {
-              string_vector nm = *p_arg_names;
-              assert (nm.numel () == 1);
-              m_os << '.' << nm(0);
+              std::string fn = (*p_arg_names)(0);
+              if (fn.empty ())
+                {
+                  tree_expression *df = *p_dyn_fields;
+
+                  if (df)
+                    {
+                      m_nesting.push ('(');
+                      m_os << "(";
+                      df->accept (*this);
+                      m_os << ")";
+                      m_nesting.pop ();
+                    }
+                }
+              else
+                m_os << '.' << fn;
             }
             break;
 
@@ -545,6 +560,7 @@ namespace octave
 
         p_arg_lists++;
         p_arg_names++;
+        p_dyn_fields++;
       }
 
     print_parens (expr, ")");

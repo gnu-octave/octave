@@ -2136,6 +2136,16 @@ Return true if @var{x} is a function handle.
 */
 
 /*
+%!test <*58389>
+%! s = "x";
+%! a.(s) = [e, pi];
+%! f = @(x) a.(s)(x);
+%! assert (f(1), e);
+%! assert (f(2), pi);
+%! assert (f([2,1]), [pi, e]);
+*/
+
+/*
 %!function r = __f (g, i)
 %!  r = g(i);
 %!endfunction

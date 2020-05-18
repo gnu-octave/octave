@@ -285,16 +285,49 @@ namespace octave
     if (e)
       e->accept (*this);
 
-    std::list<tree_argument_list *> lst = expr.arg_lists ();
+    std::list<tree_argument_list *> arg_lists = expr.arg_lists ();
+    std::list<string_vector> arg_names = expr.arg_names ();
+    std::list<tree_expression *> dyn_fields = expr.dyn_fields ();
 
-    auto p = lst.begin ();
+    auto p_arg_lists = arg_lists.begin ();
+    auto p_arg_names = arg_names.begin ();
+    auto p_dyn_fields = dyn_fields.begin ();
 
-    while (p != lst.end ())
+    std::string type_tags = expr.type_tags ();
+    int n = type_tags.length ();
+
+    for (int i = 0; i < n; i++)
       {
-        tree_argument_list *elt = *p++;
+        switch (type_tags[i])
+          {
+          case '(':
+          case '{':
+            {
+              tree_argument_list *l = *p_arg_lists;
+              if (l)
+                l->accept (*this);
+            }
+            break;
 
-        if (elt)
-          elt->accept (*this);
+          case '.':
+            {
+              std::string fn = (*p_arg_names)(0);
+              if (fn.empty ())
+                {
+                  tree_expression *df = *p_dyn_fields;
+                  if (df)
+                    df->accept (*this);
+                }
+            }
+            break;
+
+          default:
+            panic_impossible ();
+          }
+
+        p_arg_lists++;
+        p_arg_names++;
+        p_dyn_fields++;
       }
   }
 

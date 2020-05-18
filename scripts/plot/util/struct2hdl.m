@@ -108,11 +108,11 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   ## change the mode to "manual" when the value is "auto".
   names = fieldnames (s.properties);
   n = strncmp (cellfun (@fliplr, names, "uniformoutput", false), "edom", 4);
-  n = (n | strcmp (names, "activepositionproperty"));
+  n = (n | strcmp (names, "positionconstraint"));
   names = [names(! n); names(n)];
   n_pos = find (strcmp (names, "position") | strcmp (names, "outerposition"));
   if (strcmp (s.type, "axes") && numel (n_pos) == 2)
-    if (strcmp (s.properties.activepositionproperty, "position"))
+    if (strcmp (s.properties.positionconstraint, "innerposition"))
       names{n_pos(1)} = "outerposition";
       names{n_pos(2)} = "position";
     else

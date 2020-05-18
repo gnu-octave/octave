@@ -136,9 +136,9 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   if (strcmp (get (ax(1), "__autopos_tag__"), "subplot"))
     set (ax(2), "__autopos_tag__", "subplot");
   elseif (strcmp (graphics_toolkit (), "gnuplot"))
-    set (ax, "activepositionproperty", "position");
+    set (ax, "positionconstraint", "innerposition");
   else
-    set (ax, "activepositionproperty", "outerposition");
+    set (ax, "positionconstraint", "outerposition");
   endif
 
   ## Don't replace axis which has colororder property already modified
@@ -154,7 +154,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
     set (ax(2), "ycolor", getcolor (h2));
   endif
 
-  if (strcmp (get(ax(1), "activepositionproperty"), "position"))
+  if (strcmp (get(ax(1), "positionconstraint"), "innerposition"))
     set (ax(2), "position", get (ax(1), "position"));
   else
     set (ax(2), {"outerposition", "looseinset"},

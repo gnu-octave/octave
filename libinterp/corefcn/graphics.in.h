@@ -3737,7 +3737,6 @@ public:
       row_vector_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
       array_property position u , default_axes_position ()
-      // FIXME: "positionconstraint" should deprecate "activepositionproperty"
       radio_property positionconstraint , "{outerposition}|innerposition"
       radio_property projection , "{orthographic}|perspective"
       radio_property sortmethod , "{depth}|childorder"

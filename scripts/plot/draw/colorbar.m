@@ -219,7 +219,7 @@ function h = colorbar (varargin)
     set (hax, "units", orig_props.units,
               "position", orig_props.position,
               "outerposition", orig_props.outerposition,
-              "activepositionproperty", orig_props.activepositionproperty);
+              "positionconstraint", orig_props.positionconstraint);
     set (hax, "units", units);
   endif
 
@@ -251,7 +251,7 @@ function h = colorbar (varargin)
     ## FIXME: Matlab does not require the "position" property to be active.
     ##        Is there a way to determine the plotbox position for the
     ##        gnuplot graphics toolkit when the outerposition is active?
-    set (hax, "activepositionproperty", "position");
+    set (hax, "positionconstraint", "innerposition");
     props = get (hax);
     props.__axes_handle__ = hax;
     position = props.position;
@@ -276,7 +276,7 @@ function h = colorbar (varargin)
     ## Create colorbar axes if necessary
     if (new_colorbar)
       hcb = axes ("parent", hpar, "tag", "colorbar",
-                  "activepositionproperty", "position", "position", cbpos,
+                  "positionconstraint", "innerposition", "position", cbpos,
                   "colormap", cmap,
                   "box", "on", "xdir", "normal", "ydir", "normal");
 
@@ -438,7 +438,7 @@ function cb_restore_axes (hcb, ~, hax, orig_props)
     set (hax, "units", orig_props.units,
               "position", orig_props.position,
               "outerposition", orig_props.outerposition,
-              "activepositionproperty", orig_props.activepositionproperty);
+              "positionconstraint", orig_props.positionconstraint);
     set (hax, "units", units);
 
     ## Nullify colorbar link (can't delete properties yet)
@@ -534,7 +534,7 @@ function [axpos, cbpos, vertical, mirr] = calc_cbar_position (loc, props, cf)
       scale = [scale, 1];
     endif
     if (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot")
-        && strcmp (props.activepositionproperty, "outerposition"))
+        && strcmp (props.positionconstraint, "outerposition"))
       props.outerposition = props.outerposition .* [1, 1, scale];
       off = 0.5 * (props.outerposition (3:4) - __actual_axis_position__ (props)(3:4));
     else
@@ -884,7 +884,7 @@ endfunction
 %! shading interp;
 %! axis ("tight", "square");
 %! colorbar ();
-#%! axes ("color","none","box","on","activepositionproperty","position");
+#%! axes ("color", "none", "box", "on", "positionconstraint", "innerposition");
 
 %!demo
 %! clf;

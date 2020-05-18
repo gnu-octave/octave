@@ -130,7 +130,7 @@ endfunction
 %! x = 0:0.01:4;
 %! plot (x,cos(x), x, sin(x));
 %! axis square;
-%! set (gca, "activepositionproperty", "position");
+%! set (gca, "positionconstraint", "innerposition");
 %! daspect ([1 1 1]);
 %! title ("square plot box with axis limits [0, 4, -2, 2]");
 
@@ -139,7 +139,7 @@ endfunction
 %! x = 0:0.01:4;
 %! plot (x,cos(x), x,sin(x));
 %! axis ([0 4 -1 1]);
-%! set (gca, "activepositionproperty", "position");
+%! set (gca, "positionconstraint", "innerposition");
 %! daspect ([2 1 1]);
 %! title ("square plot box with axis limits [0, 4, -1, 1]");
 

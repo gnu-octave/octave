@@ -87,7 +87,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     dr = 1;
   endif
 
-  if (strcmp (axis_obj.activepositionproperty, "position"))
+  if (strcmp (axis_obj.positionconstraint, "innerposition"))
     if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
       x = [1, 1];
     else
@@ -103,7 +103,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fprintf (plot_stream, "set rmargin screen %.15g;\n",
              pos(1)+pos(3)/2+x(1)*pos(3)/2);
     sz_str = "";
-  else ## activepositionproperty == outerposition
+  else ## positionconstraint == outerposition
     fprintf (plot_stream, "unset tmargin;\n");
     fprintf (plot_stream, "unset bmargin;\n");
     fprintf (plot_stream, "unset lmargin;\n");

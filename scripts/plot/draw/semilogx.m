@@ -104,12 +104,12 @@ endfunction
 %!
 %! subplot (1,2,1);
 %!  semilogx (x, y);
-%!  set (gca, "xdir", "reverse", "activepositionproperty", "outerposition");
+%!  set (gca, "xdir", "reverse", "positionconstraint", "outerposition");
 %!  title ({"semilogx (x, y)", "xdir = reversed"});
 %!
 %! subplot (1,2,2);
 %!  semilogx (-x, y);
-%!  set (gca, "xdir", "reverse", "activepositionproperty", "outerposition");
+%!  set (gca, "xdir", "reverse", "positionconstraint", "outerposition");
 %!  title ({"semilogx (-x, y)", "xdir = reversed"});
 
 %!test

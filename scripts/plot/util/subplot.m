@@ -211,7 +211,7 @@ function h = subplot (varargin)
     set (cf, "units", "pixels");
 
     ## FIXME: At the moment we force gnuplot to use the aligned mode
-    ##        which will set "activepositionproperty" to "position".
+    ##        which will set "positionconstraint" to "innerposition".
     ##        This can yield to text overlap between labels and titles.
     ##        See bug #31610.
     if (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
@@ -288,7 +288,7 @@ function h = subplot (varargin)
         set (hsubplot, varargin{:});
       endif
     else
-      pval = [{"activepositionproperty", "position", ...
+      pval = [{"positionconstraint", "innerposition", ...
                "position", pos, "looseinset", li} varargin];
       if (! make_subplot)
         hsubplot = axes (pval{:});
@@ -445,7 +445,7 @@ function subplot_align (h, d, rmupdate = false)
       endif
       for ii = 1:numel (hsubplots)
         set (hsubplots(ii), "outerposition", opos(ii,:), ...
-             "activepositionproperty", "position");
+             "positionconstraint", "innerposition");
       endfor
 
       ## Compare current positions to default and compute the new ones

@@ -2490,22 +2490,21 @@ private:
 // autoloaded functions in the PKG_ADD file and will not be visible to
 // the interpreter.
 
+#if defined (HAVE_FLTK)
 static octave_value_list
 F__fltk_check__ (octave::interpreter& interp, const octave_value_list&, int)
 {
-#if defined (HAVE_FLTK)
   Fl::check ();
 
   if (Vdrawnow_requested)
     Fdrawnow (interp);
 
   return octave_value_list ();
-#else
   octave_unused_parameter (interp);
 
   err_disabled_feature ("__fltk_check__", "OpenGL and FLTK");
-#endif
 }
+#endif
 
 // Initialize the fltk graphics toolkit.
 

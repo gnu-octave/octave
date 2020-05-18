@@ -1959,6 +1959,7 @@ Undocumented internal function.
   retval = recorder;
 
 #else
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_audiorecorder__",

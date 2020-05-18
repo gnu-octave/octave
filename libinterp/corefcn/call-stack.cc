@@ -831,7 +831,7 @@ namespace octave
   symbol_info_list
   call_stack::regexp_symbol_info (const std::string& pattern) const
   {
-    return m_cs[m_curr_frame]->glob_symbol_info (pattern);
+    return m_cs[m_curr_frame]->regexp_symbol_info (pattern);
   }
 
   symbol_info_list call_stack::get_symbol_info (void)

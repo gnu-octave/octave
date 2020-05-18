@@ -247,6 +247,27 @@ namespace octave
     panic_impossible ();
   }
 
+  symbol_info_list
+  stack_frame::make_symbol_info_list (const std::list<symbol_record>& symrec_list) const
+  {
+    symbol_info_list symbol_stats;
+
+    for (const auto& sym : symrec_list)
+      {
+        octave_value value = varval (sym);
+
+        if (value.is_defined ())
+          {
+            symbol_info syminf (sym.name (), value, sym.is_formal (),
+                                is_global (sym), is_persistent (sym));
+
+            symbol_stats.append (syminf);
+          }
+      }
+
+    return symbol_stats;
+  }
+
   // Return first occurrence of variables in current stack frame and any
   // parent frames reachable through access links.
 

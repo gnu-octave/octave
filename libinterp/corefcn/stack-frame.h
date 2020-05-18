@@ -215,28 +215,8 @@ namespace octave
     virtual unwind_protect *
     unwind_protect_frame (void) const { return nullptr; }
 
-    // FIXME: Should this function be private?
-
     symbol_info_list
-    make_symbol_info_list (const std::list<symbol_record>& symrec_list) const
-    {
-      symbol_info_list symbol_stats;
-
-      for (const auto& sym : symrec_list)
-        {
-          octave_value value = varval (sym);
-
-          if (value.is_defined ())
-            {
-              symbol_info syminf (sym.name (), value, sym.is_formal (),
-                                  is_global (sym), is_persistent (sym));
-
-              symbol_stats.append (syminf);
-            }
-        }
-
-      return symbol_stats;
-    }
+    make_symbol_info_list (const std::list<symbol_record>& symrec_list) const;
 
     symbol_info_list all_variables (void);
 

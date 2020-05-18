@@ -11,6 +11,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/odedefaults.m \
   %reldir%/private/odemergeopts.m \
   %reldir%/private/runge_kutta_23.m \
+  %reldir%/private/runge_kutta_23s.m \
   %reldir%/private/runge_kutta_45_dorpri.m \
   %reldir%/private/runge_kutta_interpolate.m \
   %reldir%/private/starting_stepsize.m
@@ -20,6 +21,7 @@ FCN_FILE_DIRS += \
   %reldir%/ode15i.m \
   %reldir%/ode15s.m \
   %reldir%/ode23.m \
+  %reldir%/ode23s.m \
   %reldir%/ode45.m \
   %reldir%/odeget.m \
   %reldir%/odeplot.m \

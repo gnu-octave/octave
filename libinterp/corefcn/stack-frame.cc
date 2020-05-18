@@ -312,6 +312,8 @@ namespace octave
 
     return retval;
   }
+  // FIXME: Should this function also find any variables in parent
+  // scopes accessible through access_links?
 
   std::list<std::string> stack_frame::variable_names (void) const
   {
@@ -330,6 +332,24 @@ namespace octave
     retval.sort ();
 
     return retval;
+  }
+
+  symbol_info_list stack_frame::glob_symbol_info (const std::string& pattern)
+  {
+    symbol_info_accumulator sia (pattern, false);
+
+    accept (sia);
+
+    return sia.symbol_info ();
+  }
+
+  symbol_info_list stack_frame::regexp_symbol_info (const std::string& pattern)
+  {
+    symbol_info_accumulator sia (pattern, true);
+
+    accept (sia);
+
+    return sia.symbol_info ();
   }
 
   size_t stack_frame::size (void) const

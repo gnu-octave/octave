@@ -258,19 +258,9 @@ namespace octave
     // insert if missing.
     virtual symbol_record insert_symbol (const std::string&) = 0;
 
-    // FIXME: should these functions should return all symbols visible in
-    // the current stack frame including those that come from a parent
-    // scope/frame?
+    symbol_info_list glob_symbol_info (const std::string& pattern);
 
-    symbol_info_list glob_symbol_info (const std::string& pattern) const
-    {
-      return make_symbol_info_list (glob (pattern));
-    }
-
-    symbol_info_list regexp_symbol_info (const std::string& pattern) const
-    {
-      return make_symbol_info_list (regexp (pattern));
-    }
+    symbol_info_list regexp_symbol_info (const std::string& pattern);
 
     symbol_info_list get_symbol_info (void)
     {

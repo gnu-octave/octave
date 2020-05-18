@@ -215,38 +215,10 @@ namespace octave
     virtual unwind_protect *
     unwind_protect_frame (void) const { return nullptr; }
 
-    // FIXME: Should this function be private?
-
     symbol_info_list
-    make_symbol_info_list (const std::list<symbol_record>& symrec_list) const
-    {
-      symbol_info_list symbol_stats;
-
-      for (const auto& sym : symrec_list)
-        {
-          octave_value value = varval (sym);
-
-          if (value.is_defined ())
-            {
-              symbol_info syminf (sym.name (), value, sym.is_formal (),
-                                  is_global (sym), is_persistent (sym));
-
-              symbol_stats.append (syminf);
-            }
-        }
-
-      return symbol_stats;
-    }
+    make_symbol_info_list (const std::list<symbol_record>& symrec_list) const;
 
     symbol_info_list all_variables (void);
-
-    // FIXME: Should these exist?  Probably we should avoid returning
-    // lists of symbol_record objects, so maybe they should be
-    // private functions?
-
-    std::list<symbol_record> glob (const std::string& pattern) const;
-
-    std::list<symbol_record> regexp (const std::string& pattern) const;
 
     std::list<std::string> variable_names (void) const;
 
@@ -258,19 +230,9 @@ namespace octave
     // insert if missing.
     virtual symbol_record insert_symbol (const std::string&) = 0;
 
-    // FIXME: should these functions should return all symbols visible in
-    // the current stack frame including those that come from a parent
-    // scope/frame?
+    symbol_info_list glob_symbol_info (const std::string& pattern);
 
-    symbol_info_list glob_symbol_info (const std::string& pattern) const
-    {
-      return make_symbol_info_list (glob (pattern));
-    }
-
-    symbol_info_list regexp_symbol_info (const std::string& pattern) const
-    {
-      return make_symbol_info_list (regexp (pattern));
-    }
+    symbol_info_list regexp_symbol_info (const std::string& pattern);
 
     symbol_info_list get_symbol_info (void)
     {

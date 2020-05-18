@@ -751,16 +751,6 @@ namespace octave
     return m_cs[m_curr_frame]->all_variables ();
   }
 
-  std::list<symbol_record> call_stack::glob (const std::string& pattern) const
-  {
-    return m_cs[m_curr_frame]->glob (pattern);
-  }
-
-  std::list<symbol_record> call_stack::regexp (const std::string& pattern) const
-  {
-    return m_cs[m_curr_frame]->regexp (pattern);
-  }
-
   std::list<std::string> call_stack::global_variable_names (void) const
   {
     std::list<std::string> retval;
@@ -831,7 +821,7 @@ namespace octave
   symbol_info_list
   call_stack::regexp_symbol_info (const std::string& pattern) const
   {
-    return m_cs[m_curr_frame]->glob_symbol_info (pattern);
+    return m_cs[m_curr_frame]->regexp_symbol_info (pattern);
   }
 
   symbol_info_list call_stack::get_symbol_info (void)

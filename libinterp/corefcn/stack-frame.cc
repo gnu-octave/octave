@@ -247,6 +247,27 @@ namespace octave
     panic_impossible ();
   }
 
+  symbol_info_list
+  stack_frame::make_symbol_info_list (const std::list<symbol_record>& symrec_list) const
+  {
+    symbol_info_list symbol_stats;
+
+    for (const auto& sym : symrec_list)
+      {
+        octave_value value = varval (sym);
+
+        if (value.is_defined ())
+          {
+            symbol_info syminf (sym.name (), value, sym.is_formal (),
+                                is_global (sym), is_persistent (sym));
+
+            symbol_stats.append (syminf);
+          }
+      }
+
+    return symbol_stats;
+  }
+
   // Return first occurrence of variables in current stack frame and any
   // parent frames reachable through access links.
 
@@ -259,59 +280,8 @@ namespace octave
     return sia.symbol_info ();
   }
 
-  std::list<symbol_record>
-  stack_frame::glob (const std::string& pattern) const
-  {
-    std::list<symbol_record> retval;
-
-    symbol_scope scope = get_scope ();
-
-    const std::map<std::string, symbol_record>& symbols = scope.symbols ();
-
-    glob_match pat (pattern);
-
-    for (const auto& nm_sr : symbols)
-      {
-        if (pat.match (nm_sr.first))
-          {
-            symbol_record sr = nm_sr.second;
-
-            if (! is_variable (sr))
-              continue;
-
-            retval.push_back (sr);
-          }
-      }
-
-    return retval;
-  }
-
-  std::list<symbol_record>
-  stack_frame::regexp (const std::string& pattern) const
-  {
-    std::list<symbol_record> retval;
-
-    symbol_scope scope = get_scope ();
-
-    const std::map<std::string, symbol_record>& symbols = scope.symbols ();
-
-    octave::regexp pat (pattern);
-
-    for (const auto& nm_sr : symbols)
-      {
-        if (pat.is_match (nm_sr.first))
-          {
-            symbol_record sr = nm_sr.second;
-
-            if (! is_variable (sr))
-              continue;
-
-            retval.push_back (sr);
-          }
-      }
-
-    return retval;
-  }
+  // FIXME: Should this function also find any variables in parent
+  // scopes accessible through access_links?
 
   std::list<std::string> stack_frame::variable_names (void) const
   {
@@ -330,6 +300,24 @@ namespace octave
     retval.sort ();
 
     return retval;
+  }
+
+  symbol_info_list stack_frame::glob_symbol_info (const std::string& pattern)
+  {
+    symbol_info_accumulator sia (pattern, false);
+
+    accept (sia);
+
+    return sia.symbol_info ();
+  }
+
+  symbol_info_list stack_frame::regexp_symbol_info (const std::string& pattern)
+  {
+    symbol_info_accumulator sia (pattern, true);
+
+    accept (sia);
+
+    return sia.symbol_info ();
   }
 
   size_t stack_frame::size (void) const

@@ -471,12 +471,12 @@ endfunction
 %! opt = odeset ('Jacobian', @jac);
 %! sol = ode23s (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
-%!test  # Sparse Jacobian
+%!testif HAVE_UMFPACK  # Sparse Jacobian
 %! jac = @(t, y) sparse ([0 1; -20*y(1)*y(2)-1, 10*(1-y(1)^2)]);
 %! opt = odeset ('Jacobian', jac);
 %! sol = ode23s (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
-%!test  # Jpattern
+%!testif HAVE_UMFPACK  # Jpattern
 %! S = sparse ([0 1; 1 1]);
 %! opt = odeset ("Jpattern", S);
 %! sol = ode23s (@fpol, [0 2], [2 0], opt);

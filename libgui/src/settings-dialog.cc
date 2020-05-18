@@ -277,7 +277,7 @@ namespace octave
       editor_long_line_marker_line->setChecked (true);
     editor_long_line_column->setValue (settings->value (ed_long_line_column).toInt ());
     editor_break_checkbox->setChecked (settings->value (ed_break_lines).toBool ());
-    editor_break_checkbox->setChecked (settings->value (ed_break_lines_comments).toBool ());
+    editor_break_comments_checkbox->setChecked (settings->value (ed_break_lines_comments).toBool ());
     editor_wrap_checkbox->setChecked (settings->value (ed_wrap_lines).toBool ());
     cb_edit_status_bar->setChecked (settings->value (ed_show_edit_status_bar).toBool ());
     cb_edit_tool_bar->setChecked (settings->value (ed_show_toolbar).toBool ());

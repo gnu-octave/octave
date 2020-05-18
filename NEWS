@@ -73,6 +73,27 @@ graphics objects for all graphics toolkits.
 - The function `saveas` now defaults to saving in Octave figure format
 (.ofig) rather than PDF (.pdf).
 
+- The additional property "contextmenu" has been added to all graphics
+objects.  It is equivalent to the previously used "uicontextmenu"
+property which is hidden now.
+
+- Additional properties have been added for the `axes` graphics object:
+    * "alphamap" (not yet implemented)
+    * "alphascale" (not yet implemented)
+    * "colorscale" (not yet implemented)
+    * "fontsizemode" (not yet implemented)
+    * "innerposition" (equivalent to "position")
+    * "interactions" (not yet implemented)
+    * "layout" (not yet implemented)
+    * "legend" (not yet implemented)
+    * "nextseriesindex" (read-only, used by `scatter` graphics objects)
+    * "positionconstraint" (replacement for "activepositionproperty"
+      which is now a hidden property. No plans for removal.)
+    * "toolbar" (not yet implemented)
+    * "xaxis" (not yet implemented)
+    * "yaxis" (not yet implemented)
+    * "zaxis" (not yet implemented)
+
 ### Alphabetical list of new functions added in Octave 7
 
 * `endsWith`

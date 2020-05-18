@@ -240,14 +240,6 @@ namespace octave
 
     symbol_info_list all_variables (void);
 
-    // FIXME: Should these exist?  Probably we should avoid returning
-    // lists of symbol_record objects, so maybe they should be
-    // private functions?
-
-    std::list<symbol_record> glob (const std::string& pattern) const;
-
-    std::list<symbol_record> regexp (const std::string& pattern) const;
-
     std::list<std::string> variable_names (void) const;
 
     // Look for named symbol visible from current scope.  Don't

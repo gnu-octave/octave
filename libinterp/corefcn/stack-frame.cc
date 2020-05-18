@@ -259,59 +259,6 @@ namespace octave
     return sia.symbol_info ();
   }
 
-  std::list<symbol_record>
-  stack_frame::glob (const std::string& pattern) const
-  {
-    std::list<symbol_record> retval;
-
-    symbol_scope scope = get_scope ();
-
-    const std::map<std::string, symbol_record>& symbols = scope.symbols ();
-
-    glob_match pat (pattern);
-
-    for (const auto& nm_sr : symbols)
-      {
-        if (pat.match (nm_sr.first))
-          {
-            symbol_record sr = nm_sr.second;
-
-            if (! is_variable (sr))
-              continue;
-
-            retval.push_back (sr);
-          }
-      }
-
-    return retval;
-  }
-
-  std::list<symbol_record>
-  stack_frame::regexp (const std::string& pattern) const
-  {
-    std::list<symbol_record> retval;
-
-    symbol_scope scope = get_scope ();
-
-    const std::map<std::string, symbol_record>& symbols = scope.symbols ();
-
-    octave::regexp pat (pattern);
-
-    for (const auto& nm_sr : symbols)
-      {
-        if (pat.is_match (nm_sr.first))
-          {
-            symbol_record sr = nm_sr.second;
-
-            if (! is_variable (sr))
-              continue;
-
-            retval.push_back (sr);
-          }
-      }
-
-    return retval;
-  }
   // FIXME: Should this function also find any variables in parent
   // scopes accessible through access_links?
 

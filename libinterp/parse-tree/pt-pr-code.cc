@@ -543,7 +543,7 @@ namespace octave
                   if (df)
                     {
                       m_nesting.push ('(');
-                      m_os << "(";
+                      m_os << ".(";
                       df->accept (*this);
                       m_os << ")";
                       m_nesting.pop ();

@@ -120,14 +120,14 @@ Octave distribution in the examples directory under the name
 @node Matlab-compatible solvers
 @subsection Matlab-compatible solvers
 
-Octave also provides a set of solvers for initial value problems for Ordinary
-Differential Equations that have a @sc{matlab}-compatible interface.
+Octave also provides a set of solvers for initial value problems for ordinary
+differential equations (ODEs) that have a @sc{matlab}-compatible interface.
 The options for this class of methods are set using the functions.
 
 @itemize
-  @item @code{odeset}
+  @item @ref{XREFodeset,,odeset}
 
-  @item @code{odeget}
+  @item @ref{XREFodeget,,odeget}
 @end itemize
 
 Currently implemented solvers are:
@@ -136,36 +136,46 @@ Currently implemented solvers are:
   @item @nospell{Runge-Kutta} methods
 
   @itemize
-    @item @code{ode23} integrates a system of non-stiff ordinary differential
-    equations (ODEs) or index-1 differential-algebraic equations (DAEs).  It
-    uses the third-order @nospell{Bogacki-Shampine} method and adapts the local
-    step size in order to satisfy a user-specified tolerance.  The solver
-    requires three function evaluations per integration step.
+    @item @ref{XREFode45,,ode45} integrates a system of non-stiff ODEs or
+    index-1 differential-algebraic equations (DAEs) using the high-order,
+    variable-step @nospell{Dormand-Prince} method.  It requires six function
+    evaluations per integration step, but may take larger steps on smooth
+    problems than @code{ode23}: potentially offering improved efficiency at
+    smaller tolerances.
 
-    @item @code{ode45} integrates a system of non-stiff ODEs (or index-1 DAEs)
-    using the high-order, variable-step @nospell{Dormand-Prince} method.  It
-    requires six function evaluations per integration step, but may
-    take larger steps on smooth problems than @code{ode23}: potentially
-    offering improved efficiency at smaller tolerances.
+    @item @ref{XREFode23,,ode23} integrates a system of non-stiff ODEs or (or
+    index-1 DAEs).  It uses the third-order @nospell{Bogacki-Shampine} method
+    and adapts the local step size in order to satisfy a user-specified
+    tolerance.  The solver requires three function evaluations per integration
+    step.
+
+    @item @ref{XREFode23s,,ode23s} integrates a system of stiff ODEs (or
+    index-1 DAEs) using a modified second-order Rosenbrock method.
   @end itemize
 
   @item Linear multistep methods
 
   @itemize
-    @item @code{ode15s} integrates a system of stiff ODEs (or index-1 DAEs)
-    using a variable step, variable order method based on Backward Difference
-    Formulas (BDF).
+    @item @ref{XREFode15s,,ode15s} integrates a system of stiff ODEs (or
+    index-1 DAEs) using a variable step, variable order method based on
+    Backward Difference Formulas (BDF).
 
-    @item @code{ode15i} integrates a system of fully-implicit ODEs (or index-1
-    DAEs) using the same variable step, variable order method as @code{ode15s}.
-    The function @code{decic} can be used to compute consistent initial
-    conditions.
+    @item @ref{XREFode15i,,ode15i} integrates a system of fully-implicit ODEs
+    (or index-1 DAEs) using the same variable step, variable order method as
+    @code{ode15s}.  @ref{XREFdecic,,decic} can be used to compute consistent
+    initial conditions for @code{ode15i}.
   @end itemize
 @end itemize
+
+Detailed information on the solvers are given in @nospell{L. F. Shampine} and
+@nospell{M. W. Reichelt}, @cite{The MATLAB ODE Suite}, SIAM Journal on
+Scientific Computing, Vol. 18, 1997, pp. 1–22.
 
 @DOCSTRING(ode45)
 
 @DOCSTRING(ode23)
+
+@DOCSTRING(ode23s)
 
 @DOCSTRING(ode15s)
 

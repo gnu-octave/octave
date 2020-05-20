@@ -1006,13 +1006,10 @@ function latex_standalone (opts)
   switch (opts.devopt)
     case {"pdflatexstandalone"}
       packages = "\\usepackage{graphicx,color}";
-      graphicsfile = [opts.name "-inc.pdf"];
     case {"pslatexstandalone"}
       packages = "\\usepackage{epsfig,color}";
-      graphicsfile = [opts.name "-inc.ps"];
     otherwise
       packages = "\\usepackage{epsfig,color}";
-      graphicsfile = [opts.name "-inc.eps"];
   endswitch
 
   packages = {packages "\\usepackage[utf8]{inputenc}"};
@@ -1035,9 +1032,6 @@ function latex_standalone (opts)
     error ("Octave:print:errorclosingfile",
            "print: error closing file '%s'", latexfile);
   endif
-  ## FIXME: should this be fixed in GL2PS?
-  latex = strrep (latex, "\\includegraphics{}",
-                  sprintf ("\\includegraphics{%s}", graphicsfile));
 
   fid = fopen (latexfile, "w");
   if (fid >= 0)

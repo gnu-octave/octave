@@ -39,6 +39,7 @@
 
 #include <gl2ps.h>
 
+#include "file-ops.h"
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
 #include "tmpfile-wrapper.h"
@@ -417,9 +418,13 @@ namespace octave
 
             if (n_begin != std::string::npos)
               {
+                // Strip any quote characters characters around filename
                 size_t n_end = include_graph.find_last_not_of (" \"'");
                 include_graph = include_graph.substr (n_begin,
                                                       n_end - n_begin + 1);
+                // Strip path from filename
+                n_begin = include_graph.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+                include_graph = include_graph.substr (n_begin + 1);
               }
             else
               include_graph = "foobar-inc";

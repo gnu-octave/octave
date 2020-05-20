@@ -45,11 +45,11 @@ function __add_default_menu__ (hf, hmenu = [], htb = [])
     ## File menu
     hui = uimenu (hf, "label", "&File", "tag", "__default_menu__File", ...
                       "handlevisibility", "off");
-    uimenu (hui, "label", "&Open", "callback", @open_cb, ...
+    uimenu (hui, "label", "&Open...", "callback", @open_cb, ...
             "accelerator", "o");
     uimenu (hui, "label", "&Save", "callback", {@save_cb, "save"}, ...
             "accelerator", "s");
-    uimenu (hui, "label", "Save &As", "callback", {@save_cb, "saveas"}, ...
+    uimenu (hui, "label", "Save &As...", "callback", {@save_cb, "saveas"}, ...
             "accelerator", "S");
     uimenu (hui, "label", "&Close", "callback", @close_cb, ...
             "accelerator", "w", "separator", "on");
@@ -174,12 +174,11 @@ function toggle_visibility_cb (hf, ~, hmenu, htb)
 endfunction
 
 function open_cb (h, e)
-  [filename, filedir] = uigetfile ({"*.ofig", "Octave Figure File"}, ...
+  [filename, filedir] = uigetfile ({"*.ofig;*.fig", "Figure Files"}, ...
                                    "Open Figure");
   if (filename != 0)
     fname = fullfile (filedir, filename);
-    tmphf = hgload (fname);
-    set (tmphf, "filename", fname);
+    tmphf = openfig (fname);
   endif
 endfunction
 
@@ -198,33 +197,48 @@ function save_cb (h, e, action)
   endif
 endfunction
 
-
 function __save_as__ (hf, fname = "")
-  filter = ifelse (! isempty (fname), fname, ...
-                   {"*.ofig", "Octave Figure File";
-                    "*.eps;*.pdf;*.svg;*.ps", "Vector Image Formats";
-                    "*.gif;*.jpg;*.png;*.tiff", "Bitmap Image Formats"});
-  def = ifelse (! isempty (fname), fname, fullfile (pwd, "untitled.ofig"));
+  def = ifelse (! isempty (fname), fname, fullfile (pwd (), "untitled.ofig"));
+  filter = {"*.ofig", "Octave Figure";
+            "*.eps", "Encapsulated PostScript";
+            "*.pdf", "Portable Document Format";
+            "*.svg", "Scalable Vector Graphics";
+            "*.ps", "PostScript";
+            "*.gif", "GIF Image";
+            "*.jpg", "JPEG Image";
+            "*.png", "Portable Network Graphics Image";
+            "*.tiff", "TIFF Image"};
+  ## Reorder filters to have current first
+  [~, ~, ext] = fileparts (def);
+  idx = ismember (filter(:,1), ["*" tolower(ext)])
+  filter = [filter(idx,:); filter(~idx,:)];
 
-  [filename, filedir] = uiputfile (filter, "Save Figure", def);
+  [filename, filedir, filterindex] = uiputfile (filter, "Save Figure", def);
 
   if (filename != 0)
     fname = fullfile (filedir, filename);
-    set (gcbf, "filename", fname);
-    flen = numel (fname);
-    if (flen > 5 && strcmp (fname(flen-4:end), ".ofig"))
-      hgsave (hf, fname);
+    [~, ~, ext] = fileparts(fname);
+    if (filterindex > size (filter, 1))
+      ## "All Files" option
+      if (isempty (ext))
+        fmt = "";
+      else
+        fmt = ext(2:end);
+      endif
     else
-      saveas (hf, fname);
+      fmt = filter{filterindex,1}(3:end);
+      if (isempty (ext))
+        fname = [fname "." fmt];
+      endif
     endif
+    set (hf, "filename", fname);
+    saveas (hf, fname, fmt);
   endif
 endfunction
 
-
 function close_cb (h, e)
-  close (gcbf);
+  close (gcbf ());
 endfunction
-
 
 function [hax, fig] = __get_axes__ (h)
   ## Get parent figure

@@ -536,20 +536,6 @@ AC_SUBST(OCTAVE_IDX_TYPE)
 AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
   [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
 
-### Enable bounds checking on element references within Octave's array and
-### matrix classes.
-dnl This slows down some operations a bit, so it is turned off by default.
-
-ENABLE_BOUNDS_CHECK=no
-AC_ARG_ENABLE([bounds-check],
-  [AS_HELP_STRING([--enable-bounds-check],
-    [OBSOLETE: use --enable-address-sanitizer-flags instead])],
-  [if test "$enableval" = yes; then ENABLE_BOUNDS_CHECK=yes; fi], [])
-if test $ENABLE_BOUNDS_CHECK = yes; then
-  warn_bounds_check="--enable-bounds-check is obsolete; use --enable-address-sanitizer-flags instead"
-  OCTAVE_CONFIGURE_WARNING([warn_bounds_check])
-fi
-
 ### Check for pthread library
 
 AX_PTHREAD

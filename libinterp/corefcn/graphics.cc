@@ -3341,7 +3341,7 @@ base_properties::dynamic_property_names (void) const
 }
 
 bool
-base_properties::has_dynamic_property (const std::string& pname)
+base_properties::has_dynamic_property (const std::string& pname) const
 {
   const std::set<std::string>& dynprops = dynamic_property_names ();
 
@@ -3368,7 +3368,7 @@ base_properties::set_dynamic (const caseless_str& pname,
 }
 
 property
-base_properties::get_property_dynamic (const caseless_str& pname)
+base_properties::get_property_dynamic (const caseless_str& pname) const
 {
   std::map<caseless_str, property, cmp_caseless_str>::const_iterator it
     = all_props.find (pname);

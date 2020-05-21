@@ -158,19 +158,30 @@ endfunction
 
 
 %!demo
-%! clf;
-%! data = rand (10, 10, 10);
-%! subplot (1, 2, 1);
-%!  patch (isosurface (data, .5), ...
-%!         "FaceColor", "blue", "EdgeColor", "k");
-%!  title ("Original data");
-%!  view (3);
-%!  smoothed_data = smooth3 (data);
-%! subplot (1, 2, 2);
-%!  patch (isosurface (smoothed_data, .5), ...
-%!         "FaceColor", "blue", "EdgeColor", "k");
-%!  title ("Smoothed data");
-%!  view (3);
+%! hf = clf;
+%! [x, y, z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
+%! data = (x.^2 + y.^2 + z.^2) + randn (size (x)) * 0.003;
+%! hax(1) = subplot (1, 2, 1, "parent", hf);
+%! patch (hax(1), isosurface (data, .035), ...
+%!        "facecolor", "g", "edgecolor", "none");
+%! title (hax(1), "Original data (including random noise)");
+%! axis (hax(1), "vis3d");
+%! grid (hax(1), "on");
+%! light (hax(1));
+%!
+%! smoothed_data = smooth3 (data, "g");
+%! hax(2) = subplot (1, 2, 2, "parent", hf);
+%! patch (hax(2), isosurface (smoothed_data, .035), ...
+%!         "facecolor", "g", "edgecolor", "none");
+%! title (hax(2), "Smoothed data");
+%! axis (hax(2), "vis3d");
+%! grid (hax(2), "on");
+%! light (hax(2));
+%!
+%! hlink = linkprop (hax, "view");
+%! set (hax(1), "userdata", hlink);  # keep hlink until figure is closed
+%! view (hax(1), 3);
+%! rotate3d (hf, "on");
 
 ## one input argument (method: "box")
 %!test

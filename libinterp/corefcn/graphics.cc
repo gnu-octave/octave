@@ -13321,11 +13321,20 @@ Undocumented internal function.
       if (! h.ok ())
         error ("__go_figure__: failed to create figure handle");
 
+      try
+        {
+          xset (h, xargs);
+        }
+      catch (octave::execution_exception& e)
+        {
+          delete_graphics_object (h);
+          error (e, "__go_figure__: unable to create figure handle");
+        }
+
       adopt (0, h);
 
       gh_mgr.push_figure (h);
 
-      xset (h, xargs);
       xcreatefcn (h);
       xinitialize (h);
 

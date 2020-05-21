@@ -3200,17 +3200,6 @@ xinitialize (const graphics_handle& h)
 
 // ---------------------------------------------------------------------
 
-void
-base_graphics_toolkit::finalize (const graphics_handle& h)
-{
-  gh_manager& gh_mgr
-    = octave::__get_gh_manager__ ("base_graphics_toolkit::finalize");
-
-  graphics_object go = gh_mgr.get_object (h);
-
-  finalize (go);
-}
-
 static int
 toggle_warn (std::string id, bool on, int state = -1)
 {

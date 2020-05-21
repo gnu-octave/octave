@@ -44,6 +44,7 @@
 #include <QMessageBox>
 #include <QPrintDialog>
 #include <QPushButton>
+#include <QScrollBar>
 #include <QStyle>
 #include <QTextBlock>
 #include <QTextCodec>
@@ -2294,7 +2295,8 @@ namespace octave
     if (settings->value (ed_rm_trailing_spaces).toBool ())
       {
         int line, col;
-        m_edit_area->getCursorPosition (&line,&col);
+        m_edit_area->getCursorPosition (&line, &col);
+        const int vscroll_pos = m_edit_area->verticalScrollBar()->value();
 
         QString eol = eol_string ();
         QString edit_text = m_edit_area->text ();
@@ -2304,7 +2306,8 @@ namespace octave
         edit_text.chop (edit_text.length () - idx - 1); // Last line
 
         m_edit_area->setText (edit_text);
-        m_edit_area->setCursorPosition (line,col);
+        m_edit_area->setCursorPosition (line, col);
+        m_edit_area->verticalScrollBar()->setValue(vscroll_pos);
       }
 
     // Save the file

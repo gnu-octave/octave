@@ -2233,6 +2233,9 @@ public:
 
   virtual octave_value get (bool all = false) const;
 
+  // FIXME: It seems like this function should be const, but that is
+  // currently not possible with the way that properties are stored as
+  // specific types in the graphics_object classes.
   virtual property get_property (const caseless_str& pname);
 
   virtual bool has_property (const caseless_str&) const
@@ -2370,7 +2373,7 @@ public:
 
   std::set<std::string> dynamic_property_names (void) const;
 
-  bool has_dynamic_property (const std::string& pname);
+  bool has_dynamic_property (const std::string& pname) const;
 
 protected:
   std::set<std::string> dynamic_properties;
@@ -2381,7 +2384,7 @@ protected:
 
   octave_value get_dynamic (bool all = false) const;
 
-  property get_property_dynamic (const caseless_str& pname);
+  property get_property_dynamic (const caseless_str& pname) const;
 
   BEGIN_BASE_PROPERTIES
     // properties common to all objects
@@ -2547,10 +2550,16 @@ public:
     return base_properties::has_readonly_property (pname);
   }
 
+  // FIXME: It seems like this function should be const, but that is
+  // currently not possible.
   virtual std::string values_as_string (void);
 
+  // FIXME: It seems like this function should be const, but that is
+  // currently not possible.
   virtual std::string value_as_string (const std::string& prop);
 
+  // FIXME: It seems like this function should be const, but that is
+  // currently not possible.
   virtual octave_scalar_map values_as_struct (void);
 
   virtual graphics_handle get_parent (void) const
@@ -2796,13 +2805,19 @@ public:
     return rep->has_readonly_property (pname);
   }
 
+  // FIXME: It seems like this function should be const, but that is
+  // currently not possible.
   std::string values_as_string (void) { return rep->values_as_string (); }
 
+  // FIXME: It seems like this function should be const, but that is
+  // currently not possible.
   std::string value_as_string (const std::string& prop)
   {
     return rep->value_as_string (prop);
   }
 
+  // FIXME: It seems like this function should be const, but that is
+  // currently not possible.
   octave_map values_as_struct (void) { return rep->values_as_struct (); }
 
   graphics_handle get_parent (void) const { return rep->get_parent (); }

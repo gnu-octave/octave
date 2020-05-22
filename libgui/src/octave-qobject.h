@@ -127,9 +127,15 @@ namespace octave
 
     virtual bool confirm_shutdown (void);
 
+  signals:
+
+    void request_interpreter_shutdown (int);
+
   public slots:
 
-    void handle_octave_finished (int);
+    void handle_interpreter_execution_finished (int);
+
+    void handle_interpreter_shutdown_finished (int);
 
     void interpreter_event (const fcn_callback& fcn);
 

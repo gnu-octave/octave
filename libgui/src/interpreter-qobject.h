@@ -54,9 +54,11 @@ namespace octave
 
   signals:
 
-    void octave_ready_signal (void);
+    void ready (void);
 
-    void octave_finished_signal (int);
+    void execution_finished (int);
+
+    void shutdown_finished (int);
 
   public slots:
 
@@ -81,6 +83,8 @@ namespace octave
     //! Initialize and execute the octave interpreter.
 
     void execute (void);
+
+    void shutdown (int);
 
   private:
 

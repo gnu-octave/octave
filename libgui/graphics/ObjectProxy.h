@@ -56,6 +56,7 @@ namespace QtHandles
 
   signals:
     void sendUpdate (int pId);
+    void sendFinalize (void);
     void sendRedraw (void);
     void sendShow (void);
     void sendPrint (const QString& file_cmd, const QString& term);

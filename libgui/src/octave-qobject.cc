@@ -200,8 +200,14 @@ namespace octave
     // Force left-to-right alignment (see bug #46204)
     m_qapplication->setLayoutDirection (Qt::LeftToRight);
 
-    connect (m_interpreter_qobj, SIGNAL (octave_finished_signal (int)),
-             this, SLOT (handle_octave_finished (int)));
+    connect (m_interpreter_qobj, SIGNAL (execution_finished (int)),
+             this, SLOT (handle_interpreter_execution_finished (int)));
+
+    connect (this, SIGNAL (request_interpreter_shutdown (int)),
+             m_interpreter_qobj, SLOT (shutdown (int)));
+
+    connect (m_interpreter_qobj, SIGNAL (shutdown_finished (int)),
+             this, SLOT (handle_interpreter_shutdown_finished (int)));
 
     connect (m_main_thread, SIGNAL (finished (void)),
              m_main_thread, SLOT (deleteLater (void)));
@@ -270,7 +276,12 @@ namespace octave
     return true;
   }
 
-  void base_qobject::handle_octave_finished (int exit_status)
+  void base_qobject::handle_interpreter_execution_finished (int exit_status)
+  {
+    emit request_interpreter_shutdown (exit_status);
+  }
+
+  void base_qobject::handle_interpreter_shutdown_finished (int exit_status)
   {
 #if defined (Q_OS_MAC)
     // fprintf to stderr is needed by macOS, for poorly-understood reasons.
@@ -342,7 +353,7 @@ namespace octave
   gui_qobject::gui_qobject (qt_application& app_context)
     : base_qobject (app_context), m_main_window (new main_window (*this))
   {
-    connect (m_interpreter_qobj, SIGNAL (octave_ready_signal (void)),
+    connect (m_interpreter_qobj, SIGNAL (ready (void)),
              m_main_window, SLOT (handle_octave_ready (void)));
 
     connect (qt_link (),

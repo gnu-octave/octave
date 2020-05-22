@@ -153,6 +153,8 @@ namespace octave
 
     int execute (void);
 
+    void shutdown (void);
+
     bool interactive (void) const
     {
       return m_interactive;
@@ -490,8 +492,6 @@ namespace octave
     int execute_command_line_file (void);
 
     int main_loop (void);
-
-    void cleanup (void);
 
     void execute_atexit_fcns (void);
 

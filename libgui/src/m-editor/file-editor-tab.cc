@@ -2306,6 +2306,9 @@ namespace octave
         edit_text.chop (edit_text.length () - idx - 1); // Last line
 
         m_edit_area->setText (edit_text);
+        const int col_max = m_edit_area->text (line).length () - 1;
+        if (col_max < col)
+          col = col_max;
         m_edit_area->setCursorPosition (line, col);
         m_edit_area->verticalScrollBar()->setValue(vscroll_pos);
       }

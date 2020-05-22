@@ -78,7 +78,7 @@ namespace octave
 
             m_interpreter = &interp;
 
-            emit octave_ready_signal ();
+            emit ready ();
 
             graphics_init (interp, m_octave_qobj);
 
@@ -92,16 +92,31 @@ namespace octave
         exit_status = ex.exit_status ();
       }
 
-    // Disable events from being passed from the GUI to the interpreter.
+    // Signal that the interpreter is done executing code in the main
+    // REPL, from script files, or command line eval arguments.  By
+    // using a signal here, we give the GUI a chance to process any
+    // pending events, then signal that it is safe to shutdown the
+    // interpreter.  Our notification here allows the GUI to insert the
+    // request to shutdown the interpreter in the event queue after any
+    // other pending signals.  The application context owns the
+    // interpreter and will be responsible for deleting it later, when
+    // the application object destructor is executed.
 
-    m_interpreter = nullptr;
+    emit execution_finished (exit_status);
+  }
 
-    // Whether or not initialization succeeds we need to clean up the
-    // interpreter once we are done with it.
+  // This function is expected to be executed when the GUI signals that
+  // it is finished processing events and ready for the interpreter to
+  // perform shutdown actions.
 
-    app_context.delete_interpreter ();
+  void interpreter_qobject::shutdown (int exit_status)
+  {
+    if (m_interpreter)
+      m_interpreter->shutdown ();
 
-    emit octave_finished_signal (exit_status);
+    // Signal that the interpreter has executed shutdown actions.
+
+    emit shutdown_finished (exit_status);
   }
 
   void interpreter_qobject::interpreter_event (const fcn_callback& fcn)

@@ -55,6 +55,8 @@ namespace QtHandles
           {
             disconnect (this, SIGNAL (sendUpdate (int)),
                         m_object, SLOT (slotUpdate (int)));
+            disconnect (this, SIGNAL (sendFinalize (void)),
+                        m_object, SLOT (slotFinalize (void)));
             disconnect (this, SIGNAL (sendRedraw (void)),
                         m_object, SLOT (slotRedraw (void)));
             disconnect (this, SIGNAL (sendShow (void)),
@@ -69,6 +71,8 @@ namespace QtHandles
           {
             connect (this, SIGNAL (sendUpdate (int)),
                      m_object, SLOT (slotUpdate (int)));
+            connect (this, SIGNAL (sendFinalize (void)),
+                     m_object, SLOT (slotFinalize (void)));
             connect (this, SIGNAL (sendRedraw (void)),
                      m_object, SLOT (slotRedraw (void)));
             connect (this, SIGNAL (sendShow (void)),
@@ -90,24 +94,13 @@ namespace QtHandles
   void
   ObjectProxy::update (int pId)
   {
-    if (octave::thread::is_thread ())
-      emit sendUpdate (pId);
-    else if (m_object)
-      m_object->slotUpdate (pId);
+    emit sendUpdate (pId);
   }
 
   void
   ObjectProxy::finalize (void)
   {
-    if (! m_object)
-      return;
-
-    Qt::ConnectionType t = Qt::BlockingQueuedConnection;
-
-    if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
-      t = Qt::DirectConnection;
-
-    QMetaObject::invokeMethod (m_object, "slotFinalize", t);
+    emit sendFinalize ();
   }
 
   void

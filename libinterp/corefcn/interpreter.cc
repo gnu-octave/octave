@@ -635,8 +635,6 @@ namespace octave
 
   interpreter::~interpreter (void)
   {
-    cleanup ();
-
     delete m_gh_manager;
   }
 
@@ -805,6 +803,114 @@ namespace octave
       }
 
     return exit_status;
+  }
+
+  // Call a function with exceptions handled to avoid problems with
+  // errors while shutting down.
+
+#define OCTAVE_IGNORE_EXCEPTION(E)                                      \
+  catch (E)                                                             \
+    {                                                                   \
+      recover_from_exception ();                                        \
+                                                                        \
+      std::cerr << "error: ignoring " #E " while preparing to exit"     \
+                << std::endl;                                           \
+    }
+
+#define OCTAVE_SAFE_CALL(F, ARGS)                                       \
+  do                                                                    \
+    {                                                                   \
+      try                                                               \
+        {                                                               \
+          unwind_protect frame;                                         \
+                                                                        \
+          frame.add_method (m_error_system,                             \
+                            &error_system::set_debug_on_error,          \
+                            m_error_system.debug_on_error ());          \
+          frame.add_method (m_error_system,                             \
+                            &error_system::set_debug_on_warning,        \
+                            m_error_system.debug_on_warning ());        \
+                                                                        \
+          m_error_system.debug_on_error (false);                        \
+          m_error_system.debug_on_warning (false);                      \
+                                                                        \
+          F ARGS;                                                       \
+        }                                                               \
+      OCTAVE_IGNORE_EXCEPTION (const exit_exception&)                   \
+      OCTAVE_IGNORE_EXCEPTION (const interrupt_exception&)              \
+      OCTAVE_IGNORE_EXCEPTION (const execution_exception&)              \
+      OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&)                   \
+    }                                                                   \
+  while (0)
+
+  void interpreter::shutdown (void)
+  {
+    // If we are attached to a GUI, process pending events and
+    // disable the link.
+
+    m_event_manager.process_events (true);
+    m_event_manager.disable ();
+
+    OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
+
+    // Any atexit functions added after this function call won't be
+    // executed.
+
+    execute_atexit_fcns ();
+
+    // Do this explicitly so that destructors for mex file objects
+    // are called, so that functions registered with mexAtExit are
+    // called.
+    OCTAVE_SAFE_CALL (m_symbol_table.clear_mex_functions, ());
+
+    OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
+
+    OCTAVE_SAFE_CALL (m_history_system.write_timestamp, ());
+
+    if (! command_history::ignoring_entries ())
+      OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
+
+    OCTAVE_SAFE_CALL (m_gh_manager->close_all_figures, ());
+
+    m_gtk_manager.unload_all_toolkits ();
+
+    // FIXME:  May still need something like this to ensure that
+    // destructors for class objects will run properly.  Should that be
+    // done earlier?  Before or after atexit functions are executed?
+    m_symbol_table.cleanup ();
+
+    OCTAVE_SAFE_CALL (sysdep_cleanup, ());
+
+    OCTAVE_SAFE_CALL (flush_stdout, ());
+
+    // Don't call singleton_cleanup_list::cleanup until we have the
+    // problems with registering/unregistering types worked out.  For
+    // example, uncomment the following line, then use the make_int
+    // function from the examples directory to create an integer
+    // object and then exit Octave.  Octave should crash with a
+    // segfault when cleaning up the typinfo singleton.  We need some
+    // way to force new octave_value_X types that are created in
+    // .oct files to be unregistered when the .oct file shared library
+    // is unloaded.
+    //
+    // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
+  }
+
+  void interpreter::execute_atexit_fcns (void)
+  {
+    // Prevent atexit functions from adding new functions to the list.
+    m_executing_atexit = true;
+
+    while (! m_atexit_fcns.empty ())
+      {
+        std::string fcn = m_atexit_fcns.front ();
+
+        m_atexit_fcns.pop_front ();
+
+        OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
+
+        OCTAVE_SAFE_CALL (flush_stdout, ());
+      }
   }
 
   void interpreter::display_startup_message (void) const
@@ -1183,114 +1289,6 @@ namespace octave
       }
 
     return exit_status;
-  }
-
-  // Call a function with exceptions handled to avoid problems with
-  // errors while shutting down.
-
-#define OCTAVE_IGNORE_EXCEPTION(E)                                      \
-  catch (E)                                                             \
-    {                                                                   \
-      recover_from_exception ();                                        \
-                                                                        \
-      std::cerr << "error: ignoring " #E " while preparing to exit"     \
-                << std::endl;                                           \
-    }
-
-#define OCTAVE_SAFE_CALL(F, ARGS)                                       \
-  do                                                                    \
-    {                                                                   \
-      try                                                               \
-        {                                                               \
-          unwind_protect frame;                                         \
-                                                                        \
-          frame.add_method (m_error_system,                             \
-                            &error_system::set_debug_on_error,          \
-                            m_error_system.debug_on_error ());          \
-          frame.add_method (m_error_system,                             \
-                            &error_system::set_debug_on_warning,        \
-                            m_error_system.debug_on_warning ());        \
-                                                                        \
-          m_error_system.debug_on_error (false);                        \
-          m_error_system.debug_on_warning (false);                      \
-                                                                        \
-          F ARGS;                                                       \
-        }                                                               \
-      OCTAVE_IGNORE_EXCEPTION (const exit_exception&)                   \
-      OCTAVE_IGNORE_EXCEPTION (const interrupt_exception&)              \
-      OCTAVE_IGNORE_EXCEPTION (const execution_exception&)              \
-      OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&)                   \
-    }                                                                   \
-  while (0)
-
-  void interpreter::cleanup (void)
-  {
-    // If we are attached to a GUI, process pending events and
-    // disable the link.
-
-    m_event_manager.process_events (true);
-    m_event_manager.disable ();
-
-    OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
-
-    // Any atexit functions added after this function call won't be
-    // executed.
-
-    execute_atexit_fcns ();
-
-    // Do this explicitly so that destructors for mex file objects
-    // are called, so that functions registered with mexAtExit are
-    // called.
-    OCTAVE_SAFE_CALL (m_symbol_table.clear_mex_functions, ());
-
-    OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
-
-    OCTAVE_SAFE_CALL (m_history_system.write_timestamp, ());
-
-    if (! command_history::ignoring_entries ())
-      OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
-
-    OCTAVE_SAFE_CALL (m_gh_manager->close_all_figures, ());
-
-    m_gtk_manager.unload_all_toolkits ();
-
-    // FIXME:  May still need something like this to ensure that
-    // destructors for class objects will run properly.  Should that be
-    // done earlier?  Before or after atexit functions are executed?
-    m_symbol_table.cleanup ();
-
-    OCTAVE_SAFE_CALL (sysdep_cleanup, ());
-
-    OCTAVE_SAFE_CALL (flush_stdout, ());
-
-    // Don't call singleton_cleanup_list::cleanup until we have the
-    // problems with registering/unregistering types worked out.  For
-    // example, uncomment the following line, then use the make_int
-    // function from the examples directory to create an integer
-    // object and then exit Octave.  Octave should crash with a
-    // segfault when cleaning up the typinfo singleton.  We need some
-    // way to force new octave_value_X types that are created in
-    // .oct files to be unregistered when the .oct file shared library
-    // is unloaded.
-    //
-    // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
-  }
-
-  void interpreter::execute_atexit_fcns (void)
-  {
-    // Prevent atexit functions from adding new functions to the list.
-    m_executing_atexit = true;
-
-    while (! m_atexit_fcns.empty ())
-      {
-        std::string fcn = m_atexit_fcns.front ();
-
-        m_atexit_fcns.pop_front ();
-
-        OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
-
-        OCTAVE_SAFE_CALL (flush_stdout, ());
-      }
   }
 
   tree_evaluator& interpreter::get_evaluator (void)

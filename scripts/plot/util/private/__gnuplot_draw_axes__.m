@@ -2296,7 +2296,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
              tickdir, ticklength, axispos, mirror);
     labels = strrep (labels, "%", "%%");
     for i = 1:ntics
-      fprintf (plot_stream, ' "%s" %.15g', labels{k++}, tics(i));
+      fprintf (plot_stream, ' "%s" %.15f', labels{k++}, tics(i));
       if (i < ntics)
         fputs (plot_stream, ", ");
       endif

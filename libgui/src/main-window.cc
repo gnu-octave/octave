@@ -1792,7 +1792,7 @@ namespace octave
         m_open_action->setShortcut (no_key);
         m_new_script_action->setShortcut (no_key);
         m_new_function_action->setShortcut (no_key);
-        m_new_function_action->setShortcut (no_key);
+        m_new_figure_action->setShortcut (no_key);
         m_load_workspace_action->setShortcut (no_key);
         m_save_workspace_action->setShortcut (no_key);
         m_preferences_action->setShortcut (no_key);
@@ -2758,7 +2758,7 @@ namespace octave
     scmgr.set_shortcut (m_open_action, sc_main_file_open_file);
     scmgr.set_shortcut (m_new_script_action, sc_main_file_new_file);
     scmgr.set_shortcut (m_new_function_action, sc_main_file_new_function);
-    scmgr.set_shortcut (m_new_function_action, sc_main_file_new_figure);
+    scmgr.set_shortcut (m_new_figure_action, sc_main_file_new_figure);
     scmgr.set_shortcut (m_load_workspace_action, sc_main_file_load_workspace);
     scmgr.set_shortcut (m_save_workspace_action, sc_main_file_save_workspace);
     scmgr.set_shortcut (m_exit_action, sc_main_file_exit);

@@ -100,7 +100,15 @@ namespace QtHandles
   void
   ObjectProxy::finalize (void)
   {
-    emit sendFinalize ();
+    if (! m_object)
+      return;
+
+    Qt::ConnectionType t = Qt::BlockingQueuedConnection;
+
+    if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
+      t = Qt::DirectConnection;
+
+    QMetaObject::invokeMethod (m_object, "slotFinalize", t);
   }
 
   void

@@ -264,15 +264,23 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
   fclose (fid);
 
   if (num_header_rows >= 0)
-    header_rows = num_header_rows;
+    ## User has defined a number of header rows which disagrees with the
+    ## auto-detected number.  Print a warning.
+    if (num_header_rows < header_rows)
+      warning ("Octave:importdata:headerrows_mismatch", 
+               "importdata: detected %d header rows, but HEADER_ROWS input configured %d rows", header_rows, num_header_rows);
+    endif
+  else
+    ## use the automatically detected number of header rows
+    num_header_rows = header_rows;
   endif
 
   ## Now, let the efficient built-in routine do the bulk of the work.
   if (delimiter == " ")
-    output.data = dlmread (fname, "", header_rows, header_cols,
+    output.data = dlmread (fname, "", num_header_rows, header_cols,
                            "emptyvalue", NA);
   else
-    output.data = dlmread (fname, delimiter, header_rows, header_cols,
+    output.data = dlmread (fname, delimiter, num_header_rows, header_cols,
                            "emptyvalue", NA);
   endif
 
@@ -290,8 +298,11 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     file_content = ostrsplit (fileread (fname), "\r\n", true);
 
     na_rows = find (any (na_idx, 2));
+    ## Prune text lines in header that were already collected
+    idx = (na_rows(1:min (header_rows, end)) + num_header_rows) <= header_rows;
+    na_rows(idx) = [];
     for ridx = na_rows(:)'
-      row = file_content{ridx+header_rows};
+      row = file_content{ridx+num_header_rows};
       if (delimiter == " ")
         fields = regexp (strtrim (row), ' +', 'split');
       else
@@ -322,6 +333,9 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
   ## Final cleanup to satisfy Matlab compatibility
   if (all (cellfun ("isempty", output.textdata)))
     output = output.data;
+  endif
+  if (num_header_rows != header_rows)
+    header_rows = num_header_rows;
   endif
 
 endfunction
@@ -610,6 +624,35 @@ endfunction
 %! assert (d, "");
 %! assert (h, 3);
 
+%!test <*58294>
+%! ## Varying values of header lines field
+%! fn  = tempname ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "header1\nheader2\n3.1\n4.2");
+%! fclose (fid);
+%! warning ("off", "Octave:importdata:headerrows_mismatch", "local");
+%! ## Base import
+%! [a, d, h] = importdata (fn, "");
+%! assert (a.data, [3.1; 4.2]);
+%! assert (a.textdata, {"header1"; "header2"});
+%! assert (h, 2);
+%! ## Import with 0 header lines
+%! [a, d, h] = importdata (fn, "", 0);
+%! assert (a.data, [NA; NA; 3.1; 4.2]);
+%! assert (a.textdata, {"header1"; "header2"});
+%! assert (h, 0);
+%! ## Import with 1 header lines
+%! [a, d, h] = importdata (fn, "", 1);
+%! assert (a.data, [NA; 3.1; 4.2]);
+%! assert (a.textdata, {"header1"; "header2"});
+%! assert (h, 1);
+%! ## Import with 3 header lines
+%! [a, d, h] = importdata (fn, "", 3);
+%! assert (a.data, [4.2]);
+%! assert (a.textdata, {"header1"; "header2"; "3.1"});
+%! assert (h, 3);
+%! unlink (fn);
+
 %!error importdata ()
 %!error importdata (1,2,3,4)
 %!error <FNAME must be a string> importdata (1)
@@ -619,3 +662,10 @@ endfunction
 %!error <HEADER_ROWS must be an integer> importdata ("foo", " ", "1")
 %!error <HEADER_ROWS must be an integer> importdata ("foo", " ", 1.5)
 %!error <not implemented for file format .avi> importdata ("foo.avi")
+%!warning <detected 2 header rows, but HEADER_ROWS input configured 1 rows>
+%! fn  = tempname ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "header1\nheader2\n3.1");
+%! fclose (fid);
+%! a = importdata (fn, "", 1);
+%! unlink (fn);

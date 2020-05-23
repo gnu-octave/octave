@@ -127,7 +127,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
   ## Use the old legend code to handle gnuplot toolkit
   if (strcmp (graphics_toolkit (), "gnuplot"))
-    [hleg, hleg_obj, hplot, labels] = __gnuplot_legend__ (varargin{:});
+    if (nargout > 0)
+      [hleg, hleg_obj, hplot, labels] = __gnuplot_legend__ (varargin{:});
+    else
+      __gnuplot_legend__ (varargin{:});
+    endif
     return;
   endif
 

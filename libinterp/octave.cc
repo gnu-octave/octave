@@ -378,7 +378,7 @@ namespace octave
 
     int status = interp.execute ();
 
-    delete_interpreter ();
+    interp.shutdown ();
 
     return status;
   }

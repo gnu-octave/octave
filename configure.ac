@@ -1811,20 +1811,22 @@ OCTAVE_CHECK_LIB(fontconfig, fontconfig,
 
 ## Check for gl2ps which is required for printing with OpenGL graphics.
 
-AC_CHECK_HEADERS([gl2ps.h],
-  [GL2PS_LIBS="-lgl2ps"],
-  [warn_gl2ps="gl2ps library not found.  Printing of OpenGL graphics will be disabled."])
+if test $opengl_graphics = yes; then
+  AC_CHECK_HEADERS([gl2ps.h],
+    [GL2PS_LIBS="-lgl2ps"],
+    [warn_gl2ps="gl2ps library not found.  Printing of OpenGL graphics will be disabled."])
 
-if test -n "$warn_gl2ps"; then
-  OCTAVE_CONFIGURE_WARNING([warn_gl2ps])
-else
-  save_LIBS="$LIBS"
-  LIBS="$GL2PS_LIBS $LIBS"
-  AC_CHECK_FUNCS([gl2psLineJoin])
-  LIBS="$save_LIBS"
+  if test -n "$warn_gl2ps"; then
+    OCTAVE_CONFIGURE_WARNING([warn_gl2ps])
+  else
+    save_LIBS="$LIBS"
+    LIBS="$GL2PS_LIBS $LIBS"
+    AC_CHECK_FUNCS([gl2psLineJoin])
+    LIBS="$save_LIBS"
+  fi
+
+  AC_SUBST(GL2PS_LIBS)
 fi
-
-AC_SUBST(GL2PS_LIBS)
 
 ### GUI/Qt related tests.
 
@@ -2579,6 +2581,7 @@ AC_ARG_ENABLE([docs],
      warn_docs="building documentation disabled; make dist will fail."
      OCTAVE_CONFIGURE_WARNING([warn_docs])
    fi], [])
+
 if test $ENABLE_DOCS = yes; then
   if test $opengl_graphics = no || test "$have_qt_opengl_offscreen" = no; then
     if test -n "$warn_gnuplot"; then
@@ -2597,6 +2600,7 @@ if test $ENABLE_DOCS = yes; then
   AC_DEFINE(ENABLE_DOCS, 1,
     [Define to 1 to build Octave documentation files.])
 fi
+
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
 
 AM_CONDITIONAL([AMCOND_BUILD_QT_DOCS],

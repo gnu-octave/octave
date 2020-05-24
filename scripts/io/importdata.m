@@ -313,12 +313,16 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
       if (! size_equal (missing_idx, fields))
         ## Fields completely missing at end of line.  Replace with NA.
         col = columns (fields);
-        output.data(ridx, (col+1):end) = NA;
+        ## FIXME: This code should be redundant because dlmread was called
+        ##        with "emptyval", NA.  Delete if there are no problems
+        ##        detected after some time.  Commented out: 5/23/2020.
+        ##output.data(ridx, (col+1):end) = NA;
         missing_idx = missing_idx(1:col);
       endif
       text = fields(missing_idx);
 
       text = text(! strcmpi (text, "NA"));  #  Remove valid "NA" entries
+      text = text(! strcmpi (text, ""));    #  Remove empty entries
       if (! isempty (text))
         output.textdata(end+1, 1:columns (text)) = text;
       endif
@@ -333,7 +337,19 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
   ## Final cleanup to satisfy Matlab compatibility
   if (all (cellfun ("isempty", output.textdata)))
     output = output.data;
+  else
+    ## Text fields should be cell array of strings, rather than just cell.
+    try
+      output.textdata = cellstr (output.textdata);
+    end_try_catch
+    try
+      output.rowheaders = cellstr (output.rowheaders);
+    end_try_catch
+    try
+      output.colheaders = cellstr (output.colheaders);
+    end_try_catch
   endif
+
   if (num_header_rows != header_rows)
     header_rows = num_header_rows;
   endif
@@ -550,8 +566,7 @@ endfunction
 %!test
 %! ## Missing values and Text Values
 %! A.data = [3.1 NA 0; 0.012 NA 128];
-%! A.textdata = {char(zeros(1,0))
-%!               "NO DATA"};
+%! A.textdata = {"NO DATA"};
 %! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t\t0\n0.012\tNO DATA\t128");

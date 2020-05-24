@@ -381,6 +381,22 @@ namespace octave
     markerDeleteAll (marker::selection);
   }
 
+  QString octave_qscintilla::eol_string (void)
+  {
+    switch (eolMode ())
+      {
+      case QsciScintilla::EolWindows:
+        return ("\r\n");
+      case QsciScintilla::EolMac:
+        return ("\r");
+      case QsciScintilla::EolUnix:
+        return ("\n");
+      }
+
+    // Last resort, if the above goes wrong (should never happen)
+    return ("\r\n");
+  }
+
   // Function returning the true cursor position where the tab length
   // is taken into account.
   void octave_qscintilla::get_current_position (int *pos, int *line, int *col)
@@ -1060,6 +1076,47 @@ namespace octave
     global_pos += QPoint (2*ttfm.maxWidth (), -3*ttfm.height ());
 
     QToolTip::showText (global_pos, msg);
+  }
+
+  void octave_qscintilla::replace_all (const QString& o_str, const QString& n_str,
+                                       bool re, bool cs, bool wo)
+  {
+    // get the resulting cursor position
+    int pos, line, col, nline, ncol;
+    get_current_position (&pos, &line, &col);
+
+    // remember first visible line for restoring the view afterwards
+    int first_line = firstVisibleLine ();
+
+    // search for first occurrence of the detected word
+    bool find_result_available = findFirst (o_str, re, cs, wo,
+                                            false, true, 0, 0);
+    // replace and find more occurrences in a loop
+    beginUndoAction ();
+    while (find_result_available)
+      {
+        // findNext doesn't work properly if the length of the replacement
+        // text is different from the original
+        replace (n_str);
+        get_current_position (&pos, &nline, &ncol);
+
+        find_result_available = findFirst (o_str, re, cs, wo,
+                                           false, true, nline, ncol);
+      }
+    endUndoAction ();
+
+      // restore the visible area
+      setFirstVisibleLine (first_line);
+
+      // fix cursor column if outside of new line length
+      int eol_len = eol_string ().length ();
+      if (line == lines () - 1)
+        eol_len = 0;
+      const int col_max = text (line).length () - eol_len;
+      if (col_max < col)
+        col = col_max;
+
+      setCursorPosition (line, col);
   }
 
   void octave_qscintilla::keyPressEvent (QKeyEvent *key_event)

@@ -65,6 +65,7 @@ namespace octave
     void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
     bool get_actual_word (void);
     void clear_selection_markers (void);
+    QString eol_string (void);
     void get_current_position (int *pos, int *line, int *col);
     QStringList comment_string (bool comment = true);
     int get_style (int pos = -1);
@@ -79,6 +80,9 @@ namespace octave
     void show_selection_markers (int l1, int c1, int l2, int c2);
 
     void set_selection_marker_color (const QColor& c);
+
+    void replace_all (const QString& o_str, const QString& n_str,
+                      bool re, bool cs, bool wo);
 
   signals:
 

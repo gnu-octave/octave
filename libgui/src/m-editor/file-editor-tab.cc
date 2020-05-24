@@ -2007,22 +2007,6 @@ namespace octave
     return eol_mode;
   }
 
-  QString file_editor_tab::eol_string (void)
-  {
-    switch (m_edit_area->eolMode ())
-      {
-      case QsciScintilla::EolWindows:
-        return ("\r\n");
-      case QsciScintilla::EolMac:
-        return ("\r");
-      case QsciScintilla::EolUnix:
-        return ("\n");
-      }
-
-    // Last resort, if the above goes wrong (should never happen)
-    return ("\r\n");
-  }
-
   void file_editor_tab::update_eol_indicator (void)
   {
     switch (m_edit_area->eolMode ())
@@ -2293,25 +2277,7 @@ namespace octave
     gui_settings *settings = rmgr.get_settings ();
 
     if (settings->value (ed_rm_trailing_spaces).toBool ())
-      {
-        int line, col;
-        m_edit_area->getCursorPosition (&line, &col);
-        const int vscroll_pos = m_edit_area->verticalScrollBar()->value();
-
-        QString eol = eol_string ();
-        QString edit_text = m_edit_area->text ();
-
-        edit_text.replace (QRegExp ("[\\t ]+" + eol), eol);  // All lines
-        long int idx = edit_text.lastIndexOf (QRegExp ("[^\\t^ ]"));
-        edit_text.chop (edit_text.length () - idx - 1); // Last line
-
-        m_edit_area->setText (edit_text);
-        const int col_max = m_edit_area->text (line).length () - 1;
-        if (col_max < col)
-          col = col_max;
-        m_edit_area->setCursorPosition (line, col);
-        m_edit_area->verticalScrollBar()->setValue(vscroll_pos);
-      }
+      m_edit_area->replace_all ("[ \\t]+$", "", true, false, false);
 
     // Save the file
     out.setCodec (codec);
@@ -2321,7 +2287,7 @@ namespace octave
     out << m_edit_area->text ();
     if (settings->value (ed_force_newline).toBool ()
         && m_edit_area->text ().length ())
-      out << eol_string ();   // Add newline if desired
+      out << m_edit_area->eol_string ();   // Add newline if desired
 
     out.flush ();
     QApplication::restoreOverrideCursor ();

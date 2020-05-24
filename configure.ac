@@ -1809,25 +1809,6 @@ OCTAVE_CHECK_LIB(fontconfig, fontconfig,
   [fontconfig.h fontconfig/fontconfig.h], [FcInit],
   [], [don't use fontconfig library, OpenGL graphics will not be fully functional])
 
-## Check for gl2ps which is required for printing with OpenGL graphics.
-
-if test $opengl_graphics = yes; then
-  AC_CHECK_HEADERS([gl2ps.h],
-    [GL2PS_LIBS="-lgl2ps"],
-    [warn_gl2ps="gl2ps library not found.  Printing of OpenGL graphics will be disabled."])
-
-  if test -n "$warn_gl2ps"; then
-    OCTAVE_CONFIGURE_WARNING([warn_gl2ps])
-  else
-    save_LIBS="$LIBS"
-    LIBS="$GL2PS_LIBS $LIBS"
-    AC_CHECK_FUNCS([gl2psLineJoin])
-    LIBS="$save_LIBS"
-  fi
-
-  AC_SUBST(GL2PS_LIBS)
-fi
-
 ### GUI/Qt related tests.
 
 QT_VERSIONS="5"
@@ -1990,6 +1971,25 @@ if test $build_qt_graphics = no && test $build_fltk_graphics = no; then
   opengl_graphics=no
 else
   opengl_graphics=yes
+fi
+
+## Check for gl2ps which is required for printing with OpenGL graphics.
+
+if test $opengl_graphics = yes; then
+  AC_CHECK_HEADERS([gl2ps.h],
+    [GL2PS_LIBS="-lgl2ps"],
+    [warn_gl2ps="gl2ps library not found.  Printing of OpenGL graphics will be disabled."])
+
+  if test -n "$warn_gl2ps"; then
+    OCTAVE_CONFIGURE_WARNING([warn_gl2ps])
+  else
+    save_LIBS="$LIBS"
+    LIBS="$GL2PS_LIBS $LIBS"
+    AC_CHECK_FUNCS([gl2psLineJoin])
+    LIBS="$save_LIBS"
+  fi
+
+  AC_SUBST(GL2PS_LIBS)
 fi
 
 ### Check for the qrupdate library

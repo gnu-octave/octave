@@ -1130,59 +1130,8 @@ namespace octave
 
         if (key == Qt::Key_Return && modifiers == Qt::ShiftModifier)
           {
-            // get the resulting cursor position
-            // (required if click was beyond a line ending)
-            int pos, line, col;
-            get_current_position (&pos, &line, &col);
-
-            // remember first visible line for restoring the view afterwards
-            int first_line = firstVisibleLine ();
-
-            // search for first occurrence of the detected word
-            bool find_result_available
-              = findFirst (m_selection,
-                           false,   // no regexp
-                           true,    // case sensitive
-                           true,    // whole words only
-                           false,   // do not wrap
-                           true,    // forward
-                           0, 0,    // from the beginning
-                           false
-#if defined (HAVE_QSCI_VERSION_2_6_0)
-                           , true
-#endif
-                          );
-
-            while (find_result_available)
-              {
-                replace (m_selection_replacement);
-
-                // FIXME: is this the right thing to do?  findNext doesn't
-                // work properly if the length of the replacement text is
-                // different from the original.
-
-                int new_line, new_col;
-                get_current_position (&pos, &new_line, &new_col);
-
-                find_result_available
-                  = findFirst (m_selection,
-                               false,   // no regexp
-                               true,    // case sensitive
-                               true,    // whole words only
-                               false,   // do not wrap
-                               true,    // forward
-                               new_line, new_col,    // from new pos
-                               false
-#if defined (HAVE_QSCI_VERSION_2_6_0)
-                               , true
-#endif
-                              );
-              }
-
-            // restore the visible area of the file, the cursor position,
-            // and the selection
-            setFirstVisibleLine (first_line);
-            setCursorPosition (line, col);
+            replace_all (m_selection, m_selection_replacement,
+                         false, true, true);
 
             // Clear the selection.
             set_word_selection ();

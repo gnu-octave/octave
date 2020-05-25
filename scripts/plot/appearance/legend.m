@@ -33,6 +33,7 @@
 ## @deftypefnx {} {} legend (@var{hobjs}, @dots{})
 ## @deftypefnx {} {} legend ("@var{command}")
 ## @deftypefnx {} {} legend (@var{hax}, @dots{})
+## @deftypefnx {} {} legend (@var{hleg}, @dots{})
 ## @deftypefnx {} {@var{hleg, hplt} =} legend (@dots{})
 ##
 ## Display a legend for the current axes using the specified strings as labels.
@@ -45,6 +46,9 @@
 ##
 ## If the first argument @var{hax} is an axes handle, then add a legend to this
 ## axes, rather than the current axes returned by @code{gca}.
+##
+## If the first argument @var{hleg} is a legend handle, then operate on this
+## legend rather than the legend of the current axes.
 ##
 ## Legend labels are associated with the axes' children; The first label is
 ## assigned to the first object that was plotted in the axes, the second label
@@ -576,12 +580,21 @@ function opts = parse_opts (varargin)
   nargs = numel (varargin);
 
   ## Find peer axes
-  if (nargs > 0
-      && (! ishghandle (varargin{1})
-          || (strcmp (get (varargin{1}, "type"), "axes")
-              && ! strcmp (get (varargin{1}, "tag"), "legend"))))
-    [axes_handles, varargin, nargs] = __plt_get_axis_arg__ ("legend",
-                                                            varargin{:});
+  if (nargs > 0)
+    if (! ishghandle (varargin{1}))
+      [axes_handles, varargin, nargs] = __plt_get_axis_arg__ ("legend",
+                                                              varargin{:});
+    elseif (strcmp (get (varargin{1}, "type"), "axes"))
+      if (strcmp (get (varargin{1}, "tag"), "legend"))
+        legend_handle = varargin{1};
+        varargin(1) = [];
+        nargs--;
+        axes_handles = getappdata (legend_handle, "__axes_handle__");
+      else
+        [axes_handles, varargin, nargs] = __plt_get_axis_arg__ ("legend",
+                                                                varargin{:});
+      endif
+    endif
     if (isempty (axes_handles))
       axes_handles = gca ();
     endif
@@ -598,13 +611,14 @@ function opts = parse_opts (varargin)
   endif
 
   ## Find any existing legend object associated with axes
-  try
-    legend_handle = get (axes_handles, "__legend_handle__");
-    if (iscell (legend_handle))
-      legend_handle = unique (cell2mat (legend_handle));
-    endif
-  catch
-  end_try_catch
+  if (isempty (legend_handle))
+    try
+      legend_handle = get (axes_handles, "__legend_handle__");
+      if (iscell (legend_handle))
+        legend_handle = unique (cell2mat (legend_handle));
+      endif
+    end_try_catch
+  endif
 
   ## Legend actions
   actions = {"show", "hide", "toggle", "boxon", ...

@@ -4769,7 +4769,20 @@ namespace octave
     FILE *ffile = nullptr;
 
     if (! full_file.empty ())
+    {
+      // Check that m-file is not overly large which can segfault interpreter.
+      const int max_file_size = 512 * 1024 * 1024;  // 512 MB
+      sys::file_stat fs (full_file);
+
+      if (fs && fs.size () > max_file_size)
+        {
+          error ("file '%s' is too large, > 512 MB", full_file.c_str ());
+
+          return octave_value ();
+        }
+
       ffile = sys::fopen (full_file, "rb");
+    }
 
     if (! ffile)
       {

@@ -56,6 +56,9 @@ vectors with rows corresponding to the input coordinate matrix.
 
 - The function `dec2bin` and `dec2hex` now support negative numbers.
 
+- The function `importdata` now produces more compatible results when
+the file contains a 2-D text matrix.
+
 - `uicontrol` objects now fully implement the "Off" and "Inactive"
 values of the "Enable" property.  When the value is "Off", no
 interaction with the object occurs and the `uicontrol` changes color

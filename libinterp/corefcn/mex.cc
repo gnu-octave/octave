@@ -1602,7 +1602,7 @@ public:
   { }
 
   mxArray_number (bool interleaved, mxClassID id_arg, double val)
-    : mxArray_matlab (interleaved, id_arg, 1, 1),
+    : mxArray_matlab (interleaved, id_arg, 1, 1), m_complex (false),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (nullptr)
   {
@@ -1611,7 +1611,7 @@ public:
   }
 
   mxArray_number (bool interleaved, mxClassID id_arg, mxLogical val)
-    : mxArray_matlab (interleaved, id_arg, 1, 1),
+    : mxArray_matlab (interleaved, id_arg, 1, 1), m_complex (false),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (nullptr)
   {
@@ -1623,6 +1623,7 @@ public:
     : mxArray_matlab (interleaved, mxCHAR_CLASS,
                       str ? (strlen (str) ? 1 : 0) : 0,
                       str ? strlen (str) : 0),
+      m_complex (false),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (nullptr)
   {
@@ -1635,6 +1636,7 @@ public:
   // FIXME: ???
   mxArray_number (bool interleaved, mwSize m, const char **str)
     : mxArray_matlab (interleaved, mxCHAR_CLASS, m, max_str_len (m, str)),
+      m_complex (false),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (nullptr)
   {
@@ -1661,7 +1663,7 @@ public:
 protected:
 
   mxArray_number (const mxArray_number& val)
-    : mxArray_matlab (val),
+    : mxArray_matlab (val), m_complex (val.m_complex),
       pr (mxArray::malloc (get_number_of_elements () * get_element_size ())),
       pi (m_interleaved
           ? nullptr

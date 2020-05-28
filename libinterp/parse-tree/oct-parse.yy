@@ -271,20 +271,20 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_statement_list_type> opt_list
 %type <tree_statement_list_type> opt_fcn_list fcn_list fcn_list1
 %type <tree_classdef_attribute_type> attr
-%type <tree_classdef_attribute_list_type> attr_list opt_attr_list
+%type <tree_classdef_attribute_list_type> attr_list attr_list1
 %type <tree_classdef_superclass_type> superclass
-%type <tree_classdef_superclass_list_type> superclass_list opt_superclass_list
-%type <tree_classdef_body_type> class_body
+%type <tree_classdef_superclass_list_type> superclass_list superclass_list1
+%type <tree_classdef_body_type> class_body class_body1
 %type <tree_classdef_property_type> class_property
-%type <tree_classdef_property_list_type> property_list
+%type <tree_classdef_property_list_type> property_list property_list1
 %type <tree_classdef_properties_block_type> properties_block
-%type <tree_classdef_methods_list_type> methods_list
+%type <tree_classdef_methods_list_type> methods_list methods_list1
 %type <tree_classdef_methods_block_type> methods_block
 %type <tree_classdef_event_type> class_event
-%type <tree_classdef_events_list_type> events_list
+%type <tree_classdef_events_list_type> events_list events_list1
 %type <tree_classdef_events_block_type> events_block
 %type <tree_classdef_enum_type> class_enum
-%type <tree_classdef_enum_list_type> enum_list
+%type <tree_classdef_enum_list_type> enum_list enum_list1
 %type <tree_classdef_enum_block_type> enum_block
 %type <tree_function_def_type> method_decl method
 %type <octave_user_function_type> method_decl1
@@ -1720,52 +1720,40 @@ classdef_beg    : CLASSDEF
                     lexer.m_symtab_context.push (octave::symbol_scope ());
                     lexer.m_parsing_classdef = true;
                     lexer.m_parsing_classdef_decl = true;
+
                     $$ = $1;
                   }
                 ;
 
-classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep class_body opt_sep END
+classdef        : classdef_beg stash_comment attr_list identifier opt_sep superclass_list class_body END
                   {
-                    YYUSE ($6);
-                    YYUSE ($8);
+                    YYUSE ($5);
 
                     lexer.m_parsing_classdef = false;
 
-                    if (! ($$ = parser.make_classdef ($1, $3, $4, $5, $7, $9, $2)))
+                    if (! ($$ = parser.make_classdef ($1, $3, $4, $6, $7, $8, $2)))
                       {
-                        // make_classdef deleted $3, $4, $5, and $7.
-                        YYABORT;
-                      }
-                  }
-                | classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep END
-                  {
-                    YYUSE ($6);
-
-                    lexer.m_parsing_classdef = false;
-
-                    if (! ($$ = parser.make_classdef ($1, $3, $4, $5, nullptr,
-                                                      $7, $2)))
-                      {
-                        // make_classdef deleted $3, $4, and $5.
+                        // make_classdef deleted $3, $4, $6, and $7.
                         YYABORT;
                       }
                   }
                 ;
 
-opt_attr_list   : // empty
+attr_list       : // empty
                   { $$ = nullptr; }
-                | '(' attr_list ')'
+                | '(' attr_list1 ')' opt_sep
                   {
                     YYUSE ($1);
                     YYUSE ($3);
+                    YYUSE ($4);
 
                     $$ = $2;
                   }
                 ;
 
-attr_list       : attr
+attr_list1      : attr
                   { $$ = new octave::tree_classdef_attribute_list ($1); }
-                | attr_list ',' attr
+                | attr_list1 ',' attr
                   {
                     YYUSE ($2);
 
@@ -1791,28 +1779,32 @@ attr            : identifier
                   }
                 ;
 
-opt_superclass_list
-                : // empty
+superclass_list : // empty
                   {
                     lexer.m_parsing_classdef_decl = false;
                     lexer.m_parsing_classdef_superclass = false;
+
                     $$ = nullptr;
                   }
-                | superclass_list
+                | superclass_list1 opt_sep
                   {
+                    YYUSE ($2);
+
                     lexer.m_parsing_classdef_decl = false;
                     lexer.m_parsing_classdef_superclass = false;
+
                     $$ = $1;
                   }
                 ;
 
-superclass_list : EXPR_LT superclass
+superclass_list1
+                : EXPR_LT superclass
                   {
                     YYUSE ($1);
 
                     $$ = new octave::tree_classdef_superclass_list ($2);
                   }
-                | superclass_list EXPR_AND superclass
+                | superclass_list1 EXPR_AND superclass
                   {
                     YYUSE ($2);
 
@@ -1825,7 +1817,17 @@ superclass      : FQ_IDENT
                   { $$ = new octave::tree_classdef_superclass ($1->text ()); }
                 ;
 
-class_body      : properties_block
+class_body      : // empty
+                  { $$ = nullptr; }
+                | class_body1 opt_sep
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
+                ;
+
+class_body1     : properties_block
                   { $$ = new octave::tree_classdef_body ($1); }
                 | methods_block
                   { $$ = new octave::tree_classdef_body ($1); }
@@ -1833,28 +1835,28 @@ class_body      : properties_block
                   { $$ = new octave::tree_classdef_body ($1); }
                 | enum_block
                   { $$ = new octave::tree_classdef_body ($1); }
-                | class_body opt_sep properties_block
+                | class_body1 opt_sep properties_block
                   {
                     YYUSE ($2);
 
                     $1->append ($3);
                     $$ = $1;
                   }
-                | class_body opt_sep methods_block
+                | class_body1 opt_sep methods_block
                   {
                     YYUSE ($2);
 
                     $1->append ($3);
                     $$ = $1;
                   }
-                | class_body opt_sep events_block
+                | class_body1 opt_sep events_block
                   {
                     YYUSE ($2);
 
                     $1->append ($3);
                     $$ = $1;
                   }
-                | class_body opt_sep enum_block
+                | class_body1 opt_sep enum_block
                   {
                     YYUSE ($2);
 
@@ -1864,35 +1866,33 @@ class_body      : properties_block
                 ;
 
 properties_block
-                : PROPERTIES stash_comment opt_attr_list opt_sep property_list opt_sep END
+                : PROPERTIES opt_sep stash_comment attr_list property_list END
                   {
-                    YYUSE ($4);
-                    YYUSE ($6);
+                    YYUSE ($2);
 
                     if (! ($$ = parser.make_classdef_properties_block
-                           ($1, $3, $5, $7, $2)))
+                           ($1, $4, $5, $6, $3)))
                       {
-                        // make_classdef_properties_block delete $3 and $5.
-                        YYABORT;
-                      }
-                  }
-                | PROPERTIES stash_comment opt_attr_list opt_sep END
-                  {
-                    YYUSE ($4);
-
-                    if (! ($$ = parser.make_classdef_properties_block
-                           ($1, $3, nullptr, $5, $2)))
-                      {
-                        // make_classdef_properties_block delete $3.
+                        // make_classdef_properties_block deleted $4 and $5.
                         YYABORT;
                       }
                   }
                 ;
 
-property_list
+property_list   : // empty
+                  { $$ = nullptr; }
+                | property_list1 opt_sep
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
+                ;
+
+property_list1
                 : class_property
                   { $$ = new octave::tree_classdef_property_list ($1); }
-                | property_list sep class_property
+                | property_list1 sep class_property
                   {
                     YYUSE ($2);
 
@@ -1912,30 +1912,17 @@ class_property  : identifier
                   }
                 ;
 
-methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_sep END
+methods_block   : METHODS opt_sep stash_comment attr_list methods_list END
                   {
-                    YYUSE ($4);
-                    YYUSE ($6);
+                    YYUSE ($2);
 
                     if (! ($$ = parser.make_classdef_methods_block
-                           ($1, $3, $5, $7, $2)))
+                           ($1, $4, $5, $6, $3)))
                       {
-                        // make_classdef_methods_block deleted $3 and $5.
+                        // make_classdef_methods_block deleted $4 and $5.
                         YYABORT;
                       }
                   }
-                | METHODS stash_comment opt_attr_list opt_sep END
-                  {
-                    YYUSE ($4);
-
-                    if (! ($$ = parser.make_classdef_methods_block
-                           ($1, $3, nullptr, $5, $2)))
-                      {
-                        // make_classdef_methods_block deleted $3.
-                        YYABORT;
-                      }
-                  }
-                ;
                 ;
 
 method_decl1    : identifier
@@ -1973,7 +1960,17 @@ method          : method_decl
                   { $$ = $1; }
                 ;
 
-methods_list    : method
+methods_list    : // empty
+                  { $$ = nullptr; }
+                | methods_list1 opt_sep
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
+                ;
+
+methods_list1   : method
                   {
                     octave_value fcn;
                     if ($1)
@@ -1981,7 +1978,7 @@ methods_list    : method
                     delete $1;
                     $$ = new octave::tree_classdef_methods_list (fcn);
                   }
-                | methods_list opt_sep method
+                | methods_list1 opt_sep method
                   {
                     YYUSE ($2);
 
@@ -1995,34 +1992,32 @@ methods_list    : method
                   }
                 ;
 
-events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep END
+events_block    : EVENTS opt_sep stash_comment attr_list events_list END
                   {
-                    YYUSE ($4);
-                    YYUSE ($6);
+                    YYUSE ($2);
 
                     if (! ($$ = parser.make_classdef_events_block
-                           ($1, $3, $5, $7, $2)))
+                           ($1, $4, $5, $6, $3)))
                       {
-                        // make_classdef_events_block deleted $3 and $5.
-                        YYABORT;
-                      }
-                  }
-                | EVENTS stash_comment opt_attr_list opt_sep END
-                  {
-                    YYUSE ($4);
-
-                    if (! ($$ = parser.make_classdef_events_block
-                           ($1, $3, nullptr, $5, $2)))
-                      {
-                        // make_classdef_events_block deleted $3.
+                        // make_classdef_events_block deleted $4 and $5.
                         YYABORT;
                       }
                   }
                 ;
 
-events_list     : class_event
+events_list     : // empty
+                  { $$ = nullptr; }
+                | events_list1 opt_sep
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
+                ;
+
+events_list1    : class_event
                   { $$ = new octave::tree_classdef_events_list ($1); }
-                | events_list opt_sep class_event
+                | events_list1 opt_sep class_event
                   {
                     YYUSE ($2);
 
@@ -2035,34 +2030,32 @@ class_event     : identifier
                   { $$ = new octave::tree_classdef_event ($1); }
                 ;
 
-enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_sep END
+enum_block      : ENUMERATION opt_sep stash_comment attr_list enum_list END
                   {
-                    YYUSE ($4);
-                    YYUSE ($6);
+                    YYUSE ($2);
 
                     if (! ($$ = parser.make_classdef_enum_block
-                           ($1, $3, $5, $7, $2)))
+                           ($1, $4, $5, $6, $3)))
                       {
-                        // make_classdef_enum_block deleted $3 and $5.
-                        YYABORT;
-                      }
-                  }
-                | ENUMERATION stash_comment opt_attr_list opt_sep END
-                  {
-                    YYUSE ($4);
-
-                    if (! ($$ = parser.make_classdef_enum_block
-                           ($1, $3, nullptr, $5, $2)))
-                      {
-                        // make_classdef_enum_block deleted $3.
+                        // make_classdef_enum_block deleted $3 and $4.
                         YYABORT;
                       }
                   }
                 ;
 
-enum_list       : class_enum
+enum_list       : // empty
+                  { $$ = nullptr; }
+                | enum_list1 opt_sep
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
+                ;
+
+enum_list1      : class_enum
                   { $$ = new octave::tree_classdef_enum_list ($1); }
-                | enum_list opt_sep class_enum
+                | enum_list1 opt_sep class_enum
                   {
                     YYUSE ($2);
 

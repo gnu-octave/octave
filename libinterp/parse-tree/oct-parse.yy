@@ -1729,11 +1729,16 @@ classdef        : classdef_beg stash_comment attr_list identifier opt_sep superc
                   {
                     YYUSE ($5);
 
+                    octave::comment_list *lc = $2;
+                    octave::comment_list *tc = lexer.get_comment ();
+
                     lexer.m_parsing_classdef = false;
 
-                    if (! ($$ = parser.make_classdef ($1, $3, $4, $6, $7, $8, $2)))
+                    if (! ($$ = parser.make_classdef ($1, $3, $4, $6, $7, $8,
+                                                      lc, tc)))
                       {
-                        // make_classdef deleted $3, $4, $6, and $7.
+                        // make_classdef deleted $3, $4, $6, $7, LC, and
+                        // TC.
                         YYABORT;
                       }
                   }
@@ -1866,14 +1871,18 @@ class_body1     : properties_block
                 ;
 
 properties_block
-                : PROPERTIES opt_sep stash_comment attr_list property_list END
+                : PROPERTIES stash_comment opt_sep attr_list property_list END
                   {
-                    YYUSE ($2);
+                    YYUSE ($3);
+
+                    octave::comment_list *lc = $2;
+                    octave::comment_list *tc = lexer.get_comment ();
 
                     if (! ($$ = parser.make_classdef_properties_block
-                           ($1, $4, $5, $6, $3)))
+                           ($1, $4, $5, $6, lc, tc)))
                       {
-                        // make_classdef_properties_block deleted $4 and $5.
+                        // make_classdef_properties_block deleted $4,
+                        // $5, LC, and TC.
                         YYABORT;
                       }
                   }
@@ -1896,30 +1905,60 @@ property_list1
                   {
                     YYUSE ($2);
 
+                    // We don't look ahead to grab end-of-line comments.
+                    // Instead, they are grabbed when we see the
+                    // identifier that becomes the next element in the
+                    // list.  If the element at the end of the list
+                    // doesn't have a doc string, see whether the
+                    // element we are adding is stroing an end-of-line
+                    // comment for us to use.
+
+                    octave::tree_classdef_property *last_elt = $1->back ();
+
+                    if (! last_elt->have_doc_string ())
+                      {
+                        octave::comment_list *cl = $3->comments ();
+
+                        if (cl)
+                          {
+                            octave::comment_elt elt = cl->front ();
+
+                            if (elt.is_end_of_line ())
+                              last_elt->doc_string (elt.text ());
+                          }
+                      }
+
                     $1->append ($3);
                     $$ = $1;
                   }
                 ;
 
-class_property  : identifier
-                  { $$ = new octave::tree_classdef_property ($1); }
-                | identifier '=' decl_param_init expression
+class_property  : stash_comment identifier
                   {
-                    YYUSE ($2);
+                    $$ = new octave::tree_classdef_property ($2, $1);
+                  }
+                | stash_comment identifier '=' decl_param_init expression
+                  {
+                    YYUSE ($3);
 
                     lexer.m_looking_at_initializer_expression = false;
-                    $$ = new octave::tree_classdef_property ($1, $4);
+
+                    $$ = new octave::tree_classdef_property ($2, $5, $1);
                   }
                 ;
 
-methods_block   : METHODS opt_sep stash_comment attr_list methods_list END
+methods_block   : METHODS stash_comment opt_sep attr_list methods_list END
                   {
-                    YYUSE ($2);
+                    YYUSE ($3);
+
+                    octave::comment_list *lc = $2;
+                    octave::comment_list *tc = lexer.get_comment ();
 
                     if (! ($$ = parser.make_classdef_methods_block
-                           ($1, $4, $5, $6, $3)))
+                           ($1, $4, $5, $6, lc, tc)))
                       {
-                        // make_classdef_methods_block deleted $4 and $5.
+                        // make_classdef_methods_block deleted $4, $5,
+                        // LC, and TC.
                         YYABORT;
                       }
                   }
@@ -1950,6 +1989,7 @@ method_decl     : stash_comment method_decl1
                   {
                     lexer.m_defining_func--;
                     lexer.m_parsed_function_name.pop ();
+
                     $$ = parser.finish_classdef_external_method ($5, $2, $1);
                   }
                 ;
@@ -1992,14 +2032,18 @@ methods_list1   : method
                   }
                 ;
 
-events_block    : EVENTS opt_sep stash_comment attr_list events_list END
+events_block    : EVENTS stash_comment opt_sep attr_list events_list END
                   {
-                    YYUSE ($2);
+                    YYUSE ($3);
+
+                    octave::comment_list *lc = $2;
+                    octave::comment_list *tc = lexer.get_comment ();
 
                     if (! ($$ = parser.make_classdef_events_block
-                           ($1, $4, $5, $6, $3)))
+                           ($1, $4, $5, $6, lc, tc)))
                       {
-                        // make_classdef_events_block deleted $4 and $5.
+                        // make_classdef_events_block deleted $4, $5,
+                        // LC, and TC.
                         YYABORT;
                       }
                   }
@@ -2026,18 +2070,22 @@ events_list1    : class_event
                   }
                 ;
 
-class_event     : identifier
-                  { $$ = new octave::tree_classdef_event ($1); }
+class_event     : stash_comment identifier
+                  { $$ = new octave::tree_classdef_event ($2, $1); }
                 ;
 
-enum_block      : ENUMERATION opt_sep stash_comment attr_list enum_list END
+enum_block      : ENUMERATION stash_comment opt_sep attr_list enum_list END
                   {
-                    YYUSE ($2);
+                    YYUSE ($3);
+
+                    octave::comment_list *lc = $2;
+                    octave::comment_list *tc = lexer.get_comment ();
 
                     if (! ($$ = parser.make_classdef_enum_block
-                           ($1, $4, $5, $6, $3)))
+                           ($1, $4, $5, $6, lc, tc)))
                       {
-                        // make_classdef_enum_block deleted $3 and $4.
+                        // make_classdef_enum_block deleted $4, $5, LC,
+                        // and TC.
                         YYABORT;
                       }
                   }
@@ -2064,12 +2112,12 @@ enum_list1      : class_enum
                   }
                 ;
 
-class_enum      : identifier '(' expression ')'
+class_enum      : stash_comment identifier '(' expression ')'
                   {
-                    YYUSE ($2);
-                    YYUSE ($4);
+                    YYUSE ($3);
+                    YYUSE ($5);
 
-                    $$ = new octave::tree_classdef_enum ($1, $3);
+                    $$ = new octave::tree_classdef_enum ($2, $4, $1);
                   }
                 ;
 
@@ -3751,13 +3799,17 @@ namespace octave
   // and methods, and adding to the list of known objects) and creates
   // a parse tree containing meta information about the class.
 
+  // LC contains comments appearing before the classdef keyword.
+  // TC contains comments appearing between the classdef elements
+  // and the final end token for the classdef block.
+
   tree_classdef *
   base_parser::make_classdef (token *tok_val,
                               tree_classdef_attribute_list *a,
                               tree_identifier *id,
                               tree_classdef_superclass_list *sc,
                               tree_classdef_body *body, token *end_tok,
-                              comment_list *lc)
+                              comment_list *lc, comment_list *tc)
   {
     tree_classdef *retval = nullptr;
 
@@ -3781,6 +3833,8 @@ namespace octave
         delete id;
         delete sc;
         delete body;
+        delete lc;
+        delete tc;
 
         bison_error ("invalid classdef definition, the class name must match the filename", l, c);
 
@@ -3789,8 +3843,6 @@ namespace octave
       {
         if (end_token_ok (end_tok, token::classdef_end))
           {
-            comment_list *tc = m_lexer.m_comment_buf.get_comment ();
-
             int l = tok_val->line ();
             int c = tok_val->column ();
 
@@ -3807,6 +3859,8 @@ namespace octave
             delete id;
             delete sc;
             delete body;
+            delete lc;
+            delete tc;
 
             end_token_error (end_tok, token::switch_end);
           }
@@ -3815,23 +3869,54 @@ namespace octave
     return retval;
   }
 
+  // LC contains comments appearing before the properties keyword.
+  // If this properties block appears first in the list of classdef
+  // elements, this comment list will be used for the help text for the
+  // classdef block.
+
+  // TC contains comments appearing between the list of properties
+  // and the final end token for the properties block and may be used to
+  // find the doc string for the final property in the list.
+
   tree_classdef_properties_block *
   base_parser::make_classdef_properties_block (token *tok_val,
                                                tree_classdef_attribute_list *a,
                                                tree_classdef_property_list *plist,
                                                token *end_tok,
-                                               comment_list *lc)
+                                               comment_list *lc,
+                                               comment_list *tc)
   {
     tree_classdef_properties_block *retval = nullptr;
 
     if (end_token_ok (end_tok, token::properties_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
-
         int l = tok_val->line ();
         int c = tok_val->column ();
 
-        if (! plist)
+        if (plist)
+          {
+            // If the element at the end of the list doesn't have a doc
+            // string, see whether the first element of TC is an
+            // end-of-line comment for us to use.
+
+            if (tc)
+              {
+                tree_classdef_property *last_elt = plist->back ();
+
+                if (! last_elt->have_doc_string ())
+                  {
+                    comment_elt first_comment_elt = tc->front ();
+
+                    if (first_comment_elt.is_end_of_line ())
+                      {
+                        std::string eol_comment = first_comment_elt.text ();
+
+                        last_elt->doc_string (eol_comment);
+                      }
+                  }
+              }
+          }
+        else
           plist = new tree_classdef_property_list ();
 
         retval = new tree_classdef_properties_block (a, plist, lc, tc, l, c);
@@ -3840,6 +3925,8 @@ namespace octave
       {
         delete a;
         delete plist;
+        delete lc;
+        delete tc;
 
         end_token_error (end_tok, token::properties_end);
       }
@@ -3847,19 +3934,22 @@ namespace octave
     return retval;
   }
 
+  // LC contains comments appearing before the methods keyword.
+  // If this methods block appears first in the list of classdef
+  // elements, this comment list will be used for the help text for the
+  // classdef block.
+
   tree_classdef_methods_block *
   base_parser::make_classdef_methods_block (token *tok_val,
                                             tree_classdef_attribute_list *a,
                                             tree_classdef_methods_list *mlist,
-                                            token *end_tok,
-                                            comment_list *lc)
+                                            token *end_tok, comment_list *lc,
+                                            comment_list *tc)
   {
     tree_classdef_methods_block *retval = nullptr;
 
     if (end_token_ok (end_tok, token::methods_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
-
         int l = tok_val->line ();
         int c = tok_val->column ();
 
@@ -3872,6 +3962,8 @@ namespace octave
       {
         delete a;
         delete mlist;
+        delete lc;
+        delete tc;
 
         end_token_error (end_tok, token::methods_end);
       }
@@ -3879,19 +3971,27 @@ namespace octave
     return retval;
   }
 
+  // LC contains comments appearing before the events keyword.
+  // If this events block appears first in the list of classdef
+  // elements, this comment list will be used for the help text for the
+  // classdef block.
+
+  // TC contains comments appearing between the list of events and
+  // the final end token for the events block and may be used to find
+  // the doc string for the final event in the list.
+
   tree_classdef_events_block *
   base_parser::make_classdef_events_block (token *tok_val,
                                            tree_classdef_attribute_list *a,
                                            tree_classdef_events_list *elist,
                                            token *end_tok,
-                                           comment_list *lc)
+                                           comment_list *lc,
+                                           comment_list *tc)
   {
     tree_classdef_events_block *retval = nullptr;
 
     if (end_token_ok (end_tok, token::events_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
-
         int l = tok_val->line ();
         int c = tok_val->column ();
 
@@ -3904,6 +4004,8 @@ namespace octave
       {
         delete a;
         delete elist;
+        delete lc;
+        delete tc;
 
         end_token_error (end_tok, token::events_end);
       }
@@ -3911,19 +4013,28 @@ namespace octave
     return retval;
   }
 
+  // LC contains comments appearing before the enumeration keyword.
+  // If this enumeration block appears first in the list of classdef
+  // elements, this comment list will be used for the help text for the
+  // classdef block.
+
+  // TC contains comments appearing between the list of
+  // enumerations and the final end token for the enumeration block and
+  // may be used to find the doc string for the final enumeration in the
+  // list.
+
   tree_classdef_enum_block *
   base_parser::make_classdef_enum_block (token *tok_val,
                                          tree_classdef_attribute_list *a,
                                          tree_classdef_enum_list *elist,
                                          token *end_tok,
-                                         comment_list *lc)
+                                         comment_list *lc,
+                                         comment_list *tc)
   {
     tree_classdef_enum_block *retval = nullptr;
 
     if (end_token_ok (end_tok, token::enumeration_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
-
         int l = tok_val->line ();
         int c = tok_val->column ();
 
@@ -3936,6 +4047,8 @@ namespace octave
       {
         delete a;
         delete elist;
+        delete lc;
+        delete tc;
 
         end_token_error (end_tok, token::enumeration_end);
       }

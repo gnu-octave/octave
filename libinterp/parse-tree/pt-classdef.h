@@ -272,9 +272,8 @@ namespace octave
   public:
 
     tree_classdef_element (tree_classdef_attribute_list *a,
-                           base_list<T> *elist,
-                           comment_list *lc, comment_list *tc,
-                           int l = -1, int c = -1)
+                           base_list<T> *elist, comment_list *lc,
+                           comment_list *tc, int l = -1, int c = -1)
       : tree (l, c), m_attr_list (a), m_elt_list (elist),
         m_lead_comm (lc), m_trail_comm (tc)
     { }
@@ -311,10 +310,10 @@ namespace octave
     // The list of objects contained in this block.
     base_list<T> *m_elt_list;
 
-    // Comment preceding the token marking the beginning of the block.
+    // Comments preceding the token marking the beginning of the block.
     comment_list *m_lead_comm;
 
-    // Comment preceding END token.
+    // Comments preceding the END token marking the end of the block.
     comment_list *m_trail_comm;
   };
 
@@ -322,10 +321,11 @@ namespace octave
   {
   public:
 
-    tree_classdef_property (tree_identifier *i = nullptr,
-                            tree_expression *e = nullptr)
-      : m_id (i), m_expr (e)
-    { }
+    tree_classdef_property (tree_identifier *i,
+                            comment_list *comments = nullptr);
+
+    tree_classdef_property (tree_identifier *i, tree_expression *e,
+                            comment_list *comments = nullptr);
 
     // No copying!
 
@@ -343,6 +343,14 @@ namespace octave
 
     tree_expression * expression (void) { return m_expr; }
 
+    comment_list * comments (void) const { return m_comments; }
+
+    void doc_string (const std::string& txt) { m_doc_string = txt; }
+
+    std::string doc_string (void) const { return m_doc_string; }
+
+    bool have_doc_string (void) const { return ! m_doc_string.empty (); }
+
     void accept (tree_walker& tw)
     {
       tw.visit_classdef_property (*this);
@@ -352,6 +360,8 @@ namespace octave
 
     tree_identifier *m_id;
     tree_expression *m_expr;
+    comment_list *m_comments;
+    std::string m_doc_string;
   };
 
   class tree_classdef_property_list : public base_list<tree_classdef_property *>
@@ -387,8 +397,7 @@ namespace octave
 
     tree_classdef_properties_block (tree_classdef_attribute_list *a,
                                     tree_classdef_property_list *plist,
-                                    comment_list *lc,
-                                    comment_list *tc,
+                                    comment_list *lc, comment_list *tc,
                                     int l = -1, int c = -1)
       : tree_classdef_element<tree_classdef_property *> (a, plist, lc, tc, l, c)
     { }
@@ -440,8 +449,8 @@ namespace octave
 
     tree_classdef_methods_block (tree_classdef_attribute_list *a,
                                  tree_classdef_methods_list *mlist,
-                                 comment_list *lc,
-                                 comment_list *tc, int l = -1, int c = -1)
+                                 comment_list *lc, comment_list *tc,
+                                 int l = -1, int c = -1)
       : tree_classdef_element<octave_value> (a, mlist, lc, tc, l, c)
     { }
 
@@ -464,7 +473,8 @@ namespace octave
   {
   public:
 
-    tree_classdef_event (tree_identifier *i = nullptr) : m_id (i) { }
+    tree_classdef_event (tree_identifier *i = nullptr,
+                         comment_list *comments = nullptr);
 
     // No copying!
 
@@ -479,6 +489,14 @@ namespace octave
 
     tree_identifier * ident (void) { return m_id; }
 
+    comment_list * comments (void) const { return m_comments; }
+
+    void doc_string (const std::string& txt) { m_doc_string = txt; }
+
+    std::string doc_string (void) const { return m_doc_string; }
+
+    bool have_doc_string (void) const { return ! m_doc_string.empty (); }
+
     void accept (tree_walker& tw)
     {
       tw.visit_classdef_event (*this);
@@ -487,6 +505,8 @@ namespace octave
   private:
 
     tree_identifier *m_id;
+    comment_list *m_comments;
+    std::string m_doc_string;
   };
 
   class tree_classdef_events_list : public base_list<tree_classdef_event *>
@@ -523,8 +543,8 @@ namespace octave
 
     tree_classdef_events_block (tree_classdef_attribute_list *a,
                                 tree_classdef_events_list *elist,
-                                comment_list *lc,
-                                comment_list *tc, int l = -1, int c = -1)
+                                comment_list *lc, comment_list *tc,
+                                int l = -1, int c = -1)
       : tree_classdef_element<tree_classdef_event *> (a, elist, lc, tc, l, c)
     { }
 
@@ -547,11 +567,8 @@ namespace octave
   {
   public:
 
-    tree_classdef_enum (void) : m_id (nullptr), m_expr (nullptr) { }
-
-    tree_classdef_enum (tree_identifier *i, tree_expression *e)
-      : m_id (i), m_expr (e)
-    { }
+    tree_classdef_enum (tree_identifier *i, tree_expression *e,
+                        comment_list *comments);
 
     // No copying!
 
@@ -569,6 +586,14 @@ namespace octave
 
     tree_expression * expression (void) { return m_expr; }
 
+    comment_list * comments (void) const { return m_comments; }
+
+    void doc_string (const std::string& txt) { m_doc_string = txt; }
+
+    std::string doc_string (void) const { return m_doc_string; }
+
+    bool have_doc_string (void) const { return ! m_doc_string.empty (); }
+
     void accept (tree_walker& tw)
     {
       tw.visit_classdef_enum (*this);
@@ -578,6 +603,8 @@ namespace octave
 
     tree_identifier *m_id;
     tree_expression *m_expr;
+    comment_list *m_comments;
+    std::string m_doc_string;
   };
 
   class tree_classdef_enum_list : public base_list<tree_classdef_enum *>
@@ -613,8 +640,8 @@ namespace octave
 
     tree_classdef_enum_block (tree_classdef_attribute_list *a,
                               tree_classdef_enum_list *elist,
-                              comment_list *lc,
-                              comment_list *tc, int l = -1, int c = -1)
+                              comment_list *lc, comment_list *tc,
+                              int l = -1, int c = -1)
       : tree_classdef_element<tree_classdef_enum *> (a, elist, lc, tc, l, c)
     { }
 
@@ -655,33 +682,15 @@ namespace octave
     typedef std::list<tree_classdef_enum_block *>::const_iterator
       enum_list_const_iterator;
 
-    tree_classdef_body (void)
-      : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
-    { }
+    tree_classdef_body (void);
 
-    tree_classdef_body (tree_classdef_properties_block *pb)
-      : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
-    {
-      append (pb);
-    }
+    tree_classdef_body (tree_classdef_properties_block *pb);
 
-    tree_classdef_body (tree_classdef_methods_block *mb)
-      : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
-    {
-      append (mb);
-    }
+    tree_classdef_body (tree_classdef_methods_block *mb);
 
-    tree_classdef_body (tree_classdef_events_block *evb)
-      : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
-    {
-      append (evb);
-    }
+    tree_classdef_body (tree_classdef_events_block *evb);
 
-    tree_classdef_body (tree_classdef_enum_block *enb)
-      : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
-    {
-      append (enb);
-    }
+    tree_classdef_body (tree_classdef_enum_block *enb);
 
     // No copying!
 
@@ -731,12 +740,20 @@ namespace octave
       return m_enum_lst;
     }
 
+    void doc_string (const std::string& txt) { m_doc_string = txt; }
+
+    std::string doc_string (void) const { return m_doc_string; }
+
+    bool have_doc_string (void) const { return ! m_doc_string.empty (); }
+
     void accept (tree_walker& tw)
     {
       tw.visit_classdef_body (*this);
     }
 
   private:
+
+    std::string get_doc_string (comment_list *comment) const;
 
     std::list<tree_classdef_properties_block *> m_properties_lst;
 
@@ -745,6 +762,8 @@ namespace octave
     std::list<tree_classdef_events_block *> m_events_lst;
 
     std::list<tree_classdef_enum_block *> m_enum_lst;
+
+    std::string m_doc_string;
   };
 
   // Classdef definition.
@@ -757,9 +776,8 @@ namespace octave
                    tree_classdef_attribute_list *a, tree_identifier *i,
                    tree_classdef_superclass_list *sc,
                    tree_classdef_body *b, comment_list *lc,
-                   comment_list *tc,
-                   const std::string& pn = "", int l = -1,
-                   int c = -1)
+                   comment_list *tc, const std::string& pn = "",
+                   int l = -1, int c = -1)
       : tree_command (l, c), m_scope (scope), m_attr_list (a), m_id (i),
         m_supclass_list (sc), m_element_list (b), m_lead_comm (lc),
         m_trail_comm (tc), m_pack_name (pn)
@@ -796,10 +814,15 @@ namespace octave
     comment_list * leading_comment (void) { return m_lead_comm; }
     comment_list * trailing_comment (void) { return m_trail_comm; }
 
-    const std::string& package_name (void) const { return m_pack_name; }
+    std::string package_name (void) const { return m_pack_name; }
 
     octave_value make_meta_class (interpreter& interp,
                                   bool is_at_folder = false);
+
+    std::string doc_string (void) const
+    {
+      return m_element_list ? m_element_list->doc_string () : "";
+    }
 
     void accept (tree_walker& tw)
     {

@@ -356,31 +356,35 @@ namespace octave
     make_classdef (token *tok_val, tree_classdef_attribute_list *a,
                    tree_identifier *id, tree_classdef_superclass_list *sc,
                    tree_classdef_body *body, token *end_tok,
-                   comment_list *lc);
+                   comment_list *lc, comment_list *tc);
 
     tree_classdef_properties_block *
     make_classdef_properties_block (token *tok_val,
                                     tree_classdef_attribute_list *a,
                                     tree_classdef_property_list *plist,
-                                    token *end_tok, comment_list *lc);
+                                    token *end_tok, comment_list *lc,
+                                    comment_list *tc);
 
     tree_classdef_methods_block *
     make_classdef_methods_block (token *tok_val,
                                  tree_classdef_attribute_list *a,
                                  tree_classdef_methods_list *mlist,
-                                 token *end_tok, comment_list *lc);
+                                 token *end_tok, comment_list *lc,
+                                 comment_list *tc);
 
     tree_classdef_events_block *
     make_classdef_events_block (token *tok_val,
                                 tree_classdef_attribute_list *a,
                                 tree_classdef_events_list *elist,
-                                token *end_tok, comment_list *lc);
+                                token *end_tok, comment_list *lc,
+                                comment_list *tc);
 
     tree_classdef_enum_block *
     make_classdef_enum_block (token *tok_val,
                               tree_classdef_attribute_list *a,
                               tree_classdef_enum_list *elist,
-                              token *end_tok, comment_list *lc);
+                              token *end_tok, comment_list *lc,
+                              comment_list *tc);
 
     octave_user_function *
     start_classdef_external_method (tree_identifier *id,

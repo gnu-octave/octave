@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <iostream>
+
 #include "ov.h"
 #include "ov-classdef.h"
 #include "pt-classdef.h"
@@ -119,6 +121,35 @@ namespace octave
 
   // Classdef property
 
+  std::string check_for_doc_string (comment_list *comments)
+  {
+    // If the comment list ends in a block comment or full-line comment,
+    // then it is the doc string for this property.
+
+    if (comments)
+      {
+        comment_elt last_elt = comments->back ();
+
+        if (last_elt.is_block () || last_elt.is_full_line ())
+          return last_elt.text ();
+      }
+
+    return "";
+  }
+
+  tree_classdef_property::tree_classdef_property (tree_identifier *i,
+                                                  comment_list *comments)
+    : m_id (i), m_expr (nullptr), m_comments (comments),
+      m_doc_string (check_for_doc_string (m_comments))
+  { }
+
+  tree_classdef_property::tree_classdef_property (tree_identifier *i,
+                                                  tree_expression *e,
+                                                  comment_list *comments)
+    : m_id (i), m_expr (e), m_comments (comments),
+      m_doc_string (check_for_doc_string (m_comments))
+  { }
+
   // Classdef property_list
 
   tree_classdef_property_list::~tree_classdef_property_list (void)
@@ -139,6 +170,12 @@ namespace octave
 
   // Classdef event
 
+  tree_classdef_event::tree_classdef_event (tree_identifier *i,
+                                            comment_list *comments)
+    : m_id (i), m_comments (comments),
+      m_doc_string (check_for_doc_string (m_comments))
+  { }
+
   // Classdef events_list
 
   tree_classdef_events_list::~tree_classdef_events_list (void)
@@ -155,6 +192,13 @@ namespace octave
 
   // Classdef enum
 
+  tree_classdef_enum::tree_classdef_enum (tree_identifier *i,
+                                          tree_expression *e,
+                                          comment_list *comments)
+    : m_id (i), m_expr (e), m_comments (comments),
+      m_doc_string (check_for_doc_string (m_comments))
+  { }
+
   // Classdef enum_list
 
   tree_classdef_enum_list::~tree_classdef_enum_list (void)
@@ -170,6 +214,38 @@ namespace octave
   // Classdef enum_block
 
   // Classdef body
+
+  tree_classdef_body::tree_classdef_body (void)
+    : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
+  { }
+
+  tree_classdef_body::tree_classdef_body (tree_classdef_properties_block *pb)
+    : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst (),
+      m_doc_string (pb ? get_doc_string (pb->leading_comment ()) : "")
+  {
+    append (pb);
+  }
+
+  tree_classdef_body::tree_classdef_body (tree_classdef_methods_block *mb)
+    : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst (),
+      m_doc_string (mb ? get_doc_string (mb->leading_comment ()) : "")
+  {
+    append (mb);
+  }
+
+  tree_classdef_body::tree_classdef_body (tree_classdef_events_block *evb)
+    : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst (),
+      m_doc_string (evb ? get_doc_string (evb->leading_comment ()) : "")
+  {
+    append (evb);
+  }
+
+  tree_classdef_body::tree_classdef_body (tree_classdef_enum_block *enb)
+    : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst (),
+      m_doc_string (enb ? get_doc_string (enb->leading_comment ()) : "")
+  {
+    append (enb);
+  }
 
   tree_classdef_body::~tree_classdef_body (void)
   {
@@ -200,6 +276,22 @@ namespace octave
         delete *p;
         m_enum_lst.erase (p);
       }
+  }
+
+  std::string
+  tree_classdef_body::get_doc_string (comment_list *comments) const
+  {
+    // Grab the first comment from the list and use it as the doc string
+    // for this classdef body.
+
+    if (comments)
+      {
+        comment_elt first_elt = comments->front ();
+
+        return first_elt.text ();
+      }
+
+    return "";
   }
 
   // Classdef

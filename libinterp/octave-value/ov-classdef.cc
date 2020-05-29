@@ -409,6 +409,29 @@ bool octave_classdef_meta::is_classdef_constructor (const std::string& cname) co
   return retval;
 }
 
+std::string octave_classdef_meta::doc_string (const std::string& meth_name) const
+{
+  if (object.is_class ())
+    {
+      octave::cdef_class cls (object);
+
+      if (meth_name.empty ())
+        return cls.doc_string ();
+
+      octave_value ov_meth = cls.get_method (meth_name);
+
+      if (ov_meth.is_defined ())
+        {
+          octave_function *fcn = ov_meth.function_value ();
+
+          if (fcn)
+            return fcn->doc_string ();
+        }
+    }
+
+  return "";
+}
+
 octave_value_list
 octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
                                       int nargout, const octave_value_list& idx)

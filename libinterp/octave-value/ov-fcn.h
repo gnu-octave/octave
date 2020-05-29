@@ -214,7 +214,11 @@ public:
 
   void document (const std::string& ds) { doc = ds; }
 
-  std::string doc_string (void) const { return doc; }
+  virtual std::string
+  doc_string (const std::string& /*meth_name*/ = "") const
+  {
+    return doc;
+  }
 
   virtual void unload (void) { }
 

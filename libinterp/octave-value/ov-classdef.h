@@ -216,6 +216,8 @@ public:
 
   bool is_classdef_constructor (const std::string& cname = "") const;
 
+  std::string doc_string (const std::string& meth_name) const;
+
 private:
 
   octave::cdef_meta_object object;

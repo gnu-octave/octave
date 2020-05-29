@@ -523,11 +523,23 @@ namespace octave
                                                 std::string& h, std::string& w,
                                                 bool& symbol_found) const
   {
-    bool retval = false;
+    std::string meth_nm;
 
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
     octave_value val = symtab.find_function (nm);
+
+    if (! val.is_defined ())
+      {
+        size_t pos = nm.rfind ('.');
+
+        if (pos != std::string::npos)
+          {
+            meth_nm = nm.substr (pos+1);
+
+            val = symtab.find_function (nm.substr (0, pos));
+          }
+      }
 
     if (val.is_defined ())
       {
@@ -535,21 +547,23 @@ namespace octave
 
         if (fcn)
           {
+            // FCN may actually be a classdef_meta object.
+
             symbol_found = true;
 
-            h = fcn->doc_string ();
-
-            retval = true;
+            h = fcn->doc_string (meth_nm);
 
             w = fcn->fcn_file_name ();
 
             if (w.empty ())
               w = fcn->is_user_function () ? "command-line function"
-                                           : "built-in function";
+                : "built-in function";
+
+            return true;
           }
       }
 
-    return retval;
+    return false;
   }
 
   bool help_system::raw_help_from_file (const std::string& nm,

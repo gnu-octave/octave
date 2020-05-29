@@ -25,9 +25,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} computer ()
-## @deftypefnx {} {@var{c} =} computer ()
-## @deftypefnx {} {[@var{c}, @var{maxsize}] =} computer ()
-## @deftypefnx {} {[@var{c}, @var{maxsize}, @var{endian}] =} computer ()
+## @deftypefnx {} {@var{comp} =} computer ()
+## @deftypefnx {} {[@var{comp}, @var{maxsize}] =} computer ()
+## @deftypefnx {} {[@var{comp}, @var{maxsize}, @var{endian}] =} computer ()
 ## @deftypefnx {} {@var{arch} =} computer ("arch")
 ## Print or return a string of the form @var{cpu}-@var{vendor}-@var{os} that
 ## identifies the type of computer that Octave is running on.
@@ -55,10 +55,13 @@
 ##
 ## If the argument @qcode{"arch"} is specified, return a string indicating the
 ## architecture of the computer on which Octave is running.
+##
+## Results may be different if Octave was invoked with the --traditional
+## option.
 ## @seealso{isunix, ismac, ispc}
 ## @end deftypefn
 
-function [c, maxsize, endian] = computer (a)
+function [comp, maxsize, endian] = computer (a)
 
   if (nargin > 1)
     print_usage ();
@@ -66,25 +69,45 @@ function [c, maxsize, endian] = computer (a)
     error ('computer: "arch" is only valid argument');
   endif
 
-  if (nargin == 0)
-    msg = __octave_config_info__ ("canonical_host_type");
+  canonical_host_type = __octave_config_info__ ("canonical_host_type");
+  traditional = __traditional__ ();
+  enable_64 = __octave_config_info__ ("ENABLE_64");
+  host_parts = ostrsplit (canonical_host_type, "-");
 
-    if (strcmp (msg, "unknown"))
-      msg = "Hi Dave, I'm a HAL-9000";
+  if (nargin == 0)
+
+    host = "";
+    if (traditional && enable_64)
+      if (ismac ())
+        host = "MACI64";
+      elseif (ispc ())
+        host = "PCWIN64";
+      elseif (strcmp ([host_parts{3} "-" host_parts{1}], "linux-x86_64"))
+        host = "GLNXA64";
+      endif
+    endif
+    if (isempty (host))
+      host = canonical_host_type;
+    elseif (strcmp (host, "unknown"))
+      host = "Hi Dave, I'm a HAL-9000";
     endif
 
     if (nargout == 0)
-      disp (msg);
+      disp (host);
     else
-      c = msg;
-      if (isargout (2))
-        if (__octave_config_info__ ("ENABLE_64"))
-          maxsize = 2^63-1;
+      comp = host;
+      if (nargout > 1)
+        if (enable_64)
+          if (traditional)
+            maxsize = 2^48-1;
+          else
+            maxsize = 2^63-1;
+          endif
         else
           maxsize = 2^31-1;
         endif
       endif
-      if (isargout (3))
+      if (nargout > 2)
         if (__octave_config_info__ ("words_big_endian"))
           endian = "B";
         elseif (__octave_config_info__ ("words_little_endian"))
@@ -94,13 +117,25 @@ function [c, maxsize, endian] = computer (a)
         endif
       endif
     endif
+
   else
-    ## "arch" argument asked for
-    tmp = ostrsplit (__octave_config_info__ ("canonical_host_type"), "-");
-    if (numel (tmp) == 4)
-      c = sprintf ("%s-%s-%s", tmp{4}, tmp{3}, tmp{1});
-    else
-      c = sprintf ("%s-%s", tmp{3}, tmp{1});
+
+    ## "arch" case.
+    comp = "";
+    if (traditional && enable_64)
+      if (ismac ())
+        comp = "maci64";
+      elseif (ispc ())
+        comp = "win64";
+      elseif (strcmp ([host_parts{3} "-" host_parts{1}], "linux-x86_64"))
+        comp = "glnxa64";
+      endif
+    endif
+    if (isempty (comp))
+      comp = [host_parts{3} "-" host_parts{1}];
+      if (numel (host_parts) == 4)
+        comp = [host_parts{4} "-" comp];
+      endif
     endif
 
   endif

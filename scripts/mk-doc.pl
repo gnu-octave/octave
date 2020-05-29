@@ -101,13 +101,27 @@ sub gethelp
 {
   my $fcn   = shift;
   my $fname = shift;
+  my $have_cdef_file = 0;
+  my $found_code = 0;
+
   open (my $fh, "<", $fname) or return;
 
   my @help_txt;
   while (my $line = <$fh>)
     {
       next if $line =~ m/^[\s#%]*$/;  # skip empty lines
-      last if $line !~ m/^\s*(#|%)/;  # out of here once code starts
+
+      if ($line !~ m/^\s*(#|%)/)
+        {
+          if (! $found_code)
+            {
+              $found_code = 1;
+              $have_cdef_file = ! $have_cdef_file && $line =~ m/^\s*classdef/;
+            }
+
+          next if $have_cdef_file;
+          last;
+        }
 
       my $reading_block = sub {defined ($line = <$fh>) && $line !~ m/^\s*$/};
 
@@ -122,6 +136,27 @@ sub gethelp
               push (@help_txt, $line);
             } while (&$reading_block ());
           last;
+
+          ## Instead of jumping out here unconditionally, should we
+          ## attempt to extract multiple help comment blocks in a
+          ## classdef file by searching forward for the next line that
+          ## begins with "function" and then saving the first comment
+          ## block after that?  We will need a way to recognize the
+          ## method name to print the docstring separator line.  Maybe
+          ## we should just be using Octave's parser and help system for
+          ## this job?
+
+          ## if ($have_cdef_file)
+          ##   {
+          ##     while (my $line = <$fh>)
+          ##       {
+          ##         last if $line =~ /^\s*function/;
+          ##       }
+          ##   }
+          ## else
+          ##  {
+          ##    last;
+          ##  }
         }
     }
 

@@ -180,6 +180,16 @@ namespace octave
       m_verbose = flag;
     }
 
+    void traditional (bool flag)
+    {
+      m_traditional = flag;
+    }
+
+    bool traditional (void) const
+    {
+      return m_traditional;
+    }
+
     void inhibit_startup_message (bool flag)
     {
       m_inhibit_startup_message = flag;
@@ -551,6 +561,8 @@ namespace octave
     bool m_read_init_files;
 
     bool m_verbose;
+
+    bool m_traditional;
 
     bool m_inhibit_startup_message;
 

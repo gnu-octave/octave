@@ -295,6 +295,15 @@ from the list, so if a function was placed in the list multiple times with
   return retval;
 }
 
+DEFMETHOD (__traditional__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __traditional__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  return ovl (interp.traditional ());
+}
+
 namespace octave
 {
   temporary_file_list::~temporary_file_list (void)
@@ -463,6 +472,7 @@ namespace octave
       m_read_site_files (true),
       m_read_init_files (m_app_context != nullptr),
       m_verbose (false),
+      m_traditional (false),
       m_inhibit_startup_message (false),
       m_load_path_initialized (false),
       m_history_initialized (false),
@@ -513,7 +523,6 @@ namespace octave
       m_display_info.initialize ();
 
     bool line_editing = false;
-    bool traditional = false;
 
     if (m_app_context)
       {
@@ -565,7 +574,7 @@ namespace octave
             && ! options.forced_line_editing ())
           line_editing = false;
 
-        traditional = options.traditional ();
+        m_traditional = options.traditional ();
 
         // FIXME: if possible, perform the following actions directly
         // instead of using the interpreter-level functions.
@@ -625,7 +634,7 @@ namespace octave
     // This should be done before initializing the load path because
     // some PKG_ADD files might need --traditional behavior.
 
-    if (traditional)
+    if (m_traditional)
       maximum_braindamage ();
 
     octave_interpreter_ready = true;

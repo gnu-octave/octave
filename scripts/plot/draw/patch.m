@@ -94,16 +94,6 @@ function h = patch (varargin)
     print_usage ();
   endif
 
-  ## FIXME: ishold called this way is very slow.
-  if (! ishold (hax))
-    ## FIXME: This is a hack to get 'layer' command to work for 2D patches
-    ##        Alternative is much more complicated surgery in graphics.cc.
-    ##        of get_children_limits() for 'z' axis and 'patch' object type.
-    if (isempty (get (htmp, "zdata")))
-      set (hax, "zlim", [-1 1]);
-    endif
-  endif
-
   if (nargout > 0)
     h = htmp;
   endif
@@ -259,21 +249,21 @@ endfunction
 
 %!demo
 %! clf;
-%! vertices = [0 0 0; 0.5 -0.5 0; 1 0 0; 1 1 0; 0 1 1; 1 0 1; 0 -1 0;]+3;
+%! vertices = [0 0 0; 0.5 -0.5 0; 1 0 0; 1 1 0; 0 1 1; 1 0 1; 0 -1 0] + 3;
 %! faces = [1 2 3 4 5 6 7];
 %! ha = axes ();
-%! hp = patch ('Vertices', vertices, 'Faces', faces, 'FaceColor', 'g');
-%! xlabel('x'), ylabel('y'), zlabel('z')
-%! view(3)
-%! set (ha, "XTick", [], "YTick", [], "ZTick", [])
-%! text (vertices(1,1), vertices(1,2), vertices(1,3), "1")
-%! text (vertices(2,1), vertices(2,2), vertices(2,3), "2")
-%! text (vertices(3,1), vertices(3,2), vertices(3,3), "3")
-%! text (vertices(4,1), vertices(4,2), vertices(4,3), "4")
-%! text (vertices(5,1), vertices(5,2), vertices(5,3), "5")
-%! text (vertices(6,1), vertices(6,2), vertices(6,3), "6")
-%! text (vertices(7,1), vertices(7,2), vertices(7,3), "7")
-%! title ("Non-coplanar patch")
+%! hp = patch ("Vertices", vertices, "Faces", faces, "FaceColor", "g");
+%! xlabel ("x"), ylabel ("y"), zlabel ("z");
+%! view(3);
+%! set (ha, "XTick", [], "YTick", [], "ZTick", []);
+%! text (vertices(1,1), vertices(1,2), vertices(1,3), "1");
+%! text (vertices(2,1), vertices(2,2), vertices(2,3), "2");
+%! text (vertices(3,1), vertices(3,2), vertices(3,3), "3");
+%! text (vertices(4,1), vertices(4,2), vertices(4,3), "4");
+%! text (vertices(5,1), vertices(5,2), vertices(5,3), "5");
+%! text (vertices(6,1), vertices(6,2), vertices(6,3), "6");
+%! text (vertices(7,1), vertices(7,2), vertices(7,3), "7");
+%! title ("Non-coplanar patch");
 
 
 %!test

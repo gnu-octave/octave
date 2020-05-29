@@ -76,6 +76,12 @@ namespace octave
 
     comment_type type (void) const { return m_type; }
 
+    bool is_block (void) const { return m_type == block; }
+    bool is_full_line (void) const { return m_type == full_line; }
+    bool is_end_of_line (void) const { return m_type == end_of_line; }
+    bool is_doc_string (void) const { return m_type == doc_string; }
+    bool is_copyright (void) const { return m_type == copyright; }
+
     ~comment_elt (void) = default;
 
   private:

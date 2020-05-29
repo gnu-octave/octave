@@ -897,6 +897,8 @@ namespace octave
 
     retval = cdm.make_class (full_class_name, slist);
 
+    retval.doc_string (t->doc_string ());
+
     // Package owning this class
 
     if (! t->package_name ().empty ())

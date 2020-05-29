@@ -151,6 +151,10 @@ namespace octave
 
       bool is_meta_class (void) const { return meta; }
 
+      void doc_string (const std::string& txt) { m_doc_string = txt; }
+
+      std::string doc_string (void) const { return m_doc_string; }
+
     private:
 
       void load_all_methods (void);
@@ -173,6 +177,8 @@ namespace octave
       // (not used yet)
 
       std::string directory;
+
+      std::string m_doc_string;
 
       // The methods defined by this class.
 
@@ -373,6 +379,10 @@ namespace octave
     void mark_as_meta_class (void) { get_rep ()->mark_as_meta_class (); }
 
     bool is_meta_class (void) const { return get_rep ()->is_meta_class (); }
+
+    void doc_string (const std::string& txt) { get_rep ()->doc_string (txt); }
+
+    std::string doc_string (void) const { return get_rep ()->doc_string (); }
 
   public:
 

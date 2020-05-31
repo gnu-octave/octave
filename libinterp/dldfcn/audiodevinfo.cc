@@ -2383,7 +2383,7 @@ Undocumented internal function.
     {
       // FIXME: Should be able to support 32-bit streams (bug #57939)
       int nbits = args(2).int_value ();
-      if (nbits != 8 || nbits != 16 || nbits != 24)
+      if (nbits != 8 && nbits != 16 && nbits != 24)
         error ("audioplayer: NBITS must be 8, 16, or 24");
 
       switch (args.length ())

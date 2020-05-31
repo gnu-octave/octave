@@ -175,6 +175,15 @@ endfunction
 %! properties = get (player, {"SampleRate", "Tag", "UserData"});
 %! assert (properties, {8000, "tag", [1, 2; 3, 4]});
 
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! ## Verify nbits option only accepts 8, 16, 24
+%! fail ("audioplayer (1, 8e3, 9)", "NBITS must be 8, 16, or 24");
+%! fail ("audioplayer (1, 8e3, 32)", "NBITS must be 8, 16, or 24");
+%! player = audioplayer (1, 8e3, 8);
+%! player = audioplayer (1, 8e3, 16);
+%! player = audioplayer (1, 8e3, 24);
+
+## FIXME: Callbacks do not work currently (5/31/2020) so BIST tests commented.
 #%!function [sound, status] = callback (samples)
 #%!  sound = rand (samples, 2) - 0.5;
 #%!  status = 0;

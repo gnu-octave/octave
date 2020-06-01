@@ -274,6 +274,10 @@ namespace octave
 
     void toplevel_change (bool toplevel);
 
+    void handle_autoc_cancelled (void);
+
+    file_editor_tab* reset_focus (void);
+
   protected slots:
 
     void copyClipboard (void);
@@ -311,6 +315,7 @@ namespace octave
     void closeEvent (QCloseEvent *event);
     void dragEnterEvent (QDragEnterEvent *event);
     void dropEvent (QDropEvent *event);
+    void focusInEvent (QFocusEvent *e);
 
   private:
 

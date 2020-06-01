@@ -232,7 +232,13 @@ function update_prop (h, ~, ax2, prop)
     unwind_protect
       recursion = true;
       val = get (h, prop);
-      set (ax2, prop, get (h, prop));
+      if (strcmpi (prop, "position") || strcmpi (prop, "outerposition"))
+        ## Save/restore "positionconstraint"
+        constraint = get (ax2, "positionconstraint");
+        set (ax2, prop, get (h, prop), "positionconstraint", constraint);
+      else
+        set (ax2, prop, get (h, prop));
+      endif
     unwind_protect_cleanup
       recursion = false;
     end_unwind_protect

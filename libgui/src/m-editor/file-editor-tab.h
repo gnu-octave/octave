@@ -86,6 +86,8 @@ namespace octave
     void edit_mfile_request (const QString&, const QString&,
                              const QString&, int);
 
+    void autoc_closed (void);
+
     void update_breakpoints_signal (const octave_value_list& args);
 
     void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
@@ -314,6 +316,7 @@ namespace octave
     QString m_new_encoding;
     QDateTime m_last_modified;
 
+    bool m_autoc_active;
     bool m_long_title;
     bool m_copy_available;
     bool m_is_octave_file;

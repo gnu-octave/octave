@@ -92,6 +92,7 @@ namespace octave
     return retval;
   }
 
+
   // File editor
 
   file_editor::file_editor (QWidget *p, base_qobject& oct_qobj)
@@ -120,11 +121,24 @@ namespace octave
 
     setVisible (false);
     setAcceptDrops (true);
+    setFocusPolicy (Qt::StrongFocus);
   }
 
   file_editor::~file_editor (void)
   {
     delete m_mru_file_menu;
+  }
+
+  void file_editor::focusInEvent (QFocusEvent *e)
+  {
+    // The focus is transferred to the active tab and its edit
+    // area in this focus in event handler. This is to avoid
+    // using focus proxies with conflicts in the proxy change
+    // presumably introduced by bug
+    // https://bugreports.qt.io/browse/QTBUG-61092
+    reset_focus (); // Make sure editor tab with edit area get focus
+
+    QDockWidget::focusInEvent (e);
   }
 
   // insert global actions, that should also be displayed in the editor window,
@@ -338,9 +352,7 @@ namespace octave
     octave_dock_widget::activate ();
 
     // set focus to current tab
-    QWidget *fileEditorTab = m_tab_widget->currentWidget ();
-    if (fileEditorTab)
-      emit fetab_set_focus (fileEditorTab);
+    reset_focus ();
   }
 
   void file_editor::set_focus (QWidget *fet)
@@ -963,8 +975,6 @@ namespace octave
         m_cut_action->setEnabled (copy_available);
         m_run_selection_action->setEnabled (copy_available);
         m_run_action->setEnabled (is_octave_file);
-
-        setFocusProxy (m_tab_widget->currentWidget ());
       }
 
     m_copy_action_enabled = m_copy_action->isEnabled ();
@@ -2294,6 +2304,40 @@ namespace octave
     check_actions ();
   }
 
+  // Slot when autocompletion list was cancelled
+  void file_editor::handle_autoc_cancelled (void)
+  {
+    // List was cancelled but somehow still active and blocking the
+    // edit area from accepting shortcuts. Only after another keypress
+    // shortcuts and lists are working againnas expected. This is
+    // probably caused by qt bug https://bugreports.qt.io/browse/QTBUG-83720
+    // Hack: Accept the list, which is hidden but still active
+    //       and undo the text insertion, if any
+
+    file_editor_tab *f = reset_focus ();
+    octave_qscintilla *qsci = f->qsci_edit_area ();
+
+    int line, col;
+    qsci->getCursorPosition (&line, &col);
+    int l1 = qsci->lineLength (line); // Current line length
+
+    // Accept autocompletion
+    qsci->SendScintilla (QsciScintillaBase::SCI_AUTOCCOMPLETE);
+
+    // Was text inserted? If yes, undo
+    if (qsci->text (line).length () - l1)
+      qsci->undo ();
+  }
+
+  file_editor_tab* file_editor::reset_focus (void)
+  {
+    // Reset the focus of the tab and the related edit area
+    file_editor_tab *f
+       = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
+     emit fetab_set_focus (f);
+     return f;
+  }
+
   file_editor_tab *
   file_editor::make_file_editor_tab (const QString& directory)
   {
@@ -2317,7 +2361,17 @@ namespace octave
              SIGNAL (focus_console_after_command_signal (void)),
              main_win (), SLOT (focus_console_after_command (void)));
 
+    connect (f->qsci_edit_area (),
+             SIGNAL (SCN_AUTOCCOMPLETED (const char*, int, int, int)),
+             this, SLOT (reset_focus (void)));
+
+    connect (f->qsci_edit_area (), SIGNAL (SCN_AUTOCCANCELLED (void)),
+             this, SLOT (handle_autoc_cancelled (void)));
+
     // Signals from the file editor_tab
+    connect (f, SIGNAL (autoc_closed (void)),
+             this, SLOT (reset_focus (void)));
+
     connect (f, SIGNAL (file_name_changed (const QString&, const QString&, bool)),
              this, SLOT (handle_file_name_changed (const QString&,
                                                    const QString&, bool)));

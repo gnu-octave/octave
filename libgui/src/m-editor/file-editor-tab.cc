@@ -107,6 +107,7 @@ namespace octave
     m_lexer_apis = nullptr;
     m_is_octave_file = true;
     m_lines_changed = false;
+    m_autoc_active = false;
 
     m_ced = directory_arg;
 
@@ -263,8 +264,6 @@ namespace octave
     gui_settings *settings = rmgr.get_settings ();
     if (settings)
       notice_settings (settings, true);
-
-    setFocusProxy (m_edit_area);
 
     // encoding, not updated with the settings
     QString locale_enc_name =
@@ -1447,6 +1446,8 @@ namespace octave
   {
     if (ID != this)
       return;
+
+    m_autoc_active = true;
 
     QsciScintilla::AutoCompletionSource s = m_edit_area->autoCompletionSource ();
     switch (s)
@@ -3042,9 +3043,19 @@ namespace octave
 
   void file_editor_tab::handle_cursor_moved (int line, int col)
   {
+    // Cursor has moved, first check wether an autocompletion list
+    // is active or if it was closed. Scintilla provides signals for
+    // completed or cancelled lists, but not for list that where hidden
+    // due to a new character not matching anymore with the list entries
     if (m_edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCACTIVE))
-      show_auto_completion (this);
+      m_autoc_active = true;
+    else if (m_autoc_active)
+      {
+        m_autoc_active = false;
+        emit autoc_closed (); // Tell editor about closed list
+      }
 
+    // Lines changed? Take care of indentation
     if (m_lines_changed)  // cursor moved and lines have changed
       {
         m_lines_changed = false;
@@ -3057,9 +3068,9 @@ namespace octave
           }
       }
 
+    // Update line and column indicator in the status bar
     m_line = line;
     m_col  = col;
-
     m_row_indicator->setNum (line+1);
     m_col_indicator->setNum (col+1);
   }

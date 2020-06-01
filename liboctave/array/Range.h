@@ -41,7 +41,8 @@ Range
 public:
 
   Range (void)
-    : rng_base (0), rng_limit (0), rng_inc (0), rng_numel (0), cache (1, 0) { }
+    : m_base (0), m_limit (0), m_inc (0), m_numel (0), m_cache (1, 0)
+  { }
 
   Range (const Range& r) = default;
 
@@ -50,43 +51,43 @@ public:
   ~Range (void) = default;
 
   Range (double b, double l)
-    : rng_base (b), rng_limit (l), rng_inc (1),
-      rng_numel (numel_internal ()), cache ()
+    : m_base (b), m_limit (l), m_inc (1), m_numel (numel_internal ()),
+      m_cache ()
   {
-    rng_limit = limit_internal ();
+    m_limit = limit_internal ();
   }
 
   Range (double b, double l, double i)
-    : rng_base (b), rng_limit (l), rng_inc (i),
-      rng_numel (numel_internal ()), cache ()
+    : m_base (b), m_limit (l), m_inc (i), m_numel (numel_internal ()),
+      m_cache ()
   {
-    rng_limit = limit_internal ();
+    m_limit = limit_internal ();
   }
 
   // For operators' usage (to preserve element count).
   Range (double b, double i, octave_idx_type n)
-    : rng_base (b), rng_limit (b + (n-1) * i), rng_inc (i),
-      rng_numel (n), cache ()
+    : m_base (b), m_limit (b + (n-1) * i), m_inc (i),
+      m_numel (n), m_cache ()
   {
     if (! octave::math::isfinite (b) || ! octave::math::isfinite (i)
-        || ! octave::math::isfinite (rng_limit))
-      rng_numel = -2;
+        || ! octave::math::isfinite (m_limit))
+      m_numel = -2;
     else
       {
         // Code below is only needed if the resulting range must be 100%
         // correctly constructed.  If the Range object created is only
         // a temporary one used by operators this may be unnecessary.
-        rng_limit = limit_internal ();
+        m_limit = limit_internal ();
       }
   }
 
-  double base (void) const { return rng_base; }
-  double limit (void) const { return rng_limit; }
-  double inc (void) const { return rng_inc; }
+  double base (void) const { return m_base; }
+  double limit (void) const { return m_limit; }
+  double inc (void) const { return m_inc; }
 
-  octave_idx_type numel (void) const { return rng_numel; }
+  octave_idx_type numel (void) const { return m_numel; }
 
-  dim_vector dims (void) const { return dim_vector (1, rng_numel); }
+  dim_vector dims (void) const { return dim_vector (1, m_numel); }
 
   octave_idx_type rows (void) const { return 1; }
 
@@ -150,13 +151,13 @@ public:
 
 private:
 
-  double rng_base;
-  double rng_limit;
-  double rng_inc;
+  double m_base;
+  double m_limit;
+  double m_inc;
 
-  octave_idx_type rng_numel;
+  octave_idx_type m_numel;
 
-  mutable Matrix cache;
+  mutable Matrix m_cache;
 
   octave_idx_type numel_internal (void) const;
 
@@ -164,18 +165,18 @@ private:
 
   void init (void);
 
-  void clear_cache (void) const { cache.resize (0, 0); }
+  void clear_cache (void) const { m_cache.resize (0, 0); }
 
 protected:
 
   // For operators' usage (to allow all values to be set directly).
   Range (double b, double l, double i, octave_idx_type n)
-    : rng_base (b), rng_limit (l), rng_inc (i),
-      rng_numel (n), cache ()
+    : m_base (b), m_limit (l), m_inc (i),
+      m_numel (n), m_cache ()
   {
     if (! octave::math::isfinite (b) || ! octave::math::isfinite (i)
         || ! octave::math::isfinite (l))
-      rng_numel = -2;
+      m_numel = -2;
   }
 };
 

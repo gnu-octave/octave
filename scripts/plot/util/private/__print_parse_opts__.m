@@ -91,7 +91,9 @@ function arg_st = __print_parse_opts__ (varargin)
   for i = 1:numel (varargin)
     arg = strtrim (varargin{i});
     if (ischar (arg))
-      if (strcmp (arg, "-color"))
+      if (isempty (arg))
+        continue;
+      elseif (strcmp (arg, "-color"))
         arg_st.use_color = 1;
       elseif (strcmp (arg, "-append"))
         arg_st.append_to_file = true;

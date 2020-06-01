@@ -45,7 +45,11 @@
 ## structure is returned.  Otherwise, the font information is displayed
 ## onscreen.
 ##
-## @seealso{text, axes, uicontrol}
+## Programming Note: On systems that don't use FontConfig natively (all but
+## Linux), the font cache is built when Octave is installed.  You will need to
+## run @code{system ("fc-cache -fv")} manually after installing new fonts.
+##
+## @seealso{listfonts, text, axes, uicontrol}
 ## @end deftypefn
 
 function varargout = uisetfont (varargin)

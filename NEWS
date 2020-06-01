@@ -91,7 +91,7 @@ property which is hidden now.
     * "legend" (not yet implemented)
     * "nextseriesindex" (read-only, used by `scatter` graphics objects)
     * "positionconstraint" (replacement for "activepositionproperty"
-      which is now a hidden property. No plans for removal.)
+      which is now a hidden property.  No plans for removal.)
     * "toolbar" (not yet implemented)
     * "xaxis" (not yet implemented)
     * "yaxis" (not yet implemented)
@@ -101,6 +101,7 @@ property which is hidden now.
 
 * `getpixelposition`
 * `endsWith`
+* `listfonts`
 * `memory`
 * `rng`
 * `startsWith`

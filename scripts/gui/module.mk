@@ -23,6 +23,7 @@ FCN_FILE_DIRS += \
   %reldir%/helpdlg.m \
   %reldir%/inputdlg.m \
   %reldir%/isappdata.m \
+  %reldir%/listfonts.m \
   %reldir%/listdlg.m \
   %reldir%/movegui.m \
   %reldir%/msgbox.m \

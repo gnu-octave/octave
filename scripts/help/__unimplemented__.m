@@ -966,7 +966,6 @@ function rlist = missing_functions ()
   "libpointer",
   "libstruct",
   "linkdata",
-  "listfonts",
   "loadlibrary",
   "lsqminnorm",
   "lsqr",

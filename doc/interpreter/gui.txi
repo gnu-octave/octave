@@ -143,6 +143,8 @@ programs that do.  The functions @code{uiwait}, @code{uiresume}, and
 
 @DOCSTRING(getpixelposition)
 
+@DOCSTRING(listfonts)
+
 @DOCSTRING(movegui)
 
 @DOCSTRING(openvar)

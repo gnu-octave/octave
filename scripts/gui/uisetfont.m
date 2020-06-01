@@ -38,7 +38,7 @@
 ## @code{FontWeight}, @code{FontAngle}, @code{FontUnits}, and @code{FontSize},
 ## indicating the initially selected font.
 ##
-## The title of the dialog window can be changed using the last argument
+## The title of the dialog window can be specified by using the last argument
 ## @var{title}.
 ##
 ## If an output argument @var{fontstruct} is requested, the selected font
@@ -75,7 +75,7 @@ function varargout = uisetfont (varargin)
     typ = get (h, "type");
     if (! any (strcmp (typ, {"axes", "text", "uicontrol"})))
       error ("Octave:uisetfont:bad-object",
-             'uisetfont: unhandled object type "%s"', typ);
+             "uisetfont: H must be a handle to an axes, text, or uicontrol object");
     endif
     nargin--;
     varargin(1) = [];
@@ -337,7 +337,7 @@ function struct_to_lists (fontstruct, sysfonts, hlists)
 
 endfunction
 
-function cb_button (h, evt, hlists, role)
+function cb_button (h, ~, hlists, role)
 
   fontstruct = [];
   if (strcmp (role, "ok"))
@@ -349,7 +349,7 @@ function cb_button (h, evt, hlists, role)
 
 endfunction
 
-function cb_list_value_changed (h, evt, hlists, htext, sysfonts)
+function cb_list_value_changed (h, ~, hlists, htext, sysfonts)
 
   if (h == hlists(1))
     set (hlists(2), "string", getstylestring (sysfonts(get (h, "value"))),
@@ -362,66 +362,8 @@ endfunction
 
 
 ## Test input validation
-%!test
-%! [msg, id] = lasterr ();
-%! unwind_protect
-%!   lasterr ("", "");
-%!   try
-%!     uisetfont (1, 2, 3);
-%!   catch
-%!   end_try_catch
-%!   [~, id] = lasterr ();
-%!   assert (id, "Octave:invalid-fun-call");
-%! unwind_protect_cleanup
-%!   lasterr (msg, id);
-%! end_unwind_protect
-
-%!test
-%! [msg, id] = lasterr ();
-%! unwind_protect
-%!   lasterr ("", "");
-%!   try
-%!     uisetfont (110, struct ());
-%!   catch
-%!   end_try_catch
-%!   [~, id] = lasterr ();
-%!   assert (id, "Octave:invalid-fun-call");
-%! unwind_protect_cleanup
-%!   lasterr (msg, id);
-%! end_unwind_protect
-
-%!test
-%! [msg, id] = lasterr ();
-%! unwind_protect
-%!   lasterr ("", "");
-%!   hf = figure ("visible", "off");
-%!   try
-%!     uisetfont (hf);
-%!   catch
-%!   end_try_catch
-%!   [~, id] = lasterr ();
-%!   assert (id, "Octave:uisetfont:bad-object");
-%! unwind_protect_cleanup
-%!   lasterr (msg, id);
-%!   close (hf);
-%! end_unwind_protect
-
-%!test
-%! [msg, id] = lasterr ();
-%! unwind_protect
-%!   lasterr ("", "");
-%!   hf = figure ("visible", "off");
-%!   hax = axes ();
-%!   try
-%!     uisetfont (hax, 1);
-%!   catch
-%!   end_try_catch
-%!   [~, id] = lasterr ();
-%!   assert (id, "Octave:uisetfont:bad-title");
-%! unwind_protect_cleanup
-%!   lasterr (msg, id);
-%!   close (hf);
-%! end_unwind_protect
-
-%!error <structure must have fields FontName, FontWeight, FontAngle, FontUnits, FontSize>
-%!  uisetfont (struct ());
+%!error <Invalid call> uisetfont (1, 2, 3)
+%!error <Invalid call> uisetfont (110, struct ())
+%!error <H must be a handle to an axes> uisetfont (groot ())
+%!error <FONTSTRUCT .* must have fields FontName,.*> uisetfont (struct ())
+%!error <TITLE must be a character vector> uisetfont ({"Title"})

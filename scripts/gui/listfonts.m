@@ -44,7 +44,7 @@ function fonts = listfonts (h)
     print_usage ();
   endif
 
-  if (! isempty (h) && (! ishghandle (h) || ! isprop (h, "fontname")))
+  if (nargin == 1 && (! ishghandle (h) || ! isprop (h, "fontname")))
     error (['listfonts: H must be a handle to a graphics object ', ...
             'with a "fontname" property']);
   endif

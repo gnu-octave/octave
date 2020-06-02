@@ -351,9 +351,6 @@ namespace octave
 
   private:
 
-    QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                          const char *member);
-
     dw_main_window *m_main;
 
     QToolBar *m_tool_bar;

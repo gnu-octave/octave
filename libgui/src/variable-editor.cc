@@ -1123,29 +1123,6 @@ namespace octave
       }
   }
 
-  // Add an action to a menu or the widget itself.
-
-  QAction*
-  variable_editor::add_action (QMenu *menu, const QIcon& icon,
-                               const QString& text,
-                               const char *member)
-  {
-    QAction *a;
-
-    if (menu)
-      a = menu->addAction (icon, text, this, member);
-    else
-      {
-        a = new QAction (this);
-        connect (a, SIGNAL (triggered ()), this, member);
-      }
-
-    addAction (a);  // important for shortcut context
-    a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
-
-    return a;
-  }
-
   void
   variable_editor::edit_variable (const QString& name, const octave_value& val)
   {

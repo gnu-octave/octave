@@ -55,14 +55,10 @@ namespace QtHandles
           {
             disconnect (this, SIGNAL (sendUpdate (int)),
                         m_object, SLOT (slotUpdate (int)));
-            disconnect (this, SIGNAL (sendFinalize (void)),
-                        m_object, SLOT (slotFinalize (void)));
             disconnect (this, SIGNAL (sendRedraw (void)),
                         m_object, SLOT (slotRedraw (void)));
             disconnect (this, SIGNAL (sendShow (void)),
                         m_object, SLOT (slotShow (void)));
-            disconnect (this, SIGNAL (sendPrint (const QString&, const QString&)),
-                        m_object, SLOT (slotPrint (const QString&, const QString&)));
           }
 
         m_object = obj;
@@ -71,15 +67,10 @@ namespace QtHandles
           {
             connect (this, SIGNAL (sendUpdate (int)),
                      m_object, SLOT (slotUpdate (int)));
-            connect (this, SIGNAL (sendFinalize (void)),
-                     m_object, SLOT (slotFinalize (void)));
             connect (this, SIGNAL (sendRedraw (void)),
                      m_object, SLOT (slotRedraw (void)));
             connect (this, SIGNAL (sendShow (void)),
                      m_object, SLOT (slotShow (void)));
-            connect (this, SIGNAL (sendPrint (const QString&, const QString&)),
-                     m_object, SLOT (slotPrint (const QString&, const QString&)),
-                     Qt::BlockingQueuedConnection);
           }
       }
   }
@@ -87,7 +78,10 @@ namespace QtHandles
   void
   ObjectProxy::setObject (Object *obj)
   {
-    finalize ();
+    // Eventually destroy previous Object
+    if (m_object)
+      finalize ();
+
     init (obj);
   }
 
@@ -101,14 +95,15 @@ namespace QtHandles
   ObjectProxy::finalize (void)
   {
     if (! m_object)
-      return;
+      error ("ObjectProxy::finalize: invalid GUI Object");
 
     Qt::ConnectionType t = Qt::BlockingQueuedConnection;
 
     if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
       t = Qt::DirectConnection;
 
-    QMetaObject::invokeMethod (m_object, "slotFinalize", t);
+    if (! QMetaObject::invokeMethod (m_object, "slotFinalize", t))
+      error ("ObjectProxy::finalize: unable to delete GUI Object");
   }
 
   void
@@ -126,12 +121,26 @@ namespace QtHandles
   void
   ObjectProxy::print (const QString& file_cmd, const QString& term)
   {
-    emit sendPrint (file_cmd, term);
+    if (! m_object)
+      error ("ObjectProxy::print: invalid GUI Object");
+
+    Qt::ConnectionType t = Qt::BlockingQueuedConnection;
+
+    if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
+      t = Qt::DirectConnection;
+
+    if (! QMetaObject::invokeMethod (m_object, "slotPrint", t,
+                                     Q_ARG (QString, file_cmd),
+                                     Q_ARG (QString, term)))
+      error ("ObjectProxy::print: unable to print figure");
   }
 
   uint8NDArray
   ObjectProxy::get_pixels (void)
   {
+    if (! m_object)
+      error ("ObjectProxy::finalize: invalid GUI Object");
+
     uint8NDArray retval;
 
     // The ObjectProxy is generally ran from the interpreter thread

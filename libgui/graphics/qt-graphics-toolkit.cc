@@ -107,9 +107,14 @@ namespace QtHandles
     // cross from the interpreter thread (where requests to create
     // graphics object are initiated) to the GUI application thread
     // (where they are actually created and displayed).
+    // We need to make sure the GUI Object and its proxy are properly
+    // created before the initialize method returns, so we use a
+    // BlockingQueuedConnection. After the signal is emitted, the interpreter
+    // thread is locked until the slot has returned.
 
     connect (this, SIGNAL (create_object_signal (double)),
-             this, SLOT (create_object (double)));
+             this, SLOT (create_object (double)),
+             Qt::BlockingQueuedConnection);
   }
 
   bool

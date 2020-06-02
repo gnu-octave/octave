@@ -125,7 +125,11 @@ __prop__ is unused.";
   doc_fontname = "Name of font used for text rendering.  When setting \
 this property, the text rendering engine will search for a matching \
 font in your system.  If none is found then text is rendered using a \
-default sans serif font (same as the default @qcode{\"*\"} value).";
+default sans serif font (same as the default @qcode{\"*\"} value).\n\n\
+Programming Note: On systems that don’t use FontConfig natively \
+(all but Linux), the font cache is built when Octave is installed.  \
+You will need to run @code{system (\"fc-cache -fv\")} manually after \
+installing new fonts.";
   doc_fontunits = "Units used to interpret the @qcode{\"fontsize\"} property.";
   doc_fontweight = "Control the variant of the base font used for \
 text rendering.";

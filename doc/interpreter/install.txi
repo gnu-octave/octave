@@ -233,7 +233,7 @@ performance for functions that compute discrete Fourier transforms
 (@code{fft}, @code{ifft}, @code{fft2}, etc.)
 
 @item FLTK
-Portable GUI toolkit (@url{http://www.fltk.org}).  FLTK is currently
+Portable GUI toolkit (@url{http://www.fltk.org}).  FLTK can be
 used to provide windows for Octave's OpenGL-based graphics functions.
 
 @item fontconfig
@@ -256,7 +256,8 @@ graphics toolkits (currently either FLTK or Qt).
 
 @item gnuplot
 Interactive graphics program (@url{http://www.gnuplot.info}).  gnuplot
-is currently the default graphics renderer for Octave.
+can be used as a graphics renderer for Octave; prior to Octave 4.0,
+gnuplot was the default graphics renderer.
 
 @item GraphicsMagick++
 Image processing library (@url{http://www.graphicsmagick.org}).
@@ -281,11 +282,12 @@ interpreter.
 
 @item OpenGL
 API for portable 2-D and 3-D graphics (@url{https://www.opengl.org}).  An
-OpenGL implementation is required to provide Octave's OpenGL-based
+OpenGL implementation can be used to provide a renderer for Octave's
 graphics functions.  Octave's OpenGL-based graphics functions usually
 outperform the gnuplot-based graphics functions because plot data can be
 rendered directly instead of sending data and commands to gnuplot for
-interpretation and rendering.
+interpretation and rendering.  Since Octave 4.0, the default graphics
+renderer (@qcode{"qt"}) has been OpenGL-based.
 
 @item PortAudio
 PortAudio (@url{http://www.portaudio.com/}) provides a very simple API
@@ -314,7 +316,9 @@ GUI.
 @item Qt
 GUI and utility libraries (@url{https://www.qt.io}).  Qt is required for
 building the GUI@.  It is a large framework, but the only components
-required are the GUI, core, and network modules.
+required are the GUI, core, and network modules.  Since Octave 4.0, the
+default graphics renderer (@qcode{"qt"}) has been Qt-based, which has
+been OpenGL-based.
 
 @item SuiteSparse
 Sparse matrix factorization library

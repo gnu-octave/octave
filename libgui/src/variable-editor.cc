@@ -39,7 +39,6 @@
 #include <QPalette>
 #include <QScreen>
 #include <QScrollBar>
-#include <QSignalMapper>
 #include <QStackedWidget>
 #include <QTabWidget>
 #include <QTableView>
@@ -61,14 +60,6 @@ namespace octave
 {
   // Code reuse functions
 
-  static QString
-  idx_to_expr (int32_t from, int32_t to)
-  {
-    return (from == to
-            ? QString ("%1").arg (from)
-            : QString ("%1:%2").arg (from).arg (to));
-  }
-
   static QSignalMapper *
   make_plot_mapper (QMenu *menu)
   {
@@ -78,11 +69,8 @@ namespace octave
     QSignalMapper *plot_mapper = new QSignalMapper (menu);
 
     for (int i = 0; i < list.size(); ++i)
-      {
-        plot_mapper->setMapping
-          (menu->addAction (list.at (i), plot_mapper, SLOT (map ())),
-           "figure (); " + list.at (i) + " (%1); title (\"%1\");");
-      }
+      plot_mapper->setMapping
+        (menu->addAction (list.at (i), plot_mapper, SLOT (map ())), list.at (i));
 
     return plot_mapper;
   }
@@ -550,30 +538,39 @@ namespace octave
     return range;
   }
 
-  QString
-  variable_editor_view::selected_to_octave (void)
-  {
-    QList<int> range = range_selected ();
-    if (range.isEmpty ())
-      return objectName ();
-
-    QString rows = idx_to_expr (range.at (0), range.at (1));
-    QString cols = idx_to_expr (range.at (2), range.at (3));
-
-    // FIXME: Does cell need separate handling?  Maybe use '{.,.}'?
-
-    return QString ("%1(%2, %3)").arg (objectName ()).arg (rows).arg (cols);
-  }
-
   void
   variable_editor_view::selected_command_requested (const QString& cmd)
   {
     if (! hasFocus ())
       return;
 
-    QString selarg = selected_to_octave ();
-    if (! selarg.isEmpty ())
-      emit command_signal (cmd.arg (selarg));
+    QList<int> range = range_selected ();
+    if (range.isEmpty ())
+      return;
+
+    int s1 = m_var_model->data_rows ();
+    int s2 = m_var_model->data_columns ();
+    if (s1 < range.at (0) || s2 < range.at (2))
+      return; // Selected range does not contain data
+
+    s1 = std::min (s1, range.at (1));
+    s2 = std::min (s2, range.at (3));
+
+    // Variable with desired range as string
+    QString variable = QString ("%1(%2:%3,%4:%5)")
+                                .arg (objectName ())
+                                .arg (range.at (0)).arg (s1)
+                                .arg (range.at (2)).arg (s2);
+
+    // Desired command as string
+    QString command;
+    if (cmd == "create")
+      command = QString ("unnamed = %1;").arg (variable);
+    else
+      command = QString ("figure (); %1 (%2); title ('%2');")
+                          .arg (cmd).arg (variable);
+
+    emit command_signal (command);
   }
 
   void
@@ -748,7 +745,7 @@ namespace octave
   {
     // FIXME: Create unnamed1..n if exist ('unnamed', 'var') is true.
 
-    selected_command_requested ("unnamed = %1");
+    selected_command_requested ("create");
   }
 
   void
@@ -1047,6 +1044,7 @@ namespace octave
       m_table_colors (),
       m_current_focus_vname (""),
       m_hovered_focus_vname (""),
+      m_plot_mapper (nullptr),
       m_focus_widget (nullptr),
       m_focus_widget_vdw (nullptr)
   {
@@ -1227,6 +1225,9 @@ namespace octave
     edit_view->verticalHeader ()->setDefaultSectionSize (m_default_height
                                                          + m_add_font_height);
 
+    connect (m_plot_mapper, SIGNAL (mapped (const QString&)),
+             edit_view, SLOT (selected_command_requested (const QString&)));
+
     connect (edit_view, SIGNAL (command_signal (const QString&)),
              this, SIGNAL (command_signal (const QString&)));
     connect (this, SIGNAL (delete_selected_signal ()),
@@ -1237,8 +1238,6 @@ namespace octave
              edit_view, SLOT (copyClipboard ()));
     connect (this, SIGNAL (paste_clipboard_signal ()),
              edit_view, SLOT (pasteClipboard ()));
-    connect (this, SIGNAL (selected_command_signal (const QString&)),
-             edit_view, SLOT (selected_command_requested (const QString&)));
     connect (edit_view->horizontalHeader (),
              SIGNAL (customContextMenuRequested (const QPoint&)),
              edit_view, SLOT (createColumnMenu (const QPoint&)));
@@ -1506,12 +1505,6 @@ namespace octave
     emit level_up_signal ();
   }
 
-  void
-  variable_editor::relay_selected_command (const QString& cmd)
-  {
-    emit selected_command_signal (cmd);
-  }
-
   // Also updates the font.
 
   void variable_editor::update_colors (void)
@@ -1630,10 +1623,7 @@ namespace octave
     plot_menu->setTitle (tr ("Plot"));
     plot_menu->setSeparatorsCollapsible (false);
 
-    QSignalMapper *plot_mapper = make_plot_mapper (plot_menu);
-
-    connect (plot_mapper, SIGNAL (mapped (const QString&)),
-             this, SLOT (relay_selected_command (const QString&)));
+    m_plot_mapper = make_plot_mapper (plot_menu);
 
     plot_tool_button->setMenu (plot_menu);
 

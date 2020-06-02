@@ -27,6 +27,7 @@
 #define octave_variable_editor_h 1
 
 #include <QHeaderView>
+#include <QSignalMapper>
 #include <QStackedWidget>
 #include <QTableView>
 
@@ -203,9 +204,6 @@ namespace octave
 
     void createRowMenu (const QPoint& pt);
 
-    // Convert selection to an Octave expression.
-    QString selected_to_octave (void);
-
     void selected_command_requested (const QString& cmd);
 
   private:
@@ -317,8 +315,6 @@ namespace octave
 
     void delete_selected_signal (void);
 
-    void selected_command_signal (const QString& cmd);
-
   public slots:
 
     void callUpdate (const QModelIndex&, const QModelIndex&);
@@ -348,10 +344,6 @@ namespace octave
     void pasteClipboard (void);
 
     void levelUp (void);
-
-    // Send command to Octave interpreter.
-    // %1 in CMD is replaced with the value of selected_to_octave.
-    void relay_selected_command (const QString& cmd);
 
   protected:
 
@@ -396,6 +388,8 @@ namespace octave
     QString m_current_focus_vname;
 
     QString m_hovered_focus_vname;
+
+    QSignalMapper *m_plot_mapper;
 
     QWidget *m_focus_widget;
 

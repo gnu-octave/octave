@@ -263,9 +263,19 @@ namespace octave
       return rep->display_rows ();
     }
 
+    octave_idx_type data_rows (void) const
+    {
+      return rep->data_rows ();
+    }
+
     int display_columns (void) const
     {
       return rep->display_columns ();
+    }
+
+    octave_idx_type data_columns (void) const
+    {
+      return rep->data_columns ();
     }
 
     void maybe_resize_rows (int rows);
@@ -316,16 +326,6 @@ namespace octave
     bool is_valid (void) const
     {
       return rep->is_valid ();
-    }
-
-    octave_idx_type data_rows (void) const
-    {
-      return rep->data_rows ();
-    }
-
-    octave_idx_type data_columns (void) const
-    {
-      return rep->data_columns ();
     }
 
     void change_display_size (int old_rows, int old_cols,

@@ -1284,11 +1284,11 @@ function update_icon_position (hicon, xdata, ydata)
   endswitch
 endfunction
 
-function pos = boxposition (axpos, pbam, pba)
+function pos = boxposition (axpos, pba)
   pos = axpos;
   pbratio = pba(1)/pba(2);
   posratio = axpos(3)/axpos(4);
-  if (strcmp (pbam, "manual") && pbratio != posratio)
+  if (pbratio != posratio)
     if (posratio < pbratio)
       pos(4) = pos(3) / pbratio;
       pos(2) += (axpos(4) - pos(4)) / 2;
@@ -1352,7 +1352,7 @@ function update_legend_position (hl, sz)
     [li, axpos, pbam, pba] = get (hax, {"looseinset", "position", ...
                                         "plotboxaspectratiomode", ...
                                         "plotboxaspectratio"}){:};
-    axpos = boxposition (axpos, pbam, pba);
+    axpos = boxposition (axpos, pba);
     lpos = [get(hl, "position")(1:2), sz];
 
     if (! outside)

@@ -3934,11 +3934,7 @@ namespace octave
         && rotation != 180.0 && rotation != 270.0)
       m_glfcns.glRotated (-rotation, 0.0, 0.0, 1.0);
 
-    double m = props.get_margin ();
-    // FIXME: Margin property should be measured in points, not pixels.
-    //        On most screens the conversion factor is 4/3.
-    //        For HiDPI this will not work.
-    m *= 4.0/3.0;
+    double m = points_to_pixels (props.get_margin ());
     const Matrix bbox = props.get_extent_matrix ();
     double x0 = bbox (0) / m_devpixratio - m;
     double x1 = x0 + bbox(2) / m_devpixratio + 2 * m;

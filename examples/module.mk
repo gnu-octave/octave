@@ -1,7 +1,5 @@
 %canon_reldir%_EXTRA_DIST =
 
-%canon_reldir%_EXTRA_DIST =
-
 include %reldir%/code/module.mk
 include %reldir%/data/module.mk
 

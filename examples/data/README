@@ -1,0 +1,51 @@
+* penny data file:
+
+  See the discussion here:
+  https://savannah.gnu.org/patch/?func=detailitem&item_id=8472
+
+* west0479 data file:
+
+  Chemical engineering plant models Eight stage column section, all
+  rigorous from set CHEMWEST, from the Harwell-Boeing Collection.
+
+  west0479.mtx: original file obtained from from
+  https://math.nist.gov/MatrixMarket/data/Harwell-Boeing/chemwest/west0479.html
+
+  west0479.mat: generated from west0479.mtx as follows:
+
+    x = load ("west0479.mtx");
+    nr = x(1,1);
+    nc = x(1,2);
+    i = x(2:end,1);
+    j = x(2:end,2);
+    sv = x(2:end,3);
+    west0479 = sparse(i, j, sv, nr, nc);
+    save -text west0479.mat west0479
+
+  Note that the original file has 1910 entries but 22 of them are exact
+  zeros:
+
+    384 86  0.0000000000000e+00
+    360 116  0.0000000000000e+00
+    361 117  0.0000000000000e+00
+    362 118  0.0000000000000e+00
+    238 224  0.0000000000000e+00
+    239 225  0.0000000000000e+00
+    240 226  0.0000000000000e+00
+    250 240  0.0000000000000e+00
+    251 241  0.0000000000000e+00
+    252 242  0.0000000000000e+00
+    272 259  0.0000000000000e+00
+    273 260  0.0000000000000e+00
+    274 261  0.0000000000000e+00
+    294 278  0.0000000000000e+00
+    295 279  0.0000000000000e+00
+    296 280  0.0000000000000e+00
+    316 297  0.0000000000000e+00
+    317 298  0.0000000000000e+00
+    318 299  0.0000000000000e+00
+    338 316  0.0000000000000e+00
+    339 317  0.0000000000000e+00
+    340 318  0.0000000000000e+00
+
+  These are not explicitly included in the west0479.mat file.

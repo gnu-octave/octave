@@ -385,7 +385,8 @@ input           : simple_list '\n'
                     YYUSE ($2);
 
                     $$ = nullptr;
-                    parser.statement_list (std::shared_ptr<octave::tree_statement_list> ($1));
+                    std::shared_ptr<octave::tree_statement_list> tmp_lst ($1);
+                    parser.statement_list (tmp_lst);
                     YYACCEPT;
                   }
                 | simple_list END_OF_INPUT
@@ -394,7 +395,8 @@ input           : simple_list '\n'
 
                     $$ = nullptr;
                     lexer.m_end_of_input = true;
-                    parser.statement_list (std::shared_ptr<octave::tree_statement_list> ($1));
+                    std::shared_ptr<octave::tree_statement_list> tmp_lst ($1);
+                    parser.statement_list (tmp_lst);
                     YYACCEPT;
                   }
                 | parse_error
@@ -2475,6 +2477,23 @@ namespace octave
       }
 
     return retval;
+  }
+
+  void
+  base_parser::statement_list (std::shared_ptr<tree_statement_list>& lst)
+  {
+    if (m_stmt_list)
+      {
+        // Append additional code to existing statement list.
+
+        while (! lst->empty ())
+          {
+            m_stmt_list->push_back (lst->front ());
+            lst->pop_front ();
+          }
+      }
+    else
+      m_stmt_list = lst;
   }
 
   void
@@ -4815,7 +4834,7 @@ namespace octave
               error ("unexpected exception while parsing %s", file.c_str ());
           }
       }
-    while (status == YYPUSH_MORE);
+    while (status == YYPUSH_MORE || ! m_lexer.at_end_of_buffer ());
 
     if (status != 0)
       parse_error ("%s", m_parse_error_msg.c_str ());

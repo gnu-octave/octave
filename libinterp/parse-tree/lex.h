@@ -542,13 +542,13 @@ namespace octave
     public:
 
       input_buffer (void)
-        : m_buffer (), m_pos (nullptr), m_chars_left (0), m_eof (false)
+        : m_buffer (), m_offset (0), m_chars_left (0), m_eof (false)
       { }
 
       void fill (const std::string& input, bool eof_arg);
 
       // Copy at most max_size characters to buf.
-      int copy_chunk (char *buf, size_t max_size);
+      int copy_chunk (char *buf, size_t max_size, bool by_lines = false);
 
       bool empty (void) const { return m_chars_left == 0; }
 
@@ -557,7 +557,7 @@ namespace octave
     private:
 
       std::string m_buffer;
-      const char *m_pos;
+      size_t m_offset;
       size_t m_chars_left;
       bool m_eof;
     };

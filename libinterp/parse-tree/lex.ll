@@ -2365,24 +2365,37 @@ namespace octave
   {
     m_buffer = input;
     m_chars_left = m_buffer.length ();
-    m_pos = m_buffer.c_str ();
+    m_offset = 0;
     m_eof = eof_arg;
   }
 
+  // If BY_LINES is true, return chunks to the lexer line by line.
   int
-  base_lexer::input_buffer::copy_chunk (char *buf, size_t max_size)
+  base_lexer::input_buffer::copy_chunk (char *buf, size_t max_size,
+                                        bool by_lines)
   {
     static const char * const eol = "\n";
 
-    size_t len = max_size > m_chars_left ? m_chars_left : max_size;
-    assert (len > 0);
+    size_t len = 0;
+    if (by_lines)
+      {
+        size_t newline_pos = m_buffer.find ('\n', m_offset);
+        len = (newline_pos != std::string::npos
+               ? newline_pos - m_offset + 1
+               : (max_size > m_chars_left ? m_chars_left : max_size));
+      }
+    else
+      len = max_size > m_chars_left ? m_chars_left : max_size;
 
-    memcpy (buf, m_pos, len);
+    assert (len > 0);
+    memcpy (buf, m_buffer.c_str () + m_offset, len);
 
     m_chars_left -= len;
-    m_pos += len;
+    m_offset += len;
 
-    // Make sure input ends with a new line character.
+    // Make sure the final input returned to the lexer ends with a new
+    // line character.
+
     if (m_chars_left == 0 && buf[len-1] != '\n')
       {
         if (len < max_size)
@@ -2394,10 +2407,17 @@ namespace octave
         else
           {
             // There isn't enough room to plug the newline character
-            // in the buffer so arrange to have it returned on the next
-            // call to base_lexer::read.
-            m_pos = eol;
+            // in BUF so arrange to have it returned on the next call
+            // to base_lexer::read.
+
+            // At this point we've exhausted the original input
+            // (m_chars_left is zero) so we can overwrite the initial
+            // buffer with a single newline character to be returned on
+            // the next call.
+
+            m_buffer = eol;
             m_chars_left = 1;
+            m_offset = 0;
           }
       }
 
@@ -3831,7 +3851,7 @@ namespace octave
         // character to the input.
 
         if (! m_input_buf.empty ())
-          status = m_input_buf.copy_chunk (buf, max_size);
+          status = m_input_buf.copy_chunk (buf, max_size, true);
         else
           status = YY_NULL;
       }

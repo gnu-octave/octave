@@ -172,10 +172,7 @@ namespace octave
       return m_classdef_object;
     }
 
-    void statement_list (const std::shared_ptr<tree_statement_list>& lst)
-    {
-      m_stmt_list = lst;
-    }
+    void statement_list (std::shared_ptr<tree_statement_list>& lst);
 
     std::shared_ptr<tree_statement_list> statement_list (void) const
     {

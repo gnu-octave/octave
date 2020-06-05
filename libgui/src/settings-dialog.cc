@@ -397,21 +397,33 @@ namespace octave
     le_file_browser_extensions->setText (settings->value (fb_txt_file_ext).toString ());
 
     checkbox_allow_web_connect->setChecked (settings->value (nr_allow_connection).toBool ());
-    useProxyServer->setChecked (
-        settings->value (global_use_proxy.key, global_use_proxy.def).toBool ());
-    proxyHostName->setText (settings->value (global_proxy_host.key, global_proxy_host.def).toString ());
 
-    int currentIndex = 0;
-    QString proxyTypeString = settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
-    while ((currentIndex < proxyType->count ())
-           && (proxyType->currentText () != proxyTypeString))
+    // Proxy
+    bool use_proxy = settings->value (global_use_proxy.key, global_use_proxy.def).toBool ();
+    use_proxy_server->setChecked (use_proxy);
+    // Fill combo box and activate current one
+    QString proxy_type_string = settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
+    proxy_type->addItems (global_proxy_all_types);
+    for (int i = 0; i < global_proxy_all_types.length (); i++)
       {
-        currentIndex++;
-        proxyType->setCurrentIndex (currentIndex);
+        if (proxy_type->itemText (i) == proxy_type_string)
+          {
+            proxy_type->setCurrentIndex (i);
+            break;
+          }
       }
-    proxyPort->setText (settings->value (global_proxy_port.key, global_proxy_port.def).toString ());
-    proxyUserName->setText (settings->value (global_proxy_user.key, global_proxy_user.def).toString ());
-    proxyPassword->setText (settings->value (global_proxy_pass.key, global_proxy_pass.def).toString ());
+    // Fill all line edits
+    proxy_host_name->setText (settings->value (global_proxy_host.key, global_proxy_host.def).toString ());
+    proxy_port->setText (settings->value (global_proxy_port.key, global_proxy_port.def).toString ());
+    proxy_username->setText (settings->value (global_proxy_user.key, global_proxy_user.def).toString ());
+    proxy_password->setText (settings->value (global_proxy_pass.key, global_proxy_pass.def).toString ());
+    // Connect relevant signals for dis-/enabling some elements
+    connect (proxy_type, SIGNAL (currentIndexChanged (int)),
+             this, SLOT (proxy_items_update (void)));
+    connect (use_proxy_server, SIGNAL (toggled (bool)),
+             this, SLOT (proxy_items_update (void)));
+    // Check whehter line edits have to be enabled
+    proxy_items_update ();
 
     // Workspace
     read_workspace_colors (settings);
@@ -594,6 +606,32 @@ namespace octave
         le_file_browser_dir->setDisabled (disable);
         pb_file_browser_dir->setDisabled (disable);
       }
+  }
+
+  // slot for updating enabled state of proxy settings
+  void settings_dialog::proxy_items_update (void)
+  {
+    bool use_proxy = use_proxy_server->isChecked ();
+
+    bool manual = false;
+    for (int i = 0; i < global_proxy_manual_types.length (); i++)
+      {
+        if (proxy_type->currentIndex () == global_proxy_manual_types.at (i))
+          {
+            manual = true;
+            break;
+          }
+      }
+
+    proxy_type->setEnabled (use_proxy);
+    proxy_host_name_label->setEnabled (use_proxy && manual);
+    proxy_host_name->setEnabled (use_proxy && manual);
+    proxy_port_label->setEnabled (use_proxy && manual);
+    proxy_port->setEnabled (use_proxy && manual);
+    proxy_username_label->setEnabled (use_proxy && manual);
+    proxy_username->setEnabled (use_proxy && manual);
+    proxy_password_label->setEnabled (use_proxy && manual);
+    proxy_password->setEnabled (use_proxy && manual);
   }
 
   // slots for import/export of shortcut sets
@@ -951,12 +989,12 @@ namespace octave
     settings->setValue (fb_txt_file_ext.key, le_file_browser_extensions->text ());
 
     settings->setValue (nr_allow_connection.key, checkbox_allow_web_connect->isChecked ());
-    settings->setValue (global_use_proxy.key, useProxyServer->isChecked ());
-    settings->setValue (global_proxy_type.key, proxyType->currentText ());
-    settings->setValue (global_proxy_host.key, proxyHostName->text ());
-    settings->setValue (global_proxy_port.key, proxyPort->text ());
-    settings->setValue (global_proxy_user.key, proxyUserName->text ());
-    settings->setValue (global_proxy_pass.key, proxyPassword->text ());
+    settings->setValue (global_use_proxy.key, use_proxy_server->isChecked ());
+    settings->setValue (global_proxy_type.key, proxy_type->currentText ());
+    settings->setValue (global_proxy_host.key, proxy_host_name->text ());
+    settings->setValue (global_proxy_port.key, proxy_port->text ());
+    settings->setValue (global_proxy_user.key, proxy_username->text ());
+    settings->setValue (global_proxy_pass.key, proxy_password->text ());
     settings->setValue (cs_cursor_use_fgcol.key, terminal_cursorUseForegroundColor->isChecked ());
     settings->setValue (mw_dir_list.key, terminal_focus_command->isChecked ());
     settings->setValue (cs_dbg_location.key, terminal_print_dbg_location->isChecked ());

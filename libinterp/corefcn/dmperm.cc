@@ -103,10 +103,9 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
     {
       CXSPARSE_NAME (d) *dm = CXSPARSE_NAME(_dmperm) (&csm, 0);
 
-      //retval(5) = put_int (dm->rr, 5);
-      //retval(4) = put_int (dm->cc, 5);
       retval = ovl (put_int (dm->p, nr), put_int (dm->q, nc),
-                    put_int (dm->r, dm->nb+1), put_int (dm->s, dm->nb+1));
+                    put_int (dm->r, dm->nb+1), put_int (dm->s, dm->nb+1),
+                    put_int (dm->cc, 5), put_int (dm->rr, 5));
 
       CXSPARSE_NAME (_dfree) (dm);
     }
@@ -116,23 +115,70 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
 
 #endif
 
+// NOTE: the docstring for dmperm is adapted from the text found in the
+// file cs_dmperm.m that is distributed with the CSparse portion of the
+// SuiteSparse library, version 5.6.0.  CSparse is distributed under the
+// terms of the LGPL v2.1 or any later version.
+
 DEFUN (dmperm, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{p} =} dmperm (@var{S})
-@deftypefnx {} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})
+@deftypefn  {} {@var{p} =} dmperm (@var{A})
+@deftypefnx {} {[@var{p}, @var{q}, @var{r}, @var{s}, @var{cc}, @var{rr}] =} dmperm (@var{A})
 
 @cindex @nospell{Dulmage-Mendelsohn} decomposition
 Perform a @nospell{Dulmage-Mendelsohn} permutation of the sparse matrix
-@var{S}.
+@var{A}.
 
-With a single output argument @code{dmperm} performs the row permutations
-@var{p} such that @code{@var{S}(@var{p},:)} has no zero elements on the
-diagonal.
+With a single output argument @code{dmperm} return a maximum matching
+@var{p} such that @code{p(j) = i} if column @var{j}
+is matched to row @var{i}, or 0 if column @var{j} is unmatched.  If
+@var{A} is square and full structural rank, @var{p} is a row permutation
+and @code{A(p,:)} has a zero-free diagonal.  The structural
+rank of @var{A} is @code{sprank(A) = sum(p>0)}.
 
-Called with two or more output arguments, returns the row and column
-permutations, such that @code{@var{S}(@var{p}, @var{q})} is in block
-triangular form.  The values of @var{r} and @var{S} define the boundaries
-of the blocks.  If @var{S} is square then @code{@var{r} == @var{S}}.
+Called with two or more output arguments, return the Dulmage-Mendelsohn
+decomposition of @var{A}.  @var{p} and @var{q} are permutation vectors.
+@var{cc} and @var{rr} are vectors of length 5.  @code{c = A(p,q)} is
+split into a 4-by-4 set of coarse blocks:
+
+@example
+@group
+   A11 A12 A13 A14
+    0  0   A23 A24
+    0  0    0  A34
+    0  0    0  A44
+@end group
+@end example
+
+@noindent
+where @code{A12}, @code{A23}, and @code{A34} are square with zero-free
+diagonals.  The columns of @code{A11} are the unmatched columns, and the
+rows of @code{A44} are the unmatched rows.  Any of these blocks can be
+empty.  In the "coarse" decomposition, the (i,j)-th block is
+@code{C(rr(i):rr(i+1)-1,cc(j):cc(j+1)-1)}.  In terms of a linear system,
+@code{[A11 A12]} is the underdetermined part of the system (it is always
+rectangular and with more columns and rows, or 0-by-0), @code{A23} is
+the well-determined part of the system (it is always square), and
+@code{[A34 ; A44]} is the over-determined part of the system (it is
+always rectangular with more rows than columns, or 0-by-0).
+
+The structural rank of @var{A} is @code{sprank (A) = rr(4)-1}, which is
+an upper bound on the numerical rank of @var{A}.
+@code{sprank(A) = rank(full(sprand(A)))} with probability 1 in exact
+arithmetic.
+
+The @code{A23} submatrix is further subdivided into block upper
+triangular form via the "fine" decomposition (the strongly-connected
+components of @code{A23}).  If @var{A} is square and structurally
+non-singular, @code{A23} is the entire matrix.
+
+@code{C(r(i):r(i+1)-1,s(j):s(j+1)-1)} is the (i,j)-th block of
+the fine decomposition.  The (1,1) block is the rectangular block
+@code{[A11 A12]}, unless this block is 0-by-0.  The (b,b) block is the
+rectangular block @code{[A34 ; A44]}, unless this block is 0-by-0, where
+@code{b = length(r)-1}.  All other blocks of the form
+@code{C(r(i):r(i+1)-1,s(i):s(i+1)-1)} are diagonal blocks of
+@code{A23}, and are square with a zero-free diagonal.
 
 The method used is described in: @nospell{A. Pothen & C.-J. Fan.}
 @cite{Computing the Block Triangular Form of a Sparse Matrix}.

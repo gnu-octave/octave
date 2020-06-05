@@ -1349,10 +1349,15 @@ function update_legend_position (hl, sz)
       return;
     endif
 
-    [li, axpos, pbam, pba] = get (hax, {"looseinset", "position", ...
-                                        "plotboxaspectratiomode", ...
-                                        "plotboxaspectratio"}){:};
-    axpos = boxposition (axpos, pba);
+    [li, axpos, pbam, pba, dam] = get (hax, {"looseinset", "position", ...
+                                             "plotboxaspectratiomode", ...
+                                             "plotboxaspectratio", ...
+                                             "dataaspectratiomode"}){:};
+    
+    if (strcmp (pbam, "manual") || strcmp (dam, "manual"))
+      axpos = boxposition (axpos, pba);
+    endif
+    
     lpos = [get(hl, "position")(1:2), sz];
 
     if (! outside)

@@ -362,8 +362,13 @@ endfunction
 
 
 ## Test input validation
-%!error <Invalid call> uisetfont (1, 2, 3)
-%!error <Invalid call> uisetfont (110, struct ())
-%!error <H must be a handle to an axes> uisetfont (groot ())
-%!error <FONTSTRUCT .* must have fields FontName,.*> uisetfont (struct ())
-%!error <TITLE must be a character vector> uisetfont ({"Title"})
+%!testif HAVE_FONTCONFIG
+%! fail ("uisetfont (1, 2, 3)", "Invalid call");
+%!testif HAVE_FONTCONFIG
+%! fail ("uisetfont (110, struct ())", "Invalid call");
+%!testif HAVE_FONTCONFIG
+%! fail ("uisetfont (groot ())", "H must be a handle to an axes");
+%!testif HAVE_FONTCONFIG
+%! fail ("uisetfont (struct ())", "FONTSTRUCT .* must have fields FontName,.*");
+%!testif HAVE_FONTCONFIG
+%! fail ("uisetfont ({'Title'})", "TITLE must be a character vector");

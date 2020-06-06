@@ -692,6 +692,15 @@ permutations on the tree.
       ridx = scm.xridx ();
       cidx = scm.xcidx ();
     }
+  else if (args(0).islogical ())
+    {
+      SparseBoolMatrix sbm = args(0).sparse_bool_matrix_value ();
+
+      n_row = sbm.rows ();
+      n_col = sbm.cols ();
+      ridx = sbm.xridx ();
+      cidx = sbm.xcidx ();
+    }
   else
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
@@ -763,7 +772,9 @@ permutations on the tree.
 }
 
 /*
-%!assert (etree (speye (2)), [0, 0]);
+%!assert (etree (sparse ([1,2], [1,2], [1,1], 2, 2)), [0, 0]);
+%!assert (etree (sparse ([1,2], [1,2], [true, true], 2, 2)), [0, 0]);
+%!assert (etree (sparse ([1,2], [1,2], [i,i], 2, 2)), [0, 0]);
 %!assert (etree (gallery ("poisson", 16)), [2:256, 0]);
 
 %!error etree ()

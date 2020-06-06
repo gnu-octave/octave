@@ -186,14 +186,15 @@ function hs = __scatter__ (varargin)
     else
       cdata_args = {"cdata", c};
     endif
+    if filled
+      filled_args = {"markerfacecolor", "flat"};
+    else
+      filled_args = {};
+    endif
 
     hs = __go_scatter__ (hax, "xdata", x(:), "ydata", y(:), "zdata", z(:),
                          cdata_args{:}, "sizedata", s(:), "marker", marker,
-                         newargs{:});
-
-    if filled
-      set (hs, "markerfacecolor", "flat");
-    endif
+                         filled_args{:}, newargs{:});
   endif
 
 endfunction

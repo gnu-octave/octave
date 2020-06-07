@@ -358,66 +358,13 @@ endfunction
 
 
 ## Test input validation
-%!test
-%! [msg, id] = lasterr ();
-%! unwind_protect
-%!   lasterr ("", "");
-%!   try
-%!     uisetfont (1, 2, 3);
-%!   catch
-%!   end_try_catch
-%!   [~, id] = lasterr ();
-%!   assert (id, "Octave:invalid-fun-call");
-%! unwind_protect_cleanup
-%!   lasterr (msg, id);
-%! end_unwind_protect
-
-%!test
-%! [msg, id] = lasterr ();
-%! unwind_protect
-%!   lasterr ("", "");
-%!   try
-%!     uisetfont (110, struct ());
-%!   catch
-%!   end_try_catch
-%!   [~, id] = lasterr ();
-%!   assert (id, "Octave:invalid-fun-call");
-%! unwind_protect_cleanup
-%!   lasterr (msg, id);
-%! end_unwind_protect
-
-%!test
-%! [msg, id] = lasterr ();
-%! unwind_protect
-%!   lasterr ("", "");
-%!   hf = figure ("visible", "off");
-%!   try
-%!     uisetfont (hf);
-%!   catch
-%!   end_try_catch
-%!   [~, id] = lasterr ();
-%!   assert (id, "Octave:uisetfont:bad-object");
-%! unwind_protect_cleanup
-%!   lasterr (msg, id);
-%!   close (hf);
-%! end_unwind_protect
-
-%!test
-%! [msg, id] = lasterr ();
-%! unwind_protect
-%!   lasterr ("", "");
-%!   hf = figure ("visible", "off");
-%!   hax = axes ();
-%!   try
-%!     uisetfont (hax, 1);
-%!   catch
-%!   end_try_catch
-%!   [~, id] = lasterr ();
-%!   assert (id, "Octave:uisetfont:bad-title");
-%! unwind_protect_cleanup
-%!   lasterr (msg, id);
-%!   close (hf);
-%! end_unwind_protect
-
-%!error <structure must have fields FontName, FontWeight, FontAngle, FontUnits, FontSize>
-%!  uisetfont (struct ());
+%!testif HAVE_FONTCONFIG
+%! fail ("uisetfont (1, 2, 3)", "Invalid call");
+%!testif HAVE_FONTCONFIG
+%! fail ("uisetfont (110, struct ())", "Invalid call");
+%!testif HAVE_FONTCONFIG
+%! fail ("uisetfont (groot ())", "unhandled object type");
+%!testif HAVE_FONTCONFIG
+%! fail ("uisetfont (struct ())", "FONTSTRUCT .* must have fields FontName,.*");
+%!testif HAVE_FONTCONFIG
+%! fail ("uisetfont ({'Title'})", "TITLE must be a character vector");

@@ -336,39 +336,108 @@ namespace octave
 
   void resource_manager::update_network_settings (void)
   {
-    if (m_settings)
+    if (! m_settings)
+      return;
+
+    QNetworkProxy proxy;
+
+    // Assume no proxy and empty proxy data
+    QNetworkProxy::ProxyType proxy_type = QNetworkProxy::NoProxy;
+    QString scheme;
+    QString host;
+    int port = 0;
+    QString user;
+    QString pass;
+    QUrl proxy_url = QUrl ();
+
+    if (m_settings->value (global_use_proxy.key, global_use_proxy.def).toBool ())
       {
-        QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+        // Use a proxy, collect all required information
 
-        if (m_settings->value (global_use_proxy.key, global_use_proxy.def).toBool ())
+        QString proxy_type_string
+            = m_settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
+
+        // The proxy type for the Qt proxy settings
+        if (proxy_type_string == "Socks5Proxy")
+          proxy_type = QNetworkProxy::Socks5Proxy;
+        else if (proxy_type_string == "HttpProxy")
+          proxy_type = QNetworkProxy::HttpProxy;
+
+        // The proxy data from the settings
+        if (proxy_type_string == "HttpProxy"
+            || proxy_type_string == "Socks5Proxy")
           {
-            QString proxyTypeString
-              = m_settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
+            host = m_settings->value (global_proxy_host.key,
+                                      global_proxy_host.def).toString ();
+            port = m_settings->value (global_proxy_port.key,
+                                      global_proxy_port.def).toInt ();
+            user = m_settings->value (global_proxy_user.key,
+                                      global_proxy_user.def).toString ();
+            pass = m_settings->value (global_proxy_pass.key,
+                                      global_proxy_pass.def).toString ();
+            if (proxy_type_string == "HttpProxy")
+              scheme = "http";
+            else if (proxy_type_string == "Socks5Proxy")
+              scheme = "socks5";
 
-            if (proxyTypeString == "Socks5Proxy")
-              proxyType = QNetworkProxy::Socks5Proxy;
-            else if (proxyTypeString == "HttpProxy")
-              proxyType = QNetworkProxy::HttpProxy;
+            QUrl env_var_url = QUrl ();
+            proxy_url.setScheme (scheme);
+            proxy_url.setHost (host);
+            proxy_url.setPort (port);
+            if (! user.isEmpty ())
+              proxy_url.setUserName (user);
+            if (! pass.isEmpty ())
+              proxy_url.setPassword (pass);
           }
 
-        QNetworkProxy proxy;
+        // The proxy data from the Environment variables
+        if (proxy_type_string == global_proxy_all_types.at (2))
+          {
+            const int nr_of_env_vars = 6;
+            char env_vars[nr_of_env_vars][20]
+              = { "ALL_PROXY", "all_proxy",
+                  "HTTP_PROXY", "http_proxy",
+                  "HTTPS_PROXY", "https_proxy"};
 
-        proxy.setType (proxyType);
-        proxy.setHostName (m_settings->value (global_proxy_host.key,
-                                              global_proxy_host.def).toString ());
-        proxy.setPort (m_settings->value (global_proxy_port.key,
-                                          global_proxy_port.def).toInt ());
-        proxy.setUser (m_settings->value (global_proxy_user.key,
-                                          global_proxy_user.def).toString ());
-        proxy.setPassword (m_settings->value (global_proxy_pass.key,
-                                              global_proxy_pass.def).toString ());
+            int count = 0;
+            while ((! proxy_url.isValid ()) && (count < nr_of_env_vars))
+              {
+                proxy_url = QUrl (QString (getenv (env_vars[count])));
+                count++;
+              }
 
-        QNetworkProxy::setApplicationProxy (proxy);
+            if (proxy_url.isValid ())
+              {
+                // Found an entry, get the data from the string
+                scheme = proxy_url.scheme ();
+
+                if (scheme.contains ("socks", Qt::CaseInsensitive))
+                  proxy_type = QNetworkProxy::Socks5Proxy;
+                else
+                  proxy_type = QNetworkProxy::HttpProxy;
+
+                host = proxy_url.host ();
+                port = proxy_url.port ();
+                user = proxy_url.userName ();
+                pass = proxy_url.password ();
+              }
+          }
       }
-    else
-      {
-        // FIXME: Is this an error?  If so, what should we do?
-      }
+
+      // Set proxy for Qt framework
+      proxy.setType (proxy_type);
+      proxy.setHostName (host);
+      proxy.setPort (port);
+      proxy.setUser (user);
+      proxy.setPassword (pass);
+
+      QNetworkProxy::setApplicationProxy (proxy);
+
+      // Set proxy for curl library if not based on environment variables
+      setenv ("http_proxy", proxy_url.toString ().toLocal8Bit ().data (), 1);
+      setenv ("HTTP_PROXY", proxy_url.toString ().toLocal8Bit ().data (), 1);
+      setenv ("https_proxy", proxy_url.toString ().toLocal8Bit ().data (), 1);
+      setenv ("HTTPS_PROXY", proxy_url.toString ().toLocal8Bit ().data (), 1);
   }
 
   QIcon resource_manager::icon (const QString& icon_name, bool fallback)

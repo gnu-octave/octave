@@ -108,7 +108,7 @@ function hs = __scatter__ (varargin)
   x(idx) = [];
   y(idx) = [];
   if (nd == 2)
-    z = zeros (length (x), 0);
+    z = zeros (numel (x), 0);
   endif
   if (numel (s) > 1)
     s(idx) = [];
@@ -192,6 +192,12 @@ function hs = __scatter__ (varargin)
       filled_args = {};
     endif
 
+    if (filled)
+      fill_args = {"markeredgecolor", "none", "markerfacecolor", "flat"};
+    else
+      fill_args = {"markeredgecolor", "flat", "markerfacecolor", "none"};
+    endif
+
     hs = __go_scatter__ (hax, "xdata", x(:), "ydata", y(:), "zdata", z(:),
                          cdata_args{:}, "sizedata", s(:), "marker", marker,
                          filled_args{:}, newargs{:});
@@ -200,27 +206,27 @@ function hs = __scatter__ (varargin)
 endfunction
 
 
-function rgb = str2rgb(str)
-## convert a color code to the corresponding rgb values
-rgb = [];
+function rgb = str2rgb (str)
+  ## Convert a color code to the corresponding RGB values
+  rgb = [];
 
-switch str
-  case 'b'
-    rgb = [0, 0, 1];
-  case 'k'
-    rgb = [0, 0, 0];
-  case 'r'
-    rgb = [1, 0, 0];
-  case 'g'
-    rgb = [0, 1, 0];
-  case 'y'
-    rgb = [1, 1, 0];
-  case 'm'
-    rgb = [1, 0, 1];
-  case 'c'
-    rgb = [0, 1, 1];
-  case 'w'
-    rgb = [1, 1, 1];
+  switch (str)
+    case 'b'
+      rgb = [0, 0, 1];
+    case 'k'
+      rgb = [0, 0, 0];
+    case 'r'
+      rgb = [1, 0, 0];
+    case 'g'
+      rgb = [0, 1, 0];
+    case 'y'
+      rgb = [1, 1, 0];
+    case 'm'
+      rgb = [1, 0, 1];
+    case 'c'
+      rgb = [0, 1, 1];
+    case 'w'
+      rgb = [1, 1, 1];
 endswitch
 
 endfunction

@@ -5185,7 +5185,7 @@ public:
       string_property longitudedatasource , ""
       radio_property marker , "{o}|+|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram|none"
       double_property markeredgealpha , 1.0
-      color_property markeredgecolor , color_property (radio_values ("{flat}"), color_values (0, 0, 0))
+      color_property markeredgecolor , color_property (radio_values ("{flat}|none"), color_values (0, 0, 0))
       double_property markerfacealpha , 1.0
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       array_property rdata , Matrix ()

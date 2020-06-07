@@ -71,8 +71,10 @@ distribution for more detailed installation instructions.
 Bugs and Patches
 ----------------
 
-The file `BUGS` explains the recommended procedure for reporting bugs
-on the [bug tracker](https://bugs.octave.org) or contributing patches.
+The file `BUGS` (or `doc/interpreter/bugs.txi`) explains the recommended
+procedure for reporting bugs on the [bug tracker](https://bugs.octave.org)
+or contributing patches; online documentation is also available
+[here](https://www.gnu.org/software/octave/bugs.html).
 
 Documentation
 -------------

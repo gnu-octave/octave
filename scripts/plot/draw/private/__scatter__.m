@@ -175,27 +175,21 @@ function hs = __scatter__ (varargin)
 
   else
     ## Use OpenGL rendering for "qt" and "fltk" graphics toolkits
-    if isempty (x)
+    if (isempty (x))
       c = x;
     endif
-    if ischar (c)
+    if (ischar (c))
       c = str2rgb (c);
     endif
-    if isempty (c)
+    if (isempty (c))
       cdata_args = {};
     else
       cdata_args = {"cdata", c};
     endif
-    if filled
-      filled_args = {"markerfacecolor", "flat"};
+    if (filled)
+      filled_args = {"markeredgecolor", "none", "markerfacecolor", "flat"};
     else
       filled_args = {};
-    endif
-
-    if (filled)
-      fill_args = {"markeredgecolor", "none", "markerfacecolor", "flat"};
-    else
-      fill_args = {"markeredgecolor", "flat", "markerfacecolor", "none"};
     endif
 
     hs = __go_scatter__ (hax, "xdata", x(:), "ydata", y(:), "zdata", z(:),

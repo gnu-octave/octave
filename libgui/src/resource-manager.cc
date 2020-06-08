@@ -393,16 +393,16 @@ namespace octave
         // The proxy data from the Environment variables
         if (proxy_type_string == global_proxy_all_types.at (2))
           {
-            const int nr_of_env_vars = 6;
-            char env_vars[nr_of_env_vars][20]
-              = { "ALL_PROXY", "all_proxy",
+            const std::vector<std::string> env_vars = 
+                { "ALL_PROXY", "all_proxy",
                   "HTTP_PROXY", "http_proxy",
-                  "HTTPS_PROXY", "https_proxy"};
+                  "HTTPS_PROXY", "https_proxy" };
 
-            int count = 0;
-            while ((! proxy_url.isValid ()) && (count < nr_of_env_vars))
+            unsigned int count = 0;
+            while ((! proxy_url.isValid ()) && (count < env_vars.size ()))
               {
-                proxy_url = QUrl (QString (getenv (env_vars[count])));
+                proxy_url = QUrl (QString::fromStdString
+                                    (sys::env::getenv (env_vars[count])));
                 count++;
               }
 
@@ -424,20 +424,21 @@ namespace octave
           }
       }
 
-      // Set proxy for Qt framework
-      proxy.setType (proxy_type);
-      proxy.setHostName (host);
-      proxy.setPort (port);
-      proxy.setUser (user);
-      proxy.setPassword (pass);
+    // Set proxy for Qt framework
+    proxy.setType (proxy_type);
+    proxy.setHostName (host);
+    proxy.setPort (port);
+    proxy.setUser (user);
+    proxy.setPassword (pass);
 
-      QNetworkProxy::setApplicationProxy (proxy);
+    QNetworkProxy::setApplicationProxy (proxy);
 
-      // Set proxy for curl library if not based on environment variables
-      setenv ("http_proxy", proxy_url.toString ().toLocal8Bit ().data (), 1);
-      setenv ("HTTP_PROXY", proxy_url.toString ().toLocal8Bit ().data (), 1);
-      setenv ("https_proxy", proxy_url.toString ().toLocal8Bit ().data (), 1);
-      setenv ("HTTPS_PROXY", proxy_url.toString ().toLocal8Bit ().data (), 1);
+    // Set proxy for curl library if not based on environment variables
+    std::string proxy_url_str = proxy_url.toString().toStdString ();
+    sys::env::putenv ("http_proxy", proxy_url_str);
+    sys::env::putenv ("HTTP_PROXY", proxy_url_str);
+    sys::env::putenv ("https_proxy", proxy_url_str);
+    sys::env::putenv ("HTTPS_PROXY", proxy_url_str);
   }
 
   QIcon resource_manager::icon (const QString& icon_name, bool fallback)

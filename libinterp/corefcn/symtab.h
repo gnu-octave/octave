@@ -75,6 +75,9 @@ namespace octave
     octave_value find_scoped_function (const std::string& name,
                                        const symbol_scope& search_scope);
 
+    octave_value find_private_function (const std::string& dir_name,
+                                        const std::string& name);
+
     // FIXME: this function only finds legacy class methods, not
     // classdef methods.
     octave_value find_method (const std::string& name,

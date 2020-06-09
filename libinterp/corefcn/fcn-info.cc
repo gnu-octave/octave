@@ -661,35 +661,41 @@ namespace octave
 
         // Private function.
 
-        std::string dir_name = search_scope.dir_name ();
+        return find_private_function (search_scope.dir_name ());
+      }
 
-        if (! dir_name.empty ())
+    return octave_value ();
+  }
+
+  octave_value
+  fcn_info::fcn_info_rep::find_private_function (const std::string& dir_name)
+  {
+    if (! dir_name.empty ())
+      {
+        auto q = private_functions.find (dir_name);
+
+        if (q == private_functions.end ())
           {
-            auto q = private_functions.find (dir_name);
+            octave_value val = load_private_function (dir_name);
 
-            if (q == private_functions.end ())
+            if (val.is_defined ())
+              return val;
+          }
+        else
+          {
+            octave_value& fval = q->second;
+
+            if (fval.is_defined ())
+              out_of_date_check (fval, "", false);
+
+            if (fval.is_defined ())
+              return fval;
+            else
               {
                 octave_value val = load_private_function (dir_name);
 
                 if (val.is_defined ())
                   return val;
-              }
-            else
-              {
-                octave_value& fval = q->second;
-
-                if (fval.is_defined ())
-                  out_of_date_check (fval, "", false);
-
-                if (fval.is_defined ())
-                  return fval;
-                else
-                  {
-                    octave_value val = load_private_function (dir_name);
-
-                    if (val.is_defined ())
-                      return val;
-                  }
               }
           }
       }

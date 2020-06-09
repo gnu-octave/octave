@@ -95,6 +95,30 @@ namespace octave
       }
   }
 
+  octave_value
+  symbol_table::find_private_function (const std::string& dir_name,
+                                       const std::string& name)
+  {
+    if (name.empty ())
+      return octave_value ();
+
+    fcn_table_const_iterator p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      return p->second.find_private_function (dir_name);
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find_private_function (dir_name);
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
+  }
+
   // FIXME: this function only finds legacy class methods, not
   // classdef methods.
 

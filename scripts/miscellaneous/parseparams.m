@@ -85,7 +85,7 @@ function [reg, varargout] = parseparams (params, varargin)
     if (! size_equal (names, defaults))
       error ("parseparams: needs odd number of arguments");
     endif
-    [names, sidx] = sort (names);
+    [names, sidx] = sort (toupper (names));
 
     varargout = defaults;
     if (i)
@@ -95,7 +95,7 @@ function [reg, varargout] = parseparams (params, varargin)
       if (! size_equal (pnames, values) || ! all (strs(i:2:end)))
         error_as_caller ("options must be given as name-value pairs");
       endif
-      idx = lookup (toupper (names), toupper (pnames), "m");
+      idx = lookup (names, toupper (pnames), "m");
       if (! all (idx))
         error_as_caller ("unrecognized option: %s", pnames{find (idx == 0, 1)});
       else
@@ -129,6 +129,11 @@ endfunction
 %! [reg, prop1] = parseparams ({"linewidth", 5}, "linewidth", 10);
 %! assert (isempty (reg));
 %! assert (prop1, 5);
+%!test <*58533>
+%! [foo, bar1, bar2] = parseparams({ 0, "model", 1, "N", 2},"model", 4, "N", 5, "d", 6);
+%! assert (foo, {0});
+%! assert (bar1, 1);
+%! assert (bar2, 2);
 
 %!error <needs odd number of arguments> parseparams ({1}, "linewidth")
 %!error <must be given as name-value pairs> parseparams ({1, "color"}, "linewidth", 5)

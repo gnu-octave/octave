@@ -353,7 +353,6 @@ namespace octave
     if (m_settings->value (global_use_proxy.key, global_use_proxy.def).toBool ())
       {
         // Use a proxy, collect all required information
-
         QString proxy_type_string
             = m_settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
 
@@ -390,16 +389,16 @@ namespace octave
               proxy_url.setPassword (pass);
           }
 
-        // The proxy data from the Environment variables
+        // The proxy data from environment variables
         if (proxy_type_string == global_proxy_all_types.at (2))
           {
-            const std::vector<std::string> env_vars = 
+            const std::array<std::string, 6> env_vars =
                 { "ALL_PROXY", "all_proxy",
                   "HTTP_PROXY", "http_proxy",
                   "HTTPS_PROXY", "https_proxy" };
 
             unsigned int count = 0;
-            while ((! proxy_url.isValid ()) && (count < env_vars.size ()))
+            while (! proxy_url.isValid () && count < env_vars.size ())
               {
                 proxy_url = QUrl (QString::fromStdString
                                     (sys::env::getenv (env_vars[count])));

@@ -72,6 +72,9 @@ namespace octave
 
     bool is_built_in_function_name (const std::string& name);
 
+    octave_value find_scoped_function (const std::string& name,
+                                       const symbol_scope& search_scope);
+
     // FIXME: this function only finds legacy class methods, not
     // classdef methods.
     octave_value find_method (const std::string& name,

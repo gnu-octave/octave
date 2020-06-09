@@ -71,6 +71,30 @@ namespace octave
     return val.is_defined ();
   }
 
+  octave_value
+  symbol_table::find_scoped_function (const std::string& name,
+                                      const symbol_scope& search_scope)
+  {
+    if (name.empty ())
+      return octave_value ();
+
+    fcn_table_const_iterator p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      return p->second.find_scoped_function (search_scope);
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find_scoped_function (search_scope);
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
+  }
+
   // FIXME: this function only finds legacy class methods, not
   // classdef methods.
 

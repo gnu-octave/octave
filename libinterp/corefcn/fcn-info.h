@@ -259,7 +259,7 @@ namespace octave
       return m_rep->builtin_find (search_scope);
     }
 
-    octave_value find_scoped_function (const symbol_scope& search_scope)
+    octave_value find_scoped_function (const symbol_scope& search_scope) const
     {
       return m_rep->find_scoped_function (search_scope);
     }

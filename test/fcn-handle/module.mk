@@ -20,6 +20,8 @@ fcn_handle_TEST_FILES = \
   %reldir%/keyword.tst \
   %reldir%/object-method.tst \
   %reldir%/package-function.tst \
+  %reldir%/shared-ctx.tst \
+  %reldir%/shared_ctx.m \
   %reldir%/static-method.tst
 
 TEST_FILES += $(fcn_handle_TEST_FILES)

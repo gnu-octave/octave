@@ -15,6 +15,7 @@ fcn_handle_TEST_FILES = \
   %reldir%/bug51709_a.m \
   %reldir%/bug51709_c.m \
   %reldir%/bug57941.tst \
+  %reldir%/bug58519.tst \
   %reldir%/bug57941a.m \
   %reldir%/bug57941b.m \
   %reldir%/derived-resolution.tst \

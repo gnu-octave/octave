@@ -12,6 +12,9 @@ fcn_handle_TEST_FILES = \
   %reldir%/@fhdr_parent/numel.m \
   %reldir%/bug51709_a.m \
   %reldir%/bug51709_c.m \
+  %reldir%/bug57941a.m \
+  %reldir%/bug57941b.m \
+  %reldir%/bug57941.tst \
   %reldir%/derived-resolution.tst \
   %reldir%/f1.m \
   %reldir%/keyword.tst \

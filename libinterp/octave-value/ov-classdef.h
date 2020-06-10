@@ -218,6 +218,8 @@ public:
   bool accepts_postfix_index (char type) const
   { return object.meta_accepts_postfix_index (type); }
 
+  bool is_classdef_method (const std::string& cname = "") const;
+
   bool is_classdef_constructor (const std::string& cname = "") const;
 
 private:

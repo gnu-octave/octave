@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <array>
 #include <string>
 
 #include <QDir>

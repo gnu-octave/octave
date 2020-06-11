@@ -2531,7 +2531,8 @@ Undocumented internal function.
       toolkit_loaded = true;
 
       octave_value fcn (new octave_builtin (F__fltk_check__));
-      octave_value fcn_handle (new octave_fcn_handle (fcn, "@__fltk_check__"));
+      octave_value fcn_handle (new octave_fcn_handle (fcn));
+
       octave_value_list id = Fadd_input_event_hook (interp, fcn_handle, 1);
 
       fltk->set_input_event_hook_id (id);

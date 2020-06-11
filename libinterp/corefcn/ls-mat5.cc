@@ -66,12 +66,12 @@
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "ov-class.h"
-#include "ov-fcn-inline.h"
 #include "ov.h"
 #include "ovl.h"
 #include "pager.h"
 #include "parse.h"
 #include "pt-eval.h"
+#include "stack-frame.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -862,8 +862,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         if (ftype == "simple" || ftype == "scopedfunction")
           {
             if (fpath.empty ())
-              // We have a builtin function
-              tc = make_fcn_handle (interp, fname);
+              {
+                octave::tree_evaluator& tw = interp.get_evaluator ();
+
+                // We have a builtin function
+                // XXX FCN_HANDLE: SIMPLE/SCOPED
+                tc = tw.make_fcn_handle (fname);
+              }
             else
               {
                 std::string mroot = m0.contents ("matlabroot").string_value ();
@@ -897,6 +902,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                                         "", "", fname);
 
                         if (ov_fcn.is_defined ())
+                          // XXX FCN_HANDLE: SIMPLE/SCOPED
                           tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                       }
                     else
@@ -923,6 +929,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                                         "", "", fname);
 
                         if (ov_fcn.is_defined ())
+                          // XXX FCN_HANDLE: SIMPLE/SCOPED
                           tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                         else
                           {
@@ -945,6 +952,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                                     "", "", fname);
 
                     if (ov_fcn.is_defined ())
+                      // XXX FCN_HANDLE: SIMPLE/SCOPED
                       tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
                     else
                       {
@@ -974,14 +982,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             tc2 = m2.contents ("MCOS").cell_value ()(1 + off).cell_value ()(1);
             m2 = tc2.scalar_map_value ();
 
-            octave::unwind_protect_safe frame;
-
-            // Set up temporary scope to use for evaluating the text
-            // that defines the anonymous function.
-
-            octave::tree_evaluator& tw = interp.get_evaluator ();
-            tw.push_dummy_scope ("read_mat5_binary_element");
-            frame.add_method (tw, &octave::tree_evaluator::pop_scope);
+            octave::stack_frame::local_vars_map local_vars;
 
             if (m2.nfields () > 0)
               {
@@ -992,9 +993,26 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string key = m2.key (p0);
                     octave_value val = m2.contents (p0);
 
-                    interp.assign (key, val);
+                    local_vars[key] = val;
                   }
               }
+
+            // Set up temporary scope to use for evaluating the text
+            // that defines the anonymous function so that we don't
+            // pick up values of random variables that might be in the
+            // current scope.
+
+            octave::tree_evaluator& tw = interp.get_evaluator ();
+            tw.push_dummy_scope ("read_mat5_binary_element");
+
+            octave::unwind_action act ([&tw] () { tw.pop_scope (); });
+
+            // FIXME: If evaluation of the string gives us an anonymous
+            // function handle object, then why extract the function and
+            // create a new anonymous function object?  Why not just
+            // attach the workspace values to the object returned by
+            // eval_string?  This code is also is duplicated in
+            // anon_fcn_handle::parse_anon_fcn_handle.
 
             int parse_status;
             octave_value anon_fcn_handle
@@ -1008,7 +1026,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             if (! fh)
               error ("load: failed to load anonymous function handle");
 
-            tc = new octave_fcn_handle (fh->fcn_val (), "@<anonymous>");
+            // XXX FCN_HANDLE: ANONYMOUS
+            tc = octave_value (new octave_fcn_handle (fh->fcn_val (), local_vars));
           }
         else
           error ("load: invalid function handle type");
@@ -1175,60 +1194,50 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (isclass)
           {
-            if (classname == "inline")
+            octave::cdef_manager& cdm = interp.get_cdef_manager ();
+
+            if (cdm.find_class (classname, false, true).ok ())
               {
-                // inline is not an object in Octave but rather an
-                // overload of a function handle.  Special case.
-                tc = new octave_fcn_inline (m.contents ("expr")(0).string_value (),
-                                            m.contents ("args")(0).string_value ());
+                tc = m;
+                warning_with_id ("Octave:load:classdef-to-struct",
+                                 "load: classdef element has been converted to a struct");
               }
             else
               {
-                octave::cdef_manager& cdm = interp.get_cdef_manager ();
+                octave_class *cls
+                  = new octave_class (m, classname,
+                                      std::list<std::string> ());
 
-                if (cdm.find_class (classname, false, true).ok ())
+                if (cls->reconstruct_exemplar ())
                   {
-                    tc = m;
-                    warning_with_id ("Octave:load:classdef-to-struct",
-                                     "load: classdef element has been converted to a struct");
+
+                    if (! cls->reconstruct_parents ())
+                      warning_with_id ("Octave:load:classdef-object-inheritance",
+                                       "load: unable to reconstruct object inheritance");
+
+                    tc = cls;
+
+                    octave::load_path& lp = interp.get_load_path ();
+
+                    if (lp.find_method (classname, "loadobj") != "")
+                      {
+                        try
+                          {
+                            octave_value_list tmp = octave::feval ("loadobj", tc, 1);
+
+                            tc = tmp(0);
+                          }
+                        catch (const octave::execution_exception&)
+                          {
+                            goto data_read_error;
+                          }
+                      }
                   }
                 else
                   {
-                    octave_class *cls
-                      = new octave_class (m, classname,
-                                          std::list<std::string> ());
-
-                    if (cls->reconstruct_exemplar ())
-                      {
-
-                        if (! cls->reconstruct_parents ())
-                          warning_with_id ("Octave:load:classdef-object-inheritance",
-                                           "load: unable to reconstruct object inheritance");
-
-                        tc = cls;
-
-                        octave::load_path& lp = interp.get_load_path ();
-
-                        if (lp.find_method (classname, "loadobj") != "")
-                          {
-                            try
-                              {
-                                octave_value_list tmp = octave::feval ("loadobj", tc, 1);
-
-                                tc = tmp(0);
-                              }
-                            catch (const octave::execution_exception&)
-                              {
-                                goto data_read_error;
-                              }
-                          }
-                      }
-                    else
-                      {
-                        tc = m;
-                        warning_with_id ("Octave:load:classdef-to-struct",
-                                         "load: element has been converted to a structure");
-                      }
+                    tc = m;
+                    warning_with_id ("Octave:load:classdef-to-struct",
+                                     "load: element has been converted to a structure");
                   }
               }
           }

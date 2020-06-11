@@ -84,7 +84,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     endif
   endif
 
-  if (strcmp (typeinfo (fun), "inline function"))
+  if (isa (fun, "inline"))
     argids = argnames (fun);
     if (isplot && length (argids) == 2)
       nargs = 2;
@@ -147,7 +147,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       yarg = args{2};
     endif
   else
-    error ("%s: F must be string, inline function, or function handle", ezfunc);
+    error ("%s: F must be a string or function handle", ezfunc);
   endif
 
   if (nargin > 2 || (nargin == 2 && isplot))
@@ -165,7 +165,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
         error ("%s: expecting a function of %d arguments", ezfunc, nargs);
       endif
       fstry = formula (funy);
-    elseif (strcmp (typeinfo (funy), "inline function"))
+    elseif (isa (funy, "inline"))
       parametric = true;
       if (numel (argnames (funy)) != nargs)
         error ("%s: expecting a function of %d arguments", ezfunc, nargs);
@@ -210,7 +210,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
           error ("%s: expecting a function of %d arguments", ezfunc, nargs);
         endif
         fstrz = formula (funz);
-      elseif (strcmp (typeinfo (funz), "inline function"))
+      elseif (isa (funz, "inline"))
         if (numel (argnames (funz)) != nargs)
           error ("%s: expecting a function of %d arguments", ezfunc, nargs);
         endif

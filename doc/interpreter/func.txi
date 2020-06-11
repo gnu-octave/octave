@@ -40,7 +40,7 @@ functions.
 * Validating Arguments::
 * Function Files::
 * Script Files::
-* Function Handles Anonymous Functions Inline Functions::
+* Function Handles and Anonymous Functions::
 * Commands::
 * Organization of Functions::
 @end menu
@@ -1733,11 +1733,10 @@ markup, that is only visible in this kind of output.
 @end group
 @end example
 
-@node Function Handles Anonymous Functions Inline Functions
-@section Function Handles, Anonymous Functions, Inline Functions
+@node Function Handles and Anonymous Functions
+@section Function Handles and Anonymous Functions
 @cindex handle, function handles
 @cindex anonymous functions
-@cindex inline, inline functions
 
 It can be very convenient store a function in a variable so that it
 can be passed to a different function.  For example, a function that
@@ -1747,7 +1746,6 @@ should be minimized.
 @menu
 * Function Handles::
 * Anonymous Functions::
-* Inline Functions::
 @end menu
 
 @node Function Handles
@@ -1886,34 +1884,6 @@ f = @@plus
 
 @xref{Operator Overloading}, for a list of operators which also have a
 functional form.
-
-@node Inline Functions
-@subsection Inline Functions
-
-An inline function is created from a string containing the function
-body using the @code{inline} function.  The following code defines the
-function @math{f(x) = x^2 + 2}.
-
-@example
-f = inline ("x^2 + 2");
-@end example
-
-@noindent
-After this it is possible to evaluate @math{f} at any @math{x} by
-writing @code{f(x)}.
-
-@strong{Caution}: @sc{matlab} has begun the process of deprecating inline
-functions.  At some point in the future support will be dropped and eventually
-Octave will follow @sc{matlab} and also remove inline functions.  Use anonymous
-functions in all new code.
-
-@DOCSTRING(inline)
-
-@DOCSTRING(argnames)
-
-@DOCSTRING(formula)
-
-@DOCSTRING(symvar)
 
 @node Commands
 @section Commands

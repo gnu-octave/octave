@@ -63,18 +63,18 @@
 namespace octave
 {
   static octave_value
-  make_fcn_handle (interpreter& interp, const octave_value& fcn,
-                   const std::string& nm)
+  make_fcn_handle (const octave_value& fcn, const std::string& meth_name,
+                   const std::string& class_name)
   {
     octave_value retval;
 
     if (fcn.is_defined ())
       {
-        tree_evaluator& tw = interp.get_evaluator ();
+        // FCN_HANDLE: METHOD
+        octave_fcn_handle *fh
+          = new octave_fcn_handle (fcn, class_name, meth_name);
 
-        symbol_scope curr_scope = tw.get_current_scope ();
-
-        retval = octave_value (new octave_fcn_handle (curr_scope, fcn, nm));
+        retval = octave_value (fh);
       }
 
     return retval;
@@ -981,12 +981,10 @@ namespace octave
 
                     if (mprefix == "get.")
                       get_methods[mname.substr (4)]
-                        = make_fcn_handle (interp, mtd,
-                                           full_class_name + '>' + mname);
+                        = make_fcn_handle (mtd, mname, full_class_name);
                     else if (mprefix == "set.")
                       set_methods[mname.substr (4)]
-                        = make_fcn_handle (interp, mtd,
-                                           full_class_name + '>' + mname);
+                        = make_fcn_handle (mtd, mname, full_class_name);
                     else
                       {
                         cdef_method meth = cdm.make_method (retval, mname, mtd);

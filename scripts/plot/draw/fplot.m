@@ -83,11 +83,9 @@
 ##
 ## @code{fplot} performance is better when the function accepts and returns a
 ## vector argument.  Consider this when writing user-defined functions and use
-## element-by-element operators such as @code{.*}, @code{./}, etc.  See the
-## function @code{vectorize} for potentially converting inline or anonymous
-## functions to vectorized versions.
+## element-by-element operators such as @code{.*}, @code{./}, etc.
 ##
-## @seealso{ezplot, plot, vectorize}
+## @seealso{ezplot, plot}
 ## @end deftypefn
 
 function [X, Y] = fplot (varargin)
@@ -99,8 +97,8 @@ function [X, Y] = fplot (varargin)
   endif
 
   fn = varargin{1};
-  if (strcmp (typeinfo (fn), "inline function"))
-    fn = vectorize (fn);
+  if (isa (fn, "inline"))
+    fn = vectorize (inline (fn));
     nam = formula (fn);
   elseif (is_function_handle (fn))
     nam = func2str (fn);

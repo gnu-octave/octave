@@ -44,9 +44,7 @@
 #include "pager.h"
 #include "parse.h"
 #include "stack-frame.h"
-#include "stack-frame-walker.h"
 #include "syminfo.h"
-#include "syminfo-accumulator.h"
 #include "symrec.h"
 #include "symscope.h"
 #include "variables.h"
@@ -96,7 +94,7 @@ namespace octave
 
     if (! m_cs.empty ())
       {
-        const stack_frame *elt = m_cs[m_curr_frame];
+        const std::shared_ptr<stack_frame> elt = m_cs[m_curr_frame];
         retval = elt->line ();
       }
 
@@ -109,7 +107,7 @@ namespace octave
 
     if (! m_cs.empty ())
       {
-        const stack_frame *elt = m_cs[m_curr_frame];
+        const std::shared_ptr<stack_frame> elt = m_cs[m_curr_frame];
         retval = elt->column ();
       }
 
@@ -124,7 +122,7 @@ namespace octave
 
     if (xframe > 0)
       {
-        const stack_frame *elt = m_cs[xframe];
+        const std::shared_ptr<stack_frame> elt = m_cs[xframe];
 
         octave_function *f = elt->function ();
 
@@ -143,7 +141,7 @@ namespace octave
 
     if (xframe > 0)
       {
-        const stack_frame *elt = m_cs[xframe];
+        const std::shared_ptr<stack_frame> elt = m_cs[xframe];
 
         octave_function *f = elt->function ();
 
@@ -167,7 +165,7 @@ namespace octave
 
     if (xframe > 0)
       {
-        const stack_frame *elt = m_cs[xframe];
+        const std::shared_ptr<stack_frame> elt = m_cs[xframe];
 
         octave_function *f = elt->function ();
 
@@ -183,7 +181,7 @@ namespace octave
     return -1;
   }
 
-  unwind_protect * call_stack::curr_fcn_unwind_protect_frame (void) const
+  unwind_protect * call_stack::curr_fcn_unwind_protect_frame (void)
   {
     // Start at current frame.
 
@@ -191,7 +189,7 @@ namespace octave
 
     if (xframe > 0)
       {
-        const stack_frame *elt = m_cs[xframe];
+        const std::shared_ptr<stack_frame> elt = m_cs[xframe];
 
         octave_function *f = elt->function ();
 
@@ -214,7 +212,7 @@ namespace octave
 
     while (i != 0)
       {
-        const stack_frame *elt = m_cs[i--];
+        const std::shared_ptr<stack_frame> elt = m_cs[i--];
 
         octave_function *f = elt->function ();
 
@@ -240,7 +238,7 @@ namespace octave
 
     while (i != 0)
       {
-        const stack_frame *elt = m_cs[i--];
+        const std::shared_ptr<stack_frame> elt = m_cs[i--];
 
         octave_function *f = elt->function ();
 
@@ -270,7 +268,7 @@ namespace octave
 
     while (i != 0)
       {
-        const stack_frame *elt = m_cs[i--];
+        const std::shared_ptr<stack_frame> elt = m_cs[i--];
 
         octave_function *f = elt->function ();
 
@@ -333,7 +331,7 @@ namespace octave
 
     while (p != m_cs.cbegin ())
       {
-        const stack_frame *elt = *(--p);
+        const std::shared_ptr<stack_frame> elt = *(--p);
 
         octave_function *f = elt->function ();
 
@@ -347,11 +345,12 @@ namespace octave
     return retval;
   }
 
-  stack_frame * call_stack::get_static_link (size_t prev_frame) const
+  std::shared_ptr<stack_frame>
+  call_stack::get_static_link (size_t prev_frame) const
   {
     // FIXME: is there a better way?
 
-    stack_frame *slink = nullptr;
+    std::shared_ptr<stack_frame> slink;
 
     if (m_curr_frame > 0)
       {
@@ -375,16 +374,16 @@ namespace octave
     if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
       error ("max_stack_depth exceeded");
 
-    stack_frame *slink = get_static_link (prev_frame);
+    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
 
-    stack_frame *new_frame
-      = new scope_stack_frame (m_evaluator, scope, m_curr_frame, slink);
+    std::shared_ptr<stack_frame>
+      new_frame (stack_frame::create (m_evaluator, scope, m_curr_frame, slink));
 
     m_cs.push_back (new_frame);
   }
 
-  void call_stack::push (octave_user_function *fcn, unwind_protect *up_frame,
-                         stack_frame *closure_frames)
+  void call_stack::push (octave_user_function *fcn,
+                         const std::shared_ptr<stack_frame>& closure_frames)
   {
     size_t prev_frame = m_curr_frame;
     m_curr_frame = m_cs.size ();
@@ -393,16 +392,17 @@ namespace octave
     if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
       error ("max_stack_depth exceeded");
 
-    stack_frame *slink = get_static_link (prev_frame);
+    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
 
-    stack_frame *new_frame
-      = new user_fcn_stack_frame (m_evaluator, fcn, up_frame, m_curr_frame,
-                                  slink, closure_frames);
+    std::shared_ptr<stack_frame>
+      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame, slink,
+                                      closure_frames));
 
     m_cs.push_back (new_frame);
   }
 
-  void call_stack::push (octave_user_script *script, unwind_protect *up_frame)
+  void call_stack::push (octave_user_function *fcn,
+                         const stack_frame::local_vars_map& local_vars)
   {
     size_t prev_frame = m_curr_frame;
     m_curr_frame = m_cs.size ();
@@ -411,11 +411,29 @@ namespace octave
     if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
       error ("max_stack_depth exceeded");
 
-    stack_frame *slink = get_static_link (prev_frame);
+    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
 
-    stack_frame *new_frame
-      = new script_stack_frame (m_evaluator, script, up_frame, m_curr_frame,
-                                slink);
+    std::shared_ptr<stack_frame>
+      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame, slink,
+                                      local_vars));
+
+    m_cs.push_back (new_frame);
+  }
+
+  void call_stack::push (octave_user_script *script)
+  {
+    size_t prev_frame = m_curr_frame;
+    m_curr_frame = m_cs.size ();
+
+    // m_max_stack_depth should never be less than zero.
+    if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
+      error ("max_stack_depth exceeded");
+
+    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
+
+    std::shared_ptr<stack_frame>
+      new_frame (stack_frame::create (m_evaluator, script, m_curr_frame,
+                                      slink));
 
     m_cs.push_back (new_frame);
   }
@@ -429,10 +447,10 @@ namespace octave
     if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
       error ("max_stack_depth exceeded");
 
-    stack_frame *slink = get_static_link (prev_frame);
+    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
 
-    stack_frame *new_frame
-      = new compiled_fcn_stack_frame (m_evaluator, fcn, m_curr_frame, slink);
+    std::shared_ptr<stack_frame>
+      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame, slink));
 
     m_cs.push_back (new_frame);
   }
@@ -449,7 +467,7 @@ namespace octave
 
         if (verbose)
           {
-            const stack_frame *elt = m_cs[n];
+            const std::shared_ptr<stack_frame> elt = m_cs[n];
 
             elt->display_stopped_in_message (octave_stdout);
           }
@@ -462,7 +480,7 @@ namespace octave
   {
     size_t user_frame = m_curr_frame;
 
-    stack_frame *frm = m_cs[user_frame];
+    std::shared_ptr<stack_frame> frm = m_cs[user_frame];
 
     if (! (frm->is_user_fcn_frame () || frm->is_user_script_frame ()
            || frm->is_scope_frame ()))
@@ -475,7 +493,7 @@ namespace octave
     return user_frame;
   }
 
-  stack_frame *call_stack::current_user_frame (void) const
+  std::shared_ptr<stack_frame> call_stack::current_user_frame (void) const
   {
     size_t frame = find_current_user_frame ();
 
@@ -501,7 +519,7 @@ namespace octave
         return start;
       }
 
-    stack_frame *frm = m_cs[start];
+    std::shared_ptr<stack_frame> frm = m_cs[start];
 
     if (! (frm && (frm->is_user_fcn_frame ()
                    || frm->is_user_script_frame ()
@@ -605,10 +623,10 @@ namespace octave
       m_curr_frame = 0;
   }
 
-  std::list<stack_frame *>
+  std::list<std::shared_ptr<stack_frame>>
   call_stack::backtrace_frames (octave_idx_type& curr_user_frame) const
   {
-    std::list<stack_frame *> frames;
+    std::list<std::shared_ptr<stack_frame>> frames;
 
     // curr_frame is the index to the current frame in the overall call
     // stack, which includes any compiled function frames and scope
@@ -621,7 +639,7 @@ namespace octave
 
     for (size_t n = m_cs.size () - 1; n > 0; n--)
       {
-        stack_frame *frm = m_cs[n];
+        std::shared_ptr<stack_frame> frm = m_cs[n];
 
         if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
             || frm->is_scope_frame ())
@@ -639,7 +657,7 @@ namespace octave
     return frames;
   }
 
-  std::list<stack_frame *>
+  std::list<std::shared_ptr<stack_frame>>
   call_stack::backtrace_frames (void) const
   {
     octave_idx_type curr_user_frame = -1;
@@ -651,11 +669,12 @@ namespace octave
   call_stack::backtrace_info (octave_idx_type& curr_user_frame,
                               bool print_subfn) const
   {
-    std::list<stack_frame *> frames = backtrace_frames (curr_user_frame);
+    std::list<std::shared_ptr<stack_frame>> frames
+      = backtrace_frames (curr_user_frame);
 
     std::list<frame_info> retval;
 
-    for (const auto *frm : frames)
+    for (const auto& frm : frames)
       {
         if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
             || frm->is_scope_frame ())
@@ -679,7 +698,8 @@ namespace octave
   octave_map call_stack::backtrace (octave_idx_type& curr_user_frame,
                                     bool print_subfn) const
   {
-    std::list<stack_frame *> frames = backtrace_frames (curr_user_frame);
+    std::list<std::shared_ptr<stack_frame>> frames
+      = backtrace_frames (curr_user_frame);
 
     size_t nframes = frames.size ();
 
@@ -692,7 +712,7 @@ namespace octave
 
     octave_idx_type k = 0;
 
-    for (const auto *frm : frames)
+    for (const auto& frm : frames)
       {
         if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
             || frm->is_scope_frame ())
@@ -728,15 +748,13 @@ namespace octave
 
     if (m_cs.size () > 1)
       {
-        stack_frame *elt = m_cs.back ();
+        std::shared_ptr<stack_frame> elt = m_cs.back ();
 
-        stack_frame *caller = elt->static_link ();
+        std::shared_ptr<stack_frame> caller = elt->static_link ();
 
         m_curr_frame = caller->index ();
 
         m_cs.pop_back ();
-
-        delete elt;
       }
   }
 
@@ -976,39 +994,9 @@ namespace octave
                                        bool have_regexp, bool return_list,
                                        bool verbose, const std::string& msg)
   {
-    symbol_info_accumulator sym_inf_accum (patterns, have_regexp);
-
-    m_cs[m_curr_frame]->accept (sym_inf_accum);
-
-    if (return_list)
-      {
-        if (verbose)
-          return sym_inf_accum.map_value ();
-        else
-          return Cell (string_vector (sym_inf_accum.names ()));
-      }
-    else if (! sym_inf_accum.is_empty ())
-      {
-
-        if (msg.empty ())
-          octave_stdout << "Variables visible from the current scope:\n";
-        else
-          octave_stdout << msg;
-
-        if (verbose)
-          sym_inf_accum.display (octave_stdout,
-                                 m_evaluator.whos_line_format ());
-        else
-          {
-            octave_stdout << "\n";
-            string_vector names (sym_inf_accum.names ());
-            names.list_in_columns (octave_stdout);
-          }
-
-        octave_stdout << "\n";
-      }
-
-    return octave_value ();
+    return m_cs[m_curr_frame]->who (patterns, have_regexp, return_list,
+                                    verbose, m_evaluator.whos_line_format (),
+                                    msg);
   }
 
   octave_value call_stack::do_global_who_two (const string_vector& patterns,

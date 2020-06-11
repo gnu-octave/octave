@@ -917,8 +917,6 @@ be passed as one of
 
 @item Anonymous Function Handle
 
-@item Inline Function
-
 @item String
 @end enumerate
 
@@ -937,8 +935,6 @@ remaining arguments are all passed to the function.
 funcdemo (@@sin, 1)
 @result{} 0.84147
 funcdemo (@@(x) sin (x), 1)
-@result{} 0.84147
-funcdemo (inline ("sin (x)"), 1)
 @result{} 0.84147
 funcdemo ("sin", 1)
 @result{} 0.84147
@@ -1698,8 +1694,7 @@ a = myfeval ("sin", 1)
 @end group
 @end example
 
-Note that it is not possible to use function handles or inline functions
-within a mex-file.
+Note that it is not possible to use function handles within a mex-file.
 
 @c @node Application Programming Interface for Mex-Files
 @c @subsection Application Programming Interface for Mex-Files

@@ -28,6 +28,7 @@
 #endif
 
 #include <istream>
+#include <memory>
 #include <ostream>
 
 #include "Array-util.h"
@@ -2027,4 +2028,122 @@ may @emph{only} be called from a class constructor.
     }
 
   return octave_value();
+}
+
+// The following classes allow us to define "inline" function objects as
+// legacy @class objects (as they appear to be in Matlab) while
+// preserving the is_inline_function and function_value methods that
+// were previously available in the octave_fcn_inline class.  However,
+// inline function objects no longer behave as octave_fcn_handle objects
+// so calling is_function_handle for them no longer returns true.  I see
+// no reasonable way to preserve that behavior.  The goal here is to
+// allow most code that used the old octave_inline_fcn object to
+// continue to work while eliminating the octave_inline_fcn class that
+// was derived from the octave_fcn_handle class.  Making that change
+// appears to be necessary to properly fix function handle behavior and
+// improve Matlab compatibility.  It's unfortunate if this change causes
+// trouble, but I see no better fix.  Ultimately, we should replace all
+// uses of "inline" function objects with anonymous functions.
+
+class octave_inline;
+
+// The following class can be removed once the
+// octave_value::function_value method is removed.
+
+class
+octave_inline_fcn : public octave_function
+{
+public:
+
+  octave_inline_fcn (octave_inline *obj) : m_inline_obj (obj) { }
+
+  // No copying!
+
+  octave_inline_fcn (const octave_inline_fcn& ob) = delete;
+
+  octave_inline_fcn& operator = (const octave_inline_fcn& ob) = delete;
+
+  ~octave_inline_fcn (void) = default;
+
+  // Override default call method because we ultimately use feval to
+  // execute the inline function and that will push a stack frame.
+
+  octave_value_list
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ())
+  {
+    return execute (tw, nargout, args);
+  }
+
+  octave_value_list
+  execute (octave::tree_evaluator& tw, int nargout = 0,
+           const octave_value_list& args = octave_value_list ());
+
+private:
+
+  octave_inline *m_inline_obj;
+};
+
+// Once the octave_inline_fcn class is removed, we should also be able
+// to eliminate the octave_inline class below and replace the
+// octave_value::is_inline_function method with
+//
+// bool octave_value::is_inline_function (void) const
+// {
+//   return class_name () == "inline";
+// }
+
+class
+octave_inline : public octave_class
+{
+public:
+
+  octave_inline (const octave_map& m)
+    : octave_class (m, "inline"), m_fcn_obj (new octave_inline_fcn (this))
+  { }
+
+  octave_inline (const octave_inline&) = default;
+
+  ~octave_inline (void) = default;
+
+  octave_base_value * clone (void) const { return new octave_inline (*this); }
+
+  octave_base_value * empty_clone (void) const
+  {
+    return new octave_inline (octave_map (map_keys ()));
+  }
+
+  bool is_inline_function (void) const { return true; }
+
+  octave_function * function_value (bool)
+  {
+    return m_fcn_obj.get ();
+  }
+
+private:
+
+  std::shared_ptr<octave_inline_fcn> m_fcn_obj;
+};
+
+octave_value_list
+octave_inline_fcn::execute (octave::tree_evaluator& tw, int nargout,
+                            const octave_value_list& args)
+{
+  octave::interpreter& interp = tw.get_interpreter ();
+
+  return interp.feval (octave_value (m_inline_obj, true), args, nargout);
+}
+
+
+DEFUN (__inline_ctor__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __inline_ctor__ (@var{prop_struct})
+Internal function.
+
+Implements final construction for inline objects.
+@end deftypefn */)
+{
+  // Input validation has already been done in input.m.
+
+  return octave_value (new octave_inline (args(0).map_value ()));
 }

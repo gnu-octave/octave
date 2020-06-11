@@ -173,9 +173,25 @@ octave_user_script::octave_user_script
     : octave_user_code (fnm, nm, scope, nullptr, ds)
 { }
 
+// We must overload the call method so that we call the proper
+// push_stack_frame method, which is overloaded for pointers to
+// octave_function, octave_user_function, and octave_user_script
+// objects.
+
 octave_value_list
 octave_user_script::call (octave::tree_evaluator& tw, int nargout,
                           const octave_value_list& args)
+{
+  tw.push_stack_frame (this);
+
+  octave::unwind_action act ([&tw] () { tw.pop_stack_frame (); });
+
+  return execute (tw, nargout, args);
+}
+
+octave_value_list
+octave_user_script::execute (octave::tree_evaluator& tw, int nargout,
+                             const octave_value_list& args)
 {
   return tw.execute_user_script (*this, nargout, args);
 }
@@ -197,11 +213,9 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 
 octave_user_function::octave_user_function
   (const octave::symbol_scope& scope, octave::tree_parameter_list *pl,
-   octave::tree_parameter_list *rl, octave::tree_statement_list *cl,
-   const local_vars_map& lviv)
+   octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
   : octave_user_code ("", "", scope, cl, ""),
     param_list (pl), ret_list (rl),
-    m_local_var_init_vals (lviv),
     lead_comm (), trail_comm (),
     location_line (0), location_column (0),
     parent_name (), system_fcn_file (false),
@@ -459,12 +473,27 @@ octave_user_function::all_va_args (const octave_value_list& args)
   return retval;
 }
 
+// We must overload the call method so that we call the proper
+// push_stack_frame method, which is overloaded for pointers to
+// octave_function, octave_user_function, and octave_user_script
+// objects.
+
 octave_value_list
 octave_user_function::call (octave::tree_evaluator& tw, int nargout,
-                            const octave_value_list& args,
-                            octave::stack_frame *closure_frames)
+                            const octave_value_list& args)
 {
-  return tw.execute_user_function (*this, nargout, args, closure_frames);
+  tw.push_stack_frame (this);
+
+  octave::unwind_action act ([&tw] () { tw.pop_stack_frame (); });
+
+  return execute (tw, nargout, args);
+}
+
+octave_value_list
+octave_user_function::execute (octave::tree_evaluator& tw, int nargout,
+                               const octave_value_list& args)
+{
+  return tw.execute_user_function (*this, nargout, args);
 }
 
 void

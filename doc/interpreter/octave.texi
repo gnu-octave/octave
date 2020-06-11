@@ -411,7 +411,7 @@ Functions and Scripts
 * Default Arguments::
 * Function Files::
 * Script Files::
-* Function Handles Anonymous Functions Inline Functions::
+* Function Handles and Anonymous Functions::
 * Commands::
 * Organization of Functions::
 
@@ -446,11 +446,10 @@ Publishing Markup
 * HTML Markup::
 * LaTeX Markup::
 
-Function Handles Anonymous Functions Inline Functions
+Function Handles and Anonymous Functions
 
 * Function Handles::
 * Anonymous Functions::
-* Inline Functions::
 
 Errors and Warnings
 

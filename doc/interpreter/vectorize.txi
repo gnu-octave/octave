@@ -130,11 +130,7 @@ a(a>5) -= 20;
 which exploits the fact that @code{a > 5} produces a boolean index.
 
 Use elementwise vector operators whenever possible to avoid looping
-(operators like @code{.*} and @code{.^}).  @xref{Arithmetic Ops}.  For
-simple inline functions, the @code{vectorize} function can do this
-automatically.
-
-@DOCSTRING(vectorize)
+(operators like @code{.*} and @code{.^}).  @xref{Arithmetic Ops}.
 
 Also exploit broadcasting in these elementwise operators both to avoid
 looping and unnecessary intermediate memory allocations.

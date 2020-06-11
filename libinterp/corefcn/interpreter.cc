@@ -1535,7 +1535,7 @@ namespace octave
       {
         return feval (val.function_value (), args, nargout);
       }
-    else if (val.is_function_handle ())
+    else if (val.is_function_handle () || val.is_inline_function ())
       {
         // This covers function handles, inline functions, and anonymous
         //  functions.
@@ -1584,6 +1584,11 @@ namespace octave
     octave_value_list tmp_args = args.slice (1, args.length () - 1, true);
 
     return feval (f_arg, tmp_args, nargout);
+  }
+
+  octave_value interpreter::make_function_handle (const std::string& name)
+  {
+    return m_evaluator.make_fcn_handle (name);
   }
 
   void interpreter::install_variable (const std::string& name,

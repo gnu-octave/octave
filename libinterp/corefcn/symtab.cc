@@ -71,6 +71,54 @@ namespace octave
     return val.is_defined ();
   }
 
+  octave_value
+  symbol_table::find_scoped_function (const std::string& name,
+                                      const symbol_scope& search_scope)
+  {
+    if (name.empty ())
+      return octave_value ();
+
+    fcn_table_const_iterator p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      return p->second.find_scoped_function (search_scope);
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find_scoped_function (search_scope);
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
+  }
+
+  octave_value
+  symbol_table::find_private_function (const std::string& dir_name,
+                                       const std::string& name)
+  {
+    if (name.empty ())
+      return octave_value ();
+
+    fcn_table_const_iterator p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      return p->second.find_private_function (dir_name);
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find_private_function (dir_name);
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
+  }
+
   // FIXME: this function only finds legacy class methods, not
   // classdef methods.
 
@@ -101,8 +149,19 @@ namespace octave
   {
     fcn_table_const_iterator p = m_fcn_table.find (name);
 
-    return (p != m_fcn_table.end ()
-            ? p->second.find_built_in_function () : octave_value ());
+    if (p != m_fcn_table.end ())
+      return p->second.find_built_in_function ();
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find_built_in_function ();
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
   }
 
   octave_value symbol_table::find_autoload (const std::string& name)
@@ -112,8 +171,19 @@ namespace octave
 
     auto p = m_fcn_table.find (name);
 
-    return (p != m_fcn_table.end ()
-            ? p->second.find_autoload () : octave_value ());
+    if (p != m_fcn_table.end ())
+      return p->second.find_autoload ();
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find_autoload ();
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
   }
 
   octave_value
@@ -222,8 +292,19 @@ namespace octave
 
     auto p = m_fcn_table.find (name);
 
-    return (p != m_fcn_table.end ()
-            ? p->second.find_user_function () : octave_value ());
+    if (p != m_fcn_table.end ())
+      return p->second.find_user_function ();
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find_user_function ();
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
   }
 
   octave_value symbol_table::find_cmdline_function (const std::string& name)
@@ -233,8 +314,19 @@ namespace octave
 
     auto p = m_fcn_table.find (name);
 
-    return (p != m_fcn_table.end ()
-            ? p->second.find_cmdline_function () : octave_value ());
+    if (p != m_fcn_table.end ())
+      return p->second.find_cmdline_function ();
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find_cmdline_function ();
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
   }
 
   void symbol_table::install_cmdline_function (const std::string& name,

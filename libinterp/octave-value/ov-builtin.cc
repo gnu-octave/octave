@@ -43,19 +43,13 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_builtin,
                                      "built-in function");
 
 octave_value_list
-octave_builtin::call (octave::tree_evaluator& tw, int nargout,
-                      const octave_value_list& args)
+octave_builtin::execute (octave::tree_evaluator& tw, int nargout,
+                         const octave_value_list& args)
 {
   octave_value_list retval;
 
   if (args.has_magic_colon ())
     error ("invalid use of colon in function argument list");
-
-  octave::unwind_protect frame;
-
-  tw.push_stack_frame (this);
-
-  frame.add_method (tw, &octave::tree_evaluator::pop_stack_frame);
 
   octave::profiler& profiler = tw.get_profiler ();
 

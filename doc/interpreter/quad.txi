@@ -140,18 +140,12 @@ Although @code{quad} returns a nonzero value for @var{ier}, the result
 is reasonably accurate (to see why, examine what happens to the result
 if you move the lower bound to 0.1, then 0.01, then 0.001, etc.).
 
-The function @qcode{"f"} can be the string name of a function, a function
-handle, or an inline function.  These options make it quite easy to do
-integration without having to fully define a function in an m-file.  For
-example:
+The function @qcode{"f"} can be the string name of a function or a
+function handle.  These options make it quite easy to do integration
+without having to fully define a function in an m-file.  For example:
 
 @example
 @group
-# Verify integral (x^3) = x^4/4
-f = inline ("x.^3");
-quadgk (f, 0, 1)
-     @result{} 0.25000
-
 # Verify gamma function = (n-1)! for n = 4
 f = @@(x) x.^3 .* exp (-x);
 quadcc (f, 0, Inf)

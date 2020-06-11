@@ -54,6 +54,7 @@
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter.h"
 #include "interpreter-private.h"
 #include "load-save.h"
 #include "oct-hdf5.h"
@@ -433,6 +434,212 @@ hdf5_make_range_type (hid_t num_type)
   return type_id;
 }
 
+static herr_t
+load_inline_fcn (hid_t loc_id, const char *name, octave_value& retval)
+{
+#if defined (HAVE_HDF5)
+
+  hid_t group_hid, data_hid, space_hid, type_hid, type_class_hid, st_id;
+  hsize_t rank;
+  int slen;
+
+#if defined (HAVE_HDF5_18)
+  group_hid = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
+#else
+  group_hid = H5Gopen (loc_id, name);
+#endif
+  if (group_hid < 0) return -1;
+
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "args", octave_H5P_DEFAULT);
+#else
+  data_hid = H5Dopen (group_hid, "args");
+#endif
+  space_hid = H5Dget_space (data_hid);
+  rank = H5Sget_simple_extent_ndims (space_hid);
+
+  if (rank != 2)
+    {
+      H5Dclose (data_hid);
+      H5Sclose (space_hid);
+      H5Gclose (group_hid);
+      return -1;
+    }
+
+  OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
+  OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
+
+  H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
+
+  octave_value_list args (hdims[1]+1);
+
+  OCTAVE_LOCAL_BUFFER (char, s1, hdims[0] * hdims[1]);
+
+  if (H5Dread (data_hid, H5T_NATIVE_UCHAR, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, s1) < 0)
+    {
+      H5Dclose (data_hid);
+      H5Sclose (space_hid);
+      H5Gclose (group_hid);
+      return -1;
+    }
+
+  H5Dclose (data_hid);
+  H5Sclose (space_hid);
+
+  for (size_t i = 0; i < hdims[1]; i++)
+    args(i+1) = std::string (s1 + i*hdims[0]);
+
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "nm", octave_H5P_DEFAULT);
+#else
+  data_hid = H5Dopen (group_hid, "nm");
+#endif
+
+  if (data_hid < 0)
+    {
+      H5Gclose (group_hid);
+      return -1;
+    }
+
+  type_hid = H5Dget_type (data_hid);
+  type_class_hid = H5Tget_class (type_hid);
+
+  if (type_class_hid != H5T_STRING)
+    {
+      H5Tclose (type_hid);
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return -1;
+    }
+
+  space_hid = H5Dget_space (data_hid);
+  rank = H5Sget_simple_extent_ndims (space_hid);
+
+  if (rank != 0)
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return -1;
+    }
+
+  slen = H5Tget_size (type_hid);
+  if (slen < 0)
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return -1;
+    }
+
+  OCTAVE_LOCAL_BUFFER (char, nm_tmp, slen);
+
+  // create datatype for (null-terminated) string to read into:
+  st_id = H5Tcopy (H5T_C_S1);
+  H5Tset_size (st_id, slen);
+
+  if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, nm_tmp) < 0)
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      H5Gclose (group_hid);
+      return -1;
+    }
+  H5Tclose (st_id);
+  H5Dclose (data_hid);
+  // NAME is obsolete and unused.
+  // std::string name (nm_tmp);
+
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "iftext", octave_H5P_DEFAULT);
+#else
+  data_hid = H5Dopen (group_hid, "iftext");
+#endif
+
+  if (data_hid < 0)
+    {
+      H5Gclose (group_hid);
+      return -1;
+    }
+
+  type_hid = H5Dget_type (data_hid);
+  type_class_hid = H5Tget_class (type_hid);
+
+  if (type_class_hid != H5T_STRING)
+    {
+      H5Tclose (type_hid);
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return -1;
+    }
+
+  space_hid = H5Dget_space (data_hid);
+  rank = H5Sget_simple_extent_ndims (space_hid);
+
+  if (rank != 0)
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return -1;
+    }
+
+  slen = H5Tget_size (type_hid);
+  if (slen < 0)
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return -1;
+    }
+
+  OCTAVE_LOCAL_BUFFER (char, iftext_tmp, slen);
+
+  // create datatype for (null-terminated) string to read into:
+  st_id = H5Tcopy (H5T_C_S1);
+  H5Tset_size (st_id, slen);
+
+  if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, iftext_tmp) < 0)
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      H5Gclose (group_hid);
+      return -1;
+    }
+  H5Tclose (st_id);
+  H5Dclose (data_hid);
+
+  args(0) = std::string (iftext_tmp);
+
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("load_inline_fcn");
+
+  octave_value_list tmp = interp.feval ("inline", args, 1);
+
+  if (tmp.length () > 0)
+    {
+      retval = tmp(0);
+      return 1;
+    }
+
+#else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+  octave_unused_parameter (retval);
+
+  warn_load ("hdf5");
+#endif
+
+  return -1;
+}
+
 // This function is designed to be passed to H5Giterate, which calls it
 // on each data item in an HDF5 file.  For the item whose name is NAME in
 // the group GROUP_ID, this function sets dv->tc to an Octave representation
@@ -534,9 +741,16 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           H5Tclose (st_id);
           H5Dclose (data_id);
 
-          d->tc = type_info.lookup_type (typ);
+          if (std::string (typ) == "inline function")
+            {
+              retval = load_inline_fcn (subgroup_id, name, d->tc);
+            }
+          else
+            {
+              d->tc = type_info.lookup_type (typ);
 
-          retval = (d->tc.load_hdf5 (subgroup_id, "value") ? 1 : -1);
+              retval = (d->tc.load_hdf5 (subgroup_id, "value") ? 1 : -1);
+            }
 
           // check for OCTAVE_GLOBAL attribute:
           d->global = hdf5_check_attr (subgroup_id, "OCTAVE_GLOBAL");
@@ -545,6 +759,10 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
         }
       else
         {
+          // It seems that this block only applies to an old list type
+          // and that we shouldn't need to handle the old inline
+          // function type here.
+
           // an HDF5 group is treated as an octave structure by
           // default (since that preserves name information), and an
           // octave list otherwise.
@@ -565,6 +783,10 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
     }
   else if (info.type == H5G_DATASET && ident_valid)
     {
+      // It seems that this block only applies to an old version of
+      // Octave HDF5 files and that it is probably not important to
+      // handle the old inline function type here.
+
       // For backwards compatibility.
 #if defined (HAVE_HDF5_18)
       data_id = H5Dopen (group_id, name, octave_H5P_DEFAULT);

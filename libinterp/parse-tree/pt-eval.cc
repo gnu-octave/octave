@@ -61,6 +61,7 @@
 #include "pt-anon-scopes.h"
 #include "pt-eval.h"
 #include "pt-tm-const.h"
+#include "stack-frame.h"
 #include "symtab.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -187,7 +188,7 @@ namespace octave
 
             if (! silent)
               {
-                stack_frame *frm = tw.current_user_frame ();
+                std::shared_ptr<stack_frame> frm = tw.current_user_frame ();
 
                 frm->display_stopped_in_message (buf);
               }
@@ -881,6 +882,364 @@ namespace octave
     return retval;
   }
 
+  // If NAME is an operator (like "+", "-", ...), convert it to the
+  // corresponding function name ("plus", "minus", ...).
+
+  static std::string
+  get_operator_function_name (const std::string& name)
+  {
+    // Bow to the god of compatibility.
+
+    // FIXME: it seems ugly to put this here, but there is no single
+    // function in the parser that converts from the operator name to
+    // the corresponding function name.  At least try to do it without N
+    // string compares.
+
+    size_t len = name.length ();
+
+    if (len == 3 && name == ".**")
+      return "power";
+    else if (len == 2)
+      {
+        if (name[0] == '.')
+          {
+            switch (name[1])
+              {
+              case '\'':
+                return "transpose";
+
+              case '+':
+                return "plus";
+
+              case '-':
+                return "minus";
+
+              case '*':
+                return "times";
+
+              case '/':
+                return "rdivide";
+
+              case '^':
+                return "power";
+
+              case '\\':
+                return "ldivide";
+
+              default:
+                break;
+              }
+          }
+        else if (name[1] == '=')
+          {
+            switch (name[0])
+              {
+              case '<':
+                return "le";
+
+              case '=':
+                return "eq";
+
+              case '>':
+                return "ge";
+
+              case '~':
+              case '!':
+                return "ne";
+
+              default:
+                break;
+              }
+          }
+        else if (name == "**")
+          return "mpower";
+      }
+    else if (len == 1)
+      {
+        switch (name[0])
+          {
+          case '~':
+          case '!':
+            return "not";
+
+          case '\'':
+            return "ctranspose";
+
+          case '+':
+            return "plus";
+
+          case '-':
+            return "minus";
+
+          case '*':
+            return "mtimes";
+
+          case '/':
+            return "mrdivide";
+
+          case '^':
+            return "mpower";
+
+          case '\\':
+            return "mldivide";
+
+          case '<':
+            return "lt";
+
+          case '>':
+            return "gt";
+
+          case '&':
+            return "and";
+
+          case '|':
+            return "or";
+
+          default:
+            break;
+          }
+      }
+
+    return name;
+  }
+
+  // Creates a function handle that takes into account the context,
+  // finding local, nested, private, or sub functions.
+
+  octave_value
+  tree_evaluator::make_fcn_handle (const std::string& name)
+  {
+    octave_value retval;
+
+    // The str2func function can create a function handle with the name
+    // of an operator (for example, "+").  If so, it is converted to the
+    // name of the corresponding function ("+" -> "plus") and we create
+    // a simple function handle using that name.
+
+    std::string fcn_name = get_operator_function_name (name);
+
+    // If FCN_NAME is different from NAME, then NAME is an operator.  As
+    // of version 2020a, Matlab apparently uses the function name
+    // corresponding to the operator to search for private and local
+    // functions in the current scope but not(!) nested functions.
+
+    bool name_is_operator = fcn_name != name;
+
+    size_t pos = fcn_name.find ('.');
+
+    if (pos != std::string::npos)
+      {
+        // Recognize (some of?  which ones?) the following cases
+        // and create something other than a simple function handle?
+        // Should we just be checking for the last two when the first
+        // element of the dot-separated list is an object?  If so, then
+        // should this syntax be limited to a dot-separated list with
+        // exactly two elements?
+        //
+        //   object . method
+        //   object . static-method
+        //
+        // Code to do that duplicates some of simple_fcn_handle::call.
+
+        // Only accept expressions that contain one '.' separator.
+
+        // FIXME: The logic here is a bit complicated.  Is there a good
+        // way to simplify it?
+
+        std::string meth_nm = fcn_name.substr (pos+1);
+
+        if (meth_nm.find ('.') == std::string::npos)
+          {
+            std::string obj_nm = fcn_name.substr (0, pos);
+
+            // If obj_nm is an object in the current scope with a
+            // method named meth_nm, create a classsimple handle.
+
+            octave_value object = varval (obj_nm);
+
+            if (object.is_defined () && object.is_classdef_object ())
+              {
+                octave_classdef *cdef = object.classdef_object_value ();
+
+                if (cdef)
+                  {
+                    std::string class_nm = cdef->class_name ();
+
+                    cdef_object cdef_obj = cdef->get_object ();
+
+                    cdef_class cls = cdef_obj.get_class ();
+
+                    cdef_method meth = cls.find_method (meth_nm);
+
+                    if (meth.ok ())
+                      {
+                        // If the method we found is static, create a
+                        // new function name from the class name and
+                        // method name and create a simple function
+                        // handle below.  Otherwise, create a class
+                        // simple function handle.
+
+                        if (meth.is_static ())
+                          fcn_name = class_nm + '.' + meth_nm;
+                        else
+                          {
+                            octave_value meth_fcn = meth.get_function ();
+
+                            octave_fcn_handle *fh
+                              = new octave_fcn_handle (object, meth_fcn,
+                                                       class_nm, meth_nm);
+
+                            return octave_value (fh);
+                          }
+                      }
+                  }
+              }
+          }
+
+        // We didn't match anything above, so create handle to SIMPLE
+        // package function or static class method.  Function resolution
+        // is performed when the handle is used.
+
+        return octave_value (new octave_fcn_handle (fcn_name));
+      }
+
+    // If the function name refers to a sub/local/private function or a
+    // class method/constructor, create scoped function handle that is
+    // bound to that function.  Use the same precedence list as
+    // fcn_info::find but limit search to the following types of
+    // functions:
+    //
+    //   nested functions (and subfunctions)
+    //   local functions in the current file
+    //   private function
+    //   class method
+    //
+    // For anything else we create a simple function handle that will be
+    // resolved dynamically in the scope where it is evaluated.
+
+    symbol_scope curr_scope = get_current_scope ();
+
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    if (curr_scope)
+      {
+        octave_value ov_fcn
+          = symtab.find_scoped_function (fcn_name, curr_scope);
+
+        if (ov_fcn.is_defined ())
+          {
+            octave_function *fcn = ov_fcn.function_value ();
+
+            if (fcn->is_nested_function ())
+              {
+                if (! name_is_operator)
+                  {
+                    // Get current stack frame and return handle to nested
+                    // function.
+
+                    std::shared_ptr<stack_frame> frame
+                      = m_call_stack.get_current_stack_frame ();
+
+                    octave_fcn_handle *fh
+                      = new octave_fcn_handle (ov_fcn, fcn_name, frame);
+
+                    return octave_value (fh);
+                  }
+              }
+            else if (fcn->is_subfunction ()
+                     /* || fcn->is_localfunction () */
+                     || fcn->is_private_function ())
+              {
+                // Create handle to SCOPED function (sub/local function
+                // or private function).
+
+                std::list<std::string> parentage = fcn->parent_fcn_names ();
+
+                octave_fcn_handle *fh
+                  = new octave_fcn_handle (ov_fcn, fcn_name, parentage);
+
+                return octave_value (fh);
+              }
+          }
+
+        // If name is operator, we are in Fstr2func, so skip the stack
+        // frame for that function.
+
+        bool skip_first = name_is_operator;
+        octave_function *curr_fcn = current_function (skip_first);
+
+        if (curr_fcn && (curr_fcn->is_class_method ()
+                         || curr_fcn->is_class_constructor ()))
+          {
+            std::string dispatch_class = curr_fcn->dispatch_class ();
+
+            octave_value ov_meth
+              = symtab.find_method (fcn_name, dispatch_class);
+
+            if (ov_meth.is_defined ())
+              {
+                octave_function *fcn = ov_meth.function_value ();
+
+                // FIXME: do we need to check that it is a method of
+                // dispatch_class, or is it sufficient to just check
+                // that it is a method?
+
+                if (fcn->is_class_method ())
+                  {
+                    // Create CLASSSIMPLE handle to method.
+
+                    octave_fcn_handle *fh
+                      = new octave_fcn_handle (ov_meth, dispatch_class,
+                                               fcn_name);
+
+                    return octave_value (fh);
+                  }
+              }
+          }
+      }
+
+    octave_value ov_fcn = symtab.find_user_function (fcn_name);
+
+    // Create handle to SIMPLE function.  If the function is not found
+    // now, then we will look for it again when the handle is used.
+
+    return octave_value (new octave_fcn_handle (ov_fcn, fcn_name));
+  }
+
+/*
+%!test
+%! x = {".**", "power";
+%!      ".'", "transpose";
+%!      ".+", "plus";
+%!      ".-", "minus";
+%!      ".*", "times";
+%!      "./", "rdivide";
+%!      ".^", "power";
+%!      ".\\", "ldivide";
+%!      "<=", "le";
+%!      "==", "eq";
+%!      ">=", "ge";
+%!      "!=", "ne";
+%!      "~=", "ne";
+%!      "**", "mpower";
+%!      "~", "not";
+%!      "!", "not";
+%!      "\'", "ctranspose";
+%!      "+", "plus";
+%!      "-", "minus";
+%!      "*", "mtimes";
+%!      "/", "mrdivide";
+%!      "^", "mpower";
+%!      "\\", "mldivide";
+%!      "<", "lt";
+%!      ">", "gt";
+%!      "&", "and";
+%!      "|", "or"};
+%! for i = 1:rows (x)
+%!   assert (functions (str2func (x{i,1})).function, x{i,2});
+%! endfor
+*/
+
   octave_value
   tree_evaluator::evaluate (tree_decl_elt *elt)
   {
@@ -894,17 +1253,19 @@ namespace octave
   bool
   tree_evaluator::is_variable (const std::string& name) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.is_variable (name);
+    return frame->is_variable (name);
   }
 
   bool
   tree_evaluator::is_local_variable (const std::string& name) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.is_local_variable (name);
+    return frame->is_local_variable (name);
   }
 
   bool
@@ -941,49 +1302,55 @@ namespace octave
   bool
   tree_evaluator::is_variable (const symbol_record& sym) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.is_variable (sym);
+    return frame->is_variable (sym);
   }
 
   bool
   tree_evaluator::is_defined (const symbol_record& sym) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.is_defined (sym);
+    return frame->is_defined (sym);
   }
 
   bool tree_evaluator::is_global (const std::string& name) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.is_global (name);
+    return frame->is_global (name);
   }
 
   octave_value
   tree_evaluator::varval (const symbol_record& sym) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.varval (sym);
+    return frame->varval (sym);
   }
 
   octave_value
   tree_evaluator::varval (const std::string& name) const
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.varval (name);
+    return frame->varval (name);
   }
 
   void tree_evaluator::install_variable (const std::string& name,
                                          const octave_value& value,
                                          bool global)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    return frame.install_variable (name, value, global);
+    return frame->install_variable (name, value, global);
   }
 
   octave_value
@@ -1021,9 +1388,10 @@ namespace octave
   void
   tree_evaluator::assign (const std::string& name, const octave_value& val)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.assign (name, val);
+    frame->assign (name, val);
   }
 
   void
@@ -1520,16 +1888,20 @@ namespace octave
   }
 
   void tree_evaluator::push_stack_frame (octave_user_function *fcn,
-                                         unwind_protect *up_frame,
-                                         stack_frame *closure_frames)
+                                         const std::shared_ptr<stack_frame>& closure_frames)
   {
-    m_call_stack.push (fcn, up_frame, closure_frames);
+    m_call_stack.push (fcn, closure_frames);
   }
 
-  void tree_evaluator::push_stack_frame (octave_user_script *script,
-                                         unwind_protect *up_frame)
+  void tree_evaluator::push_stack_frame (octave_user_function *fcn,
+                                         const stack_frame::local_vars_map& local_vars)
   {
-    m_call_stack.push (script, up_frame);
+    m_call_stack.push (fcn, local_vars);
+  }
+
+  void tree_evaluator::push_stack_frame (octave_user_script *script)
+  {
+    m_call_stack.push (script);
   }
 
   void tree_evaluator::push_stack_frame (octave_function *fcn)
@@ -1564,7 +1936,7 @@ namespace octave
 
   void tree_evaluator::debug_where (std::ostream& os) const
   {
-    stack_frame *frm = m_call_stack.current_user_frame ();
+    std::shared_ptr<stack_frame> frm = m_call_stack.current_user_frame ();
 
     frm->display_stopped_in_message (os);
   }
@@ -1574,7 +1946,7 @@ namespace octave
     return m_call_stack.current_user_code ();
   }
 
-  unwind_protect * tree_evaluator::curr_fcn_unwind_protect_frame (void) const
+  unwind_protect * tree_evaluator::curr_fcn_unwind_protect_frame (void)
   {
     return m_call_stack.curr_fcn_unwind_protect_frame ();
   }
@@ -1636,13 +2008,13 @@ namespace octave
     return m_call_stack.is_class_constructor_executing (dclass);
   }
 
-  std::list<stack_frame *>
+  std::list<std::shared_ptr<stack_frame>>
   tree_evaluator::backtrace_frames (octave_idx_type& curr_user_frame) const
   {
     return m_call_stack.backtrace_frames (curr_user_frame);
   }
 
-  std::list<stack_frame *>
+  std::list<std::shared_ptr<stack_frame>>
   tree_evaluator::backtrace_frames (void) const
   {
     return m_call_stack.backtrace_frames ();
@@ -1782,9 +2154,10 @@ namespace octave
 
   octave_value tree_evaluator::find (const std::string& name)
   {
-    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    octave_value val = frame.varval (name);
+    octave_value val = frame->varval (name);
 
     if (val.is_defined ())
       return val;
@@ -1793,7 +2166,7 @@ namespace octave
     // subfunctions if we are currently executing a function defined
     // from a .m file.
 
-    octave_value fcn = frame.find_subfunction (name);
+    octave_value fcn = frame->find_subfunction (name);
 
     if (fcn.is_defined ())
       return fcn;
@@ -1805,37 +2178,42 @@ namespace octave
 
   void tree_evaluator::clear_objects (void)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.clear_objects ();
+    frame->clear_objects ();
   }
 
   void tree_evaluator::clear_variable (const std::string& name)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.clear_variable (name);
+    frame->clear_variable (name);
   }
 
   void tree_evaluator::clear_variable_pattern (const std::string& pattern)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.clear_variable_pattern (pattern);
+    frame->clear_variable_pattern (pattern);
   }
 
   void tree_evaluator::clear_variable_regexp (const std::string& pattern)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.clear_variable_regexp (pattern);
+    frame->clear_variable_regexp (pattern);
   }
 
   void tree_evaluator::clear_variables (void)
   {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
 
-    frame.clear_variables ();
+    frame->clear_variables ();
   }
 
   void tree_evaluator::clear_global_variable (const std::string& name)
@@ -2315,26 +2693,15 @@ namespace octave
     if (! cmd_list)
       return retval;
 
-    unwind_protect frame;
-
     if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
       error ("max_recursion_depth exceeded");
 
-    m_call_stack.push (&user_script, &frame);
-
-    // Set pointer to the current unwind_protect frame to allow
-    // certain builtins register simple cleanup in a very optimized manner.
-    // This is *not* intended as a general-purpose on-cleanup mechanism,
-
-    frame.add_method (m_call_stack, &call_stack::pop);
-
-    frame.protect_var (m_statement_context);
-    m_statement_context = SC_SCRIPT;
+    unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_SCRIPT);
 
     profiler::enter<octave_user_script> block (m_profiler, user_script);
 
     if (echo ())
-      push_echo_state (frame, tree_evaluator::ECHO_SCRIPTS, file_name);
+      push_echo_state (tree_evaluator::ECHO_SCRIPTS, file_name);
 
     cmd_list->accept (*this);
 
@@ -2357,8 +2724,7 @@ namespace octave
   octave_value_list
   tree_evaluator::execute_user_function (octave_user_function& user_function,
                                          int nargout,
-                                         const octave_value_list& xargs,
-                                         stack_frame *closure_frames)
+                                         const octave_value_list& xargs)
   {
     octave_value_list retval;
 
@@ -2390,24 +2756,12 @@ namespace octave
       return retval;
 #endif
 
-    unwind_protect frame;
-
     if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
       error ("max_recursion_depth exceeded");
-
-    // Save old and set current symbol table context, for
-    // eval_undefined_error().
-
-    m_call_stack.push (&user_function, &frame, closure_frames);
-
-    frame.add_method (m_call_stack, &call_stack::pop);
 
     bind_auto_fcn_vars (xargs.name_tags (), args.length (),
                         nargout, user_function.takes_varargs (),
                         user_function.all_va_args (args));
-
-    if (user_function.is_anonymous_function ())
-      init_local_fcn_vars (user_function);
 
     tree_parameter_list *param_list = user_function.parameter_list ();
 
@@ -2428,37 +2782,23 @@ namespace octave
         define_parameter_list_from_arg_vector (ret_list, ret_args);
       }
 
-    // Force parameter list to be undefined when this function exits.
-    // Doing so decrements the reference counts on the values of local
-    // variables that are also named function parameters.
-
-    //    if (param_list)
-    //      frame.add_method (this, &tree_evaluator::undefine_parameter_list,
-    //                        param_list);
-
-    // Force return list to be undefined when this function exits.
-    // Doing so decrements the reference counts on the values of local
-    // variables that are also named values returned by this function.
-
-    //    if (ret_list)
-    //      frame.add_method (this, &tree_evaluator::undefine_parameter_list,
-    //                        ret_list);
-
-    frame.add_method (&user_function,
-                      &octave_user_function::restore_warning_states);
+    unwind_action act2 ([&user_function] () {
+                          user_function.restore_warning_states ();
+                        });
 
     // Evaluate the commands that make up the function.
 
-    frame.protect_var (m_statement_context);
-    m_statement_context = SC_FUNCTION;
+    unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_FUNCTION);
 
-    frame.add_method (m_call_stack, &call_stack::clear_current_frame_values);
+    unwind_action act1 ([this] () {
+                          m_call_stack.clear_current_frame_values ();
+                        });
 
     {
       profiler::enter<octave_user_function> block (m_profiler, user_function);
 
       if (echo ())
-        push_echo_state (frame, tree_evaluator::ECHO_FUNCTIONS,
+        push_echo_state (tree_evaluator::ECHO_FUNCTIONS,
                          user_function.fcn_file_name ());
 
       if (user_function.is_special_expr ())
@@ -2502,25 +2842,6 @@ namespace octave
 
         retval = convert_return_list_to_const_vector (ret_list, nargout,
                                                       varargout);
-      }
-
-    if (user_function.is_nested_function ()
-        || user_function.is_parent_function ())
-      {
-        // Copy current stack frame to handles to nested functions.
-
-        for (octave_idx_type i = 0; i < retval.length (); i++)
-          {
-            octave_value val = retval(i);
-
-            if (val.is_function_handle ())
-              {
-                octave_fcn_handle *fh = val.fcn_handle_value ();
-
-                if (fh)
-                  fh->push_closure_context (*this);
-              }
-          }
       }
 
     return retval;
@@ -3537,13 +3858,17 @@ namespace octave
   }
 
   void
-  tree_evaluator::push_echo_state (unwind_protect& frame, int type,
-                                   const std::string& file_name,
+  tree_evaluator::push_echo_state (int type, const std::string& file_name,
                                    size_t pos)
   {
-    push_echo_state_cleanup (frame);
+    unwind_protect *frame = m_call_stack.curr_fcn_unwind_protect_frame ();
 
-    set_echo_state (type, file_name, pos);
+    if (frame)
+      {
+        push_echo_state_cleanup (*frame);
+
+        set_echo_state (type, file_name, pos);
+      }
   }
 
   void
@@ -3845,17 +4170,6 @@ namespace octave
 
     if (takes_varargs)
       assign ("varargin", va_args.cell_value ());
-  }
-
-  void tree_evaluator::init_local_fcn_vars (octave_user_function& user_fcn)
-  {
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
-
-    const octave_user_function::local_vars_map& lviv
-      = user_fcn.local_var_init_vals ();
-
-    for (const auto& nm_ov : lviv)
-      frame.assign (nm_ov.first, nm_ov.second);
   }
 
   std::string

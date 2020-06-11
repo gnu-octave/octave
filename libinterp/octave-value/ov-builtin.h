@@ -96,14 +96,9 @@ public:
 
   bool is_builtin_function (void) const { return true; }
 
-  // We don't need to override both forms of the call method.  The using
-  // declaration will avoid warnings about partially-overloaded virtual
-  // functions.
-  using octave_function::call;
-
   octave_value_list
-  call (octave::tree_evaluator& tw, int nargout = 0,
-        const octave_value_list& args = octave_value_list ());
+  execute (octave::tree_evaluator& tw, int nargout = 0,
+           const octave_value_list& args = octave_value_list ());
 
   octave::jit_type * to_jit (void) const;
 

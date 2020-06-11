@@ -57,7 +57,6 @@ class octave_scalar_map;
 class octave_function;
 class octave_user_function;
 class octave_fcn_handle;
-class octave_fcn_inline;
 class octave_value_list;
 
 #include "mxtypes.h"
@@ -976,8 +975,6 @@ public:
 
   octave_fcn_handle * fcn_handle_value (bool silent = false) const;
 
-  octave_fcn_inline * fcn_inline_value (bool silent = false) const;
-
   octave_value_list list_value (void) const;
 
   ColumnVector column_vector_value (bool frc_str_conv = false,
@@ -1195,7 +1192,6 @@ public:
   octave_user_script * xuser_script_value (const char *fmt, ...) const;
   octave_user_code * xuser_code_value (const char *fmt, ...) const;
   octave_fcn_handle * xfcn_handle_value (const char *fmt, ...) const;
-  octave_fcn_inline * xfcn_inline_value (const char *fmt, ...) const;
 
   octave_value_list xlist_value (const char *fmt, ...) const;
 

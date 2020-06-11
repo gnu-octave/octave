@@ -44,7 +44,7 @@
 #include "load-path.h"
 #include "load-save.h"
 #include "ov.h"
-#include "ov-fcn-inline.h"
+#include "ovl.h"
 #include "pager.h"
 #include "symtab.h"
 
@@ -208,6 +208,9 @@ namespace octave
     return get_function_handle (interp, arg, parameter_names);
   }
 
+  // May return a function handle object, inline function object, or
+  // function object.
+
   octave_value
   get_function_handle (interpreter& interp, const octave_value& arg,
                        const std::list<std::string>& parameter_names)
@@ -228,12 +231,19 @@ namespace octave
         if (fcn.is_defined ())
           return fcn;
 
-        fcn = octave_value (new octave_fcn_inline (fstr, parameter_names));
-
         // Possibly warn here that passing the function body in a
         // character string is discouraged.
 
-        return fcn;
+        octave_value_list args (parameter_names.size () + 1);
+        octave_idx_type i = 0;
+        args(i++) = fstr;
+        for (const auto& pname : parameter_names)
+          args(i++) = pname;
+
+        octave_value_list tmp = interp.feval ("inline", args, 1);
+
+        if (tmp.length () > 0)
+          return tmp(0);
       }
 
     return octave_value ();

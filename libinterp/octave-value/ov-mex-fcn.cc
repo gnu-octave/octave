@@ -91,19 +91,13 @@ call_mex (octave_mex_function& curr_mex_fcn, const octave_value_list& args,
           int nargout);
 
 octave_value_list
-octave_mex_function::call (octave::tree_evaluator& tw, int nargout,
-                           const octave_value_list& args)
+octave_mex_function::execute (octave::tree_evaluator& tw, int nargout,
+                              const octave_value_list& args)
 {
   octave_value_list retval;
 
   if (args.has_magic_colon ())
     error ("invalid use of colon in function argument list");
-
-  octave::unwind_protect frame;
-
-  tw.push_stack_frame (this);
-
-  frame.add_method (tw, &octave::tree_evaluator::pop_stack_frame);
 
   octave::profiler& profiler = tw.get_profiler ();
 

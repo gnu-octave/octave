@@ -87,6 +87,11 @@ public:
   virtual octave::symbol_scope parent_fcn_scope (void) const
   { return octave::symbol_scope (); }
 
+  virtual std::list<std::string> parent_fcn_names (void) const
+  {
+    return std::list<std::string> ();
+  }
+
   virtual void mark_fcn_file_up_to_date (const octave::sys::time&) { }
 
   virtual octave::symbol_scope scope (void) { return octave::symbol_scope (); }
@@ -98,6 +103,10 @@ public:
   { return octave::sys::time (static_cast<time_t> (0)); }
 
   virtual int call_depth (void) const { return 0; }
+
+  virtual bool is_nested_function (void) const { return false; }
+
+  virtual bool is_parent_function (void) const { return false; }
 
   virtual bool is_subfunction (void) const { return false; }
 
@@ -227,14 +236,16 @@ public:
   virtual bool accepts_postfix_index (char type) const
   { return (type == '('); }
 
+  // Push new stack frame (if necessary) and execute function.
   virtual octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
-        const octave_value_list& args = octave_value_list ()) = 0;
+        const octave_value_list& args = octave_value_list ());
 
+  // Execute function without pushing new stack frame (assumes that has
+  // already been done).
   virtual octave_value_list
-  call (octave::tree_evaluator& tw, int nargout,
-        const octave_value_list& args,
-        octave::stack_frame *closure_context);
+  execute (octave::tree_evaluator& tw, int nargout = 0,
+           const octave_value_list& args = octave_value_list ()) = 0;
 
 protected:
 

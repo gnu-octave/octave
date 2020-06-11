@@ -332,12 +332,11 @@ labeling mode on the respective axis.  Each has the same form.
 @subsubsection Two-dimensional Function Plotting
 @cindex plotting, two-dimensional functions
 
-Octave can plot a function from a function handle, inline function, or
-string defining the function without the user needing to explicitly
-create the data to be plotted.  The function @code{fplot} also generates
-two-dimensional plots with linear axes using a function name and limits
-for the range of the x-coordinate instead of the x and y data.  For
-example,
+Octave can plot a function from a function handle or string defining the
+function without the user needing to explicitly create the data to be
+plotted.  The function @code{fplot} also generates two-dimensional plots
+with linear axes using a function name and limits for the range of the
+x-coordinate instead of the x and y data.  For example,
 
 @example
 @group
@@ -1891,7 +1890,7 @@ The function can be provided as a function handle to a plain Octave function,
 as an anonymous function, or as a string representing an Octave command.  The
 latter syntax is not recommended since syntax errors will only occur when the
 string is evaluated.
-@xref{Function Handles Anonymous Functions Inline Functions, , Function Handles section}.
+@xref{Function Handles and Anonymous Functions, , Function Handles section}.
 
 This can then be associated with an object either at the object's creation, or
 later with the @code{set} function.  For example,

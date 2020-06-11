@@ -42,6 +42,7 @@
 #include "ovl.h"
 #include "profiler.h"
 #include "pt-walk.h"
+#include "stack-frame.h"
 
 class octave_user_code;
 
@@ -211,8 +212,7 @@ namespace octave
 
     octave_value_list
     execute_user_function (octave_user_function& user_function,
-                           int nargout, const octave_value_list& args,
-                           stack_frame *closure_frames = nullptr);
+                           int nargout, const octave_value_list& args);
 
     void visit_octave_user_function_header (octave_user_function&);
 
@@ -298,6 +298,8 @@ namespace octave
 
     Matrix ignored_fcn_outputs (void) const;
 
+    octave_value make_fcn_handle (const std::string& nm);
+
     octave_value evaluate (tree_decl_elt *);
 
     void install_variable (const std::string& name,
@@ -377,27 +379,23 @@ namespace octave
     void push_stack_frame (const symbol_scope& scope);
 
     void push_stack_frame (octave_user_function *fcn,
-                           unwind_protect *up_frame,
-                           stack_frame *closure_frames = nullptr);
+                           const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
 
-    void push_stack_frame (octave_user_script *script,
-                           unwind_protect *up_frame);
+    void push_stack_frame (octave_user_function *fcn,
+                           const stack_frame::local_vars_map& local_vars);
+
+    void push_stack_frame (octave_user_script *script);
 
     void push_stack_frame (octave_function *fcn);
 
     void pop_stack_frame (void);
 
-    const stack_frame& get_current_stack_frame (void) const
+    std::shared_ptr<stack_frame> get_current_stack_frame (void) const
     {
       return m_call_stack.get_current_stack_frame ();
     }
 
-    stack_frame& get_current_stack_frame (void)
-    {
-      return m_call_stack.get_current_stack_frame ();
-    }
-
-    stack_frame * current_user_frame (void) const
+    std::shared_ptr<stack_frame> current_user_frame (void) const
     {
       return m_call_stack.current_user_frame ();
     }
@@ -418,7 +416,7 @@ namespace octave
 
     octave_user_code * current_user_code (void) const;
 
-    unwind_protect * curr_fcn_unwind_protect_frame (void) const;
+    unwind_protect * curr_fcn_unwind_protect_frame (void);
 
     // Current function that we are debugging.
     octave_user_code * debug_user_code (void) const;
@@ -443,10 +441,10 @@ namespace octave
 
     bool is_class_constructor_executing (std::string& dispatch_class) const;
 
-    std::list<stack_frame *>
+    std::list<std::shared_ptr<stack_frame>>
     backtrace_frames (octave_idx_type& curr_user_frame) const;
 
-    std::list<stack_frame *> backtrace_frames () const;
+    std::list<std::shared_ptr<stack_frame>> backtrace_frames () const;
 
     std::list<frame_info> backtrace_info (octave_idx_type& curr_user_frame,
                                           bool print_subfn = true) const;
@@ -711,8 +709,8 @@ namespace octave
 
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
-    void push_echo_state (unwind_protect& frame, int type,
-                          const std::string& file_name, size_t pos = 1);
+    void push_echo_state (int type, const std::string& file_name,
+                          size_t pos = 1);
 
   private:
 
@@ -744,8 +742,6 @@ namespace octave
     void bind_auto_fcn_vars (const string_vector& arg_names, int nargin,
                              int nargout, bool takes_varargs,
                              const octave_value_list& va_args);
-
-    void init_local_fcn_vars (octave_user_function& user_fcn);
 
     std::string check_autoload_file (const std::string& nm) const;
 

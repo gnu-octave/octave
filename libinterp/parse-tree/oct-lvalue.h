@@ -40,7 +40,8 @@ namespace octave
   {
   public:
 
-    octave_lvalue (const symbol_record& sr, stack_frame& frame)
+    octave_lvalue (const symbol_record& sr,
+                   const std::shared_ptr<stack_frame>& frame)
       : m_sym (sr), m_frame (frame), m_black_hole (false),
         m_type (), m_idx (), m_nel (1)
     { }
@@ -87,7 +88,7 @@ namespace octave
 
     symbol_record m_sym;
 
-    stack_frame& m_frame;
+    std::shared_ptr<stack_frame> m_frame;
 
     bool m_black_hole;
 

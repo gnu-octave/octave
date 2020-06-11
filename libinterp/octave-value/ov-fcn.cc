@@ -27,10 +27,12 @@
 #  include "config.h"
 #endif
 
+#include "unwind-prot.h"
+
 #include "error.h"
 #include "ovl.h"
 #include "ov-fcn.h"
-
+#include "pt-eval.h"
 
 octave_base_value *
 octave_function::clone (void) const
@@ -46,11 +48,11 @@ octave_function::empty_clone (void) const
 
 octave_value_list
 octave_function::call (octave::tree_evaluator& tw, int nargout,
-                       const octave_value_list& args,
-                       octave::stack_frame *closure_context)
+                       const octave_value_list& args)
 {
-  if (closure_context)
-    panic_impossible ();
+  tw.push_stack_frame (this);
 
-  return call (tw, nargout, args);
+  octave::unwind_action act ([&tw] () { tw.pop_stack_frame (); });
+
+  return execute (tw, nargout, args);
 }

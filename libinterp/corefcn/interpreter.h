@@ -371,6 +371,8 @@ namespace octave
 
     octave_value_list feval (const octave_value_list& args, int nargout = 0);
 
+    octave_value make_function_handle (const std::string& name);
+
     void install_variable (const std::string& name, const octave_value& value,
                            bool global);
 

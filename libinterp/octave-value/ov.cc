@@ -75,7 +75,6 @@
 #include "ov-dld-fcn.h"
 #include "ov-usr-fcn.h"
 #include "ov-fcn-handle.h"
-#include "ov-fcn-inline.h"
 #include "ov-typeinfo.h"
 #include "ov-null-mat.h"
 #include "ov-lazy-idx.h"
@@ -1694,12 +1693,6 @@ octave_value::fcn_handle_value (bool silent) const
   return rep->fcn_handle_value (silent);
 }
 
-octave_fcn_inline *
-octave_value::fcn_inline_value (bool silent) const
-{
-  return rep->fcn_inline_value (silent);
-}
-
 octave_value_list
 octave_value::list_value (void) const
 {
@@ -2119,7 +2112,6 @@ XVALUE_EXTRACTOR (octave_user_function *, xuser_function_value, user_function_va
 XVALUE_EXTRACTOR (octave_user_script *, xuser_script_value, user_script_value)
 XVALUE_EXTRACTOR (octave_user_code *, xuser_code_value, user_code_value)
 XVALUE_EXTRACTOR (octave_fcn_handle *, xfcn_handle_value, fcn_handle_value)
-XVALUE_EXTRACTOR (octave_fcn_inline *, xfcn_inline_value, fcn_inline_value)
 
 XVALUE_EXTRACTOR (octave_value_list, xlist_value, list_value)
 
@@ -3031,7 +3023,6 @@ install_types (octave::type_info& ti)
   octave_user_function::register_type (ti);
   octave_dld_function::register_type (ti);
   octave_fcn_handle::register_type (ti);
-  octave_fcn_inline::register_type (ti);
   octave_float_scalar::register_type (ti);
   octave_float_complex::register_type (ti);
   octave_float_matrix::register_type (ti);

@@ -32,6 +32,7 @@
 #include <iosfwd>
 #include <list>
 #include <map>
+#include <memory>
 #include <string>
 
 class octave_value;
@@ -39,8 +40,6 @@ class octave_value_list;
 
 #include "error.h"
 #include "ov-fcn.h"
-#include "ov-fcn.h"
-#include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "syminfo.h"
 #include "symscope.h"
@@ -104,16 +103,13 @@ namespace octave
   class symbol_info_list;
   class unwind_protect;
 
-  class compiled_fcn_stack_frame;
-  class script_stack_frame;
-  class user_fcn_stack_frame;
-  class scope_stack_frame;
-
   class stack_frame_walker;
 
   class stack_frame
   {
   public:
+
+    typedef std::map<std::string, octave_value> local_vars_map;
 
     // Markers indicating the type of a variable.  Values for local
     // variables are stored in the stack frame.  Values for
@@ -144,19 +140,45 @@ namespace octave
     stack_frame (void) = delete;
 
     stack_frame (tree_evaluator& tw, size_t index,
-                 stack_frame *static_link, stack_frame *access_link)
+                 const std::shared_ptr<stack_frame>& static_link,
+                 const std::shared_ptr<stack_frame>& access_link)
       : m_evaluator (tw), m_line (-1), m_column (-1), m_index (index),
         m_static_link (static_link), m_access_link (access_link),
         m_dispatch_class ()
     { }
+
+    // Compiled function.
+    static stack_frame *
+    create (tree_evaluator& tw, octave_function *fcn, size_t index,
+            const std::shared_ptr<stack_frame>& static_link);
+
+    // Script.
+    static stack_frame *
+    create (tree_evaluator& tw, octave_user_script *script, size_t index,
+            const std::shared_ptr<stack_frame>& static_link);
+
+    // User-defined function.
+    static stack_frame *
+    create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
+            const std::shared_ptr<stack_frame>& static_link,
+            const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ());
+
+    // Anonymous user-defined function with init vars.
+    static stack_frame *
+    create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
+            const std::shared_ptr<stack_frame>& static_link,
+            const local_vars_map& local_vars);
+
+    // Scope.
+    static stack_frame *
+    create (tree_evaluator& tw, const symbol_scope& scope, size_t index,
+            const std::shared_ptr<stack_frame>& static_link);
 
     stack_frame (const stack_frame& elt) = default;
 
     stack_frame& operator = (const stack_frame& elt) = delete;
 
     virtual ~stack_frame (void) = default;
-
-    virtual stack_frame * dup (void) const = 0;
 
     // FIXME: It would be nice to eliminate these but there are a few
     // places where we still need to know the specific type of the
@@ -198,7 +220,7 @@ namespace octave
             retval = parent_fcn_name + '>';
 
           if (fcn->is_anonymous_function ())
-            retval += octave_fcn_handle::anonymous;
+            retval += "@<anonymous>";
           else
             retval += fcn->name ();
         }
@@ -212,13 +234,19 @@ namespace octave
 
     virtual octave_function * function (void) const { return nullptr; }
 
-    virtual unwind_protect *
-    unwind_protect_frame (void) const { return nullptr; }
+    virtual unwind_protect * unwind_protect_frame (void) { return nullptr; }
 
     symbol_info_list
     make_symbol_info_list (const std::list<symbol_record>& symrec_list) const;
 
+    octave_value who (const string_vector& patterns, bool have_regexp,
+                      bool return_list, bool verbose,
+                      const std::string& whos_line_fmt,
+                      const std::string& msg);
+
     symbol_info_list all_variables (void);
+
+    octave_value workspace (void);
 
     std::list<std::string> variable_names (void) const;
 
@@ -271,15 +299,11 @@ namespace octave
       mark_global (sym);
     }
 
-    stack_frame * static_link (void) const {return m_static_link; }
+    std::shared_ptr<stack_frame>
+    static_link (void) const {return m_static_link; }
 
-    stack_frame * access_link (void) const {return m_access_link; }
-
-    void set_closure_links (stack_frame *dup_frame)
-    {
-      m_static_link = dup_frame;
-      m_access_link = dup_frame;
-    }
+    std::shared_ptr<stack_frame>
+    access_link (void) const {return m_access_link; }
 
     virtual size_t size (void) const;
 
@@ -534,494 +558,16 @@ namespace octave
 
     // Pointer to the nearest parent frame that contains variable
     // information (script, function, or scope).
-    stack_frame *m_static_link;
+    std::shared_ptr<stack_frame> m_static_link;
 
     // Pointer to the nearest lexical parent frame.  Used to access
     // non-local variables for nested and anonymous functions or as a
     // link to the parent frame in which a script is executed.
-    stack_frame *m_access_link;
+    std::shared_ptr<stack_frame> m_access_link;
 
     // Allow function handles to temporarily store their dispatch class
     // in the call stack.
     std::string m_dispatch_class;
-  };
-
-  class compiled_fcn_stack_frame : public stack_frame
-  {
-  public:
-
-    compiled_fcn_stack_frame (void) = delete;
-
-    compiled_fcn_stack_frame (tree_evaluator& tw, octave_function *fcn,
-                              size_t index, stack_frame *static_link)
-      : stack_frame (tw, index, static_link, static_link->access_link ()),
-        m_fcn (fcn)
-    { }
-
-    compiled_fcn_stack_frame (const compiled_fcn_stack_frame& elt) = default;
-
-    compiled_fcn_stack_frame&
-    operator = (const compiled_fcn_stack_frame& elt) = delete;
-
-    ~compiled_fcn_stack_frame (void) = default;
-
-    compiled_fcn_stack_frame * dup (void) const;
-
-    bool is_compiled_fcn_frame (void) const { return true; }
-
-    symbol_scope get_scope (void) const
-    {
-      return m_static_link->get_scope ();
-    }
-
-    octave_function * function (void) const { return m_fcn; }
-
-    symbol_record lookup_symbol (const std::string& name) const
-    {
-      return m_static_link->lookup_symbol (name);
-    }
-
-    symbol_record insert_symbol (const std::string& name)
-    {
-      return m_static_link->insert_symbol (name);
-    }
-
-    stack_frame::scope_flags scope_flag (const symbol_record& sym) const
-    {
-      // Look in closest stack frame that contains values (either the
-      // top scope, or a user-defined function or script).
-
-      return m_static_link->scope_flag (sym);
-    }
-
-    void set_auto_fcn_var (auto_var_type avt, const octave_value& val)
-    {
-      m_static_link->set_auto_fcn_var (avt, val);
-    }
-
-    octave_value get_auto_fcn_var (auto_var_type avt) const
-    {
-      return m_static_link->get_auto_fcn_var (avt);
-    }
-
-    // We only need to override one of each of these functions.  The
-    // using declaration will avoid warnings about partially-overloaded
-    // virtual functions.
-    using stack_frame::varval;
-    using stack_frame::varref;
-
-    octave_value varval (const symbol_record& sym) const
-    {
-      // Look in closest stack frame that contains values (either the
-      // top scope, or a user-defined function or script).
-
-      return m_static_link->varval (sym);
-    }
-
-    octave_value& varref (const symbol_record& sym)
-    {
-      // Look in closest stack frame that contains values (either the
-      // top scope, or a user-defined function or script).
-
-      return m_static_link->varref (sym);
-    }
-
-    void mark_scope (const symbol_record& sym, scope_flags flag)
-    {
-      // Look in closest stack frame that contains values (either the
-      // top scope, or a user-defined function or script).
-
-      m_static_link->mark_scope (sym, flag);
-    }
-
-    void display (bool follow = true) const;
-
-    void accept (stack_frame_walker& sfw);
-
-  private:
-
-    // Compiled function object associated with this stack frame.
-    // Should always be a built-in, .oct or .mex file function and
-    // should always be valid.
-    octave_function *m_fcn;
-  };
-
-  // Scripts have a symbol_scope object to store the set of variables
-  // in the script, but values for those variables are stored in the
-  // stack frame corresponding to the nearest calling function or in
-  // the top-level scope (the evaluation stack frame).
-  //
-  // Accessing values in a scope requires a mapping from the index of
-  // the variable for the script scope to the list of values in the
-  // evaluation frame(s).  The frame offset tells us how many access
-  // links we must follow to find the stack frame that holds the
-  // value.  The value offset is the index into the vector of values
-  // in that stack frame that we should use to find the value.
-  //
-  // Frame and value offsets are set in this stack frame when it is
-  // created using information from the script and enclosing scopes.
-  //
-  // If a script is invoked in a nested function context, the frame
-  // offsets for individual values may be different.  Some may be
-  // accessed from the invoking function and some may come from a
-  // parent function.
-
-  class script_stack_frame : public stack_frame
-  {
-  public:
-
-    script_stack_frame (void) = delete;
-
-    script_stack_frame (tree_evaluator& tw, octave_user_script *script,
-                        unwind_protect *up_frame, size_t index,
-                        stack_frame *static_link);
-
-    script_stack_frame (const script_stack_frame& elt) = default;
-
-    script_stack_frame& operator = (const script_stack_frame& elt) = delete;
-
-    ~script_stack_frame (void) = default;
-
-    script_stack_frame * dup (void) const;
-
-    bool is_user_script_frame (void) const { return true; }
-
-    static stack_frame * get_access_link (stack_frame *static_link);
-
-    static size_t get_num_symbols (octave_user_script *script);
-
-    void set_script_offsets (void);
-
-    void set_script_offsets_internal (const std::map<std::string,
-                                                     symbol_record>& symbols);
-
-    void resize_and_update_script_offsets (const symbol_record& sym);
-
-    symbol_scope get_scope (void) const { return m_script->scope (); }
-
-    octave_function * function (void) const { return m_script; }
-
-    unwind_protect *
-    unwind_protect_frame (void) const { return m_unwind_protect_frame; }
-
-    symbol_record lookup_symbol (const std::string& name) const;
-
-    symbol_record insert_symbol (const std::string&);
-
-    size_t size (void) const { return m_lexical_frame_offsets.size (); }
-
-    void resize (size_t size)
-    {
-      m_lexical_frame_offsets.resize (size, 0);
-      m_value_offsets.resize (size, 0);
-    }
-
-    void get_val_offsets_with_insert (const symbol_record& sym,
-                                      size_t& frame_offset,
-                                      size_t& data_offset);
-
-    bool get_val_offsets_internal (const symbol_record& sym,
-                                   size_t& frame_offset,
-                                   size_t& data_offset) const;
-
-    bool get_val_offsets (const symbol_record& sym, size_t& frame_offset,
-                          size_t& data_offset) const;
-
-    scope_flags scope_flag (const symbol_record& sym) const;
-
-    void set_auto_fcn_var (auto_var_type avt, const octave_value& val)
-    {
-      m_access_link->set_auto_fcn_var (avt, val);
-    }
-
-    octave_value get_auto_fcn_var (auto_var_type avt) const
-    {
-      return m_access_link->get_auto_fcn_var (avt);
-    }
-
-    // We only need to override one of each of these functions.  The
-    // using declaration will avoid warnings about partially-overloaded
-    // virtual functions.
-    using stack_frame::varval;
-    using stack_frame::varref;
-
-    octave_value varval (const symbol_record& sym) const;
-
-    octave_value& varref (const symbol_record& sym);
-
-    void mark_scope (const symbol_record& sym, scope_flags flag);
-
-    void display (bool follow = true) const;
-
-    void accept (stack_frame_walker& sfw);
-
-  private:
-
-    // Script object associated with this stack frame.  Should always
-    // be valid.
-    octave_user_script *m_script;
-
-    // The nearest unwind protect frame that was active when this
-    // stack frame was created.  Should always be valid.
-    unwind_protect *m_unwind_protect_frame;
-
-    // Mapping between the symbols in the symbol_scope object of the
-    // script to the stack frame in which the script is executed.  The
-    // frame offsets may be greater than one if the script is executed
-    // in a nested function context.
-
-    std::vector<size_t> m_lexical_frame_offsets;
-    std::vector<size_t> m_value_offsets;
-  };
-
-  // Base class for values and offsets shared by user_fcn and scope
-  // frames.
-
-  class base_value_stack_frame : public stack_frame
-  {
-  public:
-
-    base_value_stack_frame (void) = delete;
-
-    base_value_stack_frame (tree_evaluator& tw, size_t num_symbols,
-                            size_t index, stack_frame *static_link,
-                            stack_frame *access_link)
-      : stack_frame (tw, index, static_link, access_link),
-        m_values (num_symbols, octave_value ()),
-        m_flags (num_symbols, LOCAL),
-        m_auto_vars (NUM_AUTO_VARS, octave_value ())
-    { }
-
-    base_value_stack_frame (const base_value_stack_frame& elt) = default;
-
-    base_value_stack_frame&
-    operator = (const base_value_stack_frame& elt) = delete;
-
-    ~base_value_stack_frame (void) = default;
-
-    size_t size (void) const
-    {
-      return m_values.size ();
-    }
-
-    void resize (size_t size)
-    {
-      m_values.resize (size, octave_value ());
-      m_flags.resize (size, LOCAL);
-    }
-
-    stack_frame::scope_flags get_scope_flag (size_t data_offset) const
-    {
-      return m_flags.at (data_offset);
-    }
-
-    void set_scope_flag (size_t data_offset, scope_flags flag)
-    {
-      m_flags.at (data_offset) = flag;
-    }
-
-    octave_value get_auto_fcn_var (auto_var_type avt) const
-    {
-      return m_auto_vars.at (avt);
-    }
-
-    void set_auto_fcn_var (auto_var_type avt, const octave_value& val)
-    {
-      m_auto_vars.at (avt) = val;
-    }
-
-    // We only need to override one of each of these functions.  The
-    // using declaration will avoid warnings about partially-overloaded
-    // virtual functions.
-    using stack_frame::varval;
-    using stack_frame::varref;
-
-    octave_value varval (size_t data_offset) const
-    {
-      return m_values.at (data_offset);
-    }
-
-    octave_value& varref (size_t data_offset)
-    {
-      return m_values.at (data_offset);
-    }
-
-    void display (bool follow = true) const;
-
-  protected:
-
-    // Variable values.  This array is indexed by the data_offset
-    // value stored in the symbol_record objects of the scope
-    // associated with this stack frame.
-    std::vector<octave_value> m_values;
-
-    // The type of each variable (local, global, persistent) of each
-    // value.  This array is indexed by the data_offset value stored
-    // in the symbol_record objects of the scope associated with this
-    // stack frame.  Local values are found in the M_VALUES array.
-    // Global values are stored in the tree_evaluator object that contains
-    // the stack frame.  Persistent values are stored in the function
-    // scope corresponding to the stack frame.
-    std::vector<scope_flags> m_flags;
-
-    // A fixed list of Automatic variables created for this function.
-    // The elements of this vector correspond to the auto_var_type
-    // enum.
-    std::vector<octave_value> m_auto_vars;
-  };
-
-  // User-defined functions have a symbol_scope object to store the set
-  // of variables in the function and values are stored in the stack
-  // frame corresponding to the invocation of the function or one of
-  // its parents.  The frame offset tells us how many access links we
-  // must follow to find the stack frame that holds the value.  The
-  // value offset is the index into the vector of values in that stack
-  // frame that we should use to find the value.
-  //
-  // Frame and value offsets are determined when the corresponding
-  // function is parsed.
-
-  class user_fcn_stack_frame : public base_value_stack_frame
-  {
-  public:
-
-    user_fcn_stack_frame (void) = delete;
-
-    user_fcn_stack_frame (tree_evaluator& tw, octave_user_function *fcn,
-                          unwind_protect *up_frame, size_t index,
-                          stack_frame *static_link,
-                          stack_frame *access_link = nullptr)
-      : base_value_stack_frame (tw, get_num_symbols (fcn), index, static_link,
-                                (access_link
-                                 ? access_link
-                                 : get_access_link (fcn, static_link))),
-        m_fcn (fcn), m_unwind_protect_frame (up_frame)
-    { }
-
-    user_fcn_stack_frame (const user_fcn_stack_frame& elt) = default;
-
-    user_fcn_stack_frame&
-    operator = (const user_fcn_stack_frame& elt) = delete;
-
-    ~user_fcn_stack_frame (void) = default;
-
-    user_fcn_stack_frame * dup (void) const;
-
-    bool is_user_fcn_frame (void) const { return true; }
-
-    static stack_frame *
-    get_access_link (octave_user_function *fcn, stack_frame *static_link);
-
-    static size_t get_num_symbols (octave_user_function *fcn)
-    {
-      symbol_scope fcn_scope = fcn->scope ();
-
-      return fcn_scope.num_symbols ();
-    }
-
-    void clear_values (void);
-
-    symbol_scope get_scope (void) const { return m_fcn->scope (); }
-
-    octave_function * function (void) const { return m_fcn; }
-
-    unwind_protect *
-    unwind_protect_frame (void) const { return m_unwind_protect_frame; }
-
-    symbol_record lookup_symbol (const std::string& name) const;
-
-    symbol_record insert_symbol (const std::string&);
-
-    scope_flags scope_flag (const symbol_record& sym) const;
-
-    // We only need to override one of each of these functions.  The
-    // using declaration will avoid warnings about partially-overloaded
-    // virtual functions.
-    using base_value_stack_frame::varval;
-    using base_value_stack_frame::varref;
-
-    octave_value varval (const symbol_record& sym) const;
-
-    octave_value& varref (const symbol_record& sym);
-
-    void mark_scope (const symbol_record& sym, scope_flags flag);
-
-    void display (bool follow = true) const;
-
-    void accept (stack_frame_walker& sfw);
-
-  private:
-
-    // User-defined object associated with this stack frame.  Should
-    // always be valid.
-    octave_user_function *m_fcn;
-
-    // The nearest unwind protect frame that was active when this
-    // stack frame was created.  Should always be valid.
-    unwind_protect *m_unwind_protect_frame;
-  };
-
-  // Pure scope stack frames (primarily the top-level workspace) have
-  // a set of variables and values are stored in the stack frame.  All
-  // variable accesses are direct as there are no parent stack frames.
-  //
-  // Value offsets are determined when the corresponding variable is
-  // entered into the symbol_scope object corresponding to the frame.
-
-  class scope_stack_frame : public base_value_stack_frame
-  {
-  public:
-
-    scope_stack_frame (void) = delete;
-
-    scope_stack_frame (tree_evaluator& tw, const symbol_scope& scope,
-                       size_t index, stack_frame *static_link)
-      : base_value_stack_frame (tw, scope.num_symbols (), index,
-                                static_link, nullptr),
-        m_scope (scope)
-    { }
-
-    scope_stack_frame (const scope_stack_frame& elt) = default;
-
-    scope_stack_frame& operator = (const scope_stack_frame& elt) = delete;
-
-    ~scope_stack_frame (void) = default;
-
-    scope_stack_frame * dup (void) const;
-
-    bool is_scope_frame (void) const { return true; }
-
-    symbol_scope get_scope (void) const { return m_scope; }
-
-    symbol_record lookup_symbol (const std::string& name) const
-    {
-      return m_scope.lookup_symbol (name);
-    }
-
-    symbol_record insert_symbol (const std::string&);
-
-    scope_flags scope_flag (const symbol_record& sym) const;
-
-    // We only need to override one of each of these functions.  The
-    // using declaration will avoid warnings about partially-overloaded
-    // virtual functions.
-    using base_value_stack_frame::varval;
-    using base_value_stack_frame::varref;
-
-    octave_value varval (const symbol_record& sym) const;
-
-    octave_value& varref (const symbol_record& sym);
-
-    void mark_scope (const symbol_record& sym, scope_flags flag);
-
-    void display (bool follow = true) const;
-
-    void accept (stack_frame_walker& sfw);
-
-  private:
-
-    // The scope object associated with this stack frame.
-    symbol_scope m_scope;
   };
 }
 

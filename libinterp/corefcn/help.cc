@@ -828,30 +828,14 @@ the return value is an empty cell array.
 
   // Find the main function we are in.
   octave::tree_evaluator& tw = interp.get_evaluator ();
-  octave_user_code *parent_fcn = tw.debug_user_code ();
+  octave_user_code *caller = tw.debug_user_code ();
 
-  if (! parent_fcn)
+  if (! caller)
     return ovl (retval);
 
-  // Find the subfunctions of this function.
-  // 1) subfunction_names contains only valid subfunctions
-  // 2) subfunctions contains both nested functions and subfunctions
-  const std::list<std::string> names = parent_fcn->subfunction_names ();
-  const std::map<std::string, octave_value> h = parent_fcn->subfunctions ();
+  octave::symbol_scope scope = caller->scope ();
 
-  size_t sz = names.size ();
-  retval.resize (dim_vector (sz, 1));
-
-  // loop over them.
-  size_t i = 0;
-  for (const auto& nm : names)
-    {
-      std::map<std::string, octave_value>::const_iterator nm_fcn = h.find (nm);
-      if (nm_fcn != h.end ())
-        retval(i++) = octave_value (new octave_fcn_handle (nm_fcn->second, nm));
-    }
-
-  return ovl (retval);
+  return ovl (Cell (scope.localfunctions ()));
 }
 
 /*

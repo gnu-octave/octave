@@ -83,9 +83,7 @@ COREFCN_INC = \
   %reldir%/sparse-xdiv.h \
   %reldir%/sparse-xpow.h \
   %reldir%/stack-frame.h \
-  %reldir%/stack-frame-walker.h \
   %reldir%/syminfo.h \
-  %reldir%/syminfo-accumulator.h \
   %reldir%/symrec.h \
   %reldir%/symscope.h \
   %reldir%/symtab.h \

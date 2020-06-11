@@ -43,7 +43,6 @@ OCTAVE_VALUE_INC = \
   %reldir%/ov-cx-mat.h \
   %reldir%/ov-dld-fcn.h \
   %reldir%/ov-fcn-handle.h \
-  %reldir%/ov-fcn-inline.h \
   %reldir%/ov-fcn.h \
   %reldir%/ov-float.h \
   %reldir%/ov-flt-complex.h \
@@ -108,7 +107,6 @@ OCTAVE_VALUE_SRC = \
   %reldir%/ov-cx-mat.cc \
   %reldir%/ov-dld-fcn.cc \
   %reldir%/ov-fcn-handle.cc \
-  %reldir%/ov-fcn-inline.cc \
   %reldir%/ov-fcn.cc \
   %reldir%/ov-float.cc \
   %reldir%/ov-flt-complex.cc \

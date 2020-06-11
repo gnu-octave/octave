@@ -186,14 +186,18 @@ public:
 
   bool is_user_script (void) const { return true; }
 
-  // We don't need to override both forms of the call method.  The using
-  // declaration will avoid warnings about partially-overloaded virtual
-  // functions.
-  using octave_user_code::call;
+  // We must overload the call method so that we call the proper
+  // push_stack_frame method, which is overloaded for pointers to
+  // octave_function, octave_user_function, and octave_user_script
+  // objects.
 
   octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
         const octave_value_list& args = octave_value_list ());
+
+  octave_value_list
+  execute (octave::tree_evaluator& tw, int nargout = 0,
+           const octave_value_list& args = octave_value_list ());
 
   void accept (octave::tree_walker& tw);
 
@@ -209,13 +213,10 @@ octave_user_function : public octave_user_code
 {
 public:
 
-  typedef std::map<std::string, octave_value> local_vars_map;
-
   octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope (),
                         octave::tree_parameter_list *pl = nullptr,
                         octave::tree_parameter_list *rl = nullptr,
-                        octave::tree_statement_list *cl = nullptr,
-                        const local_vars_map& lviv = local_vars_map ());
+                        octave::tree_statement_list *cl = nullptr);
 
   // No copying!
 
@@ -270,6 +271,11 @@ public:
   octave::symbol_scope parent_fcn_scope (void) const
   {
     return m_scope.parent_scope ();
+  }
+
+  std::list<std::string> parent_fcn_names (void) const
+  {
+    return m_scope.parent_fcn_names ();
   }
 
   void mark_as_system_fcn_file (void);
@@ -372,16 +378,18 @@ public:
             ? (cname.empty () ? true : cname == dispatch_class ()) : false);
   }
 
-  octave_value_list
-  call (octave::tree_evaluator& tw, int nargout = 0,
-        const octave_value_list& args = octave_value_list ())
-  {
-    return call (tw, nargout, args, nullptr);
-  }
+  // We must overload the call method so that we call the proper
+  // push_stack_frame method, which is overloaded for pointers to
+  // octave_function, octave_user_function, and octave_user_script
+  // objects.
 
   octave_value_list
-  call (octave::tree_evaluator& tw, int nargout,
-        const octave_value_list& args, octave::stack_frame *);
+  call (octave::tree_evaluator& tw, int nargout = 0,
+        const octave_value_list& args = octave_value_list ());
+
+  octave_value_list
+  execute (octave::tree_evaluator& tw, int nargout = 0,
+           const octave_value_list& args = octave_value_list ());
 
   octave::tree_parameter_list * parameter_list (void) { return param_list; }
 
@@ -390,11 +398,6 @@ public:
   octave::comment_list * leading_comment (void) { return lead_comm; }
 
   octave::comment_list * trailing_comment (void) { return trail_comm; }
-
-  const local_vars_map& local_var_init_vals (void) const
-  {
-    return m_local_var_init_vals;
-  }
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
@@ -430,9 +433,6 @@ private:
   // List of parameters we return.  These are also local variables in
   // this function.
   octave::tree_parameter_list *ret_list;
-
-  // For anonymous function values inherited from parent scope.
-  local_vars_map m_local_var_init_vals;
 
   // The comments preceding the FUNCTION token.
   octave::comment_list *lead_comm;

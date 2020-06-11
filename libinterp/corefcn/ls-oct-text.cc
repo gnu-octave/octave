@@ -52,6 +52,7 @@
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter.h"
 #include "interpreter-private.h"
 #include "load-save.h"
 #include "ls-ascii-helper.h"
@@ -235,6 +236,53 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 
 #define SUBSTRING_COMPARE_EQ(s, pos, n, t) (s.substr (pos, n) == (t))
 
+static octave_value
+load_inline_fcn (std::istream& is, const std::string& filename)
+{
+  int nargs;
+  if (extract_keyword (is, "nargs", nargs, true))
+    {
+      std::string name;
+      octave_value_list args (nargs+1);
+      for (int i = 0; i < nargs; i++)
+        {
+          std::string tmp;
+          is >> tmp;
+          args(i+1) = tmp;
+        }
+      is >> name;
+      if (name == "0")
+        name = "";
+
+      skip_preceeding_newline (is);
+
+      std::string buf;
+
+      if (is)
+        {
+
+          // Get a line of text whitespace characters included,
+          // leaving newline in the stream.
+          buf = read_until_newline (is, true);
+        }
+
+      if (is)
+        {
+          args(0) = std::string (buf);
+
+          octave::interpreter& interp
+            = octave::__get_interpreter__ ("load_inline_fcn");
+
+          octave_value_list tmp = interp.feval ("inline", args, 1);
+
+          if (tmp.length () > 0)
+            return tmp(0);
+        }
+    }
+
+  error ("load: trouble reading ascii file '%s'", filename.c_str ());
+}
+
 std::string
 read_text_data (std::istream& is, const std::string& filename, bool& global,
                 octave_value& tc, octave_idx_type count,
@@ -280,6 +328,12 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
   // Special case for backward compatibility.  A small bit of cruft
   if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
     tc = charMatrix ();
+  else if (SUBSTRING_COMPARE_EQ (typ, 0, 15, "inline function"))
+    {
+      // Special case for loading old octave_inline_fcn objects.
+      tc = load_inline_fcn (is, filename);
+      return name;
+    }
   else
     {
       octave::type_info& type_info

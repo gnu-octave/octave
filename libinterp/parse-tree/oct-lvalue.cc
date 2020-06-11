@@ -36,7 +36,7 @@ namespace octave
 {
   bool octave_lvalue::is_defined (void) const
   {
-    return ! is_black_hole () && m_frame.is_defined (m_sym);
+    return ! is_black_hole () && m_frame->is_defined (m_sym);
   }
 
   bool octave_lvalue::is_undefined (void) const
@@ -46,14 +46,14 @@ namespace octave
 
   void octave_lvalue::define (const octave_value& v)
   {
-    m_frame.assign (m_sym, v);
+    m_frame->assign (m_sym, v);
   }
 
   void octave_lvalue::assign (octave_value::assign_op op,
                               const octave_value& rhs)
   {
     if (! is_black_hole ())
-      m_frame.assign (op, m_sym, m_type, m_idx, rhs);
+      m_frame->assign (op, m_sym, m_type, m_idx, rhs);
   }
 
   void octave_lvalue::set_index (const std::string& t,
@@ -97,12 +97,12 @@ namespace octave
   void octave_lvalue::do_unary_op (octave_value::unary_op op)
   {
     if (! is_black_hole ())
-      m_frame.do_non_const_unary_op (op, m_sym, m_type, m_idx);
+      m_frame->do_non_const_unary_op (op, m_sym, m_type, m_idx);
   }
 
   octave_value octave_lvalue::value (void) const
   {
     return (is_black_hole ()
-            ? octave_value () : m_frame.value (m_sym, m_type, m_idx));
+            ? octave_value () : m_frame->value (m_sym, m_type, m_idx));
   }
 }

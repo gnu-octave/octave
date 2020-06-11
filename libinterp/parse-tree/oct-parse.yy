@@ -2530,7 +2530,10 @@ namespace octave
 
     if (! m_lexer.m_reading_script_file && m_curr_fcn_depth == 0
         && ! m_parsing_subfunctions)
-      m_primary_fcn_scope = m_lexer.m_symtab_context.curr_scope ();
+        {
+          m_primary_fcn_scope = m_lexer.m_symtab_context.curr_scope ();
+          m_primary_fcn_scope.mark_primary_fcn_scope ();
+        }
 
     if (m_lexer.m_reading_script_file && m_curr_fcn_depth > 0)
       {
@@ -3722,15 +3725,16 @@ namespace octave
 
     if (fcn)
       {
-        std::string nm = fcn->name ();
+        std::string fcn_nm = fcn->name ();
         std::string file = fcn->fcn_file_name ();
 
-        std::string tmp = nm;
+        std::string tmp = fcn_nm;
         if (! file.empty ())
           tmp += ": " + file;
 
         symbol_scope fcn_scope = fcn->scope ();
         fcn_scope.cache_name (tmp);
+        fcn_scope.cache_fcn_name (fcn_nm);
         fcn_scope.cache_fcn_file_name (file);
         fcn_scope.cache_dir_name (m_lexer.m_dir_name);
 
@@ -3754,14 +3758,27 @@ namespace octave
                 symbol_scope pscope = m_function_scopes.parent_scope ();
                 fcn_scope.set_parent (pscope);
                 fcn_scope.set_primary_parent (m_primary_fcn_scope);
-                pscope.install_nestfunction (nm, ov_fcn, fcn_scope);
+                pscope.install_nestfunction (fcn_nm, ov_fcn, fcn_scope);
+
+                // For nested functions, the list of parent functions is
+                // set in symbol_scope::update_nest.
               }
             else
               {
                 fcn->mark_as_subfunction ();
-                m_subfunction_names.push_back (nm);
+                m_subfunction_names.push_back (fcn_nm);
                 fcn_scope.set_parent (m_primary_fcn_scope);
-                m_primary_fcn_scope.install_subfunction (nm, ov_fcn);
+                if (m_parsing_subfunctions)
+                  fcn_scope.set_primary_parent (m_primary_fcn_scope);
+                m_primary_fcn_scope.install_subfunction (fcn_nm, ov_fcn);
+
+                // Prepend name of primary fucntion to list of parent
+                // functions (if any) for subfunction.
+
+                std::list<std::string> plst
+                  = fcn_scope.parent_fcn_names ();
+                plst.push_front (m_primary_fcn_scope.fcn_name ());
+                fcn_scope.cache_parent_fcn_names (plst);
               }
           }
 

@@ -195,13 +195,17 @@ public:
     return object.meta_subsref (type, idx, nargout);
   }
 
-  // We don't need to override both forms of the call method.  The using
-  // declaration will avoid warnings about partially-overloaded virtual
-  // functions.
-  using octave_function::call;
+  // Override default call method because we don't push a new stack
+  // frame for this operation on classdef_meta objects.
 
-  octave_value_list call (octave::tree_evaluator&, int nargout,
+  octave_value_list call (octave::tree_evaluator& tw, int nargout,
                           const octave_value_list& args)
+  {
+    return execute (tw, nargout, args);
+  }
+
+  octave_value_list execute (octave::tree_evaluator&, int nargout,
+                             const octave_value_list& args)
   {
     // Emulate ()-type meta subsref
 
@@ -213,6 +217,8 @@ public:
 
   bool accepts_postfix_index (char type) const
   { return object.meta_accepts_postfix_index (type); }
+
+  bool is_classdef_method (const std::string& cname = "") const;
 
   bool is_classdef_constructor (const std::string& cname = "") const;
 
@@ -243,13 +249,17 @@ public:
 
   octave_function * function_value (bool = false) { return this; }
 
-  // We don't need to override both forms of the call method.  The using
-  // declaration will avoid warnings about partially-overloaded virtual
-  // functions.
-  using octave_function::call;
+  // Override default call method because we don't push a new stack
+  // frame for this operation on classdef_superclass_ref objects.
 
-  octave_value_list
-  call (octave::tree_evaluator& tw, int nargout, const octave_value_list& idx);
+  octave_value_list call (octave::tree_evaluator& tw, int nargout,
+                          const octave_value_list& args)
+  {
+    return execute (tw, nargout, args);
+  }
+
+  octave_value_list execute (octave::tree_evaluator& tw, int nargout,
+                             const octave_value_list& idx);
 
 private:
 

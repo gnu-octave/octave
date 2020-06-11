@@ -991,8 +991,6 @@ currently installed data types.
 %!assert (typeinfo (@sin), "function handle")
 %!assert (typeinfo (@(x) x), "function handle")
 
-%!assert (typeinfo (inline ("x^2")), "inline function")
-
 %!assert (typeinfo (single (1)), "float scalar")
 %!assert (typeinfo (single (i)), "float complex scalar")
 %!assert (typeinfo (single ([1, 2])), "float matrix")

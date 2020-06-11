@@ -28,6 +28,7 @@
 
 #include "octave-config.h"
 
+#include <list>
 #include <string>
 
 #include "Array.h"
@@ -89,6 +90,8 @@ public:
           elem(i++,0) = val;
       }
   }
+
+  Cell (const std::list<std::string>& sl);
 
   Cell (const Array<std::string>& sa);
 

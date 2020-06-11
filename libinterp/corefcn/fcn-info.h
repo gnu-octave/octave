@@ -89,7 +89,13 @@ namespace octave
 
       octave_value builtin_find (const symbol_scope& search_scope);
 
+      octave_value find_scoped_function (const symbol_scope& search_scope);
+
+      octave_value find_private_function (const std::string& dir_name);
+
       octave_value find_method (const std::string& dispatch_type);
+
+      octave_value find_method (const octave_value_list& args);
 
       octave_value find_autoload (void);
 
@@ -253,6 +259,16 @@ namespace octave
     builtin_find (const symbol_scope& search_scope)
     {
       return m_rep->builtin_find (search_scope);
+    }
+
+    octave_value find_scoped_function (const symbol_scope& search_scope) const
+    {
+      return m_rep->find_scoped_function (search_scope);
+    }
+
+    octave_value find_private_function (const std::string& dir_name) const
+    {
+      return m_rep->find_private_function (dir_name);
     }
 
     octave_value find_method (const std::string& dispatch_type) const

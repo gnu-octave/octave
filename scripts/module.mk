@@ -45,7 +45,7 @@ include %reldir%/web/module.mk
 ## The include above fails because Automake cannot process the '@' character.
 ## As a work around, the contents of %reldir%/@ftp/module.mk are placed directly
 ## in this module.mk file.
-%canon_reldir%_EXTRA_DIST += %reldir%/@ftp/module.mk
+scripts_EXTRA_DIST += %reldir%/@ftp/module.mk
 ######################## include %reldir%/@ftp/module.mk ########################
 FCN_FILE_DIRS += %reldir%/@ftp
 

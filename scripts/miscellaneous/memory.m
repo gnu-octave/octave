@@ -176,7 +176,7 @@ function [userdata, systemdata] = memory ()
     available_ram = sys.AvailPhys;
     free_swap = sys.AvailPageFile;
     used_ram = proc.WorkingSetSize;
-    used_virtual = proc.PagefileUsage;
+    used_virtual = proc.WorkingSetSize + proc.PagefileUsage;
     avail_virtual = sys.AvailVirtual;
     address_space = sys.TotalVirtual;
 

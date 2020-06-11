@@ -176,10 +176,10 @@ namespace octave
     {
       if (m_fcn.is_defined ())
         {
-          octave_function *fcn = m_fcn.function_value ();
+          octave_function *oct_fcn = m_fcn.function_value ();
 
-          if (fcn)
-            m_file = fcn->fcn_file_name ();
+          if (oct_fcn)
+            m_file = oct_fcn->fcn_file_name ();
         }
     }
 
@@ -2394,13 +2394,13 @@ namespace octave
     unwind_action act ([&tw] () { tw.pop_scope (); });
 
     int parse_status;
-    octave_value anonymous_fcn_handle
+    octave_value anonymous_fcn_hdl
       = interp.eval_string (fcn_text, true, parse_status);
 
     if (parse_status != 0)
       return false;
 
-    octave_fcn_handle *fh = anonymous_fcn_handle.fcn_handle_value ();
+    octave_fcn_handle *fh = anonymous_fcn_hdl.fcn_handle_value ();
 
     if (! fh)
       return false;

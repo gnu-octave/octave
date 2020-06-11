@@ -116,11 +116,11 @@ load_inline_fcn (std::istream& is, bool swap, octave::mach_info::float_format,
           octave::interpreter& interp
             = octave::__get_interpreter__ ("load_inline_fcn");
 
-          octave_value_list tmp = interp.feval ("inline", args, 1);
+          octave_value_list tmp_inl = interp.feval ("inline", args, 1);
 
-          if (tmp.length () > 0)
+          if (tmp_inl.length () > 0)
             {
-              retval = tmp(0);
+              retval = tmp_inl(0);
               return true;
             }
         }

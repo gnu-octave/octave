@@ -1789,7 +1789,7 @@ namespace octave
 
     std::ostringstream buf;
     print_raw (buf, true, 0);
-    m.setfield ("name", buf.str ());
+    m.setfield ("function", buf.str ());
 
     m.setfield ("type", type ());
     m.setfield ("file", "");

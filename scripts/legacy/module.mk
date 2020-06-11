@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/__vectorize__.m \
   %reldir%/findstr.m \
   %reldir%/flipdim.m \
   %reldir%/genvarname.m \
@@ -10,7 +11,8 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/setstr.m \
   %reldir%/strmatch.m \
   %reldir%/strread.m \
-  %reldir%/textread.m
+  %reldir%/textread.m \
+  %reldir%/vectorize.m
 
 ## include %reldir%/@inline/module.mk
 ## The include above fails because Automake cannot process the '@' character.

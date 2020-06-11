@@ -22,11 +22,14 @@ FCN_FILE_DIRS += %reldir%/@inline
 
 %canon_reldir%_@inline_FCN_FILES = \
   %reldir%/@inline/argnames.m \
+  %reldir%/@inline/char.m \
+  %reldir%/@inline/feval.m \
   %reldir%/@inline/formula.m \
   %reldir%/@inline/inline.m \
+  %reldir%/@inline/subsref.m \
   %reldir%/@inline/vectorize.m
 
-%canon_reldir%_@inlinedir = $(fcnfiledir)/@inline
+%canon_reldir%_@inlinedir = $(fcnfiledir)/legacy/@inline
 
 %canon_reldir%_@inline_DATA = $(%canon_reldir%_@inline_FCN_FILES)
 

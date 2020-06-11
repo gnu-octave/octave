@@ -1191,10 +1191,10 @@ namespace octave
 
     if (m_fcn.is_defined ())
       {
-        octave_function *fcn = m_fcn.function_value ();
+        octave_function *oct_fcn = m_fcn.function_value ();
 
-        if (fcn)
-          m_file = fcn->fcn_file_name ();
+        if (oct_fcn)
+          m_file = oct_fcn->fcn_file_name ();
       }
 
     m_parentage.push_front (name);

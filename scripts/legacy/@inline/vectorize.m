@@ -31,32 +31,6 @@ function fcn = vectorize (obj)
     print_usage ();
   endif
 
-  new_expr = "";
-
-  expr = obj.expr;
-  len = length (expr);
-  i = 1;
-
-  while (i <= len)
-    c = expr(i);
-
-    if (c == "*" || c == "/" || c == "\\" || c == "^")
-      if (i > 1 && expr(i-1) != ".")
-        new_expr(end+1) = ".";
-      endif
-
-      ## Special case for ** operator.
-      if (c == '*' && i < (len - 1) && expr(i+1) == '*')
-        new_expr(end+1) = "*";
-        i++;
-      endif
-    endif
-
-    new_expr(end+1) = c;
-    i++;
-
-  endwhile
-
-  fcn = inline (new_expr);
+  fcn = inline (__vectorize__ (obj.expr));
 
 endfunction

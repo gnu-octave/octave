@@ -995,7 +995,7 @@ namespace octave
 
     bool retval = true;
 
-    hid_t group_hid = -1;
+    octave_hdf5_id group_hid = -1;
 #if defined (HAVE_HDF5_18)
     group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
                            octave_H5P_DEFAULT);
@@ -1005,7 +1005,7 @@ namespace octave
     if (group_hid < 0)
       return false;
 
-    hid_t space_hid, data_hid, type_hid;
+    octave_hdf5_id space_hid, data_hid, type_hid;
     space_hid = data_hid = type_hid = -1;
 
     // attach the type of the variable
@@ -1065,12 +1065,13 @@ namespace octave
     H5Tclose (type_hid);
     type_hid = H5Tcopy (H5T_C_S1);
     H5Tset_size (type_hid, octaveroot.length () + 1);
+    octave_hdf5_id a_id;
 #if defined (HAVE_HDF5_18)
-    hid_t a_id = H5Acreate (group_hid, "OCTAVEROOT",
-                            type_hid, space_hid, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+    a_id = H5Acreate (group_hid, "OCTAVEROOT", type_hid, space_hid,
+                      octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
-    hid_t a_id = H5Acreate (group_hid, "OCTAVEROOT",
-                            type_hid, space_hid, octave_H5P_DEFAULT);
+    a_id = H5Acreate (group_hid, "OCTAVEROOT", type_hid, space_hid,
+                      octave_H5P_DEFAULT);
 #endif
 
     if (a_id >= 0)
@@ -2005,7 +2006,7 @@ namespace octave
 
     bool retval = true;
 
-    hid_t group_hid = -1;
+    octave_hdf5_id group_hid = -1;
 #if defined (HAVE_HDF5_18)
     group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
                            octave_H5P_DEFAULT);
@@ -2015,7 +2016,7 @@ namespace octave
     if (group_hid < 0)
       return false;
 
-    hid_t space_hid, data_hid, type_hid;
+    octave_hdf5_id space_hid, data_hid, type_hid;
     space_hid = data_hid = type_hid = -1;
 
     // attach the type of the variable
@@ -2093,18 +2094,18 @@ namespace octave
 
     if (varlen > 0)
       {
-        hid_t as_id = H5Screate (H5S_SCALAR);
+        octave_hdf5_id as_id = H5Screate (H5S_SCALAR);
 
         if (as_id >= 0)
           {
+            octave_hdf5_id a_id;
 #if defined (HAVE_HDF5_18)
-            hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
-                                    H5T_NATIVE_IDX, as_id,
-                                    octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+            a_id = H5Acreate (group_hid, "SYMBOL_TABLE", H5T_NATIVE_IDX, as_id,
+                              octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 
 #else
-            hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
-                                    H5T_NATIVE_IDX, as_id, octave_H5P_DEFAULT);
+            a_id = H5Acreate (group_hid, "SYMBOL_TABLE", H5T_NATIVE_IDX, as_id,
+                              octave_H5P_DEFAULT);
 #endif
 
             if (a_id >= 0)
@@ -2172,9 +2173,9 @@ namespace octave
     bool success = true;
 
 #if defined (HAVE_HDF5_18)
-    hid_t data_hid = H5Dopen (group_hid, "fcn", octave_H5P_DEFAULT);
+    octave_hdf5_id data_hid = H5Dopen (group_hid, "fcn", octave_H5P_DEFAULT);
 #else
-    hid_t data_hid = H5Dopen (group_hid, "fcn");
+    octave_hdf5_id data_hid = H5Dopen (group_hid, "fcn");
 #endif
 
     if (data_hid < 0)
@@ -2187,7 +2188,7 @@ namespace octave
 
     H5Tclose (type_hid);
     type_hid = H5Dget_type (data_hid);
-    hid_t type_class_hid = H5Tget_class (type_hid);
+    octave_hdf5_id type_class_hid = H5Tget_class (type_hid);
 
     if (type_class_hid != H5T_STRING)
       {
@@ -2224,7 +2225,7 @@ namespace octave
     OCTAVE_LOCAL_BUFFER (char, fcn_tmp, slen);
 
     // create datatype for (null-terminated) string to read into:
-    hid_t st_id = H5Tcopy (H5T_C_S1);
+    octave_hdf5_id st_id = H5Tcopy (H5T_C_S1);
     H5Tset_size (st_id, slen);
 
     if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL,
@@ -2260,7 +2261,7 @@ namespace octave
     H5Eset_auto (nullptr, nullptr);
 #endif
 
-    hid_t attr_id = H5Aopen_name (group_hid, "SYMBOL_TABLE");
+    octave_hdf5_id attr_id = H5Aopen_name (group_hid, "SYMBOL_TABLE");
 
     if (attr_id >= 0)
       {
@@ -2724,17 +2725,17 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name_arg)
 #if defined (HAVE_HDF5)
 
 #if defined (HAVE_HDF5_18)
-  hid_t group_hid = H5Gopen (loc_id, name_arg, octave_H5P_DEFAULT);
+  octave_hdf5_id group_hid = H5Gopen (loc_id, name_arg, octave_H5P_DEFAULT);
 #else
-  hid_t group_hid = H5Gopen (loc_id, name_arg);
+  octave_hdf5_id group_hid = H5Gopen (loc_id, name_arg);
 #endif
   if (group_hid < 0)
     return false;
 
 #if defined (HAVE_HDF5_18)
-  hid_t data_hid = H5Dopen (group_hid, "nm", octave_H5P_DEFAULT);
+  octave_hdf5_id data_hid = H5Dopen (group_hid, "nm", octave_H5P_DEFAULT);
 #else
-  hid_t data_hid = H5Dopen (group_hid, "nm");
+  octave_hdf5_id data_hid = H5Dopen (group_hid, "nm");
 #endif
 
   if (data_hid < 0)
@@ -2743,8 +2744,8 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name_arg)
       return false;
     }
 
-  hid_t type_hid = H5Dget_type (data_hid);
-  hid_t type_class_hid = H5Tget_class (type_hid);
+  octave_hdf5_id type_hid = H5Dget_type (data_hid);
+  octave_hdf5_id type_class_hid = H5Tget_class (type_hid);
 
   if (type_class_hid != H5T_STRING)
     {
@@ -2754,7 +2755,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name_arg)
       return false;
     }
 
-  hid_t space_hid = H5Dget_space (data_hid);
+  octave_hdf5_id space_hid = H5Dget_space (data_hid);
   hsize_t rank = H5Sget_simple_extent_ndims (space_hid);
 
   if (rank != 0)
@@ -2779,7 +2780,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name_arg)
   OCTAVE_LOCAL_BUFFER (char, nm_tmp, slen);
 
   // create datatype for (null-terminated) string to read into:
-  hid_t st_id = H5Tcopy (H5T_C_S1);
+  octave_hdf5_id st_id = H5Tcopy (H5T_C_S1);
   H5Tset_size (st_id, slen);
 
   if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL,

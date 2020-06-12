@@ -83,7 +83,7 @@ void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]);
 #define mexIsInf mxIsInf
 #define mexGetEps mxGetEps
 #define mexGetInf mxGetInf
-#define mexGetNaN mxGetNan
+#define mexGetNaN mxGetNaN
 
 #define mexGetGlobal(nm) mexGetArray (nm, "global")
 #define mexGetMatrix(nm) mexGetArray (nm, "caller")

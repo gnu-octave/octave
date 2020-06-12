@@ -107,6 +107,13 @@
 
 function varname = genvarname (str, exclusions = {})
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:legacy-function",
+             "genvarname is obsolete; use matlab.lang.makeValidName or matlab.lang.makeUniqueStrings instead\n");
+  endif
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif

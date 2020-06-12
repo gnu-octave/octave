@@ -228,9 +228,12 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
       tname = octave::find_data_file_in_load_path ("dlmread", tname);
 
-      std::string ascii_fname = octave::sys::get_ASCII_filename (tname);
-
-      input_file.open (ascii_fname.c_str (), std::ios::in);
+#if defined (OCTAVE_USE_WINDOWS_API)
+      std::wstring wname = octave::sys::u8_to_wstring (tname);
+      input_file.open (wname.c_str (), std::ios::in);
+#else
+      input_file.open (tname.c_str (), std::ios::in);
+#endif
 
       if (! input_file)
         error ("dlmread: unable to open file '%s'", fname.c_str ());

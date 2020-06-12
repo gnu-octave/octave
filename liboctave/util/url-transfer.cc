@@ -121,8 +121,9 @@ namespace octave
               {
                 std::string realfile = target + directory + sep + sv(i);
 
-                std::ofstream ofile (realfile.c_str (),
-                                     std::ios::out | std::ios::binary);
+                std::ofstream ofile =
+                  sys::ofstream (realfile.c_str (),
+                                 std::ios::out | std::ios::binary);
 
                 if (! ofile.is_open ())
                   {
@@ -206,10 +207,9 @@ namespace octave
               else
                 {
                   // FIXME: Does ascii mode need to be flagged here?
-                  std::string ascii_fname = sys::get_ASCII_filename (realfile);
-
-                  std::ifstream ifile (ascii_fname.c_str (),
-                                       std::ios::in | std::ios::binary);
+                  std::ifstream ifile =
+                    sys::ifstream (realfile.c_str (),
+                                   std::ios::in | std::ios::binary);
 
                   if (! ifile.is_open ())
                     {

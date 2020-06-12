@@ -142,7 +142,8 @@ urlwrite ("http://www.google.com/search", "search.html",
 
   octave::sys::file_stat fs (filename);
 
-  std::ofstream ofile (filename.c_str (), std::ios::out | std::ios::binary);
+  std::ofstream ofile =
+    octave::sys::ofstream (filename.c_str (), std::ios::out | std::ios::binary);
 
   if (! ofile.is_open ())
     error ("urlwrite: unable to open file");

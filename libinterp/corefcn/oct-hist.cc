@@ -47,6 +47,7 @@ Software Foundation, Inc.
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "lo-mappers.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-time.h"
 #include "str-vec.h"
@@ -238,7 +239,7 @@ namespace octave
 
     std::string name = sys::tempnam ("", "oct-");
 
-    std::fstream file (name.c_str (), std::ios::out);
+    std::ofstream file = sys::ofstream (name.c_str (), std::ios::out);
 
     if (! file)
       error ("%s: couldn't open temporary file '%s'", warn_for,
@@ -478,7 +479,7 @@ namespace octave
     // Write the commands to the history file since source_file
     // disables command line history while it executes.
 
-    std::fstream file (name.c_str (), std::ios::in);
+    std::fstream file = sys::fstream (name.c_str (), std::ios::in);
 
     char *line;
     //int first = 1;

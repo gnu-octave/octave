@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <string>
-
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "lo-error.h"
@@ -347,6 +345,48 @@ namespace octave
 
 #else
       return std::fopen (filename.c_str (), mode.c_str ());
+#endif
+    }
+
+    std::fstream
+    fstream (const std::string& filename, const std::ios::openmode mode)
+    {
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+      std::wstring wfilename = u8_to_wstring (filename);
+
+      return std::fstream (wfilename.c_str (), mode);
+
+#else
+      return std::fstream (filename.c_str (), mode);
+#endif
+    }
+
+    std::ifstream
+    ifstream (const std::string& filename, const std::ios::openmode mode)
+    {
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+      std::wstring wfilename = u8_to_wstring (filename);
+
+      return std::ifstream (wfilename.c_str (), mode);
+
+#else
+      return std::ifstream (filename.c_str (), mode);
+#endif
+    }
+
+    std::ofstream
+    ofstream (const std::string& filename, const std::ios::openmode mode)
+    {
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+      std::wstring wfilename = u8_to_wstring (filename);
+
+      return std::ofstream (wfilename.c_str (), mode);
+
+#else
+      return std::ofstream (filename.c_str (), mode);
 #endif
     }
 

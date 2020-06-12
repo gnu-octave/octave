@@ -424,11 +424,10 @@ Undocumented internal function
         }
       else
         {
-          std::string ascii_fname = octave::sys::get_ASCII_filename (file);
-
           // FIXME: Does ascii mode need to be flagged here?
-          std::ifstream ifile (ascii_fname.c_str (),
-                               std::ios::in | std::ios::binary);
+          std::ifstream ifile = 
+            octave::sys::ifstream (file.c_str (),
+                                   std::ios::in | std::ios::binary);
 
           if (! ifile.is_open ())
             error ("__ftp_mput__: unable to open file");
@@ -497,9 +496,9 @@ Undocumented internal function
             url_xfer.mget_directory (sv(i), target);
           else
             {
-              std::ofstream ofile ((target + sv(i)).c_str (),
-                                   std::ios::out |
-                                   std::ios::binary);
+              std::ofstream ofile =
+                octave::sys::ofstream ((target + sv(i)).c_str (),
+                                       std::ios::out | std::ios::binary);
 
               if (! ofile.is_open ())
                 error ("__ftp_mget__: unable to open file");

@@ -37,6 +37,7 @@
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "lo-error.h"
+#include "lo-sysdep.h"
 #include "singleton-cleanup.h"
 #include "str-vec.h"
 
@@ -399,7 +400,7 @@ namespace octave
 
                     if (! fs)
                       {
-                        std::fstream tmp (f, std::ios::out);
+                        std::ofstream tmp = sys::ofstream (f, std::ios::out);
                         tmp.close ();
                       }
 

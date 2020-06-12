@@ -28,6 +28,7 @@
 
 #include "octave-config.h"
 
+#include <fstream>
 #include <string>
 
 #include <sys/types.h>
@@ -48,6 +49,16 @@ namespace octave
                              std::string& msg);
 
     extern std::FILE * fopen (const std::string& name, const std::string& mode);
+
+    extern std::fstream fstream (const std::string& name,
+                                 const std::ios::openmode mode =
+                                   std::ios::in | std::ios::out);
+
+    extern std::ifstream ifstream (const std::string& name,
+                                   const std::ios::openmode mode = std::ios::in);
+
+    extern std::ofstream ofstream (const std::string& name,
+                                   const std::ios::openmode mode = std::ios::out);
 
     extern void putenv_wrapper (const std::string& name,
                                 const std::string& value);

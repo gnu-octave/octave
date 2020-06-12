@@ -167,8 +167,8 @@ namespace octave
 
     std::string ascii_fname = sys::get_ASCII_filename (fname);
 
-    std::ifstream file (ascii_fname.c_str (),
-                        std::ios::in | std::ios::binary);
+    std::ifstream file = sys::ifstream (fname.c_str (),
+                                        std::ios::in | std::ios::binary);
 
     unsigned char magic[2];
     if (file.read (reinterpret_cast<char *> (&magic[0]), 2)
@@ -348,8 +348,8 @@ namespace octave
 
     if (! use_zlib)
       {
-        std::ifstream file (ascii_fname.c_str (),
-                            std::ios::in | std::ios::binary);
+        std::ifstream file = sys::ifstream (fname.c_str (),
+                                            std::ios::in | std::ios::binary);
         if (file)
           {
             retval = get_file_format (file, orig_fname);
@@ -803,7 +803,7 @@ namespace octave
             else
 #endif
               {
-                std::ofstream file (fname, mode);
+                std::ofstream file = sys::ofstream (fname, mode);
 
                 if (file)
                   {
@@ -1352,9 +1352,7 @@ namespace octave
               else
 #endif
                 {
-                  std::string ascii_fname = sys::get_ASCII_filename (fname);
-
-                  std::ifstream file (ascii_fname.c_str (), mode);
+                  std::ifstream file = sys::ifstream (fname.c_str (), mode);
 
                   if (! file)
                     error ("load: unable to open input file '%s'",
@@ -1525,7 +1523,7 @@ namespace octave
             else
 #endif
               {
-                std::ofstream file (fname.c_str (), mode);
+                std::ofstream file = sys::ofstream (fname.c_str (), mode);
 
                 if (! file)
                   err_file_open ("save", fname);

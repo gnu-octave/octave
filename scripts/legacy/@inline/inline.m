@@ -57,6 +57,13 @@
 
 function obj = inline (expr, varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:legacy-function",
+             "inline is obsolete; use anonymous functions instead\n");
+  endif
+
   if (nargin == 0)
     print_usage ();
   endif

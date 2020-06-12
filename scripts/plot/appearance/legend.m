@@ -1977,7 +1977,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!test <*40333>
+%!testif HAVE_FREETYPE <*40333>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   axes ("units", "normalized");

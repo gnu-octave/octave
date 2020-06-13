@@ -56,6 +56,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   endif
 
   nd = __calc_dimensions__ (h);
+  if (nd == 2 && (any (get (h, "view") != [0, 90])))
+    ## view() only works correctly on 3-D axes in gnuplot (bug #58526).
+    nd = 3;
+  endif
 
   if (strcmp (axis_obj.dataaspectratiomode, "manual")
       && strcmp (axis_obj.xlimmode, "manual")

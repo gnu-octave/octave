@@ -54,6 +54,20 @@ namespace octave
     {
       std::string retval;
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+      wchar_t *tmp = _wgetcwd (nullptr, 0);
+
+      if (! tmp)
+        (*current_liboctave_error_handler) ("unable to find current directory");
+
+      std::wstring tmp_wstr (tmp);
+      free (tmp);
+
+      std::string tmp_str = u8_from_wstring (tmp_wstr);
+
+      retval = tmp_str;
+
+#else
       // Using octave_getcwd_wrapper ensures that we have a getcwd that
       // will allocate a buffer as large as necessary if buf and size are
       // both 0.
@@ -65,6 +79,7 @@ namespace octave
 
       retval = tmp;
       free (tmp);
+#endif
 
       return retval;
     }

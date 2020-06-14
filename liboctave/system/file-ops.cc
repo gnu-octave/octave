@@ -32,15 +32,18 @@
 #include <cstdlib>
 #include <cstring>
 
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-#  include <algorithm>
-#endif
+#include <vector>
+
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
 #  include <shlwapi.h>
 #endif
 
-#include <vector>
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+#  include <algorithm>
+#  include "localcharset-wrapper.h"
+#  include "uniconv-wrappers.h"
+#endif
 
 #include "areadlink-wrapper.h"
 #include "canonicalize-file-name-wrapper.h"
@@ -699,6 +702,45 @@ namespace octave
 
       std::string retval;
 
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+      // On Windows, convert to locale charset before passing to
+      // canonicalize_file_name, and convert back to UTF-8 after that.
+
+      // FIXME: This only allows non-ASCII characters in the file or path that
+      // can be encoded in the locale charset.
+      // Consider replacing this with std::filesystem::canonical once we allow
+      // using C++17.
+
+      const char *locale = octave_locale_charset_wrapper ();
+      const uint8_t *name_u8 = reinterpret_cast<const uint8_t *>
+                                 (name.c_str ());
+      size_t length = 0;
+      char *name_locale = octave_u8_conv_to_encoding (locale, name_u8,
+                                                      name.length () + 1,
+                                                      &length);
+
+      if (name_locale)
+        {
+          char *tmp_locale =
+            octave_canonicalize_file_name_wrapper (name_locale);
+          free (name_locale);
+
+          if (tmp_locale)
+            {
+              char *tmp = reinterpret_cast<char *>
+                            (octave_u8_conv_from_encoding (locale, tmp_locale,
+                                                           strlen (tmp_locale),
+                                                           &length));
+              free (tmp_locale);
+
+              if (tmp)
+                {
+                  retval = std::string (tmp, length);
+                  free (tmp);
+                }
+            }
+        }
+#else
       char *tmp = octave_canonicalize_file_name_wrapper (name.c_str ());
 
       if (tmp)
@@ -706,6 +748,7 @@ namespace octave
           retval = tmp;
           free (tmp);
         }
+#endif
 
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
       // Canonical Windows file separator is backslash.

@@ -121,7 +121,7 @@ namespace QtHandles
   qt_graphics_toolkit::initialize (const graphics_object& go)
   {
     if (go.isa ("figure")
-        || go.isa ("uicontrol")
+        || (go.isa ("uicontrol") && go.get ("style").string_value () != "frame")
         || go.isa ("uipanel")
         || go.isa ("uibuttongroup")
         || go.isa ("uimenu")
@@ -131,7 +131,7 @@ namespace QtHandles
         || go.isa ("uipushtool")
         || go.isa ("uitoggletool"))
       {
-        // FIXME: We need to unlock the mutex here but we have no way to know if
+        // FIXME: We need to unlock the mutex here but we have no way to know
         // if it was previously locked by this thread, and thus if we should
         // re-lock it.
 

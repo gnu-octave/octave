@@ -139,6 +139,14 @@
 ## By default, the @code{Octave:built-in-variable-assignment} warning is
 ## enabled.
 ##
+## @item Octave:classdef-to-struct
+## If the @code{Octave:classdef-to-struct} warning is enabled, a warning
+## is issued when a classdef object is forcibly converted into a struct with
+## @code{struct (@var{CLASSDEF_OBJ})}.  Conversion removes the access
+## restrictions from the object and makes private and protected properties
+## visible.
+## By default, the @code{Octave:classdef-to-struct} warning is enabled.
+##
 ## @item Octave:colon-complex-argument
 ## If the @code{Octave:colon-complex-argument} warning is enabled, a warning
 ## is issued when one of the three arguments to the colon operator (base,

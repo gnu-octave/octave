@@ -53,7 +53,7 @@ example, the expression
 produces the string whose contents are @samp{foobarbaz}.  @xref{Numeric Data
 Types}, for more information about creating matrices.
 
-While strings can in principal store arbitrary content, most functions expect
+While strings can in principle store arbitrary content, most functions expect
 them to be UTF-8 encoded Unicode strings.
 
 @menu

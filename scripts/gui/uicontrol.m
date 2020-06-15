@@ -119,6 +119,16 @@ function hui = uicontrol (varargin)
 
   [h, args] = __uiobject_split_args__ ("uicontrol", varargin,
                                        {"figure", "uipanel", "uibuttongroup"});
+
+  ## Validate style
+  idx = find (strcmp (args, "style"), 1, "last");
+  if (! isempty (idx))
+    if (idx < numel (args) && strcmp (varargin{idx+1}, "frame"))
+      warning ("Octave:unimplemented-matlab-functionality",
+               'uicontrol: "frame" style is not implemented.  Use uipanel() or uibuttongroup() instead');
+    endif
+  endif
+
   htmp = __go_uicontrol__ (h, args{:});
 
   if (nargout > 0)

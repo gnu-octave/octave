@@ -376,6 +376,14 @@
 ## the warning message is printed just once per Octave session.
 ## By default, the @code{Octave:glyph-render} warning is enabled.
 ##
+## @item Octave:unimplemented-matlab-functionality
+## If the @code{Octave:unimplemented-matlab-functionality} warning is enabled,
+## a warning is printed when a @sc{matlab} code construct is used which the
+## Octave interpreter parses as valid, but for which Octave does not yet
+## implement the functionality.
+## By default, the @code{Octave:unimplemented-matlab-functionality} warning is
+## enabled.
+##
 ## @item Octave:variable-switch-label
 ## If the @code{Octave:variable-switch-label} warning is enabled, Octave
 ## will print a warning if a switch label is not a constant or constant

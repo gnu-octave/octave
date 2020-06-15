@@ -80,6 +80,11 @@ graphics objects for all graphics toolkits.
 objects.  It is equivalent to the previously used "uicontextmenu"
 property which is hidden now.
 
+- A new warning ID (Octave:unimplemented-matlab-functionality) has been
+added which prints a warning when Octave's parser recognizes valid
+Matlab code, but for which Octave does not yet implement the
+functionality.  By default, this warning is enabled.
+
 - Additional properties have been added for the `axes` graphics object:
     * "alphamap" (not yet implemented)
     * "alphascale" (not yet implemented)

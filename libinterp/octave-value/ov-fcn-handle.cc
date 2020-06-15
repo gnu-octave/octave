@@ -397,14 +397,17 @@ namespace octave
     // FIXME: octaveroot is temporary information used when loading
     // handles.  Can we avoid using it in the constructor?
 
-    class_simple_fcn_handle (const std::string& name = "",
-                             const std::string& file = "",
-                             const std::string& /*octaveroot*/ = "")
+    class_simple_fcn_handle (const std::string& name,
+                             const std::string& file,
+                             const std::string& /*octaveroot*/)
       : base_fcn_handle (name, file)
     { }
 
     // FIXME: is the method name supposed to be just the method name or
     // also contain the object name?
+
+    class_simple_fcn_handle (const std::string& class_nm,
+                             const std::string& meth_nm);
 
     class_simple_fcn_handle (const octave_value& fcn,
                              const std::string& class_nm,
@@ -1586,6 +1589,12 @@ namespace octave
       return false;
   }
 
+  class_simple_fcn_handle::class_simple_fcn_handle (const std::string& class_nm,
+                                                    const std::string& meth_nm)
+    : base_fcn_handle (meth_nm), m_obj (), m_fcn (),
+      m_dispatch_class (class_nm)
+  { }
+
   class_simple_fcn_handle::class_simple_fcn_handle (const octave_value& fcn,
                                                     const std::string& class_nm,
                                                     const std::string& meth_nm)
@@ -1625,7 +1634,10 @@ namespace octave
 
     tw.set_dispatch_class (m_dispatch_class);
 
-    return interp.feval (m_fcn, args, nargout);
+    if (m_fcn.is_defined ())
+      return interp.feval (m_fcn, args, nargout);
+
+    return interp.feval (fcn_name (), args, nargout);
   }
 
   octave_scalar_map class_simple_fcn_handle::info (void)
@@ -2446,6 +2458,12 @@ octave_fcn_handle::octave_fcn_handle (const std::string& name)
 octave_fcn_handle::octave_fcn_handle (const octave_value& fcn,
                                       const std::string& name)
   : octave_base_value (), m_rep (new octave::simple_fcn_handle (fcn, name))
+{ }
+
+octave_fcn_handle::octave_fcn_handle (const std::string& class_nm,
+                                      const std::string& meth_nm)
+  : octave_base_value (),
+    m_rep (new octave::class_simple_fcn_handle (class_nm, meth_nm))
 { }
 
 octave_fcn_handle::octave_fcn_handle (const octave_value& fcn,

@@ -179,6 +179,9 @@ public:
   // Create a simple function handle that is bound to a function.
   octave_fcn_handle (const octave_value& fcn, const std::string& name);
 
+  // Create a function handle that might be bound to a class method.
+  octave_fcn_handle (const std::string& class_nm, const std::string& meth_nm);
+
   // Create a function handle bound to a class method.
   octave_fcn_handle (const octave_value& fcn, const std::string& class_nm,
                      const std::string& meth_nm);

@@ -1186,11 +1186,11 @@ namespace octave
 
                 if (fcn->is_class_method ())
                   {
-                    // Create CLASSSIMPLE handle to method.
+                    // Create CLASSSIMPLE handle to method but don't
+                    // bind to the method.  Lookup will be done later.
 
                     octave_fcn_handle *fh
-                      = new octave_fcn_handle (ov_meth, dispatch_class,
-                                               fcn_name);
+                      = new octave_fcn_handle (dispatch_class, fcn_name);
 
                     return octave_value (fh);
                   }

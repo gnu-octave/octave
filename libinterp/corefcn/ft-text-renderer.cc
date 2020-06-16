@@ -198,6 +198,7 @@ namespace octave
 
       if (font_map.isempty ())
         {
+#if defined (HAVE_FONTCONFIG)
           FcConfig *config = FcConfigGetCurrent();
           FcPattern *pat = FcPatternCreate ();
           FcObjectSet *os = FcObjectSetBuild (FC_FAMILY, FC_SLANT, FC_WEIGHT,
@@ -269,6 +270,7 @@ namespace octave
               if (fs)
                 FcFontSetDestroy (fs);
             }
+#endif
         }
 
       return font_map;

@@ -693,9 +693,9 @@ For a vector @code{A}, the following loop
 
 @example
 @group
-n = length (A);
+n = length (A) - 1;
 B = zeros (n, 2);
-for i = 1:length (A)
+for i = 1:n
   ## this will be two columns, the first is the difference and
   ## the second the mean of the two elements used for the diff.
   B(i,:) = [A(i+1)-A(i), (A(i+1) + A(i))/2];

@@ -37,6 +37,7 @@
 #endif
 
 #include <algorithm>
+#include <array>
 #include <fstream>
 #include <map>
 #include <string>
@@ -513,16 +514,16 @@ get_jvm_lib_path_in_subdir (std::string java_home_path)
   // This assumes that whatever architectures are installed are appropriate for
   // this machine
 #if defined (OCTAVE_USE_WINDOWS_API)
-  std::string subdirs[] = {"bin/client", "bin/server"};
+  const std::array<const std::string, 2> subdirs = {"bin/client", "bin/server"};
 #else
-  std::string subdirs[] = {"jre/lib/server", "jre/lib",
-                           "lib/client", "lib/server",
-                           "jre/lib/amd64/client", "jre/lib/amd64/server",
-                           "jre/lib/i386/client", "jre/lib/i386/server"
-                          };
+  const std::array<const std::string, 8> subdirs =
+    {"jre/lib/server", "jre/lib", "lib/client", "lib/server",
+     "jre/lib/amd64/client", "jre/lib/amd64/server",
+     "jre/lib/i386/client", "jre/lib/i386/server"
+    };
 #endif
 
-  for (size_t i = 0; i < sizeof (subdirs) / sizeof (subdirs[0]); i++)
+  for (size_t i = 0; i < subdirs.size (); i++)
     {
       std::string candidate = java_home_path + "/" + subdirs[i]
                               + "/" LIBJVM_FILE_NAME;

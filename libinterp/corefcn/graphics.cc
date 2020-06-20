@@ -10273,6 +10273,10 @@ scatter::properties::update_color (void)
   if (updating_scatter_cdata)
     return;
 
+  Matrix series_idx = get_seriesindex ().matrix_value ();
+  if (series_idx.isempty ())
+    return;
+
   gh_manager& gh_mgr
     = octave::__get_gh_manager__ ("scatter::properties::update_color");
 
@@ -10283,7 +10287,6 @@ scatter::properties::update_color (void)
         (go.get_ancestor ("axes").get_properties ());
 
   Matrix color_order = parent_axes_prop.get_colororder ().matrix_value ();
-  Matrix series_idx = get_seriesindex ().matrix_value ();
   octave_idx_type s = (static_cast<octave_idx_type> (series_idx(0)) - 1)
                       % color_order.rows ();
 

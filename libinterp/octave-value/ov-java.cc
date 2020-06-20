@@ -613,7 +613,6 @@ get_jvm_lib_path_from_registry ()
 //!
 //! - '-Djava.class.path=classpath', where @c classpath is given by
 //!   #initial_class_path().
-//! - '-Djava.system.class.loader=org.octave.OctClassLoader'.
 //! - '-Xrs'
 //!
 //! Further options are read from the file @c java.opts in the directory given
@@ -763,7 +762,6 @@ initialize_jvm (void)
 
       // Hard-coded options for the jvm.
       vm_args.add ("-Djava.class.path=" + initial_class_path ());
-      vm_args.add ("-Djava.system.class.loader=org.octave.OctClassLoader");
       vm_args.add ("-Xrs");
 
       // Additional options given by file java.opts.

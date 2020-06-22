@@ -395,8 +395,7 @@ namespace octave
     int opts = 0;  // No options by default.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs.key,
-                           global_use_native_dialogs.def).toBool ())
+    if (! settings->value (global_use_native_dialogs).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString file
@@ -421,8 +420,7 @@ namespace octave
     int opts = 0;  // No options by default.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs.key,
-                           global_use_native_dialogs.def).toBool ())
+    if (! settings->value (global_use_native_dialogs).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString file = file_arg;
@@ -994,8 +992,7 @@ namespace octave
     int opts = QFileDialog::ShowDirsOnly;
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs.key,
-                           global_use_native_dialogs.def).toBool ())
+    if (! settings->value (global_use_native_dialogs).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString dir
@@ -1268,8 +1265,7 @@ namespace octave
     fileDialog->setDirectory (m_current_directory_combo_box->itemText (0));
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-    if (! settings->value (global_use_native_dialogs.key,
-                           global_use_native_dialogs.def).toBool ())
+    if (! settings->value (global_use_native_dialogs).toBool ())
       fileDialog->setOption(QFileDialog::DontUseNativeDialog);
 
     connect (fileDialog, SIGNAL (filesSelected (const QStringList&)),

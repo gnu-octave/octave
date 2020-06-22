@@ -94,6 +94,9 @@ global_status_bar ("show_status_bar", QVariant (true));
 // setting the flag for ignoring the pref to "true" (3rd argument)
 const gui_pref
 global_use_native_dialogs ("use_native_file_dialogs", QVariant (false), true);
+#elif defined (Q_OS_WIN32)
+const gui_pref
+global_use_native_dialogs ("use_native_file_dialogs", QVariant (false));
 #else
 const gui_pref
 global_use_native_dialogs ("use_native_file_dialogs", QVariant (true));

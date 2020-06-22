@@ -2380,8 +2380,7 @@ namespace octave
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs.key,
-                           global_use_native_dialogs.def).toBool ())
+    if (! settings->value (global_use_native_dialogs).toBool ())
       fileDialog->setOption(QFileDialog::DontUseNativeDialog);
 
     connect (fileDialog, SIGNAL (filterSelected (const QString&)),

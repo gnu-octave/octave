@@ -89,8 +89,18 @@ global_icon_theme ("use_system_icon_theme", QVariant (true));
 const gui_pref
 global_status_bar ("show_status_bar", QVariant (true));
 
+#if defined (Q_OS_MAC)
+// prevent native file dialogs on MAC by setting the default "false" and
+// setting the flag for ignoring the pref to "true" (3rd argument)
+const gui_pref
+global_use_native_dialogs ("use_native_file_dialogs", QVariant (false), true);
+#elif defined (Q_OS_WIN32)
+const gui_pref
+global_use_native_dialogs ("use_native_file_dialogs", QVariant (false));
+#else
 const gui_pref
 global_use_native_dialogs ("use_native_file_dialogs", QVariant (true));
+#endif
 
 const gui_pref
 global_cursor_blinking ("cursor_blinking", QVariant (true));

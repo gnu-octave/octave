@@ -628,8 +628,6 @@ octave_cell::string_vector_value (bool pad) const
 Array<std::string>
 octave_cell::cellstr_value (void) const
 {
-  Array<std::string> retval;
-
   if (! iscellstr ())
     error ("invalid conversion from cell array to array of strings");
 
@@ -637,8 +635,6 @@ octave_cell::cellstr_value (void) const
     *cellstr_cache = matrix.cellstr_value ();
 
   return *cellstr_cache;
-
-  return retval;
 }
 
 bool

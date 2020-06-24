@@ -456,7 +456,7 @@ function [local_packages, global_packages] = pkg (varargin)
         endif
         action = varargin{i};
       otherwise
-        files{end+1} = tolower (varargin{i});
+        files{end+1} = varargin{i};
     endswitch
   endfor
 

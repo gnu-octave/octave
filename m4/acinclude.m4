@@ -187,6 +187,74 @@ return v[3] == 207089 ? 0 : 1;
   fi
 ])
 dnl
+dnl Check if pthread stack size accounts for thread-local storage.
+dnl
+dnl This program should succeed if the pthread library allocates memory
+dnl for thread-local (__thread) variables independently of the
+dnl requested thread stack size.
+dnl
+dnl It will fail if (as in the current version of glibc) the storage
+dnl for thread-local variables is subtracted from the memory allocated
+dnl for the thread stack.  (This can cause problems for Java and for
+dnl other libraries.)
+dnl
+dnl This bug is tracked in glibc at:
+dnl https://sourceware.org/bugzilla/show_bug.cgi?id=11787
+dnl
+AC_DEFUN([OCTAVE_CHECK_BROKEN_PTHREAD_STACKSIZE], [
+  AC_CACHE_CHECK([whether pthread stack size does not account for thread-local storage],
+    [octave_cv_broken_pthread_stacksize],
+    [AC_LANG_PUSH(C)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+#include <stdio.h>
+#include <string.h>
+#include <pthread.h>
+
+static char __thread data[100 * 1024];
+
+static void * threadfunc(void *arg)
+{
+    return data;
+}
+      ]], [[
+  pthread_attr_t attr;
+  pthread_t thread;
+  int errnum;
+
+  pthread_attr_init (&attr);
+  errnum = pthread_attr_setstacksize (&attr, 64 * 1024);
+  if (errnum != 0)
+  {
+    fprintf (stderr, "pthread_attr_setstacksize: %s\n", strerror(errnum));
+    return 1;
+  }
+  errnum = pthread_create (&thread, &attr, &threadfunc, NULL);
+  if (errnum != 0)
+  {
+    fprintf (stderr, "pthread_create: %s\n", strerror(errnum));
+    return 1;
+  }
+  errnum = pthread_join (thread, NULL);
+  if (errnum != 0)
+  {
+    fprintf (stderr, "pthread_join: %s\n", strerror(errnum));
+    return 1;
+  }
+
+  pthread_attr_destroy (&attr);
+  return 0;
+    ]])],
+    octave_cv_broken_pthread_stacksize=no,
+    octave_cv_broken_pthread_stacksize=yes,
+    octave_cv_broken_pthread_stacksize=no)
+    AC_LANG_POP(C)
+  ])
+  if test $octave_cv_broken_pthread_stacksize = yes; then
+    AC_DEFINE(HAVE_BROKEN_PTHREAD_STACKSIZE, 1,
+      [Define to 1 if pthread stack size does not account for thread-local storage.])
+  fi
+])
+dnl
 dnl Check whether CXSparse is version 2.2 or later
 dnl FIXME: This test uses a version number.  It potentially could
 dnl        be re-written to actually call a function, but is it worth it?

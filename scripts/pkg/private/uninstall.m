@@ -32,8 +32,8 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
                     global_list, global_install)
 
   ## Get the list of installed packages.
-  [local_packages, global_packages] = installed_packages(local_list,
-                                                         global_list);
+  [local_packages, global_packages] = installed_packages (local_list,
+                                                          global_list);
   if (global_install)
     installed_pkgs_lst = {local_packages{:}, global_packages{:}};
   else
@@ -145,8 +145,8 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
 
     ## Write a new ~/.octave_packages.
     if (global_install)
-      if (length (remaining_packages) == 0)
-        unlink (global_list);
+      if (numel (remaining_packages) == 0)
+        [~] = unlink (global_list);
       else
         global_packages = save_order (remaining_packages);
         if (ispc)
@@ -157,8 +157,8 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
         save (global_list, "global_packages");
       endif
     else
-      if (length (remaining_packages) == 0)
-        unlink (local_list);
+      if (numel (remaining_packages) == 0)
+        [~] = unlink (local_list);
       else
         local_packages = save_order (remaining_packages);
         if (ispc)

@@ -567,7 +567,7 @@ function [local_packages, global_packages] = pkg (varargin)
                  global_list, global_install);
 
       unwind_protect_cleanup
-        cellfun ("unlink", local_files);
+        [~] = cellfun ("unlink", local_files);
         if (exist (tmp_dir, "file"))
           rmdir (tmp_dir, "s");
         endif

@@ -95,7 +95,7 @@ function build (builddir, tarballs, verbose)
 
     ## Currently does nothing because gzip() removes the original tar
     ## file but that should change in the future (bug #43431).
-    unlink (tar_path);
+    [~] = unlink (tar_path);
   endfor
 
 endfunction

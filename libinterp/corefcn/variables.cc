@@ -1124,7 +1124,7 @@ DEFMETHOD (clear, interp, args, ,
 @deftypefn  {} {} clear
 @deftypefnx {} {} clear @var{pattern} @dots{}
 @deftypefnx {} {} clear @var{options} @var{pattern} @dots{}
-Delete the names matching the given @var{pattern}s from the symbol table.
+Delete the names matching the given @var{pattern}s thereby freeing memory.
 
 The @var{pattern} may contain the following special characters:
 
@@ -1192,7 +1192,7 @@ options can be used without the dash as well.  Note that, aside from
 @option{-exclusive}, only one other option may appear.  All options must
 appear before any patterns.
 
-Programming Note: The command @code{clear @var{name}} only clears the variable
+Programming Notes: The command @code{clear @var{name}} only clears the variable
 @var{name} when both a variable and a (shadowed) function named @var{name}
 are currently defined.  For example, suppose you have defined a function
 @code{foo}, and then hidden it by performing the assignment @code{foo = 2}.
@@ -1200,7 +1200,13 @@ Executing the command @code{clear foo} once will clear the variable
 definition and restore the definition of @code{foo} as a function.
 Executing @code{clear foo} a second time will clear the function definition.
 
-@seealso{who, whos, exist, mlock}
+When a local variable name, which is linked to a global variable, is cleared
+only the local copy of the variable is removed.  The global copy is untouched
+and can be restored with @code{global @var{global_varname}}.  Conversely,
+@code{clear -g @var{global_varname}} will remove both the local and global
+variables.
+
+@seealso{clearvars, who, whos, exist, mlock}
 @end deftypefn */)
 {
   int argc = args.length () + 1;

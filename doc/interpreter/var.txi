@@ -85,11 +85,14 @@ before they have been given a value.  Doing so results in an error.
 @cindex @code{global} statement
 @cindex variables, global
 
-A variable that has been declared @dfn{global} may be accessed from
-within a function body without having to pass it as a formal parameter.
+A @dfn{global} variable is one that may be accessed anywhere within Octave.
+This is in contrast to a local variable which can only be accessed outside
+of its current context if it is passed explicitly, such as by including it as a
+parameter when calling a function
+(@code{fcn (@var{local_var1}, @var{local_var2})}).
 
-A variable may be declared global using a @code{global} declaration
-statement.  The following statements are all global declarations.
+A variable is declared global by using a @code{global} declaration statement.
+The following statements are all global declarations.
 
 @example
 @group
@@ -100,8 +103,17 @@ global d = 3 e f = 5
 @end group
 @end example
 
-A global variable may only be initialized once in a @code{global}
-statement.  For example, after executing the following code
+Note that the @code{global} qualifier extends only to the next end-of-statement
+indicator which could be a comma (@samp{,}), semicolon (@samp{;}), or newline
+(@samp{'\n'}).  For example, the following code declares one global variable,
+@var{a}, and one local variable @var{b} to which the value 1 is assigned.
+
+@example
+global a, b = 1
+@end example
+
+A global variable may only be initialized once in a @code{global} statement.
+For example, after executing the following code
 
 @example
 @group
@@ -115,8 +127,8 @@ the value of the global variable @code{gvar} is 1, not 2.  Issuing a
 @samp{clear gvar} command does not change the above behavior, but
 @samp{clear all} does.
 
-It is necessary declare a variable as global within a function body in
-order to access it.  For example,
+It is necessary declare a variable as global within a function body in order to
+access the one universal variable.  For example,
 
 @example
 @group
@@ -129,8 +141,9 @@ f ()
 @end example
 
 @noindent
-does @emph{not} set the value of the global variable @code{x} to 1.  In
-order to change the value of the global variable @code{x}, you must also
+does @emph{not} set the value of the global variable @code{x} to 1.  Instead,
+a local variable, with name @code{x}, is created and assigned the value of 1.
+In order to change the value of the global variable @code{x}, you must also
 declare it to be global within the function body, like this
 
 @example
@@ -142,9 +155,8 @@ endfunction
 @end group
 @end example
 
-Passing a global variable in a function parameter list will
-make a local copy and not modify the global value.  For example, given
-the function
+Passing a global variable in a function parameter list will make a local copy
+and @emph{not} modify the global value.  For example, given the function
 
 @example
 @group
@@ -169,9 +181,16 @@ f (x)
 @end example
 
 @noindent
-will display the value of @code{x} from inside the function as 0,
-but the value of @code{x} at the top level remains unchanged, because
-the function works with a @emph{copy} of its argument.
+will display the value of @code{x} from inside the function as 0, but the value
+of @code{x} at the top level remains unchanged, because the function works with
+a @emph{copy} of its argument.
+
+Programming Note: While global variables occasionally are the right solution to
+a coding problem, modern best practice discourages their use.  Code which
+relies on global variables may behave unpredictably between different users
+and can be difficult to debug.  This is because global variables can introduce
+systemic changes so that localizing a bug to a particular function, or to a
+particular loop within a function, becomes difficult.
 
 @DOCSTRING(isglobal)
 

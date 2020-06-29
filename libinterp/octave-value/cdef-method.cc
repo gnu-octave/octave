@@ -190,6 +190,16 @@ namespace octave
             : false);
   }
 
+  std::string
+  cdef_method::cdef_method_rep::get_doc_string (void)
+  {
+    check_method ();
+
+    octave_function *fcn = function.function_value ();
+
+    return fcn ? fcn->doc_string () : "";
+  }
+
   bool
   cdef_method::cdef_method_rep::check_access (void) const
   {

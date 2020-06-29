@@ -73,6 +73,8 @@ namespace octave
 
       void set_function (const octave_value& fcn) { function = fcn; }
 
+      std::string get_doc_string (void);
+
       bool check_access (void) const;
 
       bool is_external (void) const { return ! dispatch_type.empty (); }
@@ -188,6 +190,11 @@ namespace octave
     octave_value get_function (void) const
     {
       return get_rep ()->get_function ();
+    }
+
+    std::string get_doc_string (void)
+    {
+      return get_rep ()->get_doc_string ();
     }
 
     bool is_constructor (void) const

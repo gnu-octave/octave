@@ -437,15 +437,10 @@ std::string octave_classdef_meta::doc_string (const std::string& meth_name) cons
       if (meth_name.empty ())
         return cls.doc_string ();
 
-      octave_value ov_meth = cls.get_method (meth_name);
+      octave::cdef_method cdef_meth = cls.find_method (meth_name);
 
-      if (ov_meth.is_defined ())
-        {
-          octave_function *fcn = ov_meth.function_value ();
-
-          if (fcn)
-            return fcn->doc_string ();
-        }
+      if (cdef_meth.ok ())
+        return cdef_meth.get_doc_string ();
     }
 
   return "";

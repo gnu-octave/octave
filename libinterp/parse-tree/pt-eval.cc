@@ -2669,6 +2669,16 @@ namespace octave
       }
   }
 
+  void tree_evaluator::visit_spmd_command (tree_spmd_command& cmd)
+  {
+    // For now, we just execute the commands serially.
+
+    tree_statement_list *body = cmd.body ();
+
+    if (body)
+      body->accept (*this);
+  }
+
   void
   tree_evaluator::visit_octave_user_script (octave_user_script&)
   {

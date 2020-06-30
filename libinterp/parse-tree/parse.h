@@ -81,6 +81,7 @@ namespace octave
   class tree_matrix;
   class tree_matrix;
   class tree_parameter_list;
+  class tree_spmd_command;
   class tree_statement;
   class tree_statement_list;
   class tree_statement_listtree_statement;
@@ -281,6 +282,12 @@ namespace octave
 
     // Build a return command.
     tree_command * make_return_command (token *return_tok);
+
+    // Build an spmd command.
+
+    tree_spmd_command *
+    make_spmd_command (token *spmd_tok, tree_statement_list *body,
+                       token *end_tok, comment_list *lc, comment_list *tc);
 
     // Start an if command.
     tree_if_command_list *

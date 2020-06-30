@@ -53,6 +53,7 @@ namespace octave
   class tree_decl_elt;
   class tree_simple_for_command;
   class tree_complex_for_command;
+  class tree_spmd_command;
   class tree_function_def;
   class tree_identifier;
   class tree_if_clause;
@@ -141,6 +142,8 @@ namespace octave
     virtual void visit_simple_for_command (tree_simple_for_command&);
 
     virtual void visit_complex_for_command (tree_complex_for_command&);
+
+    virtual void visit_spmd_command (tree_spmd_command&);
 
     virtual void visit_octave_user_script (octave_user_script&);
 

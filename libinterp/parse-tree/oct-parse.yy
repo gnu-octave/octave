@@ -254,7 +254,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_parameter_list_type> param_list1 param_list2
 %type <tree_parameter_list_type> return_list return_list1
 %type <tree_command_type> command select_command loop_command
-%type <tree_command_type> jump_command except_command
+%type <tree_command_type> jump_command spmd_command except_command
 %type <tree_function_def_type> function
 %type <tree_classdef_type> classdef
 %type <tree_command_type> file
@@ -1053,6 +1053,8 @@ command         : declaration
                   { $$ = $1; }
                 | jump_command
                   { $$ = $1; }
+                | spmd_command
+                  { $$ = $1; }
                 | except_command
                   { $$ = $1; }
                 | function
@@ -1321,6 +1323,25 @@ jump_command    : BREAK
                   }
                 | FUNC_RET
                   { $$ = parser.make_return_command ($1); }
+                ;
+
+// =======================
+// Parallel execution pool
+// =======================
+
+spmd_command    : SPMD stash_comment opt_sep opt_list END
+                  {
+                    YYUSE ($3);
+
+                    octave::comment_list *lc = $2;
+                    octave::comment_list *tc = lexer.get_comment ();
+
+                    if (! ($$ = parser.make_spmd_command ($1, $4, $5, lc, tc)))
+                      {
+                        // make_spmd_command deleted $4, LC, and TC.
+                        YYABORT;
+                      }
+                  }
                 ;
 
 // ==========
@@ -3221,6 +3242,34 @@ namespace octave
     int c = return_tok->column ();
 
     return new tree_return_command (l, c);
+  }
+
+  // Build an spmd command.
+
+  tree_spmd_command *
+  base_parser::make_spmd_command (token *spmd_tok, tree_statement_list *body,
+                                  token *end_tok, comment_list *lc,
+                                  comment_list *tc)
+  {
+    tree_spmd_command *retval = nullptr;
+
+    if (end_token_ok (end_tok, token::if_end))
+      {
+        int l = spmd_tok->line ();
+        int c = spmd_tok->column ();
+
+        retval = new tree_spmd_command (body, lc, tc, l, c);
+      }
+    else
+      {
+        delete body;
+        delete lc;
+        delete tc;
+
+        end_token_error (end_tok, token::spmd_end);
+      }
+
+    return retval;
   }
 
   // Start an if command.

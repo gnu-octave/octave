@@ -202,6 +202,8 @@ namespace octave
 
     void visit_complex_for_command (tree_complex_for_command&);
 
+    void visit_spmd_command (tree_spmd_command&);
+
     void visit_octave_user_script (octave_user_script&);
 
     octave_value_list

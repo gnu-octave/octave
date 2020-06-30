@@ -174,6 +174,14 @@ namespace octave
       list->accept (*this);
   }
 
+  void tree_walker::visit_spmd_command (tree_spmd_command& cmd)
+  {
+    tree_statement_list *body = cmd.body ();
+
+    if (body)
+      body->accept (*this);
+  }
+
   void tree_walker::visit_octave_user_script (octave_user_script& fcn)
   {
     tree_statement_list *cmd_list = fcn.body ();

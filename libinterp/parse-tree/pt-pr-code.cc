@@ -293,6 +293,35 @@ namespace octave
   }
 
   void
+  tree_print_code::visit_spmd_command (tree_spmd_command& cmd)
+  {
+    print_comment_list (cmd.leading_comment ());
+
+    indent ();
+
+    m_os << "spmd";
+
+    newline ();
+
+    tree_statement_list *list = cmd.body ();
+
+    if (list)
+      {
+        increment_indent_level ();
+
+        list->accept (*this);
+
+        decrement_indent_level ();
+      }
+
+    print_indented_comment (cmd.trailing_comment ());
+
+    indent ();
+
+    m_os << "endspmd";
+  }
+
+  void
   tree_print_code::visit_octave_user_script (octave_user_script& fcn)
   {
     reset ();

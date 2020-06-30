@@ -38,6 +38,7 @@ PARSE_TREE_INC = \
   %reldir%/pt-misc.h \
   %reldir%/pt-pr-code.h \
   %reldir%/pt-select.h \
+  %reldir%/pt-spmd.h \
   %reldir%/pt-stmt.h \
   %reldir%/pt-tm-const.h \
   %reldir%/pt-unop.h \
@@ -87,6 +88,7 @@ PARSE_TREE_SRC = \
   %reldir%/pt-misc.cc \
   %reldir%/pt-pr-code.cc \
   %reldir%/pt-select.cc \
+  %reldir%/pt-spmd.cc \
   %reldir%/pt-stmt.cc \
   %reldir%/pt-tm-const.cc \
   %reldir%/pt-unop.cc \

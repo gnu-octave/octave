@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2020 The Octave Project Developers
+// Copyright (C) 2020 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,39 +23,20 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_pt_all_h)
-#define octave_pt_all_h 1
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
 
-#include "octave-config.h"
-
-#include "pt.h"
-#include "pt-arg-list.h"
-#include "pt-assign.h"
-#include "pt-bp.h"
-#include "pt-binop.h"
-#include "pt-cbinop.h"
-#include "pt-check.h"
-#include "pt-classdef.h"
-#include "pt-cmd.h"
-#include "pt-colon.h"
-#include "pt-const.h"
-#include "pt-decl.h"
-#include "pt-except.h"
-#include "pt-exp.h"
-#include "pt-fcn-handle.h"
-#include "pt-id.h"
-#include "pt-idx.h"
-#include "pt-jump.h"
-#include "pt-loop.h"
-#include "pt-mat.h"
-#include "pt-cell.h"
-#include "pt-misc.h"
-#include "pt-pr-code.h"
-#include "pt-select.h"
+#include "comment-list.h"
 #include "pt-spmd.h"
 #include "pt-stmt.h"
-#include "pt-unop.h"
-#include "pt-pr-code.h"
-#include "pt-walk.h"
 
-#endif
+namespace octave
+{
+  tree_spmd_command::~tree_spmd_command (void)
+  {
+    delete m_body;
+    delete m_lead_comm;
+    delete m_trail_comm;
+  }
+}

@@ -65,6 +65,7 @@ namespace octave
       switch_end,
       try_catch_end,
       unwind_protect_end,
+      spmd_end,
       while_end,
     };
 

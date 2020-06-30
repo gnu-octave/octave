@@ -572,6 +572,13 @@ Mark the end of a parfor loop.  See @code{parfor} for an example.
 Mark the end of a properties block in a classdef definition.
 @seealso{properties}
 @end deftypefn
+endspmd
+@c libinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endparfor
+Mark the end of an spmd block.  See @code{spmd} for an example.
+@seealso{spmd, parfor}
+@end deftypefn
 endswitch
 @c libinterp/parse-tree/oct-parse.yy
 -*- texinfo -*-
@@ -731,6 +738,31 @@ elsewhere.
 @deftypefn {} {} return
 Return from a function.
 @seealso{function}
+@end deftypefn
+spmd
+@c libinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn  {} {} spmd
+@deftypefnx {} {} spmd (@var{n})
+@deftypefnx {} {} spmd (@var{m}, @var{n})
+Begin a block of statements which may execute in parallel across multiple
+workers.
+
+If Octave has a parallel processing pool enabled, the block of code will be
+executed in parallel across all of the pool's workers.  Otherwise, @code{spmd}
+has no effect and the statements are processed as normal code by the main
+Octave interpreter.
+
+If called with one additional argument @var{n} then use exactly @var{n} workers
+from the pool.  If called with two arguments @var{m}, @var{n} then use a
+minimum of @var{m} workers and a maximum of @var{n} workers from the parallel
+pool.
+
+@strong{Warning:} parallel processing pools are currently unimplemented in
+Octave; @code{spmd} currently does nothing, but is included to avoid breaking
+existing @sc{matlab} code.
+
+@seealso{parfor}
 @end deftypefn
 switch
 @c libinterp/parse-tree/oct-parse.yy

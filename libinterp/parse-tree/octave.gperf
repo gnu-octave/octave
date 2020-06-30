@@ -51,6 +51,7 @@ enum octave_kw_id
   endmethods_kw,
   endparfor_kw,
   endproperties_kw,
+  endspmd_kw,
   endswitch_kw,
   endwhile_kw,
   enumeration_kw,
@@ -69,6 +70,7 @@ enum octave_kw_id
   properties_kw,
   return_kw,
   set_kw,
+  spmd_kw,
   switch_kw,
   try_kw,
   until_kw,
@@ -102,6 +104,7 @@ endif, END, endif_kw
 endmethods, END, endmethods_kw
 endparfor, END, endparfor_kw
 endproperties, END, endproperties_kw
+endspmd, END, endspmd_kw
 endswitch, END, endswitch_kw
 endwhile, END, endwhile_kw
 enumeration, ENUMERATION, enumeration_kw
@@ -118,6 +121,7 @@ persistent, PERSISTENT, persistent_kw
 properties, PROPERTIES, properties_kw
 return, FUNC_RET, return_kw
 set, SET, set_kw
+spmd, SPMD, spmd_kw
 switch, SWITCH, switch_kw
 try, TRY, try_kw
 until, UNTIL, until_kw

@@ -205,6 +205,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token <tok_val> END
 %token <tok_val> DQ_STRING SQ_STRING
 %token <tok_val> FOR PARFOR WHILE DO UNTIL
+%token <tok_val> SPMD
 %token <tok_val> IF ELSEIF ELSE
 %token <tok_val> SWITCH CASE OTHERWISE
 %token <tok_val> BREAK CONTINUE FUNC_RET
@@ -2453,6 +2454,10 @@ namespace octave
 
       case token::properties_end:
         retval = "endproperties";
+        break;
+
+      case token::spmd_end:
+        retval = "endspmd";
         break;
 
       case token::switch_end:

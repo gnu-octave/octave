@@ -2506,103 +2506,95 @@ do_colon_op (const octave_value& base, const octave_value& increment,
 
   if (base.isobject () || increment.isobject () || limit.isobject ())
     {
-      std::string dispatch_type;
-
-      if (base.isobject ())
-        dispatch_type = base.class_name ();
-      else if (increment.is_defined () && increment.isobject ())
-        dispatch_type = increment.class_name ();
-      else
-        dispatch_type = limit.class_name ();
-
-      octave::symbol_table& symtab = octave::__get_symbol_table__ ("do_colon_op");
-
-      octave_value meth = symtab.find_method ("colon", dispatch_type);
-
-      if (! meth.is_defined ())
-        error ("colon method not defined for %s class", dispatch_type.c_str ());
-
-      octave_value_list args;
+      octave_value_list tmp1;
 
       if (increment.is_defined ())
         {
-          args(2) = limit;
-          args(1) = increment;
+          tmp1(2) = limit;
+          tmp1(1) = increment;
+          tmp1(0) = base;
         }
       else
-        args(1) = limit;
+        {
+          tmp1(1) = limit;
+          tmp1(0) = base;
+        }
 
-      args(0) = base;
+      octave::interpreter& interp = octave::__get_interpreter__ ("do_colon_op");
 
-      octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
-      if (tmp.length () > 0)
-        retval = tmp(0);
+      octave_value fcn = symtab.find_function ("colon", tmp1);
+
+      if (fcn.is_defined ())
+        {
+          octave_value_list tmp2 = interp.feval (fcn, tmp1, 1);
+
+          return tmp2 (0);
+        }
     }
+
+  bool result_is_str = (base.is_string () && limit.is_string ());
+  bool dq_str = (base.is_dq_string () || limit.is_dq_string ());
+
+  if (base.numel () > 1 || limit.numel () > 1
+      || (increment.is_defined () && increment.numel () > 1))
+    warning_with_id ("Octave:colon-nonscalar-argument",
+                     "colon arguments should be scalars");
+
+  if (base.iscomplex () || limit.iscomplex ()
+      || (increment.is_defined () && increment.iscomplex ()))
+    warning_with_id ("Octave:colon-complex-argument",
+                     "imaginary part of complex colon arguments is ignored");
+
+  Matrix m_base, m_limit, m_increment;
+
+  try
+    {
+      m_base = base.matrix_value (true);
+    }
+  catch (octave::execution_exception& e)
+    {
+      error (e, "invalid base value in colon expression");
+    }
+
+  try
+    {
+      m_limit = limit.matrix_value (true);
+    }
+  catch (octave::execution_exception& e)
+    {
+      error (e, "invalid limit value in colon expression");
+    }
+
+  try
+    {
+      m_increment = (increment.is_defined ()
+                     ? increment.matrix_value (true)
+                     : Matrix (1, 1, 1.0));
+    }
+  catch (octave::execution_exception& e)
+    {
+      error (e, "invalid increment value in colon expression");
+    }
+
+  bool base_empty = m_base.isempty ();
+  bool limit_empty = m_limit.isempty ();
+  bool increment_empty = m_increment.isempty ();
+
+  if (base_empty || limit_empty || increment_empty)
+    retval = Range ();
   else
     {
-      bool result_is_str = (base.is_string () && limit.is_string ());
-      bool dq_str = (base.is_dq_string () || limit.is_dq_string ());
+      Range r (m_base(0), m_limit(0), m_increment(0));
 
-      if (base.numel () > 1 || limit.numel () > 1
-          || (increment.is_defined () && increment.numel () > 1))
-        warning_with_id ("Octave:colon-nonscalar-argument",
-                         "colon arguments should be scalars");
+      // For compatibility with Matlab, don't allow the range used in
+      // a FOR loop expression to be converted to a Matrix.
 
-      if (base.iscomplex () || limit.iscomplex ()
-          || (increment.is_defined () && increment.iscomplex ()))
-        warning_with_id ("Octave:colon-complex-argument",
-                         "imaginary part of complex colon arguments is ignored");
+      retval = octave_value (r, is_for_cmd_expr);
 
-      Matrix m_base, m_limit, m_increment;
-
-      try
-        {
-          m_base = base.matrix_value (true);
-        }
-      catch (octave::execution_exception& e)
-        {
-          error (e, "invalid base value in colon expression");
-        }
-
-      try
-        {
-          m_limit = limit.matrix_value (true);
-        }
-      catch (octave::execution_exception& e)
-        {
-          error (e, "invalid limit value in colon expression");
-        }
-
-      try
-        {
-          m_increment = (increment.is_defined ()
-                         ? increment.matrix_value (true)
-                         : Matrix (1, 1, 1.0));
-        }
-      catch (octave::execution_exception& e)
-        {
-          error (e, "invalid increment value in colon expression");
-        }
-
-      bool base_empty = m_base.isempty ();
-      bool limit_empty = m_limit.isempty ();
-      bool increment_empty = m_increment.isempty ();
-
-      if (base_empty || limit_empty || increment_empty)
-        retval = Range ();
-      else
-        {
-          Range r (m_base(0), m_limit(0), m_increment(0));
-
-          // For compatibility with Matlab, don't allow the range used in
-          // a FOR loop expression to be converted to a Matrix.
-
-          retval = octave_value (r, is_for_cmd_expr);
-
-          if (result_is_str)
-            retval = (retval.convert_to_str (false, true, dq_str ? '"' : '\''));
-        }
+      if (result_is_str)
+        retval = (retval.convert_to_str (false, true, dq_str ? '"' : '\''));
     }
 
   return retval;

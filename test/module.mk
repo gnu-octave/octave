@@ -87,6 +87,7 @@ include %reldir%/class-concat/module.mk
 include %reldir%/classdef/module.mk
 include %reldir%/classdef-multiple-inheritance/module.mk
 include %reldir%/classes/module.mk
+include %reldir%/colon-op/module.mk
 include %reldir%/ctor-vs-method/module.mk
 include %reldir%/fcn-handle/module.mk
 include %reldir%/local-functions/module.mk

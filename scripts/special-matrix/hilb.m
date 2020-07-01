@@ -66,12 +66,10 @@ function retval = hilb (n)
     error ("hilb: N must be a scalar integer");
   endif
 
-  retval = zeros (n);
-  tmp = 1:n;
-  for i = 1:n
-    retval(i, :) = 1.0 ./ tmp;
-    tmp += 1;
-  endfor
+  ## Very elegant solution by N. Higham
+  ## https://nhigham.com/2020/06/30/what-is-the-hilbert-matrix/
+  j = 1:n;
+  retval = 1 ./ (j' + j - 1);
 
 endfunction
 

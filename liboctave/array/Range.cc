@@ -89,23 +89,20 @@ Range::nnz (void) const
 Matrix
 Range::matrix_value (void) const
 {
-  if (m_numel > 0 && m_cache.isempty ())
-    {
-      m_cache.resize (1, m_numel);
+  Matrix retval (1, m_numel);
 
-      // The first element must always be *exactly* the base.
-      // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
-      m_cache(0) = m_base;
+  // The first element must always be *exactly* the base.
+  // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
+  retval(0) = m_base;
 
-      double b = m_base;
-      double increment = m_inc;
-      for (octave_idx_type i = 1; i < m_numel - 1; i++)
-        m_cache.xelem (i) = b + i * increment;
+  double b = m_base;
+  double increment = m_inc;
+  for (octave_idx_type i = 1; i < m_numel - 1; i++)
+    retval.xelem (i) = b + i * increment;
 
-      m_cache.xelem (m_numel - 1) = m_limit;
-    }
+  retval.xelem (m_numel - 1) = m_limit;
 
-  return m_cache;
+  return retval;
 }
 
 double
@@ -259,7 +256,6 @@ Range::sort_internal (bool ascending)
     {
       std::swap (m_base, m_limit);
       m_inc = -m_inc;
-      clear_cache ();
     }
 }
 
@@ -279,7 +275,6 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
     {
       std::swap (m_base, m_limit);
       m_inc = -m_inc;
-      clear_cache ();
       reverse = true;
     }
 
@@ -427,59 +422,32 @@ operator - (const Range& r)
 
 Range operator + (double x, const Range& r)
 {
-  Range result (x + r.base (), x + r.limit (), r.inc (), r.numel ());
-  // Check whether new range was constructed properly.  A non-finite
-  // value (Inf or NaN) requires that the output be of the same size
-  // as the original range with all values set to the non-finite value.
-  if (result.m_numel < 0)
-    result.m_cache = x + r.matrix_value ();
-
-  return result;
+  return Range (x + r.base (), x + r.limit (), r.inc (), r.numel ());
 }
 
 Range operator + (const Range& r, double x)
 {
-  Range result (r.base () + x, r.limit () + x, r.inc (), r.numel ());
-  if (result.m_numel < 0)
-    result.m_cache = r.matrix_value () + x;
-
-  return result;
+  return Range (r.base () + x, r.limit () + x, r.inc (), r.numel ());
 }
 
 Range operator - (double x, const Range& r)
 {
-  Range result (x - r.base (), x - r.limit (), -r.inc (), r.numel ());
-  if (result.m_numel < 0)
-    result.m_cache = x - r.matrix_value ();
-
-  return result;
+  return Range (x - r.base (), x - r.limit (), -r.inc (), r.numel ());
 }
 
 Range operator - (const Range& r, double x)
 {
-  Range result (r.base () - x, r.limit () - x, r.inc (), r.numel ());
-  if (result.m_numel < 0)
-    result.m_cache = r.matrix_value () - x;
-
-  return result;
+  return Range (r.base () - x, r.limit () - x, r.inc (), r.numel ());
 }
 
 Range operator * (double x, const Range& r)
 {
-  Range result (x * r.base (), x * r.limit (), x * r.inc (), r.numel ());
-  if (result.m_numel < 0)
-    result.m_cache = x * r.matrix_value ();
-
-  return result;
+  return Range (x * r.base (), x * r.limit (), x * r.inc (), r.numel ());
 }
 
 Range operator * (const Range& r, double x)
 {
-  Range result (r.base () * x, r.limit () * x, r.inc () * x, r.numel ());
-  if (result.m_numel < 0)
-    result.m_cache = r.matrix_value () * x;
-
-  return result;
+  return Range (r.base () * x, r.limit () * x, r.inc () * x, r.numel ());
 }
 
 // C  See Knuth, Art Of Computer Programming, Vol. 1, Problem 1.2.4-5.
@@ -620,6 +588,4 @@ Range::init (void)
 {
   m_numel = numel_internal ();
   m_limit = limit_internal ();
-
-  clear_cache ();
 }

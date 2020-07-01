@@ -41,7 +41,7 @@ Range
 public:
 
   Range (void)
-    : m_base (0), m_limit (0), m_inc (0), m_numel (0), m_cache (1, 0)
+    : m_base (0), m_limit (0), m_inc (0), m_numel (0)
   { }
 
   Range (const Range& r) = default;
@@ -51,23 +51,24 @@ public:
   ~Range (void) = default;
 
   Range (double b, double l)
-    : m_base (b), m_limit (l), m_inc (1), m_numel (numel_internal ()),
-      m_cache ()
+    : m_base (b), m_limit (l), m_inc (1), m_numel (numel_internal ())
   {
     m_limit = limit_internal ();
   }
 
   Range (double b, double l, double i)
-    : m_base (b), m_limit (l), m_inc (i), m_numel (numel_internal ()),
-      m_cache ()
+    : m_base (b), m_limit (l), m_inc (i), m_numel (numel_internal ())
   {
     m_limit = limit_internal ();
   }
 
+  // NOTE: The following constructor may be deprecated and removed after
+  // the arithmetic operators are removed.
+
   // For operators' usage (to preserve element count).
+
   Range (double b, double i, octave_idx_type n)
-    : m_base (b), m_limit (b + (n-1) * i), m_inc (i),
-      m_numel (n), m_cache ()
+    : m_base (b), m_limit (b + (n-1) * i), m_inc (i), m_numel (n)
   {
     if (! octave::math::isfinite (b) || ! octave::math::isfinite (i)
         || ! octave::math::isfinite (m_limit))
@@ -157,22 +158,20 @@ private:
 
   octave_idx_type m_numel;
 
-  mutable Matrix m_cache;
-
   octave_idx_type numel_internal (void) const;
 
   double limit_internal (void) const;
 
   void init (void);
 
-  void clear_cache (void) const { m_cache.resize (0, 0); }
-
 protected:
+
+  // NOTE: The following constructor may be removed when the arithmetic
+  // operators are removed.
 
   // For operators' usage (to allow all values to be set directly).
   Range (double b, double l, double i, octave_idx_type n)
-    : m_base (b), m_limit (l), m_inc (i),
-      m_numel (n), m_cache ()
+    : m_base (b), m_limit (l), m_inc (i), m_numel (n)
   {
     if (! octave::math::isfinite (b) || ! octave::math::isfinite (i)
         || ! octave::math::isfinite (l))
@@ -180,12 +179,25 @@ protected:
   }
 };
 
+OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
 extern OCTAVE_API Range operator - (const Range& r);
+
+OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
 extern OCTAVE_API Range operator + (double x, const Range& r);
+
+OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
 extern OCTAVE_API Range operator + (const Range& r, double x);
+
+OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
 extern OCTAVE_API Range operator - (double x, const Range& r);
+
+OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
 extern OCTAVE_API Range operator - (const Range& r, double x);
+
+OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
 extern OCTAVE_API Range operator * (double x, const Range& r);
+
+OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
 extern OCTAVE_API Range operator * (const Range& r, double x);
 
 #endif

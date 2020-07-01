@@ -3253,7 +3253,7 @@ namespace octave
   {
     tree_spmd_command *retval = nullptr;
 
-    if (end_token_ok (end_tok, token::if_end))
+    if (end_token_ok (end_tok, token::spmd_end))
       {
         int l = spmd_tok->line ();
         int c = spmd_tok->column ();

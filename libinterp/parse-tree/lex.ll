@@ -2843,18 +2843,13 @@ bool
           }
         break;
 
-      /* Unimplementd 'spmd' keyword for Matlab compatibility only.
-         FIXME: Allow spmd statement, but treat as no-op, bug #58676. */
       case spmd_kw:
-        /* m_at_beginning_of_statement = true; */
+        m_at_beginning_of_statement = true;
         break;
 
       case endspmd_kw:
-        /*
-        tok_val = new token (endspmd_kw, token::spmd_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (endspmd_kw, token::spmd_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
-        */
         break;
 
       case magic_file_kw:

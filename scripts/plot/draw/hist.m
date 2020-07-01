@@ -115,10 +115,11 @@ function [nn, xx] = hist (varargin)
   ## Process possible second argument
   if (nargin == 1 || ischar (varargin{iarg}))
     n = 10;
-    ## Use range type to preserve accuracy
+    ## Use integer range values and perform division last to preserve
+    ## accuracy.
     if (min_val != max_val)
-      x = (0.5:n) * (1/n);
-      x = (max_val - min_val) * x + min_val;
+      x = 1:2:2*n;
+      x = ((max_val - min_val) * x + 2*n*min_val) / (2*n);
     else
       x = (-floor ((n-1)/2):ceil ((n-1)/2)) + min_val;
     endif
@@ -140,10 +141,11 @@ function [nn, xx] = hist (varargin)
       if (n <= 0)
         error ("hist: number of bins NBINS must be positive");
       endif
-      ## Use range type to preserve accuracy
+      ## Use integer range values and perform division last to preserve
+      ## accuracy.
       if (min_val != max_val)
-        x = (0.5:n) * (1/n);
-        x = (max_val - min_val) * x + min_val;
+        x = 1:2:2*n;
+        x = ((max_val - min_val) * x + 2*n*min_val) / (2*n);
       else
         x = (-floor ((n-1)/2):ceil ((n-1)/2)) + min_val;
       endif

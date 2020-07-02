@@ -549,6 +549,12 @@ dnl They will be reset before output files are generated.
 CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
 CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 
+dnl Check if glibc uses wrong stack size
+OCTAVE_CHECK_BROKEN_PTHREAD_STACKSIZE
+AM_CONDITIONAL([OCTAVE_CHECK_BROKEN_PTHREAD_STACKSIZE],
+  [test $octave_cv_broken_pthread_stacksize = yes])
+
+
 ### Test whether the compiler supports OpenMP.
 dnl This is enabled by default to allow the option of using OpenMP in
 dnl loadable modules.

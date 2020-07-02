@@ -763,6 +763,9 @@ initialize_jvm (void)
 
       // Hard-coded options for the jvm.
       vm_args.add ("-Djava.class.path=" + initial_class_path ());
+#if defined (HAVE_BROKEN_PTHREAD_STACKSIZE)
+      vm_args.add ("-Djdk.lang.processReaperUseDefaultStackSize=true");
+#endif
       vm_args.add ("-Xrs");
 
       // Additional options given by file java.opts.

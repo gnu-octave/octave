@@ -188,27 +188,27 @@ function assert (cond, varargin)
           err.observed{end+1} = ["O(" sprintf("%dx", size(cond))(1:end-1) ")"];
           err.expected{end+1} = ["E(" sprintf("%dx", size(expected))(1:end-1) ")"];
           err.reason{end+1} = "Structure sizes don't match";
+        elseif (! strcmp (sort (fieldnames (cond)),
+                          sort (fieldnames (expected))))
+          err.index{end+1} = ".";
+          err.observed{end+1} = "O";
+          err.expected{end+1} = "E";
+          err.reason{end+1} = "Structure fieldname mismatch";
         else
           try
-            empty = isempty (cond);
-            normal = (numel (cond) == 1);
-            for [v, k] = cond
-              if (! isfield (expected, k))
-                err.index{end+1} = ".";
-                err.observed{end+1} = "O";
-                err.expected{end+1} = "E";
-                err.reason{end+1} = ["'" k "'" " is not an expected field"];
-              endif
-              if (empty)
-                v = {};
-              elseif (normal)
-                v = {v};
-              else
-                v = v(:)';
-              endif
-              ## Recursively call assert for struct array values
-              assert (v, {expected.(k)}, tol);
-            endfor
+            assert (isempty (cond), isempty (expected));
+
+            if (! isempty (cond))
+              for [v, k] = cond
+                if (numel (cond) == 1)
+                  v = {v};
+                else
+                  v = v(:)';
+                endif
+                ## Recursively call assert for struct array values
+                assert (v, {expected.(k)}, tol);
+              endfor
+            endif
           catch
             err.index{end+1} = ".";
             err.observed{end+1} = "O";
@@ -624,7 +624,7 @@ endfunction
 %! x.b = 1;
 %! y.a = 1;
 %! assert (x,y);
-%!error <'b' is not an expected field>
+%!error <Structure fieldname mismatch>
 %! x.b = 1;
 %! y.a = 1;
 %! assert (x,y);

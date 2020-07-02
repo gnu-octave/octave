@@ -1776,7 +1776,9 @@ namespace octave
                 for (octave_idx_type i = 0; i < tmp_ovl.length (); i++)
                   args.push_back (tmp_ovl(i));
               }
-            else if (tmp.is_defined ())
+            else if (! tmp.is_defined ())
+              error ("Element %d in argument list is not defined", k + 1);
+            else
               args.push_back (tmp);
           }
         else

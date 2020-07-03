@@ -196,6 +196,9 @@ function assert (cond, varargin)
           err.reason{end+1} = "Structure fieldname mismatch";
         else
           try
+            ## Test if both structs are empty, i.e. 0x0, Nx0, or Nx0 structs.
+            ## In this case the values cannot be extracted for comparison as
+            ## they are not assignable and not defined.
             assert (isempty (cond), isempty (expected));
 
             if (! isempty (cond))

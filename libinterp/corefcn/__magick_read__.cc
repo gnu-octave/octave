@@ -751,58 +751,19 @@ read_images (std::vector<Magick::Image>& imvec,
   return retval;
 }
 
-// Read file content into blob.
-static Magick::Blob
-read_file (const std::string& filename)
-{
-  octave::sys::file_stat fs (filename);
-
-  if (! fs)
-    error ("no such file, '%s'", filename.c_str ());
-
-  size_t sz = fs.size ();
-
-  std::ifstream file = octave::sys::ifstream (filename.c_str (),
-                                              std::ios::in | std::ios::binary);
-
-  std::string fstr (sz+1, 0);
-  if (file)
-    {
-      file.read (&fstr[0], sz+1);
-
-      if (! file.eof ())
-        error ("error reading file %s", filename.c_str ());
-    }
-
-  Magick::Blob blob;
-  try
-    {
-      // Convert to blob
-      blob = Magick::Blob (fstr.c_str (), fstr.size ());
-    }
-  catch (Magick::Warning& w)
-    {
-      warning ("Magick++ warning: %s", w.what ());
-    }
-  catch (Magick::Exception& e)
-    {
-      error ("Magick++ exception: %s", e.what ());
-    }
-
-  return blob;
-}
-
 // Read a file into vector of image objects.
 void static
 read_file (const std::string& filename, std::vector<Magick::Image>& imvec)
 {
-  // Read file content into blob
-  Magick::Blob blob = read_file (filename);
+  // FIXME: We need this on Windows because GraphicsMagick uses the ANSI API
+  // to open files on disc.  In contrast, the API of ImageMagick uses UTF-8
+  // encoded strings.  Should we somehow detect which is used on runtime and
+  // pass the file names accordingly? (See also bug #58493.)
+  std::string ascii_fname = octave::sys::get_ASCII_filename (filename, true);
 
   try
     {
-      // Create images from blob
-      Magick::readImages (&imvec, blob);
+      Magick::readImages (&imvec, ascii_fname);
     }
   catch (Magick::Warning& w)
     {
@@ -1734,24 +1695,16 @@ This is a private internal function not intended for direct use.
   img.subImage (idx); // start ping from this image (in case of multi-page)
   img.subRange (1);   // ping only one of them
 
-#  if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-  // Magick++ doesn't handle UTF-8 encoded file names on Windows.
-  // To prevent an error in this case, read the file content into a blob and
-  // pass the blob to Magick::Image::ping. This is less efficient than passing
-  // the file name to Magick::Image::ping because this requires to read the
-  // entire file from the disk. So, do this on affected file systems only.
-  Magick::Blob blob = read_file (filename);
+  // FIXME: We need this on Windows because GraphicsMagick uses the ANSI API
+  // to open files on disc.  In contrast, the API of ImageMagick uses UTF-8
+  // encoded strings.  Should we somehow detect which is used on runtime and
+  // pass the file names accordingly? (See also bug #58493.)
+  std::string ascii_fname = octave::sys::get_ASCII_filename (filename, true);
 
   try
     {
-      img.ping (blob);
+      img.ping (ascii_fname);
     }
-#  else
-  try
-    {
-      img.ping (filename);
-    }
-#  endif
   catch (Magick::Warning& w)
     {
       warning ("Magick++ warning: %s", w.what ());

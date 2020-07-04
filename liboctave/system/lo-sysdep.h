@@ -71,7 +71,8 @@ namespace octave
 
     extern std::string u8_from_wstring (const std::wstring&);
 
-    extern std::string get_ASCII_filename (const std::string& long_file_name);
+    extern std::string get_ASCII_filename (const std::string& long_file_name,
+                                           const bool allow_locale = false);
   }
 }
 

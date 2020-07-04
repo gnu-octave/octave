@@ -50,6 +50,10 @@ octave_u8_conv_to_encoding (const char *tocode, const uint8_t *src,
                             size_t srclen, size_t *lengthp);
 
 extern char *
+octave_u8_conv_to_encoding_strict (const char *tocode, const uint8_t *src,
+                                   size_t srclen, size_t *lengthp);
+
+extern char *
 octave_u32_conv_to_encoding_strict (const char *tocode, const uint32_t *src,
                                     size_t srclen, size_t *lengthp);
 

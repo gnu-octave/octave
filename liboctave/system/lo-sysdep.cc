@@ -31,6 +31,7 @@
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
+#include "localcharset-wrapper.h"
 #include "putenv-wrapper.h"
 #include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
@@ -40,8 +41,9 @@
 #  include <windows.h>
 #  include <wchar.h>
 
-#  include "lo-hash.h"
 #  include "filepos-wrappers.h"
+#  include "lo-hash.h"
+#  include "oct-locbuf.h"
 #  include "unwind-prot.h"
 #endif
 
@@ -523,11 +525,16 @@ namespace octave
     // checks whether there are any non-ASCII characters in the passed
     // file name.  If there are not, it returns the original name.
 
-    // Otherwise, it tries to obtain the short file name (8.3 naming
-    // scheme) which only consists of ASCII characters and are safe to
-    // pass.  However, short file names can be disabled for performance
-    // reasons on the file system level with NTFS.  So there is no
-    // guarantee that these exist.
+    // Otherwise, it optionally tries to convert the file name to the locale
+    // charset.
+
+    // If the file name contains characters that cannot be converted to the
+    // locale charset (or that step is skipped), it tries to obtain the short
+    // file name (8.3 naming scheme) which only consists of ASCII characters
+    // and are safe to pass.  However, short file names can be disabled for
+    // performance reasons on the file system level with NTFS and they are not
+    // stored on other file systems (e.g. ExFAT).  So there is no guarantee
+    // that these exist.
 
     // If short file names are not stored, a hard link to the file is
     // created.  For this the path to the file is split at the deepest
@@ -548,7 +555,8 @@ namespace octave
     // For Unixy systems, this function does nothing.
 
     std::string
-    get_ASCII_filename (const std::string& orig_file_name)
+    get_ASCII_filename (const std::string& orig_file_name,
+                        const bool allow_locale)
     {
 #if defined (OCTAVE_USE_WINDOWS_API)
 
@@ -558,7 +566,7 @@ namespace octave
       // This is useful for passing file names to functions that are not
       // aware of the character encoding we are using.
 
-      // 1. Check whether filename contains non-ASCII (UTF-8) characters.
+      // 0. Check whether filename contains non-ASCII (UTF-8) characters.
 
       std::string::const_iterator first_non_ASCII
         = std::find_if (orig_file_name.begin (), orig_file_name.end (),
@@ -566,6 +574,28 @@ namespace octave
 
       if (first_non_ASCII == orig_file_name.end ())
         return orig_file_name;
+
+      // 1. Optionally, check if all characters in the path can be successfully
+      // converted to the locale charset
+      if (allow_locale)
+        {
+          const char *locale = octave_locale_charset_wrapper ();
+          if (locale)
+            {
+              const uint8_t *name_u8 = reinterpret_cast<const uint8_t *>
+                                         (orig_file_name.c_str ());
+              size_t length = 0;
+              char *name_locale = octave_u8_conv_to_encoding_strict
+                                    (locale, name_u8,
+                                     orig_file_name.length () + 1, &length);
+              if (name_locale)
+                {
+                  std::string file_name_locale (name_locale, length);
+                  free (name_locale);
+                  return file_name_locale;
+                }
+            }
+        }
 
       // 2. Check if file system stores short filenames (always
       // ASCII-only).
@@ -589,7 +619,7 @@ namespace octave
           // Dynamically allocate the correct size (terminating null char
           // was included in length).
 
-          wchar_t *w_short_file_name = new wchar_t[length];
+          OCTAVE_LOCAL_BUFFER (wchar_t, w_short_file_name, length);
           GetShortPathNameW (w_full_file_name, w_short_file_name, length);
 
           std::wstring w_short_file_name_str
@@ -650,6 +680,10 @@ namespace octave
 
       if (CreateHardLinkW (w_filename_hash, w_orig_file_name, nullptr))
         return filename_hash;
+
+#else
+
+      octave_unused_parameter (allow_locale);
 
 #endif
 

@@ -1510,7 +1510,7 @@ namespace octave
                     size_t script_sr_data_offset = script_sr.data_offset ();
 
                     m_lexical_frame_offsets.at (script_sr_data_offset)
-                      = parent_scope_sr.frame_offset () + 1;
+                      = parent_scope_sr.frame_offset () + count;
 
                     m_value_offsets.at (script_sr_data_offset)
                       = parent_scope_sr.data_offset ();
@@ -1703,7 +1703,7 @@ namespace octave
                 found = true;
                 symbol_record parent_scope_sr = p->second;
 
-                frame_offset = parent_scope_sr.frame_offset () + 1;
+                frame_offset = parent_scope_sr.frame_offset () + count;
 
                 data_offset = parent_scope_sr.data_offset ();
 

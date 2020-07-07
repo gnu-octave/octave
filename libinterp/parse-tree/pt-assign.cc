@@ -350,14 +350,34 @@ namespace octave
 }
 
 /*
-%!function varargout = f ()
+%!function varargout = f1 ()
 %!  varargout{1} = nargout;
 %!endfunction
 %!
 %!test
-%! [a, ~] = f ();
+%! [a, ~] = f1 ();
 %! assert (a, 2);
 %!test
-%! [a, ~, ~, ~, ~] = f ();
+%! [a, ~, ~, ~, ~] = f1 ();
 %! assert (a, 5);
+
+%!function [x, y] = f2 ()
+%!  y = 1;
+%!endfunction
+%!
+%!test
+%! [~, y] = f2 ();
+%! assert (y, 1);
+
+%!function [x, y, varargout] = f3 ()
+%!  y = 1;
+%!  varargout = {2, 3};
+%!endfunction
+%!
+%!test
+%! [~, y, a, b] = f3 ();
+%! assert ([y, a, b], [1, 2, 3]);
+%!test
+%! [~, y, ~, b] = f3 ();
+%! assert ([y, b], [1, 3]);
 */

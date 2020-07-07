@@ -1788,7 +1788,8 @@ namespace octave
 
   octave_value_list
   tree_evaluator::convert_return_list_to_const_vector
-    (tree_parameter_list *ret_list, int nargout, const Cell& varargout)
+    (tree_parameter_list *ret_list, int nargout, const Matrix& ignored_outputs,
+     const Cell& varargout)
   {
     octave_idx_type vlen = varargout.numel ();
     int len = ret_list->length ();
@@ -1796,35 +1797,59 @@ namespace octave
     // Special case.  Will do a shallow copy.
     if (len == 0)
       return varargout;
-    else if (nargout <= len)
-      {
-        octave_value_list retval (nargout);
-
-        int i = 0;
-
-        for (tree_decl_elt *elt : *ret_list)
-          {
-            if (is_defined (elt->ident ()))
-              retval(i) = evaluate (elt);
-
-            i++;
-          }
-
-        return retval;
-      }
     else
       {
-        octave_value_list retval (len + vlen);
-
         int i = 0;
+        int k = 0;
+        int num_ignored = ignored_outputs.numel ();
+        int ignored = num_ignored > 0 ? ignored_outputs(k) - 1 : -1;
 
-        for (tree_decl_elt *elt : *ret_list)
-          retval(i++) = evaluate (elt);
+        if (nargout <= len)
+          {
+            int nout = nargout > 0 ? nargout : 1;
+            octave_value_list retval (nout);
 
-        for (octave_idx_type j = 0; j < vlen; j++)
-          retval(i++) = varargout(j);
+            for (tree_decl_elt *elt : *ret_list)
+              {
+                if (nargout == 0 && ! is_defined (elt->ident ()))
+                  break;
 
-        return retval;
+                if (ignored >= 0 && i == ignored)
+                  {
+                    i++;
+                    k++;
+                    ignored = k < num_ignored ? ignored_outputs(k) - 1 : -1;
+                  }
+                else
+                  retval(i++) = evaluate (elt);
+
+                if (i == nout)
+                  break;
+              }
+
+            return retval;
+          }
+        else
+          {
+            octave_value_list retval (len + vlen);
+
+            for (tree_decl_elt *elt : *ret_list)
+              {
+                if (ignored >= 0 && i == ignored)
+                  {
+                    i++;
+                    k++;
+                    ignored = k < num_ignored ? ignored_outputs(k) - 1 : -1;
+                  }
+                else
+                  retval(i++) = evaluate (elt);
+              }
+
+            for (octave_idx_type j = 0; j < vlen; j++)
+              retval(i++) = varargout(j);
+
+            return retval;
+          }
       }
   }
 
@@ -2769,7 +2794,9 @@ namespace octave
     if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
       error ("max_recursion_depth exceeded");
 
-    bind_auto_fcn_vars (xargs.name_tags (), args.length (),
+    Matrix ignored_outputs = ignored_fcn_outputs ();
+
+    bind_auto_fcn_vars (xargs.name_tags (), ignored_outputs, args.length (),
                         nargout, user_function.takes_varargs (),
                         user_function.all_va_args (args));
 
@@ -2851,6 +2878,7 @@ namespace octave
           }
 
         retval = convert_return_list_to_const_vector (ret_list, nargout,
+                                                      ignored_outputs,
                                                       varargout);
       }
 
@@ -4168,12 +4196,13 @@ namespace octave
   }
 
   void tree_evaluator::bind_auto_fcn_vars (const string_vector& arg_names,
+                                           const Matrix& ignored_outputs,
                                            int nargin, int nargout,
                                            bool takes_varargs,
                                            const octave_value_list& va_args)
   {
     set_auto_fcn_var (stack_frame::ARG_NAMES, Cell (arg_names));
-    set_auto_fcn_var (stack_frame::IGNORED, ignored_fcn_outputs ());
+    set_auto_fcn_var (stack_frame::IGNORED, ignored_outputs);
     set_auto_fcn_var (stack_frame::NARGIN, nargin);
     set_auto_fcn_var (stack_frame::NARGOUT, nargout);
     set_auto_fcn_var (stack_frame::SAVED_WARNING_STATES, octave_value ());

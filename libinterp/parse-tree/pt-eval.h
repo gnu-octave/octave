@@ -363,7 +363,8 @@ namespace octave
 
     octave_value_list
     convert_return_list_to_const_vector
-      (tree_parameter_list *ret_list, int nargout, const Cell& varargout);
+      (tree_parameter_list *ret_list, int nargout,
+       const Matrix& ignored_outputs, const Cell& varargout);
 
     bool eval_decl_elt (tree_decl_elt *elt);
 
@@ -741,7 +742,8 @@ namespace octave
 
     bool quit_loop_now (void);
 
-    void bind_auto_fcn_vars (const string_vector& arg_names, int nargin,
+    void bind_auto_fcn_vars (const string_vector& arg_names,
+                             const Matrix& ignored_outputs, int nargin,
                              int nargout, bool takes_varargs,
                              const octave_value_list& va_args);
 

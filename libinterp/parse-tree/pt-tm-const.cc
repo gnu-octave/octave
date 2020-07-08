@@ -171,7 +171,7 @@ namespace octave
         octave_value tmp = elt->evaluate (tw);
 
         if (tmp.is_undefined ())
-          return;
+          continue;
 
         if (tmp.is_cs_list ())
           {
@@ -318,7 +318,7 @@ namespace octave
           }
 
         if (row.empty ())
-          break;
+          continue;
 
         if (m_all_strings && ! row.all_strings_p ())
           m_all_strings = false;
@@ -927,4 +927,26 @@ namespace octave
 %!assert (isnull ([;;]))
 %!assert (isnull ([;,;]))
 %!assert (isnull ([,;,;,]))
+
+## Undefined elements.
+%!function my_undef ()
+%!endfunction
+%!
+%!shared es
+%! es = struct ("a", {});
+%!
+%!assert <58695> ([1, es.a, 3], [1, 3])
+%!assert <58695> ([1, my_undef(), 3], [1, 3])
+%!
+%!assert <58695> ([es.a, es.a, 3], 3)
+%!assert <58695> ([my_undef(), my_undef(), 3], 3)
+%!
+%!assert <58695> ([1; es.a; 3], [1; 3])
+%!assert <58695> ([1; my_undef(), 3], [1; 3])
+%!
+%!assert <58695> ([es.a; es.a; 3], 3)
+%!assert <58695> ([my_undef(); my_undef(); 3], 3)
+%!
+%!assert <58695> ([es.a; es.a; 3], 3)
+%!assert <58695> ([my_undef(); my_undef(); 3], 3)
 */

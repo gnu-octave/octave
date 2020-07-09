@@ -810,7 +810,7 @@ namespace octave
     // Take selected code and extend it by commands for echoing each
     // evaluated line and for adding the line to the history (use script)
     QString code = QString ();
-    QString hist = QString ("### Begin selected code\n");
+    QString hist = QString ();
 
     // Split contents into single lines and complete commands
     QStringList lines = selectedText ().split (QRegExp ("[\r\n]"),
@@ -840,7 +840,6 @@ namespace octave
         hist += line_history + "\n";
       }
 
-    hist += "### End selected code\n";
     octave_stdout << hist.toStdString () << "\n";
 
     // Create tmp file with the code to be executed by the interpreter

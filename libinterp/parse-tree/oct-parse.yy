@@ -3720,8 +3720,10 @@ namespace octave
   {
     tree_function_def *retval = nullptr;
 
-    if (ret_list)
-      ret_list->mark_as_formal_parameters ();
+    if (! ret_list)
+      ret_list = new tree_parameter_list (tree_parameter_list::out);
+
+    ret_list->mark_as_formal_parameters ();
 
     if (fcn)
       {
@@ -4146,8 +4148,10 @@ namespace octave
                                                 tree_parameter_list *ret_list,
                                                 comment_list *cl)
   {
-    if (ret_list)
-      fcn->define_ret_list (ret_list);
+    if (! ret_list)
+      ret_list = new tree_parameter_list (tree_parameter_list::out);
+
+    fcn->define_ret_list (ret_list);
 
     if (cl)
       fcn->stash_leading_comment (cl);

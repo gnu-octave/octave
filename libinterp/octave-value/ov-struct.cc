@@ -146,6 +146,9 @@ octave_struct::subsref (const std::string& type,
 
             const Cell t = tmp.index (idx.front ());
 
+            // Avoid creating a comma-separated list if the result is a
+            // single element.
+
             retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
 
             // We handled two index elements, so tell
@@ -162,8 +165,10 @@ octave_struct::subsref (const std::string& type,
       {
         const Cell t = dotref (idx.front ());
 
-        if (! map.isempty ())
-          retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
+        // Avoid creating a comma-separated list if the result is a
+        // single element.
+
+        retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
       }
       break;
 
@@ -207,6 +212,9 @@ octave_struct::subsref (const std::string& type,
 
             const Cell t = tmp.index (idx.front (), auto_add);
 
+            // Avoid creating a comma-separated list if the result is a
+            // single element.
+
             retval = (t.numel () == 1) ? t(0) : octave_value (t, true);
 
             // We handled two index elements, so tell
@@ -224,6 +232,9 @@ octave_struct::subsref (const std::string& type,
         if (map.numel () > 0)
           {
             const Cell t = dotref (idx.front (), auto_add);
+
+            // Avoid creating a comma-separated list if the result is a
+            // single element.
 
             retval = (t.numel () == 1) ? t(0) : octave_value (t, true);
           }

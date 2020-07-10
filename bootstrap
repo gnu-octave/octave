@@ -670,6 +670,11 @@ if $use_gnulib; then
         || cleanup_gnulib
 
       trap - 1 2 13 15
+
+    elif test -n "$GNULIB_REVISION" \
+         && ! git --git-dir="$gnulib_path"/.git cat-file \
+              commit "$GNULIB_REVISION"; then
+      git --git-dir="$gnulib_path"/.git fetch
     fi
     GNULIB_SRCDIR=$gnulib_path
     ;;

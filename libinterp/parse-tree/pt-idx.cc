@@ -153,10 +153,20 @@ namespace octave
                    const string_vector& m_arg_nm, const octave_value *object,
                    bool rvalue = true)
   {
+    // FIXME: This function duplicates tree_evaluator::make_value_list.
+    // See also the way convert_to_const_vector is used in
+    // tree_index_expression::evaluate_n.
+
     octave_value_list retval;
 
     if (m_args)
       {
+        unwind_action act ([&tw] (const std::list<octave_lvalue> *lvl)
+                           {
+                             tw.set_lvalue_list (lvl);
+                           }, tw.lvalue_list ());
+        tw.set_lvalue_list (nullptr);
+
         if (rvalue && object && m_args->has_magic_end ()
             && object->is_undefined ())
           err_invalid_inquiry_subscript ();

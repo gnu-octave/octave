@@ -940,7 +940,7 @@ endfunction
 %!fail ("toeplitz ([1,2],[1,2;3,4])", msg2)
 %!fail ("toeplitz ([1,2;3,4],[1,2])", msg2)
 %!test fail ("toeplitz", "Invalid call to toeplitz")
-%!fail ("toeplitz (1, 2, 3)", "Invalid call to toeplitz")
+%!fail ("toeplitz (1, 2, 3)", "called with too many inputs")
 %!test assert (toeplitz ([1,2,3], [1,4]), [1,4; 2,1; 3,2])
 %!assert (toeplitz ([1,2,3], [1,4]), [1,4; 2,1; 3,2])
 %!demo toeplitz ([1,2,3,4],[1,5,6])
@@ -974,7 +974,7 @@ endfunction
 
 ## Test 'fail' keyword
 %!fail ("test", "Invalid call to test")  # no args, generates usage()
-%!fail ("test (1,2,3,4)", "usage.*test") # too many args, generates usage()
+%!fail ("test (1,2,3,4)", "called with too many inputs") # too many args
 %!fail ('test ("test", "invalid")', "unknown flag")  # incorrect args
 %!fail ('garbage','garbage.*undefined')  # usage on nonexistent function should be
 

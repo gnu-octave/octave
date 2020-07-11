@@ -224,5 +224,5 @@ endfunction
 
 ## Test input validation
 %!error <invalid input> help (42)
-%!error <invalid input> help ("abc", "def")
+%!error <called with too many inputs> help ("abc", "def")
 %!error <'_! UNLIKELY_FCN! _' not found> help ("_! UNLIKELY_FCN! _")

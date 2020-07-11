@@ -73,7 +73,7 @@ endfunction
 %!         uint8 ([164:166 0 167:170]));
 
 %!error <Invalid call> unicode2native ()
-%!error <Invalid call> unicode2native ('a', 'ISO-8859-1', 'test')
+%!error <called with too many inputs> unicode2native ('a', 'ISO-8859-1', 'test')
 %!error <UTF8_STR must be a character vector> unicode2native (['ab'; 'cd'])
 %!error <UTF8_STR must be a character vector> unicode2native ({1 2 3 4})
 %!error <CODEPAGE must be a string> unicode2native ('ЄЅІЇЈЉЊ', 123)

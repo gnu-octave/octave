@@ -98,7 +98,7 @@
 %! assert ((e1 && strcmp (s2.modestr(1), "d") && e3 && e4 < 0));
 
 %!error <Invalid call to mkdir> mkdir ()
-%!error <Invalid call to mkdir> mkdir ("foo", 1, 2)
+%!error <called with too many inputs> mkdir ("foo", 1, 2)
 %!error <Invalid call to rmdir> rmdir ()
 
 %!test

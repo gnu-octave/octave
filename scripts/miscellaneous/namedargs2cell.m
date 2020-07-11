@@ -66,6 +66,6 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> namedargs2cell ()
-%!error <Invalid call> namedargs2cell (1, 2)
+%!error <called with too many inputs> namedargs2cell (1, 2)
 %!error <S must be a scalar structure> namedargs2cell (true)
 %!error <S must be a scalar structure> namedargs2cell (struct ("name", {1, 2}))

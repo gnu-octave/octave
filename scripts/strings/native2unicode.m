@@ -93,7 +93,7 @@ endfunction
 %!        [0 0 120 0 0 123 0 0]);
 
 %!error <Invalid call> native2unicode ()
-%!error <Invalid call> native2unicode (1, 'ISO-8859-1', 'test')
+%!error <called with too many inputs> native2unicode (1, 'ISO-8859-1', 'test')
 %!error <NATIVE_BYTES must be a numeric vector> native2unicode ([1 2; 3 4])
 %!error <NATIVE_BYTES must be a numeric vector> native2unicode ({1 2 3 4})
 %!error <CODEPAGE must be a string> native2unicode (164:170, 123)

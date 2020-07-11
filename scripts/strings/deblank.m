@@ -102,5 +102,5 @@ endfunction
 %!assert (deblank ({" abc   ", {"   def   "}}), {" abc", {"   def"}})
 
 %!error <Invalid call to deblank> deblank ()
-%!error <Invalid call to deblank> deblank ("foo", "bar")
+%!error <called with too many inputs> deblank ("foo", "bar")
 %!error <argument must be a string> deblank (1)

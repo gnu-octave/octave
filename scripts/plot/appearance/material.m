@@ -305,7 +305,7 @@ endfunction
 %!error <Invalid call to material> a = material (-1, 2)
 %!error <Invalid call to material> a = material ({})
 %!error <Invalid call to material> a = material ([.3 .4 .5])
-%!error <Invalid call to material> [a, b] = material ()
+%!error <called with too many outputs> [a, b] = material ()
 %!error <first argument must be a list of handles> material (-1, "metal")
 %!error <unknown material type 'foo'> material foo
 %!error <incorrect number of elements in material vector> material (-1)

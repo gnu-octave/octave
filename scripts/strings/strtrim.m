@@ -90,6 +90,6 @@ endfunction
 %!assert (strtrim ({" abc   ", {"   def   "}}), {"abc", {"def"}})
 
 %!error <Invalid call to strtrim> strtrim ()
-%!error <Invalid call to strtrim> strtrim ("abc", "def")
+%!error <called with too many inputs> strtrim ("abc", "def")
 %!error <argument must be a string> strtrim (1)
 %!error <argument must be a string> strtrim ({[]})

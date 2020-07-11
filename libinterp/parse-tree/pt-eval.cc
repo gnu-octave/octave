@@ -2728,6 +2728,9 @@ namespace octave
     if (! cmd_list)
       return retval;
 
+    // FIXME: Maybe this check belongs in the places where we push a new
+    // stack frame?  Or in the call_stack push method itself?
+
     if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
       error ("max_recursion_depth exceeded");
 
@@ -2763,27 +2766,61 @@ namespace octave
   {
     octave_value_list retval;
 
-    tree_statement_list *cmd_list = user_function.body ();
-
-    if (! cmd_list)
-      return retval;
-
     // If this function is a classdef constructor, extract the first input
     // argument, which must be the partially constructed object instance.
 
     octave_value_list args (xargs);
     octave_value_list ret_args;
 
+    int nargin = args.length ();
+
     if (user_function.is_classdef_constructor ())
       {
-        if (args.length () > 0)
+        if (nargin > 0)
           {
             ret_args = args.slice (0, 1, true);
-            args = args.slice (1, args.length () - 1, true);
+            --nargin;
+            args = args.slice (1, nargin, true);
           }
         else
           panic_impossible ();
       }
+
+    // FIXME: this probably shouldn't be a double-precision matrix.
+    Matrix ignored_outputs = ignored_fcn_outputs ();
+
+    tree_parameter_list *param_list = user_function.parameter_list ();
+
+    if (param_list)
+      {
+        int max_inputs = param_list->length ();
+
+        if (! param_list->takes_varargs () && nargin > max_inputs)
+          {
+            std::string name = user_function.name ();
+
+            error ("%s: function called with too many inputs", name.c_str ());
+          }
+
+        if (! param_list->varargs_only ())
+          define_parameter_list_from_arg_vector (param_list, args);
+      }
+
+    tree_parameter_list *ret_list = user_function.return_list ();
+
+    if (ret_list && ! ret_list->takes_varargs ())
+      {
+        int max_outputs = ret_list->length ();
+
+        if (nargout > max_outputs)
+          {
+            std::string name = user_function.name ();
+
+            error ("%s: function called with too many outputs", name.c_str ());
+          }
+      }
+
+    // FIXME: Is this in the right place now?
 
 #if defined (HAVE_LLVM)
     if (user_function.is_special_expr ()
@@ -2791,24 +2828,12 @@ namespace octave
       return retval;
 #endif
 
-    if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
-      error ("max_recursion_depth exceeded");
-
-    Matrix ignored_outputs = ignored_fcn_outputs ();
-
-    bind_auto_fcn_vars (xargs.name_tags (), ignored_outputs, args.length (),
+    bind_auto_fcn_vars (xargs.name_tags (), ignored_outputs, nargin,
                         nargout, user_function.takes_varargs (),
                         user_function.all_va_args (args));
 
-    tree_parameter_list *param_list = user_function.parameter_list ();
-
-    if (param_list && ! param_list->varargs_only ())
-      define_parameter_list_from_arg_vector (param_list, args);
-
     // For classdef constructor, pre-populate the output arguments
     // with the pre-initialized object instance, extracted above.
-
-    tree_parameter_list *ret_list = user_function.return_list ();
 
     if (user_function.is_classdef_constructor ())
       {
@@ -2819,49 +2844,60 @@ namespace octave
         define_parameter_list_from_arg_vector (ret_list, ret_args);
       }
 
+    // FIXME: Maybe this check belongs in the places where we push a
+    // new stack frame?  Or in the call_stack push method itself?
+
+    if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
+      error ("max_recursion_depth exceeded");
+
     unwind_action act2 ([&user_function] () {
                           user_function.restore_warning_states ();
                         });
 
     // Evaluate the commands that make up the function.
 
-    unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_FUNCTION);
+    unwind_protect_var<stmt_list_type>
+      upv (m_statement_context, SC_FUNCTION);
 
     unwind_action act1 ([this] () {
                           m_call_stack.clear_current_frame_values ();
                         });
 
-    {
-      profiler::enter<octave_user_function> block (m_profiler, user_function);
+    tree_statement_list *cmd_list = user_function.body ();
 
-      if (echo ())
-        push_echo_state (tree_evaluator::ECHO_FUNCTIONS,
-                         user_function.fcn_file_name ());
+    if (cmd_list)
+      {
+        profiler::enter<octave_user_function>
+          block (m_profiler, user_function);
 
-      if (user_function.is_special_expr ())
-        {
-          assert (cmd_list->length () == 1);
+        if (echo ())
+          push_echo_state (tree_evaluator::ECHO_FUNCTIONS,
+                           user_function.fcn_file_name ());
 
-          tree_statement *stmt = cmd_list->front ();
+        if (user_function.is_special_expr ())
+          {
+            assert (cmd_list->length () == 1);
 
-          tree_expression *expr = stmt->expression ();
+            tree_statement *stmt = cmd_list->front ();
 
-          if (expr)
-            {
-              m_call_stack.set_location (stmt->line (), stmt->column ());
+            tree_expression *expr = stmt->expression ();
 
-              retval = expr->evaluate_n (*this, nargout);
-            }
-        }
-      else
-        cmd_list->accept (*this);
-    }
+            if (expr)
+              {
+                m_call_stack.set_location (stmt->line (), stmt->column ());
 
-    if (m_returning)
-      m_returning = 0;
+                retval = expr->evaluate_n (*this, nargout);
+              }
+          }
+        else
+          cmd_list->accept (*this);
 
-    if (m_breaking)
-      m_breaking--;
+        if (m_returning)
+          m_returning = 0;
+
+        if (m_breaking)
+          m_breaking--;
+      }
 
     // Copy return values out.
 

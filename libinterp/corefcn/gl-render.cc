@@ -4491,12 +4491,9 @@ namespace octave
     // Check actual maximum number of lights possible
     if (m_max_lights == 0)
       {
-        for (m_max_lights = 0; m_max_lights < GL_MAX_LIGHTS; m_max_lights++)
-          {
-            m_glfcns.glDisable (GL_LIGHT0 + m_max_lights);
-            if (m_glfcns.glGetError ())
-              break;
-          }
+        GLint max_lights;
+        m_glfcns.glGetIntegerv (GL_MAX_LIGHTS, &max_lights);
+        m_max_lights = max_lights;
       }
 
 #else

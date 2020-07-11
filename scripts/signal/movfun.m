@@ -328,7 +328,7 @@ endfunction
 
 ## Apply replacement value boundary conditions
 ## Window is padded at beginning and end with user-specified value.
-function y = replaceval_bc (fcn, x, idxp, win, wlen)
+function y = replaceval_bc (fcn, x, idxp, win, wlen, ~)
 
   persistent substitute;
 
@@ -359,7 +359,7 @@ endfunction
 ## Apply "same" boundary conditions
 ## 'y' values outside window are replaced by value of 'x' at the window
 ## boundary.
-function y = same_bc (fcn, x, idxp, win)
+function y = same_bc (fcn, x, idxp, win, ~, ~)
   idx          = idxp + win;
   idx(idx < 1) = 1;
   N            = length (x);
@@ -370,7 +370,7 @@ endfunction
 ## Apply "periodic" boundary conditions
 ## Window wraps around.  Window values outside data array are replaced with
 ## data from the other end of the array.
-function y = periodic_bc (fcn, x, idxp, win)
+function y = periodic_bc (fcn, x, idxp, win, ~, ~)
   N       = length (x);
   idx     = idxp + win;
   tf      = idx < 1;

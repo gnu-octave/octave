@@ -718,8 +718,8 @@ function create_pkgadddel (desc, packdir, nm, global_install)
   ## part in the main directory.
   archdir = fullfile (getarchprefix (desc, global_install),
                       [desc.name "-" desc.version], getarch ());
-  if (isfolder (getarchdir (desc, global_install)))
-    archpkg = fullfile (getarchdir (desc, global_install), nm);
+  if (isfolder (getarchdir (desc)))
+    archpkg = fullfile (getarchdir (desc), nm);
     archfid = fopen (archpkg, "at");
   else
     archpkg = instpkg;

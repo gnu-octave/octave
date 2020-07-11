@@ -433,7 +433,7 @@ endfunction
 %!  refrob = [100, 0.617234887614937, 0.000006153591397, 0.382758958793666];
 %!endfunction
 %!
-%!function [val, isterminal, direction] = feve (t, y)
+%!function [val, isterminal, direction] = feve (t, y, ~)
 %!  isterminal = [0, 1];
 %!  if (t < 1e1)
 %!    val = [-1, -2];

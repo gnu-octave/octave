@@ -75,7 +75,16 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
 
   ## Check M1 and sets its type
   if (isempty (M1)) # M1 empty, set to identity function
-      M1fun = @(x) x;
+    switch solver_name
+      case {"pcg", "gmres", "bicgstab", "cgs", "tfqmr"}
+        ## methods which do not require the transpose
+        M1fun = @(x) x;
+      case {"bicg"}
+        ## methods which do require the transpose
+        M1fun = @(x, ~) x;
+      otherwise
+        error (["__alltohandles__: unknown method: ", solver_name]);
+    endswitch
   else # M1 not empty
     if (is_function_handle (M1))
       M1fun = M1;
@@ -89,7 +98,16 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
   endif
 
   if (isempty (M2)) # M2 empty, then I set is to the identity function
-    M2fun = @(x) x;
+    switch solver_name
+      case {"pcg", "gmres", "bicgstab", "cgs", "tfqmr"}
+        ## methods which do not require the transpose
+        M2fun = @(x) x;
+      case {"bicg"}
+        ## methods which do require the transpose
+        M2fun = @(x, ~) x;
+      otherwise
+        error (["__alltohandles__: unknown method: ", solver_name]);
+    endswitch
   else # M2 not empty
     if (is_function_handle (M2))
       M2fun = M2;
@@ -104,7 +122,7 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
 
   switch solver_name
     case {"pcg", "gmres", "bicgstab", "cgs", "tfqmr"}
-      # methods which do not require the transpose
+      ## methods which do not require the transpose
       if (A_is_numeric)
         Afun = @(x) A * x;
       endif
@@ -115,7 +133,7 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
         M2fun = @(x) M2 \ x;
       endif
     case {"bicg"}
-      # methods which do require the transpose
+      ## methods which do require the transpose
       if (A_is_numeric)
         Afun = @(x, trans) A_sub (A, x, trans);
       endif

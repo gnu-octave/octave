@@ -372,7 +372,7 @@ endfunction
 %! unwind_protect
 %!   fmt = imformats ("jpg"); # take jpg as template
 %!   fmt.ext = "new_fmt";
-%!   fmt.read = @() true ();
+%!   fmt.read = @(~) true ();
 %!   imformats ("add", fmt);
 %!   assert (imread (fname), true);
 %! unwind_protect_cleanup
@@ -391,7 +391,7 @@ endfunction
 %! unwind_protect
 %!   fmt = imformats ("jpg"); # take jpg as template
 %!   fmt.ext = "new_fmt1";
-%!   fmt.read = @() true();
+%!   fmt.read = @(~) true();
 %!   fmt(2) = fmt(1);
 %!   fmt(2).ext = "new_fmt2";
 %!   imformats ("add", fmt);

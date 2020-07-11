@@ -23,7 +23,7 @@
 ##
 ########################################################################
 
-%!function cb_children (hg)
+%!function cb_children (hg, ~)
 %!  hl = get (hg, "children");
 %!  color = get (hl, "color");
 %!  set (hl, "userdata", isequal (color, [1 0 0]));

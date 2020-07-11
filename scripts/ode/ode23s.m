@@ -356,7 +356,7 @@ endfunction
 ## We are using the "Van der Pol" implementation for all tests that are done
 ## for this function.  For further tests we also define a reference solution
 ## (computed at high accuracy).
-%!function ydot = fpol (t, y)  # The Van der Pol ODE
+%!function ydot = fpol (t, y, varargin)  # The Van der Pol ODE
 %!  ydot = [y(2); 10 * (1 - y(1)^2) * y(2) - y(1)];
 %!endfunction
 %!function ydot = jac (t, y)   # The Van der Pol ODE
@@ -366,12 +366,12 @@ endfunction
 %!  ref = [1.8610687248524305  -0.0753216319179125];
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
-%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  val = fpol (t, y, varargin{:});  # We use the derivatives
 %!  trm = zeros (2,1);            # that's why component 2
 %!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction
 %!function [val, trm, dir] = fevn (t, y, varargin)
-%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  val = fpol (t, y, varargin{:});  # We use the derivatives
 %!  trm = ones (2,1);             # that's why component 2
 %!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction

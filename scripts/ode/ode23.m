@@ -326,19 +326,19 @@ endfunction
 
 ## We are using the Van der Pol equation for all tests.
 ## Further tests also define a reference solution (computed at high accuracy)
-%!function ydot = fpol (t, y)  # The Van der Pol ODE
+%!function ydot = fpol (t, y, varargin)  # The Van der Pol ODE
 %!  ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %!endfunction
 %!function ref = fref ()       # The computed reference sol
 %!  ref = [0.32331666704577, -1.83297456798624];
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
-%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  val = fpol (t, y, varargin{:});  # We use the derivatives
 %!  trm = zeros (2,1);            # that's why component 2
 %!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction
 %!function [val, trm, dir] = fevn (t, y, varargin)
-%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  val = fpol (t, y, varargin{:});  # We use the derivatives
 %!  trm = ones (2,1);             # that's why component 2
 %!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction

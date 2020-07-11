@@ -190,7 +190,7 @@ classdef inputParser < handle
 
   properties (Access = protected, Constant = true)
     ## Default validator, always returns scalar true.
-    def_val = @() true;
+    def_val = @(~) true;
   endproperties
 
   methods

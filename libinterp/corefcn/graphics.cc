@@ -3612,7 +3612,7 @@ base_properties::update_handlevisibility (void)
 %! hf = figure ("handlevisibility", "off", "visible", "off");
 %! hax = axes ("parent", hf, "handlevisibility", "off");
 %! unwind_protect
-%!   fcn = @(h) setappdata (h, "testdata", gcbo ());
+%!   fcn = @(h, ~) setappdata (h, "testdata", gcbo ());
 %!   addlistener (hf, "color", fcn);
 %!   addlistener (hax, "color", fcn);
 %!   set (hf, "color", "b");
@@ -12474,7 +12474,7 @@ gh_manager::process_events (bool force)
 
 /*
 ## Test interruptible/busyaction properties
-%!function cb (h)
+%!function cb (h, ~)
 %! setappdata (gcbf (), "cb_exec", [getappdata(gcbf (), "cb_exec") h]);
 %! drawnow ();
 %! setappdata (gcbf (), "cb_exec", [getappdata(gcbf (), "cb_exec") h]);

@@ -277,7 +277,7 @@ function hax = buildoverlay (hf)
   listener = {@update_figsize_points, hax};
   addlistener (hf, "position", listener);
 
-  delfcn = @() dellistener (hf, "position", listener);
+  delfcn = @(~, ~) dellistener (hf, "position", listener);
   set (hax, "deletefcn", delfcn);
 
 endfunction
@@ -329,7 +329,7 @@ function h = buildannot (hax, objtype, pos)
 
   addlistener (hax, "figsize_points", listener);
 
-  delfcn = @() dellistener (hax, "figsize_points", listener);
+  delfcn = @(~, ~) dellistener (hax, "figsize_points", listener);
   set (h, "deletefcn", delfcn);
 
   addlistener (h, "units", {@update_position, h});
@@ -832,7 +832,10 @@ function addbaseprops (h, proptable)
            proptable(1:3:end), proptable(2:3:end), proptable(3:3:end));
 endfunction
 
-function addbasemenu (hm, hpar, pname, vals, mainlabel = "")
+## FIXME: there are some calls to addbasemenu with option-like arguments
+## but we don't do anything with varargin here.  What is the right thing
+## to do?
+function addbasemenu (hm, hpar, pname, vals, mainlabel = "", varargin)
 
   if (isempty (mainlabel))
     mainlabel = pname;

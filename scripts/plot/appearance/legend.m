@@ -245,17 +245,17 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     hf = ancestor (hax, "figure");
 
     add_safe_listener (hl, hf, "colormap", ...
-                       @() set (hl, "colormap", get (hax, "colormap")));
+                       @(~, ~) set (hl, "colormap", get (hax, "colormap")));
 
     add_safe_listener (hl, hax, "position", {@maybe_update_layout_cb, hl});
     add_safe_listener (hl, hax, "tightinset", ...
-                       @(h) update_layout_cb (get (h, "__legend_handle__")));
+                       @(h, ~) update_layout_cb (get (h, "__legend_handle__")));
     add_safe_listener (hl, hax, "clim", ...
-                       @(hax) set (hl, "clim", get (hax, "clim")));
+                       @(hax, ~) set (hl, "clim", get (hax, "clim")));
     add_safe_listener (hl, hax, "colormap", ...
-                       @(hax) set (hl, "colormap", get (hax, "colormap")));
+                       @(hax, ~) set (hl, "colormap", get (hax, "colormap")));
     add_safe_listener (hl, hax, "fontsize", ...
-                       @(hax) set (hl, "fontsize", 0.9*get (hax, "fontsize")));
+                       @(hax, ~) set (hl, "fontsize", 0.9*get (hax, "fontsize")));
     add_safe_listener (hl, hax, "children", {@legend_autoupdate_cb, hl});
 
     ## Listeners to legend properties
@@ -281,8 +281,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     addlistener (hl, "string", @update_string_cb);
 
     addlistener (hl, "textcolor", ...
-                 @(h) set (findobj (h, "type", "text"), ...
-                           "color", get (hl, "textcolor")));
+                 @(h, ~) set (findobj (h, "type", "text"), ...
+                               "color", get (hl, "textcolor")));
 
     addlistener (hl, "visible", @update_visible_cb);
 
@@ -340,14 +340,14 @@ function update_location_cb (hl, ~, do_layout = true)
 
 endfunction
 
-function update_edgecolor_cb (hl)
+function update_edgecolor_cb (hl, ~)
 
   ecolor = get (hl, "edgecolor");
   set (hl, "xcolor", ecolor, "ycolor", ecolor);
 
 endfunction
 
-function update_position_cb (hl)
+function update_position_cb (hl, ~)
 
   updating = getappdata (hl, "__updating_layout__");
   if (isempty (updating) || ! updating)
@@ -356,7 +356,7 @@ function update_position_cb (hl)
 
 endfunction
 
-function update_string_cb (hl)
+function update_string_cb (hl, ~)
 
   ## Check that the number of legend item and the number of labels match
   ## before calling update_layout_cb.
@@ -390,7 +390,7 @@ function update_string_cb (hl)
 
 endfunction
 
-function update_visible_cb (hl)
+function update_visible_cb (hl, ~)
 
   location = get (hl, "location");
   if (strcmp (location(end:-1:end-3), "edis"))
@@ -416,7 +416,7 @@ function reset_cb (ht, evt, hl, deletelegend = true)
 
 endfunction
 
-function delete_legend_cb (hl)
+function delete_legend_cb (hl, ~)
 
   reset_cb ([], [], hl, false);
 
@@ -461,7 +461,7 @@ function addproperties (hl)
 
   addproperty ("numcolumnsmode", hl, "radio", "{auto}|manual");
 
-  addlistener (hl, "numcolumns", @(h) set (h, "numcolumnsmode", "manual"));
+  addlistener (hl, "numcolumns", @(h, ~) set (h, "numcolumnsmode", "manual"));
 
   addproperty ("autoupdate", hl, "radio", "{on}|off");
 
@@ -505,7 +505,7 @@ function maybe_update_layout_cb (h, d, hl)
 
 endfunction
 
-function update_numchild_cb (hl)
+function update_numchild_cb (hl, ~)
 
   if (strcmp (get (hl, "autoupdate"), "on"))
 
@@ -992,12 +992,12 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       safe_property_link (hplt(1), hicon, lprops);
       safe_property_link (hplt(end), hmarker, mprops);
       addlistener (hicon, "ydata", ...
-                   @(h) set (hmarker, "ydata", get (h, "markerydata")));
+                   @(h, ~) set (hmarker, "ydata", get (h, "markerydata")));
       addlistener (hicon, "xdata", ...
-                   @(h) set (hmarker, "xdata", get (h, "markerxdata")));
+                   @(h, ~) set (hmarker, "xdata", get (h, "markerxdata")));
       addlistener (hmarker, "markersize", @update_marker_cb);
       add_safe_listener (hl, hplt(1), "beingdeleted",
-                         @() delete ([hicon hmarker]))
+                         @(~, ~) delete ([hicon hmarker]))
       if (! strcmp (typ, "__errplot__"))
         setappdata (hicon, "__creator__", typ);
       else
@@ -1035,11 +1035,11 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       safe_property_link (hplt(1), hicon, pprops);
       safe_property_link (hplt(end), htmp, pprops);
       addlistener (hicon, "ydata", ...
-                   @(h) set (htmp, "ydata", get (h, "innerydata")));
+                   @(h, ~) set (htmp, "ydata", get (h, "innerydata")));
       addlistener (hicon, "xdata", ...
-                   @(h) set (htmp, "xdata", get (h, "innerxdata")));
+                   @(h, ~) set (htmp, "xdata", get (h, "innerxdata")));
       add_safe_listener (hl, hplt(1), "beingdeleted",
-                         @() delete ([hicon htmp]))
+                         @(~, ~) delete ([hicon htmp]))
 
       setappdata (hicon, "__creator__", typ);
 
@@ -1055,9 +1055,9 @@ endfunction
 function safe_property_link (h1, h2, props)
   for ii = 1:numel (props)
     prop = props{ii};
-    lsn = {h1, prop, @(h) set (h2, prop, get (h, prop))};
+    lsn = {h1, prop, @(h, ~) set (h2, prop, get (h, prop))};
     addlistener (lsn{:});
-    addlistener (h2, "beingdeleted", @() dellistener (lsn{:}));
+    addlistener (h2, "beingdeleted", @(~, ~) dellistener (lsn{:}));
   endfor
 endfunction
 
@@ -1079,7 +1079,7 @@ function update_displayname_cb (h, ~, hl)
 
 endfunction
 
-function update_marker_cb (h)
+function update_marker_cb (h, ~)
 
   if (get (h, "markersize") > 8)
     set (h, "markersize", 8);

@@ -3088,7 +3088,12 @@ namespace octave
         try
           {
             if (cmd)
-              cmd->accept (*this);
+              {
+                unwind_protect_var<const std::list<octave_lvalue> *>
+                  upv (m_lvalue_list, nullptr);
+
+                cmd->accept (*this);
+              }
             else
               {
                 if (m_echo_state)

@@ -38,6 +38,7 @@
 #include "gui-preferences-ed.h"
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
+#include "qt-utils.h"
 
 #include "localcharset-wrapper.h"
 #include "oct-env.h"
@@ -161,8 +162,8 @@ namespace octave
     QStringList lst
       = m_uiwidget_creator.input_dialog (make_qstring_list (prompt),
                                          QString::fromStdString (title),
-                                         QFloatList::fromStdList (nr),
-                                         QFloatList::fromStdList (nc),
+                                         std_list_to_qt_list<float> (nr),
+                                         std_list_to_qt_list<float> (nc),
                                          make_qstring_list (defaults));
     std::list<std::string> retval;
 
@@ -186,13 +187,15 @@ namespace octave
       = m_uiwidget_creator.list_dialog (make_qstring_list (list),
                                         QString::fromStdString (mode),
                                         width, height,
-                                        QList<int>::fromStdList (initial),
+                                        std_list_to_qt_list<int> (initial),
                                         QString::fromStdString (name),
                                         make_qstring_list (prompt),
                                         QString::fromStdString (ok_string),
                                         QString::fromStdString (cancel_string));
 
-    return std::pair<std::list<int>, int> (result.first.toStdList (),
+    QIntList& lst = result.first;
+    return std::pair<std::list<int>, int> (std::list<int> (lst.begin (),
+                                                           lst.end ()),
                                            result.second);
   }
 

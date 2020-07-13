@@ -70,7 +70,7 @@ namespace QtHandles
     if (m_qobject)
       {
         m_qobject->setProperty ("QtHandles::Object",
-                                qVariantFromValue<void*> (this));
+                                QVariant::fromValue<void*> (this));
         connect (m_qobject, SIGNAL (destroyed (QObject*)),
                  SLOT (objectDestroyed (QObject*)));
       }

@@ -681,7 +681,6 @@ namespace octave
         setFileMode (QFileDialog::AnyFile);
         setAcceptMode (QFileDialog::AcceptSave);
         setOption (QFileDialog::DontConfirmOverwrite, false);
-        setConfirmOverwrite (true);
       }
     else if (multimode == "dir")    // uigetdir
       {

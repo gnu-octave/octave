@@ -671,12 +671,14 @@ namespace octave
 
         // center the window on the screen where octave is running
         QDesktopWidget *m_desktop = QApplication::desktop ();
-        int screen = m_desktop->screenNumber (this);  // screen of the main window
-        QRect screen_geo = m_desktop->availableGeometry (screen);
+        QRect screen_geo = m_desktop->availableGeometry (this);
+
         int win_x = screen_geo.width ();        // width of the screen
         int win_y = screen_geo.height ();       // height of the screen
+
         int reln_x = win_x*2/5;  // desired width of release notes
         int reln_y = win_y*2/3;  // desired height of release notes
+
         m_release_notes_window->resize (reln_x, reln_y);  // set size
         m_release_notes_window->move (20, 20);     // move to the top left corner
       }
@@ -749,12 +751,14 @@ namespace octave
 
         // center the window on the screen where octave is running
         QDesktopWidget *m_desktop = QApplication::desktop ();
-        int screen = m_desktop->screenNumber (this);  // screen of the main window
-        QRect screen_geo = m_desktop->availableGeometry (screen);
+        QRect screen_geo = m_desktop->availableGeometry (this);
+
         int win_x = screen_geo.width ();        // width of the screen
         int win_y = screen_geo.height ();       // height of the screen
+
         int news_x = win_x/2;  // desired width of news window
         int news_y = win_y/2;  // desired height of news window
+
         m_community_news_window->resize (news_x, news_y);  // set size and center
         m_community_news_window->move ((win_x - m_community_news_window->width ())/2,
                                        (win_y - m_community_news_window->height ())/2);
@@ -1538,8 +1542,7 @@ namespace octave
         restoreState (mw_state.def.toByteArray ());
 
         QDesktopWidget *m_desktop = QApplication::desktop ();
-        int screen = m_desktop->screenNumber (this);  // screen of the main window
-        QRect screen_geo = m_desktop->availableGeometry (screen);
+        QRect screen_geo = m_desktop->availableGeometry (this);
 
         int win_x = screen_geo.width ();        // width of the screen
         int win_y = screen_geo.height ();       // height of the screen

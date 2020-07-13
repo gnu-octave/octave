@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <algorithm>
 #include <array>
 #include <string>
 
@@ -474,7 +475,7 @@ namespace octave
 
     // Clean up and sort list of codecs
     codecs->removeDuplicates ();
-    qSort (*codecs);
+    std::sort (codecs->begin (), codecs->end ());
   }
 
   // initialize a given combo box with available text encodings

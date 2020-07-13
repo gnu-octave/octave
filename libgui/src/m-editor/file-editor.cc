@@ -29,6 +29,8 @@
 
 #if defined (HAVE_QSCINTILLA)
 
+#include <algorithm>
+
 #include <QApplication>
 #include <QFile>
 #include <QFileDialog>
@@ -336,7 +338,7 @@ namespace octave
         s_data << item;
       }
 
-    qSort (s_data);
+    std::sort (s_data.begin (), s_data.end ());
 
     // finally open the files with the desired encoding in the desired order
     for (int n = 0; n < s_data.count (); ++n)

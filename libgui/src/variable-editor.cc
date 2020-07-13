@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <algorithm>
 #include <limits>
 
 #include <QApplication>
@@ -821,7 +822,7 @@ namespace octave
 
     QItemSelectionModel *sel = selectionModel ();
     QList<QModelIndex> indices = sel->selectedIndexes ();
-    qSort (indices);
+    std::sort (indices.begin (), indices.end ());
 
     if (indices.isEmpty ())
       return;

@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <algorithm>
+
 #include <QFileIconProvider>
 #include <QtAlgorithms>
 
@@ -192,8 +194,8 @@ namespace octave
       {
         beginResetModel ();
 
-        qSort (m_files.begin (), m_files.end (),
-               find_file_less_than (m_sortorder));
+        std::sort (m_files.begin (), m_files.end (),
+                   find_file_less_than (m_sortorder));
 
         endResetModel ();
       }

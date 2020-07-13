@@ -222,6 +222,7 @@ noinst_HEADERS += \
   %reldir%/octave-qobject.h \
   %reldir%/qt-application.h \
   %reldir%/qt-interpreter-events.h \
+  %reldir%/qt-utils.h \
   %reldir%/resource-manager.h \
   %reldir%/settings-dialog.h \
   %reldir%/shortcut-manager.h \

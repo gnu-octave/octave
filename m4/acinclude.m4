@@ -461,6 +461,35 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO], [
   fi
 ])
 dnl
+dnl Check whether the Qt class QList has a constructor that accepts
+dnl a pair of iterators.  This constructor was introduced in Qt 5.14.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR], [
+  AC_CACHE_CHECK([for QList<T>::QList (iterator, iterator) constructor],
+    [octave_cv_func_qlist_iterator_constructor],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QList>
+        ]], [[
+        QList<int> lst_one;
+        QList<int> lst_two (lst_one.begin (), lst_one.end ());
+        ]])],
+      octave_cv_func_qlist_iterator_constructor=yes,
+      octave_cv_func_qlist_iterator_constructor=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qlist_iterator_constructor = yes; then
+    AC_DEFINE(HAVE_QLIST_ITERATOR_CONSTRUCTOR, 1,
+      [Define to 1 if you have the `QList<T>::QList (iterator, iterator)' constructor.])
+  fi
+])
+dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
 AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
@@ -1763,6 +1792,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QGUIAPPLICATION_SETDESKTOPFILENAME
     OCTAVE_CHECK_FUNC_QHELPSEARCHQUERYWIDGET_SEARCHINPUT
     OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
+    OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR
 
     if test -n "$OPENGL_LIBS"; then
       OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],

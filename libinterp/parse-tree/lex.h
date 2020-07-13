@@ -661,7 +661,7 @@ namespace octave
 
     bool whitespace_is_significant (void);
 
-    void handle_number (void);
+    int handle_number (bool imag);
 
     void handle_continuation (void);
 

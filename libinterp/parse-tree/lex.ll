@@ -1209,10 +1209,7 @@ ANY_INCLUDING_NL (.|{NL})
             unput (',');
           }
         else
-          {
-            curr_lexer->handle_number ();
-            return curr_lexer->count_token_internal (IMAG_NUM);
-          }
+          return curr_lexer->handle_number (true);
       }
   }
 
@@ -1244,10 +1241,7 @@ ANY_INCLUDING_NL (.|{NL})
             unput (',');
           }
         else
-          {
-            curr_lexer->handle_number ();
-            return curr_lexer->count_token_internal (NUM);
-          }
+          return curr_lexer->handle_number (false);
       }
   }
 
@@ -2935,8 +2929,8 @@ looks_like_hex (const char *s, int len)
 
 namespace octave
 {
-  void
-  base_lexer::handle_number (void)
+  int
+  base_lexer::handle_number (bool imag)
   {
     double value = 0.0;
     int nread = 0;
@@ -3003,6 +2997,8 @@ namespace octave
     update_token_positions (flex_yyleng ());
 
     push_token (new token (NUM, value, yytxt, m_tok_beg, m_tok_end));
+
+    return count_token_internal (imag ? IMAG_NUM : NUM);
   }
 
   void

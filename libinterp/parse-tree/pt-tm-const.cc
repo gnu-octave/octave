@@ -935,11 +935,11 @@ namespace octave
 %!shared es
 %! es = struct ("a", {});
 %!
-%!assert <58695> ([1; es.a; 3], [1; 3])
-%!test <58695>
+%!assert <*58695> ([1; es.a; 3], [1; 3])
+%!test <*58695>
 %! fail ("undefined element in matrix list", "[1; my_undef(), 3]");
 %!
-%!assert <58695> ([es.a; es.a; 3], 3)
-%!test <58695>
+%!assert <*58695> ([es.a; es.a; 3], 3)
+%!test <*58695>
 %! fail ("undefined element in matrix list", "[my_undef(); my_undef(); 3]")
 */

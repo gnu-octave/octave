@@ -923,7 +923,7 @@
 %!assert <*53148> (double (sprintf ("B\0B")), [66, 0, 66])
 %!assert <*53148> (sscanf ("B\0B 13", "B\0B %d"), 13)
 
-%!test <58055>
+%!test <*58055>
 %!  w_modes = {"wb", "wt"};
 %!  r_modes = {"rb", "rt"};
 %!  f_texts = {"foo\nbar\nbaz\n", "foo\rbar\rbaz\r", "foo\r\nbar\r\nbaz\r\n"};

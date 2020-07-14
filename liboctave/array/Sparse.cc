@@ -651,9 +651,9 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
 }
 
 /*
-%!assert <51880> (sparse (1:2, 2, 1:2, 2, 2), sparse ([0, 1; 0, 2]))
-%!assert <51880> (sparse (1:2, 1, 1:2, 2, 2), sparse ([1, 0; 2, 0]))
-%!assert <51880> (sparse (1:2, 2, 1:2, 2, 3), sparse ([0, 1, 0; 0, 2, 0]))
+%!assert <*51880> (sparse (1:2, 2, 1:2, 2, 2), sparse ([0, 1; 0, 2]))
+%!assert <*51880> (sparse (1:2, 1, 1:2, 2, 2), sparse ([1, 0; 2, 0]))
+%!assert <*51880> (sparse (1:2, 2, 1:2, 2, 3), sparse ([0, 1, 0; 0, 2, 0]))
 */
 
 template <typename T>
@@ -2969,10 +2969,10 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 %!test test_sparse_slice ([2 2], 22, 3);
 %!test test_sparse_slice ([2 2], 22, 4);
 
-%!assert <35570> (speye (3,1)(3:-1:1), sparse ([0; 0; 1]))
+%!assert <*35570> (speye (3,1)(3:-1:1), sparse ([0; 0; 1]))
 
 ## Test removing columns
-%!test <36656>
+%!test <*36656>
 %! s = sparse (magic (5));
 %! s(:,2:4) = [];
 %! assert (s, sparse (magic (5)(:, [1,5])));
@@ -2983,21 +2983,21 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 %! assert (s, sparse ([], [], [], 0, 1));
 
 ## Test (bug #37321)
-%!test <37321> a=sparse (0,0); assert (all (a) == sparse ([1]));
-%!test <37321> a=sparse (0,1); assert (all (a) == sparse ([1]));
-%!test <37321> a=sparse (1,0); assert (all (a) == sparse ([1]));
-%!test <37321> a=sparse (1,0); assert (all (a,2) == sparse ([1]));
-%!test <37321> a=sparse (1,0); assert (size (all (a,1)), [1 0]);
-%!test <37321> a=sparse (1,1);
+%!test <*37321> a=sparse (0,0); assert (all (a) == sparse ([1]));
+%!test <*37321> a=sparse (0,1); assert (all (a) == sparse ([1]));
+%!test <*37321> a=sparse (1,0); assert (all (a) == sparse ([1]));
+%!test <*37321> a=sparse (1,0); assert (all (a,2) == sparse ([1]));
+%!test <*37321> a=sparse (1,0); assert (size (all (a,1)), [1 0]);
+%!test <*37321> a=sparse (1,1);
 %! assert (all (a) == sparse ([0]));
 %! assert (size (all (a)), [1 1]);
-%!test <37321> a=sparse (2,1);
+%!test <*37321> a=sparse (2,1);
 %! assert (all (a) == sparse ([0]));
 %! assert (size (all (a)), [1 1]);
-%!test <37321> a=sparse (1,2);
+%!test <*37321> a=sparse (1,2);
 %! assert (all (a) == sparse ([0]));
 %! assert (size (all (a)), [1 1]);
-%!test <37321> a=sparse (2,2); assert (isequal (all (a), sparse ([0 0])));
+%!test <*37321> a=sparse (2,2); assert (isequal (all (a), sparse ([0 0])));
 
 ## Test assigning row to a column slice
 %!test <45589>

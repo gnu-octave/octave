@@ -490,6 +490,39 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR], [
   fi
 ])
 dnl
+dnl Check whether the Qt class QList has a constructor that accepts
+dnl a pair of iterators.  This constructor was introduced in Qt 5.14.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QFONTMETRICS_HORIZONTAL_ADVANCE], [
+  AC_CACHE_CHECK([for QFontMetrics::horizontalAdvance function],
+    [octave_cv_func_qfontmetrics_horizontal_advance],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QFont>
+        #include <QFontMetrics>
+        #include <QString>
+        ]], [[
+        QFont font;
+        QFontMetrics fm (font);
+        fm.horizontalAdvance ('x');
+        fm.horizontalAdvance (QString ("string"));
+        ]])],
+      octave_cv_func_qfontmetrics_horizontal_advance=yes,
+      octave_cv_func_qfontmetrics_horizontal_advance=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qfontmetrics_horizontal_advance = yes; then
+    AC_DEFINE(HAVE_QFONTMETRICS_HORIZONTAL_ADVANCE, 1,
+      [Define to 1 if you have the `QFontMetrics::horizontalAdvance' function.])
+  fi
+])
+dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
 AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
@@ -1789,10 +1822,11 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ## tests if they fail because we have already decided that the Qt
     ## version that we are testing now will be the one used.
 
+    OCTAVE_CHECK_FUNC_QFONTMETRICS_HORIZONTAL_ADVANCE
     OCTAVE_CHECK_FUNC_QGUIAPPLICATION_SETDESKTOPFILENAME
     OCTAVE_CHECK_FUNC_QHELPSEARCHQUERYWIDGET_SEARCHINPUT
-    OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
     OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR
+    OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
 
     if test -n "$OPENGL_LIBS"; then
       OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],

@@ -28,18 +28,40 @@
 
 #include <list>
 
+#include <QFontMetrics>
 #include <QList>
 
 namespace octave
 {
   template <typename T>
-  QList<T>
+  inline QList<T>
   std_list_to_qt_list (const std::list<T>& lst)
   {
 #if defined (HAVE_QLIST_ITERATOR_CONSTRUCTOR)
     return QList<T> (lst.begin (), lst.end ());
 #else
     return QList<T>::fromStdList (lst);
+#endif
+  }
+
+  inline int
+  qt_fontmetrics_horizontal_advance (const QFontMetrics& fm, QChar ch)
+  {
+#if defined (HAVE_QFONTMETRICS_HORIZONTAL_ADVANCE)
+    return fm.horizontalAdvance (ch);
+#else
+    return fm.width (ch);
+#endif
+  }
+
+  inline int
+  qt_fontmetrics_horizontal_advance (const QFontMetrics& fm,
+                                     const QString& text, int len = -1)
+  {
+#if defined (HAVE_QFONTMETRICS_HORIZONTAL_ADVANCE)
+    return fm.horizontalAdvance (text, len);
+#else
+    return fm.width (text, len);
 #endif
   }
 }

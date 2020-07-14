@@ -53,6 +53,7 @@
 #include "gui-preferences-global.h"
 #include "gui-preferences-ve.h"
 #include "octave-qobject.h"
+#include "qt-utils.h"
 #include "shortcut-manager.h"
 #include "variable-editor-model.h"
 #include "variable-editor.h"
@@ -501,7 +502,8 @@ namespace octave
         // font, so any character will do.  If not, you lose!
 
         QFontMetrics fm (font ());
-        int w = m_var_model->column_width () * fm.width ('0');
+        int w = (m_var_model->column_width ()
+                 * qt_fontmetrics_horizontal_advance (fm, '0'));
         horizontalHeader ()->setDefaultSectionSize (w);
       }
   }

@@ -440,7 +440,7 @@ void TerminalView::drawBackground(QPainter& painter, const QRect& rect, const QC
   QRect contentsRect = contentsRegion.boundingRect();
 
   painter.fillRect(contentsRect, backgroundColor);
-  painter.fillRect(scrollBarArea,_scrollBar->palette().background());
+  painter.fillRect(scrollBarArea,_scrollBar->palette().window());
 }
 
 void TerminalView::drawCursor(QPainter& painter,
@@ -549,7 +549,7 @@ void TerminalView::drawTextFragment(QPainter& painter ,
   const QColor backgroundColor = style->backgroundColor.color(_colorTable);
 
   // draw background if different from the display's background color
-  if ( backgroundColor != palette().background().color() )
+  if ( backgroundColor != palette().window().color() )
     drawBackground(painter,rect,backgroundColor);
 
   // draw cursor shape if the current character is the cursor
@@ -959,7 +959,7 @@ void TerminalView::paintEvent( QPaintEvent* pe )
 
   foreach (QRect rect, (pe->region() & contentsRect()).rects())
     {
-      drawBackground(paint,rect,palette().background().color());
+      drawBackground(paint,rect,palette().window().color());
       drawContents(paint, rect);
     }
   //    drawBackground(paint,contentsRect(),palette().background().color(),	true /* use opacity setting */);

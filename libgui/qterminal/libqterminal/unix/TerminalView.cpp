@@ -1229,7 +1229,7 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
           // transformation has been applied to the painter.  this ensures that
           // painting does actually start from textArea.topLeft()
           // (instead of textArea.topLeft() * painter-scale)
-          QMatrix inverted = paint.transform().inverted();
+          QTransform inverted = paint.transform().inverted();
           textArea.moveCenter( inverted.map(textArea.center()) );
 
 
@@ -2565,7 +2565,7 @@ void TerminalView::doDrag()
   QMimeData *mimeData = new QMimeData;
   mimeData->setText(QApplication::clipboard()->text(QClipboard::Selection));
   dragInfo.dragObject->setMimeData(mimeData);
-  dragInfo.dragObject->start(Qt::CopyAction);
+  dragInfo.dragObject->exec(Qt::CopyAction);
   // Don't delete the QTextDrag object.  Qt will delete it when it's done with it.
 }
 

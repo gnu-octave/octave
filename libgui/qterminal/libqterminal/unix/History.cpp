@@ -20,6 +20,8 @@
     02110-1301  USA.
 */
 
+#include <algorithm>
+
 // Own
 #include "unix/History.h"
 
@@ -307,7 +309,7 @@ void HistoryScrollBuffer::addCellsVector(const QVector<Character>& cells)
 void HistoryScrollBuffer::addCells(const Character a[], int count)
 {
   HistoryLine newLine(count);
-  qCopy(a,a+count,newLine.begin());
+  std::copy(a,a+count,newLine.begin());
 
   addCellsVector(newLine);
 }

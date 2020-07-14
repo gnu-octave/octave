@@ -1236,7 +1236,7 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
           // transformation has been applied to the painter.  this ensures that
           // painting does actually start from textArea.topLeft()
           // (instead of textArea.topLeft() * painter-scale)
-          QMatrix inverted = paint.transform().inverted();
+          QTransform inverted = paint.transform().inverted();
           textArea.moveCenter( inverted.map(textArea.center()) );
 
 

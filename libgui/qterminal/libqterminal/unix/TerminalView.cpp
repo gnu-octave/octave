@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include "qt-utils.h"
+
 // Own
 #include "unix/TerminalView.h"
 
@@ -166,14 +168,15 @@ void TerminalView::fontChange(const QFont&)
   // "Base character width on widest ASCII character. This prevents too wide
   //  characters in the presence of double wide (e.g. Japanese) characters."
   // Get the width from representative normal width characters
-  _fontWidth = (double)fm.width(REPCHAR)/(double)strlen(REPCHAR);
+  _fontWidth = ((double)octave::qt_fontmetrics_horizontal_advance(fm, REPCHAR)
+                / (double)strlen(REPCHAR));
 
   _fixedFont = true;
 
-  int fw = fm.width(REPCHAR[0]);
+  int fw = octave::qt_fontmetrics_horizontal_advance(fm, REPCHAR[0]);
   for(unsigned int i=1; i< strlen(REPCHAR); i++)
     {
-      if (fw != fm.width(REPCHAR[i]))
+      if (fw != octave::qt_fontmetrics_horizontal_advance(fm, REPCHAR[i]))
         {
           _fixedFont = false;
           break;
@@ -210,7 +213,7 @@ void TerminalView::setVTFont(const QFont& f)
       // Disabling kerning saves some computation when rendering text.
       // font.setKerning(false);
 
-      QFont::StyleStrategy strategy = font.styleStrategy();
+      int strategy = font.styleStrategy();
 #if defined (HAVE_QFONT_FORCE_INTEGER_METRICS)
       strategy |= QFont::ForceIntegerMetrics;
 #endif
@@ -913,7 +916,7 @@ void TerminalView::showResizeNotification()
       if (!_resizeWidget)
         {
           _resizeWidget = new QLabel(("Size: XXX x XXX"), this);
-          _resizeWidget->setMinimumWidth(_resizeWidget->fontMetrics().width(("Size: XXX x XXX")));
+          _resizeWidget->setMinimumWidth(octave::qt_fontmetrics_horizontal_advance(_resizeWidget->fontMetrics(), "Size: XXX x XXX"));
           _resizeWidget->setMinimumHeight(_resizeWidget->sizeHint().height());
           _resizeWidget->setAlignment(Qt::AlignCenter);
 

@@ -1236,7 +1236,7 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
           // transformation has been applied to the painter.  this ensures that
           // painting does actually start from textArea.topLeft()
           // (instead of textArea.topLeft() * painter-scale)
-          QMatrix inverted = paint.matrix().inverted();
+          QMatrix inverted = paint.transform().inverted();
           textArea.moveCenter( inverted.map(textArea.center()) );
 
 
@@ -1250,7 +1250,7 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
           _fixedFont = save__fixedFont;
 
           //reset back to single-width, single-height _lines
-          paint.resetMatrix();
+          paint.resetTransform();
 
           if (y < _lineProperties.size()-1)
             {

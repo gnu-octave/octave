@@ -41,6 +41,11 @@ functional form---parentheses and '=' for assignment of return values.
 
 ### Matlab compatibility
 
+- Calling a user-defined function with too many inputs or outputs is now
+an error.  The interpreter makes this check automatically.  If a function
+uses varargin, the check is skipped for function inputs and if a function
+uses varargout, the check is skipped for function outputs.
+
 - The function `griddata` now implements the "v4" Biharmonic Spline
 Interpolation method.  In adddition, the function now accepts 3-D inputs
 by passing the data to `griddata3`.

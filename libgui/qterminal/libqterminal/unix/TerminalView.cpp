@@ -963,7 +963,7 @@ void TerminalView::paintEvent( QPaintEvent* pe )
   QPainter paint(this);
   //qDebug("%s %d paintEvent %d %d", __FILE__, __LINE__, paint.window().top(), paint.window().right());
 
-  foreach (QRect rect, (pe->region() & contentsRect()).rects())
+  for (QRect rect : (pe->region() & contentsRect()))
     {
       drawBackground(paint,rect,palette().window().color());
       drawContents(paint, rect);

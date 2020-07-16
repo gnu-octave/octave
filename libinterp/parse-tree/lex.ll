@@ -92,6 +92,7 @@ and after the nested call.
 #include <cctype>
 #include <cstring>
 
+#include <algorithm>
 #include <iostream>
 #include <set>
 #include <sstream>
@@ -251,6 +252,35 @@ and after the nested call.
      }                                                  \
    while (0)
 
+#define HANDLE_NUMBER(PATTERN, BASE)                            \
+  do                                                            \
+    {                                                           \
+     curr_lexer->lexer_debug (PATTERN);                         \
+                                                                \
+     if (curr_lexer->previous_token_may_be_command ()           \
+         &&  curr_lexer->space_follows_previous_token ())       \
+       {                                                        \
+         yyless (0);                                            \
+         curr_lexer->push_start_state (COMMAND_START);          \
+       }                                                        \
+     else                                                       \
+       {                                                        \
+         int tok = curr_lexer->previous_token_value ();         \
+                                                                \
+         if (curr_lexer->whitespace_is_significant ()           \
+             && curr_lexer->space_follows_previous_token ()     \
+             && ! (tok == '[' || tok == '{'                     \
+                   || curr_lexer->previous_token_is_binop ()))  \
+           {                                                    \
+             yyless (0);                                        \
+             unput (',');                                       \
+           }                                                    \
+         else                                                   \
+           return curr_lexer->handle_number<BASE> ();           \
+       }                                                        \
+    }                                                           \
+  while (0)
+
 #define HANDLE_IDENTIFIER(pattern, get_set)                             \
    do                                                                   \
      {                                                                  \
@@ -326,15 +356,40 @@ D       [0-9]
 D_      [0-9_]
 S       [ \t]
 NL      ((\n)|(\r)|(\r\n))
-Im      [iIjJ]
 CCHAR   [#%]
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
 FQIDENT ({IDENT}({S}*\.{S}*{IDENT})*)
-EXPON   ([DdEe][+-]?{D}{D_}*)
-NUMBIN  (0[bB][01_]+)
-NUMHEX  (0[xX][0-9a-fA-F][0-9a-fA-F_]*)
-NUMREAL (({D}{D_}*\.?{D_}*{EXPON}?)|(\.{D}{D_}*{EXPON}?))
-NUMBER  ({NUMREAL}|{NUMHEX}|{NUMBIN})
+
+%{
+// Decimal numbers may be real or imaginary but always create
+// double precision constants initially.  Any conversion to single
+// precision happens as part of an expression evaluation in the
+// interpreter, not the lexer and parser.
+%}
+
+DECIMAL_DIGITS ({D}{D_}*)
+EXPONENT       ([DdEe][+-]?{DECIMAL_DIGITS})
+REAL_DECIMAL   ((({DECIMAL_DIGITS}\.?)|({DECIMAL_DIGITS}?\.{DECIMAL_DIGITS})){EXPONENT}?)
+IMAG_DECIMAL   ({REAL_DECIMAL}[IiJj])
+DECIMAL_NUMBER ({REAL_DECIMAL}|{IMAG_DECIMAL})
+
+%{
+// It is possible to specify signedness and size for binary and
+// hexadecimal numbers but there is no special syntax for imaginary
+// constants.  Binary and hexadecimal constants always create integer
+// valued constants ({u,}int{8,16,32,64}).  If a size is not specified,
+// the smallest integer type that will hold the value is used.  Negative
+// values may be created with a signed size specification by applying
+// twos-complement conversion (for example, 0xffs8 produces an 8-bit
+// signed integer equal to -1 and 0b10000000s8 produces an 8-bit signed
+// integer equal to -128).
+%}
+
+SIZE_SUFFIX        ([su](8|16|32|64))
+BINARY_BITS        (0[bB][01][01_]*)
+BINARY_NUMBER      ({BINARY_BITS}|{BINARY_BITS}{SIZE_SUFFIX})
+HEXADECIMAL_BITS   (0[xX][0-9a-fA-F][0-9a-fA-F_]*)
+HEXADECIMAL_NUMBER ({HEXADECIMAL_BITS}|{HEXADECIMAL_BITS}{SIZE_SUFFIX})
 
 ANY_EXCEPT_NL [^\r\n]
 ANY_INCLUDING_NL (.|{NL})
@@ -1183,66 +1238,24 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->pop_start_state ();
   }
 
-%{
-// Imaginary numbers.
-%}
-
-{NUMBER}{Im} {
-    curr_lexer->lexer_debug ("{NUMBER}{Im}");
-
-    if (curr_lexer->previous_token_may_be_command ()
-        &&  curr_lexer->space_follows_previous_token ())
-      {
-        yyless (0);
-        curr_lexer->push_start_state (COMMAND_START);
-      }
-    else
-      {
-        int tok = curr_lexer->previous_token_value ();
-
-        if (curr_lexer->whitespace_is_significant ()
-            && curr_lexer->space_follows_previous_token ()
-            && ! (tok == '[' || tok == '{'
-                  || curr_lexer->previous_token_is_binop ()))
-          {
-            yyless (0);
-            unput (',');
-          }
-        else
-          return curr_lexer->handle_number (true);
-      }
+{BINARY_NUMBER} {
+    HANDLE_NUMBER ("{BINARY_NUMBER}", 2);
   }
 
 %{
-// Real numbers.  Don't grab the '.' part of a dot operator as part of
-// the constant.
+// Decimal numbers.  For expressions that are just digits followed
+// directly by an element-by-element operator, don't grab the '.'
+// part of the operator as part of the constant (for example, in an
+// expression like "13./x").
 %}
 
-{D}{D_}*/\.[\*/\\^\'] |
-{NUMBER} {
-    curr_lexer->lexer_debug ("{D}{D_}*/\\.[\\*/\\\\^\\']|{NUMBER}");
+{DECIMAL_DIGITS}/\.[\*/\\^\'] |
+{DECIMAL_NUMBER} {
+    HANDLE_NUMBER ("{DECIMAL_DIGITS}/\\.[\\*/\\\\^\\']|{DECIMAL_NUMBER}", 10);
+  }
 
-    if (curr_lexer->previous_token_may_be_command ()
-        &&  curr_lexer->space_follows_previous_token ())
-      {
-        yyless (0);
-        curr_lexer->push_start_state (COMMAND_START);
-      }
-    else
-      {
-        int tok = curr_lexer->previous_token_value ();
-
-        if (curr_lexer->whitespace_is_significant ()
-            && curr_lexer->space_follows_previous_token ()
-            && ! (tok == '[' || tok == '{'
-                  || curr_lexer->previous_token_is_binop ()))
-          {
-            yyless (0);
-            unput (',');
-          }
-        else
-          return curr_lexer->handle_number (false);
-      }
+{HEXADECIMAL_NUMBER} {
+    HANDLE_NUMBER ("{HEXADECIMAL_NUMBER}", 16);
   }
 
 %{
@@ -2928,65 +2941,190 @@ looks_like_hex (const char *s, int len)
   return (len > 2 && s[0] == '0' && (s[1] == 'x' || s[1] == 'X'));
 }
 
+static inline octave_value
+make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
+{
+  if (unsigned_val)
+    {
+     switch (bytes)
+       {
+       case 1:
+         return octave_value (octave_uint8 (long_int_val));
+
+       case 2:
+         return octave_value (octave_uint16 (long_int_val));
+
+       case 4:
+         return octave_value (octave_uint32 (long_int_val));
+
+       case 8:
+         return octave_value (octave_uint64 (long_int_val));
+
+       default:
+         panic_impossible ();
+       };
+    }
+  else
+    {
+      // FIXME: Conversion to signed values is supposed to follow
+      // twos-complement rules.  Do we need to be more carefule here?
+
+      switch (bytes)
+        {
+        case 1:
+          return octave_value (octave_int8 (int8_t (long_int_val)));
+
+        case 2:
+          return octave_value (octave_int16 (int16_t (long_int_val)));
+
+        case 4:
+          return octave_value (octave_int32 (int32_t (long_int_val)));
+
+        case 8:
+        return octave_value (octave_int64 (int64_t (long_int_val)));
+
+        default:
+          panic_impossible ();
+        };
+    }
+
+  return octave_value ();
+}
+
 namespace octave
 {
+  template <>
   int
-  base_lexer::handle_number (bool imag)
+  base_lexer::handle_number<2> (void)
   {
-    double value = 0.0;
-    int nread = 0;
+    // Skip 0[bB] prefix.
+    std::string yytxt (flex_yytext () + 2);
 
-    char *yytxt = flex_yytext ();
+    yytxt.erase (std::remove (yytxt.begin (), yytxt.end (), '_'),
+                 yytxt.end ());
 
-    // Strip any underscores
-    char *tmptxt = strsave (yytxt);
-    char *rptr = tmptxt;
-    char *wptr = tmptxt;
-    while (*rptr)
+    size_t pos = yytxt.find_first_of ("su");
+
+    bool unsigned_val = true;
+    int bytes = -1;
+    std::string size_str;
+    if (pos == std::string::npos)
       {
-        *wptr = *rptr++;
-        wptr += (*wptr != '_');
-      }
-    *wptr = '\0';
+        size_t num_digits = yytxt.length ();
 
-    if (looks_like_hex (tmptxt, strlen (tmptxt)))
-      {
-        uintmax_t long_int_value;
-
-        nread = sscanf (tmptxt, "%jx", &long_int_value);
-
-        value = static_cast<double> (long_int_value);
-      }
-    else if (looks_like_bin (tmptxt, strlen (tmptxt)))
-      {
-        uintmax_t long_int_value = 0;
-
-        for (size_t i = 0; i < strlen (tmptxt); i++)
-          {
-            if (tmptxt[i] == '0')
-              long_int_value <<= 1;
-            else if (tmptxt[i] == '1')
-            {
-              long_int_value <<= 1;
-              long_int_value += 1;
-            }
-          }
-
-        value = static_cast<double> (long_int_value);
-
-        nread = 1;  // Just to pass the assert stmt below
+        if (num_digits <= 8)
+          bytes = 1;
+        else if (num_digits <= 16)
+          bytes = 2;
+        else if (num_digits <= 32)
+          bytes = 4;
+        else if (num_digits <= 64)
+          bytes = 8;
       }
     else
       {
-        char *idx = strpbrk (tmptxt, "Dd");
+        unsigned_val = (yytxt[pos] == 'u');
+        std::string size_str = yytxt.substr (pos+1);
+        yytxt = yytxt.substr (0, pos);
+        size_t num_digits = yytxt.length ();
 
-        if (idx)
-          *idx = 'e';
-
-        nread = sscanf (tmptxt, "%lf", &value);
+        if (size_str == "8" && num_digits <= 8)
+          bytes = 1;
+        else if (size_str == "16" && num_digits <= 16)
+          bytes = 2;
+        else if (size_str == "32" && num_digits <= 32)
+          bytes = 4;
+        else if (size_str == "64" && num_digits <= 64)
+          bytes = 8;
       }
 
-    delete [] tmptxt;
+    if (bytes < 0)
+      {
+        token *tok
+          = new token (LEXICAL_ERROR,
+                       "too many digits for binary constant",
+                       m_tok_beg, m_tok_end);
+
+        push_token (tok);
+
+        return count_token_internal (LEXICAL_ERROR);
+      }
+
+    // FIXME: is there a better way?  Can uintmax_t be anything other
+    // than long or long long?  Should we just be using uint64_t instead
+    // of uintmax_t?
+
+    errno = 0;
+    char *end;
+    uintmax_t long_int_val;
+    if (sizeof (uintmax_t) == sizeof (unsigned long long))
+      long_int_val = strtoull (yytxt.c_str (), &end, 2);
+    else if (sizeof (uintmax_t) == sizeof (unsigned long))
+      long_int_val = strtoul (yytxt.c_str (), &end, 2);
+    else
+      panic_impossible ();
+
+    if (errno == ERANGE)
+      panic_impossible ();
+
+    octave_value ov_value
+      = make_integer_value (long_int_val, unsigned_val, bytes);
+
+    m_looking_for_object_index = false;
+    m_at_beginning_of_statement = false;
+
+    update_token_positions (flex_yyleng ());
+
+    push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
+
+    return count_token_internal (NUMBER);
+  }
+
+  template <>
+  int
+  base_lexer::handle_number<10> (void)
+  {
+    bool imag = false;
+
+    char *yytxt = flex_yytext ();
+    size_t yylng = flex_yyleng ();
+
+    OCTAVE_LOCAL_BUFFER (char, tmptxt, yylng + 1);
+    char *rp = yytxt;
+    char *p = &tmptxt[0];
+
+    char ch;
+    while ((ch = *rp++))
+      {
+        switch (ch)
+          {
+          case '_':
+            break;
+
+          case 'D':
+          case 'd':
+            *p++ = 'e';
+            break;
+
+          case 'I':
+          case 'i':
+          case 'J':
+          case 'j':
+            imag = true;
+            break;
+
+          default:
+            *p++ = ch;
+            break;
+          }
+      }
+
+    *p = '\0';
+
+    double value = 0.0;
+    int nread = 0;
+
+    nread = sscanf (tmptxt, "%lf", &value);
 
     // If yytext doesn't contain a valid number, we are in deep doo doo.
 
@@ -2995,10 +3133,86 @@ namespace octave
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = false;
 
-    update_token_positions (flex_yyleng ());
+    update_token_positions (yylng);
 
     octave_value ov_value
       = imag ? octave_value (Complex (0.0, value)) : octave_value (value);
+
+    push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
+
+    return count_token_internal (NUMBER);
+  }
+
+  template <>
+  int
+  base_lexer::handle_number<16> (void)
+  {
+    // Skip 0[xX] prefix.
+    std::string yytxt (flex_yytext () + 2);
+
+    yytxt.erase (std::remove (yytxt.begin (), yytxt.end (), '_'),
+                 yytxt.end ());
+
+    size_t pos = yytxt.find_first_of ("su");
+
+    bool unsigned_val = true;
+    int bytes = -1;
+    std::string size_str;
+    if (pos == std::string::npos)
+      {
+        size_t num_digits = yytxt.length ();
+
+        if (num_digits <= 2)
+          bytes = 1;
+        else if (num_digits <= 4)
+          bytes = 2;
+        else if (num_digits <= 8)
+          bytes = 4;
+        else if (num_digits <= 16)
+          bytes = 8;
+      }
+    else
+      {
+        unsigned_val = (yytxt[pos] == 'u');
+        std::string size_str = yytxt.substr (pos+1);
+        yytxt = yytxt.substr (0, pos);
+        size_t num_digits = yytxt.length ();
+
+        if (size_str == "8" && num_digits <= 2)
+          bytes = 1;
+        else if (size_str == "16" && num_digits <= 4)
+          bytes = 2;
+        else if (size_str == "32" && num_digits <= 8)
+          bytes = 4;
+        else if (size_str == "64" && num_digits <= 16)
+          bytes = 8;
+      }
+
+    if (bytes < 0)
+      {
+        token *tok
+          = new token (LEXICAL_ERROR,
+                       "too many digits for hexadecimal constant",
+                       m_tok_beg, m_tok_end);
+
+        push_token (tok);
+
+        return count_token_internal (LEXICAL_ERROR);
+      }
+
+    // Assert here because if yytext doesn't contain a valid number, we
+    // are in deep doo doo.
+
+    uintmax_t long_int_val;
+    assert (sscanf (yytxt.c_str (), "%jx", &long_int_val));
+
+    octave_value ov_value
+      = make_integer_value (long_int_val, unsigned_val, bytes);
+
+    m_looking_for_object_index = false;
+    m_at_beginning_of_statement = false;
+
+    update_token_positions (flex_yyleng ());
 
     push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
 

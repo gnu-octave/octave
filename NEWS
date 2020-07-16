@@ -61,6 +61,24 @@ vectors with rows corresponding to the input coordinate matrix.
 
 - The function `dec2bin` and `dec2hex` now support negative numbers.
 
+- Binary and hexadecimal constants like `0b101` and `0xDEADBEEF` now create
+integers (unsigned by default) with sizes determined from the number of
+digits present.  So, for example, `0xff` creates an `uint8` value and
+`0xDEADBEEF` creates a `uint64` value.  Binary constants are limited to 64
+binary digits and hexadecimal constants are limited to 16 hexadecimal
+digits with no automatic rounding or conversion to floating point
+values.  Note that this may cause trouble for existing code.  For
+example, an expression like `[0x1; 0x100; 0x10000]` will be uint8 (because
+of the rules of concatenating integers of different sizes) with the
+larger values truncated (because of the saturation semantics of integer
+values).  To avoid these kinds of problems, pad constants in array
+expressions with leading zeros so that they use the same number of
+digits for each value.  For example, `[0x01_00_00; 0x00_01_00;
+0x01_00_00]`.  You may also use a suffix of the form `s8`, `s16`, `s32`,
+`s64`, `u8`, `u16`, `u32`, or `u64` to explicitly specify the data type
+to use (`u` or `s` to indicate signed or unsigned and the number to
+indicate the integer size).
+
 - The function `importdata` now produces more compatible results when
 the file contains a 2-D text matrix.
 

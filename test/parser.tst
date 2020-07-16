@@ -286,19 +286,19 @@
 %!assert (123_456, 123456)
 %!assert (.123_456, .123456)
 %!assert (123_456.123_456, 123456.123456)
-%!assert (0xAB_CD, 43981)
+%!assert (0xAB_CD, uint16 (43981))
 %!assert (2e0_1, 20)
 
 ## Test binary constants
-%!assert (0b101, 5)
+%!assert (0b101, uint8 (5))
 %!assert (0B1100_0001, 0xC1)
-%!assert (class (0b1), "double")
+%!assert (class (0b1), "uint8")
 
 ## Test range of large binary and hexadecimal literals
-%!assert (0x8000_0000_0000_0000, 2^63)
-%!assert (0xFFFF_FFFF_FFFF_FFFF, 2^64)
-%!assert (0b10000000_0000000_000000000_00000000_00000000_00000000_00000000_00000000, 2^63)
-%!assert (0b11111111_1111111_111111111_11111111_11111111_11111111_11111111_11111111, 2^64)
+%!assert (0x8000_0000_0000_0000, uint64 (2^63))
+%!assert (0xFFFF_FFFF_FFFF_FFFF, uint64 (2^64))
+%!assert (0b10000000_0000000_000000000_00000000_00000000_00000000_00000000_00000000, uint64 (2^63))
+%!assert (0b11111111_1111111_111111111_11111111_11111111_11111111_11111111_11111111, uint64 (2^64))
 
 ## Test creation of anonymous functions
 

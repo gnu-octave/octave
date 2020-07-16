@@ -661,7 +661,9 @@ namespace octave
 
     bool whitespace_is_significant (void);
 
-    int handle_number (bool imag);
+    // We only provide specializations with base equal to 2, 10, or 16.
+    template <int base>
+    int handle_number (void);
 
     void handle_continuation (void);
 
@@ -821,6 +823,10 @@ namespace octave
 
     bool m_initial_input;
   };
+
+  template <> int base_lexer::handle_number<2> ();
+  template <> int base_lexer::handle_number<10> ();
+  template <> int base_lexer::handle_number<16> ();
 
   class
   push_lexer : public base_lexer

@@ -62,11 +62,11 @@ namespace octave
       m_tok_info (s), m_orig_text ()
   { }
 
-  token::token (int tv, double d, const std::string& s, const filepos& beg_pos,
-                const filepos& end_pos)
+  token::token (int tv, const octave_value& val, const std::string& s,
+                const filepos& beg_pos, const filepos& end_pos)
     : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
-      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (double_token),
-      m_tok_info (d), m_orig_text (s)
+      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (numeric_token),
+      m_tok_info (val), m_orig_text (s)
   { }
 
   token::token (int tv, end_tok_type t, const filepos& beg_pos,
@@ -114,11 +114,11 @@ namespace octave
     return m_tok_info.m_sr->name ();
   }
 
-  double
+  octave_value
   token::number (void) const
   {
-    assert (m_type_tag == double_token);
-    return m_tok_info.m_num;
+    assert (m_type_tag == numeric_token);
+    return *m_tok_info.m_num;
   }
 
   token::token_type

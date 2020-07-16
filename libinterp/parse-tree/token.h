@@ -31,6 +31,7 @@
 #include <string>
 
 #include "filepos.h"
+#include "ov.h"
 #include "symrec.h"
 
 namespace octave
@@ -44,7 +45,7 @@ namespace octave
       generic_token,
       keyword_token,
       string_token,
-      double_token,
+      numeric_token,
       ettype_token,
       sym_rec_token,
       scls_name_token,
@@ -80,8 +81,8 @@ namespace octave
     token (int tv, const std::string& s, const filepos& beg_pos,
            const filepos& end_pos);
 
-    token (int tv, double d, const std::string& s, const filepos& beg_pos,
-           const filepos& end_pos);
+    token (int tv, const octave_value& val, const std::string& s,
+           const filepos& beg_pos, const filepos& end_pos);
 
     token (int tv, end_tok_type t, const filepos& beg_pos,
            const filepos& end_pos);
@@ -131,7 +132,7 @@ namespace octave
 
     std::string text (void) const;
     std::string symbol_name (void) const;
-    double number (void) const;
+    octave_value number (void) const;
     token_type ttype (void) const;
     end_tok_type ettype (void) const;
     symbol_record sym_rec (void) const;
@@ -162,7 +163,7 @@ namespace octave
 
       tok_info (const std::string& str) : m_str (new std::string (str)) { }
 
-      tok_info (double num) : m_num (num) { }
+      tok_info (const octave_value& num) : m_num (new octave_value (num)) { }
 
       tok_info (end_tok_type et) : m_et (et) { }
 
@@ -182,7 +183,7 @@ namespace octave
 
       std::string *m_str;
 
-      double m_num;
+      octave_value *m_num;
 
       end_tok_type m_et;
 

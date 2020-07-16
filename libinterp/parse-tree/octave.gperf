@@ -129,4 +129,4 @@ unwind_protect, UNWIND, unwind_protect_kw
 unwind_protect_cleanup, CLEANUP, unwind_protect_cleanup_kw
 while, WHILE, while_kw
 __FILE__, DQ_STRING, magic_file_kw
-__LINE__, NUM, magic_line_kw
+__LINE__, NUMBER, magic_line_kw

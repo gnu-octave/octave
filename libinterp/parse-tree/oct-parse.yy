@@ -199,7 +199,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token <tok_val> LEFTDIV EMUL EDIV ELEFTDIV EPLUS EMINUS
 %token <tok_val> HERMITIAN TRANSPOSE
 %token <tok_val> PLUS_PLUS MINUS_MINUS POW EPOW
-%token <tok_val> NUM IMAG_NUM
+%token <tok_val> NUMBER
 %token <tok_val> STRUCT_ELT
 %token <tok_val> NAME
 %token <tok_val> END
@@ -541,10 +541,8 @@ string          : DQ_STRING
                   { $$ = parser.make_constant (SQ_STRING, $1); }
                 ;
 
-constant        : NUM
-                  { $$ = parser.make_constant (NUM, $1); }
-                | IMAG_NUM
-                  { $$ = parser.make_constant (IMAG_NUM, $1); }
+constant        : NUMBER
+                  { $$ = parser.make_constant (NUMBER, $1); }
                 | string
                   { $$ = $1; }
                 ;
@@ -2583,18 +2581,9 @@ namespace octave
 
     switch (op)
       {
-      case NUM:
+      case NUMBER:
         {
-          octave_value tmp (tok_val->number ());
-          retval = new tree_constant (tmp, l, c);
-          retval->stash_original_text (tok_val->text_rep ());
-        }
-        break;
-
-      case IMAG_NUM:
-        {
-          octave_value tmp (Complex (0.0, tok_val->number ()));
-          retval = new tree_constant (tmp, l, c);
+          retval = new tree_constant (tok_val->number (), l, c);
           retval->stash_original_text (tok_val->text_rep ());
         }
         break;

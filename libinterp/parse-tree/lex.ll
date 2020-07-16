@@ -2861,8 +2861,9 @@ bool
       case magic_line_kw:
         {
           int l = m_tok_beg.line ();
-          tok_val = new token (magic_line_kw, static_cast<double> (l),
-                               "", m_tok_beg, m_tok_end);
+          octave_value ov_value (static_cast<double> (l));
+          tok_val = new token (magic_line_kw, ov_value, "",
+                               m_tok_beg, m_tok_end);
         }
         break;
 
@@ -2996,9 +2997,12 @@ namespace octave
 
     update_token_positions (flex_yyleng ());
 
-    push_token (new token (NUM, value, yytxt, m_tok_beg, m_tok_end));
+    octave_value ov_value
+      = imag ? octave_value (Complex (0.0, value)) : octave_value (value);
 
-    return count_token_internal (imag ? IMAG_NUM : NUM);
+    push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
+
+    return count_token_internal (NUMBER);
   }
 
   void
@@ -3427,12 +3431,13 @@ namespace octave
       case POW: std::cerr << "POW\n"; break;
       case EPOW: std::cerr << "EPOW\n"; break;
 
-      case NUM:
-      case IMAG_NUM:
+      case NUMBER:
         {
           token *tok_val = current_token ();
-          std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
-                    << " [" << tok_val->number () << "]\n";
+          std::cerr << "NUMBER [";
+          octave_value num = tok_val->number ();
+          num.print_raw (std::cerr);
+          std::cerr << "]\n";
         }
         break;
 

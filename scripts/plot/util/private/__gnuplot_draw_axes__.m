@@ -1005,7 +1005,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                 colorspec = "palette";
               elseif (columns (ccol) == 3)
                 colorspec = "lc rgb variable";
-                ccol = 255*ccol*[0x1; 0x100; 0x10000];
+                ccol = 255*ccol*double ([0x00_00_01; 0x00_01_00; 0x01_00_00]);
               endif
             else
               colorspec = sprintf ('lc rgb "#%02x%02x%02x"',

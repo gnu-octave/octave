@@ -3158,7 +3158,7 @@ namespace octave
     bool unsigned_val = true;
     int bytes = -1;
 
-if (pos == std::string::npos)
+    if (pos == std::string::npos)
       {
         size_t num_digits = yytxt.length ();
 

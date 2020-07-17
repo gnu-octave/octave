@@ -42,42 +42,46 @@ functional form---parentheses and '=' for assignment of return values.
 ### Matlab compatibility
 
 - Calling a user-defined function with too many inputs or outputs is now
-an error.  The interpreter makes this check automatically.  If a function
-uses varargin, the check is skipped for function inputs and if a function
-uses varargout, the check is skipped for function outputs.
+an error.  The interpreter makes this check automatically.  If a
+function uses varargin then the check is skipped for function inputs,
+and if a function uses varargout then the check is skipped for function
+outputs.
 
 - The function `griddata` now implements the "v4" Biharmonic Spline
 Interpolation method.  In adddition, the function now accepts 3-D inputs
 by passing the data to `griddata3`.
 
 - Coordinate transformation functions `cart2sph`, `sph2cart`,
-`cart2pol`, and `pol2cart` can now accept either row or column vectors
-for coordinate inputs.  A single coordinate matrix with one variable per
+`cart2pol`, and `pol2cart` now accept either row or column vectors for
+coordinate inputs.  A single coordinate matrix with one variable per
 column can still be used as function input, but a single output variable
 will now contain just the first output coordinate, and will no longer
-return the full output coordinate matrix.  Output size matches the
-size of input vectors, or in the case of an input matrix will be column
+return the full output coordinate matrix.  Output size matches the size
+of input vectors, or in the case of an input matrix will be column
 vectors with rows corresponding to the input coordinate matrix.
 
 - The function `dec2bin` and `dec2hex` now support negative numbers.
 
-- Binary and hexadecimal constants like `0b101` and `0xDEADBEEF` now create
-integers (unsigned by default) with sizes determined from the number of
-digits present.  So, for example, `0xff` creates an `uint8` value and
-`0xDEADBEEF` creates a `uint64` value.  Binary constants are limited to 64
-binary digits and hexadecimal constants are limited to 16 hexadecimal
-digits with no automatic rounding or conversion to floating point
-values.  Note that this may cause trouble for existing code.  For
-example, an expression like `[0x1; 0x100; 0x10000]` will be uint8 (because
-of the rules of concatenating integers of different sizes) with the
-larger values truncated (because of the saturation semantics of integer
-values).  To avoid these kinds of problems, pad constants in array
-expressions with leading zeros so that they use the same number of
-digits for each value.  For example, `[0x01_00_00; 0x00_01_00;
-0x01_00_00]`.  You may also use a suffix of the form `s8`, `s16`, `s32`,
-`s64`, `u8`, `u16`, `u32`, or `u64` to explicitly specify the data type
-to use (`u` or `s` to indicate signed or unsigned and the number to
-indicate the integer size).
+- Binary and hexadecimal constants like `0b101` and `0xDEADBEEF` now
+create integers (unsigned by default) with sizes determined from the
+number of digits present.  For example, `0xff` creates a `uint8` value
+and `0xDEADBEEF` creates a `uint64` value.  You may also use a suffix of
+the form `s8`, `s16`, `s32`, `s64`, `u8`, `u16`, `u32`, or `u64` to
+explicitly specify the data type to use (`u` or `s` to indicate signed
+or unsigned and the number to indicate the integer size).
+
+Binary constants are limited to 64 binary digits and hexadecimal
+constants are limited to 16 hexadecimal digits with no automatic
+rounding or conversion to floating point values.  Note that this may
+cause problems in existing code.  For example, an expression like
+`[0x1; 0x100; 0x10000]` will be uint8 (because of the rules of
+concatenating integers of different sizes) with the larger values
+truncated (because of the saturation semantics of integer values).  To
+avoid these kinds of problems either: 1) declare the first integer to be
+of the desired size such as `[0x1u32; 0x100; 0x10000]`, or 2) pad
+constants in array expressions with leading zeros so that they use the
+same number of digits for each value such as
+`[0x00_00_01; 0x00_01_00; 0x01_00_00]`.
 
 - The function `importdata` now produces more compatible results when
 the file contains a 2-D text matrix.
@@ -90,11 +94,11 @@ interaction with the object occurs and the `uicontrol` changes color
 not possible to change the value of the object (such as modifying text
 in an `Edit` box or clicking on a `RadioButton`).
 
-- The functions `scatter` and `scatter3` now return a handle to a scatter
-graphics object.  For compatibility, they return a hg group of patch
-graphics objects when the "gnuplot" graphics toolkit is used.  In
-previous versions of Octave, these functions returned a hg group of patch
-graphics objects for all graphics toolkits.
+- The functions `scatter` and `scatter3` now return a handle to a
+scatter graphics object.  For compatibility, they return an `hggroup` of
+patch graphics objects when the "gnuplot" graphics toolkit is used.  In
+previous versions of Octave, these functions returned a hg group of
+patch graphics objects for all graphics toolkits.
 
 - The function `saveas` now defaults to saving in Octave figure format
 (.ofig) rather than PDF (.pdf).
@@ -108,7 +112,7 @@ added which prints a warning when Octave's parser recognizes valid
 Matlab code, but for which Octave does not yet implement the
 functionality.  By default, this warning is enabled.
 
-- Additional properties have been added for the `axes` graphics object:
+- Additional properties have been added to the `axes` graphics object:
     * "alphamap" (not yet implemented)
     * "alphascale" (not yet implemented)
     * "colorscale" (not yet implemented)

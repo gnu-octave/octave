@@ -76,6 +76,7 @@
 #include "ov-usr-fcn.h"
 #include "ov-fcn-handle.h"
 #include "ov-typeinfo.h"
+#include "ov-magic-int.h"
 #include "ov-null-mat.h"
 #include "ov-lazy-idx.h"
 #include "ov-java.h"
@@ -2123,6 +2124,8 @@ octave_value::storable_value (void) const
   octave_value retval = *this;
   if (isnull ())
     retval = octave_value (rep->empty_clone ());
+  else if (is_magic_int ())
+    retval = octave_value (rep->double_value ());
   else
     retval.maybe_economize ();
 
@@ -2135,6 +2138,13 @@ octave_value::make_storable_value (void)
   if (isnull ())
     {
       octave_base_value *rc = rep->empty_clone ();
+      if (--rep->count == 0)
+        delete rep;
+      rep = rc;
+    }
+  else if (is_magic_int ())
+    {
+      octave_base_value *rc = new octave_scalar (rep->double_value ());
       if (--rep->count == 0)
         delete rep;
       rep = rc;
@@ -3022,6 +3032,8 @@ install_types (octave::type_info& ti)
   octave_float_complex_matrix::register_type (ti);
   octave_float_complex_diag_matrix::register_type (ti);
   octave_perm_matrix::register_type (ti);
+  octave_magic_int::register_type (ti);
+  octave_magic_uint::register_type (ti);
   octave_null_matrix::register_type (ti);
   octave_null_str::register_type (ti);
   octave_null_sq_str::register_type (ti);

@@ -118,6 +118,7 @@ and after the nested call.
 #include "interpreter.h"
 #include "lex.h"
 #include "octave.h"
+#include "ov-magic-int.h"
 #include "ov.h"
 #include "parse.h"
 #include "pt-all.h"
@@ -3080,11 +3081,18 @@ namespace octave
     return count_token_internal (NUMBER);
   }
 
+  static uint64_t
+  flintmax (void)
+  {
+    return (static_cast<uint64_t> (1) << std::numeric_limits<double>::digits);
+  }
+
   template <>
   int
   base_lexer::handle_number<10> (void)
   {
     bool imag = false;
+    bool digits_only = true;
 
     char *yytxt = flex_yytext ();
     size_t yylng = flex_yyleng ();
@@ -3104,13 +3112,25 @@ namespace octave
           case 'D':
           case 'd':
             *p++ = 'e';
+            digits_only = false;
             break;
 
           case 'I':
-          case 'i':
           case 'J':
+          case 'i':
           case 'j':
+            // Octave does not provide imaginary integers.
+            digits_only = false;
             imag = true;
+            break;
+
+          case '+':
+          case '-':
+          case '.':
+          case 'E':
+          case 'e':
+            digits_only = false;
+            *p++ = ch;
             break;
 
           default:
@@ -3130,13 +3150,52 @@ namespace octave
 
     assert (nread == 1);
 
+    octave_value ov_value;
+
+    // Use >= because > will not return true until value is greater than
+    // flintmax + 2!
+
+    if (digits_only && value >= flintmax ())
+      {
+        // Try reading as an unsigned 64-bit integer.  If there is a
+        // range error, then create a double value.  Otherwise, create a
+        // special uint64 object that will be automatically converted to
+        // double unless it appears as the argument to one of the int64
+        // or uint64 functions.
+
+        errno = 0;
+        char *end;
+        uintmax_t long_int_val;
+        if (sizeof (uintmax_t) == sizeof (unsigned long long))
+          long_int_val = strtoull (tmptxt, &end, 10);
+        else if (sizeof (uintmax_t) == sizeof (unsigned long))
+          long_int_val = strtoul (tmptxt, &end, 10);
+        else
+          panic_impossible ();
+
+        if (errno != ERANGE)
+          {
+            // If possible, store the value as a signed integer.
+
+            octave_base_value *magic_int;
+            if (long_int_val > std::numeric_limits<int64_t>::max ())
+              magic_int = new octave_magic_uint (octave_uint64 (long_int_val));
+            else
+              magic_int = new octave_magic_int (octave_int64 (long_int_val));
+
+            ov_value = octave_value (magic_int);
+          }
+      }
+
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = false;
 
     update_token_positions (yylng);
 
-    octave_value ov_value
-      = imag ? octave_value (Complex (0.0, value)) : octave_value (value);
+    if (ov_value.is_undefined ())
+      ov_value = (imag
+                  ? octave_value (Complex (0.0, value))
+                  : octave_value (value));
 
     push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
 

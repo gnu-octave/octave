@@ -3619,11 +3619,18 @@ namespace octave
           }
         else
           {
+            // FIXME: Maybe assign could also return the assigned value,
+            // just for convenience?
+
             assign (ans, val);
 
             if (print)
               {
-                octave_value_list args = ovl (val);
+                // Use varval instead of displaying VAL directly so that
+                // we get the right type and value for things like
+                // magic_int values that may mutate when stored.
+
+                octave_value_list args = ovl (varval (ans));
                 args.stash_name_tags (string_vector (ans));
                 feval ("display", args);
               }

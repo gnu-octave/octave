@@ -631,6 +631,9 @@ public:
   bool is_magic_colon (void) const
   { return rep->is_magic_colon (); }
 
+  bool is_magic_int (void) const
+  { return rep->is_magic_int (); }
+
   bool isnull (void) const
   { return rep->isnull (); }
 

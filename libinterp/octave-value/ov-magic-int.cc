@@ -257,10 +257,13 @@ octave_base_magic_int<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   return tmp.save_hdf5 (loc_id, name, save_as_floats);
 
 #else
+
   octave_unused_parameter (loc_id);
   octave_unused_parameter (name);
+  octave_unused_parameter (save_as_floats);
 
-  warn_save ("hdf5");
+  octave_base_value::warn_save ("hdf5");
+
 #endif
 
   return retval;
@@ -278,9 +281,10 @@ octave_base_magic_int<T>::load_hdf5 (octave_hdf5_id, const char *)
 
 #else
 
-  warn_load ("hdf5");
+  octave_base_value::warn_load ("hdf5");
 
   return false;
+
 #endif
 }
 

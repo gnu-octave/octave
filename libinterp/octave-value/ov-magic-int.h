@@ -93,52 +93,52 @@ public:
   bool isfloat (void) const { return true; }
 
   int8NDArray int8_array_value (void) const
-  { return int8NDArray (dim_vector (1, 1), scalar_ref ()); }
+  { return int8NDArray (dim_vector (1, 1), double_value ()); }
 
   int16NDArray int16_array_value (void) const
-  { return int16NDArray (dim_vector (1, 1), scalar_ref ()); }
+  { return int16NDArray (dim_vector (1, 1), double_value ()); }
 
   int32NDArray int32_array_value (void) const
-  { return int32NDArray (dim_vector (1, 1), scalar_ref ()); }
+  { return int32NDArray (dim_vector (1, 1), double_value ()); }
 
   int64NDArray int64_array_value (void) const
-  { return int64NDArray (dim_vector (1, 1), scalar_ref ()); }
+  { return int64NDArray (dim_vector (1, 1), double_value ()); }
 
   uint8NDArray uint8_array_value (void) const
-  { return uint8NDArray (dim_vector (1, 1), scalar_ref ()); }
+  { return uint8NDArray (dim_vector (1, 1), double_value ()); }
 
   uint16NDArray uint16_array_value (void) const
-  { return uint16NDArray (dim_vector (1, 1), scalar_ref ()); }
+  { return uint16NDArray (dim_vector (1, 1), double_value ()); }
 
   uint32NDArray uint32_array_value (void) const
-  { return uint32NDArray (dim_vector (1, 1), scalar_ref ()); }
+  { return uint32NDArray (dim_vector (1, 1), double_value ()); }
 
   uint64NDArray uint64_array_value (void) const
-  { return uint64NDArray (dim_vector (1, 1), scalar_ref ()); }
+  { return uint64NDArray (dim_vector (1, 1), double_value ()); }
 
   octave_int8 int8_scalar_value (void) const
-  { return octave_int8 (scalar_ref ()); }
+  { return octave_int8 (double_value ()); }
 
   octave_int16 int16_scalar_value (void) const
-  { return octave_int16 (scalar_ref ()); }
+  { return octave_int16 (double_value ()); }
 
   octave_int32 int32_scalar_value (void) const
-  { return octave_int32 (scalar_ref ()); }
+  { return octave_int32 (double_value ()); }
 
   octave_int64 int64_scalar_value (void) const
-  { return octave_int64 (scalar_ref ()); }
+  { return octave_int64 (double_value ()); }
 
   octave_uint8 uint8_scalar_value (void) const
-  { return octave_uint8 (scalar_ref ()); }
+  { return octave_uint8 (double_value ()); }
 
   octave_uint16 uint16_scalar_value (void) const
-  { return octave_uint16 (scalar_ref ()); }
+  { return octave_uint16 (double_value ()); }
 
   octave_uint32 uint32_scalar_value (void) const
-  { return octave_uint32 (scalar_ref ()); }
+  { return octave_uint32 (double_value ()); }
 
   octave_uint64 uint64_scalar_value (void) const
-  { return octave_uint64 (scalar_ref ()); }
+  { return octave_uint64 (double_value ()); }
 
   double double_value (bool = false) const
   {
@@ -146,10 +146,10 @@ public:
   }
 
   float float_value (bool = false) const
-  { return scalar_ref ().float_value (); }
+  { return static_cast<float> (double_value ()); }
 
   double scalar_value (bool = false) const
-  { return scalar_ref ().double_value (); }
+  { return double_value (); }
 
   float float_scalar_value (bool = false) const
   { return float_value (); }
@@ -199,7 +199,7 @@ public:
   char_array_value (bool = false) const
   {
     charNDArray retval (dim_vector (1, 1));
-    retval(0) = static_cast<char> (scalar_ref ().char_value ());
+    retval(0) = static_cast<char> (double_value ());
     return retval;
   }
 
@@ -208,7 +208,7 @@ public:
     if (warn && scalar_ref () != T (0) && scalar_ref () != T (1))
       warn_logical_conversion ();
 
-    return scalar_ref ().bool_value ();
+    return double_value ();
   }
 
   boolNDArray bool_array_value (bool warn = false) const
@@ -216,7 +216,7 @@ public:
     if (warn && scalar_ref () != T (0) && scalar_ref () != T (1))
       warn_logical_conversion ();
 
-    return boolNDArray (dim_vector (1, 1), scalar_ref ().bool_value ());
+    return boolNDArray (dim_vector (1, 1), double_value ());
   }
 
   octave_value as_double (void) const;

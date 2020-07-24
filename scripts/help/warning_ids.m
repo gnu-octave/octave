@@ -230,6 +230,12 @@
 ## printed for implicit conversions of complex numbers to real numbers.
 ## By default, the @code{Octave:imag-to-real} warning is disabled.
 ##
+## @item Octave:infinite-loop
+## If the @code{Octave:infinite-loop} warning is enabled, a warning is
+## printed when an infinite loop is detected such as @code{for i = 1:Inf} or
+## @code{while (1)}.
+## By default, the @code{Octave:infinite-loop} warning is enabled.
+##
 ## @item Octave:language-extension
 ## Print warnings when using features that are unique to the Octave
 ## language and that may still be missing in @sc{matlab}.

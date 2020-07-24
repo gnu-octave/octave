@@ -2530,8 +2530,9 @@ namespace octave
         octave_idx_type steps = rng.numel ();
 
         if (octave::math::isinf (rng.limit ()))
-          warning ("FOR loop limit is infinite, will stop after %ld steps",
-                   steps);
+          warning_with_id ("Octave:infinite-loop",
+                           "FOR loop limit is infinite, will stop after %ld steps",
+                           steps);
 
         for (octave_idx_type i = 0; i < steps; i++)
           {

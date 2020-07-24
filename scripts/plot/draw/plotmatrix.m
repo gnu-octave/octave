@@ -121,7 +121,7 @@ endfunction
 %! title ("plotmatrix() demo #1");
 
 
-function plotmatrixdelete (h, d, ax)
+function plotmatrixdelete (h, ~, ax)
 
   for i = 1 : numel (ax)
     hc = ax(i);

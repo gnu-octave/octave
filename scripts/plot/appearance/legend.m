@@ -314,7 +314,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
 endfunction
 
-function update_box_cb (hl)
+function update_box_cb (hl, ~)
 
   if (strcmp (get (hl, "box"), "on"))
     if (strcmp (get (hl, "color"), "none"))
@@ -399,7 +399,7 @@ function update_visible_cb (hl, ~)
 
 endfunction
 
-function reset_cb (ht, evt, hl, deletelegend = true)
+function reset_cb (ht, ~, hl, deletelegend = true)
 
   if (ishghandle (hl))
     listeners = getappdata (hl, "__listeners__");
@@ -479,7 +479,7 @@ function addproperties (hl)
 
 endfunction
 
-function maybe_update_layout_cb (h, d, hl)
+function maybe_update_layout_cb (h, ~, hl)
 
   persistent updating = false;
 
@@ -523,7 +523,7 @@ function update_numchild_cb (hl, ~)
 
 endfunction
 
-function legend_autoupdate_cb (hax, d, hl)
+function legend_autoupdate_cb (hax, ~, hl)
 
   ## Get all current children including eventual peer plotyy axes children
   try
@@ -1284,7 +1284,7 @@ function update_icon_position (hicon, xdata, ydata)
   endswitch
 endfunction
 
-function pos = boxposition (axpos, pba)
+function pos = boxposition (axpos, pba, ~)
   pos = axpos;
   pbratio = pba(1)/pba(2);
   posratio = axpos(3)/axpos(4);

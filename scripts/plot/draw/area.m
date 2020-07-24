@@ -206,7 +206,7 @@ function update_prop (h, ~, prop)
   set (kids, prop, get (h, prop));
 endfunction
 
-function move_baseline (h, d)
+function move_baseline (h, ~)
   persistent recursion = false;
 
   ## Don't allow recursion
@@ -224,7 +224,7 @@ function move_baseline (h, d)
           endif
         endif
       endfor
-      update_data (h, d);
+      update_data (h, []);
     unwind_protect_cleanup
       recursion = false;
     end_unwind_protect
@@ -232,7 +232,7 @@ function move_baseline (h, d)
 
 endfunction
 
-function update_data (h, d)
+function update_data (h, ~)
 
   hlist = get (h, "areagroup");
   bv = get (h, "basevalue");

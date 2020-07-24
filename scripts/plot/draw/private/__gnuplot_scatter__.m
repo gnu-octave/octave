@@ -231,7 +231,7 @@ function render_size_color (hg, vert, s, c, marker, filled, isflat)
 
 endfunction
 
-function update_props (h, d)
+function update_props (h, ~)
 
   lw = get (h, "linewidth");
   m  = get (h, "marker");
@@ -245,7 +245,7 @@ function update_props (h, d)
 endfunction
 
 ## FIXME: This callback routine doesn't handle the case where N > 100.
-function update_data (h, d)
+function update_data (h, ~)
 
   x = get (h, "xdata");
   y = get (h, "ydata");

@@ -394,7 +394,7 @@ function [pos, opos, li] = subplot_position (hf, nrows, ncols, idx)
 
 endfunction
 
-function subplot_align (h, d, rmupdate = false)
+function subplot_align (h, ~, rmupdate = false)
   persistent updating = false;
 
   if (! updating)

@@ -469,7 +469,7 @@ function cb_clim (hax, ~, hcb, hi)
 endfunction
 
 ## Update colorbar when changes to axes or figure colormap have occurred.
-function cb_colormap (h, d, hax, hcb, hi, init_sz)
+function cb_colormap (h, ~, hax, hcb, hi, init_sz)
   persistent sz = init_sz;
 
   if (ishghandle (h))

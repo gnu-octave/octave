@@ -1241,11 +1241,11 @@ function cb_legend_hideshow (hleg, ~, ca, orig_pos, new_pos)
 endfunction
 
 ## The legend "location" property has changed.
-function cb_legend_location (hleg, d)
+function cb_legend_location (hleg, [])
 
-  ## If it isn't "none", which means manual positioning, then rebuild .
+  ## If it isn't "none", which means manual positioning, then rebuild.
   if (! strcmp (get (hleg, "location"), "none"))
-    cb_legend_update (hleg, d);
+    cb_legend_update (hleg, []);
   endif
 
 endfunction

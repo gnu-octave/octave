@@ -172,7 +172,7 @@ function toggle_visibility_cb (hf, ~, hmenu, htb)
   set (htb, "visible", toolbar_state);
 endfunction
 
-function open_cb ()
+function open_cb (~, ~)
   [filename, filedir] = uigetfile ({"*.ofig;*.fig", "Figure Files"}, ...
                                    "Open Figure");
   if (filename != 0)
@@ -239,7 +239,7 @@ function __save_as__ (hf, fname = "")
   endif
 endfunction
 
-function close_cb ()
+function close_cb (~, ~)
   close (gcbf ());
 endfunction
 
@@ -251,7 +251,7 @@ function [hax, fig] = __get_axes__ (h)
   hax = findobj (fig, "type", "axes", "-not", "tag", "legend");
 endfunction
 
-function autoscale_cb (h)
+function autoscale_cb (h, ~)
   hax = __get_axes__ (h);
   arrayfun (@(h) axis (h, "auto"), hax);
   drawnow ();
@@ -270,7 +270,7 @@ function init_mouse_tools (hf)
                                     "FigureHandle", hf));
 endfunction
 
-function guimode_cb (h)
+function guimode_cb (h, ~)
   [hax, fig] = __get_axes__ (h);
   id = get (h, "tag");
   switch (id)
@@ -378,7 +378,7 @@ function mouse_tools_cb (h, ~, htools, typ = "")
 
 endfunction
 
-function axes_cb (h)
+function axes_cb (h, ~)
   hax = get (gcbf (), "currentaxes");
   if (! isempty (hax))
     if (strcmp (get (hax, "visible"), "on"))
@@ -389,7 +389,7 @@ function axes_cb (h)
   endif
 endfunction
 
-function grid_cb (h)
+function grid_cb (h, ~)
   hax = get (gcbf (), "currentaxes");
   if (! isempty (hax))
     if (strcmp (get (hax, "xgrid"), "on") && strcmp (get (hax, "ygrid"), "on"))
@@ -400,14 +400,14 @@ function grid_cb (h)
   endif
 endfunction
 
-function auto_cb (h)
+function auto_cb (h, ~)
   hax = get (gcbf (), "currentaxes");
   if (! isempty (hax))
     axis (hax, "auto");
   endif
 endfunction
 
-function clipboard_cb (h)
+function clipboard_cb (h, ~)
   hf = gcbf ();
   fname = tempname ();
   props = {"inverthardcopy", "paperposition", "paperpositionmode"};

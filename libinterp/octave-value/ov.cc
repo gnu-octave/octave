@@ -1075,10 +1075,16 @@ octave_value::octave_value (double base, double limit, double inc)
 }
 
 octave_value::octave_value (const Range& r, bool force_range)
-  : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_range (r))
-         : dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ())))
+  : rep (nullptr)
 {
+  if (! force_range && ! r.ok ())
+    error ("invalid range");
+
+  if (force_range || ! Vdisable_range)
+    rep = dynamic_cast<octave_base_value *> (new octave_range (r));
+  else
+    rep = dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ()));
+
   maybe_mutate ();
 }
 

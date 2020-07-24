@@ -161,3 +161,20 @@
 %! endfor
 %! assert (cnt, 0);
 %! assert (k, cell (0,3));
+
+%!test <45143>
+%! fail ("for i = 0:inf; break; end", "warning",
+%!       "FOR loop limit is infinite");
+%!
+%! fail ("for i = 0:-1:-inf; break; end", "warning",
+%!       "FOR loop limit is infinite");
+
+%!test <45143>
+%! k = 0; for i = 1:inf; if (++k > 10); break; end; end
+%! assert (i, 11);
+%! k = 0; for i = -1:-1:-inf; if (++k > 10); break; end; end
+%! assert (i, -11);
+%! k = 0; for i = 1:-inf; if (++k > 10); break; end; end
+%! assert (i, zeros(1,0));
+%! k = 0; for i = 0:-1:inf; if (++k > 10); break; end; end
+%! assert (i, zeros(1,0));

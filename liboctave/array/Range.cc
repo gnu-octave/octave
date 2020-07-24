@@ -527,9 +527,16 @@ Range::numel_internal (void) const
 {
   octave_idx_type retval = -1;
 
-  if (m_inc == 0
-      || (m_limit > m_base && m_inc < 0)
-      || (m_limit < m_base && m_inc > 0))
+  if (! octave::math::isfinite (m_base) || ! octave::math::isfinite (m_inc)
+      || octave::math::isnan (m_limit))
+    retval = -2;
+  else if (octave::math::isinf (m_limit)
+           && ((m_inc > 0 && m_limit > 0)
+               || (m_inc < 0 && m_limit < 0)))
+    retval = std::numeric_limits<octave_idx_type>::max () - 1;
+  else if (m_inc == 0
+           || (m_limit > m_base && m_inc < 0)
+           || (m_limit < m_base && m_inc > 0))
     {
       retval = 0;
     }
@@ -539,8 +546,8 @@ Range::numel_internal (void) const
 
       double tmp = tfloor ((m_limit - m_base + m_inc) / m_inc, ct);
 
-      octave_idx_type n_elt = (tmp > 0.0 ? static_cast<octave_idx_type> (tmp)
-                                         : 0);
+      octave_idx_type n_elt = (tmp > 0.0
+                               ? static_cast<octave_idx_type> (tmp) : 0);
 
       // If the final element that we would compute for the range is equal to
       // the limit of the range, or is an adjacent floating point number,
@@ -559,8 +566,8 @@ Range::numel_internal (void) const
             n_elt++;
         }
 
-      retval = (n_elt < std::numeric_limits<octave_idx_type>::max () - 1)
-               ? n_elt : -1;
+      retval = ((n_elt < std::numeric_limits<octave_idx_type>::max ())
+                ? n_elt : -1);
     }
 
   return retval;
@@ -569,12 +576,7 @@ Range::numel_internal (void) const
 double
 Range::limit_internal (void) const
 {
-  double new_limit;
-
-  if (m_inc > 0)
-    new_limit = max ();
-  else
-    new_limit = min ();
+  double new_limit = m_inc > 0 ? max () : min ();
 
   // If result must be an integer then force the new_limit to be one.
   if (all_elements_are_ints ())
@@ -587,5 +589,7 @@ void
 Range::init (void)
 {
   m_numel = numel_internal ();
-  m_limit = limit_internal ();
+
+  if (! octave::math::isinf (m_limit))
+    m_limit = limit_internal ();
 }

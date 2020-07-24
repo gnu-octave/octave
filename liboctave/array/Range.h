@@ -53,13 +53,15 @@ public:
   Range (double b, double l)
     : m_base (b), m_limit (l), m_inc (1), m_numel (numel_internal ())
   {
-    m_limit = limit_internal ();
+    if (! octave::math::isinf (m_limit))
+      m_limit = limit_internal ();
   }
 
   Range (double b, double l, double i)
     : m_base (b), m_limit (l), m_inc (i), m_numel (numel_internal ())
   {
-    m_limit = limit_internal ();
+    if (! octave::math::isinf (m_limit))
+      m_limit = limit_internal ();
   }
 
   // NOTE: The following constructor may be deprecated and removed after
@@ -70,16 +72,15 @@ public:
   Range (double b, double i, octave_idx_type n)
     : m_base (b), m_limit (b + (n-1) * i), m_inc (i), m_numel (n)
   {
-    if (! octave::math::isfinite (b) || ! octave::math::isfinite (i)
-        || ! octave::math::isfinite (m_limit))
-      m_numel = -2;
-    else
-      {
-        // Code below is only needed if the resulting range must be 100%
-        // correctly constructed.  If the Range object created is only
-        // a temporary one used by operators this may be unnecessary.
-        m_limit = limit_internal ();
-      }
+    if (! octave::math::isinf (m_limit))
+      m_limit = limit_internal ();
+  }
+
+  // The range has a finite number of elements.
+  bool ok (void) const
+  {
+    return (octave::math::isfinite (m_limit)
+            && (m_numel >= 0 || m_numel == -2));
   }
 
   double base (void) const { return m_base; }
@@ -172,11 +173,7 @@ protected:
   // For operators' usage (to allow all values to be set directly).
   Range (double b, double l, double i, octave_idx_type n)
     : m_base (b), m_limit (l), m_inc (i), m_numel (n)
-  {
-    if (! octave::math::isfinite (b) || ! octave::math::isfinite (i)
-        || ! octave::math::isfinite (l))
-      m_numel = -2;
-  }
+  { }
 };
 
 OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")

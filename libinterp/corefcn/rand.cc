@@ -388,12 +388,14 @@ You may also initialize the state vector from an arbitrary vector of length
 @leq{} 625 for @var{v}.  This new state will be a hash based on the value of
 @var{v}, not @var{v} itself.
 
-By default, the generator is initialized from @code{/dev/urandom} if it is
-available, otherwise from CPU time, wall clock time, and the current
-fraction of a second.  Note that this differs from @sc{matlab}, which
-always initializes the state to the same state at startup.  To obtain
-behavior comparable to @sc{matlab}, initialize with a deterministic state
-vector in Octave's startup files (@pxref{Startup Files}).
+By default, the generator is initialized by contributing entropy from the
+wall clock time, the CPU time, the current fraction of a second, the process
+ID and---if available---up to 1024 bits from the C++ random numbers source
+@code{random_device}, which might be non-deterministic (implementation
+specific).  Note that this differs from @sc{matlab}, which always initializes
+the state to the same state at startup.  To obtain behavior comparable to
+@sc{matlab}, initialize with a deterministic state vector in Octave's startup
+files (@pxref{Startup Files}).
 
 To compute the pseudo-random sequence, @code{rand} uses the Mersenne
 Twister with a period of @math{2^{19937}-1}

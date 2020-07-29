@@ -63,7 +63,7 @@ function __debug_octave__ (command_string)
     endif
   endif
 
-  system (sprintf (command_string, getpid ()), "async");
+  system (sprintf (command_string, getpid ()), false, "async");
 
 endfunction
 

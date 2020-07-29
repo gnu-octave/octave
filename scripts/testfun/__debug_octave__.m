@@ -48,14 +48,12 @@ function __debug_octave__ (command_string)
   endif
 
   if (nargin == 0)
-    [status, ~] = system ("gdb --version");
+    status = system ("gdb --version");
     if (status != 0)
       error ("unable to execute gdb");
     endif
     if (isunix ())
-      ## FIXME: is there a portable way to run a command in a new window?
-      ## Obviously, gnome-terminal is not always available.
-      command_string = "gnome-terminal -- gdb -p %d";
+      command_string = "x-terminal-emulator -e gdb -p %d";
     elseif (ispc ())
       command_string = "start gdb -p %d";
     elseif (ismac ())
@@ -65,7 +63,7 @@ function __debug_octave__ (command_string)
     endif
   endif
 
-  system (sprintf (command_string, getpid ()));
+  system (sprintf (command_string, getpid ()), false, "async");
 
 endfunction
 

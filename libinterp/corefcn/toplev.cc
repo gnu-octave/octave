@@ -184,17 +184,11 @@ DEFUN (system, args, nargout,
 @deftypefnx {} {[@var{status}, @var{output}] =} system (@dots{})
 Execute a shell command specified by @var{string}.
 
-If the optional argument @var{type} is @qcode{"async"}, the process is
-started in the background and the process ID of the child process is
-returned immediately.  Otherwise, the child process is started and Octave
-waits until it exits.  If the @var{type} argument is omitted, it defaults to
-the value @qcode{"sync"}.
-
-If @var{system} is called with one or more output arguments, or if the
-optional argument @var{return_output} is true and the subprocess is started
+If @var{system} is called with one or more output arguments, or if the optional
+argument @var{return_output} is true and the subprocess is started
 synchronously, then the output from the command is returned as a variable.
-Otherwise, if the subprocess is executed synchronously, its output is sent
-to the standard output.  To send the output of a command executed with
+Otherwise, if the subprocess is executed synchronously, its output is sent to
+the standard output.  To send the output of a command executed with
 @code{system} through the pager, use a command like
 
 @example
@@ -215,25 +209,30 @@ printf ("%s\n", nthargout (2, "system", "cmd"));
 @end group
 @end example
 
-The @code{system} function can return two values.  The first is the
-exit status of the command and the second is any output from the
-command that was written to the standard output stream.  For example,
+If the optional argument @var{type} is @qcode{"async"}, the process is started
+in the background and the process ID of the child process is returned
+immediately.  Otherwise, the child process is started and Octave waits until it
+exits.  If the @var{type} argument is omitted, it defaults to the value
+@qcode{"sync"}.
+
+The @code{system} function can return two values.  The first is the exit status
+of the command and the second is any output from the command that was written
+to the standard output stream.  For example,
 
 @example
 [status, output] = system ("echo foo & exit 2");
 @end example
 
 @noindent
-will set the variable @var{output} to the string @samp{foo}, and the
-variable @var{status} to the integer @samp{2}.
+will set the variable @var{output} to the string @samp{foo}, and the variable
+@var{status} to the integer @samp{2}.
 
-For commands run asynchronously, @var{status} is the process id of the
-command shell that is started to run the command.
+For commands run asynchronously, @var{status} is the process id of the command
+shell that is started to run the command.
 
 The shell used for executing commands varies with operating system and is
 typically @file{/bin/sh} for UNIX systems and @nospell{@file{cmd.exe}} for
-Windows
-systems.
+Windows systems.
 @seealso{unix, dos}
 @end deftypefn */)
 {

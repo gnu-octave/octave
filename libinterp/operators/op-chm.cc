@@ -52,7 +52,7 @@ DEFNDCATOP_FN (chm_chm, char_matrix, char_matrix, char_array, char_array,
 
 DEFCATOP (chm_s, char_matrix, scalar)
 {
-  octave_char_matrix& v1 = dynamic_cast<octave_char_matrix&> (a1);
+  const octave_char_matrix& v1 = dynamic_cast<const octave_char_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   warn_implicit_conversion ("Octave:num-to-str",
@@ -64,7 +64,7 @@ DEFCATOP (chm_s, char_matrix, scalar)
 
 DEFCATOP (chm_m, char_matrix, matrix)
 {
-  octave_char_matrix& v1 = dynamic_cast<octave_char_matrix&> (a1);
+  const octave_char_matrix& v1 = dynamic_cast<const octave_char_matrix&> (a1);
   const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
   warn_implicit_conversion ("Octave:num-to-str",
@@ -76,7 +76,7 @@ DEFCATOP (chm_m, char_matrix, matrix)
 
 DEFCATOP (s_chm, scalar, char_matrix)
 {
-  octave_scalar& v1 = dynamic_cast<octave_scalar&> (a1);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
   const octave_char_matrix& v2 = dynamic_cast<const octave_char_matrix&> (a2);
 
   warn_implicit_conversion ("Octave:num-to-str",
@@ -88,7 +88,7 @@ DEFCATOP (s_chm, scalar, char_matrix)
 
 DEFCATOP (m_chm, matrix, char_matrix)
 {
-  octave_matrix& v1 = dynamic_cast<octave_matrix&> (a1);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
   const octave_char_matrix& v2 = dynamic_cast<const octave_char_matrix&> (a2);
 
   warn_implicit_conversion ("Octave:num-to-str",

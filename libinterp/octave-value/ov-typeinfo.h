@@ -56,7 +56,7 @@ namespace octave
       (const octave_base_value&, const octave_base_value&);
 
     typedef octave_value (*cat_op_fcn)
-      (octave_base_value&, const octave_base_value&,
+      (const octave_base_value&, const octave_base_value&,
      const Array<octave_idx_type>& ra_idx);
 
     typedef octave_value (*assign_op_fcn)

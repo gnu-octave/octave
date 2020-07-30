@@ -101,7 +101,7 @@ DEFBINOP_FN (el_or,  scalar, sparse_matrix, mx_el_or)
 
 DEFCATOP (s_sm, scalar, sparse_matrix)
 {
-  octave_scalar& v1 = dynamic_cast<octave_scalar&> (a1);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
   const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
   SparseMatrix tmp (1, 1, v1.scalar_value ());
   return octave_value (tmp.concat (v2.sparse_matrix_value (), ra_idx));

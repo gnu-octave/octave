@@ -322,12 +322,13 @@ extern void install_ops (octave::type_info&);
 
 #define DEFCATOPX(name, t1, t2)                                         \
   static octave_value                                                   \
-  CONCAT2 (oct_catop_, name) (octave_base_value&, const octave_base_value&, \
+  CONCAT2 (oct_catop_, name) (const octave_base_value&,                 \
+                              const octave_base_value&,                 \
                               const Array<octave_idx_type>& ra_idx)
 
 #define DEFCATOP(name, t1, t2)                                          \
   static octave_value                                                   \
-  CONCAT2 (oct_catop_, name) (octave_base_value& a1,                    \
+  CONCAT2 (oct_catop_, name) (const octave_base_value& a1,              \
                               const octave_base_value& a2,              \
                               const Array<octave_idx_type>& ra_idx)
 
@@ -335,11 +336,11 @@ extern void install_ops (octave::type_info&);
 
 #define DEFCATOP_FN(name, t1, t2, f)                                    \
   static octave_value                                                   \
-  CONCAT2 (oct_catop_, name) (octave_base_value& a1,                    \
+  CONCAT2 (oct_catop_, name) (const octave_base_value& a1,              \
                               const octave_base_value& a2,              \
                               const Array<octave_idx_type>& ra_idx)     \
   {                                                                     \
-    CONCAT2 (octave_, t1)& v1 = dynamic_cast<CONCAT2 (octave_, t1)&> (a1); \
+    const CONCAT2 (octave_, t1)& v1 = dynamic_cast<const CONCAT2 (octave_, t1)&> (a1); \
     const CONCAT2 (octave_, t2)& v2 = dynamic_cast<const CONCAT2 (octave_, t2)&> (a2); \
                                                                         \
     return octave_value (v1.CONCAT2 (t1, _value) () . f (v2.CONCAT2 (t2, _value) (), ra_idx)); \
@@ -347,11 +348,11 @@ extern void install_ops (octave::type_info&);
 
 #define DEFNDCATOP_FN(name, t1, t2, e1, e2, f)                          \
   static octave_value                                                   \
-  CONCAT2 (oct_catop_, name) (octave_base_value& a1,                    \
+  CONCAT2 (oct_catop_, name) (const octave_base_value& a1,              \
                               const octave_base_value& a2,              \
                               const Array<octave_idx_type>& ra_idx)     \
   {                                                                     \
-    CONCAT2 (octave_, t1)& v1 = dynamic_cast<CONCAT2 (octave_, t1)&> (a1); \
+    const CONCAT2 (octave_, t1)& v1 = dynamic_cast<const CONCAT2 (octave_, t1)&> (a1); \
     const CONCAT2 (octave_, t2)& v2 = dynamic_cast<const CONCAT2 (octave_, t2)&> (a2); \
                                                                         \
     return octave_value (v1.CONCAT2 (e1, _value) () . f (v2.CONCAT2 (e2, _value) (), ra_idx)); \
@@ -359,11 +360,11 @@ extern void install_ops (octave::type_info&);
 
 #define DEFNDCHARCATOP_FN(name, t1, t2, f)                              \
   static octave_value                                                   \
-  CONCAT2 (oct_catop_, name) (octave_base_value& a1,                    \
+  CONCAT2 (oct_catop_, name) (const octave_base_value& a1,              \
                               const octave_base_value& a2,              \
                               const Array<octave_idx_type>& ra_idx)     \
   {                                                                     \
-    CONCAT2 (octave_, t1)& v1 = dynamic_cast<CONCAT2 (octave_, t1)&> (a1); \
+    const CONCAT2 (octave_, t1)& v1 = dynamic_cast<const CONCAT2 (octave_, t1)&> (a1); \
     const CONCAT2 (octave_, t2)& v2 = dynamic_cast<const CONCAT2 (octave_, t2)&> (a2); \
                                                                         \
     return octave_value (v1.char_array_value () . f (v2.char_array_value (), ra_idx), \
@@ -376,11 +377,11 @@ extern void install_ops (octave::type_info&);
 
 #define DEFNDCATOP_FN2(name, t1, t2, tc1, tc2, e1, e2, f)               \
   static octave_value                                                   \
-  CONCAT2 (oct_catop_, name) (octave_base_value& a1,                    \
+  CONCAT2 (oct_catop_, name) (const octave_base_value& a1,              \
                               const octave_base_value& a2,              \
                               const Array<octave_idx_type>& ra_idx)     \
   {                                                                     \
-    CONCAT2 (octave_, t1)& v1 = dynamic_cast<CONCAT2 (octave_, t1)&> (a1); \
+    const CONCAT2 (octave_, t1)& v1 = dynamic_cast<const CONCAT2 (octave_, t1)&> (a1); \
     const CONCAT2 (octave_, t2)& v2 = dynamic_cast<const CONCAT2 (octave_, t2)&> (a2); \
                                                                         \
     return octave_value (tc1 (v1.CONCAT2 (e1, _value) ()) . f (tc2 (v2.CONCAT2 (e2, _value) ()), ra_idx)); \

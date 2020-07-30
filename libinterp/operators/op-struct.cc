@@ -60,7 +60,8 @@ DEFNDCATOP_FN (ss_s_concat, scalar_struct, struct, map, map, concat)
 DEFNDCATOP_FN (ss_ss_concat, scalar_struct, scalar_struct, map, map, concat)
 
 static octave_value
-oct_catop_struct_matrix (octave_base_value& a1, const octave_base_value& a2,
+oct_catop_struct_matrix (const octave_base_value& a1,
+                         const octave_base_value& a2,
                          const Array<octave_idx_type>&)
 {
   const octave_struct& v1 = dynamic_cast<const octave_struct&> (a1);
@@ -76,7 +77,8 @@ oct_catop_struct_matrix (octave_base_value& a1, const octave_base_value& a2,
 }
 
 static octave_value
-oct_catop_matrix_struct (octave_base_value& a1, const octave_base_value& a2,
+oct_catop_matrix_struct (const octave_base_value& a1,
+                         const octave_base_value& a2,
                          const Array<octave_idx_type>&)
 {
   const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);

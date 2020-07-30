@@ -110,7 +110,7 @@ DEFBINOP_FN (el_or, scalar, sparse_complex_matrix, mx_el_or)
 
 DEFCATOP (s_scm, scalar, sparse_compelx_matrix)
 {
-  octave_scalar& v1 = dynamic_cast<octave_scalar&> (a1);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
   const octave_sparse_complex_matrix& v2
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
   SparseMatrix tmp (1, 1, v1.scalar_value ());

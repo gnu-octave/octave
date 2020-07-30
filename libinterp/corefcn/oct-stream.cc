@@ -2714,8 +2714,8 @@ namespace octave
               dv = dim_vector (std::max (valid_rows - 1, 0), 1);
 
             ra_idx(1) = i;
-            retval = do_cat_op (retval, octave_value (Cell (col.resize (dv,0))),
-                                ra_idx);
+            retval = cat_op (retval, octave_value (Cell (col.resize (dv,0))),
+                             ra_idx);
             i++;
           }
       }
@@ -2734,8 +2734,7 @@ namespace octave
                 if (prev_type != -1)
                   {
                     ra_idx(1) = i++;
-                    retval = do_cat_op (retval, octave_value (Cell (cur)),
-                                        ra_idx);
+                    retval = cat_op (retval, octave_value (Cell (cur)), ra_idx);
                   }
                 cur = octave_value (col.resize (dv,0));
                 group_size = 1;
@@ -2744,12 +2743,11 @@ namespace octave
             else
               {
                 ra_idx(1) = group_size++;
-                cur = do_cat_op (cur, octave_value (col.resize (dv,0)),
-                                 ra_idx);
+                cur = cat_op (cur, octave_value (col.resize (dv,0)), ra_idx);
               }
           }
         ra_idx(1) = i;
-        retval = do_cat_op (retval, octave_value (Cell (cur)), ra_idx);
+        retval = cat_op (retval, octave_value (Cell (cur)), ra_idx);
       }
 
     return retval;
@@ -3276,7 +3274,7 @@ namespace octave
                     else
                       {
                         if (ov.isreal ())  // cat does type conversion
-                          ov = do_cat_op (ov, octave_value (v), row);
+                          ov = cat_op (ov, octave_value (v), row);
                         else
                           ov.internal_rep ()->fast_elem_insert (row(0), v);
                       }
@@ -3289,7 +3287,7 @@ namespace octave
                     else
                       {
                         if (ov.isreal ())  // cat does type conversion
-                          ov = do_cat_op (ov, octave_value (v), row);
+                          ov = cat_op (ov, octave_value (v), row);
                         else
                           ov.internal_rep ()->fast_elem_insert (row(0),
                                                                 FloatComplex (v));
@@ -3374,7 +3372,7 @@ namespace octave
           }
 
         if (is.fail () & ! fmt.discard)
-          ov = do_cat_op (ov, empty_value, row);
+          ov = cat_op (ov, empty_value, row);
       }
     else
       {
@@ -5716,7 +5714,7 @@ namespace octave
         // Easier than dispatching here...
 
         octave_value ov_is_ge_zero
-          = do_binary_op (octave_value::op_ge, val, octave_value (0.0));
+          = binary_op (octave_value::op_ge, val, octave_value (0.0));
 
         return ov_is_ge_zero.is_true ();
       }

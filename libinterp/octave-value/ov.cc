@@ -1510,7 +1510,7 @@ octave_value::assign (assign_op op, const std::string& type,
 
       binary_op binop = op_eq_to_binary_op (op);
 
-      t_rhs = do_binary_op (binop, t, rhs);
+      t_rhs = octave::binary_op (binop, t, rhs);
     }
 
   *this = subsasgn (type, idx, t_rhs);
@@ -1542,7 +1542,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
 
       if (f)
         {
-          f (*rep, octave_value_list (), *rhs.rep);
+          f (*rep, octave_value_list (), rhs.get_rep ());
           // Usually unnecessary, but may be needed (complex arrays).
           maybe_mutate ();
         }
@@ -1551,7 +1551,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
 
           binary_op binop = op_eq_to_binary_op (op);
 
-          octave_value t = do_binary_op (binop, *this, rhs);
+          octave_value t = octave::binary_op (binop, *this, rhs);
 
           operator = (t);
         }
@@ -1613,7 +1613,7 @@ octave_value::is_equal (const octave_value& test) const
 
   if (rows () == test.rows () && columns () == test.columns ())
     {
-      octave_value tmp = do_binary_op (octave_value::op_eq, *this, test);
+      octave_value tmp = octave::binary_op (octave_value::op_eq, *this, test);
 
       // Empty array also means a match.
       if (tmp.is_defined ())
@@ -2173,449 +2173,6 @@ octave_value::write (octave::stream& os, int block_size,
   return rep->write (os, block_size, output_type, skip, flt_fmt);
 }
 
-OCTAVE_NORETURN static void
-err_binary_op (const std::string& on, const std::string& tn1,
-               const std::string& tn2)
-{
-  error ("binary operator '%s' not implemented for '%s' by '%s' operations",
-         on.c_str (), tn1.c_str (), tn2.c_str ());
-}
-
-OCTAVE_NORETURN static void
-err_binary_op_conv (const std::string& on)
-{
-  error ("type conversion failed for binary operator '%s'", on.c_str ());
-}
-
-octave_value
-do_binary_op (octave::type_info& ti, octave_value::binary_op op,
-              const octave_value& v1, const octave_value& v2)
-{
-  octave_value retval;
-
-  int t1 = v1.type_id ();
-  int t2 = v2.type_id ();
-
-  if (t1 == octave_class::static_type_id ()
-      || t2 == octave_class::static_type_id ()
-      || t1 == octave_classdef::static_type_id ()
-      || t2 == octave_classdef::static_type_id ())
-    {
-      octave::type_info::binary_class_op_fcn f
-        = ti.lookup_binary_class_op (op);
-
-      if (! f)
-        err_binary_op (octave_value::binary_op_as_string (op),
-                       v1.class_name (), v2.class_name ());
-
-      retval = f (v1, v2);
-    }
-  else
-    {
-      // FIXME: we need to handle overloading operators for built-in
-      // classes (double, char, int8, etc.)
-
-      octave::type_info::binary_op_fcn f
-        = ti.lookup_binary_op (op, t1, t2);
-
-      if (f)
-        retval = f (*v1.rep, *v2.rep);
-      else
-        {
-          octave_value tv1;
-          octave_base_value::type_conv_info cf1
-            = v1.numeric_conversion_function ();
-
-          octave_value tv2;
-          octave_base_value::type_conv_info cf2
-            = v2.numeric_conversion_function ();
-
-          // Try biased (one-sided) conversions first.
-          if (cf2.type_id () >= 0
-              && ti.lookup_binary_op (op, t1, cf2.type_id ()))
-            cf1 = nullptr;
-          else if (cf1.type_id () >= 0
-                   && ti.lookup_binary_op (op, cf1.type_id (), t2))
-            cf2 = nullptr;
-
-          if (cf1)
-            {
-              octave_base_value *tmp = cf1 (*v1.rep);
-
-              if (! tmp)
-                err_binary_op_conv (octave_value::binary_op_as_string (op));
-
-              tv1 = octave_value (tmp);
-              t1 = tv1.type_id ();
-            }
-          else
-            tv1 = v1;
-
-          if (cf2)
-            {
-              octave_base_value *tmp = cf2 (*v2.rep);
-
-              if (! tmp)
-                err_binary_op_conv (octave_value::binary_op_as_string (op));
-
-              tv2 = octave_value (tmp);
-              t2 = tv2.type_id ();
-            }
-          else
-            tv2 = v2;
-
-          if (cf1 || cf2)
-            {
-              retval = do_binary_op (op, tv1, tv2);
-            }
-          else
-            {
-              //demote double -> single and try again
-              cf1 = tv1.numeric_demotion_function ();
-
-              cf2 = tv2.numeric_demotion_function ();
-
-              // Try biased (one-sided) conversions first.
-              if (cf2.type_id () >= 0
-                  && ti.lookup_binary_op (op, t1, cf2.type_id ()))
-                cf1 = nullptr;
-              else if (cf1.type_id () >= 0
-                       && ti.lookup_binary_op (op, cf1.type_id (), t2))
-                cf2 = nullptr;
-
-              if (cf1)
-                {
-                  octave_base_value *tmp = cf1 (*tv1.rep);
-
-                  if (! tmp)
-                    err_binary_op_conv (octave_value::binary_op_as_string (op));
-
-                  tv1 = octave_value (tmp);
-                  t1 = tv1.type_id ();
-                }
-
-              if (cf2)
-                {
-                  octave_base_value *tmp = cf2 (*tv2.rep);
-
-                  if (! tmp)
-                    err_binary_op_conv (octave_value::binary_op_as_string (op));
-
-                  tv2 = octave_value (tmp);
-                  t2 = tv2.type_id ();
-                }
-
-              if (! cf1 && ! cf2)
-                err_binary_op (octave_value::binary_op_as_string (op),
-                               v1.type_name (), v2.type_name ());
-
-              f = ti.lookup_binary_op (op, t1, t2);
-
-              if (! f)
-                err_binary_op (octave_value::binary_op_as_string (op),
-                               v1.type_name (), v2.type_name ());
-
-              retval = f (*tv1.rep, *tv2.rep);
-            }
-        }
-    }
-
-  return retval;
-}
-
-octave_value
-do_binary_op (octave_value::binary_op op,
-              const octave_value& v1, const octave_value& v2)
-{
-  octave::type_info& ti = octave::__get_type_info__ ("do_binary_op");
-
-  return do_binary_op (ti, op, v1, v2);
-}
-
-static octave_value
-decompose_binary_op (octave::type_info& ti,
-                     octave_value::compound_binary_op op,
-                     const octave_value& v1, const octave_value& v2)
-{
-  switch (op)
-    {
-    case octave_value::op_trans_mul:
-      return do_binary_op (octave_value::op_mul,
-                           do_unary_op (octave_value::op_transpose, v1), v2);
-
-    case octave_value::op_mul_trans:
-      return do_binary_op (ti, octave_value::op_mul,
-                           v1, do_unary_op (octave_value::op_transpose, v2));
-
-    case octave_value::op_herm_mul:
-      return do_binary_op (ti, octave_value::op_mul,
-                           do_unary_op (octave_value::op_hermitian, v1), v2);
-
-    case octave_value::op_mul_herm:
-      return do_binary_op (ti, octave_value::op_mul,
-                           v1, do_unary_op (octave_value::op_hermitian, v2));
-
-    case octave_value::op_trans_ldiv:
-      return do_binary_op (ti, octave_value::op_ldiv,
-                           do_unary_op (octave_value::op_transpose, v1), v2);
-
-    case octave_value::op_herm_ldiv:
-      return do_binary_op (ti, octave_value::op_ldiv,
-                           do_unary_op (octave_value::op_hermitian, v1), v2);
-
-    case octave_value::op_el_not_and:
-      return do_binary_op (ti, octave_value::op_el_and,
-                           do_unary_op (octave_value::op_not, v1), v2);
-
-    case octave_value::op_el_not_or:
-      return do_binary_op (ti, octave_value::op_el_or,
-                           do_unary_op (octave_value::op_not, v1), v2);
-
-    case octave_value::op_el_and_not:
-      return do_binary_op (ti, octave_value::op_el_and,
-                           v1, do_unary_op (octave_value::op_not, v2));
-
-    case octave_value::op_el_or_not:
-      return do_binary_op (ti, octave_value::op_el_or,
-                           v1, do_unary_op (octave_value::op_not, v2));
-
-    default:
-      error ("invalid compound operator");
-    }
-}
-
-octave_value
-do_binary_op (octave::type_info& ti, octave_value::compound_binary_op op,
-              const octave_value& v1, const octave_value& v2)
-{
-  octave_value retval;
-
-  int t1 = v1.type_id ();
-  int t2 = v2.type_id ();
-
-  if (t1 == octave_class::static_type_id ()
-      || t2 == octave_class::static_type_id ()
-      || t1 == octave_classdef::static_type_id ()
-      || t2 == octave_classdef::static_type_id ())
-    {
-      octave::type_info::binary_class_op_fcn f = ti.lookup_binary_class_op (op);
-
-      if (f)
-        retval = f (v1, v2);
-      else
-        retval = decompose_binary_op (ti, op, v1, v2);
-    }
-  else
-    {
-      octave::type_info::binary_op_fcn f = ti.lookup_binary_op (op, t1, t2);
-
-      if (f)
-        retval = f (*v1.rep, *v2.rep);
-      else
-        retval = decompose_binary_op (ti, op, v1, v2);
-    }
-
-  return retval;
-}
-
-octave_value
-do_binary_op (octave_value::compound_binary_op op,
-              const octave_value& v1, const octave_value& v2)
-{
-  octave::type_info& ti = octave::__get_type_info__ ("do_binary_op");
-
-  return do_binary_op (ti, op, v1, v2);
-}
-
-OCTAVE_NORETURN static void
-err_cat_op (const std::string& tn1, const std::string& tn2)
-{
-  error ("concatenation operator not implemented for '%s' by '%s' operations",
-         tn1.c_str (), tn2.c_str ());
-}
-
-OCTAVE_NORETURN static void
-err_cat_op_conv (void)
-{
-  error ("type conversion failed for concatenation operator");
-}
-
-octave_value
-do_cat_op (octave::type_info& ti, const octave_value& v1,
-           const octave_value& v2, const Array<octave_idx_type>& ra_idx)
-{
-  octave_value retval;
-
-  // Can't rapid return for concatenation with an empty object here as
-  // something like cat(1,[],single([]) must return the correct type.
-
-  int t1 = v1.type_id ();
-  int t2 = v2.type_id ();
-
-  octave::type_info::cat_op_fcn f = ti.lookup_cat_op (t1, t2);
-
-  if (f)
-    retval = f (*v1.rep, *v2.rep, ra_idx);
-  else
-    {
-      octave_value tv1;
-      octave_base_value::type_conv_info cf1 = v1.numeric_conversion_function ();
-
-      octave_value tv2;
-      octave_base_value::type_conv_info cf2 = v2.numeric_conversion_function ();
-
-      // Try biased (one-sided) conversions first.
-      if (cf2.type_id () >= 0 && ti.lookup_cat_op (t1, cf2.type_id ()))
-        cf1 = nullptr;
-      else if (cf1.type_id () >= 0 && ti.lookup_cat_op (cf1.type_id (), t2))
-        cf2 = nullptr;
-
-      if (cf1)
-        {
-          octave_base_value *tmp = cf1 (*v1.rep);
-
-          if (! tmp)
-            err_cat_op_conv ();
-
-          tv1 = octave_value (tmp);
-          t1 = tv1.type_id ();
-        }
-      else
-        tv1 = v1;
-
-      if (cf2)
-        {
-          octave_base_value *tmp = cf2 (*v2.rep);
-
-          if (! tmp)
-            err_cat_op_conv ();
-
-          tv2 = octave_value (tmp);
-          t2 = tv2.type_id ();
-        }
-      else
-        tv2 = v2;
-
-      if (! cf1 && ! cf2)
-        err_cat_op (v1.type_name (), v2.type_name ());
-
-      retval = do_cat_op (ti, tv1, tv2, ra_idx);
-    }
-
-  return retval;
-}
-
-octave_value
-do_cat_op (const octave_value& v1, const octave_value& v2,
-           const Array<octave_idx_type>& ra_idx)
-{
-  octave::type_info& ti = octave::__get_type_info__ ("do_cat_op");
-
-  return do_cat_op (ti, v1, v2, ra_idx);
-}
-
-octave_value
-do_colon_op (const octave_value& base, const octave_value& increment,
-             const octave_value& limit, bool is_for_cmd_expr)
-{
-  octave_value retval;
-
-  if (base.isobject () || increment.isobject () || limit.isobject ())
-    {
-      octave_value_list tmp1;
-
-      if (increment.is_defined ())
-        {
-          tmp1(2) = limit;
-          tmp1(1) = increment;
-          tmp1(0) = base;
-        }
-      else
-        {
-          tmp1(1) = limit;
-          tmp1(0) = base;
-        }
-
-      octave::interpreter& interp = octave::__get_interpreter__ ("do_colon_op");
-
-      octave::symbol_table& symtab = interp.get_symbol_table ();
-
-      octave_value fcn = symtab.find_function ("colon", tmp1);
-
-      if (fcn.is_defined ())
-        {
-          octave_value_list tmp2 = interp.feval (fcn, tmp1, 1);
-
-          return tmp2 (0);
-        }
-    }
-
-  bool result_is_str = (base.is_string () && limit.is_string ());
-  bool dq_str = (base.is_dq_string () || limit.is_dq_string ());
-
-  if (base.numel () > 1 || limit.numel () > 1
-      || (increment.is_defined () && increment.numel () > 1))
-    warning_with_id ("Octave:colon-nonscalar-argument",
-                     "colon arguments should be scalars");
-
-  if (base.iscomplex () || limit.iscomplex ()
-      || (increment.is_defined () && increment.iscomplex ()))
-    warning_with_id ("Octave:colon-complex-argument",
-                     "imaginary part of complex colon arguments is ignored");
-
-  Matrix m_base, m_limit, m_increment;
-
-  try
-    {
-      m_base = base.matrix_value (true);
-    }
-  catch (octave::execution_exception& e)
-    {
-      error (e, "invalid base value in colon expression");
-    }
-
-  try
-    {
-      m_limit = limit.matrix_value (true);
-    }
-  catch (octave::execution_exception& e)
-    {
-      error (e, "invalid limit value in colon expression");
-    }
-
-  try
-    {
-      m_increment = (increment.is_defined ()
-                     ? increment.matrix_value (true)
-                     : Matrix (1, 1, 1.0));
-    }
-  catch (octave::execution_exception& e)
-    {
-      error (e, "invalid increment value in colon expression");
-    }
-
-  bool base_empty = m_base.isempty ();
-  bool limit_empty = m_limit.isempty ();
-  bool increment_empty = m_increment.isempty ();
-
-  if (base_empty || limit_empty || increment_empty)
-    retval = Range ();
-  else
-    {
-      Range r (m_base(0), m_limit(0), m_increment(0));
-
-      // For compatibility with Matlab, don't allow the range used in
-      // a FOR loop expression to be converted to a Matrix.
-
-      retval = octave_value (r, is_for_cmd_expr);
-
-      if (result_is_str)
-        retval = (retval.convert_to_str (false, true, dq_str ? '"' : '\''));
-    }
-
-  return retval;
-}
-
 void
 octave_value::print_info (std::ostream& os, const std::string& prefix) const
 {
@@ -2696,77 +2253,6 @@ octave_value::mex_get_data (mxClassID class_id, mxComplexity complexity) const
 }
 
 OCTAVE_NORETURN static void
-err_unary_op (const std::string& on, const std::string& tn)
-{
-  error ("unary operator '%s' not implemented for '%s' operands",
-         on.c_str (), tn.c_str ());
-}
-
-OCTAVE_NORETURN static void
-err_unary_op_conv (const std::string& on)
-{
-  error ("type conversion failed for unary operator '%s'", on.c_str ());
-}
-
-octave_value
-do_unary_op (octave::type_info& ti, octave_value::unary_op op,
-             const octave_value& v)
-{
-  octave_value retval;
-
-  int t = v.type_id ();
-
-  if (t == octave_class::static_type_id ()
-      || t == octave_classdef::static_type_id ())
-    {
-      octave::type_info::unary_class_op_fcn f = ti.lookup_unary_class_op (op);
-
-      if (! f)
-        err_unary_op (octave_value::unary_op_as_string (op), v.class_name ());
-
-      retval = f (v);
-    }
-  else
-    {
-      // FIXME: we need to handle overloading operators for built-in
-      // classes (double, char, int8, etc.)
-
-      octave::type_info::unary_op_fcn f = ti.lookup_unary_op (op, t);
-
-      if (f)
-        retval = f (*v.rep);
-      else
-        {
-          octave_value tv;
-          octave_base_value::type_conv_fcn cf
-            = v.numeric_conversion_function ();
-
-          if (! cf)
-            err_unary_op (octave_value::unary_op_as_string (op),
-                          v.type_name ());
-
-          octave_base_value *tmp = cf (*v.rep);
-
-          if (! tmp)
-            err_unary_op_conv (octave_value::unary_op_as_string (op));
-
-          tv = octave_value (tmp);
-          retval = do_unary_op (op, tv);
-        }
-    }
-
-  return retval;
-}
-
-octave_value
-do_unary_op (octave_value::unary_op op, const octave_value& v)
-{
-  octave::type_info& ti = octave::__get_type_info__ ("do_unary_op");
-
-  return do_unary_op (ti, op, v);
-}
-
-OCTAVE_NORETURN static void
 err_unary_op_conversion_failed (const std::string& op,
                                 const std::string& tn)
 {
@@ -2774,8 +2260,15 @@ err_unary_op_conversion_failed (const std::string& op,
          op.c_str (), tn.c_str ());
 }
 
+OCTAVE_NORETURN static void
+err_unary_op (const std::string& on, const std::string& tn)
+{
+  error ("unary operator '%s' not implemented for '%s' operands",
+         on.c_str (), tn.c_str ());
+}
+
 octave_value&
-octave_value::do_non_const_unary_op (unary_op op)
+octave_value::non_const_unary_op (unary_op op)
 {
   if (op == op_incr || op == op_decr)
     {
@@ -2793,8 +2286,7 @@ octave_value::do_non_const_unary_op (unary_op op)
       // Genuine.
       int t = type_id ();
 
-      octave::type_info& ti
-        = octave::__get_type_info__ ("do_non_const_unary_op");
+      octave::type_info& ti = octave::__get_type_info__ ("non_const_unary_op");
 
       octave::type_info::non_const_unary_op_fcn f
         = ti.lookup_non_const_unary_op (op, t);
@@ -2858,7 +2350,7 @@ octave_value::do_non_const_unary_op (unary_op op)
       if (rep->count == 1)
         {
           octave::type_info& ti
-            = octave::__get_type_info__ ("do_non_const_unary_op");
+            = octave::__get_type_info__ ("non_const_unary_op");
 
           f = ti.lookup_non_const_unary_op (op, t);
         }
@@ -2866,18 +2358,18 @@ octave_value::do_non_const_unary_op (unary_op op)
       if (f)
         f (*rep);
       else
-        *this = do_unary_op (op, *this);
+        *this = octave::unary_op (op, *this);
     }
 
   return *this;
 }
 
 octave_value&
-octave_value::do_non_const_unary_op (unary_op op, const std::string& type,
-                                     const std::list<octave_value_list>& idx)
+octave_value::non_const_unary_op (unary_op op, const std::string& type,
+                                  const std::list<octave_value_list>& idx)
 {
   if (idx.empty ())
-    do_non_const_unary_op (op);
+    non_const_unary_op (op);
   else
     {
       // FIXME: only do the following stuff if we can't find a
@@ -2985,6 +2477,514 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
     }
   else
     return octave_value (rhs.empty_clone ());
+}
+
+namespace octave
+{
+  OCTAVE_NORETURN static void
+  err_binary_op (const std::string& on, const std::string& tn1,
+                 const std::string& tn2)
+  {
+    error ("binary operator '%s' not implemented for '%s' by '%s' operations",
+           on.c_str (), tn1.c_str (), tn2.c_str ());
+  }
+
+  OCTAVE_NORETURN static void
+  err_binary_op_conv (const std::string& on)
+  {
+    error ("type conversion failed for binary operator '%s'", on.c_str ());
+  }
+
+  octave_value
+  binary_op (type_info& ti, octave_value::binary_op op,
+             const octave_value& v1, const octave_value& v2)
+  {
+    octave_value retval;
+
+    int t1 = v1.type_id ();
+    int t2 = v2.type_id ();
+
+    if (t1 == octave_class::static_type_id ()
+        || t2 == octave_class::static_type_id ()
+        || t1 == octave_classdef::static_type_id ()
+        || t2 == octave_classdef::static_type_id ())
+      {
+        type_info::binary_class_op_fcn f = ti.lookup_binary_class_op (op);
+
+        if (! f)
+          err_binary_op (octave_value::binary_op_as_string (op),
+                         v1.class_name (), v2.class_name ());
+
+        retval = f (v1, v2);
+      }
+    else
+      {
+        // FIXME: we need to handle overloading operators for built-in
+        // classes (double, char, int8, etc.)
+
+        type_info::binary_op_fcn f
+          = ti.lookup_binary_op (op, t1, t2);
+
+        if (f)
+          retval = f (v1.get_rep (), v2.get_rep ());
+        else
+          {
+            octave_value tv1;
+            octave_base_value::type_conv_info cf1
+              = v1.numeric_conversion_function ();
+
+            octave_value tv2;
+            octave_base_value::type_conv_info cf2
+              = v2.numeric_conversion_function ();
+
+            // Try biased (one-sided) conversions first.
+            if (cf2.type_id () >= 0
+                && ti.lookup_binary_op (op, t1, cf2.type_id ()))
+              cf1 = nullptr;
+            else if (cf1.type_id () >= 0
+                     && ti.lookup_binary_op (op, cf1.type_id (), t2))
+              cf2 = nullptr;
+
+            if (cf1)
+              {
+                octave_base_value *tmp = cf1 (v1.get_rep ());
+
+                if (! tmp)
+                  err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+                tv1 = octave_value (tmp);
+                t1 = tv1.type_id ();
+              }
+            else
+              tv1 = v1;
+
+            if (cf2)
+              {
+                octave_base_value *tmp = cf2 (v2.get_rep ());
+
+                if (! tmp)
+                  err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+                tv2 = octave_value (tmp);
+                t2 = tv2.type_id ();
+              }
+            else
+              tv2 = v2;
+
+            if (cf1 || cf2)
+              {
+                retval = binary_op (op, tv1, tv2);
+              }
+            else
+              {
+                //demote double -> single and try again
+                cf1 = tv1.numeric_demotion_function ();
+
+                cf2 = tv2.numeric_demotion_function ();
+
+                // Try biased (one-sided) conversions first.
+                if (cf2.type_id () >= 0
+                    && ti.lookup_binary_op (op, t1, cf2.type_id ()))
+                  cf1 = nullptr;
+                else if (cf1.type_id () >= 0
+                         && ti.lookup_binary_op (op, cf1.type_id (), t2))
+                  cf2 = nullptr;
+
+                if (cf1)
+                  {
+                    octave_base_value *tmp = cf1 (tv1.get_rep ());
+
+                    if (! tmp)
+                      err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+                    tv1 = octave_value (tmp);
+                    t1 = tv1.type_id ();
+                  }
+
+                if (cf2)
+                  {
+                    octave_base_value *tmp = cf2 (tv2.get_rep ());
+
+                    if (! tmp)
+                      err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+                    tv2 = octave_value (tmp);
+                    t2 = tv2.type_id ();
+                  }
+
+                if (! cf1 && ! cf2)
+                  err_binary_op (octave_value::binary_op_as_string (op),
+                                 v1.type_name (), v2.type_name ());
+
+                f = ti.lookup_binary_op (op, t1, t2);
+
+                if (! f)
+                  err_binary_op (octave_value::binary_op_as_string (op),
+                                 v1.type_name (), v2.type_name ());
+
+                retval = f (tv1.get_rep (), tv2.get_rep ());
+              }
+          }
+      }
+
+    return retval;
+  }
+
+  octave_value
+  binary_op (octave_value::binary_op op, const octave_value& v1,
+             const octave_value& v2)
+  {
+    type_info& ti = __get_type_info__ ("binary_op");
+
+    return binary_op (ti, op, v1, v2);
+  }
+
+  static octave_value
+  decompose_binary_op (type_info& ti, octave_value::compound_binary_op op,
+                       const octave_value& v1, const octave_value& v2)
+  {
+    switch (op)
+      {
+      case octave_value::op_trans_mul:
+        return binary_op (octave_value::op_mul,
+                          unary_op (octave_value::op_transpose, v1), v2);
+
+      case octave_value::op_mul_trans:
+        return binary_op (ti, octave_value::op_mul,
+                          v1, unary_op (octave_value::op_transpose, v2));
+
+      case octave_value::op_herm_mul:
+        return binary_op (ti, octave_value::op_mul,
+                          unary_op (octave_value::op_hermitian, v1), v2);
+
+      case octave_value::op_mul_herm:
+        return binary_op (ti, octave_value::op_mul,
+                          v1, unary_op (octave_value::op_hermitian, v2));
+
+      case octave_value::op_trans_ldiv:
+        return binary_op (ti, octave_value::op_ldiv,
+                          unary_op (octave_value::op_transpose, v1), v2);
+
+      case octave_value::op_herm_ldiv:
+        return binary_op (ti, octave_value::op_ldiv,
+                          unary_op (octave_value::op_hermitian, v1), v2);
+
+      case octave_value::op_el_not_and:
+        return binary_op (ti, octave_value::op_el_and,
+                          unary_op (octave_value::op_not, v1), v2);
+
+      case octave_value::op_el_not_or:
+        return binary_op (ti, octave_value::op_el_or,
+                          unary_op (octave_value::op_not, v1), v2);
+
+      case octave_value::op_el_and_not:
+        return binary_op (ti, octave_value::op_el_and,
+                          v1, unary_op (octave_value::op_not, v2));
+
+      case octave_value::op_el_or_not:
+        return binary_op (ti, octave_value::op_el_or,
+                          v1, unary_op (octave_value::op_not, v2));
+
+      default:
+        error ("invalid compound operator");
+      }
+  }
+
+  octave_value
+  binary_op (type_info& ti, octave_value::compound_binary_op op,
+             const octave_value& v1, const octave_value& v2)
+  {
+    octave_value retval;
+
+    int t1 = v1.type_id ();
+    int t2 = v2.type_id ();
+
+    if (t1 == octave_class::static_type_id ()
+        || t2 == octave_class::static_type_id ()
+        || t1 == octave_classdef::static_type_id ()
+        || t2 == octave_classdef::static_type_id ())
+      {
+        type_info::binary_class_op_fcn f = ti.lookup_binary_class_op (op);
+
+        if (f)
+          retval = f (v1, v2);
+        else
+          retval = decompose_binary_op (ti, op, v1, v2);
+      }
+    else
+      {
+        type_info::binary_op_fcn f = ti.lookup_binary_op (op, t1, t2);
+
+        if (f)
+          retval = f (v1.get_rep (), v2.get_rep ());
+        else
+          retval = decompose_binary_op (ti, op, v1, v2);
+      }
+
+    return retval;
+  }
+
+  octave_value
+  binary_op (octave_value::compound_binary_op op,
+             const octave_value& v1, const octave_value& v2)
+  {
+    type_info& ti = __get_type_info__ ("binary_op");
+
+    return binary_op (ti, op, v1, v2);
+  }
+
+  OCTAVE_NORETURN static void
+  err_cat_op (const std::string& tn1, const std::string& tn2)
+  {
+    error ("concatenation operator not implemented for '%s' by '%s' operations",
+           tn1.c_str (), tn2.c_str ());
+  }
+
+  OCTAVE_NORETURN static void
+  err_cat_op_conv (void)
+  {
+    error ("type conversion failed for concatenation operator");
+  }
+
+  octave_value
+  cat_op (type_info& ti, const octave_value& v1,
+          const octave_value& v2, const Array<octave_idx_type>& ra_idx)
+  {
+    octave_value retval;
+
+    // Can't rapid return for concatenation with an empty object here as
+    // something like cat(1,[],single([]) must return the correct type.
+
+    int t1 = v1.type_id ();
+    int t2 = v2.type_id ();
+
+    type_info::cat_op_fcn f = ti.lookup_cat_op (t1, t2);
+
+    if (f)
+      retval = f (v1.get_rep (), v2.get_rep (), ra_idx);
+    else
+      {
+        octave_value tv1;
+        octave_base_value::type_conv_info cf1 = v1.numeric_conversion_function ();
+
+        octave_value tv2;
+        octave_base_value::type_conv_info cf2 = v2.numeric_conversion_function ();
+
+        // Try biased (one-sided) conversions first.
+        if (cf2.type_id () >= 0 && ti.lookup_cat_op (t1, cf2.type_id ()))
+          cf1 = nullptr;
+        else if (cf1.type_id () >= 0 && ti.lookup_cat_op (cf1.type_id (), t2))
+          cf2 = nullptr;
+
+        if (cf1)
+          {
+            octave_base_value *tmp = cf1 (v1.get_rep ());
+
+            if (! tmp)
+              err_cat_op_conv ();
+
+            tv1 = octave_value (tmp);
+            t1 = tv1.type_id ();
+          }
+        else
+          tv1 = v1;
+
+        if (cf2)
+          {
+            octave_base_value *tmp = cf2 (v2.get_rep ());
+
+            if (! tmp)
+              err_cat_op_conv ();
+
+            tv2 = octave_value (tmp);
+            t2 = tv2.type_id ();
+          }
+        else
+          tv2 = v2;
+
+        if (! cf1 && ! cf2)
+          err_cat_op (v1.type_name (), v2.type_name ());
+
+        retval = cat_op (ti, tv1, tv2, ra_idx);
+      }
+
+    return retval;
+  }
+
+  octave_value
+  cat_op (const octave_value& v1, const octave_value& v2,
+          const Array<octave_idx_type>& ra_idx)
+  {
+    type_info& ti = __get_type_info__ ("cat_op");
+
+    return cat_op (ti, v1, v2, ra_idx);
+  }
+
+  octave_value
+  colon_op (const octave_value& base, const octave_value& increment,
+            const octave_value& limit, bool is_for_cmd_expr)
+  {
+    octave_value retval;
+
+    if (base.isobject () || increment.isobject () || limit.isobject ())
+      {
+        octave_value_list tmp1;
+
+        if (increment.is_defined ())
+          {
+            tmp1(2) = limit;
+            tmp1(1) = increment;
+            tmp1(0) = base;
+          }
+        else
+          {
+            tmp1(1) = limit;
+            tmp1(0) = base;
+          }
+
+        interpreter& interp = __get_interpreter__ ("colon_op");
+
+        symbol_table& symtab = interp.get_symbol_table ();
+
+        octave_value fcn = symtab.find_function ("colon", tmp1);
+
+        if (fcn.is_defined ())
+          {
+            octave_value_list tmp2 = interp.feval (fcn, tmp1, 1);
+
+            return tmp2 (0);
+          }
+      }
+
+    bool result_is_str = (base.is_string () && limit.is_string ());
+    bool dq_str = (base.is_dq_string () || limit.is_dq_string ());
+
+    if (base.numel () > 1 || limit.numel () > 1
+        || (increment.is_defined () && increment.numel () > 1))
+      warning_with_id ("Octave:colon-nonscalar-argument",
+                       "colon arguments should be scalars");
+
+    if (base.iscomplex () || limit.iscomplex ()
+        || (increment.is_defined () && increment.iscomplex ()))
+      warning_with_id ("Octave:colon-complex-argument",
+                       "imaginary part of complex colon arguments is ignored");
+
+    Matrix m_base, m_limit, m_increment;
+
+    try
+      {
+        m_base = base.matrix_value (true);
+      }
+    catch (execution_exception& e)
+      {
+        error (e, "invalid base value in colon expression");
+      }
+
+    try
+      {
+        m_limit = limit.matrix_value (true);
+      }
+    catch (execution_exception& e)
+      {
+        error (e, "invalid limit value in colon expression");
+      }
+
+    try
+      {
+        m_increment = (increment.is_defined ()
+                       ? increment.matrix_value (true)
+                       : Matrix (1, 1, 1.0));
+      }
+    catch (execution_exception& e)
+      {
+        error (e, "invalid increment value in colon expression");
+      }
+
+    bool base_empty = m_base.isempty ();
+    bool limit_empty = m_limit.isempty ();
+    bool increment_empty = m_increment.isempty ();
+
+    if (base_empty || limit_empty || increment_empty)
+      retval = Range ();
+    else
+      {
+        Range r (m_base(0), m_limit(0), m_increment(0));
+
+        // For compatibility with Matlab, don't allow the range used in
+        // a FOR loop expression to be converted to a Matrix.
+
+        retval = octave_value (r, is_for_cmd_expr);
+
+        if (result_is_str)
+          retval = (retval.convert_to_str (false, true, dq_str ? '"' : '\''));
+      }
+
+    return retval;
+  }
+
+  OCTAVE_NORETURN static void
+  err_unary_op_conv (const std::string& on)
+  {
+    error ("type conversion failed for unary operator '%s'", on.c_str ());
+  }
+
+  octave_value
+  unary_op (type_info& ti, octave_value::unary_op op,
+            const octave_value& v)
+  {
+    octave_value retval;
+
+    int t = v.type_id ();
+
+    if (t == octave_class::static_type_id ()
+        || t == octave_classdef::static_type_id ())
+      {
+        type_info::unary_class_op_fcn f = ti.lookup_unary_class_op (op);
+
+        if (! f)
+          err_unary_op (octave_value::unary_op_as_string (op), v.class_name ());
+
+        retval = f (v);
+      }
+    else
+      {
+        // FIXME: we need to handle overloading operators for built-in
+        // classes (double, char, int8, etc.)
+
+        type_info::unary_op_fcn f = ti.lookup_unary_op (op, t);
+
+        if (f)
+          retval = f (v.get_rep ());
+        else
+          {
+            octave_value tv;
+            octave_base_value::type_conv_fcn cf
+              = v.numeric_conversion_function ();
+
+            if (! cf)
+              err_unary_op (octave_value::unary_op_as_string (op),
+                            v.type_name ());
+
+            octave_base_value *tmp = cf (v.get_rep ());
+
+            if (! tmp)
+              err_unary_op_conv (octave_value::unary_op_as_string (op));
+
+            tv = octave_value (tmp);
+            retval = unary_op (op, tv);
+          }
+      }
+
+    return retval;
+  }
+
+  octave_value
+  unary_op (octave_value::unary_op op, const octave_value& v)
+  {
+    type_info& ti = __get_type_info__ ("unary_op");
+
+    return unary_op (ti, op, v);
+  }
 }
 
 void

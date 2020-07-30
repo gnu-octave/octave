@@ -427,7 +427,7 @@ public:
     (new OCTAVE_VALUE_INT_MATRIX_T
      (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION ()));
 
-    return tmp.do_index_op (idx, resize_ok);
+    return tmp.index_op (idx, resize_ok);
   }
 
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }

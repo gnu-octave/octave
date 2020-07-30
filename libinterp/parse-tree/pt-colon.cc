@@ -73,6 +73,6 @@ namespace octave
         ov_limit = m_limit->evaluate (tw);
       }
 
-    return do_colon_op (ov_base, ov_increment, ov_limit, is_for_cmd_expr ());
+    return colon_op (ov_base, ov_increment, ov_limit, is_for_cmd_expr ());
   }
 }

@@ -165,7 +165,7 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
     {
       octave_value tmp (new octave_matrix (range.matrix_value ()));
 
-      return tmp.do_index_op (idx, resize_ok);
+      return tmp.index_op (idx, resize_ok);
     }
 }
 

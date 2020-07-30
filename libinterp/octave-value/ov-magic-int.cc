@@ -81,7 +81,7 @@ octave_base_magic_int<T>::do_index_op (const octave_value_list& idx,
 {
   octave_value tmp (double_value ());
 
-  return tmp.do_index_op (idx, resize_ok);
+  return tmp.index_op (idx, resize_ok);
 }
 
 template <typename T>

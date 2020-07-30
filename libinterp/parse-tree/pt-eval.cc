@@ -2606,9 +2606,9 @@ namespace octave
                 if (m_echo_state)
                   m_echo_file_pos = line;
 
-                // do_index_op expects one-based indices.
+                // index_op expects one-based indices.
                 idx(iidx) = i;
-                octave_value val = arg.do_index_op (idx);
+                octave_value val = arg.index_op (idx);
 
                 ult.assign (octave_value::op_asn_eq, val);
 

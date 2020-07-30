@@ -140,7 +140,7 @@ octave_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 
   octave_value tmp (new octave_complex_matrix (complex_matrix_value ()));
 
-  return tmp.do_index_op (idx, resize_ok);
+  return tmp.index_op (idx, resize_ok);
 }
 
 // Can't make an index_vector from a complex number.  Throw an error.

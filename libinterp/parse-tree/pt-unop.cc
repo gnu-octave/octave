@@ -71,7 +71,7 @@ namespace octave
             profiler::enter<tree_prefix_expression>
               block (tw.get_profiler (), *this);
 
-            op_ref.do_unary_op (m_etype);
+            op_ref.unary_op (m_etype);
 
             val = op_ref.value ();
           }
@@ -87,14 +87,14 @@ namespace octave
                 // Attempt to do the operation in-place if it is unshared
                 // (a temporary expression).
                 if (op_val.get_count () == 1)
-                  val = op_val.do_non_const_unary_op (m_etype);
+                  val = op_val.non_const_unary_op (m_etype);
                 else
                   {
                     interpreter& interp = tw.get_interpreter ();
 
                     type_info& ti = interp.get_type_info ();
 
-                    val = ::do_unary_op (ti, m_etype, op_val);
+                    val = unary_op (ti, m_etype, op_val);
                   }
               }
           }
@@ -134,7 +134,7 @@ namespace octave
             profiler::enter<tree_postfix_expression>
               block (tw.get_profiler (), *this);
 
-            ref.do_unary_op (m_etype);
+            ref.unary_op (m_etype);
           }
         else
           {
@@ -149,7 +149,7 @@ namespace octave
 
                 type_info& ti = interp.get_type_info ();
 
-                val = ::do_unary_op (ti, m_etype, op_val);
+                val = unary_op (ti, m_etype, op_val);
               }
           }
       }

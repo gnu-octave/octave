@@ -1955,7 +1955,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
               // Can't fast return here to skip empty matrices as something
               // like cat (1,[],single ([])) must return an empty matrix of
               // the right type.
-              tmp = do_cat_op (tmp, args(j), ra_idx);
+              tmp = octave::cat_op (tmp, args(j), ra_idx);
 
               dim_vector dv_tmp = args(j).dims ();
 
@@ -5955,7 +5955,7 @@ unary_op_defun_body (octave_value::unary_op op,
   if (args.length () != 1)
     print_usage ();
 
-  return do_unary_op (op, args(0));
+  return octave::unary_op (op, args(0));
 }
 
 DEFUN (not, args, ,
@@ -6061,7 +6061,7 @@ binary_op_defun_body (octave_value::binary_op op,
   if (args.length () != 2)
     print_usage ();
 
-  return do_binary_op (op, args(0), args(1));
+  return octave::binary_op (op, args(0), args(1));
 }
 
 static octave_value
@@ -6077,10 +6077,10 @@ binary_assoc_op_defun_body (octave_value::binary_op op,
   octave_value retval;
 
   if (nargin == 2)
-    retval = do_binary_op (op, args(0), args(1));
+    retval = octave::binary_op (op, args(0), args(1));
   else
     {
-      retval = do_binary_op (op, args(0), args(1));
+      retval = octave::binary_op (op, args(0), args(1));
 
       for (int i = 2; i < nargin; i++)
         retval.assign (aop, args(i));
@@ -6375,8 +6375,9 @@ This function is equivalent to the operator syntax
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  return (nargin == 2 ? do_colon_op (args(0), args(1))
-                      : do_colon_op (args(0), args(1), args(2)));
+  return (nargin == 2
+          ? octave::colon_op (args(0), args(1))
+          : octave::colon_op (args(0), args(1), args(2)));
 }
 
 static double tic_toc_timestamp = -1.0;

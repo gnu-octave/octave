@@ -465,15 +465,15 @@ namespace octave
         varref (sym).assign (op, type, idx, rhs);
     }
 
-    void do_non_const_unary_op (octave_value::unary_op op,
+    void non_const_unary_op (octave_value::unary_op op,
                                 const symbol_record& sym,
                                 const std::string& type,
                                 const std::list<octave_value_list>& idx)
     {
       if (idx.empty ())
-        varref (sym).do_non_const_unary_op (op);
+        varref (sym).non_const_unary_op (op);
       else
-        varref (sym).do_non_const_unary_op (op, type, idx);
+        varref (sym).non_const_unary_op (op, type, idx);
     }
 
     octave_value value (const symbol_record& sym, const std::string& type,

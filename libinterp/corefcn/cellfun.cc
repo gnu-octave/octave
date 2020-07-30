@@ -1244,7 +1244,7 @@ arrayfun (@@str2num, [1234],
               for (int j = 0; j < nargin; j++)
                 {
                   if (mask[j])
-                    inputlist.xelem (j) = inputs[j].do_index_op (idx_list);
+                    inputlist.xelem (j) = inputs[j].index_op (idx_list);
                 }
 
               const octave_value_list tmp
@@ -1336,7 +1336,7 @@ arrayfun (@@str2num, [1234],
               for (int j = 0; j < nargin; j++)
                 {
                   if (mask[j])
-                    inputlist.xelem (j) = inputs[j].do_index_op (idx_list);
+                    inputlist.xelem (j) = inputs[j].index_op (idx_list);
                 }
 
               const octave_value_list tmp
@@ -2085,7 +2085,7 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
       for (int i = 0; i < nd; i++)
         ra_idx(i) = idx[i][ridx[i]];
 
-      retval.xelem (j) = a.do_index_op (ra_idx);
+      retval.xelem (j) = a.index_op (ra_idx);
 
       rdv.increment_index (ridx);
     }
@@ -2420,7 +2420,7 @@ slicing is done along the first non-singleton dimension.
       for (octave_idx_type i = 0; i < n; i++)
         {
           idx(dim) = Range (lb(i), ub(i));
-          retcell.xelem (i) = x.do_index_op (idx);
+          retcell.xelem (i) = x.index_op (idx);
         }
     }
 
@@ -2471,7 +2471,7 @@ indexing keyword @code{end} is not available.
 
       octave_value tmp = x(i);
 
-      y.xelem (i) = tmp.do_index_op (idx);
+      y.xelem (i) = tmp.index_op (idx);
     }
 
   return octave_value (y);

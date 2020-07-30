@@ -94,10 +94,10 @@ namespace octave
     return retval;
   }
 
-  void octave_lvalue::do_unary_op (octave_value::unary_op op)
+  void octave_lvalue::unary_op (octave_value::unary_op op)
   {
     if (! is_black_hole ())
-      m_frame->do_non_const_unary_op (op, m_sym, m_type, m_idx);
+      m_frame->non_const_unary_op (op, m_sym, m_type, m_idx);
   }
 
   octave_value octave_lvalue::value (void) const

@@ -128,7 +128,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
       if (nidx == 2 && ! resize_ok && idx0.is_scalar () && idx1.is_scalar ())
         retval = matrix.checkelem (idx0(0), idx1(0));
       else
-        retval = to_dense ().do_index_op (idx, resize_ok);
+        retval = to_dense ().index_op (idx, resize_ok);
     }
 
   return retval;

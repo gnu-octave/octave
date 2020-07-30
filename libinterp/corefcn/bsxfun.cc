@@ -540,7 +540,7 @@ as the other array.
                         {
                           have_NDArray = false;
                           C = result_NDArray;
-                          C = do_cat_op (C, tmp(0), ra_idx);
+                          C = octave::cat_op (C, tmp(0), ra_idx);
                         }
                       else if (tmp(0).isreal ())
                         result_NDArray.insert (tmp(0).array_value (), ra_idx);
@@ -560,7 +560,7 @@ as the other array.
                         {
                           have_FloatNDArray = false;
                           C = result_FloatNDArray;
-                          C = do_cat_op (C, tmp(0), ra_idx);
+                          C = octave::cat_op (C, tmp(0), ra_idx);
                         }
                       else if (tmp(0).isreal ())
                         result_FloatNDArray.insert
@@ -583,7 +583,7 @@ as the other array.
                         {                                               \
                           have_ ## T = false;                           \
                           C = result_ ## T;                             \
-                          C = do_cat_op (C, tmp(0), ra_idx);            \
+                          C = octave::cat_op (C, tmp(0), ra_idx);       \
                         }                                               \
                       else                                              \
                         result_ ## T .insert (tmp(0). EXTRACTOR ## _array_value (), ra_idx); \
@@ -601,7 +601,7 @@ as the other array.
                   else if BSXLOOP(uint32NDArray, "uint32", uint32)
                   else if BSXLOOP(uint64NDArray, "uint64", uint64)
                   else
-                    C = do_cat_op (C, tmp(0), ra_idx);
+                    C = octave::cat_op (C, tmp(0), ra_idx);
                 }
             }
 

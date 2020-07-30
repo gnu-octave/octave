@@ -130,7 +130,7 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
                   retval = rm;
                 }
               else
-                retval = to_dense ().do_index_op (idx, resize_ok);
+                retval = to_dense ().index_op (idx, resize_ok);
             }
         }
       catch (octave::index_exception& e)
@@ -141,7 +141,7 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
         }
     }
   else
-    retval = to_dense ().do_index_op (idx, resize_ok);
+    retval = to_dense ().index_op (idx, resize_ok);
 
   return retval;
 }

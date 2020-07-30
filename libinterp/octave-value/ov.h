@@ -64,17 +64,6 @@ class octave_value_list;
 #include "oct-stream.h"
 #include "ov-base.h"
 
-// Forward declarations of friend functions that have default arguments.
-
-OCTINTERP_API octave_value do_colon_op (const octave_value& base,
-                                        const octave_value& limit,
-                                        bool is_for_cmd_expr = false);
-
-OCTINTERP_API octave_value do_colon_op (const octave_value& base,
-                                        const octave_value& increment,
-                                        const octave_value& limit,
-                                        bool is_for_cmd_expr = false);
-
 class
 OCTINTERP_API
 octave_value
@@ -474,9 +463,17 @@ public:
                              std::list<octave_value_list>& idx,
                              size_t skip = 1);
 
+  octave_value index_op (const octave_value_list& idx, bool resize_ok = false)
+  {
+    return rep->do_index_op (idx, resize_ok);
+  }
+
+  OCTAVE_DEPRECATED (7, "use 'octave_value::index_op' instead")
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)
-  { return rep->do_index_op (idx, resize_ok); }
+  {
+    return index_op (idx, resize_ok);
+  }
 
   octave_value subsasgn (const std::string& type,
                          const std::list<octave_value_list>& idx,
@@ -1260,39 +1257,27 @@ public:
 
   std::string class_name (void) const { return rep->class_name (); }
 
-  // Unary and binary operations.
+  // Unary operations that are member functions.  There are also some
+  // non-member functions for unary and binary operations declared
+  // below, outside of the octave_value class declaration.
 
-  friend OCTINTERP_API octave_value
-  do_unary_op (octave::type_info& ti, unary_op op, const octave_value& a);
+  octave_value& non_const_unary_op (unary_op op);
 
-  octave_value& do_non_const_unary_op (unary_op op);
-
-  octave_value& do_non_const_unary_op (unary_op op, const std::string& type,
-                                       const std::list<octave_value_list>& idx);
-
-  friend OCTINTERP_API octave_value
-  do_binary_op (octave::type_info& ti, binary_op op,
-                const octave_value& a, const octave_value& b);
-
-  friend OCTINTERP_API octave_value
-  do_binary_op (octave::type_info& ti, compound_binary_op op,
-                const octave_value& a, const octave_value& b);
-
-  friend OCTINTERP_API octave_value
-  do_cat_op (octave::type_info& ti, const octave_value& a,
-             const octave_value& b, const Array<octave_idx_type>& ra_idx);
-
-  friend OCTINTERP_API octave_value do_colon_op (const octave_value& base,
-                                                 const octave_value& limit,
-                                                 bool is_for_cmd_expr)
+  OCTAVE_DEPRECATED (7, "use 'octave_value::non_const_unary_op' instead")
+  octave_value& do_non_const_unary_op (unary_op op)
   {
-    return do_colon_op (base, octave_value (), limit, is_for_cmd_expr);
+    return non_const_unary_op (op);
   }
 
-  friend OCTINTERP_API octave_value do_colon_op (const octave_value& base,
-                                                 const octave_value& increment,
-                                                 const octave_value& limit,
-                                                 bool is_for_cmd_expr);
+  octave_value& non_const_unary_op (unary_op op, const std::string& type,
+                                    const std::list<octave_value_list>& idx);
+
+  OCTAVE_DEPRECATED (7, "use 'octave_value::non_const_unary_op' instead")
+  octave_value& do_non_const_unary_op (unary_op op, const std::string& type,
+                                       const std::list<octave_value_list>& idx)
+  {
+    return non_const_unary_op (op, type, idx);
+  }
 
   const octave_base_value& get_rep (void) const { return *rep; }
 
@@ -1488,45 +1473,137 @@ private:
 
 };
 
-// Publish externally used friend functions.  Which compiler requires
-// these extra declarations?
+// Non-member unary and binary operations on octave_value objects.
 
-extern OCTINTERP_API octave_value
+namespace octave
+{
+  extern OCTINTERP_API octave_value
+  unary_op (octave::type_info& ti, octave_value::unary_op op,
+            const octave_value& a);
+
+  extern OCTINTERP_API octave_value
+  unary_op (octave_value::unary_op op, const octave_value& a);
+
+  extern OCTINTERP_API octave_value
+  binary_op (octave::type_info& ti, octave_value::binary_op op,
+             const octave_value& a, const octave_value& b);
+
+  extern OCTINTERP_API octave_value
+  binary_op (octave::type_info& ti, octave_value::compound_binary_op op,
+             const octave_value& a, const octave_value& b);
+
+  extern OCTINTERP_API octave_value
+  binary_op (octave_value::binary_op op, const octave_value& a,
+             const octave_value& b);
+
+  extern OCTINTERP_API octave_value
+  binary_op (octave_value::compound_binary_op op, const octave_value& a,
+             const octave_value& b);
+
+  extern OCTINTERP_API octave_value
+  cat_op (octave::type_info& ti, const octave_value& a,
+          const octave_value& b, const Array<octave_idx_type>& ra_idx);
+
+  extern OCTINTERP_API octave_value
+  cat_op (const octave_value& a, const octave_value& b,
+          const Array<octave_idx_type>& ra_idx);
+
+  extern OCTINTERP_API octave_value
+  colon_op (const octave_value& base, const octave_value& increment,
+            const octave_value& limit, bool is_for_cmd_expr = false);
+
+  inline octave_value
+  colon_op (const octave_value& base, const octave_value& limit,
+            bool is_for_cmd_expr = false)
+  {
+    return colon_op (base, octave_value (), limit, is_for_cmd_expr);
+  }
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::unary_op' instead")
+inline octave_value
 do_unary_op (octave::type_info& ti, octave_value::unary_op op,
-             const octave_value& a);
+             const octave_value& a)
+{
+  return octave::unary_op (ti, op, a);
+}
 
-extern OCTINTERP_API octave_value
-do_unary_op (octave_value::unary_op op, const octave_value& a);
+OCTAVE_DEPRECATED (7, "use 'octave::unary_op' instead")
+inline octave_value
+do_unary_op (octave_value::unary_op op, const octave_value& a)
+{
+  return octave::unary_op (op, a);
 
-extern OCTINTERP_API octave_value
+}
+OCTAVE_DEPRECATED (7, "use 'octave::binary_op' instead")
+inline octave_value
 do_binary_op (octave::type_info& ti, octave_value::binary_op op,
-              const octave_value& a, const octave_value& b);
+              const octave_value& a, const octave_value& b)
+{
+  return octave::binary_op (ti, op, a, b);
+}
 
-extern OCTINTERP_API octave_value
+OCTAVE_DEPRECATED (7, "use 'octave::binary_op' instead")
+inline octave_value
 do_binary_op (octave::type_info& ti, octave_value::compound_binary_op op,
-              const octave_value& a, const octave_value& b);
+              const octave_value& a, const octave_value& b)
+{
+  return octave::binary_op (ti, op, a, b);
+}
 
-extern OCTINTERP_API octave_value
+OCTAVE_DEPRECATED (7, "use 'octave::binary_op' instead")
+inline octave_value
 do_binary_op (octave_value::binary_op op, const octave_value& a,
-              const octave_value& b);
+              const octave_value& b)
+{
+  return octave::binary_op (op, a, b);
+}
 
-extern OCTINTERP_API octave_value
+OCTAVE_DEPRECATED (7, "use 'octave::binary_op' instead")
+inline octave_value
 do_binary_op (octave_value::compound_binary_op op, const octave_value& a,
-              const octave_value& b);
+              const octave_value& b)
+{
+  return octave::binary_op (op, a, b);
+}
 
-extern OCTINTERP_API octave_value
+OCTAVE_DEPRECATED (7, "use 'octave::cat_op' instead")
+inline octave_value
 do_cat_op (octave::type_info& ti, const octave_value& a,
-           const octave_value& b, const Array<octave_idx_type>& ra_idx);
+           const octave_value& b, const Array<octave_idx_type>& ra_idx)
+{
+  return octave::cat_op (ti, a, b, ra_idx);
+}
 
-extern OCTINTERP_API octave_value
+OCTAVE_DEPRECATED (7, "use 'octave::cat_op' instead")
+inline octave_value
 do_cat_op (const octave_value& a, const octave_value& b,
-           const Array<octave_idx_type>& ra_idx);
+           const Array<octave_idx_type>& ra_idx)
+{
+  return octave::cat_op (a, b, ra_idx);
+}
 
-#define OV_UNOP_FN(name)                        \
-  inline octave_value                           \
-  name (const octave_value& a)                  \
-  {                                             \
-    return do_unary_op (octave_value::name, a); \
+OCTAVE_DEPRECATED (7, "use 'octave::colon_op' instead")
+inline octave_value
+do_colon_op (const octave_value& base, const octave_value& increment,
+             const octave_value& limit, bool is_for_cmd_expr = false)
+{
+  return octave::colon_op (base, increment, limit, is_for_cmd_expr);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::colon_op' instead")
+inline octave_value
+do_colon_op (const octave_value& base, const octave_value& limit,
+             bool is_for_cmd_expr = false)
+{
+  return octave::colon_op (base, limit, is_for_cmd_expr);
+}
+
+#define OV_UNOP_FN(name)                                \
+  inline octave_value                                   \
+  name (const octave_value& a)                          \
+  {                                                     \
+    return octave::unary_op (octave_value::name, a);    \
   }
 
 #define OV_UNOP_OP(name, op)                    \
@@ -1552,11 +1629,11 @@ OV_UNOP_FN (op_hermitian)
 //   incr
 //   decr
 
-#define OV_BINOP_FN(name)                               \
-  inline octave_value                                   \
-  name (const octave_value& a1, const octave_value& a2) \
-  {                                                     \
-    return do_binary_op (octave_value::name, a1, a2);   \
+#define OV_BINOP_FN(name)                                       \
+  inline octave_value                                           \
+  name (const octave_value& a1, const octave_value& a2)         \
+  {                                                             \
+    return octave::binary_op (octave_value::name, a1, a2);      \
   }
 
 #define OV_BINOP_OP(name, op)                                   \
@@ -1594,11 +1671,11 @@ OV_BINOP_FN (op_el_or)
 
 OV_BINOP_FN (op_struct_ref)
 
-#define OV_COMP_BINOP_FN(name)                          \
-  inline octave_value                                   \
-  name (const octave_value& a1, const octave_value& a2) \
-  {                                                     \
-    return do_binary_op (octave_value::name, a1, a2);   \
+#define OV_COMP_BINOP_FN(name)                                  \
+  inline octave_value                                           \
+  name (const octave_value& a1, const octave_value& a2)         \
+  {                                                             \
+    return octave::binary_op (octave_value::name, a1, a2);      \
   }
 
 OV_COMP_BINOP_FN (op_trans_mul)

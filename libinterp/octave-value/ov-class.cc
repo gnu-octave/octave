@@ -838,8 +838,8 @@ octave_class::index_vector (bool require_integers) const
   // (why this inconsistency Mathworks?), and so we must
   // add one to the value returned as the index_vector method
   // expects it to be one based.
-  return do_binary_op (octave_value::op_add, tmp (0),
-                       octave_value (1.0)).index_vector (require_integers);
+  return octave::binary_op (octave_value::op_add, tmp (0),
+                               octave_value (1.0)).index_vector (require_integers);
 }
 
 size_t

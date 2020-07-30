@@ -80,7 +80,13 @@ namespace octave
 
     bool index_is_colon (void) const;
 
-    void do_unary_op (octave_value::unary_op op);
+    void unary_op (octave_value::unary_op op);
+
+    OCTAVE_DEPRECATED (7, "use 'octave_lvalue::unary_op' instead")
+    void do_unary_op (octave_value::unary_op op)
+    {
+      return unary_op (op);
+    }
 
     octave_value value (void) const;
 

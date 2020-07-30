@@ -190,7 +190,7 @@ due to the limited range of integer objects.
       // exceed intmax.
       octave_value_list tmp;
       tmp(1) = dim + 1;
-      tmp(0) = do_binary_op (octave_value::op_el_mul, argx, argy);
+      tmp(0) = octave::binary_op (octave_value::op_el_mul, argx, argy);
 
       tmp = Fsum (tmp, 1);
       if (! tmp.empty ())

@@ -113,7 +113,7 @@ do_fft (const octave_value_list& args, const char *fcn, int type)
         idx(i) = idx_vector::colon;
       idx(dim) = idx_vector (static_cast<octave_idx_type> (0));
 
-      return arg.do_index_op (idx);
+      return arg.index_op (idx);
     }
 
   if (arg.is_single_type ())

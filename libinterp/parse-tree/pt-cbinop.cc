@@ -54,7 +54,7 @@ namespace octave
 
                 type_info& ti = interp.get_type_info ();
 
-                val = ::do_binary_op (ti, m_etype, a, b);
+                val = binary_op (ti, m_etype, a, b);
               }
           }
       }

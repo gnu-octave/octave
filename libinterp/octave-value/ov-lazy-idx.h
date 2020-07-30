@@ -93,7 +93,7 @@ public:
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)
-  { return make_value ().do_index_op (idx, resize_ok); }
+  { return make_value ().index_op (idx, resize_ok); }
 
   dim_vector dims (void) const { return index.orig_dimensions (); }
 

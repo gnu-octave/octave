@@ -91,8 +91,7 @@ enum builtin_type_t
   btyp_num_types = btyp_unknown
 };
 
-extern OCTINTERP_API std::string
-btyp_class_name [btyp_num_types];
+extern OCTINTERP_API std::string btyp_class_name [];
 
 inline bool btyp_isnumeric (builtin_type_t btyp)
 { return btyp <= btyp_uint64; }
@@ -128,27 +127,40 @@ struct class_to_btyp
   static const builtin_type_t btyp = btyp_unknown;
 };
 
-#define DEF_CLASS_TO_BTYP(CLASS,BTYP)           \
+template <builtin_type_t BTYP>
+struct btyp_to_class
+{
+  typedef void type;
+};
+
+#define DEF_BTYP_TRAITS(BTYP, CLASS)            \
   template <>                                   \
   struct class_to_btyp<CLASS>                   \
   {                                             \
     static const builtin_type_t btyp = BTYP;    \
+  };                                            \
+                                                \
+  template <>                                   \
+  struct btyp_to_class<BTYP>                    \
+  {                                             \
+    typedef CLASS type;                         \
   }
 
-DEF_CLASS_TO_BTYP (double, btyp_double);
-DEF_CLASS_TO_BTYP (float, btyp_float);
-DEF_CLASS_TO_BTYP (Complex, btyp_complex);
-DEF_CLASS_TO_BTYP (FloatComplex, btyp_float_complex);
-DEF_CLASS_TO_BTYP (octave_int8, btyp_int8);
-DEF_CLASS_TO_BTYP (octave_int16, btyp_int16);
-DEF_CLASS_TO_BTYP (octave_int32, btyp_int32);
-DEF_CLASS_TO_BTYP (octave_int64, btyp_int64);
-DEF_CLASS_TO_BTYP (octave_uint8, btyp_uint8);
-DEF_CLASS_TO_BTYP (octave_uint16, btyp_uint16);
-DEF_CLASS_TO_BTYP (octave_uint32, btyp_uint32);
-DEF_CLASS_TO_BTYP (octave_uint64, btyp_uint64);
-DEF_CLASS_TO_BTYP (bool, btyp_bool);
-DEF_CLASS_TO_BTYP (char, btyp_char);
+DEF_BTYP_TRAITS (btyp_double, double);
+DEF_BTYP_TRAITS (btyp_float, float);
+DEF_BTYP_TRAITS (btyp_complex, Complex);
+DEF_BTYP_TRAITS (btyp_float_complex, FloatComplex);
+DEF_BTYP_TRAITS (btyp_int8, octave_int8);
+DEF_BTYP_TRAITS (btyp_int16, octave_int16);
+DEF_BTYP_TRAITS (btyp_int32, octave_int32);
+DEF_BTYP_TRAITS (btyp_int64, octave_int64);
+DEF_BTYP_TRAITS (btyp_uint8, octave_uint8);
+DEF_BTYP_TRAITS (btyp_uint16, octave_uint16);
+DEF_BTYP_TRAITS (btyp_uint32, octave_uint32);
+DEF_BTYP_TRAITS (btyp_uint64, octave_uint64);
+DEF_BTYP_TRAITS (btyp_bool, bool);
+DEF_BTYP_TRAITS (btyp_char, char);
+
 
 // T_ID is the type id of struct objects, set by register_type().
 // T_NAME is the type name of struct objects.

@@ -2820,20 +2820,100 @@ namespace octave
     return cat_op (ti, v1, v2, ra_idx);
   }
 
+  // Unless the colon operator is used with a class or classdef object,
+  // then all arguments must be the same type or mixed with double
+  // values.
+
+  static builtin_type_t
+  get_colon_op_type (builtin_type_t op1_type, builtin_type_t op2_type)
+  {
+    if (op1_type == op2_type)
+      return op1_type;
+
+    if (op1_type == btyp_double)
+      return op2_type;
+
+    if (op2_type == btyp_double)
+      return op1_type;
+
+    return btyp_unknown;
+  }
+
+  static builtin_type_t
+  get_colon_op_type (const octave_value& base, const octave_value& increment,
+                     const octave_value& limit)
+  {
+    builtin_type_t typ
+      = get_colon_op_type (base.builtin_type (), increment.builtin_type ());
+
+    if (typ == btyp_unknown)
+      return typ;
+
+    return get_colon_op_type (typ, limit.builtin_type ());
+  }
+
+  template <typename T>
   octave_value
-  colon_op (const octave_value& base, const octave_value& increment,
-            const octave_value& limit, bool is_for_cmd_expr)
+  make_range (const octave_value& base, const octave_value& increment,
+              const octave_value& limit, bool for_cmd_expr)
+  {
+    if (base.isempty () || increment.isempty () || limit.isempty ())
+      return octave_value (Range (), for_cmd_expr);
+
+    T b = octave_value_extract<T> (base);
+    T i = octave_value_extract<T> (increment);
+    T l = octave_value_extract<T> (limit);
+
+    // FIXME: ultimately, we will eliminate these casts and create range
+    // objects that properly correspond to the type T.
+
+    double db = static_cast<double> (b);
+    double di = static_cast<double> (i);
+    double dl = static_cast<double> (l);
+
+    return octave_value (Range (db, dl, di), for_cmd_expr);
+  }
+
+  template <>
+  octave_value
+  make_range<char> (const octave_value& base, const octave_value& increment,
+                    const octave_value& limit, bool for_cmd_expr)
   {
     octave_value retval;
 
-    if (base.isobject () || increment.isobject () || limit.isobject ())
+    if (base.isempty () || increment.isempty () || limit.isempty ())
+      retval = octave_value (Range (), for_cmd_expr);
+    else
+      {
+        Matrix mtx_base = base.matrix_value (true);
+        Matrix mtx_increment = increment.matrix_value (true);
+        Matrix mtx_limit = limit.matrix_value (true);
+
+        double b = mtx_base(0);
+        double i = mtx_increment(0);
+        double l = mtx_limit(0);
+
+        retval = octave_value (Range (b, l, i), for_cmd_expr);
+      }
+
+    bool dq_str = (base.is_dq_string () || increment.is_dq_string ()
+                   || limit.is_dq_string ());
+
+    return retval.convert_to_str (false, true, dq_str ? '"' : '\'');
+  }
+
+  octave_value
+  colon_op (const octave_value& base, const octave_value& increment_arg,
+            const octave_value& limit, bool is_for_cmd_expr)
+  {
+    if (base.isobject () || increment_arg.isobject () || limit.isobject ())
       {
         octave_value_list tmp1;
 
-        if (increment.is_defined ())
+        if (increment_arg.is_defined ())
           {
             tmp1(2) = limit;
-            tmp1(1) = increment;
+            tmp1(1) = increment_arg;
             tmp1(0) = base;
           }
         else
@@ -2856,70 +2936,66 @@ namespace octave
           }
       }
 
-    bool result_is_str = (base.is_string () && limit.is_string ());
-    bool dq_str = (base.is_dq_string () || limit.is_dq_string ());
+    octave_value increment
+      = increment_arg.is_defined () ? increment_arg : octave_value (1.0);
 
-    if (base.numel () > 1 || limit.numel () > 1
-        || (increment.is_defined () && increment.numel () > 1))
+    if (base.numel () > 1 || limit.numel () > 1 || increment.numel () > 1)
       warning_with_id ("Octave:colon-nonscalar-argument",
                        "colon arguments should be scalars");
 
-    if (base.iscomplex () || limit.iscomplex ()
-        || (increment.is_defined () && increment.iscomplex ()))
+    if (base.iscomplex () || limit.iscomplex () || increment.iscomplex ())
       warning_with_id ("Octave:colon-complex-argument",
                        "imaginary part of complex colon arguments is ignored");
 
-    Matrix m_base, m_limit, m_increment;
+    // FIXME: is there a better way to do this job, maybe using type traits?
 
-    try
+    builtin_type_t type_id = get_colon_op_type (base, increment, limit);
+
+    // For compatibility with Matlab, don't allow the range used in
+    // a FOR loop expression to be converted to a Matrix.
+
+    switch (type_id)
       {
-        m_base = base.matrix_value (true);
-      }
-    catch (execution_exception& e)
-      {
-        error (e, "invalid base value in colon expression");
-      }
+      case btyp_double:
+      case btyp_complex:
+        return make_range<double> (base, increment, limit, is_for_cmd_expr);
 
-    try
-      {
-        m_limit = limit.matrix_value (true);
-      }
-    catch (execution_exception& e)
-      {
-        error (e, "invalid limit value in colon expression");
-      }
+      case btyp_float:
+      case btyp_float_complex:
+        return make_range<float> (base, increment, limit, is_for_cmd_expr);
 
-    try
-      {
-        m_increment = (increment.is_defined ()
-                       ? increment.matrix_value (true)
-                       : Matrix (1, 1, 1.0));
-      }
-    catch (execution_exception& e)
-      {
-        error (e, "invalid increment value in colon expression");
-      }
+      case btyp_int8:
+        return make_range<octave_int8> (base, increment, limit, is_for_cmd_expr);
 
-    bool base_empty = m_base.isempty ();
-    bool limit_empty = m_limit.isempty ();
-    bool increment_empty = m_increment.isempty ();
+      case btyp_int16:
+        return make_range<octave_int16> (base, increment, limit, is_for_cmd_expr);
 
-    if (base_empty || limit_empty || increment_empty)
-      retval = Range ();
-    else
-      {
-        Range r (m_base(0), m_limit(0), m_increment(0));
+      case btyp_int32:
+        return make_range<octave_int32> (base, increment, limit, is_for_cmd_expr);
 
-        // For compatibility with Matlab, don't allow the range used in
-        // a FOR loop expression to be converted to a Matrix.
+      case btyp_int64:
+        return make_range<octave_int64> (base, increment, limit, is_for_cmd_expr);
 
-        retval = octave_value (r, is_for_cmd_expr);
+      case btyp_uint8:
+        return make_range<octave_uint8> (base, increment, limit, is_for_cmd_expr);
 
-        if (result_is_str)
-          retval = (retval.convert_to_str (false, true, dq_str ? '"' : '\''));
+      case btyp_uint16:
+        return make_range<octave_uint16> (base, increment, limit, is_for_cmd_expr);
+
+      case btyp_uint32:
+        return make_range<octave_uint32> (base, increment, limit, is_for_cmd_expr);
+
+      case btyp_uint64:
+        return make_range<octave_uint64> (base, increment, limit, is_for_cmd_expr);
+
+      case btyp_char:
+        return make_range<char> (base, increment, limit, is_for_cmd_expr);
+
+      default:
+        error ("invalid types found in range expression");
       }
 
-    return retval;
+    return octave_value ();
   }
 
   OCTAVE_NORETURN static void

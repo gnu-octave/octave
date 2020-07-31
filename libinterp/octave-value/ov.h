@@ -1516,6 +1516,12 @@ namespace octave
   colon_op (const octave_value& base, const octave_value& limit,
             bool is_for_cmd_expr = false)
   {
+    // Note, we need to pass an undefined octave_value object instead of
+    // octave_value (1.0) so that we can properly detect the
+    // two-argument case and correctly pass just two arguments to any
+    // user-defined function that is provided if either base or limit is
+    // an object.
+
     return colon_op (base, octave_value (), limit, is_for_cmd_expr);
   }
 }

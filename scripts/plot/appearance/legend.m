@@ -1280,10 +1280,17 @@ function update_icon_position (hicon, xdata, ydata)
   endswitch
 endfunction
 
-function pos = boxposition (axpos, pba)
+function pos = boxposition (axpos, pba, pbam, dam)
+
   pos = axpos;
+
+  if (strcmp (pbam, "auto") && strcmp (dam, "auto"))
+    return;
+  endif
+
   pbratio = pba(1)/pba(2);
   posratio = axpos(3)/axpos(4);
+
   if (pbratio != posratio)
     if (posratio < pbratio)
       pos(4) = pos(3) / pbratio;
@@ -1293,6 +1300,7 @@ function pos = boxposition (axpos, pba)
       pos(1) += (axpos(3) - pos(3)) / 2;
     endif
   endif
+
 endfunction
 
 function update_legend_position (hl, sz)
@@ -1349,11 +1357,9 @@ function update_legend_position (hl, sz)
                                              "plotboxaspectratiomode", ...
                                              "plotboxaspectratio", ...
                                              "dataaspectratiomode"}){:};
-    
-    if (strcmp (pbam, "manual") || strcmp (dam, "manual"))
-      axpos = boxposition (axpos, pba);
-    endif
-    
+
+    axpos = boxposition (axpos, pba, pbam, dam);
+
     lpos = [get(hl, "position")(1:2), sz];
 
     if (! outside)
@@ -1408,7 +1414,7 @@ function update_legend_position (hl, sz)
           if (axpos(1) < (dx + hmargin))
             li(1) = min (dx + hmargin, 0.95 * (axpos(1) + axpos(3)));
             set (hax, "looseinset", li);
-            axpos = boxposition (get (hax, "position"), pbam, pba);
+            axpos = boxposition (get (hax, "position"), pba, pbam, dam);
           endif
           lpos(1) = axpos(1) - dx;
           lpos(2) = axpos(2);
@@ -1417,7 +1423,7 @@ function update_legend_position (hl, sz)
           if (axpos(1) < (dx + hmargin))
             li(1) = min (dx + hmargin, 0.95 * (axpos(1) + axpos(3)));
             set (hax, "looseinset", li);
-            axpos = boxposition (get (hax, "position"), pbam, pba);
+            axpos = boxposition (get (hax, "position"), pba, pbam, dam);
           endif
           lpos(1) = axpos(1) - dx;
           lpos(2) = axpos(2) + axpos(4)/2 - lpos(4)/2;
@@ -1426,7 +1432,7 @@ function update_legend_position (hl, sz)
           if (axpos(1) < (dx + hmargin))
             li(1) = min (dx + hmargin, 0.95 * (axpos(1) + axpos(3)));
             set (hax, "looseinset", li);
-            axpos = boxposition (get (hax, "position"), pbam, pba);
+            axpos = boxposition (get (hax, "position"), pba, pbam, dam);
           endif
           lpos(1) = axpos(1) - dx;
           lpos(2) = axpos(2) + axpos(4) - lpos(4);
@@ -1435,7 +1441,7 @@ function update_legend_position (hl, sz)
           if (li(4) < (dy + vmargin))
             li(4) = min (dy + vmargin, axpos(4));
             set (hax, "looseinset", li);
-            axpos = boxposition (get (hax, "position"), pbam, pba);
+            axpos = boxposition (get (hax, "position"), pba, pbam, dam);
           endif
           lpos(1) = axpos(1) + axpos(3)/2 - lpos(3)/2;
           lpos(2) = axpos(2) + axpos(4) + vmargin + ti(4);
@@ -1444,7 +1450,7 @@ function update_legend_position (hl, sz)
           if (li(3) < (dx + hmargin))
             li(3) = min (dx + hmargin, axpos(3));
             set (hax, "looseinset", li);
-            axpos = boxposition (get (hax, "position"), pbam, pba);
+            axpos = boxposition (get (hax, "position"), pba, pbam, dam);
           endif
           lpos(1) = axpos(1) + axpos(3) + hmargin + ti(3);
           lpos(2) = axpos(2) + axpos(4) - lpos(4);
@@ -1453,7 +1459,7 @@ function update_legend_position (hl, sz)
           if (li(3) < (dx + hmargin))
             li(3) = min (dx + hmargin, axpos(3));
             set (hax, "looseinset", li);
-            axpos = boxposition (get (hax, "position"), pbam, pba);
+            axpos = boxposition (get (hax, "position"), pba, pbam, dam);
           endif
           lpos(1) = axpos(1) + axpos(3) + hmargin + ti(3);
           lpos(2) = axpos(2) + axpos(4)/2 - lpos(4)/2;
@@ -1462,7 +1468,7 @@ function update_legend_position (hl, sz)
           if (li(3) < (dx + hmargin))
             li(3) = min (dx + hmargin, axpos(3));
             set (hax, "looseinset", li);
-            axpos = boxposition (get (hax, "position"), pbam, pba);
+            axpos = boxposition (get (hax, "position"), pba, pbam, dam);
           endif
           lpos(1) = axpos(1) + axpos(3) + hmargin + ti(3);
           lpos(2) = axpos(2);
@@ -1471,7 +1477,7 @@ function update_legend_position (hl, sz)
           if (li(2) < (dy + vmargin))
             li(2) = min (dy + vmargin, 0.95 * (axpos(2) + axpos(4)));
             set (hax, "looseinset", li);
-            axpos = boxposition (get (hax, "position"), pbam, pba);
+            axpos = boxposition (get (hax, "position"), pba, pbam, dam);
           endif
           lpos(1) = axpos(1) + axpos(3)/2 - lpos(3)/2;
           lpos(2) = axpos(2) - lpos(4) - vmargin - ti(2);

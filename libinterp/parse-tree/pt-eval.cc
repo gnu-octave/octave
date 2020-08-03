@@ -2531,7 +2531,7 @@ namespace octave
 
         if (octave::math::isinf (rng.limit ()))
           warning_with_id ("Octave:infinite-loop",
-                           "FOR loop limit is infinite, will stop after "
+                           "FOR loop limit is infinite, will stop after %"
                            OCTAVE_IDX_TYPE_FORMAT " steps",
                            steps);
 

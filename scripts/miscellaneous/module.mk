@@ -22,7 +22,6 @@ FCN_FILE_DIRS += \
   %reldir%/dir.m \
   %reldir%/dos.m \
   %reldir%/edit.m \
-  %reldir%/fact.m \
   %reldir%/fieldnames.m \
   %reldir%/fileattrib.m \
   %reldir%/fileparts.m \

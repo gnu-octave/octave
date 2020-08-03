@@ -523,6 +523,44 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QFONTMETRICS_HORIZONTAL_ADVANCE], [
   fi
 ])
 dnl
+dnl Check whether the Qt class QRegion has the iterators and related
+dnl functions introduced in Qt 5.8.
+dnl
+AC_DEFUN([OCTAVE_CHECK_QREGION_ITERATORS], [
+  AC_CACHE_CHECK([for QRegion iterators and related functions],
+    [octave_cv_qregion_iterators],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QRegion>
+        ]], [[
+        QRegion region;
+        QRegion::const_iterator it;
+        it = region.begin ();
+        it = region.end ();
+        it = region.cbegin ();
+        it = region.cend ();
+        QRegion::const_reverse_iterator rit;
+        rit = region.rbegin ();
+        rit = region.rend ();
+        rit = region.crbegin ();
+        rit = region.crend ();
+        ]])],
+      octave_cv_qregion_iterators=yes,
+      octave_cv_qregion_iterators=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_qregion_iterators = yes; then
+    AC_DEFINE(HAVE_QREGION_ITERATORS, 1,
+      [Define to 1 if you have the `QFontMetrics::horizontalAdvance' function.])
+  fi
+])
+dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
 AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
@@ -1827,6 +1865,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QHELPSEARCHQUERYWIDGET_SEARCHINPUT
     OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR
     OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
+
+    OCTAVE_CHECK_QREGION_ITERATORS
 
     if test -n "$OPENGL_LIBS"; then
       OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],

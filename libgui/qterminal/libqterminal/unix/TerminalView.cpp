@@ -23,6 +23,10 @@
     02110-1301  USA.
 */
 
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
+
 // Own
 #include "unix/TerminalView.h"
 
@@ -956,7 +960,11 @@ void TerminalView::paintEvent( QPaintEvent* pe )
   QPainter paint(this);
   //qDebug("%s %d paintEvent %d %d", __FILE__, __LINE__, paint.window().top(), paint.window().right());
 
+#if defined (HAVE_QREGION_ITERATORS)
+  for (QRect rect : (pe->region() & contentsRect()))
+#else
   foreach (QRect rect, (pe->region() & contentsRect()).rects())
+#endif
     {
       drawBackground(paint,rect,palette().window().color());
       drawContents(paint, rect);

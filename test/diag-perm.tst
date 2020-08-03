@@ -178,6 +178,8 @@
 %! assert (diag (D1D2), d1 .* d2);
 
 ## slicing
+## preserving diagonal matrix type is not possible if indices are
+## general matrix objects.
 %!test
 %! m = 13;
 %! n = 6;
@@ -185,7 +187,11 @@
 %! d = rand (mn, 1);
 %! D = diag (d, m, n);
 %! Dslice = D (1:(m-3), 1:(n-2));
-%! assert (typeinfo (Dslice), "diagonal matrix");
+%! if (disable_range ())
+%!   assert (typeinfo (Dslice), "matrix");
+%! else
+%!   assert (typeinfo (Dslice), "diagonal matrix");
+%! endif
 
 ## preserve dense matrix structure when scaling
 %!assert (typeinfo (rand (8) * (3 * eye (8))), "matrix")

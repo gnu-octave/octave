@@ -942,7 +942,12 @@ currently installed data types.
 %!assert (typeinfo ([i, 2]), "complex matrix")
 %!assert (typeinfo (diag ([i, 2])), "complex diagonal matrix")
 
-%!assert (typeinfo (1:2), "range")
+%!test
+%! if (disable_range ())
+%!   assert (typeinfo (1:2), "matrix")
+%! else
+%!   assert (typeinfo (1:2), "range")
+%! endif
 
 %!assert (typeinfo (false), "bool")
 %!assert (typeinfo ([true, false]), "bool matrix")

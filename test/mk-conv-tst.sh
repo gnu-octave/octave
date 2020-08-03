@@ -28,7 +28,7 @@
 cat <<EOF
 ## !!! DO NOT EDIT !!!
 ## THIS IS AN AUTOMATICALLY GENERATED FILE
-## modify build-conv-tests.sh to generate the tests you need.
+## modify mk-conv-tst.sh to generate the tests you need.
 
 
 %!shared r,dq,sq,b,bm,dm,cdm,fdm,fcdm,pm,sm,sbm,scm,s,m,cs,cm,fs,fm,fcs,fcm,i8s,i16s,i32s,i64s,i8m,i16m,i32m,i64m,ui8s,ui16s,ui32s,ui64s,ui8m,ui16m,ui32m,ui64m
@@ -71,7 +71,12 @@ cat <<EOF
 %! ui32m = uint32 (rand (5) * 10);
 %! ui64m = uint64 (rand (5) * 10);
 %!
-%!assert (typeinfo (r), "range")
+%!test
+%! if (disable_range ())
+%!   assert (typeinfo (r), "matrix")
+%! else
+%!   assert (typeinfo (r), "range")
+%! endif
 %!assert (typeinfo (dq), "string")
 %!assert (typeinfo (sq), "sq_string")
 %!assert (typeinfo (b), "bool")

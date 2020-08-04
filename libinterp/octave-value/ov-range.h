@@ -56,29 +56,29 @@ octave_range : public octave_base_value
 public:
 
   octave_range (void)
-    : octave_base_value (), range (), idx_cache () { }
+    : octave_base_value (), m_range (), m_idx_cache () { }
 
   octave_range (double base, double limit, double inc)
-    : octave_base_value (), range (base, limit, inc), idx_cache ()
+    : octave_base_value (), m_range (base, limit, inc), m_idx_cache ()
   {
-    if (range.numel () < 0)
+    if (m_range.numel () < 0)
       error ("invalid range");
   }
 
   octave_range (const Range& r)
-    : octave_base_value (), range (r), idx_cache ()
+    : octave_base_value (), m_range (r), m_idx_cache ()
   {
-    if (range.numel () < 0 && range.numel () != -2)
+    if (m_range.numel () < 0 && m_range.numel () != -2)
       error ("invalid range");
   }
 
   octave_range (const octave_range& r)
-    : octave_base_value (), range (r.range),
-      idx_cache (r.idx_cache ? new idx_vector (*r.idx_cache) : nullptr)
+    : octave_base_value (), m_range (r.m_range),
+      m_idx_cache (r.m_idx_cache ? new idx_vector (*r.m_idx_cache) : nullptr)
   { }
 
   octave_range (const Range& r, const idx_vector& cache)
-    : octave_base_value (), range (r), idx_cache ()
+    : octave_base_value (), m_range (r), m_idx_cache ()
   {
     set_idx_cache (cache);
   }
@@ -115,11 +115,11 @@ public:
 
   dim_vector dims (void) const
   {
-    octave_idx_type n = range.numel ();
+    octave_idx_type n = m_range.numel ();
     return dim_vector (n > 0, n);
   }
 
-  octave_idx_type nnz (void) const { return range.nnz (); }
+  octave_idx_type nnz (void) const { return m_range.nnz (); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
@@ -131,9 +131,9 @@ public:
   octave_value permute (const Array<int>& vec, bool inv = false) const
   { return NDArray (array_value ().permute (vec, inv)); }
 
-  octave_value squeeze (void) const { return range; }
+  octave_value squeeze (void) const { return m_range; }
 
-  octave_value full_value (void) const { return range.matrix_value (); }
+  octave_value full_value (void) const { return m_range.matrix_value (); }
 
   bool is_defined (void) const { return true; }
 
@@ -150,14 +150,14 @@ public:
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-  { return range.sort (dim, mode); }
+  { return m_range.sort (dim, mode); }
 
   octave_value sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const
-  { return range.sort (sidx, dim, mode); }
+  { return m_range.sort (sidx, dim, mode); }
 
   sortmode issorted (sortmode mode = UNSORTED) const
-  { return range.issorted (mode); }
+  { return m_range.issorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode) const
   { return Array<octave_idx_type> (dim_vector (1, 0)); }
@@ -188,16 +188,16 @@ public:
   { return float_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
-  { return range.matrix_value (); }
+  { return m_range.matrix_value (); }
 
   FloatMatrix float_matrix_value (bool = false) const
-  { return range.matrix_value (); }
+  { return m_range.matrix_value (); }
 
   NDArray array_value (bool = false) const
-  { return range.matrix_value (); }
+  { return m_range.matrix_value (); }
 
   FloatNDArray float_array_value (bool = false) const
-  { return FloatMatrix (range.matrix_value ()); }
+  { return FloatMatrix (m_range.matrix_value ()); }
 
   charNDArray char_array_value (bool = false) const;
 
@@ -230,7 +230,7 @@ public:
   uint64_array_value (void) const { return uint64NDArray (array_value ()); }
 
   SparseMatrix sparse_matrix_value (bool = false) const
-  { return SparseMatrix (range.matrix_value ()); }
+  { return SparseMatrix (m_range.matrix_value ()); }
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
   { return SparseComplexMatrix (sparse_matrix_value ()); }
@@ -242,18 +242,18 @@ public:
   boolNDArray bool_array_value (bool warn = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return ComplexMatrix (range.matrix_value ()); }
+  { return ComplexMatrix (m_range.matrix_value ()); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return FloatComplexMatrix (range.matrix_value ()); }
+  { return FloatComplexMatrix (m_range.matrix_value ()); }
 
   ComplexNDArray complex_array_value (bool = false) const
-  { return ComplexMatrix (range.matrix_value ()); }
+  { return ComplexMatrix (m_range.matrix_value ()); }
 
   FloatComplexNDArray float_complex_array_value (bool = false) const
-  { return FloatComplexMatrix (range.matrix_value ()); }
+  { return FloatComplexMatrix (m_range.matrix_value ()); }
 
-  Range range_value (void) const { return range; }
+  Range range_value (void) const { return m_range; }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
@@ -318,21 +318,21 @@ public:
 
 private:
 
-  Range range;
+  Range m_range;
 
   idx_vector set_idx_cache (const idx_vector& idx) const
   {
-    delete idx_cache;
-    idx_cache = (idx ? new idx_vector (idx) : nullptr);
+    delete m_idx_cache;
+    m_idx_cache = (idx ? new idx_vector (idx) : nullptr);
     return idx;
   }
 
   void clear_cached_info (void) const
   {
-    delete idx_cache; idx_cache = nullptr;
+    delete m_idx_cache; m_idx_cache = nullptr;
   }
 
-  mutable idx_vector *idx_cache;
+  mutable idx_vector *m_idx_cache;
 
   // No assignment.
 

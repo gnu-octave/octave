@@ -85,10 +85,10 @@ octave_range::try_narrowing_conversion (void)
 {
   octave_base_value *retval = nullptr;
 
-  switch (range.numel ())
+  switch (m_range.numel ())
     {
     case 1:
-      retval = new octave_scalar (range.base ());
+      retval = new octave_scalar (m_range.base ());
       break;
 
     case 0:
@@ -96,7 +96,7 @@ octave_range::try_narrowing_conversion (void)
       break;
 
     case -2:
-      retval = new octave_matrix (range.matrix_value ());
+      retval = new octave_matrix (m_range.matrix_value ());
       break;
 
     default:
@@ -146,10 +146,10 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
         {
           idx_vector i = idx(0).index_vector ();
 
-          if (i.is_scalar () && i(0) < range.numel ())
-            retval = range.elem (i(0));
+          if (i.is_scalar () && i(0) < m_range.numel ())
+            retval = m_range.elem (i(0));
           else
-            retval = range.index (i);
+            retval = m_range.index (i);
         }
       catch (octave::index_exception& e)
         {
@@ -163,7 +163,7 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
     }
   else
     {
-      octave_value tmp (new octave_matrix (range.matrix_value ()));
+      octave_value tmp (new octave_matrix (m_range.matrix_value ()));
 
       return tmp.index_op (idx, resize_ok);
     }
@@ -172,12 +172,12 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
 idx_vector
 octave_range::index_vector (bool require_integers) const
 {
-  if (idx_cache)
-    return *idx_cache;
+  if (m_idx_cache)
+    return *m_idx_cache;
   else
     {
-      if (require_integers || range.all_elements_are_ints ())
-        return set_idx_cache (idx_vector (range));
+      if (require_integers || m_range.all_elements_are_ints ())
+        return set_idx_cache (idx_vector (m_range));
       else
         {
           warning_with_id ("Octave:noninteger-range-as-index",
@@ -191,7 +191,7 @@ octave_range::index_vector (bool require_integers) const
 double
 octave_range::double_value (bool) const
 {
-  octave_idx_type nel = range.numel ();
+  octave_idx_type nel = m_range.numel ();
 
   if (nel == 0)
     err_invalid_conversion ("range", "real scalar");
@@ -199,13 +199,13 @@ octave_range::double_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "range", "real scalar");
 
-  return range.base ();
+  return m_range.base ();
 }
 
 float
 octave_range::float_value (bool) const
 {
-  octave_idx_type nel = range.numel ();
+  octave_idx_type nel = m_range.numel ();
 
   if (nel == 0)
     err_invalid_conversion ("range", "real scalar");
@@ -213,13 +213,13 @@ octave_range::float_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "range", "real scalar");
 
-  return range.base ();
+  return m_range.base ();
 }
 
 charNDArray
 octave_range::char_array_value (bool) const
 {
-  const Matrix matrix = range.matrix_value ();
+  const Matrix matrix = m_range.matrix_value ();
   charNDArray retval (dims ());
 
   octave_idx_type nel = numel ();
@@ -235,7 +235,7 @@ octave_range::all (int dim) const
 {
   // FIXME: this is a potential waste of memory.
 
-  Matrix m = range.matrix_value ();
+  Matrix m = m_range.matrix_value ();
 
   return m.all (dim);
 }
@@ -245,7 +245,7 @@ octave_range::any (int dim) const
 {
   // FIXME: this is a potential waste of memory.
 
-  Matrix m = range.matrix_value ();
+  Matrix m = m_range.matrix_value ();
 
   return m.any (dim);
 }
@@ -255,14 +255,14 @@ octave_range::diag (octave_idx_type k) const
 {
   return
     (k == 0
-       ? octave_value (DiagMatrix (DiagArray2<double> (range.matrix_value ())))
-       : octave_value (range.diag (k)));
+       ? octave_value (DiagMatrix (DiagArray2<double> (m_range.matrix_value ())))
+       : octave_value (m_range.diag (k)));
 }
 
 octave_value
 octave_range::diag (octave_idx_type m, octave_idx_type n) const
 {
-  Matrix mat = range.matrix_value ();
+  Matrix mat = m_range.matrix_value ();
 
   return mat.diag (m, n);
 }
@@ -274,7 +274,7 @@ octave_range::is_true (void) const
 {
   bool retval = false;
 
-  if (! range.isempty ())
+  if (! m_range.isempty ())
     {
       if (dims ().numel () > 1)
         warn_array_as_logical (dims ());
@@ -296,7 +296,7 @@ octave_range::is_true (void) const
           */
 
           // FIXME: this is a waste of memory.
-          Matrix m ((range.matrix_value ().all ()).all ());
+          Matrix m ((m_range.matrix_value ().all ()).all ());
 
           retval = ! m.isempty () && m(0, 0) != 0.0;
         }
@@ -308,7 +308,7 @@ octave_range::is_true (void) const
 Complex
 octave_range::complex_value (bool) const
 {
-  octave_idx_type nel = range.numel ();
+  octave_idx_type nel = m_range.numel ();
 
   if (nel == 0)
     err_invalid_conversion ("range", "complex scalar");
@@ -316,7 +316,7 @@ octave_range::complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "range", "complex scalar");
 
-  return Complex (range.base (), 0);
+  return Complex (m_range.base (), 0);
 }
 
 FloatComplex
@@ -326,7 +326,7 @@ octave_range::float_complex_value (bool) const
 
   FloatComplex retval (tmp, tmp);
 
-  octave_idx_type nel = range.numel ();
+  octave_idx_type nel = m_range.numel ();
 
   if (nel == 0)
     err_invalid_conversion ("range", "complex scalar");
@@ -334,7 +334,7 @@ octave_range::float_complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "range", "complex scalar");
 
-  retval = range.base ();
+  retval = m_range.base ();
 
   return retval;
 }
@@ -342,7 +342,7 @@ octave_range::float_complex_value (bool) const
 boolNDArray
 octave_range::bool_array_value (bool warn) const
 {
-  Matrix m = range.matrix_value ();
+  Matrix m = m_range.matrix_value ();
 
   if (m.any_element_is_nan ())
     octave::err_nan_to_logical_conversion ();
@@ -366,68 +366,68 @@ octave_range::resize (const dim_vector& dv, bool fill) const
 octave_value
 octave_range::convert_to_str_internal (bool pad, bool force, char type) const
 {
-  octave_value tmp (range.matrix_value ());
+  octave_value tmp (m_range.matrix_value ());
   return tmp.convert_to_str (pad, force, type);
 }
 
 octave_value
 octave_range::as_double (void) const
 {
-  return range;
+  return m_range;
 }
 
 octave_value
 octave_range::as_single (void) const
 {
-  return FloatMatrix (range.matrix_value ());
+  return FloatMatrix (m_range.matrix_value ());
 }
 
 octave_value
 octave_range::as_int8 (void) const
 {
-  return int8NDArray (range.matrix_value ());
+  return int8NDArray (m_range.matrix_value ());
 }
 
 octave_value
 octave_range::as_int16 (void) const
 {
-  return int16NDArray (range.matrix_value ());
+  return int16NDArray (m_range.matrix_value ());
 }
 
 octave_value
 octave_range::as_int32 (void) const
 {
-  return int32NDArray (range.matrix_value ());
+  return int32NDArray (m_range.matrix_value ());
 }
 
 octave_value
 octave_range::as_int64 (void) const
 {
-  return int64NDArray (range.matrix_value ());
+  return int64NDArray (m_range.matrix_value ());
 }
 
 octave_value
 octave_range::as_uint8 (void) const
 {
-  return uint8NDArray (range.matrix_value ());
+  return uint8NDArray (m_range.matrix_value ());
 }
 
 octave_value
 octave_range::as_uint16 (void) const
 {
-  return uint16NDArray (range.matrix_value ());
+  return uint16NDArray (m_range.matrix_value ());
 }
 
 octave_value
 octave_range::as_uint32 (void) const
 {
-  return uint32NDArray (range.matrix_value ());
+  return uint32NDArray (m_range.matrix_value ());
 }
 
 octave_value
 octave_range::as_uint64 (void) const
 {
-  return uint64NDArray (range.matrix_value ());
+  return uint64NDArray (m_range.matrix_value ());
 }
 
 void
@@ -440,7 +440,7 @@ octave_range::print (std::ostream& os, bool pr_as_read_syntax)
 void
 octave_range::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, range, pr_as_read_syntax,
+  octave_print_internal (os, m_range, pr_as_read_syntax,
                          current_print_indent_level ());
 }
 
@@ -449,7 +449,7 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
 {
   bool retval = false;
 
-  octave_idx_type n = range.numel ();
+  octave_idx_type n = m_range.numel ();
 
   indent (os);
 
@@ -471,20 +471,20 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
 void
 octave_range::short_disp (std::ostream& os) const
 {
-  octave_idx_type len = range.numel ();
+  octave_idx_type len = m_range.numel ();
 
   if (len == 0)
     os << "[]";
   else
     {
-      os << range.base () << ':';
+      os << m_range.base () << ':';
 
       if (len > 1)
         {
-          if (range.inc () != 1)
-            os << range.inc () << ':';
+          if (m_range.inc () != 1)
+            os << m_range.inc () << ':';
 
-          os << range.limit ();
+          os << m_range.limit ();
         }
     }
 }
@@ -517,7 +517,7 @@ octave_range::edit_display (const float_display_format& fmt,
                             octave_idx_type, octave_idx_type j) const
 {
   std::ostringstream buf;
-  octave_print_internal (buf, fmt, range.elem (j));
+  octave_print_internal (buf, fmt, m_range.elem (j));
   return buf.str ();
 }
 
@@ -561,9 +561,9 @@ octave_range::load_ascii (std::istream& is)
     error ("load: failed to load range constant");
 
   if (inc != 0)
-    range = Range (base, limit, inc);
+    m_range = Range (base, limit, inc);
   else
-    range = Range (base, inc, static_cast<octave_idx_type> (limit));
+    m_range = Range (base, inc, static_cast<octave_idx_type> (limit));
 
   return true;
 }
@@ -608,9 +608,9 @@ octave_range::load_binary (std::istream& is, bool swap,
   if (swap)
     swap_bytes<8> (&inc);
   if (inc != 0)
-    range = Range (bas, lim, inc);
+    m_range = Range (bas, lim, inc);
   else
-    range = Range (bas, inc, static_cast<octave_idx_type> (lim));
+    m_range = Range (bas, inc, static_cast<octave_idx_type> (lim));
 
   return true;
 }
@@ -745,13 +745,13 @@ octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       octave_idx_type nel;
       if (hdf5_get_scalar_attr (data_hid, H5T_NATIVE_IDX,
                                 "OCTAVE_RANGE_NELEM", &nel))
-        range = Range (rangevals[0], rangevals[2], nel);
+        m_range = Range (rangevals[0], rangevals[2], nel);
       else
         {
           if (rangevals[2] != 0)
-            range = Range (rangevals[0], rangevals[1], rangevals[2]);
+            m_range = Range (rangevals[0], rangevals[1], rangevals[2]);
           else
-            range = Range (rangevals[0], rangevals[2],
+            m_range = Range (rangevals[0], rangevals[2],
                            static_cast<octave_idx_type> (rangevals[1]));
         }
     }
@@ -792,6 +792,6 @@ octave_range::as_mxArray (bool interleaved) const
 octave_value
 octave_range::fast_elem_extract (octave_idx_type n) const
 {
-  return (n < range.numel ()) ? octave_value (range.elem (n))
-                              : octave_value ();
+  return (n < m_range.numel ()
+          ? octave_value (m_range.elem (n)) : octave_value ());
 }

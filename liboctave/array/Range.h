@@ -412,6 +412,7 @@ public:
   double base (void) const { return m_base; }
   double limit (void) const { return m_limit; }
   double inc (void) const { return m_inc; }
+  double increment (void) const { return m_inc; }
 
   octave_idx_type numel (void) const { return m_numel; }
 

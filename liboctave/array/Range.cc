@@ -600,7 +600,7 @@ std::ostream&
 operator << (std::ostream& os, const Range& a)
 {
   double b = a.base ();
-  double increment = a.inc ();
+  double increment = a.increment ();
   octave_idx_type nel = a.numel ();
 
   if (nel > 1)
@@ -639,37 +639,37 @@ operator >> (std::istream& is, Range& a)
 Range
 operator - (const Range& r)
 {
-  return Range (-r.base (), -r.limit (), -r.inc (), r.numel ());
+  return Range (-r.base (), -r.limit (), -r.increment (), r.numel ());
 }
 
 Range operator + (double x, const Range& r)
 {
-  return Range (x + r.base (), x + r.limit (), r.inc (), r.numel ());
+  return Range (x + r.base (), x + r.limit (), r.increment (), r.numel ());
 }
 
 Range operator + (const Range& r, double x)
 {
-  return Range (r.base () + x, r.limit () + x, r.inc (), r.numel ());
+  return Range (r.base () + x, r.limit () + x, r.increment (), r.numel ());
 }
 
 Range operator - (double x, const Range& r)
 {
-  return Range (x - r.base (), x - r.limit (), -r.inc (), r.numel ());
+  return Range (x - r.base (), x - r.limit (), -r.increment (), r.numel ());
 }
 
 Range operator - (const Range& r, double x)
 {
-  return Range (r.base () - x, r.limit () - x, r.inc (), r.numel ());
+  return Range (r.base () - x, r.limit () - x, r.increment (), r.numel ());
 }
 
 Range operator * (double x, const Range& r)
 {
-  return Range (x * r.base (), x * r.limit (), x * r.inc (), r.numel ());
+  return Range (x * r.base (), x * r.limit (), x * r.increment (), r.numel ());
 }
 
 Range operator * (const Range& r, double x)
 {
-  return Range (r.base () * x, r.limit () * x, r.inc () * x, r.numel ());
+  return Range (r.base () * x, r.limit () * x, r.increment () * x, r.numel ());
 }
 
 // C  See Knuth, Art Of Computer Programming, Vol. 1, Problem 1.2.4-5.

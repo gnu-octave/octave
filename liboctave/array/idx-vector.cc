@@ -143,7 +143,7 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
       if (r.all_elements_are_ints ())
         {
           start = static_cast<octave_idx_type> (r.base ()) - 1;
-          step = static_cast<octave_idx_type> (r.inc ());
+          step = static_cast<octave_idx_type> (r.increment ());
           if (start < 0)
             octave::err_invalid_index (start);
           if (step < 0 && start + (len - 1)*step < 0)
@@ -153,7 +153,7 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
         {
           // find first non-integer, then gripe about it
           double b = r.base ();
-          double inc = r.inc ();
+          double inc = r.increment ();
           octave::err_invalid_index (b != std::trunc (b) ? b : b + inc);
         }
     }

@@ -192,8 +192,8 @@ public:
     m_row_cache = m_row_end - m_row_start + 1;
     m_col_cache = m_col_end - m_col_start + 1;
 
-    m_row_shift = m_col_cache * rows.inc ();
-    m_col_shift = m_col_cache * (m_row_cache + rows.inc () - 1) - cols.inc ();
+    m_row_shift = m_col_cache * rows.increment ();
+    m_col_shift = m_col_cache * (m_row_cache + rows.increment () - 1) - cols.increment ();
 
     m_row_out = rows.numel ();
     m_col_out = cols.numel ();

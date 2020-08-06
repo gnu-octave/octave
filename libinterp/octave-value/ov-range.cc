@@ -481,8 +481,8 @@ octave_range::short_disp (std::ostream& os) const
 
       if (len > 1)
         {
-          if (m_range.inc () != 1)
-            os << m_range.inc () << ':';
+          if (m_range.increment () != 1)
+            os << m_range.increment () << ':';
 
           os << m_range.limit ();
         }
@@ -527,7 +527,7 @@ octave_range::save_ascii (std::ostream& os)
   Range r = range_value ();
   double base = r.base ();
   double limit = r.limit ();
-  double inc = r.inc ();
+  double inc = r.increment ();
   octave_idx_type len = r.numel ();
 
   if (inc != 0)
@@ -576,7 +576,7 @@ octave_range::save_binary (std::ostream& os, bool /* save_as_floats */)
   Range r = range_value ();
   double bas = r.base ();
   double lim = r.limit ();
-  double inc = r.inc ();
+  double inc = r.increment ();
   if (inc == 0)
     lim = r.numel ();
 
@@ -674,8 +674,8 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   Range r = range_value ();
   double range_vals[3];
   range_vals[0] = r.base ();
-  range_vals[1] = (r.inc () != 0 ? r.limit () : r.numel ());
-  range_vals[2] = r.inc ();
+  range_vals[1] = (r.increment () != 0 ? r.limit () : r.numel ());
+  range_vals[2] = r.increment ();
 
   if (H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
                 octave_H5P_DEFAULT, range_vals)

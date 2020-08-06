@@ -7221,7 +7221,7 @@ Undocumented internal function.
       if (vals.is_range ())
         {
           Range r = vals.range_value ();
-          if (r.inc () == 0)
+          if (r.increment () == 0)
             vals = r.base ();
         }
 

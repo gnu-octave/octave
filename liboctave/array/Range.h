@@ -414,6 +414,15 @@ public:
   double inc (void) const { return m_inc; }
   double increment (void) const { return m_inc; }
 
+  // We adjust the limit to be the final value, so return that.  We
+  // could introduce a new variable to store the final value separately,
+  // but it seems like that would just add confusion.  If we changed
+  // the meaning of the limit function, we would change the behavior of
+  // programs that expect limit to be the final value instead of the
+  // value of the limit when the range was created.  This problem will
+  // be fixed with the new template range class.
+  double final_value (void) const { return m_limit; }
+
   octave_idx_type numel (void) const { return m_numel; }
 
   dim_vector dims (void) const { return dim_vector (1, m_numel); }

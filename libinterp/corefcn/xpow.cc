@@ -732,8 +732,7 @@ elem_xpow (double a, const Range& r)
         }
       else
         {
-          // Don't use Range::limit () here.
-          double limit = std::pow (a, r.base () + (n-1) * r.increment ());
+          double limit = std::pow (a, r.final_value ());
           double inc = std::pow (a, -r.increment ());
           result(n-1) = limit;
           for (octave_idx_type i = n-2; i >= 0; i--)
@@ -962,8 +961,7 @@ elem_xpow (const Complex& a, const Range& r)
         }
       else
         {
-          // Don't use Range::limit () here.
-          Complex limit = std::pow (a, r.base () + (n-1) * r.increment ());
+          Complex limit = std::pow (a, r.final_value ());
           Complex inc = std::pow (a, -r.increment ());
           result(n-1) = limit;
           for (octave_idx_type i = n-2; i >= 0; i--)

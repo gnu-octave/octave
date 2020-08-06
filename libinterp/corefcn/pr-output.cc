@@ -2494,6 +2494,7 @@ octave_print_internal (std::ostream& os, const Range& r,
   double base = r.base ();
   double increment = r.increment ();
   double limit = r.limit ();
+  double final_value = r.final_value ();
   octave_idx_type num_elem = r.numel ();
 
   if (plus_format && ! pr_as_read_syntax)
@@ -2575,12 +2576,7 @@ octave_print_internal (std::ostream& os, const Range& r,
                     val = base + i * increment;
 
                   if (i == num_elem - 1)
-                    {
-                      // See the comments in Range::matrix_value.
-                      if ((increment > 0 && val >= limit)
-                          || (increment < 0 && val <= limit))
-                        val = limit;
-                    }
+                    val = final_value;
 
                   os << "  ";
 

@@ -465,7 +465,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
     }
   else if (tc.is_range ())
     {
-      Range r = tc.range_value ();
+      octave::range<double> r = tc.range_value ();
       double base = r.base ();
       double inc = r.increment ();
       octave_idx_type nel = r.numel ();

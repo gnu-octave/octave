@@ -2529,7 +2529,7 @@ namespace octave
 
     if (rhs.is_range ())
       {
-        Range rng = rhs.range_value ();
+        octave::range<double> rng = rhs.range_value ();
 
         octave_idx_type steps = rng.numel ();
 

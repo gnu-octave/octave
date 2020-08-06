@@ -58,17 +58,26 @@ public:
   octave_range (void)
     : octave_base_value (), m_range (), m_idx_cache () { }
 
-  octave_range (double base, double limit, double inc)
-    : octave_base_value (), m_range (base, limit, inc), m_idx_cache ()
+  octave_range (const octave::range<double>& r)
+    : octave_base_value (), m_range (r), m_idx_cache ()
   {
-    if (m_range.numel () < 0)
+    if (numel () < 0 && numel () != -2)
+      error ("invalid range");
+  }
+
+  octave_range (double base, double limit, double increment)
+    : octave_base_value (), m_range (base, limit, increment), m_idx_cache ()
+  {
+    if (numel () < 0)
       error ("invalid range");
   }
 
   octave_range (const Range& r)
-    : octave_base_value (), m_range (r), m_idx_cache ()
+    : octave_base_value (),
+      m_range (r.base (), r.increment (), r.limit (), r.numel ()),
+      m_idx_cache ()
   {
-    if (m_range.numel () < 0 && m_range.numel () != -2)
+    if (numel () < 0 && numel () != -2)
       error ("invalid range");
   }
 
@@ -78,7 +87,9 @@ public:
   { }
 
   octave_range (const Range& r, const idx_vector& cache)
-    : octave_base_value (), m_range (r), m_idx_cache ()
+    : octave_base_value (),
+      m_range (r.base (), r.increment (), r.limit (), r.numel ()),
+      m_idx_cache ()
   {
     set_idx_cache (cache);
   }
@@ -115,9 +126,11 @@ public:
 
   dim_vector dims (void) const
   {
-    octave_idx_type n = m_range.numel ();
+    octave_idx_type n = numel ();
     return dim_vector (n > 0, n);
   }
+
+  octave_idx_type numel (void) const { return m_range.numel (); }
 
   octave_idx_type nnz (void) const { return m_range.nnz (); }
 
@@ -133,7 +146,7 @@ public:
 
   octave_value squeeze (void) const { return m_range; }
 
-  octave_value full_value (void) const { return m_range.matrix_value (); }
+  octave_value full_value (void) const { return matrix_value (); }
 
   bool is_defined (void) const { return true; }
 
@@ -150,11 +163,17 @@ public:
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-  { return m_range.sort (dim, mode); }
+  {
+    Matrix tmp = matrix_value ();
+    return tmp.sort (dim, mode);
+  }
 
   octave_value sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const
-  { return m_range.sort (sidx, dim, mode); }
+  {
+    Matrix tmp = matrix_value ();
+    return tmp.sort (sidx, dim, mode);
+  }
 
   sortmode issorted (sortmode mode = UNSORTED) const
   { return m_range.issorted (mode); }
@@ -188,16 +207,16 @@ public:
   { return float_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
-  { return m_range.matrix_value (); }
+  { return m_range.array_value (); }
 
   FloatMatrix float_matrix_value (bool = false) const
-  { return m_range.matrix_value (); }
+  { return matrix_value (); }
 
   NDArray array_value (bool = false) const
-  { return m_range.matrix_value (); }
+  { return matrix_value (); }
 
   FloatNDArray float_array_value (bool = false) const
-  { return FloatMatrix (m_range.matrix_value ()); }
+  { return FloatMatrix (matrix_value ()); }
 
   charNDArray char_array_value (bool = false) const;
 
@@ -230,7 +249,7 @@ public:
   uint64_array_value (void) const { return uint64NDArray (array_value ()); }
 
   SparseMatrix sparse_matrix_value (bool = false) const
-  { return SparseMatrix (m_range.matrix_value ()); }
+  { return SparseMatrix (matrix_value ()); }
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
   { return SparseComplexMatrix (sparse_matrix_value ()); }
@@ -242,18 +261,18 @@ public:
   boolNDArray bool_array_value (bool warn = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return ComplexMatrix (m_range.matrix_value ()); }
+  { return ComplexMatrix (matrix_value ()); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return FloatComplexMatrix (m_range.matrix_value ()); }
+  { return FloatComplexMatrix (matrix_value ()); }
 
   ComplexNDArray complex_array_value (bool = false) const
-  { return ComplexMatrix (m_range.matrix_value ()); }
+  { return ComplexMatrix (matrix_value ()); }
 
   FloatComplexNDArray float_complex_array_value (bool = false) const
-  { return FloatComplexMatrix (m_range.matrix_value ()); }
+  { return FloatComplexMatrix (matrix_value ()); }
 
-  Range range_value (void) const { return m_range; }
+  octave::range<double> range_value (void) const { return m_range; }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
@@ -318,7 +337,7 @@ public:
 
 private:
 
-  Range m_range;
+  octave::range<double> m_range;
 
   idx_vector set_idx_cache (const idx_vector& idx) const
   {

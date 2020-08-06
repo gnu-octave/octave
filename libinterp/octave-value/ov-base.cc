@@ -811,7 +811,7 @@ octave_base_value::cellstr_value (void) const
   err_wrong_type_arg ("octave_base_value::cellstr_value()", type_name ());
 }
 
-Range
+octave::range<double>
 octave_base_value::range_value (void) const
 {
   err_wrong_type_arg ("octave_base_value::range_value()", type_name ());

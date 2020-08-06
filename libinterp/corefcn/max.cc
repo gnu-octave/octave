@@ -269,7 +269,7 @@ do_minmax_body (const octave_value_list& args,
           {
             if (arg.is_range () && (dim == -1 || dim == 1))
               {
-                Range range = arg.range_value ();
+                octave::range<double> range = arg.range_value ();
                 if (range.numel () < 1)
                   {
                     retval(0) = arg;

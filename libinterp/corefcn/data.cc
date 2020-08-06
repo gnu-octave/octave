@@ -4023,7 +4023,13 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
     case oct_data_conv::dt_double:
       {
         if (dims.ndims () == 2 && dims(0) == 1)
-          retval = Range (static_cast<double> (val), 0.0, dims(1));
+          {
+            // FIXME: If this optimization provides a significant
+            // benefit, then maybe there should be a special storage
+            // type for constant value arrays.
+            double dval = static_cast<double> (val);
+            retval = octave::range<double>::make_constant (dval, dims(1));
+          }
         else
           retval = NDArray (dims, val);
       }
@@ -4095,7 +4101,10 @@ fill_matrix (const octave_value_list& args, double val, float fval,
 
     case oct_data_conv::dt_double:
       if (dims.ndims () == 2 && dims(0) == 1 && octave::math::isfinite (val))
-        retval = Range (val, 0.0, dims(1));  // Packed form
+        // FIXME: If this optimization provides a significant benefit,
+        // then maybe there should be a special storage type for
+        // constant value arrays.
+        retval = octave::range<double>::make_constant (val, dims(1));
       else
         retval = NDArray (dims, val);
       break;
@@ -4161,7 +4170,10 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
     case oct_data_conv::dt_double:
       if (dims.ndims () == 2 && dims(0) == 1 && octave::math::isfinite (val))
-        retval = Range (val, 0.0, dims(1));  // Packed form
+        // FIXME: If this optimization provides a significant benefit,
+        // then maybe there should be a special storage type for
+        // constant value arrays.
+        retval = octave::range<double>::make_constant (val, dims(1));
       else
         retval = NDArray (dims, val);
       break;
@@ -7220,7 +7232,7 @@ Undocumented internal function.
 
       if (vals.is_range ())
         {
-          Range r = vals.range_value ();
+          octave::range<double> r = vals.range_value ();
           if (r.increment () == 0)
             vals = r.base ();
         }

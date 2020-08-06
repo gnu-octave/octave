@@ -715,7 +715,7 @@ namespace octave
       }
     else if (ty == jit_typeinfo::get_range ())
       {
-        Range rv = v.range_value ();
+        range<double> rv = v.range_value ();
         m_result = m_factory.create<jit_const_range> (rv);
       }
     else if (ty == jit_typeinfo::get_complex ())
@@ -2314,7 +2314,7 @@ namespace octave
   {
     if (bounds.is_range ())
       {
-        Range rng = bounds.range_value ();
+        range<double> rng = bounds.range_value ();
         return rng.numel ();
       }
 

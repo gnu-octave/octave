@@ -1319,7 +1319,7 @@ make_range_format (int x_max, int x_min, int all_ints)
 
 template <>
 float_display_format
-make_format (const Range& r)
+make_format (const octave::range<double>& r)
 {
   if (free_format)
     return float_display_format ();
@@ -2488,7 +2488,7 @@ octave_print_internal (std::ostream& os, const FloatComplexDiagMatrix& cm,
 }
 
 void
-octave_print_internal (std::ostream& os, const Range& r,
+octave_print_internal (std::ostream& os, const octave::range<double>& r,
                        bool pr_as_read_syntax, int extra_indent)
 {
   double base = r.base ();

@@ -116,7 +116,7 @@ namespace octave
   extern "C" octave_idx_type
   octave_jit_compute_nelem (double base, double limit, double inc)
   {
-    Range rng = Range (base, limit, inc);
+    range<double> rng (base, inc, limit);
     return rng.numel ();
   }
 
@@ -167,7 +167,7 @@ namespace octave
   extern "C" octave_base_value *
   octave_jit_cast_any_range (jit_range *rng)
   {
-    Range temp (*rng);
+    range<double> temp (*rng);
     octave_value ret (temp);
     octave_base_value *rep = ret.internal_rep ();
     rep->grab ();
@@ -480,7 +480,7 @@ namespace octave
   bool
   jit_range::all_elements_are_ints () const
   {
-    Range r (*this);
+    range<double> r (*this);
     return r.all_elements_are_ints ();
   }
 

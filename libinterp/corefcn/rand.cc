@@ -181,7 +181,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           }
         else if (tmp.is_range ())
           {
-            Range r = tmp.range_value ();
+            octave::range<double> r = tmp.range_value ();
 
             if (! r.all_elements_are_ints ())
               error ("%s: all elements of range must be integers", fcn);

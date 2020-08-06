@@ -355,6 +355,7 @@ Range
 {
 public:
 
+  OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
   Range (void)
     : m_base (0), m_limit (0), m_inc (0), m_numel (0)
   { }
@@ -364,6 +365,7 @@ public:
   // that mimics the behavior of the other Range class constructors that
   // reset limit to the computed final value.
 
+  OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
   Range (const octave::range<double>& r)
     : m_base (r.base ()), m_limit (r.final_value ()), m_inc (r.increment ()),
       m_numel (r.numel ())
@@ -375,6 +377,7 @@ public:
 
   ~Range (void) = default;
 
+  OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
   Range (double b, double l)
     : m_base (b), m_limit (l), m_inc (1), m_numel (numel_internal ())
   {
@@ -382,6 +385,7 @@ public:
       m_limit = limit_internal ();
   }
 
+  OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
   Range (double b, double l, double i)
     : m_base (b), m_limit (l), m_inc (i), m_numel (numel_internal ())
   {
@@ -395,6 +399,7 @@ public:
   // For operators' usage (to preserve element count) and to create
   // constant row vectors (obsolete usage).
 
+  OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
   Range (double b, double i, octave_idx_type n)
     : m_base (b), m_limit (b + (n-1) * i), m_inc (i), m_numel (n)
   {

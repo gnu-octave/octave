@@ -52,14 +52,14 @@ namespace octave
   struct
   jit_range
   {
-    jit_range (const Range& from)
+    jit_range (const range<double>& from)
       : m_base (from.base ()), m_limit (from.limit ()), m_inc (from.inc ()),
         m_nelem (from.numel ())
     { }
 
-    operator Range () const
+    operator range<double> () const
     {
-      return Range (m_base, m_limit, m_inc);
+      return range<double> (m_base, m_inc, m_limit);
     }
 
     bool all_elements_are_ints (void) const;

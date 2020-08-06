@@ -141,17 +141,17 @@ get_depth (Magick::Image& img)
 // width 1.  In those cases, the type will come as scalar instead of range
 // since that's the behavior of the colon operator (1:1:1 will be a scalar,
 // not a range).
-static Range
+static octave::range<double>
 get_region_range (const octave_value& region)
 {
-  Range output;
+  octave::range<double> output;
 
   if (region.is_range ())
     output = region.range_value ();
   else if (region.is_scalar_type ())
     {
       double value = region.scalar_value ();
-      output = Range (value, value);
+      output = octave::range<double> (value, value);
     }
   else if (region.is_matrix_type ())
     {
@@ -159,7 +159,7 @@ get_region_range (const octave_value& region)
       double base = array(0);
       double limit = array(array.numel () - 1);
       double incr = array(1) - base;
-      output = Range (base, limit, incr);
+      output = octave::range<double> (base, incr, limit);
     }
   else
     error ("__magick_read__: unknown datatype for Region option");
@@ -181,8 +181,8 @@ public:
 
     // Subtract 1 to account for 0 indexing.
 
-    const Range rows = get_region_range (pixel_region (0));
-    const Range cols = get_region_range (pixel_region (1));
+    const octave::range<double> rows = get_region_range (pixel_region (0));
+    const octave::range<double> cols = get_region_range (pixel_region (1));
 
     m_row_start = rows.base () - 1;
     m_col_start = cols.base () - 1;

@@ -609,7 +609,7 @@ public:
 
   virtual Array<std::string> cellstr_value (void) const;
 
-  virtual Range range_value (void) const;
+  virtual octave::range<double> range_value (void) const;
 
   virtual octave_map map_value (void) const;
 

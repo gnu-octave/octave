@@ -711,7 +711,7 @@ same_sign (double a, double b)
 }
 
 octave_value
-elem_xpow (double a, const Range& r)
+elem_xpow (double a, const octave::range<double>& r)
 {
   octave_value retval;
 
@@ -742,7 +742,10 @@ elem_xpow (double a, const Range& r)
       retval = result;
     }
   else
-    retval = elem_xpow (a, r.matrix_value ());
+    {
+      Matrix tmp = r.array_value ();
+      retval = elem_xpow (a, tmp);
+    }
 
   return retval;
 }
@@ -939,7 +942,7 @@ elem_xpow (const Complex& a, const ComplexMatrix& b)
 }
 
 octave_value
-elem_xpow (const Complex& a, const Range& r)
+elem_xpow (const Complex& a, const octave::range<double>& r)
 {
   octave_value retval;
 
@@ -971,7 +974,10 @@ elem_xpow (const Complex& a, const Range& r)
       retval = result;
     }
   else
-    retval = elem_xpow (a, r.matrix_value ());
+    {
+      Matrix tmp = r.array_value ();
+      retval = elem_xpow (a, tmp);
+    }
 
   return retval;
 }

@@ -132,7 +132,7 @@ idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
     octave::err_invalid_index (start + (len-1)*step);
 }
 
-idx_vector::idx_range_rep::idx_range_rep (const Range& r)
+idx_vector::idx_range_rep::idx_range_rep (const octave::range<double>& r)
   : idx_base_rep (), start (0), len (r.numel ()), step (1)
 {
   if (len < 0)
@@ -207,11 +207,11 @@ idx_vector::idx_range_rep::print (std::ostream& os) const
   return os;
 }
 
-Range
+octave::range<double>
 idx_vector::idx_range_rep::unconvert (void) const
 {
-  return Range (static_cast<double> (start+1),
-                static_cast<double> (step), len);
+  return octave::range<double>::make_n_element_range
+    (static_cast<double> (start+1), static_cast<double> (step), len);
 }
 
 Array<octave_idx_type>
@@ -1226,7 +1226,7 @@ idx_vector::unmask (void) const
 }
 
 void idx_vector::unconvert (idx_class_type& iclass,
-                            double& scalar, Range& range,
+                            double& scalar, octave::range<double>& range,
                             Array<double>& array, Array<bool>& mask) const
 {
   iclass = idx_class ();

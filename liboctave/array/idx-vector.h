@@ -41,14 +41,21 @@
 
 template <typename T> class Array;
 template <typename T> class Sparse;
-class Range;
+
+namespace octave
+{
+  template <typename T> class range;
+}
 
 // Design rationale:
-// idx_vector is a reference-counting, polymorphic pointer, that can contain
-// 4 types of index objects: a magic colon, a range, a scalar, or an index vector.
-// Polymorphic methods for single element access are provided, as well as
-// templates implementing "early dispatch", i.e., hoisting the checks for index
-// type out of loops.
+//
+// idx_vector is a reference-counting, polymorphic pointer, that can
+// contain 4 types of index objects: a magic colon, a range, a scalar,
+// or an index vector.
+//
+// Polymorphic methods for single element access are provided, as well
+// as templates implementing "early dispatch", i.e., hoisting the checks
+// for index type out of loops.
 
 class
 OCTAVE_API
@@ -173,7 +180,7 @@ private:
     idx_range_rep (octave_idx_type _start, octave_idx_type _limit,
                    octave_idx_type _step);
 
-    idx_range_rep (const Range&);
+    idx_range_rep (const octave::range<double>&);
 
     // No copying!
 
@@ -212,7 +219,7 @@ private:
 
     std::ostream& print (std::ostream& os) const;
 
-    Range unconvert (void) const;
+    octave::range<double> unconvert (void) const;
 
     Array<octave_idx_type> as_array (void);
 
@@ -525,7 +532,7 @@ public:
 
   idx_vector (const Array<bool>& nda);
 
-  idx_vector (const Range& r)
+  idx_vector (const octave::range<double>& r)
     : rep (new idx_range_rep (r))
   { chkerr (); }
 
@@ -1013,7 +1020,7 @@ public:
 
   // Unconverts the index to a scalar, Range, double array or a mask.
   void unconvert (idx_class_type& iclass,
-                  double& scalar, Range& range,
+                  double& scalar, octave::range<double>& range,
                   Array<double>& array, Array<bool>& mask) const;
 
   Array<octave_idx_type> as_array (void) const;

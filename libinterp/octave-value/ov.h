@@ -273,8 +273,11 @@ public:
                 bool zero_based = false, bool cache_index = false);
   octave_value (const Array<std::string>& cellstr);
   octave_value (const idx_vector& idx, bool lazy = true);
+  OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
   octave_value (double base, double limit, double inc);
+  OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
   octave_value (const Range& r, bool force_range = false);
+  octave_value (const octave::range<double>& r, bool force_range = false);
   octave_value (const octave_map& m);
   octave_value (const octave_scalar_map& m);
   octave_value (const std::map<std::string, octave_value>&);
@@ -937,7 +940,7 @@ public:
   Array<std::string> cellstr_value (void) const
   { return rep->cellstr_value (); }
 
-  Range range_value (void) const
+  octave::range<double> range_value (void) const
   { return rep->range_value (); }
 
   octave_map map_value (void) const;
@@ -1149,7 +1152,7 @@ public:
 
   Array<std::string> xcellstr_value (const char *fmt, ...) const;
 
-  Range xrange_value (const char *fmt, ...) const;
+  octave::range<double> xrange_value (const char *fmt, ...) const;
 
   octave_map xmap_value (const char *fmt, ...) const;
 

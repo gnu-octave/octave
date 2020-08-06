@@ -48,7 +48,6 @@ class DiagMatrix;
 class FloatDiagMatrix;
 class NDArray;
 class FloatNDArray;
-class Range;
 class boolMatrix;
 class boolNDArray;
 class charMatrix;
@@ -56,6 +55,11 @@ class charNDArray;
 class PermMatrix;
 class Cell;
 class octave_value;
+
+namespace octave
+{
+  template <typename T> class range;
+}
 
 template <typename T> class intNDArray;
 
@@ -91,7 +95,7 @@ make_format (const float& f);
 
 template <>
 float_display_format
-make_format (const Range& r);
+make_format (const octave::range<double>& r);
 
 template <>
 float_display_format
@@ -309,7 +313,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
                        int extra_indent = 0);
 
 extern OCTINTERP_API void
-octave_print_internal (std::ostream& os, const Range& r,
+octave_print_internal (std::ostream& os, const octave::range<double>& r,
                        bool pr_as_read_syntax = false,
                        int extra_indent = 0);
 

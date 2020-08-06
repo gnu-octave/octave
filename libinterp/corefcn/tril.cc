@@ -286,7 +286,7 @@ do_trilu (const std::string& name,
         octave_value_list ov_idx;
         std::list<octave_value_list> idx_tmp;
         ov_idx(1) = static_cast<double> (nc+1);
-        ov_idx(0) = Range (1, nr);
+        ov_idx(0) = octave::range<double> (1, nr);
         idx_tmp.push_back (ov_idx);
         ov_idx(1) = static_cast<double> (nc);
         tmp = tmp.resize (dim_vector (0,0));
@@ -301,7 +301,7 @@ do_trilu (const std::string& name,
               {
                 octave_idx_type nr_limit = (1 > j - k ? 1 : j - k);
                 ov_idx(1) = static_cast<double> (j);
-                ov_idx(0) = Range (nr_limit, nr);
+                ov_idx(0) = octave::range<double> (nr_limit, nr);
                 std::list<octave_value_list> idx;
                 idx.push_back (ov_idx);
 
@@ -316,7 +316,7 @@ do_trilu (const std::string& name,
               {
                 octave_idx_type nr_limit = (nr < j - k ? nr : j - k);
                 ov_idx(1) = static_cast<double> (j);
-                ov_idx(0) = Range (1, nr_limit);
+                ov_idx(0) = octave::range<double> (1, nr_limit);
                 std::list<octave_value_list> idx;
                 idx.push_back (ov_idx);
 

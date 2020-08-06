@@ -2419,7 +2419,7 @@ slicing is done along the first non-singleton dimension.
       octave_value_list idx (ndims, octave_value::magic_colon_t);
       for (octave_idx_type i = 0; i < n; i++)
         {
-          idx(dim) = Range (lb(i), ub(i));
+          idx(dim) = octave::range<double> (lb(i), ub(i));
           retcell.xelem (i) = x.index_op (idx);
         }
     }

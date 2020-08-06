@@ -1008,7 +1008,7 @@ octave_value::octave_value (const idx_vector& idx, bool lazy)
   : rep ()
 {
   double scalar;
-  Range range;
+  octave::range<double> range;
   NDArray array;
   boolNDArray mask;
   idx_vector::idx_class_type idx_class;
@@ -1085,6 +1085,14 @@ octave_value::octave_value (const Range& r, bool force_range)
   else
     rep = dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ()));
 
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave::range<double>& r, bool force_range)
+  : rep (force_range || ! Vdisable_range
+         ? dynamic_cast<octave_base_value *> (new octave_range (r))
+         : dynamic_cast<octave_base_value *> (new octave_matrix (r.array_value ())))
+{
   maybe_mutate ();
 }
 
@@ -2088,7 +2096,7 @@ XVALUE_EXTRACTOR (string_vector, xstring_vector_value, string_vector_value)
 XVALUE_EXTRACTOR (Cell, xcell_value, cell_value)
 XVALUE_EXTRACTOR (Array<std::string>, xcellstr_value, cellstr_value)
 
-XVALUE_EXTRACTOR (Range, xrange_value, range_value)
+XVALUE_EXTRACTOR (octave::range<double>, xrange_value, range_value)
 
 XVALUE_EXTRACTOR (octave_map, xmap_value, map_value)
 XVALUE_EXTRACTOR (octave_scalar_map, xscalar_map_value, scalar_map_value)
@@ -2857,21 +2865,22 @@ namespace octave
   make_range (const octave_value& base, const octave_value& increment,
               const octave_value& limit, bool for_cmd_expr)
   {
+    // FIXME: ultimately we will eliminate these casts and create range
+    // objects that properly correspond to the type T instead of always
+    // returning range<double>.
+
     if (base.isempty () || increment.isempty () || limit.isempty ())
-      return octave_value (Range (), for_cmd_expr);
+      return octave_value (octave::range<double> (), for_cmd_expr);
 
-    T b = octave_value_extract<T> (base);
-    T i = octave_value_extract<T> (increment);
-    T l = octave_value_extract<T> (limit);
+    T base_val = octave_value_extract<T> (base);
+    T increment_val = octave_value_extract<T> (increment);
+    T limit_val = octave_value_extract<T> (limit);
 
-    // FIXME: ultimately, we will eliminate these casts and create range
-    // objects that properly correspond to the type T.
+    octave::range<double> r (static_cast<double> (base_val),
+                             static_cast<double> (increment_val),
+                             static_cast<double> (limit_val));
 
-    double db = static_cast<double> (b);
-    double di = static_cast<double> (i);
-    double dl = static_cast<double> (l);
-
-    return octave_value (Range (db, dl, di), for_cmd_expr);
+    return octave_value (r, for_cmd_expr);
   }
 
   template <>
@@ -2881,25 +2890,25 @@ namespace octave
   {
     octave_value retval;
 
+    bool dq_str = (base.is_dq_string () || increment.is_dq_string ()
+                   || limit.is_dq_string ());
+
+    char type = dq_str ? '"' : '\'';
+
     if (base.isempty () || increment.isempty () || limit.isempty ())
-      retval = octave_value (Range (), for_cmd_expr);
+      retval = octave_value ("", type);
     else
       {
         Matrix mtx_base = base.matrix_value (true);
         Matrix mtx_increment = increment.matrix_value (true);
         Matrix mtx_limit = limit.matrix_value (true);
 
-        double b = mtx_base(0);
-        double i = mtx_increment(0);
-        double l = mtx_limit(0);
+        range<double> tmp (mtx_base(0), mtx_increment(0), mtx_limit(0));
 
-        retval = octave_value (Range (b, l, i), for_cmd_expr);
+        retval = octave_value (tmp, for_cmd_expr);
       }
 
-    bool dq_str = (base.is_dq_string () || increment.is_dq_string ()
-                   || limit.is_dq_string ());
-
-    return retval.convert_to_str (false, true, dq_str ? '"' : '\'');
+    return retval.convert_to_str (false, true, type);
   }
 
   octave_value

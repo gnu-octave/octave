@@ -50,6 +50,17 @@ class octave_value_list;
 
 // Range values.
 
+template <typename T>
+octave::range<double>
+make_double_range (const octave::range<T>& r)
+{
+  return octave::range<double> (static_cast<double> (r.base ()),
+                                static_cast<double> (r.increment ()),
+                                static_cast<double> (r.limit ()),
+                                static_cast<double> (r.final_value ()),
+                                r.numel ());
+}
+
 class
 octave_range : public octave_base_value
 {
@@ -58,8 +69,71 @@ public:
   octave_range (void)
     : octave_base_value (), m_range (), m_idx_cache () { }
 
+  octave_range (const octave::range<float>& r)
+    : octave_base_value (), m_range (make_double_range (r)), m_idx_cache ()
+  {
+    if (numel () < 0 && numel () != -2)
+      error ("invalid range");
+  }
+
   octave_range (const octave::range<double>& r)
     : octave_base_value (), m_range (r), m_idx_cache ()
+  {
+    if (numel () < 0 && numel () != -2)
+      error ("invalid range");
+  }
+
+  octave_range (const octave::range<octave_int8>& r)
+    : octave_base_value (), m_range (make_double_range (r)), m_idx_cache ()
+  {
+    if (numel () < 0 && numel () != -2)
+      error ("invalid range");
+  }
+
+  octave_range (const octave::range<octave_int16>& r)
+    : octave_base_value (), m_range (make_double_range (r)), m_idx_cache ()
+  {
+    if (numel () < 0 && numel () != -2)
+      error ("invalid range");
+  }
+
+  octave_range (const octave::range<octave_int32>& r)
+    : octave_base_value (), m_range (make_double_range (r)), m_idx_cache ()
+  {
+    if (numel () < 0 && numel () != -2)
+      error ("invalid range");
+  }
+
+  octave_range (const octave::range<octave_int64>& r)
+    : octave_base_value (), m_range (make_double_range (r)), m_idx_cache ()
+  {
+    if (numel () < 0 && numel () != -2)
+      error ("invalid range");
+  }
+
+  octave_range (const octave::range<octave_uint8>& r)
+    : octave_base_value (), m_range (make_double_range (r)), m_idx_cache ()
+  {
+    if (numel () < 0 && numel () != -2)
+      error ("invalid range");
+  }
+
+  octave_range (const octave::range<octave_uint16>& r)
+    : octave_base_value (), m_range (make_double_range (r)), m_idx_cache ()
+  {
+    if (numel () < 0 && numel () != -2)
+      error ("invalid range");
+  }
+
+  octave_range (const octave::range<octave_uint32>& r)
+    : octave_base_value (), m_range (make_double_range (r)), m_idx_cache ()
+  {
+    if (numel () < 0 && numel () != -2)
+      error ("invalid range");
+  }
+
+  octave_range (const octave::range<octave_uint64>& r)
+    : octave_base_value (), m_range (make_double_range (r)), m_idx_cache ()
   {
     if (numel () < 0 && numel () != -2)
       error ("invalid range");
@@ -359,5 +433,19 @@ private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
+
+typedef octave_range octave_float_range;
+typedef octave_range octave_double_range;
+
+typedef octave_range octave_int8_range;
+typedef octave_range octave_int16_range;
+typedef octave_range octave_int32_range;
+typedef octave_range octave_int64_range;
+
+typedef octave_range octave_uint8_range;
+typedef octave_range octave_uint16_range;
+typedef octave_range octave_uint32_range;
+typedef octave_range octave_uint64_range;
+
 
 #endif

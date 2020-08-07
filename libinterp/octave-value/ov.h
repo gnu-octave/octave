@@ -277,7 +277,17 @@ public:
   octave_value (double base, double limit, double inc);
   OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
   octave_value (const Range& r, bool force_range = false);
+  octave_value (const octave::range<char>& r, char type, bool force_range = false);
+  octave_value (const octave::range<float>& r, bool force_range = false);
   octave_value (const octave::range<double>& r, bool force_range = false);
+  octave_value (const octave::range<octave_int8>& r, bool force_range = false);
+  octave_value (const octave::range<octave_int16>& r, bool force_range = false);
+  octave_value (const octave::range<octave_int32>& r, bool force_range = false);
+  octave_value (const octave::range<octave_int64>& r, bool force_range = false);
+  octave_value (const octave::range<octave_uint8>& r, bool force_range = false);
+  octave_value (const octave::range<octave_uint16>& r, bool force_range = false);
+  octave_value (const octave::range<octave_uint32>& r, bool force_range = false);
+  octave_value (const octave::range<octave_uint64>& r, bool force_range = false);
   octave_value (const octave_map& m);
   octave_value (const octave_scalar_map& m);
   octave_value (const std::map<std::string, octave_value>&);

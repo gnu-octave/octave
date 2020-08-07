@@ -109,6 +109,12 @@ namespace octave
         m_final (limit), m_numel (numel)
     { }
 
+    range (const T& base, const T& increment, const T& limit,
+           const T& final, octave_idx_type numel)
+      : m_base (base), m_increment (increment), m_limit (limit),
+        m_final (final), m_numel (numel)
+    { }
+
     // We don't use a constructor for this because it will conflict with
     // range<T> (base, limit) when T is octave_idx_type.
 

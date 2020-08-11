@@ -626,7 +626,7 @@ operator << (std::ostream& os, const NDArray& a)
   for (octave_idx_type i = 0; i < nel; i++)
     {
       os << ' ';
-      octave_write_double (os, a.elem (i));
+      octave::write_value<double> (os, a.elem (i));
       os << "\n";
     }
   return os;
@@ -642,7 +642,7 @@ operator >> (std::istream& is, NDArray& a)
       double tmp;
       for (octave_idx_type i = 0; i < nel; i++)
         {
-          tmp = octave_read_value<double> (is);
+          tmp = octave::read_value<double> (is);
           if (is)
             a.elem (i) = tmp;
           else

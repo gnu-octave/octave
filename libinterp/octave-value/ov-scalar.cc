@@ -219,7 +219,7 @@ octave_scalar::save_ascii (std::ostream& os)
 {
   double d = double_value ();
 
-  octave_write_double (os, d);
+  octave::write_value<double> (os, d);
 
   os << "\n";
 
@@ -229,7 +229,7 @@ octave_scalar::save_ascii (std::ostream& os)
 bool
 octave_scalar::load_ascii (std::istream& is)
 {
-  scalar = octave_read_value<double> (is);
+  scalar = octave::read_value<double> (is);
 
   if (! is)
     error ("load: failed to load scalar constant");

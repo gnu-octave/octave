@@ -616,7 +616,7 @@ operator << (std::ostream& os, const FloatComplexNDArray& a)
   for (octave_idx_type i = 0; i < nel; i++)
     {
       os << ' ';
-      octave_write_complex (os, a.elem (i));
+      octave::write_value<Complex> (os, a.elem (i));
       os << "\n";
     }
   return os;
@@ -632,7 +632,7 @@ operator >> (std::istream& is, FloatComplexNDArray& a)
       FloatComplex tmp;
       for (octave_idx_type i = 0; i < nel; i++)
         {
-          tmp = octave_read_value<FloatComplex> (is);
+          tmp = octave::read_value<FloatComplex> (is);
           if (is)
             a.elem (i) = tmp;
           else

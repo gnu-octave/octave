@@ -443,7 +443,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
           tmp_stream.str (str);
           tmp_stream.clear ();
 
-          double x = octave_read_double (tmp_stream);
+          double x = octave::read_value<double> (tmp_stream);
           if (tmp_stream)
             {
               if (tmp_stream.eof ())
@@ -485,7 +485,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                     }
                   else
                     {
-                      double y = octave_read_double (tmp_stream);
+                      double y = octave::read_value<double> (tmp_stream);
 
                       if (! iscmplx && y != 0.0)
                         {
@@ -502,7 +502,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
             }
           else
             {
-              // octave_read_double() parsing failed
+              // octave::read_value<double>() parsing failed
               j++;  // Leave data initialized to empty_value
             }
 

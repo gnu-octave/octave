@@ -154,7 +154,7 @@ get_lines_and_columns (std::istream& is,
                 {
                   std::istringstream tmp_stream (buf.substr (beg, end-beg));
 
-                  octave_read_double (tmp_stream);
+                  octave::read_value<double> (tmp_stream);
 
                   if (tmp_stream.fail ())
                     {
@@ -285,7 +285,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
         {
           octave_quit ();
 
-          d = octave_read_value<double> (tmp_stream);
+          d = octave::read_value<double> (tmp_stream);
 
           if (! tmp_stream && ! tmp_stream.eof ())
             error ("load: failed to read matrix from file '%s'",
@@ -381,7 +381,7 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
                 {
                   // Omit leading tabs.
                   if (j != 0) os << '\t';
-                  octave_write_double (os, m(i, j));
+                  octave::write_value<double> (os, m(i, j));
                 }
               os << "\n";
             }

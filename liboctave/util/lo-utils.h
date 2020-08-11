@@ -85,55 +85,89 @@ extern OCTAVE_API std::string octave_fgetl (std::FILE *);
 extern OCTAVE_API std::string octave_fgets (std::FILE *, bool& eof);
 extern OCTAVE_API std::string octave_fgetl (std::FILE *, bool& eof);
 
-template <typename T>
-T
-octave_read_value (std::istream& is)
+namespace octave
 {
-  T retval;
-  is >> retval;
-  return retval;
+  template <typename T>
+  T
+  read_value (std::istream& is)
+  {
+    T retval;
+    is >> retval;
+    return retval;
+  }
+
+  template <> double read_value (std::istream& is);
+  template <> Complex read_value (std::istream& is);
+  template <> float read_value (std::istream& is);
+  template <> FloatComplex read_value (std::istream& is);
+
+  template <typename T>
+  void
+  write_value (std::ostream& os, const T& value)
+  {
+    os << value;
+  }
+
+  template <> void write_value (std::ostream& os, const double& value);
+  template <> void write_value (std::ostream& os, const Complex& value);
+  template <> void write_value (std::ostream& os, const float& value);
+  template <> void write_value (std::ostream& os, const FloatComplex& value);
 }
 
-template <> OCTAVE_API double octave_read_value (std::istream& is);
-template <> OCTAVE_API Complex octave_read_value (std::istream& is);
-template <> OCTAVE_API float octave_read_value (std::istream& is);
-template <> OCTAVE_API FloatComplex octave_read_value (std::istream& is);
-
-// The next four functions are provided for backward compatibility.
+OCTAVE_DEPRECATED (7, "use 'octave::read_value<T>' instead")
 inline double
 octave_read_double (std::istream& is)
 {
-  return octave_read_value<double> (is);
+  return octave::read_value<double> (is);
 }
 
+OCTAVE_DEPRECATED (7, "use 'octave::read_value<T>' instead")
 inline Complex
 octave_read_complex (std::istream& is)
 {
-  return octave_read_value<Complex> (is);
+  return octave::read_value<Complex> (is);
 }
 
+OCTAVE_DEPRECATED (7, "use 'octave::read_value<T>' instead")
 inline float
 octave_read_float (std::istream& is)
 {
-  return octave_read_value<float> (is);
+  return octave::read_value<float> (is);
 }
 
+OCTAVE_DEPRECATED (7, "use 'octave::read_value<T>' instead")
 inline FloatComplex
 octave_read_float_complex (std::istream& is)
 {
-  return octave_read_value<FloatComplex> (is);
+  return octave::read_value<FloatComplex> (is);
 }
 
-extern OCTAVE_API void
-octave_write_double (std::ostream& os, double dval);
+OCTAVE_DEPRECATED (7, "use 'octave::write_value<T>' instead")
+inline void
+octave_write_double (std::ostream& os, double value)
+{
+  octave::write_value<double> (os, value);
+}
 
-extern OCTAVE_API void
-octave_write_complex (std::ostream& os, const Complex& cval);
+OCTAVE_DEPRECATED (7, "use 'octave::write_value<T>' instead")
+inline void
+octave_write_complex (std::ostream& os, const Complex& value)
+{
+  octave::write_value<Complex> (os, value);
+}
 
-extern OCTAVE_API void
-octave_write_float (std::ostream& os, float dval);
+OCTAVE_DEPRECATED (7, "use 'octave::write_value<T>' instead")
+inline void
+octave_write_float (std::ostream& os, float value)
+{
+  octave::write_value<float> (os, value);
+}
 
-extern OCTAVE_API void
-octave_write_float_complex (std::ostream& os, const FloatComplex& cval);
+OCTAVE_DEPRECATED (7, "use 'octave::write_value<T>' instead")
+inline void
+octave_write_float_complex (std::ostream& os, const FloatComplex& value)
+{
+  octave::write_value<FloatComplex> (os, value);
+}
 
 #endif

@@ -187,244 +187,253 @@ octave_fgetl (FILE *f, bool& eof)
   return retval;
 }
 
-// Note that the caller is responsible for repositioning the stream on failure.
-
-template <typename T>
-T
-read_inf_nan_na (std::istream& is, char c0)
+namespace octave
 {
-  T val = 0.0;
+  // Note that the caller is responsible for repositioning the stream on
+  // failure.
 
-  switch (c0)
-    {
-    case 'i': case 'I':
+  template <typename T>
+  T
+  read_inf_nan_na (std::istream& is, char c0)
+  {
+    T val = 0.0;
+
+    switch (c0)
       {
-        char c1 = is.get ();
-        if (c1 == 'n' || c1 == 'N')
-          {
-            char c2 = is.get ();
-            if (c2 == 'f' || c2 == 'F')
-              val = std::numeric_limits<T>::infinity ();
-            else
-              is.setstate (std::ios::failbit);
-          }
-        else
-          is.setstate (std::ios::failbit);
-      }
-      break;
-
-    case 'n': case 'N':
-      {
-        char c1 = is.get ();
-        if (c1 == 'a' || c1 == 'A')
-          {
-            char c2 = is.get ();
-            if (c2 == 'n' || c2 == 'N')
-              val = std::numeric_limits<T>::quiet_NaN ();
-            else
-              {
-                val = octave::numeric_limits<T>::NA ();
-                if (c2 != std::istream::traits_type::eof ())
-                  is.putback (c2);
-                else
-                  is.clear (is.rdstate () & ~std::ios::failbit);
-              }
-          }
-        else
-          is.setstate (std::ios::failbit);
-      }
-      break;
-
-    default:
-      (*current_liboctave_error_handler)
-        ("read_inf_nan_na: invalid character '%c'", c0);
-    }
-
-  return val;
-}
-
-// Read a double value.  Discard any sign on NaN and NA.
-
-template <typename T>
-double
-octave_read_fp_value (std::istream& is)
-{
-  T val = 0.0;
-
-  // FIXME: resetting stream position is likely to fail unless we are
-  // reading from a file.
-  std::streampos pos = is.tellg ();
-
-  char c1 = ' ';
-
-  while (isspace (c1))
-    c1 = is.get ();
-
-  bool neg = false;
-
-  switch (c1)
-    {
-    case '-':
-      neg = true;
-      OCTAVE_FALLTHROUGH;
-
-    case '+':
-      {
-        char c2 = 0;
-        c2 = is.get ();
-        if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
-          val = read_inf_nan_na<T> (is, c2);
-        else
-          {
-            is.putback (c2);
-            is >> val;
-          }
-
-        if (neg && ! is.fail ())
-          val = -val;
-      }
-      break;
-
-    case 'i': case 'I':
-    case 'n': case 'N':
-      val = read_inf_nan_na<T> (is, c1);
-      break;
-
-    default:
-      is.putback (c1);
-      is >> val;
-      break;
-    }
-
-  std::ios::iostate status = is.rdstate ();
-  if (status & std::ios::failbit)
-    {
-      // Convert MAX_VAL returned by C++ streams for very large numbers to Inf
-      if (val == std::numeric_limits<T>::max ())
+      case 'i': case 'I':
         {
-          if (neg)
-            val = -std::numeric_limits<T>::infinity ();
-          else
-            val = std::numeric_limits<T>::infinity ();
-          is.clear (status & ~std::ios::failbit);
-        }
-      else
-        {
-          // True error.  Reset stream to original position and pass status on.
-          is.clear ();
-          is.seekg (pos);
-          is.setstate (status);
-        }
-    }
-
-  return val;
-}
-
-template <typename T>
-std::complex<T>
-octave_read_cx_fp_value (std::istream& is)
-{
-  T re = 0.0;
-  T im = 0.0;
-
-  std::complex<T> cx = 0.0;
-
-  char ch = ' ';
-
-  while (isspace (ch))
-    ch = is.get ();
-
-  if (ch == '(')
-    {
-      re = octave_read_value<T> (is);
-      ch = is.get ();
-
-      if (ch == ',')
-        {
-          im = octave_read_value<T> (is);
-          ch = is.get ();
-
-          if (ch == ')')
-            cx = std::complex<T> (re, im);
+          char c1 = is.get ();
+          if (c1 == 'n' || c1 == 'N')
+            {
+              char c2 = is.get ();
+              if (c2 == 'f' || c2 == 'F')
+                val = std::numeric_limits<T>::infinity ();
+              else
+                is.setstate (std::ios::failbit);
+            }
           else
             is.setstate (std::ios::failbit);
         }
-      else if (ch == ')')
-        cx = re;
-      else
-        is.setstate (std::ios::failbit);
-    }
-  else
-    {
-      is.putback (ch);
-      cx = octave_read_value<double> (is);
-    }
+        break;
 
-  return cx;
-}
+      case 'n': case 'N':
+        {
+          char c1 = is.get ();
+          if (c1 == 'a' || c1 == 'A')
+            {
+              char c2 = is.get ();
+              if (c2 == 'n' || c2 == 'N')
+                val = std::numeric_limits<T>::quiet_NaN ();
+              else
+                {
+                  val = octave::numeric_limits<T>::NA ();
+                  if (c2 != std::istream::traits_type::eof ())
+                    is.putback (c2);
+                  else
+                    is.clear (is.rdstate () & ~std::ios::failbit);
+                }
+            }
+          else
+            is.setstate (std::ios::failbit);
+        }
+        break;
 
-template <> OCTAVE_API double octave_read_value (std::istream& is)
-{
-  return octave_read_fp_value<double> (is);
-}
+      default:
+        (*current_liboctave_error_handler)
+          ("read_inf_nan_na: invalid character '%c'", c0);
+      }
 
-template <> OCTAVE_API Complex octave_read_value (std::istream& is)
-{
-  return octave_read_cx_fp_value<double> (is);
-}
+    return val;
+  }
 
-template <> OCTAVE_API float octave_read_value (std::istream& is)
-{
-  return octave_read_fp_value<float> (is);
-}
+  // Read a double value.  Discard any sign on NaN and NA.
 
-template <> OCTAVE_API FloatComplex octave_read_value (std::istream& is)
-{
-  return octave_read_cx_fp_value<float> (is);
-}
+  template <typename T>
+  double
+  read_fp_value (std::istream& is)
+  {
+    T val = 0.0;
 
-void
-octave_write_double (std::ostream& os, double d)
-{
-  if (lo_ieee_is_NA (d))
-    os << "NA";
-  else if (lo_ieee_isnan (d))
-    os << "NaN";
-  else if (lo_ieee_isinf (d))
-    os << (d < 0 ? "-Inf" : "Inf");
-  else
-    os << d;
-}
+    // FIXME: resetting stream position is likely to fail unless we are
+    // reading from a file.
+    std::streampos pos = is.tellg ();
 
-void
-octave_write_complex (std::ostream& os, const Complex& c)
-{
-  os << '(';
-  octave_write_double (os, real (c));
-  os << ',';
-  octave_write_double (os, imag (c));
-  os << ')';
-}
+    char c1 = ' ';
 
-void
-octave_write_float (std::ostream& os, float d)
-{
-  if (lo_ieee_is_NA (d))
-    os << "NA";
-  else if (lo_ieee_isnan (d))
-    os << "NaN";
-  else if (lo_ieee_isinf (d))
-    os << (d < 0 ? "-Inf" : "Inf");
-  else
-    os << d;
-}
+    while (isspace (c1))
+      c1 = is.get ();
 
-void
-octave_write_float_complex (std::ostream& os, const FloatComplex& c)
-{
-  os << '(';
-  octave_write_float (os, real (c));
-  os << ',';
-  octave_write_float (os, imag (c));
-  os << ')';
+    bool neg = false;
+
+    switch (c1)
+      {
+      case '-':
+        neg = true;
+        OCTAVE_FALLTHROUGH;
+
+      case '+':
+        {
+          char c2 = 0;
+          c2 = is.get ();
+          if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
+            val = read_inf_nan_na<T> (is, c2);
+          else
+            {
+              is.putback (c2);
+              is >> val;
+            }
+
+          if (neg && ! is.fail ())
+            val = -val;
+        }
+        break;
+
+      case 'i': case 'I':
+      case 'n': case 'N':
+        val = read_inf_nan_na<T> (is, c1);
+        break;
+
+      default:
+        is.putback (c1);
+        is >> val;
+        break;
+      }
+
+    std::ios::iostate status = is.rdstate ();
+    if (status & std::ios::failbit)
+      {
+        // Convert MAX_VAL returned by C++ streams for very large numbers to Inf
+        if (val == std::numeric_limits<T>::max ())
+          {
+            if (neg)
+              val = -std::numeric_limits<T>::infinity ();
+            else
+              val = std::numeric_limits<T>::infinity ();
+            is.clear (status & ~std::ios::failbit);
+          }
+        else
+          {
+            // True error.  Reset stream to original position and pass status on.
+            is.clear ();
+            is.seekg (pos);
+            is.setstate (status);
+          }
+      }
+
+    return val;
+  }
+
+  template <typename T>
+  std::complex<T>
+  read_cx_fp_value (std::istream& is)
+  {
+    T re = 0.0;
+    T im = 0.0;
+
+    std::complex<T> cx = 0.0;
+
+    char ch = ' ';
+
+    while (isspace (ch))
+      ch = is.get ();
+
+    if (ch == '(')
+      {
+        re = read_value<T> (is);
+        ch = is.get ();
+
+        if (ch == ',')
+          {
+            im = read_value<T> (is);
+            ch = is.get ();
+
+            if (ch == ')')
+              cx = std::complex<T> (re, im);
+            else
+              is.setstate (std::ios::failbit);
+          }
+        else if (ch == ')')
+          cx = re;
+        else
+          is.setstate (std::ios::failbit);
+      }
+    else
+      {
+        is.putback (ch);
+        cx = read_value<T> (is);
+      }
+
+    return cx;
+  }
+
+  // FIXME: Could we use traits and enable_if to avoid duplication in the
+  // following specializations?
+
+  template <> double read_value (std::istream& is)
+  {
+    return read_fp_value<double> (is);
+  }
+
+  template <> Complex read_value (std::istream& is)
+  {
+    return read_cx_fp_value<double> (is);
+  }
+
+  template <> float read_value (std::istream& is)
+  {
+    return read_fp_value<float> (is);
+  }
+
+  template <> FloatComplex read_value (std::istream& is)
+  {
+    return read_cx_fp_value<float> (is);
+  }
+
+  // Note: precision is supposed to be managed outside of this function by
+  // setting stream parameters.
+
+  template <> void write_value (std::ostream& os, const double& value)
+  {
+    if (lo_ieee_is_NA (value))
+      os << "NA";
+    else if (lo_ieee_isnan (value))
+      os << "NaN";
+    else if (lo_ieee_isinf (value))
+      os << (value < 0 ? "-Inf" : "Inf");
+    else
+      os << value;
+  }
+
+  template <> void write_value (std::ostream& os, const Complex& value)
+  {
+    os << '(';
+    write_value<double> (os, real (value));
+    os << ',';
+    write_value<double> (os, imag (value));
+    os << ')';
+  }
+
+  // Note: precision is supposed to be managed outside of this function by
+  // setting stream parameters.
+
+  template <> void write_value (std::ostream& os, const float& value)
+  {
+    if (lo_ieee_is_NA (value))
+      os << "NA";
+    else if (lo_ieee_isnan (value))
+      os << "NaN";
+    else if (lo_ieee_isinf (value))
+      os << (value < 0 ? "-Inf" : "Inf");
+    else
+      os << value;
+  }
+
+  template <> void write_value (std::ostream& os, const FloatComplex& value)
+  {
+    os << '(';
+    write_value<float> (os, real (value));
+    os << ',';
+    write_value<float> (os, imag (value));
+    os << ')';
+  }
 }

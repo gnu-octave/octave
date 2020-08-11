@@ -3200,7 +3200,7 @@ operator << (std::ostream& os, const FloatComplexMatrix& a)
       for (octave_idx_type j = 0; j < a.cols (); j++)
         {
           os << ' ';
-          octave_write_complex (os, a.elem (i, j));
+          octave::write_value<Complex> (os, a.elem (i, j));
         }
       os << "\n";
     }
@@ -3219,7 +3219,7 @@ operator >> (std::istream& is, FloatComplexMatrix& a)
       for (octave_idx_type i = 0; i < nr; i++)
         for (octave_idx_type j = 0; j < nc; j++)
           {
-            tmp = octave_read_value<FloatComplex> (is);
+            tmp = octave::read_value<FloatComplex> (is);
             if (is)
               a.elem (i, j) = tmp;
             else

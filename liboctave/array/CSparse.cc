@@ -7487,7 +7487,7 @@ operator << (std::ostream& os, const SparseComplexMatrix& a)
       for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
         {
           os << a.ridx (i) + 1 << ' '  << j + 1 << ' ';
-          octave_write_complex (os, a.data (i));
+          octave::write_value<Complex> (os, a.data (i));
           os << "\n";
         }
     }
@@ -7500,7 +7500,7 @@ operator >> (std::istream& is, SparseComplexMatrix& a)
 {
   typedef SparseComplexMatrix::element_type elt_type;
 
-  return read_sparse_matrix<elt_type> (is, a, octave_read_value<Complex>);
+  return read_sparse_matrix<elt_type> (is, a, octave::read_value<Complex>);
 }
 
 SparseComplexMatrix

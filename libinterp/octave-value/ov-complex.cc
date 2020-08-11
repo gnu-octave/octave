@@ -313,7 +313,7 @@ octave_complex::save_ascii (std::ostream& os)
 {
   Complex c = complex_value ();
 
-  octave_write_complex (os, c);
+  octave::write_value<Complex> (os, c);
 
   os << "\n";
 
@@ -323,7 +323,7 @@ octave_complex::save_ascii (std::ostream& os)
 bool
 octave_complex::load_ascii (std::istream& is)
 {
-  scalar = octave_read_value<Complex> (is);
+  scalar = octave::read_value<Complex> (is);
 
   if (! is)
     error ("load: failed to load complex scalar constant");

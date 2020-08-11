@@ -282,7 +282,7 @@ operator >> (std::istream& is, SparseBoolMatrix& a)
 {
   typedef SparseBoolMatrix::element_type elt_type;
 
-  return read_sparse_matrix<elt_type> (is, a, octave_read_value<bool>);
+  return read_sparse_matrix<elt_type> (is, a, octave::read_value<bool>);
 }
 
 SparseBoolMatrix

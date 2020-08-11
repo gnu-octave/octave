@@ -535,14 +535,14 @@ octave_range::save_ascii (std::ostream& os)
   else
     os << "# base, length, increment\n";
 
-  octave_write_double (os, base);
+  octave::write_value<double> (os, base);
   os << ' ';
   if (inc != 0)
-    octave_write_double (os, limit);
+    octave::write_value<double> (os, limit);
   else
     os << len;
   os << ' ';
-  octave_write_double (os, inc);
+  octave::write_value<double> (os, inc);
   os << "\n";
 
   return true;

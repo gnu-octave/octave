@@ -2960,7 +2960,7 @@ namespace octave
       {
         char *pos = is.tellg ();
         std::ios::iostate state = is.rdstate ();
-        //re = octave_read_value<double> (is);
+        //re = octave::read_value<double> (is);
         re = read_double (is, fmt);
 
         // check for "treat as empty" string
@@ -3025,7 +3025,7 @@ namespace octave
                 pos   = is.tellg ();
                 state = is.rdstate ();
 
-                //im = octave_read_value<double> (is);
+                //im = octave::read_value<double> (is);
                 im = read_double (is, fmt);
                 if (is.fail ())
                   im = 1;
@@ -4370,7 +4370,7 @@ namespace octave
             {
               is.putback (c1);
 
-              ref = octave_read_value<double> (is);
+              ref = octave::read_value<double> (is);
             }
         }
         break;

@@ -91,16 +91,19 @@ Range::matrix_value (void) const
 {
   Matrix retval (1, m_numel);
 
-  // The first element must always be *exactly* the base.
-  // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
-  retval(0) = m_base;
+  if (m_numel > 0)
+    {
+      // The first element must always be *exactly* the base.
+      // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
+      retval(0) = m_base;
 
-  double b = m_base;
-  double increment = m_inc;
-  for (octave_idx_type i = 1; i < m_numel - 1; i++)
-    retval.xelem (i) = b + i * increment;
+      double b = m_base;
+      double increment = m_inc;
+      for (octave_idx_type i = 1; i < m_numel - 1; i++)
+        retval.xelem (i) = b + i * increment;
 
-  retval.xelem (m_numel - 1) = m_limit;
+      retval.xelem (m_numel - 1) = m_limit;
+    }
 
   return retval;
 }

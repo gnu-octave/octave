@@ -1069,7 +1069,7 @@ octave_value::octave_value (const Array<std::string>& cellstr)
 }
 
 octave_value::octave_value (double base, double limit, double inc)
-  : rep (new octave_range (base, limit, inc))
+  : rep (new ov_range<double> (octave::range<double> (base, inc, limit)))
 {
   maybe_mutate ();
 }
@@ -1081,7 +1081,7 @@ octave_value::octave_value (const Range& r, bool force_range)
     error ("invalid range");
 
   if (force_range || ! Vdisable_range)
-    rep = dynamic_cast<octave_base_value *> (new octave_range (r));
+    rep = dynamic_cast<octave_base_value *> (new ov_range<double> (octave::range<double> (r.base (), r.increment (), r.limit ())));
   else
     rep = dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ()));
 
@@ -1107,7 +1107,7 @@ octave_value::octave_value (const octave::range<char>& r, char type,
 
 octave_value::octave_value (const octave::range<float>& r, bool force_range)
   : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_float_range (r))
+         ? dynamic_cast<octave_base_value *> (new ov_range<float> (r))
          : dynamic_cast<octave_base_value *> (new octave_float_matrix (r.array_value ())))
 {
   maybe_mutate ();
@@ -1115,7 +1115,7 @@ octave_value::octave_value (const octave::range<float>& r, bool force_range)
 
 octave_value::octave_value (const octave::range<double>& r, bool force_range)
   : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_double_range (r))
+         ? dynamic_cast<octave_base_value *> (new ov_range<double> (r))
          : dynamic_cast<octave_base_value *> (new octave_matrix (r.array_value ())))
 {
   maybe_mutate ();
@@ -1124,7 +1124,7 @@ octave_value::octave_value (const octave::range<double>& r, bool force_range)
 octave_value::octave_value (const octave::range<octave_int8>& r,
                             bool force_range)
   : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_int8_range (r))
+         ? dynamic_cast<octave_base_value *> (new ov_range<octave_int8> (r))
          : dynamic_cast<octave_base_value *> (new octave_int8_matrix (r.array_value ())))
 {
   maybe_mutate ();
@@ -1133,7 +1133,7 @@ octave_value::octave_value (const octave::range<octave_int8>& r,
 octave_value::octave_value (const octave::range<octave_int16>& r,
                             bool force_range)
   : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_int16_range (r))
+         ? dynamic_cast<octave_base_value *> (new ov_range<octave_int16> (r))
          : dynamic_cast<octave_base_value *> (new octave_int16_matrix (r.array_value ())))
 {
   maybe_mutate ();
@@ -1142,7 +1142,7 @@ octave_value::octave_value (const octave::range<octave_int16>& r,
 octave_value::octave_value (const octave::range<octave_int32>& r,
                             bool force_range)
   : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_int32_range (r))
+         ? dynamic_cast<octave_base_value *> (new ov_range<octave_int32> (r))
          : dynamic_cast<octave_base_value *> (new octave_int32_matrix (r.array_value ())))
 {
   maybe_mutate ();
@@ -1151,7 +1151,7 @@ octave_value::octave_value (const octave::range<octave_int32>& r,
 octave_value::octave_value (const octave::range<octave_int64>& r,
                             bool force_range)
   : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_int64_range (r))
+         ? dynamic_cast<octave_base_value *> (new ov_range<octave_int64> (r))
          : dynamic_cast<octave_base_value *> (new octave_int64_matrix (r.array_value ())))
 {
   maybe_mutate ();
@@ -1160,7 +1160,7 @@ octave_value::octave_value (const octave::range<octave_int64>& r,
 octave_value::octave_value (const octave::range<octave_uint8>& r,
                             bool force_range)
   : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_uint8_range (r))
+         ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint8> (r))
          : dynamic_cast<octave_base_value *> (new octave_uint8_matrix (r.array_value ())))
 {
   maybe_mutate ();
@@ -1169,7 +1169,7 @@ octave_value::octave_value (const octave::range<octave_uint8>& r,
 octave_value::octave_value (const octave::range<octave_uint16>& r,
                             bool force_range)
   : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_uint16_range (r))
+         ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint16> (r))
          : dynamic_cast<octave_base_value *> (new octave_uint16_matrix (r.array_value ())))
 {
   maybe_mutate ();
@@ -1178,7 +1178,7 @@ octave_value::octave_value (const octave::range<octave_uint16>& r,
 octave_value::octave_value (const octave::range<octave_uint32>& r,
                             bool force_range)
   : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_uint32_range (r))
+         ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint32> (r))
          : dynamic_cast<octave_base_value *> (new octave_uint32_matrix (r.array_value ())))
 {
   maybe_mutate ();
@@ -1187,7 +1187,7 @@ octave_value::octave_value (const octave::range<octave_uint32>& r,
 octave_value::octave_value (const octave::range<octave_uint64>& r,
                             bool force_range)
   : rep (force_range || ! Vdisable_range
-         ? dynamic_cast<octave_base_value *> (new octave_uint64_range (r))
+         ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint64> (r))
          : dynamic_cast<octave_base_value *> (new octave_uint64_matrix (r.array_value ())))
 {
   maybe_mutate ();
@@ -2193,7 +2193,16 @@ XVALUE_EXTRACTOR (string_vector, xstring_vector_value, string_vector_value)
 XVALUE_EXTRACTOR (Cell, xcell_value, cell_value)
 XVALUE_EXTRACTOR (Array<std::string>, xcellstr_value, cellstr_value)
 
+XVALUE_EXTRACTOR (octave::range<float>, xfloat_range_value, float_range_value)
 XVALUE_EXTRACTOR (octave::range<double>, xrange_value, range_value)
+XVALUE_EXTRACTOR (octave::range<octave_int8>, xint8_range_value, int8_range_value)
+XVALUE_EXTRACTOR (octave::range<octave_int16>, xint16_range_value, int16_range_value)
+XVALUE_EXTRACTOR (octave::range<octave_int32>, xint32_range_value, int32_range_value)
+XVALUE_EXTRACTOR (octave::range<octave_int64>, xint64_range_value, int64_range_value)
+XVALUE_EXTRACTOR (octave::range<octave_uint8>, xuint8_range_value, uint8_range_value)
+XVALUE_EXTRACTOR (octave::range<octave_uint16>, xuint16_range_value, uint16_range_value)
+XVALUE_EXTRACTOR (octave::range<octave_uint32>, xuint32_range_value, uint32_range_value)
+XVALUE_EXTRACTOR (octave::range<octave_uint64>, xuint64_range_value, uint64_range_value)
 
 XVALUE_EXTRACTOR (octave_map, xmap_value, map_value)
 XVALUE_EXTRACTOR (octave_scalar_map, xscalar_map_value, scalar_map_value)
@@ -3174,7 +3183,16 @@ install_types (octave::type_info& ti)
   octave_diag_matrix::register_type (ti);
   octave_complex_matrix::register_type (ti);
   octave_complex_diag_matrix::register_type (ti);
-  octave_range::register_type (ti);
+  ov_range<float>::register_type (ti);
+  ov_range<double>::register_type (ti);
+  ov_range<octave_int8>::register_type (ti);
+  ov_range<octave_int16>::register_type (ti);
+  ov_range<octave_int32>::register_type (ti);
+  ov_range<octave_int64>::register_type (ti);
+  ov_range<octave_uint8>::register_type (ti);
+  ov_range<octave_uint16>::register_type (ti);
+  ov_range<octave_uint32>::register_type (ti);
+  ov_range<octave_uint64>::register_type (ti);
   octave_bool::register_type (ti);
   octave_bool_matrix::register_type (ti);
   octave_char_matrix_str::register_type (ti);

@@ -57,6 +57,7 @@ OCTAVE_VALUE_INC = \
   %reldir%/ov-null-mat.h \
   %reldir%/ov-oncleanup.h \
   %reldir%/ov-perm.h \
+  %reldir%/ov-range-traits.h \
   %reldir%/ov-range.h \
   %reldir%/ov-re-diag.h \
   %reldir%/ov-re-mat.h \

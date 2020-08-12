@@ -950,8 +950,35 @@ public:
   Array<std::string> cellstr_value (void) const
   { return rep->cellstr_value (); }
 
+  octave::range<float> float_range_value (void) const
+  { return rep->float_range_value (); }
+
   octave::range<double> range_value (void) const
   { return rep->range_value (); }
+
+  octave::range<octave_int8> int8_range_value (void) const
+  { return rep->int8_range_value (); }
+
+  octave::range<octave_int16> int16_range_value (void) const
+  { return rep->int16_range_value (); }
+
+  octave::range<octave_int32> int32_range_value (void) const
+  { return rep->int32_range_value (); }
+
+  octave::range<octave_int64> int64_range_value (void) const
+  { return rep->int64_range_value (); }
+
+  octave::range<octave_uint8> uint8_range_value (void) const
+  { return rep->uint8_range_value (); }
+
+  octave::range<octave_uint16> uint16_range_value (void) const
+  { return rep->uint16_range_value (); }
+
+  octave::range<octave_uint32> uint32_range_value (void) const
+  { return rep->uint32_range_value (); }
+
+  octave::range<octave_uint64> uint64_range_value (void) const
+  { return rep->uint64_range_value (); }
 
   octave_map map_value (void) const;
 
@@ -1162,7 +1189,25 @@ public:
 
   Array<std::string> xcellstr_value (const char *fmt, ...) const;
 
+  octave::range<float> xfloat_range_value (const char *fmt, ...) const;
+
   octave::range<double> xrange_value (const char *fmt, ...) const;
+
+  octave::range<octave_int8> xint8_range_value (const char *fmt, ...) const;
+
+  octave::range<octave_int16> xint16_range_value (const char *fmt, ...) const;
+
+  octave::range<octave_int32> xint32_range_value (const char *fmt, ...) const;
+
+  octave::range<octave_int64> xint64_range_value (const char *fmt, ...) const;
+
+  octave::range<octave_uint8> xuint8_range_value (const char *fmt, ...) const;
+
+  octave::range<octave_uint16> xuint16_range_value (const char *fmt, ...) const;
+
+  octave::range<octave_uint32> xuint32_range_value (const char *fmt, ...) const;
+
+  octave::range<octave_uint64> xuint64_range_value (const char *fmt, ...) const;
 
   octave_map xmap_value (const char *fmt, ...) const;
 

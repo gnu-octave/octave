@@ -811,10 +811,64 @@ octave_base_value::cellstr_value (void) const
   err_wrong_type_arg ("octave_base_value::cellstr_value()", type_name ());
 }
 
+octave::range<float>
+octave_base_value::float_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::float_range_value()", type_name ());
+}
+
 octave::range<double>
 octave_base_value::range_value (void) const
 {
   err_wrong_type_arg ("octave_base_value::range_value()", type_name ());
+}
+
+octave::range<octave_int8>
+octave_base_value::int8_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::int8_range_value()", type_name ());
+}
+
+octave::range<octave_int16>
+octave_base_value::int16_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::int16_range_value()", type_name ());
+}
+
+octave::range<octave_int32>
+octave_base_value::int32_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::int32_range_value()", type_name ());
+}
+
+octave::range<octave_int64>
+octave_base_value::int64_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::int64_range_value()", type_name ());
+}
+
+octave::range<octave_uint8>
+octave_base_value::uint8_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::uint8_range_value()", type_name ());
+}
+
+octave::range<octave_uint16>
+octave_base_value::uint16_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::uint16_range_value()", type_name ());
+}
+
+octave::range<octave_uint32>
+octave_base_value::uint32_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::uint32_range_value()", type_name ());
+}
+
+octave::range<octave_uint64>
+octave_base_value::uint64_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::uint64_range_value()", type_name ());
 }
 
 octave_map

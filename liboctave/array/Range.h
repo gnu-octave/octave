@@ -139,7 +139,7 @@ namespace octave
       // clearer to see "make_constant" instead of puzzling over the
       // purpose of this strange constructor form.
 
-      T final_val = base + double (numel - 1) * increment;
+      T final_val = base + (numel - 1) * increment;
 
       return range<T> (base, increment, final_val, numel);
     }
@@ -298,7 +298,7 @@ namespace octave
           retval(0) = m_base;
 
           for (octave_idx_type i = 1; i < nel - 1; i++)
-            retval.xelem (i) = m_base + double (i) * m_increment;
+            retval.xelem (i) = m_base + i * m_increment;
 
           retval.xelem (nel - 1) = final_value ();
         }
@@ -337,7 +337,7 @@ namespace octave
 
     T get_final_value (void) const
     {
-      return m_base + double (m_numel - 1) * m_increment;
+      return m_base + (m_numel - 1) * m_increment;
     }
   };
 

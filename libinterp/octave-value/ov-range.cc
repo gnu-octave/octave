@@ -23,9 +23,9 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if defined (HAVE_CONFIG_H)
-#  include "config.h"
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 #include <istream>
 #include <ostream>
@@ -49,9 +49,11 @@
 #include "variables.h"
 #include "errwarn.h"
 #include "mxarray.h"
+#include "mx-type-traits.h"
 #include "ops.h"
 #include "ovl.h"
 #include "oct-hdf5.h"
+#include "ov-range-traits.h"
 #include "ov-range.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
@@ -62,41 +64,148 @@
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
+#if defined (HAVE_HDF5)
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_range, "range", "double");
+template <>
+octave_hdf5_id ov_range<float>::hdf5_save_type = H5T_NATIVE_FLOAT;
 
+template <>
+octave_hdf5_id ov_range<double>::hdf5_save_type = H5T_NATIVE_DOUBLE;
+
+template <>
+octave_hdf5_id ov_range<octave_int8>::hdf5_save_type = H5T_NATIVE_INT8;
+
+template <>
+octave_hdf5_id ov_range<octave_int16>::hdf5_save_type = H5T_NATIVE_INT16;
+
+template <>
+octave_hdf5_id ov_range<octave_int32>::hdf5_save_type = H5T_NATIVE_INT32;
+
+template <>
+octave_hdf5_id ov_range<octave_int64>::hdf5_save_type = H5T_NATIVE_INT64;
+
+template <>
+octave_hdf5_id ov_range<octave_uint8>::hdf5_save_type = H5T_NATIVE_UINT8;
+
+template <>
+octave_hdf5_id ov_range<octave_uint16>::hdf5_save_type = H5T_NATIVE_UINT16;
+
+template <>
+octave_hdf5_id ov_range<octave_uint32>::hdf5_save_type = H5T_NATIVE_UINT32;
+
+template <>
+octave_hdf5_id ov_range<octave_uint64>::hdf5_save_type = H5T_NATIVE_UINT64;
+
+#else
+
+template <>
+octave_hdf5_id ov_range<float>::hdf5_save_type = 0;
+
+template <>
+octave_hdf5_id ov_range<double>::hdf5_save_type = 0;
+
+template <>
+octave_hdf5_id ov_range<octave_int8>::hdf5_save_type = 0;
+
+template <>
+octave_hdf5_id ov_range<octave_int16>::hdf5_save_type = 0;
+
+template <>
+octave_hdf5_id ov_range<octave_int32>::hdf5_save_type = 0;
+
+template <>
+octave_hdf5_id ov_range<octave_int64>::hdf5_save_type = 0;
+
+template <>
+octave_hdf5_id ov_range<octave_uint8>::hdf5_save_type = 0;
+
+template <>
+octave_hdf5_id ov_range<octave_uint16>::hdf5_save_type = 0;
+
+template <>
+octave_hdf5_id ov_range<octave_uint32>::hdf5_save_type = 0;
+
+template <>
+octave_hdf5_id ov_range<octave_uint64>::hdf5_save_type = 0;
+
+#endif
+
+DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<float>,
+                                              "float_range", "single");
+
+DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<double>,
+                                              "range", "double");
+
+DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int8>,
+                                              "int8_range", "int8");
+
+DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int16>,
+                                              "int16_range", "int16");
+
+DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int32>,
+                                              "int32_range", "int32");
+
+DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int64>,
+                                              "int64_range", "int64");
+
+DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint8>,
+                                              "uint8_range", "uint8");
+
+DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint16>,
+                                              "uint16_range", "uint16");
+
+DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint32>,
+                                              "uint32_range", "uint32");
+
+DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint64>,
+                                              "uint64_range", "uint64");
+
+template <typename T>
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  const octave_range& v = dynamic_cast<const octave_range&> (a);
+  typedef typename octave_value_range_traits<T>::matrix_type ov_mx_type;
 
-  return new octave_matrix (v.matrix_value ());
+  const ov_range<T>& v = dynamic_cast<const ov_range<T>&> (a);
+
+  return new ov_mx_type (v.raw_array_value ());
 }
 
+template <typename T>
 octave_base_value::type_conv_info
-octave_range::numeric_conversion_function (void) const
+ov_range<T>::numeric_conversion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_matrix::static_type_id ());
+  typedef typename octave_value_range_traits<T>::matrix_type ov_mx_type;
+
+  return octave_base_value::type_conv_info
+    (default_numeric_conversion_function<T>, ov_mx_type::static_type_id ());
 }
 
+template <typename T>
 octave_base_value *
-octave_range::try_narrowing_conversion (void)
+ov_range<T>::try_narrowing_conversion (void)
 {
   octave_base_value *retval = nullptr;
 
   switch (numel ())
     {
     case 1:
-      retval = new octave_scalar (m_range.base ());
+      retval = new typename octave_value_range_traits<T>::scalar_type (m_range.elem (0));
       break;
 
     case 0:
-      retval = new octave_matrix (Matrix (1, 0));
+      {
+        typedef typename octave_value_range_traits<T>::matrix_type ov_mx_type;
+        typename ov_mx_type::object_type m (dim_vector (1, 0));
+        retval = new ov_mx_type (m);
+      }
       break;
 
     case -2:
-      retval = new octave_matrix (matrix_value ());
+      // FIXME: is this case possible now?  It would have to be due to
+      // conversion from Range to range<double>, but even in that case,
+      // is the invalid numel value preserved?
+      retval = new typename octave_value_range_traits<T>::matrix_type (raw_array_value ());
       break;
 
     default:
@@ -106,9 +215,10 @@ octave_range::try_narrowing_conversion (void)
   return retval;
 }
 
+template <typename T>
 octave_value
-octave_range::subsref (const std::string& type,
-                       const std::list<octave_value_list>& idx)
+ov_range<T>::subsref (const std::string& type,
+                      const std::list<octave_value_list>& idx)
 {
   octave_value retval;
 
@@ -133,8 +243,10 @@ octave_range::subsref (const std::string& type,
   return retval.next_subsref (type, idx);
 }
 
+template <typename T>
 octave_value
-octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
+ov_range<T>::do_index_op (const octave_value_list& idx,
+                                   bool resize_ok)
 {
   if (idx.length () == 1 && ! resize_ok)
     {
@@ -163,33 +275,23 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
     }
   else
     {
-      octave_value tmp (new octave_matrix (matrix_value ()));
+      octave_value tmp (new typename octave_value_range_traits<T>::matrix_type (raw_array_value ()));
 
       return tmp.index_op (idx, resize_ok);
     }
 }
 
+template <typename T>
 idx_vector
-octave_range::index_vector (bool require_integers) const
+ov_range<T>::index_vector (bool require_integers) const
 {
-  if (m_idx_cache)
-    return *m_idx_cache;
-  else
-    {
-      if (require_integers || m_range.all_elements_are_ints ())
-        return set_idx_cache (idx_vector (m_range));
-      else
-        {
-          warning_with_id ("Octave:noninteger-range-as-index",
-                           "non-integer range used as index");
-
-          return octave_value (matrix_value ()).round ().index_vector ();
-        }
-    }
+  octave_value tmp (raw_array_value ());
+  return tmp.index_vector (require_integers);
 }
 
+template <typename T>
 double
-octave_range::double_value (bool) const
+ov_range<T>::double_value (bool) const
 {
   octave_idx_type nel = numel ();
 
@@ -202,8 +304,9 @@ octave_range::double_value (bool) const
   return m_range.base ();
 }
 
+template <typename T>
 float
-octave_range::float_value (bool) const
+ov_range<T>::float_value (bool) const
 {
   octave_idx_type nel = numel ();
 
@@ -216,10 +319,11 @@ octave_range::float_value (bool) const
   return m_range.base ();
 }
 
+template <typename T>
 charNDArray
-octave_range::char_array_value (bool) const
+ov_range<T>::char_array_value (bool) const
 {
-  const Matrix matrix = matrix_value ();
+  const Array<T> matrix = raw_array_value ();
   charNDArray retval (dims ());
 
   octave_idx_type nel = numel ();
@@ -230,83 +334,9 @@ octave_range::char_array_value (bool) const
   return retval;
 }
 
-octave_value
-octave_range::all (int dim) const
-{
-  // FIXME: this is a potential waste of memory.
-
-  Matrix m = matrix_value ();
-
-  return m.all (dim);
-}
-
-octave_value
-octave_range::any (int dim) const
-{
-  // FIXME: this is a potential waste of memory.
-
-  Matrix m = matrix_value ();
-
-  return m.any (dim);
-}
-
-octave_value
-octave_range::diag (octave_idx_type k) const
-{
-  return
-    (k == 0
-       ? octave_value (DiagMatrix (DiagArray2<double> (matrix_value ())))
-       : octave_value (m_range.diag (k)));
-}
-
-octave_value
-octave_range::diag (octave_idx_type m, octave_idx_type n) const
-{
-  Matrix mat = matrix_value ();
-
-  return mat.diag (m, n);
-}
-
-// Return true if this range has all true elements (non-zero, not NaN/NA).
-// A range cannot have NaN/NA.
-bool
-octave_range::is_true (void) const
-{
-  bool retval = false;
-
-  if (! m_range.isempty ())
-    {
-      if (dims ().numel () > 1)
-        warn_array_as_logical (dims ());
-
-      octave::range<double> r = range_value ();
-      double base = r.base ();
-      double limit = r.limit ();
-
-      // Can't be zero if we start and finish on the same size of 0
-      if (((base > 0 && limit > 0) || (base < 0 && limit < 0)) && numel () > 0)
-        retval = true;
-      else
-        {
-          /*
-          // This tells us whether one element is 0, if arithmetic is exact.
-          double steps_to_zero = base / r.increment ();
-
-          retval = (steps_to_zero != floor (steps_to_zero));
-          */
-
-          // FIXME: this is a waste of memory.
-          Matrix m ((matrix_value ().all ()).all ());
-
-          retval = ! m.isempty () && m(0, 0) != 0.0;
-        }
-    }
-
-  return retval;
-}
-
+template <typename T>
 Complex
-octave_range::complex_value (bool) const
+ov_range<T>::complex_value (bool) const
 {
   octave_idx_type nel = numel ();
 
@@ -319,8 +349,9 @@ octave_range::complex_value (bool) const
   return Complex (m_range.base (), 0);
 }
 
+template <typename T>
 FloatComplex
-octave_range::float_complex_value (bool) const
+ov_range<T>::float_complex_value (bool) const
 {
   float tmp = lo_ieee_float_nan_value ();
 
@@ -339,23 +370,23 @@ octave_range::float_complex_value (bool) const
   return retval;
 }
 
+template <typename T>
 boolNDArray
-octave_range::bool_array_value (bool warn) const
+ov_range<T>::bool_array_value (bool warn) const
 {
-  Matrix m = matrix_value ();
+  Array<T> matrix = raw_array_value ();
 
-  if (m.any_element_is_nan ())
-    octave::err_nan_to_logical_conversion ();
-  if (warn && m.any_element_not_one_or_zero ())
+  if (warn && ! matrix.test_all (xis_one_or_zero<T>))
     warn_logical_conversion ();
 
-  return boolNDArray (m);
+  return boolNDArray (matrix);
 }
 
+template <typename T>
 octave_value
-octave_range::resize (const dim_vector& dv, bool fill) const
+ov_range<T>::resize (const dim_vector& dv, bool fill) const
 {
-  NDArray retval = array_value ();
+  Array<T> retval = raw_array_value ();
   if (fill)
     retval.resize (dv, 0);
   else
@@ -363,89 +394,180 @@ octave_range::resize (const dim_vector& dv, bool fill) const
   return retval;
 }
 
-octave_value
-octave_range::convert_to_str_internal (bool pad, bool force, char type) const
+template <typename T>
+octave::range<float>
+ov_range<T>::float_range_value (void) const
 {
-  octave_value tmp (matrix_value ());
+  err_wrong_type_arg ("ov_range<T>::float_range_value ()", type_name ());
+}
+
+template <typename T>
+octave::range<double>
+ov_range<T>::range_value (void) const
+{
+  err_wrong_type_arg ("ov_range<T>::range_value()", type_name ());
+}
+
+template <typename T>
+octave::range<octave_int8>
+ov_range<T>::int8_range_value (void) const
+{
+  err_wrong_type_arg ("ov_range<T>::int8_range_value ()", type_name ());
+}
+
+template <typename T>
+octave::range<octave_int16>
+ov_range<T>::int16_range_value (void) const
+{
+  err_wrong_type_arg ("ov_range<T>::int16_range_value ()", type_name ());
+}
+
+template <typename T>
+octave::range<octave_int32>
+ov_range<T>::int32_range_value (void) const
+{
+  err_wrong_type_arg ("ov_range<T>::int32_range_value ()", type_name ());
+}
+
+template <typename T>
+octave::range<octave_int64>
+ov_range<T>::int64_range_value (void) const
+{
+  err_wrong_type_arg ("ov_range<T>::int64_range_value ()", type_name ());
+}
+
+template <typename T>
+octave::range<octave_uint8>
+ov_range<T>::uint8_range_value (void) const
+{
+  err_wrong_type_arg ("ov_range<T>::uint8_range_value ()", type_name ());
+}
+
+template <typename T>
+octave::range<octave_uint16>
+ov_range<T>::uint16_range_value (void) const
+{
+  err_wrong_type_arg ("ov_range<T>::uint16_range_value ()", type_name ());
+}
+
+template <typename T>
+octave::range<octave_uint32>
+ov_range<T>::uint32_range_value (void) const
+{
+  err_wrong_type_arg ("ov_range<T>::uint32_range_value ()", type_name ());
+}
+
+template <typename T>
+octave::range<octave_uint64>
+ov_range<T>::uint64_range_value (void) const
+{
+  err_wrong_type_arg ("ov_range<T>::uint64_range_value ()", type_name ());
+}
+
+template <typename T>
+octave_value
+ov_range<T>::convert_to_str_internal (bool pad, bool force, char type) const
+{
+  octave_value tmp (raw_array_value ());
   return tmp.convert_to_str (pad, force, type);
 }
 
+// FIXME: could most of these fucntions preserve range type now?
+
+template <typename T>
 octave_value
-octave_range::as_double (void) const
+ov_range<T>::as_double (void) const
 {
-  return m_range;
+  return NDArray (raw_array_value ());
 }
 
+template <typename T>
 octave_value
-octave_range::as_single (void) const
+ov_range<T>::as_single (void) const
 {
-  return FloatMatrix (matrix_value ());
+  return FloatMatrix (raw_array_value ());
 }
 
+template <typename T>
 octave_value
-octave_range::as_int8 (void) const
+ov_range<T>::as_int8 (void) const
 {
-  return int8NDArray (matrix_value ());
+  return int8NDArray (raw_array_value ());
 }
 
+template <typename T>
 octave_value
-octave_range::as_int16 (void) const
+ov_range<T>::as_int16 (void) const
 {
-  return int16NDArray (matrix_value ());
+  return int16NDArray (raw_array_value ());
 }
 
+template <typename T>
 octave_value
-octave_range::as_int32 (void) const
+ov_range<T>::as_int32 (void) const
 {
-  return int32NDArray (matrix_value ());
+  return int32NDArray (raw_array_value ());
 }
 
+template <typename T>
 octave_value
-octave_range::as_int64 (void) const
+ov_range<T>::as_int64 (void) const
 {
-  return int64NDArray (matrix_value ());
+  return int64NDArray (raw_array_value ());
 }
 
+template <typename T>
 octave_value
-octave_range::as_uint8 (void) const
+ov_range<T>::as_uint8 (void) const
 {
-  return uint8NDArray (matrix_value ());
+  return uint8NDArray (raw_array_value ());
 }
 
+template <typename T>
 octave_value
-octave_range::as_uint16 (void) const
+ov_range<T>::as_uint16 (void) const
 {
-  return uint16NDArray (matrix_value ());
+  return uint16NDArray (raw_array_value ());
 }
 
+template <typename T>
 octave_value
-octave_range::as_uint32 (void) const
+ov_range<T>::as_uint32 (void) const
 {
-  return uint32NDArray (matrix_value ());
+  return uint32NDArray (raw_array_value ());
 }
 
+template <typename T>
 octave_value
-octave_range::as_uint64 (void) const
+ov_range<T>::as_uint64 (void) const
 {
-  return uint64NDArray (matrix_value ());
+  return uint64NDArray (raw_array_value ());
 }
 
+template <typename T>
 void
-octave_range::print (std::ostream& os, bool pr_as_read_syntax)
+ov_range<T>::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
 }
 
+template <typename T>
 void
-octave_range::print_raw (std::ostream& os, bool pr_as_read_syntax) const
+ov_range<T>::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, m_range, pr_as_read_syntax,
+  // FIXME: this is a potential waste of memory.
+
+  typedef typename octave_value_range_traits<T>::matrix_type ov_mx_type;
+  typename ov_mx_type::object_type tmp (raw_array_value ());
+
+  octave_print_internal (os, tmp, pr_as_read_syntax,
                          current_print_indent_level ());
 }
 
+template <typename T>
 bool
-octave_range::print_name_tag (std::ostream& os, const std::string& name) const
+ov_range<T>::print_name_tag (std::ostream& os, const std::string& name) const
 {
   bool retval = false;
 
@@ -468,8 +590,9 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
   return retval;
 }
 
+template <typename T>
 void
-octave_range::short_disp (std::ostream& os) const
+ov_range<T>::short_disp (std::ostream& os) const
 {
   octave_idx_type len = numel ();
 
@@ -481,7 +604,7 @@ octave_range::short_disp (std::ostream& os) const
 
       if (len > 1)
         {
-          if (m_range.increment () != 1)
+          if (m_range.increment () != T (1))
             os << m_range.increment () << ':';
 
           os << m_range.limit ();
@@ -506,116 +629,126 @@ skip_comments (std::istream& is)
   skip_until_newline (is, false);
 }
 
+template <typename T>
 float_display_format
-octave_range::get_edit_display_format (void) const
+ov_range<T>::get_edit_display_format (void) const
 {
-  return make_format (range_value ());
+  return make_format (m_range);
 }
 
+template <typename T>
 std::string
-octave_range::edit_display (const float_display_format& fmt,
-                            octave_idx_type, octave_idx_type j) const
+ov_range<T>::edit_display (const float_display_format& fmt,
+                           octave_idx_type, octave_idx_type j) const
 {
   std::ostringstream buf;
   octave_print_internal (buf, fmt, m_range.elem (j));
   return buf.str ();
 }
 
+template <typename T>
 bool
-octave_range::save_ascii (std::ostream& os)
+ov_range<T>::save_ascii (std::ostream& os)
 {
-  octave::range<double> r = range_value ();
-  double base = r.base ();
-  double limit = r.limit ();
-  double inc = r.increment ();
+  octave::range<T> r = m_range;
+  T base = r.base ();
+  T limit = r.limit ();
+  T inc = r.increment ();
   octave_idx_type len = r.numel ();
 
-  if (inc != 0)
+  if (inc != T (0))
     os << "# base, limit, increment\n";
   else
     os << "# base, length, increment\n";
 
-  octave::write_value<double> (os, base);
+  octave::write_value<T> (os, base);
   os << ' ';
-  if (inc != 0)
-    octave::write_value<double> (os, limit);
+  if (inc != T (0))
+    octave::write_value<T> (os, limit);
   else
     os << len;
   os << ' ';
-  octave::write_value<double> (os, inc);
+  octave::write_value<T> (os, inc);
   os << "\n";
 
   return true;
 }
 
+template <typename T>
 bool
-octave_range::load_ascii (std::istream& is)
+ov_range<T>::load_ascii (std::istream& is)
 {
   // # base, limit, range comment added by save ().
   skip_comments (is);
 
-  double base, limit, inc;
+  T base, limit, inc;
   is >> base >> limit >> inc;
 
   if (! is)
     error ("load: failed to load range constant");
 
-  if (inc != 0)
-    m_range = octave::range<double> (base, limit, inc);
+  if (inc != T (0))
+    m_range = octave::range<T> (base, limit, inc);
   else
     {
       octave_idx_type numel = static_cast<octave_idx_type> (limit);
-      m_range = octave::range<double>::make_constant (base, numel);
+      m_range = octave::range<T>::make_constant (base, numel);
     }
 
   return true;
 }
 
+template <typename T>
 bool
-octave_range::save_binary (std::ostream& os, bool /* save_as_floats */)
+ov_range<T>::save_binary (std::ostream& os, bool /* save_as_floats */)
 {
+  // FIXME: Not always double!
+
   char tmp = LS_DOUBLE;
   os.write (reinterpret_cast<char *> (&tmp), 1);
-  octave::range<double> r = range_value ();
-  double bas = r.base ();
-  double lim = r.limit ();
-  double inc = r.increment ();
-  if (inc == 0)
+  octave::range<T> r = m_range;
+  T bas = r.base ();
+  T lim = r.limit ();
+  T inc = r.increment ();
+  if (inc == T (0))
     lim = r.numel ();
 
-  os.write (reinterpret_cast<char *> (&bas), 8);
-  os.write (reinterpret_cast<char *> (&lim), 8);
-  os.write (reinterpret_cast<char *> (&inc), 8);
+  os.write (reinterpret_cast<char *> (&bas), sizeof (T));
+  os.write (reinterpret_cast<char *> (&lim), sizeof (T));
+  os.write (reinterpret_cast<char *> (&inc), sizeof (T));
 
   return true;
 }
 
+template <typename T>
 bool
-octave_range::load_binary (std::istream& is, bool swap,
-                           octave::mach_info::float_format /* fmt */)
+ov_range<T>::load_binary (std::istream& is, bool swap,
+                                   octave::mach_info::float_format /* fmt */)
 {
+  // FIXME: Not always double!
+
   char tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     return false;
-  double bas, lim, inc;
-  if (! is.read (reinterpret_cast<char *> (&bas), 8))
+  T bas, lim, inc;
+  if (! is.read (reinterpret_cast<char *> (&bas), sizeof (T)))
     return false;
   if (swap)
-    swap_bytes<8> (&bas);
-  if (! is.read (reinterpret_cast<char *> (&lim), 8))
+    swap_bytes<sizeof (T)> (&bas);
+  if (! is.read (reinterpret_cast<char *> (&lim), sizeof (T)))
     return false;
   if (swap)
-    swap_bytes<8> (&lim);
-  if (! is.read (reinterpret_cast<char *> (&inc), 8))
+    swap_bytes<sizeof (T)> (&lim);
+  if (! is.read (reinterpret_cast<char *> (&inc), sizeof (T)))
     return false;
   if (swap)
-    swap_bytes<8> (&inc);
-  if (inc != 0)
-    m_range = octave::range<double> (bas, lim, inc);
+    swap_bytes<sizeof (T)> (&inc);
+  if (inc != T (0))
+    m_range = octave::range<T> (bas, lim, inc);
   else
     {
       octave_idx_type numel = static_cast<octave_idx_type> (lim);
-      m_range = octave::range<double>::make_constant (bas, numel);
+      m_range = octave::range<T>::make_constant (bas, numel);
     }
 
   return true;
@@ -629,23 +762,25 @@ octave_range::load_binary (std::istream& is, bool swap,
 // H5T_NATIVE_DOUBLE to save as 'double').  Note that any necessary
 // conversions are handled automatically by HDF5.
 
+template <typename T>
 static hid_t
 hdf5_make_range_type (hid_t num_type)
 {
-  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (double) * 3);
+  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (T) * 3);
 
-  H5Tinsert (type_id, "base", 0 * sizeof (double), num_type);
-  H5Tinsert (type_id, "limit", 1 * sizeof (double), num_type);
-  H5Tinsert (type_id, "increment", 2 * sizeof (double), num_type);
+  H5Tinsert (type_id, "base", 0 * sizeof (T), num_type);
+  H5Tinsert (type_id, "limit", 1 * sizeof (T), num_type);
+  H5Tinsert (type_id, "increment", 2 * sizeof (T), num_type);
 
   return type_id;
 }
 
 #endif
 
+template <typename T>
 bool
-octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                         bool /* save_as_floats */)
+ov_range<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                        bool /* save_as_floats */)
 {
   bool retval = false;
 
@@ -658,7 +793,7 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   space_hid = H5Screate_simple (0, dimens, nullptr);
   if (space_hid < 0) return false;
 
-  type_hid = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
+  type_hid = hdf5_make_range_type<T> (hdf5_save_type);
   if (type_hid < 0)
     {
       H5Sclose (space_hid);
@@ -677,10 +812,10 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  octave::range<double> r = range_value ();
-  double range_vals[3];
+  octave::range<T> r = m_range;
+  T range_vals[3];
   range_vals[0] = r.base ();
-  range_vals[1] = (r.increment () != 0 ? r.limit () : r.numel ());
+  range_vals[1] = (r.increment () != T (0) ? r.limit () : r.numel ());
   range_vals[2] = r.increment ();
 
   if (H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
@@ -708,8 +843,9 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   return retval;
 }
 
+template <typename T>
 bool
-octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+ov_range<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool retval = false;
 
@@ -722,7 +858,7 @@ octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 #endif
   hid_t type_hid = H5Dget_type (data_hid);
 
-  hid_t range_type = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
+  hid_t range_type = hdf5_make_range_type<T> (hdf5_save_type);
 
   if (! hdf5_types_compatible (type_hid, range_type))
     {
@@ -742,7 +878,7 @@ octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       return false;
     }
 
-  double rangevals[3];
+  T rangevals[3];
   if (H5Dread (data_hid, range_type, octave_H5S_ALL, octave_H5S_ALL,
                octave_H5P_DEFAULT, rangevals)
       >= 0)
@@ -751,13 +887,12 @@ octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
       // Don't use OCTAVE_RANGE_NELEM attribute, just reconstruct the range.
 
-      if (rangevals[2] != 0)
-        m_range = octave::range<double> (rangevals[0], rangevals[1],
-                                         rangevals[2]);
+      if (rangevals[2] != T (0))
+        m_range = octave::range<T> (rangevals[0], rangevals[1], rangevals[2]);
       else
         {
           octave_idx_type numel = static_cast<octave_idx_type> (rangevals[1]);
-          m_range = octave::range<double>::make_constant (rangevals[0], numel);
+          m_range = octave::range<T>::make_constant (rangevals[0], numel);
         }
     }
 
@@ -775,18 +910,22 @@ octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   return retval;
 }
 
+template <typename T>
 mxArray *
-octave_range::as_mxArray (bool interleaved) const
+ov_range<T>::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (interleaved, mxDOUBLE_CLASS, dims (), mxREAL);
+  mxClassID mx_class = mx_type_traits<T>::mx_class;
 
-  mxDouble *pd = static_cast<mxDouble *> (retval->get_data ());
+  mxArray *retval = new mxArray (interleaved, mx_class, dims (), mxREAL);
+
+  typedef typename mx_type_traits<T>::mx_type mx_type;
+  mx_type *pd = static_cast<mx_type *> (retval->get_data ());
 
   mwSize nel = numel ();
 
-  Matrix m = matrix_value ();
+  Array<T> matrix = raw_array_value ();
 
-  const double *pdata = m.data ();
+  const T *pdata = matrix.data ();
 
   for (mwSize i = 0; i < nel; i++)
     pd[i] = pdata[i];
@@ -794,8 +933,138 @@ octave_range::as_mxArray (bool interleaved) const
   return retval;
 }
 
+template <typename T>
 octave_value
-octave_range::fast_elem_extract (octave_idx_type n) const
+ov_range<T>::fast_elem_extract (octave_idx_type n) const
 {
   return (n < numel () ? octave_value (m_range.elem (n)) : octave_value ());
+}
+
+// Specializations.
+
+template <>
+octave::range<float>
+ov_range<float>::float_range_value (void) const
+{
+  return m_range;
+}
+
+template <>
+octave::range<double>
+ov_range<double>::range_value (void) const
+{
+  return m_range;
+}
+
+template <>
+octave::range<octave_int8>
+ov_range<octave_int8>::int8_range_value (void) const
+{
+  return m_range;
+}
+
+template <>
+octave::range<octave_int16>
+ov_range<octave_int16>::int16_range_value (void) const
+{
+  return m_range;
+}
+
+template <>
+octave::range<octave_int32>
+ov_range<octave_int32>::int32_range_value (void) const
+{
+  return m_range;
+}
+
+template <>
+octave::range<octave_int64>
+ov_range<octave_int64>::int64_range_value (void) const
+{
+  return m_range;
+}
+
+template <>
+octave::range<octave_uint8>
+ov_range<octave_uint8>::uint8_range_value (void) const
+{
+  return m_range;
+}
+
+template <>
+octave::range<octave_uint16>
+ov_range<octave_uint16>::uint16_range_value (void) const
+{
+  return m_range;
+}
+
+template <>
+octave::range<octave_uint32>
+ov_range<octave_uint32>::uint32_range_value (void) const
+{
+  return m_range;
+}
+
+template <>
+octave::range<octave_uint64>
+ov_range<octave_uint64>::uint64_range_value (void) const
+{
+  return m_range;
+}
+
+template <>
+idx_vector
+ov_range<double>::index_vector (bool require_integers) const
+{
+  if (m_idx_cache)
+    return *m_idx_cache;
+
+  if (require_integers || m_range.all_elements_are_ints ())
+    return set_idx_cache (idx_vector (m_range));
+
+  warning_with_id ("Octave:noninteger-range-as-index",
+                   "non-integer range used as index");
+
+  return octave_value (matrix_value ()).round ().index_vector ();
+}
+
+template <>
+octave_idx_type
+ov_range<double>::nnz (void) const
+{
+  return m_range.nnz ();
+}
+
+// The following specialization is also historical baggage.  For double
+// ranges, we can produce special double-valued diagnoal matrix objects
+// but Octave currently provides only double and Complex diagonal matrix
+// objects.
+
+template <>
+octave_value
+ov_range<double>::diag (octave_idx_type k) const
+{
+  // FIXME: this is a potential waste of memory.
+
+  return
+    (k == 0
+     ? octave_value (DiagMatrix (DiagArray2<double> (matrix_value ())))
+     : octave_value (m_range.diag (k)));
+}
+
+template <>
+octave_value
+ov_range<double>::diag (octave_idx_type nr, octave_idx_type nc) const
+{
+  Matrix mat = matrix_value ();
+
+  return mat.diag (nr, nc);
+}
+
+template <>
+void
+ov_range<double>::print_raw (std::ostream& os, bool pr_as_read_syntax) const
+{
+  octave_print_internal (os, m_range, pr_as_read_syntax,
+                         current_print_indent_level ());
 }

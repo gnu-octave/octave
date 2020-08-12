@@ -2490,6 +2490,36 @@ namespace octave
       }
   }
 
+  template <typename T>
+  void
+  tree_evaluator::execute_range_loop (const range<T>& rng, size_t line,
+                                      octave_lvalue& ult,
+                                      tree_statement_list *loop_body)
+  {
+    octave_idx_type steps = rng.numel ();
+
+    if (octave::math::isinf (rng.limit ()))
+      warning_with_id ("Octave:infinite-loop",
+                       "FOR loop limit is infinite, will stop after %"
+                       OCTAVE_IDX_TYPE_FORMAT " steps", steps);
+
+    for (octave_idx_type i = 0; i < steps; i++)
+      {
+        if (m_echo_state)
+          m_echo_file_pos = line;
+
+        octave_value val (rng.elem (i));
+
+        ult.assign (octave_value::op_asn_eq, val);
+
+        if (loop_body)
+          loop_body->accept (*this);
+
+        if (quit_loop_now ())
+          break;
+      }
+  }
+
   void
   tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   {
@@ -2529,33 +2559,70 @@ namespace octave
 
     if (rhs.is_range ())
       {
-        octave::range<double> rng = rhs.range_value ();
+        // FIXME: is there a better way to dispatch here?
 
-        octave_idx_type steps = rng.numel ();
-
-        if (octave::math::isinf (rng.limit ()))
-          warning_with_id ("Octave:infinite-loop",
-                           "FOR loop limit is infinite, will stop after %"
-                           OCTAVE_IDX_TYPE_FORMAT " steps",
-                           steps);
-
-        for (octave_idx_type i = 0; i < steps; i++)
+        if (rhs.is_double_type ())
           {
-            if (m_echo_state)
-              m_echo_file_pos = line;
+            execute_range_loop (rhs.range_value (), line, ult, loop_body);
+            return;
+          }
 
-            octave_value val (rng.elem (i));
+        if (rhs.is_int64_type ())
+          {
+            execute_range_loop (rhs.int64_range_value (), line, ult, loop_body);
+            return;
+          }
 
-            ult.assign (octave_value::op_asn_eq, val);
+        if (rhs.is_uint64_type ())
+          {
+            execute_range_loop (rhs.uint64_range_value (), line, ult, loop_body);
+            return;
+          }
 
-            if (loop_body)
-              loop_body->accept (*this);
+        if (rhs.is_int32_type ())
+          {
+            execute_range_loop (rhs.int32_range_value (), line, ult, loop_body);
+            return;
+          }
 
-            if (quit_loop_now ())
-              break;
+        if (rhs.is_uint32_type ())
+          {
+            execute_range_loop (rhs.uint32_range_value (), line, ult, loop_body);
+            return;
+          }
+
+        if (rhs.is_int16_type ())
+          {
+            execute_range_loop (rhs.int16_range_value (), line, ult, loop_body);
+            return;
+          }
+
+        if (rhs.is_uint16_type ())
+          {
+            execute_range_loop (rhs.uint16_range_value (), line, ult, loop_body);
+            return;
+          }
+
+        if (rhs.is_int8_type ())
+          {
+            execute_range_loop (rhs.int8_range_value (), line, ult, loop_body);
+            return;
+          }
+
+        if (rhs.is_uint8_type ())
+          {
+            execute_range_loop (rhs.uint8_range_value (), line, ult, loop_body);
+            return;
+          }
+
+        if (rhs.is_single_type ())
+          {
+            execute_range_loop (rhs.float_range_value (), line, ult, loop_body);
+            return;
           }
       }
-    else if (rhs.is_scalar_type ())
+
+    if (rhs.is_scalar_type ())
       {
         if (m_echo_state)
           m_echo_file_pos = line;
@@ -2567,9 +2634,15 @@ namespace octave
 
         // Maybe decrement break and continue states.
         quit_loop_now ();
+
+        return;
       }
-    else if (rhs.is_matrix_type () || rhs.iscell () || rhs.is_string ()
-             || rhs.isstruct ())
+
+    // Also handle any range types not explicitly handled above, though
+    // not as efficiently as the specialized code above.
+
+    if (rhs.is_range () || rhs.is_matrix_type () || rhs.iscell ()
+        || rhs.is_string () || rhs.isstruct ())
       {
         // A matrix or cell is reshaped to 2 dimensions and iterated by
         // columns.
@@ -2624,10 +2697,12 @@ namespace octave
             // Handle empty cases, while still assigning to loop var.
             ult.assign (octave_value::op_asn_eq, arg);
           }
+
+        return;
       }
-    else
-      error ("invalid type in for loop expression near line %d, column %d",
-             cmd.line (), cmd.column ());
+
+    error ("invalid type in for loop expression near line %d, column %d",
+           cmd.line (), cmd.column ());
   }
 
   void

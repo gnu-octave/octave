@@ -717,6 +717,11 @@ namespace octave
 
   private:
 
+    template <typename T>
+    void execute_range_loop (const range<T>& rng, size_t line,
+                             octave_lvalue& ult,
+                             tree_statement_list *loop_body);
+
     void set_echo_state (int type, const std::string& file_name, size_t pos);
 
     void maybe_set_echo_state (void);

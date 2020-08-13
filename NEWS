@@ -47,6 +47,9 @@ function uses varargin then the check is skipped for function inputs,
 and if a function uses varargout then the check is skipped for function
 outputs.
 
+- As part of GSoC 2020, Abdallah K. Elshamy implemented the 
+`jsondecode` and `jsonencode` functions to read and write JSON data.
+
 - The function `griddata` now implements the "v4" Biharmonic Spline
 Interpolation method.  In adddition, the function now accepts 3-D inputs
 by passing the data to `griddata3`.
@@ -133,6 +136,8 @@ functionality.  By default, this warning is enabled.
 
 * `getpixelposition`
 * `endsWith`
+* `jsondecode`
+* `jsonencode`
 * `listfonts`
 * `memory`
 * `rng`

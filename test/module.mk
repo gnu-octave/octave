@@ -90,6 +90,7 @@ include %reldir%/classes/module.mk
 include %reldir%/colon-op/module.mk
 include %reldir%/ctor-vs-method/module.mk
 include %reldir%/fcn-handle/module.mk
+include %reldir%/json/module.mk
 include %reldir%/local-functions/module.mk
 include %reldir%/mex/module.mk
 include %reldir%/nest/module.mk

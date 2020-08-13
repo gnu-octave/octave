@@ -958,8 +958,6 @@ function rlist = missing_functions ()
   "javaMethodEDT",
   "javaObjectEDT",
   "join",
-  "jsondecode",
-  "jsonencode",
   "juliandate",
   "labeledge",
   "labelnode",

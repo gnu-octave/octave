@@ -1331,6 +1331,22 @@ OCTAVE_CHECK_LIB(pcre, PCRE,
   ],
   [libpcre], [REQUIRED])
 
+### Check for RapidJSON header only library.
+
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADER([rapidjson/rapidjson.h], [have_rapidjson=yes], [have_rapidjson=no
+  rapid_json_warning="RapidJSON library not found.  Octave will not be able to read or write JSON files."])
+if test "$have_rapidjson" = yes; then
+  AC_CHECK_HEADER([rapidjson/cursorstreamwrapper.h], [have_rapidjson=yes], [have_rapidjson=no
+    rapid_json_warning="RapidJSON 1.1.0 or older found, but latest development version needed.  Octave will not be able to read or write JSON files."])
+fi
+if test "$have_rapidjson" = yes; then
+  AC_DEFINE(HAVE_RAPIDJSON, 1, [Define to 1 if RapidJSON is available.])
+else
+  OCTAVE_CONFIGURE_WARNING([rapid_json_warning])
+fi
+AC_LANG_POP([C++])
+
 ### Check for readline library.
 
 OCTAVE_ENABLE_READLINE

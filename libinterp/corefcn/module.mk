@@ -185,6 +185,8 @@ COREFCN_SRC = \
   %reldir%/interpreter-private.cc \
   %reldir%/interpreter.cc \
   %reldir%/inv.cc \
+  %reldir%/jsondecode.cc \
+  %reldir%/jsonencode.cc \
   %reldir%/kron.cc \
   %reldir%/load-path.cc \
   %reldir%/load-save.cc \

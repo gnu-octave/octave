@@ -24,6 +24,12 @@
 ########################################################################
 
 function interpimages (d, nm, typ)
+
+  if (strcmp (typ, "txt"))
+    image_as_txt (d, nm);
+    return;
+  endif
+
   set_graphics_toolkit ();
   set_print_size ();
   hide_output ();
@@ -37,9 +43,7 @@ function interpimages (d, nm, typ)
     d_typ = ["-d", typ];
   endif
 
-  if (strcmp (typ, "txt"))
-    image_as_txt (d, nm);
-  elseif (strcmp (nm, "interpft"))
+  if (strcmp (nm, "interpft"))
     t = 0 : 0.3 : pi; dt = t(2)-t(1);
     n = length (t); k = 100;
     ti = t(1) + [0 : k-1]*dt*n/k;

@@ -854,22 +854,43 @@ namespace octave
 
   void interpreter::shutdown (void)
   {
+    OCTAVE_SAFE_CALL (feval, ("close", ovl ("all"), 0));
+
     // If we are attached to a GUI, process pending events and
     // disable the link.
 
-    m_event_manager.process_events (true);
-    m_event_manager.disable ();
+    OCTAVE_SAFE_CALL (m_event_manager.process_events, (true));
+    OCTAVE_SAFE_CALL (m_event_manager.disable, ());
 
     OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
 
     // Any atexit functions added after this function call won't be
-    // executed.
+    // executed.  Each atexit function is executed with
+    // OCTAVE_SAFE_CALL, so we don't need that here.
 
     execute_atexit_fcns ();
+
+    // Clear all functions and variables.
+
+    OCTAVE_SAFE_CALL (clear_all, (true));
+
+    // We may still have some figures.  Close them.
+
+    OCTAVE_SAFE_CALL (feval, ("close", ovl ("all"), 0));
+
+    // What is supposed to happen if a figure has a closerequestfcn or
+    // deletefcn callback registered that creates other figures or
+    // variables?  What if those variables are classdef objects with
+    // destructors that can create figures?  The possibilities are
+    // endless.  At some point, we have to give up and force execution
+    // to end.
+
+    OCTAVE_SAFE_CALL (clear_all, (true));
 
     // Do this explicitly so that destructors for mex file objects
     // are called, so that functions registered with mexAtExit are
     // called.
+
     OCTAVE_SAFE_CALL (m_symbol_table.clear_mex_functions, ());
 
     OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
@@ -879,14 +900,15 @@ namespace octave
     if (! command_history::ignoring_entries ())
       OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
 
-    OCTAVE_SAFE_CALL (m_gh_manager->close_all_figures, ());
-
-    m_gtk_manager.unload_all_toolkits ();
-
     // FIXME:  May still need something like this to ensure that
     // destructors for class objects will run properly.  Should that be
     // done earlier?  Before or after atexit functions are executed?
-    m_symbol_table.cleanup ();
+    // What will happen if the destructor for an obect attempts to
+    // display a figure?
+
+    OCTAVE_SAFE_CALL (m_symbol_table.cleanup, ());
+
+    OCTAVE_SAFE_CALL (m_gtk_manager.unload_all_toolkits, ());
 
     OCTAVE_SAFE_CALL (sysdep_cleanup, ());
 

@@ -1669,11 +1669,14 @@ Example:
   int index_position = tw.index_position ();
   int num_indices = tw.num_indices ();
 
-  // Return invalid index value instead of throwing an error so that we
-  // will see an error about the object that is indexed rather than
-  // "end" being used incorrectly.
+  // If indexed_object is nullptr, then this use of 'end' is either
+  // appearing in a function call argument list or in an attempt to
+  // index an undefined symbol.  There seems to be no reasonable way to
+  // provide a better error message.  So just fail with an invalid use
+  // message.  See bug #58830.
+
   if (! indexed_object)
-    return ovl (octave_NaN);
+    error ("invalid use of 'end': may only be used to index existing value");
 
   if (indexed_object->isobject ())
     {
@@ -1723,8 +1726,9 @@ Example:
 }
 
 /*
-%!test <*33637>
-%! fail ("__undef_sym__ (end)", "'__undef_sym__' undefined");
+%!test <*58830>
+%! fail ("__undef_sym__ (end)",
+%!       "invalid use of 'end': may only be used to index existing value");
 */
 
 namespace octave

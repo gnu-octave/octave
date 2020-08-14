@@ -502,22 +502,17 @@ namespace octave
                 tw.set_lvalue_list (nullptr);
 
                 string_vector anm = *p_arg_nm;
+
                 first_args = tw.convert_to_const_vector (al);
+
                 first_args.stash_name_tags (anm);
               }
 
-            symbol_record sym = id->symbol ();
+            interpreter& interp = tw.get_interpreter ();
 
-            octave_value val = tw.varval (sym);
+            symbol_table& symtab = interp.get_symbol_table ();
 
-            if (val.is_undefined ())
-              {
-                interpreter& interp = tw.get_interpreter ();
-
-                symbol_table& symtab = interp.get_symbol_table ();
-
-                val = symtab.find_function (sym.name (), first_args);
-              }
+            octave_value val = symtab.find_function (nm, first_args);
 
             octave_function *fcn = nullptr;
 

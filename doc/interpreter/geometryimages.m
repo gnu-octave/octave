@@ -24,6 +24,12 @@
 ########################################################################
 
 function geometryimages (d, nm, typ)
+
+  if (strcmp (typ, "txt"))
+    image_as_txt (d, nm);
+    return;
+  endif
+
   set_graphics_toolkit ();
   set_print_size ();
   hide_output ();
@@ -41,8 +47,6 @@ function geometryimages (d, nm, typ)
       && any (strcmp (nm, {"voronoi", "griddata", "convhull", "delaunay", ...
                            "triplot"})))
     sombreroimage (outfile, typ, d_typ);
-  elseif (strcmp (typ, "txt"))
-    image_as_txt (d, nm);
   elseif (strcmp (nm, "voronoi"))
     rand ("state", 9);
     x = rand (10, 1);

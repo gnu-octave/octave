@@ -24,6 +24,12 @@
 ########################################################################
 
 function plotimages (d, nm, typ)
+
+  if (strcmp (typ , "txt"))
+    image_as_txt (d, nm);
+    return;
+  endif
+
   set_graphics_toolkit ();
   set_print_size ();
   hide_output ();
@@ -37,9 +43,7 @@ function plotimages (d, nm, typ)
     d_typ = ["-d", typ];
   endif
 
-  if (strcmp (typ , "txt"))
-    image_as_txt (d, nm);
-  elseif (strcmp (nm, "plot"))
+  if (strcmp (nm, "plot"))
     x = -10:0.1:10;
     plot (x, sin (x));
     xlabel ("x");

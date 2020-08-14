@@ -24,6 +24,12 @@
 ########################################################################
 
 function splineimages (d, nm, typ)
+
+  if (strcmp (typ, "txt"))
+    image_as_txt (d, nm);
+    return;
+  endif
+
   set_graphics_toolkit ();
   set_print_size ();
   hide_output ();
@@ -37,9 +43,7 @@ function splineimages (d, nm, typ)
     d_typ = ["-d" typ];
   endif
 
-  if (strcmp (typ, "txt"))
-    image_as_txt (d, nm);
-  elseif (strcmp (nm, "splinefit1")) ## Breaks and Pieces
+  if (strcmp (nm, "splinefit1")) ## Breaks and Pieces
     rand ("state", 1);
     randn ("state", 1);
     x = 2 * pi * rand (1, 200);

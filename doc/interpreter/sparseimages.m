@@ -24,6 +24,12 @@
 ########################################################################
 
 function sparseimages (d, nm, typ)
+
+  if (strcmp (typ, "txt"))
+    txtimages (d, nm, 15, typ);
+    return;
+  endif
+
   set_graphics_toolkit ();
   set_print_size ();
   hide_output ();
@@ -43,8 +49,6 @@ function sparseimages (d, nm, typ)
     ## There is no sparse matrix implementation available because
     ## of missing libraries, plot sombreros instead.
     sombreroimage (outfile, typ, d_typ);
-  elseif (strcmp (typ, "txt"))
-    txtimages (d, nm, 15, typ);
   elseif (strcmp (nm, "gplot"))
     A = sparse ([2,6,1,3,2,4,3,5,4,6,1,5],
                 [1,1,2,2,3,3,4,4,5,5,6,6], 1, 6, 6);

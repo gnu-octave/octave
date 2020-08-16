@@ -872,7 +872,11 @@ namespace octave
 
     // Clear all functions and variables.
 
-    OCTAVE_SAFE_CALL (clear_all, (true));
+    // Note that we don't force symbols to be cleared, so we will
+    // respect mlock at this point.  Later, we'll force all variables
+    // and functions to be cleared.
+
+    OCTAVE_SAFE_CALL (clear_all, ());
 
     // We may still have some figures.  Close them.
 
@@ -885,7 +889,11 @@ namespace octave
     // endless.  At some point, we have to give up and force execution
     // to end.
 
-    OCTAVE_SAFE_CALL (clear_all, (true));
+    // Note that we again don't force symbols to be cleared, so we
+    // continue to respect mlock here.  Later, we'll force all variables
+    // and functions to be cleared.
+
+    OCTAVE_SAFE_CALL (clear_all, ());
 
     // Do this explicitly so that destructors for mex file objects
     // are called, so that functions registered with mexAtExit are
@@ -900,6 +908,13 @@ namespace octave
     if (! command_history::ignoring_entries ())
       OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
 
+    OCTAVE_SAFE_CALL (m_gtk_manager.unload_all_toolkits, ());
+
+    // Now that the graphics toolkits have been unloaded, force all
+    // symbols to be cleared.
+
+    OCTAVE_SAFE_CALL (clear_all, (true));
+
     // FIXME:  May still need something like this to ensure that
     // destructors for class objects will run properly.  Should that be
     // done earlier?  Before or after atexit functions are executed?
@@ -907,8 +922,6 @@ namespace octave
     // display a figure?
 
     OCTAVE_SAFE_CALL (m_symbol_table.cleanup, ());
-
-    OCTAVE_SAFE_CALL (m_gtk_manager.unload_all_toolkits, ());
 
     OCTAVE_SAFE_CALL (sysdep_cleanup, ());
 

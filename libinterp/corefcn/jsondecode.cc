@@ -43,35 +43,6 @@
 octave_value
 decode (const rapidjson::Value& val, const octave_value_list& options);
 
-//! Checks if two instances of @ref string_vector are equal.
-//!
-//! @param a The first @ref string_vector.
-//! @param b The second @ref string_vector.
-//!
-//! @return @c bool that indicates if they are equal.
-//!
-//! @b Example:
-//!
-//! @code{.cc}
-//! string_vector a ({"foo", "bar"});
-//! string_vector b ({"foo", "baz"});
-//! bool is_equal = equals (a, b);
-//! @endcode
-
-bool
-equals (const string_vector& a, const string_vector& b)
-{
-  // FIXME: move to string_vector class
-  octave_idx_type n = a.numel ();
-  if (n != b.numel ())
-    return false;
-  for (octave_idx_type i = 0; i < n; ++i)
-    if (a(i) != b(i))
-      return false;
-
-  return true;
-}
-
 //! Decodes a numerical JSON value into a scalar number.
 //!
 //! @param val JSON value that is guaranteed to be a numerical value.
@@ -249,9 +220,10 @@ decode_object_array (const rapidjson::Value& val,
 {
   Cell struct_cell = decode_string_and_mixed_array (val, options).cell_value ();
   string_vector field_names = struct_cell(0).scalar_map_value ().fieldnames ();
-  bool same_field_names = 1;
+  bool same_field_names = true;
   for (octave_idx_type i = 1; i < struct_cell.numel (); ++i)
-    if (! equals (field_names, struct_cell(i).scalar_map_value ().fieldnames ()))
+    if (field_names.std_list ()
+        != struct_cell(i).scalar_map_value ().fieldnames ().std_list ())
       {
         same_field_names = 0;
         break;

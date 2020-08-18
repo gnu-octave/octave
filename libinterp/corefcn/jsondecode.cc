@@ -499,36 +499,43 @@ Examples:
 @example
 @group
 jsondecode ('[1, 2, null, 3]')
-    @result{} 1  2  NaN  3
+    @result{} ans =
+
+      1
+      2
+    NaN
+      3
 @end group
 
 @group
 jsondecode ('["foo", "bar", ["foo", "bar"]]')
     @result{} ans =
-                {
-                  [1,1] = foo
-                  [2,1] = bar
-                  [3,1] =
-                  {
-                    [1,1] = foo
-                    [2,1] = bar
-                  }
+       @{
+         [1,1] = foo
+         [2,1] = bar
+         [3,1] =
+         @{
+           [1,1] = foo
+           [2,1] = bar
+         @}
 
-                }
+       @}
 @end group
 
 @group
-jsondecode ('{"nu#m#ber": 7, "s#tr#ing": "hi"}', 'ReplacementStyle', 'delete')
+jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', 'ReplacementStyle', 'delete')
     @result{} scalar structure containing the fields:
-                number =  7
-                string = hi
+
+         number = 7
+         string = hi
 @end group
 
 @group
-jsondecode ('{"1": "one", "2": "two"}', 'Prefix', 'm_')
+jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
     @result{} scalar structure containing the fields:
-                m_1 = one
-                m_2 = two
+
+         m_1 = one
+         m_2 = two
 @end group
 @end example
 
@@ -538,8 +545,7 @@ jsondecode ('{"1": "one", "2": "two"}', 'Prefix', 'm_')
 #if defined (HAVE_RAPIDJSON)
 
   int nargin = args.length ();
-  // makeValidName options must be in pairs
-  // The number of arguments must be odd
+  // makeValidName options are pairs, the number of arguments must be odd.
   if (! (nargin % 2))
     print_usage ();
 
@@ -549,24 +555,24 @@ jsondecode ('{"1": "one", "2": "two"}', 'Prefix', 'm_')
   std::string json = args (0).string_value ();
   rapidjson::Document d;
   // DOM is chosen instead of SAX as SAX publishes events to a handler that
-  // decides what to do depending on the event only. This will cause a problem
-  // in decoding JSON arrays as the output may be an array or a cell and that
-  // doesn't only depend on the event (startArray) but also on the types of
-  // the elements inside the array
+  // decides what to do depending on the event only.  This will cause a
+  // problem in decoding JSON arrays as the output may be an array or a cell
+  // and that doesn't only depend on the event (startArray) but also on the
+  // types of the elements inside the array.
   d.Parse <rapidjson::kParseNanAndInfFlag>(json.c_str ());
 
   if (d.HasParseError ())
     error("jsondecode: Parse error at offset %u: %s\n",
-          d.GetErrorOffset (),
+          static_cast<unsigned int> (d.GetErrorOffset ()),
           rapidjson::GetParseError_En (d.GetParseError ()));
-  return decode (d, args.slice (1, nargin-1));
+
+  return decode (d, args.slice (1, nargin - 1));
 
 #else
 
   octave_unused_parameter (args);
 
-  err_disabled_feature ("jsondecode",
-                        "RapidJSON is required for JSON encoding\\decoding");
+  err_disabled_feature ("jsondecode", "JSON decoding through RapidJSON");
 
 #endif
 }

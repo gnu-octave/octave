@@ -1337,11 +1337,14 @@ AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([rapidjson/rapidjson.h], [have_rapidjson=yes], [have_rapidjson=no
   rapid_json_warning="RapidJSON library not found.  Octave will not be able to read or write JSON files."])
 if test "$have_rapidjson" = yes; then
-  AC_CHECK_HEADER([rapidjson/cursorstreamwrapper.h], [have_rapidjson=yes], [have_rapidjson=no
-    rapid_json_warning="RapidJSON 1.1.0 or older found, but latest development version needed.  Octave will not be able to read or write JSON files."])
+  AC_CHECK_HEADER([rapidjson/cursorstreamwrapper.h], [have_rapidjson_dev=yes], [have_rapidjson_dev=no
+    rapid_json_warning="RapidJSON 1.1.0 or older found.  Octave will not support the 'PrettyWriter' option in 'jsonencode'."])
 fi
 if test "$have_rapidjson" = yes; then
   AC_DEFINE(HAVE_RAPIDJSON, 1, [Define to 1 if RapidJSON is available.])
+  if test "$have_rapidjson_dev" = yes; then
+    AC_DEFINE(HAVE_RAPIDJSON_DEV, 1, [Define to 1 if the development version of RapidJSON is available.])
+  fi
 else
   OCTAVE_CONFIGURE_WARNING([rapid_json_warning])
 fi

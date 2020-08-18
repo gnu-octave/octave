@@ -31,13 +31,13 @@
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
-#include "ovl.h"
 #include "oct-string.h"
+#include "ovl.h"
 
 #if defined (HAVE_RAPIDJSON)
-#  include <rapidjson/writer.h>
 #  include <rapidjson/prettywriter.h>
 #  include <rapidjson/stringbuffer.h>
+#  include <rapidjson/writer.h>
 #endif
 
 #if defined (HAVE_RAPIDJSON)
@@ -438,12 +438,12 @@ of encoding @var{object}.
 
 If the value of the option @qcode{"ConvertInfAndNaN"} is true, @qcode{"NaN"},
 @qcode{"Inf"} and @qcode{"-Inf"} values will be converted to @qcode{"null"}
-value in the output. If it is false, they will remain with their
+value in the output.  If it is false, they will remain with their
 original values. The default value for this option is true.
 
 If the value of the option @qcode{"PrettyWriter"} is true, the output text will
-have indentations and line feeds. If it is false, the output will be condensed
-and without any white-spaces. The default value for this option is false.
+have indentations and line feeds.  If it is false, the output will be condensed
+and without any white-spaces.  The default value for this option is false.
 
 -NOTES:
 @itemize @bullet
@@ -459,12 +459,12 @@ To preserve the escape characters (e.g. "\n"), use double-quote strings.
 
 @item
 It is not guaranteed to get the same dimensions for arrays if you encode
-and then decode it. For example, If you encoded a row vector then decoded it,
+and then decode it.  For example, if you encoded a row vector then decoded it,
 you will get a column vector.
 
 @item
 It is not guaranteed to get the same data type if you encode and then decode
-an Octave value as Octave supports more data types than JSON. For example, If
+an Octave value as Octave supports more data types than JSON.  For example, if
 you encoded an @qcode{"int32"} then decoded it, you will get a @qcode{"double"}.
 @end itemize
 
@@ -529,20 +529,20 @@ Examples:
 @example
 @group
 jsonencode ([1 NaN; 3 4])
-@result{}  [[1,null],[3,4]]
+@result{} [[1,null],[3,4]]
 @end group
 
 @group
 jsonencode ([1 NaN; 3 4], "ConvertInfAndNaN", false)
-@result{}  [[1,NaN],[3,4]]
+@result{} [[1,NaN],[3,4]]
 @end group
 
 @group
 jsonencode ([true; false], "ConvertInfAndNaN", false, "PrettyWriter", true)
 @result{} ans = [
-                    true,
-                    false
-                ]
+       true,
+       false
+   ]
 @end group
 
 @group
@@ -552,22 +552,22 @@ jsonencode (['foo', 'bar'; 'foo', 'bar'])
 
 @group
 jsonencode (struct ('a', Inf, 'b', [], 'c', struct ()))
-@result{} {"a":null,"b":[],"c":{}}
+@result{} @{"a":null,"b":[],"c":@{@}@}
 @end group
 
 @group
-jsonencode (struct ('structarray', struct ('a', {1; 3}, 'b', {2; 4})))
-@result{} {"structarray":[{"a":1,"b":2},{"a":3,"b":4}]}
+jsonencode (struct ('structarray', struct ('a', @{1; 3@}, 'b', @{2; 4@})))
+@result{} @{"structarray":[@{"a":1,"b":2@},@{"a":3,"b":4@}]@}
 @end group
 
 @group
-jsonencode ({'foo'; 'bar'; {'foo'; 'bar'}})
+jsonencode (@{'foo'; 'bar'; @{'foo'; 'bar'@}@})
 @result{} ["foo","bar",["foo","bar"]]
 @end group
 
 @group
-jsonencode (containers.Map({'foo'; 'bar'; 'baz'}, [1, 2, 3]))
-@result{} {"bar":2,"baz":3,"foo":1}
+jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
+@result{} @{"bar":2,"baz":3,"foo":1@}
 @end group
 @end example
 
@@ -601,15 +601,29 @@ jsonencode (containers.Map({'foo'; 'bar'; 'baz'}, [1, 2, 3]))
         error ("jsonencode: Valid options are \'ConvertInfAndNaN\'"
                " and \'PrettyWriter\'");
     }
+
+  // FIXME: RapidJSON 1.1.0 (2016-08-25) is the latest release (2020-08-18)
+  //        and does not support the "PrettyWriter" option.  Once a newer
+  //        RapidJSON version is released and established with major
+  //        distributions, make that version a requirement.
+  #if ! defined (HAVE_RAPIDJSON_DEV)
+     if (PrettyWriter)
+       {
+         warn_disabled_feature ("jsonencode",
+                                "the \'PrettyWriter\' option of RapidJSON");
+         PrettyWriter = false;
+       }
+  #endif
+
   rapidjson::StringBuffer json;
   if (PrettyWriter)
-    // In order to use the "PrettyWriter" option, you must use the development
-    // version of RapidJSON. The release causes an error in compilation.
     {
-      rapidjson::PrettyWriter<rapidjson::StringBuffer, rapidjson::UTF8<>,
-                              rapidjson::UTF8<>, rapidjson::CrtAllocator,
-                              rapidjson::kWriteNanAndInfFlag> writer (json);
-      encode (writer, args(0), ConvertInfAndNaN);
+      #if defined (HAVE_RAPIDJSON_DEV)
+         rapidjson::PrettyWriter<rapidjson::StringBuffer, rapidjson::UTF8<>,
+                                 rapidjson::UTF8<>, rapidjson::CrtAllocator,
+                                 rapidjson::kWriteNanAndInfFlag> writer (json);
+         encode (writer, args(0), ConvertInfAndNaN);
+      #endif
     }
   else
     {
@@ -625,8 +639,7 @@ jsonencode (containers.Map({'foo'; 'bar'; 'baz'}, [1, 2, 3]))
 
   octave_unused_parameter (args);
 
-  err_disabled_feature ("jsonencode",
-                        "RapidJSON is required for JSON encoding\\decoding");
+  err_disabled_feature ("jsonencode", "JSON encoding through RapidJSON");
 
 #endif
 }

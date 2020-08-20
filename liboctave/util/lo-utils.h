@@ -66,15 +66,26 @@ any_all_test (F fcn, const T *m, octave_idx_type len)
 }
 
 extern OCTAVE_API bool xis_int_or_inf_or_nan (double x);
-extern OCTAVE_API bool xis_one_or_zero (double x);
-extern OCTAVE_API bool xis_zero (double x);
+
+template <typename T>
+bool
+xis_one_or_zero (const T& x)
+{
+  return x == T (0) || x == T (1);
+}
+
+template <typename T>
+bool
+xis_zero (const T& x)
+{
+  return x == T (0);
+}
+
 extern OCTAVE_API bool xtoo_large_for_float (double x);
 
 extern OCTAVE_API bool xtoo_large_for_float (const Complex&  x);
 
 extern OCTAVE_API bool xis_int_or_inf_or_nan (float x);
-extern OCTAVE_API bool xis_one_or_zero (float x);
-extern OCTAVE_API bool xis_zero (float x);
 extern OCTAVE_API bool xtoo_large_for_float (float x);
 
 extern OCTAVE_API char * strsave (const char *);

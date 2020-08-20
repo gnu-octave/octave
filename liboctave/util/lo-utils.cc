@@ -46,12 +46,6 @@
 bool xis_int_or_inf_or_nan (double x)
 { return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
 
-bool xis_one_or_zero (double x)
-{ return x == 0 || x == 1; }
-
-bool xis_zero (double x)
-{ return x == 0; }
-
 bool xtoo_large_for_float (double x)
 {
   return (octave::math::isfinite (x)
@@ -66,12 +60,6 @@ bool xtoo_large_for_float (const Complex& x)
 
 bool xis_int_or_inf_or_nan (float x)
 { return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
-
-bool xis_one_or_zero (float x)
-{ return x == 0 || x == 1; }
-
-bool xis_zero (float x)
-{ return x == 0; }
 
 // Save a string.
 

@@ -1330,4 +1330,29 @@ xmin (const octave_int<T>& x, const octave_int<T>& y)
   return octave_int<T> (xv <= yv ? xv : yv);
 }
 
+// Ints are handled by converting to octave_int type.
+
+#define OCTAVE_INT_IDX_TYPE_BIN_OP(OP)                          \
+  template <typename T>                                         \
+  inline octave_int<T>                                          \
+  operator OP (const octave_int<T>& x, octave_idx_type y)       \
+  {                                                             \
+    return x OP octave_int<T> (y);                              \
+  }                                                             \
+                                                                \
+  template <typename T>                                         \
+  inline octave_int<T>                                          \
+  operator OP (octave_idx_type x, const octave_int<T>& y)       \
+  {                                                             \
+    return octave_int<T> (x) OP y;                              \
+  }
+
+OCTAVE_INT_IDX_TYPE_BIN_OP (+)
+OCTAVE_INT_IDX_TYPE_BIN_OP (-)
+OCTAVE_INT_IDX_TYPE_BIN_OP (*)
+OCTAVE_INT_IDX_TYPE_BIN_OP (/)
+
+#undef OCTAVE_INT_IDX_TYPE_BIN_OP
+
+
 #endif

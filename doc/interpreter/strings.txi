@@ -63,6 +63,7 @@ them to be UTF-8 encoded Unicode strings.
 * Comparing Strings::
 * Manipulating Strings::
 * String Conversions::
+* JSON decoding/encoding::
 * Character Class Functions::
 @end menu
 
@@ -534,6 +535,17 @@ hex2dec ("FF")
 @DOCSTRING(do_string_escapes)
 
 @DOCSTRING(undo_string_escapes)
+
+@node JSON decoding/encoding
+@section JSON decoding/encoding
+
+JavaScript Object Notation, in short JSON, is a very common human readable
+and structured data format.  GNU Octave supports decoding and encoding this
+format with the following two functions.
+
+@DOCSTRING(jsondecode)
+
+@DOCSTRING(jsonencode)
 
 @node Character Class Functions
 @section Character Class Functions

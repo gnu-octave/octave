@@ -420,10 +420,12 @@ The output @var{object} is an Octave object that contains the result
 of decoding @var{json}.
 
 For more information about the options @qcode{"ReplacementStyle"} and
-@qcode{"Prefix"}, see @ref{matlab.lang.makeValidName}.
+@qcode{"Prefix"}, see
+@ref{XREFmatlab_lang_makeValidName,,matlab.lang.makeValidName}.
 
 -NOTE: It is not guaranteed to get the same JSON text if you decode
-and then encode it as some names may change by @ref{matlab.lang.makeValidName}.
+and then encode it as some names may change by
+@code{matlab.lang.makeValidName}.
 
 This table shows the conversions from JSON data types to Octave data types:
 
@@ -439,7 +441,8 @@ Scalar @qcode{"double"}
 
 @item JSON @qcode{"Object"}
 Scalar @qcode{"struct"} (field names of the struct may be different from
-the keys of the JSON object due to @ref{matlab.lang.makeValidName})
+the keys of the JSON object due to
+@ref{XREFmatlab_lang_makeValidName,,matlab.lang.makeValidName})
 
 @item @qcode{"Array"} of different data types
 @qcode{"Cell"} array

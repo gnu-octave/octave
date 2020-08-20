@@ -189,22 +189,35 @@ DEF_BTYP_TRAITS (btyp_char, char);
     static const std::string t_name;                                    \
     static const std::string c_name;
 
-#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)            \
-  int t::t_id (-1);                                             \
-  const std::string t::t_name (n);                              \
-  const std::string t::c_name (c);                              \
-  void t::register_type (void)                                  \
-  {                                                             \
-    octave::type_info& type_info                                \
-      = octave::__get_type_info__ (#t "::register_type");       \
-                                                                \
-    register_type (type_info);                                  \
-  }                                                             \
-  void t::register_type (octave::type_info& ti)                 \
-  {                                                             \
-    octave_value v (new t ());                                  \
-    t_id = ti.register_type (t::t_name, t::c_name, v);          \
+#define DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS(cls, type)           \
+  template <> void cls<type>::register_type (void);                     \
+  template <> void cls<type>::register_type (octave::type_info&);       \
+  template <> int cls<type>::t_id;                                      \
+  template <> const std::string cls<type>::t_name;                      \
+  template <> const std::string cls<type>::c_name;
+
+#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA_INTERNAL(tspec, t, n, c)    \
+  tspec int t::t_id (-1);                                               \
+  tspec const std::string t::t_name (n);                                \
+  tspec const std::string t::c_name (c);                                \
+  tspec void t::register_type (void)                                    \
+  {                                                                     \
+    octave::type_info& type_info                                        \
+      = octave::__get_type_info__ (#t "::register_type");               \
+                                                                        \
+    register_type (type_info);                                          \
+  }                                                                     \
+  tspec void t::register_type (octave::type_info& ti)                   \
+  {                                                                     \
+    octave_value v (new t ());                                          \
+    t_id = ti.register_type (t::t_name, t::c_name, v);                  \
   }
+
+#define DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)           \
+  DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA_INTERNAL (template <>, t, n, c)
+
+#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)            \
+  DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA_INTERNAL ( , t, n, c)
 
 // A base value type, so that derived types only have to redefine what
 // they need (if they are derived from octave_base_value instead of

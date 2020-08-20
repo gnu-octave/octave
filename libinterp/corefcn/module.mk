@@ -58,6 +58,7 @@ COREFCN_INC = \
   %reldir%/ls-utils.h \
   %reldir%/mex.h \
   %reldir%/mexproto.h \
+  %reldir%/mx-type-traits.h \
   %reldir%/mxarray.h \
   %reldir%/oct-errno.h \
   %reldir%/oct-fstrm.h \

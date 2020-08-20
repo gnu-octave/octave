@@ -302,16 +302,9 @@ Strings
 
 * Escape Sequences in String Constants::
 * Character Arrays::
-* Creating Strings::
-* Comparing Strings::
-* Manipulating Strings::
-* String Conversions::
+* String Operations::
+* Converting Strings::
 * Character Class Functions::
-
-Creating Strings
-
-* Concatenating Strings::
-* Converting Numerical Data to Strings::
 
 Data Containers
 

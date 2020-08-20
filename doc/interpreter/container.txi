@@ -914,11 +914,11 @@ strcmp ("hello", c)
 The following string functions support cell arrays of strings:
 @code{char}, @code{strvcat}, @code{strcat} (@pxref{Concatenating
 Strings}), @code{strcmp}, @code{strncmp}, @code{strcmpi},
-@code{strncmpi} (@pxref{Comparing Strings}), @code{str2double},
+@code{strncmpi} (@pxref{Searching in Strings}), @code{str2double},
 @code{deblank}, @code{strtrim}, @code{strtrunc}, @code{strfind},
 @code{strmatch}, , @code{regexp}, @code{regexpi}
-(@pxref{Manipulating Strings}) and @code{str2double}
-(@pxref{String Conversions}).
+(@pxref{String Operations}) and @code{str2double}
+(@pxref{Converting Strings}).
 
 The function @code{iscellstr} can be used to test if an object is a
 cell array of strings.

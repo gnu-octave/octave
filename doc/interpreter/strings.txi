@@ -56,14 +56,17 @@ Types}, for more information about creating matrices.
 While strings can in principle store arbitrary content, most functions expect
 them to be UTF-8 encoded Unicode strings.
 
+Furthermore, it is possible to create a string without actually writing a text.
+The function @code{blanks} creates a string of a given length consisting only
+of blank characters (ASCII code 32).
+
+@DOCSTRING(blanks)
+
 @menu
 * Escape Sequences in String Constants::
 * Character Arrays::
-* Creating Strings::
-* Comparing Strings::
-* Manipulating Strings::
-* String Conversions::
-* JSON decoding/encoding::
+* String Operations::
+* Converting Strings::
 * Character Class Functions::
 @end menu
 
@@ -208,25 +211,64 @@ blank character using the @code{string_fill_char} function.
 
 @DOCSTRING(string_fill_char)
 
+Another useful function to control the text justification in this case is
+the @code{strjust} function.
+
+@DOCSTRING(strjust)
+
 This shows a problem with character matrices.  It simply isn't possible to
 represent strings of different lengths.  The solution is to use a cell array of
 strings, which is described in @ref{Cell Arrays of Strings}.
 
-@node Creating Strings
-@section Creating Strings
+@node String Operations
+@section String Operations
 
-The easiest way to create a string is, as illustrated in the introduction,
-to enclose a text in double-quotes or single-quotes.  It is however
-possible to create a string without actually writing a text.  The
-function @code{blanks} creates a string of a given length consisting
-only of blank characters (ASCII code 32).
+Octave supports a wide range of functions for manipulating strings.
+Since a string is just a matrix, simple manipulations can be accomplished
+using standard operators.  The following example shows how to replace
+all blank characters with underscores.
 
-@DOCSTRING(blanks)
+@example
+@group
+quote = ...
+  "First things first, but not necessarily in that order";
+quote( quote == " " ) = "_"
+@result{} quote =
+    First_things_first,_but_not_necessarily_in_that_order
+@end group
+@end example
+
+For more complex manipulations, such as searching, replacing, and
+general regular expressions, the following functions come with Octave.
 
 @menu
+* Common String Operations::
 * Concatenating Strings::
-* Converting Numerical Data to Strings::
+* Splitting and Joining Strings::
+* Searching in Strings::
+* Searching and Replacing in Strings::
 @end menu
+
+@node Common String Operations
+@subsection Common String Operations
+
+The following functions are useful to perform common String operations.
+
+@DOCSTRING(tolower)
+
+@DOCSTRING(toupper)
+
+@DOCSTRING(deblank)
+
+@DOCSTRING(strtrim)
+
+@DOCSTRING(strtrunc)
+
+@DOCSTRING(untabify)
+
+@DOCSTRING(do_string_escapes)
+
+@DOCSTRING(undo_string_escapes)
 
 @node Concatenating Strings
 @subsection Concatenating Strings
@@ -371,25 +413,21 @@ from the internal representation of the strings in a string array
 
 @DOCSTRING(cstrcat)
 
-@node Converting Numerical Data to Strings
-@subsection Converting Numerical Data to Strings
-Apart from the string concatenation functions (@pxref{Concatenating Strings})
-which cast numerical data to the corresponding UTF-8 encoded characters, there
-are several functions that format numerical data as strings.  @code{mat2str}
-and @code{num2str} convert real or complex matrices, while @code{int2str}
-converts integer matrices.  @code{int2str} takes the real part of complex
-values and round fractional values to integer.  A more flexible way to format
-numerical data as strings is the @code{sprintf} function
-(@pxref{Formatted Output}, @ref{XREFsprintf,,sprintf}).
+@node Splitting and Joining Strings
+@subsection Splitting and Joining Strings
 
-@DOCSTRING(mat2str)
+@DOCSTRING(substr)
 
-@DOCSTRING(num2str)
+@DOCSTRING(strtok)
 
-@DOCSTRING(int2str)
+@DOCSTRING(strsplit)
 
-@node Comparing Strings
-@section Comparing Strings
+@DOCSTRING(ostrsplit)
+
+@DOCSTRING(strjoin)
+
+@node Searching in Strings
+@subsection Searching in Strings
 
 Since a string is a character array, comparisons between strings work
 element by element as the following example shows:
@@ -417,36 +455,12 @@ corresponding functions for case-insensitive comparison.
 
 @DOCSTRING(strncmpi)
 
+Despite those comparison functions, there are more specialized function to
+find the index position of a search pattern within a string.
+
 @DOCSTRING(startsWith)
 
 @DOCSTRING(endsWith)
-
-@node Manipulating Strings
-@section Manipulating Strings
-
-Octave supports a wide range of functions for manipulating strings.
-Since a string is just a matrix, simple manipulations can be accomplished
-using standard operators.  The following example shows how to replace
-all blank characters with underscores.
-
-@example
-@group
-quote = ...
-  "First things first, but not necessarily in that order";
-quote( quote == " " ) = "_"
-@result{} quote =
-    First_things_first,_but_not_necessarily_in_that_order
-@end group
-@end example
-
-For more complex manipulations, such as searching, replacing, and
-general regular expressions, the following functions come with Octave.
-
-@DOCSTRING(deblank)
-
-@DOCSTRING(strtrim)
-
-@DOCSTRING(strtrunc)
 
 @DOCSTRING(findstr)
 
@@ -456,25 +470,18 @@ general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(rindex)
 
-@DOCSTRING(strfind)
+@DOCSTRING(unicode_idx)
 
-@DOCSTRING(strjoin)
+@DOCSTRING(strfind)
 
 @DOCSTRING(strmatch)
 
-@DOCSTRING(strtok)
-
-@DOCSTRING(strsplit)
-
-@DOCSTRING(ostrsplit)
-
-@DOCSTRING(strread)
+@node Searching and Replacing in Strings
+@subsection Searching and Replacing in Strings
 
 @DOCSTRING(strrep)
 
 @DOCSTRING(erase)
-
-@DOCSTRING(substr)
 
 @DOCSTRING(regexp)
 
@@ -484,23 +491,45 @@ general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(regexptranslate)
 
-@DOCSTRING(untabify)
+@node Converting Strings
+@section Converting Strings
 
-@DOCSTRING(unicode_idx)
+Octave offers several kinds of conversion functions for Strings.
 
-@node String Conversions
-@section String Conversions
+@menu
+* String encoding::
+* Numerical Data and Strings::
+* JSON data decoding/encoding::
+@end menu
 
-Octave supports various kinds of conversions between strings and
-numbers.  As an example, it is possible to convert a string containing
-a hexadecimal number to a floating point number.
+@node String encoding
+@subsection String encoding
 
-@example
-@group
-hex2dec ("FF")
-      @result{} 255
-@end group
-@end example
+@DOCSTRING(unicode2native)
+
+@DOCSTRING(native2unicode)
+
+@node Numerical Data and Strings
+@subsection Numerical Data and Strings
+
+Apart from the string concatenation functions (@pxref{Concatenating Strings})
+which cast numerical data to the corresponding UTF-8 encoded characters, there
+are several functions that format numerical data as strings.  @code{mat2str}
+and @code{num2str} convert real or complex matrices, while @code{int2str}
+converts integer matrices.  @code{int2str} takes the real part of complex
+values and round fractional values to integer.  A more flexible way to format
+numerical data as strings is the @code{sprintf} function
+(@pxref{Formatted Output}, @ref{XREFsprintf,,sprintf}).
+
+@DOCSTRING(mat2str)
+
+@DOCSTRING(num2str)
+
+@DOCSTRING(int2str)
+
+@DOCSTRING(str2double)
+
+@DOCSTRING(str2num)
 
 @DOCSTRING(bin2dec)
 
@@ -518,26 +547,10 @@ hex2dec ("FF")
 
 @DOCSTRING(hex2num)
 
-@DOCSTRING(str2double)
+@DOCSTRING(strread)
 
-@DOCSTRING(strjust)
-
-@DOCSTRING(str2num)
-
-@DOCSTRING(tolower)
-
-@DOCSTRING(toupper)
-
-@DOCSTRING(unicode2native)
-
-@DOCSTRING(native2unicode)
-
-@DOCSTRING(do_string_escapes)
-
-@DOCSTRING(undo_string_escapes)
-
-@node JSON decoding/encoding
-@section JSON decoding/encoding
+@node JSON data decoding/encoding
+@subsection JSON data decoding/encoding
 
 JavaScript Object Notation, in short JSON, is a very common human readable
 and structured data format.  GNU Octave supports decoding and encoding this

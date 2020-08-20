@@ -50,6 +50,8 @@ octave_base_matrix : public octave_base_value
 {
 public:
 
+  typedef MT object_type;
+
   octave_base_matrix (void)
     : octave_base_value (), matrix (), typ (), idx_cache () { }
 

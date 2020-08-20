@@ -49,6 +49,8 @@ octave_base_scalar : public octave_base_value
 {
 public:
 
+  typedef ST scalar_type;
+
   octave_base_scalar (void)
     : octave_base_value (), scalar () { }
 

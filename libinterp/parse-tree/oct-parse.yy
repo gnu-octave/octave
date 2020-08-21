@@ -4407,6 +4407,12 @@ namespace octave
                     return false;
                   }
               }
+            else if (iskeyword (name))
+              {
+                bison_error ("invalid use of keyword '" + name
+                             + "' in parameter list");
+                return false;
+              }
             else if (dict.find (name) != dict.end ())
               {
                 bison_error ("'" + name

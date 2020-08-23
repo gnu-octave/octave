@@ -480,9 +480,9 @@ function rgbout = print (varargin)
                     "-not", "units", "normalized", "-not", "units", "data");
     hobj(strncmp (get (hobj, "type"), "ui", 2)) = [];
     for n = 1:numel(hobj)
-      props(n).h = hobj(n);
-      props(n).name = "units";
-      props(n).value = {get(hobj(n), "units")};
+      props(end+1).h = hobj(n);
+      props(end).name = "units";
+      props(end).value = {get(hobj(n), "units")};
       set (hobj(n), "units", "data");
       nfig += 1;
     endfor

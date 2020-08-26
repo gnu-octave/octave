@@ -51,11 +51,12 @@ variable's current value.  Variables are given new values with
 @dfn{assignment operators} and @dfn{increment operators}.
 @xref{Assignment Ops,,Assignment Expressions}.
 
-There is one built-in variable with a special meaning.  The @code{ans} variable
-always contains the result of the last computation, where the output wasn't
-assigned to any variable.  The code @code{a = cos (pi)} will assign the value
--1 to the variable @code{a}, but will not change the value of @code{ans}.
-However, the code @code{cos (pi)} will set the value of @code{ans} to -1.
+There is one automatically created variable with a special meaning.  The
+@code{ans} variable always contains the result of the last computation,
+where the output wasn't assigned to any variable.  The code @code{a =
+cos (pi)} will assign the value -1 to the variable @code{a}, but will
+not change the value of @code{ans}.  However, the code @code{cos (pi)}
+will set the value of @code{ans} to -1.
 
 Variables in Octave do not have fixed types, so it is possible to first
 store a numeric value in a variable and then to later use the same name

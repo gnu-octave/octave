@@ -110,8 +110,8 @@ specified.
 Specify the path to search for programs to run.  The value of @var{path}
 specified on the command line will override any value of
 @w{@env{OCTAVE_EXEC_PATH}} found in the environment, but not any commands
-in the system or user startup files that set the built-in variable
-@w{@env{EXEC_PATH}}.
+in the system or user startup files that call the
+@w{@env{EXEC_PATH}} function.
 
 @item --gui
 @cindex @sortas{options, Octave command --gui} @ @ @code{--gui}
@@ -128,8 +128,8 @@ Print short help message and exit.
 Add path to the head of the search path for images.  The value of
 @var{path} specified on the command line will override any value of
 @w{@env{OCTAVE_IMAGE_PATH}} found in the environment, but not any commands
-in the system or user startup files that set the built-in variable
-@w{@env{IMAGE_PATH}}.
+in the system or user startup files that call the @w{@env{IMAGE_PATH}}
+function.
 
 @item --info-file @var{filename}
 @cindex @sortas{options, Octave command --info-file} @ @ @code{--info-file @var{filename}}

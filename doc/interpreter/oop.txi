@@ -381,9 +381,10 @@ in the caller's scope.  Deleting or completely replacing @code{x} inside
 subsasgn will not do anything, however, only indexed assignments matter.
 
 Since this optimization may change the way code works (especially if badly
-written), a built-in variable @code{optimize_subsasgn_calls} is provided to
-control it.  It is on by default.  Another way to avoid the optimization is to
-declare subsasgn methods with different output and input arguments like this:
+written), a function @code{optimize_subsasgn_calls} is provided to
+control it.  This feature is enabled by default.  Another way to avoid
+the optimization is to declare subsasgn methods with different output
+and input arguments like this:
 
 @example
 @group

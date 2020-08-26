@@ -52,7 +52,7 @@ value of @samp{pi}
 @example
 @group
 pi
-     @print{} pi = 3.1416
+     @print{} ans =  3.1416
 @end group
 @end example
 

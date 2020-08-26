@@ -301,10 +301,10 @@ set using the @code{format} function.  @xref{Basic Input and Output}.
 Octave automatically switches to scientific notation when values become
 very large or very small.  This guarantees that you will see several
 significant figures for every value in a matrix.  If you would prefer to
-see all values in a matrix printed in a fixed point format, you can set
-the built-in variable @code{fixed_point_format} to a nonzero value.  But
-doing so is not recommended, because it can produce output that can
-easily be misinterpreted.
+see all values in a matrix printed in a fixed point format, you can use
+the function @code{fixed_point_format}.  But doing so is not
+recommended, because it can produce output that can easily be
+misinterpreted.
 
 @DOCSTRING(fixed_point_format)
 

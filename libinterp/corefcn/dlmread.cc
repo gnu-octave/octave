@@ -305,6 +305,32 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   bool sep_is_wspace = (sep.find_first_of (" \t") != std::string::npos);
   bool auto_sep_is_wspace = false;
 
+  if (r0 == 0)
+    {
+      // Peek into stream and potentially strip Byte Order Mark (BOM)
+      const char BOM[3] = {'\xEF', '\xBB', '\xBF'};
+      char buf[3];
+      int i_bom;
+      bool found_bom = true;
+      for (i_bom = 0; i_bom < 3; i_bom++)
+        {
+          char ch_p = input->peek ();
+          if (ch_p == BOM[i_bom])
+            buf[i_bom] = input->get ();
+          else
+            {
+              found_bom = false;
+              break;
+            }
+        }
+      // Put back read characters if it wasn't a BOM
+      if (! found_bom)
+        {
+          for (int i_ret = i_bom-1; i_ret >= 0; i_ret--)
+            input->putback (buf[i_ret]);
+        }
+    }
+
   std::string line;
 
   // Skip the r0 leading lines
@@ -709,6 +735,20 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   fclose (fid);
 %!
 %!   assert (dlmread (file), [1, 0, 3]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+## Verify UTF-8 Byte Order Mark does not cause problems with reading
+%!test <*58813>
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, char ([0xEF, 0xBB, 0xBF]));  # UTF-8 BOM
+%!   fwrite (fid, "1,2\n3,4");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2; 3, 4]);
 %! unwind_protect_cleanup
 %!   unlink (file);
 %! end_unwind_protect

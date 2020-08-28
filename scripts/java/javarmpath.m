@@ -54,7 +54,7 @@ function javarmpath (varargin)
 
     for clspath = arg
       clspath = clspath{1};
-    
+
       old_path = canonicalize_file_name (tilde_expand (clspath));
       if (isfolder (old_path))
         if (old_path(end) != filesep ())

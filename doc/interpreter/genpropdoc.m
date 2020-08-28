@@ -832,7 +832,7 @@ __modemsg__.";
 The four elements of the vector are the coordinates of the lower left corner \
 and width and height of the legend.  Changing this property also \
 switches the @qcode{\"location\"} to @qcode{\"none\"}.";
-          s.printdefault = false;          
+          s.printdefault = false;
         else
           s.doc = "Specify the position of the plot excluding titles, \
 axes, and legend.  The four elements of the vector are the \

@@ -94,7 +94,7 @@
 ## @c The following table is obtained by copying the output of
 ## @c genpropdoc ("legend", "", {"autoupdate", "box", "location", "numcolumns", "orientation", "string", "textcolor"})
 ## @table @asis
-## 
+##
 ## @item @code{autoupdate}: @qcode{"off"} | @{@qcode{"on"}@}
 ## Control whether the number of legend items is updated automatically when objects are added to (or deleted from) the peer axes.
 ## For example:
@@ -113,16 +113,16 @@
 ## plot ((1:10) * 3);
 ## @end group
 ## @end example
-## 
-## 
+##
+##
 ## @item @code{box}: @qcode{"off"} | @{@qcode{"on"}@}
 ## Control whether the legend has a surrounding box.
-## 
-## 
+##
+##
 ## @item @code{location}: @qcode{"best"} | @qcode{"bestoutside"} | @qcode{"east"} | @qcode{"eastoutside"} | @qcode{"none"} | @qcode{"north"} | @{@qcode{"northeast"}@} | @qcode{"northeastoutside"} | @qcode{"northoutside"} | @qcode{"northwest"}| @qcode{"northwestoutside"} | @qcode{"south"} | @qcode{"southeast"} | @qcode{"southeastoutside"} | @qcode{"southoutside"} | @qcode{"southwest"} | @qcode{"southwestoutside"} | @qcode{"west"} | @qcode{"westoutside"}
 ## Control the location of the legend.
-## 
-## 
+##
+##
 ## @item @code{numcolumns}: scalar interger, def. @code{1}
 ## Control the number of columns used in the layout of the legend items.  For example:
 ## @example
@@ -133,12 +133,12 @@
 ## @end group
 ## @end example
 ## Setting @code{numcolumns} also forces the @code{numcolumnsmode} property to be set to @qcode{"manual"}.
-## 
-## 
+##
+##
 ## @item @code{orientation}: @qcode{"horizontal"} | @{@qcode{"vertical"}@}
 ## Control whether the legend items are arranged vertically (column-wise) or horizontally (row-wise).
-## 
-## 
+##
+##
 ## @item @code{string}: string | cell array of strings
 ## List of labels for the legend items.  For example:
 ## @example
@@ -153,11 +153,11 @@
 ## set (hl, "string", str);
 ## @end group
 ## @end example
-## 
-## 
+##
+##
 ## @item @code{textcolor}: colorspec, def. @code{[0   0   0]}
 ## Control the color of the text strings for legend item.
-## 
+##
 ## @end table
 ##
 ## The full list of supported legend specific properties can be found at

@@ -30,6 +30,11 @@
 %! assert (isequal (jsonencode (['foo'; 'bar']), '["foo","bar"]'));
 %! assert (isequal (jsonencode (['foo', 'bar'; 'foo', 'bar']), '["foobar","foobar"]'));
 
+% escape characters inside single-quoted and double-quoted strings
+%!testif HAVE_RAPIDJSON
+%! assert (isequal (jsonencode ('\0\a\b\t\n\v\f\r'), '"\\0\\a\\b\\t\\n\\v\\f\\r"'));
+%! assert (isequal (jsonencode ("\a\b\t\n\v\f\r"), '"\u0007\b\t\n\u000B\f\r"'));
+
 %!testif HAVE_RAPIDJSON
 %! data = [[['foo'; 'bar']; ['foo'; 'bar']], [['foo'; 'bar']; ['foo'; 'bar']]];
 %! exp  = '["foofoo","barbar","foofoo","barbar"]';

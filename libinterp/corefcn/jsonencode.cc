@@ -458,6 +458,10 @@ into structs then encoded as structs.
 To preserve the escape characters (e.g. "\n"), use double-quote strings.
 
 @item
+Every character after the null character ("\0") in double-quoted strings will
+be dropped during encoding.
+
+@item
 It is not guaranteed to get the same dimensions for arrays if you encode
 and then decode it.  For example, if you encoded a row vector then decoded it,
 you will get a column vector.
@@ -535,6 +539,18 @@ jsonencode ([1 NaN; 3 4])
 @group
 jsonencode ([1 NaN; 3 4], "ConvertInfAndNaN", false)
 @result{} [[1,NaN],[3,4]]
+@end group
+
+@group
+## Escape characters inside a single-quoted string
+jsonencode ('\0\a\b\t\n\v\f\r')
+@result{} "\\0\\a\\b\\t\\n\\v\\f\\r"
+@end group
+
+@group
+## Escape characters inside a double-quoted string
+jsonencode ("\a\b\t\n\v\f\r")
+@result{} "\u0007\b\t\n\u000B\f\r"
 @end group
 
 @group

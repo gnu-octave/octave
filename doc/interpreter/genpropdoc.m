@@ -37,8 +37,8 @@
 ## @seealso{}
 ## @end deftypefn
 
-function genpropdoc (objname, fname)
-  objnames = {"root", "figure", "axes", ...
+function genpropdoc (objname, fname = "", props = {})
+  objnames = {"root", "figure", "axes", "legend", ...
               "image", "light", "line", "patch", "scatter", "surface", ...
               "text", "uibuttongroup", "uicontextmenu", "uicontrol", ...
               "uipanel", "uimenu", "uipushtool", "uitable", ...
@@ -50,15 +50,15 @@ function genpropdoc (objname, fname)
 
   ## Object properties
   if (any (strcmp (objname, objnames)))
-    obj = getstructure (objname, base);
+    obj = getstructure (objname, base, props);
   else
     error ("genpropdoc: unknown object %s", objname);
   endif
 
   ## Docstring
-  str = printdoc (objname, obj);
+  str = printdoc (objname, obj, ! isempty (props));
 
-  if (nargin == 2)
+  if (! isempty (fname))
     fid = fopen (fname,  "w+");
     if (fid < 0)
       error ("genpropdoc: couldn't open %s.", fname);
@@ -651,7 +651,7 @@ Changing modes of a visible figure may cause the figure to close and reopen.";
     endswitch
 
   ## Axes properties
-  elseif (strcmp (objname, "axes"))
+  elseif (strcmp (objname, "axes") || strcmp (objname, "legend"))
     switch (field)
       ## Overridden shared properties
       case "clipping"
@@ -666,7 +666,7 @@ Changing modes of a visible figure may cause the figure to close and reopen.";
         s.doc = doc_unused;
 
       case "box"
-        s.doc = "Control whether the axes has a surrounding box.";
+        s.doc = "Control whether the __objname__ has a surrounding box.";
 
       case "boxstyle"
         s.doc = "For 3-D axes, control whether the @qcode{\"full\"} \
@@ -699,7 +699,8 @@ __modemsg__.  @xref{XREFpcolor, , @w{pcolor function}}.";
         s.doc = doc_unused;
 
       case "color"
-        s.doc = "Color of the axes background.  @xref{Colors, , colorspec}.";
+        s.doc = "Color of the __objname__ background.  \
+@xref{Colors, , colorspec}.";
         s.valid = valid_color;
 
       case "colororder"
@@ -820,14 +821,20 @@ left corner of the axes at @math{(0.2, 0.3)} and the width and \
 height to be 0.4 and 0.5 respectively.  \
 @xref{XREFaxesposition, , @w{position property}}.";
         s.valid = valid_4elvec;
-
       case "plotboxaspectratio"
         s.doc = "@xref{XREFpbaspect, , pbaspect function}.  \
 __modemsg__.";
 
       case "plotboxaspectratiomode"
       case "position"
-        s.doc = "Specify the position of the plot excluding titles, \
+        if (strcmp (objname, "legend"))
+          s.doc = "Specify the position of the legend excluding its title. \
+The four elements of the vector are the coordinates of the lower left corner \
+and width and height of the legend.  Changing this property also \
+switches the @qcode{\"location\"} to @qcode{\"none\"}.";
+          s.printdefault = false;          
+        else
+          s.doc = "Specify the position of the plot excluding titles, \
 axes, and legend.  The four elements of the vector are the \
 coordinates of the lower left corner and width and height of the \
 plot, in units normalized to the width and height of the plot \
@@ -835,6 +842,7 @@ window.  For example, @code{[0.2, 0.3, 0.4, 0.5]} sets the lower \
 left corner of the axes at @math{(0.2, 0.3)} and the width and \
 height to be 0.4 and 0.5 respectively.  \
 @xref{XREFaxesouterposition, , @w{outerposition property}}.";
+        endif
         s.valid = valid_4elvec;
 
       case "positionconstraint"
@@ -884,8 +892,13 @@ label fontsize";
         s.doc = "Control variant of base font used for the axes title.";
 
       case "units"
-        s.doc = "Units used to interpret the @qcode{\"position\"}, \
+        if (strcmp (objname, "legend"))
+          s.doc = "Units used to interpret the @qcode{\"position\"}, \
+ property.";
+        else
+          s.doc = "Units used to interpret the @qcode{\"position\"}, \
 @qcode{\"outerposition\"}, and @qcode{\"tightinset\"} properties.";
+        endif
 
       case "view"
         s.doc = "Two-element vector @code{[azimuth elevation]} specifying \
@@ -1021,6 +1034,82 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.doc = doc_unused;
 
       case "ztickmode"
+
+      ## Legend specific properties
+      case "autoupdate"
+        s.doc = "Control whether the number of legend items is updated \
+automatically when objects are added to (or deleted from) the peer axes.\n\
+For example:\n\
+@example\n\
+@group\n\
+## Create a single plot with its legend.\n\
+figure ();\n\
+plot (1:10);\n\
+legend (\"Slope 1\");\n\
+## Add another plot and specify its displayname so that\n\
+## the legend is correctly updated.\n\
+hold on;\n\
+plot ((1:10) * 2, \"displayname\", \"Slope 2\");\n\
+## Stop automatic updates for further plots.\n\
+legend (\"autoupdate\", \"off\");\n\
+plot ((1:10) * 3);\n\
+@end group\n\
+@end example";
+
+      case "edgecolor"
+        s.doc = "Control the color of the legend outline.";
+        s.valid = valid_color;
+
+      case "interpreter"
+        s.doc = "Control if and eventually how labels strings are interpreted \
+before rendering.\n\
+@xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
+
+      case "location"
+        s.doc = "Control the location of the legend.";
+
+      case "numcolumns"
+        s.doc = "Control the number of columns used in the layout of the legend items. \
+ For example:\n\
+@example\n\
+@group\n\
+figure ();\n\
+plot (rand (30));\n\
+legend (\"numcolumns\", 3);\n\
+@end group\n\
+@end example\n\
+__modemsg__.";
+        s.valid = "scalar interger";
+
+      case "orientation"
+        s.doc = "Control whether the legend items are arranged vertically \
+(column-wise) or horizontally (row-wise).";
+
+      case "string"
+        s.doc = "List of labels for the legend items.  For example:\n\
+@example\n\
+@group\n\
+figure ();\n\
+plot (rand (20));\n\
+## Let legend choose names automatically\n\
+hl = legend ();\n\
+## Selectively change some names\n\
+str = get (hl, \"string\");\n\
+str(1:5:end) = \"Garbage\";\n\
+set (hl, \"string\", str);\n\
+@end group\n\
+@end example";
+        s.valid = valid_cellstring;
+        s.printdefault = false;
+
+      case "textcolor"
+        s.doc = "Control the color of the text strings for legend items.";
+        s.valid = valid_color;
+
+      case "textposition"
+        s.doc = "Control whether text strings are displayed on the left or \
+right of their corresponding icon.";
+
     endswitch
 
   ## Line properties
@@ -1967,7 +2056,7 @@ functions see @ref{Callbacks, , @w{Callbacks section}}.";
   strout = strrep (strout, "__fcnmsg__", fcnmsg);
 endfunction
 
-function s = getstructure (objname, base = [])
+function s = getstructure (objname, base = [], props = {})
   hf = [];
   if (! strcmp (objname, "root"))
     ## Use an improbable number to avoid ishghandle to return true for 1
@@ -1983,6 +2072,15 @@ function s = getstructure (objname, base = [])
     h = 0;
   elseif (strcmp (objname, "figure"))
     h = hf;
+  elseif (strcmp (objname, "legend"))
+    line ();
+    h = legend ();
+    if (isempty (props))
+        props = {"autoupdate", "box", "color", "edgecolor", "fontangle", ...
+                 "fontname", "fontsize", "fontunits", "fontweight", ...
+                 "location", "numcolumns", "orientation", "position", ...
+                 "string", "textcolor", "title", "units"};
+    endif
   elseif (strcmp (objname, "scatter"))
     ## Make sure to get a scatter object independent of graphics toolkit
     hax = axes (hf);
@@ -1993,6 +2091,15 @@ function s = getstructure (objname, base = [])
 
   gprop = get (h);
   sprop = set (h);
+
+  if (! isempty (props))
+    flds = fieldnames (gprop);
+    idx = cellfun (@(s) ! any (strcmp (props, s)), flds);
+    gprop = rmfield (gprop, flds(idx));
+    flds = fieldnames (sprop);
+    idx = cellfun (@(s) ! any (strcmp (props, s)), flds);
+    sprop = rmfield (sprop, flds(idx));
+  endif
 
   fields = fieldnames (gprop);
   nf = numel (fields);
@@ -2081,7 +2188,7 @@ function def = getdefault (h, objname, field)
 
 endfunction
 
-function str = printdoc (objname, obj)
+function str = printdoc (objname, obj, is_prop_subset)
   ## Sort fields so that they appear in alphabetic order in the manual
   fields = sort (fieldnames (obj));
   nf = numel (fields);
@@ -2090,6 +2197,8 @@ function str = printdoc (objname, obj)
   str = warn_autogen ();
   if (strcmp (objname, "root"))
     str = sprintf ("%s\n\nProperties of the root graphics object:", str);
+  elseif (is_prop_subset)
+    ## Do nothing
   else
     str = sprintf ("%s\n\nProperties of @code{%s} objects (@pxref{XREF%s,,%s}):",
                    str, objname, objname, objname);
@@ -2100,10 +2209,12 @@ function str = printdoc (objname, obj)
     field = fields{ii};
     str = sprintf ("%s\n\n", str);
 
-    ## @anchor: cross reference using XREFobjnamefield label
-    ## Concept index: call info from octave with 'doc ("objname field")'
-    str = sprintf ("%s@anchor{XREF%s%s}\n@prindex %s %s\n",
-                   str, objname, field, objname, field);
+    if (! is_prop_subset)
+      ## @anchor: cross reference using XREFobjnamefield label
+      ## Concept index: call info from octave with 'doc ("objname field")'
+      str = sprintf ("%s@anchor{XREF%s%s}\n@prindex %s %s\n",
+                     str, objname, field, objname, field);
+    endif
 
     ## Item
     str = sprintf ("%s@item @code{%s}", str, field);

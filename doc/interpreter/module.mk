@@ -4,6 +4,7 @@ GRAPH_PROP_TEXI_SRC = \
   %reldir%/plot-axesproperties.texi \
   %reldir%/plot-figureproperties.texi \
   %reldir%/plot-imageproperties.texi \
+  %reldir%/plot-legendproperties.texi \
   %reldir%/plot-lightproperties.texi \
   %reldir%/plot-lineproperties.texi \
   %reldir%/plot-patchproperties.texi \
@@ -39,6 +40,9 @@ GRAPHICS_PROPS_SRC = libinterp/corefcn/graphics.in.h libinterp/corefcn/genprops.
 
 %reldir%/plot-imageproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,image)
+
+%reldir%/plot-legendproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
+	$(AM_V_GEN)$(call gen-propdoc-texi,legend)
 
 %reldir%/plot-lightproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,light)

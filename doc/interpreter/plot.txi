@@ -1497,6 +1497,7 @@ struct2hdl (fig_struct);
 * Root Properties::
 * Figure Properties::
 * Axes Properties::
+* Legend Properties::
 * Line Properties::
 * Text Properties::
 * Image Properties::
@@ -1548,6 +1549,13 @@ In the following documentation default values are enclosed in @{ @}.
 @include plot-axesproperties.texi
 
 
+@node Legend Properties
+@subsubsection Legend Properties
+@prindex @sortas{@ Legend Properties} Legend Properties
+
+@include plot-legendproperties.texi
+
+
 @node Line Properties
 @subsubsection Line Properties
 @prindex @sortas{@ Line Properties} Line Properties
@@ -1596,11 +1604,13 @@ In the following documentation default values are enclosed in @{ @}.
 
 @include plot-lightproperties.texi
 
+
 @node Uimenu Properties
 @subsubsection Uimenu Properties
 @prindex @sortas{@ Uimenu Properties} Uimenu Properties
 
 @include plot-uimenuproperties.texi
+
 
 @node Uibuttongroup Properties
 @subsubsection Uibuttongroup Properties
@@ -1608,11 +1618,13 @@ In the following documentation default values are enclosed in @{ @}.
 
 @include plot-uibuttongroupproperties.texi
 
+
 @node Uicontextmenu Properties
 @subsubsection Uicontextmenu Properties
 @prindex @sortas{@ Uicontextmenu Properties} Uicontextmenu Properties
 
 @include plot-uicontextmenuproperties.texi
+
 
 @node Uipanel Properties
 @subsubsection Uipanel Properties
@@ -1620,11 +1632,13 @@ In the following documentation default values are enclosed in @{ @}.
 
 @include plot-uipanelproperties.texi
 
+
 @node Uicontrol Properties
 @subsubsection Uicontrol Properties
 @prindex @sortas{@ Uicontrol Properties} Uicontrol Properties
 
 @include plot-uicontrolproperties.texi
+
 
 @node Uitable Properties
 @subsubsection Uitable Properties
@@ -1632,11 +1646,13 @@ In the following documentation default values are enclosed in @{ @}.
 
 @include plot-uitableproperties.texi
 
+
 @node Uitoolbar Properties
 @subsubsection Uitoolbar Properties
 @prindex @sortas{@ Uitoolbar Properties} Uitoolbar Properties
 
 @include plot-uitoolbarproperties.texi
+
 
 @node Uipushtool Properties
 @subsubsection Uipushtool Properties
@@ -1644,11 +1660,13 @@ In the following documentation default values are enclosed in @{ @}.
 
 @include plot-uipushtoolproperties.texi
 
+
 @node Uitoggletool Properties
 @subsubsection Uitoggletool Properties
 @prindex @sortas{@ Uitoggletool Properties} Uitoggletool Properties
 
 @include plot-uitoggletoolproperties.texi
+
 
 @node Searching Properties
 @subsection Searching Properties

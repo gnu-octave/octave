@@ -233,7 +233,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
         error ("Octave:invalid-input-arg",
                'ode15s: invalid value assigned to field "Jacobian"');
       endif
-    else  # matrix input 
+    else  # matrix input
       if (! issquare (options.Jacobian) || rows (options.Jacobian) != n
           || ! isnumeric (options.Jacobian) || ! isreal (options.Jacobian))
         error ("Octave:invalid-input-arg",

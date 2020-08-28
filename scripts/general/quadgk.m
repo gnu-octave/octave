@@ -482,10 +482,10 @@ endfunction
 %!assert (quadgk (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-10)
 %!assert <*57614> (quadgk (@(z) exp(z)./z, 1, 1,
 %!                        "Waypoints", [1+i, -1+i, -1-i, 1-i]),
-%!                 complex (0, 2*pi), 1e-10) 
+%!                 complex (0, 2*pi), 1e-10)
 %!assert <*57614> (quadgk (@(z) exp(z)./z, 1, 1,
 %!                        "Waypoints", [1-i, -1-i, -1+i, 1+i]),
-%!                 complex (0, -2*pi), 1e-10) 
+%!                 complex (0, -2*pi), 1e-10)
 %!assert (quadgk (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]),
 %!        complex (0, pi), 1e-10)
 %!assert (quadgk (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), -1e-6)

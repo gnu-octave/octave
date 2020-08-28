@@ -1647,7 +1647,7 @@ Force Octave to assume the file is in @sc{matlab}'s version 7 binary format.
 @itemx -6
 @itemx -mat
 @itemx -mat-binary
-Force Octave to assume the file is in @sc{matlab}'s version 6 binary format. 
+Force Octave to assume the file is in @sc{matlab}'s version 6 binary format.
 
 @item  -v4
 @itemx -V4
@@ -1799,7 +1799,7 @@ format, saving global variables also saves the global status of the variable.
 If the variable is restored at a later time using @samp{load}, it will be
 restored as a global variable.
 
-Example: 
+Example:
 
 The command
 

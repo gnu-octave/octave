@@ -181,7 +181,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
         J1 = options.Jacobian{1};
         J2 = options.Jacobian{2};
         if (   ! issquare (J1) || ! issquare (J2)
-            || rows (J1) != n || rows (J2) != n  
+            || rows (J1) != n || rows (J2) != n
             || ! isnumeric (J1) || ! isnumeric (J2)
             || ! isreal (J1) || ! isreal (J2))
           error ("Octave:invalid-input-arg",

@@ -486,7 +486,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
 DEFUN (__qp__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {[@var{x}, @var{lambda}, @var{info}, @var{iter}] =} __qp__ (@var{x0}, @var{H}, @var{q}, @var{Aeq}, @var{beq}, @var{Ain}, @var{bin}, @var{maxit})
+@deftypefn {} {[@var{x}, @var{lambda}, @var{info}, @var{iter}] =} __qp__ (@var{x0}, @var{H}, @var{q}, @var{Aeq}, @var{beq}, @var{Ain}, @var{bin}, @var{maxit}, @var{rtol})
 Undocumented internal function.
 @end deftypefn */)
 {

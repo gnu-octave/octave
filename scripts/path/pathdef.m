@@ -106,6 +106,9 @@ endfunction
 %! tmp_dir = tempname ();
 %! unwind_protect
 %!   mkdir (tmp_dir);
+%!   ## Required on Windows to make sure an 8.3 name is converted to full name
+%!   ## which is what is always stored in path().  See bug #59039.
+%!   tmp_dir = canonicalize_file_name (tmp_dir);
 %!   addpath (tmp_dir);
 %!   p1 = path ();
 %!   p2 = pathdef ();
@@ -122,6 +125,7 @@ endfunction
 %! tmp_dir = tempname ();
 %! unwind_protect
 %!   mkdir (tmp_dir);
+%!   tmp_dir = canonicalize_file_name (tmp_dir);
 %!   addpath (tmp_dir);
 %!   path_1 = path ();
 %!   p = pathdef ();

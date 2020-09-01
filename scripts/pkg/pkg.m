@@ -740,6 +740,8 @@ function [local_packages, global_packages] = pkg (varargin)
           printf ("Testing functions in package '%s':\n", files{i});
           installed_pkgs_dirs = {installed_pkgs_lst{i}.dir, ...
                                  installed_pkgs_lst{i}.archprefix};
+          installed_pkgs_dirs = 
+            installed_pkgs_dirs (~cellfun (@isempty, installed_pkgs_dirs));
           ## For local installs installed_pkgs_dirs contains the same subdirs
           installed_pkgs_dirs = unique (installed_pkgs_dirs);
           if (! isempty (installed_pkgs_dirs))

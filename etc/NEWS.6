@@ -12,7 +12,8 @@ Summary of important user-visible changes for version 6.1.0 (2020-08-26):
   major feature is the support for cookies to enable RESTful
   communication with the web service.
 
-  Additionally, the system web browser can be opened by the `web` function.
+  Additionally, the system web browser can be opened by the `web`
+  function.
 
 - The `linspace` function now produces symmetrical sequences when the
   endpoints are symmetric.  This is more intuitive and also compatible
@@ -74,8 +75,8 @@ Summary of important user-visible changes for version 6.1.0 (2020-08-26):
   `native2unicode` to convert from your preferred locale.  For example,
   the copyright symbol in UTF-8 is `native2unicode (169, "latin1")`.
 
-- The startup file `octaverc` now can be located in the platform
-  dependent location for user local configuration files (e.g.
+- The startup file `octaverc` can now be located in the platform
+  dependent location for user local configuration files (e.g.,
   ${XDG_CONFIG_HOME}/octave/octaverc on Unix-like operating systems or
   %APPDATA%\octave\octaverc on Windows).
 
@@ -101,7 +102,7 @@ Summary of important user-visible changes for version 6.1.0 (2020-08-26):
   removed completely in Octave version 7.
 
 - The `legend` function has been entirely rewritten.  This fixes a
-  number of historical bugs, but also implements new properties such as
+  number of historical bugs, and also implements new properties such as
   `"AutoUpdate"` and `"NumColumns"`.  The gnuplot toolkit---which is no
   longer actively maintained---still uses the old legend function.
 
@@ -147,8 +148,8 @@ Summary of important user-visible changes for version 6.1.0 (2020-08-26):
   will eventually be removed from a future version of Octave.
 
 - The placement of text subscripts and superscripts has been
-re-engineered and now produces visually attractive results similar to
-Latex.
+  re-engineered and now produces visually attractive results similar to
+  Latex.
 
 ### Matlab compatibility
 
@@ -183,6 +184,14 @@ Latex.
 - The meta.class property "SuperClassList" has been renamed
   "Superclasslist" for Matlab compatibility.  The original name will
   exist as an alias until Octave version 8.1.
+
+- Inline functions created by the function `inline` are now of type
+  "inline" when interrogated with the `class` function.  In previous
+  versions of Octave, the class returned was "function_handle".  This
+  change is Matlab compatible.  Inline functions are deprecated in
+  both Matlab and Octave and support may eventually be removed.
+  Anonymous functions can be used to replace all instances of inline
+  functions.
 
 - The function `javaaddpath` now prepends new directories to the
   existing dynamic classpath by default.  To append them instead, use

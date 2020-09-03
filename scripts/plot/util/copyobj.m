@@ -117,7 +117,7 @@ endfunction
 
 
 ## Absurd number of drawnow() function calls in demos is due to problem
-## with FLTK backend which is not respecting the set ('position') call.
+## with FLTK backend which is not respecting the set ("position") call.
 
 %!demo
 %! hobj = clf;

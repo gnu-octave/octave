@@ -2029,9 +2029,9 @@ endfunction
 %!   plot (1:10);
 %!   hl = legend ("Legend Text", "units", "normalized");
 %!   title ({'Multi-line', 'titles', 'are a', 'problem'});
-%!   pos = get (gca, 'position');
+%!   pos = get (gca, "position");
 %!   axtop = sum (pos(2:2:4));
-%!   pos = get (hl, 'position');
+%!   pos = get (hl, "position");
 %!   legtop = sum (pos(2:2:4));
 %!   assert (legtop < axtop);
 %! unwind_protect_cleanup
@@ -2044,10 +2044,10 @@ endfunction
 %!   axes ("units", "normalized");
 %!   plot (1:10);
 %!   hl = legend ("Legend Text", "units", "normalized");
-%!   pos = get (gca, 'position');
-%!   set (hf, 'position', [0, 0, 200, 200]);
-%!   set (hl, 'fontsize', 20);
-%!   assert (get (gca, 'position'), pos, 2*eps);
+%!   pos = get (gca, "position");
+%!   set (hf, "position", [0, 0, 200, 200]);
+%!   set (hl, "fontsize", 20);
+%!   assert (get (gca, "position"), pos, 2*eps);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

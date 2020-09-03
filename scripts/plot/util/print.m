@@ -474,12 +474,21 @@ function rgbout = print (varargin)
     set (opts.figure, "__printing__", "on");
     nfig += 1;
 
-    ## print() requires children of axes to have units = "normalized", or "data"
-    hobj = findall (opts.figure, "-not", "type", "figure", ...
-                    "-not", "type", "axes", "-property", "units", ...
+    ## print() requires children of axes to have units = "normalized" or "data"
+    ## FIXME: Bug #59015.  The only graphics object type to which this
+    ## requirement applies seems to be 'text' objects.  It is simpler, and
+    ## clearer, to just select those objects.  The old code is left commented
+    ## out until sufficient testing has been done.
+    ## Change made: 2020/09/02.
+    ##hobj = findall (opts.figure, "-not", "type", "figure", ...
+    ##                "-not", "type", "axes", "-not", "type", "hggroup", ...
+    ##                "-property", "units", ...
+    ##                "-not", "units", "normalized", "-not", "units", "data");
+    ##hobj(strncmp (get (hobj, "type"), "ui", 2)) = [];
+
+    hobj = findall (opts.figure, "type", "text",
                     "-not", "units", "normalized", "-not", "units", "data");
-    hobj(strncmp (get (hobj, "type"), "ui", 2)) = [];
-    for n = 1:numel(hobj)
+    for n = 1:numel (hobj)
       props(end+1).h = hobj(n);
       props(end).name = "units";
       props(end).value = {get(hobj(n), "units")};

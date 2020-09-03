@@ -1696,8 +1696,6 @@ ANY_INCLUDING_NL (.|{NL})
 "(" {
     curr_lexer->lexer_debug ("(");
 
-    curr_lexer->update_token_positions (yyleng);
-
     bool unput_comma = false;
 
     if (curr_lexer->whitespace_is_significant ()
@@ -2635,6 +2633,9 @@ bool
   int
   base_lexer::make_keyword_token (const std::string& s)
   {
+    // Token positions should have already been updated before this
+    // function is called.
+
     int slen = s.length ();
 
     const octave_kw *kw = octave_kw_hash::in_word_set (s.c_str (), slen);
@@ -2646,8 +2647,6 @@ bool
 
     // May be reset to true for some token types.
     m_at_beginning_of_statement = false;
-
-    update_token_positions (slen);
 
     token *tok_val = nullptr;
 

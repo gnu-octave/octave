@@ -97,9 +97,11 @@ function retval = dir (directory)
   if (strcmp (directory, "."))
     flst = {"."};
     nf = 1;
+    dir_has_wildcard = false;
   else
     flst = __wglob__ (directory);
     nf = numel (flst);
+    dir_has_wildcard = any (directory == '*');  # See Bug #58976.
   endif
 
   ## Determine the file list for the case where a single directory is specified.
@@ -109,7 +111,7 @@ function retval = dir (directory)
     if (err < 0)
       warning ("dir: 'stat (%s)' failed: %s", fn, msg);
       nf = 0;
-    elseif (S_ISDIR (st.mode))
+    elseif (S_ISDIR (st.mode) && ! dir_has_wildcard)
       flst = readdir (flst{1});
       nf = numel (flst);
       flst = strcat ([fn filesep], flst);
@@ -220,6 +222,40 @@ endfunction
 %!     list2 = dir (fullfile (list(found).folder, list(found).name));
 %!     assert (list(found), list2);
 %!   endif
+%! unwind_protect_cleanup
+%!   chdir (orig_dir);
+%!   confirm_recursive_rmdir (false, "local");
+%!   if (exist (tmp_dir))
+%!     sts = rmdir (tmp_dir, "s");
+%!   endif
+%! end_unwind_protect
+
+%!test <*58976>
+%! orig_dir = pwd ();
+%! tmp_dir = tempname ();
+%! unwind_protect
+%!   assert (mkdir (tmp_dir));
+%!   assert (mkdir (fullfile (tmp_dir, "dir1")));
+%!   assert (mkdir (fullfile (tmp_dir, "dir2")));
+%!   chdir (fullfile (tmp_dir, "dir1"));
+%!   fclose (fopen ("f1", "w"));
+%!   chdir (tmp_dir);
+%!
+%!   ## Wildcard with multiple matches lists directories
+%!   list = dir (fullfile (tmp_dir, "dir*"));
+%!   keyboard;
+%!   assert (numel (list) == 2);
+%!   assert ({list.name}, {"dir1", "dir2"});
+%!
+%!   ## Wildcard with single match lists directories
+%!   assert (rmdir (fullfile (tmp_dir, "dir2")));
+%!   list = dir (fullfile (tmp_dir, "dir*"));
+%!   assert (numel (list) == 1);
+%!   assert ({list.name}, {"dir1"});
+%!
+%!   ## No wildcard returns listing of directory contents
+%!   list = dir (fullfile (tmp_dir, "dir1"));
+%!   assert (any (strcmp ({list.name}, "f1")));
 %! unwind_protect_cleanup
 %!   chdir (orig_dir);
 %!   confirm_recursive_rmdir (false, "local");

@@ -104,7 +104,7 @@ C
      1     30, 52, 0, 0, 0, 0, 1, DBLE (T), 0.0D0)
       CALL XERRWD(
      1   '      T not in interval TCUR - HU (= R1) to TCUR (=R2)      ',
-     1    60, 52, 0, 0, 0, 0, 2, DBLE (TP), TN)
+     1    60, 52, 0, 0, 0, 0, 2, DBLE (TP), DBLE (TN))
       IFLAG = -2
       RETURN
 C----------------------- END OF SUBROUTINE SINTDY ----------------------

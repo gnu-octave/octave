@@ -243,7 +243,6 @@ endfunction
 %!
 %!   ## Wildcard with multiple matches lists directories
 %!   list = dir (fullfile (tmp_dir, "dir*"));
-%!   keyboard;
 %!   assert (numel (list) == 2);
 %!   assert ({list.name}, {"dir1", "dir2"});
 %!

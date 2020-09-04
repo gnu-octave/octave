@@ -1,12 +1,12 @@
 EXTERNAL_SOURCES += \
-  %reldir%/cfode.f \
+  %reldir%/dcfode.f \
+  %reldir%/dewset.f \
+  %reldir%/dintdy.f \
   %reldir%/dlsode.f \
-  %reldir%/ewset.f \
-  %reldir%/intdy.f \
-  %reldir%/prepj.f \
-  %reldir%/solsy.f \
-  %reldir%/stode.f \
-  %reldir%/vnorm.f \
+  %reldir%/dprepj.f \
+  %reldir%/dsolsy.f \
+  %reldir%/dstode.f \
+  %reldir%/dvnorm.f \
   %reldir%/scfode.f \
   %reldir%/sewset.f \
   %reldir%/sintdy.f \

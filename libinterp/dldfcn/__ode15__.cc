@@ -388,7 +388,7 @@ namespace octave
   void
   IDA::set_up (const ColumnVector& y)
   {
-    N_Vector yy = ColToNVec(y, m_num);
+    N_Vector yy = ColToNVec (y, m_num);
 
     if (m_havejacsparse)
       {
@@ -439,7 +439,7 @@ namespace octave
                       N_Vector& yy, N_Vector& yyp, SUNMatrix& JJ)
 
   {
-    long int Neq = NV_LENGTH_S(yy);
+    long int Neq = NV_LENGTH_S (yy);
 
     ColumnVector y = NVecToCol (yy, Neq);
 
@@ -479,13 +479,13 @@ namespace octave
     sunindextype *rowvals = SUNSparseMatrix_IndexValues (Jac);
 
     for (int i = 0; i < m_num + 1; i++)
-      colptrs[i] = jac.cidx(i);
+      colptrs[i] = jac.cidx (i);
 
     double *d = SUNSparseMatrix_Data (Jac);
     for (int i = 0; i < jac.nnz (); i++)
       {
-        rowvals[i] = jac.ridx(i);
-        d[i] = jac.data(i);
+        rowvals[i] = jac.ridx (i);
+        d[i] = jac.data (i);
       }
   }
 #  endif
@@ -916,7 +916,7 @@ namespace octave
 
     if (flag == "init")
       {
-        ColumnVector toutput(2);
+        ColumnVector toutput (2);
         toutput(0) = tsol;
         toutput(1) = tend;
         output(0) = toutput;
@@ -1110,43 +1110,43 @@ namespace octave
     dae.initialize ();
 
     // Set tolerances
-    realtype rel_tol = options.getfield("RelTol").double_value ();
+    realtype rel_tol = options.getfield ("RelTol").double_value ();
 
     bool haveabstolvec = options.getfield ("haveabstolvec").bool_value ();
 
     if (haveabstolvec)
       {
-        ColumnVector abs_tol = options.getfield("AbsTol").vector_value ();
+        ColumnVector abs_tol = options.getfield ("AbsTol").vector_value ();
 
         dae.set_tolerance (abs_tol, rel_tol);
       }
     else
       {
-        realtype abs_tol = options.getfield("AbsTol").double_value ();
+        realtype abs_tol = options.getfield ("AbsTol").double_value ();
 
         dae.set_tolerance (abs_tol, rel_tol);
       }
 
     //Set max step
-    realtype maxstep = options.getfield("MaxStep").double_value ();
+    realtype maxstep = options.getfield ("MaxStep").double_value ();
 
     dae.set_maxstep (maxstep);
 
     //Set initial step
-    if (! options.getfield("InitialStep").isempty ())
+    if (! options.getfield ("InitialStep").isempty ())
       {
-        realtype initialstep = options.getfield("InitialStep").double_value ();
+        realtype initialstep = options.getfield ("InitialStep").double_value ();
 
         dae.set_initialstep (initialstep);
       }
 
     //Set max order FIXME: it doesn't work
-    int maxorder = options.getfield("MaxOrder").int_value ();
+    int maxorder = options.getfield ("MaxOrder").int_value ();
 
     dae.set_maxorder (maxorder);
 
     //Set Refine
-    const int refine = options.getfield("Refine").int_value ();
+    const int refine = options.getfield ("Refine").int_value ();
 
     bool haverefine = (refine > 1);
 
@@ -1155,25 +1155,25 @@ namespace octave
 
     // OutputFcn
     bool haveoutputfunction
-      = options.getfield("haveoutputfunction").bool_value ();
+      = options.getfield ("haveoutputfunction").bool_value ();
 
     if (haveoutputfunction)
-      output_fcn = options.getfield("OutputFcn");
+      output_fcn = options.getfield ("OutputFcn");
 
     // OutputSel
-    bool haveoutputsel = options.getfield("haveoutputselection").bool_value ();
+    bool haveoutputsel = options.getfield ("haveoutputselection").bool_value ();
 
     if (haveoutputsel)
-      outputsel = options.getfield("OutputSel").vector_value ();
+      outputsel = options.getfield ("OutputSel").vector_value ();
 
     octave_value event_fcn;
 
     // Events
     bool haveeventfunction
-      = options.getfield("haveeventfunction").bool_value ();
+      = options.getfield ("haveeventfunction").bool_value ();
 
     if (haveeventfunction)
-      event_fcn = options.getfield("Events");
+      event_fcn = options.getfield ("Events");
 
     // Set up linear solver
     dae.set_up (y0);
@@ -1185,7 +1185,7 @@ namespace octave
                             haveeventfunction, event_fcn);
 
     // Statistics
-    bool havestats = options.getfield("havestats").bool_value ();
+    bool havestats = options.getfield ("havestats").bool_value ();
 
     if (havestats)
       dae.print_stat ();

@@ -1991,6 +1991,46 @@ Return the number of fields of the structure @var{s}.
 %!assert (isfield (struct ("a", 1, "b", 2), {"a", "c"}), [true, false])
 */
 
+OCTAVE_NORETURN
+static void
+invalid_cell2struct_fields_error (void)
+{
+  error ("cell2struct: FIELDS must be a cell array of strings or a scalar string");
+}
+
+static Array<std::string>
+get_cell2struct_fields (const octave_value& arg)
+{
+  if (arg.is_string ())
+    {
+      if (arg.rows () != 1)
+        invalid_cell2struct_fields_error ();
+
+      return Array<std::string> (dim_vector (1, 1), arg.string_value ());
+    }
+
+  if (arg.iscell ())
+    {
+      const Cell c = arg.cell_value ();
+
+      Array<std::string> retval (c.dims ());
+
+      for (octave_idx_type i = 0; i < c.numel (); i++)
+        {
+          const octave_value val = c(i);
+
+          if (! val.is_string () || val.rows () != 1)
+            invalid_cell2struct_fields_error ();
+
+          retval(i) = c(i).string_value ();
+        }
+
+      return retval;
+    }
+
+  invalid_cell2struct_fields_error ();
+}
+
 DEFUN (cell2struct, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} cell2struct (@var{cell}, @var{fields})
@@ -2024,11 +2064,10 @@ A(1)
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  if (! args(0).iscell ())
-    error ("cell2struct: argument CELL must be of type cell");
+  const Cell vals
+    = args(0).xcell_value ("cell2struct: argument CELL must be of type cell");
 
-  if (! (args(1).iscellstr () || args(1).is_char_matrix ()))
-    error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
+  const Array<std::string> fields = get_cell2struct_fields (args(1));
 
   int dim = 0;
 
@@ -2042,9 +2081,6 @@ A(1)
 
   if (dim < 0)
     error ("cell2struct: DIM must be a valid dimension");
-
-  const Cell vals = args(0).cell_value ();
-  const Array<std::string> fields = args(1).cellstr_value ();
 
   octave_idx_type ext = (vals.ndims () > dim ? vals.dims ()(dim) : 1);
 
@@ -2095,6 +2131,12 @@ A(1)
 %!assert (cell2struct ({1; 2}, {"a"; "b"}), struct ("a", 1, "b", 2))
 
 %!assert (cell2struct ({}, {"f"}, 3), struct ("f", {}))
+
+%!assert (cell2struct ({1; 2; 3; 4}, {'a', 'b'; 'c', 'd'}),
+%!        struct ('a', 1, 'c', 2, 'b', 3, 'd', 4));
+%!assert (cell2struct ({1, 2, 3, 4}, {'a', 'b'; 'c', 'd'}, 2),
+%!        struct ('a', 1, 'c', 2, 'b', 3, 'd', 4));
+%!error cell2struct ({1, 2, 3, 4}, {'a', 'b'; 'c', 'd'})
 */
 
 DEFUN (rmfield, args, ,

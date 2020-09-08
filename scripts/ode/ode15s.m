@@ -715,7 +715,7 @@ endfunction
 %!               "MStateDependence", "none");
 %! sol = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert (isfield (sol, "ie"));
-%! assert (sol.ie, [0;1]);
+%! assert (sol.ie, [1; 2]);
 %! assert (isfield (sol, "xe"));
 %! assert (isfield (sol, "ye"));
 %! assert (sol.x(end), 10, 1);
@@ -725,7 +725,9 @@ endfunction
 %! opt = odeset ("Events", @feve, "Mass", @massdensefunstate,
 %!               "MStateDependence", "none");
 %! [t, y, te, ye, ie] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
-%! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.5, 0.5, 0, 0]);
+%! assert (t(end), 10, 1);
+%! assert (te, [10; 10], 0.5);
+%! assert (ie, [1; 2]);
 
 ## Initial solution as row vector
 %!testif HAVE_SUNDIALS

@@ -748,7 +748,8 @@ namespace octave
 
       }
 
-    return ovl (tout, output, te, ye, ie);
+    // Index of Events (ie) variable must use 1-based indexing
+    return ovl (tout, output, te, ye, ie + 1.0);
   }
 
   bool

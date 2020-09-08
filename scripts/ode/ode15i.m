@@ -504,7 +504,7 @@ endfunction
 %! opt = odeset ("Events", @ff);
 %! sol = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0], opt);
 %! assert (isfield (sol, "ie"));
-%! assert (sol.ie, [0;1]);
+%! assert (sol.ie, [1; 2]);
 %! assert (isfield (sol, "xe"));
 %! assert (isfield (sol, "ye"));
 %! assert (sol.x(end), 10, 1);
@@ -514,7 +514,9 @@ endfunction
 %! opt = odeset ("Events", @ff);
 %! [t, y, te, ye, ie] = ode15i (@rob, [0, 100], [1; 0; 0],
 %!                              [-1e-4; 1e-4; 0], opt);
-%! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.2, 0.2, 0, 0]);
+%! assert (t(end), 10, 1);
+%! assert (te, [10; 10], 0.2);
+%! assert (ie, [1; 2]);
 
 ## Initial solutions as row vectors
 %!testif HAVE_SUNDIALS

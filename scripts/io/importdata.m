@@ -215,7 +215,7 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
         else
           output.colheaders = ostrsplit (output.textdata{end}, delimiter);
         endif
-       
+
         nc_hdr = numel (output.colheaders);
         nc_dat = numel (row_data);
         if (! has_rowheaders)
@@ -267,7 +267,7 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     ## User has defined a number of header rows which disagrees with the
     ## auto-detected number.  Print a warning.
     if (num_header_rows < header_rows)
-      warning ("Octave:importdata:headerrows_mismatch", 
+      warning ("Octave:importdata:headerrows_mismatch",
                "importdata: detected %d header rows, but HEADER_ROWS input configured %d rows", header_rows, num_header_rows);
     endif
   else

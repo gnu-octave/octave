@@ -87,7 +87,7 @@ endfunction
 
 ## Test classdef object
 %!test
-%! m = containers.Map (); 
+%! m = containers.Map ();
 %! f = fieldnames (m);
 %! assert (f, {"Count"; "KeyType"; "ValueType"; "map"; "numeric_keys"});
 

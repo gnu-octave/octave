@@ -58,7 +58,7 @@
 ## variable with three fields: @qcode{"Type"}, @qcode{"Seed"}, and
 ## @qcode{"State"}.  The random number generator can be restored to the state
 ## @var{s} using @code{rng (@var{s})}.  This is useful when the identical
-## sequence of pseudo-random numbers is required for an algorithm. 
+## sequence of pseudo-random numbers is required for an algorithm.
 ##
 ## By default, and with the @qcode{"twister"} option, pseudo-random sequences
 ## are computed using the Mersenne Twister with a period of @math{2^{19937}-1}

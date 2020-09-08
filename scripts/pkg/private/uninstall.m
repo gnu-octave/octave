@@ -122,7 +122,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
         endif
       endif
       if (isfolder (desc.dir))
-        ## FIXME: If first call to rmdir fails, then error() will 
+        ## FIXME: If first call to rmdir fails, then error() will
         ##        stop further processing of getarchdir & archprefix.
         ##        If this is, in fact, correct, then calls should
         ##        just be shortened to rmdir (...) and let rmdir()

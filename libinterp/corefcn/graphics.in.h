@@ -3483,7 +3483,7 @@ public:
 
     // Redirect calls to "activepositionproperty" to "positionconstraint".
 
-    std::string get_activepositionproperty (void) const 
+    std::string get_activepositionproperty (void) const
     {
       std::string cur_val;
 

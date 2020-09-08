@@ -63,7 +63,7 @@ function h = dec2hex (d, len)
   endif
   ## Create column vector for algorithm (output is always col. vector anyways)
   d = d(:);
-  
+
   lt_zero_idx = (d < 0);
   if (any (lt_zero_idx))
     ## FIXME: Need an algorithm that works with larger values such as int64.

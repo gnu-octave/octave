@@ -264,7 +264,7 @@ function retval = inv_sparse_fcn (flag, x, varargin)
     case "transp"
       retval = Ainvt * x;
     case "init"
-      n = rows (x); 
+      n = rows (x);
       isreal_op = isreal (x);
       [L, U, P, Q] = deal (varargin{1:4});
       Ainv = Q * (U \ (L \ P));
@@ -288,7 +288,7 @@ function retval = inv_full_fcn (flag, x, varargin)
     case "transp"
       retval = Ainvt \ x;
     case "init"
-      n = rows (x); 
+      n = rows (x);
       isreal_op = isreal (x);
       [L, U, P] = deal (varargin{1:3});
       Ainv = U \ (L \ P);

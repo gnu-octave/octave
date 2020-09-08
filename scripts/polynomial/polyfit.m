@@ -144,7 +144,7 @@ function [p, s, mu] = polyfit (x, y, n)
     pad_output = true;
     ## Keep the lowest m entries in polymask
     idx = find (polymask);
-    idx((end-m+1):end) = [];  
+    idx((end-m+1):end) = [];
     polymask(idx) = false;
   endif
 
@@ -195,7 +195,7 @@ function [p, s, mu] = polyfit (x, y, n)
     p = zeros (n+1, 1);
     p(polymask) = q;
   endif
-  p = p.';  # Return a row vector.  
+  p = p.';  # Return a row vector.
 
 endfunction
 

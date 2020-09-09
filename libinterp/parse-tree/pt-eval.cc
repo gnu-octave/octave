@@ -1729,6 +1729,12 @@ Example:
 %!test <*58830>
 %! fail ("__undef_sym__ (end)",
 %!       "invalid use of 'end': may only be used to index existing value");
+
+%!test <58953>
+%! x = 1:10;
+%! assert (x(end), 10);
+%! assert (x(minus (end, 1)), 9);
+%! assert (x(minus (minus (end, 1), 1)), 8);
 */
 
 namespace octave
@@ -1742,10 +1748,8 @@ namespace octave
     // need a different way of asking an octave_value object this
     // question?
 
-    bool stash_object = (arg_list->includes_magic_end ()
-                         && object
-                         && ! (object->is_function ()
-                               || object->is_function_handle ()));
+    bool stash_object = (object && ! (object->is_function ()
+                                      || object->is_function_handle ()));
 
     unwind_protect_var<const octave_value *> upv1 (m_indexed_object);
     unwind_protect_var<int> upv2 (m_index_position);

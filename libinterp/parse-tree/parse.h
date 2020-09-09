@@ -113,7 +113,11 @@ namespace octave
       typedef std::deque<value_type>::reverse_iterator reverse_iterator;
       typedef std::deque<value_type>::const_reverse_iterator const_reverse_iterator;
 
-      parent_scope_info (void) = default;
+      parent_scope_info (void) = delete;
+
+      parent_scope_info (base_parser& parser)
+        : m_parser (parser), m_info (), m_all_names ()
+      { }
 
       parent_scope_info (const parent_scope_info&) = default;
 
@@ -141,6 +145,7 @@ namespace octave
 
     private:
 
+      base_parser& m_parser;
       std::deque<value_type> m_info;
       std::set<std::string> m_all_names;
     };
@@ -180,6 +185,16 @@ namespace octave
       return m_stmt_list;
     }
 
+    void parsing_subfunctions (bool flag)
+    {
+      m_parsing_subfunctions = flag;
+    }
+
+    bool parsing_subfunctions (void) const
+    {
+      return m_parsing_subfunctions;
+    }
+
     void parsing_local_functions (bool flag)
     {
       m_parsing_local_functions = flag;
@@ -188,6 +203,11 @@ namespace octave
     bool parsing_local_functions (void) const
     {
       return m_parsing_local_functions;
+    }
+
+    int curr_fcn_depth (void) const
+    {
+      return m_curr_fcn_depth;
     }
 
     void endfunction_found (bool flag)

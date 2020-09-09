@@ -2339,7 +2339,15 @@ namespace octave
     full_name += name;
 
     if (m_all_names.find (full_name) != m_all_names.end ())
-      return false;
+      {
+        // Return false (failure) if we are parsing a subfunction, local
+        // function, or nested function.  Otherwise, it is OK to have a
+        // duplicate name.
+
+        return ! (m_parser.parsing_subfunctions ()
+                  || m_parser.parsing_local_functions ()
+                  || m_parser.curr_fcn_depth () > 0);
+      }
 
     m_all_names.insert (full_name);
 
@@ -2381,7 +2389,7 @@ namespace octave
       m_fcn_file_from_relative_lookup (false),
       m_parsing_subfunctions (false), m_parsing_local_functions (false),
       m_max_fcn_depth (-1), m_curr_fcn_depth (-1), m_primary_fcn_scope (),
-      m_curr_class_name (), m_curr_package_name (), m_function_scopes (),
+      m_curr_class_name (), m_curr_package_name (), m_function_scopes (*this),
       m_primary_fcn (), m_subfunction_names (), m_classdef_object (),
       m_stmt_list (), m_lexer (lxr), m_parser_state (yypstate_new ())
   { }

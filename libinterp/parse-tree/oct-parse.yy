@@ -3682,16 +3682,17 @@ namespace octave
           }
       }
 
+    sys::time now;
+
+    fcn->stash_fcn_file_name (m_lexer.m_fcn_file_full_name);
+    fcn->stash_fcn_file_time (now);
+    fcn->stash_dir_name (m_lexer.m_dir_name);
+    fcn->stash_package_name (m_lexer.m_package_name);
+    fcn->mark_as_system_fcn_file ();
+    fcn->stash_function_name (id_name);
+
     if (m_lexer.m_reading_fcn_file || m_lexer.m_reading_classdef_file || m_autoloading)
       {
-        sys::time now;
-
-        fcn->stash_fcn_file_name (m_lexer.m_fcn_file_full_name);
-        fcn->stash_fcn_file_time (now);
-        fcn->stash_dir_name (m_lexer.m_dir_name);
-        fcn->stash_package_name (m_lexer.m_package_name);
-        fcn->mark_as_system_fcn_file ();
-
         if (m_fcn_file_from_relative_lookup)
           fcn->mark_relative ();
 
@@ -3731,8 +3732,6 @@ namespace octave
         warning ("function '%s' defined within script file '%s'",
                  id_name.c_str (), m_lexer.m_fcn_file_full_name.c_str ());
       }
-
-    fcn->stash_function_name (id_name);
 
     // Record help text for functions other than nested functions.
     // We cannot currently record help for nested functions (bug #46008)

@@ -65,9 +65,9 @@
 ## @w{@code{fieldnames (@var{solution})}} to see the other fields and
 ## additional information returned.
 ##
-## If no output arguments are requested, and no @code{OutputFcn} is specified
-## in @var{ode_opt}, then the @code{OutputFcn} is set to @code{odeplot} and the
-## results of the solver are plotted immediately.
+## If no output arguments are requested, and no @qcode{"OutputFcn"} is
+## specified in @var{ode_opt}, then the @qcode{"OutputFcn"} is set to
+## @code{odeplot} and the results of the solver are plotted immediately.
 ##
 ## If using the @qcode{"Events"} option then three additional outputs may be
 ## returned.  @var{te} holds the time when an Event function returned a zero.

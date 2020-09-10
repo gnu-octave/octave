@@ -25,8 +25,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{@dots{}}] =} gui_mainfcn  (@var{gui_state}, @dots{})
-## Compatibility function for figures created with Matlab's Guide.
+## @deftypefn {} {[@var{@dots{}}] =} gui_mainfcn (@var{gui_state}, @dots{})
+## Compatibility function for figures created with @sc{matlab}'s Guide.
 ##
 ## This function is undocumented and users should not use it in new code.
 ##

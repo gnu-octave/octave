@@ -31,10 +31,9 @@
 ## Create a graphics transform object.
 ##
 ## FIXME: Need to write documentation.
-## FIXME: Add 'makehgtform' to seealso list when it is implemented.
+## FIXME: Add <makehgtform> to seealso list when it is implemented.
 ## @seealso{hggroup}
 ## @end deftypefn
-
 
 ## FIXME: hgtransform should be a C++ graphics object, not an m-file.
 ##        For the moment (3/7/17), it is quicker to implement something in

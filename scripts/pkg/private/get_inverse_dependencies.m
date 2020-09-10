@@ -26,7 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{installed_pkgs_list} =} get_inverse_dependencies (@var{installed_pkgs_lst})
 ## Find inverse dependencies, if any, for each package, and store in
-## the struct field "invdeps".
+## the struct field @qcode{"invdeps"}.
 ##
 ## @end deftypefn
 

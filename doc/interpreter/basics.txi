@@ -392,11 +392,12 @@ A message will be displayed as each of the startup files is read if you
 invoke Octave with the @option{--verbose} option but without the
 @option{--silent} option.
 
-The startup files are always processes in the system's locale charset
-(independent of the .m file encoding that is set e.g. in the GUI properties).
-That is until a user manually sets the .m file encoding (e.g. in one of the
-startup files) and triggers re-parsing the .m files.  This can be done with the
-undocumented core function @code{__mfile_encoding__}:
+The startup files are always processed in the system's locale charset
+(independent of the m-file encoding that is set, for example, in the GUI
+properties).  In other words, the system's locale charset is in effect until a
+user manually sets the m-file encoding (e.g., in one of the startup files) and
+triggers re-parsing of any relevant m-files.  Octave can be forced to use a
+new encoding with the undocumented function @code{__mfile_encoding__}:
 
 @example
 @group
@@ -405,8 +406,8 @@ clear ("functions");  # re-parse all .m files in the new encoding
 @end group
 @end example
 
-This changes the encoding that is used to interpret all subsequently run startup
-and .m files (not including the currently executing file).
+This changes the encoding that is used to interpret all subsequently run
+startup and m-files (not including the currently executing file).
 
 @node Quitting Octave
 @section Quitting Octave

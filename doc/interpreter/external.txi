@@ -1758,9 +1758,9 @@ the prepended capital @code{F}) accessible in the C++ API@.  The declarations
 for all built-in functions are collected in the header file
 @code{builtin-defun-decls.h}.  This feature should be used with care as the
 list of built-in functions can change.  No guarantees can be made that a
-function that is currently a built-in won't be implemented as a .m file or as a
-dynamically linked function in the future.  An example of how to call built-in
-functions from C++ can be seen in the code
+function that is currently a built-in won't be implemented as a @file{.m} file
+or as a dynamically linked function in the future.  An example of how to call
+built-in functions from C++ can be seen in the code
 
 @example
 @EXAMPLEFILE(standalonebuiltin.cc)

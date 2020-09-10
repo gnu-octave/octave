@@ -500,8 +500,8 @@ corresponding system error message.  The @var{mode} is a one or two
 character string that specifies whether the file is to be opened for
 reading, writing, or both.  The @var{encoding} is a character string with a
 valid encoding identifier.  This encoding is used when strings are read from
-or written to the file.  By default, the same encoding is used like for reading
-.m files.
+or written to the file.  By default, the same encoding specified for reading
+@file{.m} files is used for interpreting user files.
 
 The second form of the @code{fopen} function returns a vector of file ids
 corresponding to all the currently open files, excluding the

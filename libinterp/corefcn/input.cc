@@ -391,6 +391,18 @@ namespace octave
     return retval;
   }
 
+  static int internal_input_event_hook_fcn (void)
+  {
+    octave_quit ();
+
+    input_system& input_sys
+      = __get_input_system__ ("internal_input_event_hook_fcn");
+
+    input_sys.run_input_event_hooks ();
+
+    return 0;
+  }
+
   // Use literal "octave" in default setting for PS1 instead of
   // "\\s" to avoid setting the prompt to "octave.exe" or
   // "octave-gui", etc.
@@ -399,12 +411,15 @@ namespace octave
     : m_interpreter (interp), m_PS1 (R"(octave:\#> )"), m_PS2 ("> "),
       m_completion_append_char (' '), m_gud_mode (false),
       m_mfile_encoding ("system"), m_last_debugging_command ("\n"),
-      m_input_event_hook_functions ()
+      m_input_event_hook_functions (), m_initialized (false)
   {
   }
 
   void input_system::initialize (bool line_editing)
   {
+    if (m_initialized)
+      return;
+
     // Force default line editor if we don't want readline editing.
     if (! line_editing)
       {
@@ -435,6 +450,10 @@ namespace octave
     command_editor::set_completion_function (generate_completion);
 
     command_editor::set_quoting_function (quoting_filename);
+
+    command_editor::add_event_hook (internal_input_event_hook_fcn);
+
+    m_initialized = true;
   }
 
   octave_value
@@ -1188,22 +1207,6 @@ for details.
   return ovl ();
 }
 
-namespace octave
-{
-  static int internal_input_event_hook_fcn (void)
-  {
-    input_system& input_sys
-      = __get_input_system__ ("internal_input_event_hook_fcn");
-
-    input_sys.run_input_event_hooks ();
-
-    if (! input_sys.have_input_event_hooks ())
-      command_editor::remove_event_hook (internal_input_event_hook_fcn);
-
-    return 0;
-  }
-}
-
 DEFMETHOD (add_input_event_hook, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{id} =} add_input_event_hook (@var{fcn})
@@ -1238,9 +1241,6 @@ list of input hook functions.
 
   hook_function hook_fcn (args(0), user_data);
 
-  if (! input_sys.have_input_event_hooks ())
-    octave::command_editor::add_event_hook (octave::internal_input_event_hook_fcn);
-
   input_sys.add_input_event_hook (hook_fcn);
 
   return ovl (hook_fcn.id ());
@@ -1270,9 +1270,6 @@ for input.
   if (! input_sys.remove_input_event_hook (hook_fcn_id) && warn)
     warning ("remove_input_event_hook: %s not found in list",
              hook_fcn_id.c_str ());
-
-  if (! input_sys.have_input_event_hooks ())
-    octave::command_editor::remove_event_hook (octave::internal_input_event_hook_fcn);
 
   return ovl ();
 }

@@ -150,7 +150,7 @@ Currently implemented solvers are:
     step.
 
     @item @ref{XREFode23s,,ode23s} integrates a system of stiff ODEs (or
-    index-1 DAEs) using a modified second-order Rosenbrock method.
+    index-1 DAEs) using a modified second-order @nospell{Rosenbrock} method.
   @end itemize
 
   @item Linear multistep methods

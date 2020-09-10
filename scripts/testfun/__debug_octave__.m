@@ -30,14 +30,16 @@
 ## Octave process.
 ##
 ## If @var{command_string} is not supplied, it should have a single
-## @qcode{%d} format option that will be replaced by the process ID
+## @code{%d} format option that will be replaced by the process ID
 ## for the current Octave process, as returned by @code{getpid}.  For
 ## example, on Windows systems the following two commands are
 ## equivalent:
 ##
 ## @example
+## @group
 ## __debug_octave__ ()
 ## __debug_octave__ ("start gdb -p %d")
+## @end group
 ## @end example
 ## @end deftypefn
 

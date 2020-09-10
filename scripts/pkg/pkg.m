@@ -29,18 +29,19 @@
 ## @deftypefnx {} {[@var{out1}, @dots{}] =} pkg (@var{command}, @dots{} )
 ## Manage or query packages (groups of add-on functions) for Octave.
 ##
-## Packages can be installed globally (i.e. for all users of the system) or
-## locally (i.e. for the current user only).
+## Packages can be installed globally (i.e., for all users of the system) or
+## locally (i.e., for the current user only).
 ##
-## Global packages are by default installed in the "global packages store".
-## That is usually located in a subdirectory of the folder where Octave itself
-## is installed in.  Therefore, Octave needs write access to this folder to
-## install global packages.  That usually means that Octave has to run with root
-## access (or "Run as administrator") to be able to install packages globally.
+## Global packages are installed by default in a system-wide location.  This is
+## usually a subdirectory of the folder where Octave itself is installed.
+## Therefore, Octave needs write access to this folder to install global
+## packages.  That usually means that Octave has to run with root access (or
+## "Run as administrator" on Windows) to be able to install packages globally.
 ##
-## In contrast, local packages are by default installed in the user's profile
-## and are only available to that specific user.  Usually, they can be installed
-## without root access (or administrative privileges).
+## In contrast, local packages are installed by default in the user's
+## home directory (profile on Windows) and are only available to that specific
+## user.  Usually, they can be installed without root access (or administrative
+## privileges).
 ##
 ## For global and local packages, there are separate databases holding the
 ## information about the installed packages.  If some package is installed
@@ -49,13 +50,13 @@
 ## used can also be manipulated by using prefixes and/or using the
 ## @samp{local_list} input argument.  Using these mechanisms, several different
 ## releases of one and the same package can be installed side by side as well
-## (but cannot be loaded simultaneouly).
+## (but cannot be loaded simultaneously).
 ##
-## Packages might dependend on external software and/or other packages.  To be
+## Packages might depend on external software and/or other packages.  To be
 ## able to install such packages, these dependencies should be installed
 ## beforehand.  A package that depends on other package(s) can still be
-## installed using the @qcode{"-nodeps"} flag.  The effects of unsatisfied
-## dependencies on external software --- like libraries --- depends on the
+## installed using the @option{-nodeps} flag.  The effects of unsatisfied
+## dependencies on external software---like libraries---depends on the
 ## individual package.
 ##
 ## Packages must be loaded before they can be used.  When loading a package,
@@ -63,25 +64,26 @@
 ## @enumerate
 ## @item
 ## If the package depends on other packages (and @code{pkg load} is called
-## without the @qcode{"-nodeps"} option), the package is not loaded immediately.
-## Instead, those dependencies are loaded first (recursively if needed).
+## without the @option{-nodeps} option), the package is not loaded
+## immediately.  Instead, those dependencies are loaded first (recursively if
+## needed).
 ##
 ## @item
-## When all dependencies are satified, the package's subdirectories are added to
-## the search path.
+## When all dependencies are satisfied, the package's subdirectories are
+## added to the search path.
 ## @end enumerate
 ##
 ## This load order leads to functions that are provided by dependencies being
 ## potentially shadowed by functions of the same name that are provided by
-## dependers.
+## top-level packages.
 ##
 ## Each time, a package is added to the search path, initialization script(s)
 ## for the package are automatically executed if they are provided by the
 ## package.
 ##
-## Depending on the value of @var{command} and on the number of requested return
-## arguments, @code{pkg} can be used to perform several tasks.  Possible values
-## for @var{command} are:
+## Depending on the value of @var{command} and on the number of requested
+## return arguments, @code{pkg} can be used to perform several tasks.
+## Possible values for @var{command} are:
 ##
 ## @table @samp
 ##
@@ -194,9 +196,9 @@
 ## adds the @code{signal} package and also tries to load its dependency: the
 ## @code{control} package.  Be aware that the functionality of package(s)
 ## loaded will probably be impacted by use of the @option{-nodeps} flag.  Even
-## if necessary dependencies are loaded later, the functionality of depender
-## packages can still be affected because the optimal loading order of may
-## not have been followed.
+## if necessary dependencies are loaded later, the functionality of top-level
+## packages can still be affected because the optimal loading order may not
+## have been followed.
 ##
 ## @item unload
 ## Remove named packages from the path.  After unloading a package it is
@@ -204,9 +206,9 @@
 ## to unload a package that other loaded packages still depend on will result
 ## in an error; no packages will be unloaded in this case.  A package can
 ## be forcibly removed with the @option{-nodeps} flag, but be aware that the
-## functionality of depender packages will likely be affected.  As when loading
-## packages, reloading dependencies after having unloaded them with the
-## @option{-nodeps} flag may not restore all functionality of the depender
+## functionality of dependent packages will likely be affected.  As when
+## loading packages, reloading dependencies after having unloaded them with the
+## @option{-nodeps} flag may not restore all functionality of the dependent
 ## packages as the required loading order may be incorrect.
 ##
 ## @item list
@@ -366,7 +368,7 @@
 ##
 ## @item test
 ## Perform the built-in self tests contained in all functions provided by
-## the named packages.  For example,
+## the named packages.  For example:
 ##
 ## @example
 ## pkg test image

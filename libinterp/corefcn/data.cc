@@ -3710,9 +3710,9 @@ DEFUN (isvector, args, ,
 @deftypefn {} {} isvector (@var{x})
 Return true if @var{x} is a vector.
 
-A vector is a 2-D array where one of the dimensions is equal to 1 (either 1xN
-or Nx1).  As a consequence of this definition, a 1x1 array (a scalar) is also a
-vector.
+A vector is a 2-D array where one of the dimensions is equal to 1 (either
+@nospell{1xN} or @nospell{Nx1}).  As a consequence of this definition, a 1x1
+array (a scalar) is also a vector.
 @seealso{isscalar, ismatrix, iscolumn, isrow, size}
 @end deftypefn */)
 {

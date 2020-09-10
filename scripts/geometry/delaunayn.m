@@ -50,7 +50,7 @@
 ## @item 4-D and higher: @var{options} = @code{@{"Qt", "Qbb", "Qc", "Qx"@}}
 ## @end itemize
 ##
-## If QHull fails for 2-D input the triangulation is attempted again with
+## If Qhull fails for 2-D input the triangulation is attempted again with
 ## the options @code{@{"Qt", "Qbb", "Qc", "Qz"@}} which may result in
 ## reduced accuracy.
 ##

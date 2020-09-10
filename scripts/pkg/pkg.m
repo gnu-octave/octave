@@ -50,13 +50,13 @@
 ## used can also be manipulated by using prefixes and/or using the
 ## @samp{local_list} input argument.  Using these mechanisms, several different
 ## releases of one and the same package can be installed side by side as well
-## (but cannot be loaded simultaneouly).
+## (but cannot be loaded simultaneously).
 ##
-## Packages might dependend on external software and/or other packages.  To be
+## Packages might depend on external software and/or other packages.  To be
 ## able to install such packages, these dependencies should be installed
 ## beforehand.  A package that depends on other package(s) can still be
-## installed using the @qcode{"-nodeps"} flag.  The effects of unsatisfied
-## dependencies on external software --- like libraries --- depends on the
+## installed using the @option{-nodeps} flag.  The effects of unsatisfied
+## dependencies on external software---like libraries---depends on the
 ## individual package.
 ##
 ## Packages must be loaded before they can be used.  When loading a package,
@@ -64,18 +64,18 @@
 ## @enumerate
 ## @item
 ## If the package depends on other packages (and @code{pkg load} is called
-## without the @qcode{"-nodeps"} option), the package is not loaded
+## without the @option{-nodeps} option), the package is not loaded
 ## immediately.  Instead, those dependencies are loaded first (recursively if
 ## needed).
 ##
 ## @item
-## When all dependencies are satified, the package's subdirectories are
+## When all dependencies are satisfied, the package's subdirectories are
 ## added to the search path.
 ## @end enumerate
 ##
 ## This load order leads to functions that are provided by dependencies being
 ## potentially shadowed by functions of the same name that are provided by
-## dependers.
+## top-level packages.
 ##
 ## Each time, a package is added to the search path, initialization script(s)
 ## for the package are automatically executed if they are provided by the
@@ -196,9 +196,9 @@
 ## adds the @code{signal} package and also tries to load its dependency: the
 ## @code{control} package.  Be aware that the functionality of package(s)
 ## loaded will probably be impacted by use of the @option{-nodeps} flag.  Even
-## if necessary dependencies are loaded later, the functionality of depender
-## packages can still be affected because the optimal loading order of may
-## not have been followed.
+## if necessary dependencies are loaded later, the functionality of top-level
+## packages can still be affected because the optimal loading order may not
+## have been followed.
 ##
 ## @item unload
 ## Remove named packages from the path.  After unloading a package it is
@@ -206,9 +206,9 @@
 ## to unload a package that other loaded packages still depend on will result
 ## in an error; no packages will be unloaded in this case.  A package can
 ## be forcibly removed with the @option{-nodeps} flag, but be aware that the
-## functionality of depender packages will likely be affected.  As when loading
-## packages, reloading dependencies after having unloaded them with the
-## @option{-nodeps} flag may not restore all functionality of the depender
+## functionality of dependent packages will likely be affected.  As when
+## loading packages, reloading dependencies after having unloaded them with the
+## @option{-nodeps} flag may not restore all functionality of the dependent
 ## packages as the required loading order may be incorrect.
 ##
 ## @item list

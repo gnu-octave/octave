@@ -31,7 +31,7 @@
 ## @deftypefnx {} {@var{solution} =} ode23s (@dots{})
 ##
 ## Solve a set of stiff Ordinary Differential Equations (stiff ODEs) with a
-## Rosenbrock method of order (2,3).
+## @nospell{Rosenbrock} method of order (2,3).
 ##
 ## @var{fun} is a function handle, inline function, or string containing the
 ## name of the function that defines the ODE: @code{M y' = f(t,y)}.  The

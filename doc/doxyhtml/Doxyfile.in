@@ -385,7 +385,6 @@ INPUT                  = @abs_top_srcdir@/src/ \
                          @abs_top_srcdir@/liboctave/ \
                          @abs_top_srcdir@/libinterp \
                          @abs_top_srcdir@/libgui \
-                         @abs_top_srcdir@/etc/HACKING.md \
                          @abs_top_srcdir@/doc/doxyhtml/pages \
                          @abs_top_builddir@/doc/doxyhtml/pages
 
@@ -503,7 +502,7 @@ HTML_TIMESTAMP         = YES
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-GENERATE_QHP           = YES
+GENERATE_QHP           = NO
 
 # If the QHG_LOCATION tag is specified, the QCH_FILE tag can be used to specify
 # the file name of the resulting .qch file. The path specified is relative to

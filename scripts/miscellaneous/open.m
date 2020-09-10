@@ -85,7 +85,7 @@ function output = open (file)
     error ("open: unable to find file %s", file);
   endif
 
-  file = tilde_expand (file);
+  file = make_absolute_filename (tilde_expand (file));
 
   [~, fname, ext] = fileparts (file);
 

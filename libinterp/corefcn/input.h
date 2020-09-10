@@ -191,6 +191,8 @@ namespace octave
 
     hook_function_list m_input_event_hook_functions;
 
+    bool m_initialized;
+
     std::string gnu_readline (const std::string& s, bool& eof) const;
   };
 

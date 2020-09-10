@@ -30,7 +30,6 @@
 #include "dColVector.h"
 #include "dMatrix.h"
 #include "dSparse.h"
-#include "f77-fcn.h"
 
 #include "Cell.h"
 #include "defun-dld.h"
@@ -167,8 +166,8 @@ namespace octave
       : m_t0 (0.0), m_y0 (), m_yp0 (), m_havejac (false), m_havejacfun (false),
         m_havejacsparse (false), m_mem (nullptr), m_num (), m_ida_fun (),
         m_ida_jac (), m_dfdy (nullptr), m_dfdyp (nullptr), m_spdfdy (nullptr),
-        m_spdfdyp (nullptr), m_fun (nullptr), m_jacfun (nullptr),
-        m_jacspfun (nullptr), m_jacdcell (nullptr), m_jacspcell (nullptr),
+        m_spdfdyp (nullptr), m_fun (nullptr), m_jacfun (nullptr), m_jacspfun (nullptr),
+        m_jacdcell (nullptr), m_jacspcell (nullptr),
         m_sunJacMatrix (nullptr), m_sunLinearSolver (nullptr)
     { }
 
@@ -178,8 +177,8 @@ namespace octave
       : m_t0 (t), m_y0 (y), m_yp0 (yp), m_havejac (false), m_havejacfun (false),
         m_havejacsparse (false), m_mem (nullptr), m_num (), m_ida_fun (ida_fcn),
         m_ida_jac (), m_dfdy (nullptr), m_dfdyp (nullptr), m_spdfdy (nullptr),
-        m_spdfdyp (nullptr), m_fun (daefun), m_jacfun (nullptr),
-        m_jacspfun (nullptr), m_jacdcell (nullptr), m_jacspcell (nullptr),
+        m_spdfdyp (nullptr), m_fun (daefun), m_jacfun (nullptr), m_jacspfun (nullptr),
+        m_jacdcell (nullptr), m_jacspcell (nullptr),
         m_sunJacMatrix (nullptr), m_sunLinearSolver (nullptr)
     { }
 
@@ -246,9 +245,9 @@ namespace octave
 
     void initialize (void);
 
-    static ColumnVector NVecToCol (N_Vector& v, octave_f77_int_type n);
+    static ColumnVector NVecToCol (N_Vector& v, long int n);
 
-    static N_Vector ColToNVec (const ColumnVector& data, octave_f77_int_type n);
+    static N_Vector ColToNVec (const ColumnVector& data, long int n);
 
     void
     set_up (const ColumnVector& y);
@@ -267,9 +266,9 @@ namespace octave
     resfun_impl (realtype t, N_Vector& yy,
                  N_Vector& yyp, N_Vector& rr);
     static int
-    jacdense (realtype t, realtype cj, N_Vector yy, N_Vector yyp,
-              N_Vector, SUNMatrix JJ, void *user_data, N_Vector,
-              N_Vector, N_Vector)
+    jacdense (realtype t, realtype cj, N_Vector yy,
+              N_Vector yyp, N_Vector, SUNMatrix JJ, void *user_data,
+              N_Vector, N_Vector, N_Vector)
     {
       IDA *self = static_cast <IDA *> (user_data);
       self->jacdense_impl (t, cj, yy, yyp, JJ);
@@ -292,8 +291,8 @@ namespace octave
     }
 
     void
-    jacsparse_impl (realtype t, realtype cj,
-                    N_Vector& yy, N_Vector& yyp, SUNMatrix& Jac);
+    jacsparse_impl (realtype t, realtype cj, N_Vector& yy,
+                    N_Vector& yyp, SUNMatrix& Jac);
 #  endif
 
     void set_maxstep (realtype maxstep);
@@ -301,14 +300,14 @@ namespace octave
     void set_initialstep (realtype initialstep);
 
     bool
-    interpolate (octave_idx_type& cont, Matrix& output, ColumnVector& tout,
+    interpolate (int& cont, Matrix& output, ColumnVector& tout,
                  int refine, realtype tend, bool haveoutputfcn,
                  bool haveoutputsel, const octave_value& output_fcn,
                  ColumnVector& outputsel, bool haveeventfunction,
                  const octave_value& event_fcn, ColumnVector& te,
                  Matrix& ye, ColumnVector& ie, ColumnVector& oldval,
                  ColumnVector& oldisterminal, ColumnVector& olddir,
-                 octave_idx_type& temp, ColumnVector& yold);
+                 int& temp, ColumnVector& yold);
 
     bool
     outputfun (const octave_value& output_fcn, bool haveoutputsel,
@@ -322,13 +321,12 @@ namespace octave
            realtype tsol, const ColumnVector& y, const std::string& flag,
            const ColumnVector& yp, ColumnVector& oldval,
            ColumnVector& oldisterminal, ColumnVector& olddir,
-           octave_idx_type cont, octave_idx_type& temp, realtype told,
-           ColumnVector& yold);
+           int cont, int& temp, realtype told, ColumnVector& yold);
 
     void set_maxorder (int maxorder);
 
     octave_value_list
-    integrate (const octave_idx_type numt, const ColumnVector& tt,
+    integrate (const int numt, const ColumnVector& tt,
                const ColumnVector& y0, const ColumnVector& yp0,
                const int refine, bool haverefine, bool haveoutputfcn,
                const octave_value& output_fcn, bool haveoutputsel,
@@ -346,7 +344,7 @@ namespace octave
     bool m_havejacfun;
     bool m_havejacsparse;
     void *m_mem;
-    octave_f77_int_type m_num;
+    int m_num;
     octave_value m_ida_fun;
     octave_value m_ida_jac;
     Matrix *m_dfdy;
@@ -398,9 +396,6 @@ namespace octave
         // FIXME : one should not allocate space for a full Jacobian
         // when using a sparse format.  Consider allocating less space
         // then possibly using SUNSparseMatrixReallocate to increase it.
-        // FIXME: m_num*m_num might be larger than the largest
-        // octave_f77_int_type (integer overflow).  Consider using a save
-        // calculation method.
         m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, m_num*m_num, CSC_MAT);
         if (! m_sunJacMatrix)
           error ("Unable to create sparse Jacobian for Sundials");
@@ -415,8 +410,7 @@ namespace octave
         IDASetJacFn (m_mem, IDA::jacsparse);
 
 #  else
-        error ("SUNDIALS SUNLINSOL KLU was unavailable when Octave was built");
-
+        error ("SUNDIALS SUNLINSOL KLU is not available in this version of Octave");
 #  endif
 
       }
@@ -445,7 +439,7 @@ namespace octave
                       N_Vector& yy, N_Vector& yyp, SUNMatrix& JJ)
 
   {
-    octave_f77_int_type Neq = NV_LENGTH_S (yy);
+    long int Neq = NV_LENGTH_S (yy);
 
     ColumnVector y = NVecToCol (yy, Neq);
 
@@ -481,14 +475,14 @@ namespace octave
       jac = (*m_jacspcell) (m_spdfdy, m_spdfdyp, cj);
 
     SUNMatZero_Sparse (Jac);
-    octave_f77_int_type *colptrs = SUNSparseMatrix_IndexPointers (Jac);
-    octave_f77_int_type *rowvals = SUNSparseMatrix_IndexValues (Jac);
+    sunindextype *colptrs = SUNSparseMatrix_IndexPointers (Jac);
+    sunindextype *rowvals = SUNSparseMatrix_IndexValues (Jac);
 
-    for (octave_f77_int_type i = 0; i < m_num + 1; i++)
+    for (int i = 0; i < m_num + 1; i++)
       colptrs[i] = jac.cidx (i);
 
     double *d = SUNSparseMatrix_Data (Jac);
-    for (octave_f77_int_type i = 0; i < to_f77_int (jac.nnz ()); i++)
+    for (int i = 0; i < jac.nnz (); i++)
       {
         rowvals[i] = jac.ridx (i);
         d[i] = jac.data (i);
@@ -497,25 +491,25 @@ namespace octave
 #  endif
 
   ColumnVector
-  IDA::NVecToCol (N_Vector& v, octave_f77_int_type n)
+  IDA::NVecToCol (N_Vector& v, long int n)
   {
     ColumnVector data (n);
     realtype *punt = nv_data_s (v);
 
-    for (octave_f77_int_type i = 0; i < n; i++)
+    for (octave_idx_type i = 0; i < n; i++)
       data(i) = punt[i];
 
     return data;
   }
 
   N_Vector
-  IDA::ColToNVec (const ColumnVector& data, octave_f77_int_type n)
+  IDA::ColToNVec (const ColumnVector& data, long int n)
   {
     N_Vector v = N_VNew_Serial (n);
 
     realtype *punt = nv_data_s (v);
 
-    for (octave_f77_int_type i = 0; i < n; i++)
+    for (octave_idx_type i = 0; i < n; i++)
       punt[i] = data(i);
 
     return v;
@@ -533,7 +527,7 @@ namespace octave
   void
   IDA::initialize (void)
   {
-    m_num = to_f77_int (m_y0.numel ());
+    m_num = m_y0.numel ();
     m_mem = IDACreate ();
 
     N_Vector yy = ColToNVec (m_y0, m_num);
@@ -565,7 +559,7 @@ namespace octave
   }
 
   octave_value_list
-  IDA::integrate (const octave_idx_type numt, const ColumnVector& tspan,
+  IDA::integrate (const int numt, const ColumnVector& tspan,
                   const ColumnVector& y, const ColumnVector& yp,
                   const int refine, bool haverefine, bool haveoutputfcn,
                   const octave_value& output_fcn, bool haveoutputsel,
@@ -576,7 +570,7 @@ namespace octave
     ColumnVector tout, yout (m_num), ypout (m_num), ysel (outputsel.numel ());
     ColumnVector ie, te, oldval, oldisterminal, olddir;
     Matrix output, ye;
-    octave_idx_type cont = 0, temp = 0;
+    int cont = 0, temp = 0;
     bool status = 0;
     std::string string = "";
     ColumnVector yold = y;
@@ -732,12 +726,11 @@ namespace octave
 
   bool
   IDA::event (const octave_value& event_fcn,
-              ColumnVector& te, Matrix& ye, ColumnVector& ie, realtype tsol,
-              const ColumnVector& y, const std::string& flag,
+              ColumnVector& te, Matrix& ye, ColumnVector& ie,
+              realtype tsol, const ColumnVector& y, const std::string& flag,
               const ColumnVector& yp, ColumnVector& oldval,
-              ColumnVector& oldisterminal, ColumnVector& olddir,
-              octave_idx_type cont, octave_idx_type& temp, realtype told,
-              ColumnVector& yold)
+              ColumnVector& oldisterminal, ColumnVector& olddir, int cont,
+              int& temp, realtype told, ColumnVector& yold)
   {
     bool status = 0;
 
@@ -832,14 +825,14 @@ namespace octave
   }
 
   bool
-  IDA::interpolate (octave_idx_type& cont, Matrix& output, ColumnVector& tout,
+  IDA::interpolate (int& cont, Matrix& output, ColumnVector& tout,
                     int refine, realtype tend, bool haveoutputfcn,
                     bool haveoutputsel, const octave_value& output_fcn,
                     ColumnVector& outputsel, bool haveeventfunction,
                     const octave_value& event_fcn, ColumnVector& te,
                     Matrix& ye, ColumnVector& ie, ColumnVector& oldval,
                     ColumnVector& oldisterminal, ColumnVector& olddir,
-                    octave_idx_type& temp, ColumnVector& yold)
+                    int& temp, ColumnVector& yold)
   {
     realtype h = 0, tcur = 0;
     bool status = 0;
@@ -1059,7 +1052,7 @@ namespace octave
   octave_value_list
   do_ode15 (const octave_value& ida_fcn,
             const ColumnVector& tspan,
-            const octave_idx_type numt,
+            const int numt,
             const realtype t0,
             const ColumnVector& y0,
             const ColumnVector& yp0,
@@ -1213,7 +1206,7 @@ Undocumented internal function.
 #if defined (HAVE_SUNDIALS)
 
   // Check number of parameters
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
   if (nargin != 5)
     print_usage ();
@@ -1228,7 +1221,7 @@ Undocumented internal function.
   ColumnVector tspan
     = args(1).xvector_value ("__ode15__: TRANGE must be a vector of numbers");
 
-  octave_idx_type numt = tspan.numel ();
+  int numt = tspan.numel ();
 
   realtype t0 = tspan (0);
 

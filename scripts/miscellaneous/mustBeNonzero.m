@@ -26,11 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNonzero (@var{x})
 ##
-## Requires that input @var{x} is not zero.
+## Require that input @var{x} is not zero.
 ##
-## Raises an error if any element of the input @var{x} is zero, as determined
+## Raise an error if any element of the input @var{x} is zero, as determined
 ## by @code{@var{x} != 0}.
 ##
+## @seealso{mustBeNonnegative, mustBePositive}
 ## @end deftypefn
 
 # TODO: Should NaN be considered nonzero? It fits the formal definition above,

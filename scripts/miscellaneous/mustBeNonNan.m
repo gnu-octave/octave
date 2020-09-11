@@ -26,11 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNonNan (@var{x})
 ##
-## Requires that input @var{x} is non-NaN.
+## Require that input @var{x} is non-@code{NaN}.
 ##
-## Raises an error if any element of the input @var{x} is NaN, as determined
-## by @code{isnan (@var{x})}.
+## Raise an error if any element of the input @var{x} is @code{NaN}, as
+## determined by @code{isnan (@var{x})}.
 ##
+## @seealso{mustBeFinite, mustBeNonempty, isnan}
 ## @end deftypefn
 
 function mustBeNonNan (x)

@@ -26,11 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNonsparse (@var{x})
 ##
-## Requires that input @var{x} is not sparse.
+## Require that input @var{x} is not sparse.
 ##
-## Raises an error if the input @var{x} is sparse, as determined by
+## Raise an error if the input @var{x} is sparse, as determined by
 ## @code{issparse (@var{x})}.
 ##
+## @seealso{issparse}
 ## @end deftypefn
 
 function mustBeNonsparse (x)

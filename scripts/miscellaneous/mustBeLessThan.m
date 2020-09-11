@@ -26,11 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeLessThan (@var{x}, @var{c})
 ##
-## Requires that input @var{x} is less than @var{c}.
+## Require that input @var{x} is less than @var{c}.
 ##
-## Raises an error if any element of the input @var{x} is not less than
+## Raise an error if any element of the input @var{x} is not less than
 ## @var{c}, as determined by @code{@var{x} < @var{c}}.
 ##
+## @seealso{mustBeLessThanOrEqual, mustBeGreaterThan, lt}
 ## @end deftypefn
 
 function mustBeLessThan (x, c)

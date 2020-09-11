@@ -26,11 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeReal (@var{x})
 ##
-## Requires that input @var{x} is real.
+## Require that input @var{x} is real.
 ##
-## Raises an error if the input @var{x} is not real, as determined by
+## Raise an error if the input @var{x} is not real, as determined by
 ## @code{isreal (@var{x})}.
 ##
+## @seealso{mustBeFinite, mustBeNonNan, isreal}
 ## @end deftypefn
 
 function mustBeReal (x)

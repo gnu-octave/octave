@@ -26,11 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNonempty (@var{x})
 ##
-## Requires that input @var{x} is nonempty.
+## Require that input @var{x} is nonempty.
 ##
-## Raises an error if the input @var{x} is not empty, as determined by
-## @code{! isempty (@var{x})}.
+## Raise an error if the input @var{x} is empty, as determined by
+## @code{isempty (@var{x})}.
 ##
+## @seealso{mustBeMember, mustBeNonzero, isempty}
 ## @end deftypefn
 
 function mustBeNonempty (x)

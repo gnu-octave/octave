@@ -26,11 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeGreaterThan (@var{x}, @var{c})
 ##
-## Requires that input @var{x} is greater than @var{c}.
+## Require that input @var{x} is greater than @var{c}.
 ##
-## Raises an error if any element of the input @var{x} is not greater than
+## Raise an error if any element of the input @var{x} is not greater than
 ## @var{c}, as determined by @code{@var{x} > @var{c}}.
 ##
+## @seealso{mustBeGreaterThanOrEqual, mustBeLessThan, gt}
 ## @end deftypefn
 
 function mustBeGreaterThan (x, c)

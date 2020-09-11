@@ -26,11 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeFinite (@var{x})
 ##
-## Requires that input @var{x} is finite.
+## Require that input @var{x} is finite.
 ##
-## Raises an error if any element of the input @var{x} is not finite, as
+## Raise an error if any element of the input @var{x} is not finite, as
 ## determined by @code{isfinite (x)}.
 ##
+## @seealso{mustBeNonNan, isfinite}
 ## @end deftypefn
 
 function mustBeFinite (x)

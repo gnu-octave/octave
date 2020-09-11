@@ -26,11 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNonnegative (@var{x})
 ##
-## Requires that input @var{x} is not negative.
+## Require that input @var{x} is not negative.
 ##
-## Raises an error if any element of the input @var{x} is negative, as
+## Raise an error if any element of the input @var{x} is negative, as
 ## determined by @code{@var{x} >= 0}.
 ##
+## @seealso{mustBeNonzero, mustBePositive}
 ## @end deftypefn
 
 function mustBeNonnegative (x)

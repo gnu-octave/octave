@@ -26,12 +26,13 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeInteger (@var{x})
 ##
-## Requires that input @var{x} is integer-valued (but not necessarily
+## Require that input @var{x} is integer-valued (but not necessarily
 ## integer-typed).
 ##
-## Raises an error if any element of the input @var{x} is not a finite,
+## Raise an error if any element of the input @var{x} is not a finite,
 ## real, integer-valued numeric value, as determined by various checks.
 ##
+## @seealso{mustBeNumeric}
 ## @end deftypefn
 
 function mustBeInteger (x)

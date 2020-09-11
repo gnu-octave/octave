@@ -26,11 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNumeric (@var{x})
 ##
-## Requires that input @var{x} is numeric.
+## Require that input @var{x} is numeric.
 ##
-## Raises an error if the input @var{x} is not numeric, as determined by
+## Raise an error if the input @var{x} is not numeric, as determined by
 ## @code{isnumeric (@var{x})}.
 ##
+## @seealso{mustBeNumericOrLogical, isnumeric}
 ## @end deftypefn
 
 function mustBeNumeric (x)

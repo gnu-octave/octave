@@ -67,9 +67,11 @@
 
 #if defined (HAVE_QSCINTILLA)
 
+#include <QApplication>
 #include <QCheckBox>
 #include <QCheckBox>
 #include <QCompleter>
+#include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QIcon>
@@ -220,15 +222,9 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *s = rmgr.get_settings ();
 
-    // Save position and fix offset it by the frame geometry
-    int fy = 2;
-    if (m_editor->isFloating ())
-      fy = 1;
-
-    int dy = geometry ().y () - frameGeometry ().y ();
+    // Save position
     QPoint dlg_pos = pos ();
-
-    m_last_position = QPoint (dlg_pos.x (), dlg_pos.y () + fy*dy);
+    m_last_position = QPoint (dlg_pos.x (), dlg_pos.y ());
 
     s->setValue (ed_fdlg_pos.key, m_last_position);
 
@@ -295,8 +291,22 @@ namespace octave
     int yp = ed_bottom_right.y () - sizeHint ().height ();
 
     m_last_position = s->value (ed_fdlg_pos.key, QPoint (xp,yp)).toPoint ();
-
     move (m_last_position);
+
+    if (QApplication::desktop ()->screenNumber (this) == -1)
+      {
+        // Last used position is not on screen anymore, use default pos.
+        m_last_position = QPoint (xp,yp);
+        move (m_last_position);
+
+        if (QApplication::desktop ()->screenNumber (this) == -1)
+          {
+            // Default position is not on screen, last resort
+            m_last_position = QPoint (50,100);  // upper left
+            move (m_last_position);
+          }
+      }
+
   }
 
   // set text of "search from start" depending on backward search

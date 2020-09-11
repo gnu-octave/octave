@@ -119,9 +119,11 @@ namespace octave
         : m_parser (parser), m_info (), m_all_names ()
       { }
 
-      parent_scope_info (const parent_scope_info&) = default;
+      // No copying!
 
-      parent_scope_info& operator = (const parent_scope_info&) = default;
+      parent_scope_info (const parent_scope_info&) = delete;
+
+      parent_scope_info& operator = (const parent_scope_info&) = delete;
 
       ~parent_scope_info (void) = default;
 

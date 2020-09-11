@@ -406,6 +406,15 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
           __vars = __vars(1:__idx(1)-1);
         endif
 
+        if (! isempty (deblank (__shared)))
+          ## Explicitly clear any existing shared variables so that
+          ## onCleanup actions will be executed.
+          __shared_vars = strtrim (ostrsplit (__shared, ","));
+          if (! isempty (__shared_vars))
+            clear (__shared_vars{:});
+          endif
+        endif
+
         ## Assign default values to variables.
         try
           __vars = deblank (__vars);
@@ -766,8 +775,8 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
              __file, sprintf (" %s", __leaked_vars{:}));
   endif
 
-  ## Clear any shared variables
-  ## This is necessary in case any onCleanup actions need to be triggered.
+  ## Explicitly clear any existing shared variables so that onCleanup
+  ## actions will be executed.
   __shared_vars = strtrim (ostrsplit (__shared, ","));
   if (! isempty (__shared_vars))
     clear (__shared_vars{:});

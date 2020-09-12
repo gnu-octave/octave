@@ -35,20 +35,27 @@
 ## @end deftypefn
 
 function mustBeNonsparse (x)
-  if issparse (x)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  if (issparse (x))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    error ("%s must be nonsparse; got a sparse array", label);
+    error ("%s must be nonsparse", label);
   endif
+
 endfunction
 
-%!test
-%! mustBeNonsparse ([])
-%! mustBeNonsparse (42)
-%! mustBeNonsparse (1:100)
-%! mustBeNonsparse (Inf)
 
-%!error mustBeNonsparse (sparse(42))
-%!error mustBeNonsparse ()
+%!test
+%! mustBeNonsparse ([]);
+%! mustBeNonsparse (42);
+%! mustBeNonsparse (1:100);
+%! mustBeNonsparse ("Hello World");
+
+%!error <Invalid call> mustBeNonsparse ()
+%!error <input must be nonsparse> mustBeNonsparse (sparse (42))

@@ -41,28 +41,35 @@
 ## @end deftypefn
 
 function mustBeMember (x, valid)
-  tf = ismember (x, valid);
-  if ! all (tf)
+
+  if (nargin != 2)
+    print_usage ();
+  endif
+
+  tf = ! (ismember (x, valid))(:);
+  if (any (tf))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    n_bad = numel (find (! tf));
-    # TODO: Fancy inclusion of bad & valid values in the error message.
-    # Probably use mat2str() in a try/catch for that.
-    error ( ...
-      "%s must be one of the specified valid values; got %d elements that weren't", ...
-      label, n_bad);
+    n_bad = numel (find (tf));
+    # FIXME: Fancy inclusion of bad_val & valid values in the error message.
+    #        Probably use mat2str() in a try/catch for that.
+    error ("%s must be one of the specified valid values; found %d elements that were not", ...
+           label, n_bad);
   endif
+
 endfunction
 
-%!test
-%! mustBeMember (42, 38:50)
-%! mustBeMember ('foo', {'foo', 'bar', 'baz'})
-%! mustBeMember (38:42, 37:43)
-%! mustBeMember ({'foo','bar'}, {'foo', 'bar', 'baz'})
 
-%!error mustBeMember ()
-%!error mustBeMember (42)
-%!error mustBeMember (42, 1:5)
-%!error mustBeMember ('nope', {'foo', 'bar', 'baz'})
+%!test
+%! mustBeMember (42, 38:50);
+%! mustBeMember ("foo", {"foo", "bar", "baz"});
+%! mustBeMember (38:42, 37:43);
+%! mustBeMember ({"foo","bar"}, {"foo", "bar", "baz"});
+
+%!error <Invalid call> mustBeMember ()
+%!error <Invalid call> mustBeMember (1)
+%!error <Invalid call> mustBeMember (1,2,3)
+%!error <found 1 elements> mustBeMember ([1, 42], 1:5)
+%!error <found 1 elements> mustBeMember ("nope", {"foo", "bar", "baz"})

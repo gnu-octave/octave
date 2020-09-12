@@ -35,22 +35,29 @@
 ## @end deftypefn
 
 function mustBeNonempty (x)
-  if isempty (x)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  if (isempty (x))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    error ("%s must be nonempty; got an empty", label);
+    error ("%s must not be empty", label);
   endif
+
 endfunction
 
-%!test
-%! mustBeNonempty (42)
-%! mustBeNonempty ('Hello')
-%! mustBeNonempty (Inf)
-%! mustBeNonempty (NaN)
 
-%!error mustBeNonempty ()
-%!error mustBeNonempty ([])
-%!error mustBeNonempty ('')
-%!error mustBeNonempty (reshape([], [0 3 3 3]))
+%!test
+%! mustBeNonempty (42);
+%! mustBeNonempty ("Hello");
+%! mustBeNonempty (Inf);
+%! mustBeNonempty (NaN);
+
+%!error <Invalid call> mustBeNonempty ()
+%!error <input must not be empty> mustBeNonempty ([])
+%!error <input must not be empty> mustBeNonempty ('')
+%!error <input must not be empty> mustBeNonempty (reshape ([], [0 3 3 3]))

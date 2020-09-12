@@ -26,45 +26,51 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeLessThanOrEqual (@var{x}, @var{c})
 ##
-## Requires that input is less than or equal to a given value.
+## Require that input is less than or equal to a given value.
 ##
-## Raises an error if any element of the input @var{x} is not less than
+## Raise an error if any element of the input @var{x} is not less than
 ## or equal to @var{c}, as determined by @code{@var{x} <= @var{c}}.
 ##
+## @seealso{mustBeLessThan, mustBeGreaterThanOrEqual, le}
 ## @end deftypefn
 
 function mustBeLessThanOrEqual (x, c)
-  tf = x <= c;
-  tf = tf(:);
-  if ! all (tf)
+
+  if (nargin != 2)
+    print_usage ();
+  endif
+
+  tf = (x <= c)(:);
+  if (! all (tf))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    ix_bad = find (! tf);
+    bad_idx = find (! tf);
     try
-      bad = x(ix_bad);
-      errmsg = sprintf ( ...
-        "%s must be less than or equal to %f; got %d elements that were not: values %s", ...
-        label, c, numel (ix_bad), mat2str (bad));
-    catch err
-      errmsg = sprintf ( ...
-        "%s must be less than or equal to %f; got %d elements that were not: indexes %s", ...
-        label, c, numel (ix_bad), mat2str (ix_bad));
+      bad_val = x(bad_idx);
+      errmsg = sprintf ("%s must be less than or equal to %f; found %d elements that were not: values %s", ...
+                        label, c, numel (bad_idx), mat2str (bad_val));
+    catch
+      errmsg = sprintf ("%s must be less than or equal to %f; found %d elements that were not: indexes %s", ...
+                        label, c, numel (bad_idx), mat2str (bad_idx));
     end_try_catch
     error (errmsg);
   endif
+
 endfunction
 
 
 %!test
-%! mustBeLessThanOrEqual (0, 1)
-%! mustBeLessThanOrEqual (-Inf, 42)
-%! mustBeLessThanOrEqual (42, Inf)
-%! mustBeLessThanOrEqual (1:41, 42)
-%! mustBeLessThanOrEqual (1:42, 42)
-%! mustBeLessThanOrEqual (1, 1)
-%! mustBeLessThanOrEqual (Inf, Inf)
+%! mustBeLessThanOrEqual (0, 1);
+%! mustBeLessThanOrEqual (-Inf, 42);
+%! mustBeLessThanOrEqual (42, Inf);
+%! mustBeLessThanOrEqual (1:41, 42);
+%! mustBeLessThanOrEqual (1:42, 42);
+%! mustBeLessThanOrEqual (1, 1);
+%! mustBeLessThanOrEqual (Inf, Inf);
 
-%!error mustBeLessThanOrEqual ()
-%!error mustBeLessThanOrEqual (1, 0)
+%!error <Invalid call> mustBeLessThanOrEqual ()
+%!error <Invalid call> mustBeLessThanOrEqual (1)
+%!error <Invalid call> mustBeLessThanOrEqual (1,2,3)
+%!error <must be less than or equal to 0> mustBeLessThanOrEqual (1, 0)

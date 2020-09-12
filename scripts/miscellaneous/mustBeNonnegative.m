@@ -26,46 +26,51 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNonnegative (@var{x})
 ##
-## Requires that input @var{x} is not negative.
+## Require that input @var{x} is not negative.
 ##
-## Raises an error if any element of the input @var{x} is negative, as
+## Raise an error if any element of the input @var{x} is negative, as
 ## determined by @code{@var{x} >= 0}.
 ##
+## @seealso{mustBeNonzero, mustBePositive}
 ## @end deftypefn
 
 function mustBeNonnegative (x)
-  tf = x >= 0;
-  tf = tf(:);
-  if ! all (tf)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  tf = (x(:) >= 0);
+  if (! all (tf))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    ix_bad = find (! tf);
+    bad_idx = find (! tf);
     try
-      bad = x(ix_bad);
-      errmsg = sprintf ( ...
-        "%s must be non-negative; got %d elements that were not: values %s", ...
-        label, numel (ix_bad), mat2str (bad));
-    catch err
-      errmsg = sprintf ( ...
-        "%s must be non-negative; got %d elements that were not: indexes %s", ...
-        label, numel (ix_bad), mat2str (ix_bad));
+      bad_val = x(bad_idx);
+      errmsg = sprintf ("%s must be non-negative; found %d elements that were not: values %s", ...
+                        label, numel (bad_idx), mat2str (bad_val));
+    catch
+      errmsg = sprintf ("%s must be non-negative; found %d elements that were not: indexes %s", ...
+                        label, numel (bad_idx), mat2str (bad_idx));
     end_try_catch
     error (errmsg);
   endif
+
 endfunction
 
-%!test
-%! mustBeNonnegative (0)
-%! mustBeNonnegative (1)
-%! mustBeNonnegative (123.456)
-%! mustBeNonnegative (Inf)
-%! mustBeNonnegative (0:10)
-%! mustBeNonnegative (eps)
 
-%!error mustBeNonnegative ()
-%!error mustBeNonnegative (-1)
-%!error mustBeNonnegative ([0 1 2 3 -4])
-%!error mustBeNonnegative (-Inf)
-%!error mustBeNonnegative (NaN)
+%!test
+%! mustBeNonnegative (0);
+%! mustBeNonnegative (1);
+%! mustBeNonnegative (123.456);
+%! mustBeNonnegative (Inf);
+%! mustBeNonnegative (0:10);
+%! mustBeNonnegative (eps);
+
+%!error <Invalid call> mustBeNonnegative ()
+%!error <input must be non-negative> mustBeNonnegative (-1)
+%!error <found 1 elements> mustBeNonnegative ([0 1 2 3 -4])
+%!error <input must be non-negative> mustBeNonnegative (-Inf)
+%!error <must be non-negative> mustBeNonnegative (NaN)

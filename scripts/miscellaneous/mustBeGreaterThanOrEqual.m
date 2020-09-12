@@ -26,42 +26,49 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeGreaterThanOrEqual (@var{x}, @var{c})
 ##
-## Requires that input @var{x} is greater than or equal to @var{c}.
+## Require that input @var{x} is greater than or equal to @var{c}.
 ##
-## Raises an error if any element of the input @var{x} is not greater than
+## Raise an error if any element of the input @var{x} is not greater than
 ## or equal to @var{c}, as determined by @code{@var{x} >= @var{c}}.
 ##
+## @seealso{mustBeGreaterThan, mustBeLessThanOrEqual, ge}
 ## @end deftypefn
 
 function mustBeGreaterThanOrEqual (x, c)
-  tf = x >= c;
-  tf = tf(:);
-  if ! all (tf)
+
+  if (nargin != 2)
+    print_usage ();
+  endif
+
+  tf = (x >= c)(:);
+  if (! all (tf))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    ix_bad = find (! tf);
+    bad_idx = find (! tf);
     try
-      bad = x(ix_bad);
-      errmsg = sprintf ( ...
-        "%s must be greater than or equal to %f; got %d elements that were not: values %s", ...
-        label, c, numel (ix_bad), mat2str (bad));
-    catch err
-      errmsg = sprintf ( ...
-        "%s must be greater than or equal to %f; got %d elements that were not: indexes %s", ...
-        label, c, numel (ix_bad), mat2str (ix_bad));
+      bad_val = x(bad_idx);
+      errmsg = sprintf ("%s must be greater than or equal to %f; found %d elements that were not: values %s", ...
+                        label, c, numel (bad_idx), mat2str (bad_val));
+    catch
+      errmsg = sprintf ("%s must be greater than or equal to %f; found %d elements that were not: indexes %s", ...
+                        label, c, numel (bad_idx), mat2str (bad_idx));
     end_try_catch
     error (errmsg);
   endif
+
 endfunction
 
-%!test
-%! mustBeGreaterThanOrEqual (42, 0)
-%! mustBeGreaterThanOrEqual (Inf, 9999)
-%! mustBeGreaterThanOrEqual (42, 42)
-%! mustBeGreaterThanOrEqual (Inf, Inf)
 
-%!error mustBeGreaterThanOrEqual ()
-%!error mustBeGreaterThanOrEqual (42)
-%!error mustBeGreaterThanOrEqual (NaN, 0)
+%!test
+%! mustBeGreaterThanOrEqual (42, 0);
+%! mustBeGreaterThanOrEqual (Inf, 9999);
+%! mustBeGreaterThanOrEqual (42, 42);
+%! mustBeGreaterThanOrEqual (Inf, Inf);
+
+%!error <Invalid call> mustBeGreaterThanOrEqual ()
+%!error <Invalid call> mustBeGreaterThanOrEqual (1)
+%!error <Invalid call> mustBeGreaterThanOrEqual (1,2,3)
+%!error <must be greater than or equal to 2> mustBeGreaterThanOrEqual (1, 2)
+%!error <must be greater than or equal to 0> mustBeGreaterThanOrEqual (NaN, 0)

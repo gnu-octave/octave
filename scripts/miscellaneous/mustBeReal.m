@@ -26,31 +26,39 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeReal (@var{x})
 ##
-## Requires that input @var{x} is real.
+## Require that input @var{x} is real.
 ##
-## Raises an error if the input @var{x} is not real, as determined by
+## Raise an error if the input @var{x} is not real, as determined by
 ## @code{isreal (@var{x})}.
 ##
+## @seealso{mustBeFinite, mustBeNonNan, isreal}
 ## @end deftypefn
 
 function mustBeReal (x)
-  if ! isreal (x)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  if (! isreal (x))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    error ("%s must be real; got a complex value", label);
+    error ("%s must be real", label);
   endif
+
 endfunction
 
-%!test
-%! mustBeReal ([])
-%! mustBeReal (42)
-%! mustBeReal (Inf)
-%! mustBeReal (NaN)
-%! mustBeReal (1:100)
-%! mustBeReal (int32(42))
 
-%!error mustBeReal ()
-%!error mustBeReal (i)
-%!error mustBeReal (2 + i)
+%!test
+%! mustBeReal ([]);
+%! mustBeReal (42);
+%! mustBeReal (Inf);
+%! mustBeReal (NaN);
+%! mustBeReal (1:100);
+%! mustBeReal (int32 (42));
+
+%!error <Invalid call> mustBeReal ()
+%!error <must be real> mustBeReal (i)
+%!error <input must be real> mustBeReal (2 + i)

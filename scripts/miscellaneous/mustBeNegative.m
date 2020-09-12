@@ -26,41 +26,46 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNegative (@var{x})
 ##
-## Requires that input @var{x} is negative.
+## Require that input @var{x} is negative.
 ##
-## Raises an error if any element of the input @var{x} is not negative, as
+## Raise an error if any element of the input @var{x} is not negative, as
 ## determined by @code{@var{x} < 0}.
 ##
+## @seealso{mustBeNonnegative}
 ## @end deftypefn
 
 function mustBeNegative (x)
-  tf = x < 0;
-  tf = tf(:);
-  if ! all (tf)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  tf = (x < 0)(:);
+  if (! all (tf))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    ix_bad = find (! tf);
+    bad_idx = find (! tf);
     try
-      bad = x(ix_bad);
-      errmsg = sprintf ( ...
-        "%s must be negative; got %d elements that were not: values %s", ...
-        label, numel (ix_bad), mat2str (bad));
-    catch err
-      errmsg = sprintf ( ...
-        "%s must be negative; got %d elements that were not: indexes %s", ...
-        label, numel (ix_bad), mat2str (ix_bad));
+      bad_val = x(bad_idx);
+      errmsg = sprintf ("%s must be negative; found %d elements that were not: values %s", ...
+                        label, numel (bad_idx), mat2str (bad_val));
+    catch
+      errmsg = sprintf ("%s must be negative; found %d elements that were not: indexes %s", ...
+                        label, numel (bad_idx), mat2str (bad_idx));
     end_try_catch
     error (errmsg);
   endif
+
 endfunction
 
-%!test
-%! mustBeNegative (-42)
-%! mustBeNegative ([])
-%! mustBeNegative (-10:-2)
 
-%!error mustBeNegative ()
-%!error mustBeNegative (42)
-%!error mustBeNegative (-5:5)
+%!test
+%! mustBeNegative ([]);
+%! mustBeNegative (-42);
+%! mustBeNegative (-10:-2);
+
+%!error <Invalid call> mustBeNegative ()
+%!error <found 1 elements> mustBeNegative ([-1, 42])
+%!error <found 6 elements> mustBeNegative (-5:5)

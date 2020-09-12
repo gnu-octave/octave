@@ -26,36 +26,42 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNonNan (@var{x})
 ##
-## Requires that input @var{x} is non-NaN.
+## Require that input @var{x} is non-@code{NaN}.
 ##
-## Raises an error if any element of the input @var{x} is NaN, as determined
-## by @code{isnan (@var{x})}.
+## Raise an error if any element of the input @var{x} is @code{NaN}, as
+## determined by @code{isnan (@var{x})}.
 ##
+## @seealso{mustBeFinite, mustBeNonempty, isnan}
 ## @end deftypefn
 
 function mustBeNonNan (x)
-  tf = ! isnan (x);
-  tf = tf(:);
-  if ! all (tf)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  tf = isnan (x(:));
+  if (any (tf))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    ix_bad = find (! tf);
-    errmsg = sprintf ( ...
-      "%s must be non-NaN; got %d elements that were not: indexes %s", ...
-      label, numel (ix_bad), mat2str (ix_bad));
+    bad_idx = find (tf);
+    errmsg = sprintf ("%s must be non-NaN; found %d elements that were not: indexes %s", ...
+                      label, numel (bad_idx), mat2str (bad_idx));
     error (errmsg);
   endif
+
 endfunction
 
-%!test
-%! mustBeNonNan (42)
-%! mustBeNonNan ('foo')
-%! mustBeNonNan (1:10)
-%! mustBeNonNan (Inf)
-%! mustBeNonNan (-Inf)
 
-%!error mustBeNonNan ()
-%!error mustBeNonNan (NaN)
-%!error mustBeNonNan ([1 2 3 NaN])
+%!test
+%! mustBeNonNan (42);
+%! mustBeNonNan ("foo");
+%! mustBeNonNan (1:10);
+%! mustBeNonNan (Inf);
+%! mustBeNonNan (-Inf);
+
+%!error <Invalid call> mustBeNonNan ()
+%!error <must be non-NaN> mustBeNonNan (NaN)
+%!error <input must be non-NaN> mustBeNonNan ([1 2 3 NaN])

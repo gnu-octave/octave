@@ -26,33 +26,42 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeFinite (@var{x})
 ##
-## Requires that input @var{x} is finite.
+## Require that input @var{x} is finite.
 ##
-## Raises an error if any element of the input @var{x} is not finite, as
+## Raise an error if any element of the input @var{x} is not finite, as
 ## determined by @code{isfinite (x)}.
 ##
+## @seealso{mustBeNonNan, isfinite}
 ## @end deftypefn
 
 function mustBeFinite (x)
-  tf = isfinite (x);
-  if ! all (tf)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  tf = isfinite (x(:));
+  if (! all (tf))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    ix_bad = find (!tf);
-    error ("%s must be finite; got Infs in %d elements: indexes %s", ...
-      label, numel (ix_bad), mat2str (ix_bad));
+    bad_idx = find (! tf);
+    error ("%s must be finite; found %d non-finite elements: indexes %s",
+           label, numel (bad_idx), mat2str (bad_idx));
   endif
+
 endfunction
+
 
 %!test
 %! mustBeFinite ([]);
 %! mustBeFinite (42);
 %! mustBeFinite (-100:.1:100);
-%! mustBeFinite (int32(42))
+%! mustBeFinite (int32 (42));
 
-%!error mustBeFinite ();
-%!error mustBeFinite (Inf);
-%!error mustBeFinite ([1 2 3 Inf]);
-%!error mustBeFinite ([-Inf -1 0 1]);
+%!error <Invalid call> mustBeFinite ()
+%!error <found 1 non-finite> mustBeFinite (Inf)
+%!error <indexes 4> mustBeFinite ([1 2 3 Inf])
+%!error <indexes 1> mustBeFinite ([-Inf -1 0 1])
+%!error <indexes 1> mustBeFinite ([NaN -1])

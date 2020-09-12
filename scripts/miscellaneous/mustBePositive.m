@@ -26,46 +26,51 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBePositive (@var{x})
 ##
-## Requires that input @var{x} is positive.
+## Require that input @var{x} is positive.
 ##
-## Raises an error if any element of the input @var{x} is not positive, as
+## Raise an error if any element of the input @var{x} is not positive, as
 ## determined by @code{@var{x} > 0}.
 ##
+## @seealso{mustBeNonnegative, mustBeNonzero}
 ## @end deftypefn
 
 function mustBePositive (x)
-  tf = x > 0;
-  tf = tf(:);
-  if ! all (tf)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  tf = (x(:) > 0);
+  if (! all (tf))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    ix_bad = find (! tf);
+    bad_idx = find (! tf);
     try
-      bad = x(ix_bad);
-      errmsg = sprintf ( ...
-        "%s must be positive; got %d elements that were not: values %s", ...
-        label, numel (ix_bad), mat2str (bad));
-    catch err
-      errmsg = sprintf ( ...
-        "%s must be positive; got %d elements that were not: indexes %s", ...
-        label, numel (ix_bad), mat2str (ix_bad));
+      bad_val = x(bad_idx);
+      errmsg = sprintf ("%s must be positive; found %d elements that were not: values %s", ...
+                        label, numel (bad_idx), mat2str (bad_val));
+    catch
+      errmsg = sprintf ("%s must be positive; found %d elements that were not: indexes %s", ...
+                        label, numel (bad_idx), mat2str (bad_idx));
     end_try_catch
     error (errmsg);
   endif
+
 endfunction
 
-%!test
-%! mustBePositive (1)
-%! mustBePositive (123.456)
-%! mustBePositive (Inf)
-%! mustBePositive (eps)
 
-%!error mustBePositive ()
-%!error mustBePositive (0)
-%!error mustBePositive (0:10)
-%!error mustBePositive (-1)
-%!error mustBePositive ([0 1 2 3 -4])
-%!error mustBePositive (-Inf)
-%!error mustBePositive (NaN)
+%!test
+%! mustBePositive (1);
+%! mustBePositive (123.456);
+%! mustBePositive (Inf);
+%! mustBePositive (eps);
+
+%!error <Invalid call> mustBePositive ()
+%!error <found 1 elements> mustBePositive (0)
+%!error <found 1 elements> mustBePositive (0:10)
+%!error <found 2 elements> mustBePositive ([-1 -2])
+%!error <found 2 elements> mustBePositive ([0 1 2 3 -4])
+%!error <found 1 elements> mustBePositive (-Inf)
+%!error <found 1 elements> mustBePositive (NaN)

@@ -26,42 +26,44 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNonzero (@var{x})
 ##
-## Requires that input @var{x} is not zero.
+## Require that input @var{x} is not zero.
 ##
-## Raises an error if any element of the input @var{x} is zero, as determined
-## by @code{@var{x} != 0}.
+## Raise an error if any element of the input @var{x} is zero, as determined
+## by @code{@var{x} == 0}.
 ##
+## @seealso{mustBeNonnegative, mustBePositive}
 ## @end deftypefn
 
-# TODO: Should NaN be considered nonzero? It fits the formal definition above,
-# but that may not be the spirit of the test. And it's not equal to any non-zero
-# value.
-
 function mustBeNonzero (x)
-  tf = x != 0;
-  tf = tf(:);
-  if ! all (tf)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  tf = (x(:) == 0);
+  if (any (tf))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    ix_bad = find (! tf);
-    errmsg = sprintf ( ...
-      "%s must be non-zero; got %d elements that were zero: indexes %s", ...
-      label, numel (ix_bad), mat2str (ix_bad));
+    bad_idx = find (tf);
+    errmsg = sprintf ("%s must be non-zero; found %d elements that were zero: indexes %s", ...
+                      label, numel (bad_idx), mat2str (bad_idx));
     error (errmsg);
   endif
+
 endfunction
 
-%!test
-%! mustBeNonzero (1)
-%! mustBeNonzero (-1)
-%! mustBeNonzero ([-5:-1 1:5])
-%! mustBeNonzero (Inf)
-%! mustBeNonzero (-Inf)
-%! mustBeNonzero (NaN)
-%! mustBeNonzero (eps)
 
-%!error mustBeNonzero ()
-%!error mustBeNonzero (0)
-%!error mustBeNonzero (-10:10)
+%!test
+%! mustBeNonzero (1);
+%! mustBeNonzero (-1);
+%! mustBeNonzero ([-5:-1 1:5]);
+%! mustBeNonzero (Inf);
+%! mustBeNonzero (-Inf);
+%! mustBeNonzero (NaN);
+%! mustBeNonzero (eps);
+
+%!error <Invalid call> mustBeNonzero ()
+%!error <found 1 elements> mustBeNonzero (-10:10)
+%!error <found 2 elements> mustBeNonzero ([-1, 0, 0, 1])

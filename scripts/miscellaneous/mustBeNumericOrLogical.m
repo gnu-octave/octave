@@ -26,31 +26,39 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNumericOrLogical (@var{x})
 ##
-## Requires that input @var{x} is numeric or logical.
+## Require that input @var{x} is numeric or logical.
 ##
-## Raises an error if the input @var{x} is not numeric or logical, as
+## Raise an error if the input @var{x} is not numeric or logical, as
 ## determined by @code{isnumeric (@var{x}) || islogical (@var{x})}.
 ##
+## @seealso{mustBeNumeric, isnumeric, islogical}
 ## @end deftypefn
 
 function mustBeNumericOrLogical (x)
-  if ! (isnumeric (x) || islogical (x))
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  if (! (isnumeric (x) || islogical (x)))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    error ("%s must be numeric or logical; got a %s", label, class (x));
+    error ("%s must be numeric or logical; found a %s", label, class (x));
   endif
+
 endfunction
 
-%!test
-%! mustBeNumericOrLogical ([])
-%! mustBeNumericOrLogical (true)
-%! mustBeNumericOrLogical (false)
-%! mustBeNumericOrLogical (42)
-%! mustBeNumericOrLogical (int32(42))
 
-%!error mustBeNumericOrLogical ()
-%!error mustBeNumericOrLogical ('foo')
-%!error mustBeNumericOrLogical ({})
-%!error mustBeNumericOrLogical (struct)
+%!test
+%! mustBeNumericOrLogical ([]);
+%! mustBeNumericOrLogical (true);
+%! mustBeNumericOrLogical (false);
+%! mustBeNumericOrLogical (42);
+%! mustBeNumericOrLogical (int32 (42));
+
+%!error <Invalid call> mustBeNumericOrLogical ()
+%!error <found a char> mustBeNumericOrLogical ("foo")
+%!error <found a struct> mustBeNumericOrLogical (struct ())
+%!error <found a cell> mustBeNumericOrLogical (cell ())

@@ -26,38 +26,48 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeGreaterThan (@var{x}, @var{c})
 ##
-## Requires that input @var{x} is greater than @var{c}.
+## Require that input @var{x} is greater than @var{c}.
 ##
-## Raises an error if any element of the input @var{x} is not greater than
+## Raise an error if any element of the input @var{x} is not greater than
 ## @var{c}, as determined by @code{@var{x} > @var{c}}.
 ##
+## @seealso{mustBeGreaterThanOrEqual, mustBeLessThan, gt}
 ## @end deftypefn
 
 function mustBeGreaterThan (x, c)
-  tf = x > c;
-  tf = tf(:);
-  if ! all (tf)
+
+  if (nargin != 2)
+    print_usage ();
+  endif
+
+  tf = (x > c)(:);
+  if (! all (tf))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    ix_bad = find (! tf);
+    bad_idx = find (! tf);
     try
-      bad = x(ix_bad);
-      errmsg = sprintf ("%s must be greater than %f; got %d elements that were not: values %s", ...
-        label, c, numel (ix_bad), mat2str (bad));
-    catch err
-      errmsg = sprintf ("%s must be greater than %f; got %d elements that were not: indexes %s", ...
-        label, c, numel (ix_bad), mat2str (ix_bad));
+      bad_val = x(bad_idx);
+      errmsg = sprintf ("%s must be greater than %f; found %d elements that were not: values %s", ...
+                        label, c, numel (bad_idx), mat2str (bad_val));
+    catch
+      errmsg = sprintf ("%s must be greater than %f; found %d elements that were not: indexes %s", ...
+                        label, c, numel (bad_idx), mat2str (bad_idx));
     end_try_catch
     error (errmsg);
   endif
+
 endfunction
 
-%!test
-%! mustBeGreaterThan (42, 0)
-%! mustBeGreaterThan (Inf, 9999)
 
-%!error mustBeGreaterThan (42, 42)
-%!error mustBeGreaterThan (Inf, Inf)
-%!error mustBeGreaterThan (NaN, 0)
+%!test
+%! mustBeGreaterThan (42, 0);
+%! mustBeGreaterThan (Inf, 9999);
+
+%!error <Invalid call> mustBeGreaterThan ()
+%!error <Invalid call> mustBeGreaterThan (1)
+%!error <Invalid call> mustBeGreaterThan (1,2,3)
+%!error <input must be greater than 42> mustBeGreaterThan (42, 42)
+%!error <found 1 elements that were not> mustBeGreaterThan (Inf, Inf)
+%!error <must be greater than 0> mustBeGreaterThan (NaN, 0)

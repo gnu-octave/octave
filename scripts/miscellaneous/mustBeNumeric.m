@@ -26,31 +26,39 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mustBeNumeric (@var{x})
 ##
-## Requires that input @var{x} is numeric.
+## Require that input @var{x} is numeric.
 ##
-## Raises an error if the input @var{x} is not numeric, as determined by
+## Raise an error if the input @var{x} is not numeric, as determined by
 ## @code{isnumeric (@var{x})}.
 ##
+## @seealso{mustBeNumericOrLogical, isnumeric}
 ## @end deftypefn
 
 function mustBeNumeric (x)
-  if ! isnumeric (x)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  if (! isnumeric (x))
     label = inputname (1);
-    if isempty (label)
+    if (isempty (label))
       label = "input";
     endif
-    error ("%s must be numeric; got a %s", label, class (x));
+    error ("%s must be numeric; found a %s", label, class (x));
   endif
+
 endfunction
 
-%!test
-%! mustBeNumeric ([])
-%! mustBeNumeric (42)
-%! mustBeNumeric (int32(42))
-%! mustBeNumeric (NaN)
 
-%!error mustBeNumeric ()
-%!error mustBeNumeric ('foo')
-%!error mustBeNumeric (struct)
-%!error mustBeNumeric ({})
-%!error mustBeNumeric (true)
+%!test
+%! mustBeNumeric ([]);
+%! mustBeNumeric (42);
+%! mustBeNumeric (int32 (42));
+%! mustBeNumeric (NaN);
+
+%!error <Invalid call> mustBeNumeric ()
+%!error <found a char> mustBeNumeric ("foo")
+%!error <found a logical> mustBeNumeric (true)
+%!error <found a struct> mustBeNumeric (struct ())
+%!error <found a cell> mustBeNumeric (cell ())

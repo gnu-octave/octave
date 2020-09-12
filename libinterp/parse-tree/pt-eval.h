@@ -138,7 +138,7 @@ namespace octave
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
         m_echo_files (), m_in_loop_command (false),
         m_breaking (0), m_continuing (0), m_returning (0),
-        m_indexed_object (nullptr), m_index_position (0),
+        m_indexed_object (), m_index_position (0),
         m_num_indices (0)
     { }
 
@@ -359,7 +359,7 @@ namespace octave
 
     octave_value_list
     convert_to_const_vector (tree_argument_list *arg_list,
-                             const octave_value *object = nullptr);
+                             const octave_value& object = octave_value ());
 
     octave_value_list
     convert_return_list_to_const_vector
@@ -629,7 +629,7 @@ namespace octave
       return val;
     }
 
-    const octave_value * indexed_object (void) const
+    octave_value indexed_object (void) const
     {
       return m_indexed_object;
     }
@@ -708,7 +708,7 @@ namespace octave
     octave_value_list
     make_value_list (tree_argument_list *args,
                      const string_vector& arg_nm,
-                     const octave_value *object, bool rvalue = true);
+                     const octave_value& object, bool rvalue = true);
 
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
@@ -839,7 +839,7 @@ namespace octave
     int m_returning;
 
     // Used by END function.
-    const octave_value *m_indexed_object;
+    octave_value m_indexed_object;
     int m_index_position;
     int m_num_indices;
   };

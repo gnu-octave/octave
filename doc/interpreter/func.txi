@@ -762,7 +762,7 @@ properties.  @code{validatestring} is used for string arguments and
 
 @DOCSTRING(validateattributes)
 
-As alternative to @code{validateattributes} there are several shorter
+As alternatives to @code{validateattributes} there are several shorter
 convenience functions to check for individual properties.
 
 @DOCSTRING(mustBeFinite)

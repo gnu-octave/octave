@@ -1665,7 +1665,7 @@ Example:
 
   octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  const octave_value *indexed_object = tw.indexed_object ();
+  octave_value indexed_object = tw.indexed_object ();
   int index_position = tw.index_position ();
   int num_indices = tw.num_indices ();
 
@@ -1675,18 +1675,18 @@ Example:
   // provide a better error message.  So just fail with an invalid use
   // message.  See bug #58830.
 
-  if (! indexed_object)
+  if (indexed_object.is_undefined ())
     error ("invalid use of 'end': may only be used to index existing value");
 
-  if (indexed_object->isobject ())
+  if (indexed_object.isobject ())
     {
       octave_value_list args;
 
       args(2) = num_indices;
       args(1) = index_position + 1;
-      args(0) = *indexed_object;
+      args(0) = indexed_object;
 
-      std::string class_name = indexed_object->class_name ();
+      std::string class_name = indexed_object.class_name ();
 
       octave::symbol_table& symtab = interp.get_symbol_table ();
 
@@ -1696,7 +1696,7 @@ Example:
         return octave::feval (meth.function_value (), args, 1);
     }
 
-  dim_vector dv = indexed_object->dims ();
+  dim_vector dv = indexed_object.dims ();
   int ndims = dv.ndims ();
 
   if (num_indices < ndims)
@@ -1741,17 +1741,18 @@ namespace octave
 {
   octave_value_list
   tree_evaluator::convert_to_const_vector (tree_argument_list *arg_list,
-                                           const octave_value *object)
+                                           const octave_value& object)
   {
     // END doesn't make sense as a direct argument for a function (i.e.,
     // "fcn (end)" is invalid but "fcn (array (end))" is OK).  Maybe we
     // need a different way of asking an octave_value object this
     // question?
 
-    bool stash_object = (object && ! (object->is_function ()
-                                      || object->is_function_handle ()));
+    bool stash_object
+      = (object.is_defined ()
+         && ! (object.is_function () || object.is_function_handle ()));
 
-    unwind_protect_var<const octave_value *> upv1 (m_indexed_object);
+    unwind_protect_var<octave_value> upv1 (m_indexed_object);
     unwind_protect_var<int> upv2 (m_index_position);
     unwind_protect_var<int> upv3 (m_num_indices);
 
@@ -3997,7 +3998,7 @@ namespace octave
   octave_value_list
   tree_evaluator::make_value_list (tree_argument_list *args,
                                    const string_vector& arg_nm,
-                                   const octave_value *object, bool rvalue)
+                                   const octave_value& object, bool rvalue)
   {
     octave_value_list retval;
 
@@ -4006,8 +4007,7 @@ namespace octave
         unwind_protect_var<const std::list<octave_lvalue> *>
           upv (m_lvalue_list, nullptr);
 
-        if (rvalue && object && args->has_magic_end ()
-            && object->is_undefined ())
+        if (rvalue && args->has_magic_end () && object.is_undefined ())
           err_invalid_inquiry_subscript ();
 
         retval = convert_to_const_vector (args, object);

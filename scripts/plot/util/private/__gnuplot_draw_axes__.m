@@ -1754,6 +1754,15 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fputs (plot_stream, "set view 0,0;\n");
   endif
 
+  ## Undo the aspect ratio lock imposed by the gnuplot command sequence:
+  ##   "set view equal xy; set view map"
+  ## See bug #40686: "Incorrect colorbar size"
+  if (nd == 3
+      && strcmp (axis_obj.dataaspectratiomode, "manual")
+      && axis_obj.dataaspectratio(1) == axis_obj.dataaspectratio(2))
+    fprintf (plot_stream, "set size noratio;\n");
+  endif
+
   if (bg_is_set)
     fputs (plot_stream, ['if (GPVAL_TERM eq "qt") unset obj 1;' "\n"]);
     bg_is_set = false;

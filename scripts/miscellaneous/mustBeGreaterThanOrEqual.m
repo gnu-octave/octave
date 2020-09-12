@@ -69,6 +69,6 @@ endfunction
 
 %!error <Invalid call> mustBeGreaterThanOrEqual ()
 %!error <Invalid call> mustBeGreaterThanOrEqual (1)
-%!error <Invalid call> mustBeGreaterThanOrEqual (1,2,3)
+%!error <called with too many inputs> mustBeGreaterThanOrEqual (1, 2, 3)
 %!error <must be greater than or equal to 2> mustBeGreaterThanOrEqual (1, 2)
 %!error <must be greater than or equal to 0> mustBeGreaterThanOrEqual (NaN, 0)

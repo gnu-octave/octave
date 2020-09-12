@@ -70,6 +70,6 @@ endfunction
 
 %!error <Invalid call> mustBeMember ()
 %!error <Invalid call> mustBeMember (1)
-%!error <Invalid call> mustBeMember (1,2,3)
+%!error <called with too many inputs> mustBeMember (1, 2, 3)
 %!error <found 1 elements> mustBeMember ([1, 42], 1:5)
 %!error <found 1 elements> mustBeMember ("nope", {"foo", "bar", "baz"})

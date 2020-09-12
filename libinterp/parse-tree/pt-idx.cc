@@ -150,7 +150,7 @@ namespace octave
   static inline octave_value_list
   make_value_list (tree_evaluator& tw,
                    tree_argument_list *m_args,
-                   const string_vector& m_arg_nm, const octave_value *object,
+                   const string_vector& m_arg_nm, const octave_value& object,
                    bool rvalue = true)
   {
     // FIXME: This function duplicates tree_evaluator::make_value_list.
@@ -167,8 +167,7 @@ namespace octave
                            }, tw.lvalue_list ());
         tw.set_lvalue_list (nullptr);
 
-        if (rvalue && object && m_args->has_magic_end ()
-            && object->is_undefined ())
+        if (rvalue && m_args->has_magic_end () && object.is_undefined ())
           err_invalid_inquiry_subscript ();
 
         retval = tw.convert_to_const_vector (m_args, object);
@@ -250,7 +249,7 @@ namespace octave
           case '(':
             {
               octave_value_list tidx
-                = make_value_list (tw, *p_args, *p_arg_nm, &tmp, false);
+                = make_value_list (tw, *p_args, *p_arg_nm, tmp, false);
 
               idx.push_back (tidx);
 
@@ -268,7 +267,7 @@ namespace octave
           case '{':
             {
               octave_value_list tidx
-                = make_value_list (tw, *p_args, *p_arg_nm, &tmp, false);
+                = make_value_list (tw, *p_args, *p_arg_nm, tmp, false);
 
               if (tmp.is_undefined ())
                 {
@@ -648,12 +647,12 @@ namespace octave
           {
           case '(':
             idx_list.push_back (make_value_list (tw, *p_args, *p_arg_nm,
-                                                 &partial_expr_val));
+                                                 partial_expr_val));
             break;
 
           case '{':
             idx_list.push_back (make_value_list (tw, *p_args, *p_arg_nm,
-                                                 &partial_expr_val));
+                                                 partial_expr_val));
             break;
 
           case '.':

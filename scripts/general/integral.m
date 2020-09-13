@@ -30,11 +30,11 @@
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using
 ## adaptive quadrature.
 ##
-## @code{integral} is a wrapper for @code{quadcc} (general scalar integrands),
-## @code{quadgk} (integrals with specified integration paths), and @code{quadv}
-## (array-valued integrands) that is intended to provide @sc{matlab}
-## compatibility.  More control of the numerical integration may be achievable
-## by calling the various quadrature functions directly.
+## @code{integral} is a wrapper for @code{quadcc} (general real-valued, scalar
+## integrands and limits), @code{quadgk} (integrals with specified integration
+## paths), and @code{quadv} (array-valued integrands) that is intended to
+## provide @sc{matlab} compatibility.  More control of the numerical integration
+## may be achievable by calling the various quadrature functions directly.
 ##
 ## @var{f} is a function handle, inline function, or string containing the name
 ## of the function to evaluate.  The function @var{f} must be vectorized and
@@ -114,11 +114,36 @@ function q = integral (f, a, b, varargin)
   if (nargin < 3 || (mod (nargin, 2) == 0))
     print_usage ();
   endif
+  
+  ## quadcc can't handle complex limits or integrands, but quadgk & quadv can.
+  ## Check for simple cases of complex limits and integrand.
+  f_is_complex = false;
+  if (iscomplex (a) || iscomplex (b))
+    f_is_complex = true;
+  elseif (iscomplex (feval (f, a)) || iscomplex (feval (f, b)))
+    f_is_complex = true;
+  endif
 
   if (nargin == 3)
     ## Pass the simplest case directly to general integrator.
     ## Let quadcc function handle input checks on function and limits.
-    q = quadcc (f, a, b);
+    if (! f_is_complex)
+      try
+        q = quadcc (f, a, b);
+      catch quaderror
+        if (strcmp (quaderror.message,
+                    "quadcc: integrand F must return a single, real-valued vector"))
+          q = quadgk (f, a, b);
+        else
+          error (quaderror.message);
+        endif
+      end_try_catch
+
+    else
+      ## Complex-valued integral
+      q = quadgk (f, a, b);
+    endif
+
   else
     ## Parse options to determine how to call integrator.
     abstol = [];
@@ -182,7 +207,21 @@ function q = integral (f, a, b, varargin)
         q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol,
                              "WayPoints", waypoints);
       else
-        q = quadcc (f, a, b, [abstol, reltol]);
+        if (! f_is_complex)
+          try
+            q = quadcc (f, a, b, [abstol, reltol]); 
+          catch quaderror
+            if (strcmp (quaderror.message,
+                        "quadcc: integrand F must return a single, real-valued vector"))
+              q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol);
+            else
+              error (quaderror.message);
+            endif
+          end_try_catch
+        else
+          ## Complex-valued integral
+          q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol);
+        endif
       endif
     endif
   endif
@@ -224,6 +263,13 @@ endfunction
 %! assert (class (integral (@sin, 0, 1, "Waypoints", single (0.5))), "single");
 %! assert (class (integral (@sin, single (0), 1, "Waypoints", 0.5)), "single");
 %! assert (class (integral (@sin, 0, single (1), "Waypoints", 0.5)), "single");
+
+%!test  # test complex argument handling
+%! f = @(x) round (exp (i*x));
+%! assert (integral (f, 0, pi), quadgk (f, 0, pi), eps);
+%! assert (integral (f, -1, 1), 2, 5*eps);
+%! assert (integral (@sin, -i, i), 0, eps);
+%! assert (1.5 * integral (@sqrt, -1, 0), i, eps);
 
 %!test
 %! f = @(x) x.^5 .* exp (-x) .* sin (x);

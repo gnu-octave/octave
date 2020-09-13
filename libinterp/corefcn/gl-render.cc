@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <limits>
 #include <sstream>
 
 #if defined (HAVE_WINDOWS_H)
@@ -1279,8 +1280,21 @@ namespace octave
 
     Matrix x_zlim = props.get_transform_zlim ();
 
-    xZ1 = std::max (-1e6, x_zlim(0)-(x_zlim(1)-x_zlim(0))*100.0);
-    xZ2 = std::min (1e6, x_zlim(1)+(x_zlim(1)-x_zlim(0))*100.0);
+    // Expand the distance between the clipping planes symmetrically by
+    // an arbitrary factor (see bug #54551).
+    const double expansion_fac = 100.0;
+    // Also make sure that the distance between the clipping planes
+    // differs in single precision (see bug #58956).  This factor is also
+    // arbitrary.  Different values (>2) might also work.
+    const double single_prec_fac = 10.0;
+
+    double avgZ = x_zlim(0) / 2.0 + x_zlim(1) / 2.0;
+    double span 
+      = std::max (expansion_fac * (x_zlim(1)-x_zlim(0)),
+                  single_prec_fac * std::abs (avgZ)
+                  * std::numeric_limits<float>::epsilon ());
+    xZ1 = avgZ - span;
+    xZ2 = avgZ + span;
 
     Matrix x_mat1 = props.get_opengl_matrix_1 ();
     Matrix x_mat2 = props.get_opengl_matrix_2 ();

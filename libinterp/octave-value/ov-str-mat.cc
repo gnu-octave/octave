@@ -234,9 +234,22 @@ octave_char_matrix_str::string_value (bool) const
 
   charMatrix chm (matrix);
 
+  if (chm.rows () > 1)
+    warning_with_id ("Octave:charmat-truncated",
+                     "multi-row character matrix converted to a string, only the first row is used");
+
   // FIXME: Is this correct?
   return chm.row_as_string (0);
 }
+
+/*
+%!test <*49536>
+%! warning ("on", "Octave:charmat-truncated", "local");
+%! s = char ("this", "is", "a", "char", "matrix");
+%! fail ("sprintf (s)", ...
+%!       "warning",     ...
+%!       "multi-row character matrix converted to a string");
+*/
 
 Array<std::string>
 octave_char_matrix_str::cellstr_value (void) const
@@ -268,7 +281,8 @@ octave_char_matrix_str::short_disp (std::ostream& os) const
 {
   if (matrix.ndims () == 2 && numel () > 0)
     {
-      std::string tmp = string_value ();
+      charMatrix chm (matrix);
+      std::string tmp = chm.row_as_string (0);
 
       // FIXME: should this be configurable?
       size_t max_len = 100;

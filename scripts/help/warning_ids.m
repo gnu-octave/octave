@@ -139,6 +139,13 @@
 ## By default, the @code{Octave:built-in-variable-assignment} warning is
 ## enabled.
 ##
+## @item Octave:charmat-truncated
+## If the @code{Octave:charmat-truncated} warning is enabled, a warning is
+## printed when a character matrix with multiple rows is converted to a string.
+## In this case, the Octave interpreter keeps only the first row and discards
+## the others.
+## By default, the @code{Octave:charmat-truncated} warning is enabled.
+##
 ## @item Octave:classdef-to-struct
 ## If the @code{Octave:classdef-to-struct} warning is enabled, a warning
 ## is issued when a classdef object is forcibly converted into a struct with

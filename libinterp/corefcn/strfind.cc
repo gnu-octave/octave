@@ -418,17 +418,18 @@ strrep ("This is a test string", "is", "&%$")
   if (nargin == 5)
     {
       if (! args(3).is_string () || ! args(4).is_scalar_type ())
-        error ("strrep: invalid optional arguments");
+        error ("strrep: invalid optional argument");
 
       std::string opt = args(3).string_value ();
-      if (opt == "overlaps")
-        overlaps = args(4).bool_value ();
-      else
+      if (opt != "overlaps")
         error ("strrep: unknown option: %s", opt.c_str ());
+
+      overlaps = args(4).bool_value ();
     }
 
   octave_value retval;
 
+  // Aliasing for better code readability
   octave_value argstr = args(0);
   octave_value argpat = args(1);
   octave_value argrep = args(2);
@@ -442,25 +443,42 @@ strrep ("This is a test string", "is", "&%$")
       qs_preprocess (pat, table);
 
       if (argstr.is_string ())
-        retval = qs_replace (argstr.char_array_value (), pat, rep,
-                             table, overlaps);
+        if (argstr.rows () == 1)  // most common case of a single string
+          retval = qs_replace (argstr.char_array_value (), pat, rep,
+                               table, overlaps);
+        else
+          {
+            const charMatrix argchm = argstr.char_matrix_value ();
+            octave_idx_type nel = argchm.rows ();
+            octave_idx_type nc = argchm.columns ();
+            charMatrix retchm (nel, 0);
+
+            for (octave_idx_type i = 0; i < nel; i++)
+              {
+                charMatrix rowchm;
+                rowchm = qs_replace (argchm.extract (i, 0, i, nc-1),
+                                     pat, rep, table, overlaps);
+                retchm.insert (rowchm, i, 0);
+              }
+
+            retval = retchm;
+          }
       else if (argstr.iscell ())
         {
-          const Cell argsc = argstr.cell_value ();
-          Cell retc (argsc.dims ());
-          octave_idx_type ns = argsc.numel ();
+          const Cell argcell = argstr.cell_value ();
+          if (! argcell.iscellstr ())
+            error ("strrep: each element of S must be a string");
 
-          for (octave_idx_type i = 0; i < ns; i++)
+          Cell retcell (argcell.dims ());
+          octave_idx_type nel = argcell.numel ();
+
+          for (octave_idx_type i = 0; i < nel; i++)
             {
-              octave_value argse = argsc(i);
-              if (argse.is_string ())
-                retc(i) = qs_replace (argse.char_array_value (), pat, rep,
-                                      table, overlaps);
-              else
-                error ("strrep: each element of S must be a string");
+              retcell(i) = qs_replace (argcell(i).char_array_value (),
+                                       pat, rep, table, overlaps);
             }
 
-          retval = retc;
+          retval = retcell;
         }
       else
         error ("strrep: S must be a string or cell array of strings");
@@ -478,9 +496,23 @@ strrep ("This is a test string", "is", "&%$")
 %!                "Th&%$ &%$ a test string")
 %!assert (strrep ("abababc", "abab", "xyz"), "xyzxyzc")
 %!assert (strrep ("abababc", "abab", "xyz", "overlaps", false), "xyzabc")
+%!assert (strrep ({"Hello World"; "Goodbye World"}, "World", "Jane"),
+%!                {"Hello Jane"; "Goodbye Jane"})
+%!assert (strrep (char ("Hello World", "Goodbye World"), "World", "Jane"),
+%!                char ("Hello Jane", "Goodbye Jane"))
 
 %!assert (size (strrep ("a", "a", "")), [0 0])
 
 %!error strrep ()
-%!error strrep ("foo", "bar", 3, 4)
+%!error strrep ("A")
+%!error strrep ("A", "B")
+%!error strrep ("A", "B", "C", "D")
+%!error strrep ("A", "B", "C", "D", "E", "F")
+%!error <invalid optional argument> strrep ("A", "B", "C", 3, true)
+%!error <invalid optional argument> strrep ("A", "B", "C", "str", ones (2,2))
+%!error <unknown option: foobar> strrep ("A", "B", "C", "foobar", true)
+%!error <each element of S must be a string> strrep ({"A", 1.0}, "B", "C")
+%!error <S must be a string or cell array of strings> strrep (1.0, "B", "C")
+%!error <PTN and REP arguments must be strings> strrep ("A", 1.0, "C")
+%!error <PTN and REP arguments must be strings> strrep ("A", "B", 1.0)
 */

@@ -2736,7 +2736,7 @@ void
 graphics_object::set_value_or_default (const caseless_str& pname,
                                        const octave_value& val)
 {
-  if (val.is_string ())
+  if (val.is_string () && val.rows () == 1)
     {
       std::string sval = val.string_value ();
 

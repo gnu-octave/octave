@@ -118,20 +118,20 @@ namespace octave
   static inline realtype *
   nv_data_s (N_Vector& v)
   {
-#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
     // Disable warning from GCC about old-style casts in Sundials
     // macro expansions.  Do this in a function so that this
     // diagnostic may still be enabled for the rest of the file.
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wold-style-cast"
-#endif
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wold-style-cast"
+#  endif
 
     return NV_DATA_S (v);
 
-#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
     // Restore prevailing warning state for remainder of the file.
-#  pragma GCC diagnostic pop
-#endif
+#   pragma GCC diagnostic pop
+#  endif
   }
 
   class IDA
@@ -486,17 +486,17 @@ namespace octave
     else
       jac = (*m_jacspcell) (m_spdfdy, m_spdfdyp, cj);
 
-#    if defined (HAVE_SUNSPARSEMATRIX_REALLOCATE)
+#     if defined (HAVE_SUNSPARSEMATRIX_REALLOCATE)
     octave_f77_int_type nnz = to_f77_int (jac.nnz ());
     if (nnz > SUNSparseMatrix_NNZ (Jac))
       {
-        // Allocate required memory for sparse Jacobian defined in user function
-        // This will always be required once since we set the number of
-        // non-zero elements to zero initially.
+        // Allocate memory for sparse Jacobian defined in user function.
+        // This will always be required at least once since we set the number
+        // of non-zero elements to zero initially.
         if (SUNSparseMatrix_Reallocate (Jac, nnz))
-          error("Unable to allocate sufficient memory for IDA sparse matrix");
+          error ("Unable to allocate sufficient memory for IDA sparse matrix");
       }
-#    endif
+#     endif
 
     SUNMatZero_Sparse (Jac);
     // We have to use "sunindextype *" here but still need to check that

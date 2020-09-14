@@ -49,7 +49,8 @@
 ## @var{z} by supplying a color matrix, @var{c}.
 ##
 ## Any property/value pairs are passed directly to the underlying surface
-## object.
+## object.  The full list of properties is documented at
+## @ref{Surface Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

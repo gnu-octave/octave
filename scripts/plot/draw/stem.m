@@ -59,7 +59,8 @@
 ## plots 10 stems with heights from 2 to 20 in red;
 ##
 ## Optional property/value pairs may be specified to control the appearance
-## of the plot.
+## of the plot.  The full list of properties is documented at
+## @ref{Line Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

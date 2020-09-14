@@ -42,7 +42,8 @@
 ## of the same format as the @code{plot} command.
 ##
 ## Multiple property/value pairs may be specified, but they must appear in
-## pairs.
+## pairs. The full list of properties is documented at
+## @ref{Line Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

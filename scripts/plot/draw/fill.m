@@ -47,7 +47,8 @@
 ## color between the vertices.
 ##
 ## Multiple property/value pairs for the underlying patch object may be
-## specified, but they must appear in pairs.
+## specified, but they must appear in pairs.  The full list of properties is
+## documented at @ref{Patch Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

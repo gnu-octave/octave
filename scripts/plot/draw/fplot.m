@@ -59,6 +59,9 @@
 ## in pairs.  These arguments are applied to the line objects drawn by
 ## @code{plot}.
 ##
+## The full list of line properties is documented at
+## @ref{Line Properties}.
+##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##

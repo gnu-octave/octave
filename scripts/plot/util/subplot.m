@@ -94,6 +94,7 @@
 ## The values in @var{pos} are normalized in the range [0,1].
 ##
 ## Any property/value pairs are passed directly to the underlying axes object.
+## The full list of properties is documented at @ref{Axes Properties}.
 ##
 ## Any previously existing axes that would be (partly) covered by the newly
 ## created axes are deleted.

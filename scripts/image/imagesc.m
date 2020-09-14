@@ -52,7 +52,8 @@
 ## form is used which first calls @code{newplot} to prepare the graphic figure
 ## and axes.  When the only inputs to @code{image} are property/value pairs
 ## the Low-Level form is used which creates a new instance of an image object
-## and inserts it in the current axes.
+## and inserts it in the current axes.  The full list of properties is
+## documented at @ref{Image Properties}.
 ##
 ## @seealso{image, imshow, caxis}
 ## @end deftypefn

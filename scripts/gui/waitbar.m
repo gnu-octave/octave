@@ -44,7 +44,8 @@
 ## function handle @var{fcn}.
 ##
 ## The appearance of the waitbar figure window can be configured by passing
-## @var{prop}/@var{val} pairs to the function.
+## @var{prop}/@var{val} pairs to the function.  The full list of properties is
+## documented at @ref{Figure Properties}.
 ##
 ## When called with a single input the current waitbar, if it exists, is
 ## updated to the new value @var{frac}.  If there are multiple outstanding

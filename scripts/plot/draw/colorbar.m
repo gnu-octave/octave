@@ -82,7 +82,8 @@
 ## operate on this colorbar directly.
 ##
 ## Additional property/value pairs are passed directly to the underlying axes
-## object.
+## object. The full list of properties is documented at
+## @ref{Axes Properties}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created
 ## colorbar object.

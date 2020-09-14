@@ -50,6 +50,7 @@
 ## be used to obtain the colormap of each image.
 ##
 ## See the Octave manual for more information in representing images.
+## (@pxref{Representing Images})
 ##
 ## Some file formats, such as TIFF and GIF, are able to store multiple images
 ## in a single file.  @var{idx} can be a scalar or vector specifying the

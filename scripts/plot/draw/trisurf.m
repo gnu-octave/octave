@@ -53,6 +53,7 @@
 ## @qcode{"flat"}).
 ##
 ## Any property/value pairs are passed directly to the underlying patch object.
+##  The full list of properties is documented at @ref{Patch Properties}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created patch
 ## object.

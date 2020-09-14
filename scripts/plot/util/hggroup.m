@@ -33,7 +33,8 @@
 ## If no parent is specified, the group is created in the current axes.
 ##
 ## Multiple property/value pairs may be specified for the hggroup, but they
-## must appear in pairs.
+## must appear in pairs.  The full list of properties is documented at
+## @ref{Axes Properties}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created
 ## hggroup object.

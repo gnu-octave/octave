@@ -33,6 +33,9 @@
 ## An optional list of @var{property}/@var{value} pairs can be used to change
 ## the properties of the created text label.
 ##
+## The full list of text object properties is documented at
+## @ref{Text Properties}.
+##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axes rather than the current axes returned by @code{gca}.
 ##

@@ -56,7 +56,8 @@
 ## The @qcode{"userdata"} property of the text objects contains the numerical
 ## value of the contour label.
 ##
-## An example of the use of @code{clabel} is
+## The full list of text object properties is documented at
+## @ref{Text Properties}.
 ##
 ## @example
 ## @group

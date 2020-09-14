@@ -121,9 +121,9 @@ function hui = uicontrol (varargin)
                                        {"figure", "uipanel", "uibuttongroup"});
 
   ## Validate style
-  idx = find (strcmp (args, "style"), 1, "last");
-  if (! isempty (idx))
-    if (idx < numel (args) && strcmp (varargin{idx+1}, "frame"))
+  idx = find (strcmpi (args(1:2:end), "style"), 1, "last");
+  if (! isempty (idx) && 2*idx <= numel (args))
+    if (strcmpi (args{2*idx}, "frame"))
       warning ("Octave:unimplemented-matlab-functionality",
                'uicontrol: "frame" style is not implemented.  Use uipanel() or uibuttongroup() instead');
     endif
@@ -136,3 +136,12 @@ function hui = uicontrol (varargin)
   endif
 
 endfunction
+
+
+%!warning <"frame" style is not implemented>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = uicontrol (hf, "string", "Hello World", "Style", "frame");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

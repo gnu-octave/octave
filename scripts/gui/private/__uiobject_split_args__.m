@@ -46,13 +46,13 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
   endif
 
   if (! isempty (args))
-    i = find (strcmpi (args, "parent"), 1, "first");
-    if (! isempty (i) && numel (args) > i)
-      parent = args{i+1};
+    i = find (strcmpi (args(1:2:end), "parent"), 1, "first");
+    if (! isempty (i) && numel (args) >= 2*i)
+      parent = args{2*i};
       if (! ishghandle (parent))
         error ("%s: invalid parent handle.", who);
       endif
-      args(i:i+1) = [];
+      args((2*i-1):2*i) = [];
     endif
   endif
 

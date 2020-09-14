@@ -2050,8 +2050,9 @@ endfunction
 %!testif HAVE_FREETYPE <*40333>
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   axes ("units", "normalized");
-%!   plot (1:10);
+%!   hax = axes ("units", "normalized", "fontsize", 10);
+%!   hold on;  # preserve properties of hax in call to plot()
+%!   plot (hax, 1:10);
 %!   hl = legend ("Legend Text", "units", "normalized");
 %!   pos = get (gca, "position");
 %!   set (hf, "position", [0, 0, 200, 200]);

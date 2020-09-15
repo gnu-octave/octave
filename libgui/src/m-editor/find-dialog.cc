@@ -224,7 +224,14 @@ namespace octave
 
     // Save position
     QPoint dlg_pos = pos ();
-    m_last_position = QPoint (dlg_pos.x (), dlg_pos.y ());
+
+#if defined (Q_OS_WIN32)
+    int y = dlg_pos.y ();
+#else
+    int y = dlg_pos.y () - geometry ().height () + frameGeometry ().height ();
+#endif
+
+    m_last_position = QPoint (dlg_pos.x (), y);
 
     s->setValue (ed_fdlg_pos.key, m_last_position);
 

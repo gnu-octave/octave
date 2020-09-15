@@ -12,8 +12,8 @@ MEX_TEST_SRC = \
 MEX_TEST_FUNCTIONS = $(MEX_TEST_SRC:%.c=%.mex)
 
 ## Since these definitions for MKOCTFILE and MKMEXFILE are only used
-## here, defining them in this file is probably OK.  If there are ever
-## used elsewhre, maybe then they could be moved to build-aux/module.mk
+## here, defining them in this file is probably OK.  If they are ever
+## used elsewhere, maybe then they could be moved to build-aux/module.mk
 ## or the main Makefile.am file.  The MKOCTFILE variables are included
 ## for completeness, in case we someday want to test building .oct
 ## files as well.
@@ -32,14 +32,22 @@ am__vopt_mkmexfile_1 = -v
 MKOCTFILECPPFLAGS = \
   -I$(top_srcdir)/libinterp/corefcn \
   -Ilibinterp/corefcn
+MKOCTFILELDFLAGS = \
+  -L$(top_builddir)/libinterp/.lib \
+  -L$(top_builddir)/liboctave/.lib
 
-MKOCTFILE = $(top_builddir)/src/mkoctfile $(MKOCTFILECPPFLAGS)
+MKOCTFILE = \
+  $(top_builddir)/src/mkoctfile $(MKOCTFILECPPFLAGS) $(MKOCTFILELDFLAGS)
 
 MKMEXFILECPPFLAGS = \
   -I$(top_srcdir)/libinterp/corefcn \
   -Ilibinterp/corefcn
+MKMEXFILELDFLAGS = \
+  -L$(top_builddir)/libinterp/.lib \
+  -L$(top_builddir)/liboctave/.lib
 
-MKMEXFILE = $(top_builddir)/src/mkoctfile --mex $(MKMEXFILECPPFLAGS)
+MKMEXFILE = \
+  $(top_builddir)/src/mkoctfile --mex $(MKMEXFILECPPFLAGS) $(MKMEXFILELDFLAGS)
 
 $(MEX_TEST_FUNCTIONS) : %.mex : %.c | %reldir%/$(octave_dirstamp)
 	$(AM_V_mkmexfile)$(MKMEXFILE) $(AM_VOPT_mkmexfile) $< -o $@ || rm -f $@

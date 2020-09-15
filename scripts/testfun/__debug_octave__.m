@@ -38,7 +38,7 @@
 ## @example
 ## @group
 ## __debug_octave__ ()
-## __debug_octave__ ("start gdb -p %d")
+## __debug_octave__ ("cmd /c start gdb -p %d")
 ## @end group
 ## @end example
 ## @end deftypefn
@@ -57,7 +57,7 @@ function __debug_octave__ (command_string)
     if (isunix ())
       command_string = "x-terminal-emulator -e gdb -p %d";
     elseif (ispc ())
-      command_string = "start gdb -p %d";
+      command_string = "cmd /c start gdb -p %d";
     elseif (ismac ())
       command_string = "osascript -e 'tell application \"Terminal\" to do script \"lldb -p %d\"'";
     else

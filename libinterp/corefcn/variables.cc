@@ -1418,27 +1418,49 @@ maybe_missing_function_hook (const std::string& name)
 
 DEFMETHOD (__varval__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __varval__ (@var{name})
+@deftypefn {} {@var{value} =} __varval__ (@var{name})
 Return the value of the variable @var{name} directly from the symbol table.
+
+If @var{name} does not exist then nothing is returned, not even an empty matrix
+(@code{[]}), since there would be no way to distinguish between a variable
+not found in the symbol table and a variable who's value was @code{[]}.
+
+A standard usage pattern is to code a @code{try}/@code{catch} block around a
+call to @code{__varval__}.
+
+Example Code
+
+@example
+@group
+try
+  @var{val} = __varval__ (@var{name});
+catch
+  ## No variable @var{name} found in symbol table
+  @var{val} = NA;                  # Substitute Not Available (NA)
+  error ("@var{name} not found");  # or, throw an error.
+end_try_catch
+@end group
+@end example
+
+Programming Note: The magic @var{name} @qcode{".argn."} will retrieve the text
+of input arguments to a function and is used by @code{inputname} internally.
+@seealso{inputname}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  std::string name = args(0).xstring_value ("__varval__: first argument must be a variable name");
+  std::string name = args(0).xstring_value ("__varval__: NAME must be a string");
 
-  std::string nm = args(0).string_value ();
-
-  // FIXME: we need this kluge to implement inputname in a .m file.
-
-  if (nm == ".argn.")
+  // We need this kluge to implement inputname in a .m file.
+  if (name == ".argn.")
     {
       octave::tree_evaluator& tw = interp.get_evaluator ();
 
       return tw.get_auto_fcn_var (octave::stack_frame::ARG_NAMES);
     }
 
-  return interp.varval (nm);
+  return interp.varval (name);
 }
 
 static std::string Vmissing_component_hook;

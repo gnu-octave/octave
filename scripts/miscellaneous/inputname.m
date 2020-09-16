@@ -31,19 +31,47 @@
 ## @deftypefnx {} {} inputname (@var{n}, @var{ids_only})
 ## Return the name of the @var{n}-th argument to the calling function.
 ##
-## If the argument is not a simple variable name, return an empty string.  As
-## an example, a reference to a field in a structure such as @code{s.field} is
-## not a simple name and will return @qcode{""}.
+## If the argument is not a simple variable name, return an empty string.
+## Examples which will return @qcode{""} are numbers (@code{5.1}),
+## expressions (@code{@var{y}/2}), and cell or structure indexing
+## (@code{@var{c}@{1@}} or @code{@var{s}.@var{field}}).
 ##
 ## @code{inputname} is only useful within a function.  When used at the command
-## line it always returns an empty string.
+## line or within a script it always returns an empty string.
 ##
-## By default, return an empty string if the @var{n}-th argument is not
-## a valid variable name.  If the optional argument @var{ids_only} is
-## false, return the text of the argument even if it is not a valid
-## variable name.
-## @seealso{nargin, nthargout}
+## By default, return an empty string if the @var{n}-th argument is not a valid
+## variable name.  If the optional argument @var{ids_only} is false, return the
+## text of the argument even if it is not a valid variable name.  This is an
+## Octave extension that allows the programmer to view exactly how the function
+## was invoked even when the inputs are complex expressions.
+## @seealso{nargin, narginchk}
 ## @end deftypefn
+
+## FIXME: Actually, it probably *isn't* worth fixing, but there are small
+## differences between Octave and Matlab.
+##
+## 1) When called from the top-level or a script, Matlab throws an error
+##
+##   inputname (1)   % at command prompt
+##   % Octave returns "", Matlab throws an error
+##
+## 2) cell or struct indexing causes all further names to be returned as ""
+##
+##   c = {'a', 'b'}
+##   y = 1; z = 2;
+##   func (c, y, z)
+##   % inputname() would return 'c', 'y', 'z' for the inputs.
+##   func (c{1}, y, z)
+##   % inputname() would return '', '', '' for the inputs.
+##
+## 3) If inputname is not called from a function, Matlab walks up the stack
+##    until it finds some valid code and then works from there.  This could
+##    be relevant for mex files or anonymous functions.
+##
+##   f = @(x) inputname (x);
+##   a = 1:4;
+##   arrayfun (fn, a, 'uniformoutput', false)
+##   % output is {'fn', 'a', '', ''}
 
 function name = inputname (n, ids_only = true)
 
@@ -51,56 +79,86 @@ function name = inputname (n, ids_only = true)
     print_usage ();
   endif
 
-  name = "";
+  if (! isscalar (n) || ! isindex (n))
+    error ("inputname: N must be a scalar index");
+  endif
+
   try
-    name = evalin ("caller", sprintf ("__varval__ ('.argn.'){%d}", fix (n)));
+    name = evalin ("caller", sprintf ("__varval__ ('.argn.'){%d}", n));
   catch
+    name = "";
     return;
   end_try_catch
 
-  ## For compatibility with Matlab,
-  ## return empty string if argument name is not a valid identifier.
+  ## For compatibility with Matlab, return empty string if argument name is
+  ## not a valid identifier.
   if (ids_only && ! isvarname (name))
     name = "";
+  elseif (ids_only)
+    ## More complicated checking is required to verify name (bug #59103).
+    ## NAME may be text, like "Inf", which is an acceptable variable name
+    ## that passes isvarname(), but that does not mean it is an actual
+    ## variable name, rather than a function or IEEE number.
+    try
+      v = evalin ("caller",
+                  sprintf ("evalin ('caller', '__varval__ (\"%s\")')", name));
+    catch
+      name = "";
+    end_try_catch
   endif
 
 endfunction
 
 
-## Warning: heap big magic in the following tests!!!
-## The test function builds a private context for each test, with only the
-## specified values shared between them.  It does this using the following
-## template:
-##
-##     function [<shared>] = testfn (<shared>)
-##        <test>
-##     endfunction
-##
-## To test inputname, I need a function context invoked with known parameter
-## names.  So define a couple of shared parameters, et voila!, the test is
-## trivial.
-
-%!shared hello, worldly
-%!assert (inputname (1), "hello")
-%!assert (inputname (2), "worldly")
-%!assert (inputname (3), "")
-
-## Clear parameter list so that testfn is created with zero inputs/outputs
-%!shared
-%!assert (inputname (-1), "")
-%!assert (inputname (1), "")
-
-%!function r = __foo1__ (x, y)
-%!  r = inputname (2);
+%!function name = __iname1__ (arg1, arg2, arg3)
+%!  name = inputname (1);
 %!endfunction
-%!assert (__foo1__ (pi, e), "e")
-%!assert (feval (@__foo1__, pi, e), "e")
 
-%!function r = __foo2__ (x, y)
-%!  r = inputname (2, false);
+%!function name = __iname1_ID__ (arg1, arg2, arg3)
+%!  name = inputname (1, false);
 %!endfunction
-%!assert (__foo2__ (pi+1, 2+2), "2 + 2")
-%!assert (feval (@__foo2__, pi, pi/2), "pi / 2")
+
+%!function name = __iname2__ (arg1, arg2, arg3)
+%!  name = inputname (2);
+%!endfunction
+
+%!function names = __iname3__ (arg1, arg2, arg3)
+%!  names = cell (1, 3);
+%!  for i = 1:3
+%!    names{i} = inputname (i);
+%!  endfor
+%!endfunction
+
+%!test
+%! assert (__iname1__ ('xvar'), "");
+%! xvar = 1; 
+%! assert (__iname1__ (xvar), "xvar");
+
+%!test
+%! xvar = 1;  yvar = 2;
+%! assert (__iname2__ (xvar), "");
+%! assert (__iname2__ (xvar, yvar), "yvar");
+
+%!test
+%! xvar = 1;  yvar = 2;
+%! assert (__iname3__ (xvar), {"xvar", "", ""}); 
+%! assert (__iname3__ (xvar, yvar), {"xvar", "yvar", ""}); 
+%! assert (__iname3__ (xvar, 3, yvar), {"xvar", "", "yvar"}); 
+
+## Test numbers, expressions, indexing operations
+%!test
+%! assert (__iname1__ (1.0), "");
+%! x = 1;
+%! assert (__iname1__ (x / 2), "");
+%! assert (__iname1__ (Inf), "");
+
+%!test
+%! assert (__iname1_ID__ (1.0), "1.0");
+%! x = 1;
+%! assert (__iname1_ID__ (x / 2), "x / 2");
+%! assert (__iname1_ID__ (Inf), "Inf");
 
 %!error inputname ()
 %!error inputname (1,2,3)
+%!error <N must be a scalar> inputname (ones (2,2))
+%!error <N must be a scalar index> inputname (-1)

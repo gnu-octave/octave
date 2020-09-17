@@ -68,8 +68,6 @@ namespace octave
 
     bool all_elements_are_constant (void) const;
 
-    bool has_magic_end (void) const;
-
     // FIXME: should we import the functions from the base class and
     // overload them here, or should we use a different name so we don't
     // have to do this?  Without the using declaration or a name change,

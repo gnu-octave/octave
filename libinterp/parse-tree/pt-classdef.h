@@ -68,8 +68,6 @@ namespace octave
 
     std::string class_name (void) const { return m_class_name; }
 
-    bool has_magic_end (void) const { return false; }
-
     tree_superclass_ref * dup (symbol_scope& scope) const;
 
     octave_value evaluate (tree_evaluator& tw, int nargout = 1)
@@ -114,8 +112,6 @@ namespace octave
     tree_metaclass_query& operator = (const tree_metaclass_query&) = delete;
 
     std::string class_name (void) const { return m_class_name; }
-
-    bool has_magic_end (void) const { return false; }
 
     tree_metaclass_query * dup (symbol_scope& scope) const;
 

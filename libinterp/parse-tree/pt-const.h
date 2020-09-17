@@ -69,8 +69,6 @@ namespace octave
 
     ~tree_constant (void) = default;
 
-    bool has_magic_end (void) const { return false; }
-
     // Type.  It would be nice to eliminate the need for this.
 
     bool is_constant (void) const { return true; }

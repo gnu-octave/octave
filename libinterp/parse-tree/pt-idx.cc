@@ -126,18 +126,6 @@ namespace octave
       }
   }
 
-  bool
-  tree_index_expression::has_magic_end (void) const
-  {
-    for (const tree_argument_list *elt : m_args)
-      {
-        if (elt && elt->has_magic_end ())
-          return true;
-      }
-
-    return false;
-  }
-
   // This is useful for printing the name of the variable in an indexed
   // assignment.
 

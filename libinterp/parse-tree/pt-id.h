@@ -68,8 +68,6 @@ namespace octave
 
     ~tree_identifier (void) = default;
 
-    bool has_magic_end (void) const { return (name () == "end"); }
-
     bool is_identifier (void) const { return true; }
 
     std::string name (void) const { return m_sym.name (); }

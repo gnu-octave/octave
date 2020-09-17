@@ -63,8 +63,6 @@ namespace octave
 
     ~tree_fcn_handle (void) = default;
 
-    bool has_magic_end (void) const { return false; }
-
     void print (std::ostream& os, bool pr_as_read_syntax = false,
                 bool pr_orig_txt = true);
 
@@ -120,8 +118,6 @@ namespace octave
     tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&) = delete;
 
     ~tree_anon_fcn_handle (void);
-
-    bool has_magic_end (void) const { return false; }
 
     bool rvalue_ok (void) const { return true; }
 

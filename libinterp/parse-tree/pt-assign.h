@@ -68,8 +68,6 @@ namespace octave
 
     ~tree_simple_assignment (void);
 
-    bool has_magic_end (void) const { return (m_rhs && m_rhs->has_magic_end ()); }
-
     bool rvalue_ok (void) const { return true; }
 
     bool is_assignment_expression (void) const { return true; }
@@ -140,11 +138,6 @@ namespace octave
     tree_multi_assignment& operator = (const tree_multi_assignment&) = delete;
 
     ~tree_multi_assignment (void);
-
-    bool has_magic_end (void) const
-    {
-      return (m_rhs && m_rhs->has_magic_end ());
-    }
 
     bool is_assignment_expression (void) const { return true; }
 

@@ -85,12 +85,6 @@ namespace octave
         }
     }
 
-    bool has_magic_end (void) const
-    {
-      return ((m_lhs && m_lhs->has_magic_end ())
-              || (m_rhs && m_rhs->has_magic_end ()));
-    }
-
     bool is_binary_expression (void) const { return true; }
 
     bool rvalue_ok (void) const { return true; }

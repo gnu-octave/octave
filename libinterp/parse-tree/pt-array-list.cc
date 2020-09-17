@@ -58,20 +58,6 @@ namespace octave
     return true;
   }
 
-  bool
-  tree_array_list::has_magic_end (void) const
-  {
-    for (const tree_argument_list *elt : *this)
-      {
-        octave_quit ();
-
-        if (elt && elt->has_magic_end ())
-          return true;
-      }
-
-    return false;
-  }
-
   void
   tree_array_list::copy_base (const tree_array_list& array_list)
   {

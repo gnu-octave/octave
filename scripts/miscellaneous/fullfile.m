@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
+## @deftypefn {} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
 ## Build complete filename from separate parts.
 ##
 ## The function joins any number of path components intelligently.  The return

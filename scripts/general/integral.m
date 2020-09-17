@@ -33,8 +33,9 @@
 ## @code{integral} is a wrapper for @code{quadcc} (general real-valued, scalar
 ## integrands and limits), @code{quadgk} (integrals with specified integration
 ## paths), and @code{quadv} (array-valued integrands) that is intended to
-## provide @sc{matlab} compatibility.  More control of the numerical integration
-## may be achievable by calling the various quadrature functions directly.
+## provide @sc{matlab} compatibility.  More control of the numerical
+## integration may be achievable by calling the various quadrature functions
+## directly.
 ##
 ## @var{f} is a function handle, inline function, or string containing the name
 ## of the function to evaluate.  The function @var{f} must be vectorized and

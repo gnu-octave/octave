@@ -247,10 +247,10 @@ Internal function.  Returns 1 on successful system call and 0 otherwise.
 
 DEFUN (__is_elevated_process__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{retval} =} __is_elevated_process__ ()
+@deftypefn {} {@var{retval} =} __is_elevated_process__ ()
 Check if current process has elevated rights.
 
-On Windows, return true if the current process has elevated right. Otherwise,
+On Windows, return true if the current process has elevated right.  Otherwise,
 return false.
 On non-Windows platforms, this function fails with an error.
 @end deftypefn */)

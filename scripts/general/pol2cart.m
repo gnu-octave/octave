@@ -56,9 +56,11 @@
 ## @ifnottex
 ##
 ## @example
+## @group
 ## @var{x} = @var{r} * cos (@var{theta})
 ## @var{y} = @var{r} * sin (@var{theta})
 ## @var{z} = @var{z}
+## @end group
 ## @end example
 ##
 ## @end ifnottex

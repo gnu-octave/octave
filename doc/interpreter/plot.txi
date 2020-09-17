@@ -1181,7 +1181,7 @@ type.
 
 In addition, there are several functions which operate on properties of the
 graphics objects and which also return handles.  This includes but is not
-limited to the following functions:  The functions @code{plot} and @code{plot3}
+limited to the following functions: The functions @code{plot} and @code{plot3}
 return a handle pointing to an object of type @code{line}.  The function
 @code{subplot} returns a handle pointing to an object of type @code{axes}.
 The functions @code{fill}, @code{trimesh}, and @code{trisurf} return a handle

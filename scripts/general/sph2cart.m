@@ -54,9 +54,11 @@
 ## @ifnottex
 ##
 ## @example
+## @group
 ## @var{x} = r * cos (@var{phi}) * cos (@var{theta})
 ## @var{y} = r * cos (@var{phi}) * sin (@var{theta})
 ## @var{z} = r * sin (@var{phi})
+## @end group
 ## @end example
 ##
 ## @end ifnottex

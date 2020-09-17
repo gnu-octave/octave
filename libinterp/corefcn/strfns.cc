@@ -1051,10 +1051,10 @@ DEFUN (__u8_validate__, args, ,
 Return string with valid UTF-8.
 
 On encountering invalid UTF-8 in @var{in_str}, the bytes are either replaced by
-the replacement character "�" (if @var{mode} is omitted or is the string
-"replace") or interpreted as the Unicode code points U+0080–U+00FF with the
-same value as the byte (if @var{mode} is the string "unicode"), thus
-interpreting the bytes according to ISO-8859-1.
+the replacement character @qcode{"�"} (if @var{mode} is omitted or is the
+string @qcode{"replace"}) or interpreted as the Unicode code points
+U+0080–U+00FF with the same value as the byte (if @var{mode} is the string
+@qcode{"unicode"}), thus interpreting the bytes according to ISO-8859-1.
 @end deftypefn */)
 {
   int nargin = args.length ();

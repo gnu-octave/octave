@@ -33,35 +33,39 @@
 ##
 ## The output argument @var{userdata} is a structure with the following fields
 ## containing data for the Octave process:
+##
 ## @table @code
 ## @item @var{MaxPossibleArrayBytes}
 ## Maximum size for an array to be allocated.  Be aware that this includes
 ## @emph{all} physical memory and swap space.  Allocating that amount of memory
 ## might result in system instability, data corruption and/or file system
-## curruption.  Note that dependend on the platform (32bit systems), the largest
-## contiguous memory block might further limit the maximum possible allocatable
-## array.  This check is currently not implemented.
+## curruption.  Note that dependend on the platform (32bit systems), the
+## largest contiguous memory block might further limit the maximum possible
+## allocatable array.  This check is currently not implemented.
 ##
 ## @item @var{MemAvailableAllArrays}
 ## The total size of available memory in bytes.
 ##
 ## @item @var{ram_available_all_arrays}
 ## The maximum size for an array that can be allocated in physical memory
-## (excluding swap space).  Note that dependend on the platform (32bit systems),
-## the largest contiguous memory block might further limit the maximum possible
-## allocatable array.  This check is currently not implemented.
+## (excluding swap space).  Note that dependend on the platform (32bit
+## systems), the largest contiguous memory block might further limit the
+## maximum possible allocatable array.  This check is currently not
+## implemented.
 ##
-## @item @var{MemUsedMATLAB}
+## @item  @var{MemUsedMATLAB}
 ## @itemx @var{mem_used_octave}
 ## The memory (including swap space) currently used by Octave in bytes.
 ##
 ## @item @var{ram_used_octave}
-## The physical memory (excluding swap space) currently used by Octave in bytes.
+## The physical memory (excluding swap space) currently used by Octave in
+## bytes.
 ##
 ## @end table
 ##
-## The output argument @var{systemdata} is a nested structure with the following
-## fields containing information about the system's memory:
+## The output argument @var{systemdata} is a nested structure with the
+## following fields containing information about the system's memory:
+##
 ## @table @code
 ## @item @var{PhysicalMemory.Available}
 ## The currently available pyhsical memory in bytes.

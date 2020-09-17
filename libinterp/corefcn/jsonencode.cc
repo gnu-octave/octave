@@ -473,7 +473,7 @@ of the array.  For example, if a row vector is encoded and decoded then the
 result will be a column vector.
 
 @item
-Encoding and decoding is not guaranteed to preserve the Octave data type 
+Encoding and decoding is not guaranteed to preserve the Octave data type
 because JSON supports fewer data types than Octave.  For example, if you
 encode an @code{int8} and then decode it, you will get a @code{double}.
 @end itemize
@@ -481,25 +481,26 @@ encode an @code{int8} and then decode it, you will get a @code{double}.
 This table shows the conversions from Octave data types to JSON data types:
 
 @multitable @columnfractions 0.50 0.50
-@headitem  Octave data type @tab JSON data type
-@item logical scalar @tab Boolean 
-@item logical vector @tab Array of Boolean, reshaped to row vector 
-@item logical array  @tab nested Array of Boolean 
-@item numeric scalar @tab Number 
+@headitem Octave data type @tab JSON data type
+@item logical scalar @tab Boolean
+@item logical vector @tab Array of Boolean, reshaped to row vector
+@item logical array  @tab nested Array of Boolean
+@item numeric scalar @tab Number
 @item numeric vector @tab Array of Number, reshaped to row vector
-@item numeric array  @tab nested Array of Number 
+@item numeric array  @tab nested Array of Number
 @item @code{NaN}, @code{NA}, @code{Inf}, @code{-Inf}@*
 when @qcode{"ConvertInfAndNaN" = true} @tab @qcode{"null"}
 @item @code{NaN}, @code{NA}, @code{Inf}, @code{-Inf}@*
-when @qcode{"ConvertInfAndNaN" = false} @tab @qcode{"NaN"}, @qcode{"NaN"}, @qcode{"Infinity"}, @qcode{"-Infinity"}
+when @qcode{"ConvertInfAndNaN" = false} @tab @qcode{"NaN"}, @qcode{"NaN"},
+@qcode{"Infinity"}, @qcode{"-Infinity"}
 @item empty array    @tab @qcode{"[]"}
-@item character vector @tab String 
-@item character array @tab Array of String 
+@item character vector @tab String
+@item character array @tab Array of String
 @item empty character array @tab @qcode{""}
 @item cell scalar @tab Array
 @item cell vector @tab Array, reshaped to row vector
-@item cell array @tab Array, flattened to row vector 
-@item struct scalar @tab Object 
+@item cell array @tab Array, flattened to row vector
+@item struct scalar @tab Object
 @item struct vector @tab Array of Object, reshaped to row vector
 @item struct array  @tab nested Array of Object
 @item classdef object @tab Object

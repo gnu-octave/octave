@@ -39,7 +39,7 @@
 ## Maximum size for an array to be allocated.  Be aware that this includes
 ## @emph{all} physical memory and swap space.  Allocating that amount of memory
 ## might result in system instability, data corruption and/or file system
-## curruption.  Note that dependend on the platform (32bit systems), the
+## corruption.  Note that depending on the platform (32-bit systems), the
 ## largest contiguous memory block might further limit the maximum possible
 ## allocatable array.  This check is currently not implemented.
 ##
@@ -48,7 +48,7 @@
 ##
 ## @item @var{ram_available_all_arrays}
 ## The maximum size for an array that can be allocated in physical memory
-## (excluding swap space).  Note that dependend on the platform (32bit
+## (excluding swap space).  Note that depending on the platform (32-bit
 ## systems), the largest contiguous memory block might further limit the
 ## maximum possible allocatable array.  This check is currently not
 ## implemented.
@@ -68,10 +68,10 @@
 ##
 ## @table @code
 ## @item @var{PhysicalMemory.Available}
-## The currently available pyhsical memory in bytes.
+## The currently available physical memory in bytes.
 ##
 ## @item @var{PhysicalMemory.Total}
-## The total pyhsical memory in bytes.
+## The total physical memory in bytes.
 ##
 ## @item @var{SystemMemory.Available}
 ## The currently available memory (including swap space) in bytes.

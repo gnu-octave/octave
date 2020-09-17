@@ -71,7 +71,7 @@ decode_number (const rapidjson::Value& val)
   else if (val.IsDouble ())
     return octave_value (val.GetDouble ());
   else
-    error ("jsondecode.cc: Unidentified type.");
+    error ("jsondecode: unidentified type");
 }
 
 //! Decodes a JSON object into a scalar struct.
@@ -93,15 +93,19 @@ octave_value
 decode_object (const rapidjson::Value& val, const octave_value_list& options)
 {
   octave_scalar_map retval;
+
+  // Validator function to guarantee legitimate variable name.
+  std::string fcn_name = "matlab.lang.makeValidName";
+
   for (const auto& pair : val.GetObject ())
     {
-      std::string fcn_name = "matlab.lang.makeValidName";
       octave_value_list args = octave_value_list (pair.name.GetString ());
       args.append (options);
       std::string validName = octave::feval (fcn_name,args)(0).string_value ();
       retval.assign (validName, decode (pair.value, options));
     }
-  return octave_value (retval);
+
+  return retval;
 }
 
 //! Decodes a JSON array that contains only numerical or null values
@@ -189,7 +193,7 @@ decode_string_and_mixed_array (const rapidjson::Value& val,
   return retval;
 }
 
-//! Decodes a JSON array that contains only objects into a Cell or a struct array
+//! Decodes a JSON array that contains only objects into a Cell or struct array
 //! depending on the similarity of the objects' keys.
 //!
 //! @param val JSON value that is guaranteed to be an object array.
@@ -220,14 +224,16 @@ decode_object_array (const rapidjson::Value& val,
 {
   Cell struct_cell = decode_string_and_mixed_array (val, options).cell_value ();
   string_vector field_names = struct_cell(0).scalar_map_value ().fieldnames ();
+
   bool same_field_names = true;
   for (octave_idx_type i = 1; i < struct_cell.numel (); ++i)
     if (field_names.std_list ()
         != struct_cell(i).scalar_map_value ().fieldnames ().std_list ())
       {
-        same_field_names = 0;
+        same_field_names = false;
         break;
       }
+
   if (same_field_names)
     {
       octave_map struct_array;
@@ -238,14 +244,14 @@ decode_object_array (const rapidjson::Value& val,
             value(k) = struct_cell(k).scalar_map_value ().getfield (field_names(i));
           struct_array.assign (field_names(i), value);
         }
-      return octave_value (struct_array);
+      return struct_array;
     }
   else
     return struct_cell;
 }
 
 //! Decodes a JSON array that contains only arrays into a Cell or an NDArray
-//! depending on the dimensions and the elements' type of the sub arrays.
+//! depending on the dimensions and element types of the sub-arrays.
 //!
 //! @param val JSON value that is guaranteed to be an array of arrays.
 //! @param options @c ReplacementStyle and @c Prefix options with their values.
@@ -274,26 +280,28 @@ decode_array_of_arrays (const rapidjson::Value& val,
                         const octave_value_list& options)
 {
   // Some arrays should be decoded as NDArrays and others as cell arrays
-  Cell cell = decode_string_and_mixed_array(val, options).cell_value ();
-  // Only arrays with sub arrays of booleans and numericals will return NDArray
+  Cell cell = decode_string_and_mixed_array (val, options).cell_value ();
+
+  // Only arrays with sub-arrays of booleans and numericals will return NDArray
   bool is_bool = cell(0).is_bool_matrix ();
   dim_vector sub_array_dims = cell(0).dims ();
   octave_idx_type sub_array_ndims = cell(0).ndims ();
   octave_idx_type cell_numel = cell.numel ();
   for (octave_idx_type i = 0; i < cell_numel; ++i)
     {
-      // If one element is cell return the cell array as at least one of
-      // the sub arrays area either an array of: strings, objects or mixed array
+      // If one element is cell return the cell array as at least one of the
+      // sub-arrays area either an array of: strings, objects or mixed array
       if (cell(i).iscell ())
         return cell;
-      // If not the same dim of elements or dim = 0 return cell array
+      // If not the same dim of elements or dim = 0, return cell array
       if (cell(i).dims () != sub_array_dims || sub_array_dims == dim_vector ())
         return cell;
-      // If not numeric sub arrays only or bool
-      // sub arrays only return cell array
-      if(cell(i).is_bool_matrix () != is_bool)
+      // If not numeric sub-arrays only or bool sub-arrays only,
+      // return cell array
+      if (cell(i).is_bool_matrix () != is_bool)
         return cell;
     }
+
   // Calculate the dims of the output array
   dim_vector array_dims;
 	array_dims.resize (sub_array_ndims + 1);
@@ -310,7 +318,7 @@ decode_array_of_arrays (const rapidjson::Value& val,
   return array;
 }
 
-//! Decodes any type of JSON arrays. This function only serves as an interface
+//! Decodes any type of JSON arrays.  This function only serves as an interface
 //! by choosing which function to call from the previous functions.
 //!
 //! @param val JSON value that is guaranteed to be an array.
@@ -331,28 +339,31 @@ decode_array (const rapidjson::Value& val, const octave_value_list& options)
 {
   // Handle empty arrays
   if (val.Empty ())
-    return NDArray (dim_vector (0,0));
+    return NDArray ();
 
   // Compare with other elements to know if the array has multiple types
   rapidjson::Type array_type = val[0].GetType ();
-  // Check if the array is numeric and if it has multible types
-  bool same_type = 1, is_numeric = 1;
+  // Check if the array is numeric and if it has multiple types
+  bool same_type = true;
+  bool is_numeric = true;
   for (const auto& elem : val.GetArray ())
     {
       rapidjson::Type current_elem_type = elem.GetType ();
       if (is_numeric && ! (current_elem_type == rapidjson::kNullType
           || current_elem_type == rapidjson::kNumberType))
-        is_numeric = 0;
+        is_numeric = false;
       if (same_type && (current_elem_type != array_type))
         // RapidJSON doesn't have kBoolean Type it has kTrueType and kFalseType
         if (! ((current_elem_type == rapidjson::kTrueType
                 && array_type == rapidjson::kFalseType)
             || (current_elem_type == rapidjson::kFalseType
                 && array_type == rapidjson::kTrueType)))
-          same_type = 0;
+          same_type = false;
     }
+
   if (is_numeric)
     return decode_numeric_array (val);
+
   if (same_type && (array_type != rapidjson::kStringType))
     {
       if (array_type == rapidjson::kTrueType
@@ -363,13 +374,13 @@ decode_array (const rapidjson::Value& val, const octave_value_list& options)
       else if (array_type == rapidjson::kArrayType)
         return decode_array_of_arrays (val, options);
       else
-        error ("jsondecode.cc: Unidentified type.");
+        error ("jsondecode: unidentified type");
     }
   else
     return decode_string_and_mixed_array (val, options);
 }
 
-//! Decodes any JSON value. This function only serves as an interface
+//! Decodes any JSON value.  This function only serves as an interface
 //! by choosing which function to call from the previous functions.
 //!
 //! @param val JSON value.
@@ -397,77 +408,52 @@ decode (const rapidjson::Value& val, const octave_value_list& options)
   else if (val.IsObject ())
     return decode_object (val, options);
   else if (val.IsNull ())
-    return NDArray (dim_vector (0,0));
+    return NDArray ();
   else if (val.IsArray ())
     return decode_array (val, options);
   else
-    error ("jsondecode.cc: Unidentified type.");
+    error ("jsondecode: unidentified type");
 }
 
 #endif
 
 DEFUN (jsondecode, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{object} =} jsondecode (@var{json})
-@deftypefnx {} {@var{object} =} jsondecode (@var{json}, "ReplacementStyle", @var{rs})
-@deftypefnx {} {@var{object} =} jsondecode (@var{json}, "Prefix", @var{pfx})
-@deftypefnx {} {@var{object} =} jsondecode (@var{json}, @dots{})
+@deftypefn  {} {@var{object} =} jsondecode (@var{JSON_txt})
+@deftypefnx {} {@var{object} =} jsondecode (@dots{}, "ReplacementStyle", @var{rs})
+@deftypefnx {} {@var{object} =} jsondecode (@dots{}, "Prefix", @var{pfx})
 
 Decode text that is formatted in JSON.
 
-The input @var{json} is a string that contains JSON text.
-The output @var{object} is an Octave object that contains the result
-of decoding @var{json}.
+The input @var{JSON_txt} is a string that contains JSON text.
+
+The output @var{object} is an Octave object that contains the result of
+decoding @var{JSON_txt}.
 
 For more information about the options @qcode{"ReplacementStyle"} and
 @qcode{"Prefix"}, see
 @ref{XREFmatlab_lang_makeValidName,,matlab.lang.makeValidName}.
 
--NOTE: It is not guaranteed to get the same JSON text if you decode
-and then encode it as some names may change by
-@code{matlab.lang.makeValidName}.
+NOTE: Decoding and encoding JSON text is not guaranteed to reproduce the
+original text as some names may be changed by @code{matlab.lang.makeValidName}.
 
 This table shows the conversions from JSON data types to Octave data types:
 
-@table @asis
-@item @qcode{"Boolean"}
-Scalar @qcode{"logical"}
-
-@item @qcode{"Number"}
-Scalar @qcode{"double"}
-
-@item @qcode{"String"}
-@qcode{"Vector"} of chars
-
-@item JSON @qcode{"Object"}
-Scalar @qcode{"struct"} (field names of the struct may be different from
-the keys of the JSON object due to
-@ref{XREFmatlab_lang_makeValidName,,matlab.lang.makeValidName})
-
-@item @qcode{"Array"} of different data types
-@qcode{"Cell"} array
-
-@item @qcode{"Array"} of booleans
-@qcode{"Array"} of logicals
-
-@item @qcode{"Array"} of numbers
-@qcode{"Array"} of doubles
-
-@item @qcode{"Array"} of strings
-@qcode{"Cell"} array of vectors of chars
-
-@item @qcode{"Array"} of JSON objects (All objects have the same field names)
-@qcode{"Struct array"}
-
-@item @qcode{"Array"} of JSON objects (Objects have different field names)
-@qcode{"Cell"} array of scalar structs
-
-@item @qcode{"null"} inside a numeric array
-@qcode{"NaN"}
-
-@item @qcode{"null"} inside a non-numeric array
-Empty @qcode{"Array"} of doubles (@qcode{"[]"})
-@end table
+@multitable @columnfractions 0.50 0.50
+@headitem JSON data type @tab Octave data type
+@item Boolean @tab scalar logical
+@item Number @tab scalar double
+@item String @tab vector of characters
+@item Object @tab scalar struct (field names of the struct may be different from the keys of the JSON object due to @code{matlab_lang_makeValidName}
+@item null, inside a numeric array @tab @code{NaN}
+@item null, inside a non-numeric array @tab empty double array @code{[]}
+@item Array, of different data types @tab cell array
+@item Array, of Booleans @tab logical array
+@item Array, of Numbers @tab double array
+@item Array, of Strings @tab cell array of character vectors (@code{cellstr})
+@item Array of Objects, same field names @tab struct array
+@item Array of Objects, different field names @tab cell array of scalar structs
+@end multitable
 
 Examples:
 
@@ -498,7 +484,8 @@ jsondecode ('["foo", "bar", ["foo", "bar"]]')
 @end group
 
 @group
-jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', 'ReplacementStyle', 'delete')
+jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', ...
+            'ReplacementStyle', 'delete')
     @result{} scalar structure containing the fields:
 
          number = 7
@@ -520,26 +507,27 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
 #if defined (HAVE_RAPIDJSON)
 
   int nargin = args.length ();
+
   // makeValidName options are pairs, the number of arguments must be odd.
   if (! (nargin % 2))
     print_usage ();
 
-  if(! args(0).is_string ())
-    error ("jsondecode: The input must be a character string");
+  if (! args(0).is_string ())
+    error ("jsondecode: JSON_TXT must be a character string");
 
-  std::string json = args (0).string_value ();
+  std::string json = args(0).string_value ();
   rapidjson::Document d;
   // DOM is chosen instead of SAX as SAX publishes events to a handler that
   // decides what to do depending on the event only.  This will cause a
   // problem in decoding JSON arrays as the output may be an array or a cell
   // and that doesn't only depend on the event (startArray) but also on the
   // types of the elements inside the array.
-  d.Parse <rapidjson::kParseNanAndInfFlag>(json.c_str ());
+  d.Parse <rapidjson::kParseNanAndInfFlag> (json.c_str ());
 
   if (d.HasParseError ())
-    error("jsondecode: Parse error at offset %u: %s\n",
-          static_cast<unsigned int> (d.GetErrorOffset ()),
-          rapidjson::GetParseError_En (d.GetParseError ()));
+    error ("jsondecode: parse error at offset %u: %s\n",
+           static_cast<unsigned int> (d.GetErrorOffset ()) + 1,
+           rapidjson::GetParseError_En (d.GetParseError ()));
 
   return decode (d, args.slice (1, nargin - 1));
 
@@ -551,3 +539,16 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
 
 #endif
 }
+
+/*
+FIXME: Need BIST tests for decoding each data type.
+##%!testif HAVE_RAPIDJSON
+
+## Input validation tests
+%!testif HAVE_RAPIDJSON
+%! fail ("jsondecode ()");
+%! fail ("jsondecode ('1', 2)");
+%! fail ("jsondecode (1)", "JSON_TXT must be a character string");
+%! fail ("jsondecode ('12-')", "parse error at offset 3");
+
+*/

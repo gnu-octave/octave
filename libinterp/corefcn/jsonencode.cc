@@ -44,7 +44,7 @@
 
 //! Encodes a scalar Octave value into a numerical JSON value.
 //!
-//! @param writer RapidJSON's writer that is responsible for generating json.
+//! @param writer RapidJSON's writer that is responsible for generating JSON.
 //! @param obj scalar Octave value.
 //! @param ConvertInfAndNaN @c bool that converts @c Inf and @c NaN to @c null.
 //!
@@ -52,36 +52,36 @@
 //!
 //! @code{.cc}
 //! octave_value obj (7);
-//! encode_numeric (writer, obj,true);
+//! encode_numeric (writer, obj, true);
 //! @endcode
 
 template <typename T> void
-encode_numeric (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
+encode_numeric (T& writer, const octave_value& obj,
+                const bool& ConvertInfAndNaN)
 {
-  double value =  obj.scalar_value ();
+  double value = obj.scalar_value ();
+
   if (obj.is_bool_scalar ())
     writer.Bool (obj.bool_value ());
   // Any numeric input from the interpreter will be in double type so in order
   // to detect ints, we will check if the floor of the input and the input are
-  // equal using fabs(A - B) < epsilon method as it is more accurate.
+  // equal using fabs (A - B) < epsilon method as it is more accurate.
   // If value > 999999, MATLAB will encode it in scientific notation (double)
   else if (fabs (floor (value) - value) < std::numeric_limits<double>::epsilon ()
            && value <= 999999 && value >= -999999)
     writer.Int64 (value);
-  // NA values doesn't exist in MATLAB, so I will decode it as null instead
-  else if (((octave::math::isnan (value) || std::isinf (value)
-            || std::isinf (-value)) && ConvertInfAndNaN)
-           || obj.isna ().bool_value ())
+  // Possibly write NULL for non-finite values (-Inf, Inf, NaN, NA)
+  else if (ConvertInfAndNaN && ! octave::math::isfinite (value))
     writer.Null ();
   else if (obj.is_double_type ())
     writer.Double (value);
   else
-    error ("jsonencode: Unsupported type.");
+    error ("jsonencode: unsupported type");
 }
 
 //! Encodes character vectors and arrays into JSON strings.
 //!
-//! @param writer RapidJSON's writer that is responsible for generating json.
+//! @param writer RapidJSON's writer that is responsible for generating JSON.
 //! @param obj character vectors or character arrays.
 //! @param original_dims The original dimensions of the array being encoded.
 //! @param level The level of recursion for the function.
@@ -90,7 +90,7 @@ encode_numeric (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN
 //!
 //! @code{.cc}
 //! octave_value obj ("foo");
-//! encode_string (writer, obj,true);
+//! encode_string (writer, obj, true);
 //! @endcode
 
 template <typename T> void
@@ -98,13 +98,14 @@ encode_string (T& writer, const octave_value& obj,
                const dim_vector& original_dims, int level = 0)
 {
   charNDArray array = obj.char_array_value ();
+
   if (array.isempty ())
     writer.String ("");
   else if (array.isvector ())
     {
-      // Handle the special case when the input is a vector with more than
-      // 2 dimensions (e.g. cat (8, ['a'], ['c'])). In this case, we don't
-      // split the inner vectors of the input. we merge them into one.
+      // Handle the special case where the input is a vector with more than
+      // 2 dimensions (e.g. cat (8, ['a'], ['c'])).  In this case, we don't
+      // split the inner vectors of the input; we merge them into one.
       if (level == 0)
         {
           std::string char_vector = "";
@@ -127,16 +128,16 @@ encode_string (T& writer, const octave_value& obj,
       octave_idx_type ndims = array.ndims ();
       dim_vector dims = array.dims ();
 
-      // In this case, we already have a vector. So,  we transform it to 2-D
+      // In this case, we already have a vector. So, we transform it to 2-D
       // vector in order to be detected by "isvector" in the recursive call
       if (dims.num_ones () == ndims - 1)
       {
         // Handle the special case when the input is a vector with more than
-        // 2 dimensions (e.g. cat (8, ['a'], ['c'])). In this case, we don't
+        // 2 dimensions (e.g. cat (8, ['a'], ['c'])).  In this case, we don't
         // add dimension brackets and treat it as if it is a vector
         if (level != 0)
           // Place an opening and a closing bracket (represents a dimension)
-          // for every dimension that equals 1 till we reach the 2-D vector
+          // for every dimension that equals 1 until we reach the 2-D vector
           for (int i = level; i < ndims - 1; ++i)
             writer.StartArray ();
 
@@ -151,7 +152,7 @@ encode_string (T& writer, const octave_value& obj,
           // We place an opening and a closing bracket for each dimension
           // that equals 1 to preserve the number of dimensions when decoding
           // the array after encoding it.
-          if (original_dims (level) == 1 && level != 1)
+          if (original_dims(level) == 1 && level != 1)
           {
             writer.StartArray ();
             encode_string (writer, array, original_dims, level + 1);
@@ -168,7 +169,7 @@ encode_string (T& writer, const octave_value& obj,
                 if (dims(idx) != 1)
                   break;
               // Create the dimensions that will be used to call "num2cell"
-              // We called "num2cell" to divide the array to smaller sub arrays
+              // We called "num2cell" to divide the array to smaller sub-arrays
               // in order to encode it recursively.
               // The recursive encoding is necessary to support encoding of
               // higher-dimensional arrays.
@@ -199,7 +200,7 @@ encode_string (T& writer, const octave_value& obj,
 //! Encodes a struct Octave value into a JSON object or a JSON array depending
 //! on the type of the struct (scalar struct or struct array.)
 //!
-//! @param writer RapidJSON's writer that is responsible for generating json.
+//! @param writer RapidJSON's writer that is responsible for generating JSON.
 //! @param obj struct Octave value.
 //! @param ConvertInfAndNaN @c bool that converts @c Inf and @c NaN to @c null.
 //!
@@ -215,9 +216,10 @@ encode_struct (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
 {
   octave_map struct_array = obj.map_value ();
   octave_idx_type numel = struct_array.numel ();
+  bool is_array = (numel > 1);
   string_vector keys = struct_array.keys ();
 
-  if (numel > 1)
+  if (is_array)
     writer.StartArray ();
 
   for (octave_idx_type i = 0; i < numel; ++i)
@@ -231,13 +233,13 @@ encode_struct (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
       writer.EndObject ();
     }
 
-  if (numel > 1)
+  if (is_array)
     writer.EndArray ();
 }
 
 //! Encodes a Cell Octave value into a JSON array
 //!
-//! @param writer RapidJSON's writer that is responsible for generating json.
+//! @param writer RapidJSON's writer that is responsible for generating JSON.
 //! @param obj Cell Octave value.
 //! @param ConvertInfAndNaN @c bool that converts @c Inf and @c NaN to @c null.
 //!
@@ -263,7 +265,7 @@ encode_cell (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
 
 //! Encodes a numeric or logical Octave array into a JSON array
 //!
-//! @param writer RapidJSON's writer that is responsible for generating json.
+//! @param writer RapidJSON's writer that is responsible for generating JSON.
 //! @param obj numeric or logical Octave array.
 //! @param ConvertInfAndNaN @c bool that converts @c Inf and @c NaN to @c null.
 //! @param original_dims The original dimensions of the array being encoded.
@@ -343,7 +345,7 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
                   break;
 
               // Create the dimensions that will be used to call "num2cell"
-              // We called "num2cell" to divide the array to smaller sub arrays
+              // We called "num2cell" to divide the array to smaller sub-arrays
               // in order to encode it recursively.
               // The recursive encoding is necessary to support encoding of
               // higher-dimensional arrays.
@@ -374,7 +376,7 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
 //! Encodes any Octave object. This function only serves as an interface
 //! by choosing which function to call from the previous functions.
 //!
-//! @param writer RapidJSON's writer that is responsible for generating json.
+//! @param writer RapidJSON's writer that is responsible for generating JSON.
 //! @param obj any @ref octave_value that is supported.
 //! @param ConvertInfAndNaN @c bool that converts @c Inf and @c NaN to @c null.
 //!
@@ -406,6 +408,7 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
     // In order to convert it we will need to disable the
     // "Octave:classdef-to-struct" warning and re-enable it.
     {
+      // FIXME: Need to save and restore current state of warning.
       set_warning_state ("Octave:classdef-to-struct", "off");
       encode_struct (writer, obj.scalar_map_value ().getfield ("map"),
                      ConvertInfAndNaN);
@@ -413,131 +416,103 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
     }
   else if (obj.isobject ())
     {
+      // FIXME: Need to save and restore current state of warning.
       set_warning_state ("Octave:classdef-to-struct", "off");
       encode_struct (writer, obj.scalar_map_value (), ConvertInfAndNaN);
       set_warning_state ("Octave:classdef-to-struct", "on");
     }
   else
-    error ("jsonencode: Unsupported type.");
+    error ("jsonencode: unsupported type");
 }
 
 #endif
 
 DEFUN (jsonencode, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{json} =} jsonencode (@var{object})
-@deftypefnx {} {@var{json} =} jsonencode (@var{object}, "ConvertInfAndNaN", @var{conv})
-@deftypefnx {} {@var{json} =} jsonencode (@var{object}, "PrettyWriter", @var{pretty})
-@deftypefnx {} {@var{json} =} jsonencode (@var{object}, @dots{})
+@deftypefn  {} {@var{JSON_txt} =} jsonencode (@var{object})
+@deftypefnx {} {@var{JSON_txt} =} jsonencode (@dots{}, "ConvertInfAndNaN", @var{TF})
+@deftypefnx {} {@var{JSON_txt} =} jsonencode (@dots{}, "PrettyWriter", @var{TF})
 
-Encode Octave's data types into JSON text.
+Encode Octave data types into JSON text.
 
-The input @var{object} is the Octave's object we want to encode.
-The output @var{json} is the JSON text that contains the result
-of encoding @var{object}.
+The input @var{object} is an Octave variable to encode.
 
-If the value of the option @qcode{"ConvertInfAndNaN"} is true, @qcode{"NaN"},
-@qcode{"Inf"} and @qcode{"-Inf"} values will be converted to @qcode{"null"}
-value in the output.  If it is false, they will remain with their
-original values. The default value for this option is true.
+The output @var{JSON_txt} is the JSON text that contains the result of encoding
+@var{object}.
+
+If the value of the option @qcode{"ConvertInfAndNaN"} is true then @code{NaN},
+@code{NA}, @code{-Inf}, and @code{Inf} values will be converted to
+@qcode{"null"} in the output.  If it is false then they will remain as their
+original values.  The default value for this option is true.
 
 If the value of the option @qcode{"PrettyWriter"} is true, the output text will
 have indentations and line feeds.  If it is false, the output will be condensed
-and without any white-spaces.  The default value for this option is false.
+and written without whitespace.  The default value for this option is false.
 
--NOTES:
+Programming Notes:
+
 @itemize @bullet
 @item
 Complex numbers are not supported.
 
 @item
-@qcode{"classdef"} objects and @qcode{"containers.Map"} objects are converted
-into structs then encoded as structs.
+classdef objects are first converted to structs and then encoded.
 
 @item
-To preserve the escape characters (e.g. "\n"), use double-quote strings.
+To preserve escape characters (e.g., @qcode{"\n"}), use single-quoted strings.
 
 @item
-Every character after the null character ("\0") in double-quoted strings will
-be dropped during encoding.
+Every character after the null character (@qcode{"\0"}) in a double-quoted
+string will be dropped during encoding.
 
 @item
-It is not guaranteed to get the same dimensions for arrays if you encode
-and then decode it.  For example, if you encoded a row vector then decoded it,
-you will get a column vector.
+Encoding and decoding an array is not guaranteed to preserve the dimensions
+of the array.  For example, if a row vector is encoded and decoded then the
+result will be a column vector.
 
 @item
-It is not guaranteed to get the same data type if you encode and then decode
-an Octave value as Octave supports more data types than JSON.  For example, if
-you encoded an @qcode{"int32"} then decoded it, you will get a @qcode{"double"}.
+Encoding and decoding is not guaranteed to preserve the Octave data type 
+because JSON supports fewer data types than Octave.  For example, if you
+encode an @code{int8} and then decode it, you will get a @code{double}.
 @end itemize
-
 
 This table shows the conversions from Octave data types to JSON data types:
 
-@table @asis
-@item Scalar @qcode{"logical"}
-@qcode{"Boolean"}
-
-@item @qcode{"NaN"}, @qcode{"Inf"}, @qcode{"-Inf"}
-@qcode{"null"}
-
-@item Scalar numeric
-@qcode{"Number"}
-
-@item @qcode{"Numeric vector"}
-@qcode{"Numeric array"}
-
-@item @qcode{"Numeric array"}
-Nested @qcode{"numeric array"}
-
-@item @qcode{"Logical vector"}
-@qcode{"Boolean array"}
-
-@item @qcode{"Logical array"}
-Nested @qcode{"boolean array"}
-
-@item @qcode{"Char vector"}
-@qcode{"String"}
-
-@item @qcode{"Char array"}
-Nested @qcode{"string array"}
-
-@item Scalar @qcode{"cell"}
-@qcode{"array"} with a single element
-
-@item @qcode{"Cell vector"}
-@qcode{"Array"}
-
-@item @qcode{"Cell array"}
-single dimensional @qcode{"array"}
-
-@item Scalar @qcode{"struct"}
-@qcode{"JSON Object"}
-
-@item @qcode{"Struct vector"}
-@qcode{"JSON objects array"}
-
-@item @qcode{"Struct array"}
-Nested @qcode{"JSON objects array"}
-
-@item @qcode{"classdef"} objects
-@qcode{"JSON object"}
-
-@item @qcode{"containers.Map"}
-@qcode{"JSON object"}
-@end table
+@multitable @columnfractions 0.50 0.50
+@headitem  Octave data type @tab JSON data type
+@item logical scalar @tab Boolean 
+@item logical vector @tab Array of Boolean, reshaped to row vector 
+@item logical array  @tab nested Array of Boolean 
+@item numeric scalar @tab Number 
+@item numeric vector @tab Array of Number, reshaped to row vector
+@item numeric array  @tab nested Array of Number 
+@item @code{NaN}, @code{NA}, @code{Inf}, @code{-Inf}@*
+when @qcode{"ConvertInfAndNaN" = true} @tab @qcode{"null"}
+@item @code{NaN}, @code{NA}, @code{Inf}, @code{-Inf}@*
+when @qcode{"ConvertInfAndNaN" = false} @tab @qcode{"NaN"}, @qcode{"NaN"}, @qcode{"Infinity"}, @qcode{"-Infinity"}
+@item empty array    @tab @qcode{"[]"}
+@item character vector @tab String 
+@item character array @tab Array of String 
+@item empty character array @tab @qcode{""}
+@item cell scalar @tab Array
+@item cell vector @tab Array, reshaped to row vector
+@item cell array @tab Array, flattened to row vector 
+@item struct scalar @tab Object 
+@item struct vector @tab Array of Object, reshaped to row vector
+@item struct array  @tab nested Array of Object
+@item classdef object @tab Object
+@end multitable
 
 Examples:
 
 @example
 @group
-jsonencode ([1 NaN; 3 4])
+jsonencode ([1, NaN; 3, 4])
 @result{} [[1,null],[3,4]]
 @end group
 
 @group
-jsonencode ([1 NaN; 3 4], "ConvertInfAndNaN", false)
+jsonencode ([1, NaN; 3, 4], "ConvertInfAndNaN", false)
 @result{} [[1,NaN],[3,4]]
 @end group
 
@@ -554,7 +529,7 @@ jsonencode ("\a\b\t\n\v\f\r")
 @end group
 
 @group
-jsonencode ([true; false], "ConvertInfAndNaN", false, "PrettyWriter", true)
+jsonencode ([true; false], "PrettyWriter", true)
 @result{} ans = [
        true,
        false
@@ -594,7 +569,7 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
 
   int nargin = args.length ();
   // jsonencode has two options 'ConvertInfAndNaN' and 'PrettyWriter'
-  if (! (nargin == 1 || nargin == 3 || nargin == 5))
+  if (nargin != 1 && nargin != 3 && nargin != 5)
     print_usage ();
 
   // Initialize options with their default values
@@ -604,42 +579,42 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
   for (octave_idx_type i = 1; i < nargin; ++i)
     {
       if (! args(i).is_string ())
-        error ("jsonencode: Option must be character vector");
+        error ("jsonencode: option must be a string");
       if (! args(i+1).is_bool_scalar ())
-        error ("jsonencode: Value for options must be logical scalar");
+        error ("jsonencode: option value must be a logical scalar");
 
       std::string option_name = args(i++).string_value ();
-      if (octave::string::strcmpi(option_name, "ConvertInfAndNaN"))
+      if (octave::string::strcmpi (option_name, "ConvertInfAndNaN"))
         ConvertInfAndNaN = args(i).bool_value ();
-      else if (octave::string::strcmpi(option_name, "PrettyWriter"))
+      else if (octave::string::strcmpi (option_name, "PrettyWriter"))
         PrettyWriter = args(i).bool_value ();
       else
-        error ("jsonencode: Valid options are \'ConvertInfAndNaN\'"
-               " and \'PrettyWriter\'");
+        error ("jsonencode: "
+               R"(Valid options are "ConvertInfAndNaN" and "PrettyWriter")");
     }
 
   // FIXME: RapidJSON 1.1.0 (2016-08-25) is the latest release (2020-08-18)
   //        and does not support the "PrettyWriter" option.  Once a newer
   //        RapidJSON version is released and established with major
   //        distributions, make that version a requirement.
-  #if ! defined (HAVE_RAPIDJSON_DEV)
-     if (PrettyWriter)
-       {
-         warn_disabled_feature ("jsonencode",
-                                "the \'PrettyWriter\' option of RapidJSON");
-         PrettyWriter = false;
-       }
-  #endif
+# if ! defined (HAVE_RAPIDJSON_DEV)
+  if (PrettyWriter)
+    {
+      warn_disabled_feature ("jsonencode",
+                             R"(the "PrettyWriter" option of RapidJSON)");
+      PrettyWriter = false;
+    }
+# endif
 
   rapidjson::StringBuffer json;
   if (PrettyWriter)
     {
-      #if defined (HAVE_RAPIDJSON_DEV)
-         rapidjson::PrettyWriter<rapidjson::StringBuffer, rapidjson::UTF8<>,
-                                 rapidjson::UTF8<>, rapidjson::CrtAllocator,
-                                 rapidjson::kWriteNanAndInfFlag> writer (json);
-         encode (writer, args(0), ConvertInfAndNaN);
-      #endif
+# if defined (HAVE_RAPIDJSON_DEV)
+      rapidjson::PrettyWriter<rapidjson::StringBuffer, rapidjson::UTF8<>,
+                              rapidjson::UTF8<>, rapidjson::CrtAllocator,
+                              rapidjson::kWriteNanAndInfFlag> writer (json);
+      encode (writer, args(0), ConvertInfAndNaN);
+# endif
     }
   else
     {
@@ -659,3 +634,24 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
 
 #endif
 }
+
+/*
+FIXME: Need BIST tests for encoding each data type
+##%!testif HAVE_RAPIDJSON
+
+
+## Input validation tests
+%!testif HAVE_RAPIDJSON
+%! fail ("jsonencode ()");
+%! fail ("jsonencode (1, 2)");
+%! fail ("jsonencode (1, 2, 3, 4)");
+%! fail ("jsonencode (1, 2, 3, 4, 5, 6)");
+%! fail ("jsonencode (1, 2, true)", "option must be a string");
+%! fail ("jsonencode (1, 'string', ones (2,2))", "option value must be a logical scalar");
+%! fail ("jsonencode (1, 'foobar', true)", 'Valid options are "ConvertInfAndNaN"');
+
+%!testif HAVE_RAPIDJSON; ! __have_feature__ ("HAVE_RAPIDJSON_DEV")
+%! fail ("jsonencode (1, 'PrettyWriter', true)", ...
+%!       "warning", 'the "PrettyWriter" option of RapidJSON was unavailable');
+
+*/

@@ -499,7 +499,7 @@ Octave offers several kinds of conversion functions for Strings.
 @menu
 * String encoding::
 * Numerical Data and Strings::
-* JSON data decoding/encoding::
+* JSON data encoding/decoding::
 @end menu
 
 @node String encoding
@@ -549,16 +549,16 @@ numerical data as strings is the @code{sprintf} function
 
 @DOCSTRING(strread)
 
-@node JSON data decoding/encoding
-@subsection JSON data decoding/encoding
+@node JSON data encoding/decoding
+@subsection JSON data encoding/decoding
 
 JavaScript Object Notation, in short JSON, is a very common human readable
-and structured data format.  GNU Octave supports decoding and encoding this
+and structured data format.  GNU Octave supports encoding and decoding this
 format with the following two functions.
 
-@DOCSTRING(jsondecode)
-
 @DOCSTRING(jsonencode)
+
+@DOCSTRING(jsondecode)
 
 @node Character Class Functions
 @section Character Class Functions

@@ -627,7 +627,7 @@ namespace octave
     else if (context == "base")
       m_call_stack.goto_base_frame ();
     else
-      error ("evalin: CONTEXT must be \"caller\" or \"base\"");
+      error (R"(evalin: CONTEXT must be "caller" or "base")");
 
     int parse_status = 0;
 
@@ -651,7 +651,7 @@ namespace octave
     else if (context == "base")
       m_call_stack.goto_base_frame ();
     else
-      error ("evalin: CONTEXT must be \"caller\" or \"base\"");
+      error (R"(evalin: CONTEXT must be "caller" or "base")");
 
     error_system& es = m_interpreter.get_error_system ();
 
@@ -1412,7 +1412,7 @@ namespace octave
     else if (context == "base")
       m_call_stack.goto_base_frame ();
     else
-      error ("assignin: CONTEXT must be \"caller\" or \"base\"");
+      error (R"(assignin: CONTEXT must be "caller" or "base")");
 
     if (valid_identifier (name))
       {
@@ -1502,7 +1502,7 @@ namespace octave
         else if (context == "base")
           m_call_stack.goto_base_frame ();
         else
-          error ("source: context must be \"caller\" or \"base\"");
+          error (R"(source: CONTEXT must be "caller" or "base")");
       }
 
     // Find symbol name that would be in symbol_table, if it were loaded.

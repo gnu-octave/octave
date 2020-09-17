@@ -207,7 +207,7 @@ namespace octave
           octave::regexp pat (R"(^\\\\[\w-]*\\[\w-]*$)");
           if ((full_file_name.length () == 2 && full_file_name[1] == ':')
               || pat.is_match (full_file_name))
-            full_file_name += "\\";
+            full_file_name += '\\';
 #endif
 
           const char *cname = full_file_name.c_str ();

@@ -304,7 +304,7 @@ recording using those parameters.
       std::string arg3 = args(2).string_value ();
       std::transform (arg3.begin (), arg3.end (), arg3.begin (), tolower);
       if (arg3 != "driverversion")
-        error ("audiodevinfo: third argument must be \"DriverVersion\"");
+        error (R"(audiodevinfo: third argument must be "DriverVersion")");
 
       if (outin == 0)
         {

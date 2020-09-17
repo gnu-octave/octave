@@ -1594,7 +1594,7 @@ expansion use a second backslash before the sequence (e.g.,
             {
               // If "all" is given implicitly or explicitly as ID.
               if (arg1 == "error")
-                error ("warning: cannot specify \"all\" warning ID with state \"error\"");
+                error (R"(warning: cannot specify "all" warning ID with state "error")");
 
               octave_map tmp;
 
@@ -1686,19 +1686,19 @@ expansion use a second backslash before the sequence (e.g.,
               else
                 {
                   if (arg2_lc == "backtrace")
-                    octave_stdout << "\"backtrace\" warning state is \"" <<
+                    octave_stdout << R"("backtrace" warning state is ")" <<
                                   (es.backtrace_on_warning () ? "on" : "off") <<
                                   "\"\n";
                   else if (arg2_lc == "debug")
-                    octave_stdout << "\"debug\" warning state is \"" <<
+                    octave_stdout << R"("debug" warning state is ")" <<
                                   (es.debug_on_warning () ? "on" : "off") <<
                                   "\"\n";
                   else if (arg2_lc == "verbose")
-                    octave_stdout << "\"verbose\" warning state is \"" <<
+                    octave_stdout << R"("verbose" warning state is ")" <<
                                   (es.verbose_warning () ? "on" : "off") <<
                                   "\"\n";
                   else
-                    octave_stdout << "\"quiet\" warning state is \"" <<
+                    octave_stdout << R"("quiet" warning state is ")" <<
                                   (es.quiet_warning () ? "on" : "off") <<
                                   "\"\n";
                 }
@@ -1711,7 +1711,7 @@ expansion use a second backslash before the sequence (e.g.,
                 {
                   octave_scalar_map tmp = es.warning_query (arg2);
 
-                  octave_stdout << "\"" << arg2 << "\" warning state is \"" <<
+                  octave_stdout << '"' << arg2 << R"(" warning state is ")" <<
                                    tmp.getfield ("state").string_value () <<
                                    "\"\n";
                 }

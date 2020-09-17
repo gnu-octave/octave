@@ -562,7 +562,7 @@ namespace octave
   char *
   gnu_readline::do_completer_word_break_hook ()
   {
-    static char *dir_sep = octave_strdup_wrapper (" '\"");
+    static char *dir_sep = octave_strdup_wrapper (R"( '")");
 
     std::string word;
     std::string line = get_line_buffer ();

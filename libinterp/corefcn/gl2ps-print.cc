@@ -414,12 +414,12 @@ namespace octave
             else
               include_graph = old_print_cmd;
 
-            size_t n_begin = include_graph.find_first_not_of (" \"'");
+            size_t n_begin = include_graph.find_first_not_of (R"( "')");
 
             if (n_begin != std::string::npos)
               {
                 // Strip any quote characters characters around filename
-                size_t n_end = include_graph.find_last_not_of (" \"'");
+                size_t n_end = include_graph.find_last_not_of (R"( "')");
                 include_graph = include_graph.substr (n_begin,
                                                       n_end - n_begin + 1);
                 // Strip path from filename
@@ -819,7 +819,7 @@ namespace octave
     ColumnVector coord_pix = get_transform ().transform (x, y, z, false);
 
     std::ostringstream os;
-    os << "<text xml:space=\"preserve\" ";
+    os << R"(<text xml:space="preserve" )";
 
     // Rotation and translation are applied to the whole text element
     os << "transform=\""
@@ -846,7 +846,7 @@ namespace octave
         os << "<tspan ";
 
         if (name.compare (p->get_family ()))
-          os << "font-family=\""  << p->get_family () << "\" ";
+          os << "font-family=\"" << p->get_family () << "\" ";
 
         if (weight.compare (p->get_weight ()))
           os << "font-weight=\"" << p->get_weight () << "\" ";
@@ -865,12 +865,12 @@ namespace octave
 
         // provide an x coordinate for each character in the string
         os << "x=\"";
-        std::vector<double> xdata =  p->get_xdata ();
+        std::vector<double> xdata = p->get_xdata ();
         for (auto q = xdata.begin (); q != xdata.end (); q++)
           os << (*q) << " ";
-        os << "\"";
+        os << '"';
 
-        os << ">";
+        os << '>';
 
         // translate unicode and special xml characters
         if (p->get_code ())

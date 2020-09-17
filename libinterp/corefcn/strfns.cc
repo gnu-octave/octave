@@ -1051,23 +1051,24 @@ DEFUN (__u8_validate__, args, ,
 Return string with valid UTF-8.
 
 On encountering invalid UTF-8 in @var{in_str}, the bytes are either replaced by
-the replacement character "�" (if @var{mode} is omitted or the string
+the replacement character "�" (if @var{mode} is omitted or is the string
 "replace") or interpreted as the Unicode code points U+0080–U+00FF with the
 same value as the byte (if @var{mode} is the string "unicode"), thus
 interpreting the bytes according to ISO-8859-1.
-
 @end deftypefn */)
 {
-  if (args.length () < 1 || args.length () > 2)
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
   // Input check
   std::string in_str =
-      args(0).xstring_value ("__u8_validate__: IN_STR must be a string.");
+    args(0).xstring_value ("__u8_validate__: IN_STR must be a string");
 
   std::string mode = "replace";
-  if (args.length () > 1)
-    mode = args(1).xstring_value ("__u8_validate__: MODE must be a string.");
+  if (nargin == 2)
+    mode = args(1).xstring_value ("__u8_validate__: MODE must be a string");
 
   octave::string::u8_fallback_type fb_type;
   if (mode == "replace")
@@ -1075,7 +1076,7 @@ interpreting the bytes according to ISO-8859-1.
   else if (mode == "unicode")
     fb_type = octave::string::U8_ISO_8859_1;
   else
-    error ("__u8_validate__: MODE must either be \"replace\" or \"unicode\".");
+    error (R"(__u8_validate__: MODE must be either "replace" or "unicode")");
 
   octave::string::u8_validate ("__u8_validate__", in_str, fb_type);
 

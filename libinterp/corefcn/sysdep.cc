@@ -226,7 +226,7 @@ Internal function.  Returns 1 on successful system call and 0 otherwise.
   return octave_value (reinterpret_cast<ptrdiff_t> (status) > 32);
 #else
   // Quote file path
-  file = "\"" + file + "\"";
+  file = '"' + file + '"';
 
 #  if defined (__APPLE__)
 #    define FSYSTEM_OPEN_STR "open "
@@ -488,11 +488,11 @@ namespace octave
     if (len > 4 && name[0] == '\\' && name[1] == '\\')
       {
         // It starts with two slashes.  Find the next slash.
-        size_t next_slash = name.find ("\\", 3);
+        size_t next_slash = name.find ('\\', 3);
         if (next_slash != std::string::npos && len > next_slash+1)
           {
             // Check if it ends with the share
-            size_t last_slash = name.find ("\\", next_slash+1);
+            size_t last_slash = name.find ('\\', next_slash+1);
             if (last_slash == std::string::npos
                 || (len > next_slash+2 && last_slash == len-1))
               candidate = true;
@@ -1349,7 +1349,7 @@ graphics callbacks execution.
       else if (state == "query")
         ;// Do nothing
       else
-        error ("pause: first argument must be \"on\", \"off\" or \"query\"");
+        error (R"(pause: first argument must be "on", "off", or "query")");
 
       if (nargout > 0 || state == "query")
         retval.append (saved_state ? "on" : "off");

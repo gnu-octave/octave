@@ -26,7 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} memory ()
 ## @deftypefnx {} {[@var{userdata}, @var{systemdata}] =} memory ()
-## Display or return information about memory usage by Octave.
+## Display or return information about the memory usage of Octave.
 ##
 ## If the function is called without output arguments, a table with an overview
 ## of the current memory consumption is displayed.
@@ -38,10 +38,10 @@
 ## @item @var{MaxPossibleArrayBytes}
 ## Maximum size for an array to be allocated.  Be aware that this includes
 ## @emph{all} physical memory and swap space.  Allocating that amount of memory
-## might result in system instability, data corruption and/or file system
+## might result in system instability, data corruption, and/or file system
 ## corruption.  Note that depending on the platform (32-bit systems), the
 ## largest contiguous memory block might further limit the maximum possible
-## allocatable array.  This check is currently not implemented.
+## allocatable array.  This check is not currently implemented.
 ##
 ## @item @var{MemAvailableAllArrays}
 ## The total size of available memory in bytes.
@@ -50,7 +50,7 @@
 ## The maximum size for an array that can be allocated in physical memory
 ## (excluding swap space).  Note that depending on the platform (32-bit
 ## systems), the largest contiguous memory block might further limit the
-## maximum possible allocatable array.  This check is currently not
+## maximum possible allocatable array.  This check is not currently
 ## implemented.
 ##
 ## @item  @var{MemUsedMATLAB}
@@ -133,9 +133,9 @@ function [userdata, systemdata] = memory ()
 
   if (! isunix () && ! ispc ())
     if (nargout > 0)
-      error ('memory: function not yet implemented for this architecture');
+      error ("memory: function not yet implemented for this architecture");
     else
-      warning ('memory: function not yet implemented for this architecture');
+      warning ("memory: function not yet implemented for this architecture");
     endif
     return;
   endif
@@ -148,13 +148,13 @@ function [userdata, systemdata] = memory ()
     [status, meminfo] = lmemory ();
 
     ## FIXME: Query the actual size of the user address space,
-    ## e.g. with getrlimit (RLIMIT_AS, rlp)
+    ##        e.g., with getrlimit (RLIMIT_AS, rlp)
     if (log2 (bits) > 32)
-      ## 64bit platform
+      ## 64-bit platform
       address_space = 2^48;  # 256 TiB
     else
-      ## 32bit platform
-      address_space =  3 * 2^30;  # 3 GiB
+      ## 32-bit platform
+      address_space = 3 * 2^30;  # 3 GiB
     endif
 
     total_ram = meminfo.MemTotal * kiB;
@@ -189,12 +189,12 @@ function [userdata, systemdata] = memory ()
   available = min (available_ram + free_swap, avail_virtual);
   ram_available = min (available_ram, avail_virtual);
 
-  ## FIXME: On 32bit systems, the largest possible array is limited by the
-  ## largest contiguous block in memory.
+  ## FIXME: On 32-bit systems, the largest possible array is limited by the
+  ##        largest contiguous block in memory.
   user.MaxPossibleArrayBytes = available;
   user.MemAvailableAllArrays = available;
   user.ram_available_all_arrays = ram_available;
-  user.MemUsedMATLAB = used_virtual;  # For Compatibility
+  user.MemUsedMATLAB = used_virtual;  # For compatibility
   user.mem_used_octave = used_virtual;
   user.ram_used_octave = used_ram;
 
@@ -205,27 +205,26 @@ function [userdata, systemdata] = memory ()
   syst.VirtualAddressSpace.Available = avail_virtual;
   syst.VirtualAddressSpace.Total = address_space;
 
-
   if (nargout)
     userdata = user;
     systemdata = syst;
   else
     unitsize = kiB;
     unitname = 'kiB';
-    disp (sprintf ('Octave is running on %s', architecture))
-    disp (sprintf ('System    RAM: %9.0f %s,  swap: %9.0f %s',
+    disp (sprintf ("Octave is running on %s", architecture))
+    disp (sprintf ("System    RAM: %9.0f %s,  swap: %9.0f %s",
                    round (syst.PhysicalMemory.Total / unitsize), unitname,
                    round (total_swap / unitsize), unitname ))
-    disp (sprintf ('Octave    RAM: %9.0f %s,  virt: %9.0f %s',
+    disp (sprintf ("Octave    RAM: %9.0f %s,  virt: %9.0f %s",
                    round (user.ram_used_octave / unitsize), unitname,
                    round (user.mem_used_octave / unitsize), unitname))
     if (isunix ())
       ## The concept of free vs. available RAM doesn't seem to exist on Windows
-      disp (sprintf ('Free      RAM: %9.0f %s,  swap: %9.0f %s',
+      disp (sprintf ("Free      RAM: %9.0f %s,  swap: %9.0f %s",
                      round (free_ram / unitsize), unitname,
                      round (free_swap / unitsize), unitname))
     endif
-    disp (sprintf ('Available RAM: %9.0f %s, total: %9.0f %s',
+    disp (sprintf ("Available RAM: %9.0f %s, total: %9.0f %s",
                    round (user.ram_available_all_arrays / unitsize), unitname,
                    round (user.MemAvailableAllArrays / unitsize), unitname))
   endif
@@ -235,14 +234,14 @@ endfunction
 function [status, meminfo] = lmemory ()
   ## Read pseudo files to gather memory information on Linux
 
-  ## Read the proc/self/status pseudofile
-  ## see https://linuxwiki.de/proc/pid#A.2Fproc.2Fpid.2Fstatus
+  ## Read the proc/self/status pseudofile.
+  ## See https://linuxwiki.de/proc/pid#A.2Fproc.2Fpid.2Fstatus.
   ## It contains a variable number of lines with name-value pairs.
 
-  f = fopen ('/proc/self/status');
-  buffer = textscan (f, '%s %s', 'delimiter', ':\n');
+  f = fopen ("/proc/self/status");
+  buffer = textscan (f, "%s %s", "delimiter", ':\n');
   fclose (f);
-  for i = 1:size (buffer{1}, 1)
+  for i = 1:rows (buffer{1})
     status.(buffer{1}{i}) = textscan (buffer{2}{i}){1};
   endfor
 
@@ -250,10 +249,10 @@ function [status, meminfo] = lmemory ()
   ## see https://linuxwiki.de/proc/meminfo
   ## It contains a variable number of lines with name-value pairs.
 
-  f = fopen ('/proc/meminfo');
-  buffer = textscan (f, '%s %s', 'delimiter', ':\n');
+  f = fopen ("/proc/meminfo");
+  buffer = textscan (f, "%s %s", "delimiter", ':\n');
   fclose (f);
-  for i = 1:size (buffer{1}, 1)
+  for i = 1:rows (buffer{1})
     meminfo.(buffer{1}{i}) = textscan (buffer{2}{i}){1};
   endfor
 
@@ -267,3 +266,8 @@ endfunction
 %! assert (user.mem_used_octave < syst.SystemMemory.Total);
 %! assert (user.MemAvailableAllArrays <= syst.SystemMemory.Available);
 
+%testif ; ! isunix () && ! ispc ()
+%! fail ("[user] = memory ()",
+%!       "function not yet implemented for this architecture");
+%! fail ("memory ()", "warning",
+%!       "function not yet implemented for this architecture");

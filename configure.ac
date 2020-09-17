@@ -1333,20 +1333,34 @@ OCTAVE_CHECK_LIB(pcre, PCRE,
 
 ### Check for RapidJSON header only library.
 
-AC_LANG_PUSH([C++])
-AC_CHECK_HEADER([rapidjson/rapidjson.h], [have_rapidjson=yes], [have_rapidjson=no
-  rapid_json_warning="RapidJSON library not found.  Octave will not be able to read or write JSON files."])
-if test "$have_rapidjson" = yes; then
-  AC_CHECK_HEADER([rapidjson/cursorstreamwrapper.h], [have_rapidjson_dev=yes], [have_rapidjson_dev=no
-    rapid_json_warning="RapidJSON 1.1.0 or older found.  Octave will not support the 'PrettyWriter' option in 'jsonencode'."])
-fi
-if test "$have_rapidjson" = yes; then
+AC_LANG_PUSH(C++)
+AC_CHECK_HEADER([rapidjson/rapidjson.h],
+                [have_rapidjson=yes], [have_rapidjson=no])
+
+if test $have_rapidjson = yes; then
   AC_DEFINE(HAVE_RAPIDJSON, 1, [Define to 1 if RapidJSON is available.])
-  if test "$have_rapidjson_dev" = yes; then
-    AC_DEFINE(HAVE_RAPIDJSON_DEV, 1, [Define to 1 if the development version of RapidJSON is available.])
+
+  ## Additional check on RapidJSON library that was found
+  AC_CACHE_CHECK([for working PrettyWriter in RapidJSON],
+    [octave_cv_rapidjson_has_prettywriter],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+      #include <rapidjson/prettywriter.h>
+      ]], [[
+      rapidjson::StringBuffer json;
+      rapidjson::PrettyWriter<rapidjson::StringBuffer, rapidjson::UTF8<>,
+                              rapidjson::UTF8<>, rapidjson::CrtAllocator,
+                              rapidjson::kWriteNanAndInfFlag> writer (json);
+      ]])],
+      [octave_cv_rapidjson_has_prettywriter=yes],
+      [octave_cv_rapidjson_has_prettywriter=no])
+    ])
+  if test $octave_cv_rapidjson_has_prettywriter = yes; then
+    AC_DEFINE(HAVE_RAPIDJSON_PRETTYWRITER, 1,
+      [Define to 1 if the RapidJSON PrettyWriter function is available.])
+  else
+    rapid_json_warning='Older RapidJSON library found.  The "PrettyWriter" option in jsonencode will be disabled.'
+    OCTAVE_CONFIGURE_WARNING([rapid_json_warning])
   fi
-else
-  OCTAVE_CONFIGURE_WARNING([rapid_json_warning])
 fi
 AC_LANG_POP([C++])
 

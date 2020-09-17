@@ -35,9 +35,11 @@
 #include "ovl.h"
 
 #if defined (HAVE_RAPIDJSON)
-#  include <rapidjson/prettywriter.h>
 #  include <rapidjson/stringbuffer.h>
 #  include <rapidjson/writer.h>
+#  if defined (HAVE_RAPIDJSON_PRETTYWRITER)
+#    include <rapidjson/prettywriter.h>
+#  endif
 #endif
 
 #if defined (HAVE_RAPIDJSON)
@@ -593,11 +595,7 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
                R"(Valid options are "ConvertInfAndNaN" and "PrettyWriter")");
     }
 
-  // FIXME: RapidJSON 1.1.0 (2016-08-25) is the latest release (2020-08-18)
-  //        and does not support the "PrettyWriter" option.  Once a newer
-  //        RapidJSON version is released and established with major
-  //        distributions, make that version a requirement.
-# if ! defined (HAVE_RAPIDJSON_DEV)
+# if ! defined (HAVE_RAPIDJSON_PRETTYWRITER)
   if (PrettyWriter)
     {
       warn_disabled_feature ("jsonencode",
@@ -609,7 +607,7 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
   rapidjson::StringBuffer json;
   if (PrettyWriter)
     {
-# if defined (HAVE_RAPIDJSON_DEV)
+# if defined (HAVE_RAPIDJSON_PRETTYWRITER)
       rapidjson::PrettyWriter<rapidjson::StringBuffer, rapidjson::UTF8<>,
                               rapidjson::UTF8<>, rapidjson::CrtAllocator,
                               rapidjson::kWriteNanAndInfFlag> writer (json);
@@ -650,7 +648,7 @@ FIXME: Need BIST tests for encoding each data type
 %! fail ("jsonencode (1, 'string', ones (2,2))", "option value must be a logical scalar");
 %! fail ("jsonencode (1, 'foobar', true)", 'Valid options are "ConvertInfAndNaN"');
 
-%!testif HAVE_RAPIDJSON; ! __have_feature__ ("HAVE_RAPIDJSON_DEV")
+%!testif HAVE_RAPIDJSON; ! __have_feature__ ("RAPIDJSON_PRETTYWRITER")
 %! fail ("jsonencode (1, 'PrettyWriter', true)", ...
 %!       "warning", 'the "PrettyWriter" option of RapidJSON was unavailable');
 

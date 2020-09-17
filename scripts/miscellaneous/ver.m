@@ -33,11 +33,10 @@
 ## string, and operating system.  The header is followed by a list of installed
 ## packages, versions, and installation directories.
 ##
-## Use the package name @var{package} or Octave to limit the listing to a
-## desired component.
+## Use the package name @var{package} or Octave to query a specific component.
 ##
 ## When called with an output argument, return a vector of structures
-## describing Octave and each installed package.  The structure includes the
+## describing Octave and each installed package.  Each structure includes the
 ## following fields.
 ##
 ## @table @code
@@ -48,10 +47,10 @@
 ## Version of the package.
 ##
 ## @item Release
-## Release of the package.
+## Release of the package (currently unused, defaults to @code{[]}).
 ##
 ## @item Date
-## Date of the version/release.
+## Date that the version was released.
 ## @end table
 ##
 ## @seealso{version, usejava, pkg}
@@ -92,25 +91,25 @@ function retval = ver (package = "")
       pkg ("list", package);
     endif
   else
-    ## Get the installed packages
+    ## Return outputs rather than displaying summary to screen.
     if (isempty (package))
-      lst = pkg ("list");
       ## Start with the version info for Octave
-      retval = struct ("Name", "Octave", "Version", version,
-                       "Release", [],
-                       "Date", __octave_config_info__ ("release_date"));
+      [octver, octdate] = version ();
+      retval = struct ("Name", "Octave", "Version", octver,
+                       "Release", [], "Date", octdate);
+      lst = pkg ("list");
       for i = 1:numel (lst)
         retval(end+1) = struct ("Name", lst{i}.name, "Version", lst{i}.version,
                                 "Release", [], "Date", lst{i}.date);
       endfor
     elseif (strcmpi (package, "Octave"))
-      retval = struct ("Name", "Octave", "Version", version,
-                       "Release", [], "Date", []);
+      [octver, octdate] = version ();
+      retval = struct ("Name", "Octave", "Version", octver,
+                       "Release", [], "Date", octdate);
     else
       lst = pkg ("list", package);
       if (isempty (lst))
-        retval = struct ("Name", {}, "Version", {},
-                         "Release", {}, "Date", {});
+        retval = struct ("Name", {}, "Version", {}, "Release", {}, "Date", {});
       else
         retval = struct ("Name", lst{1}.name, "Version", lst{1}.version,
                          "Release", [], "Date", lst{1}.date);
@@ -124,10 +123,14 @@ endfunction
 %!test
 %! result = ver;
 %! assert (result(1).Name, "Octave");
-%! assert (result(1).Version, version);
+%! assert (result(1).Version, OCTAVE_VERSION ());
+%! assert (result(1).Release, []);
+%! assert (result(1).Date, __octave_config_info__ ("release_date"));
 %! result = ver ("octave");
-%! assert (result(1).Name, "Octave");
-%! assert (result(1).Version, version);
+%! assert (result.Name, "Octave");
+%! assert (result.Version, OCTAVE_VERSION ());
+%! assert (result.Release, []);
+%! assert (result.Date, __octave_config_info__ ("release_date"));
 
 %!test
 %! lst = pkg ("list");

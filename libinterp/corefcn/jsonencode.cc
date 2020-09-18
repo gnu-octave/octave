@@ -477,8 +477,7 @@ string will be dropped during encoding.
 
 @item
 Encoding and decoding an array is not guaranteed to preserve the dimensions
-of the array.  For example, if a row vector is encoded and decoded then the
-result will be a column vector.
+of the array.  In particular, row vectors will be reshaped to column vectors.
 
 @item
 Encoding and decoding is not guaranteed to preserve the Octave data type
@@ -643,9 +642,7 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
 }
 
 /*
-FIXME: Need BIST tests for encoding each data type
-##%!testif HAVE_RAPIDJSON
-
+Functional BIST tests are located in test/json/jsonencode_BIST.tst
 
 ## Input validation tests
 %!testif HAVE_RAPIDJSON
@@ -654,8 +651,10 @@ FIXME: Need BIST tests for encoding each data type
 %! fail ("jsonencode (1, 2, 3, 4)");
 %! fail ("jsonencode (1, 2, 3, 4, 5, 6)");
 %! fail ("jsonencode (1, 2, true)", "option must be a string");
-%! fail ("jsonencode (1, 'string', ones (2,2))", "option value must be a logical scalar");
-%! fail ("jsonencode (1, 'foobar', true)", 'Valid options are "ConvertInfAndNaN"');
+%! fail ("jsonencode (1, 'string', ones (2,2))", ...
+%!       "option value must be a logical scalar");
+%! fail ("jsonencode (1, 'foobar', true)", ...
+%!       'Valid options are "ConvertInfAndNaN"');
 
 %!testif HAVE_RAPIDJSON; ! __have_feature__ ("RAPIDJSON_PRETTYWRITER")
 %! fail ("jsonencode (1, 'PrettyWriter', true)", ...

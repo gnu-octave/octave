@@ -541,8 +541,7 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
 }
 
 /*
-FIXME: Need BIST tests for decoding each data type.
-##%!testif HAVE_RAPIDJSON
+Functional BIST tests are located in test/json/jsondecode_BIST.tst
 
 ## Input validation tests
 %!testif HAVE_RAPIDJSON

@@ -375,12 +375,6 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
     }
 }
 
-static void
-warning_cleanup (const octave_value_list& args)
-{
-  set_warning_state (args);
-}
-
 //! Encodes any Octave object. This function only serves as an interface
 //! by choosing which function to call from the previous functions.
 //!
@@ -419,7 +413,9 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
       octave_value_list ws
         = set_warning_state ("Octave:classdef-to-struct", "off");
       octave::unwind_protect frame;
-      frame.add_fcn (warning_cleanup, ws);
+      auto cleanup_ptr = +[] (octave_value_list ws_orig)
+                           { set_warning_state (ws_orig); } ;
+      frame.add_fcn (cleanup_ptr, ws);
 
       encode_struct (writer, obj.scalar_map_value ().getfield ("map"),
                      ConvertInfAndNaN);
@@ -429,7 +425,9 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
       octave_value_list ws
         = set_warning_state ("Octave:classdef-to-struct", "off");
       octave::unwind_protect frame;
-      frame.add_fcn (warning_cleanup, ws);
+      auto cleanup_ptr = +[] (octave_value_list ws_orig)
+                           { set_warning_state (ws_orig); } ;
+      frame.add_fcn (cleanup_ptr, ws);
 
       encode_struct (writer, obj.scalar_map_value (), ConvertInfAndNaN);
     }

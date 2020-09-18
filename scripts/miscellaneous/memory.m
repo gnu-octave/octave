@@ -266,7 +266,7 @@ endfunction
 %! assert (user.mem_used_octave < syst.SystemMemory.Total);
 %! assert (user.MemAvailableAllArrays <= syst.SystemMemory.Available);
 
-%testif ; ! isunix () && ! ispc ()
+%!testif ; ! isunix () && ! ispc ()
 %! fail ("[user] = memory ()",
 %!       "function not yet implemented for this architecture");
 %! fail ("memory ()", "warning",

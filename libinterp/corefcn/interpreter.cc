@@ -1392,6 +1392,7 @@ namespace octave
     // FIXME: should these actions be handled as a list of functions
     // to call so users can add their own chdir handlers?
 
+    m_load_path.read_dir_config (".");
     m_load_path.update ();
 
     m_event_manager.directory_changed (sys::env::get_current_directory ());

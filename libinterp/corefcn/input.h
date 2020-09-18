@@ -34,6 +34,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 #include "hook-fcn.h"
 #include "oct-time.h"
@@ -147,6 +148,10 @@ namespace octave
 
     void set_mfile_encoding (const std::string& s) { m_mfile_encoding = s; }
 
+    std::string dir_encoding (const std::string& dir);
+
+    void set_dir_encoding (const std::string& dir, std::string& enc);
+
     bool yes_or_no (const std::string& prompt);
 
     std::string interactive_input (const std::string& s, bool& eof);
@@ -183,6 +188,9 @@ namespace octave
 
     // Codepage which is used to read .m files
     std::string m_mfile_encoding;
+
+    // map of directories -> used mfile encoding
+    std::unordered_map<std::string, std::string> m_dir_encoding;
 
     // If we are in debugging mode, this is the last command entered,
     // so that we can repeat the previous command if the user just
@@ -240,6 +248,8 @@ namespace octave
     input_reader (interpreter& interp);
 
     input_reader (interpreter& interp, FILE *file);
+
+    input_reader (interpreter& interp, FILE *file, const std::string& enc);
 
     input_reader (interpreter& interp, const std::string& str);
 

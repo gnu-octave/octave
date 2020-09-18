@@ -541,6 +541,92 @@ namespace octave
     return retval;
   }
 
+  // Get part of the directory that would be added to the load path
+  static std::string load_path_dir (const std::string& dir)
+  {
+    std::string lp_dir = dir;
+
+    // strip trailing filesep
+    size_t ipos = lp_dir.find_last_not_of (sys::file_ops::dir_sep_chars ());
+    if (ipos != std::string::npos)
+      lp_dir = lp_dir.erase (ipos+1);
+
+    // strip trailing private folder
+    ipos = lp_dir.find_last_of (sys::file_ops::dir_sep_chars ());
+    if (ipos != std::string::npos
+        && lp_dir.substr (ipos+1).compare ("private") == 0)
+      {
+        lp_dir = lp_dir.erase (ipos);
+        ipos = lp_dir.find_last_of (sys::file_ops::dir_sep_chars ());
+      }
+
+    // strip trailing @class folder
+    if (ipos != std::string::npos && lp_dir[ipos+1] == '@')
+      {
+        lp_dir = lp_dir.erase (ipos);
+        ipos = lp_dir.find_last_of (sys::file_ops::dir_sep_chars ());
+      }
+
+    // strip (nested) +namespace folders
+    while (ipos != std::string::npos && lp_dir[ipos+1] == '+')
+      {
+        lp_dir = lp_dir.erase (ipos);
+        ipos = lp_dir.find_last_of (sys::file_ops::dir_sep_chars ());
+      }
+
+    return lp_dir;
+  }
+
+  std::string input_system::dir_encoding (const std::string& dir)
+  {
+    std::string enc = m_mfile_encoding;
+
+    auto enc_it = m_dir_encoding.find (load_path_dir (dir));
+    if (enc_it != m_dir_encoding.end ())
+      enc = enc_it->second;
+
+    return enc;
+  }
+
+  void input_system::set_dir_encoding (const std::string& dir,
+                                       std::string& enc)
+  {
+    // use lower case
+    std::transform (enc.begin (), enc.end (), enc.begin (), ::tolower);
+
+    if (enc.compare ("delete") == 0)
+      {
+        // Remove path from map
+        m_dir_encoding.erase (load_path_dir (dir));
+        return;
+      }
+    else if (enc.compare ("utf-8"))
+      {
+        // Check for valid encoding name.
+        // FIXME: This will probably not happen very often and opening the
+        //        encoder doesn't take long.
+        //        Should we cache working encoding identifiers anyway?
+        void *codec
+          = octave_iconv_open_wrapper (enc.c_str (), "utf-8");
+
+        if (codec == reinterpret_cast<void *> (-1))
+          {
+            if (errno == EINVAL)
+              error ("dir_encoding: conversion from encoding '%s' "
+                     "not supported", enc.c_str ());
+            else
+              error ("dir_encoding: error %d opening encoding '%s'.",
+                     errno, enc.c_str ());
+          }
+        else
+          octave_iconv_close_wrapper (codec);
+      }
+
+    m_dir_encoding[load_path_dir (dir)] = enc;
+
+    return;
+  }
+
   bool input_system::yes_or_no (const std::string& prompt)
   {
     std::string prompt_string = prompt + "(yes or no) ";
@@ -808,7 +894,14 @@ namespace octave
   public:
 
     file_reader (interpreter& interp, FILE *f_arg)
-      : base_reader (interp), m_file (f_arg) { }
+      : base_reader (interp), m_file (f_arg)
+    {
+      octave::input_system& input_sys = interp.get_input_system ();
+      m_encoding = input_sys.mfile_encoding ();
+    }
+
+    file_reader (interpreter& interp, FILE *f_arg, const std::string& enc)
+      : base_reader (interp), m_file (f_arg), m_encoding (enc) { }
 
     std::string get_input (const std::string& prompt, bool& eof);
 
@@ -819,6 +912,8 @@ namespace octave
   private:
 
     FILE *m_file;
+
+    std::string m_encoding;
 
     static const std::string s_in_src;
   };
@@ -853,6 +948,10 @@ namespace octave
     : m_rep (new file_reader (interp, file))
   { }
 
+  input_reader::input_reader (interpreter& interp, FILE *file, const std::string& enc)
+    : m_rep (new file_reader (interp, file, enc))
+  { }
+
   input_reader::input_reader (interpreter& interp, const std::string& str)
     : m_rep (new eval_string_reader (interp, str))
   { }
@@ -882,9 +981,15 @@ namespace octave
 
     std::string src_str = octave_fgets (m_file, eof);
 
-    input_system& input_sys = m_interpreter.get_input_system ();
+    std::string mfile_encoding;
 
-    std::string mfile_encoding = input_sys.mfile_encoding ();
+    if (m_encoding.empty ())
+      {
+        input_system& input_sys = m_interpreter.get_input_system ();
+        mfile_encoding = input_sys.mfile_encoding ();
+      }
+    else
+      mfile_encoding = m_encoding;
 
     std::string encoding;
     if (mfile_encoding.compare ("system") == 0)
@@ -1401,4 +1506,71 @@ Set and query the codepage that is used for reading .m files.
   octave::input_system& input_sys = interp.get_input_system ();
 
   return input_sys.mfile_encoding (args, nargout);
+}
+
+DEFMETHOD (dir_encoding, interp, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn {}  {@var{current_encoding} =} dir_encoding (@var{dir})
+@deftypefnx {} {@var{prev_encoding} =} dir_encoding (@var{dir}, @var{encoding})
+@deftypefnx {} {} dir_encoding (@dots{})
+Set and query the @var{encoding} that is used for reading m-files in @var{dir}.
+
+That encoding overrides the (globally set) m-file encoding.
+
+The string @var{DIR} must match the form how the directory would appear in the
+load path.
+
+The @var{encoding} must be a valid encoding identifier or @code{"delete"}.  In
+the latter case, the (globally set) m-file encoding will be used for the given
+@var{dir}.
+
+The currently or previously used encoding is returned in @var{current_encoding}
+or @var{prev_encoding}, respectively.  The output argument must be explicitly
+requested.
+
+The directory encoding is automatically read from the file @file{.oct_config}
+when a new path is added to the load path (for example with @code{addpath}).
+To set the encoding for all files in the same folder, that file must contain
+a line starting with @code{"encoding="} followed by the encoding identifier.
+
+For example to set the file encoding for all files in the same folder to
+ISO 8859-1 (Latin-1), create a file @file{.oct_config} with the following
+content:
+
+@example
+encoding=iso8859-1
+@end example
+
+If the file encoding is changed after the files have already been parsed, the
+files have to be parsed again for that change to take effect.  That can be done
+with the command @code{clear all}.
+
+@seealso{addpath, path}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  std::string dir
+    = args(0).xstring_value ("dir_encoding: DIR must be a string");
+
+  octave_value retval;
+
+  octave::input_system& input_sys = interp.get_input_system ();
+
+  if (nargout > 0)
+    retval = input_sys.dir_encoding (dir);
+
+  if (nargin > 1)
+    {
+      std::string encoding
+        = args(1).xstring_value ("dir_encoding: ENCODING must be a string");
+
+      input_sys.set_dir_encoding (dir, encoding);
+    }
+
+  return ovl (retval);
+
 }

@@ -4998,7 +4998,9 @@ namespace octave
 
     unwind_action act ([=] (void) { ::fclose (ffile); });
 
-    parser parser (ffile, interp);
+    // get the encoding for this folder
+    octave::input_system& input_sys = interp.get_input_system ();
+    parser parser (ffile, interp, input_sys.dir_encoding (dir_name));
 
     parser.m_curr_class_name = dispatch_type;
     parser.m_curr_package_name = package_name;

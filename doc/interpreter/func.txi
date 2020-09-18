@@ -924,6 +924,8 @@ After this the directory @samp{~/Octave} will be searched for functions.
 
 @DOCSTRING(dir_in_loadpath)
 
+@DOCSTRING(dir_encoding)
+
 @node Subfunctions
 @subsection Subfunctions
 

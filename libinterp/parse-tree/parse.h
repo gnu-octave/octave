@@ -610,6 +610,10 @@ namespace octave
       : base_parser (*(new lexer (file, interp)))
     { }
 
+    parser (FILE *file, interpreter& interp, std::string encoding)
+      : base_parser (*(new lexer (file, interp, encoding)))
+    { }
+
     parser (const std::string& eval_string, interpreter& interp)
       : base_parser (*(new lexer (eval_string, interp)))
     { }

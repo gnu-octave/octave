@@ -191,6 +191,8 @@ namespace octave
       remove_hook = f;
     }
 
+    void read_dir_config (const std::string& dir) const;
+
     void execute_pkg_add (const std::string& dir);
     void execute_pkg_del (const std::string& dir);
 

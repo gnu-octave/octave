@@ -28,6 +28,7 @@
 #endif
 
 #include <algorithm>
+#include <cctype>
 
 #include "dir-ops.h"
 #include "file-ops.h"
@@ -1084,6 +1085,8 @@ namespace octave
           {
             if (fs.is_dir ())
               {
+                read_dir_config (dir);
+
                 dir_info di (dir);
 
                 if (at_end)
@@ -1132,6 +1135,78 @@ namespace octave
 
         remove (pkg_di.second, full_name);
       }
+  }
+
+  void
+  load_path::read_dir_config (const std::string& dir) const
+  {
+    // read file with directory configuration
+    std::string conf_file = dir + sys::file_ops::dir_sep_str ()
+                            + ".oct_config";
+
+    FILE* cfile = sys::fopen (conf_file, "rb");
+
+    if (! cfile)
+      {
+        // reset directory encoding
+        input_system& input_sys
+          = __get_input_system__ ("load_path::read_dir_config");
+
+        std::string enc_val = "delete";
+        input_sys.set_dir_encoding (dir, enc_val);
+        return;
+      }
+
+    unwind_action close_file ([cfile] (void) { fclose (cfile); });
+
+    // find line with character encoding and read it
+    bool eof = false;
+    const std::string enc_prop = "encoding";
+    while (! eof)
+      {
+        std::string conf_str = octave_fgets (cfile, eof);
+
+        // delete any preceeding whitespace
+        auto it = std::find_if_not (conf_str.begin (), conf_str.end (),
+                                    [] (unsigned char c)
+                                    { return std::isblank (c); });
+        conf_str.erase (conf_str.begin (), it);
+
+        // match identifier
+        if (conf_str.compare (0, enc_prop.size (), enc_prop) == 0)
+          {
+            // skip delimiter characters
+            size_t pos = conf_str.find_first_not_of (" \t=:",
+                                                     enc_prop.size ());
+            if (pos == std::string::npos)
+              continue;
+
+            std::string enc_val = conf_str.substr (pos);
+
+            // take alphanumeric and '-' characters
+            it = std::find_if_not (enc_val.begin (), enc_val.end (),
+                                   [] (unsigned char c)
+                                   { return std::isalnum (c) || c == '-'; });
+            enc_val.erase(it, enc_val.end ());
+
+            if (enc_val.empty ())
+              continue;
+
+            // set encoding for this directory in input system
+            input_system& input_sys
+              = __get_input_system__ ("load_path::read_dir_config");
+            input_sys.set_dir_encoding (dir, enc_val);
+            return;
+          }
+      }
+
+    // reset directory encoding
+    input_system& input_sys
+      = __get_input_system__ ("load_path::read_dir_config");
+
+    std::string enc_val = "delete";
+    input_sys.set_dir_encoding (dir, enc_val);
+
   }
 
   bool

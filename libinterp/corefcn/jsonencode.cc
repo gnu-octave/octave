@@ -375,6 +375,12 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
     }
 }
 
+static void
+warning_cleanup (const octave_value_list& args)
+{
+  set_warning_state (args);
+}
+
 //! Encodes any Octave object. This function only serves as an interface
 //! by choosing which function to call from the previous functions.
 //!
@@ -404,24 +410,28 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
   else if (obj.iscell ())
     encode_cell (writer, obj, ConvertInfAndNaN);
   else if (obj.class_name () == "containers.Map")
-    // To extract the data in containers.Map, Convert it to a struct.
-    // The struct will have a "map" field that its value is a struct that
+    // To extract the data in containers.Map, convert it to a struct.
+    // The struct will have a "map" field whose value is a struct that
     // contains the desired data.
-    // In order to convert it we will need to disable the
+    // To avoid warnings due to that conversion, disable the
     // "Octave:classdef-to-struct" warning and re-enable it.
     {
-      // FIXME: Need to save and restore current state of warning.
-      set_warning_state ("Octave:classdef-to-struct", "off");
+      octave_value_list ws
+        = set_warning_state ("Octave:classdef-to-struct", "off");
+      octave::unwind_protect frame;
+      frame.add_fcn (warning_cleanup, ws);
+
       encode_struct (writer, obj.scalar_map_value ().getfield ("map"),
                      ConvertInfAndNaN);
-      set_warning_state ("Octave:classdef-to-struct", "on");
     }
   else if (obj.isobject ())
     {
-      // FIXME: Need to save and restore current state of warning.
-      set_warning_state ("Octave:classdef-to-struct", "off");
+      octave_value_list ws
+        = set_warning_state ("Octave:classdef-to-struct", "off");
+      octave::unwind_protect frame;
+      frame.add_fcn (warning_cleanup, ws);
+
       encode_struct (writer, obj.scalar_map_value (), ConvertInfAndNaN);
-      set_warning_state ("Octave:classdef-to-struct", "on");
     }
   else
     error ("jsonencode: unsupported type");

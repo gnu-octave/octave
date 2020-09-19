@@ -31,6 +31,7 @@
 #include "dMatrix.h"
 #include "dSparse.h"
 #include "f77-fcn.h"
+#include "lo-utils.h"
 
 #include "Cell.h"
 #include "defun-dld.h"
@@ -401,9 +402,9 @@ namespace octave
         // entries.
         m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, 0, CSC_MAT);
 #    else
-        // FIXME: m_num*m_num might be larger than the largest
-        // octave_f77_int_type (integer overflow).  Consider using a save
-        // calculation method.
+        if (octave::math::int_multiply_overflow (m_num, m_num))
+          error ("Unable to allocate memory for sparse Jacobian");
+
         m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, m_num*m_num, CSC_MAT);
 #    endif
         if (! m_sunJacMatrix)

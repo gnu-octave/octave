@@ -123,6 +123,21 @@ namespace octave
   template <> void write_value (std::ostream& os, const Complex& value);
   template <> void write_value (std::ostream& os, const float& value);
   template <> void write_value (std::ostream& os, const FloatComplex& value);
+
+  namespace math
+  {
+    bool int_multiply_overflow (int a, int b);
+    bool int_multiply_overflow (long int a, long int b);
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
+    bool int_multiply_overflow (long long int a, long long int b);
+#endif
+    bool int_multiply_overflow (unsigned int a, unsigned int b);
+    bool int_multiply_overflow (unsigned long int a, unsigned long int b);
+#if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
+    bool int_multiply_overflow (unsigned long long int a,
+                                unsigned long long int b);
+#endif
+  }
 }
 
 OCTAVE_DEPRECATED (7, "use 'octave::read_value<T>' instead")

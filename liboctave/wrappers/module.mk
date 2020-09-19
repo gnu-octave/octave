@@ -12,6 +12,7 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/glob-wrappers.h \
   %reldir%/hash-wrappers.h \
   %reldir%/iconv-wrappers.h \
+  %reldir%/intprops-wrappers.h \
   %reldir%/localcharset-wrapper.h \
   %reldir%/math-wrappers.h \
   %reldir%/mkostemp-wrapper.h \
@@ -54,6 +55,7 @@ WRAPPERS_SRC = \
   %reldir%/glob-wrappers.c \
   %reldir%/hash-wrappers.c \
   %reldir%/iconv-wrappers.c \
+  %reldir%/intprops-wrappers.c \
   %reldir%/localcharset-wrapper.c \
   %reldir%/math-wrappers.c \
   %reldir%/mkostemp-wrapper.c \

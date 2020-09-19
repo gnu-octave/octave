@@ -38,6 +38,7 @@
 
 #include "quit.h"
 
+#include "intprops-wrappers.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
@@ -423,5 +424,44 @@ namespace octave
     os << ',';
     write_value<float> (os, imag (value));
     os << ')';
+  }
+
+  namespace math
+  {
+    bool int_multiply_overflow (int a, int b)
+    {
+      return octave_i_multiply_overflow_wrapper (a, b);
+    }
+
+    bool int_multiply_overflow (long int a, long int b)
+    {
+      return octave_li_multiply_overflow_wrapper (a, b);
+    }
+
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
+    bool int_multiply_overflow (long long int a, long long int b)
+    {
+      return octave_lli_multiply_overflow_wrapper (a, b);
+    }
+#endif
+
+    bool int_multiply_overflow (unsigned int a, unsigned int b)
+    {
+      return octave_ui_multiply_overflow_wrapper (a, b);
+    }
+
+    bool int_multiply_overflow (unsigned long int a, unsigned long int b)
+    {
+      return octave_uli_multiply_overflow_wrapper (a, b);
+    }
+
+#if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
+    bool int_multiply_overflow (unsigned long long int a,
+                                unsigned long long int b)
+    {
+      return octave_ulli_multiply_overflow_wrapper (a, b);
+    }
+#endif
+
   }
 }

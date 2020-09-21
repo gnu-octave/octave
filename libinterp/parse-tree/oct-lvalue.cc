@@ -28,6 +28,7 @@
 #endif
 
 #include "error.h"
+#include "errwarn.h"
 #include "ovl.h"
 #include "oct-lvalue.h"
 #include "ov.h"
@@ -54,6 +55,115 @@ namespace octave
   {
     if (! is_black_hole ())
       m_frame->assign (op, m_sym, m_type, m_idx, rhs);
+  }
+
+  octave_idx_type octave_lvalue::numel (void) const
+  {
+    // Return 1 if there is no index because without an index there
+    // should be no way to have a cs-list here.  Cs-lists may be passed
+    // around internally but they are not supposed to be stored as
+    // single symbols in a stack frame.
+
+    size_t num_indices = m_idx.size ();
+
+    if (num_indices == 0)
+      return 1;
+
+    switch (m_type[num_indices-1])
+      {
+      case '(':
+        return 1;
+
+      case '{':
+        {
+          // FIXME: Duplicate code in '.' case below...
+
+          // Evaluate, skipping the last index.
+
+          std::string tmp_type = m_type;
+          std::list<octave_value_list> tmp_idx = m_idx;
+
+          tmp_type.pop_back ();
+          tmp_idx.pop_back ();
+
+          octave_value tmp = eval_for_numel (tmp_type, tmp_idx);
+
+          octave_value_list tidx = m_idx.back ();
+
+          if (tmp.is_undefined ())
+            {
+              if (tidx.has_magic_colon ())
+                err_invalid_inquiry_subscript ();
+
+              tmp = Cell ();
+            }
+          else if (tmp.is_zero_by_zero ()
+                   && (tmp.is_matrix_type () || tmp.is_string ()))
+            {
+              tmp = Cell ();
+            }
+
+          return tmp.xnumel (tidx);
+        }
+        break;
+
+      case '.':
+        {
+          // Evaluate, skipping either the last index or the last two
+          // indices if we are looking at "(idx).field".
+
+          std::string tmp_type = m_type;
+          std::list<octave_value_list> tmp_idx = m_idx;
+
+          tmp_type.pop_back ();
+          tmp_idx.pop_back ();
+
+          bool paren_dot = num_indices > 1 && m_type[num_indices-2] == '(';
+
+          // Index for paren operator, if any.
+          octave_value_list pidx;
+
+          if (paren_dot)
+            {
+              pidx = tmp_idx.back ();
+
+              tmp_type.pop_back ();
+              tmp_idx.pop_back ();
+            }
+
+          octave_value tmp = eval_for_numel (tmp_type, tmp_idx);
+
+          bool autoconv = (tmp.is_zero_by_zero ()
+                           && (tmp.is_matrix_type () || tmp.is_string ()
+                               || tmp.iscell ()));
+
+          if (paren_dot)
+            {
+              // Use octave_map, not octave_scalar_map so that the
+              // dimensions are 0x0, not 1x1.
+
+              if (tmp.is_undefined ())
+                {
+                  if (pidx.has_magic_colon ())
+                    err_invalid_inquiry_subscript ();
+
+                  tmp = octave_map ();
+                }
+              else if (autoconv)
+                tmp = octave_map ();
+
+              return tmp.xnumel (pidx);
+            }
+          else if (tmp.is_undefined () || autoconv)
+            return 1;
+          else
+            return tmp.xnumel (octave_value_list ());
+        }
+        break;
+
+      default:
+        panic_impossible ();
+      }
   }
 
   void octave_lvalue::set_index (const std::string& t,
@@ -104,5 +214,30 @@ namespace octave
   {
     return (is_black_hole ()
             ? octave_value () : m_frame->value (m_sym, m_type, m_idx));
+  }
+
+  octave_value
+  octave_lvalue::eval_for_numel (const std::string& type,
+                                 const std::list<octave_value_list>& idx) const
+  {
+    octave_value retval;
+
+    try
+      {
+        retval = m_frame->varval (m_sym);
+
+        if (retval.is_constant () && ! idx.empty ())
+          retval = retval.subsref (type, idx);
+      }
+    catch (const execution_exception&)
+      {
+        // Ignore an error and treat it as undefined.  The error
+        // could happen because there is an index is out of range
+        // and we will be resizing a cell array.
+
+        retval = octave_value ();
+      }
+
+    return retval;
   }
 }

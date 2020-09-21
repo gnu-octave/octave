@@ -95,11 +95,17 @@ using a package manager, `DIRNAME` is likely to be `/usr/bin` or
 `/usr/local/bin` (where the gnulib-tool script resides).
 
 By using an external gnulib directory, you can share a single gnulib
-source tree among several projects.  Since 2011, the gnulib sources
-are a Mercurial subrepository of the Octave repository, so they will
-be automatically updated to the corresponding Mercurial revision if
-you update the working directory to a past revision not too far in
-the past.
+source tree among several projects.  From 2011 until 2020, the gnulib
+sources were a Mercurial subrepository of the Octave repository, so they
+will be automatically updated to the corresponding Mercurial revision if
+you update the working directory to a revision in that time period.
+In 2020, the gnulib Mercurial subrepository was deleted.  Instead, the
+`bootstrap` script is used to fetch and update to a marked revision of
+the gnulib git repository.  A working copy of the gnulib git repository
+will be automatically updated to the matching revision (see the default
+value of `GNULIB_REVISION` in `bootstrap.conf`) when you run the
+`bootstrap` script after you updated the working directory to a revision
+after that point in time.  A working `git` installation is necessary.
 
 Additional options besides `--gnulib-srcdir` can be passed to
 `bootstrap` and they will be forwarded without modification to the
@@ -160,18 +166,13 @@ An overview of the directory layout of Octave's source files:
      programming interface).
 
 - `gnulib`
-     gnulib subrepo.  This is a clone of the gnulib source tree
-     maintained by the Octave project.  The default branch is
-     identical to the upstream gnulib sources.  There is also an
-     `octave-stable` branch that may contain changes as needed for
-     the `stable` branch in the Octave archive.  We usually don't
-     want to update gnulib sources when going from one stable point
-     release to the next, but we occasionally need to include small
-     updates.
+     gnulib repository.  This is a working copy of the gnulib git
+     repository.  We usually don't want to update gnulib sources when
+     going from one stable point release to the next.
 
 - `libgnu`
-     gnulib sources that we use.  The files here are copied here from
-     the gnulib directory by the `bootstrap` script.
+     gnulib sources that we use.  These files are copied here from the
+     gnulib directory by the `bootstrap` script.
 
 - `liboctave`
     C++ interfaces to the numerical libraries, Fortran numerical
@@ -220,7 +221,7 @@ An overview of the directory layout of Octave's source files:
        scripting language) as well as internal C++ functions used by
        the interpreter.
   - `dldfcn`
-       dynamically linked `DEFUN` functions (callable from the
+       dynamically linked `DEFUN_DLD` functions (callable from the
        scripting language).  If you see `help foo` telling you that
        `foo` is defined in `foo.oct`, then `foo.cc` will be found
        here and contain the source code.

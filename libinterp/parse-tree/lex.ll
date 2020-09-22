@@ -526,6 +526,10 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->m_filepos.increment_column (yyleng);
   }
 
+%{
+// Whitespace inside matrix lists.
+%}
+
 <MATRIX_START>{S}* {
     curr_lexer->lexer_debug ("<MATRIX_START>{S}*");
 
@@ -548,6 +552,24 @@ ANY_INCLUDING_NL (.|{NL})
         if (! (tok == ';' || tok == '[' || tok == '{'))
           curr_lexer->xunput (';');
       }
+  }
+
+%{
+// Continuation lines in matrix constants are handled as whitespace.
+// Allow arbitrary text after the continuation marker.
+%}
+
+<MATRIX_START>\.\.\.{ANY_EXCEPT_NL}*{NL} {
+    curr_lexer->lexer_debug ("<MATRIX_START>\\.\\.\\.{ANY_EXCEPT_NL}*{NL}");
+
+    curr_lexer->handle_continuation ();
+
+    // Even if there wasn't a space before or after the continuation
+    // marker, treat the continuation as if it were.  But since it will
+    // be transformed to a separator later anyway, there's no need to
+    // actually unput a space on the input stream.
+
+    curr_lexer->mark_previous_token_trailing_space ();
   }
 
 %{

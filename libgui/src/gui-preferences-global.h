@@ -31,12 +31,12 @@
 // Global preferences
 
 // Get the default monospaced font
-#if defined (Q_WS_X11)
-const QString global_font_family = "Monospace";
-#elif defined (Q_WS_WIN) || defined (Q_WS_MAC)
+#if defined (Q_OS_WIN)
 const QString global_font_family = "Courier";
+#elif defined (Q_OS_MAC)
+const QString global_font_family = "Monaco";
 #else
-const QString global_font_family = "Courier";
+const QString global_font_family = "Monospace";
 #endif
 
 const gui_pref

@@ -324,6 +324,10 @@ reception.
 
 @DOCSTRING(base64_decode)
 
+@DOCSTRING(matlab.net.base64encode)
+
+@DOCSTRING(matlab.net.base64decode)
+
 @node Controlling Subprocesses
 @section Controlling Subprocesses
 

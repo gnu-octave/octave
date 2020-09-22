@@ -94,4 +94,31 @@ namespace octave
 
     return retval;
   }
+
+  intNDArray<octave_uint8>
+  base64_decode_bytes (const std::string& str)
+  {
+    intNDArray<octave_uint8> retval;
+
+    char *out;
+    size_t outlen;
+
+    bool ok
+      = octave_base64_decode_alloc_wrapper (str.data (), str.length (),
+                                            &out, &outlen);
+
+    if (! ok)
+      (*current_liboctave_error_handler)
+        ("base64_decode: input was not valid base64");
+
+    if (! out)
+      (*current_liboctave_error_handler)
+        ("base64_decode: memory allocation error");
+
+    retval.resize (dim_vector (1, outlen));
+    std::copy (out, out + outlen, retval.fortran_vec ());
+    ::free (out);
+
+    return retval;
+  }
 }

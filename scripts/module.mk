@@ -6,6 +6,7 @@
 
 include %reldir%/+containers/module.mk
 include %reldir%/+matlab/+lang/module.mk
+include %reldir%/+matlab/+net/module.mk
 include %reldir%/audio/module.mk
 include %reldir%/deprecated/module.mk
 include %reldir%/elfun/module.mk

@@ -7978,7 +7978,7 @@ DEFUN (base64_encode, args, ,
 Encode a double matrix or array @var{x} into the base64 format string
 @var{s}.
 
-@seealso{base64_decode}
+@seealso{base64_decode, matlab.net.base64decode, matlab.net.base64encode}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -8086,7 +8086,7 @@ Decode the double matrix or array @var{x} from the base64 encoded string
 
 The optional input parameter @var{dims} should be a vector containing the
 dimensions of the decoded array.
-@seealso{base64_encode}
+@seealso{base64_encode, matlab.net.base64decode, matlab.net.base64encode}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -8131,4 +8131,58 @@ dimensions of the decoded array.
 %!error <input was not valid base64> base64_decode (1)
 %!error <input was not valid base64> base64_decode ("AQ=")
 %!error <incorrect input size> base64_decode ("AQ==")
+*/
+
+DEFUN (__base64_decode_bytes__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{x} =} base64_decode_bytes (@var{s})
+@deftypefnx {} {@var{x} =} base64_decode_bytes (@var{s}, @var{dims})
+Decode the uint8 matrix or array @var{x} from the base64 encoded string
+@var{s}.
+
+The optional input parameter @var{dims} should be a vector containing the
+dimensions of the decoded array.
+@seealso{base64_decode}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  std::string str = args(0).string_value ();
+
+  intNDArray<octave_uint8> retval = octave::base64_decode_bytes (str);
+
+  if (nargin == 2)
+    {
+      dim_vector dims;
+
+      const Array<octave_idx_type> size
+        = args(1).octave_idx_type_vector_value ();
+
+      dims = dim_vector::alloc (size.numel ());
+      for (octave_idx_type i = 0; i < size.numel (); i++)
+        dims(i) = size(i);
+
+      retval = retval.reshape (dims);
+    }
+
+  return ovl (retval);
+}
+
+/*
+%!assert (__base64_decode_bytes__ (base64_encode (uint8 (1))), uint8 (1))
+
+%!test
+%! in   = uint8 (rand (10)*255);
+%! outv = __base64_decode_bytes__ (base64_encode (in));
+%! outm = __base64_decode_bytes__ (base64_encode (in), size (in));
+%! assert (outv, in(:).');
+%! assert (outm, in);
+
+%!error __base64_decode_bytes__ ()
+%!error __base64_decode_bytes__ (1,2,3)
+%!error __base64_decode_bytes__ (1, "this is not a valid set of dimensions")
+%!error <input was not valid base64> __base64_decode_bytes__ (1)
 */

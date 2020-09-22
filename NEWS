@@ -153,6 +153,8 @@ functionality.  By default, this warning is enabled.
 * `jsondecode`
 * `jsonencode`
 * `listfonts`
+* `matlab.net.base64decode`
+* `matlab.net.base64encode`
 * `memory`
 * `rng`
 * `startsWith`

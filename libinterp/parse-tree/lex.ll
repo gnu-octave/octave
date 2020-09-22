@@ -264,7 +264,7 @@ and after the nested call.
                  || curr_lexer->previous_token_is_binop ()))            \
          {                                                              \
            yyless (0);                                                  \
-           unput (',');                                                 \
+           curr_lexer->xunput (',');                                    \
          }                                                              \
        else                                                             \
          {                                                              \
@@ -1228,7 +1228,7 @@ ANY_INCLUDING_NL (.|{NL})
                   || curr_lexer->previous_token_is_binop ()))
           {
             yyless (0);
-            unput (',');
+            curr_lexer->xunput (',');
           }
         else
           {
@@ -1263,7 +1263,7 @@ ANY_INCLUDING_NL (.|{NL})
                   || curr_lexer->previous_token_is_binop ()))
           {
             yyless (0);
-            unput (',');
+            curr_lexer->xunput (',');
           }
         else
           {
@@ -1428,7 +1428,7 @@ ANY_INCLUDING_NL (.|{NL})
                   || curr_lexer->previous_token_is_binop ()))
           {
             yyless (0);
-            unput (',');
+            curr_lexer->xunput (',');
           }
         else
           {

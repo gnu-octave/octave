@@ -54,12 +54,12 @@ function __debug_octave__ (command_string)
     if (status != 0)
       error ("unable to execute gdb");
     endif
-    if (isunix ())
+    if (ismac ())
+      command_string = "osascript -e 'tell application \"Terminal\" to do script \"lldb -p %d\"'";
+    elseif (isunix ())
       command_string = "x-terminal-emulator -e gdb -p %d";
     elseif (ispc ())
       command_string = "cmd /c start gdb -p %d";
-    elseif (ismac ())
-      command_string = "osascript -e 'tell application \"Terminal\" to do script \"lldb -p %d\"'";
     else
       error ("unknown system -- unable to determine how to start debugger");
     endif

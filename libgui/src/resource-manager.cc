@@ -222,30 +222,30 @@ namespace octave
     QString default_family;
 
 #if defined (Q_OS_MAC)
-  // Use hard coded default on macOS, since selection of fixed width
-  // default font is unreliable (see bug #59128).
+    // Use hard coded default on macOS, since selection of fixed width
+    // default font is unreliable (see bug #59128).
 
-  // Get all available fixed width fonts via a font combobox
-  QFontComboBox font_combo_box;
-  font_combo_box.setFontFilters (QFontComboBox::MonospacedFonts);
-  QStringList fonts;
+    // Get all available fixed width fonts via a font combobox
+    QFontComboBox font_combo_box;
+    font_combo_box.setFontFilters (QFontComboBox::MonospacedFonts);
+    QStringList fonts;
 
-  for (int index = 0; index < font_combo_box.count(); index++)
-    fonts << font_combo_box.itemText(index);
+    for (int index = 0; index < font_combo_box.count(); index++)
+      fonts << font_combo_box.itemText(index);
 
-  // Test for macOS default fixed width font
-  if (fonts.contains (global_mono_font.def.toString ()))
-    default_family = global_mono_font.def.toString ();
+    // Test for macOS default fixed width font
+    if (fonts.contains (global_mono_font.def.toString ()))
+      default_family = global_mono_font.def.toString ();
 #endif
 
-  // If default font is still empty (on all other platforms or
-  // if macOS default font is not available): use QFontDatabase
-  if (default_family.isEmpty ())
-    {
-      // Get the system's default monospaced font
-      QFont fixed_font = QFontDatabase::systemFont (QFontDatabase::FixedFont);
-      default_family = fixed_font.defaultFamily ();
-    }
+    // If default font is still empty (on all other platforms or
+    // if macOS default font is not available): use QFontDatabase
+    if (default_family.isEmpty ())
+      {
+        // Get the system's default monospaced font
+        QFont fixed_font = QFontDatabase::systemFont (QFontDatabase::FixedFont);
+        default_family = fixed_font.defaultFamily ();
+      }
 
     // Test env variable which has preference
     std::string env_default_family = sys::env::getenv ("OCTAVE_DEFAULT_FONT");

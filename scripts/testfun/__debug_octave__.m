@@ -50,16 +50,27 @@ function __debug_octave__ (command_string)
   endif
 
   if (nargin == 0)
-    status = system ("gdb --version");
-    if (status != 0)
-      error ("unable to execute gdb");
-    endif
     if (ismac ())
+      status = system ("lldb --version");
+      if (status != 0)
+        error ("unable to execute lldb");
+      endif
       command_string = "osascript -e 'tell application \"Terminal\" to do script \"lldb -p %d\"'";
+
     elseif (isunix ())
+      status = system ("gdb --version");
+      if (status != 0)
+        error ("unable to execute gdb");
+      endif
       command_string = "x-terminal-emulator -e gdb -p %d";
+
     elseif (ispc ())
+      status = system ("gdb --version");
+      if (status != 0)
+        error ("unable to execute gdb");
+      endif
       command_string = "cmd /c start gdb -p %d";
+
     else
       error ("unknown system -- unable to determine how to start debugger");
     endif

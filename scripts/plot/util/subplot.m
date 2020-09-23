@@ -249,15 +249,31 @@ function h = subplot (varargin)
             continue;
           endif
 
-          ## Check if this axes is a subplot with the same layout and
-          ## index as the requested one
-          rcn = getappdata (child, "__subplotrcn__");
+          if (! replace_axes)
+            if (isappdata (child, "__subplotposition__"))
+              objpos = getappdata (child, "__subplotposition__");
+            else
+              objpos = get (child, "position");
+            endif
+            if (all (abs (objpos - pos) < eps))
+              ## If the new axes are in exactly the same position
+              ## as an existing axes object, or if they share the same
+              ## appdata "__subplotposition__", use the existing axes.
+              found = true;
+              hsubplot = child;
+            else
+              ## Check if this axes is a subplot with the same layout and
+              ## index as the requested one
+              rcn = getappdata (child, "__subplotrcn__");
+              if (all (size (rcn) == [1 3])
+                  && rcn{1} == rows && rcn{2} == cols && all (rcn{3} == index))
+                found = true;
+                hsubplot = child;
+              endif
+            endif
+          endif
 
-          if (! replace_axes && all (size (rcn) == [1 3])
-              && rcn{1} == rows && rcn{2} == cols && all (rcn{3} == index))
-            found = true;
-            hsubplot = child;
-          else
+          if (! found)
             ## If the new axes overlap an old axes object, delete the old axes.
             objpos = get (child, "position");
 

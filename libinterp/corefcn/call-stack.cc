@@ -72,17 +72,19 @@ namespace octave
 
     octave_function *fcn = nullptr;
 
-    size_t idx = size ();
+    size_t idx = m_curr_frame;
 
-    if (idx > 1 && skip_first)
+    if (idx > 0 && skip_first)
       --idx;
 
-    while (--idx)
+    while (true)
       {
         fcn = m_cs[idx]->function ();
 
-        if (fcn)
+        if (fcn || idx == 0)
           break;
+
+        --idx;
       }
 
     return fcn;

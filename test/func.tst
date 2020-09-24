@@ -213,3 +213,12 @@
 
 %!error <can't make function parameter retval persistent> __fnpersist1__ (1);
 %!error <can't make function parameter in1 persistent> __fnpersist2__ (1);
+
+## Check nargin, nargout validation by interpreter
+%!function __fn_nargout0__ (in1)
+%!endfunction
+%!function [out1] = __fn_nargin2__ (in1, in2)
+%!endfunction
+
+%!error <function called with too many outputs> r = __fn_nargout0__ ()
+%!error <function called with too many inputs>  r = __fn_nargin2__ (1,2,3)

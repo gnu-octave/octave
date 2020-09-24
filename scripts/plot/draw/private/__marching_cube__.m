@@ -94,11 +94,6 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
     [edge_table, tri_table] = init_mc ();
   endif
 
-  ## FIXME: Do we need all of the following validation on an internal function?
-  if ((nargin != 5 && nargin != 6) || (nargout != 2 && nargout != 3))
-    print_usage ();
-  endif
-
   if (! isnumeric (xx) || ! isnumeric (yy) || ! isnumeric (zz)
       || ! isnumeric (c) || ndims (xx) != 3 || ndims (yy) != 3
       || ndims (zz) != 3 || ndims (c) != 3)

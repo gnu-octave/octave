@@ -36,13 +36,7 @@
 ## @seealso{sound, soundsc}
 ## @end deftypefn
 
-function x = record (sec, fs)
-
-  if (nargin == 1)
-    fs = 8000;
-  elseif (nargin != 2)
-    print_usage ();
-  endif
+function x = record (sec, fs = 8000)
 
   if (! (isscalar (sec) && (sec >= 0)))
     error ("record: recording duration SEC must be a non-negative number");

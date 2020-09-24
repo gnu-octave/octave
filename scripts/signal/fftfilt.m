@@ -47,7 +47,7 @@ function y = fftfilt (b, x, n)
   ## of two larger than N and length(b).  This could result in length
   ## one blocks, but if the user knows better ...
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

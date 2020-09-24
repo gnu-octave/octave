@@ -67,7 +67,7 @@
 
 function retval = fail (code, pattern, warning_pattern)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 

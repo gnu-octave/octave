@@ -57,13 +57,9 @@
 
 function h = gca ()
 
-  if (nargin == 0)
-    h = get (gcf (), "currentaxes");
-    if (isempty (h))
-      h = axes ();
-    endif
-  else
-    print_usage ();
+  h = get (gcf (), "currentaxes");
+  if (isempty (h))
+    h = axes ();
   endif
 
 endfunction

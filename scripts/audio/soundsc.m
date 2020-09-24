@@ -51,7 +51,7 @@
 
 function soundsc (y, fs, nbits, yrange)
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 1)
     print_usage ();
   endif
 

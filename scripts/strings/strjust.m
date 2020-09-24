@@ -51,7 +51,7 @@
 
 function y = strjust (s, pos = "right")
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! ischar (s) || ndims (s) > 2)
     error ("strjust: S must be a string or 2-D character matrix");

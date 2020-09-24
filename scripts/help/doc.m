@@ -41,10 +41,6 @@
 
 function retval = doc (function_name)
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 1)
     if (! ischar (function_name))
       error ("doc: FUNCTION_NAME must be a string");

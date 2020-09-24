@@ -102,7 +102,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
 
   persistent root2 = sqrt (2);
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 1)
     print_usage ();
   endif
 

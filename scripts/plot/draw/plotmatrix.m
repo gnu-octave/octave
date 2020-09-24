@@ -78,7 +78,7 @@ function [h, ax, bigax, p, pax] = plotmatrix (varargin)
 
   [bigax2, varargin, nargin] = __plt_get_axis_arg__ ("plotmatrix", varargin{:});
 
-  if (nargin > 3 || nargin < 1)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 

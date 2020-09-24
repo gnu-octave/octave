@@ -67,7 +67,7 @@
 
 function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
 
-  if (nargin < 2 || nargin > 6)
+  if (nargin < 2)
     print_usage ();
   endif
 

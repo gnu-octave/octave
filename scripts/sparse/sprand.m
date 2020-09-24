@@ -49,9 +49,9 @@
 
 function s = sprand (m, n, d, rc)
 
-  if (nargin == 1 )
+  if (nargin == 1)
     s = __sprand__ (m, @rand);
-  elseif ( nargin == 3)
+  elseif (nargin == 3)
     s = __sprand__ (m, n, d, "sprand", @rand);
   elseif (nargin == 4)
     s = __sprand__ (m, n, d, rc, "sprand", @rand);

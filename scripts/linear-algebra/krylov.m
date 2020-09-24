@@ -71,7 +71,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg)
     defeps = 1e-12;
   endif
 
-  if (nargin < 3 || nargin > 5)
+  if (nargin < 3)
     print_usage ();
   elseif (nargin < 5)
     ## Default permutation flag.

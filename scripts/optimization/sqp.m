@@ -197,7 +197,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
   globals = struct (); # data and handles, needed and changed by subfunctions
 
-  if (nargin < 2 || nargin > 8 || nargin == 5)
+  if (nargin < 2 || nargin == 5)
     print_usage ();
   endif
 

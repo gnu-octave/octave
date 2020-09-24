@@ -74,7 +74,7 @@
 
 function [theta, r, z] = cart2pol (x, y, z = [])
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 

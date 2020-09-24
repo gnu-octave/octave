@@ -45,7 +45,7 @@
 
 function [ex_code, ex_idx] = example (name, n = 0)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 

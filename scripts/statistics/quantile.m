@@ -156,7 +156,7 @@
 
 function q = quantile (x, p = [], dim, method = 5)
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -405,7 +405,7 @@ endfunction
 ## Description: Quantile function of empirical samples
 function inv = __quantile__ (x, p, method = 5)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ("quantile");
   endif
 

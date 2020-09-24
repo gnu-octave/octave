@@ -44,10 +44,6 @@
 
 function val = pathdef ()
 
-  if (nargin > 0)
-    print_usage ();
-  endif
-
   ## Locate any project-specific .octaverc file.
   proj_octaverc = fullfile (pwd, ".octaverc");
   if (exist (proj_octaverc, "file"))

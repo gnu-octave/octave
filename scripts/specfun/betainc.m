@@ -74,7 +74,7 @@
 
 function y = betainc (x, a, b, tail = "lower")
 
-  if (nargin < 3 || nargin > 4)
+  if (nargin < 3)
     print_usage ();
   endif
 

@@ -168,7 +168,7 @@
 
 function [L, U, P] = ilu (A, opts = struct ())
 
-  if (nargin < 1 || nargin > 2 || (nargout > 3))
+  if (nargin < 1)
     print_usage ();
   endif
 

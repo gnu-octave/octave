@@ -45,7 +45,7 @@ function rotate (h, direction, alpha, origin)
   ## default origin due to possible differences in the auto-scaling
   ## algorithm between Octave and Matlab.
 
-  if (nargin < 3 || nargin > 4)
+  if (nargin < 3)
     print_usage ();
   endif
 

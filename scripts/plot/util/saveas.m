@@ -81,7 +81,7 @@
 
 function saveas (h, filename, fmt)
 
-  if (nargin != 2 && nargin != 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

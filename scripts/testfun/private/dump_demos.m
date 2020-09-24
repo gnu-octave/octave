@@ -57,10 +57,6 @@
 
 function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, mfile="dump_plot_demos.m", fmt="png")
 
-  if (nargin > 3)
-    print_usage ();
-  endif
-
   if (ischar (dirs))
     dirs = {dirs};
   elseif (! iscellstr (dirs))

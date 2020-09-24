@@ -40,10 +40,6 @@
 
 function retval = date ()
 
-  if (nargin != 0)
-    print_usage ();
-  endif
-
   retval = strftime ("%d-%b-%Y", localtime (time ()));
 
 endfunction

@@ -75,13 +75,7 @@
 ## FIXME: This is quite slow for large directories.
 ##        Perhaps it should be converted to C++?
 
-function retval = dir (directory)
-
-  if (nargin == 0)
-    directory = ".";
-  elseif (nargin > 1)
-    print_usage ();
-  endif
+function retval = dir (directory = ".")
 
   if (! ischar (directory))
     error ("dir: DIRECTORY argument must be a string");

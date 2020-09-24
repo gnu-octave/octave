@@ -58,7 +58,7 @@
 
 function [a, b] = arch_fit (y, x, p, iter, gamma, a0, b0)
 
-  if (nargin < 3 || nargin == 6 || nargin > 7)
+  if (nargin < 3 || nargin == 6)
     print_usage ();
   endif
 

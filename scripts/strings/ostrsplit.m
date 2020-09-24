@@ -62,7 +62,7 @@
 
 function cstr = ostrsplit (s, sep, strip_empty = false)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   elseif (! ischar (s) || ! ischar (sep))
     error ("ostrsplit: S and SEP must be string values");

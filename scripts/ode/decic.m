@@ -97,7 +97,7 @@ function [y0_new, yp0_new, resnorm] = decic (fun, t0,
                                              y0, fixed_y0, yp0, fixed_yp0,
                                              options)
 
-  if (nargin < 6 || nargin > 7)
+  if (nargin < 6)
     print_usage ();
   endif
 

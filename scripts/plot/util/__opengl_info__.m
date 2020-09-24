@@ -59,10 +59,6 @@
 
 function retval = __opengl_info__ ()
 
-  if (nargin != 0)
-    print_usage ();
-  endif
-
   [info, msg] = gl_info ();
 
   if (! isempty (msg))

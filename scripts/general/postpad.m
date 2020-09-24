@@ -44,7 +44,7 @@
 
 function y = postpad (x, l, c, dim)
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2)
     print_usage ();
   endif
 

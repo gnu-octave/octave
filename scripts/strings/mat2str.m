@@ -65,7 +65,7 @@
 
 function s = mat2str (x, n = 15, cls = "")
 
-  if (nargin < 1 || nargin > 3 || ! (isnumeric (x) || islogical (x)))
+  if (nargin < 1 || ! (isnumeric (x) || islogical (x)))
     print_usage ();
   elseif (ndims (x) > 2)
     error ("mat2str: X must be two dimensional");

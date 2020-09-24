@@ -134,7 +134,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     return;
   endif
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

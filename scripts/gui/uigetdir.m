@@ -41,10 +41,6 @@
 
 function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to Open")
 
-  if (nargin > 2)
-    print_usage ();
-  endif
-
   if (! ischar (init_path) || ! ischar (dialog_name))
     error ("uigetdir: INIT_PATH and DIALOG_NAME must be string arguments");
   endif

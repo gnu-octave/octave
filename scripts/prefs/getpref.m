@@ -55,10 +55,6 @@
 
 function retval = getpref (group, pref, default)
 
-  if (nargin > 3)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     retval = loadprefs ();
   elseif (nargin == 1)

@@ -30,7 +30,7 @@
 
 function __gnuplot_drawnow__ (h, term, file, debug_file)
 
-  if (nargin < 1 || nargin > 4 || nargin == 2)
+  if (nargin < 1 || nargin == 2)
     print_usage ();
   endif
 

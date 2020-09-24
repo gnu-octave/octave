@@ -49,7 +49,7 @@
 
 function y = filter2 (b, x, shape)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
   if (nargin < 3)

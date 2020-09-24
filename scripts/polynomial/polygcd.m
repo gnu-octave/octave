@@ -53,39 +53,42 @@
 
 function x = polygcd (b, a, tol)
 
-  if (nargin == 2 || nargin == 3)
-    if (nargin == 2)
-      if (isa (a, "single") || isa (b, "single"))
-        tol = sqrt (eps ("single"));
-      else
-        tol = sqrt (eps);
-      endif
-    endif
-    if (length (a) == 1 || length (b) == 1)
-      if (a == 0)
-        x = b;
-      elseif (b == 0)
-        x = a;
-      else
-        x = 1;
-      endif
+  if (nargin < 2)
+    print_usage ();
+  endif
+
+  if (nargin == 2)
+    if (isa (a, "single") || isa (b, "single"))
+      tol = sqrt (eps ("single"));
     else
-      a /= a(1);
-      while (1)
-        [d, r] = deconv (b, a);
-        nz = find (abs (r) > tol);
-        if (isempty (nz))
-          x = a;
-          break;
-        else
-          r = r(nz(1):length(r));
-        endif
-        b = a;
-        a = r / r(1);
-      endwhile
+      tol = sqrt (eps);
+    endif
+  endif
+  ## FIXME: No input validation of tol if it was user-supplied
+
+
+  if (length (a) == 1 || length (b) == 1)
+    if (a == 0)
+      x = b;
+    elseif (b == 0)
+      x = a;
+    else
+      x = 1;
     endif
   else
-    print_usage ();
+    a /= a(1);
+    while (1)
+      [d, r] = deconv (b, a);
+      nz = find (abs (r) > tol);
+      if (isempty (nz))
+        x = a;
+        break;
+      else
+        r = r(nz(1):length(r));
+      endif
+      b = a;
+      a = r / r(1);
+    endwhile
   endif
 
 endfunction

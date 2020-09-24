@@ -40,7 +40,7 @@
 
 function msg = nargchk (minargs, maxargs, nargs, outtype = "string")
 
-  if (nargin < 3 || nargin > 4)
+  if (nargin < 3)
     print_usage ();
   elseif (minargs > maxargs)
     error ("nargchk: MINARGS must be <= MAXARGS");

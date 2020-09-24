@@ -159,7 +159,7 @@
 ## FIXME: consider two dimensional speedup surfaces for functions like kron.
 function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 100, __f2 = "", __tol = eps)
 
-  if (nargin < 1 || nargin > 6)
+  if (nargin < 1)
     print_usage ();
   endif
 

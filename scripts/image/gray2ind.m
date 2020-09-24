@@ -42,7 +42,7 @@
 
 function [I, map] = gray2ind (I, n = 64)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! isreal (I) || issparse (I) || ! ismatrix(I))
     error ("gray2ind: I must be a grayscale or binary image");

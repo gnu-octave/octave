@@ -81,6 +81,10 @@
 
 function retval = rank (A, tol)
 
+  if (nargin < 1)
+    print_usage ();
+  endif
+
   if (nargin == 1)
     sigma = svd (A);
     if (isempty (sigma))
@@ -92,11 +96,9 @@ function retval = rank (A, tol)
         tolerance = max (size (A)) * sigma (1) * eps;
       endif
     endif
-  elseif (nargin == 2)
+  else
     sigma = svd (A);
     tolerance = tol;
-  else
-    print_usage ();
   endif
 
   retval = sum (sigma > tolerance);

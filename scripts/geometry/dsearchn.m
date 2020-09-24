@@ -39,7 +39,7 @@
 
 function [idx, d] = dsearchn (x, tri, xi, outval)
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2)
     print_usage ();
   endif
 

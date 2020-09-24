@@ -54,7 +54,7 @@
 
 function h = dec2hex (d, len)
 
-  if (nargin == 0 || nargin > 2)
+  if (nargin == 0)
     print_usage ();
   endif
 

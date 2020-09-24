@@ -34,10 +34,6 @@
 
 function closereq ()
 
-  if (nargin != 0)
-    print_usage ();
-  endif
-
   ## Get current figure, but don't use gcf to avoid creating a new figure.
   cf = get (0, "currentfigure");
   if (isfigure (cf))

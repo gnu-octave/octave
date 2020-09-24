@@ -167,7 +167,7 @@ function retval = legendre (n, x, normalization)
 
   persistent warned_overflow = false;
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

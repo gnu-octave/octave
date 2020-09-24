@@ -64,7 +64,7 @@
 
 function C = bitset (A, n, val = true)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

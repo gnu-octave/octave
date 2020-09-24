@@ -40,7 +40,7 @@
 
 function retval = null (A, tol)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (nargin == 2 && strcmp (tol, "r"))
     error ("null: option for rational not yet implemented");

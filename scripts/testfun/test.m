@@ -137,7 +137,7 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
   persistent __signal_file  = ">>>>> ";
   persistent __signal_skip  = "----- ";
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   elseif (! isempty (__name) && ! ischar (__name))
     error ("test: NAME must be a string");

@@ -36,7 +36,7 @@
 
 function retval = optimget (options, parname, default)
 
-  if (nargin < 2 || nargin > 4 || ! isstruct (options) || ! ischar (parname))
+  if (nargin < 2 || ! isstruct (options) || ! ischar (parname))
     print_usage ();
   endif
 

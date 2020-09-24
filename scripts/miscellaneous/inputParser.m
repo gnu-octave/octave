@@ -225,7 +225,7 @@ classdef inputParser < handle
       ##
       ## @end deftypefn
 
-      if (nargin < 2 || nargin > 3)
+      if (nargin < 2)
         print_usage ();
       elseif (numel (this.Optional) || numfields (this.Parameter)
               || numfields (this.Switch))
@@ -264,7 +264,7 @@ classdef inputParser < handle
       ##
       ## @end deftypefn
 
-      if (nargin < 3 || nargin > 4)
+      if (nargin < 3)
         print_usage ();
       elseif (numfields (this.Parameter) || numfields (this.Switch))
         error (["inputParser.Optional: can't have Optional arguments " ...
@@ -287,7 +287,7 @@ classdef inputParser < handle
       ##
       ## @end deftypefn
 
-      if (nargin < 3 || nargin > 4)
+      if (nargin < 3)
         print_usage ();
       endif
       this.addParameter (name, def, val);

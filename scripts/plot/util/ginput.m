@@ -46,10 +46,6 @@
 
 function varargout = ginput (n = -1)
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   ## Create an axis, if necessary.
   fig = gcf ();
   ax = gca ();

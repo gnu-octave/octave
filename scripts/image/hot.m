@@ -36,9 +36,7 @@
 
 function map = hot (n)
 
-  if (nargin > 1)
-    print_usage ();
-  elseif (nargin == 1)
+  if (nargin == 1)
     if (! isscalar (n))
       error ("hot: N must be a scalar");
     endif

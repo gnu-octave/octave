@@ -134,7 +134,7 @@
 
 function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse = [])
 
-  if (nargin < 2 || nargin > 6)
+  if (nargin < 2)
     print_usage ();
   endif
 

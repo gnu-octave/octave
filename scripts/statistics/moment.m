@@ -130,7 +130,7 @@
 
 function m = moment (x, p, opt1, opt2)
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2)
     print_usage ();
   endif
 

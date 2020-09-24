@@ -41,7 +41,7 @@
 
 function filelist = gunzip (gzfile, dir = [])
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 

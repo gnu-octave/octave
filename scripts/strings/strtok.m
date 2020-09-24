@@ -58,7 +58,7 @@
 
 function [tok, rem] = strtok (str, delim)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! (ischar (str) || iscellstr (str)))
     error ("strtok: STR must be a string or cell array of strings.");

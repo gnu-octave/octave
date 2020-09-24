@@ -82,7 +82,7 @@
 
 function [h_r, f_r] = freqz (b, a, n, region, Fs)
 
-  if (nargin < 1 || nargin > 5)
+  if (nargin < 1)
     print_usage ();
   elseif (nargin == 1)
     ## Response of an FIR filter.

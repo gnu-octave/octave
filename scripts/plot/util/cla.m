@@ -49,10 +49,6 @@
 
 function cla (hax, do_reset = false)
 
-  if (nargin > 2)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     hax = gca;
   elseif (nargin == 1)

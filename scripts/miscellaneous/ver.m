@@ -58,10 +58,6 @@
 
 function retval = ver (package = "")
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargout == 0)
     hg_id = __octave_config_info__ ("hg_id");
 

@@ -130,7 +130,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   ## other options for the kinds of plots described by Tukey could be
   ## provided.  This may best be left to users.
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

@@ -58,7 +58,7 @@
 
 function retval = dec2base (d, base, len)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

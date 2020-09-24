@@ -45,10 +45,6 @@
 
 function __debug_octave__ (command_string)
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     if (ismac ())
       status = system ("lldb --version");

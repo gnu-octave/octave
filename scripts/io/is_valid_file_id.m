@@ -31,18 +31,18 @@
 
 function retval = is_valid_file_id (fid)
 
-  retval = false;
-
-  if (nargin == 1)
-    try
-      if (isscalar (fid))
-        [file, mode, arch] = fopen (fid);
-        retval = ! isempty (file);
-      endif
-    end_try_catch
-  else
+  if (nargin != 1)
     print_usage ();
   endif
+
+  retval = false;
+
+  try
+    if (isscalar (fid))
+      [file, mode, arch] = fopen (fid);
+      retval = ! isempty (file);
+    endif
+  end_try_catch
 
 endfunction
 

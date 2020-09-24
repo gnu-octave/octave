@@ -46,10 +46,6 @@
 ## Built-in profiler.
 function profshow (data, n = 20)
 
-  if (nargin > 2)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     data = profile ("info");
   elseif (nargin == 1 && ! isstruct (data))

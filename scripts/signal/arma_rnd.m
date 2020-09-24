@@ -47,15 +47,9 @@
 ## is omitted, @var{n} = 100 is used.
 ## @end deftypefn
 
-function x = arma_rnd (a, b, v, t, n)
+function x = arma_rnd (a, b, v, t, n = 100)
 
-  if (nargin == 4)
-    n = 100;
-  elseif (nargin == 5)
-    if (! isscalar (n))
-      error ("arma_rnd: N must be a scalar");
-    endif
-  else
+  if (nargin < 4)
     print_usage ();
   endif
 
@@ -65,6 +59,10 @@ function x = arma_rnd (a, b, v, t, n)
 
   if (! isscalar (t))
     error ("arma_rnd: T must be a scalar");
+  endif
+
+  if (! isscalar (n))
+    error ("arma_rnd: N must be a scalar");
   endif
 
   ar = length (a);

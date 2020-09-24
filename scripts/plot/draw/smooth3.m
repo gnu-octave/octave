@@ -65,7 +65,7 @@
 
 function smoothed_data = smooth3 (data, method = "box", sz = 3, std_dev = 0.65)
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 1)
     print_usage ();
   endif
 

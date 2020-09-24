@@ -45,7 +45,7 @@
 function [h, old_prop] = hgload (filename, prop_struct = struct ())
 
   ## Check number of input arguments
-  if (nargin == 0 || nargin > 2)
+  if (nargin == 0)
     print_usage ();
   endif
 

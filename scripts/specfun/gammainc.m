@@ -95,7 +95,7 @@
 
 function y = gammainc (x, a, tail = "lower")
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

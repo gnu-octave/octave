@@ -42,7 +42,7 @@
 
 function rmpref (group, pref)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! ischar (group))
     error ("rmpref: GROUP must be a string");

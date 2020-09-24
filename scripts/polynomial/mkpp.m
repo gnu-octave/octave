@@ -59,7 +59,7 @@
 function pp = mkpp (x, P, d)
 
   ## check number of arguments
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

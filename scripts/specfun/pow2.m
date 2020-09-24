@@ -47,12 +47,14 @@
 
 function y = pow2 (f, e)
 
+  if (nargin < 1)
+    print_usage ();
+  endif
+
   if (nargin == 1)
     y = 2 .^ f;
-  elseif (nargin == 2)
-    y = f .* (2 .^ e);
   else
-    print_usage ();
+    y = f .* (2 .^ e);
   endif
 
 endfunction

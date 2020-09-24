@@ -61,7 +61,7 @@ function v = findstr (s, t, overlap = true)
              "findstr is obsolete; use strfind instead\n");
   endif
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

@@ -52,7 +52,7 @@
 
 function [text, status] = get_first_help_sentence (name, max_len = 80)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 

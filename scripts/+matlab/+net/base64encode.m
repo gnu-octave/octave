@@ -36,7 +36,7 @@
 
 function b64_str = base64encode (in)
 
-  if (nargin != 1 || nargout > 1)
+  if (nargin != 1)
     print_usage ();
   endif
 

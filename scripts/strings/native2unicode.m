@@ -45,7 +45,7 @@
 
 function utf8_str = native2unicode (native_bytes, codepage = "")
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 

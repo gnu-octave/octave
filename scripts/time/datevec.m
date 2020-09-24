@@ -94,7 +94,7 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
     std_formats{++nfmt} = "mm/dd/yyyy HH:MM";
   endif
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 

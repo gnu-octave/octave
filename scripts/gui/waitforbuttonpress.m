@@ -39,10 +39,6 @@
 
 function b = waitforbuttonpress ()
 
-  if (nargin != 0 || nargout > 1)
-    print_usage ();
-  endif
-
   [x, y, k] = ginput (1);
 
   if (nargout == 1)

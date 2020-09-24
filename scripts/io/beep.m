@@ -35,10 +35,6 @@
 
 function beep ()
 
-  if (nargin != 0)
-    print_usage ();
-  endif
-
   puts ("\a");
 
 endfunction

@@ -85,10 +85,6 @@
 
 function [status, msg, msgid] = fileattrib (file = ".")
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (! ischar (file))
     error ("fileattrib: FILE must be a string");
   endif

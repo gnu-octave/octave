@@ -42,9 +42,7 @@
 
 function spinmap (t = 5, inc = 2)
 
-  if (nargin > 2)
-    print_usage ();
-  elseif (ischar (t))
+  if (ischar (t))
     if (strcmpi (t, "inf"))
       t = Inf;
     else

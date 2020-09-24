@@ -74,14 +74,12 @@ function refreshdata (h, workspace)
     endif
     if (nargin == 1)
       workspace = "base";
-    elseif (nargin == 2)
+    else
       if (! ischar (workspace)
           || ! any (strcmpi (workspace, {"base", "caller"})))
         error ('refreshdata: WORKSPACE must be "base" or "caller"');
       endif
       workspace = tolower (workspace);
-    else
-      print_usage ();
     endif
   endif
 

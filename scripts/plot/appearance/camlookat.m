@@ -54,10 +54,6 @@
 
 function camlookat (hh)
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     hax = gca ();
     hh = get (hax, "children");

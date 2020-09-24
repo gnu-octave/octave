@@ -175,7 +175,7 @@ function retval = datestr (date, f = [], p = [])
     names_d = {"S", "M", "T", "W", "T", "F", "S"};
   endif
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 

@@ -74,7 +74,7 @@
 
 function retval = logspace (a, b, n = 50)
 
-  if (nargin != 2 && nargin != 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

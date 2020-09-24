@@ -61,7 +61,7 @@
 
 function hgsave (h, filename, fmt = "-binary")
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 

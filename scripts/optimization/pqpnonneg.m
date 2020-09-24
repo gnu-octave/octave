@@ -93,7 +93,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x0 = [],
     return;
   endif
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2)
     print_usage ();
   endif
 

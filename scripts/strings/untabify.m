@@ -57,7 +57,7 @@
 
 function s = untabify (t, tw = 8, deblank_arg = false)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   elseif (! (ischar (t) || iscellstr (t)))
     error ("untabify: T must be a string or cellstring");

@@ -57,7 +57,7 @@
 
 function [uniqstr, ismodified] = makeUniqueStrings (str, ex = {}, maxlength = Inf)
 
-  if (nargin == 0 || nargout > 3)
+  if (nargin == 0)
     print_usage ();
   endif
 

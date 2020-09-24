@@ -39,6 +39,10 @@
 
 function y = lin2mu (x, n)
 
+  if (nargin < 1)
+    print_usage ();
+  endif
+
   if (nargin == 1)
     range = max (abs (x (:)));
     if (range <= 1)
@@ -49,12 +53,10 @@ function y = lin2mu (x, n)
     else
       n = 16;
     endif
-  elseif (nargin == 2)
+  else
     if (n != 0 && n != 8 && n != 16)
       error ("lin2mu: N must be either 0, 8 or 16");
     endif
-  else
-    print_usage ();
   endif
 
   ## Transform real and n-bit format to 16-bit.

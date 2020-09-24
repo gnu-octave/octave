@@ -63,9 +63,7 @@
 
 function [comp, maxsize, endian] = computer (a)
 
-  if (nargin > 1)
-    print_usage ();
-  elseif (nargin == 1 && ! strcmpi (a, "arch"))
+  if (nargin == 1 && ! strcmpi (a, "arch"))
     error ('computer: "arch" is only valid argument');
   endif
 

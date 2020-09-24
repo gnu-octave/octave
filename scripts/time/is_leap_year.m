@@ -43,10 +43,6 @@
 
 function retval = is_leap_year (year)
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     t = clock ();
     year = t(1);

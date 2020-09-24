@@ -35,9 +35,7 @@
 
 function map = winter (n)
 
-  if (nargin > 1)
-    print_usage ();
-  elseif (nargin == 1)
+  if (nargin == 1)
     if (! isscalar (n))
       error ("winter: N must be a scalar");
     endif

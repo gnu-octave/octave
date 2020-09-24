@@ -60,7 +60,7 @@
 
 function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2)
     print_usage ();
   endif
 

@@ -45,7 +45,7 @@
 
 function native_bytes = unicode2native (utf8_str, codepage = "")
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 

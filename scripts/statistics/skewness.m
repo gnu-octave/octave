@@ -87,7 +87,7 @@
 
 function y = skewness (x, flag, dim)
 
-  if (nargin < 1) || (nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 

@@ -73,10 +73,6 @@
 
 function retval = what (dir)
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     dir = { pwd() };
   else

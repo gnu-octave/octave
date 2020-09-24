@@ -40,7 +40,7 @@
 
 function [x, y] = gplot (A, xy, line_style)
 
-  if (nargin < 2 || nargin > 3 || nargout > 2)
+  if (nargin < 2)
     print_usage ();
   endif
 

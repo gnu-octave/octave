@@ -77,7 +77,7 @@
 
 function [x, R] = linsolve (A, b, opts)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 

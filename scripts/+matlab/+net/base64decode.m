@@ -37,7 +37,7 @@
 
 function out_vec = base64decode (b64_str)
 
-  if (nargin != 1 || nargout > 1)
+  if (nargin != 1)
     print_usage ();
   endif
 

@@ -79,7 +79,7 @@
 
 function c = cov (x, y = [], opt = 0)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 

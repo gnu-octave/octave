@@ -58,10 +58,6 @@
 
 function h = groot ()
 
-  if (nargin != 0)
-    print_usage ();
-  endif
-
   h = 0;
 
 endfunction

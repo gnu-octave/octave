@@ -109,8 +109,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
   persistent monthstart = [306; 337; 0; 31; 61; 92; 122; 153; 184; 214; 245; 275];
   persistent monthlength = [31; 28; 31; 30; 31; 30; 31; 31; 30; 31; 30; 31];
 
-  if (nargin == 0 || nargin > 6
-      || (nargin > 2 && (ischar (year) || iscellstr (year))))
+  if (nargin == 0 || (nargin > 2 && (ischar (year) || iscellstr (year))))
     print_usage ();
   endif
 

@@ -62,10 +62,6 @@
 
 function [path1, path2] = javaclasspath (what = "")
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   ## dynamic classpath
   dynamic_path = javaMethod ("getClassPath", "org.octave.ClassHelper");
   dynamic_path_list = ostrsplit (dynamic_path, pathsep ());

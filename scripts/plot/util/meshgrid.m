@@ -67,7 +67,7 @@
 
 function [xx, yy, zz] = meshgrid (x, y, z)
 
-  if (nargin == 0 || nargin > 3)
+  if (nargin == 0)
     print_usage ();
   endif
 

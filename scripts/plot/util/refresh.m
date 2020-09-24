@@ -35,9 +35,7 @@
 
 function refresh (h)
 
-  if (nargin > 1)
-    print_usage ();
-  elseif (nargin == 1)
+  if (nargin == 1)
     if (! isfigure (h))
       error ("refresh: H must be a valid figure handle");
     endif

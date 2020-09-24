@@ -37,10 +37,6 @@
 
 function t = now ()
 
-  if (nargin != 0)
-    print_usage ();
-  endif
-
   t = datenum (clock ());
 
   ## The following doesn't work (e.g., one hour off on 2005-10-04):

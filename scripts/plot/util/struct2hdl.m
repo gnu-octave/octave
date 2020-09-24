@@ -45,12 +45,16 @@
 
 function [h, pout] = struct2hdl (s, p=[], hilev = false)
 
+  if (nargin < 1)
+    print_usage ();
+  endif
+
   fields = {"handle", "type", "children", "properties", "special"};
   partypes = {"root", "figure", "axes", "hggroup"};
   othertypes = {"line", "patch", "scatter", "surface", "image", "text"};
   alltypes = [partypes othertypes];
 
-  if (nargin > 3 || ! isstruct (s))
+  if (! isstruct (s))
     print_usage ();
   elseif (! all (isfield (s, fields)))
     print_usage ();

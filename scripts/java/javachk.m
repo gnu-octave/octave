@@ -69,7 +69,7 @@
 
 function msg = javachk (feature, caller = "")
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! ischar (feature))
     error ("javachk: FEATURE must be a string");

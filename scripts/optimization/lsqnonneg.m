@@ -91,7 +91,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d,
     return;
   endif
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2)
     print_usage ();
   endif
 

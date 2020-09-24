@@ -31,11 +31,7 @@
 
 function retval = isunix ()
 
-  if (nargin == 0)
-    retval = __octave_config_info__ ("unix");
-  else
-    print_usage ();
-  endif
+  retval = __octave_config_info__ ("unix");
 
 endfunction
 

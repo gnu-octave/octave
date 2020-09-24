@@ -66,7 +66,7 @@
 
 function [y, c] = stft (x, win_size = 80, inc = 24, num_coef = 64, win_type = 1)
 
-  if (nargin < 1 || nargin > 5)
+  if (nargin < 1)
     print_usage ();
   endif
 

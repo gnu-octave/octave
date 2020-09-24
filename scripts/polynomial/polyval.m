@@ -48,7 +48,7 @@
 
 function [y, dy] = polyval (p, x, s = [], mu)
 
-  if (nargin < 2 || nargin > 4 || (nargout == 2 && nargin < 3))
+  if (nargin < 2 || (nargout == 2 && nargin < 3))
     print_usage ();
   endif
 

@@ -160,7 +160,7 @@
 
 function L = ichol (A, opts = struct ())
 
-  if (nargin < 1 || nargin > 2 || nargout > 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

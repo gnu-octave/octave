@@ -45,10 +45,6 @@
 
 function retval = graphics_toolkit (name, hlist = [])
 
-  if (nargin > 2)
-    print_usage ();
-  endif
-
   if (nargout > 0 || nargin == 0)
     retval = get (0, "defaultfigure__graphics_toolkit__");
     ## Handle case where graphics_toolkit has been called before any plotting

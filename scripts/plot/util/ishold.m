@@ -37,10 +37,6 @@
 
 function retval = ishold (h)
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     fig = gcf ();
     ax = get (fig, "currentaxes");

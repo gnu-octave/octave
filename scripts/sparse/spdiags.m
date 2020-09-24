@@ -64,7 +64,7 @@
 
 function [B, d] = spdiags (v, d, m, n)
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 1)
     print_usage ();
   endif
 

@@ -63,9 +63,7 @@ function retval = close (arg1, arg2)
 
   figs = [];
 
-  if (nargin > 2)
-    print_usage ();
-  elseif (nargin == 0)
+  if (nargin == 0)
     ## Close current figure.
     ## Can't use gcf because it opens a new plot window if one does not exist.
     figs = get (0, "currentfigure");

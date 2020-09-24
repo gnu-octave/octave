@@ -47,7 +47,7 @@
 
 function retval = pascal (n, t = 0)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! (isscalar (n) && isscalar (t)))
     error ("pascal: N and T must be scalars");

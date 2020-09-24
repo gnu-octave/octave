@@ -68,12 +68,8 @@
 
 function [retval, errmsg] = license (cmd, feature, toggle)
 
-  if (nargin > 3)
-    print_usage ();
-  endif
-
-  ## Then only give information about Octave core
   if (nargin == 0)
+    ## then only give information about Octave core
     retval = "GNU General Public License";
     return;
   endif
@@ -82,10 +78,6 @@ function [retval, errmsg] = license (cmd, feature, toggle)
 
   switch (tolower (cmd))
     case "inuse"
-      if (nargin > 2)
-        print_usage ();
-      endif
-
       features = features(loaded);
 
       if (nargin > 1)

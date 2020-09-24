@@ -141,6 +141,8 @@ namespace octave
 
     void unregister_doc (const std::string& file);
 
+    void update_gui_lexer (void);
+
     void directory_changed (const std::string& dir);
 
     void file_remove (const std::string& old_name,
@@ -239,6 +241,8 @@ namespace octave
     void register_doc_signal (const QString& file);
 
     void unregister_doc_signal (const QString& file);
+
+    void update_gui_lexer_signal (bool update_apis_only);
 
     void edit_variable_signal (const QString& name, const octave_value& val);
 

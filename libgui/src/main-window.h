@@ -106,6 +106,7 @@ namespace octave
     void show_doc_signal (const QString&);
     void register_doc_signal (const QString&);
     void unregister_doc_signal (const QString&);
+    void update_gui_lexer_signal (bool);
 
     void insert_debugger_pointer_signal (const QString& file, int line);
     void delete_debugger_pointer_signal (const QString& file, int line);

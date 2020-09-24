@@ -447,6 +447,11 @@ namespace octave
     emit unregister_doc_signal (QString::fromStdString (file));
   }
 
+  void qt_interpreter_events::update_gui_lexer (void)
+  {
+    emit update_gui_lexer_signal (true);
+  }
+
   void qt_interpreter_events::directory_changed (const std::string& dir)
   {
     emit directory_changed_signal (QString::fromStdString (dir));

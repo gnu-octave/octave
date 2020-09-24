@@ -195,6 +195,8 @@ namespace octave
 
     virtual void unregister_doc (const std::string& /*file*/) { }
 
+    virtual void update_gui_lexer (void) { }
+
     // Notifications of events in the interpreter that a GUI will
     // normally wish to respond to.
 
@@ -495,7 +497,17 @@ namespace octave
         }
       else
         return false;
+    }
 
+    bool update_gui_lexer (void)
+    {
+      if (enabled ())
+        {
+          instance->update_gui_lexer ();
+          return true;
+        }
+      else
+        return false;
     }
 
     void directory_changed (const std::string& dir)

@@ -2251,6 +2251,9 @@ namespace octave
     connect (qt_link,
              SIGNAL (unregister_doc_signal (const QString &)),
              this, SLOT (handle_unregister_doc (const QString &)));
+
+    connect (qt_link, SIGNAL (update_gui_lexer_signal (bool)),
+             this, SIGNAL (update_gui_lexer_signal (bool)));
   }
 
   QAction* main_window::add_action (QMenu *menu, const QIcon& icon,

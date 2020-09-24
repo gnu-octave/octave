@@ -2408,7 +2408,7 @@ namespace octave
     connect (f, SIGNAL (set_focus_editor_signal (QWidget*)),
              this, SLOT (set_focus (QWidget*)));
 
-    // Signals from the file_editor non-trivial operations
+    // Signals from the file_editor or main-win non-trivial operations
     connect (this, SIGNAL (fetab_settings_changed (const gui_settings *)),
              f, SLOT (notice_settings (const gui_settings *)));
 
@@ -2418,6 +2418,9 @@ namespace octave
     connect (this, SIGNAL (fetab_save_file (const QWidget*, const QString&,
                                             bool)),
              f, SLOT (save_file (const QWidget*, const QString&, bool)));
+
+    connect (main_win (), SIGNAL (update_gui_lexer_signal (bool)),
+             f, SLOT (update_lexer_settings (bool)));
 
     // Signals from the file_editor trivial operations
     connect (this, SIGNAL (fetab_recover_from_exit (void)),

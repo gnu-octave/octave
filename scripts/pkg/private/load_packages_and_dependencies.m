@@ -61,6 +61,11 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
     EXEC_PATH (execpath);
   endif
 
+  ## Update lexer for autocompletion if necessary
+  if isguirunning && (length (idx) > 0)
+    __event_manager_update_gui_lexer__;
+  endif
+
 endfunction
 
 

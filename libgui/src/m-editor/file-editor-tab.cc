@@ -688,8 +688,11 @@ namespace octave
 
 
   // Update settings, which are lexer related and have to be updated
-  // when a) the lexer changes or b) the settings have changed.
-  void file_editor_tab::update_lexer_settings (void)
+  // when
+  //    a) the lexer changes,
+  //    b) the settings have changed, or
+  //    c) a package was loaded/unloaded
+  void file_editor_tab::update_lexer_settings (bool update_apis_only)
   {
     QsciLexer *lexer = m_edit_area->lexer ();
 
@@ -760,7 +763,8 @@ namespace octave
                 // if the file is older than a few minutes preventing from
                 // re-preparing data when the user opens several files.
                 QDateTime apis_time = apis_file.lastModified ();
-                if (QDateTime::currentDateTime () > apis_time.addSecs (180))
+                if (update_apis_only
+                    || QDateTime::currentDateTime () > apis_time.addSecs (180))
                   update_apis = true;
               }
 
@@ -791,6 +795,8 @@ namespace octave
             // no prepared info was loaded, prepare and save if possible
 
             // create raw apis info
+
+            m_lexer_apis->clear (); // Clear current contents
 
             if (m_is_octave_file)
               {
@@ -856,6 +862,9 @@ namespace octave
               }
           }
       }
+
+    if (update_apis_only)
+      return;   // We are done here
 
     lexer->readSettings (*settings);
 

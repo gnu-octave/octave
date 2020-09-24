@@ -577,6 +577,17 @@ Undocumented internal function.
   return ovl (evmgr.unregister_doc (file));
 }
 
+DEFMETHOD (__event_manager_update_gui_lexer__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_update_gui_lexer__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
+  return ovl (evmgr.update_gui_lexer ());
+}
+
 DEFMETHOD (__event_manager_copy_image_to_clipboard__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __event_manager_copy_image_to_clipboard__ (@var{filename})

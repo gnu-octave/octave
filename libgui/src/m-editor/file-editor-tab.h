@@ -204,6 +204,8 @@ namespace octave
 
     void update_breakpoints_handler (const octave_value_list& argout);
 
+    void update_lexer_settings (bool update_apis_only = false);
+
   private slots:
 
     // When user closes message box for decoding problems
@@ -281,7 +283,6 @@ namespace octave
     bool unchanged_or_saved (void);
 
     void update_lexer (void);
-    void update_lexer_settings (void);
 
     void show_dialog (QDialog *dlg, bool modal);
   public:

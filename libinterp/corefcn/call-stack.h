@@ -308,16 +308,16 @@ namespace octave
 
     tree_evaluator& m_evaluator;
 
-    // The current call stack.
-    // FIXME: maybe we should be using a std::shared_ptr to manage the
-    // individual stack frames?
+    // The list of stack frames.
     stack_frames m_cs;
 
-    // FIXME: Could we eliminate this variable and manage the current
-    // frame in the evaluator class instead?  The current frame might
-    // always be the top of the stack.  Restoring the previous/current
-    // frame would be managed by other means, such as an
-    // unwind_protect frame.
+    // The current frame.  When a new frame is pushed, m_curr_frame
+    // moves to the end of the list of stack frames (also referred to as
+    // the top of the call stack) but may be temporarily moved to
+    // another location by evalin or debugging functions.
+
+    // FIXME: should the current frame be managed by the evaluator
+    // instead?
     size_t m_curr_frame;
 
     int m_max_stack_depth;

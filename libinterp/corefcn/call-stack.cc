@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <iostream>
-
 #include "lo-regexp.h"
 #include "str-vec.h"
 
@@ -379,7 +377,8 @@ namespace octave
     std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, scope, m_curr_frame, slink));
+      new_frame (stack_frame::create (m_evaluator, scope, m_curr_frame,
+                                      m_cs[prev_frame], slink));
 
     m_cs.push_back (new_frame);
   }
@@ -397,7 +396,8 @@ namespace octave
     std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame, slink,
+      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame,
+                                      m_cs[prev_frame], slink,
                                       closure_frames));
 
     m_cs.push_back (new_frame);
@@ -416,8 +416,8 @@ namespace octave
     std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame, slink,
-                                      local_vars));
+      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame,
+                                      m_cs[prev_frame], slink, local_vars));
 
     m_cs.push_back (new_frame);
   }
@@ -435,7 +435,7 @@ namespace octave
 
     std::shared_ptr<stack_frame>
       new_frame (stack_frame::create (m_evaluator, script, m_curr_frame,
-                                      slink));
+                                      m_cs[prev_frame], slink));
 
     m_cs.push_back (new_frame);
   }
@@ -452,7 +452,8 @@ namespace octave
     std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame, slink));
+      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame,
+                                      m_cs[prev_frame], slink));
 
     m_cs.push_back (new_frame);
   }
@@ -752,7 +753,7 @@ namespace octave
       {
         std::shared_ptr<stack_frame> elt = m_cs.back ();
 
-        std::shared_ptr<stack_frame> caller = elt->static_link ();
+        std::shared_ptr<stack_frame> caller = elt->parent_link ();
 
         m_curr_frame = caller->index ();
 

@@ -140,38 +140,44 @@ namespace octave
     stack_frame (void) = delete;
 
     stack_frame (tree_evaluator& tw, size_t index,
+                 const std::shared_ptr<stack_frame>& parent_link,
                  const std::shared_ptr<stack_frame>& static_link,
                  const std::shared_ptr<stack_frame>& access_link)
       : m_evaluator (tw), m_line (-1), m_column (-1), m_index (index),
-        m_static_link (static_link), m_access_link (access_link),
-        m_dispatch_class ()
+        m_parent_link (parent_link), m_static_link (static_link),
+        m_access_link (access_link), m_dispatch_class ()
     { }
 
     // Compiled function.
     static stack_frame *
     create (tree_evaluator& tw, octave_function *fcn, size_t index,
+            const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link);
 
     // Script.
     static stack_frame *
     create (tree_evaluator& tw, octave_user_script *script, size_t index,
+            const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link);
 
     // User-defined function.
     static stack_frame *
     create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
+            const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link,
             const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ());
 
     // Anonymous user-defined function with init vars.
     static stack_frame *
     create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
+            const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link,
             const local_vars_map& local_vars);
 
     // Scope.
     static stack_frame *
     create (tree_evaluator& tw, const symbol_scope& scope, size_t index,
+            const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link);
 
     stack_frame (const stack_frame& elt) = default;
@@ -298,6 +304,9 @@ namespace octave
 
       mark_global (sym);
     }
+
+    std::shared_ptr<stack_frame>
+    parent_link (void) const {return m_parent_link; }
 
     std::shared_ptr<stack_frame>
     static_link (void) const {return m_static_link; }
@@ -556,8 +565,13 @@ namespace octave
     // Index in call stack.
     size_t m_index;
 
+    // Pointer to the nearest parent frame.  May include compiled
+    // functions.
+    std::shared_ptr<stack_frame> m_parent_link;
+
     // Pointer to the nearest parent frame that contains variable
-    // information (script, function, or scope).
+    // information (script, function, or scope).  This link skips over
+    // compiled function parent frames.
     std::shared_ptr<stack_frame> m_static_link;
 
     // Pointer to the nearest lexical parent frame.  Used to access

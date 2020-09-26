@@ -77,6 +77,14 @@ octtestsdir=`echo "@octtestsdir@" | sed "s|^${prefix}/\\+||"`
 startupfiledir=`echo "@startupfiledir@" | sed "s|^${prefix}/\\+||"`
 texi_macros_file=`echo "@texi_macros_file@" | sed "s|^${prefix}/\\+||"`
 
+## Replace portions of compiler flags that depend on prefix on target
+cppflags=`echo "@CPPFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+fftw3f_ldflags=`echo "@FFTW3F_LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+fftw3_ldflags=`echo "@FFTW3_LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+flibs=`echo "@FLIBS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+ldflags=`echo "@LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+oct_link_opts=`echo "@OCT_LINK_OPTS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+
 srcdir="@srcdir@"
 top_srcdir="@top_srcdir@"
 abs_srcdir="@abs_srcdir@"
@@ -108,7 +116,6 @@ COLAMD_CPPFLAGS="@COLAMD_CPPFLAGS@"
 COLAMD_LDFLAGS="@COLAMD_LDFLAGS@"
 COLAMD_LIBS="@COLAMD_LIBS@"
 CPICFLAG="@CPICFLAG@"
-CPPFLAGS="@CPPFLAGS@"
 CURL_CPPFLAGS="@CURL_CPPFLAGS@"
 CURL_LDFLAGS="@CURL_LDFLAGS@"
 CURL_LIBS="@CURL_LIBS@"
@@ -132,12 +139,9 @@ F77_FLOAT_STORE_FLAG="@F77_FLOAT_STORE_FLAG@"
 F77_INTEGER_8_FLAG="@F77_INTEGER_8_FLAG@"
 FFLAGS="@FFLAGS@"
 FFTW3_CPPFLAGS="@FFTW3_CPPFLAGS@"
-FFTW3_LDFLAGS="@FFTW3_LDFLAGS@"
 FFTW3_LIBS="@FFTW3_LIBS@"
 FFTW3F_CPPFLAGS="@FFTW3F_CPPFLAGS@"
-FFTW3F_LDFLAGS="@FFTW3F_LDFLAGS@"
 FFTW3F_LIBS="@FFTW3F_LIBS@"
-FLIBS="@FLIBS@"
 FLTK_CPPFLAGS="@FLTK_CPPFLAGS@"
 FLTK_LDFLAGS="@FLTK_LDFLAGS@"
 FLTK_LIBS="@FLTK_LIBS@"
@@ -157,7 +161,6 @@ KLU_CPPFLAGS="@KLU_CPPFLAGS@"
 KLU_LDFLAGS="@KLU_LDFLAGS@"
 KLU_LIBS="@KLU_LIBS@"
 LAPACK_LIBS="@LAPACK_LIBS@"
-LDFLAGS="@LDFLAGS@"
 LD_STATIC_FLAG="@LD_STATIC_FLAG@"
 LEX="@LEX@"
 LEXLIB="@LEXLIB@"
@@ -183,7 +186,6 @@ MKOCTFILE_OCT_LINK_DEPS="@MKOCTFILE_OCT_LINK_DEPS@"
 OCTAVE_LINK_DEPS="@OCTAVE_LINK_DEPS@"
 OCTAVE_LINK_OPTS="@OCTAVE_LINK_OPTS@"
 OCT_LINK_DEPS="@OCT_LINK_DEPS@"
-OCT_LINK_OPTS="@OCT_LINK_OPTS@"
 OPENGL_LIBS="@OPENGL_LIBS@"
 PCRE_CPPFLAGS="@PCRE_CPPFLAGS@"
 PCRE_LDFLAGS="@PCRE_LDFLAGS@"
@@ -267,7 +269,7 @@ $SED \
   -e "s|%OCTAVE_CONF_COLAMD_LDFLAGS%|\"${COLAMD_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_COLAMD_LIBS%|\"${COLAMD_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_CPICFLAG%|\"${CPICFLAG}\"|" \
-  -e "s|%OCTAVE_CONF_CPPFLAGS%|\"${CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_CPPFLAGS%|\"${cppflags}\"|" \
   -e "s|%OCTAVE_CONF_CURL_CPPFLAGS%|\"${CURL_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_CURL_LDFLAGS%|\"${CURL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_CURL_LIBS%|\"${CURL_LIBS}\"|" \
@@ -290,12 +292,12 @@ $SED \
   -e "s|%OCTAVE_CONF_F77_INTEGER_8_FLAG%|\"${F77_INTEGER_8_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_FFLAGS%|\"${FFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FFTW3F_CPPFLAGS%|\"${FFTW3F_CPPFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_FFTW3F_LDFLAGS%|\"${FFTW3F_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_FFTW3F_LDFLAGS%|\"${fftw3f_ldflags}\"|" \
   -e "s|%OCTAVE_CONF_FFTW3F_LIBS%|\"${FFTW3F_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_FFTW3_CPPFLAGS%|\"${FFTW3_CPPFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_FFTW3_LDFLAGS%|\"${FFTW3_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_FFTW3_LDFLAGS%|\"${fftw3_ldflags}\"|" \
   -e "s|%OCTAVE_CONF_FFTW3_LIBS%|\"${FFTW3_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_FLIBS%|\"${FLIBS}\"|" \
+  -e "s|%OCTAVE_CONF_FLIBS%|\"${flibs}\"|" \
   -e "s|%OCTAVE_CONF_FLTK_CPPFLAGS%|\"${FLTK_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FLTK_LDFLAGS%|\"${FLTK_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FLTK_LIBS%|\"${FLTK_LIBS}\"|" \
@@ -319,7 +321,7 @@ $SED \
   -e "s|%OCTAVE_CONF_KLU_LDFLAGS%|\"${KLU_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_KLU_LIBS%|\"${KLU_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LAPACK_LIBS%|\"${LAPACK_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_LDFLAGS%|\"${LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_LDFLAGS%|\"${ldflags}\"|" \
   -e "s|%OCTAVE_CONF_LD_STATIC_FLAG%|\"${LD_STATIC_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_LEX%|\"${LEX}\"|" \
   -e "s|%OCTAVE_CONF_LEXLIB%|\"${LEXLIB}\"|" \
@@ -348,7 +350,7 @@ $SED \
   -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
   -e "s|%OCTAVE_CONF_OCTLIBDIR%|\"${octlibdir}\"|" \
   -e "s|%OCTAVE_CONF_OCT_LINK_DEPS%|\"${OCT_LINK_DEPS}\"|" \
-  -e "s|%OCTAVE_CONF_OCT_LINK_OPTS%|\"${OCT_LINK_OPTS}\"|" \
+  -e "s|%OCTAVE_CONF_OCT_LINK_OPTS%|\"${oct_link_opts}\"|" \
   -e "s|%OCTAVE_CONF_OPENGL_LIBS%|\"${OPENGL_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_PCRE_CPPFLAGS%|\"${PCRE_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_PCRE_LDFLAGS%|\"${PCRE_LDFLAGS}\"|" \

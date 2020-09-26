@@ -304,10 +304,10 @@ decode_array_of_arrays (const rapidjson::Value& val,
 
   // Calculate the dims of the output array
   dim_vector array_dims;
-	array_dims.resize (sub_array_ndims + 1);
-	array_dims(0) = cell_numel;
-	for (auto i = 1; i < sub_array_ndims + 1; i++)
-  	array_dims(i) = sub_array_dims(i-1);
+  array_dims.resize (sub_array_ndims + 1);
+  array_dims(0) = cell_numel;
+  for (auto i = 1; i < sub_array_ndims + 1; i++)
+    array_dims(i) = sub_array_dims(i-1);
   NDArray array (array_dims);
 
   // Populate the array with specific order to generate MATLAB-identical output
@@ -315,7 +315,11 @@ decode_array_of_arrays (const rapidjson::Value& val,
   for (octave_idx_type i = 0; i < array.numel () / cell_numel; ++i)
     for (octave_idx_type k = 0; k < cell_numel; ++k)
       array(array_index++) = cell(k).array_value ()(i);
-  return array;
+
+  if (is_bool)
+    return boolNDArray (array);
+  else
+    return array;
 }
 
 //! Decodes any type of JSON arrays.  This function only serves as an interface

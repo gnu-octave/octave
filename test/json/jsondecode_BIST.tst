@@ -49,7 +49,6 @@
 %! assert (isa (obs, 'logical'));
 %! assert (isequal (obs, exp));
 
-%% FIXME: Matlab returns logical array rather than numeric array
 %!testif HAVE_RAPIDJSON <59135>
 %! json = '[[true, true], [false, true]]';
 %! exp  = logical ([1, 1; 0, 1]);

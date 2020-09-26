@@ -160,6 +160,7 @@ namespace octave
       m_argv (m_app_context.sys_argv ()),
       m_qapplication (new octave_qapplication (m_argc, m_argv)),
       m_resource_manager (), m_shortcut_manager (*this),
+      m_workspace_model (new workspace_model (*this)),
       m_qt_tr (new QTranslator ()), m_gui_tr (new QTranslator ()),
       m_qsci_tr (new QTranslator ()), m_translators_installed (false),
       m_qt_interpreter_events (new qt_interpreter_events (*this)),

@@ -164,9 +164,10 @@ namespace octave
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
     scmgr.init_data ();
 
+    m_workspace_model = m_octave_qobj.get_workspace_model ();
+
     construct_central_widget ();
 
-    m_workspace_model = new workspace_model (m_octave_qobj);
     m_status_bar = new QStatusBar ();
     m_command_window = new terminal_dock_widget (this, m_octave_qobj);
     m_history_window = new history_dock_widget (this, m_octave_qobj);

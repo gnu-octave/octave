@@ -1137,10 +1137,6 @@ namespace octave
     m_debug_step_over->setEnabled (true);
     m_debug_step_out->setEnabled (true);
     m_debug_quit->setEnabled (true);
-
-#if defined (HAVE_QSCINTILLA)
-    m_editor_window->handle_enter_debug_mode ();
-#endif
   }
 
   void main_window::handle_exit_debugger (void)
@@ -1152,10 +1148,6 @@ namespace octave
     m_debug_step_over->setEnabled (m_editor_has_tabs);
     m_debug_step_out->setEnabled (false);
     m_debug_quit->setEnabled (false);
-
-#if defined (HAVE_QSCINTILLA)
-    m_editor_window->handle_exit_debug_mode ();
-#endif
   }
 
   void main_window::debug_continue (void)
@@ -2146,6 +2138,13 @@ namespace octave
     // Signals for removing/renaming files/dirs in the terminal window
     connect (qt_link, SIGNAL (file_renamed_signal (bool)),
              m_editor_window, SLOT (handle_file_renamed (bool)));
+
+    // Signals for entering/exiting debug mode
+    connect (qt_link, SIGNAL (enter_debugger_signal (void)),
+             m_editor_window, SLOT (handle_enter_debug_mode (void)));
+
+    connect (qt_link, SIGNAL (exit_debugger_signal (void)),
+             m_editor_window, SLOT (handle_exit_debug_mode (void)));
 #endif
 
     // Signals for removing/renaming files/dirs in the temrinal window

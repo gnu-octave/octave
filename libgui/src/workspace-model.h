@@ -75,7 +75,8 @@ namespace octave
 
     symbol_info_list get_symbol_info (void) const { return m_syminfo_list; }
 
-    QStringList get_symbol_names (void) const { return m_symbols; }
+    QStringList *get_symbol_names (void) { return &m_symbols; }
+    QStringList *get_symbol_values (void) { return &m_values; }
 
   signals:
 

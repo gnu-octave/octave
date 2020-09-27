@@ -112,9 +112,6 @@ namespace octave
       SELECTALL_ACTION
     };
 
-    void handle_enter_debug_mode (void);
-    void handle_exit_debug_mode (void);
-
     void check_actions (void);
     void empty_script (bool startup, bool visible);
     void restore_session (gui_settings *settings);
@@ -175,6 +172,9 @@ namespace octave
     void editor_tabs_changed_signal (bool);
     void request_dbcont_signal (void);
 
+    void enter_debug_mode_signal (void);
+    void exit_debug_mode_signal (void);
+
   public slots:
 
     void activate (void);
@@ -182,6 +182,9 @@ namespace octave
     void enable_menu_shortcuts (bool);
     bool check_closing (void);
     void handle_tab_ready_to_close (void);
+
+    void handle_enter_debug_mode (void);
+    void handle_exit_debug_mode (void);
 
     void request_new_file (const QString& commands);
     void request_close_file (bool);

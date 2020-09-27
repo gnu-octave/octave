@@ -110,9 +110,12 @@ namespace octave
   }
 
   octave_qscintilla::octave_qscintilla (QWidget *p, base_qobject& oct_qobj)
-    : QsciScintilla (p), m_octave_qobj (oct_qobj), m_word_at_cursor (),
-      m_selection (), m_selection_replacement (), m_selection_line (-1),
-      m_selection_col (-1), m_indicator_id (1)
+    : QsciScintilla (p), m_octave_qobj (oct_qobj), m_debug_mode (false),
+      m_symbol_names (m_octave_qobj.get_workspace_model ()->get_symbol_names ()),
+      m_symbol_values (m_octave_qobj.get_workspace_model ()->get_symbol_values ()),
+      m_word_at_cursor (), m_selection (), m_selection_replacement (),
+      m_selection_line (-1), m_selection_col (-1), m_indicator_id (1),
+      m_tooltip_font (QToolTip::font ())
   {
     connect (this, SIGNAL (textChanged (void)),
              this, SLOT (text_changed (void)));
@@ -1118,6 +1121,30 @@ namespace octave
       setCursorPosition (line, col);
   }
 
+  bool octave_qscintilla::event (QEvent *e)
+  {
+    if (m_debug_mode && e->type() == QEvent::ToolTip)
+      {
+        QHelpEvent *help_e = static_cast<QHelpEvent *>(e);
+        QString variable = wordAtPoint (help_e->pos());
+        int symbol_idx = m_symbol_names->indexOf (variable);
+        if (symbol_idx > -1)
+          {
+            QToolTip::showText (help_e->globalPos(), variable
+                                + " = " + m_symbol_values->at (symbol_idx));
+          }
+        else
+          {
+            QToolTip::hideText();
+            e->ignore();
+          }
+
+        return true;
+      }
+
+    return QWidget::event(e);
+  }
+
   void octave_qscintilla::keyPressEvent (QKeyEvent *key_event)
   {
     if (m_selection.isEmpty ())
@@ -1273,6 +1300,24 @@ namespace octave
         e->ignore();
       }
   }
+
+  void octave_qscintilla::handle_enter_debug_mode (void)
+  {
+    // Set tool tip font to the lexers default font
+    m_tooltip_font = QToolTip::font ();   // Save current font
+    QToolTip::setFont (lexer ()->defaultFont ());
+
+    m_debug_mode = true;
+  }
+
+  void octave_qscintilla::handle_exit_debug_mode (void)
+  {
+    m_debug_mode = false;
+
+    // Reset tool tip font
+    QToolTip::setFont (m_tooltip_font);
+  }
+
 }
 
 #endif

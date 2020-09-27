@@ -98,6 +98,11 @@ namespace octave
     void ctx_menu_run_finished_signal (bool, int, QTemporaryFile*, QTemporaryFile*);
     void focus_console_after_command_signal (void);
 
+  public slots:
+
+    void handle_enter_debug_mode (void);
+    void handle_exit_debug_mode (void);
+
   private slots:
 
     void ctx_menu_run_finished (bool, int, QTemporaryFile*, QTemporaryFile*);
@@ -121,6 +126,8 @@ namespace octave
 
     void show_replace_action_tooltip (void);
 
+    bool event (QEvent *e);
+
     void keyPressEvent (QKeyEvent *e);
 
     void dragEnterEvent (QDragEnterEvent *e);
@@ -132,6 +139,10 @@ namespace octave
 
     base_qobject& m_octave_qobj;
 
+    bool m_debug_mode;
+    QStringList *m_symbol_names;
+    QStringList *m_symbol_values;
+
     QString m_word_at_cursor;
 
     QString m_selection;
@@ -139,6 +150,8 @@ namespace octave
     int m_selection_line;
     int m_selection_col;
     int m_indicator_id;
+
+    QFont m_tooltip_font;
   };
 }
 

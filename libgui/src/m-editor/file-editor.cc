@@ -191,6 +191,8 @@ namespace octave
       m_run_action->setShortcut (QKeySequence ());  // prevent ambiguous shortcuts
 
     m_run_action->setToolTip (tr ("Continue"));   // update tool tip
+
+    emit enter_debug_mode_signal ();
   }
 
   void file_editor::handle_exit_debug_mode (void)
@@ -198,6 +200,8 @@ namespace octave
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
     scmgr.set_shortcut (m_run_action, sc_edit_run_run_file);
     m_run_action->setToolTip (tr ("Save File and Run"));  // update tool tip
+
+    emit exit_debug_mode_signal ();
   }
 
   void file_editor::check_actions (void)
@@ -2369,6 +2373,13 @@ namespace octave
 
     connect (f->qsci_edit_area (), SIGNAL (SCN_AUTOCCANCELLED (void)),
              this, SLOT (handle_autoc_cancelled (void)));
+
+    // signals from the qscintilla edit area
+    connect (this, SIGNAL (enter_debug_mode_signal (void)),
+             f->qsci_edit_area (), SLOT (handle_enter_debug_mode (void)));
+
+    connect (this, SIGNAL (exit_debug_mode_signal (void)),
+             f->qsci_edit_area (), SLOT (handle_exit_debug_mode (void)));
 
     // Signals from the file editor_tab
     connect (f, SIGNAL (autoc_closed (void)),

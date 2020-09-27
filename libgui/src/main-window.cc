@@ -252,7 +252,6 @@ namespace octave
     delete m_file_browser_window;
     delete m_history_window;
     delete m_status_bar;
-    delete m_workspace_model;
     delete m_variable_editor_window;
 
     delete m_find_files_dlg;

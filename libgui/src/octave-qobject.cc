@@ -238,6 +238,7 @@ namespace octave
     delete m_gui_tr;
     delete m_qt_tr;
     delete m_qapplication;
+    delete m_workspace_model;
 
     string_vector::delete_c_str_vec (m_argv);
   }

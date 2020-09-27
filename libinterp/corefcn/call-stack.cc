@@ -345,117 +345,122 @@ namespace octave
     return retval;
   }
 
-  std::shared_ptr<stack_frame>
-  call_stack::get_static_link (size_t prev_frame) const
+  void call_stack::get_new_frame_index_and_links
+    (size_t& new_frame_idx, std::shared_ptr<stack_frame>& parent_link,
+     std::shared_ptr<stack_frame>& static_link) const
   {
     // FIXME: is there a better way?
 
-    std::shared_ptr<stack_frame> slink;
+    size_t prev_frame_idx = m_curr_frame;
 
-    if (m_curr_frame > 0)
-      {
-        octave_function *t_fcn = m_cs[prev_frame]->function ();
+    new_frame_idx = m_cs.size ();
 
-        slink = (t_fcn
-                 ? (t_fcn->is_user_code ()
-                    ? m_cs[prev_frame] : m_cs[prev_frame]->static_link ())
-                 : m_cs[prev_frame]);
-      }
+    // m_max_stack_depth should never be less than zero.
+    if (new_frame_idx > static_cast<size_t> (m_max_stack_depth))
+      error ("max_stack_depth exceeded");
 
-    return slink;
+    // There can't be any links to previous frames if this is the first
+    // frame on the stack.
+
+    if (new_frame_idx == 0)
+      return;
+
+    parent_link = m_cs[prev_frame_idx];
+
+    octave_function *t_fcn = parent_link->function ();
+
+    static_link = (t_fcn
+                   ? (t_fcn->is_user_code ()
+                      ? parent_link : parent_link->static_link ())
+                   : parent_link);
   }
 
   void call_stack::push (const symbol_scope& scope)
   {
-    size_t prev_frame = m_curr_frame;
-    m_curr_frame = m_cs.size ();
+    size_t new_frame_idx;
+    std::shared_ptr<stack_frame> parent_link;
+    std::shared_ptr<stack_frame> static_link;
 
-    // m_max_stack_depth should never be less than zero.
-    if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
-      error ("max_stack_depth exceeded");
-
-    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
+    get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, scope, m_curr_frame,
-                                      m_cs[prev_frame], slink));
+      new_frame (stack_frame::create (m_evaluator, scope, new_frame_idx,
+                                      parent_link, static_link));
 
     m_cs.push_back (new_frame);
+
+    m_curr_frame = new_frame_idx;
   }
 
   void call_stack::push (octave_user_function *fcn,
                          const std::shared_ptr<stack_frame>& closure_frames)
   {
-    size_t prev_frame = m_curr_frame;
-    m_curr_frame = m_cs.size ();
+    size_t new_frame_idx;
+    std::shared_ptr<stack_frame> parent_link;
+    std::shared_ptr<stack_frame> static_link;
 
-    // m_max_stack_depth should never be less than zero.
-    if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
-      error ("max_stack_depth exceeded");
-
-    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
+    get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame,
-                                      m_cs[prev_frame], slink,
+      new_frame (stack_frame::create (m_evaluator, fcn, new_frame_idx,
+                                      parent_link, static_link,
                                       closure_frames));
 
     m_cs.push_back (new_frame);
+
+    m_curr_frame = new_frame_idx;
   }
 
   void call_stack::push (octave_user_function *fcn,
                          const stack_frame::local_vars_map& local_vars)
   {
-    size_t prev_frame = m_curr_frame;
-    m_curr_frame = m_cs.size ();
+    size_t new_frame_idx;
+    std::shared_ptr<stack_frame> parent_link;
+    std::shared_ptr<stack_frame> static_link;
 
-    // m_max_stack_depth should never be less than zero.
-    if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
-      error ("max_stack_depth exceeded");
-
-    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
+    get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame,
-                                      m_cs[prev_frame], slink, local_vars));
+      new_frame (stack_frame::create (m_evaluator, fcn, new_frame_idx,
+                                      parent_link, static_link, local_vars));
 
     m_cs.push_back (new_frame);
+
+    m_curr_frame = new_frame_idx;
   }
 
   void call_stack::push (octave_user_script *script)
   {
-    size_t prev_frame = m_curr_frame;
-    m_curr_frame = m_cs.size ();
+    size_t new_frame_idx;
+    std::shared_ptr<stack_frame> parent_link;
+    std::shared_ptr<stack_frame> static_link;
 
-    // m_max_stack_depth should never be less than zero.
-    if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
-      error ("max_stack_depth exceeded");
-
-    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
+    get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, script, m_curr_frame,
-                                      m_cs[prev_frame], slink));
+      new_frame (stack_frame::create (m_evaluator, script, new_frame_idx,
+                                      parent_link, static_link));
 
     m_cs.push_back (new_frame);
+
+    m_curr_frame = new_frame_idx;
   }
 
   void call_stack::push (octave_function *fcn)
   {
-    size_t prev_frame = m_curr_frame;
-    m_curr_frame = m_cs.size ();
+    size_t new_frame_idx;
+    std::shared_ptr<stack_frame> parent_link;
+    std::shared_ptr<stack_frame> static_link;
 
-    // m_max_stack_depth should never be less than zero.
-    if (m_curr_frame > static_cast<size_t> (m_max_stack_depth))
-      error ("max_stack_depth exceeded");
-
-    std::shared_ptr<stack_frame> slink = get_static_link (prev_frame);
+    get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
 
     std::shared_ptr<stack_frame>
-      new_frame (stack_frame::create (m_evaluator, fcn, m_curr_frame,
-                                      m_cs[prev_frame], slink));
+      new_frame (stack_frame::create (m_evaluator, fcn, new_frame_idx,
+                                      parent_link, static_link));
 
     m_cs.push_back (new_frame);
+
+    m_curr_frame = new_frame_idx;
   }
 
   bool call_stack::goto_frame (size_t n, bool verbose)

@@ -153,8 +153,6 @@ namespace octave
     // Return TRUE if all elements on the call stack are scripts.
     bool all_scripts (void) const;
 
-    std::shared_ptr<stack_frame> get_static_link (size_t prev_frame) const;
-
     void push (const symbol_scope& scope);
 
     void push (octave_user_function *fcn,
@@ -305,6 +303,10 @@ namespace octave
     octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
 
   private:
+
+    void get_new_frame_index_and_links
+      (size_t& new_frame_idx, std::shared_ptr<stack_frame>& parent_link,
+       std::shared_ptr<stack_frame>& static_link) const;
 
     tree_evaluator& m_evaluator;
 

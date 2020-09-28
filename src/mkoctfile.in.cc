@@ -213,14 +213,14 @@ initialize (void)
     = get_variable ("OCTLIBDIR",
                     prepend_octave_exec_home (%OCTAVE_CONF_OCTLIBDIR%));
 
+  std::string DEFAULT_INCFLAGS;
+
 #if defined (OCTAVE_USE_WINDOWS_API)
-  std::string DEFAULT_INCFLAGS
-    = "-I" + quote_path (vars["OCTINCLUDEDIR"] + R"(\..)")
-      + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
+  DEFAULT_INCFLAGS = "-I" + quote_path (vars["OCTINCLUDEDIR"] + R"(\..)")
+                     + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #else
-  std::string DEFAULT_INCFLAGS
-    = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "/..")
-      + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
+  DEFAULT_INCFLAGS = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "/..")
+                     + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #endif
 
   if (vars["INCLUDEDIR"] != "/usr/include")
@@ -320,7 +320,7 @@ initialize (void)
   vars["OCT_LINK_OPTS"] = get_variable ("OCT_LINK_OPTS",
                                         %OCTAVE_CONF_OCT_LINK_OPTS%);
 
-  vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
+  vars["LDFLAGS"] = get_variable ("LDFLAGS", DEFAULT_LDFLAGS);
 
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
                                          %OCTAVE_CONF_LD_STATIC_FLAG%);

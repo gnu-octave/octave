@@ -13,6 +13,7 @@
 
 %!testif HAVE_RAPIDJSON
 %! assert (isequal (jsonencode (logical (1)), 'true'));
+%! assert (isequal (jsonencode (logical (0)), 'false'));
 %! assert (isequal (jsonencode (50.025), '50.025'));
 %! assert (isequal (jsonencode (NaN), 'null'));
 %! assert (isequal (jsonencode (NA), 'null'));    % Octave-only test
@@ -247,9 +248,19 @@
 %! assert (isequal (obs, exp));
 
 %% Try logical array (tests above were all with numeric data)
+
+%% 2-D logical array
 %!testif HAVE_RAPIDJSON
 %! data = [true, false; true, false; true, false];
 %! exp  = '[[true,false],[true,false],[true,false]]';
+%! obs  = jsonencode (data);
+%! assert (isequal (obs, exp));
+
+%% N-D logical array
+%!testif HAVE_RAPIDJSON <59198>
+%! data = true (2,2,2);
+%! data(1,1,2) = false;
+%! exp  = '[[[true,false],[true,true]],[[true,true],[true,true]]]';
 %! obs  = jsonencode (data);
 %! assert (isequal (obs, exp));
 

@@ -138,8 +138,8 @@ namespace octave
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
         m_echo_files (), m_in_loop_command (false),
         m_breaking (0), m_continuing (0), m_returning (0),
-        m_indexed_object (), m_index_position (0),
-        m_num_indices (0)
+        m_indexed_object (), m_index_list (), m_index_type (),
+        m_index_position (0), m_num_indices (0)
     { }
 
     // No copying!
@@ -357,9 +357,7 @@ namespace octave
 
     void undefine_parameter_list (tree_parameter_list *param_list);
 
-    octave_value_list
-    convert_to_const_vector (tree_argument_list *arg_list,
-                             const octave_value& object = octave_value ());
+    octave_value_list convert_to_const_vector (tree_argument_list *arg_list);
 
     octave_value_list
     convert_return_list_to_const_vector
@@ -634,9 +632,45 @@ namespace octave
       return m_indexed_object;
     }
 
+    void set_indexed_object (const octave_value& obj = octave_value ())
+    {
+      m_indexed_object = obj;
+    }
+
+    const std::list<octave_value_list>& index_list (void) const
+    {
+      return m_index_list;
+    }
+
+    void set_index_list (const std::string& index_type,
+                         const std::list<octave_value_list>& index_list)
+    {
+      m_index_type = index_type;
+      m_index_list = index_list;
+    }
+
+    void clear_index_list (void)
+    {
+      m_index_type = "";
+      m_index_list.clear ();
+    }
+
+    void append_index_list (char type, const octave_value_list& idx)
+    {
+      m_index_type += type;
+      m_index_list.push_back (idx);
+    }
+
+    const std::string& index_type (void) const
+    {
+      return m_index_type;
+    }
+
     int index_position (void) const { return m_index_position; }
 
     int num_indices (void) const { return m_num_indices; }
+
+    octave_value_list evaluate_end_expression (const octave_value_list& args);
 
     const std::list<octave_lvalue> * lvalue_list (void) const
     {
@@ -706,9 +740,7 @@ namespace octave
                          bool return_list, bool verbose = false);
 
     octave_value_list
-    make_value_list (tree_argument_list *args,
-                     const string_vector& arg_nm,
-                     const octave_value& object, bool rvalue = true);
+    make_value_list (tree_argument_list *args, const string_vector& arg_nm);
 
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
@@ -838,8 +870,11 @@ namespace octave
     // Nonzero means we're returning from a function.
     int m_returning;
 
-    // Used by END function.
+    // The following are all used by the END function.  Maybe they
+    // should be kept together in a separate object?
     octave_value m_indexed_object;
+    std::list<octave_value_list> m_index_list;
+    std::string m_index_type;
     int m_index_position;
     int m_num_indices;
   };

@@ -155,9 +155,13 @@
 %! assert ({b.name}, {1, 2, "b", "e", 3, 4});
 %! assert ({b.value}, {100, "5", 100, "6", 100, "7"});
 
-%!error <a cs-list cannot be further indexed>
+%!error <deal: nargin>
 %! [a(1:3).x] = deal ([1, 5], [3, 7], [8, 9]);
 %! [a(2:3).x(2)] = deal (10, 11);
+
+%!error <a cs-list cannot be further indexed>
+%! [a(1:3).x] = deal ([1, 5], [3, 7], [8, 9]);
+%! [a(2:3).x(2)] = 1;
 
 %!error <a cs-list cannot be further indexed>
 %! [a(1:3).x] = deal ([1, 5], [3, 7], [8, 9]);

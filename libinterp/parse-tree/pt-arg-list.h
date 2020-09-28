@@ -54,12 +54,11 @@ namespace octave
     typedef tree_expression* element_type;
 
     tree_argument_list (void)
-      : m_list_includes_magic_end (false), m_list_includes_magic_tilde (false),
-        m_simple_assign_lhs (false) { }
+      : m_list_includes_magic_tilde (false), m_simple_assign_lhs (false)
+    { }
 
     tree_argument_list (tree_expression *t)
-      : m_list_includes_magic_end (false), m_list_includes_magic_tilde (false),
-        m_simple_assign_lhs (false)
+      : m_list_includes_magic_tilde (false), m_simple_assign_lhs (false)
     { append (t); }
 
     // No copying!
@@ -69,15 +68,6 @@ namespace octave
     tree_argument_list& operator = (const tree_argument_list&) = delete;
 
     ~tree_argument_list (void);
-
-    // FIXME: This does not recursively check elements of the list
-    // that are also index expressions.
-    bool has_magic_end (void) const;
-
-    bool includes_magic_end (void) const
-    {
-      return m_list_includes_magic_end;
-    }
 
     bool has_magic_tilde (void) const
     {
@@ -119,8 +109,6 @@ namespace octave
     }
 
   private:
-
-    bool m_list_includes_magic_end;
 
     bool m_list_includes_magic_tilde;
 

@@ -126,18 +126,6 @@ namespace octave
       }
   }
 
-  bool
-  tree_index_expression::has_magic_end (void) const
-  {
-    for (const tree_argument_list *elt : m_args)
-      {
-        if (elt && elt->has_magic_end ())
-          return true;
-      }
-
-    return false;
-  }
-
   // This is useful for printing the name of the variable in an indexed
   // assignment.
 
@@ -145,40 +133,6 @@ namespace octave
   tree_index_expression::name (void) const
   {
     return m_expr->name ();
-  }
-
-  static inline octave_value_list
-  make_value_list (tree_evaluator& tw,
-                   tree_argument_list *m_args,
-                   const string_vector& m_arg_nm, const octave_value& object,
-                   bool rvalue = true)
-  {
-    // FIXME: This function duplicates tree_evaluator::make_value_list.
-    // See also the way convert_to_const_vector is used in
-    // tree_index_expression::evaluate_n.
-
-    octave_value_list retval;
-
-    if (m_args)
-      {
-        unwind_action act ([&tw] (const std::list<octave_lvalue> *lvl)
-                           {
-                             tw.set_lvalue_list (lvl);
-                           }, tw.lvalue_list ());
-        tw.set_lvalue_list (nullptr);
-
-        if (rvalue && m_args->has_magic_end () && object.is_undefined ())
-          err_invalid_inquiry_subscript ();
-
-        retval = tw.convert_to_const_vector (m_args, object);
-      }
-
-    octave_idx_type n = retval.length ();
-
-    if (n > 0)
-      retval.stash_name_tags (m_arg_nm);
-
-    return retval;
   }
 
   std::string
@@ -210,7 +164,6 @@ namespace octave
   tree_index_expression::lvalue (tree_evaluator& tw)
   {
     std::list<octave_value_list> idx;
-    std::string tmp_type;
 
     int n = m_args.size ();
 
@@ -220,73 +173,37 @@ namespace octave
 
     octave_lvalue retval = m_expr->lvalue (tw);
 
-    octave_value tmp = retval.value ();
+    unwind_action
+      act ([&tw] (const octave_value& val,
+                  const std::string& index_type,
+                  const std::list<octave_value_list>& index_list)
+           {
+             tw.set_indexed_object (val);
+             tw.set_index_list (index_type, index_list);
+           }, tw.indexed_object (), tw.index_type (), tw.index_list ());
 
-    octave_idx_type tmpi = 0;
-    std::list<octave_value_list> tmpidx;
+    tw.set_indexed_object (retval.value ());
+    tw.clear_index_list ();
 
     for (int i = 0; i < n; i++)
       {
-        if (retval.numel () != 1)
-          err_indexed_cs_list ();
-
-        if (tmpi < i)
-          {
-            try
-              {
-                tmp = tmp.subsref (m_type.substr (tmpi, i-tmpi), tmpidx, true);
-              }
-            catch (index_exception& e)  // problems with range, invalid type etc.
-              {
-                tw.final_index_error (e, m_expr);
-              }
-
-            tmpidx.clear ();
-          }
-
         switch (m_type[i])
           {
           case '(':
             {
-              octave_value_list tidx
-                = make_value_list (tw, *p_args, *p_arg_nm, tmp, false);
+              octave_value_list tidx = tw.make_value_list (*p_args, *p_arg_nm);
 
+              tw.append_index_list ('(', tidx);
               idx.push_back (tidx);
-
-              if (i < n - 1)
-                {
-                  if (m_type[i+1] != '.')
-                    error ("() must be followed by . or close the index chain");
-
-                  tmpidx.push_back (tidx);
-                  tmpi = i+1;
-                }
             }
             break;
 
           case '{':
             {
-              octave_value_list tidx
-                = make_value_list (tw, *p_args, *p_arg_nm, tmp, false);
+              octave_value_list tidx = tw.make_value_list (*p_args, *p_arg_nm);
 
-              if (tmp.is_undefined ())
-                {
-                  if (tidx.has_magic_colon ())
-                    err_invalid_inquiry_subscript ();
-
-                  tmp = Cell ();
-                }
-              else if (tmp.is_zero_by_zero ()
-                       && (tmp.is_matrix_type () || tmp.is_string ()))
-                {
-                  tmp = Cell ();
-                }
-
-              retval.numel (tmp.xnumel (tidx));
-
+              tw.append_index_list ('{', tidx);
               idx.push_back (tidx);
-              tmpidx.push_back (tidx);
-              tmpi = i;
             }
             break;
 
@@ -294,47 +211,7 @@ namespace octave
             {
               octave_value tidx = get_struct_index (tw, p_arg_nm, p_dyn_field);
 
-              bool autoconv = (tmp.is_zero_by_zero ()
-                               && (tmp.is_matrix_type () || tmp.is_string ()
-                                   || tmp.iscell ()));
-
-              if (i > 0 && m_type[i-1] == '(')
-                {
-                  octave_value_list pidx = idx.back ();
-
-                  // Use octave_map, not octave_scalar_map so that the
-                  // dimensions are 0x0, not 1x1.
-                  if (tmp.is_undefined ())
-                    {
-                      if (pidx.has_magic_colon ())
-                        err_invalid_inquiry_subscript ();
-
-                      tmp = octave_map ();
-                    }
-                  else if (autoconv)
-                    tmp = octave_map ();
-
-                  retval.numel (tmp.xnumel (pidx));
-
-                  tmpi = i-1;
-                  tmpidx.push_back (tidx);
-                }
-              else
-                {
-                  if (tmp.is_undefined () || autoconv)
-                    {
-                      tmpi = i+1;
-                      tmp = octave_value ();
-                    }
-                  else
-                    {
-                      retval.numel (tmp.xnumel (octave_value_list ()));
-
-                      tmpi = i;
-                      tmpidx.push_back (tidx);
-                    }
-                }
-
+              tw.append_index_list ('.', tidx);
               idx.push_back (tidx);
             }
             break;
@@ -573,102 +450,127 @@ namespace octave
     // files in a +packagename folder, they will also be an
     // octave_classdef_meta object, but we don't want to index them.
 
-    bool indexing_object = (base_expr_val.isobject ()
-                            || base_expr_val.isjava ()
-                            || (base_expr_val.is_classdef_meta ()
-                                && ! base_expr_val.is_package ()));
-
     std::list<octave_value_list> idx_list;
 
-    octave_value partial_expr_val = base_expr_val;
+    {
+      // Note: need new scope so that the following unwind action will
+      // happen before we perform the final indexing for objects (for
+      // example).
 
-    for (int i = beg; i < n; i++)
-      {
-        if (i > beg)
-          {
-            tree_argument_list *al = *p_args;
+      unwind_action
+        act ([&tw] (const octave_value& val,
+                    const std::string& index_type,
+                    const std::list<octave_value_list>& index_list)
+             {
+               tw.set_indexed_object (val);
+               tw.set_index_list (index_type, index_list);
+             },
+             tw.indexed_object (),
+             tw.index_type (), tw.index_list ());
 
-            if (! indexing_object || (al && al->has_magic_end ()))
+      tw.set_indexed_object ();
+      tw.clear_index_list ();
+
+      bool indexing_object = (base_expr_val.isobject ()
+                              || base_expr_val.isjava ()
+                              || (base_expr_val.is_classdef_meta ()
+                                  && ! base_expr_val.is_package ()));
+
+      octave_value partial_expr_val = base_expr_val;
+
+      for (int i = beg; i < n; i++)
+        {
+          if (i > beg)
+            {
+              if (! indexing_object)
+                {
+                  // Evaluate what we have so far.
+
+                  try
+                    {
+                      // Silently ignore extra output values.
+
+                      octave_value_list tmp_list
+                        = base_expr_val.subsref (m_type.substr (beg, i-beg),
+                                                 idx_list, nargout);
+
+                      partial_expr_val
+                        = tmp_list.length () ? tmp_list(0) : octave_value ();
+
+                      base_expr_val = partial_expr_val;
+
+                      if (partial_expr_val.is_cs_list ())
+                        err_indexed_cs_list ();
+
+                      retval = partial_expr_val;
+
+                      beg = i;
+                      idx_list.clear ();
+                      tw.clear_index_list ();
+
+                      if (partial_expr_val.isobject ()
+                          || partial_expr_val.isjava ()
+                          || (partial_expr_val.is_classdef_meta ()
+                              && ! partial_expr_val.is_package ()))
+                        {
+                          // Found an object, so now we'll build up
+                          // complete index list for one big subsref
+                          // call from this point on.
+
+                          // FIXME: is is also possible to have a
+                          // static method call buried somewhere in
+                          // the depths of a complex indexing
+                          // expression so that we would also need to
+                          // check for an octave_classdef_meta object
+                          // here?
+
+                          indexing_object = true;
+                        }
+                    }
+                  catch (index_exception& e)
+                    {
+                      tw.final_index_error (e, m_expr);
+                    }
+                }
+            }
+
+          tw.set_indexed_object (partial_expr_val);
+
+          switch (m_type[i])
+            {
+            case '(':
               {
-                // Evaluate what we have so far to find the value to
-                // pass to the END function.
-
-                try
-                  {
-                    // Silently ignore extra output values.
-
-                    octave_value_list tmp_list
-                      = base_expr_val.subsref (m_type.substr (beg, i-beg),
-                                               idx_list, nargout);
-
-                    partial_expr_val
-                      = tmp_list.length () ? tmp_list(0) : octave_value ();
-
-                    if (! indexing_object)
-                      {
-                        base_expr_val = partial_expr_val;
-
-                        if (partial_expr_val.is_cs_list ())
-                          err_indexed_cs_list ();
-
-                        retval = partial_expr_val;
-
-                        beg = i;
-                        idx_list.clear ();
-
-                        if (partial_expr_val.isobject ()
-                            || partial_expr_val.isjava ()
-                            || (partial_expr_val.is_classdef_meta ()
-                                && ! partial_expr_val.is_package ()))
-                          {
-                            // Found an object, so now we'll build up
-                            // complete index list for one big subsref
-                            // call from this point on.
-
-                            // FIXME: is is also possible to have a
-                            // static method call buried somewhere in
-                            // the depths of a complex indexing
-                            // expression so that we would also need to
-                            // check for an octave_classdef_meta object
-                            // here?
-
-                            indexing_object = true;
-                          }
-                      }
-                  }
-                catch (index_exception& e)
-                  {
-                    tw.final_index_error (e, m_expr);
-                  }
+                octave_value_list tmp = tw.make_value_list (*p_args, *p_arg_nm);
+                tw.append_index_list ('(', tmp);
+                idx_list.push_back (tmp);
               }
-          }
+              break;
 
-        switch (m_type[i])
-          {
-          case '(':
-            idx_list.push_back (make_value_list (tw, *p_args, *p_arg_nm,
-                                                 partial_expr_val));
-            break;
+            case '{':
+              {
+                octave_value_list tmp = tw.make_value_list (*p_args, *p_arg_nm);
+                tw.append_index_list ('{', tmp);
+                idx_list.push_back (tmp);
+              }
+              break;
 
-          case '{':
-            idx_list.push_back (make_value_list (tw, *p_args, *p_arg_nm,
-                                                 partial_expr_val));
-            break;
+            case '.':
+              {
+                octave_value tmp = get_struct_index (tw, p_arg_nm, p_dyn_field);
+                tw.append_index_list ('.', tmp);
+                idx_list.push_back (tmp);
+              }
+              break;
 
-          case '.':
-            idx_list.push_back (octave_value
-                                (get_struct_index (tw, p_arg_nm, p_dyn_field)));
-            break;
+            default:
+              panic_impossible ();
+            }
 
-          default:
-            panic_impossible ();
-          }
-
-        p_args++;
-        p_arg_nm++;
-        p_dyn_field++;
-      }
-
+          p_args++;
+          p_arg_nm++;
+          p_dyn_field++;
+        }
+    }
 
     // If ! idx_list.empty () that means we still have stuff to index
     // otherwise they would have been dealt with and idx_list would have
@@ -760,16 +662,11 @@ namespace octave
           }
       }
 
-    // Delete any temporary values prior to pushing the result and
-    // returning so that destructors for any temporary classdef handle
-    // objects will be called before we return.  Otherwise, the
-    // destructor may push result values that will wipe out the result
-    // that we push below.  Although the method name is "push_result"
-    // there is only a single register (either an octave_value or an
-    // octave_value_list) not a stack.
+    // Delete any temporary values prior to returning so that
+    // destructors for any temporary classdef handle objects will be
+    // called before we return.
 
     idx_list.clear ();
-    partial_expr_val = octave_value ();
     base_expr_val = octave_value ();
     val = octave_value ();
 

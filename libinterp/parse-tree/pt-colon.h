@@ -75,13 +75,6 @@ namespace octave
       delete m_increment;
     }
 
-    bool has_magic_end (void) const
-    {
-      return ((m_base && m_base->has_magic_end ())
-              || (m_limit && m_limit->has_magic_end ())
-              || (m_increment && m_increment->has_magic_end ()));
-    }
-
     void preserve_base (void) { m_save_base = true; }
 
     bool rvalue_ok (void) const { return true; }

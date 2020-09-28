@@ -53,25 +53,10 @@ namespace octave
       }
   }
 
-  bool
-  tree_argument_list::has_magic_end (void) const
-  {
-    for (const tree_expression *elt : *this)
-      {
-        if (elt && ! elt->is_index_expression () && elt->has_magic_end ())
-          return true;
-      }
-
-    return false;
-  }
-
   void
   tree_argument_list::append (const element_type& s)
   {
     base_list<tree_expression *>::append (s);
-
-    if (! m_list_includes_magic_end && s && s->has_magic_end ())
-      m_list_includes_magic_end = true;
 
     if (! m_list_includes_magic_tilde && s && s->is_identifier ())
       {
@@ -157,7 +142,6 @@ namespace octave
   {
     tree_argument_list *new_list = new tree_argument_list ();
 
-    new_list->m_list_includes_magic_end = m_list_includes_magic_end;
     new_list->m_simple_assign_lhs = m_simple_assign_lhs;
 
     for (const tree_expression *elt : *this)

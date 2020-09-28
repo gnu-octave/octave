@@ -36,6 +36,7 @@
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-array-errwarn.h"
 #include "lo-ieee.h"
 #include "oct-env.h"
 
@@ -1635,7 +1636,7 @@ namespace octave
 }
 
 // END is documented in op-kw-docs.
-DEFCONSTMETHOD (end, interp, , ,
+DEFCONSTMETHOD (end, interp, args, ,
                 doc: /* -*- texinfo -*-
 @deftypefn {} {} end
 Last element of an array or the end of any @code{for}, @code{parfor},
@@ -1661,68 +1662,9 @@ Example:
 @seealso{for, parfor, if, do, while, function, switch, try, unwind_protect}
 @end deftypefn */)
 {
-  octave_value retval;
-
   octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  octave_value indexed_object = tw.indexed_object ();
-  int index_position = tw.index_position ();
-  int num_indices = tw.num_indices ();
-
-  // If indexed_object is nullptr, then this use of 'end' is either
-  // appearing in a function call argument list or in an attempt to
-  // index an undefined symbol.  There seems to be no reasonable way to
-  // provide a better error message.  So just fail with an invalid use
-  // message.  See bug #58830.
-
-  if (indexed_object.is_undefined ())
-    error ("invalid use of 'end': may only be used to index existing value");
-
-  if (indexed_object.isobject ())
-    {
-      octave_value_list args;
-
-      args(2) = num_indices;
-      args(1) = index_position + 1;
-      args(0) = indexed_object;
-
-      std::string class_name = indexed_object.class_name ();
-
-      octave::symbol_table& symtab = interp.get_symbol_table ();
-
-      octave_value meth = symtab.find_method ("end", class_name);
-
-      if (meth.is_defined ())
-        return octave::feval (meth.function_value (), args, 1);
-    }
-
-  dim_vector dv = indexed_object.dims ();
-  int ndims = dv.ndims ();
-
-  if (num_indices < ndims)
-    {
-      for (int i = num_indices; i < ndims; i++)
-        dv(num_indices-1) *= dv(i);
-
-      if (num_indices == 1)
-        {
-          ndims = 2;
-          dv.resize (ndims);
-          dv(1) = 1;
-        }
-      else
-        {
-          ndims = num_indices;
-          dv.resize (ndims);
-        }
-    }
-
-  if (index_position < ndims)
-    retval = dv(index_position);
-  else
-    retval = 1;
-
-  return retval;
+  return tw.evaluate_end_expression (args);
 }
 
 /*
@@ -1740,59 +1682,31 @@ Example:
 namespace octave
 {
   octave_value_list
-  tree_evaluator::convert_to_const_vector (tree_argument_list *arg_list,
-                                           const octave_value& object)
+  tree_evaluator::convert_to_const_vector (tree_argument_list *args)
   {
-    // END doesn't make sense as a direct argument for a function (i.e.,
-    // "fcn (end)" is invalid but "fcn (array (end))" is OK).  Maybe we
-    // need a different way of asking an octave_value object this
-    // question?
+    std::list<octave_value> arg_vals;
 
-    bool stash_object
-      = (object.is_defined ()
-         && ! (object.is_function () || object.is_function_handle ()));
-
-    unwind_protect_var<octave_value> upv1 (m_indexed_object);
-    unwind_protect_var<int> upv2 (m_index_position);
-    unwind_protect_var<int> upv3 (m_num_indices);
-
-    if (stash_object)
-      m_indexed_object = object;
-
-    int len = arg_list->length ();
-
-    std::list<octave_value> args;
-
-    auto p = arg_list->begin ();
-    for (int k = 0; k < len; k++)
+    for (auto elt : *args)
       {
-        if (stash_object)
-          {
-            m_index_position = k;
-            m_num_indices = len;
-          }
+        // FIXME: is it possible for elt to be invalid?
 
-        tree_expression *elt = *p++;
-
-        if (elt)
-          {
-            octave_value tmp = elt->evaluate (*this);
-
-            if (tmp.is_cs_list ())
-              {
-                octave_value_list tmp_ovl = tmp.list_value ();
-
-                for (octave_idx_type i = 0; i < tmp_ovl.length (); i++)
-                  args.push_back (tmp_ovl(i));
-              }
-            else if (tmp.is_defined ())
-              args.push_back (tmp);
-          }
-        else
+        if (! elt)
           break;
+
+        octave_value tmp = elt->evaluate (*this);
+
+        if (tmp.is_cs_list ())
+          {
+            octave_value_list tmp_ovl = tmp.list_value ();
+
+            for (octave_idx_type i = 0; i < tmp_ovl.length (); i++)
+              arg_vals.push_back (tmp_ovl(i));
+          }
+        else if (tmp.is_defined ())
+          arg_vals.push_back (tmp);
       }
 
-    return octave_value_list (args);
+    return octave_value_list (arg_vals);
   }
 
   octave_value_list
@@ -3997,8 +3911,7 @@ namespace octave
 
   octave_value_list
   tree_evaluator::make_value_list (tree_argument_list *args,
-                                   const string_vector& arg_nm,
-                                   const octave_value& object, bool rvalue)
+                                   const string_vector& arg_nm)
   {
     octave_value_list retval;
 
@@ -4007,10 +3920,40 @@ namespace octave
         unwind_protect_var<const std::list<octave_lvalue> *>
           upv (m_lvalue_list, nullptr);
 
-        if (rvalue && args->has_magic_end () && object.is_undefined ())
-          err_invalid_inquiry_subscript ();
+        int len = args->length ();
 
-        retval = convert_to_const_vector (args, object);
+        unwind_protect_var<int> upv2 (m_index_position);
+        unwind_protect_var<int> upv3 (m_num_indices);
+
+        m_num_indices = len;
+
+        std::list<octave_value> arg_vals;
+
+        int k = 0;
+
+        for (auto elt : *args)
+          {
+            // FIXME: is it possible for elt to be invalid?
+
+            if (! elt)
+              break;
+
+            m_index_position = k++;
+
+            octave_value tmp = elt->evaluate (*this);
+
+            if (tmp.is_cs_list ())
+              {
+                octave_value_list tmp_ovl = tmp.list_value ();
+
+                for (octave_idx_type i = 0; i < tmp_ovl.length (); i++)
+                  arg_vals.push_back (tmp_ovl(i));
+              }
+            else if (tmp.is_defined ())
+              arg_vals.push_back (tmp);
+          }
+
+        retval = octave_value_list (arg_vals);
       }
 
     octave_idx_type n = retval.length ();
@@ -4253,6 +4196,132 @@ namespace octave
   {
     if (! m_debugger_stack.empty ())
       m_debugger_stack.top()->dbquit (all);
+  }
+
+  static octave_value end_value (const octave_value& value,
+                                 octave_idx_type index_position,
+                                 octave_idx_type num_indices)
+  {
+    dim_vector dv = value.dims ();
+    int ndims = dv.ndims ();
+
+    if (num_indices < ndims)
+      {
+        for (int i = num_indices; i < ndims; i++)
+          dv(num_indices-1) *= dv(i);
+
+        if (num_indices == 1)
+          {
+            ndims = 2;
+            dv.resize (ndims);
+            dv(1) = 1;
+          }
+        else
+          {
+            ndims = num_indices;
+            dv.resize (ndims);
+          }
+      }
+
+    return (index_position < ndims
+            ? octave_value (dv(index_position)) : octave_value (1.0));
+  }
+
+  octave_value_list
+  tree_evaluator::evaluate_end_expression (const octave_value_list& args)
+  {
+    int nargin = args.length ();
+
+    if (nargin != 0 && nargin != 3)
+      print_usage ();
+
+    if (nargin == 3)
+      {
+        octave_idx_type index_position
+          = args(1).xidx_type_value ("end: K must be integer value");
+
+        if (index_position < 1)
+          error ("end: K must be greater than zero");
+
+        octave_idx_type num_indices
+          = args(2).xidx_type_value ("end: N must be integer value");
+
+        if (num_indices < 1)
+          error ("end: N must be greater than zero");
+
+        return end_value (args(0), index_position-1, num_indices);
+      }
+
+    // If m_indexed_object is undefined, then this use of 'end' is
+    // either appearing in a function call argument list or in an
+    // attempt to index an undefined symbol.  There seems to be no
+    // reasonable way to provide a better error message.  So just fail
+    // with an invalid use message.  See bug #58830.
+
+    if (m_indexed_object.is_undefined ())
+      error ("invalid use of 'end': may only be used to index existing value");
+
+    octave_value expr_result;
+
+    if (m_index_list.empty ())
+      expr_result = m_indexed_object;
+    else
+      {
+        try
+          {
+            // When evaluating "end" with no arguments, we should have
+            // been called from the built-in Fend function that appears
+            // in the context of an argument list.  Fend will be
+            // evaluated in its own stack frame.  But we need to
+            // evaluate the partial expression that the special "end"
+            // token applies to in the calling stack frame.
+
+            unwind_action act ([this] (size_t frm)
+                               {
+                                 m_call_stack.restore_frame (frm);
+                               }, m_call_stack.current_frame ());
+
+            size_t n = m_call_stack.find_current_user_frame ();
+            m_call_stack.goto_frame (n);
+
+            // End is only valid inside argument lists used for
+            // indexing.  The dispatch class is set by the function that
+            // evaluates the argument list.
+
+            // Silently ignore extra output values.
+
+            octave_value_list tmp
+              = m_indexed_object.subsref (m_index_type, m_index_list, 1);
+
+            expr_result = tmp.length () ? tmp(0) : octave_value ();
+
+            if (expr_result.is_cs_list ())
+              err_indexed_cs_list ();
+          }
+        catch (index_exception&)
+          {
+            error ("error evaluating partial expression for END");
+          }
+      }
+
+    if (expr_result.isobject ())
+      {
+        // FIXME: is there a better way to lookup and execute a method
+        // that handles all the details like setting the dispatch class
+        // appropriately?
+
+        std::string dispatch_class = expr_result.class_name ();
+
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+        octave_value meth = symtab.find_method ("end", dispatch_class);
+
+        if (meth.is_defined ())
+          return m_interpreter.feval
+            (meth, ovl (expr_result, m_index_position+1, m_num_indices), 1);
+      }
+
+    return end_value (expr_result, m_index_position, m_num_indices);
   }
 
   octave_value

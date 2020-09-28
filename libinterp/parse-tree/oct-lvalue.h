@@ -43,7 +43,7 @@ namespace octave
     octave_lvalue (const symbol_record& sr,
                    const std::shared_ptr<stack_frame>& frame)
       : m_sym (sr), m_frame (frame), m_black_hole (false),
-        m_type (), m_idx (), m_nel (1)
+        m_type (), m_idx ()
     { }
 
     octave_lvalue (const octave_lvalue&) = default;
@@ -66,9 +66,7 @@ namespace octave
 
     void assign (octave_value::assign_op, const octave_value&);
 
-    void numel (octave_idx_type n) { m_nel = n; }
-
-    octave_idx_type numel (void) const { return m_nel; }
+    octave_idx_type numel (void) const;
 
     void set_index (const std::string& t, const std::list<octave_value_list>& i);
 
@@ -91,6 +89,10 @@ namespace octave
     octave_value value (void) const;
 
   private:
+
+    octave_value
+    eval_for_numel (const std::string& type,
+                    const std::list<octave_value_list>& idx) const;
 
     symbol_record m_sym;
 

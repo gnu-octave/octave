@@ -594,6 +594,10 @@ cell_rows       : cell_or_matrix_row
 // tree_argument_list objects can't be empty or have leading or trailing
 // commas, but those are all allowed in matrix and cell array rows.
 
+// FIXME: is tree_argument_list the best object for this purpose, or
+// should we have a separate one intended specifically to represent the
+// list of objects that make up elements in cell and matrix expressions?
+
 cell_or_matrix_row
                 : // empty
                   { $$ = nullptr; }

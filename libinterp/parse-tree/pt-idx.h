@@ -70,8 +70,6 @@ namespace octave
 
     ~tree_index_expression (void);
 
-    bool has_magic_end (void) const;
-
     void append (tree_argument_list *lst = nullptr, char t = '(');
 
     void append (const std::string& n);

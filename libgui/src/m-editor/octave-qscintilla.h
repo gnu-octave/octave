@@ -140,8 +140,6 @@ namespace octave
     base_qobject& m_octave_qobj;
 
     bool m_debug_mode;
-    QStringList *m_symbol_names;
-    QStringList *m_symbol_values;
 
     QString m_word_at_cursor;
 

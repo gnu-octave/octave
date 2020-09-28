@@ -111,8 +111,6 @@ namespace octave
 
   octave_qscintilla::octave_qscintilla (QWidget *p, base_qobject& oct_qobj)
     : QsciScintilla (p), m_octave_qobj (oct_qobj), m_debug_mode (false),
-      m_symbol_names (m_octave_qobj.get_workspace_model ()->get_symbol_names ()),
-      m_symbol_values (m_octave_qobj.get_workspace_model ()->get_symbol_values ()),
       m_word_at_cursor (), m_selection (), m_selection_replacement (),
       m_selection_line (-1), m_selection_col (-1), m_indicator_id (1),
       m_tooltip_font (QToolTip::font ())
@@ -1127,11 +1125,15 @@ namespace octave
       {
         QHelpEvent *help_e = static_cast<QHelpEvent *>(e);
         QString variable = wordAtPoint (help_e->pos());
-        int symbol_idx = m_symbol_names->indexOf (variable);
+        QStringList symbol_names
+            = m_octave_qobj.get_workspace_model ()->get_symbol_names ();
+        int symbol_idx = symbol_names.indexOf (variable);
         if (symbol_idx > -1)
           {
+            QStringList symbol_values
+                = m_octave_qobj.get_workspace_model ()->get_symbol_values ();
             QToolTip::showText (help_e->globalPos(), variable
-                                + " = " + m_symbol_values->at (symbol_idx));
+                                + " = " + symbol_values.at (symbol_idx));
           }
         else
           {

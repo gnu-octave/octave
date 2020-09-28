@@ -410,24 +410,22 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
     // To avoid warnings due to that conversion, disable the
     // "Octave:classdef-to-struct" warning and re-enable it.
     {
-      octave_value_list ws
-        = set_warning_state ("Octave:classdef-to-struct", "off");
-      octave::unwind_protect frame;
-      auto cleanup_ptr = +[] (octave_value_list ws_orig)
-                           { set_warning_state (ws_orig); } ;
-      frame.add_fcn (cleanup_ptr, ws);
+      octave::unwind_action restore_warning_state
+        ([] (const auto& old_warning_state)
+         {
+           set_warning_state (old_warning_state);
+         }, set_warning_state ("Octave:classdef-to-struct", "off"));
 
       encode_struct (writer, obj.scalar_map_value ().getfield ("map"),
                      ConvertInfAndNaN);
     }
   else if (obj.isobject ())
     {
-      octave_value_list ws
-        = set_warning_state ("Octave:classdef-to-struct", "off");
-      octave::unwind_protect frame;
-      auto cleanup_ptr = +[] (octave_value_list ws_orig)
-                           { set_warning_state (ws_orig); } ;
-      frame.add_fcn (cleanup_ptr, ws);
+      octave::unwind_action restore_warning_state
+        ([] (const auto& old_warning_state)
+         {
+           set_warning_state (old_warning_state);
+         }, set_warning_state ("Octave:classdef-to-struct", "off"));
 
       encode_struct (writer, obj.scalar_map_value (), ConvertInfAndNaN);
     }

@@ -489,8 +489,8 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
     print_usage ();
   endif
 
-  if (all (size (c) > 1) || iscomplex (c) || ischar (c))
-    error ("glpk: C must be a real vector");
+   if (! isvector (c) || iscomplex (c) || ischar (c) || any (! isfinite (c)))
+     error ("glpk: C must be a real vector with finite values");
   endif
   nx = length (c);
   ## Force column vector.
@@ -504,6 +504,10 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
   if (! isreal (A))
     error ("glpk: A must be real valued, not %s", typeinfo (A));
   endif
+  if (any (! isfinite (A(:))))
+    error ("glpk: The values in A must be finite");
+  endif
+
   [nc, nxa] = size (A);
   if (nxa != nx)
     error ("glpk: A must be %d by %d, not %d by %d",
@@ -518,14 +522,19 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
   if (! isreal (b) || length (b) != nc)
     error ("glpk: B must be a real valued %d by 1 vector", nc);
   endif
+  if (any (! isfinite (b(:))))
+    error ("glpk: The values in B must be finite");
+  endif
 
   ## 4) Vector with the lower bound of each variable
 
   if (nargin > 3)
     if (isempty (lb))
       lb = zeros (nx, 1);
-    elseif (! isreal (lb) || all (size (lb) > 1) || length (lb) != nx)
-      error ("glpk: LB must be a real valued %d by 1 column vector", nx);
+    elseif (! isreal (lb) || all (size (lb) > 1) || length (lb) != nx
+            || any (! isfinite (lb)))
+      error ("glpk: LB must be a real and finite valued %d by 1 column vector",
+             nx);
     endif
   else
     lb = zeros (nx, 1);
@@ -536,8 +545,10 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
   if (nargin > 4)
     if (isempty (ub))
       ub = Inf (nx, 1);
-    elseif (! isreal (ub) || all (size (ub) > 1) || length (ub) != nx)
-      error ("glpk: UB must be a real valued %d by 1 column vector", nx);
+    elseif (! isreal (ub) || all (size (ub) > 1) || length (ub) != nx
+            || any (! isfinite (ub)))
+      error ("glpk: UB must be a real and finite valued %d by 1 column vector",
+             nx);
     endif
   else
     ub = Inf (nx, 1);
@@ -579,7 +590,8 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
   if (nargin > 7)
     if (isempty (sense))
       sense = 1;
-    elseif (ischar (sense) || all (size (sense) > 1) || ! isreal (sense))
+    elseif (ischar (sense) || all (size (sense) > 1) || ! isreal (sense)
+            || any (! isfinite (sense)))
       error ("glpk: SENSE must be an integer value");
     elseif (sense >= 0)
       sense = 1;
@@ -656,3 +668,10 @@ endfunction
 %!   sense, param);
 %! assert (fmin, c' * xmin);
 %! assert (A * xmin, b);
+
+%!error<C .* finite values> glpk(NaN, 2, 3)
+%!error<A must be finite> glpk(1, NaN, 3)
+%!error<B must be finite> glpk(1, 2, NaN)
+%!error<LB must be .* finite value> glpk(1, 2, 3, NaN)
+%!error<UB must be .* finite value> glpk(1, 2, 3, 4, NaN)
+%!error<SENSE must be .* integer> glpk(1, 2, 3, 4, 5, "F", "C", NaN)

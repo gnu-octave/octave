@@ -214,7 +214,7 @@ namespace octave
     if (! m_valid)
       {
         if (role == Qt::DisplayRole)
-          return QVariant (QString ("Variable %1 not found")
+          return QVariant (QString ("Variable %1 not found or value can't be edited")
                            .arg (QString::fromStdString (m_name)));
 
         return QVariant (QString ("x"));
@@ -1215,7 +1215,13 @@ namespace octave
     if (symbol_exist (name, "var") > 0)
       {
         int parse_status = 0;
-        return interp.eval_string (x, true, parse_status);
+
+        octave_value result = interp.eval_string (x, true, parse_status);
+
+        if (result.is_cs_list ())
+          error ("evaluation produced c-s list");
+
+        return result;
       }
 
     return octave_value ();
@@ -1225,7 +1231,7 @@ namespace octave
   variable_editor_model::evaluation_error (const std::string& expr) const
   {
     emit user_error_signal ("Evaluation failed",
-                            QString ("failed to evaluate expression: '%1'")
+                            QString ("failed to evaluate expression: '%1' or result can't be edited")
                             .arg (QString::fromStdString (expr)));
   }
 

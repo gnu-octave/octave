@@ -152,11 +152,7 @@ namespace octave
   {
     octave_function *retval = nullptr;
 
-    unwind_protect frame;
-
-    frame.protect_var (m_doing_load);
-
-    m_doing_load = true;
+    octave::unwind_protect_var<bool> restore_var (m_doing_load, true);
 
     dynamic_library oct_file = m_loaded_shlibs.find_file (file_name);
 
@@ -234,11 +230,7 @@ namespace octave
                             const std::string& file_name,
                             bool /*relative*/)
   {
-    unwind_protect frame;
-
-    frame.protect_var (m_doing_load);
-
-    m_doing_load = true;
+    octave::unwind_protect_var<bool> restore_var (m_doing_load, true);
 
     dynamic_library mex_file = m_loaded_shlibs.find_file (file_name);
 

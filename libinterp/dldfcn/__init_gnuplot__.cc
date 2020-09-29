@@ -111,10 +111,8 @@ public:
     // Prevent recursion
     if (! drawnow_executing)
       {
-        octave::unwind_protect frame;
-        frame.protect_var (drawnow_executing);
+        octave::unwind_protect_var<bool> restore_var (drawnow_executing, true);
 
-        drawnow_executing = true;
         octave_value_list args;
         args(0) = go.get_handle ().as_octave_value ();
         octave::feval ("__gnuplot_drawnow__", args);

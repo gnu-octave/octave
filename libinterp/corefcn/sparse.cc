@@ -152,9 +152,7 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
   octave_value retval;
 
   // Temporarily disable sparse_auto_mutate if set (it's obsolete anyway).
-  octave::unwind_protect frame;
-  frame.protect_var (Vsparse_auto_mutate);
-  Vsparse_auto_mutate = false;
+  octave::unwind_protect_var<bool> restore_var (Vsparse_auto_mutate, false);
 
   if (nargin == 1)
     {

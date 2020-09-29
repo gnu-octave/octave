@@ -454,19 +454,12 @@ v = cellfun (@@det, a); # faster
   {
     if (func.is_function_handle () || func.is_inline_function ())
       {
-        // We can't check for overloads now.  Is there something else we
-        // should be doing instead?
+        // FIXME: instead of checking for overloaded functions as we did
+        // previously but is no longer possible, we could check whether
+        // the types of all the cell array elements are the same, then
+        // lookup the function for that type just once.
+
         goto nevermind;
-
-#if 0
-        octave_fcn_handle *f = func.fcn_handle_value ();
-
-        // Overloaded function handles need to check the type of the
-        // arguments for each element of the array, so they cannot be
-        // optimized this way.
-        if (f -> is_overloaded ())
-          goto nevermind;
-#endif
       }
 
     std::string name = func.function_value () -> name ();
@@ -1158,19 +1151,13 @@ arrayfun (@@str2num, [1234],
         {
           if (func.is_function_handle () || func.class_name () == "inline")
             {
-              // We can't check for overloads now.  Is there something
-              // else we should be doing instead?
+              // FIXME: instead of checking for overloaded functions as
+              // we did previously but is no longer possible, we could
+              // check whether the types of all the cell array elements
+              // are the same, then lookup the function for that type
+              // just once.
+
               goto nevermind;
-
-#if 0
-              octave_fcn_handle *f = func.fcn_handle_value ();
-
-              // Overloaded function handles need to check the type of the
-              // arguments for each element of the array, so they cannot be
-              // optimized this way.
-              if (f -> is_overloaded ())
-                goto nevermind;
-#endif
             }
 
           octave_value f

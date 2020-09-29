@@ -1943,12 +1943,12 @@ static callback_props executing_callbacks;
 void
 callback_property::execute (const octave_value& data) const
 {
-  octave::unwind_protect frame;
-
   // We are executing a callback function, so allow handles that have
   // their handlevisibility property set to "callback" to be visible.
 
-  frame.add_method (executing_callbacks, &callback_props::erase, this);
+  octave::unwind_action executing_callbacks_cleanup
+    ([] (auto old_callback_props, auto &self)
+      { old_callback_props->erase (self); }, &executing_callbacks, this);
 
   if (! executing_callbacks.contains (this))
     {
@@ -3062,9 +3062,7 @@ static void
 delete_graphics_objects (const NDArray vals, bool from_root = false)
 {
   // Prevent redraw of partially deleted objects.
-  octave::unwind_protect frame;
-  frame.protect_var (delete_executing);
-  delete_executing = true;
+  octave::unwind_protect_var<bool> restore_var (delete_executing, true);
 
   for (octave_idx_type i = 0; i < vals.numel (); i++)
     delete_graphics_object (vals.elem (i), from_root);
@@ -6276,9 +6274,7 @@ axes::properties::update_axes_layout (void)
   zPlaneN = (zPlane == z_min ? z_max : z_min);
   fz = (z_max - z_min) / sqrt (dir(0)*dir(0) + dir(1)*dir(1));
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_axes_layout);
-  updating_axes_layout = true;
+  octave::unwind_protect_var<bool> restore_var (updating_axes_layout, true);
 
   xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
   zSign = (zd*(zPlane-zPlaneN) <= 0);
@@ -6438,9 +6434,8 @@ axes::properties::update_xlabel_position (void)
 
   bool isempty = xlabel_props.get_string ().isempty ();
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_xlabel_position);
-  updating_xlabel_position = true;
+  octave::unwind_protect_var<bool>
+    restore_var (updating_xlabel_position, true);
 
   if (! isempty)
     {
@@ -6543,9 +6538,8 @@ axes::properties::update_ylabel_position (void)
 
   bool isempty = ylabel_props.get_string ().isempty ();
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_ylabel_position);
-  updating_ylabel_position = true;
+  octave::unwind_protect_var<bool>
+    restore_var (updating_ylabel_position, true);
 
   if (! isempty)
     {
@@ -6649,9 +6643,8 @@ axes::properties::update_zlabel_position (void)
   bool camAuto = cameraupvectormode_is ("auto");
   bool isempty = zlabel_props.get_string ().isempty ();
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_zlabel_position);
-  updating_zlabel_position = true;
+  octave::unwind_protect_var<bool>
+    restore_updating_zlabel_position (updating_zlabel_position, true);
 
   if (! isempty)
     {
@@ -6774,9 +6767,7 @@ axes::properties::update_title_position (void)
   text::properties& title_props
     = reinterpret_cast<text::properties&> (go.get_properties ());
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_title_position);
-  updating_title_position = true;
+  octave::unwind_protect_var<bool> restore_var (updating_title_position, true);
 
   if (title_props.positionmode_is ("auto"))
     {
@@ -6927,8 +6918,8 @@ axes::properties::update_aspectratios (void)
 
       if (modified_limits)
         {
-          octave::unwind_protect frame;
-          frame.protect_var (updating_aspectratios);
+          octave::unwind_protect_var<std::set<double>>
+            restore_var (updating_aspectratios);
 
           updating_aspectratios.insert (get___myhandle__ ().value ());
 
@@ -8602,8 +8593,8 @@ axes::update_axis_limits (const std::string& axis_type,
 
 #undef FIX_LIMITS
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_axis_limits);
+  octave::unwind_protect_var<std::set<double>>
+    restore_var (updating_axis_limits);
 
   updating_axis_limits.insert (get_handle ().value ());
   bool is_auto;
@@ -8807,8 +8798,8 @@ axes::update_axis_limits (const std::string& axis_type)
 
     }
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_axis_limits);
+  octave::unwind_protect_var<std::set<double>>
+    restore_var (updating_axis_limits);
 
   updating_axis_limits.insert (get_handle ().value ());
   bool is_auto;
@@ -9712,9 +9703,7 @@ patch::properties::update_fvc (void)
 
   // FIXME: shouldn't we update facevertexalphadata here ?
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_patch_data);
-  updating_patch_data = true;
+  octave::unwind_protect_var<bool> restore_var (updating_patch_data, true);
 
   faces.set (idx);
   vertices.set (vert);
@@ -9954,9 +9943,7 @@ patch::properties::update_data (void)
   // Update normals
   update_normals (true);
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_patch_data);
-  updating_patch_data = true;
+  octave::unwind_protect_var<bool> restore_var (updating_patch_data, true);
 
   set_xdata (xd);
   set_ydata (yd);
@@ -10295,9 +10282,7 @@ scatter::properties::update_color (void)
   color(1) = color_order(s,1);
   color(2) = color_order(s,2);
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_scatter_cdata);
-  updating_scatter_cdata = true;
+  octave::unwind_protect_var<bool> restore_var (updating_scatter_cdata, true);
 
   set_cdata (color);
   set_cdatamode ("auto");
@@ -10777,10 +10762,7 @@ hggroup::update_axis_limits (const std::string& axis_type,
 
   get_children_limits (min_val, max_val, min_pos, max_neg, kids, update_type);
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_hggroup_limits);
-
-  updating_hggroup_limits = true;
+  octave::unwind_protect_var<bool> restore_var (updating_hggroup_limits, true);
 
   if (limits(0) != min_val || limits(1) != max_val
       || limits(2) != min_pos || limits(3) != max_neg)
@@ -10867,10 +10849,7 @@ hggroup::update_axis_limits (const std::string& axis_type)
       update_type = 'a';
     }
 
-  octave::unwind_protect frame;
-  frame.protect_var (updating_hggroup_limits);
-
-  updating_hggroup_limits = true;
+  octave::unwind_protect_var<bool> restore_var (updating_hggroup_limits, true);
 
   Matrix limits (1, 4);
 
@@ -13834,9 +13813,7 @@ undocumented.
   if (args.length () > 3)
     print_usage ();
 
-  octave::unwind_protect frame;
-
-  frame.protect_var (Vdrawnow_requested, false);
+  octave::unwind_protect_var<bool> restore_var (Vdrawnow_requested, false);
 
   // Redraw unless we are in the middle of a deletion.
 

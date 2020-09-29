@@ -269,9 +269,7 @@ parameters for @code{dassl}.
 
   octave_value_list retval (4);
 
-  octave::unwind_protect frame;
-
-  frame.protect_var (call_depth);
+  octave::unwind_protect_var<int> restore_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)

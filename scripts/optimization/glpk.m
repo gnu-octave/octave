@@ -510,7 +510,7 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
 
   [nc, nxa] = size (A);
   if (nxa != nx)
-    error ("glpk: A must be %d by %d, not %d by %d",
+    error ("glpk: A must be %d-by-%d, not %d-by-%d",
            nc, nx, rows (A), columns (A));
   endif
 
@@ -520,7 +520,7 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
     error ("glpk: B cannot be an empty vector");
   endif
   if (! isreal (b) || length (b) != nc)
-    error ("glpk: B must be a real valued %d by 1 vector", nc);
+    error ("glpk: B must be a real-valued %d-by-1 vector", nc);
   endif
   if (any (! isfinite (b(:))))
     error ("glpk: The values in B must be finite");
@@ -533,7 +533,7 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
       lb = zeros (nx, 1);
     elseif (! isreal (lb) || all (size (lb) > 1) || length (lb) != nx
             || any (isnan (lb)))
-      error ("glpk: LB must be a real valued %d by 1 column vector", nx);
+      error ("glpk: LB must be a real-valued %d-by-1 column vector", nx);
     endif
   else
     lb = zeros (nx, 1);
@@ -546,7 +546,7 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
       ub = Inf (nx, 1);
     elseif (! isreal (ub) || all (size (ub) > 1) || length (ub) != nx
             || any (isnan (ub)))
-      error ("glpk: UB must be a real valued %d by 1 column vector", nx);
+      error ("glpk: UB must be a real-valued %d-by-1 column vector", nx);
     endif
   else
     ub = Inf (nx, 1);
@@ -558,7 +558,7 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
     if (isempty (ctype))
       ctype = repmat ("S", nc, 1);
     elseif (! ischar (ctype) || all (size (ctype) > 1) || length (ctype) != nc)
-      error ("glpk: CTYPE must be a char valued vector of length %d", nc);
+      error ("glpk: CTYPE must be a char vector of length %d", nc);
     elseif (! all (ctype == "F" | ctype == "U" | ctype == "S"
                    | ctype == "L" | ctype == "D"))
       error ("glpk: CTYPE must contain only F, U, S, L, or D");
@@ -574,7 +574,7 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
       vartype = repmat ("C", nx, 1);
     elseif (! ischar (vartype) || all (size (vartype) > 1)
             || length (vartype) != nx)
-      error ("glpk: VARTYPE must be a char valued vector of length %d", nx);
+      error ("glpk: VARTYPE must be a char vector of length %d", nx);
     elseif (! all (vartype == "C" | vartype == "I"))
       error ("glpk: VARTYPE must contain only C or I");
     endif
@@ -670,6 +670,6 @@ endfunction
 %!error<C .* finite values> glpk(NaN, 2, 3)
 %!error<A must be finite> glpk(1, NaN, 3)
 %!error<B must be finite> glpk(1, 2, NaN)
-%!error<LB must be a real valued> glpk(1, 2, 3, NaN)
-%!error<UB must be a real valued> glpk(1, 2, 3, 4, NaN)
+%!error<LB must be a real-valued> glpk(1, 2, 3, NaN)
+%!error<UB must be a real-valued> glpk(1, 2, 3, 4, NaN)
 %!error<SENSE must be .* integer> glpk(1, 2, 3, 4, 5, "F", "C", NaN)

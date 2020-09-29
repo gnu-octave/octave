@@ -706,26 +706,15 @@ octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
                                         octave::mach_info::float_format)
 {
   T tmp;
+
   if (! is.read (reinterpret_cast<char *> (&tmp), this->byte_size ()))
     return false;
 
   if (swap)
-    switch (this->byte_size ())
-      {
-      case 8:
-        swap_bytes<8> (&tmp);
-        break;
-      case 4:
-        swap_bytes<4> (&tmp);
-        break;
-      case 2:
-        swap_bytes<2> (&tmp);
-        break;
-      case 1:
-      default:
-        break;
-      }
+    swap_bytes<sizeof (T)> (&tmp);
+
   this->scalar = tmp;
+
   return true;
 }
 

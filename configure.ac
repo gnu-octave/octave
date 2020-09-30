@@ -659,7 +659,14 @@ AC_ARG_ENABLE([link-all-dependencies],
      *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-depenencies])
      ;;
    esac],
-  [link_all_deps=no])
+  [case $host_os in
+    darwin*)
+      link_all_deps=yes
+    ;;
+    *)
+      link_all_deps=no
+    ;;
+  esac])
 AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 
 ### Check for BLAS and LAPACK libraries:

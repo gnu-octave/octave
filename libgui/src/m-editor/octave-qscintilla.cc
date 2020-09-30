@@ -1144,7 +1144,7 @@ namespace octave
         return true;
       }
 
-    return QWidget::event(e);
+    return QsciScintilla::event(e);
   }
 
   void octave_qscintilla::keyPressEvent (QKeyEvent *key_event)

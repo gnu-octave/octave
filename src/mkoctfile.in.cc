@@ -281,6 +281,8 @@ initialize (void)
   vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS",
                                      %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
 
+  DEFAULT_LDFLAGS += ' ' + vars["DL_LDFLAGS"];
+
   vars["RDYNAMIC_FLAG"] = get_variable ("RDYNAMIC_FLAG",
                                         %OCTAVE_CONF_RDYNAMIC_FLAG%);
 

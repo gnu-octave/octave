@@ -926,8 +926,11 @@ namespace octave
                  "converting from codepage '%s' to UTF-8: %s",
                  encoding.c_str (), std::strerror (errno));
 
-        unwind_protect frame;
-        frame.add_fcn (::free, static_cast<void *> (utf8_str));
+        octave::unwind_action free_utf8_str
+          ([] (const auto utf8_str_ptr)
+           {
+             ::free (utf8_str_ptr);
+           }, static_cast<void *> (utf8_str));
 
         src_str = std::string (reinterpret_cast<char *> (utf8_str), length);
       }

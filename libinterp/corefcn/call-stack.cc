@@ -968,14 +968,14 @@ namespace octave
         // implement this option there so that the variables are never
         // stored at all.
 
-        unwind_protect frame;
-
         // Set up temporary scope.
 
         symbol_scope tmp_scope ("$dummy_scope$");
 
         push (tmp_scope);
-        frame.add_method (*this, &call_stack::pop);
+
+        octave::unwind_action restore_scope
+          ([] (auto& self) { self->pop (); }, this);
 
         feval ("load", octave_value (file_name), 0);
 

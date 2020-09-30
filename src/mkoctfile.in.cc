@@ -226,6 +226,18 @@ initialize (void)
   if (vars["INCLUDEDIR"] != "/usr/include")
     DEFAULT_INCFLAGS += " -I" + quote_path (vars["INCLUDEDIR"]);
 
+  std::string DEFAULT_LDFLAGS;
+
+#if (defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)) || (defined __APPLE__ && defined __MACH__)
+
+  // We'll be linking the files we compile with -loctinterp and -loctave,
+  // so we need to know where to find them.
+  DEFAULT_LDFLAGS += "-L" + quote_path (vars["OCTLIBDIR"]);
+#endif
+
+  if (vars["LIBDIR"] != "/usr/lib")
+    DEFAULT_LDFLAGS += " -L" + quote_path (vars["LIBDIR"]);
+
   vars["CPPFLAGS"] = get_variable ("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
 
   vars["INCFLAGS"] = get_variable ("INCFLAGS", DEFAULT_INCFLAGS);
@@ -312,6 +324,11 @@ initialize (void)
 
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
                                          %OCTAVE_CONF_LD_STATIC_FLAG%);
+
+  // FIXME: Remove LFLAGS in Octave 7.0
+  vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LDFLAGS);
+  if (vars["LFLAGS"] != DEFAULT_LDFLAGS)
+    std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
 
   vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
                                             %OCTAVE_CONF_F77_INTEGER_8_FLAG%);

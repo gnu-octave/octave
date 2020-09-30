@@ -200,11 +200,6 @@ and have been removed from Octave 7.
   `uipanel`        | `fontangle`   | `"oblique"`
   `uitable`        | `fontangle`   | `"oblique"`
 
-
-- `mkoctfile -p LFLAGS`<br>
-The environment variable used by `mkoctfile` for linker flags is now
-`LDFLAGS` rather than `LFLAGS`.  `LFLAGS` has been removed.
-
 ### Old release news
 
 - [Octave 6.x](etc/NEWS.6)

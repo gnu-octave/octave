@@ -324,10 +324,10 @@ namespace octave
   {
     if (! m_flushing_output_to_pager)
       {
-        unwind_protect frame;
-
-        frame.protect_var (m_really_flush_to_pager);
-        frame.protect_var (m_flushing_output_to_pager);
+        octave::unwind_protect_var<bool>
+          restore_var1 (m_really_flush_to_pager);
+        octave::unwind_protect_var<bool>
+          restore_var2 (m_flushing_output_to_pager);
 
         m_really_flush_to_pager = true;
         m_flushing_output_to_pager = true;

@@ -281,9 +281,11 @@ Windows systems.
     cmd_str = '"' + cmd_str + '"';
 #endif
 
-  octave::unwind_protect frame;
-
-  frame.add_fcn (restore_signal_mask, get_signal_mask ());
+  octave::unwind_action restore_mask
+    ([] (const auto signal_mask_ptr)
+     {
+       restore_signal_mask (signal_mask_ptr);
+     }, get_signal_mask ());
 
   octave_unblock_async_signals ();
   octave_unblock_signal_by_name ("SIGTSTP");

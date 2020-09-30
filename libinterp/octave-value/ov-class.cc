@@ -579,8 +579,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           if (obsolete_copies == 0 && meth.is_user_function ()
               && meth.user_function_value ()->subsasgn_optimization_ok ())
             {
-              octave::unwind_protect frame;
-              frame.protect_var (obsolete_copies);
+              octave::unwind_protect_var<int> restore_var (obsolete_copies);
               obsolete_copies = 2;
 
               tmp = octave::feval (meth.function_value (), args);
@@ -1018,8 +1017,6 @@ octave_class::print (std::ostream& os, bool)
 void
 octave_class::print_raw (std::ostream& os, bool) const
 {
-  octave::unwind_protect frame;
-
   indent (os);
   os << "  <class " << class_name () << '>';
   newline (os);

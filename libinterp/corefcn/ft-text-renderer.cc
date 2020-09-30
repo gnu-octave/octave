@@ -980,9 +980,9 @@ namespace octave
 
     m_strlist = std::list<text_renderer::string> ();
 
-    unwind_protect frame;
-    frame.protect_var (m_do_strlist);
-    frame.protect_var (m_strlist);
+    octave::unwind_protect_var<bool> restore_var1 (m_do_strlist);
+    octave::unwind_protect_var<std::list<text_renderer::string>>
+      restore_var2 (m_strlist);
     m_do_strlist = true;
 
     text_to_pixels (txt, pxls, box, ha, va, rot, interp, false);

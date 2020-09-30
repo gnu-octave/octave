@@ -901,8 +901,6 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
   size_t length;
   uint8_t *utf8_str = nullptr;
 
-  octave::unwind_protect frame;
-
   utf8_str = octave_u8_conv_from_encoding (codepage, src, srclen, &length);
 
   if (! utf8_str)
@@ -915,7 +913,11 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
                codepage, std::strerror (errno));
     }
 
-  frame.add_fcn (::free, static_cast<void *> (utf8_str));
+  octave::unwind_action free_utf8_str
+    ([] (const auto utf8_str_ptr)
+     {
+       ::free (utf8_str_ptr);
+     }, static_cast<void *> (utf8_str));
 
   octave_idx_type len = length;
 
@@ -953,8 +955,6 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
   size_t length;
   char *native_bytes = nullptr;
 
-  octave::unwind_protect frame;
-
   native_bytes = octave_u8_conv_to_encoding (codepage, src, srclen, &length);
 
   if (! native_bytes)
@@ -967,7 +967,11 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
                codepage, std::strerror (errno));
     }
 
-  frame.add_fcn (::free, static_cast<void *> (native_bytes));
+  octave::unwind_action free_native_bytes
+    ([] (const auto native_bytes_ptr)
+     {
+       ::free (native_bytes_ptr);
+     }, static_cast<void *> (native_bytes));
 
   octave_idx_type len = length;
 

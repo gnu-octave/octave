@@ -838,8 +838,6 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 
   octave_value_list retval;
 
-  octave::unwind_protect frame;
-
   octave_idx_type curr_frame = -1;
 
   size_t nskip = 0;

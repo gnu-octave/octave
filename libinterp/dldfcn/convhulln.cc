@@ -58,12 +58,6 @@ char qh_version[] = "convhulln.oct 2007-07-24";
 #  endif
 
 static void
-close_fcn (FILE *f)
-{
-  std::fclose (f);
-}
-
-static void
 free_qhull_memory ()
 {
   qh_freeqhull (! qh_ALL);
@@ -173,8 +167,6 @@ convex hull is calculated.
 
   boolT ismalloc = false;
 
-  octave::unwind_protect frame;
-
   // Replace the outfile pointer with stdout for debugging information.
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
   FILE *outfile = std::fopen ("NUL", "w");
@@ -186,7 +178,8 @@ convex hull is calculated.
   if (! outfile)
     error ("convhulln: unable to create temporary file for output");
 
-  frame.add_fcn (close_fcn, outfile);
+  octave::unwind_action close_outfile
+    ([] (const auto file_ptr) { std::fclose (file_ptr); }, outfile);
 
   // qh_new_qhull command and points arguments are not const...
 
@@ -199,7 +192,7 @@ convex hull is calculated.
   int exitcode = qh_new_qhull (dim, num_points, points.fortran_vec (),
                                ismalloc, cmd_str, outfile, errfile);
 
-  frame.add_fcn (free_qhull_memory);
+  octave::unwind_action free_memory ([] () { free_qhull_memory (); });
 
   if (exitcode)
     error ("convhulln: qhull failed");

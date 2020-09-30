@@ -327,11 +327,13 @@ namespace octave
   {
     bool numbered_output = nargout == 0;
 
-    unwind_protect frame;
+    octave::unwind_action restore_history_filename
+      ([] (const auto& old_filename)
+       {
+         command_history::set_file (old_filename);
+       }, command_history::file ());
 
     string_vector hlist;
-
-    frame.add_fcn (command_history::set_file, command_history::file ());
 
     int nargin = args.length ();
 

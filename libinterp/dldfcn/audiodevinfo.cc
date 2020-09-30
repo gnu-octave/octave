@@ -863,12 +863,6 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   return paContinue;
 }
 
-static void
-safe_audioplayer_stop (audioplayer *player)
-{
-  player->stop ();
-}
-
 audioplayer::audioplayer (void)
   : octave_callback_function (nullptr),
     id (-1), fs (0), nbits (16), channels (0), sample_number (0),
@@ -1156,9 +1150,8 @@ audioplayer::playblocking (void)
   start = get_sample_number ();
   end = get_end_sample ();
 
-  octave::unwind_protect frame;
-
-  frame.add_fcn (safe_audioplayer_stop, this);
+  octave::unwind_action stop_audioplayer
+    ([] (audioplayer * player) { player->stop (); }, this);
 
   for (unsigned int i = start; i < end; i += buffer_size)
     {
@@ -1543,12 +1536,6 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
   return paContinue;
 }
 
-static void
-safe_audiorecorder_stop (audiorecorder *recorder)
-{
-  recorder->stop ();
-}
-
 audiorecorder::audiorecorder (void)
   : octave_callback_function (nullptr),
     id (-1), fs (8000), nbits (8), channels (1), sample_number (0),
@@ -1836,9 +1823,8 @@ audiorecorder::recordblocking (float seconds)
 
   unsigned int frames = seconds * get_fs ();
 
-  octave::unwind_protect frame;
-
-  frame.add_fcn (safe_audiorecorder_stop, this);
+  octave::unwind_action stop_audiorecorder
+    ([] (audiorecorder * recorder) { recorder->stop (); }, this);
 
   for (unsigned int i = 0; i < frames; i += buffer_size)
     {

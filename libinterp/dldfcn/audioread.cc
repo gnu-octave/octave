@@ -49,14 +49,6 @@
 #  include <sndfile.h>
 #endif
 
-#if defined (HAVE_SNDFILE)
-static void
-safe_close (SNDFILE *file)
-{
-  sf_close (file);
-}
-#endif
-
 DEFUN_DLD (audioread, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{y}, @var{fs}] =} audioread (@var{filename})
@@ -96,9 +88,8 @@ is stored in the audio file.
     error ("audioread: failed to open input file '%s': %s",
            filename.c_str (), sf_strerror (file));
 
-  octave::unwind_protect frame;
-
-  frame.add_fcn (safe_close, file);
+  octave::unwind_action close_open_file
+    ([] (auto file_ptr) { sf_close (file_ptr); }, file);
 
   OCTAVE_LOCAL_BUFFER (double, data, info.frames * info.channels);
 
@@ -431,9 +422,8 @@ Comment.
     error ("audiowrite: failed to open output file '%s': %s",
            filename.c_str (), sf_strerror (file));
 
-  octave::unwind_protect frame;
-
-  frame.add_fcn (safe_close, file);
+  octave::unwind_action close_open_file
+    ([] (auto file_ptr) { sf_close (file_ptr); }, file);
 
   sf_command (file, SFC_SET_NORM_DOUBLE, nullptr, SF_TRUE);
   sf_command (file, SFC_SET_CLIPPING, nullptr, SF_TRUE) ;
@@ -626,9 +616,8 @@ Audio bit rate.  Unused, only present for compatibility with @sc{matlab}.
     error ("audioinfo: failed to open input file '%s': %s",
            filename.c_str (), sf_strerror (file));
 
-  octave::unwind_protect frame;
-
-  frame.add_fcn (safe_close, file);
+  octave::unwind_action close_open_file
+    ([] (auto file_ptr) { sf_close (file_ptr); }, file);
 
   octave_scalar_map result;
 

@@ -4250,10 +4250,8 @@ call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
   for (int i = 0; i < nout; i++)
     argout[i] = nullptr;
 
-  octave::unwind_protect_safe frame;
-
   // Save old mex pointer.
-  frame.protect_var (mex_context);
+  octave::unwind_protect_var<mex *> restore_var (mex_context);
 
   mex context (mex_fcn);
 

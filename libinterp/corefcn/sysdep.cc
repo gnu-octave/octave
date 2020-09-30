@@ -718,9 +718,12 @@ namespace octave
     wchar_t *wcommand = u8_to_wchar (command);
     wchar_t *wmode = u8_to_wchar (mode);
 
-    unwind_protect frame;
-    frame.add_fcn (::free, static_cast<void *> (wcommand));
-    frame.add_fcn (::free, static_cast<void *> (wmode));
+    octave::unwind_action free_memory
+      ([] (const auto wcommand_ptr, const auto wmode_ptr)
+       {
+         ::free (wcommand_ptr);
+         ::free (wmode_ptr);
+       }, static_cast<void *> (wcommand), static_cast<void *> (wmode));
 
     if (wmode && wmode[0] && ! wmode[1])
       {
@@ -961,9 +964,11 @@ namespace octave
     if (result != ERROR_SUCCESS)
       return result;
 
-    unwind_protect frame;
-
-    frame.add_fcn (reg_close_key_wrapper, h_subkey);
+    octave::unwind_action restore_keys
+      ([] (const auto& old_subkeys)
+       {
+         reg_close_key_wrapper (old_subkeys);
+       }, h_subkey);
 
     std::wstring wname = sys::u8_to_wstring (name);
     DWORD length = 0;

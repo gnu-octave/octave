@@ -571,10 +571,7 @@ namespace octave
          || application::forced_interactive ())
         && debug_on_warning () && in_user_code && bptab.debug_on_warn (id))
       {
-        unwind_protect frame;
-
-        frame.protect_var (m_debug_on_warning);
-        m_debug_on_warning = false;
+        unwind_protect_var<bool> restore_var (m_debug_on_warning, false);
 
         tw.enter_debugger ();
       }

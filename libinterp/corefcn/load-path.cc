@@ -963,8 +963,6 @@ namespace octave
     if (! octave_interpreter_ready)
       return;
 
-    unwind_protect frame;
-
     std::string file = sys::file_ops::concat (dir, script_file);
 
     sys::file_stat fs (file);

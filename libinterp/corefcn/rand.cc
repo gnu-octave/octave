@@ -117,10 +117,12 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
   octave_value retval;
   dim_vector dims;
 
-  octave::unwind_protect frame;
   // Restore current distribution on any exit.
-  frame.add_fcn (octave::rand::distribution,
-                 octave::rand::distribution ());
+  octave::unwind_action restore_distribution
+    ([] (const auto& old_distribution)
+     {
+       octave::rand::distribution (old_distribution);
+     }, octave::rand::distribution ());
 
   octave::rand::distribution (distribution);
 

@@ -1243,9 +1243,9 @@ main (int argc, char **argv)
           std::string cmd
             = (vars["CXXLD"] + ' ' + vars["CPPFLAGS"] + ' '
                + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
-               + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
-               + output_option + ' ' + objfiles + ' ' + libfiles + ' '
-               + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
+               + pass_on_options + ' ' + output_option + ' ' + objfiles + ' '
+               + libfiles + ' ' + vars["ALL_LDFLAGS"] + ' ' + ldflags + ' '
+               + vars["LFLAGS"] + ' ' + octave_libs + ' '
                + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
 
           int status = run_command (cmd, printonly);
@@ -1272,8 +1272,8 @@ main (int argc, char **argv)
 
       std::string cmd
         = (vars["CXXLD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
-           + vars["DL_LDFLAGS"] + ' ' + vars["LDFLAGS"] + ' ' + pass_on_options
-           + " -o " + octfile + ' ' + objfiles + ' ' + libfiles + ' '
+           + pass_on_options + " -o " + octfile + ' ' + objfiles + ' '
+           + libfiles + ' ' + vars["DL_LDFLAGS"] + ' ' + vars["LDFLAGS"] + ' '
            + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
            + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
 

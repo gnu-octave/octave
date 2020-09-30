@@ -975,7 +975,7 @@ namespace octave
         push (tmp_scope);
 
         octave::unwind_action restore_scope
-          ([] (auto& self) { self->pop (); }, this);
+          ([] (auto self) { self->pop (); }, this);
 
         feval ("load", octave_value (file_name), 0);
 

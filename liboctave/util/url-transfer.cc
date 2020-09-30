@@ -448,8 +448,11 @@ namespace octave
     {
       struct curl_slist *slist = nullptr;
 
-      unwind_protect frame;
-      frame.add_fcn (curl_slist_free_all, slist);
+      octave::unwind_action cleanup_slist
+        ([] (const auto slist_ptr)
+         { 
+           curl_slist_free_all (slist_ptr);
+         }, slist);
 
       std::string cmd = "rnfr " + oldname;
       slist = curl_slist_append (slist, cmd.c_str ());
@@ -616,8 +619,11 @@ namespace octave
 
       struct curl_slist *slist = nullptr;
 
-      unwind_protect frame;
-      frame.add_fcn (curl_slist_free_all, slist);
+      octave::unwind_action cleanup_slist
+        ([] (const auto slist_ptr)
+         { 
+           curl_slist_free_all (slist_ptr);
+         }, slist);
 
       slist = curl_slist_append (slist, "pwd");
       SETOPTR (CURLOPT_POSTQUOTE, slist);
@@ -708,9 +714,11 @@ namespace octave
     {
       struct curl_slist *slist = nullptr;
 
-      unwind_protect frame;
-
-      frame.add_fcn (curl_slist_free_all, slist);
+      octave::unwind_action cleanup_slist
+        ([] (const auto slist_ptr)
+         { 
+           curl_slist_free_all (slist_ptr);
+         }, slist);
 
       if (param.numel () >= 2)
         {
@@ -732,13 +740,16 @@ namespace octave
     // path of the file as its value.
     void form_data_post (const Array<std::string>& param)
     {
-      struct curl_httppost *post = nullptr, *last = nullptr;
+      struct curl_httppost *post = nullptr;
+      struct curl_httppost *last = nullptr;
 
       SETOPT (CURLOPT_URL, m_host_or_url.c_str ());
 
-      unwind_protect frame;
-
-      frame.add_fcn (curl_formfree, post);
+      octave::unwind_action cleanup_httppost
+        ([] (const auto httppost_ptr)
+         { 
+           curl_formfree (httppost_ptr);
+         }, post);
 
       if (param.numel () >= 2)
         {
@@ -912,9 +923,11 @@ namespace octave
     {
       struct curl_slist *slist = nullptr;
 
-      unwind_protect frame;
-
-      frame.add_fcn (curl_slist_free_all, slist);
+      octave::unwind_action cleanup_slist
+        ([] (const auto slist_ptr)
+         { 
+           curl_slist_free_all (slist_ptr);
+         }, slist);
 
       std::string cmd = action + ' ' + file_or_dir;
 

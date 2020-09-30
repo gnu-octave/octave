@@ -147,7 +147,7 @@ namespace octave
   //     int val = 42;
   //
   //     // template parameters, std::bind and std::function provide
-  //     // flexibility in calling forms:
+  //     // flexibility in calling forms (function pointer or lambda):
   //
   //     unwind_action act1 (fcn, val);
   //     unwind_action act2 ([val] (void) { fcn (val); });

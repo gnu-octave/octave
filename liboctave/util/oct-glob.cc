@@ -78,11 +78,13 @@ namespace octave
 
       int k = 0;
 
-      unwind_protect frame;
-
       void *glob_info = octave_create_glob_info_struct ();
 
-      frame.add_fcn (octave_destroy_glob_info_struct, glob_info);
+      octave::unwind_action cleanup_glob_info_struct
+        ([] (const auto glob_info_ptr)
+         { 
+           octave_destroy_glob_info_struct (glob_info_ptr);
+         }, glob_info);
 
       for (int i = 0; i < npat; i++)
         {
@@ -154,11 +156,13 @@ namespace octave
 
       int k = 0;
 
-      unwind_protect frame;
-
       void *glob_info = octave_create_glob_info_struct ();
 
-      frame.add_fcn (octave_destroy_glob_info_struct, glob_info);
+      octave::unwind_action cleanup_glob_info_struct
+        ([] (const auto glob_info_ptr)
+         { 
+           octave_destroy_glob_info_struct (glob_info_ptr);
+         }, glob_info);
 
       for (int i = 0; i < npat; i++)
         {

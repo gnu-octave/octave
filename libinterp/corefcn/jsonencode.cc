@@ -272,6 +272,7 @@ encode_cell (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
 //! @param ConvertInfAndNaN @c bool that converts @c Inf and @c NaN to @c null.
 //! @param original_dims The original dimensions of the array being encoded.
 //! @param level The level of recursion for the function.
+//! @param is_logical optional @c bool that indicates if the array is logical.
 //!
 //! @b Example:
 //!
@@ -282,9 +283,15 @@ encode_cell (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
 
 template <typename T> void
 encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
-              const dim_vector& original_dims, int level = 0)
+              const dim_vector& original_dims, int level = 0,
+              bool is_logical = false)
 {
   NDArray array = obj.array_value ();
+  // is_logical is assigned at level 0.  I think this is better than changing
+  // many places in the code, and it makes the function more modular.
+  if (level == 0)
+    is_logical = obj.islogical ();
+
   if (array.isempty ())
     {
       writer.StartArray ();
@@ -295,7 +302,7 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
       writer.StartArray ();
       for (octave_idx_type i = 0; i < array.numel (); ++i)
         {
-          if (obj.islogical ())
+          if (is_logical)
             encode_numeric (writer, bool (array(i)), ConvertInfAndNaN);
           else
             encode_numeric (writer, array(i), ConvertInfAndNaN);
@@ -322,7 +329,7 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
               writer.StartArray ();
 
           encode_array (writer, array.as_row (), ConvertInfAndNaN,
-                        original_dims);
+                        original_dims, level + 1, is_logical);
 
           if (level != 0)
             for (int i = level; i < ndims - 1; ++i)
@@ -337,7 +344,7 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
           {
             writer.StartArray ();
             encode_array (writer, array, ConvertInfAndNaN,
-                          original_dims, level + 1);
+                          original_dims, level + 1, is_logical);
             writer.EndArray ();
           }
           else
@@ -367,7 +374,7 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
 
               for (octave_idx_type i = 0; i < sub_arrays.numel (); ++i)
                 encode_array (writer, sub_arrays(i), ConvertInfAndNaN,
-                              original_dims, level + 1);
+                              original_dims, level + 1, is_logical);
 
               writer.EndArray ();
             }

@@ -77,7 +77,7 @@ namespace octave
     std::string path_str = to_string ();
 
     emit interpreter_event
-      ([path_str] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -283,7 +283,7 @@ namespace octave
   void set_path_model::path_to_model (void)
   {
     emit interpreter_event
-      ([this] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 

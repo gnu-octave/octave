@@ -1024,7 +1024,7 @@ namespace octave
     std::string expr = os.str ();
 
     emit interpreter_event
-      ([this, nm, expr, idx] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1173,7 +1173,7 @@ namespace octave
     std::string expr = expr_arg.toStdString ();
 
     emit interpreter_event
-      ([this, expr] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1245,7 +1245,7 @@ namespace octave
   variable_editor_model::update_data_cache (void)
   {
     emit interpreter_event
-      ([this] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER_THREAD
 

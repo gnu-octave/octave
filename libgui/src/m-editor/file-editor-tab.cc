@@ -431,7 +431,7 @@ namespace octave
     if (ok && ! new_cond.isEmpty ())
       {
         emit interpreter_event
-          ([this, line, new_cond] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
@@ -801,7 +801,7 @@ namespace octave
             if (m_is_octave_file)
               {
                 emit interpreter_event
-                  ([this, octave_functions, octave_builtins] (interpreter& interp)
+                  ([=] (interpreter& interp)
                    {
                      // INTERPRETER THREAD
 
@@ -1169,7 +1169,7 @@ namespace octave
     bp_info info (m_file_name, line);
 
     emit interpreter_event
-      ([info] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1258,7 +1258,7 @@ namespace octave
     bp_info info (m_file_name);
 
     emit interpreter_event
-      ([info] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1366,7 +1366,7 @@ namespace octave
   void file_editor_tab::add_breakpoint_event (const bp_info& info)
   {
     emit interpreter_event
-      ([this, info] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -2041,7 +2041,7 @@ namespace octave
     // Create and queue the command object.
 
     emit interpreter_event
-      ([this] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -2104,7 +2104,7 @@ namespace octave
     if (ans == QMessageBox::Save)
       {
         emit interpreter_event
-          ([this, file_to_save, base_name, remove_on_success, restore_breakpoints] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
@@ -2159,7 +2159,7 @@ namespace octave
         QString base_name = file_info.baseName ();
 
         emit interpreter_event
-          ([this, file_to_save, base_name, remove_on_success, restore_breakpoints] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 

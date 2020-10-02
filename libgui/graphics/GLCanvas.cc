@@ -188,7 +188,7 @@ namespace QtHandles
         catch (octave::execution_exception& ee)
           {
             emit interpreter_event
-              ([ee] (void)
+              ([=] (void)
                {
                  // INTERPRETER THREAD
 

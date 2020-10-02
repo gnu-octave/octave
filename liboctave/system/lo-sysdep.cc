@@ -221,7 +221,8 @@ namespace octave
           return false;
         }
 
-      unwind_action act ([fptr, tmpname] () {
+      unwind_action act ([=] ()
+                         {
                            std::fclose (fptr);
                            sys::unlink (tmpname);
                          });

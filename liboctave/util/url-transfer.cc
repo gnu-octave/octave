@@ -449,7 +449,7 @@ namespace octave
       struct curl_slist *slist = nullptr;
 
       octave::unwind_action cleanup_slist
-        ([slist] () { curl_slist_free_all (slist); });
+        ([=] () { curl_slist_free_all (slist); });
 
       std::string cmd = "rnfr " + oldname;
       slist = curl_slist_append (slist, cmd.c_str ());
@@ -617,7 +617,7 @@ namespace octave
       struct curl_slist *slist = nullptr;
 
       octave::unwind_action cleanup_slist
-        ([slist] () { curl_slist_free_all (slist); });
+        ([=] () { curl_slist_free_all (slist); });
 
       slist = curl_slist_append (slist, "pwd");
       SETOPTR (CURLOPT_POSTQUOTE, slist);
@@ -709,7 +709,7 @@ namespace octave
       struct curl_slist *slist = nullptr;
 
       octave::unwind_action cleanup_slist
-        ([slist] () { curl_slist_free_all (slist); });
+        ([=] () { curl_slist_free_all (slist); });
 
       if (param.numel () >= 2)
         {
@@ -737,7 +737,7 @@ namespace octave
       SETOPT (CURLOPT_URL, m_host_or_url.c_str ());
 
       octave::unwind_action cleanup_httppost
-        ([post] () { curl_formfree (post); });
+        ([=] () { curl_formfree (post); });
 
       if (param.numel () >= 2)
         {
@@ -912,7 +912,7 @@ namespace octave
       struct curl_slist *slist = nullptr;
 
       octave::unwind_action cleanup_slist
-        ([slist] () { curl_slist_free_all (slist); });
+        ([=] () { curl_slist_free_all (slist); });
 
       std::string cmd = action + ' ' + file_or_dir;
 

@@ -4996,10 +4996,7 @@ namespace octave
         return octave_value ();
       }
 
-    unwind_action act ([ffile] (void)
-                       {
-                         fclose (ffile);
-                       });
+    unwind_action act ([=] (void) { ::fclose (ffile); });
 
     parser parser (ffile, interp);
 
@@ -5798,7 +5795,7 @@ s = evalc ("t = 42"), t
   // the eval, then the message is stored in the exception object and we
   // will display it later, after the buffers have been restored.
 
-  octave::unwind_action act ([old_out_buf, old_err_buf] (void)
+  octave::unwind_action act ([=] (void)
                              {
                                octave_stdout.rdbuf (old_out_buf);
                                std::cerr.rdbuf (old_err_buf);

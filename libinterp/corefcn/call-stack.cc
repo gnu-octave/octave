@@ -974,7 +974,7 @@ namespace octave
 
         push (tmp_scope);
 
-        unwind_action restore_scope ([this] (void) { pop (); });
+        unwind_action restore_scope ([=] (void) { pop (); });
 
         feval ("load", octave_value (file_name), 0);
 

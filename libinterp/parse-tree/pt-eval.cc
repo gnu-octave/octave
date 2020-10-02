@@ -200,7 +200,8 @@ namespace octave
 
             evmgr.set_workspace ();
 
-            frame.add ([&evmgr, fcn_nm, curr_debug_line] (void) {
+            frame.add ([=, &evmgr] (void)
+                       {
                          evmgr.execute_in_debugger_event (fcn_nm,
                                                           curr_debug_line);
                        });
@@ -618,7 +619,7 @@ namespace octave
                                             const std::string& try_code,
                                             int nargout)
   {
-    unwind_action act ([this] (size_t frm)
+    unwind_action act ([=] (size_t frm)
                        {
                          m_call_stack.restore_frame (frm);
                        }, m_call_stack.current_frame ());
@@ -642,7 +643,7 @@ namespace octave
   {
     octave_value_list retval;
 
-    unwind_action act1 ([this] (size_t frm)
+    unwind_action act1 ([=] (size_t frm)
                         {
                           m_call_stack.restore_frame (frm);
                         }, m_call_stack.current_frame ());
@@ -828,7 +829,7 @@ namespace octave
 
     m_debugger_stack.push (dbgr);
 
-    frame.add ([this] (void)
+    frame.add ([=] (void)
                {
                  delete m_debugger_stack.top ();
                  m_debugger_stack.pop ();
@@ -1403,7 +1404,7 @@ namespace octave
     // by getting a reference to the caller or base stack frame and
     // calling assign on that?
 
-    unwind_action act ([this] (size_t frm)
+    unwind_action act ([=] (size_t frm)
                        {
                          m_call_stack.restore_frame (frm);
                        }, m_call_stack.current_frame ());
@@ -2863,7 +2864,7 @@ namespace octave
     unwind_protect_var<stmt_list_type>
       upv (m_statement_context, SC_FUNCTION);
 
-    unwind_action act1 ([this] () {
+    unwind_action act1 ([=] () {
                           m_call_stack.clear_current_frame_values ();
                         });
 
@@ -4276,7 +4277,7 @@ namespace octave
             // evaluate the partial expression that the special "end"
             // token applies to in the calling stack frame.
 
-            unwind_action act ([this] (size_t frm)
+            unwind_action act ([=] (size_t frm)
                                {
                                  m_call_stack.restore_frame (frm);
                                }, m_call_stack.current_frame ());

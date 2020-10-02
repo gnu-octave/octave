@@ -633,7 +633,7 @@ namespace octave
   void file_editor::request_run_file (bool)
   {
     emit interpreter_event
-      ([this] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 

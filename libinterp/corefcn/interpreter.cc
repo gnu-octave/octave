@@ -709,7 +709,7 @@ namespace octave
         frame.add_method (m_load_path, &load_path::set_add_hook,
                           m_load_path.get_add_hook ());
 
-        m_load_path.set_add_hook ([this] (const std::string& dir)
+        m_load_path.set_add_hook ([=] (const std::string& dir)
                                   { this->execute_pkg_add (dir); });
 
         m_load_path.initialize (set_initial_path);

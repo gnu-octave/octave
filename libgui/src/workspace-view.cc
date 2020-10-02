@@ -405,7 +405,7 @@ namespace octave
         QString var_name = get_var_name (index);
 
         emit interpreter_event
-          ([var_name] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 

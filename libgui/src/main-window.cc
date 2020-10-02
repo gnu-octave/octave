@@ -405,7 +405,7 @@ namespace octave
     if (! file.isEmpty ())
       {
         emit interpreter_event
-          ([file] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
@@ -432,7 +432,7 @@ namespace octave
     if (! file.isEmpty ())
       {
         emit interpreter_event
-          ([file] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
@@ -454,7 +454,7 @@ namespace octave
         std::string file = file_arg.toStdString ();
 
         emit interpreter_event
-          ([file] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
@@ -532,7 +532,7 @@ namespace octave
     std::string new_name = new_name_arg.toStdString ();
 
     emit interpreter_event
-      ([old_name, new_name] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -558,7 +558,7 @@ namespace octave
                                  bool rm, bool subdirs)
   {
     emit interpreter_event
-      ([dir_list, rm, subdirs, this] (interpreter& interp)
+      ([=] (interpreter& interp)
       {
         // INTERPRETER THREAD
 
@@ -1020,7 +1020,7 @@ namespace octave
     if (fileInfo.exists () && fileInfo.isDir ())
       {
         emit interpreter_event
-          ([xdir] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
@@ -1055,7 +1055,7 @@ namespace octave
   void main_window::execute_command_in_terminal (const QString& command)
   {
     emit interpreter_event
-      ([command] (void)
+      ([=] (void)
        {
          // INTERPRETER THREAD
 
@@ -1074,7 +1074,7 @@ namespace octave
   void main_window::run_file_in_terminal (const QFileInfo& info)
   {
     emit interpreter_event
-      ([info] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1152,7 +1152,7 @@ namespace octave
   void main_window::debug_continue (void)
   {
     emit interpreter_event
-      ([this] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1166,7 +1166,7 @@ namespace octave
   void main_window::debug_step_into (void)
   {
     emit interpreter_event
-      ([this] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1184,7 +1184,7 @@ namespace octave
         // We are in debug mode, just call dbstep.
 
         emit interpreter_event
-          ([this] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
@@ -1205,7 +1205,7 @@ namespace octave
   void main_window::debug_step_out (void)
   {
     emit interpreter_event
-      ([this] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1316,7 +1316,7 @@ namespace octave
                                                int line)
   {
     emit interpreter_event
-      ([this, fname, ffile, curr_dir, line] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1819,7 +1819,7 @@ namespace octave
   void main_window::set_screen_size (int ht, int wd)
   {
     emit interpreter_event
-      ([ht, wd] (void)
+      ([=] (void)
        {
          // INTERPRETER THREAD
 
@@ -2839,7 +2839,7 @@ namespace octave
       mfile_encoding = "SYSTEM";
 
     emit interpreter_event
-      ([mfile_encoding] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 

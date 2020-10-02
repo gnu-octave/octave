@@ -3604,7 +3604,7 @@ set_format_style (int argc, const string_vector& argv)
   frame.protect_var (Vcompact_format);
   frame.protect_var (uppercase_format);
   int prec = output_precision ();
-  frame.add ([prec] (void) { set_output_prec (prec); });
+  frame.add ([=] (void) { set_output_prec (prec); });
 
   format = format_string;   // Initialize with existing value
   while (argc-- > 0)

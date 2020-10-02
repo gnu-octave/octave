@@ -178,7 +178,7 @@ convex hull is calculated.
   if (! outfile)
     error ("convhulln: unable to create temporary file for output");
 
-  octave::unwind_action close_outfile ([outfile] () { std::fclose (outfile); });
+  octave::unwind_action close_outfile ([=] () { std::fclose (outfile); });
 
   // qh_new_qhull command and points arguments are not const...
 

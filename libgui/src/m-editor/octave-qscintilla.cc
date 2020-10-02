@@ -873,7 +873,7 @@ namespace octave
 
     // Add commands to the history
     emit interpreter_event
-      ([tmp_hist] (interpreter& interp)
+      ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
 
@@ -892,7 +892,7 @@ namespace octave
 
     // Let the interpreter execute the tmp file
     emit interpreter_event
-      ([this, tmp_file, tmp_hist, show_dbg_file] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 

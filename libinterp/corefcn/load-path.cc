@@ -230,8 +230,8 @@ namespace octave
   load_path::load_path (interpreter& interp)
     : m_interpreter (interp), package_map (), top_level_package (),
       dir_info_list (), init_dirs (), m_command_line_path (),
-      add_hook ([this] (const std::string& dir) { this->execute_pkg_add (dir); }),
-      remove_hook ([this] (const std::string& dir) { this->execute_pkg_del (dir); })
+      add_hook ([=] (const std::string& dir) { this->execute_pkg_add (dir); }),
+      remove_hook ([=] (const std::string& dir) { this->execute_pkg_del (dir); })
   { }
 
   void

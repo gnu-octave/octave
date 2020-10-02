@@ -134,7 +134,7 @@ namespace octave
     catch (execution_exception& ee)
       {
         emit interpreter_event
-          ([ee] (void)
+          ([=] (void)
            {
              // INTERPRETER THREAD
 

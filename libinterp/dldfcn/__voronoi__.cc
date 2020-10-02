@@ -65,12 +65,6 @@ char qh_version[] = "__voronoi__.oct 2007-07-24";
 #  endif
 
 static void
-close_fcn (FILE *f)
-{
-  std::fclose (f);
-}
-
-static void
 free_qhull_memory ()
 {
   qh_freeqhull (! qh_ALL);
@@ -169,8 +163,7 @@ Undocumented internal function.
   if (! outfile)
     error ("__voronoi__: unable to create temporary file for output");
 
-  octave::unwind_action close_outfile
-    ([] (const auto file_ptr) { close_fcn (file_ptr); }, outfile);
+  octave::unwind_action close_outfile ([outfile] () { std::fclose (outfile); });
 
   // qh_new_qhull command and points arguments are not const...
 

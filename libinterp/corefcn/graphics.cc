@@ -1947,8 +1947,7 @@ callback_property::execute (const octave_value& data) const
   // their handlevisibility property set to "callback" to be visible.
 
   octave::unwind_action executing_callbacks_cleanup
-    ([] (auto old_callback_props, auto &self)
-      { old_callback_props->erase (self); }, &executing_callbacks, this);
+    ([this] () { executing_callbacks.erase (this); });
 
   if (! executing_callbacks.contains (this))
     {

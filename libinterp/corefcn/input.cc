@@ -927,10 +927,7 @@ namespace octave
                  encoding.c_str (), std::strerror (errno));
 
         octave::unwind_action free_utf8_str
-          ([] (const auto utf8_str_ptr)
-           {
-             ::free (utf8_str_ptr);
-           }, static_cast<void *> (utf8_str));
+          ([utf8_str] () { ::free (utf8_str); });
 
         src_str = std::string (reinterpret_cast<char *> (utf8_str), length);
       }

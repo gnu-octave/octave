@@ -282,10 +282,7 @@ Windows systems.
 #endif
 
   octave::unwind_action restore_mask
-    ([] (const auto signal_mask_ptr)
-     {
-       restore_signal_mask (signal_mask_ptr);
-     }, get_signal_mask ());
+    ([] (void *mask) { restore_signal_mask (mask); }, get_signal_mask ());
 
   octave_unblock_async_signals ();
   octave_unblock_signal_by_name ("SIGTSTP");

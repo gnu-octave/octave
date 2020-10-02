@@ -411,7 +411,7 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
     // "Octave:classdef-to-struct" warning and re-enable it.
     {
       octave::unwind_action restore_warning_state
-        ([] (const auto& old_warning_state)
+        ([] (const octave_value_list& old_warning_state)
          {
            set_warning_state (old_warning_state);
          }, set_warning_state ("Octave:classdef-to-struct", "off"));
@@ -422,7 +422,7 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
   else if (obj.isobject ())
     {
       octave::unwind_action restore_warning_state
-        ([] (const auto& old_warning_state)
+        ([] (const octave_value_list& old_warning_state)
          {
            set_warning_state (old_warning_state);
          }, set_warning_state ("Octave:classdef-to-struct", "off"));

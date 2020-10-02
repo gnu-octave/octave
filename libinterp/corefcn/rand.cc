@@ -119,7 +119,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
   // Restore current distribution on any exit.
   octave::unwind_action restore_distribution
-    ([] (const auto& old_distribution)
+    ([] (const std::string& old_distribution)
      {
        octave::rand::distribution (old_distribution);
      }, octave::rand::distribution ());

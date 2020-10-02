@@ -70,12 +70,6 @@ char qh_version[] = "__delaunayn__.oct 2007-08-21";
 #  endif
 
 static void
-close_fcn (FILE *f)
-{
-  std::fclose (f);
-}
-
-static void
 free_qhull_memory ()
 {
   qh_freeqhull (! qh_ALL);
@@ -178,7 +172,7 @@ Undocumented internal function.
         error ("__delaunayn__: unable to create temporary file for output");
 
       octave::unwind_action close_outfile
-        ([] (const auto file_ptr) { close_fcn (file_ptr); }, outfile);
+        ([outfile] () { std::fclose (outfile); });
 
       int exitcode = qh_new_qhull (dim, n, pt_array,
                                    ismalloc, flags, outfile, errfile);

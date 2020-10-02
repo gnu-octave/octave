@@ -517,10 +517,7 @@ octave::string::u8_to_encoding (const std::string& who,
     }
 
   octave::unwind_action free_native_str
-    ([] (const auto native_str_ptr)
-     {
-       ::free (native_str_ptr);
-     }, static_cast<void *> (native_str));
+    ([native_str] () { ::free (native_str); });
 
   std::string retval = std::string (native_str, length);
 
@@ -550,11 +547,7 @@ octave::string::u8_from_encoding (const std::string& who,
            who.c_str (), encoding.c_str (), std::strerror (errno));
     }
 
-  octave::unwind_action free_utf8_str
-    ([] (const auto utf8_str_ptr)
-     {
-       ::free (utf8_str_ptr);
-     }, static_cast<void *> (utf8_str));
+  octave::unwind_action free_utf8_str ([utf8_str] () { ::free (utf8_str); });
 
   std::string retval = std::string (reinterpret_cast<char *> (utf8_str), length);
 
@@ -601,10 +594,7 @@ octave::string::u8_validate (const std::string& who,
                    who.c_str (), fallback.c_str (), std::strerror (errno));
 
               octave::unwind_action free_val_utf8
-                ([] (const auto val_utf8_ptr)
-                 {
-                   ::free (val_utf8_ptr);
-                 }, static_cast<void *> (val_utf8));
+                ([val_utf8] () { ::free (val_utf8); });
 
               out_str.append (reinterpret_cast<const char *> (val_utf8),
                               lengthp);

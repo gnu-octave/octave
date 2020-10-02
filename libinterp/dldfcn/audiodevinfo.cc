@@ -1150,8 +1150,7 @@ audioplayer::playblocking (void)
   start = get_sample_number ();
   end = get_end_sample ();
 
-  octave::unwind_action stop_audioplayer
-    ([] (audioplayer * player) { player->stop (); }, this);
+  octave::unwind_action stop_audioplayer ([this] () { stop (); });
 
   for (unsigned int i = start; i < end; i += buffer_size)
     {
@@ -1823,8 +1822,7 @@ audiorecorder::recordblocking (float seconds)
 
   unsigned int frames = seconds * get_fs ();
 
-  octave::unwind_action stop_audiorecorder
-    ([] (audiorecorder * recorder) { recorder->stop (); }, this);
+  octave::unwind_action stop_audiorecorder ([this] () { stop (); });
 
   for (unsigned int i = 0; i < frames; i += buffer_size)
     {

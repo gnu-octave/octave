@@ -431,10 +431,7 @@ namespace octave
 #if defined (OCTAVE_USE_WINDOWS_API)
       wchar_t *wnew_item = u8_to_wchar (new_item);
       octave::unwind_action free_new_item
-        ([] (const auto new_item_ptr)
-         {
-           std::free (new_item_ptr);
-         }, static_cast<void *> (new_item));
+        ([] (const wchar_t *ptr) { std::free (ptr); }, new_item);
 
       if (_wputenv (wnew_item) < 0)
         (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);

@@ -433,8 +433,7 @@ namespace octave
       wchar_t *wnew_item = u8_to_wchar (new_item);
 
       // free new_item, but leak wnew_item (see above)
-      octave::unwind_action free_new_item
-        ([] (char *ptr) { std::free (ptr); }, new_item);
+      octave::unwind_action free_new_item ([=] () { std::free (new_item); });
 
       if (_wputenv (wnew_item) < 0)
         (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);

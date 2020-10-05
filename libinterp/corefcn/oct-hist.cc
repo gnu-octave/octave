@@ -327,7 +327,7 @@ namespace octave
   {
     bool numbered_output = nargout == 0;
 
-    octave::unwind_action restore_history_filename
+    unwind_action restore_history_filename
       ([] (const std::string& old_filename)
        {
          command_history::set_file (old_filename);

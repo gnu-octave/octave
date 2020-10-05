@@ -718,12 +718,11 @@ namespace octave
     wchar_t *wcommand = u8_to_wchar (command);
     wchar_t *wmode = u8_to_wchar (mode);
 
-    octave::unwind_action free_memory
-      ([=] ()
-       {
-         ::free (wcommand);
-         ::free (wmode);
-       });
+    unwind_action free_memory ([=] ()
+                               {
+                                 ::free (wcommand);
+                                 ::free (wmode);
+                               });
 
     if (wmode && wmode[0] && ! wmode[1])
       {
@@ -964,8 +963,7 @@ namespace octave
     if (result != ERROR_SUCCESS)
       return result;
 
-    octave::unwind_action restore_keys
-      ([=] () { reg_close_key_wrapper (h_subkey); });
+    unwind_action restore_keys ([=] () { reg_close_key_wrapper (h_subkey); });
 
     std::wstring wname = sys::u8_to_wstring (name);
     DWORD length = 0;

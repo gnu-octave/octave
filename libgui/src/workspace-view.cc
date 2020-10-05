@@ -209,7 +209,7 @@ namespace octave
               .arg (m_model->storage_class_color (i).name ())
               .arg (m_model->storage_class_color (i + ws_colors_count).name ())
               .arg (QCoreApplication::translate ("octave::settings_dialog",
-                                ws_color_names.at (i).toStdString ().data ()));
+                                                 ws_color_names.at (i).toStdString ().data ()));
           }
       }
 

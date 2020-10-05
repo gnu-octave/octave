@@ -823,7 +823,7 @@ namespace octave
 
   void call_stack::clear_global_variable_regexp (const std::string& pattern)
   {
-    octave::regexp pat (pattern);
+    regexp pat (pattern);
 
     for (auto& nm_ov : m_global_values)
       {
@@ -1024,7 +1024,7 @@ namespace octave
 
         if (have_regexp)
           {
-            octave::regexp pat (pattern);
+            regexp pat (pattern);
 
             for (auto& nm_ov : m_global_values)
               {

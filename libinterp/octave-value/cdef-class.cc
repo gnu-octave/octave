@@ -869,7 +869,7 @@ namespace octave
     tree_evaluator& tw = interp.get_evaluator ();
 
     tw.push_dummy_scope (full_class_name);
-    frame.add_method (tw, &octave::tree_evaluator::pop_scope);
+    frame.add_method (tw, &tree_evaluator::pop_scope);
 
     std::list<cdef_class> slist;
 

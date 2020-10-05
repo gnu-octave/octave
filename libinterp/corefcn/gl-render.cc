@@ -3752,7 +3752,7 @@ namespace octave
         if (props.markerfacecolor_is ("auto"))
           {
             gh_manager& gh_mgr
-              = octave::__get_gh_manager__ ("opengl_renderer::draw_scatter");
+              = __get_gh_manager__ ("opengl_renderer::draw_scatter");
             graphics_object go = gh_mgr.get_object (props.get___myhandle__ ());
             graphics_object ax = go.get_ancestor ("axes");
             const axes::properties& ax_props

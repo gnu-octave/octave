@@ -202,7 +202,7 @@ namespace octave
     T checkelem (octave_idx_type i) const
     {
       if (i < 0 || i >= m_numel)
-        octave::err_index_out_of_range (2, 2, i+1, m_numel, dims ());
+        err_index_out_of_range (2, 2, i+1, m_numel, dims ());
 
       if (i == 0)
         return m_base;
@@ -216,7 +216,7 @@ namespace octave
     {
       // Ranges are *always* row vectors.
       if (i != 0)
-        octave::err_index_out_of_range (1, 1, i+1, m_numel, dims ());
+        err_index_out_of_range (1, 1, i+1, m_numel, dims ());
 
       return checkelem (j);
     }
@@ -259,7 +259,7 @@ namespace octave
       else
         {
           if (i.extent (n) != n)
-            octave::err_index_out_of_range (1, 1, i.extent (n), n, dims ());
+            err_index_out_of_range (1, 1, i.extent (n), n, dims ());
 
           dim_vector rd = i.orig_dimensions ();
           octave_idx_type il = i.length (n);

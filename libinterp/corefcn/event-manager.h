@@ -44,7 +44,7 @@ class string_vector;
 namespace octave
 {
   typedef std::function<void (void)> fcn_callback;
-  typedef std::function<void (octave::interpreter&)> meth_callback;
+  typedef std::function<void (interpreter&)> meth_callback;
 
   class symbol_info_list;
 
@@ -210,7 +210,7 @@ namespace octave
 
     virtual void
     set_workspace (bool /*top_level*/, bool /*debug*/,
-                   const octave::symbol_info_list& /*syminfo*/,
+                   const symbol_info_list& /*syminfo*/,
                    bool /*update_variable_editor*/)
     { }
 
@@ -371,7 +371,7 @@ namespace octave
 
     void update_path_dialog (void)
     {
-      if (octave::application::is_gui_running () && enabled ())
+      if (application::is_gui_running () && enabled ())
         instance->update_path_dialog ();
     }
 
@@ -519,19 +519,19 @@ namespace octave
     // Methods for removing/renaming files which might be open in editor
     void file_remove (const std::string& old_name, const std::string& new_name)
     {
-      if (octave::application::is_gui_running () && enabled ())
+      if (application::is_gui_running () && enabled ())
         instance->file_remove (old_name, new_name);
     }
 
     void file_renamed (bool load_new)
     {
-      if (octave::application::is_gui_running () && enabled ())
+      if (application::is_gui_running () && enabled ())
         instance->file_renamed (load_new);
     }
 
     void set_workspace (void);
 
-    void set_workspace (bool top_level, const octave::symbol_info_list& syminfo,
+    void set_workspace (bool top_level, const symbol_info_list& syminfo,
                         bool update_variable_editor = true)
     {
       if (enabled ())
@@ -621,10 +621,10 @@ namespace octave
   protected:
 
     // Semaphore to lock access to the event queue.
-    octave::mutex *event_queue_mutex;
+    mutex *event_queue_mutex;
 
     // Event Queue.
-    octave::event_queue gui_event_queue;
+    event_queue gui_event_queue;
 
     bool debugging;
     bool link_enabled;

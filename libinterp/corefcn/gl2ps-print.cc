@@ -56,20 +56,6 @@
 
 namespace octave
 {
-  static void
-  safe_pclose (FILE *f)
-  {
-    if (f)
-      octave::pclose (f);
-  }
-
-  static void
-  safe_fclose (FILE *f)
-  {
-    if (f)
-      std::fclose (f);
-  }
-
   class
   OCTINTERP_API
   gl2ps_renderer : public opengl_renderer
@@ -381,7 +367,7 @@ namespace octave
         if (! tmpf)
           error ("gl2ps_renderer::draw: couldn't open temporary file for printing");
 
-        frame.add_fcn (safe_fclose, tmpf);
+        frame.add ([=] () { std::fclose (tmpf); });
 
         // Reset buffsize, unless this is 2nd pass of a texstandalone print.
         if (term.find ("tex") == std::string::npos)
@@ -423,7 +409,7 @@ namespace octave
                 include_graph = include_graph.substr (n_begin,
                                                       n_end - n_begin + 1);
                 // Strip path from filename
-                n_begin = include_graph.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+                n_begin = include_graph.find_last_of (sys::file_ops::dir_sep_chars ());
                 include_graph = include_graph.substr (n_begin + 1);
               }
             else
@@ -1445,7 +1431,8 @@ namespace octave
         if (! fp)
           error (R"(print: failed to open pipe "%s")", stream.c_str ());
 
-        frame.add_fcn (safe_pclose, fp);
+        // Need octave:: qualifier here to avoid ambiguity.
+        frame.add ([=] () { octave::pclose (fp); });
       }
     else
       {
@@ -1456,7 +1443,7 @@ namespace octave
         if (! fp)
           error (R"(gl2ps_print: failed to create file "%s")", stream.c_str ());
 
-        frame.add_fcn (safe_fclose, fp);
+        frame.add ([=] () { std::fclose (fp); });
       }
 
     gl2ps_renderer rend (glfcns, fp, term);

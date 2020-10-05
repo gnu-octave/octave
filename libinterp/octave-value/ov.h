@@ -1536,18 +1536,18 @@ private:
 namespace octave
 {
   extern OCTINTERP_API octave_value
-  unary_op (octave::type_info& ti, octave_value::unary_op op,
+  unary_op (type_info& ti, octave_value::unary_op op,
             const octave_value& a);
 
   extern OCTINTERP_API octave_value
   unary_op (octave_value::unary_op op, const octave_value& a);
 
   extern OCTINTERP_API octave_value
-  binary_op (octave::type_info& ti, octave_value::binary_op op,
+  binary_op (type_info& ti, octave_value::binary_op op,
              const octave_value& a, const octave_value& b);
 
   extern OCTINTERP_API octave_value
-  binary_op (octave::type_info& ti, octave_value::compound_binary_op op,
+  binary_op (type_info& ti, octave_value::compound_binary_op op,
              const octave_value& a, const octave_value& b);
 
   extern OCTINTERP_API octave_value
@@ -1559,7 +1559,7 @@ namespace octave
              const octave_value& b);
 
   extern OCTINTERP_API octave_value
-  cat_op (octave::type_info& ti, const octave_value& a,
+  cat_op (type_info& ti, const octave_value& a,
           const octave_value& b, const Array<octave_idx_type>& ra_idx);
 
   extern OCTINTERP_API octave_value

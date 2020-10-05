@@ -239,9 +239,9 @@ namespace octave
     }
 
     static octave_map
-    make_stack_map (const std::list<octave::frame_info>& frames);
+    make_stack_map (const std::list<frame_info>& frames);
 
-    static std::list<octave::frame_info>
+    static std::list<frame_info>
     make_stack_frame_list (const octave_map& stack);
 
     //! For given warning ID, return 0 if warnings are disabled, 1 if
@@ -291,7 +291,7 @@ namespace octave
 
     void initialize_default_warning_state (void);
 
-    void interpreter_try (octave::unwind_protect& frame);
+    void interpreter_try (unwind_protect& frame);
 
     // Throw execution_exception or, if debug_on_error is TRUE, enter
     // debugger.  If stack_info is empty, use current call stack.

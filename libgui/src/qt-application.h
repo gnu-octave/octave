@@ -35,7 +35,7 @@ namespace octave
   // must be included only in the corresponding .cc file.
 
   //! This class inherits from the pure-virtual base class
-  //! octave::application and provides an implementation of the
+  //! application and provides an implementation of the
   //! application::execute method that starts an interface to Octave
   //! that is based on Qt.  It may start a command-line interface that
   //! allows Qt graphics to be used or it may start an interface that

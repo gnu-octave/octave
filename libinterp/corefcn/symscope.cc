@@ -116,7 +116,7 @@ namespace octave
             if (! fcn)
               continue;
 
-            octave::symbol_scope scope = fcn->scope ();
+            symbol_scope scope = fcn->scope ();
 
             std::list<std::string> plst = scope.parent_fcn_names ();
 
@@ -211,7 +211,7 @@ namespace octave
   void
   symbol_scope_rep::cache_dir_name (const std::string& name)
   {
-    m_dir_name = octave::sys::canonicalize_file_name (name);
+    m_dir_name = sys::canonicalize_file_name (name);
   }
 
   bool

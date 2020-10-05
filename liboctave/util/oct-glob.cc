@@ -80,7 +80,7 @@ namespace octave
 
       void *glob_info = octave_create_glob_info_struct ();
 
-      octave::unwind_action cleanup_glob_info_struct
+      unwind_action cleanup_glob_info_struct
         ([=] () { octave_destroy_glob_info_struct (glob_info); });
 
       for (int i = 0; i < npat; i++)
@@ -155,7 +155,7 @@ namespace octave
 
       void *glob_info = octave_create_glob_info_struct ();
 
-      octave::unwind_action cleanup_glob_info_struct
+      unwind_action cleanup_glob_info_struct
         ([=] () { octave_destroy_glob_info_struct (glob_info); });
 
       for (int i = 0; i < npat; i++)

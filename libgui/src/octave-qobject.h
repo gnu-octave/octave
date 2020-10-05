@@ -49,7 +49,7 @@ namespace octave
   //! reimplement QApplication::notify.  The octave_qapplication object
   //! should behave identically to a QApplication object except that it
   //! overrides the notify method so we can handle forward Octave
-  //! octave::execution_exception exceptions from the GUI thread to the
+  //! execution_exception exceptions from the GUI thread to the
   //! interpreter thread.
 
   class octave_qapplication : public QApplication

@@ -402,7 +402,7 @@ namespace octave
         // entries.
         m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, 0, CSC_MAT);
 #    else
-        if (octave::math::int_multiply_overflow (m_num, m_num))
+        if (math::int_multiply_overflow (m_num, m_num))
           error ("Unable to allocate memory for sparse Jacobian");
 
         m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, m_num*m_num, CSC_MAT);

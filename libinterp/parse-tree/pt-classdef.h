@@ -768,7 +768,7 @@ namespace octave
   {
   public:
 
-    tree_classdef (const octave::symbol_scope& scope,
+    tree_classdef (const symbol_scope& scope,
                    tree_classdef_attribute_list *a, tree_identifier *i,
                    tree_classdef_superclass_list *sc,
                    tree_classdef_body *b, comment_list *lc,
@@ -795,7 +795,7 @@ namespace octave
       delete m_trail_comm;
     }
 
-    octave::symbol_scope scope (void) { return m_scope; }
+    symbol_scope scope (void) { return m_scope; }
 
     tree_classdef_attribute_list *
     attribute_list (void) { return m_attr_list; }
@@ -831,7 +831,7 @@ namespace octave
     // corresponds to any identifiers that were found in attribute lists
     // (for example).  Used again when computing the meta class object.
 
-    octave::symbol_scope m_scope;
+    symbol_scope m_scope;
 
     tree_classdef_attribute_list *m_attr_list;
 

@@ -97,8 +97,7 @@ namespace octave
       }
     catch (const execution_exception&)
       {
-        octave::interpreter& interp
-          = __get_interpreter__ ("convert_to_valid_int");
+        interpreter& interp = __get_interpreter__ ("convert_to_valid_int");
 
         interp.recover_from_exception ();
 
@@ -2958,7 +2957,7 @@ namespace octave
       {
         char *pos = is.tellg ();
         std::ios::iostate state = is.rdstate ();
-        //re = octave::read_value<double> (is);
+        //re = read_value<double> (is);
         re = read_double (is, fmt);
 
         // check for "treat as empty" string
@@ -3023,7 +3022,7 @@ namespace octave
                 pos   = is.tellg ();
                 state = is.rdstate ();
 
-                //im = octave::read_value<double> (is);
+                //im = read_value<double> (is);
                 im = read_double (is, fmt);
                 if (is.fail ())
                   im = 1;
@@ -4368,7 +4367,7 @@ namespace octave
             {
               is.putback (c1);
 
-              ref = octave::read_value<double> (is);
+              ref = read_value<double> (is);
             }
         }
         break;

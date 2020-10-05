@@ -86,7 +86,7 @@ namespace octave
 
     tmpfcn->mark_as_private_function (class_name);
 
-    private_functions[octave::sys::canonicalize_file_name (dir_name)] = ov_fcn;
+    private_functions[sys::canonicalize_file_name (dir_name)] = ov_fcn;
 
     return ov_fcn;
   }

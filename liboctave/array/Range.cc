@@ -84,10 +84,10 @@ namespace octave
   octave_idx_type xnumel_internal (T base, T limit, T inc)
   {
     octave_idx_type retval = -1;
-    if (! octave::math::isfinite (base) || ! octave::math::isfinite (inc)
-        || octave::math::isnan (limit))
+    if (! math::isfinite (base) || ! math::isfinite (inc)
+        || math::isnan (limit))
       retval = -2;
-    else if (octave::math::isinf (limit)
+    else if (math::isinf (limit)
              && ((inc > 0 && limit > 0)
                  || (inc < 0 && limit < 0)))
       retval = std::numeric_limits<octave_idx_type>::max () - 1;
@@ -139,9 +139,9 @@ namespace octave
     // will also be an integer, even if the limit is not.  If the range
     // has only one or zero elements, then the base needs to be an integer.
 
-    return (! (octave::math::isnan (base) || octave::math::isnan (inc))
-            && (octave::math::nint_big (base) == base || nel < 1)
-            && (octave::math::nint_big (inc) == inc || nel <= 1));
+    return (! (math::isnan (base) || math::isnan (inc))
+            && (math::nint_big (base) == base || nel < 1)
+            && (math::nint_big (inc) == inc || nel <= 1));
   }
 
   template <typename T>
@@ -239,7 +239,7 @@ namespace octave
             if (m_base == 0 || m_limit == 0)
               // Exactly one zero at beginning or end of range.
               retval = m_numel - 1;
-            else if (octave::math::mod (-m_base, m_increment) != 0)
+            else if (math::mod (-m_base, m_increment) != 0)
               // Range crosses negative/positive without hitting zero.
               retval = m_numel;
             else

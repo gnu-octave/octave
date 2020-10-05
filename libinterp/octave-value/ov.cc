@@ -2972,13 +2972,13 @@ namespace octave
               const octave_value& limit, bool for_cmd_expr)
   {
     if (base.isempty () || increment.isempty () || limit.isempty ())
-      return octave_value (octave::range<T> (), for_cmd_expr);
+      return octave_value (range<T> (), for_cmd_expr);
 
     T base_val = octave_value_extract<T> (base);
     T increment_val = octave_value_extract<T> (increment);
     T limit_val = octave_value_extract<T> (limit);
 
-    octave::range<T> r (base_val, increment_val, limit_val);
+    range<T> r (base_val, increment_val, limit_val);
 
     return octave_value (r, for_cmd_expr);
   }

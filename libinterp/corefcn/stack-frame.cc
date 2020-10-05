@@ -1164,7 +1164,7 @@ namespace octave
 
     while (frame)
       {
-        octave::symbol_info_list symbols = frame->all_variables ();
+        symbol_info_list symbols = frame->all_variables ();
 
         octave_scalar_map ws;
 

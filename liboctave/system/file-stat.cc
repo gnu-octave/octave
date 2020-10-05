@@ -204,7 +204,7 @@ namespace octave
           // If path is a root (like "C:" or "\\SERVER\share"), add a
           // trailing backslash.
           // FIXME: Does this pattern match all possible UNC roots?
-          octave::regexp pat (R"(^\\\\[\w-]*\\[\w-]*$)");
+          regexp pat (R"(^\\\\[\w-]*\\[\w-]*$)");
           if ((full_file_name.length () == 2 && full_file_name[1] == ':')
               || pat.is_match (full_file_name))
             full_file_name += '\\';

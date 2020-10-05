@@ -986,7 +986,7 @@ namespace octave
   }
 
   bool simple_fcn_handle::load_binary (std::istream& is, bool,
-                                       octave::mach_info::float_format)
+                                       mach_info::float_format)
   {
     return is.good ();
   }
@@ -1292,7 +1292,7 @@ namespace octave
   }
 
   bool scoped_fcn_handle::load_binary (std::istream& is, bool swap,
-                                       octave::mach_info::float_format fmt)
+                                       mach_info::float_format fmt)
   {
     octave_cell ov_cell;
     ov_cell.load_binary (is, swap, fmt);

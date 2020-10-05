@@ -963,8 +963,8 @@ namespace octave
                                                 tmp_file, tmp_hist);
 
              // New exception with updated message and stack
-             octave::execution_exception ee (e.err_type (),e.identifier (),
-                                             new_msg.toStdString (), stack);
+             execution_exception ee (e.err_type (),e.identifier (),
+                                     new_msg.toStdString (), stack);
 
              // Throw
              throw (ee);

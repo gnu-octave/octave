@@ -215,7 +215,7 @@ namespace octave
                 val = std::numeric_limits<T>::quiet_NaN ();
               else
                 {
-                  val = octave::numeric_limits<T>::NA ();
+                  val = numeric_limits<T>::NA ();
                   if (c2 != std::istream::traits_type::eof ())
                     is.putback (c2);
                   else

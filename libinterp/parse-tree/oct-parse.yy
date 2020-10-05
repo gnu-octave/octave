@@ -2561,7 +2561,7 @@ namespace octave
       m_max_fcn_depth = m_curr_fcn_depth;
 
     // Will get a real name later.
-    m_lexer.m_symtab_context.push (octave::symbol_scope ("parser:push_fcn_symtab"));
+    m_lexer.m_symtab_context.push (symbol_scope ("parser:push_fcn_symtab"));
     m_function_scopes.push (m_lexer.m_symtab_context.curr_scope ());
 
     if (! m_lexer.m_reading_script_file && m_curr_fcn_depth == 0
@@ -3583,7 +3583,7 @@ namespace octave
         return nullptr;
       }
 
-    octave::symbol_scope curr_scope = m_lexer.m_symtab_context.curr_scope ();
+    symbol_scope curr_scope = m_lexer.m_symtab_context.curr_scope ();
     curr_scope.cache_name (id_name);
 
     m_lexer.m_parsed_function_name.top () = true;
@@ -5935,10 +5935,10 @@ Undocumented internal function.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string file = args(0).xstring_value ("__parse_file__: expecting filename as argument");
+  std::string file
+    = args(0).xstring_value ("__parse_file__: expecting filename as argument");
 
-  std::string full_file
-      = octave::sys::file_ops::tilde_expand (file);
+  std::string full_file = octave::sys::file_ops::tilde_expand (file);
 
   full_file = octave::sys::env::make_absolute (full_file);
 

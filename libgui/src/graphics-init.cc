@@ -63,7 +63,7 @@ namespace octave
 
     graphics_toolkit tk (qt_gtk);
 
-    octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+    gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
     gtk_mgr.register_toolkit ("qt");
 

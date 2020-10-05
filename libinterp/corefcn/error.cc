@@ -368,7 +368,7 @@ namespace octave
   static const octave_fields bt_fields (bt_fieldnames);
 
   octave_map
-  error_system::make_stack_map (const std::list<octave::frame_info>& frames)
+  error_system::make_stack_map (const std::list<frame_info>& frames)
   {
     size_t nframes = frames.size ();
 
@@ -404,10 +404,10 @@ namespace octave
     return retval;
   }
 
-  std::list<octave::frame_info>
+  std::list<frame_info>
   error_system::make_stack_frame_list (const octave_map& stack)
   {
-    std::list<octave::frame_info> frames;
+    std::list<frame_info> frames;
 
     Cell file = stack.contents ("file");
     Cell name = stack.contents ("name");
@@ -423,11 +423,11 @@ namespace octave
     octave_idx_type nel = name.numel ();
 
     for (octave_idx_type i = 0; i < nel; i++)
-      frames.push_back (octave::frame_info (file(i).string_value (),
-                                            name(i).string_value (),
-                                            line(i).int_value (),
-                                            (have_column
-                                             ? column(i).int_value () : -1)));
+      frames.push_back (frame_info (file(i).string_value (),
+                                    name(i).string_value (),
+                                    line(i).int_value (),
+                                    (have_column
+                                     ? column(i).int_value () : -1)));
 
     return frames;
   }

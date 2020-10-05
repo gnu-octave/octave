@@ -25,16 +25,32 @@
 
 %!test <*58593>
 %! obj = myclass1 ();
-%! assert (obj.data (plus (minus (end,1), 1)), 1005)
+%! assert (obj.data (plus (minus (end,1), 1)), 1005);
 
 %!test <*58593>
 %! obj = myclass2 ();
-%! assert (obj.alldata, 1001:1005)
+%! assert (obj.alldata, 1001:1005);
 
 %!test <*58593>
 %! obj = myclass2 ();
-%! assert (obj(end), 1004)
+%! assert (obj(end), 1004);
 
 %!test <*58593>
 %! obj = myclass2 ();
-%! assert (obj.data(end), 1005)
+%! assert (obj.data(end), 1005);
+
+%!test <*58593>
+%! obj = myclass2 ();
+%! obj.alldata = 1:5;
+%! assert (obj.data, 1:5);
+
+%!test <*58593>
+%! obj = myclass2 ();
+%! obj(end) = -1;
+%! assert (obj.data, [1001:1003, -1, 1005]);
+
+%!test <*58593>
+%! obj = myclass2 ();
+%! obj.data(end) = -1;
+%! assert (obj.data, [1001:1004, -1]);
+

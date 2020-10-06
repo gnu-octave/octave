@@ -40,8 +40,9 @@ function p = colperm (s)
     print_usage ();
   endif
 
-  [i, j] = find (s);
-  idx = find (diff ([j; Inf]) != 0);
-  [~, p] = sort (idx - [0; idx(1:(end-1))]);
+  [~, p] = sort (sum (s != 0, 1));
 
 endfunction
+
+
+%!assert <*59226> (colperm ([1,0;0,0]), [2, 1])

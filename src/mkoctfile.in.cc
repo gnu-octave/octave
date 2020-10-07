@@ -327,7 +327,7 @@ initialize (void)
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
                                          %OCTAVE_CONF_LD_STATIC_FLAG%);
 
-  // FIXME: Remove LFLAGS in Octave 7.0
+  // FIXME: Remove LFLAGS in Octave 8.0
   vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LDFLAGS);
   if (vars["LFLAGS"] != DEFAULT_LDFLAGS)
     std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;

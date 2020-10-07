@@ -268,6 +268,10 @@ major release after 6):
   -----------------|---------------|------------
                    |               |
 
+- The environment variable used by `mkoctfile` for linker flags is now
+  `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` is deprecated, and a warning
+  is emitted if it is used, but it will continue to work.
+
 
 ### Removed functions and properties
 

@@ -550,51 +550,92 @@ static std::string
 get_jvm_lib_path_from_registry ()
 {
   // In Windows, find the location of the JRE from the registry
-  // and load the symbol from the dll.
   std::string key, jversion, value;
 
-  // First search for JRE >= 9
-  key = R"(software\javasoft\jre)";
+  // First search for JRE >= 15
+  key = R"(software\javasoft\jdk)";
 
   jversion = octave::sys::env::getenv ("JAVA_VERSION");
+  bool maybe_version_15_or_newer = true;
   octave_value regval;
   LONG retval;
   if (jversion.empty ())
     {
       value = "CurrentVersion";
-      retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+      retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
+                                         regval);
 
       if (retval != ERROR_SUCCESS)
         {
-          // Search for JRE < 9
-          key = R"(software\javasoft\java runtime environment)";
-          retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+          // Search for JRE < 15
+          maybe_version_15_or_newer = false;
+          key = R"(software\javasoft\jre)";
+          retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
+                                             regval);
+
+          if (retval != ERROR_SUCCESS)
+            {
+              // Search for JRE < 9
+              key = R"(software\javasoft\java runtime environment)";
+              retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key,
+                                                 value, regval);
+            }
         }
 
       if (retval != ERROR_SUCCESS)
         error ("unable to find Java Runtime Environment: %s::%s",
                key.c_str (), value.c_str ());
 
-      jversion = regval.xstring_value ("initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+      jversion = regval.xstring_value ("initialize_jvm: registry value "
+                                       R"("%s" at "%s" must be a string)",
                                        value.c_str (), key.c_str ());
     }
 
-  key = key + '\\' + jversion;
+  std::string jvm_lib_path;
+  if (maybe_version_15_or_newer)
+    {
+      // Look for value used by JRE >= 15
+      key = key + '\\' + jversion;
+      value = "JavaHome";
+      retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
+                                         regval);
+
+      if (retval != ERROR_SUCCESS)
+        error ("unable to find Java Runtime Environment: %s::%s",
+               key.c_str (), value.c_str ());
+
+      jvm_lib_path
+        = regval.xstring_value (R"(initialize_jvm: registry value "%s" at )"
+                                R"("%s" must be a string)",
+                                value.c_str (), key.c_str ())
+          + R"(\bin\server\jvm.dll)";
+
+      if (! jvm_lib_path.empty ())
+        return jvm_lib_path;
+
+    }
+
+  // Search for JRE < 15
+  key = R"(software\javasoft\jre\)" + jversion;
   value = "RuntimeLib";
-  retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+  retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
+                                     regval);
+
   if (retval != ERROR_SUCCESS)
     {
       // Search for JRE < 9
       key = R"(software\javasoft\java runtime environment\)" + jversion;
-      retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+      retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
+                                         regval);
     }
 
   if (retval != ERROR_SUCCESS)
     error ("unable to find Java Runtime Environment: %s::%s",
            key.c_str (), value.c_str ());
 
-  std::string jvm_lib_path
-    = regval.xstring_value ("initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+  jvm_lib_path
+    = regval.xstring_value (R"(initialize_jvm: registry value "%s" at )"
+                            R"("%s" must be a string)",
                             value.c_str (), key.c_str ());
 
   if (jvm_lib_path.empty ())

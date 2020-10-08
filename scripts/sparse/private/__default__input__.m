@@ -24,24 +24,24 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{[varargout]} =} __default__input__ (@var{def_val}, @var{varargin})
-## Check if the arguments in input of a function are empty or missing
-## and in such cases sets up them in default values.
+## @deftypefn {} {@var{varargout} =} __default__input__ (@var{def_val}, @var{varargin})
+## Check if the input arguments of a function are empty or missing.
+## If they are, use default values.
 ##
-## The input argoments are:
+## The input arguments are:
 ##
 ## @itemize @minus
 ## @item @var{def_val} is a cell array that contains the values to use
 ## as default.
 ##
-## @item @var{varargin} are the input argument
+## @item @var{varargin} are the input arguments
 ## @end itemize
 ##
-## The output argoments:
+## The output arguments are:
 ##
 ## @itemize @minus
-## @item @var{varargout} all the input argument with filled the empty
-## or missing parameters.
+## @item @var{varargout} all input arguments completed with default
+## values for empty or omitted parameters.
 ##
 ## @end itemize
 ##
@@ -54,9 +54,11 @@ function [varargout] = __default__input__ (def_val, varargin)
   n = length (varargin);
 
   for i = 1:m
-    if (n < i || isempty (varargin {i}))
-      varargout {i} = def_val {i};
+    if (n < i || isempty (varargin{i}))
+      varargout{i} = def_val{i};
     else
-      varargout {i} = varargin {i};
+      varargout{i} = varargin{i};
     endif
   endfor
+
+endfunction

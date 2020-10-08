@@ -194,7 +194,12 @@ namespace octave
           std::string full_file_name = sys::file_ops::tilde_expand (file_name);
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-          full_file_name = sys::canonicalize_file_name (full_file_name);
+          std::string canon_file_name
+            = sys::canonicalize_file_name (full_file_name);
+
+          // Might have failed for files with non-ASCII characters in name
+          if (! canon_file_name.empty ())
+            full_file_name = canon_file_name;
 
           // Remove trailing slashes
           while (full_file_name.length () > 1

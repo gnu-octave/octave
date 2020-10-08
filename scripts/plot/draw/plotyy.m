@@ -154,6 +154,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
     set (ax(2), "ycolor", getcolor (h2));
   endif
 
+  set (ax(2), "units", get (ax(1), "units"));
   if (strcmp (get(ax(1), "positionconstraint"), "innerposition"))
     set (ax(2), "position", get (ax(1), "position"));
   else

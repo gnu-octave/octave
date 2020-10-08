@@ -36,6 +36,13 @@
 #include "file-stat.h"
 #include "unwind-prot.h"
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <windows.h>
+#  include <wchar.h>
+
+#  include "lo-sysdep.h"
+#endif
+
 // These functions are defined here and not in glob_match.cc so that we
 // can include the glob.h file from gnulib, which defines glob to
 // be rpl_glob.  If we include glob.h in glob_match.cc, then it
@@ -151,6 +158,36 @@ namespace octave
 
       int npat = pat.numel ();
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+      _WIN32_FIND_DATAW ffd;
+      std::list<std::string> dirlist_str;
+
+      for (int i = 0; i < npat; i++)
+        {
+          std::string xpat = pat(i);
+          if (xpat.empty ())
+            continue;
+
+          // find first file in directory that matches pattern
+          std::wstring wxpat = u8_to_wstring (xpat);
+          HANDLE h_find = FindFirstFileW (wxpat.c_str (), &ffd);
+          // ignore any error
+          if (h_find == INVALID_HANDLE_VALUE)
+            continue;
+
+          unwind_action close_h_find ([=] () { FindClose (h_find); });
+
+          // find all other files that match pattern
+          do
+            dirlist_str.push_back (u8_from_wstring (ffd.cFileName));
+          while (FindNextFileW (h_find, &ffd) != 0);
+        }
+
+      retval = string_vector (dirlist_str);
+
+#else
+
       int k = 0;
 
       void *glob_info = octave_create_glob_info_struct ();
@@ -169,12 +206,12 @@ namespace octave
 
               for (size_t j = 0; j < xpat.length (); j++)
                 {
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
-     && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+#  if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
+       && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
                   if (xpat[j] == '\\')
                     escaped += '/';
                   else
-#endif
+#  endif
                     {
                       if (xpat[j] == ']' || xpat[j] == '[')
                         escaped += '\\';
@@ -219,12 +256,12 @@ namespace octave
 
                           for (size_t m = 0; m < tmp.length (); m++)
                             {
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
+#  if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
                               if (tmp[m] == '/')
                                 unescaped += '\\';
                               else
-#endif
+#  endif
                                 {
                                   if (tmp[m] == '\\'
                                       && ++m == tmp.length ())
@@ -242,6 +279,7 @@ namespace octave
                 }
             }
         }
+#endif
 
       return retval.sort ();
     }

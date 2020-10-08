@@ -514,13 +514,18 @@ glob ("file[12]")
         [2,1] = file2
       @}
 @end example
+
+Note: On Windows, patterns that contain non-ASCII characters are not
+supported.
+
 @seealso{ls, dir, readdir, what}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  string_vector pat = args(0).xstring_vector_value ("glob: PATTERN must be a string");
+  string_vector pat
+    = args(0).xstring_vector_value ("glob: PATTERN must be a string");
 
   glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
 

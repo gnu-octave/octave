@@ -277,7 +277,7 @@ function h = colorbar (varargin)
     ## Create colorbar axes if necessary
     if (new_colorbar)
       hcb = axes ("parent", hpar, "tag", "colorbar",
-                  "activepositionproperty", "position",
+                  "positionconstraint", "innerposition",
                   "units", get (hax, "units"), "position", cbpos,
                   "colormap", cmap,
                   "box", "on", "xdir", "normal", "ydir", "normal");

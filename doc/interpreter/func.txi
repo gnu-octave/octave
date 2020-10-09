@@ -1949,7 +1949,7 @@ toupper (strvar)
 
 Many of Octave's standard functions are distributed as function files.
 They are loosely organized by topic, in subdirectories of
-@file{@var{octave-home}/lib/octave/@var{version}/m}, to make it easier
+@file{@var{octave-home}/share/octave/@var{version}/m}, to make it easier
 to find them.
 
 The following is a list of all the function file subdirectories, and the

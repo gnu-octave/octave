@@ -999,7 +999,7 @@ Query or set the internal variable that specifies the name of the
 Octave info file.
 
 The default value is
-@file{@var{octave-home}/info/octave.info}, in
+@file{@var{octave-home}/share/info/octave.info}, in
 which @var{octave-home} is the root directory of the Octave installation.
 The default value may be overridden by the environment variable
 @w{@env{OCTAVE_INFO_FILE}}, or the command line argument
@@ -1024,14 +1024,9 @@ DEFMETHOD (info_program, interp, args, nargout,
 Query or set the internal variable that specifies the name of the
 info program to run.
 
-The default value is
-@file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}
-in which @var{octave-home} is the root directory of the Octave installation,
-@var{version} is the Octave version number, and @var{arch} is the system
-type (for example, @code{i686-pc-linux-gnu}).  The default value may be
-overridden by the environment variable
-@w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument
-@option{--info-program NAME}.
+The default value is "@file{info}".  The default value may be overridden by the
+environment variable @w{@env{OCTAVE_INFO_PROGRAM}}, or the command line
+argument @option{--info-program NAME}.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.

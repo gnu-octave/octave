@@ -1156,13 +1156,16 @@ function files.
 
 If the internal variable is set to @qcode{"system"}, Octave will not
 automatically recompile function files in subdirectories of
-@file{@var{octave-home}/lib/@var{version}} if they have changed since they were last compiled, but will recompile other function files in the search path if they change.
+@file{@var{octave-home}/share/@var{version}/m} if they have changed since
+they were last compiled, but will recompile other function files in the
+search path if they change.
 
 If set to @qcode{"all"}, Octave will not recompile any function files
 unless their definitions are removed with @code{clear}.
 
-If set to @qcode{"none"}, Octave will always check time stamps on files to
-determine whether functions defined in function files need to recompiled.
+If set to @qcode{"none"}, Octave will always check time stamps on files
+to determine whether functions defined in function files need to
+recompiled.
 @end deftypefn */)
 {
   int nargin = args.length ();

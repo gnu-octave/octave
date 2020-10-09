@@ -6,52 +6,52 @@
     <message>
         <location filename="../../../octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
         <source>Search for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous search</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущий поиск</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next search</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующий поиск</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Advanced search</source>
-        <translation type="unfinished"></translation>
+        <translation>Расширенный поиск</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation type="unfinished"></translation>
+        <translation>слова, &lt;B&gt;похожие&lt;/B&gt; на:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;не включая&lt;/B&gt; слова:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;фраза целиком&lt;/B&gt;:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;все&lt;/B&gt; слова:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;хотя бы одно&lt;/B&gt; слово:</translation>
     </message>
 </context>
 <context>
@@ -59,30 +59,30 @@
     <message>
         <location filename="../src/settings-dialog.cc" line="+674"/>
         <source>Difference to the default size</source>
-        <translation type="unfinished">Отличие то размера по умолчанию</translation>
+        <translation>Отличие от размера по умолчанию</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Background color, pink (255, 0, 255) means default</source>
-        <translation type="unfinished">Цвет заднего фона, розовый (255,0,255) по умолчанию {255, 0, 255)?}</translation>
+        <translation>Цвет фона, по умолчанию розовый (255, 0, 255)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>b</source>
         <comment>short form for bold</comment>
-        <translation type="unfinished">ж</translation>
+        <translation>ж</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>i</source>
         <comment>short form for italic</comment>
-        <translation type="unfinished">к</translation>
+        <translation>к</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>u</source>
         <comment>short form for underlined</comment>
-        <translation type="unfinished">п</translation>
+        <translation>п</translation>
     </message>
 </context>
 <context>
@@ -90,17 +90,17 @@
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.cc" line="+139"/>
         <source>Edit %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Help on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Справка по %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Documentation on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Документация по %1</translation>
     </message>
     <message>
         <location line="+154"/>
@@ -115,27 +115,27 @@
     <message>
         <location line="+6"/>
         <source>Select All</source>
-        <translation>Выделить всё</translation>
+        <translation>Выделить все</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Run Selection</source>
-        <translation type="unfinished">Запустить выделенное</translation>
+        <translation>Выполнить выделенное</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Edit selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить выделенное</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Help on selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Справка по выделенному</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Documentation on selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Документация по выделенному</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -145,7 +145,7 @@
     <message>
         <location line="-213"/>
         <source>Edit %1 at line %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить строку %2 файла %1</translation>
     </message>
 </context>
 <context>
@@ -161,7 +161,7 @@
     <message>
         <location filename="../../../qsci/qscilexerbash.cpp" line="+203"/>
         <source>Default</source>
-        <translation>Обычный текст</translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -181,52 +181,52 @@
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation>Зарезервированное слово</translation>
+        <translation>Ключевое слово</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в двойных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в одинарных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Оператор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Скаляр</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Parameter expansion</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры разложения</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Обратные апострофы</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Разделитель heredoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Heredoc в одинарных кавычках</translation>
     </message>
 </context>
 <context>
@@ -234,7 +234,7 @@
     <message>
         <location filename="../../../qsci/qscilexerbatch.cpp" line="+174"/>
         <source>Default</source>
-        <translation>Обычный текст</translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -244,32 +244,32 @@
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation>Зарезервированное слово</translation>
+        <translation>Ключевое слово</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Метка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide command character</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрыть командный символ</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>External command</source>
-        <translation type="unfinished"></translation>
+        <translation>Внешеняя команда</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Переменная</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Оператор</translation>
     </message>
 </context>
 <context>
@@ -277,282 +277,282 @@
     <message>
         <location filename="../../../qsci/qscilexercpp.cpp" line="+364"/>
         <source>Default</source>
-        <translation>Обычный текст</translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive default</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный по умолчанию</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий C</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный комментарий C</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий C++</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный комментарий C++</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий C в стиле JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный комментарий C в стиле JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished">Число</translation>
+        <translation>Число</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive number</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивное число</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished">Зарезервированное слово</translation>
+        <translation>Ключевое слово</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивное ключевое слово</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в двойных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивная строка в двойных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в одинарных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивная строка в одинарных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>IDL UUID</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный IDL UUID</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Блок препроцессора</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный блок препроцессора</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Оператор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный оператор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный идентификатор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Незавершённая строка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивная незавершённая строка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Буквальная строка C#</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивная буквальная строка C#</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Регулярное выражение JavaScript</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивное регулярное выражение JavaScript</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий C++ в стиле JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный комментарий C++ в стиле JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Вторичные ключевые слова и идентификаторы</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивные вторичные ключевые слова и идентификаторы</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Ключевое слово JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивное ключевое слово JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка ключевого слова JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивная ошибка ключевого слова JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Глобальные классы и определения типов</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивные глобальные классы и определения типов</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation>Неформатированная строка C++</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивная неформатированная строка C++</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Буквальная строка Vala в тройных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивная буквальная строка Vala в тройных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка Pike в кавычках-решётках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивная строка Pike в кавычках-решётках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre-processor C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий препроцессора C</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный комментарий препроцессора C</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style pre-processor comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий препроцессора в стиле JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style pre-processor comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный комментарий препроцессора в стиле JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>User-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation>Определённый пользователем литерал</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive user-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивный определённый пользователем литерал</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Task marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Метка задачи</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive task marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивная метка задачи</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Управляющая последовательность</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Неактивная управляющая последовательность</translation>
     </message>
 </context>
 <context>
@@ -560,7 +560,7 @@
     <message>
         <location filename="../../../qsci/qscilexerdiff.cpp" line="+106"/>
         <source>Default</source>
-        <translation>Обычный текст</translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -570,52 +570,52 @@
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished">Команда</translation>
+        <translation>Команда</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Header</source>
-        <translation type="unfinished">Заголовок</translation>
+        <translation>Заголовок</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Position</source>
-        <translation type="unfinished">Расположение</translation>
+        <translation>Положение</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed line</source>
-        <translation type="unfinished">Удалённая строка</translation>
+        <translation>Удалённая строка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added line</source>
-        <translation type="unfinished">Добавленная строка</translation>
+        <translation>Добавленная строка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Changed line</source>
-        <translation type="unfinished">Изменённая строка</translation>
+        <translation>Изменённая строка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added adding patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавленное исправление с добавлениями</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed adding patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалённое исправление с добавлениями</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added removing patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавленное исправление с удалениями</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed removing patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалённое исправление с удалениями</translation>
     </message>
 </context>
 <context>
@@ -623,7 +623,7 @@
     <message>
         <location filename="../../../qsci/qscilexermatlab.cpp" line="+133"/>
         <source>Default</source>
-        <translation>Обычный текст</translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -643,27 +643,27 @@
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation>Зарезервированное слово</translation>
+        <translation>Ключевое слово</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в одинарных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Оператор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в двойных кавычках</translation>
     </message>
 </context>
 <context>
@@ -671,207 +671,207 @@
     <message>
         <location filename="../../../qsci/qscilexerperl.cpp" line="+328"/>
         <source>Default</source>
-        <translation>Обычный текст</translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished">Комментарий</translation>
+        <translation>Комментарий</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD</source>
-        <translation type="unfinished"></translation>
+        <translation>POD</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished">Число</translation>
+        <translation>Число</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished">Зарезервированное слово</translation>
+        <translation>Ключевое слово</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в двойных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в одинарных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Оператор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Скаляр</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Array</source>
-        <translation type="unfinished"></translation>
+        <translation>Массив</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hash</source>
-        <translation type="unfinished"></translation>
+        <translation>Хэш</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Symbol table</source>
-        <translation type="unfinished"></translation>
+        <translation>Таблица символов</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Регулярное выражение</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution</source>
-        <translation type="unfinished"></translation>
+        <translation>Подстановка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Обратные апострофы</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Data section</source>
-        <translation type="unfinished"></translation>
+        <translation>Раздел данных</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Разделитель heredoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Heredoc в одинарных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Heredoc в двойных кавычках</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Heredoc в обратных апострофах</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (q)</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в кавычках (q)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq)</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в кавычках (qq)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в кавычках (qx)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr)</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в кавычках (qr)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qw)</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в кавычках (qw)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD verbatim</source>
-        <translation type="unfinished"></translation>
+        <translation>Буквальный POD</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Subroutine prototype</source>
-        <translation type="unfinished"></translation>
+        <translation>Прототип подпрограммы</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор формата</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format body</source>
-        <translation type="unfinished"></translation>
+        <translation>Тело формата</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в двойных кавычках (интерполированная переменная)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевод</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Регулярное выражение (интерполированная переменная)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Подстановка (интерполированная переменная)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Обратные апострофы (интерполированная переменная)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Heredoc в двойных кавычках (интерполированная переменная)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Heredoc в обратных апострофах (интерполированная переменная)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в кавычках (qq, интерполированная переменная)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в кавычках (qx, интерполированная переменная)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка в кавычках (qr, интерполированная переменная)</translation>
     </message>
 </context>
 <context>
@@ -909,7 +909,7 @@
     <message>
         <location line="+7"/>
         <source>Select All</source>
-        <translation>Выбрать все</translation>
+        <translation>Выделить все</translation>
     </message>
 </context>
 <context>
@@ -917,28 +917,28 @@
     <message>
         <location filename="../qterminal/libqterminal/unix/Filter.cpp" line="+625"/>
         <source>Open Link</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть ссылку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy Link Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать адрес ссылки</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Send Email To...</source>
-        <translation type="unfinished"></translation>
+        <translation>Отправить письмо...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy Email Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать электронный адрес</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+12"/>
         <source>Edit %1 at line %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить строку %2 файла %1</translation>
     </message>
 </context>
 <context>
@@ -966,7 +966,7 @@
     <message>
         <location line="+42"/>
         <source>bold</source>
-        <translation>жирный</translation>
+        <translation>полужирный</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -991,38 +991,38 @@
     <message>
         <location line="+22"/>
         <source>Horz alignment</source>
-        <translation type="unfinished">Выравнивание</translation>
+        <translation>Выравнивание по гор.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>left</source>
-        <translation type="unfinished">слева</translation>
+        <translation>слева</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+29"/>
         <source>middle</source>
-        <translation type="unfinished">по середине</translation>
+        <translation>по центру</translation>
     </message>
     <message>
         <location line="-24"/>
         <source>right</source>
-        <translation type="unfinished">справа</translation>
+        <translation>справа</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Vert alignment</source>
-        <translation type="unfinished">Выравнивание</translation>
+        <translation>Выравнивание по верт.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>top</source>
-        <translation type="unfinished">сверху</translation>
+        <translation>сверху</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>bottom</source>
-        <translation type="unfinished">снизу</translation>
+        <translation>снизу</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1032,12 +1032,12 @@
     <message>
         <location line="+6"/>
         <source>X</source>
-        <translation></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Y</source>
-        <translation></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1052,47 +1052,47 @@
     <message>
         <location line="+17"/>
         <source>units</source>
-        <translation type="unfinished">единицы</translation>
+        <translation>единицы</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>normalized</source>
-        <translation type="unfinished"></translation>
+        <translation>нормализ.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Fit to box</source>
-        <translation type="unfinished">Обрамление</translation>
+        <translation>Вписать в рамку</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Box</source>
-        <translation type="unfinished">Обрамление</translation>
+        <translation>Обрамление</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Background</source>
-        <translation type="unfinished">Цвет фона</translation>
+        <translation>Цвет фона</translation>
     </message>
     <message>
         <location line="+444"/>
         <source>Edge</source>
-        <translation type="unfinished">Цвет линии</translation>
+        <translation>Цвет контура</translation>
     </message>
     <message>
         <location line="+133"/>
         <source>Line style</source>
-        <translation type="unfinished">Стиль линии</translation>
+        <translation>Стиль линии</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>none</source>
-        <translation type="unfinished"></translation>
+        <translation>нет</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Line width</source>
-        <translation type="unfinished">Ширина линии</translation>
+        <translation>Толщина линии</translation>
     </message>
 </context>
 <context>
@@ -1100,7 +1100,7 @@
     <message>
         <location filename="../src/dialog.cc" line="+483"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Выделить все</translation>
     </message>
 </context>
 <context>
@@ -1110,109 +1110,115 @@
         <location line="+12"/>
         <location line="+668"/>
         <source>Octave Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Документация Octave</translation>
     </message>
     <message>
         <location line="-679"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось скопировать набор разделов справки
+во временный файл. Это может повлиять
+на возможности поиска.
+%1</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Could not setup the data required for the
 documentation viewer. Only help texts in
 the Command Window will be available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить данные, необходимые
+для средства просмотра документации.
+В командном окне будет доступна только
+справочная информация.</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти:</translation>
     </message>
     <message>
         <location line="+7"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти далее</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти ранее</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>Function Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Индекс функций</translation>
     </message>
     <message>
         <location line="+100"/>
         <source>Go home</source>
-        <translation type="unfinished"></translation>
+        <translation>На главную</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Go back</source>
-        <translation type="unfinished"></translation>
+        <translation>Назад</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Go forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Вперёд</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Find</source>
-        <translation type="unfinished">Найти</translation>
+        <translation>Найти</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличить масштаб</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>Уменьшить масштаб</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom original</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить масштаб</translation>
     </message>
     <message>
         <location line="-207"/>
         <source>Contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Содержание</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Enter text to search the indices</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите текст для поиска по индексам</translation>
     </message>
     <message>
         <location line="+9"/>
         <location line="+39"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск</translation>
     </message>
     <message>
         <location line="+86"/>
         <source>Previous pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущие страницы</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Next pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующие страницы</translation>
     </message>
     <message>
         <location line="+433"/>
         <source>Unable to register help file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удаётся зарегистрировать файл справки %1.</translation>
     </message>
 </context>
 <context>
@@ -1220,12 +1226,12 @@ the Command Window will be available.</source>
     <message>
         <location filename="../src/documentation-dock-widget.cc" line="+41"/>
         <source>Documentation</source>
-        <translation type="unfinished">Документация</translation>
+        <translation>Документация</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>See the documentation for help.</source>
-        <translation type="unfinished">Для получения помощи смотрите документацию.</translation>
+        <translation>Открыть документацию для получения справки.</translation>
     </message>
 </context>
 <context>
@@ -1233,27 +1239,27 @@ the Command Window will be available.</source>
     <message>
         <location filename="../src/dw-main-window.cc" line="+54"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Закрыть</translation>
+        <translation>&amp;Закрыть</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть &amp;все</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close &amp;Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть &amp;остальные</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Switch to &amp;Left Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключиться на &amp;левый виджет</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Switch to &amp;Right Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключиться на &amp;правый виджет</translation>
     </message>
 </context>
 <context>
@@ -1262,20 +1268,21 @@ the Command Window will be available.</source>
         <location filename="../src/external-editor-interface.cc" line="+68"/>
         <location line="+47"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Редактор Octave</translation>
+        <translation>Редактор Octave</translation>
     </message>
     <message>
         <location line="-46"/>
         <source>Could not start custom file editor
 %1</source>
-        <translation type="unfinished">Невозможно запустить внешний редактор
+        <translation>Не удалось запустить пользовательский редактор файлов
 %1</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>There is no custom editor configured yet.
 Do you want to open the preferences?</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользовательский редактор файлов ещё не настроен.
+Открыть параметры?</translation>
     </message>
 </context>
 <context>
@@ -1287,28 +1294,28 @@ Do you want to open the preferences?</source>
         <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Редактор Octave</translation>
+        <translation>Редактор Octave</translation>
     </message>
     <message>
         <location line="-606"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
-        <translation type="unfinished">Файл не сохранен! Файл с выбранным именем
+        <translation>Ошибка при сохранении. Файл с именем
 %1
-уже открыт в редакторе</translation>
+уже открыт в редакторе.</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>The associated file editor tab has disappeared.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкладка связанного редактора файлов исчезла.</translation>
     </message>
     <message>
         <location line="+536"/>
         <source>Could not open file
 %1
 for read: %2.</source>
-        <translation type="unfinished">Не удалось открыть файл
+        <translation>Не удалось открыть файл
 %1
 для чтения: %2.</translation>
     </message>
@@ -1317,413 +1324,413 @@ for read: %2.</source>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished">Файл
+        <translation>Файл
 %1
-не существует. Вы хотите создать его?</translation>
+не существует. Создать его?</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Create</source>
-        <translation type="unfinished">Создать</translation>
+        <translation>Создать</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Could not open file
 %1
 for write: %2.</source>
-        <translation type="unfinished">Не удалось открыть файл
+        <translation>Не удалось открыть файл
 %1
 для записи: %2.</translation>
     </message>
     <message>
         <location line="+233"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Файл</translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Recent Editor Files</source>
-        <translation type="unfinished">По&amp;следние файлы</translation>
+        <translation>По&amp;следние файлы</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Edit Function</source>
-        <translation type="unfinished">&amp;Редактировать функцию</translation>
+        <translation>&amp;Изменить функцию</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Save File</source>
-        <translation type="unfinished">&amp;Сохранить</translation>
+        <translation>&amp;Сохранить</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Save File &amp;As...</source>
-        <translation type="unfinished">Сохранить &amp;как...</translation>
+        <translation>Сохранить &amp;как...</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Закрыть</translation>
+        <translation>З&amp;акрыть</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close All</source>
-        <translation type="unfinished">Закрыть всё</translation>
+        <translation>Закрыть все</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close Other Files</source>
-        <translation type="unfinished">Закрыть другие файлы</translation>
+        <translation>Закрыть другие файлы</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Print...</source>
-        <translation type="unfinished">Печать...</translation>
+        <translation>Печать...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Правка</translation>
+        <translation>&amp;Правка</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Повторить</translation>
+        <translation>&amp;Повторить</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Вы&amp;резать</translation>
+        <translation>Вы&amp;резать</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Find and Replace...</source>
-        <translation type="unfinished">&amp;Найти и заменить...</translation>
+        <translation>&amp;Найти и заменить...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Find &amp;Next...</source>
-        <translation type="unfinished">Найти &amp;следующее....</translation>
+        <translation>Найти &amp;далее....</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Find &amp;Previous...</source>
-        <translation type="unfinished">Найти &amp;предыдущее...</translation>
+        <translation>Найти &amp;ранее...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Commands</source>
-        <translation type="unfinished">&amp;Команды</translation>
+        <translation>&amp;Команды</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Delete Line</source>
-        <translation type="unfinished">Удалить строку</translation>
+        <translation>Удалить строку</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Copy Line</source>
-        <translation type="unfinished">Копировать строку</translation>
+        <translation>Копировать строку</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Cut Line</source>
-        <translation type="unfinished">Вырезать строку</translation>
+        <translation>Вырезать строку</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Delete to Start of Word</source>
-        <translation type="unfinished">Удалить до начала слова</translation>
+        <translation>Удалить до начала слова</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete to End of Word</source>
-        <translation type="unfinished">Удалить до конца слова</translation>
+        <translation>Удалить до конца слова</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete to Start of Line</source>
-        <translation type="unfinished">Удалить до начала строки</translation>
+        <translation>Удалить до начала строки</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete to End of Line</source>
-        <translation type="unfinished">Удалить до конца строки</translation>
+        <translation>Удалить до конца строки</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Duplicate Selection/Line</source>
-        <translation type="unfinished">Дублировать выделенное/строку</translation>
+        <translation>Дублировать выделение/строку</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Transpose Line</source>
-        <translation type="unfinished">Переместить строку</translation>
+        <translation>Переставить строку</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Show Completion List</source>
-        <translation type="unfinished">Показать &amp;список завершения</translation>
+        <translation>Показать &amp;список завершения</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Format</source>
-        <translation type="unfinished">&amp;Формат</translation>
+        <translation>&amp;Формат</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Uppercase Selection</source>
-        <translation type="unfinished">Перевести в &amp;верхний регистр</translation>
+        <translation>Перевести в &amp;верхний регистр</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Lowercase Selection</source>
-        <translation type="unfinished">Перевести в &amp;нижний регистр</translation>
+        <translation>Перевести в &amp;нижний регистр</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Comment</source>
-        <translation type="unfinished">&amp;Закомментировать</translation>
+        <translation>За&amp;комментировать</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Uncomment</source>
-        <translation type="unfinished">&amp;Раскомментировать</translation>
+        <translation>&amp;Раскомментировать</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Comment (Choosing String)</source>
-        <translation type="unfinished"></translation>
+        <translation>Закомментировать (с выбором строки)</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Indent Selection Rigidly</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Отступ для выделенного фрагмента</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Unindent Selection Rigidly</source>
-        <translation type="unfinished"></translation>
+        <translation>От&amp;менить отступ для выделенного фрагмента</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Indent Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Расставить отступы для кода</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Convert Line Endings to &amp;Windows (CRLF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Преобразовать завершения строк в формат &amp;Windows (CRLF)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Convert Line Endings to &amp;Unix (LF)</source>
-        <translation type="unfinished">Конец строки &amp;Unix (LF)</translation>
+        <translation>Преобразовать завершения строк в формат &amp;Unix (LF)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
-        <translation type="unfinished">Конец строки Legacy &amp;Mac (CR)</translation>
+        <translation>Преобразовать завершения строк в формат Legacy &amp;Mac (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Navi&amp;gation</source>
-        <translation type="unfinished">Нави&amp;гация</translation>
+        <translation>Нави&amp;гация</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Go &amp;to Line...</source>
-        <translation type="unfinished">&amp;Перейти к строке...</translation>
+        <translation>&amp;Перейти к строке...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Move to Matching Brace</source>
-        <translation type="unfinished">Перейти к соответствующей скобке</translation>
+        <translation>Перейти к парной скобке</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Select to Matching Brace</source>
-        <translation type="unfinished">Выделить до соответствующей скобки</translation>
+        <translation>Выделить до парной скобки</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Next Bookmark</source>
-        <translation type="unfinished">С&amp;ледующая закладка</translation>
+        <translation>С&amp;ледующая закладка</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Pre&amp;vious Bookmark</source>
-        <translation type="unfinished">Пр&amp;едыдущая закладка</translation>
+        <translation>Пр&amp;едыдущая закладка</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Toggle &amp;Bookmark</source>
-        <translation type="unfinished">&amp;Установить/снять закладку</translation>
+        <translation>Пере&amp;ключить закладку</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Remove All Bookmarks</source>
-        <translation type="unfinished">&amp;Удалить все закладки</translation>
+        <translation>&amp;Удалить все закладки</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Preferences...</source>
-        <translation type="unfinished">&amp;Настройки...</translation>
+        <translation>&amp;Параметры...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Styles Preferences...</source>
-        <translation type="unfinished">Настройки &amp;стиля...</translation>
+        <translation>Параметры &amp;стилей...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;View</source>
-        <translation type="unfinished">&amp;Вид</translation>
+        <translation>&amp;Вид</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Editor</source>
-        <translation type="unfinished">&amp;Редактор</translation>
+        <translation>&amp;Редактор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show &amp;Line Numbers</source>
-        <translation type="unfinished">Показывать &amp;номера строк</translation>
+        <translation>Показывать &amp;номера строк</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Whitespace Characters</source>
-        <translation type="unfinished">Показывать символ &amp;пробела</translation>
+        <translation>Показывать символ &amp;пробела</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show Line &amp;Endings</source>
-        <translation type="unfinished">Показывать символ &amp;конца строки</translation>
+        <translation>Показывать символ &amp;конца строки</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Indentation Guides</source>
-        <translation type="unfinished">Показывать линии &amp;отступов</translation>
+        <translation>Показывать &amp;направляющие для отступов</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show Long Line &amp;Marker</source>
-        <translation type="unfinished">Показывать линию переноса &amp;строк</translation>
+        <translation>Показывать &amp;метку длинных строк</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Show &amp;Toolbar</source>
-        <translation type="unfinished">Показывать панель &amp;инструментов</translation>
+        <translation>Показывать панель &amp;инструментов</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Statusbar</source>
-        <translation type="unfinished">Показывать строку &amp;состояния</translation>
+        <translation>Показывать строку &amp;состояния</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Horizontal Scrollbar</source>
-        <translation type="unfinished">Показывать &amp;горизонтальную полосу прокрутки</translation>
+        <translation>Показывать &amp;горизонтальную полосу прокрутки</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Zoom &amp;In</source>
-        <translation type="unfinished">У&amp;величить</translation>
+        <translation>У&amp;величить масштаб</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Zoom &amp;Out</source>
-        <translation type="unfinished">У&amp;меньшить</translation>
+        <translation>У&amp;меньшить масштаб</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Normal Size</source>
-        <translation type="unfinished">&amp;Нормальный размер</translation>
+        <translation>&amp;Обычный масштаб</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Sort Tabs Alphabetically</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Упорядочить вкладки по алфавиту</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Debug</source>
-        <translation type="unfinished">&amp;Отладка</translation>
+        <translation>&amp;Отладка</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Toggle &amp;Breakpoint</source>
-        <translation type="unfinished">&amp;Установить/снять точку останова</translation>
+        <translation>&amp;Переключить точку останова</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Next Breakpoint</source>
-        <translation type="unfinished">&amp;Следующая точка останова</translation>
+        <translation>&amp;Следующая точка останова</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Pre&amp;vious Breakpoint</source>
-        <translation type="unfinished">&amp;Предыдущая точка останова</translation>
+        <translation>&amp;Предыдущая точка останова</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Remove All Breakpoints</source>
-        <translation type="unfinished">&amp;Удалить все точки останова</translation>
+        <translation>&amp;Удалить все точки останова</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Run</source>
-        <translation type="unfinished">&amp;Запуск</translation>
+        <translation>&amp;Выполнение</translation>
     </message>
     <message>
         <location line="-1988"/>
         <source>Save File and Run</source>
-        <translation type="unfinished">Сохранить файл и запустить</translation>
+        <translation>Сохранить и выполнить</translation>
     </message>
     <message>
         <location line="-7"/>
         <source>Continue</source>
-        <translation type="unfinished">Продолжить</translation>
+        <translation>Продолжить</translation>
     </message>
     <message>
         <location line="+2000"/>
         <source>Save File and Run / Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить и выполнить/продолжить</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Run &amp;Selection</source>
-        <translation type="unfinished">&amp;Запустить выделенное</translation>
+        <translation>В&amp;ыполнить выделение</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Помощь</translation>
+        <translation>С&amp;правка</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Help on Keyword</source>
-        <translation type="unfinished">&amp;Помощь по зарезервированному слову</translation>
+        <translation>&amp;Найти справку по</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Documentation on Keyword</source>
-        <translation type="unfinished">&amp;Документация по зарезервированному слову</translation>
+        <translation>Н&amp;айти документацию по</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Recent Files</source>
-        <translation type="unfinished">Последние файлы</translation>
+        <translation>Последние файлы</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>Editor</source>
-        <translation type="unfinished">Редактор</translation>
+        <translation>Редактор</translation>
     </message>
 </context>
 <context>
@@ -1731,32 +1738,32 @@ for write: %2.</source>
     <message>
         <location filename="../src/m-editor/file-editor-tab.cc" line="+150"/>
         <source>line:</source>
-        <translation type="unfinished">строка:</translation>
+        <translation>строка:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>col:</source>
-        <translation type="unfinished">столбец:</translation>
+        <translation>столбец:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>encoding:</source>
-        <translation type="unfinished">кодировка:</translation>
+        <translation>кодировка:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>eol:</source>
-        <translation type="unfinished">конец строки:</translation>
+        <translation>конец строки:</translation>
     </message>
     <message>
         <location line="+257"/>
         <source>Breakpoint condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Состояние точки останова</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>ERROR: </source>
-        <translation type="unfinished"></translation>
+        <translation>ОШИБКА: </translation>
     </message>
     <message>
         <location line="+61"/>
@@ -1769,45 +1776,47 @@ for write: %2.</source>
         <location line="+102"/>
         <location line="+36"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Редактор Octave</translation>
+        <translation>Редактор Octave</translation>
     </message>
     <message>
         <location line="-2072"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось добавить точку останова к изменённому или безымянному файлу.
+Сохранить файл и добавить точку останова или отменить действие?</translation>
     </message>
     <message>
         <location line="+878"/>
         <source>Goto line</source>
-        <translation type="unfinished">Перейти к строке</translation>
+        <translation>Перейти к строке</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Line number</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер строки</translation>
     </message>
     <message>
         <location line="+127"/>
         <source>Comment selected text</source>
-        <translation type="unfinished"></translation>
+        <translation>Закомментировать выделенный текст</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Comment string to use:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Используемая строка комментария:
+</translation>
     </message>
     <message>
         <location line="+136"/>
         <location line="+57"/>
         <source>&lt;unnamed&gt;</source>
-        <translation type="unfinished">&lt;без названия&gt;</translation>
+        <translation>&lt;без названия&gt;</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Do you want to cancel closing, save or discard the changes?</source>
-        <translation type="unfinished">Сохранить изменения или отклонить их?</translation>
+        <translation>Отменить закрытие, сохранить изменения или отклонить их?</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1816,12 +1825,11 @@ Save and add breakpoint, or cancel?</source>
   %1
 
 is about to be closed but has been modified.  %2</source>
-        <translation type="unfinished">Файл
+        <translation>Файл
 
   %1
 
-был изменён.
-%2</translation>
+был изменён, но будет закрыт.  %2</translation>
     </message>
     <message>
         <location line="+106"/>
@@ -1830,29 +1838,33 @@ is about to be closed but has been modified.  %2</source>
 with the selected encoding %2.
 
 Modifying and saving the file might cause data loss!</source>
-        <translation type="unfinished"></translation>
+        <translation>При чтении файла
+%1
+возникли проблемы с выбранной кодировкой %2.
+
+Изменение и сохранение файла может привести к потере данных.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Edit anyway</source>
-        <translation type="unfinished"></translation>
+        <translation>Всё равно &amp;изменить</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+57"/>
         <source>Chan&amp;ge encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить &amp;кодировку</translation>
     </message>
     <message>
         <location line="-56"/>
         <location line="+49"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Закрыть</translation>
+        <translation>З&amp;акрыть</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Select new default encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбор новой кодировки по умолчанию</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1861,24 +1873,29 @@ for reloading the current file.
 
 This does not change the default encoding.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите новую кодировку
+для загрузки текущего файла.
+
+Кодировка по умолчанию не будет изменена.
+</translation>
     </message>
     <message>
         <location line="+161"/>
         <source>Debug or Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Отладить или сохранить</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>This file is currently being executed.
 Quit debugging and save?</source>
-        <translation type="unfinished"></translation>
+        <translation>Этот файл выполняется в данный момент.
+Прервать отладку и сохранить?</translation>
     </message>
     <message>
         <location line="+167"/>
         <source>Could not open file %1 for write:
 %2.</source>
-        <translation type="unfinished">Не удалось открыть файл %1 для записи:
+        <translation>Не удалось открыть файл %1 для записи:
 %2.</translation>
     </message>
     <message>
@@ -1887,7 +1904,10 @@ Quit debugging and save?</source>
 can not be applied.
 
 Please select another one!</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущая кодировка %1
+не может быть применена.
+
+Используйте другую кодировку.</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -1896,17 +1916,21 @@ with the selected encoding %1.
 Using it would result in data loss!
 
 Please select another one!</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбранная кодировка %1 не позволяет закодировать
+текущее содержимое редактора.
+Её использование может привести к потере данных.
+
+Используйте другую кодировку.</translation>
     </message>
     <message>
         <location line="-142"/>
         <source>Octave Files (*.m)</source>
-        <translation type="unfinished">Файлы Octave (*.m)</translation>
+        <translation>Файлы Octave (*.m)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Все файлы (*)</translation>
+        <translation>Все файлы (*)</translation>
     </message>
     <message>
         <location line="+78"/>
@@ -1917,30 +1941,37 @@ If you keep this filename, you will not be able to
 call your script using its name as an Octave command.
 
 Do you want to choose another name?</source>
-        <translation type="unfinished"></translation>
+        <translation>«%1»
+не является допустимым идентификатором.
+
+При использовании данного имени файла
+вызов сценария путём использования его имени
+в качестве команды Octave будет недоступен.
+
+Выбрать другое имя?</translation>
     </message>
     <message>
         <location line="+165"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation type="unfinished">Кажется, файл &apos;%1&apos; был изменен другим приложением. Вы хотите обновить его содержимое?</translation>
+        <translation>Похоже, файл «%1» был изменён другим приложением. Обновить его содержимое?</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
-        <translation type="unfinished">
+        <translation>
 
-Предупреждение: содержимое в редакторе было изменено!</translation>
+Предупреждение: содержимое в редакторе было изменено.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>It seems that the file
 %1
 has been deleted or renamed. Do you want to save it now?%2</source>
-        <translation type="unfinished">Кажется, файл
+        <translation>Похоже, файл
 %1
-был удален или переименован. Вы хотите сохранить его?%2</translation>
+был удалён или переименован. Сохранить его?%2</translation>
     </message>
 </context>
 <context>
@@ -1948,247 +1979,251 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location filename="../src/files-dock-widget.cc" line="+78"/>
         <source>File Browser</source>
-        <translation type="unfinished">Диспетчер файлов</translation>
+        <translation>Диспетчер файлов</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Browse your files</source>
-        <translation type="unfinished"></translation>
+        <translation>Обзор файлов</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>File size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер файла</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип файла</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Date modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата изменения</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать скрытые файлы</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished">Чередующиеся цвета строк</translation>
+        <translation>Чередующиеся цвета строк</translation>
     </message>
     <message>
         <location line="+38"/>
         <source>Enter the path or filename</source>
-        <translation type="unfinished">Введите путь или имя файла</translation>
+        <translation>Введите путь или имя файла</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>One directory up</source>
-        <translation type="unfinished">Перейти на одну папку вверх</translation>
+        <translation>Перейти к папке уровнем выше</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Octave directory</source>
-        <translation type="unfinished">Перейти к текущей рабочей папке Octave</translation>
+        <translation>Перейти к текущей рабочей папке Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go to current Octave directory</source>
-        <translation type="unfinished">Перейти к текущей рабочей папке Octave</translation>
+        <translation>Перейти к текущей рабочей папке Octave</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Octave directory</source>
-        <translation type="unfinished">Установить рабочую папку Octave</translation>
+        <translation>Установить рабочую папку Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished">Задать просматриваемую папку как рабочую папку Octave</translation>
+        <translation>Установить просматриваемую папку как рабочую папку Octave</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Actions on current directory</source>
-        <translation type="unfinished">Действия в текущей папке</translation>
+        <translation>Действия в текущей папке</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Home Directory</source>
-        <translation type="unfinished">Показывать домашнюю папку</translation>
+        <translation>Показывать домашнюю папку</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Set Browser Directory...</source>
-        <translation type="unfinished">Выбрать папку...</translation>
+        <translation>Выбрать папку...</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+397"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Найти файлы...</translation>
+        <translation>Найти файлы...</translation>
     </message>
     <message>
         <location line="-393"/>
         <location line="+406"/>
         <source>New File...</source>
-        <translation type="unfinished">Новый файл...</translation>
+        <translation>Создать файл...</translation>
     </message>
     <message>
         <location line="-403"/>
         <location line="+406"/>
         <source>New Directory...</source>
-        <translation type="unfinished">Новая папка...</translation>
+        <translation>Создать папку...</translation>
     </message>
     <message>
         <location line="-354"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation type="unfinished"></translation>
+        <translation>Дважды щёлкните для открытия файла/папки;
+щёлкните правой кнопкой мыши для других действий</translation>
     </message>
     <message>
         <location line="+291"/>
         <source>Open</source>
-        <translation type="unfinished">Открыть</translation>
+        <translation>Открыть</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in System File Explorer</source>
-        <translation type="unfinished">Открыть в системном диспетчере файлов</translation>
+        <translation>Открыть в системном диспетчере файлов</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation type="unfinished">Открыть в текстовом редакторе</translation>
+        <translation>Открыть в текстовом редакторе</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy Selection to Clipboard</source>
-        <translation type="unfinished">Скопировать выделенное в буфер обмена</translation>
+        <translation>Копировать выделение в буфер обмена</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Run</source>
-        <translation type="unfinished">Запуск</translation>
+        <translation>Выполнить</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Load Data</source>
-        <translation type="unfinished">Загрузить данные</translation>
+        <translation>Загрузить данные</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation type="unfinished">Установить текущую директорию</translation>
+        <translation>Установить текущую директорию</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add to Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить к пути</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+7"/>
         <source>Selected Directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбранные каталоги</translation>
     </message>
     <message>
         <location line="-5"/>
         <location line="+7"/>
         <source>Selected Directories and Subdirectories</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбранные каталоги и подкаталоги</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Remove from Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить из пути</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Rename...</source>
-        <translation type="unfinished">Переименовать...</translation>
+        <translation>Переименовать...</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete...</source>
-        <translation type="unfinished">Удалить...</translation>
+        <translation>Удалить...</translation>
     </message>
     <message>
         <location line="+118"/>
         <source>Rename file/directory</source>
-        <translation type="unfinished">Переименовать файл/директорию</translation>
+        <translation>Переименовать файл/каталог</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rename file/directory:
 </source>
-        <translation type="unfinished">Переименовать файл/директорию:</translation>
+        <translation>Переименовать файл/каталог:
+</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>
  to: </source>
-        <translation type="unfinished"> в: </translation>
+        <translation>
+ в: </translation>
     </message>
     <message>
         <location line="+31"/>
         <location line="+14"/>
         <source>Delete file/directory</source>
-        <translation type="unfinished">Удалить файл/директорию</translation>
+        <translation>Удалить файл/каталог</translation>
     </message>
     <message>
         <location line="-13"/>
         <source>Are you sure you want to delete
 </source>
-        <translation type="unfinished">Вы уверены, что хотите удалить</translation>
+        <translation>Удалить
+</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Can not delete a directory that is not empty</source>
-        <translation type="unfinished">Невозможно удалить непустую директорию</translation>
+        <translation>Невозможно удалить непустой каталог</translation>
     </message>
     <message>
         <location line="+192"/>
         <source>Set directory of file browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить каталог диспетчера файлов</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Create File</source>
-        <translation type="unfinished">Создать файл</translation>
+        <translation>Создать файл</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Create file in
 </source>
         <comment>String ends with \n!</comment>
-        <translation type="unfinished">Создать файл в
+        <translation>Создать файл в
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New File.txt</source>
-        <translation type="unfinished">Новый файл.txt</translation>
+        <translation>Новый файл.txt</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Create Directory</source>
-        <translation type="unfinished">Создать директорию</translation>
+        <translation>Создать каталог</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Create folder in
 </source>
         <comment>String ends with \n!</comment>
-        <translation type="unfinished">Создать папку в
+        <translation>Создать каталог в
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New Directory</source>
-        <translation type="unfinished">Новая папка</translation>
+        <translation>Новый каталог</translation>
     </message>
 </context>
 <context>
@@ -2196,22 +2231,22 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+319"/>
         <source>Enjoy!</source>
-        <translation type="unfinished">Наслаждайтесь!</translation>
+        <translation>Удачной работы!</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Previous</source>
-        <translation type="unfinished">Назад</translation>
+        <translation>Назад</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Finish</source>
-        <translation type="unfinished">Завершить</translation>
+        <translation>Готово</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2220,10 +2255,10 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 &lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;body&gt;
-&lt;p&gt;Мы надеемся Octave окажется удобным решением для Вас.&lt;/p&gt;
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Мы надеемся, что Вам понравится работать с Octave.&lt;/p&gt;
 &lt;p&gt;В случае возникновения проблем существует несколько путей их устранения, включая коммерческую поддержку, почтовые рассылки, wiki-сайт и другие варианты поддержки от сообщества.
-Вы можете найти больше информации, посетив &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (открывается во внешнем браузере).&lt;/p&gt;
+Получить дополнительную информацию можно по адресу &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (открывается во внешнем браузере).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -2240,15 +2275,15 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;
+        <translation>&lt;html&gt;&lt;head&gt;
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
 &lt;/head&gt;&lt;body&gt;
-&lt;p&gt;Для дополнительной информации об Octave:&lt;/p&gt;
+&lt;p&gt;Для получения дополнительной информации об Octave:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Посетите &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (открывается во внешнем браузере)&lt;/li&gt;
-&lt;li&gt;Получите документацию в виде &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- или &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-документов (открывается во внешнем браузере)&lt;/li&gt;
+&lt;li&gt;Посетите сайт &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (открывается во внешнем браузере)&lt;/li&gt;
+&lt;li&gt;Получите документацию в виде &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- или &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-документа (открывается во внешнем браузере)&lt;/li&gt;
 &lt;li&gt;Откройте документацию через графическую оболочку Octave&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
@@ -2259,117 +2294,117 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/m-editor/find-dialog.cc" line="+94"/>
         <source>Editor: Find and Replace</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор: поиск и замена</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Find &amp;what:</source>
-        <translation type="unfinished">&amp;Найти:</translation>
+        <translation>Найти &amp;текст:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter text to search for</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите текст для поиска</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Re&amp;place with:</source>
-        <translation type="unfinished">За&amp;менить на:</translation>
+        <translation>За&amp;менить на:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter new text replacing search hits</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите текст для замены результатов поиска</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Match &amp;case</source>
-        <translation type="unfinished">&amp;Учитывать регистр</translation>
+        <translation>&amp;Учитывать регистр</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search from &amp;start</source>
-        <translation type="unfinished">И&amp;скать с начала</translation>
+        <translation>И&amp;скать с начала</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Wrap while searching</source>
-        <translation type="unfinished">Искать по &amp;кругу</translation>
+        <translation>Искать по &amp;кругу</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Find Next</source>
-        <translation type="unfinished">Найти &amp;следующее</translation>
+        <translation>Найти &amp;далее</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find &amp;Previous</source>
-        <translation type="unfinished">Найти п&amp;редыдущее</translation>
+        <translation>Найти &amp;ранее</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Replace</source>
-        <translation type="unfinished">&amp;Заменить</translation>
+        <translation>&amp;Заменить</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Replace &amp;All</source>
-        <translation type="unfinished">Заменить &amp;все</translation>
+        <translation>Заменить &amp;все</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;More...</source>
-        <translation type="unfinished">&amp;Больше...</translation>
+        <translation>Д&amp;ополнительно...</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Whole words</source>
-        <translation type="unfinished">&amp;Целое слово</translation>
+        <translation>Слово &amp;целиком</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Regular E&amp;xpressions</source>
-        <translation type="unfinished">&amp;Регулярные выражения</translation>
+        <translation>Регулярные &amp;выражения</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search &amp;backward</source>
-        <translation type="unfinished">&amp;Искать в обратном направлении</translation>
+        <translation>Об&amp;ратный поиск</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search se&amp;lection</source>
-        <translation type="unfinished">Искать &amp;выделенное</translation>
+        <translation>Поиск в &amp;выделенной области</translation>
     </message>
     <message>
         <location line="+164"/>
         <source>Search from end</source>
-        <translation type="unfinished">Искать с конца</translation>
+        <translation>Искать с конца</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Search from start</source>
-        <translation type="unfinished">Искать с начала</translation>
+        <translation>Искать с начала</translation>
     </message>
     <message>
         <location line="+320"/>
         <source>Replace Result</source>
-        <translation type="unfinished">Результат замены</translation>
+        <translation>Результаты замены</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 items replaced</source>
-        <translation type="unfinished">%1 элементов заменено</translation>
+        <translation>Заменено элементов: %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Find Result</source>
-        <translation type="unfinished">Результаты поиска</translation>
+        <translation>Результаты поиска</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>No more matches found</source>
-        <translation type="unfinished">Больше совпадений не найдено</translation>
+        <translation>Больше совпадений не найдено</translation>
     </message>
 </context>
 <context>
@@ -2377,147 +2412,147 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/find-files-dialog.cc" line="+61"/>
         <source>Find Files</source>
-        <translation type="unfinished">Найти файлы</translation>
+        <translation>Поиск файлов</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Named:</source>
-        <translation type="unfinished">Имя:</translation>
+        <translation>Имя:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter the filename search expression</source>
-        <translation type="unfinished">Введите регулярное выражение для поиска</translation>
+        <translation>Введите выражение для поиска по имени файла</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Start in:</source>
-        <translation type="unfinished">Искать в:</translation>
+        <translation>Рабочая папка:</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Enter the start directory</source>
-        <translation type="unfinished">Введите начальную папку</translation>
+        <translation>Укажите рабочую папку</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Browse...</source>
-        <translation type="unfinished">Выбрать...</translation>
+        <translation>Обзор...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Browse for start directory</source>
-        <translation type="unfinished">Выбрать начальную папку</translation>
+        <translation>Выбор рабочей папки</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Search subdirectories</source>
-        <translation type="unfinished">В подпапках</translation>
+        <translation>Поиск по подпапкам</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Search recursively through directories for matching files</source>
-        <translation type="unfinished">Искать рекурсивно в папках подходящие файлы</translation>
+        <translation>Рекурсивный поиск файлов по подпапкам</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Include directory names</source>
-        <translation type="unfinished">В именах папок</translation>
+        <translation>Поиск в именах папок</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Include matching directories in search results</source>
-        <translation type="unfinished">Искать в именах папок</translation>
+        <translation>Включать подходящие папки в результаты поиска</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Name case insensitive</source>
-        <translation type="unfinished">С учётом регистра</translation>
+        <translation>Имя без учёта регистра</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set matching name is case insensitive</source>
-        <translation type="unfinished">Искать с учётом регистра</translation>
+        <translation>Выполнять поиск по именам без учёта регистра</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Contains text:</source>
-        <translation type="unfinished">Содержит текст:</translation>
+        <translation>Содержит текст:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Enter the file content search expression</source>
-        <translation type="unfinished">Искать в содержимом файлов</translation>
+        <translation>Введите выражение для поиска в содержимом файлов</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Text to match</source>
-        <translation type="unfinished">Текст для поиска</translation>
+        <translation>Текст для поиска</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Text case insensitive</source>
-        <translation type="unfinished">С учётом регистра</translation>
+        <translation>Текст без учёта регистра</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set text content is case insensitive</source>
-        <translation type="unfinished">Искать с учётом регистра</translation>
+        <translation>Выполнять поиск текста без учёта регистра</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Search results</source>
-        <translation type="unfinished">Результаты поиска</translation>
+        <translation>Результаты поиска</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Idle.</source>
-        <translation type="unfinished">Ожидание.</translation>
+        <translation>В режиме ожидания.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Find</source>
-        <translation type="unfinished">Найти</translation>
+        <translation>Найти</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Start search for matching files</source>
-        <translation type="unfinished">Начать поиск</translation>
+        <translation>Начать поиск</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Stop</source>
-        <translation type="unfinished">Завершить</translation>
+        <translation>Остановить</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stop searching</source>
-        <translation type="unfinished">Остановить поиск</translation>
+        <translation>Остановить поиск</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Filename/location</source>
-        <translation type="unfinished">Имя файла/расположение</translation>
+        <translation>Имя файла/расположение</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>File contents</source>
-        <translation type="unfinished">Содержимое файла</translation>
+        <translation>Содержимое файла</translation>
     </message>
     <message>
         <location line="+101"/>
         <source>Searching...</source>
-        <translation type="unfinished">Поиск...</translation>
+        <translation>Поиск...</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>%1 match (es)</source>
-        <translation type="unfinished"></translation>
+        <translation>Совпадений: %1</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Set search directory</source>
-        <translation type="unfinished">Установить директорию для поиска</translation>
+        <translation>Задание каталога для поиска</translation>
     </message>
 </context>
 <context>
@@ -2525,12 +2560,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/find-files-model.cc" line="+91"/>
         <source>Filename</source>
-        <translation type="unfinished">Имя файла</translation>
+        <translation>Имя файла</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Directory</source>
-        <translation type="unfinished">Папка</translation>
+        <translation>Каталог</translation>
     </message>
 </context>
 <context>
@@ -2538,52 +2573,52 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/history-dock-widget.cc" line="+53"/>
         <source>Browse and search the command history.</source>
-        <translation type="unfinished">Просмотр и поиск в журнале выполненных команд.</translation>
+        <translation>Просмотр и поиск в журнале выполненных команд.</translation>
     </message>
     <message>
         <location line="+95"/>
         <source>Copy</source>
-        <translation type="unfinished">Копировать</translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Evaluate</source>
-        <translation type="unfinished">Выполнить</translation>
+        <translation>Выполнить</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Create script</source>
-        <translation type="unfinished">Создать скрипт</translation>
+        <translation>Создать сценарий</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Hide filter</source>
-        <translation type="unfinished">Скрыть фильтр</translation>
+        <translation>Скрыть фильтр</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
-        <translation type="unfinished">Показывать фильтр</translation>
+        <translation>Показать фильтр</translation>
     </message>
     <message>
         <location line="+121"/>
         <source>Double-click a command to transfer it to the Command Window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Дважды щёлкните команду для её перемещения в командное окно.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Enter text to filter the command history</source>
-        <translation type="unfinished">Введите текст для поиска по истории выполненных команд</translation>
+        <translation>Введите текст для поиска по истории выполненных команд</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Filter</source>
-        <translation type="unfinished">Фильтр</translation>
+        <translation>Фильтр</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Command History</source>
-        <translation type="unfinished">Журнал выполненных команд</translation>
+        <translation>Журнал выполненных команд</translation>
     </message>
 </context>
 <context>
@@ -2591,17 +2626,17 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/welcome-wizard.cc" line="-189"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">Добро пожаловать в Octave!</translation>
+        <translation>Добро пожаловать в Octave!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Next</source>
-        <translation type="unfinished">Далее</translation>
+        <translation>Далее</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -2610,10 +2645,10 @@ a:link { text-decoration: underline; color: #0000ff; }
 Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
 &lt;p&gt;The configuration file is stored in&lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;body&gt;
-&lt;p&gt;Вы используете графическую оболочку Octave в первый раз на этом компьютере.
-Нажмите &quot;Далее&quot; для создания файла настроек и запуска Octave.&lt;/p&gt;
-&lt;p&gt;Файл настроек находится в&lt;br&gt;%1.&lt;/p&gt;
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Графическая оболочка Octave впервые используется на этом компьютере.
+Нажмите «Далее» для создания файла конфигурации и запуска Octave.&lt;/p&gt;
+&lt;p&gt;Файл конфигурации хранится в &lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
@@ -2622,12 +2657,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+78"/>
         <source>Undock widget</source>
-        <translation type="unfinished">Открепить виджет</translation>
+        <translation>Открепить виджет</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Close widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть виджет</translation>
     </message>
 </context>
 <context>
@@ -2635,383 +2670,384 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location filename="../src/main-window.cc" line="+403"/>
         <source>Save Workspace As</source>
-        <translation type="unfinished">Сохранить область переменных как</translation>
+        <translation>Сохранить область переменных как</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Load Workspace</source>
-        <translation type="unfinished">Загрузить область переменных</translation>
+        <translation>Загрузить область переменных</translation>
     </message>
     <message>
         <location line="+223"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished">Файл с примечаниями к выпуску &apos;%1&apos; пустой.</translation>
+        <translation>Файл «%1» с заметками о выпуске пуст.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished">Файл с примечаниями к выпуску &apos;%1&apos; не может быть прочтён.</translation>
+        <translation>Файл «%1» с заметками о выпуске не может быть прочитан.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished">Примечания к выпуску Octave</translation>
+        <translation>Заметки о выпуске Octave</translation>
     </message>
     <message>
         <location line="+80"/>
         <source>Octave Community News</source>
-        <translation type="unfinished">Новости сообщества Octave</translation>
+        <translation>Новости сообщества Octave</translation>
     </message>
     <message>
         <location line="+85"/>
         <location line="+1830"/>
         <source>About Octave</source>
-        <translation type="unfinished">Об Octave</translation>
+        <translation>О программе Octave</translation>
     </message>
     <message>
         <location line="-2371"/>
         <source>Octave</source>
-        <translation type="unfinished">Octave</translation>
+        <translation>Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Are you sure you want to exit Octave?</source>
-        <translation type="unfinished">Вы уверены, что хотите выйти из Octave?</translation>
+        <translation>Выйти из Octave?</translation>
     </message>
     <message>
         <location line="+707"/>
         <location line="+1727"/>
         <source>Browse directories</source>
-        <translation type="unfinished">Выбрать папку</translation>
+        <translation>Обзор каталогов</translation>
     </message>
     <message>
         <location line="-1466"/>
         <source>Octave Files (*.m);;All Files (*)</source>
-        <translation type="unfinished">Файлы Octave (*.m);;Все файлы (*)</translation>
+        <translation>Файлы Octave (*.m);;Все файлы (*)</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>New Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая функция</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New function name:
 </source>
-        <translation type="unfinished">Имя новой функции:
+        <translation>Имя новой функции:
 </translation>
     </message>
     <message>
         <location line="+50"/>
         <source>%1 is a built-in, compiled or inline
 function and can not be edited.</source>
-        <translation type="unfinished"></translation>
+        <translation>Функция %1 — встроенная, скомпилированная
+или подставляемая, поэтому не может быть изменена.</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Can not find function %1</source>
-        <translation type="unfinished">Невозможно найти функцию %1</translation>
+        <translation>Не удаётся найти функцию %1</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Редактор Octave</translation>
+        <translation>Редактор Octave</translation>
     </message>
     <message>
         <location line="+911"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Файл</translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Open...</source>
-        <translation type="unfinished">Открыть...</translation>
+        <translation>Открыть...</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open an existing file in editor</source>
-        <translation type="unfinished">Открыть существующий файл в редакторе</translation>
+        <translation>Открыть существующий файл в редакторе</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Load Workspace...</source>
-        <translation type="unfinished">Загрузить область переменных...</translation>
+        <translation>Загрузить область переменных...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Save Workspace As...</source>
-        <translation type="unfinished">Сохранить область переменных как...</translation>
+        <translation>Сохранить область переменных как...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Exit</source>
-        <translation type="unfinished">Выход</translation>
+        <translation>Выход</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>New</source>
-        <translation type="unfinished">Новый</translation>
+        <translation>Создать</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>New Script</source>
-        <translation type="unfinished">Новый сценарий</translation>
+        <translation>Создать сценарий</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>New Function...</source>
-        <translation type="unfinished">Новая функция...</translation>
+        <translation>Создать функцию...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>New Figure</source>
-        <translation type="unfinished">Новый графический объект</translation>
+        <translation>Создать рисунок</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Правка</translation>
+        <translation>&amp;Правка</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Undo</source>
-        <translation type="unfinished">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Copy</source>
-        <translation type="unfinished">Копировать</translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Paste</source>
-        <translation type="unfinished">Вставить</translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Выделить все</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Clear Clipboard</source>
-        <translation type="unfinished">Очистить буфер обмена</translation>
+        <translation>Очистить буфер обмена</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Найти файлы...</translation>
+        <translation>Найти файлы...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Clear Command Window</source>
-        <translation type="unfinished">Очистить командное окно</translation>
+        <translation>Очистить командное окно</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear Command History</source>
-        <translation type="unfinished">Очистить журнал выполненных команд</translation>
+        <translation>Очистить журнал выполненных команд</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear Workspace</source>
-        <translation type="unfinished">Очистить область переменных</translation>
+        <translation>Очистить область переменных</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить путь</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Preferences...</source>
-        <translation type="unfinished">Настройки...</translation>
+        <translation>Параметры...</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>De&amp;bug</source>
-        <translation type="unfinished">&amp;Отладка</translation>
+        <translation>&amp;Отладка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Step</source>
-        <translation type="unfinished">Шаг</translation>
+        <translation>Шаг</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step In</source>
-        <translation type="unfinished">Шаг с заходом</translation>
+        <translation>Шаг с заходом</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step Out</source>
-        <translation type="unfinished">Шаг с выходом</translation>
+        <translation>Шаг с выходом</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Continue</source>
-        <translation type="unfinished">Продолжить</translation>
+        <translation>Продолжить</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Quit Debug Mode</source>
-        <translation type="unfinished">Выйти из режима отладки</translation>
+        <translation>Выйти из режима отладки</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>&amp;Window</source>
-        <translation type="unfinished">&amp;Окно</translation>
+        <translation>О&amp;кно</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Command Window</source>
-        <translation type="unfinished">Показывать командное окно</translation>
+        <translation>Показывать командное окно</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Command History</source>
-        <translation type="unfinished">Показывать журнал выполненных команд</translation>
+        <translation>Показывать журнал выполненных команд</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show File Browser</source>
-        <translation type="unfinished">Показывать диспетчер файлов</translation>
+        <translation>Показывать диспетчер файлов</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Workspace</source>
-        <translation type="unfinished">Показывать область переменных</translation>
+        <translation>Показывать область переменных</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Editor</source>
-        <translation type="unfinished">Показывать редактор</translation>
+        <translation>Показывать редактор</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Documentation</source>
-        <translation type="unfinished">Показывать документацию</translation>
+        <translation>Показывать документацию</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Variable Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать редактор переменных</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Command Window</source>
-        <translation type="unfinished">Командное окно</translation>
+        <translation>Командное окно</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command History</source>
-        <translation type="unfinished">Журнал выполненных команд</translation>
+        <translation>Журнал выполненных команд</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>File Browser</source>
-        <translation type="unfinished">Диспетчер файлов</translation>
+        <translation>Диспетчер файлов</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Workspace</source>
-        <translation type="unfinished">Область переменных</translation>
+        <translation>Область переменных</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Editor</source>
-        <translation type="unfinished">Редактор</translation>
+        <translation>Редактор</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+44"/>
         <source>Documentation</source>
-        <translation type="unfinished">Документация</translation>
+        <translation>Документация</translation>
     </message>
     <message>
         <location line="-41"/>
         <source>Variable Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор переменных</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Previous Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущий виджет</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reset Default Window Layout</source>
-        <translation type="unfinished">Сбросить расположение окон</translation>
+        <translation>Сбросить расположение окон</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Помощь</translation>
+        <translation>&amp;Справка</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Сообщить об ошибке</translation>
+        <translation>Сообщить об ошибке</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Packages</source>
-        <translation type="unfinished">Пакеты Octave</translation>
+        <translation>Пакеты Octave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Contribute</source>
-        <translation type="unfinished">Внести вклад</translation>
+        <translation>Внести вклад</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Donate to Octave</source>
-        <translation type="unfinished">Внести пожертвование</translation>
+        <translation>Внести пожертвование</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>On Disk</source>
-        <translation type="unfinished">На диске</translation>
+        <translation>На диске</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Online</source>
-        <translation type="unfinished">На веб-сайте Octave</translation>
+        <translation>На веб-сайте Octave</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;News</source>
-        <translation type="unfinished">&amp;Новости</translation>
+        <translation>&amp;Новости</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Release Notes</source>
-        <translation type="unfinished">Примечания к выпуску</translation>
+        <translation>Заметки о выпуске</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Community News</source>
-        <translation type="unfinished">Новости сообщества</translation>
+        <translation>Новости сообщества</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Toolbar</source>
-        <translation type="unfinished">Панель инструментов</translation>
+        <translation>Панель инструментов</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Enter directory name</source>
-        <translation type="unfinished">Введите путь</translation>
+        <translation>Введите имя папки</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Current Directory: </source>
-        <translation type="unfinished">Текущая папка: </translation>
+        <translation>Текущая папка: </translation>
     </message>
     <message>
         <location line="+5"/>
         <source>One directory up</source>
-        <translation type="unfinished">Перейти на одну папку вверх</translation>
+        <translation>Перейти к папке уровнем выше</translation>
     </message>
 </context>
 <context>
@@ -3030,18 +3066,18 @@ when you have a connection to the web (link opens in an external browser).
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished">&lt;html&gt;
+        <translation>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
 Новости сообщества Octave недоступны.
 &lt;/p&gt;
 &lt;p&gt;
-Для информации о последних новостях посетите
+Для получения информации о последних новостях посетите
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
-когда у Вас будет подключение к сети интернет (ссылка открывается во внешнем браузере).
+при наличии подключения к сети Интернет (ссылка открывается во внешнем браузере).
 &lt;/p&gt;
 &lt;p&gt;
-&lt;small&gt;&lt;em&gt;&amp;mdash; Разоаботчики Octave,</translation>
+&lt;small&gt;&lt;em&gt;&amp;mdash; Разработчики Octave, </translation>
     </message>
     <message>
         <location line="+18"/>
@@ -3058,19 +3094,19 @@ or enable web connections for news in Octave&apos;s network settings dialog.
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished">&lt;html&gt;
+        <translation>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
-Подключение к веб-сайту Octave для оповещения о новостях сообщеста запрещено.
+Подключение к веб-сайту для отображения новостей сообщеста Octave запрещено.
 &lt;/p&gt;
 &lt;p&gt;
-Для информации о последних новостях посетите
+Для получения информации о последних новостях посетите
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
-когда у Вас будет подключение к сети интернет (ссылка открывается во внешнем браузере),
-или разрешите подключение к веб-сайту Octave в настройках.
+при наличии подключения к сети Интернет (ссылка открывается во внешнем браузере)
+или разрешите подключение к веб-сайту Octave в диалоговом окне параметров сети.
 &lt;/p&gt;
 &lt;p&gt;
-&lt;small&gt;&lt;em&gt;&amp;mdash; Разработчики Octave,</translation>
+&lt;small&gt;&lt;em&gt;&amp;mdash; Разработчики Octave, </translation>
     </message>
 </context>
 <context>
@@ -3078,17 +3114,17 @@ or enable web connections for news in Octave&apos;s network settings dialog.
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+153"/>
         <source>Hide widget</source>
-        <translation type="unfinished">Спрятать виджет</translation>
+        <translation>Скрыть виджет</translation>
     </message>
     <message>
         <location line="+76"/>
         <source>Dock widget</source>
-        <translation type="unfinished">Закрепить виджет</translation>
+        <translation>Закрепить виджет</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Undock widget</source>
-        <translation type="unfinished">Открепить виджет</translation>
+        <translation>Открепить виджет</translation>
     </message>
 </context>
 <context>
@@ -3096,27 +3132,27 @@ or enable web connections for news in Octave&apos;s network settings dialog.
     <message>
         <location filename="../src/m-editor/octave-qscintilla.cc" line="+294"/>
         <source>Help on</source>
-        <translation type="unfinished">Справка по</translation>
+        <translation>Справка по</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Documentation on</source>
-        <translation type="unfinished">Документация по</translation>
+        <translation>Документация по</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Edit</source>
-        <translation type="unfinished">Редактировать</translation>
+        <translation>Изменить</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>dbstop if ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Точка останова в случае...</translation>
     </message>
     <message>
         <location line="+471"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Редактор Octave</translation>
+        <translation>Редактор Octave</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3125,12 +3161,16 @@ Make sure you have write access to temp. directory
 %1
 
 &quot;Run Selection&quot; requires temporary files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при создании временных файлов.
+Убедитесь, что у вас есть доступ на запись во временный каталог
+%1
+
+Для выполнения операции «Выполнить выделение» необходимы временные файлы.</translation>
     </message>
     <message>
         <location line="+273"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите «%1», чтобы заменить все вхождения «%2» на «%3».</translation>
     </message>
 </context>
 <context>
@@ -3138,7 +3178,7 @@ Make sure you have write access to temp. directory
     <message>
         <location filename="../src/m-editor/octave-txt-lexer.cc" line="+43"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>По умолчанию</translation>
     </message>
 </context>
 <context>
@@ -3148,52 +3188,52 @@ Make sure you have write access to temp. directory
         <location line="+5"/>
         <location line="+2"/>
         <source>Create</source>
-        <translation type="unfinished">Создать</translation>
+        <translation>Создать</translation>
     </message>
     <message>
         <location line="-7"/>
         <location line="+31"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished">Файл
+        <translation>Файл
 %1
-не существует. Вы хотите создать его?</translation>
+не существует. Создать его?</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Редактор Octave</translation>
+        <translation>Редактор Octave</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation type="unfinished">Файл %1 не находится в загрузочном пути. Для запуска или отладки редактируемой функции необходимо перейти в папку %2 или добавить её в загрузочный путь.</translation>
+        <translation>Файл %1 не существует по пути загрузки. Для выполнения или отладки редактируемой функции необходимо перейти в папку %2 или добавить её в путь загрузки.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        <translation type="unfinished">Файл %1 заслонён одноимённым файлом из загрузочного пути. Для запуска или отладки редактируемой функции перейдите в папку %2.</translation>
+        <translation>Файл %1 скрыт одноимённым файлом из пути загрузки. Для выполнения или отладки редактируемой функции перейдите в папку %2.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Change Directory or Add Directory to Load Path</source>
-        <translation type="unfinished">Перейти в папку или добавить её в путь загрузки</translation>
+        <translation>Перейти в папку или добавить её в путь загрузки</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Change Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Перейти в папку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Add Directory to Load Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Д&amp;обавить папку в путь загрузки</translation>
     </message>
 </context>
 <context>
@@ -3207,7 +3247,7 @@ Make sure you have read and write permissions to
 %2
 
 Octave GUI must be closed now.</source>
-        <translation type="unfinished">Файл настроек
+        <translation>Файл параметров
 %1
 не существует и не может быть создан.
 Убедитесь, что у Вас есть права права на чтение и запись в
@@ -3218,7 +3258,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+6"/>
         <source>Octave Critical Error</source>
-        <translation type="unfinished">Критическая ошибка в Octave</translation>
+        <translation>Критическая ошибка Octave</translation>
     </message>
 </context>
 <context>
@@ -3226,82 +3266,82 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/set-path-dialog.cc" line="+64"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Установка пути</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>All changes take effect immediately.</source>
-        <translation type="unfinished"></translation>
+        <translation>Все изменения вступят в силу немедленно.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить папку...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Single Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Одиночная папка</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Folder with Subfolders</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка с вложенными папками</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move to Top</source>
-        <translation type="unfinished"></translation>
+        <translation>На самый верх</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move to Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>В самый низ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Вверх</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Вниз</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Revert</source>
-        <translation type="unfinished"></translation>
+        <translation>Отменить изменения</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Revert Last Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Отменить последнее изменение</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Revert All Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Отменить все изменения</translation>
     </message>
     <message>
         <location line="+94"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть каталог</translation>
     </message>
 </context>
 <context>
@@ -3309,134 +3349,134 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/settings-dialog.cc" line="-579"/>
         <source>Octave Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Unable to save preferences.  Missing preferences file or unknown directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить параметры. Файл параметров отсутствует или каталог неизвестен.</translation>
     </message>
     <message>
         <location line="+16"/>
         <location line="+5"/>
         <location line="+705"/>
         <source>System setting</source>
-        <translation type="unfinished">Используемый в системе</translation>
+        <translation>Используемый в системе</translation>
     </message>
     <message>
         <location line="-461"/>
         <source>IBeam Cursor</source>
-        <translation type="unfinished">Вертикальная черта</translation>
+        <translation>Вертикальная черта</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Block Cursor</source>
-        <translation type="unfinished">Блок</translation>
+        <translation>Блок</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Underline Cursor</source>
-        <translation type="unfinished">Черта снизу</translation>
+        <translation>Черта снизу</translation>
     </message>
     <message>
         <location line="+169"/>
         <source>Set Octave Startup Directory</source>
-        <translation type="unfinished">Установить начальную рабочую папку Octave</translation>
+        <translation>Установить начальную папку для Octave</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Set File Browser Startup Directory</source>
-        <translation type="unfinished">Установить начальную папку для диспетчера файлов</translation>
+        <translation>Установить начальную папку для диспетчера файлов</translation>
     </message>
     <message>
         <location line="+506"/>
         <source>Enable attribute colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить цветовое выделение свойств</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide tools tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрывать всплывающие подсказки</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-cs.h" line="+68"/>
         <source>foreground</source>
-        <translation type="unfinished">цвет текста</translation>
+        <translation>цвет текста</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>background</source>
-        <translation type="unfinished">фон</translation>
+        <translation>цвет фона</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>selection</source>
-        <translation type="unfinished">выделение</translation>
+        <translation>цвет выделения</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>cursor</source>
-        <translation type="unfinished">указатель</translation>
+        <translation>цвет курсора</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ed.h" line="+198"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Сверху</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Снизу</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Слева</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Справа</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ve.h" line="+67"/>
         <source>Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет текста</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation type="unfinished">Цвет фона</translation>
+        <translation>Цвет фона</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет текста выделения</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет фона выделения</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Дополнительный цвет фона</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ws.h" line="+85"/>
         <source>argument</source>
-        <translation type="unfinished"></translation>
+        <translation>аргумент</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>global</source>
-        <translation type="unfinished">глобальная</translation>
+        <translation>глобальная</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>persistant</source>
-        <translation type="unfinished"></translation>
+        <translation>постоянная</translation>
     </message>
 </context>
 <context>
@@ -3444,22 +3484,22 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+46"/>
         <source>Community News</source>
-        <translation type="unfinished">Новости сообщества</translation>
+        <translation>Новости сообщества</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Previous</source>
-        <translation type="unfinished">Назад</translation>
+        <translation>Предыдущая</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next</source>
-        <translation type="unfinished">Далее</translation>
+        <translation>Следующая</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3469,7 +3509,12 @@ The check will happen at most once each day and news will only be displayed if t
 &lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu, or by visiting
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;При запуске Octave выборочно производится проверка веб-сайта Octave на предмет наличия новостей сообщества.
+Проверка производится не чаще раза в сутки, а новости отображаются только при их появлении с последнего просмотра.&lt;/p&gt;
+&lt;p&gt;Ознакомиться с новостями также можно, выбрав пункт «Новости сообщества» в меню «Справка» или перейдя по адресу
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -3480,7 +3525,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;
+        <translation>&lt;html&gt;&lt;head&gt;
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
@@ -3494,7 +3539,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/shortcut-manager.cc" line="+582"/>
         <source>Double Shortcut</source>
-        <translation type="unfinished">Конфликт комбинаций клавиш</translation>
+        <translation>Конфликт сочетаний клавиш</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3503,758 +3548,760 @@ a:link { text-decoration: underline; color: #0000ff; }
 is already used for the action
   &quot;%2&quot;.
 Do you want to use the shortcut anyhow removing it from the previous action?</source>
-        <translation type="unfinished">Выбранная комбинация клавиш
-  &quot;%1&quot;
+        <translation>Выбранное сочетание клавиш
+  «%1»
 уже используется для действия
-  &quot;%2&quot;.
-Вы действительно хотите использовать эту комбинацию?</translation>
+  «%2».
+Удалить текущую привязку и использовать это сочетание?</translation>
     </message>
     <message>
         <location line="-440"/>
         <source>New File</source>
-        <translation type="unfinished">Новый файл</translation>
+        <translation>Создать файл</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Undock/Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Открепить/закрепить виджет</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть виджет</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>New Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать функцию</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Figure</source>
-        <translation type="unfinished">Новый графический объект</translation>
+        <translation>Создать рисунок</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open File</source>
-        <translation type="unfinished">Открыть файл</translation>
+        <translation>Открыть файл</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Load Workspace</source>
-        <translation type="unfinished">Загрузить область переменных</translation>
+        <translation>Загрузить область переменных</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save Workspace As</source>
-        <translation type="unfinished">Сохранить область переменных как</translation>
+        <translation>Сохранить область переменных как</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Exit Octave</source>
-        <translation type="unfinished">Выйли из Octave</translation>
+        <translation>Выйти из Octave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy</source>
-        <translation type="unfinished">Копировать</translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Paste</source>
-        <translation type="unfinished">Вставить</translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Undo</source>
-        <translation type="unfinished">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Выделить все</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Clipboard</source>
-        <translation type="unfinished">Очистить буфер обмена</translation>
+        <translation>Очистить буфер обмена</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find in Files</source>
-        <translation type="unfinished">Найти файлы</translation>
+        <translation>Найти в файлах</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Command Window</source>
-        <translation type="unfinished">Очистить командное окно</translation>
+        <translation>Очистить командное окно</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Command History</source>
-        <translation type="unfinished">Очистить журнал выполненных команд</translation>
+        <translation>Очистить журнал выполненных команд</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Workspace</source>
-        <translation type="unfinished">Очистить область переменных</translation>
+        <translation>Очистить область переменных</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить путь</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+112"/>
         <source>Preferences</source>
-        <translation type="unfinished">Настройки</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location line="-109"/>
         <source>Step</source>
-        <translation type="unfinished">Шаг</translation>
+        <translation>Шаг</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Step Into</source>
-        <translation type="unfinished">Шаг с заходом</translation>
+        <translation>Шаг с заходом</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Step Out</source>
-        <translation type="unfinished">Шаг с выходом</translation>
+        <translation>Шаг с выходом</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Continue</source>
-        <translation type="unfinished">Продолжить</translation>
+        <translation>Продолжить</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Quit Debug Mode</source>
-        <translation type="unfinished">Выйти из режима отладки</translation>
+        <translation>Выйти из режима отладки</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Command Window</source>
-        <translation type="unfinished">Показывать командное окно</translation>
+        <translation>Показывать командное окно</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Command History</source>
-        <translation type="unfinished">Показывать журнал выполненных команд</translation>
+        <translation>Показывать журнал выполненных команд</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show File Browser</source>
-        <translation type="unfinished">Показывать диспетчер файлов</translation>
+        <translation>Показывать диспетчер файлов</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Workspace</source>
-        <translation type="unfinished">Показывать область переменных</translation>
+        <translation>Показывать область переменных</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Editor</source>
-        <translation type="unfinished">Показывать редактор</translation>
+        <translation>Показывать редактор</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Documentation</source>
-        <translation type="unfinished">Показывать документацию</translation>
+        <translation>Показывать документацию</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Variable Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать редактор переменных</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Command Window</source>
-        <translation type="unfinished">Командное окно</translation>
+        <translation>Командное окно</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Command History</source>
-        <translation type="unfinished">Журнал выполненных команд</translation>
+        <translation>Журнал выполненных команд</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File Browser</source>
-        <translation type="unfinished">Диспетчер файлов</translation>
+        <translation>Диспетчер файлов</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Workspace</source>
-        <translation type="unfinished">Область переменных</translation>
+        <translation>Область переменных</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+234"/>
         <source>Editor</source>
-        <translation type="unfinished">Редактор</translation>
+        <translation>Редактор</translation>
     </message>
     <message>
         <location line="-233"/>
         <source>Documentation</source>
-        <translation type="unfinished">Документация</translation>
+        <translation>Документация</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Variable Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор переменных</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущий виджет</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Reset Default Window Layout</source>
-        <translation type="unfinished">Сбросить расположение окон</translation>
+        <translation>Сбросить расположение окон</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Ondisk Documentation</source>
-        <translation type="unfinished">Документация на диске</translation>
+        <translation>Показать документацию на диске</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Online Documentation</source>
-        <translation type="unfinished">Документация на веб-сайте Octave</translation>
+        <translation>Показать документацию на веб-сайте Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Сообщить об ошибке</translation>
+        <translation>Сообщить об ошибке</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Octave Packages</source>
-        <translation type="unfinished">Пакеты Octave</translation>
+        <translation>Пакеты Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Contribute to Octave</source>
-        <translation type="unfinished">Внести вклад в Octave</translation>
+        <translation>Внести вклад в Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Octave Developer Resources</source>
-        <translation type="unfinished">Ресурсы разработчика Octave</translation>
+        <translation>Ресурсы разработчика Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>About Octave</source>
-        <translation type="unfinished">Об Octave</translation>
+        <translation>О программе Octave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Release Notes</source>
-        <translation type="unfinished">Примечания к выпуску</translation>
+        <translation>Заметки о выпуске</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Community News</source>
-        <translation type="unfinished">Новости сообщества</translation>
+        <translation>Новости сообщества</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Close Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть вкладку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close All Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть все вкладки</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close Other Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть остальные вкладки</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Switch to Left Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключиться на левую вкладку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Switch to Right Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключиться на правую вкладку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Tab Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить вкладку влево</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Tab Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить вкладку вправо</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Edit Function</source>
-        <translation type="unfinished">Редактировать функцию</translation>
+        <translation>Изменить функцию</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save File</source>
-        <translation type="unfinished">Сохранить файл</translation>
+        <translation>Сохранить файл</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save File As</source>
-        <translation type="unfinished">Сохранить файл как</translation>
+        <translation>Сохранить файл как</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Print</source>
-        <translation type="unfinished">Печать</translation>
+        <translation>Печать</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторить</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cut</source>
-        <translation type="unfinished">Вырезать</translation>
+        <translation>Вырезать</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find and Replace</source>
-        <translation type="unfinished">Найти и заменить</translation>
+        <translation>Найти и заменить</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find Next</source>
-        <translation type="unfinished">Найти следующее</translation>
+        <translation>Найти далее</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find Previous</source>
-        <translation type="unfinished">Найти предыдущее</translation>
+        <translation>Найти ранее</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to Start of Word</source>
-        <translation type="unfinished">Удалить до начала слова</translation>
+        <translation>Удалить до начала слова</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to End of Word</source>
-        <translation type="unfinished">Удалить до конца слова</translation>
+        <translation>Удалить до конца слова</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to Start of Line</source>
-        <translation type="unfinished">Удалить до начала строки</translation>
+        <translation>Удалить до начала строки</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to End of Line</source>
-        <translation type="unfinished">Удалить до конца строки</translation>
+        <translation>Удалить до конца строки</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Line</source>
-        <translation type="unfinished">Удалить строку</translation>
+        <translation>Удалить строку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy Line</source>
-        <translation type="unfinished">Копировать строку</translation>
+        <translation>Копировать строку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cut Line</source>
-        <translation type="unfinished">Вырезать строку</translation>
+        <translation>Вырезать строку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Selection/Line</source>
-        <translation type="unfinished">Дублировать выделенное/строку</translation>
+        <translation>Дублировать выделенное/строку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Transpose Line</source>
-        <translation type="unfinished">Переместить строку</translation>
+        <translation>Переместить строку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Completion List</source>
-        <translation type="unfinished">Показать список завершения</translation>
+        <translation>Показать список завершения</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Comment Selection</source>
-        <translation type="unfinished">Закоментировать выделенное</translation>
+        <translation>Закомментировать выделенное</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Uncomment Selection</source>
-        <translation type="unfinished">Раскоментировать выделенное</translation>
+        <translation>Раскомментировать выделенное</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Comment Selection (Choosing String)</source>
-        <translation type="unfinished"></translation>
+        <translation>Закомментировать выделенное (с выбором строки)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Uppercase Selection</source>
-        <translation type="unfinished">Перевести в верхний регистр</translation>
+        <translation>Перевести в верхний регистр</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lowercase Selection</source>
-        <translation type="unfinished">Перевести в нижний регистр</translation>
+        <translation>Перевести в нижний регистр</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+3"/>
         <source>Indent Selection Rigidly</source>
-        <translation type="unfinished"></translation>
+        <translation>Отступ для выделенного фрагмента</translation>
     </message>
     <message>
         <location line="-2"/>
         <location line="+3"/>
         <source>Unindent Selection Rigidly</source>
-        <translation type="unfinished"></translation>
+        <translation>Отменить отступ для выделенного фрагмента</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Indent Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Расставить отступы для кода</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Windows</source>
-        <translation type="unfinished">Преобразовать конец строки в формат Windows</translation>
+        <translation>Преобразовать завершения строк в формат Windows</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Convert Line Endings to Unix</source>
-        <translation type="unfinished">Преобразовать конец строки в формат Unix</translation>
+        <translation>Преобразовать завершения строк в формат Unix</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Convert Line Endings to Mac</source>
-        <translation type="unfinished">Преобразовать конец строки в формат Mac</translation>
+        <translation>Преобразовать завершения строк в формат Mac</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Goto Line</source>
-        <translation type="unfinished">Перейти к строке</translation>
+        <translation>Перейти к строке</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move to Matching Brace</source>
-        <translation type="unfinished">Перейти к соответствующей скобке</translation>
+        <translation>Перейти к парной фигурной скобке</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select to Matching Brace</source>
-        <translation type="unfinished">Выделить до соответствующей скобки</translation>
+        <translation>Выделить до парной фигурной скобки</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Toggle Bookmark</source>
-        <translation type="unfinished">Установить закладку</translation>
+        <translation>Переключить закладку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next Bookmark</source>
-        <translation type="unfinished">Следующая закладка</translation>
+        <translation>Следующая закладка</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous Bookmark</source>
-        <translation type="unfinished">Предыдущая закладка</translation>
+        <translation>Предыдущая закладка</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove All Bookmark</source>
-        <translation type="unfinished">Удалить все закладки</translation>
+        <translation>Удалить все закладки</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Styles Preferences</source>
-        <translation type="unfinished">Настройки стиля</translation>
+        <translation>Параметры стиля</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Line Numbers</source>
-        <translation type="unfinished">Показывать номера строк</translation>
+        <translation>Показывать номера строк</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Whitespace Characters</source>
-        <translation type="unfinished">Показывать символ пробела</translation>
+        <translation>Показывать символ пробела</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Line Endings</source>
-        <translation type="unfinished">Показывать символ конца строки</translation>
+        <translation>Показывать символ конца строки</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Indentation Guides</source>
-        <translation type="unfinished">Показывать линии отступов</translation>
+        <translation>Показывать направляющие для отступов</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Long Line Marker</source>
-        <translation type="unfinished">Показывать линию переноса строк</translation>
+        <translation>Показывать метку длинных строк</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать панель инструментов</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Statusbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать строку состояния</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Horizontal Scrollbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать горизонтальную полосу прокрутки</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Sort Tabs Alphabetically</source>
-        <translation type="unfinished"></translation>
+        <translation>Упорядочить вкладки по алфавиту</translation>
     </message>
     <message>
         <location line="+111"/>
         <source>Handling of Dock Widgets</source>
-        <translation type="unfinished"></translation>
+        <translation>Поведение закрепляемых виджетов</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Documentation Viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Средство просмотра документации</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Браузер</translation>
     </message>
     <message>
         <location line="+80"/>
         <source>Import shortcuts from file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт сочетаний клавиш из файла...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export shortcuts to file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт сочетаний клавиш в файл...</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Failed to open %1 as Octave shortcut file</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть %1 как файл сочетаний клавиш Octave</translation>
     </message>
     <message>
         <location line="-326"/>
         <source>Zoom In</source>
-        <translation type="unfinished">Увеличить</translation>
+        <translation>Увеличить масштаб</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Zoom Out</source>
-        <translation type="unfinished">Уменьшить</translation>
+        <translation>Уменьшить масштаб</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+2"/>
         <source>Zoom Normal</source>
-        <translation type="unfinished">Обычный масштаб</translation>
+        <translation>Обычный масштаб</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>Toggle Breakpoint</source>
-        <translation type="unfinished">Установить/снять точку останова</translation>
+        <translation>Переключить точку останова</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next Breakpoint</source>
-        <translation type="unfinished">Следующая точка останова</translation>
+        <translation>Следующая точка останова</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous Breakpoint</source>
-        <translation type="unfinished">Предыдущая точка останова</translation>
+        <translation>Предыдущая точка останова</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove All Breakpoints</source>
-        <translation type="unfinished">Удалить все точки останова</translation>
+        <translation>Удалить все точки останова</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Run File</source>
-        <translation type="unfinished">Запустить файл</translation>
+        <translation>Выполнить файл</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Run Selection</source>
-        <translation type="unfinished">Запустить выделенное</translation>
+        <translation>Выполнить выделенное</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Help on Keyword</source>
-        <translation type="unfinished">Помощь по зарезервированному слову</translation>
+        <translation>Найти справку по ключевому слову</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Document on Keyword</source>
-        <translation type="unfinished">Документация по зарезервированному слову</translation>
+        <translation>Найти документацию по ключевому слову</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Go to Homepage</source>
-        <translation type="unfinished"></translation>
+        <translation>На домашнюю страницу</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Go Back one Page</source>
-        <translation type="unfinished"></translation>
+        <translation>На предыдущую страницу</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Go Forward one Page</source>
-        <translation type="unfinished"></translation>
+        <translation>На следующую страницу</translation>
     </message>
     <message>
         <location line="+76"/>
         <source>Global</source>
-        <translation type="unfinished">Общие</translation>
+        <translation>Общие</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+35"/>
         <source>File Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню «Файл»</translation>
     </message>
     <message>
         <location line="-33"/>
         <location line="+35"/>
         <source>Edit Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню «Правка»</translation>
     </message>
     <message>
         <location line="-33"/>
         <location line="+37"/>
         <source>Debug Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню «Отладка»</translation>
     </message>
     <message>
         <location line="-35"/>
         <source>Window Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню «Окно»</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+37"/>
         <source>Help Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню «Справка»</translation>
     </message>
     <message>
         <location line="-35"/>
         <source>News Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню «Новости»</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Tab Handling in Dock Widgets</source>
-        <translation type="unfinished"></translation>
+        <translation>Поведение вкладок в закрепляемых виджетах</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Find &amp; Replace in Dock Widgets</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск и замена в закрепляемых виджетах</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Zooming in Editor and Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменение масштаба в редакторе и документации</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>View Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню «Вид»</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Run Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню «Выполнение»</translation>
     </message>
     <message>
         <location line="+97"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
-        <translation type="unfinished">Файл набора комбинаций клавиш Octave (*.osc);;Все файлы (*)</translation>
+        <translation>Файлы сочетаний клавиш Octave (*.osc);;Все файлы (*)</translation>
     </message>
     <message>
         <location line="+123"/>
         <source>Enter new Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Ввод нового сочетания клавиш</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Apply the desired shortcut or click on the right button to reset the shortcut to its default.</source>
-        <translation type="unfinished">Назначьте комбинацию клавиш или нажмине на кнопку сброса на значение по умолчанию.</translation>
+        <translation>Назначьте сочетание клавиш или щёлкните правой кнопкой мыши для сброса на значение по умолчанию.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Enter shortcut directly by performing it</source>
-        <translation type="unfinished">Ввести комбинацию клавиш путём её воспроизведения</translation>
+        <translation>Ввести сочетание клавиш путём его воспроизведения</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add Shift modifier
 (allows to enter number keys)</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить модификатор Shift
+(позволяет использовать клавиши с цифрами)</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Actual shortcut</source>
-        <translation type="unfinished">Текущая комбинация</translation>
+        <translation>Текущее сочетание</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Default shortcut</source>
-        <translation type="unfinished">Комбинация по умолчанию</translation>
+        <translation>Сочетание по умолчанию</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set to default</source>
-        <translation type="unfinished">Значение по умолчанию</translation>
+        <translation>Установить по умолчанию</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>Overwriting Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Замена сочетаний клавиш</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>You are about to overwrite all shortcuts.
 Would you like to save the current shortcut set or cancel the action?</source>
-        <translation type="unfinished"></translation>
+        <translation>Все сочетания клавиш будут заменены.
+Сохранить текущий набор сочетаний клавиш или отменить действие?</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Don&apos;t save</source>
-        <translation type="unfinished"></translation>
+        <translation>Не сохранять</translation>
     </message>
 </context>
 <context>
@@ -4262,7 +4309,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location filename="../src/terminal-dock-widget.cc" line="+53"/>
         <source>Command Window</source>
-        <translation type="unfinished">Командное окно</translation>
+        <translation>Командное окно</translation>
     </message>
 </context>
 <context>
@@ -4270,27 +4317,27 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location filename="../src/variable-editor.cc" line="+187"/>
         <source>Dock widget</source>
-        <translation type="unfinished">Закрепить виджет</translation>
+        <translation>Закрепить виджет</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Variable Editor: </source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор переменных: </translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Undock widget</source>
-        <translation type="unfinished">Открепить виджет</translation>
+        <translation>Открепить виджет</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Restore geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстановить размеры</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Redock</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрепить снова</translation>
     </message>
 </context>
 <context>
@@ -4298,84 +4345,84 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+837"/>
         <source>Variable Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор переменных</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edit variables.</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменение переменных.</translation>
     </message>
     <message>
         <location line="+532"/>
         <source>Variable Editor Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель инструментов редактора переменных</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save variable to a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить переменную в файл</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Cut</source>
-        <translation type="unfinished">Вырезать</translation>
+        <translation>Вырезать</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cut data to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Вырезать данные в буфер обмена</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy</source>
-        <translation type="unfinished">Копировать</translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy data to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать данные в буфер обмена</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Paste</source>
-        <translation type="unfinished">Вставить</translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Paste clipboard into variable data</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить данные из буфера обмена в переменную</translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+5"/>
         <location line="+7"/>
         <source>Plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Отобразить</translation>
     </message>
     <message>
         <location line="-11"/>
         <source>Plot Selected Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Отобразить выделенные данные</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Plot selected data</source>
-        <translation type="unfinished"></translation>
+        <translation>Отобразить выделенные данные</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Вверх</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go one level up in variable hierarchy</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на уровень выше в иерархии переменных</translation>
     </message>
 </context>
 <context>
@@ -4383,7 +4430,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-1188"/>
         <source>Save Variable %1 As</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить переменную %1 как</translation>
     </message>
 </context>
 <context>
@@ -4391,57 +4438,57 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+128"/>
         <source>Cut</source>
-        <translation type="unfinished">Вырезать</translation>
+        <translation>Вырезать</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Copy</source>
-        <translation type="unfinished">Копировать</translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Paste</source>
-        <translation type="unfinished">Вставить</translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Variable from Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать переменную из выделения</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Transpose</source>
-        <translation type="unfinished"></translation>
+        <translation>Транспонировать</translation>
     </message>
     <message>
         <location line="+50"/>
         <source> columns</source>
-        <translation type="unfinished"></translation>
+        <translation> столбцы</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> column</source>
-        <translation type="unfinished"></translation>
+        <translation> столбец</translation>
     </message>
     <message>
         <location line="+47"/>
         <source> rows</source>
-        <translation type="unfinished"></translation>
+        <translation> строки</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> row</source>
-        <translation type="unfinished"></translation>
+        <translation> строка</translation>
     </message>
 </context>
 <context>
@@ -4449,7 +4496,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="-198"/>
         <source>Welcome to GNU Octave</source>
-        <translation type="unfinished">Добро пожаловать в GNU Octave</translation>
+        <translation>Добро пожаловать в GNU Octave</translation>
     </message>
 </context>
 <context>
@@ -4457,38 +4504,38 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location filename="../src/workspace-model.cc" line="+47"/>
         <source>Name</source>
-        <translation type="unfinished">Идентификатор</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dimension</source>
-        <translation type="unfinished">Размерность</translation>
+        <translation>Размерность</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished">Значение</translation>
+        <translation>Значение</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Attribute</source>
-        <translation type="unfinished">Свойство</translation>
+        <translation>Свойство</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>Right click to copy, rename, or display</source>
-        <translation type="unfinished">Правый щелчок для копирования, переименования или отображения</translation>
+        <translation>Щёлкните правой кнопкой для копирования, переименования или отображения</translation>
     </message>
     <message>
         <location line="+30"/>
         <location line="+2"/>
         <source>complex</source>
-        <translation type="unfinished">комплексная</translation>
+        <translation>комплексная</translation>
     </message>
 </context>
 <context>
@@ -4496,87 +4543,87 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location filename="../src/workspace-view.cc" line="+62"/>
         <source>Workspace</source>
-        <translation type="unfinished">Область переменных</translation>
+        <translation>Область переменных</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>View the variables in the active workspace.</source>
-        <translation type="unfinished">Содержимое текущей области переменных.</translation>
+        <translation>Содержимое текущей области переменных.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter text to filter the workspace</source>
-        <translation type="unfinished">Введите текст для поиска в области переменных</translation>
+        <translation>Введите текст для поиска в области переменных</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Filter</source>
-        <translation type="unfinished">Фильтр</translation>
+        <translation>Фильтр</translation>
     </message>
     <message>
         <location line="+136"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
-        <translation type="unfinished">Содержимое текущей области переменных.&lt;br&gt; </translation>
+        <translation>Содержимое текущей области переменных.&lt;br&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Colors for variable attributes:</source>
-        <translation type="unfinished">Цветовое обозначение переменных:</translation>
+        <translation>Цветовое обозначение переменных:</translation>
     </message>
     <message>
         <location line="+132"/>
         <source>Open in Variable Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть в редакторе переменных</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy name</source>
-        <translation type="unfinished">Копировать имя</translation>
+        <translation>Копировать имя</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy value</source>
-        <translation type="unfinished">Копировать значение</translation>
+        <translation>Копировать значение</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Rename</source>
-        <translation type="unfinished">Переименовать</translation>
+        <translation>Переименовать</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Only top-level symbols may be renamed</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименование доступно только для символов верхнего уровня</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Hide filter</source>
-        <translation type="unfinished">Скрыть фильтр</translation>
+        <translation>Скрыть фильтр</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
-        <translation type="unfinished">Показывать фильтр</translation>
+        <translation>Показать фильтр</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ws.h" line="-29"/>
         <source>Class</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dimension</source>
-        <translation type="unfinished">Размерность</translation>
+        <translation>Размерность</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished">Значение</translation>
+        <translation>Значение</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Attribute</source>
-        <translation type="unfinished">Свойство</translation>
+        <translation>Свойство</translation>
     </message>
 </context>
 <context>
@@ -4615,7 +4662,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+190"/>
         <source>Custom style</source>
-        <translation>Свой стиль</translation>
+        <translation>Пользовательский стиль</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -4636,12 +4683,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <location line="+387"/>
         <location line="+140"/>
         <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
-        <translation>Это хорошо работает для моноширинных шрифтов. Позиция линии зависит от ширины символа пробела. В случае использования пропорционального шрифта линия может не совпадать с реальным положением переноса.</translation>
+        <translation>Хорошо работает для моноширинных шрифтов. Положение линии зависит от ширины символа пробела. В случае использования пропорционального шрифта линия может не совпадать с реальным положением переноса.</translation>
     </message>
     <message>
         <location line="-635"/>
         <source>Enable Code Folding</source>
-        <translation>Разрешить сворачивание блоков</translation>
+        <translation>Включить сворачивание кода</translation>
     </message>
     <message>
         <location line="+1159"/>
@@ -4651,7 +4698,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+5"/>
         <source>Legacy Mac (CR)</source>
-        <translation type="unfinished">Legacy Mac (CR)</translation>
+        <translation>Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4671,7 +4718,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+622"/>
         <source>Wrap long lines at current window border</source>
-        <translation type="unfinished"></translation>
+        <translation>Переносить длинные строки у границы текущего окна</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -4691,22 +4738,22 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+20"/>
         <source>Auto indentation</source>
-        <translation>Авто-отступы</translation>
+        <translation>Автоматический отступ</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Tab width</source>
-        <translation>Ширина табуляции</translation>
+        <translation>Интервал табуляции</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Show indentation guides</source>
-        <translation>Показывать линии отступов</translation>
+        <translation>Показывать направляющие для отступов</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Backspace unindents line</source>
-        <translation>Уменьшение отступа клавишей backspace</translation>
+        <translation>Уменьшение отступа клавишей Backspace</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -4716,12 +4763,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+70"/>
         <source>Auto completion</source>
-        <translation>Автодополнение</translation>
+        <translation>Автоматическое завершение</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Match keywords</source>
-        <translation>Зарезервированные слова</translation>
+        <translation>Совпадение по ключевым словам</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -4736,22 +4783,23 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-10"/>
         <source>Match words in document</source>
-        <translation>Слова из документа</translation>
+        <translation>Совпадение по словам в документе</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>With Octave builtins</source>
-        <translation>Встроенные слова Octave</translation>
+        <translation>Завершение встроенными
+словами Octave</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>With Octave functions</source>
-        <translation>Функции Octave</translation>
+        <translation>Завершение функциями Octave</translation>
     </message>
     <message>
         <location line="+64"/>
         <source>Show completion list automatically</source>
-        <translation>Показать список завершения автоматически</translation>
+        <translation>Автоматически показывать список завершения</translation>
     </message>
     <message>
         <location line="+76"/>
@@ -4761,7 +4809,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-894"/>
         <source>Use custom file editor</source>
-        <translation>Использовать внешний редактор</translation>
+        <translation>Использовать внешний редактор файлов</translation>
     </message>
     <message>
         <location line="+987"/>
@@ -4771,12 +4819,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+48"/>
         <source>Editor Styles</source>
-        <translation>Вид редактора</translation>
+        <translation>Стили редактора</translation>
     </message>
     <message>
         <location line="-1463"/>
         <source>(Changing buffer size clears history)</source>
-        <translation>(Изменение параметра очищает историю)</translation>
+        <translation>(изменение параметра очищает историю)</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -4823,7 +4871,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-580"/>
         <source>Text inactive</source>
-        <translation>Текст неактивный</translation>
+        <translation>Неактивный текст</translation>
     </message>
     <message>
         <location line="-32"/>
@@ -4834,7 +4882,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+39"/>
         <source>Background inactive</source>
-        <translation>Фон неактивный</translation>
+        <translation>Неактивный фон</translation>
     </message>
     <message>
         <location line="+121"/>
@@ -4845,7 +4893,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <location line="+46"/>
         <location line="+1764"/>
         <source>Browse</source>
-        <translation>Выбрать</translation>
+        <translation>Обзор</translation>
     </message>
     <message>
         <location line="-1371"/>
@@ -4860,7 +4908,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+369"/>
         <source>Tab width min.</source>
-        <translation>Ширина вкладок мин.</translation>
+        <translation>Ширина вкладок, мин.</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -4880,12 +4928,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-547"/>
         <source>Cursor type:</source>
-        <translation>Тип указателя:</translation>
+        <translation>Тип курсора:</translation>
     </message>
     <message>
         <location line="-415"/>
         <source>Cursor blinking</source>
-        <translation>Мигающий указатель</translation>
+        <translation>Мигающий курсор</translation>
     </message>
     <message>
         <location line="+404"/>
@@ -4911,7 +4959,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+340"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
-        <translation>Эти настройки применяются после конфигурационных файлов octaverc.</translation>
+        <translation>Эти параметры применяются после загрузки конфигурационных файлов .octaverc.</translation>
     </message>
     <message>
         <location line="+603"/>
@@ -4931,172 +4979,175 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-1879"/>
         <source>Preferences</source>
-        <translation type="unfinished">Настройки</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location line="+63"/>
         <source>(requires restart)</source>
-        <translation type="unfinished"></translation>
+        <translation>(требуется перезапуск)</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Use native file dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать встроенные
+диалоги работы с файлами</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Use system icon theme if available (requires restart)</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать системную тему значков
+при её наличии (требуется перезапуск)</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>Toolbar Icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Значки панели инструментов</translation>
     </message>
     <message>
         <location line="+186"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Язык</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Initial working directory of Octave interpreter</source>
-        <translation type="unfinished"></translation>
+        <translation>Начальная рабочая папка интерпретатора Octave</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Restore last working directory of previous session</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстанавливать последнюю рабочую папку предыдущего сеанса</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Command</source>
-        <translation type="unfinished">Команда</translation>
+        <translation>Команда</translation>
     </message>
     <message>
         <location line="+208"/>
         <source>Set focus to Command Window when running a command from within another widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Устанавливать фокус на командном окне при выполнении команды из другого виджета</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Print debug location in Command Window in addition to the marker in the editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Выводить место отладки в командном окне помимо маркера в редакторе</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Command Window Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвета в командном окне</translation>
     </message>
     <message>
         <location line="+526"/>
         <source>Show complete path in title</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать в заголовке полный путь</translation>
     </message>
     <message>
         <location line="-336"/>
         <source>Number size as difference to editor font</source>
-        <translation type="unfinished"></translation>
+        <translation>Нумеровать размер как отклонение от шрифта редактора</translation>
     </message>
     <message>
         <location line="+140"/>
         <source>Highlight all occurrences of a word selected by a double click</source>
-        <translation type="unfinished"></translation>
+        <translation>Подсвечивать все вхождения слова, выделенного двойным щелчком</translation>
     </message>
     <message>
         <location line="+65"/>
         <source>Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкладки</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Tab position</source>
-        <translation type="unfinished"></translation>
+        <translation>Положение вкладок</translation>
     </message>
     <message>
         <location line="+112"/>
         <source>Comments (Octave)</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарии (Octave)</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Strings considered for uncommenting text</source>
-        <translation type="unfinished"></translation>
+        <translation>Строки, учитываемые при раскомментировании текста</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>String used for commenting selected text</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка, используемая для комментирования выделенного текста</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Long lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Длинные строки</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Break long lines at line length</source>
-        <translation type="unfinished"></translation>
+        <translation>Разрывать длинные строки</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Break lines only in comments</source>
-        <translation type="unfinished"></translation>
+        <translation>Разрывать только строки комментариев</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Line length</source>
-        <translation type="unfinished"></translation>
+        <translation>Длина строк</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Long line marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Метка длинных строк</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Линия</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Background</source>
-        <translation type="unfinished">Цвет фона</translation>
+        <translation>Изменение фона</translation>
     </message>
     <message>
         <location line="+191"/>
         <source>Auto insert after &quot;if&quot; etc.</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматическая вставка после «if» и т. д.</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Nothing</source>
-        <translation type="unfinished"></translation>
+        <translation>Ничего</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&quot;endif&quot; etc.</source>
-        <translation type="unfinished"></translation>
+        <translation>«endif» и т. д.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&quot;end&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>«end»</translation>
     </message>
     <message>
         <location line="+238"/>
         <source>Debugging</source>
-        <translation type="unfinished"></translation>
+        <translation>Отладка</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Always show debug breakpoints and pointers (opens related file if closed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Всегда показывать точки останова и указатели
+(приводит к открытию связанного файла)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -5106,17 +5157,18 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+32"/>
         <source>Restore editor tabs from previous session on startup or when editor is shown again after closing</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстанавливать вкладки редактора из предыдущего сеанса при запуске
+или при повторном отображении редактора после его закрытия</translation>
     </message>
     <message>
         <location line="+105"/>
         <source>Close all files when the editor widget is closed/hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрывать все файлы при закрытии/сокрытии виджета редактора</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Выберите шрифт, его размер (как разницу от размера по умолчанию), стиль шрифта (&lt;b&gt;ж&lt;/b&gt;ирный, &lt;b&gt;к&lt;/b&gt;урсив, &lt;b&gt;п&lt;/b&gt;одчёркнутый), цвет текста и фона (для фона пурпурный цвет (255,0,255) является обозначением фона по умолчанию).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Выберите шрифт, его размер (как разницу от размера по умолчанию), стиль шрифта (полу&lt;b&gt;ж&lt;/b&gt;ирный, &lt;b&gt;к&lt;/b&gt;урсив, &lt;b&gt;п&lt;/b&gt;одчёркнутый), цвет текста и фона (для фона пурпурный цвет (255,0,255) является цветом по умолчанию).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+62"/>
@@ -5126,12 +5178,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+22"/>
         <source>Restore last directory of previous session</source>
-        <translation>Открывать последнюю папку предыдущей сессии</translation>
+        <translation>Восстанавливать последнюю папку предыдущего сеанса</translation>
     </message>
     <message>
         <location line="+68"/>
         <source>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</source>
-        <translation>Расширения файлов, котрые будут открываться в текстовом редакторе (разделённые &quot;;&quot;):</translation>
+        <translation>Расширения файлов, котрые будут открываться в текстовом редакторе (разделённые «;»):</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -5146,22 +5198,22 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+133"/>
         <source>Use Command Window font</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать шрифт командного окна</translation>
     </message>
     <message>
         <location line="+133"/>
         <source>Import shortcut set</source>
-        <translation>Импортировать</translation>
+        <translation>Импорт сочетаний клавиш</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Export current shortcut set</source>
-        <translation>Экспортировать</translation>
+        <translation>Экспорт сочетаний клавиш</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Reset shortcuts to their defaults</source>
-        <translation>По умолчанию</translation>
+        <translation>Сбросить сочетания клавиш</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5172,12 +5224,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-71"/>
         <source>Edit a shortcut by double-clicking in a cell</source>
-        <translation>Для изменения комбинации клавиш дважды нажмите на ячейку</translation>
+        <translation>Для изменения сочетания клавиш дважды щёлкните ячейку</translation>
     </message>
     <message>
         <location line="+76"/>
         <source>Actual</source>
-        <translation>Текущая</translation>
+        <translation>Текущее</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -5197,32 +5249,32 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-433"/>
         <source>Variable Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор переменных</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Default row height</source>
-        <translation type="unfinished"></translation>
+        <translation>Высота строк по умолчанию</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Default column width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина столбцов по умолчанию</translation>
     </message>
     <message>
         <location line="+78"/>
         <source>Variable Editor Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвета в редакторе переменных</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Use alternating row colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать чередующиеся цвета строк</translation>
     </message>
     <message>
         <location line="+59"/>
         <source>Disable global shortcuts when Command Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключить глобальные сочетания клавиш при фокусе на командном окне</translation>
     </message>
     <message>
         <location line="+211"/>
@@ -5232,7 +5284,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-2588"/>
         <source>Icon set for dock widgets</source>
-        <translation>Значок виджета в панели задач</translation>
+        <translation>Набор значков виджетов</translation>
     </message>
     <message>
         <location line="+1995"/>
@@ -5242,27 +5294,27 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+46"/>
         <source>Initial file browser directory (only if not synchronized with initial working directory of Octave)</source>
-        <translation type="unfinished"></translation>
+        <translation>Начальная папка диспетчера файлов (только при отсутствии синхронизации с рабочей папкой Octave)</translation>
     </message>
     <message>
         <location line="+302"/>
         <source>Shortcuts</source>
-        <translation>Комбинации клавиш</translation>
+        <translation>Сочетания клавиш</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Select this option to prevent conflicts with readline shortcuts</source>
-        <translation>Используйте для предотвращения конфликтов между комбинациями клавиш</translation>
+        <translation>Установите флажок для предотвращения конфликтов с системными сочетаниями клавиш</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>Export</source>
-        <translation>Экспортировать</translation>
+        <translation>Экспорт</translation>
     </message>
     <message>
         <location line="-10"/>
         <source>Import</source>
-        <translation>Импортировать</translation>
+        <translation>Импорт</translation>
     </message>
     <message>
         <location line="+90"/>
@@ -5277,12 +5329,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-16"/>
         <source>Hostname:</source>
-        <translation>Имя хоста:</translation>
+        <translation>Имя узла:</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Proxy type:</source>
-        <translation>Тип сервера:</translation>
+        <translation>Тип прокси-сервера:</translation>
     </message>
     <message>
         <location line="+10"/>

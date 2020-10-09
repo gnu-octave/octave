@@ -147,7 +147,7 @@ IEEE Transactions on Automatic Control, 1979).
 %! [p, h] = hess (a);
 %! assert (p * h * p', a, sqrt (eps ("single")));
 
-%!error hess ()
+%!error <Invalid call> hess ()
 %!error hess ([1, 2; 3, 4], 2)
 %!error <must be a square matrix> hess ([1, 2; 3, 4; 5, 6])
 */

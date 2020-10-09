@@ -160,10 +160,9 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
 %!assert (sylvester (single ([1, 2; 3, 4]), single ([5, 6; 7, 8]), single ([9, 10; 11, 12])), single ([1/2, 2/3; 2/3, 1/2]), sqrt (eps ("single")))
 
 ## Test input validation
-%!error sylvester ()
-%!error sylvester (1)
-%!error sylvester (1,2)
-%!error sylvester (1, 2, 3, 4)
+%!error <Invalid call> sylvester ()
+%!error <Invalid call> sylvester (1)
+%!error <Invalid call> sylvester (1,2)
 %!error <A must be a square matrix> sylvester (ones (2,3), ones (2,2), ones (2,2))
 %!error <B must be a square matrix> sylvester (ones (2,2), ones (2,3), ones (2,2))
 %!error <nonconformant matrices> sylvester (ones (2,2), ones (2,2), ones (3,3))

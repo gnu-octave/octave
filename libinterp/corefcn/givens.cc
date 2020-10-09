@@ -186,7 +186,7 @@ factorization.
 %!assert (givens (1,0), eye (2))
 %!assert (givens (0,1), [0, 1; -1 0])
 
-%!error givens ()
-%!error givens (1)
+%!error <Invalid call> givens ()
+%!error <Invalid call> givens (1)
 %!error [a,b,c] = givens (1, 1)
 */

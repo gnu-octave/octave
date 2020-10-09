@@ -191,7 +191,7 @@ isglobal ("x")
 %! assert (isglobal ("x"), true);
 %! clear -global x;  # cleanup after test
 
-%!error isglobal ()
+%!error <Invalid call> isglobal ()
 %!error isglobal ("a", "b")
 %!error isglobal (1)
 */
@@ -505,8 +505,7 @@ Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
 %!assert (exist (dirtmp, "dir"), 7)
 %!assert (exist (dirtmp, "file"), 7)
 
-%!error exist ()
-%!error exist (1,2,3)
+%!error <Invalid call> exist ()
 %!warning <"class" type argument is not implemented> exist ("a", "class");
 %!error <TYPE must be a string> exist ("a", 1)
 %!error <NAME must be a string> exist (1)

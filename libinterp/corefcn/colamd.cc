@@ -777,8 +777,7 @@ permutations on the tree.
 %!assert (etree (sparse ([1,2], [1,2], [i,i], 2, 2)), [0, 0]);
 %!assert (etree (gallery ("poisson", 16)), [2:256, 0]);
 
-%!error etree ()
-%!error etree (1, 2, 3)
+%!error <Invalid call> etree ()
 %!error <S must be a sparse matrix> etree ([1, 2; 3, 4])
 %!error <TYP must be a string> etree (speye (2), 3)
 %!error <is not square> etree (sprand (2, 4, .25))

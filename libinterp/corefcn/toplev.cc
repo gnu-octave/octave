@@ -317,8 +317,7 @@ Windows systems.
 %! assert (ischar (output));
 %! assert (! isempty (output));
 
-%!error system ()
-%!error system (1, 2, 3)
+%!error <Invalid call> system ()
 */
 
 static octave_value

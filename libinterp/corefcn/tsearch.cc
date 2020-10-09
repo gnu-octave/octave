@@ -173,5 +173,5 @@ convex hull, @var{idx} is NaN.
 %!assert (tsearch (x,y,tri,-1/3, -1/3), 1)
 %!assert (tsearch (x,y,tri, 1, 1), NaN)
 
-%!error tsearch ()
+%!error <Invalid call> tsearch ()
 */

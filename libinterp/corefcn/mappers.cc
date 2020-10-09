@@ -80,8 +80,7 @@ abs (3 + 4i)
 %!assert (abs (single (3-4i)), single (5))
 %!assert (abs (single ([1.1, 3i; 3+4i, -3-4i])), single ([1.1, 3; 5, 5]))
 
-%!error abs ()
-%!error abs (1, 2)
+%!error <Invalid call> abs ()
 */
 
 DEFUN (acos, args, ,
@@ -141,8 +140,7 @@ Compute the inverse cosine in radians for each element of @var{x}.
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
 
-%!error acos ()
-%!error acos (1, 2)
+%!error <Invalid call> acos ()
 */
 
 DEFUN (acosh, args, ,
@@ -216,8 +214,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
 
-%!error acosh ()
-%!error acosh (1, 2)
+%!error <Invalid call> acosh ()
 */
 
 DEFUN (angle, args, ,
@@ -284,8 +281,7 @@ arg (3 + 4i)
 %!assert (arg (single (-i)), single (-pi/2))
 %!assert (arg (single ([1, i; -1, -i])), single ([0, pi/2; pi, -pi/2]), 2e1*eps ("single"))
 
-%!error arg ()
-%!error arg (1, 2)
+%!error <Invalid call> arg ()
 */
 
 DEFUN (asin, args, ,
@@ -344,8 +340,7 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
 
-%!error asin ()
-%!error asin (1, 2)
+%!error <Invalid call> asin ()
 */
 
 DEFUN (asinh, args, ,
@@ -387,8 +382,7 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);
 
-%!error asinh ()
-%!error asinh (1, 2)
+%!error <Invalid call> asinh ()
 */
 
 DEFUN (atan, args, ,
@@ -426,8 +420,7 @@ Compute the inverse tangent in radians for each element of @var{x}.
 %! assert (real (atan (x)), v);
 %! assert (imag (atan (x)), [0, 0, 0, 0], eps);
 
-%!error atan ()
-%!error atan (1, 2)
+%!error <Invalid call> atan ()
 */
 
 DEFUN (atanh, args, ,
@@ -461,8 +454,7 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.
 %! assert (imag (atanh (x)), v);
 %! assert (real (atanh (x)), [0, 0, 0, 0], eps);
 
-%!error atanh ()
-%!error atanh (1, 2)
+%!error <Invalid call> atanh ()
 */
 
 DEFUN (cbrt, args, ,
@@ -491,8 +483,7 @@ negative.
 %!assert (cbrt (2^300), 2^100)
 %!assert (cbrt (125*2^300), 5*2^100)
 
-%!error cbrt ()
-%!error cbrt (1, 2)
+%!error <Invalid call> cbrt ()
 */
 
 DEFUN (ceil, args, ,
@@ -533,8 +524,7 @@ ceil ([-2.7, 2.7])
 ## complex single precision
 %!assert (ceil (single ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])), single ([2+2i, 2+2i, -1-i, -1-i]))
 
-%!error ceil ()
-%!error ceil (1, 2)
+%!error <Invalid call> ceil ()
 */
 
 DEFUN (conj, args, ,
@@ -571,8 +561,7 @@ $\bar{z} = x - iy$.
 %!assert (conj (single (1-i)), single (1+i))
 %!assert (conj (single ([-1, -i; -1+i, -1-i])), single ([-1, i; -1-i, -1+i]))
 
-%!error conj ()
-%!error conj (1, 2)
+%!error <Invalid call> conj ()
 */
 
 DEFUN (cos, args, ,
@@ -605,8 +594,7 @@ Compute the cosine for each element of @var{x} in radians.
 %! v = single ([1, rt3/2, rt2/2, 1/2, 0, -1/2, -rt2/2, -rt3/2, -1]);
 %! assert (cos (x), v, sqrt (eps ("single")));
 
-%!error cos ()
-%!error cos (1, 2)
+%!error <Invalid call> cos ()
 */
 
 DEFUN (cosh, args, ,
@@ -633,8 +621,7 @@ Compute the hyperbolic cosine for each element of @var{x}.
 %! v = single ([1, 0, -1, 0]);
 %! assert (cosh (x), v, sqrt (eps ("single")));
 
-%!error cosh ()
-%!error cosh (1, 2)
+%!error <Invalid call> cosh ()
 */
 
 DEFUN (erf, args, ,
@@ -702,8 +689,7 @@ erf (z) = --------- *  | e^(-t^2) dt
 %! assert (erf (-x), -v, -1.e-10);
 %! assert (erfc (x), 1-v, -1.e-10);
 
-%!error erf ()
-%!error erf (1, 2)
+%!error <Invalid call> erf ()
 */
 
 DEFUN (erfinv, args, ,
@@ -739,8 +725,7 @@ erf (@var{y}) == @var{x}
 %!assert (erfinv ([-1, 1, 1.1, -2.1]), [-Inf, Inf, NaN, NaN])
 %!error erfinv (1+2i)
 
-%!error erfinv ()
-%!error erfinv (1, 2)
+%!error <Invalid call> erfinv ()
 */
 
 DEFUN (erfcinv, args, ,
@@ -776,8 +761,7 @@ erfc (@var{y}) == @var{x}
 %!assert (erfcinv ([2, 0, -0.1, 2.1]), [-Inf, Inf, NaN, NaN])
 %!error erfcinv (1+2i)
 
-%!error erfcinv ()
-%!error erfcinv (1, 2)
+%!error <Invalid call> erfcinv ()
 */
 
 DEFUN (erfc, args, ,
@@ -806,8 +790,7 @@ $1 - {\rm erf} (z)$.
 %! a = -1i*sqrt (-1/(6.4187*6.4187));
 %! assert (erfc (a), erfc (real (a)));
 
-%!error erfc ()
-%!error erfc (1, 2)
+%!error <Invalid call> erfc ()
 */
 
 DEFUN (erfcx, args, ,
@@ -848,8 +831,7 @@ exp (z^2) * erfc (z)
 %! v = [0.0056416137829894329, 0.0054246791754558-0.00108483153786434i];
 %! assert (erfcx (x), v, -1.e-10);
 
-%!error erfcx ()
-%!error erfcx (1, 2)
+%!error <Invalid call> erfcx ()
 */
 
 DEFUN (erfi, args, ,
@@ -885,8 +867,7 @@ $$
 %! x = [-0.1, 0.1, 1, 1+2i,-1+2i,1e-6+2e-6i,0+2i];
 %! assert (erfi (x), -i * erf(i*x), -1.e-10);
 
-%!error erfi ()
-%!error erfi (1, 2)
+%!error <Invalid call> erfi ()
 */
 
 DEFUN (dawson, args, ,
@@ -924,8 +905,7 @@ $$
 %! assert (dawson (x), v, -1.e-10);
 %! assert (dawson (-x), -v, -1.e-10);
 
-%!error dawson ()
-%!error dawson (1, 2)
+%!error <Invalid call> dawson ()
 */
 
 DEFUN (exp, args, ,
@@ -959,8 +939,7 @@ To compute the matrix exponential, see @ref{Linear Algebra}.
 %!assert (exp ([Inf, -Inf, NaN]), [Inf 0 NaN])
 %!assert (exp (single ([Inf, -Inf, NaN])), single ([Inf 0 NaN]))
 
-%!error exp ()
-%!error exp (1, 2)
+%!error <Invalid call> exp ()
 */
 
 DEFUN (expm1, args, ,
@@ -989,8 +968,7 @@ accurately in the neighborhood of zero.
 %!assert (expm1 ([Inf, -Inf, NaN]), [Inf -1 NaN])
 %!assert (expm1 (single ([Inf, -Inf, NaN])), single ([Inf -1 NaN]))
 
-%!error expm1 ()
-%!error expm1 (1, 2)
+%!error <Invalid call> expm1 ()
 */
 
 DEFUN (isfinite, args, ,
@@ -1025,8 +1003,7 @@ isfinite ([13, Inf, NA, NaN])
 %!assert (! isfinite (single (NaN)))
 %!assert (isfinite (single (rand (1,10))))
 
-%!error isfinite ()
-%!error isfinite (1, 2)
+%!error <Invalid call> isfinite ()
 */
 
 DEFUN (fix, args, ,
@@ -1058,8 +1035,7 @@ fix ([-2.7, 2.7])
 %!assert (fix (single ([1.1, 1, -1.1, -1])), single ([1, 1, -1, -1]))
 %!assert (fix (single ([1.1+1.1i, 1+i, -1.1-1.1i, -1-i])), single ([1+i, 1+i, -1-i, -1-i]))
 
-%!error fix ()
-%!error fix (1, 2)
+%!error <Invalid call> fix ()
 */
 
 DEFUN (floor, args, ,
@@ -1091,8 +1067,7 @@ floor ([-2.7, 2.7])
 %!assert (floor (single ([2, 1.1, -1.1, -1])), single ([2, 1, -2, -1]))
 %!assert (floor (single ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])), single ([2+2i, 1+i, -2-2i, -1-i]))
 
-%!error floor ()
-%!error floor (1, 2)
+%!error <Invalid call> floor ()
 */
 
 DEFUN (gamma, args, ,
@@ -1160,8 +1135,7 @@ loss of precision.  The final result is then
 %! assert (gamma (x), v);
 %! assert (gamma (single (x)), single (v));
 
-%!error gamma ()
-%!error gamma (1, 2)
+%!error <Invalid call> gamma ()
 */
 
 DEFUN (imag, args, ,
@@ -1188,8 +1162,7 @@ Return the imaginary part of @var{z} as a real number.
 %!assert (imag (single (1+i)), single (1))
 %!assert (imag (single ([i, 1; 1, i])), full (eye (2,"single")))
 
-%!error imag ()
-%!error imag (1, 2)
+%!error <Invalid call> imag ()
 */
 
 DEFUNX ("isalnum", Fisalnum, args, ,
@@ -1363,8 +1336,7 @@ isinf ([13, Inf, NA, NaN])
 %!assert (isinf (single (rand (1,10))), false (1,10))
 %!assert (isinf (single ([NaN -Inf -1 0 1 Inf NA])), [false, true, false, false, false, true, false])
 
-%!error isinf ()
-%!error isinf (1, 2)
+%!error <Invalid call> isinf ()
 */
 
 DEFUNX ("isgraph", Fisgraph, args, ,
@@ -1456,8 +1428,7 @@ isna ([13, Inf, NA, NaN])
 %!assert (isna (single (rand (1,10))), false (1,10))
 %!assert (isna (single ([NaN -Inf -1 0 1 Inf NA])), [false, false, false, false, false, false, true])
 
-%!error isna ()
-%!error isna (1, 2)
+%!error <Invalid call> isna ()
 */
 
 DEFUN (isnan, args, ,
@@ -1496,8 +1467,7 @@ isnan ([13, Inf, NA, NaN])
 %!assert (isnan (single (rand (1,10))), false (1,10))
 %!assert (isnan (single ([NaN -Inf -1 0 1 Inf NA])), [true, false, false, false, false, false, true])
 
-%!error isnan ()
-%!error isnan (1, 2)
+%!error <Invalid call> isnan ()
 */
 
 DEFUNX ("isprint", Fisprint, args, ,
@@ -1709,8 +1679,7 @@ To compute the matrix logarithm, see @ref{Linear Algebra}.
 %!assert (log (single ([1, e, e^2])), single ([0, 1, 2]), sqrt (eps ("single")))
 %!assert (log (single ([-0.5, -1.5, -2.5])), single (log ([0.5, 1.5, 2.5]) + pi*1i), 4*eps ("single"))
 
-%!error log ()
-%!error log (1, 2)
+%!error <Invalid call> log ()
 */
 
 DEFUN (log10, args, ,
@@ -1730,8 +1699,7 @@ Compute the base-10 logarithm of each element of @var{x}.
 %!assert (log10 ([0.01, 0.1, 1, 10, 100]), [-2, -1, 0, 1, 2], sqrt (eps))
 %!assert (log10 (single ([0.01, 0.1, 1, 10, 100])), single ([-2, -1, 0, 1, 2]), sqrt (eps ("single")))
 
-%!error log10 ()
-%!error log10 (1, 2)
+%!error <Invalid call> log10 ()
 */
 
 DEFUN (log1p, args, ,
@@ -1758,8 +1726,7 @@ accurately in the neighborhood of zero.
 %!assert (log1p ([0, 2*eps, -2*eps]), [0, 2*eps, -2*eps], 1e-29)
 %!assert (log1p (single ([0, 2*eps, -2*eps])), single ([0, 2*eps, -2*eps]), 1e-29)
 
-%!error log1p ()
-%!error log1p (1, 2)
+%!error <Invalid call> log1p ()
 */
 
 DEFUN (real, args, ,
@@ -1786,8 +1753,7 @@ Return the real part of @var{z}.
 %!assert (real (single (1+i)), single (1))
 %!assert (real (single ([1, i; i, 1])), full (eye (2, "single")))
 
-%!error real ()
-%!error real (1, 2)
+%!error <Invalid call> real ()
 */
 
 DEFUN (round, args, ,
@@ -1831,8 +1797,7 @@ round ([-2.7, 2.7])
 %!assert (round (single (-2.6)), single (-3))
 %!assert (round (single ([1.1, -2.4; -3.7, 7.1])), single ([1, -2; -4, 7]))
 
-%!error round ()
-%!error round (1, 2)
+%!error <Invalid call> round ()
 */
 
 DEFUN (roundb, args, ,
@@ -1871,8 +1836,7 @@ return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.
 %!assert (roundb (single (-2.6)), single (-3))
 %!assert (roundb (single ([1.1, -2.4; -3.7, 7.1])), single ([1, -2; -4, 7]))
 
-%!error roundb ()
-%!error roundb (1, 2)
+%!error <Invalid call> roundb ()
 */
 
 DEFUN (sign, args, ,
@@ -1923,8 +1887,7 @@ whether zero is signed, use the @code{signbit} function.
 %!assert (sign (single (3)), single (1))
 %!assert (sign (single ([1, -pi; e, 0])), single ([1, -1; 1, 0]))
 
-%!error sign ()
-%!error sign (1, 2)
+%!error <Invalid call> sign ()
 */
 
 DEFUNX ("signbit", Fsignbit, args, ,
@@ -1994,8 +1957,7 @@ Compute the sine for each element of @var{x} in radians.
 %! v = single ([0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0]);
 %! assert (sin (x), v, sqrt (eps ("single")));
 
-%!error sin ()
-%!error sin (1, 2)
+%!error <Invalid call> sin ()
 */
 
 DEFUN (sinh, args, ,
@@ -2022,8 +1984,7 @@ Compute the hyperbolic sine for each element of @var{x}.
 %! v = single ([0, i, 0, -i]);
 %! assert (sinh (x), v, sqrt (eps ("single")));
 
-%!error sinh ()
-%!error sinh (1, 2)
+%!error <Invalid call> sinh ()
 */
 
 DEFUN (sqrt, args, ,
@@ -2054,8 +2015,7 @@ To compute the matrix square root, see @ref{Linear Algebra}.
 %!assert (sqrt (single (1+i)), single (exp (0.5 * log (1+i))), sqrt (eps ("single")))
 %!assert (sqrt (single ([4, -4; i, 1-i])), single ([2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))]), sqrt (eps ("single")))
 
-%!error sqrt ()
-%!error sqrt (1, 2)
+%!error <Invalid call> sqrt ()
 */
 
 DEFUN (tan, args, ,
@@ -2086,8 +2046,7 @@ Compute the tangent for each element of @var{x} in radians.
 %! v = single ([0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0]);
 %! assert (tan (x), v,  sqrt (eps ("single")));
 
-%!error tan ()
-%!error tan (1, 2)
+%!error <Invalid call> tan ()
 */
 
 DEFUN (tanh, args, ,
@@ -2114,8 +2073,7 @@ Compute hyperbolic tangent for each element of @var{x}.
 %! v = single ([0, 0]);
 %! assert (tanh (x), v, sqrt (eps ("single")));
 
-%!error tanh ()
-%!error tanh (1, 2)
+%!error <Invalid call> tanh ()
 */
 
 DEFUNX ("tolower", Ftolower, args, ,

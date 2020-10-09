@@ -291,8 +291,8 @@ When the third argument is a matrix, return the convolution of the matrix
 %! assert (B, A);   # Yes, this test is for *exact* equivalence.
 
 ## Test input validation
-%!error conv2 ()
-%!error conv2 (1)
+%!error <Invalid call> conv2 ()
+%!error <Invalid call> conv2 (1)
 %!error <must be 1-D vectors or 2-D matrices> conv2 (ones (2), ones (2,2,2))
 %!error <SHAPE type not valid> conv2 (1,2, "NOT_A_SHAPE")
 ## Test alternate calling form which should be 2 vectors and a matrix
@@ -563,8 +563,8 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %!assert (class (convn (ones(5, "uint8"), rand(3))), "double")
 %!assert (class (convn (rand (3, "single"), ones(5, "uint8"))), "single")
 
-%!error convn ()
-%!error convn (1)
+%!error <Invalid call> convn ()
+%!error <Invalid call> convn (1)
 %!error <SHAPE type not valid> convn (1,2, "NOT_A_SHAPE")
 %!error convn (rand (3), 1, 1)
 */

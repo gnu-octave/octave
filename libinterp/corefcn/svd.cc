@@ -377,7 +377,7 @@ and may be inaccurate for some input matrices.  See the documentation for
 
 %!assert <*55710> (1 / svd (-0), Inf)
 
-%!error svd ()
+%!error <Invalid call> svd ()
 %!error svd ([1, 2; 4, 5], 2, 3)
 */
 

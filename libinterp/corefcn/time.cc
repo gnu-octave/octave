@@ -182,8 +182,7 @@ gmtime (time ())
 %! assert (isfield (ts, "isdst"));
 %! assert (isfield (ts, "yday"));
 
-%!error gmtime ()
-%!error gmtime (1, 2)
+%!error <Invalid call> gmtime ()
 */
 
 DEFUN (localtime, args, ,
@@ -237,8 +236,7 @@ localtime (time ())
 %! assert (isfield (ts, "isdst"));
 %! assert (isfield (ts, "yday"));
 
-%!error localtime ()
-%!error localtime (1, 2)
+%!error <Invalid call> localtime ()
 */
 
 DEFUN (mktime, args, ,
@@ -279,9 +277,8 @@ mktime (localtime (time ()))
 %!assert (datestr (datenum (1901, 1, 1), 0), "01-Jan-1901 00:00:00")
 %!assert (datestr (datenum (1795, 1, 1), 0), "01-Jan-1795 00:00:00")
 
-%!error mktime ()
-%!error mktime (1)
-%!error mktime (1, 2, 3)
+%!error <Invalid call> mktime ()
+%!error <TM_STRUCT argument must be a structure> mktime (1)
 %!error mktime (struct ("year", "foo"))
 */
 
@@ -462,7 +459,7 @@ Year (1970-).
 %!assert (ischar (strftime ("%c%C%d%e%D%h%j", localtime (time ()))))
 %!assert (ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ()))))
 
-%!error strftime ()
+%!error <Invalid call> strftime ()
 %!error strftime ("foo", 1)
 %!error strftime ("foo", struct ("year", "foo"))
 %!error strftime ("foo", localtime (time ()), 1)
@@ -509,5 +506,5 @@ you're absolutely sure the date string will be parsed correctly.
 %! assert (isfield (ts, "isdst"));
 %! assert (isfield (ts, "yday"));
 
-%!error strptime ()
+%!error <Invalid call> strptime ()
 */

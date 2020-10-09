@@ -649,8 +649,7 @@ the first index of the minimum value(s).  Thus,
 %! assert (min (2, x), sparse ([1 2 2 2]));
 %! assert (min (x, 2.1i), sparse ([1 2 2.1i 2.1i]));
 
-%!error min ()
-%!error min (1, 2, 3, 4)
+%!error <Invalid call> min ()
 %!error <DIM must be a valid dimension> min ([1 2; 3 4], [], -3)
 %!warning <second argument is ignored> min ([1 2 3 4], 2, 2);
 %!error <wrong type argument 'cell'> min ({1 2 3 4})
@@ -874,8 +873,7 @@ the first index of the maximum value(s).  Thus,
 %!assert <*40743> (max (sparse (zeros (1,0)), sparse (ones (1,1))),
 %!                sparse (zeros (1,0)))
 
-%!error max ()
-%!error max (1, 2, 3, 4)
+%!error <Invalid call> max ()
 %!error <DIM must be a valid dimension> max ([1 2; 3 4], [], -3)
 %!warning <second argument is ignored> max ([1 2 3 4], 2, 2);
 %!error <wrong type argument 'cell'> max ({1 2 3 4})
@@ -1039,8 +1037,7 @@ iw = 1  2  2  4  4  6
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
 
-%!error cummin ()
-%!error cummin (1, 2, 3)
+%!error <Invalid call> cummin ()
 */
 
 DEFUN (cummax, args, nargout,
@@ -1094,6 +1091,5 @@ iw = 1  2  2  4  4  4
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
 
-%!error cummax ()
-%!error cummax (1, 2, 3)
+%!error <Invalid call> cummax ()
 */

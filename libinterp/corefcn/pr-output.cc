@@ -3551,8 +3551,7 @@ of properly displaying the object's name.  This can be done by using the
 %! end_unwind_protect
 
 ## Test input validation
-%!error display ()
-%!error display (1,2)
+%!error <Invalid call> display ()
 */
 
 static inline void

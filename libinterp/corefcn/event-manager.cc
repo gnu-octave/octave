@@ -524,7 +524,7 @@ Open the variable @var{name} in the graphical Variable Editor.
 }
 
 /*
-%!error openvar ()
+%!error <Invalid call> openvar ()
 %!error openvar ("a", "b")
 %!error <NAME must be a string> openvar (1:10)
 */

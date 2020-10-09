@@ -476,5 +476,5 @@ above another, and returned as a column vector.
 %!assert (triu (a, -4), um3);
 
 %!error tril ()
-%!error triu ()
+%!error <Invalid call> triu ()
 */

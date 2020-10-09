@@ -103,8 +103,7 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
 %!assert (colloc (1, "left", "right"), [0; 0.5; 1])
 
 ## Test input validation
-%!error colloc ()
-%!error colloc (1,2,3,4)
+%!error <Invalid call> colloc ()
 %!error <N must be a scalar> colloc (ones (2,2))
 %!error <N cannot be NaN> colloc (NaN)
 %!error <N must be positive> colloc (-1)

@@ -72,8 +72,7 @@ Return true if @var{x} is a sparse matrix.
 %!assert (issparse (cell (1)), false)
 
 ## Test input validation
-%!error issparse ()
-%!error issparse (1,2)
+%!error <Invalid call> issparse ()
 */
 
 DEFUN (sparse, args, ,
@@ -316,9 +315,8 @@ even if @var{nz} is 0.
 %!assert (spalloc (2,1), sparse (2,1))
 %!assert (spalloc (2,1,2), sparse (2,1))
 
-%!error spalloc ()
-%!error spalloc (1)
-%!error spalloc (1,2,3,4)
+%!error <Invalid call> spalloc ()
+%!error <Invalid call> spalloc (1)
 %!error <M, N, and NZ must be non-negative> spalloc (-1, 1, 1)
 %!error <M, N, and NZ must be non-negative> spalloc (1, -1, 1)
 %!error <M, N, and NZ must be non-negative> spalloc (1, 1, -1)

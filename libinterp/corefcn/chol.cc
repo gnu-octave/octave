@@ -345,7 +345,7 @@ sparse matrices.
 %! [Q, p] = chol (A);
 %! assert (p != 0);
 
-%!error chol ()
+%!error <Invalid call> chol ()
 %!error <matrix must be positive definite> chol ([1, 2; 3, 4])
 %!error <requires square matrix> chol ([1, 2; 3, 4; 5, 6])
 %!error <optional arguments must be strings> chol (1, 2)

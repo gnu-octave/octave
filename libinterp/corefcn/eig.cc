@@ -595,7 +595,7 @@ The eigenvalues returned by @code{eig} are not ordered.
 %! A = diag([1e-16, 1e-15]);
 %! chol_qz_accuracy (A, A, true, false);
 
-%!error eig ()
+%!error <Invalid call> eig ()
 %!error eig (false)
 %!error eig ([1, 2; 3, 4], [4, 3; 2, 1], 1)
 

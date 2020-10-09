@@ -120,8 +120,7 @@ If the optional argument @var{dim} is supplied, work along dimension
 %! assert (all (x, 1) == [0, 1, 1]);
 %! assert (all (x, 2) == [0; 1; 1]);
 
-%!error all ()
-%!error all (1, 2, 3)
+%!error <Invalid call> all ()
 */
 
 DEFUN (any, args, ,
@@ -185,8 +184,7 @@ any (eye (2, 4), 2)
 %! assert (any (x, 1) == [0, 0, 1]);
 %! assert (any (x, 2) == [0; 0; 1]);
 
-%!error any ()
-%!error any (1, 2, 3)
+%!error <Invalid call> any ()
 */
 
 // These mapping functions may also be useful in other places, eh?
@@ -308,8 +306,7 @@ This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
 %! assert (nnz (y), 3);
 %! assert (y, sparse (atan2 (0:3, zeros (1,4))));
 
-%!error atan2 ()
-%!error atan2 (1, 2, 3)
+%!error <Invalid call> atan2 ()
 */
 
 static octave_value
@@ -725,8 +722,7 @@ periodic, @code{mod} is a better choice.
 
 %!error rem (uint (8), int8 (5))
 %!error rem (uint8 ([1, 2]), uint8 ([3, 4, 5]))
-%!error rem ()
-%!error rem (1, 2, 3)
+%!error <Invalid call> rem ()
 %!error rem ([1, 2], [3, 4, 5])
 %!error rem (i, 1)
 */
@@ -1017,7 +1013,7 @@ cumprod ([1, 2; 3, 4; 5, 6])
 %!assert (cumprod (single ([2, 3; 4, 5]), 1), single ([2, 3; 8, 15]))
 %!assert (cumprod (single ([2, 3; 4, 5]), 2), single ([2, 6; 4, 20]))
 
-%!error cumprod ()
+%!error <Invalid call> cumprod ()
 */
 
 DEFUN (cumsum, args, ,
@@ -1167,7 +1163,7 @@ and @qcode{"double"}.
 %!assert (cumsum (single ([1, 2; 3, 4]), 1), single ([1, 2; 4, 6]))
 %!assert (cumsum (single ([1, 2; 3, 4]), 2), single ([1, 3; 3, 7]))
 
-%!error cumsum ()
+%!error <Invalid call> cumsum ()
 */
 
 DEFUN (diag, args, ,
@@ -1502,8 +1498,7 @@ in double precision even for single precision inputs.
 %!assert (prod ([true false; true true], 2, "native"), [false; true])
 
 ## Test input validation
-%!error prod ()
-%!error prod (1,2,3)
+%!error <Invalid call> prod ()
 %!error <unrecognized type argument 'foobar'> prod (1, "foobar")
 */
 
@@ -2865,8 +2860,7 @@ Return the number of rows of @var{a}.  This is equivalent to
 %!assert (rows (zeros (2,0)), 2)
 
 ## Test input validation
-%!error rows ()
-%!error rows (1,2)
+%!error <Invalid call> rows ()
 */
 
 DEFUN (columns, args, ,
@@ -3111,8 +3105,7 @@ type @qcode{"extra"} has no effect.
 ;-)
 %!assert (sum ("Octave") + "8", sumsq (primes (17)))
 
-%!error sum ()
-%!error sum (1,2,3)
+%!error <Invalid call> sum ()
 %!error <unrecognized type argument 'foobar'> sum (1, "foobar")
 */
 
@@ -3153,7 +3146,7 @@ but it uses less memory and avoids calling @code{conj} if @var{x} is real.
 %!assert (sumsq (single ([1, 2; 3, 4]), 1), single ([10, 20]))
 %!assert (sumsq (single ([1, 2; 3, 4]), 2), single ([5; 25]))
 
-%!error sumsq ()
+%!error <Invalid call> sumsq ()
 */
 
 DEFUN (islogical, args, ,
@@ -3240,7 +3233,7 @@ Octave are double precision floating point values.
 %!assert (! isinteger ("parrot"))
 %!assert (! isinteger ([1, 2, 3]))
 
-%!error isinteger ()
+%!error <Invalid call> isinteger ()
 %!error isinteger ("multiple", "parameters")
 */
 
@@ -3270,8 +3263,7 @@ Return true if @var{x} is a complex-valued numeric object.
 %!assert (iscomplex ({i}), false)
 
 ## Test input validation
-%!error iscomplex ()
-%!error iscomplex (1, 2)
+%!error <Invalid call> iscomplex ()
 */
 
 DEFUN (isfloat, args, ,
@@ -3701,8 +3693,7 @@ returns @w{@code{[1, 1]}}.
 %! assert (isscalar (s));
 
 ## Test input validation
-%!error isscalar ()
-%!error isscalar (1, 2)
+%!error <Invalid call> isscalar ()
 */
 
 DEFUN (isvector, args, ,
@@ -3742,7 +3733,7 @@ array (a scalar) is also a vector.
 %! assert (isvector (s), true);
 
 ## Test input validation
-%!error isvector ()
+%!error <Invalid call> isvector ()
 %!error isvector ([1, 2], 2)
 */
 
@@ -3791,7 +3782,7 @@ A row vector is a 2-D array for which @code{size (@var{x})} returns
 %! assert (isrow (s), true);
 
 ## Test input validation
-%!error isrow ()
+%!error <Invalid call> isrow ()
 %!error isrow ([1, 2], 2)
 */
 
@@ -3840,7 +3831,7 @@ A column vector is a 2-D array for which @code{size (@var{x})} returns
 %! assert (iscolumn (s));
 
 ## Test input validation
-%!error iscolumn ()
+%!error <Invalid call> iscolumn ()
 %!error iscolumn ([1, 2], 2)
 */
 
@@ -3889,7 +3880,7 @@ N.
 %! s.a = 1;
 %! assert (ismatrix (s), true);
 
-%!error ismatrix ()
+%!error <Invalid call> ismatrix ()
 %!error ismatrix ([1, 2; 3, 4], 2)
 */
 
@@ -3930,7 +3921,7 @@ A square array is a 2-D object for which @code{size (@var{x})} returns
 %!assert (sparse (([1, 2; 3, 4])))
 
 ## Test input validation
-%!error issquare ()
+%!error <Invalid call> issquare ()
 %!error issquare ([1, 2; 3, 4], 2)
 */
 
@@ -5389,8 +5380,7 @@ only a single value (@var{n} = 1) is requested.
 ##%!assert <56933> (linspace (-Inf, 0, 4), [-Inf, NaN, NaN, 0])
 ##%!assert <56933> (linspace (Inf, 0, 4), [Inf, NaN, NaN, 0])
 
-%!error linspace ()
-%!error linspace (1, 2, 3, 4)
+%!error <Invalid call> linspace ()
 %!error <N must be a scalar> linspace (1, 2, [3, 4])
 %!error <START, END must be scalars or vectors> linspace (ones (2,2), 2, 3)
 %!error <START, END must be scalars or vectors> linspace (2, ones (2,2), 3)
@@ -5615,8 +5605,7 @@ the unspecified dimension.
 %! s.a = 1;
 %! fail ("reshape (s, 2, 3)", "can't reshape 1x1 array to 2x3 array");
 
-%!error reshape ()
-%!error reshape (1, 2, 3, 4)
+%!error <Invalid call> reshape ()
 %!error <SIZE must have 2 or more dimensions> reshape (1:3, 3)
 %!error <SIZE must be non-negative> reshape (1:3, [3 -1])
 %!error <only a single dimension can be unknown> reshape (1:3, 1,[],[],3)
@@ -5683,8 +5672,7 @@ with all elements along the last dimension.  This is equivalent to
 %!assert (vec ([1, 3; 2, 4], 3), reshape ([1, 2, 3, 4], 1, 1, 4))
 %!assert (vec ([1, 3; 2, 4], 3), shiftdim (vec ([1, 3; 2, 4]), -2))
 
-%!error vec ()
-%!error vec (1, 2, 3)
+%!error <Invalid call> vec ()
 %!error vec ([1, 2; 3, 4], 0)
 */
 
@@ -5950,8 +5938,7 @@ compute the norms of each column and return a row vector.
 %! assert (norm (A), 1);
 
 ## Test input validation
-%!error norm ()
-%!error norm (1,2,3,4)
+%!error <Invalid call> norm ()
 %!error <unrecognized option> norm (1, "invalid")
 %!error <unrecognized option> norm (1, "rows", "invalid")
 %!error <unrecognized option> norm (1, "invalid", "rows")
@@ -6128,8 +6115,8 @@ cumulatively from left to right:
 %!assert (plus (1,2,3,4,5,6,7,8,9), sum (1:9))
 
 ## Test input validation for all functions which use binary_assoc_op_defun_body
-%!error plus ()
-%!error plus (1)
+%!error <Invalid call> plus ()
+%!error <Invalid call> plus (1)
 */
 
 DEFUN (minus, args, ,
@@ -6871,8 +6858,7 @@ ordered lists.
 %! [v, i] = sort (a);
 %! assert (i, [1, 4, 2, 5, 3]);
 
-%!error sort ()
-%!error sort (1, 2, 3, 4)
+%!error <Invalid call> sort ()
 */
 
 // Sort the rows of the matrix @var{a} according to the order
@@ -7064,8 +7050,7 @@ This function does not support sparse matrices.
 %!assert (issorted ("", "rows", "descend"))
 
 ## Test input validation
-%!error issorted ()
-%!error issorted (1,2,3,4)
+%!error <Invalid call> issorted ()
 %!error <second argument must be a string> issorted (1, 2)
 %!error <second argument must be a string> issorted (1, {"rows"})
 %!error <sparse matrices not yet supported> issorted (sparse ([1 2 3]), "rows")
@@ -7175,8 +7160,8 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
 
 %!assert <*51329> (nth_element ([1:10], [1:10]), [1:10])
 
-%!error nth_element ()
-%!error nth_element (1)
+%!error <Invalid call> nth_element ()
+%!error <Invalid call> nth_element (1)
 %!error nth_element (1, 1.5)
 %!error nth_element (1, 2, 3, 4)
 %!error nth_element ("abcd", 3)
@@ -7850,8 +7835,7 @@ an empty matrix is returned.
 %!assert (diff ([1, 2; 5, 4; 8, 7; 9, 6; 3, 1], 3), [-1, -5; -5, 0])
 %!assert (isempty (diff (1)))
 
-%!error diff ()
-%!error diff (1, 2, 3, 4)
+%!error <Invalid call> diff ()
 %!error diff ("foo")
 %!error diff ([1, 2; 3, 4], -1)
 */
@@ -8070,8 +8054,7 @@ Encode a double matrix or array @var{x} into the base64 format string
 %!assert (base64_encode (uint64 ([0 0 0])), "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 %!assert (base64_encode (uint8 ([255 255 255])), "////")
 
-%!error base64_encode ()
-%!error base64_encode (1,2)
+%!error <Invalid call> base64_encode ()
 %!error base64_encode ("A string")
 %!error base64_encode ({"A cell array"})
 %!error base64_encode (struct ())
@@ -8125,8 +8108,7 @@ dimensions of the decoded array.
 %! assert (outv, in(:).');
 %! assert (outm, in);
 
-%!error base64_decode ()
-%!error base64_decode (1,2,3)
+%!error <Invalid call> base64_decode ()
 %!error base64_decode (1, "this is not a valid set of dimensions")
 %!error <input was not valid base64> base64_decode (1)
 %!error <input was not valid base64> base64_decode ("AQ=")
@@ -8181,8 +8163,7 @@ dimensions of the decoded array.
 %! assert (outv, in(:).');
 %! assert (outm, in);
 
-%!error __base64_decode_bytes__ ()
-%!error __base64_decode_bytes__ (1,2,3)
+%!error <Invalid call> __base64_decode_bytes__ ()
 %!error __base64_decode_bytes__ (1, "this is not a valid set of dimensions")
 %!error <input was not valid base64> __base64_decode_bytes__ (1)
 */

@@ -165,6 +165,5 @@ endfunction
 %!  end_unwind_protect
 
 ## Test input validation
-%!error linkaxes ()
-%!error linkaxes (1,2,3)
+%!error <Invalid call> linkaxes ()
 %!error <HAX must be a vector of axes handles> linkaxes ([pi, e])

@@ -118,7 +118,7 @@ endfunction
 %! assert (D * vech (B), vec (B), 1e-6);
 %! assert (D * vech (C), vec (C), 1e-6);
 
-%!error duplication_matrix ()
+%!error <Invalid call> duplication_matrix ()
 %!error duplication_matrix (0.5)
 %!error duplication_matrix (-1)
 %!error duplication_matrix (ones (1,4))

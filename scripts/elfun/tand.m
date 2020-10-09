@@ -52,4 +52,3 @@ endfunction
 %!assert (tand ([90, 270]) == Inf)
 
 %!error tand ()
-%!error tand (1, 2)

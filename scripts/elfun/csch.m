@@ -46,4 +46,3 @@ endfunction
 %! assert (csch (x), v, sqrt (eps));
 
 %!error csch ()
-%!error csch (1, 2)

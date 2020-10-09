@@ -157,6 +157,6 @@ endfunction
 %!assert (findstr ("aba", "abababa", 0), [1, 5])
 
 ## Test input validation
-%!error findstr ()
-%!error findstr ("foo", "bar", 3, 4)
+%!error <Invalid call> findstr ()
+%!error <Invalid call> findstr ("str1")
 %!error <must have only one non-singleton dimension> findstr (["AB" ; "CD"], "C")

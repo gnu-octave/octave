@@ -78,7 +78,7 @@ endfunction
 %! assert (y{2}, repmat ("line", 2, 1));
 
 ## Test input validation
-%!error strtrunc ()
+%!error <Invalid call> strtrunc ()
 %!error strtrunc ("abcd")
 %!error strtrunc ("abcd", 4, 5)
 %!error <N must be a positive integer> strtrunc ("abcd", ones (2,2))

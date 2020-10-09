@@ -113,7 +113,7 @@ endfunction
 %! assert (index (str, "o", "last"), [5; 2; 3; 2]);
 
 ## Test input validation
-%!error index ()
+%!error <Invalid call> index ()
 %!error index ("a")
 %!error index ("a", "b", "first", "d")
 %!error index (1, "bar")

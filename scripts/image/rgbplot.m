@@ -91,8 +91,7 @@ endfunction
 %!  rgbplot (ocean, "composite");
 
 ## Test input validation
-%!error rgbplot ()
-%!error rgbplot (1,2)
+%!error <Invalid call> rgbplot ()
 %!error <CMAP must be a valid colormap> rgbplot ({0 1 0})
 %!error <STYLE must be a string> rgbplot ([0 1 0], 2)
 %!error <unknown STYLE 'nostyle'> rgbplot ([0 1 0], "nostyle")

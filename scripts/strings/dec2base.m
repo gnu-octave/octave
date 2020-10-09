@@ -163,9 +163,8 @@ endfunction
 %!assert <*56005> (dec2base ([0, 0], 16), ["0"; "0"])
 
 ## Test input validation
-%!error dec2base ()
-%!error dec2base (1)
-%!error dec2base (1, 2, 3, 4)
+%!error <Invalid call> dec2base ()
+%!error <Invalid call> dec2base (1)
 %!error dec2base ("A")
 %!error dec2base (2i)
 %!error dec2base (-1)

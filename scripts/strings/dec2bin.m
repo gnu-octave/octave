@@ -130,6 +130,5 @@ endfunction
 %!        ["00000001"; "00000011"; "00000010"; "11111100"])
 
 ## Test input validation
-%!error dec2bin ()
-%!error dec2bin (1, 2, 3)
+%!error <Invalid call> dec2bin ()
 %!error <negative inputs cannot be less than> dec2bin (- flintmax ())

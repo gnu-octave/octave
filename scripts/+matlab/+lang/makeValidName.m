@@ -67,7 +67,7 @@
 
 function [varname, ismodified] = makeValidName (str, varargin)
 
-  if (nargin == 0 || nargout > 2)
+  if (nargin == 0)
     print_usage ();
   endif
 
@@ -218,7 +218,7 @@ endfunction
 %!error matlab.lang.makeValidName ("for", "Prefix", "for")
 
 ## Test input validation
-%!error matlab.lang.makeValidName ()
+%!error <Invalid call> matlab.lang.makeValidName ()
 %!error <STR must be a string or cellstr> matlab.lang.makeValidName (42)
 %!error <options must occur in pairs> matlab.lang.makeValidName ("a", "opt1")
 %!error <option argument must be a string>

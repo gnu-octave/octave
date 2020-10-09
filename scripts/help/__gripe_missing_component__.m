@@ -62,14 +62,15 @@ function __gripe_missing_component__ (caller, component)
 endfunction
 
 
-## WARNING: Tests cannot rely on the exact error strings shown above because we
-##          specifically allow these messages to be overridden by
-##          missing_component_hook.  The prefix is all we can be sure of.
+## NOTE: Tests cannot rely on the exact error strings shown above because we
+##       specifically allow these messages to be overridden by
+##       missing_component_hook.  The prefix is all we can be sure of.
 %!error <abc: .*> __gripe_missing_component__ ("abc", "info-file")
 %!error <abc: .*> __gripe_missing_component__ ("abc", "octave")
 %!error <abc: .*> __gripe_missing_component__ ("abc", "octave-config")
 %!error <abc: .*> __gripe_missing_component__ ("abc", "xyz")
 
+%!error <Invalid call> __gripe_missing_component__ ()
 %!error __gripe_missing_component__ ()
 %!error __gripe_missing_component__ ("fcn")
 %!error __gripe_missing_component__ ("fcn", 1 , 2)

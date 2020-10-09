@@ -368,5 +368,4 @@ endfunction
 %!                 "00:05:00.000")
 
 ## Test input validation
-%!error datestr ()
-%!error datestr (1, 2, 3, 4)
+%!error <Invalid call> datestr ()

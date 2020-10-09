@@ -130,8 +130,7 @@ endfunction
 %!assert (cell2mat ({"foo", "lol"; "bar", "qux"}),
 %!        reshape ("fboaorlqoulx", [2 6]))
 
-%!error cell2mat ()
-%!error cell2mat (1,2)
+%!error <Invalid call> cell2mat ()
 %!error <C must be a cell array> cell2mat ([1,2])
 %!error <mixed cells, structs, and matrices> cell2mat ({[1], struct()})
 %!error <mixed cells, structs, and matrices> cell2mat ({[1], {1}})

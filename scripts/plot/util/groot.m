@@ -64,6 +64,3 @@ endfunction
 
 
 %!assert (groot (), 0)
-
-## Test input validation
-%!error groot (1)

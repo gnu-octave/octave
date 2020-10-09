@@ -71,5 +71,4 @@ endfunction
 %! z = x .* (2 .^ y);
 %! assert (pow2 (x,y), z, sqrt (eps));
 
-%!error pow2 ()
-%!error pow2 (1,2,3)
+%!error <Invalid call> pow2 ()

@@ -134,7 +134,6 @@ endfunction
 %! assert (ifftshift (y), x);
 
 ## Test input validation
-%!error ifftshift ()
-%!error ifftshift (1, 2, 3)
+%!error <Invalid call> ifftshift ()
 %!error ifftshift (0:3, -1)
 %!error ifftshift (0:3, 0:3)

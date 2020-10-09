@@ -90,8 +90,7 @@ endfunction
 %!assert (pascal (0,2), [])
 
 ## Test input validation
-%!error pascal ()
-%!error pascal (1,2,3)
+%!error <Invalid call> pascal ()
 %!error <N and T must be scalars> pascal ([1 2])
 %!error <N and T must be scalars> pascal (1, [1 2])
 %!error <T must be -1> pascal (3,-2)

@@ -46,4 +46,3 @@ endfunction
 %! assert (sech (x), v, sqrt (eps));
 
 %!error sech ()
-%!error sech (1, 2)

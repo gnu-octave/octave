@@ -74,10 +74,9 @@ endfunction
 %!assert (discrete_cdf ([x, NaN], v, single (p)), single ([y, NaN]), 2*eps ("single"))
 
 ## Test input validation
-%!error discrete_cdf ()
-%!error discrete_cdf (1)
-%!error discrete_cdf (1,2)
-%!error discrete_cdf (1,2,3,4)
+%!error <Invalid call> discrete_cdf ()
+%!error <Invalid call> discrete_cdf (1)
+%!error <Invalid call> discrete_cdf (1,2)
 %!error discrete_cdf (1, ones (2), ones (2,1))
 %!error discrete_cdf (1, [1 ; NaN], ones (2,1))
 %!error discrete_cdf (1, ones (2,1), ones (1,1))

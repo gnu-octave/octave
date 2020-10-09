@@ -103,9 +103,8 @@ endfunction
 %!assert (run_count (ones (3), 4), [0,0,0;0,0,0;1,1,1;0,0,0])
 
 ## Test input validation
-%!error run_count ()
-%!error run_count (1)
-%!error run_count (1, 2, 3, 4)
+%!error <Invalid call> run_count ()
+%!error <Invalid call> run_count (1)
 %!error run_count ({1, 2}, 3)
 %!error run_count (['A'; 'A'; 'B'], 3)
 %!error run_count (1:5, ones (2,2))

@@ -223,10 +223,9 @@ endfunction
 %! assert (betainc (0.5, 1, Inf), NaN);
 
 ## Test input validation
-%!error betainc ()
-%!error betainc (1)
-%!error betainc (1,2)
-%!error betainc (1,2,3,4,5)
+%!error <Invalid call> betainc ()
+%!error <Invalid call> betainc (1)
+%!error <Invalid call> betainc (1,2)
 %!error <must be of common size or scalars> betainc (ones (2,2), ones (1,2), 1)
 %!error <all inputs must be real> betainc (0.5i, 1, 2)
 %!error <all inputs must be real> betainc (0, 1i, 1)

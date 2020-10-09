@@ -61,6 +61,5 @@ endfunction
 %!assert (eomday ([2004;2005], [2;2]), [29;28])
 
 ## Test input validation
-%!error eomday ()
-%!error eomday (1)
-%!error eomday (1,2,3)
+%!error <Invalid call> eomday ()
+%!error <Invalid call> eomday (1)

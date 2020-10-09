@@ -141,9 +141,8 @@ endfunction
 %! assert (max (abs (imag (interpft ([1:9], 21)))), 0, 21*eps)
 
 ## Test input validation
-%!error interpft ()
-%!error interpft (1)
-%!error interpft (1,2,3)
+%!error <Invalid call> interpft ()
+%!error <Invalid call> interpft (1)
 %!error <N must be a scalar integer> interpft (1,[2,2])
 %!error <N must be a scalar integer> interpft (1,2.1)
 %!error <invalid dimension DIM> interpft (1,2,0)

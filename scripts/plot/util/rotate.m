@@ -181,9 +181,10 @@ endfunction
 %! h2 = figure ("visible", "off");
 %! o2 = line ();
 %! o3 = text (0, 0, "foobar");
-%!error rotate ()
-%!error rotate (o1)
-%!error rotate (o1, [0,0,0])
+
+%!error <Invalid call> rotate ()
+%!error <Invalid call> rotate (o1)
+%!error <Invalid call> rotate (o1, [0,0,0])
 %!error <all handles must be children of the same axes object> rotate ([o1, o2], [0,0,0], 90)
 %!error <invalid direction> rotate (o1, "foo", 90)
 %!error <invalid rotation angle> rotate (o1, [0,0,0], "foo")

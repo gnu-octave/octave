@@ -45,4 +45,3 @@ endfunction
 %!assert (secd ([90, 270]) == Inf)
 
 %!error secd ()
-%!error secd (1, 2)

@@ -58,7 +58,7 @@ endfunction
 %!assert (matlab.net.base64decode ("YWJjZGVmZw=="), uint8 ("abcdefg"));
 
 ## Test input validation
-%!error matlab.net.base64decode ()
+%!error <Invalid call> matlab.net.base64decode ()
 %!error <character vector> matlab.net.base64decode (pi)
 %!error <character vector> matlab.net.base64decode ({1,2})
 %!error <character vector> matlab.net.base64decode ([1,2;3,4])

@@ -61,5 +61,4 @@ endfunction
 %!assert (! istriu (randn (10)))
 
 ## Test input validation
-%!error istriu ()
-%!error istriu (1,2)
+%!error <Invalid call> istriu ()

@@ -98,7 +98,6 @@ endfunction
 %!   endif
 %! end_unwind_protect
 
-%!error ispref ()
-%!error ispref (1,2,3)
+%!error <Invalid call> ispref ()
 %!error <GROUP must be a string> ispref (1, "pref1")
 %!error <PREF must be a string> ispref ("group1", 1)

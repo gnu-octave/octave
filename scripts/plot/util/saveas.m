@@ -150,9 +150,8 @@ endfunction
 
 
 ## Test input validation
-%!error saveas ()
-%!error saveas (1)
-%!error saveas (1,2,3,4)
+%!error <Invalid call> saveas ()
+%!error <Invalid call> saveas (1)
 %!error <H must be a graphics handle> saveas (Inf, "tst.pdf")
 %!error <FILENAME must be a string> saveas (0, 1)
 %!error <FMT must be a string> saveas (0, "tst.pdf", 1)

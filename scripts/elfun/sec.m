@@ -48,4 +48,3 @@ endfunction
 %! assert (sec (x), v, sqrt (eps));
 
 %!error sec ()
-%!error sec (1, 2)

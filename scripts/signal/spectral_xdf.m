@@ -76,7 +76,6 @@ endfunction
 
 
 ## Test input validation
-%!error spectral_xdf ()
-%!error spectral_xdf (1, 2, 3, 4)
-%!error spectral_xdf (1, 2)
-%!error spectral_xdf (1, "invalid")
+%!error <Invalid call> spectral_xdf ()
+%!error <WIN must be a string> spectral_xdf (1, 2)
+%!error <unable to find function for @invalid_sw> spectral_xdf (1, "invalid")

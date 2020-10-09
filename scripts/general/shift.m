@@ -91,11 +91,11 @@ endfunction
 %! assert (shift (m, -2), [c; a; b]);
 
 ## Test input validation
-%!error shift ()
-%!error shift (1, 2, 3, 4)
-%!error shift ([], 1)
-%!error shift (ones (2), ones (2))
-%!error shift (ones (2), 1.5)
-%!error shift (1, 1, 1.5)
-%!error shift (1, 1, 0)
-%!error shift (1, 1, 3)
+%!error <Invalid call> shift ()
+%!error <Invalid call> shift (1)
+%!error <X must not be empty> shift ([], 1)
+%!error <B must be an integer> shift (ones (2), ones (2))
+%!error <B must be an integer> shift (ones (2), 1.5)
+%!error <DIM must be an integer> shift (1, 1, 1.5)
+%!error <DIM must be .* a valid dimension> shift (1, 1, 0)
+%!error <DIM must be .* a valid dimension> shift (1, 1, 3)

@@ -143,7 +143,7 @@ endfunction
 %!assert (erase ({'Hello World t '}, {'ld '; 'o '}), {'HellWort '})
 
 ## Test input validation
-%!error erase ()
+%!error <Invalid call> erase ()
 %!error erase ("a")
 %!error erase ("a", "b", "c")
 %!error <STR must be a string> erase ([1], "foo")

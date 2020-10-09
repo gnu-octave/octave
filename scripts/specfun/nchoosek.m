@@ -149,9 +149,8 @@ endfunction
 %!assert (size (nchoosek (1:5,0)), [1 0])
 
 ## Test input validation
-%!error nchoosek ()
-%!error nchoosek (1)
-%!error nchoosek (1,2,3)
+%!error <Invalid call> nchoosek ()
+%!error <Invalid call> nchoosek (1)
 
 %!error nchoosek (100, 2i)
 %!error nchoosek (100, [2 3])

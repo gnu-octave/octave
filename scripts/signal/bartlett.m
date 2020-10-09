@@ -63,7 +63,7 @@ endfunction
 %! A = bartlett (N);
 %! assert (A(ceil (N/2)), 1);
 
-%!error bartlett ()
+%!error <Invalid call> bartlett ()
 %!error bartlett (0.5)
 %!error bartlett (-1)
 %!error bartlett (ones (1,4))

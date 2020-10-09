@@ -145,6 +145,6 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error run ()
+%!error <Invalid call> run ()
 %!error run ("a", "b")
 %!error <SCRIPT must exist> run ("__A_very_#unlikely#_file_name__")

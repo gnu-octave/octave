@@ -80,10 +80,9 @@ endfunction
 %! assert (! isbanded (A,1,0));
 
 ## Test input validation
-%!error isbanded ()
-%!error isbanded (1)
-%!error isbanded (1,2)
-%!error isbanded (1,2,3,4)
+%!error <Invalid call> isbanded ()
+%!error <Invalid call> isbanded (1)
+%!error <Invalid call> isbanded (1,2)
 %!error <LOWER and UPPER must be non-negative> isbanded (1, -1, 1)
 %!error <LOWER and UPPER must be non-negative> isbanded (1, 1, -1)
 %!error <LOWER and UPPER must be non-negative> isbanded (1, {1}, 1)

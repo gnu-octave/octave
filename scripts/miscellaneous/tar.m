@@ -154,8 +154,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error tar ()
-%!error tar (1)
-%!error tar (1,2,3,4)
+%!error <Invalid call> tar ()
+%!error <Invalid call> tar (1)
 %!error <TARFILE must be a string> tar (1, "foobar")
 %!error <FILES must be a character array or cellstr> tar ("foobar", 1)

@@ -123,8 +123,7 @@ endfunction
 %!assert (var ([1,2,3], [], 3), [0,0,0])
 
 ## Test input validation
-%!error var ()
-%!error var (1,2,3,4)
+%!error <Invalid call> var ()
 %!error <X must be a numeric> var (['A'; 'B'])
 %!error <OPT must be 0 or 1> var (1, -1)
 %!error <FLAG must be 0 or 1> skewness (1, 2)

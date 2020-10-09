@@ -88,9 +88,8 @@ endfunction
 %! assert (zeros (size (a)), beta (a, -a), tol);
 %! assert (zeros (size (a)), beta (-a, a), tol);
 
-%!error beta ()
-%!error beta (1)
-%!error beta (1,2,3)
+%!error <Invalid call> beta ()
+%!error <Invalid call> beta (1)
 %!error <A and B must be real> beta (1i, 2)
 %!error <A and B must be real> beta (2, 1i)
 %!error <A and B must have consistent sizes> beta ([1 2], [1 2 3])

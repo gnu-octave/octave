@@ -37,5 +37,3 @@ endfunction
 
 
 %!assert (islogical (ispc ()))
-
-%!error ispc (1)

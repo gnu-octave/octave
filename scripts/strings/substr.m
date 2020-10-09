@@ -104,7 +104,7 @@ endfunction
 %!assert (isempty (substr ("This is a test string", 1, 0)))
 
 ## Test input validation
-%!error substr ()
+%!error <Invalid call> substr ()
 %!error substr ("foo", 2, 3, 4)
 %!error substr (ones (5, 1), 1, 1)
 %!error substr ("foo", ones (2,2))

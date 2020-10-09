@@ -114,8 +114,7 @@ endfunction
 %!assert (spearman ([1 2 3], [-1 1 -2]), -0.5, 5*eps)
 
 ## Test input validation
-%!error spearman ()
-%!error spearman (1, 2, 3)
+%!error <Invalid call> spearman ()
 %!error spearman (['A'; 'B'])
 %!error spearman (ones (1,2), {1, 2})
 %!error spearman (ones (2,2,2))

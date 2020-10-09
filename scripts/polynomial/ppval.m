@@ -139,9 +139,8 @@ endfunction
 %! assert (ppval (pp, [breaks',breaks']), ret);
 
 ## Test input validation
-%!error ppval ()
-%!error ppval (1)
-%!error ppval (1,2,3)
+%!error <Invalid call> ppval ()
+%!error <Invalid call> ppval (1)
 %!error <argument must be a pp-form structure> ppval (1,2)
 %!error <argument must be a pp-form structure> ppval (struct ("a", 1), 2)
 %!error <argument must be a pp-form structure> ppval (struct ("form", "ab"), 2)

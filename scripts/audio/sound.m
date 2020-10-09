@@ -51,7 +51,7 @@ function sound (y, fs, nbits)
 
   if (nargin < 2 || isempty (fs))
     fs = 8000;
-  elseif (! (isscalar (fs) && (fs > 0)))
+  elseif (! (isscalar (fs) && fs > 0))
     error ("sound: sample rate FS must be a positive number");
   endif
 
@@ -71,7 +71,7 @@ endfunction
 ## Tests of sound must not actually play anything.
 
 ## Test input validation
-%!error sound ()
-%!error sound (1,2,3,4)
-%!error sound (1, -1)
-%!error sound (1, [], 2)
+%!error <Invalid call> sound ()
+%!error <FS must be a positive number> sound (1, ones (2,2))
+%!error <FS must be a positive number> sound (1, -1)
+%!error <NBITS must be 8, 16, or 24> sound (1, [], 2)

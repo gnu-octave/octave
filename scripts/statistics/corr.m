@@ -107,8 +107,7 @@ endfunction
 %!assert (corr (single (5)), single (1))
 
 ## Test input validation
-%!error corr ()
-%!error corr (1, 2, 3)
+%!error <Invalid call> corr ()
 %!error corr ([1; 2], ["A", "B"])
 %!error corr (ones (2,2,2))
 %!error corr (ones (2,2), ones (2,2,2))

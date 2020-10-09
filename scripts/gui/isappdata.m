@@ -66,7 +66,6 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error isappdata ()
-%!error isappdata (1,2,3)
+%!error <Invalid call> isappdata ()
 %!error <H must be a scalar .* graphic handle> isappdata (-1, "hello")
 %!error <NAME must be a string> isappdata (0, 1)

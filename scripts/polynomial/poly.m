@@ -112,6 +112,5 @@ endfunction
 %! y = poly (x);
 %! assert (y, [1 + 0i, -9 - 3i, 25 + 24i, -17 - 57i, -12 + 36i]);
 
-%!error poly ()
-%!error poly (1,2)
+%!error <Invalid call> poly ()
 %!error poly ([1, 2, 3; 4, 5, 6])

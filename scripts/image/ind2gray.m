@@ -77,9 +77,8 @@ endfunction
 %!assert (gray2ind (i2g, 100), uint8 (0:99))
 
 ## Test input validation
-%!error ind2gray ()
-%!error ind2gray (1)
-%!error ind2gray (1,2,3)
+%!error <Invalid call> ind2gray ()
+%!error <Invalid call> ind2gray (1)
 %!error <X must be an indexed image> ind2gray (ones (3,3,3), jet (64))
 %!error <X must be an indexed image> ind2gray (1+i, jet (64))
 %!error <X must be an indexed image> ind2gray (sparse (1), jet (64))

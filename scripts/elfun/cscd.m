@@ -45,4 +45,3 @@ endfunction
 %!assert (cscd ([90, 270]) != Inf)
 
 %!error cscd ()
-%!error cscd (1, 2)

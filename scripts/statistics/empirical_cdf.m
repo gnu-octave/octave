@@ -58,7 +58,6 @@ endfunction
 %!assert (empirical_cdf ([x, NaN], single (v)), single ([y, NaN]), eps)
 
 ## Test input validation
-%!error empirical_cdf ()
-%!error empirical_cdf (1)
-%!error empirical_cdf (1,2,3)
+%!error <Invalid call> empirical_cdf ()
+%!error <Invalid call> empirical_cdf (1)
 %!error empirical_cdf (1, ones (2))

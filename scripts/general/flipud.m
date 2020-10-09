@@ -78,5 +78,4 @@ endfunction
 %! a(1,:,:,2) = [ 5  6  7  8];
 %! assert (flipud (a), a);
 
-%!error flipud ()
-%!error flipud (1, 2)
+%!error <Invalid call> flipud ()

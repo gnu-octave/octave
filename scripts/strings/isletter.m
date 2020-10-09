@@ -43,5 +43,5 @@ function retval = isletter (s)
 endfunction
 
 
-%!error isletter ()
+%!error <Invalid call> isletter ()
 %!error isletter ("a", "b")

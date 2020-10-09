@@ -133,8 +133,7 @@ endfunction
 %!assert (toeplitz ([1, 2, 3], [1; -3i; -5i]), [1, -3i, -5i; 2, 1, -3i; 3, 2, 1])
 
 ## Test input validation
-%!error toeplitz ()
-%!error toeplitz (1, 2, 3)
+%!error <Invalid call> toeplitz ()
 %!error <C must be a vector> toeplitz ([1, 2; 3, 4])
 %!error <C and R must be vectors> toeplitz ([1, 2; 3, 4], 1)
 %!error <C and R must be vectors> toeplitz (1, [1, 2; 3, 4])

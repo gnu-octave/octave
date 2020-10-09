@@ -111,8 +111,7 @@ endfunction
 %! assert (vecnorm (A), ret, 1e-4);
 
 ## Test input validation
-%!error vecnorm ()
-%!error vecnorm (1,2,3,4)
+%!error <Invalid call> vecnorm ()
 %!error <P must be positive real scalar> vecnorm (1, [1 2])
 %!error <P must be positive real scalar> vecnorm (1, i)
 %!error <P must be positive real scalar> vecnorm (1, -1)

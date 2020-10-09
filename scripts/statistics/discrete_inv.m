@@ -86,10 +86,9 @@ endfunction
 %!assert (discrete_inv ([x, NaN], v, single (p)), single ([y, NaN]), eps ("single"))
 
 ## Test input validation
-%!error discrete_inv ()
-%!error discrete_inv (1)
-%!error discrete_inv (1,2)
-%!error discrete_inv (1,2,3,4)
+%!error <Invalid call> discrete_inv ()
+%!error <Invalid call> discrete_inv (1)
+%!error <Invalid call> discrete_inv (1,2)
 %!error discrete_inv (1, ones (2), ones (2,1))
 %!error discrete_inv (1, ones (2,1), ones (1,1))
 %!error discrete_inv (1, ones (2,1), [1 NaN])

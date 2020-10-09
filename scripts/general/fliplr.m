@@ -78,5 +78,5 @@ endfunction
 %! a(:,1,:,2) = [ 5  6  7  8];
 %! assert (fliplr (a), a);
 
-%!error fliplr()
-%!error fliplr (1, 2)
+## Test input validation
+%!error fliplr ()

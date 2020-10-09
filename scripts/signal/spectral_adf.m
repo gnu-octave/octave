@@ -74,7 +74,6 @@ endfunction
 
 
 ## Test input validation
-%!error spectral_adf ()
-%!error spectral_adf (1, 2, 3, 4)
-%!error spectral_adf (1, 2)
-%!error spectral_adf (1, "invalid")
+%!error <Invalid call> spectral_adf ()
+%!error <WIN must be a string> spectral_adf (1, 2)
+%!error <unable to find function for @invalid_lw> spectral_adf (1, "invalid")

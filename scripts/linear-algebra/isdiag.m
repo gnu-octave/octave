@@ -60,5 +60,4 @@ endfunction
 %!assert (isdiag (diag (1:10)))
 
 ## Test input validation
-%!error isdiag ()
-%!error isdiag (1,2)
+%!error <Invalid call> isdiag ()

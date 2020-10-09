@@ -48,4 +48,3 @@ endfunction
 %! assert (acot (x), v, sqrt (eps));
 
 %!error acot ()
-%!error acot (1, 2)

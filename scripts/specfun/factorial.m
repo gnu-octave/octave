@@ -65,8 +65,7 @@ endfunction
 %!assert (factorial (70), exp (sum (log (1:70))), -128*eps)
 %!assert (factorial (0), 1)
 
-%!error factorial ()
-%!error factorial (1,2)
+%!error <Invalid call> factorial ()
 %!error <must be real non-negative integers> factorial (2i)
 %!error <must be real non-negative integers> factorial (-3)
 %!error <must be real non-negative integers> factorial (5.5)

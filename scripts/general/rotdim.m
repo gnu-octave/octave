@@ -164,5 +164,4 @@ endfunction
 ## FIXME: We need tests for multidimensional arrays
 ##        and different values of PLANE.
 
-%!error rotdim ()
-%!error rotdim (1, 2, 3, 4)
+%!error <Invalid call> rotdim ()

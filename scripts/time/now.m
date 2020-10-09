@@ -55,5 +55,3 @@ endfunction
 %!assert (isnumeric (now ()))
 %!assert (now () > 0)
 %!assert (now () <= now ())
-
-%!error now (1)

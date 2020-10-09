@@ -187,8 +187,7 @@ endfunction
 %! assert (y0, y, 55*eps);
 
 ## Test input validation
-%!error fftfilt (1)
-%!error fftfilt (1, 2, 3, 4)
+%!error <Invalid call> fftfilt (1)
 %!error fftfilt (ones (2), 1)
 %!error fftfilt (2, ones (3,3,3))
 %!error fftfilt (2, 1, ones (2))

@@ -87,7 +87,7 @@ endfunction
 %! A = hanning (N, "periodic");
 %! assert (A(N/2 + 1), 1);
 
-%!error hanning ()
+%!error <Invalid call> hanning ()
 %!error hanning (0.5)
 %!error hanning (-1)
 %!error hanning (ones (1,4))

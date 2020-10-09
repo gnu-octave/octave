@@ -52,5 +52,4 @@ endfunction
 %!assert (nonzeros (sparse ([1,2,3,0])), [1;2;3])
 
 ## Test input validation
-%!error nonzeros ()
-%!error nonzeros (1, 2)
+%!error <Invalid call> nonzeros ()

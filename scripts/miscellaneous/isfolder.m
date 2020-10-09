@@ -75,6 +75,6 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error isfolder ()
+%!error <Invalid call> isfolder ()
 %!error isfolder ("a", "b")
 %!error <F must be a string> isfolder (1.0)

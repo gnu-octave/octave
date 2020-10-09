@@ -62,5 +62,4 @@ endfunction
 %!assert (range (2), 0)
 
 ## Test input validation
-%!error range ()
-%!error range (1, 2, 3)
+%!error <Invalid call> range ()

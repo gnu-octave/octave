@@ -148,8 +148,7 @@ endfunction
 %!assert (kendall (single (1)), single (1))
 
 ## Test input validation
-%!error kendall ()
-%!error kendall (1, 2, 3)
+%!error <Invalid call> kendall ()
 %!error kendall (['A'; 'B'])
 %!error kendall (ones (2,1), ['A'; 'B'])
 %!error kendall (ones (2,2,2))

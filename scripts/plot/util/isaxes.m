@@ -66,5 +66,4 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!error isaxes ()
-%!error isaxes (1, 2)
+%!error <Invalid call> isaxes ()

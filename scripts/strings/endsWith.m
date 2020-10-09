@@ -156,7 +156,7 @@ endfunction
 %! assert (endsWith (str, pattern, "iG", 0), expected_wo_ignore);
 
 ## Test input validation
-%!error endsWith ()
+%!error <Invalid call> endsWith ()
 %!error endsWith ("A")
 %!error endsWith ("A", "B", "C")
 %!error endsWith ("A", "B", "C", "D", "E")

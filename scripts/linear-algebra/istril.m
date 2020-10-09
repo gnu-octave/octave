@@ -61,5 +61,4 @@ endfunction
 %!assert (! istril (randn (10)))
 
 ## Test input validation
-%!error istril ()
-%!error istril (1,2)
+%!error <Invalid call> istril ()

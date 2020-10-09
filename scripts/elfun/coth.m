@@ -46,4 +46,3 @@ endfunction
 %! assert (coth (x), v, sqrt (eps));
 
 %!error coth ()
-%!error coth (1, 2)

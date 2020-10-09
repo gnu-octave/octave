@@ -79,5 +79,5 @@ endfunction
 %! B = [length(A):-1:1];
 %! assert (polyint (A), [1./B, 0]);
 
-%!error polyint ()
+%!error <Invalid call> polyint ()
 %!error polyint (ones (2,2))

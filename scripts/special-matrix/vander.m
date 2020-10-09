@@ -95,6 +95,5 @@ endfunction
 %!assert (vander (2, 3), [4, 2, 1])
 %!assert (vander ([2, 3], 3), [4, 2, 1; 9, 3, 1])
 
-%!error vander ()
-%!error vander (1, 2, 3)
+%!error <Invalid call> vander ()
 %!error <polynomial C must be a vector> vander ([1, 2; 3, 4])

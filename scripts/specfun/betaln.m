@@ -68,9 +68,8 @@ endfunction
 %!assert (betaln (3,4), log (beta (3,4)), eps)
 
 ## Test input validation
-%!error betaln ()
-%!error betaln (1)
-%!error betaln (1,2,3)
+%!error <Invalid call> betaln ()
+%!error <Invalid call> betaln (1)
 %!error <A and B must be real> betaln (1i, 2)
 %!error <A and B must be real> betaln (2, 1i)
 %!error <A and B must have consistent sizes> betaln ([1 2], [1 2 3])

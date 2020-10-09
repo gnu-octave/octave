@@ -161,8 +161,7 @@ endfunction
 %! assert (lastwarn (), "");
 
 ## Test input validation
-%!error skewness ()
-%!error skewness (1, 2, 3)
+%!error <Invalid call> skewness ()
 %!error <X must be a numeric vector or matrix> skewness (['A'; 'B'])
 %!error <FLAG must be 0 or 1> skewness (1, 2)
 %!error <FLAG must be 0 or 1> skewness (1, [1 0])

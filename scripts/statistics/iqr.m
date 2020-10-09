@@ -97,8 +97,7 @@ endfunction
 %! assert (iqr (x, 1), 50);
 %! assert (iqr (x', 2), 50);
 
-%!error iqr ()
-%!error iqr (1, 2, 3)
+%!error <Invalid call> iqr ()
 %!error iqr (1)
 %!error iqr (['A'; 'B'])
 %!error iqr (1:10, 3)

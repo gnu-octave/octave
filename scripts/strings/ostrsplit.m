@@ -119,7 +119,7 @@ endfunction
 %!assert (ostrsplit (char ("a,bc", ",de"), ", ", true), {"a", "bc", "de"})
 
 ## Test input validation
-%!error ostrsplit ()
+%!error <Invalid call> ostrsplit ()
 %!error ostrsplit ("abc")
 %!error ostrsplit ("abc", "b", true, 4)
 %!error <S and SEP must be string values> ostrsplit (123, "b")

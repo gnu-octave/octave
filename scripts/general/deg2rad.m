@@ -67,7 +67,6 @@ endfunction
 %!assert (deg2rad ([0, 90, 180, 270, 360]), pi*[0, 1/2, 1, 3/2, 2])
 
 ## Test input validation
-%!error deg2rad ()
-%!error deg2rad (1, 2)
+%!error <Invalid call> deg2rad ()
 %!error <DEG must be a floating point class> deg2rad (uint8 (1))
 %!error <DEG must be a floating point class> deg2rad ("A")

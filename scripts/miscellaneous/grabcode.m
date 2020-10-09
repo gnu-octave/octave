@@ -100,5 +100,4 @@ endfunction
 
 
 ## Test input validation
-%!error grabcode ()
-%!error grabcode (1,2)
+%!error <Invalid call> grabcode ()

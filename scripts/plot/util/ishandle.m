@@ -72,5 +72,4 @@ endfunction
 %! assert (ishandle (jobj));
 
 ## Test input validation
-%!error ishandle ()
-%!error ishandle (1, 2)
+%!error <Invalid call> ishandle ()

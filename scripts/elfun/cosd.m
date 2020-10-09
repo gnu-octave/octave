@@ -50,4 +50,3 @@ endfunction
 %!assert (cosd ([90, 270]) == 0)
 
 %!error cosd ()
-%!error cosd (1, 2)

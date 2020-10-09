@@ -162,8 +162,7 @@ endfunction
 %! assert (lastwarn (), "");
 
 ## Test input validation
-%!error kurtosis ()
-%!error kurtosis (1, 2, 3)
+%!error <Invalid call> kurtosis ()
 %!error <X must be a numeric vector or matrix> kurtosis (['A'; 'B'])
 %!error <FLAG must be 0 or 1> kurtosis (1, 2)
 %!error <FLAG must be 0 or 1> kurtosis (1, [1 0])

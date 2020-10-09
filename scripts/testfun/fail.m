@@ -157,6 +157,5 @@ endfunction
 %!error <warning failure> fail ("warning ('warning failure')", "warning", "success")
 
 ## Test input validation
-%!error fail ()
-%!error fail (1,2,3,4)
+%!error <Invalid call> fail ()
 %!error fail (1, "nowarning", "foo")

@@ -133,8 +133,7 @@ endfunction
 %! assert (! ishermitian (s));
 
 ## Test input validation
-%!error ishermitian ()
-%!error ishermitian (1,2,3,4)
+%!error <Invalid call> ishermitian ()
 %!error <second argument must be> ishermitian (1, {"skew"})
 %!error <SKEWOPT must be 'skew' or 'nonskew'> ishermitian (1, "foobar")
 %!error <SKEWOPT must be 'skew' or 'nonskew'> ishermitian (1, "foobar")

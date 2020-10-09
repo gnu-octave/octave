@@ -101,8 +101,7 @@ endfunction
 %! assert (abs (y(:)) < 20*eps);
 
 ## Test input validation
-%!error detrend ()
-%!error detrend (1, 2, 3)
+%!error <Invalid call> detrend ()
 %!error detrend ("a")
 %!error detrend (true)
 %!error detrend (1, "invalid")

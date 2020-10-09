@@ -132,8 +132,7 @@ endfunction
 %! assert (! issymmetric (s));
 
 ## Test input validation
-%!error issymmetric ()
-%!error issymmetric (1,2,3,4)
+%!error <Invalid call> issymmetric ()
 %!error <second argument must be> issymmetric (1, {"skew"})
 %!error <SKEWOPT must be 'skew' or 'nonskew'> issymmetric (1, "foobar")
 %!error <SKEWOPT must be 'skew' or 'nonskew'> issymmetric (1, "foobar")

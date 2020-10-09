@@ -108,8 +108,7 @@ endfunction
 %!assert (cast ([-2.5 1.1 2.5], "uint64"), uint64 ([0 1 3]))
 
 ## Test input validation
-%!error cast ()
-%!error cast (1)
-%!error cast (1,2,3)
+%!error <Invalid call> cast ()
+%!error <Invalid call> cast (1)
 %!error <TYPE 'foobar' is not a built-in type> cast (1, "foobar")
 %!error <TYPE must be a string> cast (1, {"foobar"})

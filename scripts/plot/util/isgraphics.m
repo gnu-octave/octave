@@ -106,7 +106,6 @@ endfunction
 %! assert (isgraphics ([-1 0], "foobar"), [false false]);
 
 ## Test input validation
-%!error isgraphics ()
-%!error isgraphics (1, 2, 3)
+%!error <Invalid call> isgraphics ()
 %!error <TYPE must be a string> isgraphics (0, 1)
 %!error <TYPE must be a string> isgraphics (0, {1})

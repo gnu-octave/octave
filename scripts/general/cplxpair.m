@@ -175,8 +175,7 @@ endfunction
 %! cplxpair ([2e6 + j; 2e6 - j; 1e-9 * (1 + j); 1e-9 * (1 - 2j)]);
 
 ## Test input validation
-%!error cplxpair ()
-%!error cplxpair (1,2,3,4)
+%!error <Invalid call> cplxpair ()
 %!error <cplxpair: TOL must be .* scalar number> cplxpair (1, ones (2,2))
 %!error <cplxpair: TOL must be .* in the range 0 <= TOL < 1> cplxpair (1, -1)
 %!error <cplxpair: TOL must be .* in the range 0 <= TOL < 1> cplxpair (1, -1)

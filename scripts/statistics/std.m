@@ -126,8 +126,7 @@ endfunction
 %!assert (std ([1 2 3], [], 3), [0 0 0])
 
 ## Test input validation
-%!error std ()
-%!error std (1, 2, 3, 4)
+%!error <Invalid call> std ()
 %!error <X must be a numeric> std (['A'; 'B'])
 %!error <OPT must be 0 or 1> std (1, 2)
 %!error <DIM must be an integer> std (1, [], ones (2,2))

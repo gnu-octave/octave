@@ -113,8 +113,7 @@ endfunction
 %!assert (rgb2hsv (sparse ([1 1 1])), sparse ([0 0 1]))
 
 ## Test input validation
-%!error rgb2hsv ()
-%!error rgb2hsv (1,2)
+%!error <Invalid call> rgb2hsv ()
 %!error <invalid data type 'cell'> rgb2hsv ({1})
 %!error <RGB must be a colormap or RGB image> rgb2hsv (ones (2,2))
 

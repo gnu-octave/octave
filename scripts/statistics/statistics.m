@@ -39,7 +39,7 @@
 
 function stats = statistics (x, dim)
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -93,8 +93,7 @@ endfunction
 %! assert (kurtosis (x, [], 2), s(:,9), eps);
 
 ## Test input validation
-%!error statistics ()
-%!error statistics (1, 2, 3)
+%!error <Invalid call> statistics ()
 %!error statistics (['A'; 'B'])
 %!error statistics (1, ones (2,2))
 %!error statistics (1, 1.5)

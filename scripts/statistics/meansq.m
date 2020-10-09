@@ -88,8 +88,7 @@ endfunction
 %!assert (meansq ([1 2], 3), [1 4])
 
 ## Test input validation
-%!error meansq ()
-%!error meansq (1, 2, 3)
+%!error <Invalid call> meansq ()
 %!error <X must be a numeric> meansq (['A'; 'B'])
 %!error <DIM must be an integer> meansq (1, ones (2,2))
 %!error <DIM must be an integer> meansq (1, 1.5)

@@ -135,8 +135,7 @@ endfunction
 %!assert (roots ([1e-200, -1e200, 1]), 1e-200)
 %!assert (roots ([1e-200, -1e200 * 1i, 1]), -1e-200 * 1i)
 
-%!error roots ()
-%!error roots (1,2)
+%!error <Invalid call> roots ()
 %!error roots ([1, 2; 3, 4])
 %!error <inputs must not contain Inf or NaN> roots ([1 Inf 1])
 %!error <inputs must not contain Inf or NaN> roots ([1 NaN 1])

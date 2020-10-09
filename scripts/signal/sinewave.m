@@ -60,4 +60,4 @@ endfunction
 %!assert (sinewave (1), sinewave (1, 1,0))
 %!assert (sinewave (3, 4), sinewave (3, 4, 0))
 
-%!error sinewave ()
+%!error <Invalid call> sinewave ()

@@ -75,10 +75,9 @@ endfunction
 %!assert (discrete_pdf ([x, NaN], v, single (p)), single ([y, NaN]), 5*eps ("single"))
 
 ## Test input validation
-%!error discrete_pdf ()
-%!error discrete_pdf (1)
-%!error discrete_pdf (1,2)
-%!error discrete_pdf (1,2,3,4)
+%!error <Invalid call> discrete_pdf ()
+%!error <Invalid call> discrete_pdf (1)
+%!error <Invalid call> discrete_pdf (1,2)
 %!error discrete_pdf (1, ones (2), ones (2,1))
 %!error discrete_pdf (1, [1 ; NaN], ones (2,1))
 %!error discrete_pdf (1, ones (2,1), ones (1,1))

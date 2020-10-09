@@ -58,5 +58,4 @@ endfunction
 
 %!assert (asctime (localtime (time ()))(end), "\n")
 
-%!error asctime ()
-%!error asctime (1, 2)
+%!error <Invalid call> asctime ()

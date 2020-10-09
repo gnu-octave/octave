@@ -105,6 +105,5 @@ endfunction
 %!assert (magic (1.5), 1)
 
 ## Test input validation
-%!error magic ()
-%!error magic (1, 2)
+%!error <Invalid call> magic ()
 %!error <N must be non-negative> magic (-5)

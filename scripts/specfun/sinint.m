@@ -210,6 +210,5 @@ endfunction
 %#!test <*52953>
 
 ## Test input validation
-%!error sinint ()
-%!error sinint (1,2)
+%!error <Invalid call> sinint ()
 %!error <X must be numeric> sinint ("1")

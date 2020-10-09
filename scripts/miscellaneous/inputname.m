@@ -158,7 +158,6 @@ endfunction
 %! assert (__iname1_ID__ (x / 2), "x / 2");
 %! assert (__iname1_ID__ (Inf), "Inf");
 
-%!error inputname ()
-%!error inputname (1,2,3)
+%!error <Invalid call> inputname ()
 %!error <N must be a scalar> inputname (ones (2,2))
 %!error <N must be a scalar index> inputname (-1)

@@ -75,6 +75,6 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error isfile ()
+%!error <Invalid call> isfile ()
 %!error isfile ("a", "b")
 %!error <F must be a string> isfile (1.0)

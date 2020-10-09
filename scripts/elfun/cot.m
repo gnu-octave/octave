@@ -48,4 +48,3 @@ endfunction
 %! assert (cot (x), v, sqrt (eps));
 
 %!error cot ()
-%!error cot (1, 2)

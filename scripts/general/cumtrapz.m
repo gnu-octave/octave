@@ -158,8 +158,7 @@ endfunction
 %!assert (cumtrapz (x2,y,3), reshape ([0,3,8;0,9,20],[1 2 3]))
 
 ## Test input validation
-%!error cumtrapz ()
-%!error cumtrapz (1,2,3,4)
+%!error <Invalid call> cumtrapz ()
 %!error <DIM must be an integer> cumtrapz (1, 2, [1 2])
 %!error <DIM must be an integer> cumtrapz (1, 2, 1.5)
 %!error <DIM must be .* a valid dimension> cumtrapz (1, 2, 0)

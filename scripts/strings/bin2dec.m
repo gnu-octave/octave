@@ -74,6 +74,5 @@ endfunction
 %!assert (bin2dec (char ("1 0 1", "   1111")), [5; 15])
 
 ## Test input validation
-%!error bin2dec ()
-%!error bin2dec (1)
-%!error bin2dec ("1", 2)
+%!error <Invalid call> bin2dec ()
+%!error <S must be a string> bin2dec (1)

@@ -68,7 +68,6 @@ endfunction
 %!assert (empirical_pdf (2, [1 2 3 2]), 0.5)
 
 ## Test input validation
-%!error empirical_pdf ()
-%!error empirical_pdf (1)
-%!error empirical_pdf (1,2,3)
+%!error <Invalid call> empirical_pdf ()
+%!error <Invalid call> empirical_pdf (1)
 %!error empirical_inv (1, ones (2))

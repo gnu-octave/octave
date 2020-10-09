@@ -82,5 +82,4 @@ endfunction
 %!error <not defined for class "double"> subsindex (1)
 
 ## Test input validation
-%!error subsindex ()
-%!error subsindex (1, 2)
+%!error <Invalid call> subsindex ()

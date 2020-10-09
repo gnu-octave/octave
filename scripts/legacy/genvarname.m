@@ -227,8 +227,7 @@ endfunction
 %!assert (genvarname ("x", {"a", "b"; "x", "d"}), "x1")
 
 ## Test input validation
-%!error genvarname ()
-%!error genvarname (1,2,3)
+%!error <Invalid call> genvarname ()
 %!error <more than one STR is given, it must be a cellstr> genvarname (char ("a", "b", "c"))
 %!error <STR must be a string or cellstr> genvarname (1)
 %!error <more than one exclusion is given, it must be a cellstr> genvarname ("x", char ("a", "b", "c"))

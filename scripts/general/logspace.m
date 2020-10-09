@@ -119,8 +119,7 @@ endfunction
 ##%!assert (logspace (Inf, 0, 3), [Inf, NaN, 1])
 
 ## Test input validation
-%!error logspace ()
-%!error logspace (1, 2, 3, 4)
+%!error <Invalid call> logspace ()
 %!error logspace ([1, 2; 3, 4], 5, 6)
 %!error logspace (1, [1, 2; 3, 4], 6)
 %!error logspace (1, 2, [1, 2; 3, 4])

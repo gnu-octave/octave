@@ -123,8 +123,7 @@ endfunction
 %!assert (unique (perms (1:5)(:))', 1:5)
 %!assert (perms (int8 (1:4)), int8 (perms (1:4)))
 
-%!error perms ()
-%!error perms (1, 2)
+%!error <Invalid call> perms ()
 
 ## Should work for any array type, such as cells and structs, and not
 ## only for numeric data.

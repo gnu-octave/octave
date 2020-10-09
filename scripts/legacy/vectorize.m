@@ -91,7 +91,6 @@ endfunction
 %! assert (finfo.function, "@(x) 2 .^ x .^ 5");
 
 ## Test input validation
-%!error vectorize ()
-%!error vectorize (1, 2)
+%!error <Invalid call> vectorize ()
 %!error <FUN must be a string or anonymous function handle> vectorize (1)
 

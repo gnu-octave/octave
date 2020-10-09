@@ -46,6 +46,3 @@ endfunction
 
 
 %!assert (strcmp (date (), strftime ("%d-%b-%Y", localtime (time ()))))
-
-## Test input validation
-%!error date (1)

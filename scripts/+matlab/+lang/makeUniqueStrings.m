@@ -228,8 +228,7 @@ endfunction
 %! assert (uniqstr, {"a_1","a_2","a_4","a_6","a_5"});
 
 ## Test input validation
-%!error matlab.lang.makeUniqueStrings ()
-%!error [a, b, c] = matlab.lang.makeUniqueStrings ("a");
+%!error <Invalid call> matlab.lang.makeUniqueStrings ()
 %!error <STR must be a string or cellstr> matlab.lang.makeUniqueStrings (1)
 %!error <STR and EX logical array must have the same length>
 %! matlab.lang.makeUniqueStrings ("a", [true false]);

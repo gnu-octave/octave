@@ -113,6 +113,5 @@ endfunction
 %!assert <*44162> (postpad ("Octave", 16, "x"), "Octavexxxxxxxxxx")
 %!assert (postpad ("Octave", 4), "Octa")
 
-%!error postpad ()
-%!error postpad (1)
-%!error postpad (1,2,3,4,5)
+%!error <Invalid call> postpad ()
+%!error <Invalid call> postpad (1)

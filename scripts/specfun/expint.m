@@ -273,6 +273,5 @@ endfunction
 %!assert (! isreal (expint (-1)))
 
 ## Test input validation
-%!error expint ()
-%!error expint (1,2)
+%!error <Invalid call> expint ()
 %!error <X must be numeric> expint ("1")

@@ -172,8 +172,8 @@ endfunction
 %!assert (accumdim ([1;3;1;3;3], a, 1, 4, [], pi)([2 4],:,:), pi (2,5,5))
 
 ## Test input validation
-%!error accumdim (1)
-%!error accumdim (1,2,3,4,5,6,7)
+%!error <Invalid call> accumdim ()
+%!error <Invalid call> accumdim (1)
 %!error <SUBS must be a subscript vector> accumdim (ones (2,2), ones (2,2))
 %!error <indices must be positive integers> accumdim ([-1 1], ones (2,2))
 %!error <N index out of range> accumdim ([1 2], ones (2,2), 1, 1)

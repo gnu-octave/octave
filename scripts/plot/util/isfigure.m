@@ -65,5 +65,4 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!error isfigure ()
-%!error isfigure (1, 2)
+%!error <Invalid call> isfigure ()

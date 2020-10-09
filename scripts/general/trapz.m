@@ -153,8 +153,7 @@ endfunction
 %!assert <*54277> (trapz (ones (3,1), 2), zeros (3,1))
 
 ## Test input validation
-%!error trapz ()
-%!error trapz (1,2,3,4)
+%!error <Invalid call> trapz ()
 %!error <DIM must be an integer> trapz (1, 2, [1 2])
 %!error <DIM must be an integer> trapz (1, 2, 1.5)
 %!error <DIM must be .* a valid dimension> trapz (1, 2, 0)

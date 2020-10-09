@@ -265,8 +265,7 @@ endfunction
 %!assert <*45174> (num2str ([65 66 67], "%s"), "ABC")
 
 ## Test input validation
-%!error num2str ()
-%!error num2str (1, 2, 3)
+%!error <Invalid call> num2str ()
 %!error <X must be a numeric> num2str ({1})
 %!error <PRECISION must be a scalar integer .= 0> num2str (1, {1})
 %!error <PRECISION must be a scalar integer .= 0> num2str (1, ones (2))

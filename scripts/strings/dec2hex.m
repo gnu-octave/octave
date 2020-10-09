@@ -122,6 +122,5 @@ endfunction
 %!assert (dec2hex ({1, 2; 3, -4}), ["01"; "03"; "02"; "FC"])
 
 ## Test input validation
-%!error dec2hex ()
-%!error dec2hex (1, 2, 3)
+%!error <Invalid call> dec2hex ()
 %!error <negative inputs cannot be less than> dec2hex (- flintmax ())

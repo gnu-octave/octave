@@ -138,8 +138,7 @@ endfunction
 %!assert (median (single ([1, 3, NaN])), single (NaN))
 
 ## Test input validation
-%!error median ()
-%!error median (1, 2, 3)
+%!error <Invalid call> median ()
 %!error <X must be a numeric> median ({1:5})
 %!error <X cannot be an empty matrix> median ([])
 %!error <DIM must be an integer> median (1, ones (2,2))

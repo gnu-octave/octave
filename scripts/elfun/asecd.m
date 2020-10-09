@@ -43,4 +43,3 @@ endfunction
 %!assert (asecd (0:10:90), 180/pi * asec (0:10:90), -10*eps)
 
 %!error asecd ()
-%!error asecd (1, 2)

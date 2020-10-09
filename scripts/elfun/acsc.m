@@ -48,4 +48,3 @@ endfunction
 %! assert (acsc (x), v, sqrt (eps));
 
 %!error acsc ()
-%!error acsc (1, 2)

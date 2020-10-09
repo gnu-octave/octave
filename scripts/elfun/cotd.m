@@ -45,4 +45,3 @@ endfunction
 %!assert (cotd ([90, 270]) == 0)
 
 %!error cotd ()
-%!error cotd (1, 2)

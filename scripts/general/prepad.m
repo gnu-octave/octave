@@ -118,9 +118,8 @@ endfunction
 
 ## FIXME: We need tests for multidimensional arrays.
 
-%!error prepad ()
-%!error prepad (1)
-%!error prepad (1,2,3,4,5)
+%!error <Invalid call> prepad ()
+%!error <Invalid call> prepad (1)
 %!error <C must be empty or a scalar> prepad ([1,2], 2, ones (2))
 %!error <DIM must be an integer> prepad ([1,2], 2, 2, ones (3))
 %!error <DIM must be an integer> prepad ([1,2], 2, 2, 1.1)

@@ -83,7 +83,7 @@ endfunction
 %!assert (verLessThan ("Octave", "99.9.9"))
 
 ## Test input validation
-%!error verLessThan ()
+%!error <Invalid call> verLessThan ()
 %!error verLessThan ("a")
 %!error verLessThan ("a", "1", "b")
 %!error <package "no-such-package" is not installed>

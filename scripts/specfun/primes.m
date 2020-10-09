@@ -108,7 +108,6 @@ endfunction
 %!assert (class (primes (single (10))), "single")
 %!assert (class (primes (uint8 (10))), "uint8")
 
-%!error primes ()
-%!error primes (1, 2)
+%!error <Invalid call> primes ()
 %!error <N must be a numeric scalar> primes ("1")
 %!error <N must be a numeric scalar> primes (ones (2,2))

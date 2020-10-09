@@ -81,7 +81,6 @@ endfunction
 %! assert (isprop (m, "KeyType"));
 %! assert (! isprop (m, "FooBar"));
 
-%!error isprop ()
-%!error isprop (1)
-%!error isprop (1,2,3)
+%!error <Invalid call> isprop ()
+%!error <Invalid call> isprop (1)
 %!error <PROP name must be a string> isprop (0, {"visible"})

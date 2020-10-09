@@ -95,8 +95,7 @@ endfunction
 %!assert (cond ([1, 2; 2, 1]), 3, sqrt (eps))
 %!assert (cond ([1, 2, 3; 4, 5, 6; 7, 8, 9]) > 1.0e+16)
 
-%!error cond ()
-%!error cond (1, 2, 3)
+%!error <Invalid call> cond ()
 %!error <A must be a 2-D matrix> cond (ones (1,3,3))
 %!error <A must not contain Inf or NaN value> cond ([1, 2;Inf 4])
 %!error <A must not contain Inf or NaN value> cond ([1, 2;NaN 4])

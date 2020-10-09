@@ -180,8 +180,7 @@ endfunction
 %! assert (q, qa, tol);
 
 ## Test input validation
-%!error prctile ()
-%!error prctile (1, 2, 3, 4)
+%!error <Invalid call> prctile ()
 %!error prctile (['A'; 'B'], 10)
 %!error prctile (1:10, [true, false])
 %!error prctile (1:10, ones (2,2))

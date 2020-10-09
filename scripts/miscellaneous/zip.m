@@ -134,8 +134,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error zip ()
-%!error zip (1)
-%!error zip (1,2,3,4)
+%!error <Invalid call> zip ()
+%!error <Invalid call> zip (1)
 %!error <ZIPFILE must be a string> zip (1, "foobar")
 %!error <FILES must be a character array or cellstr> zip ("foobar", 1)

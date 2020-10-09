@@ -158,7 +158,7 @@ endfunction
 %! assert (javachk ("jvm"), stnul);
 
 ## Test input validation
-%!error javachk ()
-%!error javachk (1)
+%!error <Invalid call> javachk ()
+%!error <FEATURE must be a string> javachk (1)
 %!error javachk ("jvm", 2)
 %!error javachk ("jvm", "feature", "ok")

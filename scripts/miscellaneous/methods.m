@@ -145,7 +145,7 @@ endfunction
 %!         "validate_name"});
 
 ## Test input validation
-%!error methods ()
+%!error <Invalid call> methods ()
 %!error methods ("a", "b", "c")
 %!error <invalid option> methods ("ftp", "option1")
 %!error <invalid input argument> methods (1)

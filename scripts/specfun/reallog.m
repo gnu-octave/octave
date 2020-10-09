@@ -50,7 +50,6 @@ endfunction
 %! x = rand (10, 10);
 %! assert (reallog (x), log (x));
 
-%!error reallog ()
-%!error reallog (1,2)
+%!error <Invalid call> reallog ()
 %!error <produced complex result> reallog (2i)
 %!error <produced complex result> reallog (-1)

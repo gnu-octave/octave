@@ -151,8 +151,7 @@ endfunction
 %!assert (mat2str (logical ([0 1; 0 0])), "[false true;false false]")
 
 ## Test input validation
-%!error mat2str ()
-%!error mat2str (1,2,3,4)
+%!error <Invalid call> mat2str ()
 %!error mat2str (["Hello"])
 %!error <X must be two dimensional> mat2str (ones (3,3,2))
 %!error <N must have only 1 or 2 elements> mat2str (ones (3,3), [1 2 3])

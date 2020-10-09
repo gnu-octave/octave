@@ -49,4 +49,3 @@ endfunction
 %!assert (sind ([90, 270]) != 0)
 
 %!error sind ()
-%!error sind (1, 2)

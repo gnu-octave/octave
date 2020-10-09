@@ -54,4 +54,3 @@ endfunction
 %! assert (asech (x), v, sqrt (eps));
 
 %!error asech ()
-%!error asech (1, 2)

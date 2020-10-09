@@ -102,8 +102,7 @@ endfunction
 %! assert (size (conv (b,a)), [1, numel(a)+numel(b)-1]);
 
 ## Test input validation
-%!error fftconv (1)
-%!error fftconv (1,2,3,4)
+%!error <Invalid call> fftconv (1)
 %!error fftconv ([1, 2; 3, 4], 3)
 %!error fftconv (2, [])
 %!error fftconv ([1,1], [2,2] , [3, 4])

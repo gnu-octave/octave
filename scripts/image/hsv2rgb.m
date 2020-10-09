@@ -136,8 +136,7 @@ endfunction
 %!assert (hsv2rgb (sparse ([1 1 1])), sparse ([1 0 0]))
 
 ## Test input validation
-%!error hsv2rgb ()
-%!error hsv2rgb (1,2)
+%!error <Invalid call> hsv2rgb ()
 %!error <invalid data type> hsv2rgb ({1})
 %!error <HSV must be a colormap or HSV image> hsv2rgb (ones (2,2))
 

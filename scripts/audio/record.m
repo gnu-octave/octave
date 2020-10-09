@@ -38,11 +38,15 @@
 
 function x = record (sec, fs = 8000)
 
-  if (! (isscalar (sec) && (sec >= 0)))
+  if (nargin < 1)
+    print_usage ();
+  endif
+
+  if (! (isscalar (sec) && sec >= 0))
     error ("record: recording duration SEC must be a non-negative number");
   endif
 
-  if (! (isscalar (fs) && (fs > 0)))
+  if (! (isscalar (fs) && fs > 0))
     error ("record: sample rate FS must be a positive number");
   endif
 
@@ -62,11 +66,10 @@ endfunction
 
 
 ## Tests of record must not actually record anything.
-
 %!assert (isempty (record (0)))
 
 ## Test input validation
-%!error record ()
-%!error record (1,2,3)
-%!error record (-1)
-%!error record (1, -1)
+%!error <SEC must be a non-negative number> record (ones (2,2))
+%!error <SEC must be a non-negative number> record (-1)
+%!error <FS must be a positive number> record (1, ones (2,2))
+%!error <FS must be a positive number> record (1, -1)

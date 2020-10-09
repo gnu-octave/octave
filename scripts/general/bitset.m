@@ -141,8 +141,9 @@ endfunction
 %!assert <*54110> (bitset (1:5, 1, 1), [1, 3, 3, 5, 5])
 %!assert (bitset (1:5, 1, [1, 1, 1, 1, 0]), [1, 3, 3, 5, 4])
 
-%!error bitset (1)
-%!error bitset (1, 2, 3, 4)
+## Test input validation
+%!error <Invalid call> bitset ()
+%!error <Invalid call> bitset (1)
 %!error <A must be .= 0> bitset (-1, 2)
 %!error <must be the same size or scalar> bitset (1, [1 2], [1 2 3])
 %!error <must be the same size or scalar> bitset ([1 2], [1 2 3])

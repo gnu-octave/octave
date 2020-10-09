@@ -128,8 +128,7 @@ endfunction
 
 
 ## Test input validation
-%!error conv (1)
-%!error conv (1,2,3,4)
+%!error <Invalid call> conv (1)
 %!error <A and B must be vectors> conv ([1, 2; 3, 4], 3)
 %!error <A and B must be vectors> conv (3, [1, 2; 3, 4])
 %!error <SHAPE argument must be> conv (2, 3, "INVALID_SHAPE")

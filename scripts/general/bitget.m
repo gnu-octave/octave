@@ -103,23 +103,19 @@ endfunction
 %!   endfor
 %! endfor
 
-%!error bitget (0, 0)
-%!error bitget (0, 55)
-
-%!error bitget (single (0), 0)
-%!error bitget (single (0), 26)
-
-%!error bitget (int8 (0), 9)
-%!error bitget (uint8 (0), 9)
-
-%!error bitget (int16 (0), 17)
-%!error bitget (uint16 (0), 17)
-
-%!error bitget (int32 (0), 33)
-%!error bitget (uint32 (0), 33)
-
-%!error bitget (int64 (0), 65)
-%!error bitget (uint64 (0), 65)
-
-%!error bitget (1)
-%!error bitget (1, 2, 3)
+## Test input validation
+%!error <Invalid call> bitget ()
+%!error <Invalid call> bitget (1)
+%!error <invalid class> bitget ("char", 1)
+%!error <N must be in the range \[1,53\]> bitget (0, 0)
+%!error <N must be in the range \[1,53\]> bitget (0, 55)
+%!error <N must be in the range \[1,24\]> bitget (single (0), 0)
+%!error <N must be in the range \[1,24\]> bitget (single (0), 26)
+%!error <N must be in the range \[1,8\]> bitget (int8 (0), 9)
+%!error <N must be in the range \[1,8\]> bitget (uint8 (0), 9)
+%!error <N must be in the range \[1,16\]> bitget (int16 (0), 17)
+%!error <N must be in the range \[1,16\]> bitget (uint16 (0), 17)
+%!error <N must be in the range \[1,32\]> bitget (int32 (0), 33)
+%!error <N must be in the range \[1,32\]> bitget (uint32 (0), 33)
+%!error <N must be in the range \[1,64\]> bitget (int64 (0), 65)
+%!error <N must be in the range \[1,64\]> bitget (uint64 (0), 65)

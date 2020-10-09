@@ -137,7 +137,7 @@ endfunction
 %!assert (isstrprop ({"AbC", "123"}, "lower"), {logical([0 1 0]), logical([0 0 0])})
 
 ## Test input validation
-%!error isstrprop ()
+%!error <Invalid call> isstrprop ()
 %!error isstrprop ("abc123")
 %!error isstrprop ("abc123", "alpha", "alpha")
 %!error <invalid string property> isstrprop ("abc123", "foo")

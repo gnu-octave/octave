@@ -109,7 +109,7 @@ endfunction
 %! profile off;
 %! profshow (profile ("info"), 5);
 
-%!error profshow (1, 2, 3)
+## Test input validation
 %!error <N must be a positive integer> profshow (struct (), ones (2))
 %!error <N must be a positive integer> profshow (struct (), 1+i)
 %!error <N must be a positive integer> profshow (struct (), -1)

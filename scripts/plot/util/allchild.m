@@ -66,5 +66,4 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%!error allchild ()
-%!error allchild (1, 2)
+%!error <Invalid call> allchild ()

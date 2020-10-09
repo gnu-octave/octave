@@ -384,8 +384,7 @@ endfunction
 %!assert <*54421> (quantile ([1:10], [0.25, 0.75]'), [3; 8])
 
 ## Test input validation
-%!error quantile ()
-%!error quantile (1, 2, 3, 4, 5)
+%!error <Invalid call> quantile ()
 %!error quantile (['A'; 'B'], 10)
 %!error quantile (1:10, [true, false])
 %!error quantile (1:10, ones (2,2))

@@ -73,8 +73,7 @@ endfunction
 %! assert (size (spconvert ([1, 1, 3; 5, 15, 0])), [5, 15]);
 
 ## Test input validation
-%!error spconvert ()
-%!error spconvert (1, 2)
+%!error <Invalid call> spconvert ()
 %!error spconvert ({[1 2 3]})
 %!error spconvert ([1 2])
 %!error spconvert ([1 2 3i])

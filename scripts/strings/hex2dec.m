@@ -65,6 +65,5 @@ endfunction
 %!assert (hex2dec ({"A1", "1A"}), [161; 26])
 
 ## Test input validation
-%!error hex2dec ()
-%!error hex2dec (1)
-%!error hex2dec ("1", 2)
+%!error <Invalid call> hex2dec ()
+%!error <S must be a string> hex2dec (1)

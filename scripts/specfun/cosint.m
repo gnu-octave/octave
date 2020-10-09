@@ -267,6 +267,5 @@ endfunction
 %#!test <*52953>
 
 ## Test input validation
-%!error cosint ()
-%!error cosint (1,2)
+%!error <Invalid call> cosint ()
 %!error <X must be numeric> cosint ("1")

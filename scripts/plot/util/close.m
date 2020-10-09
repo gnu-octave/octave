@@ -179,7 +179,6 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error close (1,2,3)
 %!error <first argument must be "all", a figure handle> close ({"all"})
 %!error <first argument must be "all", a figure handle> close (-1)
 %!error <second argument must be "hidden"> close all hid

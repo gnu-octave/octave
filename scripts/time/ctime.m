@@ -58,5 +58,4 @@ endfunction
 
 %!assert (ctime (time ())(end), "\n")
 
-%!error ctime ()
-%!error ctime (1, 2)
+%!error <Invalid call> ctime ()

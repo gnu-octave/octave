@@ -58,5 +58,4 @@ endfunction
 
 %!assert (vech ([1, 2, 3; 4, 5, 6; 7, 8, 9]), [1; 4; 7; 5; 8; 9])
 
-%!error vech ()
-%!error vech (1, 2)
+%!error <Invalid call> vech ()

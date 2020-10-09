@@ -63,8 +63,7 @@ endfunction
 %!assert (blanks (10), "          ")
 
 ## Test input validation
-%!error blanks ()
-%!error blanks (1, 2)
+%!error <Invalid call> blanks ()
 %!error blanks (ones (2))
 %!error blanks (2.1)
 %!error blanks (-2)

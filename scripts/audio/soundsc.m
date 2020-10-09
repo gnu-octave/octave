@@ -64,7 +64,7 @@ function soundsc (y, fs, nbits, yrange)
   elseif (nargin == 2 && numel (fs) > 1)
     yrange = fs;
     fs = 8000;
-  elseif (! (isscalar (fs) && (fs > 0)))
+  elseif (! (isscalar (fs) && fs > 0))
     error ("soundsc: sample rate FS must be a positive number");
   endif
 
@@ -102,15 +102,14 @@ endfunction
 
 
 ## Tests of soundsc must not actually play anything.
-
 ## Test input validation
-%!error soundsc ()
-%!error soundsc (1,2,3,4,5)
-%!error soundsc (1, -1)
-%!error soundsc (1, [], 2)
-%!error soundsc (1, [2 1])
-%!error soundsc (1, [1 2 3])
-%!error soundsc (1, 8000, [2 1])
-%!error soundsc (1, 8000, [1 2 3])
-%!error soundsc (1, 8000, 8, [2 1])
-%!error soundsc (1, 8000, 8, [1 2 3])
+%!error <Invalid call> soundsc ()
+%!error <FS must be a positive number> soundsc (1, ones (2,2), 8)
+%!error <FS must be a positive number> soundsc (1, -1)
+%!error <NBITS must be 8, 16, or 24> soundsc (1, [], 2)
+%!error <range must be a 2-element .* vector> soundsc (1, [2 1])
+%!error <range must be a 2-element .* vector> soundsc (1, [1 2 3])
+%!error <range must be a 2-element .* vector> soundsc (1, 8000, [2 1])
+%!error <range must be a 2-element .* vector> soundsc (1, 8000, [1 2 3])
+%!error <range must be a 2-element .* vector> soundsc (1, 8000, 8, [2 1])
+%!error <range must be a 2-element .* vector> soundsc (1, 8000, 8, [1 2 3])

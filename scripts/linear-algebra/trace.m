@@ -58,6 +58,5 @@ endfunction
 %!assert (trace (rand (1,0)), 0)
 %!assert (trace ([3:10]), 3)
 
-%!error trace ()
-%!error trace (1, 2)
+%!error <Invalid call> trace ()
 %!error <only valid on 2-D objects> trace (reshape (1:9,[1,3,3]))

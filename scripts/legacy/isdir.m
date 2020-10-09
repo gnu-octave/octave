@@ -69,5 +69,4 @@ endfunction
 %!assert (isdir (pwd ()))
 %!assert (! isdir (tempname ()))
 
-%!error isdir ()
-%!error isdir (1, 2)
+%!error <Invalid call> isdir ()

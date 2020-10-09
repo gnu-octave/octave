@@ -50,6 +50,5 @@ endfunction
 %! x = rand (10, 10);
 %! assert (realsqrt (x), sqrt (x));
 
-%!error realsqrt ()
-%!error realsqrt (1,2)
+%!error <Invalid call> realsqrt ()
 %!error <produced complex result> realsqrt (-1)

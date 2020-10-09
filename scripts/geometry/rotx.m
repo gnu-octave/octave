@@ -83,7 +83,7 @@
 
 function retmat = rotx (angle_in_deg)
 
-  if ((nargin != 1) || ! isscalar (angle_in_deg))
+  if (nargin != 1 || ! isscalar (angle_in_deg))
     print_usage ();
   endif
 
@@ -96,13 +96,13 @@ function retmat = rotx (angle_in_deg)
 
 endfunction
 
+
 ## Function output tests
-%!assert (rotx (0), [1 0 0; 0 1 0; 0 0 1]);
-%!assert (rotx (45), [1, 0, 0; [0; 0],[(sqrt(2)/2).*[1 -1; 1 1]]], 1e-12);
-%!assert (rotx (90), [1 0 0; 0 0 -1; 0 1 0], 1e-12);
-%!assert (rotx (180), [1 0 0; 0 -1 0; 0 0 -1], 1e-12);
+%!assert (rotx (0), [1 0 0; 0 1 0; 0 0 1])
+%!assert (rotx (45), [1, 0, 0; [0; 0],[(sqrt(2)/2).*[1 -1; 1 1]]], 1e-12)
+%!assert (rotx (90), [1 0 0; 0 0 -1; 0 1 0], 1e-12)
+%!assert (rotx (180), [1 0 0; 0 -1 0; 0 0 -1], 1e-12)
 
 ## Test input validation
-%!error rotx ()
-%!error rotx (1, 2)
-%!error rotx ([1 2 3])
+%!error <Invalid call> rotx ()
+%!error <Invalid call> rotx ([1 2 3])

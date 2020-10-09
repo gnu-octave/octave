@@ -134,8 +134,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error hgsave ()
-%!error hgsave (1, 2, 3, 4)
+%!error <Invalid call> hgsave ()
 %!error <no current figure to save>
 %! unwind_protect
 %!  old_fig = get (0, "currentfigure");

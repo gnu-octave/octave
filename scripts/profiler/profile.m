@@ -151,6 +151,6 @@ endfunction
 %! assert (fieldnames (hier), {"Index"; "SelfTime"; "TotalTime"; "NumCalls"; "Children"});
 
 ## Test input validation
-%!error profile ()
+%!error <Invalid call> profile ()
 %!error profile ("on", 2)
 %!error profile ("INVALID_OPTION")

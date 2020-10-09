@@ -90,8 +90,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error getappdata ()
-%!error getappdata (1,2,3)
+%!error <Invalid call> getappdata ()
 %!error <H must be a scalar .* graphic handle> getappdata (-1, "hello")
 %!error <NAME must be a string> getappdata (0, 1)
 %!error <Only one handle H may be used when fetching appdata> getappdata ([0 0])

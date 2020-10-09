@@ -58,22 +58,28 @@ function [x, map] = ind2x (caller, x, map)
   ## It is possible that an integer storage class may not have enough room
   ## to make the switch, in which case we convert the data to single.
   maxidx = max (x(:));
-  if (isinteger (x))
+  is_int = isinteger (x);
+  if (is_int)
     if (maxidx == intmax (x))
       x = single (x);
     endif
-    x      += 1;
-    maxidx += 1;
+    x += 1;
   endif
 
   ## When there are more colors in the image, than there are in the map,
   ## pad the colormap with the last color in the map for Matlab compatibility.
   num_colors = rows (map);
-  if (num_colors < maxidx)
+  if (num_colors - is_int < maxidx)
     warning (["Octave:" caller ":invalid-idx-img"],
              [caller ": indexed image contains colors outside of colormap"]);
-    pad = repmat (map(end,:), maxidx - num_colors, 1);
-    map(end+1:maxidx, :) = pad;
+    if (numel (x) > maxidx - num_colors + is_int)
+      ## The image is large. So extend the map.
+      pad = repmat (map(end,:), maxidx - num_colors + is_int, 1);
+      map(end+(1:rows (pad)), :) = pad;
+    else
+      ## The map extension would be large. So clip the image.
+      x(x > rows (map)) = rows (map);
+    endif
   endif
 
 endfunction

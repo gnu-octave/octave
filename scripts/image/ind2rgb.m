@@ -141,3 +141,8 @@ endfunction
 %! ind(3,3) = 65540;
 %! assert (ind2rgb (uint32 (ind), cmap), rgb)
 %! assert (ind2rgb (uint64 (ind), cmap), rgb)
+
+%!test <*59242>
+%! warning ("off", "Octave:ind2rgb:invalid-idx-img", "local");
+%! assert (ind2rgb (uint64 (intmax ("uint64")), jet (64)), ...
+%!         reshape ([0.5,0,0], [1,1,3]));

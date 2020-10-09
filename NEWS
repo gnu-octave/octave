@@ -84,6 +84,9 @@ $DATA is a platform dependent location for (roaming) user data files (e.g.
 ${XDG_DATA_HOME} or, if that is not set, ~/.local/share on Unix-like operating
 systems or %APPDATA% on Windows).
 
+- In debug mode, symbol values are now shown in tooltips when hovering
+variables in the editor panel.
+
 ### Graphics backend
 
 - Support for Qt4 for both graphics and the GUI has been removed.

@@ -156,6 +156,20 @@ quote_path (const std::string& s)
     return s;
 }
 
+static std::string
+replace_prefix (std::string s)
+{
+  const std::string match = "${prefix}";
+  size_t pos = s.find (match);
+  while (pos != std::string::npos )
+    {
+      s.replace(pos, match.length (), prepend_octave_exec_home (""));
+      pos = s.find (match);
+    }
+
+  return s;
+}
+
 static void
 initialize (void)
 {
@@ -238,7 +252,8 @@ initialize (void)
   if (vars["LIBDIR"] != "/usr/lib")
     DEFAULT_LDFLAGS += " -L" + quote_path (vars["LIBDIR"]);
 
-  vars["CPPFLAGS"] = get_variable ("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
+  vars["CPPFLAGS"] = get_variable ("CPPFLAGS",
+                                   replace_prefix (%OCTAVE_CONF_CPPFLAGS%));
 
   vars["INCFLAGS"] = get_variable ("INCFLAGS", DEFAULT_INCFLAGS);
 
@@ -296,19 +311,22 @@ initialize (void)
 
   vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
 
-  vars["FFTW3_LDFLAGS"] = get_variable ("FFTW3_LDFLAGS",
-                                        %OCTAVE_CONF_FFTW3_LDFLAGS%);
+  vars["FFTW3_LDFLAGS"]
+    = get_variable ("FFTW3_LDFLAGS",
+                    replace_prefix (%OCTAVE_CONF_FFTW3_LDFLAGS%));
 
   vars["FFTW3_LIBS"] = get_variable ("FFTW3_LIBS", %OCTAVE_CONF_FFTW3_LIBS%);
 
-  vars["FFTW3F_LDFLAGS"] = get_variable ("FFTW3F_LDFLAGS",
-                                         %OCTAVE_CONF_FFTW3F_LDFLAGS%);
+  vars["FFTW3F_LDFLAGS"]
+    = get_variable ("FFTW3F_LDFLAGS",
+                    replace_prefix (%OCTAVE_CONF_FFTW3F_LDFLAGS%));
 
   vars["FFTW3F_LIBS"] = get_variable ("FFTW3F_LIBS", %OCTAVE_CONF_FFTW3F_LIBS%);
 
   vars["LIBS"] = get_variable ("LIBS", %OCTAVE_CONF_LIBS%);
 
-  vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
+  vars["FLIBS"] = get_variable ("FLIBS",
+                                replace_prefix (%OCTAVE_CONF_FLIBS%));
 
   vars["OCTAVE_LINK_DEPS"] = get_variable ("OCTAVE_LINK_DEPS",
                                            %OCTAVE_CONF_MKOCTFILE_OCTAVE_LINK_DEPS%);
@@ -319,8 +337,9 @@ initialize (void)
   vars["OCT_LINK_DEPS"] = get_variable ("OCT_LINK_DEPS",
                                         %OCTAVE_CONF_MKOCTFILE_OCT_LINK_DEPS%);
 
-  vars["OCT_LINK_OPTS"] = get_variable ("OCT_LINK_OPTS",
-                                        %OCTAVE_CONF_OCT_LINK_OPTS%);
+  vars["OCT_LINK_OPTS"]
+    = get_variable ("OCT_LINK_OPTS",
+                    replace_prefix (%OCTAVE_CONF_OCT_LINK_OPTS%));
 
   vars["LDFLAGS"] = get_variable ("LDFLAGS", DEFAULT_LDFLAGS);
 

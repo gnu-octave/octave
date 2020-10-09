@@ -595,7 +595,7 @@ Octave and other binaries that people will want to run directly.
 @item @var{prefix}/lib/octave-@var{version}
 Libraries like liboctave.a and liboctinterp.a.
 
-@item @var{prefix}/octave-@var{version}/include/octave
+@item @var{prefix}/include/octave-@var{version}/octave
 Include files distributed with Octave.
 
 @item @var{prefix}/share

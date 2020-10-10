@@ -222,7 +222,8 @@ can have any value real or complex value.  However, for polygamma functions
 %! endfor
 
 ## Test input validation
-%!error <Invalid call> psi ()
+%!error psi ()
+%!error psi (1, 2, 3)
 %!error <Z must be> psi ("non numeric")
 %!error <K must be an integer> psi ({5.3}, 1)
 %!error <K must be non-negative> psi (-5, 1)

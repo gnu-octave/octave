@@ -233,8 +233,9 @@ due to the limited range of integer objects.
 %! assert (dot (x, x), 127);
 
 ## Test input validation
-%!error <Invalid call> dot ()
-%!error <Invalid call> dot (1)
+%!error dot ()
+%!error dot (1)
+%!error dot (1,2,3,4)
 %!error <X and Y must be numeric> dot ({1,2}, [3,4])
 %!error <X and Y must be numeric> dot ([1,2], {3,4})
 %!error <sizes of X and Y must match> dot ([1 2], [1 2 3])
@@ -422,8 +423,9 @@ endfor
 %! assert (size (z), [1, 0, 3]);
 
 ## Test input validation
-%!error <Invalid call> blkmm ()
-%!error <Invalid call> blkmm (1)
+%!error blkmm ()
+%!error blkmm (1)
+%!error blkmm (1,2,3)
 %!error <A and B must be numeric> blkmm ({1,2}, [3,4])
 %!error <A and B must be numeric> blkmm ([3,4], {1,2})
 %!error <A and B dimensions don't match> blkmm (ones (2,2), ones (3,3))

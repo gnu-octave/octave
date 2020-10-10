@@ -127,7 +127,7 @@ and the first character must not be a digit.
 %!assert (isvarname (12), false)
 %!assert (isvarname ("foo+bar"), false)
 
-%!error <Invalid call> isvarname ()
+%!error isvarname ()
 %!error isvarname ("foo", "bar")
 */
 
@@ -241,7 +241,7 @@ return true.
 %!assert (is_same_file ({pwd(), ".", tempdir()}, canonicalize_file_name (".")),
 %!        [true, true, false])
 
-%!error <Invalid call> is_same_file ()
+%!error is_same_file ()
 %!error is_same_file ("foo")
 %!error is_same_file ("foo", "bar", "baz")
 %!error <must be strings or cell arrays of strings> is_same_file ("foo", 1)
@@ -457,7 +457,7 @@ If no files are found, return an empty cell array.
 %! lst = file_in_loadpath ("$$probably_!! _not_&&_a_!! _file$$", "all");
 %! assert (lst, {});
 
-%!error <Invalid call> file_in_loadpath ()
+%!error file_in_loadpath ()
 %!error file_in_loadpath ("foo", "bar", 1)
 %!error file_in_loadpath ([])
 %!error file_in_loadpath ("plot.m", "bar")
@@ -528,7 +528,7 @@ If no files are found, return an empty cell array.
 %! lst = file_in_path (path (), "$$probably_!! _not_&&_a_!! _file$$", "all");
 %! assert (lst, {});
 
-%!error <Invalid call> file_in_path ()
+%!error file_in_path ()
 %!error file_in_path ("foo")
 %!error file_in_path ("foo", "bar", "baz", 1)
 %!error file_in_path ([])
@@ -826,7 +826,7 @@ Escape sequences begin with a leading backslash
 %!assert (do_string_escapes ('A\x4AG'), ["A" char(74) "G"])
 %!assert (sprintf ('\x4f\x63\x74\x61\x76\x65'), "Octave")
 
-%!error <Invalid call> do_string_escapes ()
+%!error do_string_escapes ()
 %!error do_string_escapes ("foo", "bar")
 %!error <STRING argument> do_string_escapes (3)
 %!warning <malformed hex escape sequence> do_string_escapes ('\xG');
@@ -949,7 +949,7 @@ replaces the unprintable alert character with its printable representation.
 %!assert (undo_string_escapes ("\"double-quoted\""), '\"double-quoted\"')
 %!assert (undo_string_escapes ("\"double-quoted\""), "\\\"double-quoted\\\"")
 
-%!error <Invalid call> undo_string_escapes ()
+%!error undo_string_escapes ()
 %!error undo_string_escapes ("foo", "bar")
 %!error undo_string_escapes (3)
 */
@@ -971,7 +971,7 @@ Return true if @var{file} is an absolute filename.
 /*
 ## FIXME: We need system-dependent tests here.
 
-%!error <Invalid call> is_absolute_filename ()
+%!error is_absolute_filename ()
 %!error is_absolute_filename ("foo", "bar")
 */
 
@@ -992,7 +992,7 @@ Return true if @var{file} is a rooted-relative filename.
 /*
 ## FIXME: We need system-dependent tests here.
 
-%!error <Invalid call> is_rooted_relative_filename ()
+%!error is_rooted_relative_filename ()
 %!error is_rooted_relative_filename ("foo", "bar")
 */
 
@@ -1018,7 +1018,7 @@ No check is done for the existence of @var{file}.  No tilde expansion of
 /*
 ## FIXME: We need system-dependent tests here.
 
-%!error <Invalid call> make_absolute_filename ()
+%!error make_absolute_filename ()
 %!error make_absolute_filename ("foo", "bar")
 */
 
@@ -1076,7 +1076,7 @@ all name matches rather than just the first.
 %! lst = dir_in_loadpath ("$$probably_!! _not_&&_a_!! _dir$$", "all");
 %! assert (lst, {});
 
-%!error <Invalid call> dir_in_loadpath ()
+%!error dir_in_loadpath ()
 %!error dir_in_loadpath ("foo", "bar", 1)
 */
 
@@ -1539,7 +1539,7 @@ character @nospell{"@xbackslashchar{}0"}, it will always be a valid index.
 %!assert (isindex (1:3, 2), false)
 %!assert (isindex ([1, 2, -3]), false)
 
-%!error <Invalid call> isindex ()
+%!error isindex ()
 %!error isindex (1:3, 2, 3)
 */
 

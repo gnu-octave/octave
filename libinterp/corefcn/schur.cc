@@ -259,7 +259,8 @@ equations in control (see @code{are} and @code{dare}).
 %! [u, s] = schur (a);
 %! assert (u' * a * u, s, sqrt (eps ("single")));
 
-%!error <Invalid call> schur ()
+%!error schur ()
+%!error schur (1,2,3)
 %!error [a,b,c] = schur (1)
 %!error <must be a square matrix> schur ([1, 2, 3; 4, 5, 6])
 %!error <wrong type argument 'cell'> schur ({1})

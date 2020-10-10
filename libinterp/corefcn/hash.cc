@@ -227,7 +227,7 @@ hash ("md5", fileread (file));
 %! unlink (tfile);
 
 ## Test bad function calls
-%!error <Invalid call> hash ()
+%!error hash ()
 %!error hash ("")
 %!error hash ("", "")
 %!error hash ("", "", "")

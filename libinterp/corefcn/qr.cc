@@ -643,7 +643,7 @@ orthogonal basis of @code{span (A)}.
 %! assert (qr (zeros (1, 0)), zeros (1, 0))
 %! assert (qr (zeros (0, 1)), zeros (0, 1))
 
-%!error <Invalid call> qr ()
+%!error qr ()
 %!error qr ([1, 2; 3, 4], 0, 2)
 
 %!function retval = __testqr (q, r, a, p)
@@ -796,7 +796,7 @@ orthogonal basis of @code{span (A)}.
 %! assert (r, re, sqrt (eps ("single")));
 %! assert (q'*b, c, sqrt (eps ("single")));
 
-%!error <Invalid call> qr ()
+%!error qr ()
 %!error qr ([1, 2; 3, 4], 0, 2)
 
 %!test

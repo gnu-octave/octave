@@ -312,7 +312,7 @@ Return true if @var{x} is a character array.
 %!assert (ischar (["test"; "ing"]), true)
 %!assert (ischar (struct ("foo", "bar")), false)
 
-%!error <Invalid call> ischar ()
+%!error ischar ()
 %!error ischar ("test", 1)
 */
 
@@ -607,7 +607,7 @@ This is just the opposite of the corresponding C library function.
 %!assert (strcmp ("foobar", "fooBar"), false)
 %!assert (strcmp ("fooba", "foobar"), false)
 
-%!error <Invalid call> strcmp ()
+%!error strcmp ()
 %!error strcmp ("foo", "bar", 3)
 */
 
@@ -668,7 +668,7 @@ This is just the opposite of the corresponding C library function.
 
 %!assert <*54373> (strncmp ("abc", "abc", 100))
 
-%!error <Invalid call> strncmp ()
+%!error strncmp ()
 %!error strncmp ("abc", "def")
 */
 
@@ -1189,7 +1189,7 @@ whos ans
 %! result = "  abc     mnop  \n  def     qrs   \n  ghijkl  tuv   \n";
 %! assert (list_in_columns (input, 20, "  "), result);
 
-%!error <Invalid call> list_in_columns ()
+%!error list_in_columns ()
 %!error list_in_columns (["abc", "def"], 20, 2)
 %!error list_in_columns (["abc", "def"], 20, "  ", 3)
 %!error <list_in_columns: WIDTH must be an integer> list_in_columns (["abc", "def"], "a")

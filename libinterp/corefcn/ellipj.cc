@@ -828,8 +828,9 @@ and 16.15), Dover, 1965.
 %! D = 1/sqrt (2) * ones (size (x));
 %! assert (dn, D, 1e-6);
 
-%!error <Invalid call> ellipj ()
-%!error <Invalid call> ellipj (1)
+%!error ellipj ()
+%!error ellipj (1)
+%!error ellipj (1,2,3,4)
 %!warning <required value 0 <= M <= 1> ellipj (1,2);
 ## FIXME: errors commented out until lasterr() truly returns the last error.
 %!#error <M must be a scalar or matrix> ellipj (1, "1")

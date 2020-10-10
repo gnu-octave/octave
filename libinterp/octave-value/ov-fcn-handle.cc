@@ -3255,7 +3255,8 @@ Return true if @var{x} is a function handle.
 %!assert (! is_function_handle ({fh}))
 %!assert (! is_function_handle (1))
 
-%!error <Invalid call> is_function_handle ()
+%!error is_function_handle ()
+%!error is_function_handle (1, 2)
 */
 
 /*

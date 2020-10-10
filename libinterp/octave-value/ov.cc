@@ -3523,7 +3523,7 @@ Return true if @var{x} is a single-quoted character string.
 %!assert (is_sq_string (1.0), false)
 %!assert (is_sq_string ({2.0}), false)
 
-%!error <Invalid call> is_sq_string ()
+%!error is_sq_string ()
 %!error is_sq_string ('foo', 2)
 */
 
@@ -3546,7 +3546,7 @@ Return true if @var{x} is a double-quoted character string.
 %!assert (is_dq_string (1.0), false)
 %!assert (is_dq_string ({2.0}), false)
 
-%!error <Invalid call> is_dq_string ()
+%!error is_dq_string ()
 %!error is_dq_string ("foo", 2)
 */
 

@@ -1154,7 +1154,8 @@ a feature, not a bug.
 %!assert (any (strcmp ("abs", deblank (cellstr (completion_matches ("abs"))))))
 %!assert (! any (strcmp ("abs", deblank (cellstr (completion_matches ("absa"))))))
 
-%!error <Invalid call> completion_matches ()
+%!error completion_matches ()
+%!error completion_matches (1, 2)
 */
 
 DEFUN (readline_read_init_file, args, ,

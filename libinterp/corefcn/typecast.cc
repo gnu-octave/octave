@@ -301,8 +301,9 @@ typecast (@var{x}, "uint8")
 %!assert (typecast (-inf, "double"), -inf)
 %!assert (typecast (nan,  "double"), nan)
 
-%!error <Invalid call> typecast ()
-%!error <Invalid call> typecast (1)
+%!error typecast ()
+%!error typecast (1)
+%!error typecast (1, 2, 3)
 %!error typecast (1, "invalid")
 %!error typecast (int8 (0), "double")
 */
@@ -450,8 +451,9 @@ column vector.
 %! x([1, 9]) = true;
 %! assert (bitpack (x, "uint32"), uint32 (257));
 
-%!error <Invalid call> bitpack ()
-%!error <Invalid call> bitpack (1)
+%!error bitpack ()
+%!error bitpack (1)
+%!error bitpack (1, 2, 3)
 %!error bitpack (1, "invalid")
 %!error bitpack (1, "double")
 %!error bitpack (false, "invalid")
@@ -583,6 +585,7 @@ column vector.
 %!assert (bitunpack (complex (single (0))), zeros (1, 64, "logical"))
 %!assert (bitunpack (complex (double (0))), zeros (1, 128, "logical"))
 
-%!error <Invalid call> bitunpack ()
+%!error bitunpack ()
+%!error bitunpack (1, 2)
 %!error bitunpack ({})
 */

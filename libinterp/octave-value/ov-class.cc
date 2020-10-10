@@ -1783,7 +1783,7 @@ is derived.
 %! assert (class (jobj), "java.lang.StringBuffer");
 
 ## Test Input Validation
-%!error <Invalid call> class ()
+%!error class ()
 */
 
 DEFUN (isa, args, ,

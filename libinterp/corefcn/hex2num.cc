@@ -370,7 +370,8 @@ strings instead of a character array.
 %!assert (hex2num (num2hex (pi)), pi)
 %!assert (hex2num (num2hex (single (pi)), "single"), single (pi))
 
-%!error <Invalid call> num2hex ()
+%!error num2hex ()
+%!error num2hex (1,2)
 %!error num2hex (1,"foo")
 %!error num2hex (1,2,3)
 %!error num2hex (1j)

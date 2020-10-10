@@ -41,7 +41,7 @@ function profexplore (data)
 
   if (nargin == 0)
     data = profile ("info");
-  elseif (nargin != 1)
+  elseif (nargin < 1)
     print_usage ();
   endif
 

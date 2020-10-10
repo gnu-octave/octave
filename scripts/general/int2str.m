@@ -60,7 +60,7 @@
 
 function retval = int2str (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! (isnumeric (n) || islogical (n) || ischar (n)))
     error ("int2str: N must be a numeric, logical, or character array");

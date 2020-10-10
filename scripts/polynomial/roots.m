@@ -84,7 +84,7 @@
 
 function r = roots (c)
 
-  if (nargin != 1 || (! isvector (c) && ! isempty (c)))
+  if (nargin < 1 || (! isvector (c) && ! isempty (c)))
     print_usage ();
   elseif (any (! isfinite (c)))
     error ("roots: inputs must not contain Inf or NaN");

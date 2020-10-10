@@ -46,10 +46,9 @@
 
 function c = namedargs2cell (s)
 
-  if (nargin != 1 || nargout > 1)
+  if (nargin < 1)
     print_usage ();
-  endif
-  if (! isstruct (s) || ! isscalar (s))
+  elseif (! isstruct (s) || ! isscalar (s))
     error ("namedargs2cell: S must be a scalar structure");
   endif
 

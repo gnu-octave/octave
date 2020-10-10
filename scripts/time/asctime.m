@@ -43,7 +43,7 @@
 
 function retval = asctime (tm_struct)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

@@ -81,7 +81,7 @@
 
 function retval = invhilb (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! isscalar (n))
     error ("invhilb: N must be a scalar integer");

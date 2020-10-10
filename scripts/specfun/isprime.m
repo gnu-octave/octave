@@ -69,7 +69,7 @@
 
 function t = isprime (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (any (fix (x) != x))
     error ("isprime: X contains non-integer entries");

@@ -48,7 +48,7 @@ function retval = vectorize (fun)
              "vectorize is unreliable; its use is strongly discouraged\n");
   endif
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

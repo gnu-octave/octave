@@ -41,7 +41,7 @@
 
 function x = factorial (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! isreal (n) || any (n(:) < 0 | n(:) != fix (n(:))))
     error ("factorial: all N must be real non-negative integers");

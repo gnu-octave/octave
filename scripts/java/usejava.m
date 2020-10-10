@@ -54,7 +54,7 @@
 
 function retval = usejava (feature)
 
-  if (nargin != 1 || ! ischar (feature))
+  if (nargin < 1 || ! ischar (feature))
     print_usage ();
   endif
 

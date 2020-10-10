@@ -68,7 +68,7 @@
 ## Built-in profiler.
 function retval = profile (option)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

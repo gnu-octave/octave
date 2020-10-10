@@ -64,7 +64,7 @@ function rgb = hsv2rgb (hsv)
   ## where f_x(hue) is a piecewise defined function for
   ## each color with f_r(hue-2/3) = f_g(hue) = f_b(hue-1/3).
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

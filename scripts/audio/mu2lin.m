@@ -37,12 +37,12 @@
 
 function y = mu2lin (x, n = 0)
 
-  if (nargin == 2)
-    if (n != 0 && n != 8 && n != 16)
-      error ("mu2lin: N must be either 0, 8, or 16");
-    endif
-  elseif (nargin != 1)
+  if (nargin < 1)
     print_usage ();
+  endif
+
+  if (n != 0 && n != 8 && n != 16)
+    error ("mu2lin: N must be either 0, 8, or 16");
   endif
 
   ulaw = [32124, 31100, 30076, 29052, 28028, 27004, 25980, 24956, ...

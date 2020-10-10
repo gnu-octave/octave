@@ -60,7 +60,7 @@
 
 function retval = hilb (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! isscalar (n))
     error ("hilb: N must be a scalar integer");

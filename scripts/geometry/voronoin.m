@@ -57,7 +57,7 @@
 
 function [C, F] = voronoin (pts, options)
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1)
     print_usage ();
   endif
 

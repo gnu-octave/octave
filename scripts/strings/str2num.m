@@ -55,7 +55,7 @@
 
 function [m, state] = str2num (s)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! ischar (s))
     error ("str2num: S must be a string or string array");

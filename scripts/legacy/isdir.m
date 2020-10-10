@@ -51,7 +51,7 @@ function retval = isdir (f)
              "isdir is obsolete; use isfolder or dir_in_loadpath instead\n");
   endif
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

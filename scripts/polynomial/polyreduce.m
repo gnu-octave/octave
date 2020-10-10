@@ -32,7 +32,7 @@
 
 function p = polyreduce (c)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! isvector (c) || isempty (c))
     error ("polyreduce: C must be a non-empty vector");

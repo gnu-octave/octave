@@ -74,7 +74,7 @@
 
 function [x, P, n, k, d] = unmkpp (pp)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
   if (! (isstruct (pp) && isfield (pp, "form") && strcmp (pp.form, "pp")))

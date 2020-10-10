@@ -52,7 +52,7 @@
 
 function fcn = vectorize (obj)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

@@ -1436,7 +1436,7 @@ function A = invol (n)
   ##   of involutory and of idempotent matrices, Numer. Math. 5 (1963),
   ##   pp. 234-237.
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for invol matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for invol matrix.");
@@ -1700,7 +1700,7 @@ function A = lehmer (n)
   ##   J. Todd, Basic Numerical Mathematics, Vol. 2: Numerical Algebra,
   ##      Birkhauser, Basel, and Academic Press, New York, 1977, p. 154.
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for lehmer matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for lehmer matrix.");
@@ -1731,7 +1731,7 @@ function T = lesp (n)
   ##        Mathematics, volume 260, Longman Scientific and Technical, Essex,
   ##        UK, 1992, pp. 234-266.
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for lesp matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for lesp matrix.");
@@ -1751,7 +1751,7 @@ function A = lotkin (n)
   ##   Reference:
   ##   M. Lotkin, A set of test matrices, MTAC, 9 (1955), pp. 153-161.
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for lotkin matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for lotkin matrix.");
@@ -1779,7 +1779,7 @@ function A = minij (n)
   ##      chemistry---II, Proc. Royal Soc. Edin., 63, A (1952), pp. 232-241.
   ##      (For the eigenvalues of Givens' matrix.)
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for minij matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for minij matrix.");
@@ -1826,7 +1826,7 @@ function [A, T] = neumann (n)
   ##   R.J. Plemmons, Regular splittings and the discrete Neumann
   ##   problem, Numer. Math., 25 (1976), pp. 153-161.
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for neumann matrix.");
   elseif (! isnumeric (n) || all (numel (n) != [1 2]) || fix (n) != n)
     error ("gallery: N must be a 1 or 2 element integer for neumann matrix.");
@@ -1992,7 +1992,7 @@ function A = parter (n)
   ##   E.E. Tyrtyshnikov, Cauchy-Toeplitz matrices and some applications,
   ##        Linear Algebra and Appl., 149 (1991), pp. 1-18.
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for parter matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for parter matrix.");
@@ -2034,7 +2034,7 @@ function A = poisson (n)
   ##   Johns Hopkins University Press, Baltimore, Maryland, 1989
   ##   (Section 4.5.4).
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for poisson matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for poisson matrix.");
@@ -2095,7 +2095,7 @@ function H = randhess (x)
   ##   W.B. Gragg, The QR algorithm for unitary Hessenberg matrices,
   ##   J. Comp. Appl. Math., 16 (1986), pp. 1-8.
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for randhess matrix.");
   elseif (! isnumeric (x) || ! isreal (x))
     error ("gallery: N or X must be numeric real values for randhess matrix.");
@@ -2305,7 +2305,7 @@ function A = redheff (n)
   ##   Spectral Properties of a Matrix of Redheffer,
   ##   Linear Algebra and Appl., 162 (1992), pp. 673-683.
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for redheff matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for redheff matrix.");
@@ -2335,7 +2335,7 @@ function A = riemann (n)
   ##   F. Roesler, Riemann's hypothesis as an eigenvalue problem,
   ##   Linear Algebra and Appl., 81 (1986), pp. 153-198.
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for riemann matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for riemann matrix.");
@@ -2361,7 +2361,7 @@ function A = ris (n)
   ##   Algebra and Function Minimisation, second edition, Adam Hilger,
   ##   Bristol, 1990 (Appendix 1).
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for ris matrix.");
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for ris matrix.");
@@ -2762,7 +2762,7 @@ function [A, b] = wilk (n)
   ##   J.H. Wilkinson, The Algebraic Eigenvalue Problem, Oxford University
   ##      Press, 1965.
 
-  if (nargin != 1)
+  if (nargin < 1)
     error ("gallery: 1 argument is required for wilk matrix.");
   elseif (! isnumeric (n) || ! isscalar (n))
     error ("gallery: N must be a numeric scalar for wilk matrix.");

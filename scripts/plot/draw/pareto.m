@@ -72,7 +72,7 @@ function h = pareto (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("pareto", varargin{:});
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 

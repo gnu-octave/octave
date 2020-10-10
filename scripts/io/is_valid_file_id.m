@@ -31,7 +31,7 @@
 
 function retval = is_valid_file_id (fid)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

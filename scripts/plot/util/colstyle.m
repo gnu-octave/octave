@@ -34,7 +34,7 @@
 
 function [l, c, m, msg] = colstyle (style)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

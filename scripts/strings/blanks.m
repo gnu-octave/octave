@@ -44,7 +44,7 @@
 
 function s = blanks (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! (isscalar (n) && n == fix (n) && n >= 0))
     error ("blanks: N must be a non-negative integer");

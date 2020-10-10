@@ -65,7 +65,7 @@
 
 function [G, y] = planerot (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! (isvector (x) && numel (x) == 2))
     error ("planerot: X must be a 2-element vector");

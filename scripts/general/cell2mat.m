@@ -36,7 +36,7 @@
 
 function m = cell2mat (c)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

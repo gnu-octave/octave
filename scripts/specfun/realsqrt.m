@@ -34,7 +34,7 @@
 
 function y = realsqrt (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (iscomplex (x) || any (x(:) < 0))
     error ("realsqrt: produced complex result");

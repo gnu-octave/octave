@@ -83,7 +83,7 @@
 
 function retmat = roty (angle_in_deg)
 
-  if (nargin != 1 || ! isscalar (angle_in_deg))
+  if (nargin < 1 || ! isscalar (angle_in_deg))
     print_usage ();
   endif
 

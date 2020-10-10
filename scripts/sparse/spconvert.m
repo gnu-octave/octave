@@ -37,7 +37,7 @@
 
 function s = spconvert (m)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 

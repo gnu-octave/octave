@@ -12580,8 +12580,8 @@ false where they are not.
 %! unwind_protect
 %!   assert (ishghandle (hf));
 %!   assert (! ishghandle (-hf));
-%!   ax = gca;
-%!   l = line;
+%!   ax = gca ();
+%!   l = line ();
 %!   assert (ishghandle (ax));
 %!   assert (! ishghandle (-ax));
 %!   assert (ishghandle ([l, -1, ax, hf]), logical ([1, 0, 1, 1]));

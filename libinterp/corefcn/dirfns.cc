@@ -601,10 +601,10 @@ glob ("*.*")
 
 /*
 %!test
-%! tmpdir = tempname;
+%! tmpdir = tempname ();
 %! filename = {"file1", "file2", "file3", "myfile1", "myfile1b"};
 %! if (mkdir (tmpdir))
-%!   cwd = pwd;
+%!   cwd = pwd ();
 %!   cd (tmpdir);
 %!   if (strcmp (canonicalize_file_name (pwd), canonicalize_file_name (tmpdir)))
 %!     a = 0;

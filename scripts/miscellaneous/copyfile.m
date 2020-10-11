@@ -165,10 +165,10 @@ endfunction
 
 %!test
 %! unwind_protect
-%!   f1 = tempname;
+%!   f1 = tempname ();
 %!   tmp_var = pi;
 %!   save (f1, "tmp_var");
-%!   f2 = tempname;
+%!   f2 = tempname ();
 %!   assert (copyfile (f1, f2));
 %!   assert (exist (f2, "file"));
 %!   fid = fopen (f1, "rb");

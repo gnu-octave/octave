@@ -143,7 +143,7 @@ function retval = edit (varargin)
                                 "MODE", "async",
                                 "EDITINPLACE", true);
   ## Make sure the stateval variables survive "clear functions".
-  mlock;
+  mlock ();
 
   ## Get default editor every time in case the user has changed it
   FUNCTION.EDITOR = [EDITOR() " %s"];

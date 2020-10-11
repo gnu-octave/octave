@@ -276,7 +276,7 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
   endif
 
   if (do_display)
-    figure;
+    figure ();
     ## Strip semicolon added to code fragments before displaying
     __init(end) = "";
     __f1(end) = "";

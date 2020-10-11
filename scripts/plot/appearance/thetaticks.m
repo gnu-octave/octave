@@ -124,7 +124,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %! polar (linspace (0, pi, 20), rand (20,1));
-%!   hax = gca;
+%!   hax = gca ();
 %!   ticks = thetaticks;
 %!   assert (thetaticks (hax), ticks);
 %!   thetaticks (hax, [0 45 90 135 180]);
@@ -139,7 +139,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   polar (linspace (0, pi, 20), 1:20);
-%!   hax = gca;
+%!   hax = gca ();
 %!   fail ("thetaticks (-1, [0 1])", "HAX must be a handle to an axes");
 %!   fail ("tmp = thetaticks (hax, [0 1])", "too many output arguments");
 %!   fail ("tmp = thetaticks (hax, 'mode')", "MODE is not yet implemented");

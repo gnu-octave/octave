@@ -160,11 +160,11 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
       if (strcmp (s.properties.tag, "legend"))
         s.properties.tag = "";
         s.properties.userdata = [];
-        par = gcf;
+        par = gcf ();
       elseif (strcmp (s.properties.tag, "colorbar"))
         s.properties.tag = "";
         s.properties.userdata = [];
-        par = gcf;
+        par = gcf ();
       endif
     endif
     ## remove read only properties

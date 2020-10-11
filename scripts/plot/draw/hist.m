@@ -126,7 +126,7 @@ function [nn, xx] = hist (varargin)
     else
       x = (-floor ((n-1)/2):ceil ((n-1)/2)) + min_val;
     endif
-    x = x.';  # Convert to matrix;
+    x = x.';  # Convert to matrix
   else
     ## Parse bin specification argument
     x = varargin{iarg++};
@@ -152,7 +152,7 @@ function [nn, xx] = hist (varargin)
       else
         x = (-floor ((n-1)/2):ceil ((n-1)/2)) + min_val;
       endif
-      x = x.';  # Convert to matrix;
+      x = x.';  # Convert to matrix
     elseif (isvector (x))
       equal_bin_spacing = strcmp (typeinfo (x), "range");
       if (! equal_bin_spacing)
@@ -394,7 +394,7 @@ endfunction
 %!error <number of bins NBINS must be positive> hist (1, 0)
 %!test
 %! hf = figure ("visible", "off");
-%! hax = gca;
+%! hax = gca ();
 %! unwind_protect
 %!   fail ("hist (hax, 1, [2 1 0])", "warning", "bin values X not sorted");
 %! unwind_protect_cleanup

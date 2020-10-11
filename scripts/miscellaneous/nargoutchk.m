@@ -103,7 +103,7 @@ function msg = nargoutchk (minargs, maxargs, nargs, outtype)
     endif
 
   else
-    print_usage;
+    print_usage ();
   endif
 
 endfunction

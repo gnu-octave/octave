@@ -142,7 +142,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   set (gca, "xticklabelmode", "auto");
-%!   hax = gca;
+%!   hax = gca ();
 %!   vals1 = xticklabels;
 %!   assert (xticklabels (hax), vals1);
 %!   mode1 = xticklabels ("mode");
@@ -164,7 +164,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   hax = gca;
+%!   hax = gca ();
 %!   fail ("xticklabels (-1, {})", "HAX must be a handle to an axes");
 %!   fail ("tmp = xticklabels (hax, {'A','B'})", "too many output arguments");
 %!   fail ("tmp = xticklabels (hax, [0, 1])", "too many output arguments");

@@ -297,7 +297,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
         if (isa (x0, "single"))
           globals.lb = tmp_lb = -realmax ("single");
         else
-          globals.lb = tmp_lb = -realmax;
+          globals.lb = tmp_lb = -realmax ();
         endif
       else
         error ("sqp: invalid lower bound");
@@ -312,7 +312,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
         if (isa (x0, "single"))
           globals.ub = tmp_ub = realmax ("single");
         else
-          globals.ub = tmp_ub = realmax;
+          globals.ub = tmp_ub = realmax ();
         endif
       else
         error ("sqp: invalid upper bound");

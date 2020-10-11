@@ -142,7 +142,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   set (gca, "yticklabelmode", "auto");
-%!   hax = gca;
+%!   hax = gca ();
 %!   vals1 = yticklabels;
 %!   assert (yticklabels (hax), vals1);
 %!   mode1 = yticklabels ("mode");
@@ -164,7 +164,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   hax = gca;
+%!   hax = gca ();
 %!   fail ("yticklabels (-1, {})", "HAX must be a handle to an axes");
 %!   fail ("tmp = yticklabels (hax, {'A','B'})", "too many output arguments");
 %!   fail ("tmp = yticklabels (hax, [0, 1])", "too many output arguments");

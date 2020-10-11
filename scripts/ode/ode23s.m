@@ -412,7 +412,7 @@ endfunction
 %! [t, y] = ode23s (@fpol, [0 2], [2 0], 12, 13, "KL");
 %! assert ([t(end), y(end,:)], [2, fref], 1e-3);
 %!test  # empty OdePkg structure *but* extra input arguments
-%! opt = odeset;
+%! opt = odeset ();
 %! [t, y] = ode23s (@fpol, [0 2], [2 0], opt, 12, 13, "KL");
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
 %!test  # InitialStep option

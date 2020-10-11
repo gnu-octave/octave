@@ -57,7 +57,7 @@ endfunction
 %! toolkit = graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   l = line;
+%!   l = line ();
 %!   kids = allchild (hf);
 %!   assert (get (kids, "type"), ...
 %!           {"axes"; "uitoolbar"; "uimenu"; "uimenu"; "uimenu"});

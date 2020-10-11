@@ -37,7 +37,7 @@ function dirname = tempdir ()
 
   dirname = getenv ("TMPDIR");
   if (isempty (dirname))
-    dirname = P_tmpdir;
+    dirname = P_tmpdir ();
   endif
 
   if (! strcmp (dirname(end), filesep))

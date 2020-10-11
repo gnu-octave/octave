@@ -227,8 +227,8 @@ endfunction
 %!test
 %! hf = figure ("Visible", "off");
 %! unwind_protect
-%!   hp = patch;
-%!   hs = surface;
+%!   hp = patch ();
+%!   hs = surface ();
 %!   material dull
 %!   assert (get (hp, "ambientstrength"), 0.3);
 %!   assert (get (hs, "ambientstrength"), 0.3);

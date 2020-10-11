@@ -329,7 +329,7 @@ endfunction
 ## Invisible figure used for tests
 %!shared hf, hax
 %! hf = figure ("visible", "off");
-%! hax = axes;
+%! hax = axes ();
 
 %!error stairs ()
 %!error <Y must be a numeric 2-D vector> stairs (hax, {1})

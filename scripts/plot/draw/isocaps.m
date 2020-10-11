@@ -376,7 +376,7 @@ endfunction
 %! [x, y, z] = meshgrid (lin, lin, lin);
 %! v = abs ((x-0.45).^2 + (y-0.55).^2 + (z-0.8).^2);
 %! hf = clf;
-%! ha = axes;
+%! ha = axes ();
 %! view (3);  box off;
 %! fvc_iso = isosurface (x, y, z, v, isoval);
 %! cmap = get (hf, "Colormap");

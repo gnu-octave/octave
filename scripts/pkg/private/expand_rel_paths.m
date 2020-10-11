@@ -26,7 +26,7 @@
 function pkg_list = expand_rel_paths (pkg_list)
 
   ## Prepend location of OCTAVE_HOME to install directories
-  loc = OCTAVE_HOME;
+  loc = OCTAVE_HOME ();
   for i = 1:numel (pkg_list)
     ## Be sure to only prepend OCTAVE_HOME to pertinent package paths
     if (strncmpi (pkg_list{i}.dir, "__OH__", 6))

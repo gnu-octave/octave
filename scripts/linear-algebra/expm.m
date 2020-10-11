@@ -103,7 +103,7 @@ function r = expm (A)
   n = rows (A);
   id = eye (n);
   ## Trace reduction.
-  A(A == -Inf) = -realmax;
+  A(A == -Inf) = -realmax ();
   trshift = trace (A) / n;
   if (trshift > 0)
     A -= trshift * id;

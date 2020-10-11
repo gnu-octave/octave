@@ -41,7 +41,7 @@
 function retval = iscolormap (cmap)
 
   if (nargin < 1)
-    print_usage;
+    print_usage ();
   endif
 
   retval = (isnumeric (cmap) && isreal (cmap)

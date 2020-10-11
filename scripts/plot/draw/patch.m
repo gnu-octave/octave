@@ -287,7 +287,7 @@ endfunction
 %!   assert (get (h, "linewidth"), get (0, "defaultpatchlinewidth"), eps);
 %!   assert (get (h, "marker"), get (0, "defaultpatchmarker"));
 %!   assert (get (h, "markersize"), get (0, "defaultpatchmarkersize"));
-%!   hl = light;
+%!   hl = light ();
 %!   assert (get (h, "facelighting"), "flat");
 %!   assert (get (h, "facenormals"), [0 0 1], eps);
 %!   assert (get (h, "vertexnormals"), []);

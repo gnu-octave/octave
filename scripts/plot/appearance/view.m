@@ -110,13 +110,13 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot3 ([0,1], [0,1], [0,1]);
-%!   [az, el] = view;
+%!   [az, el] = view ();
 %!   assert ([az, el], [-37.5, 30], eps);
 %!   view (2);
-%!   [az, el] = view;
+%!   [az, el] = view ();
 %!   assert ([az, el], [0, 90], eps);
 %!   view ([1 1 0]);
-%!   [az, el] = view;
+%!   [az, el] = view ();
 %!   assert ([az, el], [135, 0], eps);
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -125,11 +125,11 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   line;
-%!   [az, el] = view;
+%!   line ();
+%!   [az, el] = view ();
 %!   assert ([az, el], [0, 90], eps);
 %!   view (3);
-%!   [az, el] = view;
+%!   [az, el] = view ();
 %!   assert ([az, el], [-37.5, 30], eps);
 %! unwind_protect_cleanup
 %!   close (hf);

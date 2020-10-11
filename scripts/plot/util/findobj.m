@@ -329,7 +329,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   l = line;
+%!   l = line ();
 %!   obj = findobj (hf, "type", "line");
 %!   assert (l, obj);
 %!   assert (gca, findobj (hf, "type", "axes"));

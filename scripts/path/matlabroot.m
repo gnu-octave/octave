@@ -34,7 +34,7 @@
 
 function retval = matlabroot ()
 
-  retval = OCTAVE_HOME;
+  retval = OCTAVE_HOME ();
 
 endfunction
 

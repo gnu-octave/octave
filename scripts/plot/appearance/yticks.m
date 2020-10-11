@@ -124,7 +124,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   set (gca, "ytickmode", "auto");
-%!   hax = gca;
+%!   hax = gca ();
 %!   vals1 = yticks;
 %!   assert (yticks (hax), vals1);
 %!   mode1 = yticks ("mode");
@@ -145,7 +145,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   hax = gca;
+%!   hax = gca ();
 %!   fail ("yticks (-1, [0 1])", "HAX must be a handle to an axes");
 %!   fail ("tmp = yticks (hax, [0 1])", "too many output arguments");
 %!   fail ("tmp = yticks (hax, 'auto')", "too many .* for arg: auto");

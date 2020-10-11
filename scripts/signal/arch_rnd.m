@@ -83,13 +83,13 @@ function y = arch_rnd (a, b, t)
   y = zeros (t, 1);
 
   h(1) = a(1);
-  e(1) = sqrt (h(1)) * randn;
+  e(1) = sqrt (h(1)) * randn ();
   y(1) = b(1) + e(1);
 
   for t = 2:m
     ta   = min ([t, la]);
     h(t) = a(1) + a(2:ta) * e(t-ta+1:t-1).^2;
-    e(t) = sqrt (h(t)) * randn;
+    e(t) = sqrt (h(t)) * randn ();
     tb   = min ([t, lb]);
     y(t) = b(1) + b(2:tb) * y(t-tb+1:t-1) + e(t);
   endfor
@@ -97,7 +97,7 @@ function y = arch_rnd (a, b, t)
   if (t > m)
     for t = m+1:t
       h(t) = a(1) + a(2:la) * e(t-la+1:t-1).^2;
-      e(t) = sqrt (h(t)) * randn;
+      e(t) = sqrt (h(t)) * randn ();
       y(t) = b(1) + b(2:lb) * y(t-tb+1:t-1) + e(t);
     endfor
   endif

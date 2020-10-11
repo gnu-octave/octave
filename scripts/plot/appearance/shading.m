@@ -265,10 +265,10 @@ endfunction
 %!test
 %! hf = figure ("Visible", "off");
 %! unwind_protect
-%!   ha = axes;
+%!   ha = axes ();
 %!   hm = mesh (sombrero ());
-%!   hp = patch;
-%!   hs = surface;
+%!   hp = patch ();
+%!   hs = surface ();
 %!   shading interp;
 %!   assert (get (hp, "facecolor"), "interp");
 %!   assert (get (hs, "facecolor"), "interp");

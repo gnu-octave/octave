@@ -201,7 +201,7 @@ endfunction
 %!   endif
 %!   status = savepath (fname);
 %!   assert (status == 0);
-%!   old_dir = pwd;
+%!   old_dir = pwd ();
 %!   unwind_protect
 %!     cd (test_dir);
 %!     if (exist (fullfile (pwd, ".octaverc")))

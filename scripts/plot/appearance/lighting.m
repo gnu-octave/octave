@@ -184,10 +184,10 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   ha = axes;
+%!   ha = axes ();
 %!   hm = mesh (sombrero ());
-%!   hp = patch;
-%!   hs = surface;
+%!   hp = patch ();
+%!   hs = surface ();
 %!   lighting flat
 %!   assert (get (hp, "facelighting"), "flat");
 %!   assert (get (hs, "facelighting"), "flat");

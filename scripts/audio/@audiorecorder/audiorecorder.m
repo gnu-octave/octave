@@ -88,14 +88,14 @@ endfunction
 %! assert (size (data)(2), 2);
 
 %!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
-%! recorder = audiorecorder;
+%! recorder = audiorecorder ();
 %! set (recorder, {"SampleRate", "Tag", "UserData"}, {8000, "tag", [1, 2; 3, 4]});
 %! assert (recorder.SampleRate, 8000);
 %! assert (recorder.Tag, "tag");
 %! assert (recorder.UserData, [1, 2; 3, 4]);
 
 %!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
-%! recorder = audiorecorder;
+%! recorder = audiorecorder ();
 %! settable = set (recorder);
 %! settable.SampleRate = 8000;
 %! settable.Tag = "tag";
@@ -106,7 +106,7 @@ endfunction
 %! assert (recorder.UserData, [1, 2; 3, 4]);
 
 %!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
-%! recorder = audiorecorder;
+%! recorder = audiorecorder ();
 %! recorder.SampleRate = 8000;
 %! recorder.Tag = "tag";
 %! recorder.UserData = [1, 2; 3, 4];

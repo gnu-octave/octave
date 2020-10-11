@@ -209,7 +209,7 @@ function output_file = publish (file, varargin)
   ## Check file to be in Octave's load path
   [file_path, file_name, file_ext] = fileparts (file);
   if (isempty (file_path))
-    file_path = pwd;
+    file_path = pwd ();
   endif
   if (exist ([file_name, file_ext]) != 2)
     error (["publish: " file " is not in the load path"]);

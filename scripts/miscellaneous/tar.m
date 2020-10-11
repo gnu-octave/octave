@@ -133,7 +133,7 @@ endfunction
 %!   if (! exist (tarname, "file"))
 %!     error ("tar archive file cannot be found!");
 %!   endif
-%!   outdir = tempname;
+%!   outdir = tempname ();
 %!   untar (tarname, outdir);
 %!   fid = fopen (fullfile (outdir, fname1), "rt");
 %!   assert (fid >= 0);

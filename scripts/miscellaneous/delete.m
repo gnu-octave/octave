@@ -73,7 +73,7 @@ endfunction
 
 %!test
 %! unwind_protect
-%!   file = tempname;
+%!   file = tempname ();
 %!   tmp_var = pi;
 %!   save (file, "tmp_var");
 %!   assert (exist (file, "file"));

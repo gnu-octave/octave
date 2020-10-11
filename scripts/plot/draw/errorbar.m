@@ -247,7 +247,7 @@ endfunction
 ## Invisible figure used for tests
 %!shared hf, hax
 %! hf = figure ("visible", "off");
-%! hax = axes;
+%! hax = axes ();
 
 %!error errorbar ()
 %!error errorbar (1)

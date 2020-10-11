@@ -91,7 +91,7 @@ function stop_solve = odeplot (t, y, flag)
     for i = 1:num_lines
       set (hlines(i), "xdata", told, "ydata", yold(i,:));
     endfor
-    drawnow;
+    drawnow ();
 
     retval = false;
 

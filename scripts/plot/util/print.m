@@ -812,7 +812,7 @@ function cmd = epstool (opts, filein, fileout)
 
   ## DOS Shell:
   ##   gs.exe [...] -sOutputFile=<filein> - & epstool -bbox -preview-tiff <filein> <fileout> & del <filein>
-  ## Unix Shell;
+  ## Unix Shell:
   ##   cat > <filein> ; epstool -bbox -preview-tiff <filein> <fileout> ; rm <filein>
 
   dos_shell = (ispc () && ! isunix ());

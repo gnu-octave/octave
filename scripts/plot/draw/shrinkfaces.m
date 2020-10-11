@@ -215,7 +215,7 @@ endfunction
 %! axis auto;   # Kludge required for Octave
 %! axis equal;
 %! view (115, 30);
-%! drawnow;
+%! drawnow ();
 %! shrinkfaces (p, 0.6);
 %! title ("shrinkfaces() on 3-D complex shapes");
 

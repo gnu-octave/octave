@@ -650,7 +650,7 @@ endclassdef
 
 ## check alternative method (obj, ...) API
 %!function p2 = create_p2 ();
-%!  p2 = inputParser;
+%!  p2 = inputParser ();
 %!  addRequired (p2, "req1", @(x) ischar (x));
 %!  addOptional (p2, "op1", "val", @(x) any (strcmp (x, {"val", "foo"})));
 %!  addOptional (p2, "op2", 78, @(x) x > 50);
@@ -677,13 +677,13 @@ endclassdef
 
 ## We must not perform validation of default values
 %!test <*45837>
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("Dir", [], @ischar);
 %! p.parse ();
 %! assert (p.Results.Dir, []);
 
 %!test
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("positive", -1, @(x) x > 5);
 %! p.parse ();
 %! assert (p.Results.positive, -1);
@@ -701,7 +701,7 @@ endclassdef
 
 ## With more Parameters to test StructExpand
 %!function p3 = create_p3 ();
-%!  p3 = inputParser;
+%!  p3 = inputParser ();
 %!  addOptional (p3, "op1", "val", @(x) any (strcmp (x, {"val", "foo"})));
 %!  addOptional (p3, "op2", 78, @(x) x > 50);
 %!  addSwitch (p3, "verbose");
@@ -745,14 +745,14 @@ endclassdef
 ## Some simple tests for addParamValue since all the other ones use add
 ## addParameter but they use the same codepath.
 %!test
-%! p = inputParser;
+%! p = inputParser ();
 %! addParameter (p, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
 %! addParameter (p, "color", "red", @(x) any (strcmp (x, {"red", "green"})));
 %! p.parse ("line", "circle");
 %! assert ({p.Results.line, p.Results.color}, {"circle", "red"})
 
 %!test
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("foo", "bar", @ischar);
 %! p.parse ();
 %! assert (p.Results, struct ("foo", "bar"))
@@ -812,7 +812,7 @@ endclassdef
 %! assert (p.Results, struct ("op1", "line", "line", "circle"))
 
 %!test <*50752>
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addOptional ("op1", "val1");
 %! p.addSwitch ("line");
 %! p.parse ("line");
@@ -820,7 +820,7 @@ endclassdef
 %! assert (p.Results.line, true)
 
 %!test
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("a", []);
 %! p.addParameter ("b", []);
 %! p.parse ("a", 1);
@@ -829,7 +829,7 @@ endclassdef
 %! assert (p.UsingDefaults, {"a"});
 
 %!test
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("b", []);
 %! p.KeepUnmatched = true;
 %! p.parse ("a", 1);
@@ -839,7 +839,7 @@ endclassdef
 
 ## Test for patch #9241
 %!error<failed validation of A with ischar>
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("a", [], @ischar);
 %! p.parse ("a", 1);
 

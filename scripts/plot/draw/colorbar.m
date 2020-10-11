@@ -859,7 +859,7 @@ endfunction
 %!demo
 %! clf;
 %! colormap ("default");
-%! axes;
+%! axes ();
 %! colorbar ();
 %! hold on;
 %! contour (peaks ());

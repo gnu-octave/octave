@@ -592,7 +592,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! ha = gca;
+%! ha = gca ();
 %! unwind_protect
 %!   h = light (ha, "Position", [1 2 3], "Color", "r");
 %!   assert (get (h, "Position"), [1 2 3]);

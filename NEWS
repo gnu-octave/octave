@@ -79,10 +79,10 @@ same number of digits for each value such as
 - As part of GSoC 2020, Abdallah K. Elshamy implemented the
 `jsondecode` and `jsonencode` functions to read and write JSON data.
 
-- By default, the history file is now located at $DATA/octave/history, where
-$DATA is a platform dependent location for (roaming) user data files (e.g.
-${XDG_DATA_HOME} or, if that is not set, ~/.local/share on Unix-like operating
-systems or %APPDATA% on Windows).
+- By default, the history file is now located at $DATA/octave/history,
+where $DATA is a platform dependent location for (roaming) user data
+files (e.g.  ${XDG_DATA_HOME} or, if that is not set, ~/.local/share on
+Unix-like operating systems or %APPDATA% on Windows).
 
 - In debug mode, symbol values are now shown in tooltips when hovering
 variables in the editor panel.
@@ -104,7 +104,8 @@ property which is hidden now.
     * `"interactions"` (not yet implemented)
     * `"layout"` (not yet implemented)
     * `"legend"` (not yet implemented)
-    * `"nextseriesindex"` (read-only, used by `scatter` graphics objects)
+    * `"nextseriesindex"` (read-only, used by `scatter`
+      graphics objects)
     * `"positionconstraint"` (replacement for `"activepositionproperty"`
       which is now a hidden property.  No plans for removal.)
     * `"toolbar"` (not yet implemented)

@@ -165,8 +165,8 @@ endfunction
 ## Test input validation
 %!error <Invalid call> lightangle ()
 %!error <Invalid call> lightangle (1, 2, 3, 4)
-%!error <Invalid call> [a, b] = lightangle (45, 30)
 %!error <Invalid call> [a, b, c] = lightangle (45, 30)
+%!error <Invalid call> [a, b] = lightangle (45, 30)
 %!error <HL must be a handle to a light object> lightangle (0)
 %!error <H must be a handle to an axes or light object> lightangle (0, 90, 45)
 %!error <AZ and EL must be numeric scalars> lightangle ([1 2], 0)

@@ -73,7 +73,7 @@
 
 function [nf, nv] = shrinkfaces (varargin)
 
-  if (nargin < 1 || nargin > 3 || nargout > 2)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
@@ -231,8 +231,8 @@ endfunction
 %!assert (norm (nfv2.vertices - vertices), 0, 2*eps)
 
 ## Test input validation
-%!error shrinkfaces ()
-%!error shrinkfaces (1,2,3,4)
+%!error <Invalid call> shrinkfaces ()
+%!error <Invalid call> shrinkfaces (1,2,3,4)
 %!error [a,b,c] = shrinkfaces (1)
 %!error <scale factor must be a positive scalar> shrinkfaces (nfv, ones (2))
 %!error <scale factor must be a positive scalar> shrinkfaces (nfv, 0)

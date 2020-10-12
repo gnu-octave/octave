@@ -49,7 +49,7 @@
 
 function [z, v] = polyeig (varargin)
 
-  if (nargin < 1 || nargout > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -105,8 +105,7 @@ endfunction
 %! assert (norm (d), 0.0);
 
 ## Test input validation
-%!error polyeig ()
-%!error [a,b,c] = polyeig (1)
+%!error <Invalid call> polyeig ()
 %!error <coefficients must be square matrices> polyeig (ones (3,2))
 %!error <coefficients must have the same dimensions>
 %! polyeig (ones (3,3), ones (2,2))

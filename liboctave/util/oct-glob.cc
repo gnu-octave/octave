@@ -33,6 +33,7 @@
 #include "glob-wrappers.h"
 
 #include "oct-glob.h"
+#include "file-ops.h"
 #include "file-stat.h"
 #include "unwind-prot.h"
 
@@ -149,6 +150,48 @@ namespace octave
       return retval.sort ();
     }
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+    static void
+    find_files (std::list<std::string>& dirlist, const std::string& dir,
+                const std::string& pat, const std::string& file)
+    {
+      // find first file in directory that matches pattern in PAT
+      std::wstring wpat = u8_to_wstring (sys::file_ops::concat (dir, pat));
+      _WIN32_FIND_DATAW ffd;
+      HANDLE h_find = FindFirstFileW (wpat.c_str (), &ffd);
+      // ignore any error
+      if (h_find == INVALID_HANDLE_VALUE)
+        return;
+
+      unwind_action close_h_find ([=] () { FindClose (h_find); });
+
+      // find all files that match pattern
+      do
+        {
+          std::string found_dir = u8_from_wstring (ffd.cFileName);
+
+          if (file.empty ())
+            dirlist.push_back (sys::file_ops::concat (dir, found_dir));
+          else
+            {
+              // get next component of path (or file name)
+              size_t sep_pos = file.find_first_of (sys::file_ops::dir_sep_chars ());
+              std::string pat_str = file.substr (0, sep_pos);
+              std::string file_str = (sep_pos != std::string::npos
+                                      && file.length () > sep_pos+1)
+                                     ? file.substr (sep_pos+1) : "";
+
+              // call this function recursively with next path component in PAT
+              find_files (dirlist, sys::file_ops::concat (dir, found_dir),
+                          pat_str, file_str);
+            }
+        }
+      while (FindNextFileW (h_find, &ffd) != 0);
+    }
+
+#endif
+
     // Glob like Windows "dir".  Treat only * and ? as wildcards,
     // and "*.*" matches filenames even if they do not contain ".".
     string_vector
@@ -160,8 +203,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-      _WIN32_FIND_DATAW ffd;
-      std::list<std::string> dirlist_str;
+      std::list<std::string> dirlist;
 
       for (int i = 0; i < npat; i++)
         {
@@ -169,22 +211,31 @@ namespace octave
           if (xpat.empty ())
             continue;
 
-          // find first file in directory that matches pattern
-          std::wstring wxpat = u8_to_wstring (xpat);
-          HANDLE h_find = FindFirstFileW (wxpat.c_str (), &ffd);
-          // ignore any error
-          if (h_find == INVALID_HANDLE_VALUE)
-            continue;
+          // separate component until first dir separator
+          size_t sep_pos
+            = xpat.find_first_of (sys::file_ops::dir_sep_chars ());
+          std::string file = (sep_pos != std::string::npos
+                              && xpat.length () > sep_pos+1)
+                             ? xpat.substr (sep_pos+1) : "";
+          xpat = xpat.substr (0, sep_pos);
 
-          unwind_action close_h_find ([=] () { FindClose (h_find); });
+          std::string dir = "";
 
-          // find all other files that match pattern
-          do
-            dirlist_str.push_back (u8_from_wstring (ffd.cFileName));
-          while (FindNextFileW (h_find, &ffd) != 0);
+          if (sep_pos == 2 && xpat[1] == ':')
+            {
+              // include disc root
+              sep_pos = file.find_first_of (sys::file_ops::dir_sep_chars ());
+              dir = xpat;
+              xpat = file.substr (0, sep_pos);
+              file = (sep_pos != std::string::npos
+                      && file.length () > sep_pos+1)
+                     ? file.substr (sep_pos+1) : "";
+            }
+
+          find_files (dirlist, dir, xpat, file);
         }
 
-      retval = string_vector (dirlist_str);
+      retval = string_vector (dirlist);
 
 #else
 

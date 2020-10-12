@@ -223,8 +223,8 @@ endfunction
 %!assert <*57603> (quadv (@(t) sin (t) .^ 2, 0, 8*pi), 4*pi, 1e-6)
 
 ## Test input validation
-%!error quadv ()
-%!error quadv (@sin)
-%!error quadv (@sin,1)
+%!error <Invalid call> quadv ()
+%!error <Invalid call> quadv (@sin)
+%!error <Invalid call> quadv (@sin,1)
 %!error <TOL must be a scalar> quadv (@sin,0,1, ones (2,2))
 %!error <TOL must be .* .=0> quadv (@sin,0,1, -1)

@@ -668,8 +668,8 @@ endfunction
 %! assert (h, 3);
 %! unlink (fn);
 
-%!error importdata ()
-%!error importdata (1,2,3,4)
+## Test input validation
+%!error <Invalid call> importdata ()
 %!error <FNAME must be a string> importdata (1)
 %!error <option -pastespecial not implemented> importdata ("-pastespecial")
 %!error <DELIMITER must be a single character> importdata ("foo", 1)

@@ -386,8 +386,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error unpack ()
-%!error unpack (1,2,3,4)
+%!error <Invalid call> unpack ()
 %!error <FILE must be a string or cell array of strings> unpack (1)
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ("_%NOT_A_FILENAME%_")
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_"})

@@ -42,4 +42,4 @@ endfunction
 
 %!assert (acosd (0:0.1:1), 180/pi * acos (0:0.1:1), -10*eps)
 
-%!error acosd ()
+%!error <Invalid call> acosd ()

@@ -185,9 +185,9 @@ endfunction
 %! yi = griddatan (x, y, xi);
 
 ## Test input validation
-%!error griddatan ()
-%!error griddatan (1)
-%!error griddatan (1,2)
+%!error <Invalid call> griddatan ()
+%!error <Invalid call> griddatan (1)
+%!error <Invalid call> griddatan (1,2)
 %!error <number of points in X> griddatan (1,2,3)
 %!error <Y must be a column vector> griddatan ([1;2],[3,4], 1)
 %!error <Y must .* same number of points .* as X> griddatan ([1;2],[3;4;5], 1)

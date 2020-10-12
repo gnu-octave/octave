@@ -230,7 +230,7 @@ endfunction
 %! assert (z, Z);
 
 ## Test input validation
-%!error cart2pol ()
+%!error <Invalid call> cart2pol ()
 %!error cart2pol (1,2,3,4)
 %!error <matrix input must be 2-D numeric array> cart2pol ({1,2,3})
 %!error <matrix input must be 2-D numeric array> cart2pol (ones (3,3,2))

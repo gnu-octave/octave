@@ -145,5 +145,5 @@ endfunction
 %!assert ([1; (1:9).'], movmin ((1:10).', 3))
 
 ## Test input validation
-%!error movmin ()
-%!error movmin (1)
+%!error <Invalid call> movmin ()
+%!error <Invalid call> movmin (1)

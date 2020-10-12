@@ -200,7 +200,8 @@ endfunction
 %! endfor
 
 ## Test input validation
-%!error listdlg ()
+%!error <Invalid call> listdlg ()
+%!error <Invalid call> listdlg (1)
 %!error listdlg ("SelectionMode")
 %!error <must occur in pairs> listdlg ("SelectionMode", "multiple", "Name")
 %!error <invalid KEY .FooBar.> listdlg ("FooBar", 1)

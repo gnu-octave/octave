@@ -143,7 +143,6 @@ endfunction
 # test for bug #55241
 %!assert ([0.5; repmat(2/3,8,1); 0.5], movmad ((1:10).', 3))
 
-
 ## Test input validation
-%!error movmad ()
-%!error movmad (1)
+%!error <Invalid call> movmad ()
+%!error <Invalid call> movmad (1)

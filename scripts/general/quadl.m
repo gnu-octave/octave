@@ -200,8 +200,8 @@ endfunction
 %! assert (class (quadl (@sin, 0, single (1))), "single");
 
 ## Test input validation
-%!error quadl ()
-%!error quadl (@sin)
-%!error quadl (@sin,1)
+%!error <Invalid call> quadl ()
+%!error <Invalid call> quadl (@sin)
+%!error <Invalid call> quadl (@sin,1)
 %!error <TOL must be a scalar> quadl (@sin,0,1, ones (2,2))
 %!error <TOL must be .* .=0> quadl (@sin,0,1, -1)

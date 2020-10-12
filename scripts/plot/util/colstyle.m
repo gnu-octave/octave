@@ -94,6 +94,6 @@ endfunction
 %! assert (msg, "colstyle: unrecognized format character: '~'");
 
 ## Test input validation
-%!error colstyle ()
+%!error <Invalid call> colstyle ()
 %!error colstyle (1, 2)
 %!error <STYLE must be a string> colstyle (1.5)

@@ -500,9 +500,9 @@ endfunction
 %! assert (imag (y), ones (size (y)))
 
 ## Test input validation
-%!error ode23s ()
-%!error ode23s (1)
-%!error ode23s (1,2)
+%!error <Invalid call> ode23s ()
+%!error <Invalid call> ode23s (1)
+%!error <Invalid call> ode23s (1,2)
 %!error <TRANGE must be a numeric> ode23s (@fpol, {[0 25]}, [3 15 1])
 %!error <TRANGE must be a .* vector> ode23s (@fpol, [0 25; 25 0], [3 15 1])
 %!error <TRANGE must contain at least 2 elements> ode23s (@fpol, [1], [3 15 1])

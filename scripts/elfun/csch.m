@@ -45,4 +45,4 @@ endfunction
 %! v = [-i, i];
 %! assert (csch (x), v, sqrt (eps));
 
-%!error csch ()
+%!error <Invalid call> csch ()

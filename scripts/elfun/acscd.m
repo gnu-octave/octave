@@ -42,4 +42,4 @@ endfunction
 
 %!assert (acscd (0:10:90), 180/pi * acsc (0:10:90), -10*eps)
 
-%!error acscd ()
+%!error <Invalid call> acscd ()

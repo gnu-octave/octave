@@ -438,8 +438,8 @@ endfunction
 %! assert (size (vertices_reduced, 2), 3);
 
 ## test for each error
-%!error reducepatch ()
-%!error reducepatch (fv, faces, vertices, .5, "f", "v")
+%!error <Invalid call> reducepatch ()
+%!error <Invalid call> reducepatch (fv, faces, vertices, .5, "f", "v")
 %!error <reducepatch: parameter 'foo' not supported>
 %! fv_reduced = reducepatch (faces, vertices, .7, "foo");
 %!error <struct FV must contain the fields 'vertices' and 'faces'>

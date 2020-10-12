@@ -47,4 +47,4 @@ endfunction
 %! v = [1, 2*rt3/3, rt2, 2, -2, -rt2, -2*rt3/3, -1];
 %! assert (sec (x), v, sqrt (eps));
 
-%!error sec ()
+%!error <Invalid call> sec ()

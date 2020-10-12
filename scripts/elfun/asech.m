@@ -53,4 +53,4 @@ endfunction
 %! x = [1, -1];
 %! assert (asech (x), v, sqrt (eps));
 
-%!error asech ()
+%!error <Invalid call> asech ()

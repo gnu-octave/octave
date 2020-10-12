@@ -223,8 +223,7 @@ endfunction
 %!assert <*43374> (eval (rat (0.75)), [0.75])
 
 ## Test input validation
-%!error rat ()
-%!error rat (1, 2, 3)
+%!error <Invalid call> rat ()
 %!error <X must be a single or double array> rat (int8 (3))
 %!error <X must be a real, not complex, array> rat (1+1i)
 %!error <TOL must be a numeric scalar> rat (1, "a")

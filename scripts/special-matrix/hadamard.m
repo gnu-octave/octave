@@ -176,6 +176,6 @@ endfunction
 %!   assert (norm (h*h' - n*eye (n)), 0);
 %! endfor
 
-%!error hadamard ()
+%!error <Invalid call> hadamard ()
 %!error hadamard (1,2)
 %!error <N must be 2\^k\*p> hadamard (5)

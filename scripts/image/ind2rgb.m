@@ -102,8 +102,8 @@ endfunction
 %! assert (rgb(:,3,:), 1/63 * ones (1,1,3));
 
 ## Test input validation
-%!error ind2rgb ()
-%!error ind2rgb (1,2,3)
+%!error <Invalid call> ind2rgb ()
+%!error <Invalid call> ind2rgb (1)
 %!error <X must be an indexed image> ind2rgb (ones (3,3,3), jet (64))
 %!error <X must be an indexed image> ind2rgb (1+i, jet (64))
 %!error <X must be an indexed image> ind2rgb (sparse (1), jet (64))

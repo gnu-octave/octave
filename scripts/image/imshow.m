@@ -268,7 +268,7 @@ endfunction
 %! title ({"imshow with random 100x100x3 matrix", "RGB values > 1 are clipped"});
 
 ## Test input validation
-%!error imshow ()
+%!error <Invalid call> imshow ()
 %!error <IM must be an image> imshow ({"cell"})
 %!error <TrueColor image must be uint8> imshow (ones (3,3,3, "uint32"))
 %!error <TrueColor image must be uint8> imshow (ones (3,3,3, "int16"))

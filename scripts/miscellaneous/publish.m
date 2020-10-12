@@ -1113,7 +1113,7 @@ endfunction
 ## Note: Functional BIST tests are located in the 'test/publish' directory.
 
 ## Test input validation
-%!error publish ()
+%!error <Invalid call> publish ()
 %!error publish (1)
 %!error <FILE does not exist> publish ("%%_non_existent_file_%%.m")
 %!error <only script files can be published> publish ("publish.m")

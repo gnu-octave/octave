@@ -578,5 +578,5 @@ endfunction
 %! fminsearch (@(x) (Inf), 0, optimset ("FunValCheck", "on"));
 
 ## Test input validation
-%!error fminsearch ()
+%!error <Invalid call> fminsearch ()
 %!error fminsearch (1)

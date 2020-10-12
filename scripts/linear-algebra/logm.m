@@ -182,6 +182,5 @@ endfunction
 %!assert (logm (expm ([0 1i; -1i 0])), [0 1i; -1i 0], 10 * eps)
 
 ## Test input validation
-%!error logm ()
-%!error logm (1, 2, 3)
+%!error <Invalid call> logm ()
 %!error <logm: A must be a square matrix> logm ([1 0;0 1; 2 2])

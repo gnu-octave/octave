@@ -314,7 +314,7 @@ endfunction
 %! open (fullfile (dir, "index.html"));
 
 ## Test input validation
-%!error profexport ()
+%!error <Invalid call> profexport ()
 %!error profexport (1)
 %!error profexport (1, 2, 3, 4)
 %!error <DIR must be a string> profexport (5)

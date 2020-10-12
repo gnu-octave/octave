@@ -158,10 +158,9 @@ endfunction
 %! assert (on, ON);
 
 ## Test input validation
-%!error inpolygon ()
-%!error inpolygon (1, 2)
-%!error inpolygon (1, 2, 3)
-%!error inpolygon (1, 2, 3, 4, 5)
+%!error <Invalid call> inpolygon ()
+%!error <Invalid call> inpolygon (1, 2)
+%!error <Invalid call> inpolygon (1, 2, 3)
 %!error <X and Y must be real> inpolygon (1i, 1, [3, 4], [5, 6])
 %!error <X and Y must be real> inpolygon (1, {1}, [3, 4], [5, 6])
 %!error <X and Y must be .* the same size> inpolygon (1, [1,2], [3, 4], [5, 6])

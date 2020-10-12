@@ -279,10 +279,9 @@ endfunction
 %!assert (class (betaincinv (single (0.5), int8 (1), 1)), "single")
 
 ## Test input validation
-%!error betaincinv ()
-%!error betaincinv (1)
-%!error betaincinv (1,2)
-%!error betaincinv (1,2,3,4,5)
+%!error <Invalid call> betaincinv ()
+%!error <Invalid call> betaincinv (1)
+%!error <Invalid call> betaincinv (1,2)
 %!error <must be of common size or scalars>
 %! betaincinv (ones (2,2), ones (1,2), 1);
 %!error <all inputs must be real> betaincinv (0.5i, 1, 2)

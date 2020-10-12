@@ -210,9 +210,9 @@ endfunction
 %! [b, seb, mseb, S] = lscov (X, y, V);
 %! assert(b, [0 100 200]', 0.2);
 
-%!error lscov ()
-%!error lscov (1)
-%!error lscov (1,2,3,4,5)
+## Test input validation
+%!error <Invalid call> lscov ()
+%!error <Invalid call> lscov (1)
 %!error <A and B must have the same number of rows> lscov (ones (2,2),1)
 %!warning <algorithm selection input ALG is not yet implemented>
 %! lscov (1,1, [], "chol");

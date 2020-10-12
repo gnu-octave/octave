@@ -303,12 +303,12 @@ endfunction
 %!assert (integral2 (@plus, 1, 2, 3, 4, "method", "iterated"), 5, 1e-10)
 
 ## Test input validation
-%!error integral2 ()
-%!error integral2 (@plus)
-%!error integral2 (@plus, 1)
-%!error integral2 (@plus, 1, 2)
-%!error integral2 (@plus, 1, 2, 3)
-%!error integral2 (@plus, 1, 2, 3, 4, "foo")
+%!error <Invalid call> integral2 ()
+%!error <Invalid call> integral2 (@plus)
+%!error <Invalid call> integral2 (@plus, 1)
+%!error <Invalid call> integral2 (@plus, 1, 2)
+%!error <Invalid call> integral2 (@plus, 1, 2, 3)
+%!error <Invalid call> integral2 (@plus, 1, 2, 3, 4, "foo")
 %!error integral2 (0, 1, 2, 3, 4)          # f must be function handle
 %!error integral2 (@plus, 1i, 2, 3, 4)     # real limits
 %!error integral2 (@plus, 1, 2i, 3, 4)     # real limits

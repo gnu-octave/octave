@@ -91,8 +91,8 @@ endfunction
 #%!assert(class (discrete_rnd (1:2, single(1:2))), "single")
 
 ## Test input validation
-%!error discrete_rnd ()
-%!error discrete_rnd (1)
+%!error <Invalid call> discrete_rnd ()
+%!error <Invalid call> discrete_rnd (1)
 %!error discrete_rnd (1:2,1:2, -1)
 %!error discrete_rnd (1:2,1:2, ones (2))
 %!error discrete_rnd (1:2,1:2, [2 -1 2])

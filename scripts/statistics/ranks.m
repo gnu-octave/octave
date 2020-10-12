@@ -164,8 +164,7 @@ endfunction
 %!assert (ranks ([1, 2, 2, 4], [], "dense"), [1, 2, 2, 3])
 
 ## Test input validation
-%!error ranks ()
-%!error ranks (1, 2, 3, 4)
+%!error <Invalid call> ranks ()
 %!error <X must be a numeric vector or matrix> ranks ({1, 2})
 %!error <X must be a numeric vector or matrix> ranks (['A'; 'B'])
 %!error <DIM must be an integer> ranks (1, 1.5)

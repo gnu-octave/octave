@@ -58,4 +58,5 @@ endfunction
 %!assert (sinc (1), 0,1e-6)
 %!assert (sinc (1/2), 2/pi, 1e-6)
 
-%!error sinc()
+## Test input validation
+%!error <Invalid call> sinc ()

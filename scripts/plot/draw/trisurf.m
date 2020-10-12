@@ -171,10 +171,10 @@ endfunction
 %! title ({"trisurf() of random data", '"facecolor" = "interp", "edgecolor" = "white"'});
 
 ## Test input validation
-%!error trisurf ()
-%!error trisurf (1)
-%!error trisurf (1,2)
-%!error trisurf (1,2,3)
+%!error <Invalid call> trisurf ()
+%!error <Invalid call> trisurf (1)
+%!error <Invalid call> trisurf (1,2)
+%!error <Invalid call> trisurf (1,2,3)
 %!error <the numbers of colors> trisurf (1,2,3,4,[5 6])
 %!error <the numbers of colors> trisurf (1,2,3,4,[5 6]')
 %!error <the numbers of colors> trisurf ([1;1],[2;2],[3;3],[4;4], zeros (3,3))

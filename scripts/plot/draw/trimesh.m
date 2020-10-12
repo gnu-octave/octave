@@ -122,9 +122,9 @@ endfunction
 %! title ("trimesh() plot of sparsely-sampled peaks() function");
 
 ## Test input validation
-%!error trimesh ()
-%!error trimesh (1)
-%!error trimesh (1,2)
+%!error <Invalid call> trimesh ()
+%!error <Invalid call> trimesh (1)
+%!error <Invalid call> trimesh (1,2)
 %!error <the numbers of colors> trimesh (1,2,3,4,[5 6])
 %!error <the numbers of colors> trimesh (1,2,3,4,[5 6]')
 %!error <the numbers of colors> trimesh ([1;1],[2;2],[3;3],[4;4], zeros (3,3))

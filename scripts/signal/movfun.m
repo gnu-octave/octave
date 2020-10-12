@@ -603,9 +603,9 @@ endfunction
 %!error (movfun (@(x) [min(x), max(x)], (1:10).', 3, "Outdim", 3))
 
 ## Test input validation
-%!error movfun ()
-%!error movfun (@min)
-%!error movfun (@min, 1)
+%!error <Invalid call> movfun ()
+%!error <Invalid call> movfun (@min)
+%!error <Invalid call> movfun (@min, 1)
 %!error <WLEN must be .* array of integers> movfun (@min, 1, {1})
 %!error <WLEN must be .* array of integers .= 0> movfun (@min, 1, -1)
 %!error <WLEN must be .* array of integers> movfun (@min, 1, 1.5)

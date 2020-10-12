@@ -337,10 +337,9 @@ endfunction
 %! assert (s.C(:,1), [0; 0]);
 
 ## Test input validation
-%!error polyfit ()
-%!error polyfit (1)
-%!error polyfit (1,2)
-%!error polyfit (1,2,3,4,5)
+%!error <Invalid call> polyfit ()
+%!error <Invalid call> polyfit (1)
+%!error <Invalid call> polyfit (1,2)
 %!error <X and Y must have the same number of points> polyfit ([1, 2], 1, 1)
 %!error <X and Y must have the same number of points> polyfit (1, [1, 2], 1)
 %!error <N must be a non-negative integer> polyfit (1, 2, [1,2])

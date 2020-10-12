@@ -188,9 +188,8 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error copyfile ()
-%!error copyfile (1)
-%!error copyfile (1,2,3,4)
+%!error <Invalid call> copyfile ()
+%!error <Invalid call> copyfile (1)
 %!error <F1 must be a string> copyfile (1, "foobar")
 %!error <F2 must be a string> copyfile ("foobar", 1)
 %!error <F2 must be a directory> copyfile ({"a", "b"}, "%_NOT_A_DIR_%")

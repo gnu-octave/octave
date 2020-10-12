@@ -179,5 +179,5 @@ endfunction
 %! assert (y1(1:3), sqrt ([1/4, 2/3, 5/4]));
 
 ## Test input validation
-%!error movstd ()
-%!error movstd (1)
+%!error <Invalid call> movstd ()
+%!error <Invalid call> movstd (1)

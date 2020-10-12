@@ -544,8 +544,8 @@ endfunction
 %! assert (rows (vertices), rows (fvcdata));
 
 ## test for each error
-%!error isocaps ()
-%!error isocaps (1,2,3,4,5,6,7,8,9)
+%!error <Invalid call> isocaps ()
+%!error <Invalid call> isocaps (1,2,3,4,5,6,7,8,9)
 %!error <parameter 'foo' not supported> isocaps (val, iso, "foo")
 %!error <incorrect number of input arguments> isocaps (x, val, iso)
 %!error <incorrect number of input arguments> isocaps (xx, yy, zz, val, iso, 5)

@@ -186,8 +186,7 @@ endfunction
 %! #-------------------------------------------------
 %! # the figure window shows one cycle of a sine wave
 
-%!error demo ()
-%!error demo (1, 2, 3)
+%!error <Invalid call> demo ()
 %!error <N must be a scalar integer> demo ("demo", {1})
 %!error <N must be a scalar integer> demo ("demo", ones (2,2))
 %!error <N must be a scalar integer> demo ("demo", 1.5)

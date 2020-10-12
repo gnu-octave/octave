@@ -303,8 +303,8 @@ endfunction
 %! assert (s_idx, 1);
 
 ## Test input validation
-%!error ismember ()
-%!error ismember (1)
-%!error ismember (1,2,3,4)
+%!error <Invalid call> ismember ()
+%!error <Invalid call> ismember (1)
+%!error <Invalid call> ismember (1,2,3,4)
 %!error <"stable" or "sorted" are not valid options> ismember (1,2, "sorted")
 %!error <"stable" or "sorted" are not valid options> ismember (1,2, "stable")

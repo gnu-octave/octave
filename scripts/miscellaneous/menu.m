@@ -100,8 +100,9 @@ function choice = menu (title, varargin)
 endfunction
 
 
-%!error menu ()
-%!error menu ("title")
+## Test input validation
+%!error <Invalid call> menu ()
+%!error <Invalid call> menu ("title")
 %!error <TITLE must be a string> menu (1, "opt1")
 %!error <All OPTIONS must be strings> menu ("title", "opt1", 1)
 %!error <OPTIONS must be string or cell array of strings> menu ("title", 1)

@@ -181,8 +181,8 @@ endfunction
 %! assert (lev_obs, lev_exp, eps);
 
 ## Test input validation
-%!error contourc ()
-%!error contourc (1,2,3,4,5)
+%!error <Invalid call> contourc ()
+%!error <Invalid call> contourc (1,2,3,4,5)
 %!error <X, Y, and Z must be numeric> contourc ({1})
 %!error <X, Y, and Z must be numeric> contourc ({1}, 2, 3)
 %!error <X, Y, and Z must be numeric> contourc (1, {2}, 3)

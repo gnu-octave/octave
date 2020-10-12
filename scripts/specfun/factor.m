@@ -120,8 +120,7 @@ endfunction
 %! assert (n, double (3));
 
 ## Test input validation
-%!error factor ()
-%!error factor (1,2)
+%!error <Invalid call> factor ()
 %!error <Q must be a real non-negative integer> factor (6i)
 %!error <Q must be a real non-negative integer> factor ([1,2])
 %!error <Q must be a real non-negative integer> factor (1.5)

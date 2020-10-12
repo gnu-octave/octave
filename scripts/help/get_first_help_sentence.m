@@ -182,8 +182,7 @@ endfunction
 %!        "Return the first sentence...")
 
 ## Test input validation
-%!error get_first_help_sentence ()
-%!error get_first_help_sentence (1, 2, 3)
+%!error <Invalid call> get_first_help_sentence ()
 %!error <NAME must be a string> get_first_help_sentence (1)
 %!error <MAX_LEN must be positive integer> get_first_help_sentence ("ls", "a")
 %!error <MAX_LEN must be positive integer> get_first_help_sentence ("ls", 0)

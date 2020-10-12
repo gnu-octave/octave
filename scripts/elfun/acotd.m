@@ -42,4 +42,4 @@ endfunction
 
 %!assert (acotd (0:10:90), 180/pi * acot (0:10:90), -10*eps)
 
-%!error acotd ()
+%!error <Invalid call> acotd ()

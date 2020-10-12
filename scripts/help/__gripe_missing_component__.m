@@ -71,6 +71,4 @@ endfunction
 %!error <abc: .*> __gripe_missing_component__ ("abc", "xyz")
 
 %!error <Invalid call> __gripe_missing_component__ ()
-%!error __gripe_missing_component__ ()
-%!error __gripe_missing_component__ ("fcn")
-%!error __gripe_missing_component__ ("fcn", 1 , 2)
+%!error <Invalid call> __gripe_missing_component__ ("fcn")

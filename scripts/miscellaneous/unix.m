@@ -71,5 +71,5 @@ endfunction
 %!   assert (output, "");
 %! endif
 
-%!error unix ()
-%!error unix (1, 2, 3)
+## Test input validation
+%!error <Invalid call> unix ()

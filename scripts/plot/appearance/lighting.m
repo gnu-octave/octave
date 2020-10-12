@@ -225,7 +225,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!error lighting ()
+%!error <Invalid call> lighting ()
 %!error lighting (1, 2, "flat")
 %!error <MODE must be a string> lighting (-1)
 %!error <MODE must be a string> lighting ({})

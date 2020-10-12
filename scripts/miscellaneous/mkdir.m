@@ -138,5 +138,4 @@ endfunction
 %! fail ('mkdir ("__%hello%__", "world")', "invalid PARENT");
 
 ## Test input validation
-%!error mkdir ()
-%!error mkdir ("a", "b", "c")
+%!error <Invalid call> mkdir ()

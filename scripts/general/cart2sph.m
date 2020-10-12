@@ -189,9 +189,8 @@ endfunction
 %! assert (r, R, eps);
 
 ## Test input validation
-%!error cart2sph ()
-%!error cart2sph (1,2)
-%!error cart2sph (1,2,3,4)
+%!error <Invalid call> cart2sph ()
+%!error <Invalid call> cart2sph (1,2)
 %!error <matrix input C must be a 2-D numeric array> cart2sph ({1,2,3})
 %!error <matrix input C must be a 2-D numeric array> cart2sph (ones (3,3,2))
 %!error <matrix input C must be a 3-element> cart2sph ([1,2,3,4])

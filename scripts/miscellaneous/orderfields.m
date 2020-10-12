@@ -213,8 +213,7 @@ endfunction
 %! assert (size_equal (s, s2));
 
 ## Test input validation
-%!error orderfields ()
-%!error orderfields (1,2,3)
+%!error <Invalid call> orderfields ()
 %!error <S1 must be a struct> orderfields (1)
 %!error <S1 and S2 do not have the same fields>
 %! s1.a = 1;

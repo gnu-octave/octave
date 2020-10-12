@@ -359,7 +359,7 @@ endfunction
 %!         "Dialog Title", "custom", cdata, copper (64));
 
 ## Test input validation
-%!error msgbox ()
+%!error <Invalid call> msgbox ()
 %!error <MSG must be a string or cell array of strings> msgbox (1)
 %!error <invalid value "foobar" for WindowStyle>
 %! msgbox ("msg", struct ("WindowStyle", "foobar"))

@@ -330,11 +330,11 @@ endfunction
 %! assert (zz, zz2, 100*eps);
 
 ## Test input validation
-%!error griddata ()
-%!error griddata (1)
-%!error griddata (1,2)
-%!error griddata (1,2,3)
-%!error griddata (1,2,3,4)
+%!error <Invalid call> griddata ()
+%!error <Invalid call> griddata (1)
+%!error <Invalid call> griddata (1,2)
+%!error <Invalid call> griddata (1,2,3)
+%!error <Invalid call> griddata (1,2,3,4)
 %!error <only one output argument> [xi,yi] = griddata (1,2,3,4,5,6,7)
 %!error <vectors of the same length> griddata (1:4, 1:3, 1:3, 1:3, 1:3)
 %!error <vectors of the same length> griddata (1:3, 1:4, 1:3, 1:3, 1:3)

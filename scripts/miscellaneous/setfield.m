@@ -146,7 +146,7 @@ endfunction
 %! assert (oo(1,2).fd(3).b(1,4), 6);
 
 ## Test input validation
-%!error setfield ()
-%!error setfield (1)
-%!error setfield (1,2)
+%!error <Invalid call> setfield ()
+%!error <Invalid call> setfield (1)
+%!error <Invalid call> setfield (1,2)
 %!error <invalid index> setfield (1,2,3)

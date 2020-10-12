@@ -48,4 +48,4 @@ endfunction
 %!assert (sind ([0, 180, 360]) == 0)
 %!assert (sind ([90, 270]) != 0)
 
-%!error sind ()
+%!error <Invalid call> sind ()

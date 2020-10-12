@@ -112,6 +112,6 @@ endfunction
 %! title ("pie3() with missing slice");
 
 ## Test input validation
-%!error pie3 ()
+%!error <Invalid call> pie3 ()
 %!error <all data in X must be finite> pie3 ([1 2 Inf])
 %!error <all data in X must be finite> pie3 ([1 2 NaN])

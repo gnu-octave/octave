@@ -103,8 +103,8 @@ endfunction
 
 
 ## Test input validation
-%!error rgb2ind ()
-%!error rgb2ind (1,2,3,4,5,6,7)
+%!error <Invalid call> rgb2ind ()
+%!error <Invalid call> rgb2ind (1,2)
 %!error <RGB> rgb2ind (rand (10, 10, 4))
 
 ## FIXME: the following tests simply make sure that rgb2ind and ind2rgb

@@ -144,5 +144,5 @@ endfunction
 %!assert ([1.5; (2:9).'; 9.5], movmedian ((1:10).', 3))
 
 ## Test input validation
-%!error movmedian ()
-%!error movmedian (1)
+%!error <Invalid call> movmedian ()
+%!error <Invalid call> movmedian (1)

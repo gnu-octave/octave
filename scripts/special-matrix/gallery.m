@@ -2912,7 +2912,7 @@ endfunction
 %!assert (gallery ("invhess", 2), [1 -1; 1 2])
 
 ## Test input validation of main dispatch function only
-%!error gallery ()
+%!error <Invalid call> gallery ()
 %!error <NAME must be a string> gallery (123)
 %!error <matrix binomial not implemented> gallery ("binomial")
 %!error <unknown matrix with NAME foobar> gallery ("foobar")

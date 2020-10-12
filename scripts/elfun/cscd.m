@@ -44,4 +44,4 @@ endfunction
 %!assert (cscd ([0, 180, 360]) == Inf)
 %!assert (cscd ([90, 270]) != Inf)
 
-%!error cscd ()
+%!error <Invalid call> cscd ()

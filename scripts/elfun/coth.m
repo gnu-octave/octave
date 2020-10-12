@@ -45,4 +45,4 @@ endfunction
 %! v = [0, 0];
 %! assert (coth (x), v, sqrt (eps));
 
-%!error coth ()
+%!error <Invalid call> coth ()

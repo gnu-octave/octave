@@ -433,7 +433,7 @@ endfunction
 %! title ("Moebius Strip");
 
 ## Test input validation
-%!error streamribbon ()
+%!error <Invalid call> streamribbon ()
 %!error <invalid number of inputs> streamribbon (1)
 %!error <invalid number of inputs> streamribbon (1,2,3,4,5)
 %!error <invalid number of inputs> streamribbon (1,2,3,4,5,6,7,8)

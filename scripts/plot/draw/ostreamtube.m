@@ -357,7 +357,7 @@ endfunction
 %! title ("Integration Towards Sink");
 
 ## Test input validation
-%!error ostreamtube ()
+%!error <Invalid call> ostreamtube ()
 %!error <invalid number of inputs> ostreamtube (1)
 %!error <invalid number of inputs> ostreamtube (1,2)
 %!error <invalid number of inputs> ostreamtube (1,2,3)

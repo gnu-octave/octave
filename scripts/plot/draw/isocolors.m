@@ -185,11 +185,11 @@ endfunction
 %! assert (rows (cdat) == rows (v));
 
 ## Test input validation
-%!error isocolors ()
-%!error isocolors (1)
-%!error isocolors (1,2,3)
-%!error isocolors (1,2,3,4,5,6)
-%!error isocolors (1,2,3,4,5,6,7,8)
+%!error <Invalid call> isocolors ()
+%!error <Invalid call> isocolors (1)
+%!error <Invalid call> isocolors (1,2,3)
+%!error <Invalid call> isocolors (1,2,3,4,5,6)
+%!error <Invalid call> isocolors (1,2,3,4,5,6,7,8)
 %!error <last argument must be a vertex list> isocolors (1, {1})
 %!error <last argument must be a vertex list> isocolors (1, [1 2 3 4])
 %!error <last argument must be a .*patch handle> isocolors (1, 0)

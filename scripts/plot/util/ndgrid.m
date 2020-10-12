@@ -128,6 +128,6 @@ endfunction
 %!assert (ndgrid ([], []), zeros(0,0))
 
 ## Test input validation
-%!error ndgrid ()
+%!error <Invalid call> ndgrid ()
 %!error <wrong number of input arguments> [a,b,c] = ndgrid (1:3,1:3)
 %!error <arguments must be vectors> ndgrid (ones (2,2))

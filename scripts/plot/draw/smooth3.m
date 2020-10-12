@@ -257,8 +257,7 @@ endfunction
 %! assert (size_equal (a, b), true);
 
 ## Test input validation
-%!error smooth3 ()
-%!error smooth3 (1,2,3,4,5)
+%!error <Invalid call> smooth3 ()
 %!error <DATA must be a 3-D numeric matrix> smooth3 (cell (2,2,2))
 %!error <DATA must be a 3-D numeric matrix> smooth3 (1)
 %!error <METHOD must be a string> smooth3 (ones (2,2,2), {3})

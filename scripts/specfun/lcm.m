@@ -58,7 +58,8 @@ endfunction
 
 %!assert (lcm (3, 5, 7, 15), 105)
 
-%!error lcm ()
-%!error lcm (1)
+## Test input validation
+%!error <Invalid call> lcm ()
+%!error <Invalid call> lcm (1)
 %!error <same size or scalar> lcm ([1 2], [1 2 3])
 %!error <arguments must be numeric> lcm ([1 2], {1 2})

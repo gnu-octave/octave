@@ -334,8 +334,8 @@ endfunction
 %! L = 4*del2 (U, x);
 
 ## Test input validation
-%!error del2 ()
-%!error del2 (1, 1, 2, 3)
+%!error <Invalid call> del2 ()
+%!error <Invalid call> del2 (1, 1, 2, 3)
 %!error <in spacing vector 1> del2 (1, 2, [1 1])
 %!error <in spacing vector 2> del2 (1, [1 1], 2)
 %!error <must be a scalar or vector> del2 (1, ones (2,2), 2)

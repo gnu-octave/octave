@@ -167,7 +167,7 @@ endfunction
 %! axis equal tight;
 
 ## Test input validation
-%!error streamline ()
+%!error <Invalid call> streamline ()
 %!error <Invalid call to streamline>
 %! hf = figure ("visible", "off");
 %! unwind_protect

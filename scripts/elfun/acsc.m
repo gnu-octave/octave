@@ -47,4 +47,4 @@ endfunction
 %! x = [2, rt2, 2*rt3/3, 1, 2*rt3/3, rt2, 2];
 %! assert (acsc (x), v, sqrt (eps));
 
-%!error acsc ()
+%!error <Invalid call> acsc ()

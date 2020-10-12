@@ -145,5 +145,5 @@ endfunction
 %!assert ([(3:3:27).'; 19], movsum ((1:10).', 3))
 
 ## Test input validation
-%!error movsum ()
-%!error movsum (1)
+%!error <Invalid call> movsum ()
+%!error <Invalid call> movsum (1)

@@ -47,4 +47,4 @@ endfunction
 %! x = i*[rt3, 1, rt3/3, -rt3/3, -1, -rt3];
 %! assert (acoth (x), v, sqrt (eps));
 
-%!error acoth ()
+%!error <Invalid call> acoth ()

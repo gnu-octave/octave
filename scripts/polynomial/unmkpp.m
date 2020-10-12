@@ -101,8 +101,7 @@ endfunction
 %! assert (d, 1);
 
 ## Test input validation
-%!error unmkpp ()
-%!error unmkpp (1,2)
+%!error <Invalid call> unmkpp ()
 %!error <piecewise polynomial structure> unmkpp (1)
 %!error <piecewise polynomial structure> unmkpp (struct ("field1", "pp"))
 %!error <piecewise polynomial structure> unmkpp (struct ("form", "not_a_pp"))

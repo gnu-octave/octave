@@ -453,5 +453,4 @@ endfunction
 %! assert (length (T_f2) > 10);
 
 ## Test input validation
-%!error speed ()
-%!error speed (1, 2, 3, 4, 5, 6, 7)
+%!error <Invalid call> speed ()

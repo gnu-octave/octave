@@ -282,8 +282,8 @@ endfunction
 %! assert (y, repmat ([0], size (x)));
 
 ## Test input validation
-%!error fplot ()
-%!error fplot (1,2,3,4,5,6)
+%!error <Invalid call> fplot ()
+%!error <Invalid call> fplot (1,2,3,4,5,6)
 %!error <FN must be a function handle> fplot (1, [0 1])
 %!error <LIMITS must be a real vector> fplot (@cos, [i, 2*i])
 %!error <LIMITS must be a real vector with 2 or 4> fplot (@cos, [1])

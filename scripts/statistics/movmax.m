@@ -145,5 +145,5 @@ endfunction
 %!assert ([(2:10).'; 10], movmax ((1:10).', 3))
 
 ## Test input validation
-%!error movmax ()
-%!error movmax (1)
+%!error <Invalid call> movmax ()
+%!error <Invalid call> movmax (1)

@@ -127,9 +127,9 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error setappdata ()
-%!error setappdata (0)
-%!error setappdata (0, "name")
+%!error <Invalid call> setappdata ()
+%!error <Invalid call> setappdata (0)
+%!error <Invalid call> setappdata (0, "name")
 %!error <H must be a scalar .* graphic handle> setappdata (-1, "foo", "bar")
 %!error <NAME/VALUE arguments must occur in pairs> setappdata (0, "1", 2, "3")
 %!error <only 3 arguments possible> setappdata (0, {"1"}, 2, "3", 4)

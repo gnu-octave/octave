@@ -308,7 +308,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!error shading ()
+%!error <Invalid call> shading ()
 %!error shading (1, 2, "flat")
 %!error <MODE must be a valid string> shading (-1)
 %!error <MODE must be a valid string> shading ({})

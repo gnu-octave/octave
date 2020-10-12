@@ -388,7 +388,7 @@ endfunction
 %! assert (isa (xx, "single"));
 
 ## Test input validation
-%!error hist ()
+%!error <Invalid call> hist ()
 %!error <Y must be real-valued> hist (2+i)
 %!error <bin specification must be a numeric> hist (1, {0,1,2})
 %!error <number of bins NBINS must be positive> hist (1, 0)

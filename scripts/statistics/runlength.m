@@ -73,7 +73,6 @@ endfunction
 %! assert (v, [2 0 4 0 1]);
 
 ## Test input validation
-%!error runlength ()
-%!error runlength (1, 2)
+%!error <Invalid call> runlength ()
 %!error runlength (['A'; 'B'])
 %!error runlength (ones (2,2))

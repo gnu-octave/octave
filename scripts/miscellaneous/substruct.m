@@ -87,8 +87,10 @@ endfunction
 %! y = substruct ("()", {1,2,3}, "{}", {":"}, ".", "foo");
 %! assert (x,y);
 
-%!error substruct ()
-%!error substruct (1, 2, 3)
+## Test input validation
+%!error <Invalid call> substruct ()
+%!error <Invalid call> substruct (1)
+%!error <Invalid call> substruct (1, 2, 3)
 %!error substruct ("x", 1)
 %!error substruct ("()", [1,2,3])
 %!error substruct (".", {1,2,3})

@@ -220,7 +220,7 @@ endfunction
 
 
 ## Test input validation
-%!error randi ()
+%!error <Invalid call> randi ()
 %!error <must be integer bounds> randi ("test")
 %!error <must be integer bounds> randi (struct ("a", 1))
 %!error <must be integer bounds> randi (1.5)

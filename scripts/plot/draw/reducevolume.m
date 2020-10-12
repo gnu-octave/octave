@@ -263,9 +263,9 @@ endfunction
 
 ## Test for each error
 %!test
-%!error reducevolume ()
-%!error reducevolume (1)
-%!error reducevolume (1,2,3,4,5,6)
+%!error <Invalid call> reducevolume ()
+%!error <Invalid call> reducevolume (1)
+%!error <Invalid call> reducevolume (1,2,3,4,5,6)
 %!error <incorrect number of arguments> reducevolume (1, 2, 3)
 %!error <R must be a scalar or a vector of length 3> reducevolume (v, [])
 %!error <R must be a scalar or a vector of length 3> reducevolume (v, [1 2])

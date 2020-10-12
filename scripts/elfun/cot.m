@@ -47,4 +47,4 @@ endfunction
 %! v = [rt3, 1, rt3/3, 0, -rt3/3, -1, -rt3];
 %! assert (cot (x), v, sqrt (eps));
 
-%!error cot ()
+%!error <Invalid call> cot ()

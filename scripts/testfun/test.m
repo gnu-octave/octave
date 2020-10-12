@@ -988,10 +988,9 @@ endfunction
 %!fail ('garbage','garbage.*undefined')  # usage on nonexistent function should be
 
 ## Test 'error' keyword
-%!error test              # no args, generates usage()
-%!error test (1,2,3,4)    # too many args, generates usage()
+%!error <Invalid call> test              # no args, generates usage()
 %!error <unknown flag> test ("test", "invalid"); # incorrect args
-%!error test ("test", "invalid");  # test without pattern
+%!error test ("test", "invalid");        # test without pattern
 %!error <'garbage' undefined> garbage; # usage on nonexistent function is error
 
 ## Test 'warning' keyword

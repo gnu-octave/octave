@@ -384,7 +384,7 @@ endfunction
 %! [t, y] = ode45 (@fpol, [0 2], [2 0], 12, 13, "KL");
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
 %!test  # empty ODEOPT structure *but* extra input arguments
-%! opt = odeset ();
+%! opt = odeset;
 %! [t, y] = ode45 (@fpol, [0 2], [2 0], opt, 12, 13, "KL");
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
 %!test  # Solve another anonymous function below zero
@@ -514,9 +514,9 @@ endfunction
 %! [x, y] = ode45 (@(x,y) 1, [0 1], 1i);
 %! assert (imag (y), ones (size (y)))
 
-%!error ode45 ()
-%!error ode45 (1)
-%!error ode45 (1,2)
+%!error <Invalid call> ode45 ()
+%!error <Invalid call> ode45 (1)
+%!error <Invalid call> ode45 (1,2)
 %!error <TRANGE must be a numeric> ode45 (@fpol, {[0 25]}, [3 15 1])
 %!error <TRANGE must be a .* vector> ode45 (@fpol, [0 25; 25 0], [3 15 1])
 %!error <TRANGE must contain at least 2 elements> ode45 (@fpol, [1], [3 15 1])

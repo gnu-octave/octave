@@ -162,11 +162,11 @@ endfunction
 %!assert (class (rescale (logical ([0, 1]))), "double")
 
 ## Test input validation
-%!error rescale ()
-%!error rescale (1, 2)
-%!error rescale (1, 2, 3, 4)
-%!error rescale (1, 2, 3, 4, 5, 6)
-%!error rescale (1, 2, 3, 4, 5, 6, 7, 8)
+%!error <Invalid call> rescale ()
+%!error <Invalid call> rescale (1, 2)
+%!error <Invalid call> rescale (1, 2, 3, 4)
+%!error <Invalid call> rescale (1, 2, 3, 4, 5, 6)
+%!error <Invalid call> rescale (1, 2, 3, 4, 5, 6, 7, 8)
 %!error <A must be a numeric or logical matrix> rescale ("abc")
 %!error <A must be a numeric or logical matrix> rescale ({ [1] })
 %!error <U must be numeric> rescale (1, 0, "A")

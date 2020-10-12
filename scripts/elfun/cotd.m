@@ -44,4 +44,4 @@ endfunction
 %!assert (cotd ([0, 180, 360]) == Inf)
 %!assert (cotd ([90, 270]) == 0)
 
-%!error cotd ()
+%!error <Invalid call> cotd ()

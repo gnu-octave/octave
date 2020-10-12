@@ -778,8 +778,9 @@ endfunction
 %!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap", "left"), [-2,0.5,1,3,1.5])
 
 ## Test input validation
-%!error interp1 ()
-%!error interp1 (1,2,3,4,5,6,7)
+%!error <Invalid call> interp1 ()
+%!error <Invalid call> interp1 (1)
+%!error <Invalid call> interp1 (1,2,3,4,5,6,7)
 %!error <minimum of 2 points required> interp1 (1,1,1, "linear")
 %!error <minimum of 2 points required> interp1 (1,1,1, "*nearest")
 %!error <minimum of 2 points required> interp1 (1,1,1, "*linear")

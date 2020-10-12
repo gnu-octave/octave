@@ -80,6 +80,5 @@ endfunction
 
 ## FIXME: Need functional tests
 
-%!error voronoin ()
-%!error voronoin (1,2,3)
+%!error <Invalid call> voronoin ()
 %!error <number of points must be greater than their dimension> voronoin ([1 2])

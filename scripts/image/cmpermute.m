@@ -131,8 +131,8 @@ endfunction
 %! assert (X, max (Y(:)) + 1 - Y);
 
 ## Test input validation
-%!error cmpermute ()
-%!error cmpermute (1,2,3,4)
+%!error <Invalid call> cmpermute ()
+%!error <Invalid call> cmpermute (1)
 %!error <invalid data type 'uint32'> cmpermute (uint32 (magic (16)), jet (256))
 %!error <X must be an indexed image> cmpermute (1+i, jet (256))
 %!error <X must be an indexed image> cmpermute (sparse (1), jet (256))

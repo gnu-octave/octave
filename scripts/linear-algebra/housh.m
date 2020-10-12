@@ -133,5 +133,6 @@ endfunction
 %! assert (r, d, 2e-8);
 %! assert (z, 0, 2e-8);
 
-%!error housh ([0])
-%!error housh ()
+%!error <Invalid call> housh ()
+%!error <Invalid call> housh (1)
+%!error <Invalid call> housh (1,2)

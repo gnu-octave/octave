@@ -1578,7 +1578,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error annotation ()
+%!error <Invalid call> annotation ()
 %!error <Invalid call to annotation> annotation ({"line"}, 1:2, 1:2)
 %!error <X and Y must be 2-element vectors> annotation ("line", {1:2}, 1:2)
 %!error <X and Y must be 2-element vectors> annotation ("line", 1:2, {1:2})

@@ -193,8 +193,8 @@ endfunction
 %! assert (V == 2);
 
 ## Input validation tests
-%!error convhull ()
-%!error convhull (1,2,3,4,5)
+%!error <Invalid call> convhull ()
+%!error <Invalid call> convhull (1,2,3,4,5)
 %!error <X must be a matrix with 2 or 3 columns> convhull (ones (2,4))
 %!error <OPTIONS must be a string or cell array> convhull (ones (2,2), struct())
 %!error <X must be a matrix with 2 or 3 columns> convhull (ones (2,4), "")

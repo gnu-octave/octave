@@ -189,9 +189,8 @@ endfunction
 %! assert (z, Z);
 
 ## Test input validation
-%!error sph2cart ()
-%!error sph2cart (1,2)
-%!error sph2cart (1,2,3,4)
+%!error <Invalid call> sph2cart ()
+%!error <Invalid call> sph2cart (1,2)
 %!error <matrix input must be a 2-D numeric array> sph2cart ({1,2,3})
 %!error <matrix input must be a 2-D numeric array> sph2cart (ones (3,3,2))
 %!error <matrix input must be a 3-element> sph2cart ([1,2,3,4])

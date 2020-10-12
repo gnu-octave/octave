@@ -423,7 +423,6 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error datevec ()
-%!error datevec (1,2,3,4)
+%!error <Invalid call> datevec ()
 %!error <none of the standard formats match> datevec ("foobar")
 %!error <DATE not parsed correctly with given format> datevec ("foobar", "%d")

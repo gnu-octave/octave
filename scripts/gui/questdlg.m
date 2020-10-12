@@ -186,8 +186,8 @@ endfunction
 %! endif
 
 ## Test input validation
-%!error questdlg ()
-%!error questdlg (1,2,3,4,5,6,7)
+%!error <Invalid call> questdlg ()
+%!error <Invalid call> questdlg (1,2,3,4,5,6,7)
 %!error <MSG must be a character string or cellstr array> questdlg (1)
 %!error <TITLE must be a character string> questdlg ("msg", 1)
 %!error <DEFAULT must match one of the button> questdlg ("msg", "title", "ABC")

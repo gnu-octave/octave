@@ -73,6 +73,5 @@ endfunction
 %!assert (nextpow2 ([1, Inf, 3, -Inf, 9, NaN]), [0, Inf, 2, Inf, 4, NaN])
 
 ## Test input validation
-%!error nexpow2 ()
-%!error nexpow2 (1, 2)
+%!error <Invalid call> nextpow2 ()
 %!error <X must be numeric> nextpow2 ("t")

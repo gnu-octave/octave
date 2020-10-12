@@ -46,6 +46,7 @@ function y = fliplr (x)
   if (nargin < 1)
     print_usage ();
   endif
+
   y = flip (x, 2);
 
 endfunction
@@ -79,4 +80,4 @@ endfunction
 %! assert (fliplr (a), a);
 
 ## Test input validation
-%!error fliplr ()
+%!error <Invalid call> fliplr ()

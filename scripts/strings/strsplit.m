@@ -314,7 +314,7 @@ endfunction
 %!assert <*47403> (strsplit ('xxx+yyy', '+'), {"xxx", "yyy"})
 
 ## Test input validation
-%!error strsplit ()
+%!error <Invalid call> strsplit ()
 %!error strsplit ("abc", "b", true, 4)
 %!error <invalid parameter name, 'foo'> strsplit ("abc", "b", "foo", "true")
 %!error <S and DEL must be string values> strsplit (123, "b")

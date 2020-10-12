@@ -776,10 +776,9 @@ endfunction
 %! assert (obj, obj_opt, sqrt (eps));
 
 ## Test input validation
-%!error sqp ()
-%!error sqp (1)
-%!error sqp (1,2,3,4,5,6,7,8,9)
-%!error sqp (1,2,3,4,5)
+%!error <Invalid call> sqp ()
+%!error <Invalid call> sqp (1)
+%!error <Invalid call> sqp (1,2,3,4,5)
 %!error sqp (ones (2,2))
 %!error sqp (1, cell (4,1))
 %!error sqp (1, cell (3,1), cell (3,1))

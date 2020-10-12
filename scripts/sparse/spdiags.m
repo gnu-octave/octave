@@ -178,5 +178,4 @@ endfunction
 %!assert (spdiags ([0.5 -1 0.5], 0:2, 1, 1), sparse (0.5))
 
 ## Test input validation
-%!error spdiags ()
-%!error spdiags (1,2,3,4,5)
+%!error <Invalid call> spdiags ()

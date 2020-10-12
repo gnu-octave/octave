@@ -140,8 +140,7 @@ endfunction
 %! assert (lambda, 3);
 
 ## Test input validation
-%!error ordeig ()
-%!error ordeig (1,2,3)
+%!error <Invalid call> ordeig ()
 %!error <A must be a square matrix> ordeig ('a')
 %!error <A must be a square matrix> ordeig ([1, 2, 3])
 %!error <A must be quasi-triangular> ordeig (magic (3))

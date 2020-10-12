@@ -129,8 +129,8 @@ endfunction
 
 
 ## Test input validation
-%!error imwrite ()                            # Wrong # of args
-%!error imwrite (1)                           # Wrong # of args
+%!error <Invalid call> imwrite ()             # Wrong # of args
+%!error <Invalid call> imwrite (1)            # Wrong # of args
 %!error imwrite ({"cell"}, "filename.jpg")    # Wrong class for img
 %!error imwrite (1, [], "filename.jpg")       # Empty image map
 %!error imwrite (1, 2, 3)                     # No filename specified

@@ -65,12 +65,14 @@ function vn = isonormals (varargin)
 
   narg = nargin;
   negate = false;
-  if (ischar (varargin{narg}))
-    if (strcmpi (varargin{narg}, "negate"))
-      negate = true;
-      narg -= 1;
-    else
-      error ("isonormals: Unknown option '%s'", varargin{narg});
+  if (nargin > 2)
+    if (ischar (varargin{end}))
+      if (strcmpi (varargin{end}, "negate"))
+        negate = true;
+        narg -= 1;
+      else
+        error ("isonormals: Unknown option '%s'", varargin{end});
+      endif
     endif
   endif
 
@@ -191,11 +193,11 @@ endfunction
 %! assert (all (dirn(isfinite (dirn)) <= 0));
 
 ## Test input validation
-%!error isonormals ()
-%!error isonormals (1)
-%!error isonormals (1,2,3)
-%!error isonormals (1,2,3,4)
-%!error isonormals (1,2,3,4,5,6)
+%!error <Invalid call> isonormals ()
+%!error <Invalid call> isonormals (1)
+%!error <Invalid call> isonormals (1,2,3)
+%!error <Invalid call> isonormals (1,2,3,4)
+%!error <Invalid call> isonormals (1,2,3,4,5,6)
 %!error <Unknown option 'foo'> isonormals (x, y, z, val, vert, "foo")
 %!error <must be a list of vertices> isonormals (1, {1})
 %!error <must be a list of vertices> isonormals (1, [1 2 3 4])

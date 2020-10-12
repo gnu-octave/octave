@@ -49,4 +49,4 @@ endfunction
 %!assert (cosd ([0, 180, 360]) != 0)
 %!assert (cosd ([90, 270]) == 0)
 
-%!error cosd ()
+%!error <Invalid call> cosd ()

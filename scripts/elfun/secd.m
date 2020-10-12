@@ -44,4 +44,4 @@ endfunction
 %!assert (secd ([0, 180, 360]) != Inf)
 %!assert (secd ([90, 270]) == Inf)
 
-%!error secd ()
+%!error <Invalid call> secd ()

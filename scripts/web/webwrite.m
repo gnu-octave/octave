@@ -113,8 +113,8 @@ endfunction
 
 
 ## Test input validation
-%!error webwrite ()
-%!error webwrite ("abc")
+%!error <Invalid call> webwrite ()
+%!error <Invalid call> webwrite ("abc")
 %!error <URL must be a string> webwrite (1, "NAME1", "VALUE1")
 %!error <URL must be a string> webwrite (["a";"b"], "NAME1", "VALUE1")
 %!error <DATA must be a string> webwrite ("URL", 1, weboptions ())

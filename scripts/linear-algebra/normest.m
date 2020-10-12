@@ -96,8 +96,7 @@ endfunction
 %! assert (normest (A), norm (A), 1e-6);
 
 ## Test input validation
-%!error normest ()
-%!error normest (1, 2, 3)
+%!error <Invalid call> normest ()
 %!error <A must be a numeric .* matrix> normest ([true true])
 %!error <A must be .* 2-D matrix> normest (ones (3,3,3))
 %!error <TOL must be a real scalar> normest (1, [1, 2])

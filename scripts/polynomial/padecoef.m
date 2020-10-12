@@ -173,8 +173,7 @@ endfunction
 ## PadeApproximant[Exp[-x * T], {x, 0, {n, n}}]
 
 ## Test input validation
-%!error padecoef ()
-%!error padecoef (1,2,3)
+%!error <Invalid call> padecoef ()
 %!error <T must be a non-negative scalar> padecoef ([1,2])
 %!error <T must be a non-negative scalar> padecoef ({1})
 %!error <T must be a non-negative scalar> padecoef (-1)

@@ -51,4 +51,4 @@ endfunction
 %!assert (tand ([0, 180, 360]) == 0)
 %!assert (tand ([90, 270]) == Inf)
 
-%!error tand ()
+%!error <Invalid call> tand ()

@@ -135,4 +135,4 @@ endfunction
 ## FIXME: Need tests for delaunayn
 
 ## Input validation tests
-%!error delaunayn ()
+%!error <Invalid call> delaunayn ()

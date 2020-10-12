@@ -367,7 +367,7 @@ endfunction
 %! title ("Plot Arbitrary Tube");
 
 ## Test input validation
-%!error streamtube ()
+%!error <Invalid call> streamtube ()
 %!error <invalid number of inputs> streamtube (1)
 %!error <invalid number of inputs> streamtube (1,2,3,4)
 %!error <invalid number of inputs> streamtube (1,2,3,4,5,6,7,8)

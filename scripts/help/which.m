@@ -113,6 +113,6 @@ endfunction
 %! str = which ("fftw");
 %! assert (str(end-7:end), "fftw.oct");
 
-%!error which ()
-%!error which (1)
+%!error <Invalid call> which ()
+%!error <Invalid call> which (1)
 

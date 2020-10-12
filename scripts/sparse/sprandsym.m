@@ -181,8 +181,7 @@ endfunction
 %!assert (size (sprandsym (0, 0.5)), [0, 0])
 
 ## Test input validation
-%!error sprandsym ()
-%!error sprandsym (1, 2, 3)
+%!error <Invalid call> sprandsym ()
 %!error sprandsym (ones (3), 0.5)
 %!error sprandsym (3.5, 0.5)
 %!error sprandsym (-1, 0.5)

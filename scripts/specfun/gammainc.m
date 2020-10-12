@@ -566,9 +566,8 @@ endfunction
 %!assert (class (gammainc (1, int8 (0.5))) == "double")
 
 ## Test input validation
-%!error gammainc ()
-%!error gammainc (1)
-%!error gammainc (1,2,3,4)
+%!error <Invalid call> gammainc ()
+%!error <Invalid call> gammainc (1)
 %!error <must be of common size or scalars> gammainc ([0, 0],[0; 0])
 %!error <must be of common size or scalars> gammainc ([1 2 3], [1 2])
 %!error <all inputs must be real> gammainc (2+i, 1)

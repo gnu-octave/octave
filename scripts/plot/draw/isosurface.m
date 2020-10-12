@@ -559,8 +559,8 @@ endfunction
 %! assert (size (fvc.facevertexcdata), [7 1]);
 
 ## test for each error and warning
-%!error isosurface ()
-%!error isosurface (1,2,3,4,5,6,7,8,9)
+%!error <Invalid call> isosurface ()
+%!error <Invalid call> isosurface (1,2,3,4,5,6,7,8,9)
 %!error <parameter 'foobar' not supported>
 %! fvc = isosurface (val, iso, "foobar");
 %!error <incorrect number of input arguments>

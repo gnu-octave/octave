@@ -250,8 +250,7 @@ endfunction
 %!assert (datenum ("5-19, 2001", "mm-dd, yyyy"), 730990)
 
 ## Test input validation
-%!error datenum ()
-%!error datenum (1,2,3,4,5,6,7)
+%!error <Invalid call> datenum ()
 %!error <expected date vector containing> datenum ([1, 2])
 %!error <expected date vector containing> datenum ([1,2,3,4,5,6,7])
 %!error <all inputs must be of class double> datenum (int32 (2000), int32 (1), int32 (1))

@@ -182,8 +182,7 @@ endfunction
 %! assert (c{3}, [1; 2; 3]);
 
 ## Test input validation
-%!error mode ()
-%!error mode (1, 2, 3)
+%!error <Invalid call> mode ()
 %!error <X must be a numeric> mode ({1 2 3})
 %!error <DIM must be an integer> mode (1, ones (2,2))
 %!error <DIM must be an integer> mode (1, 1.5)

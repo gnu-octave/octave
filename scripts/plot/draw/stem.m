@@ -225,7 +225,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error stem ()
+%!error <Invalid call> stem ()
 %!error <can not define Z for 2-D stem plot> stem (1,2,3)
 %!error <Y must be a vector or 2-D array> stem (ones (2,2,2))
 %!error <X and Y must be numeric> stem ({1})

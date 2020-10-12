@@ -47,4 +47,4 @@ endfunction
 %! v = [pi/6, pi/4, pi/3, pi/2, -pi/3, -pi/4, -pi/6];
 %! assert (acot (x), v, sqrt (eps));
 
-%!error acot ()
+%!error <Invalid call> acot ()

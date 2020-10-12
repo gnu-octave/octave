@@ -106,5 +106,6 @@ endfunction
 %! assert (a, 1);
 %! assert (b, 1);
 
-%!error deal ()
+## Test input validation
+%!error <Invalid call> deal ()
 %!error <nargin . 1 and nargin != nargout> y = deal (1, 2)

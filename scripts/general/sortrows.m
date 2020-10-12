@@ -159,8 +159,7 @@ endfunction
 %! assert (C2, flipud (C));
 
 ## Test input validation
-%!error sortrows ()
-%!error sortrows (1, 2, 3)
+%!error <Invalid call> sortrows ()
 %!error sortrows (1, "ascend")
 %!error sortrows (1, ones (2,2))
 %!error sortrows (1, 0)

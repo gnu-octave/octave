@@ -682,8 +682,8 @@ endfunction
 %! end_try_catch
 
 ## test input validation
-%!error assert ()
-%!error assert (1,2,3,4)
+%!error <Invalid call> assert ()
+%!error <Invalid call> assert (1,2,3,4)
 
 
 ## Convert all error indices into tuple format

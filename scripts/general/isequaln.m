@@ -318,5 +318,5 @@ endfunction
 %!assert (isequaln (st, st, st), true)
 
 ## Input validation
-%!error isequaln ()
-%!error isequaln (1)
+%!error <Invalid call> isequaln ()
+%!error <Invalid call> isequaln (1)

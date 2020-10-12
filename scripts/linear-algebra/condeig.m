@@ -138,8 +138,7 @@ endfunction
 %!assert (condeig ([]), [])
 
 ## Test input validation
-%!error condeig ()
-%!error condeig (1,2)
+%!error <Invalid call> condeig ()
 %!error <A must be a square numeric matrix> condeig ({1})
 %!error <A must be a square numeric matrix> condeig (ones (3,2))
 %!error <A must be a square numeric matrix> condeig (ones (2,2,2))

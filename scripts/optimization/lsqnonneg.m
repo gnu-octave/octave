@@ -238,9 +238,8 @@ endfunction
 %! assert (lsqnonneg (C, d), xnew, 0.0001);
 
 # Test input validation
-%!error lsqnonneg ()
-%!error lsqnonneg (1)
-%!error lsqnonneg (1,2,3,4,5)
+%!error <Invalid call> lsqnonneg ()
+%!error <Invalid call> lsqnonneg (1)
 %!error <C .* must be numeric matrices> lsqnonneg ({1},2)
 %!error <C .* must be numeric matrices> lsqnonneg (ones (2,2,2),2)
 %!error <D must be numeric matrices> lsqnonneg (1,{2})

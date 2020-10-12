@@ -178,5 +178,5 @@ endfunction
 %! assert (y1(1:3), [1/4, 2/3, 5/4]);
 
 ## Test input validation
-%!error movvar ()
-%!error movvar (1)
+%!error <Invalid call> movvar ()
+%!error <Invalid call> movvar (1)

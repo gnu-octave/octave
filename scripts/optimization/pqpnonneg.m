@@ -240,9 +240,8 @@ endfunction
 %! assert (pqpnonneg (C'*C, -C'*d), lsqnonneg (C, d), 100*eps);
 
 # Test input validation
-%!error pqpnonneg ()
-%!error pqpnonneg (1)
-%!error pqpnonneg (1,2,3,4,5)
+%!error <Invalid call> pqpnonneg ()
+%!error <Invalid call> pqpnonneg (1)
 %!error <C .* must be numeric matrices> pqpnonneg ({1},2)
 %!error <C .* must be numeric matrices> pqpnonneg (ones (2,2,2),2)
 %!error <D must be numeric matrices> pqpnonneg (1,{2})

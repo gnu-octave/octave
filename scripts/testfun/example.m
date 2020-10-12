@@ -119,8 +119,7 @@ endfunction
 %! assert (idx, [1, 23, 73]);
 
 ## Test input validation
-%!error example ()
-%!error example ("example", 3, 5)
+%!error <Invalid call> example ()
 %!error <N must be a scalar integer> example ("example", {1})
 %!error <N must be a scalar integer> example ("example", ones (2,2))
 %!error <N must be a scalar integer> example ("example", 1.5)

@@ -215,13 +215,12 @@ endfunction
 %! assert ([ynew(1:end), ypnew(1:end)], [ref1(1:end), ref2(1:end)], 1e-5);
 
 ## Test input validation
-%!error decic ()
-%!error decic (1)
-%!error decic (1,2)
-%!error decic (1,2,3)
-%!error decic (1,2,3,4)
-%!error decic (1,2,3,4,5)
-%!error decic (1,2,3,4,5,6,7,8)
+%!error <Invalid call> decic ()
+%!error <Invalid call> decic (1)
+%!error <Invalid call> decic (1,2)
+%!error <Invalid call> decic (1,2,3)
+%!error <Invalid call> decic (1,2,3,4)
+%!error <Invalid call> decic (1,2,3,4,5)
 %!error <FUN must be a valid function handle>
 %! decic (1, 0, [1; 0; 0], [1; 1; 0], [-1e-4; 1; 0], [0; 0; 0]);
 %!error <T0 must be a numeric scalar>

@@ -73,5 +73,6 @@ endfunction
 %!   assert (output, "");
 %! endif
 
-%!error dos ()
+## Test input validation
+%!error <Invalid call> dos ()
 %!error dos (1, 2, 3)

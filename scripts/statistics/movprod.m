@@ -145,5 +145,5 @@ endfunction
 %!assert ([2; 6; 24; 60; 120; 210; 336; 504; 720; 90], movprod ((1:10).', 3))
 
 ## Test input validation
-%!error movprod ()
-%!error movprod (1)
+%!error <Invalid call> movprod ()
+%!error <Invalid call> movprod (1)

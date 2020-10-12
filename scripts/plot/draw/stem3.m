@@ -90,7 +90,7 @@ endfunction
 %! stem3 (cos (theta), sin (theta), theta);
 %! title ("stem3() plot");
 
-%!error stem3 ()
+%!error <Invalid call> stem3 ()
 %!error <must define X, Y, and Z> stem3 (1,2)
 %!error <X, Y, and Z must be numeric> stem3 ({1}, 1, 1)
 %!error <X, Y, and Z must be numeric> stem3 (1, {1}, 1)

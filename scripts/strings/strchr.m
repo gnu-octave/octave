@@ -82,7 +82,7 @@ endfunction
 %!assert (strchr ("Octave is the best software", "software"), [3, 4, 6, 9, 11, 13, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27])
 
 ## Test input validation
-%!error strchr ()
-%!error strchr (1)
+%!error <Invalid call> strchr ()
+%!error <Invalid call> strchr (1)
 %!error <STR argument must be a string> strchr (1, "aeiou")
 %!error <CHARS argument must be a string> strchr ("aeiou", 1)

@@ -545,5 +545,5 @@ endfunction
 %!assert (isequal (sparse (1), sparse (1)), sparse (1), true)
 
 ## test input validation
-%!error isequal ()
-%!error isequal (1)
+%!error <Invalid call> isequal ()
+%!error <Invalid call> isequal (1)

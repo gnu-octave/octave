@@ -45,4 +45,4 @@ endfunction
 %! v = [1, -1];
 %! assert (sech (x), v, sqrt (eps));
 
-%!error sech ()
+%!error <Invalid call> sech ()

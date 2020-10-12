@@ -207,7 +207,7 @@ endfunction
 %! assert (numel (xy{:}), 10);
 
 ## Test input validation
-%!error stream2 ()
+%!error <Invalid call> stream2 ()
 %!error <invalid number of inputs> stream2 (1)
 %!error <invalid number of inputs> stream2 (1,2)
 %!error <invalid number of inputs> stream2 (1,2,3)

@@ -42,4 +42,4 @@ endfunction
 
 %!assert (atand (0:10:90), 180/pi * atan (0:10:90), -10*eps)
 
-%!error atand ()
+%!error <Invalid call> atand ()

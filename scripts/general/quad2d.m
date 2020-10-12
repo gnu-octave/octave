@@ -437,12 +437,12 @@ endfunction
 %!assert (quad2d (@plus, 1, 2, 3, 4), 5, 1e-10)
 
 ## Test input validation
-%!error quad2d ()
-%!error quad2d (@plus)
-%!error quad2d (@plus, 1)
-%!error quad2d (@plus, 1, 2)
-%!error quad2d (@plus, 1, 2, 3)
-%!error quad2d (@plus, 1, 2, 3, 4, "foo")
+%!error <Invalid call> quad2d ()
+%!error <Invalid call> quad2d (@plus)
+%!error <Invalid call> quad2d (@plus, 1)
+%!error <Invalid call> quad2d (@plus, 1, 2)
+%!error <Invalid call> quad2d (@plus, 1, 2, 3)
+%!error <Invalid call> quad2d (@plus, 1, 2, 3, 4, "foo")
 %!error quad2d (0, 1, 2, 3, 4)          # f must be function handle
 %!error quad2d (@plus, 1i, 2, 3, 4)     # real limits
 %!error quad2d (@plus, 1, 2i, 3, 4)     # real limits

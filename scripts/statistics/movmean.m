@@ -144,5 +144,5 @@ endfunction
 %!assert ([1.5; (2:9).'; 9.5], movmean ((1:10).', 3))
 
 ## Test input validation
-%!error movmean ()
-%!error movmean (1)
+%!error <Invalid call> movmean ()
+%!error <Invalid call> movmean (1)

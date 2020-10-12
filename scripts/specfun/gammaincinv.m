@@ -312,9 +312,8 @@ endfunction
 %!assert (class (gammaincinv (single (0.5), int8 (1))), "single")
 
 ## Test input validation
-%!error gammaincinv ()
-%!error gammaincinv (1)
-%!error gammaincinv (1, 2, 3, 4)
+%!error <Invalid call> gammaincinv ()
+%!error <Invalid call> gammaincinv (1)
 %!error <must be of common size or scalars>
 %! gammaincinv (ones (2,2), ones (1,2), 1);
 %!error <all inputs must be real> gammaincinv (0.5i, 1)

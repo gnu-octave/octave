@@ -209,8 +209,8 @@ endfunction
 %! assert (sortrows (sort (delaunay (x, y, z), 2)), [1,2,3,4;1,2,4,5]);
 
 ## Input validation tests
-%!error delaunay ()
-%!error delaunay (1,2,3,4,5)
+%!error <Invalid call> delaunay ()
+%!error <Invalid call> delaunay (1,2,3,4,5)
 %!error <X must be a matrix with 2 or 3 columns> delaunay (ones (2,4))
 %!error <OPTIONS must be a string or cell array> delaunay (ones (2,2), struct())
 %!error <X must be a matrix with 2 or 3 columns> delaunay (ones (2,4), "")

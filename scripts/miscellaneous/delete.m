@@ -95,5 +95,5 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error delete ()
+%!error <Invalid call> delete ()
 %!error <first argument must be a filename> delete (struct ())

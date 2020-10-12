@@ -90,6 +90,5 @@ endfunction
 %! assert (! state);
 
 ## Test input validation
-%!error str2num ()
-%!error str2num ("string", 1)
+%!error <Invalid call> str2num ()
 %!error <S must be a string> str2num ({"string"})

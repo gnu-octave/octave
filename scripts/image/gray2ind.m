@@ -106,8 +106,7 @@ endfunction
 %! assert (class (gray2ind ([0.0 0.5 1.0], 257)), "uint16");
 
 ## Test input validation
-%!error gray2ind ()
-%!error gray2ind (1,2,3)
+%!error <Invalid call> gray2ind ()
 %!error <I must be a grayscale or binary image> gray2ind ({1})
 %!error <I must be a grayscale or binary image> gray2ind ([1+i])
 %!error <I must be a grayscale or binary image> gray2ind (sparse ([1]))

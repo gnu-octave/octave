@@ -413,7 +413,7 @@
 ## uniformdata) by Nicholas J. Higham <Nicholas.J.Higham@manchester.ac.uk>
 ## Adapted for Octave and into single gallery function by Carnë Draug
 
-function [varargout] = gallery (name, varargin)
+function varargout = gallery (name, varargin)
 
   if (nargin < 1)
     print_usage ();

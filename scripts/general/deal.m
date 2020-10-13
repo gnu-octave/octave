@@ -84,7 +84,7 @@
 ## @seealso{cell2struct, struct2cell, repmat}
 ## @end deftypefn
 
-function [varargout] = deal (varargin)
+function varargout = deal (varargin)
 
   if (nargin == 0)
     print_usage ();

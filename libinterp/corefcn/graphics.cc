@@ -3126,7 +3126,7 @@ gh_manager::close_all_figures (void)
   hlist = figure_handle_list (true);
 
   if (hlist.numel () != 0)
-    warning ("gh_manager::close_all_figures: some graphics elements failed to close.");
+    warning ("gh_manager::close_all_figures: some graphics elements failed to close");
 
   // Clear all callback objects from our list.
 

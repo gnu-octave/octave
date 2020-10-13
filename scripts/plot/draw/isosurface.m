@@ -364,7 +364,7 @@ function [x, y, z, v, isoval, colors, noshare, verbose] = __get_check_isosurface
       error ("isosurface: COL must match the size of V")
     endif
     if (nout == 2)
-      warning ("isosurface: colors will be calculated, but no output argument to receive it.");
+      warning ("isosurface: colors will be calculated, but no output argument to receive it");
     endif
   elseif (nout >= 3)
     error ("isosurface: COL must be passed to return C")

@@ -116,7 +116,7 @@
 %!   end_unwind_protect
 %! endfor
 %!
-%!error <package foobar is not installed> pkg ("load", "foobar");
+%!error <package foobar is not installed> pkg ("load", "foobar")
 
 # -nodeps
 ## FIXME: Need test

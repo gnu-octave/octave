@@ -24,4 +24,4 @@
 ########################################################################
 
 %!assert (bug_51725 (), [])
-%!error <element number 2 undefined in return list> [x,y,z] = bug_51725 ();
+%!error <element number 2 undefined in return list> [x,y,z] = bug_51725 ()

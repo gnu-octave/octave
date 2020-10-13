@@ -33,4 +33,4 @@
 
 ## Also test without function handle.
 %!assert <*55975> (pkga.pkgb.bug51709_a.smeth (), "pkg bug51709_a");
-%!assert (pkga.pkgb.bug51709_b.smeth (), "pkg bug51709_b");
+%!assert (pkga.pkgb.bug51709_b.smeth (), "pkg bug51709_b")

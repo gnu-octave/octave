@@ -313,7 +313,7 @@ r = ind2sub (dims, ind)
 %! r = ind2sub ([2, 2, 2], 1:8);
 %! assert (r, 1:8);
 
-%!error <DIMS must contain integers> ind2sub ([2, -2], 3);
-%!error <index out of range> ind2sub ([2, 2, 2], 1:9);
-%!error <invalid index> ind2sub ([2, 2, 2], -1:8);
+%!error <DIMS must contain integers> ind2sub ([2, -2], 3)
+%!error <index out of range> ind2sub ([2, 2, 2], 1:9)
+%!error <invalid index> ind2sub ([2, 2, 2], -1:8)
 */

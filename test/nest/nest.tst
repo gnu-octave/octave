@@ -156,5 +156,5 @@
 %! assert (observed, [1, 2, 1, 3, 2]);
 
 ## Test visibility of nested function from script called from parent.
-%!assert (script_nest_2 (42), 84);
+%!assert (script_nest_2 (42), 84)
 %!error script_nest_2 (0)

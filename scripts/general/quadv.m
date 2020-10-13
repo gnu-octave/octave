@@ -210,7 +210,7 @@ endfunction
 %!assert (quadv (@sin, 0, pi), 2, 1e-6)
 
 ## Test weak singularities at the edge
-%!assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 15*1e-6);
+%!assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 15*1e-6)
 
 ## Test vector-valued functions
 %!assert (quadv (@(x) [(sin (x)), (sin (2 * x))], 0, pi), [2, 0], 1e-6)

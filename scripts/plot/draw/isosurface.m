@@ -592,9 +592,9 @@ endfunction
 %! [xx, yy, zz] = meshgrid (x, y, z);
 %! fvc = isosurface (xx, yy, zz, val, iso);
 %!error <ISOVAL must be a scalar> fvc = isosurface (val, [iso iso], yy)
-%!error <COL must match the size of V> fvc = isosurface (val, [iso iso]);
+%!error <COL must match the size of V> fvc = isosurface (val, [iso iso])
 %!error <COL must be passed to return C> [f, v, c] = isosurface (val, iso)
-%!warning <colors will be calculated, but no output argument to receive it.>
+%!warning <colors will be calculated, but no output argument to receive it>
 %! [f, v] = isosurface (val, iso, yy);
 
 ## test for __calc_isovalue_from_data__

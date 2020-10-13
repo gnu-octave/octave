@@ -478,9 +478,9 @@ endfunction
 %!        -2.9582761911890713293e7-1i * 9.612022339061679758e6, -30*eps)
 %!assert (gammainc (-10, 10, "upper"), -3.112658165341493126871616e7, ...
 %!        -2*eps)
-%!assert (gammainc (-10, 10, "scaledlower"), 0.5128019364747265, -1e-14);
-%!assert (gammainc (-10, 10, "scaledupper"), -0.5128019200000000, -1e-14);
-%!assert (gammainc (200, 201, "upper"), 0.518794309678684497, -2 * eps);
+%!assert (gammainc (-10, 10, "scaledlower"), 0.5128019364747265, -1e-14)
+%!assert (gammainc (-10, 10, "scaledupper"), -0.5128019200000000, -1e-14)
+%!assert (gammainc (200, 201, "upper"), 0.518794309678684497, -2 * eps)
 %!assert (gammainc (200, 201, "scaledupper"),
 %!        18.4904360746560462660798514, -eps)
 ## Here we are very good (no D (x,a)) involved

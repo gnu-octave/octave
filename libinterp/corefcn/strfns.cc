@@ -1038,7 +1038,7 @@ unicode_idx ("aäbc")
 }
 
 /*
-%!assert (unicode_idx (["aäou"; "Ä∞"]), [1 2 2 3 4; 5 5 6 6 6]);
+%!assert (unicode_idx (["aäou"; "Ä∞"]), [1 2 2 3 4; 5 5 6 6 6])
 */
 
 DEFUN (__u8_validate__, args, ,
@@ -1112,7 +1112,7 @@ line2
 %!assert (newline (), "\n")
 
 %!error newline (1)
-%!error [a, b] = newline ();
+%!error [a, b] = newline ()
 */
 
 DEFUN (list_in_columns, args, ,

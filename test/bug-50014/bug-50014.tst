@@ -26,7 +26,7 @@
 %!error <duplicate subfunction or nested function name>
 %! duplicate_nested_function ()
 
-%!assert (duplicate_nested_in_subfunction_ok (), 3);
+%!assert (duplicate_nested_in_subfunction_ok (), 3)
 
 %!error <duplicate subfunction or nested function name>
 %! duplicate_nested_parent_function ()
@@ -52,4 +52,4 @@
 %!error <duplicate subfunction or nested function name>
 %! duplicate_subfunction_old_syntax ()
 
-%!assert (duplicate_subfunction_separate_scope_ok (), 3);
+%!assert (duplicate_subfunction_separate_scope_ok (), 3)

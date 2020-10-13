@@ -161,7 +161,7 @@ function y = cosint (x)
 endfunction
 
 
-%!assert (cosint (1.1), 0.38487337742465081550, 2 * eps);
+%!assert (cosint (1.1), 0.38487337742465081550, 2 * eps)
 
 %!test
 %! x = [2, 3, pi; exp(1), 5, 6];

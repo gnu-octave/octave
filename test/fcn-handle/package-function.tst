@@ -33,4 +33,4 @@
 
 ## Also test without function handle.
 %!assert <*55975> (pkga.pkgb.f1 (), "pkg f1");
-%!assert (pkga.pkgb.f2 (), "pkg f2");
+%!assert (pkga.pkgb.f2 (), "pkg f2")

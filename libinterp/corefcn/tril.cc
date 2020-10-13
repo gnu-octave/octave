@@ -441,16 +441,16 @@ above another, and returned as a column vector.
 %! lm3 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 10, 0, 0];
 %! lm4 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 0, 0, 0];
 %!
-%!assert (tril (a, 3), l2);
-%!assert (tril (a, 2), l2);
-%!assert (tril (a, 1), l1);
-%!assert (tril (a, 0), l0);
-%!assert (tril (a), l0);
-%!assert (tril (a, -1), lm1);
-%!assert (tril (a, -2), lm2);
-%!assert (tril (a, -3), lm3);
-%!assert (tril (a, -4), lm4);
-%!assert (tril (a, -5), lm4);
+%!assert (tril (a, 3), l2)
+%!assert (tril (a, 2), l2)
+%!assert (tril (a, 1), l1)
+%!assert (tril (a, 0), l0)
+%!assert (tril (a), l0)
+%!assert (tril (a, -1), lm1)
+%!assert (tril (a, -2), lm2)
+%!assert (tril (a, -3), lm3)
+%!assert (tril (a, -4), lm4)
+%!assert (tril (a, -5), lm4)
 
 %!shared a, u3, u2, u1, u0, um1, um2, um3
 %!
@@ -464,16 +464,16 @@ above another, and returned as a column vector.
 %! um2 = [1, 2, 3; 4, 5, 6; 7, 8, 9; 0, 11, 12];
 %! um3 = [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12];
 %!
-%!assert (triu (a, 4), u3);
-%!assert (triu (a, 3), u3);
-%!assert (triu (a, 2), u2);
-%!assert (triu (a, 1), u1);
-%!assert (triu (a, 0), u0);
-%!assert (triu (a), u0);
-%!assert (triu (a, -1), um1);
-%!assert (triu (a, -2), um2);
-%!assert (triu (a, -3), um3);
-%!assert (triu (a, -4), um3);
+%!assert (triu (a, 4), u3)
+%!assert (triu (a, 3), u3)
+%!assert (triu (a, 2), u2)
+%!assert (triu (a, 1), u1)
+%!assert (triu (a, 0), u0)
+%!assert (triu (a), u0)
+%!assert (triu (a, -1), um1)
+%!assert (triu (a, -2), um2)
+%!assert (triu (a, -3), um3)
+%!assert (triu (a, -4), um3)
 
 %!error tril ()
 %!error triu ()

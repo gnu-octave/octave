@@ -216,7 +216,7 @@ gen_specific_tests() {
 %!assert (nnz (sparse (1,1,0)), 0)
 %!assert (nnz (sparse (eye (3))*0), 0)
 %!assert (nnz (sparse (eye (3))-sparse (eye (3))), 0)
-%!assert (full (sparse (eye (3))/0), full (eye (3)/0));
+%!assert (full (sparse (eye (3))/0), full (eye (3)/0))
 
 EOF
 }
@@ -576,8 +576,8 @@ gen_unaryop_tests() {
 %!assert (as',  sparse (af'))
 %!assert (-as, sparse (-af))
 %!assert (!as, sparse (!af))
-%!error [i,j] = size (af);as(i-1,j+1);
-%!error [i,j] = size (af);as(i+1,j-1);
+%!error [i,j] = size (af);as(i-1,j+1)
+%!error [i,j] = size (af);as(i+1,j-1)
 %!test
 %! [Is,Js,Vs] = find (as);
 %! [If,Jf,Vf] = find (af);

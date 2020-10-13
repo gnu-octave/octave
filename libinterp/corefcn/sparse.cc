@@ -242,7 +242,7 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
 
 /*
 ## Tests for sparse constructor are in test/sparse.tst
-%!assert (1);
+%!assert (1)
 */
 
 DEFUN (spalloc, args, ,

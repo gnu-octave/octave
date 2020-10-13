@@ -1275,7 +1275,7 @@ dimensions.
 /*
 ## This might work on some system someday, but for now, who has a system
 ## where a 16 yottabyte array can be allocated?  See bug #50934.
-%!error <out of memory> cell (1e24, 1);
+%!error <out of memory> cell (1e24, 1)
 */
 
 DEFUN (iscellstr, args, ,

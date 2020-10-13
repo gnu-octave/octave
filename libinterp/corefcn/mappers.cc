@@ -1216,7 +1216,7 @@ This is equivalent to (@code{isalpha (@var{s}) | isdigit (@var{s})}).
 %! result(double ("0":"9") + 1) = true;
 %! result(double ("a":"z") + 1) = true;
 %! assert (isalnum (charset), result);
-%!assert (isalnum(["Ä8Aa?"; "(Uß ;"]), logical ([1 1 1 1 1 0; 0 1 1 1 0 0]));
+%!assert (isalnum(["Ä8Aa?"; "(Uß ;"]), logical ([1 1 1 1 1 0; 0 1 1 1 0 0]))
 
 %!error isalnum ()
 %!error isalnum (1, 2)
@@ -1245,7 +1245,7 @@ This is equivalent to (@code{islower (@var{s}) | isupper (@var{s})}).
 %! result(double ("A":"Z") + 1) = true;
 %! result(double ("a":"z") + 1) = true;
 %! assert (isalpha (charset), result);
-%!assert (isalpha("Ä8Aa(Uß ;"), logical ([1 1 0 1 1 0 1 1 1 0 0]));
+%!assert (isalpha("Ä8Aa(Uß ;"), logical ([1 1 0 1 1 0 1 1 1 0 0]))
 
 %!error isalpha ()
 %!error isalpha (1, 2)
@@ -1321,7 +1321,7 @@ decimal digits (0-9) and false where they are not.
 %! result = false (1, 128);
 %! result(double ("0":"9") + 1) = true;
 %! assert (isdigit (charset), result);
-%!assert (isdigit("Ä8Aa(Uß ;"), logical ([0 0 1 0 0 0 0 0 0 0 0]));
+%!assert (isdigit("Ä8Aa(Uß ;"), logical ([0 0 1 0 0 0 0 0 0 0 0]))
 
 %!error isdigit ()
 %!error isdigit (1, 2)
@@ -1388,7 +1388,7 @@ not.
 %! result = false (1, 128);
 %! result(34:127) = true;
 %! assert (isgraph (charset), result);
-%!assert (isgraph("Ä8Aa(Uß ;"), logical ([1 1 1 1 1 1 1 1 1 0 1]));
+%!assert (isgraph("Ä8Aa(Uß ;"), logical ([1 1 1 1 1 1 1 1 1 0 1]))
 
 %!error isgraph ()
 %!error isgraph (1, 2)
@@ -1414,7 +1414,7 @@ lowercase letters and false where they are not.
 %! result = false (1, 128);
 %! result(double ("a":"z") + 1) = true;
 %! assert (islower (charset), result);
-%!assert (islower("Ä8Aa(Uß ;"), logical ([0 0 0 0 1 0 0 1 1 0 0]));
+%!assert (islower("Ä8Aa(Uß ;"), logical ([0 0 0 0 1 0 0 1 1 0 0]))
 
 %!error islower ()
 %!error islower (1, 2)
@@ -1521,7 +1521,7 @@ are not.
 %! result = false (1, 128);
 %! result(33:127) = true;
 %! assert (isprint (charset), result);
-%!assert (isprint("Ä8Aa(Uß ;"), logical ([1 1 1 1 1 1 1 1 1 1 1]));
+%!assert (isprint("Ä8Aa(Uß ;"), logical ([1 1 1 1 1 1 1 1 1 1 1]))
 
 %!error isprint ()
 %!error isprint (1, 2)
@@ -1550,7 +1550,7 @@ punctuation characters and false where they are not.
 %! result(92:97) = true;
 %! result(124:127) = true;
 %! assert (ispunct (charset), result);
-%!assert (ispunct("Ä8Aa(Uß ;"), logical ([0 0 0 0 0 1 0 0 0 0 1]));
+%!assert (ispunct("Ä8Aa(Uß ;"), logical ([0 0 0 0 0 1 0 0 0 0 1]))
 
 %!error ispunct ()
 %!error ispunct (1, 2)
@@ -1577,7 +1577,7 @@ vertical tab) and false where they are not.
 %! result = false (1, 128);
 %! result(double (" \f\n\r\t\v") + 1) = true;
 %! assert (isspace (charset), result);
-%!assert (isspace("Ä8Aa(Uß ;"), logical ([0 0 0 0 0 0 0 0 0 1 0]));
+%!assert (isspace("Ä8Aa(Uß ;"), logical ([0 0 0 0 0 0 0 0 0 1 0]))
 
 %!error isspace ()
 %!error isspace (1, 2)
@@ -1603,7 +1603,7 @@ uppercase letters and false where they are not.
 %! result = false (1, 128);
 %! result(double ("A":"Z") + 1) = true;
 %! assert (isupper (charset), result);
-%!assert (isupper("Ä8Aa(Uß ;"), logical ([1 1 0 1 0 0 1 0 0 0 0]));
+%!assert (isupper("Ä8Aa(Uß ;"), logical ([1 1 0 1 0 0 1 0 0 0 0]))
 
 %!error isupper ()
 %!error isupper (1, 2)
@@ -1631,7 +1631,7 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).
 %! result(double ("0":"9") + 1) = true;
 %! result(double ("a":"f") + 1) = true;
 %! assert (isxdigit (charset), result);
-%!assert (isxdigit("Ä8Aa(Uß ;"), logical ([0 0 1 1 1 0 0 0 0 0 0]));
+%!assert (isxdigit("Ä8Aa(Uß ;"), logical ([0 0 1 1 1 0 0 0 0 0 0]))
 
 %!error isxdigit ()
 %!error isxdigit (1, 2)

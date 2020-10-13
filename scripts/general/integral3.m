@@ -286,10 +286,10 @@ endfunction
 %!shared f
 %! f = @(x, y, z) x .* y .* z;
 
-%!assert (integral3 (f, 0, 1, 0, 1, 0, 1), 0.125, 1e-10);
-%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "tiled"), 0.125, 1e-10);
-%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "iterated"), 0.125, 1e-10);
-%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "auto"), 0.125, 1e-10);
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1), 0.125, 1e-10)
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "tiled"), 0.125, 1e-10)
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "iterated"), 0.125, 1e-10)
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "auto"), 0.125, 1e-10)
 
 ## vectorized = false test
 %!test

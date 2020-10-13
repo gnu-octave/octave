@@ -772,10 +772,10 @@ permutations on the tree.
 }
 
 /*
-%!assert (etree (sparse ([1,2], [1,2], [1,1], 2, 2)), [0, 0]);
-%!assert (etree (sparse ([1,2], [1,2], [true, true], 2, 2)), [0, 0]);
-%!assert (etree (sparse ([1,2], [1,2], [i,i], 2, 2)), [0, 0]);
-%!assert (etree (gallery ("poisson", 16)), [2:256, 0]);
+%!assert (etree (sparse ([1,2], [1,2], [1,1], 2, 2)), [0, 0])
+%!assert (etree (sparse ([1,2], [1,2], [true, true], 2, 2)), [0, 0])
+%!assert (etree (sparse ([1,2], [1,2], [i,i], 2, 2)), [0, 0])
+%!assert (etree (gallery ("poisson", 16)), [2:256, 0])
 
 %!error etree ()
 %!error etree (1, 2, 3)

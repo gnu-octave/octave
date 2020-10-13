@@ -492,10 +492,10 @@ Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
 %! end_unwind_protect
 %! assert (exist (fullfile (pwd (), "%nonexistentfile%"), "file"), 0);
 
-%!assert (exist ("fftw"), 3);
-%!assert (exist ("fftw.oct"), 3);
-%!assert (exist ("fftw", "file"), 3);
-%!assert (exist ("fftw", "builtin"), 0);
+%!assert (exist ("fftw"), 3)
+%!assert (exist ("fftw.oct"), 3)
+%!assert (exist ("fftw", "file"), 3)
+%!assert (exist ("fftw", "builtin"), 0)
 
 %!assert (exist ("sin"), 5)
 %!assert (exist ("sin", "builtin"), 5)

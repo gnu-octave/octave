@@ -88,9 +88,9 @@ endfunction
 %! assert (double (native2unicode ([164:166 0 167:170], 'ISO-8859-5')),
 %!         [208 132 208 133 208 134 0 208 135 208 136 208 137 208 138]);
 
-%!assert (native2unicode ("foobar"), "foobar");
+%!assert (native2unicode ("foobar"), "foobar")
 %!assert <*54384> (double (native2unicode ([0 0 120.3 0 0 122.6 0 0])),
-%!        [0 0 120 0 0 123 0 0]);
+%!                 [0 0 120 0 0 123 0 0])
 
 %!error <Invalid call> native2unicode ()
 %!error <called with too many inputs> native2unicode (1, 'ISO-8859-1', 'test')

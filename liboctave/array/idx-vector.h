@@ -543,7 +543,7 @@ public:
 
   ~idx_vector (void)
   {
-    if (--rep->count == 0)
+    if (--rep->count == 0 && rep != nil_rep ())
       delete rep;
   }
 
@@ -551,7 +551,7 @@ public:
   {
     if (this != &a)
       {
-        if (--rep->count == 0)
+        if (--rep->count == 0 && rep != nil_rep ())
           delete rep;
 
         rep = a.rep;

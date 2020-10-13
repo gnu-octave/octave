@@ -129,7 +129,7 @@ namespace octave
 
     ~dynamic_library (void)
     {
-      if (--m_rep->m_count == 0)
+      if (--m_rep->m_count == 0 && m_rep != &s_nil_rep)
         delete m_rep;
     }
 
@@ -143,7 +143,7 @@ namespace octave
     {
       if (m_rep != sl.m_rep)
         {
-          if (--m_rep->m_count == 0)
+          if (--m_rep->m_count == 0 && m_rep != &s_nil_rep)
             delete m_rep;
 
           m_rep = sl.m_rep;

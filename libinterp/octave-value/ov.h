@@ -329,7 +329,7 @@ public:
     // operator, rep may be a nullptr here.  We should only need to
     // protect the move assignment operator in a similar way.
 
-    if (rep && --rep->count == 0)
+    if (rep && --rep->count == 0 && rep != nil_rep ())
       delete rep;
   }
 
@@ -339,7 +339,7 @@ public:
       {
         octave_base_value *r = rep->unique_clone ();
 
-        if (--rep->count == 0)
+        if (--rep->count == 0 && rep != nil_rep ())
           delete rep;
 
         rep = r;
@@ -355,7 +355,7 @@ public:
       {
         octave_base_value *r = rep->unique_clone ();
 
-        if (--rep->count == 0)
+        if (--rep->count == 0 && rep != nil_rep ())
           delete rep;
 
         rep = r;
@@ -368,7 +368,7 @@ public:
   {
     if (rep != a.rep)
       {
-        if (--rep->count == 0)
+        if (--rep->count == 0 && rep != nil_rep ())
           delete rep;
 
         rep = a.rep;
@@ -386,7 +386,7 @@ public:
 
     if (this != &a)
       {
-        if (rep && --rep->count == 0)
+        if (rep && --rep->count == 0 && rep != nil_rep ())
           delete rep;
 
         rep = a.rep;

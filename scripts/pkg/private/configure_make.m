@@ -90,7 +90,7 @@ function configure_make (desc, packdir, verbose)
       if (status != 0)
         sts = rmdir (desc.dir, "s");
         disp (output);
-        error ("pkg: error running the configure script for %s.", desc.name);
+        error ("pkg: error running the configure script for %s", desc.name);
       endif
     endif
 
@@ -107,7 +107,7 @@ function configure_make (desc, packdir, verbose)
       if (status != 0)
         sts = rmdir (desc.dir, "s");
         disp (output);
-        error ("pkg: error running 'make' for the %s package.", desc.name);
+        error ("pkg: error running 'make' for the %s package", desc.name);
       endif
     endif
   endif
@@ -136,7 +136,7 @@ function [status, output] = shell (cmd, verbose)
     if (have_sh)
       cmd = ['sh.exe -c "' cmd '"'];
     else
-      error ("pkg: unable to find the command shell.");
+      error ("pkg: unable to find the command shell");
     endif
   endif
   ## if verbose, we want to display the output in real time.  To do this, we

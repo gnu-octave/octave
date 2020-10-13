@@ -525,7 +525,7 @@ namespace octave
                   error ("__mfile_encoding__: conversion from encoding '%s' "
                          "not supported", encoding.c_str ());
                 else
-                  error ("__mfile_encoding__: error %d opening encoding '%s'.",
+                  error ("__mfile_encoding__: error %d opening encoding '%s'",
                          errno, encoding.c_str ());
               }
             else

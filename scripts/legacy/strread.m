@@ -354,7 +354,7 @@ function varargout = strread (str, format = "%f", varargin)
     ## Check for unsupported format specifiers
     errpat = '(\[.*\]|[cq]|[nfdu]8|[nfdu]16|[nfdu]32|[nfdu]64)';
     if (! all (cellfun ("isempty", regexp (fmt_words(idy2), errpat))))
-      error ("strread: %q, %c, %[] or bit width format specifiers are not supported yet.");
+      error ("strread: %q, %c, %[] or bit width format specifiers are not supported yet");
     endif
 
     ## Format conversion specifiers following literals w/o space/delim

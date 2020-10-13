@@ -132,7 +132,7 @@ function camorbit (varargin)
     dir = "z";
   else
     if (strcmpi (coorsys, "camera"))
-      error ("camorbit: DIR must not be used with 'camera' COORSYS.");
+      error ("camorbit: DIR must not be used with 'camera' COORSYS");
     endif
     dir = varargin{4};
   endif

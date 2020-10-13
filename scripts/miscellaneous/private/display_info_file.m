@@ -40,7 +40,7 @@ function display_info_file (func, package, file)
     names     = cellfun (@(x) x.name, installed, "UniformOutput", false);
     pos       = strcmpi (names, package);
     if (! any (pos))
-      error ("%s: package '%s' is not installed.", func, package);
+      error ("%s: package '%s' is not installed", func, package);
     endif
     filepath = fullfile (installed{pos}.dir, "packinfo", file);
   endif

@@ -79,7 +79,7 @@ function hnew = copyobj (horig, hparent = 0)
   endfor
 
   if (kididx <= paridx)
-    error ("copyobj: %s object can't be a child of %s.",
+    error ("copyobj: %s object can't be a child of %s",
            alltypes{kididx}, alltypes{paridx});
   endif
 

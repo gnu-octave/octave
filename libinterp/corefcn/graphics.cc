@@ -11572,7 +11572,7 @@ uitable::properties::set_columnformat (const octave_value& val)
                 {
                   octave_value p = popup(j);
                   if (! p.is_string () || p.isempty ())
-                    error ("set: pop-up menu definitions must be non-empty strings.");
+                    error ("set: pop-up menu definitions must be non-empty strings");
                 }
             }
           else if (! (v.is_string () || v.isempty ()))
@@ -11594,7 +11594,7 @@ uitable::properties::set_columnformat (const octave_value& val)
     }
   else
     {
-      error ("set: expecting cell of strings.");
+      error ("set: expecting cell of strings");
     }
 }
 
@@ -11630,7 +11630,7 @@ uitable::properties::set_columnwidth (const octave_value& val)
     error_exists = true;
 
   if (error_exists)
-    error ("set: expecting either 'auto' or a cell of pixel values or auto.");
+    error ("set: expecting either 'auto' or a cell of pixel values or auto");
   else
     {
       if (columnwidth.set (val, true))

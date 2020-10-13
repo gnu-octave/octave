@@ -177,7 +177,7 @@ function [L, U, P] = ilu (A, opts = struct ())
   endif
 
   if (! isstruct (opts))
-    error ("ilu: OPTS must be a structure.");
+    error ("ilu: OPTS must be a structure");
   endif
 
   ## If A is empty then return empty L, U and P for Matlab compatibility

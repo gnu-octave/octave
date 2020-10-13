@@ -67,7 +67,7 @@ function camlookat (hh)
         hax = unique ([hax{:}]);
       endif
       if (numel (hax) > 1)
-        error ("camlookat: HANDLE_LIST must be children of the same axes.");
+        error ("camlookat: HANDLE_LIST must be children of the same axes");
       endif
     endif
   endif
@@ -81,7 +81,7 @@ function camlookat (hh)
     h = hh(i);
 
     if (! ishghandle (h))
-      error ("camlookat: Inputs must be handles.");
+      error ("camlookat: Inputs must be handles");
     end
 
     x0_ = min (get (h, "xdata")(:));

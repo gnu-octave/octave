@@ -39,7 +39,7 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
       parent = in_args{1};
       offset = 2;
     elseif (! ischar (in_args{1}) && ! isstruct (in_args{1}))
-      error ("%s: invalid parent handle.", who);
+      error ("%s: invalid parent handle", who);
     endif
 
     args = in_args(offset:end);
@@ -50,7 +50,7 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
     if (! isempty (i) && numel (args) >= 2*i)
       parent = args{2*i};
       if (! ishghandle (parent))
-        error ("%s: invalid parent handle.", who);
+        error ("%s: invalid parent handle", who);
       endif
       args((2*i-1):2*i) = [];
     endif

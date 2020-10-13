@@ -88,7 +88,7 @@ function retval = graphics_toolkit (name, hlist = [])
     if (strcmp (name, "gnuplot"))
       valid_version = __gnuplot_has_feature__ ("minimum_version");
       if (valid_version != 1)
-        error ("graphics_toolkit: gnuplot version too old.");
+        error ("graphics_toolkit: gnuplot version too old");
       endif
     endif
     feval (["__init_", name, "__"]);

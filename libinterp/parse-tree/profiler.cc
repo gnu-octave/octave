@@ -255,7 +255,7 @@ namespace octave
   profiler::reset (void)
   {
     if (enabled ())
-      error ("Can't reset active profiler.");
+      error ("Can't reset active profiler");
 
     m_known_functions.clear ();
     m_fcn_index.clear ();

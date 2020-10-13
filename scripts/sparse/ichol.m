@@ -169,7 +169,7 @@ function L = ichol (A, opts = struct ())
   endif
 
   if (! isstruct (opts))
-    error ("ichol: OPTS must be a structure.");
+    error ("ichol: OPTS must be a structure");
   endif
 
   ## If A is empty then return empty L for Matlab compatibility

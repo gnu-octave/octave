@@ -1558,7 +1558,7 @@ Use @code{imwrite} instead.
         encode_indexed_images<uint16NDArray> (imvec, img.uint16_array_value (),
                                               cmap);
       else
-        error ("__magick_write__: indexed image must be uint8, uint16 or float.");
+        error ("__magick_write__: indexed image must be uint8, uint16 or float");
     }
   static std::map<std::string, octave_idx_type> disposal_methods
     = init_reverse_disposal_methods ();

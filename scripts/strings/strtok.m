@@ -61,9 +61,9 @@ function [tok, rem] = strtok (str, delim)
   if (nargin < 1)
     print_usage ();
   elseif (! (ischar (str) || iscellstr (str)))
-    error ("strtok: STR must be a string or cell array of strings.");
+    error ("strtok: STR must be a string or cell array of strings");
   elseif (ischar (str) && ! isvector (str) &&! isempty (str))
-    error ("strtok: STR cannot be a 2-D character array.");
+    error ("strtok: STR cannot be a 2-D character array");
   endif
 
   if (nargin < 2 || isempty (delim))

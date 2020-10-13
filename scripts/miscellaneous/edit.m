@@ -219,7 +219,7 @@ function retval = edit (varargin)
     if (iscellstr (varargin))
       editfilelist = varargin;
     else
-      error ("edit: if supplying more than one input all inputs must be strings containing field names to open.");
+      error ("edit: if supplying more than one input all inputs must be strings containing field names to open");
     endif
   endif
 

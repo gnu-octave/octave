@@ -300,7 +300,7 @@ On non-Windows platforms, this function fails with an error.
 
   HANDLE h_proc = GetCurrentProcess ();
   if (h_proc == nullptr)
-    error ("__wmemory__: Couldn't open handle to own process.");
+    error ("__wmemory__: Couldn't open handle to own process");
 
   PROCESS_MEMORY_COUNTERS proc_mem_count;
   if (GetProcessMemoryInfo (h_proc, &proc_mem_count, sizeof (proc_mem_count)))
@@ -374,7 +374,7 @@ On non-Windows platforms, this function fails with an error.
 
 #else
   octave_unused_parameter (args);
-  error ("__wmemory__: Function is only supported on Windows platforms.");
+  error ("__wmemory__: Function is only supported on Windows platforms");
 #endif
 }
 
@@ -1170,7 +1170,7 @@ On non-Windows platforms this function fails with an error.
       LONG retval = octave::get_regkey_value (h_rootkey, subkey_name,
                                               value_name, key_val);
       if (retval == ERROR_FILE_NOT_FOUND)
-        error ("winqueryreg: no value found for '%s' at %s\\%s.",
+        error ("winqueryreg: no value found for '%s' at %s\\%s",
                value_name.c_str (), rootkey_name.c_str (),
                subkey_name.c_str ());
       if (retval != ERROR_SUCCESS)

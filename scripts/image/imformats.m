@@ -92,7 +92,7 @@ function varargout = imformats (arg1, arg2, arg3)
       switch (tolower (arg1))
         case "add",
           if (! isstruct (arg2))
-            error ("imformats: FORMAT to %s must be a structure.", arg1);
+            error ("imformats: FORMAT to %s must be a structure", arg1);
           endif
           arrayfun (@is_valid_format, arg2);
           formats(end + 1: end + numel (arg2)) = arg2;
@@ -100,21 +100,21 @@ function varargout = imformats (arg1, arg2, arg3)
 
         case {"remove", "update"},
           if (! ischar (arg2))
-            error ("imformats: EXT to %s must be a string.", arg1);
+            error ("imformats: EXT to %s must be a string", arg1);
           endif
           ## FIXME: suppose a format with multiple extensions.  If one of
           ##        them is requested to be removed, should we remove the
           ##        whole format, or just that extension from the format?
           match = find_ext_idx (formats, arg2);
           if (! any (match))
-            error ("imformats: no EXT '%s' found.", arg2);
+            error ("imformats: no EXT '%s' found", arg2);
           endif
           if (strcmpi (arg1, "remove"))
             formats(match) = [];
           else
             ## then it's update
             if (! isstruct (arg3))
-              error ("imformats: FORMAT to update must be a structure.");
+              error ("imformats: FORMAT to update must be a structure");
             endif
             is_valid_format (arg3);
             formats(match) = arg3;
@@ -135,7 +135,7 @@ function varargout = imformats (arg1, arg2, arg3)
           endif
       endswitch
     else
-      error ("imformats: first argument must be either a structure or string.");
+      error ("imformats: first argument must be either a structure or string");
     endif
   else
     varargout{1} = formats;
@@ -269,7 +269,7 @@ function is_valid_format (format)
   min_fields  = {"ext", "read", "isa", "write", "info", "alpha", "description"};
   fields_mask = isfield (format, min_fields);
   if (! all (fields_mask))
-    error ("imformats: structure has missing field '%s'.", min_fields(! fields_mask){1});
+    error ("imformats: structure has missing field '%s'", min_fields(! fields_mask){1});
   endif
 
 endfunction

@@ -69,7 +69,7 @@ function retval = substruct (varargin)
       error ("substruct: for TYPE == ., SUBS must be a character string");
     endif
   else
-    error ('substruct: TYPE must be one of "()", "{}", or "."');
+    error ('substruct: TYPE must be one of "()", "{}", or ""');
   endif
 
   retval = struct ("type", typ, "subs", sub);

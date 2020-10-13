@@ -66,7 +66,7 @@ function [R, G, B] = ind2rgb (x, map)
                    [1 2 4 3]);
     else
       ## we should never reach here since ind2x() should filter them out
-      error ("ind2rgb: an indexed image must have 2 or 4 dimensions.");
+      error ("ind2rgb: an indexed image must have 2 or 4 dimensions");
     endif
   endif
 

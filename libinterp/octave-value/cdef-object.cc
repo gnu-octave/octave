@@ -326,7 +326,7 @@ namespace octave
             cdef_object rhs_obj = to_cdef (rhs);
 
             if (rhs_obj.get_class () != get_class ())
-              error ("can't assign %s object into array of %s objects.",
+              error ("can't assign %s object into array of %s objects",
                      rhs_obj.class_name ().c_str (),
                      class_name ().c_str ());
 

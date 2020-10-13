@@ -66,9 +66,8 @@ function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
   endif
 
   ## Validate inputs
-  retval = (isnumeric (A) || islogical (A)) && issquare (A);
-  if (! retval)
-    return;
+  if (! (isnumeric (A) || islogical (A) || ischar (A)))
+    error ("issymmetric: A must be a numeric, logical, or character matrix");
   endif
 
   if (! (strcmp (skewopt, "skew") || strcmp (skewopt, "nonskew")))
@@ -79,13 +78,18 @@ function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
     error ("issymmetric: TOL must be a scalar >= 0");
   endif
 
+  if (! issquare (A))
+    retval = false;
+    return;
+  endif
+
   ## Calculate symmetry
   if (strcmp (skewopt, "nonskew"))
     if (tol == 0)
       ## check for exact symmetry
       retval = full (! any ((A != A.')(:)));
     else
-      if (islogical (A))
+      if (! isnumeric (A))
         ## Hack to allow norm to work.  Choose single to minimize memory.
         A = single (A);
       endif
@@ -97,7 +101,7 @@ function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
     if (tol == 0)
       retval = full (! any ((A != -A.')(:)));
     else
-      if (islogical (A))
+      if (! isnumeric (A))
         ## Hack to allow norm to work.  Choose single to minimize memory.
         A = single (A);
       endif
@@ -116,25 +120,21 @@ endfunction
 %!assert (issymmetric ([1, 2.1; 2, 1.1], 0.2))
 %!assert (issymmetric ([1, 2i; 2i, 1]))
 %!assert (issymmetric (speye (100)), true)  # Return full logical value.
-%!assert (issymmetric (logical (eye (2))))
-%!assert (! issymmetric (logical ([1 1; 0 1])))
-%!assert (issymmetric (logical ([1 1; 0 1]), 0.5))
+%!assert (! issymmetric ([0, 2; -2, 0], "nonskew"))
 %!assert (issymmetric ([0, 2; -2, 0], "skew"))
 %!assert (! issymmetric ([0, 2; -2, eps], "skew"))
 %!assert (issymmetric ([0, 2; -2, eps], "skew", eps))
-
-%!assert (! (issymmetric ("test")))
-%!assert (! (issymmetric ("t")))
-%!assert (! (issymmetric (["te"; "et"])))
-%!assert (! issymmetric ({1}))
-%!test
-%! s.a = 1;
-%! assert (! issymmetric (s));
+%!assert (issymmetric (logical (eye (2))))
+%!assert (! issymmetric (logical ([1 1; 0 1])))
+%!assert (issymmetric (logical ([1 1; 0 1]), 0.5))
+%!assert (! issymmetric ("test"))
+%!assert (issymmetric ("t"))
+%!assert (issymmetric (["te"; "et"]))
 
 ## Test input validation
 %!error <Invalid call> issymmetric ()
 %!error <second argument must be> issymmetric (1, {"skew"})
-%!error <SKEWOPT must be 'skew' or 'nonskew'> issymmetric (1, "foobar")
+%!error <A must be a numeric,.* matrix> issymmetric ({1})
 %!error <SKEWOPT must be 'skew' or 'nonskew'> issymmetric (1, "foobar")
 %!error <TOL must be a scalar .= 0> issymmetric (1, "skew", {1})
 %!error <TOL must be a scalar .= 0> issymmetric (1, "skew", [1 1])

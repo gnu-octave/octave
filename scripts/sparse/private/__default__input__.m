@@ -34,31 +34,39 @@
 ## @item @var{def_val} is a cell array that contains the values to use
 ## as default.
 ##
-## @item @var{varargin} are the input arguments
+## @item @var{varargin} are the input arguments.
 ## @end itemize
 ##
 ## The output arguments are:
 ##
 ## @itemize @minus
-## @item @var{varargout} all input arguments completed with default
-## values for empty or omitted parameters.
+## @item @var{varargout} are the input arguments where any empty or omitted
+## parameters have been replaced with default values.
 ##
 ## @end itemize
 ##
 ## @end deftypefn
 
+function varargout = __default__input__ (def_val, varargin)
 
-function [varargout] = __default__input__ (def_val, varargin)
+  m = numel (def_val);
+  n = numel (varargin);
+  count = min (m, n);
 
-  m = length (def_val);
-  n = length (varargin);
-
-  for i = 1:m
-    if (n < i || isempty (varargin{i}))
+  ## Check for missing values in input and replace with default value.
+  for i = 1:count
+    if (isempty (varargin{i}))
       varargout{i} = def_val{i};
     else
       varargout{i} = varargin{i};
     endif
   endfor
+
+  ## Copy any remaining items to output
+  if (n < m)
+    varargout(n+1:m) = def_val(n+1:m);
+  elseif (m < n)
+    varargout(m+1:n) = varargin(m+1:n);
+  endif
 
 endfunction

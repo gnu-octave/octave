@@ -41,35 +41,31 @@
 ## @seealso{pan, zoom}
 ## @end deftypefn
 
-function rotate3d (varargin)
+function h = rotate3d (hfig, option)
 
-  hfig = NaN;
-
-  nargs = nargin;
-
-  if (nargs > 2)
-    print_usage ();
-  endif
-
-  if (nargin == 1 && nargout > 0 && isfigure (varargin{1}))
+  ## FIXME: Presumably should implement this for Matlab compatibility.
+  if (nargin == 1 && nargout > 0 && isfigure (hfig))
     error ("rotate3d: syntax 'handle = rotate3d (hfig)' not implemented");
   endif
 
-  if (nargs == 2)
-    hfig = varargin{1};
-    if (isfigure (hfig))
-      varargin(1) = [];
-      nargs -= 1;
+  if (nargin == 0)
+    hfig = gcf ();
+  else
+    if (nargin == 1)
+      option = hfig;
+      hfig = gcf ();
     else
-      error ("rotate3d: invalid figure handle HFIG");
+      if (! isfigure (hfig))
+        error ("rotate3d: invalid figure handle HFIG");
+      endif
+    endif
+
+    if (! ischar (option))
+      error ("rotate3d: OPTION must be a string");
     endif
   endif
 
-  if (isnan (hfig))
-    hfig = gcf ();
-  endif
-
-  if (nargs == 0)
+  if (nargin == 0)
     rm = get (hfig, "__rotate_mode__");
     if (strcmp (rm.Enable, "on"))
       rm.Enable = "off";
@@ -78,25 +74,17 @@ function rotate3d (varargin)
     endif
     set (hfig, "__rotate_mode__", rm);
     update_mouse_mode (hfig, rm.Enable);
-  elseif (nargs == 1)
-    arg = varargin{1};
-    if (ischar (arg))
-      switch (arg)
-        case {"on", "off"}
-          rm = get (hfig, "__rotate_mode__");
-          switch (arg)
-            case {"on", "off"}
-              rm.Enable = arg;
-              rm.Motion = "both";
-          endswitch
-          set (hfig, "__rotate_mode__", rm);
-          update_mouse_mode (hfig, arg);
-        otherwise
-          error ("rotate3d: unrecognized OPTION '%s'", arg);
-      endswitch
-    else
-      error ("rotate3d: wrong type argument '%s'", class (arg));
-    endif
+  else
+    switch (option)
+      case {"on", "off"}
+        rm = get (hfig, "__rotate_mode__");
+        rm.Enable = option;
+        rm.Motion = "both";
+        set (hfig, "__rotate_mode__", rm);
+        update_mouse_mode (hfig, option);
+      otherwise
+        error ("rotate3d: unrecognized OPTION '%s'", option);
+    endswitch
   endif
 
 endfunction
@@ -106,11 +94,10 @@ function update_mouse_mode (hfig, arg)
   if (strcmp (arg, "off"))
     set (hfig, "__mouse_mode__", "none");
   else
-    ## FIXME: Is there a better way other than calling these
-    ## functions to set the other mouse mode Enable fields to
-    ## "off"?
-    pan ("off");
-    zoom ("off");
+    ## FIXME: Is there a better way other than calling these functions
+    ##        to set the other mouse mode Enable fields to "off"?
+    pan (hfig, "off");
+    zoom (hfig, "off");
     set (hfig, "__mouse_mode__", "rotate");
   endif
 

@@ -61,17 +61,17 @@ function [xx, yy, zz] = cylinder (varargin)
 
   [hax, args, nargs] = __plt_get_axis_arg__ ("cylinder", varargin{:});
 
-  if (nargs == 0)
+  if (nargs > 2)
+    print_usage ();
+  elseif (nargs == 0)
     r = [1, 1];
     n = 20;
   elseif (nargs == 1)
     r = args{1};
     n = 20;
-  elseif (nargs == 2)
+  else
     r = args{1};
     n = args{2};
-  else
-    print_usage ();
   endif
 
   if (length (r) < 2)

@@ -33,125 +33,124 @@ function retval = __plt__ (caller, hp, varargin)
   persistent warned_callers = {};
   nargs = nargin - 2;
 
-  if (nargs > 0)
+  if (nargs < 1)
+    error ("__plt__: invalid number of arguments");
+  endif
 
-    k = 1;
+  k = 1;
 
-    x_set = false;
-    y_set = false;
-    property_set = false;
-    properties = {};
+  x_set = false;
+  y_set = false;
+  property_set = false;
+  properties = {};
 
-    ## Find any legend associated with this axes
-    try
-      hlegend = get (hp, "__legend_handle__");
-    catch
-      hlegend = [];
-    end_try_catch
+  ## Find any legend associated with this axes
+  try
+    hlegend = get (hp, "__legend_handle__");
+  catch
+    hlegend = [];
+  end_try_catch
 
-    setlgnd = false;
-    if (isempty (hlegend))
-      hlgnd = [];
-      tlgnd = {};
+  setlgnd = false;
+  if (isempty (hlegend))
+    hlgnd = [];
+    tlgnd = {};
+  else
+    [hlgnd, tlgnd] = __getlegenddata__ (hlegend);
+  endif
+
+  ## Gather arguments, decode format, gather plot strings, and plot lines.
+
+  retval = [];
+
+  while (nargs > 0 || x_set)
+
+    if (nargs == 0)
+      ## Force the last plot when input variables run out.
+      next_cell = {};
+      next_arg = {""};
     else
-      [hlgnd, tlgnd] = __getlegenddata__ (hlegend);
+      next_cell = varargin(k);
+      next_arg = varargin{k++};
     endif
 
-    ## Gather arguments, decode format, gather plot strings, and plot lines.
-
-    retval = [];
-
-    while (nargs > 0 || x_set)
-
-      if (nargs == 0)
-        ## Force the last plot when input variables run out.
-        next_cell = {};
-        next_arg = {""};
-      else
-        next_cell = varargin(k);
-        next_arg = varargin{k++};
+    if (isnumeric (next_arg) && ndims (next_arg) > 2
+        && any (size (next_arg) == 1))
+      next_arg = squeeze (next_arg);
+      if (! any (strcmp (caller, warned_callers)) && ndims (next_arg) < 3)
+        warning (["%s: N-d inputs have been squeezed to less than " ...
+                  "three dimensions"], caller);
+        warned_callers(end+1) = caller;
       endif
+    endif
+    if (isnumeric (next_arg) && ndims (next_arg) > 2)
+      error ("%s: plot arrays must have less than 2 dimensions", caller);
+    endif
 
-      if (isnumeric (next_arg) && ndims (next_arg) > 2
-          && any (size (next_arg) == 1))
-        next_arg = squeeze (next_arg);
-        if (! any (strcmp (caller, warned_callers)) && ndims (next_arg) < 3)
-          warning (["%s: N-d inputs have been squeezed to less than " ...
-                    "three dimensions"], caller);
-          warned_callers(end+1) = caller;
-        endif
-      endif
-      if (isnumeric (next_arg) && ndims (next_arg) > 2)
-        error ("%s: plot arrays must have less than 2 dimensions", caller);
-      endif
+    nargs -= 1;
 
-      nargs -= 1;
-
-      if (ischar (next_arg) || iscellstr (next_arg))
-        if (x_set)
-          [options, valid] = __pltopt__ (caller, next_arg, false);
-          if (! valid)
-            if (nargs == 0)
-              error ("%s: properties must appear followed by a value", caller);
-            endif
-            properties = [properties, [next_cell, varargin(k++)]];
-            nargs -= 1;
-            continue;
-          else
-            while (nargs > 0 && ischar (varargin{k}))
-              if (nargs < 2)
-                error ("%s: properties must appear followed by a value",
-                       caller);
-              endif
-              properties = [properties, varargin(k:k+1)];
-              k += 2;
-              nargs -= 2;
-            endwhile
+    if (ischar (next_arg) || iscellstr (next_arg))
+      if (x_set)
+        [options, valid] = __pltopt__ (caller, next_arg, false);
+        if (! valid)
+          if (nargs == 0)
+            error ("%s: properties must appear followed by a value", caller);
           endif
-          if (y_set)
-            htmp = __plt2__ (hp, x, y, options, properties);
-            [hlgnd, tlgnd, setlgnd] = ...
-              __plt_key__ (htmp, options, hlgnd, tlgnd, setlgnd);
-            properties = {};
-            retval = [retval; htmp];
-          else
-            htmp = __plt1__ (hp, x, options, properties);
-            [hlgnd, tlgnd, setlgnd] = ...
-               __plt_key__ (htmp, options, hlgnd, tlgnd, setlgnd);
-            properties = {};
-            retval = [retval; htmp];
-          endif
-          x_set = false;
-          y_set = false;
+          properties = [properties, [next_cell, varargin(k++)]];
+          nargs -= 1;
+          continue;
         else
-          error ("plot: no data to plot");
+          while (nargs > 0 && ischar (varargin{k}))
+            if (nargs < 2)
+              error ("%s: properties must appear followed by a value",
+                     caller);
+            endif
+            properties = [properties, varargin(k:k+1)];
+            k += 2;
+            nargs -= 2;
+          endwhile
         endif
-      elseif (x_set)
         if (y_set)
-          options = __pltopt__ (caller, {""});
           htmp = __plt2__ (hp, x, y, options, properties);
           [hlgnd, tlgnd, setlgnd] = ...
             __plt_key__ (htmp, options, hlgnd, tlgnd, setlgnd);
-          retval = [retval; htmp];
-          x = next_arg;
-          y_set = false;
           properties = {};
+          retval = [retval; htmp];
         else
-          y = next_arg;
-          y_set = true;
+          htmp = __plt1__ (hp, x, options, properties);
+          [hlgnd, tlgnd, setlgnd] = ...
+             __plt_key__ (htmp, options, hlgnd, tlgnd, setlgnd);
+          properties = {};
+          retval = [retval; htmp];
         endif
+        x_set = false;
+        y_set = false;
       else
-        x = next_arg;
-        x_set = true;
+        error ("plot: no data to plot");
       endif
-
-    endwhile
-
-    if (setlgnd)
-      legend (gca (), hlgnd, tlgnd);
+    elseif (x_set)
+      if (y_set)
+        options = __pltopt__ (caller, {""});
+        htmp = __plt2__ (hp, x, y, options, properties);
+        [hlgnd, tlgnd, setlgnd] = ...
+          __plt_key__ (htmp, options, hlgnd, tlgnd, setlgnd);
+        retval = [retval; htmp];
+        x = next_arg;
+        y_set = false;
+        properties = {};
+      else
+        y = next_arg;
+        y_set = true;
+      endif
+    else
+      x = next_arg;
+      x_set = true;
     endif
-  else
-    error ("__plt__: invalid number of arguments");
+
+  endwhile
+
+  if (setlgnd)
+    legend (gca (), hlgnd, tlgnd);
   endif
 
 endfunction

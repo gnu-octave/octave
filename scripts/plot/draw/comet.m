@@ -46,9 +46,11 @@ function comet (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("comet", varargin{:});
 
-  if (nargin == 0)
+  if (nargin == 0 || nargin > 3)
     print_usage ();
-  elseif (nargin == 1)
+  endif
+
+  if (nargin == 1)
     y = varargin{1};
     x = 1:numel (y);
     p = 5 / numel (y);

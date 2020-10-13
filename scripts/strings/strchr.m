@@ -41,7 +41,7 @@
 
 function varargout = strchr (str, chars, varargin)
 
-  if (nargin < 2)
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   elseif (! ischar (str))
     error ("strchr: STR argument must be a string or string array");
@@ -84,5 +84,6 @@ endfunction
 ## Test input validation
 %!error <Invalid call> strchr ()
 %!error <Invalid call> strchr (1)
+%!error <Invalid call> strchr ("s", "a", 1, "last", 5)
 %!error <STR argument must be a string> strchr (1, "aeiou")
 %!error <CHARS argument must be a string> strchr ("aeiou", 1)

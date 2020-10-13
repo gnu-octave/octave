@@ -36,10 +36,15 @@
 
 function etreeplot (A, varargin)
 
-  if (nargin < 1)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
   treeplot (etree (A+A'), varargin{:});
 
 endfunction
+
+
+## Test input validation
+%!error <Invalid call> etreeplot ()
+%!error <Invalid call> etreeplot (1,2,3,4)

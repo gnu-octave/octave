@@ -72,7 +72,7 @@ function [thout, rout] = rose (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("rose", varargin{:});
 
-  if (nargin < 1)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
@@ -167,6 +167,7 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> rose ()
+%!error <Invalid call> rose (1,2,3)
 %!warning <bin sizes .= pi will not plot correctly>
 %! [th, r] = rose ([1 2 2 4 4 4], 2);
 %!warning <bin 1 and bin 3 are not centered>

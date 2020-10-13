@@ -78,8 +78,6 @@ function h = streamtube (varargin)
   div = [];
   dia = [];
   switch (nargin)
-    case 0
-      print_usage ();
     case 2
       ## "dia" can be a cell array or a constant
       if (iscell (varargin{2}) || numel (varargin{2}) == 1)
@@ -116,7 +114,7 @@ function h = streamtube (varargin)
     case 10
       [x, y, z, u, v, w, spx, spy, spz, options] = varargin{:};
     otherwise
-      error ("streamtube: invalid number of inputs");
+      print_usage ();
   endswitch
 
   scale = 1;
@@ -129,7 +127,7 @@ function h = streamtube (varargin)
         scale = options(1);
         num_circum = options(2);
       otherwise
-        error ("streamtube: invalid number of OPTIONS elements");
+        error ("streamtube: OPTIONS must be a 1- or 2-element vector");
     endswitch
 
     if (! isreal (scale) || scale <= 0)
@@ -368,11 +366,11 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> streamtube ()
-%!error <invalid number of inputs> streamtube (1)
-%!error <invalid number of inputs> streamtube (1,2,3,4)
-%!error <invalid number of inputs> streamtube (1,2,3,4,5,6,7,8)
-%!error <invalid number of inputs> streamtube (1,2,3,4,5,6,7,8,9,10,11)
-%!error <invalid number of OPTIONS elements> streamtube (1,2,[1,2,3])
+%!error <Invalid call> streamtube (1)
+%!error <Invalid call> streamtube (1,2,3,4)
+%!error <Invalid call> streamtube (1,2,3,4,5,6,7,8)
+%!error <Invalid call> streamtube (1,2,3,4,5,6,7,8,9,10,11)
+%!error <OPTIONS must be a 1- or 2-element vector> streamtube (1,2,[1,2,3])
 %!error <SCALE must be a real scalar . 0> streamtube (1,2,[1i])
 %!error <SCALE must be a real scalar . 0> streamtube (1,2,[0])
 %!error <SCALE must be a real scalar . 0> streamtube (1,2,[-1])

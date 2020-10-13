@@ -134,8 +134,6 @@ function h = streamribbon (varargin)
   lin_spd = [];
   anlr_rot = [];
   switch (nargin)
-    case 0
-      print_usage ();
     case 2
       [xyz, anlr_rot] = varargin{:};
     case 3
@@ -171,7 +169,7 @@ function h = streamribbon (varargin)
     case 10
       [x, y, z, u, v, w, spx, spy, spz, width] = varargin{:};
     otherwise
-      error ("streamribbon: invalid number of inputs");
+      print_usage ();
   endswitch
 
   if (isempty (xyz))
@@ -434,10 +432,10 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> streamribbon ()
-%!error <invalid number of inputs> streamribbon (1)
-%!error <invalid number of inputs> streamribbon (1,2,3,4,5)
-%!error <invalid number of inputs> streamribbon (1,2,3,4,5,6,7,8)
-%!error <invalid number of inputs> streamribbon (1,2,3,4,5,6,7,8,9,10,11)
+%!error <Invalid call> streamribbon (1)
+%!error <Invalid call> streamribbon (1,2,3,4,5)
+%!error <Invalid call> streamribbon (1,2,3,4,5,6,7,8)
+%!error <Invalid call> streamribbon (1,2,3,4,5,6,7,8,9,10,11)
 %!error <WIDTH must be a real scalar . 0> streamribbon (1,2,3,1i)
 %!error <WIDTH must be a real scalar . 0> streamribbon (1,2,3,0)
 %!error <WIDTH must be a real scalar . 0> streamribbon (1,2,3,-1)

@@ -82,8 +82,6 @@ function xy = stream2 (varargin)
 
   options = [];
   switch (numel (varargin))
-    case 0
-      print_usage ();
     case {4,5}
       if (numel (varargin) == 4)
         [u, v, spx, spy] = varargin{:};
@@ -97,7 +95,7 @@ function xy = stream2 (varargin)
     case 7
       [x, y, u, v, spx, spy, options] = varargin{:};
     otherwise
-      error ("stream2: invalid number of inputs");
+      print_usage ();
   endswitch
 
   stepsize = 0.1;
@@ -110,7 +108,7 @@ function xy = stream2 (varargin)
         stepsize = options(1);
         max_vertices = options(2);
       otherwise
-        error ("stream2: invalid number of OPTIONS elements");
+        error ("stream2: OPTIONS must be a 1- or 2-element vector");
     endswitch
 
     if (! isreal (stepsize) || stepsize == 0)
@@ -208,10 +206,10 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> stream2 ()
-%!error <invalid number of inputs> stream2 (1)
-%!error <invalid number of inputs> stream2 (1,2)
-%!error <invalid number of inputs> stream2 (1,2,3)
-%!error <invalid number of OPTIONS> stream2 (1,2,3,4, [1,2,3])
+%!error <Invalid call> stream2 (1)
+%!error <Invalid call> stream2 (1,2)
+%!error <Invalid call> stream2 (1,2,3)
+%!error <OPTIONS must be a 1- or 2-element> stream2 (1,2,3,4, [1,2,3])
 %!error <STEPSIZE must be a real scalar != 0> stream2 (1,2,3,4, [1i])
 %!error <STEPSIZE must be a real scalar != 0> stream2 (1,2,3,4, [0])
 %!error <MAX_VERTICES must be an integer> stream2 (1,2,3,4, [1, 1i])

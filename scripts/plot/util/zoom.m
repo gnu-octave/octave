@@ -64,33 +64,27 @@
 ## Eventually we need to also support these features:
 ## @deftypefnx {} {zoom_object_handle =} zoom (@var{hfig})
 
-function zoom (varargin)
+function h = zoom (hfig, option)
 
-  nargs = nargin;
-  if (nargs > 2)
-    print_usage ();
-  endif
-
-  if (nargs == 1 && nargout > 0 && isfigure (varargin{1}))
+  ## FIXME: Presumably should implement this for Matlab compatibility.
+  if (nargin == 1 && nargout > 0 && isfigure (hfig))
     error ("zoom: syntax 'handle = zoom (hfig)' not implemented");
   endif
 
-  hfig = NaN;
-  if (nargs == 2)
-    hfig = varargin{1};
-    if (isfigure (hfig))
-      varargin(1) = [];
-      nargs -= 1;
+  if (nargin == 0)
+    hfig = gcf ();
+  else
+    if (nargin == 1)
+      option = hfig;
+      hfig = gcf ();
     else
-      error ("zoom: invalid figure handle HFIG");
+      if (! isfigure (hfig))
+        error ("zoom: invalid figure handle HFIG");
+      endif
     endif
   endif
 
-  if (isnan (hfig))
-    hfig = gcf ();
-  endif
-
-  if (nargs == 0)
+  if (nargin == 0)
     zm = get (hfig, "__zoom_mode__");
     if (strcmp (zm.Enable, "on"))
       zm.Enable = "off";
@@ -99,10 +93,9 @@ function zoom (varargin)
     endif
     set (hfig, "__zoom_mode__", zm);
     update_mouse_mode (hfig, zm.Enable);
-  elseif (nargs == 1)
-    arg = varargin{1};
-    if (isnumeric (arg))
-      factor = arg;
+  else
+    if (isnumeric (option))
+      factor = option;
       switch (numel (factor))
         case 2
           xfactor = factor(1);
@@ -110,10 +103,10 @@ function zoom (varargin)
         case 1
           xfactor = yfactor = factor;
         otherwise
-          error ("zoom: invalid FACTOR");
+          error ("zoom: FACTOR must be a 1- or 2-element vector");
       endswitch
-      if (xfactor < 0 || yfactor < 0)
-        error ("zoom: FACTOR must be greater than 1");
+      if (xfactor <= 0 || yfactor <= 0)
+        error ("zoom: FACTOR must be greater than 0");
       elseif (xfactor == 1 && yfactor == 1)
         return;
       endif
@@ -132,13 +125,13 @@ function zoom (varargin)
         endif
         __zoom__ (cax, mode, factor);
       endif
-    elseif (ischar (arg))
-      switch (arg)
+    elseif (ischar (option))
+      switch (option)
         case {"on", "off", "xon", "yon"}
           zm = get (hfig, "__zoom_mode__");
-          switch (arg)
+          switch (option)
             case {"on", "off"}
-              zm.Enable = arg;
+              zm.Enable = option;
               zm.Motion = "both";
             case "xon"
               zm.Enable = "on";
@@ -148,7 +141,7 @@ function zoom (varargin)
               zm.Motion = "vertical";
           endswitch
           set (hfig, "__zoom_mode__", zm);
-          update_mouse_mode (hfig, arg);
+          update_mouse_mode (hfig, option);
         case "out"
           cax = get (hfig, "currentaxes");
           if (! isempty (cax))
@@ -160,10 +153,10 @@ function zoom (varargin)
             __zoom__ (cax, "reset");
           endif
         otherwise
-          error ("zoom: unrecognized OPTION '%s'", arg);
+          error ("zoom: unrecognized OPTION '%s'", option);
       endswitch
     else
-      error ("zoom: wrong type argument '%s'", class (arg));
+      error ("zoom: OPTION must be a number or a string");
     endif
   endif
 
@@ -176,8 +169,8 @@ function update_mouse_mode (hfig, arg)
   else
     ## FIXME: Is there a better way other than calling these functions
     ##        to set the other mouse mode Enable fields to "off"?
-    pan ("off");
-    rotate3d ("off");
+    pan (hfig, "off");
+    rotate3d (hfig, "off");
     set (hfig, "__mouse_mode__", "zoom");
   endif
 

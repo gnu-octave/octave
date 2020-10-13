@@ -107,7 +107,7 @@ function hg = __rectangle__ (hax, varargin)
         pos = varargin{iarg+1};
         varargin(iarg:iarg+1) = [];
         if (! isvector (pos) || numel (pos) != 4)
-          error ("rectangle: position must be a 4 element vector");
+          error ("rectangle: position must be a 4-element vector");
         endif
       elseif (strcmpi (arg, "curvature"))
         curv2 = varargin{iarg+1};

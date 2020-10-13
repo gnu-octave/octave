@@ -217,9 +217,8 @@ function varargout = annotation (varargin)
 
   ## options
   opts = varargin;
-  nopts = numel (opts);
   if (! isempty (opts))
-    if (fix (nopts/2) != nopts/2 || ! all (cellfun (@ischar, opts(1:2:end))))
+    if (mod (numel (opts), 2) != 0 || ! all (cellfun (@ischar, opts(1:2:end))))
       warning ("annotation: couldn't parse PROP/VAL pairs, skipping");
       opts = {};
     endif

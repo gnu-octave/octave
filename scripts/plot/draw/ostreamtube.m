@@ -97,8 +97,6 @@ function h = ostreamtube (varargin)
   options = [];
   xyz = [];
   switch (nargin)
-    case 0
-      print_usage ();
     case 6
       [u, v, w, spx, spy, spz] = varargin{:};
       [m, n, p] = size (u);
@@ -118,7 +116,7 @@ function h = ostreamtube (varargin)
     case 10
       [x, y, z, u, v, w, spx, spy, spz, options] = varargin{:};
     otherwise
-      error ("ostreamtube: invalid number of inputs");
+      print_usage ();
   endswitch
 
   scale = 1;
@@ -131,7 +129,7 @@ function h = ostreamtube (varargin)
         scale = options(1);
         num_circum = options(2);
       otherwise
-        error ("ostreamtube: invalid number of OPTIONS elements");
+        error ("ostreamtube: OPTIONS must be a 1- or 2-element vector");
     endswitch
 
     if (! isreal (scale) || scale <= 0)
@@ -358,12 +356,12 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> ostreamtube ()
-%!error <invalid number of inputs> ostreamtube (1)
-%!error <invalid number of inputs> ostreamtube (1,2)
-%!error <invalid number of inputs> ostreamtube (1,2,3)
-%!error <invalid number of inputs> ostreamtube (1,2,3,4)
-%!error <invalid number of inputs> ostreamtube (1,2,3,4,5)
-%!error <invalid number of OPTIONS> ostreamtube (1,2,3,4,5,6,[1,2,3])
+%!error <Invalid call> ostreamtube (1)
+%!error <Invalid call> ostreamtube (1,2)
+%!error <Invalid call> ostreamtube (1,2,3)
+%!error <Invalid call> ostreamtube (1,2,3,4)
+%!error <Invalid call> ostreamtube (1,2,3,4,5)
+%!error <OPTIONS must be a 1- or 2-element> ostreamtube (1,2,3,4,5,6,[1,2,3])
 %!error <SCALE must be a real scalar . 0> ostreamtube (1,2,3,4,5,6,[1i])
 %!error <SCALE must be a real scalar . 0> ostreamtube (1,2,3,4,5,6,[0])
 %!error <N must be greater than 2> ostreamtube (1,2,3,4,5,6,[1,1i])

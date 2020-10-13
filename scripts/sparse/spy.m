@@ -29,17 +29,17 @@
 ## @deftypefnx {} {} spy (@dots{}, @var{line_spec})
 ## Plot the sparsity pattern of the sparse matrix @var{x}.
 ##
-## If the argument @var{markersize} is given as a scalar value, it is used to
-## determine the point size in the plot.
+## If the optional numeric argument @var{markersize} is given, it determines
+## the size of the markers used in the plot.
 ##
-## If the string @var{line_spec} is given it is passed to @code{plot} and
-## determines the appearance of the plot.
+## If the optional string @var{line_spec} is given it is passed to @code{plot}
+## and determines the appearance of the plot.
 ## @seealso{plot, gplot}
 ## @end deftypefn
 
 function spy (x, varargin)
 
-  if (nargin < 1)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
@@ -49,21 +49,22 @@ function spy (x, varargin)
   else
     line_spec = ".";
   endif
-  for i = 1:length (varargin)
-    if (ischar (varargin{i}))
-      if (length (varargin{i}) == 1)
-        line_spec = [line_spec, varargin{i}];
+  for arg = varargin
+    arg = arg{1};
+    if (ischar (arg))
+      if (numel (arg) == 1)
+        line_spec = [line_spec, arg];
       else
-        line_spec = varargin{i};
+        line_spec = arg;
       endif
-    elseif (isscalar (varargin{i}))
-      markersize = varargin{i};
+    elseif (isreal (arg) && isscalar (arg))
+      markersize = arg;
     else
       error ("spy: expected markersize or linespec");
     endif
   endfor
 
-  [i, j, s] = find (x);
+  [i, j] = find (x);
   [m, n] = size (x);
 
   if (isnan (markersize))
@@ -73,6 +74,7 @@ function spy (x, varargin)
   endif
 
   axis ([0, n+1, 0, m+1], "ij");
+  xlabel (sprintf ("nnz = %d", nnz (x)));
 
 endfunction
 
@@ -81,5 +83,6 @@ endfunction
 %! clf;
 %! spy (sprand (10,10, 0.2));
 
-## Mark graphical function as tested by demo block
-%!assert (1)
+## Test input validation
+%!error <Invalid call> spy ()
+%!error <Invalid call> spy (1,2,3,4)

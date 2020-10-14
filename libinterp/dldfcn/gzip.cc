@@ -783,7 +783,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!function test_xzip_dir (test_dir, z) # bug #43431
 %!  fpaths = fullfile (test_dir, {"test1", "test2", "test3"});
 %!  md5s = cell (1, 3);
-%!  for idx = 1:numel(fpaths)
+%!  for idx = 1:numel (fpaths)
 %!    create_file (fpaths{idx}, rand (100, 1));
 %!    md5s(idx) = hash ("md5", fileread (fpaths{idx}));
 %!  endfor
@@ -793,7 +793,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  z_files = strcat (fpaths, z.ext);
 %!  z_filelist = z.zip (test_dir);
 %!  assert (sort (z_filelist), z_files(:))
-%!  for idx = 1:numel(fpaths)
+%!  for idx = 1:numel (fpaths)
 %!    assert (exist (z_files{idx}), 2)
 %!    unlink_or_error (fpaths{idx});
 %!  endfor
@@ -803,12 +803,12 @@ The optional output @var{filelist} is a list of the compressed files.
 %!    uz_filelist = z.unzip (test_dir);
 %!  else
 %!    uz_filelist = cell (1, numel (z_filelist));
-%!    for idx = 1:numel(z_filelist)
+%!    for idx = 1:numel (z_filelist)
 %!      uz_filelist(idx) = z.unzip (z_filelist{idx});
 %!    endfor
 %!  endif
 %!  assert (sort (uz_filelist), fpaths(:)) # bug #48598
-%!  for idx = 1:numel(fpaths)
+%!  for idx = 1:numel (fpaths)
 %!    assert (hash ("md5", fileread (fpaths{idx})), md5s{idx})
 %!  endfor
 %!endfunction
@@ -826,7 +826,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!    error ("unable to create directory for test");
 %!  endif
 %!  unwind_protect
-%!    for idx = 1:numel(out_dirs)
+%!    for idx = 1:numel (out_dirs)
 %!      out_dir = out_dirs{idx};
 %!      uz_file = fullfile (out_dir, filename);
 %!      z_file = [uz_file z.ext];
@@ -842,7 +842,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!    endfor
 %!  unwind_protect_cleanup
 %!    confirm_recursive_rmdir (false, "local");
-%!    for idx = 1:numel(out_dirs)
+%!    for idx = 1:numel (out_dirs)
 %!      sts = rmdir (out_dirs{idx}, "s");
 %!    endfor
 %!  end_unwind_protect

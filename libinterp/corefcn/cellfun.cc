@@ -1551,14 +1551,14 @@ arrayfun (@@str2num, [1234],
 %! A = arrayfun (@(x,y) x.a:y.a, a, b, "UniformOutput", false);
 %! assert (isequal (A, {[1.1, 2.1, 3.1]}));
 %!test
-%! A = arrayfun (@(x) mat2str(x), "a", "ErrorHandler", @__arrayfunerror);
+%! A = arrayfun (@(x) mat2str (x), "a", "ErrorHandler", @__arrayfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);
 %! assert (isfield (A, "index"), true);
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
 %!test  # Overwriting setting of "UniformOutput" true
-%! A = arrayfun (@(x) mat2str(x), "a", "UniformOutput", true, ...
+%! A = arrayfun (@(x) mat2str (x), "a", "UniformOutput", true, ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);

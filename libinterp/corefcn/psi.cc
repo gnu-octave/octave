@@ -175,7 +175,7 @@ can have any value real or complex value.  However, for polygamma functions
 ## "Introduction to the Gamma Function"
 
 ## Interesting identities of the digamma function, in section of 5.1.3
-%!assert (psi (1/3), - em - (3/2) * log(3) - ((sqrt (3) / 6) * pi), eps*10)
+%!assert (psi (1/3), - em - (3/2) * log (3) - ((sqrt (3) / 6) * pi), eps*10)
 %!assert (psi (1/4), - em -3 * log (2) - pi/2, eps*10)
 %!assert (psi (1/6), - em -2 * log (2) - (3/2) * log (3) - ((sqrt (3) / 2) * pi), eps*10)
 

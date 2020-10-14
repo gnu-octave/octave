@@ -841,7 +841,7 @@ exp (z^2) * erfc (z)
 
 %!test
 %! x = [1+2i,-1+2i,1e-6+2e-6i,0+2i];
-%! assert (erfcx (x), exp (x.^2) .* erfc(x), -1.e-10);
+%! assert (erfcx (x), exp (x.^2) .* erfc (x), -1.e-10);
 
 %!test
 %! x = [100, 100+20i];
@@ -883,7 +883,7 @@ $$
 
 %!test
 %! x = [-0.1, 0.1, 1, 1+2i,-1+2i,1e-6+2e-6i,0+2i];
-%! assert (erfi (x), -i * erf(i*x), -1.e-10);
+%! assert (erfi (x), -i * erf (i*x), -1.e-10);
 
 %!error erfi ()
 %!error erfi (1, 2)

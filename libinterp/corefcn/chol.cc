@@ -581,11 +581,11 @@ diagonal elements.  @code{chol2inv (@var{U})} provides
 %! sparse_chol2inv (B, eps*100);
 
 %!testif HAVE_CHOLMOD
-%! C = gallery("tridiag", 5);
+%! C = gallery ("tridiag", 5);
 %! sparse_chol2inv (C, eps*10);
 
 %!testif HAVE_CHOLMOD
-%! D = gallery("wathen", 1, 1);
+%! D = gallery ("wathen", 1, 1);
 %! sparse_chol2inv (D, eps*10^4);
 
 */

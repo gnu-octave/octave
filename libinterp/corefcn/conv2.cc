@@ -550,18 +550,18 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %!    925  1976  2363  1971  1636  1600  1844  2239  1664   626
 %!    372  1133  1558  1687  1570  1401  1243  1122   883   264
 %!     60   270   556   857  1024   870   569   282    66     0];
-%!assert (convn(a, b, "full"), c)
-%!assert (convn(a, b, "same"), c(3:6,2:9,2:5,:))
-%!assert (convn(a, b, "valid"), c(4,3:8,3:4,:))
+%!assert (convn (a, b, "full"), c)
+%!assert (convn (a, b, "same"), c(3:6,2:9,2:5,:))
+%!assert (convn (a, b, "valid"), c(4,3:8,3:4,:))
 
 ## test correct class
-%!assert (class (convn (rand(5), rand(3))), "double")
-%!assert (class (convn (rand(5, "single"), rand(3))), "single")
-%!assert (class (convn (rand(5), rand(3, "single"))), "single")
-%!assert (class (convn (true (5), rand(3))), "double")
-%!assert (class (convn (true (5), rand(3, "single"))), "single")
-%!assert (class (convn (ones(5, "uint8"), rand(3))), "double")
-%!assert (class (convn (rand (3, "single"), ones(5, "uint8"))), "single")
+%!assert (class (convn (rand (5), rand (3))), "double")
+%!assert (class (convn (rand (5, "single"), rand (3))), "single")
+%!assert (class (convn (rand (5), rand (3, "single"))), "single")
+%!assert (class (convn (true (5), rand (3))), "double")
+%!assert (class (convn (true (5), rand (3, "single"))), "single")
+%!assert (class (convn (ones (5, "uint8"), rand (3))), "double")
+%!assert (class (convn (rand (3, "single"), ones (5, "uint8"))), "single")
 
 %!error convn ()
 %!error convn (1)

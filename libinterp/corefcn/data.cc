@@ -2213,8 +2213,8 @@ new matrices.  For example:
 
 %!error horzcat (struct ("foo", "bar"), cell (1))
 
-%!test <*39041> assert (class (horzcat (cell(0), struct())), "cell")
-%!test <51086> assert (class (horzcat (struct(), cell(0))), "struct")
+%!test <*39041> assert (class (horzcat (cell (0), struct ())), "cell")
+%!test <51086> assert (class (horzcat (struct (), cell (0))), "struct")
 */
 
 DEFUN (vertcat, args, ,
@@ -2796,10 +2796,10 @@ Return the number of nonzero elements in @var{a}.
 %!assert (nnz (-5:0), 5)
 %!assert (nnz (-5:5), 10)
 %!assert (nnz (-2:1:2), 4)
-%!assert (nnz (-2+eps(2):1:2), 5)
-%!assert (nnz (-2-eps(2):1:2), 5)
-%!assert (nnz (-2:1+eps(1):2), 5)
-%!assert (nnz (-2:1-eps(1):2), 5)
+%!assert (nnz (-2+eps (2):1:2), 5)
+%!assert (nnz (-2-eps (2):1:2), 5)
+%!assert (nnz (-2:1+eps (1):2), 5)
+%!assert (nnz (-2:1-eps (1):2), 5)
 %!assert (nnz ([1:5] * 0), 0)
 %!assert (nnz ([-5:-1] * 0), 0)
 %!assert (nnz ([-1:1] * 0), 0)
@@ -3631,7 +3631,7 @@ zero).
 
 /*
 ## Debian bug #706376
-%!assert (isempty (speye(2^16)), false)
+%!assert (isempty (speye (2^16)), false)
 */
 
 DEFUN (isnumeric, args, ,

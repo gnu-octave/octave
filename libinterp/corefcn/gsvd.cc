@@ -319,7 +319,7 @@ and zggsvd routines.
 %! B = B0;
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
-%! D1 = zeros(5, 3);  D1(1:3, 1:3) = C;
+%! D1 = zeros (5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
@@ -329,7 +329,7 @@ and zggsvd routines.
 %!test <48807>
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
-%! D1 = zeros(5, 2);  D1(1:2, 1:2) = C;
+%! D1 = zeros (5, 2);  D1(1:2, 1:2) = C;
 %! D2 = [S; zeros(1, 2)];
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*[zeros(2, 1) R]) <= 1e-6);
@@ -351,8 +351,8 @@ and zggsvd routines.
 %!test <48807>
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
-%! D1 = zeros(3, 5); D1(1, 1) = 1; D1(2:3, 2:3) = C;
-%! D2 = zeros(5, 5); D2(1:2, 2:3) = S; D2(3:4, 4:5) = eye (2);
+%! D1 = zeros (3, 5); D1(1, 1) = 1; D1(2:3, 2:3) = C;
+%! D2 = zeros (5, 5); D2(1:2, 2:3) = S; D2(3:4, 4:5) = eye (2);
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
@@ -374,7 +374,7 @@ and zggsvd routines.
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
 %! [U, V, X, C, S, R]=gsvd (A, B);
-%! D1 = zeros(3, 4); D1(1:3, 1:3) = C;
+%! D1 = zeros (3, 4); D1(1:3, 1:3) = C;
 %! D2 = eye (4); D2(1:3, 1:3) = S; D2(5,:) = 0;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*[zeros(4, 1) R]) <= 1e-6);
@@ -387,7 +387,7 @@ and zggsvd routines.
 %! A = A0;
 %! B = B0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
-%! D1 = zeros(5, 3);  D1(1:3, 1:3) = C;
+%! D1 = zeros (5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
@@ -397,7 +397,7 @@ and zggsvd routines.
 %!test <48807>
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
-%! D1 = zeros(5, 3);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
+%! D1 = zeros (5, 3);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
 %! D2 = [zeros(2, 1) S; zeros(1, 3)];
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
@@ -408,7 +408,7 @@ and zggsvd routines.
 %! B = B0;
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
-%! D1 = zeros(5, 3);  D1(1:3, 1:3) = C;
+%! D1 = zeros (5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
@@ -418,7 +418,7 @@ and zggsvd routines.
 %!test <48807>
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
-%! D1 = zeros(5, 2);  D1(1:2, 1:2) = C;
+%! D1 = zeros (5, 2);  D1(1:2, 1:2) = C;
 %! D2 = [S; zeros(1, 2)];
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*[zeros(2, 1) R]) <= 1e-6);
@@ -441,8 +441,8 @@ and zggsvd routines.
 %!test <48807>
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
-%! D1 = zeros(3, 5);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
-%! D2 = zeros(5,5);  D2(1:2, 2:3) = S;  D2(3:4, 4:5) = eye (2);
+%! D1 = zeros (3, 5);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
+%! D2 = zeros (5,5);  D2(1:2, 2:3) = S;  D2(3:4, 4:5) = eye (2);
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
@@ -452,8 +452,8 @@ and zggsvd routines.
 %! B = B0;
 %! A(3, :) = 2*A(1, :) - A(2, :);
 %! [U, V, X, C, S, R] = gsvd (A, B);
-%! D1 = zeros(3, 5);  D1(1:3, 1:3) = C;
-%! D2 = zeros(5,5);  D2(1:3, 1:3) = S;  D2(4:5, 4:5) = eye (2);
+%! D1 = zeros (3, 5);  D1(1:3, 1:3) = C;
+%! D2 = zeros (5,5);  D2(1:3, 1:3) = S;  D2(4:5, 4:5) = eye (2);
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*R) <= 1e-6);
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
@@ -465,7 +465,7 @@ and zggsvd routines.
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
-%! D1 = zeros(3, 4);  D1(1:3, 1:3) = C;
+%! D1 = zeros (3, 4);  D1(1:3, 1:3) = C;
 %! D2 = eye (4);  D2(1:3, 1:3) = S;  D2(5,:) = 0;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*[zeros(4, 1) R]) <= 1e-6);

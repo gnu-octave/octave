@@ -532,22 +532,22 @@ The eigenvalues returned by @code{eig} are not ordered.
 ## column vector if 1 output is specified
 %!function test_shapes (args)
 %!  d = eig (args{:});
-%!  assert (isvector(d))
+%!  assert (isvector (d))
 %!  d2 = eig (args{:}, "vector");
-%!  assert (isvector(d2))
+%!  assert (isvector (d2))
 %!  [v, d3] = eig (args{:});
-%!  assert (isdiag(d3))
+%!  assert (isdiag (d3))
 %!  d4 = eig (args{:}, "matrix");
-%!  assert (isdiag(d4))
+%!  assert (isdiag (d4))
 %!  [v, d5, w] = eig (args{:});
-%!  assert (isdiag(d5))
+%!  assert (isdiag (d5))
 %!  d6 = eig (args{:}, "matrix");
-%!  assert (isdiag(d6))
+%!  assert (isdiag (d6))
 %!  assert (d, d2)
 %!  assert (d3, d4)
 %!  assert (d5, d6)
-%!  assert (d, diag(d3))
-%!  assert (d, diag(d5))
+%!  assert (d, diag (d3))
+%!  assert (d, diag (d5))
 %!endfunction
 
 %!function shapes_AEP (A)

@@ -564,8 +564,8 @@ octave_map::reshape (const dim_vector& dv) const
 %! reshape (x, 3, 8, 1, 1);
 
 %!test <*46385>
-%! M = repmat (struct ('a', ones(100), 'b', true), 1, 2);
-%! M = repmat(M, 1, 2);
+%! M = repmat (struct ('a', ones (100), 'b', true), 1, 2);
+%! M = repmat (M, 1, 2);
 %! assert (size (M), [1, 4]);
 
 libinterp/corefcn/oct-map.cc

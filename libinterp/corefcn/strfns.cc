@@ -870,7 +870,7 @@ risk of using @code{eval} on unknown data.
 %!assert (str2double (zeros (3,1,2)), NaN)
 %!assert (str2double (''), NaN)
 %!assert (str2double ([]), NaN)
-%!assert (str2double (char(zeros(3,0))), NaN)
+%!assert (str2double (char (zeros (3,0))), NaN)
 */
 
 DEFUN (__native2unicode__, args, ,

@@ -187,7 +187,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg)
     if ((columns (V) > na) && (length (alpha) == na))
       ## Trim to size.
       V = V(:,1:na);
-    elseif (columns(V) > na)
+    elseif (columns (V) > na)
       krylov_V = V;
       krylov_na = na;
       krylov_length_alpha = length (alpha);
@@ -198,7 +198,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg)
       ## Construct next Q and multiply.
       Q = zeros (size (V));
       for kk = 1:columns (Q)
-        Q(pivot_vec(nu-columns(Q)+kk),kk) = 1;
+        Q(pivot_vec(nu-columns (Q)+kk),kk) = 1;
       endfor
 
       ## Apply Householder reflections.
@@ -218,7 +218,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg)
       hv = U(:,i);
       av = alpha(i);
       V -= av*hv*(hv'*V);
-      H(i,nu-columns(V)+(1:columns(V))) = V(pivot_vec(i),:);
+      H(i,nu-columns (V)+(1:columns (V))) = V(pivot_vec(i),:);
     endfor
 
   endwhile

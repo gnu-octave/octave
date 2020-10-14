@@ -363,7 +363,7 @@ endfunction
 %! patch (fv, "FaceColor", "g");
 %! view (3);  axis equal;
 %! title ("Sphere with all faces");
-%! ax2 = subplot(1, 2, 2);
+%! ax2 = subplot (1, 2, 2);
 %! patch (reducepatch (fv, 72), "FaceColor", "g");
 %! view (3);  axis equal;
 %! title ("Sphere with reduced number of faces");

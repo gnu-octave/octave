@@ -217,7 +217,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   norm_b = norm (b, 2);
   if (norm_b == 0)
     if (nargout < 2)
-      printf("The right hand side vector is all zero so tfqmr \n")
+      printf ("The right hand side vector is all zero so tfqmr \n")
       printf ("returned an all zero solution without iterating.\n")
     endif
     x_min = zeros (numel (b), 1);
@@ -242,7 +242,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   it = 1;
 
   try
-    warning("error", "Octave:singular-matrix", "local");
+    warning ("error", "Octave:singular-matrix", "local");
     u_hat = feval (M1fun, u, varargin{:});
     u_hat = feval (M2fun, u_hat, varargin{:});
     v = feval (Afun, u_hat, varargin{:});
@@ -306,8 +306,8 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   resvec = resvec (1: (iter + 1));
 
   relres = resvec (iter_min + 1) / norm (b);
-  iter_min = floor(iter_min / 2); # compatibility, since it
-                                  # makes two times the effective iterations
+  iter_min = floor (iter_min / 2); # compatibility, since it
+                                   # makes two times the effective iterations
 
   if (relres <= tol)
     flag = 0;
@@ -456,11 +456,11 @@ endfunction
 
 %!test
 %!function y = Afun (x)
-%!   A = toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]);
-%!   y = A * x;
+%!  A = toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]);
+%!  y = A * x;
 %!endfunction
 %! [x, flag] = tfqmr ("Afun", [1; 2; 2; 3]);
-%! assert (x, ones(4, 1), 1e-6)
+%! assert (x, ones (4, 1), 1e-6)
 
 %!test # unpreconditioned residual
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));

@@ -227,7 +227,7 @@ endfunction
 function x = newton_method (F, JF, x0, a, b, y, tol, maxit);
   l = numel (y);
   res = -F (x0, a, b, y) ./ JF (x0, a, b);
-  todo = (abs(res) >= tol * abs (x0));
+  todo = (abs (res) >= tol * abs (x0));
   x = x0;
   it = 0;
   while (any (todo) && (it < maxit))
@@ -235,7 +235,7 @@ function x = newton_method (F, JF, x0, a, b, y, tol, maxit);
     x(todo) += res(todo);
     res(todo) = -F(x(todo), a(todo), b(todo), y(todo)) ...
                 ./ JF (x(todo), a(todo), b(todo));
-    todo = (abs(res) >= tol * abs (x));
+    todo = (abs (res) >= tol * abs (x));
   endwhile
   x += res;
 endfunction

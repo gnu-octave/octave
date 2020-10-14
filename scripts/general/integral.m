@@ -181,13 +181,13 @@ function q = integral (f, a, b, varargin)
 
       ## FIXME: Replace warning when have array compatible call with waypoints
       if (! isempty (waypoints))
-        warning(["integral: array-valued quadrature routine currently ", ...
+        warning (["integral: array-valued quadrature routine currently ", ...
                  "unable to handle WayPoints.  WayPoints are ignored."]);
       endif
 
       ## FIXME: Remove warning once we have reltol compatible arrayval'd quadfn
       if (! isempty (reltol))
-        warning(["integral: array-valued quadrature only accepts AbsTol.", ...
+        warning (["integral: array-valued quadrature only accepts AbsTol.", ...
                  "  RelTol ignored."]);
       endif
       if (isempty (abstol))
@@ -243,7 +243,7 @@ endfunction
 %! assert (integral (@(x) f(x,5), 0, 2), -0.4605015338467329, 1e-10);
 
 %!test  # with tolerances
-%! f = @(x) log(x);
+%! f = @(x) log (x);
 %! assert (integral (@(x) f(x), 0, 1, "AbsTol", 1e-6), -1, 1e-6);
 
 %!test  # waypoints
@@ -256,11 +256,11 @@ endfunction
 %!         1e-10);
 
 %!test  # test single input/output
-%! assert (integral (@sin, 0, 1), cos(0)-cos(1), 1e-10);
+%! assert (integral (@sin, 0, 1), cos (0)-cos (1), 1e-10);
 %! assert (class (integral (@sin, single (0), 1)), "single");
 %! assert (class (integral (@sin, 0, single (1))), "single");
 %! assert (class (integral (@sin, single (0), single (1))), "single");
-%! assert (integral (@sin, 0, 1, "Waypoints", 0.5), cos(0)-cos(1), 1e-10);
+%! assert (integral (@sin, 0, 1, "Waypoints", 0.5), cos (0)-cos (1), 1e-10);
 %! assert (class (integral (@sin, 0, 1, "Waypoints", single (0.5))), "single");
 %! assert (class (integral (@sin, single (0), 1, "Waypoints", 0.5)), "single");
 %! assert (class (integral (@sin, 0, single (1), "Waypoints", 0.5)), "single");

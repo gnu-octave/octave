@@ -100,7 +100,7 @@ function opts = __opengl_print__ (opts)
         cmd_pstoedit = opts.pstoedit_cmd (opts, "fig", false);
         [~, ~, ext] = fileparts (opts.name);
         if (any (strcmpi (ext, {".ps", ".tex", "."})))
-          opts.name = opts.name(1:end-numel(ext));
+          opts.name = opts.name(1:end-numel (ext));
         endif
         opts.name = [opts.name ".ps"];
         cmd = sprintf ('%s | %s > "%s"', cmd_pstoedit, cmd_fig2dev, opts.name);
@@ -109,7 +109,7 @@ function opts = __opengl_print__ (opts)
         cmd_fig2dev = opts.fig2dev_cmd (opts, "pstex_t");
         gl2ps_device{2} = "eps";
         pipeline{2} = sprintf ('%s | %s > "%s"', cmd_pstoedit,
-                               cmd_fig2dev, strrep(opts.name, ".ps", ".tex"));
+                               cmd_fig2dev, strrep (opts.name, ".ps", ".tex"));
       else
         ## Using svgconvert
         tmp = tempname ();

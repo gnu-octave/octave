@@ -1557,7 +1557,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:0.1:7;
-%! h = plot (x,sin(x), x,cos(x), x,sin(x.^2/10), x,cos(x.^2/10));
+%! h = plot (x,sin (x), x,cos (x), x,sin (x.^2/10), x,cos (x.^2/10));
 %! title ("Only the sin() objects have keylabels");
 %! legend (h([1, 3]), {"sin (x)", "sin (x^2/10)"}, "location", "southwest");
 

@@ -241,7 +241,7 @@ function q = integral3 (f, xa, xb, ya, yb, za, zb, varargin)
     if (! (isreal (za) && isscalar (za)))
       error ("integral3: ZA must be a real scalar or a function");
     endif
-    za = @(x, y) za * ones (size(y));
+    za = @(x, y) za * ones (size (y));
   endif
   if (! is_function_handle (zb))
     if (! (isreal (zb) && isscalar (zb)))

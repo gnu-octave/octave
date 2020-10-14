@@ -138,7 +138,7 @@ endfunction
 %! z = peaks (x, y);
 %! tri = delaunay (x(:), y(:));
 %! trisurf (tri, x(:), y(:), z(:));
-%! title ("trisurf() of sparsely-sampled triangulation of peaks()");
+%! title ("trisurf () of sparsely-sampled triangulation of peaks ()");
 
 %!demo
 %! clf;

@@ -254,7 +254,7 @@ endfunction
 %! ha = axes ();
 %! hp = patch ("Vertices", vertices, "Faces", faces, "FaceColor", "g");
 %! xlabel ("x"), ylabel ("y"), zlabel ("z");
-%! view(3);
+%! view (3);
 %! set (ha, "XTick", [], "YTick", [], "ZTick", []);
 %! text (vertices(1,1), vertices(1,2), vertices(1,3), "1");
 %! text (vertices(2,1), vertices(2,2), vertices(2,3), "2");

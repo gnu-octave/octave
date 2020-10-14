@@ -288,15 +288,15 @@ endfunction
 function print_formatted_table (table)
   printf ("\n Func-count     x          f(x)         Procedure\n");
   for row=table
-    printf("%5.5s        %7.7s    %8.8s\t%s\n",
-           int2str (row.funccount), num2str (row.x,"%.5f"),
-           num2str (row.fx,"%.6f"), row.procedure);
+    printf ("%5.5s        %7.7s    %8.8s\t%s\n",
+            int2str (row.funccount), num2str (row.x,"%.5f"),
+            num2str (row.fx,"%.6f"), row.procedure);
   endfor
   printf ("\n");
 endfunction
 
 ## Print either a success termination message or bad news
-function print_exit_msg (info, opt=struct())
+function print_exit_msg (info, opt=struct ())
   printf ("");
   switch (info)
     case 1

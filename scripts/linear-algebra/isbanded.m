@@ -69,9 +69,9 @@ endfunction
 
 %!assert (isbanded ([1, 1],1,1))
 %!assert (isbanded ([1; 1],1,1))
-%!assert (isbanded (eye(10),0,0))
-%!assert (isbanded (eye(10),1,1))
-%!assert (isbanded (i*eye(10),1,1))
+%!assert (isbanded (eye (10),0,0))
+%!assert (isbanded (eye (10),1,1))
+%!assert (isbanded (i*eye (10),1,1))
 %!assert (isbanded (logical (eye (10)),1,1))
 
 %! A = [2 3 0 0 0; 1 2 3 0 0; 0 1 2 3 0; 0 0 1 2 3; 0 0 0 1 2];

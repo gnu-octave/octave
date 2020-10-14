@@ -388,11 +388,11 @@ endfunction
 
 ## With empty options
 %!testif HAVE_SUNDIALS
-%! opt = odeset();
+%! opt = odeset ();
 %! [t, y] = ode15i (@rob, [0, 1e6, 2e6, 3e6, 4e6], [1; 0; 0],
 %!                  [-1e-4; 1e-4; 0], opt);
 %! assert ([t(end), y(end,:)], fref2, 1e-3);
-%! opt = odeset();
+%! opt = odeset ();
 
 ## Without options
 %!testif HAVE_SUNDIALS

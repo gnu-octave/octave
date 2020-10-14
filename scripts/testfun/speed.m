@@ -243,7 +243,7 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
         __t = min ([__t, __t2, __t3]);
       endif
       __torig(k) = __t;
-      if (! isinf(__tol))
+      if (! isinf (__tol))
         assert (__v1, __v2, __tol);
       endif
     endif
@@ -403,7 +403,7 @@ endfunction
 %! fstr_build = cstrcat (
 %!   "function x = build (n)\n",
 %!   "  idx = [1:100]';\n",
-%!   "  x = idx(:,ones(1,n));\n",
+%!   "  x = idx(:,ones (1,n));\n",
 %!   "  x = reshape (x, 1, n*100);\n",
 %!   "endfunction");
 %!

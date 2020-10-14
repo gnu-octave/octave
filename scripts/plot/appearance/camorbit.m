@@ -219,7 +219,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   sphere ();
-%!   camorbit(20, 30, "camera")
+%!   camorbit (20, 30, "camera")
 %!   p = campos ();
 %!   u = camup ();
 %!   ## Matlab 2008a

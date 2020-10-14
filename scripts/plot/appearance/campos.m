@@ -145,7 +145,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   sphere();
+%!   sphere ();
 %!   p_orig = campos ();
 %!   m = campos ("mode");
 %!   assert (strcmp (m, "auto"));

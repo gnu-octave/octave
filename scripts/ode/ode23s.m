@@ -283,7 +283,7 @@ endfunction
 %! [vt, vy] = ode23s (fun, [0 20], [2 0]);
 %! toc ()
 %! ## Plotting the result
-%! plot(vt,vy(:,1),'-o');
+%! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demo function: stiff Van Der Pol equation
@@ -295,7 +295,7 @@ endfunction
 %! [vt, vy] = ode23s (fun, [0 20], [2 0], odeopts);
 %! toc ()
 %! ## Plotting the result
-%! plot(vt,vy(:,1),'-o');
+%! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demo function: stiff Van Der Pol equation
@@ -306,7 +306,7 @@ endfunction
 %! [vt, vy] = ode23s (fun, [0 200], [2 0]);
 %! toc ()
 %! ## Plotting the result
-%! plot(vt,vy(:,1),'-o');
+%! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demo function: stiff Van Der Pol equation
@@ -318,7 +318,7 @@ endfunction
 %! [vt, vy] = ode23s (fun, [0 200], [2 0], odeopts);
 %! toc ()
 %! ## Plotting the result
-%! plot(vt,vy(:,1),'-o');
+%! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demonstrate convergence order for ode23s

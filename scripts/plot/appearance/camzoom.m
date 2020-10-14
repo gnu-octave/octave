@@ -114,7 +114,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   sphere();
+%!   sphere ();
 %!   x = camva ();
 %!   camzoom (2);
 %!   y = camva ();

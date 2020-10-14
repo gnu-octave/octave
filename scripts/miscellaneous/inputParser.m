@@ -441,7 +441,7 @@ classdef inputParser < handle
           else
             this.error (sprintf (["failed validation of %s\n", ...
                                   "Validation function: %s"],
-                                 toupper (opt.name), disp(opt.val)));
+                                 toupper (opt.name), disp (opt.val)));
           endif
         endif
         this.Results.(opt.name) = in;

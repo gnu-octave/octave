@@ -47,7 +47,7 @@
 function response = webwrite (url, varargin)
 
   if (nargin < 2)
-    print_usage();
+    print_usage ();
   endif
 
   if (! (ischar (url) && isrow (url)))

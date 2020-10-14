@@ -667,9 +667,9 @@ endfunction
 %! assert (fmin, c' * xmin);
 %! assert (A * xmin, b);
 
-%!error<C .* finite values> glpk(NaN, 2, 3)
-%!error<A must be finite> glpk(1, NaN, 3)
-%!error<B must be finite> glpk(1, 2, NaN)
-%!error<LB must be a real-valued> glpk(1, 2, 3, NaN)
-%!error<UB must be a real-valued> glpk(1, 2, 3, 4, NaN)
-%!error<SENSE must be .* integer> glpk(1, 2, 3, 4, 5, "F", "C", NaN)
+%!error <C .* finite values> glpk (NaN, 2, 3)
+%!error <A must be finite> glpk (1, NaN, 3)
+%!error <B must be finite> glpk (1, 2, NaN)
+%!error <LB must be a real-valued> glpk (1, 2, 3, NaN)
+%!error <UB must be a real-valued> glpk (1, 2, 3, 4, NaN)
+%!error <SENSE must be .* integer> glpk (1, 2, 3, 4, 5, "F", "C", NaN)

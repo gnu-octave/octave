@@ -311,7 +311,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
     endfor
   else
     ## Right-angled simplex based on co-ordinate axes.
-    alpha = scale * ones(n+1,1);
+    alpha = scale * ones (n+1,1);
     for j = 2:n+1
       V(:,j) = x0 + alpha(j)*V(:,j);
       x(:) = V(:,j);
@@ -362,7 +362,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
       printf ("Iter. %2.0f,", k);
       printf ("  how = %-11s", [how ","]);
       printf ("nf = %3.0f,  f = %9.4e  (%2.1f%%)\n", nf, dirn * fmax, ...
-              100*(fmax-fmax_old)/(abs(fmax_old)+eps));
+              100*(fmax-fmax_old)/(abs (fmax_old)+eps));
     endif
     fmax_old = fmax;
 

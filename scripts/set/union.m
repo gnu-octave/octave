@@ -195,12 +195,12 @@ endfunction
 %!error <cells not supported with "rows"> union ({"a"}, {"b"}, "rows","legacy")
 %!error <A and B must be arrays or cell arrays> union (@sin, 1, "rows")
 %!error <A and B must be arrays or cell arrays> union (@sin,1,"rows","legacy")
-%!error <A and B must be 2-dimensional matrices> union (rand(2,2,2), 1, "rows")
-%!error <A and B must be 2-dimensional matrices> union (1, rand(2,2,2), "rows")
+%!error <A and B must be 2-dimensional matrices> union (rand (2,2,2), 1, "rows")
+%!error <A and B must be 2-dimensional matrices> union (1, rand (2,2,2), "rows")
 %!error <A and B must be 2-dimensional matrices>
-%! union (rand(2,2,2), 1, "rows", "legacy");
+%! union (rand (2,2,2), 1, "rows", "legacy");
 %!error <A and B must be 2-dimensional matrices>
-%! union (1, rand(2,2,2), "rows", "legacy");
+%! union (1, rand (2,2,2), "rows", "legacy");
 %!error <number of columns in A and B must match> union ([1 2], 1, "rows")
 %!error <number of columns in A and B must match> union (1, [1 2], "rows")
 %!error <number of columns in A and B must match>

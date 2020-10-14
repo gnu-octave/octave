@@ -104,7 +104,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:0.01:4;
-%! plot (x,cos(x), x,sin(x));
+%! plot (x,cos (x), x,sin (x));
 %! axis square;
 %! daspect ([1 1 1]);
 %! title ("square plot box with axis limits [0, 4, -2, 2]");
@@ -120,7 +120,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:0.01:4;
-%! plot (x,cos(x), x,sin(x));
+%! plot (x,cos (x), x,sin (x));
 %! daspect ([1 2 1]);
 %! pbaspect ([2 1 1]);
 %! title ("2x1 plot box with axis limits [0, 4, -2, 2]");
@@ -128,7 +128,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:0.01:4;
-%! plot (x,cos(x), x, sin(x));
+%! plot (x,cos (x), x, sin (x));
 %! axis square;
 %! set (gca, "positionconstraint", "innerposition");
 %! daspect ([1 1 1]);
@@ -137,7 +137,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:0.01:4;
-%! plot (x,cos(x), x,sin(x));
+%! plot (x,cos (x), x,sin (x));
 %! axis ([0 4 -1 1]);
 %! set (gca, "positionconstraint", "innerposition");
 %! daspect ([2 1 1]);

@@ -215,12 +215,12 @@ function [x_min, flag, relres, iter_min, resvec] = ...
 
   # Check if input tol are empty (set them to default if necessary)
   [tol, maxit, x0] = __default__input__ ({1e-06, min(rows(b), 20), ...
-                    zeros(rows(b), 1)}, tol, maxit, x0);
+                    zeros(rows (b), 1)}, tol, maxit, x0);
 
   norm_b = norm (b, 2);
   if (norm_b == 0)
     if (nargout < 2)
-      printf("The right hand side vector is all zero so bicgstab \n")
+      printf ("The right hand side vector is all zero so bicgstab \n")
       printf ("returned an all zero solution without iterating.\n")
     endif
     x_min = zeros (numel (b), 1);
@@ -248,7 +248,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
 
   ## To check if the preconditioners are singular or they have some NaN
   try
-    warning("error", "Octave:singular-matrix", "local");
+    warning ("error", "Octave:singular-matrix", "local");
     p_hat = feval (M1fun, p, varargin{:});
     p_hat = feval (M2fun, p_hat, varargin{:});
   catch

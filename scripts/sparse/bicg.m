@@ -236,7 +236,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   endif
   norm_b = norm (b, 2);
 
-  if (norm_b == 0)  # the only (only iff det(A) == 0) solution is x = 0
+  if (norm_b == 0)  # the only (only iff det (A) == 0) solution is x = 0
     if (nargout < 2)
       printf ("The right hand side vector is all zero so bicg\n")
       printf ("returned an all zero solution without iterating.\n")

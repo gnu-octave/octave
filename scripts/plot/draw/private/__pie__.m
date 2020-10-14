@@ -130,7 +130,7 @@ function hlist = __pie__ (caller, varargin)
 
       hlist = [hlist;
         patch(xoff + [0, -sind(xn)], yoff + [0, cosd(xn)], zeros (1, ln + 1), i);
-        surface(sx, sy, sz, sc);
+        surface (sx, sy, sz, sc);
         patch(xoff + [0, -sind(xn)], yoff + [0, cosd(xn)], zlvl * ones (1, ln + 1), i);
         text(xt, yt, zlvl, labels{i})];
 

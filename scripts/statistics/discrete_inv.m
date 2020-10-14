@@ -76,7 +76,7 @@ endfunction
 %!shared x,v,p,y
 %! x = [-1 0 0.1 0.5 1 2];
 %! v = 0.1:0.2:1.9;
-%! p = 1/length(v) * ones (1, length(v));
+%! p = 1/length (v) * ones (1, length (v));
 %! y = [NaN v(1) v(1) v(end/2) v(end) NaN];
 %!assert (discrete_inv ([x, NaN], v, p), [y, NaN], eps)
 

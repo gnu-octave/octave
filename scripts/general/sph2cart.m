@@ -178,11 +178,11 @@ endfunction
 %!test
 %! [t, p, r] = meshgrid ([0, pi/2], [0, pi/2], [0, 1]);
 %! [x, y, z] = sph2cart (t, p, r);
-%! X = zeros(2, 2, 2);
+%! X = zeros (2, 2, 2);
 %! X(1, 1, 2) = 1;
-%! Y = zeros(2, 2, 2);
+%! Y = zeros (2, 2, 2);
 %! Y(1, 2, 2) = 1;
-%! Z = zeros(2, 2, 2);
+%! Z = zeros (2, 2, 2);
 %! Z(2, :, 2) = [1 1];
 %! assert (x, X, eps);
 %! assert (y, Y, eps);

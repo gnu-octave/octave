@@ -115,7 +115,7 @@ function out = base2dec (s, base)
 
   ## Multiply the resulting digits by the appropriate power
   ## and sum the rows.
-  out = s * (base .^ (columns(s)-1 : -1 : 0)');
+  out = s * (base .^ (columns (s)-1 : -1 : 0)');
 
 endfunction
 

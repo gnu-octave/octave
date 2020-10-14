@@ -57,7 +57,7 @@ function compare_plot_demos (varargin)
   arg.fcn_file = "dump_plot_demos.m";
   arg.replace_images = false;
 
-  for n = 1:2:numel(varargin)
+  for n = 1:2:numel (varargin)
     if (! ischar (varargin{n}))
       print_usage ();
     else

@@ -58,5 +58,5 @@ endfunction
 
 
 %!assert (symvar ("3*x + 4*y + 5*cos (z)"), {"x"; "y"; "z"})
-%!assert (symvar ("sin()^2 + cos()^2 == 1"), {})
+%!assert (symvar ("sin ()^2 + cos ()^2 == 1"), {})
 %!assert (symvar ("1./x"), {"x"})

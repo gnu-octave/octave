@@ -135,7 +135,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   sphere();
+%!   sphere ();
 %!   a_orig = camva ();
 %!   m = camva ("mode");
 %!   assert (strcmp (m, "auto"));

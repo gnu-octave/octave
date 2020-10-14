@@ -37,7 +37,7 @@ function [text, status] = __strip_html_tags__ (html_text)
   stop  = find (html_text == ">");
   if (length (start) == length (stop))
     text = html_text;
-    for n = length(start):-1:1
+    for n = length (start):-1:1
       text (start (n):stop (n)) = [];
     endfor
     text = strip_superfluous_endlines (text);

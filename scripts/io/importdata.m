@@ -82,7 +82,7 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
   if (nargin > 1)
     if (! ischar (delimiter)
         || (length (delimiter) > 1 && ! strcmp (delimiter, '\t')))
-      error("importdata: DELIMITER must be a single character");
+      error ("importdata: DELIMITER must be a single character");
     endif
     if (strcmp (delimiter, '\t'))
       delimiter = "\t";

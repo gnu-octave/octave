@@ -284,7 +284,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
   b_norm = norm (b);
   if (b_norm == 0)
      if (n_arg_out < 2)
-       printf("The right hand side vector is all zero so pcg \n");
+       printf ("The right hand side vector is all zero so pcg \n");
        printf ("returned an all zero solution without iterating.\n");
      endif
      x_min = b;

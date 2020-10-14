@@ -61,7 +61,7 @@ function yi = ppval (pp, xi)
   P = reshape (P, [d, n * k]);
   P = shiftdim (P, nd);
   P = reshape (P, [n, k, d]);
-  Pidx = P(idx(:), :);  # 2D matrix size: x = coefs*prod(d), y = prod(sxi)
+  Pidx = P(idx(:), :);  # 2D matrix size: x = coefs*prod (d), y = prod (sxi)
 
   if (isvector (xi))
     Pidx = reshape (Pidx, [xn, k, d]);

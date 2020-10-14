@@ -467,9 +467,9 @@ endfunction
 %!endfunction
 %!
 %!function jac = jacfunsparse (t, y)
-%!  jac = sparse([-0.04,           1e4*y(3),  1e4*y(2);
-%!                 0.04, -1e4*y(3)-6e7*y(2), -1e4*y(2);
-%!                    1,                  1,         1]);
+%!  jac = sparse ([-0.04,           1e4*y(3),  1e4*y(2);
+%!                  0.04, -1e4*y(3)-6e7*y(2), -1e4*y(2);
+%!                     1,                  1,         1]);
 %!endfunction
 
 %!testif HAVE_SUNDIALS

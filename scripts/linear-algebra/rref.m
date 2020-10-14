@@ -111,7 +111,7 @@ endfunction
 %! a = [1 3; 4 5; 7 9];
 %! [r k] = rref (a);
 %! assert (rank (a), rank (r), 2e-8);
-%! assert (r, eye(3)(:,1:2), 2e-8);
+%! assert (r, eye (3)(:,1:2), 2e-8);
 %! assert (k, [1 2], 2e-8);
 
 %!test

@@ -181,12 +181,12 @@ function [cest, v] = condest (varargin)
     endif
   elseif (is_function_handle (varargin{1}))
     if (nargin == 1)
-      error("condest: must provide AINVFCN when using AFCN");
+      error ("condest: must provide AINVFCN when using AFCN");
     endif
     Afcn = varargin{1};
     have_Afcn = true;
     if (! is_function_handle (varargin{2}))
-      error("condest: AINVFCN must be a function handle");
+      error ("condest: AINVFCN must be a function handle");
     endif
     Ainvfcn = varargin{2};
     have_Ainvfcn = true;

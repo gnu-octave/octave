@@ -167,9 +167,9 @@ endfunction
 %! y = Z(:,1); X = [ones(rows(Z),1), Z(:,2:end)];
 %! alpha = 0.05;
 %! [b, stdb, mse] = lscov (X, y);
-%! assert(b, V(:,1), 3e-6);
-%! assert(stdb, V(:,2), -1.e-5);
-%! assert(sqrt (mse), rsd, -1E-6);
+%! assert (b, V(:,1), 3e-6);
+%! assert (stdb, V(:,2), -1.e-5);
+%! assert (sqrt (mse), rsd, -1E-6);
 
 %!test
 %! ## Adapted from example in Matlab documentation
@@ -178,37 +178,37 @@ endfunction
 %! X = [ones(size(x1)) x1 x2];
 %! y = [.17 .26 .28 .23 .27 .34]';
 %! [b, se_b, mse, S] = lscov(X, y);
-%! assert(b, [0.1203 0.3284 -0.1312]', 1E-4);
-%! assert(se_b, [0.0643 0.2267 0.1488]', 1E-4);
-%! assert(mse, 0.0015, 1E-4);
-%! assert(S, [0.0041 -0.0130 0.0075; -0.0130 0.0514 -0.0328; 0.0075 -0.0328 0.0221], 1E-4);
+%! assert (b, [0.1203 0.3284 -0.1312]', 1E-4);
+%! assert (se_b, [0.0643 0.2267 0.1488]', 1E-4);
+%! assert (mse, 0.0015, 1E-4);
+%! assert (S, [0.0041 -0.0130 0.0075; -0.0130 0.0514 -0.0328; 0.0075 -0.0328 0.0221], 1E-4);
 %! w = [1 1 1 1 1 .1]';
 %! [bw, sew_b, msew] = lscov (X, y, w);
-%! assert(bw, [0.1046 0.4614 -0.2621]', 1E-4);
-%! assert(sew_b, [0.0309 0.1152 0.0814]', 1E-4);
-%! assert(msew, 3.4741e-004, -1E-4);
-%! V = .2*ones(length(x1)) + .8*diag(ones(size(x1)));
+%! assert (bw, [0.1046 0.4614 -0.2621]', 1E-4);
+%! assert (sew_b, [0.0309 0.1152 0.0814]', 1E-4);
+%! assert (msew, 3.4741e-004, -1E-4);
+%! V = .2*ones (length (x1)) + .8*diag (ones (size (x1)));
 %! [bg, sew_b, mseg] = lscov (X, y, V);
-%! assert(bg, [0.1203 0.3284 -0.1312]', 1E-4);
-%! assert(sew_b, [0.0672 0.2267 0.1488]', 1E-4);
-%! assert(mseg, 0.0019, 1E-4);
+%! assert (bg, [0.1203 0.3284 -0.1312]', 1E-4);
+%! assert (sew_b, [0.0672 0.2267 0.1488]', 1E-4);
+%! assert (mseg, 0.0019, 1E-4);
 %! y2 = [y 2*y];
 %! [b2, se_b2, mse2, S2] = lscov (X, y2);
-%! assert(b2, [b 2*b], 2*eps);
-%! assert(se_b2, [se_b 2*se_b], 2*eps);
-%! assert(mse2, [mse 4*mse], eps);
-%! assert(S2(:, :, 1), S, eps);
-%! assert(S2(:, :, 2), 4*S, eps);
+%! assert (b2, [b 2*b], 2*eps);
+%! assert (se_b2, [se_b 2*se_b], 2*eps);
+%! assert (mse2, [mse 4*mse], eps);
+%! assert (S2(:, :, 1), S, eps);
+%! assert (S2(:, :, 2), 4*S, eps);
 
 %!test
 %! ## Artificial example with positive semi-definite weight matrix
 %! x = (0:0.2:2)';
-%! y = round(100*sin(x) + 200*cos(x));
+%! y = round (100*sin (x) + 200*cos (x));
 %! X = [ones(size(x)) sin(x) cos(x)];
-%! V = eye(numel(x));
+%! V = eye (numel (x));
 %! V(end, end-1) = V(end-1, end) = 1;
 %! [b, seb, mseb, S] = lscov (X, y, V);
-%! assert(b, [0 100 200]', 0.2);
+%! assert (b, [0 100 200]', 0.2);
 
 ## Test input validation
 %!error <Invalid call> lscov ()

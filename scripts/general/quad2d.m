@@ -233,13 +233,13 @@ function [q, err, iter] = quad2d (f, xa, xb, ya, yb, varargin)
     if (! (isreal (ya) && isscalar (ya)))
       error ("quad2d: YA must be a real scalar or a function");
     endif
-    ya = @(x) ya * ones(rows (x), columns (x));
+    ya = @(x) ya * ones (rows (x), columns (x));
   endif
   if (! is_function_handle (yb))
     if (! (isreal (yb) && isscalar (yb)))
       error ("quad2d: YB must be a real scalar or a function");
     endif
-    yb = @(x) yb * ones(rows (x), columns (x));
+    yb = @(x) yb * ones (rows (x), columns (x));
   endif
 
   iter = 0;
@@ -262,7 +262,7 @@ function [q, err, iter] = quad2d (f, xa, xb, ya, yb, varargin)
 
     xtrans = @(tx) ((xa - xb) .* cos (tx) + (xa + xb)) ./ 2;
     ytrans = @(ty) (1 - cos (ty)) ./ 2;
-    ztrans = @(tx, ty) (xb - xa) .* sin(tx) .* sin(ty) ./ 4;
+    ztrans = @(tx, ty) (xb - xa) .* sin (tx) .* sin (ty) ./ 4;
     area = pi ^ 2;
 
     ## Initialize tile list

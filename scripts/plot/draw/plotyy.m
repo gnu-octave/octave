@@ -87,7 +87,7 @@ function [ax, h1, h2] = plotyy (varargin)
       hax = get (hax, "__plotyy_axes__");
     else
       hax = [hax; axes("nextplot", get (hax(1), "nextplot"), ...
-                       "parent", get(hax(1), "parent"))];
+                       "parent", get (hax(1), "parent"))];
     endif
 
     [axtmp, h1tmp, h2tmp] = __plotyy__ (hax, varargin{:});
@@ -155,7 +155,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   endif
 
   set (ax(2), "units", get (ax(1), "units"));
-  if (strcmp (get(ax(1), "positionconstraint"), "innerposition"))
+  if (strcmp (get (ax(1), "positionconstraint"), "innerposition"))
     set (ax(2), "position", get (ax(1), "position"));
   else
     set (ax(2), {"outerposition", "looseinset"},
@@ -286,13 +286,13 @@ endfunction
 %! colormap ("default");
 %! x = linspace (-1, 1, 201);
 %! subplot (2,2,1);
-%!  plotyy (x,sin(pi*x), x,10*cos(pi*x));
+%!  plotyy (x,sin (pi*x), x,10*cos (pi*x));
 %!  title ("plotyy() in subplot");
 %! subplot (2,2,2);
 %!  surf (peaks (25));
 %! subplot (2,2,3);
 %!  contour (peaks (25));
 %! subplot (2,2,4);
-%!  plotyy (x,10*sin(2*pi*x), x,cos(2*pi*x));
+%!  plotyy (x,10*sin (2*pi*x), x,cos (2*pi*x));
 %!  title ("plotyy() in subplot");
 %!  axis square;

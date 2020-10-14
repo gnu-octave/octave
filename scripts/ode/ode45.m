@@ -401,7 +401,7 @@ endfunction
 %! assert ([sol.x(5)-sol.x(4)], [1e-3], 1e-3);
 %!test  # Solve with intermediate step
 %! [t, y] = ode45 (@fpol, [0 1 2], [2 0]);
-%! assert (any((t-1) == 0));
+%! assert (any ((t-1) == 0));
 %! assert ([t(end), y(end,:)], [2, fref], 1e-3);
 %!test  # Solve in backward direction starting at t=0
 %! vref = [-1.205364552835178, 0.951542399860817];
@@ -414,7 +414,7 @@ endfunction
 %!test  # Solve in backward direction starting at t=2, with intermediate step
 %! vref = [-1.205364552835178, 0.951542399860817];
 %! [t, y] = ode45 (@fpol, [2 0 -2], fref);
-%! idx = find(y < 0, 1, "first") - 1;
+%! idx = find (y < 0, 1, "first") - 1;
 %! assert ([t(idx), y(idx,:)], [0,2,0], 1e-2);
 %! assert ([t(end), y(end,:)], [-2, vref], 1e-2);
 %!test  # Solve another anonymous function in backward direction

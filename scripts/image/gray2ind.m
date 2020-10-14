@@ -44,7 +44,7 @@ function [I, map] = gray2ind (I, n = 64)
 
   if (nargin < 1)
     print_usage ();
-  elseif (! isreal (I) || issparse (I) || ! ismatrix(I))
+  elseif (! isreal (I) || issparse (I) || ! ismatrix (I))
     error ("gray2ind: I must be a grayscale or binary image");
   elseif (! isscalar (n) || n < 1 || n > 65536)
     error ("gray2ind: N must be a positive integer in the range [1, 65536]");

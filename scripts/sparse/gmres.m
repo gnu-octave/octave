@@ -258,9 +258,9 @@ function [x_min, flag, relres, it, resvec] = ...
   size_b = rows (b);
 
   if (tol >= 1)
-    warning("Input tol is bigger than 1. \n Try to use a smaller tolerance.");
+    warning ("Input tol is bigger than 1. \n Try to use a smaller tolerance.");
   elseif (tol <= eps / 2)
-    warning("Input tol may not be achievable by gmres. \n Try to use a bigger tolerance.");
+    warning ("Input tol may not be achievable by gmres. \n Try to use a bigger tolerance.");
   endif
 
   ## This big "if block" is to set maxit and restart in the proper way
@@ -303,7 +303,7 @@ function [x_min, flag, relres, it, resvec] = ...
   prec_b_norm = norm (b, 2);
   if (prec_b_norm == 0)
     if (nargout < 2)
-      printf("The right hand side vector is all zero so gmres\nreturned an all zero solution without iterating.\n")
+      printf ("The right hand side vector is all zero so gmres\nreturned an all zero solution without iterating.\n")
     endif
     x_min = b;
     flag = 0;
@@ -324,14 +324,14 @@ function [x_min, flag, relres, it, resvec] = ...
   iter_min = 0; # iteration with minimum residual
   outer_it = 1; # number of outer iterations
   restart_it  =  1; # number of inner iterations
-  it = zeros(1, 2);
+  it = zeros (1, 2);
   resvec = zeros (max_iter_number + 1, 1);
   flag = 1; # Default flag is maximum # of iterations exceeded
 
   ## begin loop
   u = feval (Afun, x_old, varargin{:});
   try
-    warning("error", "Octave:singular-matrix", "local")
+    warning ("error", "Octave:singular-matrix", "local");
     prec_res = feval (M1fun, b - u, varargin{:}); # M1*(b-u)
     prec_res = feval (M2fun, prec_res, varargin{:});
     presn = norm (prec_res, 2);
@@ -401,22 +401,22 @@ function [x_min, flag, relres, it, resvec] = ...
   if ((nargout < 2) && (restart != size_b)) # restart applied
     switch (flag)
       case {0} # gmres converged
-        printf ("gmres(%d) converged at outer iteration %d (inner iteration %d) ",restart, it (1), it (2));
+        printf ("gmres (%d) converged at outer iteration %d (inner iteration %d) ",restart, it (1), it (2));
         printf ("to a solution with relative residual %d \n", relres);
       case {1} # max number of iteration reached
-        printf ("gmres(%d) stopped at outer iteration %d (inner iteration %d) ", restart, outer_it, restart_it-1);
+        printf ("gmres (%d) stopped at outer iteration %d (inner iteration %d) ", restart, outer_it, restart_it-1);
         printf ("without converging to the desired tolerance %d ", tol);
         printf ("because the maximum number of iterations was reached \n");
         printf ("The iterated returned (number %d(%d)) ", it(1), it(2));
         printf ("has relative residual %d \n", relres);
       case {2} # preconditioner singular
-        printf ("gmres(%d) stopped at outer iteration %d (inner iteration %d) ",restart, outer_it, restart_it-1);
+        printf ("gmres (%d) stopped at outer iteration %d (inner iteration %d) ",restart, outer_it, restart_it-1);
         printf ("without converging to the desired tolerance %d ", tol);
         printf ("because the preconditioner matrix is singular \n");
         printf ("The iterated returned (number %d(%d)) ", it(1), it(2));
         printf ("has relative residual %d \n", relres);
       case {3} # stagnation
-        printf ("gmres(%d) stopped at outer iteration %d (inner iteration %d) ", restart, outer_it, restart_it - 1);
+        printf ("gmres (%d) stopped at outer iteration %d (inner iteration %d) ", restart, outer_it, restart_it - 1);
         printf ("without converging to the desired tolerance %d", tol);
         printf ("because it stagnates. \n");
         printf ("The iterated returned (number %d(%d)) ", it(1), it(2));
@@ -539,7 +539,7 @@ endfunction
 %! [x, flag] = gmres (A, b, 10, 1e-10, dim, @(x) x ./ diag (A), [], b);
 %! assert (x, A\b, 1e-9*norm (x, Inf));
 %! [x, flag] = gmres (A, b, dim, 1e-10, 1e4, @(x) diag (diag (A)) \ x, [], b);
-%! assert(x, A\b, 1e-7*norm (x, Inf));
+%! assert (x, A\b, 1e-7*norm (x, Inf));
 
 %!test
 %! dim = 100;
@@ -571,7 +571,7 @@ endfunction
 %! A = hilb (100);
 %! b = sum (A, 2);
 %! [x, flag, relres, iter] = gmres (A, b, [], 1e-14);
-%! assert(flag, 1);
+%! assert (flag, 1);
 
 %!test
 %! ## gmres recognizes that the preconditioner matrix is singular
@@ -637,7 +637,7 @@ endfunction
 %!   y = A * x;
 %!endfunction
 %! [x, flag] = gmres ("Afun", [1; 2; 2; 3]);
-%! assert (x, ones(4, 1), 1e-6)
+%! assert (x, ones (4, 1), 1e-6)
 
 %!test # preconditioned residual
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));

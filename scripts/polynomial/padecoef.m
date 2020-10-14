@@ -163,7 +163,7 @@ endfunction
 %! x = A \ b';
 %! k = N : -1 : 0;
 %! d_exp = [flipud(x(N + 2 : 2 * N + 1)); 1]';
-%! n_exp = flipud(x(1 : N + 1))';
+%! n_exp = flipud (x(1 : N + 1))';
 %! n_exp ./= d_exp(1);
 %! d_exp ./= d_exp(1);
 %! [n_obs, d_obs] = padecoef (T, N);

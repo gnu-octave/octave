@@ -64,7 +64,7 @@ endfunction
 %!shared x,v,p,y
 %! x = [-1 0.1 1.1 1.9 3];
 %! v = 0.1:0.2:1.9;
-%! p = 1/length(v) * ones (1, length(v));
+%! p = 1/length (v) * ones (1, length (v));
 %! y = [0 0.1 0.6 1 1];
 %!assert (discrete_cdf ([x, NaN], v, p), [y, NaN], eps)
 

@@ -611,7 +611,7 @@ function p_content = parse_paragraph_content (content)
   ## Extract <html> and <latex> blocks recursively.
   content_str = strjoin (content, "\n");
   tags = {"html", "latex"};
-  for i = 1:length(tags)
+  for i = 1:length (tags)
     tok = regexp (content_str, ...
       ['(.*?)(^|\n\n)(<', tags{i}, '>)\n(.*?)\n(<\/', ...
         tags{i}, '>)($|\n\n)(.*)'], "tokens", "once");

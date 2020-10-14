@@ -48,7 +48,7 @@
 function response = webread (url, varargin)
 
   if (nargin == 0)
-    print_usage();
+    print_usage ();
   endif
 
   if (! (ischar (url) && isrow (url)))

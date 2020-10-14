@@ -264,7 +264,7 @@ classdef weboptions < handle
 
     function f = set.Timeout (f, value)
       if (! isreal (value) || ! isscalar (value)
-          || floor(value) != value || value < 0)
+          || floor (value) != value || value < 0)
         error ("weboptions: invalid Timeout value");
       else
         f.Timeout = value;

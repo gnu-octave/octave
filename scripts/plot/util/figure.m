@@ -85,7 +85,7 @@ function h = figure (varargin)
   ## Check to see if we already have a figure on the screen.  If we do,
   ## then update it if it is different from the figure we are creating
   ## or switching to.
-  cf = get (0, "currentfigure");   # Can't use gcf () because it calls figure()
+  cf = get (0, "currentfigure");   # Can't use gcf() because it calls figure()
   if (! isempty (cf) && cf != 0)
     if (init_new_figure || cf != f)
       drawnow ();

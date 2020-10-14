@@ -92,7 +92,7 @@ function [x, y, z] = pol2cart (theta, r, z = [])
       theta = theta(1);
 
     else
-      ncols = columns(theta);
+      ncols = columns (theta);
       if (ncols != 2 && ncols != 3)
         error ("cart2pol: matrix input must be a 2- or 3-element vector or a 2- or 3-column array");
       endif
@@ -224,10 +224,10 @@ endfunction
 %!test
 %! [t, r, Z] = meshgrid ([0, pi/2], [1, 2], [0, 1]);
 %! [x, y, z] = pol2cart (t, r, Z);
-%! X = zeros(2, 2, 2);
+%! X = zeros (2, 2, 2);
 %! X(:, 1, 1) = [1; 2];
 %! X(:, 1, 2) = [1; 2];
-%! Y = zeros(2, 2, 2);
+%! Y = zeros (2, 2, 2);
 %! Y(:, 2, 1) = [1; 2];
 %! Y(:, 2, 2) = [1; 2];
 %! assert (x, X, eps);

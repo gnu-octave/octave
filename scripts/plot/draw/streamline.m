@@ -154,7 +154,7 @@ endfunction
 %! sy = 0.0;
 %! sz = 0.0;
 %! plot3 (sx, sy, sz, ".r", "markersize", 15);
-%! t = linspace (0, 12 * 2 * pi(), 500);
+%! t = linspace (0, 12 * 2 * pi (), 500);
 %! tx = exp (-a * t).*cos (t);
 %! ty = exp (-a * t).*sin (t);
 %! tz = - b * t;

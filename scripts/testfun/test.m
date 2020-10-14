@@ -669,7 +669,7 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
       endif
 
       ## evaluate code for test, shared, and assert.
-      if (! isempty(__code))
+      if (! isempty (__code))
         try
           eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
                          __shared_r, __shared, __code));
@@ -726,7 +726,7 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
             && ! strcmp (__type, "xtest")
             && ! all (__shared == " "))
           fputs (__fid, "shared variables ");
-          eval (sprintf ("fdisp(__fid,var2struct(%s));", __shared));
+          eval (sprintf ("fdisp (__fid,var2struct(%s));", __shared));
         endif
         fflush (__fid);
       endif
@@ -914,7 +914,7 @@ endfunction
 function msg = trimerr (msg, prefix)
   idx = index (msg, [prefix ":"]);
   if (idx > 0)
-    msg(1:idx+length(prefix)) = [];
+    msg(1:idx+length (prefix)) = [];
   endif
   msg = strtrim (msg);
 endfunction
@@ -1079,15 +1079,15 @@ endfunction
 ## All of the following tests should fail.  These tests should
 ## be disabled unless you are developing test() since users don't
 ## like to be presented with known failures.
-## %!test   error("---------Failure tests.  Use test('test','verbose',1)");
-## %!test   assert([a,b,c],[1,3,6]);   # variables have wrong values
+## %!test   error ("---------Failure tests.  Use test('test','verbose',1)");
+## %!test   assert ([a,b,c],[1,3,6]);   # variables have wrong values
 ## %!invalid                   # unknown block type
-## %!error  toeplitz([1,2,3]); # correct usage
+## %!error  toeplitz ([1,2,3]); # correct usage
 ## %!test   syntax errors)     # syntax errors fail properly
 ## %!shared garbage in         # variables must be comma separated
 ## %!error  syntax++error      # error test fails on syntax errors
 ## %!error  "succeeds.";       # error test fails if code succeeds
-## %!error <wrong pattern> error("message")  # error pattern must match
+## %!error <wrong pattern> error ("message")  # error pattern must match
 ## %!demo   with syntax error  # syntax errors in demo fail properly
 ## %!shared a,b,c
 ## %!demo                      # shared variables not available in demo

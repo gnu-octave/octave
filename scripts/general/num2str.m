@@ -211,8 +211,8 @@ endfunction
 %!assert (num2str ([inf -inf]), "Inf -Inf")
 %!assert (num2str ([inf NaN -inf]), "Inf  NaN -Inf")
 %!assert (num2str ([complex(Inf,0), complex(0,-Inf)]), "Inf+0i   0-Infi")
-%!assert (num2str (complex(Inf,1)), "Inf+1i")
-%!assert (num2str (complex(1,Inf)), "1+Infi")
+%!assert (num2str (complex (Inf,1)), "Inf+1i")
+%!assert (num2str (complex (1,Inf)), "1+Infi")
 %!assert (num2str (nan), "NaN")
 %!assert (num2str (complex (NaN, 1)), "NaN+1i")
 %!assert (num2str (complex (1, NaN)), "1+NaNi")
@@ -249,7 +249,7 @@ endfunction
 %!assert <*36133> (num2str (1e15), "1000000000000000")
 %!assert <*36133> (num2str (1e16), "1e+16")
 ## Even exact integers in IEEE notation should use exponential notation
-%!assert <*36133> (num2str(2^512), "1.34078079299426e+154")
+%!assert <*36133> (num2str (2^512), "1.34078079299426e+154")
 ## Mixed integer/floating point arrays
 %!assert <*36133> (num2str ([2.1, 1e23, pi]),
 %!                 "2.1  9.999999999999999e+22      3.141592653589793")

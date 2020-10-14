@@ -95,8 +95,8 @@ endfunction
 %! x = 1:3;
 %! [XX, YY] = ndgrid (x);
 %! assert (size_equal (XX, YY));
-%! assert (isequal (XX, repmat(x(:), 1, numel(x))));
-%! assert (isequal (YY, repmat(x, numel(x), 1)));
+%! assert (isequal (XX, repmat (x(:), 1, numel (x))));
+%! assert (isequal (YY, repmat (x, numel (x), 1)));
 
 %!test
 %! x = 1:2;
@@ -124,7 +124,7 @@ endfunction
 %! assert (XX1, XX2.');
 %! assert (YY1, YY2.');
 
-%!assert (ndgrid ([]), zeros(0,1))
+%!assert (ndgrid ([]), zeros (0,1))
 %!assert (ndgrid ([], []), zeros(0,0))
 
 ## Test input validation

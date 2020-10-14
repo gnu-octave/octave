@@ -134,8 +134,8 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
     header = sprintf ("%s | %s | %s\n", h1, h2, h3);
     printf (header);
     tmp = sprintf (repmat ("-", 1, length (header) - 1));
-    tmp(length(h1)+2) = "+";
-    tmp(length(h1)+length(h2)+5) = "+";
+    tmp(length (h1)+2) = "+";
+    tmp(length (h1)+length (h2)+5) = "+";
     printf ("%s\n", tmp);
 
     ## Print the packages.

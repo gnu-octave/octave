@@ -137,7 +137,7 @@ function [tok, rem] = strtok (str, delim)
     if (isargout (2))
       rem = cell (size (str));
       rem(eidx) = {""};
-      rem(midx) = tmp(2:2:end);
+      rem (midx) = tmp(2:2:end);
     endif
   endif
 

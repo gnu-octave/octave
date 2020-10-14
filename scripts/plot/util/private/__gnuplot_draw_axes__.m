@@ -152,7 +152,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fputs (plot_stream, "unset title;\n");
   else
     if (nd == 2)
-      t = get(axis_obj.title);
+      t = get (axis_obj.title);
       colorspec = get_text_colorspec (t.color);
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
       fontspec = create_fontspec (f, s, gnuplot_term);
@@ -168,7 +168,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         unwind_protect_cleanup
         end_unwind_protect
       endif
-      t = get(axis_obj.title);
+      t = get (axis_obj.title);
       axispos = axis_obj.position;
       screenpos = t.position;
       screenpos(1) = axispos(1)+screenpos(1)*axispos(3);
@@ -869,7 +869,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
               if (nd == 3 && numel (xcol) == 3)
                 if (isnan (ccdat))
-                  ccdat = (cmap_sz + rows (addedcmap) + 1) * ones(3, 1);
+                  ccdat = (cmap_sz + rows (addedcmap) + 1) * ones (3, 1);
                   addedcmap = [addedcmap; reshape(color, 1, 3)];
                 elseif (numel (ccdat) == 1)
                   ccdat = ccdat * ones (size (zcol));
@@ -1980,7 +1980,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
       endif
     endif
   endif
-  if (! isempty(pt) && isfield (obj, "markeredgecolor")
+  if (! isempty (pt) && isfield (obj, "markeredgecolor")
       && ! strcmp (obj.markeredgecolor, "none"))
     if (facesame && (strcmp (obj.markeredgecolor, "auto")
         || (isnumeric (obj.markeredgecolor)
@@ -2532,8 +2532,8 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
                  '{}', str(e(i) + b2(1) + 1:end)];
         endif
       elseif (strcmp (f, "fontsize"))
-        b1 = strfind (str(e(i) + 1:end),'{');
-        b2 = strfind (str(e(i) + 1:end),'}');
+        b1 = strfind (str(e (i) + 1:end),'{');
+        b2 = strfind (str(e (i) + 1:end),'}');
         if (isempty (b1) || isempty (b2))
           warning ('syntax error in \fontname argument');
         else

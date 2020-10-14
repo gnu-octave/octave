@@ -84,7 +84,7 @@ function x = polygcd (b, a, tol)
         x = a;
         break;
       else
-        r = r(nz(1):length(r));
+        r = r(nz(1):length (r));
       endif
       b = a;
       a = r / r(1);

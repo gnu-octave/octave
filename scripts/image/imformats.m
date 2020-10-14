@@ -243,7 +243,7 @@ function rformats = default_formats ()
             "XWD",  {"xwd"},          false;
             };
 
-  for fidx = 1: rows(coders)
+  for fidx = 1:rows (coders)
     formats(fidx).coder = coders{fidx, 1};
     formats(fidx).ext   = coders{fidx, 2};
     formats(fidx).alpha = coders{fidx, 3};
@@ -387,7 +387,7 @@ endfunction
 %! unwind_protect
 %!   fmt = imformats ("jpg"); # take jpg as template
 %!   fmt.ext = "new_fmt1";
-%!   fmt.read = @(~) true();
+%!   fmt.read = @(~) true ();
 %!   fmt(2) = fmt(1);
 %!   fmt(2).ext = "new_fmt2";
 %!   imformats ("add", fmt);

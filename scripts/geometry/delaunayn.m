@@ -106,8 +106,8 @@ function T = delaunayn (pts, varargin)
     p12 = p1 - p2;
     p23 = p2 - p3;
     det = cross (p12, p23, 2);
-    idx = abs (det(:,3) ./ sqrt (sumsq (p12, 2))) < tol & ...
-          abs (det(:,3) ./ sqrt (sumsq (p23, 2))) < tol;
+    idx = abs (det (:,3) ./ sqrt (sumsq (p12, 2))) < tol & ...
+          abs (det (:,3) ./ sqrt (sumsq (p23, 2))) < tol;
   else
     ## FIXME: Vectorize this for loop or convert delaunayn to .oct function
     idx = [];

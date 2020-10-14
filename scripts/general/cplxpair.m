@@ -153,9 +153,9 @@ endfunction
 
 %!shared z,y
 %! z = exp (2i*pi*[4; 3; 5; 2; 6; 1; 0]/7);
-%! z(2) = conj(z(1));
-%! z(4) = conj(z(3));
-%! z(6) = conj(z(5));
+%! z(2) = conj (z(1));
+%! z(4) = conj (z(3));
+%! z(6) = conj (z(5));
 %!assert (cplxpair (z(randperm (7))), z)
 %!assert (cplxpair (z(randperm (7))), z)
 %!assert (cplxpair (z(randperm (7))), z)

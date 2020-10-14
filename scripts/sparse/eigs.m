@@ -1482,11 +1482,11 @@ endfunction
 %! i_A = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 %! j_A = [1, 2, 3, 4, 5, 6, 7,  8, 9, 10];
 %! v_A = [1, 2i, 3, 4i, 5, 6i, 7, 8, 9, 10i];
-%! A = sparse(i_A, j_A, v_A);
+%! A = sparse (i_A, j_A, v_A);
 %! i_B = [1,2, 3, 4, 5, 6, 7, 8, 9, 10];
 %! j_B = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 %! v_B = [3, 10i, 1, 8i, 7, 6i, 5, 4i, 9, 7i];
-%! B = sparse(i_B, j_B, v_B); # not SPD
+%! B = sparse (i_B, j_B, v_B); # not SPD
 %! [Evectors, Evalues] = eigs(A, B, 5, "SM"); # call_eig is true
 %! ResidualVectors = A * Evectors - B * Evectors * Evalues;
 %! RelativeErrors = norm (ResidualVectors, "columns") ./ ...

@@ -895,7 +895,7 @@ function update_layout_cb (hl, ~, update_item = false)
     return;
   endif
 
-  setappdata(hl, "__updating_layout__", true);
+  setappdata (hl, "__updating_layout__", true);
 
   ## Scale limits so that item positions are expressed in points, from
   ## top to bottom and from left to right or reverse depending on textposition
@@ -927,7 +927,7 @@ function update_layout_cb (hl, ~, update_item = false)
 
   unwind_protect_cleanup
     set (hl, "units", units);
-    setappdata(hl, "__updating_layout__", false);
+    setappdata (hl, "__updating_layout__", false);
   end_unwind_protect
 
 endfunction
@@ -1237,7 +1237,7 @@ function sz = update_texticon_position (hl, objlist)
 
     nrow = ceil (nitem / ncol);
 
-    colwidth = arrayfun (@(idx) max(ext(idx:ncol:end, 1)),
+    colwidth = arrayfun (@(idx) max (ext(idx:ncol:end, 1)),
                          1:ncol);
     y = vmargin;
     for ii = 1:nrow
@@ -1340,7 +1340,7 @@ function update_icon_position (hicon, xdata, ydata)
       set (hicon, "markerxdata", x0, "markerydata", y0, ...
            "xdata", xdata, "ydata", ydata);
     case "__scatter__"
-      set (hicon, "xdata", mean(xdata), "ydata", mean(ydata));
+      set (hicon, "xdata", mean (xdata), "ydata", mean (ydata));
     case "__stem__"
       xdata(2) -= (get (get (hicon, "peer_object"), "markersize") / 2);
       set (hicon, "markerxdata", xdata(2), "markerydata", mean (ydata), ...
@@ -1742,7 +1742,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:0.1:7;
-%! h = plot (x,sin(x), x,cos(x), x,sin(x.^2/10), x,cos(x.^2/10));
+%! h = plot (x,sin (x), x,cos (x), x,sin (x.^2/10), x,cos (x.^2/10));
 %! title ("Only the sin() objects have keylabels");
 %! legend (h([1, 3]), {"sin (x)", "sin (x^2/10)"}, "location", "southwest");
 

@@ -1133,7 +1133,7 @@ endfunction
 
 function XY = textcoordinates (hte, pos)
   ## Get the "tight" extent of the text object in points units
-  textpos = get(hte, "position");
+  textpos = get (hte, "position");
   rot = get (hte, "rotation");
   units = get (hte, "units");
 
@@ -1453,8 +1453,8 @@ endfunction
 %! xl = xlim ();
 %! yl = [-1.2 1.5];
 %! ylim (yl);
-%! x0 = (x0 - xl(1)) / diff(xl);
-%! y0 = (y0 - yl(1)) / diff(yl);
+%! x0 = (x0 - xl(1)) / diff (xl);
+%! y0 = (y0 - yl(1)) / diff (yl);
 %!
 %! pos = get (gca (), "position");
 %! x0 = x0*pos(3) + pos(1);

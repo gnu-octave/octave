@@ -430,7 +430,7 @@ function y = D (x, a)
   endif
 
   ii = (x < 0) & (a == fix (a));
-  if (any(ii))  # remove spurious imaginary part.
+  if (any (ii))  # remove spurious imaginary part.
     y(ii) = real (y(ii));
   endif
 

@@ -273,8 +273,8 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
   endif
 
   ## Validate inequality constraints.
-  if (nargs > 7 && isempty (A_in) && ! (isempty(A_lb) || isempty(A_ub)))
-    warning("qp: empty inequality constraint matrix but non-empty bound vectors");
+  if (nargs > 7 && isempty (A_in) && ! (isempty (A_lb) || isempty (A_ub)))
+    warning ("qp: empty inequality constraint matrix but non-empty bound vectors");
   endif
 
   if (nargs > 7 && ! isempty (A_in))

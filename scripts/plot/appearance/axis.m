@@ -587,14 +587,14 @@ endfunction
 %!  axis ("autoy");
 %!
 %! subplot (326);
-%!  plot (t, sin(t), t, -2*sin(t/2));
+%!  plot (t, sin (t), t, -2*sin (t/2));
 %!  axis ("tight");
 %!  title ("tight");
 
 %!demo
 %! clf;
 %! x = 0:0.1:10;
-%! plot (x, sin(x));
+%! plot (x, sin (x));
 %! axis image;
 %! title ({"image", 'equivalent to "tight" & "equal"'});
 

@@ -117,7 +117,7 @@ function S = __sprand__ (varargin)
       else
         ## Only the min (m, n) greater singular values from rc vector are used.
         if (length (rc) > min (m,n))
-          rc = rc(1:min(m, n));
+          rc = rc(1:min (m, n));
         endif
         S = sparse (diag (sort (rc, "descend"), m, n));
       endif

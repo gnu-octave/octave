@@ -88,7 +88,7 @@ endfunction
 %!test
 %! A = [1 0; 0 1];
 %! assert (null (A), zeros (2,0));
-%! assert (null (single (A)), zeros (2, 0, "single"))
+%! assert (null (single (A)), zeros (2, 0, "single"));
 
 %!test
 %! A = [1 0; 1 0];
@@ -96,8 +96,8 @@ endfunction
 
 %!test
 %! A = [1 1; 0 0];
-%! assert (null (A), [-1/sqrt(2) 1/sqrt(2)]', eps)
-%! assert (null (single (A)), single ([-1/sqrt(2) 1/sqrt(2)]'), eps)
+%! assert (null (A), [-1/sqrt(2) 1/sqrt(2)]', eps);
+%! assert (null (single (A)), single ([-1/sqrt(2) 1/sqrt(2)]'), eps);
 
 %!test
 %! tol = 1e-4;

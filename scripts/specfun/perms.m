@@ -160,5 +160,5 @@ endfunction
 %!test <*52432>
 %! s = struct ();
 %! s(1) = [];
-%! assert (perms (reshape (s, 0, 0)), reshape (s, 1, 0))
-%! assert (perms (reshape (s, 0, 1)), reshape (s, 1, 0))
+%! assert (perms (reshape (s, 0, 0)), reshape (s, 1, 0));
+%! assert (perms (reshape (s, 0, 1)), reshape (s, 1, 0));

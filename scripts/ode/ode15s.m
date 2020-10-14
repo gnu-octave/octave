@@ -731,7 +731,7 @@ endfunction
 %!testif HAVE_SUNDIALS
 %! A = zeros (2);
 %! [tout, yout] = ode15s (@(t, y) A * y, [0, 1], [1, 1]);
-%! assert (yout, ones (18, 2))
+%! assert (yout, ones (18, 2));
 
 %!testif HAVE_SUNDIALS
 %! A = zeros (2);

@@ -507,7 +507,7 @@ endfunction
 %! A = sparse (magic (4));
 %! opts.type = "ilutp";
 %! [L, U] = ilu (A, opts);
-%! assert (L * U, A, eps)
+%! assert (L * U, A, eps);
 
 ## Tests for input validation
 %!shared A_tiny, opts

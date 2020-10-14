@@ -781,7 +781,7 @@ endfunction
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! [v, d] = eigs (A, B, 4, "lm");
 %! for i = 1:4
-%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 %! ddiag = diag (d);
 %! [ddiag, idx] = sort (ddiag);
@@ -881,7 +881,7 @@ endfunction
 %! opts.cholB = true;
 %! [v, d] = eigs (A, R, 4, "lm", opts);
 %! for i = 1:4
-%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! A = toeplitz (sparse (1:10));
@@ -891,7 +891,7 @@ endfunction
 %! opts.permB = permB;
 %! [v, d] = eigs (A, R, 4, "lm", opts);
 %! for i = 1:4
-%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 
 

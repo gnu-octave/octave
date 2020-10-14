@@ -202,9 +202,9 @@ endfunction
 %!      -0.000099999999944461111128 + 0.99999999833338888972e-6*1i
 %!      -1.5386156269726011209 - 0.053969388020443786229*1i ];
 %! B = sinint (x);
-%! assert (A, B, -3*eps)
+%! assert (A, B, -3*eps);
 %! B = sinint (single (x));
-%! assert (A, B, -3*eps ("single"))
+%! assert (A, B, -3*eps ("single"));
 
 ## FIXME: Need a test for bug #52953
 %#!test <*52953>

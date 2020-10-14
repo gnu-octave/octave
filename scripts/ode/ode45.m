@@ -510,9 +510,9 @@ endfunction
 
 %!test # Check that imaginary part of solution does not get inverted
 %! sol = ode45 (@(x,y) 1, [0 1], 1i);
-%! assert (imag (sol.y), ones (size (sol.y)))
+%! assert (imag (sol.y), ones (size (sol.y)));
 %! [x, y] = ode45 (@(x,y) 1, [0 1], 1i);
-%! assert (imag (y), ones (size (y)))
+%! assert (imag (y), ones (size (y)));
 
 %!error <Invalid call> ode45 ()
 %!error <Invalid call> ode45 (1)

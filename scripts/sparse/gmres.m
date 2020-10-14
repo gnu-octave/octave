@@ -564,7 +564,7 @@ endfunction
 %! b = sum (A, 2);
 %! [x, flag] = gmres(A, b, [], [], 5);
 %! assert (flag, 0);
-%! assert (x, ones (5, 1), -1e-06)
+%! assert (x, ones (5, 1), -1e-06);
 
 %!test
 %! ## Maximum number of iteration reached
@@ -580,56 +580,56 @@ endfunction
 %! I = eye (3);
 %! M = [1 0 0; 0 1 0; 0 0 0]; # the last row is zero
 %! [x, flag] = gmres(@(y) AA * y, bb, [], [], [], @(y) M \ y, @(y) y);
-%! assert (flag, 2)
+%! assert (flag, 2);
 
 %!test
 %! A = rand (4);
 %! A = A' * A;
 %! [x, flag] = gmres (A, zeros (4, 1), [], [], [], [], [], ones (4, 1));
-%! assert (x, zeros (4, 1))
+%! assert (x, zeros (4, 1));
 
 %!test
 %! A = rand (4);
 %! b = zeros (4, 1);
 %! [x, flag, relres, iter] = gmres (A, b);
-%! assert (relres, 0)
+%! assert (relres, 0);
 
 %!test
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
 %! b = A * ones (5, 1);
 %! [x, flag, relres, iter] = gmres (A, b, [], [], [], [], [], ...
 %! ones (5, 1) + 1e-8);
-%! assert (iter, [0, 0])
+%! assert (iter, [0, 0]);
 
 %!test
 %! A = rand (20);
 %! b = A * ones (20, 1);
 %! [x, flag, relres, iter, resvec] = gmres (A, b, [], [], 1);
-%! assert (iter, [1, 1])
+%! assert (iter, [1, 1]);
 
 %!test
 %! A = hilb (20);
 %! b = A * ones (20, 1);
 %! [x, flag, relres, iter, resvec] = gmres (A, b ,5, 1e-14);
-%! assert (iter, [4, 5])
+%! assert (iter, [4, 5]);
 
 %!test
 %! A = single (1);
 %! b = 1;
 %! [x, flag] = gmres (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %! A = 1;
 %! b = single (1);
 %! [x, flag] = gmres (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %! A = single (1);
 %! b = single (1);
 %! [x, flag] = gmres (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %!function y = Afun (x)
@@ -637,11 +637,11 @@ endfunction
 %!   y = A * x;
 %!endfunction
 %! [x, flag] = gmres ("Afun", [1; 2; 2; 3]);
-%! assert (x, ones (4, 1), 1e-6)
+%! assert (x, ones (4, 1), 1e-6);
 
 %!test # preconditioned residual
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
 %! M = magic (5);
 %! [x, flag, relres] = gmres (A, b, [], [], 2, M);
-%! assert (relres, norm (M \ (b - A * x)) / norm (M \ b), 8 * eps)
+%! assert (relres, norm (M \ (b - A * x)) / norm (M \ b), 8 * eps);

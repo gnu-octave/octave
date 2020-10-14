@@ -141,9 +141,9 @@ endfunction
 
 %!test
 %! xvar = 1;  yvar = 2;
-%! assert (__iname3__ (xvar), {"xvar", "", ""}); 
-%! assert (__iname3__ (xvar, yvar), {"xvar", "yvar", ""}); 
-%! assert (__iname3__ (xvar, 3, yvar), {"xvar", "", "yvar"}); 
+%! assert (__iname3__ (xvar), {"xvar", "", ""});
+%! assert (__iname3__ (xvar, yvar), {"xvar", "yvar", ""});
+%! assert (__iname3__ (xvar, 3, yvar), {"xvar", "", "yvar"});
 
 ## Test numbers, expressions, indexing operations
 %!test

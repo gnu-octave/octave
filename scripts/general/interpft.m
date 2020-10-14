@@ -118,11 +118,11 @@ endfunction
 %!shared n,y
 %! x = [0:10]';  y = sin(x);  n = length (x);
 %!testif HAVE_FFTW
-%! assert (interpft (y, n), y, 20*eps)
+%! assert (interpft (y, n), y, 20*eps);
 %!testif HAVE_FFTW
-%! assert (interpft (y', n), y', 20*eps)
+%! assert (interpft (y', n), y', 20*eps);
 %!testif HAVE_FFTW
-%! assert (interpft ([y,y],n), [y,y], 20*eps)
+%! assert (interpft ([y,y],n), [y,y], 20*eps);
 
 ## Test case with complex input
 %!testif HAVE_FFTW <*39566>
@@ -132,13 +132,13 @@ endfunction
 
 ## Test for correct spectral symmetry with even/odd lengths
 %!testif HAVE_FFTW
-%! assert (max (abs (imag (interpft ([1:8], 20)))), 0, 20*eps)
+%! assert (max (abs (imag (interpft ([1:8], 20)))), 0, 20*eps);
 %!testif HAVE_FFTW
-%! assert (max (abs (imag (interpft ([1:8], 21)))), 0, 21*eps)
+%! assert (max (abs (imag (interpft ([1:8], 21)))), 0, 21*eps);
 %!testif HAVE_FFTW
-%! assert (max (abs (imag (interpft ([1:9], 20)))), 0, 20*eps)
+%! assert (max (abs (imag (interpft ([1:9], 20)))), 0, 20*eps);
 %!testif HAVE_FFTW
-%! assert (max (abs (imag (interpft ([1:9], 21)))), 0, 21*eps)
+%! assert (max (abs (imag (interpft ([1:9], 21)))), 0, 21*eps);
 
 ## Test input validation
 %!error <Invalid call> interpft ()

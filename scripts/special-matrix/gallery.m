@@ -2930,9 +2930,9 @@ endfunction
 %!   4  5  6  7  8
 %!   5  6  7  8  9
 %!   6  7  8  9  10];
-%! assert (gallery ("cauchy", 5), exp)
-%! assert (gallery ("cauchy", 1:5), exp)
-%! assert (gallery ("cauchy", 1:5, 1:5), exp)
+%! assert (gallery ("cauchy", 5), exp);
+%! assert (gallery ("cauchy", 1:5), exp);
+%! assert (gallery ("cauchy", 1:5, 1:5), exp);
 %!
 %! exp = 1 ./ [
 %!   1  2  3  4  5
@@ -2940,9 +2940,9 @@ endfunction
 %!   3  4  5  6  7
 %!   4  5  6  7  8
 %!   5  6  7  8  9];
-%! assert (gallery ("cauchy", 0:4, 1:5), exp)
-%! assert (gallery ("cauchy", 1:5, 0:4), exp)
-%! assert (gallery ("cauchy", 1:5, 4:-1:0), fliplr (exp))
+%! assert (gallery ("cauchy", 0:4, 1:5), exp);
+%! assert (gallery ("cauchy", 1:5, 0:4), exp);
+%! assert (gallery ("cauchy", 1:5, 4:-1:0), fliplr (exp));
 %!
 %! exp = 1 ./ [
 %!  -1  0  1  2  3
@@ -2950,16 +2950,16 @@ endfunction
 %!   1  2  3  4  5
 %!   2  3  4  5  6
 %!   3  4  5  6  7];
-%! assert (gallery ("cauchy", 1:5, -2:2), exp)
+%! assert (gallery ("cauchy", 1:5, -2:2), exp);
 %!
 %! exp = 1 ./ [
 %!    8  18  -4  2
 %!   13  23   1  7
 %!    9  19  -3  3
 %!   15  25   3  9];
-%! assert (gallery ("cauchy", [-2 3 -1 5], [10 20 -2 4]), exp)
-%! assert (gallery ("cauchy", [-2 3 -1 5], [10 20 -2 4]'), exp)
-%! assert (gallery ("cauchy", [-2 3 -1 5]', [10 20 -2 4]), exp)
+%! assert (gallery ("cauchy", [-2 3 -1 5], [10 20 -2 4]), exp);
+%! assert (gallery ("cauchy", [-2 3 -1 5], [10 20 -2 4]'), exp);
+%! assert (gallery ("cauchy", [-2 3 -1 5]', [10 20 -2 4]), exp);
 
 %!assert (size (gallery ("chebspec", 5)), [5 5])
 %!assert (size (gallery ("chebspec", 5, 1)), [5 5])
@@ -3006,10 +3006,10 @@ endfunction
 %!   2   1   0   1   2
 %!   3   2   1   0   1
 %!   4   3   2   1   0];
-%! assert (gallery ("fiedler", 5), exp)
-%! assert (gallery ("fiedler", 1:5), exp)
-%! assert (gallery ("fiedler", -2:2), exp)
-%! assert (gallery ("fiedler", 2:5), exp(1:4,1:4))
+%! assert (gallery ("fiedler", 5), exp);
+%! assert (gallery ("fiedler", 1:5), exp);
+%! assert (gallery ("fiedler", -2:2), exp);
+%! assert (gallery ("fiedler", 2:5), exp(1:4,1:4));
 
 %!assert (size (gallery ("forsythe", 5)), [5 5])
 %!assert (size (gallery ("forsythe", 5, 1, 0.5)), [5 5])

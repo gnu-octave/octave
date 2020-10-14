@@ -201,7 +201,7 @@ endfunction
 %!   camlookat (h2);
 %!   dir2 = camtarget () - campos ();
 %!   dir2 /= norm (dir2);
-%!   assert (dir, dir2, -2*eps)
+%!   assert (dir, dir2, -2*eps);
 %!   camlookat ([h1 h2]);
 %!   dir2 = camtarget () - campos ();
 %!   dir2 /= norm (dir2);

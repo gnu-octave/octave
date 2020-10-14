@@ -428,31 +428,31 @@ endfunction
 %! A (1,50) = 10000;
 %! b = ones (50,1);
 %! [x, flag, relres, iter, resvec] = tfqmr (A, b, [], 100);
-%! assert (flag, 0)
-%! assert (x, A \ b, 1e-05)
+%! assert (flag, 0);
+%! assert (x, A \ b, 1e-05);
 %! ## Detects a singular preconditioner
 %! M = ones (50);
 %! M(1, 1) = 0;
 %! [x, flag] = tfqmr (A, b, [], 100, M);
-%! assert (flag, 2)
+%! assert (flag, 2);
 
 %!test
 %! A = single (1);
 %! b = 1;
 %! [x, flag] = tfqmr (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %! A = 1;
 %! b = single (1);
 %! [x, flag] = tfqmr (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %! A = single (1);
 %! b = single (1);
 %! [x, flag] = tfqmr (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %!function y = Afun (x)
@@ -460,14 +460,14 @@ endfunction
 %!  y = A * x;
 %!endfunction
 %! [x, flag] = tfqmr ("Afun", [1; 2; 2; 3]);
-%! assert (x, ones (4, 1), 1e-6)
+%! assert (x, ones (4, 1), 1e-6);
 
 %!test # unpreconditioned residual
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
 %! M = magic (5);
 %! [x, flag, relres] = tfqmr (A, b, [], 3, M);
-%! assert (relres, norm (b - A * x) / norm (b), 8 * eps)
+%! assert (relres, norm (b - A * x) / norm (b), 8 * eps);
 
 %!demo # simplest use
 %! n = 20;

@@ -495,9 +495,9 @@ endfunction
 
 %!test # Check that imaginary part of solution does not get inverted
 %! sol = ode23s (@(x,y) 1, [0 1], 1i);
-%! assert (imag (sol.y), ones (size (sol.y)))
+%! assert (imag (sol.y), ones (size (sol.y)));
 %! [x, y] = ode23s (@(x,y) 1, [0 1], 1i);
-%! assert (imag (y), ones (size (y)))
+%! assert (imag (y), ones (size (y)));
 
 ## Test input validation
 %!error <Invalid call> ode23s ()

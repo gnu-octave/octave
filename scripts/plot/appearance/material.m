@@ -296,7 +296,7 @@ endfunction
 
 %!test
 %! refl_props = material ("metal");
-%! assert (refl_props, {0.3, 0.3, 1, 25, 0.5})
+%! assert (refl_props, {0.3, 0.3, 1, 25, 0.5});
 
 ## Test input validation
 %!error <Invalid call to material> material ()

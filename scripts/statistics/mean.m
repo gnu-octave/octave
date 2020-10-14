@@ -217,25 +217,25 @@ endfunction
 %!test
 %! in = [1 2 3];
 %! out = 2;
-%! assert (mean (in, "default"), mean (in))
-%! assert (mean (in, "default"), out)
+%! assert (mean (in, "default"), mean (in));
+%! assert (mean (in, "default"), out);
 %!
 %! in = single ([1 2 3]);
 %! out = 2;
-%! assert (mean (in, "default"), mean (in))
-%! assert (mean (in, "default"), single (out))
-%! assert (mean (in, "double"), out)
-%! assert (mean (in, "native"), single (out))
+%! assert (mean (in, "default"), mean (in));
+%! assert (mean (in, "default"), single (out));
+%! assert (mean (in, "double"), out);
+%! assert (mean (in, "native"), single (out));
 %!
 %! in = uint8 ([1 2 3]);
 %! out = 2;
-%! assert (mean (in, "default"), mean (in))
-%! assert (mean (in, "default"), out)
-%! assert (mean (in, "double"), out)
-%! assert (mean (in, "native"), uint8 (out))
+%! assert (mean (in, "default"), mean (in));
+%! assert (mean (in, "default"), out);
+%! assert (mean (in, "double"), out);
+%! assert (mean (in, "native"), uint8 (out));
 %!
 %! in = logical ([1 0 1]);
 %! out = 2/3;
-%! assert (mean (in, "default"), mean (in))
-%! assert (mean (in, "default"), out)
-%! assert (mean (in, "native"), out) # logical ignores native option
+%! assert (mean (in, "default"), mean (in));
+%! assert (mean (in, "default"), out);
+%! assert (mean (in, "native"), out);  # logical ignores native option

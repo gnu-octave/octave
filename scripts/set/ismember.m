@@ -294,7 +294,7 @@ endfunction
 %! assert (s_idx, 2);
 %!
 %! tf = ismember ([5, 4-3j, 3+4j], 5);
-%! assert (tf, logical ([1, 0, 0]))
+%! assert (tf, logical ([1, 0, 0]));
 %! [~, s_idx] = ismember ([5, 4-3j, 3+4j], 5);
 %! assert (s_idx, [1, 0, 0]);
 %!

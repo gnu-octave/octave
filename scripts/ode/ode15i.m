@@ -521,13 +521,13 @@ endfunction
 %! A = eye (2);
 %! [tout, yout] = ode15i (@(t, y, yp) A * y - A * yp, ...
 %! [0, 1], [1, 1], [1, 1]);
-%! assert (size (yout), [20, 2])
+%! assert (size (yout), [20, 2]);
 
 %!testif HAVE_SUNDIALS
 %! A = eye (2);
 %! [tout, yout] = ode15i (@(t, y, yp) A * y - A * yp, ...
 %! [0, 1], [1, 1], [1; 1]);
-%! assert (size (yout), [20, 2])
+%! assert (size (yout), [20, 2]);
 
 ## Jacobian fun wrong dimension
 %!testif HAVE_SUNDIALS

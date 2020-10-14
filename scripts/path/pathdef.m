@@ -108,8 +108,8 @@ endfunction
 %!   addpath (tmp_dir);
 %!   p1 = path ();
 %!   p2 = pathdef ();
-%!   assert (! isempty (strfind (p1, tmp_dir)))
-%!   assert (isempty (strfind (p2, tmp_dir)))
+%!   assert (! isempty (strfind (p1, tmp_dir)));
+%!   assert (isempty (strfind (p2, tmp_dir)));
 %! unwind_protect_cleanup
 %!   sts = rmdir (tmp_dir);
 %!   path (path_orig);
@@ -126,7 +126,7 @@ endfunction
 %!   path_1 = path ();
 %!   p = pathdef ();
 %!   path_2 = path ();
-%!   assert (path_1, path_2)
+%!   assert (path_1, path_2);
 %! unwind_protect_cleanup
 %!   sts = rmdir (tmp_dir);
 %!   path (path_orig);

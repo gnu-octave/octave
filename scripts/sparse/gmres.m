@@ -449,6 +449,7 @@ function [x_min, flag, relres, it, resvec] = ...
   endif
 endfunction
 
+
 %!demo
 %! dim = 20;
 %! A = spdiags ([-ones(dim,1) 2*ones(dim,1) ones(dim,1)], [-1:1], dim, dim);

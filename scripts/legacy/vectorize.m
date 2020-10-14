@@ -70,6 +70,7 @@ function retval = vectorize (fun)
   endif
 endfunction
 
+
 %!assert (vectorize ("x.^2 + 1"), "x.^2 + 1")
 %!test
 %! fh = @(x) x.^2 + 1;

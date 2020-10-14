@@ -105,6 +105,7 @@ function retval = graphics_toolkit (name, hlist = [])
 
 endfunction
 
+
 %!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
 %! unwind_protect
 %!   hf = figure ("visible", "off");

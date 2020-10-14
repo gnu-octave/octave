@@ -345,6 +345,8 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     endswitch
   endif
 endfunction
+
+
 %!test
 %! ## Check that all type of inputs work
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));

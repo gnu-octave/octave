@@ -80,6 +80,7 @@ function [b, r] = deconv (y, a)
 
 endfunction
 
+
 %!test
 %! [b, r] = deconv ([3, 6, 9, 9], [1, 2, 3]);
 %! assert (b, [3, 0]);

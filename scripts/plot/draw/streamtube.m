@@ -332,6 +332,7 @@ function Y = rotation (X, U, cp, sp)
 
 endfunction
 
+
 %!demo
 %! clf;
 %! [x, y, z] = meshgrid (-3:0.15:3, -1:0.1:1, -1:0.1:1);

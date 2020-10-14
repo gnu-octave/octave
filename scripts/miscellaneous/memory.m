@@ -160,7 +160,7 @@ function [userdata, systemdata] = memory ()
     total_ram = meminfo.MemTotal * kiB;
     total_swap = meminfo.SwapTotal * kiB;
     free_ram = meminfo.MemFree * kiB;
-    if isfield (meminfo, "MemAvailable")
+    if (isfield (meminfo, "MemAvailable"))
       available_ram = meminfo.MemAvailable * kiB;
     else
       ## On kernels from before 2014 MemAvailable is not present.

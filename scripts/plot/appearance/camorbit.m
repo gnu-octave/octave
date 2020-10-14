@@ -138,7 +138,7 @@ function camorbit (varargin)
   endif
 
   if (ischar (dir))
-    switch tolower (dir)
+    switch (tolower (dir))
       case "x"
         dir = [1 0 0];
       case "y"

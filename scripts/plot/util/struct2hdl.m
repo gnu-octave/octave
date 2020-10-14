@@ -138,7 +138,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
 
   ## Translate field names for Matlab .fig files
   ## FIXME: Is it ok to do this unconditionally?
-  if isfield (s.properties, "applicationdata")
+  if (isfield (s.properties, "applicationdata"))
     s.properties.__appdata__ = s.properties.applicationdata;
     s.properties = rmfield (s.properties, "applicationdata");
   endif

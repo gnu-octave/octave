@@ -94,7 +94,7 @@ function response = webwrite (url, varargin)
     if (ischar (varargin{1}) && isrow (varargin{1}))
       param = strsplit (varargin{1}, {"=", "&"});
       response = __restful_service__ (url, param, options);
-    elseif  (! iscellstr (varargin))
+    elseif (! iscellstr (varargin))
       error ("webwrite: DATA must be a string");
     else
       response = __restful_service__ (url, varargin, options);

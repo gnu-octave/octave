@@ -38,7 +38,7 @@
 function out = tar_is_bsd ()
   ## BSD tar needs to be handled differently from GNU tar
   persistent cache
-  if isempty (cache)
+  if (isempty (cache))
     [status, tar_ver_str] = system ("tar --version");
     if (status)
       error ("tar: Failed executing tar --version (status = %d)", status);

@@ -128,7 +128,7 @@ function [t_next, x_next, x_est, k] = runge_kutta_23s (fun, t, x, dt,
   endif
   W = M - dt*d*J;
 
-  if issparse (W)
+  if (issparse (W))
     [Lw, Uw, Pw, Qw, Rw] = lu  (W);
   else
     [Lw, Uw, Pw] = lu (W);
@@ -136,13 +136,13 @@ function [t_next, x_next, x_est, k] = runge_kutta_23s (fun, t, x, dt,
 
   ## compute the slopes
   F(:,1) = feval (fun, t, x, args{:});
-  if issparse (W)
+  if (issparse (W))
     k(:,1) = Qw * (Uw \ (Lw \ (Pw * (Rw \ (F(:,1) + dt*d*T)))));
   else
     k(:,1) = Uw \ (Lw \ (Pw * (F(:,1) + dt*d*T)));
   endif
   F(:,2) = feval (fun, t+a*dt, x+a*dt*k(:,1), args{:});
-  if issparse (W)
+  if (issparse (W))
     k(:,2) = Uw * (Uw \ (Lw \ (Pw * (Rw \ (F(:,2) - M*k(:,1)))))) + k(:,1);
   else
     k(:,2) = Uw \ (Lw \ (Pw * (F(:,2) - M*k(:,1)))) + k(:,1);
@@ -154,7 +154,7 @@ function [t_next, x_next, x_est, k] = runge_kutta_23s (fun, t, x, dt,
   if (nargout >= 3)
     ## 3rd order, needed in error formula
     F(:,3) = feval (fun, t+dt, x_next, args{:});
-    if issparse (W)
+    if (issparse (W))
       k(:,3) = Qw * (Uw \ (Lw \ (Pw * (Rw \ (F(:,3) - e32 * (M*k(:,2) - F(:,2)) - 2 * (M*k(:,1) - F(:,1)) + dt*d*T)))));
     else
       k(:,3) = Uw \ (Lw \ (Pw * (F(:,3) - e32 * (M*k(:,2) - F(:,2)) - 2 * (M*k(:,1) - F(:,1)) + dt*d*T)));

@@ -235,7 +235,7 @@ function h = streamribbon (varargin)
     sl = xyz{i};
     num_vertices = rows (sl);
     if (! isempty (sl) && num_vertices > 1)
-      if isempty (anlr_rot)
+      if (isempty (anlr_rot))
         ## Plot from vector field
         ## Interpolate onto streamline vertices
         [lin_spd_sl, anlr_spd_sl, max_vertices] = ...

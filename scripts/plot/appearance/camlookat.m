@@ -62,7 +62,7 @@ function camlookat (hh)
       hh = get (hax, "children");
     elseif (all (ishghandle (hh)))
       hax = ancestor (hh, "axes");
-      if numel (hax) > 1
+      if (numel (hax) > 1)
         hax = unique ([hax{:}]);
       endif
       if (numel (hax) > 1)

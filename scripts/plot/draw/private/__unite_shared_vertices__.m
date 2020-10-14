@@ -55,7 +55,7 @@ function [faces, vertices, J] = __unite_shared_vertices__ (faces, vertices)
   [J, idx] = sort (J);
   j(idx) = 1:length (idx);
   vertices = vertices(idx,:);
-  if any (nan_vertices)
+  if (any (nan_vertices))
     j(end+1) = length (idx) + 1;
     vertices(end+1,:) = NaN;
     lut(nan_vertices) = rows (vertices);

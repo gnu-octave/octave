@@ -100,7 +100,7 @@ function unload_packages (files, handle_deps, local_list, global_list)
     if (any (idx))
       rmpath (d);
       ## FIXME: We should also check if we need to remove items from EXEC_PATH.
-      if isguirunning
+      if (isguirunning)
         __event_manager_update_gui_lexer__;
       endif
     endif

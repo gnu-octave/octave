@@ -48,7 +48,7 @@ Undocumented internal function.
   Matrix xi = args(1).matrix_value ().transpose ();
 
   if (x.rows () != xi.rows () || x.columns () < 1)
-    error ("__dsearch__: number of rows of X and XI must match");
+    error ("__dsearchn__: number of rows of X and XI must match");
 
   octave_idx_type n = x.rows ();
   octave_idx_type nx = x.columns ();

@@ -4189,7 +4189,7 @@ void
 figure::properties::set___graphics_toolkit__ (const octave_value& val)
 {
   if (! val.is_string ())
-    error ("set___graphics_toolkit__ must be a string");
+    error ("set___graphics_toolkit__: toolkit must be a string");
 
   std::string nm = val.string_value ();
 

@@ -592,21 +592,21 @@ octave_play_callback (const void *, void *output, unsigned long frames,
   audioplayer *player = static_cast<audioplayer *> (data);
 
   if (! player)
-    error ("audio player callback function called without player");
+    error ("audioplayer callback function called without player");
 
   octave_value_list retval
     = octave::feval (player->octave_callback_function,
                      ovl (static_cast<double> (frames)), 1);
 
   if (retval.length () < 2)
-    error ("audio player callback function failed");
+    error ("audioplayer callback function failed");
 
   const Matrix sound = retval(0).matrix_value ();
   int return_status = retval(1).int_value ();
 
   if (frames - sound.rows () != 0 || sound.columns () < 1
       || sound.columns () > 2)
-    error ("audio player callback function failed");
+    error ("audioplayer callback function failed");
 
   // Don't multiply the audio data by scale_factor here.  Although it
   // does move the operation outside of the loops below, it also causes
@@ -682,7 +682,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
       break;
 
     default:
-      error ("invalid player bit depth in callback function");
+      error ("invalid bit depth in audioplayer callback function");
     }
 
   return return_status;
@@ -696,7 +696,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   audioplayer *player = static_cast<audioplayer *> (data);
 
   if (! player)
-    error ("audio player callback function called without player");
+    error ("audioplayer callback function called without player");
 
   // Don't multiply the audio data by scale_factor here.  Although it would
   // move the operation outside of the loops below, it also causes a second
@@ -799,7 +799,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
           break;
 
         default:
-          error ("invalid player bit depth in callback function");
+          error ("invalid bit depth in audioplayer callback function");
         }
     }
   else if (player->get_type () == TYPE_INT8)
@@ -1341,7 +1341,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
   audiorecorder *recorder = static_cast<audiorecorder *> (data);
 
   if (! recorder)
-    error ("audio recorder callback function called without recorder");
+    error ("audiorecorder callback function called without recorder");
 
   int channels = recorder->get_channels ();
 
@@ -1445,7 +1445,7 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
   audiorecorder *recorder = static_cast<audiorecorder *> (data);
 
   if (! recorder)
-    error ("audio recorder callback function called without recorder");
+    error ("audiorecorder callback function called without recorder");
 
   int channels = recorder->get_channels ();
 
@@ -2413,7 +2413,7 @@ get_player (octave::interpreter& interp, const octave_value& ov)
 
   audioplayer *pl = dynamic_cast<audioplayer *> (ncrep);
   if (! pl)
-    error ("audiodevinfo.cc get_player: dynamic_cast to audioplayer failed");
+    error ("audiodevinfo.cc (get_player): dynamic_cast to audioplayer failed");
 
   return pl;
 }

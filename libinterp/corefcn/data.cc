@@ -6508,7 +6508,7 @@ seconds elapsed since the timer @var{id} was initialized.
     }
 
   if (start_time < 0)
-    error ("toc called before timer set");
+    error ("toc: function called before timer initialization with tic()");
 
   octave::sys::time now;
 

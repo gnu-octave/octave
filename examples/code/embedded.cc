@@ -77,7 +77,7 @@ main (void)
     }
 
   // Shutdown the interpreter which cleanly releases all memory.
-  interp->shutdown ();
+  interpreter->shutdown ();
 
   return 0;
 }

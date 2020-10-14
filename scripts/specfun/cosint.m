@@ -106,7 +106,7 @@ function y = cosint (x)
 
   ## Special values
   y(x == Inf) = 0;
-  y((x == -Inf) & !signbit (imag (x))) = 1i * pi;
+  y((x == -Inf) & ! signbit (imag (x))) = 1i * pi;
   y((x == -Inf) &  signbit (imag (x))) = -1i * pi;
 
   todo(isinf (x)) = false;

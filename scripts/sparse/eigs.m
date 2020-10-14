@@ -1286,7 +1286,7 @@ endfunction
 %! A(1, 1) = 0;
 %! A(1, 9) = 1;
 %! [V, L] = eigs (A, 4, -1);
-%! assert (!any (isnan (diag (L))));
+%! assert (! any (isnan (diag (L))));
 %! assert (any (abs (diag (L)) <= 2 * eps));
 %!testif HAVE_ARPACK
 %! A = diag (ones (9, 1), 1);

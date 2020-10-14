@@ -290,7 +290,7 @@ function [x_min, flag, relres, it, resvec] = ...
     restart = size_b;
     maxit = size_b;
     max_iter_number = size_b;
-  elseif (restart > size_b) && (!empty_maxit)
+  elseif (restart > size_b) && (! empty_maxit)
     warning ("RESTART is %d but it should be bounded by SIZE(A,2).\n Setting restart to %d. \n", restart, size_b)
     restart = size_b;
     max_iter_number = restart * maxit;

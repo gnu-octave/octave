@@ -47,7 +47,7 @@
 %! catch
 %! end_try_catch
 %! a = 2;
-%! assert (!exist ('x'));
+%! assert (! exist ('x'));
 %! assert (a,2);
 
 %!test

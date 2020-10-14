@@ -221,4 +221,4 @@ endfunction
 %!assert (size (repmat ({1}, [0, 1])), [0, 1])
 %!assert (size (repmat ({1}, [0, 5])), [0, 5])
 
-%!error (size (repmat (".", -1, -1)))
+%!error size (repmat (".", -1, -1))

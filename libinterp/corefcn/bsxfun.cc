@@ -637,12 +637,12 @@ as the other array.
 %! b = mean (a, 1);
 %! c = mean (a, 2);
 %! f = @minus;
-%!error (bsxfun (f))
-%!error (bsxfun (f, a))
-%!error (bsxfun (a, b))
-%!error (bsxfun (a, b, c))
-%!error (bsxfun (f, a, b, c))
-%!error (bsxfun (f, ones (4, 0), ones (4, 4)))
+%!error bsxfun (f)
+%!error bsxfun (f, a)
+%!error bsxfun (a, b)
+%!error bsxfun (a, b, c)
+%!error bsxfun (f, a, b, c)
+%!error bsxfun (f, ones (4, 0), ones (4, 4))
 %!assert (bsxfun (f, ones (4, 0), ones (4, 1)), zeros (4, 0))
 %!assert (bsxfun (f, ones (1, 4), ones (4, 1)), zeros (4, 4))
 %!assert (bsxfun (f, a, b), a - repmat (b, 4, 1))
@@ -655,12 +655,12 @@ as the other array.
 %! b = mean (a, 1);
 %! c = mean (a, 2);
 %! f = @minus;
-%!error (bsxfun (f))
-%!error (bsxfun (f, a))
-%!error (bsxfun (a, b))
-%!error (bsxfun (a, b, c))
-%!error (bsxfun (f, a, b, c))
-%!error (bsxfun (f, ones (4, 0), ones (4, 4)))
+%!error bsxfun (f)
+%!error bsxfun (f, a)
+%!error bsxfun (a, b)
+%!error bsxfun (a, b, c)
+%!error bsxfun (f, a, b, c)
+%!error bsxfun (f, ones (4, 0), ones (4, 4))
 %!assert (bsxfun (f, ones (4, 0), ones (4, 1)), zeros (4, 0))
 %!assert (bsxfun (f, ones (1, 4), ones (4, 1)), zeros (4, 4))
 %!assert (bsxfun (f, a, b), a - repmat (b, 4, 1))
@@ -673,12 +673,12 @@ as the other array.
 %! b = mean (a, 1);
 %! c = mean (a, 2);
 %! f = @minus;
-%!error (bsxfun (f))
-%!error (bsxfun (f, a))
-%!error (bsxfun (a, b))
-%!error (bsxfun (a, b, c))
-%!error (bsxfun (f, a, b, c))
-%!error (bsxfun (f, ones (4, 0), ones (4, 4)))
+%!error bsxfun (f)
+%!error bsxfun (f, a)
+%!error bsxfun (a, b)
+%!error bsxfun (a, b, c)
+%!error bsxfun (f, a, b, c)
+%!error bsxfun (f, ones (4, 0), ones (4, 4))
 %!assert (bsxfun (f, ones (4, 0), ones (4, 1)), zeros (4, 0))
 %!assert (bsxfun (f, ones (1, 4), ones (4, 1)), zeros (4, 4))
 %!assert (bsxfun (f, a, b), a - repmat (b, 4, 1))
@@ -690,12 +690,12 @@ as the other array.
 %! b = a (1, :);
 %! c = a (:, 1);
 %! f = @(x, y) x == y;
-%!error (bsxfun (f))
-%!error (bsxfun (f, a))
-%!error (bsxfun (a, b))
-%!error (bsxfun (a, b, c))
-%!error (bsxfun (f, a, b, c))
-%!error (bsxfun (f, ones (4, 0), ones (4, 4)))
+%!error bsxfun (f)
+%!error bsxfun (f, a)
+%!error bsxfun (a, b)
+%!error bsxfun (a, b, c)
+%!error bsxfun (f, a, b, c)
+%!error bsxfun (f, ones (4, 0), ones (4, 4))
 %!assert (bsxfun (f, ones (4, 0), ones (4, 1)), zeros (4, 0, "logical"))
 %!assert (bsxfun (f, ones (1, 4), ones (4, 1)), ones (4, 4, "logical"))
 %!assert (bsxfun (f, a, b), a == repmat (b, 4, 1))
@@ -707,7 +707,7 @@ as the other array.
 %! c = mean (a, 2);
 %! d = mean (a, 3);
 %! f = @minus;
-%!error (bsxfun (f, ones ([4, 0, 4]), ones ([4, 4, 4])))
+%!error bsxfun (f, ones ([4, 0, 4]), ones ([4, 4, 4]))
 %!assert (bsxfun (f, ones ([4, 0, 4]), ones ([4, 1, 4])), zeros ([4, 0, 4]))
 %!assert (bsxfun (f, ones ([4, 4, 0]), ones ([4, 1, 1])), zeros ([4, 4, 0]))
 %!assert (bsxfun (f, ones ([1, 4, 4]), ones ([4, 1, 4])), zeros ([4, 4, 4]))

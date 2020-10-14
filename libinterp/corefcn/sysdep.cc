@@ -1380,7 +1380,7 @@ graphics callbacks execution.
 %!test
 %! pause (1);
 
-%!error (pause (1, 2))
+%!error pause (1, 2)
 */
 
 // FIXME: maybe this should only return 1 if IEEE floating

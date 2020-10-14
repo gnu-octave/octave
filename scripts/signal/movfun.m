@@ -600,7 +600,7 @@ endfunction
 %!assert (size( movfun (@(x) [min(x), max(x)], cumsum (ones (10,5),2), 3)),
 %!        [10 5 2])
 ## outdim > dim
-%!error (movfun (@(x) [min(x), max(x)], (1:10).', 3, "Outdim", 3))
+%!error movfun (@(x) [min(x), max(x)], (1:10).', 3, "Outdim", 3)
 
 ## Test input validation
 %!error <Invalid call> movfun ()

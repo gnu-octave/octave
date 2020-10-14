@@ -442,8 +442,8 @@ endfunction
 %! assert (accumarray (subsc, vals, [], @max),
 %!         accumarray (subs, vals, [], @max));
 
-%!error (accumarray (1:5))
-%!error (accumarray ([1,2,3],1:2))
+%!error accumarray (1:5)
+%!error accumarray ([1,2,3],1:2)
 
 ## Handle empty arrays
 %!test <*47287>

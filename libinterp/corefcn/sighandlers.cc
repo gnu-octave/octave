@@ -540,7 +540,7 @@ The original variable value is restored when exiting the function.
 %! debug_on_interrupt (orig_val);
 %! assert (debug_on_interrupt (), orig_val);
 
-%!error (debug_on_interrupt (1, 2))
+%!error debug_on_interrupt (1, 2)
 */
 
 DEFUN (sighup_dumps_octave_core, args, nargout,
@@ -571,7 +571,7 @@ The original variable value is restored when exiting the function.
 %! sighup_dumps_octave_core (orig_val);
 %! assert (sighup_dumps_octave_core (), orig_val);
 
-%!error (sighup_dumps_octave_core (1, 2))
+%!error sighup_dumps_octave_core (1, 2)
 */
 
 DEFUN (sigquit_dumps_octave_core, args, nargout,
@@ -602,7 +602,7 @@ The original variable value is restored when exiting the function.
 %! sigquit_dumps_octave_core (orig_val);
 %! assert (sigquit_dumps_octave_core (), orig_val);
 
-%!error (sigquit_dumps_octave_core (1, 2))
+%!error sigquit_dumps_octave_core (1, 2)
 */
 
 DEFUN (sigterm_dumps_octave_core, args, nargout,
@@ -633,5 +633,5 @@ The original variable value is restored when exiting the function.
 %! sigterm_dumps_octave_core (orig_val);
 %! assert (sigterm_dumps_octave_core (), orig_val);
 
-%!error (sigterm_dumps_octave_core (1, 2))
+%!error sigterm_dumps_octave_core (1, 2)
 */

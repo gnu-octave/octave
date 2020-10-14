@@ -48,4 +48,4 @@ endfunction
 %!assert (size (rosser ()), [8,8])
 %!assert (rosser ()([1, end]), [611, 99])
 
-%!error (rosser (1))
+%!error rosser (1)

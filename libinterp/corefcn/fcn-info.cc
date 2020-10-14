@@ -1223,7 +1223,7 @@ recompiled.
 %! ignore_function_time_stamp (old_state);
 
 ## Test input validation
-%!error (ignore_function_time_stamp ("all", "all"))
-%!error (ignore_function_time_stamp ("UNKNOWN_VALUE"))
-%!error (ignore_function_time_stamp (42))
+%!error ignore_function_time_stamp ("all", "all")
+%!error ignore_function_time_stamp ("UNKNOWN_VALUE")
+%!error ignore_function_time_stamp (42)
 */

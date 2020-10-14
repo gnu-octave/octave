@@ -889,7 +889,7 @@ negative numbers or when the values are periodic.
 %!assert (mod (uint8 (5), uint8 (4)), uint8 (1))
 %!assert (mod (uint8 ([1:5]), uint8 (4)), uint8 ([1,2,3,0,1]))
 %!assert (mod (uint8 ([1:5]), uint8 (0)), uint8 ([1:5]))
-%!error (mod (uint8 (5), int8 (4)))
+%!error mod (uint8 (5), int8 (4))
 
 ## mixed integer/real types
 %!assert (mod (uint8 (5), 4), uint8 (1))
@@ -4485,10 +4485,10 @@ DEFALIAS (inf, Inf);
 %!assert (inf (3, 2, "single"), single ([Inf, Inf; Inf, Inf; Inf, Inf]))
 %!assert (size (inf (3, 4, 5, "single")), [3, 4, 5])
 
-%!error (inf (3, "int8"))
-%!error (inf (2, 3, "int8"))
-%!error (inf (3, 2, "int8"))
-%!error (inf (3, 4, 5, "int8"))
+%!error inf (3, "int8")
+%!error inf (2, 3, "int8")
+%!error inf (3, 2, "int8")
+%!error inf (3, 4, 5, "int8")
 */
 
 DEFUN (NaN, args, ,
@@ -4550,10 +4550,10 @@ DEFALIAS (nan, NaN);
 %!assert (NaN (3, 2, "single"), single ([NaN, NaN; NaN, NaN; NaN, NaN]))
 %!assert (size (NaN (3, 4, 5, "single")), [3, 4, 5])
 
-%!error (NaN (3, "int8"))
-%!error (NaN (2, 3, "int8"))
-%!error (NaN (3, 2, "int8"))
-%!error (NaN (3, 4, 5, "int8"))
+%!error NaN (3, "int8")
+%!error NaN (2, 3, "int8")
+%!error NaN (3, 2, "int8")
+%!error NaN (3, 4, 5, "int8")
 */
 
 DEFUN (e, args, ,

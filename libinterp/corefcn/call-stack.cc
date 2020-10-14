@@ -1166,7 +1166,7 @@ The original variable value is restored when exiting the function.
 %! max_stack_depth (orig_val);
 %! assert (max_stack_depth (), orig_val);
 
-%!error (max_stack_depth (1, 2))
+%!error max_stack_depth (1, 2)
 */
 
 DEFMETHOD (who, interp, args, nargout,

@@ -605,7 +605,7 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %!assert (filter ([1, 1, 1], [1, 1], [1 2], [1, 1]), [2 2])
 %!assert (filter ([1, 1, 1], [1, 1], [1 2], [1, 1]'), [2 2])
 %!assert (filter ([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]), [5 7; 6 10; 14 18])
-%!error (filter ([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]'))
+%!error filter ([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]')
 %!assert (filter ([1, 3, 2], [1], [1 2; 3 4; 5 6], [1 0 0; 1 0 0], 2), [2 6; 3 13; 5 21])
 
 ## Test of DIM parameter

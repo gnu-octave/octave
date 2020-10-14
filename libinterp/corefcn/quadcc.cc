@@ -2242,9 +2242,9 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
 %! assert (class (quadcc (@sin, single (0), single (1))), "single");
 
 ## Test input validation
-%!error (quadcc ())
-%!error (quadcc (@sin))
-%!error (quadcc (@sin, 0))
+%!error quadcc ()
+%!error quadcc (@sin)
+%!error quadcc (@sin, 0)
 %!error <lower limit .* must be a .* scalar> (quadcc (@sin, ones (2), pi))
 %!error <lower limit .* must be a real scalar> (quadcc (@sin, -i, pi))
 %!error <upper limit .* must be a .* scalar> (quadcc (@sin, 0, ones (2)))

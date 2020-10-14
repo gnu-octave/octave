@@ -40,4 +40,4 @@ function beep ()
 endfunction
 
 
-%!error (beep (1))
+%!error beep (1)

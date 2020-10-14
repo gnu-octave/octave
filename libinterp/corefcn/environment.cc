@@ -186,7 +186,7 @@ The original variable value is restored when exiting the function.
 %! EDITOR (orig_val);
 %! assert (EDITOR (), orig_val);
 
-%!error (EDITOR (1, 2))
+%!error EDITOR (1, 2)
 */
 
 DEFMETHOD (EXEC_PATH, interp, args, nargout,
@@ -223,7 +223,7 @@ The original variable value is restored when exiting the function.
 %! EXEC_PATH (orig_val);
 %! assert (EXEC_PATH (), orig_val);
 
-%!error (EXEC_PATH (1, 2))
+%!error EXEC_PATH (1, 2)
 */
 
 DEFMETHOD (IMAGE_PATH, interp, args, nargout,
@@ -255,5 +255,5 @@ The original variable value is restored when exiting the function.
 %! IMAGE_PATH (orig_val);
 %! assert (IMAGE_PATH (), orig_val);
 
-%!error (IMAGE_PATH (1, 2))
+%!error IMAGE_PATH (1, 2)
 */

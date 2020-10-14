@@ -187,7 +187,7 @@ do_fft (const octave_value_list& args, const char *fcn, int type)
 %!testif HAVE_FFTW
 %! assert (fft (eye (2,2,"single")), single ([1,1; 1,-1]))
 
-%!error (fft ())
+%!error fft ()
 */
 
 

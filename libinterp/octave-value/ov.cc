@@ -1326,7 +1326,7 @@ Convert @var{x} to single precision type.
 %!assert (class (single (uint64 (1))), "single")
 %!assert (class (single (true)), "single")
 %!assert (class (single ("A")), "single")
-%!error (single (sparse (1)))
+%!error single (sparse (1))
 %!test
 %! x = diag ([1 3 2]);
 %! y = single (x);

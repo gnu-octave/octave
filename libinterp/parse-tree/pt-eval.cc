@@ -4490,7 +4490,7 @@ The original variable value is restored when exiting the function.
 %! max_recursion_depth (orig_val);
 %! assert (max_recursion_depth (), orig_val);
 
-%!error (max_recursion_depth (1, 2))
+%!error max_recursion_depth (1, 2)
 */
 
 DEFMETHOD (whos_line_format, interp, args, nargout,
@@ -4602,7 +4602,7 @@ The original variable value is restored when exiting the function.
 %! silent_functions (orig_val);
 %! assert (silent_functions (), orig_val);
 
-%!error (silent_functions (1, 2))
+%!error silent_functions (1, 2)
 */
 
 DEFMETHOD (string_fill_char, interp, args, nargout,
@@ -4651,7 +4651,7 @@ The original variable value is restored when exiting the function.
 
 %!assert ( [ [], {1} ], {1} )
 
-%!error (string_fill_char (1, 2))
+%!error string_fill_char (1, 2)
 */
 
 DEFMETHOD (PS4, interp, args, nargout,

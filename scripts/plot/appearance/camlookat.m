@@ -40,7 +40,6 @@
 ## (@pxref{XREFcamtarget,,camtarget}) and camera position
 ## (@pxref{XREFcampos,,campos}) are changed.
 ##
-##
 ## If the argument is a list @var{handle_list}, then a single bounding box for
 ## all the objects is computed and the camera is then adjusted as above.
 ##

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __plt__ (@var{caller}, @var{hparent}, @var{varargin})
+## @deftypefn {} {} __plt__ (@var{caller}, @var{hp}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 

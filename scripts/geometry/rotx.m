@@ -27,8 +27,8 @@
 ## @deftypefn {} {@var{T} =} rotx (@var{angle})
 ##
 ## @code{rotx} returns the 3x3 transformation matrix corresponding to an active
-## rotation of the vector about the x-axis by the specified @var{angle}, given
-## in degrees, where a positive angle corresponds to a counterclockwise
+## rotation of a vector about the x-axis by the specified @var{angle}, given in
+## degrees, where a positive angle corresponds to a counterclockwise
 ## rotation when viewing the y-z plane from the positive x side.
 ##
 ## The form of the transformation matrix is:
@@ -51,7 +51,8 @@
 ## @end ifnottex
 ##
 ## This rotation matrix is intended to be used as a left-multiplying matrix
-## when acting on a column vector, using the notation @var{v} = @var{T}@var{u}.
+## when acting on a column vector, using the notation
+## @code{@var{v} = @var{T}*@var{u}}.
 ## For example, a vector, @var{u}, pointing along the positive y-axis, rotated
 ## 90-degrees about the x-axis, will result in a vector pointing along the
 ## positive z-axis:
@@ -81,18 +82,18 @@
 ## @seealso{roty, rotz}
 ## @end deftypefn
 
-function retmat = rotx (angle_in_deg)
+function T = rotx (angle)
 
-  if (nargin < 1 || ! isscalar (angle_in_deg))
+  if (nargin < 1 || ! isscalar (angle))
     print_usage ();
   endif
 
-  angle_in_rad = angle_in_deg * pi / 180;
+  angle *= pi / 180;
 
-  s = sin (angle_in_rad);
-  c = cos (angle_in_rad);
+  s = sin (angle);
+  c = cos (angle);
 
-  retmat = [1 0 0; 0 c -s; 0 s c];
+  T = [1 0 0; 0 c -s; 0 s c];
 
 endfunction
 

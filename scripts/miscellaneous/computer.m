@@ -61,9 +61,9 @@
 ## @seealso{isunix, ismac, ispc}
 ## @end deftypefn
 
-function [comp, maxsize, endian] = computer (a)
+function [comp, maxsize, endian] = computer (arch)
 
-  if (nargin == 1 && ! strcmpi (a, "arch"))
+  if (nargin == 1 && ! strcmpi (arch, "arch"))
     error ('computer: "arch" is only valid argument');
   endif
 

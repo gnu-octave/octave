@@ -24,10 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{prefix}, @var{archprefix} =} default_prefix (@var{global_install})
+## @deftypefn {} {[@var{prefix}, @var{archprefix} =} default_prefix (@var{global_install}, @var{desc})
 ## Undocumented internal function.
 ## @end deftypefn
 
+## FIXME: second input "desc" does not appear to be used.
 function [prefix, archprefix] = default_prefix (global_install, desc)
 
   if (global_install)

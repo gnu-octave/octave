@@ -51,7 +51,8 @@
 ## @end ifnottex
 ##
 ## This rotation matrix is intended to be used as a left-multiplying matrix
-## when acting on a column vector, using the notation @var{v} = @var{T}@var{u}.
+## when acting on a column vector, using the notation
+## @code{@var{v} = @var{T}*@var{u}}.
 ## For example, a vector, @var{u}, pointing along the positive x-axis, rotated
 ## 90-degrees about the z-axis, will result in a vector pointing along the
 ## positive y-axis:
@@ -81,18 +82,18 @@
 ## @seealso{rotx, roty}
 ## @end deftypefn
 
-function retmat = rotz (angle_in_deg)
+function T = rotz (angle)
 
-  if (nargin < 1 || ! isscalar (angle_in_deg))
+  if (nargin < 1 || ! isscalar (angle))
     print_usage ();
   endif
 
-  angle_in_rad = angle_in_deg * pi / 180;
+  angle = angle * pi / 180;
 
-  s = sin (angle_in_rad);
-  c = cos (angle_in_rad);
+  s = sin (angle);
+  c = cos (angle);
 
-  retmat = [c -s 0; s c 0; 0 0 1];
+  T = [c -s 0; s c 0; 0 0 1];
 
 endfunction
 

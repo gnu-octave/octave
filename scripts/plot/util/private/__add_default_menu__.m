@@ -24,9 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} __add_default_menu__ (@var{hfig})
-## @deftypefnx {} {} __add_default_menu__ (@var{hfig}, @var{hmenu})
+## @deftypefn  {} {} __add_default_menu__ (@var{hf})
+## @deftypefnx {} {} __add_default_menu__ (@var{hf}, @var{hmenu})
+## @deftypefnx {} {} __add_default_menu__ (@var{hf}, @var{hmenu}, @var{htb})
 ## Add default menu and listeners to figure.
+##
+## @var{hf} is a figure handle.
+## @var{hmenu} is a uimenu handle.
+## @var{htb} is a uitoolbar handle.
 ##
 ## All uimenu handles have their @qcode{"HandleVisibility"} property set to
 ## @qcode{"off"}.

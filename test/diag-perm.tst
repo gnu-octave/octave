@@ -232,7 +232,7 @@
 %! A = sprand (n, n, .5);
 %! scalefact = rand (n-2, 1);
 %! Dr = diag (scalefact, n, n-2);
-%! assert (full (Dr \ A), Dr \ full(A));
+%! assert (full (Dr \ A), Dr \ full (A));
 
 ## sparse inverse column scaling with a zero factor
 %!test
@@ -242,15 +242,15 @@
 %! Dc = diag (scalefact);
 %! scalefact(n-1) = Inf;
 %! Dc(n-1, n-1) = 0;
-%! assert (full (A / Dc), full(A) / Dc);
+%! assert (full (A / Dc), full (A) / Dc);
 
 ## short sparse inverse column scaling
 %!test
 %! n = 7;
 %! A = sprand (n, n, .5);
-%! scalefact = rand (1, n-2) + I () * rand(1, n-2);
+%! scalefact = rand (1, n-2) + I () * rand (1, n-2);
 %! Dc = diag (scalefact, n-2, n);
-%! assert (full (A / Dc), full(A) / Dc);
+%! assert (full (A / Dc), full (A) / Dc);
 
 ## adding sparse and diagonal stays sparse
 %!test

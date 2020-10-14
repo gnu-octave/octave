@@ -35,12 +35,12 @@
 
 %!test
 %! eval ("clear a; a; str = '';", "str=lasterr;");
-%! assert (lasterr()(1:13), "'a' undefined");
+%! assert (lasterr ()(1:13), "'a' undefined");
 %! assert (str(1:13), "'a' undefined");
 
 %!test
 %! eval ("error ('user-defined error'); str = '';", "str = lasterr;");
-%! assert (lasterr()(1:18), "user-defined error");
+%! assert (lasterr ()(1:18), "user-defined error");
 %! assert (str(1:18), "user-defined error");
 
 %!function ms = mangle (s)

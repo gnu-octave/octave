@@ -174,5 +174,5 @@
 %! command_test w(m,1)   % edge weights
 %! assert (cmd_out, '|w(m,1)|');
 %!test
-%! command_test x2( size( x ) )
-%! assert (cmd_out, '|x2( size( x ) )|');
+%! command_test x2( size ( x ) )
+%! assert (cmd_out, '|x2( size ( x ) )|');

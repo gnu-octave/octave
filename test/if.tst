@@ -133,5 +133,5 @@
 %! c1 = [2i 4i] || 0;
 %! c2 = [22 4i] || 0;
 %! c3 = i || 0;
-%! c4 = complex(0) || 0;
+%! c4 = complex (0) || 0;
 %! assert ([c1 c2 c3 c4], [true true true false]);

@@ -104,7 +104,7 @@
 %! assert (2 ^++a, 8);
 %! assert (a, 3);
 %! assert (a' ^2, 9);
-%! assert (2 ^sin(0), 1);
+%! assert (2 ^sin (0), 1);
 %! assert (-2 ^2, -4);;
 %! assert (2 ^+1 ^3, 8);
 %! assert (2 ^-1 ^3, 0.125);
@@ -214,7 +214,7 @@
 ## Level 13 (parentheses and indexing)
 %!test
 %! a.b1 = 2;
-%! assert (a.(strcat('b','1'))++, 2);
+%! assert (a.(strcat ('b','1'))++, 2);
 %! assert (a.b1, 3);
 %! b = {1 2 3 4 5};
 %! assert (b{(a. b1 + 1)}, 4);
@@ -335,7 +335,7 @@
 #!error <vertical dimensions mismatch \(1x2 vs 1x1\)> z = [1, 2; 3]
 
 %!test
-%! f = @(s,t=toeplitz(s),u=t(x=2:end-1,x)=32)t;
+%! f = @(s,t=toeplitz (s),u=t(x=2:end-1,x)=32)t;
 %! assert (f (1), 1);
 %! assert (f (1, 2), 2);
 

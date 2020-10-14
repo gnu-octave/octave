@@ -6,7 +6,7 @@
 %!assert (fn (6), 37)
 %!assert (feval (inline ("sum (x(:))"), [1 2; 3 4]), 10)
 %!assert (feval (inline ("sqrt (x^2 + y^2)", "x", "y"), 3, 4), 5)
-%!assert (feval (inline ("exp (P1*x) + P2", 3), 3, 4, 5), exp(3*4) + 5)
+%!assert (feval (inline ("exp (P1*x) + P2", 3), 3, 4, 5), exp (3*4) + 5)
 
 ## Test input validation
 %!error inline ()

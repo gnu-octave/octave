@@ -45,13 +45,13 @@ classdef myclass2 < handle
         switch (S(1).subs)
         case 'data'
           % Transform: obj.data --> obj.data_
-          if length(S)>1
+          if length (S)>1
             B = subsasgn (obj.data_, S(2:end), B);
           end
           obj.data_ = B;
         case 'alldata'
           % Transform: obj.data --> obj.data_(1:end)
-          if length(S)>1
+          if length (S)>1
             B = subsasgn (obj.data_(1:end), S(2:end), B);
           end
           % This statement should trigger *builtin* subsref to evaluate 'end',
@@ -59,7 +59,7 @@ classdef myclass2 < handle
           % 'end' here is also builtin 'end'
           obj.data_(1:end) = B;
         otherwise
-          error('Incorrect usage');
+          error ('Incorrect usage');
         end
       case '()'
         % Transform: obj(index) --> obj.data_(index)

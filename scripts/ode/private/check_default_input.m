@@ -25,7 +25,7 @@
 
 function fun = check_default_input (fun, trange, solver, y0, yp0);
 
-  if (nargin != 4)
+  if (nargin < 4)
     print_usage ();
   endif
 

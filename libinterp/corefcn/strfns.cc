@@ -1114,7 +1114,7 @@ line2
 %!error newline (1)
 ## FIXME: The next error() test requires a semicolon at EOL until
 ##        bug #59265 is resolved.
-%!error [a, b] = newline ()
+%!error [a, b] = newline ();
 */
 
 DEFUN (list_in_columns, args, ,

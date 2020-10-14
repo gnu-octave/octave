@@ -73,7 +73,7 @@ function camlookat (hh)
   endif
 
   if (isempty (hh))
-    return
+    return;
   end
 
   x0 = x1 = y0 = y1 = z0 = z1 = [];

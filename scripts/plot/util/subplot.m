@@ -419,7 +419,7 @@ function subplot_align (h, ~, rmupdate = false)
         rmappdata (h, "__subplotposition__");
         rmappdata (h, "__subplotouterposition__");
       endif
-      return
+      return;
     endif
 
     unwind_protect
@@ -434,7 +434,7 @@ function subplot_align (h, ~, rmupdate = false)
         do_align = ! cellfun (@isempty, pos);
         pos = cell2mat (pos(do_align));
       else
-        return
+        return;
       endif
       hsubplots = children(do_align);
 
@@ -449,7 +449,7 @@ function subplot_align (h, ~, rmupdate = false)
         hsubplots(! do_align) = [];
         pos(! do_align,:) = [];
       else
-        return
+        return;
       endif
 
       ## Reset outerpositions to their default value

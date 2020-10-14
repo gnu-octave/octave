@@ -310,7 +310,7 @@ function [x_min, flag, relres, it, resvec] = ...
     relres = 0;
     resvec = 0;
     it = [0, 0];
-    return
+    return;
   endif
 
   ## gmres: function handle case

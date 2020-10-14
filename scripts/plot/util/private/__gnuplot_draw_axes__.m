@@ -2299,7 +2299,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   fprintf (plot_stream, ['set format %s "%s";' "\n"], ax, fmt);
   if (strcmp (ticmode, "manual") && isempty (tics))
     fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
-    return
+    return;
   else
     k = 1;
     ntics = numel (tics);

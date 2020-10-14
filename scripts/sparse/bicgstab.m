@@ -228,7 +228,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     flag = 0;
     resvec = 0;
     relres = 0;
-    return
+    return;
   endif
 
   ## Double maxit to mind also the "half iterations"
@@ -270,7 +270,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     if (resvec (iter + 1) <= real_tol) # reached the tol
       x_min = x;
       iter_min = iter;
-      break
+      break;
     elseif (resvec (iter + 1) <= resvec (iter_min + 1)) # Found min residual
       x_min = x;
       iter_min = iter;
@@ -293,7 +293,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     endif
     if (norm (x - x_pr) <= norm (x) * eps)
       flag = 3;
-      break
+      break;
     endif
     x_pr = x;
     rho_2 = rho_1;

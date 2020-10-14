@@ -276,7 +276,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     alpha = (s0' * prec_r0);
     if (abs (prod_qv) <= eps * abs (alpha))
       flag = 4;
-      break
+      break;
     endif
     alpha ./= prod_qv;
     x += alpha * p;

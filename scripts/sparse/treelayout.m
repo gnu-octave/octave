@@ -72,7 +72,7 @@ function [x_coordinate, y_coordinate, height, s] = ...
 
       if (hare < i)
         ## This part of graph was checked before.
-        break
+        break;
       endif
 
       tortoise = tree(tortoise);

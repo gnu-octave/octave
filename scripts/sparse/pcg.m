@@ -293,7 +293,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
      resvec = 0;
      iter_min = 0;
      eigest = [NaN, NaN];
-     return
+     return;
   endif
 
   x = x_pr = x_min = x0;

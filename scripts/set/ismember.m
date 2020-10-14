@@ -92,7 +92,7 @@ function [tf, s_idx] = ismember (a, s, varargin)
       s_idx = zeros (size (real_argout{2}));
       s_idx(tf) = min (real_argout{2}(tf), imag_argout{2}(tf));
     endif
-    return
+    return;
   endif
 
   ## lookup() does not handle logical values

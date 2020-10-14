@@ -561,7 +561,7 @@ function txt = check_package (fcn, name, classes)
           txt = sprintf (["'%s' is a method of class '%s'; it must be ", ...
                           "called with a '%s' argument (see 'help @@%s/%s')."],
                          fcn, cls, cls, cls, fcn);
-          return
+          return;
         endif
       endfor
       txt = sprintf ("%s but has not yet been implemented.", txt);

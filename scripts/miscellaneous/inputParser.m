@@ -420,7 +420,7 @@ classdef inputParser < handle
           ## keys.  See bug #50752.
           idx -= 1;
           vidx -= 1;
-          break
+          break;
         endif
         try
           valid_option = opt.val (in);
@@ -437,7 +437,7 @@ classdef inputParser < handle
                               && isscalar (in)))
             idx -= 1;
             vidx -= 1;
-            break
+            break;
           else
             this.error (sprintf (["failed validation of %s\n", ...
                                   "Validation function: %s"],

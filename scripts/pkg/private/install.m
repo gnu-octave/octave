@@ -389,7 +389,7 @@ function copy_built_files (desc, packdir, verbose)
 
   src = fullfile (packdir, "src");
   if (! isfolder (src))
-    return
+    return;
   endif
 
   ## Copy files to "inst" and "inst/arch" (this is instead of 'make install').

@@ -95,7 +95,7 @@ function [s, iters] = logm (A, opt_iters = 100)
       j(2) = find (tau / 2 <= theta, 1);
       if (j(1) - j(2) <= 1 || p == 2)
         m = j(1);
-        break
+        break;
       endif
     endif
     k += 1;

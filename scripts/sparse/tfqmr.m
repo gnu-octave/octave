@@ -225,7 +225,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     flag = 0;
     resvec = 0;
     relres = 0;
-    return
+    return;
   endif
 
   x = x_pr = x_min = x0;
@@ -257,7 +257,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
         ## Essentially the next iteration doesn't change x,
         ## and the iter after this will have a division by zero
         flag = 4;
-        break
+        break;
       endif
       alpha = rho_1 / v_r;
       u_1 = u - alpha * v;  # u at the after iteration
@@ -279,7 +279,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
         ## Essentially the next iteration doesn't change x,
         ## and the iter after this will have a division by zero
         flag = 4;
-        break
+        break;
       endif
       beta = rho_1 / rho_2;
       u_1 = w + beta * u; # u at the after iteration
@@ -298,7 +298,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     endif
     if (norm (x_pr - x) <= norm (x) * eps)
       flag = 3; # Stagnation
-      break
+      break;
     endif
     x_pr = x;
     it = -it;

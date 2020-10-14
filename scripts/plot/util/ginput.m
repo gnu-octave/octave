@@ -65,7 +65,7 @@ function varargout = ginput (n = -1)
     else
       [varargout{:}] = feval (toolkit_fcn, fig, n);
     endif
-    return
+    return;
   endif
 
   x = y = button = [];

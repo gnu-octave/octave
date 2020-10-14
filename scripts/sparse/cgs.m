@@ -212,7 +212,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     flag = 0;
     resvec = 0;
     relres = 0;
-    return
+    return;
   endif
 
   resvec = zeros (maxit, 1); # Preallocation of resvec

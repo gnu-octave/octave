@@ -1,7 +1,7 @@
 # scope1.m
 function scope1 (n)
   value = n;
-  if value
+  if (value)
     C;
   end
   function A

@@ -3,7 +3,7 @@ function rot = parent (a)
   if (nargin == 0)
     rot = class (struct (), 'parent');
   else
-    switch class (a)
+    switch (class (a))
       case 'parent'
         %% copy constructor
         rot = a;

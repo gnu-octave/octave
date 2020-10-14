@@ -5,7 +5,7 @@ function s = set (s, varargin)
     propName  = propArgs{1};
     propValue = propArgs{2};
     propArgs  = propArgs(3:end);
-    switch propName
+    switch (propName)
       case 'cork'
         if (isa (propValue, 'Cork'))
           s.Cork = propValue;

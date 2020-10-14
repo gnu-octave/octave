@@ -18,7 +18,7 @@ classdef foo_subsref_subsasgn < handle
 
     function ind = end (obj, k, n)
       sz = size (obj.x);
-      if k < n
+      if (k < n)
         ind = sz(k);
       else
         ind = prod (sz(k:end));

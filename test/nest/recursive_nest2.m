@@ -7,7 +7,7 @@ function x = recursive_nest2 ()
     C;
     v = Y;
     function BB (m)
-      if m > 0
+      if (m > 0)
         Y = Y + 1;
         BB(m - 1);
         C;

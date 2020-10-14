@@ -5,7 +5,7 @@ function x = recursive_nest ()
   f (20);
 
   function f (n)
-    if n > 0
+    if (n > 0)
       x = x + recursive_nest_inc;
       f (n - 1);
     end

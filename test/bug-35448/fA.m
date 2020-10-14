@@ -1,7 +1,7 @@
 # fA.m
 function y = fA (x, f)
   global gfun
-  if nargin < 2
+  if (nargin < 2)
     y = fA (x, gfun);
   else
     w = feval (f, x);

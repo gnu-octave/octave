@@ -258,7 +258,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   resvec(1) = norm (r0, 2);
 
   try
-    warning ("error", "Octave:singular-matrix", "local")
+    warning ("error", "Octave:singular-matrix", "local");
     prec_r0 = M1fun (r0, "notransp", varargin{:});  # r0 preconditioned
     prec_s0 = s0;
     prec_r0 = M2fun (prec_r0, "notransp", varargin{:});

@@ -77,7 +77,7 @@ function profexport (dir, name = "", data)
   endif
 
   if (! copyfile (__dataFilename ("style.css"), dir))
-    error ("profexport: failed to copy data file to directory '%s'", dir)
+    error ("profexport: failed to copy data file to directory '%s'", dir);
   endif
 
   if (isempty (name))

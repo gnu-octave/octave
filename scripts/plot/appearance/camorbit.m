@@ -116,7 +116,7 @@ function camorbit (varargin)
   phi = varargin{2};
   if (! (isnumeric (theta) && isscalar (theta)
          && isnumeric (phi) && isscalar (phi)))
-    error ("camorbit: THETA and PHI must be numeric scalars")
+    error ("camorbit: THETA and PHI must be numeric scalars");
   endif
 
   if (nargin < 3)
@@ -124,7 +124,7 @@ function camorbit (varargin)
   else
     coorsys = varargin{3};
     if (! any (strcmpi (coorsys, {"data" "camera"})))
-      error ("camorbit: COORSYS must be 'data' or 'camera'")
+      error ("camorbit: COORSYS must be 'data' or 'camera'");
     endif
   endif
 

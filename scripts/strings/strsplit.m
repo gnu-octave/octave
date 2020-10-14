@@ -187,7 +187,7 @@ function [cstr, matches] = strsplit (str, del, varargin)
   if (! ischar (str) || (! ischar (del) && ! iscellstr (del)))
     error ("strsplit: S and DEL must be string values");
   elseif (! isempty (str) && ! isrow (str))
-    error ("strsplit: S must be a char row vector")
+    error ("strsplit: S must be a char row vector");
   elseif (! isscalar (args.collapsedelimiters))
     error ("strsplit: COLLAPSEDELIMITERS must be a scalar value");
   endif

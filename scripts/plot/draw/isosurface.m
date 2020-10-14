@@ -307,7 +307,7 @@ function [x, y, z, v, isoval, colors, noshare, verbose] = __get_check_isosurface
       colors = varargin{6};
 
     otherwise
-      error ("isosurface: incorrect number of input arguments")
+      error ("isosurface: incorrect number of input arguments");
 
   endswitch
 
@@ -355,19 +355,19 @@ function [x, y, z, v, isoval, colors, noshare, verbose] = __get_check_isosurface
   endif
 
   if (! isscalar (isoval))
-    error ("isosurface: ISOVAL must be a scalar")
+    error ("isosurface: ISOVAL must be a scalar");
   endif
 
   ## check colors
   if (! isempty (colors))
     if (! size_equal (v, colors))
-      error ("isosurface: COL must match the size of V")
+      error ("isosurface: COL must match the size of V");
     endif
     if (nout == 2)
       warning ("isosurface: colors will be calculated, but no output argument to receive it");
     endif
   elseif (nout >= 3)
-    error ("isosurface: COL must be passed to return C")
+    error ("isosurface: COL must be passed to return C");
   endif
 
 endfunction

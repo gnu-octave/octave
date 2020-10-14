@@ -155,7 +155,7 @@ function x = betaincinv (y, a, b, tail = "lower")
     x(y == 0) = 1;
     x(y == 1) = 0;
   else
-    error ("betaincinv: invalid value for TAIL")
+    error ("betaincinv: invalid value for TAIL");
   endif
 
   ## Special values have been already computed.

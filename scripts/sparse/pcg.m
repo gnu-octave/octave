@@ -319,7 +319,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
   while (resvec(iter-1,1) > tol * b_norm && iter < maxit)
     if (iter == 2) # Check whether M1 or M2 are singular
       try
-        warning ("error","Octave:singular-matrix","local")
+        warning ("error","Octave:singular-matrix","local");
         z = feval (M1fun, r, varargin{:});
         z = feval (M2fun, z, varargin{:});
       catch
@@ -395,7 +395,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
       endif
     else
       eigest = [NaN, NaN];
-      warning ('pcg: eigenvalue estimate failed: matrix not positive definite?')
+      warning ('pcg: eigenvalue estimate failed: matrix not positive definite?');
     endif
     resvec(iter - 1, 2) = sqrt (r' * z);
     resvec  = resvec (1:(iter-1), :);

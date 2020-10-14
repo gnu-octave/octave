@@ -8,7 +8,7 @@ function rot = parent (a)
         %% copy constructor
         rot = a;
       otherwise
-        error ('type mismatch in parent constructor')
+        error ('type mismatch in parent constructor');
     end
   end
   __trace__ ('end parent/parent');

@@ -45,7 +45,7 @@ function lambda = ordeig (A, B)
   endif
 
   if (! isnumeric (A) || ! issquare (A))
-    error ("ordeig: A must be a square matrix")
+    error ("ordeig: A must be a square matrix");
   endif
 
   n = length (A);

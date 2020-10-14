@@ -148,7 +148,7 @@ function x = gammaincinv (y, a, tail = "lower")
     q = y;
     p = 1 - q;
   else
-    error ("gammaincinv: invalid value for TAIL")
+    error ("gammaincinv: invalid value for TAIL");
   endif
 
   todo = (a != 1) & (y != 0) & (y != 1);

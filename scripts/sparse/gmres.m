@@ -270,7 +270,7 @@ function [x_min, flag, relres, it, resvec] = ...
     maxit = 1;
     max_iter_number = min (size_b, 10);
   elseif (restart <= 0) || (maxit <= 0)
-    error ("gmres: MAXIT and RESTART must be positive integers")
+    error ("gmres: MAXIT and RESTART must be positive integers");
   elseif (restart < size_b) && (empty_maxit)
     maxit = min (size_b / restart, 10);
     max_iter_number = maxit * restart;
@@ -278,7 +278,7 @@ function [x_min, flag, relres, it, resvec] = ...
     maxit = 1;
     max_iter_number = min (size_b, 10);
   elseif (restart > size_b) && (empty_maxit)
-    warning ("RESTART is %d but it should be bounded by SIZE(A,2).\n Setting restart to %d. \n", restart, size_b)
+    warning ("RESTART is %d but it should be bounded by SIZE(A,2).\n Setting restart to %d. \n", restart, size_b);
     restart = size_b;
     maxit = 1;
     max_iter_number = restart;
@@ -291,7 +291,7 @@ function [x_min, flag, relres, it, resvec] = ...
     maxit = size_b;
     max_iter_number = size_b;
   elseif (restart > size_b) && (! empty_maxit)
-    warning ("RESTART is %d but it should be bounded by SIZE(A,2).\n Setting restart to %d. \n", restart, size_b)
+    warning ("RESTART is %d but it should be bounded by SIZE(A,2).\n Setting restart to %d. \n", restart, size_b);
     restart = size_b;
     max_iter_number = restart * maxit;
   elseif (restart == size_b) && (maxit <= size_b)

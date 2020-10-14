@@ -65,11 +65,11 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
   elseif (ischar (A))
     Afun = str2func (A);
   elseif (! isnumeric (A) || ! issquare (A))
-    error ([solver_name, ": A must be a square matrix or a function handle"])
+    error ([solver_name, ": A must be a square matrix or a function handle"]);
   else
     A_is_numeric = true;
     if (size (A, 2) != size (b, 1))
-      error ("__alltohandles__: dimension of B is not consistent with A")
+      error ("__alltohandles__: dimension of B is not consistent with A");
     endif
   endif
 
@@ -91,7 +91,7 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
     elseif (ischar (M1))
       M1fun = str2func (M1);
     elseif (! isnumeric (M1) || ! issquare (M1))
-      error ([solver_name, ": M1 must be a square matrix or a function handle"])
+      error ([solver_name, ": M1 must be a square matrix or a function handle"]);
     else
       M1_is_numeric = true;
     endif
@@ -114,7 +114,7 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
     elseif (ischar (M2))
       M2fun = str2func (M2);
     elseif (! isnumeric (M2) || ! issquare (M2))
-      error ([solver_name, ": M2 must be a square matrix or a function handle"])
+      error ([solver_name, ": M2 must be a square matrix or a function handle"]);
     else
       M2_is_numeric = true;
     endif

@@ -229,7 +229,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   rho_1 = rr' * r0;
 
   try
-    warning ("error","Octave:singular-matrix","local")
+    warning ("error","Octave:singular-matrix","local");
     p_hat = feval (M1fun, p, varargin{:});
     p_hat = feval (M2fun, p_hat, varargin {:});
   catch

@@ -59,7 +59,7 @@ function utf8_str = native2unicode (native_bytes, codepage = "")
   endif
 
   if (! ischar (codepage))
-    error ("native2unicode: CODEPAGE must be a string")
+    error ("native2unicode: CODEPAGE must be a string");
   endif
 
   ## FIXME: Would it be better to do this by converting to uint8?  Or to

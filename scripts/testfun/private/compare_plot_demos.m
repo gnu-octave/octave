@@ -68,17 +68,17 @@ function compare_plot_demos (varargin)
   if (ischar (arg.toolkits))
     arg.toolkits = {arg.toolkits};
   elseif (! iscellstr (arg.toolkits))
-    error ('compare_plot_demos: Invalid value for "toolkits"')
+    error ('compare_plot_demos: Invalid value for "toolkits"');
   endif
 
   if (ischar (arg.directories))
     arg.directories = {arg.directories};
   elseif (! iscellstr (arg.directories))
-    error ('compare_plot_demos: Invalid value for "directory"')
+    error ('compare_plot_demos: Invalid value for "directory"');
   endif
 
   if (! ischar (arg.fmt))
-    error ('compare_plot_demos: Invalid value for "fmt"')
+    error ('compare_plot_demos: Invalid value for "fmt"');
   endif
 
   ## Generate arg.fcn_file for rendering/saving the plot demo images

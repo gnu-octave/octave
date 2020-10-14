@@ -69,7 +69,7 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
   else
     A_is_numeric = true;
     if (size (A, 2) != size (b, 1))
-      error ("__alltohandles__: dimension of b is not consistent with A")
+      error ("__alltohandles__: dimension of B is not consistent with A")
     endif
   endif
 

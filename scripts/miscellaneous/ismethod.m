@@ -42,7 +42,7 @@ function retval = ismethod (obj, method)
   endif
 
   if (! ischar (method))
-    error ("ismethod: second argument must be a method name");
+    error ("ismethod: METHOD must be a string");
   endif
 
   method_list = methods (obj);

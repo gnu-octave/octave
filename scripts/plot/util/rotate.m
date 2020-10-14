@@ -65,7 +65,7 @@ function rotate (h, direction, alpha, origin)
   endif
 
   if (! (isnumeric (direction) && numel (direction) == 3))
-    error ("rotate: invalid direction");
+    error ("rotate: invalid DIRECTION");
   endif
 
   if (! (isnumeric (alpha) && isscalar (alpha)))

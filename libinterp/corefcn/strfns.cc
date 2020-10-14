@@ -1112,6 +1112,8 @@ line2
 %!assert (newline (), "\n")
 
 %!error newline (1)
+## FIXME: The next error() test requires a semicolon at EOL until
+##        bug #59265 is resolved.
 %!error [a, b] = newline ()
 */
 

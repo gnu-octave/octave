@@ -186,7 +186,7 @@ endfunction
 %!error <Invalid call> rotate (o1)
 %!error <Invalid call> rotate (o1, [0,0,0])
 %!error <all handles must be children of the same axes object> rotate ([o1, o2], [0,0,0], 90)
-%!error <invalid direction> rotate (o1, "foo", 90)
+%!error <invalid DIRECTION> rotate (o1, "foo", 90)
 %!error <invalid rotation angle> rotate (o1, [0,0,0], "foo")
 %!error <invalid ORIGIN> rotate (o1, [0,0,0], 90, "foo")
 %!error rotate (o1, [0,0,0], 90, [0,0,0], 1)

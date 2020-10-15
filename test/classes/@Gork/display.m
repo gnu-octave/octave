@@ -1,5 +1,5 @@
 function display (s)
-%  Display the critical info for a Gork.
+%%  Display the critical info for a Gork.
 
    dork_base = s.Dork
    %pork_base = s.Pork

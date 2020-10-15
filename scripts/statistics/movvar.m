@@ -166,7 +166,7 @@ endfunction
 
 
 ## FIXME: Need functional BIST tests
-# test for bug #55241
+## test for bug #55241
 %!assert ([0.5; ones(8,1); 0.5], movvar ((1:10).', 3))
 
 %!test <*56765>

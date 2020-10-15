@@ -390,8 +390,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
   info = 0;
   iter = 0;
-  # report ();  # Called with no arguments to initialize reporting
-  # report (iter, qp_iter, alpha, __sqp_nfun__, obj);
+  ## report ();  # Called with no arguments to initialize reporting
+  ## report (iter, qp_iter, alpha, __sqp_nfun__, obj);
 
   while (++iter < iter_max)
 
@@ -533,7 +533,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     A = A_new;
 
-    # report (iter, qp_iter, alpha, __sqp_nfun__, obj);
+    ## report (iter, qp_iter, alpha, __sqp_nfun__, obj);
 
   endwhile
 

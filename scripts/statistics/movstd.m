@@ -167,7 +167,7 @@ endfunction
 
 
 ## FIXME: Need functional BIST tests
-# test for bug #55241
+## test for bug #55241
 %!assert ([1/sqrt(2); ones(8,1); 1/sqrt(2)], movstd ((1:10).', 3), 1e-8)
 
 %!test <*56765>

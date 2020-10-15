@@ -141,7 +141,7 @@ endfunction
 
 
 ## FIXME: Need functional BIST tests
-# test for bug #55241
+## test for bug #55241
 %!assert ([(3:3:27).'; 19], movsum ((1:10).', 3))
 
 ## Test input validation

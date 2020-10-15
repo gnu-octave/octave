@@ -134,7 +134,7 @@ endfunction
 %! assert (lambda, expected_lambda, 0.001);
 %! assert (c, expected_c, 0.001);
 
-# Test empty input
+## Test empty input
 %!assert (condeig ([]), [])
 
 ## Test input validation

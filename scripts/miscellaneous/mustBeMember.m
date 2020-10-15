@@ -53,8 +53,8 @@ function mustBeMember (x, valid)
       label = "input";
     endif
     n_bad = numel (find (tf));
-    # FIXME: Fancy inclusion of bad_val & valid values in the error message.
-    #        Probably use mat2str() in a try/catch for that.
+    ## FIXME: Fancy inclusion of bad_val & valid values in the error message.
+    ##        Probably use mat2str() in a try/catch for that.
     error ("%s must be one of the specified valid values; found %d elements that were not", ...
            label, n_bad);
   endif

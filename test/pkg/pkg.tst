@@ -79,7 +79,7 @@
 %!
 %!error pkg ("install", "nonexistent.zip")
 
-# -local
+## -local
 %!testif HAVE_Z
 %! for i = 1:numel (mfile_pkg_name)
 %!   silent_pkg_install ("-local", mfile_pkg_tgz{i});
@@ -87,18 +87,18 @@
 %!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 
-# -forge (need check for options?)
+## -forge (need check for options?)
 ## FIXME: Need test
-# We do not test this yet ... fails if no internet connection
-# use dataframe which is an mfile only package
+## We do not test this yet ... fails if no internet connection
+## use dataframe which is an mfile only package
 #%!test
 #%! silent_pkg_install ("-forge", "dataframe");
 #%! pkg ("uninstall", "dataframe");
 
-# -nodeps
+## -nodeps
 ## FIXME: Need test
 
-# -verbose
+## -verbose
 ## FIXME: Need test
 
 ## Action load/unload (within install/uninstall)
@@ -118,17 +118,17 @@
 %!
 %!error <package foobar is not installed> pkg ("load", "foobar")
 
-# -nodeps
+## -nodeps
 ## FIXME: Need test
 
-# -verbose
+## -verbose
 ## FIXME: Need test
 
 ## Action list
 %!test
 %! [user_packages, system_packages] = pkg ("list");
 
-# -forge
+## -forge
 #%!test
 #%! oct_forge_pkgs = pkg ("list", "-forge");
 
@@ -141,7 +141,7 @@
 %! system (["chmod -Rf u+w '" prefix "'"]);     ## FIXME: Work around bug #53578
 %! pkg ("uninstall", mfile_pkg_name{1});
 
-# -verbose
+## -verbose
 ## FIXME: Need test
 
 ## Action prefix
@@ -156,11 +156,11 @@
 
 ## Action build
 ## FIXME: Need test
-# pkg build -verbose /tmp image-*
+## pkg build -verbose /tmp image-*
 
 ## Action rebuild
 ## FIXME: Need test
-# pkg rebuild signal
+## pkg rebuild signal
 
 ## Future commands
 %!error pkg ("whereis", "myfunc.m")

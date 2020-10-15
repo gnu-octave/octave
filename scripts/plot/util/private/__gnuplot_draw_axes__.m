@@ -635,7 +635,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             titlespec{data_idx} = ['title "' tmp '"'];
             obj.displayname = tmpdispname;
             if (! isempty (findobj (obj.parent, "-property", "format", "-depth", 0)))
-              # Place phantom errorbar data for legend
+              ## Place phantom errorbar data for legend
               data{data_idx} = NaN (4,1);
               usingclause{data_idx} = sprintf ("record=1 using ($1):($2):($3):($4)");
               switch (get (obj.parent, "format"))

@@ -1,5 +1,5 @@
 function s = Cork (click)
-% Test class.
+%% Test class.
 
   if (nargin == 1 && isa (click, 'Cork'))
     s = click;

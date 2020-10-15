@@ -1,4 +1,4 @@
-# scope2.m
+## scope2.m
 function scope2
   C;
   function A

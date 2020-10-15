@@ -406,7 +406,7 @@ function [local_packages, global_packages] = pkg (varargin)
 
   confirm_recursive_rmdir (false, "local");
 
-  # valid actions in alphabetical order
+  ## valid actions in alphabetical order
   available_actions = {"build", "describe", "global_list",  "install", ...
                        "list", "load", "local_list", "prefix", "rebuild", ...
                        "test", "uninstall", "unload", "update"};

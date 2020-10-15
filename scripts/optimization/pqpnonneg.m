@@ -239,7 +239,7 @@ endfunction
 %! d = rand (20, 1);
 %! assert (pqpnonneg (C'*C, -C'*d), lsqnonneg (C, d), 100*eps);
 
-# Test input validation
+## Test input validation
 %!error <Invalid call> pqpnonneg ()
 %!error <Invalid call> pqpnonneg (1)
 %!error <C .* must be numeric matrices> pqpnonneg ({1},2)

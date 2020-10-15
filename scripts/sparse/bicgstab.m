@@ -213,7 +213,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   ## Check consistency and  type of A, M1, M2
   [Afun, M1fun, M2fun] =  __alltohandles__ (A, b, M1, M2, "bicgstab");
 
-  # Check if input tol are empty (set them to default if necessary)
+  ## Check if input tol are empty (set them to default if necessary)
   [tol, maxit, x0] = __default__input__ ({1e-06, min(rows(b), 20), ...
                     zeros(rows (b), 1)}, tol, maxit, x0);
 

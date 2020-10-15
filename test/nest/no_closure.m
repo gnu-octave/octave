@@ -1,4 +1,4 @@
-# no_closure.m
+## no_closure.m
 function r = no_closure (n)
   if (ischar (n))
     r = nested (n);

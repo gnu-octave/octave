@@ -53,9 +53,9 @@ function x = factorial (n)
   ## This doesn't seem particularly worth copying--for example uint8 would
   ## saturate for n > 5.  If desired, however, the following code could be
   ## uncommented.
-  # if (! isfloat (x))
-  #   x = cast (x, class (n));
-  # endif
+  ## if (! isfloat (x))
+  ##   x = cast (x, class (n));
+  ## endif
 
 endfunction
 

@@ -237,7 +237,7 @@ endfunction
 %! xnew = [0;0.6929];
 %! assert (lsqnonneg (C, d), xnew, 0.0001);
 
-# Test input validation
+## Test input validation
 %!error <Invalid call> lsqnonneg ()
 %!error <Invalid call> lsqnonneg (1)
 %!error <C .* must be numeric matrices> lsqnonneg ({1},2)

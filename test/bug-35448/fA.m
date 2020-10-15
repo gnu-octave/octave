@@ -1,4 +1,4 @@
-# fA.m
+## fA.m
 function y = fA (x, f)
   global gfun
   if (nargin < 2)

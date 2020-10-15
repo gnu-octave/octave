@@ -192,17 +192,17 @@
 %! assert (abs (result - 1/9) < 1e-5);
 %! assert (jit_failcnt, 0);
 
-# %!testif HAVE_LLVM
-# %! jit_failcnt (0);
-# %! temp = 1+1i;
-# %! nan = NaN;
-# %! while (1)
-# %!   temp = temp - 1i;
-# %!   temp = temp * nan;
-# %!   break;
-# %! endwhile
-# %! assert (imag (temp), 0);
-# %! assert (jit_failcnt, 0);
+## %!testif HAVE_LLVM
+## %! jit_failcnt (0);
+## %! temp = 1+1i;
+## %! nan = NaN;
+## %! while (1)
+## %!   temp = temp - 1i;
+## %!   temp = temp * nan;
+## %!   break;
+## %! endwhile
+## %! assert (imag (temp), 0);
+## %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
 %! jit_failcnt (0);
@@ -217,15 +217,15 @@
 %! assert (imag (temp), 0);
 %! assert (jit_failcnt, 0);
 
-# %!testif HAVE_LLVM
-# %! jit_failcnt (0);
-# %! temp = 1+1i;
-# %! while (1)
-# %!   temp = temp * 5;
-# %!   break;
-# %! endwhile
-# %! assert (temp, 5+5i);
-# %! assert (jit_failcnt, 0);
+## %!testif HAVE_LLVM
+## %! jit_failcnt (0);
+## %! temp = 1+1i;
+## %! while (1)
+## %!   temp = temp * 5;
+## %!   break;
+## %! endwhile
+## %! assert (temp, 5+5i);
+## %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
 %! jit_failcnt (0);
@@ -249,22 +249,22 @@
 %! assert (sum (mat) == total);
 %! assert (jit_failcnt, 0);
 
-# %!testif HAVE_LLVM
-# %! jit_failcnt (0);
-# %! nr = 1001;
-# %! mat = [3 1 5];
-# %! try
-# %!   for i = 1:nr
-# %!     if (i > 500)
-# %!       result = mat(100);
-# %!     else
-# %!       result = i;
-# %!     endif
-# %!   endfor
-# %! catch
-# %! end_try_catch
-# %! assert (result == 500);
-# %! assert (jit_failcnt, 0);
+## %!testif HAVE_LLVM
+## %! jit_failcnt (0);
+## %! nr = 1001;
+## %! mat = [3 1 5];
+## %! try
+## %!   for i = 1:nr
+## %!     if (i > 500)
+## %!       result = mat(100);
+## %!     else
+## %!       result = i;
+## %!     endif
+## %!   endfor
+## %! catch
+## %! end_try_catch
+## %! assert (result == 500);
+## %! assert (jit_failcnt, 0);
 
 %!function result = gen_test (n)
 %!  result = double (rand (1, n) > .01);
@@ -388,14 +388,14 @@
 %! endfor
 %!endfunction
 
-# %!testif HAVE_LLVM
-# %! jit_failcnt (0);
-# %! lasterr ("");
-# %! try
-# %!   test_divide ();
-# %! end_try_catch
-# %! assert (strcmp (lasterr (), "division by zero"));
-# %! assert (jit_failcnt, 0);
+## %!testif HAVE_LLVM
+## %! jit_failcnt (0);
+## %! lasterr ("");
+## %! try
+## %!   test_divide ();
+## %! end_try_catch
+## %! assert (strcmp (lasterr (), "division by zero"));
+## %! assert (jit_failcnt, 0);
 
 %!testif HAVE_LLVM
 %! jit_failcnt (0);
@@ -459,17 +459,17 @@
 %! assert (a == 9);
 %! assert (jit_failcnt, 0);
 
-# %!testif HAVE_LLVM
-# %! jit_failcnt (0);
-# %! num = 2;
-# %! a = zeros (1, num);
-# %! i = 1;
-# %! while i <= num
-# %!   a(i) = norm (eye (i));
-# %!   ++i;
-# %! endwhile
-# %! assert (a, ones (1, num));
-# %! assert (jit_failcnt, 0);
+## %!testif HAVE_LLVM
+## %! jit_failcnt (0);
+## %! num = 2;
+## %! a = zeros (1, num);
+## %! i = 1;
+## %! while i <= num
+## %!   a(i) = norm (eye (i));
+## %!   ++i;
+## %! endwhile
+## %! assert (a, ones (1, num));
+## %! assert (jit_failcnt, 0);
 
 %!function test_compute_idom ()
 %! while (li <= length (l1) && si <= length (s1))
@@ -583,14 +583,14 @@
 %! assert (id (1, 2), 1);
 %! assert (jit_failcnt, 0);
 
-# %!testif HAVE_LLVM
-# %! jit_failcnt (0);
-# %! lasterr ("");
-# %! try
-# %!   id ();
-# %! end_try_catch
-# %! assert (strncmp (lasterr (), "'x' undefined near", 18));
-# %! assert (jit_failcnt, 0);
+## %!testif HAVE_LLVM
+## %! jit_failcnt (0);
+## %! lasterr ("");
+## %! try
+## %!   id ();
+## %! end_try_catch
+## %! assert (strncmp (lasterr (), "'x' undefined near", 18));
+## %! assert (jit_failcnt, 0);
 
 ## Restore JIT settings
 %!testif HAVE_LLVM

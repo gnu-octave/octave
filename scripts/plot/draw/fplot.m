@@ -228,7 +228,7 @@ function [X, Y] = fplot (varargin)
     endif
     hl = plot (hax, x, y, fmt{:});
     if (isempty (get (hl(1), "displayname")))
-      # set displayname for legend if FMT didn't contain a name
+      ## Set displayname for legend if FMT did not contain a name.
       if (isvector (y))
         set (hl, "displayname", nam);
       else
@@ -238,7 +238,7 @@ function [X, Y] = fplot (varargin)
         set (hl, {"displayname"}, nams(:));
       endif
     endif
-    # properties past as input arguments override other properties
+    ## Properties passed as input arguments override other properties.
     if (! isempty (prop_vals))
       set (hl, prop_vals{:});
     endif

@@ -140,7 +140,7 @@ endfunction
 
 
 ## FIXME: Need functional BIST tests
-# test for bug #55241
+## test for bug #55241
 %!assert ([1.5; (2:9).'; 9.5], movmean ((1:10).', 3))
 
 ## Test input validation

@@ -1,5 +1,5 @@
 function s = Sneetch (mcbean)
-% Test class: should produce error.
+%% Test class: should produce error.
 
   if (nargin == 1 && isa (mcbean, 'Sneetch'))
     s = mcbean;

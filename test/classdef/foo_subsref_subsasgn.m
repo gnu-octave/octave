@@ -31,7 +31,7 @@ classdef foo_subsref_subsasgn < handle
           if (S(1).type == "()")
             varargout = {obj.x(S(1).subs{1})};
           elseif (S(1).type == "{}")
-            % Note in ML R2018b "x{1:3}" expects "nargout == 3".
+            %% Note in ML R2018b "x{1:3}" expects "nargout == 3".
             varargout = num2cell (obj.x(S(1).subs{1}));
           elseif (S(1).type == "." && S(1).subs == 'x')
             varargout = {obj.x};
@@ -40,7 +40,7 @@ classdef foo_subsref_subsasgn < handle
               'foo_subsref_subsasgn: Invalid syntax');
           end
         case 2
-          % Note in ML R2018b "x(1)(1)" is not allowed.
+          %% Note in ML R2018b "x(1)(1)" is not allowed.
           if (S(1).type == "{}" && (S(2).type == "{}" || S(2).type == "()"))
             varargout = {obj.x(S(1).subs{1}, S(2).subs{1})};
           elseif (S(1).type == "." && S(1).subs == 'x' ...
@@ -68,7 +68,7 @@ classdef foo_subsref_subsasgn < handle
               'foo_subsref_subsasgn: Invalid syntax');
           end
         case 2
-          % Note in ML R2018b "x(1)(1)" is not allowed.
+          %% Note in ML R2018b "x(1)(1)" is not allowed.
           if (S(1).type == "{}" && (S(2).type == "{}" || S(2).type == "()"))
             obj.x(S(1).subs{1}, S(2).subs{1}) = varargin{1};
           elseif (S(1).type == "." && S(1).subs == 'x' ...

@@ -207,18 +207,18 @@ function [mine, cnt] = __writeHierarchical (dir, name, funcs, ...
   template = __readTemplate ("hierarchical.html");
   entryTemplate = __readTemplate ("hierarchical_entry.html");
 
-  % Fill in basic data and parent breadcrumbs.
+  ## Fill in basic data and parent breadcrumbs.
   res = template;
   res = strrep (res, "%title", name);
   parentsStr = __hierarchicalParents (parents);
   res = strrep (res, "%parents", parentsStr);
 
-  % Set this page's counter and update parents struct with it.
+  ## Set this page's counter and update parents struct with it.
   mine = cnt++;
   parents{end}.cnt = mine;
   file = sprintf ("%s/hierarchy-%d.html", dir, mine);
 
-  % Sort children by time.
+  ## Sort children by time.
   times = -[ children.TotalTime ];
   [~, p] = sort (times);
   children = children(p);

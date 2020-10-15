@@ -1,5 +1,5 @@
 function s = Snork (gick)
-% Test class.
+%% Test class.
 
   if (nargin == 1 && isa (gick, 'Snork'))
     s = gick;

@@ -2049,37 +2049,6 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
   fi
 ])
 dnl
-dnl Check whether SUNDIALS IDA library has the SUNLINSOL_DENSE linear solver.
-dnl The IDADENSE API was removed in SUNDIALS version 3.0.0.
-dnl
-AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE], [
-  AC_CHECK_HEADERS([sunlinsol/sunlinsol_dense.h])
-  AC_CACHE_CHECK([whether SUNDIALS IDA includes the SUNLINSOL_DENSE linear solver],
-    [octave_cv_sundials_sunlinsol_dense],
-    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-         #if defined (HAVE_IDA_IDA_H)
-         #  include <ida/ida.h>
-         #endif
-         #if defined (HAVE_SUNLINSOL_SUNLINSOL_DENSE_H)
-         #  include <sunlinsol/sunlinsol_dense.h>
-         #endif
-         ]], [[
-         void *mem = 0;
-         long int num = 0;
-         IDADense (mem, num);
-      ]])],
-      octave_cv_sundials_sunlinsol_dense=yes,
-      octave_cv_sundials_sunlinsol_dense=no)
-    ])
-  if test $octave_cv_sundials_sunlinsol_dense = yes; then
-    AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_DENSE, 1,
-      [Define to 1 if SUNDIALS IDA includes the SUNLINSOL_DENSE linear solver.])
-  else
-    warn_sundials_disabled="SUNDIALS IDA library does not include the SUNLINSOL_DENSE linear solver.  The solvers ode15i and ode15s will be disabled."
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
-  fi
-])
-dnl
 dnl Add warning to final summary.
 dnl
 AC_DEFUN([OCTAVE_CONFIGURE_WARNING], [

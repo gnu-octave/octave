@@ -2279,6 +2279,9 @@ if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
     if test -z "$warn_sundials_disabled"; then
       OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
     fi
+    if test -z "$warn_sundials_disabled"; then
+      OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE
+    fi
     dnl The following tests determine whether certain optional features are
     dnl present in the SUNDIALS libraries, but will not disable using SUNDIALS.
     if test -z "$warn_sundials_disabled"; then
@@ -2298,7 +2301,8 @@ dnl How can we do a better job here?  Do we need to disable sundials
 dnl any tests fail, or can we fix __ode15__.cc so that it still partially
 dnl works when some things are missing (for example, KLU)?
 if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
-  if test "x$octave_cv_sundials_realtype_is_double" = xyes \
+  if test "x$octave_cv_sundials_sunlinsol_dense" = xyes \
+      && test "x$octave_cv_sundials_realtype_is_double" = xyes \
       && test "x$octave_have_sundials_compatible_api" = xyes; then
     AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
 

@@ -30,59 +30,59 @@
 ##
 ## @var{opt} can currently be some combination of the following:
 ##
-## @table @code
-## @item "-"
+## @table @asis
+## @item @qcode{"-"}
 ## For solid linestyle (default).
 ##
-## @item "--"
+## @item @qcode{"--"}
 ## For dashed line style.
 ##
-## @item "-."
+## @item @qcode{"-."}
 ## For linespoints plot style.
 ##
-## @item ":"
+## @item @qcode{":"}
 ## For dots plot style.
 ##
-## @item "r"
+## @item @qcode{"r"}
 ## Red line color.
 ##
-## @item "g"
+## @item @qcode{"g"}
 ## Green line color.
 ##
-## @item "b"
+## @item @qcode{"b"}
 ## Blue line color.
 ##
-## @item "c"
+## @item @qcode{"c"}
 ## Cyan line color.
 ##
-## @item "m"
+## @item @qcode{"m"}
 ## Magenta line color.
 ##
-## @item "y"
+## @item @qcode{"y"}
 ## Yellow line color.
 ##
-## @item "k"
+## @item @qcode{"k"}
 ## Black line color.
 ##
-## @item "w"
+## @item @qcode{"w"}
 ## White line color.
 ##
-## @item ";title;"
+## @item @qcode{";title;"}
 ## Here @code{"title"} is the label for the key.
 ##
-## @item  "+"
-## @itemx "o"
-## @itemx "*"
-## @itemx "."
-## @itemx "x"
-## @itemx "s"
-## @itemx "d"
-## @itemx "^"
-## @itemx "v"
-## @itemx ">"
-## @itemx "<"
-## @itemx "p"
-## @itemx "h"
+## @item  @qcode{"+"}
+## @itemx @qcode{"o"}
+## @itemx @qcode{"*"}
+## @itemx @qcode{"."}
+## @itemx @qcode{"x"}
+## @itemx @qcode{"s"}
+## @itemx @qcode{"d"}
+## @itemx @qcode{"^"}
+## @itemx @qcode{"v"}
+## @itemx @qcode{">"}
+## @itemx @qcode{"<"}
+## @itemx @qcode{"p"}
+## @itemx @qcode{"h"}
 ## Used in combination with the points or linespoints styles, set the point
 ## style.
 ## @end table

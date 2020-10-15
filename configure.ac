@@ -2262,9 +2262,6 @@ if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
   if test -z "$warn_sundials_disabled"; then
     OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
   fi
-  if test -z "$warn_sundials_disabled"; then
-    OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE
-  fi
   dnl The following tests determine whether certain optional features are
   dnl present in the SUNDIALS libraries, but will not disable using SUNDIALS.
   if test -z "$warn_sundials_disabled"; then

@@ -49,13 +49,15 @@ function delete (varargin)
     for arg = varargin
       files = glob (arg{1});
       if (isempty (files))
-        warning ("delete: no such file: %s", arg{1});
+        warning ("Octave:delete:no-such-file", ...
+                 "delete: no such file: %s", arg{1});
       endif
       for i = 1:length (files)
         file = files{i};
         [err, msg] = unlink (file);
         if (err)
-          warning ("delete: %s: %s", file, msg);
+          warning ("Octave:delete:unlink-error", ...
+                   "delete: %s: %s", file, msg);
         endif
       endfor
     endfor
@@ -65,7 +67,8 @@ function delete (varargin)
     __go_delete__ (varargin{1});
 
   else
-    error ("delete: first argument must be a filename or graphics handle");
+    error ("Octave:delete:unsupported-object", ...
+           "delete: first argument must be a filename or graphics handle");
   endif
 
 endfunction

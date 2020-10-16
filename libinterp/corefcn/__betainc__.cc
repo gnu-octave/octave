@@ -37,9 +37,7 @@ DEFUN (__betainc__, args, ,
 Continued fraction for incomplete beta function.
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 3)
+  if (args.length () != 3)
     print_usage ();
 
   bool is_single = (args(0).is_single_type () || args(1).is_single_type ()

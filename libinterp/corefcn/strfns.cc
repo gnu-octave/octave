@@ -881,9 +881,7 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
 @seealso{native2unicode, __unicode2native__}
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   if (args(0).is_string ())
@@ -934,9 +932,7 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
 @seealso{unicode2native, __native2unicode__}
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   std::string tmp = args(1).string_value ();
@@ -1001,9 +997,7 @@ unicode_idx ("aäbc")
 
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   charNDArray str = args(0).xchar_array_value ("STR must be a string");

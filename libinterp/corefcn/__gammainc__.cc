@@ -36,9 +36,7 @@ DEFUN (__gammainc__, args, ,
 Continued fraction for incomplete gamma function.
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   bool is_single = args(0).is_single_type () || args(1).is_single_type ();

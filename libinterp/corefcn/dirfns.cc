@@ -701,9 +701,7 @@ Query the character used to separate directories in a path.
 @seealso{filesep}
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin > 0)
+  if (args.length () > 0)
     print_usage ();
 
   return ovl (octave::directory_path::path_sep_str ());

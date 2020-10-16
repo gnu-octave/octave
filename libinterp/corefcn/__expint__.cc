@@ -37,9 +37,7 @@ DEFUN (__expint__, args, ,
 Continued fraction expansion for the exponential integral.
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   octave_value_list retval;

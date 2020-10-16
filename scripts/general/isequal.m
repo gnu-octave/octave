@@ -176,7 +176,7 @@ function t = isequal (x, varargin)
 
       endif
 
-    else  ## More than two args.  This is going to be slower in general.
+    else  # More than two args.  This is going to be slower in general.
 
       if (ischar (x) && all (cellfun ("isclass", varargin, "char")))
         ## char type.  Optimization, strcmp is ~35% faster than '==' operator.

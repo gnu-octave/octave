@@ -107,7 +107,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fprintf (plot_stream, "set rmargin screen %.15g;\n",
              pos(1)+pos(3)/2+x(1)*pos(3)/2);
     sz_str = "";
-  else ## positionconstraint == outerposition
+  else  # positionconstraint == outerposition
     fprintf (plot_stream, "unset tmargin;\n");
     fprintf (plot_stream, "unset bmargin;\n");
     fprintf (plot_stream, "unset lmargin;\n");

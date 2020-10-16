@@ -270,7 +270,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
                                                   options.havetimedep,
                                                   options.havejacfun);
       options.havejacfun = true;
-    else   ## All matrices are constant
+    else   # All matrices are constant
       options.Jacobian = {[- options.Jacobian], [options.Mass]};
 
     endif

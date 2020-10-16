@@ -53,9 +53,9 @@ function names = fieldnames (obj)
     names = __fieldnames__ (obj);
   elseif (isobject (obj))
     try
-      names = properties (obj);      ## classdef object
+      names = properties (obj);      # classdef object
     catch
-      names = __fieldnames__ (obj);  ## @class object
+      names = __fieldnames__ (obj);  # @class object
     end_try_catch
   elseif (isjava (obj) || ischar (obj))
     ## FIXME: Function prototype that accepts java obj exists, but doesn't

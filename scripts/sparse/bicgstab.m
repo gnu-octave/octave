@@ -309,7 +309,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   endwhile
   resvec = resvec (1:iter+1,1);
 
-  relres = resvec (iter_min + 1) / norm_b; ## I set the relative residual
+  relres = resvec (iter_min + 1) / norm_b;  # I set the relative residual
   iter /=  2;
   iter_min /= 2;
 

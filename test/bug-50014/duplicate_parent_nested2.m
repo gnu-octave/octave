@@ -4,8 +4,8 @@ function duplicate_parent_nested2 ()
     function bug ()
     endfunction
   endfunction
-  function bug () ## no error here
-    function bug () ## error here (duplicates parent name)
+  function bug ()  # no error here
+    function bug ()  # error here (duplicates parent name)
     endfunction
   endfunction
 endfunction

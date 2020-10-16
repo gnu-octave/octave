@@ -373,6 +373,7 @@ function limits = __axis__ (ca, varargin)
     endif
 
   endfor
+
 endfunction
 
 ## Find the limits for axis ("tight").

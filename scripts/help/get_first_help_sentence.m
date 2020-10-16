@@ -109,7 +109,9 @@ function [text, status] = first_sentence_plain_text (help_text, max_len)
       text = help_text(1:max_len);
     endif
   endif
+
   status = 0;
+
 endfunction
 
 ## This function extracts the first sentence from a Texinfo help text.

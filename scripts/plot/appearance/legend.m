@@ -1346,6 +1346,7 @@ function update_icon_position (hicon, xdata, ydata)
       set (hicon, "markerxdata", xdata(2), "markerydata", mean (ydata), ...
            "xdata", xdata, "ydata", [mean(ydata), mean(ydata)]);
   endswitch
+
 endfunction
 
 function pos = boxposition (axpos, pba, pbam, dam)

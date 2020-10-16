@@ -53,7 +53,7 @@ function lambda = ordeig (A, B)
   if (nargin == 1)
     B = eye (n);
     if (isreal (A))
-      if (! isquasitri (A))
+      if (! is_quasitri (A))
         error ("ordeig: A must be quasi-triangular (i.e., upper block triangular with 1x1 or 2x2 blocks on the diagonal)");
       endif
     else
@@ -68,7 +68,7 @@ function lambda = ordeig (A, B)
       error ("ordeig: A and B must be the same size");
     endif
     if (isreal (A) && isreal (B))
-      if (! isquasitri (A) || ! isquasitri (B))
+      if (! is_quasitri (A) || ! is_quasitri (B))
         error ("ordeig: A and B must be quasi-triangular (i.e., upper block triangular with 1x1 or 2x2 blocks on the diagonal)");
       endif
     else
@@ -106,7 +106,7 @@ function lambda = ordeig (A, B)
 endfunction
 
 ## Check whether a matrix is quasi-triangular
-function retval = isquasitri (A)
+function retval = is_quasitri (A)
   if (length (A) <= 2)
     retval = true;
   else

@@ -299,6 +299,7 @@ endfunction
 
 ## a == 1.
 function y = gammainc_a1 (x, tail)
+
   if (strcmp (tail, "lower"))
     if (abs (x) < 1/2)
       y = - expm1 (-x);
@@ -316,12 +317,14 @@ function y = gammainc_a1 (x, tail)
   else
     y = 1 ./ x;
   endif
+
 endfunction
 
 ## positive integer a; exp (x) and a! both under 1/eps
 ## uses closed-form expressions for nonnegative integer a
 ## -- http://mathworld.wolfram.com/IncompleteGammaFunction.html.
 function y = gammainc_an (x, a, tail)
+
   y = t = ones (size (x), class (x));
   i = 1;
   while (any (a(:) > i))
@@ -339,12 +342,14 @@ function y = gammainc_an (x, a, tail)
   elseif (strcmp (tail, "scaledupper"))
     y .*= exp (-x) ./ D(x, a);
   endif
+
 endfunction
 
 ## x + 0.25 < a | x < 0 | abs(x) < 1.
 ## Numerical Recipes in Fortran 77 (6.2.5)
 ## series
 function y = gammainc_s (x, a, tail)
+
   if (strcmp (tail, "scaledlower") || strcmp (tail, "scaledupper"))
     y = ones (size (x), class (x));
     term = x ./ (a + 1);
@@ -367,6 +372,7 @@ function y = gammainc_s (x, a, tail)
   elseif (strcmp (tail, "scaledupper"))
     y = 1 ./ D (x,a) - y;
   endif
+
 endfunction
 
 ## x positive and large relative to a
@@ -375,6 +381,7 @@ endfunction
 ## Lentz's algorithm
 ## __gammainc__ in libinterp/corefcn/__gammainc__.cc
 function y = gammainc_l (x, a, tail)
+
   y = __gammainc__ (x, a);
   if (strcmp (tail,  "lower"))
     y = 1 - y .* D (x, a);
@@ -383,6 +390,7 @@ function y = gammainc_l (x, a, tail)
   elseif (strcmp (tail, "scaledlower"))
     y = 1 ./ D (x, a) - y;
   endif
+
 endfunction
 
 ## Compute exp(-x)*x^a/Gamma(a+1) in a stable way for x and a large.
@@ -391,6 +399,7 @@ endfunction
 ## SIAM J. Sci. Stat. Comput., 7(3), 1986
 ## which quotes Section 5, Abramowitz&Stegun 6.1.40, 6.1.41.
 function y = D (x, a)
+
   athresh = 10;  # FIXME: can this be better tuned?
   y = zeros (size (x), class (x));
 

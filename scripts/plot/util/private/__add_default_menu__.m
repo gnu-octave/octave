@@ -242,6 +242,7 @@ function __save_as__ (hf, fname = "")
     set (hf, "filename", fname);
     saveas (hf, fname, fmt);
   endif
+
 endfunction
 
 function close_cb (~, ~)
@@ -276,6 +277,7 @@ function init_mouse_tools (hf)
 endfunction
 
 function guimode_cb (h, ~)
+
   [hax, fig] = __get_axes__ (h);
   id = get (h, "tag");
   switch (id)
@@ -295,6 +297,7 @@ function guimode_cb (h, ~)
     case "zoom_off"
       arrayfun (@(h) set (h, "mousewheelzoom", 0.0), hax);
   endswitch
+
 endfunction
 
 function mouse_tools_cb (h, ~, htools, typ = "")
@@ -413,6 +416,7 @@ function auto_cb (h, ~)
 endfunction
 
 function clipboard_cb (h, ~)
+
   hf = gcbf ();
   fname = tempname ();
   props = {"inverthardcopy", "paperposition", "paperpositionmode"};
@@ -424,4 +428,5 @@ function clipboard_cb (h, ~)
   unwind_protect_cleanup
     set (hf, props, values);
   end_unwind_protect
+
 endfunction

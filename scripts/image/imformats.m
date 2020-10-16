@@ -77,7 +77,7 @@
 
 function varargout = imformats (arg1, arg2, arg3)
 
-  mlock (); # prevent formats to be removed by "clear all"
+  mlock ();  # prevent formats being removed by "clear all"
   persistent formats = default_formats ();
 
   if (nargin == 0 && nargout == 0)
@@ -102,7 +102,7 @@ function varargout = imformats (arg1, arg2, arg3)
           if (! ischar (arg2))
             error ("imformats: EXT to %s must be a string", arg1);
           endif
-          ## FIXME: suppose a format with multiple extensions.  If one of
+          ## FIXME: Suppose a format with multiple extensions; if one of
           ##        them is requested to be removed, should we remove the
           ##        whole format, or just that extension from the format?
           match = find_ext_idx (formats, arg2);
@@ -126,7 +126,7 @@ function varargout = imformats (arg1, arg2, arg3)
         otherwise
           ## then we look for a format with that extension.
           match = find_ext_idx (formats, arg1);
-          ## For matlab compatibility, if we don't find any format we must
+          ## For Matlab compatibility, if we don't find any format we must
           ## return an empty struct with NO fields.  We can't use match as mask
           if (any (match))
             varargout{1} = formats(match);
@@ -264,6 +264,7 @@ function rformats = default_formats ()
 endfunction
 
 function is_valid_format (format)
+
   ## the minimal list of fields required in the structure.  We don't
   ## require multipage because it doesn't exist in matlab
   min_fields  = {"ext", "read", "isa", "write", "info", "alpha", "description"};
@@ -275,10 +276,12 @@ function is_valid_format (format)
 endfunction
 
 function match = find_ext_idx (formats, ext)
+
   ## FIXME: what should we do if there's more than one hit?
   ##        Should this function prevent the addition of
   ##        duplicated extensions?
   match = cellfun (@(x) any (strcmpi (x, ext)), {formats.ext});
+
 endfunction
 
 function bool = isa_magick (coder, filename)

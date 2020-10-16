@@ -364,6 +364,7 @@ function retval = __plt2ss__ (hp, x, y, options, properties = {})
   retval = __go_line__ (hp, "xdata", x, "ydata", y,
                         "color", color, "linestyle", linestyle,
                         "marker", marker, properties{:});
+
 endfunction
 
 function retval = __plt2sv__ (hp, x, y, options, properties = {})

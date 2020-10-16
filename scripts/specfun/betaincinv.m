@@ -207,6 +207,7 @@ endfunction
 
 ## subfunctions: Bisection and Newton Methods
 function xc = bisection_method (F, xl, xr, a, b, y, maxit)
+
   F_l = F (xl, a, b, y);
   F_r = F (xr, a, b, y);
   for it = 1:maxit
@@ -222,9 +223,11 @@ function xc = bisection_method (F, xl, xr, a, b, y, maxit)
     F_r(flag_r) = F_c(flag_r);
     F_l(flag_c) = F_r(flag_c) = 0;
   endfor
+
 endfunction
 
 function x = newton_method (F, JF, x0, a, b, y, tol, maxit);
+
   l = numel (y);
   res = -F (x0, a, b, y) ./ JF (x0, a, b);
   todo = (abs (res) >= tol * abs (x0));
@@ -238,6 +241,7 @@ function x = newton_method (F, JF, x0, a, b, y, tol, maxit);
     todo = (abs (res) >= tol * abs (x));
   endwhile
   x += res;
+
 endfunction
 
 

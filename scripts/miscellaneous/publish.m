@@ -709,6 +709,7 @@ function p_content = parse_paragraph_content (content)
     p_content{end+1}.type = "text";
     p_content{end}.content = strjoin (block, "\n");
   endfor
+
 endfunction
 
 
@@ -722,6 +723,7 @@ function m_source = read_file_to_cellstr (file)
   until (! ischar (m_source{i}))
   fclose (fid);
   m_source = m_source(1:end-1);  # No EOL
+
 endfunction
 
 
@@ -770,6 +772,7 @@ function ofile = create_output (doc, options)
       endfor
     endif
   endif
+
 endfunction
 
 
@@ -783,6 +786,7 @@ function toc_cstr = get_toc (cstr, formatter)
       toc_cstr{end+1} = format_text (cstr{i}.content, formatter);
     endif
   endfor
+
 endfunction
 
 
@@ -1067,6 +1071,7 @@ function cstr = eval_code_helper (__code__)
   ## Split string by lines and preserve blank lines.
   cstr = strsplit (strrep (cstr, "\n\n", "\n \n"), "\n");
   eval_context ("save");
+
 endfunction
 
 
@@ -1107,6 +1112,7 @@ function cstr = eval_context (op)
       ## Do nothing
 
   endswitch
+
 endfunction
 
 

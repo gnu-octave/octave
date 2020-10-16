@@ -68,6 +68,7 @@ function retval = vectorize (fun)
   else
     error ("vectorize: FUN must be a string or anonymous function handle");
   endif
+
 endfunction
 
 
@@ -94,4 +95,3 @@ endfunction
 ## Test input validation
 %!error <Invalid call> vectorize ()
 %!error <FUN must be a string or anonymous function handle> vectorize (1)
-

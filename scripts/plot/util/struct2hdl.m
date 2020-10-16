@@ -232,6 +232,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
 endfunction
 
 function [h, sout] = createfigure (s)
+
   ## Create figure initially invisible to speed up loading.
   opts = {"visible", "off"};
   if (isfield (s.properties, "integerhandle"))  # see also bug #53342.
@@ -248,6 +249,7 @@ function [h, sout] = createfigure (s)
   endif
   addmissingprops (h, s.properties);
   sout = s;
+
 endfunction
 
 function [h, sout] = createaxes (s, p, par)

@@ -194,6 +194,7 @@ classdef inputParser < handle
   endproperties
 
   methods
+
     function set.PartialMatching (this, val)
       if (val)
         error ("inputParser: PartialMatching is not yet implemented");
@@ -514,9 +515,11 @@ classdef inputParser < handle
       printf ("Defined parameters:\n\n   {%s}\n",
               strjoin (this.Parameters, ", "));
     endfunction
+
   endmethods
 
   methods (Access = private)
+
     function validate_name (this, type, name)
       if (! isvarname (name))
         error ("inputParser.add%s: NAME is an invalid identifier", method);
@@ -572,9 +575,11 @@ classdef inputParser < handle
       endif
       error ("%s%s", where, msg);
     endfunction
+
   endmethods
 
 endclassdef
+
 
 %!function p = create_p ()
 %!  p = inputParser ();
@@ -697,7 +702,6 @@ endclassdef
 %! p.parse ("not_err", "qux");
 %! assert (p.Results.err, "foo");
 %! assert (p.Results.not_err, "qux");
-
 
 ## With more Parameters to test StructExpand
 %!function p3 = create_p3 ();
@@ -838,7 +842,7 @@ endclassdef
 %! assert (p.Unmatched, struct ());
 
 ## Test for patch #9241
-%!error<failed validation of A with ischar>
+%!error <failed validation of A with ischar>
 %! p = inputParser ();
 %! p.addParameter ("a", [], @ischar);
 %! p.parse ("a", 1);

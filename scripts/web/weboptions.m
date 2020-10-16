@@ -160,6 +160,7 @@ classdef weboptions < handle
   endproperties
 
   methods
+
     function f = weboptions (varargin)
       if (rem (numel (varargin), 2) != 0)
         error ("weboptions: invalid number of arguments");
@@ -244,6 +245,7 @@ classdef weboptions < handle
           error (["weboptions: Undefined field " field]);
         endif
       endif
+
     endfunction
 
     function f = set.CharacterEncoding (f, value)
@@ -355,6 +357,7 @@ classdef weboptions < handle
     endfunction
 
     function display (f)
+
       Timeout = int2str (f.Timeout);
       Password = repmat ("*", 1, numel (num2str (f.Password)));
 
@@ -393,6 +396,7 @@ classdef weboptions < handle
                 "\n           HeaderFields: " , HeaderFields,...
                 "\n    CertificateFilename: '", f.CertificateFilename, "'\n"];
       disp (output);
+
     endfunction
 
   endmethods

@@ -165,18 +165,21 @@ endfunction
 
 
 function gen = check_generator (val)
+
   if (isempty (val))
     gen = "";
     return;
   elseif (! iscellstr (val))
     error ("rng: GENERATOR must be a string");
   endif
+
   gen = tolower (char (val));
   if (any (strcmp (gen, {"simdtwister", "combrecursive", "philox", "threefry", "multfibonacci", "v4"})))
     error ('rng: random number generator "%s" is not available in Octave', gen);
   elseif (! any (strcmp (gen, {"twister", "v5uniform", "v5normal"})))
     error ('rng: unknown random number generator "%s"', gen);
   endif
+
 endfunction
 
 

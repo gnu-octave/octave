@@ -46,6 +46,7 @@ function [hf, hok, hcancel, hpanel] = __ok_cancel_dlg__ (ttl, varargin)
 endfunction
 
 function  cb_fix_button_position (hf, evt, hcancel, hok, hpanel)
+
   persistent margin = 20;
   persistent hgt = 30;
   persistent wd = 70;
@@ -62,4 +63,5 @@ function  cb_fix_button_position (hf, evt, hcancel, hok, hpanel)
   unwind_protect_cleanup
     set (hf, "units", units);
   end_unwind_protect
+
 endfunction

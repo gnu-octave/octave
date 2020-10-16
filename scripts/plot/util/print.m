@@ -802,6 +802,7 @@ function rgbout = print (varargin)
   if (isfigure (orig_figure))
     set (0, "currentfigure", orig_figure);
   endif
+
 endfunction
 
 function cmd = epstool (opts, filein, fileout)

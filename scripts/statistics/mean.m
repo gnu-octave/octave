@@ -179,6 +179,7 @@ function y = mean (x, varargin)
       ## this should have been filtered out during input check, but...
       error ("mean: OUTTYPE '%s' not recognized", out_type);
   endswitch
+
 endfunction
 
 

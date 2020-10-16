@@ -398,6 +398,7 @@ function __update_polar_grid__ (hax, ~, hg)
 endfunction
 
 function resetaxis (~, ~, hax)
+
   if (isaxes (hax))
     dellistener (hax, "rtick");
     dellistener (hax, "ttick");
@@ -412,6 +413,7 @@ function resetaxis (~, ~, hax)
     dellistener (hax, "gridlinestyle");
     dellistener (hax, "linewidth");
   endif
+
 endfunction
 
 

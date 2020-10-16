@@ -447,6 +447,7 @@ function [x_min, flag, relres, it, resvec] = ...
         printf ("has relative residual %d \n", relres);
     endswitch
   endif
+
 endfunction
 
 

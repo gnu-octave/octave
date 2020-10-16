@@ -36,6 +36,7 @@
 ## @end deftypefn
 
 function out = tar_is_bsd ()
+
   ## BSD tar needs to be handled differently from GNU tar
   persistent cache
   if (isempty (cache))
@@ -46,4 +47,5 @@ function out = tar_is_bsd ()
     cache = ! isempty (regexp (tar_ver_str, "bsdtar"));
   endif
   out = cache;
+
 endfunction

@@ -311,6 +311,7 @@ endfunction
 ## Apply "shrink" boundary conditions
 ## Function is not applied to any window elements outside the original data.
 function y = shrink_bc (fcn, x, idxp, win, wlen, odim)
+
   N   = length (x);
   idx = idxp + win;
   tf  = (idx > 0) & (idx <= N);  # idx inside boundaries
@@ -324,6 +325,7 @@ function y = shrink_bc (fcn, x, idxp, win, wlen, odim)
     k      = idx(tf(:,i),i);
     y(i,:) = fcn (x(k));
   endfor
+
 endfunction
 
 ## Apply replacement value boundary conditions

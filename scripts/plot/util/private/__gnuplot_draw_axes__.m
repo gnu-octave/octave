@@ -2657,6 +2657,7 @@ function l = length_string (s)
 endfunction
 
 function sym = __setup_sym_table__ ()
+
   ## Setup the translation table for TeX to gnuplot enhanced mode.
   sym.forall = '{/Symbol \042}';
   sym.exists = '{/Symbol \044}';
@@ -2769,6 +2770,7 @@ function sym = __setup_sym_table__ ()
   sym.rfloor = '{/Symbol \373}';
   sym.rceil = '{/Symbol \371}';
   sym.int = '{/Symbol \362}';
+
 endfunction
 
 function retval = __do_enhanced_option__ (enhanced, obj)
@@ -2851,6 +2853,7 @@ function do_text (stream, gpterm, enhanced, obj, hax, screenpos)
 endfunction
 
 function cdata = mapcdata (cdata, mode, clim, cmap_sz)
+
   if (ndims (cdata) == 3)
     ## True Color, clamp data to 8-bit
     clim = double (clim);
@@ -2881,4 +2884,5 @@ function cdata = mapcdata (cdata, mode, clim, cmap_sz)
     endif
     cdata = max (1, min (cdata, cmap_sz));
   endif
+
 endfunction

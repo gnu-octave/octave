@@ -146,6 +146,7 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
     otherwise
       error (["__alltohandles__: unknown method: ", solver_name]);
   endswitch
+
 endfunction
 
 function y = A_sub (A, x, trans)

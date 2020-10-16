@@ -105,7 +105,7 @@ function y = ranks (x, dim, rtype = 0)
       otherwise
         if (! ischar (rtype))
           rtype = num2str (rtype);
-        end
+        endif
         error ("ranks: unknown RTYPE '%s'", rtype);
     endswitch
 

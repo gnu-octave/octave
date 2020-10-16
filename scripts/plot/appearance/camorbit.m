@@ -172,7 +172,7 @@ function camorbit (varargin)
     yaw_ax = up;
   else
     yaw_ax = dir;
-  end
+  endif
 
   ## First pitch up then yaw right (order matters)
   pos = num2cell (campos (hax));

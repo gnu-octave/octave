@@ -71,7 +71,7 @@ function h = trisurf (tri, x, y, z, varargin)
     varargin(1) = [];
     if (isvector (c))
       c = c(:);
-    end
+    endif
     if (rows (c) != numel (z) && rows (c) != rows (tri))
       error ("trisurf: the numbers of colors specified in C must equal the number of vertices in Z or the number of triangles in TRI");
     elseif (columns (c) != 1 && columns (c) != 3)

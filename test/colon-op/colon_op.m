@@ -5,7 +5,7 @@ classdef colon_op
         r = sprintf ("%s:%s", class (a), class (b));
       else
         r = sprintf ("%s:%s:%s", class (a), class (b), class (c));
-      end
-    end
-  end
-end
+      endif
+    endfunction
+  endmethods
+endclassdef

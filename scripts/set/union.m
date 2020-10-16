@@ -91,7 +91,7 @@ function [y, ia, ib] = union (a, b, varargin)
       na = rows (a);
     else
       na = numel (a);
-    end
+    endif
     ia = idx(idx <= na);
     ib = idx(idx > na) - na;
   endif

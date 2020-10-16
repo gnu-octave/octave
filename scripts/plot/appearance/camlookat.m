@@ -73,7 +73,7 @@ function camlookat (hh)
 
   if (isempty (hh))
     return;
-  end
+  endif
 
   x0 = x1 = y0 = y1 = z0 = z1 = [];
   for i = 1:numel (hh)
@@ -81,7 +81,7 @@ function camlookat (hh)
 
     if (! ishghandle (h))
       error ("camlookat: Inputs must be handles");
-    end
+    endif
 
     x0_ = min (get (h, "xdata")(:));
     x1_ = max (get (h, "xdata")(:));

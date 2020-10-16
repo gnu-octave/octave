@@ -72,7 +72,7 @@ function filelist = tar (tarfile, files, rootdir = ".")
   else
     cmd = sprintf ("tar cvf %s -C %s %s",
                             tarfile, rootdir, sprintf (" %s", files{:}));
-  end
+  endif
 
   ## Save and restore the TAR_OPTIONS environment variable used by GNU tar.
   tar_options_env = getenv ("TAR_OPTIONS");

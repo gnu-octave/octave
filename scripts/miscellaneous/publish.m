@@ -1093,7 +1093,7 @@ function cstr = eval_context (op)
       for i = 1:length (var_names)
         if (! any (strcmp (var_names{i}, forbidden_var_names)))
           ctext(var_names{i}) = evalin ("caller", var_names{i});
-        end
+        endif
       endfor
 
     case "load"

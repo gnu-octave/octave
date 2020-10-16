@@ -2011,7 +2011,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
           edgecolor = obj.markeredgecolor;
         else
           edgecolor = obj.color;
-        end
+        endif
         fprintf (plot_stream, ' linecolor rgb "#%02x%02x%02x"',
                  round (255*edgecolor));
       else

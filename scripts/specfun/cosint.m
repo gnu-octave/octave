@@ -96,7 +96,7 @@ function y = cosint (x)
     x = complex (real (x)(:), imag (x)(:));
   else
     x = x(:);
-  end
+  endif
 
   ## Initialize the result
   y = zeros (size (x), class (x));
@@ -136,7 +136,7 @@ function y = cosint (x)
     xx = complex (real (x)(todo), imag (x)(todo));
   else
     xx = x(todo);
-  end
+  endif
   ssum = - xx .^ 2 / 4; # First term of the series expansion
   ## FIXME: This is way more precision than a double value can hold.
   gma = 0.57721566490153286060651209008; # Euler gamma constant

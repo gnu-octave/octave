@@ -190,7 +190,7 @@ function h = streamribbon (varargin)
         mxy(j) = max (sly); mny(j) = min (sly);
         mxz(j) = max (slz); mnz(j) = min (slz);
         j += 1;
-      end
+      endif
     endfor
     dx = max (mxx) - min (mnx);
     dy = max (mxy) - min (mny);

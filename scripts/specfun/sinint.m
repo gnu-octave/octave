@@ -75,7 +75,7 @@ function y = sinint (x)
     x = complex (real (x)(:), imag (x)(:));
   else
     x = x(:);
-  end
+  endif
 
   ## Initialize the result
   y = zeros (size (x), class (x));

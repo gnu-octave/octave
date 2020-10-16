@@ -3,5 +3,5 @@ function r = colon (a, b, c)
     r = sprintf ("%s:%s", class (a), class (b));
   else
     r = sprintf ("%s:%s:%s", class (a), class (b), class (c));
-  end
-end
+  endif
+endfunction

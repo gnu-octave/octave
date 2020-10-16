@@ -200,7 +200,7 @@ function [nn, xx] = hist (varargin)
     ## Lookup is more efficient if y is sorted, but sorting costs.
     if (! equal_bin_spacing && n > sqrt (rows (y) * 1e4))
       y = sort (y);
-    end
+    endif
 
     nanidx = isnan (y);
     y(nanidx) = 0;
@@ -210,21 +210,21 @@ function [nn, xx] = hist (varargin)
         d = 1;
       else
         d = (x(end) - x(1)) / (length (x) - 1);
-      end
+      endif
       cutlen = length (cutoff);
       for j = 1:y_nc
         freq(:,j) = accumarray (1 + max (0, min (cutlen, ceil ((double (y(:,j))
                                                          - cutoff(1)) / d))),
                                 double (! nanidx(:,j)),
                                 [n, 1]);
-      end
+      endfor
     else
       for j = 1:y_nc
         i = lookup (cutoff, y(:,j));
         i = 1 + i - (cutoff(max (i, 1)) == y(:,j));
         freq(:,j) = accumarray (i, double (! nanidx(:,j)), [n, 1]);
-      end
-    end
+      endfor
+    endif
   endif
 
   if (norm)

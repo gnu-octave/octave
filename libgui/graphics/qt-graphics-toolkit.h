@@ -42,7 +42,8 @@ namespace QtHandles
   class Object;
   class ObjectProxy;
 
-  class qt_graphics_toolkit : public QObject, public base_graphics_toolkit
+  class qt_graphics_toolkit
+    : public QObject, public octave::base_graphics_toolkit
   {
     Q_OBJECT
 

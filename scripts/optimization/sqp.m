@@ -29,7 +29,7 @@
 ## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h})
 ## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub})
 ## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter})
-## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tol})
+## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tolerance})
 ## Minimize an objective function using sequential quadratic programming (SQP).
 ##
 ## Solve the nonlinear program
@@ -127,7 +127,7 @@
 ## The seventh argument @var{maxiter} specifies the maximum number of
 ## iterations.  The default value is 100.
 ##
-## The eighth argument @var{tol} specifies the tolerance for the stopping
+## The eighth argument @var{tolerance} specifies the tolerance for the stopping
 ## criteria.  The default value is @code{sqrt (eps)}.
 ##
 ## The value returned in @var{info} may be one of the following:

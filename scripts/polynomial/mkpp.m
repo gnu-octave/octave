@@ -56,30 +56,26 @@
 ## @seealso{unmkpp, ppval, spline, pchip, ppder, ppint, ppjumps}
 ## @end deftypefn
 
-function pp = mkpp (x, P, d)
+function pp = mkpp (breaks, coefs, d)
 
-  ## check number of arguments
   if (nargin < 2)
     print_usage ();
   endif
 
-  ## check x
-  if (length (x) < 2)
-    error ("mkpp: at least one interval is needed");
+  ## Check BREAKS
+  if (! isvector (breaks))
+    error ("mkpp: BREAKS must be a vector");
+  elseif (length (breaks) < 2)
+    error ("mkpp: BREAKS must have at least one interval");
   endif
 
-  if (! isvector (x))
-    error ("mkpp: x must be a vector");
-  endif
-
-  len = length (x) - 1;
-  dP = length (size (P));
+  len = length (breaks) - 1;
 
   pp = struct ("form", "pp",
-               "breaks", x(:).',
+               "breaks", breaks(:).',
                "coefs", [],
                "pieces", len,
-               "order", prod (size (P)) / len,
+               "order", prod (size (coefs)) / len,
                "dim", 1);
 
   if (nargin == 3)
@@ -88,7 +84,7 @@ function pp = mkpp (x, P, d)
   endif
 
   dim_vec = [pp.pieces * prod(pp.dim), pp.order];
-  pp.coefs = reshape (P, dim_vec);
+  pp.coefs = reshape (coefs, dim_vec);
 
 endfunction
 

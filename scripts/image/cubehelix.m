@@ -26,6 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{map} =} cubehelix ()
 ## @deftypefnx {} {@var{map} =} cubehelix (@var{n})
+## @deftypefnx {} {@var{map} =} cubehelix (@var{n}, @var{start}, @var{rots}, @var{hue}, @var{gamma})
 ## Create cubehelix colormap.
 ##
 ## This colormap varies from black to white going though blue, green, and red

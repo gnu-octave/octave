@@ -24,18 +24,18 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
-## @deftypefnx {} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
+## @deftypefn  {} {[@var{t}, @var{p}] =} __marching_cube__ (@var{xx}, @var{yy}, @var{zz}, @var{val}, @var{iso})
+## @deftypefnx {} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{xx}, @var{yy}, @var{zz}, @var{v}, @var{iso}, @var{colors})
 ##
 ## Return the triangulation information @var{t} at points @var{p} for the
-## isosurface values resp. the volume data @var{val} and the iso level
-## @var{iso}.  It is considered that the volume data @var{val} is given at
-## the points @var{x}, @var{y} and @var{z} which are of type
+## isosurface values resp. the volume data @var{v} and the iso level
+## @var{iso}.  It is considered that the volume data @var{v} is given at
+## the points @var{xx}, @var{yy}, and @var{zz} which are of type
 ## three-dimensional numeric arrays.  The orientation of the triangles is
 ## chosen such that the normals point from the higher values to the lower
 ## values.
 ##
-## Optionally the color data @var{col} can be passed to this function
+## Optionally the color data @var{colors} can be passed to this function
 ## whereas computed vertices color data @var{c} is returned as third
 ## argument.
 ##
@@ -51,10 +51,10 @@
 ## @group
 ## N = 20;
 ## lin = linspace (0, 2, N);
-## [x, y, z] = meshgrid (lin, lin, lin);
+## [xx, yy, zz] = meshgrid (lin, lin, lin);
 ##
-## c = (x-.5).^2 + (y-.5).^2 + (z-.5).^2;
-## [t, p] = __marching_cube__ (x, y, z, c, .5);
+## v = (xx-.5).^2 + (yy-.5).^2 + (zz-.5).^2;
+## [t, p] = __marching_cube__ (xx, yy, zz, v, .5);
 ##
 ## figure ();
 ## trimesh (t, p(:,1), p(:,2), p(:,3));
@@ -82,7 +82,7 @@
 ##
 ## @end deftypefn
 
-function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
+function [T, p, col] = __marching_cube__ (xx, yy, zz, v, iso, colors)
 
   persistent edge_table = [];
   persistent tri_table = [];
@@ -95,13 +95,13 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   endif
 
   if (! isnumeric (xx) || ! isnumeric (yy) || ! isnumeric (zz)
-      || ! isnumeric (c) || ndims (xx) != 3 || ndims (yy) != 3
-      || ndims (zz) != 3 || ndims (c) != 3)
-    error ("__marching_cube__: XX, YY, ZZ, C must be 3-D matrices");
+      || ! isnumeric (v) || ndims (xx) != 3 || ndims (yy) != 3
+      || ndims (zz) != 3 || ndims (v) != 3)
+    error ("__marching_cube__: XX, YY, ZZ, v must be 3-D matrices");
   endif
 
-  if (! size_equal (xx, yy, zz, c))
-    error ("__marching_cube__: XX, YY, ZZ, C must be of equal size");
+  if (! size_equal (xx, yy, zz, v))
+    error ("__marching_cube__: XX, YY, ZZ, v must be of equal size");
   endif
 
   if (any (size (xx) < [2 2 2]))
@@ -113,14 +113,14 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   endif
 
   if (nargin == 6)
-    if (! isnumeric (colors) || ndims (colors) != 3 || ! size_equal (colors, c))
-      error ( "COLORS must be a 3-D matrix with the same size as C" );
+    if (! isnumeric (colors) || ndims (colors) != 3 || ! size_equal (colors, v))
+      error ( "COLORS must be a 3-D matrix with the same size as v" );
     endif
     calc_cols = true;
     lindex = 5;
   endif
 
-  n = size (c) - 1;
+  n = size (v) - 1;
 
   ## phase I: assign information to each voxel which edges are intersected by
   ## the isosurface.
@@ -138,7 +138,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
 
   ## calculate which vertices have values higher than iso
   for ii = 1:8
-    idx = c(vertex_idx{ii, :}) > iso;
+    idx = v(vertex_idx{ii, :}) > iso;
     cc(idx) = bitset (cc(idx), ii);
   endfor
 
@@ -152,7 +152,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   ## phase II: calculate the list of intersection points
   xyz_off = [1, 1, 1; 2, 1, 1; 2, 2, 1; 1, 2, 1; 1, 1, 2; 2, 1, 2; 2, 2, 2; 1, 2, 2];
   edges = [1 2; 2 3; 3 4; 4 1; 5 6; 6 7; 7 8; 8 5; 1 5; 2 6; 3 7; 4 8];
-  offset = sub2ind (size (c), xyz_off(:, 1), xyz_off(:, 2), xyz_off(:, 3)) - 1;
+  offset = sub2ind (size (v), xyz_off(:, 1), xyz_off(:, 2), xyz_off(:, 3)) - 1;
   pp = zeros (length (id), lindex, 12);
   ccedge = [vec(cedge(id)), id];
   ix_offset=0;
@@ -160,16 +160,16 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
     id__ = bitget (ccedge(:, 1), jj);
     id_ = ccedge(id__, 2);
     [ix iy iz] = ind2sub (size (cc), id_);
-    id_c = sub2ind (size (c), ix, iy, iz);
+    id_c = sub2ind (size (v), ix, iy, iz);
     id1 = id_c + offset(edges(jj, 1));
     id2 = id_c + offset(edges(jj, 2));
     if (calc_cols)
       pp(id__, 1:5, jj) = [vertex_interp(iso, xx(id1), yy(id1), zz(id1), ...
-        xx(id2), yy(id2), zz(id2), c(id1), c(id2), colors(id1), colors(id2)), ...
+        xx(id2), yy(id2), zz(id2), v(id1), v(id2), colors(id1), colors(id2)), ...
         (1:rows (id_))' + ix_offset ];
     else
       pp(id__, 1:4, jj) = [vertex_interp(iso, xx(id1), yy(id1), zz(id1), ...
-        xx(id2), yy(id2), zz(id2), c(id1), c(id2)), ...
+        xx(id2), yy(id2), zz(id2), v(id1), v(id2)), ...
         (1:rows (id_))' + ix_offset ];
     endif
     ix_offset += rows (id_);

@@ -1234,9 +1234,7 @@ Undocumented internal function.
 #if defined (HAVE_SUNDIALS)
 
   // Check number of parameters
-  octave_idx_type nargin = args.length ();
-
-  if (nargin != 5)
+  if (args.length () != 5)
     print_usage ();
 
   // Check odefun

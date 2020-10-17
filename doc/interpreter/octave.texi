@@ -306,6 +306,20 @@ Strings
 * Converting Strings::
 * Character Class Functions::
 
+String Operations
+
+* Common String Operations::
+* Concatenating Strings::
+* Splitting and Joining Strings::
+* Searching in Strings::
+* Searching and Replacing in Strings::
+
+Converting Strings
+
+* String encoding::
+* Numerical Data and Strings::
+* JSON data encoding/decoding::
+
 Data Containers
 
 * Structures::

@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct_config \
   %reldir%/bandwidth.m \
   %reldir%/commutation_matrix.m \
   %reldir%/cond.m \

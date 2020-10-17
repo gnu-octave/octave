@@ -28,7 +28,9 @@ FCN_FILE_DIRS += \
   %reldir%/private/uninstall.m \
   %reldir%/private/unload_packages.m
 
-%canon_reldir%_FCN_FILES = %reldir%/pkg.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/.oct_config \
+  %reldir%/pkg.m
 
 %canon_reldir%dir = $(fcnfiledir)/pkg
 

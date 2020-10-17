@@ -50,6 +50,9 @@ scripts_EXTRA_DIST += %reldir%/@ftp/module.mk
 ######################## include %reldir%/@ftp/module.mk ########################
 FCN_FILE_DIRS += %reldir%/@ftp
 
+%canon_reldir%_FCN_FILES = \
+  %reldir%/.oct_config
+
 %canon_reldir%_@ftp_FCN_FILES = \
   %reldir%/@ftp/ascii.m \
   %reldir%/@ftp/binary.m  \
@@ -71,7 +74,9 @@ FCN_FILE_DIRS += %reldir%/@ftp
 
 %canon_reldir%_@ftp_DATA = $(%canon_reldir%_@ftp_FCN_FILES)
 
-FCN_FILES += $(%canon_reldir%_@ftp_FCN_FILES)
+FCN_FILES += \
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_@ftp_FCN_FILES)
 
 PKG_ADD_FILES += %reldir%/@ftp/PKG_ADD
 

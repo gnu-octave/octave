@@ -6,6 +6,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__splinen__.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct_config \
   %reldir%/accumarray.m \
   %reldir%/accumdim.m \
   %reldir%/bincoeff.m \

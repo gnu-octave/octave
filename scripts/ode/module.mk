@@ -17,6 +17,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/starting_stepsize.m
 
 %canon_reldir%_FCN_FILES =  \
+  %reldir%/.oct_config \
   %reldir%/decic.m \
   %reldir%/ode15i.m \
   %reldir%/ode15s.m \

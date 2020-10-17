@@ -14,6 +14,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__uiputfile_fltk__.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct_config \
   %reldir%/dialog.m \
   %reldir%/errordlg.m \
   %reldir%/getappdata.m \

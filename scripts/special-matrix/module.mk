@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct_config \
   %reldir%/gallery.m \
   %reldir%/hadamard.m \
   %reldir%/hankel.m \

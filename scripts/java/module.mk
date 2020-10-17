@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct_config \
   %reldir%/javaArray.m \
   %reldir%/java_get.m \
   %reldir%/java_set.m \

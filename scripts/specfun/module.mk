@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct_config \
   %reldir%/beta.m \
   %reldir%/betainc.m \
   %reldir%/betaincinv.m \

@@ -24,6 +24,7 @@ GEN_FCN_FILES += $(%canon_reldir%_GEN_FCN_FILES)
   %reldir%/private/__set_default_mouse_modes__.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct_config \
   %reldir%/__actual_axis_position__.m \
   %reldir%/__default_plot_options__.m \
   %reldir%/__gnuplot_drawnow__.m \

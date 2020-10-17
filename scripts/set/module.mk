@@ -6,6 +6,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/validsetargs.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct_config \
   %reldir%/intersect.m \
   %reldir%/ismember.m \
   %reldir%/powerset.m \

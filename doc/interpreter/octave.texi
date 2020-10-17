@@ -396,17 +396,24 @@ Functions and Scripts
 
 * Introduction to Function and Script Files::
 * Defining Functions::
+* Returning from a Function::
 * Multiple Return Values::
+* Variable-length Return Lists::
 * Variable-length Argument Lists::
 * Ignoring Arguments::
-* Variable-length Return Lists::
-* Returning from a Function::
 * Default Arguments::
+* Validating Arguments::
 * Function Files::
 * Script Files::
 * Function Handles and Anonymous Functions::
 * Commands::
 * Organization of Functions::
+
+Validating Arguments
+
+* Validating the number of Arguments::
+* Validating the type of Arguments::
+* Parsing Arguments::
 
 Function Files
 
@@ -557,6 +564,7 @@ Graphics Object Properties
 * Root Properties::
 * Figure Properties::
 * Axes Properties::
+* Legend Properties::
 * Line Properties::
 * Text Properties::
 * Image Properties::
@@ -569,6 +577,7 @@ Graphics Object Properties
 * Uicontextmenu Properties::
 * Uipanel Properties::
 * Uicontrol Properties::
+* Uitable Properties::
 * Uitoolbar Properties::
 * Uipushtool Properties::
 * Uitoggletool Properties::
@@ -600,6 +609,7 @@ Object Groups
 Graphics Toolkits
 
 * Customizing Toolkit Behavior::
+* Hardware vs. Software Rendering::
 
 Matrix Manipulation
 
@@ -742,6 +752,7 @@ Geometry
 * Voronoi Diagrams::
 * Convex Hull::
 * Interpolation on Scattered Data::
+* Vector Rotation Matrices::
 
 Delaunay Triangulation
 
@@ -782,6 +793,7 @@ Object Oriented Programming
 * Indexing Objects::
 * Overloading Objects::
 * Inheritance and Aggregation::
+* classdef Classes::
 
 Indexing Objects
 
@@ -793,6 +805,14 @@ Overloading Objects
 * Function Overloading::
 * Operator Overloading::
 * Precedence of Objects::
+
+classdef Classes
+
+* Creating a classdef Class::
+* Properties::
+* Methods::
+* Inheritance::
+* Value Classes vs. Handle Classes::
 
 GUI Development
 

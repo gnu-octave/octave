@@ -55,14 +55,14 @@
 ## Specifies points to be used in defining subintervals of the quadrature
 ## algorithm, or if @var{a}, @var{b}, or @var{waypoints} are complex then
 ## the quadrature is calculated as a contour integral along a piecewise
-## continuous path.  For more detail see @code{quadgk}.
+## continuous path.  For more detail, @pxref{XREFquadgk,,@code{quadgk}}.
 ##
 ## @item ArrayValued
 ## @code{integral} expects @var{f} to return a scalar value unless
 ## @var{arrayvalued} is specified as true.  This option will cause
 ## @code{integral} to perform the integration over the entire array and return
 ## @var{q} with the same dimensions as returned by @var{f}.  For more detail
-## see @code{quadv}.
+## @pxref{XREFquadv,,@code{quadv}}.
 ##
 ## @item AbsTol
 ## Define the absolute error tolerance for the quadrature.  The default

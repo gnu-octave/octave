@@ -39,7 +39,7 @@
 ## a string @var{s}, with @var{idx} indicating the ending position of the
 ## various examples.
 ##
-## See @code{demo} for a complete explanation.
+## For a complete explanation @pxref{XREFdemo,,@code{demo}}.
 ## @seealso{demo, test}
 ## @end deftypefn
 

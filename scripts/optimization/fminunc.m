@@ -70,7 +70,8 @@
 ## @var{x}, while @qcode{"TolFun"} is a tolerance for the objective function
 ## value @var{fval}.  The default is @code{1e-6} for both options.
 ##
-## For a description of the other options, see @code{optimset}.
+## For a description of the other options,
+## @pxref{XREFoptimset,,@code{optimset}}.
 ##
 ## On return, @var{x} is the location of the minimum and @var{fval} contains
 ## the value of the objective function at @var{x}.

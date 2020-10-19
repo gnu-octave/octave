@@ -64,8 +64,8 @@
 ##
 ## For 3-D interpolation, the optional argument @var{options} is passed
 ## directly to Qhull when computing the Delaunay triangulation used for
-## interpolation.  See @code{delaunayn} for information on the defaults and
-## how to pass different values.
+## interpolation.  For more information on the defaults and how to pass
+## different values, @pxref{XREFdelaunayn,,@code{delaunayn}}.
 ##
 ## Programming Notes: If the input is complex the real and imaginary parts
 ## are interpolated separately.  Interpolation is normally based on a

@@ -55,8 +55,9 @@
 ## @code{200 * number_of_variables}, i.e., @code{200 * length (@var{x0})}.
 ## The value must be a positive integer.
 ##
-## For a description of the other options, see @code{optimset}.  To initialize
-## an options structure with default values for @code{fminsearch} use
+## For a description of the other options,
+## @pxref{XREFoptimset,,@code{optimset}}.  To initialize an options structure
+## with default values for @code{fminsearch} use
 ## @code{options = optimset ("fminsearch")}.
 ##
 ## @code{fminsearch} may also be called with a single structure argument

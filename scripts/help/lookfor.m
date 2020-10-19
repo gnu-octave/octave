@@ -49,7 +49,8 @@
 ## related functions that are not a part of Octave.
 ##
 ## The speed of lookup is greatly enhanced by having a cached documentation
-## file.  See @code{doc_cache_create} for more information.
+## file.  For more information,
+## @pxref{XREFdoc_cache_create,,@code{doc_cache_create}}.
 ## @seealso{help, doc, which, path, doc_cache_create}
 ## @end deftypefn
 

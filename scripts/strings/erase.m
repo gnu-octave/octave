@@ -64,7 +64,7 @@
 ## @end group
 ## @end example
 ##
-## See @code{strrep} for processing overlaps.
+## For processing overlaps, @pxref{XREFstrrep,,@code{strrep}}.
 ##
 ## @seealso{strrep, regexprep}
 ## @end deftypefn

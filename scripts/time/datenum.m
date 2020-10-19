@@ -42,12 +42,12 @@
 ## The fractional part, @code{rem (@var{days}, 1)} corresponds to the time
 ## on the given day.
 ##
-## The input may be a date vector (see @code{datevec}),
-## datestr (see @code{datestr}), or directly specified as input.
+## The input may be a date vector (@pxref{XREFdatevec,,datevec}),
+## date string (@pxref{XREFdatestr,,datestr}), or directly specified as input.
 ##
 ## When processing input datestrings, @var{f} is the format string used to
-## interpret date strings (see @code{datestr}).  If no format @var{f} is
-## specified, then a relatively slow search is performed through various
+## interpret date strings (@pxref{XREFdatestr,,datestr}).  If no format @var{f}
+## is specified, then a relatively slow search is performed through various
 ## formats.  It is always preferable to specify the format string @var{f} if
 ## it is known.  Formats which do not specify a particular time component
 ## will have the value set to zero.  Formats which do not specify a date

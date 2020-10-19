@@ -29,19 +29,19 @@
 ## @deftypefnx {} {@var{v} =} datevec (@var{date}, @var{p})
 ## @deftypefnx {} {@var{v} =} datevec (@var{date}, @var{f}, @var{p})
 ## @deftypefnx {} {[@var{y}, @var{m}, @var{d}, @var{h}, @var{mi}, @var{s}] =} datevec (@dots{})
-## Convert a serial date number (see @code{datenum}) or date string (see
-## @code{datestr}) into a date vector.
+## Convert a serial date number (@pxref{XREFdatenum,,@code{datenum}}) or date
+## string (@pxref{XREFdatestr,,@code{datestr}}) into a date vector.
 ##
 ## A date vector is a row vector with six members, representing the year,
 ## month, day, hour, minute, and seconds respectively.
 ##
 ## @var{f} is the format string used to interpret date strings
-## (see @code{datestr}).  If @var{date} is a string, but no format is
-## specified, then a relatively slow search is performed through various
-## formats.  It is always preferable to specify the format string @var{f} if it
-## is known.  Formats which do not specify a particular time component will
-## have the value set to zero.  Formats which do not specify a date will
-## default to January 1st of the current year.
+## (@pxref{XREFdatestr,,@code{datestr}}).  If @var{date} is a string, but no
+## format is specified, then a relatively slow search is performed through
+## various formats.  It is always preferable to specify the format string
+## @var{f} if it is known.  Formats which do not specify a particular time
+## component will have the value set to zero.  Formats which do not specify a
+## date will default to January 1st of the current year.
 ##
 ## @var{p} is the year at the start of the century to which two-digit years
 ## will be referenced.  If not specified, it defaults to the current year minus

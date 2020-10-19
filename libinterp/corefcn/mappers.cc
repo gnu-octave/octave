@@ -223,7 +223,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 DEFUN (angle, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} angle (@var{z})
-See @code{arg}.
+@xref{XREFarg,,@code{arg}}.
 @seealso{arg}
 @end deftypefn */)
 {

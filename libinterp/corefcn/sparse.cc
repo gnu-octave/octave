@@ -101,8 +101,9 @@ maximum index in the vectors @var{i} and @var{j} as given by
 
 @strong{Note}: if multiple values are specified with the same @var{i},
 @var{j} indices, the corresponding value in @var{s} will be the sum of the
-values at the repeated location.  See @code{accumarray} for an example of
-how to produce different behavior, such as taking the minimum instead.
+values at the repeated location.  @xref{XREFaccumarray,,@code{accumarray}}, for
+an example of how to produce different behavior such as taking the minimum
+instead.
 
 If the option @qcode{"unique"} is given, and more than one value is
 specified at the same @var{i}, @var{j} indices, then the last specified

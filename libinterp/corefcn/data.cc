@@ -1040,8 +1040,8 @@ cumsum ([1, 2; 3, 4; 5, 6])
 @end group
 @end example
 
-See @code{sum} for an explanation of the optional parameters @qcode{"native"}
-and @qcode{"double"}.
+For an explanation of the optional parameters @qcode{"native"} and
+@qcode{"double"}, @pxref{XREFsum,,@code{sum}}.
 @seealso{sum, cumprod}
 @end deftypefn */)
 {

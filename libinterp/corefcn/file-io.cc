@@ -273,7 +273,8 @@ character.
 
 If there are no more characters to read, @code{fgetl} returns @minus{}1.
 
-To read a line and return the terminating newline see @code{fgets}.
+To read a line and return the terminating newline,
+@pxref{XREFfgets,,@code{fgets}}.
 @seealso{fgets, fscanf, fread, fopen}
 @end deftypefn */)
 {
@@ -315,7 +316,8 @@ character.
 
 If there are no more characters to read, @code{fgets} returns @minus{}1.
 
-To read a line and discard the terminating newline see @code{fgetl}.
+To read a line and discard the terminating newline,
+@pxref{XREFfgetl,,@code{fgetl}}.
 @seealso{fputs, fgetl, fscanf, fread, fopen}
 @end deftypefn */)
 {
@@ -2865,7 +2867,7 @@ otherwise the default directory for temporary files is used.
 Programming Note: Because the named file is not opened by @code{tempname},
 it is possible, though relatively unlikely, that it will not be available
 by the time your program attempts to open it.  If this is a concern,
-see @code{tmpfile}.
+@pxref{XREFtmpfile,,@code{tmpfile}}.
 @seealso{mkstemp, tempdir, P_tmpdir, tmpfile}
 @end deftypefn */)
 {

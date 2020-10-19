@@ -162,9 +162,9 @@ half-plane
 @end enumerate
 
 Note: @code{qz} performs permutation balancing, but not scaling
-(@pxref{XREFbalance,,balance}), which may be lead to less accurate results than
-@code{eig}.  The order of output arguments was selected for compatibility with
-@sc{matlab}.
+(@pxref{XREFbalance,,@code{balance}}), which may be lead to less accurate
+results than @code{eig}.  The order of output arguments was selected for
+compatibility with @sc{matlab}.
 @seealso{eig, ordeig, balance, lu, chol, hess, qr, qzhess, schur, svd}
 @end deftypefn */)
 {

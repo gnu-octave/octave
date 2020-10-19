@@ -1199,7 +1199,8 @@ Case insensitive regular expression string matching.
 
 Search for @var{pat} in UTF-8 encoded @var{str} and return the positions and
 substrings of any matches, or empty values if there are none.
-@xref{XREFregexp,,regexp}, for details on the syntax of the search pattern.
+@xref{XREFregexp,,@code{regexp}}, for details on the syntax of the search
+pattern.
 @seealso{regexp}
 @end deftypefn */)
 {
@@ -1396,7 +1397,7 @@ DEFUN (regexprep, args, ,
 Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.
 
 The pattern is a regular expression as documented for @code{regexp}.
-@xref{XREFregexp,,regexp}.
+@xref{XREFregexp,,@code{regexp}}.
 
 All strings must be UTF-8 encoded.
 

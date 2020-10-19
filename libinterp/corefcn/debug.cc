@@ -293,7 +293,7 @@ as separate arguments or as a vector.
 
 @item event
 An event such as @code{error}, @code{interrupt}, or @code{warning}
-(@pxref{XREFdbstop,,dbstop} for details).
+(@pxref{XREFdbstop,,@code{dbstop}} for details).
 @end table
 
 When called without a line number specification all breakpoints in the named

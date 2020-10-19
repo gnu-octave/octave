@@ -68,8 +68,8 @@ DEFUN (sub2ind, args, ,
 Convert subscripts to linear indices.
 
 The input @var{dims} is a dimension vector where each element is the size of
-the array in the respective dimension (@pxref{XREFsize,,size}).  The remaining
-inputs are scalars or vectors of subscripts to be converted.
+the array in the respective dimension (@pxref{XREFsize,,@code{size}}).  The
+remaining inputs are scalars or vectors of subscripts to be converted.
 
 The output vector @var{ind} contains the converted linear indices.
 
@@ -193,8 +193,8 @@ DEFUN (ind2sub, args, nargout,
 Convert linear indices to subscripts.
 
 The input @var{dims} is a dimension vector where each element is the size of
-the array in the respective dimension (@pxref{XREFsize,,size}).  The second
-input @var{ind} contains linear indies to be converted.
+the array in the respective dimension (@pxref{XREFsize,,@code{size}}).  The
+second input @var{ind} contains linear indies to be converted.
 
 The outputs @var{s1}, @dots{}, @var{sN} contain the converted subscripts.
 

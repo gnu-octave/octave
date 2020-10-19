@@ -1397,7 +1397,7 @@ and examples, see @ref{XREFerror,,error}.
 The optional warning identifier @var{id} allows users to enable or disable
 warnings tagged by this identifier.  A message identifier is a string of the
 form @qcode{"NAMESPACE:WARNING-NAME"}.  Octave's own warnings use the
-@qcode{"Octave"} namespace (@pxref{XREFwarning_ids,,warning_ids}).  For
+@qcode{"Octave"} namespace (@pxref{XREFwarning_ids,,@code{warning_ids}}).  For
 example:
 
 @example

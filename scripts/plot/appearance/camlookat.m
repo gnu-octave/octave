@@ -35,17 +35,18 @@
 ## the bounding box approximately fills the field of view.
 ##
 ## This command fixes the camera's viewing direction
-## (@code{camtarget() - campos()}), camera up vector (@pxref{XREFcamup,,camup})
-## and viewing angle (@pxref{XREFcamva,,camva}).  The camera target
-## (@pxref{XREFcamtarget,,camtarget}) and camera position
-## (@pxref{XREFcampos,,campos}) are changed.
+## (@code{camtarget() - campos()}), camera up vector
+## (@pxref{XREFcamup,,@code{camup}}) and viewing angle
+## (@pxref{XREFcamva,,@code{camva}}).  The camera target
+## (@pxref{XREFcamtarget,,@code{camtarget}}) and camera position
+## (@pxref{XREFcampos,,@code{campos}}) are changed.
 ##
 ## If the argument is a list @var{handle_list}, then a single bounding box for
 ## all the objects is computed and the camera is then adjusted as above.
 ##
 ## If the argument is an axis object @var{hax}, then the children of the axis
 ## are used as @var{handle_list}.  When called with no inputs, it uses the
-## current axis (@pxref{XREFgca,,gca}).
+## current axis (@pxref{XREFgca,,@code{gca}}).
 ##
 ## @seealso{camorbit, camzoom, camroll}
 ## @end deftypefn

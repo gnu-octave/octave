@@ -123,7 +123,7 @@
 ## @end table
 ##
 ## Programming Note: This function is a wrapper which calls @code{movfun}.
-## For additional options and documentation, @pxref{XREFmovfun,,movfun}.
+## For additional options and documentation, @pxref{XREFmovfun,,@code{movfun}}.
 ##
 ## @seealso{movfun, movslice, movmad, movmax, movmean, movmedian, movprod, movstd, movsum, movvar}
 ## @end deftypefn

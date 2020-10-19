@@ -43,7 +43,8 @@
 ## Optionally, @var{x}, @var{y}, and @var{z} can be supplied to represent the
 ## set of coordinates of @var{v}.  They can either be matrices of the same size
 ## as @var{v} or vectors with sizes according to the dimensions of @var{v}, in
-## which case they are expanded to matrices (@pxref{XREFmeshgrid,,meshgrid}).
+## which case they are expanded to matrices
+## (@pxref{XREFmeshgrid,,@code{meshgrid}}).
 ##
 ## If @code{reducevolume} is called with two arguments then @var{x}, @var{y},
 ## and @var{z} are assumed to match the respective indices of @var{v}.

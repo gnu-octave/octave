@@ -52,7 +52,7 @@
 ## the space character.  Using arbitrary strings for field names is
 ## incompatible with @sc{matlab}, and this usage will emit a warning if the
 ## warning ID @code{Octave:language-extension} is enabled.
-## @xref{XREFwarning_ids,,warning_ids}.
+## @xref{XREFwarning_ids,,@code{warning_ids}}.
 ##
 ## With the second calling form, set a field of a structure array.  The
 ## input @var{sidx} selects an element of the structure array, @var{field}

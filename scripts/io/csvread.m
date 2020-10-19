@@ -38,7 +38,7 @@
 ## @end example
 ##
 ## Any optional arguments are passed directly to @code{dlmread}
-## (@pxref{XREFdlmread,,dlmread}).
+## (@pxref{XREFdlmread,,@code{dlmread}}).
 ## @seealso{dlmread, textscan, csvwrite, dlmwrite}
 ## @end deftypefn
 

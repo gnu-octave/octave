@@ -59,7 +59,7 @@
 ## vectors with lengths corresponding to the dimensions of @var{v}, then the
 ## volume data is taken at the specified points.  If @var{x}, @var{y}, or
 ## @var{z} are empty, the grid corresponds to the indices (@code{1:n}) in
-## the respective direction (@pxref{XREFmeshgrid,,meshgrid}).
+## the respective direction (@pxref{XREFmeshgrid,,@code{meshgrid}}).
 ##
 ## The optional input argument @var{col}, which is a three-dimensional array
 ## of the same size as @var{v}, specifies coloring of the isosurface.  The

@@ -34,8 +34,8 @@
 ##
 ## The input @var{theta} is assumed to be radians and is converted to degrees
 ## for plotting.  If you have degrees then you must convert
-## (@pxref{XREFcart2pol,,cart2pol}) to radians before passing the data to this
-## function.
+## (@pxref{XREFcart2pol,,@code{cart2pol}}) to radians before passing the
+## data to this function.
 ##
 ## If a single complex input @var{cplx} is given then the real part is used
 ## for @var{theta} and the imaginary part is used for @var{rho}.

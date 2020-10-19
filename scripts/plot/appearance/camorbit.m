@@ -49,11 +49,11 @@
 ## @end example
 ##
 ## These rotations are centered around the camera target
-## (@pxref{XREFcamtarget,,camtarget}).
+## (@pxref{XREFcamtarget,,@code{camtarget}}).
 ## First the camera position is pitched up or down by rotating it @var{phi}
 ## degrees around an axis orthogonal to both the viewing direction
 ## (specifically @code{camtarget() - campos()}) and the camera ``up vector''
-## (@pxref{XREFcamup,,camup}).
+## (@pxref{XREFcamup,,@code{camup}}).
 ## Example:
 ##
 ## @example
@@ -81,7 +81,7 @@
 ##
 ## When @var{coorsys} is set to @qcode{"camera"}, the camera is moved left or
 ## right by rotating it around an axis parallel to the camera up vector
-## (@pxref{XREFcamup,,camup}).
+## (@pxref{XREFcamup,,@code{camup}}).
 ## The input @var{dir} should not be specified in this case.
 ## Example:
 ##

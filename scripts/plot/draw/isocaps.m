@@ -57,7 +57,7 @@
 ## vectors with lengths corresponding to the dimensions of @var{v}, then the
 ## volume data is taken at the specified points.  If @var{x}, @var{y}, or
 ## @var{z} are empty, the grid corresponds to the indices (@code{1:n}) in
-## the respective direction (@pxref{XREFmeshgrid,,meshgrid}).
+## the respective direction (@pxref{XREFmeshgrid,,@code{meshgrid}}).
 ##
 ## The optional parameter @var{which_caps} can have one of the following
 ## string values which defines how the data will be enclosed:

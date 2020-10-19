@@ -39,7 +39,8 @@
 ## The input patch can be represented by a structure @var{fv} with the
 ## fields @code{faces} and @code{vertices}, by two matrices @var{faces} and
 ## @var{vertices} (see, e.g., the result of @code{isosurface}), or by a
-## handle to a patch object @var{patch_handle} (@pxref{XREFpatch,,patch}).
+## handle to a patch object @var{patch_handle}
+## (@pxref{XREFpatch,,@code{patch}}).
 ##
 ## The number of faces and vertices in the patch is reduced by iteratively
 ## collapsing the shortest edge of the patch to its midpoint (as discussed,

@@ -41,8 +41,8 @@
 ## @var{x0} is an optional initial guess for the solution @var{x}.
 ##
 ## @var{options} is an options structure to change the behavior of the
-## algorithm (@pxref{XREFoptimset,,optimset}).  @code{pqpnonneg} recognizes
-## one option: @qcode{"MaxIter"}.
+## algorithm (@pxref{XREFoptimset,,@code{optimset}}).  @code{pqpnonneg}
+## recognizes one option: @qcode{"MaxIter"}.
 ##
 ## Outputs:
 ##

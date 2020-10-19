@@ -61,10 +61,10 @@
 ##
 ## For dense matrices, backslash uses the Gaussian Elimination algorithm
 ## with partial pivoting.  For sparse matrices, backslash uses a direct
-## method to compute an LU factorization (@pxref{XREFlu,,lu}).  The direct
-## method tries to minimize ``fill-in'' of zeros but it could nonetheless use a
-## lot of memory; if this is a concern, consider an iterative method
-## (@pxref{XREFcgs,,cgs} or @pxref{XREFgmres,,gmres}).
+## method to compute an LU factorization (@pxref{XREFlu,,@code{lu}}).  The
+## direct method tries to minimize ``fill-in'' of zeros but it could
+## nonetheless use a lot of memory; if this is a concern, consider an iterative
+## method (@pxref{XREFcgs,,@code{cgs}} or @pxref{XREFgmres,,@code{gmres}}).
 ##
 ## @item @code{/} Matrix Right Division
 ## The forward slash notation can be used to solve systems of the form

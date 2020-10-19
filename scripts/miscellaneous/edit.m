@@ -109,7 +109,7 @@
 ## (editor is started in the background and Octave continues) or sync mode
 ## (Octave waits until the editor exits).  Set it to @qcode{"sync"} to start
 ## the editor in sync mode.  The default is @qcode{"async"}
-## (@pxref{XREFsystem,,system}).
+## (@pxref{XREFsystem,,@code{system}}).
 ##
 ## @item editinplace
 ## Determines whether files should be edited in place, without regard to

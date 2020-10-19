@@ -115,7 +115,7 @@
 ## any built-in demo blocks are extracted but not executed.  The text for all
 ## code blocks is concatenated and returned as @var{code} with @var{idx} being
 ## a vector of positions of the ends of each demo block.  For an easier way to
-## extract demo blocks from files, @xref{XREFexample,,example}.
+## extract demo blocks from files, @xref{XREFexample,,@code{example}}.
 ##
 ## If the second argument is @qcode{"explain"} then @var{name} is ignored and
 ## an explanation of the line markers used in @code{test} output reports is

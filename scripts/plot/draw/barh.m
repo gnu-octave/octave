@@ -72,7 +72,7 @@
 ##
 ## The optional return value @var{h} is a graphics handle to the created
 ## bar series hggroup.  For a description of the use of the
-## bar series, @pxref{XREFbar,,bar}.
+## bar series, @pxref{XREFbar,,@code{bar}}.
 ## @seealso{bar, hist, pie, plot, patch}
 ## @end deftypefn
 

@@ -29,7 +29,7 @@
 ## Extract the components of a piecewise polynomial structure @var{pp}.
 ##
 ## This function is the inverse of @code{mkpp}: it extracts the inputs to
-## @code{mkpp} needed to create the piecewise polynomial structure @var{PP}.
+## @code{mkpp} needed to create the piecewise polynomial structure @var{pp}.
 ## The code below makes this relation explicit:
 ##
 ## @example

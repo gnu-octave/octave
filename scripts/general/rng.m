@@ -35,7 +35,7 @@
 ## Set or query the seed of the random number generator used by @code{rand} and
 ## @code{randn}.
 ##
-## The input @code{seed} is a scalar numeric value used to initialize the state
+## The input @var{seed} is a scalar numeric value used to initialize the state
 ## vector of the random number generator.
 ##
 ## The optional string @var{generator} specifies the type of random number

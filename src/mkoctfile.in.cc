@@ -356,7 +356,7 @@ make_vars_map (bool link_stand_alone, bool verbose, bool debug)
   // FIXME: Remove LFLAGS in Octave 8.0
   vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LDFLAGS);
   if (vars["LFLAGS"] != DEFAULT_LDFLAGS)
-    std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
+    std::cerr << "mkoctfile: warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
 
   vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
                                             %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
@@ -804,7 +804,7 @@ main (int argc, char **argv)
         }
       else if (arg == "-largeArrayDims" || arg == "-compatibleArrayDims")
         {
-          std::cerr << "warning: -largeArrayDims and -compatibleArrayDims are accepted for compatibility, but ignored" << std::endl;
+          std::cerr << "mkoctfile: warning: -largeArrayDims and -compatibleArrayDims are accepted for compatibility, but ignored" << std::endl;
         }
       else if (arg == "-R2017b")
         {
@@ -866,7 +866,7 @@ main (int argc, char **argv)
 
               // FIXME: Remove LFLAGS checking in Octave 7.0
               if (! strcmp (argv[i], "LFLAGS"))
-                std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
+                std::cerr << "mkoctfile: warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
 
               if (! var_to_print.empty ())
                 std::cerr << "mkoctfile: warning: only one '" << arg
@@ -983,11 +983,11 @@ main (int argc, char **argv)
   else
     {
       if (r2017b_option)
-        std::cerr << "warning: -R2017b option ignored unless creating mex file"
+        std::cerr << "mkoctfile: warning: -R2017b option ignored unless creating mex file"
                   << std::endl;
 
       if (r2018a_option)
-        std::cerr << "warning: -R2018a option ignored unless creating mex file"
+        std::cerr << "mkoctfile: warning: -R2018a option ignored unless creating mex file"
                   << std::endl;
     }
 

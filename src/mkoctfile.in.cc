@@ -376,8 +376,6 @@ static std::string usage_msg = "usage: mkoctfile [options] file ...";
 
 static std::string version_msg = "mkoctfile, version " OCTAVE_VERSION;
 
-static bool debug = false;
-
 static std::string help_msg =
   "\n"
   "Options:\n"
@@ -565,7 +563,7 @@ ends_with (const std::string& s, const std::string& suffix)
 }
 
 static int
-run_command (const std::string& cmd, bool printonly = false)
+run_command (const std::string& cmd, bool verbose, bool printonly = false)
 {
   if (printonly)
     {
@@ -573,7 +571,7 @@ run_command (const std::string& cmd, bool printonly = false)
       return 0;
     }
 
-  if (debug)
+  if (verbose)
     std::cout << cmd << std::endl;
 
   int result = system (cmd.c_str ());
@@ -706,6 +704,7 @@ main (int argc, char **argv)
   std::string output_ext = ".oct";
   std::string objfiles, libfiles, octfile, outputfile;
   std::string incflags, defs, ldflags, pass_on_options;
+  bool verbose = false;
   bool strip = false;
   bool no_oct_file_strip_on_this_platform = is_true ("%NO_OCT_FILE_STRIP%");
   bool compile_only = false;
@@ -757,7 +756,8 @@ main (int argc, char **argv)
       else if (arg == "-d" || arg == "-debug" || arg == "--debug"
                || arg == "-v" || arg == "-verbose" ||  arg == "--verbose")
         {
-          debug = true;
+          verbose = true;
+
           if (vars["CC"] == "cc-msvc")
             vars["CC"] += " -d";
           if (vars["CXX"] == "cc-msvc")
@@ -1146,7 +1146,7 @@ main (int argc, char **argv)
                + vars["ALL_FFLAGS"] + ' ' + incflags + ' ' + defs + ' '
                + pass_on_options + ' ' + f + " -o " + o);
 
-          int status = run_command (cmd, printonly);
+          int status = run_command (cmd, verbose, printonly);
 
           if (status)
             return status;
@@ -1186,7 +1186,7 @@ main (int argc, char **argv)
                + pass_on_options + ' ' + incflags + ' ' + defs + ' '
                + quote_path (f) + " -o " + quote_path (o));
 
-          int status = run_command (cmd, printonly);
+          int status = run_command (cmd, verbose, printonly);
 
           if (status)
             return status;
@@ -1226,7 +1226,7 @@ main (int argc, char **argv)
                + pass_on_options + ' ' + incflags + ' ' + defs + ' '
                + quote_path (f) + " -o " + quote_path (o));
 
-          int status = run_command (cmd, printonly);
+          int status = run_command (cmd, verbose, printonly);
 
           if (status)
             return status;
@@ -1267,7 +1267,7 @@ main (int argc, char **argv)
                + vars["LFLAGS"] + ' ' + octave_libs + ' '
                + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
 
-          int status = run_command (cmd, printonly);
+          int status = run_command (cmd, verbose, printonly);
 
           clean_up_tmp_files (tmp_objfiles);
 
@@ -1301,7 +1301,7 @@ main (int argc, char **argv)
         cmd += ' ' + vars["FLIBS"];
 #endif
 
-      int status = run_command (cmd, printonly);
+      int status = run_command (cmd, verbose, printonly);
 
       clean_up_tmp_files (tmp_objfiles);
 
@@ -1313,7 +1313,7 @@ main (int argc, char **argv)
     {
       std::string cmd = "strip " + octfile;
 
-      int status = run_command (cmd, printonly);
+      int status = run_command (cmd, verbose, printonly);
 
       if (status)
         return status;

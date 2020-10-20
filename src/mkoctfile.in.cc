@@ -66,8 +66,6 @@
 #  include "wait-wrappers.h"
 #endif
 
-static std::map<std::string, std::string> vars;
-
 #if ! defined (OCTAVE_VERSION)
 #  define OCTAVE_VERSION %OCTAVE_CONF_VERSION%
 #endif
@@ -170,10 +168,12 @@ replace_prefix (std::string s)
   return s;
 }
 
-static void
-initialize (void)
+static std::map<std::string, std::string>
+make_vars_map (bool verbose, bool debug)
 {
   set_octave_home ();
+
+  std::map<std::string, std::string> vars;
 
   vars["OCTAVE_HOME"] = Voctave_home;
   vars["OCTAVE_EXEC_HOME"] = Voctave_exec_home;
@@ -264,16 +264,22 @@ initialize (void)
   vars["FPICFLAG"] = get_variable ("FPICFLAG", %OCTAVE_CONF_FPICFLAG%);
 
   vars["CC"] = get_variable ("CC", %OCTAVE_CONF_MKOCTFILE_CC%);
+  if (verbose && vars["CC"] == "cc-msvc")
+    vars["CC"] += " -d";
 
   vars["CFLAGS"] = get_variable ("CFLAGS", %OCTAVE_CONF_CFLAGS%);
 
   vars["CPICFLAG"] = get_variable ("CPICFLAG", %OCTAVE_CONF_CPICFLAG%);
 
   vars["CXX"] = get_variable ("CXX", %OCTAVE_CONF_MKOCTFILE_CXX%);
+  if (verbose && vars["CXX"] == "cc-msvc")
+    vars["CXX"] += " -d";
 
   vars["CXXFLAGS"] = get_variable ("CXXFLAGS", %OCTAVE_CONF_CXXFLAGS%);
 
   vars["CXXLD"] = get_variable ("CXXLD", vars["CXX"]);
+  if (verbose && vars["CXXLD"] == "cc-msvc")
+    vars["CXXLD"] += " -d";
 
   vars["CXXPICFLAG"] = get_variable ("CXXPICFLAG", %OCTAVE_CONF_CXXPICFLAG%);
 
@@ -354,12 +360,18 @@ initialize (void)
   vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
                                             %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
   vars["ALL_FFLAGS"] = vars["FFLAGS"] + ' ' + vars["F77_INTEGER8_FLAG"];
+  if (debug)
+    vars["ALL_FFLAGS"] += " -g";
 
   vars["ALL_CFLAGS"]
     = vars["INCFLAGS"] + ' ' + vars["XTRA_CFLAGS"] + ' ' + vars["CFLAGS"];
+  if (debug)
+    vars["ALL_CFLAGS"] += " -g";
 
   vars["ALL_CXXFLAGS"]
     = vars["INCFLAGS"] + ' ' + vars["XTRA_CXXFLAGS"] + ' ' + vars["CXXFLAGS"];
+  if (debug)
+    vars["ALL_CXXFLAGS"] += " -g";
 
   vars["ALL_LDFLAGS"]
     = vars["LD_STATIC_FLAG"] + ' ' + vars["CPICFLAG"] + ' ' + vars["LDFLAGS"];
@@ -370,6 +382,8 @@ initialize (void)
 
   vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + ' ' + vars["FFTW3_LIBS"] + ' '
                       + vars["FFTW3F_LDFLAGS"] + ' ' + vars["FFTW3F_LIBS"];
+
+  return vars;
 }
 
 static std::string usage_msg = "usage: mkoctfile [options] file ...";
@@ -684,8 +698,6 @@ clean_up_tmp_files (const std::list<std::string>& tmp_files)
 int
 main (int argc, char **argv)
 {
-  initialize ();
-
   if (argc == 1)
     {
       std::cout << usage_msg << std::endl;
@@ -704,6 +716,8 @@ main (int argc, char **argv)
   std::string output_ext = ".oct";
   std::string objfiles, libfiles, octfile, outputfile;
   std::string incflags, defs, ldflags, pass_on_options;
+  std::string var_to_print;
+  bool debug = false;
   bool verbose = false;
   bool strip = false;
   bool no_oct_file_strip_on_this_platform = is_true ("%NO_OCT_FILE_STRIP%");
@@ -757,13 +771,6 @@ main (int argc, char **argv)
                || arg == "-v" || arg == "-verbose" ||  arg == "--verbose")
         {
           verbose = true;
-
-          if (vars["CC"] == "cc-msvc")
-            vars["CC"] += " -d";
-          if (vars["CXX"] == "cc-msvc")
-            vars["CXX"] += " -d";
-          if (vars["CXXLD"] == "cc-msvc")
-            vars["CXXLD"] += " -d";
         }
       else if (arg == "-silent" ||  arg == "--silent")
         {
@@ -854,13 +861,17 @@ main (int argc, char **argv)
         {
           if (i < argc-1)
             {
-              arg = argv[++i];
+              ++i;
+
               // FIXME: Remove LFLAGS checking in Octave 7.0
-              if (arg == "LFLAGS")
+              if (! strcmp (argv[i], "LFLAGS"))
                 std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
 
-              std::cout << vars[arg] << std::endl;
-              return 0;
+              if (! var_to_print.empty ())
+                std::cerr << "mkoctfile: warning: only one '" << arg
+                          << "' option will be processed" << std::endl;
+              else
+                var_to_print = argv[i];
             }
           else
             std::cerr << "mkoctfile: --print requires argument" << std::endl;
@@ -879,9 +890,7 @@ main (int argc, char **argv)
         }
       else if (arg == "-g")
         {
-          vars["ALL_CFLAGS"] += " -g";
-          vars["ALL_CXXFLAGS"] += " -g";
-          vars["ALL_FFLAGS"] += " -g";
+          debug = true;
         }
       else if (arg == "-link-stand-alone" || arg == "--link-stand-alone")
         {
@@ -929,6 +938,22 @@ main (int argc, char **argv)
 
       if (! file.empty () && octfile.empty ())
         octfile = file;
+    }
+
+  std::map<std::string, std::string> vars = make_vars_map (verbose, debug);
+
+  if (! var_to_print.empty ())
+    {
+      if (vars.find (var_to_print) == vars.end ())
+        {
+          std::cerr << "mkoctfile: unknown variable '" << var_to_print << "'"
+                    << std::endl;
+          return 1;
+        }
+
+      std::cout << vars[var_to_print] << std::endl;
+
+      return 0;
     }
 
   if (creating_mex_file)

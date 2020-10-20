@@ -39,8 +39,16 @@
 octave_idx_type *
 dim_vector::nil_rep (void)
 {
-  static dim_vector zv (0, 0);
-  return zv.rep;
+  // Create a statically allocated rep object with an initial reference
+  // count of 1.  The dim_vector constructor that uses this object will
+  // increment the reference count.  The dim_vector destructor and copy
+  // assignment operator will decrement the reference count but those
+  // operations can never cause the count to become zero so they will
+  // never call delete on this object.
+
+  static octave_idx_type nr[4] = { 1, 2, 0, 0 };
+
+  return &nr[2];
 }
 
 // The maximum allowed value for a dimension extent.  This will normally be a

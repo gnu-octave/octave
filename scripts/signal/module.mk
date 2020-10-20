@@ -9,7 +9,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/triangle_sw.m
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/__parse_movargs__.m \
   %reldir%/arch_fit.m \
   %reldir%/arch_rnd.m \

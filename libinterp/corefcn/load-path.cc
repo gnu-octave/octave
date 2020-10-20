@@ -1142,7 +1142,7 @@ namespace octave
   {
     // read file with directory configuration
     std::string conf_file = dir + sys::file_ops::dir_sep_str ()
-                            + ".oct_config";
+                            + ".oct-config";
 
     FILE* cfile = sys::fopen (conf_file, "rb");
 

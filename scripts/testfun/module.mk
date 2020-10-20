@@ -9,7 +9,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/html_plot_demos_template.html
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/__debug_octave__.m \
   %reldir%/__have_feature__.m \
   %reldir%/__printf_assert__.m \

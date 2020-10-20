@@ -4,7 +4,7 @@ FCN_FILE_DIRS += \
   %reldir%/@audiorecorder
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/lin2mu.m \
   %reldir%/mu2lin.m \
   %reldir%/record.m \

@@ -22,7 +22,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__unite_shared_vertices__.m
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/area.m \
   %reldir%/bar.m \
   %reldir%/barh.m \

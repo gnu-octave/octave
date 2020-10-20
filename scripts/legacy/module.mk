@@ -1,7 +1,7 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/__vectorize__.m \
   %reldir%/findstr.m \
   %reldir%/flipdim.m \

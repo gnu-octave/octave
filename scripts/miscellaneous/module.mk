@@ -10,7 +10,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/tar_is_bsd.m
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/bug_report.m \
   %reldir%/bunzip2.m \
   %reldir%/cast.m \

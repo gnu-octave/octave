@@ -1,7 +1,7 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/base2dec.m \
   %reldir%/bin2dec.m \
   %reldir%/blanks.m \

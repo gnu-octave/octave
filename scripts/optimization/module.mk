@@ -6,7 +6,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__fdjac__.m
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/__all_opts__.m \
   %reldir%/fminbnd.m \
   %reldir%/fminsearch.m \

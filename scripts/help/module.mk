@@ -7,7 +7,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__strip_html_tags__.m
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/__gripe_missing_component__.m \
   %reldir%/__makeinfo__.m \
   %reldir%/__unimplemented__.m \

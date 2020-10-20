@@ -13,7 +13,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/ind2x.m
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/autumn.m \
   %reldir%/bone.m \
   %reldir%/brighten.m \

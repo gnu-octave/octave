@@ -8,7 +8,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__gnuplot_legend__.m
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/__clabel__.m \
   %reldir%/__getlegenddata__.m \
   %reldir%/__rotate_around_axis__.m \

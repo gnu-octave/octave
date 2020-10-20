@@ -8,7 +8,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/saveprefs.m
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/addpref.m \
   %reldir%/getpref.m \
   %reldir%/ispref.m \

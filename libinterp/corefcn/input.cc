@@ -1528,13 +1528,13 @@ The currently or previously used encoding is returned in @var{current_encoding}
 or @var{prev_encoding}, respectively.  The output argument must be explicitly
 requested.
 
-The directory encoding is automatically read from the file @file{.oct_config}
+The directory encoding is automatically read from the file @file{.oct-config}
 when a new path is added to the load path (for example with @code{addpath}).
 To set the encoding for all files in the same folder, that file must contain
 a line starting with @code{"encoding="} followed by the encoding identifier.
 
 For example to set the file encoding for all files in the same folder to
-ISO 8859-1 (Latin-1), create a file @file{.oct_config} with the following
+ISO 8859-1 (Latin-1), create a file @file{.oct-config} with the following
 content:
 
 @example

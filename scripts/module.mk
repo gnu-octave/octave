@@ -51,7 +51,7 @@ scripts_EXTRA_DIST += %reldir%/@ftp/module.mk
 FCN_FILE_DIRS += %reldir%/@ftp
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config
+  %reldir%/.oct-config
 
 %canon_reldir%_@ftp_FCN_FILES = \
   %reldir%/@ftp/ascii.m \

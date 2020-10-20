@@ -6,7 +6,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/getsavepath.m
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct_config \
+  %reldir%/.oct-config \
   %reldir%/import.m \
   %reldir%/matlabroot.m \
   %reldir%/pathdef.m \

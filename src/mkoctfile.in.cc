@@ -169,7 +169,7 @@ replace_prefix (std::string s)
 }
 
 static std::map<std::string, std::string>
-make_vars_map (bool verbose, bool debug)
+make_vars_map (bool link_stand_alone, bool verbose, bool debug)
 {
   set_octave_home ();
 
@@ -302,7 +302,8 @@ make_vars_map (bool verbose, bool debug)
   vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS",
                                      %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
 
-  DEFAULT_LDFLAGS += ' ' + vars["DL_LDFLAGS"];
+  if (! link_stand_alone)
+    DEFAULT_LDFLAGS += ' ' + vars["DL_LDFLAGS"];
 
   vars["RDYNAMIC_FLAG"] = get_variable ("RDYNAMIC_FLAG",
                                         %OCTAVE_CONF_RDYNAMIC_FLAG%);
@@ -940,7 +941,8 @@ main (int argc, char **argv)
         octfile = file;
     }
 
-  std::map<std::string, std::string> vars = make_vars_map (verbose, debug);
+  std::map<std::string, std::string> vars
+    = make_vars_map (link_stand_alone, verbose, debug);
 
   if (! var_to_print.empty ())
     {

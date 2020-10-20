@@ -78,7 +78,7 @@ in the en_US locale is Center.  This word is not an Octave-specific exception
 which can be added to the private dictionary.  Instead the source is marked up:
 Manchester @nospell{Centre} for Computational Mathematics.
 
-aspell will no longer reports any misspellings for linalg.texi.
+aspell will no longer report any misspellings for linalg.texi.
 
 GRAMMAR:
 

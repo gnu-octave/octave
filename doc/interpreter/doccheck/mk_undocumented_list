@@ -64,10 +64,12 @@ if ($#all_functions != $#where)
 }
 
 # Second, remove functions based on directory location
-# deprecated directory, doc/interpreter directory, test/ directory
+# deprecated directory, legacy directory, doc/interpreter directory,
+# test/ directory
 FUNC: foreach $idx (0 .. $#where)
 {
   next FUNC if ($where[$idx] =~ /deprecated/i);
+  next FUNC if ($where[$idx] =~ /legacy/i);
   next FUNC if ($where[$idx] =~ /interpreter/i);
   next FUNC if ($where[$idx] =~ m#test/#i);
 
@@ -81,7 +83,8 @@ FUNC: foreach $idx (0 .. $#where)
 # Fourth, remove exceptions based on name that do not require documentation
 # Load list of function exceptions not requiring a DOCSTRING
 # Exception data is stored at the bottom of this script
-map { chomp, $exceptions{$_}=1; } <DATA>;
+foreach $_ (<DATA>)
+{ chomp, $exceptions{$_}=1; }
 
 # Remove exception data from the list
 @functions = grep (! $exceptions{$_}, @functions);
@@ -135,6 +138,7 @@ finite
 flipdim
 fmod
 gammaln
+gui_mainfcn
 home
 i
 ifelse

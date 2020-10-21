@@ -1806,6 +1806,8 @@ f (pi/4)
 
 @DOCSTRING(str2func)
 
+@DOCSTRING(symvar)
+
 @node Anonymous Functions
 @subsection Anonymous Functions
 

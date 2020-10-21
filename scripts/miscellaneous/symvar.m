@@ -48,6 +48,7 @@
 
 function vars = symvar (str)
 
+  warning ("off", "Octave:legacy-function", "local");  # using inline below.
   vars = argnames (inline (str));
   ## Correct for auto-generated 'x' variable when no symvar was found.
   if (numel (vars) == 1 && strcmp (vars{1}, "x") && ! any (str == "x"))

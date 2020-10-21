@@ -59,7 +59,6 @@ function args = __parse_movargs__ (caller, varargin)
     else
       error ("Octave:invalid-input-arg",
              [caller ": invalid input at position %d"], i);
-      args(end+1) = arg;
     endif
 
     i += 1;  # Advance to next element

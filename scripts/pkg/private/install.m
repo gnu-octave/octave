@@ -506,7 +506,7 @@ function copy_files (desc, packdir, global_install)
     [status, output] = mkdir (desc.dir);
     if (status != 1)
       error ("couldn't create installation directory %s : %s",
-      desc.dir, output);
+             desc.dir, output);
     endif
   endif
 
@@ -555,7 +555,7 @@ function copy_files (desc, packdir, global_install)
         if (status != 1)
           sts = rmdir (desc.dir, "s");
           error ("couldn't create installation directory %s : %s",
-          octfiledir, output);
+                 octfiledir, output);
         endif
       endif
       [status, output] = movefile (fullfile (desc.dir, getarch (), "*"),

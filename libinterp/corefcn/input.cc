@@ -410,10 +410,10 @@ namespace octave
   input_system::input_system (interpreter& interp)
     : m_interpreter (interp), m_PS1 (R"(octave:\#> )"), m_PS2 ("> "),
       m_completion_append_char (' '), m_gud_mode (false),
-      m_mfile_encoding ("system"), m_last_debugging_command ("\n"),
-      m_input_event_hook_functions (), m_initialized (false)
-  {
-  }
+      m_mfile_encoding ("system"), m_auto_repeat_debug_command (true),
+      m_last_debugging_command ("\n"), m_input_event_hook_functions (),
+      m_initialized (false)
+  { }
 
   void input_system::initialize (bool line_editing)
   {
@@ -625,6 +625,14 @@ namespace octave
     m_dir_encoding[load_path_dir (dir)] = enc;
 
     return;
+   }
+ 
+  octave_value
+  input_system::auto_repeat_debug_command (const octave_value_list& args,
+                                           int nargout)
+  {
+    return set_internal_variable (m_auto_repeat_debug_command, args, nargout,
+                                  "auto_repeat_debug_command");
   }
 
   bool input_system::yes_or_no (const std::string& prompt)
@@ -837,7 +845,7 @@ namespace octave
         else
           input_sys.last_debugging_command ("\n");
       }
-    else if (tw.in_debug_repl ())
+    else if (tw.in_debug_repl () && input_sys.auto_repeat_debug_command ())
       {
         retval = input_sys.last_debugging_command ();
         history_skip_auto_repeated_debugging_command = true;
@@ -1573,4 +1581,23 @@ with the command @code{clear all}.
 
   return ovl (retval);
 
+}
+
+DEFMETHOD (auto_repeat_debug_command, interp, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} auto_repeat_debug_command ()
+@deftypefnx {} {@var{old_val} =} auto_repeat_debug_command (@var{new_val})
+@deftypefnx {} {} auto_repeat_debug_command (@var{new_val}, "local")
+Query or set the internal variable that controls whether debugging
+commands are automatically repeated when the input line is empty (typing
+just @key{RET}).
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
+{
+  octave::input_system& input_sys = interp.get_input_system ();
+
+  return input_sys.auto_repeat_debug_command (args, nargout);
 }

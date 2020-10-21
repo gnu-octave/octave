@@ -152,6 +152,21 @@ namespace octave
 
     void set_dir_encoding (const std::string& dir, std::string& enc);
 
+    octave_value
+    auto_repeat_debug_command (const octave_value_list& args, int nargout);
+
+    bool auto_repeat_debug_command (void) const
+    {
+      return m_auto_repeat_debug_command;
+    }
+
+    bool auto_repeat_debug_command (bool val)
+    {
+      bool old_val = m_auto_repeat_debug_command;
+      m_auto_repeat_debug_command = val;
+      return old_val;
+    }
+
     bool yes_or_no (const std::string& prompt);
 
     std::string interactive_input (const std::string& s, bool& eof);
@@ -191,6 +206,9 @@ namespace octave
 
     // map of directories -> used mfile encoding
     std::unordered_map<std::string, std::string> m_dir_encoding;
+
+    // TRUE means repeat last debug command if the user just types RET.
+    bool m_auto_repeat_debug_command;
 
     // If we are in debugging mode, this is the last command entered,
     // so that we can repeat the previous command if the user just

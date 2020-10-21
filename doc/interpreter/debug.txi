@@ -178,7 +178,10 @@ the command @code{dbstep}.
 When in debug mode the @key{RETURN} key will execute the last entered command.
 This is useful, for example, after hitting a breakpoint and entering
 @code{dbstep} once.  After that, one can advance line by line through the code
-with only a single key stroke.
+with only a single key stroke.  This feature may be disabled using the
+@code{auto_repeat_debug_command} function.
+
+@DOCSTRING(auto_repeat_debug_command)
 
 @node Call Stack
 @section Call Stack

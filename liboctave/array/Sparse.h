@@ -273,8 +273,6 @@ public:
 
   octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
 
-  // FIXME: Functions are marked as NORETURN, but they are used with
-  //        a return statement in following code.  Shouldn't that be fixed?
   OCTAVE_NORETURN T range_error (const char *fcn, octave_idx_type n) const;
   OCTAVE_NORETURN T& range_error (const char *fcn, octave_idx_type n);
 
@@ -322,8 +320,7 @@ public:
   T& checkelem (octave_idx_type n)
   {
     if (n < 0 || n >= numel ())
-      // FIXME: Why should we "return" when range_error is OCTAVE_NORETURN?
-      return range_error ("T& Sparse<T>::checkelem", n);
+      range_error ("T& Sparse<T>::checkelem", n);
     else
       {
         make_unique ();
@@ -334,7 +331,7 @@ public:
   T& checkelem (octave_idx_type i, octave_idx_type j)
   {
     if (i < 0 || j < 0 || i >= dim1 () || j >= dim2 ())
-      return range_error ("T& Sparse<T>::checkelem", i, j);
+      range_error ("T& Sparse<T>::checkelem", i, j);
     else
       {
         make_unique ();
@@ -347,7 +344,7 @@ public:
     octave_idx_type i = compute_index (ra_idx);
 
     if (i < 0)
-      return range_error ("T& Sparse<T>::checkelem", ra_idx);
+      range_error ("T& Sparse<T>::checkelem", ra_idx);
     else
       return elem (i);
   }
@@ -385,7 +382,7 @@ public:
   T checkelem (octave_idx_type n) const
   {
     if (n < 0 || n >= numel ())
-      return range_error ("T Sparse<T>::checkelem", n);
+      range_error ("T Sparse<T>::checkelem", n);
     else
       return xelem (n);
   }
@@ -393,7 +390,7 @@ public:
   T checkelem (octave_idx_type i, octave_idx_type j) const
   {
     if (i < 0 || j < 0 || i >= dim1 () || j >= dim2 ())
-      return range_error ("T Sparse<T>::checkelem", i, j);
+      range_error ("T Sparse<T>::checkelem", i, j);
     else
       return xelem (i, j);
   }
@@ -403,7 +400,7 @@ public:
     octave_idx_type i = compute_index (ra_idx);
 
     if (i < 0)
-      return range_error ("T Sparse<T>::checkelem", ra_idx);
+      range_error ("T Sparse<T>::checkelem", ra_idx);
     else
       return Sparse<T>::elem (i);
   }

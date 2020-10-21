@@ -216,12 +216,10 @@ octave_base_magic_int<T>::save_ascii (std::ostream& os)
 }
 
 template <typename T>
-bool
+OCTAVE_NORETURN bool
 octave_base_magic_int<T>::load_ascii (std::istream&)
 {
   error ("octave_base_magic_int<T>::load_ascii: internal error");
-
-  return false;
 }
 
 template <typename T>
@@ -234,13 +232,11 @@ octave_base_magic_int<T>::save_binary (std::ostream& os, bool save_as_floats)
 }
 
 template <typename T>
-bool
+OCTAVE_NORETURN bool
 octave_base_magic_int<T>::load_binary (std::istream&, bool,
                                        octave::mach_info::float_format)
 {
   error ("octave_base_magic_int<T>::load_binary: internal error");
-
-  return false;
 }
 
 template <typename T>

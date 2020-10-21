@@ -2301,7 +2301,6 @@ public:
 
       case mxSINGLE_CLASS:
         error ("single precision sparse data type not supported");
-        break;
 
       default:
         panic_impossible ();

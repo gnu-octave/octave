@@ -598,7 +598,6 @@ namespace octave
       case '{':
       case '.':
         error ("function handle cannot be indexed with %c", type[0]);
-        break;
 
       default:
         panic_impossible ();

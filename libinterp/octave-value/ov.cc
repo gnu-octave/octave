@@ -2353,7 +2353,6 @@ octave_value::mex_get_data (mxClassID class_id, mxComplexity complexity) const
         default:
           // We only expect to see numeric types explicitly requested.
           error ("mex_get_data: unexpected type requested");
-          break;
         }
 
       if (! type_ok)

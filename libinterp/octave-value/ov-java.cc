@@ -746,7 +746,6 @@ initialize_jvm (void)
 
         case JNI_EVERSION:
           error ("JVM internal error, the required JNI version is not supported");
-          break;
 
         case JNI_OK:
           // Don't do anything, the current thread is already attached to JVM

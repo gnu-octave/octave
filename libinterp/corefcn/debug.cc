@@ -222,10 +222,7 @@ all breakpoints within the file are cleared.
                   && bkpt.cell_value () (0).isstruct ())
                 mv = bkpt.cell_value () (0).map_value ();
               else
-                {
-                  error ("dbstop: invalid 'bkpt' field");
-                  mv = octave_map ();
-                }
+                error ("dbstop: invalid 'bkpt' field");
             }
         }
       if (mv.isempty ())
@@ -235,7 +232,6 @@ all breakpoints within the file are cleared.
       else if (! mv.isfield ("name") || ! mv.isfield ("line"))
         {
           error ("dbstop: Cell array must contain fields 'name' and 'line'");
-          retval = octave_value (0);
         }
       else
         {

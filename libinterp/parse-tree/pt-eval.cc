@@ -3193,6 +3193,32 @@ namespace octave
             else
               throw;
           }
+        catch (const execution_exception& ee)
+          {
+            error_system& es = m_interpreter.get_error_system ();
+
+            if ((m_interpreter.interactive ()
+                 || application::forced_interactive ())
+                && ((es.debug_on_error ()
+                     && m_bp_table.debug_on_err (es.last_error_id ()))
+                    || (es.debug_on_caught ()
+                        && m_bp_table.debug_on_caught (es.last_error_id ())))
+                && in_user_code ())
+              {
+                es.save_exception (ee);
+                es.display_exception (ee, std::cerr);
+
+                enter_debugger ();
+
+                // It doesn't make sense to continue execution after an
+                // error occurs so force the debugger to quit all debug
+                // levels and return the the top prompt.
+
+                throw quit_debug_exception (true);
+              }
+            else
+              throw;
+          }
       }
   }
 

@@ -894,25 +894,6 @@ namespace octave
 
   void error_system::throw_error (execution_exception& ex)
   {
-    tree_evaluator& tw = m_interpreter.get_evaluator ();
-
-    bp_table& bptab = tw.get_bp_table ();
-
-    if ((m_interpreter.interactive () || application::forced_interactive ())
-        && ((debug_on_error ()
-             && bptab.debug_on_err (last_error_id ()))
-            || (debug_on_caught ()
-                && bptab.debug_on_caught (last_error_id ())))
-        && tw.in_user_code ())
-      {
-        save_exception (ex);
-        display_exception (ex, std::cerr);
-
-        tw.enter_debugger ();
-      }
-
-    // Throw the exception even if we entered the debugger.
-
     throw ex;
   }
 

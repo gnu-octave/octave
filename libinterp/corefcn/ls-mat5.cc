@@ -980,20 +980,24 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             m2 = subsys_ov.scalar_map_value ();
             m2 = m2.contents ("MCOS").scalar_map_value ();
             tc2 = m2.contents ("MCOS").cell_value ()(1 + off).cell_value ()(1);
-            m2 = tc2.scalar_map_value ();
 
             octave::stack_frame::local_vars_map local_vars;
 
-            if (m2.nfields () > 0)
+            if (! tc2.isempty ())
               {
-                octave_value tmp;
+                m2 = tc2.scalar_map_value ();
 
-                for (auto p0 = m2.begin (); p0 != m2.end (); p0++)
+                if (m2.nfields () > 0)
                   {
-                    std::string key = m2.key (p0);
-                    octave_value val = m2.contents (p0);
+                    octave_value tmp;
 
-                    local_vars[key] = val;
+                    for (auto p0 = m2.begin (); p0 != m2.end (); p0++)
+                      {
+                        std::string key = m2.key (p0);
+                        octave_value val = m2.contents (p0);
+
+                        local_vars[key] = val;
+                      }
                   }
               }
 

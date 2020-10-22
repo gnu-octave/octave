@@ -415,7 +415,6 @@ CollocWt::init (void)
   if (wid <= 0.0)
     {
       error ("CollocWt: width less than or equal to zero");
-      return;
     }
 
   octave_idx_type nt = n + inc_left + inc_right;

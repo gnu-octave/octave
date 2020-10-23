@@ -122,9 +122,9 @@ namespace octave
              this, SLOT (cursor_position_changed (int, int)));
 
     connect (this, SIGNAL (ctx_menu_run_finished_signal (bool, int, QTemporaryFile*,
-                                                         QTemporaryFile*)),
+                                                         QTemporaryFile*, bool, bool)),
              this, SLOT (ctx_menu_run_finished (bool, int, QTemporaryFile*,
-                                                QTemporaryFile*)),
+                                                QTemporaryFile*, bool, bool)),
              Qt::QueuedConnection);
 
     // clear scintilla edit shortcuts that are handled by the editor
@@ -841,7 +841,7 @@ namespace octave
         hist += line_history + "\n";
       }
 
-    octave_stdout << hist.toStdString () << "\n";
+    octave_stdout << hist.toStdString ();
 
     // Create tmp file with the code to be executed by the interpreter
     QPointer<QTemporaryFile> tmp_file
@@ -888,8 +888,6 @@ namespace octave
     bool show_dbg_file = settings->value (ed_show_dbg_file).toBool ();
     settings->setValue (ed_show_dbg_file.key, false);
 
-    emit focus_console_after_command_signal ();
-
     // Let the interpreter execute the tmp file
     emit interpreter_event
       ([=] (interpreter& interp)
@@ -901,6 +899,14 @@ namespace octave
          std::string pending_input = command_editor::get_current_line ();
 
          int err_line = -1;   // For storing the line of a poss. error
+
+         // Get current state of auto command repeat in debug mode
+         octave_value_list ovl_dbg = Fisdebugmode (interp);
+         bool dbg = ovl_dbg(0).bool_value ();
+         octave_value_list ovl_auto_repeat = ovl (true);
+         if (dbg)
+           ovl_auto_repeat = Fauto_repeat_debug_command (interp, ovl (false), 1);
+         bool auto_repeat = ovl_auto_repeat(0).bool_value ();
 
          try
            {
@@ -960,7 +966,8 @@ namespace octave
 
              // Clean up before throwing the modified error.
              emit ctx_menu_run_finished_signal (show_dbg_file, err_line,
-                                                tmp_file, tmp_hist);
+                                                tmp_file, tmp_hist,
+                                                dbg, auto_repeat);
 
              // New exception with updated message and stack
              execution_exception ee (e.err_type (),e.identifier (),
@@ -971,8 +978,10 @@ namespace octave
            }
 
          // Clean up
+
          emit ctx_menu_run_finished_signal (show_dbg_file, err_line,
-                                            tmp_file, tmp_hist);
+                                            tmp_file, tmp_hist,
+                                            dbg, auto_repeat);
 
          command_editor::erase_empty_line (true);
          command_editor::replace_line ("");
@@ -981,13 +990,16 @@ namespace octave
          command_editor::interrupt_event_loop ();
          command_editor::accept_line ();
          command_editor::erase_empty_line (true);
+
        });
   }
 
   void octave_qscintilla::ctx_menu_run_finished (bool show_dbg_file, int,
-                                                 QTemporaryFile* tmp_file,
-                                                 QTemporaryFile* tmp_hist)
+                      QTemporaryFile* tmp_file, QTemporaryFile* tmp_hist,
+                      bool dbg, bool auto_repeat)
   {
+    emit focus_console_after_command_signal ();
+
     // TODO: Use line nr. (int argument) of possible error for removing
     //       lines from history that were never executed. For this,
     //       possible lines from commands at a debug prompt must be
@@ -997,6 +1009,14 @@ namespace octave
     settings->setValue (ed_show_dbg_file.key, show_dbg_file);
     rmgr.remove_tmp_file (tmp_file);
     rmgr.remove_tmp_file (tmp_hist);
+
+    emit interpreter_event
+      ([this, dbg, auto_repeat] (interpreter& interp)
+       {
+         // INTERPRETER THREAD
+         if (dbg)
+           Fauto_repeat_debug_command (interp, ovl (auto_repeat));
+       });
   }
 
 

@@ -95,7 +95,8 @@ namespace octave
     void context_menu_break_condition_signal (int);
     void context_menu_break_once (int);
     void interpreter_event (const meth_callback& meth);
-    void ctx_menu_run_finished_signal (bool, int, QTemporaryFile*, QTemporaryFile*);
+    void ctx_menu_run_finished_signal (bool, int, QTemporaryFile*,
+                                       QTemporaryFile*, bool, bool);
     void focus_console_after_command_signal (void);
 
   public slots:
@@ -105,7 +106,8 @@ namespace octave
 
   private slots:
 
-    void ctx_menu_run_finished (bool, int, QTemporaryFile*, QTemporaryFile*);
+    void ctx_menu_run_finished (bool, int, QTemporaryFile*, QTemporaryFile*,
+                                bool, bool);
 
     void contextmenu_help (bool);
     void contextmenu_doc (bool);

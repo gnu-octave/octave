@@ -34,8 +34,11 @@
 
 // Helper functions when reading from ascii files.
 
-// These function take care of CR/LF issues when files are opened in
-// text-mode for reading.
+// These functions take care of different line endings (LF, CR, CRLF)
+// when files were opened in text mode for writing and are now opened in
+// binary mode for reading.
+// Even though we no longer store files in text mode, keep this logic
+// to allow loading older files that might have CRLF or CR line endings.
 
 // Skip characters from stream IS until a newline is reached.
 // Depending on KEEP_NEWLINE, either eat newline from stream or

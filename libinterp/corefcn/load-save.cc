@@ -1471,14 +1471,8 @@ namespace octave
         std::ios::openmode mode
           = (append ? (std::ios::app | std::ios::ate) : std::ios::out);
 
-        if (format.type () == BINARY
-#if defined (HAVE_HDF5)
-            || format.type () == HDF5
-#endif
-            || format.type () == MAT_BINARY
-            || format.type () == MAT5_BINARY
-            || format.type () == MAT7_BINARY)
-          mode |= std::ios::binary;
+        // Always open in binary mode to save line endings as is.
+        mode |= std::ios::binary;
 
 #if defined (HAVE_HDF5)
         if (format.type () == HDF5)

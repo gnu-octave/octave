@@ -10782,21 +10782,25 @@ hggroup::update_axis_limits (const std::string& axis_type)
 
 // ---------------------------------------------------------------------
 
-uicontextmenu::~uicontextmenu (void)
+void
+uicontextmenu::properties::update_beingdeleted (void)
 {
-  std::list<graphics_handle> lst = xproperties.get_dependent_obj_list ();
-  std::list<graphics_handle>::const_iterator it;
-
-  gh_manager& gh_mgr
-    = octave::__get_gh_manager__ ("uicontextmenu::~uicontextmenu");
-
-  for (it = lst.begin (); it != lst.end (); it++)
+  // Clear the uicontextmenu property of dependent objects
+  if (beingdeleted.is ("on"))
     {
-      graphics_object go = gh_mgr.get_object (*it);
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("uicontextmenu::properties::update_beingdeleted");
 
-      if (go.valid_object ()
-          && go.get ("uicontextmenu") == xproperties.get___myhandle__ ())
-        go.set ("uicontextmenu", Matrix ());
+      std::list<graphics_handle> lst = get_dependent_obj_list ();
+
+      for (auto& hobj : lst)
+        {
+          graphics_object go = gh_mgr.get_object (hobj);
+
+          if (go.valid_object ()
+              && go.get ("uicontextmenu") == get___myhandle__ ())
+            go.set ("uicontextmenu", Matrix ());
+        }
     }
 }
 

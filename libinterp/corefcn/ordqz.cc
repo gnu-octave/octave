@@ -55,8 +55,8 @@
 
 DEFUN (ordqz, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn   {} {[@var{AR}, @var{BR}, @var{QR}, @var{ZR}] =} ordqz (@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{keyword})
-@deftypefnx  {} {[@var{AR}, @var{BR}, @var{QR}, @var{ZR}] =} ordqz (@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{select})
+@deftypefn  {} {[@var{AR}, @var{BR}, @var{QR}, @var{ZR}] =} ordqz (@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{keyword})
+@deftypefnx {} {[@var{AR}, @var{BR}, @var{QR}, @var{ZR}] =} ordqz (@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{select})
 Reorder the QZ@tie{}decomposition of a generalized eigenvalue problem.
 
 The generalized eigenvalue problem is defined as
@@ -92,7 +92,7 @@ $$ AA = Q \cdot A \cdot Z, BB = Q \cdot B \cdot Z $$
 
 The @code{ordqz} function computes a unitary transformation @var{QR} and
 @var{ZR} such that the order of the eigenvalue on the diagonal of @var{AA} and
-@var{BB} is changed. The resulting reordered matrices @var{AR} and @var{BR}
+@var{BB} is changed.  The resulting reordered matrices @var{AR} and @var{BR}
 fulfill:
 
 @tex
@@ -110,7 +110,7 @@ $$ A_R = Q_R \cdot A \cdot Z_R, B_R = Q_R \cdot B \cdot Z_R $$
 
 @end ifnottex
 
-The function can either be called with the @code{keyword} argument which
+The function can either be called with the @var{keyword} argument which
 selects the eigenvalues in the top left block of @var{AR} and @var{BR} in the
 following way:
 
@@ -144,17 +144,16 @@ half-plane
 
 If a logical vector @var{select} is given instead of a keyword the @code{ordqz}
 function reorders all eigenvalues @code{k} to the left block for which
-@code{select (k)} is true.
+@code{select(k)} is true.
 
-Note: The keywords are compatible to the ones of @code{qr}.
+Note: The keywords are compatible with the ones from @code{qr}.
 
 @seealso{eig, ordeig, qz, schur, ordschur}
 @end deftypefn */)
 {
-  int nargin = args.length ();
   enum { LHP, RHP, UDI, UDO, VEC, NONE } select_mode = NONE;
 
-  if (nargin != 5)
+  if (args.length () != 5)
     print_usage ();
 
   // Check select argument
@@ -173,25 +172,23 @@ Note: The keywords are compatible to the ones of @code{qr}.
         select_mode = UDO;
       else
         error_with_id ("Octave:ordqz:unknown-keyword",
-                       "ordqz: unknown keyword, possible values: "
+                       "ordqz: unknown KEYWORD, possible values: "
                        "lhp, rhp, udi, udo");
     }
   else if (args(4).isreal () || args(4).isinteger () || args(4).islogical ())
     {
       if (args(4).rows () > 1 && args(4).columns () > 1)
         error_with_id ("Octave:ordqz:select-not-vector",
-                       "ordqz: select argument must be a vector.");
+                       "ordqz: SELECT argument must be a vector");
       select_mode = VEC;
     }
   else
     error_with_id ("Octave:ordqz:unknown-arg",
-                   "ordqz: OPT must be string or a logicial vector");
+                   "ordqz: OPT must be string or a logical vector");
 
   if (nargout > 4)
     error_with_id ("Octave:ordqz:nargout",
-                   "ordqz: at most four output arguments required.");
-
-
+                   "ordqz: at most four output arguments possible");
 
   // Matrix A: check dimensions.
   F77_INT nn = octave::to_f77_int (args(0).rows ());
@@ -213,7 +210,6 @@ Note: The keywords are compatible to the ones of @code{qr}.
     caa = args(0).complex_matrix_value ();
   else
     aa = args(0).matrix_value ();
-
 
   // Extract argument 2 (bb, or cbb if complex).
   F77_INT b_nr = octave::to_f77_int (args(1).rows ());
@@ -260,14 +256,14 @@ Note: The keywords are compatible to the ones of @code{qr}.
   else
     zz = args(3).matrix_value ();
 
-  bool complex_case = (args(0).iscomplex () || args(1).iscomplex ())
-                      || args(2).iscomplex () || args(3).iscomplex ();
+  bool complex_case = (args(0).iscomplex () || args(1).iscomplex ()
+                       || args(2).iscomplex () || args(3).iscomplex ());
 
-  if (select_mode == VEC && args(4).rows () != nn &&  args(4).columns () != nn)
+  if (select_mode == VEC && args(4).rows () != nn && args(4).columns () != nn)
     error_with_id ("Octave:ordqz:numel_select",
-                   "ordqz: selection vector has the wrong number of elements.");
+                   "ordqz: SELECT vector has the wrong number of elements");
 
-  Array<double> select_array (dim_vector (nn,1));
+  Array<double> select_array (dim_vector (nn, 1));
   if (select_mode == VEC)
     select_array = args(4).vector_value ();
 
@@ -294,9 +290,8 @@ Note: The keywords are compatible to the ones of @code{qr}.
           if (caa(k+1,k) != 0.0)
             error_with_id ("Octave:ordqz:unsupported_AA",
                            "ordqz: quasi upper triangular matrices are not "
-                           "allowed with complex data.");
+                           "allowed with complex data");
         }
-
 
       for (k = 0; k < nn; k++)
         {
@@ -306,39 +301,42 @@ Note: The keywords are compatible to the ones of @code{qr}.
 
       for (k = 0; k < nn; k++)
         {
-          switch( select_mode)
+          switch (select_mode)
             {
-              case LHP:
-                select(k) = real (alpha(k) * beta(k)) < 0;
-                break;
-              case RHP:
-                select(k) = real (alpha(k) * beta(k)) > 0;
-                break;
-              case UDI:
-                if (beta(k) != 0.0)
-                  select(k) = abs (alpha(k)/beta(k)) < 1.0;
-                else
-                  select(k) = false;
-                break;
-              case UDO:
-                if (beta(k) != 0.0)
-                  select(k) = abs (alpha(k)/beta(k)) > 1.0;
-                else
-                  select(k) = true;
-                break;
-              case VEC:
-                if (select_array(k) != 0.0)
-                  select(k) = true;
-                else
-                  select(k) = false;
-                break;
-              default:
-                // Already checked
-                panic_impossible();
+            case LHP:
+              select(k) = real (alpha(k) * beta(k)) < 0;
+              break;
+            case RHP:
+              select(k) = real (alpha(k) * beta(k)) > 0;
+              break;
+            case UDI:
+              if (beta(k) != 0.0)
+                select(k) = abs (alpha(k)/beta(k)) < 1.0;
+              else
+                select(k) = false;
+              break;
+            case UDO:
+              if (beta(k) != 0.0)
+                select(k) = abs (alpha(k)/beta(k)) > 1.0;
+              else
+                select(k) = true;
+              break;
+            case VEC:
+              if (select_array(k) != 0.0)
+                select(k) = true;
+              else
+                select(k) = false;
+              break;
+            default:
+              // default: case just here to suppress compiler warning.
+              panic_impossible ();
             }
         }
-      F77_LOGICAL wantq = 1, wantz = 1;
-      F77_INT ijob = 0, mm, lrwork3 = 1, liwork = 1, info;
+
+      F77_LOGICAL wantq, wantz;
+      wantq = 1,  wantz = 1;
+      F77_INT ijob, mm, lrwork3, liwork, info;
+      ijob = 0,  lrwork3 = 1,  liwork = 1;
       F77_DBLE pl, pr;
       ComplexRowVector work3 (lrwork3);
       Array<F77_INT> iwork (dim_vector (liwork, 1));
@@ -418,7 +416,7 @@ Note: The keywords are compatible to the ones of @code{qr}.
               alphar(k+1) = ar[1];
               alphai(k)   = ai[0];
               alphai(k+1) = ai[1];
-              beta(k) = b[0];
+              beta(k)   = b[0];
               beta(k+1) = b[1];
 
               k += 2;
@@ -430,36 +428,38 @@ Note: The keywords are compatible to the ones of @code{qr}.
         {
           switch (select_mode)
             {
-              case LHP:
-                select(k) = alphar(k) * beta(k) < 0;
-                break;
-              case RHP:
-                select(k) = alphar(k) * beta(k) > 0;
-                break;
-              case UDI:
-                select(k) = alphar(k)*alphar(k)
-                            + alphai(k)*alphai(k) < beta(k)*beta(k);
-                break;
-              case UDO:
-                select(k) = alphar(k)*alphar(k)
-                            + alphai(k)*alphai(k) > beta(k)*beta(k);
-                break;
-              case VEC:
-                if (select_array(k) != 0.0)
-                  select(k) = true;
-                else
-                  select(k) = false;
-                break;
-              default:
-                // Already checked
-                panic_impossible();
+            case LHP:
+              select(k) = alphar(k) * beta(k) < 0;
+              break;
+            case RHP:
+              select(k) = alphar(k) * beta(k) > 0;
+              break;
+            case UDI:
+              select(k) = alphar(k)*alphar(k)
+                          + alphai(k)*alphai(k) < beta(k)*beta(k);
+              break;
+            case UDO:
+              select(k) = alphar(k)*alphar(k)
+                          + alphai(k)*alphai(k) > beta(k)*beta(k);
+              break;
+            case VEC:
+              if (select_array(k) != 0.0)
+                select(k) = true;
+              else
+                select(k) = false;
+              break;
+            default:
+              // default: case just here to suppress compiler warning.
+              panic_impossible();
             }
         }
 
-      F77_LOGICAL wantq = 1, wantz = 1;
-      F77_INT ijob = 0, mm, lrwork3 = 4*nn+16, liwork = nn, info;
+      F77_LOGICAL wantq, wantz;
+      wantq = 1,  wantz = 1;
+      F77_INT ijob, mm, lrwork3, liwork, info;
+      ijob = 0,  lrwork3 = 4*nn+16,  liwork = nn;
       F77_DBLE pl, pr;
-      RowVector rwork3(lrwork3);
+      RowVector rwork3 (lrwork3);
       Array<F77_INT> iwork (dim_vector (liwork, 1));
 
       F77_XFCN (dtgsen, DTGSEN,
@@ -478,47 +478,45 @@ Note: The keywords are compatible to the ones of @code{qr}.
                  rwork3.fortran_vec (), lrwork3,
                  iwork.fortran_vec (), liwork,
                  info));
-      if ( info != 0 )
+      if (info != 0)
         error("ordqz: failed to reorder eigenvalues");
     }
 
-  octave_value_list retval(nargout);
+  octave_value_list retval (nargout);
   switch (nargout)
     {
-      case 4:
-        if (complex_case)
-          retval(3) = czz;
-        else
-          retval(3) = zz;
-        OCTAVE_FALLTHROUGH;
-      case 3:
-        if (complex_case)
-          retval(2) = cqq.hermitian();
-        else
-          retval(2) = qq.transpose();
-        OCTAVE_FALLTHROUGH;
-      case 2:
-        if (complex_case)
-          retval(1) = cbb;
-        else
-          retval(1) = bb;
-        OCTAVE_FALLTHROUGH;
-      case 1:
-        if (complex_case)
-          retval(0) = caa;
-        else
-          retval(0) = aa;
-        break;
-      case 0:
-        if (complex_case)
-          retval(0) = caa;
-        else
-          retval(0) = aa;
-        break;
-      default:
-        // Already catched
-        error ("ordqz: too many return arguments");
+    case 4:
+      if (complex_case)
+        retval(3) = czz;
+      else
+        retval(3) = zz;
+      OCTAVE_FALLTHROUGH;
+    case 3:
+      if (complex_case)
+        retval(2) = cqq.hermitian();
+      else
+        retval(2) = qq.transpose();
+      OCTAVE_FALLTHROUGH;
+    case 2:
+      if (complex_case)
+        retval(1) = cbb;
+      else
+        retval(1) = bb;
+      OCTAVE_FALLTHROUGH;
+    case 1:
+      if (complex_case)
+        retval(0) = caa;
+      else
+        retval(0) = aa;
+      break;
+    case 0:
+      if (complex_case)
+        retval(0) = caa;
+      else
+        retval(0) = aa;
+      break;
     }
+
   return retval;
 }
 
@@ -545,20 +543,6 @@ Note: The keywords are compatible to the ones of @code{qr}.
 %! [AAC, BBC, QQC, ZZC] = qz (AC, BC);
 %! select = [0 0 1 1];
 %! selectc = [0 0 0 1];
-
-%!error id=Octave:invalid-fun-call ordqz ()
-%!error id=Octave:invalid-fun-call ordqz (eye (2))
-%!error id=Octave:invalid-fun-call ordqz (eye (2), eye (2))
-%!error id=Octave:invalid-fun-call ordqz (eye (2), eye (2), eye (2))
-%!error id=Octave:invalid-fun-call ordqz (eye (2), eye (2), eye (2), eye (2))
-%!error id=Octave:ordqz:unknown-keyword ordqz (eye (2), eye (2), eye (2), eye (2), "test")
-%!error id=Octave:ordqz:select-not-vector ordqz (eye (2), eye (2), eye (2), eye (2), eye (2))
-%!error id=Octave:ordqz:unknown-arg ordqz (eye (2), eye (2), eye (2), eye (2), eye (2) + eye (2)*1i)
-%!error <nonconformant matrices> ordqz (eye (2), eye (3), eye (2), eye (2), "udi")
-%!error <nonconformant matrices> ordqz (eye (2), eye (2), eye (3), eye (2), "udi")
-%!error <nonconformant matrices> ordqz (eye (2), eye (2), eye (2), eye (3), "udi")
-%!error <nonconformant matrices> ordqz (eye (3), eye (2), eye (2), eye (2), "udi")
-%!error id=Octave:ordqz:nargout [a,b,c,d,e] =  ordqz (eye (2), eye (2), eye (2), eye (2), "udi")
 
 %!test
 %! [AAX, BBX, QQX, ZZX] = ordqz (AA, BB, QQ, ZZ, "rhp");
@@ -656,6 +640,39 @@ Note: The keywords are compatible to the ones of @code{qr}.
 %! [AA, BB, Q, Z] = qz (A, B);
 %! [AAS, BBS, QS, ZS] = ordqz (AA, BB, Q, Z, "lhp");
 %! E2 = ordeig (AAS, BBS);
-%! ECOMP = [-3.414213562373092; -1.099019513592784; -0.5857864376269046; 9.099019513592784];
+%! ECOMP = [-3.414213562373092; -1.099019513592784;
+%!          -0.5857864376269046; 9.099019513592784];
 %! assert (norm (ECOMP - E2, "Inf"), 0, 1e-8);
+
+## Test input validation
+%!error <Invalid call> ordqz ()
+%!error <Invalid call> ordqz (eye (2))
+%!error <Invalid call> ordqz (eye (2), eye (2))
+%!error <Invalid call> ordqz (eye (2), eye (2), eye (2))
+%!error <Invalid call> ordqz (eye (2), eye (2), eye (2), eye (2))
+%!error id=Octave:ordqz:unknown-keyword
+%! ordqz (eye (2), eye (2), eye (2), eye (2), "foobar");
+%!error id=Octave:ordqz:select-not-vector
+%! ordqz (eye (2), eye (2), eye (2), eye (2), eye (2));
+%!error id=Octave:ordqz:unknown-arg
+%! ordqz (eye (2), eye (2), eye (2), eye (2), {"foobar"});
+%!error id=Octave:ordqz:nargout
+%! [a,b,c,d,e] = ordqz (eye (2), eye (2), eye (2), eye (2), "udi");
+%!warning <A: argument is empty matrix> ordqz ([], [], [], [], "udi");
+%!error <A must be a square matrix> ordqz (ones (1,2), [], [], [], "udi");
+%!error <nonconformant matrices>
+%! ordqz (eye (3), eye (2), eye (2), eye (2), "udi");
+%!error <nonconformant matrices>
+%! ordqz (eye (2), eye (3), eye (2), eye (2), "udi");
+%!error <nonconformant matrices>
+%! ordqz (eye (2), eye (2), eye (3), eye (2), "udi");
+%!error <nonconformant matrices>
+%! ordqz (eye (2), eye (2), eye (2), eye (3), "udi");
+%!error <SELECT vector .* wrong number of elements>
+%! ordqz (eye (2), eye (2), eye (2), eye (2), ones (1,5));
+%!error <quasi upper triangular matrices are not allowed with complex data>
+%! AA = zeros (2, 2);
+%! AA(2,1) = i;
+%! ordqz (AA, eye (2), eye (2), eye (2), "udi");
+
 */

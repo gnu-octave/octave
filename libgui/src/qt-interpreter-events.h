@@ -248,7 +248,7 @@ namespace octave
 
     void get_named_icon_signal (const QString& name);
 
-    void settings_changed (const gui_settings *);
+    void settings_changed (const gui_settings *, bool);
 
     void apply_new_settings (void);
 

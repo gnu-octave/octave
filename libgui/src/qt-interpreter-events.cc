@@ -601,7 +601,7 @@ namespace octave
         // Change settings only for new, non-empty values
         settings->setValue (key, QVariant (adjusted_value));
 
-        emit settings_changed (settings);
+        emit settings_changed (settings, true);   // true: changed by worker
       }
 
     m_result = read_value;

@@ -84,6 +84,8 @@ Summary of important user-visible changes for version 6.1.0 (2020-08-26):
   (i.e., other installed packages that depend on the package in
   question).
 
+- `pkg test` now tests all functions in a package.
+
 - When unloading a package, `pkg` now checks if any remaining loaded
   packages depend on the one to be removed.  If this is the case `pkg`
   aborts with an explanatory error message.  This behavior can be

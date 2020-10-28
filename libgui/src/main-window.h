@@ -158,7 +158,8 @@ namespace octave
                                           = QString ());
 
     void show_about_octave (void);
-    void notice_settings (const gui_settings *settings);
+    void notice_settings (const gui_settings *settings,
+                          bool update_by_worker = false);
     void prepare_to_exit (void);
     void go_to_previous_widget (void);
     void reset_windows (void);

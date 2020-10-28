@@ -836,7 +836,8 @@ namespace octave
                         QString::fromStdString (message));
   }
 
-  void main_window::notice_settings (const gui_settings *settings)
+  void main_window::notice_settings (const gui_settings *settings,
+                                     bool update_by_worker)
   {
     if (! settings)
       return;
@@ -925,7 +926,9 @@ namespace octave
     // Check whether some octave internal preferences have to be updated
     QString new_default_encoding
       = settings->value (ed_default_enc).toString ();
-    if (new_default_encoding != m_default_encoding)
+    // Do not update internal pref only if a) this update was not initiated
+    // by the worker and b) the pref has really changes
+    if (! update_by_worker && (new_default_encoding != m_default_encoding))
       update_default_encoding (new_default_encoding);
 
     // Set cursor blinking depending on the settings
@@ -2166,8 +2169,8 @@ namespace octave
 
     qt_interpreter_events *qt_link = interp_qobj->qt_link ();
 
-    connect (qt_link, SIGNAL (settings_changed (const gui_settings *)),
-             this, SLOT (notice_settings (const gui_settings *)));
+    connect (qt_link, SIGNAL (settings_changed (const gui_settings *, bool)),
+             this, SLOT (notice_settings (const gui_settings *, bool)));
 
     connect (qt_link, SIGNAL (apply_new_settings (void)),
              this, SLOT (request_reload_settings (void)));

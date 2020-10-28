@@ -510,9 +510,8 @@ with the @code{paperorientation} property.";
 
       case "paperunits"
         s.doc = "The unit used to compute the @code{paperposition} property.  \
-For __prop__ set to @code{\"pixels\"}, the conversion between physical \
-units (ex: @code{\"inches\"}) and @code{\"pixels\"} is dependent on the \
-@code{screenpixelsperinch} property of the root object.";
+The conversion from physical units (e.g., @code{\"inches\"}) is dependent on \
+the @code{screenpixelsperinch} property of the root object.";
 
       case "pointer"
         s.doc = "Name of the mouse pointer shape associated with the canvas \

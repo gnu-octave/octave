@@ -102,6 +102,32 @@
 ## If the output @var{hax} is requested, subplot returns the axes handle for
 ## the subplot.  This is useful for modifying the properties of a subplot
 ## using @code{set}.
+##
+## Under some circumstances, @code{subplot} might not be able to identify axes
+## that it could re-use and might replace them.  If @code{subplot} axes
+## should be referenced repeatedly, consider creating and storing their axes
+## handles beforehand instead of calling @code{subplot} repeatedly for the same
+## position.
+##
+## Example:
+## @example
+## @group
+## x = 1:10;
+## y = rand (16, 10);
+## for i_plot = 1:4
+##   hax(i_plot) = subplot (2, 2, i_plot);
+##   hold (hax(i_plot), "on");
+##   grid (hax(i_plot), "on");
+## endfor
+## for i_loop = 1:2
+##   for i_plot = 1:4
+##     iy = (i_loop - 1)*4 + i_plot;
+##     plotyy (hax(i_plot), x,y(iy,:), x,y(iy+1,:));
+##   endfor
+##  endfor
+## @end group
+## @end example
+##
 ## @seealso{axes, plot, gca, set}
 ## @end deftypefn
 

@@ -61,7 +61,13 @@
 ## ylabel (ax(2), "Axis 2");
 ## @end group
 ## @end example
-## @seealso{plot}
+##
+## When using @code{plotyy} in conjunction with @code{subplot} make sure to
+## call @code{subplot} first and pass the resulting axes handle to
+## @code{plotyy}.  Do not call @code{subplot} with any of the axes handles
+## returned by @code{plotyy} or the other axes will be removed.
+##
+## @seealso{plot, subplot}
 ## @end deftypefn
 
 function [ax, h1, h2] = plotyy (varargin)

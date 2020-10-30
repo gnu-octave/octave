@@ -120,15 +120,15 @@
 ## @itemx -painters
 ##   Specifies whether the opengl (pixel-based) or painters (vector-based)
 ## renderer is used.  This is equivalent to changing the figure's
-## @qcode{"Renderer"} property.  When the figure @code{RendererMode} property
-## is @qcode{"auto"} (the default) Octave will use the @qcode{"opengl"}
-## renderer for raster formats (e.g., JPEG) and @qcode{"painters"} for
-## vector formats (e.g., PDF).  Those options are only supported for the "qt"
-## graphics toolkit.
+## @qcode{"Renderer"} property.  When the figure @qcode{"RendererMode"}
+## property is @qcode{"auto"} (the default) Octave will use the
+## @qcode{"opengl"} renderer for raster formats (e.g., JPEG) and
+## @qcode{"painters"} for vector formats (e.g., PDF).  Those options are only
+## supported for the "qt" graphics toolkit.
 ##
 ## @item -svgconvert
-##   When using the -painters renderer, this enables a different backend
-## toolchain with enhanced characteristics:
+##   When using the @option{-painters} renderer, this enables a different
+## backend toolchain with enhanced characteristics:
 ##
 ## @table @asis
 ## @item Font handling:
@@ -136,11 +136,10 @@
 ## arbitrary characters and fonts in all vector formats.
 ##
 ## @item Output Simplification:
-## By default, the @option{-painters} renders patch and surface objects
-## using assemblies of triangles.  This may lead to anti-aliasing
-## artifacts when viewing the file.  The @option{-svgconvert} option
-## reconstructs polygons in order to avoid those artifacts (particularly for
-## 2-D figures).
+## By default, the option @option{-painters} renders patch and surface objects
+## using assemblies of triangles.  This may lead to anti-aliasing artifacts
+## when viewing the file.  The @option{-svgconvert} option reconstructs
+## polygons in order to avoid those artifacts (particularly for 2-D figures).
 ##
 ## @item Transparency:
 ## Allows for printing transparent graphics objects in PDF format.
@@ -200,9 +199,9 @@
 ##
 ## @item -S@var{xsize},@var{ysize}
 ##   Plot size in pixels for raster formats including PNG, JPEG, PNG, and
-## (unusually (SVG))@.  For all vector formats, including PDF, PS, and EPS, the
-## plot size is specified in points.  This option is equivalent to changing the
-## width and height of the output by setting the figure property
+## @emph{unusually} SVG@.  For all vector formats, including PDF, PS, and EPS,
+## the plot size is specified in points.  This option is equivalent to changing
+## the width and height of the output by setting the figure property
 ## @code{paperposition(3:4)}.  When using the command form of the print
 ## function you must quote the @var{xsize},@var{ysize} option to prevent the
 ## Octave interpreter from recognizing the embedded comma (',').  For example,
@@ -310,8 +309,8 @@
 ##   @itemx pdfcairolatex*
 ##   @itemx epscairolatexstandalone*
 ##   @itemx pdfcairolatexstandalone*
-##     Generate output with Cairo renderer.  The devices @samp{epscairo} and
-## @samp{pdfcairo} are synonymous with the @samp{epsc} device.  The @LaTeX{}
+##     Generate output with Cairo renderer.  The devices @code{epscairo} and
+## @code{pdfcairo} are synonymous with the @code{epsc} device.  The @LaTeX{}
 ## variants generate a @LaTeX{} file, @file{@var{filename}.tex}, for the text
 ## portions of a plot, and an image file, @file{@var{filename}.(eps|pdf)}, for
 ## the graph portion of the plot.  The @samp{standalone} variants behave as
@@ -326,9 +325,8 @@
 ##
 ##   @item fig
 ##     XFig.  For the Gnuplot graphics toolkit, the additional options
-## @option{-textspecial} or @option{-textnormal} can be used to control
-## whether the special flag should be set for the text in the figure.
-## (default is @option{-textnormal})
+## @option{-textspecial} or @option{-textnormal} (default) can be used to
+## control whether the special flag should be set for the text in the figure.
 ##
 ##   @item  latex*
 ##   @itemx eepic*
@@ -389,7 +387,7 @@
 ##   @end table
 ##
 ##   For a complete list of available formats and devices type
-## @code{system ("gs -h")}.
+## @kbd{system ("gs -h")}.
 ##
 ##   When Ghostscript output is sent to a printer the size is determined by
 ## the figure's @qcode{"papersize"} property.  When the output is sent to a

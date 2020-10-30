@@ -31,23 +31,37 @@
 @node Introduction to Plotting
 @section Introduction to Plotting
 
-Earlier versions of Octave provided plotting through the use of
-gnuplot.  This capability is still available.  But, a newer plotting
-capability is provided by access to OpenGL@.  Which plotting system
-is used is controlled by the @code{graphics_toolkit} function.
-@xref{Graphics Toolkits}.
+Earlier versions of Octave provided plotting through the use of gnuplot.  This
+capability is still available.  But, newer versions of Octave offer more modern
+plotting capabilities using OpenGL@.  Which plotting system is used is
+controlled by the @code{graphics_toolkit} function.  @xref{Graphics Toolkits}.
 
-The function call @code{graphics_toolkit ("qt")} selects the
-Qt/OpenGL system, @code{graphics_toolkit ("fltk")} selects the
-FLTK/OpenGL system, and @code{graphics_toolkit ("gnuplot")} selects the
-gnuplot system.  The three systems may be used selectively through the use
-of the @code{graphics_toolkit} property of the graphics handle for each
-figure.  This is explained in @ref{Graphics Data Structures}.
-@strong{Caution:} The OpenGL-based toolkits use single precision
-variables internally which limits the maximum value that can be
-displayed to approximately @math{10^{38}}.  If your data contains larger
-values you must use the gnuplot toolkit which supports values up to
-@math{10^{308}}.
+The function call @code{graphics_toolkit ("qt")} selects the Qt/OpenGL system,
+@code{graphics_toolkit ("fltk")} selects the FLTK/OpenGL system, and
+@code{graphics_toolkit ("gnuplot")} selects the gnuplot system.  The three
+systems may be used selectively through the use of the @code{graphics_toolkit}
+property of the graphics handle for each figure.  This is explained in
+@ref{Graphics Data Structures}.
+
+@strong{Caution:} The OpenGL-based toolkits use single precision variables
+internally which limits the maximum value that can be displayed to
+approximately @math{10^{38}}.  If your data contains larger values you must use
+the gnuplot toolkit which supports values up to @math{10^{308}}.  Similarly,
+single precision variables can accurately represent only 6-9 base10 digits.  If
+your data contains very fine differences (approximately 1e-8) these cannot be
+resolved with the OpenGL-based graphics toolkits and the gnuplot toolkit
+is required.
+
+@strong{Note:} The gnuplot graphics toolkit uses the third party program
+gnuplot for plotting.  The communication from Octave to gnuplot is done via a
+one-way pipe.  This has implications for performance and functionality.
+Performance is significantly slower because the entire data set, which could
+be many megabytes, must be passed to gnuplot over the pipe.  Functionality
+is negatively affected because the pipe is one-way from Octave to gnuplot.
+Octave has no way of knowing about user interactions with the plot window (be
+it resizing, moving, closing, or anything else).  It is recommended not to
+interact with (or close) a gnuplot window if you will access the figure from
+Octave later on.
 
 @node High-Level Plotting
 @section High-Level Plotting

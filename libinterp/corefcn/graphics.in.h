@@ -2282,6 +2282,7 @@ public:
   void set_beingdeleted (const octave_value& val)
   {
     beingdeleted.set (val, true, false);
+    update_beingdeleted ();
   }
 
   void set_tag (const octave_value& val) { tag = val; }
@@ -2414,6 +2415,8 @@ protected:
     bool_property __modified__ hs , "on"
     graphics_handle __myhandle__ fhrs , mh
   END_PROPERTIES
+
+  virtual void update_beingdeleted (void) { };
 
   virtual void update_handlevisibility (void);
 
@@ -5764,6 +5767,9 @@ public:
   private:
     // List of objects that might depend on this uicontextmenu object
     std::list<graphics_handle> dependent_obj_list;
+
+    void update_beingdeleted (void);
+
   };
 
 private:
@@ -5774,7 +5780,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~uicontextmenu (void);
+  ~uicontextmenu (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 

@@ -600,8 +600,7 @@ namespace octave
             }
         }
 
-      // 2. Check if file system stores short filenames (always
-      // ASCII-only).
+      // 2. Check if file system stores short filenames (might be ASCII-only).
 
       std::wstring w_orig_file_name_str = u8_to_wstring (orig_file_name);
       const wchar_t *w_orig_file_name = w_orig_file_name_str.c_str ();
@@ -627,10 +626,19 @@ namespace octave
 
           std::wstring w_short_file_name_str
             = std::wstring (w_short_file_name, length);
-          std::string short_file_name = u8_from_wstring (w_short_file_name_str);
 
           if (w_short_file_name_str.compare (0, length-1, w_full_file_name_str) != 0)
-            return short_file_name;
+            {
+              // Check whether short file name contains non-ASCII characters
+              std::string short_file_name
+                = u8_from_wstring (w_short_file_name_str);
+              first_non_ASCII
+                = std::find_if (short_file_name.begin (),
+                                short_file_name.end (),
+                                [](char c) { return (c < 0 || c >= 128); });
+              if (first_non_ASCII == short_file_name.end ())
+                return short_file_name;
+            }
         }
 
       // 3. Create hard link with only-ASCII characters.

@@ -1317,12 +1317,19 @@ function update_icon_position (hicon, xdata, ydata)
       elseif (strcmp (fmt, "xerr"))
         xdata = [x0+2, x0+2, x0+2, x1-2, x1-2, x1-2, x1-2];
         ydata = [ym+2, ym-2, ym, ym, ym+2, ym-2, ym];
-      else # "both"
+      elseif (strcmp (fmt, "xyerr"))
         xdata = [x0+2, x0+2, x0+2, x1-2, x1-2, x1-2, x1-2, ...
                  xm, xm, xm-2, xm+2, xm, xm, xm-2, xm+2];
         ydata = [ym+2, ym-2, ym, ym, ym+2, ym-2, ym, ...
                  ym, y0, y0, y0, y0, y1, y1, y1];
+      elseif (strncmp (fmt, "box", 3))
+        xdata = [x0+2, x1-2, x1-2, x0+2, x0+2];
+        ydata = [y0, y0, y1, y1, y0];
+      else
+        xdata = [x0, x1];
+        ydata = [ym, ym];
       endif
+
       set (hicon, "markerxdata", xm, "markerydata", ym, ...
            "xdata", xdata, "ydata", ydata);
 

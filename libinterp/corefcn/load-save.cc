@@ -645,6 +645,10 @@ namespace octave
           warning (R"(save: "-tabs" option only has an effect with "-ascii")");
       }
 
+    if (append && use_zlib
+        && (fmt.type () != TEXT && fmt.type () != MAT_ASCII))
+      error ("save: -append and -zip options can only be used together with a text format (-text or -ascii)");
+
     return retval;
   }
 
@@ -1850,6 +1854,12 @@ file @file{data} in Octave's binary format.
 %! assert (B, B2);
 %! assert (C, C2);
 %! assert (D, D2);
+
+## Test input validation
+%!error <-append and -zip options .* with a text format>
+%! fname = tempname ();
+%! x = 1;
+%! save ("-append", "-zip", "-binary", fname, "x"); 
 */
 
 DEFMETHOD (crash_dumps_octave_core, interp, args, nargout,

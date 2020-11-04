@@ -1856,10 +1856,11 @@ file @file{data} in Octave's binary format.
 %! assert (D, D2);
 
 ## Test input validation
-%!error <-append and -zip options .* with a text format>
+%!testif HAVE_ZLIB
 %! fname = tempname ();
 %! x = 1;
-%! save ("-append", "-zip", "-binary", fname, "x"); 
+%! fail ('save ("-append", "-zip", "-binary", fname, "x")',
+%!       "-append and -zip options .* with a text format");
 */
 
 DEFMETHOD (crash_dumps_octave_core, interp, args, nargout,

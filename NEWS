@@ -169,6 +169,9 @@ functionality.  By default, this warning is enabled.
 * `rng`
 * `startsWith`
 * `streamribbon`
+* `xtickangle`
+* `ytickangle`
+* `ztickangle`
 
 ### Deprecated functions and properties
 

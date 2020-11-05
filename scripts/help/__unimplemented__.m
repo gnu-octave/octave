@@ -1319,16 +1319,13 @@ function rlist = missing_functions ()
   "xmlread",
   "xmlwrite",
   "xslt",
-  "xtickangle",
   "xtickformat",
   "year",
   "years",
   "ymd",
-  "ytickangle",
   "ytickformat",
   "yyaxis",
   "yyyymmdd",
-  "ztickangle",
   "ztickformat",
   };
 

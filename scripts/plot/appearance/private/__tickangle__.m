@@ -43,7 +43,7 @@ function retval = __tickangle__ (caller, hax, angle)
         return;
       else
         angle = hax;
-        hax = gca ();
+        hax = [];
       endif
 
     case 3
@@ -57,6 +57,10 @@ function retval = __tickangle__ (caller, hax, angle)
     error ([caller ": ANGLE must be a finite, numeric, scalar value"]);
   elseif (nargout > 0)
     error ([caller ": function called with output query and input set value"]);
+  endif
+
+  if (isempty (hax))
+    hax = gca ();
   endif
 
   set (hax, [ax, "ticklabelrotation"], angle);

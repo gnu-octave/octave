@@ -53,10 +53,12 @@ FCN_FILE_DIRS += \
   %reldir%/ylabel.m \
   %reldir%/ylim.m \
   %reldir%/yticks.m \
+  %reldir%/ytickangle.m \
   %reldir%/yticklabels.m \
   %reldir%/zlabel.m \
   %reldir%/zlim.m \
   %reldir%/zticks.m \
+  %reldir%/ztickangle.m \
   %reldir%/zticklabels.m
 
 %canon_reldir%dir = $(fcnfiledir)/plot/appearance

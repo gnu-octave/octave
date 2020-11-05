@@ -342,6 +342,16 @@ labeling mode on the respective axis.  Each has the same form.
 @findex zticklabels
 @DOCSTRING(xticklabels)
 
+The @code{xtickangle}, @code{ytickangle}, and @code{ztickangle} functions
+may be used to get or set the rotation angle of labels for the respective axis.
+Each has the same form.
+
+@anchor{XREFytickangle}
+@anchor{XREFztickangle}
+@findex ytickangle
+@findex ztickangle
+@DOCSTRING(xtickangle)
+
 @node Two-dimensional Function Plotting
 @subsubsection Two-dimensional Function Plotting
 @cindex plotting, two-dimensional functions

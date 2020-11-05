@@ -36,6 +36,9 @@
 #include <QFileInfo>
 #include <QHelpContentWidget>
 #include <QHelpIndexWidget>
+#if defined (HAVE_QHELPLINK)
+#include <QHelpLink>
+#endif
 #include <QHelpSearchEngine>
 #include <QHelpSearchQueryWidget>
 #include <QHelpSearchResultWidget>
@@ -182,6 +185,10 @@ namespace octave
 
     if (m_help_engine)
       {
+#if defined (HAVE_QHELPLINK)
+        // Help engine uses filters instead of old api since Qt 5.15
+        m_help_engine->setUsesFilterEngine (true);
+#endif
         // Layout contents, index and search
         QTabWidget *navi = new QTabWidget (this);
         navi->setTabsClosable (false);
@@ -227,10 +234,17 @@ namespace octave
 
         navi->addTab (index_all, tr ("Function Index"));
 
+#if defined (HAVE_QHELPLINK)
+        connect (m_help_engine->indexWidget (),
+                 &QHelpIndexWidget::documentActivated,
+                  this, [this](const QHelpLink &link) {
+                        m_doc_browser->handle_index_clicked (link.url);});
+#else
         connect(m_help_engine->indexWidget (),
                 SIGNAL (linkActivated (const QUrl&, const QString&)),
                 m_doc_browser, SLOT(handle_index_clicked (const QUrl&,
                                                           const QString&)));
+#endif
 
         connect (m_filter, SIGNAL (editTextChanged (const QString&)),
                  this, SLOT(filter_update (const QString&)));

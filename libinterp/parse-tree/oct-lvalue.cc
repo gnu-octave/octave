@@ -29,6 +29,8 @@
 
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "ovl.h"
 #include "oct-lvalue.h"
 #include "ov.h"
@@ -234,6 +236,11 @@ namespace octave
         // Ignore an error and treat it as undefined.  The error
         // could happen because there is an index is out of range
         // and we will be resizing a cell array.
+
+        interpreter& interp
+          = __get_interpreter__ ("octave_lvalue::eval_for_numel");
+
+        interp.recover_from_exception ();
 
         retval = octave_value ();
       }

@@ -47,6 +47,8 @@ To initialize:
 #include "defun-dld.h"
 #include "error.h"
 #include "graphics.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "ov.h"
 #include "ovl.h"
 #include "parse.h"
@@ -213,7 +215,12 @@ have_gnuplot_binary (void)
         }
     }
   catch (octave::execution_exception&)
-    { }
+    {
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("have_gnuplot_binary");
+
+      interp.recover_from_exception ();
+    }
 
   return retval;
 }

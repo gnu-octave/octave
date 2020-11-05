@@ -5,7 +5,8 @@ FCN_FILE_DIRS += \
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/__axis_label__.m \
   %reldir%/private/__axis_limits__.m \
-  %reldir%/private/__gnuplot_legend__.m
+  %reldir%/private/__gnuplot_legend__.m \
+  %reldir%/private/__tickangle__.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
@@ -46,6 +47,7 @@ FCN_FILE_DIRS += \
   %reldir%/whitebg.m \
   %reldir%/xlabel.m \
   %reldir%/xlim.m \
+  %reldir%/xtickangle.m \
   %reldir%/xticks.m \
   %reldir%/xticklabels.m \
   %reldir%/ylabel.m \

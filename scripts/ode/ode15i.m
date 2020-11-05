@@ -261,8 +261,8 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
     varargout{1} = t;
     varargout{2} = y;
   elseif (nargout == 1)
-    varargout{1}.x = t;  # Time stamps are saved in field x
-    varargout{1}.y = y;  # Results are saved in field y
+    varargout{1}.x = t.';  # Time stamps saved in field x (row vector)
+    varargout{1}.y = y.';  # Results are saved in field y (row vector)
     varargout{1}.solver = solver;
     if (options.haveeventfunction)
       varargout{1}.xe = te;  # Time info when an event occurred

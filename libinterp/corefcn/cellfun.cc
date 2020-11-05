@@ -80,19 +80,20 @@ get_output_list (octave::error_system& es,
     {
       tmp = octave::feval (func, inputlist, nargout);
     }
-  catch (const octave::execution_exception& e)
+  catch (const octave::execution_exception& ee)
     {
       if (error_handler.is_defined ())
         {
           octave::interpreter& interp
             = octave::__get_interpreter__ ("get_output_list");
 
+          es.save_exception (ee);
           interp.recover_from_exception ();
 
           execution_error = true;
         }
       else
-        throw e;
+        throw;
     }
 
   if (execution_error)
@@ -987,6 +988,17 @@ nevermind:
 %!error cellfun (@sin, {[]}, "BadParam", false)
 %!error cellfun (@sin, {[]}, "UniformOuput")
 %!error cellfun (@sin, {[]}, "ErrorHandler")
+
+%!function retval = __errfcn (S, varargin)
+%!  global __errmsg;
+%!  __errmsg = S.message;
+%!  retval = NaN;
+%!endfunction
+%!test <58411>
+%! global __errmsg;
+%! assert (cellfun (@factorial, {1, 2, -3}, "ErrorHandler", @__errfcn), [1, 2, NaN]);
+%! assert (! isempty (__errmsg));
+%! clear -global __errmsg;
 */
 
 // Arrayfun was originally a .m file written by Bill Denney and Jaroslav

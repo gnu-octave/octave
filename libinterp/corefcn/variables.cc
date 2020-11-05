@@ -233,26 +233,70 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
   // We shouldn't need to look in the global symbol table, since any name
   // that is visible in the current scope will be in the local symbol table.
 
-  // Command line function which Matlab does not support
-  if (search_any)
-    {
-      octave_value val = symtab.find_cmdline_function (name);
-
-      if (val.is_defined ())
-        return 103;
-    }
-
   if (search_any || search_file || search_dir)
     {
-      octave::tree_evaluator& tw = interp.get_evaluator ();
+      bool have_fcn_ext = false;
 
-      std::string file_name = tw.lookup_autoload (name);
+      std::string xname = name;
+      std::string ext;
 
-      if (file_name.empty ())
+      size_t pos = name.rfind ('.');
+
+      if (pos != std::string::npos)
+        {
+          ext = name.substr (pos+1);
+
+          if (ext == "m" || ext == "oct" || ext == "mex")
+            {
+              xname = name.substr (0, pos);
+              have_fcn_ext = true;
+            }
+        }
+
+      std::string file_name;
+
+      if (search_any || search_file)
         {
           octave::load_path& lp = interp.get_load_path ();
 
-          file_name = lp.find_fcn (name);
+          // Class constructor.
+          file_name = lp.find_method (xname, xname);
+
+          if (have_fcn_ext && ! file_name.empty ())
+            {
+              pos = file_name.rfind ('.');
+
+              if (pos != std::string::npos)
+                {
+                  std::string fext = file_name.substr (pos+1);
+
+                  if (ext != fext)
+                    file_name = "";
+                }
+            }
+
+          if (search_any && file_name.empty ())
+            {
+              // Command line function which Matlab does not support
+              octave_value val = symtab.find_cmdline_function (xname);
+
+              if (val.is_defined ())
+                return 103;
+            }
+
+          // Autoloads can only have simple names without extensions.
+
+          if (! have_fcn_ext && file_name.empty ())
+            {
+              octave::tree_evaluator& tw = interp.get_evaluator ();
+
+              file_name = tw.lookup_autoload (name);
+            }
+
+          // Use original name here.
+
+          if (file_name.empty ())
+            file_name = lp.find_fcn (name);
         }
 
       size_t len = file_name.length ();
@@ -303,14 +347,9 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
         return 0;
     }
 
-  if (search_any || search_builtin)
-    {
-      if (symtab.is_built_in_function_name (name))
-        return 5;
-
-      if (search_builtin)
-        return 0;
-    }
+  if ((search_any || search_builtin)
+      && symtab.is_built_in_function_name (name))
+    return 5;
 
   return 0;
 }
@@ -496,6 +535,14 @@ Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
 %!assert (exist ("fftw.oct"), 3);
 %!assert (exist ("fftw", "file"), 3);
 %!assert (exist ("fftw", "builtin"), 0);
+
+%!assert (exist ("ftp"), 2);
+%!assert (exist ("ftp.m"), 2);
+%!assert (exist ("@ftp/ftp"), 2);
+%!assert (exist ("@ftp/ftp.m"), 2);
+
+%!assert (exist ("inputParser"), 2);
+%!assert (exist ("inputParser.m"), 2);
 
 %!assert (exist ("sin"), 5)
 %!assert (exist ("sin", "builtin"), 5)

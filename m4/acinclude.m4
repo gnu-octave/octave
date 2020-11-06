@@ -604,15 +604,16 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QHELPSEARCHQUERYWIDGET_SEARCHINPUT], [
   fi
 ])
 dnl
-dnl Check whether the structure QtHelpLink is defined. Then,
-dnl QHelpIndexWidget emits documentActivates instead of linkActivated.
-dnl This structure/signal was introduced in Qt 5.15.
+dnl Check whether new API is used with QHelpIndexWidget.
+dnl Under new API, QHelpIndexWidget emits documentActivates.
+dnl Under old API, QHelpIndexWidget emits linkActivated.
+dnl New structure/signal API was introduced in Qt 5.15.
 dnl
 dnl FIXME: Delete this entirely when we drop support for Qt 5.14 or older.
 dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_QHELPLINK], [
-  AC_CACHE_CHECK([for QHelpLink],
-    [octave_cv_func_qhelplink],
+AC_DEFUN([OCTAVE_CHECK_NEW_QHELPINDEXWIDGET_API], [
+  AC_CACHE_CHECK([for new QHelpIndexWidget API],
+    [octave_cv_new_qhelpindexwidget_api],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     ac_octave_save_CXXFLAGS="$CXXFLAGS"
@@ -623,15 +624,15 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QHELPLINK], [
         ]], [[
         QHelpLink link;
         ]])],
-      octave_cv_func_qhelplink=yes,
-      octave_cv_func_qhelplink=no)
+      octave_cv_new_qhelpindexwidget_api=yes,
+      octave_cv_new_qhelpindexwidget_api=no)
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
     CXXFLAGS="$ac_octave_save_CXXFLAGS"
     AC_LANG_POP(C++)
   ])
-  if test $octave_cv_func_qhelplink = yes; then
-    AC_DEFINE(HAVE_QHELPLINK, 1,
-      [Define to 1 if you have the `QHelpLink' structure.])
+  if test $octave_cv_new_qhelpindexwidget_api = yes; then
+    AC_DEFINE(HAVE_NEW_QHELPINDEXWIDGET_API, 1,
+      [Define to 1 if using new QHelpIndexWidget API.])
   fi
 ])
 dnl
@@ -2398,7 +2399,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSCLICKABLE
     OCTAVE_CHECK_FUNC_QHEADERVIEW_SETSECTIONSMOVABLE
     OCTAVE_CHECK_FUNC_QHELPSEARCHQUERYWIDGET_SEARCHINPUT
-    OCTAVE_CHECK_FUNC_QHELPLINK
+    OCTAVE_CHECK_NEW_QHELPINDEXWIDGET_API
     OCTAVE_CHECK_FUNC_QINSTALLMESSAGEHANDLER
     OCTAVE_CHECK_FUNC_QLINEEDIT_SETPLACEHOLDERTEXT
     OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR

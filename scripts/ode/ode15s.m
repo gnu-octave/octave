@@ -619,77 +619,77 @@ endfunction
 
 ## Solve in backward direction starting at t=0
 %!testif HAVE_SUNDIALS
-%! ref = [-1.205364552835178, 0.951542399860817];
+%! ref = [-1.205364552835178; 0.951542399860817];
 %! sol = ode15s (@fpol, [0 -2], [2, 0]);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 5e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; ref], 5e-3);
 
 ## Solve in backward direction starting at t=2
 %!testif HAVE_SUNDIALS
-%! ref = [-1.205364552835178, 0.951542399860817];
+%! ref = [-1.205364552835178; 0.951542399860817];
 %! sol = ode15s (@fpol, [2, 0 -2], fref);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 3e-2);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; ref], 3e-2);
 
 ## Solve another anonymous function in backward direction
 %!testif HAVE_SUNDIALS
-%! ref = [-1, 0.367879437558975];
+%! ref = [-1; 0.367879437558975];
 %! sol = ode15s (@(t,y) y, [0 -1], 1);
-%! assert ([sol.x(end), sol.y(end,:)], ref, 1e-2);
+%! assert ([sol.x(end); sol.y(:,end)], ref, 1e-2);
 
 ## Solve another anonymous function below zero
 %!testif HAVE_SUNDIALS
-%! ref = [0, 14.77810590694212];
+%! ref = [0; 14.77810590694212];
 %! sol = ode15s (@(t,y) y, [-2, 0], 2);
-%! assert ([sol.x(end), sol.y(end,:)], ref, 5e-2);
+%! assert ([sol.x(end); sol.y(:,end)], ref, 5e-2);
 
 ## Solve in backward direction starting at t=0 with MaxStep option
 %!testif HAVE_SUNDIALS
-%! ref = [-1.205364552835178, 0.951542399860817];
+%! ref = [-1.205364552835178; 0.951542399860817];
 %! opt = odeset ("MaxStep", 1e-3);
 %! sol = ode15s (@fpol, [0 -2], [2, 0], opt);
 %! assert (abs (sol.x(8)-sol.x(7)), 1e-3, 1e-3);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; ref], 1e-3);
 
 ## AbsTol option
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", 1e-5);
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 4e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 4e-3);
 
 ## AbsTol and RelTol option
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", 1e-8, "RelTol", 1e-8);
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 1e-3);
 
 ## RelTol option -- higher accuracy
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("RelTol", 1e-8);
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-4);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 1e-4);
 
 ## Mass option as function
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", @fmas, "MStateDependence", "none");
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 3e-3);
 
 ## Mass option as matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", eye (2,2), "MStateDependence", "none");
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 3e-3);
 
 ## Mass option as sparse matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", speye (2), "MStateDependence", "none");
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 3e-3);
 
 ## Mass option as function and sparse matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", "fmsa", "MStateDependence", "none");
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 3e-3);
 
 ## Refine
 %!testif HAVE_SUNDIALS

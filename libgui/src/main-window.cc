@@ -169,6 +169,9 @@ namespace octave
     construct_central_widget ();
 
     m_status_bar = new QStatusBar ();
+    m_profiler_status_indicator = new QLabel (tr ("Profiler OFF"));
+    m_status_bar->addPermanentWidget (m_profiler_status_indicator);
+
     m_command_window = new terminal_dock_widget (this, m_octave_qobj);
     m_history_window = new history_dock_widget (this, m_octave_qobj);
     m_file_browser_window = new files_dock_widget (this, m_octave_qobj);
@@ -1921,6 +1924,66 @@ namespace octave
        });
   }
 
+  void main_window::profiler_session (void)
+  {
+    emit interpreter_event
+      ([=] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+
+          Ffeval (interp, ovl ("profile","on"));
+
+          emit profiler_status_update (true);
+        });
+  }
+
+  void main_window::profiler_session_resume (void)
+  {
+    emit interpreter_event
+      ([=] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+
+          Ffeval (interp, ovl ("profile","resume"));
+
+          emit profiler_status_update (true);
+        });
+  }
+
+  void main_window::profiler_stop (void)
+  {
+    emit interpreter_event
+      ([=] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+
+          Ffeval (interp, ovl ("profile","resume"));
+
+          emit profiler_status_update (false);
+        });
+  }
+
+  void main_window::handle_profiler_status_update (bool active)
+  {
+    m_profiler_start->setEnabled (! active);
+    m_profiler_resume->setEnabled (! active);
+    m_profiler_stop->setEnabled (active);
+
+    QString status = tr ("Profiler OFF");
+    if (active)
+      status = tr ("Profiler ON");
+    m_profiler_status_indicator->setText (status);
+  }
+
+  void main_window::profiler_show (void)
+  {
+    // Do not use a separate interpreter event as in the other
+    // profiler slots since the output of the command "profshow"
+    // would obscure the prompt and we do not need to emimt a signal
+    // for action that is required in the gui after rhe command
+    execute_command_in_terminal ("profshow");
+  }
+
   void main_window::closeEvent (QCloseEvent *e)
   {
     if (confirm_shutdown ())
@@ -2302,6 +2365,8 @@ namespace octave
 
     construct_debug_menu (menu_bar);
 
+    construct_profile_menu (menu_bar);
+
     construct_window_menu (menu_bar);
 
     construct_help_menu (menu_bar);
@@ -2537,6 +2602,27 @@ namespace octave
     m_debug_quit
       = construct_debug_menu_item ("db-stop", tr ("Quit Debug Mode"),
                                    SLOT (debug_quit (void)));
+  }
+
+  void main_window::construct_profile_menu (QMenuBar *p)
+  {
+    QMenu *profiler_menu = m_add_menu (p, tr ("&Profiler"));
+
+    m_profiler_start = add_action (profiler_menu, QIcon (),
+          tr ("Start &Profiler Session"), SLOT (profiler_session ()));
+
+    m_profiler_resume = add_action (profiler_menu, QIcon (),
+          tr ("&Resume Profiler Session"), SLOT (profiler_session_resume ()));
+
+    m_profiler_stop = add_action (profiler_menu, QIcon (),
+          tr ("&Stop Profiler"), SLOT (profiler_stop ()));
+    m_profiler_stop->setEnabled (false);
+
+    m_profiler_show = add_action (profiler_menu, QIcon (),
+          tr ("&Show Profile Data"), SLOT (profiler_show ()));
+
+    connect (this, SIGNAL (profiler_status_update (bool)),
+             this, SLOT (handle_profiler_status_update (bool)));
   }
 
   void main_window::editor_tabs_changed (bool have_tabs)

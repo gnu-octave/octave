@@ -125,6 +125,8 @@ namespace octave
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
 
+    void profiler_status_update (bool);
+
   public slots:
 
     void focus_changed (QWidget *w_old, QWidget *w_new);
@@ -211,6 +213,12 @@ namespace octave
     void handle_register_doc (const QString& file);
     void handle_unregister_doc (const QString& file);
 
+    void profiler_session (void);
+    void profiler_session_resume (void);
+    void profiler_stop (void);
+    void handle_profiler_status_update (bool);
+    void profiler_show (void);
+
     void handle_octave_ready ();
 
     void handle_set_path_dialog_request (void);
@@ -283,6 +291,7 @@ namespace octave
     void construct_debug_menu (QMenuBar *p);
     QAction * construct_window_menu_item (QMenu *p, const QString& item,
                                           bool checkable, QWidget*);
+    void construct_profile_menu (QMenuBar *p);
     void construct_window_menu (QMenuBar *p);
     void construct_help_menu (QMenuBar *p);
     void construct_documentation_menu (QMenu *p);
@@ -310,6 +319,7 @@ namespace octave
     //! Toolbar.
 
     QStatusBar *m_status_bar;
+    QLabel *m_profiler_status_indicator;
 
     //! Dock widgets.
     //!@{
@@ -359,6 +369,11 @@ namespace octave
     QAction *m_clear_workspace_action;
     QAction *m_find_files_action;
     QAction *m_select_all_action;
+
+    QAction *m_profiler_start;
+    QAction *m_profiler_resume;
+    QAction *m_profiler_stop;
+    QAction *m_profiler_show;
 
     QAction *m_show_command_window_action;
     QAction *m_show_history_action;

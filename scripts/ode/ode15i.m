@@ -265,9 +265,9 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
     varargout{1}.y = y.';  # Results are saved in field y (row vector)
     varargout{1}.solver = solver;
     if (options.haveeventfunction)
-      varargout{1}.xe = te;  # Time info when an event occurred
-      varargout{1}.ye = ye;  # Results when an event occurred
-      varargout{1}.ie = ie;  # Index info which event occurred
+      varargout{1}.xe = te.';  # Time info when an event occurred
+      varargout{1}.ye = ye.';  # Results when an event occurred
+      varargout{1}.ie = ie.';  # Index info which event occurred
     endif
   elseif (nargout > 2)
     varargout = cell (1,5);

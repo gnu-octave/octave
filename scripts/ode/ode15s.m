@@ -715,7 +715,7 @@ endfunction
 %!               "MStateDependence", "none");
 %! sol = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert (isfield (sol, "ie"));
-%! assert (sol.ie, [1; 2]);
+%! assert (sol.ie, [1, 2]);
 %! assert (isfield (sol, "xe"));
 %! assert (isfield (sol, "ye"));
 %! assert (sol.x(end), 10, 1);

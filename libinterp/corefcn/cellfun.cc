@@ -546,6 +546,7 @@ nevermind:
 
       OCTAVE_LOCAL_BUFFER (octave_value, retv, nargout1);
 
+      int expected_nargout;
       for (octave_idx_type count = 0; count < k; count++)
         {
           for (int j = 0; j < nargin; j++)
@@ -558,12 +559,17 @@ nevermind:
             = get_output_list (es, count, nargout, inputlist, func,
                                error_handler);
 
-          if (nargout > 0 && tmp.length () < nargout)
+          int tmp_numel = tmp.length ();
+          if (count == 0)
+            expected_nargout = tmp_numel;
+          else if (tmp_numel != expected_nargout)
+            error ("cellfun: function returned unexpected number of values");
+
+          if (nargout > 0 && tmp_numel < nargout)
             error ("cellfun: function returned fewer than nargout values");
 
           if (nargout > 0
-              || (nargout == 0
-                  && tmp.length () > 0 && tmp(0).is_defined ()))
+              || (nargout == 0 && tmp_numel > 0 && tmp(0).is_defined ()))
             {
               int num_to_copy = tmp.length ();
 
@@ -681,6 +687,12 @@ nevermind:
 %!  ## Empty function
 %!endfunction
 
+%!function varargout = __f02 (out)
+%!  if (out)
+%!    varargout{1} = out;
+%!  endif
+%!endfunction
+
 %!test
 %! __cellfun_test_num_outputs__ = -1;
 %!
@@ -705,6 +717,10 @@ nevermind:
 %! assert (__cellfun_test_num_outputs__, 0);
 
 %!error x = cellfun (@__f01, {1, 2})
+%!error x = cellfun (@__f01, {1, 2})
+
+%!error x = cellfun (@__f02, {0, 2}, "uniformoutput", false)
+%!error x = cellfun (@__f02, {0, 2}, "uniformoutput", true)
 
 %!test
 %! assert (cellfun (@__f11, {1, 2}), [1, 2]);

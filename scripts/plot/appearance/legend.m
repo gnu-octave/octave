@@ -203,6 +203,10 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     return;
   endif
 
+  ## FIXME: This function needs to be locked to avoid bug #59439.  Remove this
+  ##        lock once that bug is properly fixed.
+  mlock ();
+
   opts = parse_opts (varargin{:});
 
   hl = opts.legend_handle;

@@ -830,6 +830,41 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
   fi
 ])
 dnl
+dnl Check whether the Qt class QHelpEngine has the documentsForIdentifier
+dnl function.  dnl This member function was introduced in Qt 5.15.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER], [
+  AC_CACHE_CHECK([for QHelpEngine::documentsForIdentifier in <QHelpEngine>],
+    [octave_cv_func_qhelpengine_documentsforidentifier],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QHelpEngine>
+        #include <QHelpLink>
+        #include <QList>
+        #include <QString>
+        #include <QUrl>
+        ]], [[
+        QString collection_file;
+        QHelpEngine eng (collection_file);
+        QString id;
+        eng.documentsForIdentifier (id);
+        ]])],
+      octave_cv_func_qhelpengine_documentsforidentifier=yes,
+      octave_cv_func_qhelpengine_documentsforidentifier=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qhelpengine_documentsforidentifier = yes; then
+    AC_DEFINE(HAVE_QHELPENGINE_DOCUMENTSFORIDENTIFIER, 1,
+      [Define to 1 if you have the `QHelpEngine::documentsForIdentifier' member function.])
+  fi
+])
+dnl
 dnl Check whether the Qt class QWheelEvent has the angleDelta member function.
 dnl This member function was introduced in Qt 5.
 dnl
@@ -2464,6 +2499,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
     OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
     OCTAVE_CHECK_FUNC_QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT
+    OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER
     OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA
     OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION
     OCTAVE_CHECK_MEMBER_QFONT_FORCE_INTEGER_METRICS

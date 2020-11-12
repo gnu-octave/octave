@@ -2065,7 +2065,12 @@ void TerminalView::wheelEvent( QWheelEvent* ev )
     {
       int charLine;
       int charColumn;
-      getCharacterPosition( ev->pos() , charLine , charColumn );
+#if defined (HAVE_QWHEELEVENT_POSITION)
+      QPoint pos = ev->position().toPoint();
+#else
+      QPoint pos = ev->pos();
+#endif
+      getCharacterPosition( pos , charLine , charColumn );
 
 #if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
       int delta = ev->angleDelta().y();

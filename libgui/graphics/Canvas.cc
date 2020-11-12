@@ -928,7 +928,12 @@ namespace QtHandles
 
             if (childObj.isa ("axes"))
               {
-                graphics_object go = selectFromAxes (childObj, event->pos ());
+#if defined (HAVE_QWHEELEVENT_POSITION)
+                QPoint pos = event->position().toPoint ();
+#else
+                QPoint pos = event->pos ();
+#endif
+                graphics_object go = selectFromAxes (childObj, pos);
 
                 if (go)
                   {

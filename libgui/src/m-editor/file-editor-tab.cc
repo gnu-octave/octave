@@ -266,10 +266,7 @@ namespace octave
       notice_settings (settings, true);
 
     // encoding, not updated with the settings
-    QString locale_enc_name =
-      QString ("SYSTEM (") +
-      QString (octave_locale_charset_wrapper ()).toUpper () + QString (")");
-    m_encoding = settings->value (ed_default_enc.key, locale_enc_name).toString ();
+    m_encoding = settings->value (ed_default_enc.key, "UTF-8").toString ();
     m_enc_indicator->setText (m_encoding);
     // no changes in encoding yet
     m_new_encoding = m_encoding;

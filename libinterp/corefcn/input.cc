@@ -410,7 +410,7 @@ namespace octave
   input_system::input_system (interpreter& interp)
     : m_interpreter (interp), m_PS1 (R"(octave:\#> )"), m_PS2 ("> "),
       m_completion_append_char (' '), m_gud_mode (false),
-      m_mfile_encoding ("system"), m_auto_repeat_debug_command (true),
+      m_mfile_encoding ("utf-8"), m_auto_repeat_debug_command (true),
       m_last_debugging_command ("\n"), m_input_event_hook_functions (),
       m_initialized (false)
   { }

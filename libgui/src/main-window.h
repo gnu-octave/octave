@@ -125,8 +125,6 @@ namespace octave
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
 
-    void profiler_status_update (bool);
-
   public slots:
 
     void focus_changed (QWidget *w_old, QWidget *w_new);
@@ -207,6 +205,8 @@ namespace octave
     void copyClipboard (void);
     void pasteClipboard (void);
     void selectAll (void);
+
+    void handle_gui_status_update (const QString& feature, const QString& status);
 
     void focus_console_after_command (void);
     void handle_show_doc (const QString& file);

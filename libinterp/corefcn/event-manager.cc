@@ -577,6 +577,40 @@ Undocumented internal function.
   return ovl (evmgr.unregister_doc (file));
 }
 
+DEFMETHOD (__event_manager_gui_status_update__, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_gui_status_update__ (@var{feature}, @var{status})
+Internal function for updating the status of some features in the GUI.
+@end deftypefn */)
+{
+  // This is currently a stub and should only be activated some
+  // interpreter action only implemented in m-files requires to update
+  // a status indicator in the gui. BUT: This internal function can
+  // be activated by the user leading to gui indicators not reflecting
+  // the real state of the related feature.
+  return ovl ();
+
+  std::string feature;
+  std::string status;
+
+  if (! (Fisguirunning ())(0).is_true ())
+    return ovl ();
+
+  if (args.length () < 2)
+    error ("__event_manager_gui_status_update__: two parameters required");
+  if (! (args(0).is_string ()))
+    error ("__event_manager_gui_status_update__: FEATURE must be a string");
+  if (! (args(1).is_string ()))
+    error ("__event_manager_gui_status_update__: STATUS must be a string");
+
+  feature = args(0).string_value ();
+  status = args(1).string_value ();
+
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
+  return ovl (evmgr.gui_status_update (feature, status));
+}
+
 DEFMETHOD (__event_manager_update_gui_lexer__, interp, , ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __event_manager_update_gui_lexer__ ()

@@ -1646,6 +1646,21 @@ namespace octave
     emit unregister_doc_signal (file);
   }
 
+  void main_window::handle_gui_status_update (const QString& feature,
+                                              const QString& status)
+  {
+    // Put actions that are required for updating a gui features here
+
+    // Profiler on/off
+    if (! feature.compare ("profiler"))
+      {
+        if (! status.compare ("on", Qt::CaseInsensitive))
+          handle_profiler_status_update (true);
+        else if (! status.compare ("off", Qt::CaseInsensitive))
+          handle_profiler_status_update (false);
+      }
+  }
+
   void main_window::handle_octave_ready (void)
   {
     // actions after the startup files are executed
@@ -1932,8 +1947,6 @@ namespace octave
           // INTERPRETER THREAD
 
           Ffeval (interp, ovl ("profile","on"));
-
-          emit profiler_status_update (true);
         });
   }
 
@@ -1945,8 +1958,6 @@ namespace octave
           // INTERPRETER THREAD
 
           Ffeval (interp, ovl ("profile","resume"));
-
-          emit profiler_status_update (true);
         });
   }
 
@@ -1957,9 +1968,7 @@ namespace octave
         {
           // INTERPRETER THREAD
 
-          Ffeval (interp, ovl ("profile","resume"));
-
-          emit profiler_status_update (false);
+          Ffeval (interp, ovl ("profile","off"));
         });
   }
 
@@ -2317,6 +2326,11 @@ namespace octave
              SIGNAL (unregister_doc_signal (const QString &)),
              this, SLOT (handle_unregister_doc (const QString &)));
 
+    connect (qt_link, SIGNAL (gui_status_update_signal (const QString &,
+                                                        const QString &)),
+             this, SLOT (handle_gui_status_update (const QString &,
+                                                   const QString &)));
+
     connect (qt_link, SIGNAL (update_gui_lexer_signal (bool)),
              this, SIGNAL (update_gui_lexer_signal (bool)));
   }
@@ -2620,9 +2634,6 @@ namespace octave
 
     m_profiler_show = add_action (profiler_menu, QIcon (),
           tr ("&Show Profile Data"), SLOT (profiler_show ()));
-
-    connect (this, SIGNAL (profiler_status_update (bool)),
-             this, SLOT (handle_profiler_status_update (bool)));
   }
 
   void main_window::editor_tabs_changed (bool have_tabs)

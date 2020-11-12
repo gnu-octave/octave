@@ -141,6 +141,8 @@ namespace octave
 
     void unregister_doc (const std::string& file);
 
+    void gui_status_update (const std::string& feature, const std::string& status);
+
     void update_gui_lexer (void);
 
     void directory_changed (const std::string& dir);
@@ -241,6 +243,8 @@ namespace octave
     void register_doc_signal (const QString& file);
 
     void unregister_doc_signal (const QString& file);
+
+    void gui_status_update_signal (const QString& feature, const QString& status);
 
     void update_gui_lexer_signal (bool update_apis_only);
 

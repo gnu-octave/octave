@@ -28,6 +28,7 @@
 #endif
 
 #include "defun.h"
+#include "event-manager.h"
 #include "interpreter.h"
 #include "oct-time.h"
 #include "ov-struct.h"
@@ -397,7 +398,16 @@ Undocumented internal function.
   octave::profiler& profiler = interp.get_profiler ();
 
   if (nargin == 1)
-    profiler.set_active (args(0).bool_value ());
+    {
+      profiler.set_active (args(0).bool_value ());
+
+      std::string status = "off";
+      if (args(0).bool_value ())
+        status = "on";
+
+      octave::event_manager& evmgr = interp.get_event_manager ();
+      evmgr.gui_status_update ("profiler", status);  // tell GUI
+    }
 
   return ovl (profiler.enabled ());
 }

@@ -195,6 +195,9 @@ namespace octave
 
     virtual void unregister_doc (const std::string& /*file*/) { }
 
+    virtual void gui_status_update (const std::string& /*feature*/,
+                                    const std::string& /*status*/) { }
+
     virtual void update_gui_lexer (void) { }
 
     // Notifications of events in the interpreter that a GUI will
@@ -493,6 +496,17 @@ namespace octave
       if (enabled ())
         {
           instance->unregister_doc (file);
+          return true;
+        }
+      else
+        return false;
+    }
+
+    bool gui_status_update (const std::string& feature, const std::string& status)
+    {
+      if (enabled ())
+        {
+          instance->gui_status_update (feature, status);
           return true;
         }
       else

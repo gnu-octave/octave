@@ -447,6 +447,13 @@ namespace octave
     emit unregister_doc_signal (QString::fromStdString (file));
   }
 
+  void qt_interpreter_events::gui_status_update (const std::string& feature,
+                                                 const std::string& status)
+  {
+    emit gui_status_update_signal (QString::fromStdString (feature),
+                                   QString::fromStdString (status));
+  }
+
   void qt_interpreter_events::update_gui_lexer (void)
   {
     emit update_gui_lexer_signal (true);

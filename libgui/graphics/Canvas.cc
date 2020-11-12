@@ -920,7 +920,12 @@ namespace QtHandles
 
             if (childObj.isa ("axes"))
               {
-                graphics_object go = selectFromAxes (childObj, event->pos ());
+#if defined (HAVE_QWHEELEVENT_POSITION)
+                QPoint pos = event->position().toPoint ();
+#else
+                QPoint pos = event->pos ();
+#endif
+                graphics_object go = selectFromAxes (childObj, pos);
 
                 if (go)
                   {
@@ -946,7 +951,11 @@ namespace QtHandles
 
                 if (zoom_enabled (figObj))
                   {
+#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
+                    if (event->angleDelta().y () > 0)
+#else
                     if (event->delta () > 0)
+#endif
                       newMouseMode = ZoomInMode;
                     else
                       newMouseMode = ZoomOutMode;
@@ -988,7 +997,11 @@ namespace QtHandles
                 {
                   axes::properties& ap = Utils::properties<axes> (axesObj);
 
+#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
+                  double factor = (event->angleDelta().y () > 0 ? 0.1 : -0.1);
+#else
                   double factor = (event->delta () > 0 ? 0.1 : -0.1);
+#endif
 
                   if (event->modifiers () == Qt::NoModifier
                       && mode != "horizontal")

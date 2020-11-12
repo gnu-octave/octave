@@ -409,8 +409,11 @@ namespace octave
             resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
             gui_settings *settings = rmgr.get_settings ();
             QString ext = settings->value (fb_txt_file_ext).toString ();
+#if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
+            QStringList extensions = ext.split (";", Qt::SkipEmptyParts);
+#else
             QStringList extensions = ext.split (";", QString::SkipEmptyParts);
-
+#endif
             if (QFile::exists (abs_fname))
               {
                 if (extensions.contains (suffix))

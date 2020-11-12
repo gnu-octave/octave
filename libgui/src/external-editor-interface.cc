@@ -59,8 +59,10 @@ namespace octave
     editor.replace ("%f", file);
     editor.replace ("%l", QString::number (line));
 
+    QStringList arguments;
+
     // start the process and check for success
-    bool started_ok = QProcess::startDetached (editor);
+    bool started_ok = QProcess::startDetached (editor, arguments);
 
     if (started_ok != true)
       {

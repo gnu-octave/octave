@@ -815,8 +815,12 @@ namespace octave
 
     // Split contents into single lines and complete commands
     QStringList lines = selectedText ().split (QRegExp ("[\r\n]"),
+#if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
+                                               Qt::SkipEmptyParts);
+#else
                                                QString::SkipEmptyParts);
-    for (int i = 0; i < lines.count (); i++)
+#endif
+  for (int i = 0; i < lines.count (); i++)
       {
         QString line = lines.at (i);
         if (line.trimmed ().isEmpty ())

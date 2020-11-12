@@ -443,7 +443,11 @@ namespace octave
     if (rx.indexIn (query_string, 0) != -1)
       m_internal_search = rx.cap (1);
     else
+#if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
+      m_internal_search = query_string.split (" ", Qt::SkipEmptyParts).first ();
+#else
       m_internal_search = query_string.split (" ", QString::SkipEmptyParts).first ();
+#endif
 
     m_help_engine->searchEngine ()->search (queries);
   }
@@ -628,14 +632,23 @@ namespace octave
       return;
 
     // First search in the function index
+#if defined (HAVE_QHELPENGINE_DOCUMENTSFORIDENTIFIER)
+    QList<QHelpLink> found_links
+      = m_help_engine->documentsForIdentifier (ref_name);
+
+    QUrl first_url = found_links.constFirst().url;
+#else
     QMap<QString, QUrl> found_links
       = m_help_engine->linksForIdentifier (ref_name);
 
-    QTabWidget *navi = static_cast<QTabWidget*> (widget (0));
+    QUrl first_url = found_links.constBegin().value ();
+#endif
+
+      QTabWidget *navi = static_cast<QTabWidget*> (widget (0));
 
     if (found_links.count() > 0)
       {
-        m_doc_browser->setSource (found_links.constBegin().value());
+        m_doc_browser->setSource (first_url);
 
         // Switch to function index tab
         m_help_engine->indexWidget()->filterIndices (ref_name);
@@ -721,7 +734,7 @@ namespace octave
     if (! m_help_engine)
       return;
 
-    QTextDocument::FindFlags find_flags = 0;
+    QTextDocument::FindFlags find_flags;
     if (backward)
       find_flags = QTextDocument::FindBackward;
 
@@ -969,7 +982,11 @@ namespace octave
   {
     if (we->modifiers () == Qt::ControlModifier)
       {
-        if (we->delta () > 0)
+#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
+        if (we->angleDelta().y () > 0)
+#else
+        if (we->delta() > 0)
+#endif
           zoom_in ();
         else
           zoom_out ();

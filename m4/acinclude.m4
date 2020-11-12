@@ -493,6 +493,103 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO], [
   fi
 ])
 dnl
+dnl Check whether the Qt class QHelpEngine has the documentsForIdentifier
+dnl function.  dnl This member function was introduced in Qt 5.15.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER], [
+  AC_CACHE_CHECK([for QHelpEngine::documentsForIdentifier in <QHelpEngine>],
+    [octave_cv_func_qhelpengine_documentsforidentifier],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QHelpEngine>
+        #include <QHelpLink>
+        #include <QList>
+        #include <QString>
+        #include <QUrl>
+        ]], [[
+        QString collection_file;
+        QHelpEngine eng (collection_file);
+        QString id;
+        eng.documentsForIdentifier (id);
+        ]])],
+      octave_cv_func_qhelpengine_documentsforidentifier=yes,
+      octave_cv_func_qhelpengine_documentsforidentifier=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qhelpengine_documentsforidentifier = yes; then
+    AC_DEFINE(HAVE_QHELPENGINE_DOCUMENTSFORIDENTIFIER, 1,
+      [Define to 1 if you have the `QHelpEngine::documentsForIdentifier' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt class QWheelEvent has the angleDelta member function.
+dnl This member function was introduced in Qt 5.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 4.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA], [
+  AC_CACHE_CHECK([for QWheelEvent::angleDelta in <QWheelEvent>],
+    [octave_cv_func_qwheelevent_angledelta],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QWheelEvent>
+        void foo (const QWheelEvent& ev)
+        {
+          ev.angleDelta ();
+        };
+        ]])],
+      octave_cv_func_qwheelevent_angledelta=yes,
+      octave_cv_func_qwheelevent_angledelta=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qwheelevent_angledelta = yes; then
+    AC_DEFINE(HAVE_QWHEELEVENT_ANGLEDELTA, 1,
+      [Define to 1 if you have the `QWheelEvent::angleDelta' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt class QWheelEvent has the position member function.
+dnl This member function was introduced in Qt 5.14.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION], [
+  AC_CACHE_CHECK([for QWheelEvent::position in <QWheelEvent>],
+    [octave_cv_func_qwheelevent_position],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QWheelEvent>
+        void foo (const QWheelEvent& ev)
+        {
+          ev.position ();
+        };
+        ]])],
+      octave_cv_func_qwheelevent_position=yes,
+      octave_cv_func_qwheelevent_position=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qwheelevent_position = yes; then
+    AC_DEFINE(HAVE_QWHEELEVENT_POSITION, 1,
+      [Define to 1 if you have the `QWheelEvent::position' member function.])
+  fi
+])
+dnl
 dnl Check whether the Qt class QList has a constructor that accepts
 dnl a pair of iterators.  This constructor was introduced in Qt 5.14.
 dnl
@@ -590,6 +687,36 @@ AC_DEFUN([OCTAVE_CHECK_QREGION_ITERATORS], [
   if test $octave_cv_qregion_iterators = yes; then
     AC_DEFINE(HAVE_QREGION_ITERATORS, 1,
       [Define to 1 if you have the `QFontMetrics::horizontalAdvance' function.])
+  fi
+])
+dnl
+dnl Check whether the Qt::SplitBehavior enum exists and has
+dnl Qt::KeepEmptyParts and Qt::SkipEmptyParts members.  This enum
+dnl was introduced or modified in Qt 5.14.
+dnl
+AC_DEFUN([OCTAVE_CHECK_QT_SPLITBEHAVIOR_ENUM], [
+  AC_CACHE_CHECK([for Qt::SplitBehavior enum],
+    [octave_cv_qt_splitbehavior_enum],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <Qt>
+        ]], [[
+        Qt::SplitBehavior sb_keep = Qt::KeepEmptyParts;
+        Qt::SplitBehavior sb_skip = Qt::SkipEmptyParts;
+        ]])],
+      octave_cv_qt_splitbehavior_enum=yes,
+      octave_cv_qt_splitbehavior_enum=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_qt_splitbehavior_enum = yes; then
+    AC_DEFINE(HAVE_QT_SPLITBEHAVIOR_ENUM, 1,
+      [Define to 1 if you have the `Qt::SplitBehavior' enum.])
   fi
 ])
 dnl
@@ -1898,8 +2025,12 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_NEW_QHELPINDEXWIDGET_API
     OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR
     OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
+    OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER
+    OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA
+    OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION
 
     OCTAVE_CHECK_QREGION_ITERATORS
+    OCTAVE_CHECK_QT_SPLITBEHAVIOR_ENUM
 
     if test -n "$OPENGL_LIBS"; then
       OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],

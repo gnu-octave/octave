@@ -152,7 +152,7 @@ function y = mean (x, varargin)
     case "a"
       y = sum (x, dim) / n;
     case "g"
-      if (all (x(:) >= 0))
+      if (! any (x(:) < 0))
         y = exp (sum (log (x), dim) ./ n);
       else
         error ("mean: X must not contain any negative values");

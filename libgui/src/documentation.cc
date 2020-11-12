@@ -969,7 +969,11 @@ namespace octave
   {
     if (we->modifiers () == Qt::ControlModifier)
       {
-        if (we->delta () > 0)
+#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
+        if (we->angleDelta().y () > 0)
+#else
+        if (we->delta() > 0)
+#endif
           zoom_in ();
         else
           zoom_out ();

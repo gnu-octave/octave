@@ -845,14 +845,10 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA], [
     CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #include <QWheelEvent>
-        class wheel_event : public QWheelEvent
+        void foo (const QWheelEvent& ev)
         {
-        public:
-          wheel_event (QWidget *parent = 0) : QWheelEvent (parent) { this->angleDelta (); }
-          ~wheel_event () {}
+          ev.angleDelta ();
         };
-        ]], [[
-        wheel_event tw;
         ]])],
       octave_cv_func_qwheelevent_angledelta=yes,
       octave_cv_func_qwheelevent_angledelta=no)

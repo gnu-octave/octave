@@ -26,6 +26,7 @@
 
 // Qt
 #include <QtCore/QHash>
+#include <QtCore/QMultiHash>
 #include <QtCore/QList>
 #include <QKeySequence>
 #include <QtCore/QMetaType>
@@ -383,7 +384,7 @@ public:
 
 private:
 
-    QHash<int,Entry> _entries; // entries in this keyboard translation,
+    QMultiHash<int,Entry> _entries; // entries in this keyboard translation,
                                                  // entries are indexed according to
                                                  // their keycode
     QString _name;

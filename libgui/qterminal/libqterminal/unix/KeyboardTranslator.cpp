@@ -829,13 +829,13 @@ QList<KeyboardTranslator::Entry> KeyboardTranslator::entries() const
 void KeyboardTranslator::addEntry(const Entry& entry)
 {
     const int keyCode = entry.keyCode();
-    _entries.insertMulti(keyCode,entry);
+    _entries.insert(keyCode,entry);
 }
 void KeyboardTranslator::replaceEntry(const Entry& existing , const Entry& replacement)
 {
     if ( !existing.isNull() )
         _entries.remove(existing.keyCode());
-    _entries.insertMulti(replacement.keyCode(),replacement);
+    _entries.insert(replacement.keyCode(),replacement);
 }
 void KeyboardTranslator::removeEntry(const Entry& entry)
 {

@@ -519,8 +519,10 @@ namespace octave
     // FIXME: The default is "SYSTEM" on all platforms.  So can this fallback
     // logic be removed completely?
     bool default_exists = false;
-    if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ())
-        || (ed_default_enc.def.toString ().startsWith ("SYSTEM")))
+    bool show_system = false;
+    if (ed_default_enc.def.toString ().startsWith ("SYSTEM"))
+      show_system = true;
+    else if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ()))
       default_exists = true;
 
     QString default_enc =
@@ -546,10 +548,10 @@ namespace octave
 
     // prepend the default item
     combo->insertSeparator (0);
-    if (default_exists)
-      combo->insertItem (0, ed_default_enc.def.toString ());
-    else
+    if (show_system)
       combo->insertItem (0, default_enc);
+    else
+      combo->insertItem (0, ed_default_enc.def.toString ());
 
     // select the default or the current one
     int idx = combo->findText (enc, Qt::MatchExactly);

@@ -992,6 +992,36 @@ AC_DEFUN([OCTAVE_CHECK_QREGION_ITERATORS], [
   fi
 ])
 dnl
+dnl Check whether the Qt::SplitBehavior enum exists and has
+dnl Qt::KeepEmptyParts and Qt::SkipEmptyParts members.  This enum
+dnl was introduced or modified in Qt 5.14.
+dnl
+AC_DEFUN([OCTAVE_CHECK_QT_SPLITBEHAVIOR_ENUM], [
+  AC_CACHE_CHECK([for Qt::SplitBehavior enum],
+    [octave_cv_qt_splitbehavior_enum],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <Qt>
+        ]], [[
+        Qt::SplitBehavior sb_keep = Qt::KeepEmptyParts;
+        Qt::SplitBehavior sb_skip = Qt::SkipEmptyParts;
+        ]])],
+      octave_cv_qt_splitbehavior_enum=yes,
+      octave_cv_qt_splitbehavior_enum=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_qt_splitbehavior_enum = yes; then
+    AC_DEFINE(HAVE_QT_SPLITBEHAVIOR_ENUM, 1,
+      [Define to 1 if you have the `Qt::SplitBehavior' enum.])
+  fi
+])
+dnl
 dnl Check whether the Qt class QList has a constructor that accepts
 dnl a pair of iterators.  This constructor was introduced in Qt 5.14.
 dnl
@@ -2441,6 +2471,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_HAVE_QGUIAPPLICATION
 
     OCTAVE_CHECK_QREGION_ITERATORS
+    OCTAVE_CHECK_QT_SPLITBEHAVIOR_ENUM
 
     if test -n "$OPENGL_LIBS"; then
       OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],

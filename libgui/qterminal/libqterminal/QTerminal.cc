@@ -174,7 +174,11 @@ void
 QTerminal::run_selection ()
 {
   QStringList commands = selectedText ().split (QRegExp ("[\r\n]"),
+#if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
+                                                Qt::SkipEmptyParts);
+#else
                                                 QString::SkipEmptyParts);
+#endif
   for (int i = 0; i < commands.size (); i++)
     emit execute_command_in_terminal_signal (commands.at (i));
 

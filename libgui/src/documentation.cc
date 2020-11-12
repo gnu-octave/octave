@@ -443,7 +443,11 @@ namespace octave
     if (rx.indexIn (query_string, 0) != -1)
       m_internal_search = rx.cap (1);
     else
+#if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
+      m_internal_search = query_string.split (" ", Qt::SkipEmptyParts).first ();
+#else
       m_internal_search = query_string.split (" ", QString::SkipEmptyParts).first ();
+#endif
 
     m_help_engine->searchEngine ()->search (queries);
   }

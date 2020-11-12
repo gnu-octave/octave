@@ -1213,8 +1213,8 @@ char Vt102Emulation::getErase() const
 {
   KeyboardTranslator::Entry entry = _keyTranslator->findEntry(
                                             Qt::Key_Backspace,
-                                            nullptr,
-                                            nullptr);
+                                            Qt::NoModifier);
+
   if ( entry.text().count() > 0 )
       return entry.text()[0];
   else

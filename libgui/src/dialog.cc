@@ -352,7 +352,7 @@ namespace octave
                                 const QString& defbutton,
                                 const QStringList& role)
     : QMessageBox (QMessageBox::NoIcon, title.isEmpty () ? " " : title,
-                   message, nullptr, nullptr)
+                   message)
   {
     // Create a NonModal message.
     setWindowModality (Qt::NonModal);

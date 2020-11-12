@@ -725,7 +725,7 @@ namespace octave
     if (! m_help_engine)
       return;
 
-    QTextDocument::FindFlags find_flags = 0;
+    QTextDocument::FindFlags find_flags;
     if (backward)
       find_flags = QTextDocument::FindBackward;
 

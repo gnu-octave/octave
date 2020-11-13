@@ -871,7 +871,46 @@ namespace octave
         fcn_to_call = partial_expr_val;
       }
     else
-      fcn_to_call = symtab.find_function (m_name, args);
+      {
+        // No "." in the name.
+
+        // Perform function lookup given current arguments.  We'll need
+        // to do this regardless of whether a function was found when
+        // the handle was created.
+
+        octave_value ov_fcn = symtab.find_function (m_name, args);
+
+        if (m_fcn.is_defined ())
+          {
+            // A simple function was found when the handle was created.
+            // Use that unless we find a class method to override it.
+
+            fcn_to_call = m_fcn;
+
+            if (ov_fcn.is_defined ())
+              {
+                octave_function *fcn = ov_fcn.function_value ();
+
+                std::string dispatch_class = fcn->dispatch_class ();
+
+                if (fcn->is_class_method ())
+                  {
+                    // Function found through lookup is a class method
+                    // so use it instead of the simple one found when
+                    // the handle was created.
+
+                    fcn_to_call = ov_fcn;
+                  }
+              }
+          }
+        else
+          {
+            // There was no simple function found when the handle was
+            // created so use the one found here (if any).
+
+            fcn_to_call = ov_fcn;
+          }
+      }
 
     if (! fcn_to_call.is_defined ())
       err_invalid_fcn_handle (m_name);
@@ -881,6 +920,9 @@ namespace octave
 
   octave_function * simple_fcn_handle::function_value (bool)
   {
+    // FIXME: Shouldn't the lookup rules here match those used in the
+    // call method?
+
     if (m_fcn.is_defined ())
       return m_fcn.function_value ();
 
@@ -898,6 +940,9 @@ namespace octave
 
   octave_user_function * simple_fcn_handle::user_function_value (bool)
   {
+    // FIXME: Shouldn't the lookup rules here match those used in the
+    // call method?
+
     if (m_fcn.is_defined ())
       return m_fcn.user_function_value ();
 

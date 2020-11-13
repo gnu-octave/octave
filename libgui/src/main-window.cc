@@ -169,7 +169,9 @@ namespace octave
     construct_central_widget ();
 
     m_status_bar = new QStatusBar ();
-    m_profiler_status_indicator = new QLabel (tr ("Profiler OFF"));
+    m_profiler_status_indicator = new led_indicator ();
+    QLabel *text = new QLabel (tr ("Profiler"));
+    m_status_bar->addPermanentWidget (text);
     m_status_bar->addPermanentWidget (m_profiler_status_indicator);
 
     m_command_window = new terminal_dock_widget (this, m_octave_qobj);
@@ -1978,10 +1980,10 @@ namespace octave
     m_profiler_resume->setEnabled (! active);
     m_profiler_stop->setEnabled (active);
 
-    QString status = tr ("Profiler OFF");
+    led_indicator::led_state state = led_indicator::LED_STATE_INACTIVE;
     if (active)
-      status = tr ("Profiler ON");
-    m_profiler_status_indicator->setText (status);
+      state = led_indicator::LED_STATE_ACTIVE;
+    m_profiler_status_indicator->set_state (state);
   }
 
   void main_window::profiler_show (void)

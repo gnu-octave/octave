@@ -53,6 +53,7 @@
 #include "find-files-dialog.h"
 #include "history-dock-widget.h"
 #include "interpreter-qobject.h"
+#include "led-indicator.h"
 #include "octave-dock-widget.h"
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
@@ -319,7 +320,7 @@ namespace octave
     //! Toolbar.
 
     QStatusBar *m_status_bar;
-    QLabel *m_profiler_status_indicator;
+    led_indicator *m_profiler_status_indicator;
 
     //! Dock widgets.
     //!@{

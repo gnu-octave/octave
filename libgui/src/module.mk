@@ -140,6 +140,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-gui-settings.cc \
   %reldir%/moc-history-dock-widget.cc \
   %reldir%/moc-interpreter-qobject.cc \
+  %reldir%/moc-led-indicator.cc \
   %reldir%/moc-main-window.cc \
   %reldir%/moc-news-reader.cc \
   %reldir%/moc-octave-qobject.cc \
@@ -210,6 +211,7 @@ noinst_HEADERS += \
   %reldir%/graphics-init.h \
   %reldir%/history-dock-widget.h \
   %reldir%/interpreter-qobject.h \
+  %reldir%/led-indicator.h \
   %reldir%/m-editor/file-editor-interface.h \
   %reldir%/m-editor/file-editor-tab.h \
   %reldir%/m-editor/file-editor.h \
@@ -251,6 +253,7 @@ noinst_HEADERS += \
   %reldir%/gui-settings.cc \
   %reldir%/history-dock-widget.cc \
   %reldir%/interpreter-qobject.cc \
+  %reldir%/led-indicator.cc \
   %reldir%/m-editor/file-editor-tab.cc \
   %reldir%/m-editor/file-editor.cc \
   %reldir%/m-editor/find-dialog.cc \

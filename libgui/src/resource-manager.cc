@@ -548,7 +548,7 @@ namespace octave
 
     // prepend the default item
     combo->insertSeparator (0);
-    if (show_system)
+    if (show_system || ! default_exists)
       combo->insertItem (0, default_enc);
     else
       combo->insertItem (0, ed_default_enc.def.toString ());

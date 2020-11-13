@@ -786,8 +786,14 @@ namespace octave
         // Get the index of the changed values
         for (octave_idx_type i = 0; i < val.numel (); i++)
           {
-            if ((val(i) > 0 && oldval(i) < 0 && dir(i) != -1) // increasing
-                || (val(i) < 0 && oldval(i) > 0 && dir(i) != 1)) // decreasing
+            // Check for sign change and whether a rising / falling edge
+            // either passes through zero or detaches from zero (bug #59063)
+            if ((dir(i) != -1
+                 && ((val(i) >= 0 && oldval(i) < 0)
+                     || (val(i) > 0 && oldval(i) <= 0))) // increasing
+                || (dir(i) != 1
+                    && ((val(i) <= 0 && oldval(i) > 0)
+                        || (val(i) < 0 && oldval(i) >= 0)))) // decreasing
               {
                 index.resize (index.numel () + 1);
                 index (index.numel () - 1) = i;

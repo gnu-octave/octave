@@ -39,6 +39,7 @@
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
+#  include <shlwapi.h>
 #  include <wchar.h>
 
 #  include "lo-sysdep.h"
@@ -154,8 +155,12 @@ namespace octave
 
     static void
     find_files (std::list<std::string>& dirlist, const std::string& dir,
-                const std::string& pat, const std::string& file)
+                const std::string& pat, std::string& file)
     {
+      // remove leading file separators
+      while (file.length () > 1 && sys::file_ops::is_dir_sep (file[0]))
+        file = file.substr (1, std::string::npos);
+
       // find first file in directory that matches pattern in PAT
       std::wstring wpat = u8_to_wstring (sys::file_ops::concat (dir, pat));
       _WIN32_FIND_DATAW ffd;
@@ -172,11 +177,15 @@ namespace octave
           std::string found_dir = u8_from_wstring (ffd.cFileName);
 
           if (file.empty ())
-            dirlist.push_back (sys::file_ops::concat (dir, found_dir));
+            {
+              if (found_dir.compare (".") && found_dir.compare (".."))
+                dirlist.push_back (sys::file_ops::concat (dir, found_dir));
+            }
           else
             {
               // get next component of path (or file name)
-              size_t sep_pos = file.find_first_of (sys::file_ops::dir_sep_chars ());
+              size_t sep_pos
+                = file.find_first_of (sys::file_ops::dir_sep_chars ());
               std::string pat_str = file.substr (0, sep_pos);
               std::string file_str = (sep_pos != std::string::npos
                                       && file.length () > sep_pos+1)
@@ -221,15 +230,33 @@ namespace octave
 
           std::string dir = "";
 
-          if (sep_pos == 2 && xpat[1] == ':')
+          if ((sep_pos == 2 || xpat.length () == 2) && xpat[1] == ':')
             {
-              // include disc root
+              // include disc root with first file or folder
+
+              // remove leading file separators in path without disc root
+              while (file.length () > 1 && sys::file_ops::is_dir_sep (file[0]))
+                file = file.substr (1, std::string::npos);
+
               sep_pos = file.find_first_of (sys::file_ops::dir_sep_chars ());
               dir = xpat;
               xpat = file.substr (0, sep_pos);
               file = (sep_pos != std::string::npos
                       && file.length () > sep_pos+1)
                      ? file.substr (sep_pos+1) : "";
+              if (xpat.empty ())
+                {
+                  // don't glob if input is only disc root
+                  if (PathFileExistsA (pat(i).c_str ()))
+                    {
+                      if (sys::file_ops::is_dir_sep (pat(i).back ()))
+                        dirlist.push_back (dir +
+                                           sys::file_ops::dir_sep_char ());
+                      else
+                        dirlist.push_back (dir);
+                    }
+                  continue;
+                }
             }
 
           find_files (dirlist, dir, xpat, file);

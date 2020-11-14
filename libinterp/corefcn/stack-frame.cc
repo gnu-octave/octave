@@ -1074,14 +1074,13 @@ namespace octave
     return new scope_stack_frame (tw, scope, index, parent_link, static_link);
   }
 
-  // This function is only implemented for user_fcn stack frames and
-  // only called for those objects using unwind_protect and the
-  // call_stack::clear_current_frame_values function.  Anything else
-  // indicates an error in the implementation.
+  // This function is only implemented and should only be called for
+  // user_fcn stack frames.  Anything else indicates an error in the
+  // implementation, but we'll simply warn if that happens.
 
   void stack_frame::clear_values (void)
   {
-    panic_impossible ();
+    warning ("invalid call to stack_frame::clear_values; please report");
   }
 
   symbol_info_list

@@ -2861,12 +2861,12 @@ namespace octave
 
     // Evaluate the commands that make up the function.
 
-    unwind_protect_var<stmt_list_type>
-      upv (m_statement_context, SC_FUNCTION);
+    unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_FUNCTION);
 
-    unwind_action act1 ([=] () {
-                          m_call_stack.clear_current_frame_values ();
-                        });
+    unwind_action act1 ([] (std::shared_ptr<stack_frame> frame)
+                       {
+                         frame->clear_values ();
+                       }, m_call_stack.get_current_stack_frame ());
 
     tree_statement_list *cmd_list = user_function.body ();
 

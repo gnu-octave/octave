@@ -1103,11 +1103,6 @@ namespace octave
     return octave_value ();
   }
 
-  void call_stack::clear_current_frame_values (void)
-  {
-    m_cs[m_curr_frame]->clear_values ();
-  }
-
   void call_stack::display (void) const
   {
     std::ostream& os = octave_stdout;

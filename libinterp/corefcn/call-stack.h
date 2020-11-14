@@ -293,8 +293,6 @@ namespace octave
                                     bool have_regexp, bool return_list,
                                     bool verbose, const std::string& msg = "");
 
-    void clear_current_frame_values (void);
-
     void display (void) const;
 
     void set_auto_fcn_var (stack_frame::auto_var_type avt,

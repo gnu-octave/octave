@@ -164,6 +164,11 @@ namespace octave
     init (tr ("Continue"), sc_main_debug_continue);
     init (tr ("Quit Debug Mode"), sc_main_debug_quit);
 
+    // tools
+    init (tr ("Start/Stop Profiler Session"), sc_main_tools_start_profiler);
+    init (tr ("Resume Profiler Session"), sc_main_tools_resume_profiler);
+    init (tr ("Show Profile Data"), sc_main_tools_show_profiler);
+
     // window
     init (tr ("Show Command Window"), sc_main_window_show_command);
     init (tr ("Show Command History"), sc_main_window_show_history);
@@ -379,6 +384,8 @@ namespace octave
     main_edit->setText (0, tr ("Edit Menu"));
     QTreeWidgetItem *main_debug = new QTreeWidgetItem (main);
     main_debug->setText (0, tr ("Debug Menu"));
+    QTreeWidgetItem *main_tools = new QTreeWidgetItem (main);
+    main_tools->setText (0, tr ("Tools Menu"));
     QTreeWidgetItem *main_window = new QTreeWidgetItem (main);
     main_window->setText (0, tr ("Window Menu"));
     QTreeWidgetItem *main_help = new QTreeWidgetItem (main);
@@ -397,6 +404,7 @@ namespace octave
     m_level_hash[sc_main_file]   = main_file;
     m_level_hash[sc_main_edit]   = main_edit;
     m_level_hash[sc_main_debug]   = main_debug;
+    m_level_hash[sc_main_tools]   = main_tools;
     m_level_hash[sc_main_window]   = main_window;
     m_level_hash[sc_main_help]   = main_help;
     m_level_hash[sc_main_news]   = main_news;

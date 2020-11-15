@@ -96,6 +96,13 @@ const sc_pref sc_main_debug_step_out (sc_main_debug + ":step_out", PRE + Qt::Shi
 const sc_pref sc_main_debug_continue (sc_main_debug + ":continue", PRE + Qt::Key_F5);
 const sc_pref sc_main_debug_quit (sc_main_debug + ":quit", PRE + Qt::ShiftModifier + Qt::Key_F5);
 
+// tools
+const QString sc_main_tools ("main_tools");
+const sc_pref sc_main_tools_start_profiler (sc_main_tools + ":start_profiler", CTRL_SHIFT + Qt::Key_P);
+const sc_pref sc_main_tools_resume_profiler (sc_main_tools + ":resume_profiler", QKeySequence::UnknownKey);
+const sc_pref sc_main_tools_show_profiler (sc_main_tools + ":show_profiler", Qt::AltModifier + Qt::ShiftModifier + Qt::Key_P);
+
+
 // window
 const QString sc_main_window ("main_window");
 const sc_pref sc_main_window_show_command (sc_main_window + ":show_command", PRE + CTRL_SHIFT + Qt::Key_0);

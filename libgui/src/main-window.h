@@ -292,7 +292,7 @@ namespace octave
     void construct_debug_menu (QMenuBar *p);
     QAction * construct_window_menu_item (QMenu *p, const QString& item,
                                           bool checkable, QWidget*);
-    void construct_profile_menu (QMenuBar *p);
+    void construct_tools_menu (QMenuBar *p);
     void construct_window_menu (QMenuBar *p);
     void construct_help_menu (QMenuBar *p);
     void construct_documentation_menu (QMenu *p);

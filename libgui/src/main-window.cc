@@ -2381,7 +2381,7 @@ namespace octave
 
     construct_debug_menu (menu_bar);
 
-    construct_profile_menu (menu_bar);
+    construct_tools_menu (menu_bar);
 
     construct_window_menu (menu_bar);
 
@@ -2620,21 +2620,21 @@ namespace octave
                                    SLOT (debug_quit (void)));
   }
 
-  void main_window::construct_profile_menu (QMenuBar *p)
+  void main_window::construct_tools_menu (QMenuBar *p)
   {
-    QMenu *profiler_menu = m_add_menu (p, tr ("&Profiler"));
+    QMenu *tools_menu = m_add_menu (p, tr ("&Tools"));
 
-    m_profiler_start = add_action (profiler_menu, QIcon (),
+    m_profiler_start = add_action (tools_menu, QIcon (),
           tr ("Start &Profiler Session"), SLOT (profiler_session ()));
 
-    m_profiler_resume = add_action (profiler_menu, QIcon (),
+    m_profiler_resume = add_action (tools_menu, QIcon (),
           tr ("&Resume Profiler Session"), SLOT (profiler_session_resume ()));
 
-    m_profiler_stop = add_action (profiler_menu, QIcon (),
+    m_profiler_stop = add_action (tools_menu, QIcon (),
           tr ("&Stop Profiler"), SLOT (profiler_stop ()));
     m_profiler_stop->setEnabled (false);
 
-    m_profiler_show = add_action (profiler_menu, QIcon (),
+    m_profiler_show = add_action (tools_menu, QIcon (),
           tr ("&Show Profile Data"), SLOT (profiler_show ()));
   }
 
@@ -2885,6 +2885,12 @@ namespace octave
     scmgr.set_shortcut (m_debug_step_out, sc_main_debug_step_out);
     scmgr.set_shortcut (m_debug_continue, sc_main_debug_continue);
     scmgr.set_shortcut (m_debug_quit, sc_main_debug_quit);
+
+    // tools menu
+    scmgr.set_shortcut (m_profiler_start, sc_main_tools_start_profiler);
+    scmgr.set_shortcut (m_profiler_resume, sc_main_tools_resume_profiler);
+    scmgr.set_shortcut (m_profiler_stop, sc_main_tools_start_profiler); // same, toggling
+    scmgr.set_shortcut (m_profiler_show, sc_main_tools_show_profiler);
 
     // window menu
     scmgr.set_shortcut (m_show_command_window_action, sc_main_window_show_command);

@@ -155,6 +155,12 @@ been added which prints a warning when Octave's parser recognizes valid
 Matlab code, but for which Octave does not yet implement the
 functionality.  By default, this warning is enabled.
 
+- The functions `bar` and `barh` now handle stacked negative bar values
+in a Matlab-compatible manner.  Negative values now stack below the zero
+axis independently of a positive value bars in the same stack.
+Previously the negative bars could overlap positive bars depending on
+drawing order.
+
 ### Alphabetical list of new functions added in Octave 7
 
 * `getpixelposition`

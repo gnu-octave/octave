@@ -95,3 +95,17 @@ endfunction
 %! set (h(2), "facecolor", "g");
 %! set (h(3), "facecolor", "b");
 %! title ("barh() graph w/multiple bars");
+
+%!demo
+%! clf;
+%! x = -rand (3) .* eye (3) + rand (3) .* (! eye (3));
+%! h = barh (x, "stacked");
+%! title ("stacked barh() graph including intermingled negative values");
+
+%% Test input validation
+%!error barh ()
+%!error <Y must be numeric> barh ("foo")
+%!error <X must be a vector> barh ([1 2; 3 4], [1 2 3 4])
+%!error <X vector values must be unique> barh ([1 2 3 3], [1 2 3 4])
+%!error <length of X and Y must be equal> barh ([1 2 3], [1 2 3 4])
+%!error <length of X and Y must be equal> barh ([1 2 3 4], [1 2 3])

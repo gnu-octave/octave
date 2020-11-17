@@ -124,7 +124,6 @@ function varargout = bar (varargin)
   [varargout{:}] = __bar__ (true, "bar", varargin{:});
 endfunction
 
-
 %!demo
 %! clf;
 %! y = rand (11, 1);
@@ -144,3 +143,17 @@ endfunction
 %! clf;
 %! h = bar (rand (5, 3), "stacked");
 %! title ("bar() graph with stacked style");
+
+%!demo
+%! clf;
+%! y = -rand (3) .* eye (3) + rand (3) .* (! eye (3));
+%! h = bar (y, "stacked");
+%! title ("stacked bar() graph including intermingled negative values");
+
+%% Test input validation
+%!error bar ()
+%!error <Y must be numeric> bar ("foo")
+%!error <X must be a vector> bar ([1 2; 3 4], [1 2 3 4])
+%!error <X vector values must be unique> bar ([1 2 3 3], [1 2 3 4])
+%!error <length of X and Y must be equal> bar ([1 2 3], [1 2 3 4])
+%!error <length of X and Y must be equal> bar ([1 2 3 4], [1 2 3])

@@ -38,6 +38,7 @@ function varargout = __bar__ (vertical, func, varargin)
 
   width = 0.8;
   group = true;
+  stacked = false;
   histc = NA;
   ## BaseValue
   if (strcmp (get (hax, "yscale"), "log"))
@@ -84,6 +85,7 @@ function varargout = __bar__ (vertical, func, varargin)
       group = true;
       idx += 1;
     elseif (ischar (varargin{idx}) && strcmpi (varargin{idx}, "stacked"))
+      stacked = true;
       group = false;
       idx += 1;
     elseif (ischar (varargin{idx}) && strcmpi (varargin{idx}, "histc"))
@@ -185,8 +187,24 @@ function varargout = __bar__ (vertical, func, varargin)
     y0 = zeros (size (y)) + bv;
     y1 = y;
   else
-    y1 = cumsum (y,2);
-    y0 = [zeros(ngrp,1)+bv, y1(:,1:end-1)];
+    if (stacked && any (y(:) < 0))
+      ypos = (y >= 0);
+      yneg = (y <  0);
+      ypos = y .* ypos;
+      yneg = y .* yneg;
+
+      y1p =  cumsum (y .* ypos, 2);
+      y1n =  cumsum (y .* yneg, 2);
+      y1 = y1p .* ypos + y1n .* yneg;
+
+      y0p = [zeros(ngrp,1)+bv, y1p(:,1:end-1)];
+      y0n = [zeros(ngrp,1)+bv, y1n(:,1:end-1)];
+      y0 = y0p .* ypos + y0n .* yneg;
+
+    else
+      y1 = cumsum (y,2);
+      y0 = [zeros(ngrp,1)+bv, y1(:,1:end-1)];
+    endif
   endif
 
   yb = zeros (4*ngrp, nbars);

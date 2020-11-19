@@ -377,7 +377,9 @@ function out = select (args, k, sigma, real_valued, symmetric)
 
   n = numel (d);
 
-  k = min (k, n);
+  if (k > n)
+    error ("eigs: requested number of eigenvalues K (%d) exceeds available eigenvalues (%d)", k, n);
+  endif
 
   if (strcmp (sigma, "be"))
     tmp = k / 2;
@@ -1370,10 +1372,6 @@ endfunction
 %!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5]) # call_eig is true
 %!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1]) # call_eig is true
 %!assert (eigs (diag (1:5), 3, "be"), [1;4;5]) # call_eig is true
-%!error
-%! A = rand (10);
-%! opts.v0 = ones (8, 1);
-%! eigs (A, 4, "sm", opts);
 %!testif HAVE_ARPACK
 %! A = toeplitz ([-2, 1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);
@@ -1590,3 +1588,23 @@ endfunction
 %! A = magic (5);
 %! d = eigs (A, [], 1);
 %! assert (d, 65, 150*eps);
+
+## Test input validation
+%!error <Invalid call> eigs ()
+%!error <requested number of eigenvalues K \(2\) exceeds available eigenvalues \(1\)>
+%! eigs (1, [], 2);
+%!error <"la" requires real symmetric problem> eigs ([i,0;0,1], 1, "la")
+%!error <"la" requires real symmetric problem> eigs ([1,1;0,1], 1, "la")
+%!error <"sa" requires real symmetric problem> eigs ([i,0;0,1], 1, "sa")
+%!error <"sa" requires real symmetric problem> eigs ([1,1;0,1], 1, "sa")
+%!error <"be" requires real symmetric problem> eigs ([i,0;0,1], 1, "be")
+%!error <"be" requires real symmetric problem> eigs ([1,1;0,1], 1, "be")
+%!error <"lr" requires complex or unsymmetric> eigs ([1,0;0,1], 1, "lr")
+%!error <"sr" requires complex or unsymmetric> eigs ([1,0;0,1], 1, "sr")
+%!error <"li" requires complex or unsymmetric> eigs ([1,0;0,1], 1, "li")
+%!error <"si" requires complex or unsymmetric> eigs ([1,0;0,1], 1, "si")
+%!error <unrecognized value for SIGMA: foobar> eigs (eye (2), 1, "foobar")
+%!error <opts.v0 must be n-by-1>
+%! A = rand (10);
+%! opts.v0 = ones (8, 1);
+%! eigs (A, 4, "sm", opts);

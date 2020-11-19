@@ -190,8 +190,6 @@ function varargout = __bar__ (vertical, func, varargin)
     if (stacked && any (y(:) < 0))
       ypos = (y >= 0);
       yneg = (y <  0);
-      ypos = y .* ypos;
-      yneg = y .* yneg;
 
       y1p =  cumsum (y .* ypos, 2);
       y1n =  cumsum (y .* yneg, 2);

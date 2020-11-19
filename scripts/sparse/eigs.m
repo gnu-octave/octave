@@ -211,15 +211,21 @@ function varargout = eigs (varargin)
 
   call_eig = false;
   offset = 0;
+  b = [];
   k = 6;
   sigma = "lm";
 
   if (isnumeric (varargin{1}) && issquare (varargin{1}))
     a = varargin{1};
-    if (nargin > 1 && isnumeric (varargin{2})
-        && issquare (varargin{2}) && size_equal (a, varargin{2}))
-      b = varargin{2};
-      offset = 1;
+    if (nargin > 1 && isnumeric (varargin{2}))
+      if (size_equal (a, varargin{2}))
+        b = varargin{2};
+        offset = 1;
+      elseif (isempty (varargin{2}))
+        ## Special syntax to do regular eigenvalue decomposition rather
+        ## than generalized eigenvalue decomposition (B = []).
+        offset = 1;
+      endif
     endif
 
     if (rows (a) < 13)
@@ -227,13 +233,13 @@ function varargout = eigs (varargin)
     endif
 
     if (nargin > 1 + offset)
-      tmp = varargin{2+offset};
-      if (isnumeric (tmp) && isscalar (tmp) && isreal (tmp)
-          && round (tmp) == tmp)
-        k = tmp;
+      arg = varargin{2+offset};
+      if (isnumeric (arg) && isscalar (arg) && isreal (arg)
+          && fix (arg) == arg)
+        k = arg;
         p = 2 * k;
-      elseif (isfield (tmp, "p"))
-          p = tmp.p;
+      elseif (isfield (arg, "p"))
+        p = arg.p;
       endif
       if (p >= rows (a))
         call_eig = true;
@@ -242,13 +248,13 @@ function varargout = eigs (varargin)
       endif
 
       if (nargin > 2 + offset)
-        tmp = varargin{3+offset};
-        if (ischar (tmp))
-          sigma = tolower (tmp);
-        elseif (isnumeric (tmp) && isscalar (tmp))
-          sigma = tmp;
-        elseif (isfield (tmp, "p"))
-          p = tmp.p;
+        arg = varargin{3+offset};
+        if (ischar (arg))
+          sigma = tolower (arg);
+        elseif (isnumeric (arg) && isscalar (arg))
+          sigma = arg;
+        elseif (isfield (arg, "p"))
+          p = arg.p;
         endif
         if (p >= rows (a))
           call_eig = true;
@@ -257,9 +263,9 @@ function varargout = eigs (varargin)
         endif
       endif
       if (nargin > 3 + offset)
-        tmp = varargin{4+offset};
-        if (isfield (tmp, "p"))
-          p = tmp.p;
+        arg = varargin{4+offset};
+        if (isfield (arg, "p"))
+          p = arg.p;
         else
           p = 2 * k;
         endif
@@ -274,14 +280,14 @@ function varargout = eigs (varargin)
 
   if (call_eig)
     varargout = cell (1, min (2, max (1, nargout)));
-    if (offset)
-      real_valued = isreal (a) && isreal (b);
-      symmetric = issymmetric (a) && issymmetric (b);
-      [varargout{:}] = eig (a, b);
-    else
+    if (isempty (b))
       real_valued = isreal (a);
       symmetric = issymmetric (a);
       [varargout{:}] = eig (a);
+    else
+      real_valued = isreal (a) && isreal (b);
+      symmetric = issymmetric (a) && issymmetric (b);
+      [varargout{:}] = eig (a, b);
     endif
     varargout = select (varargout, k, sigma, real_valued, symmetric);
     if (nargout == 3)
@@ -1579,3 +1585,8 @@ endfunction
 %! assert (isreal (d));
 %! [~, d] = eigs (A);
 %! assert (isreal (d));
+
+%!testif HAVE_ARPACK <*59486>
+%! A = magic (5);
+%! d = eigs (A, [], 1);
+%! assert (d, 65, 150*eps);

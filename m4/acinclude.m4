@@ -1848,7 +1848,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_TOOL], [
     AC_CHECK_TOOLS(m4_toupper([$1]), [$1])
     if test -n "$m4_toupper([$1])"; then
       if test -n "$QTCHOOSER"; then
-        m4_toupper([$1])FLAGS="-qt$qt_version"
+        m4_toupper([$1])FLAGS="-qt=$qt_version"
       fi
       QT_TOOLS_AVAILABLE="$QT_TOOLS_AVAILABLE $1"
     else

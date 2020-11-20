@@ -1604,7 +1604,7 @@ endfunction
 %!error <"li" requires complex or unsymmetric> eigs ([1,0;0,1], 1, "li")
 %!error <"si" requires complex or unsymmetric> eigs ([1,0;0,1], 1, "si")
 %!error <unrecognized value for SIGMA: foobar> eigs (eye (2), 1, "foobar")
-%!error <opts.v0 must be n-by-1>
+%!testif HAVE_ARPACK
 %! A = rand (10);
 %! opts.v0 = ones (8, 1);
-%! eigs (A, 4, "sm", opts);
+%! fail ("eigs (A, 4, 'sm', opts)", "opts.v0 must be n-by-1");

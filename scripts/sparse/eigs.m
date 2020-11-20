@@ -1587,7 +1587,7 @@ endfunction
 %!testif HAVE_ARPACK <*59486>
 %! A = magic (5);
 %! d = eigs (A, [], 1);
-%! assert (d, 65, 150*eps);
+%! assert (d, 65, 5 * eps (65));
 
 ## Test input validation
 %!error <Invalid call> eigs ()

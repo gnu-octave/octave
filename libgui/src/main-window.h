@@ -434,6 +434,7 @@ namespace octave
     //! Some class global flags.
     //!@{
     bool m_prevent_readline_conflicts;
+    bool m_prevent_readline_conflicts_menu;
     bool m_suppress_dbg_location;
     bool m_editor_has_tabs;
 

@@ -119,7 +119,9 @@ namespace octave
       m_find_files_dlg (nullptr), m_set_path_dlg (nullptr),
       m_release_notes_window (nullptr), m_community_news_window (nullptr),
       m_clipboard (QApplication::clipboard ()),
-      m_prevent_readline_conflicts (true), m_suppress_dbg_location (true),
+      m_prevent_readline_conflicts (true),
+      m_prevent_readline_conflicts_menu (false),
+      m_suppress_dbg_location (true),
       m_closing (false), m_file_encoding (QString ())
   {
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
@@ -352,9 +354,12 @@ namespace octave
         count++;  // Limited number of trials
       }
 
-    // editor needs extra handling
+    // editor and terminal needs extra handling
     octave_dock_widget *edit_dock_widget
       = static_cast<octave_dock_widget *> (m_editor_window);
+    octave_dock_widget *cmd_dock_widget
+      = static_cast<octave_dock_widget *> (m_command_window);
+
     // if new dock has focus, emit signal and store active focus
     // except editor changes to a dialog (dock=0)
     if ((dock || m_active_dock != edit_dock_widget) && (dock != m_active_dock))
@@ -369,10 +374,37 @@ namespace octave
               dock->set_predecessor_widget (m_active_dock);
           }
 
+        int editor = 0;
         if (edit_dock_widget == dock)
-          emit editor_focus_changed (true);
+          {
+            emit editor_focus_changed (true);
+            editor = 1;
+          }
         else if (edit_dock_widget == m_active_dock)
-          emit editor_focus_changed (false);
+          {
+            emit editor_focus_changed (false);
+            editor = -1;
+          }
+
+        int command = 0;
+        if (m_prevent_readline_conflicts_menu)
+          {
+            if (cmd_dock_widget == dock)
+              command = 1;
+            else if (cmd_dock_widget == m_active_dock)
+              command = -1;
+          }
+
+        // If editor or command gets/looses focus, disable/enable
+        // main menu accelerators
+        if (editor || command)
+          {
+            int sum = editor + command;
+            if (sum > 0)
+              disable_menu_shortcuts (true);
+            else if (sum < 0)
+              disable_menu_shortcuts (false);
+          }
 
         if (m_active_dock)
           m_previous_dock = m_active_dock;
@@ -916,6 +948,10 @@ namespace octave
       = settings->value (sc_prevent_rl_conflicts.key,
                          sc_prevent_rl_conflicts.def).toBool ();
 
+    m_prevent_readline_conflicts_menu
+      = settings->value (sc_prevent_rl_conflicts_menu.key,
+                         sc_prevent_rl_conflicts_menu.def).toBool ();
+
     m_suppress_dbg_location
       = ! settings->value (cs_dbg_location).toBool ();
 
@@ -926,7 +962,13 @@ namespace octave
 
     configure_shortcuts ();
     set_global_shortcuts (m_active_dock == m_command_window);
-    disable_menu_shortcuts (m_active_dock == m_editor_window);
+
+    bool do_disable_main_menu_shortcuts
+      = (m_active_dock == m_editor_window)
+        || (m_prevent_readline_conflicts_menu
+            && (m_active_dock == m_command_window));
+
+    disable_menu_shortcuts (do_disable_main_menu_shortcuts);
 
     // Check whether some octave internal preferences have to be updated
     QString new_default_encoding
@@ -2101,9 +2143,6 @@ namespace octave
 
     connect (this, SIGNAL (settings_changed (const gui_settings *)),
              this, SLOT (notice_settings (const gui_settings *)));
-
-    connect (this, SIGNAL (editor_focus_changed (bool)),
-             this, SLOT (disable_menu_shortcuts (bool)));
 
     connect (this, SIGNAL (editor_focus_changed (bool)),
              m_editor_window, SLOT (enable_menu_shortcuts (bool)));

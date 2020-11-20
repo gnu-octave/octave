@@ -98,6 +98,8 @@ namespace octave
 
     QToolBar * toolbar (void) { return m_tool_bar; }
 
+    QMenuBar * menubar (void) { return m_menu_bar; }
+
     void insert_global_actions (QList<QAction*>);
 
     enum shared_actions_idx

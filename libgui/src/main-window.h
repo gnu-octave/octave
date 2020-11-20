@@ -345,6 +345,8 @@ namespace octave
 
     QMenu *m_debug_menu;
 
+    QMenuBar *m_editor_menubar;
+
     QAction *m_debug_continue;
     QAction *m_debug_step_into;
     QAction *m_debug_step_over;

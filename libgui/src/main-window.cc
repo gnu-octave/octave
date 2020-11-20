@@ -189,9 +189,15 @@ namespace octave
     // Set active editor depending on editor window.  If the latter is
     // not initialized (qscintilla not present), use the external editor.
     if (m_editor_window)
-      m_active_editor = m_editor_window;
+      {
+        m_editor_menubar = m_editor_window->menubar ();
+        m_active_editor = m_editor_window;
+      }
     else
-      m_active_editor = m_external_editor;
+      {
+        m_editor_menubar = nullptr;
+        m_active_editor = m_external_editor;
+      }
 
 #if defined (HAVE_QGUIAPPLICATION_SETDESKTOPFILENAME)
     QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
@@ -319,10 +325,18 @@ namespace octave
   // catch focus changes and determine the active dock widget
   void main_window::focus_changed (QWidget *, QWidget *new_widget)
   {
-    // If there is no new widget (e.g., when pressing <alt> and the global
-    // menu gets active), we can return immediately
-    if (! new_widget)
-      return;
+    // If there is no new widget or the new widget is a menu bar
+    // (when pressing <alt>), we can return immediately and reset the
+    // focus to the previous widget
+    if (! new_widget
+          || (new_widget == menuBar ())
+          || (new_widget == m_editor_menubar))
+      {
+        if (m_active_dock)
+          m_active_dock->setFocus ();
+
+        return;
+      }
 
     octave_dock_widget *dock = nullptr;
     QWidget *w_new = new_widget;  // get a copy of new focus widget
@@ -1008,6 +1022,10 @@ namespace octave
       m_set_path_dlg->save_settings ();
 
     write_settings ();
+
+    // No more active dock, otherwise, focus_changed would try to set
+    // the focus to a dock widget that might not exist anymore
+    m_active_dock = nullptr;
   }
 
   void main_window::go_to_previous_widget (void)

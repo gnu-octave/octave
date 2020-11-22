@@ -355,6 +355,10 @@ namespace octave
     // recover old window states, hide and re-show new added widget
     m_parent->restoreState (settings->value (mw_state.key).toByteArray ());
     setFloating (false);
+     // restore size using setGeometry instead of restoreGeometry following
+     // this post:
+     // https://forum.qt.io/topic/79326/qdockwidget-restoregeometry-not-working-correctly-when-qmainwindow-is-maximized/5
+    setGeometry (m_recent_dock_geom);
 
     // adjust the (un)dock icon
     connect (m_dock_action, SIGNAL (triggered (bool)),
@@ -494,9 +498,16 @@ namespace octave
     if (QApplication::desktop ()->screenNumber (&dummy) == -1)
       m_recent_float_geom = default_size;
 
-    m_recent_dock_geom
+    // The following is required for ensure smooth transition from old
+    // saveGeomety to new QRect setting (see comment for restoring size
+    // of docked widgets)
+    QVariant dock_geom
       = settings->value (dw_dock_geometry.key.arg (objectName ()),
-                         dw_dock_geometry.def).toByteArray ();
+                         dw_dock_geometry.def);
+    if (dock_geom.canConvert (QMetaType::QRect))
+      m_recent_dock_geom = dock_geom.toRect ();
+    else
+      m_recent_dock_geom = dw_dock_geometry.def.toRect ();
 
     notice_settings (settings);  // call individual handler
 
@@ -577,7 +588,7 @@ namespace octave
       }
     else
       {
-        m_recent_dock_geom = saveGeometry ();
+        m_recent_dock_geom = geometry ();
       }
   }
 

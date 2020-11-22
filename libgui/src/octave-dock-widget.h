@@ -184,7 +184,7 @@ namespace octave
     QString m_icon_color_active;
     octave_dock_widget *m_predecessor_widget;
     QRect m_recent_float_geom;
-    QByteArray m_recent_dock_geom;
+    QRect m_recent_dock_geom;
     bool m_waiting_for_mouse_button_release;
 
   };

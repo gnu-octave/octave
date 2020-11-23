@@ -93,7 +93,11 @@ function [status, msg, msgid] = fileattrib (file = ".")
   msg = "";
   msgid = "";
 
-  files = glob (file);
+  if (ispc ())
+    files = __wglob__ (file);
+  else
+    files = glob (file);
+  endif
   if (isempty (files))
     files = {file};
   endif

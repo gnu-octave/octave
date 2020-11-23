@@ -93,7 +93,11 @@ function filelist = unpack (file, dir = [], filetype = "")
   if (numel (file) == 1)
     ## FIXME: The code below is not a perfect test for a URL
     if (isempty (strfind (file{1}, "://")))
-      gfile = glob (file);
+      if (ispc ())
+        gfile = __wglob__ (file);
+      else
+        gfile = glob (file);
+      endif
       if (isempty (gfile))
         error ('unpack: FILE "%s" not found', file{1});
       else

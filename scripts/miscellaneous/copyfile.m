@@ -98,7 +98,11 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
   endif
 
   ## Protect the filename(s).
-  f1 = glob (f1);
+  if (ispc ())
+    f1 = __wglob__ (f1);
+  else
+    f1 = glob (f1);
+  endif
   if (isempty (f1))
     if (nargout == 0)
       error ("copyfile: no files to move");

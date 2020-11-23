@@ -31,7 +31,7 @@
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#include "parse.h"
+#include "utils.h"
 
 #if defined (HAVE_RAPIDJSON)
 #  include <rapidjson/document.h>
@@ -41,7 +41,8 @@
 #if defined (HAVE_RAPIDJSON)
 
 octave_value
-decode (const rapidjson::Value& val, const octave_value_list& options);
+decode (const rapidjson::Value& val,
+        const octave::make_valid_name_options& options);
 
 //! Decodes a numerical JSON value into a scalar number.
 //!
@@ -90,20 +91,19 @@ decode_number (const rapidjson::Value& val)
 //! @endcode
 
 octave_value
-decode_object (const rapidjson::Value& val, const octave_value_list& options)
+decode_object (const rapidjson::Value& val,
+               const octave::make_valid_name_options& options)
 {
   octave_scalar_map retval;
 
-  // Validator function to guarantee legitimate variable name.
-  std::string fcn_name = "matlab.lang.makeValidName";
-
   for (const auto& pair : val.GetObject ())
-    {
-      octave_value_list args = octave_value_list (pair.name.GetString ());
-      args.append (options);
-      std::string validName = octave::feval (fcn_name,args)(0).string_value ();
-      retval.assign (validName, decode (pair.value, options));
-    }
+  {
+    // Validator function "matlab.lang.makeValidName" to guarantee legitimate
+    // variable name.
+    std::string varname = pair.name.GetString ();
+    octave::make_valid_name (varname, options);
+    retval.assign (varname, decode (pair.value, options));
+  }
 
   return retval;
 }
@@ -184,7 +184,7 @@ decode_boolean_array (const rapidjson::Value& val)
 
 octave_value
 decode_string_and_mixed_array (const rapidjson::Value& val,
-                               const octave_value_list& options)
+                               const octave::make_valid_name_options& options)
 {
   Cell retval (dim_vector (val.Size (), 1));
   octave_idx_type index = 0;
@@ -220,7 +220,7 @@ decode_string_and_mixed_array (const rapidjson::Value& val,
 
 octave_value
 decode_object_array (const rapidjson::Value& val,
-                     const octave_value_list& options)
+                     const octave::make_valid_name_options& options)
 {
   Cell struct_cell = decode_string_and_mixed_array (val, options).cell_value ();
   string_vector field_names = struct_cell(0).scalar_map_value ().fieldnames ();
@@ -277,7 +277,7 @@ decode_object_array (const rapidjson::Value& val,
 
 octave_value
 decode_array_of_arrays (const rapidjson::Value& val,
-                        const octave_value_list& options)
+                        const octave::make_valid_name_options& options)
 {
   // Some arrays should be decoded as NDArrays and others as cell arrays
   Cell cell = decode_string_and_mixed_array (val, options).cell_value ();
@@ -339,7 +339,8 @@ decode_array_of_arrays (const rapidjson::Value& val,
 //! @endcode
 
 octave_value
-decode_array (const rapidjson::Value& val, const octave_value_list& options)
+decode_array (const rapidjson::Value& val,
+              const octave::make_valid_name_options& options)
 {
   // Handle empty arrays
   if (val.Empty ())
@@ -401,7 +402,8 @@ decode_array (const rapidjson::Value& val, const octave_value_list& options)
 //! @endcode
 
 octave_value
-decode (const rapidjson::Value& val, const octave_value_list& options)
+decode (const rapidjson::Value& val,
+        const octave::make_valid_name_options& options)
 {
   if (val.IsBool ())
     return val.GetBool ();
@@ -516,6 +518,8 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
   if (! (nargin % 2))
     print_usage ();
 
+  octave::make_valid_name_options options (args.slice (1, nargin - 1));
+
   if (! args(0).is_string ())
     error ("jsondecode: JSON_TXT must be a character string");
 
@@ -533,7 +537,7 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
            static_cast<unsigned int> (d.GetErrorOffset ()) + 1,
            rapidjson::GetParseError_En (d.GetParseError ()));
 
-  return decode (d, args.slice (1, nargin - 1));
+  return decode (d, options);
 
 #else
 

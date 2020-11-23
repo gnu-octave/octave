@@ -133,6 +133,166 @@ and the first character must not be a digit.
 
 namespace octave
 {
+  bool
+  make_valid_name (std::string& str, const make_valid_name_options& options)
+  {
+    // If `isvarname (str)`, no modifications necessary.
+    if (valid_identifier (str) && ! iskeyword (str))
+      return false;
+
+    // Change whitespace followed by lowercase letter to uppercase, except
+    // for the first
+    bool previous = false;
+    bool any_non_space = false;
+    for (char& c : str)
+    {
+      c = ((any_non_space && previous && std::isalpha (c)) ? std::toupper (c)
+                                                           : c);
+      previous = std::isspace (c);
+      any_non_space |= (! previous);  // once true, always true
+    }
+
+    // Remove any whitespace.
+    str.erase (std::remove_if (str.begin(), str.end(),
+                               [] (unsigned char x)
+                                  { return std::isspace(x); }),
+               str.end());
+    if (str.empty ())
+      str = options.get_prefix ();
+
+    // Add prefix and capitalize first character, if `str` is a reserved
+    // keyword.
+    if (iskeyword (str))
+    {
+      str[0] = std::toupper (str[0]);
+      str = options.get_prefix () + str;
+    }
+
+    // Add prefix if first character is not a letter or underscore.
+    if (! std::isalpha (str[0]) && str[0] != '_')
+      str = options.get_prefix () + str;
+
+    // Replace non alphanumerics or underscores
+    if (options.get_replacement_style () == "underscore")
+      for (char& c : str)
+        c = (std::isalnum (c) ? c : '_');
+    else if (options.get_replacement_style () == "delete")
+      str.erase (std::remove_if (str.begin(), str.end(),
+                                 [] (unsigned char x)
+                                    { return ! std::isalnum (x) && x != '_'; }),
+                 str.end());
+    else if (options.get_replacement_style () == "hex")
+    {
+      const std::string permitted_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                          "abcdefghijklmnopqrstuvwxyz"
+                                          "_0123456789";
+      // Get the first non-permitted char.
+      size_t pos = str.find_first_not_of (permitted_chars);
+      // Buffer for hex string "0xFF" (+1 for null terminator).
+      char hex_str[5];
+      // Repeat until end of string.
+      while (pos != std::string::npos)
+      {
+        // Replace non-permitted char by it's hex value.
+        std::snprintf (hex_str, sizeof (hex_str), "0x%02X", str[pos]);
+        str.replace (pos, 1, hex_str);
+        // Get the next occurrence from the last position.
+        // (-1 for null terminator)
+        pos = str.find_first_not_of (permitted_chars,
+                                     pos + sizeof (hex_str) - 1);
+      }
+    }
+
+    return true;
+  }
+
+  make_valid_name_options::make_valid_name_options (const octave_value_list& args)
+  {
+    auto nargs = args.length ();
+    if (nargs == 0)
+      return;
+
+    // nargs = 2, 4, 6, ... permitted
+    if (nargs % 2)
+      error ("makeValidName: property/value options must occur in pairs");
+
+    auto str_to_lower = [] (std::string& s)
+                           {
+                             std::transform (s.begin(), s.end(), s.begin(),
+                                             [] (unsigned char c)
+                                                { return std::tolower(c); });
+                           };
+
+    for (auto i = 0; i < nargs; i = i + 2)
+    {
+      std::string parameter = args(i).xstring_value ("makeValidName: "
+        "option argument must be a string");
+      str_to_lower (parameter);
+      if (parameter == "replacementstyle")
+      {
+        m_replacement_style = args(i + 1).xstring_value ("makeValidName: "
+          "'ReplacementStyle' value must be a string");
+        str_to_lower (m_replacement_style);
+        if ((m_replacement_style != "underscore")
+            && (m_replacement_style != "delete")
+            && (m_replacement_style != "hex"))
+          error ("makeValidName: invalid 'ReplacementStyle' value '%s'",
+                 m_replacement_style.c_str ());
+      }
+      else if (parameter == "prefix")
+      {
+        m_prefix = args(i + 1).xstring_value ("makeValidName: "
+          "'Prefix' value must be a string");
+        if (! octave::valid_identifier (m_prefix)
+            || octave::iskeyword (m_prefix))
+          error ("makeValidName: invalid 'Prefix' value '%s'",
+                 m_prefix.c_str ());
+      }
+      else
+        error ("makeValidName: unknown property '%s'", parameter.c_str ());
+    }
+  }
+}
+
+DEFUN (__make_valid_name__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{varname} =} __make_valid_name__ (@var{str})
+@deftypefnx {} {@var{varname} =} __make_valid_name__ (@var{str}, @qcode{"ReplacementStyle"})
+@deftypefnx {} {@var{varname} =} __make_valid_name__ (@var{str}, @qcode{"ReplacementStyle"}, @qcode{"Prefix"})
+@deftypefnx {} {[@var{varname}, @var{ismodified}] =} __make_valid_name__ (@dots{})
+Return a valid variable name @var{varname} from input @var{str}.
+
+For more documentation, see @code{matlab.lang.makeValidName}.
+
+@seealso{isvarname, matlab.lang.makeValidName}
+@end deftypefn */)
+{
+  auto nargin = args.length ();
+  if (nargin < 1)
+    print_usage ();
+
+  octave::make_valid_name_options options (args.slice (1, nargin - 1));
+
+  if (args(0).is_string ())
+  {
+    std::string varname = args(0).string_value ();
+    bool is_modified = octave::make_valid_name (varname, options);
+    return ovl (varname, is_modified);
+  }
+  else if (args(0).iscellstr ())
+  {
+    Array<std::string> varnames = args(0).cellstr_value ();
+    Array<bool> is_modified (varnames.dims ());
+    for (auto i = 0; i < varnames.numel (); i++)
+      is_modified(i) = octave::make_valid_name (varnames(i), options);
+    return ovl (varnames, is_modified);
+  }
+  else
+    error ("makeValidName: STR must be a string or cellstr");
+}
+
+namespace octave
+{
   // Return TRUE if F and G are both names for the same file.
 
   bool same_file (const std::string& f, const std::string& g)

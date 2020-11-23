@@ -46,6 +46,63 @@ namespace octave
   extern OCTINTERP_API bool valid_identifier (const char *s);
   extern OCTINTERP_API bool valid_identifier (const std::string& s);
 
+  //! Helper class for `make_valid_name` function calls.
+  //!
+  //! Extracting options separately for multiple (e.g. 1000+) function calls
+  //! avoids expensive repetitive parsing of the very same options.
+
+  class
+  OCTINTERP_API
+  make_valid_name_options
+  {
+  public:
+
+    //! Default options for `make_valid_name` function calls.
+    //!
+    //! Calling the constructor without arguments is equivalent to:
+    //!
+    //! @code{.cc}
+    //! make_valid_name_options (ovl ("ReplacementStyle", "underscore",
+    //!                               "Prefix", "x"));
+    //! @endcode
+
+    make_valid_name_options () = default;
+
+    //! Extract attribute-value-pairs from an octave_value_list of strings.
+    //!
+    //! If attributes occur multiple times, the rightmost pair is chosen.
+    //!
+    //! @code{.cc}
+    //! make_valid_name_options (ovl ("ReplacementStyle", "hex", ...));
+    //! @endcode
+
+    make_valid_name_options (const octave_value_list& args);
+
+    //! @return ReplacementStyle, see `help matlab.lang.makeValidName`.
+
+    const std::string&
+    get_replacement_style () const { return m_replacement_style; }
+
+    //! @return Prefix, see `help matlab.lang.makeValidName`.
+
+    const std::string& get_prefix () const { return m_prefix; }
+
+  private:
+
+    std::string m_replacement_style{"underscore"};
+    std::string m_prefix{"x"};
+  };
+
+  //! Modify @p str to be a valid variable name.
+  //!
+  //! @param str input string
+  //! @param options see also `help matlab.lang.makeValidName`.
+  //!
+  //! @return true, if @p str was modified.
+
+  extern OCTINTERP_API bool
+  make_valid_name (std::string& str, const make_valid_name_options& options);
+
   extern OCTINTERP_API bool
   same_file (const std::string& f, const std::string& g);
 

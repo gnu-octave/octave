@@ -62,7 +62,8 @@ const struct { QString name; QString path; } dw_icon_set_names[]
 const gui_pref dw_float_geometry ("DockWidgets/%1_floating_geometry",
                                   QVariant (QRect (50, 50, 480, 640)));
 
-const gui_pref dw_dock_geometry ("DockWidgets/%1", QVariant (QByteArray ()));
+const gui_pref dw_dock_geometry ("DockWidgets/%1",
+                                 QVariant (QRect (10, 10, 240, 320)));
 
 const gui_pref dw_is_visible ("DockWidgets/%1Visible", QVariant (true));
 

@@ -145,12 +145,12 @@ namespace octave
     bool previous = false;
     bool any_non_space = false;
     for (char& c : str)
-    {
-      c = ((any_non_space && previous && std::isalpha (c)) ? std::toupper (c)
-                                                           : c);
-      previous = std::isspace (c);
-      any_non_space |= (! previous);  // once true, always true
-    }
+      {
+        c = ((any_non_space && previous && std::isalpha (c)) ? std::toupper (c)
+                                                             : c);
+        previous = std::isspace (c);
+        any_non_space |= (! previous);  // once true, always true
+      }
 
     // Remove any whitespace.
     str.erase (std::remove_if (str.begin(), str.end(),
@@ -163,10 +163,10 @@ namespace octave
     // Add prefix and capitalize first character, if `str` is a reserved
     // keyword.
     if (iskeyword (str))
-    {
-      str[0] = std::toupper (str[0]);
-      str = options.get_prefix () + str;
-    }
+      {
+        str[0] = std::toupper (str[0]);
+        str = options.get_prefix () + str;
+      }
 
     // Add prefix if first character is not a letter or underscore.
     if (! std::isalpha (str[0]) && str[0] != '_')
@@ -182,31 +182,32 @@ namespace octave
                                     { return ! std::isalnum (x) && x != '_'; }),
                  str.end());
     else if (options.get_replacement_style () == "hex")
-    {
-      const std::string permitted_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                          "abcdefghijklmnopqrstuvwxyz"
-                                          "_0123456789";
-      // Get the first non-permitted char.
-      size_t pos = str.find_first_not_of (permitted_chars);
-      // Buffer for hex string "0xFF" (+1 for null terminator).
-      char hex_str[5];
-      // Repeat until end of string.
-      while (pos != std::string::npos)
       {
-        // Replace non-permitted char by it's hex value.
-        std::snprintf (hex_str, sizeof (hex_str), "0x%02X", str[pos]);
-        str.replace (pos, 1, hex_str);
-        // Get the next occurrence from the last position.
-        // (-1 for null terminator)
-        pos = str.find_first_not_of (permitted_chars,
-                                     pos + sizeof (hex_str) - 1);
+        const std::string permitted_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                            "abcdefghijklmnopqrstuvwxyz"
+                                            "_0123456789";
+        // Get the first non-permitted char.
+        size_t pos = str.find_first_not_of (permitted_chars);
+        // Buffer for hex string "0xFF" (+1 for null terminator).
+        char hex_str[5];
+        // Repeat until end of string.
+        while (pos != std::string::npos)
+          {
+            // Replace non-permitted char by it's hex value.
+            std::snprintf (hex_str, sizeof (hex_str), "0x%02X", str[pos]);
+            str.replace (pos, 1, hex_str);
+            // Get the next occurrence from the last position.
+            // (-1 for null terminator)
+            pos = str.find_first_not_of (permitted_chars,
+                                         pos + sizeof (hex_str) - 1);
+          }
       }
-    }
 
     return true;
   }
 
-  make_valid_name_options::make_valid_name_options (const octave_value_list& args)
+  make_valid_name_options::make_valid_name_options
+    (const octave_value_list& args)
   {
     auto nargs = args.length ();
     if (nargs == 0)
@@ -224,33 +225,33 @@ namespace octave
                            };
 
     for (auto i = 0; i < nargs; i = i + 2)
-    {
-      std::string parameter = args(i).xstring_value ("makeValidName: "
-        "option argument must be a string");
-      str_to_lower (parameter);
-      if (parameter == "replacementstyle")
       {
-        m_replacement_style = args(i + 1).xstring_value ("makeValidName: "
-          "'ReplacementStyle' value must be a string");
-        str_to_lower (m_replacement_style);
-        if ((m_replacement_style != "underscore")
-            && (m_replacement_style != "delete")
-            && (m_replacement_style != "hex"))
-          error ("makeValidName: invalid 'ReplacementStyle' value '%s'",
-                 m_replacement_style.c_str ());
+        std::string parameter = args(i).xstring_value ("makeValidName: "
+          "option argument must be a string");
+        str_to_lower (parameter);
+        if (parameter == "replacementstyle")
+          {
+            m_replacement_style = args(i + 1).xstring_value ("makeValidName: "
+              "'ReplacementStyle' value must be a string");
+            str_to_lower (m_replacement_style);
+            if ((m_replacement_style != "underscore")
+                && (m_replacement_style != "delete")
+                && (m_replacement_style != "hex"))
+              error ("makeValidName: invalid 'ReplacementStyle' value '%s'",
+                     m_replacement_style.c_str ());
+          }
+        else if (parameter == "prefix")
+          {
+            m_prefix = args(i + 1).xstring_value ("makeValidName: "
+              "'Prefix' value must be a string");
+            if (! octave::valid_identifier (m_prefix)
+                || octave::iskeyword (m_prefix))
+              error ("makeValidName: invalid 'Prefix' value '%s'",
+                     m_prefix.c_str ());
+          }
+        else
+          error ("makeValidName: unknown property '%s'", parameter.c_str ());
       }
-      else if (parameter == "prefix")
-      {
-        m_prefix = args(i + 1).xstring_value ("makeValidName: "
-          "'Prefix' value must be a string");
-        if (! octave::valid_identifier (m_prefix)
-            || octave::iskeyword (m_prefix))
-          error ("makeValidName: invalid 'Prefix' value '%s'",
-                 m_prefix.c_str ());
-      }
-      else
-        error ("makeValidName: unknown property '%s'", parameter.c_str ());
-    }
   }
 }
 
@@ -274,19 +275,19 @@ For more documentation, see @code{matlab.lang.makeValidName}.
   octave::make_valid_name_options options (args.slice (1, nargin - 1));
 
   if (args(0).is_string ())
-  {
-    std::string varname = args(0).string_value ();
-    bool is_modified = octave::make_valid_name (varname, options);
-    return ovl (varname, is_modified);
-  }
+    {
+      std::string varname = args(0).string_value ();
+      bool is_modified = octave::make_valid_name (varname, options);
+      return ovl (varname, is_modified);
+    }
   else if (args(0).iscellstr ())
-  {
-    Array<std::string> varnames = args(0).cellstr_value ();
-    Array<bool> is_modified (varnames.dims ());
-    for (auto i = 0; i < varnames.numel (); i++)
-      is_modified(i) = octave::make_valid_name (varnames(i), options);
-    return ovl (varnames, is_modified);
-  }
+    {
+      Array<std::string> varnames = args(0).cellstr_value ();
+      Array<bool> is_modified (varnames.dims ());
+      for (auto i = 0; i < varnames.numel (); i++)
+        is_modified(i) = octave::make_valid_name (varnames(i), options);
+      return ovl (varnames, is_modified);
+    }
   else
     error ("makeValidName: STR must be a string or cellstr");
 }

@@ -1596,19 +1596,8 @@ namespace octave
           }
       }
 
-    if (settings)
+    if (! settings)
       {
-        // Restore main window state and geometry after creating all
-        // dock widgets
-        if (! restoreState (settings->value (mw_state).toByteArray ()))
-          restoreState (mw_state.def.toByteArray ());
-
-        if (! restoreGeometry (settings->value (mw_geometry).toByteArray ()))
-          restoreGeometry (mw_geometry.def.toByteArray ());
-      }
-    else
-      {
-        // Reset to the initial window layout and size
         restoreGeometry (mw_geometry.def.toByteArray ());
         restoreState (mw_state.def.toByteArray ());
 

@@ -85,6 +85,10 @@ function hlink = linkprop (h, prop)
     set (h(2:end), prop{j}, get (h(1), prop{j}));
   endfor
 
+  ## FIXME: This file needs to be locked to avoid bug #59439.  Remove this
+  ##        lock once that bug is properly fixed.
+  mlock ();
+
   ## Add listeners to all objects
   for i = 1 : numel (h)
     for j = 1 : numel (prop)

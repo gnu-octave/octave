@@ -452,10 +452,14 @@ endfunction
 %!test
 %! for i = 1:20
 %!   assert (eigs (i, 1), i, 1e-11);
-%!   assert (eigs (zeros  (i), 1), 0, 1e-11);
-%!   assert (eigs (ones   (i), 1), i, 1e-11);
+%!   assert (eigs (zeros (i), 1), 0, 1e-11);
 %!   assert (eigs (sparse (i), 1), i, 1e-11);
 %!   assert (eigs (sparse (i, i), 1), 0, 1e-11);
+%! endfor
+
+%!testif HAVE_ARPACK
+%! for i = 1:20
+%!   assert (eigs (ones (i), 1), i, 1e-11);
 %!   assert (eigs (sparse (ones (i)), 1), i, 1e-11);
 %! endfor
 

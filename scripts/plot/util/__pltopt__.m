@@ -155,7 +155,7 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
               || topt == "." || topt == "x" || topt == "s"
               || topt == "d" || topt == "^" || topt == "v"
               || topt == ">" || topt == "<" || topt == "p"
-              || topt == "h" || topt == "@")
+              || topt == "h")
         have_marker = true;
         ## Check for long form marker styles
         if (any (topt == "sdhp"))

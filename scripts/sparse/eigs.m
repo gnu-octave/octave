@@ -548,7 +548,7 @@ endfunction
 %! opts.issym = 1;  opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 4.1, opts);
 %! assert (d1, eigs (A, k, 4.1), 1e-11);
-%!testif HAVE_ARPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK
 %! AA = speye (10);
 %! fn = @(x) AA * x;
 %! opts.issym = 1;  opts.isreal = 1;
@@ -1535,7 +1535,7 @@ endfunction
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (Afun, 100, 6, "lm", opts);
 %! assert (d(6), NaN+1i*NaN);
-%!testif HAVE_ARPACK
+%!testif HAVE_ARPACK, HAVE_CHOLMOD
 %! A = sparse (magic (10));
 %! B = sparse (magic (10)); # not HPD
 %! fail ("eigs (A, B, 4)", "eigs: The matrix B is not positive definite")

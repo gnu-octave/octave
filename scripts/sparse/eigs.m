@@ -239,6 +239,7 @@ function varargout = eigs (varargin)
   if (isnumeric (varargin{1}) && issquare (varargin{1}))
     A = varargin{1};
     have_A = true;
+    k = min (k, rows (A));  # reduce default k if necessary
     if (nargin > 1)
       if (! isnumeric (varargin{2}))
         error ("eigs: second argument must be numeric");
@@ -329,7 +330,7 @@ function varargout = eigs (varargin)
           V = diag (ones ([k,1]), rows (A), k);
           varargout = { V, diag(zeros (k,1)) };
 
-        case 1
+        case {0, 1}
           varargout = { zeros(k,1) };
       endswitch
     else
@@ -445,6 +446,18 @@ function out = select_eig (args, k, sigma, real_valued, symmetric)
 
 endfunction
 
+
+### TRIVIAL TESTS ###
+
+%!test
+%! for i = 1:20
+%!   assert (eigs (i, 1), i, 1e-11);
+%!   assert (eigs (zeros  (i), 1), 0, 1e-11);
+%!   assert (eigs (ones   (i), 1), i, 1e-11);
+%!   assert (eigs (sparse (i), 1), i, 1e-11);
+%!   assert (eigs (sparse (i, i), 1), 0, 1e-11);
+%!   assert (eigs (sparse (ones (i)), 1), i, 1e-11);
+%! endfor
 
 ### SPARSE MATRIX TESTS ###
 

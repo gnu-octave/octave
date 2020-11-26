@@ -169,27 +169,23 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
             n = 9;
           endif
         endif
-        ## Backward compatibility.  Leave undocumented.
-        if (topt == "@")
-          topt = "+";
-        endif
         options.marker = topt;
-      ## Numeric color specs are for backward compatibility.  Don't document.
-      elseif (topt == "k" || topt == "0")
+      ## Color specs
+      elseif (topt == "k")
         options.color = [0, 0, 0];
-      elseif (topt == "r" || topt == "1")
+      elseif (topt == "r")
         options.color = [1, 0, 0];
-      elseif (topt == "g" || topt == "2")
+      elseif (topt == "g")
         options.color = [0, 1, 0];
-      elseif (topt == "b" || topt == "3")
+      elseif (topt == "b")
         options.color = [0, 0, 1];
       elseif (topt == "y")
         options.color = [1, 1, 0];
-      elseif (topt == "m" || topt == "4")
+      elseif (topt == "m")
         options.color = [1, 0, 1];
-      elseif (topt == "c" || topt == "5")
+      elseif (topt == "c")
         options.color = [0, 1, 1];
-      elseif (topt == "w" || topt == "6")
+      elseif (topt == "w")
         options.color = [1, 1, 1];
       elseif (isspace (topt))
         ## Do nothing.
@@ -244,7 +240,7 @@ endfunction
 %! assert (opts.linestyle, ":");
 %! assert (opts.marker, "x");
 %!test
-%! opts = __pltopt__ ("abc", "2square");
+%! opts = __pltopt__ ("abc", "gsquare");
 %! assert (opts.color, [0 1 0]);
 %! assert (opts.linestyle, "none");
 %! assert (opts.marker, "s");

@@ -43,32 +43,41 @@
 ## @item @qcode{":"}
 ## For dots plot style.
 ##
-## @item @qcode{"r"}
+## @item  @qcode{"r"}
+## @itemx @qcode{"red"}
 ## Red line color.
 ##
-## @item @qcode{"g"}
+## @item  @qcode{"g"}
+## @itemx @qcode{"green"}
 ## Green line color.
 ##
-## @item @qcode{"b"}
+## @item  @qcode{"b"}
+## @itemx @qcode{"blue"}
 ## Blue line color.
 ##
-## @item @qcode{"c"}
+## @item  @qcode{"c"}
+## @itemx @qcode{"cyan"}
 ## Cyan line color.
 ##
-## @item @qcode{"m"}
+## @item  @qcode{"m"}
+## @itemx @qcode{"magenta"}
 ## Magenta line color.
 ##
-## @item @qcode{"y"}
+## @item  @qcode{"y"}
+## @itemx @qcode{"yellow"}
 ## Yellow line color.
 ##
-## @item @qcode{"k"}
+## @item  @qcode{"k"}
+## @itemx @qcode{"black"}
 ## Black line color.
 ##
-## @item @qcode{"w"}
+## @item  @qcode{"w"}
+## @itemx @qcode{"white"}
 ## White line color.
 ##
-## @item @qcode{";title;"}
-## Here @code{"title"} is the label for the key.
+## @item @qcode{";displayname;"}
+## The text between semicolons is used to set the @qcode{"displayname"}
+## property which determines the label used for the plot legend.
 ##
 ## @item  @qcode{"+"}
 ## @itemx @qcode{"o"}
@@ -87,8 +96,6 @@
 ## style.
 ## @end table
 ##
-## The legend may be fixed to include the name of the variable
-## plotted in some future version of Octave.
 ## @end deftypefn
 
 function [options, valid] = __pltopt__ (caller, opt, err_on_invalid = true)

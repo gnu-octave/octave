@@ -133,6 +133,11 @@ vectors with rows corresponding to the input coordinate matrix.
 - The function `importdata` now produces more compatible results when
 the file contains a 2-D text matrix.
 
+- The `FMT` format argument for plot commands now accepts long forms for
+color names which may be more understandable than the existing
+one-letter codes.   For example, the RGB value `[0 0 0]` can now be
+specified by "black" in addition to "k". 
+
 - `uicontrol` objects now fully implement the "Off" and "Inactive"
 values of the "Enable" property.  When the value is "Off", no
 interaction with the object occurs and the `uicontrol` changes color
@@ -147,6 +152,12 @@ patch graphics objects when the "gnuplot" graphics toolkit is used.  In
 previous versions of Octave, these functions returned an `hggroup` of
 patch graphics objects for all graphics toolkits.
 
+- The functions `bar` and `barh` now handle stacked negative bar values
+in a Matlab-compatible manner.  Negative values now stack below the zero
+axis independently of a positive value bars in the same stack.
+Previously the negative bars could overlap positive bars depending on
+drawing order.
+
 - The function `saveas` now defaults to saving in Octave figure format
 (.ofig) rather than PDF (.pdf).
 
@@ -154,12 +165,6 @@ patch graphics objects for all graphics toolkits.
 been added which prints a warning when Octave's parser recognizes valid
 Matlab code, but for which Octave does not yet implement the
 functionality.  By default, this warning is enabled.
-
-- The functions `bar` and `barh` now handle stacked negative bar values
-in a Matlab-compatible manner.  Negative values now stack below the zero
-axis independently of a positive value bars in the same stack.
-Previously the negative bars could overlap positive bars depending on
-drawing order.
 
 ### Alphabetical list of new functions added in Octave 7
 

@@ -115,7 +115,7 @@ property which is hidden now.
 
 ### Matlab compatibility
 
-- The function `griddata` now implements the "v4" Biharmonic Spline
+- The function `griddata` now implements the `"v4"` Biharmonic Spline
 Interpolation method.  In adddition, the function now accepts 3-D inputs
 by passing the data to `griddata3`.
 
@@ -136,19 +136,19 @@ the file contains a 2-D text matrix.
 - The `FMT` format argument for plot commands now accepts long forms for
 color names which may be more understandable than the existing
 one-letter codes.   For example, the RGB value `[0 0 0]` can now be
-specified by "black" in addition to "k". 
+specified by `"black"` in addition to `"k"`.
 
-- `uicontrol` objects now fully implement the "Off" and "Inactive"
-values of the "Enable" property.  When the value is "Off", no
+- `uicontrol` objects now fully implement the `"Off"` and `"Inactive"`
+values of the `"Enable"` property.  When the value is `"Off"`, no
 interaction with the object occurs and the `uicontrol` changes color
 (typically to gray) to indicate it is disabled.  When the value is
-"Inactive", the object appears normally (no change in color), but it is
+`"Inactive"`, the object appears normally (no change in color), but it is
 not possible to change the value of the object (such as modifying text
 in an `Edit` box or clicking on a `RadioButton`).
 
 - The functions `scatter` and `scatter3` now return a handle to a
 scatter graphics object.  For compatibility, they return an `hggroup` of
-patch graphics objects when the "gnuplot" graphics toolkit is used.  In
+patch graphics objects when the `"gnuplot"` graphics toolkit is used.  In
 previous versions of Octave, these functions returned an `hggroup` of
 patch graphics objects for all graphics toolkits.
 

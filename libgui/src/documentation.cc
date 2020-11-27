@@ -36,7 +36,8 @@
 #include <QFileInfo>
 #include <QHelpContentWidget>
 #include <QHelpIndexWidget>
-#if defined (HAVE_NEW_QHELPINDEXWIDGET_API)
+#if defined (HAVE_NEW_QHELPINDEXWIDGET_API) \
+  || defined (HAVE_QHELPENGINE_DOCUMENTSFORIDENTIFIER)
 #  include <QHelpLink>
 #endif
 #include <QHelpSearchEngine>

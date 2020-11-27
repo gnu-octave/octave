@@ -35,7 +35,7 @@ function options = __default_plot_options__ ()
                     "color", [],
                     "linestyle", [],
                     "marker", [],
-                    "errorstytle", []);
+                    "errorstyle", []);
 
 endfunction
 

@@ -6334,7 +6334,7 @@ DEFUN (mldivide, args, ,
 @deftypefn {} {} mldivide (@var{x}, @var{y})
 Return the matrix left division of @var{x} and @var{y}.
 
-This function and @w{@tcode{@var{x} @xbackslashchar{} @var{y}}} are equivalent.
+This function and @w{@tcode{@var{x} @backslashchar{} @var{y}}} are equivalent.
 @seealso{mrdivide, ldivide, rdivide}
 @end deftypefn */)
 {
@@ -6461,7 +6461,7 @@ DEFUN (ldivide, args, ,
 @deftypefn {} {} ldivide (@var{x}, @var{y})
 Return the element-by-element left division of @var{x} and @var{y}.
 
-This function and @w{@tcode{@var{x} .@xbackslashchar{} @var{y}}} are
+This function and @w{@tcode{@var{x} .@backslashchar{} @var{y}}} are
 equivalent.
 @seealso{rdivide, mldivide, times, plus}
 @end deftypefn */)

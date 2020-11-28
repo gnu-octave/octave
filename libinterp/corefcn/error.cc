@@ -1240,11 +1240,11 @@ error (err_msg);
 which will only stop execution if an error has been found.
 
 Implementation Note: For compatibility with @sc{matlab}, escape
-sequences in @var{template} (e.g., @qcode{"@xbackslashchar{}n"} =>
+sequences in @var{template} (e.g., @qcode{"@backslashchar{}n"} =>
 newline) are processed regardless of whether @var{template} has been defined
 with single quotes, as long as there are two or more input arguments.  To
 disable escape sequence expansion use a second backslash before the sequence
-(e.g., @qcode{"@xbackslashchar{}@xbackslashchar{}n"}) or use the
+(e.g., @qcode{"@backslashchar{}@backslashchar{}n"}) or use the
 @code{regexptranslate} function.
 @seealso{warning, lasterror}
 @end deftypefn */)
@@ -1453,11 +1453,11 @@ In this case the @var{state} argument may only be @qcode{"on"} or
 @qcode{"off"}.
 
 Implementation Note: For compatibility with @sc{matlab}, escape sequences in
-@var{template} (e.g., @qcode{"@xbackslashchar{}n"} => newline) are processed
+@var{template} (e.g., @qcode{"@backslashchar{}n"} => newline) are processed
 regardless of whether @var{template} has been defined with single quotes, as
 long as there are two or more input arguments.  To disable escape sequence
 expansion use a second backslash before the sequence (e.g.,
-@qcode{"@xbackslashchar{}@xbackslashchar{}n"}) or use the
+@qcode{"@backslashchar{}@backslashchar{}n"}) or use the
 @code{regexptranslate} function.
 @seealso{warning_ids, lastwarn, error}
 @end deftypefn */)

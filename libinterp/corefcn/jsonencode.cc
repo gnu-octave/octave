@@ -474,11 +474,12 @@ Complex numbers are not supported.
 classdef objects are first converted to structs and then encoded.
 
 @item
-To preserve escape characters (e.g., @qcode{"\n"}), use single-quoted strings.
+To preserve escape characters (e.g., @qcode{"@backslashchar{}n"}), use
+single-quoted strings.
 
 @item
-Every character after the null character (@qcode{"\0"}) in a double-quoted
-string will be dropped during encoding.
+Every character after the null character (@qcode{"@backslashchar{}0"}) in a
+double-quoted string will be dropped during encoding.
 
 @item
 Encoding and decoding an array is not guaranteed to preserve the dimensions

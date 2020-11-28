@@ -752,10 +752,10 @@ Match within a word
 @end table
 
 Implementation Note: For compatibility with @sc{matlab}, escape sequences
-in @var{pat} (e.g., @qcode{"@xbackslashchar{}n"} => newline) are expanded
+in @var{pat} (e.g., @qcode{"@backslashchar{}n"} => newline) are expanded
 even when @var{pat} has been defined with single quotes.  To disable
 expansion use a second backslash before the escape sequence (e.g.,
-"@xbackslashchar{}@xbackslashchar{}n") or use the @code{regexptranslate}
+"@backslashchar{}@backslashchar{}n") or use the @code{regexptranslate}
 function.
 
 The outputs of @code{regexp} default to the order given below
@@ -1424,10 +1424,10 @@ This option is present for compatibility but is ignored.
 @end table
 
 Implementation Note: For compatibility with @sc{matlab}, escape sequences
-in @var{pat} (e.g., @qcode{"@xbackslashchar{}n"} => newline) are expanded
+in @var{pat} (e.g., @qcode{"@backslashchar{}n"} => newline) are expanded
 even when @var{pat} has been defined with single quotes.  To disable
 expansion use a second backslash before the escape sequence (e.g.,
-"@xbackslashchar{}@xbackslashchar{}n") or use the @code{regexptranslate}
+"@backslashchar{}@backslashchar{}n") or use the @code{regexptranslate}
 function.
 @seealso{regexp, regexpi, strrep}
 @end deftypefn */)

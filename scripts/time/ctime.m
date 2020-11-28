@@ -35,7 +35,7 @@
 ## @example
 ## @group
 ## ctime (time ())
-##    @result{} "Mon Feb 17 01:15:06 1997@xbackslashchar{}n"
+##    @result{} "Mon Feb 17 01:15:06 1997@backslashchar{}n"
 ## @end group
 ## @end example
 ## @seealso{asctime, time, localtime}

@@ -34,7 +34,9 @@
 
 @c The following macro works around the Info/plain text expansion of @code{XXX}
 @c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
+@c single or double-quoted text, such as a property value `"position"'.
+@c The mnemonic to remember this macro is Quoted CODE.
+
 @ifinfo
 @macro qcode{arg}
 \arg\
@@ -46,20 +48,35 @@
 @end macro
 @end ifnotinfo
 
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This can be confusing when the macro body itself
+@c ends with a transpose character, such as `x''.
+@c The mnemonic to remember this macro is Transpose CODE.
+
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't want
+@c lots of `See also: foo, bar, and baz' strings cluttering the printed manual
+@c (that information should be in the supporting text for each group of
+@c functions and variables).
 @c
 @c Implementation Note:
 @c For TeX, @vskip produces a nice separation.
 @c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct
-@c behavior.
+@c for HTML.  We use a simple blank line to produce the correct behavior.
 @c
-@c We use @xseealso now because Texinfo introduced its own @seealso
-@c command.  But instead of modifying all source files, we'll have the
-@c munge-texi script convert @seealso to @xseealso.
+@c The macro is named @xseealso now because Texinfo introduced its own @seealso
+@c command.  But, instead of modifying all source files, the build system uses
+@c the munge-texi script to convert @seealso to @xseealso.
 
 @macro xseealso {args}
 @iftex
@@ -78,26 +95,9 @@ See also: \args\.
 @end ifinfo
 @end macro
 
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
+@c ------------------------------------------------------------
+@c non-macro items
+@c ------------------------------------------------------------
 
 @c These may be useful for all, not just for octave.texi.
 @tex
@@ -121,5 +121,6 @@ See also: \args\.
   \fi
 @end tex
 
-@c Make the apostrophe in code examples cut-and-paste friendly.
+@c Make the apostrophe in code examples cut-and-paste friendly so programmers
+@c can take examples from the Octave manual and directly run them in Octave.
 @codequoteundirected on

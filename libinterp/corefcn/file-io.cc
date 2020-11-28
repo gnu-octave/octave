@@ -834,7 +834,7 @@ function exactly equivalent to @code{printf}.
 The optional output returns the number of bytes written to the file.
 
 Implementation Note: For compatibility with @sc{matlab}, escape sequences in
-the template string (e.g., @qcode{"@xbackslashchar{}n"} => newline) are
+the template string (e.g., @qcode{"@backslashchar{}n"} => newline) are
 expanded even when the template string is defined with single quotes.
 @seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}
 @end deftypefn */)
@@ -857,7 +857,7 @@ complete description of the syntax of the template string.
 @end ifclear
 
 Implementation Note: For compatibility with @sc{matlab}, escape sequences in
-the template string (e.g., @qcode{"@xbackslashchar{}n"} => newline) are
+the template string (e.g., @qcode{"@backslashchar{}n"} => newline) are
 expanded even when the template string is defined with single quotes.
 @seealso{fprintf, sprintf, scanf}
 @end deftypefn */)
@@ -934,7 +934,7 @@ sized string as an argument, Octave's @code{sprintf} function returns the
 string, automatically sized to hold all of the items converted.
 
 Implementation Note: For compatibility with @sc{matlab}, escape sequences in
-the template string (e.g., @qcode{"@xbackslashchar{}n"} => newline) are
+the template string (e.g., @qcode{"@backslashchar{}n"} => newline) are
 expanded even when the template string is defined with single quotes.
 @seealso{printf, fprintf, sscanf}
 @end deftypefn */)
@@ -1446,12 +1446,12 @@ example), then the default is zero.
 @item @qcode{"EndOfLine"}
 @var{value} can be either an empty or one character specifying the
 end-of-line character, or the pair
-@qcode{"@xbackslashchar{}r@xbackslashchar{}n"} (CRLF).
+@qcode{"@backslashchar{}r@backslashchar{}n"} (CRLF).
 In the latter case, any of
-@qcode{"@xbackslashchar{}r"}, @qcode{"@xbackslashchar{}n"} or
-@qcode{"@xbackslashchar{}r@xbackslashchar{}n"} is counted as a (single)
+@qcode{"@backslashchar{}r"}, @qcode{"@backslashchar{}n"} or
+@qcode{"@backslashchar{}r@backslashchar{}n"} is counted as a (single)
 newline.  If no value is given,
-@qcode{"@xbackslashchar{}r@xbackslashchar{}n"} is used.
+@qcode{"@backslashchar{}r@backslashchar{}n"} is used.
 @c If set to "" (empty string) EOLs are ignored as delimiters and added
 @c to whitespace.
 
@@ -1489,7 +1489,7 @@ The default value for whitespace is
 @c Note: the next line specifically has a newline which generates a space
 @c       in the output of qcode, but keeps the next line < 80 characters.
 @qcode{"
-@xbackslashchar{}b@xbackslashchar{}r@xbackslashchar{}n@xbackslashchar{}t"}
+@backslashchar{}b@backslashchar{}r@backslashchar{}n@backslashchar{}t"}
 (note the space).  Unless whitespace is set to @qcode{""} (empty) AND at
 least one @qcode{"%s"} format conversion specifier is supplied, a space is
 always part of whitespace.

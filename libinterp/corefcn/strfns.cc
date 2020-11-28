@@ -1078,7 +1078,7 @@ DEFUN (newline, args, ,
 @deftypefn {} {} newline
 Return the character corresponding to a newline.
 
-This is equivalent to @qcode{"@xbackslashchar{}n"}.
+This is equivalent to @qcode{"@backslashchar{}n"}.
 
 Example Code
 

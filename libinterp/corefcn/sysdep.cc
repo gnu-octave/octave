@@ -1074,7 +1074,8 @@ The variable @var{rootkey} must be a string with a valid root key identifier:
 
 Examples:
 
-Get a list of value names at the key @nospell{@qcode{'HKCU\Environment'}}:
+Get a list of value names at the key
+@nospell{@qcode{'HKCU@backslashchar{}Environment'}}:
 
 @example
 @group

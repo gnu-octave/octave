@@ -4584,7 +4584,7 @@ the left of the specified balance column.
 
 The default format is:
 
-@qcode{"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@xbackslashchar{}n"}
+@qcode{"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@backslashchar{}n"}
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.

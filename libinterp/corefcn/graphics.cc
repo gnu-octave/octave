@@ -14350,7 +14350,7 @@ warning is issued and a value of 1 is used instead.  If the timeout value is
 not an integer, it is truncated towards 0.
 
 To define a condition on a property named @qcode{"timeout"}, use the string
-@qcode{'\timeout'} instead.
+@qcode{'@backslashchar{}timeout'} instead.
 
 In all cases, typing CTRL-C stops program execution immediately.
 @seealso{waitforbuttonpress, isequal}

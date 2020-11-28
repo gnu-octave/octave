@@ -944,8 +944,8 @@ DEFUN (do_string_escapes, args, ,
 Convert escape sequences in @var{string} to the characters they represent.
 
 Escape sequences begin with a leading backslash
-(@qcode{'@xbackslashchar{}'}) followed by 1--3 characters
-(.e.g., @qcode{"@xbackslashchar{}n"} => newline).
+(@qcode{'@backslashchar{}'}) followed by 1--3 characters
+(.e.g., @qcode{"@backslashchar{}n"} => newline).
 @seealso{undo_string_escapes}
 @end deftypefn */)
 {
@@ -1661,7 +1661,7 @@ indexing using @var{ind} will not perform the check again.
 
 Implementation Note: Strings are first converted to double values before the
 checks for valid indices are made.  Unless a string contains the NULL
-character @nospell{"@xbackslashchar{}0"}, it will always be a valid index.
+character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 @end deftypefn */)
 {
   int nargin = args.length ();

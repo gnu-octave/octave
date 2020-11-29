@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <cstdlib>
+
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "lo-error.h"
@@ -51,6 +53,18 @@ namespace octave
 {
   namespace sys
   {
+    int
+    system (const std::string& cmd_str)
+    {
+#if defined (OCTAVE_USE_WINDOWS_API)
+      const std::wstring wcmd_str =  u8_to_wstring (cmd_str);
+
+      return _wsystem (wcmd_str.c_str ());
+#else
+      return ::system (cmd_str.c_str ());
+#endif
+    }
+
     std::string
     getcwd (void)
     {

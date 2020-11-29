@@ -41,6 +41,8 @@ namespace octave
 {
   namespace sys
   {
+    extern int system (const std::string& cmd_str);
+
     extern std::string getcwd (void);
 
     extern int chdir (const std::string&);

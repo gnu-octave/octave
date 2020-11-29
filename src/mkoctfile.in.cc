@@ -589,6 +589,7 @@ run_command (const std::string& cmd, bool verbose, bool printonly = false)
   if (verbose)
     std::cout << cmd << std::endl;
 
+  // FIXME: Call _wsystem on Windows or octave::sys::system.
   int result = system (cmd.c_str ());
 
   if (octave_wifexited_wrapper (result))

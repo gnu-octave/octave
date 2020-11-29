@@ -293,7 +293,7 @@ Windows systems.
     retval = run_command_and_return_output (cmd_str);
   else
     {
-      int status = system (cmd_str.c_str ());
+      int status = octave::sys::system (cmd_str);
 
       // The value in status is as returned by waitpid.  If
       // the process exited normally, extract the actual exit

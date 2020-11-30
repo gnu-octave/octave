@@ -130,7 +130,8 @@ function retval = num2str (x, arg)
     nd = ndims (x);
     nc = columns (x) * (nd - 1);    # ND-arrays are expanded in columns
     x  = permute (x, [2, 3:nd, 1]);
-    if (! (sum (fmt == "%") > 1 || any (strcmp (fmt, {"%s", "%c"}))))
+    if (! (sum (strrep (fmt, "%%", "") == "%") > 1
+           || any (strcmp (fmt, {"%s", "%c"}))))
       fmt = [deblank(repmat (fmt, 1, nc)), "\n"];
     endif
     strtmp = sprintf (fmt, x);

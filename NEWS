@@ -135,8 +135,14 @@ the file contains a 2-D text matrix.
 
 - The `FMT` format argument for plot commands now accepts long forms for
 color names which may be more understandable than the existing
-one-letter codes.   For example, the RGB value `[0 0 0]` can now be
+one-letter codes.  For example, the RGB value `[0 0 0]` can now be
 specified by `"black"` in addition to `"k"`.
+
+- The color graphics properties, for example `"EdgeColor"` or
+`"FaceColor"`, now accept HTML specifications.  An HTML specification is
+a string that begins with the character '#' and is followed by either 3
+or 6 hexadecimal digits.  For example, magenta which is 100% red and
+blue values can specified by `"#FF00FF"` or `"#F0F"`.  
 
 - `uicontrol` objects now fully implement the `"Off"` and `"Inactive"`
 values of the `"Enable"` property.  When the value is `"Off"`, no

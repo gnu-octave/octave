@@ -1830,10 +1830,44 @@ returns a list of factory defaults.
 @cindex graphics colors
 @cindex colors, graphics
 
-Colors may be specified as RGB triplets with values ranging from zero to
-one, or by name.  Recognized color names include @qcode{"blue"},
-@qcode{"black"}, @qcode{"cyan"}, @qcode{"green"}, @qcode{"magenta"},
-@qcode{"red"}, @qcode{"white"}, and @qcode{"yellow"}.
+Colors may be specified in three ways: 1) RGB triplets, 2) by name, or 3) by HTML notation.
+
+@table @asis
+
+@item RGB triplet
+
+An RGB triplet is a 1x3 vector where each value is between 0 and 1 inclusive.
+The first value represents the percentage of Red, the second value the
+percentage of Green, and the third value the percentage of Blue.  For example,
+@code{[1, 0, 1]} represents full Red and Blue channels resulting in the color
+magenta.
+
+@item short or long name
+
+Eight colors can be specified directly by name or by a single character short
+name.
+
+@multitable @columnfractions 0.21 0.79
+@headitem Name @tab Color
+@item @samp{k}, @qcode{"black"}   @tab blacK
+@item @samp{r}, @qcode{"red"}     @tab Red
+@item @samp{g}, @qcode{"green"}   @tab Green
+@item @samp{b}, @qcode{"blue"}    @tab Blue
+@item @samp{y}, @qcode{"yellow"}  @tab Yellow
+@item @samp{m}, @qcode{"magenta"} @tab Magenta
+@item @samp{c}, @qcode{"cyan"}    @tab Cyan
+@item @samp{w}, @qcode{"white"}   @tab White
+@end multitable
+
+@item HTML notation
+
+HTML notation is a string that begins with the character @samp{#} and is
+followed by either 3 or 6 hexadecimal digits.  As with RGB triplets, each
+hexadecimal number represents the fraction of the Red, Green, and Blue channels
+present in the specified color.  For example, @qcode{"#FF00FF"} represents
+the color magenta.
+
+@end table
 
 @node Line Styles
 @subsection Line Styles

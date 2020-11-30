@@ -1381,6 +1381,7 @@ color_values::str2rgb (const std::string& str_arg)
 
   std::transform (str.begin (), str.end (), str.begin (), tolower);
 
+  // "blue" must precede black for Matlab compatibility
   if (str.compare (0, len, "blue", 0, len) == 0)
     tmp_rgb[2] = 1;
   else if (str.compare (0, len, "black", 0, len) == 0
@@ -1399,6 +1400,38 @@ color_values::str2rgb (const std::string& str_arg)
   else if (str.compare (0, len, "white", 0, len) == 0
            || str.compare (0, len, "w", 0, len) == 0)
     tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 1;
+  else if (str[0] == '#' && len == 7)
+    {
+      try
+        {
+          tmp_rgb[0] = static_cast<double> (stoi (str.substr (1,2), nullptr, 16))
+                       / 255.0;
+          tmp_rgb[1] = static_cast<double> (stoi (str.substr (3,2), nullptr, 16))
+                       / 255.0;
+          tmp_rgb[2] = static_cast<double> (stoi (str.substr (5,2), nullptr, 16))
+                       / 255.0;
+        }
+      catch (...)
+        {
+          retval = false;
+        }
+    }
+  else if (str[0] == '#' && len == 4)
+    {
+      try
+        {
+          tmp_rgb[0] = static_cast<double> (stoi (str.substr (1,1), nullptr, 16))
+                       / 15.0;
+          tmp_rgb[1] = static_cast<double> (stoi (str.substr (2,1), nullptr, 16))
+                       / 15.0;
+          tmp_rgb[2] = static_cast<double> (stoi (str.substr (3,1), nullptr, 16))
+                       / 15.0;
+        }
+      catch (...)
+        {
+          retval = false;
+        }
+    }
   else
     retval = false;
 

@@ -44,17 +44,17 @@
 ## @group
 ## S = pi * speye (2,2)
 ## S =
-## 
+##
 ## Compressed Column Sparse (rows = 2, cols = 2, nnz = 2 [50%])
-## 
+##
 ##   (1, 1) -> 3.1416
 ##   (2, 2) -> 3.1416
-## 
+##
 ## y = spfun (@@cos, S)
 ## y =
-## 
+##
 ## Compressed Column Sparse (rows = 2, cols = 2, nnz = 2 [50%])
-## 
+##
 ##   (1, 1) -> -1
 ##   (2, 2) -> -1
 ## @end group
@@ -62,9 +62,9 @@
 ## @group
 ## y = cos (S)
 ## y =
-## 
+##
 ## Compressed Column Sparse (rows = 2, cols = 2, nnz = 4 [100%])
-## 
+##
 ##   (1, 1) -> -1
 ##   (2, 1) -> 1
 ##   (1, 2) -> 1
@@ -101,5 +101,5 @@ endfunction
 ## Test input validation
 %!error <Invalid call> spfun ()
 %!error <Invalid call> spfun (@cos)
-%!error <S must be numeric> spfun (@cos, {1}) 
-%!error <S must be numeric> spfun (@cos, "FooBar") 
+%!error <S must be numeric> spfun (@cos, {1})
+%!error <S must be numeric> spfun (@cos, "FooBar")

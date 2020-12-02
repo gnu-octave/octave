@@ -63,7 +63,7 @@ function n = vecnorm (A, p = 2, dim)
   if (! isnumeric (A))
     error ("vecnorm: A must be numeric");
   endif
-    
+
   if (! (isscalar (p) && isreal (p) && p > 0))
     error ("vecnorm: P must be positive real scalar or Inf");
   endif

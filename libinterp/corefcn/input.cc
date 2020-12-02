@@ -626,7 +626,7 @@ namespace octave
 
     return;
    }
- 
+
   octave_value
   input_system::auto_repeat_debug_command (const octave_value_list& args,
                                            int nargout)

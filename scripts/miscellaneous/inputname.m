@@ -131,7 +131,7 @@ endfunction
 
 %!test
 %! assert (__iname1__ ('xvar'), "");
-%! xvar = 1; 
+%! xvar = 1;
 %! assert (__iname1__ (xvar), "xvar");
 
 %!test

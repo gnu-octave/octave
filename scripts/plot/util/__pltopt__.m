@@ -109,7 +109,7 @@ function [options, valid] = __pltopt__ (caller, opt, err_on_invalid = true)
 
   nel = numel (opt);
 
-  if (nel) 
+  if (nel)
     for i = nel:-1:1
       [options(i), valid] = decode_linespec (caller, opt{i}, err_on_invalid);
       if (! err_on_invalid && ! valid)

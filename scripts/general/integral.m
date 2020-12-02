@@ -115,7 +115,7 @@ function q = integral (f, a, b, varargin)
   if (nargin < 3 || (mod (nargin, 2) == 0))
     print_usage ();
   endif
-  
+
   ## quadcc can't handle complex limits or integrands, but quadgk & quadv can.
   ## Check for simple cases of complex limits and integrand.
   f_is_complex = false;
@@ -210,7 +210,7 @@ function q = integral (f, a, b, varargin)
       else
         if (! f_is_complex)
           try
-            q = quadcc (f, a, b, [abstol, reltol]); 
+            q = quadcc (f, a, b, [abstol, reltol]);
           catch quaderror
             if (strcmp (quaderror.message,
                         "quadcc: integrand F must return a single, real-valued vector"))

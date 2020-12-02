@@ -1289,7 +1289,7 @@ namespace octave
     const double single_prec_fac = 10.0;
 
     double avgZ = x_zlim(0) / 2.0 + x_zlim(1) / 2.0;
-    double span 
+    double span
       = std::max (expansion_fac * (x_zlim(1)-x_zlim(0)),
                   single_prec_fac * std::abs (avgZ)
                   * std::numeric_limits<float>::epsilon ());

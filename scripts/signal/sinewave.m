@@ -38,7 +38,7 @@ function x = sinewave (m, n, d = 0)
   if (nargin < 1)
     print_usage ();
   endif
-    
+
   ## FIXME: No input validation of M, N, or D
   if (nargin < 2)
     n = m;

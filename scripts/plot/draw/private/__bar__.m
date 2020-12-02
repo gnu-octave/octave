@@ -276,25 +276,15 @@ function hglist = bars (hax, vertical, x, y, xb, yb, width, group, have_color_sp
 
     if (vertical)
       if (! have_color_spec)
-        if (nbars == 1)
-          lev = clim(1);
-        else
-          lev = (i - 1) * (clim(2) - clim(1)) / (nbars - 1) - clim(1);
-        endif
-        h = patch (hax, xb(:,:,i), yb(:,:,i),
-                        "FaceColor", "flat", "cdata", lev, "parent", hg);
+        color = __next_line_color__ ();
+        h = patch (hax, xb(:,:,i), yb(:,:,i), "FaceColor", color, "parent", hg);
       else
         h = patch (hax, xb(:,:,i), yb(:,:,i), "parent", hg);
       endif
     else
       if (! have_color_spec)
-        if (nbars == 1)
-          lev = clim(1);
-        else
-          lev = (i - 1) * (clim(2) - clim(1)) / (nbars - 1) - clim(1);
-        endif
-        h = patch (hax, yb(:,:,i), xb(:,:,i),
-                        "FaceColor", "flat", "cdata", lev, "parent", hg);
+        color = __next_line_color__ ();
+        h = patch (hax, yb(:,:,i), xb(:,:,i), "FaceColor", color, "parent", hg);
       else
         h = patch (hax, yb(:,:,i), xb(:,:,i), "parent", hg);
       endif

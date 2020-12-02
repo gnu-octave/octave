@@ -94,18 +94,9 @@
 ## @end example
 ##
 ## @noindent
-## The color of the bars is taken from the figure's colormap, such that
-##
-## @example
-## @group
-## bar (rand (10, 3));
-## colormap (summer (64));
-## @end group
-## @end example
-##
-## @noindent
-## will change the colors used for the bars.  The color of bars can also be set
-## manually using the @qcode{"facecolor"} property as shown below.
+## The default color for bars is taken from the axes' @qcode{"ColorOrder"}
+## property.  The color of bars can also be set manually using the
+## @qcode{"facecolor"} property as shown below.
 ##
 ## @example
 ## @group

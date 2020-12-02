@@ -61,16 +61,9 @@
 ## @end example
 ##
 ## @noindent
-## The histogram's colors also depend upon the current colormap.
-##
-## @example
-## @group
-## hist (rand (10, 3));
-## colormap (summer ());
-## @end group
-## @end example
-##
 ## The full list of patch properties is documented at @ref{Patch Properties}.
+## If not specified, the default colors for the histogram are taken from the
+## axes' @qcode{"ColorOrder"} property.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

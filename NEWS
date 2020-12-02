@@ -142,7 +142,7 @@ specified by `"black"` in addition to `"k"`.
 `"FaceColor"`, now accept HTML specifications.  An HTML specification is
 a string that begins with the character '#' and is followed by either 3
 or 6 hexadecimal digits.  For example, magenta which is 100% red and
-blue values can specified by `"#FF00FF"` or `"#F0F"`.  
+blue values can specified by `"#FF00FF"` or `"#F0F"`.
 
 - `uicontrol` objects now fully implement the `"Off"` and `"Inactive"`
 values of the `"Enable"` property.  When the value is `"Off"`, no
@@ -163,6 +163,10 @@ in a Matlab-compatible manner.  Negative values now stack below the zero
 axis independently of a positive value bars in the same stack.
 Previously the negative bars could overlap positive bars depending on
 drawing order.
+
+- The functions `bar`, `barh`, and `hist` now use colors from the
+`"ColorOrder"` axes property rather than the `"Colormap"` figure
+property.
 
 - The function `saveas` now defaults to saving in Octave figure format
 (.ofig) rather than PDF (.pdf).

@@ -1870,7 +1870,7 @@ file @file{data} in Octave's binary format.
 %! struc.e = {"foo", "bar"};  # cell string
 %! struc.f = {"Saint Barthélemy", "Saint Kitts and Nevis"};  # non-ASCII
 %! struc.g = [1 2 3];  # double vector
-%! struc.e = 1:5;  # range
+%! struc.h = 1:5;  # range
 %! struc2 = struc;
 %! mat_file = [tempname(), ".mat"];
 %! unwind_protect
@@ -1883,7 +1883,7 @@ file @file{data} in Octave's binary format.
 %! assert (struc, struc2);
 
 ## Save and load struct with "-v7"
-%!test
+%!testif HAVE_ZLIB
 %! struc.a = "foobar";  # normal string
 %! struc.b = "a";  # short string
 %! struc.c = ["foo"; "bar"];  # character matrix
@@ -1891,7 +1891,7 @@ file @file{data} in Octave's binary format.
 %! struc.e = {"foo", "bar"};  # cell string
 %! struc.f = {"Saint Barthélemy", "Saint Kitts and Nevis"};  # non-ASCII
 %! struc.g = [1 2 3];  # double vector
-%! struc.e = 1:5;  # range
+%! struc.h = 1:5;  # range
 %! struc2 = struc;
 %! mat_file = [tempname(), ".mat"];
 %! unwind_protect

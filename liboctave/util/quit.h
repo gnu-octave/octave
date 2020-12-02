@@ -89,7 +89,7 @@ namespace octave
             && a.column () == b.column ());
   }
 
-  class execution_exception : std::runtime_error
+  class execution_exception : public std::runtime_error
   {
   public:
 

@@ -31,6 +31,8 @@ class QUnixTerminalImpl : public QTerminal
 {
     Q_OBJECT
 
+    int fdstdin;
+    int fdstdout;
     int fdstderr;
 
 public:

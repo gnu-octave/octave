@@ -107,8 +107,12 @@ QUnixTerminalImpl::get_hotspot_actions (const QPoint& at)
 
 void QUnixTerminalImpl::connectToPty()
 {
-    // Store the file descriptor associated with the STDERR stream onto
-    // another temporary file descriptor for reconnect in the destructor.
+    // Store the file descriptor associated with the STDIN, STDOUT, and
+    // STDERR streams onto another temporary file descriptor for
+    // reconnect in the destructor.
+
+    fdstdin = dup (STDIN_FILENO);
+    fdstdout = dup (STDOUT_FILENO);
     fdstderr = dup (STDERR_FILENO);
 
     int fds = m_kpty->slaveFd();
@@ -136,7 +140,11 @@ QUnixTerminalImpl::~QUnixTerminalImpl()
     delete m_kpty;
     delete m_terminalView;
 
-    // Restore stderr so that any errors at exit might appear somewhere.
+    // Restore STDIN, STDOUT, and STDERR so that I/O at exit will work
+    // as expected.
+
+    dup2 (fdstdin, STDIN_FILENO);
+    dup2 (fdstdout, STDOUT_FILENO);
     dup2 (fdstderr, STDERR_FILENO);
 
     emit destroyed();

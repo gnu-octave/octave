@@ -2138,17 +2138,19 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       ret += 8;
 
       octave_idx_type str_len;
+      size_t sz_of = 1;
       if (u16_str)
         {
-          // Count number of elements in converted string
-          str_len = 2 * n16_str;
           free (u16_str);
+          // Count number of elements in converted string
+          str_len = n16_str;
+          sz_of = 2;
         }
       else
         str_len = chm.numel ();
 
       if (str_len > 2)
-        ret += PAD (str_len);
+        ret += PAD (sz_of * str_len);
     }
   else if (tc.issparse ())
     {
@@ -2265,7 +2267,6 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
 
       for (octave_idx_type j = 0; j < nel; j++)
         {
-
           for (auto i = m.begin (); i != m.end (); i++)
             {
               const Cell elts = m.contents (i);

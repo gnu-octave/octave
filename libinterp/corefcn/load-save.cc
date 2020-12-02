@@ -165,8 +165,6 @@ namespace octave
   {
     bool retval = false;
 
-    std::string ascii_fname = sys::get_ASCII_filename (fname);
-
     std::ifstream file = sys::ifstream (fname.c_str (),
                                         std::ios::in | std::ios::binary);
 
@@ -1819,14 +1817,16 @@ file @file{data} in Octave's binary format.
 /*
 ## Save and load strings with "-v6"
 %!test
-%! A = A2 = ["foo"; "bar"];
-%! B = B2 = "foobar";
-%! C = C2 = {"foo", "bar"};
-%! D = D2 = {"Saint Barthélemy", "Saint Kitts and Nevis"};
+%! A = A2 = "foobar";  # normal string
+%! B = B2 = "a";  # short string
+%! C = C2 = ["foo"; "bar"];  # character matrix
+%! D = D2 = "ab".';  # short character matrix
+%! E = E2 = {"foo", "bar"};  # cell string
+%! F = F2 = {"Saint Barthélemy", "Saint Kitts and Nevis"};  % non-ASCII
 %! mat_file = [tempname(), ".mat"];
 %! unwind_protect
-%!   save (mat_file, "A", "B", "C", "D", "-v6");
-%!   clear ("A", "B", "C", "D");
+%!   save (mat_file, "A", "B", "C", "D", "E", "F", "-v6");
+%!   clear ("A", "B", "C", "D", "E", "F");
 %!   load (mat_file);
 %! unwind_protect_cleanup
 %!   unlink (mat_file);
@@ -1835,17 +1835,21 @@ file @file{data} in Octave's binary format.
 %! assert (B, B2);
 %! assert (C, C2);
 %! assert (D, D2);
+%! assert (E, E2);
+%! assert (F, F2);
 
 ## Save and load strings with "-v7"
 %!testif HAVE_ZLIB
-%! A = A2 = ["foo"; "bar"];
-%! B = B2 = "foobar";
-%! C = C2 = {"foo", "bar"};
-%! D = D2 = {"Saint Barthélemy", "Saint Kitts and Nevis"};
+%! A = A2 = "foobar";  # normal string
+%! B = B2 = "a";  # short string
+%! C = C2 = ["foo"; "bar"];  # character matrix
+%! D = D2 = "ab".';  # short character matrix
+%! E = E2 = {"foo", "bar"};  # cell string
+%! F = F2 = {"Saint Barthélemy", "Saint Kitts and Nevis"};  # non-ASCII
 %! mat_file = [tempname(), ".mat"];
 %! unwind_protect
-%!   save (mat_file, "A", "B", "C", "D", "-v7");
-%!   clear ("A", "B", "C", "D");
+%!   save (mat_file, "A", "B", "C", "D", "E", "F", "-v7");
+%!   clear ("A", "B", "C", "D", "E", "F");
 %!   load (mat_file);
 %! unwind_protect_cleanup
 %!   unlink (mat_file);
@@ -1854,6 +1858,50 @@ file @file{data} in Octave's binary format.
 %! assert (B, B2);
 %! assert (C, C2);
 %! assert (D, D2);
+%! assert (E, E2);
+%! assert (F, F2);
+
+## Save and load struct with "-v6"
+%!test
+%! struc.a = "foobar";  # normal string
+%! struc.b = "a";  # short string
+%! struc.c = ["foo"; "bar"];  # character matrix
+%! struc.d = "ab".';  # short character matrix
+%! struc.e = {"foo", "bar"};  # cell string
+%! struc.f = {"Saint Barthélemy", "Saint Kitts and Nevis"};  # non-ASCII
+%! struc.g = [1 2 3];  # double vector
+%! struc.e = 1:5;  # range
+%! struc2 = struc;
+%! mat_file = [tempname(), ".mat"];
+%! unwind_protect
+%!   save (mat_file, "struc", "-v6");
+%!   clear ("struc");
+%!   load (mat_file);
+%! unwind_protect_cleanup
+%!   unlink (mat_file);
+%! end_unwind_protect
+%! assert (struc, struc2);
+
+## Save and load struct with "-v7"
+%!test
+%! struc.a = "foobar";  # normal string
+%! struc.b = "a";  # short string
+%! struc.c = ["foo"; "bar"];  # character matrix
+%! struc.d = "ab".';  # short character matrix
+%! struc.e = {"foo", "bar"};  # cell string
+%! struc.f = {"Saint Barthélemy", "Saint Kitts and Nevis"};  # non-ASCII
+%! struc.g = [1 2 3];  # double vector
+%! struc.e = 1:5;  # range
+%! struc2 = struc;
+%! mat_file = [tempname(), ".mat"];
+%! unwind_protect
+%!   save (mat_file, "struc", "-v7");
+%!   clear ("struc");
+%!   load (mat_file);
+%! unwind_protect_cleanup
+%!   unlink (mat_file);
+%! end_unwind_protect
+%! assert (struc, struc2);
 
 ## Test input validation
 %!testif HAVE_ZLIB <*59225>

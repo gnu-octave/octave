@@ -44,7 +44,7 @@ namespace octave
   terminal_dock_widget::terminal_dock_widget (QWidget *p,
                                               base_qobject& oct_qobj)
     : octave_dock_widget ("TerminalDockWidget", p, oct_qobj),
-      m_terminal (QTerminal::create (oct_qobj, p))
+      m_terminal (QTerminal::create (oct_qobj, this))
   {
     m_terminal->setObjectName ("OctaveTerminal");
     m_terminal->setFocusPolicy (Qt::StrongFocus);
@@ -91,10 +91,7 @@ namespace octave
     setGeometry (0, 0, win_x, win_y);
   }
 
-  terminal_dock_widget::~terminal_dock_widget (void)
-  {
-    delete m_terminal;
-  }
+  terminal_dock_widget::~terminal_dock_widget (void) { }
 
   bool terminal_dock_widget::has_focus (void) const
   {

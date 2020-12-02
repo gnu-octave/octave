@@ -170,7 +170,7 @@ namespace octave
 
     construct_central_widget ();
 
-    m_status_bar = new QStatusBar ();
+    m_status_bar = new QStatusBar (this);
     m_profiler_status_indicator = new led_indicator ();
     QLabel *text = new QLabel (tr ("Profiler"));
     m_status_bar->addPermanentWidget (text);
@@ -254,20 +254,6 @@ namespace octave
 
   main_window::~main_window (void)
   {
-    // Destroy the terminal first so that STDERR stream is redirected back
-    // to its original pipe to capture error messages at exit.
-
-    delete m_editor_window;     // first one for dialogs of modified editor-tabs
-    delete m_external_editor;
-    delete m_command_window;
-    delete m_workspace_window;
-    delete m_doc_browser_window;
-    delete m_file_browser_window;
-    delete m_history_window;
-    delete m_status_bar;
-    delete m_variable_editor_window;
-
-    delete m_find_files_dlg;
     delete m_release_notes_window;
     delete m_community_news_window;
   }
@@ -707,7 +693,11 @@ namespace octave
           news = (tr ("The release notes file '%1' cannot be read.")
                   . arg (QString::fromStdString (news_file)));
 
-        m_release_notes_window = new QWidget;
+        // We want the window manager to give the release notes window
+        // a title bar, so don't its parent to main_window.  Do remember
+        // to delete in the main_window destructor.
+
+        m_release_notes_window = new QWidget ();
 
         QTextBrowser *browser = new QTextBrowser (m_release_notes_window);
         browser->setText (news);
@@ -785,7 +775,11 @@ namespace octave
   {
     if (! m_community_news_window)
       {
-        m_community_news_window = new QWidget;
+        // We want the window manager to give the community news window
+        // a title bar, so don't its parent to main_window.  Do remember
+        // to delete in the main_window destructor.
+
+        m_community_news_window = new QWidget ();
 
         QTextBrowser *browser = new QTextBrowser (m_community_news_window);
 

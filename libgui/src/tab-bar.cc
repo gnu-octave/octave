@@ -38,10 +38,7 @@ namespace octave
     : QTabBar (p), m_context_menu (new QMenu (this))
   { }
 
-  tab_bar::~tab_bar (void)
-  {
-    delete m_context_menu;
-  }
+  tab_bar::~tab_bar (void) { }
 
   // slots for tab navigation
   void tab_bar::switch_left_tab (void)

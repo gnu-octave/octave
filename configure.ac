@@ -1058,6 +1058,24 @@ AC_FUNC_ALLOCA
 ## Does the C compiler support Automake subdir-objects option?
 AM_PROG_CC_C_O
 
+## Set the target Windows version early so that gnulib can use all functions
+## that are available in that version.
+case $host_os in
+  msdosmsvc | mingw*)
+    AC_MSG_CHECKING([for required _WIN32_WINNT])
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <windows.h>
+        #if _WIN32_WINNT < 0x0403
+        #error "Wrong version"
+        #endif
+        ]], [])],
+      [AC_MSG_RESULT([none])],
+      [AC_DEFINE(_WIN32_WINNT, 0x0403,
+        [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount.])
+       AC_MSG_RESULT([0x0403])])
+  ;;
+esac
+
 ### gnulib initialization: part 2
 dnl Must take place after part 1, and after standard compiler options and
 dnl search paths have been established, and at the same priority level as
@@ -1226,23 +1244,6 @@ if test $octave_cv_header_math_defines = yes; then
 else
   AC_MSG_ERROR([MATH DEFINES in math.h such as M_PI are required to build Octave])
 fi
-
-## Windows-specific tests for extra #defines
-case $host_os in
-  msdosmsvc | mingw*)
-    AC_MSG_CHECKING([for required _WIN32_WINNT])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <windows.h>
-        #if _WIN32_WINNT < 0x0403
-        #error "Wrong version"
-        #endif
-        ]], [])],
-      [AC_MSG_RESULT([none])],
-      [AC_DEFINE(_WIN32_WINNT, 0x0403,
-        [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount.])
-       AC_MSG_RESULT([0x0403])])
-  ;;
-esac
 
 ## Windows-specific use of functions
 case $host_os in

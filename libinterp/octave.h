@@ -33,6 +33,8 @@
 
 #include "str-vec.h"
 
+class octave_value;
+
 namespace octave
 {
   // Command line arguments.  See also options-usage.h.
@@ -111,6 +113,8 @@ namespace octave
     void texi_macros_file (const std::string& arg) { m_texi_macros_file = arg; }
     void all_args (const string_vector& arg) { m_all_args = arg; }
     void remaining_args (const string_vector& arg) { m_remaining_args = arg; }
+
+    octave_value as_octave_value (void) const;
 
   private:
 

@@ -236,6 +236,43 @@ namespace octave
                                       argc-octave_optind_wrapper ());
   }
 
+  octave_value cmdline_options::as_octave_value (void) const
+  {
+    octave_scalar_map m;
+
+    m.assign ("sys_argc", sys_argc ());
+    m.assign ("sys_argv", string_vector (sys_argv ()));
+    m.assign ("debug_jit", debug_jit ());
+    m.assign ("echo_commands", echo_commands ());
+    m.assign ("forced_interactive", forced_interactive ());
+    m.assign ("forced_line_editing", forced_line_editing ());
+    m.assign ("gui", gui ());
+    m.assign ("inhibit_startup_message", inhibit_startup_message ());
+    m.assign ("jit_compiler", jit_compiler ());
+    m.assign ("line_editing", line_editing ());
+    m.assign ("no_window_system", no_window_system ());
+    m.assign ("persist", persist ());
+    m.assign ("read_history_file", read_history_file ());
+    m.assign ("read_init_files", read_init_files ());
+    m.assign ("read_site_files", read_site_files ());
+    m.assign ("set_initial_path", set_initial_path ());
+    m.assign ("traditional", traditional ());
+    m.assign ("verbose_flag", verbose_flag ());
+    m.assign ("code_to_eval", code_to_eval ());
+    m.assign ("command_line_path", string_vector (command_line_path ()));
+    m.assign ("docstrings_file", docstrings_file ());
+    m.assign ("doc_cache_file", doc_cache_file ());
+    m.assign ("exec_path", exec_path ());
+    m.assign ("image_path", image_path ());
+    m.assign ("info_file", info_file ());
+    m.assign ("info_program", info_program ());
+    m.assign ("texi_macros_file", texi_macros_file ());
+    m.assign ("all_args", all_args ());
+    m.assign ("remaining_args", remaining_args ());
+
+    return m;
+  }
+
   application *application::instance = nullptr;
 
   application::application (int argc, char **argv)
@@ -435,6 +472,26 @@ an example of how to create an executable Octave script.
 %!assert (iscellstr (argv ()))
 %!error argv (1)
 */
+
+DEFUN (cmdline_options, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} argv ()
+Return a structure containing info about the command line arguments
+passed to Octave.
+@end deftypefn */)
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  octave::application *app = octave::application::app ();
+
+  if (! app)
+    error ("invalid application context!");
+
+  octave::cmdline_options opts = app->options ();
+
+  return ovl (opts.as_octave_value ());
+}
 
 DEFUN (program_invocation_name, args, ,
        doc: /* -*- texinfo -*-

@@ -62,15 +62,8 @@ namespace octave
 
     // Create and show main window.
 
-    if (start_gui_p ())
-      {
-        gui_qobject gui_interface (*this);
-        return gui_interface.exec ();
-      }
-    else
-      {
-        cli_qobject cli_interface (*this);
-        return cli_interface.exec ();
-      }
+    base_qobject qt_interface (*this, start_gui_p ());
+
+    return qt_interface.exec ();
   }
 }

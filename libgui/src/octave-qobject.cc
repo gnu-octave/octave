@@ -154,7 +154,7 @@ namespace octave
   // we can handle forward Octave interpreter exceptions from the GUI
   // thread to the interpreter thread.
 
-  base_qobject::base_qobject (qt_application& app_context)
+  base_qobject::base_qobject (qt_application& app_context, bool gui_app)
     : QObject (), m_app_context (app_context),
       m_argc (m_app_context.sys_argc ()),
       m_argv (m_app_context.sys_argv ()),
@@ -165,7 +165,8 @@ namespace octave
       m_qsci_tr (new QTranslator ()), m_translators_installed (false),
       m_qt_interpreter_events (new qt_interpreter_events (*this)),
       m_interpreter_qobj (new interpreter_qobject (*this)),
-      m_main_thread (new QThread ())
+      m_main_thread (new QThread ()), m_gui_app (gui_app),
+      m_main_window (nullptr)
   {
     std::string show_gui_msgs =
       sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
@@ -225,6 +226,32 @@ namespace octave
     connect (qt_link (),
              SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
              this, SLOT (copy_image_to_clipboard (const QString&, bool)));
+
+    if (gui_app)
+      {
+        m_main_window = new main_window (*this);
+
+        connect (m_interpreter_qobj, SIGNAL (ready (void)),
+                 m_main_window, SLOT (handle_octave_ready (void)));
+
+        connect (qt_link (),
+                 SIGNAL (focus_window_signal (const QString&)),
+                 m_main_window, SLOT (focus_window (const QString&)));
+
+        m_app_context.gui_running (true);
+      }
+    else
+      {
+        // Get settings file.
+        m_resource_manager.reload_settings ();
+
+        // After settings.
+        config_translators ();
+
+        m_qapplication->setQuitOnLastWindowClosed (false);
+      }
+
+    start_main_thread ();
   }
 
   base_qobject::~base_qobject (void)
@@ -232,6 +259,8 @@ namespace octave
     // Note that we don't delete m_main_thread here.  That is handled by
     // deleteLater slot that is called when the m_main_thread issues a
     // finished signal.
+
+    delete m_main_window;
 
     delete m_interpreter_qobj;
     delete m_qsci_tr;
@@ -275,7 +304,11 @@ namespace octave
 
   bool base_qobject::confirm_shutdown (void)
   {
-    return true;
+    // Currently, we forward to main_window::confirm_shutdown instead of
+    // just displaying a dialog box here because the main_window also
+    // knows about and is responsible for notifying the editor.
+
+    return m_main_window ? m_main_window->confirm_shutdown () : true;
   }
 
   void base_qobject::handle_interpreter_execution_finished (int exit_status)
@@ -336,48 +369,5 @@ namespace octave
 
     if (remove_file)
       QFile::remove (file);
-  }
-
-  cli_qobject::cli_qobject (qt_application& app_context)
-    : base_qobject (app_context)
-  {
-    // Get settings file.
-    m_resource_manager.reload_settings ();
-
-    // After settings.
-    config_translators ();
-
-    m_qapplication->setQuitOnLastWindowClosed (false);
-
-    start_main_thread ();
-  }
-
-  gui_qobject::gui_qobject (qt_application& app_context)
-    : base_qobject (app_context), m_main_window (new main_window (*this))
-  {
-    connect (m_interpreter_qobj, SIGNAL (ready (void)),
-             m_main_window, SLOT (handle_octave_ready (void)));
-
-    connect (qt_link (),
-             SIGNAL (focus_window_signal (const QString&)),
-             m_main_window, SLOT (focus_window (const QString&)));
-
-    m_app_context.gui_running (true);
-
-    start_main_thread ();
-  }
-
-  gui_qobject::~gui_qobject (void)
-  {
-    delete m_main_window;
-  }
-
-  bool gui_qobject::confirm_shutdown (void)
-  {
-    // Currently, we forward to main_window::confirm_shutdown instead of
-    // just displaying a dialog box here because the main_window also
-    // knows about and is responsible for notifying the editor.
-
-    return m_main_window ? m_main_window->confirm_shutdown () : true;
   }
 }

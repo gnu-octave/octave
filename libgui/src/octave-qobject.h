@@ -83,7 +83,7 @@ namespace octave
 
   public:
 
-    base_qobject (qt_application& app_context);
+    base_qobject (qt_application& app_context, bool gui_app = false);
 
     ~base_qobject (void);
 
@@ -130,6 +130,9 @@ namespace octave
     }
 
     QThread *main_thread (void) { return m_main_thread; }
+
+    // Declared virtual so that a derived class may redefine this
+    // method.
 
     virtual bool confirm_shutdown (void);
 
@@ -178,38 +181,8 @@ namespace octave
     interpreter_qobject *m_interpreter_qobj;
 
     QThread *m_main_thread;
-  };
 
-  //! This object provides a command-line interface to Octave that may
-  //! use Qt graphics.
-
-  class cli_qobject : public base_qobject
-  {
-    Q_OBJECT
-
-  public:
-
-    cli_qobject (qt_application& app_context);
-
-    ~cli_qobject (void) = default;
-  };
-
-  //! This object provides a full GUI interface to Octave that is
-  //! implemented Qt.
-
-  class gui_qobject : public base_qobject
-  {
-    Q_OBJECT
-
-  public:
-
-    gui_qobject (qt_application& app_context);
-
-    ~gui_qobject (void);
-
-    bool confirm_shutdown (void);
-
-  private:
+    bool m_gui_app;
 
     main_window *m_main_window;
   };

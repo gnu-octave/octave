@@ -296,6 +296,9 @@ namespace octave
 
     void update_default_encoding (const QString& default_encoding);
 
+    void get_screen_geometry (int *width, int *height);
+    void set_default_geometry (void);
+
     base_qobject& m_octave_qobj;
 
     workspace_model *m_workspace_model;

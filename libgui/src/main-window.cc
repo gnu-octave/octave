@@ -669,18 +669,11 @@ namespace octave
 
         browser->document ()->adjustSize ();
 
-        // center the window on the screen where octave is running
-        QDesktopWidget *m_desktop = QApplication::desktop ();
-        QRect screen_geo = m_desktop->availableGeometry (this);
+        int win_x, win_y;
+        get_screen_geometry (&win_x, &win_y);
 
-        int win_x = screen_geo.width ();        // width of the screen
-        int win_y = screen_geo.height ();       // height of the screen
-
-        int reln_x = win_x*2/5;  // desired width of release notes
-        int reln_y = win_y*2/3;  // desired height of release notes
-
-        m_release_notes_window->resize (reln_x, reln_y);  // set size
-        m_release_notes_window->move (20, 20);     // move to the top left corner
+        m_release_notes_window->resize (win_x*2/5, win_y*2/3);
+        m_release_notes_window->move (20, 20);  // move to the top left corner
       }
 
     if (! m_release_notes_window->isVisible ())
@@ -749,17 +742,10 @@ namespace octave
         m_community_news_window->setLayout (vlayout);
         m_community_news_window->setWindowTitle (tr ("Octave Community News"));
 
-        // center the window on the screen where octave is running
-        QDesktopWidget *m_desktop = QApplication::desktop ();
-        QRect screen_geo = m_desktop->availableGeometry (this);
+        int win_x, win_y;
+        get_screen_geometry (&win_x, &win_y);
 
-        int win_x = screen_geo.width ();        // width of the screen
-        int win_y = screen_geo.height ();       // height of the screen
-
-        int news_x = win_x/2;  // desired width of news window
-        int news_y = win_y/2;  // desired height of news window
-
-        m_community_news_window->resize (news_x, news_y);  // set size and center
+        m_community_news_window->resize (win_x/2, win_y/2);
         m_community_news_window->move ((win_x - m_community_news_window->width ())/2,
                                        (win_y - m_community_news_window->height ())/2);
       }
@@ -1546,13 +1532,7 @@ namespace octave
         restoreGeometry (mw_geometry.def.toByteArray ());
         restoreState (mw_state.def.toByteArray ());
 
-        QDesktopWidget *m_desktop = QApplication::desktop ();
-        QRect screen_geo = m_desktop->availableGeometry (this);
-
-        int win_x = screen_geo.width ();        // width of the screen
-        int win_y = screen_geo.height ();       // height of the screen
-
-        resize (std::max (width (), 2*win_x/3), std::max (height (), 7*win_y/8));
+        set_default_geometry ();
       }
 
     show ();
@@ -2102,17 +2082,7 @@ namespace octave
     addDockWidget (Qt::LeftDockWidgetArea, m_workspace_window);
     addDockWidget (Qt::LeftDockWidgetArea, m_history_window);
 
-    int win_x = QApplication::desktop ()->width ();
-    int win_y = QApplication::desktop ()->height ();
-
-    if (win_x > 960)
-      win_x = 960;
-
-    if (win_y > 720)
-      win_y = 720;
-
-    setGeometry (0, 0, win_x, win_y);   // excluding frame geometry
-    move (0, 0);                        // including frame geometry
+    set_default_geometry ();
 
     setStatusBar (m_status_bar);
 
@@ -2849,4 +2819,23 @@ namespace octave
          F__mfile_encoding__ (interp, ovl (mfile_encoding));
        });
   }
+
+  void main_window::get_screen_geometry (int *width, int *height)
+  {
+    QRect screen_geometry
+        = QApplication::desktop ()->availableGeometry (this);
+
+    *width = screen_geometry.width ();
+    *height = screen_geometry.height ();
+  }
+
+  void main_window::set_default_geometry ()
+  {
+    int win_x, win_y;
+    get_screen_geometry (&win_x, &win_y);
+
+    move (0, 0);
+    resize (2*win_x/3, 7*win_y/8);
+  }
+
 }

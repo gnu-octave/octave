@@ -796,7 +796,7 @@ namespace octave
 
     if (! dir.empty ())
       {
-        load_path& lp = __get_load_path__ ("contents_in_file_path");
+        load_path& lp = __get_load_path__ ("contents_file_in_path");
 
         std::string tcontents
           = sys::file_ops::concat (lp.find_dir (dir), "Contents.m");

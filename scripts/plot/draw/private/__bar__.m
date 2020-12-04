@@ -125,6 +125,8 @@ function varargout = __bar__ (vertical, func, varargin)
     endif
   endwhile
 
+  ishist = islogical (histc);
+
   ngrp = rows (x);
 
   if (isvector (y) && ngrp != rows (y))
@@ -137,7 +139,7 @@ function varargout = __bar__ (vertical, func, varargin)
   nbars = columns (y);
 
   ## Column width is 1 for 'hist*' styles (bars touch).
-  if (islogical (histc))
+  if (ishist)
     cwidth = 1;
     if (nbars == 1)
       gwidth = 1;
@@ -173,7 +175,7 @@ function varargout = __bar__ (vertical, func, varargin)
   xb = repmat ([x1; x1; x2; x2](:), 1, nbars);
 
   if (group)
-    if (islogical (histc) && histc)
+    if (ishist && histc)
       offset = 2*cdelta * [0:(nbars-1)] + cdelta(1);  # not centered
     else
       offset = 2*cdelta * [-(nbars - 1) / 2 : (nbars - 1) / 2];
@@ -223,7 +225,7 @@ function varargout = __bar__ (vertical, func, varargin)
       hax = newplot (hax);
 
       htmp = bars (hax, vertical, x, y, xb, yb, gwidth, group,
-                   have_line_spec, bv, newargs{:});
+                   have_line_spec | ishist, bv, newargs{:});
 
       if (! ishold ())
         if (numel (x(:,1)) <= 15 && all (x(:,1) == fix (x(:,1))))
@@ -241,7 +243,7 @@ function varargout = __bar__ (vertical, func, varargin)
         else
           set (hax, "clim", [0 1], "ylimmode", "manual");
         endif
-        set (hax, "box", "on", "layer", "top");
+        set (hax, "box", "on", "layer", "top", "climmode", "auto");
       endif
     unwind_protect_cleanup
       if (! isempty (oldfig))
@@ -279,14 +281,14 @@ function hglist = bars (hax, vertical, x, y, xb, yb, width, group, have_color_sp
         color = __next_line_color__ ();
         h = patch (hax, xb(:,:,i), yb(:,:,i), "FaceColor", color, "parent", hg);
       else
-        h = patch (hax, xb(:,:,i), yb(:,:,i), "parent", hg);
+        h = patch (hax, xb(:,:,i), yb(:,:,i), "cdata", i, "parent", hg);
       endif
     else
       if (! have_color_spec)
         color = __next_line_color__ ();
         h = patch (hax, yb(:,:,i), xb(:,:,i), "FaceColor", color, "parent", hg);
       else
-        h = patch (hax, yb(:,:,i), xb(:,:,i), "parent", hg);
+        h = patch (hax, yb(:,:,i), xb(:,:,i), "cdata", i, "parent", hg);
       endif
     endif
 

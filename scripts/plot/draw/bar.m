@@ -95,8 +95,10 @@
 ##
 ## @noindent
 ## The default color for bars is taken from the axes' @qcode{"ColorOrder"}
-## property.  The color of bars can also be set manually using the
-## @qcode{"facecolor"} property as shown below.
+## property.  The default color for bars when a histogram option
+## (@qcode{"hist"}, @qcode{"histc"} is used is the @qcode{"Colormap"} property
+## of either the axes or figure.  The color of bars can also be set manually
+## using the @qcode{"facecolor"} property as shown below.
 ##
 ## @example
 ## @group

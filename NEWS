@@ -164,9 +164,9 @@ axis independently of a positive value bars in the same stack.
 Previously the negative bars could overlap positive bars depending on
 drawing order.
 
-- The functions `bar`, `barh`, and `hist` now use colors from the
-`"ColorOrder"` axes property rather than the `"Colormap"` figure
-property.
+- The functions `bar` and `barh` now use colors from the `"ColorOrder"`
+axes property rather than the `"Colormap"` figure property unless one
+of the histogram options (@qcode{"hist"}, @qcode{"histc"} was specified.
 
 - The function `saveas` now defaults to saving in Octave figure format
 (.ofig) rather than PDF (.pdf).

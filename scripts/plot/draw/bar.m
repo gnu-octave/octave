@@ -114,7 +114,7 @@
 
 function varargout = bar (varargin)
   varargout = cell (nargout, 1);
-  [varargout{:}] = __bar__ (true, "bar", varargin{:});
+  [varargout{:}] = __bar__ ("bar", true, varargin{:});
 endfunction
 
 %!demo

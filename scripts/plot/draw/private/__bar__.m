@@ -28,7 +28,7 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function varargout = __bar__ (vertical, func, varargin)
+function varargout = __bar__ (func, vertical, varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ (func, varargin{:});
 
@@ -224,8 +224,8 @@ function varargout = __bar__ (vertical, func, varargin)
     unwind_protect
       hax = newplot (hax);
 
-      htmp = bars (hax, vertical, x, y, xb, yb, gwidth, group,
-                   have_line_spec | ishist, bv, newargs{:});
+      htmp = bars (hax, ishist, vertical, x, y, xb, yb, gwidth, group,
+                   have_line_spec, bv, newargs{:});
 
       if (! ishold ())
         if (numel (x(:,1)) <= 15 && all (x(:,1) == fix (x(:,1))))
@@ -237,13 +237,17 @@ function varargout = __bar__ (vertical, func, varargin)
             set (hax, "ytick", x(:,1));
           endif
         endif
-        ## Hack prevents color and xlim setting changes when basevalue changes.
-        if (vertical)
-          set (hax, "clim", [0 1], "xlimmode", "manual");
+        if (ishist)
+          set (hax, "climmode", "auto");
         else
-          set (hax, "clim", [0 1], "ylimmode", "manual");
+          ## Hack prevents xlim setting changes when basevalue changes.
+          if (vertical)
+            set (hax, "xlimmode", "manual");
+          else
+            set (hax, "ylimmode", "manual");
+          endif
         endif
-        set (hax, "box", "on", "layer", "top", "climmode", "auto");
+        set (hax, "box", "on", "layer", "top");
       endif
     unwind_protect_cleanup
       if (! isempty (oldfig))
@@ -265,12 +269,35 @@ function varargout = __bar__ (vertical, func, varargin)
 
 endfunction
 
-function hglist = bars (hax, vertical, x, y, xb, yb, width, group, have_color_spec, base_value, varargin)
+function hglist = bars (hax, ishist, vertical, x, y, xb, yb, width, group, have_color_spec, base_value, varargin)
 
-  nbars = columns (y);
-  clim = get (hax, "clim");
   hglist = [];
+  nbars = columns (y);
 
+  if (ishist)
+    ## Special case for Matlab compatibility.  For 'hist', 'histc' arguments,
+    ## return Patch objects rather than hggroup Bar object.
+    for i = 1:nbars
+
+      if (vertical)
+        h = patch (hax, xb(:,:,i), yb(:,:,i),
+                   "cdata", i*ones (columns (xb),1), "FaceColor", "flat");
+      else
+        h = patch (hax, yb(:,:,i), xb(:,:,i),
+                   "cdata", i*ones (columns (yb),1), "FaceColor", "flat");
+      endif
+
+      if (! isempty (varargin))
+        set (h, varargin{:});
+      endif
+
+      hglist = [hglist; h];
+    endfor
+
+    return;  # return immediately, rest of function is for creating Bar object.
+  endif
+
+  ## Code to create hggroup Bar object
   for i = 1:nbars
     hg = hggroup ();
     hglist = [hglist; hg];

@@ -954,7 +954,7 @@ namespace octave
     settings->setValue (global_proxy_user.key, proxyUserName->text ());
     settings->setValue (global_proxy_pass.key, proxyPassword->text ());
     settings->setValue (cs_cursor_use_fgcol.key, terminal_cursorUseForegroundColor->isChecked ());
-    settings->setValue (mw_dir_list.key, terminal_focus_command->isChecked ());
+    settings->setValue (cs_focus_cmd.key, terminal_focus_command->isChecked ());
     settings->setValue (cs_dbg_location.key, terminal_print_dbg_location->isChecked ());
     settings->setValue (cs_hist_buffer.key, terminal_history_buffer->value ());
 

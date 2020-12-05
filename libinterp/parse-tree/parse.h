@@ -162,7 +162,7 @@ namespace octave
 
     base_parser& operator = (const base_parser&) = delete;
 
-    ~base_parser (void);
+    virtual ~base_parser (void);
 
     base_lexer& get_lexer (void) const { return m_lexer; }
 

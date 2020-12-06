@@ -109,6 +109,7 @@ namespace octave
              this, SLOT (pasteClipboard ()));
     connect (p, SIGNAL (selectAll_signal ()),
              this, SLOT (selectAll ()));
+
     // undo handling
     connect (p, SIGNAL (undo_signal ()), this, SLOT (do_undo ()));
   }
@@ -355,9 +356,9 @@ namespace octave
     // recover old window states, hide and re-show new added widget
     m_parent->restoreState (settings->value (mw_state.key).toByteArray ());
     setFloating (false);
-     // restore size using setGeometry instead of restoreGeometry following
-     // this post:
-     // https://forum.qt.io/topic/79326/qdockwidget-restoregeometry-not-working-correctly-when-qmainwindow-is-maximized/5
+    // restore size using setGeometry instead of restoreGeometry following
+    // this post:
+    // https://forum.qt.io/topic/79326/qdockwidget-restoregeometry-not-working-correctly-when-qmainwindow-is-maximized/5
     setGeometry (m_recent_dock_geom);
 
     // adjust the (un)dock icon

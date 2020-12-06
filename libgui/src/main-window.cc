@@ -956,14 +956,6 @@ namespace octave
     m_previous_dock->activate ();
   }
 
-  void main_window::reset_windows (void)
-  {
-    hide ();
-    set_window_layout (nullptr);  // do not use the settings file
-    showNormal ();  // make sure main window is not minimized
-    focus_command_window ();
-  }
-
   void main_window::update_octave_directory (const QString& dir)
   {
     // Remove existing entry, if any, then add new directory at top and
@@ -1474,14 +1466,22 @@ namespace octave
   void main_window::set_window_layout (gui_settings *settings)
   {
     // Restore main window state and geometry from settings file or, in case
-    // of an error, from the default layout.
-    if (settings)
+    // of an error (no pref values yet), from the default layout.
+    if (! restoreGeometry (settings->value (mw_geometry).toByteArray ()))
       {
-        if (! restoreState (settings->value (mw_state).toByteArray ()))
-          restoreState (mw_state.def.toByteArray ());
+        do_reset_windows (true);
+        return;
+      }
 
-        if (! restoreGeometry (settings->value (mw_geometry).toByteArray ()))
-          restoreGeometry (mw_geometry.def.toByteArray ());
+    if (isMaximized())
+      {
+        setGeometry( QApplication::desktop ()->availableGeometry (this));
+      }
+
+    if (! restoreState (settings->value (mw_state).toByteArray ()))
+      {
+        do_reset_windows (true);
+        return;
       }
 
     // Restore the geometry of all dock-widgets
@@ -1493,13 +1493,11 @@ namespace octave
           {
             bool floating = false;
             bool visible = true;
-            if (settings)
-              {
-                floating = settings->value
-                  (dw_is_floating.key.arg (name), dw_is_floating.def).toBool ();
-                visible = settings->value
-                  (dw_is_visible.key.arg (name), dw_is_visible.def).toBool ();
-              }
+
+            floating = settings->value
+                (dw_is_floating.key.arg (name), dw_is_floating.def).toBool ();
+            visible = settings->value
+                (dw_is_visible.key.arg (name), dw_is_visible.def).toBool ();
 
             // If floating, make window from widget.
             if (floating)
@@ -1508,9 +1506,8 @@ namespace octave
 
                 if (visible)
                   {
-                    if (settings
-                        && settings->value (dw_is_minimized.key.arg (name),
-                                            dw_is_minimized.def).toBool ())
+                    if (settings->value (dw_is_minimized.key.arg (name),
+                                         dw_is_minimized.def).toBool ())
                       widget->showMinimized ();
                     else
                       widget->setVisible (true);
@@ -1525,14 +1522,6 @@ namespace octave
                 widget->setVisible (visible);   // not floating -> show
               }
           }
-      }
-
-    if (! settings)
-      {
-        restoreGeometry (mw_geometry.def.toByteArray ());
-        restoreState (mw_state.def.toByteArray ());
-
-        set_default_geometry ();
       }
 
     show ();
@@ -1945,7 +1934,7 @@ namespace octave
     QWidget *dummyWidget = new QWidget ();
     dummyWidget->setObjectName ("CentralDummyWidget");
     dummyWidget->resize (10, 10);
-    dummyWidget->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
+    dummyWidget->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     dummyWidget->hide ();
     setCentralWidget (dummyWidget);
   }
@@ -2054,35 +2043,7 @@ namespace octave
     connect (this, SIGNAL (warning_function_not_found_signal (const QString&)),
              this, SLOT (warning_function_not_found (const QString&)));
 
-    // Build the window with widgets
-
     setWindowTitle ("Octave");
-
-    // See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
-#if (QT_VERSION < 0x050601) || (QT_VERSION >= 0x050701)
-    setDockOptions (QMainWindow::AnimatedDocks
-                    | QMainWindow::AllowNestedDocks
-                    | QMainWindow::AllowTabbedDocks);
-#else
-    setDockNestingEnabled (true);
-#endif
-
-    addDockWidget (Qt::RightDockWidgetArea, m_command_window);
-    addDockWidget (Qt::RightDockWidgetArea, m_doc_browser_window);
-    tabifyDockWidget (m_command_window, m_doc_browser_window);
-
-#if defined (HAVE_QSCINTILLA)
-    addDockWidget (Qt::RightDockWidgetArea, m_editor_window);
-    tabifyDockWidget (m_command_window, m_editor_window);
-#endif
-    addDockWidget (Qt::RightDockWidgetArea, m_variable_editor_window);
-    tabifyDockWidget (m_command_window, m_variable_editor_window);
-
-    addDockWidget (Qt::LeftDockWidgetArea, m_file_browser_window);
-    addDockWidget (Qt::LeftDockWidgetArea, m_workspace_window);
-    addDockWidget (Qt::LeftDockWidgetArea, m_history_window);
-
-    set_default_geometry ();
 
     setStatusBar (m_status_bar);
 
@@ -2820,6 +2781,7 @@ namespace octave
        });
   }
 
+  // Get size of screen where the main window is located
   void main_window::get_screen_geometry (int *width, int *height)
   {
     QRect screen_geometry
@@ -2829,6 +2791,28 @@ namespace octave
     *height = screen_geometry.height ();
   }
 
+  void main_window::resize_dock (QDockWidget *dw, int width, int height)
+  {
+#if defined (HAVE_QMAINWINDOW_RESIZEDOCKS)
+    // resizeDockWidget was added to Qt in Qt 5.6
+    if (width >= 0)
+      resizeDocks ({dw},{width},Qt::Horizontal);
+    if (height >= 0)
+      resizeDocks ({dw},{height},Qt::Vertical);
+#else
+    // This replacement of resizeDockWidget is not very reliable.
+    // But even if Qt4 is not yet
+    QSize s = dw->widget ()->size ();
+    if (width >= 0)
+      s.setWidth (width);
+    if (height >= 0)
+      s.setHeight (height);
+    dw->widget ()->resize (s);
+    dw->adjustSize ();
+#endif
+  }
+
+  // The default main window size relative to the desktop size
   void main_window::set_default_geometry ()
   {
     int win_x, win_y;
@@ -2838,4 +2822,78 @@ namespace octave
     resize (2*win_x/3, 7*win_y/8);
   }
 
+  void main_window::reset_windows (void)
+  {
+    // Slot for resetting the window layout to the default one
+    hide ();
+    showNormal ();              // Unmaximize
+    do_reset_windows (false);   // Add all widgets
+    // Re-add after giving time: This seems to be a reliable way to
+    // reset the main window's layout
+    QTimer::singleShot (250, this, SLOT (do_reset_windows (void)));
+  }
+
+  // Create the default layout of the main window. Do not use
+  // restoreState () and restoreGeometry () with default values since
+  // this might lead to problems when the Qt version changes
+  void main_window::do_reset_windows (bool show_it)
+  {
+    // Set main window default geometry and store its width for
+    // later resizing the command window
+    set_default_geometry ();
+    int win_x = geometry ().width ();
+
+    // Resize command window, the important one in the default layout
+    resize_dock (m_command_window, 7*win_x/8, -1);
+
+    // See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
+#if (QT_VERSION < 0x050601) || (QT_VERSION >= 0x050701)
+    setDockOptions (QMainWindow::AnimatedDocks
+                    | QMainWindow::AllowNestedDocks
+                    | QMainWindow::AllowTabbedDocks);
+#else
+    setDockNestingEnabled (true);
+#endif
+
+    // Add the dock widgets and show them
+    addDockWidget (Qt::LeftDockWidgetArea, m_file_browser_window);
+    addDockWidget (Qt::LeftDockWidgetArea, m_workspace_window);
+    addDockWidget (Qt::LeftDockWidgetArea, m_history_window);
+
+    addDockWidget (Qt::RightDockWidgetArea, m_command_window);
+
+    addDockWidget (Qt::RightDockWidgetArea, m_doc_browser_window);
+    tabifyDockWidget (m_command_window, m_doc_browser_window);
+
+    addDockWidget (Qt::RightDockWidgetArea, m_variable_editor_window);
+    tabifyDockWidget (m_command_window, m_variable_editor_window);
+
+#if defined (HAVE_QSCINTILLA)
+    addDockWidget (Qt::RightDockWidgetArea, m_editor_window);
+    tabifyDockWidget (m_command_window, m_editor_window);
+#endif
+
+    // Resize command window, the important one in the default layout
+    resize_dock (m_command_window, 2*win_x/3, -1);
+
+    // Show main wibdow, save state and geometry of main window and
+    // all dock widgets
+    if (show_it)
+      {
+        // Show all dock widgets
+        for (auto *widget : dock_widget_list ())
+          widget->show ();
+
+        // Show main window and store size and state
+        showNormal ();
+
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings *settings = rmgr.get_settings ();
+
+        settings->setValue (mw_geometry.key, saveGeometry ());
+        settings->setValue (mw_state.key, saveState ());
+
+        focus_command_window ();
+      }
+  }
 }

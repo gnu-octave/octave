@@ -15,32 +15,6 @@ fontSize=__default_font_size__
 fontName=__default_font__
 cursorType=ibeam
 
-[DockWidgets]
-TerminalDockWidget=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\x1j\0\0\0 \0\0\x4\x3\0\0\x2\x9e\0\0\x1j\0\0\0 \0\0\x4\x3\0\0\x2\x9e\0\0\0\0\0\0)
-TerminalDockWidgetFloating=false
-TerminalDockWidgetVisible=true
-WorkspaceView=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\0\0\0\x1+\0\0\x1\x63\0\0\x2\0\0\0\0\0\0\0\x1+\0\0\x1\x63\0\0\x2\0\0\0\0\0\0\0)
-WorkspaceViewFloating=false
-WorkspaceViewVisible=true
-HistoryDockWidget=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\0\0\0\x2\a\0\0\x1\x63\0\0\x2\xba\0\0\0\0\0\0\x2\a\0\0\x1\x63\0\0\x2\xba\0\0\0\0\0\0)
-HistoryDockWidgetFloating=false
-HistoryDockWidgetVisible=true
-FilesDockWidget=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\0\0\0\0 \0\0\x1\x63\0\0\x1$\0\0\0\0\0\0\0 \0\0\x1\x63\0\0\x1$\0\0\0\0\0\0)
-FilesDockWidgetFloating=false
-FilesDockWidgetVisible=true
-DocumentationDockWidget=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\xff\xff\xfbr\xff\xff\xfb\x8d\xff\xff\xfe\v\xff\xff\xfe\v\xff\xff\xfbr\xff\xff\xfb\x8d\xff\xff\xfe\v\xff\xff\xfe\v\0\0\0\0\0\0)
-DocumentationDockWidgetFloating=false
-DocumentationDockWidgetVisible=true
-FileEditor=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\xff\xff\xfbr\xff\xff\xfb\x8d\xff\xff\xfe\v\xff\xff\xfe\v\xff\xff\xfbr\xff\xff\xfb\x8d\xff\xff\xfe\v\xff\xff\xfe\v\0\0\0\0\0\0)
-FileEditorFloating=false
-FileEditorVisible=true
-NewsDockWidget=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\x2\"\0\0\0@\0\0\x4\xb3\0\0\x1\x1a\0\0\x2\"\0\0\0@\0\0\x4\xb3\0\0\x1\x1a\0\0\0\0\0\0)
-NewsDockWidgetFloating=false
-NewsDockWidgetVisible=true
-VariableEditor=@ByteArray(\x1\xd9\xd0\xcb\0\x2\0\0\xff\xff\xfb\x65\xff\xff\xfb\xac\xff\xff\xfe\v\xff\xff\xfe\v\xff\xff\xfb\x65\xff\xff\xfb\xac\xff\xff\xfe\v\xff\xff\xfe\v\xff\xff\xff\xff\0\0\0\0\x5\0)
-VariableEditorFloating=false
-VariableEditorVisible=true
-
 [workspaceview]
 local_collapsed=false
 global_collapsed=false

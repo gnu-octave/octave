@@ -164,6 +164,7 @@ namespace octave
     void prepare_to_exit (void);
     void go_to_previous_widget (void);
     void reset_windows (void);
+    void do_reset_windows (bool show_it = true);
 
     void update_octave_directory (const QString& dir);
     void browse_for_directory (void);
@@ -306,6 +307,10 @@ namespace octave
     QList<octave_dock_widget *> dock_widget_list (void);
 
     void update_default_encoding (const QString& default_encoding);
+
+    void get_screen_geometry (int *width, int *height);
+    void set_default_geometry (void);
+    void resize_dock (QDockWidget *dw, int width, int height);
 
     base_qobject& m_octave_qobj;
 

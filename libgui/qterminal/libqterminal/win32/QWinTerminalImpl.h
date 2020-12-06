@@ -49,7 +49,7 @@ class QWinTerminalImpl : public QTerminal
   friend class QConsoleView;
 
 public:
-  QWinTerminalImpl (QWidget* parent = 0);
+  QWinTerminalImpl (QWidget* parent, QWidget* main_win);
   QWinTerminalImpl (const QString& cmd, QWidget* parent = 0);
   ~QWinTerminalImpl (void);
 

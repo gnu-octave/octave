@@ -1441,19 +1441,19 @@ QConsolePrivate::cursorRect (void)
 
 //////////////////////////////////////////////////////////////////////////////
 
-QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
+QWinTerminalImpl::QWinTerminalImpl (QWidget* parent, QWidget* main_win)
     : QTerminal (parent), d (new QConsolePrivate (this)),
       allowTripleClick (false)
 {
     installEventFilter (this);
 
     connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
-           parent, SLOT (set_global_shortcuts (bool)));
+             main_win, SLOT (set_global_shortcuts (bool)));
     connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
              this, SLOT (set_global_shortcuts (bool)));
 
     connect (this, SIGNAL (set_screen_size_signal (int, int)),
-             parent, SLOT (set_screen_size (int, int)));
+             main_win, SLOT (set_screen_size (int, int)));
 
     setAcceptDrops (true);
 }

@@ -49,12 +49,14 @@ see <https://www.gnu.org/licenses/>.
 #endif
 
 QTerminal *
-QTerminal::create (octave::base_qobject& oct_qobj, QWidget *xparent)
+QTerminal::create (octave::base_qobject& oct_qobj, QWidget *p, QWidget *main_win)
 {
+  // p:       real parent
+  // xparent: main window for signal connections
 #if defined (Q_OS_WIN32)
-  QTerminal *terminal = new QWinTerminalImpl (xparent);
+  QTerminal *terminal = new QWinTerminalImpl (p, main_win);
 #else
-  QTerminal *terminal = new QUnixTerminalImpl (xparent);
+  QTerminal *terminal = new QUnixTerminalImpl (p, main_win);
 #endif
 
   // FIXME: this function should probably be called from or part of the
@@ -63,7 +65,7 @@ QTerminal::create (octave::base_qobject& oct_qobj, QWidget *xparent)
   // Unix- and Windows-specific versions would need access to the
   // base_qobject object, or the design would have to change significantly.
 
-  terminal->construct (oct_qobj, xparent);
+  terminal->construct (oct_qobj, main_win);
 
   return terminal;
 }

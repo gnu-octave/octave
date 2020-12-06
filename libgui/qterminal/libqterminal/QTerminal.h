@@ -51,7 +51,7 @@ class QTerminal : public QWidget
 public:
 
   static QTerminal *
-  create (octave::base_qobject& oct_qobj, QWidget *xparent = nullptr);
+  create (octave::base_qobject& oct_qobj, QWidget *xparent, QWidget* main_win);
 
   virtual ~QTerminal (void) = default;
 

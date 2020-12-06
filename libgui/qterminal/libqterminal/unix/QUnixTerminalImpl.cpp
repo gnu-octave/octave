@@ -24,14 +24,13 @@
 
 #include <termios.h>
 
-QUnixTerminalImpl::QUnixTerminalImpl(QWidget *p)
-    : QTerminal(p),
-      _parent (p)
+QUnixTerminalImpl::QUnixTerminalImpl(QWidget *p, QWidget *main_win)
+    : QTerminal(p)
 {
-    initialize();
+    initialize(main_win);
 }
 
-void QUnixTerminalImpl::initialize()
+void QUnixTerminalImpl::initialize(QWidget* main_win)
 {
     m_terminalView = new TerminalView(this);
     m_terminalView->setKeyboardCursorShape(TerminalView::UnderlineCursor);
@@ -51,9 +50,9 @@ void QUnixTerminalImpl::initialize()
     m_terminalView->filterChain ()->addFilter (file_filter);
 
     connect (file_filter, SIGNAL (request_edit_mfile_signal (const QString&, int)),
-             _parent, SLOT (edit_mfile (const QString&, int)));
+             main_win, SLOT (edit_mfile (const QString&, int)));
     connect (file_filter, SIGNAL (request_open_file_signal (const QString&, int)),
-             _parent, SLOT (open_file (const QString&, int)));
+             main_win, SLOT (open_file (const QString&, int)));
 
     connect(m_terminalView, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(handleCustomContextMenuRequested(QPoint)));

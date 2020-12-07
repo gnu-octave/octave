@@ -273,7 +273,16 @@ namespace octave
 
         default_family = get_default_font_family ();
 
+        // determine the fefault fotn size of the system
+        QFont font = QFont (default_family);
+        int font_size = font.pointSize ();
+        if (font_size == -1)
+          font_size = static_cast <int> (std::floor(font.pointSizeF ()));
+
+        // check for valid font size, otherwise take default 10
         QString default_font_size = "10";
+        if (font_size > 0)
+          default_font_size = QString::number (font_size);
 
         std::string env_default_font_size
           = sys::env::getenv ("OCTAVE_DEFAULT_FONT_SIZE");

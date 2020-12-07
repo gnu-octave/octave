@@ -278,16 +278,14 @@ namespace octave
     emit remove_all_breakpoints ();
     emit remove_all_positions ();
 
-    // Destroy items attached to m_edit_area.
+    // Destroy lexer attached to m_edit_area, which is not the parent
+    // of lexer
     QsciLexer *lexer = m_edit_area->lexer ();
     if (lexer)
       {
         delete lexer;
         m_edit_area->setLexer (nullptr);
       }
-
-    // Destroy m_edit_area.
-    delete m_edit_area;
   }
 
   void file_editor_tab::set_encoding (const QString& new_encoding)

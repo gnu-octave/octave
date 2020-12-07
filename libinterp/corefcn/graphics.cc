@@ -1411,7 +1411,7 @@ color_values::str2rgb (const std::string& str_arg)
           tmp_rgb[2] = static_cast<double> (stoi (str.substr (5,2), nullptr, 16))
                        / 255.0;
         }
-      catch (...)
+      catch (const octave::execution_exception&)
         {
           retval = false;
         }
@@ -1427,7 +1427,7 @@ color_values::str2rgb (const std::string& str_arg)
           tmp_rgb[2] = static_cast<double> (stoi (str.substr (3,1), nullptr, 16))
                        / 15.0;
         }
-      catch (...)
+      catch (const octave::execution_exception&)
         {
           retval = false;
         }

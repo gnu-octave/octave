@@ -210,7 +210,9 @@ namespace octave
 
         for (int i = 0; ! retval && i < c.numel (); i++)
           {
-            cdef_class cls = lookup_class (c(i));
+            octave_classdef *metacls = c(i).classdef_object_value ();
+            std::string clsname = metacls->get_property (0, "Name").string_value ();
+            cdef_class cls = lookup_class (clsname);
 
             retval = is_superclass (clsa, cls, true,
                                     max_depth < 0 ? max_depth : max_depth-1);

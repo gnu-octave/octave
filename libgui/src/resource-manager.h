@@ -29,6 +29,7 @@
 #include <QComboBox>
 #include <QIcon>
 #include <QPointer>
+#include <Qsci/qscilexer.h>
 #include <QTranslator>
 #include <QTemporaryFile>
 
@@ -69,6 +70,8 @@ namespace octave
 
     QString get_default_font_family (void);
 
+    QStringList get_default_font (void);
+
     QPointer<QTemporaryFile>
     create_tmp_file (const QString& extension = QString (),
                      const QString& contents = QString ());
@@ -76,6 +79,8 @@ namespace octave
     void remove_tmp_file (QPointer<QTemporaryFile> tmp_file);
 
     void reload_settings (void);
+
+    void read_lexer_settings (QsciLexer *lexer, QSettings *settings);
 
     void set_settings (const QString& file);
 

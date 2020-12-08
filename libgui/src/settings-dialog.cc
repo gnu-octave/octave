@@ -664,8 +664,12 @@ namespace octave
                                              gui_settings *settings)
   {
 #if defined (HAVE_QSCINTILLA)
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
-    lexer->readSettings (*settings);
+    // Get lexer settings and copy from default settings if not yet
+    // available in normal settings file
+    rmgr.read_lexer_settings (lexer, settings);
+
     int styles[MaxLexerStyles];  // array for saving valid styles
     // (enum is not continuous)
     int max_style = get_valid_lexer_styles (lexer, styles);

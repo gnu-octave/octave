@@ -255,10 +255,35 @@ namespace octave
     return default_family;
   }
 
-  void resource_manager::reload_settings (void)
+  QStringList resource_manager::get_default_font (void)
   {
     QString default_family = get_default_font_family ();
 
+    // determine the fefault fotn size of the system
+    QFont font = QFont (default_family);
+    int font_size = font.pointSize ();
+    if (font_size == -1)
+      font_size = static_cast <int> (std::floor(font.pointSizeF ()));
+
+    // check for valid font size, otherwise take default 10
+    QString default_font_size = "10";
+    if (font_size > 0)
+      default_font_size = QString::number (font_size);
+
+    std::string env_default_font_size
+      = sys::env::getenv ("OCTAVE_DEFAULT_FONT_SIZE");
+
+    if (! env_default_font_size.empty ())
+      default_font_size = QString::fromStdString (env_default_font_size);
+
+    QStringList result;
+    result << default_family;
+    result << default_font_size;
+    return result;
+  }
+
+  void resource_manager::reload_settings (void)
+  {
     if (! QFile::exists (m_settings_file))
       {
         QDir ("/").mkpath (m_settings_directory);
@@ -271,24 +296,8 @@ namespace octave
         QString settings_text = in.readAll ();
         qt_settings.close ();
 
-        default_family = get_default_font_family ();
-
-        // determine the fefault fotn size of the system
-        QFont font = QFont (default_family);
-        int font_size = font.pointSize ();
-        if (font_size == -1)
-          font_size = static_cast <int> (std::floor(font.pointSizeF ()));
-
-        // check for valid font size, otherwise take default 10
-        QString default_font_size = "10";
-        if (font_size > 0)
-          default_font_size = QString::number (font_size);
-
-        std::string env_default_font_size
-          = sys::env::getenv ("OCTAVE_DEFAULT_FONT_SIZE");
-
-        if (! env_default_font_size.empty ())
-          default_font_size = QString::fromStdString (env_default_font_size);
+        // Get the default font
+        QStringList def_font = get_default_font ();
 
         // Get the default custom editor
 #if defined (Q_OS_WIN32)
@@ -305,8 +314,8 @@ namespace octave
 
         // Replace placeholders
         settings_text.replace ("__default_custom_editor__", custom_editor);
-        settings_text.replace ("__default_font__", default_family);
-        settings_text.replace ("__default_font_size__", default_font_size);
+        settings_text.replace ("__default_font__", def_font.at(0));
+        settings_text.replace ("__default_font_size__", def_font.at (1));
 
         QFile user_settings (m_settings_file);
 
@@ -325,8 +334,72 @@ namespace octave
     // Write the default monospace font into the settings for later use by
     // console and editor as fallbacks of their font preferences.
     if (m_settings)
-      m_settings->setValue (global_mono_font.key, default_family);
+      m_settings->setValue (global_mono_font.key,
+                            get_default_font_family ());
 
+  }
+
+  void resource_manager::read_lexer_settings (QsciLexer *lexer,
+                                              QSettings *settings)
+  {
+    // Test whether the settings for lexer is already contained in the
+    // given gui settings file. If yes, load them, if not copy them from the
+    // default settings file.
+    // This is useful when a new language support is implemented and the
+    // existing settings file is used (which is of course the common case).
+
+    settings->beginGroup ("Scintilla");
+    settings->beginGroup (lexer->language ());
+
+    QStringList lexer_keys = settings->allKeys ();
+
+    if (lexer_keys.count () == 0)
+      {
+        // No Lexer keys found
+        // => copy all settings from the default settings
+        QSettings def_settings (default_qt_settings_file (),
+                                QSettings::IniFormat);
+        // Get all lexer keys and copy the ones for the given lexer
+        def_settings.beginGroup ("Scintilla");
+        def_settings.beginGroup (lexer->language ());
+
+        // Get the default font
+        QStringList def_font = get_default_font ();
+
+        lexer_keys = def_settings.allKeys ();
+
+        for (int i = 0; i < lexer_keys.count (); i++)
+          {
+            QString key = lexer_keys.at (i);
+            if (key.contains ("font"))
+              {
+                // font setting, insert default font and size
+                QStringList val = def_settings.value (key).toStringList ();
+                val.removeFirst ();
+                val.removeFirst ();
+                val.prepend (def_font.at (1));
+                val.prepend (def_font.at (0));
+                settings->setValue (key, val);
+              }
+            else
+              {
+                // No font setting just copy
+                QVariant var = def_settings.value (key);
+                settings->setValue (key, var);
+              }
+          }
+
+        def_settings.endGroup ();
+        def_settings.endGroup ();
+
+      }
+
+    settings->endGroup ();
+    settings->endGroup ();
+
+    settings->sync ();
+
+    lexer->readSettings (*settings);
   }
 
   void resource_manager::set_settings (const QString& file)

@@ -861,7 +861,7 @@ namespace octave
     if (update_apis_only)
       return;   // We are done here
 
-    lexer->readSettings (*settings);
+    rmgr.read_lexer_settings (lexer, settings);
 
     m_edit_area->setCaretForegroundColor (lexer->color (0));
     m_edit_area->setIndentationGuidesForegroundColor (lexer->color (0));

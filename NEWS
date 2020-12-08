@@ -178,6 +178,7 @@ functionality.  By default, this warning is enabled.
 
 ### Alphabetical list of new functions added in Octave 7
 
+* `cospi`
 * `getpixelposition`
 * `endsWith`
 * `jsondecode`
@@ -188,6 +189,7 @@ functionality.  By default, this warning is enabled.
 * `memory`
 * `ordqz`
 * `rng`
+* `sinpi`
 * `startsWith`
 * `streamribbon`
 * `xtickangle`

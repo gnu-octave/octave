@@ -27,7 +27,8 @@
 ## @deftypefn {} {} sind (@var{x})
 ## Compute the sine for each element of @var{x} in degrees.
 ##
-## Returns zero for elements where @code{@var{x}/180} is an integer.
+## The function is more exact than @code{sin} for multiples of 180 degrees and
+## returns zero rather than a small value on the order of eps.
 ## @seealso{asind, sin}
 ## @end deftypefn
 
@@ -37,15 +38,19 @@ function y = sind (x)
     print_usage ();
   endif
 
-  I = x / 180;
-  y = sin (I .* pi);
-  y(I == fix (I) & isfinite (I)) = 0;
+  ## Unwrap multiples so that new domain is [0, 360)
+  x = mod (x, 360);
+
+  ## Integer multiples of pi must be exactly zero
+  x(x == 180) = 0;
+
+  y = sin (x / 180 * pi);
 
 endfunction
 
 
-%!assert (sind (10:10:90), sin (pi*[10:10:90]/180), -10*eps)
-%!assert (sind ([0, 180, 360]) == 0)
-%!assert (sind ([90, 270]) != 0)
+%!assert (sind (10:20:360), sin ([10:20:360] * pi/180), 5*eps)
+%!assert (sind ([-360, -180, 0, 180, 360]) == 0)
+%!assert (sind ([-270, -90, 90, 270]), [1, -1, 1, -1])
 
 %!error <Invalid call> sind ()

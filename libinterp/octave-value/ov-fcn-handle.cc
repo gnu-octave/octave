@@ -837,7 +837,7 @@ namespace octave
 
                     arg_list.clear ();
                   }
-                catch (index_exception&)
+                catch (const index_exception&)
                   {
                     err_invalid_fcn_handle (m_name);
                   }

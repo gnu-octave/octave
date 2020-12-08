@@ -71,9 +71,9 @@ quad_user_function (double x)
         {
           tmp = octave::feval (quad_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "quad");
+          err_user_supplied_eval (ee, "quad");
         }
 
       if (! tmp.length () || ! tmp(0).is_defined ())
@@ -107,9 +107,9 @@ quad_float_user_function (float x)
         {
           tmp = octave::feval (quad_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "quad");
+          err_user_supplied_eval (ee, "quad");
         }
 
       if (! tmp.length () || ! tmp(0).is_defined ())

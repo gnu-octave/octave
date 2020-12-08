@@ -808,9 +808,9 @@ protected:
           {
             nda = val.array_value ();
           }
-        catch (octave::execution_exception& e)
+        catch (octave::execution_exception& ee)
           {
-            error (e, R"(set: invalid string property value for "%s")",
+            error (ee, R"(set: invalid string property value for "%s")",
                    get_name ().c_str ());
           }
 
@@ -1801,9 +1801,9 @@ protected:
       {
         new_kids = val.matrix_value ();
       }
-    catch (octave::execution_exception& e)
+    catch (octave::execution_exception& ee)
       {
-        error (e, "set: children must be an array of graphics handles");
+        error (ee, "set: children must be an array of graphics handles");
       }
 
     octave_idx_type nel = new_kids.numel ();

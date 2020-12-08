@@ -230,10 +230,10 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
           else
             err_wrong_type_arg ("sparse", args(2));
         }
-      catch (octave::index_exception& e)
+      catch (octave::index_exception& ie)
         {
           // Rethrow to allow more info to be reported later.
-          e.set_pos_if_unset (2, k+1);
+          ie.set_pos_if_unset (2, k+1);
           throw;
         }
     }

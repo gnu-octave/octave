@@ -263,11 +263,11 @@ ov_range<T>::do_index_op (const octave_value_list& idx,
           else
             retval = m_range.index (i);
         }
-      catch (octave::index_exception& e)
+      catch (octave::index_exception& ie)
         {
           // More info may be added later before displaying error.
 
-          e.set_pos_if_unset (1, 1);
+          ie.set_pos_if_unset (1, 1);
           throw;
         }
 

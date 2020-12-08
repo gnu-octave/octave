@@ -82,9 +82,9 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = octave::feval (daspk_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "daspk");
+          err_user_supplied_eval (ee, "daspk");
         }
 
       int tlen = tmp.length ();
@@ -132,9 +132,9 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = octave::feval (daspk_jac, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "daspk");
+          err_user_supplied_eval (ee, "daspk");
         }
 
       int tlen = tmp.length ();

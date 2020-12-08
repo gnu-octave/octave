@@ -297,7 +297,7 @@ namespace octave
             while (n < n_max)
               entropy[n++] = dist (rd);
           }
-        catch (std::exception& e)
+        catch (const std::exception&)
           {
             // Just ignore any exception and skip that source of entropy.
           }

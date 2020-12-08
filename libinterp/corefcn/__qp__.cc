@@ -157,9 +157,9 @@ qp (const Matrix& H, const ColumnVector& q,
     {
       eigH = EIG (H);
     }
-  catch (octave::execution_exception& e)
+  catch (octave::execution_exception& ee)
     {
-      error (e, "qp: failed to compute eigenvalues of H");
+      error (ee, "qp: failed to compute eigenvalues of H");
     }
 
   ColumnVector eigenvalH = real (eigH.eigenvalues ());
@@ -298,9 +298,9 @@ qp (const Matrix& H, const ColumnVector& q,
                 {
                   eigrH = EIG (rH);
                 }
-              catch (octave::execution_exception& e)
+              catch (octave::execution_exception& ee)
                 {
-                  error (e, "qp: failed to compute eigenvalues of rH");
+                  error (ee, "qp: failed to compute eigenvalues of rH");
                 }
 
               ColumnVector eigenvalrH = real (eigrH.eigenvalues ());

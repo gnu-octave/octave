@@ -401,9 +401,9 @@ namespace octave
                   {
                     retval = fcn->call (tw, nargout, first_args);
                   }
-                catch (index_exception& e)
+                catch (index_exception& ie)
                   {
-                    tw.final_index_error (e, m_expr);
+                    tw.final_index_error (ie, m_expr);
                   }
 
                 beg++;
@@ -527,9 +527,9 @@ namespace octave
                           indexing_object = true;
                         }
                     }
-                  catch (index_exception& e)
+                  catch (index_exception& ie)
                     {
-                      tw.final_index_error (e, m_expr);
+                      tw.final_index_error (ie, m_expr);
                     }
                 }
             }
@@ -588,9 +588,9 @@ namespace octave
                 beg = n;
                 idx_list.clear ();
               }
-            catch (index_exception& e)
+            catch (index_exception& ie)
               {
-                tw.final_index_error (e, m_expr);
+                tw.final_index_error (ie, m_expr);
               }
           }
         else
@@ -624,9 +624,9 @@ namespace octave
 
                     retval = fcn->call (tw, nargout, final_args);
                   }
-                catch (index_exception& e)
+                catch (index_exception& ie)
                   {
-                    tw.final_index_error (e, m_expr);
+                    tw.final_index_error (ie, m_expr);
                   }
               }
           }

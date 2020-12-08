@@ -680,9 +680,9 @@ permute_to_correct_order (octave_idx_type n, octave_idx_type nf,
                                      new_map_list[i], perm);
         }
     }
-  catch (octave::execution_exception& e)
+  catch (octave::execution_exception& ee)
     {
-      error (e, "cat: field names mismatch in concatenating structs");
+      error (ee, "cat: field names mismatch in concatenating structs");
     }
 }
 
@@ -964,10 +964,10 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
           break;
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (n_idx, k+1);
+      ie.set_pos_if_unset (n_idx, k+1);
       throw;
     }
 
@@ -1027,9 +1027,9 @@ octave_map::assign (const idx_vector& i, const octave_map& rhs)
         {
           rhs1 = rhs.orderfields (*this, perm);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          error (e, "incompatible fields in struct assignment");
+          error (ee, "incompatible fields in struct assignment");
         }
 
       assert (rhs1.xkeys.is_same (xkeys));
@@ -1075,9 +1075,9 @@ octave_map::assign (const idx_vector& i, const idx_vector& j,
         {
           rhs1 = rhs.orderfields (*this, perm);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          error (e, "incompatible fields in struct assignment");
+          error (ee, "incompatible fields in struct assignment");
         }
 
       assert (rhs1.xkeys.is_same (xkeys));
@@ -1123,9 +1123,9 @@ octave_map::assign (const Array<idx_vector>& ia,
         {
           rhs1 = rhs.orderfields (*this, perm);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          error (e, "incompatible fields in struct assignment");
+          error (ee, "incompatible fields in struct assignment");
         }
 
       assert (rhs1.xkeys.is_same (xkeys));
@@ -1179,10 +1179,10 @@ octave_map::assign (const octave_value_list& idx, const octave_map& rhs)
           break;
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (n_idx, k+1);
+      ie.set_pos_if_unset (n_idx, k+1);
       throw;
     }
 }
@@ -1298,10 +1298,10 @@ octave_map::delete_elements (const octave_value_list& idx)
         {
           ia(i) = idx(i).index_vector ();
         }
-      catch (octave::index_exception& e)
+      catch (octave::index_exception& ie)
         {
           // Rethrow to allow more info to be reported later.
-          e.set_pos_if_unset (n_idx, i+1);
+          ie.set_pos_if_unset (n_idx, i+1);
           throw;
         }
     }

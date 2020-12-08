@@ -81,9 +81,9 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = octave::feval (dassl_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "dassl");
+          err_user_supplied_eval (ee, "dassl");
         }
 
       int tlen = tmp.length ();
@@ -131,9 +131,9 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = octave::feval (dassl_jac, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "dassl");
+          err_user_supplied_eval (ee, "dassl");
         }
 
       int tlen = tmp.length ();

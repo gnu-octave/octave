@@ -87,9 +87,9 @@ namespace octave
             exit_status = interp.execute ();
           }
       }
-    catch (const exit_exception& ex)
+    catch (const exit_exception& xe)
       {
-        exit_status = ex.exit_status ();
+        exit_status = xe.exit_status ();
       }
 
     // Signal that the interpreter is done executing code in the main

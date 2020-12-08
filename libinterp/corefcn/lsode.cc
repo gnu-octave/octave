@@ -79,9 +79,9 @@ lsode_user_function (const ColumnVector& x, double t)
         {
           tmp = octave::feval (lsode_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "lsode");
+          err_user_supplied_eval (ee, "lsode");
         }
 
       if (tmp.empty () || ! tmp(0).is_defined ())
@@ -119,9 +119,9 @@ lsode_user_jacobian (const ColumnVector& x, double t)
         {
           tmp = octave::feval (lsode_jac, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "lsode");
+          err_user_supplied_eval (ee, "lsode");
         }
 
       if (tmp.empty () || ! tmp(0).is_defined ())

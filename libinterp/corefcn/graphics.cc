@@ -1484,9 +1484,9 @@ color_property::do_set (const octave_value& val)
                   return true;
                 }
             }
-          catch (octave::execution_exception& e)
+          catch (octave::execution_exception& ee)
             {
-              error (e, R"(invalid value for color property "%s" (value = %s))",
+              error (ee, R"(invalid value for color property "%s" (value = %s))",
                      get_name ().c_str (), s.c_str ());
             }
         }
@@ -3322,9 +3322,9 @@ base_properties::set_from_list (base_graphics_object& bgo,
             {
               bgo.set (pname, prop_val.second);
             }
-          catch (octave::execution_exception& e)
+          catch (octave::execution_exception& ee)
             {
-              error (e, "error setting default property %s", pname.c_str ());
+              error (ee, "error setting default property %s", pname.c_str ());
             }
         }
     }
@@ -12277,9 +12277,9 @@ gh_manager::execute_callback (const graphics_handle& h,
             {
               m_interpreter.eval_string (s, false, status, 0);
             }
-          catch (octave::execution_exception& e)
+          catch (const octave::execution_exception& ee)
             {
-              m_interpreter.handle_exception (e);
+              m_interpreter.handle_exception (ee);
             }
         }
       else if (cb.iscell () && cb.length () > 0
@@ -12309,9 +12309,9 @@ gh_manager::execute_callback (const graphics_handle& h,
             else
               octave::feval (fcn, args);
           }
-        catch (octave::execution_exception& e)
+        catch (const octave::execution_exception& ee)
           {
-            m_interpreter.handle_exception (e);
+            m_interpreter.handle_exception (ee);
           }
 
       // Redraw after interacting with a user-interface (ui*) object.
@@ -13226,9 +13226,9 @@ make_graphics_object (const std::string& go_name,
       h = gh_mgr.make_graphics_handle (go_name, parent,
                                        integer_figure_handle, false, false);
     }
-  catch (octave::execution_exception& e)
+  catch (octave::execution_exception& ee)
     {
-      error (e, "__go_%s__: unable to create graphics handle",
+      error (ee, "__go_%s__: unable to create graphics handle",
              go_name.c_str ());
     }
 
@@ -13236,10 +13236,10 @@ make_graphics_object (const std::string& go_name,
     {
       xset (h, xargs);
     }
-  catch (octave::execution_exception& e)
+  catch (octave::execution_exception& ee)
     {
       delete_graphics_object (h);
-      error (e, "__go_%s__: unable to create graphics handle",
+      error (ee, "__go_%s__: unable to create graphics handle",
              go_name.c_str ());
     }
 
@@ -13332,10 +13332,10 @@ Undocumented internal function.
         {
           xset (h, xargs);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
           delete_graphics_object (h);
-          error (e, "__go_figure__: unable to create figure handle");
+          error (ee, "__go_figure__: unable to create figure handle");
         }
 
       adopt (0, h);

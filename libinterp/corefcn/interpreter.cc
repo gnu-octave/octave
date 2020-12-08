@@ -353,9 +353,9 @@ namespace octave
 
         return 1;
       }
-    catch (const execution_exception& e)
+    catch (const execution_exception& ee)
       {
-        interp.handle_exception (e);
+        interp.handle_exception (ee);
 
         return 1;
       }
@@ -806,9 +806,9 @@ namespace octave
             exit_status = main_loop ();
           }
       }
-    catch (const exit_exception& ex)
+    catch (const exit_exception& xe)
       {
-        return ex.exit_status ();
+        return xe.exit_status ();
       }
 
     return exit_status;
@@ -1039,9 +1039,9 @@ namespace octave
               {
                 recover_from_exception ();
               }
-            catch (const execution_exception& e)
+            catch (const execution_exception& ee)
               {
-                handle_exception (e);
+                handle_exception (ee);
               }
           }
 
@@ -1149,9 +1149,9 @@ namespace octave
 
         return 1;
       }
-    catch (const execution_exception& e)
+    catch (const execution_exception& ee)
       {
-        handle_exception (e);
+        handle_exception (ee);
 
         return 1;
       }
@@ -1292,12 +1292,12 @@ namespace octave
             if (m_interactive)
               octave_stdout << "\n";
           }
-        catch (const index_exception& e)
+        catch (const index_exception& ie)
           {
             recover_from_exception ();
 
             std::cerr << "error: unhandled index exception: "
-                      << e.message () << " -- trying to return to prompt"
+                      << ie.message () << " -- trying to return to prompt"
                       << std::endl;
           }
         catch (const execution_exception& ee)
@@ -1971,9 +1971,9 @@ namespace octave
       {
         recover_from_exception ();
       }
-    catch (const execution_exception& e)
+    catch (const execution_exception& ee)
       {
-        handle_exception (e);
+        handle_exception (ee);
       }
   }
 }

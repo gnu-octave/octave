@@ -83,9 +83,9 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = octave::feval (dasrt_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "dasrt");
+          err_user_supplied_eval (ee, "dasrt");
         }
 
       if (tmp.empty () || ! tmp(0).is_defined ())
@@ -124,9 +124,9 @@ dasrt_user_cf (const ColumnVector& x, double t)
         {
           tmp = octave::feval (dasrt_cf, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "dasrt");
+          err_user_supplied_eval (ee, "dasrt");
         }
 
       if (tmp.empty () || ! tmp(0).is_defined ())
@@ -170,9 +170,9 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
         {
           tmp = octave::feval (dasrt_jac, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "dasrt");
+          err_user_supplied_eval (ee, "dasrt");
         }
 
       int tlen = tmp.length ();

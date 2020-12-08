@@ -917,14 +917,14 @@ namespace octave
              // Do the job
              interp.source_file (file);
            }
-         catch (const execution_exception& e)
+         catch (const execution_exception& ee)
            {
              // Catch errors otherwise the rest of the interpreter
              // will not be executed (cleaning up).
 
              // New error message and error stack
-             QString new_msg = QString::fromStdString (e.message ());
-             std::list<frame_info> stack = e.stack_info ();
+             QString new_msg = QString::fromStdString (ee.message ());
+             std::list<frame_info> stack = ee.stack_info ();
 
              // Remove line and column from first line of error message only
              // if it is related to the tmp itself, i.e. only if the
@@ -974,11 +974,11 @@ namespace octave
                                                 dbg, auto_repeat);
 
              // New exception with updated message and stack
-             execution_exception ee (e.err_type (),e.identifier (),
-                                     new_msg.toStdString (), stack);
+             execution_exception nee (ee.err_type (), ee.identifier (),
+                                      new_msg.toStdString (), stack);
 
              // Throw
-             throw (ee);
+             throw (nee);
            }
 
          // Clean up

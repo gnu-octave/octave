@@ -212,7 +212,7 @@ have_gnuplot_binary (void)
           retval = fs.exists ();
         }
     }
-  catch (octave::execution_exception&)
+  catch (const octave::execution_exception&)
     {
       octave::interpreter& interp
         = octave::__get_interpreter__ ("have_gnuplot_binary");

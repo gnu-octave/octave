@@ -454,11 +454,11 @@ namespace octave
 
                  emit request_add_breakpoint (line, new_cond);
                }
-             catch (const execution_exception& e)
+             catch (const execution_exception& ee)
                {
                  interp.recover_from_exception ();
 
-                 msg = e.message ();
+                 msg = ee.message ();
                  eval_error = true;
                }
              catch (const interrupt_exception&)
@@ -2175,7 +2175,7 @@ namespace octave
                    {
                      sym = symtab.find_user_function (std_base_name);
                    }
-                 catch (const execution_exception& e)
+                 catch (const execution_exception&)
                    {
                      interp.recover_from_exception ();
 

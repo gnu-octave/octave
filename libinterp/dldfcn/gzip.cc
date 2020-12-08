@@ -508,13 +508,17 @@ namespace octave
             {
               X::zip (path, dest_path);
             }
+          catch (const interrupt_exception&)
+            {
+              throw;  // interrupts are special, just re-throw.
+            }
           catch (...)
             {
               // Error "handling" is not including filename on the output list.
-              // Also remove created file which maybe was not even created
+              // Also, remove created file which may not have been created
               // in the first place.  Note that it is possible for the file
-              // to exist in the first place and for X::zip to not have
-              // clobber it yet but we remove it anyway by design.
+              // to exist before the call to X::zip and that X::zip has not
+              // clobber it yet, but we remove it anyway.
               sys::unlink (dest_path);
               return;
             }

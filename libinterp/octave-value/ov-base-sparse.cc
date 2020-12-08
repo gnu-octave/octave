@@ -96,10 +96,10 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
           error ("sparse indexing needs 1 or 2 indices");
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (n_idx, k+1);
+      ie.set_pos_if_unset (n_idx, k+1);
       throw;
     }
 
@@ -221,10 +221,10 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
           error ("sparse indexing needs 1 or 2 indices");
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (len, k+1);
+      ie.set_pos_if_unset (len, k+1);
       throw;
     }
 
@@ -273,10 +273,10 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
           error ("sparse indexing needs 1 or 2 indices");
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (len, k+1);
+      ie.set_pos_if_unset (len, k+1);
       throw;
     }
 

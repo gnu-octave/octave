@@ -1555,9 +1555,9 @@ namespace octave
                                       file_name, dir_name, "", "",
                                       require_file, true, false, false);
           }
-        catch (execution_exception& e)
+        catch (execution_exception& ee)
           {
-            error (e, "source: error sourcing file '%s'",
+            error (ee, "source: error sourcing file '%s'",
                    file_full_name.c_str ());
           }
       }
@@ -4325,7 +4325,7 @@ namespace octave
             if (expr_result.is_cs_list ())
               err_indexed_cs_list ();
           }
-        catch (index_exception&)
+        catch (const index_exception&)
           {
             error ("error evaluating partial expression for END");
           }

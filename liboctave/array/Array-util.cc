@@ -561,13 +561,13 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
           if (idx.extent (n) > n)
             octave::err_index_out_of_range (len, i+1, idx.extent (n), n, dv);
         }
-      catch (octave::index_exception& e)
+      catch (octave::index_exception& ie)
         {
-          e.set_pos_if_unset (len, i+1);
-          e.set_var ();
-          std::string msg = e.message ();
+          ie.set_pos_if_unset (len, i+1);
+          ie.set_var ();
+          std::string msg = ie.message ();
           (*current_liboctave_error_with_id_handler)
-            (e.err_id (), "%s", msg.c_str ());
+            (ie.err_id (), "%s", msg.c_str ());
         }
     }
   // idxa known to be valid.

@@ -2092,17 +2092,17 @@ octave_value::float_complex_vector_value (bool force_string_conv,
       {                                                 \
         retval = FCN ();                                \
       }                                                 \
-    catch (octave::execution_exception& e)               \
+    catch (octave::execution_exception& ee)             \
       {                                                 \
         if (fmt)                                        \
           {                                             \
             va_list args;                               \
             va_start (args, fmt);                       \
-            verror (e, fmt, args);                      \
+            verror (ee, fmt, args);                     \
             va_end (args);                              \
           }                                             \
                                                         \
-        throw e;                                        \
+        throw ee;                                       \
       }                                                 \
                                                         \
     return retval;                                      \

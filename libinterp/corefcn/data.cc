@@ -1648,9 +1648,9 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
         {
           result = octave::feval (fcn, ovl (ov), 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          error (e, "conversion from %s to %s failed", dtype.c_str (),
+          error (ee, "conversion from %s to %s failed", dtype.c_str (),
                  cname.c_str ());
         }
 
@@ -1676,9 +1676,9 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
         {
           result = octave::feval (fcn, ovl (ov), 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          error (e, "%s constructor failed for %s argument", dtype.c_str (),
+          error (ee, "%s constructor failed for %s argument", dtype.c_str (),
                  cname.c_str ());
         }
 
@@ -1715,9 +1715,9 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
         {
           tmp2 = octave::feval (fcn, ovl, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          error (e, "%s/%s method failed", dtype.c_str (), cattype.c_str ());
+          error (ee, "%s/%s method failed", dtype.c_str (), cattype.c_str ());
         }
 
       if (tmp2.empty ())
@@ -7301,9 +7301,9 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
             err_wrong_type_arg ("nth_element", argx);
         }
     }
-  catch (const octave::index_exception& e)
+  catch (const octave::index_exception& ie)
     {
-      error ("nth_element: invalid index %s", e.what ());
+      error ("nth_element: invalid index %s", ie.what ());
     }
 
   return retval;
@@ -7400,9 +7400,9 @@ Undocumented internal function.
       else
         err_wrong_type_arg ("accumarray", vals);
     }
-  catch (const octave::index_exception& e)
+  catch (const octave::index_exception& ie)
     {
-      error ("__accumarray_sum__: invalid index %s", e.what ());
+      error ("__accumarray_sum__: invalid index %s", ie.what ());
     }
 
   return retval;
@@ -7511,9 +7511,9 @@ do_accumarray_minmax_fun (const octave_value_list& args,
           err_wrong_type_arg ("accumarray", vals);
         }
     }
-  catch (const octave::index_exception& e)
+  catch (const octave::index_exception& ie)
     {
-      error ("do_accumarray_minmax_fun: invalid index %s", e.what ());
+      error ("do_accumarray_minmax_fun: invalid index %s", ie.what ());
     }
 
   return retval;
@@ -7618,9 +7618,9 @@ Undocumented internal function.
       else
         err_wrong_type_arg ("accumdim", vals);
     }
-  catch (const octave::index_exception& e)
+  catch (const octave::index_exception& ie)
     {
-      error ("__accumdim_sum__: invalid index %s", e.what ());
+      error ("__accumdim_sum__: invalid index %s", ie.what ());
     }
 
   return retval;

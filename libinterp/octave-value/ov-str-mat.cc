@@ -140,10 +140,10 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
           break;
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (len, k+1);
+      ie.set_pos_if_unset (len, k+1);
       throw;
     }
 

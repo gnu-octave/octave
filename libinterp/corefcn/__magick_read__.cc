@@ -765,11 +765,11 @@ read_file (const std::string& filename, std::vector<Magick::Image>& imvec)
     {
       Magick::readImages (&imvec, ascii_fname);
     }
-  catch (Magick::Warning& w)
+  catch (const Magick::Warning& w)
     {
       warning ("Magick++ warning: %s", w.what ());
     }
-  catch (Magick::Exception& e)
+  catch (const Magick::Exception& e)
     {
       error ("Magick++ exception: %s", e.what ());
     }
@@ -1461,15 +1461,15 @@ write_file (const std::string& filename,
     {
       Magick::writeImages (imvec.begin (), imvec.end (), ext + ':' + filename);
     }
-  catch (Magick::Warning& w)
+  catch (const Magick::Warning& w)
     {
       warning ("Magick++ warning: %s", w.what ());
     }
-  catch (Magick::ErrorCoder& e)
+  catch (const Magick::ErrorCoder& e)
     {
       warning ("Magick++ coder error: %s", e.what ());
     }
-  catch (Magick::Exception& e)
+  catch (const Magick::Exception& e)
     {
       error ("Magick++ exception: %s", e.what ());
     }
@@ -1705,11 +1705,11 @@ This is a private internal function not intended for direct use.
     {
       img.ping (ascii_fname);
     }
-  catch (Magick::Warning& w)
+  catch (const Magick::Warning& w)
     {
       warning ("Magick++ warning: %s", w.what ());
     }
-  catch (Magick::Exception& e)
+  catch (const Magick::Exception& e)
     {
       error ("Magick++ exception: %s", e.what ());
     }
@@ -2384,7 +2384,7 @@ Fill formats info with GraphicsMagick CoderInfo.
             fmt.setfield ("write", Matrix ());
           formats.fast_elem_insert (idx, fmt);
         }
-      catch (Magick::Exception& e)
+      catch (const Magick::Exception&)
         {
           // Exception here are missing formats.  So we remove the format
           // from the structure and reduce idx.

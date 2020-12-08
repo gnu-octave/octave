@@ -244,10 +244,10 @@ namespace octave
                 {
                   iv(i) = ival(i).index_vector ();
                 }
-              catch (index_exception& e)
+              catch (index_exception& ie)
                 {
                   // Rethrow to allow more info to be reported later.
-                  e.set_pos_if_unset (ival.length (), i+1);
+                  ie.set_pos_if_unset (ival.length (), i+1);
                   throw;
                 }
 
@@ -340,9 +340,9 @@ namespace octave
                   {
                     iv(i) = ival(i).index_vector ();
                   }
-                catch (index_exception& e)
+                catch (index_exception& ie)
                   {
-                    e.set_pos_if_unset (ival.length (), i+1);
+                    ie.set_pos_if_unset (ival.length (), i+1);
                     throw;   // var name set in pt-idx.cc / pt-assign.cc
                   }
 
@@ -391,10 +391,10 @@ namespace octave
                   {
                     iv(i) = ival(i).index_vector ();
                   }
-                catch (index_exception& e)
+                catch (index_exception& ie)
                   {
                     // Rethrow to allow more info to be reported later.
-                    e.set_pos_if_unset (ival.length (), i+1);
+                    ie.set_pos_if_unset (ival.length (), i+1);
                     throw;
                   }
 

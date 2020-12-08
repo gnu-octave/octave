@@ -133,10 +133,10 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
                 retval = to_dense ().index_op (idx, resize_ok);
             }
         }
-      catch (octave::index_exception& e)
+      catch (octave::index_exception& ie)
         {
           // Rethrow to allow more info to be reported later.
-          e.set_pos_if_unset (2, k+1);
+          ie.set_pos_if_unset (2, k+1);
           throw;
         }
     }
@@ -197,10 +197,10 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                     dense_cache = octave_value ();
                   }
               }
-            catch (octave::index_exception& e)
+            catch (octave::index_exception& ie)
               {
                 // Rethrow to allow more info to be reported later.
-                e.set_pos_if_unset (2, k+1);
+                ie.set_pos_if_unset (2, k+1);
                 throw;
               }
           }
@@ -225,10 +225,10 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                     dense_cache = octave_value ();
                   }
               }
-            catch (octave::index_exception& e)
+            catch (octave::index_exception& ie)
               {
                 // Rethrow to allow more info to be reported later.
-                e.set_pos_if_unset (2, k+1);
+                ie.set_pos_if_unset (2, k+1);
                 throw;
               }
           }

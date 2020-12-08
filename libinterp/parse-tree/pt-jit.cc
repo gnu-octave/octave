@@ -1365,7 +1365,7 @@ namespace octave
 
         convert (blocks, constants);
       }
-    catch (const jit_fail_exception& e)
+    catch (const jit_fail_exception&)
       {
         m_function->eraseFromParent ();
         throw;
@@ -1411,7 +1411,7 @@ namespace octave
 
         convert (blocks, constants);
       }
-    catch (const jit_fail_exception& e)
+    catch (const jit_fail_exception&)
       {
         m_function->eraseFromParent ();
         throw;
@@ -2596,14 +2596,14 @@ namespace octave
             m_function = reinterpret_cast<jited_function> (void_fn);
           }
       }
-    catch (const jit_fail_exception& e)
+    catch (const jit_fail_exception& jfe)
       {
         m_argument_types.clear ();
 
         if (Vdebug_jit)
           {
-            if (e.known ())
-              octave_stdout << "jit fail: " << e.what () << std::endl;
+            if (jfe.known ())
+              octave_stdout << "jit fail: " << jfe.what () << std::endl;
           }
 
         Vjit_failcnt++;
@@ -2772,16 +2772,15 @@ namespace octave
 
         m_bounds = conv.get_bounds ();
       }
-    catch (const jit_fail_exception& e)
+    catch (const jit_fail_exception& jfe)
       {
         if (Vdebug_jit)
           {
-            if (e.known ())
-              octave_stdout << "jit fail: " << e.what () << std::endl;
+            if (jfe.known ())
+              octave_stdout << "jit fail: " << jfe.what () << std::endl;
           }
 
         Vjit_failcnt++;
-
       }
 
     if (llvm_function)

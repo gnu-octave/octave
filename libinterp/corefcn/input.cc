@@ -666,11 +666,11 @@ namespace octave
           {
             Fdrawnow (m_interpreter);
           }
-        catch (const execution_exception& e)
+        catch (const execution_exception& ee)
           {
             eval_error = true;
 
-            m_interpreter.handle_exception (e);
+            m_interpreter.handle_exception (ee);
           }
 
         flush_stdout ();

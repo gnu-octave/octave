@@ -203,10 +203,10 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
           break;
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (n_idx, k+1);
+      ie.set_pos_if_unset (n_idx, k+1);
       throw;
     }
 
@@ -271,10 +271,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
           break;
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (n_idx, k+1);
+      ie.set_pos_if_unset (n_idx, k+1);
       throw;
     }
 
@@ -377,10 +377,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
           break;
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (n_idx, k+1);
+      ie.set_pos_if_unset (n_idx, k+1);
       throw;
     }
 

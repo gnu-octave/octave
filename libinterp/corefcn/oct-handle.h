@@ -52,9 +52,9 @@ public:
           {
             val = a.double_value ();
           }
-        catch (octave::execution_exception& e)
+        catch (octave::execution_exception& ee)
           {
-            error (e, "invalid handle");
+            error (ee, "invalid handle");
           }
       }
   }

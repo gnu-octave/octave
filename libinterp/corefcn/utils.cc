@@ -1446,9 +1446,9 @@ namespace octave
 
                     retval *= jdx.length (dv(i));
                   }
-                catch (const index_exception& e)
+                catch (const index_exception& ie)
                   {
-                    error ("dims_to_numel: invalid index %s", e.what ());
+                    error ("dims_to_numel: invalid index %s", ie.what ());
                   }
               }
           }

@@ -71,9 +71,9 @@ eigs_func (const ColumnVector& x, int& eigs_error)
         {
           tmp = octave::feval (eigs_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "eigs");
+          err_user_supplied_eval (ee, "eigs");
         }
 
       if (tmp.length () && tmp(0).is_defined ())
@@ -111,9 +111,9 @@ eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
         {
           tmp = octave::feval (eigs_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "eigs");
+          err_user_supplied_eval (ee, "eigs");
         }
 
       if (tmp.length () && tmp(0).is_defined ())

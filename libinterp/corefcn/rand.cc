@@ -212,9 +212,9 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
               {
                 iv = tmp.octave_idx_type_vector_value (true);
               }
-            catch (octave::execution_exception& e)
+            catch (octave::execution_exception& ee)
               {
-                error (e, "%s: dimensions must be a scalar or array of integers", fcn);
+                error (ee, "%s: dimensions must be a scalar or array of integers", fcn);
               }
 
             octave_idx_type len = iv.numel ();

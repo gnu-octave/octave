@@ -264,9 +264,9 @@ Windows systems.
         {
           return_output = args(1).is_true ();
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          error (e, "system: RETURN_OUTPUT must be boolean value true or false");
+          error (ee, "system: RETURN_OUTPUT must be boolean value true or false");
         }
     }
 

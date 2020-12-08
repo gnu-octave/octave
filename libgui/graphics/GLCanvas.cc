@@ -191,7 +191,6 @@ namespace QtHandles
               ([=] (void)
                {
                  // INTERPRETER THREAD
-
                  throw ee;
                });
           }

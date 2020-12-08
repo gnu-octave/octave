@@ -1027,9 +1027,9 @@ namespace octave
       {
         tmp = feval (ida_fc, ovl (t, x, xdot), 1);
       }
-    catch (execution_exception& e)
+    catch (execution_exception& ee)
       {
-        err_user_supplied_eval (e, "__ode15__");
+        err_user_supplied_eval (ee, "__ode15__");
       }
 
     return tmp(0).vector_value ();
@@ -1045,9 +1045,9 @@ namespace octave
       {
         tmp = feval (ida_jc, ovl (t, x, xdot), 2);
       }
-    catch (execution_exception& e)
+    catch (execution_exception& ee)
       {
-        err_user_supplied_eval (e, "__ode15__");
+        err_user_supplied_eval (ee, "__ode15__");
       }
 
     return tmp(0).matrix_value () + cj * tmp(1).matrix_value ();
@@ -1063,9 +1063,9 @@ namespace octave
       {
         tmp = feval (ida_jc, ovl (t, x, xdot), 2);
       }
-    catch (execution_exception& e)
+    catch (execution_exception& ee)
       {
-        err_user_supplied_eval (e, "__ode15__");
+        err_user_supplied_eval (ee, "__ode15__");
       }
 
     return tmp(0).sparse_matrix_value () + cj * tmp(1).sparse_matrix_value ();

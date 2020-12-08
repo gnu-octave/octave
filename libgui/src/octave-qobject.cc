@@ -137,7 +137,6 @@ namespace octave
           ([=] (void)
            {
              // INTERPRETER THREAD
-
              throw ee;
            });
       }

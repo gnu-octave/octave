@@ -56,6 +56,7 @@
 #  endif
 
 #  include <Qsci/qscilexercpp.h>
+#  include <Qsci/qscilexerjava.h>
 #  include <Qsci/qscilexerbash.h>
 #  include <Qsci/qscilexerperl.h>
 #  include <Qsci/qscilexerbatch.h>
@@ -495,6 +496,10 @@ namespace octave
 #endif
 
     lexer = new QsciLexerCPP ();
+    read_lexer_settings (lexer, settings);
+    delete lexer;
+
+    lexer = new QsciLexerJava ();
     read_lexer_settings (lexer, settings);
     delete lexer;
 
@@ -1036,6 +1041,10 @@ namespace octave
 #endif
 
     lexer = new QsciLexerCPP ();
+    write_lexer_settings (lexer, settings);
+    delete lexer;
+
+    lexer = new QsciLexerJava ();
     write_lexer_settings (lexer, settings);
     delete lexer;
 

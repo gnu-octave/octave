@@ -60,6 +60,7 @@
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerbatch.h>
 #include <Qsci/qscilexercpp.h>
+#include <Qsci/qscilexerjava.h>
 #include <Qsci/qscilexerdiff.h>
 #include <Qsci/qscilexerperl.h>
 #include <Qsci/qsciprinter.h>
@@ -614,6 +615,10 @@ namespace octave
             || m_file_name.endsWith (".h++"))
           {
             lexer = new QsciLexerCPP ();
+          }
+        else if (m_file_name.endsWith (".java"))
+          {
+            lexer = new QsciLexerJava ();
           }
         else if (m_file_name.endsWith (".pl"))
           {

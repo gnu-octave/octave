@@ -8716,6 +8716,8 @@ axes::update_axis_limits (const std::string& axis_type)
           xproperties.check_axis_limits (limits, kids,
                                          xproperties.xscale_is ("log"),
                                          update_type);
+          if (axis_type == "xscale")
+            update_type = 'x';
         }
     }
   else if (axis_type == "ydata" || axis_type == "yscale"
@@ -8737,6 +8739,8 @@ axes::update_axis_limits (const std::string& axis_type)
           xproperties.check_axis_limits (limits, kids,
                                          xproperties.yscale_is ("log"),
                                          update_type);
+          if (axis_type == "yscale")
+            update_type = 'y';
         }
     }
   else if (axis_type == "zdata" || axis_type == "zscale"
@@ -8774,6 +8778,8 @@ axes::update_axis_limits (const std::string& axis_type)
           xproperties.check_axis_limits (limits, kids,
                                          xproperties.zscale_is ("log"),
                                          update_type);
+          if (axis_type == "zscale")
+            update_type = 'z';
         }
     }
   else if (axis_type == "cdata" || axis_type == "climmode"

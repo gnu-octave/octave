@@ -37,16 +37,14 @@ function y = cosd (x)
     print_usage ();
   endif
 
-  I = x / 180;
-  y = cos (I .* pi);
-  I += 0.5;
-  y(I == fix (I) & isfinite (I)) = 0;
+  ## Advance phase by 90 degrees to turn sin in to cos and use sind. 
+  y = sind (x + 90);
 
 endfunction
 
 
-%!assert (cosd (0:10:80), cos (pi*[0:10:80]/180), -10*eps)
-%!assert (cosd ([0, 180, 360]) != 0)
-%!assert (cosd ([90, 270]) == 0)
+%!assert (cosd (10:20:360), cos ([10:20:360] * pi/180), 5*eps)
+%!assert (cosd ([-270, -90, 90, 270]) == 0)
+%!assert (cosd ([-360, -180, 0, 180, 360]), [1, -1, 1, -1, 1])
 
 %!error <Invalid call> cosd ()

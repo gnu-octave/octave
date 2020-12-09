@@ -176,14 +176,13 @@ function q = quantile (x, p = [], dim, method = 5)
     ## Find the first non-singleton dimension.
     (dim = find (size (x) > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= ndims (x)))
+    if (!(isscalar (dim) && dim == fix (dim)) || !(1 <= dim))
       error ("quantile: DIM must be an integer and a valid dimension");
     endif
   endif
 
   ## Set the permutation vector.
-  perm = 1:ndims (x);
+  perm = 1:(max (ndims (x), dim));
   perm(1) = dim;
   perm(dim) = 1;
 
@@ -382,6 +381,7 @@ endfunction
 %!assert <*54421> (quantile ([1:10]', 0.5, 2), [1:10]')
 %!assert <*54421> (quantile ([1:10], [0.25, 0.75]), [3, 8])
 %!assert <*54421> (quantile ([1:10], [0.25, 0.75]'), [3; 8])
+%!assert (quantile ([1:10], 1, 3), [1:10])
 
 ## Test input validation
 %!error <Invalid call> quantile ()
@@ -390,7 +390,6 @@ endfunction
 %!error quantile (1:10, ones (2,2))
 %!error quantile (1, 1, 1.5)
 %!error quantile (1, 1, 0)
-%!error quantile (1, 1, 3)
 %!error quantile ((1:5)', 0.5, 1, 0)
 %!error quantile ((1:5)', 0.5, 1, 10)
 

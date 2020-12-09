@@ -57,11 +57,11 @@ function y = sinpi (x)
     print_usage ();
   endif
 
-  ## Unwrap integer multiples so that new domain is [0, 2)
-  x = mod (x, 2);
+  ## Wrap integer multiples so that new domain is [-1, 1)
+  x = mod (x-1, 2) - 1;
 
   ## Integer multiples of pi must be exactly zero
-  x(x == 1) = 0;
+  x(x == -1) = 0;
 
   y = sin (x * pi);
 

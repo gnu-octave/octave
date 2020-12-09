@@ -38,11 +38,11 @@ function y = sind (x)
     print_usage ();
   endif
 
-  ## Unwrap multiples so that new domain is [0, 360)
-  x = mod (x, 360);
+  ## Wrap multiples so that new domain is [-180, 180)
+  x = mod (x-180, 360) - 180;
 
   ## Integer multiples of pi must be exactly zero
-  x(x == 180) = 0;
+  x(x == -180) = 0;
 
   y = sin (x / 180 * pi);
 

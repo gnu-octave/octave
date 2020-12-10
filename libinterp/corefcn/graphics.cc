@@ -13234,8 +13234,8 @@ make_graphics_object (const std::string& go_name,
     }
   catch (octave::execution_exception& ee)
     {
-      error (ee, "__go_%s__: unable to create graphics handle",
-             go_name.c_str ());
+      error (ee, "__go_%s__: %s, unable to create graphics handle",
+             go_name.c_str (), ee.message ().c_str ());
     }
 
   try
@@ -13245,8 +13245,8 @@ make_graphics_object (const std::string& go_name,
   catch (octave::execution_exception& ee)
     {
       delete_graphics_object (h);
-      error (ee, "__go_%s__: unable to create graphics handle",
-             go_name.c_str ());
+      error (ee, "__go_%s__: %s, unable to create graphics handle",
+             go_name.c_str (), ee.message ().c_str ());
     }
 
   adopt (parent, h);

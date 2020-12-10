@@ -734,7 +734,7 @@ namespace octave
     octave_value
     string_fill_char (const octave_value_list& args, int nargout);
 
-    void final_index_error (index_exception& e, const tree_expression *expr);
+    void final_index_error (index_exception& ie, const tree_expression *expr);
 
     octave_value do_who (int argc, const string_vector& argv,
                          bool return_list, bool verbose = false);

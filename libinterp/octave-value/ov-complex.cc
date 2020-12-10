@@ -149,9 +149,9 @@ octave_complex::index_vector (bool) const
 {
   std::ostringstream buf;
   buf << scalar.real () << std::showpos << scalar.imag () << 'i';
-  octave::complex_index_exception e (buf.str ());
+  octave::complex_index_exception cie (buf.str ());
 
-  throw e;
+  throw cie;
 }
 
 double

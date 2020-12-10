@@ -258,7 +258,7 @@ namespace octave
                    va_list args);
 
     OCTAVE_NORETURN
-    void error_1 (execution_exception& e, const char *id, const char *fmt,
+    void error_1 (execution_exception& ee, const char *id, const char *fmt,
                   va_list args);
 
     OCTAVE_NORETURN
@@ -304,11 +304,11 @@ namespace octave
                         = std::list<frame_info> ());
 
     OCTAVE_NORETURN
-    void throw_error (execution_exception& e);
+    void throw_error (execution_exception& ee);
 
-    void save_exception (const execution_exception& e);
+    void save_exception (const execution_exception& ee);
 
-    void display_exception (const execution_exception& e,
+    void display_exception (const execution_exception& ee,
                             std::ostream& os) const;
 
   private:

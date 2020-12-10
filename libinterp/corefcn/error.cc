@@ -72,12 +72,12 @@ format_message (const char *fmt, va_list args)
 
 OCTAVE_NORETURN
 static void
-error_1 (octave::execution_exception& e, const char *id, const char *fmt,
+error_1 (octave::execution_exception& ee, const char *id, const char *fmt,
          va_list args)
 {
   octave::error_system& es = octave::__get_error_system__ ("error_1");
 
-  es.error_1 (e, id, fmt, args);
+  es.error_1 (ee, id, fmt, args);
 }
 
 OCTAVE_NORETURN
@@ -577,13 +577,13 @@ namespace octave
       }
   }
 
-  void error_system::error_1 (execution_exception& e, const char *id,
+  void error_system::error_1 (execution_exception& ee, const char *id,
                               const char *fmt, va_list args)
   {
-    e.set_identifier (id);
-    e.set_message (format_message (fmt, args));
+    ee.set_identifier (id);
+    ee.set_message (format_message (fmt, args));
 
-    throw_error (e);
+    throw_error (ee);
   }
 
   void error_system::error_1 (const char *id, const char *fmt,
@@ -616,7 +616,7 @@ namespace octave
   {
     std::list<frame_info> stack_info;
 
-    execution_exception e ("error", id, msg, stack_info);
+    execution_exception ee ("error", id, msg, stack_info);
 
     if (! stack.isempty ()
         && ! (stack.contains ("file") && stack.contains ("name")
@@ -624,9 +624,9 @@ namespace octave
       error ("rethrow: STACK struct must contain the fields 'file', 'name', and 'line'");
 
     if (! stack.isempty ())
-      e.set_stack_info (make_stack_frame_list (stack));
+      ee.set_stack_info (make_stack_frame_list (stack));
 
-    throw_error (e);
+    throw_error (ee);
   }
 
   void error_system::vpanic (const char *fmt, va_list args)
@@ -897,25 +897,25 @@ namespace octave
     throw ex;
   }
 
-  void error_system::save_exception (const execution_exception& e)
+  void error_system::save_exception (const execution_exception& ee)
   {
-    last_error_id (e.identifier ());
-    std::string message = e.message ();
+    last_error_id (ee.identifier ());
+    std::string message = ee.message ();
     std::string xmsg
       = (message.size () > 0 && message.back () == '\n'
          ? message.substr (0, message.size () - 1) : message);
     last_error_message (xmsg);
-    last_error_stack (make_stack_map (e.stack_info ()));
+    last_error_stack (make_stack_map (ee.stack_info ()));
   }
 
-  void error_system::display_exception (const execution_exception& e,
+  void error_system::display_exception (const execution_exception& ee,
                                         std::ostream& os) const
   {
     if (m_beep_on_error)
       os << "\a";
 
-    e.display (octave_diary);
-    e.display (os);
+    ee.display (octave_diary);
+    ee.display (os);
   }
 }
 
@@ -975,17 +975,17 @@ error (const char *fmt, ...)
 }
 
 void
-verror (octave::execution_exception& e, const char *fmt, va_list args)
+verror (octave::execution_exception& ee, const char *fmt, va_list args)
 {
-  error_1 (e, "", fmt, args);
+  error_1 (ee, "", fmt, args);
 }
 
 void
-error (octave::execution_exception& e, const char *fmt, ...)
+error (octave::execution_exception& ee, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (e, fmt, args);
+  verror (ee, fmt, args);
   va_end (args);
 }
 

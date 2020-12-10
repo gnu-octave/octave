@@ -3899,7 +3899,7 @@ namespace octave
   // variable being indexed, if any, then issue an error.  (Will this also
   // be needed by pt-lvalue, which calls subsref?)
 
-  void tree_evaluator::final_index_error (index_exception& e,
+  void tree_evaluator::final_index_error (index_exception& ie,
                                           const tree_expression *expr)
   {
     std::string extra_message;
@@ -3908,7 +3908,7 @@ namespace octave
       {
         std::string var = expr->name ();
 
-        e.set_var (var);
+        ie.set_var (var);
 
         symbol_table& symtab = m_interpreter.get_symbol_table ();
 
@@ -3924,9 +3924,9 @@ namespace octave
           }
       }
 
-    std::string msg = e.message () + extra_message;
+    std::string msg = ie.message () + extra_message;
 
-    error_with_id (e.err_id (), "%s", msg.c_str ());
+    error_with_id (ie.err_id (), "%s", msg.c_str ());
   }
 
   octave_value

@@ -27,7 +27,10 @@
 ## @deftypefn {} {} cosd (@var{x})
 ## Compute the cosine for each element of @var{x} in degrees.
 ##
-## Returns zero for elements where @code{(@var{x}-90)/180} is an integer.
+## The function is more accurate than @code{cos} for large values of @var{x}
+## and for multiples of 90 degrees (@code{@var{x} = 90 + 180*n} with n an
+## integer) where @code{cosd} returns 0 rather than a small value on the order
+## of eps.
 ## @seealso{acosd, cos}
 ## @end deftypefn
 
@@ -37,7 +40,11 @@ function y = cosd (x)
     print_usage ();
   endif
 
-  ## Advance phase by 90 degrees to turn sin in to cos and use sind. 
+  if (! isnumeric (x))
+    error ("cosd: X must be numeric");
+  endif
+
+  ## Advance phase by 90 degrees to transform sin to cos and use sind().
   y = sind (x + 90);
 
 endfunction
@@ -46,5 +53,11 @@ endfunction
 %!assert (cosd (10:20:360), cos ([10:20:360] * pi/180), 5*eps)
 %!assert (cosd ([-270, -90, 90, 270]) == 0)
 %!assert (cosd ([-360, -180, 0, 180, 360]), [1, -1, 1, -1, 1])
+%!assert (cosd ([-Inf, NaN, +Inf, 0]), [NaN, NaN, NaN, 1])
+%!assert (cosd (+23) == cosd (-23))
+%!assert (cosd (1e6), 0.17364817766693033, 5*eps)
+%!assert (cosd (90 + 180i), -i*sinh (pi))
+%!assert (cosd (1e6 + 180i), 2.01292156189451577 + 11.3732880565446539i, 5*eps)
 
 %!error <Invalid call> cosd ()
+%!error <X must be numeric> cosd ("abc")

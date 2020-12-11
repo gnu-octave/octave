@@ -196,6 +196,11 @@ been added which prints a warning when Octave's parser recognizes valid
 Matlab code, but for which Octave does not yet implement the
 functionality.  By default, this warning is enabled.
 
+- The function `iqr` now uses Matlab compatible interpolation for
+quantile values.  Dimension input now allows a vector, "all", and
+dimensions greater than `ndims (x)`.  The function compatibly handles
+`Inf` and `NaN` input values.
+
 ### Alphabetical list of new functions added in Octave 7
 
 * `cospi`

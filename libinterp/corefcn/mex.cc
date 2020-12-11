@@ -4329,6 +4329,16 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
 
   try
     {
+      octave::tree_evaluator& tw = interp.get_evaluator ();
+
+      octave::unwind_action act
+        ([&tw] (const std::list<octave::octave_lvalue> *lvl)
+         {
+           tw.set_lvalue_list (lvl);
+         }, tw.lvalue_list ());
+
+      tw.set_lvalue_list (nullptr);
+
       retval = octave::feval (fname, args, nargout);
     }
   catch (const octave::execution_exception&)

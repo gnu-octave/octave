@@ -57,7 +57,7 @@ endfunction
 %!assert (cosd (+23) == cosd (-23))
 %!assert (cosd (1e6), 0.17364817766693033, 5*eps)
 %!assert (cosd (90 + 180i), -i*sinh (pi))
-%!assert (cosd (1e6 + 180i), 2.01292156189451577 + 11.3732880565446539i, 5*eps)
+%!assert (cosd (1e6 + 180i), 2.01292156189451577 + 11.3732880565446539i, -eps)
 
 %!error <Invalid call> cosd ()
 %!error <X must be numeric> cosd ("abc")

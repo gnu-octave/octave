@@ -436,7 +436,22 @@ namespace octave
     // scoping or overloads.
     octave_function * function_value (bool = false)
     {
-      return m_fcn.function_value ();
+      // FIXME: Shouldn't the lookup rules here match those used in the
+      // call method?
+
+      if (m_fcn.is_defined ())
+        return m_fcn.function_value ();
+
+      symbol_table& symtab
+        = __get_symbol_table__ ("class_simple_fcn_handle::function_value");
+
+      // FIXME: is caching the correct thing to do?
+      // Cache this value so that the pointer will be valid as long as the
+      // function handle object is valid.
+
+      m_fcn = symtab.find_method (m_name, m_dispatch_class);
+
+      return m_fcn.is_defined () ? m_fcn.function_value () : nullptr;
     }
 
     octave_user_function * user_function_value (bool = false)

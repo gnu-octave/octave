@@ -68,8 +68,8 @@ function q = prctile (x, p = [], dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim)) || !(1 <= dim))
-      error ("prctile: DIM must be an integer and a valid dimension");
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
+      error ("quantile: DIM must be a positive integer");
     endif
   endif
 

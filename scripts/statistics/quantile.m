@@ -176,8 +176,8 @@ function q = quantile (x, p = [], dim, method = 5)
     ## Find the first non-singleton dimension.
     (dim = find (size (x) > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim)) || !(1 <= dim))
-      error ("quantile: DIM must be an integer and a valid dimension");
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
+      error ("quantile: DIM must be a positive integer");
     endif
   endif
 

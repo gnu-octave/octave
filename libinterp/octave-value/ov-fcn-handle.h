@@ -241,6 +241,8 @@ public:
 
   bool is_defined (void) const { return true; }
 
+  builtin_type_t builtin_type (void) const { return btyp_func_handle; }
+
   bool is_function_handle (void) const { return true; }
 
   bool is_internal (void) const { return m_rep->is_internal (); }

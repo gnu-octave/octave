@@ -146,7 +146,7 @@ function retval = dir (directory = ".")
         endif
         fn = regexprep (fn, re, '$2$3');
         info(++cnt).name = fn;
-        if (no_dir && fn != ".")
+        if (no_dir && ! strcmp (fn, "."))
           tmpdir = ".";
         endif
         if (! is_same_file (last_dir, tmpdir))

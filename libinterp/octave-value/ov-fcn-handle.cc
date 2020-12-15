@@ -2567,7 +2567,7 @@ octave_fcn_handle::octave_fcn_handle (octave::base_fcn_handle *rep)
 octave_fcn_handle::octave_fcn_handle (const octave_fcn_handle& fh)
   : octave_base_value (fh)
 {
-  m_rep = fh.m_rep->clone ();
+  m_rep.reset (fh.m_rep->clone ());
 }
 
 dim_vector
@@ -2586,7 +2586,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
 bool
 octave_fcn_handle::load_ascii (std::istream& is)
 {
-  octave::base_fcn_handle *new_rep = nullptr;
+  std::shared_ptr<octave::base_fcn_handle> new_rep;
 
   // Read enough to detect type then create new rep object and dispatch
   // to finish loading object.
@@ -2631,9 +2631,9 @@ octave_fcn_handle::load_ascii (std::istream& is)
       is >> name;
 
       if (name == anonymous)
-        new_rep = new octave::anonymous_fcn_handle ();
+        new_rep.reset (new octave::anonymous_fcn_handle ());
       else
-        new_rep = new octave::simple_fcn_handle (name, fpath, octaveroot);
+        new_rep.reset (new octave::simple_fcn_handle (name, fpath, octaveroot));
     }
   else
     {
@@ -2644,30 +2644,30 @@ octave_fcn_handle::load_ascii (std::istream& is)
           std::string name;
           is >> name;
 
-          new_rep = new octave::simple_fcn_handle (name, fpath, octaveroot);
+          new_rep.reset (new octave::simple_fcn_handle (name, fpath, octaveroot));
         }
       else if (subtype == "scopedfunction")
         {
           std::string name;
           is >> name;
 
-          new_rep = new octave::scoped_fcn_handle (name, fpath, octaveroot);
+          new_rep.reset (new octave::scoped_fcn_handle (name, fpath, octaveroot));
         }
       else if (subtype == "anonymous")
-        new_rep = new octave::anonymous_fcn_handle ();
+        new_rep.reset (new octave::anonymous_fcn_handle ());
       else if (subtype == "nested")
         {
           std::string name;
           is >> name;
 
-          new_rep = new octave::nested_fcn_handle (name, fpath, octaveroot);
+          new_rep.reset (new octave::nested_fcn_handle (name, fpath, octaveroot));
         }
       else if (subtype == "classsimple")
         {
           std::string name;
           is >> name;
 
-          new_rep = new octave::class_simple_fcn_handle (name, fpath, octaveroot);
+          new_rep.reset (new octave::class_simple_fcn_handle (name, fpath, octaveroot));
         }
     }
 
@@ -2675,12 +2675,8 @@ octave_fcn_handle::load_ascii (std::istream& is)
     return false;
 
   if (! new_rep->load_ascii (is))
-    {
-      delete new_rep;
-      return false;
-    }
+    return false;
 
-  delete m_rep;
   m_rep = new_rep;
 
   return true;
@@ -2715,7 +2711,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
   if (! is)
     return false;
 
-  octave::base_fcn_handle *new_rep = nullptr;
+  std::shared_ptr<octave::base_fcn_handle> new_rep;
 
   size_t anl = anonymous.length ();
 
@@ -2726,7 +2722,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       // number of local variables appended.  We decode that inside the
       // load_binary function.
 
-      new_rep = new octave::anonymous_fcn_handle (name);
+      new_rep.reset (new octave::anonymous_fcn_handle (name));
     }
   else
     {
@@ -2765,25 +2761,21 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       // following list.
 
       if (subtype == "simple")
-        new_rep = new octave::simple_fcn_handle (name, fpath, octaveroot);
+        new_rep.reset (new octave::simple_fcn_handle (name, fpath, octaveroot));
       else if (subtype == "scopedfunction")
-        new_rep = new octave::scoped_fcn_handle (name, fpath, octaveroot);
+        new_rep.reset (new octave::scoped_fcn_handle (name, fpath, octaveroot));
       else if (subtype == "nested")
-        new_rep = new octave::nested_fcn_handle (name, fpath, octaveroot);
+        new_rep.reset (new octave::nested_fcn_handle (name, fpath, octaveroot));
       else if (subtype == "classsimple")
-        new_rep = new octave::class_simple_fcn_handle (name, fpath, octaveroot);
+        new_rep.reset (new octave::class_simple_fcn_handle (name, fpath, octaveroot));
     }
 
   if (! new_rep)
     return false;
 
   if (! new_rep->load_binary (is, swap, fmt))
-    {
-      delete new_rep;
-      return false;
-    }
+    return false;
 
-  delete m_rep;
   m_rep = new_rep;
 
   return true;
@@ -2876,14 +2868,14 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name_arg)
 
   std::string name (nm_tmp);
 
-  octave::base_fcn_handle *new_rep = nullptr;
+  std::shared_ptr<octave::base_fcn_handle> new_rep;
 
   if (name == anonymous)
     {
       // Even with extra info stored in the function name, anonymous
       // functions look the same.
 
-      new_rep = new octave::anonymous_fcn_handle ();
+      new_rep.reset (new octave::anonymous_fcn_handle ());
     }
   else
     {
@@ -2922,27 +2914,21 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name_arg)
       // following list.
 
       if (subtype == "simple")
-        new_rep = new octave::simple_fcn_handle (name, fpath, octaveroot);
+        new_rep.reset (new octave::simple_fcn_handle (name, fpath, octaveroot));
       else if (subtype == "scopedfunction")
-        new_rep = new octave::scoped_fcn_handle (name, fpath, octaveroot);
+        new_rep.reset (new octave::scoped_fcn_handle (name, fpath, octaveroot));
       else if (subtype == "nested")
-        new_rep = new octave::nested_fcn_handle (name, fpath, octaveroot);
+        new_rep.reset (new octave::nested_fcn_handle (name, fpath, octaveroot));
       else if (subtype == "classsimple")
-        new_rep = new octave::class_simple_fcn_handle (name, fpath, octaveroot);
+        new_rep.reset (new octave::class_simple_fcn_handle (name, fpath, octaveroot));
     }
 
   bool status = false;
 
-  if (new_rep)
+  if (new_rep && new_rep->load_hdf5 (group_hid, space_hid, type_hid))
     {
-      if (new_rep->load_hdf5 (group_hid, space_hid, type_hid))
-        {
-          delete m_rep;
-          m_rep = new_rep;
-          status = true;
-        }
-      else
-        delete new_rep;
+      m_rep = new_rep;
+      status = true;
     }
 
   // FIXME: manage these with an unwind_action object?

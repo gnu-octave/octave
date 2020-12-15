@@ -30,6 +30,7 @@
 
 #include <iosfwd>
 #include <list>
+#include <memory>
 #include <string>
 
 #include "oct-map.h"
@@ -325,11 +326,11 @@ public:
 
 private:
 
-  octave::base_fcn_handle *m_rep;
+  std::shared_ptr<octave::base_fcn_handle> m_rep;
 
   octave_fcn_handle (octave::base_fcn_handle *rep);
 
-  octave::base_fcn_handle * get_rep (void) const { return m_rep; }
+  octave::base_fcn_handle * get_rep (void) const { return m_rep.get (); }
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

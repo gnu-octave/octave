@@ -52,10 +52,10 @@
 
 #include "graphics.h"
 #include "interpreter.h"
+#include "oct-map.h"
 #include "oct-stream.h"
 #include "oct-string.h"
 #include "oct-strstrm.h"
-#include "ov-struct.h"
 
 namespace QtHandles
 {
@@ -503,8 +503,7 @@ namespace QtHandles
           }
         octave_scalar_map eventData;
         eventData.setfield ("Indices", indices);
-        octave_value cellSelectionCallbackEventObject =
-          octave_value (new octave_struct (eventData));
+        octave_value cellSelectionCallbackEventObject (eventData);
         emit gh_callback_event (m_handle, "cellselectioncallback",
                                 cellSelectionCallbackEventObject);
       }
@@ -551,8 +550,7 @@ namespace QtHandles
         eventData.setfield ("EditData", edit_data);
         eventData.setfield ("Error", error);
 
-        octave_value cellEditCallbackEventObject =
-          octave_value (new octave_struct (eventData));
+        octave_value cellEditCallbackEventObject (eventData);
 
         emit gh_callback_event (m_handle, "celleditcallback",
                                 cellEditCallbackEventObject);

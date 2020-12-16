@@ -48,7 +48,7 @@
 #include "octave-qobject.h"
 
 #include "interpreter.h"
-#include "ov-struct.h"
+#include "oct-map.h"
 
 namespace QtHandles
 {
@@ -520,7 +520,7 @@ namespace QtHandles
         eventData.setfield ("NewValue", newValue.as_octave_value ());
         eventData.setfield ("Source", bp.get___myhandle__ ().as_octave_value ());
         eventData.setfield ("EventName", "SelectionChanged");
-        octave_value selectionChangedEventObject (new octave_struct (eventData));
+        octave_value selectionChangedEventObject (eventData);
         emit gh_callback_event (m_handle, "selectionchangedfcn",
                                 selectionChangedEventObject);
       }

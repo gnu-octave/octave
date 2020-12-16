@@ -178,7 +178,7 @@ typedef unsigned long ino_t;
 #  define OCTAVE_IMPORT __declspec(dllimport)
 #else
    /* All other compilers, at least for now. */
-#  define OCTAVE_EXPORT
+#  define OCTAVE_EXPORT __attribute__ ((visibility ("default")))
 #  define OCTAVE_IMPORT
 #endif
 

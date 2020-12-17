@@ -167,6 +167,18 @@ endfunction
 %! assert (ia, [1, 2]);
 %! assert (ib, [3, 1]);
 
+%!test  # "legacy" + "rows"
+%! A = [1 2; 3 4; 5 6; 3 4; 7 8];
+%! B = [3 4; 7 8; 9 10];
+%! [c, ia, ib] = union (A, B, "rows");
+%! assert (c, [1, 2; 3, 4; 5, 6; 7, 8; 9, 10]);
+%! assert (ia, [1; 2; 3; 5]);
+%! assert (ib, [3]);
+%! [c, ia, ib] = union (A, B, "rows", "legacy");
+%! assert (c, [1, 2; 3, 4; 5, 6; 7, 8; 9, 10]);
+%! assert (ia, [1; 3]);
+%! assert (ib, [1; 2; 3]);
+
 ## Test orientation of output
 %!shared x,y
 %! x = 1:3;
@@ -176,6 +188,10 @@ endfunction
 %!assert (size (union (x', y)), [5 1])
 %!assert (size (union (x, y')), [5 1])
 %!assert (size (union (x', y')), [5 1])
+%!assert (size (union (x, y, "legacy")), [1, 5])
+%!assert (size (union (x', y, "legacy")), [1, 5])
+%!assert (size (union (x, y', "legacy")), [1, 5])
+%!assert (size (union (x', y', "legacy")), [5, 1])
 
 ## Clear shared variables
 %!shared

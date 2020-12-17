@@ -208,8 +208,12 @@ main (int argc, char **argv)
 {
   int retval = 0;
 
+  int idx_gui = -1;
   bool start_gui = false;
   bool gui_libs = true;
+
+  bool eval_code = false;
+  bool persist_octave = false;
 
   set_octave_home ();
 
@@ -231,7 +235,7 @@ main (int argc, char **argv)
 
   // Declaring new_argv static avoids leak warnings when using GCC's
   // --address-sanitizer option.
-  static char **new_argv = new char * [argc + 1];
+  static char **new_argv = new char * [argc + 2];
 
   int k = 1;
 
@@ -267,8 +271,26 @@ main (int argc, char **argv)
           // If we see this option, then we fork and exec octave with
           // the --gui option, while continuing to handle signals in the
           // terminal.
+          // Do not copy the arg now, since we still not know if the
+          // gui should really be launched.  Just store the index.
 
           start_gui = true;
+          idx_gui = i;
+        }
+      else if (! strcmp (argv[i], "--persist"))
+        {
+          // FIXME: How can we reliably detect if this option appears
+          //        after a FILE argument.  In this case octave ignores
+          //        the option, but the GUI might still be launched if
+          //        --gui is also given.
+
+          persist_octave = true;
+          new_argv[k++] = argv[i];
+        }
+      else if (! strcmp (argv[i], "--eval") ||
+               (strlen (argv[i]) > 0 && argv[i][0] != '-'))
+        {
+          eval_code = true;
           new_argv[k++] = argv[i];
         }
       else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "--quiet"))
@@ -307,11 +329,16 @@ main (int argc, char **argv)
         new_argv[k++] = argv[i];
     }
 
-  // At this point, gui_libs and start_gui are just about options, not
-  // the environment.  Exit if they don't make sense.
+  if (start_gui && eval_code && ! persist_octave)
+    start_gui = false;
 
+  // At this point, we definitely know whether the gui has to
+  // be launched or not.
+  // gui_libs and start_gui are just about options, not
+  // the environment.  Exit if they don't make sense.
   if (start_gui)
     {
+      // GUI should be started
       if (! gui_libs)
         {
           std::cerr << "octave: conflicting options: --no-gui-libs and --gui"
@@ -324,6 +351,14 @@ main (int argc, char **argv)
                 << std::endl;
       return 1;
 #endif
+
+      // Finally, add --gui to the command line options. We can not
+      // just append it since options after a given file are ignored.
+      for (int j = k; j > 1; j--)
+        new_argv[j] = new_argv[j-1];
+
+      new_argv[1] = argv[idx_gui];
+      k++;
     }
 
   new_argv[k] = nullptr;

@@ -140,7 +140,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
     if (nargout > 1)
       ia = ia(i(i <= na));
       ib = ib(i(i > na) - na);
-      if (optlegacy && isrowvec)
+      if (optlegacy && isrowvec && ! by_rows)
         ia = ia(:).';
         ib = ib(:).';
       endif
@@ -233,6 +233,10 @@ endfunction
 %!assert (size (setxor (x', y)), [3 1])
 %!assert (size (setxor (x, y')), [3 1])
 %!assert (size (setxor (x', y')), [3 1])
+%!assert (size (setxor (x, y, "legacy")), [1, 3])
+%!assert (size (setxor (x', y, "legacy")), [1, 3])
+%!assert (size (setxor (x, y', "legacy")), [1, 3])
+%!assert (size (setxor (x', y', "legacy")), [3, 1])
 
 ## Test "legacy" input
 %!test
@@ -246,3 +250,15 @@ endfunction
 %! assert (c, [2, 3, 4, 5]);
 %! assert (ia, [5, 1]);
 %! assert (ib, [4, 1]);
+
+%!test  # "legacy" + "rows"
+%! A = [1 2; 3 4; 5 6; 3 4; 7 8];
+%! B = [3 4; 7 8; 9 10];
+%! [c, ia, ib] = setxor (A, B, "rows");
+%! assert (c, [1, 2; 5, 6; 9, 10]);
+%! assert (ia, [1; 3]);
+%! assert (ib, [3]);
+%! [c, ia, ib] = setxor (A, B, "rows", "legacy");
+%! assert (c, [1, 2; 5, 6; 9, 10]);
+%! assert (ia, [1; 3]);
+%! assert (ib, [3]);

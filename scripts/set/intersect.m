@@ -134,11 +134,11 @@ function [c, ia, ib] = intersect (a, b, varargin)
       ## FIXME: Is there a way to avoid a call to sort?
       c = c(sort (ic(match)));
     endif
-  endif
 
-  ## Adjust output orientation for Matlab compatibility
-  if (isrowvec)
-    c = c.';
+    ## Adjust output orientation for Matlab compatibility
+    if (isrowvec)
+      c = c.';
+    endif
   endif
 
   if (nargout > 1)
@@ -150,7 +150,7 @@ function [c, ia, ib] = intersect (a, b, varargin)
       [~, idx] = min (ib);
       ib = [ib(idx:end); ib(1:idx-1)];
     endif
-    if (optlegacy && isrowvec)
+    if (optlegacy && isrowvec && ! by_rows)
       ia = ia.';
       ib = ib.';
     endif
@@ -251,6 +251,18 @@ endfunction
 %! assert (c, [4, 7]);
 %! assert (ia, [5, 4]);
 %! assert (ib, [4, 1]);
+
+%!test  # "legacy" + "rows"
+%! A = [ 1 2; 3 4; 5 6; 3 4; 7 8 ];
+%! B = [ 3 4; 7 8; 9 10 ];
+%! [c, ia, ib] = intersect (A, B, "rows");
+%! assert (c, [3, 4; 7, 8]);
+%! assert (ia, [2; 5]);
+%! assert (ib, [1; 2]);
+%! [c, ia, ib] = intersect (A, B, "rows", "legacy");
+%! assert (c, [3, 4; 7, 8]);
+%! assert (ia, [4; 5]);
+%! assert (ib, [1; 2]);
 
 ## Test orientation of output
 %!shared a,b

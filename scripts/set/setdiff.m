@@ -191,6 +191,9 @@ endfunction
 %!test
 %! a = [7 9 7; 0 0 0; 7 9 7; 5 5 5; 1 4 5];
 %! b = [0 0 0; 5 5 5];
+%! [c, ia] = setdiff (a, b, "rows");
+%! assert (c, [1, 4 ,5; 7, 9 7]);
+%! assert (ia, [5; 1]);
 %! [c, ia] = setdiff (a, b, "rows", "legacy");
 %! assert (c, [1, 4 ,5; 7, 9 7]);
 %! assert (ia, [5; 3]);

@@ -235,7 +235,7 @@ main (int argc, char **argv)
 
   // Declaring new_argv static avoids leak warnings when using GCC's
   // --address-sanitizer option.
-  static char **new_argv = new char * [argc + 1];
+  static char **new_argv = new char * [argc + 2];
 
   int k = 1;
 
@@ -272,19 +272,19 @@ main (int argc, char **argv)
           // the --gui option, while continuing to handle signals in the
           // terminal.
           // Do not copy the arg now, since we still not know if the
-          // gui should really be launched. Just store the index
+          // gui should really be launched.  Just store the index.
 
-          idx_gui = i;
           start_gui = true;
+          idx_gui = i;
         }
       else if (! strcmp (argv[i], "--persist"))
         {
           // FIXME: How can we reliably detect if this option appears
-          //        after a FILE argument. In this case octave ignores
-          //        the option but the GUI might still be launched if
+          //        after a FILE argument.  In this case octave ignores
+          //        the option, but the GUI might still be launched if
           //        --gui is also given.
-          persist_octave = true;
 
+          persist_octave = true;
           new_argv[k++] = argv[i];
         }
       else if (! strcmp (argv[i], "--eval") ||
@@ -335,7 +335,7 @@ main (int argc, char **argv)
   // At this point, we definitely know whether the gui has to
   // be launched or not.
   // gui_libs and start_gui are just about options, not
-  // the environment. Exit if they don't make sense.
+  // the environment.  Exit if they don't make sense.
   if (start_gui)
     {
       // GUI should be started

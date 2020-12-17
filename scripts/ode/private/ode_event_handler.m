@@ -101,18 +101,10 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
     ## Check if one or more signs of the event has changed
     signum = (sign (evtold) != sign (evt));
     if (any (signum))         # One or more values have changed
-      idx = find (signum);    # Get the index of the changed values
-
-      if (any (dir(idx) == 0))
-        ## Rising or falling (both are possible)
-        ## Don't change anything, keep the index
-      elseif (any (dir(idx) == sign (evt(idx))))
-        ## Detected rising or falling, need a new index
-        idx = find (dir == sign (evt));
-      else
-        ## Found a zero crossing but must not be notified
-        idx = [];
-      endif
+      ## Find events where either rising and falling edges are counted (dir==0)
+      ## or where the specified edge type matches the event edge type.
+      idx = signum & (dir == 0 | dir == sign (evt));
+      idx = find (idx);  # convert logical to numeric index or []
 
       ## Create new output values if a valid index has been found
       if (! isempty (idx))
@@ -123,11 +115,12 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
         else
           retcell{1} = any (term(idx));     # Stop integration or not
         endif
-        retcell{2}(evtcnt,1) = idx(1,1);  # Take first event found
+        idx = idx(1);  # Use first event found if there are multiple.
+        retcell{2}(evtcnt,1) = idx;
         ## Calculate the time stamp when the event function returned 0 and
         ## calculate new values for the integration results, we do both by
-        ## a linear interpolation
-        tnew = t - evt(1,idx) * (t - told) / (evt(1,idx) - evtold(1,idx));
+        ## a linear interpolation.
+        tnew = t - evt(idx) * (t - told) / (evt(idx) - evtold(idx));
         ynew = (y - (t - tnew) * (y - yold) / (t - told)).';
         retcell{3}(evtcnt,1) = tnew;
         retcell{4}(evtcnt,:) = ynew;

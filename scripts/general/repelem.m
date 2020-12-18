@@ -226,7 +226,7 @@ function retval = repelem (x, varargin)
     vector_r = ! (cellfun (@numel, varargin) == 1);
 
     ## 1. Check that all varargin are either scalars or vectors, not arrays.
-    ##    isvector gives true for scalars.
+    ##    isvector returns true for scalars so one test captures both inputs.
     if (! (isvector (varargin{1}) && (isvector (varargin{2}))))
       error ("repelem: R1 and R2 must be scalars or vectors");
 
@@ -237,13 +237,17 @@ function retval = repelem (x, varargin)
     endif
 
     ## Create index arrays to pass to element.
-    ## (It is no slower passing to prepareIdx
-    ## than checking and doing scalars directly.)
+    ## (It is no slower to call prepareIdx than to check and do scalars
+    ## directly.)
     idx1 = prepareIdx (varargin{1}, xsz(1));
     idx2 = prepareIdx (varargin{2}, xsz(2));
 
-    ## The ":" at the end takes care of any x dimensions > 2.
-    retval = x(idx1, idx2, :);
+    if (issparse (x))
+      retval = x(idx1, idx2);
+    else
+      ## The ":" at the end takes care of any x dimensions > 2.
+      retval = x(idx1, idx2, :);
+    endif
 
   else  # (nargin > 3)
 
@@ -436,6 +440,11 @@ endfunction
 
 %!test <*54275>
 %! assert (repelem (11:13, [1 3 0]), [11 12 12 12]);
+
+%!test <*59705>
+%! xs = sparse (magic (3));
+%! assert (repelem (xs, 1, 2), ...
+%!         sparse ([8,8,1,1,6,6; 3,3,5,5,7,7; 4,4,9,9,2,2]));
 
 ## nargin <= 1 error tests
 %!error <Invalid call> repelem ()

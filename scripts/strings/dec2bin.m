@@ -49,9 +49,17 @@
 ## @end group
 ## @end example
 ##
-## Programming Notes: The largest negative value that can be converted in to
+## Programming Notes: The largest negative value that can be converted into
 ## two's complement is @code{- (flintmax () / 2)}.
 ##
+## Known @sc{matlab} Incompatibility: @sc{matlab}'s @code{dec2bin} allows
+## non-integer values for @var{d}, truncating the value using the equivalent
+## of @code{fix (@var{d})} for positive values, but, as of R2020b and in
+## conflict with published documentation, appears to use
+## @code{round (@var{d})} for negative values.  To be consistent with
+## @code{dec2hex} and @code{dec2base}, Octave produces an error for non-integer
+## valued inputs for @var{d}.  Users wanting compatible code for non-integer
+## valued inputs should make use of @code{fix} or @code{round} as appropriate.
 ## @seealso{bin2dec, dec2base, dec2hex}
 ## @end deftypefn
 

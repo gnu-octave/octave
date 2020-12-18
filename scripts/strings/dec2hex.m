@@ -29,7 +29,8 @@
 ## Return a string representing the conversion of the integer @var{d} to a
 ## hexadecimal (base16) number.
 ##
-## If @var{d} is negative, return the two's complement binary value of @var{d}.
+## If @var{d} is negative, return the hexadecimal equivalent of the two's
+## complement binary value of @var{d}.
 ## If @var{d} is a matrix or cell array, return a string matrix with one row
 ## for each element in @var{d}, padded with leading zeros to the width of the
 ## largest value.

@@ -90,12 +90,9 @@ function hgsave (h, filename, fmt = "-binary")
 endfunction
 
 
-## FIXME: Have to use gnuplot for printing figs that have never been visible.
-%!testif HAVE_MAGICK; any (strcmp ("gnuplot", available_graphics_toolkits ()))
-%! toolkit = graphics_toolkit ();
-%! graphics_toolkit ("gnuplot");
+%!testif HAVE_MAGICK; (have_window_system () && __have_feature__ ("QT_OFFSCREEN") && strcmp ("qt", graphics_toolkit ())) || strcmp ("gnuplot", graphics_toolkit ());
+%! h1 = figure ("visible", "off", "paperposition", [0.25, 2.5, 8.0, 6.0]);
 %! unwind_protect
-%!   h1 = figure ("visible", "off", "paperposition", [0.25, 2.5, 8.0, 6.0]);
 %!   x = 0:0.1:2*pi;
 %!   y1 = sin (x);
 %!   y2 = exp (x - 1);
@@ -130,7 +127,6 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (h1);
 %!   close (h2);
-%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
 ## Test input validation

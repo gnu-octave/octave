@@ -467,7 +467,10 @@ namespace octave
       m_cdef_manager (*this),
       m_gtk_manager (),
       m_event_manager (*this),
+      m_parser (),
       m_gh_manager (nullptr),
+      m_exit_status (0),
+      m_server_mode (false),
       m_interactive (false),
       m_read_site_files (true),
       m_read_init_files (m_app_context != nullptr),
@@ -755,6 +758,53 @@ namespace octave
     m_initialized = true;
   }
 
+  void interpreter::parse_and_execute (const std::string& input,
+                                       bool& incomplete_parse)
+  {
+    incomplete_parse = false;
+
+    unwind_protect_var<bool> upv (m_in_top_level_repl, true);
+
+    if (m_evaluator.at_top_level ())
+      {
+        m_evaluator.dbstep_flag (0);
+        m_evaluator.reset_debug_state ();
+      }
+
+    bool eof = false;
+
+    if (command_history::add (input))
+      m_event_manager.append_history (input);
+
+    m_exit_status = m_parser->run (input, eof);
+
+    if (m_exit_status == 0)
+      {
+        std::shared_ptr<tree_statement_list>
+          stmt_list = m_parser->statement_list ();
+
+        if (stmt_list)
+          {
+            command_editor::increment_current_command_number ();
+
+            m_evaluator.eval (stmt_list, m_interactive);
+
+            m_event_manager.set_workspace ();
+          }
+        else if (m_parser->at_end_of_input ())
+          m_exit_status = EOF;
+      }
+    else
+      incomplete_parse = true;
+
+    if (m_exit_status == -1)
+      m_exit_status = 0;
+    else
+      m_parser->reset ();
+
+    m_event_manager.pre_input_event ();
+  }
+
   // FIXME: this function is intended to be executed only once.  Should
   // we enforce that restriction?
 
@@ -801,7 +851,10 @@ namespace octave
             if (options.forced_interactive ())
               command_editor::blink_matching_paren (false);
 
-            exit_status = main_loop ();
+            if (options.server ())
+              exit_status = server_loop ();
+            else
+              exit_status = main_loop ();
           }
       }
     catch (const exit_exception& xe)
@@ -1333,6 +1386,91 @@ namespace octave
       }
 
     return exit_status;
+  }
+
+  int interpreter::server_loop (void)
+  {
+    // Process events from the event queue.
+
+    unwind_protect_var<bool> upv (m_server_mode, true);
+
+    m_exit_status = 0;
+
+    if (! m_parser)
+      m_parser = std::shared_ptr<push_parser> (new push_parser (*this));
+
+    do
+      {
+        try
+          {
+            // FIXME: Running the event queue should be decoupled from
+            // the command_editor.  We should also use a condition
+            // variable to manage the execution of entries in the queue
+            // and eliminate the need for the busy-wait loop.
+
+            command_editor::run_event_hooks ();
+
+            octave::sleep (0.1);
+          }
+        catch (const interrupt_exception&)
+          {
+            recover_from_exception ();
+
+            m_parser->reset ();
+
+            // Required newline when the user does Ctrl+C at the prompt.
+            if (m_interactive)
+              octave_stdout << "\n";
+          }
+        catch (const index_exception& e)
+          {
+            recover_from_exception ();
+
+            m_parser->reset ();
+
+            std::cerr << "error: unhandled index exception: "
+                      << e.message () << " -- trying to return to prompt"
+                      << std::endl;
+          }
+        catch (const execution_exception& ee)
+          {
+            m_error_system.save_exception (ee);
+            m_error_system.display_exception (ee, std::cerr);
+
+            if (m_interactive)
+              {
+                recover_from_exception ();
+
+                m_parser->reset ();
+              }
+            else
+              {
+                // We should exit with a nonzero status.
+                m_exit_status = 1;
+                break;
+              }
+          }
+        catch (const std::bad_alloc&)
+          {
+            recover_from_exception ();
+
+            m_parser->reset ();
+
+            std::cerr << "error: out of memory -- trying to return to prompt"
+                      << std::endl;
+          }
+      }
+    while (m_exit_status == 0);
+
+    if (m_exit_status == EOF)
+      {
+        if (m_interactive)
+          octave_stdout << "\n";
+
+        m_exit_status = 0;
+      }
+
+    return m_exit_status;
   }
 
   tree_evaluator& interpreter::get_evaluator (void)

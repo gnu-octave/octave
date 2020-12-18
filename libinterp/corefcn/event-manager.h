@@ -195,6 +195,9 @@ namespace octave
 
     virtual void unregister_doc (const std::string& /*file*/) { }
 
+    virtual void interpreter_output (const std::string& /*msg*/) { }
+
+
     virtual void gui_status_update (const std::string& /*feature*/,
                                     const std::string& /*status*/) { }
 
@@ -497,6 +500,17 @@ namespace octave
       if (enabled ())
         {
           instance->unregister_doc (file);
+          return true;
+        }
+      else
+        return false;
+    }
+
+    bool interpreter_output (const std::string& msg)
+    {
+      if (enabled ())
+        {
+          instance->interpreter_output (msg);
           return true;
         }
       else

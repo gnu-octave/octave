@@ -41,7 +41,7 @@ static const char *usage_string =
        [--jit-compiler] [--line-editing] [--no-gui] [--no-history]\n\
        [--no-init-file] [--no-init-path] [--no-line-editing]\n\
        [--no-site-file] [--no-window-system] [--norc] [-p path]\n\
-       [--path path] [--persist] [--silent] [--traditional]\n\
+       [--path path] [--persist] [--server] [--silent] [--traditional]\n\
        [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
@@ -75,8 +75,9 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define NO_LINE_EDITING_OPTION 15
 #define NO_SITE_FILE_OPTION 16
 #define PERSIST_OPTION 17
-#define TEXI_MACROS_FILE_OPTION 18
-#define TRADITIONAL_OPTION 19
+#define SERVER_OPTION 18
+#define TEXI_MACROS_FILE_OPTION 19
+#define TRADITIONAL_OPTION 20
 struct octave_getopt_options long_opts[] =
 {
   { "braindead",                octave_no_arg,       0, TRADITIONAL_OPTION },
@@ -106,6 +107,7 @@ struct octave_getopt_options long_opts[] =
   { "path",                     octave_required_arg, 0, 'p' },
   { "persist",                  octave_no_arg,       0, PERSIST_OPTION },
   { "quiet",                    octave_no_arg,       0, 'q' },
+  { "server",                   octave_no_arg,       0, SERVER_OPTION },
   { "silent",                   octave_no_arg,       0, 'q' },
   { "texi-macros-file",         octave_required_arg, 0, TEXI_MACROS_FILE_OPTION },
   { "traditional",              octave_no_arg,       0, TRADITIONAL_OPTION },
@@ -156,6 +158,7 @@ Options:\n\
   --norc, -f              Don't read any initialization files.\n\
   --path PATH, -p PATH    Add PATH to head of function search path.\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
+  --server                Enter server mode at startup.\n\
   --silent, --quiet, -q   Don't print message at startup.\n\
   --texi-macros-file FILE Use Texinfo macros in FILE for makeinfo command.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\

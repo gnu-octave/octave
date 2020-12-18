@@ -213,6 +213,7 @@ main (int argc, char **argv)
   int retval = 0;
 
   int idx_gui = -1;
+  bool server = false;
   bool start_gui = false;
   bool gui_libs = true;
 
@@ -291,6 +292,11 @@ main (int argc, char **argv)
           persist_octave = true;
           new_argv[k++] = argv[i];
         }
+      else if (! strcmp (argv[i], "--server"))
+        {
+          server = true;
+          new_argv[k++] = argv[i];
+        }
       else if (! strcmp (argv[i], "--eval") ||
                (strlen (argv[i]) > 0 && argv[i][0] != '-'))
         {
@@ -346,6 +352,13 @@ main (int argc, char **argv)
       if (! gui_libs)
         {
           std::cerr << "octave: conflicting options: --no-gui-libs and --gui"
+                    << std::endl;
+          return 1;
+        }
+
+      if (server)
+        {
+          std::cerr << "octave: conflicting options: --server and --gui"
                     << std::endl;
           return 1;
         }

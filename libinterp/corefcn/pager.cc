@@ -377,13 +377,17 @@ namespace octave
 
   bool output_system::sync (const char *buf, int len)
   {
-    if (! m_interpreter.interactive ()
+    // FIXME: The following seems to be a bit of a mess.
+
+    if (m_interpreter.server_mode ()
+        || ! m_interpreter.interactive ()
         || application::forced_interactive ()
         || m_really_flush_to_pager
         || (m_page_screen_output && m_page_output_immediately)
         || ! m_page_screen_output)
       {
-        bool bypass_pager = (! m_interpreter.interactive ()
+        bool bypass_pager = (m_interpreter.server_mode ()
+                             || ! m_interpreter.interactive ()
                              || application::forced_interactive ()
                              || ! m_page_screen_output
                              || (m_really_flush_to_pager
@@ -439,8 +443,17 @@ namespace octave
       {
         if (bypass_pager)
           {
-            std::cout.write (msg, len);
-            std::cout.flush ();
+            if (m_interpreter.server_mode ())
+              {
+                event_manager& evmgr = m_interpreter.get_event_manager ();
+
+                evmgr.interpreter_output (std::string (msg, len));
+              }
+            else
+              {
+                std::cout.write (msg, len);
+                std::cout.flush ();
+              }
           }
         else
           {

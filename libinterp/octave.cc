@@ -212,6 +212,10 @@ namespace octave
             m_persist = true;
             break;
 
+          case SERVER_OPTION:
+            m_server = true;
+            break;
+
           case TEXI_MACROS_FILE_OPTION:
             if (octave_optarg_wrapper ())
               m_texi_macros_file = octave_optarg_wrapper ();
@@ -255,6 +259,7 @@ namespace octave
     m.assign ("read_history_file", read_history_file ());
     m.assign ("read_init_files", read_init_files ());
     m.assign ("read_site_files", read_site_files ());
+    m.assign ("server", server ());
     m.assign ("set_initial_path", set_initial_path ());
     m.assign ("traditional", traditional ());
     m.assign ("verbose_flag", verbose_flag ());
@@ -398,8 +403,21 @@ namespace octave
             std::cerr << "error: --gui and --no-line-editing are mutually exclusive options" << std::endl;
             octave_print_terse_usage_and_exit ();
           }
+        if (m_options.server ())
+          {
+            std::cerr << "error: --gui and --server are mutually exclusive options" << std::endl;
+            octave_print_terse_usage_and_exit ();
+          }
       }
 
+    if (m_options.server ())
+      {
+        if (m_options.forced_interactive ())
+          {
+            std::cerr << "error: --server and --forced-interactive are mutually exclusive options" << std::endl;
+            octave_print_terse_usage_and_exit ();
+          }
+      }
 
     m_is_octave_program = ((m_have_script_file || m_have_eval_option_code)
                            && ! m_options.persist ()

@@ -69,6 +69,7 @@ namespace octave
     bool read_history_file (void) const { return m_read_history_file; }
     bool read_init_files (void) const { return m_read_init_files; }
     bool read_site_files (void) const { return m_read_site_files; }
+    bool server (void) const { return m_server; }
     bool set_initial_path (void) const { return m_set_initial_path; }
     bool traditional (void) const { return m_traditional; }
     bool verbose_flag (void) const { return m_verbose_flag; }
@@ -99,6 +100,7 @@ namespace octave
     void read_history_file (bool arg) { m_read_history_file = arg; }
     void read_init_files (bool arg) { m_read_init_files = arg; }
     void read_site_files (bool arg) { m_read_site_files = arg; }
+    void server (bool arg) { m_server = arg; }
     void set_initial_path (bool arg) { m_set_initial_path = arg; }
     void traditional (bool arg) { m_traditional = arg; }
     void verbose_flag (bool arg) { m_verbose_flag = arg; }
@@ -169,6 +171,10 @@ namespace octave
     // TRUE means we read the site-wide octaverc files.
     // (--norc; --no-site-file; -f)
     bool m_read_site_files = true;
+
+    // If TRUE, start the command server.
+    // (--server)
+    bool m_server = false;
 
     // TRUE means we set the initial path to configured defaults.
     // (--no-init-path)

@@ -618,19 +618,6 @@ namespace octave
       });
   }
 
-  void main_window::new_file (const QString& commands)
-  {
-    emit new_file_signal (commands);
-  }
-
-  void main_window::open_file (const QString& file_name, int line)
-  {
-    if (line < 0)
-      emit open_file_signal (file_name);
-    else
-      emit open_file_signal (file_name, QString (), line);
-  }
-
   void main_window::edit_mfile (const QString& name, int line)
   {
     handle_edit_mfile_request (name, QString (), QString (), line);
@@ -1780,7 +1767,7 @@ namespace octave
                  SLOT (set_current_directory (const QString&)));
 
         connect (m_find_files_dlg, SIGNAL (file_selected (const QString &)),
-                 this, SLOT (open_file (const QString &)));
+                 this, SIGNAL (open_file_signal (const QString &)));
 
         m_find_files_dlg->setWindowModality (Qt::NonModal);
       }
@@ -2371,7 +2358,7 @@ namespace octave
                    << m_undo_action
                    << m_copy_action
                    << m_paste_action
-                   <<m_select_all_action;
+                   << m_select_all_action;
     m_editor_window->insert_global_actions (shared_actions);
 #endif
   }
@@ -2383,9 +2370,10 @@ namespace octave
     construct_new_menu (file_menu);
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    m_open_action
-      = file_menu->addAction (rmgr.icon ("document-open"), tr ("Open..."));
-    m_open_action->setShortcutContext (Qt::ApplicationShortcut);
+
+    m_open_action = add_action (
+                    file_menu, rmgr.icon ("document-open"), tr ("Open..."),
+                    SLOT (request_open_file (void)), this);
     m_open_action->setToolTip (tr ("Open an existing file in editor"));
 
 #if defined (HAVE_QSCINTILLA)
@@ -2394,53 +2382,22 @@ namespace octave
 
     file_menu->addSeparator ();
 
-    m_load_workspace_action
-      = file_menu->addAction (tr ("Load Workspace..."));
+    m_load_workspace_action = add_action (
+              file_menu, QIcon (), tr ("Load Workspace..."),
+              SLOT (handle_load_workspace_request (void)), this);
 
-    m_save_workspace_action
-      = file_menu->addAction (tr ("Save Workspace As..."));
+    m_save_workspace_action = add_action (
+              file_menu, QIcon (), tr ("Save Workspace As..."),
+              SLOT (handle_save_workspace_request (void)), this);
 
     file_menu->addSeparator ();
 
-    m_exit_action = file_menu->addAction (tr ("Exit"));
+    m_exit_action = add_action (
+              file_menu, QIcon (), tr ("Exit"),
+              SLOT (close (void)), this);
     m_exit_action->setMenuRole (QAction::QuitRole);
-    m_exit_action->setShortcutContext (Qt::ApplicationShortcut);
 
-    connect (m_open_action, SIGNAL (triggered (void)),
-             this, SLOT (request_open_file (void)));
-
-    connect (m_load_workspace_action, SIGNAL (triggered (void)),
-             this, SLOT (handle_load_workspace_request (void)));
-
-    connect (m_save_workspace_action, SIGNAL (triggered (void)),
-             this, SLOT (handle_save_workspace_request (void)));
-
-    connect (m_exit_action, SIGNAL (triggered (void)),
-             this, SLOT (close (void)));
-  }
-
-  void main_window::construct_new_menu (QMenu *p)
-  {
-    QMenu *new_menu = p->addMenu (tr ("New"));
-
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    m_new_script_action
-      = new_menu->addAction (rmgr.icon ("document-new"), tr ("New Script"));
-    m_new_script_action->setShortcutContext (Qt::ApplicationShortcut);
-
-    m_new_function_action = new_menu->addAction (tr ("New Function..."));
-    m_new_function_action->setEnabled (true);
-    m_new_function_action->setShortcutContext (Qt::ApplicationShortcut);
-
-    m_new_figure_action = new_menu->addAction (tr ("New Figure"));
-    m_new_figure_action->setEnabled (true);
-
-    connect (m_new_script_action, SIGNAL (triggered (void)),
-             this, SLOT (request_new_script (void)));
-
-    connect (m_new_function_action, SIGNAL (triggered (void)),
-             this, SLOT (request_new_function (void)));
-
+    // Connect signal related to opening or creating editor files
     connect (this, SIGNAL (new_file_signal (const QString&)),
              m_active_editor, SLOT (request_new_file (const QString&)));
 
@@ -2451,9 +2408,25 @@ namespace octave
              SIGNAL (open_file_signal (const QString&, const QString&, int)),
              m_active_editor,
              SLOT (request_open_file (const QString&, const QString&, int)));
+  }
 
-    connect (m_new_figure_action, SIGNAL (triggered (void)),
-             this, SLOT (handle_new_figure_request (void)));
+  void main_window::construct_new_menu (QMenu *p)
+  {
+    QMenu *new_menu = p->addMenu (tr ("New"));
+
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    m_new_script_action = add_action (
+          new_menu, rmgr.icon ("document-new"), tr ("New Script"),
+          SLOT (request_new_script (void)), this);
+
+    m_new_function_action = add_action (
+          new_menu, QIcon (), tr ("New Function..."),
+          SLOT (request_new_function (void)), this);
+
+    m_new_figure_action = add_action (
+          new_menu, QIcon (), tr ("New Figure"),
+          SLOT (handle_new_figure_request (void)), this);
   }
 
   void main_window::construct_edit_menu (QMenuBar *p)

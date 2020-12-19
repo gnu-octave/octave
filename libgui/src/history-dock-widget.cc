@@ -53,7 +53,7 @@ namespace octave
     setStatusTip (tr ("Browse and search the command history."));
 
     connect (this, SIGNAL (command_create_script (const QString&)),
-             p, SLOT (new_file (const QString&)));
+             p, SIGNAL (new_file_signal (const QString&)));
 
     connect (this, SIGNAL (information (const QString&)),
              p, SLOT (report_status_message (const QString&)));

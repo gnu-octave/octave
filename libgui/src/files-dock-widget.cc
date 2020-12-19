@@ -106,7 +106,7 @@ namespace octave
     setWidget (container);
 
     connect (this, SIGNAL (open_file (const QString&)),
-             main_win (), SLOT (open_file (const QString&)));
+             main_win (), SIGNAL (open_file_signal (const QString&)));
 
     connect (this, SIGNAL (displayed_directory_changed (const QString&)),
              main_win (),

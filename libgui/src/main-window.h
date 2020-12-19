@@ -144,8 +144,6 @@ namespace octave
     void handle_rename_variable_request (const QString& old_name,
                                          const QString& new_name);
     void modify_path (const octave_value_list& dir_list, bool rm, bool subdirs);
-    void new_file (const QString& commands = QString ());
-    void open_file (const QString& file_name = QString (), int line = -1);
     void edit_mfile (const QString&, int);
     void file_remove_proxy (const QString& o, const QString& n);
     void open_online_documentation_page (void);

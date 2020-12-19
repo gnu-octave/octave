@@ -244,10 +244,11 @@ namespace octave
 
     init_terminal_size ();
 
-    // Connect signals for changes in visibility now before window is
-    // shown.
+    emit init_window_menu ();
 
-    connect_visibility_changed ();
+#if defined (HAVE_QSCINTILLA)
+    m_editor_window->enable_menu_shortcuts (false);
+#endif
 
     focus_command_window ();
   }
@@ -1596,18 +1597,6 @@ namespace octave
       }
     settings->setValue (mw_dir_list.key, curr_dirs);
     settings->sync ();
-  }
-
-  // Connecting the signals emitted when the visibility of a widget changes.
-  // This has to be done after the window is shown (see octave-gui.cc)
-  void main_window::connect_visibility_changed (void)
-  {
-    for (auto *widget : dock_widget_list ())
-      widget->connect_visibility_changed ();
-
-#if defined (HAVE_QSCINTILLA)
-    m_editor_window->enable_menu_shortcuts (false);
-#endif
   }
 
   void main_window::copyClipboard (void)

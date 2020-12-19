@@ -92,8 +92,6 @@ namespace octave
 
     virtual ~octave_dock_widget (void) = default;
 
-    virtual void connect_visibility_changed (void);
-
     void set_predecessor_widget (octave_dock_widget *prev_widget);
 
   signals:
@@ -126,6 +124,8 @@ namespace octave
 
     virtual void notice_settings (const gui_settings *) { }
 
+    void init_window_menu_entry (void);
+
     void handle_settings (const gui_settings *);
 
     void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
@@ -147,14 +147,6 @@ namespace octave
   protected slots:
 
     virtual void toplevel_change (bool);
-
-    //! Slot to steer changing visibility from outside.
-
-    virtual void handle_visibility_changed (bool visible)
-    {
-      if (visible)
-        emit active_changed (true);
-    }
 
     //! Event filter for double clicks into the window decoration elements.
 

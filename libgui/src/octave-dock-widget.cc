@@ -194,7 +194,10 @@ namespace octave
     connect (this, SIGNAL (topLevelChanged (bool)),
              this, SLOT (toplevel_change (bool)));
     connect (this, SIGNAL (visibilityChanged (bool)),
-             this, SLOT (handle_visibility_changed (bool)));
+             this, SLOT (handle_visibility (bool)));
+
+    connect (p, SIGNAL (init_window_menu (void)),
+             this, SLOT (init_window_menu_entry (void)));
 
     connect (p, SIGNAL (settings_changed (const gui_settings *)),
              this, SLOT (handle_settings (const gui_settings *)));
@@ -262,12 +265,9 @@ namespace octave
     handle_settings (rmgr.get_settings ());
   }
 
-  // connect signal visibility changed to related slot (called from main-window)
   void
-  octave_dock_widget::connect_visibility_changed (void)
+  octave_dock_widget::init_window_menu_entry (void)
   {
-    connect (this, SIGNAL (visibilityChanged (bool)),
-             this, SLOT (handle_visibility (bool)));
     emit active_changed (isVisible ());  // emit once for init of window menu
   }
 
@@ -631,8 +631,12 @@ namespace octave
 
   void octave_dock_widget::handle_visibility (bool visible)
   {
-    if (visible && ! isFloating ())
-      setFocus ();
+    if (visible)
+      {
+        emit active_changed (true);
+        if (! isFloating ())
+          setFocus ();
+      }
   }
 
   void

@@ -1408,6 +1408,8 @@ namespace octave
   // files and is made visible.
   void file_editor::handle_visibility (bool visible)
   {
+    octave_dock_widget::handle_visibility (visible);
+
     if (m_closed && visible)
       {
         m_closed = false;
@@ -1417,9 +1419,6 @@ namespace octave
       }
 
     empty_script (false, visible);
-
-    if (visible && ! isFloating ())
-      setFocus ();
   }
 
   // This slot is a reimplementation of the virtual slot in octave_dock_widget.

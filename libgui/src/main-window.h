@@ -99,6 +99,7 @@ namespace octave
 
     void settings_changed (const gui_settings *);
     void init_terminal_size_signal (void);
+    void init_window_menu (void);
     void new_file_signal (const QString&);
     void open_file_signal (const QString&);
     void open_file_signal (const QString& file, const QString& enc, int line);
@@ -202,7 +203,6 @@ namespace octave
     void init_terminal_size (void);
     void set_window_layout (gui_settings *settings);
     void write_settings (void);
-    void connect_visibility_changed (void);
 
     void copyClipboard (void);
     void pasteClipboard (void);

@@ -449,7 +449,11 @@ namespace octave
       // Cache this value so that the pointer will be valid as long as the
       // function handle object is valid.
 
-      m_fcn = symtab.find_method (m_name, m_dispatch_class);
+      // FIXME: This should probably dispatch to the respective class method.
+      // But that breaks if a function handle is used in a class method with
+      // e.g. bsxfun with arguments of a different class (see bug #59661).
+      // m_fcn = symtab.find_method (m_name, m_dispatch_class);
+      m_fcn = symtab.find_function (m_name, octave_value_list ());
 
       return m_fcn.is_defined () ? m_fcn.function_value () : nullptr;
     }

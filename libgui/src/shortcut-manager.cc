@@ -336,8 +336,18 @@ namespace octave
     settings->sync ();      // sync the settings file
   }
 
-  void shortcut_manager::set_shortcut (QAction *action, const sc_pref& scpref)
+  void shortcut_manager::set_shortcut (QAction *action, const sc_pref& scpref,
+                                       bool enable)
   {
+    if (! enable)
+      {
+        // Disable => remove existing shortcut from the action
+        action->setShortcut (QKeySequence ());
+        return;
+      }
+
+    // Enable: Is the given key known? If yes, get the value from the
+    //         settings file and set it to the action
     int index;
 
     index = m_action_hash[scpref.key] - 1;

@@ -229,10 +229,6 @@ namespace octave
     void find_files_finished (int) { }
     //!@}
 
-    //! Setting global shortcuts.
-
-    void set_global_shortcuts (bool enable);
-
     void set_screen_size (int ht, int wd);
 
     //! Handling the clipboard.

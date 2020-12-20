@@ -375,6 +375,7 @@ namespace octave
               dock->set_predecessor_widget (m_active_dock);
           }
 
+        // Check whether editor loses or gains focus
         int editor = 0;
         if (edit_dock_widget == dock)
           {
@@ -387,17 +388,21 @@ namespace octave
             editor = -1;
           }
 
+        // Check whether terminal loses or gains focus
+        int cmd_involved = 0;
+        if (cmd_dock_widget == dock)
+          cmd_involved = 1;
+        else if (cmd_dock_widget == m_active_dock)
+          cmd_involved = -1;
+
+        // If we have to take care of Alt+? accelerators of the main
+        // window, take result of test for terminal widget above
         int command = 0;
         if (m_prevent_readline_conflicts_menu)
-          {
-            if (cmd_dock_widget == dock)
-              command = 1;
-            else if (cmd_dock_widget == m_active_dock)
-              command = -1;
-          }
+          command = cmd_involved;
 
         // If editor or command gets/looses focus, disable/enable
-        // main menu accelerators
+        // main menu accelerators (Alt + ?)
         if (editor || command)
           {
             int sum = editor + command;
@@ -410,6 +415,11 @@ namespace octave
         if (m_active_dock)
           m_previous_dock = m_active_dock;
         m_active_dock = dock;
+
+        // En-/disable global shortcuts (preventing conflicts with
+        // readline. Do it here because it relies on m_active_dock
+        if (cmd_involved)
+          configure_shortcuts ();
       }
   }
 
@@ -921,18 +931,16 @@ namespace octave
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_main_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
-    if (settings->value (global_status_bar.key, global_status_bar.def).toBool ())
+    if (settings->value (global_status_bar).toBool ())
       m_status_bar->show ();
     else
       m_status_bar->hide ();
 
     m_prevent_readline_conflicts
-      = settings->value (sc_prevent_rl_conflicts.key,
-                         sc_prevent_rl_conflicts.def).toBool ();
+      = settings->value (sc_prevent_rl_conflicts).toBool ();
 
     m_prevent_readline_conflicts_menu
-      = settings->value (sc_prevent_rl_conflicts_menu.key,
-                         sc_prevent_rl_conflicts_menu.def).toBool ();
+      = settings->value (sc_prevent_rl_conflicts_menu).toBool ();
 
     m_suppress_dbg_location
       = ! settings->value (cs_dbg_location).toBool ();
@@ -943,7 +951,6 @@ namespace octave
     emit active_dock_changed (nullptr, m_active_dock); // update dock widget styles
 
     configure_shortcuts ();
-    set_global_shortcuts (m_active_dock == m_command_window);
 
     bool do_disable_main_menu_shortcuts
       = (m_active_dock == m_editor_window)
@@ -1781,61 +1788,6 @@ namespace octave
 
     m_find_files_dlg->activateWindow ();
 
-  }
-
-  void main_window::set_global_shortcuts (bool set_shortcuts)
-  {
-    // this slot is called when the terminal gets/loses focus
-
-    // return if the user doesn't want to use readline shortcuts
-    if (! m_prevent_readline_conflicts)
-      return;
-
-    if (set_shortcuts)
-      {
-        // terminal loses focus: set the global shortcuts
-        configure_shortcuts ();
-      }
-    else
-      {
-        // terminal gets focus: disable some shortcuts
-        QKeySequence no_key = QKeySequence ();
-
-        // file menu
-        m_open_action->setShortcut (no_key);
-        m_new_script_action->setShortcut (no_key);
-        m_new_function_action->setShortcut (no_key);
-        m_new_figure_action->setShortcut (no_key);
-        m_load_workspace_action->setShortcut (no_key);
-        m_save_workspace_action->setShortcut (no_key);
-        m_preferences_action->setShortcut (no_key);
-        m_set_path_action->setShortcut (no_key);
-        m_exit_action->setShortcut (no_key);
-
-        // edit menu
-        m_select_all_action->setShortcut (no_key);
-        m_clear_clipboard_action->setShortcut (no_key);
-        m_find_files_action->setShortcut (no_key);
-        m_clear_command_history_action->setShortcut (no_key);
-        m_clear_command_window_action->setShortcut (no_key);
-        m_clear_workspace_action->setShortcut (no_key);
-
-        // window menu
-        m_reset_windows_action->setShortcut (no_key);
-
-        // help menu
-        m_ondisk_doc_action->setShortcut (no_key);
-        m_online_doc_action->setShortcut (no_key);
-        m_report_bug_action->setShortcut (no_key);
-        m_octave_packages_action->setShortcut (no_key);
-        m_contribute_action->setShortcut (no_key);
-        m_developer_action->setShortcut (no_key);
-        m_about_octave_action->setShortcut (no_key);
-
-        // news menu
-        m_release_notes_action->setShortcut (no_key);
-        m_current_news_action->setShortcut (no_key);
-      }
   }
 
   void main_window::set_screen_size (int ht, int wd)
@@ -2799,73 +2751,76 @@ namespace octave
 
   void main_window::configure_shortcuts (void)
   {
+    bool enable
+      = ! ((m_active_dock == m_command_window) && m_prevent_readline_conflicts);
+
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
 
     // file menu
-    scmgr.set_shortcut (m_open_action, sc_main_file_open_file);
-    scmgr.set_shortcut (m_new_script_action, sc_main_file_new_file);
-    scmgr.set_shortcut (m_new_function_action, sc_main_file_new_function);
-    scmgr.set_shortcut (m_new_figure_action, sc_main_file_new_figure);
-    scmgr.set_shortcut (m_load_workspace_action, sc_main_file_load_workspace);
-    scmgr.set_shortcut (m_save_workspace_action, sc_main_file_save_workspace);
-    scmgr.set_shortcut (m_exit_action, sc_main_file_exit);
+    scmgr.set_shortcut (m_open_action, sc_main_file_open_file, enable);
+    scmgr.set_shortcut (m_new_script_action, sc_main_file_new_file, enable);
+    scmgr.set_shortcut (m_new_function_action, sc_main_file_new_function, enable);
+    scmgr.set_shortcut (m_new_figure_action, sc_main_file_new_figure, enable);
+    scmgr.set_shortcut (m_load_workspace_action, sc_main_file_load_workspace, enable);
+    scmgr.set_shortcut (m_save_workspace_action, sc_main_file_save_workspace, enable);
+    scmgr.set_shortcut (m_exit_action, sc_main_file_exit, enable);
 
     // edit menu
-    scmgr.set_shortcut (m_copy_action, sc_main_edit_copy);
-    scmgr.set_shortcut (m_paste_action, sc_main_edit_paste);
-    scmgr.set_shortcut (m_undo_action, sc_main_edit_undo);
-    scmgr.set_shortcut (m_select_all_action, sc_main_edit_select_all);
-    scmgr.set_shortcut (m_clear_clipboard_action, sc_main_edit_clear_clipboard);
-    scmgr.set_shortcut (m_find_files_action, sc_main_edit_find_in_files);
-    scmgr.set_shortcut (m_clear_command_history_action, sc_main_edit_clear_history);
-    scmgr.set_shortcut (m_clear_command_window_action, sc_main_edit_clear_command_window);
-    scmgr.set_shortcut (m_clear_workspace_action, sc_main_edit_clear_workspace);
-    scmgr.set_shortcut (m_set_path_action, sc_main_edit_set_path);
-    scmgr.set_shortcut (m_preferences_action, sc_main_edit_preferences);
+    scmgr.set_shortcut (m_copy_action, sc_main_edit_copy, enable);
+    scmgr.set_shortcut (m_paste_action, sc_main_edit_paste, enable);
+    scmgr.set_shortcut (m_undo_action, sc_main_edit_undo, enable);
+    scmgr.set_shortcut (m_select_all_action, sc_main_edit_select_all, enable);
+    scmgr.set_shortcut (m_clear_clipboard_action, sc_main_edit_clear_clipboard, enable);
+    scmgr.set_shortcut (m_find_files_action, sc_main_edit_find_in_files, enable);
+    scmgr.set_shortcut (m_clear_command_history_action, sc_main_edit_clear_history, enable);
+    scmgr.set_shortcut (m_clear_command_window_action, sc_main_edit_clear_command_window, enable);
+    scmgr.set_shortcut (m_clear_workspace_action, sc_main_edit_clear_workspace, enable);
+    scmgr.set_shortcut (m_set_path_action, sc_main_edit_set_path, enable);
+    scmgr.set_shortcut (m_preferences_action, sc_main_edit_preferences, enable);
 
     // debug menu
-    scmgr.set_shortcut (m_debug_step_over, sc_main_debug_step_over);
-    scmgr.set_shortcut (m_debug_step_into, sc_main_debug_step_into);
-    scmgr.set_shortcut (m_debug_step_out, sc_main_debug_step_out);
-    scmgr.set_shortcut (m_debug_continue, sc_main_debug_continue);
-    scmgr.set_shortcut (m_debug_quit, sc_main_debug_quit);
+    scmgr.set_shortcut (m_debug_step_over, sc_main_debug_step_over, enable);
+    scmgr.set_shortcut (m_debug_step_into, sc_main_debug_step_into, enable);
+    scmgr.set_shortcut (m_debug_step_out, sc_main_debug_step_out, enable);
+    scmgr.set_shortcut (m_debug_continue, sc_main_debug_continue, enable);
+    scmgr.set_shortcut (m_debug_quit, sc_main_debug_quit, enable);
 
     // tools menu
-    scmgr.set_shortcut (m_profiler_start, sc_main_tools_start_profiler);
-    scmgr.set_shortcut (m_profiler_resume, sc_main_tools_resume_profiler);
-    scmgr.set_shortcut (m_profiler_stop, sc_main_tools_start_profiler); // same, toggling
-    scmgr.set_shortcut (m_profiler_show, sc_main_tools_show_profiler);
+    scmgr.set_shortcut (m_profiler_start, sc_main_tools_start_profiler, enable);
+    scmgr.set_shortcut (m_profiler_resume, sc_main_tools_resume_profiler, enable);
+    scmgr.set_shortcut (m_profiler_stop, sc_main_tools_start_profiler, enable); // same, toggling
+    scmgr.set_shortcut (m_profiler_show, sc_main_tools_show_profiler, enable);
 
     // window menu
-    scmgr.set_shortcut (m_show_command_window_action, sc_main_window_show_command);
-    scmgr.set_shortcut (m_show_history_action, sc_main_window_show_history);
-    scmgr.set_shortcut (m_show_workspace_action, sc_main_window_show_workspace);
-    scmgr.set_shortcut (m_show_file_browser_action, sc_main_window_show_file_browser);
-    scmgr.set_shortcut (m_show_editor_action, sc_main_window_show_editor);
-    scmgr.set_shortcut (m_show_documentation_action, sc_main_window_show_doc);
-    scmgr.set_shortcut (m_show_variable_editor_action, sc_main_window_show_variable_editor);
-    scmgr.set_shortcut (m_command_window_action, sc_main_window_command);
-    scmgr.set_shortcut (m_history_action, sc_main_window_history);
-    scmgr.set_shortcut (m_workspace_action, sc_main_window_workspace);
-    scmgr.set_shortcut (m_file_browser_action, sc_main_window_file_browser);
-    scmgr.set_shortcut (m_editor_action, sc_main_window_editor);
-    scmgr.set_shortcut (m_documentation_action, sc_main_window_doc);
-    scmgr.set_shortcut (m_variable_editor_action, sc_main_window_variable_editor);
-    scmgr.set_shortcut (m_previous_dock_action, sc_main_window_previous_dock);
-    scmgr.set_shortcut (m_reset_windows_action, sc_main_window_reset);
+    scmgr.set_shortcut (m_show_command_window_action, sc_main_window_show_command, enable);
+    scmgr.set_shortcut (m_show_history_action, sc_main_window_show_history, enable);
+    scmgr.set_shortcut (m_show_workspace_action, sc_main_window_show_workspace, enable);
+    scmgr.set_shortcut (m_show_file_browser_action, sc_main_window_show_file_browser, enable);
+    scmgr.set_shortcut (m_show_editor_action, sc_main_window_show_editor, enable);
+    scmgr.set_shortcut (m_show_documentation_action, sc_main_window_show_doc, enable);
+    scmgr.set_shortcut (m_show_variable_editor_action, sc_main_window_show_variable_editor, enable);
+    scmgr.set_shortcut (m_command_window_action, sc_main_window_command, enable);
+    scmgr.set_shortcut (m_history_action, sc_main_window_history, enable);
+    scmgr.set_shortcut (m_workspace_action, sc_main_window_workspace, enable);
+    scmgr.set_shortcut (m_file_browser_action, sc_main_window_file_browser, enable);
+    scmgr.set_shortcut (m_editor_action, sc_main_window_editor, enable);
+    scmgr.set_shortcut (m_documentation_action, sc_main_window_doc, enable);
+    scmgr.set_shortcut (m_variable_editor_action, sc_main_window_variable_editor, enable);
+    scmgr.set_shortcut (m_previous_dock_action, sc_main_window_previous_dock, enable);
+    scmgr.set_shortcut (m_reset_windows_action, sc_main_window_reset, enable);
 
     // help menu
-    scmgr.set_shortcut (m_ondisk_doc_action, sc_main_help_ondisk_doc);
-    scmgr.set_shortcut (m_online_doc_action, sc_main_help_online_doc);
-    scmgr.set_shortcut (m_report_bug_action, sc_main_help_report_bug);
-    scmgr.set_shortcut (m_octave_packages_action, sc_main_help_packages);
-    scmgr.set_shortcut (m_contribute_action, sc_main_help_contribute);
-    scmgr.set_shortcut (m_developer_action, sc_main_help_developer);
-    scmgr.set_shortcut (m_about_octave_action, sc_main_help_about);
+    scmgr.set_shortcut (m_ondisk_doc_action, sc_main_help_ondisk_doc, enable);
+    scmgr.set_shortcut (m_online_doc_action, sc_main_help_online_doc, enable);
+    scmgr.set_shortcut (m_report_bug_action, sc_main_help_report_bug, enable);
+    scmgr.set_shortcut (m_octave_packages_action, sc_main_help_packages, enable);
+    scmgr.set_shortcut (m_contribute_action, sc_main_help_contribute, enable);
+    scmgr.set_shortcut (m_developer_action, sc_main_help_developer, enable);
+    scmgr.set_shortcut (m_about_octave_action, sc_main_help_about, enable);
 
     // news menu
-    scmgr.set_shortcut (m_release_notes_action, sc_main_news_release_notes);
-    scmgr.set_shortcut (m_current_news_action, sc_main_news_community_news);
+    scmgr.set_shortcut (m_release_notes_action, sc_main_news_release_notes, enable);
+    scmgr.set_shortcut (m_current_news_action, sc_main_news_community_news, enable);
   }
 
   QList<octave_dock_widget *> main_window::dock_widget_list (void)

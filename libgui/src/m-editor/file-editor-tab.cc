@@ -2088,7 +2088,7 @@ namespace octave
     update_lexer ();
 
     m_edit_area->setText (commands);
-    m_edit_area->setModified (false); // new file is not modified yet
+    m_edit_area->setModified (!commands.isEmpty ());
   }
 
   void file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,

@@ -228,6 +228,10 @@ namespace octave
                     (cs_cursor_blinking.key, cs_cursor_blinking.def).toBool ());
       }
 
+    // focus follows mouse
+    cb_focus_follows_mouse->setChecked (
+        settings->value (dw_focus_follows_mouse).toBool ());
+
     // prompt on exit
     cb_prompt_to_exit->setChecked (
         settings->value (global_prompt_to_exit.key, global_prompt_to_exit.def).toBool ());
@@ -909,6 +913,9 @@ namespace octave
 
     // cursor blinking
     settings->setValue (global_cursor_blinking.key, cb_cursor_blinking->isChecked ());
+
+    // focus follows mouse
+    settings->setValue (dw_focus_follows_mouse.key, cb_focus_follows_mouse->isChecked ());
 
     // promp to exit
     settings->setValue (global_prompt_to_exit.key, cb_prompt_to_exit->isChecked ());

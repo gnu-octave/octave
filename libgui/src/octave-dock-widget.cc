@@ -183,8 +183,9 @@ namespace octave
 
   octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p,
                                           base_qobject& oct_qobj)
-    : label_dock_widget (p, oct_qobj), m_recent_float_geom (),
-      m_recent_dock_geom (), m_waiting_for_mouse_button_release (false)
+    : label_dock_widget (p, oct_qobj), m_focus_follows_mouse (false),
+      m_recent_float_geom (), m_recent_dock_geom (),
+      m_waiting_for_mouse_button_release (false)
   {
     setObjectName (obj_name);
 
@@ -446,6 +447,8 @@ namespace octave
   void
   octave_dock_widget::handle_settings (const gui_settings *settings)
   {
+    m_focus_follows_mouse = settings->value (dw_focus_follows_mouse).toBool ();
+
     m_custom_style
       = settings->value (dw_title_custom_style).toBool ();
 
@@ -572,11 +575,18 @@ namespace octave
 
   bool octave_dock_widget::eventFilter (QObject *obj, QEvent *e)
   {
+    // Ignore double clicks into window decoration elements
     if (e->type () == QEvent::NonClientAreaMouseButtonDblClick)
       {
-        e->ignore (); // ignore double clicks into window decoration elements
+        e->ignore ();
         return true;
       }
+
+    // Detect mouse enter events if "focus follows mouse" is desired
+    // for widgets docked to the main window (non floating) and activate
+    // the widget currently under the mouse 
+    if (m_focus_follows_mouse && ! isFloating () && (e->type () == QEvent::Enter))
+      activate ();
 
     return QDockWidget::eventFilter (obj,e);
   }

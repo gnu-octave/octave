@@ -29,6 +29,9 @@
 #include "gui-preferences.h"
 
 const gui_pref
+dw_focus_follows_mouse ("DockWidgets/focus_follows_mouse", QVariant (false));
+
+const gui_pref
 dw_title_custom_style ("DockWidgets/widget_title_custom_style",
                        QVariant (false));
 

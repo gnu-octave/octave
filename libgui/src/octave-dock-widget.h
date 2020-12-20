@@ -167,6 +167,7 @@ namespace octave
     QMainWindow *m_parent;
 
     bool m_custom_style;
+    bool m_focus_follows_mouse;
     int m_title_3d;
     QColor m_bg_color;
     QColor m_bg_color_active;

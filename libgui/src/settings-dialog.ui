@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -51,9 +51,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-38</y>
+            <y>0</y>
             <width>1021</width>
-            <height>607</height>
+            <height>616</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -112,16 +112,6 @@
                   </property>
                  </widget>
                 </item>
-                <item row="8" column="0">
-                 <widget class="QCheckBox" name="cb_use_native_file_dialogs">
-                  <property name="text">
-                   <string>Use native file dialogs</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
                 <item row="3" column="1">
                  <layout class="QVBoxLayout" name="verticalLayout_5">
                   <item>
@@ -173,26 +163,6 @@
                    </widget>
                   </item>
                  </layout>
-                </item>
-                <item row="9" column="0">
-                 <widget class="QCheckBox" name="cb_cursor_blinking">
-                  <property name="text">
-                   <string>Cursor blinking</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="10" column="0">
-                 <widget class="QCheckBox" name="cb_status_bar">
-                  <property name="text">
-                   <string>Show status bar</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
                 </item>
                 <item row="5" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -414,13 +384,6 @@
                   </item>
                  </layout>
                 </item>
-                <item row="11" column="0">
-                 <widget class="QCheckBox" name="cb_prompt_to_exit">
-                  <property name="text">
-                   <string>Confirm before exiting</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="label_2">
                   <property name="text">
@@ -459,6 +422,63 @@
                  <widget class="QLabel" name="label_29">
                   <property name="text">
                    <string>Style</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_35">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QCheckBox" name="cb_use_native_file_dialogs">
+                  <property name="text">
+                   <string>Use native file dialogs</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cb_cursor_blinking">
+                  <property name="text">
+                   <string>Cursor blinking</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cb_status_bar">
+                  <property name="text">
+                   <string>Show status bar</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cb_focus_follows_mouse">
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                  <property name="text">
+                   <string>Focus follows mouse for widgets docked to the main window</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cb_prompt_to_exit">
+                  <property name="text">
+                   <string>Confirm before exiting</string>
                   </property>
                  </widget>
                 </item>

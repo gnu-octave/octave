@@ -247,7 +247,7 @@ namespace octave
   }
 
   regexp::match_data
-  regexp::match (const std::string& buffer)
+  regexp::match (const std::string& buffer) const
   {
     // check if input is valid utf-8
     const uint8_t *buf_str = reinterpret_cast<const uint8_t *> (buffer.c_str ());
@@ -465,7 +465,8 @@ namespace octave
   } rep_token_t;
 
   std::string
-  regexp::replace (const std::string& buffer, const std::string& replacement)
+  regexp::replace (const std::string& buffer,
+                   const std::string& replacement) const
   {
     std::string retval;
 

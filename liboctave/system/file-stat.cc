@@ -38,6 +38,7 @@
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include "lo-regexp.h"
+#  include "oct-env.h"
 #endif
 
 namespace octave
@@ -194,12 +195,7 @@ namespace octave
           std::string full_file_name = sys::file_ops::tilde_expand (file_name);
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-          std::string canon_file_name
-            = sys::canonicalize_file_name (full_file_name);
-
-          // Might have failed for files with non-ASCII characters in name
-          if (! canon_file_name.empty ())
-            full_file_name = canon_file_name;
+          full_file_name = sys::env::make_absolute (full_file_name);
 
           // Remove trailing slashes
           while (full_file_name.length () > 1
@@ -209,10 +205,10 @@ namespace octave
           // If path is a root (like "C:" or "\\SERVER\share"), add a
           // trailing backslash.
           // FIXME: Does this pattern match all possible UNC roots?
-          octave::regexp pat (R"(^\\\\[\w-]*\\[\w-]*$)");
+          regexp pat (R"(^\\\\[\w-]*\\[\w-]*$)");
           if ((full_file_name.length () == 2 && full_file_name[1] == ':')
               || pat.is_match (full_file_name))
-            full_file_name += "\\";
+            full_file_name += '\\';
 #endif
 
           const char *cname = full_file_name.c_str ();

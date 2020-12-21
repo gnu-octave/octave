@@ -73,9 +73,9 @@ namespace octave
 
     match_data match (const std::string& buffer);
 
-    bool is_match (const std::string& buffer);
+    bool is_match (const std::string& buffer) const;
 
-    Array<bool> is_match (const string_vector& buffer);
+    Array<bool> is_match (const string_vector& buffer) const;
 
     std::string replace (const std::string& buffer,
                          const std::string& replacement);

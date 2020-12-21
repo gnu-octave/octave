@@ -437,7 +437,7 @@ namespace octave
   }
 
   bool
-  regexp::is_match (const std::string& buffer)
+  regexp::is_match (const std::string& buffer) const
   {
     regexp::match_data rx_lst = match (buffer);
 
@@ -445,7 +445,7 @@ namespace octave
   }
 
   Array<bool>
-  regexp::is_match (const string_vector& buffer)
+  regexp::is_match (const string_vector& buffer) const
   {
     octave_idx_type len = buffer.numel ();
 

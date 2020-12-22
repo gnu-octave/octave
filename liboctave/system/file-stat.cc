@@ -206,7 +206,7 @@ namespace octave
           // trailing backslash.
           // FIXME: This pattern does not match all possible UNC roots:
           //        https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-dtyp/62e862f4-2a51-452e-8eeb-dc4ff5ee33cc
-          regexp pat (R"(^\\\\[\w.-]+\\[\w\$-]+$)");
+          static regexp pat (R"(^\\\\[\w.-]+\\[\w\$-]+$)");
           if ((full_file_name.length () == 2 && full_file_name[1] == ':')
               || (full_file_name.length () > 4  && full_file_name[0] == '\\'
                   && full_file_name[1] == '\\' && pat.is_match (full_file_name)))

@@ -204,11 +204,13 @@ namespace octave
 
           // If path is a root (like "C:" or "\\SERVER\share"), add a
           // trailing backslash.
-          // FIXME: Does this pattern match all possible UNC roots?
-          static const regexp pat (R"(^\\\\[\w-]*\\[\w-]*$)");
+          // FIXME: This pattern does not match all possible UNC roots:
+          //        https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-dtyp/62e862f4-2a51-452e-8eeb-dc4ff5ee33cc
+          static const regexp pat (R"(^\\\\[\w.-]+\\[\w\$-]+$)");
           if ((full_file_name.length () == 2 && full_file_name[1] == ':')
-              || pat.is_match (full_file_name))
-            full_file_name += '\\';
+              || (full_file_name.length () > 4  && full_file_name[0] == '\\'
+                  && full_file_name[1] == '\\' && pat.is_match (full_file_name)))
+            full_file_name.push_back ('\\');
 #endif
 
           const char *cname = full_file_name.c_str ();

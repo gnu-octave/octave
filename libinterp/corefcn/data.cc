@@ -4402,11 +4402,12 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
 DEFUN (ones, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} ones (@var{n})
-@deftypefnx {} {} ones (@var{m}, @var{n})
-@deftypefnx {} {} ones (@var{m}, @var{n}, @var{k}, @dots{})
-@deftypefnx {} {} ones ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {} ones (@dots{}, @var{class})
+@deftypefn  {} {@var{val} =} ones (@var{n})
+@deftypefnx {} {@var{val} =} ones (@var{m}, @var{n})
+@deftypefnx {} {@var{val} =} ones (@var{m}, @var{n}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} ones ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{val} =} ones (@dots{}, "@var{like}", @var{var}))
+@deftypefnx {} {@var{val} =} ones (@dots{}, @var{class})
 Return a matrix or N-dimensional array whose elements are all 1.
 
 If invoked with a single scalar integer argument @var{n}, return a square
@@ -4421,6 +4422,9 @@ such as
 @example
 val_matrix = val * ones (m, n)
 @end example
+
+If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
+will have the same data type, complexity, and sparsity as @var{var}.
 
 The optional argument @var{class} specifies the class of the return array
 and defaults to double.  For example:
@@ -4486,11 +4490,12 @@ val = ones (m,n, "uint8")
 
 DEFUN (zeros, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} zeros (@var{n})
-@deftypefnx {} {} zeros (@var{m}, @var{n})
-@deftypefnx {} {} zeros (@var{m}, @var{n}, @var{k}, @dots{})
-@deftypefnx {} {} zeros ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {} zeros (@dots{}, @var{class})
+@deftypefn  {} {@var{val} =} zeros (@var{n})
+@deftypefnx {} {@var{val} =} zeros (@var{m}, @var{n})
+@deftypefnx {} {@var{val} =} zeros (@var{m}, @var{n}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} zeros ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{val} =} zeros (@dots{}, "@var{like}", @var{var}))
+@deftypefnx {} {@var{val} =} zeros (@dots{}, @var{class})
 Return a matrix or N-dimensional array whose elements are all 0.
 
 If invoked with a single scalar integer argument, return a square
@@ -4498,6 +4503,9 @@ If invoked with a single scalar integer argument, return a square
 
 If invoked with two or more scalar integer arguments, or a vector of integer
 values, return an array with the given dimensions.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
+will have the same data type, complexity, and sparsity as @var{var}.
 
 The optional argument @var{class} specifies the class of the return array
 and defaults to double.  For example:
@@ -4620,11 +4628,12 @@ DEFUN (NaN, args, ,
 @c List other form of function in documentation index
 @findex nan
 
-@deftypefn  {} {} NaN
-@deftypefnx {} {} NaN (@var{n})
-@deftypefnx {} {} NaN (@var{n}, @var{m})
-@deftypefnx {} {} NaN (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {} NaN (@dots{}, @var{class})
+@deftypefn  {} {@var{val} =} NaN
+@deftypefnx {} {@var{val} =} NaN (@var{n})
+@deftypefnx {} {@var{val} =} NaN (@var{n}, @var{m})
+@deftypefnx {} {@var{val} =} NaN (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} NaN (@dots{}, "@var{like}", @var{var}))
+@deftypefnx {} {@var{val} =} NaN (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the IEEE symbol NaN (Not a Number).
 
@@ -4651,6 +4660,9 @@ dimension specified.
 When called with more than one scalar argument the first two arguments are
 taken as the number of rows and columns and any further arguments specify
 additional matrix dimensions.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
+will have the same data type, complexity, and sparsity as @var{var}.
 
 The optional argument @var{class} specifies the return type and may be
 either @qcode{"double"} or @qcode{"single"}.
@@ -5014,11 +5026,12 @@ DEFALIAS (j, I);
 
 DEFUN (NA, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} NA
-@deftypefnx {} {} NA (@var{n})
-@deftypefnx {} {} NA (@var{n}, @var{m})
-@deftypefnx {} {} NA (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {} NA (@dots{}, @var{class})
+@deftypefn  {} {@var{val} =} NA
+@deftypefnx {} {@var{val} =} NA (@var{n})
+@deftypefnx {} {@var{val} =} NA (@var{n}, @var{m})
+@deftypefnx {} {@var{val} =} NA (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} NA (@dots{}, "@var{like}", @var{var}))
+@deftypefnx {} {@var{val} =} NA (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the special constant used to designate missing values.
 
@@ -5033,6 +5046,9 @@ dimension specified.
 When called with more than one scalar argument the first two arguments are
 taken as the number of rows and columns and any further arguments specify
 additional matrix dimensions.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
+will have the same data type, complexity, and sparsity as @var{var}.
 
 The optional argument @var{class} specifies the return type and may be
 either @qcode{"double"} or @qcode{"single"}.
@@ -5050,9 +5066,10 @@ either @qcode{"double"} or @qcode{"single"}.
 
 DEFUN (false, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} false (@var{x})
-@deftypefnx {} {} false (@var{n}, @var{m})
-@deftypefnx {} {} false (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefn  {} {@var{val} =} false (@var{x})
+@deftypefnx {} {@var{val} =} false (@var{n}, @var{m})
+@deftypefnx {} {@var{val} =} false (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} false (@dots{}, "@var{like}", @var{var}))
 Return a matrix or N-dimensional array whose elements are all logical 0.
 
 If invoked with a single scalar integer argument, return a square
@@ -5060,6 +5077,9 @@ matrix of the specified size.
 
 If invoked with two or more scalar integer arguments, or a vector of integer
 values, return an array with given dimensions.
+
+If a logical variable @var{var} is specified after @qcode{"like"}, the output
+@var{val} will have the same sparsity as @var{var}.
 @seealso{true}
 @end deftypefn */)
 {
@@ -5078,9 +5098,10 @@ values, return an array with given dimensions.
 
 DEFUN (true, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} true (@var{x})
-@deftypefnx {} {} true (@var{n}, @var{m})
-@deftypefnx {} {} true (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefn  {} {@var{val} =} true (@var{x})
+@deftypefnx {} {@var{val} =} true (@var{n}, @var{m})
+@deftypefnx {} {@var{val} =} true (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} true (@dots{}, "@var{like}", @var{var}))
 Return a matrix or N-dimensional array whose elements are all logical 1.
 
 If invoked with a single scalar integer argument, return a square
@@ -5088,6 +5109,9 @@ matrix of the specified size.
 
 If invoked with two or more scalar integer arguments, or a vector of integer
 values, return an array with given dimensions.
+
+If a logical variable @var{var} is specified after @qcode{"like"}, the output
+@var{val} will have the same sparsity as @var{var}.
 @seealso{false}
 @end deftypefn */)
 {

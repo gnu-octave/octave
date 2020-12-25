@@ -55,6 +55,9 @@ namespace octave
     evmgr.connect_link (m_octave_qobj.get_qt_interpreter_events ());
     evmgr.enable ();
 
+    connect (this, SIGNAL (ready (void)),
+             &m_octave_qobj, SLOT (interpreter_ready (void)));
+
     int exit_status = 0;
 
     try

@@ -165,7 +165,7 @@ namespace octave
       m_qt_interpreter_events (new qt_interpreter_events (*this)),
       m_interpreter_qobj (new interpreter_qobject (*this)),
       m_main_thread (new QThread ()), m_gui_app (gui_app),
-      m_main_window (nullptr)
+      m_main_window (nullptr), m_interpreter_ready (false)
   {
     std::string show_gui_msgs =
       sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
@@ -230,8 +230,8 @@ namespace octave
       {
         m_main_window = new main_window (*this);
 
-        connect (m_interpreter_qobj, SIGNAL (ready (void)),
-                 m_main_window, SLOT (handle_octave_ready (void)));
+        if (m_interpreter_ready)
+          m_main_window->handle_octave_ready ();
 
         connect (qt_link (),
                  SIGNAL (focus_window_signal (const QString&)),
@@ -269,6 +269,17 @@ namespace octave
     delete m_workspace_model;
 
     string_vector::delete_c_str_vec (m_argv);
+  }
+
+  void base_qobject::interpreter_ready (void)
+  {
+    // Slot for signal of interpreter being ready.
+    // If main window already exists, call initialization,
+    // otherwise store interpreter state
+    if (m_main_window)
+      m_main_window->handle_octave_ready ();
+    else
+      m_interpreter_ready = true;
   }
 
   void base_qobject::config_translators (void)

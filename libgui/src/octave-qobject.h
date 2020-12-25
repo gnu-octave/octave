@@ -142,6 +142,8 @@ namespace octave
 
   public slots:
 
+    void interpreter_ready (void);
+
     void handle_interpreter_execution_finished (int);
 
     void handle_interpreter_shutdown_finished (int);
@@ -185,6 +187,8 @@ namespace octave
     bool m_gui_app;
 
     main_window *m_main_window;
+
+    bool m_interpreter_ready;
   };
 }
 

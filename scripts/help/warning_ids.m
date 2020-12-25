@@ -28,6 +28,12 @@
 ##
 ## @table @code
 ## @item Octave:abbreviated-property-match
+## If the @code{Octave:abbreviated-property-match} warning is enabled, a warning
+## is printed if a non-exact or ambiguous match is being used for a operation
+## specifying an object property.  For example, for a graphics object,
+## @var{fig}, with the property @qcode{'displayname'},
+## @code{get (@var{fig}, 'dis')} elicits a warning if the
+## @code{Octave:abbreviated-property-match} warning is enabled.
 ## By default, the @code{Octave:abbreviated-property-match} warning is enabled.
 ##
 ## @item Octave:addpath-pkg
@@ -133,10 +139,6 @@
 ## calls in PKG_ADD files, when the PKG_ADD file is not in the same
 ## directory as the .oct file referred to by the autoload() command.
 ## By default, the @code{Octave:autoload-relative-file-name} warning is
-## enabled.
-##
-## @item Octave:built-in-variable-assignment
-## By default, the @code{Octave:built-in-variable-assignment} warning is
 ## enabled.
 ##
 ## @item Octave:charmat-truncated
@@ -260,6 +262,9 @@
 ## By default, the @code{Octave:legacy-function} warning is enabled.
 ##
 ## @item Octave:logical-conversion
+## If the @code{Octave:logical-conversion} warning is enabled, a warning is
+## printed if an implicit conversion of an array from numerical to boolean
+## occurs and any of the elements in the array are not equal to zero or one.
 ## By default, the @code{Octave:logical-conversion} warning is enabled.
 ##
 ## @item Octave:lu:sparse_input
@@ -304,10 +309,27 @@
 ## By default, the @code{Octave:neg-dim-as-zero} warning is disabled.
 ##
 ## @item Octave:noninteger-range-as-index
+## If the @code{Octave:noninteger-range-as-index} warning is enabled, a warning
+## is printed if an array is indexed with a range that contains non-integer
+## values.  For example,
+##
+## @example
+## @group
+## a = [1 2 3 4 5];
+## b = 2.2:4.2
+## @result{} 1.2  2.2  3.2
+## a(b)
+## @result{} 2 3 4
+## @end group
+## @end example
+##
+## @noindent
+## elicits a warning if the @code{Octave:noninteger-range-as-index} warning is
+## enabled.
 ## By default, the @code{Octave:noninteger-range-as-index} warning is enabled.
 ##
 ## @item Octave:num-to-str
-## If the @code{Octave:num-to-str} warning is enable, a warning is
+## If the @code{Octave:num-to-str} warning is enabled, a warning is
 ## printed for implicit conversions of numbers to their UTF-8 encoded character
 ## equivalents when strings are constructed using a mixture of strings and
 ## numbers in matrix notation.  For example,
@@ -372,6 +394,9 @@
 ## By default, the @code{Octave:single-quote-string} warning is disabled.
 ##
 ## @item Octave:sqrtm:SingularMatrix
+## If the @code{Octave:sqrtm:SingularMatrix} warning is enabled, a warning is
+## printed if the matrix square root function @code{sqrtm} is called with an
+## input matrix that is singular.
 ## By default, the @code{Octave:sqrtm:SingularMatrix} warning is enabled.
 ##
 ## @item Octave:str-to-num

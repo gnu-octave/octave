@@ -626,10 +626,12 @@ fi
 AC_SUBST(STATIC_LIBS)
 
 XTRA_EXTERNAL_SH_LDFLAGS=
-if test $have_msvc = yes; then
-  FLIBS="$FLIBS -lkernel32"
-  XTRA_EXTERNAL_SH_LDFLAGS="-Wl,external/external.def"
-fi
+case $host_os in
+  msdosmsvc | mingw*)
+    FLIBS="$FLIBS -lkernel32"
+    XTRA_EXTERNAL_SH_LDFLAGS="-Wl,liboctave/external/external.def"
+  ;;
+esac
 AC_SUBST(XTRA_EXTERNAL_SH_LDFLAGS)
 
 if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
@@ -2488,7 +2490,6 @@ do
         else
           JAVA_CPPFLAGS="-I\"${JAVA_HOME}/include\" -I\"${JAVA_HOME}/include/win32\""
         fi
-        LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
       fi
       AC_DEFINE(HAVE_JAVA, 1,
         [Define to 1 if Java is available and is at least version 1.5])

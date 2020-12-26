@@ -182,11 +182,18 @@ octave_unused_parameter (const T&)
 #    define octave_unused_parameter(param) (void) param;
 #  endif
 
-#  if defined (_MSC_VER)
-#    define OCTAVE_EXPORT __declspec(dllexport)
-#    define OCTAVE_IMPORT __declspec(dllimport)
+#  if defined (_WIN32) || defined (__CYGWIN__)
+#    if defined (__GNUC__)
+       /* GCC */
+#      define OCTAVE_EXPORT __attribute__ ((dllexport))
+#      define OCTAVE_IMPORT __attribute__ ((dllimport))
+#    else
+       /* MSVC */
+#      define OCTAVE_EXPORT __declspec(dllexport)
+#      define OCTAVE_IMPORT __declspec(dllimport)
+#    endif
 #  else
-     /* All other compilers, at least for now. */
+     /* All other platforms. */
 #    define OCTAVE_EXPORT __attribute__ ((visibility ("default")))
 #    define OCTAVE_IMPORT
 #  endif

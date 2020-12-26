@@ -2955,12 +2955,6 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
         fi
         NO_OCT_FILE_STRIP=true
         library_path_var=PATH
-        ## Extra compilation flags.
-        EXTERNAL_DLL_DEFS="-DEXTERNAL_DLL"
-        OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
-        OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
-        OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
-        OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
       else
         CPICFLAG=
         CXXPICFLAG=
@@ -2969,6 +2963,12 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
         SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
         library_path_var=PATH
       fi
+      ## Extra compilation flags.
+      EXTERNAL_DLL_DEFS="-DEXTERNAL_DLL"
+      OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
+      OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+      OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
+      OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
     ;;
     *-*-msdosmsvc)
       DL_LDFLAGS="-shared"

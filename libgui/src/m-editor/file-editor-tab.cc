@@ -70,6 +70,7 @@
 #include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-global.h"
+#include "gui-utils.h"
 #include "marker.h"
 #include "octave-qobject.h"
 #include "octave-txt-lexer.h"
@@ -875,27 +876,19 @@ namespace octave
     QColor bg = lexer->paper (0);
     QColor fg = lexer->color (0);
 
-    int bh, bs, bv, fh, fs, fv, h, s, v;
-    bg.getHsv (&bh,&bs,&bv);
-    fg.getHsv (&fh,&fs,&fv);
-
     // margin colors
-    h = bh;
-    s = bs/2;
-    v = bv + (fv - bv)/5;
+    QColor bgm, fgm;
 
-    bg.setHsv (h,s,v);
-    m_edit_area->setEdgeColor (bg);
-
-    v = bv + (fv - bv)/8;
-    bg.setHsv (h,s,v);
-    v = bv + (fv - bv)/4;
-    fg.setHsv (h,s,v);
+    bgm = interpolate_color (bg, fg, 0.5, 0.2);
+    m_edit_area->setEdgeColor (bgm);
 
     m_edit_area->setMarkerForegroundColor (lexer->color (0));
     m_edit_area->setMarginsForegroundColor (lexer->color (0));
-    m_edit_area->setMarginsBackgroundColor (bg);
-    m_edit_area->setFoldMarginColors (bg,fg);
+
+    bgm = interpolate_color (bg, fg, 0.5, 0.125);
+    fgm = interpolate_color (bg, fg, 0.5, 0.25);
+    m_edit_area->setMarginsBackgroundColor (bgm);
+    m_edit_area->setFoldMarginColors (bgm, fgm);
 
     // color indicator for highlighting all occurrences:
     // applications highlight color with more transparency

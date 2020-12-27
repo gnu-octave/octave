@@ -239,7 +239,8 @@ noinst_HEADERS += \
   %reldir%/variable-editor.h \
   %reldir%/variable-editor-model.h \
   %reldir%/set-path-dialog.h \
-  %reldir%/set-path-model.h
+  %reldir%/set-path-model.h \
+  %reldir%/gui-utils.h
 
 
 %canon_reldir%_%canon_reldir%_la_SOURCES = \
@@ -280,7 +281,8 @@ noinst_HEADERS += \
   %reldir%/variable-editor.cc \
   %reldir%/variable-editor-model.cc \
   %reldir%/set-path-dialog.cc \
-  %reldir%/set-path-model.cc
+  %reldir%/set-path-model.cc \
+  %reldir%/gui-utils.cc
 
 nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   $(octave_gui_MOC) \

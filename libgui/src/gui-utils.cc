@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2013-2020 The Octave Project Developers
+// Copyright (C) 2000-2020 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,53 +27,19 @@
 #  include "config.h"
 #endif
 
-#include <QColor>
-
 #include "gui-utils.h"
-#include "led-indicator.h"
 
 namespace octave
 {
-
-  led_indicator::led_indicator (led_state initial_state, QWidget *p)
-    : QLabel (p)
+  OCTGUI_API QColor
+  interpolate_color (const QColor& col1, const QColor& col2,
+                     double fs, double fv)
   {
-    setFixedSize(12,12);
-    set_state (initial_state);
+    qreal h1, s1, v1, h2, s2, v2;
+
+    col1.getHsvF (&h1, &s1, &v1);
+    col2.getHsvF (&h2, &s2, &v2);
+
+    return QColor::fromHsvF (h1, s1*fs, v1 + fv*(v2 - v1));
   }
-
-  void led_indicator::set_state (led_state state)
-  {
-    QColor col (Qt::gray);
-
-    switch (state)
-      {
-        case LED_STATE_NO:
-          break;
-
-        case LED_STATE_INACTIVE:
-          col = QColor (Qt::darkRed);
-          break;
-
-        case LED_STATE_ACTIVE:
-          col = QColor (Qt::darkGreen);
-          break;
-      }
-
-    setStyleSheet (style_sheet (col));
-  }
-
-  QString led_indicator::style_sheet (const QColor& col)
-  {
-    QColor col_light = interpolate_color (col, QColor (Qt::white), 0.25, 0.9);
-
-    const QString style = QString (
-        "border-radius: %1; background-color: "
-        "qlineargradient(spread:pad, x1:0.2, y1:0.2, x2:1, y2:1, stop:0 "
-        "%2, stop:1 %3);"
-      ).arg (width ()/2).arg (col_light.name ()).arg (col.name ());
-
-    return style;
-  }
-
 }

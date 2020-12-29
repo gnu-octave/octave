@@ -193,7 +193,7 @@ namespace octave
 
     virtual void run_first (void) = 0;
 
-    void run (size_t num);
+    OCTAVE_API void run (size_t num);
 
     void run (void) { run (size ()); }
 

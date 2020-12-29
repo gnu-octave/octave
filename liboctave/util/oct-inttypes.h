@@ -427,7 +427,7 @@ public:
   // Convert a real number (check NaN and non-int).
 
   template <typename S>
-  static T convert_real (const S& value);
+  static OCTAVE_API T convert_real (const S& value);
 };
 
 // Saturated (homogeneous) integer arithmetics.  The signed and
@@ -791,6 +791,7 @@ class octave_int_arith
 
 template <typename T>
 class
+OCTAVE_API
 octave_int : public octave_int_base<T>
 {
 public:
@@ -906,7 +907,7 @@ public:
 
   static int byte_size (void) { return sizeof (T); }
 
-  static const char * type_name ();
+  static const OCTAVE_API char * type_name ();
 
   // The following are provided for convenience.
   static const octave_int zero, one;

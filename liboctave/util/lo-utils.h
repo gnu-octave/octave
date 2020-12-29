@@ -98,44 +98,40 @@ extern OCTAVE_API std::string octave_fgetl (std::FILE *, bool& eof);
 
 namespace octave
 {
-  template <typename T>
-  T
-  read_value (std::istream& is)
-  {
-    T retval;
-    is >> retval;
-    return retval;
-  }
+  template <typename T> OCTAVE_API T read_value (std::istream& is);
 
-  template <> double read_value (std::istream& is);
-  template <> Complex read_value (std::istream& is);
-  template <> float read_value (std::istream& is);
-  template <> FloatComplex read_value (std::istream& is);
+  template <> OCTAVE_API double read_value (std::istream& is);
+  template <> OCTAVE_API Complex read_value (std::istream& is);
+  template <> OCTAVE_API float read_value (std::istream& is);
+  template <> OCTAVE_API FloatComplex read_value (std::istream& is);
 
-  template <typename T>
-  void
-  write_value (std::ostream& os, const T& value)
-  {
-    os << value;
-  }
+  template <typename T> OCTAVE_API void write_value (std::ostream& os, const T& value);
 
-  template <> void write_value (std::ostream& os, const double& value);
-  template <> void write_value (std::ostream& os, const Complex& value);
-  template <> void write_value (std::ostream& os, const float& value);
-  template <> void write_value (std::ostream& os, const FloatComplex& value);
+  template <> OCTAVE_API void write_value (std::ostream& os, const double& value);
+  template <> OCTAVE_API void write_value (std::ostream& os, const Complex& value);
+  template <> OCTAVE_API void write_value (std::ostream& os, const float& value);
+  template <> OCTAVE_API void write_value (std::ostream& os, const FloatComplex& value);
 
   namespace math
   {
-    bool int_multiply_overflow (int a, int b);
-    bool int_multiply_overflow (long int a, long int b);
+    extern OCTAVE_API bool int_multiply_overflow (int a, int b);
+
+    extern OCTAVE_API bool int_multiply_overflow (long int a, long int b);
+
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
-    bool int_multiply_overflow (long long int a, long long int b);
+    extern OCTAVE_API bool
+    int_multiply_overflow (long long int a, long long int b);
 #endif
-    bool int_multiply_overflow (unsigned int a, unsigned int b);
-    bool int_multiply_overflow (unsigned long int a, unsigned long int b);
+
+    extern OCTAVE_API bool
+    int_multiply_overflow (unsigned int a, unsigned int b);
+
+    extern OCTAVE_API bool
+    int_multiply_overflow (unsigned long int a, unsigned long int b);
+
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
-    bool int_multiply_overflow (unsigned long long int a,
-                                unsigned long long int b);
+    extern OCTAVE_API bool
+    int_multiply_overflow (unsigned long long int a, unsigned long long int b);
 #endif
   }
 }

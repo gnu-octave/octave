@@ -34,14 +34,14 @@ namespace octave
 {
   namespace sys
   {
-    extern bool
+    extern OCTAVE_API bool
     fnmatch (const string_vector& pat, const std::string& str,
              int fnmatch_flags);
 
-    extern string_vector
+    extern OCTAVE_API string_vector
     glob (const string_vector&);
 
-    extern string_vector
+    extern OCTAVE_API string_vector
     windows_glob (const string_vector&);
   }
 }

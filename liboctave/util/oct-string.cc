@@ -210,28 +210,30 @@ octave::string::strncmpi (const T& str_a, const typename T::value_type *str_b,
 
 
 // Instantiations we need
-#define INSTANTIATE_OCTAVE_STRING(T)                                          \
-  template bool octave::string::strcmp<T> (const T&, const T&);               \
-  template bool octave::string::strcmp<T> (const T&,                          \
-                                           const typename T::value_type*);    \
-  template bool octave::string::strcmpi<T> (const T&, const T&);              \
-  template bool octave::string::strcmpi<T> (const T&,                         \
-                                            const typename T::value_type*);   \
-  template bool octave::string::strncmp<T> (const T&, const T&,               \
-                                            const typename T::size_type);     \
-  template bool octave::string::strncmp<T> (const T&,                         \
-                                            const typename T::value_type*,    \
-                                            const typename T::size_type);     \
-  template bool octave::string::strncmpi<T> (const T&, const T&,              \
-                                             const typename T::size_type n);  \
-  template bool octave::string::strncmpi<T> (const T&,                        \
-                                             const typename T::value_type*,   \
-                                             const typename T::size_type);
+#define INSTANTIATE_OCTAVE_STRING(T, API)                                     \
+  template API bool octave::string::strcmp<T> (const T&, const T&);           \
+  template API bool                                                           \
+  octave::string::strcmp<T> (const T&, const typename T::value_type*);        \
+  template API bool octave::string::strcmpi<T> (const T&, const T&);          \
+  template API bool                                                           \
+  octave::string::strcmpi<T> (const T&, const typename T::value_type*);       \
+  template API bool                                                           \
+  octave::string::strncmp<T> (const T&, const T&,                             \
+                              const typename T::size_type);                   \
+  template API bool                                                           \
+  octave::string::strncmp<T> (const T&, const typename T::value_type*,        \
+                              const typename T::size_type);                   \
+  template API bool                                                           \
+  octave::string::strncmpi<T> (const T&, const T&,                            \
+                               const typename T::size_type n);                \
+  template API bool                                                           \
+  octave::string::strncmpi<T> (const T&, const typename T::value_type*,       \
+                               const typename T::size_type);
 
 // We could also instantiate std::vector<char> but would it be
 // useful for anyone?
-INSTANTIATE_OCTAVE_STRING(std::string)
-INSTANTIATE_OCTAVE_STRING(Array<char>)
+INSTANTIATE_OCTAVE_STRING(std::string, OCTAVE_API)
+INSTANTIATE_OCTAVE_STRING(Array<char>, OCTAVE_API)
 
 #undef INSTANTIATE_OCTAVE_STRING
 
@@ -709,5 +711,5 @@ rational_approx (T val, int len)
 }
 
 // instantiate the template for float and double
-template std::string rational_approx <float> (float val, int len);
-template std::string rational_approx <double> (double val, int len);
+template OCTAVE_API std::string rational_approx <float> (float val, int len);
+template OCTAVE_API std::string rational_approx <double> (double val, int len);

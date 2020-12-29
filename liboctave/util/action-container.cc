@@ -23,6 +23,10 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
+
 #include "action-container.h"
 #include "cmd-edit.h"
 

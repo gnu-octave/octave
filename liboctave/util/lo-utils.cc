@@ -43,6 +43,7 @@
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
+#include "oct-inttypes.h"
 
 bool xis_int_or_inf_or_nan (double x)
 { return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
@@ -178,6 +179,25 @@ octave_fgetl (FILE *f, bool& eof)
 
 namespace octave
 {
+  template <typename T>
+  T
+  read_value (std::istream& is)
+  {
+    T retval;
+    is >> retval;
+    return retval;
+  }
+
+  template bool read_value<bool> (std::istream& is);
+  template octave_int8 read_value<octave_int8> (std::istream& is);
+  template octave_int16 read_value<octave_int16> (std::istream& is);
+  template octave_int32 read_value<octave_int32> (std::istream& is);
+  template octave_int64 read_value<octave_int64> (std::istream& is);
+  template octave_uint8 read_value<octave_uint8> (std::istream& is);
+  template octave_uint16 read_value<octave_uint16> (std::istream& is);
+  template octave_uint32 read_value<octave_uint32> (std::istream& is);
+  template octave_uint64 read_value<octave_uint64> (std::istream& is);
+
   // Note that the caller is responsible for repositioning the stream on
   // failure.
 
@@ -358,30 +378,47 @@ namespace octave
   // FIXME: Could we use traits and enable_if to avoid duplication in the
   // following specializations?
 
-  template <> double read_value (std::istream& is)
+  template <> OCTAVE_API double read_value (std::istream& is)
   {
     return read_fp_value<double> (is);
   }
 
-  template <> Complex read_value (std::istream& is)
+  template <> OCTAVE_API Complex read_value (std::istream& is)
   {
     return read_cx_fp_value<double> (is);
   }
 
-  template <> float read_value (std::istream& is)
+  template <> OCTAVE_API float read_value (std::istream& is)
   {
     return read_fp_value<float> (is);
   }
 
-  template <> FloatComplex read_value (std::istream& is)
+  template <> OCTAVE_API FloatComplex read_value (std::istream& is)
   {
     return read_cx_fp_value<float> (is);
   }
 
+  template <typename T>
+  void
+  write_value (std::ostream& os, const T& value)
+  {
+    os << value;
+  }
+
+  template void write_value<bool>  (std::ostream& os, const bool& value);
+  template void write_value<octave_int8> (std::ostream& os, const octave_int8& value);
+  template void write_value<octave_int16> (std::ostream& os, const octave_int16& value);
+  template void write_value<octave_int32> (std::ostream& os, const octave_int32& value);
+  template void write_value<octave_int64> (std::ostream& os, const octave_int64& value);
+  template void write_value<octave_uint8> (std::ostream& os, const octave_uint8& value);
+  template void write_value<octave_uint16> (std::ostream& os, const octave_uint16& value);
+  template void write_value<octave_uint32> (std::ostream& os, const octave_uint32& value);
+  template void write_value<octave_uint64> (std::ostream& os, const octave_uint64& value);
+
   // Note: precision is supposed to be managed outside of this function by
   // setting stream parameters.
 
-  template <> void write_value (std::ostream& os, const double& value)
+  template <> OCTAVE_API void write_value (std::ostream& os, const double& value)
   {
     if (lo_ieee_is_NA (value))
       os << "NA";
@@ -393,7 +430,7 @@ namespace octave
       os << value;
   }
 
-  template <> void write_value (std::ostream& os, const Complex& value)
+  template <> OCTAVE_API void write_value (std::ostream& os, const Complex& value)
   {
     os << '(';
     write_value<double> (os, real (value));
@@ -405,7 +442,7 @@ namespace octave
   // Note: precision is supposed to be managed outside of this function by
   // setting stream parameters.
 
-  template <> void write_value (std::ostream& os, const float& value)
+  template <> OCTAVE_API void write_value (std::ostream& os, const float& value)
   {
     if (lo_ieee_is_NA (value))
       os << "NA";
@@ -417,7 +454,7 @@ namespace octave
       os << value;
   }
 
-  template <> void write_value (std::ostream& os, const FloatComplex& value)
+  template <> OCTAVE_API void write_value (std::ostream& os, const FloatComplex& value)
   {
     os << '(';
     write_value<float> (os, real (value));

@@ -37,12 +37,16 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTAVE_API Array<idx_vector>;
-extern template class OCTAVE_API Array<octave_idx_type>;
+extern template class Array<idx_vector>;
+extern template class Array<octave_idx_type>;
 
 NO_INSTANTIATE_ARRAY_SORT (octave::jit_function);
 
-INSTANTIATE_ARRAY (octave::jit_function, OCTINTERP_API);
+// Visibility attributes are ignored on template instantiation.
+// As a work-around, set visibility to default overriding compiler options.
+#pragma GCC visibility push(default)
+INSTANTIATE_ARRAY (octave::jit_function);
+#pragma GCC visibility pop
 
 #if defined (Cell_h)
 #  error Must not include Cell.h in Array-jit.h

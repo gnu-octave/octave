@@ -41,21 +41,26 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTAVE_API Array<Complex>;
-extern template class OCTAVE_API Array<FloatComplex>;
-extern template class OCTAVE_API Array<bool>;
-extern template class OCTAVE_API Array<char>;
-extern template class OCTAVE_API Array<double>;
-extern template class OCTAVE_API Array<float>;
-extern template class OCTAVE_API Array<idx_vector>;
-extern template class OCTAVE_API Array<octave_idx_type>;
-extern template class OCTAVE_API Array<std::string>;
+extern template class Array<Complex>;
+extern template class Array<FloatComplex>;
+extern template class Array<bool>;
+extern template class Array<char>;
+extern template class Array<double>;
+extern template class Array<float>;
+extern template class Array<idx_vector>;
+extern template class Array<octave_idx_type>;
+extern template class Array<std::string>;
 
+// Visibility attributes are ignored on template instantiation.
+// As a work-around, set visibility to default overriding compiler options.
+#pragma GCC visibility push(default)
 NO_INSTANTIATE_ARRAY_SORT (octave_value);
-INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave_value);
 
 NO_INSTANTIATE_ARRAY_SORT (octave_value *);
-INSTANTIATE_ARRAY (octave_value *, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave_value *);
 
 NO_INSTANTIATE_ARRAY_SORT (octave::cdef_object);
-INSTANTIATE_ARRAY (octave::cdef_object, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave::cdef_object);
+#pragma GCC visibility pop
+

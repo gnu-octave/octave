@@ -39,12 +39,12 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTAVE_API Array<idx_vector>;
-extern template class OCTAVE_API Array<octave_idx_type>;
+extern template class Array<idx_vector>;
+extern template class Array<octave_idx_type>;
 
-template class OCTAVE_API octave_sort<short>;
+template class octave_sort<short>;
 
-INSTANTIATE_ARRAY (short, OCTAVE_API);
+INSTANTIATE_ARRAY (short);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

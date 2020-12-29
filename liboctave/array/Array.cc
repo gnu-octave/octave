@@ -2764,9 +2764,9 @@ void Array<T>::instantiation_guard ()
   T::__xXxXx__ ();
 }
 
-#define INSTANTIATE_ARRAY(T, API)                       \
+#define INSTANTIATE_ARRAY(T)                            \
   template <> void Array<T>::instantiation_guard () { } \
-  template class API Array<T>
+  template class Array<T>
 
 // FIXME: is this used?
 

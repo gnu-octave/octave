@@ -35,24 +35,26 @@ extern "C" {
 // These functions return 1 if the operation between the input arguments would
 // overflow.
 
-extern int octave_i_multiply_overflow_wrapper (int a, int b);
+extern OCTAVE_API int octave_i_multiply_overflow_wrapper (int a, int b);
 
-extern int octave_li_multiply_overflow_wrapper (long int a, long int b);
+extern OCTAVE_API int
+octave_li_multiply_overflow_wrapper (long int a, long int b);
 
 #  if defined (OCTAVE_HAVE_LONG_LONG_INT)
-extern int octave_lli_multiply_overflow_wrapper (long long int a,
-                                                 long long int b);
+extern OCTAVE_API int
+octave_lli_multiply_overflow_wrapper (long long int a, long long int b);
 #  endif
 
-extern int octave_ui_multiply_overflow_wrapper (unsigned int a,
-                                                unsigned int b);
+extern OCTAVE_API int
+octave_ui_multiply_overflow_wrapper (unsigned int a, unsigned int b);
 
-extern int octave_uli_multiply_overflow_wrapper (unsigned long int a,
-                                                 unsigned long int b);
+extern OCTAVE_API int
+octave_uli_multiply_overflow_wrapper (unsigned long int a, unsigned long int b);
 
 #  if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
-extern int octave_ulli_multiply_overflow_wrapper (unsigned long long int a,
-                                                  unsigned long long int b);
+extern OCTAVE_API int
+octave_ulli_multiply_overflow_wrapper (unsigned long long int a,
+                                       unsigned long long int b);
 #  endif
 
 #if defined __cplusplus

@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-extern int octave_wait_for_input (int fid);
+extern OCTAVE_API int octave_wait_for_input (int fid);
 
 #if defined __cplusplus
 }

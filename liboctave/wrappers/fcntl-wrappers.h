@@ -32,39 +32,40 @@
 extern "C" {
 #endif
 
-extern int octave_fcntl_wrapper (int fd, int cmd, int arg);
+extern OCTAVE_API int octave_fcntl_wrapper (int fd, int cmd, int arg);
 
-extern int octave_open_wrapper (const char *nm, int flags, mode_t mode);
+extern OCTAVE_API int
+octave_open_wrapper (const char *nm, int flags, mode_t mode);
 
-extern int octave_f_dupfd_wrapper (void);
+extern OCTAVE_API int octave_f_dupfd_wrapper (void);
 
-extern int octave_f_getfd_wrapper (void);
+extern OCTAVE_API int octave_f_getfd_wrapper (void);
 
-extern int octave_f_getfl_wrapper (void);
+extern OCTAVE_API int octave_f_getfl_wrapper (void);
 
-extern int octave_f_setfd_wrapper (void);
+extern OCTAVE_API int octave_f_setfd_wrapper (void);
 
-extern int octave_f_setfl_wrapper (void);
+extern OCTAVE_API int octave_f_setfl_wrapper (void);
 
-extern int octave_o_append_wrapper (void);
+extern OCTAVE_API int octave_o_append_wrapper (void);
 
-extern int octave_o_async_wrapper (void);
+extern OCTAVE_API int octave_o_async_wrapper (void);
 
-extern int octave_o_creat_wrapper (void);
+extern OCTAVE_API int octave_o_creat_wrapper (void);
 
-extern int octave_o_excl_wrapper (void);
+extern OCTAVE_API int octave_o_excl_wrapper (void);
 
-extern int octave_o_nonblock_wrapper (void);
+extern OCTAVE_API int octave_o_nonblock_wrapper (void);
 
-extern int octave_o_rdonly_wrapper (void);
+extern OCTAVE_API int octave_o_rdonly_wrapper (void);
 
-extern int octave_o_rdwr_wrapper (void);
+extern OCTAVE_API int octave_o_rdwr_wrapper (void);
 
-extern int octave_o_sync_wrapper (void);
+extern OCTAVE_API int octave_o_sync_wrapper (void);
 
-extern int octave_o_trunc_wrapper (void);
+extern OCTAVE_API int octave_o_trunc_wrapper (void);
 
-extern int octave_o_wronly_wrapper (void);
+extern OCTAVE_API int octave_o_wronly_wrapper (void);
 
 #if defined __cplusplus
 }

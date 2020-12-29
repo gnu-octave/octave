@@ -38,9 +38,10 @@
 extern "C" {
 #endif
 
-extern int octave_fseeko_wrapper (FILE *fp, off_t offset, int whence);
+extern OCTAVE_API int
+octave_fseeko_wrapper (FILE *fp, off_t offset, int whence);
 
-extern off_t octave_ftello_wrapper (FILE *fp);
+extern OCTAVE_API off_t octave_ftello_wrapper (FILE *fp);
 
 #if defined __cplusplus
 }

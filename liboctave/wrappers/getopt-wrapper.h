@@ -42,15 +42,15 @@ struct octave_getopt_options
 #define octave_required_arg 1
 #define octave_optional_arg 2
 
-extern int
+extern OCTAVE_API int
 octave_getopt_long_wrapper (int argc, char **argv,
                             const char *shortopts,
                             const struct octave_getopt_options *longopts,
                             int *longind);
 
-extern char * octave_optarg_wrapper (void);
+extern OCTAVE_API char * octave_optarg_wrapper (void);
 
-extern int octave_optind_wrapper (void);
+extern OCTAVE_API int octave_optind_wrapper (void);
 
 #if defined __cplusplus
 }

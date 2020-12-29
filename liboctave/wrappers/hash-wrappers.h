@@ -36,37 +36,37 @@
 extern "C" {
 #endif
 
-extern int octave_md2_digest_size (void);
-extern int octave_md4_digest_size (void);
-extern int octave_md5_digest_size (void);
-extern int octave_sha1_digest_size (void);
-extern int octave_sha224_digest_size (void);
-extern int octave_sha256_digest_size (void);
-extern int octave_sha384_digest_size (void);
-extern int octave_sha512_digest_size (void);
+extern OCTAVE_API int octave_md2_digest_size (void);
+extern OCTAVE_API int octave_md4_digest_size (void);
+extern OCTAVE_API int octave_md5_digest_size (void);
+extern OCTAVE_API int octave_sha1_digest_size (void);
+extern OCTAVE_API int octave_sha224_digest_size (void);
+extern OCTAVE_API int octave_sha256_digest_size (void);
+extern OCTAVE_API int octave_sha384_digest_size (void);
+extern OCTAVE_API int octave_sha512_digest_size (void);
 
-extern void *
+extern OCTAVE_API void *
 octave_md2_buffer_wrapper (const char *buf, size_t len, void *res);
 
-extern void *
+extern OCTAVE_API void *
 octave_md4_buffer_wrapper (const char *buf, size_t len, void *res);
 
-extern void *
+extern OCTAVE_API void *
 octave_md5_buffer_wrapper (const char *buf, size_t len, void *res);
 
-extern void *
+extern OCTAVE_API void *
 octave_sha1_buffer_wrapper (const char *buf, size_t len, void *res);
 
-extern void *
+extern OCTAVE_API void *
 octave_sha224_buffer_wrapper (const char *buf, size_t len, void *res);
 
-extern void *
+extern OCTAVE_API void *
 octave_sha256_buffer_wrapper (const char *buf, size_t len, void *res);
 
-extern void *
+extern OCTAVE_API void *
 octave_sha384_buffer_wrapper (const char *buf, size_t len, void *res);
 
-extern void *
+extern OCTAVE_API void *
 octave_sha512_buffer_wrapper (const char *buf, size_t len, void *res);
 
 #if defined __cplusplus

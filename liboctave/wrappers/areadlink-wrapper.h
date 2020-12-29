@@ -30,8 +30,7 @@
 extern "C" {
 #endif
 
-extern char *
-octave_areadlink_wrapper (const char *name);
+extern OCTAVE_API char * octave_areadlink_wrapper (const char *name);
 
 #if defined __cplusplus
 }

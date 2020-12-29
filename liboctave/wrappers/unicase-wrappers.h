@@ -30,12 +30,12 @@
 extern "C" {
 #endif
 
-extern uint8_t *
+extern OCTAVE_API uint8_t *
 octave_u8_tolower_wrapper (const uint8_t *s, size_t n,
                            const char *iso639_language,
                            uint8_t *resultbuf, size_t *lengthp);
 
-extern uint8_t *
+extern OCTAVE_API uint8_t *
 octave_u8_toupper_wrapper (const uint8_t *s, size_t n,
                            const char *iso639_language,
                            uint8_t *resultbuf, size_t *lengthp);

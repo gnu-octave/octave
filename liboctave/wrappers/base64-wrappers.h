@@ -37,10 +37,10 @@
 extern "C" {
 #endif
 
-extern size_t
+extern OCTAVE_API size_t
 octave_base64_encode_alloc_wrapper (const char *in, size_t inlen, char **out);
 
-extern bool
+extern OCTAVE_API bool
 octave_base64_decode_alloc_wrapper (const char *in, size_t inlen,
                                     char **out, size_t *outlen);
 

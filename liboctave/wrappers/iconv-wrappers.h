@@ -30,11 +30,10 @@
 extern "C" {
 #endif
 
-extern void *
+extern OCTAVE_API void *
 octave_iconv_open_wrapper (const char *tocode, const char *fromcode);
 
-extern int
-octave_iconv_close_wrapper (void *cd);
+extern OCTAVE_API int octave_iconv_close_wrapper (void *cd);
 
 #if defined __cplusplus
 }

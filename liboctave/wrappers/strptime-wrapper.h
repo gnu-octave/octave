@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-extern char *
+extern OCTAVE_API char *
 octave_strptime_wrapper (const char *p, const char *fmt, struct tm *t);
 
 #if defined __cplusplus

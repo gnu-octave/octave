@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-extern pid_t
+extern OCTAVE_API pid_t
 octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
                int *fildes, const char **errmsg);
 

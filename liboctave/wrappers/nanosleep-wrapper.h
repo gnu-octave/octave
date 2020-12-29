@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-extern int
+extern OCTAVE_API int
 octave_nanosleep_wrapper (const struct timespec *requested,
                           struct timespec *remaining);
 

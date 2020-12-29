@@ -90,6 +90,8 @@ noinst_LTLIBRARIES += %reldir%/libwrappers.la
 %canon_reldir%_libwrappers_la_SOURCES = $(WRAPPERS_SRC)
 
 %canon_reldir%_libwrappers_la_CPPFLAGS = \
+  @OCTAVE_DLL_DEFS@ \
+  @EXTERNAL_DLL_DEFS@ \
   -Ilibgnu -I$(srcdir)/libgnu
 
 liboctave_liboctave_la_LIBADD += %reldir%/libwrappers.la

@@ -36,29 +36,30 @@
 extern "C" {
 #endif
 
-extern pid_t octave_waitpid_wrapper (pid_t pid, int *statusp, int options);
+extern OCTAVE_API pid_t
+octave_waitpid_wrapper (pid_t pid, int *statusp, int options);
 
-extern int octave_wcontinue_wrapper (void);
+extern OCTAVE_API int octave_wcontinue_wrapper (void);
 
-extern int octave_wcoredump_wrapper (int status);
+extern OCTAVE_API int octave_wcoredump_wrapper (int status);
 
-extern bool octave_wifcontinued_wrapper (int status);
+extern OCTAVE_API bool octave_wifcontinued_wrapper (int status);
 
-extern bool octave_wifexited_wrapper (int status);
+extern OCTAVE_API bool octave_wifexited_wrapper (int status);
 
-extern bool octave_wifsignaled_wrapper (int status);
+extern OCTAVE_API bool octave_wifsignaled_wrapper (int status);
 
-extern bool octave_wifstopped_wrapper (int status);
+extern OCTAVE_API bool octave_wifstopped_wrapper (int status);
 
-extern int octave_wexitstatus_wrapper (int status);
+extern OCTAVE_API int octave_wexitstatus_wrapper (int status);
 
-extern int octave_wnohang_wrapper (void);
+extern OCTAVE_API int octave_wnohang_wrapper (void);
 
-extern int octave_wstopsig_wrapper (int status);
+extern OCTAVE_API int octave_wstopsig_wrapper (int status);
 
-extern int octave_wtermsig_wrapper (int status);
+extern OCTAVE_API int octave_wtermsig_wrapper (int status);
 
-extern int octave_wuntraced_wrapper (void);
+extern OCTAVE_API int octave_wuntraced_wrapper (void);
 
 #if defined __cplusplus
 }

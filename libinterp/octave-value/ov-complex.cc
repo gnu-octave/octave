@@ -57,8 +57,8 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTINTERP_API octave_base_scalar<double>;
-extern template class OCTINTERP_API octave_base_scalar<FloatComplex>;
+extern template class octave_base_scalar<double>;
+extern template class octave_base_scalar<FloatComplex>;
 
 template class octave_base_scalar<Complex>;
 

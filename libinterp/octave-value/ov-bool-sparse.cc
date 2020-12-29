@@ -51,7 +51,7 @@
 #include "ov-base-sparse.h"
 #include "ov-base-sparse.cc"
 
-template class OCTINTERP_API octave_base_sparse<SparseBoolMatrix>;
+template class octave_base_sparse<SparseBoolMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_bool_matrix,
                                      "sparse bool matrix", "logical");

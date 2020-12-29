@@ -52,7 +52,7 @@
 #include "ov-bool-sparse.h"
 
 
-template class OCTINTERP_API octave_base_sparse<SparseComplexMatrix>;
+template class octave_base_sparse<SparseComplexMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_complex_matrix,
                                      "sparse complex matrix", "double");

@@ -37,7 +37,7 @@
 
 namespace octave
 {
-  class gtk_manager
+  class OCTINTERP_API gtk_manager
   {
   public:
 

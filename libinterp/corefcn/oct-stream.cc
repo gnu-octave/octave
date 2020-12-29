@@ -7084,7 +7084,7 @@ namespace octave
 
 #define INSTANTIATE_WRITE(T)                                            \
   template                                                              \
-  octave_idx_type                                                       \
+  OCTINTERP_API octave_idx_type                                         \
   stream::write (const Array<T>& data, octave_idx_type block_size,      \
                  oct_data_conv::data_type output_type,                  \
                  octave_idx_type skip,                                  \

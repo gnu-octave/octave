@@ -38,7 +38,7 @@ namespace octave
 {
   class interpreter;
 
-  class history_system
+  class OCTINTERP_API history_system
   {
   public:
 

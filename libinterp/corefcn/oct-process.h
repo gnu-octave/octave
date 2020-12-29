@@ -32,7 +32,6 @@
 
 namespace octave
 {
-  OCTINTERP_API
   class
   process_execution_result
   {
@@ -49,10 +48,10 @@ namespace octave
         m_stdout_output (stdout_output)
     { }
 
-    static process_execution_result
+    static OCTINTERP_API process_execution_result
     of_success (int exit_status, const std::string& stdout_output);
 
-    static process_execution_result
+    static OCTINTERP_API process_execution_result
     of_error (int status, const std::string& err_msg);
 
     int status (void) const { return m_status; }

@@ -33,7 +33,6 @@
 
 namespace octave
 {
-  OCTINTERP_API
   process_execution_result
   process_execution_result::of_success (int exit_status,
                                         const std::string& stdout_output)
@@ -41,7 +40,6 @@ namespace octave
     return process_execution_result (0, exit_status, stdout_output, "");
   }
 
-  OCTINTERP_API
   process_execution_result
   process_execution_result::of_error (int status, const std::string& err_msg)
   {
@@ -49,7 +47,6 @@ namespace octave
   }
 
   // Execute a shell command, returning results as a C++ object
-  OCTINTERP_API
   process_execution_result
   run_command_and_return_output (const std::string& cmd_str)
   {

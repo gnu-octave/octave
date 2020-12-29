@@ -60,7 +60,7 @@
 
 // ---------------------------------------------------------------------
 
-class base_scaler
+class OCTINTERP_API base_scaler
 {
 public:
   base_scaler (void) { }
@@ -152,7 +152,7 @@ private:
   }
 };
 
-class neg_log_scaler : public base_scaler
+class OCTINTERP_API neg_log_scaler : public base_scaler
 {
 public:
   neg_log_scaler (void) { }
@@ -192,7 +192,7 @@ private:
   }
 };
 
-class scaler
+class OCTINTERP_API scaler
 {
 public:
   scaler (void) : rep (new base_scaler ()) { }
@@ -268,7 +268,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class property;
+class OCTINTERP_API property;
 
 // FIXME: These values should probably be defined inside a namespace or
 // class, but which one is most appropriate?  For now, prefix with
@@ -277,7 +277,7 @@ class property;
 
 enum listener_mode { GCB_POSTSET, GCB_PERSISTENT, GCB_PREDELETE };
 
-class base_property
+class OCTINTERP_API base_property
 {
 public:
   friend class property;
@@ -430,7 +430,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class string_property : public base_property
+class OCTINTERP_API string_property : public base_property
 {
 public:
   string_property (const std::string& s, const graphics_handle& h,
@@ -476,7 +476,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class string_array_property : public base_property
+class OCTINTERP_API string_array_property : public base_property
 {
 public:
   enum desired_enum { string_t, cell_t };
@@ -676,7 +676,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class text_label_property : public base_property
+class OCTINTERP_API text_label_property : public base_property
 {
 public:
   enum type { char_t, cellstr_t };
@@ -838,7 +838,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class radio_values
+class OCTINTERP_API radio_values
 {
 public:
   OCTINTERP_API radio_values (const std::string& opt_string = "");
@@ -908,9 +908,9 @@ public:
       return false;
   }
 
-  std::string values_as_string (void) const;
+  OCTINTERP_API std::string values_as_string (void) const;
 
-  Cell values_as_cell (void) const;
+  OCTINTERP_API Cell values_as_cell (void) const;
 
   octave_idx_type nelem (void) const { return possible_vals.size (); }
 
@@ -920,7 +920,7 @@ private:
   std::set<caseless_str> possible_vals;
 };
 
-class radio_property : public base_property
+class OCTINTERP_API radio_property : public base_property
 {
 public:
   radio_property (const std::string& nm, const graphics_handle& h,
@@ -997,7 +997,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class color_values
+class OCTINTERP_API color_values
 {
 public:
   color_values (double r = 0, double g = 0, double b = 1)
@@ -1058,7 +1058,7 @@ private:
   OCTINTERP_API bool str2rgb (const std::string& str);
 };
 
-class color_property : public base_property
+class OCTINTERP_API color_property : public base_property
 {
 public:
   color_property (const color_values& c, const radio_values& v)
@@ -1172,7 +1172,7 @@ enum finite_type
   NOT_NAN,
   NOT_INF
 };
-class double_property : public base_property
+class OCTINTERP_API double_property : public base_property
 {
 public:
   double_property (const std::string& nm, const graphics_handle& h,
@@ -1284,7 +1284,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class double_radio_property : public base_property
+class OCTINTERP_API double_radio_property : public base_property
 {
 public:
   double_radio_property (double d, const radio_values& v)
@@ -1366,7 +1366,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class array_property : public base_property
+class OCTINTERP_API array_property : public base_property
 {
 public:
   array_property (void)
@@ -1497,7 +1497,7 @@ protected:
   std::pair<double, bool> minval, maxval;
 };
 
-class row_vector_property : public array_property
+class OCTINTERP_API row_vector_property : public array_property
 {
 public:
   row_vector_property (const std::string& nm, const graphics_handle& h,
@@ -1591,7 +1591,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class bool_property : public radio_property
+class OCTINTERP_API bool_property : public radio_property
 {
 public:
   bool_property (const std::string& nm, const graphics_handle& h,
@@ -1630,7 +1630,7 @@ protected:
 
 // ---------------------------------------------------------------------
 
-class handle_property : public base_property
+class OCTINTERP_API handle_property : public base_property
 {
 public:
   handle_property (const std::string& nm, const graphics_handle& h,
@@ -1675,7 +1675,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class any_property : public base_property
+class OCTINTERP_API any_property : public base_property
 {
 public:
   any_property (const std::string& nm, const graphics_handle& h,
@@ -1708,7 +1708,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class children_property : public base_property
+class OCTINTERP_API children_property : public base_property
 {
 public:
   children_property (void)
@@ -1863,7 +1863,7 @@ private:
     children_list = val;
   }
 
-  Matrix do_get_children (bool return_hidden) const;
+  OCTINTERP_API Matrix do_get_children (bool return_hidden) const;
 
   Matrix do_get_all_children (void) const
   {
@@ -1899,7 +1899,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class callback_property : public base_property
+class OCTINTERP_API callback_property : public base_property
 {
 public:
   callback_property (const std::string& nm, const graphics_handle& h,
@@ -1947,7 +1947,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class property
+class OCTINTERP_API property
 {
 public:
   property (void) : rep (new base_property ("", graphics_handle ()))
@@ -2037,10 +2037,9 @@ public:
   void run_listeners (listener_mode mode = GCB_POSTSET)
   { rep->run_listeners (mode); }
 
-  OCTINTERP_API static
-  property create (const std::string& name, const graphics_handle& parent,
-                   const caseless_str& type,
-                   const octave_value_list& args);
+  static OCTINTERP_API property
+  create (const std::string& name, const graphics_handle& parent,
+          const caseless_str& type, const octave_value_list& args);
 
   property clone (void) const
   { return property (rep->clone ()); }
@@ -2073,7 +2072,7 @@ private:
 
 typedef std::pair<std::string, octave_value> pval_pair;
 
-class pval_vector : public std::vector<pval_pair>
+class OCTINTERP_API pval_vector : public std::vector<pval_pair>
 {
 public:
   const_iterator find (const std::string pname) const
@@ -2137,7 +2136,7 @@ public:
 
 };
 
-class property_list
+class OCTINTERP_API property_list
 {
 public:
   typedef pval_vector pval_map_type;
@@ -2154,9 +2153,9 @@ public:
 
   ~property_list (void) = default;
 
-  void set (const caseless_str& name, const octave_value& val);
+  OCTINTERP_API void set (const caseless_str& name, const octave_value& val);
 
-  octave_value lookup (const caseless_str& name) const;
+  OCTINTERP_API octave_value lookup (const caseless_str& name) const;
 
   plist_map_iterator begin (void) { return plist_map.begin (); }
   plist_map_const_iterator begin (void) const { return plist_map.begin (); }
@@ -2174,7 +2173,8 @@ public:
     return plist_map.find (go_name);
   }
 
-  octave_scalar_map as_struct (const std::string& prefix_arg) const;
+  OCTINTERP_API octave_scalar_map
+  as_struct (const std::string& prefix_arg) const;
 
 private:
   plist_map_type plist_map;
@@ -2196,9 +2196,9 @@ public:
 
   virtual std::string graphics_object_name (void) const { return "unknown"; }
 
-  void mark_modified (void);
+  OCTINTERP_API void mark_modified (void);
 
-  void override_defaults (base_graphics_object& obj);
+  OCTINTERP_API void override_defaults (base_graphics_object& obj);
 
   virtual void init_integerhandle (const octave_value&)
   {
@@ -2208,7 +2208,8 @@ public:
   // Look through DEFAULTS for properties with given CLASS_NAME, and
   // apply them to the current object with set (virtual method).
 
-  void set_from_list (base_graphics_object& obj, property_list& defaults);
+  OCTINTERP_API void
+  set_from_list (base_graphics_object& obj, property_list& defaults);
 
   void insert_property (const std::string& name, property p)
   {
@@ -2287,7 +2288,7 @@ public:
 
   void set_tag (const octave_value& val) { tag = val; }
 
-  void set_parent (const octave_value& val);
+  OCTINTERP_API void set_parent (const octave_value& val);
 
   Matrix get_children (void) const
   {
@@ -2304,9 +2305,10 @@ public:
     return children.get_hidden ();
   }
 
-  void get_children_of_type (const caseless_str& type, bool get_invisible,
-                             bool traverse,
-                             std::list<graphics_object> &children_list) const;
+  OCTINTERP_API void
+  get_children_of_type (const caseless_str& type, bool get_invisible,
+                        bool traverse,
+                        std::list<graphics_object> &children_list) const;
 
   void set_modified (const octave_value& val) { set___modified__ (val); }
 
@@ -2351,7 +2353,7 @@ public:
     parent = new_gh;
   }
 
-  static property_list::pval_map_type factory_defaults (void);
+  static OCTINTERP_API property_list::pval_map_type factory_defaults (void);
 
   // FIXME: These functions should be generated automatically by the
   //        genprops.awk script.
@@ -2370,22 +2372,23 @@ public:
   virtual bool is_yliminclude (void) const { return false; }
   virtual bool is_zliminclude (void) const { return false; }
 
-  bool is_handle_visible (void) const;
+  OCTINTERP_API bool is_handle_visible (void) const;
 
-  std::set<std::string> dynamic_property_names (void) const;
+  OCTINTERP_API std::set<std::string> dynamic_property_names (void) const;
 
-  bool has_dynamic_property (const std::string& pname) const;
+  OCTINTERP_API bool has_dynamic_property (const std::string& pname) const;
 
 protected:
   std::set<std::string> dynamic_properties;
 
-  void set_dynamic (const caseless_str& pname, const octave_value& val);
+  OCTINTERP_API void
+  set_dynamic (const caseless_str& pname, const octave_value& val);
 
-  octave_value get_dynamic (const caseless_str& pname) const;
+  OCTINTERP_API octave_value get_dynamic (const caseless_str& pname) const;
 
-  octave_value get_dynamic (bool all = false) const;
+  OCTINTERP_API octave_value get_dynamic (bool all = false) const;
 
-  property get_property_dynamic (const caseless_str& pname) const;
+  OCTINTERP_API property get_property_dynamic (const caseless_str& pname) const;
 
   BEGIN_BASE_PROPERTIES
     // properties common to all objects
@@ -2744,15 +2747,15 @@ public:
     rep->set (name, val);
   }
 
-  void set (const octave_value_list& args);
+  OCTINTERP_API void set (const octave_value_list& args);
 
-  void set (const Array<std::string>& names, const Cell& values,
-            octave_idx_type row);
+  OCTINTERP_API void set (const Array<std::string>& names, const Cell& values,
+                          octave_idx_type row);
 
-  void set (const octave_map& m);
+  OCTINTERP_API void set (const octave_map& m);
 
-  void set_value_or_default (const caseless_str& name,
-                             const octave_value& val);
+  OCTINTERP_API void set_value_or_default (const caseless_str& name,
+                                           const octave_value& val);
 
   void set_defaults (const std::string& mode) { rep->set_defaults (mode); }
 
@@ -2827,7 +2830,7 @@ public:
 
   graphics_handle get_handle (void) const { return rep->get_handle (); }
 
-  graphics_object get_ancestor (const std::string& type) const;
+  OCTINTERP_API graphics_object get_ancestor (const std::string& type) const;
 
   void remove_child (const graphics_handle& h) { rep->remove_child (h); }
 
@@ -2901,7 +2904,8 @@ public:
   bool is_handle_visible (void) const
   { return get_properties ().is_handle_visible (); }
 
-  octave::graphics_toolkit get_toolkit (void) const { return rep->get_toolkit (); }
+  octave::graphics_toolkit get_toolkit (void) const
+  { return rep->get_toolkit (); }
 
   void add_property_listener (const std::string& nm, const octave_value& v,
                               listener_mode mode = GCB_POSTSET)
@@ -2941,10 +2945,12 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h, bool from_root = false);
+    OCTINTERP_API void
+    remove_child (const graphics_handle& h, bool from_root = false);
 
-    Matrix get_boundingbox (bool internal = false,
-                            const Matrix& parent_pix_size = Matrix ()) const;
+    OCTINTERP_API Matrix
+    get_boundingbox (bool internal = false,
+                     const Matrix& parent_pix_size = Matrix ()) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -3086,7 +3092,7 @@ public:
 
   bool valid_object (void) const { return true; }
 
-  void reset_default_properties (void);
+  OCTINTERP_API void reset_default_properties (void);
 
   bool has_readonly_property (const caseless_str& pname) const
   {
@@ -3102,7 +3108,8 @@ private:
 
   property_list factory_properties;
 
-  static property_list::plist_map_type init_factory_properties (void);
+  static OCTINTERP_API property_list::plist_map_type
+  init_factory_properties (void);
 };
 
 // ---------------------------------------------------------------------
@@ -3110,6 +3117,7 @@ private:
 class OCTINTERP_API figure : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
@@ -3118,41 +3126,44 @@ public:
       integerhandle = val;
     }
 
-    void remove_child (const graphics_handle& h, bool from_root = false);
+    OCTINTERP_API void
+    remove_child (const graphics_handle& h, bool from_root = false);
 
-    void set_visible (const octave_value& val);
+    OCTINTERP_API void set_visible (const octave_value& val);
 
-    octave::graphics_toolkit get_toolkit (void) const;
+    OCTINTERP_API octave::graphics_toolkit get_toolkit (void) const;
 
-    void set_toolkit (const octave::graphics_toolkit& b);
+    OCTINTERP_API void set_toolkit (const octave::graphics_toolkit& b);
 
-    void set___graphics_toolkit__ (const octave_value& val);
+    OCTINTERP_API void set___graphics_toolkit__ (const octave_value& val);
 
-    void adopt (const graphics_handle& h);
+    OCTINTERP_API void adopt (const graphics_handle& h);
 
-    void set_position (const octave_value& val,
-                       bool do_notify_toolkit = true);
+    OCTINTERP_API void set_position (const octave_value& val,
+                                     bool do_notify_toolkit = true);
 
-    void set_outerposition (const octave_value& val,
-                            bool do_notify_toolkit = true);
+    OCTINTERP_API void set_outerposition (const octave_value& val,
+                                          bool do_notify_toolkit = true);
 
-    Matrix bbox2position (const Matrix& bbox) const;
+    OCTINTERP_API Matrix bbox2position (const Matrix& bbox) const;
 
-    Matrix get_boundingbox (bool internal = false,
-                            const Matrix& parent_pix_size = Matrix ()) const;
+    OCTINTERP_API Matrix
+    get_boundingbox (bool internal = false,
+                     const Matrix& parent_pix_size = Matrix ()) const;
 
-    void set_boundingbox (const Matrix& bb, bool internal = false,
-                          bool do_notify_toolkit = true);
+    OCTINTERP_API void
+    set_boundingbox (const Matrix& bb, bool internal = false,
+                     bool do_notify_toolkit = true);
 
-    Matrix map_from_boundingbox (double x, double y) const;
+    OCTINTERP_API Matrix map_from_boundingbox (double x, double y) const;
 
-    Matrix map_to_boundingbox (double x, double y) const;
+    OCTINTERP_API Matrix map_to_boundingbox (double x, double y) const;
 
-    void update_units (const caseless_str& old_units);
+    OCTINTERP_API void update_units (const caseless_str& old_units);
 
-    void update_paperunits (const caseless_str& old_paperunits);
+    OCTINTERP_API void update_paperunits (const caseless_str& old_paperunits);
 
-    std::string get_title (void) const;
+    OCTINTERP_API std::string get_title (void) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -3256,7 +3267,7 @@ public:
     }
 
   private:
-    Matrix get_auto_paperposition (void);
+    OCTINTERP_API Matrix get_auto_paperposition (void);
 
     void update_paperpositionmode (void)
     {
@@ -3264,9 +3275,9 @@ public:
         paperposition.set (get_auto_paperposition ());
     }
 
-    void update_handlevisibility (void);
+    OCTINTERP_API void update_handlevisibility (void);
 
-    void init_toolkit (void);
+    OCTINTERP_API void init_toolkit (void);
 
     octave::graphics_toolkit toolkit;
   };
@@ -3318,7 +3329,7 @@ public:
     return retval;
   }
 
-  octave_value get_default (const caseless_str& name) const;
+  OCTINTERP_API octave_value get_default (const caseless_str& name) const;
 
   octave_value get_defaults (void) const
   {
@@ -3336,7 +3347,7 @@ public:
 
   bool valid_object (void) const { return true; }
 
-  void reset_default_properties (void);
+  OCTINTERP_API void reset_default_properties (void);
 
   bool has_readonly_property (const caseless_str& pname) const
   {
@@ -3355,6 +3366,7 @@ private:
 class OCTINTERP_API graphics_xform
 {
 public:
+
   graphics_xform (void)
     : xform (xform_eye ()), xform_inv (xform_eye ()),
       sx ("linear"), sy ("linear"), sz ("linear"),  zlim (1, 2, 0.0)
@@ -3385,15 +3397,15 @@ public:
     return *this;
   }
 
-  static ColumnVector xform_vector (double x, double y, double z);
+  static OCTINTERP_API ColumnVector xform_vector (double x, double y, double z);
 
-  static Matrix xform_eye (void);
+  static OCTINTERP_API Matrix xform_eye (void);
 
-  ColumnVector transform (double x, double y, double z,
-                          bool use_scale = true) const;
+  OCTINTERP_API ColumnVector
+  transform (double x, double y, double z, bool use_scale = true) const;
 
-  ColumnVector untransform (double x, double y, double z,
-                            bool use_scale = true) const;
+  OCTINTERP_API ColumnVector
+  untransform (double x, double y, double z, bool use_scale = true) const;
 
   ColumnVector untransform (double x, double y, bool use_scale = true) const
   { return untransform (x, y, (zlim(0)+zlim(1))/2, use_scale); }
@@ -3443,25 +3455,32 @@ enum
 class OCTINTERP_API axes : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void set_defaults (base_graphics_object& obj, const std::string& mode);
 
-    void remove_child (const graphics_handle& h, bool from_root = false);
+    OCTINTERP_API void
+    set_defaults (base_graphics_object& obj, const std::string& mode);
 
-    void adopt (const graphics_handle& h);
+    OCTINTERP_API void
+    remove_child (const graphics_handle& h, bool from_root = false);
+
+    OCTINTERP_API void adopt (const graphics_handle& h);
 
     const scaler& get_x_scaler (void) const { return sx; }
     const scaler& get_y_scaler (void) const { return sy; }
     const scaler& get_z_scaler (void) const { return sz; }
 
-    Matrix get_boundingbox (bool internal = false,
-                            const Matrix& parent_pix_size = Matrix ()) const;
-    Matrix get_extent (bool with_text = false,
-                       bool only_text_height=false) const;
+    OCTINTERP_API Matrix
+    get_boundingbox (bool internal = false,
+                     const Matrix& parent_pix_size = Matrix ()) const;
+    OCTINTERP_API Matrix
+    get_extent (bool with_text = false,
+                bool only_text_height=false) const;
 
-    double get___fontsize_points__ (double box_pix_height = 0) const;
+    OCTINTERP_API double
+    get___fontsize_points__ (double box_pix_height = 0) const;
 
     void update_boundingbox (void)
     {
@@ -3472,9 +3491,9 @@ public:
         }
     }
 
-    void update_camera (void);
-    void update_axes_layout (void);
-    void update_aspectratios (void);
+    OCTINTERP_API void update_camera (void);
+    OCTINTERP_API void update_axes_layout (void);
+    OCTINTERP_API void update_aspectratios (void);
     void update_transform (void)
     {
       update_aspectratios ();
@@ -3482,7 +3501,7 @@ public:
       update_axes_layout ();
     }
 
-    void sync_positions (void);
+    OCTINTERP_API void sync_positions (void);
 
     // Redirect calls to "activepositionproperty" to "positionconstraint".
 
@@ -3521,11 +3540,11 @@ public:
       set_position (val);
     }
 
-    void update_autopos (const std::string& elem_type);
-    void update_xlabel_position (void);
-    void update_ylabel_position (void);
-    void update_zlabel_position (void);
-    void update_title_position (void);
+    OCTINTERP_API void update_autopos (const std::string& elem_type);
+    OCTINTERP_API void update_xlabel_position (void);
+    OCTINTERP_API void update_ylabel_position (void);
+    OCTINTERP_API void update_zlabel_position (void);
+    OCTINTERP_API void update_title_position (void);
 
     graphics_xform get_transform (void) const
     { return graphics_xform (x_render, x_render_inv, sx, sy, sz, x_zlim); }
@@ -3583,36 +3602,43 @@ public:
     ColumnVector coord2pixel (double x, double y, double z) const
     { return get_transform ().transform (x, y, z); }
 
-    void zoom_about_point (const std::string& mode, double x, double y,
-                           double factor, bool push_to_zoom_stack = true);
-    void zoom (const std::string& mode, double factor,
-               bool push_to_zoom_stack = true);
-    void zoom (const std::string& mode, const Matrix& xl, const Matrix& yl,
-               bool push_to_zoom_stack = true);
+    OCTINTERP_API void
+    zoom_about_point (const std::string& mode, double x, double y,
+                      double factor, bool push_to_zoom_stack = true);
+    OCTINTERP_API void
+    zoom (const std::string& mode, double factor,
+          bool push_to_zoom_stack = true);
+    OCTINTERP_API void
+    zoom (const std::string& mode, const Matrix& xl, const Matrix& yl,
+          bool push_to_zoom_stack = true);
 
-    void translate_view (const std::string& mode,
-                         double x0, double x1, double y0, double y1,
-                         bool push_to_zoom_stack = true);
+    OCTINTERP_API void
+    translate_view (const std::string& mode,
+                    double x0, double x1, double y0, double y1,
+                    bool push_to_zoom_stack = true);
 
-    void pan (const std::string& mode, double factor,
+    OCTINTERP_API void
+    pan (const std::string& mode, double factor,
+         bool push_to_zoom_stack = true);
+
+    OCTINTERP_API void
+    rotate3d (double x0, double x1, double y0, double y1,
               bool push_to_zoom_stack = true);
 
-    void rotate3d (double x0, double x1, double y0, double y1,
-                   bool push_to_zoom_stack = true);
+    OCTINTERP_API void
+    rotate_view (double delta_az, double delta_el,
+                 bool push_to_zoom_stack = true);
 
-    void rotate_view (double delta_az, double delta_el,
-                      bool push_to_zoom_stack = true);
+    OCTINTERP_API void unzoom (void);
+    OCTINTERP_API void update_handlevisibility (void);
+    OCTINTERP_API void push_zoom_stack (void);
+    OCTINTERP_API void clear_zoom_stack (bool do_unzoom = true);
 
-    void unzoom (void);
-    void update_handlevisibility (void);
-    void push_zoom_stack (void);
-    void clear_zoom_stack (bool do_unzoom = true);
+    OCTINTERP_API void update_units (const caseless_str& old_units);
 
-    void update_units (const caseless_str& old_units);
+    OCTINTERP_API void update_font (std::string prop = "");
 
-    void update_font (std::string prop = "");
-
-    void update_fontunits (const caseless_str& old_fontunits);
+    OCTINTERP_API void update_fontunits (const caseless_str& old_fontunits);
 
     void increase_num_lights (void) { num_lights++; }
     void decrease_num_lights (void) { num_lights--; }
@@ -3680,10 +3706,12 @@ public:
     // Text renderer, used for calculation of text (tick labels) size
     octave::text_renderer txt_renderer;
 
-    void set_text_child (handle_property& h, const std::string& who,
-                         const octave_value& v);
+    OCTINTERP_API void
+    set_text_child (handle_property& h, const std::string& who,
+                    const octave_value& v);
 
-    void delete_text_child (handle_property& h, bool from_root = false);
+    OCTINTERP_API void
+    delete_text_child (handle_property& h, bool from_root = false);
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -3843,7 +3871,7 @@ public:
    END_PROPERTIES
 
   protected:
-    void init (void);
+    OCTINTERP_API void init (void);
 
   private:
 
@@ -3873,7 +3901,8 @@ public:
       sz = get_scale (get_zscale (), zlim.get ().matrix_value ());
     }
 
-    void update_label_color (handle_property label, color_property col);
+    OCTINTERP_API void
+    update_label_color (handle_property label, color_property col);
     void update_xcolor (void)
     { update_label_color (xlabel, xcolor); }
 
@@ -4112,21 +4141,24 @@ public:
       sync_positions ();
     }
 
-    void update_outerposition (void);
-    void update_position (void);
-    void update_looseinset (void);
+    OCTINTERP_API void update_outerposition (void);
+    OCTINTERP_API void update_position (void);
+    OCTINTERP_API void update_looseinset (void);
 
-    double calc_tick_sep (double minval, double maxval);
-    void calc_ticks_and_lims (array_property& lims, array_property& ticks,
-                              array_property& mticks, bool limmode_is_auto,
-                              bool tickmode_is_auto, bool is_logscale);
-    void calc_ticklabels (const array_property& ticks, any_property& labels,
-                          bool is_logscale, const bool is_origin,
-                          const int other_axislocation,
-                          const array_property& axis_lims);
-    Matrix get_ticklabel_extents (const Matrix& ticks,
-                                  const string_vector& ticklabels,
-                                  const Matrix& limits);
+    OCTINTERP_API double calc_tick_sep (double minval, double maxval);
+    OCTINTERP_API void
+    calc_ticks_and_lims (array_property& lims, array_property& ticks,
+                         array_property& mticks, bool limmode_is_auto,
+                         bool tickmode_is_auto, bool is_logscale);
+    OCTINTERP_API void
+    calc_ticklabels (const array_property& ticks, any_property& labels,
+                     bool is_logscale, const bool is_origin,
+                     const int other_axislocation,
+                     const array_property& axis_lims);
+    OCTINTERP_API Matrix
+    get_ticklabel_extents (const Matrix& ticks,
+                           const string_vector& ticklabels,
+                           const Matrix& limits);
 
     void fix_limits (array_property& lims)
     {
@@ -4148,7 +4180,7 @@ public:
         }
     }
 
-    Matrix calc_tightbox (const Matrix& init_pos);
+    OCTINTERP_API Matrix calc_tightbox (const Matrix& init_pos);
 
     void set_colormap (const octave_value& val)
     {
@@ -4160,15 +4192,17 @@ public:
       colormap.run_listeners (GCB_POSTSET);
     }
 
-    octave_value get_colormap (void) const;
+    OCTINTERP_API octave_value get_colormap (void) const;
 
   public:
-    Matrix get_axis_limits (double xmin, double xmax,
-                            double min_pos, double max_neg,
-                            const bool logscale);
+    OCTINTERP_API Matrix
+    get_axis_limits (double xmin, double xmax,
+                     double min_pos, double max_neg,
+                     const bool logscale);
 
-    void check_axis_limits (Matrix &limits, const Matrix kids,
-                            const bool logscale, char &update_type);
+    OCTINTERP_API void
+    check_axis_limits (Matrix &limits, const Matrix kids,
+                       const bool logscale, char &update_type);
 
     void update_xlim ()
     {
@@ -4287,7 +4321,7 @@ public:
     return retval;
   }
 
-  octave_value get_default (const caseless_str& name) const;
+  OCTINTERP_API octave_value get_default (const caseless_str& name) const;
 
   octave_value get_defaults (void) const
   {
@@ -4303,14 +4337,14 @@ public:
 
   const base_properties& get_properties (void) const { return xproperties; }
 
-  void update_axis_limits (const std::string& axis_type);
+  OCTINTERP_API void update_axis_limits (const std::string& axis_type);
 
-  void update_axis_limits (const std::string& axis_type,
-                           const graphics_handle& h);
+  OCTINTERP_API void update_axis_limits (const std::string& axis_type,
+                                         const graphics_handle& h);
 
   bool valid_object (void) const { return true; }
 
-  void reset_default_properties (void);
+  OCTINTERP_API void reset_default_properties (void);
 
   bool has_readonly_property (const caseless_str& pname) const
   {
@@ -4321,7 +4355,7 @@ public:
   }
 
 protected:
-  void initialize (const graphics_object& go);
+  OCTINTERP_API void initialize (const graphics_object& go);
 
 private:
   property_list default_properties;
@@ -4332,9 +4366,11 @@ private:
 class OCTINTERP_API line : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -4373,8 +4409,8 @@ public:
     }
 
   private:
-    Matrix compute_xlim (void) const;
-    Matrix compute_ylim (void) const;
+    OCTINTERP_API Matrix compute_xlim (void) const;
+    OCTINTERP_API Matrix compute_ylim (void) const;
 
     void update_xdata (void) { set_xlim (compute_xlim ()); }
 
@@ -4413,14 +4449,17 @@ public:
 class OCTINTERP_API text : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    double get___fontsize_points__ (double box_pix_height = 0) const;
 
-    void update_text_extent (void);
+    OCTINTERP_API double
+    get___fontsize_points__ (double box_pix_height = 0) const;
 
-    void update_font (void);
+    OCTINTERP_API void update_text_extent (void);
+
+    OCTINTERP_API void update_font (void);
 
     void set_position (const octave_value& val)
     {
@@ -4488,8 +4527,8 @@ public:
       double_property __fontsize_points__ hgr , 0
     END_PROPERTIES
 
-    Matrix get_data_position (void) const;
-    Matrix get_extent_matrix (void) const;
+    OCTINTERP_API Matrix get_data_position (void) const;
+    OCTINTERP_API Matrix get_extent_matrix (void) const;
     const uint8NDArray& get_pixels (void) const { return pixels; }
 
     // Text renderer, used for calculation of text size
@@ -4536,7 +4575,7 @@ public:
         set_zliminclude ("off");
     }
 
-    void request_autopos (void);
+    OCTINTERP_API void request_autopos (void);
     void update_positionmode (void) { request_autopos (); }
     void update_rotationmode (void) { request_autopos (); }
     void update_horizontalalignmentmode (void) { request_autopos (); }
@@ -4568,8 +4607,8 @@ public:
     void update_horizontalalignment (void) { update_text_extent (); }
     void update_verticalalignment (void) { update_text_extent (); }
 
-    void update_units (void);
-    void update_fontunits (const caseless_str& old_fontunits);
+    OCTINTERP_API void update_units (void);
+    OCTINTERP_API void update_fontunits (const caseless_str& old_fontunits);
 
   private:
     std::string cached_units;
@@ -4608,9 +4647,11 @@ public:
 class OCTINTERP_API image : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
+
     bool is_aliminclude (void) const
     { return (aliminclude.is_on () && alphadatamapping.is ("scaled")); }
     std::string get_aliminclude (void) const
@@ -4621,7 +4662,7 @@ public:
     std::string get_climinclude (void) const
     { return climinclude.current_value (); }
 
-    octave_value get_color_data (void) const;
+    OCTINTERP_API octave_value get_color_data (void) const;
 
     void initialize_data (void) { update_cdata (); }
 
@@ -4821,6 +4862,7 @@ public:
 class OCTINTERP_API light : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
     // See the genprops.awk script for an explanation of the
@@ -4840,7 +4882,7 @@ public:
     }
 
   private:
-    void update_visible (void);
+    OCTINTERP_API void update_visible (void);
   };
 
 private:
@@ -4868,7 +4910,7 @@ public:
   }
 
 protected:
-  void initialize (const graphics_object& go);
+  OCTINTERP_API void initialize (const graphics_object& go);
 };
 
 // ---------------------------------------------------------------------
@@ -4876,9 +4918,11 @@ protected:
 class OCTINTERP_API patch : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
+
     octave_value get_color_data (void) const;
 
     // Matlab allows incoherent data to be stored into patch properties.
@@ -4899,7 +4943,7 @@ public:
     std::string get_climinclude (void) const
     { return climinclude.current_value (); }
 
-    bool get_do_lighting (void) const;
+    OCTINTERP_API bool get_do_lighting (void) const;
 
     std::vector<std::vector<octave_idx_type>> coplanar_last_idx;
 
@@ -5018,7 +5062,7 @@ public:
 
     void update_facevertexcdata (void) { update_data ();}
 
-    void update_fvc (void);
+    OCTINTERP_API void update_fvc (void);
 
     void update_xdata (void)
     {
@@ -5077,11 +5121,11 @@ public:
         clim = cdata.get_limits ();
     }
 
-    void update_data (void);
+    OCTINTERP_API void update_data (void);
 
-    void calc_face_normals (Matrix& normals);
-    void update_face_normals (bool reset, bool force = false);
-    void update_vertex_normals (bool reset, bool force = false);
+    OCTINTERP_API void calc_face_normals (Matrix& normals);
+    OCTINTERP_API void update_face_normals (bool reset, bool force = false);
+    OCTINTERP_API void update_vertex_normals (bool reset, bool force = false);
 
     void update_edgelighting (void)
     {
@@ -5135,10 +5179,10 @@ public:
     return retval;
   }
 
-  void reset_default_properties (void);
+  OCTINTERP_API void reset_default_properties (void);
 
 protected:
-  void initialize (const graphics_object& go);
+  OCTINTERP_API void initialize (const graphics_object& go);
 
 };
 
@@ -5147,10 +5191,12 @@ protected:
 class OCTINTERP_API scatter : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    octave_value get_color_data (void) const;
+
+    OCTINTERP_API octave_value get_color_data (void) const;
 
     // Matlab allows incoherent data to be stored in scatter properties.
     // The scatter object should then be ignored by the renderer.
@@ -5262,7 +5308,7 @@ public:
     }
 
   public:
-    void update_color (void);
+    OCTINTERP_API void update_color (void);
 
   private:
     std::string bad_data_msg;
@@ -5370,7 +5416,7 @@ public:
   }
 
 protected:
-  void initialize (const graphics_object& go);
+  OCTINTERP_API void initialize (const graphics_object& go);
 
 };
 
@@ -5379,9 +5425,11 @@ protected:
 class OCTINTERP_API surface : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
+
     octave_value get_color_data (void) const;
 
     bool is_aliminclude (void) const
@@ -5394,7 +5442,7 @@ public:
     std::string get_climinclude (void) const
     { return climinclude.current_value (); }
 
-    bool get_do_lighting (void) const;
+    OCTINTERP_API bool get_do_lighting (void) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5534,8 +5582,8 @@ public:
       set_zlim (zdata.get_limits ());
     }
 
-    void update_face_normals (bool reset, bool force = false);
-    void update_vertex_normals (bool reset, bool force = false);
+    OCTINTERP_API void update_face_normals (bool reset, bool force = false);
+    OCTINTERP_API void update_vertex_normals (bool reset, bool force = false);
 
     void update_facenormalsmode (void)
     { update_face_normals (false); }
@@ -5587,12 +5635,15 @@ public:
 class OCTINTERP_API hggroup : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h, bool from_root = false);
 
-    void adopt (const graphics_handle& h);
+    OCTINTERP_API void
+    remove_child (const graphics_handle& h, bool from_root = false);
+
+    OCTINTERP_API void adopt (const graphics_handle& h);
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5615,9 +5666,9 @@ public:
     END_PROPERTIES
 
   private:
-    void update_limits (void) const;
+    OCTINTERP_API void update_limits (void) const;
 
-    void update_limits (const graphics_handle& h) const;
+    OCTINTERP_API void update_limits (const graphics_handle& h) const;
 
   protected:
     void init (void)
@@ -5641,10 +5692,10 @@ public:
 
   bool valid_object (void) const { return true; }
 
-  void update_axis_limits (const std::string& axis_type);
+  OCTINTERP_API void update_axis_limits (const std::string& axis_type);
 
-  void update_axis_limits (const std::string& axis_type,
-                           const graphics_handle& h);
+  OCTINTERP_API void update_axis_limits (const std::string& axis_type,
+                                         const graphics_handle& h);
 
   bool has_readonly_property (const caseless_str& pname) const
   {
@@ -5661,9 +5712,11 @@ public:
 class OCTINTERP_API uimenu : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
+
     void remove_child (const graphics_handle& h, bool from_root = false)
     {
       base_properties::remove_child (h, from_root);
@@ -5732,6 +5785,7 @@ public:
 class OCTINTERP_API uicontextmenu : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
@@ -5768,7 +5822,7 @@ public:
     // List of objects that might depend on this uicontextmenu object
     std::list<graphics_handle> dependent_obj_list;
 
-    void update_beingdeleted (void);
+    OCTINTERP_API void update_beingdeleted (void);
 
   };
 
@@ -5803,13 +5857,17 @@ public:
 class OCTINTERP_API uicontrol : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    Matrix get_boundingbox (bool internal = false,
-                            const Matrix& parent_pix_size = Matrix ()) const;
 
-    double get___fontsize_points__ (double box_pix_height = 0) const;
+    OCTINTERP_API Matrix
+    get_boundingbox (bool internal = false,
+                     const Matrix& parent_pix_size = Matrix ()) const;
+
+    OCTINTERP_API double
+    get___fontsize_points__ (double box_pix_height = 0) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5864,7 +5922,7 @@ public:
       cached_units = get_units ();
     }
 
-    void update_text_extent (void);
+    OCTINTERP_API void update_text_extent (void);
 
     void update_string (void) { update_text_extent (); }
     void update_fontname (void) { update_text_extent (); }
@@ -5875,9 +5933,9 @@ public:
     }
     void update_fontweight (void) { update_text_extent (); }
 
-    void update_fontunits (const caseless_str& old_units);
+    OCTINTERP_API void update_fontunits (const caseless_str& old_units);
 
-    void update_units (void);
+    OCTINTERP_API void update_units (void);
 
   };
 
@@ -5911,17 +5969,22 @@ public:
 class OCTINTERP_API uibuttongroup : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h, bool from_root = false);
 
-    void adopt (const graphics_handle& h);
+    OCTINTERP_API void
+    remove_child (const graphics_handle& h, bool from_root = false);
 
-    Matrix get_boundingbox (bool internal = false,
-                            const Matrix& parent_pix_size = Matrix ()) const;
+    OCTINTERP_API void adopt (const graphics_handle& h);
 
-    double get___fontsize_points__ (double box_pix_height = 0) const;
+    OCTINTERP_API Matrix
+    get_boundingbox (bool internal = false,
+                     const Matrix& parent_pix_size = Matrix ()) const;
+
+    OCTINTERP_API double
+    get___fontsize_points__ (double box_pix_height = 0) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5971,8 +6034,8 @@ public:
     // void update_fontangle (void) { update_text_extent (); }
     // void update_fontweight (void) { update_fontweight (); }
 
-    void update_units (const caseless_str& old_units);
-    void update_fontunits (const caseless_str& old_units);
+    OCTINTERP_API void update_units (const caseless_str& old_units);
+    OCTINTERP_API void update_fontunits (const caseless_str& old_units);
 
   };
 
@@ -6007,13 +6070,17 @@ public:
 class OCTINTERP_API uipanel : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    Matrix get_boundingbox (bool internal = false,
-                            const Matrix& parent_pix_size = Matrix ()) const;
 
-    double get___fontsize_points__ (double box_pix_height = 0) const;
+    OCTINTERP_API Matrix
+    get_boundingbox (bool internal = false,
+                     const Matrix& parent_pix_size = Matrix ()) const;
+
+    OCTINTERP_API double
+    get___fontsize_points__ (double box_pix_height = 0) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -6052,8 +6119,8 @@ public:
       position.add_constraint (dim_vector (1, 4));
     }
 
-    void update_units (const caseless_str& old_units);
-    void update_fontunits (const caseless_str& old_units);
+    OCTINTERP_API void update_units (const caseless_str& old_units);
+    OCTINTERP_API void update_fontunits (const caseless_str& old_units);
 
   };
 
@@ -6087,15 +6154,20 @@ public:
 class OCTINTERP_API uitable : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    Matrix get_boundingbox (bool internal = false,
-                            const Matrix& parent_pix_size = Matrix ()) const;
 
-    double get___fontsize_points__ (double box_pix_height = 0) const;
+    OCTINTERP_API Matrix
+    get_boundingbox (bool internal = false,
+                     const Matrix& parent_pix_size = Matrix ()) const;
 
-    double get_fontsize_pixels (double box_pix_height = 0) const;
+    OCTINTERP_API double
+    get___fontsize_points__ (double box_pix_height = 0) const;
+
+    OCTINTERP_API double
+    get_fontsize_pixels (double box_pix_height = 0) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -6132,11 +6204,11 @@ public:
       radio_property units S , "normalized|inches|centimeters|points|{pixels}|characters"
     END_PROPERTIES
 
-    Matrix get_extent_matrix (void) const;
+    OCTINTERP_API Matrix get_extent_matrix (void) const;
 
-    Matrix get_backgroundcolor_rgb (void);
+    OCTINTERP_API Matrix get_backgroundcolor_rgb (void);
 
-    Matrix get_alternatebackgroundcolor_rgb (void);
+    OCTINTERP_API Matrix get_alternatebackgroundcolor_rgb (void);
 
   protected:
     void init (void)
@@ -6148,8 +6220,8 @@ public:
       columneditable.add_constraint ("logical");
     }
 
-    void update_units (const caseless_str& old_units);
-    void update_fontunits (const caseless_str& old_units);
+    OCTINTERP_API void update_units (const caseless_str& old_units);
+    OCTINTERP_API void update_fontunits (const caseless_str& old_units);
     void update_table_extent (void) { };
     void update_data (void) { update_table_extent (); }
     void update_fontname (void) { update_table_extent (); }
@@ -6191,9 +6263,11 @@ public:
 class OCTINTERP_API uitoolbar : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -6255,7 +6329,7 @@ public:
     return retval;
   }
 
-  octave_value get_default (const caseless_str& name) const;
+  OCTINTERP_API octave_value get_default (const caseless_str& name) const;
 
   octave_value get_defaults (void) const
   {
@@ -6273,7 +6347,7 @@ public:
 
   bool valid_object (void) const { return true; }
 
-  void reset_default_properties (void);
+  OCTINTERP_API void reset_default_properties (void);
 
   bool has_readonly_property (const caseless_str& pname) const
   {
@@ -6292,9 +6366,11 @@ private:
 class OCTINTERP_API uipushtool : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -6353,9 +6429,11 @@ public:
 class OCTINTERP_API uitoggletool : public base_graphics_object
 {
 public:
+
   class OCTINTERP_API properties : public base_properties
   {
   public:
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -6414,10 +6492,10 @@ public:
 
 // ---------------------------------------------------------------------
 
-octave_value
+OCTINTERP_API octave_value
 get_property_from_handle (double handle, const std::string& property,
                           const std::string& func);
-bool
+OCTINTERP_API bool
 set_property_in_handle (double handle, const std::string& property,
                         const octave_value& arg, const std::string& func);
 
@@ -6426,6 +6504,7 @@ set_property_in_handle (double handle, const std::string& property,
 class graphics_event;
 
 class
+OCTINTERP_API
 base_graphics_event
 {
 public:
@@ -6452,6 +6531,7 @@ public:
 };
 
 class
+OCTINTERP_API
 graphics_event
 {
 public:
@@ -6484,26 +6564,26 @@ public:
 
   bool ok (void) const { return (rep != nullptr); }
 
-  static graphics_event
+  static OCTINTERP_API graphics_event
   create_callback_event (const graphics_handle& h,
                          const std::string& name,
                          const octave_value& data = Matrix (),
                          int busyaction = base_graphics_event::QUEUE);
 
-  static graphics_event
+  static OCTINTERP_API graphics_event
   create_callback_event (const graphics_handle& h,
                          const octave_value& cb,
                          const octave_value& data = Matrix (),
                          int busyaction = base_graphics_event::QUEUE);
 
-  static graphics_event
+  static OCTINTERP_API graphics_event
   create_mcode_event (const graphics_handle& h, const std::string& cmd,
                       int busyaction);
 
-  static graphics_event
+  static OCTINTERP_API graphics_event
   create_function_event (event_fcn fcn, void *data = nullptr);
 
-  static graphics_event
+  static OCTINTERP_API graphics_event
   create_set_event (const graphics_handle& h, const std::string& name,
                     const octave_value& value, bool notify_toolkit = true,
                     bool redraw_figure = false);
@@ -6516,17 +6596,17 @@ class OCTINTERP_API gh_manager
 {
 public:
 
-  gh_manager (octave::interpreter& interp);
+  OCTINTERP_API gh_manager (octave::interpreter& interp);
 
   // FIXME: eventually eliminate these static functions and access
   // gh_manager object through the interpreter.
 
-  graphics_handle get_handle (bool integer_figure_handle);
+  OCTINTERP_API graphics_handle get_handle (bool integer_figure_handle);
 
-  void free (const graphics_handle& h, bool from_root = false);
+  OCTINTERP_API void free (const graphics_handle& h, bool from_root = false);
 
-  void renumber_figure (const graphics_handle& old_gh,
-                           const graphics_handle& new_gh);
+  OCTINTERP_API void renumber_figure (const graphics_handle& old_gh,
+                                      const graphics_handle& new_gh);
 
   graphics_handle lookup (double val) const
   {
@@ -6554,18 +6634,19 @@ public:
     return (p != m_handle_map.end ()) ? p->second : graphics_object ();
   }
 
-graphics_handle make_graphics_handle (const std::string& go_name,
-                                      const graphics_handle& p,
-                                      bool integer_figure_handle = false,
-                                      bool call_createfcn = true,
-                                      bool notify_toolkit = true);
+  OCTINTERP_API graphics_handle
+  make_graphics_handle (const std::string& go_name,
+                        const graphics_handle& p,
+                        bool integer_figure_handle = false,
+                        bool call_createfcn = true,
+                        bool notify_toolkit = true);
 
-  graphics_handle make_figure_handle (double val,
-                                      bool notify_toolkit = true);
+  OCTINTERP_API graphics_handle
+  make_figure_handle (double val, bool notify_toolkit = true);
 
-  void push_figure (const graphics_handle& h);
+  OCTINTERP_API void push_figure (const graphics_handle& h);
 
-  void pop_figure (const graphics_handle& h);
+  OCTINTERP_API void pop_figure (const graphics_handle& h);
 
   graphics_handle current_figure (void) const
   {
@@ -6620,7 +6701,8 @@ graphics_handle make_graphics_handle (const std::string& go_name,
     return retval;
   }
 
-  void execute_listener (const graphics_handle& h, const octave_value& l);
+  OCTINTERP_API void
+  execute_listener (const graphics_handle& h, const octave_value& l);
 
   void execute_callback (const graphics_handle& h,
                          const std::string& name,
@@ -6641,21 +6723,25 @@ graphics_handle make_graphics_handle (const std::string& go_name,
     execute_callback (h, cb, data);
   }
 
-  void execute_callback (const graphics_handle& h, const octave_value& cb,
-                         const octave_value& data = Matrix ());
+  OCTINTERP_API void
+  execute_callback (const graphics_handle& h, const octave_value& cb,
+                    const octave_value& data = Matrix ());
 
-  void post_callback (const graphics_handle& h, const std::string& name,
-                      const octave_value& data = Matrix ());
+  OCTINTERP_API void
+  post_callback (const graphics_handle& h, const std::string& name,
+                 const octave_value& data = Matrix ());
 
-  void post_function (graphics_event::event_fcn fcn, void *fcn_data = nullptr);
+  OCTINTERP_API void
+  post_function (graphics_event::event_fcn fcn, void *fcn_data = nullptr);
 
-  void post_set (const graphics_handle& h, const std::string& name,
-                 const octave_value& value, bool notify_toolkit = true,
-                 bool redraw_figure = false);
+  OCTINTERP_API void
+  post_set (const graphics_handle& h, const std::string& name,
+            const octave_value& value, bool notify_toolkit = true,
+            bool redraw_figure = false);
 
-  int process_events (bool force = false);
+  OCTINTERP_API int process_events (bool force = false);
 
-  void enable_event_processing (bool enable = true);
+  OCTINTERP_API void enable_event_processing (bool enable = true);
 
   bool is_handle_visible (const graphics_handle& h) const
   {
@@ -6669,11 +6755,11 @@ graphics_handle make_graphics_handle (const std::string& go_name,
     return retval;
   }
 
-  void close_all_figures (void);
+  OCTINTERP_API void close_all_figures (void);
 
-  void restore_gcbo (void);
+  OCTINTERP_API void restore_gcbo (void);
 
-  void post_event (const graphics_event& e);
+  OCTINTERP_API void post_event (const graphics_event& e);
 
   octave::mutex graphics_lock (void)
   {
@@ -6720,9 +6806,10 @@ private:
   int m_event_processing;
 };
 
-void get_children_limits (double& min_val, double& max_val,
-                          double& min_pos, double& max_neg,
-                          const Matrix& kids, char limit_type);
+OCTINTERP_API void
+get_children_limits (double& min_val, double& max_val,
+                     double& min_pos, double& max_neg,
+                     const Matrix& kids, char limit_type);
 
 OCTINTERP_API int calc_dimensions (const graphics_object& gh);
 

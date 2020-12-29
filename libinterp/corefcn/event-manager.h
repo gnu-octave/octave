@@ -255,7 +255,7 @@ namespace octave
   {
   public:
 
-    event_manager (interpreter& interp);
+    OCTINTERP_API event_manager (interpreter& interp);
 
     // No copying!
 
@@ -270,9 +270,10 @@ namespace octave
     // class interpreter_events, or nullptr to disconnect and delete the
     // previous link.
 
-    void connect_link (const std::shared_ptr<interpreter_events>& obj);
+    OCTINTERP_API void
+    connect_link (const std::shared_ptr<interpreter_events>& obj);
 
-    bool enable (void);
+    OCTINTERP_API bool enable (void);
 
     bool disable (void)
     {
@@ -289,9 +290,9 @@ namespace octave
     // If disable is TRUE, then no additional events will be processed
     // other than exit.
 
-    void process_events (bool disable = false);
+    OCTINTERP_API void process_events (bool disable = false);
 
-    void discard_events (void);
+    OCTINTERP_API void discard_events (void);
 
     // The post_event and post_exception functions provide a thread-safe
     // way for the GUI to queue interpreter functions for execution.
@@ -543,7 +544,7 @@ namespace octave
         instance->file_renamed (load_new);
     }
 
-    void set_workspace (void);
+    OCTINTERP_API void set_workspace (void);
 
     void set_workspace (bool top_level, const symbol_info_list& syminfo,
                         bool update_variable_editor = true)

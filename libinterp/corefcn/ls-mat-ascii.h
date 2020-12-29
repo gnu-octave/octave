@@ -33,15 +33,15 @@
 
 class octave_value;
 
-extern std::string
+extern OCTINTERP_API std::string
 read_mat_ascii_data (std::istream& is, const std::string& filename,
                      octave_value& tc);
 
-extern bool
+extern OCTINTERP_API bool
 save_mat_ascii_data (std::ostream& os, const octave_value& val_arg,
                      int precision, bool tabs = false);
 
-extern bool looks_like_mat_ascii_file (std::istream& is,
-                                       const std::string& filename);
+extern OCTINTERP_API bool
+looks_like_mat_ascii_file (std::istream& is, const std::string& filename);
 
 #endif

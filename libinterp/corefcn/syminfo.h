@@ -50,7 +50,9 @@ namespace octave
     std::string line;
   };
 
-  class symbol_info
+  class
+  OCTINTERP_API
+  symbol_info
   {
   public:
 
@@ -85,7 +87,9 @@ namespace octave
     bool m_is_persistent;
   };
 
-  class symbol_info_list : public base_list<symbol_info>
+  class
+  OCTINTERP_API
+  symbol_info_list : public base_list<symbol_info>
   {
   public:
 

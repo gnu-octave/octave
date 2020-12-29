@@ -55,14 +55,14 @@ enum mat5_data_type
   miUTF32                     // Unicode UTF-32 Encoded Character Data
 };
 
-extern int
+extern OCTINTERP_API int
 read_mat5_binary_file_header (std::istream& is, bool& swap,
                               bool quiet = false,
                               const std::string& filename = "");
-extern std::string
+extern OCTINTERP_API std::string
 read_mat5_binary_element (std::istream& is, const std::string& filename,
                           bool swap, bool& global, octave_value& tc);
-extern bool
+extern OCTINTERP_API bool
 save_mat5_binary_element (std::ostream& os,
                           const octave_value& tc, const std::string& name,
                           bool mark_global, bool mat7_format,

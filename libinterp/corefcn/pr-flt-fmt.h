@@ -40,11 +40,12 @@ class pr_formatted_float;
 template <typename T>
 class pr_rational_float;
 
-extern int output_precision (void);
+extern OCTINTERP_API int output_precision (void);
 
-extern void set_output_prec (int prec);
+extern OCTINTERP_API void set_output_prec (int prec);
 
 class
+OCTINTERP_API
 float_format
 {
 public:
@@ -205,6 +206,7 @@ private:
 };
 
 class
+OCTINTERP_API
 float_display_format
 {
 public:

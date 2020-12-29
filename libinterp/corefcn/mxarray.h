@@ -81,16 +81,16 @@ class dim_vector;
       rep->METHOD_CALL;                         \
     }
 
-class mxArray;
+class OCTINTERP_API mxArray;
 
 // A class to provide the default implementation of some of the
 // virtual functions declared in the mxArray class.
 
-class mxArray_base
+class OCTINTERP_API mxArray_base
 {
 protected:
 
-  mxArray_base (bool interleaved);
+  OCTINTERP_API mxArray_base (bool interleaved);
 
 public:
 
@@ -336,42 +336,43 @@ class mxArray
 {
 public:
 
-  mxArray (bool interleaved, const octave_value& ov);
+  OCTINTERP_API mxArray (bool interleaved, const octave_value& ov);
 
-  mxArray (bool interleaved, mxClassID id, mwSize ndims, const mwSize *dims,
-           mxComplexity flag = mxREAL, bool init = true);
+  OCTINTERP_API mxArray (bool interleaved, mxClassID id, mwSize ndims,
+                         const mwSize *dims, mxComplexity flag = mxREAL,
+                         bool init = true);
 
-  mxArray (bool interleaved, mxClassID id, const dim_vector& dv,
-           mxComplexity flag = mxREAL);
+  OCTINTERP_API mxArray (bool interleaved, mxClassID id, const dim_vector& dv,
+                         mxComplexity flag = mxREAL);
 
-  mxArray (bool interleaved, mxClassID id, mwSize m, mwSize n,
-           mxComplexity flag = mxREAL, bool init = true);
+  OCTINTERP_API mxArray (bool interleaved, mxClassID id, mwSize m, mwSize n,
+                         mxComplexity flag = mxREAL, bool init = true);
 
-  mxArray (bool interleaved, mxClassID id, double val);
+  OCTINTERP_API mxArray (bool interleaved, mxClassID id, double val);
 
-  mxArray (bool interleaved, mxClassID id, mxLogical val);
+  OCTINTERP_API mxArray (bool interleaved, mxClassID id, mxLogical val);
 
-  mxArray (bool interleaved, const char *str);
+  OCTINTERP_API mxArray (bool interleaved, const char *str);
 
-  mxArray (bool interleaved, mwSize m, const char **str);
+  OCTINTERP_API mxArray (bool interleaved, mwSize m, const char **str);
 
-  mxArray (bool interleaved, mxClassID id, mwSize m, mwSize n, mwSize nzmax,
-           mxComplexity flag = mxREAL);
+  OCTINTERP_API mxArray (bool interleaved, mxClassID id, mwSize m, mwSize n,
+                         mwSize nzmax, mxComplexity flag = mxREAL);
 
-  mxArray (bool interleaved, mwSize ndims, const mwSize *dims, int num_keys,
-           const char **keys);
+  OCTINTERP_API mxArray (bool interleaved, mwSize ndims, const mwSize *dims,
+                         int num_keys, const char **keys);
 
-  mxArray (bool interleaved, const dim_vector& dv, int num_keys,
-           const char **keys);
+  OCTINTERP_API mxArray (bool interleaved, const dim_vector& dv, int num_keys,
+                         const char **keys);
 
-  mxArray (bool interleaved, mwSize m, mwSize n, int num_keys,
-           const char **keys);
+  OCTINTERP_API mxArray (bool interleaved, mwSize m, mwSize n, int num_keys,
+                         const char **keys);
 
-  mxArray (bool interleaved, mwSize ndims, const mwSize *dims);
+  OCTINTERP_API mxArray (bool interleaved, mwSize ndims, const mwSize *dims);
 
-  mxArray (bool interleaved, const dim_vector& dv);
+  OCTINTERP_API mxArray (bool interleaved, const dim_vector& dv);
 
-  mxArray (bool interleaved, mwSize m, mwSize n);
+  OCTINTERP_API mxArray (bool interleaved, mwSize m, mwSize n);
 
   mxArray * dup (void) const
   {
@@ -395,7 +396,7 @@ public:
 
   mxArray& operator = (const mxArray&) = delete;
 
-  ~mxArray (void);
+  OCTINTERP_API ~mxArray (void);
 
   bool is_octave_value (void) const { return rep->is_octave_value (); }
 
@@ -467,7 +468,7 @@ public:
 
   const char * get_name (void) const { return name; }
 
-  void set_name (const char *name_arg);
+  OCTINTERP_API void set_name (const char *name_arg);
 
   mxClassID get_class_id (void) const { return rep->get_class_id (); }
 
@@ -670,9 +671,9 @@ public:
 
   mxArray * mutate (void) const { return rep->mutate (); }
 
-  static void * malloc (size_t n);
+  static OCTINTERP_API void * malloc (size_t n);
 
-  static void * calloc (size_t n, size_t t);
+  static OCTINTERP_API void * calloc (size_t n, size_t t);
 
   static char * strsave (const char *str)
   {
@@ -691,10 +692,10 @@ public:
     return retval;
   }
 
-  static octave_value
+  static OCTINTERP_API octave_value
   as_octave_value (const mxArray *ptr, bool null_is_empty = true);
 
-  octave_value as_octave_value (void) const;
+  OCTINTERP_API octave_value as_octave_value (void) const;
 
 private:
 
@@ -705,38 +706,38 @@ private:
   mxArray (mxArray_base *r, const char *n)
     : rep (r), name (mxArray::strsave (n)) { }
 
-  static mxArray_base *
+  static OCTINTERP_API mxArray_base *
   create_rep (bool interleaved, const octave_value& ov);
 
-  static mxArray_base *
+  static OCTINTERP_API mxArray_base *
   create_rep (bool interleaved, mxClassID id, mwSize ndims,
               const mwSize *dims, mxComplexity flag, bool init);
 
-  static mxArray_base *
+  static OCTINTERP_API mxArray_base *
   create_rep (bool interleaved, mxClassID id, const dim_vector& dv,
               mxComplexity flag);
 
-  static mxArray_base *
+  static OCTINTERP_API mxArray_base *
   create_rep (bool interleaved, mxClassID id, mwSize m, mwSize n,
               mxComplexity flag, bool init);
 
-  static mxArray_base *
+  static OCTINTERP_API mxArray_base *
   create_rep (bool interleaved, mxClassID id, double val);
 
-  static mxArray_base *
+  static OCTINTERP_API mxArray_base *
   create_rep (bool interleaved, mxClassID id, mxLogical val);
 
-  static mxArray_base *
+  static OCTINTERP_API mxArray_base *
   create_rep (bool interleaved, const char *str);
 
-  static mxArray_base *
+  static OCTINTERP_API mxArray_base *
   create_rep (bool interleaved, mwSize m, const char **str);
 
-  static mxArray_base *
+  static OCTINTERP_API mxArray_base *
   create_rep (bool interleaved, mxClassID id, mwSize m, mwSize n,
               mwSize nzmax, mxComplexity flag);
 
-  void maybe_mutate (void) const;
+  OCTINTERP_API void maybe_mutate (void) const;
 };
 
 #undef DO_MUTABLE_METHOD

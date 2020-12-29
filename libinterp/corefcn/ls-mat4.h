@@ -34,22 +34,22 @@
 
 class octave_value;
 
-extern octave::mach_info::float_format
+extern OCTINTERP_API octave::mach_info::float_format
 mopt_digit_to_float_format (int mach);
 
-extern int
+extern OCTINTERP_API int
 float_format_to_mopt_digit (octave::mach_info::float_format flt_fmt);
 
-extern int
+extern OCTINTERP_API int
 read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
                       int32_t& nr, int32_t& nc, int32_t& imag,
                       int32_t& len, int quiet = 0);
 
-extern std::string
+extern OCTINTERP_API std::string
 read_mat_binary_data (std::istream& is, const std::string& filename,
                       octave_value& tc);
 
-extern bool
+extern OCTINTERP_API bool
 save_mat_binary_data (std::ostream& os, const octave_value& tc,
                       const std::string& name);
 

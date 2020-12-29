@@ -41,7 +41,7 @@ namespace octave
   namespace math
   {
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     hess<Matrix>::init (const Matrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -104,7 +104,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     hess<FloatMatrix>::init (const FloatMatrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -167,7 +167,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     hess<ComplexMatrix>::init (const ComplexMatrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -230,7 +230,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     hess<FloatComplexMatrix>::init (const FloatComplexMatrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());

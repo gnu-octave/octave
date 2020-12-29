@@ -67,10 +67,10 @@ public:
 
   ColumnVector parameter_vector (void) { return theta; }
 
-  void initialize (const ColumnVector& x, double t);
+  OCTAVE_API void initialize (const ColumnVector& x, double t);
 
-  void initialize (const ColumnVector& x, double t,
-                   const ColumnVector& theta);
+  OCTAVE_API void
+  initialize (const ColumnVector& x, double t, const ColumnVector& theta);
 
 protected:
 

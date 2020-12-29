@@ -291,7 +291,7 @@ namespace octave
   }
 
   template <>
-  double rand::uniform<double> (void)
+  OCTAVE_API double rand::uniform<double> (void)
   {
     double retval;
 
@@ -304,7 +304,7 @@ namespace octave
   }
 
   template <>
-  double rand::normal<double> (void)
+  OCTAVE_API double rand::normal<double> (void)
   {
     double retval;
 
@@ -317,7 +317,7 @@ namespace octave
   }
 
   template <>
-  double rand::exponential<double> (void)
+  OCTAVE_API double rand::exponential<double> (void)
   {
     double retval;
 
@@ -330,7 +330,7 @@ namespace octave
   }
 
   template <>
-  double rand::poisson<double> (double a)
+  OCTAVE_API double rand::poisson<double> (double a)
   {
     double retval;
 
@@ -352,7 +352,7 @@ namespace octave
   }
 
   template <>
-  double rand::gamma<double> (double a)
+  OCTAVE_API double rand::gamma<double> (double a)
   {
     double retval;
 
@@ -370,7 +370,7 @@ namespace octave
   }
 
   template <>
-  float rand::uniform<float> (void)
+  OCTAVE_API float rand::uniform<float> (void)
   {
     float retval;
 
@@ -383,7 +383,7 @@ namespace octave
   }
 
   template <>
-  float rand::normal<float> (void)
+  OCTAVE_API float rand::normal<float> (void)
   {
     float retval;
 
@@ -396,7 +396,7 @@ namespace octave
   }
 
   template <>
-  float rand::exponential<float> (void)
+  OCTAVE_API float rand::exponential<float> (void)
   {
     float retval;
 
@@ -409,7 +409,7 @@ namespace octave
   }
 
   template <>
-  float rand::poisson<float> (float a)
+  OCTAVE_API float rand::poisson<float> (float a)
   {
     float retval;
 
@@ -434,7 +434,7 @@ namespace octave
   }
 
   template <>
-  float rand::gamma<float> (float a)
+  OCTAVE_API float rand::gamma<float> (float a)
   {
     float retval;
 
@@ -490,8 +490,8 @@ namespace octave
     return retval;
   }
 
-  template double rand::do_scalar<double> (double);
-  template float rand::do_scalar<float> (float);
+  template OCTAVE_API double rand::do_scalar<double> (double);
+  template OCTAVE_API float rand::do_scalar<float> (float);
 
   template <typename T>
   Array<T>
@@ -511,8 +511,10 @@ namespace octave
     return retval;
   }
 
-  template Array<double> rand::do_vector<double> (octave_idx_type, double);
-  template Array<float> rand::do_vector<float> (octave_idx_type, float);
+  template OCTAVE_API Array<double>
+  rand::do_vector<double> (octave_idx_type, double);
+  template OCTAVE_API Array<float>
+  rand::do_vector<float> (octave_idx_type, float);
 
   NDArray rand::do_nd_array (const dim_vector& dims, double a)
   {

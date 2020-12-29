@@ -591,6 +591,7 @@ namespace octave
     // different from the default).
 
     template <>
+    OCTAVE_API
     sparse_chol<SparseComplexMatrix>::sparse_chol (const SparseComplexMatrix& a,
                                                    octave_idx_type& info)
       : rep (new sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info,
@@ -600,14 +601,15 @@ namespace octave
 
     // Instantiations we need.
 
-    template class sparse_chol<SparseMatrix>;
+    template class OCTAVE_API sparse_chol<SparseMatrix>;
 
     template class sparse_chol<SparseComplexMatrix>;
 
-    template SparseMatrix
+    template OCTAVE_API SparseMatrix
     chol2inv<SparseMatrix> (const SparseMatrix& r);
 
-    template SparseComplexMatrix
+    template OCTAVE_API SparseComplexMatrix
     chol2inv<SparseComplexMatrix> (const SparseComplexMatrix& r);
+
   }
 }

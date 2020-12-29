@@ -35,7 +35,8 @@ namespace octave
   namespace math
   {
     template <typename MT>
-    class aepbalance
+    class
+    aepbalance
     {
     public:
 
@@ -43,7 +44,7 @@ namespace octave
 
       aepbalance (void) : balanced_mat (), scale (), ilo (), ihi (), job () { }
 
-      aepbalance (const MT& a, bool noperm = false, bool noscal = false);
+      OCTAVE_API aepbalance (const MT& a, bool noperm = false, bool noscal = false);
 
       aepbalance (const aepbalance& a)
         : balanced_mat (a.balanced_mat), scale (a.scale),
@@ -66,7 +67,7 @@ namespace octave
 
       virtual ~aepbalance (void) = default;
 
-      MT balancing_matrix (void) const;
+      OCTAVE_API MT balancing_matrix (void) const;
 
       MT balanced_matrix (void) const
       {

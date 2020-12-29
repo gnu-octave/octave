@@ -95,12 +95,12 @@ namespace octave
       T schur_mat;
       T unitary_mat;
 
-      octave_f77_int_type
+      OCTAVE_API octave_f77_int_type
       init (const T& a, const std::string& ord, bool calc_unitary);
     };
 
     template <typename RT, typename AT>
-    extern schur<RT>
+    extern OCTAVE_API schur<RT>
     rsf2csf (const AT& s, const AT& u);
   }
 }

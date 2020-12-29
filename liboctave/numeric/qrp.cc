@@ -50,6 +50,7 @@ namespace octave
     // Specialization.
 
     template <>
+    OCTAVE_API
     void
     qrp<Matrix>::init (const Matrix& a, type qr_type)
     {
@@ -102,6 +103,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     qrp<Matrix>::qrp (const Matrix& a, type qr_type)
       : qr<Matrix> (), p ()
     {
@@ -109,6 +111,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     RowVector
     qrp<Matrix>::Pvec (void) const
     {
@@ -118,6 +121,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     void
     qrp<FloatMatrix>::init (const FloatMatrix& a, type qr_type)
     {
@@ -170,6 +174,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     qrp<FloatMatrix>::qrp (const FloatMatrix& a, type qr_type)
       : qr<FloatMatrix> (), p ()
     {
@@ -177,6 +182,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     FloatRowVector
     qrp<FloatMatrix>::Pvec (void) const
     {
@@ -186,6 +192,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     void
     qrp<ComplexMatrix>::init (const ComplexMatrix& a, type qr_type)
     {
@@ -246,6 +253,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     qrp<ComplexMatrix>::qrp (const ComplexMatrix& a, type qr_type)
       : qr<ComplexMatrix> (), p ()
     {
@@ -253,6 +261,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     RowVector
     qrp<ComplexMatrix>::Pvec (void) const
     {
@@ -262,6 +271,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     void
     qrp<FloatComplexMatrix>::init (const FloatComplexMatrix& a, type qr_type)
     {
@@ -322,6 +332,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     qrp<FloatComplexMatrix>::qrp (const FloatComplexMatrix& a, type qr_type)
       : qr<FloatComplexMatrix> (), p ()
     {
@@ -329,6 +340,7 @@ namespace octave
     }
 
     template <>
+    OCTAVE_API
     FloatRowVector
     qrp<FloatComplexMatrix>::Pvec (void) const
     {

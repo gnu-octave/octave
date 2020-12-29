@@ -426,7 +426,7 @@ namespace octave
 
   /* Determine mantissa for uniform doubles */
   template <>
-  double
+  OCTAVE_API double
   rand_uniform<double> (void)
   {
     return randu53 ();
@@ -434,7 +434,7 @@ namespace octave
 
   /* Determine mantissa for uniform floats */
   template <>
-  float
+  OCTAVE_API float
   rand_uniform<float> (void)
   {
     return randu24 ();
@@ -581,7 +581,7 @@ namespace octave
    */
 
 
-  template <> double rand_normal<double> (void)
+  template <> OCTAVE_API double rand_normal<double> (void)
   {
     if (initt)
       create_ziggurat_tables ();
@@ -645,7 +645,7 @@ namespace octave
       }
   }
 
-  template <> double rand_exponential<double> (void)
+  template <> OCTAVE_API double rand_exponential<double> (void)
   {
     if (initt)
       create_ziggurat_tables ();
@@ -671,17 +671,17 @@ namespace octave
       }
   }
 
-  template <> void rand_uniform<double> (octave_idx_type n, double *p)
+  template <> OCTAVE_API void rand_uniform<double> (octave_idx_type n, double *p)
   {
     std::generate_n (p, n, [](void) { return rand_uniform<double> (); });
   }
 
-  template <> void rand_normal (octave_idx_type n, double *p)
+  template <> OCTAVE_API void rand_normal (octave_idx_type n, double *p)
   {
     std::generate_n (p, n, [](void) { return rand_normal<double> (); });
   }
 
-  template <> void rand_exponential (octave_idx_type n, double *p)
+  template <> OCTAVE_API void rand_exponential (octave_idx_type n, double *p)
   {
     std::generate_n (p, n, [](void) { return rand_exponential<double> (); });
   }
@@ -783,7 +783,7 @@ namespace octave
    * distribution is exp(-0.5*x*x)
    */
 
-  template <> float rand_normal<float> (void)
+  template <> OCTAVE_API float rand_normal<float> (void)
   {
     if (inittf)
       create_ziggurat_float_tables ();
@@ -823,7 +823,7 @@ namespace octave
       }
   }
 
-  template <> float rand_exponential<float> (void)
+  template <> OCTAVE_API float rand_exponential<float> (void)
   {
     if (inittf)
       create_ziggurat_float_tables ();
@@ -849,17 +849,17 @@ namespace octave
       }
   }
 
-  template <> void rand_uniform (octave_idx_type n, float *p)
+  template <> OCTAVE_API void rand_uniform (octave_idx_type n, float *p)
   {
     std::generate_n (p, n, [](void) { return rand_uniform<float> (); });
   }
 
-  template <> void rand_normal (octave_idx_type n, float *p)
+  template <> OCTAVE_API void rand_normal (octave_idx_type n, float *p)
   {
     std::generate_n (p, n, [](void) { return rand_normal<float> (); });
   }
 
-  template <> void rand_exponential (octave_idx_type n, float *p)
+  template <> OCTAVE_API void rand_exponential (octave_idx_type n, float *p)
   {
     std::generate_n (p, n, [](void) { return rand_exponential<float> (); });
   }

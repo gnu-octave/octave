@@ -205,6 +205,7 @@ extern "C"
 
   // XERBLA
 
+  OCTAVE_API
   F77_RET_T
   F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL, const F77_INT&
                              F77_CHAR_ARG_LEN_DECL);

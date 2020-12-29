@@ -45,6 +45,7 @@ namespace octave
 
     template <typename chol_type>
     class
+    OCTAVE_API
     sparse_chol
     {
     public:
@@ -94,14 +95,9 @@ namespace octave
     };
 
     template <typename chol_type>
+    OCTAVE_API
     chol_type
     chol2inv (const chol_type& r);
-
-    // SparseComplexMatrix specialization.
-
-    template <>
-    sparse_chol<SparseComplexMatrix>::sparse_chol
-      (const SparseComplexMatrix& a, octave_idx_type& info);
   }
 }
 

@@ -43,7 +43,7 @@ namespace octave
   namespace math
   {
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
                               const std::string& balance_job)
     {
@@ -108,7 +108,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     gepbalance<FloatMatrix>::init (const FloatMatrix& a, const FloatMatrix& b,
                                    const std::string& balance_job)
     {
@@ -174,7 +174,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     gepbalance<ComplexMatrix>::init (const ComplexMatrix& a,
                                      const ComplexMatrix& b,
                                      const std::string& balance_job)
@@ -242,7 +242,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     gepbalance<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
                                           const FloatComplexMatrix& b,
                                           const std::string& balance_job)

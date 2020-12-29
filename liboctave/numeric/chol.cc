@@ -406,7 +406,7 @@ namespace octave
     // Specializations.
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<Matrix>::init (const Matrix& a, bool upper, bool calc_cond)
     {
       octave_idx_type a_nr = a.rows ();
@@ -481,7 +481,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     chol<Matrix>::update (const ColumnVector& u)
     {
       F77_INT n = to_f77_int (chol_mat.rows ());
@@ -498,7 +498,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<Matrix>::downdate (const ColumnVector& u)
     {
       F77_INT info = -1;
@@ -519,7 +519,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<Matrix>::insert_sym (const ColumnVector& u, octave_idx_type j_arg)
     {
       F77_INT info = -1;
@@ -546,7 +546,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     chol<Matrix>::delete_sym (octave_idx_type j_arg)
     {
       F77_INT n = to_f77_int (chol_mat.rows ());
@@ -563,7 +563,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     chol<Matrix>::shift_sym (octave_idx_type i_arg, octave_idx_type j_arg)
     {
       F77_INT n = to_f77_int (chol_mat.rows ());
@@ -582,7 +582,7 @@ namespace octave
 #endif
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<FloatMatrix>::init (const FloatMatrix& a, bool upper, bool calc_cond)
     {
       octave_idx_type a_nr = a.rows ();
@@ -657,7 +657,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     chol<FloatMatrix>::update (const FloatColumnVector& u)
     {
       F77_INT n = to_f77_int (chol_mat.rows ());
@@ -674,7 +674,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<FloatMatrix>::downdate (const FloatColumnVector& u)
     {
       F77_INT info = -1;
@@ -695,7 +695,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<FloatMatrix>::insert_sym (const FloatColumnVector& u,
                                    octave_idx_type j_arg)
     {
@@ -723,7 +723,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     chol<FloatMatrix>::delete_sym (octave_idx_type j_arg)
     {
       F77_INT n = to_f77_int (chol_mat.rows ());
@@ -741,7 +741,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     chol<FloatMatrix>::shift_sym (octave_idx_type i_arg, octave_idx_type j_arg)
     {
       F77_INT n = to_f77_int (chol_mat.rows ());
@@ -760,7 +760,7 @@ namespace octave
 #endif
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<ComplexMatrix>::init (const ComplexMatrix& a, bool upper, bool calc_cond)
     {
       octave_idx_type a_nr = a.rows ();
@@ -834,7 +834,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     chol<ComplexMatrix>::update (const ComplexColumnVector& u)
     {
       F77_INT n = to_f77_int (chol_mat.rows ());
@@ -854,7 +854,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<ComplexMatrix>::downdate (const ComplexColumnVector& u)
     {
       F77_INT info = -1;
@@ -878,7 +878,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<ComplexMatrix>::insert_sym (const ComplexColumnVector& u,
                                      octave_idx_type j_arg)
     {
@@ -909,7 +909,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     chol<ComplexMatrix>::delete_sym (octave_idx_type j_arg)
     {
       F77_INT n = to_f77_int (chol_mat.rows ());
@@ -928,7 +928,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     chol<ComplexMatrix>::shift_sym (octave_idx_type i_arg,
                                     octave_idx_type j_arg)
     {
@@ -951,7 +951,7 @@ namespace octave
 #endif
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<FloatComplexMatrix>::init (const FloatComplexMatrix& a, bool upper,
                                     bool calc_cond)
     {
@@ -1026,7 +1026,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     chol<FloatComplexMatrix>::update (const FloatComplexColumnVector& u)
     {
       F77_INT n = to_f77_int (chol_mat.rows ());
@@ -1043,7 +1043,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<FloatComplexMatrix>::downdate (const FloatComplexColumnVector& u)
     {
       F77_INT info = -1;
@@ -1065,7 +1065,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     chol<FloatComplexMatrix>::insert_sym (const FloatComplexColumnVector& u,
                                           octave_idx_type j_arg)
     {
@@ -1095,7 +1095,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     chol<FloatComplexMatrix>::delete_sym (octave_idx_type j_arg)
     {
       F77_INT n = to_f77_int (chol_mat.rows ());
@@ -1113,7 +1113,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     chol<FloatComplexMatrix>::shift_sym (octave_idx_type i_arg,
                                          octave_idx_type j_arg)
     {
@@ -1143,16 +1143,16 @@ namespace octave
 
     template class chol<FloatComplexMatrix>;
 
-    template Matrix
+    template OCTAVE_API Matrix
     chol2inv<Matrix> (const Matrix& r);
 
-    template ComplexMatrix
+    template OCTAVE_API ComplexMatrix
     chol2inv<ComplexMatrix> (const ComplexMatrix& r);
 
-    template FloatMatrix
+    template OCTAVE_API FloatMatrix
     chol2inv<FloatMatrix> (const FloatMatrix& r);
 
-    template FloatComplexMatrix
+    template OCTAVE_API FloatComplexMatrix
     chol2inv<FloatComplexMatrix> (const FloatComplexMatrix& r);
   }
 }

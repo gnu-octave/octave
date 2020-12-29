@@ -76,19 +76,19 @@ namespace octave
       COND_T rcond (void) const { return xrcond; }
 
       // Compute the inverse of a matrix using the Cholesky factorization.
-      T inverse (void) const;
+      OCTAVE_API T inverse (void) const;
 
-      void set (const T& R);
+      OCTAVE_API void set (const T& R);
 
-      void update (const VT& u);
+      OCTAVE_API void update (const VT& u);
 
-      octave_idx_type downdate (const VT& u);
+      OCTAVE_API octave_idx_type downdate (const VT& u);
 
-      octave_idx_type insert_sym (const VT& u, octave_idx_type j);
+      OCTAVE_API octave_idx_type insert_sym (const VT& u, octave_idx_type j);
 
-      void delete_sym (octave_idx_type j);
+      OCTAVE_API void delete_sym (octave_idx_type j);
 
-      void shift_sym (octave_idx_type i, octave_idx_type j);
+      OCTAVE_API void shift_sym (octave_idx_type i, octave_idx_type j);
 
     private:
 
@@ -98,11 +98,11 @@ namespace octave
 
       bool is_upper;
 
-      octave_idx_type init (const T& a, bool upper, bool calc_cond);
+      OCTAVE_API octave_idx_type init (const T& a, bool upper, bool calc_cond);
     };
 
     template <typename T>
-    T
+    OCTAVE_API T
     chol2inv (const T& r);
   }
 }

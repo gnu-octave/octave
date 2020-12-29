@@ -55,9 +55,11 @@ namespace octave
       sparse_lu (void)
         : Lfact (), Ufact (), Rfact (), cond (0), P (), Q () { }
 
+      OCTAVE_API
       sparse_lu (const lu_type& a, const Matrix& piv_thres = Matrix (),
                  bool scale = false);
 
+      OCTAVE_API
       sparse_lu (const lu_type& a, const ColumnVector& Qinit,
                  const Matrix& piv_thres, bool scale = false,
                  bool FixedQ = false, double droptol = -1.0,
@@ -90,19 +92,19 @@ namespace octave
 
       SparseMatrix R (void) const { return Rfact; }
 
-      lu_type Y (void) const;
+      OCTAVE_API lu_type Y (void) const;
 
-      SparseMatrix Pc (void) const;
+      OCTAVE_API SparseMatrix Pc (void) const;
 
-      SparseMatrix Pr (void) const;
+      OCTAVE_API SparseMatrix Pr (void) const;
 
-      ColumnVector Pc_vec (void) const;
+      OCTAVE_API ColumnVector Pc_vec (void) const;
 
-      ColumnVector Pr_vec (void) const;
+      OCTAVE_API ColumnVector Pr_vec (void) const;
 
-      PermMatrix Pc_mat (void) const;
+      OCTAVE_API PermMatrix Pc_mat (void) const;
 
-      PermMatrix Pr_mat (void) const;
+      OCTAVE_API PermMatrix Pr_mat (void) const;
 
       const octave_idx_type * row_perm (void) const { return P.fortran_vec (); }
 

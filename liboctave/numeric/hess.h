@@ -82,11 +82,11 @@ namespace octave
       T hess_mat;
       T unitary_hess_mat;
 
-      octave_idx_type init (const T& a);
+      OCTAVE_API octave_idx_type init (const T& a);
     };
 
     template <typename T>
-    extern std::ostream&
+    extern OCTAVE_API std::ostream&
     operator << (std::ostream& os, const hess<T>& a);
   }
 }

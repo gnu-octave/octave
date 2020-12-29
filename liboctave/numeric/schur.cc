@@ -98,7 +98,7 @@ namespace octave
     }
 
     template <>
-    F77_INT
+    OCTAVE_API F77_INT
     schur<Matrix>::init (const Matrix& a, const std::string& ord, bool calc_unitary)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -184,7 +184,7 @@ namespace octave
     }
 
     template <>
-    F77_INT
+    OCTAVE_API F77_INT
     schur<FloatMatrix>::init (const FloatMatrix& a, const std::string& ord,
                               bool calc_unitary)
     {
@@ -271,7 +271,7 @@ namespace octave
     }
 
     template <>
-    F77_INT
+    OCTAVE_API F77_INT
     schur<ComplexMatrix>::init (const ComplexMatrix& a, const std::string& ord,
                                 bool calc_unitary)
     {
@@ -354,7 +354,7 @@ namespace octave
     }
 
     template <>
-    schur<ComplexMatrix>
+    OCTAVE_API schur<ComplexMatrix>
     rsf2csf<ComplexMatrix, Matrix> (const Matrix& s_arg, const Matrix& u_arg)
     {
       ComplexMatrix s (s_arg);
@@ -379,7 +379,7 @@ namespace octave
     }
 
     template <>
-    F77_INT
+    OCTAVE_API F77_INT
     schur<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
                                      const std::string& ord, bool calc_unitary)
     {
@@ -462,7 +462,7 @@ namespace octave
     }
 
     template <>
-    schur<FloatComplexMatrix>
+    OCTAVE_API schur<FloatComplexMatrix>
     rsf2csf<FloatComplexMatrix, FloatMatrix> (const FloatMatrix& s_arg,
                                               const FloatMatrix& u_arg)
     {

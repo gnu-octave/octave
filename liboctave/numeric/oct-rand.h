@@ -45,7 +45,7 @@ namespace octave
   {
   protected:
 
-    rand (void);
+    OCTAVE_API rand (void);
 
   public:
 
@@ -207,86 +207,88 @@ namespace octave
     std::map<int, uint32NDArray> rand_states;
 
     // Return the current seed.
-    double do_seed (void);
+    OCTAVE_API double do_seed (void);
 
     // Set the seed.
-    void do_seed (double s);
+    OCTAVE_API void do_seed (double s);
 
     // Reset the seed.
-    void do_reset ();
+    OCTAVE_API void do_reset ();
 
     // Return the current state.
-    uint32NDArray do_state (const std::string& d);
+    OCTAVE_API uint32NDArray do_state (const std::string& d);
 
     // Set the current state/
-    void do_state (const uint32NDArray& s, const std::string& d);
+    OCTAVE_API void do_state (const uint32NDArray& s, const std::string& d);
 
     // Reset the current state/
-    void do_reset (const std::string& d);
+    OCTAVE_API void do_reset (const std::string& d);
 
     // Return the current distribution.
-    std::string do_distribution (void);
+    OCTAVE_API std::string do_distribution (void);
 
     // Set the current distribution.  May be either "uniform" (the
     // default), "normal", "exponential", "poisson", or "gamma".
-    void do_distribution (const std::string& d);
+    OCTAVE_API void do_distribution (const std::string& d);
 
-    void do_uniform_distribution (void);
+    OCTAVE_API void do_uniform_distribution (void);
 
-    void do_normal_distribution (void);
+    OCTAVE_API void do_normal_distribution (void);
 
-    void do_exponential_distribution (void);
+    OCTAVE_API void do_exponential_distribution (void);
 
-    void do_poisson_distribution (void);
+    OCTAVE_API void do_poisson_distribution (void);
 
-    void do_gamma_distribution (void);
+    OCTAVE_API void do_gamma_distribution (void);
 
     // The following templates only make sense for double and float
     // types.
 
-    template <typename T> T uniform (void);
+    template <typename T> OCTAVE_API T uniform (void);
 
-    template <typename T> T normal (void);
+    template <typename T> OCTAVE_API T normal (void);
 
-    template <typename T> T exponential (void);
+    template <typename T> OCTAVE_API T exponential (void);
 
-    template <typename T> T poisson (T a);
+    template <typename T> OCTAVE_API T poisson (T a);
 
-    template <typename T> T gamma (T a);
+    template <typename T> OCTAVE_API T gamma (T a);
 
     // Return the next number from the sequence.
-    template <typename T> T do_scalar (T a = 1);
+    template <typename T> OCTAVE_API T do_scalar (T a = 1);
 
     // Return an array of numbers from the sequence.
-    template <typename T> Array<T> do_vector (octave_idx_type n, T a = 1);
+    template <typename T> OCTAVE_API Array<T>
+    do_vector (octave_idx_type n, T a = 1);
 
     // Return an N-dimensional array of numbers from the sequence,
     // filled in column major order.
-    NDArray do_nd_array (const dim_vector& dims, double a = 1.);
+    OCTAVE_API NDArray do_nd_array (const dim_vector& dims, double a = 1.);
 
     // Return an N-dimensional array of numbers from the sequence,
     // filled in column major order.
-    FloatNDArray do_float_nd_array (const dim_vector& dims, float a = 1.);
+    OCTAVE_API FloatNDArray
+    do_float_nd_array (const dim_vector& dims, float a = 1.);
 
     // Some helper functions.
 
-    void initialize_ranlib_generators (void);
+    OCTAVE_API void initialize_ranlib_generators (void);
 
-    void initialize_mersenne_twister (void);
+    OCTAVE_API void initialize_mersenne_twister (void);
 
-    uint32NDArray get_internal_state (void);
+    OCTAVE_API uint32NDArray get_internal_state (void);
 
-    void save_state (void);
+    OCTAVE_API void save_state (void);
 
-    int get_dist_id (const std::string& d);
+    OCTAVE_API int get_dist_id (const std::string& d);
 
-    void set_internal_state (const uint32NDArray& s);
+    OCTAVE_API void set_internal_state (const uint32NDArray& s);
 
-    void switch_to_generator (int dist);
+    OCTAVE_API void switch_to_generator (int dist);
 
-    void fill (octave_idx_type len, double *v, double a);
+    OCTAVE_API void fill (octave_idx_type len, double *v, double a);
 
-    void fill (octave_idx_type len, float *v, float a);
+    OCTAVE_API void fill (octave_idx_type len, float *v, float a);
   };
 }
 

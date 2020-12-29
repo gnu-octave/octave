@@ -127,28 +127,28 @@ namespace octave
     // SparseMatrix Specialization.
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_defaults<double> (double *Control)
     {
       UMFPACK_DNAME (defaults) (Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_free_numeric<double> (void **Numeric)
     {
       UMFPACK_DNAME (free_numeric) (Numeric);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_free_symbolic<double> (void **Symbolic)
     {
       UMFPACK_DNAME (free_symbolic) (Symbolic);
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_get_lunz<double>
     (octave_idx_type *lnz, octave_idx_type *unz, void *Numeric)
     {
@@ -160,7 +160,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_get_numeric<double>
     (octave_idx_type *Lp, octave_idx_type *Lj, double *Lx,
      octave_idx_type *Up, octave_idx_type *Ui, double *Ux,
@@ -178,7 +178,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_numeric<double>
     (const octave_idx_type *Ap, const octave_idx_type *Ai,
      const double *Ax, void *Symbolic, void **Numeric,
@@ -190,7 +190,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_qsymbolic<double>
     (octave_idx_type n_row, octave_idx_type n_col, const octave_idx_type *Ap,
      const octave_idx_type *Ai, const double *Ax,
@@ -205,21 +205,21 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_control<double> (const double *Control)
     {
       UMFPACK_DNAME (report_control) (Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_info<double> (const double *Control, const double *Info)
     {
       UMFPACK_DNAME (report_info) (Control, Info);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_matrix<double>
     (octave_idx_type n_row, octave_idx_type n_col, const octave_idx_type *Ap,
      const octave_idx_type *Ai, const double *Ax, octave_idx_type col_form,
@@ -232,14 +232,14 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_numeric<double> (void *Numeric, const double *Control)
     {
       UMFPACK_DNAME (report_numeric) (Numeric, Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_perm<double>
     (octave_idx_type np, const octave_idx_type *Perm, const double *Control)
     {
@@ -247,14 +247,14 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_status<double> (double *Control, octave_idx_type status)
     {
       UMFPACK_DNAME (report_status) (Control, status);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_symbolic<double> (void *Symbolic, const double *Control)
     {
       UMFPACK_DNAME (report_symbolic) (Symbolic, Control);
@@ -263,28 +263,28 @@ namespace octave
     // SparseComplexMatrix specialization.
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_defaults<Complex> (double *Control)
     {
       UMFPACK_ZNAME (defaults) (Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_free_numeric<Complex> (void **Numeric)
     {
       UMFPACK_ZNAME (free_numeric) (Numeric);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_free_symbolic<Complex> (void **Symbolic)
     {
       UMFPACK_ZNAME (free_symbolic) (Symbolic);
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_get_lunz<Complex>
     (octave_idx_type *lnz, octave_idx_type *unz, void *Numeric)
     {
@@ -296,7 +296,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_get_numeric<Complex>
     (octave_idx_type *Lp, octave_idx_type *Lj, Complex *Lz,
      octave_idx_type *Up, octave_idx_type *Ui, Complex *Uz,
@@ -317,7 +317,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_numeric<Complex>
     (const octave_idx_type *Ap, const octave_idx_type *Ai,
      const Complex *Az, void *Symbolic, void **Numeric,
@@ -330,7 +330,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_qsymbolic<Complex>
     (octave_idx_type n_row, octave_idx_type n_col,
      const octave_idx_type *Ap, const octave_idx_type *Ai,
@@ -346,21 +346,21 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_control<Complex> (const double *Control)
     {
       UMFPACK_ZNAME (report_control) (Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_info<Complex> (const double *Control, const double *Info)
     {
       UMFPACK_ZNAME (report_info) (Control, Info);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_matrix<Complex>
     (octave_idx_type n_row, octave_idx_type n_col,
      const octave_idx_type *Ap, const octave_idx_type *Ai,
@@ -374,14 +374,14 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_numeric<Complex> (void *Numeric, const double *Control)
     {
       UMFPACK_ZNAME (report_numeric) (Numeric, Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_perm<Complex>
     (octave_idx_type np, const octave_idx_type *Perm, const double *Control)
     {
@@ -389,14 +389,14 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_status<Complex> (double *Control, octave_idx_type status)
     {
       UMFPACK_ZNAME (report_status) (Control, status);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_symbolic <Complex> (void *Symbolic, const double *Control)
     {
       UMFPACK_ZNAME (report_symbolic) (Symbolic, Control);
@@ -981,9 +981,8 @@ namespace octave
     }
 
     // Instantiations we need.
+    template class OCTAVE_API sparse_lu<SparseMatrix>;
 
-    template class sparse_lu<SparseMatrix>;
-
-    template class sparse_lu<SparseComplexMatrix>;
+    template class OCTAVE_API sparse_lu<SparseComplexMatrix>;
   }
 }

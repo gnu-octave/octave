@@ -29,7 +29,7 @@
 #include "octave-config.h"
 
 template <typename RT, typename ST, typename T>
-RT
+OCTAVE_API RT
 dmsolve (const ST& a, const T& b, octave_idx_type& info);
 
 #endif

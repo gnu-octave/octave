@@ -47,7 +47,7 @@ namespace octave
 
       qrp (void) : qr<T> (), p () { }
 
-      qrp (const T&, type = qr<T>::std);
+      OCTAVE_API qrp (const T&, type = qr<T>::std);
 
       qrp (const qrp& a) : qr<T> (a), p (a.p) { }
 
@@ -64,11 +64,11 @@ namespace octave
 
       ~qrp (void) = default;
 
-      void init (const T&, type = qr<T>::std);
+      OCTAVE_API void init (const T&, type = qr<T>::std);
 
       PermMatrix P (void) const { return p; }
 
-      RV_T Pvec (void) const;
+      OCTAVE_API RV_T Pvec (void) const;
 
     private:
 

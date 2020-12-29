@@ -49,12 +49,12 @@ namespace octave
       lu (void)
         : a_fact (), l_fact (), ipvt () { }
 
-      lu (const T& a);
+      OCTAVE_API lu (const T& a);
 
       lu (const lu& a)
         : a_fact (a.a_fact), l_fact (a.l_fact), ipvt (a.ipvt) { }
 
-      lu (const T& l, const T& u, const PermMatrix& p);
+      OCTAVE_API lu (const T& l, const T& u, const PermMatrix& p);
 
       lu& operator = (const lu& a)
       {
@@ -70,35 +70,35 @@ namespace octave
 
       virtual ~lu (void) = default;
 
-      bool packed (void) const;
+      OCTAVE_API bool packed (void) const;
 
-      void unpack (void);
+      OCTAVE_API void unpack (void);
 
-      T L (void) const;
+      OCTAVE_API T L (void) const;
 
-      T U (void) const;
+      OCTAVE_API T U (void) const;
 
-      T Y (void) const;
+      OCTAVE_API T Y (void) const;
 
-      PermMatrix P (void) const;
+      OCTAVE_API PermMatrix P (void) const;
 
-      ColumnVector P_vec (void) const;
+      OCTAVE_API ColumnVector P_vec (void) const;
 
-      bool regular (void) const;
+      OCTAVE_API bool regular (void) const;
 
-      void update (const VT& u, const VT& v);
+      OCTAVE_API void update (const VT& u, const VT& v);
 
-      void update (const T& u, const T& v);
+      OCTAVE_API void update (const T& u, const T& v);
 
-      void update_piv (const VT& u, const VT& v);
+      OCTAVE_API void update_piv (const VT& u, const VT& v);
 
-      void update_piv (const T& u, const T& v);
+      OCTAVE_API void update_piv (const T& u, const T& v);
 
     protected:
 
       // The result of getp is passed to other Octave Matrix functions,
       // so we use octave_idx_type.
-      Array<octave_idx_type> getp (void) const;
+      OCTAVE_API Array<octave_idx_type> getp (void) const;
 
       T a_fact;
       T l_fact;

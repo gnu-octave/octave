@@ -378,7 +378,7 @@ namespace octave
     // Specializations.
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::form (octave_idx_type n_arg, Matrix& afact, double *tau,
                       type qr_type)
     {
@@ -449,7 +449,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::init (const Matrix& a, type qr_type)
     {
       F77_INT m = to_f77_int (a.rows ());
@@ -485,7 +485,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::update (const ColumnVector& u, const ColumnVector& v)
     {
       F77_INT m = to_f77_int (q.rows ());
@@ -507,7 +507,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::update (const Matrix& u, const Matrix& v)
     {
       F77_INT m = to_f77_int (q.rows ());
@@ -535,7 +535,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::insert_col (const ColumnVector& u, octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
@@ -571,7 +571,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::insert_col (const Matrix& u, const Array<octave_idx_type>& j)
     {
       F77_INT m = to_f77_int (q.rows ());
@@ -629,7 +629,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::delete_col (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
@@ -658,7 +658,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::delete_col (const Array<octave_idx_type>& j)
     {
       F77_INT m = to_f77_int (q.rows ());
@@ -708,7 +708,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::insert_row (const RowVector& u, octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
@@ -740,7 +740,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::delete_row (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
@@ -766,7 +766,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::shift_cols (octave_idx_type i_arg, octave_idx_type j_arg)
     {
       F77_INT i = to_f77_int (i_arg);
@@ -792,7 +792,7 @@ namespace octave
 #endif
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::form (octave_idx_type n_arg, FloatMatrix& afact,
                            float *tau, type qr_type)
     {
@@ -863,7 +863,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::init (const FloatMatrix& a, type qr_type)
     {
       F77_INT m = to_f77_int (a.rows ());
@@ -899,7 +899,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::update (const FloatColumnVector& u, const FloatColumnVector& v)
     {
       F77_INT m = to_f77_int (q.rows ());
@@ -921,7 +921,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::update (const FloatMatrix& u, const FloatMatrix& v)
     {
       F77_INT m = to_f77_int (q.rows ());
@@ -949,7 +949,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::insert_col (const FloatColumnVector& u,
                                  octave_idx_type j_arg)
     {
@@ -986,7 +986,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::insert_col (const FloatMatrix& u,
                                  const Array<octave_idx_type>& j)
     {
@@ -1045,7 +1045,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::delete_col (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
@@ -1074,7 +1074,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::delete_col (const Array<octave_idx_type>& j)
     {
       F77_INT m = to_f77_int (q.rows ());
@@ -1124,7 +1124,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::insert_row (const FloatRowVector& u,
                                  octave_idx_type j_arg)
     {
@@ -1157,7 +1157,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::delete_row (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
@@ -1184,7 +1184,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::shift_cols (octave_idx_type i_arg, octave_idx_type j_arg)
     {
       F77_INT i = to_f77_int (i_arg);
@@ -1210,7 +1210,7 @@ namespace octave
 #endif
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::form (octave_idx_type n_arg, ComplexMatrix& afact,
                              Complex *tau, type qr_type)
     {
@@ -1287,7 +1287,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::init (const ComplexMatrix& a, type qr_type)
     {
       F77_INT m = to_f77_int (a.rows ());
@@ -1327,7 +1327,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::update (const ComplexColumnVector& u,
                                const ComplexColumnVector& v)
     {
@@ -1353,7 +1353,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::update (const ComplexMatrix& u, const ComplexMatrix& v)
     {
       F77_INT m = to_f77_int (q.rows ());
@@ -1385,7 +1385,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::insert_col (const ComplexColumnVector& u,
                                    octave_idx_type j_arg)
     {
@@ -1423,7 +1423,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::insert_col (const ComplexMatrix& u,
                                    const Array<octave_idx_type>& j)
     {
@@ -1485,7 +1485,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::delete_col (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
@@ -1515,7 +1515,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::delete_col (const Array<octave_idx_type>& j)
     {
       F77_INT m = to_f77_int (q.rows ());
@@ -1566,7 +1566,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::insert_row (const ComplexRowVector& u,
                                    octave_idx_type j_arg)
     {
@@ -1600,7 +1600,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::delete_row (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
@@ -1628,7 +1628,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::shift_cols (octave_idx_type i_arg,
                                    octave_idx_type j_arg)
     {
@@ -1656,7 +1656,7 @@ namespace octave
 #endif
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::form (octave_idx_type n_arg, FloatComplexMatrix& afact,
                                   FloatComplex *tau, type qr_type)
     {
@@ -1731,7 +1731,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::init (const FloatComplexMatrix& a, type qr_type)
     {
       F77_INT m = to_f77_int (a.rows ());
@@ -1769,7 +1769,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::update (const FloatComplexColumnVector& u,
                                     const FloatComplexColumnVector& v)
     {
@@ -1795,7 +1795,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::update (const FloatComplexMatrix& u,
                                     const FloatComplexMatrix& v)
     {
@@ -1827,7 +1827,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::insert_col (const FloatComplexColumnVector& u,
                                         octave_idx_type j_arg)
     {
@@ -1864,7 +1864,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::insert_col (const FloatComplexMatrix& u,
                                         const Array<octave_idx_type>& j)
     {
@@ -1924,7 +1924,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::delete_col (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
@@ -1954,7 +1954,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::delete_col (const Array<octave_idx_type>& j)
     {
       F77_INT m = to_f77_int (q.rows ());
@@ -2004,7 +2004,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::insert_row (const FloatComplexRowVector& u,
                                         octave_idx_type j_arg)
     {
@@ -2038,7 +2038,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::delete_row (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
@@ -2066,7 +2066,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::shift_cols (octave_idx_type i_arg,
                                         octave_idx_type j_arg)
     {

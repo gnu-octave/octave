@@ -87,7 +87,8 @@ namespace octave
       RT balancing_mat;
       RT balancing_mat2;
 
-      octave_idx_type init (const T& a, const T& b, const std::string& job);
+      OCTAVE_API octave_idx_type
+      init (const T& a, const T& b, const std::string& job);
     };
   }
 }

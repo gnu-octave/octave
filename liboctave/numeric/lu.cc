@@ -270,6 +270,7 @@ namespace octave
     // Specializations.
 
     template <>
+    OCTAVE_API
     lu<Matrix>::lu (const Matrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -293,7 +294,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE_LUU)
 
     template <>
-    void
+    OCTAVE_API void
     lu<Matrix>::update (const ColumnVector& u, const ColumnVector& v)
     {
       if (packed ())
@@ -319,7 +320,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<Matrix>::update (const Matrix& u, const Matrix& v)
     {
       if (packed ())
@@ -352,7 +353,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<Matrix>::update_piv (const ColumnVector& u, const ColumnVector& v)
     {
       if (packed ())
@@ -383,7 +384,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<Matrix>::update_piv (const Matrix& u, const Matrix& v)
     {
       if (packed ())
@@ -422,6 +423,7 @@ namespace octave
 #endif
 
     template <>
+    OCTAVE_API
     lu<FloatMatrix>::lu (const FloatMatrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -445,7 +447,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE_LUU)
 
     template <>
-    void
+    OCTAVE_API void
     lu<FloatMatrix>::update (const FloatColumnVector& u,
                              const FloatColumnVector& v)
     {
@@ -473,7 +475,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<FloatMatrix>::update (const FloatMatrix& u, const FloatMatrix& v)
     {
       if (packed ())
@@ -506,7 +508,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<FloatMatrix>::update_piv (const FloatColumnVector& u,
                                  const FloatColumnVector& v)
     {
@@ -538,7 +540,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<FloatMatrix>::update_piv (const FloatMatrix& u, const FloatMatrix& v)
     {
       if (packed ())
@@ -577,6 +579,7 @@ namespace octave
 #endif
 
     template <>
+    OCTAVE_API
     lu<ComplexMatrix>::lu (const ComplexMatrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -601,7 +604,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE_LUU)
 
     template <>
-    void
+    OCTAVE_API void
     lu<ComplexMatrix>::update (const ComplexColumnVector& u,
                                const ComplexColumnVector& v)
     {
@@ -630,7 +633,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<ComplexMatrix>::update (const ComplexMatrix& u, const ComplexMatrix& v)
     {
       if (packed ())
@@ -666,7 +669,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<ComplexMatrix>::update_piv (const ComplexColumnVector& u,
                                    const ComplexColumnVector& v)
     {
@@ -700,7 +703,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<ComplexMatrix>::update_piv (const ComplexMatrix& u,
                                    const ComplexMatrix& v)
     {
@@ -744,6 +747,7 @@ namespace octave
 #endif
 
     template <>
+    OCTAVE_API
     lu<FloatComplexMatrix>::lu (const FloatComplexMatrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -768,7 +772,7 @@ namespace octave
 #if defined (HAVE_QRUPDATE_LUU)
 
     template <>
-    void
+    OCTAVE_API void
     lu<FloatComplexMatrix>::update (const FloatComplexColumnVector& u,
                                     const FloatComplexColumnVector& v)
     {
@@ -797,7 +801,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<FloatComplexMatrix>::update (const FloatComplexMatrix& u,
                                     const FloatComplexMatrix& v)
     {
@@ -832,7 +836,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<FloatComplexMatrix>::update_piv (const FloatComplexColumnVector& u,
                                         const FloatComplexColumnVector& v)
     {
@@ -866,7 +870,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     lu<FloatComplexMatrix>::update_piv (const FloatComplexMatrix& u,
                                         const FloatComplexMatrix& v)
     {

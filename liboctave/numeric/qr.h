@@ -59,7 +59,7 @@ namespace octave
         init (a, qr_type);
       }
 
-      qr (const T& q, const T& r);
+      OCTAVE_API qr (const T& q, const T& r);
 
       qr (const qr& a) : q (a.q), r (a.r) { }
 
@@ -80,39 +80,40 @@ namespace octave
 
       T R (void) const { return r; }
 
-      type get_type (void) const;
+      OCTAVE_API type get_type (void) const;
 
-      bool regular (void) const;
+      OCTAVE_API bool regular (void) const;
 
-      void init (const T& a, type qr_type);
+      OCTAVE_API void init (const T& a, type qr_type);
 
-      void update (const CV_T& u, const CV_T& v);
+      OCTAVE_API void update (const CV_T& u, const CV_T& v);
 
-      void update (const T& u, const T& v);
+      OCTAVE_API void update (const T& u, const T& v);
 
-      void insert_col (const CV_T& u, octave_idx_type j);
+      OCTAVE_API void insert_col (const CV_T& u, octave_idx_type j);
 
-      void insert_col (const T& u, const Array<octave_idx_type>& j);
+      OCTAVE_API void insert_col (const T& u, const Array<octave_idx_type>& j);
 
-      void delete_col (octave_idx_type j);
+      OCTAVE_API void delete_col (octave_idx_type j);
 
-      void delete_col (const Array<octave_idx_type>& j);
+      OCTAVE_API void delete_col (const Array<octave_idx_type>& j);
 
-      void insert_row (const RV_T& u, octave_idx_type j);
+      OCTAVE_API void insert_row (const RV_T& u, octave_idx_type j);
 
-      void delete_row (octave_idx_type j);
+      OCTAVE_API void delete_row (octave_idx_type j);
 
-      void shift_cols (octave_idx_type i, octave_idx_type j);
+      OCTAVE_API void shift_cols (octave_idx_type i, octave_idx_type j);
 
     protected:
 
       T q;
       T r;
 
-      void form (octave_idx_type n, T& afact, ELT_T *tau, type qr_type);
+      OCTAVE_API void
+      form (octave_idx_type n, T& afact, ELT_T *tau, type qr_type);
     };
 
-    extern void warn_qrupdate_once (void);
+    extern OCTAVE_API void warn_qrupdate_once (void);
   }
 }
 

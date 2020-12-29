@@ -36,6 +36,7 @@ namespace octave
   {
     template <typename T>
     class
+    OCTAVE_API
     svd
     {
     public:

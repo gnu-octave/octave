@@ -3944,7 +3944,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
 // Matrix
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealSymmetricMatrix<Matrix>
   (const Matrix& m, const std::string typ, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, Matrix& eig_vec,
@@ -3953,7 +3953,7 @@ EigsRealSymmetricMatrix<Matrix>
    bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealSymmetricMatrixShift<Matrix>
   (const Matrix& m, double sigma, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, Matrix& eig_vec,
@@ -3962,7 +3962,7 @@ EigsRealSymmetricMatrixShift<Matrix>
    bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealSymmetricFunc<Matrix>
 (EigsFunc fun, octave_idx_type n, const std::string& _typ, double sigma,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
@@ -3971,7 +3971,7 @@ EigsRealSymmetricFunc<Matrix>
    bool rvec, bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealNonSymmetricMatrix<Matrix>
   (const Matrix& m, const std::string typ, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -3980,7 +3980,7 @@ EigsRealNonSymmetricMatrix<Matrix>
    bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealNonSymmetricMatrixShift<Matrix>
   (const Matrix& m, double sigmar, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -3989,7 +3989,7 @@ EigsRealNonSymmetricMatrixShift<Matrix>
    bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealNonSymmetricFunc<Matrix>
 (EigsFunc fun, octave_idx_type n, const std::string& _typ, double sigmar,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
@@ -4000,7 +4000,7 @@ EigsRealNonSymmetricFunc<Matrix>
 // SparseMatrix
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealSymmetricMatrix<SparseMatrix>
   (const SparseMatrix& m, const std::string typ, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, Matrix& eig_vec,
@@ -4009,7 +4009,7 @@ EigsRealSymmetricMatrix<SparseMatrix>
    bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealSymmetricMatrixShift<SparseMatrix>
   (const SparseMatrix& m, double sigma, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, Matrix& eig_vec,
@@ -4018,7 +4018,7 @@ EigsRealSymmetricMatrixShift<SparseMatrix>
    bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealSymmetricFunc<SparseMatrix>
 (EigsFunc fun, octave_idx_type n, const std::string& _typ, double sigma,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
@@ -4027,7 +4027,7 @@ EigsRealSymmetricFunc<SparseMatrix>
    bool rvec, bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealNonSymmetricMatrix<SparseMatrix>
   (const SparseMatrix& m, const std::string typ, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -4036,7 +4036,7 @@ EigsRealNonSymmetricMatrix<SparseMatrix>
    bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealNonSymmetricMatrixShift<SparseMatrix>
   (const SparseMatrix& m, double sigmar, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -4045,7 +4045,7 @@ EigsRealNonSymmetricMatrixShift<SparseMatrix>
    bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealNonSymmetricFunc<SparseMatrix>
 (EigsFunc fun, octave_idx_type n, const std::string& _typ, double sigmar,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
@@ -4056,7 +4056,7 @@ EigsRealNonSymmetricFunc<SparseMatrix>
 // ComplexMatrix
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricMatrix<ComplexMatrix>
   (const ComplexMatrix& m, const std::string typ, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -4065,7 +4065,7 @@ EigsComplexNonSymmetricMatrix<ComplexMatrix>
    bool rvec, bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricMatrixShift<ComplexMatrix>
   (const ComplexMatrix& m, Complex sigma, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -4074,7 +4074,7 @@ EigsComplexNonSymmetricMatrixShift<ComplexMatrix>
    bool rvec, bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricFunc<ComplexMatrix>
 (EigsComplexFunc fun, octave_idx_type n, const std::string& _typ, Complex sigma,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
@@ -4085,7 +4085,7 @@ EigsComplexNonSymmetricFunc<ComplexMatrix>
 // SparseComplexMatrix
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricMatrix<SparseComplexMatrix>
   (const SparseComplexMatrix& m, const std::string typ, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -4094,7 +4094,7 @@ EigsComplexNonSymmetricMatrix<SparseComplexMatrix>
    double tol, bool rvec, bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricMatrixShift<SparseComplexMatrix>
   (const SparseComplexMatrix& m, Complex sigma, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -4103,7 +4103,7 @@ EigsComplexNonSymmetricMatrixShift<SparseComplexMatrix>
    double tol, bool rvec, bool cholB, int disp, int maxit);
 
 template
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricFunc<SparseComplexMatrix>
 (EigsComplexFunc fun, octave_idx_type n, const std::string& _typ, Complex sigma,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,

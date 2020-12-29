@@ -173,6 +173,12 @@ namespace octave
 #endif
     }
 
+    // Instantiations we need.
+
+    template class OCTAVE_API sparse_qr<SparseMatrix>;
+
+    template class OCTAVE_API sparse_qr<SparseComplexMatrix>;
+
     // Specializations.
 
     // Real-valued matrices.
@@ -2360,11 +2366,5 @@ namespace octave
                                                    SparseComplexMatrix>
                                              (a, b, info);
     }
-
-    // Instantiations we need.
-
-    template class sparse_qr<SparseMatrix>;
-
-    template class sparse_qr<SparseComplexMatrix>;
   }
 }

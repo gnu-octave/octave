@@ -52,34 +52,34 @@ namespace octave
     {
     public:
 
-      sparse_qr (void);
+      OCTAVE_API sparse_qr (void);
 
-      sparse_qr (const SPARSE_T& a, int order = 0);
+      OCTAVE_API sparse_qr (const SPARSE_T& a, int order = 0);
 
-      sparse_qr (const sparse_qr& a);
+      OCTAVE_API sparse_qr (const sparse_qr& a);
 
-      ~sparse_qr (void);
+      OCTAVE_API ~sparse_qr (void);
 
-      sparse_qr& operator = (const sparse_qr& a);
+      OCTAVE_API sparse_qr& operator = (const sparse_qr& a);
 
-      bool ok (void) const;
+      OCTAVE_API bool ok (void) const;
 
-      SPARSE_T V (void) const;
+      OCTAVE_API SPARSE_T V (void) const;
 
-      ColumnVector Pinv (void) const;
+      OCTAVE_API ColumnVector Pinv (void) const;
 
-      ColumnVector P (void) const;
+      OCTAVE_API ColumnVector P (void) const;
 
-      SPARSE_T R (bool econ = false) const;
+      OCTAVE_API SPARSE_T R (bool econ = false) const;
 
-      typename SPARSE_T::dense_matrix_type
+      OCTAVE_API typename SPARSE_T::dense_matrix_type
       C (const typename SPARSE_T::dense_matrix_type& b) const;
 
-      typename SPARSE_T::dense_matrix_type
+      OCTAVE_API typename SPARSE_T::dense_matrix_type
       Q (void) const;
 
       template <typename RHS_T, typename RET_T>
-      static RET_T
+      static OCTAVE_API RET_T
       solve (const SPARSE_T& a, const RHS_T& b,
              octave_idx_type& info);
 
@@ -90,50 +90,50 @@ namespace octave
       sparse_qr_rep *rep;
 
       template <typename RHS_T, typename RET_T>
-      RET_T
+      OCTAVE_API RET_T
       tall_solve (const RHS_T& b, octave_idx_type& info) const;
 
       template <typename RHS_T, typename RET_T>
-      RET_T
+      OCTAVE_API RET_T
       wide_solve (const RHS_T& b, octave_idx_type& info) const;
     };
 
     // Provide qrsolve for backward compatibility.
 
-    extern Matrix
+    extern OCTAVE_API Matrix
     qrsolve (const SparseMatrix& a, const MArray<double>& b,
              octave_idx_type& info);
 
-    extern SparseMatrix
+    extern OCTAVE_API SparseMatrix
     qrsolve (const SparseMatrix& a, const SparseMatrix& b,
              octave_idx_type& info);
 
-    extern ComplexMatrix
+    extern OCTAVE_API ComplexMatrix
     qrsolve (const SparseMatrix& a, const MArray<Complex>& b,
              octave_idx_type& info);
 
-    extern SparseComplexMatrix
+    extern OCTAVE_API SparseComplexMatrix
     qrsolve (const SparseMatrix& a, const SparseComplexMatrix& b,
              octave_idx_type& info);
 
-    extern ComplexMatrix
+    extern OCTAVE_API ComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const MArray<double>& b,
              octave_idx_type& info);
 
-    extern SparseComplexMatrix
+    extern OCTAVE_API SparseComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const SparseMatrix& b,
              octave_idx_type& info);
 
-    extern ComplexMatrix
+    extern OCTAVE_API ComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const MArray<Complex>& b,
              octave_idx_type& info);
 
-    extern SparseComplexMatrix
+    extern OCTAVE_API SparseComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
              octave_idx_type& info);
 
-    typedef sparse_qr<SparseMatrix> SparseQR;
-    typedef sparse_qr<SparseComplexMatrix> SparseComplexQR;
+    //typedef sparse_qr<SparseMatrix> SparseQR;
+    //typedef sparse_qr<SparseComplexMatrix> SparseComplexQR;
   }
 }
 

@@ -38,7 +38,6 @@ class SparseMatrix;
 class SparseComplexMatrix;
 
 class
-OCTAVE_API
 MatrixType
 {
 public:
@@ -60,46 +59,47 @@ public:
     Rectangular
   };
 
-  MatrixType (void);
+  OCTAVE_API MatrixType (void);
 
-  MatrixType (const MatrixType& a);
+  OCTAVE_API MatrixType (const MatrixType& a);
 
-  MatrixType (const Matrix& a);
+  OCTAVE_API MatrixType (const Matrix& a);
 
-  MatrixType (const ComplexMatrix& a);
+  OCTAVE_API MatrixType (const ComplexMatrix& a);
 
-  MatrixType (const FloatMatrix& a);
+  OCTAVE_API MatrixType (const FloatMatrix& a);
 
-  MatrixType (const FloatComplexMatrix& a);
+  OCTAVE_API MatrixType (const FloatComplexMatrix& a);
 
   template <typename T>
+  OCTAVE_API
   MatrixType (const MSparse<T> &a);
 
-  MatrixType (const matrix_type t, bool _full = false);
+  OCTAVE_API MatrixType (const matrix_type t, bool _full = false);
 
-  MatrixType (const matrix_type t, const octave_idx_type np,
+  OCTAVE_API MatrixType (const matrix_type t, const octave_idx_type np,
               const octave_idx_type *p, bool _full = false);
 
-  MatrixType (const matrix_type t, const octave_idx_type ku,
+  OCTAVE_API MatrixType (const matrix_type t, const octave_idx_type ku,
               const octave_idx_type kl, bool _full = false);
 
-  ~MatrixType (void);
+  OCTAVE_API ~MatrixType (void);
 
-  MatrixType& operator = (const MatrixType& a);
+  OCTAVE_API MatrixType& operator = (const MatrixType& a);
 
-  int type (bool quiet = true);
+  OCTAVE_API int type (bool quiet = true);
 
-  int type (const Matrix& a);
+  OCTAVE_API int type (const Matrix& a);
 
-  int type (const ComplexMatrix& a);
+  OCTAVE_API int type (const ComplexMatrix& a);
 
-  int type (const FloatMatrix& a);
+  OCTAVE_API int type (const FloatMatrix& a);
 
-  int type (const FloatComplexMatrix& a);
+  OCTAVE_API int type (const FloatComplexMatrix& a);
 
-  int type (const SparseMatrix& a);
+  OCTAVE_API int type (const SparseMatrix& a);
 
-  int type (const SparseComplexMatrix& a);
+  OCTAVE_API int type (const SparseComplexMatrix& a);
 
   double band_density (void) const { return bandden; }
 
@@ -136,7 +136,7 @@ public:
 
   bool is_unknown (void) const { return (typ == Unknown); }
 
-  void info (void) const;
+  OCTAVE_API void info (void) const;
 
   octave_idx_type * triangular_perm (void) const { return perm; }
 
@@ -163,15 +163,15 @@ public:
 
   void mark_as_not_dense (void) { dense = false; }
 
-  void mark_as_symmetric (void);
+  OCTAVE_API void mark_as_symmetric (void);
 
-  void mark_as_unsymmetric (void);
+  OCTAVE_API void mark_as_unsymmetric (void);
 
-  void mark_as_permuted (const octave_idx_type np, const octave_idx_type *p);
+  OCTAVE_API void mark_as_permuted (const octave_idx_type np, const octave_idx_type *p);
 
-  void mark_as_unpermuted (void);
+  OCTAVE_API void mark_as_unpermuted (void);
 
-  MatrixType transpose (void) const;
+  OCTAVE_API MatrixType transpose (void) const;
 
 private:
   void type (int new_typ) { typ = static_cast<matrix_type> (new_typ); }

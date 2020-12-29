@@ -44,6 +44,7 @@ xabs (const Complex& x)
 }
 
 template <>
+OCTAVE_API
 bool
 sparse_ascending_compare<Complex> (const Complex& a, const Complex& b)
 {
@@ -52,6 +53,7 @@ sparse_ascending_compare<Complex> (const Complex& a, const Complex& b)
 }
 
 template <>
+OCTAVE_API
 bool
 sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
 {

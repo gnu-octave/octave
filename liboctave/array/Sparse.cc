@@ -54,7 +54,7 @@
 #include "PermMatrix.h"
 
 template <typename T>
-typename Sparse<T>::SparseRep *
+OCTAVE_API typename Sparse<T>::SparseRep *
 Sparse<T>::nil_rep (void)
 {
   static typename Sparse<T>::SparseRep nr;
@@ -62,6 +62,7 @@ Sparse<T>::nil_rep (void)
 }
 
 template <typename T>
+OCTAVE_API
 T&
 Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)
 {
@@ -103,6 +104,7 @@ Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)
 }
 
 template <typename T>
+OCTAVE_API
 T
 Sparse<T>::SparseRep::celem (octave_idx_type _r, octave_idx_type _c) const
 {
@@ -114,6 +116,7 @@ Sparse<T>::SparseRep::celem (octave_idx_type _r, octave_idx_type _c) const
 }
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
 {
@@ -138,6 +141,7 @@ Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
 }
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::SparseRep::change_length (octave_idx_type nz)
 {
@@ -171,6 +175,7 @@ Sparse<T>::SparseRep::change_length (octave_idx_type nz)
 }
 
 template <typename T>
+OCTAVE_API
 bool
 Sparse<T>::SparseRep::indices_ok (void) const
 {
@@ -178,6 +183,7 @@ Sparse<T>::SparseRep::indices_ok (void) const
 }
 
 template <typename T>
+OCTAVE_API
 bool
 Sparse<T>::SparseRep::any_element_is_nan (void) const
 {
@@ -191,6 +197,7 @@ Sparse<T>::SparseRep::any_element_is_nan (void) const
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
   : rep (nullptr), dimensions (dim_vector (nr, nc))
 {
@@ -219,6 +226,7 @@ Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>::Sparse (const PermMatrix& a)
   : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
     dimensions (dim_vector (a.rows (), a.cols ()))
@@ -237,6 +245,7 @@ Sparse<T>::Sparse (const PermMatrix& a)
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>::Sparse (const dim_vector& dv)
   : rep (nullptr), dimensions (dv)
 {
@@ -248,6 +257,7 @@ Sparse<T>::Sparse (const dim_vector& dv)
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
   : rep (nullptr), dimensions (dv)
 {
@@ -290,6 +300,7 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
                    const idx_vector& c, octave_idx_type nr,
                    octave_idx_type nc, bool sum_terms,
@@ -657,6 +668,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
 */
 
 template <typename T>
+OCTAVE_API
 Sparse<T>::Sparse (const Array<T>& a)
   : rep (nullptr), dimensions (a.dims ())
 {
@@ -691,6 +703,7 @@ Sparse<T>::Sparse (const Array<T>& a)
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>::~Sparse (void)
 {
   if (--rep->count == 0)
@@ -716,6 +729,7 @@ Sparse<T>::operator = (const Sparse<T>& a)
 }
 
 template <typename T>
+OCTAVE_API
 octave_idx_type
 Sparse<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
@@ -739,6 +753,7 @@ Sparse<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 }
 
 template <typename T>
+OCTAVE_API
 T
 Sparse<T>::range_error (const char *fcn, octave_idx_type n) const
 {
@@ -747,6 +762,7 @@ Sparse<T>::range_error (const char *fcn, octave_idx_type n) const
 }
 
 template <typename T>
+OCTAVE_API
 T&
 Sparse<T>::range_error (const char *fcn, octave_idx_type n)
 {
@@ -755,6 +771,7 @@ Sparse<T>::range_error (const char *fcn, octave_idx_type n)
 }
 
 template <typename T>
+OCTAVE_API
 T
 Sparse<T>::range_error (const char *fcn, octave_idx_type i,
                         octave_idx_type j) const
@@ -765,6 +782,7 @@ Sparse<T>::range_error (const char *fcn, octave_idx_type i,
 }
 
 template <typename T>
+OCTAVE_API
 T&
 Sparse<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j)
 {
@@ -774,6 +792,7 @@ Sparse<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j)
 }
 
 template <typename T>
+OCTAVE_API
 T
 Sparse<T>::range_error (const char *fcn,
                         const Array<octave_idx_type>& ra_idx) const
@@ -798,6 +817,7 @@ Sparse<T>::range_error (const char *fcn,
 }
 
 template <typename T>
+OCTAVE_API
 T&
 Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
 {
@@ -821,6 +841,7 @@ Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>
 Sparse<T>::reshape (const dim_vector& new_dims) const
 {
@@ -900,6 +921,7 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>
 Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
 {
@@ -928,6 +950,7 @@ Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
 }
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::resize1 (octave_idx_type n)
 {
@@ -947,6 +970,7 @@ Sparse<T>::resize1 (octave_idx_type n)
 }
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::resize (const dim_vector& dv)
 {
@@ -959,6 +983,7 @@ Sparse<T>::resize (const dim_vector& dv)
 }
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
 {
@@ -1009,6 +1034,7 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>&
 Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
 {
@@ -1090,6 +1116,7 @@ Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>&
 Sparse<T>::insert (const Sparse<T>& a, const Array<octave_idx_type>& ra_idx)
 {
@@ -1101,6 +1128,7 @@ Sparse<T>::insert (const Sparse<T>& a, const Array<octave_idx_type>& ra_idx)
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>
 Sparse<T>::transpose (void) const
 {
@@ -1140,7 +1168,8 @@ Sparse<T>::transpose (void) const
 // Lower bound lookup.  Could also use octave_sort, but that has upper bound
 // semantics, so requires some manipulation to set right.  Uses a plain loop
 // for small columns.
-static octave_idx_type
+static
+octave_idx_type
 lblookup (const octave_idx_type *ridx, octave_idx_type nr,
           octave_idx_type ri)
 {
@@ -1157,6 +1186,7 @@ lblookup (const octave_idx_type *ridx, octave_idx_type nr,
 }
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::delete_elements (const idx_vector& idx)
 {
@@ -1258,6 +1288,7 @@ Sparse<T>::delete_elements (const idx_vector& idx)
 }
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
 {
@@ -1377,6 +1408,7 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
 }
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::delete_elements (int dim, const idx_vector& idx)
 {
@@ -1389,6 +1421,7 @@ Sparse<T>::delete_elements (int dim, const idx_vector& idx)
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>
 Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 {
@@ -1589,6 +1622,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>
 Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
                   bool resize_ok) const
@@ -1833,6 +1867,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
 }
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
 {
@@ -1985,6 +2020,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
 }
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::assign (const idx_vector& idx_i,
                    const idx_vector& idx_j, const Sparse<T>& rhs)
@@ -2224,6 +2260,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
 // Can't use versions of these in Array.cc due to duplication of the
 // instantiations for Array<double and Sparse<double>, etc
 template <typename T>
+OCTAVE_API
 bool
 sparse_ascending_compare (typename ref_param<T>::type a,
                           typename ref_param<T>::type b)
@@ -2232,6 +2269,7 @@ sparse_ascending_compare (typename ref_param<T>::type a,
 }
 
 template <typename T>
+OCTAVE_API
 bool
 sparse_descending_compare (typename ref_param<T>::type a,
                            typename ref_param<T>::type b)
@@ -2240,6 +2278,7 @@ sparse_descending_compare (typename ref_param<T>::type a,
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>
 Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
 {
@@ -2306,6 +2345,7 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>
 Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
                  sortmode mode) const
@@ -2413,6 +2453,7 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>
 Sparse<T>::diag (octave_idx_type k) const
 {
@@ -2586,6 +2627,7 @@ Sparse<T>::diag (octave_idx_type k) const
 }
 
 template <typename T>
+OCTAVE_API
 Sparse<T>
 Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
 {
@@ -2684,6 +2726,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
 }
 
 template <typename T>
+OCTAVE_API
 Array<T>
 Sparse<T>::array_value () const
 {
@@ -2708,6 +2751,7 @@ Sparse<T>::array_value () const
 }
 
 template <typename T>
+OCTAVE_API
 std::istream&
 read_sparse_matrix (std::istream& is, Sparse<T>& a,
                     T (*read_fcn) (std::istream&))
@@ -3010,6 +3054,7 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 */
 
 template <typename T>
+OCTAVE_API
 void
 Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const
 {
@@ -3025,6 +3070,6 @@ Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const
 
 #define INSTANTIATE_SPARSE(T, API)                                      \
   template class API Sparse<T>;                                         \
-  template std::istream&                                                \
+  template API std::istream&                                            \
   read_sparse_matrix<T> (std::istream& is, Sparse<T>& a,                \
                          T (*read_fcn) (std::istream&));

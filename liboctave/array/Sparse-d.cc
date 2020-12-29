@@ -34,6 +34,7 @@
 #include "Sparse.cc"
 
 template <>
+OCTAVE_API
 bool
 sparse_ascending_compare<double> (double a, double b)
 {
@@ -41,6 +42,7 @@ sparse_ascending_compare<double> (double a, double b)
 }
 
 template <>
+OCTAVE_API
 bool
 sparse_descending_compare<double> (double a, double b)
 {

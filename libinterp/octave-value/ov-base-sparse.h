@@ -47,6 +47,7 @@ class octave_sparse_bool_matrix;
 
 template <typename T>
 class
+OCTINTERP_API
 octave_base_sparse : public octave_base_value
 {
 public:
@@ -91,16 +92,16 @@ public:
   // functions.
   using octave_base_value::subsref;
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx);
+  OCTINTERP_API octave_value
+  subsref (const std::string& type, const std::list<octave_value_list>& idx);
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
   { return subsref (type, idx); }
 
-  octave_value subsasgn (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         const octave_value& rhs);
+  OCTINTERP_API octave_value
+  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+            const octave_value& rhs);
 
   // FIXME: should we import the functions from the base class and
   // overload them here, or should we use a different name so we don't
@@ -109,14 +110,14 @@ public:
   // can also cause some confusion.
   using octave_base_value::assign;
 
-  void assign (const octave_value_list& idx, const T& rhs);
+  OCTINTERP_API void assign (const octave_value_list& idx, const T& rhs);
 
-  void delete_elements (const octave_value_list& idx);
+  OCTINTERP_API void delete_elements (const octave_value_list& idx);
 
   dim_vector dims (void) const { return matrix.dims (); }
 
-  octave_value do_index_op (const octave_value_list& idx,
-                            bool resize_ok = false);
+  OCTINTERP_API octave_value
+  do_index_op (const octave_value_list& idx, bool resize_ok = false);
 
   octave_value reshape (const dim_vector& new_dims) const
   { return T (matrix.reshape (new_dims)); }
@@ -124,7 +125,7 @@ public:
   octave_value permute (const Array<int>& vec, bool inv = false) const
   { return T (matrix.permute (vec, inv)); }
 
-  octave_value resize (const dim_vector& dv, bool = false) const;
+  OCTINTERP_API octave_value resize (const dim_vector& dv, bool = false) const;
 
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }
@@ -160,24 +161,27 @@ public:
 
   bool is_constant (void) const { return true; }
 
-  bool is_true (void) const;
+  OCTINTERP_API bool is_true (void) const;
 
-  bool print_as_scalar (void) const;
+  OCTINTERP_API bool print_as_scalar (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false);
+  OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  void print_info (std::ostream& os, const std::string& prefix) const;
+  OCTINTERP_API void
+  print_info (std::ostream& os, const std::string& prefix) const;
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+  OCTINTERP_API void
+  print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool save_ascii (std::ostream& os);
+  OCTINTERP_API bool save_ascii (std::ostream& os);
 
-  bool load_ascii (std::istream& is);
+  OCTINTERP_API bool load_ascii (std::istream& is);
 
-  float_display_format get_edit_display_format (void) const;
+  OCTINTERP_API float_display_format get_edit_display_format (void) const;
 
-  std::string edit_display (const float_display_format& fmt,
-                            octave_idx_type i, octave_idx_type j) const;
+  OCTINTERP_API std::string
+  edit_display (const float_display_format& fmt,
+                octave_idx_type i, octave_idx_type j) const;
 
   // Unsafe.  These functions exists to support the MEX interface.
   // You should not use them anywhere else.
@@ -187,11 +191,12 @@ public:
 
   octave_idx_type * mex_get_jc (void) const { return matrix.mex_get_jc (); }
 
-  octave_value fast_elem_extract (octave_idx_type n) const;
+  OCTINTERP_API octave_value fast_elem_extract (octave_idx_type n) const;
 
 protected:
 
-  octave_value map (octave_base_value::unary_mapper_t umap) const;
+  OCTINTERP_API octave_value
+  map (octave_base_value::unary_mapper_t umap) const;
 
   T matrix;
 

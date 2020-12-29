@@ -36,7 +36,6 @@
 // Real diagonal matrix values.
 
 class
-OCTINTERP_API
 octave_complex_diag_matrix
   : public octave_base_diag<ComplexDiagMatrix, ComplexMatrix>
 {
@@ -58,11 +57,11 @@ public:
   octave_base_value * empty_clone (void) const
   { return new octave_complex_diag_matrix (); }
 
-  type_conv_info numeric_conversion_function (void) const;
+  OCTINTERP_API type_conv_info numeric_conversion_function (void) const;
 
-  type_conv_info numeric_demotion_function (void) const;
+  OCTINTERP_API type_conv_info numeric_demotion_function (void) const;
 
-  octave_base_value * try_narrowing_conversion (void);
+  OCTINTERP_API octave_base_value * try_narrowing_conversion (void);
 
   builtin_type_t builtin_type (void) const { return btyp_complex; }
 
@@ -74,28 +73,30 @@ public:
 
   bool isfloat (void) const { return true; }
 
-  DiagMatrix diag_matrix_value (bool = false) const;
+  OCTINTERP_API DiagMatrix diag_matrix_value (bool = false) const;
 
-  FloatDiagMatrix float_diag_matrix_value (bool = false) const;
+  OCTINTERP_API FloatDiagMatrix float_diag_matrix_value (bool = false) const;
 
-  ComplexDiagMatrix complex_diag_matrix_value (bool = false) const;
+  OCTINTERP_API ComplexDiagMatrix
+  complex_diag_matrix_value (bool = false) const;
 
-  FloatComplexDiagMatrix float_complex_diag_matrix_value (bool = false) const;
+  OCTINTERP_API FloatComplexDiagMatrix
+  float_complex_diag_matrix_value (bool = false) const;
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  OCTINTERP_API octave_value as_double (void) const;
+  OCTINTERP_API octave_value as_single (void) const;
 
-  bool save_binary (std::ostream& os, bool save_as_floats);
+  OCTINTERP_API bool save_binary (std::ostream& os, bool save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap,
-                    octave::mach_info::float_format fmt);
+  OCTINTERP_API bool
+  load_binary (std::istream& is, bool swap,
+               octave::mach_info::float_format fmt);
 
-  octave_value map (unary_mapper_t umap) const;
+  OCTINTERP_API octave_value map (unary_mapper_t umap) const;
 
 private:
 
-  bool chk_valid_scalar (const octave_value&,
-                         Complex&) const;
+  OCTINTERP_API bool chk_valid_scalar (const octave_value&, Complex&) const;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

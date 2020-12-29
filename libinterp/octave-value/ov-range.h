@@ -97,9 +97,9 @@ public:
     return new typename octave_value_range_traits<T>::matrix_type ();
   }
 
-  type_conv_info numeric_conversion_function (void) const;
+  OCTINTERP_API type_conv_info numeric_conversion_function (void) const;
 
-  octave_base_value * try_narrowing_conversion (void);
+  OCTINTERP_API octave_base_value * try_narrowing_conversion (void);
 
   builtin_type_t builtin_type (void) const { return class_to_btyp<T>::btyp; }
 
@@ -115,10 +115,10 @@ public:
                              const std::list<octave_value_list>& idx, int)
   { return subsref (type, idx); }
 
-  octave_value do_index_op (const octave_value_list& idx,
-                            bool resize_ok = false);
+  OCTINTERP_API octave_value
+  do_index_op (const octave_value_list& idx, bool resize_ok = false);
 
-  idx_vector index_vector (bool require_integers = false) const;
+  OCTINTERP_API idx_vector index_vector (bool require_integers = false) const;
 
   dim_vector dims (void) const
   {
@@ -136,7 +136,8 @@ public:
     return tmp.nnz ();
   }
 
-  octave_value resize (const dim_vector& dv, bool fill = false) const;
+  OCTINTERP_API octave_value
+  resize (const dim_vector& dv, bool fill = false) const;
 
   size_t byte_size (void) const { return 3 * sizeof (T); }
 
@@ -263,9 +264,9 @@ public:
 
   Array<T> raw_array_value (void) const { return m_range.array_value (); }
 
-  double double_value (bool = false) const;
+  OCTINTERP_API double double_value (bool = false) const;
 
-  float float_value (bool = false) const;
+  OCTINTERP_API float float_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
   {
@@ -297,7 +298,7 @@ public:
     return raw_array_value ();
   }
 
-  charNDArray char_array_value (bool = false) const;
+  OCTINTERP_API charNDArray char_array_value (bool = false) const;
 
   // FIXME: it would be better to have Range::intXNDArray_value
   // functions to avoid the intermediate conversion to a matrix
@@ -353,11 +354,11 @@ public:
     return SparseComplexMatrix (complex_matrix_value ());
   }
 
-  Complex complex_value (bool = false) const;
+  OCTINTERP_API Complex complex_value (bool = false) const;
 
-  FloatComplex float_complex_value (bool = false) const;
+  OCTINTERP_API FloatComplex float_complex_value (bool = false) const;
 
-  boolNDArray bool_array_value (bool warn = false) const;
+  OCTINTERP_API boolNDArray bool_array_value (bool warn = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
   {
@@ -379,66 +380,72 @@ public:
     return raw_array_value ();
   }
 
-  octave::range<float> float_range_value (void) const;
+  OCTINTERP_API octave::range<float> float_range_value (void) const;
 
-  octave::range<double> range_value (void) const;
+  OCTINTERP_API octave::range<double> range_value (void) const;
 
-  octave::range<octave_int8> int8_range_value (void) const;
+  OCTINTERP_API octave::range<octave_int8> int8_range_value (void) const;
 
-  octave::range<octave_int16> int16_range_value (void) const;
+  OCTINTERP_API octave::range<octave_int16> int16_range_value (void) const;
 
-  octave::range<octave_int32> int32_range_value (void) const;
+  OCTINTERP_API octave::range<octave_int32> int32_range_value (void) const;
 
-  octave::range<octave_int64> int64_range_value (void) const;
+  OCTINTERP_API octave::range<octave_int64> int64_range_value (void) const;
 
-  octave::range<octave_uint8> uint8_range_value (void) const;
+  OCTINTERP_API octave::range<octave_uint8> uint8_range_value (void) const;
 
-  octave::range<octave_uint16> uint16_range_value (void) const;
+  OCTINTERP_API octave::range<octave_uint16> uint16_range_value (void) const;
 
-  octave::range<octave_uint32> uint32_range_value (void) const;
+  OCTINTERP_API octave::range<octave_uint32> uint32_range_value (void) const;
 
-  octave::range<octave_uint64> uint64_range_value (void) const;
+  OCTINTERP_API octave::range<octave_uint64> uint64_range_value (void) const;
 
-  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
+  OCTINTERP_API octave_value
+  convert_to_str_internal (bool pad, bool force, char type) const;
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  OCTINTERP_API octave_value as_double (void) const;
+  OCTINTERP_API octave_value as_single (void) const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  OCTINTERP_API octave_value as_int8 (void) const;
+  OCTINTERP_API octave_value as_int16 (void) const;
+  OCTINTERP_API octave_value as_int32 (void) const;
+  OCTINTERP_API octave_value as_int64 (void) const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  OCTINTERP_API octave_value as_uint8 (void) const;
+  OCTINTERP_API octave_value as_uint16 (void) const;
+  OCTINTERP_API octave_value as_uint32 (void) const;
+  OCTINTERP_API octave_value as_uint64 (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false);
+  OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+  OCTINTERP_API void
+  print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool print_name_tag (std::ostream& os, const std::string& name) const;
+  OCTINTERP_API bool
+  print_name_tag (std::ostream& os, const std::string& name) const;
 
-  void short_disp (std::ostream& os) const;
+  OCTINTERP_API void short_disp (std::ostream& os) const;
 
-  float_display_format get_edit_display_format (void) const;
+  OCTINTERP_API float_display_format get_edit_display_format (void) const;
 
-  std::string edit_display (const float_display_format& fmt,
-                            octave_idx_type i, octave_idx_type j) const;
+  OCTINTERP_API std::string
+  edit_display (const float_display_format& fmt,
+                octave_idx_type i, octave_idx_type j) const;
 
-  bool save_ascii (std::ostream& os);
+  OCTINTERP_API bool save_ascii (std::ostream& os);
 
-  bool load_ascii (std::istream& is);
+  OCTINTERP_API bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool save_as_floats);
+  OCTINTERP_API bool save_binary (std::ostream& os, bool save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap,
-                    octave::mach_info::float_format fmt);
+  OCTINTERP_API bool
+  load_binary (std::istream& is, bool swap,
+               octave::mach_info::float_format fmt);
 
-  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool flag);
+  OCTINTERP_API bool
+  save_hdf5 (octave_hdf5_id loc_id, const char *name, bool flag);
 
-  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+  OCTINTERP_API bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
@@ -450,7 +457,7 @@ public:
     return os.write (matrix_value (), block_size, output_type, skip, flt_fmt);
   }
 
-  mxArray * as_mxArray (bool interleaved) const;
+  OCTINTERP_API mxArray * as_mxArray (bool interleaved) const;
 
   octave_value map (unary_mapper_t umap) const
   {
@@ -458,7 +465,7 @@ public:
     return tmp.map (umap);
   }
 
-  octave_value fast_elem_extract (octave_idx_type n) const;
+  OCTINTERP_API octave_value fast_elem_extract (octave_idx_type n) const;
 
 protected:
 
@@ -497,54 +504,54 @@ DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, octave_uint64)
 // Specializations.
 
 template <>
-octave::range<float>
+OCTINTERP_API octave::range<float>
 ov_range<float>::float_range_value (void) const;
 
 template <>
-octave::range<double>
+OCTINTERP_API octave::range<double>
 ov_range<double>::range_value (void) const;
 
 template <>
-octave::range<octave_int8>
+OCTINTERP_API octave::range<octave_int8>
 ov_range<octave_int8>::int8_range_value (void) const;
 
 template <>
-octave::range<octave_int16>
+OCTINTERP_API octave::range<octave_int16>
 ov_range<octave_int16>::int16_range_value (void) const;
 
 template <>
-octave::range<octave_int32>
+OCTINTERP_API octave::range<octave_int32>
 ov_range<octave_int32>::int32_range_value (void) const;
 
 template <>
-octave::range<octave_int64>
+OCTINTERP_API octave::range<octave_int64>
 ov_range<octave_int64>::int64_range_value (void) const;
 
 template <>
-octave::range<octave_uint8>
+OCTINTERP_API octave::range<octave_uint8>
 ov_range<octave_uint8>::uint8_range_value (void) const;
 
 template <>
-octave::range<octave_uint16>
+OCTINTERP_API octave::range<octave_uint16>
 ov_range<octave_uint16>::uint16_range_value (void) const;
 
 template <>
-octave::range<octave_uint32>
+OCTINTERP_API octave::range<octave_uint32>
 ov_range<octave_uint32>::uint32_range_value (void) const;
 
 template <>
-octave::range<octave_uint64>
+OCTINTERP_API octave::range<octave_uint64>
 ov_range<octave_uint64>::uint64_range_value (void) const;
 
 // The following specializations are here to preserve previous Range
 // performance until solutions can be generalized for other types.
 
 template <>
-idx_vector
+OCTINTERP_API idx_vector
 ov_range<double>::index_vector (bool require_integers) const;
 
 template <>
-octave_idx_type
+OCTINTERP_API octave_idx_type
 ov_range<double>::nnz (void) const;
 
 // The following specialization is also historical baggage.  For double
@@ -553,15 +560,15 @@ ov_range<double>::nnz (void) const;
 // objects.
 
 template <>
-octave_value
+OCTINTERP_API octave_value
 ov_range<double>::diag (octave_idx_type k) const;
 
 template <>
-octave_value
+OCTINTERP_API octave_value
 ov_range<double>::diag (octave_idx_type nr, octave_idx_type nc) const;
 
 template <>
-void
+OCTINTERP_API void
 ov_range<double>::print_raw (std::ostream& os, bool pr_as_read_syntax) const;
 
 

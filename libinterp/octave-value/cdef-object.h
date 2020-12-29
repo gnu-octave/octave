@@ -48,6 +48,7 @@ namespace octave
   // cdef_object, such that it can contain cdef_object objects.
 
   class
+  OCTINTERP_API
   cdef_object_rep
   {
   public:
@@ -137,7 +138,7 @@ namespace octave
 
     virtual bool is_valid (void) const { return false; }
 
-    std::string class_name (void) const;
+    OCTINTERP_API std::string class_name (void) const;
 
     virtual void mark_for_construction (const cdef_class&)
     {
@@ -173,7 +174,7 @@ namespace octave
 
     virtual void destroy (void) { delete this; }
 
-    void release (const cdef_object& obj);
+    OCTINTERP_API void release (const cdef_object& obj);
 
     virtual dim_vector dims (void) const { return dim_vector (); }
 
@@ -221,7 +222,7 @@ namespace octave
       return *this;
     }
 
-    cdef_class get_class (void) const;
+    OCTINTERP_API cdef_class get_class (void) const;
 
     void set_class (const cdef_class& cls) { rep->set_class (cls); }
 
@@ -293,7 +294,7 @@ namespace octave
 
     string_vector map_keys (void) const { return rep->map_keys (); }
 
-    octave_map map_value (void) const;
+    OCTINTERP_API octave_map map_value (void) const;
 
     const cdef_object_rep * get_rep (void) const { return rep; }
 
@@ -351,16 +352,16 @@ namespace octave
 
     ~cdef_object_base (void) { }
 
-    cdef_class get_class (void) const;
+    OCTINTERP_API cdef_class get_class (void) const;
 
-    void set_class (const cdef_class& cls);
+    OCTINTERP_API void set_class (const cdef_class& cls);
 
     cdef_object_rep * empty_clone (void) const
     {
       return new cdef_object_base (*this);
     }
 
-    cdef_object_rep * make_array (void) const;
+    OCTINTERP_API cdef_object_rep * make_array (void) const;
 
   protected:
 
@@ -403,12 +404,12 @@ namespace octave
 
     Array<cdef_object> array_value (void) const { return array; }
 
-    octave_value_list
+    OCTINTERP_API octave_value_list
     subsref (const std::string& type, const std::list<octave_value_list>& idx,
              int nargout, size_t& skip, const cdef_class& context,
              bool auto_add);
 
-    octave_value
+    OCTINTERP_API octave_value
     subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
               const octave_value& rhs);
 
@@ -434,7 +435,7 @@ namespace octave
 
     void fill_empty_values (void) { fill_empty_values (array); }
 
-    void fill_empty_values (Array<cdef_object>& arr);
+    OCTINTERP_API void fill_empty_values (Array<cdef_object>& arr);
 
     // Private copying!
     cdef_object_array (const cdef_object_array& obj)
@@ -488,24 +489,25 @@ namespace octave
       return get (pname);
     }
 
-    octave_value_list
+    OCTINTERP_API octave_value_list
     subsref (const std::string& type, const std::list<octave_value_list>& idx,
              int nargout, size_t& skip, const cdef_class& context,
              bool auto_add);
 
-    octave_value
+    OCTINTERP_API octave_value
     subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
               const octave_value& rhs);
 
-    void mark_for_construction (const cdef_class&);
+    OCTINTERP_API void mark_for_construction (const cdef_class&);
 
-    bool is_constructed_for (const cdef_class& cls) const;
+    OCTINTERP_API bool is_constructed_for (const cdef_class& cls) const;
 
-    bool is_partially_constructed_for (const cdef_class& cls) const;
+    OCTINTERP_API bool
+    is_partially_constructed_for (const cdef_class& cls) const;
 
     void mark_as_constructed (void) { ctor_list.clear (); }
 
-    void mark_as_constructed (const cdef_class& cls);
+    OCTINTERP_API void mark_as_constructed (const cdef_class& cls);
 
     bool is_constructed (void) const { return ctor_list.empty (); }
 
@@ -534,7 +536,7 @@ namespace octave
 
     handle_cdef_object& operator = (const handle_cdef_object&) = delete;
 
-    ~handle_cdef_object (void);
+    OCTINTERP_API ~handle_cdef_object (void);
 
     cdef_object_rep * clone (void) const
     {
@@ -569,7 +571,7 @@ namespace octave
 
     value_cdef_object& operator = (const value_cdef_object&) = delete;
 
-    ~value_cdef_object (void);
+    OCTINTERP_API ~value_cdef_object (void);
 
     cdef_object_rep * clone (void) const
     {

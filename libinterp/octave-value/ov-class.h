@@ -81,18 +81,18 @@ public:
 
   octave_base_value * clone (void) const { return new octave_class (*this); }
 
-  octave_base_value * unique_clone (void);
+  OCTINTERP_API octave_base_value * unique_clone (void);
 
   octave_base_value * empty_clone (void) const
   {
     return new octave_class (octave_map (map.keys ()), c_name, parent_list);
   }
 
-  Cell dotref (const octave_value_list& idx);
+  OCTINTERP_API Cell dotref (const octave_value_list& idx);
 
-  Matrix size (void);
+  OCTINTERP_API Matrix size (void);
 
-  octave_idx_type xnumel (const octave_value_list&);
+  OCTINTERP_API octave_idx_type xnumel (const octave_value_list&);
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -106,29 +106,30 @@ public:
     return tmp.length () > 0 ? tmp(0) : octave_value ();
   }
 
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout);
+  OCTINTERP_API octave_value_list
+  subsref (const std::string& type, const std::list<octave_value_list>& idx,
+           int nargout);
 
-  static octave_value numeric_conv (const Cell& val,
-                                    const std::string& type);
+  static OCTINTERP_API octave_value
+  numeric_conv (const Cell& val, const std::string& type);
 
   void assign(const std::string& k, const octave_value& rhs)
   { map.assign (k, rhs); };
 
-  octave_value subsasgn (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         const octave_value& rhs);
+  OCTINTERP_API octave_value
+   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+             const octave_value& rhs);
 
-  octave_value undef_subsasgn (const std::string& type,
-                               const std::list<octave_value_list>& idx,
-                               const octave_value& rhs);
+  OCTINTERP_API octave_value
+  undef_subsasgn (const std::string& type,
+                  const std::list<octave_value_list>& idx,
+                  const octave_value& rhs);
 
-  idx_vector index_vector (bool require_integers = false) const;
+  OCTINTERP_API idx_vector index_vector (bool require_integers = false) const;
 
   dim_vector dims (void) const { return map.dims (); }
 
-  size_t byte_size (void) const;
+  OCTINTERP_API size_t byte_size (void) const;
 
   // This is the number of elements in each field.  The total number
   // of elements is numel () * nfields ().
@@ -162,11 +163,11 @@ public:
 
   bool isobject (void) const { return true; }
 
-  bool is_true (void) const;
+  OCTINTERP_API bool is_true (void) const;
 
   octave_map map_value (void) const { return map; }
 
-  string_vector map_keys (void) const;
+  OCTINTERP_API string_vector map_keys (void) const;
 
   std::list<std::string> parent_class_name_list (void) const
   { return parent_list; }
@@ -174,38 +175,41 @@ public:
   string_vector parent_class_names (void) const
   { return string_vector (parent_list); }
 
-  octave_base_value * find_parent_class (const std::string&);
+  OCTINTERP_API octave_base_value * find_parent_class (const std::string&);
 
-  octave_base_value * unique_parent_class (const std::string&);
+  OCTINTERP_API octave_base_value * unique_parent_class (const std::string&);
 
-  bool is_instance_of (const std::string&) const;
+  OCTINTERP_API bool is_instance_of (const std::string&) const;
 
-  string_vector string_vector_value (bool pad) const;
+  OCTINTERP_API string_vector string_vector_value (bool pad) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false);
+  OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+  OCTINTERP_API void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool reconstruct_exemplar (void);
+  OCTINTERP_API bool reconstruct_exemplar (void);
 
-  static void clear_exemplar_map (void);
+  OCTINTERP_API static void clear_exemplar_map (void);
 
-  bool reconstruct_parents (void);
+  OCTINTERP_API bool reconstruct_parents (void);
 
-  bool save_ascii (std::ostream& os);
+  OCTINTERP_API bool save_ascii (std::ostream& os);
 
-  bool load_ascii (std::istream& is);
+  OCTINTERP_API bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool save_as_floats);
+  OCTINTERP_API bool save_binary (std::ostream& os, bool save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap,
-                    octave::mach_info::float_format fmt);
+  OCTINTERP_API bool
+  load_binary (std::istream& is, bool swap,
+               octave::mach_info::float_format fmt);
 
-  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
+  OCTINTERP_API bool
+  save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
-  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+  OCTINTERP_API bool
+  load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray * as_mxArray (bool interleaved) const;
+  OCTINTERP_API mxArray * as_mxArray (bool interleaved) const;
 
 private:
   octave_map map;
@@ -218,7 +222,7 @@ public:
   static int static_type_id (void) { return t_id; }
   static std::string static_type_name (void) { return t_name; }
   static std::string static_class_name (void) { return "<unknown>"; }
-  static void register_type (octave::type_info&);
+  static OCTINTERP_API void register_type (octave::type_info&);
 
 private:
   static int t_id;
@@ -227,13 +231,13 @@ private:
   std::string c_name;
   std::list<std::string> parent_list;
 
-  bool in_class_method (void);
-  std::string get_current_method_class (void);
+  OCTINTERP_API bool in_class_method (void);
+  OCTINTERP_API std::string get_current_method_class (void);
 
-  octave_value subsasgn_common (const octave_value& obj,
-                                const std::string& type,
-                                const std::list<octave_value_list>& idx,
-                                const octave_value& rhs);
+  OCTINTERP_API octave_value
+  subsasgn_common (const octave_value& obj, const std::string& type,
+                   const std::list<octave_value_list>& idx,
+                   const octave_value& rhs);
 
   int obsolete_copies;
 
@@ -246,7 +250,7 @@ public:
 
     exemplar_info (void) : field_names (), parent_class_names () { }
 
-    exemplar_info (const octave_value& obj);
+    OCTINTERP_API exemplar_info (const octave_value& obj);
 
     exemplar_info (const exemplar_info& x)
       : field_names (x.field_names),
@@ -270,7 +274,7 @@ public:
 
     std::list<std::string> parents (void) const { return parent_class_names; }
 
-    bool compare (const octave_value& obj) const;
+    OCTINTERP_API bool compare (const octave_value& obj) const;
 
   private:
 

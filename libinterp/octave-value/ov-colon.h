@@ -70,9 +70,9 @@ public:
 
   bool is_magic_colon (void) const { return true; }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false);
+  OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+  OCTINTERP_API void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
 private:
 

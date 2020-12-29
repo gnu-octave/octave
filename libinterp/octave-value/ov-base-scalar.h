@@ -45,6 +45,7 @@
 
 template <typename ST>
 class
+OCTINTERP_API
 octave_base_scalar : public octave_base_value
 {
 public:
@@ -71,22 +72,22 @@ public:
   // functions.
   using octave_base_value::subsref;
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx);
+  OCTINTERP_API octave_value
+  subsref (const std::string& type, const std::list<octave_value_list>& idx);
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
   { return subsref (type, idx); }
 
-  octave_value subsasgn (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         const octave_value& rhs);
+  OCTINTERP_API octave_value
+  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+            const octave_value& rhs);
 
   bool is_constant (void) const { return true; }
 
   bool is_defined (void) const { return true; }
 
-  dim_vector dims (void) const;
+  OCTINTERP_API dim_vector dims (void) const;
 
   octave_idx_type numel (void) const { return 1; }
 
@@ -94,9 +95,9 @@ public:
 
   octave_idx_type nnz (void) const { return (scalar != ST () ? 1 : 0); }
 
-  octave_value permute (const Array<int>&, bool = false) const;
+  OCTINTERP_API octave_value permute (const Array<int>&, bool = false) const;
 
-  octave_value reshape (const dim_vector& new_dims) const;
+  OCTINTERP_API octave_value reshape (const dim_vector& new_dims) const;
 
   size_t byte_size (void) const { return sizeof (ST); }
 
@@ -104,9 +105,9 @@ public:
 
   octave_value any (int = 0) const { return (scalar != ST ()); }
 
-  octave_value diag (octave_idx_type k = 0) const;
+  OCTINTERP_API octave_value diag (octave_idx_type k = 0) const;
 
-  octave_value diag (octave_idx_type m, octave_idx_type n) const;
+  OCTINTERP_API octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
   octave_value sort (octave_idx_type, sortmode) const
   { return octave_value (scalar); }
@@ -138,20 +139,23 @@ public:
 
   bool isnumeric (void) const { return true; }
 
-  bool is_true (void) const;
+  OCTINTERP_API bool is_true (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false);
+  OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+  OCTINTERP_API void
+  print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool print_name_tag (std::ostream& os, const std::string& name) const;
+  OCTINTERP_API bool
+  print_name_tag (std::ostream& os, const std::string& name) const;
 
-  void short_disp (std::ostream& os) const;
+  OCTINTERP_API void short_disp (std::ostream& os) const;
 
-  float_display_format get_edit_display_format (void) const;
+  OCTINTERP_API float_display_format get_edit_display_format (void) const;
 
-  std::string edit_display (const float_display_format& fmt,
-                            octave_idx_type i, octave_idx_type j) const;
+  OCTINTERP_API std::string
+  edit_display (const float_display_format& fmt,
+                octave_idx_type i, octave_idx_type j) const;
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
@@ -161,9 +165,10 @@ public:
 
   ST& scalar_ref (void) { return scalar; }
 
-  octave_value fast_elem_extract (octave_idx_type n) const;
+  OCTINTERP_API octave_value fast_elem_extract (octave_idx_type n) const;
 
-  bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
+  OCTINTERP_API bool
+  fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
 protected:
 

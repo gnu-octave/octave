@@ -83,15 +83,16 @@ public:
 
   bool is_classdef_object (void) const { return true; }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false);
+  OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+  OCTINTERP_API void
+  print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool is_instance_of (const std::string& cls_name) const;
+  OCTINTERP_API bool is_instance_of (const std::string& cls_name) const;
 
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout);
+  OCTINTERP_API octave_value_list
+  subsref (const std::string& type, const std::list<octave_value_list>& idx,
+           int nargout);
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
@@ -100,22 +101,22 @@ public:
     return (retval.length () > 0 ? retval(0) : octave_value ());
   }
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx,
-                        bool auto_add);
+  OCTINTERP_API octave_value
+  subsref (const std::string& type, const std::list<octave_value_list>& idx,
+           bool auto_add);
 
-  octave_value subsasgn (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         const octave_value& rhs);
+  OCTINTERP_API octave_value
+  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+            const octave_value& rhs);
 
-  octave_value
+  OCTINTERP_API octave_value
   undef_subsasgn (const std::string& type,
                   const std::list<octave_value_list>& idx,
                   const octave_value& rhs);
 
-  Matrix size (void);
+  OCTINTERP_API Matrix size (void);
 
-  octave_idx_type xnumel (const octave_value_list&);
+  OCTINTERP_API octave_idx_type xnumel (const octave_value_list&);
 
   string_vector map_keys (void) const { return object.map_keys (); }
 
@@ -135,10 +136,10 @@ public:
     return object.get_property (idx, name);
   }
 
-  static octave_value superclass_ref (const std::string& meth,
-                                      const std::string& cls);
+  static OCTINTERP_API octave_value
+  superclass_ref (const std::string& meth, const std::string& cls);
 
-  static octave_value metaclass_query (const std::string& cls);
+  static OCTINTERP_API octave_value metaclass_query (const std::string& cls);
 
 public:
 
@@ -149,7 +150,7 @@ public:
   static int static_type_id (void) { return t_id; }
   static std::string static_type_name (void) { return t_name; }
   static std::string static_class_name (void) { return "<unknown>"; }
-  static void register_type (octave::type_info&);
+  static OCTINTERP_API void register_type (octave::type_info&);
 
 private:
 
@@ -218,11 +219,12 @@ public:
   bool accepts_postfix_index (char type) const
   { return object.meta_accepts_postfix_index (type); }
 
-  bool is_classdef_method (const std::string& cname = "") const;
+  OCTINTERP_API bool is_classdef_method (const std::string& cname = "") const;
 
-  bool is_classdef_constructor (const std::string& cname = "") const;
+  OCTINTERP_API bool
+  is_classdef_constructor (const std::string& cname = "") const;
 
-  std::string doc_string (const std::string& meth_name) const;
+  OCTINTERP_API std::string doc_string (const std::string& meth_name) const;
 
 private:
 
@@ -258,13 +260,14 @@ public:
     return execute (tw, nargout, args);
   }
 
-  octave_value_list execute (octave::tree_evaluator& tw, int nargout,
-                             const octave_value_list& idx);
+  OCTINTERP_API octave_value_list
+  execute (octave::tree_evaluator& tw, int nargout,
+           const octave_value_list& idx);
 
 private:
 
-  bool is_constructed_object (octave::tree_evaluator& tw,
-                              const std::string& nm);
+  OCTINTERP_API bool
+  is_constructed_object (octave::tree_evaluator& tw, const std::string& nm);
 
 private:
 

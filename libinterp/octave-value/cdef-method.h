@@ -73,9 +73,9 @@ namespace octave
 
       void set_function (const octave_value& fcn) { function = fcn; }
 
-      std::string get_doc_string (void);
+      OCTINTERP_API std::string get_doc_string (void);
 
-      bool check_access (void) const;
+      OCTINTERP_API bool check_access (void) const;
 
       bool is_external (void) const { return ! dispatch_type.empty (); }
 
@@ -84,18 +84,18 @@ namespace octave
         dispatch_type = dtype;
       }
 
-      octave_value_list execute (const octave_value_list& args, int nargout,
-                                 bool do_check_access = true,
-                                 const std::string& who = "");
+      OCTINTERP_API octave_value_list
+      execute (const octave_value_list& args, int nargout,
+               bool do_check_access = true, const std::string& who = "");
 
-      octave_value_list execute (const cdef_object& obj,
-                                 const octave_value_list& args, int nargout,
-                                 bool do_check_access = true,
-                                 const std::string& who = "");
+      OCTINTERP_API octave_value_list
+      execute (const cdef_object& obj,
+               const octave_value_list& args, int nargout,
+               bool do_check_access = true, const std::string& who = "");
 
-      bool is_constructor (void) const;
+      OCTINTERP_API bool is_constructor (void) const;
 
-      bool is_defined_in_class (const std::string& cname) const;
+      OCTINTERP_API bool is_defined_in_class (const std::string& cname) const;
 
       octave_value_list
       meta_subsref (const std::string& type,
@@ -113,7 +113,7 @@ namespace octave
           dispatch_type (m.dispatch_type)
       { }
 
-      void check_method (void);
+      OCTINTERP_API void check_method (void);
 
       cdef_method wrap (void)
       {

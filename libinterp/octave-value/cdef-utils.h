@@ -39,70 +39,70 @@ namespace octave
   class cdef_class;
   class cdef_package;
 
-  extern std::string
+  extern OCTINTERP_API std::string
   get_base_name (const std::string& nm);
 
-  extern void
+  extern OCTINTERP_API void
   make_function_of_class (const std::string& class_name,
                           const octave_value& fcn);
 
-  extern void
+  extern OCTINTERP_API void
   make_function_of_class (const cdef_class& cls, const octave_value& fcn);
 
-  extern cdef_class
+  extern OCTINTERP_API cdef_class
   lookup_class (const std::string& name, bool error_if_not_found = true,
                 bool load_if_not_found = true);
 
-  extern cdef_class
+  extern OCTINTERP_API cdef_class
   lookup_class (const cdef_class& cls);
 
-  extern cdef_class
+  extern OCTINTERP_API cdef_class
   lookup_class (const octave_value& ov);
 
-  extern std::list<cdef_class>
+  extern OCTINTERP_API std::list<cdef_class>
   lookup_classes (const Cell& cls_list);
 
-  extern octave_value
+  extern OCTINTERP_API octave_value
   to_ov (const cdef_object& obj);
 
-  extern octave_value
+  extern OCTINTERP_API octave_value
   to_ov (const octave_value& ov);
 
-  extern cdef_object
+  extern OCTINTERP_API cdef_object
   to_cdef (const octave_value& val);
 
-  extern cdef_object&
+  extern OCTINTERP_API cdef_object&
   to_cdef_ref (const octave_value& val);
 
-  extern cdef_object
+  extern OCTINTERP_API cdef_object
   to_cdef (const cdef_object& obj);
 
-  extern octave_value
+  extern OCTINTERP_API octave_value
   to_ov (const std::list<cdef_class>& class_list);
 
-  extern bool
+  extern OCTINTERP_API bool
   is_dummy_method (const octave_value& fcn);
 
-  extern bool
+  extern OCTINTERP_API bool
   is_superclass (const cdef_class& clsa, const cdef_class& clsb,
                  bool allow_equal = true, int max_depth = -1);
-  extern bool
+  extern OCTINTERP_API bool
   is_strict_superclass (const cdef_class& clsa, const cdef_class& clsb);
 
-  extern bool
+  extern OCTINTERP_API bool
   is_direct_superclass (const cdef_class& clsa, const cdef_class& clsb);
 
-  extern cdef_package
+  extern OCTINTERP_API cdef_package
   lookup_package (const std::string& name, bool error_if_not_found = true,
                   bool load_if_not_found = true);
 
-  extern cdef_class
+  extern OCTINTERP_API cdef_class
   get_class_context (std::string& name, bool& in_constructor);
 
-  extern cdef_class
+  extern OCTINTERP_API cdef_class
   get_class_context (void);
 
-  extern bool
+  extern OCTINTERP_API bool
   check_access (const cdef_class& cls, const octave_value& acc,
                 const std::string& meth_name = "",
                 const std::string& prop_name = "",

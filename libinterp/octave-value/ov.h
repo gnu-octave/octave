@@ -144,22 +144,23 @@ public:
     unknown_assign_op
   };
 
-  static binary_op assign_op_to_binary_op (assign_op);
+  static OCTINTERP_API binary_op assign_op_to_binary_op (assign_op);
 
-  static assign_op binary_op_to_assign_op (binary_op);
+  static OCTINTERP_API assign_op binary_op_to_assign_op (binary_op);
 
-  static std::string unary_op_as_string (unary_op);
-  static std::string unary_op_fcn_name (unary_op);
+  static OCTINTERP_API std::string unary_op_as_string (unary_op);
+  static OCTINTERP_API std::string unary_op_fcn_name (unary_op);
 
-  static std::string binary_op_as_string (binary_op);
-  static std::string binary_op_fcn_name (binary_op);
+  static OCTINTERP_API std::string binary_op_as_string (binary_op);
+  static OCTINTERP_API std::string binary_op_fcn_name (binary_op);
 
-  static std::string binary_op_fcn_name (compound_binary_op);
+  static OCTINTERP_API std::string binary_op_fcn_name (compound_binary_op);
 
-  static std::string assign_op_as_string (assign_op);
+  static OCTINTERP_API std::string assign_op_as_string (assign_op);
 
-  static octave_value empty_conv (const std::string& type,
-                                  const octave_value& rhs = octave_value ());
+  static OCTINTERP_API octave_value
+  empty_conv (const std::string& type,
+              const octave_value& rhs = octave_value ());
 
   enum magic_colon { magic_colon_t };
 
@@ -169,12 +170,12 @@ public:
     rep->count++;
   }
 
-  octave_value (short int i);
-  octave_value (unsigned short int i);
-  octave_value (int i);
-  octave_value (unsigned int i);
-  octave_value (long int i);
-  octave_value (unsigned long int i);
+  OCTINTERP_API octave_value (short int i);
+  OCTINTERP_API octave_value (unsigned short int i);
+  OCTINTERP_API octave_value (int i);
+  OCTINTERP_API octave_value (unsigned int i);
+  OCTINTERP_API octave_value (long int i);
+  OCTINTERP_API octave_value (unsigned long int i);
 
   // FIXME: These are kluges.  They turn into doubles internally, which will
   // break for very large values.  We just use them to store things like
@@ -182,127 +183,148 @@ public:
   // than can be represented exactly in a double.
 
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
-  octave_value (long long int i);
+  OCTINTERP_API octave_value (long long int i);
 #endif
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
-  octave_value (unsigned long long int i);
+  OCTINTERP_API octave_value (unsigned long long int i);
 #endif
 
-  octave_value (octave::sys::time t);
-  octave_value (double d);
-  octave_value (float d);
-  octave_value (const Array<octave_value>& a, bool is_cs_list = false);
-  octave_value (const Cell& c, bool is_cs_list = false);
-  octave_value (const Matrix& m, const MatrixType& t = MatrixType ());
-  octave_value (const FloatMatrix& m, const MatrixType& t = MatrixType ());
-  octave_value (const NDArray& nda);
-  octave_value (const FloatNDArray& nda);
-  octave_value (const Array<double>& m);
-  octave_value (const Array<float>& m);
-  octave_value (const DiagMatrix& d);
-  octave_value (const DiagArray2<double>& d);
-  octave_value (const DiagArray2<float>& d);
-  octave_value (const DiagArray2<Complex>& d);
-  octave_value (const DiagArray2<FloatComplex>& d);
-  octave_value (const FloatDiagMatrix& d);
-  octave_value (const RowVector& v);
-  octave_value (const FloatRowVector& v);
-  octave_value (const ColumnVector& v);
-  octave_value (const FloatColumnVector& v);
-  octave_value (const Complex& C);
-  octave_value (const FloatComplex& C);
-  octave_value (const ComplexMatrix& m, const MatrixType& t = MatrixType ());
-  octave_value (const FloatComplexMatrix& m,
-                const MatrixType& t = MatrixType ());
-  octave_value (const ComplexNDArray& cnda);
-  octave_value (const FloatComplexNDArray& cnda);
-  octave_value (const Array<Complex>& m);
-  octave_value (const Array<FloatComplex>& m);
-  octave_value (const ComplexDiagMatrix& d);
-  octave_value (const FloatComplexDiagMatrix& d);
-  octave_value (const ComplexRowVector& v);
-  octave_value (const FloatComplexRowVector& v);
-  octave_value (const ComplexColumnVector& v);
-  octave_value (const FloatComplexColumnVector& v);
-  octave_value (const PermMatrix& p);
-  octave_value (bool b);
-  octave_value (const boolMatrix& bm, const MatrixType& t = MatrixType ());
-  octave_value (const boolNDArray& bnda);
-  octave_value (const Array<bool>& bnda);
-  octave_value (char c, char type = '\'');
-  octave_value (const char *s, char type = '\'');
-  octave_value (const std::string& s, char type = '\'');
-  octave_value (const string_vector& s, char type = '\'');
-  octave_value (const charMatrix& chm,  char type = '\'');
-  octave_value (const charNDArray& chnda, char type = '\'');
-  octave_value (const Array<char>& chnda, char type = '\'');
+  OCTINTERP_API octave_value (octave::sys::time t);
+  OCTINTERP_API octave_value (double d);
+  OCTINTERP_API octave_value (float d);
+  OCTINTERP_API octave_value (const Array<octave_value>& a,
+                              bool is_cs_list = false);
+  OCTINTERP_API octave_value (const Cell& c, bool is_cs_list = false);
+  OCTINTERP_API octave_value (const Matrix& m,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const FloatMatrix& m,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const NDArray& nda);
+  OCTINTERP_API octave_value (const FloatNDArray& nda);
+  OCTINTERP_API octave_value (const Array<double>& m);
+  OCTINTERP_API octave_value (const Array<float>& m);
+  OCTINTERP_API octave_value (const DiagMatrix& d);
+  OCTINTERP_API octave_value (const DiagArray2<double>& d);
+  OCTINTERP_API octave_value (const DiagArray2<float>& d);
+  OCTINTERP_API octave_value (const DiagArray2<Complex>& d);
+  OCTINTERP_API octave_value (const DiagArray2<FloatComplex>& d);
+  OCTINTERP_API octave_value (const FloatDiagMatrix& d);
+  OCTINTERP_API octave_value (const RowVector& v);
+  OCTINTERP_API octave_value (const FloatRowVector& v);
+  OCTINTERP_API octave_value (const ColumnVector& v);
+  OCTINTERP_API octave_value (const FloatColumnVector& v);
+  OCTINTERP_API octave_value (const Complex& C);
+  OCTINTERP_API octave_value (const FloatComplex& C);
+  OCTINTERP_API octave_value (const ComplexMatrix& m,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const FloatComplexMatrix& m,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const ComplexNDArray& cnda);
+  OCTINTERP_API octave_value (const FloatComplexNDArray& cnda);
+  OCTINTERP_API octave_value (const Array<Complex>& m);
+  OCTINTERP_API octave_value (const Array<FloatComplex>& m);
+  OCTINTERP_API octave_value (const ComplexDiagMatrix& d);
+  OCTINTERP_API octave_value (const FloatComplexDiagMatrix& d);
+  OCTINTERP_API octave_value (const ComplexRowVector& v);
+  OCTINTERP_API octave_value (const FloatComplexRowVector& v);
+  OCTINTERP_API octave_value (const ComplexColumnVector& v);
+  OCTINTERP_API octave_value (const FloatComplexColumnVector& v);
+  OCTINTERP_API octave_value (const PermMatrix& p);
+  OCTINTERP_API octave_value (bool b);
+  OCTINTERP_API octave_value (const boolMatrix& bm,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const boolNDArray& bnda);
+  OCTINTERP_API octave_value (const Array<bool>& bnda);
+  OCTINTERP_API octave_value (char c, char type = '\'');
+  OCTINTERP_API octave_value (const char *s, char type = '\'');
+  OCTINTERP_API octave_value (const std::string& s, char type = '\'');
+  OCTINTERP_API octave_value (const string_vector& s, char type = '\'');
+  OCTINTERP_API octave_value (const charMatrix& chm,  char type = '\'');
+  OCTINTERP_API octave_value (const charNDArray& chnda, char type = '\'');
+  OCTINTERP_API octave_value (const Array<char>& chnda, char type = '\'');
 
-  octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
-  octave_value (const Sparse<double>& m, const MatrixType& t = MatrixType ());
-  octave_value (const SparseComplexMatrix& m,
-                const MatrixType& t = MatrixType ());
-  octave_value (const Sparse<Complex>& m, const MatrixType& t = MatrixType ());
-  octave_value (const SparseBoolMatrix& bm,
-                const MatrixType& t = MatrixType ());
-  octave_value (const Sparse<bool>& m, const MatrixType& t = MatrixType ());
-  octave_value (const octave_int8& i);
-  octave_value (const octave_int16& i);
-  octave_value (const octave_int32& i);
-  octave_value (const octave_int64& i);
-  octave_value (const octave_uint8& i);
-  octave_value (const octave_uint16& i);
-  octave_value (const octave_uint32& i);
-  octave_value (const octave_uint64& i);
-  octave_value (const int8NDArray& inda);
-  octave_value (const Array<octave_int8>& inda);
-  octave_value (const int16NDArray& inda);
-  octave_value (const Array<octave_int16>& inda);
-  octave_value (const int32NDArray& inda);
-  octave_value (const Array<octave_int32>& inda);
-  octave_value (const int64NDArray& inda);
-  octave_value (const Array<octave_int64>& inda);
-  octave_value (const uint8NDArray& inda);
-  octave_value (const Array<octave_uint8>& inda);
-  octave_value (const uint16NDArray& inda);
-  octave_value (const Array<octave_uint16>& inda);
-  octave_value (const uint32NDArray& inda);
-  octave_value (const Array<octave_uint32>& inda);
-  octave_value (const uint64NDArray& inda);
-  octave_value (const Array<octave_uint64>& inda);
-  octave_value (const Array<octave_idx_type>& inda,
-                bool zero_based = false, bool cache_index = false);
-  octave_value (const Array<std::string>& cellstr);
-  octave_value (const idx_vector& idx, bool lazy = true);
+  OCTINTERP_API octave_value (const SparseMatrix& m,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const Sparse<double>& m,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const SparseComplexMatrix& m,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const Sparse<Complex>& m,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const SparseBoolMatrix& bm,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const Sparse<bool>& m,
+                              const MatrixType& t = MatrixType ());
+  OCTINTERP_API octave_value (const octave_int8& i);
+  OCTINTERP_API octave_value (const octave_int16& i);
+  OCTINTERP_API octave_value (const octave_int32& i);
+  OCTINTERP_API octave_value (const octave_int64& i);
+  OCTINTERP_API octave_value (const octave_uint8& i);
+  OCTINTERP_API octave_value (const octave_uint16& i);
+  OCTINTERP_API octave_value (const octave_uint32& i);
+  OCTINTERP_API octave_value (const octave_uint64& i);
+  OCTINTERP_API octave_value (const int8NDArray& inda);
+  OCTINTERP_API octave_value (const Array<octave_int8>& inda);
+  OCTINTERP_API octave_value (const int16NDArray& inda);
+  OCTINTERP_API octave_value (const Array<octave_int16>& inda);
+  OCTINTERP_API octave_value (const int32NDArray& inda);
+  OCTINTERP_API octave_value (const Array<octave_int32>& inda);
+  OCTINTERP_API octave_value (const int64NDArray& inda);
+  OCTINTERP_API octave_value (const Array<octave_int64>& inda);
+  OCTINTERP_API octave_value (const uint8NDArray& inda);
+  OCTINTERP_API octave_value (const Array<octave_uint8>& inda);
+  OCTINTERP_API octave_value (const uint16NDArray& inda);
+  OCTINTERP_API octave_value (const Array<octave_uint16>& inda);
+  OCTINTERP_API octave_value (const uint32NDArray& inda);
+  OCTINTERP_API octave_value (const Array<octave_uint32>& inda);
+  OCTINTERP_API octave_value (const uint64NDArray& inda);
+  OCTINTERP_API octave_value (const Array<octave_uint64>& inda);
+  OCTINTERP_API octave_value (const Array<octave_idx_type>& inda,
+                              bool zero_based = false,
+                              bool cache_index = false);
+  OCTINTERP_API octave_value (const Array<std::string>& cellstr);
+  OCTINTERP_API octave_value (const idx_vector& idx, bool lazy = true);
   OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
-  octave_value (double base, double limit, double inc);
+  OCTINTERP_API octave_value (double base, double limit, double inc);
   OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
-  octave_value (const Range& r, bool force_range = false);
-  octave_value (const octave::range<char>& r, char type, bool force_range = false);
-  octave_value (const octave::range<float>& r, bool force_range = false);
-  octave_value (const octave::range<double>& r, bool force_range = false);
-  octave_value (const octave::range<octave_int8>& r, bool force_range = false);
-  octave_value (const octave::range<octave_int16>& r, bool force_range = false);
-  octave_value (const octave::range<octave_int32>& r, bool force_range = false);
-  octave_value (const octave::range<octave_int64>& r, bool force_range = false);
-  octave_value (const octave::range<octave_uint8>& r, bool force_range = false);
-  octave_value (const octave::range<octave_uint16>& r, bool force_range = false);
-  octave_value (const octave::range<octave_uint32>& r, bool force_range = false);
-  octave_value (const octave::range<octave_uint64>& r, bool force_range = false);
-  octave_value (const octave_map& m);
-  octave_value (const octave_scalar_map& m);
-  octave_value (const std::map<std::string, octave_value>&);
-  octave_value (const octave_map& m, const std::string& id,
-                const std::list<std::string>& plist);
-  octave_value (const octave_scalar_map& m, const std::string& id,
-                const std::list<std::string>& plist);
+  OCTINTERP_API octave_value (const Range& r, bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<char>& r, char type,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<float>& r,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<double>& r,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<octave_int8>& r,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<octave_int16>& r,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<octave_int32>& r,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<octave_int64>& r,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<octave_uint8>& r,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<octave_uint16>& r,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<octave_uint32>& r,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave::range<octave_uint64>& r,
+                              bool force_range = false);
+  OCTINTERP_API octave_value (const octave_map& m);
+  OCTINTERP_API octave_value (const octave_scalar_map& m);
+  OCTINTERP_API octave_value (const std::map<std::string, octave_value>&);
+  OCTINTERP_API octave_value (const octave_map& m, const std::string& id,
+                              const std::list<std::string>& plist);
+  OCTINTERP_API octave_value (const octave_scalar_map& m, const std::string& id,
+                              const std::list<std::string>& plist);
 
   // This one is explicit because it can cause some trouble to
   // accidentally create a cs-list when one was not intended.
-  explicit octave_value (const octave_value_list& m);
+  explicit OCTINTERP_API octave_value (const octave_value_list& m);
 
-  octave_value (octave_value::magic_colon);
+  OCTINTERP_API octave_value (octave_value::magic_colon);
 
-  octave_value (octave_base_value *new_rep, bool borrow = false);
+  OCTINTERP_API octave_value (octave_base_value *new_rep, bool borrow = false);
 
   // Copy constructor.
 
@@ -320,7 +342,7 @@ public:
 
   // This should only be called for derived types.
 
-  octave_base_value * clone (void) const;
+  OCTINTERP_API octave_base_value * clone (void) const;
 
   octave_base_value * empty_clone (void) const
   { return rep->empty_clone (); }
@@ -408,7 +430,7 @@ public:
   octave_base_value::type_conv_info numeric_demotion_function (void) const
   { return rep->numeric_demotion_function (); }
 
-  void maybe_mutate (void);
+  OCTINTERP_API void maybe_mutate (void);
 
   octave_value squeeze (void) const
   { return rep->squeeze (); }
@@ -447,8 +469,8 @@ public:
   // FIXME: Do we really need all these different versions of subsref
   // and related functions?
 
-  octave_value single_subsref (const std::string& type,
-                               const octave_value_list& idx);
+  OCTINTERP_API octave_value
+  single_subsref (const std::string& type, const octave_value_list& idx);
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
@@ -459,22 +481,21 @@ public:
                         bool auto_add)
   { return rep->subsref (type, idx, auto_add); }
 
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout);
+  OCTINTERP_API octave_value_list
+  subsref (const std::string& type, const std::list<octave_value_list>& idx,
+           int nargout);
 
-  octave_value next_subsref (const std::string& type, const
-                             std::list<octave_value_list>& idx,
-                             size_t skip = 1);
+  OCTINTERP_API octave_value
+  next_subsref (const std::string& type,
+                const std::list<octave_value_list>& idx, size_t skip = 1);
 
-  octave_value_list next_subsref (int nargout,
-                                  const std::string& type, const
-                                  std::list<octave_value_list>& idx,
-                                  size_t skip = 1);
+  OCTINTERP_API octave_value_list
+  next_subsref (int nargout, const std::string& type,
+                const std::list<octave_value_list>& idx, size_t skip = 1);
 
-  octave_value next_subsref (bool auto_add, const std::string& type, const
-                             std::list<octave_value_list>& idx,
-                             size_t skip = 1);
+  OCTINTERP_API octave_value
+  next_subsref (bool auto_add, const std::string& type,
+                const std::list<octave_value_list>& idx, size_t skip = 1);
 
   octave_value index_op (const octave_value_list& idx, bool resize_ok = false)
   {
@@ -488,19 +509,20 @@ public:
     return index_op (idx, resize_ok);
   }
 
-  octave_value subsasgn (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         const octave_value& rhs);
+  OCTINTERP_API octave_value
+  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+            const octave_value& rhs);
 
-  octave_value undef_subsasgn (const std::string& type,
-                               const std::list<octave_value_list>& idx,
-                               const octave_value& rhs);
+  OCTINTERP_API octave_value
+  undef_subsasgn (const std::string& type,
+                  const std::list<octave_value_list>& idx,
+                  const octave_value& rhs);
 
-  octave_value& assign (assign_op op, const std::string& type,
-                        const std::list<octave_value_list>& idx,
-                        const octave_value& rhs);
+  OCTINTERP_API octave_value&
+  assign (assign_op op, const std::string& type,
+          const std::list<octave_value_list>& idx, const octave_value& rhs);
 
-  octave_value& assign (assign_op, const octave_value& rhs);
+  OCTINTERP_API octave_value& assign (assign_op, const octave_value& rhs);
 
   idx_vector index_vector (bool require_integers = false) const
   {
@@ -511,13 +533,13 @@ public:
 
   dim_vector dims (void) const { return rep->dims (); }
 
-  std::string get_dims_str (void) const;
+  OCTINTERP_API std::string get_dims_str (void) const;
 
   octave_idx_type rows (void) const { return rep->rows (); }
 
   octave_idx_type columns (void) const { return rep->columns (); }
 
-  octave_idx_type length (void) const;
+  OCTINTERP_API octave_idx_type length (void) const;
 
   int ndims (void) const { return rep->ndims (); }
 
@@ -980,9 +1002,9 @@ public:
   octave::range<octave_uint64> uint64_range_value (void) const
   { return rep->uint64_range_value (); }
 
-  octave_map map_value (void) const;
+  OCTINTERP_API octave_map map_value (void) const;
 
-  octave_scalar_map scalar_map_value (void) const;
+  OCTINTERP_API octave_scalar_map scalar_map_value (void) const;
 
   string_vector map_keys (void) const
   { return rep->map_keys (); }
@@ -1003,67 +1025,80 @@ public:
   bool is_instance_of (const std::string& cls_name) const
   { return rep->is_instance_of (cls_name); }
 
-  octave_classdef * classdef_object_value (bool silent = false) const;
+  OCTINTERP_API octave_classdef *
+  classdef_object_value (bool silent = false) const;
 
-  octave_function * function_value (bool silent = false) const;
+  OCTINTERP_API octave_function *
+  function_value (bool silent = false) const;
 
-  octave_user_function * user_function_value (bool silent = false) const;
+  OCTINTERP_API octave_user_function *
+  user_function_value (bool silent = false) const;
 
-  octave_user_script * user_script_value (bool silent = false) const;
+  OCTINTERP_API octave_user_script *
+  user_script_value (bool silent = false) const;
 
-  octave_user_code * user_code_value (bool silent = false) const;
+  OCTINTERP_API octave_user_code * user_code_value (bool silent = false) const;
 
-  octave_fcn_handle * fcn_handle_value (bool silent = false) const;
+  OCTINTERP_API octave_fcn_handle *
+  fcn_handle_value (bool silent = false) const;
 
-  octave_value_list list_value (void) const;
+  OCTINTERP_API octave_value_list list_value (void) const;
 
-  ColumnVector column_vector_value (bool frc_str_conv = false,
-                                    bool frc_vec_conv = false) const;
+  OCTINTERP_API ColumnVector
+  column_vector_value (bool frc_str_conv = false,
+                       bool frc_vec_conv = false) const;
 
-  ComplexColumnVector
+  OCTINTERP_API ComplexColumnVector
   complex_column_vector_value (bool frc_str_conv = false,
                                bool frc_vec_conv = false) const;
 
-  RowVector row_vector_value (bool frc_str_conv = false,
-                              bool frc_vec_conv = false) const;
+  OCTINTERP_API RowVector
+  row_vector_value (bool frc_str_conv = false,
+                    bool frc_vec_conv = false) const;
 
-  ComplexRowVector
+  OCTINTERP_API ComplexRowVector
   complex_row_vector_value (bool frc_str_conv = false,
                             bool frc_vec_conv = false) const;
 
-  FloatColumnVector float_column_vector_value (bool frc_str_conv = false,
-                                               bool frc_vec_conv = false) const;
+  OCTINTERP_API FloatColumnVector
+  float_column_vector_value (bool frc_str_conv = false,
+                             bool frc_vec_conv = false) const;
 
-  FloatComplexColumnVector
+  OCTINTERP_API FloatComplexColumnVector
   float_complex_column_vector_value (bool frc_str_conv = false,
                                      bool frc_vec_conv = false) const;
 
-  FloatRowVector float_row_vector_value (bool frc_str_conv = false,
-                                         bool frc_vec_conv = false) const;
+  OCTINTERP_API FloatRowVector
+  float_row_vector_value (bool frc_str_conv = false,
+                          bool frc_vec_conv = false) const;
 
-  FloatComplexRowVector
+  OCTINTERP_API FloatComplexRowVector
   float_complex_row_vector_value (bool frc_str_conv = false,
                                   bool frc_vec_conv = false) const;
 
-  Array<int> int_vector_value (bool req_int = false,
-                               bool frc_str_conv = false,
-                               bool frc_vec_conv = false) const;
+  OCTINTERP_API Array<int>
+  int_vector_value (bool req_int = false,
+                    bool frc_str_conv = false,
+                    bool frc_vec_conv = false) const;
 
-  Array<octave_idx_type>
+  OCTINTERP_API Array<octave_idx_type>
   octave_idx_type_vector_value (bool req_int = false,
                                 bool frc_str_conv = false,
                                 bool frc_vec_conv = false) const;
 
-  Array<double> vector_value (bool frc_str_conv = false,
-                              bool frc_vec_conv = false) const;
+  OCTINTERP_API Array<double>
+  vector_value (bool frc_str_conv = false,
+                bool frc_vec_conv = false) const;
 
-  Array<Complex> complex_vector_value (bool frc_str_conv = false,
-                                       bool frc_vec_conv = false) const;
+  OCTINTERP_API Array<Complex>
+  complex_vector_value (bool frc_str_conv = false,
+                        bool frc_vec_conv = false) const;
 
-  Array<float> float_vector_value (bool frc_str_conv = false,
-                                   bool frc_vec_conv = false) const;
+  OCTINTERP_API Array<float>
+  float_vector_value (bool frc_str_conv = false,
+                      bool frc_vec_conv = false) const;
 
-  Array<FloatComplex>
+  OCTINTERP_API Array<FloatComplex>
   float_complex_vector_value (bool frc_str_conv = false,
                               bool frc_vec_conv = false) const;
 
@@ -1075,183 +1110,216 @@ public:
   // specific types and display error messages that are more meaningful than
   // the generic "error: wrong type argument 'cell'" message.
 
-  short int xshort_value (const char *fmt, ...) const;
+  OCTINTERP_API short int xshort_value (const char *fmt, ...) const;
 
-  unsigned short int xushort_value (const char *fmt, ...) const;
+  OCTINTERP_API unsigned short int xushort_value (const char *fmt, ...) const;
 
-  int xint_value (const char *fmt, ...) const;
+  OCTINTERP_API int xint_value (const char *fmt, ...) const;
 
-  unsigned int xuint_value (const char *fmt, ...) const;
+  OCTINTERP_API unsigned int xuint_value (const char *fmt, ...) const;
 
-  int xnint_value (const char *fmt, ...) const;
+  OCTINTERP_API int xnint_value (const char *fmt, ...) const;
 
-  long int xlong_value (const char *fmt, ...) const;
+  OCTINTERP_API long int xlong_value (const char *fmt, ...) const;
 
-  unsigned long int xulong_value (const char *fmt, ...) const;
+  OCTINTERP_API unsigned long int xulong_value (const char *fmt, ...) const;
 
-  int64_t xint64_value (const char *fmt, ...) const;
+  OCTINTERP_API int64_t xint64_value (const char *fmt, ...) const;
 
-  uint64_t xuint64_value (const char *fmt, ...) const;
+  OCTINTERP_API uint64_t xuint64_value (const char *fmt, ...) const;
 
-  octave_idx_type xidx_type_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_idx_type xidx_type_value (const char *fmt, ...) const;
 
-  double xdouble_value (const char *fmt, ...) const;
+  OCTINTERP_API double xdouble_value (const char *fmt, ...) const;
 
-  float xfloat_value (const char *fmt, ...) const;
+  OCTINTERP_API float xfloat_value (const char *fmt, ...) const;
 
-  double xscalar_value (const char *fmt, ...) const;
+  OCTINTERP_API double xscalar_value (const char *fmt, ...) const;
 
-  float xfloat_scalar_value (const char *fmt, ...) const;
+  OCTINTERP_API float xfloat_scalar_value (const char *fmt, ...) const;
 
-  Matrix xmatrix_value (const char *fmt, ...) const;
+  OCTINTERP_API Matrix xmatrix_value (const char *fmt, ...) const;
 
-  FloatMatrix xfloat_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API FloatMatrix xfloat_matrix_value (const char *fmt, ...) const;
 
-  NDArray xarray_value (const char *fmt, ...) const;
+  OCTINTERP_API NDArray xarray_value (const char *fmt, ...) const;
 
-  FloatNDArray xfloat_array_value (const char *fmt, ...) const;
+  OCTINTERP_API FloatNDArray xfloat_array_value (const char *fmt, ...) const;
 
-  Complex xcomplex_value (const char *fmt, ...) const;
+  OCTINTERP_API Complex xcomplex_value (const char *fmt, ...) const;
 
-  FloatComplex xfloat_complex_value (const char *fmt, ...) const;
+  OCTINTERP_API FloatComplex xfloat_complex_value (const char *fmt, ...) const;
 
-  ComplexMatrix xcomplex_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API ComplexMatrix
+  xcomplex_matrix_value (const char *fmt, ...) const;
 
-  FloatComplexMatrix xfloat_complex_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API FloatComplexMatrix
+  xfloat_complex_matrix_value (const char *fmt, ...) const;
 
-  ComplexNDArray xcomplex_array_value (const char *fmt, ...) const;
+  OCTINTERP_API ComplexNDArray
+  xcomplex_array_value (const char *fmt, ...) const;
 
-  FloatComplexNDArray xfloat_complex_array_value (const char *fmt, ...) const;
+  OCTINTERP_API FloatComplexNDArray
+  xfloat_complex_array_value (const char *fmt, ...) const;
 
-  bool xbool_value (const char *fmt, ...) const;
+  OCTINTERP_API bool xbool_value (const char *fmt, ...) const;
 
-  boolMatrix xbool_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API boolMatrix xbool_matrix_value (const char *fmt, ...) const;
 
-  boolNDArray xbool_array_value (const char *fmt, ...) const;
+  OCTINTERP_API boolNDArray xbool_array_value (const char *fmt, ...) const;
 
-  charMatrix xchar_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API charMatrix xchar_matrix_value (const char *fmt, ...) const;
 
-  charNDArray xchar_array_value (const char *fmt, ...) const;
+  OCTINTERP_API charNDArray xchar_array_value (const char *fmt, ...) const;
 
-  SparseMatrix xsparse_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API SparseMatrix xsparse_matrix_value (const char *fmt, ...) const;
 
-  SparseComplexMatrix xsparse_complex_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API SparseComplexMatrix
+  xsparse_complex_matrix_value (const char *fmt, ...) const;
 
-  SparseBoolMatrix xsparse_bool_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API SparseBoolMatrix
+  xsparse_bool_matrix_value (const char *fmt, ...) const;
 
-  DiagMatrix xdiag_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API DiagMatrix xdiag_matrix_value (const char *fmt, ...) const;
 
-  FloatDiagMatrix xfloat_diag_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API FloatDiagMatrix
+  xfloat_diag_matrix_value (const char *fmt, ...) const;
 
-  ComplexDiagMatrix xcomplex_diag_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API ComplexDiagMatrix
+  xcomplex_diag_matrix_value (const char *fmt, ...) const;
 
-  FloatComplexDiagMatrix xfloat_complex_diag_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API FloatComplexDiagMatrix
+  xfloat_complex_diag_matrix_value (const char *fmt, ...) const;
 
-  PermMatrix xperm_matrix_value (const char *fmt, ...) const;
+  OCTINTERP_API PermMatrix xperm_matrix_value (const char *fmt, ...) const;
 
-  octave_int8 xint8_scalar_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_int8 xint8_scalar_value (const char *fmt, ...) const;
 
-  octave_int16 xint16_scalar_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_int16 xint16_scalar_value (const char *fmt, ...) const;
 
-  octave_int32 xint32_scalar_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_int32 xint32_scalar_value (const char *fmt, ...) const;
 
-  octave_int64 xint64_scalar_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_int64 xint64_scalar_value (const char *fmt, ...) const;
 
-  octave_uint8 xuint8_scalar_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_uint8 xuint8_scalar_value (const char *fmt, ...) const;
 
-  octave_uint16 xuint16_scalar_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_uint16 xuint16_scalar_value (const char *fmt, ...) const;
 
-  octave_uint32 xuint32_scalar_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_uint32 xuint32_scalar_value (const char *fmt, ...) const;
 
-  octave_uint64 xuint64_scalar_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_uint64 xuint64_scalar_value (const char *fmt, ...) const;
 
-  int8NDArray xint8_array_value (const char *fmt, ...) const;
+  OCTINTERP_API int8NDArray xint8_array_value (const char *fmt, ...) const;
 
-  int16NDArray xint16_array_value (const char *fmt, ...) const;
+  OCTINTERP_API int16NDArray xint16_array_value (const char *fmt, ...) const;
 
-  int32NDArray xint32_array_value (const char *fmt, ...) const;
+  OCTINTERP_API int32NDArray xint32_array_value (const char *fmt, ...) const;
 
-  int64NDArray xint64_array_value (const char *fmt, ...) const;
+  OCTINTERP_API int64NDArray xint64_array_value (const char *fmt, ...) const;
 
-  uint8NDArray xuint8_array_value (const char *fmt, ...) const;
+  OCTINTERP_API uint8NDArray xuint8_array_value (const char *fmt, ...) const;
 
-  uint16NDArray xuint16_array_value (const char *fmt, ...) const;
+  OCTINTERP_API uint16NDArray xuint16_array_value (const char *fmt, ...) const;
 
-  uint32NDArray xuint32_array_value (const char *fmt, ...) const;
+  OCTINTERP_API uint32NDArray xuint32_array_value (const char *fmt, ...) const;
 
-  uint64NDArray xuint64_array_value (const char *fmt, ...) const;
+  OCTINTERP_API uint64NDArray xuint64_array_value (const char *fmt, ...) const;
 
-  std::string xstring_value (const char *fmt, ...) const;
+  OCTINTERP_API std::string xstring_value (const char *fmt, ...) const;
 
-  string_vector xstring_vector_value (const char *fmt, ...) const;
+  OCTINTERP_API string_vector xstring_vector_value (const char *fmt, ...) const;
 
-  Cell xcell_value (const char *fmt, ...) const;
+  OCTINTERP_API Cell xcell_value (const char *fmt, ...) const;
 
-  Array<std::string> xcellstr_value (const char *fmt, ...) const;
+  OCTINTERP_API Array<std::string> xcellstr_value (const char *fmt, ...) const;
 
-  octave::range<float> xfloat_range_value (const char *fmt, ...) const;
+  OCTINTERP_API octave::range<float>
+  xfloat_range_value (const char *fmt, ...) const;
 
-  octave::range<double> xrange_value (const char *fmt, ...) const;
+  OCTINTERP_API octave::range<double>
+  xrange_value (const char *fmt, ...) const;
 
-  octave::range<octave_int8> xint8_range_value (const char *fmt, ...) const;
+  OCTINTERP_API octave::range<octave_int8>
+  xint8_range_value (const char *fmt, ...) const;
 
-  octave::range<octave_int16> xint16_range_value (const char *fmt, ...) const;
+  OCTINTERP_API octave::range<octave_int16>
+  xint16_range_value (const char *fmt, ...) const;
 
-  octave::range<octave_int32> xint32_range_value (const char *fmt, ...) const;
+  OCTINTERP_API octave::range<octave_int32>
+  xint32_range_value (const char *fmt, ...) const;
 
-  octave::range<octave_int64> xint64_range_value (const char *fmt, ...) const;
+  OCTINTERP_API octave::range<octave_int64>
+  xint64_range_value (const char *fmt, ...) const;
 
-  octave::range<octave_uint8> xuint8_range_value (const char *fmt, ...) const;
+  OCTINTERP_API octave::range<octave_uint8>
+  xuint8_range_value (const char *fmt, ...) const;
 
-  octave::range<octave_uint16> xuint16_range_value (const char *fmt, ...) const;
+  OCTINTERP_API octave::range<octave_uint16>
+  xuint16_range_value (const char *fmt, ...) const;
 
-  octave::range<octave_uint32> xuint32_range_value (const char *fmt, ...) const;
+  OCTINTERP_API octave::range<octave_uint32>
+  xuint32_range_value (const char *fmt, ...) const;
 
-  octave::range<octave_uint64> xuint64_range_value (const char *fmt, ...) const;
+  OCTINTERP_API octave::range<octave_uint64>
+  xuint64_range_value (const char *fmt, ...) const;
 
-  octave_map xmap_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_map xmap_value (const char *fmt, ...) const;
 
-  octave_scalar_map xscalar_map_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_scalar_map
+  xscalar_map_value (const char *fmt, ...) const;
 
-  ColumnVector xcolumn_vector_value (const char *fmt, ...) const;
+  OCTINTERP_API ColumnVector xcolumn_vector_value (const char *fmt, ...) const;
 
-  ComplexColumnVector
+  OCTINTERP_API ComplexColumnVector
   xcomplex_column_vector_value (const char *fmt, ...) const;
 
-  RowVector xrow_vector_value (const char *fmt, ...) const;
+  OCTINTERP_API RowVector xrow_vector_value (const char *fmt, ...) const;
 
-  ComplexRowVector xcomplex_row_vector_value (const char *fmt, ...) const;
+  OCTINTERP_API ComplexRowVector
+  xcomplex_row_vector_value (const char *fmt, ...) const;
 
-  FloatColumnVector xfloat_column_vector_value (const char *fmt, ...) const;
+  OCTINTERP_API FloatColumnVector
+  xfloat_column_vector_value (const char *fmt, ...) const;
 
-  FloatComplexColumnVector
+  OCTINTERP_API FloatComplexColumnVector
   xfloat_complex_column_vector_value (const char *fmt, ...) const;
 
-  FloatRowVector xfloat_row_vector_value (const char *fmt, ...) const;
+  OCTINTERP_API FloatRowVector
+  xfloat_row_vector_value (const char *fmt, ...) const;
 
-  FloatComplexRowVector
+  OCTINTERP_API FloatComplexRowVector
   xfloat_complex_row_vector_value (const char *fmt, ...) const;
 
-  Array<int> xint_vector_value (const char *fmt, ...) const;
+  OCTINTERP_API Array<int> xint_vector_value (const char *fmt, ...) const;
 
-  Array<octave_idx_type>
+  OCTINTERP_API Array<octave_idx_type>
   xoctave_idx_type_vector_value (const char *fmt, ...) const;
 
-  Array<double> xvector_value (const char *fmt, ...) const;
+  OCTINTERP_API Array<double> xvector_value (const char *fmt, ...) const;
 
-  Array<Complex> xcomplex_vector_value (const char *fmt, ...) const;
+  OCTINTERP_API Array<Complex>
+  xcomplex_vector_value (const char *fmt, ...) const;
 
-  Array<float> xfloat_vector_value (const char *fmt, ...) const;
+  OCTINTERP_API Array<float> xfloat_vector_value (const char *fmt, ...) const;
 
-  Array<FloatComplex> xfloat_complex_vector_value (const char *fmt, ...) const;
+  OCTINTERP_API Array<FloatComplex>
+  xfloat_complex_vector_value (const char *fmt, ...) const;
 
-  octave_function * xfunction_value (const char *fmt, ...) const;
-  octave_user_function * xuser_function_value (const char *fmt, ...) const;
-  octave_user_script * xuser_script_value (const char *fmt, ...) const;
-  octave_user_code * xuser_code_value (const char *fmt, ...) const;
-  octave_fcn_handle * xfcn_handle_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_function * xfunction_value (const char *fmt, ...) const;
 
-  octave_value_list xlist_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_user_function *
+  xuser_function_value (const char *fmt, ...) const;
+
+  OCTINTERP_API octave_user_script *
+  xuser_script_value (const char *fmt, ...) const;
+
+  OCTINTERP_API octave_user_code *
+  xuser_code_value (const char *fmt, ...) const;
+
+  OCTINTERP_API octave_fcn_handle *
+  xfcn_handle_value (const char *fmt, ...) const;
+
+  OCTINTERP_API octave_value_list xlist_value (const char *fmt, ...) const;
 
   // Possibly economize a lazy-indexed value.
 
@@ -1262,12 +1330,12 @@ public:
   // storing it to a "permanent" location, like a named variable, a cell or a
   // struct component, or a return value of a function.
 
-  octave_value storable_value (void) const;
+  OCTINTERP_API octave_value storable_value (void) const;
 
   // Ditto, but in place, i.e., equivalent to *this = this->storable_value (),
   // but possibly more efficient.
 
-  void make_storable_value (void);
+  OCTINTERP_API void make_storable_value (void);
 
   // FIXME: These should probably be private.
   // Conversions.  If a user of this class wants a certain kind of constant,
@@ -1301,7 +1369,7 @@ public:
 
   void short_disp (std::ostream& os) const { rep->short_disp (os); }
 
-  float_display_format get_edit_display_format (void) const;
+  OCTINTERP_API float_display_format get_edit_display_format (void) const;
 
   std::string edit_display (const float_display_format& fmt,
                             octave_idx_type i, octave_idx_type j) const
@@ -1319,7 +1387,7 @@ public:
   // non-member functions for unary and binary operations declared
   // below, outside of the octave_value class declaration.
 
-  octave_value& non_const_unary_op (unary_op op);
+  OCTINTERP_API octave_value& non_const_unary_op (unary_op op);
 
   OCTAVE_DEPRECATED (7, "use 'octave_value::non_const_unary_op' instead")
   octave_value& do_non_const_unary_op (unary_op op)
@@ -1327,8 +1395,9 @@ public:
     return non_const_unary_op (op);
   }
 
-  octave_value& non_const_unary_op (unary_op op, const std::string& type,
-                                    const std::list<octave_value_list>& idx);
+  OCTINTERP_API octave_value&
+  non_const_unary_op (unary_op op, const std::string& type,
+                      const std::list<octave_value_list>& idx);
 
   OCTAVE_DEPRECATED (7, "use 'octave_value::non_const_unary_op' instead")
   octave_value& do_non_const_unary_op (unary_op op, const std::string& type,
@@ -1341,8 +1410,8 @@ public:
 
   bool is_copy_of (const octave_value& val) const { return rep == val.rep; }
 
-  void print_info (std::ostream& os,
-                   const std::string& prefix = "") const;
+  OCTINTERP_API void
+  print_info (std::ostream& os, const std::string& prefix = "") const;
 
   bool save_ascii (std::ostream& os) { return rep->save_ascii (os); }
 
@@ -1362,16 +1431,18 @@ public:
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name)
   { return rep->load_hdf5 (loc_id, name); }
 
-  int write (octave::stream& os, int block_size,
-             oct_data_conv::data_type output_type, int skip,
-             octave::mach_info::float_format flt_fmt) const;
+  OCTINTERP_API int
+  write (octave::stream& os, int block_size,
+         oct_data_conv::data_type output_type, int skip,
+         octave::mach_info::float_format flt_fmt) const;
 
   octave_base_value * internal_rep (void) const { return rep; }
 
   // Unsafe.  These functions exist to support the MEX interface.
   // You should not use them anywhere else.
-  void * mex_get_data (mxClassID class_id = mxUNKNOWN_CLASS,
-                       mxComplexity complexity = mxREAL) const;
+  OCTINTERP_API void *
+  mex_get_data (mxClassID class_id = mxUNKNOWN_CLASS,
+                mxComplexity complexity = mxREAL) const;
 
   octave_idx_type * mex_get_ir (void) const { return rep->mex_get_ir (); }
 
@@ -1519,15 +1590,15 @@ protected:
 
 private:
 
-  static octave_base_value *nil_rep (void);
+  static OCTINTERP_API octave_base_value *nil_rep (void);
 
-  assign_op unary_op_to_assign_op (unary_op op);
+  OCTINTERP_API assign_op unary_op_to_assign_op (unary_op op);
 
-  binary_op op_eq_to_binary_op (assign_op op);
+  OCTINTERP_API binary_op op_eq_to_binary_op (assign_op op);
 
   // This declaration protects against constructing octave_value from
   // const octave_base_value* which actually silently calls octave_value (bool).
-  octave_value (const octave_base_value *);
+  OCTINTERP_API octave_value (const octave_base_value *);
 
 };
 

@@ -67,17 +67,20 @@ namespace octave
 
       void set_name (const std::string& nm) { put ("Name", nm); }
 
-      void install_class (const cdef_class& cls, const std::string& nm);
+      OCTINTERP_API void
+      install_class (const cdef_class& cls, const std::string& nm);
 
-      void install_function (const octave_value& fcn, const std::string& nm);
+      OCTINTERP_API void
+      install_function (const octave_value& fcn, const std::string& nm);
 
-      void install_package (const cdef_package& pack, const std::string& nm);
+      OCTINTERP_API void
+      install_package (const cdef_package& pack, const std::string& nm);
 
-      Cell get_classes (void) const;
+      OCTINTERP_API Cell get_classes (void) const;
 
-      Cell get_functions (void) const;
+      OCTINTERP_API Cell get_functions (void) const;
 
-      Cell get_packages (void) const;
+      OCTINTERP_API Cell get_packages (void) const;
 
       octave_idx_type static_count (void) const { return member_count; }
 
@@ -96,18 +99,18 @@ namespace octave
           delete this;
       }
 
-      octave_value_list
+      OCTINTERP_API octave_value_list
       meta_subsref (const std::string& type,
                     const std::list<octave_value_list>& idx, int nargout);
 
-      void meta_release (void);
+      OCTINTERP_API void meta_release (void);
 
       bool meta_accepts_postfix_index (char type) const
       {
         return (type == '.');
       }
 
-      octave_value find (const std::string& nm);
+      OCTINTERP_API octave_value find (const std::string& nm);
 
     private:
 
@@ -221,7 +224,7 @@ namespace octave
       return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ());
     }
 
-    friend void install_classdef (interpreter& interp);
+    friend OCTINTERP_API void install_classdef (interpreter& interp);
   };
 }
 

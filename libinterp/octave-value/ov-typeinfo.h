@@ -39,7 +39,9 @@ class string_vector;
 
 namespace octave
 {
-  class type_info
+  class
+  OCTINTERP_API
+  type_info
   {
   public:
 
@@ -285,47 +287,49 @@ namespace octave_value_typeinfo
 
   typedef octave::type_info::assignany_op_fcn assignany_op_fcn;
 
-  extern int register_type (const std::string& t_name,
+  extern OCTINTERP_API int register_type (const std::string& t_name,
                             const std::string& c_name,
                             const octave_value& val);
 
-  extern octave_value lookup_type (const std::string& nm);
+  extern OCTINTERP_API octave_value lookup_type (const std::string& nm);
 
-  extern unary_class_op_fcn lookup_unary_class_op (octave_value::unary_op op);
+  extern OCTINTERP_API unary_class_op_fcn
+  lookup_unary_class_op (octave_value::unary_op op);
 
-  extern unary_op_fcn lookup_unary_op (octave_value::unary_op op, int t);
+  extern OCTINTERP_API unary_op_fcn
+  lookup_unary_op (octave_value::unary_op op, int t);
 
-  extern non_const_unary_op_fcn
+  extern OCTINTERP_API non_const_unary_op_fcn
   lookup_non_const_unary_op (octave_value::unary_op op, int t);
 
-  extern binary_class_op_fcn
+  extern OCTINTERP_API binary_class_op_fcn
   lookup_binary_class_op (octave_value::binary_op op);
 
-  extern binary_op_fcn
+  extern OCTINTERP_API binary_op_fcn
   lookup_binary_op (octave_value::binary_op op, int t1, int t2);
 
-  extern binary_class_op_fcn
+  extern OCTINTERP_API binary_class_op_fcn
   lookup_binary_class_op (octave_value::compound_binary_op op);
 
-  extern binary_op_fcn
+  extern OCTINTERP_API binary_op_fcn
   lookup_binary_op (octave_value::compound_binary_op op, int t1, int t2);
 
-  extern cat_op_fcn lookup_cat_op (int t1, int t2);
+  extern OCTINTERP_API cat_op_fcn lookup_cat_op (int t1, int t2);
 
-  extern assign_op_fcn
+  extern OCTINTERP_API assign_op_fcn
   lookup_assign_op (octave_value::assign_op op, int t_lhs, int t_rhs);
 
-  extern assignany_op_fcn
+  extern OCTINTERP_API assignany_op_fcn
   lookup_assignany_op (octave_value::assign_op op, int t_lhs);
 
-  extern int lookup_pref_assign_conv (int t_lhs, int t_rhs);
+  extern OCTINTERP_API int lookup_pref_assign_conv (int t_lhs, int t_rhs);
 
-  extern octave_base_value::type_conv_fcn
+  extern OCTINTERP_API octave_base_value::type_conv_fcn
   lookup_widening_op (int t, int t_result);
 
-  extern string_vector installed_type_names (void);
+  extern OCTINTERP_API string_vector installed_type_names (void);
 
-  extern octave_scalar_map installed_type_info (void);
+  extern OCTINTERP_API octave_scalar_map installed_type_info (void);
 }
 
 #endif

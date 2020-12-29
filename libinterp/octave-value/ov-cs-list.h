@@ -79,11 +79,12 @@ public:
   // functions.
   using octave_base_value::subsref;
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx);
+  OCTINTERP_API octave_value
+  subsref (const std::string& type, const std::list<octave_value_list>& idx);
 
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx, int);
+  OCTINTERP_API octave_value_list
+  subsref (const std::string& type, const std::list<octave_value_list>& idx,
+           int);
 
 private:
 

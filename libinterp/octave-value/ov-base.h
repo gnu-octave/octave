@@ -50,7 +50,7 @@ namespace octave
   // interpreter-private.h here and bringing in a lot of unnecessary
   // symbols that require even more header files.
 
-  extern type_info& __get_type_info__ (const std::string&);
+  extern OCTINTERP_API type_info& __get_type_info__ (const std::string&);
 }
 
 class Cell;
@@ -876,9 +876,10 @@ protected:
 
   // This should only be called for derived types.
 
-  octave_value numeric_assign (const std::string& type,
-                               const std::list<octave_value_list>& idx,
-                               const octave_value& rhs);
+  OCTINTERP_API octave_value
+  numeric_assign (const std::string& type,
+                  const std::list<octave_value_list>& idx,
+                  const octave_value& rhs);
 
   void reset_indent_level (void) const
   { curr_print_indent_level = 0; }
@@ -892,11 +893,11 @@ protected:
   int current_print_indent_level (void) const
   { return curr_print_indent_level; }
 
-  void indent (std::ostream& os) const;
+  OCTINTERP_API void indent (std::ostream& os) const;
 
-  void newline (std::ostream& os) const;
+  OCTINTERP_API void newline (std::ostream& os) const;
 
-  void reset (void) const;
+  OCTINTERP_API void reset (void) const;
 
   // A reference count.
   // NOTE: the declaration is octave_idx_type because with 64-bit indexing,
@@ -904,14 +905,14 @@ protected:
   // (think of an empty cell array with >2G elements).
   octave::refcount<octave_idx_type> count;
 
-  static const char * get_umap_name (unary_mapper_t);
+  OCTINTERP_API static const char * get_umap_name (unary_mapper_t);
 
-  void warn_load (const char *type) const;
-  void warn_save (const char *type) const;
+  OCTINTERP_API void warn_load (const char *type) const;
+  OCTINTERP_API void warn_save (const char *type) const;
 
 private:
 
-  void wrong_type_arg_error (void) const;
+  OCTINTERP_API void wrong_type_arg_error (void) const;
 
   static int curr_print_indent_level;
   static bool beginning_of_line;

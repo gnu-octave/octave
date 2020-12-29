@@ -60,6 +60,10 @@
 #    define OCTAVE_UNUSED
 #  endif
 #else
+// We are linking against static libs so do not decorate with dllimport.
+// FIXME: This should be done by the build system.
+#  undef OCTAVE_API
+#  define OCTAVE_API
 #  include "mkostemps-wrapper.h"
 #  include "uniconv-wrappers.h"
 #  include "unistd-wrappers.h"
@@ -158,10 +162,11 @@ static std::string
 replace_prefix (std::string s)
 {
   const std::string match = "${prefix}";
+  const std::string repl = prepend_octave_exec_home ("");
   size_t pos = s.find (match);
   while (pos != std::string::npos )
     {
-      s.replace(pos, match.length (), prepend_octave_exec_home (""));
+      s.replace(pos, match.length (), repl);
       pos = s.find (match);
     }
 

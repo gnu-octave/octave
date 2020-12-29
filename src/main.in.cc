@@ -43,6 +43,10 @@
 #include <iostream>
 #include <string>
 
+// We are linking against static libs so do not decorate with dllimport.
+// FIXME: This should be done by the build system.
+#undef OCTAVE_API
+#define OCTAVE_API
 #include "fcntl-wrappers.h"
 #include "signal-wrappers.h"
 #include "unistd-wrappers.h"

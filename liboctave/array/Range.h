@@ -67,7 +67,9 @@ namespace octave
   };
 
   template <typename T>
-  class range
+  class
+  OCTAVE_API
+  range
   {
   public:
 
@@ -195,7 +197,7 @@ namespace octave
       return mode;
     }
 
-    octave_idx_type nnz (void) const;
+    OCTAVE_API octave_idx_type nnz (void) const;
 
     // Support for single-index subscripting, without generating matrix cache.
 
@@ -343,20 +345,19 @@ namespace octave
 
   // Specializations defined externally.
 
-  template <> bool range<double>::all_elements_are_ints (void) const;
-  template <> bool range<float>::all_elements_are_ints (void) const;
+  template <> OCTAVE_API bool range<double>::all_elements_are_ints (void) const;
+  template <> OCTAVE_API bool range<float>::all_elements_are_ints (void) const;
 
-  template <> octave_idx_type range<double>::get_numel (void) const;
-  template <> octave_idx_type range<float>::get_numel (void) const;
+  template <> OCTAVE_API octave_idx_type range<double>::get_numel (void) const;
+  template <> OCTAVE_API octave_idx_type range<float>::get_numel (void) const;
 
-  template <> double range<double>::get_final_value (void) const;
-  template <> float range<float>::get_final_value (void) const;
+  template <> OCTAVE_API double range<double>::get_final_value (void) const;
+  template <> OCTAVE_API float range<float>::get_final_value (void) const;
 
-  template <> octave_idx_type range<double>::nnz (void) const;
+  template <> OCTAVE_API octave_idx_type range<double>::nnz (void) const;
 }
 
 class
-OCTAVE_API
 Range
 {
 public:
@@ -445,32 +446,32 @@ public:
 
   bool isempty (void) const { return numel () == 0; }
 
-  bool all_elements_are_ints (void) const;
+  OCTAVE_API bool all_elements_are_ints (void) const;
 
-  Matrix matrix_value (void) const;
+  OCTAVE_API Matrix matrix_value (void) const;
 
-  double min (void) const;
-  double max (void) const;
+  OCTAVE_API double min (void) const;
+  OCTAVE_API double max (void) const;
 
-  void sort_internal (bool ascending = true);
-  void sort_internal (Array<octave_idx_type>& sidx, bool ascending = true);
+  OCTAVE_API void sort_internal (bool ascending = true);
+  OCTAVE_API void sort_internal (Array<octave_idx_type>& sidx, bool ascending = true);
 
-  Matrix diag (octave_idx_type k = 0) const;
+  OCTAVE_API Matrix diag (octave_idx_type k = 0) const;
 
-  Range sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
-  Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
+  OCTAVE_API Range sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
+  OCTAVE_API Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
               sortmode mode = ASCENDING) const;
 
-  sortmode issorted (sortmode mode = ASCENDING) const;
+  OCTAVE_API sortmode issorted (sortmode mode = ASCENDING) const;
 
-  octave_idx_type nnz (void) const;
+  OCTAVE_API octave_idx_type nnz (void) const;
 
   // Support for single-index subscripting, without generating matrix cache.
 
-  double checkelem (octave_idx_type i) const;
-  double checkelem (octave_idx_type i, octave_idx_type j) const;
+  OCTAVE_API double checkelem (octave_idx_type i) const;
+  OCTAVE_API double checkelem (octave_idx_type i, octave_idx_type j) const;
 
-  double elem (octave_idx_type i) const;
+  OCTAVE_API double elem (octave_idx_type i) const;
   double elem (octave_idx_type /* i */, octave_idx_type j) const
   { return elem (j); }
 
@@ -478,13 +479,13 @@ public:
   double operator () (octave_idx_type i, octave_idx_type j) const
   { return elem (i, j); }
 
-  Array<double> index (const idx_vector& i) const;
+  OCTAVE_API Array<double> index (const idx_vector& i) const;
 
-  void set_base (double b);
+  OCTAVE_API void set_base (double b);
 
-  void set_limit (double l);
+  OCTAVE_API void set_limit (double l);
 
-  void set_inc (double i);
+  OCTAVE_API void set_inc (double i);
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os,
                                                const Range& r);
@@ -506,11 +507,11 @@ private:
 
   octave_idx_type m_numel;
 
-  octave_idx_type numel_internal (void) const;
+  OCTAVE_API octave_idx_type numel_internal (void) const;
 
-  double limit_internal (void) const;
+  OCTAVE_API double limit_internal (void) const;
 
-  void init (void);
+  OCTAVE_API void init (void);
 
 protected:
 

@@ -31,6 +31,6 @@
 
 #include "MSparse.h"
 
-template class OCTAVE_API MSparse<Complex>;
+template class MSparse<Complex>;
 
 INSTANTIATE_SPARSE_FRIENDS (Complex, OCTAVE_API);

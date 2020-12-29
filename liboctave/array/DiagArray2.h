@@ -38,6 +38,7 @@
 
 template <typename T>
 class
+OCTAVE_API
 DiagArray2 : protected Array<T>
 {
 protected:

@@ -35,6 +35,7 @@ class NDArray;
 
 template <typename T>
 class
+OCTAVE_API
 intNDArray : public MArray<T>
 {
 public:
@@ -130,9 +131,11 @@ public:
 // i/o
 
 template <typename T>
+OCTAVE_API
 std::ostream& operator << (std::ostream& os, const intNDArray<T>& a);
 
 template <typename T>
+OCTAVE_API
 std::istream& operator >> (std::istream& is, intNDArray<T>& a);
 
 #endif

@@ -59,6 +59,7 @@ template <typename T> MArray<T> product (const MArray<T>&, const MArray<T>&);
 //! Template for N-dimensional array classes with like-type math operators.
 template <typename T>
 class
+OCTAVE_API
 MArray : public Array<T>
 {
 protected:

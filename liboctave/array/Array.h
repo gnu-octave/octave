@@ -178,7 +178,7 @@ protected:
 
     // No assignment!
 
-    ArrayRep& operator = (const ArrayRep& a);
+    OCTARRAY_API ArrayRep& operator = (const ArrayRep& a);
   };
 
   //--------------------------------------------------------------------
@@ -239,7 +239,7 @@ protected:
 
 private:
 
-  static typename Array<T>::ArrayRep *nil_rep (void);
+  static OCTARRAY_API typename Array<T>::ArrayRep *nil_rep (void);
 
 protected:
 
@@ -279,7 +279,7 @@ public:
   }
 
   //! Reshape constructor.
-  Array (const Array<T>& a, const dim_vector& dv);
+  OCTARRAY_API Array (const Array<T>& a, const dim_vector& dv);
 
   //! Constructor from standard library sequence containers.
   template<template <typename...> class Container>
@@ -365,10 +365,10 @@ public:
     return *this;
   }
 
-  void fill (const T& val);
+  OCTARRAY_API void fill (const T& val);
 
-  void clear (void);
-  void clear (const dim_vector& dv);
+  OCTARRAY_API void clear (void);
+  OCTARRAY_API void clear (const dim_vector& dv);
 
   void clear (octave_idx_type r, octave_idx_type c)
   { clear (dim_vector (r, c)); }
@@ -453,12 +453,12 @@ public:
   const dim_vector& dims (void) const { return dimensions; }
 
   //! Chop off leading singleton dimensions
-  Array<T> squeeze (void) const;
+  OCTARRAY_API Array<T> squeeze (void) const;
 
-  octave_idx_type compute_index (octave_idx_type i, octave_idx_type j) const;
-  octave_idx_type compute_index (octave_idx_type i, octave_idx_type j,
+  OCTARRAY_API octave_idx_type compute_index (octave_idx_type i, octave_idx_type j) const;
+  OCTARRAY_API octave_idx_type compute_index (octave_idx_type i, octave_idx_type j,
                                  octave_idx_type k) const;
-  octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
+  OCTARRAY_API octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
 
   octave_idx_type compute_index_unchecked (const Array<octave_idx_type>& ra_idx)
   const
@@ -488,13 +488,13 @@ public:
   // FIXME: would be nice to fix this so that we don't unnecessarily force
   //        a copy, but that is not so easy, and I see no clean way to do it.
 
-  T& checkelem (octave_idx_type n);
+  OCTARRAY_API T& checkelem (octave_idx_type n);
 
-  T& checkelem (octave_idx_type i, octave_idx_type j);
+  OCTARRAY_API T& checkelem (octave_idx_type i, octave_idx_type j);
 
-  T& checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k);
+  OCTARRAY_API T& checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k);
 
-  T& checkelem (const Array<octave_idx_type>& ra_idx);
+  OCTARRAY_API T& checkelem (const Array<octave_idx_type>& ra_idx);
 
   T& elem (octave_idx_type n)
   {
@@ -517,14 +517,14 @@ public:
   T& operator () (const Array<octave_idx_type>& ra_idx)
   { return elem (ra_idx); }
 
-  crefT checkelem (octave_idx_type n) const;
+  OCTARRAY_API crefT checkelem (octave_idx_type n) const;
 
-  crefT checkelem (octave_idx_type i, octave_idx_type j) const;
+  OCTARRAY_API crefT checkelem (octave_idx_type i, octave_idx_type j) const;
 
-  crefT checkelem (octave_idx_type i, octave_idx_type j,
+  OCTARRAY_API crefT checkelem (octave_idx_type i, octave_idx_type j,
                    octave_idx_type k) const;
 
-  crefT checkelem (const Array<octave_idx_type>& ra_idx) const;
+  OCTARRAY_API crefT checkelem (const Array<octave_idx_type>& ra_idx) const;
 
   crefT elem (octave_idx_type n) const { return xelem (n); }
 
@@ -549,13 +549,13 @@ public:
   // Fast extractors.  All of these produce shallow copies.
 
   //! Extract column: A(:,k+1).
-  Array<T> column (octave_idx_type k) const;
+  OCTARRAY_API Array<T> column (octave_idx_type k) const;
   //! Extract page: A(:,:,k+1).
-  Array<T> page (octave_idx_type k) const;
+  OCTARRAY_API Array<T> page (octave_idx_type k) const;
 
   //! Extract a slice from this array as a column vector: A(:)(lo+1:up).
   //! Must be 0 <= lo && up <= numel.  May be up < lo.
-  Array<T> linear_slice (octave_idx_type lo, octave_idx_type up) const;
+  OCTARRAY_API Array<T> linear_slice (octave_idx_type lo, octave_idx_type up) const;
 
   Array<T> reshape (octave_idx_type nr, octave_idx_type nc) const
   { return Array<T> (*this, dim_vector (nr, nc)); }
@@ -563,7 +563,7 @@ public:
   Array<T> reshape (const dim_vector& new_dims) const
   { return Array<T> (*this, new_dims); }
 
-  Array<T> permute (const Array<octave_idx_type>& vec, bool inv = false) const;
+  OCTARRAY_API Array<T> permute (const Array<octave_idx_type>& vec, bool inv = false) const;
   Array<T> ipermute (const Array<octave_idx_type>& vec) const
   { return permute (vec, true); }
 
@@ -575,14 +575,14 @@ public:
 
   bool is_nd_vector (void) const { return dimensions.is_nd_vector (); }
 
-  Array<T> transpose (void) const;
-  Array<T> hermitian (T (*fcn) (const T&) = nullptr) const;
+  OCTARRAY_API Array<T> transpose (void) const;
+  OCTARRAY_API Array<T> hermitian (T (*fcn) (const T&) = nullptr) const;
 
   const T * data (void) const { return slice_data; }
 
   const T * fortran_vec (void) const { return data (); }
 
-  T * fortran_vec (void);
+  OCTARRAY_API T * fortran_vec (void);
 
   bool is_shared (void) { return rep->count > 1; }
 
@@ -590,27 +590,27 @@ public:
 
   //@{
   //! Indexing without resizing.
-  Array<T> index (const idx_vector& i) const;
+  OCTARRAY_API Array<T> index (const idx_vector& i) const;
 
-  Array<T> index (const idx_vector& i, const idx_vector& j) const;
+  OCTARRAY_API Array<T> index (const idx_vector& i, const idx_vector& j) const;
 
-  Array<T> index (const Array<idx_vector>& ia) const;
+  OCTARRAY_API Array<T> index (const Array<idx_vector>& ia) const;
   //@}
 
-  virtual T resize_fill_value (void) const;
+  virtual OCTARRAY_API T resize_fill_value (void) const;
 
   //@{
   //! Resizing (with fill).
-  void resize2 (octave_idx_type nr, octave_idx_type nc, const T& rfv);
+  OCTARRAY_API void resize2 (octave_idx_type nr, octave_idx_type nc, const T& rfv);
   void resize2 (octave_idx_type nr, octave_idx_type nc)
   {
     resize2 (nr, nc, resize_fill_value ());
   }
 
-  void resize1 (octave_idx_type n, const T& rfv);
+  OCTARRAY_API void resize1 (octave_idx_type n, const T& rfv);
   void resize1 (octave_idx_type n) { resize1 (n, resize_fill_value ()); }
 
-  void resize (const dim_vector& dv, const T& rfv);
+  OCTARRAY_API void resize (const dim_vector& dv, const T& rfv);
   void resize (const dim_vector& dv) { resize (dv, resize_fill_value ()); }
   //@}
 
@@ -620,13 +620,13 @@ public:
   // FIXME: this is really a corner case, that should better be
   // handled directly in liboctinterp.
 
-  Array<T> index (const idx_vector& i, bool resize_ok, const T& rfv) const;
+  OCTARRAY_API Array<T> index (const idx_vector& i, bool resize_ok, const T& rfv) const;
   Array<T> index (const idx_vector& i, bool resize_ok) const
   {
     return index (i, resize_ok, resize_fill_value ());
   }
 
-  Array<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok,
+  OCTARRAY_API Array<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok,
                   const T& rfv) const;
   Array<T> index (const idx_vector& i, const idx_vector& j,
                   bool resize_ok) const
@@ -634,7 +634,7 @@ public:
     return index (i, j, resize_ok, resize_fill_value ());
   }
 
-  Array<T> index (const Array<idx_vector>& ia, bool resize_ok,
+  OCTARRAY_API Array<T> index (const Array<idx_vector>& ia, bool resize_ok,
                   const T& rfv) const;
   Array<T> index (const Array<idx_vector>& ia, bool resize_ok) const
   {
@@ -644,20 +644,20 @@ public:
 
   //@{
   //! Indexed assignment (always with resize & fill).
-  void assign (const idx_vector& i, const Array<T>& rhs, const T& rfv);
+  OCTARRAY_API void assign (const idx_vector& i, const Array<T>& rhs, const T& rfv);
   void assign (const idx_vector& i, const Array<T>& rhs)
   {
     assign (i, rhs, resize_fill_value ());
   }
 
-  void assign (const idx_vector& i, const idx_vector& j, const Array<T>& rhs,
+  OCTARRAY_API void assign (const idx_vector& i, const idx_vector& j, const Array<T>& rhs,
                const T& rfv);
   void assign (const idx_vector& i, const idx_vector& j, const Array<T>& rhs)
   {
     assign (i, j, rhs, resize_fill_value ());
   }
 
-  void assign (const Array<idx_vector>& ia, const Array<T>& rhs, const T& rfv);
+  OCTARRAY_API void assign (const Array<idx_vector>& ia, const Array<T>& rhs, const T& rfv);
   void assign (const Array<idx_vector>& ia, const Array<T>& rhs)
   {
     assign (ia, rhs, resize_fill_value ());
@@ -668,23 +668,23 @@ public:
   //! Deleting elements.
 
   //! A(I) = [] (with a single subscript)
-  void delete_elements (const idx_vector& i);
+  OCTARRAY_API void delete_elements (const idx_vector& i);
 
   //! A(:,...,I,...,:) = [] (>= 2 subscripts, one of them is non-colon)
-  void delete_elements (int dim, const idx_vector& i);
+  OCTARRAY_API void delete_elements (int dim, const idx_vector& i);
 
   //! Dispatcher to the above two.
-  void delete_elements (const Array<idx_vector>& ia);
+  OCTARRAY_API void delete_elements (const Array<idx_vector>& ia);
   //@}
 
   //! Insert an array into another at a specified position.  If
   //! size (a) is [d1 d2 ... dN] and idx is [i1 i2 ... iN], this
   //! method is equivalent to x(i1:i1+d1-1, i2:i2+d2-1, ... ,
   //! iN:iN+dN-1) = a.
-  Array<T>& insert (const Array<T>& a, const Array<octave_idx_type>& idx);
+  OCTARRAY_API Array<T>& insert (const Array<T>& a, const Array<octave_idx_type>& idx);
 
   //! This is just a special case for idx = [r c 0 ...]
-  Array<T>& insert (const Array<T>& a, octave_idx_type r, octave_idx_type c);
+  OCTARRAY_API Array<T>& insert (const Array<T>& a, octave_idx_type r, octave_idx_type c);
 
   void maybe_economize (void)
   {
@@ -697,59 +697,59 @@ public:
       }
   }
 
-  void print_info (std::ostream& os, const std::string& prefix) const;
+  OCTARRAY_API void print_info (std::ostream& os, const std::string& prefix) const;
 
   //! Give a pointer to the data in mex format.  Unsafe.  This function
   //! exists to support the MEX interface.  You should not use it
   //! anywhere else.
   void * mex_get_data (void) const { return const_cast<T *> (data ()); }
 
-  Array<T> sort (int dim = 0, sortmode mode = ASCENDING) const;
-  Array<T> sort (Array<octave_idx_type> &sidx, int dim = 0,
+  OCTARRAY_API Array<T> sort (int dim = 0, sortmode mode = ASCENDING) const;
+  OCTARRAY_API Array<T> sort (Array<octave_idx_type> &sidx, int dim = 0,
                  sortmode mode = ASCENDING) const;
 
   //! Ordering is auto-detected or can be specified.
-  sortmode issorted (sortmode mode = UNSORTED) const;
+  OCTARRAY_API sortmode issorted (sortmode mode = UNSORTED) const;
 
   //! Sort by rows returns only indices.
-  Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const;
+  OCTARRAY_API Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const;
 
   //! Ordering is auto-detected or can be specified.
-  sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
+  OCTARRAY_API sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
   //! Do a binary lookup in a sorted array.  Must not contain NaNs.
   //! Mode can be specified or is auto-detected by comparing 1st and last element.
-  octave_idx_type lookup (const T& value, sortmode mode = UNSORTED) const;
+  OCTARRAY_API octave_idx_type lookup (const T& value, sortmode mode = UNSORTED) const;
 
   //! Ditto, but for an array of values, specializing on the case when values
   //! are sorted.  NaNs get the value N.
-  Array<octave_idx_type> lookup (const Array<T>& values,
+  OCTARRAY_API Array<octave_idx_type> lookup (const Array<T>& values,
                                  sortmode mode = UNSORTED) const;
 
   //! Count nonzero elements.
-  octave_idx_type nnz (void) const;
+  OCTARRAY_API octave_idx_type nnz (void) const;
 
   //! Find indices of (at most n) nonzero elements.  If n is specified,
   //! backward specifies search from backward.
-  Array<octave_idx_type> find (octave_idx_type n = -1,
+  OCTARRAY_API Array<octave_idx_type> find (octave_idx_type n = -1,
                                bool backward = false) const;
 
   //! Returns the n-th element in increasing order, using the same
   //! ordering as used for sort.  n can either be a scalar index or a
   //! contiguous range.
-  Array<T> nth_element (const idx_vector& n, int dim = 0) const;
+  OCTARRAY_API Array<T> nth_element (const idx_vector& n, int dim = 0) const;
 
   //! Get the kth super or subdiagonal.  The zeroth diagonal is the
   //! ordinary diagonal.
-  Array<T> diag (octave_idx_type k = 0) const;
+  OCTARRAY_API Array<T> diag (octave_idx_type k = 0) const;
 
-  Array<T> diag (octave_idx_type m, octave_idx_type n) const;
+  OCTARRAY_API Array<T> diag (octave_idx_type m, octave_idx_type n) const;
 
   //! Concatenation along a specified (0-based) dimension, equivalent
   //! to cat().  dim = -1 corresponds to dim = 0 and dim = -2
   //! corresponds to dim = 1, but apply the looser matching rules of
   //! vertcat/horzcat.
-  static Array<T>
+  static OCTARRAY_API Array<T>
   cat (int dim, octave_idx_type n, const Array<T> *array_list);
 
   //! Apply function fcn to each element of the Array<T>.  This function
@@ -835,7 +835,7 @@ public:
   //! Returns true if this->dims () == dv, and if so, replaces this->dimensions
   //! by a shallow copy of dv.  This is useful for maintaining several arrays
   //! with supposedly equal dimensions (e.g. structs in the interpreter).
-  bool optimize_dimensions (const dim_vector& dv);
+  OCTARRAY_API bool optimize_dimensions (const dim_vector& dv);
 
   //@{
   //! WARNING: Only call these functions from jit
@@ -850,7 +850,7 @@ public:
   //@}
 
 private:
-  static void instantiation_guard ();
+  OCTARRAY_API static void instantiation_guard ();
 };
 
 // We use a variadic template for template template parameter so that
@@ -879,7 +879,7 @@ Array<T>::Array (const Container<T>& a, const dim_vector& dv)
 }
 
 template <typename T>
-std::ostream&
+OCTARRAY_API std::ostream&
 operator << (std::ostream& os, const Array<T>& a);
 
 #endif

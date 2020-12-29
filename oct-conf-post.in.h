@@ -189,11 +189,18 @@ typedef unsigned long ino_t;
 #  define OCTAVE_API OCTAVE_IMPORT
 #endif
 
-/* API macro for libinterp */
+/* API macro for liboctinterp */
 #if defined (OCTINTERP_DLL)
 #  define OCTINTERP_API OCTAVE_EXPORT
 #else
 #  define OCTINTERP_API OCTAVE_IMPORT
+#endif
+
+/* API macro for the Array class in liboctave and liboctinterp */
+#if (defined (OCTAVE_DLL) || defined (OCTINTERP_DLL))
+#  define OCTARRAY_API OCTAVE_EXPORT
+#else
+#  define OCTARRAY_API OCTAVE_IMPORT
 #endif
 
 /* API macro for libinterp/graphics */

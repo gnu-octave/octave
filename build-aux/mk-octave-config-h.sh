@@ -191,8 +191,40 @@ octave_unused_parameter (const T&)
 #    define OCTAVE_IMPORT
 #  endif
 
+/* API macro for liboctave */
+#if defined (OCTAVE_DLL)
+#  define OCTAVE_API OCTAVE_EXPORT
+#else
 #  define OCTAVE_API OCTAVE_IMPORT
+#endif
+
+/* API macro for libinterp */
+#if defined (OCTINTERP_DLL)
+#  define OCTINTERP_API OCTAVE_EXPORT
+#else
 #  define OCTINTERP_API OCTAVE_IMPORT
+#endif
+
+/* API macro for the Array class in liboctave and liboctinterp */
+#if (defined (OCTAVE_DLL) || defined (OCTINTERP_DLL))
+#  define OCTARRAY_API OCTAVE_EXPORT
+#else
+#  define OCTARRAY_API OCTAVE_IMPORT
+#endif
+
+/* API macro for libinterp/graphics */
+#if defined (OCTGRAPHICS_DLL)
+#  define OCTGRAPHICS_API OCTAVE_EXPORT
+#else
+#  define OCTGRAPHICS_API OCTAVE_IMPORT
+#endif
+
+/* API macro for libgui */
+#if defined (OCTGUI_DLL)
+#  define OCTGUI_API OCTAVE_EXPORT
+#else
+#  define OCTGUI_API OCTAVE_IMPORT
+#endif
 EOF
 
 octave_idx_type="`$SED -n 's/#define OCTAVE_IDX_TYPE \([_a-zA-Z][_a-zA-Z0-9]*\)/\1/p' $config_h_file`"

@@ -127,23 +127,23 @@ namespace octave
 
       ~parent_scope_info (void) = default;
 
-      size_t size (void) const;
+      OCTINTERP_API size_t size (void) const;
 
-      void push (const value_type& elt);
+      OCTINTERP_API void push (const value_type& elt);
 
-      void push (const symbol_scope& id);
+      OCTINTERP_API void push (const symbol_scope& id);
 
-      void pop (void);
+      OCTINTERP_API void pop (void);
 
-      bool name_ok (const std::string& name);
+      OCTINTERP_API bool name_ok (const std::string& name);
 
-      bool name_current_scope (const std::string& name);
+      OCTINTERP_API bool name_current_scope (const std::string& name);
 
-      symbol_scope parent_scope (void) const;
+      OCTINTERP_API symbol_scope parent_scope (void) const;
 
-      std::string parent_name (void) const;
+      OCTINTERP_API std::string parent_name (void) const;
 
-      void clear (void);
+      OCTINTERP_API void clear (void);
 
     private:
 
@@ -154,7 +154,7 @@ namespace octave
 
   public:
 
-    base_parser (base_lexer& lxr);
+    OCTINTERP_API base_parser (base_lexer& lxr);
 
     // No copying!
 
@@ -168,7 +168,7 @@ namespace octave
 
     bool at_end_of_input (void) const { return m_lexer.m_end_of_input; }
 
-    void reset (void);
+    OCTINTERP_API void reset (void);
 
     void classdef_object (const std::shared_ptr<tree_classdef>& obj)
     {
@@ -180,7 +180,7 @@ namespace octave
       return m_classdef_object;
     }
 
-    void statement_list (std::shared_ptr<tree_statement_list>& lst);
+    OCTINTERP_API void statement_list (std::shared_ptr<tree_statement_list>& lst);
 
     std::shared_ptr<tree_statement_list> statement_list (void) const
     {
@@ -223,274 +223,281 @@ namespace octave
     }
 
     // Error messages for mismatched end tokens.
-    void end_token_error (token *tok, token::end_tok_type expected);
+    OCTINTERP_API void
+    end_token_error (token *tok, token::end_tok_type expected);
 
     // Check to see that end tokens are properly matched.
-    bool end_token_ok (token *tok, token::end_tok_type expected);
+    OCTINTERP_API bool end_token_ok (token *tok, token::end_tok_type expected);
 
     // Handle pushing symbol table for new function scope.
-    bool push_fcn_symtab (void);
+    OCTINTERP_API bool push_fcn_symtab (void);
 
     // Build a constant.
-    tree_constant * make_constant (int op, token *tok_val);
+    OCTINTERP_API tree_constant * make_constant (int op, token *tok_val);
 
     // Build a function handle.
-    tree_fcn_handle * make_fcn_handle (token *tok_val);
+    OCTINTERP_API tree_fcn_handle * make_fcn_handle (token *tok_val);
 
     // Build an anonymous function handle.
-    tree_anon_fcn_handle *
+    OCTINTERP_API tree_anon_fcn_handle *
     make_anon_fcn_handle (tree_parameter_list *param_list,
                           tree_expression * expr, const filepos& at_pos);
 
     // Build a colon expression.
-    tree_expression *
+    OCTINTERP_API tree_expression *
     make_colon_expression (tree_expression *base, tree_expression *limit,
                            tree_expression *incr = nullptr);
 
     // Build a binary expression.
-    tree_expression *
+    OCTINTERP_API tree_expression *
     make_binary_op (int op, tree_expression *op1, token *tok_val,
                     tree_expression *op2);
 
     // Build a boolean expression.
-    tree_expression *
+    OCTINTERP_API tree_expression *
     make_boolean_op (int op, tree_expression *op1, token *tok_val,
                      tree_expression *op2);
 
     // Build a prefix expression.
-    tree_expression *
+    OCTINTERP_API tree_expression *
     make_prefix_op (int op, tree_expression *op1, token *tok_val);
 
     // Build a postfix expression.
-    tree_expression *
+    OCTINTERP_API tree_expression *
     make_postfix_op (int op, tree_expression *op1, token *tok_val);
 
     // Build an unwind-protect command.
-    tree_command *
+    OCTINTERP_API tree_command *
     make_unwind_command (token *unwind_tok, tree_statement_list *body,
                          tree_statement_list *cleanup, token *end_tok,
                          comment_list *lc, comment_list *mc);
 
     // Build a try-catch command.
-    tree_command *
+    OCTINTERP_API tree_command *
     make_try_command (token *try_tok, tree_statement_list *body,
                       char catch_sep, tree_statement_list *cleanup,
                       token *end_tok, comment_list *lc,
                       comment_list *mc);
 
     // Build a while command.
-    tree_command *
+    OCTINTERP_API tree_command *
     make_while_command (token *while_tok, tree_expression *expr,
                         tree_statement_list *body, token *end_tok,
                         comment_list *lc);
 
     // Build a do-until command.
-    tree_command *
+    OCTINTERP_API tree_command *
     make_do_until_command (token *until_tok, tree_statement_list *body,
                            tree_expression *expr, comment_list *lc);
 
     // Build a for command.
-    tree_command *
+    OCTINTERP_API tree_command *
     make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
                       tree_expression *expr, tree_expression *maxproc,
                       tree_statement_list *body, token *end_tok,
                       comment_list *lc);
 
     // Build a break command.
-    tree_command * make_break_command (token *break_tok);
+    OCTINTERP_API tree_command * make_break_command (token *break_tok);
 
     // Build a continue command.
-    tree_command * make_continue_command (token *continue_tok);
+    OCTINTERP_API tree_command * make_continue_command (token *continue_tok);
 
     // Build a return command.
-    tree_command * make_return_command (token *return_tok);
+    OCTINTERP_API tree_command * make_return_command (token *return_tok);
 
     // Build an spmd command.
 
-    tree_spmd_command *
+    OCTINTERP_API tree_spmd_command *
     make_spmd_command (token *spmd_tok, tree_statement_list *body,
                        token *end_tok, comment_list *lc, comment_list *tc);
 
     // Start an if command.
-    tree_if_command_list *
+    OCTINTERP_API tree_if_command_list *
     start_if_command (tree_expression *expr, tree_statement_list *list);
 
     // Finish an if command.
-    tree_if_command *
+    OCTINTERP_API tree_if_command *
     finish_if_command (token *if_tok, tree_if_command_list *list,
                        token *end_tok, comment_list *lc);
 
     // Build an elseif clause.
-    tree_if_clause *
+    OCTINTERP_API tree_if_clause *
     make_elseif_clause (token *elseif_tok, tree_expression *expr,
                         tree_statement_list *list, comment_list *lc);
 
     // Finish a switch command.
-    tree_switch_command *
+    OCTINTERP_API tree_switch_command *
     finish_switch_command (token *switch_tok, tree_expression *expr,
                            tree_switch_case_list *list, token *end_tok,
                            comment_list *lc);
 
     // Build a switch case.
-    tree_switch_case *
+    OCTINTERP_API tree_switch_case *
     make_switch_case (token *case_tok, tree_expression *expr,
                       tree_statement_list *list, comment_list *lc);
 
     // Build an assignment to a variable.
-    tree_expression *
+    OCTINTERP_API tree_expression *
     make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
                     tree_expression *rhs);
 
     // Define a script.
-    void make_script (tree_statement_list *cmds, tree_statement *end_script);
+    OCTINTERP_API void
+    make_script (tree_statement_list *cmds, tree_statement *end_script);
 
     // Handle identifier that is recognized as a function name.
-    tree_identifier *
+    OCTINTERP_API tree_identifier *
     make_fcn_name (tree_identifier *id);
 
     // Define a function.
-    tree_function_def *
+    OCTINTERP_API tree_function_def *
     make_function (token *fcn_tok, tree_parameter_list *ret_list,
                    tree_identifier *id, tree_parameter_list *param_list,
                    tree_statement_list *body, tree_statement *end_fcn_stmt,
                    comment_list *lc);
 
     // Begin defining a function.
-    octave_user_function *
+    OCTINTERP_API octave_user_function *
     start_function (tree_identifier *id, tree_parameter_list *param_list,
                     tree_statement_list *body, tree_statement *end_function);
 
     // Create a no-op statement for end_function.
-    tree_statement * make_end (const std::string& type, bool eof,
-                               const filepos& beg_pos, const filepos& end_pos);
+    OCTINTERP_API tree_statement *
+    make_end (const std::string& type, bool eof,
+              const filepos& beg_pos, const filepos& end_pos);
 
     // Do most of the work for defining a function.
-    octave_user_function *
+    OCTINTERP_API octave_user_function *
     frob_function (tree_identifier *id, octave_user_function *fcn);
 
     // Finish defining a function.
-    tree_function_def *
+    OCTINTERP_API tree_function_def *
     finish_function (tree_parameter_list *ret_list,
                      octave_user_function *fcn, comment_list *lc,
                      int l, int c);
 
     // Reset state after parsing function.
-    void
+    OCTINTERP_API void
     recover_from_parsing_function (void);
 
-    tree_classdef *
+    OCTINTERP_API tree_classdef *
     make_classdef (token *tok_val, tree_classdef_attribute_list *a,
                    tree_identifier *id, tree_classdef_superclass_list *sc,
                    tree_classdef_body *body, token *end_tok,
                    comment_list *lc, comment_list *tc);
 
-    tree_classdef_properties_block *
+    OCTINTERP_API tree_classdef_properties_block *
     make_classdef_properties_block (token *tok_val,
                                     tree_classdef_attribute_list *a,
                                     tree_classdef_property_list *plist,
                                     token *end_tok, comment_list *lc,
                                     comment_list *tc);
 
-    tree_classdef_methods_block *
+    OCTINTERP_API tree_classdef_methods_block *
     make_classdef_methods_block (token *tok_val,
                                  tree_classdef_attribute_list *a,
                                  tree_classdef_methods_list *mlist,
                                  token *end_tok, comment_list *lc,
                                  comment_list *tc);
 
-    tree_classdef_events_block *
+    OCTINTERP_API tree_classdef_events_block *
     make_classdef_events_block (token *tok_val,
                                 tree_classdef_attribute_list *a,
                                 tree_classdef_events_list *elist,
                                 token *end_tok, comment_list *lc,
                                 comment_list *tc);
 
-    tree_classdef_enum_block *
+    OCTINTERP_API tree_classdef_enum_block *
     make_classdef_enum_block (token *tok_val,
                               tree_classdef_attribute_list *a,
                               tree_classdef_enum_list *elist,
                               token *end_tok, comment_list *lc,
                               comment_list *tc);
 
-    octave_user_function *
+    OCTINTERP_API octave_user_function *
     start_classdef_external_method (tree_identifier *id,
                                     tree_parameter_list *pl);
 
-    tree_function_def *
+    OCTINTERP_API tree_function_def *
     finish_classdef_external_method (octave_user_function *fcn,
                                      tree_parameter_list *ret_list,
                                      comment_list *cl);
 
-    void
+    OCTINTERP_API void
     finish_classdef_file (tree_classdef *cls,
                           tree_statement_list *local_fcns);
 
     // Make an index expression.
-    tree_index_expression *
+    OCTINTERP_API tree_index_expression *
     make_index_expression (tree_expression *expr,
                            tree_argument_list *args, char type);
 
     // Make an indirect reference expression.
-    tree_index_expression *
+    OCTINTERP_API tree_index_expression *
     make_indirect_ref (tree_expression *expr, const std::string&);
 
     // Make an indirect reference expression with dynamic field name.
-    tree_index_expression *
+    OCTINTERP_API tree_index_expression *
     make_indirect_ref (tree_expression *expr, tree_expression *field);
 
     // Make a declaration command.
-    tree_decl_command *
+    OCTINTERP_API tree_decl_command *
     make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst);
 
     // Validate an function parameter list.
-    bool validate_param_list (tree_parameter_list *lst,
-                              tree_parameter_list::in_or_out type);
+    OCTINTERP_API bool
+    validate_param_list (tree_parameter_list *lst,
+                         tree_parameter_list::in_or_out type);
     // Validate matrix or cell
-    bool validate_array_list (tree_expression *e);
+    OCTINTERP_API bool validate_array_list (tree_expression *e);
 
     // Validate matrix object used in "[lhs] = ..." assignments.
-    tree_argument_list * validate_matrix_for_assignment (tree_expression *e);
+    OCTINTERP_API tree_argument_list *
+    validate_matrix_for_assignment (tree_expression *e);
 
     // Finish building an array_list (common action for finish_matrix
     // and finish_cell).
-    tree_expression * finish_array_list (tree_array_list *a, token *open_delim,
-                                         token *close_delim);
+    OCTINTERP_API tree_expression *
+    finish_array_list (tree_array_list *a, token *open_delim,
+                       token *close_delim);
 
     // Finish building a matrix list.
-    tree_expression * finish_matrix (tree_matrix *m, token *open_delim,
-                                     token *close_delim);
+    OCTINTERP_API tree_expression *
+    finish_matrix (tree_matrix *m, token *open_delim, token *close_delim);
 
     // Finish building a cell list.
-    tree_expression * finish_cell (tree_cell *c, token *open_delim,
-                                   token *close_delim);
+    OCTINTERP_API tree_expression *
+    finish_cell (tree_cell *c, token *open_delim, token *close_delim);
 
     // Set the print flag for a statement based on the separator type.
-    tree_statement_list *
+    OCTINTERP_API tree_statement_list *
     set_stmt_print_flag (tree_statement_list *, char, bool);
 
     // Finish building a statement.
     template <typename T>
-    tree_statement * make_statement (T *arg);
+    OCTINTERP_API tree_statement * make_statement (T *arg);
 
     // Create a statement list.
-    tree_statement_list * make_statement_list (tree_statement *stmt);
+    OCTINTERP_API tree_statement_list *
+    make_statement_list (tree_statement *stmt);
 
     // Append a statement to an existing statement list.
-    tree_statement_list *
+    OCTINTERP_API tree_statement_list *
     append_statement_list (tree_statement_list *list, char sep,
                            tree_statement *stmt, bool warn_missing_semi);
 
     // Don't allow parsing command syntax.  If the parser/lexer is
     // reset, this setting is also reset to the default (allow command
     // syntax).
-    void disallow_command_syntax (void);
+    OCTINTERP_API void disallow_command_syntax (void);
 
     // Generic error messages.
-    void bison_error (const std::string& s);
-    void bison_error (const std::string& s, const filepos& pos);
-    void bison_error (const std::string& s, int line, int column);
+    OCTINTERP_API void bison_error (const std::string& s);
+    OCTINTERP_API void bison_error (const std::string& s, const filepos& pos);
+    OCTINTERP_API void bison_error (const std::string& s, int line, int column);
 
-    friend octave_value
+    friend OCTINTERP_API octave_value
     parse_fcn_file (interpreter& interp, const std::string& full_file,
                     const std::string& file, const std::string& dir_name,
                     const std::string& dispatch_type,
@@ -580,18 +587,18 @@ namespace octave
 
     // Maybe print a warning if an assignment expression is used as the
     // test in a logical expression.
-    void maybe_warn_assign_as_truth_value (tree_expression *expr);
+    OCTINTERP_API void maybe_warn_assign_as_truth_value (tree_expression *expr);
 
     // Maybe print a warning about switch labels that aren't constants.
-    void maybe_warn_variable_switch_label (tree_expression *expr);
+    OCTINTERP_API void maybe_warn_variable_switch_label (tree_expression *expr);
 
     // Maybe print a warning.
-    void maybe_warn_missing_semi (tree_statement_list *);
+    OCTINTERP_API void maybe_warn_missing_semi (tree_statement_list *);
   };
 
   // Publish externally used friend functions.
 
-  extern OCTAVE_API octave_value
+  extern OCTINTERP_API octave_value
   parse_fcn_file (interpreter& interp, const std::string& full_file,
                   const std::string& file, const std::string& dir_name,
                   const std::string& dispatch_type,
@@ -634,7 +641,7 @@ namespace octave
 
     ~parser (void) = default;
 
-    int run (void);
+    OCTINTERP_API int run (void);
   };
 
   class push_parser : public base_parser
@@ -666,12 +673,12 @@ namespace octave
     // parser arranges for input through the M_READER object.  See, for
     // example, interpreter::main_loop.
 
-    int run (void);
+    OCTINTERP_API int run (void);
 
     // Parse INPUT.  M_READER is not used.  The user is responsible for
     // collecting input.
 
-    int run (const std::string& input, bool eof);
+    OCTINTERP_API int run (const std::string& input, bool eof);
 
   private:
 

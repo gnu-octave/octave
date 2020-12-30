@@ -411,7 +411,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
   elseif (resvec (1, 1) == 0)
     relres = 0;
   else
-    relres = resvec(iter_min+1, 1) ./ resvec(1, 1);
+    relres = resvec(iter_min+1, 1) ./ b_norm;
   endif
 
   iter -= 2; # compatibility
@@ -672,4 +672,14 @@ endfunction
 %! M = toeplitz (sparse ([2, 1, 0, 0, 0]));
 %! [x, flag, relres] = pcg (A, b, [], 2, M);
 %! assert (norm (b - A * x) / norm (b), relres,  8 * eps);
+
+%!test <*59776>
+%! A = [ 1.00000000  -0.00054274  -0.00066848;
+%!      -0.00054274   1.00000000  -0.00060330;
+%!      -0.00066848  -0.00060330   1.00000000];
+%! b = [1 1 1]';
+%! [x, flag, relres, iter, resvec] = pcg (A, b, 1e-6, 4, [], [], [1; 1; 1]);
+%! assert (flag, 0);
+%! assert (relres, resvec(2) / norm (b));
+%! assert (iter, 1);
 

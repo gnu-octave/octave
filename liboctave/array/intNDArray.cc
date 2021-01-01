@@ -300,3 +300,9 @@ intNDArray<T>::diff (octave_idx_type order, int dim) const
 {
   return do_mx_diff_op<T> (*this, dim, order, mx_inline_diff);
 }
+
+#if defined (__clang__)
+#  define INSTANTIATE_INTNDARRAY(T) template class OCTAVE_API intNDArray<T>
+#else
+#  define INSTANTIATE_INTNDARRAY(T) template class intNDArray<T>
+#endif

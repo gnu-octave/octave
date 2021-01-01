@@ -33,7 +33,7 @@
 
 #include "bsxfun-defs.cc"
 
-template class intNDArray<octave_int32>;
+INSTANTIATE_INTNDARRAY (octave_int32);
 
 template OCTAVE_API
 std::ostream&

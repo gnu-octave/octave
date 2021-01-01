@@ -549,7 +549,11 @@ namespace octave
 
     QList<int> range = range_selected ();
     if (range.isEmpty ())
-      return;
+      {
+        // Nothing selected, apply print command to all data
+        range << 1 << m_var_model->data_rows ()
+              << 1 << m_var_model->data_columns ();
+      }
 
     int s1 = m_var_model->data_rows ();
     int s2 = m_var_model->data_columns ();

@@ -173,12 +173,6 @@ namespace octave
 #endif
     }
 
-    // Instantiations we need.
-
-    template class OCTAVE_API sparse_qr<SparseMatrix>;
-
-    template class OCTAVE_API sparse_qr<SparseComplexMatrix>;
-
     // Specializations.
 
     // Real-valued matrices.
@@ -2300,6 +2294,46 @@ namespace octave
     {
       return rep->template wide_solve<RHS_T, RET_T> (b, info);
     }
+
+    // Explicitly instantiate all member functions
+
+    template OCTAVE_API sparse_qr<SparseMatrix>::sparse_qr (void);
+    template OCTAVE_API
+    sparse_qr<SparseMatrix>::sparse_qr (const SparseMatrix& a, int order);
+    template OCTAVE_API
+    sparse_qr<SparseMatrix>::sparse_qr (const sparse_qr<SparseMatrix>& a);
+    template OCTAVE_API sparse_qr<SparseMatrix>::~sparse_qr (void);
+    template OCTAVE_API bool sparse_qr<SparseMatrix>::ok (void) const;
+    template OCTAVE_API SparseMatrix sparse_qr<SparseMatrix>::V (void) const;
+    template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::Pinv (void) const;
+    template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::P (void) const;
+    template OCTAVE_API SparseMatrix
+    sparse_qr<SparseMatrix>::R (bool econ) const;
+    template OCTAVE_API Matrix
+    sparse_qr<SparseMatrix>::C (const Matrix& b) const;
+    template OCTAVE_API Matrix sparse_qr<SparseMatrix>::Q (void) const;
+
+    template OCTAVE_API sparse_qr<SparseComplexMatrix>::sparse_qr (void);
+    template OCTAVE_API
+    sparse_qr<SparseComplexMatrix>::sparse_qr
+    (const SparseComplexMatrix& a, int order);
+    template OCTAVE_API
+    sparse_qr<SparseComplexMatrix>::sparse_qr
+    (const sparse_qr<SparseComplexMatrix>& a);
+    template OCTAVE_API sparse_qr<SparseComplexMatrix>::~sparse_qr (void);
+    template OCTAVE_API bool sparse_qr<SparseComplexMatrix>::ok (void) const;
+    template OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseComplexMatrix>::V (void) const;
+    template OCTAVE_API ColumnVector
+    sparse_qr<SparseComplexMatrix>::Pinv (void) const;
+    template OCTAVE_API ColumnVector
+    sparse_qr<SparseComplexMatrix>::P (void) const;
+    template OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseComplexMatrix>::R (bool econ) const;
+    template OCTAVE_API ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::C (const ComplexMatrix& b) const;
+    template OCTAVE_API ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::Q (void) const;
 
     Matrix
     qrsolve (const SparseMatrix& a, const MArray<double>& b,

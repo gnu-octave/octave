@@ -32,8 +32,8 @@
 
 class Matrix;
 class ComplexMatrix;
-class SparseComplexMatrix;
 class SparseMatrix;
+class SparseComplexMatrix;
 class ColumnVector;
 template <typename T> class MArray;
 
@@ -98,6 +98,14 @@ namespace octave
       wide_solve (const RHS_T& b, octave_idx_type& info) const;
     };
 
+#if defined (__clang__) || defined (_WIN32)
+    // extern instantiations with set visibility/export/import attribute
+
+    extern template class OCTAVE_API sparse_qr<SparseMatrix>;
+
+    extern template class OCTAVE_API sparse_qr<SparseComplexMatrix>;
+#endif
+
     // Provide qrsolve for backward compatibility.
 
     extern OCTAVE_API Matrix
@@ -132,8 +140,8 @@ namespace octave
     qrsolve (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
              octave_idx_type& info);
 
-    //typedef sparse_qr<SparseMatrix> SparseQR;
-    //typedef sparse_qr<SparseComplexMatrix> SparseComplexQR;
+    typedef sparse_qr<SparseMatrix> SparseQR;
+    typedef sparse_qr<SparseComplexMatrix> SparseComplexQR;
   }
 }
 

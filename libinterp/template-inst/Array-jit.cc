@@ -40,12 +40,12 @@
 extern template class Array<idx_vector>;
 extern template class Array<octave_idx_type>;
 
-NO_INSTANTIATE_ARRAY_SORT (octave::jit_function);
+NO_INSTANTIATE_ARRAY_SORT (octave::jit_function, OCTINTERP_API);
 
 // Visibility attributes are ignored on template instantiation.
 // As a work-around, set visibility to default overriding compiler options.
 #pragma GCC visibility push(default)
-INSTANTIATE_ARRAY (octave::jit_function);
+INSTANTIATE_ARRAY (octave::jit_function, OCTINTERP_API);
 #pragma GCC visibility pop
 
 #if defined (Cell_h)

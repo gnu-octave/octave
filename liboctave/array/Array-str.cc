@@ -44,4 +44,4 @@ extern template class Array<octave_idx_type>;
 
 template class octave_sort<std::string>;
 
-INSTANTIATE_ARRAY (std::string);
+INSTANTIATE_ARRAY (std::string, OCTAVE_API);

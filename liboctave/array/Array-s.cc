@@ -44,7 +44,7 @@ extern template class Array<octave_idx_type>;
 
 template class octave_sort<short>;
 
-INSTANTIATE_ARRAY (short);
+INSTANTIATE_ARRAY (short, OCTAVE_API);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

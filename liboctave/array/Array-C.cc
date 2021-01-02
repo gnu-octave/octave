@@ -94,7 +94,7 @@ safe_comparator (sortmode mode, const Array<Complex>& a, bool allow_chk)
 
 template class octave_sort<Complex>;
 
-INSTANTIATE_ARRAY (Complex);
+INSTANTIATE_ARRAY (Complex, OCTAVE_API);
 
 template OCTAVE_API std::ostream& operator << (std::ostream&,
                                                const Array<Complex>&);

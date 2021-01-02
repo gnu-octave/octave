@@ -120,7 +120,7 @@ octave_sort<bool>::sort (bool *data, octave_idx_type *idx, octave_idx_type nel,
 
 template class octave_sort<bool>;
 
-INSTANTIATE_ARRAY (bool);
+INSTANTIATE_ARRAY (bool, OCTAVE_API);
 
 template OCTAVE_API std::ostream& operator << (std::ostream&,
                                                const Array<bool>&);

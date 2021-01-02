@@ -44,7 +44,7 @@ extern template class Array<octave_idx_type>;
 
 template class octave_sort<char>;
 
-INSTANTIATE_ARRAY (char);
+INSTANTIATE_ARRAY (char, OCTAVE_API);
 
 template OCTAVE_API std::ostream& operator << (std::ostream&,
                                                const Array<char>&);

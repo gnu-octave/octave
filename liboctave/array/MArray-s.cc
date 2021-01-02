@@ -32,7 +32,7 @@
 #include "MArray.h"
 #include "MArray.cc"
 
-template class MArray<short>;
+INSTANTIATE_MARRAY (short);
 
 INSTANTIATE_MARRAY_FRIENDS (short, OCTAVE_API)
 

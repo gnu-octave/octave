@@ -3068,8 +3068,16 @@ Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const
      << prefix << "rep->count:  " << rep->count << "\n";
 }
 
-#define INSTANTIATE_SPARSE(T, API)                                      \
-  template class API Sparse<T>;                                         \
-  template API std::istream&                                            \
-  read_sparse_matrix<T> (std::istream& is, Sparse<T>& a,                \
-                         T (*read_fcn) (std::istream&));
+#if defined (__clang__)
+#  define INSTANTIATE_SPARSE(T)                                         \
+     template class OCTAVE_API Sparse<T>;                               \
+     template OCTAVE_API std::istream&                                  \
+     read_sparse_matrix<T> (std::istream& is, Sparse<T>& a,             \
+                            T (*read_fcn) (std::istream&));
+#else
+#  define INSTANTIATE_SPARSE(T)                                         \
+     template class Sparse<T>;                                          \
+     template OCTAVE_API std::istream&                                  \
+     read_sparse_matrix<T> (std::istream& is, Sparse<T>& a,             \
+                            T (*read_fcn) (std::istream&));
+#endif

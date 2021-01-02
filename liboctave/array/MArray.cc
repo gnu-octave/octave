@@ -359,3 +359,9 @@ operator - (const MArray<T>& a)
 {
   return do_mx_unary_op<T, T> (a, mx_inline_uminus);
 }
+
+#if defined (__clang__)
+#  define INSTANTIATE_MARRAY(T) template class OCTAVE_API MArray<T>
+#else
+#  define INSTANTIATE_MARRAY(T) template class MArray<T>
+#endif

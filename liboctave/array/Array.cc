@@ -2764,9 +2764,15 @@ void Array<T>::instantiation_guard ()
   T::__xXxXx__ ();
 }
 
-#define INSTANTIATE_ARRAY(T, API)                           \
-  template <> API void Array<T>::instantiation_guard () { } \
-  template class Array<T>
+#if defined (__clang__)
+#  define INSTANTIATE_ARRAY(T, API)                            \
+     template <> API void Array<T>::instantiation_guard () { } \
+     template class API Array<T>
+#else
+#  define INSTANTIATE_ARRAY(T, API)                            \
+     template <> API void Array<T>::instantiation_guard () { } \
+     template class Array<T>
+#endif
 
 // FIXME: is this used?
 

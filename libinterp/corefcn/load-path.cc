@@ -2739,7 +2739,7 @@ and runs it if it exists.
       std::string arg = args(i).xstring_value ("rmpath: all arguments must be strings");
       std::list<std::string> dir_elts = octave::split_path (arg);
 
-      for (const auto dir : dir_elts)
+      for (const auto& dir : dir_elts)
         {
           //dir = regexprep (dir_elts{j}, '//+', "/");
           //dir = regexprep (dir, '/$', "");

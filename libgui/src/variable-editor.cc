@@ -48,11 +48,13 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
+#include "builtin-defun-decls.h"
 #include "dw-main-window.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-ve.h"
 #include "octave-qobject.h"
+#include "ovl.h"
 #include "qt-utils.h"
 #include "shortcut-manager.h"
 #include "variable-editor-model.h"
@@ -437,11 +439,54 @@ namespace octave
       }
   }
 
+  // Slot for saving a variable into a file
   void
-  variable_editor_stack::save (void)
+  variable_editor_stack::save (const QString& format)
   {
     if (! hasFocus ())
       return;
+
+    // Check whether a format for saving the variable is given
+    QString format_string;
+    if (! format.isEmpty ())
+      {
+        format_string = "-" + format;
+        do_save (format_string, format_string);
+        return;
+      }
+
+    // No format given, test save default options
+    emit interpreter_event
+      ([=] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+
+          octave_value_list argout
+            = Fsave_default_options (interp, octave_value_list (), 1);
+          QString save_opts = QString::fromStdString (argout(0).string_value ());
+
+          connect (this, SIGNAL (do_save_signal (const QString&, const QString&)),
+                   this, SLOT (do_save (const QString&, const QString&)));
+
+          emit (do_save_signal (format_string, save_opts));
+
+        });
+  }
+
+
+  // Perform saving the variable after desired format is determined
+  void
+  variable_editor_stack::do_save (const QString& format, const QString& save_opts)
+  {
+    QString file_ext = "txt";
+    for (int i = 0; i < ve_save_formats_ext.length ()/2; i++)
+      {
+        if (save_opts.contains (ve_save_formats_ext.at (2*i), Qt::CaseInsensitive))
+          {
+            file_ext = ve_save_formats_ext.at (2*i + 1);
+            break;
+          }
+      }
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = 0;  // No options by default.
@@ -454,17 +499,27 @@ namespace octave
     QString file
       = QFileDialog::getSaveFileName (this,
                                       tr ("Save Variable %1 As").arg (name),
-    // FIXME: Should determine extension from save_default_options
-                                      QString ("./%1.txt").arg (name),
+                                      QString ("./%1.%2").arg (name).arg (file_ext),
                                       0, 0, QFileDialog::Option (opts));
 
-    // FIXME: Type? binary, float-binary, ascii, text, hdf5, matlab format?
-    // FIXME: Call octave_value::save_* directly?
+    if (file.isEmpty ())
+      return; // No file selected: Just return
 
-    if (! file.isEmpty ())
-      emit command_signal (QString ("save (\"%1\", \"%2\");")
-                           .arg (file)
-                           .arg (name));
+    // Let the interpreter thread do the saving
+    emit interpreter_event
+      ([=] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+
+          octave_value_list ovl;
+          std::list<octave_value> str_list
+                              = {octave_value (file.toStdString ()),
+                                 octave_value (name.toStdString ())};
+          if (! format.isEmpty ())
+            str_list.push_front (octave_value (format.toStdString ()));
+
+          Fsave (interp, octave_value_list (str_list));
+        });
   }
 
 
@@ -1191,8 +1246,14 @@ namespace octave
     page->setWidget (stack);
     page->setFocusProxy (stack);
 
-    connect (stack, SIGNAL (command_signal (const QString&)),
-             this, SIGNAL (command_signal (const QString&)));
+    // Any interpreter_event signal from a variable_editor_stack object is
+    // handled the same as for the parent variable_editor object.
+    connect (stack, SIGNAL (interpreter_event (const fcn_callback&)),
+             this, SIGNAL (interpreter_event (const fcn_callback&)));
+
+    connect (stack, SIGNAL (interpreter_event (const meth_callback&)),
+             this, SIGNAL (interpreter_event (const meth_callback&)));
+
     connect (stack, SIGNAL (edit_variable_signal (const QString&, const octave_value&)),
              this, SLOT (edit_variable (const QString&, const octave_value&)));
     connect (this, SIGNAL (level_up_signal ()),
@@ -1211,6 +1272,8 @@ namespace octave
 
     connect (m_plot_mapper, SIGNAL (mapped (const QString&)),
              edit_view, SLOT (selected_command_requested (const QString&)));
+    connect (m_save_mapper, SIGNAL (mapped (const QString&)),
+             stack, SLOT (save (const QString&)));
 
     connect (edit_view, SIGNAL (command_signal (const QString&)),
              this, SIGNAL (command_signal (const QString&)));
@@ -1571,6 +1634,30 @@ namespace octave
     action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     action->setShortcuts (QKeySequence::Save);
     action->setStatusTip(tr("Save variable to a file"));
+
+    action = new QAction (rmgr.icon ("document-save-as"), tr ("Save in format ..."), m_tool_bar);
+
+    QToolButton *save_tool_button = new HoverToolButton (m_tool_bar);
+    save_tool_button->setDefaultAction (action);
+
+    save_tool_button->setText (tr ("Save in format ..."));
+    save_tool_button->setToolTip (tr("Save variable to a file in different format"));
+    save_tool_button->setIcon (rmgr.icon ("document-save-as"));
+    save_tool_button->setPopupMode (QToolButton::InstantPopup);
+
+    QMenu *save_menu = new ReturnFocusMenu (save_tool_button);
+    save_menu->setTitle (tr ("Save in format ..."));
+    save_menu->setSeparatorsCollapsible (false);
+
+    m_save_mapper = new QSignalMapper (save_menu);
+    for (int i = 0; i < ve_save_formats.length (); i++)
+      m_save_mapper->setMapping
+        (save_menu->addAction (ve_save_formats.at (i),
+                               m_save_mapper, SLOT (map ())),
+                               ve_save_formats.at (i));
+
+    save_tool_button->setMenu (save_menu);
+    m_tool_bar->addWidget (save_tool_button);
 
     m_tool_bar->addSeparator ();
 

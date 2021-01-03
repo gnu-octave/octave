@@ -34,6 +34,7 @@
 #include "dw-main-window.h"
 #include "gui-settings.h"
 #include "octave-dock-widget.h"
+#include "qt-interpreter-events.h"
 #include "tab-bar.h"
 
 class octave_value;
@@ -136,9 +137,12 @@ namespace octave
 
   signals:
 
-    void command_signal (const QString& cmd);
-
     void edit_variable_signal (const QString& name, const octave_value& val);
+
+    void do_save_signal (const QString& format, const QString& save_opts);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
   public slots:
 
@@ -146,7 +150,9 @@ namespace octave
 
     void levelUp (void);
 
-    void save (void);
+    void save (const QString& format = QString ());
+
+    void do_save (const QString& format, const QString& save_opts);
 
   private:
 
@@ -387,6 +393,7 @@ namespace octave
     QString m_hovered_focus_vname;
 
     QSignalMapper *m_plot_mapper;
+    QSignalMapper *m_save_mapper;
 
     QWidget *m_focus_widget;
 

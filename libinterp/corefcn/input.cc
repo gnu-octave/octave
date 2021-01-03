@@ -193,8 +193,8 @@ namespace octave
 
             unwind_protect frame;
 
-            frame.add_method (es, &error_system::set_discard_warning_messages,
-                              es.discard_warning_messages ());
+            frame.add (&error_system::set_discard_warning_messages, &es,
+                       es.discard_warning_messages ());
 
             es.discard_warning_messages (true);
 

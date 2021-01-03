@@ -1234,9 +1234,8 @@ namespace octave
 
     for (size_t idx = 0; iter != arg_list->end (); ++idx, ++iter)
       {
-        unwind_protect frame;
-        frame.add_method (&m_end_context,
-                          &std::vector<jit_magic_end::context>::pop_back);
+        unwind_action pop_end_context
+          (&std::vector<jit_magic_end::context>::pop_back, &m_end_context));
 
         jit_magic_end::context ctx (m_factory, object, idx, narg);
         m_end_context.push_back (ctx);

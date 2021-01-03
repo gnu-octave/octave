@@ -71,12 +71,6 @@ namespace octave
   { }
 
   void
-  base_url_transfer::delete_file (const std::string& file)
-  {
-    sys::unlink (file);
-  }
-
-  void
   base_url_transfer::mget_directory (const std::string& directory,
                                      const std::string& target)
   {
@@ -101,9 +95,7 @@ namespace octave
 
     if (good ())
       {
-        unwind_protect_safe frame;
-
-        frame.add_fcn (reset_path, this);
+        unwind_action_safe reset_path (&base_url_transfer::cwd, this, "..");
 
         string_vector sv = list ();
 
@@ -131,17 +123,15 @@ namespace octave
                     m_errmsg = "__ftp_mget__: unable to open file";
                     break;
                   }
-
-                unwind_protect_safe frame2;
-
-                frame2.add_fcn (delete_file, realfile);
+                int(*unlink_fptr)(const std::string&) = sys::unlink;
+                unwind_action_safe delete_file (unlink_fptr, realfile);
 
                 get (sv(i), ofile);
 
                 ofile.close ();
 
                 if (good ())
-                  frame2.discard ();
+                  delete_file.set ();
               }
 
             if (! good ())
@@ -169,9 +159,7 @@ namespace octave
 
     if (good ())
       {
-        unwind_protect_safe frame;
-
-        frame.add_fcn (reset_path, this);
+        unwind_action_safe reset_path (&base_url_transfer::cwd, this, "..");
 
         string_vector files;
         std::string msg;

@@ -2751,15 +2751,15 @@ namespace octave
             // the previous value of last_warning_message and skip the
             // conversion to a constant value.
 
-            unwind_protect frame;
-
             error_system& es = interp.get_error_system ();
 
-            frame.add_method (es, &error_system::set_last_warning_message,
-                              es.last_warning_message (""));
+            unwind_action restore_last_warning_message
+              (&error_system::set_last_warning_message, &es,
+               es.last_warning_message (""));
 
-            frame.add_method (es, &error_system::set_discard_warning_messages,
-                              es.discard_warning_messages (true));
+            unwind_action restore_discard_warning_messages
+              (&error_system::set_discard_warning_messages, &es,
+               es.discard_warning_messages (true));
 
             tree_evaluator& tw = interp.get_evaluator ();
 
@@ -4567,15 +4567,15 @@ namespace octave
             // the previous value of last_warning_message and skip the
             // conversion to a constant value.
 
-            unwind_protect frame;
-
             error_system& es = interp.get_error_system ();
 
-            frame.add_method (es, &error_system::set_last_warning_message,
-                              es.last_warning_message (""));
+            unwind_action restore_last_warning_message
+              (&error_system::set_last_warning_message, &es,
+               es.last_warning_message (""));
 
-            frame.add_method (es, &error_system::set_discard_warning_messages,
-                              es.discard_warning_messages (true));
+            unwind_action restore_discard_warning_messages
+              (&error_system::set_discard_warning_messages, &es,
+               es.discard_warning_messages (true));
 
             tree_evaluator& tw = interp.get_evaluator ();
 

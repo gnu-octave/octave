@@ -704,10 +704,8 @@ namespace octave
         // be evaluated from the normal interpreter loop where exceptions
         // are already handled.
 
-        unwind_protect frame;
-
-        frame.add_method (m_load_path, &load_path::set_add_hook,
-                          m_load_path.get_add_hook ());
+        unwind_action restore_add_hook (&load_path::set_add_hook, &m_load_path,
+                                        m_load_path.get_add_hook ());
 
         m_load_path.set_add_hook ([=] (const std::string& dir)
                                   { this->execute_pkg_add (dir); });
@@ -831,14 +829,13 @@ namespace octave
     {                                                                   \
       try                                                               \
         {                                                               \
-          unwind_protect frame;                                         \
+          unwind_action restore_debug_on_error                          \
+            (&error_system::set_debug_on_error, &m_error_system,        \
+             m_error_system.debug_on_error ());                        \
                                                                         \
-          frame.add_method (m_error_system,                             \
-                            &error_system::set_debug_on_error,          \
-                            m_error_system.debug_on_error ());          \
-          frame.add_method (m_error_system,                             \
-                            &error_system::set_debug_on_warning,        \
-                            m_error_system.debug_on_warning ());        \
+          unwind_action restore_debug_on_warning                        \
+            (&error_system::set_debug_on_warning, &m_error_system,      \
+             m_error_system.debug_on_warning ());                       \
                                                                         \
           m_error_system.debug_on_error (false);                        \
           m_error_system.debug_on_warning (false);                      \
@@ -1166,23 +1163,26 @@ namespace octave
 
     const cmdline_options& options = m_app_context->options ();
 
-    unwind_protect frame;
-
-    frame.add_method (this, &interpreter::interactive, m_interactive);
-
     string_vector args = options.all_args ();
 
-    frame.add_method (m_app_context, &application::intern_argv, args);
+    void (interpreter::*interactive_fptr) (bool) = &interpreter::interactive;
+    unwind_action restore_interactive (interactive_fptr, this, m_interactive);
 
-    frame.add_method (this, &interpreter::intern_nargin, args.numel () - 1);
+    unwind_action restore_argv (&application::intern_argv, m_app_context, args);
 
-    frame.add_method (m_app_context,
-                      &application::program_invocation_name,
-                      application::program_invocation_name ());
+    unwind_action restore_nargin (&interpreter::intern_nargin, this,
+                                  args.numel () - 1);
 
-    frame.add_method (m_app_context,
-                      &application::program_name,
-                      application::program_name ());
+    void (application::*program_invocation_name_fptr) (const std::string&)
+      = &application::program_invocation_name;
+    unwind_action restore_program_invocation_name
+      (program_invocation_name_fptr, m_app_context,
+       application::program_invocation_name ());
+
+    void (application::*program_name_fptr) (const std::string&)
+      = &application::program_name;
+    unwind_action restore_program_name
+      (program_name_fptr, m_app_context, application::program_name ());
 
     m_interactive = false;
 

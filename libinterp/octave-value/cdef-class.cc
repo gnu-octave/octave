@@ -864,12 +864,10 @@ namespace octave
     // this, we may pick up stray values from the current scope when
     // evaluating expressions found in things like attribute lists.
 
-    unwind_protect frame;
-
     tree_evaluator& tw = interp.get_evaluator ();
 
     tw.push_dummy_scope (full_class_name);
-    frame.add_method (tw, &tree_evaluator::pop_scope);
+    unwind_action pop_scope (&tree_evaluator::pop_scope, &tw);
 
     std::list<cdef_class> slist;
 

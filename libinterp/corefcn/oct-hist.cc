@@ -261,12 +261,6 @@ namespace octave
     return name;
   }
 
-  static void
-  unlink_cleanup (const char *file)
-  {
-    octave_unlink_wrapper (file);
-  }
-
   history_system::history_system (interpreter& interp)
     : m_interpreter (interp), m_input_from_tmp_file (false),
       m_timestamp_format_string (default_timestamp_format ())
@@ -502,12 +496,9 @@ namespace octave
 
     file.close ();
 
-    unwind_protect frame;
-
-    frame.add_fcn (unlink_cleanup, name.c_str ());
-    frame.protect_var (m_input_from_tmp_file);
-
-    m_input_from_tmp_file = true;
+    int(*unlink_fptr)(const std::string&) = octave::sys::unlink;
+    unwind_action unlink_action (unlink_fptr, name);
+    unwind_protect_var<bool> upv (m_input_from_tmp_file, true);
 
     // FIXME: instead of sourcing a file, we should just iterate through
     // the list of commands, parsing and executing them one at a time as
@@ -523,12 +514,9 @@ namespace octave
     if (name.empty ())
       return;
 
-    unwind_protect frame;
-
-    frame.add_fcn (unlink_cleanup, name.c_str ());
-    frame.protect_var (m_input_from_tmp_file);
-
-    m_input_from_tmp_file = true;
+    int(*unlink_fptr)(const std::string&) = octave::sys::unlink;
+    unwind_action unlink_action (unlink_fptr, name);
+    unwind_protect_var<bool> upv (m_input_from_tmp_file, true);
 
     // FIXME: instead of sourcing a file, we should just iterate through
     // the list of commands, parsing and executing them one at a time as

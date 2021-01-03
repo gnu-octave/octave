@@ -52,12 +52,6 @@
 #include "unwind-prot.h"
 #include "url-handle-manager.h"
 
-static void
-delete_file (const std::string& file)
-{
-  octave::sys::unlink (file);
-}
-
 DEFUN (urlwrite, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} urlwrite (@var{url}, @var{localfile})
@@ -148,9 +142,8 @@ urlwrite ("http://www.google.com/search", "search.html",
   if (! ofile.is_open ())
     error ("urlwrite: unable to open file");
 
-  octave::unwind_protect_safe frame;
-
-  frame.add_fcn (delete_file, filename);
+  int(*unlink_fptr)(const std::string&) = octave::sys::unlink;
+  octave::unwind_action_safe unlink_action (unlink_fptr, filename);
 
   octave::url_transfer url_xfer (url, ofile);
 
@@ -164,7 +157,7 @@ urlwrite ("http://www.google.com/search", "search.html",
   ofile.close ();
 
   if (url_xfer.good ())
-    frame.discard ();
+    unlink_action.set ();
 
   if (nargout > 0)
     {

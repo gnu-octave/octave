@@ -4607,8 +4607,8 @@ mexGetVariable (const char *space, const char *name)
             {
               octave::tree_evaluator& tw = interp.get_evaluator ();
 
-              frame.add_method (tw, &octave::tree_evaluator::restore_frame,
-                                tw.current_call_stack_frame_number ());
+              frame.add (&octave::tree_evaluator::restore_frame, &tw,
+                         tw.current_call_stack_frame_number ());
 
               tw.goto_base_frame ();
             }
@@ -4672,8 +4672,8 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
             {
               octave::tree_evaluator& tw = interp.get_evaluator ();
 
-              frame.add_method (tw, &octave::tree_evaluator::restore_frame,
-                                tw.current_call_stack_frame_number ());
+              frame.add (&octave::tree_evaluator::restore_frame, &tw,
+                         tw.current_call_stack_frame_number ());
 
               tw.goto_base_frame ();
             }

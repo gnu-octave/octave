@@ -153,8 +153,8 @@ namespace octave
 
     bool silent = tw.quiet_breakpoint_flag (false);
 
-    frame.add_method (tw, &tree_evaluator::restore_frame,
-                      tw.current_call_stack_frame_number ());
+    frame.add (&tree_evaluator::restore_frame, &tw,
+               tw.current_call_stack_frame_number ());
 
     tw.goto_frame (tw.debug_frame ());
 
@@ -200,11 +200,8 @@ namespace octave
 
             evmgr.set_workspace ();
 
-            frame.add ([=, &evmgr] (void)
-                       {
-                         evmgr.execute_in_debugger_event (fcn_nm,
-                                                          curr_debug_line);
-                       });
+            frame.add (&event_manager::execute_in_debugger_event, &evmgr,
+                       fcn_nm, curr_debug_line);
 
             if (! silent)
               {
@@ -231,14 +228,15 @@ namespace octave
     if (m_level > 0)
       tmp_prompt = "[" + std::to_string (m_level) + "]" + prompt_arg;
 
-    frame.add_method (input_sys, &input_system::set_PS1, input_sys.PS1 ());
+    frame.add (&input_system::set_PS1, &input_sys, input_sys.PS1 ());
     input_sys.PS1 (tmp_prompt);
 
     if (! m_interpreter.interactive ())
       {
-
-        frame.add_method (m_interpreter, &interpreter::interactive,
-                          m_interpreter.interactive ());
+        void (interpreter::*interactive_fptr) (bool)
+          = &interpreter::interactive;
+        frame.add (interactive_fptr, &m_interpreter,
+                   m_interpreter.interactive ());
 
         m_interpreter.interactive (true);
 
@@ -249,8 +247,10 @@ namespace octave
 
         if (app)
           {
-            frame.add_method (app, &application::forced_interactive,
-                              app->forced_interactive ());
+            void (application::*forced_interactive_fptr) (bool)
+              = &application::forced_interactive;
+            frame.add (forced_interactive_fptr, app,
+                       app->forced_interactive ());
 
             app->forced_interactive (true);
           }
@@ -793,24 +793,23 @@ namespace octave
   {
     unwind_protect frame;
 
-    frame.add_fcn (command_history::ignore_entries,
-                   command_history::ignoring_entries ());
+    frame.add (command_history::ignore_entries,
+               command_history::ignoring_entries ());
 
     command_history::ignore_entries (false);
 
-    frame.add_method (m_call_stack, &call_stack::restore_frame,
-                      m_call_stack.current_frame ());
+    frame.add (&call_stack::restore_frame, &m_call_stack,
+               m_call_stack.current_frame ());
 
     // Don't allow errors or warnings at the debug prompt to push us
     // into deeper levels of debugging.
 
     error_system& es = m_interpreter.get_error_system ();
 
-    frame.add_method (es, &error_system::set_debug_on_error,
-                      es.debug_on_error ());
+    frame.add (&error_system::set_debug_on_error, &es, es.debug_on_error ());
 
-    frame.add_method (es, &error_system::set_debug_on_warning,
-                      es.debug_on_warning ());
+    frame.add (&error_system::set_debug_on_warning, &es,
+               es.debug_on_warning ());
 
     es.debug_on_error (false);
     es.debug_on_warning (false);
@@ -1496,8 +1495,8 @@ namespace octave
 
     if (! context.empty ())
       {
-        frame.add_method (m_call_stack, &call_stack::restore_frame,
-                          m_call_stack.current_frame ());
+        frame.add (&call_stack::restore_frame, &m_call_stack,
+                   m_call_stack.current_frame ());
 
         if (context == "caller")
           m_call_stack.goto_caller_frame ();
@@ -3405,10 +3404,11 @@ namespace octave
     // We want to preserve the last location info for possible
     // backtracking.
 
-    frame.add_method (m_call_stack, &call_stack::set_line,
-                      m_call_stack.current_line ());
-    frame.add_method (m_call_stack, &call_stack::set_column,
-                      m_call_stack.current_column ());
+    frame.add (&call_stack::set_line, &m_call_stack,
+               m_call_stack.current_line ());
+
+    frame.add (&call_stack::set_column, &m_call_stack,
+               m_call_stack.current_column ());
 
     // Similarly, if we have seen a return or break statement, allow all
     // the cleanup code to run before returning or handling the break.
@@ -4056,8 +4056,8 @@ namespace octave
   void
   tree_evaluator::push_echo_state_cleanup (unwind_protect& frame)
   {
-    frame.add_method (this, &tree_evaluator::uwp_set_echo_state,
-                      m_echo_state, m_echo_file_name, m_echo_file_pos);
+    frame.add (&tree_evaluator::uwp_set_echo_state, this,
+               m_echo_state, m_echo_file_name, m_echo_file_pos);
   }
 
   bool tree_evaluator::maybe_push_echo_state_cleanup (void)

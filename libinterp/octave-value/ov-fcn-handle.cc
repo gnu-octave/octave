@@ -1919,8 +1919,6 @@ namespace octave
 
     std::streampos pos = is.tellg ();
 
-    unwind_protect_safe frame;
-
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
@@ -1930,7 +1928,7 @@ namespace octave
     tree_evaluator& tw = interp.get_evaluator ();
 
     tw.push_dummy_scope (buf);
-    frame.add_method (tw, &tree_evaluator::pop_scope);
+    unwind_action_safe restore_scope (&tree_evaluator::pop_scope, &tw);
 
     octave_idx_type len = 0;
 
@@ -2037,8 +2035,6 @@ namespace octave
     is.read (ctmp2, tmp);
     ctmp2[tmp] = 0;
 
-    unwind_protect_safe frame;
-
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
@@ -2048,7 +2044,7 @@ namespace octave
     tree_evaluator& tw = interp.get_evaluator ();
 
     tw.push_dummy_scope (ctmp2);
-    frame.add_method (tw, &tree_evaluator::pop_scope);
+    unwind_action_safe restore_scope (&tree_evaluator::pop_scope, &tw);
 
     if (len > 0)
       {
@@ -2353,8 +2349,6 @@ namespace octave
     H5Eset_auto (err_func, err_func_data);
 #endif
 
-    unwind_protect_safe frame;
-
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
@@ -2364,7 +2358,7 @@ namespace octave
     tree_evaluator& tw = interp.get_evaluator ();
 
     tw.push_dummy_scope (fcn_tmp);
-    frame.add_method (tw, &tree_evaluator::pop_scope);
+    unwind_action_safe restore_scope (&tree_evaluator::pop_scope, &tw);
 
     if (len > 0 && success)
       {

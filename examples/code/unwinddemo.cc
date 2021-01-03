@@ -21,14 +21,16 @@ DEFUN_DLD (unwinddemo, args, nargout, "Unwind Demo")
   NDArray a = args(0).array_value ();
   NDArray b = args(1).array_value ();
 
-  // Declare unwind_protect frame which lasts as long as
-  // the variable frame has scope.
-  octave::unwind_protect frame;
-  frame.add_fcn (set_liboctave_warning_handler,
-                 current_liboctave_warning_handler);
+  // Create unwind_action objects.  At the end of the enclosing scope,
+  // destructors for these objects will call the given functions with
+  // the specified arguments.
 
-  frame.add_fcn (set_liboctave_warning_with_id_handler,
-                 current_liboctave_warning_with_id_handler);
+  octave::unwind_action restore_warning_handler
+    (set_liboctave_warning_handler, current_liboctave_warning_handler);
+
+  octave::unwind_action restore_warning_with_id_handler
+    (set_liboctave_warning_with_id_handler,
+     current_liboctave_warning_with_id_handler);
 
   set_liboctave_warning_handler (my_err_handler);
   set_liboctave_warning_with_id_handler (my_err_with_id_handler);

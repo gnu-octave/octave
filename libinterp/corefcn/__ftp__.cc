@@ -52,12 +52,6 @@
 #include "unwind-prot.h"
 #include "url-handle-manager.h"
 
-static void
-delete_file (const std::string& file)
-{
-  octave::sys::unlink (file);
-}
-
 DEFMETHOD (__ftp__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{handle} =} __ftp__ (@var{host})
@@ -503,16 +497,16 @@ Undocumented internal function
               if (! ofile.is_open ())
                 error ("__ftp_mget__: unable to open file");
 
-              octave::unwind_protect_safe frame;
-
-              frame.add_fcn (delete_file, target + sv(i));
+              int(*unlink_fptr)(const std::string&) = octave::sys::unlink;
+              octave::unwind_action_safe delete_file
+                (unlink_fptr, target + sv(i));
 
               url_xfer.get (sv(i), ofile);
 
               ofile.close ();
 
               if (url_xfer.good ())
-                frame.discard ();
+                delete_file.set ();
             }
 
           if (! url_xfer.good ())

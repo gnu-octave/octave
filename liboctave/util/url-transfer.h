@@ -56,15 +56,6 @@ namespace octave
   OCTAVE_API
   base_url_transfer
   {
-  private:
-
-    static void delete_file (const std::string& file);
-
-    static void reset_path (base_url_transfer *curl_xfer)
-    {
-      curl_xfer->cwd ("..");
-    }
-
   public:
 
     friend class url_transfer;

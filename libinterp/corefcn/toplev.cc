@@ -111,7 +111,7 @@ run_command_and_return_output (const std::string& cmd_str)
 
   octave::child_list& kids
     = octave::__get_child_list__ ("run_command_and_return_output");
-  frame.add_method (kids, &octave::child_list::remove, cmd->pid ());
+  frame.add (&octave::child_list::remove, kids, cmd->pid ());
 
   if (! *cmd)
     error ("system: unable to start subprocess for '%s'", cmd_str.c_str ());

@@ -12253,9 +12253,8 @@ gh_manager::execute_callback (const graphics_handle& h,
       else
         args(1) = Matrix ();
 
-      octave::unwind_protect_safe frame;
-
-      frame.add_method (this, &gh_manager::restore_gcbo);
+      octave::unwind_action_safe restore_gcbo_action
+        (&gh_manager::restore_gcbo, this);
 
       graphics_object go (get_object (h));
       if (go)
@@ -14409,7 +14408,9 @@ In all cases, typing CTRL-C stops program execution immediately.
 
   caseless_str pname;
 
-  octave::unwind_protect frame;
+  octave::unwind_action cleanup_waitfor_id_action;
+  octave::unwind_action cleanup_waitfor_postset_listener_action;
+  octave::unwind_action cleanup_waitfor_predelete_listener_action;
 
   static uint32_t id_counter = 0;
   uint32_t id = 0;
@@ -14459,7 +14460,7 @@ In all cases, typing CTRL-C stops program execution immediately.
           Cell listener (1, max_arg_index >= 2 ? 5 : 4);
 
           id = id_counter++;
-          frame.add_fcn (cleanup_waitfor_id, id);
+          cleanup_waitfor_id_action.set (cleanup_waitfor_id, id);
           waitfor_results[id] = false;
 
           listener(0) = wf_listener;
@@ -14485,8 +14486,9 @@ In all cases, typing CTRL-C stops program execution immediately.
                 waitfor_results[id] = true;
               else
                 {
+                  cleanup_waitfor_postset_listener_action.set
+                    (cleanup_waitfor_postset_listener, ov_listener);
 
-                  frame.add_fcn (cleanup_waitfor_postset_listener, ov_listener);
                   go.add_property_listener (pname, ov_listener, GCB_POSTSET);
                   go.add_property_listener (pname, ov_listener, GCB_PERSISTENT);
 
@@ -14509,8 +14511,9 @@ In all cases, typing CTRL-C stops program execution immediately.
 
                       octave_value ov_del_listener (del_listener);
 
-                      frame.add_fcn (cleanup_waitfor_predelete_listener,
-                                     ov_del_listener);
+                      cleanup_waitfor_predelete_listener_action.set
+                        (cleanup_waitfor_predelete_listener, ov_del_listener);
+
                       go.add_property_listener (pname, ov_del_listener,
                                                 GCB_PREDELETE);
                     }

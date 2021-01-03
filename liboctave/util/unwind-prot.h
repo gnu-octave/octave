@@ -209,6 +209,68 @@ namespace octave
     std::function<void (void)> m_fcn;
   };
 
+  // Like unwind_action, but this one will guard against the possibility
+  // of seeing an exception (or interrupt) in the cleanup actions.
+  // Not that we can do much about it, but at least we won't crash.
+
+  class OCTAVE_API unwind_action_safe
+  {
+  private:
+
+    void warn_unhandled_exception (void) const;
+
+  public:
+
+    unwind_action_safe (void) : m_fcn () { }
+
+    // FIXME: Do we need to apply std::forward to the arguments to
+    // std::bind here?
+
+    template <typename F, typename... Args>
+    unwind_action_safe (F&& fcn, Args&&... args)
+      : m_fcn (std::bind (fcn, args...))
+    { }
+
+    // No copying!
+
+    unwind_action_safe (const unwind_action_safe&) = delete;
+
+    unwind_action_safe& operator = (const unwind_action_safe&) = delete;
+
+    ~unwind_action_safe (void) { run (); }
+
+    // FIXME: Do we need to apply std::forward to the arguments to
+    // std::bind here?
+
+    template <typename F, typename... Args>
+    void set (F&& fcn, Args&&... args)
+    {
+      m_fcn = std::bind (fcn, args...);
+    }
+
+    void set (void) { m_fcn = nullptr; }
+
+    void run (void)
+    {
+      try
+        {
+          if (m_fcn)
+            m_fcn ();
+        }
+      catch (...) // Yes, the black hole.  Remember we're in a destructor.
+        {
+          warn_unhandled_exception ();
+        }
+
+      // Invalidate so action won't run again when object is deleted.
+      set ();
+    }
+
+  private:
+
+    std::function<void (void)> m_fcn;
+  };
+
   // Reset a variable value at the end of the current scope when
   // unwind_protect_var object destructor is called.
   //

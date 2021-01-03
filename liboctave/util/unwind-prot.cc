@@ -40,4 +40,13 @@ namespace octave
        "It is a bug in Octave for this to happen.  "
        "Please help improve Octave by reporting it.");
   }
+
+  void
+  unwind_action_safe::warn_unhandled_exception (void) const
+  {
+    (*current_liboctave_warning_handler)
+      ("unhandled exception in unwind_action_safe handler.  "
+       "It is a bug in Octave for this to happen.  "
+       "Please help improve Octave by reporting it.");
+  }
 }

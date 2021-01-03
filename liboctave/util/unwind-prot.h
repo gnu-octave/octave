@@ -162,9 +162,14 @@ namespace octave
   // called immediately after the object is constructed instead of at
   // the end of the current scope.
 
-  class unwind_action
+  class OCTAVE_API unwind_action
   {
   public:
+
+    unwind_action (void) : m_fcn () { }
+
+    // FIXME: Do we need to apply std::forward to the arguments to
+    // std::bind here?
 
     template <typename F, typename... Args>
     unwind_action (F&& fcn, Args&&... args)
@@ -177,7 +182,27 @@ namespace octave
 
     unwind_action& operator = (const unwind_action&) = delete;
 
-    ~unwind_action (void) { m_fcn (); }
+    ~unwind_action (void) { run (); }
+
+    // FIXME: Do we need to apply std::forward to the arguments to
+    // std::bind here?
+
+    template <typename F, typename... Args>
+    void set (F&& fcn, Args&&... args)
+    {
+      m_fcn = std::bind (fcn, args...);
+    }
+
+    void set (void) { m_fcn = nullptr; }
+
+    void run (void)
+    {
+      if (m_fcn)
+        m_fcn ();
+
+      // Invalidate so action won't run again when object is deleted.
+      set ();
+    }
 
   private:
 

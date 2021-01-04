@@ -329,6 +329,7 @@ noinst_LTLIBRARIES += \
   $(FT2_CPPFLAGS) \
   $(HDF5_CPPFLAGS) \
   $(LLVM_CPPFLAGS) \
+  $(SPARSE_XCPPFLAGS) \
   $(Z_CPPFLAGS)
 
 libinterp_EXTRA_DIST += \

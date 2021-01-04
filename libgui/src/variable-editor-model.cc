@@ -987,7 +987,12 @@ namespace octave
   variable_editor_model::setData (const QModelIndex& idx,
                                   const QVariant& v_user_input, int role)
   {
-    if (role != Qt::EditRole || ! v_user_input.canConvert (QVariant::String)
+#if defined (QVARIANT_CANCONVERT_ACCEPTS_QMETATYPE_TYPE)
+    QMetaType::Type string_type = QMetaType::QString;
+#else
+    QVariant::Type string_type = QVariant::String;
+#endif
+    if (role != Qt::EditRole || ! v_user_input.canConvert (string_type)
         || ! idx.isValid ())
       return false;
 

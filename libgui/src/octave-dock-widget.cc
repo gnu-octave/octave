@@ -507,7 +507,12 @@ namespace octave
     QVariant dock_geom
       = settings->value (dw_dock_geometry.key.arg (objectName ()),
                          default_dock_size);
-    if (dock_geom.canConvert (QMetaType::QRect))
+#if defined (QVARIANT_CANCONVERT_ACCEPTS_QMETATYPE_TYPE)
+    QMetaType::Type rect_type = QMetaType::QRect;
+#else
+    QVariant::Type rect_type = QVariant::Rect;
+#endif
+    if (dock_geom.canConvert (rect_type))
       m_recent_dock_geom = dock_geom.toRect ();
     else
       m_recent_dock_geom = dw_dock_geometry.def.toRect ();

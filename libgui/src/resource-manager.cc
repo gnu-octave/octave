@@ -241,9 +241,17 @@ namespace octave
   // if macOS default font is not available): use QFontDatabase
   if (default_family.isEmpty ())
     {
+#if defined (HAVE_QFONTDATABASE_SYSTEMFONT)
       // Get the system's default monospaced font
       QFont fixed_font = QFontDatabase::systemFont (QFontDatabase::FixedFont);
       default_family = fixed_font.defaultFamily ();
+#elif defined (HAVE_QFONT_MONOSPACE)
+      QFont fixed_font;
+      fixed_font.setStyleHint (QFont::Monospace);
+      default_family = fixed_font.defaultFamily ();
+#else
+      default_family = global_font_family;
+#endif
     }
 
     // Test env variable which has preference

@@ -130,7 +130,10 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
       names{n_pos(2)} = "position";
     endif
   endif
-  ## Reorder the properties with the mode properties coming last
+  ## Set "units" property early
+  n = strcmp (names, "units");
+  names = [names(n); names(! n)];
+  ## Reorder the properties
   s.properties = orderfields (s.properties, names);
 
   ## Silence deprecation warnings

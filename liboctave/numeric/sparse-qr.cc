@@ -87,7 +87,7 @@ namespace octave
       bool ok (void) const
       {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
-        return (m_H && m_Htau && m_HPinv && m_R && m_E && &m_cc);
+        return (m_H && m_Htau && m_HPinv && m_R && m_E);
 #elif defined (HAVE_CXSPARSE)
         return (N && S);
 #else
@@ -2644,174 +2644,6 @@ namespace octave
     {
       return rep->Q (econ);
     }
-    // FIXME: Why is the "order" of the QR calculation as used in the
-    // CXSparse function sqr 3 for real matrices and 2 for complex?  These
-    // values seem to be required but there was no explanation in David
-    // Bateman's original code.
-
-    template <typename SPARSE_T>
-    class
-    cxsparse_defaults
-    {
-    public:
-      enum { order = -1 };
-    };
-
-    template <>
-    class
-    cxsparse_defaults<SparseMatrix>
-    {
-    public:
-#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
-      enum { order = SPQR_ORDERING_DEFAULT };
-#elif defined (HAVE_CXSPARSE)
-      enum { order = 3 };
-#endif
-    };
-
-    template <>
-    class
-    cxsparse_defaults<SparseComplexMatrix>
-    {
-    public:
-#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
-      enum { order = SPQR_ORDERING_DEFAULT };
-#elif defined (HAVE_CXSPARSE)
-      enum { order = 2 };
-#endif
-    };
-
-    template <typename SPARSE_T>
-    template <typename RHS_T, typename RET_T>
-    RET_T
-    sparse_qr<SPARSE_T>::solve (const SPARSE_T& a, const RHS_T& b,
-                                octave_idx_type& info)
-    {
-#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
-
-      info = -1;
-
-      octave_idx_type nr = a.rows ();
-      octave_idx_type nc = a.cols ();
-
-      octave_idx_type b_nc = b.cols ();
-      octave_idx_type b_nr = b.rows ();
-
-      int order = cxsparse_defaults<SPARSE_T>::order;
-
-      if (nr <= 0 || nc <= 0 || b_nc <= 0 || b_nr <= 0)
-        (*current_liboctave_error_handler)
-          ("matrix dimension with negative or zero size");
-
-      if ( nr != b_nr)
-        (*current_liboctave_error_handler)
-          ("matrix dimension mismatch in solution of minimum norm problem");
-
-      info = 0;
-
-      return min2norm_solve<RHS_T, RET_T> (a, b, info, order);
-
-#elif defined (HAVE_CXSPARSE)
-
-      info = -1;
-
-      octave_idx_type nr = a.rows ();
-      octave_idx_type nc = a.cols ();
-
-      octave_idx_type b_nc = b.cols ();
-      octave_idx_type b_nr = b.rows ();
-
-      int order = cxsparse_defaults<SPARSE_T>::order;
-
-      if (nr < 0 || nc < 0 || nr != b_nr)
-        (*current_liboctave_error_handler)
-          ("matrix dimension mismatch in solution of minimum norm problem");
-
-      if (nr == 0 || nc == 0 || b_nc == 0)
-        {
-          info = 0;
-
-          return RET_T (nc, b_nc, 0.0);
-        }
-      else if (nr >= nc)
-        {
-          sparse_qr<SPARSE_T> q (a, order);
-
-          return q.ok () ? q.tall_solve<RHS_T, RET_T> (b, info) : RET_T ();
-        }
-      else
-        {
-          sparse_qr<SPARSE_T> q (a.hermitian (), order);
-
-          return q.ok () ? q.wide_solve<RHS_T, RET_T> (b, info) : RET_T ();
-        }
-
-#else
-
-      octave_unused_parameter (a);
-      octave_unused_parameter (b);
-      octave_unused_parameter (info);
-
-      return RET_T ();
-
-#endif
-    }
-
-    //explicit instantiations of static member function solve
-    template
-    OCTAVE_API Matrix
-    sparse_qr<SparseMatrix>::solve<MArray<double>, Matrix>
-    (const SparseMatrix& a, const MArray<double>& b, octave_idx_type& info);
-
-    template
-    OCTAVE_API SparseMatrix
-    sparse_qr<SparseMatrix>::solve<SparseMatrix, SparseMatrix>
-    (const SparseMatrix& a, const SparseMatrix& b, octave_idx_type& info);
-
-    template
-    OCTAVE_API ComplexMatrix
-    sparse_qr<SparseMatrix>::solve<MArray<Complex>, ComplexMatrix>
-    (const SparseMatrix& a, const MArray<Complex>& b, octave_idx_type& info);
-
-    template
-    OCTAVE_API SparseComplexMatrix
-    sparse_qr<SparseMatrix>::solve<SparseComplexMatrix, SparseComplexMatrix>
-    (const SparseMatrix& a, const SparseComplexMatrix& b,
-     octave_idx_type& info);
-
-    template
-    OCTAVE_API ComplexMatrix
-    sparse_qr<SparseComplexMatrix>::solve<MArray<Complex>, ComplexMatrix>
-    (const SparseComplexMatrix& a, const MArray<Complex>& b,
-     octave_idx_type& info);
-
-    template
-    OCTAVE_API SparseComplexMatrix
-    sparse_qr<SparseComplexMatrix>::solve<
-    SparseComplexMatrix, SparseComplexMatrix>
-    (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
-     octave_idx_type& info);
-
-    template
-    OCTAVE_API ComplexMatrix
-    sparse_qr<SparseComplexMatrix>::solve<MArray<double>, ComplexMatrix>
-    (const SparseComplexMatrix& a, const MArray<double>& b,
-     octave_idx_type& info);
-
-    template
-    OCTAVE_API SparseComplexMatrix
-    sparse_qr<SparseComplexMatrix>::solve<SparseMatrix, SparseComplexMatrix>
-    (const SparseComplexMatrix& a, const SparseMatrix& b,
-     octave_idx_type& info);
-
-    //explicit instantiations of member function E_MAT
-    template
-    OCTAVE_API SparseMatrix
-    sparse_qr<SparseMatrix>::E_MAT (void) const;
-
-    template
-    OCTAVE_API SparseMatrix
-    sparse_qr<SparseComplexMatrix>::E_MAT (void) const;
 
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
     //specializations of function min2norm_solve
@@ -3116,6 +2948,175 @@ namespace octave
 
     }
 #endif
+
+    // FIXME: Why is the "order" of the QR calculation as used in the
+    // CXSparse function sqr 3 for real matrices and 2 for complex?  These
+    // values seem to be required but there was no explanation in David
+    // Bateman's original code.
+
+    template <typename SPARSE_T>
+    class
+    cxsparse_defaults
+    {
+    public:
+      enum { order = -1 };
+    };
+
+    template <>
+    class
+    cxsparse_defaults<SparseMatrix>
+    {
+    public:
+#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
+      enum { order = SPQR_ORDERING_DEFAULT };
+#elif defined (HAVE_CXSPARSE)
+      enum { order = 3 };
+#endif
+    };
+
+    template <>
+    class
+    cxsparse_defaults<SparseComplexMatrix>
+    {
+    public:
+#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
+      enum { order = SPQR_ORDERING_DEFAULT };
+#elif defined (HAVE_CXSPARSE)
+      enum { order = 2 };
+#endif
+    };
+
+    template <typename SPARSE_T>
+    template <typename RHS_T, typename RET_T>
+    RET_T
+    sparse_qr<SPARSE_T>::solve (const SPARSE_T& a, const RHS_T& b,
+                                octave_idx_type& info)
+    {
+#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
+
+      info = -1;
+
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.cols ();
+
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type b_nr = b.rows ();
+
+      int order = cxsparse_defaults<SPARSE_T>::order;
+
+      if (nr <= 0 || nc <= 0 || b_nc <= 0 || b_nr <= 0)
+        (*current_liboctave_error_handler)
+          ("matrix dimension with negative or zero size");
+
+      if ( nr != b_nr)
+        (*current_liboctave_error_handler)
+          ("matrix dimension mismatch in solution of minimum norm problem");
+
+      info = 0;
+
+      return min2norm_solve<RHS_T, RET_T> (a, b, info, order);
+
+#elif defined (HAVE_CXSPARSE)
+
+      info = -1;
+
+      octave_idx_type nr = a.rows ();
+      octave_idx_type nc = a.cols ();
+
+      octave_idx_type b_nc = b.cols ();
+      octave_idx_type b_nr = b.rows ();
+
+      int order = cxsparse_defaults<SPARSE_T>::order;
+
+      if (nr < 0 || nc < 0 || nr != b_nr)
+        (*current_liboctave_error_handler)
+          ("matrix dimension mismatch in solution of minimum norm problem");
+
+      if (nr == 0 || nc == 0 || b_nc == 0)
+        {
+          info = 0;
+
+          return RET_T (nc, b_nc, 0.0);
+        }
+      else if (nr >= nc)
+        {
+          sparse_qr<SPARSE_T> q (a, order);
+
+          return q.ok () ? q.tall_solve<RHS_T, RET_T> (b, info) : RET_T ();
+        }
+      else
+        {
+          sparse_qr<SPARSE_T> q (a.hermitian (), order);
+
+          return q.ok () ? q.wide_solve<RHS_T, RET_T> (b, info) : RET_T ();
+        }
+
+#else
+
+      octave_unused_parameter (a);
+      octave_unused_parameter (b);
+      octave_unused_parameter (info);
+
+      return RET_T ();
+
+#endif
+    }
+
+    //explicit instantiations of static member function solve
+    template
+    OCTAVE_API Matrix
+    sparse_qr<SparseMatrix>::solve<MArray<double>, Matrix>
+    (const SparseMatrix& a, const MArray<double>& b, octave_idx_type& info);
+
+    template
+    OCTAVE_API SparseMatrix
+    sparse_qr<SparseMatrix>::solve<SparseMatrix, SparseMatrix>
+    (const SparseMatrix& a, const SparseMatrix& b, octave_idx_type& info);
+
+    template
+    OCTAVE_API ComplexMatrix
+    sparse_qr<SparseMatrix>::solve<MArray<Complex>, ComplexMatrix>
+    (const SparseMatrix& a, const MArray<Complex>& b, octave_idx_type& info);
+
+    template
+    OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseMatrix>::solve<SparseComplexMatrix, SparseComplexMatrix>
+    (const SparseMatrix& a, const SparseComplexMatrix& b,
+     octave_idx_type& info);
+
+    template
+    OCTAVE_API ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::solve<MArray<Complex>, ComplexMatrix>
+    (const SparseComplexMatrix& a, const MArray<Complex>& b,
+     octave_idx_type& info);
+
+    template
+    OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseComplexMatrix>::solve<
+    SparseComplexMatrix, SparseComplexMatrix>
+    (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     octave_idx_type& info);
+
+    template
+    OCTAVE_API ComplexMatrix
+    sparse_qr<SparseComplexMatrix>::solve<MArray<double>, ComplexMatrix>
+    (const SparseComplexMatrix& a, const MArray<double>& b,
+     octave_idx_type& info);
+
+    template
+    OCTAVE_API SparseComplexMatrix
+    sparse_qr<SparseComplexMatrix>::solve<SparseMatrix, SparseComplexMatrix>
+    (const SparseComplexMatrix& a, const SparseMatrix& b,
+     octave_idx_type& info);
+
+    //explicit instantiations of member function E_MAT
+    template
+    OCTAVE_API SparseMatrix
+    sparse_qr<SparseMatrix>::E_MAT (void) const;
+
+    template
+    OCTAVE_API SparseMatrix
+    sparse_qr<SparseComplexMatrix>::E_MAT (void) const;
 
     template <typename SPARSE_T>
     template <typename RHS_T, typename RET_T>

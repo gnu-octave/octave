@@ -1006,7 +1006,7 @@ orthogonal basis of @code{span (A)}.
 %! r = qr (a);
 %! assert (r'*r, a'*a, 1e-10);
 
-%!testif HAVE_COLAMD
+%!testif HAVE_COLAMD; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1056,7 +1056,7 @@ orthogonal basis of @code{span (A)}.
 %! r = qr (a);
 %! assert (r'*r,a'*a,1e-10);
 
-%!testif HAVE_COLAMD
+%!testif HAVE_COLAMD; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);

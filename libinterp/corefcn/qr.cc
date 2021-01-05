@@ -997,7 +997,7 @@ orthogonal basis of @code{span (A)}.
 ## The deactivated tests below can't be tested till rectangular back-subs is
 ## implemented for sparse matrices.
 
-%!testif ; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
+%!testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1006,7 +1006,7 @@ orthogonal basis of @code{span (A)}.
 %! r = qr (a);
 %! assert (r'*r, a'*a, 1e-10);
 
-%!testif HAVE_COLAMD; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
+%!testif HAVE_COLAMD; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1017,7 +1017,7 @@ orthogonal basis of @code{span (A)}.
 %! r = qr (a);
 %! assert (r'*r, a'*a, 1e-10);
 
-%!testif ; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
+%!testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1026,7 +1026,7 @@ orthogonal basis of @code{span (A)}.
 %! [c,r] = qr (a, ones (n,1));
 %! assert (r\c, full (a)\ones (n,1), 10e-10);
 
-%!testif ; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
+%!testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1037,7 +1037,7 @@ orthogonal basis of @code{span (A)}.
 %! assert (r\c, full (a)\b, 10e-10);
 
 ## Test under-determined systems!!
-%!#testif ; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
+%!#testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1047,7 +1047,7 @@ orthogonal basis of @code{span (A)}.
 %! [c,r] = qr (a, b);
 %! assert (r\c, full (a)\b, 10e-10);
 
-%!testif ; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
+%!testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1056,7 +1056,7 @@ orthogonal basis of @code{span (A)}.
 %! r = qr (a);
 %! assert (r'*r,a'*a,1e-10);
 
-%!testif HAVE_COLAMD; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
+%!testif HAVE_COLAMD; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1067,7 +1067,7 @@ orthogonal basis of @code{span (A)}.
 %! r = qr (a);
 %! assert (r'*r, a'*a, 1e-10);
 
-%!testif ; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
+%!testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1076,7 +1076,7 @@ orthogonal basis of @code{span (A)}.
 %! [c,r] = qr (a, ones (n,1));
 %! assert (r\c, full (a)\ones (n,1), 10e-10);
 
-%!testif ; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
+%!testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1087,7 +1087,7 @@ orthogonal basis of @code{span (A)}.
 %! assert (r\c, full (a)\b, 10e-10);
 
 ## Test under-determined systems!!
-%!#testif ; __have_feature__ ("SPQR") || __have_feature__ ("CXSPARSE")
+%!#testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1097,7 +1097,7 @@ orthogonal basis of @code{span (A)}.
 %! [c, r] = qr (a, b);
 %! assert (r\c, full (a)\b, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1107,7 +1107,7 @@ orthogonal basis of @code{span (A)}.
 %! [c, r] = qr (a, b);
 %! assert (r\c, full (a)\b, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1118,7 +1118,7 @@ orthogonal basis of @code{span (A)}.
 %! [c2, r2] = qr (full (a), full (b), 0);
 %! assert (r\c, r2\c2, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1131,7 +1131,7 @@ orthogonal basis of @code{span (A)}.
 %! x2 = r2 \ c2;
 %! assert (x, x2, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1140,7 +1140,7 @@ orthogonal basis of @code{span (A)}.
 %! [q, r, p] = qr (a, "matrix");
 %! assert (q * r, a * p, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1151,7 +1151,7 @@ orthogonal basis of @code{span (A)}.
 %! [c2, r2] = qr (full (a), b);
 %! assert (x, r2\c2, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1162,7 +1162,7 @@ orthogonal basis of @code{span (A)}.
 %! [c2, r2] = qr (full (a), b);
 %! assert (x, r2\c2, 10e-10);
 
-%!#testif HAVE_SPQR
+%!#testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1173,7 +1173,7 @@ orthogonal basis of @code{span (A)}.
 %! [c2, r2] = qr (full (a), b);
 %! assert (r\c, r2\c2, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1186,7 +1186,7 @@ orthogonal basis of @code{span (A)}.
 %! x2 = r2 \ c2;
 %! assert (x, x2, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1197,7 +1197,7 @@ orthogonal basis of @code{span (A)}.
 %! [c2, r2] = qr (full (a), full (b), 0);
 %! assert (r\c, r2\c2, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1210,7 +1210,7 @@ orthogonal basis of @code{span (A)}.
 %! x2 = r2 \ c2;
 %! assert(x, x2, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1219,7 +1219,7 @@ orthogonal basis of @code{span (A)}.
 %! [q, r, p] = qr (a, "matrix");
 %! assert(q * r, a * p, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! n = 12; m = 20; d = 0.2;
 %! ## initialize generators to make behavior reproducible
 %! rand ("state", 42);
@@ -1230,7 +1230,7 @@ orthogonal basis of @code{span (A)}.
 %! [c2, r2] = qr (full (a), b);
 %! assert (x, r2\c2, 10e-10);
 
-%!testif HAVE_SPQR
+%!testif HAVE_SPQR, HAVE_CHOLMOD
 %! a = sparse (5, 6);
 %! a(3,1) = 0.8;
 %! a(2,2) = 1.4;

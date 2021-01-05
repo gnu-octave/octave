@@ -360,6 +360,7 @@ namespace octave
     dw_main_window *m_main;
 
     QToolBar *m_tool_bar;
+    QAction *m_save_action;
 
     int m_default_width;
 

@@ -52,6 +52,7 @@
 #include "dw-main-window.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
+#include "gui-preferences-sc.h"
 #include "gui-preferences-ve.h"
 #include "octave-qobject.h"
 #include "ovl.h"
@@ -1439,6 +1440,10 @@ namespace octave
     QStyle *st = style ();
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_tool_bar->setIconSize (QSize (icon_size, icon_size));
+
+    // Shortcuts (same as file editor)
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    scmgr.set_shortcut (m_save_action, sc_edit_file_save);
   }
 
   void
@@ -1627,15 +1632,13 @@ namespace octave
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
-    QAction *action;
-    action = add_tool_bar_button (rmgr.icon ("document-save"), tr ("Save"),
+    m_save_action = add_tool_bar_button (rmgr.icon ("document-save"), tr ("Save"),
                                   this, SLOT (save ()));
-    addAction (action);
-    action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
-    action->setShortcuts (QKeySequence::Save);
-    action->setStatusTip(tr("Save variable to a file"));
+    addAction (m_save_action);
+    m_save_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+    m_save_action->setStatusTip(tr("Save variable to a file"));
 
-    action = new QAction (rmgr.icon ("document-save-as"), tr ("Save in format ..."), m_tool_bar);
+    QAction *action = new QAction (rmgr.icon ("document-save-as"), tr ("Save in format ..."), m_tool_bar);
 
     QToolButton *save_tool_button = new HoverToolButton (m_tool_bar);
     save_tool_button->setDefaultAction (action);

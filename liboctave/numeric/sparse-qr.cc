@@ -125,7 +125,9 @@ namespace octave
       template <typename RHS_T, typename RET_T>
       RET_T solve (const RHS_T& b, octave_idx_type& info) const;
 
-#elif defined (HAVE_CXSPARSE)
+#endif
+
+#if defined (HAVE_CXSPARSE)
 
       typename cxsparse_types<SPARSE_T>::symbolic_type *S;
       typename cxsparse_types<SPARSE_T>::numeric_type *N;

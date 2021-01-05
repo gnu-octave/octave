@@ -488,7 +488,7 @@ endfunction
 %! opts.issym = 1;  opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 4.1, opts);
 %! assert (d1, eigs (A, k, 4.1), 1e-11);
-%!testif HAVE_ARPACK, HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! AA = speye (10);
 %! fn = @(x) AA * x;
 %! opts.issym = 1;  opts.isreal = 1;
@@ -782,7 +782,7 @@ endfunction
 %! for i=1:k
 %!   assert (max (abs ((A - d1(i)*speye (n))*v1(:,i))), 0, 1e-11);
 %! endfor
-%!testif HAVE_ARPACK, HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! A = toeplitz (sparse (1:10));
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! [v, d] = eigs (A, B, 4, "lm");
@@ -798,7 +798,7 @@ endfunction
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
 %! assert (abs (v), abs (R \ v1), 1e-12);
-%!testif HAVE_ARPACK, HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! [v, d] = eigs (A, B, 4, "lm");
@@ -814,7 +814,7 @@ endfunction
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
 %! assert (abs (v), abs (R \ v1), 1e-12);
-%!testif HAVE_ARPACK, HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10) -...
 %! 1i * spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
@@ -831,7 +831,7 @@ endfunction
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
 %! assert (abs (v), abs (R \ v1), 1e-12);
-%!testif HAVE_ARPACK, HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! A = toeplitz (sparse (1:10));
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! [v, d] = eigs (A, B, 4, 1);
@@ -847,7 +847,7 @@ endfunction
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
 %! assert (abs (v), abs (R \ v1), 1e-12);
-%!testif HAVE_ARPACK, HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! [v, d] = eigs (A, B, 4, 1);
@@ -863,7 +863,7 @@ endfunction
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
 %! assert (abs (v), abs (R \ v1), 1e-12);
-%!testif HAVE_ARPACK, HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10) -...
 %! 1i * spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
@@ -880,7 +880,7 @@ endfunction
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
 %! assert (abs (v), abs (R \ v1), 1e-12);
-%!testif HAVE_ARPACK, HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! A = toeplitz (sparse (1:10));
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! R = chol (B);
@@ -889,7 +889,7 @@ endfunction
 %! for i = 1:4
 %!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
 %! endfor
-%!testif HAVE_ARPACK, HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! A = toeplitz (sparse (1:10));
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! [R, ~, permB] = chol (B, "vector");

@@ -54,7 +54,7 @@ namespace octave
 
       OCTAVE_API sparse_qr (void);
 
-#if (HAVE_SPQR)
+#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
       // order = 7 selects SPQR default ordering
       OCTAVE_API sparse_qr (const SPARSE_T& a, int order = 7);
 #else
@@ -83,16 +83,10 @@ namespace octave
       OCTAVE_API SPARSE_T R (bool econ = false) const;
 
       OCTAVE_API typename SPARSE_T::dense_matrix_type
-      C (const typename SPARSE_T::dense_matrix_type& b) const;
+      C (const typename SPARSE_T::dense_matrix_type& b, bool econ = false) const;
 
       OCTAVE_API typename SPARSE_T::dense_matrix_type
-      C (const typename SPARSE_T::dense_matrix_type& b, bool econ) const;
-
-      OCTAVE_API typename SPARSE_T::dense_matrix_type
-      Q (void) const;
-
-      OCTAVE_API typename SPARSE_T::dense_matrix_type
-      Q (bool econ) const;
+      Q (bool econ = false) const;
 
       template <typename RHS_T, typename RET_T>
       static OCTAVE_API RET_T

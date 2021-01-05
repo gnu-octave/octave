@@ -1032,7 +1032,7 @@ cat <<EOF
 %! x = a \ b;
 %! assert (sparse (a * x), b, feps);
 %!endfunction
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! a = alpha*sprandn (10,11,0.2) + speye (10,11);
 %! f (a,[10,2],1e-10);
 %! ## Test this by forcing matrix_type, as can't get a certain
@@ -1069,32 +1069,32 @@ cat <<EOF
 %!assert (pds\xs, sparse (pdf\xs), 100*eps)
 %!test
 %! us = alpha*[[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]];
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! assert (us*(us\xf), xf, 100*eps);
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! assert (us*(us\xs), xs, 100*eps);
 %!test
 %! pus = us(:,[2,1,3:12]);
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! assert (pus*(pus\xf), xf, 100*eps);
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! assert (pus*(pus\xs), xs, 100*eps);
 %!test
 %! us = alpha*[speye(11,9),[1;sparse(8,1);1;0]];
 %!testif HAVE_CXSPARSE
 %! [c,r] = qr (us, xf);
 %! assert (us\xf, r\c, 100*eps);
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! [c,r] = qr (us, xs);
 %! r = matrix_type (r, "Singular"); ## Force Matrix Type
 %! assert (us\xs, r\c, 100*eps);
 %!test
 %! pus = us(:,[1:8,10,9]);
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! [c,r] = qr (pus, xf);
 %! r = matrix_type (r, "Singular"); ## Force Matrix Type
 %! assert (pus\xf, r\c, 100*eps);
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! [c,r] = qr (pus, xs);
 %! r = matrix_type (r, "Singular"); ## Force Matrix Type
 %! assert (pus\xs, r\c, 100*eps);
@@ -1112,20 +1112,20 @@ cat <<EOF
 %! ls = alpha*[speye(10,10), sparse(10,1);[1;1], sparse(2,9),[1;1]];
 %! xf = beta * ones (12,2);
 %! xs = speye (12,12);
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! [c,r] = qr (ls, xf);
 %! assert (ls\xf, r\c, 100*eps);
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! [c,r] = qr (ls, xs);
 %! r = matrix_type (r, "Singular"); ## Force Matrix Type
 %! assert (ls\xs, r\c, 100*eps);
-%!testif HAVE_CXSPARSE
+%!test
 %! pls = ls(:,[1:8,10,9]);
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! [c,r] = qr (pls, xf);
 %! r = matrix_type (r, "Singular"); ## Force Matrix Type
 %! assert (pls\xf, r\c, 100*eps);
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! [c,r] = qr (pls, xs);
 %! r = matrix_type (r, "Singular"); ## Force Matrix Type
 %! assert (pls\xs, r\c, 100*eps);

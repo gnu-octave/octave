@@ -103,7 +103,7 @@ function s = spaugment (A, c)
 endfunction
 
 
-%!testif HAVE_UMFPACK
+%!testif HAVE_UMFPACK, HAVE_CXSPARSE
 %! m = 11; n = 10; mn = max (m ,n);
 %! A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
 %! x0 = A \ ones (m,1);

@@ -95,6 +95,8 @@
 
 #if defined (HAVE_SUITESPARSE_SUITESPARSEQR_HPP)
 #  include <suitesparse/SuiteSparseQR.hpp>
+#elif defined (HAVE_SUITESPARSEQR_HPP)
+#  include <SuiteSparseQR.hpp>
 #endif
 
 // Cope with new SuiteSparse versions

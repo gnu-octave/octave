@@ -2148,7 +2148,7 @@ LIBS="$save_LIBS"
 
 OCTAVE_CHECK_LIB(spqr, SPQR,
   [SPQR library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/SuiteSparseQR.hpp],
+  [suitesparse/SuiteSparseQR.hpp SuiteSparseQR.hpp],
   [SuiteSparseQR_C],
   [C++], [don't use SPQR library, disable some sparse matrix functionality])
 

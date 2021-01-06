@@ -142,10 +142,10 @@ namespace octave
       cholmod_common m_cc;
       cholmod_sparse *m_R;  // R factor
       // Column permutation for A. Fill-reducing ordering.
-      suitesparse_integer *m_E;
+      SuiteSparse_long *m_E;
       cholmod_sparse *m_H;  // Householder vectors
       cholmod_dense *m_Htau;  // beta scalars
-      suitesparse_integer *m_HPinv;
+      SuiteSparse_long *m_HPinv;
 
 #endif
     };
@@ -180,7 +180,7 @@ namespace octave
 
       // FIXME: Is ret.xelem (m_HPinv[i]) = i + 1 correct?
       for (octave_idx_type i = 0; i < nrows; i++)
-        ret.xelem (m_HPinv[i]) = i + 1;
+        ret.xelem (from_suitesparse_long (m_HPinv[i])) = i + 1;
 
       return ret;
 
@@ -209,7 +209,7 @@ namespace octave
       ColumnVector ret (ncols);
 
       for (octave_idx_type i = 0; i < ncols; i++)
-        ret(i) = static_cast<octave_idx_type> (m_E[i]) + 1;
+        ret(i) = from_suitesparse_long (m_E[i]) + 1;
 
       return ret;
 
@@ -219,6 +219,255 @@ namespace octave
 
 #endif
     }
+
+#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
+
+  // Convert real sparse octave matrix to real sparse cholmod matrix.
+  // Returns a "shallow" copy of a.
+  static cholmod_sparse
+  ros2rcs (const SparseMatrix& a)
+  {
+    cholmod_sparse A;
+
+    octave_idx_type ncols = a.cols ();
+    octave_idx_type nnz = a.nnz ();
+
+    A.ncol = ncols;
+    A.nrow = a.rows ();
+    A.itype = CHOLMOD_LONG;
+    A.nzmax = nnz;
+    A.sorted = 0;
+    A.packed = 1;
+    A.stype = 0;
+    A.xtype = CHOLMOD_REAL;
+    A.dtype = CHOLMOD_DOUBLE;
+    A.nz = nullptr;
+    A.z = nullptr;
+    if (sizeof (octave_idx_type) == sizeof (SuiteSparse_long))
+      {
+        A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
+        A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
+      }
+    else
+      {
+        SuiteSparse_long *A_p;
+        A_p = new SuiteSparse_long[ncols+1];
+        for (octave_idx_type i = 0; i < ncols+1; i++)
+          A_p[i] = a.cidx (i);
+        A.p = A_p;
+        SuiteSparse_long *A_i;
+        A_i = new SuiteSparse_long[nnz];
+        for (octave_idx_type i = 0; i < nnz; i++)
+          A_i[i] = a.ridx (i);
+        A.i = A_i;
+      }
+    A.x = const_cast<double *> (a.data ());
+
+    return A;
+  }
+
+  // Convert complex sparse octave matrix to complex sparse cholmod matrix.
+  // Returns a "shallow" copy of a.
+  static cholmod_sparse
+  cos2ccs (const SparseComplexMatrix& a)
+  {
+    cholmod_sparse A;
+
+    octave_idx_type ncols = a.cols ();
+    octave_idx_type nnz = a.nnz ();
+
+    A.ncol = ncols;
+    A.nrow = a.rows ();
+    A.itype = CHOLMOD_LONG;
+    A.nzmax = nnz;
+    A.sorted = 0;
+    A.packed = 1;
+    A.stype = 0;
+    A.xtype = CHOLMOD_COMPLEX;
+    A.dtype = CHOLMOD_DOUBLE;
+    A.nz = nullptr;
+    A.z = nullptr;
+    if (sizeof (octave_idx_type) == sizeof (SuiteSparse_long))
+      {
+        A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
+        A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
+      }
+    else
+      {
+        SuiteSparse_long *A_p;
+        A_p = new SuiteSparse_long[ncols+1];
+        for (octave_idx_type i = 0; i < ncols+1; i++)
+          A_p[i] = a.cidx (i);
+        A.p = A_p;
+        SuiteSparse_long *A_i;
+        A_i = new SuiteSparse_long[nnz];
+        for (octave_idx_type i = 0; i < nnz; i++)
+          A_i[i] = a.ridx (i);
+        A.i = A_i;
+      }
+    A.x = const_cast<Complex *>
+                 (reinterpret_cast<const Complex *> (a.data ()));
+
+    return A;
+  }
+
+  // Convert real dense octave matrix to complex dense cholmod matrix.
+  // Returns a "deep" copy of a.
+  static cholmod_dense*
+  rod2ccd (const MArray<double>& a, cholmod_common *cc1)
+  {
+    cholmod_dense *A
+      = cholmod_l_allocate_dense (a.rows (), a.cols (), a.rows(),
+                                  CHOLMOD_COMPLEX, cc1);
+
+    const double *a_x = a.data ();
+
+    Complex *A_x = reinterpret_cast<Complex *> (A->x);
+    for (octave_idx_type j = 0; j < a.cols() * a.rows() ; j++)
+      A_x[j] = Complex (a_x[j], 0.0);
+
+    return A;
+  }
+
+  // Convert real dense octave matrix to real dense cholmod matrix.
+  // Returns a "shallow" copy of a.
+  static cholmod_dense
+  rod2rcd (const MArray<double> &a)
+  {
+    cholmod_dense A;
+
+    A.ncol = a.cols ();
+    A.nrow = a.rows ();
+    A.nzmax = a.cols () * a.rows ();
+    A.xtype = CHOLMOD_REAL;
+    A.dtype = CHOLMOD_DOUBLE;
+    A.z = nullptr;
+    A.d = a.rows ();
+    A.x = const_cast<double *> (a.data ());
+
+    return A;
+  }
+
+  // Convert complex dense octave matrix to complex dense cholmod matrix.
+  // Returns a "shallow" copy of a.
+  static cholmod_dense
+  cod2ccd (const ComplexMatrix &a)
+  {
+    cholmod_dense A;
+
+    A.ncol = a.cols ();
+    A.nrow = a.rows ();
+    A.nzmax = a.cols () * a.rows ();
+    A.xtype = CHOLMOD_COMPLEX;
+    A.dtype = CHOLMOD_DOUBLE;
+    A.z = nullptr;
+    A.d = a.rows ();
+    A.x = const_cast<Complex*> (reinterpret_cast<const Complex*> (a.data ()));
+
+    return A;
+  }
+
+  // Convert real sparse cholmod matrix to real sparse octave matrix.
+  // Returns a "shallow" copy of y.
+  static SparseMatrix
+  rcs2ros (const cholmod_sparse* y)
+  {
+    octave_idx_type nrow = from_size_t (y->nrow);
+    octave_idx_type ncol = from_size_t (y->ncol);
+    octave_idx_type nz = from_size_t (y->nzmax);
+    SparseMatrix ret (nrow, ncol, nz);
+
+    SuiteSparse_long *y_p = reinterpret_cast<SuiteSparse_long *> (y->p);
+    for (octave_idx_type j = 0; j < ncol + 1; j++)
+      ret.xcidx (j) = from_suitesparse_long (y_p[j]);
+
+    SuiteSparse_long *y_i = reinterpret_cast<SuiteSparse_long *> (y->i);
+    double *y_x = reinterpret_cast<double *> (y->x);
+    for (octave_idx_type j = 0; j < nz; j++)
+      {
+        ret.xridx (j) = from_suitesparse_long (y_i[j]);
+        ret.xdata (j) = y_x[j];
+      }
+
+    return ret;
+  }
+
+  // Convert complex sparse cholmod matrix to complex sparse octave matrix.
+  // Returns a "deep" copy of a.
+  static SparseComplexMatrix
+  ccs2cos (const cholmod_sparse *a)
+  {
+    octave_idx_type nrow = from_size_t (a->nrow);
+    octave_idx_type ncol = from_size_t (a->ncol);
+    octave_idx_type nz = from_size_t (a->nzmax);
+    SparseComplexMatrix ret (nrow, ncol, nz);
+
+    SuiteSparse_long *a_p = reinterpret_cast<SuiteSparse_long *> (a->p);
+    for (octave_idx_type j = 0; j < ncol + 1; j++)
+      ret.xcidx(j) = from_suitesparse_long (a_p[j]);
+
+    SuiteSparse_long *a_i = reinterpret_cast<SuiteSparse_long *> (a->i);
+    Complex *a_x = reinterpret_cast<Complex *> (a->x);
+    for (octave_idx_type j = 0; j < nz; j++)
+      {
+        ret.xridx(j) = from_suitesparse_long (a_i[j]);
+        ret.xdata(j) = a_x[j];
+      }
+ 
+    return ret;
+  }
+
+  // Convert real sparse octave matrix to complex sparse cholmod matrix.
+  // Returns a "deep" copy of a.
+  static cholmod_sparse*
+  ros2ccs (const SparseMatrix& a, cholmod_common *cc)
+  {
+    cholmod_sparse *A
+      = cholmod_l_allocate_sparse (a.rows (), a.cols (), a.nnz (), 0, 1, 0,
+                                   CHOLMOD_COMPLEX, cc);
+
+    octave_idx_type ncol = a.cols ();
+    SuiteSparse_long *A_p = reinterpret_cast<SuiteSparse_long *> (A->p);
+    for (octave_idx_type j = 0; j < ncol + 1; j++)
+      A_p[j] = a.cidx(j);
+
+    const double *a_x = a.data ();
+    Complex *A_x = reinterpret_cast<Complex *> (A->x);
+    SuiteSparse_long *A_i = reinterpret_cast<SuiteSparse_long *> (A->i);
+    for (octave_idx_type j = 0; j < a.nnz (); j++)
+      {
+        A_x[j] = Complex (a_x[j], 0.0);
+        A_i[j] = a.ridx(j);
+      }
+    return A;
+  }
+
+  static void
+  spqr_error_handler (const cholmod_common *cc)
+  {
+    if (cc->status >= 0)
+      return;
+
+    switch (cc->status)
+      {
+      case CHOLMOD_OUT_OF_MEMORY:
+        (*current_liboctave_error_handler)
+          ("sparse_qr: sparse matrix QR factorization failed"
+           " - out of memory");
+      case CHOLMOD_TOO_LARGE:
+        (*current_liboctave_error_handler)
+          ("sparse_qr: sparse matrix QR factorization failed"
+           " - integer overflow occurred");
+      default:
+        (*current_liboctave_error_handler)
+          ("sparse_qr: sparse matrix QR factorization failed"
+           " - error %d", cc->status);
+      }
+
+    // FIXME: Free memory?
+    // FIXME: Can cc-status > 0 (CHOLMOD_NOT_POSDEF, CHOLMOD_DSMALL) occur?
+  }
+#endif
 
     // Specializations.
 
@@ -256,15 +505,21 @@ namespace octave
         (*current_liboctave_error_handler)
           ("ordering %d is not supported by SPQR", order);
 
-      CHOLMOD_NAME (start) (&m_cc);
-      const cholmod_sparse A = ros2rcs (a);
+      cholmod_l_start (&m_cc);
+      cholmod_sparse A = ros2rcs (a);
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      SuiteSparseQR<double> (order, SPQR_DEFAULT_TOL, A.nrow,
-                             const_cast<cholmod_sparse*> (&A), &m_R, &m_E, &m_H,
-                             &m_HPinv, &m_Htau, &m_cc);
+      SuiteSparseQR<double> (order, static_cast<double> (SPQR_DEFAULT_TOL),
+                             static_cast<SuiteSparse_long> (A.nrow),
+                             &A, &m_R, &m_E, &m_H, &m_HPinv, &m_Htau, &m_cc);
       spqr_error_handler (&m_cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+        {
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+        }
     }
 
 #elif defined (HAVE_CXSPARSE)
@@ -311,12 +566,12 @@ namespace octave
     {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
-      CHOLMOD_NAME (free_sparse) (&m_R, &m_cc);
-      CHOLMOD_NAME (free_sparse) (&m_H, &m_cc);
-      CHOLMOD_NAME (free_dense) (&m_Htau, &m_cc);
+      cholmod_l_free_sparse (&m_R, &m_cc);
+      cholmod_l_free_sparse (&m_H, &m_cc);
+      cholmod_l_free_dense (&m_Htau, &m_cc);
       free (m_E);  // FIXME: use cholmod_l_free
       free (m_HPinv);
-      CHOLMOD_NAME (finish) (&m_cc);
+      cholmod_l_finish (&m_cc);
 
 #elif defined (HAVE_CXSPARSE)
 
@@ -381,18 +636,16 @@ namespace octave
 
       // FIXME: Does this work if econ = true?
       SparseMatrix ret ((econ ? (nc > nr ? nr : nc) : nr), nc, nz);
-      octave_idx_type *Rp = to_octave_idx_type_ptr
-                              (static_cast<suitesparse_integer*> (m_R->p));
-      octave_idx_type *Ri = to_octave_idx_type_ptr
-                              (static_cast<suitesparse_integer*> (m_R->i));
+      SuiteSparse_long *Rp = reinterpret_cast<SuiteSparse_long *> (m_R->p);
+      SuiteSparse_long *Ri = reinterpret_cast<SuiteSparse_long *> (m_R->i);
 
       for (octave_idx_type j = 0; j < nc + 1; j++)
-        ret.xcidx (j) = Rp[j];
+        ret.xcidx (j) = from_suitesparse_long (Rp[j]);
 
       for (octave_idx_type j = 0; j < nz; j++)
         {
-          ret.xridx (j) = Ri[j];
-          ret.xdata (j) = (static_cast<double*> (m_R->x))[j];
+          ret.xridx (j) = from_suitesparse_long (Ri[j]);
+          ret.xdata (j) = (reinterpret_cast<double *> (m_R->x))[j];
         }
 
       return ret;
@@ -455,21 +708,21 @@ namespace octave
           ("sparse_qr: matrix dimension with negative or zero size");
 
       cholmod_dense *QTB;  // Q' * B
-      const cholmod_dense B = rod2rcd (b);
+      cholmod_dense B = rod2rcd (b);
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      QTB = SuiteSparseQR_qmult<double> (SPQR_QTX, m_H, m_Htau, m_HPinv,
-                                         const_cast<cholmod_dense*> (&B), &m_cc);
+      QTB = SuiteSparseQR_qmult<double> (SPQR_QTX, m_H, m_Htau, m_HPinv, &B,
+                                         &m_cc);
       spqr_error_handler (&m_cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       // copy QTB into ret
-      double *QTB_x = static_cast<double*> (QTB->x);
-      double *ret_vec = static_cast<double*> (ret.fortran_vec ());
+      double *QTB_x = reinterpret_cast<double *> (QTB->x);
+      double *ret_vec = reinterpret_cast<double *> (ret.fortran_vec ());
       for (octave_idx_type j = 0; j < b_nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
           ret_vec[j * nr + i] = QTB_x[j * b_nr + i];
 
-      CHOLMOD_NAME (free_dense) (&QTB, &m_cc);
+      cholmod_l_free_dense (&QTB, &m_cc);
 
       return ret;
 
@@ -553,29 +806,28 @@ namespace octave
       cholmod_dense *q;
 
       // I is nrows x nrows identity matrix
-      cholmod_dense *I = static_cast<cholmod_dense*>
-                           (CHOLMOD_NAME (allocate_dense)
-                             (nrows, nrows, nrows, CHOLMOD_REAL, &m_cc));
+      cholmod_dense *I
+        = cholmod_l_allocate_dense (nrows, nrows, nrows, CHOLMOD_REAL, &m_cc);
 
       for (octave_idx_type i = 0; i < nrows * nrows; i++)
-        (static_cast<double*> (I->x))[i] = 0.0;
+        (reinterpret_cast<double *> (I->x))[i] = 0.0;
 
       for (octave_idx_type i = 0; i < nrows; i++)
-       (static_cast<double*> (I->x))[i * nrows + i] = 1.0;
+       (reinterpret_cast<double *> (I->x))[i * nrows + i] = 1.0;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       q = SuiteSparseQR_qmult<double> (SPQR_QX, m_H, m_Htau, m_HPinv, I, &m_cc);
       spqr_error_handler (&m_cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-      double *q_x = static_cast<double*> (q->x);
-      double *ret_vec = const_cast<double*> (ret.fortran_vec ());
+      double *q_x = reinterpret_cast<double *> (q->x);
+      double *ret_vec = const_cast<double *> (ret.fortran_vec ());
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nrows; i++)
           ret_vec[j * nrows + i] = q_x[j * nrows + i];
 
-      CHOLMOD_NAME (free_dense) (&q, &m_cc);
-      CHOLMOD_NAME (free_dense) (&I, &m_cc);
+      cholmod_l_free_dense (&q, &m_cc);
+      cholmod_l_free_dense (&I, &m_cc);
 
       return ret;
 
@@ -645,6 +897,18 @@ namespace octave
 #endif
     }
 
+    static suitesparse_integer
+    suitesparse_long_to_suitesparse_integer (SuiteSparse_long x)
+    {
+      if (x < std::numeric_limits<suitesparse_integer>::min ()
+          || x > std::numeric_limits<suitesparse_integer>::max ())
+        (*current_liboctave_error_handler)
+          ("integer dimension or index out of range for SuiteSparse's indexing type");
+
+      return static_cast<suitesparse_integer> (x);
+    }
+
+
     template <>
     template <>
     Matrix
@@ -667,14 +931,13 @@ namespace octave
         (*current_liboctave_error_handler) ("matrix dimension mismatch");
 
       cholmod_dense *QTB;  // Q' * B
-      const cholmod_dense B = rod2rcd (b);
+      cholmod_dense B = rod2rcd (b);
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       // FIXME: Process b column by column as in the CXSPARSE version below.
       // This avoids a large dense matrix Q' * B in memory.
-      QTB = SuiteSparseQR_qmult<double>
-             (SPQR_QTX, m_H, m_Htau, m_HPinv, const_cast<cholmod_dense*> (&B),
-              &m_cc);
+      QTB = SuiteSparseQR_qmult<double> (SPQR_QTX, m_H, m_Htau, m_HPinv, &B,
+                                         &m_cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       spqr_error_handler (&m_cc);
@@ -684,26 +947,60 @@ namespace octave
       R2.n = ncols;
       R2.m = ncols;
       R2.nzmax = m_R->nzmax;
-      R2.x = static_cast<double*> (m_R->x);
-      R2.i = static_cast<suitesparse_integer*> (m_R->i);
-      R2.p = static_cast<suitesparse_integer*> (m_R->p);
+      R2.x = reinterpret_cast<double *> (m_R->x);
+      suitesparse_integer *R2_p;
+      suitesparse_integer *R2_i;
+      if (sizeof (suitesparse_integer) == sizeof (SuiteSparse_long))
+        {
+          R2.p = reinterpret_cast<suitesparse_integer *> (m_R->p);
+          R2.i = reinterpret_cast<suitesparse_integer *> (m_R->i);
+        }
+      else
+        {
+          R2_p = new suitesparse_integer[ncols+1];
+          SuiteSparse_long * R_p = reinterpret_cast<SuiteSparse_long *> (m_R->p);
+          for (octave_idx_type i = 0; i < ncols+1; i++)
+            R2_p[i] = suitesparse_long_to_suitesparse_integer (R_p[i]);
+          R2.p = R2_p;
+          octave_idx_type nnz = m_R->nzmax;
+          R2_i = new suitesparse_integer[nnz];
+          SuiteSparse_long * R_i = reinterpret_cast<SuiteSparse_long *> (m_R->i);
+          for (octave_idx_type i = 0; i < nnz; i++)
+            R2_i[i] =  suitesparse_long_to_suitesparse_integer (R_i[i]);
+          R2.i = R2_i;
+        }
       R2.nz = -1;
-      double *x_vec = const_cast<double*> (x.fortran_vec ());
+      double *x_vec = const_cast<double *> (x.fortran_vec ());
+      suitesparse_integer *E;
+      if (sizeof (suitesparse_integer) != sizeof (SuiteSparse_long))
+        {
+          E = new suitesparse_integer [ncols];
+          for (octave_idx_type i = 0; i < ncols; i++)
+            E[i] = suitesparse_long_to_suitesparse_integer (m_E[i]);
+        }
+      else
+        E = reinterpret_cast<suitesparse_integer *> (m_E);
       for (volatile octave_idx_type j = 0; j < b_nc; j++)
         {
           // fill x(:,j)
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           // solve (m_R\(Q'*B(:,j)) and store result in QTB(:,j)
           CXSPARSE_DNAME (_usolve)
-            (&R2, &(static_cast<double*> (QTB->x)[j * b_nr]));
+            (&R2, &(reinterpret_cast<double *> (QTB->x)[j * b_nr]));
           // x(:,j) = m_E' * (m_R\(Q'*B(:,j))
           CXSPARSE_DNAME (_ipvec)
-            (m_E, &(static_cast<double*> (QTB->x)[j * b_nr]), &x_vec[j * ncols],
-             ncols);
+            (E, &(reinterpret_cast<double *> (QTB->x)[j * b_nr]),
+             &x_vec[j * ncols], ncols);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
-      CHOLMOD_NAME (free_dense) (&QTB, &m_cc);
+      if (sizeof (suitesparse_integer) != sizeof (SuiteSparse_long))
+        {
+          delete [] R2_p;
+          delete [] R2_i;
+          delete [] E;
+        }
+      cholmod_l_free_dense (&QTB, &m_cc);
 
       info = 0;
 
@@ -1224,15 +1521,22 @@ namespace octave
         (*current_liboctave_error_handler)
           ("ordering %d is not supported by SPQR", order);
 
-      CHOLMOD_NAME (start) (&m_cc);
-      const cholmod_sparse A = cos2ccs (a);
+      cholmod_l_start (&m_cc);
+      cholmod_sparse A = cos2ccs (a);
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      SuiteSparseQR<Complex> (order, SPQR_DEFAULT_TOL, A.nrow,
-                              const_cast<cholmod_sparse*>(&A), &m_R, &m_E, &m_H,
+      SuiteSparseQR<Complex> (order, static_cast<double> (SPQR_DEFAULT_TOL),
+                              static_cast<SuiteSparse_long> (A.nrow),
+                              &A, &m_R, &m_E, &m_H,
                               &m_HPinv, &m_Htau, &m_cc);
       spqr_error_handler (&m_cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+        {
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+        }
     }
 
 #elif defined (HAVE_CXSPARSE)
@@ -1280,12 +1584,12 @@ namespace octave
     {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
-      CHOLMOD_NAME (free_sparse) (&m_R, &m_cc);
-      CHOLMOD_NAME (free_sparse) (&m_H, &m_cc);
-      CHOLMOD_NAME (free_dense) (&m_Htau, &m_cc);
+      cholmod_l_free_sparse (&m_R, &m_cc);
+      cholmod_l_free_sparse (&m_H, &m_cc);
+      cholmod_l_free_dense (&m_Htau, &m_cc);
       free (m_E);  // FIXME: use cholmod_l_free
       free (m_HPinv);
-      CHOLMOD_NAME (finish) (&m_cc);
+      cholmod_l_finish (&m_cc);
 
 #elif defined (HAVE_CXSPARSE)
 
@@ -1321,7 +1625,7 @@ namespace octave
       for (octave_idx_type j = 0; j < nz; j++)
         {
           ret.xridx (j) = N->L->i[j];
-          ret.xdata (j) = reinterpret_cast<Complex *>(N->L->x)[j];
+          ret.xdata (j) = reinterpret_cast<Complex *> (N->L->x)[j];
         }
 
       return ret;
@@ -1339,24 +1643,22 @@ namespace octave
     {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
-      octave_idx_type nr = static_cast<octave_idx_type> (m_R->nrow);
-      octave_idx_type nc = static_cast<octave_idx_type> (m_R->ncol);
-      octave_idx_type nz = static_cast<octave_idx_type> (m_R->nzmax);
+      octave_idx_type nr = from_size_t (m_R->nrow);
+      octave_idx_type nc = from_size_t (m_R->ncol);
+      octave_idx_type nz = from_size_t (m_R->nzmax);
 
       // FIXME: Does this work if econ = true?
       SparseComplexMatrix ret ((econ ? (nc > nr ? nr : nc) : nr), nc, nz);
-      octave_idx_type *Rp = to_octave_idx_type_ptr
-                              (static_cast<suitesparse_integer*> (m_R->p));
-      octave_idx_type *Ri = to_octave_idx_type_ptr
-                              (static_cast<suitesparse_integer*> (m_R->i));
+      SuiteSparse_long *Rp = reinterpret_cast<SuiteSparse_long *> (m_R->p);
+      SuiteSparse_long *Ri = reinterpret_cast<SuiteSparse_long *> (m_R->i);
 
       for (octave_idx_type j = 0; j < nc + 1; j++)
-        ret.xcidx (j) = Rp[j];
+        ret.xcidx (j) = from_suitesparse_long (Rp[j]);
 
       for (octave_idx_type j = 0; j < nz; j++)
         {
-          ret.xridx (j) = Ri[j];
-          ret.xdata (j) = (static_cast<Complex*> (m_R->x))[j];
+          ret.xridx (j) = from_suitesparse_long (Ri[j]);
+          ret.xdata (j) = (reinterpret_cast<Complex *> (m_R->x))[j];
         }
 
       return ret;
@@ -1423,23 +1725,22 @@ namespace octave
           ("matrix dimension with negative or zero size");
 
       cholmod_dense *QTB;  // Q' * B
-      const cholmod_dense B = cod2ccd (b);
+      cholmod_dense B = cod2ccd (b);
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      QTB = SuiteSparseQR_qmult<Complex> (SPQR_QTX, m_H, m_Htau, m_HPinv,
-                                          const_cast<cholmod_dense*> (&B),
+      QTB = SuiteSparseQR_qmult<Complex> (SPQR_QTX, m_H, m_Htau, m_HPinv, &B,
                                           &m_cc);
       spqr_error_handler (&m_cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       // copy QTB into ret
-      Complex *QTB_x = static_cast<Complex*> (QTB->x);
-      Complex *ret_vec = static_cast<Complex*> (ret.fortran_vec ());
+      Complex *QTB_x = reinterpret_cast<Complex *> (QTB->x);
+      Complex *ret_vec = reinterpret_cast<Complex *> (ret.fortran_vec ());
       for (octave_idx_type j = 0; j < b_nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
           ret_vec[j * nr + i] = QTB_x[j * b_nr + i];
 
-      CHOLMOD_NAME (free_dense) (&QTB, &m_cc);
+      cholmod_l_free_dense (&QTB, &m_cc);
 
       return ret;
 
@@ -1521,15 +1822,15 @@ namespace octave
       cholmod_dense *q;
 
       // I is nrows x nrows identity matrix
-      cholmod_dense *I = static_cast<cholmod_dense*>
-                           (CHOLMOD_NAME (allocate_dense)
-                              (nrows, nrows, nrows, CHOLMOD_COMPLEX, &m_cc));
+      cholmod_dense *I
+        = reinterpret_cast<cholmod_dense *>
+            (cholmod_l_allocate_dense (nrows, nrows, nrows, CHOLMOD_COMPLEX, &m_cc));
 
       for (octave_idx_type i = 0; i < nrows * nrows; i++)
-        (static_cast<Complex*> (I->x))[i] = 0.0;
+        (reinterpret_cast<Complex *> (I->x))[i] = 0.0;
 
       for (octave_idx_type i = 0; i < nrows; i++)
-        (static_cast<Complex*> (I->x))[i * nrows + i] = 1.0;
+        (reinterpret_cast<Complex *> (I->x))[i * nrows + i] = 1.0;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       q = SuiteSparseQR_qmult<Complex> (SPQR_QX, m_H, m_Htau, m_HPinv, I,
@@ -1537,15 +1838,15 @@ namespace octave
       spqr_error_handler (&m_cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-      Complex *q_x = static_cast<Complex*> (q->x);
+      Complex *q_x = reinterpret_cast<Complex *> (q->x);
       Complex *ret_vec = const_cast<Complex*> (ret.fortran_vec ());
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nrows; i++)
           ret_vec[j * nrows + i] = q_x[j * nrows + i];
 
-      CHOLMOD_NAME (free_dense) (&q, &m_cc);
-      CHOLMOD_NAME (free_dense) (&I, &m_cc);
+      cholmod_l_free_dense (&q, &m_cc);
+      cholmod_l_free_dense (&I, &m_cc);
 
       return ret;
 
@@ -1964,7 +2265,7 @@ namespace octave
             buf[j] = cs_complex_t (0.0, 0.0);
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx),
+          CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *> (Xx),
                                   buf, nr);
           CXSPARSE_ZNAME (_utsolve) (N->U, buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -2034,7 +2335,7 @@ namespace octave
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_ipvec) (S->pinv,
-                                   reinterpret_cast<cs_complex_t *>(Xx),
+                                   reinterpret_cast<cs_complex_t *> (Xx),
                                    buf, nr);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
@@ -2138,7 +2439,7 @@ namespace octave
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_pvec) (S->q,
-                                  reinterpret_cast<cs_complex_t *>(Xx),
+                                  reinterpret_cast<cs_complex_t *> (Xx),
                                   buf, nr);
           CXSPARSE_ZNAME (_utsolve) (N->U, buf);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -2374,7 +2675,7 @@ namespace octave
 
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_ipvec) (S->pinv,
-                                   reinterpret_cast<cs_complex_t *>(Xx),
+                                   reinterpret_cast<cs_complex_t *> (Xx),
                                    buf, nr);
           END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
@@ -2660,24 +2961,27 @@ namespace octave
       Matrix x (nc, b_nc);
       cholmod_common cc;
 
-      CHOLMOD_NAME (start) (&cc);
-      const cholmod_sparse A = ros2rcs (a);
-      const cholmod_dense B = rod2rcd (b);
+      cholmod_l_start (&cc);
+      cholmod_sparse A = ros2rcs (a);
+      cholmod_dense B = rod2rcd (b);
       cholmod_dense *X;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL,
-                                          const_cast<cholmod_sparse*> (&A),
-                                          const_cast<cholmod_dense*> (&B), &cc);
+      X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
       spqr_error_handler (&cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       double *vec = x.fortran_vec ();
       for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
-        vec[i] = static_cast<double*> (X->x)[i];
+        vec[i] = reinterpret_cast<double *> (X->x)[i];
 
       info = 0;
-      CHOLMOD_NAME (finish) (&cc);
+      if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+        {
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+        }
+      cholmod_l_finish (&cc);
 
       return x;
 
@@ -2694,20 +2998,26 @@ namespace octave
       SparseMatrix x;
       cholmod_common cc;
 
-      CHOLMOD_NAME (start) (&cc);
-      const cholmod_sparse A = ros2rcs(a);
-      cholmod_sparse B = ros2rcs(b);
+      cholmod_l_start (&cc);
+      cholmod_sparse A = ros2rcs (a);
+      cholmod_sparse B = ros2rcs (b);
       cholmod_sparse *X;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL,
-                                          const_cast<cholmod_sparse*>(&A), &B,
-                                          &cc);
+      X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
       spqr_error_handler (&cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
+      if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+        {
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+          delete [] reinterpret_cast<SuiteSparse_long *> (B.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
+        }
+
       x = rcs2ros (X);
-      CHOLMOD_NAME (finish) (&cc);
+      cholmod_l_finish (&cc);
       info = 0;
 
       return x;
@@ -2730,25 +3040,23 @@ namespace octave
 
       cholmod_common cc;
 
-      CHOLMOD_NAME (start) (&cc);
+      cholmod_l_start (&cc);
 
       cholmod_sparse *A = ros2ccs (a, &cc);
-      const cholmod_dense B = cod2ccd (b);
+      cholmod_dense B = cod2ccd (b);
       cholmod_dense *X;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A,
-                                           const_cast<cholmod_dense*> (&B),
-                                           &cc);
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A, &B, &cc);
       spqr_error_handler (&cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       Complex *vec = x.fortran_vec ();
       for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
-        vec[i] = static_cast<Complex*> (X->x)[i];
+        vec[i] = reinterpret_cast<Complex *> (X->x)[i];
 
-      CHOLMOD_NAME (free_sparse) (&A, &cc);
-      CHOLMOD_NAME (finish) (&cc);
+      cholmod_l_free_sparse (&A, &cc);
+      cholmod_l_finish (&cc);
 
       info = 0;
 
@@ -2768,21 +3076,24 @@ namespace octave
 
       cholmod_common cc;
 
-      CHOLMOD_NAME (start) (&cc);
+      cholmod_l_start (&cc);
 
-      cholmod_sparse * A = ros2ccs (a, &cc);
-      const cholmod_sparse B = cos2ccs (b);
+      cholmod_sparse *A = ros2ccs (a, &cc);
+      cholmod_sparse B = cos2ccs (b);
       cholmod_sparse *X;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A,
-                                           const_cast<cholmod_sparse*> (&B),
-                                           &cc);
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A, &B, &cc);
       spqr_error_handler (&cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-      CHOLMOD_NAME (free_sparse) (&A, &cc);
-      CHOLMOD_NAME (finish) (&cc);
+      cholmod_l_free_sparse (&A, &cc);
+      if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+        {
+          delete [] reinterpret_cast<SuiteSparse_long *> (B.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
+        }
+      cholmod_l_finish (&cc);
 
       SparseComplexMatrix ret = ccs2cos(X);
 
@@ -2807,25 +3118,27 @@ namespace octave
 
       cholmod_common cc;
  
-      CHOLMOD_NAME (start) (&cc);
+      cholmod_l_start (&cc);
 
-      const cholmod_sparse A = cos2ccs (a);
-      const cholmod_dense B = cod2ccd (b);
+      cholmod_sparse A = cos2ccs (a);
+      cholmod_dense B = cod2ccd (b);
       cholmod_dense *X;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL,
-                                           const_cast<cholmod_sparse*> (&A),
-                                           const_cast<cholmod_dense*> (&B),
-                                           &cc);
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
       spqr_error_handler (&cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       Complex *vec = x.fortran_vec ();
       for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
-        vec[i] = static_cast<Complex*> (X->x)[i];
+        vec[i] = reinterpret_cast<Complex *> (X->x)[i];
 
-      CHOLMOD_NAME (finish) (&cc);
+      if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+        {
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+        }
+      cholmod_l_finish (&cc);
 
       info = 0;
 
@@ -2849,26 +3162,29 @@ namespace octave
 
       cholmod_common cc;
 
-      CHOLMOD_NAME (start) (&cc);
+      cholmod_l_start (&cc);
 
-      const cholmod_sparse A = cos2ccs (a);
+      cholmod_sparse A = cos2ccs (a);
       cholmod_dense *B = rod2ccd (b, &cc);
       cholmod_dense *X;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL,
-                                           const_cast<cholmod_sparse*> (&A),
-                                           B, &cc);
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, B, &cc);
       spqr_error_handler (&cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       Complex *vec = x.fortran_vec ();
 
       for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
-       vec[i] = static_cast<Complex*> (X->x)[i];
+       vec[i] = reinterpret_cast<Complex *> (X->x)[i];
 
-      CHOLMOD_NAME (free_dense) (&B, &cc);
-      CHOLMOD_NAME (finish) (&cc);
+      if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+        {
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+        }
+      cholmod_l_free_dense (&B, &cc);
+      cholmod_l_finish (&cc);
 
       info = 0;
 
@@ -2888,21 +3204,25 @@ namespace octave
 
       cholmod_common cc;
 
-      CHOLMOD_NAME (start) (&cc);
+      cholmod_l_start (&cc);
 
-      const cholmod_sparse A = cos2ccs (a);
-      const cholmod_sparse B = cos2ccs (b);
+      cholmod_sparse A = cos2ccs (a);
+      cholmod_sparse B = cos2ccs (b);
       cholmod_sparse *X;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL,
-                                           const_cast<cholmod_sparse*> (&A),
-                                           const_cast<cholmod_sparse*> (&B),
-                                           &cc);
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
       spqr_error_handler (&cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-      CHOLMOD_NAME (finish) (&cc);
+      if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+        {
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+          delete [] reinterpret_cast<SuiteSparse_long *> (B.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
+        }
+      cholmod_l_finish (&cc);
 
       info = 0;
 
@@ -2922,25 +3242,26 @@ namespace octave
 
       cholmod_common cc;
 
-      CHOLMOD_NAME (start) (&cc);
+      cholmod_l_start (&cc);
 
-      const cholmod_sparse A = cos2ccs (a);
+      cholmod_sparse A = cos2ccs (a);
       cholmod_sparse *B = ros2ccs (b, &cc);
       cholmod_sparse *X;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL,
-                                           const_cast<cholmod_sparse*> (&A), B,
-                                           &cc);
+      X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, B, &cc);
       spqr_error_handler (&cc);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-      CHOLMOD_NAME (finish) (&cc);
-
       SparseComplexMatrix ret = ccs2cos(X);
 
-      CHOLMOD_NAME (free_sparse) (&B, &cc);
-      CHOLMOD_NAME (finish) (&cc);
+      if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+        {
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+          delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+        }
+      cholmod_l_free_sparse (&B, &cc);
+      cholmod_l_finish (&cc);
 
       info = 0;
 

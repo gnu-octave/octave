@@ -259,8 +259,11 @@ namespace octave
   {
     QString default_family = get_default_font_family ();
 
-    // determine the fefault fotn size of the system
-    QFont font = QFont (default_family);
+    // determine the fefault font size of the system
+    // FIXME: QApplication::font () does not return the monospace font,
+    //        but the size should be probably near to the monospace font
+    QFont font = QApplication::font ();
+
     int font_size = font.pointSize ();
     if (font_size == -1)
       font_size = static_cast <int> (std::floor(font.pointSizeF ()));

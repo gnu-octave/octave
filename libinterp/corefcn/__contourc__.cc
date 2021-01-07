@@ -55,27 +55,25 @@ static int elem;
 #define CONTOUR_QUANT 50
 
 // Add a coordinate point (x,y) to this_contour.
-
 static void
 add_point (double x, double y)
 {
   if (elem % CONTOUR_QUANT == 0)
     this_contour = this_contour.append (Matrix (2, CONTOUR_QUANT, 0));
 
-  this_contour (0, elem) = x;
-  this_contour (1, elem) = y;
+  this_contour(0, elem) = x;
+  this_contour(1, elem) = y;
   elem++;
 }
 
 // Add contents of current contour to contourc.
 // this_contour.cols () - 1;
-
 static void
 end_contour (void)
 {
   if (elem > 2)
     {
-      this_contour (1, 0) = elem - 1;
+      this_contour(1, 0) = elem - 1;
       contourc = contourc.append (this_contour.extract_n (0, 0, 2, elem));
     }
 
@@ -302,13 +300,10 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
 
 DEFUN (__contourc__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})
-Undocumented internal function.
+@deftypefn {} {@var{c} =} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})
+Calculate Z-level contours (isolines).
 @end deftypefn */)
 {
-  if (args.length () != 4)
-    print_usage ();
-
   RowVector X = args(0).row_vector_value ();
   RowVector Y = args(1).row_vector_value ();
   Matrix Z = args(2).matrix_value ();
@@ -317,7 +312,7 @@ Undocumented internal function.
   contourc.resize (2, 0);
 
   for (int i = 0; i < L.numel (); i++)
-    cntr (X, Y, Z, L (i));
+    cntr (X, Y, Z, L(i));
 
   end_contour ();
 

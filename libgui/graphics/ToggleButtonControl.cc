@@ -98,6 +98,7 @@ namespace QtHandles
                                                   cdat.rows (),
                                                   cdat.columns ());
           btn->setIcon (QIcon (QPixmap::fromImage (img)));
+          btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
         }
         break;
 

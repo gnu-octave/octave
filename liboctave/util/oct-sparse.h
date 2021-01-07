@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#include <limits>
+
 #if defined (HAVE_CHOLMOD)
 #  include "dSparse.h"
 #  include "CSparse.h"

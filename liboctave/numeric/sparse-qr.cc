@@ -222,251 +222,262 @@ namespace octave
 
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
-  // Convert real sparse octave matrix to real sparse cholmod matrix.
-  // Returns a "shallow" copy of a.
-  static cholmod_sparse
-  ros2rcs (const SparseMatrix& a)
-  {
-    cholmod_sparse A;
+    // Convert real sparse octave matrix to real sparse cholmod matrix.
+    // Returns a "shallow" copy of a.
+    static cholmod_sparse
+    ros2rcs (const SparseMatrix& a)
+    {
+      cholmod_sparse A;
 
-    octave_idx_type ncols = a.cols ();
-    octave_idx_type nnz = a.nnz ();
+      octave_idx_type ncols = a.cols ();
+      octave_idx_type nnz = a.nnz ();
 
-    A.ncol = ncols;
-    A.nrow = a.rows ();
-    A.itype = CHOLMOD_LONG;
-    A.nzmax = nnz;
-    A.sorted = 0;
-    A.packed = 1;
-    A.stype = 0;
-    A.xtype = CHOLMOD_REAL;
-    A.dtype = CHOLMOD_DOUBLE;
-    A.nz = nullptr;
-    A.z = nullptr;
-    if (sizeof (octave_idx_type) == sizeof (SuiteSparse_long))
-      {
-        A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
-        A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
-      }
-    else
-      {
-        SuiteSparse_long *A_p;
-        A_p = new SuiteSparse_long[ncols+1];
-        for (octave_idx_type i = 0; i < ncols+1; i++)
-          A_p[i] = a.cidx (i);
-        A.p = A_p;
-        SuiteSparse_long *A_i;
-        A_i = new SuiteSparse_long[nnz];
-        for (octave_idx_type i = 0; i < nnz; i++)
-          A_i[i] = a.ridx (i);
-        A.i = A_i;
-      }
-    A.x = const_cast<double *> (a.data ());
+      A.ncol = ncols;
+      A.nrow = a.rows ();
+      A.itype = CHOLMOD_LONG;
+      A.nzmax = nnz;
+      A.sorted = 0;
+      A.packed = 1;
+      A.stype = 0;
+      A.xtype = CHOLMOD_REAL;
+      A.dtype = CHOLMOD_DOUBLE;
+      A.nz = nullptr;
+      A.z = nullptr;
+      if (sizeof (octave_idx_type) == sizeof (SuiteSparse_long))
+        {
+          A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
+          A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
+        }
+      else
+        {
+          SuiteSparse_long *A_p;
+          A_p = new SuiteSparse_long[ncols+1];
+          for (octave_idx_type i = 0; i < ncols+1; i++)
+            A_p[i] = a.cidx (i);
+          A.p = A_p;
+          SuiteSparse_long *A_i;
+          A_i = new SuiteSparse_long[nnz];
+          for (octave_idx_type i = 0; i < nnz; i++)
+            A_i[i] = a.ridx (i);
+          A.i = A_i;
+        }
+      A.x = const_cast<double *> (a.data ());
 
-    return A;
-  }
+      return A;
+    }
 
-  // Convert complex sparse octave matrix to complex sparse cholmod matrix.
-  // Returns a "shallow" copy of a.
-  static cholmod_sparse
-  cos2ccs (const SparseComplexMatrix& a)
-  {
-    cholmod_sparse A;
+    // Convert complex sparse octave matrix to complex sparse cholmod matrix.
+    // Returns a "shallow" copy of a.
+    static cholmod_sparse
+    cos2ccs (const SparseComplexMatrix& a)
+    {
+      cholmod_sparse A;
 
-    octave_idx_type ncols = a.cols ();
-    octave_idx_type nnz = a.nnz ();
+      octave_idx_type ncols = a.cols ();
+      octave_idx_type nnz = a.nnz ();
 
-    A.ncol = ncols;
-    A.nrow = a.rows ();
-    A.itype = CHOLMOD_LONG;
-    A.nzmax = nnz;
-    A.sorted = 0;
-    A.packed = 1;
-    A.stype = 0;
-    A.xtype = CHOLMOD_COMPLEX;
-    A.dtype = CHOLMOD_DOUBLE;
-    A.nz = nullptr;
-    A.z = nullptr;
-    if (sizeof (octave_idx_type) == sizeof (SuiteSparse_long))
-      {
-        A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
-        A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
-      }
-    else
-      {
-        SuiteSparse_long *A_p;
-        A_p = new SuiteSparse_long[ncols+1];
-        for (octave_idx_type i = 0; i < ncols+1; i++)
-          A_p[i] = a.cidx (i);
-        A.p = A_p;
-        SuiteSparse_long *A_i;
-        A_i = new SuiteSparse_long[nnz];
-        for (octave_idx_type i = 0; i < nnz; i++)
-          A_i[i] = a.ridx (i);
-        A.i = A_i;
-      }
-    A.x = const_cast<Complex *>
-                 (reinterpret_cast<const Complex *> (a.data ()));
+      A.ncol = ncols;
+      A.nrow = a.rows ();
+      A.itype = CHOLMOD_LONG;
+      A.nzmax = nnz;
+      A.sorted = 0;
+      A.packed = 1;
+      A.stype = 0;
+      A.xtype = CHOLMOD_COMPLEX;
+      A.dtype = CHOLMOD_DOUBLE;
+      A.nz = nullptr;
+      A.z = nullptr;
+      if (sizeof (octave_idx_type) == sizeof (SuiteSparse_long))
+        {
+          A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
+          A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
+        }
+      else
+        {
+          SuiteSparse_long *A_p;
+          A_p = new SuiteSparse_long[ncols+1];
+          for (octave_idx_type i = 0; i < ncols+1; i++)
+            A_p[i] = a.cidx (i);
+          A.p = A_p;
+          SuiteSparse_long *A_i;
+          A_i = new SuiteSparse_long[nnz];
+          for (octave_idx_type i = 0; i < nnz; i++)
+            A_i[i] = a.ridx (i);
+          A.i = A_i;
+        }
+      A.x = const_cast<Complex *>
+                   (reinterpret_cast<const Complex *> (a.data ()));
 
-    return A;
-  }
+      return A;
+    }
 
-  // Convert real dense octave matrix to complex dense cholmod matrix.
-  // Returns a "deep" copy of a.
-  static cholmod_dense*
-  rod2ccd (const MArray<double>& a, cholmod_common *cc1)
-  {
-    cholmod_dense *A
-      = cholmod_l_allocate_dense (a.rows (), a.cols (), a.rows(),
-                                  CHOLMOD_COMPLEX, cc1);
+    // Convert real dense octave matrix to complex dense cholmod matrix.
+    // Returns a "deep" copy of a.
+    static cholmod_dense*
+    rod2ccd (const MArray<double>& a, cholmod_common *cc1)
+    {
+      cholmod_dense *A
+        = cholmod_l_allocate_dense (a.rows (), a.cols (), a.rows(),
+                                    CHOLMOD_COMPLEX, cc1);
 
-    const double *a_x = a.data ();
+      const double *a_x = a.data ();
 
-    Complex *A_x = reinterpret_cast<Complex *> (A->x);
-    for (octave_idx_type j = 0; j < a.cols() * a.rows() ; j++)
-      A_x[j] = Complex (a_x[j], 0.0);
-
-    return A;
-  }
-
-  // Convert real dense octave matrix to real dense cholmod matrix.
-  // Returns a "shallow" copy of a.
-  static cholmod_dense
-  rod2rcd (const MArray<double> &a)
-  {
-    cholmod_dense A;
-
-    A.ncol = a.cols ();
-    A.nrow = a.rows ();
-    A.nzmax = a.cols () * a.rows ();
-    A.xtype = CHOLMOD_REAL;
-    A.dtype = CHOLMOD_DOUBLE;
-    A.z = nullptr;
-    A.d = a.rows ();
-    A.x = const_cast<double *> (a.data ());
-
-    return A;
-  }
-
-  // Convert complex dense octave matrix to complex dense cholmod matrix.
-  // Returns a "shallow" copy of a.
-  static cholmod_dense
-  cod2ccd (const ComplexMatrix &a)
-  {
-    cholmod_dense A;
-
-    A.ncol = a.cols ();
-    A.nrow = a.rows ();
-    A.nzmax = a.cols () * a.rows ();
-    A.xtype = CHOLMOD_COMPLEX;
-    A.dtype = CHOLMOD_DOUBLE;
-    A.z = nullptr;
-    A.d = a.rows ();
-    A.x = const_cast<Complex*> (reinterpret_cast<const Complex*> (a.data ()));
-
-    return A;
-  }
-
-  // Convert real sparse cholmod matrix to real sparse octave matrix.
-  // Returns a "shallow" copy of y.
-  static SparseMatrix
-  rcs2ros (const cholmod_sparse* y)
-  {
-    octave_idx_type nrow = from_size_t (y->nrow);
-    octave_idx_type ncol = from_size_t (y->ncol);
-    octave_idx_type nz = from_size_t (y->nzmax);
-    SparseMatrix ret (nrow, ncol, nz);
-
-    SuiteSparse_long *y_p = reinterpret_cast<SuiteSparse_long *> (y->p);
-    for (octave_idx_type j = 0; j < ncol + 1; j++)
-      ret.xcidx (j) = from_suitesparse_long (y_p[j]);
-
-    SuiteSparse_long *y_i = reinterpret_cast<SuiteSparse_long *> (y->i);
-    double *y_x = reinterpret_cast<double *> (y->x);
-    for (octave_idx_type j = 0; j < nz; j++)
-      {
-        ret.xridx (j) = from_suitesparse_long (y_i[j]);
-        ret.xdata (j) = y_x[j];
-      }
-
-    return ret;
-  }
-
-  // Convert complex sparse cholmod matrix to complex sparse octave matrix.
-  // Returns a "deep" copy of a.
-  static SparseComplexMatrix
-  ccs2cos (const cholmod_sparse *a)
-  {
-    octave_idx_type nrow = from_size_t (a->nrow);
-    octave_idx_type ncol = from_size_t (a->ncol);
-    octave_idx_type nz = from_size_t (a->nzmax);
-    SparseComplexMatrix ret (nrow, ncol, nz);
-
-    SuiteSparse_long *a_p = reinterpret_cast<SuiteSparse_long *> (a->p);
-    for (octave_idx_type j = 0; j < ncol + 1; j++)
-      ret.xcidx(j) = from_suitesparse_long (a_p[j]);
-
-    SuiteSparse_long *a_i = reinterpret_cast<SuiteSparse_long *> (a->i);
-    Complex *a_x = reinterpret_cast<Complex *> (a->x);
-    for (octave_idx_type j = 0; j < nz; j++)
-      {
-        ret.xridx(j) = from_suitesparse_long (a_i[j]);
-        ret.xdata(j) = a_x[j];
-      }
- 
-    return ret;
-  }
-
-  // Convert real sparse octave matrix to complex sparse cholmod matrix.
-  // Returns a "deep" copy of a.
-  static cholmod_sparse*
-  ros2ccs (const SparseMatrix& a, cholmod_common *cc)
-  {
-    cholmod_sparse *A
-      = cholmod_l_allocate_sparse (a.rows (), a.cols (), a.nnz (), 0, 1, 0,
-                                   CHOLMOD_COMPLEX, cc);
-
-    octave_idx_type ncol = a.cols ();
-    SuiteSparse_long *A_p = reinterpret_cast<SuiteSparse_long *> (A->p);
-    for (octave_idx_type j = 0; j < ncol + 1; j++)
-      A_p[j] = a.cidx(j);
-
-    const double *a_x = a.data ();
-    Complex *A_x = reinterpret_cast<Complex *> (A->x);
-    SuiteSparse_long *A_i = reinterpret_cast<SuiteSparse_long *> (A->i);
-    for (octave_idx_type j = 0; j < a.nnz (); j++)
-      {
+      Complex *A_x = reinterpret_cast<Complex *> (A->x);
+      for (octave_idx_type j = 0; j < a.cols() * a.rows() ; j++)
         A_x[j] = Complex (a_x[j], 0.0);
-        A_i[j] = a.ridx(j);
-      }
-    return A;
-  }
 
-  static void
-  spqr_error_handler (const cholmod_common *cc)
-  {
-    if (cc->status >= 0)
-      return;
+      return A;
+    }
 
-    switch (cc->status)
-      {
-      case CHOLMOD_OUT_OF_MEMORY:
-        (*current_liboctave_error_handler)
-          ("sparse_qr: sparse matrix QR factorization failed"
-           " - out of memory");
-      case CHOLMOD_TOO_LARGE:
-        (*current_liboctave_error_handler)
-          ("sparse_qr: sparse matrix QR factorization failed"
-           " - integer overflow occurred");
-      default:
-        (*current_liboctave_error_handler)
-          ("sparse_qr: sparse matrix QR factorization failed"
-           " - error %d", cc->status);
-      }
+    // Convert real dense octave matrix to real dense cholmod matrix.
+    // Returns a "shallow" copy of a.
+    static cholmod_dense
+    rod2rcd (const MArray<double> &a)
+    {
+      cholmod_dense A;
 
-    // FIXME: Free memory?
-    // FIXME: Can cc-status > 0 (CHOLMOD_NOT_POSDEF, CHOLMOD_DSMALL) occur?
-  }
+      A.ncol = a.cols ();
+      A.nrow = a.rows ();
+      A.nzmax = a.cols () * a.rows ();
+      A.xtype = CHOLMOD_REAL;
+      A.dtype = CHOLMOD_DOUBLE;
+      A.z = nullptr;
+      A.d = a.rows ();
+      A.x = const_cast<double *> (a.data ());
+
+      return A;
+    }
+
+    // Convert complex dense octave matrix to complex dense cholmod matrix.
+    // Returns a "shallow" copy of a.
+    static cholmod_dense
+    cod2ccd (const ComplexMatrix &a)
+    {
+      cholmod_dense A;
+
+      A.ncol = a.cols ();
+      A.nrow = a.rows ();
+      A.nzmax = a.cols () * a.rows ();
+      A.xtype = CHOLMOD_COMPLEX;
+      A.dtype = CHOLMOD_DOUBLE;
+      A.z = nullptr;
+      A.d = a.rows ();
+      A.x = const_cast<Complex*> (reinterpret_cast<const Complex*> (a.data ()));
+
+      return A;
+    }
+
+    // Convert real sparse cholmod matrix to real sparse octave matrix.
+    // Returns a "shallow" copy of y.
+    static SparseMatrix
+    rcs2ros (const cholmod_sparse* y)
+    {
+      octave_idx_type nrow = from_size_t (y->nrow);
+      octave_idx_type ncol = from_size_t (y->ncol);
+      octave_idx_type nz = from_size_t (y->nzmax);
+      SparseMatrix ret (nrow, ncol, nz);
+
+      SuiteSparse_long *y_p = reinterpret_cast<SuiteSparse_long *> (y->p);
+      for (octave_idx_type j = 0; j < ncol + 1; j++)
+        ret.xcidx (j) = from_suitesparse_long (y_p[j]);
+
+      SuiteSparse_long *y_i = reinterpret_cast<SuiteSparse_long *> (y->i);
+      double *y_x = reinterpret_cast<double *> (y->x);
+      for (octave_idx_type j = 0; j < nz; j++)
+        {
+          ret.xridx (j) = from_suitesparse_long (y_i[j]);
+          ret.xdata (j) = y_x[j];
+        }
+
+      return ret;
+    }
+
+    // Convert complex sparse cholmod matrix to complex sparse octave matrix.
+    // Returns a "deep" copy of a.
+    static SparseComplexMatrix
+    ccs2cos (const cholmod_sparse *a)
+    {
+      octave_idx_type nrow = from_size_t (a->nrow);
+      octave_idx_type ncol = from_size_t (a->ncol);
+      octave_idx_type nz = from_size_t (a->nzmax);
+      SparseComplexMatrix ret (nrow, ncol, nz);
+
+      SuiteSparse_long *a_p = reinterpret_cast<SuiteSparse_long *> (a->p);
+      for (octave_idx_type j = 0; j < ncol + 1; j++)
+        ret.xcidx(j) = from_suitesparse_long (a_p[j]);
+
+      SuiteSparse_long *a_i = reinterpret_cast<SuiteSparse_long *> (a->i);
+      Complex *a_x = reinterpret_cast<Complex *> (a->x);
+      for (octave_idx_type j = 0; j < nz; j++)
+        {
+          ret.xridx(j) = from_suitesparse_long (a_i[j]);
+          ret.xdata(j) = a_x[j];
+        }
+   
+      return ret;
+    }
+
+    // Convert real sparse octave matrix to complex sparse cholmod matrix.
+    // Returns a "deep" copy of a.
+    static cholmod_sparse*
+    ros2ccs (const SparseMatrix& a, cholmod_common *cc)
+    {
+      cholmod_sparse *A
+        = cholmod_l_allocate_sparse (a.rows (), a.cols (), a.nnz (), 0, 1, 0,
+                                     CHOLMOD_COMPLEX, cc);
+
+      octave_idx_type ncol = a.cols ();
+      SuiteSparse_long *A_p = reinterpret_cast<SuiteSparse_long *> (A->p);
+      for (octave_idx_type j = 0; j < ncol + 1; j++)
+        A_p[j] = a.cidx(j);
+
+      const double *a_x = a.data ();
+      Complex *A_x = reinterpret_cast<Complex *> (A->x);
+      SuiteSparse_long *A_i = reinterpret_cast<SuiteSparse_long *> (A->i);
+      for (octave_idx_type j = 0; j < a.nnz (); j++)
+        {
+          A_x[j] = Complex (a_x[j], 0.0);
+          A_i[j] = a.ridx(j);
+        }
+      return A;
+    }
+
+    static suitesparse_integer
+    suitesparse_long_to_suitesparse_integer (SuiteSparse_long x)
+    {
+      if (x < std::numeric_limits<suitesparse_integer>::min ()
+          || x > std::numeric_limits<suitesparse_integer>::max ())
+        (*current_liboctave_error_handler)
+          ("integer dimension or index out of range for SuiteSparse's indexing type");
+
+      return static_cast<suitesparse_integer> (x);
+    }
+
+    static void
+    spqr_error_handler (const cholmod_common *cc)
+    {
+      if (cc->status >= 0)
+        return;
+
+      switch (cc->status)
+        {
+        case CHOLMOD_OUT_OF_MEMORY:
+          (*current_liboctave_error_handler)
+            ("sparse_qr: sparse matrix QR factorization failed"
+             " - out of memory");
+        case CHOLMOD_TOO_LARGE:
+          (*current_liboctave_error_handler)
+            ("sparse_qr: sparse matrix QR factorization failed"
+             " - integer overflow occurred");
+        default:
+          (*current_liboctave_error_handler)
+            ("sparse_qr: sparse matrix QR factorization failed"
+             " - error %d", cc->status);
+        }
+
+      // FIXME: Free memory?
+      // FIXME: Can cc-status > 0 (CHOLMOD_NOT_POSDEF, CHOLMOD_DSMALL) occur?
+    }
 #endif
 
     // Specializations.
@@ -896,18 +907,6 @@ namespace octave
 
 #endif
     }
-
-    static suitesparse_integer
-    suitesparse_long_to_suitesparse_integer (SuiteSparse_long x)
-    {
-      if (x < std::numeric_limits<suitesparse_integer>::min ()
-          || x > std::numeric_limits<suitesparse_integer>::max ())
-        (*current_liboctave_error_handler)
-          ("integer dimension or index out of range for SuiteSparse's indexing type");
-
-      return static_cast<suitesparse_integer> (x);
-    }
-
 
     template <>
     template <>

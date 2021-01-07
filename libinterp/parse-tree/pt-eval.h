@@ -157,6 +157,11 @@ namespace octave
       return m_parser;
     }
 
+    void set_parser (const std::shared_ptr<push_parser>& parser)
+    {
+      m_parser = parser;
+    }
+
     bool at_top_level (void) const;
 
     std::string mfilename (const std::string& opt = "") const;
@@ -174,6 +179,8 @@ namespace octave
     int server_loop (void);
 
     bool server_mode (void) const { return m_server_mode; }
+
+    void server_mode (bool arg) { m_server_mode = arg; }
 
     void eval (std::shared_ptr<tree_statement_list>& stmt_list,
                bool interactive);

@@ -55,6 +55,7 @@ namespace octave
       event_queue_mutex (new mutex ()), gui_event_queue (),
       debugging (false), link_enabled (false)
   {
+    push_event_queue ();
     command_editor::add_event_hook (readline_event_hook);
   }
 
@@ -98,10 +99,10 @@ namespace octave
           disable ();
 
         event_queue_mutex->lock ();
-
-        gui_event_queue.run ();
-
+        std::shared_ptr<event_queue> evq = gui_event_queue.top ();
         event_queue_mutex->unlock ();
+
+        evq->run ();
       }
   }
 
@@ -110,10 +111,49 @@ namespace octave
     if (enabled ())
       {
         event_queue_mutex->lock ();
-
-        gui_event_queue.discard ();
-
+        std::shared_ptr<event_queue> evq = gui_event_queue.top ();
         event_queue_mutex->unlock ();
+
+        evq->discard ();
+      }
+  }
+
+  void event_manager::push_event_queue (void)
+  {
+    std::shared_ptr<event_queue> evq (new event_queue ());
+    gui_event_queue.push (evq);
+  }
+
+  void event_manager::pop_event_queue (void)
+  {
+    // FIXME: Should we worry about the possibility of events remaining
+    // in the queue when we pop back to the previous queue?  If so, then
+    // we will probably want to push them on to the front of the
+    // previous queue so they will be executed before any other events
+    // that were in the previous queue.  This case could happen if
+    // graphics callback functions were added to the event queue during a
+    // debug session just after a dbcont command was added but before it
+    // executed and brought us here, for example.
+
+    std::shared_ptr<event_queue> evq = gui_event_queue.top ();
+    gui_event_queue.pop ();
+  }
+
+  void event_manager::post_event (const fcn_callback& fcn)
+  {
+    if (enabled ())
+      {
+        std::shared_ptr<event_queue> evq = gui_event_queue.top ();
+        evq->add (fcn);
+      }
+  }
+
+  void event_manager::post_event (const meth_callback& meth)
+  {
+    if (enabled ())
+      {
+        std::shared_ptr<event_queue> evq = gui_event_queue.top ();
+        evq->add (std::bind (meth, std::ref (m_interpreter)));
       }
   }
 

@@ -111,6 +111,8 @@ namespace octave
         m_execution_mode (EX_NORMAL), m_in_debug_repl (false)
     { }
 
+    int server_loop (void);
+
     void repl (const std::string& prompt = "debug> ");
 
     bool in_debug_repl (void) const { return m_in_debug_repl; }
@@ -139,6 +141,115 @@ namespace octave
     execution_mode m_execution_mode;
     bool m_in_debug_repl;
   };
+
+  // FIXME: Could the debugger server_loop and repl functions be merged
+  // with the corresponding tree_evaluator functions or do they need to
+  // remain separate?  They perform nearly the same functions.
+
+  int debugger::server_loop (void)
+  {
+    // Process events from the event queue.
+
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+    void (tree_evaluator::*server_mode_fptr) (bool)
+      = &tree_evaluator::server_mode;
+    unwind_action act (server_mode_fptr, &tw, true);
+
+    int exit_status = 0;
+
+    do
+      {
+        if (m_execution_mode == EX_CONTINUE || tw.dbstep_flag ())
+          break;
+
+        if (quitting_debugger ())
+          break;
+
+        try
+          {
+            // FIXME: Running the event queue should be decoupled from
+            // the command_editor.
+
+            // FIXME: Is it OK to use command_editor::run_event_hooks
+            // here?  It may run more than one queued function per call,
+            // and it seems that the checks at the top of the loop
+            // probably need to be done after each individual event
+            // function is executed.  For now, maybe the simplest thing
+            // would be to pass a predicate function (lambda expression)
+            // to the command_editor::run_event_hooks and have it check
+            // that and break out of the eval loop(s) if the condition
+            // is met?
+
+            // FIXME: We should also use a condition variable to manage
+            // the execution of entries in the queue and eliminate the
+            // need for the busy-wait loop.
+
+            command_editor::run_event_hooks ();
+
+            octave::sleep (0.1);
+          }
+        catch (const interrupt_exception&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            // Required newline when the user does Ctrl+C at the prompt.
+            if (m_interpreter.interactive ())
+              octave_stdout << "\n";
+          }
+        catch (const index_exception& e)
+          {
+            m_interpreter.recover_from_exception ();
+
+            std::cerr << "error: unhandled index exception: "
+                      << e.message () << " -- trying to return to prompt"
+                      << std::endl;
+          }
+        catch (const execution_exception& ee)
+          {
+            error_system& es = m_interpreter.get_error_system ();
+
+            es.save_exception (ee);
+            es.display_exception (ee, std::cerr);
+
+            if (m_interpreter.interactive ())
+              {
+                m_interpreter.recover_from_exception ();
+              }
+            else
+              {
+                // We should exit with a nonzero status.
+                exit_status = 1;
+                break;
+              }
+          }
+        catch (const quit_debug_exception& qde)
+          {
+            if (qde.all ())
+              throw;
+
+            // Continue in this debug level.
+          }
+        catch (const std::bad_alloc&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            std::cerr << "error: out of memory -- trying to return to prompt"
+                      << std::endl;
+          }
+      }
+    while (exit_status == 0);
+
+    if (exit_status == EOF)
+      {
+        if (m_interpreter.interactive ())
+          octave_stdout << "\n";
+
+        exit_status = 0;
+      }
+
+    return exit_status;
+  }
 
   void debugger::repl (const std::string& prompt_arg)
   {
@@ -173,6 +284,8 @@ namespace octave
 
     input_system& input_sys = m_interpreter.get_input_system ();
 
+    event_manager& evmgr = m_interpreter.get_event_manager ();
+
     if (! fcn_nm.empty ())
       {
         if (input_sys.gud_mode ())
@@ -193,8 +306,6 @@ namespace octave
 
                 frm->display_stopped_in_message (buf);
               }
-
-            event_manager& evmgr = m_interpreter.get_event_manager ();
 
             evmgr.enter_debugger_event (fcn_nm, fcn_file_nm, curr_debug_line);
 
@@ -221,146 +332,167 @@ namespace octave
 
     std::string stopped_in_msg = buf.str ();
 
-    if (! stopped_in_msg.empty ())
-      std::cerr << stopped_in_msg << std::endl;
-
-    std::string tmp_prompt = prompt_arg;
-    if (m_level > 0)
-      tmp_prompt = "[" + std::to_string (m_level) + "]" + prompt_arg;
-
-    frame.add (&input_system::set_PS1, &input_sys, input_sys.PS1 ());
-    input_sys.PS1 (tmp_prompt);
-
-    if (! m_interpreter.interactive ())
+    if (m_interpreter.server_mode ())
       {
-        void (interpreter::*interactive_fptr) (bool)
-          = &interpreter::interactive;
-        frame.add (interactive_fptr, &m_interpreter,
-                   m_interpreter.interactive ());
+        if (! stopped_in_msg.empty ())
+          octave_stdout << stopped_in_msg << std::endl;
 
-        m_interpreter.interactive (true);
+        evmgr.push_event_queue ();
 
-        // FIXME: should debugging be possible in an embedded
-        // interpreter?
+        frame.add (&event_manager::pop_event_queue, &evmgr);
 
-        application *app = application::app ();
+        frame.add (&tree_evaluator::set_parser, &tw, tw.get_parser ());
 
-        if (app)
-          {
-            void (application::*forced_interactive_fptr) (bool)
-              = &application::forced_interactive;
-            frame.add (forced_interactive_fptr, app,
-                       app->forced_interactive ());
+        std::shared_ptr<push_parser>
+          debug_parser (new push_parser (m_interpreter));
 
-            app->forced_interactive (true);
-          }
+        tw.set_parser (debug_parser);
+
+        server_loop ();
       }
+    else
+      {
+        if (! stopped_in_msg.empty ())
+          std::cerr << stopped_in_msg << std::endl;
+
+        std::string tmp_prompt = prompt_arg;
+        if (m_level > 0)
+          tmp_prompt = "[" + std::to_string (m_level) + "]" + prompt_arg;
+
+        frame.add (&input_system::set_PS1, &input_sys, input_sys.PS1 ());
+        input_sys.PS1 (tmp_prompt);
+
+        if (! m_interpreter.interactive ())
+          {
+            void (interpreter::*interactive_fptr) (bool)
+              = &interpreter::interactive;
+            frame.add (interactive_fptr, &m_interpreter,
+                       m_interpreter.interactive ());
+
+            m_interpreter.interactive (true);
+
+            // FIXME: should debugging be possible in an embedded
+            // interpreter?
+
+            application *app = application::app ();
+
+            if (app)
+              {
+                void (application::*forced_interactive_fptr) (bool)
+                  = &application::forced_interactive;
+                frame.add (forced_interactive_fptr, app,
+                           app->forced_interactive ());
+
+                app->forced_interactive (true);
+              }
+          }
 
 #if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
 
-    input_reader reader (m_interpreter);
+        input_reader reader (m_interpreter);
 
-    push_parser debug_parser (m_interpreter);
+        push_parser debug_parser (m_interpreter);
 
 #else
 
-    parser debug_parser (m_interpreter);
+        parser debug_parser (m_interpreter);
 
 #endif
 
-    error_system& es = m_interpreter.get_error_system ();
+        error_system& es = m_interpreter.get_error_system ();
 
-    while (m_in_debug_repl)
-      {
-        if (m_execution_mode == EX_CONTINUE || tw.dbstep_flag ())
-          break;
-
-        if (quitting_debugger ())
-          break;
-
-        try
+        while (m_in_debug_repl)
           {
-            debug_parser.reset ();
+            if (m_execution_mode == EX_CONTINUE || tw.dbstep_flag ())
+              break;
+
+            if (quitting_debugger ())
+              break;
+
+            try
+              {
+                debug_parser.reset ();
 
 #if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
 
-            int retval = 0;
+                int retval = 0;
 
-            std::string prompt
-              = command_editor::decode_prompt_string (tmp_prompt);
+                std::string prompt
+                  = command_editor::decode_prompt_string (tmp_prompt);
 
-            do
-              {
-                bool eof = false;
-                std::string input_line = reader.get_input (prompt, eof);
-
-                if (eof)
+                do
                   {
-                    retval = EOF;
+                    bool eof = false;
+                    std::string input_line = reader.get_input (prompt, eof);
+
+                    if (eof)
+                      {
+                        retval = EOF;
+                        break;
+                      }
+
+                    retval = debug_parser.run (input_line, false);
+
+                    prompt = command_editor::decode_prompt_string (input_sys.PS2 ());
+                  }
+                while (retval < 0);
+
+#else
+
+                int retval = debug_parser.run ();
+
+#endif
+                if (command_editor::interrupt (false))
+                  {
+                    // Break regardless of m_execution_mode value.
+
+                    quitting_debugger ();
+
                     break;
                   }
-
-                retval = debug_parser.run (input_line, false);
-
-                prompt = command_editor::decode_prompt_string (input_sys.PS2 ());
-              }
-            while (retval < 0);
-
-#else
-
-            int retval = debug_parser.run ();
-
-#endif
-            if (command_editor::interrupt (false))
-              {
-                // Break regardless of m_execution_mode value.
-
-                quitting_debugger ();
-
-                break;
-              }
-            else
-              {
-                if (retval == 0)
+                else
                   {
-                    std::shared_ptr<tree_statement_list> stmt_list
-                      = debug_parser.statement_list ();
+                    if (retval == 0)
+                      {
+                        std::shared_ptr<tree_statement_list> stmt_list
+                          = debug_parser.statement_list ();
 
-                    if (stmt_list)
-                      stmt_list->accept (tw);
+                        if (stmt_list)
+                          stmt_list->accept (tw);
 
-                    if (octave_completion_matches_called)
-                      octave_completion_matches_called = false;
+                        if (octave_completion_matches_called)
+                          octave_completion_matches_called = false;
 
-                    // FIXME: the following statement is here because
-                    // the last command may have been a dbup, dbdown, or
-                    // dbstep command that changed the current debug
-                    // frame.  If so, we need to reset the current frame
-                    // for the call stack.  But is this right way to do
-                    // this job?  What if the statement list was
-                    // something like "dbup; dbstack"?  Will the call to
-                    // dbstack use the right frame?  If not, how can we
-                    // fix this problem?
-                    tw.goto_frame (tw.debug_frame ());
+                        // FIXME: the following statement is here because
+                        // the last command may have been a dbup, dbdown, or
+                        // dbstep command that changed the current debug
+                        // frame.  If so, we need to reset the current frame
+                        // for the call stack.  But is this right way to do
+                        // this job?  What if the statement list was
+                        // something like "dbup; dbstack"?  Will the call to
+                        // dbstack use the right frame?  If not, how can we
+                        // fix this problem?
+                        tw.goto_frame (tw.debug_frame ());
+                      }
+
+                    octave_quit ();
                   }
-
-                octave_quit ();
               }
-          }
-        catch (const execution_exception& ee)
-          {
-            es.save_exception (ee);
-            es.display_exception (ee, std::cerr);
+            catch (const execution_exception& ee)
+              {
+                es.save_exception (ee);
+                es.display_exception (ee, std::cerr);
 
-            // Ignore errors when in debugging mode;
-            m_interpreter.recover_from_exception ();
-          }
-        catch (const quit_debug_exception& qde)
-          {
-            if (qde.all ())
-              throw;
+                // Ignore errors when in debugging mode;
+                m_interpreter.recover_from_exception ();
+              }
+            catch (const quit_debug_exception& qde)
+              {
+                if (qde.all ())
+                  throw;
 
-            // Continue in this debug level.
+                // Continue in this debug level.
+              }
           }
       }
   }
@@ -621,12 +753,12 @@ namespace octave
   {
     // Process events from the event queue.
 
-    unwind_protect_var<bool> upv (m_server_mode, true);
+    unwind_protect_var<bool> upv1 (m_server_mode, true);
 
     m_exit_status = 0;
 
-    if (! m_parser)
-      m_parser = std::shared_ptr<push_parser> (new push_parser (m_interpreter));
+    std::shared_ptr<push_parser> parser (new push_parser (m_interpreter));
+    unwind_protect_var<std::shared_ptr<push_parser>> upv2 (m_parser, parser);
 
     do
       {

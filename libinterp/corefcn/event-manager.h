@@ -31,6 +31,7 @@
 #include <functional>
 #include <list>
 #include <memory>
+#include <stack>
 #include <string>
 
 #include "oct-mutex.h"
@@ -302,17 +303,11 @@ namespace octave
     // The queued functions are executed when the interpreter is
     // otherwise idle.
 
-    void post_event (const fcn_callback& fcn)
-    {
-      if (enabled ())
-        gui_event_queue.add (fcn);
-    }
+    void push_event_queue (void);
+    void pop_event_queue (void);
 
-    void post_event (const meth_callback& meth)
-    {
-      if (enabled ())
-        gui_event_queue.add (std::bind (meth, std::ref (m_interpreter)));
-    }
+    OCTINTERP_API void post_event (const fcn_callback& fcn);
+    OCTINTERP_API void post_event (const meth_callback& meth);
 
     // The following functions correspond to the virtual fuunctions in
     // the interpreter_events class.  They provide a way for the
@@ -652,8 +647,17 @@ namespace octave
     // Semaphore to lock access to the event queue.
     mutex *event_queue_mutex;
 
-    // Event Queue.
-    event_queue gui_event_queue;
+    // Event Queue.  We use a stack so that we can handle evaluation in
+    // the debugger when we are executing in server mode.  In server
+    // mode, code is evaluated from inside the event queue.  So when the
+    // evaluator reaches a breakpoint, the queue is already locked and
+    // executing an event function.  We can't just add a new command to the
+    // existing queue, so we need another one that can process new
+    // events generated at the debug prompt.  When execution continues
+    // (dbcont or dbstep, for example) we pop the queue and return to
+    // the previous point of execution.
+
+    std::stack<std::shared_ptr <event_queue>> gui_event_queue;
 
     bool debugging;
     bool link_enabled;

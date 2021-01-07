@@ -122,6 +122,9 @@
 //!   - string_vector: Array<std::string> with 1 column
 //!   - Cell: Array<octave_value>, equivalent to an Octave cell.
 
+// forward declare template with visibility attribute
+template <typename T> class OCTARRAY_API Array;
+
 template <typename T>
 class
 Array

@@ -31,7 +31,8 @@
 #include "Array.h"
 #include "mx-inlines.cc"
 
-template <typename T> class MArray;
+// forward declare template with visibility attribute
+template <typename T> class OCTAVE_API MArray;
 
 template <typename T> MArray<T>& operator += (MArray<T>&, const T&);
 template <typename T> MArray<T>& operator -= (MArray<T>&, const T&);

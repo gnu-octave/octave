@@ -43,6 +43,9 @@ class PermMatrix;
 // Two dimensional sparse class.  Handles the reference counting for
 // all the derived classes.
 
+// forward declare template with visibility attribute
+template <typename T> class OCTAVE_API Sparse;
+
 template <typename T>
 class
 Sparse

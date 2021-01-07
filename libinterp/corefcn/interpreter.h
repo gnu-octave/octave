@@ -29,7 +29,6 @@
 #include "octave-config.h"
 
 #include <map>
-#include <memory>
 #include <stack>
 #include <string>
 
@@ -72,7 +71,6 @@ extern OCTINTERP_API bool octave_initialized;
 
 namespace octave
 {
-  class push_parser;
   class profiler;
   class child_list;
 
@@ -163,10 +161,7 @@ namespace octave
 
     void shutdown (void);
 
-    bool server_mode (void) const
-    {
-      return m_server_mode;
-    }
+    bool server_mode (void) const { return m_evaluator.server_mode (); }
 
     bool interactive (void) const
     {
@@ -210,7 +205,7 @@ namespace octave
 
     bool in_top_level_repl (void) const
     {
-      return m_in_top_level_repl;
+      return m_evaluator.in_top_level_repl ();
     }
 
     bool initialized (void) const
@@ -313,11 +308,6 @@ namespace octave
     event_manager& get_event_manager (void)
     {
       return m_event_manager;
-    }
-
-    std::shared_ptr<push_parser> get_parser (void)
-    {
-      return m_parser;
     }
 
     gh_manager& get_gh_manager (void)
@@ -573,14 +563,7 @@ namespace octave
 
     event_manager m_event_manager;
 
-    std::shared_ptr<push_parser> m_parser;
-
     gh_manager *m_gh_manager;
-
-    int m_exit_status;
-
-    // TRUE means we are executing in the server_loop function.
-    bool m_server_mode;
 
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;
@@ -598,9 +581,6 @@ namespace octave
     bool m_load_path_initialized;
 
     bool m_history_initialized;
-
-    // TRUE if we are in the top level interactive read eval print loop.
-    bool m_in_top_level_repl;
 
     bool m_cancel_quit;
 

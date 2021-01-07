@@ -55,6 +55,7 @@ namespace octave
 
   class debugger;
   class interpreter;
+  class push_parser;
   class unwind_protect;
 
   // How to evaluate the code that the parse trees represent.
@@ -127,16 +128,17 @@ namespace octave
     typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
     tree_evaluator (interpreter& interp)
-      : m_interpreter (interp), m_statement_context (SC_OTHER),
+      : m_interpreter (interp), m_parser (), m_statement_context (SC_OTHER),
         m_lvalue_list (nullptr), m_autoload_map (), m_bp_table (*this),
         m_call_stack (*this), m_profiler (), m_debug_frame (0),
         m_debug_mode (false), m_quiet_breakpoint_flag (false),
-        m_debugger_stack (), m_max_recursion_depth (256),
+        m_debugger_stack (), m_exit_status (0), m_max_recursion_depth (256),
         m_whos_line_format ("  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
         m_silent_functions (false), m_string_fill_char (' '),
         m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
-        m_echo_files (), m_in_loop_command (false),
+        m_echo_files (), m_in_top_level_repl (false),
+        m_server_mode (false), m_in_loop_command (false),
         m_breaking (0), m_continuing (0), m_returning (0),
         m_indexed_object (), m_index_list (), m_index_type (),
         m_index_position (0), m_num_indices (0)
@@ -150,12 +152,31 @@ namespace octave
 
     ~tree_evaluator (void) = default;
 
+    std::shared_ptr<push_parser> get_parser (void)
+    {
+      return m_parser;
+    }
+
     bool at_top_level (void) const;
+
+    std::string mfilename (const std::string& opt = "") const;
+
+    // Parse a line of input.  If input ends at a complete statement
+    // boundary, execute the resulting parse tree.  Useful to handle
+    // parsing user input when running in server mode.
+
+    void parse_and_execute (const std::string& input, bool& incomplete_parse);
+
+    int repl (void);
+
+    bool in_top_level_repl (void) const { return m_in_top_level_repl; }
+
+    int server_loop (void);
+
+    bool server_mode (void) const { return m_server_mode; }
 
     void eval (std::shared_ptr<tree_statement_list>& stmt_list,
                bool interactive);
-
-    std::string mfilename (const std::string& opt = "") const;
 
     octave_value_list eval_string (const std::string& eval_str, bool silent,
                                    int& parse_status, int nargout);
@@ -788,6 +809,8 @@ namespace octave
 
     interpreter& m_interpreter;
 
+    std::shared_ptr<push_parser> m_parser;
+
     // The context for the current evaluation.
     stmt_list_type m_statement_context;
 
@@ -815,6 +838,8 @@ namespace octave
     // from the stack and deleted and we resume working with the
     // previous debugger (if any) that is now at the top of the stack.
     std::stack<debugger *> m_debugger_stack;
+
+    int m_exit_status;
 
     // Maximum nesting level for functions, scripts, or sourced files
     // called recursively.
@@ -857,6 +882,12 @@ namespace octave
     size_t m_echo_file_pos;
 
     std::map<std::string, bool> m_echo_files;
+
+    // TRUE if we are in the top level interactive read eval print loop.
+    bool m_in_top_level_repl;
+
+    // TRUE means we are executing in the server_loop function.
+    bool m_server_mode;
 
     // TRUE means we are evaluating some kind of looping construct.
     bool m_in_loop_command;

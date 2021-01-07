@@ -397,38 +397,6 @@ namespace octave
     return m_call_stack.at_top_level ();
   }
 
-  void tree_evaluator::eval (std::shared_ptr<tree_statement_list>& stmt_list,
-                             bool interactive)
-  {
-    try
-      {
-        stmt_list->accept (*this);
-
-        octave_quit ();
-
-        if (! interactive)
-          {
-            bool quit = (m_returning || m_breaking);
-
-            if (m_returning)
-              m_returning = 0;
-
-            if (m_breaking)
-              m_breaking--;
-
-            if (quit)
-              return;
-          }
-
-        if (octave_completion_matches_called)
-          octave_completion_matches_called = false;
-      }
-    catch (const quit_debug_exception&)
-      {
-        m_interpreter.recover_from_exception ();
-      }
-  }
-
   std::string
   tree_evaluator::mfilename (const std::string& opt) const
   {
@@ -463,6 +431,309 @@ namespace octave
       fname = fname.substr (dpos+1);
 
     return fname;
+  }
+
+  void tree_evaluator::parse_and_execute (const std::string& input,
+                                          bool& incomplete_parse)
+  {
+    incomplete_parse = false;
+
+    unwind_protect_var<bool> upv (m_in_top_level_repl, true);
+
+    if (at_top_level ())
+      {
+        dbstep_flag (0);
+        reset_debug_state ();
+      }
+
+    bool eof = false;
+
+    event_manager& evmgr = m_interpreter.get_event_manager ();
+
+    if (command_history::add (input))
+      evmgr.append_history (input);
+
+    m_exit_status = m_parser->run (input, eof);
+
+    if (m_exit_status == 0)
+      {
+        std::shared_ptr<tree_statement_list>
+          stmt_list = m_parser->statement_list ();
+
+        if (stmt_list)
+          {
+            command_editor::increment_current_command_number ();
+
+            eval (stmt_list, m_interpreter.interactive ());
+
+            evmgr.set_workspace ();
+          }
+        else if (m_parser->at_end_of_input ())
+          m_exit_status = EOF;
+      }
+    else
+      incomplete_parse = true;
+
+    if (m_exit_status == -1)
+      m_exit_status = 0;
+    else
+      m_parser->reset ();
+
+    evmgr.pre_input_event ();
+  }
+
+  int tree_evaluator::repl (void)
+  {
+    // The big loop.  Read, Eval, Print, Loop.  Normally user
+    // interaction at the command line in a terminal session, but we may
+    // also end up here when reading from a pipe or when stdin is
+    // connected to a file by the magic of input redirection.
+
+    int exit_status = 0;
+
+    // FIXME: should this choice be a command-line option?  Note that we
+    // intend that the push parser interface only be used for
+    // interactive sessions.
+
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+    static bool use_command_line_push_parser = true;
+#else
+    static bool use_command_line_push_parser = false;
+#endif
+
+    // The following logic is written as it is to allow easy transition
+    // to setting USE_COMMAND_LINE_PUSH_PARSER at run time and to
+    // simplify the logic of the main loop below by using the same
+    // base_parser::run interface for both push and pull parsers.
+
+    std::shared_ptr<base_parser> repl_parser;
+
+    if (m_interpreter.interactive ())
+      {
+        if (use_command_line_push_parser)
+          {
+            push_parser *pp
+              = new push_parser (m_interpreter,
+                                 new input_reader (m_interpreter));
+
+            repl_parser = std::shared_ptr<base_parser> (pp);
+          }
+        else
+          {
+            parser *pp = new parser (new lexer (m_interpreter));
+            repl_parser = std::shared_ptr<base_parser> (pp);
+          }
+      }
+    else
+      {
+        parser *pp = new parser (new lexer (stdin, m_interpreter));
+        repl_parser = std::shared_ptr<base_parser> (pp);
+      }
+
+    do
+      {
+        try
+          {
+            unwind_protect_var<bool> upv (m_in_top_level_repl, true);
+
+            repl_parser->reset ();
+
+            if (at_top_level ())
+              {
+                dbstep_flag (0);
+                reset_debug_state ();
+              }
+
+            exit_status = repl_parser->run ();
+
+            if (exit_status == 0)
+              {
+                std::shared_ptr<tree_statement_list>
+                  stmt_list = repl_parser->statement_list ();
+
+                if (stmt_list)
+                  {
+                    command_editor::increment_current_command_number ();
+
+                    eval (stmt_list, m_interpreter.interactive ());
+                  }
+                else if (repl_parser->at_end_of_input ())
+                  {
+                    exit_status = EOF;
+                    break;
+                  }
+              }
+          }
+        catch (const interrupt_exception&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            // Required newline when the user does Ctrl+C at the prompt.
+            if (m_interpreter.interactive ())
+              octave_stdout << "\n";
+          }
+        catch (const index_exception& ie)
+          {
+            m_interpreter.recover_from_exception ();
+
+            std::cerr << "error: unhandled index exception: "
+                      << ie.message () << " -- trying to return to prompt"
+                      << std::endl;
+          }
+        catch (const execution_exception& ee)
+          {
+            error_system& es = m_interpreter.get_error_system ();
+
+            es.save_exception (ee);
+            es.display_exception (ee, std::cerr);
+
+            if (m_interpreter.interactive ())
+              m_interpreter.recover_from_exception ();
+            else
+              {
+                // We should exit with a nonzero status.
+                exit_status = 1;
+                break;
+              }
+          }
+        catch (const std::bad_alloc&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            std::cerr << "error: out of memory -- trying to return to prompt"
+                      << std::endl;
+          }
+      }
+    while (exit_status == 0);
+
+    if (exit_status == EOF)
+      {
+        if (m_interpreter.interactive ())
+          octave_stdout << "\n";
+
+        exit_status = 0;
+      }
+
+    return exit_status;
+  }
+
+  int tree_evaluator::server_loop (void)
+  {
+    // Process events from the event queue.
+
+    unwind_protect_var<bool> upv (m_server_mode, true);
+
+    m_exit_status = 0;
+
+    if (! m_parser)
+      m_parser = std::shared_ptr<push_parser> (new push_parser (m_interpreter));
+
+    do
+      {
+        try
+          {
+            // FIXME: Running the event queue should be decoupled from
+            // the command_editor.  We should also use a condition
+            // variable to manage the execution of entries in the queue
+            // and eliminate the need for the busy-wait loop.
+
+            command_editor::run_event_hooks ();
+
+            octave::sleep (0.1);
+          }
+        catch (const interrupt_exception&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            m_parser->reset ();
+
+            // Required newline when the user does Ctrl+C at the prompt.
+            if (m_interpreter.interactive ())
+              octave_stdout << "\n";
+          }
+        catch (const index_exception& e)
+          {
+            m_interpreter.recover_from_exception ();
+
+            m_parser->reset ();
+
+            std::cerr << "error: unhandled index exception: "
+                      << e.message () << " -- trying to return to prompt"
+                      << std::endl;
+          }
+        catch (const execution_exception& ee)
+          {
+            error_system& es = m_interpreter.get_error_system ();
+
+            es.save_exception (ee);
+            es.display_exception (ee, std::cerr);
+
+            if (m_interpreter.interactive ())
+              {
+                m_interpreter.recover_from_exception ();
+
+                m_parser->reset ();
+              }
+            else
+              {
+                // We should exit with a nonzero status.
+                m_exit_status = 1;
+                break;
+              }
+          }
+        catch (const std::bad_alloc&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            m_parser->reset ();
+
+            std::cerr << "error: out of memory -- trying to return to prompt"
+                      << std::endl;
+          }
+      }
+    while (m_exit_status == 0);
+
+    if (m_exit_status == EOF)
+      {
+        if (m_interpreter.interactive ())
+          octave_stdout << "\n";
+
+        m_exit_status = 0;
+      }
+
+    return m_exit_status;
+  }
+
+  void tree_evaluator::eval (std::shared_ptr<tree_statement_list>& stmt_list,
+                             bool interactive)
+  {
+    try
+      {
+        stmt_list->accept (*this);
+
+        octave_quit ();
+
+        if (! interactive)
+          {
+            bool quit = (m_returning || m_breaking);
+
+            if (m_returning)
+              m_returning = 0;
+
+            if (m_breaking)
+              m_breaking--;
+
+            if (quit)
+              return;
+          }
+
+        if (octave_completion_matches_called)
+          octave_completion_matches_called = false;
+      }
+    catch (const quit_debug_exception&)
+      {
+        m_interpreter.recover_from_exception ();
+      }
   }
 
   octave_value_list

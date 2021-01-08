@@ -87,6 +87,8 @@
 #if ! defined (octave_oct_sort_h)
 #define octave_oct_sort_h 1
 
+#include <functional>
+
 #include "octave-config.h"
 
 #include "lo-traits.h"
@@ -100,12 +102,12 @@ octave_sort
 {
 public:
 
-  typedef bool (*compare_fcn_type) (typename ref_param<T>::type,
-                                    typename ref_param<T>::type);
+  typedef std::function<bool (typename ref_param<T>::type,
+                              typename ref_param<T>::type)> compare_fcn_type;
 
   octave_sort (void);
 
-  octave_sort (compare_fcn_type);
+  octave_sort (const compare_fcn_type&);
 
   // No copying!
 
@@ -115,7 +117,7 @@ public:
 
   ~octave_sort (void);
 
-  void set_compare (compare_fcn_type comp) { m_compare = comp; }
+  void set_compare (const compare_fcn_type& comp) { m_compare = comp; }
 
   void set_compare (sortmode mode);
 

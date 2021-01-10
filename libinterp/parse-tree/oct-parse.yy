@@ -1341,7 +1341,7 @@ jump_command    : BREAK
 
 spmd_command    : SPMD stash_comment opt_sep opt_list END
                   {
-                    YYUSE ($3);
+                    OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
                     octave::comment_list *tc = lexer.get_comment ();

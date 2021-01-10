@@ -42,9 +42,14 @@ namespace octave
     documentation_dock_widget (QWidget *parent, base_qobject& oct_qobj);
     ~documentation_dock_widget (void);
 
+  signals:
+
+    void save_settings_signal (void);
+
   public slots:
 
     void notice_settings (const gui_settings *settings);
+    void save_settings (void);
 
   protected slots:
 

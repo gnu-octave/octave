@@ -305,6 +305,7 @@ namespace octave
     init (tr ("Go to Homepage"), sc_doc_go_home);
     init (tr ("Go Back one Page"), sc_doc_go_back);
     init (tr ("Go Forward one Page"), sc_doc_go_next);
+    init (tr ("Bookmark this Page"), sc_doc_bookmark);
   }
 
   // write one or all actual shortcut set(s) into a settings file

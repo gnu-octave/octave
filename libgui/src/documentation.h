@@ -32,6 +32,7 @@
 #include <QSplitter>
 #include <QTextBrowser>
 #include <QToolBar>
+#include <QListWidget>
 #include <QToolButton>
 #include <QWidget>
 #include <QtHelp/QHelpEngine>
@@ -41,6 +42,7 @@
 namespace octave
 {
   class base_qobject;
+  class documentation;
 
   //! Documentation browser derived from Textbrowser
 
@@ -100,6 +102,17 @@ namespace octave
 
     documentation (QWidget *parent, base_qobject& oct_qobj);
     ~documentation (void);
+
+    /*!
+        Generate a string with page name @p title and current anchor
+        from @p url for using in prev/next or bookmarks menu:
+
+          @param title current title of the page as QString
+          @param url   current url  as QUrl
+
+          @return QString "title: anchor"
+    */
+    QString title_and_anchor (const QString& title, const QUrl& url);
 
   signals:
 
@@ -172,6 +185,8 @@ namespace octave
     QAction *m_prev_pages_actions[max_history_entries];
     QAction *m_next_pages_actions[max_history_entries];
 
+    QAction *m_action_bookmark;
+
     QAction *m_action_find;
     QShortcut *m_findnext_shortcut;
     QShortcut *m_findprev_shortcut;
@@ -180,6 +195,7 @@ namespace octave
     QAction *m_action_zoom_out;
     QAction *m_action_zoom_original;
   };
+
 }
 
 #endif

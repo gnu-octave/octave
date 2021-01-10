@@ -65,6 +65,12 @@ namespace octave
     m_docs->notice_settings (settings);
   }
 
+  void documentation_dock_widget::save_settings (void)
+  {
+    emit save_settings_signal ();
+    octave_dock_widget::save_settings ();
+  }
+
   void documentation_dock_widget::copyClipboard (void)
   {
     m_docs->copyClipboard ();

@@ -50,6 +50,7 @@
 #include <QVBoxLayout>
 
 #include "documentation.h"
+#include "documentation-bookmarks.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-sc.h"
 #include "octave-qobject.h"
@@ -253,6 +254,16 @@ namespace octave
         connect (m_filter->lineEdit (), SIGNAL (editingFinished (void)),
                  this, SLOT(filter_update_history (void)));
 
+        // Bookmarks (own class)
+        documentation_bookmarks *bookmarks
+          = new documentation_bookmarks (this, m_doc_browser, m_octave_qobj, navi);
+        navi->addTab (bookmarks, tr ("Bookmarks"));
+
+        connect (m_action_bookmark, SIGNAL (triggered ()),
+                 bookmarks, SLOT (add_bookmark ()));
+        connect (p, SIGNAL (save_settings_signal (void)),
+                 bookmarks, SLOT (save_settings (void)));
+
         // Search
         QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();
         QHelpSearchQueryWidget *search = search_engine->queryWidget ();
@@ -324,7 +335,9 @@ namespace octave
       r = receiver;
 
     a = new QAction (icon, text, this);
-    connect (a, SIGNAL (triggered ()), r, member);
+
+    if (member)
+      connect (a, SIGNAL (triggered ()), r, member);
 
     if (tool_bar)
       tool_bar->addAction (a);
@@ -414,6 +427,12 @@ namespace octave
     m_action_zoom_original
       = add_action (rmgr.icon ("zoom-original"), tr ("Zoom original"),
                     SLOT (zoom_original (void)), m_doc_browser, m_tool_bar);
+
+    // Bookmarks (connect slots later)
+    m_tool_bar->addSeparator ();
+    m_action_bookmark
+      = add_action (rmgr.icon ("bookmark-new"), tr ("Bookmark current page"),
+                    nullptr, nullptr, m_tool_bar);
   }
 
   void documentation::global_search (void)
@@ -613,6 +632,7 @@ namespace octave
     scmgr.set_shortcut (m_action_go_home, sc_doc_go_home);
     scmgr.set_shortcut (m_action_go_prev, sc_doc_go_back);
     scmgr.set_shortcut (m_action_go_next, sc_doc_go_next);
+    scmgr.set_shortcut (m_action_bookmark, sc_doc_bookmark);
   }
 
   void documentation::copyClipboard (void)
@@ -870,37 +890,9 @@ namespace octave
     // Fill used menu entries
     for (int i = 0; i < count; i++)
       {
-        QString title = m_doc_browser->historyTitle (prev_next*(i+1));
-        title.remove (QRegExp ("\\s*\\(*GNU Octave \\(version [^\\)]*\\)[: \\)]*"));
-
-        // Since the title only contains the section name and not the
-        // specific anchor, extract the latter from the url and append
-        // it to the title
-        QString url = m_doc_browser->historyUrl (prev_next*(i+1)).toString ();
-        if (url.contains ('#'))
-          {
-            // Get the anchor from the url
-            QString anchor = url.split ('#').last ();
-
-            // Remove internal string parts
-            anchor.remove (QRegExp ("^index-"));
-            anchor.remove (QRegExp ("^SEC_"));
-            anchor.remove (QRegExp ("^XREF"));
-            anchor.remove ("Concept-Index_cp_letter-");
-            anchor.replace ("-"," ");
-
-            // replace encoded special chars by their unencoded versions
-            QRegExp rx = QRegExp ("_00([0-7][0-9a-f])");
-            int pos = 0;
-            while ((pos = rx.indexIn(anchor, pos)) != -1)
-              {
-                anchor.replace ("_00"+rx.cap (1), QChar (rx.cap (1).toInt (nullptr,16)));
-                pos += rx.matchedLength();
-              }
-
-            if (title != anchor)
-              title = title + ": " + anchor;
-          }
+        QString title
+          = title_and_anchor (m_doc_browser->historyTitle (prev_next*(i+1)),
+                              m_doc_browser->historyUrl (prev_next*(i+1)));
 
         if (i == 0)
           a->setText (title); // set tool tip for prev/next buttons
@@ -924,8 +916,51 @@ namespace octave
     m_doc_browser->setSource (a->data ().toUrl ());
   }
 
+  // Utility functions
 
+  QString documentation::title_and_anchor (const QString& title, const QUrl& url)
+  {
+    QString retval = title;
+    QString u = url.toString ();
+
+    retval.remove (QRegExp ("\\s*\\(*GNU Octave \\(version [^\\)]*\\)[: \\)]*"));
+
+    // Since the title only contains the section name and not the
+    // specific anchor, extract the latter from the url and append
+    // it to the title
+    if (u.contains ('#'))
+      {
+        // Get the anchor from the url
+        QString anchor = u.split ('#').last ();
+        // Remove internal string parts
+        anchor.remove (QRegExp ("^index-"));
+        anchor.remove (QRegExp ("^SEC_"));
+        anchor.remove (QRegExp ("^XREF"));
+        anchor.remove ("Concept-Index_cp_letter-");
+        anchor.replace ("-"," ");
+
+        // replace encoded special chars by their unencoded versions
+        QRegExp rx = QRegExp ("_00([0-7][0-9a-f])");
+        int pos = 0;
+        while ((pos = rx.indexIn(anchor, pos)) != -1)
+          {
+            anchor.replace ("_00"+rx.cap (1), QChar (rx.cap (1).toInt (nullptr,16)));
+            pos += rx.matchedLength();
+          }
+
+        if (retval != anchor)
+          retval = retval + ": " + anchor;
+      }
+
+    return retval;
+  }
+
+
+
+  //
   // The documentation browser
+  //
+
   documentation_browser::documentation_browser (QHelpEngine *he, QWidget *p)
     : QTextBrowser (p), m_help_engine (he), m_zoom_level (0)
   {

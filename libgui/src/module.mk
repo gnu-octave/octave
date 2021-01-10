@@ -135,6 +135,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-dialog.cc \
   %reldir%/moc-documentation-dock-widget.cc \
   %reldir%/moc-documentation.cc \
+  %reldir%/moc-documentation-bookmarks.cc \
   %reldir%/moc-dw-main-window.cc \
   %reldir%/moc-files-dock-widget.cc \
   %reldir%/moc-gui-settings.cc \
@@ -187,9 +188,11 @@ noinst_HEADERS += \
   %reldir%/octave-dock-widget.h \
   %reldir%/documentation-dock-widget.h \
   %reldir%/documentation.h \
+  %reldir%/documentation-bookmarks.h \
   %reldir%/dw-main-window.h \
   %reldir%/gui-preferences-all.h \
   %reldir%/gui-preferences-cs.h \
+  %reldir%/gui-preferences-dc.h \
   %reldir%/gui-preferences-dw.h \
   %reldir%/gui-preferences-ed.h \
   %reldir%/gui-preferences-fb.h \
@@ -247,6 +250,7 @@ noinst_HEADERS += \
   %reldir%/dialog.cc \
   %reldir%/documentation-dock-widget.cc \
   %reldir%/documentation.cc \
+  %reldir%/documentation-bookmarks.cc \
   %reldir%/dw-main-window.cc \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \

@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/actions">
         <file>icons/applications-system.png</file>
+        <file>icons/bookmark-new.png</file>
         <file>icons/bp-toggle.png</file>
         <file>icons/bp-rm-all.png</file>
         <file>icons/bp-prev.png</file>

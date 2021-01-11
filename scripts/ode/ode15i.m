@@ -255,7 +255,8 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   ## Events
   options.haveeventfunction = ! isempty (options.Events);
 
-  [t, y, te, ye, ie] = __ode15__ (fun, trange, y0, yp0, options);
+  ## 3 arguments in the event callback of ode15i
+  [t, y, te, ye, ie] = __ode15__ (fun, trange, y0, yp0, options, 3);
 
   if (nargout == 2)
     varargout{1} = t;

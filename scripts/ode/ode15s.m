@@ -312,11 +312,12 @@ function varargout = ode15s (fun, trange, y0, varargin)
 
   yp0 = options.InitialSlope;
 
+  ## 2 arguments in the event callback of ode15s
   [t, y, te, ye, ie] = __ode15__ (@ (t, y, yp) wrap (t, y, yp, options.Mass,
                                                      options.havetimedep,
                                                      options.havestatedep,
                                                      fun),
-                                  trange, y0, yp0, options);
+                                  trange, y0, yp0, options, 2);
 
   if (nargout == 2)
     varargout{1} = t;
@@ -433,7 +434,7 @@ endfunction
 %!  refrob = [100, 0.617234887614937, 0.000006153591397, 0.382758958793666];
 %!endfunction
 %!
-%!function [val, isterminal, direction] = feve (t, y, ~)
+%!function [val, isterminal, direction] = feve (t, y)
 %!  isterminal = [0, 1];
 %!  if (t < 1e1)
 %!    val = [-1, -2];

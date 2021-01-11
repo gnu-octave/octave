@@ -213,6 +213,11 @@ namespace octave
       return m_initialized;
     }
 
+    application *get_app_context (void)
+    {
+      return m_app_context;
+    }
+
     display_info& get_display_info (void)
     {
       return m_display_info;

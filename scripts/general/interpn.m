@@ -173,8 +173,7 @@ function vi = interpn (varargin)
   method = tolower (method);
 
   all_vectors = all (cellfun ("isvector", y));
-  sz_y = cellfun (@size, y, "uniformoutput", false);
-  same_size = isequal (sz_y{:});
+  same_size = size_equal (y{:});
   if (all_vectors && ! same_size)
     [foobar(1:numel(y)).y] = ndgrid (y{:});
     y = {foobar.y};

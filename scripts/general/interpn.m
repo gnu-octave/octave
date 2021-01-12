@@ -37,9 +37,14 @@
 ## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}.
 ## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either
 ## @var{n}-dimensional arrays of the same size as the array @var{v} in
-## the @qcode{"ndgrid"} format or vectors.  The parameters @var{y1}, etc.@:
-## respect a similar format to @var{x1}, etc., and they represent the points
-## at which the array @var{vi} is interpolated.
+## the @qcode{"ndgrid"} format or vectors.
+##
+## The parameters @var{y1}, @var{y2}, @dots{}, @var{yn} represent the points at
+## which the array @var{vi} is interpolated.  They can be vectors of the same
+## length and orientation in which case they are interpreted as coordinates of
+## scattered points.  If they are vectors of differing orientation or length,
+## they are used to form a grid in @qcode{"ndgrid"} format.  They can also be
+## @var{n}-dimensional arrays of equal size.
 ##
 ## If @var{x1}, @dots{}, @var{xn} are omitted, they are assumed to be
 ## @code{x1 = 1 : size (@var{v}, 1)}, etc.  If @var{m} is specified, then
@@ -168,8 +173,9 @@ function vi = interpn (varargin)
   method = tolower (method);
 
   all_vectors = all (cellfun ("isvector", y));
-  different_lengths = numel (unique (cellfun ("numel", y))) > 1;
-  if (all_vectors && different_lengths)
+  sz_y = cellfun (@size, y, "uniformoutput", false);
+  same_size = isequal (sz_y{:});
+  if (all_vectors && ! same_size)
     [foobar(1:numel(y)).y] = ndgrid (y{:});
     y = {foobar.y};
   endif

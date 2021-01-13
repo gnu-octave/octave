@@ -111,7 +111,6 @@ function vi = interpn (varargin)
     warning ("interpn: ignoring unsupported '*' flag to METHOD");
     method(1) = [];
   endif
-  method = tolower (method);
   method = validatestring (method,
                            {"nearest", "linear", "pchip", "cubic", "spline"},
                            "interpn");

@@ -23,32 +23,30 @@
 ##
 ########################################################################
 
-## Undocumented internal function.
-
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{yi} =} __splinen__ (@var{x}, @var{y}, @var{xi}, @var{extrapval}, @var{f})
 ## Undocumented internal function.
 ## @end deftypefn
 
-## FIXME: Allow arbitrary grids..
+## FIXME: Allow arbitrary grids.
 
 function yi = __splinen__ (x, y, xi, extrapval, f)
 
-  ## ND isvector function.
-  isvec = @(x) numel (x) == length (x);
-  if (! iscell (x) || length (x) < ndims (y) || any (! cellfun (isvec, x))
-      || ! iscell (xi) || length (xi) < ndims (y)
-      || any (! cellfun (isvec, xi)))
+  ## ND function to check whether any object in cell array is *not* a vector.
+  isnotvec = @(x) cellfun ("numel", x) != cellfun ("length", x);
+  if (! iscell (x) || length (x) < ndims (y) || any (isnotvec (x))
+      || ! iscell (xi) || length (xi) < ndims (y) || any (isnotvec (xi)))
     error ("__splinen__: %s: non-gridded data or dimensions inconsistent", f);
   endif
+
   yi = y;
   for i = length (x):-1:1
     yi = permute (spline (x{i}, yi, xi{i}(:)), [length(x),1:length(x)-1]);
   endfor
 
-  [xi{:}] = ndgrid (cellfun (@(x) x(:), xi, "uniformoutput", false){:});
   if (! isempty (extrapval))
-    idx = zeros (size (xi{1}));
+    [xi{:}] = ndgrid (cellfun (@(x) x(:), xi, "uniformoutput", false){:});
+    idx = false (size (xi{1}));
     for i = 1 : length (x)
       idx |= xi{i} < min (x{i}(:)) | xi{i} > max (x{i}(:));
     endfor

@@ -56,7 +56,7 @@ namespace octave
     setFocusProxy (m_terminal);
 
     connect (m_terminal, SIGNAL (interrupt_signal (void)),
-             this, SLOT (terminal_interrupt (void)));
+             &oct_qobj, SLOT (interpreter_interrupt (void)));
 
     // Connect the visibility signal to the terminal for dis-/enabling timers
     connect (this, SIGNAL (visibilityChanged (bool)),
@@ -98,21 +98,5 @@ namespace octave
     QWidget *w = widget ();
 
     return w->hasFocus ();
-  }
-
-  void terminal_dock_widget::terminal_interrupt (void)
-  {
-    // FIXME: Protect with mutex?
-
-    octave_signal_caught = 1;
-    octave_interrupt_state++;
-
-    // Send SIGINT to all other processes in our process group.
-    // This is needed to interrupt calls to system (), for example.
-
-    int sigint;
-    octave_get_sig_number ("SIGINT", &sigint);
-
-    octave_kill_wrapper (0, sigint);
   }
 }

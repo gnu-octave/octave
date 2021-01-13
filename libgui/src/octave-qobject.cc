@@ -362,6 +362,14 @@ namespace octave
     m_interpreter_qobj->interpreter_event (meth);
   }
 
+  void base_qobject::interpreter_interrupt (void)
+  {
+    // The following is a direct function call across threads.  It works
+    // because the it is accessing a thread-safe function.
+
+    m_interpreter_qobj->interrupt ();
+  }
+
   void base_qobject::copy_image_to_clipboard (const QString& file,
                                               bool remove_file)
   {

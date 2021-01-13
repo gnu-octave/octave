@@ -152,6 +152,8 @@ namespace octave
 
     void interpreter_event (const meth_callback& meth);
 
+    void interpreter_interrupt (void);
+
     void copy_image_to_clipboard (const QString& file, bool remove_file);
 
   protected:

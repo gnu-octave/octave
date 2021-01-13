@@ -48,14 +48,6 @@ namespace octave
 
     bool has_focus (void) const;
 
-  signals:
-
-    void interrupt_signal (void);
-
-  protected slots:
-
-    void terminal_interrupt (void);
-
   private:
 
     QTerminal *m_terminal;

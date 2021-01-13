@@ -42,6 +42,7 @@
 #include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "oct-env.h"
+#include "quit.h"
 #include "str-vec.h"
 #include "signal-wrappers.h"
 #include "unistd-wrappers.h"
@@ -1701,6 +1702,34 @@ namespace octave
   std::list<std::string> interpreter::autoloaded_functions (void) const
   {
     return m_evaluator.autoloaded_functions ();
+  }
+
+  // May be used to send an interrupt signal to the the interpreter from
+  // another thread (for example, the GUI).
+
+  void interpreter::interrupt (void)
+  {
+    static int sigint = 0;
+    static bool first = true;
+
+    if (first)
+      {
+        octave_get_sig_number ("SIGINT", &sigint);
+        first = false;
+      }
+
+    // Send SIGINT to all other processes in our process group.  The
+    // signal handler for SIGINT will set a global variable indicating
+    // an interrupt has happened.  That variable is checked in many
+    // places in the Octave interpreter and eventually results in an
+    // interrupt_exception being thrown.  Finally, that exception is
+    // caught and returns control to one of the read-eval-print loops or
+    // to the server loop.  We use a signal instead of just setting the
+    // global variables here so that we will probably send interrupt
+    // signals to any subprocesses as well as interrupt execution of the
+    // interpreter.
+
+    octave_kill_wrapper (0, sigint);
   }
 
   void interpreter::handle_exception (const execution_exception& ee)

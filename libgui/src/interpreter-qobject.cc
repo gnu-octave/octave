@@ -142,6 +142,14 @@ namespace octave
     evmgr.post_event (meth);
   }
 
+  void interpreter_qobject::interrupt (void)
+  {
+    if (! m_interpreter)
+      return;
+
+    m_interpreter->interrupt ();
+  }
+
   qt_interpreter_events * interpreter_qobject::qt_link (void)
   {
     return m_octave_qobj.qt_link ();

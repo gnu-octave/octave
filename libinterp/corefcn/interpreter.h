@@ -467,6 +467,8 @@ namespace octave
 
     std::list<std::string> autoloaded_functions (void) const;
 
+    void interrupt (void);
+
     void handle_exception (const execution_exception& ee);
 
     void recover_from_exception (void);

@@ -52,6 +52,8 @@ namespace octave
 
     void interpreter_event (const meth_callback& meth);
 
+    void interrupt (void);
+
   signals:
 
     void ready (void);

@@ -168,6 +168,11 @@ namespace octave
 
         try
           {
+            // FIXME: Should we call octave_quit in the octave::sleep
+            // and/or command_editor::run_event_hooks functions?
+
+            octave_quit ();
+
             // FIXME: Running the event queue should be decoupled from
             // the command_editor.
 
@@ -764,6 +769,11 @@ namespace octave
       {
         try
           {
+            // FIXME: Should we call octave_quit in the octave::sleep
+            // and/or command_editor::run_event_hooks functions?
+
+            octave_quit ();
+
             // FIXME: Running the event queue should be decoupled from
             // the command_editor.  We should also use a condition
             // variable to manage the execution of entries in the queue

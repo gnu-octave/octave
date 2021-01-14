@@ -477,6 +477,7 @@ namespace octave
       m_inhibit_startup_message (false),
       m_load_path_initialized (false),
       m_history_initialized (false),
+      m_interrupt_all_in_process_group (true),
       m_cancel_quit (false),
       m_executing_finish_script (false),
       m_executing_atexit (false),
@@ -1729,7 +1730,9 @@ namespace octave
     // signals to any subprocesses as well as interrupt execution of the
     // interpreter.
 
-    octave_kill_wrapper (0, sigint);
+    pid_t pid = m_interrupt_all_in_process_group ? 0 : octave_getpid_wrapper ();
+
+    octave_kill_wrapper (pid, sigint);
   }
 
   void interpreter::handle_exception (const execution_exception& ee)

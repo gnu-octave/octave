@@ -213,6 +213,16 @@ namespace octave
       return m_initialized;
     }
 
+    void interrupt_all_in_process_group (bool b)
+    {
+      m_interrupt_all_in_process_group = b;
+    }
+
+    bool interrupt_all_in_process_group (void) const
+    {
+      return m_interrupt_all_in_process_group;
+    }
+
     application *get_app_context (void)
     {
       return m_app_context;
@@ -588,6 +598,8 @@ namespace octave
     bool m_load_path_initialized;
 
     bool m_history_initialized;
+
+    bool m_interrupt_all_in_process_group;
 
     bool m_cancel_quit;
 

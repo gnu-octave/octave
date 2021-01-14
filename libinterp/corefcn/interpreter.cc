@@ -1746,6 +1746,9 @@ namespace octave
 
   void interpreter::recover_from_exception (void)
   {
+    if (octave_interrupt_state)
+      m_event_manager.interpreter_interrupted ();
+
     can_interrupt = true;
     octave_interrupt_state = 0;
     octave_signal_caught = 0;

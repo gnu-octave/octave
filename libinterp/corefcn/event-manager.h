@@ -248,6 +248,8 @@ namespace octave
     update_breakpoint (bool /*insert*/, const std::string& /*file*/,
                        int /*line*/, const std::string& /*cond*/)
     { }
+
+    virtual void interpreter_interrupted (void) { }
   };
 
   //! Provides threadsafe access to octave.
@@ -631,6 +633,12 @@ namespace octave
     {
       if (enabled ())
         instance->update_breakpoint (insert, file, line, cond);
+    }
+
+    void interpreter_interrupted (void)
+    {
+      if (enabled ())
+        instance->interpreter_interrupted ();
     }
 
   private:

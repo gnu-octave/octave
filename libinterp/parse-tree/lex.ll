@@ -1083,7 +1083,8 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>(\.\.\.){S}*{NL} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>(\\.\\.\\.){S}*{NL}");
 
-    static const char *msg = "'...' continuations in double-quoted character strings are obsolete and will not be allowed in a future version of Octave; please use '\\' instead";
+    /* FIXME: Remove support for '...' continuation in Octave 9 */
+    static const char *msg = "'...' continuations in double-quoted character strings were deprecated in version 7 and will not be allowed in a future version of Octave; please use '\\' instead";
 
     std::string nm = curr_lexer->m_fcn_file_full_name;
 

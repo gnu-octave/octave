@@ -40,8 +40,8 @@ an error.  The interpreter makes this check automatically.  If a
 function uses varargin then the check is skipped for function inputs,
 and if a function uses varargout then the check is skipped for function
 outputs.  Input validation for functions typically begins with checking
-the number of inputs and outputs match expectations.  Existing code can
-be simplified by removing these checks which are now done by the
+that the number of inputs and outputs match expectations.  Existing code
+can be simplified by removing these checks which are now done by the
 interpreter.  Typically, code blocks like the following can simply be
 deleted.
 
@@ -59,9 +59,9 @@ deleted.
 create integers (unsigned by default) with sizes determined from the
 number of digits present.  For example, `0xff` creates a `uint8` value
 and `0xDEADBEEF` creates a `uint64` value.  You may also use a suffix of
-the form `s8`, `s16`, `s32`, `s64`, `u8`, `u16`, `u32`, or `u64` to
-explicitly specify the data type to use (`u` or `s` to indicate signed
-or unsigned and the number to indicate the integer size).
+the form `u8`, `u16`, `u32`, `u64`, `s8`, `s16`, `s32`, or `s64` to
+explicitly specify the data type to use (`u` or `s` to indicate unsigned
+or signed and the number to indicate the integer size).
 
     Binary constants are limited to 64 binary digits and hexadecimal
 constants are limited to 16 hexadecimal digits with no automatic
@@ -81,7 +81,7 @@ same number of digits for each value such as
 
 - By default, the history file is now located at $DATA/octave/history,
 where $DATA is a platform dependent location for (roaming) user data
-files (e.g.  ${XDG_DATA_HOME} or, if that is not set, ~/.local/share on
+files (e.g., ${XDG_DATA_HOME} or, if that is not set, ~/.local/share on
 Unix-like operating systems or %APPDATA% on Windows).
 
 - In debug mode, symbol values are now shown in tooltips when hovering
@@ -216,6 +216,12 @@ major release after 7):
   Object           | Property      | Value
   -----------------|---------------|------------
                    |               |
+
+- Interpreter
+
+    * The use of `'...'` for line continuations within double-quoted
+    strings has been deprecated.  Use `'\'` for line continuations
+    instead.
 
 ### Removed functions and properties
 

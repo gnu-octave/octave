@@ -506,7 +506,7 @@ Undocumented internal function
               ofile.close ();
 
               if (url_xfer.good ())
-                delete_file.set ();
+                delete_file.discard ();
             }
 
           if (! url_xfer.good ())

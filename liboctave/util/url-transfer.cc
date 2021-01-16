@@ -131,7 +131,7 @@ namespace octave
                 ofile.close ();
 
                 if (good ())
-                  delete_file.set ();
+                  delete_file.discard ();
               }
 
             if (! good ())

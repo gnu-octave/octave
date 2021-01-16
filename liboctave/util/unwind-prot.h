@@ -195,13 +195,16 @@ namespace octave
 
     void set (void) { m_fcn = nullptr; }
 
+    // Alias for set() which is clearer about programmer intention.
+    void discard (void) { set (); }
+
     void run (void)
     {
       if (m_fcn)
         m_fcn ();
 
       // Invalidate so action won't run again when object is deleted.
-      set ();
+      discard ();
     }
 
   private:
@@ -250,6 +253,9 @@ namespace octave
 
     void set (void) { m_fcn = nullptr; }
 
+    // Alias for set() which is clearer about programmer intention.
+    void discard (void) { set (); }
+
     void run (void)
     {
       try
@@ -263,7 +269,7 @@ namespace octave
         }
 
       // Invalidate so action won't run again when object is deleted.
-      set ();
+      discard ();
     }
 
   private:

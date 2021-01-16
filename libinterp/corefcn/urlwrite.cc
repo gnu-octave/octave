@@ -157,7 +157,7 @@ urlwrite ("http://www.google.com/search", "search.html",
   ofile.close ();
 
   if (url_xfer.good ())
-    unlink_action.set ();
+    unlink_action.discard ();
 
   if (nargout > 0)
     {

@@ -1101,7 +1101,7 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>\\{S}+{NL} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{S}+{NL}");
 
-    static const char *msg = "white space and comments after continuation markers in double-quoted character strings are obsolete and will not be allowed in a future version of Octave";
+    static const char *msg = "whitespace after continuation markers in double-quoted character strings are obsolete and will not be allowed in a future version of Octave";
 
     std::string nm = curr_lexer->m_fcn_file_full_name;
 

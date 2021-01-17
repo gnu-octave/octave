@@ -562,7 +562,7 @@ namespace octave
         // element of the load path in turn.
         for (const auto& di : dir_info_list)
           {
-            std::string tfile = sys::file_ops::concat (di.dir_name, file);
+            std::string tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
             sys::file_stat fs (tfile);
 
@@ -582,7 +582,7 @@ namespace octave
             for (octave_idx_type i = 0; i < len; i++)
               {
                 if (all_files[i] == file)
-                  return sys::file_ops::concat (di.dir_name, file);
+                  return sys::file_ops::concat (di.abs_dir_name, file);
               }
           }
       }
@@ -609,7 +609,7 @@ namespace octave
         std::string canon_dir = maybe_canonicalize (dir);
         for (const auto& di : dir_info_list)
           {
-            std::string dname = sys::env::make_absolute (di.dir_name);
+            std::string dname = di.abs_dir_name;
 
             size_t dname_len = dname.length ();
 
@@ -629,7 +629,7 @@ namespace octave
                 sys::file_stat fs (di.dir_name);
 
                 if (fs.exists () && fs.is_dir ())
-                  return di.dir_name;
+                  return di.abs_dir_name;
               }
           }
       }
@@ -656,7 +656,7 @@ namespace octave
         std::string canon_dir = maybe_canonicalize (dir);
         for (const auto& di : dir_info_list)
           {
-            std::string dname = sys::env::make_absolute (di.dir_name);
+            std::string dname = di.abs_dir_name;
 
             size_t dname_len = dname.length ();
 
@@ -676,7 +676,7 @@ namespace octave
                 sys::file_stat fs (di.dir_name);
 
                 if (fs.exists () && fs.is_dir ())
-                  retlist.push_back (di.dir_name);
+                  retlist.push_back (di.abs_dir_name);
               }
           }
       }
@@ -717,7 +717,7 @@ namespace octave
                 for (const auto& di : dir_info_list)
                   {
                     std::string tfile;
-                    tfile = sys::file_ops::concat (di.dir_name, file);
+                    tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
                     sys::file_stat fs (tfile);
 
@@ -744,7 +744,7 @@ namespace octave
               {
                 if (all_files[i] == rel_flist[j])
                   {
-                    dir_name = di.dir_name;
+                    dir_name = di.abs_dir_name;
                     file_name = rel_flist[j];
 
                     goto done;
@@ -794,7 +794,7 @@ namespace octave
                 for (const auto& di : dir_info_list)
                   {
                     std::string tfile;
-                    tfile = sys::file_ops::concat (di.dir_name, file);
+                    tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
                     sys::file_stat fs (tfile);
 
@@ -820,7 +820,7 @@ namespace octave
             for (octave_idx_type j = 0; j < rel_flen; j++)
               {
                 if (all_files[i] == rel_flist[j])
-                  retlist.push_back (sys::file_ops::concat (di.dir_name,
+                  retlist.push_back (sys::file_ops::concat (di.abs_dir_name,
                                                             rel_flist[j]));
               }
           }
@@ -1343,7 +1343,7 @@ namespace octave
       {
         try
           {
-            std::string abs_name = sys::env::make_absolute (dir_name);
+            std::string abs_name = sys::canonicalize_file_name (dir_name);
 
             const_abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
 
@@ -1445,13 +1445,13 @@ namespace octave
 
         try
           {
-            std::string abs_name = sys::env::make_absolute (dir_name);
+            abs_dir_name = sys::canonicalize_file_name (dir_name);
 
             // FIXME: nothing is ever removed from this cache of
             // directory information, so there could be some resource
             // problems.  Perhaps it should be pruned from time to time.
 
-            abs_dir_cache[abs_name] = *this;
+            abs_dir_cache[abs_dir_name] = *this;
           }
         catch (const execution_exception&)
           {
@@ -1566,7 +1566,7 @@ namespace octave
   void
   load_path::package_info::move (const dir_info& di, bool at_end)
   {
-    std::string dir_name = di.dir_name;
+    std::string dir_name = di.abs_dir_name;
 
     auto s = std::find (dir_list.begin (), dir_list.end (), dir_name);
 
@@ -1590,7 +1590,7 @@ namespace octave
   void
   load_path::package_info::remove (const dir_info& di)
   {
-    std::string dir = di.dir_name;
+    std::string dir = di.abs_dir_name;
 
     string_vector fcn_files = di.fcn_files;
 
@@ -1598,7 +1598,7 @@ namespace octave
 
     remove_fcn_map (dir, fcn_files);
 
-    remove_private_fcn_map (sys::canonicalize_file_name (dir));
+    remove_private_fcn_map (dir);
 
     remove_method_map (dir);
   }
@@ -1857,7 +1857,7 @@ namespace octave
   load_path::package_info::add_to_fcn_map (const dir_info& di,
                                            bool at_end, bool updating)
   {
-    std::string dir_name = di.dir_name;
+    std::string dir_name = di.abs_dir_name;
 
     string_vector fcn_files = di.fcn_files;
 
@@ -1965,14 +1965,13 @@ namespace octave
     dir_info::fcn_file_map_type private_file_map = di.private_file_map;
 
     if (! private_file_map.empty ())
-      private_fcn_map[sys::canonicalize_file_name (di.dir_name)]
-        = private_file_map;
+      private_fcn_map[di.abs_dir_name] = private_file_map;
   }
 
   void
   load_path::package_info::add_to_method_map (const dir_info& di, bool at_end)
   {
-    std::string dir_name = di.dir_name;
+    std::string dir_name = di.abs_dir_name;
 
     // <CLASS_NAME, CLASS_INFO>
     dir_info::method_file_map_type method_file_map = di.method_file_map;
@@ -2029,8 +2028,7 @@ namespace octave
         dir_info::fcn_file_map_type private_file_map = ci.private_file_map;
 
         if (! private_file_map.empty ())
-          private_fcn_map[sys::canonicalize_file_name (full_dir_name)]
-            = private_file_map;
+          private_fcn_map[full_dir_name] = private_file_map;
       }
   }
 
@@ -2169,7 +2167,7 @@ namespace octave
   void
   load_path::package_info::remove_private_fcn_map (const std::string& dir)
   {
-    auto p = private_fcn_map.find (sys::canonicalize_file_name (dir));
+    auto p = private_fcn_map.find (dir);
 
     if (p != private_fcn_map.end ())
       private_fcn_map.erase (p);

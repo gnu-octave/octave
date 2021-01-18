@@ -28,6 +28,8 @@ which operate on sets will convert their input to a set before proceeding.
 
 @DOCSTRING(unique)
 
+@DOCSTRING(uniquetol)
+
 @menu
 * Set Operations::
 @end menu

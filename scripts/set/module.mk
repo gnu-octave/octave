@@ -13,7 +13,8 @@ FCN_FILE_DIRS += \
   %reldir%/setdiff.m \
   %reldir%/setxor.m \
   %reldir%/union.m \
-  %reldir%/unique.m
+  %reldir%/unique.m \
+  %reldir%/uniquetol.m
 
 %canon_reldir%dir = $(fcnfiledir)/set
 

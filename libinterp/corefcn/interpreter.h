@@ -479,6 +479,17 @@ namespace octave
 
     void interrupt (void);
 
+    // Pause interpreter execution at the next available statement and
+    // enter the debugger.
+    void pause (void);
+
+    // Exit debugger or stop execution and return to the top-level REPL
+    // or server loop.
+    void stop (void);
+
+    // Resume interpreter execution if paused.
+    void resume (void);
+
     void handle_exception (const execution_exception& ee);
 
     void recover_from_exception (void);

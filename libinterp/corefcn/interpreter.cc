@@ -1719,20 +1719,53 @@ namespace octave
         first = false;
       }
 
-    // Send SIGINT to all other processes in our process group.  The
-    // signal handler for SIGINT will set a global variable indicating
-    // an interrupt has happened.  That variable is checked in many
-    // places in the Octave interpreter and eventually results in an
-    // interrupt_exception being thrown.  Finally, that exception is
-    // caught and returns control to one of the read-eval-print loops or
-    // to the server loop.  We use a signal instead of just setting the
-    // global variables here so that we will probably send interrupt
-    // signals to any subprocesses as well as interrupt execution of the
-    // interpreter.
+    // Send SIGINT to Octave and (optionally) all other processes in its
+    // process group.  The signal handler for SIGINT will set a global
+    // variable indicating an interrupt has happened.  That variable is
+    // checked in many places in the Octave interpreter and eventually
+    // results in an interrupt_exception being thrown.  Finally, that
+    // exception is caught and returns control to one of the
+    // read-eval-print loops or to the server loop.  We use a signal
+    // instead of just setting the global variables here so that we will
+    // probably send interrupt signals to any subprocesses as well as
+    // interrupt execution of the interpreter.
 
-    pid_t pid = m_interrupt_all_in_process_group ? 0 : octave_getpid_wrapper ();
+    pid_t pid
+      = m_interrupt_all_in_process_group ? 0 : octave_getpid_wrapper ();
 
     octave_kill_wrapper (pid, sigint);
+  }
+
+  void interpreter::pause (void)
+  {
+    // FIXME: To be reliable, these tree_evaluator functions must be
+    // made thread safe.
+
+    m_evaluator.break_on_next_statement (true);
+    m_evaluator.reset_debug_state ();
+  }
+
+  void interpreter::stop (void)
+  {
+    // FIXME: To be reliable, these tree_evaluator functions must be
+    // made thread safe.
+
+    if (m_evaluator.in_debug_repl ())
+      m_evaluator.dbquit (true);
+    else
+      interrupt ();
+  }
+
+  void interpreter::resume (void)
+  {
+    // FIXME: To be reliable, these tree_evaluator functions must be
+    // made thread safe.
+
+    // FIXME: Should there be any feeback about not doing anything if
+    // not in debug mode?
+
+    if (m_evaluator.in_debug_repl ())
+      m_evaluator.dbcont ();
   }
 
   void interpreter::handle_exception (const execution_exception& ee)

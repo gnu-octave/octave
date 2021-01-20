@@ -134,8 +134,8 @@ namespace octave
         m_debug_mode (false), m_quiet_breakpoint_flag (false),
         m_debugger_stack (), m_exit_status (0), m_max_recursion_depth (256),
         m_whos_line_format ("  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
-        m_silent_functions (false), m_string_fill_char (' '),
-        m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
+        m_silent_functions (false), m_string_fill_char (' '), m_PS4 ("+ "),
+        m_dbstep_flag (0), m_break_on_next_stmt (false), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
         m_echo_files (), m_in_top_level_repl (false),
         m_server_mode (false), m_in_loop_command (false),
@@ -642,6 +642,9 @@ namespace octave
 
     void dbcont (void);
 
+    // Return true if we are in the debug repl and m_execution_mode is
+    // set to exit the debugger.  Otherwise, do nothing.
+
     void dbquit (bool all = false);
 
     octave_value PS4 (const octave_value_list& args, int nargout);
@@ -747,6 +750,23 @@ namespace octave
     }
 
     void set_dbstep_flag (int step) { m_dbstep_flag = step; }
+
+    bool break_on_next_statement (void) const
+    {
+      return m_break_on_next_stmt;
+    }
+
+    bool break_on_next_statement (bool val)
+    {
+      bool old_val = m_break_on_next_stmt;
+      m_break_on_next_stmt = val;
+      return old_val;
+    }
+
+    void set_break_on_next_statement (bool val)
+    {
+      m_break_on_next_stmt = val;
+    }
 
     octave_value echo (const octave_value_list& args, int nargout);
 
@@ -870,6 +890,10 @@ namespace octave
     //
     // If < 0, stop executing at the next possible stopping point.
     int m_dbstep_flag;
+
+    // If TRUE, and we are not stopping for another reason (dbstep or a
+    // breakpoint) then stop at next statement and enter the debugger.
+    bool m_break_on_next_stmt;
 
     // Echo commands as they are executed?
     //

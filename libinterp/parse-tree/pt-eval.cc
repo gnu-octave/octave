@@ -117,10 +117,7 @@ namespace octave
 
     bool in_debug_repl (void) const { return m_in_debug_repl; }
 
-    void dbcont (void)
-    {
-      m_execution_mode = EX_CONTINUE;
-    }
+    void dbcont (void) { m_execution_mode = EX_CONTINUE; }
 
     void dbquit (bool all = false)
     {
@@ -1191,7 +1188,9 @@ namespace octave
   void
   tree_evaluator::reset_debug_state (void)
   {
-    m_debug_mode = (m_bp_table.have_breakpoints () || m_dbstep_flag != 0
+    m_debug_mode = (m_bp_table.have_breakpoints ()
+                    || m_dbstep_flag != 0
+                    || m_break_on_next_stmt
                     || in_debug_repl ());
   }
 
@@ -4150,6 +4149,11 @@ namespace octave
             && m_call_stack.current_frame () == m_debug_frame)
           m_dbstep_flag = -1;
       }
+
+    if (! break_on_this_statement)
+      break_on_this_statement = m_break_on_next_stmt;
+
+    m_break_on_next_stmt = false;
 
     if (break_on_this_statement)
       {

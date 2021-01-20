@@ -1101,7 +1101,8 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>\\{S}+{NL} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{S}+{NL}");
 
-    static const char *msg = "whitespace after continuation markers in double-quoted character strings are obsolete and will not be allowed in a future version of Octave";
+    /* FIXME: Remove support for WS after line continuation in Octave 9 */
+    static const char *msg = "whitespace after continuation markers in double-quoted character strings were deprecated in version 7 and will not be allowed in a future version of Octave";
 
     std::string nm = curr_lexer->m_fcn_file_full_name;
 
@@ -1311,7 +1312,8 @@ ANY_INCLUDING_NL (.|{NL})
 \\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL} {
     curr_lexer->lexer_debug ("\\\\{S}*{NL}|\\\\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL}");
 
-    static const char *msg = "using continuation marker \\ outside of double quoted strings is deprecated and will be removed from a future version of Octave, use ... instead";
+    /* FIXME: Remove support for '\\' line continuation in Octave 9 */
+    static const char *msg = "using continuation marker \\ outside of double quoted strings was deprecated in version 7 and will be removed from a future version of Octave, use ... instead";
 
     std::string nm = curr_lexer->m_fcn_file_full_name;
 

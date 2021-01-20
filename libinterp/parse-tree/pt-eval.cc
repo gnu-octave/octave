@@ -1245,6 +1245,7 @@ namespace octave
                {
                  delete m_debugger_stack.top ();
                  m_debugger_stack.pop ();
+                 reset_debug_state ();
                });
 
     dbgr->repl (prompt);

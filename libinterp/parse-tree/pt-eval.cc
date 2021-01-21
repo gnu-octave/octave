@@ -580,6 +580,17 @@ namespace octave
         reset_debug_state ();
       }
 
+    // FIXME: OK to do this job here, or should it be in the functions
+    // that do the actual prompting?
+
+    // Update the time stamp for the "prompt" so that automatically
+    // finding modified files based on file modification times will
+    // work.  In the future, we may do something completely different to
+    // check for changes to files but for now, we rely on the prompt
+    // time stamp to limit the checks for file modification times.
+
+    Vlast_prompt_time.stamp ();
+
     bool eof = false;
 
     event_manager& evmgr = m_interpreter.get_event_manager ();

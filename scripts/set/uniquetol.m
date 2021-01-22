@@ -30,54 +30,68 @@
 ## @deftypefnx {} {[@var{c}, @var{ia}, @var{ic}] =} uniquetol (@dots{})
 ## Return the unique elements of @var{A} within tolerance @var{tol}.
 ##
-## Two values, @var{x} and @var{y}, are within tolerance if
+## Two values, @var{x} and @var{y}, are within relative tolerance if
 ## @code{abs (@var{x} - @var{y}) <= @var{tol} * max (abs (@var{A}(:)))}.
 ##
-## If it is unspecified, the default tolerance is 1e-12 for double precision
-## input or 1e-6 for single precision input, respectively.
+## The input @var{A} must be a floating point type (double or single).
 ##
-## The input input @var{A} must be a floating point type (double or single).
+## If @var{tol} is unspecified, the default tolerance is 1e-12 for double
+## precision input or 1e-6 for single precision input.
 ##
-## The output @var{C} is a row vector if the input @var{A} is a row vector.
-## For all other cases, a column vector is returned.
-##
-## @var{IA} and @var{IC} are column index vectors such that
-## @code{@var{C} = @var{A}(@var{IA})} and @code{@var{A} = @var{C}(@var{IC})}.
-##
-## Additionally, the function can be called with the following optional
-## property value pairs. Property value pairs must be passed after the other
-## input arguments:
+## The function may also be called with the following optional property/value
+## pairs.  Property/value pairs must be passed after other input arguments:
 ##
 ## @table @asis
-## @item @qcode{"ByRows"}, @code{true}
-## The function returns the unique rows of @var{A}.
+## @item @qcode{"ByRows"} (default: @code{false})
+## When true, return the unique rows of @var{A}.  @var{A} must be a 2-D array
+## to use this option.  For rows, the criteria for uniqueness is changed to
+## @code{all (abs (@var{x} - @var{y}) <= @var{tol}*max (abs (@var{A}),[],1))}
+## which compares each column component of a row against a column-specific
+## tolerance.
 ##
-## @item @qcode{"DataScale"}, @var{DS}
+## @item @qcode{"DataScale"}
 ## The tolerance test is changed to
-## @code{abs (@var{x}-@var{y}) <= @var{tol}*@var{DS}} where @var{DS} is a scalar
-## unless the property @qcode{"ByRows"} is set to @code{true}.  In that case,
-## @var{DS} can be a scalar or a vector with a length equal to the number of
-## rows in @var{A}.  Using a value of 1.0 for @var{DS} will change the
-## tolerance from a relative one to an absolute tolerance.
+## @code{abs (@var{x} - @var{y}) <= @var{tol}*@var{DS}} where @var{DS} is a
+## scalar unless the property @qcode{"ByRows"} is true.  In that case, @var{DS}
+## can either be a scalar or a vector with a length equal to the number of
+## columns in @var{A}.  Using a value of @code{1.0} for @var{DS} will change
+## the tolerance from a relative one to an absolute tolerance.  Using a value
+## of @code{Inf} will disable testing.
 ##
-## @item @qcode{"OutputAllIndices"}, @code{true}
-## @var{IA} is a cell array that contains the indices for all elements in
-## @var{A} that are within tolerance of a value in @var{C}. That is, each cell
-## in @var{IA} corresponds to a value in @var{C}, and the values in each cell
-## correspond to locations in @var{A}.
+## @item @qcode{"OutputAllIndices"} (default: @code{false})
+## When true, @var{ia} is a cell array (not a vector) that contains the indices
+## for @emph{all} elements in @var{A} that are within tolerance of a value in
+## @var{C}.  That is, each cell in @var{ia} corresponds to a single unique
+## value in @var{C}, and the values in each cell correspond to locations in
+## @var{A}.
 ## @end table
 ##
-## Example:
+## The output @var{c} is a row vector if the input @var{A} is a row vector.
+## For all other cases, a column vector is returned.
+##
+## The optional output @var{ia} is a column index vector such that
+## @code{@var{c} = @var{A}(@var{ia})}.  If the @qcode{"ByRows"} property is
+## true the condition is @code{@var{c} = @var{A}(@var{ia}, :)}.  If the
+## @qcode{"OutputAllIndices"} property is true then the values
+## @code{@var{A}(@var{ia}{i})} are all within tolerance of the unique value
+## @code{@var{c}(@var{i}).
+##
+## The optional output @var{ic} is a column index vector such that
+## @code{@var{A} = @var{c}(@var{ic})} when @var{A} is a vector.  When @var{A}
+## is a matrix, @code{@var{A}(:) = @var{c}(@var{ic})}.  If the @qcode{"ByRows"}
+## property is true then @code{@var{A} = @var{c}(@var{ic},:)}.
+##
+## Example: small round-off errors require @code{uniquetol}, not @code{unique}
 ##
 ## @example
 ## @group
-## x = (1:6)*pi;
-## y = 10.^log10 (x);
-## C = uniquetol ([x, y])
-## @result{} [3.1416, 6.2832, 9.4248, 12.5664, 15.7080, 18.8496]
+## x = [1:5];
+## ## Inverse_Function (Function (x)) should return exactly x
+## y = exp (log (x));
 ## D = unique ([x, y])
-## @result{} [3.1416, 6.2832, 9.4248, 12.5664, 12.5664, 15.7080,
-## 18.8496, 18.8496]
+## @result{} [1.0000   2.0000   3.0000   3.0000   4.0000   5.0000   5.0000]
+## C = uniquetol ([x, y])
+## @result{} [1   2   3   4   5]
 ## @end group
 ## @end example
 ##
@@ -207,8 +221,8 @@ function [c, ia, ic] = uniquetol (A, varargin)
 endfunction
 
 
-%!assert (uniquetol ([1 1 2; 1 2 1; 1 1 2]), [1;2])
-%!assert (uniquetol ([1 1 2; 1 0 1; 1 1 2], 1e-12, "byrows", true),
+%!assert (uniquetol ([1 1 2; 1 2 1; 1 1 2+10*eps]), [1;2])
+%!assert (uniquetol ([1 1 2; 1 0 1; 1 1 2+10*eps], "byrows", true),
 %!        [1 1 2; 1 0 1])
 %!assert (uniquetol ([]), [])
 %!assert (uniquetol ([1]), [1])
@@ -218,30 +232,31 @@ endfunction
 %!assert (uniquetol ([1; 2]), [1; 2])
 %!xtest <59850>
 %! ## FIXME: Matlab returns only one unique value for Inf.
-%! assert (uniquetol ([1, NaN, Inf, NaN, Inf]), [1, Inf, NaN, NaN]);
+%! assert (uniquetol ([-Inf, 1, NaN, Inf, NaN, Inf]), [-Inf, 1, Inf, NaN, NaN]);
 %!xtest <59850>
 %! ## FIXME: Matlab returns empty column vectors.
 %! ##        Do we want to bother with that?
 %! assert (uniquetol (zeros (1,0)), zeros (0,1));
-%!assert (uniquetol (zeros (1,0), 1e-12, "byrows", true), zeros (1,0))
-%!assert (uniquetol ([1,2,2,3,2,4], 1e-12, "byrows", true), [1,2,2,3,2,4])
+%!assert (uniquetol (zeros (1,0), "byrows", true), zeros (1,0))
+%!assert (uniquetol ([1,2,2,3,2,4], "byrows", true), [1,2,2,3,2,4])
 %!assert (uniquetol ([1,2,2,3,2,4]), [1,2,3,4])
-%!assert (uniquetol ([1,2,2,3,2,4].', 1e-12, "byrows", true), [1;2;3;4])
+%!assert (uniquetol ([1,2,2,3,2,4].', "byrows", true), [1;2;3;4])
 %!assert (uniquetol (sparse ([2,0;2,0])), sparse ([2;0]))
 %!assert (uniquetol (sparse ([1,2;2,3])), sparse ([1;2;3]))
-%!assert (uniquetol ([1,2,2,3,2,4]', 1e-12, "byrows", true), [1;2;3;4])
-%!assert (uniquetol (single ([1,2,2,3,2,4]), 1e-12, "byrows", true),
+%!assert (uniquetol (single ([1,2,2,3,2,4]), "byrows", true),
 %!        single ([1,2,2,3,2,4]))
 %!assert (uniquetol (single ([1,2,2,3,2,4])), single ([1,2,3,4]))
-%!assert (uniquetol (single ([1,2,2,3,2,4].'), 1e-12, "byrows", true),
+%!assert (uniquetol (single ([1,2,2,3,2,4].'), "byrows", true),
 %!        single ([1;2;3;4]))
 
+## Test index vector return arguments
 %!test
 %! [c, ia, ic] = uniquetol ([1,1,2,3,3,3,4]);
 %! assert (c, [1,2,3,4]);
 %! assert (ia, [1;3;4;7]);
 %! assert (ic, [1;1;2;3;3;3;4]);
 
+## Test index vector return arguments with "ByRows"
 %!test
 %! A = [2, 3, 4; 2, 3, 4];
 %! [c, ia, ic] = uniquetol (A, "byrows", true);
@@ -251,16 +266,22 @@ endfunction
 
 %!test
 %! x = (2:7)'*pi;
-%! y = exp (1).^log (x);
+%! y = exp (log (x));
 %! C = uniquetol ([x; y]);
 %! assert (C, x);
 
 ## Test "ByRows" Property
 %!test
 %! A = [0.06, 0.21, 0.38; 0.38, 0.21, 0.39; 0.54, 0.56, 0.41; 0.46, 0.52, 0.95];
-%! B = log (exp (1).^A);
+%! B = log (exp (A));
 %! C = uniquetol ([A; B], "ByRows", true);
 %! assert (C, A);
+
+## Test "DataScale" Property
+%!test
+%! x = 10^11;
+%! C = uniquetol ([x, exp(log(x))], 1e-6, "DataScale", 1);
+%! assert (C, [x, exp(log(x))]);
 
 ## Test "OutputAllIndices" Property
 %!test
@@ -269,12 +290,6 @@ endfunction
 %! assert (C, [.1, 10]);
 %! assert (ia, {(1:3)', 4});
 %! assert (ic, [1; 1; 1; 2]);
-
-## Test "DataScale" Property
-%!test
-%! x = 10^11;
-%! C = uniquetol ([x, exp(log(x))], 1e-6, "DataScale", 1);
-%! assert (C, [x, exp(log(x))]);
 
 ## Test input validation
 %!error <Invalid call> uniquetol ()

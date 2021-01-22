@@ -47,7 +47,11 @@ function delete (varargin)
 
   if (iscellstr (varargin))
     for arg = varargin
-      files = glob (arg{1});
+      if (ispc ())
+        files = __wglob__ (arg{1});
+      else
+        files = glob (arg{1});
+      endif
       if (isempty (files))
         warning ("Octave:delete:no-such-file", ...
                  "delete: no such file: %s", arg{1});

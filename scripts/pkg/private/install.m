@@ -52,18 +52,24 @@ function install (files, handle_deps, prefix, archprefix, verbose,
     packages = local_packages;
   endif
 
+  if (ispc ())
+    oct_glob = @__wglob__;
+  else
+    oct_glob = @glob;
+  endif
+
   ## Uncompress the packages and read the DESCRIPTION files.
   tmpdirs = packdirs = descriptions = {};
   try
     ## Warn about non existent files.
     for i = 1:length (files)
-      if (isempty (glob (files{i})))
+      if (isempty (oct_glob (files{i})))
         warning ("file %s does not exist", files{i});
       endif
     endfor
 
     ## Unpack the package files and read the DESCRIPTION files.
-    files = glob (files);
+    files = oct_glob (files);
     packages_to_uninstall = [];
     for i = 1:length (files)
       tgz = files{i};
@@ -730,17 +736,23 @@ function create_pkgadddel (desc, packdir, nm, global_install)
   endif
 
   if (archfid >= 0 && instfid >= 0)
+    if (ispc ())
+      oct_glob = @__wglob__;
+    else
+      oct_glob = @glob;
+    endif
+
     ## Search all dot-m files for PKG commands.
-    lst = glob (fullfile (packdir, "inst", "*.m"));
+    lst = oct_glob (fullfile (packdir, "inst", "*.m"));
     for i = 1:length (lst)
       nam = lst{i};
       fwrite (instfid, extract_pkg (nam, ['^[#%][#%]* *' nm ': *(.*)$']));
     endfor
 
     ## Search all C++ source files for PKG commands.
-    cc_lst = glob (fullfile (packdir, "src", "*.cc"));
-    cpp_lst = glob (fullfile (packdir, "src", "*.cpp"));
-    cxx_lst = glob (fullfile (packdir, "src", "*.cxx"));
+    cc_lst = oct_glob (fullfile (packdir, "src", "*.cc"));
+    cpp_lst = oct_glob (fullfile (packdir, "src", "*.cpp"));
+    cxx_lst = oct_glob (fullfile (packdir, "src", "*.cxx"));
     lst = [cc_lst; cpp_lst; cxx_lst];
     for i = 1:length (lst)
       nam = lst{i};

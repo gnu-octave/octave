@@ -87,7 +87,7 @@
 ## The third output, @var{j}, has not been implemented yet when the sort
 ## order is @qcode{"stable"}.
 ##
-## @seealso{union, intersect, setdiff, setxor, ismember}
+## @seealso{uniquetol, union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 
 function [y, i, j] = unique (x, varargin)

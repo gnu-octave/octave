@@ -6,12 +6,12 @@ classdef bug59704_1 < handle
 
   methods
 
-    function n = numel(this, varargin)
+    function n = numel (this, varargin)
       n = 1;
     endfunction
 
-    function test(this)
-      [~, this.p] = bug59704_1_test(this.p);
+    function test (this)
+      [~, this.p] = bug59704_1_test (this.p);
     endfunction
 
   endmethods

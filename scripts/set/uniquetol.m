@@ -71,10 +71,10 @@
 ##
 ## The optional output @var{ia} is a column index vector such that
 ## @code{@var{c} = @var{A}(@var{ia})}.  If the @qcode{"ByRows"} property is
-## true the condition is @code{@var{c} = @var{A}(@var{ia}, :)}.  If the
-## @qcode{"OutputAllIndices"} property is true then the values
-## @code{@var{A}(@var{ia}{i})} are all within tolerance of the unique value
-## @code{@var{c}(@var{i}).
+## true, the condition is @code{@var{c} = @var{A}(@var{ia}, :)}.  If the
+## @qcode{"OutputAllIndices"} property is true, then the values
+## @code{@var{A}(@var{ia}@{@var{i}@})} are all within tolerance of the unique
+## value @code{@var{c}(@var{i})}.
 ##
 ## The optional output @var{ic} is a column index vector such that
 ## @code{@var{A} = @var{c}(@var{ic})} when @var{A} is a vector.  When @var{A}

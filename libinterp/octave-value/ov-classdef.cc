@@ -47,6 +47,7 @@
 #include "pr-output.h"
 #include "pt-eval.h"
 #include "pt-misc.h"
+#include "oct-lvalue.h"
 
 static bool
 in_class_method (const octave::cdef_class& cls)
@@ -250,6 +251,17 @@ octave_classdef::xnumel (const octave_value_list& idx)
 
           for (octave_idx_type i = 0; i < idx.length (); i++)
             args(i+1) = idx(i);
+
+          // Temporarily set lvalue list of current statement to NULL, to avoid
+          // using that list for the execution of the method "numel"
+          octave::interpreter& interp = octave::__get_interpreter__ ("octave_classdef::xnumel");
+          octave::tree_evaluator& tw = interp.get_evaluator();
+
+          octave::unwind_action act ([&tw] (const std::list<octave::octave_lvalue> *lvl)
+                            {
+                              tw.set_lvalue_list (lvl);
+                            }, tw.lvalue_list ());
+          tw.set_lvalue_list (nullptr);
 
           octave_value_list lv = meth.execute (args, 1, true, "numel");
           if (lv.length () != 1 || ! lv(0).is_scalar_type ())

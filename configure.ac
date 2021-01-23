@@ -2680,6 +2680,32 @@ AC_ARG_ENABLE([install-build-logs],
   [if test "$enableval" = yes; then install_build_logs=yes; fi])
 AM_CONDITIONAL([AMCOND_INSTALL_BUILD_LOGS], [test $install_build_logs = yes])
 
+### Determine whether libraries should be linked with visibility attributes
+
+ENABLE_LIB_VISIBILITY_FLAGS=yes
+AC_ARG_ENABLE(lib-visibility-flags,
+  [AS_HELP_STRING([--disable-lib-visibility-flags],
+    [don't build libraries with visibility flags (export all symbols)])],
+  [case $enableval in
+     yes) ENABLE_LIB_VISIBILITY_FLAGS=yes ;;
+     no) ENABLE_LIB_VISIBILITY_FLAGS=no ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-lib-visibility-flags]) ;;
+   esac])
+
+if test $ENABLE_LIB_VISIBILITY_FLAGS = yes; then
+  AC_DEFINE(OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS, 1,
+    [Define to 1 if building libraries with visibility flags])
+else
+  case $host_os in
+    msdosmsvc | mingw* | cygwin*)
+      LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
+    ;;
+  esac
+fi
+
+AM_CONDITIONAL([AMCOND_LIB_VISIBILITY_FLAGS],
+  [test $ENABLE_LIB_VISIBILITY_FLAGS = yes])
+
 ### Add extra compiler flags now that feature testing is complete.
 
 ## Add warning flags

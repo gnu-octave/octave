@@ -170,19 +170,24 @@ typedef unsigned long ino_t;
 
 /* oct-dlldefs.h */
 
-#if defined (_WIN32) || defined (__CYGWIN__)
-#  if defined (__GNUC__)
-     /* GCC */
-#    define OCTAVE_EXPORT __attribute__ ((dllexport))
-#    define OCTAVE_IMPORT __attribute__ ((dllimport))
+#if defined (OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS)
+#  if defined (_WIN32) || defined (__CYGWIN__)
+#    if defined (__GNUC__)
+       /* GCC */
+#      define OCTAVE_EXPORT __attribute__ ((dllexport))
+#      define OCTAVE_IMPORT __attribute__ ((dllimport))
+#    else
+       /* MSVC */
+#      define OCTAVE_EXPORT __declspec(dllexport)
+#      define OCTAVE_IMPORT __declspec(dllimport)
+#    endif
 #  else
-     /* MSVC */
-#    define OCTAVE_EXPORT __declspec(dllexport)
-#    define OCTAVE_IMPORT __declspec(dllimport)
+     /* All other platforms. */
+#    define OCTAVE_EXPORT __attribute__ ((visibility ("default")))
+#    define OCTAVE_IMPORT
 #  endif
 #else
-   /* All other platforms. */
-#  define OCTAVE_EXPORT __attribute__ ((visibility ("default")))
+#  define OCTAVE_EXPORT
 #  define OCTAVE_IMPORT
 #endif
 

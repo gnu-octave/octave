@@ -78,12 +78,15 @@ startupfiledir=`echo "@startupfiledir@" | sed "s|^${prefix}/\\+||"`
 texi_macros_file=`echo "@texi_macros_file@" | sed "s|^${prefix}/\\+||"`
 
 ## Replace portions of compiler flags that depend on prefix on target
-cppflags=`echo "@CPPFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
-fftw3f_ldflags=`echo "@FFTW3F_LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
-fftw3_ldflags=`echo "@FFTW3_LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
-flibs=`echo "@FLIBS@" | sed "s|@prefix@|\$\{prefix\}|g"`
-ldflags=`echo "@LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
-oct_link_opts=`echo "@OCT_LINK_OPTS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+## FIXME: Some of these flags might contain double quotes.
+##        Is it ok to use single quotes here?
+cppflags=`echo '@CPPFLAGS@' | sed "s|@prefix@|\$\{prefix\}|g" | sed 's|\"|\\\\\\\"|g'`
+fftw3f_ldflags=`echo '@FFTW3F_LDFLAGS@' | sed "s|@prefix@|\$\{prefix\}|g" | sed 's|\"|\\\\\\\"|g'`
+fftw3_ldflags=`echo '@FFTW3_LDFLAGS@' | sed "s|@prefix@|\$\{prefix\}|g" | sed 's|\"|\\\\\\\"|g'`
+flibs=`echo '@FLIBS@' | sed "s|@prefix@|\$\{prefix\}|g" | sed 's|\"|\\\\\\\"|g'`
+ldflags=`echo '@LDFLAGS@' | sed "s|@prefix@|\$\{prefix\}|g" | sed 's|\"|\\\\\\\"|g'`
+oct_link_opts=`echo '@OCT_LINK_OPTS@' | sed "s|@prefix@|\$\{prefix\}|g" | sed 's|\"|\\\\\\\"|g'`
+
 
 srcdir="@srcdir@"
 top_srcdir="@top_srcdir@"

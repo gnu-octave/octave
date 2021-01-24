@@ -1814,7 +1814,15 @@ void QWinTerminalImpl::pasteClipboard (void)
   QString text = QApplication::clipboard()->text (QClipboard::Clipboard);
 
   if (! text.isEmpty ())
+    {
+      if (text.contains ("\t"))
+        {
+          qWarning ("Tabs replaced with spaces in pasted text before processing");
+          text.replace ("\t", "    ");
+        }
+
     sendText (text);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////

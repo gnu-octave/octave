@@ -2208,6 +2208,11 @@ void TerminalView::emitSelection(bool useXselection,bool appendReturn)
   if ( ! text.isEmpty() )
     {
       text.replace("\n", "\r");
+      if (text.contains ("\t"))
+        {
+          qWarning ("Tabs replaced with spaces in pasted text before processing");
+          text.replace ("\t", "    ");
+        }
       QKeyEvent e(QEvent::KeyPress, 0, Qt::NoModifier, text);
       emit keyPressedSignal(&e); // expose as a big fat keypress event
 

@@ -1993,6 +1993,9 @@ namespace octave
   {
     size_t data_offset = sym.data_offset ();
 
+    if (data_offset >= size ())
+      resize_and_update_script_offsets (sym);
+
     // Redirection to evaluation context for the script.
 
     size_t frame_offset = m_lexical_frame_offsets.at (data_offset);

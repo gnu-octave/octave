@@ -2526,6 +2526,9 @@ namespace octave
   void
   base_parser::statement_list (std::shared_ptr<tree_statement_list>& lst)
   {
+    if (! lst)
+      return;
+
     if (m_stmt_list)
       {
         // Append additional code to existing statement list.

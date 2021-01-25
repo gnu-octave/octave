@@ -27,8 +27,8 @@
 ## @deftypefn  {} {} strmatch (@var{s}, @var{A})
 ## @deftypefnx {} {} strmatch (@var{s}, @var{A}, "exact")
 ##
-## This function is obsolete.  Use an alternative such as @code{strncmp}
-## or @code{strcmp} instead.
+## This function is obsolete.  @strong{Use an alternative} such as
+## @code{strncmp} or @code{strcmp} instead.
 ##
 ## Return indices of entries of @var{A} which begin with the string @var{s}.
 ##
@@ -54,10 +54,11 @@
 ## @end group
 ## @end example
 ##
-## @strong{Caution:} @code{strmatch} is obsolete.  Use @code{strncmp} (normal
-## case) or @code{strcmp} (@qcode{"exact"} case) in all new code.  Other
-## replacement possibilities, depending on application, include @code{regexp}
-## or @code{validatestring}.
+## @strong{Caution:} @code{strmatch} is obsolete (and can produce incorrect
+## results in @sc{matlab} when used with cell arrays of strings.  Use
+## @code{strncmp} (normal case) or @code{strcmp} (@qcode{"exact"} case) in all
+## new code.  Other replacement possibilities, depending on application,
+## include @code{regexp} or @code{validatestring}.
 ## @seealso{strncmp, strcmp, regexp, strfind, validatestring}
 ## @end deftypefn
 
@@ -118,6 +119,13 @@ function idx = strmatch (s, A, exact)
     endif
   endif
 
+  ## Return exactly sized and shaped values for Matlab compatibility.
+  if (isempty (idx))
+    idx = [];  # always return 0x0 empty matrix for non-match.
+  else
+    idx = idx(:);  # always return column vector.
+  endif
+
 endfunction
 
 
@@ -134,8 +142,8 @@ endfunction
 %!assert (strmatch ("a ", "a"), 1)
 %!assert (strmatch ("a", "a \0", "exact"), 1)
 %!assert (strmatch ("a b", {"a b", "a c", "c d"}), 1)
-%!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4])
-%!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, "exact"), [1,4])
+%!assert (strmatch ("", {"", "foo", "bar", ""}), [1; 4])
+%!assert (strmatch ('', {'', '% comment', 'var a = 5', ''}, "exact"), [1;4])
 
 ## Weird Matlab corner cases
 %!test <*49601>
@@ -146,6 +154,10 @@ endfunction
 %!test <*54432>
 %! assert (strmatch ({"a"}, {"aaa", "bab", "bbb"}), 1);
 %! assert (isempty (strmatch ({}, {"aaa", "bab"})));
+%!test <*59917>
+%! a = { "dfr", "tgh", "rere", "rere" };
+%! b = strmatch ("rere", a, "exact");
+%! assert (b, [3; 4]);
 
 ## Test input validation
 %!error <Invalid call to strmatch> strmatch ()

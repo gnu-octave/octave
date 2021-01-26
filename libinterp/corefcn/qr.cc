@@ -515,6 +515,9 @@ orthogonal basis of @code{span (A)}.
     }
   else
     {
+      if (have_b && nargout > 2)
+        error ("qr: too many output arguments for dense A with B");
+
       if (arg.is_single_type ())
         {
           if (arg.isreal ())
@@ -786,6 +789,10 @@ orthogonal basis of @code{span (A)}.
 
 %!error qr ()
 %!error qr ([1, 2; 3, 4], 0, 2)
+%!error <too many output arguments for dense A with B>
+%! [q, r, p] = qr (rand (3, 2), rand (3, 1));
+%!error <too many output arguments for dense A with B>
+%! [q, r, p] = qr (rand (3, 2), rand (3, 1), 0);
 
 %!function retval = __testqr (q, r, a, p)
 %!  tol = 100*eps (class (q));
@@ -898,8 +905,8 @@ orthogonal basis of @code{span (A)}.
 %! assert (qe * re, a(:, pe), sqrt (eps ("single")));
 
 %!test
-%! a = single([0, 2, 1; 2, 1, 2; 3, 1, 2]);
-%! b = single([1, 3, 2; 1, 1, 0; 3, 0, 2]);
+%! a = single ([0, 2, 1; 2, 1, 2; 3, 1, 2]);
+%! b = single ([1, 3, 2; 1, 1, 0; 3, 0, 2]);
 %!
 %! [q, r] = qr (a);
 %! [c, re] = qr (a, b);
@@ -908,8 +915,8 @@ orthogonal basis of @code{span (A)}.
 %! assert (q'*b, c, sqrt (eps ("single")));
 
 %!test
-%! a = single([0, 2, i; 2, 1, 2; 3, 1, 2]);
-%! b = single([1, 3, 2; 1, i, 0; 3, 0, 2]);
+%! a = single ([0, 2, i; 2, 1, 2; 3, 1, 2]);
+%! b = single ([1, 3, 2; 1, i, 0; 3, 0, 2]);
 %!
 %! [q, r] = qr (a);
 %! [c, re] = qr (a, b);
@@ -918,8 +925,8 @@ orthogonal basis of @code{span (A)}.
 %! assert (q'*b, c, sqrt (eps ("single")));
 
 %!test
-%! a = single([0, 2, i; 2, 1, 2; 3, 1, 2]);
-%! b = single([1, 3, 2; 1, 1, 0; 3, 0, 2]);
+%! a = single ([0, 2, i; 2, 1, 2; 3, 1, 2]);
+%! b = single ([1, 3, 2; 1, 1, 0; 3, 0, 2]);
 %!
 %! [q, r] = qr (a);
 %! [c, re] = qr (a, b);
@@ -928,17 +935,14 @@ orthogonal basis of @code{span (A)}.
 %! assert (q'*b, c, sqrt (eps));
 
 %!test
-%! a = single([0, 2, 1; 2, 1, 2; 3, 1, 2]);
-%! b = single([1, 3, 2; 1, i, 0; 3, 0, 2]);
+%! a = single ([0, 2, 1; 2, 1, 2; 3, 1, 2]);
+%! b = single ([1, 3, 2; 1, i, 0; 3, 0, 2]);
 %!
 %! [q, r] = qr (a);
 %! [c, re] = qr (a, b);
 %!
 %! assert (r, re, sqrt (eps ("single")));
 %! assert (q'*b, c, sqrt (eps ("single")));
-
-%!error qr ()
-%!error qr ([1, 2; 3, 4], 0, 2)
 
 %!test
 %! t = ones (24, 1);

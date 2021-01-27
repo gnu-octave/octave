@@ -1,5 +1,6 @@
 octave_gui_ICONS = \
   %reldir%/icons/applications-system.png \
+  %reldir%/icons/bookmark-new.png \
   %reldir%/icons/bottom_left_corner.png \
   %reldir%/icons/bottom_right_corner.png \
   %reldir%/icons/bottom_side.png \

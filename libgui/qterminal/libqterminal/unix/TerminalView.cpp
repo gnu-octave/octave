@@ -2220,7 +2220,13 @@ void TerminalView::emitSelection(bool useXselection,bool appendReturn)
   if ( ! text.isEmpty() )
     {
       text.replace("\n", "\r");
-      bracketText(text);
+      if (bracketedPasteMode() && !_disabledBracketedPasteMode)
+        bracketText(text);
+      else if (text.contains ("\t"))
+        {
+          qWarning ("converting TAB to SPC in pasted text before processing");
+          text.replace ("\t", " ");
+        }
       QKeyEvent e(QEvent::KeyPress, 0, Qt::NoModifier, text);
       emit keyPressedSignal(&e); // expose as a big fat keypress event
 
@@ -2230,11 +2236,8 @@ void TerminalView::emitSelection(bool useXselection,bool appendReturn)
 
 void TerminalView::bracketText(QString& text)
 {
-  if (bracketedPasteMode() && !_disabledBracketedPasteMode)
-    {
-        text.prepend("\033[200~");
-        text.append("\033[201~");
-    }
+    text.prepend("\033[200~");
+    text.append("\033[201~");
 }
 
 void TerminalView::setSelection(const QString& t)

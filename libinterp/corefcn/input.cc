@@ -36,6 +36,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <queue>
 #include <sstream>
 #include <string>
 
@@ -882,7 +883,7 @@ namespace octave
   public:
 
     terminal_reader (interpreter& interp)
-      : base_reader (interp)
+      : base_reader (interp), m_eof (false), m_input_queue ()
     { }
 
     std::string get_input (const std::string& prompt, bool& eof);
@@ -892,6 +893,9 @@ namespace octave
     bool input_from_terminal (void) const { return true; }
 
   private:
+
+    bool m_eof;
+    std::queue<std::string> m_input_queue;
 
     static const std::string s_in_src;
   };
@@ -968,6 +972,13 @@ namespace octave
 
   const std::string terminal_reader::s_in_src ("terminal");
 
+  // If octave_gets returns multiple lines, we cache the input and
+  // return it one line at a time.  Multiple input lines may happen when
+  // using readline and bracketed paste mode is enabled, for example.
+  // Instead of queueing lines here, it might be better to modify the
+  // grammar in the parser to handle multiple lines when working
+  // interactively.  See also bug #59938.
+
   std::string
   terminal_reader::get_input (const std::string& prompt, bool& eof)
   {
@@ -975,7 +986,54 @@ namespace octave
 
     eof = false;
 
-    return octave_gets (prompt, eof);
+    if (m_input_queue.empty ())
+      {
+        std::string input = octave_gets (prompt, m_eof);
+
+        size_t len = input.size ();
+
+        if (len == 0)
+          {
+            if (m_eof)
+              {
+                eof = m_eof;
+                return input;
+              }
+            else
+              {
+                // Can this happen, or will the string returned from
+                // octave_gets always end in a newline character?
+
+                input = "\n";
+                len = 1;
+              }
+          }
+
+        size_t beg = 0;
+        while (beg < len)
+          {
+            size_t end = input.find ('\n', beg);
+
+            if (end == std::string::npos)
+              {
+                m_input_queue.push (input.substr (beg));
+                break;
+              }
+            else
+              {
+                m_input_queue.push (input.substr (beg, end-beg+1));
+                beg = end + 1;
+              }
+          }
+      }
+
+    std::string retval = m_input_queue.front ();
+    m_input_queue.pop ();
+
+    if (m_input_queue.empty ())
+      eof = m_eof;
+
+    return retval;
   }
 
   const std::string file_reader::s_in_src ("file");

@@ -254,6 +254,7 @@ TerminalView::TerminalView(QWidget *parent)
   ,_resizing(false)
   ,_terminalSizeHint(false)
   ,_terminalSizeStartup(true)
+  ,_disabledBracketedPasteMode(false)
   ,_actSel(0)
   ,_wordSelectionMode(false)
   ,_lineSelectionMode(false)
@@ -312,6 +313,7 @@ TerminalView::TerminalView(QWidget *parent)
   //  QCursor::setAutoHideCursor( this, true );
 
   setUsesMouse(true);
+  setBracketedPasteMode(false);
   setColorTable(base_color_table);
   setMouseTracking(true);
 
@@ -2187,6 +2189,16 @@ bool TerminalView::usesMouse() const
   return _mouseMarks;
 }
 
+void TerminalView::setBracketedPasteMode(bool on)
+{
+  _bracketedPasteMode = on;
+}
+bool TerminalView::bracketedPasteMode() const
+{
+    return _bracketedPasteMode;
+}
+
+
 /* ------------------------------------------------------------------------- */
 /*                                                                           */
 /*                               Clipboard                                   */
@@ -2208,16 +2220,24 @@ void TerminalView::emitSelection(bool useXselection,bool appendReturn)
   if ( ! text.isEmpty() )
     {
       text.replace("\n", "\r");
-      if (text.contains ("\t"))
+      if (bracketedPasteMode() && !_disabledBracketedPasteMode)
+        bracketText(text);
+      else if (text.contains ("\t"))
         {
-          qWarning ("Tabs replaced with spaces in pasted text before processing");
-          text.replace ("\t", "    ");
+          qWarning ("converting TAB to SPC in pasted text before processing");
+          text.replace ("\t", " ");
         }
       QKeyEvent e(QEvent::KeyPress, 0, Qt::NoModifier, text);
       emit keyPressedSignal(&e); // expose as a big fat keypress event
 
       _screenWindow->clearSelection();
     }
+}
+
+void TerminalView::bracketText(QString& text)
+{
+    text.prepend("\033[200~");
+    text.append("\033[201~");
 }
 
 void TerminalView::setSelection(const QString& t)

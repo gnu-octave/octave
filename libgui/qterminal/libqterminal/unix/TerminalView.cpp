@@ -254,6 +254,7 @@ TerminalView::TerminalView(QWidget *parent)
   ,_resizing(false)
   ,_terminalSizeHint(false)
   ,_terminalSizeStartup(true)
+  ,_disabledBracketedPasteMode(false)
   ,_actSel(0)
   ,_wordSelectionMode(false)
   ,_lineSelectionMode(false)
@@ -312,6 +313,7 @@ TerminalView::TerminalView(QWidget *parent)
   //  QCursor::setAutoHideCursor( this, true );
 
   setUsesMouse(true);
+  setBracketedPasteMode(false);
   setColorTable(base_color_table);
   setMouseTracking(true);
 
@@ -2187,6 +2189,16 @@ bool TerminalView::usesMouse() const
   return _mouseMarks;
 }
 
+void TerminalView::setBracketedPasteMode(bool on)
+{
+  _bracketedPasteMode = on;
+}
+bool TerminalView::bracketedPasteMode() const
+{
+    return _bracketedPasteMode;
+}
+
+
 /* ------------------------------------------------------------------------- */
 /*                                                                           */
 /*                               Clipboard                                   */
@@ -2208,10 +2220,20 @@ void TerminalView::emitSelection(bool useXselection,bool appendReturn)
   if ( ! text.isEmpty() )
     {
       text.replace("\n", "\r");
+      bracketText(text);
       QKeyEvent e(QEvent::KeyPress, 0, Qt::NoModifier, text);
       emit keyPressedSignal(&e); // expose as a big fat keypress event
 
       _screenWindow->clearSelection();
+    }
+}
+
+void TerminalView::bracketText(QString& text)
+{
+  if (bracketedPasteMode() && !_disabledBracketedPasteMode)
+    {
+        text.prepend("\033[200~");
+        text.append("\033[201~");
     }
 }
 

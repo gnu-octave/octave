@@ -160,6 +160,9 @@ public:
 
     void emitSelection(bool useXselection,bool appendReturn);
 
+    /** change and wrap text corresponding to paste mode **/
+    void bracketText(QString& text);
+
     /**
      * This enum describes the available shapes for the keyboard cursor.
      * See setKeyboardCursorShape()
@@ -379,6 +382,9 @@ public:
      */
     void visibility_changed (bool visible);
 
+    void disableBracketedPasteMode(bool disable) { _disabledBracketedPasteMode = disable; }
+    bool bracketedPasteModeIsDisabled() const { return _disabledBracketedPasteMode; }
+
 public slots:
 
     /**
@@ -454,6 +460,9 @@ public slots:
 
     /** See setUsesMouse() */
     bool usesMouse() const;
+
+    void setBracketedPasteMode(bool bracketedPasteMode);
+    bool bracketedPasteMode() const;
 
 signals:
 
@@ -663,6 +672,8 @@ private:
     bool _terminalSizeHint;
     bool _terminalSizeStartup;
     bool _mouseMarks;
+    bool _bracketedPasteMode;
+    bool _disabledBracketedPasteMode;
 
     QPoint  _iPntSel; // initial selection point
     QPoint  _pntSel; // current selection point

@@ -131,6 +131,11 @@ void TerminalModel::addView(TerminalView* widget)
 
         widget->setUsesMouse( _emulation->programUsesMouse() );
 
+        connect( _emulation , SIGNAL(programBracketedPasteModeChanged(bool)) ,
+                 widget , SLOT(setBracketedPasteMode(bool)) );
+
+        widget->setBracketedPasteMode(_emulation->programBracketedPasteMode());
+
         widget->setScreenWindow(_emulation->createWindow());
     }
 

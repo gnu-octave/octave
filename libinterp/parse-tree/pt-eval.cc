@@ -1152,7 +1152,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -1177,7 +1179,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -2784,7 +2788,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -2835,7 +2841,7 @@ namespace octave
 
   template <typename T>
   void
-  tree_evaluator::execute_range_loop (const range<T>& rng, size_t line,
+  tree_evaluator::execute_range_loop (const range<T>& rng, int line,
                                       octave_lvalue& ult,
                                       tree_statement_list *loop_body)
   {
@@ -2866,7 +2872,9 @@ namespace octave
   void
   tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   {
-    size_t line = cmd.line ();
+    int line = cmd.line ();
+    if (line < 0)
+      line = 1;
 
     if (m_echo_state)
       {
@@ -3051,7 +3059,9 @@ namespace octave
   void
   tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
   {
-    size_t line = cmd.line ();
+    int line = cmd.line ();
+    if (line < 0)
+      line = 1;
 
     if (m_echo_state)
       {
@@ -3400,7 +3410,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3469,7 +3481,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3513,7 +3527,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3562,7 +3578,9 @@ namespace octave
               {
                 if (m_echo_state)
                   {
-                    size_t line = stmt.line ();
+                    int line = stmt.line ();
+                    if (line < 0)
+                      line = 1;
                     echo_code (line);
                     m_echo_file_pos = line + 1;
                   }
@@ -3712,7 +3730,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3752,7 +3772,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3905,7 +3927,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3956,7 +3980,9 @@ namespace octave
   void
   tree_evaluator::visit_while_command (tree_while_command& cmd)
   {
-    size_t line = cmd.line ();
+    int line = cmd.line ();
+    if (line < 0)
+      line = 1;
 
     if (m_echo_state)
       {
@@ -4002,7 +4028,9 @@ namespace octave
   void
   tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
   {
-    size_t line = cmd.line ();
+    int line = cmd.line ();
+    if (line < 0)
+      line = 1;
 
     if (m_echo_state)
       {
@@ -4433,7 +4461,7 @@ namespace octave
 
   void
   tree_evaluator::push_echo_state (int type, const std::string& file_name,
-                                   size_t pos)
+                                   int pos)
   {
     unwind_protect *frame = m_call_stack.curr_fcn_unwind_protect_frame ();
 
@@ -4447,7 +4475,7 @@ namespace octave
 
   void
   tree_evaluator::set_echo_state (int type, const std::string& file_name,
-                                  size_t pos)
+                                  int pos)
   {
     m_echo_state = echo_this_file (file_name, type);
     m_echo_file_name = file_name;
@@ -4456,7 +4484,7 @@ namespace octave
 
   void
   tree_evaluator::uwp_set_echo_state (bool state, const std::string& file_name,
-                                      size_t pos)
+                                      int pos)
   {
     m_echo_state = state;
     m_echo_file_name = file_name;
@@ -4476,7 +4504,14 @@ namespace octave
 
         std::string file_name = fcn->fcn_file_name ();
 
-        size_t pos = m_call_stack.current_line ();
+        // We want the line where "echo" was called, not the line number
+        // stored in the stack frame that was created for the echo
+        // function (that will always be -1).
+
+        int pos = m_call_stack.current_user_code_line ();
+
+        if (pos < 0)
+          pos = 1;
 
         set_echo_state (type, file_name, pos);
       }
@@ -4819,7 +4854,7 @@ namespace octave
     return false;
   }
 
-  void tree_evaluator::echo_code (size_t line)
+  void tree_evaluator::echo_code (int line)
   {
     std::string prefix = command_editor::decode_prompt_string (m_PS4);
 
@@ -4829,7 +4864,7 @@ namespace octave
       {
         octave_user_code *code = dynamic_cast<octave_user_code *> (curr_fcn);
 
-        size_t num_lines = line - m_echo_file_pos + 1;
+        int num_lines = line - m_echo_file_pos + 1;
 
         std::deque<std::string> lines
           = code->get_code_lines (m_echo_file_pos, num_lines);

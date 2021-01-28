@@ -792,17 +792,16 @@ namespace octave
 
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
-    void push_echo_state (int type, const std::string& file_name,
-                          size_t pos = 1);
+    void push_echo_state (int type, const std::string& file_name, int pos = 1);
 
   private:
 
     template <typename T>
-    void execute_range_loop (const range<T>& rng, size_t line,
+    void execute_range_loop (const range<T>& rng, int line,
                              octave_lvalue& ult,
                              tree_statement_list *loop_body);
 
-    void set_echo_state (int type, const std::string& file_name, size_t pos);
+    void set_echo_state (int type, const std::string& file_name, int pos);
 
     void maybe_set_echo_state (void);
 
@@ -818,12 +817,11 @@ namespace octave
     bool is_logically_true (tree_expression *expr, const char *warn_for);
 
     // For unwind-protect.
-    void uwp_set_echo_state (bool state, const std::string& file_name,
-                             size_t pos);
+    void uwp_set_echo_state (bool state, const std::string& file_name, int pos);
 
     bool echo_this_file (const std::string& file, int type) const;
 
-    void echo_code (size_t line);
+    void echo_code (int line);
 
     bool quit_loop_now (void);
 
@@ -909,8 +907,15 @@ namespace octave
 
     std::string m_echo_file_name;
 
-    // Next line to echo, counting from 1.
-    size_t m_echo_file_pos;
+    // Next line to echo, counting from 1.  We use int here because the
+    // parser does.  It also initializes line and column numbers to the
+    // invalid value -1 and that can cause trouble if cast to an
+    // unsigned value.  When updating this value and echoing ranges of
+    // code, we also check to ensure that the line numbers stored in the
+    // parse tree are valid.  It would be better to ensure that the
+    // parser always stores valid position info, but that's more
+    // difficult to always do correctly.
+    int m_echo_file_pos;
 
     std::map<std::string, bool> m_echo_files;
 

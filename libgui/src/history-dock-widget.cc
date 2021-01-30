@@ -124,6 +124,20 @@ namespace octave
     m_filter->setCurrentIndex (0);
   }
 
+  void history_dock_widget::set_filter_focus (bool focus)
+  {
+    if (focus)
+      {
+        m_filter->setFocus ();
+        setFocusProxy (m_filter);
+      }
+    else
+      {
+        m_history_list_view->setFocus ();
+        setFocusProxy (m_history_list_view);
+      }
+  }
+
   void history_dock_widget::filter_activate (bool state)
   {
     m_filter->setEnabled (state);
@@ -133,6 +147,8 @@ namespace octave
       m_sort_filter_proxy_model.setFilterWildcard (m_filter->currentText ());
     else
       m_sort_filter_proxy_model.setFilterWildcard (QString ());
+
+    set_filter_focus (state);
   }
 
   void history_dock_widget::ctxMenu (const QPoint& xpos)
@@ -223,6 +239,8 @@ namespace octave
   {
     m_filter_shown = ! m_filter_shown;
     m_filter_widget->setVisible (m_filter_shown);
+
+    set_filter_focus (m_filter_shown && m_filter_checkbox->isChecked ()) ;
   }
 
   void history_dock_widget::copyClipboard (void)

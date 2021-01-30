@@ -105,6 +105,7 @@ namespace octave
   private:
 
     void relay_contextmenu_command (const QString& cmdname, bool str = false);
+    void set_filter_focus (bool focus);
 
     QString get_var_name (const QModelIndex& index);
 

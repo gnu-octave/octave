@@ -246,6 +246,20 @@ namespace octave
     octave_dock_widget::save_settings ();
   }
 
+  void workspace_view::set_filter_focus (bool focus)
+  {
+    if (focus)
+      {
+        m_filter->setFocus ();
+        setFocusProxy (m_filter);
+      }
+    else
+      {
+        m_view->setFocus ();
+        setFocusProxy (m_view);
+      }
+  }
+
   void
   workspace_view::filter_update (const QString& expression)
   {
@@ -263,6 +277,8 @@ namespace octave
       filter_update (m_filter->currentText ());
     else
       filter_update (QString ());
+
+    set_filter_focus (state);
   }
 
   void
@@ -495,6 +511,8 @@ namespace octave
   {
     m_filter_shown = ! m_filter_shown;
     m_filter_widget->setVisible (m_filter_shown);
+
+    set_filter_focus (m_filter_shown && m_filter_checkbox->isChecked ());
   }
 
   void

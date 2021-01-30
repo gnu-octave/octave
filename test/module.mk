@@ -84,6 +84,7 @@ include %reldir%/bug-53468/module.mk
 include %reldir%/bug-53956/module.mk
 include %reldir%/bug-54995/module.mk
 include %reldir%/bug-55758/module.mk
+include %reldir%/bug-56068/module.mk
 include %reldir%/bug-58572/module.mk
 include %reldir%/bug-58593/module.mk
 include %reldir%/bug-59451/module.mk

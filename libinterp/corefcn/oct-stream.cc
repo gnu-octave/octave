@@ -1512,7 +1512,7 @@ namespace octave
   {
     char *retval;
 
-    if (eob  - idx > size)
+    if (eob - idx > size)
       {
         retval = idx;
         idx += size;
@@ -5457,10 +5457,10 @@ namespace octave
   private:
 
     const octave_value_list values;
-    int val_idx;
-    int elt_idx;
-    int n_vals;
-    int n_elts;
+    octave_idx_type val_idx;
+    octave_idx_type elt_idx;
+    octave_idx_type n_vals;
+    octave_idx_type n_elts;
     bool have_data;
     octave_value curr_val;
     state curr_state;

@@ -1,6 +1,7 @@
 nest_TEST_FILES = \
   %reldir%/arg_nest.m \
   %reldir%/arg_ret.m \
+  %reldir%/bug_59989.m \
   %reldir%/counter.m \
   %reldir%/nest.tst \
   %reldir%/nest_eval.m \

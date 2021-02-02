@@ -156,6 +156,16 @@ namespace octave
         // FIXME: maybe it would be better to just stash curr_fcn
         // instead of individual bits of info about it?
 
+        // An anonymous function defined inside another nested function
+        // or parent of a nested function also behaves like a nested
+        // function.
+
+        if (curr_fcn->is_parent_function () || curr_fcn->is_nested_function ())
+          {
+            af->mark_as_nested_function ();
+            new_scope.set_nesting_depth (parent_scope.nesting_depth () + 1);
+          }
+
         af->stash_parent_fcn_name (curr_fcn->name ());
         af->stash_dir_name (curr_fcn->dir_name ());
 

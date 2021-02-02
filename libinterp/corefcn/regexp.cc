@@ -60,7 +60,7 @@ do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
   size_t j = 0;
   size_t len = s.length ();
 
-  retval.resize (len+i);
+  retval.resize (len);
 
   while (j < len)
     {
@@ -79,11 +79,15 @@ do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
                 }
               break;
 
-            // Translate \< and \> to PCRE word boundary
+            // Translate \< and \> to PCRE patterns for pseudo-word boundary
             case '<': // begin word boundary
+              retval.insert (i, "(?<=\\W|^)");
+              i += 8;
+              break;
+
             case '>': // end word boundary
-              retval[i] = '\\';
-              retval[++i] = 'b';
+              retval.insert (i, "(?=\\W|$)");
+              i += 7;
               break;
 
             case 'o': // octal input
@@ -1178,11 +1182,18 @@ size) with successive @code{regexp} searches.
 %!assert (regexp ("\n", '\n'), 1)
 %!assert (regexp ("\n", "\n"), 1)
 
-# Test escape sequences are silently converted
+## Test escape sequences are silently converted
 %!test <*45407>
 %! assert (regexprep ('s', 's', 'x\.y'), 'x.y');
 %! assert (regexprep ('s', '(s)', 'x\$1y'), 'x$1y');
 %! assert (regexprep ('s', '(s)', 'x\\$1y'), 'x\sy');
+
+## Test start-of-word / end-of-word patterns for Matlab compatibility
+%!test <*59992>
+%! assert (regexp ('foo!+bar', '\<\w'), [1, 6]);
+%! assert (regexp ('foo!+bar', '.\>'), [3, 4, 8]);
+%! assert (regexp ('foo!+bar\nbar!+foo', '.\>'), [3, 4, 8, 13, 14, 18]);
+%! assert (regexp ('foo!+bar\nbar!+foo', '\<\w'), [1, 6, 10, 16]);
 
 ## Test input validation
 %!error regexp ('string', 'tri', 'BadArg')

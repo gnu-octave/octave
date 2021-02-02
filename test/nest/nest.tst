@@ -158,3 +158,5 @@
 ## Test visibility of nested function from script called from parent.
 %!assert (script_nest_2 (42), 84)
 %!error script_nest_2 (0)
+
+%!assert (bug_59989 (), 6)

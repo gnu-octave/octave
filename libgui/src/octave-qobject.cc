@@ -334,6 +334,7 @@ namespace octave
 #endif
 
     m_main_thread->quit ();
+    m_main_thread->wait ();
 
     qApp->exit (exit_status);
   }

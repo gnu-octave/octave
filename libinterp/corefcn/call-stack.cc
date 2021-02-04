@@ -618,11 +618,12 @@ namespace octave
   {
     size_t start = find_current_user_frame ();
 
-    // FIXME: is this supposed to be an error?
-    if (start == 0)
-      error ("already at top level");
+    std::shared_ptr<stack_frame> caller_frame = m_cs[start]->static_link ();
 
-    m_curr_frame = dbupdown (start, -1, false);
+    // Allow evalin ('caller', ...) to work when called from the
+    // top-level prompt.
+
+    m_curr_frame = caller_frame ? caller_frame->index () : 0;
   }
 
   void call_stack::goto_base_frame (void)

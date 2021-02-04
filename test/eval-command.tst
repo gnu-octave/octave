@@ -159,3 +159,53 @@
 %! f4a ();
 %! assert (sigma_call, "function");
 %! clear -global sigma_call
+
+%!function r = f_eval_fun ()
+%!  evalin_value = "this is f_eval_fun";
+%!  r = evalin ("caller", "evalin_value");
+%!endfunction
+%!function r = g_eval_fun ()
+%!  evalin_value = "this is g_eval_fun";
+%!  r = evalin ("caller", "f_eval_fun ()");
+%!endfunction
+%!function r = h_eval_fun ()
+%!  evalin_value = "this is h_eval_fun";
+%!  r = f_eval_fun ();
+%!endfunction
+
+%!shared evalin_value
+%! evalin_value = "this is the caller";
+%!assert <59847> (f_eval_fun (), "this is the caller");
+%!assert <59847> (g_eval_fun (), "this is the caller");
+%!assert <59847> (h_eval_fun (), "this is h_eval_fun");
+
+%!function r = f_asgn_fun ()
+%!  asgnin_value = "this is f_asgn_fun";
+%!  assignin ("caller", "asgnin_value", "f value");
+%!  r = asgnin_value;
+%!endfunction
+%!function r = g_asgn_fun ()
+%!  asgnin_value = "this is g_asgn_fun";
+%!  evalin ("caller", "f_asgn_fun ();");
+%!  r = asgnin_value;
+%!endfunction
+%!function r = h_asgn_fun ()
+%!  asgnin_value = "this is h_asgn_fun";
+%!  f_asgn_fun ();
+%!  r = asgnin_value;
+%!endfunction
+
+%!test <59847>
+%! asgnin_value = "this is the caller";
+%! assert (f_asgn_fun (), "this is f_asgn_fun");
+%! assert (asgnin_value, "f value");
+
+%!test <59847>
+%! asgnin_value = "this is the caller";
+%! assert (g_asgn_fun (), "this is g_asgn_fun");
+%! assert (asgnin_value, "f value");
+
+%!test <59847>
+%! asgnin_value = "this is the caller";
+%! assert (h_asgn_fun (), "f value");
+%! assert (asgnin_value, "this is the caller");

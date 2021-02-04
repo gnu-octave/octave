@@ -59,6 +59,7 @@ FCN_FILE_DIRS += \
   %reldir%/spinmap.m \
   %reldir%/spring.m \
   %reldir%/summer.m \
+  %reldir%/turbo.m \
   %reldir%/viridis.m \
   %reldir%/white.m \
   %reldir%/winter.m

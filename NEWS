@@ -195,6 +195,7 @@ functionality.  By default, this warning is enabled.
 * `sinpi`
 * `startsWith`
 * `streamribbon`
+* `turbo`
 * `uniquetol`
 * `xtickangle`
 * `ytickangle`

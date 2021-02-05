@@ -178,6 +178,14 @@ namespace octave
     return retval;
   }
 
+  template <typename T>
+  void
+  xinit (T base, T limit, T inc, T& final_val, octave_idx_type& nel)
+  {
+    nel = xnumel_internal (base, limit, inc);
+    final_val = xfinal_value (base, limit, inc, nel);
+  }
+
   template <>
   bool
   range<double>::all_elements_are_ints (void) const
@@ -193,31 +201,17 @@ namespace octave
   }
 
   template <>
-  octave_idx_type
-  range<double>::get_numel (void) const
+  void
+  range<double>::init (void)
   {
-    return xnumel_internal (m_base, m_limit, m_increment);
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
   }
 
   template <>
-  octave_idx_type
-  range<float>::get_numel (void) const
+  void
+  range<float>::init (void)
   {
-    return xnumel_internal (m_base, m_limit, m_increment);
-  }
-
-  template <>
-  double
-  range<double>::get_final_value (void) const
-  {
-    return xfinal_value (m_base, m_limit, m_increment, m_numel);
-  }
-
-  template <>
-  float
-  range<float>::get_final_value (void) const
-  {
-    return xfinal_value (m_base, m_limit, m_increment, m_numel);
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
   }
 
   template <typename T>

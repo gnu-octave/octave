@@ -316,30 +316,22 @@ namespace octave
     T m_final;
     octave_idx_type m_numel;
 
-    void init (void)
-    {
-      m_numel = get_numel ();
-      m_final = get_final_value ();
-    }
-
     // Setting the number of elements to zero when the increment is zero
     // is intentional and matches the behavior of Matlab's colon
     // operator.
 
-    octave_idx_type get_numel (void) const
-    {
-      return ((m_increment == T (0)
-               || (m_limit > m_base && m_increment < T (0))
-               || (m_limit < m_base && m_increment > T (0)))
-              ? T (0)
-              : (m_limit - m_base + m_increment) / m_increment);
-    }
+    // These calculations are appropriate for integer ranges.  There are
+    // specializations for double and float.
 
-    // This calculation is appropriate for integer ranges.
-
-    T get_final_value (void) const
+    void init (void)
     {
-      return m_base + (m_numel - 1) * m_increment;
+      m_numel = ((m_increment == T (0)
+                  || (m_limit > m_base && m_increment < T (0))
+                  || (m_limit < m_base && m_increment > T (0)))
+                 ? T (0)
+                 : (m_limit - m_base + m_increment) / m_increment);
+
+      m_final = m_base + (m_numel - 1) * m_increment;
     }
   };
 
@@ -348,11 +340,8 @@ namespace octave
   template <> OCTAVE_API bool range<double>::all_elements_are_ints (void) const;
   template <> OCTAVE_API bool range<float>::all_elements_are_ints (void) const;
 
-  template <> OCTAVE_API octave_idx_type range<double>::get_numel (void) const;
-  template <> OCTAVE_API octave_idx_type range<float>::get_numel (void) const;
-
-  template <> OCTAVE_API double range<double>::get_final_value (void) const;
-  template <> OCTAVE_API float range<float>::get_final_value (void) const;
+  template <> OCTAVE_API void range<double>::init (void);
+  template <> OCTAVE_API void range<float>::init (void);
 
   template <> OCTAVE_API octave_idx_type range<double>::nnz (void) const;
   template <> OCTAVE_API octave_idx_type range<float>::nnz (void) const;

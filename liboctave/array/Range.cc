@@ -220,41 +220,52 @@ namespace octave
     return xfinal_value (m_base, m_limit, m_increment, m_numel);
   }
 
+  template <typename T>
+  octave_idx_type
+  xnnz (T base, T limit, T inc, T final_val, octave_idx_type nel)
+  {
+    // Note that the order of the following checks matters.
+
+    // If there are no elements, there can be no non-zero elements.
+    if (nel == 0)
+      return 0;
+
+    // All elements have the same sign, hence there are no zeros.
+    if ((base > 0 && limit > 0) || (base < 0 && limit < 0))
+      return nel;
+
+    // All elements are equal (inc = 0) but we know from the previous
+    // condition that they are not positive or negative, therefore all
+    // elements are zero.
+    if (inc == 0)
+      return 0;
+
+    // Exactly one zero at beginning or end of range.
+    if (base == 0 || final_val == 0)
+      return nel - 1;
+
+    // Range crosses negative/positive without hitting zero.
+    // FIXME: Is this test sufficiently tolerant or do we need to be
+    // more careful?
+    if (math::mod (-base, inc) != 0)
+      return nel;
+
+    // Range crosses negative/positive and hits zero.
+    return nel - 1;
+  }
+
   template <>
   octave_idx_type
   range<double>::nnz (void) const
   {
-    octave_idx_type retval = 0;
+    return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
+  }
 
-    if (! isempty ())
-      {
-        if ((m_base > 0 && m_limit > 0)
-            || (m_base < 0 && m_limit < 0))
-          {
-            // All elements have the same sign, hence there are no zeros.
-            retval = m_numel;
-          }
-        else if (m_increment != 0)
-          {
-            if (m_base == 0 || m_limit == 0)
-              // Exactly one zero at beginning or end of range.
-              retval = m_numel - 1;
-            else if (math::mod (-m_base, m_increment) != 0)
-              // Range crosses negative/positive without hitting zero.
-              retval = m_numel;
-            else
-              // Range crosses negative/positive and hits zero.
-              retval = m_numel - 1;
-          }
-        else
-          {
-            // All elements are equal (m_increment = 0) but not
-            // positive or negative, therefore all elements are zero.
-            retval = 0;
-          }
-      }
-
-    return retval;
+  template <>
+  octave_idx_type
+  range<float>::nnz (void) const
+  {
+    return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
   }
 }
 

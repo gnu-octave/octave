@@ -355,6 +355,7 @@ namespace octave
   template <> OCTAVE_API float range<float>::get_final_value (void) const;
 
   template <> OCTAVE_API octave_idx_type range<double>::nnz (void) const;
+  template <> OCTAVE_API octave_idx_type range<float>::nnz (void) const;
 }
 
 class

@@ -246,29 +246,7 @@ namespace octave
 #elif defined (OCTAVE_USE_WINDOWS_API)
       TIME_ZONE_INFORMATION tzi;
 
-      // GetTimeZoneInformationForYear is in Windows Vista SP1 or later
-      typedef BOOL (WINAPI *gtzify_type) (USHORT year,
-                                          PDYNAMIC_TIME_ZONE_INFORMATION pdtzi,
-                                          LPTIME_ZONE_INFORMATION ptzi);
-      HMODULE h_kernel32 = LoadLibrary ("kernel32.dll");
-
-      gtzify_type p_gtzify = nullptr;
-      if (h_kernel32)
-        {
-          p_gtzify = reinterpret_cast<gtzify_type>
-                       (GetProcAddress (h_kernel32,
-                                        "GetTimeZoneInformationForYear"));
-
-          if (p_gtzify)
-            p_gtzify (m_year, nullptr, &tzi);
-
-          FreeLibrary (h_kernel32);
-        }
-
-      // Fall back to GetTimeZoneInformation, which might be wrong if a time
-      // zone switched the GMT offset.
-      if (! p_gtzify)
-        GetTimeZoneInformation (&tzi);
+      GetTimeZoneInformationForYear (m_year, nullptr, &tzi);
 
       if (m_isdst)
         m_gmtoff = -60 * (tzi.Bias + tzi.DaylightBias);

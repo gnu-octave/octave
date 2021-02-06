@@ -1067,14 +1067,14 @@ case $host_os in
     AC_MSG_CHECKING([for required _WIN32_WINNT])
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #include <windows.h>
-        #if _WIN32_WINNT < 0x0403
+        #if _WIN32_WINNT < 0x0601
         #error "Wrong version"
         #endif
         ]], [])],
       [AC_MSG_RESULT([none])],
-      [AC_DEFINE(_WIN32_WINNT, 0x0403,
-        [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount.])
-       AC_MSG_RESULT([0x0403])])
+      [AC_DEFINE(_WIN32_WINNT, 0x0601,
+        [Define to 0x0601 to access SetCurrentProcessExplicitAppUserModelID.])
+       AC_MSG_RESULT([0x0601])])
   ;;
 esac
 

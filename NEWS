@@ -76,6 +76,9 @@ constants in array expressions with leading zeros so that they use the
 same number of digits for each value such as
 `[0x00_00_01; 0x00_01_00; 0x01_00_00]`.
 
+- For Octave on Windows OS, the minimum required version of the Windows
+API is now 6.1 (Windows 7 or newer).
+
 - As part of GSoC 2020, Abdallah K. Elshamy implemented the
 `jsondecode` and `jsonencode` functions to read and write JSON data.
 

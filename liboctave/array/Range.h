@@ -46,23 +46,28 @@ namespace octave
   {
   public:
 
-    rangeidx_helper (T *a, T b, T i, T l, octave_idx_type n)
-      : array (a), base (b), inc (i), limit (l), nmax (n-1) { }
+    rangeidx_helper (T *array, T base, T increment, T final_value,
+                     octave_idx_type numel)
+      : m_array (array), m_base (base), m_increment (increment),
+        m_final (final_value),
+        m_nmax (numel-1)
+    { }
 
     void operator () (octave_idx_type i)
     {
       if (i == 0)
-        *array++ = base;
-      else if (i < nmax)
-        *array++ = base + T (i) * inc;
+        // Required for proper NaN handling.
+        *m_array++ = m_nmax == 0 ? m_final : m_base;
+      else if (i < m_nmax)
+        *m_array++ = m_base + T (i) * m_increment;
       else
-        *array++ = limit;
+        *m_array++ = m_final;
     }
 
   private:
 
-    T *array, base, inc, limit;
-    octave_idx_type nmax;
+    T *m_array, m_base, m_increment, m_final;
+    octave_idx_type m_nmax;
 
   };
 
@@ -174,6 +179,16 @@ namespace octave
 
     octave_idx_type numel (void) const { return m_numel; }
 
+    // To support things like "for i = 1:Inf; ...; end" that are
+    // required for Matlab compatibility, creation of a range object
+    // like 1:Inf is allowed with m_numel set to
+    // numeric_limits<octave_idx_type>::max().  However, it is not
+    // possible to store these ranges.  The following function allows
+    // us to easily distinguish ranges with an infinite number of
+    // elements.  There are specializations for double and float.
+
+    bool is_storable (void) const { return true; }
+
     dim_vector dims (void) const { return dim_vector (1, m_numel); }
 
     octave_idx_type rows (void) const { return 1; }
@@ -207,7 +222,8 @@ namespace octave
         err_index_out_of_range (2, 2, i+1, m_numel, dims ());
 
       if (i == 0)
-        return m_base;
+        // Required for proper NaN handling.
+        return m_numel == 1 ? final_value () : m_base;
       else if (i < m_numel - 1)
         return m_base + T (i) * m_increment;
       else
@@ -226,7 +242,8 @@ namespace octave
     T elem (octave_idx_type i) const
     {
       if (i == 0)
-        return m_base;
+        // Required for proper NaN handling.
+        return m_numel == 1 ? final_value () : m_base;
       else if (i < m_numel - 1)
         return m_base + T (i) * m_increment;
       else
@@ -293,7 +310,10 @@ namespace octave
 
       Array<T> retval (dim_vector (1, nel));
 
-      if (nel > 0)
+      if (nel == 1)
+        // Required for proper NaN handling.
+        retval(0) = final_value ();
+      else if (nel > 1)
         {
           // The first element must always be *exactly* the base.
           // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
@@ -342,6 +362,9 @@ namespace octave
 
   template <> OCTAVE_API void range<double>::init (void);
   template <> OCTAVE_API void range<float>::init (void);
+
+  template <> OCTAVE_API bool range<double>::is_storable (void) const;
+  template <> OCTAVE_API bool range<float>::is_storable (void) const;
 
   template <> OCTAVE_API octave_idx_type range<double>::nnz (void) const;
   template <> OCTAVE_API octave_idx_type range<float>::nnz (void) const;

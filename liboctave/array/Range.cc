@@ -133,15 +133,24 @@ namespace octave
   }
 
   template <typename T>
-  bool xall_elements_are_ints (T base, T inc, octave_idx_type nel)
+  bool xall_elements_are_ints (T base, T inc, T final_val, octave_idx_type nel)
   {
-    // If the base and increment are ints, the final value in the range
-    // will also be an integer, even if the limit is not.  If the range
-    // has only one or zero elements, then the base needs to be an integer.
+    // If the range is empty or NaN then there are no elements so there
+    // can be no int elements.
+    if (nel == 0 || math::isnan (final_val))
+      return false;
 
-    return (! (math::isnan (base) || math::isnan (inc))
-            && (math::nint_big (base) == base || nel < 1)
-            && (math::nint_big (inc) == inc || nel <= 1));
+    // If the base and increment are ints, all elements will be
+    // integers.
+    if (math::nint_big (base) == base && math::nint_big (inc) == inc)
+      return true;
+
+    // If the range has only one element, then the base needs to be an
+    // integer.
+    if (nel == 1 && math::nint_big (base))
+      return true;
+
+    return false;
   }
 
   template <typename T>
@@ -171,8 +180,11 @@ namespace octave
       retval = limit;
 
     // If all elements are integers, then ensure the final value is.
+    // Note that we pass the preliminary computed final value to
+    // xall_elements_are_ints, but it only checks whether that value is
+    // NaN.
 
-    if (xall_elements_are_ints (base, inc, nel))
+    if (xall_elements_are_ints (base, inc, retval, nel))
       retval = std::round (retval);
 
     return retval;
@@ -182,22 +194,83 @@ namespace octave
   void
   xinit (T base, T limit, T inc, T& final_val, octave_idx_type& nel)
   {
+    // Catch obvious NaN ranges.
+    if (math::isnan (base) || math::isnan (limit) || math::isnan (inc))
+      {
+        final_val = numeric_limits<T>::NaN ();
+        nel = 1;
+        return;
+      }
+
+    // Catch empty ranges.
+    if (inc == 0
+        || (limit < base && inc > 0)
+        || (limit > base && inc < 0))
+      {
+        nel = 0;
+        return;
+      }
+
+    // The following case also catches Inf values for increment when
+    // there will be only one element.
+
+    if ((limit <= base && base + inc < limit)
+        || (limit >= base && base + inc > limit))
+      {
+        final_val = base;
+        nel = 1;
+        return;
+      }
+
+    // Any other calculations with Inf will give us either a NaN range
+    // or an infinite nember of elements.
+
+    T dnel = (limit - base) / inc;
+    if (math::isnan (dnel))
+      {
+        nel = 1;
+        final_val = numeric_limits<T>::NaN ();
+        return;
+      }
+
+    if (dnel > 0 && math::isinf (dnel))
+      {
+        // FIXME: Should this be an immediate error?
+        nel = std::numeric_limits<octave_idx_type>::max ();
+
+        // FIXME: Will this do the right thing in all cases?
+        final_val = xfinal_value (base, limit, inc, nel);
+
+        return;
+      }
+
+    // Now that we have handled all the special cases, we can compute
+    // the number of elements and the final value in a way that attempts
+    // to avoid rounding errors as much as possible.
+
     nel = xnumel_internal (base, limit, inc);
     final_val = xfinal_value (base, limit, inc, nel);
+  }
+
+  template <typename T>
+  bool
+  xis_storable (T base, T limit, octave_idx_type nel)
+  {
+    return ! (nel > 1 && (math::isinf (base) || math::isinf (limit)));
   }
 
   template <>
   bool
   range<double>::all_elements_are_ints (void) const
   {
-    return xall_elements_are_ints (m_base, m_increment, m_numel);
+    return xall_elements_are_ints (m_base, m_increment, m_final, m_numel);
   }
 
   template <>
   bool
   range<float>::all_elements_are_ints (void) const
   {
-    return xall_elements_are_ints (m_base, m_increment, m_numel);
+    return xall_elements_are_ints (m_base, m_increment, m_final, m_numel);
   }
 
   template <>
@@ -212,6 +285,20 @@ namespace octave
   range<float>::init (void)
   {
     return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  bool
+  range<double>::is_storable (void) const
+  {
+    return xis_storable (m_base, m_limit, m_numel);
+  }
+
+  template <>
+  bool
+  range<float>::is_storable (void) const
+  {
+    return xis_storable (m_base, m_limit, m_numel);
   }
 
   template <typename T>

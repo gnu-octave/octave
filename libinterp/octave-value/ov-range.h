@@ -157,6 +157,8 @@ public:
 
   bool is_defined (void) const { return true; }
 
+  bool is_storable (void) const { return m_range.is_storable (); }
+
   bool is_constant (void) const { return true; }
 
   bool is_range (void) const { return true; }

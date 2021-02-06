@@ -2246,6 +2246,8 @@ octave_value::storable_value (void) const
     retval = octave_value (rep->empty_clone ());
   else if (is_magic_int ())
     retval = octave_value (rep->double_value ());
+  else if (is_range () && ! rep->is_storable ())
+    error ("range with infinite number of elements cannot be stored");
   else
     retval.maybe_economize ();
 
@@ -2269,6 +2271,8 @@ octave_value::make_storable_value (void)
         delete rep;
       rep = rc;
     }
+  else if (is_range () && ! rep->is_storable ())
+    error ("range with infinite number of elements cannot be stored");
   else
     maybe_economize ();
 }

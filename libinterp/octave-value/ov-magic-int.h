@@ -82,6 +82,8 @@ public:
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 
+  bool is_storable (void) const { return false; }
+
   bool is_magic_int (void) const { return true; }
 
   bool is_real_scalar (void) const { return true; }

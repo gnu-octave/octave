@@ -72,6 +72,8 @@ public:
 
   static const octave_value instance;
 
+  bool is_storable (void) const { return false; }
+
   bool isnull (void) const { return true; }
 
   type_conv_info numeric_conversion_function (void) const;
@@ -92,6 +94,8 @@ octave_null_sq_str : public octave_char_matrix_sq_str
 public:
 
   static const octave_value instance;
+
+  bool is_storable (void) const { return false; }
 
   bool isnull (void) const { return true; }
 

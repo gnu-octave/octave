@@ -2146,11 +2146,14 @@ LIBS="$save_LIBS"
 
 ### Check for SPQR library
 
+save_LIBS="$LIBS"
+LIBS="$CHOLMOD_LIBS $LIBS"
 OCTAVE_CHECK_LIB(spqr, SPQR,
   [SPQR library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/SuiteSparseQR.hpp SuiteSparseQR.hpp],
   [SuiteSparseQR_C],
   [C++], [don't use SPQR library, disable some sparse matrix functionality])
+LIBS="$save_LIBS"
 
 ### Check for CXSparse library
 

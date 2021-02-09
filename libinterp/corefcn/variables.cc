@@ -469,11 +469,26 @@ Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
+  // For compatibility with undocumented Matlab behavior, return 0 if
+  // there is an empty built-in object as the only argument.
+
+  if (nargin == 1 && args(0).builtin_type () != btyp_unknown
+      && args(0).isempty ())
+    return ovl (0);
+
+  // Also for compatibility, return 0 if the second argument is an empty
+  // built-in object.
+
+  if (nargin == 2 && args(1).builtin_type () != btyp_unknown
+      && args(1).isempty ())
+    return ovl (0);
+
   std::string name = args(0).xstring_value ("exist: NAME must be a string");
 
   if (nargin == 2)
     {
-      std::string type = args(1).xstring_value ("exist: TYPE must be a string");
+      std::string type
+        = args(1).xstring_value ("exist: TYPE must be a string");
 
       if (type == "class")
         warning (R"(exist: "class" type argument is not implemented)");

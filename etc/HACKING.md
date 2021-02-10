@@ -396,7 +396,7 @@ https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 
 ################################################################################
 
-Copyright (C) 2009-2020 The Octave Project Developers
+Copyright (C) 2009-2021 The Octave Project Developers
 
 See the file COPYRIGHT.md in the top-level directory of this
 distribution or <https://octave.org/copyright/>.

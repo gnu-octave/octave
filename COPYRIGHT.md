@@ -16,10 +16,10 @@ along with Octave; see the file COPYING.  If not, see
 
 Copyright:
 
-> 1987-1988, 1991-1997, 2003-2018 
-	* Free Software Foundation
-> 1992-2020 
-	* John W. Eaton
+# 1987-1988, 1991-1997, 2003-2018 
+	 Free Software Foundation
+# 1992-2020 
+	 John W. Eaton
 * **1993** 
 	* Fook Fah Yap
   	* Friedrich Leisch

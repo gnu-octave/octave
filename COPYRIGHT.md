@@ -1,5 +1,5 @@
 
-Octave is free software: you can redistribute it and/or modify it
+_Octave is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
@@ -11,15 +11,16 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<https://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>._
 
 
 Copyright:
 
-> 1987-1988, 1991-1997, 2003-2018  Free Software Foundation
-* 1992-2020 
+> 1987-1988, 1991-1997, 2003-2018 
+	* Free Software Foundation
+> 1992-2020 
 	* John W. Eaton
-* 1993 
+* **1993** 
 	* Fook Fah Yap
   	* Friedrich Leisch
   	* Gerhard Kirche
@@ -28,10 +29,14 @@ Copyright:
   	* R. Bruce Tenison
   	*Teresa Twaroch
 
-> 1993, 1995  Auburn University
-> 1993, 1995, 1998-2002, 2004, 2006-2007  A. Scottedward Hodel
-> 1993, 1996-1999, 2001-2002, 2005-2006  Kurt Hornik
-> 1993-1997  O. Weber
+> 1993, 1995 
+	* Auburn University
+> 1993, 1995, 1998-2002, 2004, 2006-2007 
+	* A. Scottedward Hodel
+> 1993, 1996-1999, 2001-2002, 2005-2006 
+	* Kurt Hornik
+> 1993-1997
+	* O. Weber
 > 1993-1998  Karl Berry
 
 * 1994 

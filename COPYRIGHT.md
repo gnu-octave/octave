@@ -17,7 +17,7 @@ along with Octave; see the file COPYING.  If not, see
 Copyright:
 
 > 1987-1988, 1991-1997, 2003-2018 Free Software Foundation ;
-> 1992-2020 John W. Eaton ;
+> 1992-2020 John W. Eaton 
 * **1993** 
 	* Fook Fah Yap
   	* Friedrich Leisch
@@ -31,7 +31,7 @@ Copyright:
 > 1993, 1995, 1998-2002, 2004, 2006-2007 A. Scottedward Hodel ;
 > 1993, 1996-1999, 2001-2002, 2005-2006 Kurt Hornik ;
 > 1993-1997  O. Weber ;
-> 1993-1998  Karl Berry ;
+> 1993-1998  Karl Berry 
 
 * **1994** 
  	* Castor Fu
@@ -40,20 +40,21 @@ Copyright:
 
 > 1994, 2009  Anthony Richardson ;
 > 1994-1995  David Clem ;
-> 1994-1997  Frederick (Rick) A Niles ;
+> 1994-1997  Frederick (Rick) A Niles 
 
-* **1995**  Paul Eggert
+* **1995** 
+	* Paul Eggert
   	* Thomas Baier
   	* Vinayak Dutt
 
-> 1995, 1997  Klaus Gebhardt ;
+> 1995, 1997  Klaus Gebhardt 
 
 * **1997** 
 	* Ram'on Garc'ia Fern'andez
   	* Rex A. Dieter
 
 > 1997, 1999-2000, 2008  Rolf Fabian ;
-> 1997-1999, 2001-2003  Mumit Khan ;
+> 1997-1999, 2001-2003  Mumit Khan 
 
 * **1998** 
 	* Eric Norum
@@ -64,7 +65,7 @@ Copyright:
 
 > 1998, 2000  Georg Thimm ;
 > 1998, 2000  John Smith ;
-> 1998-2000, 2002-2006, 2012  Andy Adler ;
+> 1998-2000, 2002-2006, 2012  Andy Adler 
 
 * **1999**  
 	* Daniel Calvelo
@@ -76,7 +77,7 @@ Copyright:
 
 > 1999-2000  Joao Cardoso ;
 > 1999-2000  Stephen Eglen ;
-> 1999-2002  Ben Sapp ;
+> 1999-2002  Ben Sapp 
 
 * **2000** 
 	* Joerg Specht
@@ -94,7 +95,7 @@ Copyright:
 > 2000-2001  Matthew W. Roberts ;
 > 2000-2002  Cai Jianming ;
 > 2000-2002, 2007-2011  Kai Habel ;
-> 2000-2007  Paul Kienzle ;
+> 2000-2007  Paul Kienzle 
 
 * **2001** 
 	* Albert Chin-A-Young
@@ -107,7 +108,7 @@ Copyright:
 
 > 2001, 2005-2009, 2012-2016  Rafael Laboissiere ;
 > 2001, 2007  Jean-Francois Cardoso ;
-> 2001-2003  Python Software Foundation ;
+> 2001-2003  Python Software Foundation 
 
 * **2002**  
 	* David Billinghurst
@@ -124,7 +125,7 @@ Copyright:
 > 2002, 2017  Bill Lash ;
 > 2002-2003  Dirk Eddelbuettel ;
 > 2002-2003, 2007  Joseph P. Skudlarek ;
-> 2002-2004  Per Persson ;
+> 2002-2004  Per Persson 
 
 * **2003** 
 	* Aaron A. King
@@ -147,7 +148,7 @@ Copyright:
 > 2003-2004  Al Niessner ;
 > 2003-2004  Petter Risholm ;
 > 2003-2007  Quentin H. Spencer ;
-> 2003-2013, 2015  David Bateman ;
+> 2003-2013, 2015  David Bateman 
 
 * **2004** 
 	* Balint Reczey
@@ -167,7 +168,7 @@ Copyright:
 > 2004, 2011, 2015, 2018  Orion Poplawski ;
 > 2004-2005  Stefan van der Walt ;
 > 2004-2006  Keith Goodman ;
-> 2004-2006, 2008, 2010-2012  Pascal A. Dupuis ;
+> 2004-2006, 2008, 2010-2012  Pascal A. Dupuis 
 
 * **2005** 
 	* Antoine Moreau
@@ -199,7 +200,7 @@ Copyright:
 > 2005-2006  William Poetra Yoga Hadisoeseno ;
 > 2005-2006, 2008, 2012  Dmitri A. Sergatskov ;
 > 2005-2008  Bill Denney ;
-> 2005-2010  Søren Hauberg ;
+> 2005-2010  Søren Hauberg 
 
 * **2006** 
 	* Atsushi Kajita
@@ -226,7 +227,7 @@ Copyright:
 > 2006-2009  Thomas Treichl ;
 > 2006-2009, 2011  Benjamin Lindner ;
 > 2006-2011  Thomas Weber ;
-> 2006-2015  Michael Goffioul ;
+> 2006-2015  Michael Goffioul 
 
 * **2007** 
 	* Alex Zvoleff
@@ -267,7 +268,7 @@ Copyright:
 > 2007-2013, 2015-2019  Marco Caliari ;
 > 2007-2013, 2018  John P. Swensen ;
 > 2007-2016, 2018-2019  Carlo de Falco ;
-> 2007-2016, 2019  Ben Abbott ;
+> 2007-2016, 2019  Ben Abbott 
 
 * **2008** 
 	* Emil Lucretiu
@@ -302,7 +303,7 @@ Copyright:
 > 2008-2011  Thorsten Meyer ;
 > 2008-2011, 2015-2016, 2018-2019  Tatsuro Matsuoka ;
 > 2008-2013, 2018  Marco Atzeri ;
-> 2008-2015, 2017  Michael D. Godfrey ;
+> 2008-2015, 2017  Michael D. Godfrey 
 
 * **2009** 
 	* Aleksej Saushev
@@ -338,7 +339,7 @@ Copyright:
 > 2009-2010, 2012  Martin Helm ;
 > 2009-2011  David Grundberg ;
 > 2009-2011  Petr Mikulik ;
-> 2009-2020  Rik Wehbring ;
+> 2009-2020  Rik Wehbring 
 
 * **2010** 
 	* Brad Froehle
@@ -356,7 +357,7 @@ Copyright:
 	* Qianqian Fang
 
 > 2010-2012  Iain Murray ;
-> 2010-2017  Jordi Gutiérrez Hermoso ;
+> 2010-2017  Jordi Gutiérrez Hermoso 
 
 * **2011** 
 	* Alexander Klein
@@ -385,7 +386,7 @@ Copyright:
 > 2011-2013  Júlio Hoffimann Mendes ;
 > 2011-2018  Carnë Draug ;
 > 2011-2019  Philip Nienhuis ;
-> 2011-2020  Torsten Lilge ;
+> 2011-2020  Torsten Lilge 
 
 * **2012** 
 	* Alexander Graf
@@ -416,7 +417,7 @@ Copyright:
 > 2012-2013  Thorsten Liebig ;
 > 2012-2016, 2018-2019  Juan Pablo Carbajal ;
 > 2012-2019  Pantxo Diribarne ;
-> 2012-2020  Mike Miller ;
+> 2012-2020  Mike Miller 
 
 * **2013** 
 	* Adam H Aitkenhead
@@ -458,7 +459,7 @@ Copyright:
 > 2013-2015  Stefan Mahr ;
 > 2013-2015, 2018  Felipe G. Nievinski ;
 > 2013-2019  Kai T. Ohlhus ;
-> 2013-2020  John Donoghue ;
+> 2013-2020  John Donoghue 
 
 * **2014** 
 	* Ahsan Ali Shahid
@@ -491,7 +492,7 @@ Copyright:
 > 2014-2015  Allan Jacobs ;
 > 2014-2016  Eugenio Gianniti ;
 > 2014-2016  Stefan Miereis ;
-> 2014-2016, 2018  Massimiliano Fasi ;
+> 2014-2016, 2018  Massimiliano Fasi 
 
 * **2015** 
 	* Akira Noda
@@ -520,7 +521,7 @@ Copyright:
 > 2015-2016, 2019  Hartmut Gimpel ;
 > 2015-2017  Avinoam Kalma ;
 > 2015-2017  Lachlan Andrew ;
-> 2015-2019  Nicholas R. Jankowski ;
+> 2015-2019  Nicholas R. Jankowski 
 
 * **2016** 
 	* Abhinav Tripathi
@@ -537,7 +538,7 @@ Copyright:
 
 > 2016-2017  Ernst Reissner ;
 > 2016-2019  Lars Kindermann ;
-> 2016-2019  Markus Mützel ;
+> 2016-2019  Markus Mützel 
 
 * **2017** 
 	* Brad Kennedy
@@ -552,7 +553,7 @@ Copyright:
 > 2017-2019  Guillaume Flandin ;
 > 2017-2019  Michael Leitner ;
 > 2017-2019  Michele Ginesi ;
-> 2017-2019  Sahil Yadav ;
+> 2017-2019  Sahil Yadav 
 
 * **2018** 
 	* Avlas
@@ -567,7 +568,7 @@ Copyright:
 
 > 2018-2019  A.R. Burgers ;
 > 2018-2019  Andrew Janke ;
-> 2018-2019  Jun Wang ;
+> 2018-2019  Jun Wang 
 
 * **2019** 
 	* Anthony Morast
@@ -580,7 +581,7 @@ Copyright:
 	* Tomi Pannila
 	* William Greene
 
-> 2019-2020  Markus Meisinger ;
+> 2019-2020  Markus Meisinger 
 
 
 _See also the list of contributors in the Octave manual (the file

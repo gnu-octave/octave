@@ -2530,7 +2530,7 @@ namespace octave
 
     if (m_block_comment_nesting_level != 0)
       {
-        warning ("block comment open at end of input");
+        warning ("block comment unterminated at end of input");
 
         if ((m_reading_fcn_file || m_reading_script_file || m_reading_classdef_file)
             && ! m_fcn_file_name.empty ())

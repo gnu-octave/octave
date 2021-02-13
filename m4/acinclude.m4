@@ -2785,6 +2785,40 @@ AC_DEFUN([OCTAVE_LLVM_IRBUILDER_CREATECONSTINBOUNDSGEP1_32_API], [
   fi
 ])
 dnl
+dnl Check if MIPS processor is target and quiet signalling NaN value is
+dnl opposite of IEEE 754-2008 standard used by all other architectures.
+dnl
+AC_DEFUN([OCTAVE_MIPS_NAN], [
+  AC_CACHE_CHECK([whether MIPS processor is using non-standard NaN encoding],
+    [octave_cv_mips_nan],
+    [AC_LANG_PUSH(C++)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        #include <cmath>
+        #include <limits>
+        ]], [[
+        /* FIXME: Only test is that MIPS is the target architecture.
+         * This should be AND'ed with a test for whether the actual NaN
+         * value for the high word (LO_IEEE_NA_HW) has the value
+         * 0x7FF840F4 (normal) or 0x7FF040F4 (non-standard).  Template code
+         * that could work is in liboctave/utils/lo-ieee.cc but it also
+         * depends on knowing whether the architecture is big-endian or
+         * little-endian.  */
+        #if defined (__mips__)
+          return (0);
+        #else
+          return (1);
+        #endif
+      ]])],
+      octave_cv_mips_nan=yes,
+      octave_cv_mips_nan=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_mips_nan = yes; then
+    AC_DEFINE(HAVE_MIPS_NAN, 1,
+      [Define to 1 if MIPS processor is using non-standard NaN encoding.])
+  fi
+])
+dnl
 dnl OCTAVE_CHECK_FORTRAN_SYMBOL_AND_CALLING_CONVENTIONS
 dnl
 dnl Set variables related to Fortran symbol names (append underscore,

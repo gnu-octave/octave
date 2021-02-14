@@ -476,3 +476,18 @@
 %!error <range with infinite number of elements cannot be stored> -inf:pt3:zero
 %!error <range with infinite number of elements cannot be stored> -inf:pt3:one
 %!error <range with infinite number of elements cannot be stored> -inf:pt3:inf
+
+## Tests with different input classes
+%!error <invalid types found in range> ({1}:1:5)
+%!error <invalid types found in range> (1:{1}:5)
+%!error <invalid types found in range> (1:1:{5})
+%!error <incompatible types found in range> (int8(1):int16(1):5)
+%!error <incompatible types found in range> (int8(1):1:int16(5))
+## Convert to ordinary %!error test when this behavior is coded
+%!xtest <59899>
+%! fail ('(int8(1):0.4:5)', 'floating point values must be integers when used with integer data types');
+%! fail ('(int8(1):1:5.5)', 'floating point values must be integers when used with integer data types');
+%!xtest <59899>
+%! fail ('(uint8(5):-1:1)', 'start, increment, and end values must be within the range of the integer data type');
+%! fail ('(-5:1:uint8(1)', 'start, increment, and end values must be within the range of the integer data type');
+%! fail ('(uint8(255):1:260', 'start, increment, and end values must be within the range of the integer data type');

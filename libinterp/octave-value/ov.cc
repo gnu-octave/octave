@@ -3103,6 +3103,9 @@ namespace octave
       case btyp_char:
         return make_range<char> (base, increment, limit, is_for_cmd_expr);
 
+      case btyp_unknown:
+        error ("incompatible types found in range expression");
+
       default:
         error ("invalid types found in range expression");
       }

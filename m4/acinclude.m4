@@ -3120,6 +3120,7 @@ AC_DEFUN([OCTAVE_MIPS_NAN], [
         #endif
       ]])],
       octave_cv_mips_nan=yes,
+      octave_cv_mips_nan=no,
       octave_cv_mips_nan=no)
     AC_LANG_POP(C++)
   ])

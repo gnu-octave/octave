@@ -391,18 +391,30 @@ Optional list of known problems.
 Optional list of homepages related to the package.
 
 @item Depends
-A list of other Octave packages that this package depends on.  This can
-include dependencies on particular versions, with a format
+A list of other Octave packages that this package depends on.  This can include
+dependencies on particular versions, with the following format:
 
 @example
 Depends: package (>= 1.0.0)
 @end example
 
 @noindent
-Possible operators are @code{<}, @code{<=}, @code{==}, @code{>=} or
-@code{>}.  If the part of the dependency in @code{()} is missing, any
-version of the package is acceptable.  Multiple dependencies can be
-defined as a comma separated list.
+Possible operators are @code{<}, @code{<=}, @code{==}, @code{>=} or @code{>}.
+If the part of the dependency in @code{()} is missing, any version of the
+package is acceptable.  Multiple dependencies can be defined as a comma
+separated list.  This can be used to define a range of versions of a particular
+package:
+
+@example
+Depends: package (>= 1.0.0), package (< 1.5.0)
+@end example
+
+@noindent
+It is also possible to depend on particular versions of Octave core:
+
+@example
+Depends: octave (>= 3.8.0)
+@end example
 
 @item License
 An optional short description of the used license (e.g., GPL version 3

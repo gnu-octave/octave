@@ -30,6 +30,7 @@ TRANSLATIONS = \
   %reldir%/languages/pt_BR.ts \
   %reldir%/languages/pt_PT.ts \
   %reldir%/languages/ru_RU.ts \
+  %reldir%/languages/tr_TR.ts \
   %reldir%/languages/uk_UA.ts \
   %reldir%/languages/zh_CN.ts
 

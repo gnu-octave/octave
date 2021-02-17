@@ -208,7 +208,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
       printf ("returned an all zero solution without iterating.\n")
     endif
     x_min = zeros (numel (b), 1);
-    iter_ min = 0;
+    iter_min = 0;
     flag = 0;
     resvec = 0;
     relres = 0;

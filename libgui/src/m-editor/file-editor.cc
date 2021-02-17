@@ -408,6 +408,48 @@ namespace octave
       }
   }
 
+  // Save open files for restoring in next session
+  // (even if last session will not be restored next time)
+  // together with encoding and the tab index
+  void file_editor::save_session (void)
+  {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    QStringList fetFileNames;
+    QStringList fet_encodings;
+    QStringList fet_index;
+    QStringList fet_lines;
+
+    std::list<file_editor_tab *> editor_tab_lst = m_tab_widget->tab_list ();
+
+    for (auto editor_tab : editor_tab_lst)
+      {
+        QString file_name = editor_tab->file_name ();
+
+        // Don't append unnamed files.
+
+        if (! file_name.isEmpty ())
+          {
+            fetFileNames.append (file_name);
+            fet_encodings.append (editor_tab->encoding ());
+
+            QString index;
+            fet_index.append (index.setNum (m_tab_widget->indexOf (editor_tab)));
+
+            int l, c;
+            editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
+            fet_lines.append (index.setNum (l + 1));
+          }
+      }
+
+    settings->setValue (ed_session_names.key, fetFileNames);
+    settings->setValue (ed_session_enc.key, fet_encodings);
+    settings->setValue (ed_session_ind.key, fet_index);
+    settings->setValue (ed_session_lines.key, fet_lines);
+    settings->sync ();
+  }
+
   bool file_editor::check_closing (void)
   {
     // When the application or the editor is closing and the user wants to
@@ -416,6 +458,10 @@ namespace octave
     // the user might cancel closing Octave during one of these saving dialogs.
     // Therefore, saving the session for restoring at next start is not done
     // before the application is definitely closing.
+
+    // Save the session. Even is closing is cancelled, this would be
+    // overwritten by the next attempt to close the editor
+    save_session ();
 
     std::list<file_editor_tab *> fe_tab_lst = m_tab_widget->tab_list ();
     m_number_of_tabs = fe_tab_lst.size ();
@@ -466,47 +512,6 @@ namespace octave
 
     // Here, the application or the editor will be closed -> store the session
 
-    // Save open files for restoring in next session; this only is possible
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-
-    // save filenames (even if last session will not be restored next time)
-    // together with encoding and the tab index
-    QStringList fetFileNames;
-    QStringList fet_encodings;
-    QStringList fet_index;
-    QStringList fet_lines;
-
-    // save all open tabs before they are definitely closed
-
-    std::list<file_editor_tab *> editor_tab_lst = m_tab_widget->tab_list ();
-
-    for (auto editor_tab : editor_tab_lst)
-      {
-        QString file_name = editor_tab->file_name ();
-
-        // Don't append unnamed files.
-
-        if (! file_name.isEmpty ())
-          {
-            fetFileNames.append (file_name);
-            fet_encodings.append (editor_tab->encoding ());
-
-            QString index;
-            fet_index.append (index.setNum (m_tab_widget->indexOf (editor_tab)));
-
-            int l, c;
-            editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
-            fet_lines.append (index.setNum (l + 1));
-          }
-      }
-
-    settings->setValue (ed_session_names.key, fetFileNames);
-    settings->setValue (ed_session_enc.key, fet_encodings);
-    settings->setValue (ed_session_ind.key, fet_index);
-    settings->setValue (ed_session_lines.key, fet_lines);
-    settings->sync ();
-
     // Take care of the find dialog
     if (m_find_dialog)
       m_find_dialog->close ();
@@ -517,6 +522,7 @@ namespace octave
     // hidden before, this state has to be restored afterwards.
     bool vis = isVisible ();
 
+    std::list<file_editor_tab *> editor_tab_lst = m_tab_widget->tab_list ();
     for (auto editor_tab : editor_tab_lst)
       delete editor_tab;
 

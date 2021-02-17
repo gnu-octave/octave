@@ -182,6 +182,7 @@ namespace octave
     void activate (void);
     void set_focus (QWidget *fet);
     void enable_menu_shortcuts (bool);
+    void save_session (void);
     bool check_closing (void);
     void handle_tab_ready_to_close (void);
 

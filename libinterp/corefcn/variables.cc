@@ -472,8 +472,7 @@ Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
   // For compatibility with undocumented Matlab behavior, return 0 if
   // there is an empty built-in object as the only argument.
 
-  if (nargin == 1 && args(0).builtin_type () != btyp_unknown
-      && args(0).isempty ())
+  if (args(0).builtin_type () != btyp_unknown && args(0).isempty ())
     return ovl (0);
 
   // Also for compatibility, return 0 if the second argument is an empty

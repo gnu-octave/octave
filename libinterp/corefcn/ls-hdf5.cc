@@ -649,6 +649,8 @@ load_inline_fcn (hid_t loc_id, const char *name, octave_value& retval)
 // It returns 1 on success (in which case H5Giterate stops and returns),
 // -1 on error, and 0 to tell H5Giterate to continue on to the next item
 // (e.g., if NAME was a data type we don't recognize).
+//
+// This function must not throw an exception.
 
 static herr_t
 hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
@@ -734,22 +736,29 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           hid_t st_id = H5Tcopy (H5T_C_S1);
           H5Tset_size (st_id, slen);
 
-          if (H5Dread (data_id, st_id, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT,
-                       typ) < 0)
+          if (H5Dread (data_id, st_id, octave_H5S_ALL, octave_H5S_ALL,
+                       octave_H5P_DEFAULT, typ) < 0)
             goto done;
 
           H5Tclose (st_id);
           H5Dclose (data_id);
 
-          if (std::string (typ) == "inline function")
+          if (std::string (typ, slen-1) == "inline function")
             {
               retval = load_inline_fcn (subgroup_id, name, d->tc);
             }
           else
             {
-              d->tc = type_info.lookup_type (typ);
+              d->tc = type_info.lookup_type (std::string (typ, slen-1));
 
-              retval = (d->tc.load_hdf5 (subgroup_id, "value") ? 1 : -1);
+              try
+                {
+                  retval = (d->tc.load_hdf5 (subgroup_id, "value") ? 1 : -1);
+                }
+              catch (const octave::execution_exception& ee)
+                {
+                  retval = -1;
+                }
             }
 
           // check for OCTAVE_GLOBAL attribute:
@@ -777,7 +786,14 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
 
           H5Gclose (subgroup_id);
 
-          retval = (d->tc.load_hdf5 (group_id, name) ? 1 : -1);
+          try
+            {
+              retval = (d->tc.load_hdf5 (group_id, name) ? 1 : -1);
+            }
+          catch (const octave::execution_exception& ee)
+            {
+              retval = -1;
+            }
         }
 
     }
@@ -967,7 +983,14 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
       // check for OCTAVE_GLOBAL attribute:
       d->global = hdf5_check_attr (data_id, "OCTAVE_GLOBAL");
 
-      retval = (d->tc.load_hdf5 (group_id, name) ? 1 : -1);
+      try
+        {
+          retval = (d->tc.load_hdf5 (group_id, name) ? 1 : -1);
+        }
+      catch (const octave::execution_exception& ee)
+        {
+          retval = -1;
+        }
 
       H5Tclose (type_id);
       H5Dclose (data_id);

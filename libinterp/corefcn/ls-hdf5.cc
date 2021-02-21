@@ -743,13 +743,13 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
           H5Tclose (st_id);
           H5Dclose (data_id);
 
-          if (std::string (typ) == "inline function")
+          if (std::string (typ, slen-1) == "inline function")
             {
               retval = load_inline_fcn (subgroup_id, name, d->tc);
             }
           else
             {
-              d->tc = type_info.lookup_type (typ);
+              d->tc = type_info.lookup_type (std::string (typ, slen-1));
 
               try
                 {

@@ -1,3 +1,84 @@
+Summary of bugs fixed for version 6.2.0 (2021-02-19):
+----------------------------------------------------
+
+See: https://www.octave.org/news/release/2021/02/20/octave-6.2.0-released.html
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements
+
+- `bicgstab.m`, `cgs.m`: Fix typo in `"iter_min"` variable name (bug #60071).
+- Compute with `NA` correctly on MIPS architecture (bug #59830).
+- Fix lookup of `"caller"` stack frame (bug #59847).
+- Also wait on `main_thread` after interpreter shuts down (bug #56952).
+- Fix symbol lookup issue with anonymous functions (bug #55989).
+- Line buffer input in `terminal_reader` class.
+- `qr`: Error for dense `A` and `B` with three output arguments (bug #58944).
+- `strmatch.m`: Always return column vector for Matlab compatibility (bug #59917)
+- Avoid crash when `evalin` global variables into existence in script (bug #59937)
+- Avoid crash on null statement list (bug #59938).
+- Fix ignored output from user function in left side of assignment (bug #59704).
+- Temporarily set lvalue list to null (bug #59704).
+- `fminbnd.m`: do not ignore `"OutputFcn"` (bug #59901).
+- `load-path.cc`: Reduce number of times `"canonicalize_file_name"` is called (bug #59711).
+- `interpn.m`: Use `size_equal` for 10X speedup in cset 067b663529bb (bug #59856).
+- `interpn.m`: Fix check for scattered point coordinates (bug #59856).
+- Avoid `YYUSE` in Octave parser files (see bug #59806).
+- `struct2hdl.m`: Set `"units"` property early.
+- `load-path.cc`: Avoid copying string for loop variable.
+- `pcg.m`: Return correct `FLAG` and correct `RELRES` output (bug #59776).
+- Use static keyword on regexp pattern in `file_stat` (bug #59706).
+- `stat`: Improve regular expression for UNC roots on Windows (bug #59706).
+- `stat`: Use `"make_absolute"` instead of `"canonicalize_file_name"` on Windows (bug #59706).
+- Improve `class_simple` function handle function lookup (bug #59661).
+- `hdl2struct.m`: store hidden text properties (bug #57241).
+- Mark script created with commands from history as modified.
+- `replem.m`: Fix operations with sparse matrices (bug #59705).
+- `ode_event_handler.m`: Fix mishandling of event edge types and multiple events (bug #59709).
+- Increase size of dynamic variable `new_argv` by 1 to avoid indexing out of array.
+- Fix incorrect results for set functions with `"legacy"` option (bug #59708).
+- `dir.m`: Return folder (not including file) in field `"folder"` (bug #59689).
+- Avoid memory leak with function handles (bug #59659).
+- Avoid dispatch error if method argument is a function handle (bug #59617).
+- Avoid crash due to accessing first element of empty list (bug #59656).
+- Don't propagate prevailing `isargout` info through `mexCallMATLAB` (bug #59597).
+- Show original error when failing to create a graphics object (bug #59620).
+- Fix regression with superclass lookup in classdef constructors (bug #59602).
+- Allow Octave class `execution_exception` to catch `std::exception` objects (bug #59592).
+
+### GUI
+
+- Fix restoring editor session after having closed all tabs (bug #60051).
+- Maybe convert TAB to SPC in GUI terminal pasted text (bug #59916).
+- Make bracketed paste mode work in GUI terminal.
+- Fix regression in variable editor when printing without selection.
+- Avoid gui when octave is launched in non-interactive mode (bug #59628).
+- `file-editor-tab.cc` (dtor): do not delete `m_edit_area` (bug #59628).
+- Fix error when restoring previous main window layout (bug #59426).
+- Improve default sizes of gui dock widgets.
+- Clean up constructing main window layout of the gui.
+- Fix focus command window after command execution (bug #59609).
+- Check object size before plotting from variable editor (bug #56685).
+- `documentation.cc`: Include missing header (bug #59553).
+
+### Build system / Tests
+
+- Add default value to `OCTAVE_MIPS_NAN` configure macro for cross-compiling (bug #59830).
+- tests: Function name should match file name (bug #59704).
+- Avoid build errors with Qt4 (bug #59813).
+- eigs.m: Make tests that depend on CHOLMOD conditional.
+- tests: Make tests that depend on CXSparse conditional.
+- build: Use `SPARSE_XCPPFLAGS` in `CPP_FLAGS` for libcorefcn (bug #59806).
+- Add test case for bug #59661.
+- `hgsave.m`: Allow test to run with qt or gnuplot graphics toolkits (bug #57241).
+
+### Documentation
+
+- `embedded.cc`: Fix syntax error interpreter shutdown.
+- Update Octave Project Developers copyright for the new year.
+- Use the same comment style for copyright headers in .m files and shell scripts.
+
+
 Summary of important user-visible changes for version 6.1.0 (2020-11-26):
 ------------------------------------------------------------------------
 

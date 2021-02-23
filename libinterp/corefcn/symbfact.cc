@@ -135,31 +135,34 @@ Cholesky@tie{}factorization as determined by @var{typ}.
   A->stype = 1;
   A->x = &dummy;
 
+  SparseMatrix sm;
+  SparseComplexMatrix scm;
+
   if (args(0).isreal ())
     {
-      const SparseMatrix a = args(0).sparse_matrix_value ();
-      A->nrow = a.rows ();
-      A->ncol = a.cols ();
-      A->p = a.cidx ();
-      A->i = a.ridx ();
-      A->nzmax = a.nnz ();
+      sm = args(0).sparse_matrix_value ();
+      A->nrow = sm.rows ();
+      A->ncol = sm.cols ();
+      A->p = sm.cidx ();
+      A->i = sm.ridx ();
+      A->nzmax = sm.nnz ();
       A->xtype = CHOLMOD_REAL;
 
-      if (a.rows () > 0 && a.cols () > 0)
-        A->x = a.data ();
+      if (A->nrow > 0 && A->ncol > 0)
+        A->x = sm.data ();
     }
   else if (args(0).iscomplex ())
     {
-      const SparseComplexMatrix a = args(0).sparse_complex_matrix_value ();
-      A->nrow = a.rows ();
-      A->ncol = a.cols ();
-      A->p = a.cidx ();
-      A->i = a.ridx ();
-      A->nzmax = a.nnz ();
+      scm = args(0).sparse_complex_matrix_value ();
+      A->nrow = scm.rows ();
+      A->ncol = scm.cols ();
+      A->p = scm.cidx ();
+      A->i = scm.ridx ();
+      A->nzmax = scm.nnz ();
       A->xtype = CHOLMOD_COMPLEX;
 
-      if (a.rows () > 0 && a.cols () > 0)
-        A->x = a.data ();
+      if (A->nrow > 0 && A->ncol > 0)
+        A->x = scm.data ();
     }
   else
     err_wrong_type_arg ("symbfact", args(0));

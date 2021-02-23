@@ -680,12 +680,13 @@ permutations on the tree.
   octave_idx_type *ridx = nullptr;
   octave_idx_type *cidx = nullptr;
 
-  if (! args(0).issparse ())
-    error ("etree: S must be a sparse matrix");
+  SparseComplexMatrix scm;
+  SparseBoolMatrix sbm;
+  SparseMatrix sm;
 
   if (args(0).iscomplex ())
     {
-      SparseComplexMatrix scm = args(0).sparse_complex_matrix_value ();
+      scm = args(0).sparse_complex_matrix_value ();
 
       n_row = scm.rows ();
       n_col = scm.cols ();
@@ -694,7 +695,7 @@ permutations on the tree.
     }
   else if (args(0).islogical ())
     {
-      SparseBoolMatrix sbm = args(0).sparse_bool_matrix_value ();
+      sbm = args(0).sparse_bool_matrix_value ();
 
       n_row = sbm.rows ();
       n_col = sbm.cols ();
@@ -703,7 +704,7 @@ permutations on the tree.
     }
   else
     {
-      SparseMatrix sm = args(0).sparse_matrix_value ();
+      sm = args(0).sparse_matrix_value ();
 
       n_row = sm.rows ();
       n_col = sm.cols ();
@@ -747,7 +748,7 @@ permutations on the tree.
   NDArray tree (dim_vector (1, n_col));
   for (octave_idx_type i = 0; i < n_col; i++)
     // We flag a root with n_col while Matlab does it with zero
-    // Convert for matlab compatible output
+    // Convert for Matlab-compatible output
     if (etree[i] == n_col)
       tree(i) = 0;
     else
@@ -777,9 +778,8 @@ permutations on the tree.
 %!assert (etree (sparse ([1,2], [1,2], [i,i], 2, 2)), [0, 0])
 %!assert (etree (gallery ("poisson", 16)), [2:256, 0])
 
-%!error etree ()
-%!error etree (1, 2, 3)
-%!error <S must be a sparse matrix> etree ([1, 2; 3, 4])
+%!error <Invalid call> etree ()
+%!error <Invalid call> etree (1, 2, 3)
 %!error <TYP must be a string> etree (speye (2), 3)
 %!error <is not square> etree (sprand (2, 4, .25))
 */

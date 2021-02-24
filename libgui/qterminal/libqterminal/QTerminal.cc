@@ -70,25 +70,6 @@ QTerminal::create (octave::base_qobject& oct_qobj, QWidget *p, QWidget *main_win
   return terminal;
 }
 
-// slot for disabling the interrupt action when terminal loses focus
-void
-QTerminal::set_global_shortcuts (bool focus_out)
-  {
-    if (focus_out)
-      {
-        _interrupt_action->setShortcut (QKeySequence ());
-        _nop_action->setShortcut (QKeySequence ());
-      }
-    else
-      {
-        _interrupt_action->setShortcut
-          (QKeySequence (Qt::ControlModifier | Qt::Key_C));
-
-        _nop_action->setShortcut
-          (QKeySequence (Qt::ControlModifier | Qt::Key_D));
-      }
-  }
-
 // slot for the terminal's context menu
 void
 QTerminal::handleCustomContextMenuRequested (const QPoint& at)
@@ -281,9 +262,12 @@ QTerminal::notice_settings (const gui_settings *settings)
 
   QString sc = settings->sc_value (sc_main_edit_copy);
 
-  //  Dis- or enable extra interrupt action depending on the Copy shortcut
+  //  Dis- or enable extra interrupt action: We need an extra option when
+  //  copy shortcut is not Ctrl-C or when global shortcuts (like copy) are
+  //  disabled.
   bool extra_ir_action
-      = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C).toString ());
+      = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C).toString ())
+        || settings->value (sc_prevent_rl_conflicts).toBool ();
 
   _interrupt_action->setEnabled (extra_ir_action);
   has_extra_interrupt (extra_ir_action);
@@ -373,8 +357,9 @@ QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
 
   _interrupt_action->setShortcut
     (QKeySequence (Qt::ControlModifier + Qt::Key_C));
+  _interrupt_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
 
-  connect (_interrupt_action, SIGNAL (triggered ()),
+  bool ok = connect (_interrupt_action, SIGNAL (triggered ()),
            this, SLOT (terminal_interrupt ()));
 
   // dummy (nop) action catching Ctrl-D in terminal, no connection
@@ -382,4 +367,5 @@ QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
   addAction (_nop_action);
 
   _nop_action->setShortcut (QKeySequence (Qt::ControlModifier + Qt::Key_D));
+  _nop_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
 }

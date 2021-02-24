@@ -123,8 +123,6 @@ public slots:
 
   void terminal_interrupt (void) { emit interrupt_signal (); }
 
-  void set_global_shortcuts (bool focus_out);
-
   void run_selection (void);
 
   void edit_file (void);

@@ -1447,11 +1447,6 @@ QWinTerminalImpl::QWinTerminalImpl (QWidget* parent, QWidget* main_win)
 {
     installEventFilter (this);
 
-    connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
-             main_win, SLOT (set_global_shortcuts (bool)));
-    connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
-             this, SLOT (set_global_shortcuts (bool)));
-
     connect (this, SIGNAL (set_screen_size_signal (int, int)),
              main_win, SLOT (set_screen_size (int, int)));
 
@@ -1652,8 +1647,6 @@ void QWinTerminalImpl::updateSelection (void)
 
 void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
 {
-  emit set_global_shortcuts_signal (false);   // disable some shortcuts
-
   setBlinkingCursorState (true);
 
   QWidget::focusInEvent (event);
@@ -1661,8 +1654,6 @@ void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
 
 void QWinTerminalImpl::focusOutEvent (QFocusEvent* event)
 {
-  emit set_global_shortcuts_signal (true);    // re-enable shortcuts
-
   // Force the cursor to be redrawn.
   d->m_cursorBlinking = true;
 

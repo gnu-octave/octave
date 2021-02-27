@@ -744,7 +744,7 @@ ov_range<T>::load_binary (std::istream& is, bool swap,
   if (swap)
     swap_bytes<sizeof (T)> (&inc);
   if (inc != T (0))
-    m_range = octave::range<T> (bas, lim, inc);
+    m_range = octave::range<T> (bas, inc, lim);
   else
     {
       octave_idx_type numel = static_cast<octave_idx_type> (lim);

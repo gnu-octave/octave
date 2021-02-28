@@ -50,6 +50,7 @@ octave_gui_ICONS = \
   %reldir%/icons/go-previous.png \
   %reldir%/icons/go-up.png \
   %reldir%/icons/graphic_logo_DocumentationDockWidget.png \
+  %reldir%/icons/graphic_logo_Figure.png \
   %reldir%/icons/graphic_logo_FileEditor.png \
   %reldir%/icons/graphic_logo_FilesDockWidget.png \
   %reldir%/icons/graphic_logo_HistoryDockWidget.png \

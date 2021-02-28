@@ -281,6 +281,8 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(fill)
 
+@DOCSTRING(fill3)
+
 @DOCSTRING(comet)
 
 @DOCSTRING(comet3)
@@ -1208,16 +1210,17 @@ graphics objects and which also return handles.  This includes but is not
 limited to the following functions: The functions @code{plot} and @code{plot3}
 return a handle pointing to an object of type @code{line}.  The function
 @code{subplot} returns a handle pointing to an object of type @code{axes}.
-The functions @code{fill}, @code{trimesh}, and @code{trisurf} return a handle
-pointing to an object of type patch.  The function @code{scatter3} returns a
-handle to an object of type scatter.  The functions @code{slice}, @code{surf},
-@code{surfl}, @code{mesh}, @code{meshz}, @code{pcolor}, and @code{waterfall}
-each return a handle of type surface.  The function @code{camlight} returns a
-handle to an object of type light.  The functions @code{area}, @code{bar},
-@code{barh}, @code{contour}, @code{contourf}, @code{contour3}, @code{surfc},
-@code{meshc}, @code{errorbar}, @code{quiver}, @code{quiver3}, @code{stair},
-@code{stem}, @code{stem3} each return a handle to a complex data structure as
-documented in @ref{XREFdatasources,,Data Sources}.
+The functions @code{fill}, @code{fill3}, @code{trimesh}, and @code{trisurf}
+return a handle pointing to an object of type patch.  The function
+@code{scatter3} returns a handle to an object of type scatter.  The functions
+@code{slice}, @code{surf}, @code{surfl}, @code{mesh}, @code{meshz},
+@code{pcolor}, and @code{waterfall} each return a handle of type surface.  The
+function @code{camlight} returns a handle to an object of type light.  The
+functions @code{area}, @code{bar}, @code{barh}, @code{contour},
+@code{contourf}, @code{contour3}, @code{surfc}, @code{meshc}, @code{errorbar},
+@code{quiver}, @code{quiver3}, @code{stair}, @code{stem}, @code{stem3} each
+return a handle to a complex data structure as documented in
+@ref{XREFdatasources,,Data Sources}.
 
 The graphics objects are arranged in a hierarchy:
 
@@ -1370,7 +1373,7 @@ If this auto-joining feature is not desired then it is important to call
 Alternatively, the easier way is to call a high-level graphics routine which
 will both create the plot and then populate it with low-level graphics objects.
 Instead of calling @code{line}, use @code{plot}.  Or use @code{surf} instead of
-@code{surface}.  Or use @code{fill} instead of @code{patch}.
+@code{surface}.  Or use @code{fill} or @code{fill3} instead of @code{patch}.
 
 @DOCSTRING(axes)
 

@@ -49,6 +49,7 @@ FCN_FILE_DIRS += \
   %reldir%/ezsurfc.m \
   %reldir%/feather.m \
   %reldir%/fill.m \
+  %reldir%/fill3.m \
   %reldir%/fplot.m \
   %reldir%/hist.m \
   %reldir%/isocaps.m \

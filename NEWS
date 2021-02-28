@@ -191,6 +191,7 @@ functionality.  By default, this warning is enabled.
 * `cospi`
 * `getpixelposition`
 * `endsWith`
+* `fill3`
 * `jsondecode`
 * `jsonencode`
 * `listfonts`

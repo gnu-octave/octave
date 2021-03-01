@@ -31,7 +31,7 @@
 ## @deftypefnx {} {@var{h} =} fill3 (@dots{})
 ## Create one or more filled 3-D polygons.
 ##
-## The inputs @var{x}, @var{y} and @var{z} are the coordinates of the polygon
+## The inputs @var{x}, @var{y}, and @var{z} are the coordinates of the polygon
 ## vertices.  If the inputs are matrices then the rows represent different
 ## vertices and each column produces a different polygon.  @code{fill3} will
 ## close any open polygons before plotting.
@@ -41,13 +41,14 @@
 ## RGB-triple.  In this case the polygon(s) will have one unique color.  If
 ## @var{c} is a vector or matrix then the color data is first scaled using
 ## @code{caxis} and then indexed into the current colormap.  A row vector will
-## color each polygon (a column from matrices @var{x}, @var{y} and @var{z})
+## color each polygon (a column from matrices @var{x}, @var{y}, and @var{z})
 ## with a single computed color.  A matrix @var{c} of the same size as @var{x},
-## @var{y} and @var{z} will compute the color of each vertex and then
+## @var{y}, and @var{z} will compute the color of each vertex and then
 ## interpolate the face color between the vertices.
 ##
 ## Multiple property/value pairs for the underlying patch object may be
-## specified, but they must appear in pairs.
+## specified, but they must appear in pairs.  The full list of properties is
+## documented at @ref{Patch Properties}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
@@ -111,7 +112,7 @@ function h = fill3 (varargin)
 
         if (! size_equal (x, y, z))
           if (rows (x) != rows (y) || rows (x) != rows (z))
-            error ("fill3: X,Y and Z must have same number of rows");
+            error ("fill3: X, Y, and Z must have same number of rows");
           endif
 
           num_cols = max ([columns(x), columns(y), columns(z)]);
@@ -204,7 +205,7 @@ function retval = iscolorspec (arg)
     endif
   elseif (isnumeric (arg))
     ## Assume any numeric argument is correctly formatted cdata.
-    ## Let patch worry about the multple different input formats.
+    ## Let patch worry about the multiple different input formats.
     retval = true;
   endif
 

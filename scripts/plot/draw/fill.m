@@ -107,13 +107,13 @@ function h = fill (varargin)
         y = varargin{iargs(i) + 1};
         cdata = varargin{iargs(i) + 2};
 
-        if (! size_equal (x,y))
+        if (! size_equal (x, y))
           if (iscolumn (y) && rows (y) == rows (x))
             y = repmat (y, [1, columns(x)]);
           elseif (iscolumn (x) && rows (x) == rows (y))
             x = repmat (x, [1, columns(y)]);
           else
-            error ("fill: X annd Y must have same number of rows");
+            error ("fill: X and Y must have same number of rows");
           endif
         endif
 

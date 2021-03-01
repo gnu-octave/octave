@@ -758,7 +758,6 @@ function rlist = missing_functions ()
   "filemarker",
   "fileMode",
   "fileName",
-  "fill3",
   "fillmissing",
   "filloutliers",
   "fimplicit",

@@ -402,7 +402,7 @@ function update_location_cb (hl, ~, do_layout = true)
               "specifier, using 'northeast' instead\n"]);
   endif
 
-  if (do_layout)
+  if (do_layout && ! strcmp (get (hl, "location"), "none"))
     update_layout_cb (hl);
   endif
 

@@ -255,6 +255,10 @@ function [x, fval, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     stop = outfcn (x, optimvalues, state);
     if (stop)
       info = -1;
+      output.iterations = niter;
+      output.successful = 0;
+      output.funcCount = nfev;
+      fjac = NaN;
       return;
     endif
   endif
@@ -430,6 +434,9 @@ function [x, fval, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         stop = outfcn (x, optimvalues, state);
         if (stop)
           info = -1;
+          output.iterations = niter;
+          output.successful = nsuciter;
+          output.funcCount = nfev;
           break;
         endif
       endif

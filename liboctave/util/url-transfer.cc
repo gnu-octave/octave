@@ -366,8 +366,6 @@ namespace octave
 
     void perform (void)
     {
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
       m_errnum = curl_easy_perform (m_curl);
 
       if (m_errnum != CURLE_OK)
@@ -375,8 +373,6 @@ namespace octave
           m_ok = false;
           m_errmsg = curl_easy_strerror (m_errnum);
         }
-
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
     }
 
     std::string lasterror (void) const

@@ -293,26 +293,19 @@ namespace octave
           cm->postorder = false;
         }
 
-      cholmod_factor *Lfactor;
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      Lfactor = CHOLMOD_NAME(analyze) (ac, cm);
+      cholmod_factor *Lfactor = CHOLMOD_NAME(analyze) (ac, cm);
       CHOLMOD_NAME(factorize) (ac, Lfactor, cm);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       is_pd = cm->status == CHOLMOD_OK;
       info = (is_pd ? 0 : cm->status);
 
       if (is_pd || force)
         {
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           cond = CHOLMOD_NAME(rcond) (Lfactor, cm);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           minor_p = Lfactor->minor;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           Lsparse = CHOLMOD_NAME(factor_to_sparse) (Lfactor, cm);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           if (minor_p > 0 && minor_p < a_nr)
             {
@@ -320,11 +313,10 @@ namespace octave
               Lsparse->p = CHOLMOD_NAME(realloc) (minor_p+1,
                                                   sizeof(octave_idx_type),
                                                   Lsparse->p, &n1, cm);
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
               CHOLMOD_NAME(reallocate_sparse)
                 (static_cast<octave_idx_type *>(Lsparse->p)[minor_p],
                  Lsparse, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               Lsparse->ncol = minor_p;
             }
@@ -342,10 +334,8 @@ namespace octave
       // NAME used to prefix statistics report from print_common
       static char blank_name[] = " ";
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CHOLMOD_NAME(print_common) (blank_name, cm);
       CHOLMOD_NAME(free_factor) (&Lfactor, cm);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       return info;
 

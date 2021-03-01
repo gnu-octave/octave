@@ -519,12 +519,10 @@ namespace octave
       cholmod_l_start (&m_cc);
       cholmod_sparse A = ros2rcs (a);
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       SuiteSparseQR<double> (order, static_cast<double> (SPQR_DEFAULT_TOL),
                              static_cast<SuiteSparse_long> (A.nrow),
                              &A, &m_R, &m_E, &m_H, &m_HPinv, &m_Htau, &m_cc);
       spqr_error_handler (&m_cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
         {
@@ -550,10 +548,8 @@ namespace octave
       A.x = const_cast<double *> (a.data ());
       A.nz = -1;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       S = CXSPARSE_DNAME (_sqr) (order, &A, 1);
       N = CXSPARSE_DNAME (_qr) (&A, S);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       if (! N)
         (*current_liboctave_error_handler)
@@ -605,13 +601,11 @@ namespace octave
       // Drop zeros from V and sort
       // FIXME: Is the double transpose to sort necessary?
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_dropzeros) (N->L);
       CXSPARSE_DNAME () *D = CXSPARSE_DNAME (_transpose) (N->L, 1);
       CXSPARSE_DNAME (_spfree) (N->L);
       N->L = CXSPARSE_DNAME (_transpose) (D, 1);
       CXSPARSE_DNAME (_spfree) (D);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       octave_idx_type nc = N->L->n;
       octave_idx_type nz = N->L->nzmax;
@@ -666,13 +660,11 @@ namespace octave
       // Drop zeros from R and sort
       // FIXME: Is the double transpose to sort necessary?
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_DNAME (_dropzeros) (N->U);
       CXSPARSE_DNAME () *D = CXSPARSE_DNAME (_transpose) (N->U, 1);
       CXSPARSE_DNAME (_spfree) (N->U);
       N->U = CXSPARSE_DNAME (_transpose) (D, 1);
       CXSPARSE_DNAME (_spfree) (D);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       octave_idx_type nc = N->U->n;
       octave_idx_type nz = N->U->nzmax;
@@ -720,11 +712,10 @@ namespace octave
 
       cholmod_dense *QTB;  // Q' * B
       cholmod_dense B = rod2rcd (b);
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       QTB = SuiteSparseQR_qmult<double> (SPQR_QTX, m_H, m_Htau, m_HPinv, &B,
                                          &m_cc);
       spqr_error_handler (&m_cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       // copy QTB into ret
       double *QTB_x = reinterpret_cast<double *> (QTB->x);
@@ -774,17 +765,13 @@ namespace octave
 
               volatile octave_idx_type nm = (nr < nc ? nr : nc);
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_ipvec) (S->pinv, bvec + idx, buf, b_nr);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               for (volatile octave_idx_type i = 0; i < nm; i++)
                 {
                   octave_quit ();
 
-                  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
                   CXSPARSE_DNAME (_happly) (N->L, i, N->B[i], buf);
-                  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
                 }
 
               for (octave_idx_type i = 0; i < b_nr; i++)
@@ -826,10 +813,8 @@ namespace octave
       for (octave_idx_type i = 0; i < nrows; i++)
        (reinterpret_cast<double *> (I->x))[i * nrows + i] = 1.0;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       q = SuiteSparseQR_qmult<double> (SPQR_QX, m_H, m_Htau, m_HPinv, I, &m_cc);
       spqr_error_handler (&m_cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       double *q_x = reinterpret_cast<double *> (q->x);
       double *ret_vec = const_cast<double *> (ret.fortran_vec ());
@@ -877,17 +862,13 @@ namespace octave
 
               volatile octave_idx_type nm = (nr < nc ? nr : nc);
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_ipvec) (S->pinv, bvec, buf, nr);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               for (volatile octave_idx_type i = 0; i < nm; i++)
                 {
                   octave_quit ();
 
-                  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
                   CXSPARSE_DNAME (_happly) (N->L, i, N->B[i], buf);
-                  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
                 }
 
               for (octave_idx_type i = 0; i < nr; i++)
@@ -932,12 +913,10 @@ namespace octave
       cholmod_dense *QTB;  // Q' * B
       cholmod_dense B = rod2rcd (b);
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       // FIXME: Process b column by column as in the CXSPARSE version below.
       // This avoids a large dense matrix Q' * B in memory.
       QTB = SuiteSparseQR_qmult<double> (SPQR_QTX, m_H, m_Htau, m_HPinv, &B,
                                          &m_cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       spqr_error_handler (&m_cc);
 
@@ -982,7 +961,6 @@ namespace octave
       for (volatile octave_idx_type j = 0; j < b_nc; j++)
         {
           // fill x(:,j)
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           // solve (m_R\(Q'*B(:,j)) and store result in QTB(:,j)
           CXSPARSE_DNAME (_usolve)
             (&R2, &(reinterpret_cast<double *> (QTB->x)[j * b_nr]));
@@ -990,7 +968,6 @@ namespace octave
           CXSPARSE_DNAME (_ipvec)
             (E, &(reinterpret_cast<double *> (QTB->x)[j * b_nr]),
              &x_vec[j * ncols], ncols);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
       if (sizeof (suitesparse_integer) != sizeof (SuiteSparse_long))
@@ -1028,23 +1005,17 @@ namespace octave
           for (octave_idx_type j = nr; j < S->m2; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_ipvec) (S->pinv, bvec + bidx, buf, nr);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_usolve) (N->U, buf);
           CXSPARSE_DNAME (_ipvec) (S->q, buf, vec + idx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
       info = 0;
@@ -1095,23 +1066,17 @@ namespace octave
           for (octave_idx_type j = nr; j < nbuf; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->q, bvec + bidx, buf, nr);
           CXSPARSE_DNAME (_utsolve) (N->U, buf);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = nr-1; j >= 0; j--)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->pinv, buf, vec + idx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
       info = 0;
@@ -1161,23 +1126,17 @@ namespace octave
           for (octave_idx_type j = nr; j < S->m2; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_ipvec) (S->pinv, Xx, buf, nr);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_usolve) (N->U, buf);
           CXSPARSE_DNAME (_ipvec) (S->q, buf, Xx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
             {
@@ -1254,23 +1213,17 @@ namespace octave
           for (octave_idx_type j = nr; j < nbuf; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->q, Xx, buf, nr);
           CXSPARSE_DNAME (_utsolve) (N->U, buf);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = nr-1; j >= 0; j--)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->pinv, buf, Xx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
             {
@@ -1347,20 +1300,15 @@ namespace octave
           for (octave_idx_type j = nr; j < S->m2; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_ipvec) (S->pinv, Xx, buf, nr);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_usolve) (N->U, buf);
           CXSPARSE_DNAME (_ipvec) (S->q, buf, Xx, nc);
 
@@ -1368,21 +1316,16 @@ namespace octave
             buf[j] = 0.;
 
           CXSPARSE_DNAME (_ipvec) (S->pinv, Xz, buf, nr);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_usolve) (N->U, buf);
           CXSPARSE_DNAME (_ipvec) (S->q, buf, Xz, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
             vec[j+idx] = Complex (Xx[j], Xz[j]);
@@ -1443,44 +1386,32 @@ namespace octave
           for (octave_idx_type j = nr; j < nbuf; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->q, Xx, buf, nr);
           CXSPARSE_DNAME (_utsolve) (N->U, buf);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = nr-1; j >= 0; j--)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->pinv, buf, Xx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = nr; j < nbuf; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->q, Xz, buf, nr);
           CXSPARSE_DNAME (_utsolve) (N->U, buf);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = nr-1; j >= 0; j--)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->pinv, buf, Xz, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
             vec[j+idx] = Complex (Xx[j], Xz[j]);
@@ -1523,13 +1454,11 @@ namespace octave
       cholmod_l_start (&m_cc);
       cholmod_sparse A = cos2ccs (a);
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       SuiteSparseQR<Complex> (order, static_cast<double> (SPQR_DEFAULT_TOL),
                               static_cast<SuiteSparse_long> (A.nrow),
                               &A, &m_R, &m_E, &m_H,
                               &m_HPinv, &m_Htau, &m_cc);
       spqr_error_handler (&m_cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
         {
@@ -1556,10 +1485,8 @@ namespace octave
               (reinterpret_cast<const cs_complex_t *> (a.data ()));
       A.nz = -1;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       S = CXSPARSE_ZNAME (_sqr) (order, &A, 1);
       N = CXSPARSE_ZNAME (_qr) (&A, S);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       if (! N)
         (*current_liboctave_error_handler)
@@ -1606,13 +1533,11 @@ namespace octave
       // Drop zeros from V and sort
       // FIXME: Is the double transpose to sort necessary?
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_dropzeros) (N->L);
       CXSPARSE_ZNAME () *D = CXSPARSE_ZNAME (_transpose) (N->L, 1);
       CXSPARSE_ZNAME (_spfree) (N->L);
       N->L = CXSPARSE_ZNAME (_transpose) (D, 1);
       CXSPARSE_ZNAME (_spfree) (D);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       octave_idx_type nc = N->L->n;
       octave_idx_type nz = N->L->nzmax;
@@ -1667,13 +1592,11 @@ namespace octave
       // Drop zeros from R and sort
       // FIXME: Is the double transpose to sort necessary?
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CXSPARSE_ZNAME (_dropzeros) (N->U);
       CXSPARSE_ZNAME () *D = CXSPARSE_ZNAME (_transpose) (N->U, 1);
       CXSPARSE_ZNAME (_spfree) (N->U);
       N->U = CXSPARSE_ZNAME (_transpose) (D, 1);
       CXSPARSE_ZNAME (_spfree) (D);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       octave_idx_type nc = N->U->n;
       octave_idx_type nz = N->U->nzmax;
@@ -1726,11 +1649,9 @@ namespace octave
       cholmod_dense *QTB;  // Q' * B
       cholmod_dense B = cod2ccd (b);
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       QTB = SuiteSparseQR_qmult<Complex> (SPQR_QTX, m_H, m_Htau, m_HPinv, &B,
                                           &m_cc);
       spqr_error_handler (&m_cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       // copy QTB into ret
       Complex *QTB_x = reinterpret_cast<Complex *> (QTB->x);
@@ -1775,20 +1696,16 @@ namespace octave
 
               volatile octave_idx_type nm = (nr < nc ? nr : nc);
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_ipvec) (S->pinv, bvec + idx,
                                        reinterpret_cast<cs_complex_t *> (buf),
                                        b_nr);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               for (volatile octave_idx_type i = 0; i < nm; i++)
                 {
                   octave_quit ();
 
-                  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
                   CXSPARSE_ZNAME (_happly) (N->L, i, N->B[i],
                                             reinterpret_cast<cs_complex_t *> (buf));
-                  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
                 }
 
               for (octave_idx_type i = 0; i < b_nr; i++)
@@ -1831,11 +1748,9 @@ namespace octave
       for (octave_idx_type i = 0; i < nrows; i++)
         (reinterpret_cast<Complex *> (I->x))[i * nrows + i] = 1.0;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       q = SuiteSparseQR_qmult<Complex> (SPQR_QX, m_H, m_Htau, m_HPinv, I,
                                         &m_cc);
       spqr_error_handler (&m_cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       Complex *q_x = reinterpret_cast<Complex *> (q->x);
       Complex *ret_vec = const_cast<Complex*> (ret.fortran_vec ());
@@ -1882,20 +1797,16 @@ namespace octave
 
               volatile octave_idx_type nm = (nr < nc ? nr : nc);
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_ipvec) (S->pinv, bvec,
                                        reinterpret_cast<cs_complex_t *> (buf),
                                        nr);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               for (volatile octave_idx_type i = 0; i < nm; i++)
                 {
                   octave_quit ();
 
-                  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
                   CXSPARSE_ZNAME (_happly) (N->L, i, N->B[i],
                                             reinterpret_cast<cs_complex_t *> (buf));
-                  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
                 }
 
               for (octave_idx_type i = 0; i < nr; i++)
@@ -1957,44 +1868,32 @@ namespace octave
           for (octave_idx_type j = nr; j < S->m2; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_ipvec) (S->pinv, Xx, buf, nr);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_usolve) (N->U, buf);
           CXSPARSE_DNAME (_ipvec) (S->q, buf, Xx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = nr; j < S->m2; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_ipvec) (S->pinv, Xz, buf, nr);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_usolve) (N->U, buf);
           CXSPARSE_DNAME (_ipvec) (S->q, buf, Xz, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
             {
@@ -2077,44 +1976,32 @@ namespace octave
           for (octave_idx_type j = nr; j < nbuf; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->q, Xx, buf, nr);
           CXSPARSE_DNAME (_utsolve) (N->U, buf);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = nr-1; j >= 0; j--)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->pinv, buf, Xx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = nr; j < nbuf; j++)
             buf[j] = 0.;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->q, Xz, buf, nr);
           CXSPARSE_DNAME (_utsolve) (N->U, buf);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = nr-1; j >= 0; j--)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_DNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_DNAME (_pvec) (S->pinv, buf, Xz, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
             {
@@ -2187,25 +2074,19 @@ namespace octave
           for (octave_idx_type j = nr; j < S->m2; j++)
             buf[j] = cs_complex_t (0.0, 0.0);
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_ipvec) (S->pinv,
                                    reinterpret_cast<cs_complex_t *>(Xx),
                                    buf, nr);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_usolve) (N->U, buf);
           CXSPARSE_ZNAME (_ipvec) (S->q, buf, vec + idx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
       info = 0;
@@ -2263,24 +2144,18 @@ namespace octave
           for (octave_idx_type j = nr; j < nbuf; j++)
             buf[j] = cs_complex_t (0.0, 0.0);
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *> (Xx),
                                   buf, nr);
           CXSPARSE_ZNAME (_utsolve) (N->U, buf);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = nr-1; j >= 0; j--)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_happly) (N->L, j, B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_pvec) (S->pinv, buf, vec + idx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
       info = 0;
@@ -2332,27 +2207,21 @@ namespace octave
           for (octave_idx_type j = nr; j < S->m2; j++)
             buf[j] = cs_complex_t (0.0, 0.0);
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_ipvec) (S->pinv,
                                    reinterpret_cast<cs_complex_t *> (Xx),
                                    buf, nr);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_usolve) (N->U, buf);
           CXSPARSE_ZNAME (_ipvec) (S->q, buf,
                                    reinterpret_cast<cs_complex_t *> (Xx),
                                    nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
             {
@@ -2436,27 +2305,21 @@ namespace octave
           for (octave_idx_type j = nr; j < nbuf; j++)
             buf[j] = cs_complex_t (0.0, 0.0);
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_pvec) (S->q,
                                   reinterpret_cast<cs_complex_t *> (Xx),
                                   buf, nr);
           CXSPARSE_ZNAME (_utsolve) (N->U, buf);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = nr-1; j >= 0; j--)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_happly) (N->L, j, B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_pvec) (S->pinv, buf,
                                   reinterpret_cast<cs_complex_t *> (Xx),
                                   nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
             {
@@ -2530,23 +2393,17 @@ namespace octave
           for (octave_idx_type j = nr; j < S->m2; j++)
             buf[j] = cs_complex_t (0.0, 0.0);
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_ipvec) (S->pinv, bvec + bidx, buf, nr);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_usolve) (N->U, buf);
           CXSPARSE_ZNAME (_ipvec) (S->q, buf, vec + idx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
       info = 0;
@@ -2604,23 +2461,17 @@ namespace octave
           for (octave_idx_type j = nr; j < nbuf; j++)
             buf[j] = cs_complex_t (0.0, 0.0);
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_pvec) (S->q, bvec + bidx, buf, nr);
           CXSPARSE_ZNAME (_utsolve) (N->U, buf);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = nr-1; j >= 0; j--)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_happly) (N->L, j, B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_pvec) (S->pinv, buf, vec + idx, nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
         }
 
       info = 0;
@@ -2672,27 +2523,21 @@ namespace octave
           for (octave_idx_type j = nr; j < S->m2; j++)
             buf[j] = cs_complex_t (0.0, 0.0);
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_ipvec) (S->pinv,
                                    reinterpret_cast<cs_complex_t *> (Xx),
                                    buf, nr);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = 0; j < nc; j++)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_happly) (N->L, j, N->B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_usolve) (N->U, buf);
           CXSPARSE_ZNAME (_ipvec) (S->q, buf,
                                    reinterpret_cast<cs_complex_t *> (Xx),
                                    nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
             {
@@ -2776,25 +2621,19 @@ namespace octave
           for (octave_idx_type j = nr; j < nbuf; j++)
             buf[j] = cs_complex_t (0.0, 0.0);
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx),
                                   buf, nr);
           CXSPARSE_ZNAME (_utsolve) (N->U, buf);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (volatile octave_idx_type j = nr-1; j >= 0; j--)
             {
               octave_quit ();
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CXSPARSE_ZNAME (_happly) (N->L, j, B[j], buf);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
           CXSPARSE_ZNAME (_pvec) (S->pinv, buf,
                                   reinterpret_cast<cs_complex_t *>(Xx), nc);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           for (octave_idx_type j = 0; j < nc; j++)
             {
@@ -2965,10 +2804,8 @@ namespace octave
       cholmod_dense B = rod2rcd (b);
       cholmod_dense *X;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
       spqr_error_handler (&cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       double *vec = x.fortran_vec ();
       for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
@@ -3002,10 +2839,8 @@ namespace octave
       cholmod_sparse B = ros2rcs (b);
       cholmod_sparse *X;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
       spqr_error_handler (&cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
         {
@@ -3045,10 +2880,8 @@ namespace octave
       cholmod_dense B = cod2ccd (b);
       cholmod_dense *X;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A, &B, &cc);
       spqr_error_handler (&cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       Complex *vec = x.fortran_vec ();
       for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
@@ -3081,10 +2914,8 @@ namespace octave
       cholmod_sparse B = cos2ccs (b);
       cholmod_sparse *X;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A, &B, &cc);
       spqr_error_handler (&cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       cholmod_l_free_sparse (&A, &cc);
       if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
@@ -3123,10 +2954,8 @@ namespace octave
       cholmod_dense B = cod2ccd (b);
       cholmod_dense *X;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
       spqr_error_handler (&cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       Complex *vec = x.fortran_vec ();
       for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
@@ -3167,10 +2996,8 @@ namespace octave
       cholmod_dense *B = rod2ccd (b, &cc);
       cholmod_dense *X;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, B, &cc);
       spqr_error_handler (&cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       Complex *vec = x.fortran_vec ();
 
@@ -3209,10 +3036,8 @@ namespace octave
       cholmod_sparse B = cos2ccs (b);
       cholmod_sparse *X;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
       spqr_error_handler (&cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
         {
@@ -3247,10 +3072,8 @@ namespace octave
       cholmod_sparse *B = ros2ccs (b, &cc);
       cholmod_sparse *X;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, B, &cc);
       spqr_error_handler (&cc);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       SparseComplexMatrix ret = ccs2cos(X);
 

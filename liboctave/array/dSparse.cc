@@ -5798,16 +5798,12 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
 
           B->x = const_cast<double *>(b.fortran_vec ());
 
-          cholmod_factor *L;
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          L = CHOLMOD_NAME(analyze) (A, cm);
+          cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
           if (calc_cond)
             rcond = CHOLMOD_NAME(rcond)(L, cm);
           else
             rcond = 1.0;
-
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           if (rcond == 0.0)
             {
@@ -5834,10 +5830,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
                   return retval;
                 }
 
-              cholmod_dense *X;
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_dense *X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
 
               retval.resize (b.rows (), b.cols ());
               for (octave_idx_type j = 0; j < b.cols (); j++)
@@ -5847,13 +5840,11 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
                     retval.xelem (i,j) = static_cast<double *>(X->x)[jr + i];
                 }
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CHOLMOD_NAME(free_dense) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
               static char blank_name[] = " ";
               CHOLMOD_NAME(print_common) (blank_name, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
           (*current_liboctave_warning_with_id_handler)
@@ -6028,15 +6019,12 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
 
           B->x = b.data ();
 
-          cholmod_factor *L;
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          L = CHOLMOD_NAME(analyze) (A, cm);
+          cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
           if (calc_cond)
             rcond = CHOLMOD_NAME(rcond)(L, cm);
           else
             rcond = 1.;
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           if (rcond == 0.0)
             {
@@ -6063,10 +6051,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
                   return retval;
                 }
 
-              cholmod_sparse *X;
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_sparse *X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
 
               retval = SparseMatrix (static_cast<octave_idx_type> (X->nrow),
                                      static_cast<octave_idx_type> (X->ncol),
@@ -6081,13 +6066,11 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
                   retval.xdata (j) = static_cast<double *>(X->x)[j];
                 }
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CHOLMOD_NAME(free_sparse) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
               static char blank_name[] = " ";
               CHOLMOD_NAME(print_common) (blank_name, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
           (*current_liboctave_warning_with_id_handler)
@@ -6286,15 +6269,12 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
 
           B->x = const_cast<Complex *>(b.fortran_vec ());
 
-          cholmod_factor *L;
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          L = CHOLMOD_NAME(analyze) (A, cm);
+          cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
           if (calc_cond)
             rcond = CHOLMOD_NAME(rcond)(L, cm);
           else
             rcond = 1.0;
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           if (rcond == 0.0)
             {
@@ -6321,10 +6301,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                   return retval;
                 }
 
-              cholmod_dense *X;
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_dense *X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
 
               retval.resize (b.rows (), b.cols ());
               for (octave_idx_type j = 0; j < b.cols (); j++)
@@ -6334,13 +6311,11 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                     retval.xelem (i,j) = static_cast<Complex *>(X->x)[jr + i];
                 }
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CHOLMOD_NAME(free_dense) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
               static char blank_name[] = " ";
               CHOLMOD_NAME(print_common) (blank_name, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
           (*current_liboctave_warning_with_id_handler)
@@ -6536,15 +6511,12 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
           B->x = b.data ();
 
-          cholmod_factor *L;
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          L = CHOLMOD_NAME(analyze) (A, cm);
+          cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
           if (calc_cond)
             rcond = CHOLMOD_NAME(rcond)(L, cm);
           else
             rcond = 1.0;
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           if (rcond == 0.0)
             {
@@ -6571,10 +6543,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                   return retval;
                 }
 
-              cholmod_sparse *X;
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_sparse *X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
 
               retval = SparseComplexMatrix
                        (static_cast<octave_idx_type> (X->nrow),
@@ -6590,13 +6559,11 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                   retval.xdata (j) = static_cast<Complex *>(X->x)[j];
                 }
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CHOLMOD_NAME(free_sparse) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
               static char blank_name[] = " ";
               CHOLMOD_NAME(print_common) (blank_name, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
           (*current_liboctave_warning_with_id_handler)

@@ -2751,11 +2751,6 @@ namespace octave
 
     unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_FUNCTION);
 
-    unwind_action act1 ([] (std::shared_ptr<stack_frame> frame)
-                       {
-                         frame->clear_values ();
-                       }, m_call_stack.get_current_stack_frame ());
-
     {
       profiler::enter<octave_user_function> block (m_profiler, user_function);
 

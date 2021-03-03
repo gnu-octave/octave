@@ -111,7 +111,10 @@ extern "C" {
 # include <bsdtty.h>
 #endif
 
-#ifdef HAVE_SYS_STROPTS_H
+#if defined (HAVE_STROPTS_H)
+# include <stropts.h>	        // Defines I_PUSH
+# define _NEW_TTY_CTRL
+#elif defined (HAVE_SYS_STROPTS_H)
 # include <sys/stropts.h>	// Defines I_PUSH
 # define _NEW_TTY_CTRL
 #endif

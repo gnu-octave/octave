@@ -402,7 +402,7 @@ function update_location_cb (hl, ~, do_layout = true)
               "specifier, using 'northeast' instead\n"]);
   endif
 
-  if (do_layout && ! strcmp (get (hl, "location"), "none"))
+  if (do_layout)
     update_layout_cb (hl);
   endif
 
@@ -419,7 +419,11 @@ function update_position_cb (hl, ~)
 
   updating = getappdata (hl, "__updating_layout__");
   if (isempty (updating) || ! updating)
-    set (hl, "location", "none");
+    if (! strcmp (get (hl, "location"), "none"))
+      set (hl, "location", "none");
+    else
+      update_layout_cb (hl);
+    endif
   endif
 
 endfunction
@@ -908,10 +912,10 @@ function update_layout_cb (hl, ~, update_item = false)
 
   unwind_protect
 
-    if (update_item)
-      pos = get (hl, "position")(3:4);
-      set (hl, "xlim",  [0, pos(1)], "ylim",  [0, pos(2)]);
+    pos = get (hl, "position");
 
+    if (update_item)
+      set (hl, "xlim",  [0, pos(3)], "ylim",  [0, pos(4)]);
       textright = strcmp (get (hl, "textposition"), "right");
       set (hl, "ydir", "reverse", ...
                "xdir", ifelse (textright, "normal", "reverse"));
@@ -923,11 +927,34 @@ function update_layout_cb (hl, ~, update_item = false)
       ## Prepare the array of text/icon pairs and update their position
       sz = update_texticon_position (hl, objlist);
     else
-      sz = [diff(get (hl, "xlim")), diff(get (hl, "ylim"))];
+      sz = getappdata (hl, "__item_bouding_box__");
     endif
 
     ## Place the legend
-    update_legend_position (hl, sz);
+    if (! strcmp (get (hl, "location"), "none"))
+      update_legend_position (hl, sz);
+    else
+      ## Custom location: Adapt width and height if necessary.
+      [x0, y0, x1, y1] = deal (0, 0, sz(1), sz(2));
+
+      if (sz(1) > pos(3))
+        pos(3) = sz(1);
+      else
+        dx = pos(3)-sz(1);
+        x0 -= dx/2;
+        x1 += dx/2;
+      endif
+
+      if (sz(2) > pos(4))
+        pos(4) = sz(2);
+      else
+        dy = pos(4)-sz(2);
+        y0 -= dy/2;
+        y1 += dy/2;
+      endif
+
+      set (hl, "position",  pos, "xlim", [x0 x1], "ylim", [y0 y1]);
+    endif
 
   unwind_protect_cleanup
     set (hl, "units", units);
@@ -1282,6 +1309,7 @@ function sz = update_texticon_position (hl, objlist)
   endif
 
   sz = [xmax, ymax];
+  setappdata (hl, "__item_bouding_box__", sz);
 
 endfunction
 

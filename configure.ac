@@ -1095,6 +1095,7 @@ AC_HEADER_SYS_WAIT
 dnl Use multiple AC_CHECKs to avoid line continuations '\' in list.
 AC_CHECK_HEADERS([dlfcn.h floatingpoint.h fpu_control.h grp.h])
 AC_CHECK_HEADERS([ieeefp.h pthread.h pwd.h sys/ioctl.h])
+AC_CHECK_HEADERS([stropts.h sys/stropts.h])
 
 ## Some versions of GCC fail when using -fopenmp and including
 ## stdatomic.h, so we try to work around that.  Use the compile_ifelse

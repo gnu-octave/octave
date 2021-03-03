@@ -31,14 +31,14 @@
 
 #include "iconv-wrappers.h"
 
-iconv_t
+void *
 octave_iconv_open_wrapper (const char *tocode, const char *fromcode)
 {
-  return iconv_open (tocode, fromcode);
+  return (void *) iconv_open (tocode, fromcode);
 }
 
 int
-octave_iconv_close_wrapper (iconv_t cd)
+octave_iconv_close_wrapper (void *cd)
 {
-  return iconv_close (cd);
+  return iconv_close ((iconv_t) cd);
 }

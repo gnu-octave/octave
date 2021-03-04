@@ -1175,16 +1175,13 @@ namespace octave
 
          load_path& lp = interp.get_load_path ();
 
-         bp_table::intmap line_info;
-         line_info[0] = info.line;
-
          if (lp.contains_file_in_dir (info.file, info.dir))
            {
              tree_evaluator& tw = interp.get_evaluator ();
 
              bp_table& bptab = tw.get_bp_table ();
 
-             bptab.remove_breakpoint (info.function_name, line_info);
+             bptab.remove_breakpoint (info.function_name, info.line);
            }
        });
   }
@@ -1375,27 +1372,17 @@ namespace octave
 
          load_path& lp = interp.get_load_path ();
 
-         bp_table::intmap line_info;
-         line_info[0] = info.line;
-
          if (lp.contains_file_in_dir (info.file, info.dir))
            {
              tree_evaluator& tw = interp.get_evaluator ();
 
              bp_table& bptab = tw.get_bp_table ();
 
-             bp_table::intmap bpmap
-               = bptab.add_breakpoint (info.function_name, "", line_info,
-                                       info.condition);
+             int lineno = bptab.add_breakpoint (info.function_name, "",
+                                                info.line, info.condition);
 
-             if (! bpmap.empty ())
-               {
-                 bp_table::intmap::iterator bp_it = bpmap.begin ();
-
-                 int remove_line = bp_it->second;
-
-                 emit maybe_remove_next (remove_line);
-               }
+             if (lineno)
+               emit maybe_remove_next (lineno);
            }
        });
   }

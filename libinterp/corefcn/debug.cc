@@ -60,22 +60,14 @@
 #include "variables.h"
 
 static octave_value
-intmap_to_ov (const octave::bp_table::intmap& line)
+bp_lines_to_ov (const octave::bp_table::bp_lines& lines)
 {
   int idx = 0;
 
-  NDArray retval (dim_vector (1, line.size ()));
+  NDArray retval (dim_vector (1, lines.size ()));
 
-  for (size_t i = 0; i < line.size (); i++)
-    {
-      octave::bp_table::const_intmap_iterator p = line.find (i);
-
-      if (p != line.end ())
-        {
-          int lineno = p->second;
-          retval(idx++) = lineno;
-        }
-    }
+  for (const auto& lineno : lines)
+    retval(idx++) = lineno;
 
   retval.resize (dim_vector (1, idx));
 
@@ -173,10 +165,10 @@ all breakpoints within the file are cleared.
 @seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning, debug_on_interrupt}
 @end deftypefn */)
 {
-  octave::bp_table::intmap retmap;
+  octave::bp_table::bp_lines retmap;
   std::string symbol_name = "";  // stays empty for "dbstop if error" etc
   std::string class_name = "";
-  octave::bp_table::intmap lines;
+  octave::bp_table::bp_lines lines;
   std::string condition = "";
   octave_value retval;
 
@@ -191,13 +183,13 @@ all breakpoints within the file are cleared.
                                      class_name, lines, condition);
 
       if (lines.size () == 0)
-        lines[0] = 1;
+        lines.insert (1);
 
       if (symbol_name != "")
         {
           retmap = bptab.add_breakpoint (symbol_name, class_name,
                                          lines, condition);
-          retval = intmap_to_ov (retmap);
+          retval = bp_lines_to_ov (retmap);
         }
     }
   else if (args.length () != 1)
@@ -242,7 +234,7 @@ all breakpoints within the file are cleared.
           std::string unconditional = "";
           for (octave_idx_type i = 0; i < line.numel (); i++)
             {
-              lines [0] = line(i).double_value ();
+              lines.insert (line(i).int_value ());
               bptab.add_breakpoint (name(i).string_value (), "", lines,
                                     (use_cond
                                      ? cond(i).string_value ()
@@ -304,7 +296,7 @@ files.
 {
   std::string symbol_name = "";  // stays empty for "dbclear if error" etc
   std::string class_name = "";
-  octave::bp_table::intmap lines;
+  octave::bp_table::bp_lines lines;
   std::string dummy;             // "if" condition -- only used for dbstop
 
   int nargin = args.length ();
@@ -313,7 +305,8 @@ files.
 
   octave::bp_table& bptab = tw.get_bp_table ();
 
-  bptab.parse_dbfunction_params ("dbclear", args, symbol_name, class_name, lines, dummy);
+  bptab.parse_dbfunction_params ("dbclear", args, symbol_name, class_name,
+                                 lines, dummy);
 
   if (nargin == 1 && symbol_name == "all")
     {

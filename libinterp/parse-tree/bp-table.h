@@ -61,13 +61,13 @@ namespace octave
 
     ~bp_table (void) = default;
 
-    // mapping from (FIXME: arbitrary index??) to line number of breakpoint
-    typedef std::map<int, int> intmap;
+    // Set of breakpoint lines.
+    typedef std::set<int> bp_lines;
 
-    typedef intmap::const_iterator const_intmap_iterator;
-    typedef intmap::iterator intmap_iterator;
+    typedef bp_lines::const_iterator const_bp_lines_iterator;
+    typedef bp_lines::iterator bp_lines_iterator;
 
-    typedef std::map <std::string, intmap> fname_line_map;
+    typedef std::map <std::string, bp_lines> fname_line_map;
 
     typedef fname_line_map::const_iterator const_fname_line_map_iterator;
     typedef fname_line_map::iterator fname_line_map_iterator;
@@ -77,17 +77,25 @@ namespace octave
     typedef fname_bp_map::iterator fname_bp_map_iterator;
 
     // Add a breakpoint at the nearest executable line.
-    intmap add_breakpoint (const std::string& fname = "",
+    int add_breakpoint (const std::string& fname = "",
+                        const std::string& class_name = "",
+                        int line = 1, const std::string& condition = "");
+
+    // Add a set of breakpoints at the nearest executable lines.
+    bp_lines add_breakpoint (const std::string& fname = "",
                            const std::string& class_name = "",
-                           const intmap& lines = intmap (),
+                           const bp_lines& lines = bp_lines (),
                            const std::string& condition = "");
 
-    // Remove a breakpoint from a line in file.
+    // Remove a breakpoint from the given line in file.
+    int remove_breakpoint (const std::string& fname = "", int line = 1);
+
+    // Remove a set of breakpoints from the given lines in file.
     int remove_breakpoint (const std::string& fname = "",
-                           const intmap& lines = intmap ());
+                           const bp_lines& lines = bp_lines ());
 
     // Remove all the breakpoints in a specified file.
-    intmap remove_all_breakpoints_in_file (const std::string& fname,
+    bp_lines remove_all_breakpoints_in_file (const std::string& fname,
                                            bool silent = false);
 
     // Remove all the breakpoints registered with octave.
@@ -127,7 +135,7 @@ namespace octave
 
     void parse_dbfunction_params (const char *who, const octave_value_list& args,
                                   std::string& func_name, std::string& class_name,
-                                  bp_table::intmap& lines, std::string& cond);
+                                  bp_table::bp_lines& lines, std::string& cond);
 
   private:
 
@@ -155,14 +163,14 @@ namespace octave
                           std::set<std::string>& id_list);
 
     bool add_breakpoint_1 (octave_user_code *fcn, const std::string& fname,
-                           const intmap& line, const std::string& condition,
-                           intmap& retval);
+                           const bp_lines& line, const std::string& condition,
+                           bp_lines& retval);
 
     int remove_breakpoint_1 (octave_user_code *fcn, const std::string&,
-                             const intmap& lines);
+                             const bp_lines& lines);
 
-    intmap remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
-                                             const std::string& fname);
+    bp_lines remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
+                                               const std::string& fname);
   };
 }
 

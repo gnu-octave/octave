@@ -499,6 +499,13 @@ namespace octave
       }
   }
 
+  void
+  cdef_object_scalar::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
+  {
+    for (octave_idx_type i = 0; i < map.nfields (); i++)
+      map.contents(i).break_closure_cycles (frame);
+  }
+
   octave_value_list
   cdef_object_scalar::subsref (const std::string& type,
                                const std::list<octave_value_list>& idx,

@@ -477,6 +477,8 @@ namespace octave
 
     void accept (stack_frame_walker& sfw);
 
+    void break_closure_cycles (const std::shared_ptr<stack_frame>& frame);
+
   private:
 
     // User-defined object associated with this stack frame.  Should
@@ -2350,6 +2352,15 @@ namespace octave
   void user_fcn_stack_frame::accept (stack_frame_walker& sfw)
   {
     sfw.visit_user_fcn_stack_frame (*this);
+  }
+
+  void user_fcn_stack_frame::break_closure_cycles (const std::shared_ptr<stack_frame>& frame)
+  {
+    for (auto& val : m_values)
+      val.break_closure_cycles (frame);
+
+    if (m_access_link)
+      m_access_link->break_closure_cycles (frame);
   }
 
   symbol_record scope_stack_frame::insert_symbol (const std::string& name)

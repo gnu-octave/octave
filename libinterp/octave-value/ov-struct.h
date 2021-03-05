@@ -64,6 +64,8 @@ public:
   octave_base_value * clone (void) const { return new octave_struct (*this); }
   octave_base_value * empty_clone (void) const { return new octave_struct (); }
 
+  void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
+
   octave_base_value * try_narrowing_conversion (void);
 
   Cell dotref (const octave_value_list& idx, bool auto_add = false);
@@ -191,6 +193,8 @@ public:
   { return new octave_scalar_struct (*this); }
   octave_base_value * empty_clone (void) const
   { return new octave_scalar_struct (); }
+
+  void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
 
   octave_value dotref (const octave_value_list& idx, bool auto_add = false);
 

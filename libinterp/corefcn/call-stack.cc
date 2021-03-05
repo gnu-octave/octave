@@ -763,6 +763,9 @@ namespace octave
 
         m_curr_frame = caller->index ();
 
+        if (elt->is_closure_context ())
+          elt->break_closure_cycles (elt);
+
         m_cs.pop_back ();
       }
   }

@@ -2969,6 +2969,7 @@ namespace octave
     return get_colon_op_type (typ, limit.builtin_type ());
   }
 
+  // Templated version used for various integer types (int8, uint16, ...)
   template <typename T>
   octave_value
   make_range (const octave_value& base, const octave_value& increment,
@@ -2977,11 +2978,58 @@ namespace octave
     if (base.isempty () || increment.isempty () || limit.isempty ())
       return octave_value (range<T> (), for_cmd_expr);
 
+    double dval;
+
     T base_val = octave_value_extract<T> (base);
+    dval = base.double_value ();
+    if (base_val != dval)
+      error ("colon operator lower bound invalid (not an integer or out of range for given integer type)");
+
     T increment_val = octave_value_extract<T> (increment);
+    dval = increment.double_value ();
+    if (increment_val != dval)
+      error ("colon operator increment invalid (not an integer or out of range for given integer type)");
+
     T limit_val = octave_value_extract<T> (limit);
+    dval = limit.double_value ();
+    if (limit_val != dval)
+      error ("colon operator upper bound invalid (not an integer or out of range for given integer type)");
 
     range<T> r (base_val, increment_val, limit_val);
+
+    return octave_value (r, for_cmd_expr);
+  }
+
+  template <>
+  octave_value
+  make_range<double> (const octave_value& base, const octave_value& increment,
+                      const octave_value& limit, bool for_cmd_expr)
+  {
+    if (base.isempty () || increment.isempty () || limit.isempty ())
+      return octave_value (range<double> (), for_cmd_expr);
+
+    double base_val = base.double_value ();
+    double increment_val = increment.double_value ();
+    double limit_val = limit.double_value ();
+
+    range<double> r (base_val, increment_val, limit_val);
+
+    return octave_value (r, for_cmd_expr);
+  }
+
+  template <>
+  octave_value
+  make_range<float> (const octave_value& base, const octave_value& increment,
+                     const octave_value& limit, bool for_cmd_expr)
+  {
+    if (base.isempty () || increment.isempty () || limit.isempty ())
+      return octave_value (range<float> (), for_cmd_expr);
+
+    float base_val = base.float_value ();
+    float increment_val = increment.float_value ();
+    float limit_val = limit.float_value ();
+
+    range<float> r (base_val, increment_val, limit_val);
 
     return octave_value (r, for_cmd_expr);
   }
@@ -3044,7 +3092,7 @@ namespace octave
           {
             octave_value_list tmp2 = interp.feval (fcn, tmp1, 1);
 
-            return tmp2 (0);
+            return tmp2(0);
           }
       }
 

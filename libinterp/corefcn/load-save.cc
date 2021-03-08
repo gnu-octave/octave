@@ -1769,8 +1769,8 @@ the files for backward compatibility.  This option is only available if Octave
 was built with a link to the zlib libraries.
 @end table
 
-The list of variables to save may use wildcard patterns containing the
-following special characters:
+The list of variables to save may use wildcard patterns (glob patterns)
+containing the following special characters:
 
 @table @code
 @item ?

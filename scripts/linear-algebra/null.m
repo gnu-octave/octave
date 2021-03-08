@@ -55,9 +55,13 @@ function Z = null (A, tol)
   else
     out_cls = class (V);
 
-    s = diag (S);
+    if (rows (A) > 1)
+      s = diag (S);
+    else
+      s = S.';
+    end
     if (nargin == 1)
-      tol = max (size (A)) * s (1) * eps (out_cls);
+      tol = max (size (A)) * s(1) * eps (out_cls);
     endif
     rank = sum (s > tol);
 

@@ -237,7 +237,7 @@ gejsv_lwork<T>::optimal (char& joba, char& jobu, char& jobv,
   std::vector<P> work (2);  // dummy work space
   
   // variables that mimic running environment of gejsv
-  F77_INT lda  = std::max (m, 1);
+  F77_INT lda  = std::max<F77_INT> (m, 1);
   F77_INT ierr = 0;
   char side  = 'L';
   char trans = 'N';
@@ -261,10 +261,10 @@ gejsv_lwork<T>::optimal (char& joba, char& jobu, char& jobv,
     {
       // only SIGMA is needed
       if (! (joba == 'E' || joba == 'G') )
-        lwork = std::max<int> ({2*m + n, n + lw_geqp3, n + lw_geqrf, 7});
+        lwork = std::max<F77_INT> ({2*m + n, n + lw_geqp3, n + lw_geqrf, 7});
       else
-        lwork = std::max<int> ({2*m + n, n + lw_geqp3, n + lw_geqrf,
-                                n + n*n + lw_pocon, 7});
+        lwork = std::max<F77_INT> ({2*m + n, n + lw_geqp3, n + lw_geqrf,
+                                    n + n*n + lw_pocon, 7});
     }
   else if (need_rsvec && ! need_lsvec)
     {
@@ -274,8 +274,8 @@ gejsv_lwork<T>::optimal (char& joba, char& jobu, char& jobv,
       trans = 'T';
       F77_INT lw_ormlq = ormlq_lwork (side, trans, n, n, n, a, lda,
                                       tau, v, n, work.data (), -1, ierr);
-      lwork = std::max<int> ({2*m + n, n + lw_geqp3, n + lw_pocon,
-                              n + lw_gelqf, 2*n + lw_geqrf, n + lw_ormlq});
+      lwork = std::max<F77_INT> ({2*m + n, n + lw_geqp3, n + lw_pocon,
+                                  n + lw_gelqf, 2*n + lw_geqrf, n + lw_ormlq});
     }
   else if (need_lsvec && ! need_rsvec)
     {
@@ -283,15 +283,15 @@ gejsv_lwork<T>::optimal (char& joba, char& jobu, char& jobv,
       F77_INT n1 = (jobu == 'U') ? n : m;  // size of U is m x n1
       F77_INT lw_ormqr = ormqr_lwork (side, trans, m, n1, n, a, lda,
                                       tau, u, m, work.data (), -1, ierr);
-      lwork = std::max<int> ({2*m + n, n + lw_geqp3, n + lw_pocon,
-                              2*n + lw_geqrf, n + lw_ormqr});
+      lwork = std::max<F77_INT> ({2*m + n, n + lw_geqp3, n + lw_pocon,
+                                  2*n + lw_geqrf, n + lw_ormqr});
     }
   else  // full SVD is needed
     {
       if (jobv == 'V')
         lwork = std::max (2*m + n, 6*n + 2*n*n);
       else if (jobv == 'J')
-        lwork = std::max<int> ({2*m + n, 4*n + n*n, 2*n + n*n + 6});
+        lwork = std::max<F77_INT> ({2*m + n, 4*n + n*n, 2*n + n*n + 6});
 
       F77_INT n1 = (jobu == 'U') ? n : m;  // size of U is m x n1
       F77_INT lw_ormqr = ormqr_lwork (side, trans, m, n1, n, a, lda,
@@ -825,7 +825,7 @@ namespace octave
           char jobt = 'N';  // or 'T', but that requires U and V appear together
           char jobp = 'N';  // use 'P' if denormal is poorly implemented.
           
-          std::vector<F77_INT> iwork (std::max (m + 3*n, 1));
+          std::vector<F77_INT> iwork (std::max<F77_INT> (m + 3*n, 1));
 
           gejsv (joba, jobu, jobv, jobr, jobt, jobp, m, n, tmp_data, m1,
                  s_vec, u, vt, nrow_vt1, work, lwork, iwork, info);

@@ -258,6 +258,12 @@ typedef OCTAVE_IDX_TYPE octave_idx_type;
 
 typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
 
+#if OCTAVE_SIZEOF_F77_INT_TYPE == 8
+#  define OCTAVE_F77_INT_TYPE_FORMAT PRId64
+#else
+#  define OCTAVE_F77_INT_TYPE_FORMAT PRId32
+#endif
+
 #define OCTAVE_HAVE_F77_INT_TYPE 1
 
 #if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)

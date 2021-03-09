@@ -85,7 +85,8 @@ Undocumented internal function.
               k++;
 
               if (ierr < 0)
-                error ("__pchip_deriv__: PCHIM failed with ierr = %i", ierr);
+                error ("__pchip_deriv__: PCHIM failed with ierr = %"
+                       OCTAVE_F77_INT_TYPE_FORMAT, ierr);
             }
 
           retval = dmat;
@@ -122,7 +123,8 @@ Undocumented internal function.
               k++;
 
               if (ierr < 0)
-                error ("__pchip_deriv__: DPCHIM failed with ierr = %i", ierr);
+                error ("__pchip_deriv__: DPCHIM failed with ierr = %"
+                       OCTAVE_F77_INT_TYPE_FORMAT, ierr);
             }
 
           retval = dmat;

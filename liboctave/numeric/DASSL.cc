@@ -232,7 +232,8 @@ DASSL::do_integrate (double tout)
           else
             {
               (*current_liboctave_error_handler)
-                ("dassl: invalid value for maximum order: %d", maxord);
+                ("dassl: invalid value for maximum order: %"
+                 OCTAVE_F77_INT_TYPE_FORMAT, maxord);
               integration_error = true;
               return retval;
             }

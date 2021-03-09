@@ -167,8 +167,8 @@ Algorithm Notes: When calculating the full decomposition (left and right
 singular matrices in addition to singular values) there is a choice of two
 routines in @sc{lapack}.  The default routine used by Octave is @code{gesvd}.
 The alternative is @code{gesdd} which is 5X faster, but may use more memory
-and may be inaccurate for some input matrices.  There is a third routine 
-@code{gejsv}, suitable for better accuracy at extreme scale.  See the 
+and may be inaccurate for some input matrices.  There is a third routine
+@code{gejsv}, suitable for better accuracy at extreme scale.  See the
 documentation for @code{svd_driver} for more information on choosing a driver.
 @seealso{svd_driver, svds, eig, lu, chol, hess, qr, qz}
 @end deftypefn */)
@@ -421,8 +421,8 @@ whereas the alternative is of order O(max(M,N)).
 
 The routine @code{gejsv} uses a preconditioned Jacobi SVD algorithm.  Unlike
 @code{gesvd} and @code{gesdd}, in @code{gejsv}, there is no bidiagonalization
-step that could contaminate accuracy in some extreme case. Also, @code{gejsv}
-is shown to be optimally accurate in some sense.  However, the speed is slower
+step that could contaminate accuracy in some extreme cases.  Also, @code{gejsv}
+is known to be optimally accurate in some sense.  However, the speed is slower
 (single threaded at its core) and uses more memory (O(min(M,N) ^ 2 + M + N)).
 
 Beyond speed and memory issues, there have been instances where some input

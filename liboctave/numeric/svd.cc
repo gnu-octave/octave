@@ -62,7 +62,7 @@ public:
 
 private:
   typedef typename T::element_type P;
-  
+
   // functions could be called from GEJSV
   static F77_INT geqp3_lwork (F77_INT m, F77_INT n,
                               P *a, F77_INT lda,
@@ -92,21 +92,19 @@ private:
                               P *work, F77_INT lwork, F77_INT& info);
 };
 
-#define GEJSV_REAL_QP3_LWORK(f, F)                          \
-    F77_XFCN (f, F, (m, n, a, lda, jpvt,                    \
-                     tau, work, lwork, info))
+#define GEJSV_REAL_QP3_LWORK(f, F)                              \
+  F77_XFCN (f, F, (m, n, a, lda, jpvt, tau, work, lwork, info))
 
-#define GEJSV_REAL_QR_LWORK(f, F)                           \
-    F77_XFCN (f, F, (m, n, a, lda,                          \
-                     tau, work, lwork, info))
+#define GEJSV_REAL_QR_LWORK(f, F)                               \
+  F77_XFCN (f, F, (m, n, a, lda, tau, work, lwork, info))
 
-#define GEJSV_REAL_ORM_LWORK(f, F)                          \
-    F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&side,  1),       \
-                     F77_CONST_CHAR_ARG2 (&trans, 1),       \
-                     m, n, k, a, lda, tau,                  \
-                     c, ldc, work, lwork, info              \
-                     F77_CHAR_ARG_LEN (1)                   \
-                     F77_CHAR_ARG_LEN (1)))
+#define GEJSV_REAL_ORM_LWORK(f, F)                              \
+  F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&side,  1),             \
+                   F77_CONST_CHAR_ARG2 (&trans, 1),             \
+                   m, n, k, a, lda, tau,                        \
+                   c, ldc, work, lwork, info                    \
+                   F77_CHAR_ARG_LEN (1)                         \
+                   F77_CHAR_ARG_LEN (1)))
 
 // For Matrix
 template<>
@@ -235,7 +233,7 @@ gejsv_lwork<T>::optimal (char& joba, char& jobu, char& jobv,
 {
   F77_INT lwork = -1;
   std::vector<P> work (2);  // dummy work space
-  
+
   // variables that mimic running environment of gejsv
   F77_INT lda  = std::max<F77_INT> (m, 1);
   F77_INT ierr = 0;
@@ -331,23 +329,23 @@ namespace octave
     // GESVD specializations
 
 #define GESVD_REAL_STEP(f, F)                                   \
-    F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobu, 1),            \
-                     F77_CONST_CHAR_ARG2 (&jobv, 1),            \
-                     m, n, tmp_data, m1, s_vec, u, m1, vt,      \
-                     nrow_vt1, work.data (), lwork, info        \
-                     F77_CHAR_ARG_LEN (1)                       \
-                     F77_CHAR_ARG_LEN (1)))
+  F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobu, 1),              \
+                   F77_CONST_CHAR_ARG2 (&jobv, 1),              \
+                   m, n, tmp_data, m1, s_vec, u, m1, vt,        \
+                   nrow_vt1, work.data (), lwork, info          \
+                   F77_CHAR_ARG_LEN (1)                         \
+                   F77_CHAR_ARG_LEN (1)))
 
 #define GESVD_COMPLEX_STEP(f, F, CMPLX_ARG)             \
-    F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobu, 1),    \
-                     F77_CONST_CHAR_ARG2 (&jobv, 1),    \
-                     m, n, CMPLX_ARG (tmp_data),        \
-                     m1, s_vec, CMPLX_ARG (u), m1,      \
-                     CMPLX_ARG (vt), nrow_vt1,          \
-                     CMPLX_ARG (work.data ()),          \
-                     lwork, rwork.data (), info         \
-                     F77_CHAR_ARG_LEN (1)               \
-                     F77_CHAR_ARG_LEN (1)))
+  F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobu, 1),      \
+                   F77_CONST_CHAR_ARG2 (&jobv, 1),      \
+                   m, n, CMPLX_ARG (tmp_data),          \
+                   m1, s_vec, CMPLX_ARG (u), m1,        \
+                   CMPLX_ARG (vt), nrow_vt1,            \
+                   CMPLX_ARG (work.data ()),            \
+                   lwork, rwork.data (), info           \
+                   F77_CHAR_ARG_LEN (1)                 \
+                   F77_CHAR_ARG_LEN (1)))
 
     // DGESVD
     template<>
@@ -583,9 +581,9 @@ namespace octave
                         F77_INT& lwork, std::vector<F77_INT>& iwork,
                         F77_INT& info)
     {
-      lwork = gejsv_lwork<Matrix>::optimal(joba, jobu, jobv, m, n);
+      lwork = gejsv_lwork<Matrix>::optimal (joba, jobu, jobv, m, n);
       work.reserve (lwork);
-      
+
       GEJSV_REAL_STEP (dgejsv, DGEJSV);
     }
 
@@ -600,7 +598,7 @@ namespace octave
                              F77_INT& lwork, std::vector<F77_INT>& iwork,
                              F77_INT& info)
     {
-      lwork = gejsv_lwork<FloatMatrix>::optimal(joba, jobu, jobv, m, n);
+      lwork = gejsv_lwork<FloatMatrix>::optimal (joba, jobu, jobv, m, n);
       work.reserve (lwork);
 
       GEJSV_REAL_STEP (sgejsv, SGEJSV);
@@ -622,13 +620,13 @@ namespace octave
       work.reserve (2);
 
       GEJSV_COMPLEX_STEP (zgejsv, ZGEJSV, F77_DBLE_CMPLX_ARG);
-      
+
       lwork = static_cast<F77_INT> (work[0].real ());
       work.reserve (lwork);
-      
+
       lrwork = static_cast<F77_INT> (rwork[0]);
       rwork.reserve (lrwork);
-      
+
       F77_INT liwork = static_cast<F77_INT> (iwork[0]);
       iwork.reserve (liwork);
 
@@ -651,13 +649,13 @@ namespace octave
       work.reserve (2);
 
       GEJSV_COMPLEX_STEP (cgejsv, CGEJSV, F77_CMPLX_ARG);
-      
+
       lwork = static_cast<F77_INT> (work[0].real ());
       work.reserve (lwork);
-      
+
       lrwork = static_cast<F77_INT> (rwork[0]);
       rwork.reserve (lrwork);
-      
+
       F77_INT liwork = static_cast<F77_INT> (iwork[0]);
       iwork.reserve (liwork);
 
@@ -805,7 +803,7 @@ namespace octave
               u  = right_sm.fortran_vec ();
               vt = left_sm.fortran_vec ();
             }
-          
+
           // translate jobu and jobv from gesvd to gejsv.
           assert ('A' <= jobu && jobu <= 'S' && 'A' <= jobv && jobv <= 'S');
           char job_svd2jsv[1 + 'S' - 'A'][2] = {0};
@@ -819,22 +817,22 @@ namespace octave
           job_svd2jsv['N' - 'A'][1] = 'N';
           jobu = job_svd2jsv[jobu - 'A'][0];
           jobv = job_svd2jsv[jobv - 'A'][1];
-          
+
           char joba = 'F';  // 'F': most conservative
           char jobr = 'R';  // 'R' is recommended.
           char jobt = 'N';  // or 'T', but that requires U and V appear together
           char jobp = 'N';  // use 'P' if denormal is poorly implemented.
-          
+
           std::vector<F77_INT> iwork (std::max<F77_INT> (m + 3*n, 1));
 
           gejsv (joba, jobu, jobv, jobr, jobt, jobp, m, n, tmp_data, m1,
                  s_vec, u, vt, nrow_vt1, work, lwork, iwork, info);
-          
+
           if (iwork[2] == 1)
             (*current_liboctave_warning_with_id_handler)
             ("Octave:convergence", "svd: (driver: GEJSV) "
              "Denormal occured, possible loss of accuracy.");
-          
+
           if (info < 0)
             (*current_liboctave_error_handler)
             ("svd: (driver: GEJSV) Illegal argument at #%d",

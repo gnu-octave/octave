@@ -1365,14 +1365,19 @@ Array<T>::assign (const Array<idx_vector>& ia,
           // dimension mismatch, unless LHS and RHS both empty
           bool lhsempty, rhsempty;
           lhsempty = rhsempty = false;
+          dim_vector lhs_dv = dim_vector::alloc (ial);
           for (int i = 0; i < ial; i++)
             {
               octave_idx_type l = ia(i).length (rdv(i));
+              lhs_dv(i) = l;
               lhsempty = lhsempty || (l == 0);
               rhsempty = rhsempty || (rhdv(j++) == 0);
             }
           if (! lhsempty || ! rhsempty)
-            octave::err_nonconformant ("=", dv, rhdv);
+            {
+              lhs_dv.chop_trailing_singletons ();
+              octave::err_nonconformant ("=", lhs_dv, rhdv);
+            }
         }
     }
 }

@@ -80,11 +80,13 @@ namespace QtHandles
                                char format = 'f',                             \
                                int precision = 4)                             \
   {                                                                           \
+    type ten = 10;                                                            \
     if (format == 'n')                                                        \
       {                                                                       \
         if (d == floor (d))                                                   \
           return QString::number (d, 'g', precision);                         \
-        else if (d <= pow (10, precision - 1) && d > pow (10, 1 - precision)) \
+        else if (d <= pow (ten, precision - 1)                                \
+                 && d > pow (ten, 1 - precision))                             \
           return QString::number (d, 'f', precision);                         \
         else                                                                  \
           return QString::number (d, 'e', precision);                         \
@@ -92,7 +94,7 @@ namespace QtHandles
     else if (format == 'F')                                                   \
       {                                                                       \
         int exponent = floor (log10 (d) / 3) * 3;                             \
-        d *= pow (10, -exponent);                                             \
+        d *= pow (ten, -exponent);                                            \
         return QString::number (d, 'f', precision) + "e" +                    \
           (exponent < 0 ? "-" : "+") +                                        \
           QString ("%1").arg (abs (exponent), 3, 10, QChar ('0'));            \
@@ -100,7 +102,7 @@ namespace QtHandles
     else if (format == 'E')                                                   \
       {                                                                       \
         int exponent = floor (log10 (d) / 3) * 3;                             \
-        d *=  pow (10, -exponent);                                            \
+        d *=  pow (ten, -exponent);                                           \
         return QString::number (d,                                            \
                                 'f',                                          \
                                 precision - floor (log10 (d)) - 1) +          \

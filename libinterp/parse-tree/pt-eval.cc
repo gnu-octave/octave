@@ -1565,6 +1565,12 @@ namespace octave
         octave_value ov_fcn
           = symtab.find_scoped_function (fcn_name, curr_scope);
 
+        // If name is operator, we are in Fstr2func, so skip the stack
+        // frame for that function.
+
+        bool skip_first = name_is_operator;
+        octave_function *curr_fcn = current_function (skip_first);
+
         if (ov_fcn.is_defined ())
           {
             octave_function *fcn = ov_fcn.function_value ();
@@ -1578,6 +1584,17 @@ namespace octave
 
                     std::shared_ptr<stack_frame> frame
                       = m_call_stack.get_current_stack_frame ();
+
+                    // If we are creating a handle to the current
+                    // function, then use the calling stack frame as the
+                    // context.
+
+                    std::string curr_fcn_name;
+                    if (curr_fcn)
+                      curr_fcn_name = curr_fcn->name ();
+
+                    if (fcn_name == curr_fcn_name)
+                      frame = frame->access_link ();
 
                     octave_fcn_handle *fh
                       = new octave_fcn_handle (ov_fcn, fcn_name, frame);
@@ -1600,12 +1617,6 @@ namespace octave
                 return octave_value (fh);
               }
           }
-
-        // If name is operator, we are in Fstr2func, so skip the stack
-        // frame for that function.
-
-        bool skip_first = name_is_operator;
-        octave_function *curr_fcn = current_function (skip_first);
 
         if (curr_fcn && (curr_fcn->is_class_method ()
                          || curr_fcn->is_class_constructor ()))

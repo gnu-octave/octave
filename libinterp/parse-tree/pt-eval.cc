@@ -193,6 +193,7 @@ namespace octave
           }
         catch (const interrupt_exception&)
           {
+            octave_interrupt_state = 1;
             m_interpreter.recover_from_exception ();
 
             // Required newline when the user does Ctrl+C at the prompt.
@@ -506,7 +507,8 @@ namespace octave
         // If there is no enclosing debug level or the top-level
         // repl is not active, handle dbquit the same as dbcont.
 
-        if (m_level > 0 || m_interpreter.in_top_level_repl ())
+        if (m_level > 0 || m_interpreter.server_mode ()
+            || m_interpreter.in_top_level_repl ())
           throw quit_debug_exception ();
         else
           return true;
@@ -517,7 +519,7 @@ namespace octave
         // If the top-level repl is not active, handle "dbquit all"
         // the same as dbcont.
 
-        if (m_interpreter.in_top_level_repl ())
+        if (m_interpreter.server_mode () || m_interpreter.in_top_level_repl ())
           throw quit_debug_exception (true);
         else
           return true;
@@ -793,6 +795,7 @@ namespace octave
           }
         catch (const interrupt_exception&)
           {
+            octave_interrupt_state = 1;
             m_interpreter.recover_from_exception ();
 
             m_parser->reset ();
@@ -830,6 +833,13 @@ namespace octave
                 m_exit_status = 1;
                 break;
               }
+          }
+        catch (const quit_debug_exception&)
+          {
+            octave_interrupt_state = 1;
+            m_interpreter.recover_from_exception ();
+
+            m_parser->reset ();
           }
         catch (const std::bad_alloc&)
           {
@@ -3178,6 +3188,8 @@ namespace octave
 
     if (echo ())
       push_echo_state (tree_evaluator::ECHO_SCRIPTS, file_name);
+
+    // FIXME: Should we be using tree_evaluator::eval here?
 
     cmd_list->accept (*this);
 

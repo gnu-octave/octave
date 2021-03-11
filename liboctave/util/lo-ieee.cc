@@ -56,24 +56,6 @@ __lo_ieee_is_NA (double x)
           && t.word[lo_ieee_lw] == LO_IEEE_NA_LW) ? 1 : 0;
 }
 
-int
-__lo_ieee_is_old_NA (double x)
-{
-  lo_ieee_double t;
-  t.value = x;
-  return (__lo_ieee_isnan (x) && t.word[lo_ieee_lw] == LO_IEEE_NA_LW_OLD
-          && t.word[lo_ieee_hw] == LO_IEEE_NA_HW_OLD) ? 1 : 0;
-}
-
-double
-__lo_ieee_replace_old_NA (double x)
-{
-  if (__lo_ieee_is_old_NA (x))
-    return lo_ieee_na_value ();
-  else
-    return x;
-}
-
 double
 lo_ieee_inf_value (void)
 {

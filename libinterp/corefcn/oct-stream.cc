@@ -6338,36 +6338,6 @@ namespace octave
       m_rep->close ();
   }
 
-  // FIXME: maybe these should be defined in lo-ieee.h?
-
-  template <typename T>
-  static inline bool
-  is_old_NA (T)
-  {
-    return false;
-  }
-
-  template <>
-  inline bool
-  is_old_NA<double> (double val)
-  {
-    return __lo_ieee_is_old_NA (val);
-  }
-
-  template <typename T>
-  static inline T
-  replace_old_NA (T val)
-  {
-    return val;
-  }
-
-  template <>
-  inline double
-  replace_old_NA<double> (double val)
-  {
-    return __lo_ieee_replace_old_NA (val);
-  }
-
   template <typename SRC_T, typename DST_T>
   static octave_value
   convert_and_copy (std::list<void *>& input_buf_list,
@@ -6403,12 +6373,14 @@ namespace octave
                                                   1, from_flt_fmt,
                                                   mach_info::native_float_format ());
 
-                    dst_elt_type tmp (data[i]);
+                    // FIXME: Potentially add conversion code for MIPS NA here
+                    //        Bug #59830.
+                    // dst_elt_type tmp (data[i]);
+                    // if (is_MIPS_NA (tmp))
+                    //  tmp = replace_MIPS_NA (tmp);
+                    // conv_data[j] = tmp;
 
-                    if (is_old_NA (tmp))
-                      tmp = replace_old_NA (tmp);
-
-                    conv_data[j] = tmp;
+                    conv_data[j] = data[i];
                   }
               }
             else
@@ -6434,12 +6406,8 @@ namespace octave
                 for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
                      i++, j++)
                   {
-                    dst_elt_type tmp (data[i]);
-
-                    if (is_old_NA (tmp))
-                      tmp = replace_old_NA (tmp);
-
-                    conv_data[j] = tmp;
+                    // FIXME: Potentially add conversion code for MIPS NA here
+                    conv_data[j] = data[i];
                   }
               }
             else

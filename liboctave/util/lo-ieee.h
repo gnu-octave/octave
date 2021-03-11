@@ -84,8 +84,6 @@ inline int __lo_ieee_finite (double x) { return std::isfinite (x); }
 inline int __lo_ieee_isinf (double x) { return std::isinf (x); }
 
 extern OCTAVE_API int __lo_ieee_is_NA (double);
-extern OCTAVE_API int __lo_ieee_is_old_NA (double);
-extern OCTAVE_API double __lo_ieee_replace_old_NA (double);
 
 extern OCTAVE_API double lo_ieee_inf_value (void);
 extern OCTAVE_API double lo_ieee_na_value (void);

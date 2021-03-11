@@ -67,8 +67,6 @@ typedef union
   unsigned int word;
 } lo_ieee_float;
 
-#define LO_IEEE_NA_HW_OLD 0x7ff00000
-#define LO_IEEE_NA_LW_OLD 1954
 #if defined (HAVE_MIPS_NAN)
   #define LO_IEEE_NA_HW 0x7FF040F4
 #else

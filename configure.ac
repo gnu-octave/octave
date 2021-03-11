@@ -1328,7 +1328,7 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 
 OCTAVE_CHECK_LIB(qhull, QHull,
   [Qhull library not found.  This will result in loss of functionality for some geometry functions.],
-  [libqhull/libqhull.h qhull/libqhull.h libqhull.h qhull/qhull.h qhull.h],
+  [libqhull.h libqhull/libqhull.h qhull/libqhull.h qhull.h qhull/qhull.h],
   [qh_qhull], [], [],
   [warn_qhull=
   OCTAVE_CHECK_QHULL_VERSION
@@ -1626,7 +1626,7 @@ CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(glpk, GLPK,
   [GLPK library not found.  The glpk function for solving linear programs will be disabled.],
-  [glpk/glpk.h glpk.h], [glp_simplex], [], [],
+  [glpk.h glpk/glpk.h], [glp_simplex], [], [],
   [warn_glpk=
    OCTAVE_CHECK_LIB_GLPK_OK(
     [AC_DEFINE(HAVE_GLPK, 1, [Define to 1 if GLPK is available.])],
@@ -2107,7 +2107,7 @@ LIBS="$SUITESPARSECONFIG_LIBS $LIBS"
 
 OCTAVE_CHECK_LIB(amd, AMD,
   [AMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/amd.h ufsparse/amd.h amd/amd.h amd.h],
+  [amd.h suitesparse/amd.h ufsparse/amd.h amd/amd.h],
   [amd_postorder],
   [], [don't use AMD library, disable some sparse matrix functionality])
 
@@ -2115,7 +2115,7 @@ OCTAVE_CHECK_LIB(amd, AMD,
 
 OCTAVE_CHECK_LIB(camd, CAMD,
   [CAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/camd.h ufsparse/camd.h camd/camd.h camd.h],
+  [camd.h suitesparse/camd.h ufsparse/camd.h camd/camd.h],
   [camd_postorder],
   [], [don't use CAMD library, disable some sparse matrix functionality])
 
@@ -2123,7 +2123,7 @@ OCTAVE_CHECK_LIB(camd, CAMD,
 
 OCTAVE_CHECK_LIB(colamd, COLAMD,
   [COLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/colamd.h ufsparse/colamd.h colamd/colamd.h colamd.h],
+  [colamd.h suitesparse/colamd.h ufsparse/colamd.h colamd/colamd.h],
   [colamd],
   [], [don't use COLAMD library, disable some sparse matrix functionality])
 
@@ -2131,7 +2131,7 @@ OCTAVE_CHECK_LIB(colamd, COLAMD,
 
 OCTAVE_CHECK_LIB(ccolamd, CCOLAMD,
   [CCOLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/ccolamd.h ufsparse/ccolamd.h ccolamd/ccolamd.h ccolamd.h],
+  [ccolamd.h suitesparse/ccolamd.h ufsparse/ccolamd.h ccolamd/ccolamd.h],
   [ccolamd],
   [], [don't use CCOLAMD library, disable some sparse matrix functionality])
 
@@ -2143,7 +2143,7 @@ save_LIBS="$LIBS"
 LIBS="$COLAMD_LDFLAGS $COLAMD_LIBS $AMD_LDFLAGS $AMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIB(cholmod, CHOLMOD,
   [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h],
+  [cholmod.h suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h],
   [cholmod${CHOLMOD_TAG}start],
   [], [don't use CHOLMOD library, disable some sparse matrix functionality])
 LIBS="$save_LIBS"
@@ -2154,7 +2154,7 @@ save_LIBS="$LIBS"
 LIBS="$CHOLMOD_LIBS $LIBS"
 OCTAVE_CHECK_LIB(spqr, SPQR,
   [SPQR library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/SuiteSparseQR.hpp SuiteSparseQR.hpp],
+  [SuiteSparseQR.hpp suitesparse/SuiteSparseQR.hpp],
   [SuiteSparseQR_C],
   [C++], [don't use SPQR library, disable some sparse matrix functionality])
 LIBS="$save_LIBS"
@@ -2163,7 +2163,7 @@ LIBS="$save_LIBS"
 
 OCTAVE_CHECK_LIB(cxsparse, CXSparse,
   [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/cs.h ufsparse/cs.h cxsparse/cs.h cs.h],
+  [cs.h suitesparse/cs.h ufsparse/cs.h cxsparse/cs.h],
   [cs${CXSPARSE_TAG}sqr],
   [C++], [don't use CXSparse library, disable some sparse matrix functionality])
 
@@ -2185,7 +2185,7 @@ LIBS="$AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
 CPPFLAGS="$AMD_CPPFLAGS $CPPFLAGS"
 OCTAVE_CHECK_LIB([umfpack], UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
+  [umfpack.h suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h],
   [umfpack${UMFPACK_TAG}get_determinant],
   [], [don't use UMFPACK, disable some sparse matrix functionality])
 CPPFLAGS="$save_CPPFLAGS"
@@ -2199,7 +2199,7 @@ if test -z "$UMFPACK_LIBS"; then
   LIBS="-lcblas $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   OCTAVE_CHECK_LIB([umfpack], UMFPACK,
     [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
-    [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
+    [umfpack.h suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h],
     [umfpack${UMFPACK_TAG}get_determinant],
     [], [don't use UMFPACK, disable some sparse matrix functionality])
   if test -n "$UMFPACK_LIBS"; then
@@ -2212,7 +2212,7 @@ fi
 
 OCTAVE_CHECK_LIB(klu, KLU,
   [KLU library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/klu.h ufsparse/klu.h klu/klu.h klu.h], [klu_solve],
+  [klu.h suitesparse/klu.h ufsparse/klu.h klu/klu.h], [klu_solve],
   [], [don't use KLU library, disable some sparse matrix functionality])
 
 ### SUITESPARSECONFIG_LIBS added to LIBS above.
@@ -2255,7 +2255,7 @@ fi
 
 OCTAVE_CHECK_LIB(sundials_nvecserial, [SUNDIALS NVECTOR],
   [SUNDIALS NVECTOR serial library not found.  The solvers ode15i and ode15s will be disabled.],
-  [nvector/nvector_serial.h nvector_serial.h ], [N_VNew_Serial],
+  [nvector_serial.h nvector/nvector_serial.h], [N_VNew_Serial],
   [], [don't use SUNDIALS NVECTOR library, disable solvers ode15i and ode15s])
 
 ### Check for SUNDIALS IDA library and header.
@@ -2270,7 +2270,7 @@ if test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
   CPPFLAGS="$SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
   OCTAVE_CHECK_LIB(sundials_ida, [SUNDIALS IDA],
     [SUNDIALS IDA library not found.  The solvers ode15i and ode15s will be disabled.],
-    [ida/ida.h ida.h], [IDAInit],
+    [ida.h ida/ida.h], [IDAInit],
     [], [don't use SUNDIALS IDA library, disable solvers ode15i and ode15s])
   CPPFLAGS="$save_CPPFLAGS"
   LDFLAGS="$save_LDFLAGS"

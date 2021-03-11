@@ -2107,7 +2107,7 @@ LIBS="$SUITESPARSECONFIG_LIBS $LIBS"
 
 OCTAVE_CHECK_LIB(amd, AMD,
   [AMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [amd.h suitesparse/amd.h ufsparse/amd.h amd/amd.h],
+  [amd.h suitesparse/amd.h amd/amd.h],
   [amd_postorder],
   [], [don't use AMD library, disable some sparse matrix functionality])
 
@@ -2115,7 +2115,7 @@ OCTAVE_CHECK_LIB(amd, AMD,
 
 OCTAVE_CHECK_LIB(camd, CAMD,
   [CAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [camd.h suitesparse/camd.h ufsparse/camd.h camd/camd.h],
+  [camd.h suitesparse/camd.h camd/camd.h],
   [camd_postorder],
   [], [don't use CAMD library, disable some sparse matrix functionality])
 
@@ -2123,7 +2123,7 @@ OCTAVE_CHECK_LIB(camd, CAMD,
 
 OCTAVE_CHECK_LIB(colamd, COLAMD,
   [COLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [colamd.h suitesparse/colamd.h ufsparse/colamd.h colamd/colamd.h],
+  [colamd.h suitesparse/colamd.h colamd/colamd.h],
   [colamd],
   [], [don't use COLAMD library, disable some sparse matrix functionality])
 
@@ -2131,7 +2131,7 @@ OCTAVE_CHECK_LIB(colamd, COLAMD,
 
 OCTAVE_CHECK_LIB(ccolamd, CCOLAMD,
   [CCOLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [ccolamd.h suitesparse/ccolamd.h ufsparse/ccolamd.h ccolamd/ccolamd.h],
+  [ccolamd.h suitesparse/ccolamd.h ccolamd/ccolamd.h],
   [ccolamd],
   [], [don't use CCOLAMD library, disable some sparse matrix functionality])
 
@@ -2143,7 +2143,7 @@ save_LIBS="$LIBS"
 LIBS="$COLAMD_LDFLAGS $COLAMD_LIBS $AMD_LDFLAGS $AMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIB(cholmod, CHOLMOD,
   [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [cholmod.h suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h],
+  [cholmod.h suitesparse/cholmod.h cholmod/cholmod.h],
   [cholmod${CHOLMOD_TAG}start],
   [], [don't use CHOLMOD library, disable some sparse matrix functionality])
 LIBS="$save_LIBS"
@@ -2163,7 +2163,7 @@ LIBS="$save_LIBS"
 
 OCTAVE_CHECK_LIB(cxsparse, CXSparse,
   [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
-  [cs.h suitesparse/cs.h ufsparse/cs.h cxsparse/cs.h],
+  [cs.h suitesparse/cs.h cxsparse/cs.h],
   [cs${CXSPARSE_TAG}sqr],
   [C++], [don't use CXSparse library, disable some sparse matrix functionality])
 
@@ -2185,7 +2185,7 @@ LIBS="$AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
 CPPFLAGS="$AMD_CPPFLAGS $CPPFLAGS"
 OCTAVE_CHECK_LIB([umfpack], UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
-  [umfpack.h suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h],
+  [umfpack.h suitesparse/umfpack.h umfpack/umfpack.h],
   [umfpack${UMFPACK_TAG}get_determinant],
   [], [don't use UMFPACK, disable some sparse matrix functionality])
 CPPFLAGS="$save_CPPFLAGS"
@@ -2199,7 +2199,7 @@ if test -z "$UMFPACK_LIBS"; then
   LIBS="-lcblas $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   OCTAVE_CHECK_LIB([umfpack], UMFPACK,
     [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
-    [umfpack.h suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h],
+    [umfpack.h suitesparse/umfpack.h umfpack/umfpack.h],
     [umfpack${UMFPACK_TAG}get_determinant],
     [], [don't use UMFPACK, disable some sparse matrix functionality])
   if test -n "$UMFPACK_LIBS"; then
@@ -2212,7 +2212,7 @@ fi
 
 OCTAVE_CHECK_LIB(klu, KLU,
   [KLU library not found.  This will result in some lack of functionality for sparse matrices.],
-  [klu.h suitesparse/klu.h ufsparse/klu.h klu/klu.h], [klu_solve],
+  [klu.h suitesparse/klu.h klu/klu.h], [klu_solve],
   [], [don't use KLU library, disable some sparse matrix functionality])
 
 ### SUITESPARSECONFIG_LIBS added to LIBS above.

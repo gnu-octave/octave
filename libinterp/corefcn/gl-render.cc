@@ -28,6 +28,7 @@
 #endif
 
 #include <limits>
+#include <memory>
 #include <sstream>
 
 #if defined (HAVE_WINDOWS_H)
@@ -37,7 +38,6 @@
 
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
-#include "oct-refcount.h"
 
 #include "errwarn.h"
 #include "gl-render.h"
@@ -94,92 +94,84 @@ namespace octave
 #  define CALLBACK
 #endif
 
-  class
-  opengl_texture
+  class opengl_texture
   {
-  protected:
+  private:
+
     class texture_rep
     {
     public:
+
       texture_rep (opengl_functions& glfcns)
-        : m_glfcns (glfcns), id (), w (), h (), tw (), th (), tx (), ty (),
-          valid (false), count (1)
+        : m_glfcns (glfcns), m_id (), m_w (), m_h (), m_tw (), m_th (),
+          m_tx (), m_ty (), m_valid (false)
       { }
 
-      texture_rep (opengl_functions& glfcns, GLuint id_arg,
-                   int w_arg, int h_arg, int tw_arg, int th_arg)
-        : m_glfcns (glfcns), id (id_arg), w (w_arg), h (h_arg),
-          tw (tw_arg), th (th_arg), tx (double(w)/tw), ty (double(h)/th),
-          valid (true), count (1)
+      texture_rep (opengl_functions& glfcns, GLuint id, int w, int h,
+                   int tw, int th)
+        : m_glfcns (glfcns), m_id (id), m_w (w), m_h (h), m_tw (tw), m_th (th),
+          m_tx (double(m_w)/m_tw), m_ty (double(m_h)/m_th), m_valid (true)
       { }
 
       ~texture_rep (void)
       {
-        if (valid)
-          m_glfcns.glDeleteTextures (1, &id);
+        if (m_valid)
+          m_glfcns.glDeleteTextures (1, &m_id);
       }
 
       void bind (int mode) const
-      { if (valid) m_glfcns.glBindTexture (mode, id); }
+      {
+        if (m_valid)
+          m_glfcns.glBindTexture (mode, m_id);
+      }
 
       void tex_coord (double q, double r) const
-      { if (valid) m_glfcns.glTexCoord2d (q*tx, r*ty); }
+      {
+        if (m_valid)
+          m_glfcns.glTexCoord2d (q*m_tx, r*m_ty);
+      }
 
       opengl_functions& m_glfcns;
-      GLuint id;
-      int w, h;
-      int tw, th;
-      double tx, ty;
-      bool valid;
-      refcount<octave_idx_type> count;
+      GLuint m_id;
+      int m_w, m_h;
+      int m_tw, m_th;
+      double m_tx, m_ty;
+      bool m_valid;
     };
 
-    texture_rep *rep;
-
-  private:
-    opengl_texture (texture_rep *_rep) : rep (_rep) { }
-
   public:
+
     opengl_texture (opengl_functions& glfcns)
-      : rep (new texture_rep (glfcns)) { }
+      : m_rep (new texture_rep (glfcns))
+    { }
 
-    opengl_texture (const opengl_texture& tx)
-      : rep (tx.rep)
-    {
-      rep->count++;
-    }
+    opengl_texture (opengl_functions& glfcns, GLuint id, int w, int h,
+                    int tw, int th)
+      : m_rep (new texture_rep (glfcns, id, w, h, tw, th))
+    { }
 
-    ~opengl_texture (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+    opengl_texture (const opengl_texture&) = default;
 
-    opengl_texture& operator = (const opengl_texture& tx)
-    {
-      if (&tx != this)
-        {
-          if (--rep->count == 0)
-            delete rep;
+    ~opengl_texture (void) = default;
 
-          rep = tx.rep;
-          rep->count++;
-        }
-
-      return *this;
-    }
+    opengl_texture& operator = (const opengl_texture&) = default;
 
     static opengl_texture create (opengl_functions& glfcns,
                                   const octave_value& data);
 
-    void bind (int mode = GL_TEXTURE_2D) const
-    { rep->bind (mode); }
+    void bind (int mode = GL_TEXTURE_2D) const { m_rep->bind (mode); }
 
-    void tex_coord (double q, double r) const
-    { rep->tex_coord (q, r); }
+    void tex_coord (double q, double r) const { m_rep->tex_coord (q, r); }
 
-    bool is_valid (void) const
-    { return rep->valid; }
+    bool is_valid (void) const { return m_rep->m_valid; }
+
+  private:
+
+    opengl_texture (const std::shared_ptr<texture_rep>& new_rep)
+      : m_rep (new_rep)
+    { }
+
+    std::shared_ptr<texture_rep> m_rep;
   };
 
   opengl_texture
@@ -315,7 +307,7 @@ namespace octave
             if (glfcns.glGetError () != GL_NO_ERROR)
               warning ("opengl_texture::create: OpenGL error while generating texture data");
             else
-              retval = opengl_texture (new texture_rep (glfcns, id, w, h, tw, th));
+              retval = opengl_texture (glfcns, id, w, h, tw, th);
           }
       }
     else
@@ -428,87 +420,69 @@ namespace octave
     bool fill;
   };
 
-  class
-  vertex_data
+  class vertex_data
   {
   public:
+
     class vertex_data_rep
     {
     public:
-      Matrix coords;
-      Matrix color;
-      Matrix vertex_normal;
-      Matrix face_normal;
-      double alpha;
-      float ambient;
-      float diffuse;
-      float specular;
-      float specular_exp;
-      float specular_color_refl;
-
-      // reference counter
-      refcount<octave_idx_type> count;
 
       vertex_data_rep (void)
-        : coords (), color (), vertex_normal (), face_normal (), alpha (),
-          ambient (), diffuse (), specular (), specular_exp (),
-          specular_color_refl (), count (1) { }
+        : m_coords (), m_color (), m_vertex_normal (), m_face_normal (),
+          m_alpha (), m_ambient (), m_diffuse (), m_specular (),
+          m_specular_exp (), m_specular_color_refl ()
+      { }
 
       vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& vn,
                        const Matrix& fn, double a, float as, float ds, float ss,
                        float se, float scr)
-        : coords (c), color (col), vertex_normal (vn), face_normal (fn),
-          alpha (a), ambient (as), diffuse (ds), specular (ss),
-          specular_exp (se), specular_color_refl (scr), count (1) { }
+        : m_coords (c), m_color (col), m_vertex_normal (vn),
+          m_face_normal (fn), m_alpha (a), m_ambient (as), m_diffuse (ds),
+          m_specular (ss), m_specular_exp (se), m_specular_color_refl (scr)
+      { }
+
+      Matrix m_coords;
+      Matrix m_color;
+      Matrix m_vertex_normal;
+      Matrix m_face_normal;
+      double m_alpha;
+      float m_ambient;
+      float m_diffuse;
+      float m_specular;
+      float m_specular_exp;
+      float m_specular_color_refl;
     };
 
-  private:
-    vertex_data_rep *rep;
-
-    vertex_data_rep * nil_rep (void) const
-    {
-      static vertex_data_rep *nr = new vertex_data_rep ();
-
-      return nr;
-    }
-
   public:
-    vertex_data (void) : rep (nil_rep ())
-    { rep->count++; }
 
-    vertex_data (const vertex_data& v) : rep (v.rep)
-    { rep->count++; }
+    // Required to instantiate std::list<vertex_data> objects.
+    vertex_data (void) : m_rep (nil_rep ()) { }
 
     vertex_data (const Matrix& c, const Matrix& col, const Matrix& vn,
                  const Matrix& fn, double a, float as, float ds, float ss,
                  float se, float scr)
-      : rep (new vertex_data_rep (c, col, vn, fn, a, as, ds, ss, se, scr))
+      : m_rep (new vertex_data_rep (c, col, vn, fn, a, as, ds, ss, se, scr))
     { }
 
-    vertex_data (vertex_data_rep *new_rep)
-      : rep (new_rep) { }
+    vertex_data (const vertex_data&) = default;
 
-    ~vertex_data (void)
+    ~vertex_data (void) = default;
+
+    vertex_data& operator = (const vertex_data&) = default;
+
+    vertex_data_rep * get_rep (void) const { return m_rep.get (); }
+
+  private:
+
+    static std::shared_ptr<vertex_data_rep> nil_rep (void)
     {
-      if (--rep->count == 0)
-        delete rep;
+      static std::shared_ptr<vertex_data_rep> nr (new vertex_data_rep ());
+
+      return nr;
     }
 
-    vertex_data& operator = (const vertex_data& v)
-    {
-      if (&v != this)
-        {
-          if (--rep->count == 0)
-            delete rep;
-
-          rep = v.rep;
-          rep->count++;
-        }
-
-      return *this;
-    }
-
-    vertex_data_rep * get_rep (void) const { return rep; }
+    std::shared_ptr<vertex_data_rep> m_rep;
   };
 
   class
@@ -556,18 +530,18 @@ namespace octave
 
       vertex_data::vertex_data_rep *v
         = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
-      //printf ("patch_tessellator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
+      //printf ("patch_tessellator::vertex (%g, %g, %g)\n", v->m_coords(0), v->m_coords(1), v->m_coords(2));
 
       // NOTE: OpenGL can re-order vertices.  For "flat" coloring of FaceColor
       // the first vertex must be identified in the draw_patch routine.
 
       if (color_mode == INTERP || (color_mode == FLAT && ! is_filled ()))
         {
-          Matrix col = v->color;
+          Matrix col = v->m_color;
 
           if (col.numel () == 3)
             {
-              glfcns.glColor4d (col(0), col(1), col(2), v->alpha);
+              glfcns.glColor4d (col(0), col(1), col(2), v->m_alpha);
               if (light_mode > 0)
                 {
                   // edge lighting only uses ambient light
@@ -575,28 +549,29 @@ namespace octave
 
                   if (face_lighting)
                     for (int k = 0; k < 3; k++)
-                      buf[k] = v->specular * (v->specular_color_refl +
-                                              (1 - v->specular_color_refl) * col(k));
+                      buf[k] = (v->m_specular
+                                * (v->m_specular_color_refl +
+                                   (1 - v->m_specular_color_refl) * col(k)));
                   glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
 
                   if (face_lighting)
                     for (int k = 0; k < 3; k++)
-                      buf[k] = (v->diffuse * col(k));
+                      buf[k] = (v->m_diffuse * col(k));
                   glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, buf);
 
                   for (int k = 0; k < 3; k++)
-                    buf[k] = (v->ambient * col(k));
+                    buf[k] = (v->m_ambient * col(k));
                   glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
                 }
             }
         }
 
       if (light_mode == FLAT && first)
-        glfcns.glNormal3dv (v->face_normal.data ());
+        glfcns.glNormal3dv (v->m_face_normal.data ());
       else if (light_mode == GOURAUD)
-        glfcns.glNormal3dv (v->vertex_normal.data ());
+        glfcns.glNormal3dv (v->m_vertex_normal.data ());
 
-      glfcns.glVertex3dv (v->coords.data ());
+      glfcns.glVertex3dv (v->m_coords.data ());
 
       first = false;
     }
@@ -626,34 +601,34 @@ namespace octave
       vv(1) = xyz[1];
       vv(2) = xyz[2];
 
-      if (v[0]->color.numel ())
+      if (v[0]->m_color.numel ())
         {
           cc.resize (1, 3, 0.0);
           for (int ic = 0; ic < 3; ic++)
             for (int iv = 0; iv < vmax; iv++)
-              cc(ic) += (w[iv] * v[iv]->color (ic));
+              cc(ic) += (w[iv] * v[iv]->m_color (ic));
         }
 
-      if (v[0]->vertex_normal.numel () > 0)
+      if (v[0]->m_vertex_normal.numel () > 0)
         {
           for (int in = 0; in < 3; in++)
             for (int iv = 0; iv < vmax; iv++)
-              vnn(in) += (w[iv] * v[iv]->vertex_normal (in));
+              vnn(in) += (w[iv] * v[iv]->m_vertex_normal (in));
         }
 
-      if (v[0]->face_normal.numel () > 0)
+      if (v[0]->m_face_normal.numel () > 0)
         {
           for (int in = 0; in < 3; in++)
             for (int iv = 0; iv < vmax; iv++)
-              fnn(in) += (w[iv] * v[iv]->face_normal (in));
+              fnn(in) += (w[iv] * v[iv]->m_face_normal (in));
         }
 
       for (int iv = 0; iv < vmax; iv++)
-        aa += (w[iv] * v[iv]->alpha);
+        aa += (w[iv] * v[iv]->m_alpha);
 
-      vertex_data new_v (vv, cc, vnn, fnn, aa, v[0]->ambient, v[0]->diffuse,
-                         v[0]->specular, v[0]->specular_exp,
-                         v[0]->specular_color_refl);
+      vertex_data new_v (vv, cc, vnn, fnn, aa, v[0]->m_ambient, v[0]->m_diffuse,
+                         v[0]->m_specular, v[0]->m_specular_exp,
+                         v[0]->m_specular_color_refl);
       tmp_vdata.push_back (new_v);
 
       *out_data = new_v.get_rep ();
@@ -3440,7 +3415,7 @@ namespace octave
                         vertex_data::vertex_data_rep *vv
                           = vdata[i+j*fr].get_rep ();
 
-                        tess.add_vertex (vv->coords.fortran_vec (), vv);
+                        tess.add_vertex (vv->m_coords.fortran_vec (), vv);
                       }
 
                     if (count_f(i) > 0)
@@ -3450,7 +3425,7 @@ namespace octave
                         if (fc_mode == FLAT)
                           {
                             // For "flat" shading, use color of 1st vertex.
-                            Matrix col = vv->color;
+                            Matrix col = vv->m_color;
 
                             if (col.numel () == 3)
                               {
@@ -3460,24 +3435,24 @@ namespace octave
                                     float cb[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
                                     for (int k = 0; k < 3; k++)
-                                      cb[k] = (vv->ambient * col(k));
+                                      cb[k] = (vv->m_ambient * col(k));
                                     m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                                     for (int k = 0; k < 3; k++)
-                                      cb[k] = (vv->diffuse * col(k));
+                                      cb[k] = (vv->m_diffuse * col(k));
                                     m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                                     for (int k = 0; k < 3; k++)
-                                      cb[k] = vv->specular *
-                                              (vv->specular_color_refl
-                                               + (1-vv->specular_color_refl) *
+                                      cb[k] = vv->m_specular *
+                                              (vv->m_specular_color_refl
+                                               + (1-vv->m_specular_color_refl) *
                                               col(k));
                                     m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                                   }
                               }
                           }
 
-                        tess.add_vertex (vv->coords.fortran_vec (), vv);
+                        tess.add_vertex (vv->m_coords.fortran_vec (), vv);
                       }
 
                     tess.end_contour ();
@@ -3554,7 +3529,7 @@ namespace octave
                           {
                             vertex_data::vertex_data_rep *vv
                               = vdata[i+j*fr].get_rep ();
-                            const Matrix m = vv->coords;
+                            const Matrix m = vv->m_coords;
                             if (! flag)
                               {
                                 flag = true;
@@ -3562,7 +3537,7 @@ namespace octave
                               }
                             if (ec_mode != UNIFORM)
                               {
-                                Matrix col = vv->color;
+                                Matrix col = vv->m_color;
 
                                 if (col.numel () == 3)
                                   m_glfcns.glColor3dv (col.data ());
@@ -3582,10 +3557,10 @@ namespace octave
                       {
                         vertex_data::vertex_data_rep *vv
                           = vdata[i+j*fr].get_rep ();
-                        const Matrix m = vv->coords;
+                        const Matrix m = vv->m_coords;
                         if (ec_mode != UNIFORM)
                           {
-                            Matrix col = vv->color;
+                            Matrix col = vv->m_color;
 
                             if (col.numel () == 3)
                               m_glfcns.glColor3dv (col.data ());
@@ -3605,7 +3580,7 @@ namespace octave
                       {
                         vertex_data::vertex_data_rep *vv
                           = vdata[i+j*fr].get_rep ();
-                        tess.add_vertex (vv->coords.fortran_vec (), vv);
+                        tess.add_vertex (vv->m_coords.fortran_vec (), vv);
                       }
 
                     tess.end_contour ();

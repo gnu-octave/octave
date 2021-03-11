@@ -472,7 +472,6 @@ function emit_source ()
 
     for (i = 1; i <= idx; i++)
     {
-##    printf ("  insert_static_property (\"%s\", %s);\n", name[i], name[i]);
       if (ptype[i])
       {
         printf ("  %s.set_id (ID_%s);\n", name[i], toupper(name[i]));

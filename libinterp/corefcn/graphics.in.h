@@ -2442,8 +2442,6 @@ protected:
   std::map<caseless_str, property, cmp_caseless_str> all_props;
 
 protected:
-  void insert_static_property (const std::string& name, base_property& p)
-  { insert_property (name, property (&p, true)); }
 
   virtual void init (void)
   {

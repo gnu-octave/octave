@@ -293,7 +293,7 @@ extern "C"
                              const F77_INT&, F77_INT&);
 
   // ORMLQ
-  
+
   F77_RET_T
   F77_FUNC (cormlq, CORMLQ) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,

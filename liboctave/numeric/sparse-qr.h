@@ -69,7 +69,7 @@ namespace octave
 
       OCTAVE_API bool ok (void) const;
 
-      OCTAVE_API ColumnVector E (void) const; 
+      OCTAVE_API ColumnVector E (void) const;
 
       // constructs permutation matrix from permutation vector rep -> E()
       OCTAVE_API SparseMatrix E_MAT () const;

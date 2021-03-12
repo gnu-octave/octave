@@ -378,7 +378,7 @@ public:
   solve (const ComplexMatrix& b, octave_idx_type& info) const;
   OCTAVE_API ComplexMatrix
   solve (const ComplexMatrix& b, octave_idx_type& info, double& rcond) const;
-  OCTAVE_API ComplexMatrix 
+  OCTAVE_API ComplexMatrix
   solve (const ComplexMatrix& b, octave_idx_type& info, double& rcond,
          solve_singularity_handler sing_handler) const;
 

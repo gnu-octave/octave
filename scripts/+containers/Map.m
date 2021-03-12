@@ -843,7 +843,7 @@ endclassdef
 %! vals = [10, 11, 12, 13];
 %! M = containers.Map (months, vals);
 %! keys = {'Jan', 'FooBar', 'Feb'};
-%! assert (M.isKey (keys)(2:end), logical ([0, 1])); 
+%! assert (M.isKey (keys)(2:end), logical ([0, 1]));
 
 ## Test input validation
 %!error containers.Map (1,2,3)

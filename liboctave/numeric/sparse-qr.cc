@@ -413,7 +413,7 @@ namespace octave
           ret.xridx(j) = from_suitesparse_long (a_i[j]);
           ret.xdata(j) = a_x[j];
         }
-   
+
       return ret;
     }
 
@@ -2740,7 +2740,7 @@ namespace octave
     {
       return rep->P ();
     }
-    
+
     template <typename SPARSE_T>
     ColumnVector
     sparse_qr<SPARSE_T>::E (void) const
@@ -2947,7 +2947,7 @@ namespace octave
       ComplexMatrix x (nc, b_nc);
 
       cholmod_common cc;
- 
+
       cholmod_l_start (&cc);
 
       cholmod_sparse A = cos2ccs (a);

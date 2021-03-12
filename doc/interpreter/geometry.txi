@@ -62,9 +62,9 @@ An example of a Delaunay triangulation of a set of points is
 
 @example
 @group
-rand ("state", 2);
-x = rand (10, 1);
-y = rand (10, 1);
+rand ("state", 1);
+x = rand (1, 10);
+y = rand (1, 10);
 T = delaunay (x, y);
 X = [ x(T(:,1)); x(T(:,2)); x(T(:,3)); x(T(:,1)) ];
 Y = [ y(T(:,1)); y(T(:,2)); y(T(:,3)); y(T(:,1)) ];

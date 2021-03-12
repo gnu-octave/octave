@@ -4528,7 +4528,7 @@ public:
     END_PROPERTIES
 
     OCTINTERP_API Matrix get_data_position (void) const;
-    OCTINTERP_API Matrix get_extent_matrix (void) const;
+    OCTINTERP_API Matrix get_extent_matrix (bool rotated = false) const;
     const uint8NDArray& get_pixels (void) const { return pixels; }
 
     // Text renderer, used for calculation of text size

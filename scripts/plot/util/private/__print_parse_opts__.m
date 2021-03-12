@@ -248,18 +248,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (strcmp (arg_st.renderer, "auto"))
     if (opengl_ok && strcmp (graphics_toolkit (arg_st.figure), "qt"))
-      ## "opengl" renderer only does text rotations of 0°, 90°, 180°, 270°, ...
-      ht = findall (arg_st.figure, "type", "text");
-      if (isempty (ht))
-        angles = [];
-      else
-        angles = [get(ht, "rotation"){:}];
-      endif
-      if (any (mod (angles, 90)))
-        arg_st.renderer = "painters";
-      else
-        arg_st.renderer = "opengl";
-      endif
+      arg_st.renderer = "opengl";
     else
       arg_st.renderer = "painters";
     endif

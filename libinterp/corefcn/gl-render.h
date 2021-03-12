@@ -183,8 +183,15 @@ namespace octave
               | (z > zmax ? 1 : 0) << 5
               | (is_nan_or_inf (x, y, z) ? 0 : 1) << 6);
     }
-
+    
+    void render_text (uint8NDArray pixels, Matrix bbox,
+                      double x, double y, double z, double rotation);
+    
     void set_normal (int bfl_mode, const NDArray& n, int j, int i);
+
+    void set_ortho_coordinates (void);
+
+    void restore_previous_coordinates (void);
 
     double points_to_pixels (const double val) const;
 
@@ -203,6 +210,9 @@ namespace octave
 
     void draw_all_lights (const base_properties& props,
                           std::list<graphics_object>& obj_list);
+
+    void draw_texture_image (const octave_value cdata,
+                             Matrix x, Matrix y, bool ortho = false);
 
   protected:
 

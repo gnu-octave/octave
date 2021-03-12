@@ -182,7 +182,7 @@ namespace octave
     dim_vector dv (data.dims ());
 
     // Expect RGB data
-    if (dv.ndims () == 3 && dv(2) == 3)
+    if (dv.ndims () == 3 && (dv(2) == 3 || dv(2) == 4))
       {
         // FIXME: dim_vectors hold octave_idx_type values.
         //        Should we check for dimensions larger than intmax?
@@ -274,7 +274,7 @@ namespace octave
             glfcns.glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
                                  GL_RGB, GL_UNSIGNED_SHORT, a);
           }
-        else if (data.is_uint8_type ())
+        else if (data.is_uint8_type () && dv(2) == 3)
           {
             const uint8NDArray xdata = data.uint8_array_value ();
 
@@ -292,6 +292,26 @@ namespace octave
 
             glfcns.glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
                                  GL_RGB, GL_UNSIGNED_BYTE, a);
+          }
+        else if (data.is_uint8_type () && dv(2) == 4)
+          {
+            const uint8NDArray xdata = data.uint8_array_value ();
+
+            OCTAVE_LOCAL_BUFFER (GLubyte, a, (4*tw*th));
+
+            for (int i = 0; i < h; i++)
+              {
+                for (int j = 0, idx = i*tw*4; j < w; j++, idx += 4)
+                  {
+                    a[idx]   = xdata(i,j,0);
+                    a[idx+1] = xdata(i,j,1);
+                    a[idx+2] = xdata(i,j,2);
+                    a[idx+3] = xdata(i,j,3);
+                  }
+              }
+
+            glfcns.glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0,
+                                 GL_RGBA, GL_UNSIGNED_BYTE, a);
           }
         else
           {
@@ -578,8 +598,6 @@ namespace octave
 
     void combine (GLdouble xyz[3], void *data[4], GLfloat w[4], void **out_data)
     {
-      //printf ("patch_tessellator::combine\n");
-
       vertex_data::vertex_data_rep *v[4];
       int vmax = 4;
 
@@ -3839,6 +3857,52 @@ namespace octave
   }
 
   void
+  opengl_renderer::set_ortho_coordinates (void)
+  {
+#if defined (HAVE_OPENGL)
+
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
+
+    Matrix vp = get_viewport_scaled ();
+    m_glfcns.glOrtho (0, vp(2), vp(3), 0, xZ1, xZ2);
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
+
+#else
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  void
+  opengl_renderer::restore_previous_coordinates (void)
+  {
+#if defined (HAVE_OPENGL)
+
+    // Restore previous coordinate system
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPopMatrix();
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPopMatrix();
+
+#else
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  void
   opengl_renderer::draw_text (const text::properties& props)
   {
 #if defined (HAVE_OPENGL)
@@ -3848,30 +3912,21 @@ namespace octave
 
     Matrix pos = xform.scale (props.get_data_position ());
 
-    // Handle clipping manually when drawing text background
+    // Handle clipping manually when drawing text in ortho coordinates
     if (! props.is_clipping ()
         || (clip_code (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0) == 0x40))
       {
         set_clipping (false);
+
         draw_text_background (props);
+
+        set_font (props);
+
+        render_text (props.get_pixels (), props.get_extent_matrix (),
+                     pos(0), pos(1), pos(2), props.get_rotation ());
+
         set_clipping (props.is_clipping ());
       }
-
-    set_font (props);
-
-    const Matrix bbox = props.get_extent_matrix ();
-
-    bool blend = m_glfcns.glIsEnabled (GL_BLEND);
-
-    m_glfcns.glEnable (GL_BLEND);
-    m_glfcns.glEnable (GL_ALPHA_TEST);
-    m_glfcns.glRasterPos3d (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0);
-    m_glfcns.glBitmap (0, 0, 0, 0, bbox(0), bbox(1), nullptr);
-    m_glfcns.glDrawPixels (bbox(2), bbox(3), GL_RGBA, GL_UNSIGNED_BYTE,
-                           props.get_pixels ().data ());
-    m_glfcns.glDisable (GL_ALPHA_TEST);
-    if (! blend)
-      m_glfcns.glDisable (GL_BLEND);
 
 #else
 
@@ -3887,7 +3942,7 @@ namespace octave
 
   void
   opengl_renderer::draw_text_background (const text::properties& props,
-                                         bool do_rotate)
+                                         bool /*do_rotate*/)
   {
 #if defined (HAVE_OPENGL)
 
@@ -3902,15 +3957,7 @@ namespace octave
                                                       pos(2), true);
 
     // Save current transform matrices and set orthogonal window coordinates
-    m_glfcns.glMatrixMode (GL_PROJECTION);
-    m_glfcns.glPushMatrix ();
-    m_glfcns.glLoadIdentity ();
-
-    Matrix vp = get_viewport_scaled ();
-    m_glfcns.glOrtho (0, vp(2), vp(3), 0, xZ1, xZ2);
-    m_glfcns.glMatrixMode (GL_MODELVIEW);
-    m_glfcns.glPushMatrix ();
-    m_glfcns.glLoadIdentity ();
+    set_ortho_coordinates ();
 
     // Translate coordinates so that the text anchor is (0,0)
     m_glfcns.glTranslated (pixpos(0), pixpos(1), -pixpos(2));
@@ -3919,9 +3966,7 @@ namespace octave
     //        Handle others here.
     double rotation = props.get_rotation ();
 
-    if (do_rotate && rotation != 0.0 && rotation != 90.0
-        && rotation != 180.0 && rotation != 270.0)
-      m_glfcns.glRotated (-rotation, 0.0, 0.0, 1.0);
+    m_glfcns.glRotated (-rotation, 0.0, 0.0, 1.0);
 
     double m = points_to_pixels (props.get_margin ());
     const Matrix bbox = props.get_extent_matrix ();
@@ -3967,10 +4012,7 @@ namespace octave
         set_linestyle ("-");
       }
 
-    // Restore previous coordinate system
-    m_glfcns.glPopMatrix();
-    m_glfcns.glMatrixMode (GL_PROJECTION);
-    m_glfcns.glPopMatrix();
+    restore_previous_coordinates ();
 
 #else
 
@@ -3991,12 +4033,34 @@ namespace octave
 #if defined (HAVE_OPENGL)
 
     octave_value cdata = props.get_color_data ();
+    Matrix x = props.get_xdata ().matrix_value ();
+    Matrix y = props.get_ydata ().matrix_value ();
+
+    draw_texture_image (cdata, x, y);
+
+#else
+
+    octave_unused_parameter (props);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  void
+  opengl_renderer::draw_texture_image (const octave_value cdata, Matrix x,
+                                       Matrix y, bool ortho)
+  {
+#if defined (HAVE_OPENGL)
+
     dim_vector dv (cdata.dims ());
     int h = dv(0);
     int w = dv(1);
     double x0, x1, y0, y1;
 
-    Matrix x = props.get_xdata ().matrix_value ();
     double dx = 1.0;
     if (w > 1)
       dx = (x(1) - x(0)) / (w - 1);
@@ -4004,7 +4068,6 @@ namespace octave
     x0 = x(0)-dx/2;
     x1 = x(1)+dx/2;
 
-    Matrix y = props.get_ydata ().matrix_value ();
     double dy = 1.0;
     if (h > 1)
       dy = (y(1) - y(0)) / (h - 1);
@@ -4013,7 +4076,7 @@ namespace octave
     y1 = y(1)+dy/2;
 
     // Expect RGB data
-    if (dv.ndims () == 3 && dv(2) == 3)
+    if (dv.ndims () == 3 && (dv(2) == 3 || dv(2) == 4))
       {
         opengl_texture tex  = opengl_texture::create (m_glfcns, cdata);
         if (tex.is_valid ())
@@ -4025,16 +4088,28 @@ namespace octave
             m_glfcns.glBegin (GL_QUADS);
 
             tex.tex_coord (0.0, 0.0);
-            m_glfcns.glVertex3d (x0, y0, 0.0);
+            if (ortho)
+              m_glfcns.glVertex2d (x0, y0);
+            else
+              m_glfcns.glVertex3d (x0, y0, 0.0);
 
             tex.tex_coord (1.0, 0.0);
-            m_glfcns.glVertex3d (x1, y0, 0.0);
+            if (ortho)
+              m_glfcns.glVertex2d (x1, y0);
+            else
+              m_glfcns.glVertex3d (x1, y0, 0.0);
 
             tex.tex_coord (1.0, 1.0);
-            m_glfcns.glVertex3d (x1, y1, 0.0);
+            if (ortho)
+              m_glfcns.glVertex2d (x1, y1);
+            else
+              m_glfcns.glVertex3d (x1, y1, 0.0);
 
             tex.tex_coord (0.0, 1.0);
-            m_glfcns.glVertex3d (x0, y1, 0.0);
+            if (ortho)
+              m_glfcns.glVertex2d (x0, y1);
+            else
+              m_glfcns.glVertex3d (x0, y1, 0.0);
 
             m_glfcns.glEnd ();
             m_glfcns.glDisable (GL_TEXTURE_2D);
@@ -4045,7 +4120,10 @@ namespace octave
 
 #else
 
-    octave_unused_parameter (props);
+    octave_unused_parameter (cdata);
+    octave_unused_parameter (x);
+    octave_unused_parameter (y);
+    octave_unused_parameter (ortho);
 
     // This shouldn't happen because construction of opengl_renderer
     // objects is supposed to be impossible if OpenGL is not available.
@@ -4795,18 +4873,7 @@ namespace octave
         uint8NDArray pixels;
         text_to_pixels (txt, pixels, bbox, halign, valign, rotation);
 
-        bool blend = m_glfcns.glIsEnabled (GL_BLEND);
-
-        m_glfcns.glEnable (GL_BLEND);
-        m_glfcns.glEnable (GL_ALPHA_TEST);
-        m_glfcns.glRasterPos3d (x, y, z);
-        m_glfcns.glBitmap(0, 0, 0, 0, bbox(0), bbox(1), nullptr);
-        m_glfcns.glDrawPixels (bbox(2), bbox(3),
-                               GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
-        m_glfcns.glDisable (GL_ALPHA_TEST);
-
-        if (! blend)
-          m_glfcns.glDisable (GL_BLEND);
+        render_text (pixels, bbox, x, y, z, rotation);
       }
 
     return bbox;
@@ -4819,6 +4886,62 @@ namespace octave
     octave_unused_parameter (z);
     octave_unused_parameter (halign);
     octave_unused_parameter (valign);
+    octave_unused_parameter (rotation);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  void
+  opengl_renderer::render_text (uint8NDArray pixels, Matrix bbox,
+                                double x, double y, double z, double rotation)
+  {
+#if defined (HAVE_OPENGL)
+
+    // Transform data coordinates to screen pixel ortho coordinates
+    ColumnVector pixpos = get_transform ().transform (x, y, z, false);
+    Matrix xdata(1, 2, bbox(0) / m_devpixratio);
+    xdata(1) += (bbox(2) - 1) / m_devpixratio;
+    Matrix ydata(1, 2, -bbox(1) / m_devpixratio);
+    ydata(1) -= (bbox(3) - 1) / m_devpixratio;
+
+    bool blend = m_glfcns.glIsEnabled (GL_BLEND);
+    m_glfcns.glEnable (GL_BLEND);
+    m_glfcns.glEnable (GL_ALPHA_TEST);
+
+    set_ortho_coordinates ();
+
+    // Translate coordinates so that the text anchor is (0,0)
+    m_glfcns.glTranslated (pixpos(0), pixpos(1), -pixpos(2));
+
+    m_glfcns.glRotated (-rotation, 0.0, 0.0, 1.0);
+
+    // Permute pixels returned by freetype
+    Array<octave_idx_type> perm (dim_vector (3, 1));
+    perm(0) = 2;
+    perm(1) = 1;
+    perm(2) = 0;
+    draw_texture_image (pixels.permute (perm),
+                        xdata, ydata, true);
+
+    restore_previous_coordinates ();
+
+    m_glfcns.glDisable (GL_ALPHA_TEST);
+
+    if (! blend)
+      m_glfcns.glDisable (GL_BLEND);
+
+#else
+
+    octave_unused_parameter (pixels);
+    octave_unused_parameter (bbox);
+    octave_unused_parameter (x);
+    octave_unused_parameter (y);
+    octave_unused_parameter (z);
     octave_unused_parameter (rotation);
 
     // This shouldn't happen because construction of opengl_renderer

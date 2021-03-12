@@ -7128,7 +7128,7 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
             }
           else
             {
-              Matrix text_ext = text_props.get_extent_matrix ();
+              Matrix text_ext = text_props.get_extent_matrix (true);
 
               // The text extent is returned in device pixels.  Unscale and
               // work with logical pixels
@@ -9404,10 +9404,47 @@ text::properties::get_data_position (void) const
 }
 
 Matrix
-text::properties::get_extent_matrix (void) const
+text::properties::get_extent_matrix (bool rotated) const
 {
   // FIXME: Should this function also add the (x,y) base position?
-  return extent.get ().matrix_value ();
+  Matrix ext = extent.get ().matrix_value ();
+
+  if (rotated && get_rotation () != 0)
+    {
+      double rot = get_rotation () * 4.0 * atan (1.0) / 180;
+      double x0 = ext(0) * cos (rot) - ext(1) * sin (rot);
+      double x1 = x0;
+      double y0 = ext(0) * sin (rot) + ext(1) * cos (rot);
+      double y1 = y0;
+
+      double tmp = (ext(0)+ext(2)) * cos (rot) - ext(1) * sin (rot);
+      x0 = std::min (x0, tmp);
+      x1 = std::max (x1, tmp);
+      tmp = (ext(0)+ext(2)) * sin (rot) + ext(1) * cos (rot);
+      y0 = std::min (y0, tmp);
+      y1 = std::max (y1, tmp);
+
+      tmp = (ext(0)+ext(2)) * cos (rot) - (ext(1)+ext(3)) * sin (rot);
+      x0 = std::min (x0, tmp);
+      x1 = std::max (x1, tmp);
+      tmp = (ext(0)+ext(2)) * sin (rot) + (ext(1)+ext(3)) * cos (rot);
+      y0 = std::min (y0, tmp);
+      y1 = std::max (y1, tmp);
+
+      tmp = ext(0) * cos (rot) - (ext(1)+ext(3)) * sin (rot);
+      x0 = std::min (x0, tmp);
+      x1 = std::max (x1, tmp);
+      tmp = ext(0) * sin (rot) + (ext(1)+ext(3)) * cos (rot);
+      y0 = std::min (y0, tmp);
+      y1 = std::max (y1, tmp);
+
+      ext(0) = x0;
+      ext(1) = y0;
+      ext(2) = x1 - x0;
+      ext(3) = y1 - y0;
+    }
+
+  return ext;
 }
 
 octave_value
@@ -9415,7 +9452,7 @@ text::properties::get_extent (void) const
 {
   // FIXME: This doesn't work right for 3D plots.
   // (It doesn't in Matlab either, at least not in version 6.5.)
-  Matrix m = extent.get ().matrix_value ();
+  Matrix m = get_extent_matrix (true);
   Matrix pos = get_position ().matrix_value ();
   Matrix p = convert_text_position (pos, *this, get_units (), "pixels");
 
@@ -9525,7 +9562,7 @@ text::properties::update_text_extent (void)
   octave::autolock guard (gh_mgr.graphics_lock ());
 
   txt_renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
-                               halign, valign, get_rotation (),
+                               halign, valign, 0.0,
                                get_interpreter ());
   // The bbox is relative to the text's position.  We'll leave it that
   // way, because get_position does not return valid results when the

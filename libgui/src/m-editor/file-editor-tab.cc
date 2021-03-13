@@ -2337,6 +2337,7 @@ namespace octave
         fileDialog->setDirectory (m_ced);
 
         // propose a name corresponding to the function name
+        // if the new file contains a function
         QString fname = get_function_name ();
         if (! fname.isEmpty ())
           fileDialog->selectFile (fname + ".m");
@@ -2373,6 +2374,12 @@ namespace octave
 
   void file_editor_tab::handle_save_as_filter_selected (const QString& filter)
   {
+    // On some systems, the filterSelected signal is emitted without user
+    // action and with  an empty filter string when the file dialog is shown.
+    // Just return in this case and do not remove the current default suffix.
+    if (filter.isEmpty ())
+      return;
+
     QFileDialog *file_dialog = qobject_cast<QFileDialog *> (sender ());
 
     QRegExp rx ("\\*\\.([^ ^\\)]*)[ \\)]");   // regexp for suffix in filter
@@ -2472,8 +2479,20 @@ namespace octave
     return codec;
   }
 
-  void file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
+  void file_editor_tab::handle_save_file_as_answer (const QString& save_file_name)
   {
+    QString saveFileName = save_file_name;
+    QFileInfo file (saveFileName);
+    QFileDialog *file_dialog = qobject_cast<QFileDialog *> (sender ());
+
+    // Test if there is the file dialog should have added a default file
+    // suffix, but the selected file still has no suffix (see Qt bug
+    // https://bugreports.qt.io/browse/QTBUG-59401)
+    if ((! file_dialog->defaultSuffix ().isEmpty ()) && file.suffix ().isEmpty ())
+      {
+        saveFileName = saveFileName + "." + file_dialog->defaultSuffix ();
+      }
+
     if (m_save_as_desired_eol != m_edit_area->eolMode ())
       convert_eol (this,m_save_as_desired_eol);
 

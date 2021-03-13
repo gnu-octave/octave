@@ -4017,7 +4017,6 @@ namespace octave
 #else
 
     octave_unused_parameter (props);
-    octave_unused_parameter (do_rotate);
 
     // This shouldn't happen because construction of opengl_renderer
     // objects is supposed to be impossible if OpenGL is not available.

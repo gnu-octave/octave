@@ -2349,12 +2349,23 @@ namespace octave
 
     fileDialog->setAcceptMode (QFileDialog::AcceptSave);
     fileDialog->setViewMode (QFileDialog::Detail);
+    fileDialog->setOption (QFileDialog::HideNameFilterDetails, false);
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     if (! settings->value (global_use_native_dialogs).toBool ())
-      fileDialog->setOption(QFileDialog::DontUseNativeDialog);
+      {
+        // Qt file dialogs
+        fileDialog->setOption(QFileDialog::DontUseNativeDialog);
+      }
+    else
+      {
+        // Native file dialogs: Test for already existing files is done manually
+        // since native file dialogs might not consider the automatically
+        // appended default extension when checking if the file already exists
+        fileDialog->setOption(QFileDialog::DontConfirmOverwrite);
+      }
 
     connect (fileDialog, SIGNAL (filterSelected (const QString&)),
              this, SLOT (handle_save_as_filter_selected (const QString&)));
@@ -2489,12 +2500,31 @@ namespace octave
     QFileInfo file (saveFileName);
     QFileDialog *file_dialog = qobject_cast<QFileDialog *> (sender ());
 
-    // Test if there is the file dialog should have added a default file
+    // Test if the file dialog should have added a default file
     // suffix, but the selected file still has no suffix (see Qt bug
     // https://bugreports.qt.io/browse/QTBUG-59401)
     if ((! file_dialog->defaultSuffix ().isEmpty ()) && file.suffix ().isEmpty ())
       {
         saveFileName = saveFileName + "." + file_dialog->defaultSuffix ();
+      }
+
+    file.setFile (saveFileName);
+
+    // If overwrite confirmation was not done by the file dialog (in case
+    // of native file dialogs, see above), do it here
+    if(file_dialog->testOption (QFileDialog::DontConfirmOverwrite) && file.exists ())
+      {
+        int ans = QMessageBox::question (file_dialog,
+                              tr ("Octave Editor"),
+                              tr ("%1\n already exists\n"
+                                  "Do you want to overwrite it?").arg (saveFileName),
+                              QMessageBox::Yes | QMessageBox::No);
+        if (ans != QMessageBox::Yes)
+          {
+            // Try again, if edit area is read only, remove on success
+            save_file_as (m_edit_area->isReadOnly ());
+            return;
+          }
       }
 
     if (m_save_as_desired_eol != m_edit_area->eolMode ())

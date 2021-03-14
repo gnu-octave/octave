@@ -171,7 +171,7 @@ namespace octave
     void request_open_file_external (const QString& file_name, int line);
     void file_loaded_signal (void);
 
-    void editor_tabs_changed_signal (bool);
+    void editor_tabs_changed_signal (bool, bool);
     void request_dbcont_signal (void);
 
     void enter_debug_mode_signal (void);
@@ -449,6 +449,7 @@ namespace octave
 
     bool m_copy_action_enabled;
     bool m_undo_action_enabled;
+    bool m_is_octave_file;
 
     QMenu *m_edit_menu;
     QMenu *m_edit_cmd_menu;

@@ -1179,7 +1179,7 @@ namespace octave
 
     m_debug_continue->setEnabled (false);
     m_debug_step_into->setEnabled (false);
-    m_debug_step_over->setEnabled (m_editor_has_tabs);
+    m_debug_step_over->setEnabled (m_editor_has_tabs && m_editor_is_octave_file);
     m_debug_step_out->setEnabled (false);
     m_debug_quit->setEnabled (false);
   }
@@ -2059,8 +2059,8 @@ namespace octave
     connect (this, SIGNAL (step_into_file_signal (void)),
              m_editor_window, SLOT (request_step_into_file (void)));
 
-    connect (m_editor_window, SIGNAL (editor_tabs_changed_signal (bool)),
-             this, SLOT (editor_tabs_changed (bool)));
+    connect (m_editor_window, SIGNAL (editor_tabs_changed_signal (bool, bool)),
+             this, SLOT (editor_tabs_changed (bool, bool)));
 
     connect (m_editor_window,
              SIGNAL (request_open_file_external (const QString&, int)),
@@ -2534,11 +2534,12 @@ namespace octave
           tr ("&Show Profile Data"), SLOT (profiler_show ()));
   }
 
-  void main_window::editor_tabs_changed (bool have_tabs)
+  void main_window::editor_tabs_changed (bool have_tabs, bool is_octave)
   {
     // Set state of actions which depend on the existence of editor tabs
     m_editor_has_tabs = have_tabs;
-    m_debug_step_over->setEnabled (have_tabs);
+    m_editor_is_octave_file = is_octave;
+    m_debug_step_over->setEnabled (have_tabs && is_octave);
   }
 
   QAction * main_window::construct_window_menu_item (QMenu *p,

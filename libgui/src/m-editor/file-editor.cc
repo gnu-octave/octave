@@ -206,6 +206,7 @@ namespace octave
 
   void file_editor::check_actions (void)
   {
+    // Do not include shared actions not only related to the editor
     bool have_tabs = m_tab_widget->count () > 0;
 
     m_edit_cmd_menu->setEnabled (have_tabs);
@@ -231,7 +232,13 @@ namespace octave
     m_find_next_action->setEnabled (have_tabs);
     m_find_previous_action->setEnabled (have_tabs);
     m_print_action->setEnabled (have_tabs);
-    m_run_action->setEnabled (have_tabs);
+
+    m_run_action->setEnabled (have_tabs && m_is_octave_file);
+
+    m_toggle_breakpoint_action->setEnabled (have_tabs && m_is_octave_file);
+    m_next_breakpoint_action->setEnabled (have_tabs && m_is_octave_file);
+    m_previous_breakpoint_action->setEnabled (have_tabs && m_is_octave_file);
+    m_remove_all_breakpoints_action->setEnabled (have_tabs && m_is_octave_file);
 
     m_edit_function_action->setEnabled (have_tabs);
     m_save_action->setEnabled (have_tabs);
@@ -241,7 +248,7 @@ namespace octave
     m_close_others_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
     m_sort_tabs_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
 
-    emit editor_tabs_changed_signal (have_tabs);
+    emit editor_tabs_changed_signal (have_tabs, m_is_octave_file);
   }
 
   // empty_script determines whether we have to create an empty script
@@ -985,8 +992,12 @@ namespace octave
         if (m_copy_action)
           m_copy_action->setEnabled (copy_available);
         m_cut_action->setEnabled (copy_available);
+
         m_run_selection_action->setEnabled (copy_available);
         m_run_action->setEnabled (is_octave_file);
+        m_is_octave_file = is_octave_file;
+
+        emit editor_tabs_changed_signal (true, m_is_octave_file);
       }
 
     m_copy_action_enabled = m_copy_action->isEnabled ();

@@ -1152,6 +1152,9 @@ namespace octave
   void file_editor_tab::handle_request_add_breakpoint (int line,
                                                        const QString& condition)
   {
+    if (! m_is_octave_file)
+      return;
+
     bp_info info (m_file_name, line, condition);
 
     add_breakpoint_event (info);

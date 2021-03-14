@@ -183,7 +183,7 @@ namespace octave
     void debug_step_over (void);
     void debug_step_out (void);
     void debug_quit (void);
-    void editor_tabs_changed (bool);
+    void editor_tabs_changed (bool, bool);
 
     void request_open_file (void);
     void request_new_script (const QString& commands = QString ());
@@ -438,6 +438,7 @@ namespace octave
     bool m_prevent_readline_conflicts_menu;
     bool m_suppress_dbg_location;
     bool m_editor_has_tabs;
+    bool m_editor_is_octave_file;
 
     //! Flag for closing the whole application.
 

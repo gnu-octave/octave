@@ -1016,8 +1016,12 @@ namespace octave
     if (m_edit_area->isModified () | ! valid_file_name ())
       {
         save_file (m_file_name);  // save file dialog
-        if (! valid_file_name ())
-          return;   // still invalid filename: "save as" was cancelled
+
+        // Running a file is disabled for non-octave files. But when saving
+        // a new file, an octave file is assumed but might actually saved
+        // as another file or with an invalid file name.
+        if (! (m_is_octave_file && valid_file_name ()))
+          return;
       }
 
     if (step_into)

@@ -490,6 +490,15 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (arg_st.formatted_for_printing)
     arg_st.ghostscript.resolution = [];
+
+    ## Warn if the figure is too large for the selected paper size
+    if (any (papersize_points < (arg_st.canvas_size + paperposition(1:2)))
+        || any (paperposition(1:2) < 0))
+      warning ("Octave:print:figure-too-large", ...
+               ['print: given the current "paperposition" and ', ...
+                '"papersize" properties, the figure is too large ', ...
+                "and will be cropped to fit on the output page."]);
+    endif
   else
     arg_st.ghostscript.papersize = "";
     arg_st.ghostscript.pageoffset = [0, 0];

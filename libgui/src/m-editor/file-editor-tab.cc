@@ -2564,9 +2564,6 @@ namespace octave
           }
       }
 
-    if (m_save_as_desired_eol != m_edit_area->eolMode ())
-      convert_eol (this,m_save_as_desired_eol);
-
     if (saveFileName == m_file_name)
       {
         save_file (saveFileName);

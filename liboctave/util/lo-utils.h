@@ -114,24 +114,27 @@ namespace octave
 
   namespace math
   {
-    extern OCTAVE_API bool int_multiply_overflow (int a, int b);
+    extern OCTAVE_API bool int_multiply_overflow (int a, int b, int *r);
 
-    extern OCTAVE_API bool int_multiply_overflow (long int a, long int b);
+    extern OCTAVE_API bool
+    int_multiply_overflow (long int a, long int b, long int *r);
 
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
     extern OCTAVE_API bool
-    int_multiply_overflow (long long int a, long long int b);
+    int_multiply_overflow (long long int a, long long int b, long long int *r);
 #endif
 
     extern OCTAVE_API bool
-    int_multiply_overflow (unsigned int a, unsigned int b);
+    int_multiply_overflow (unsigned int a, unsigned int b, unsigned int *r);
 
     extern OCTAVE_API bool
-    int_multiply_overflow (unsigned long int a, unsigned long int b);
+    int_multiply_overflow (unsigned long int a, unsigned long int b,
+                           unsigned long int *r);
 
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
     extern OCTAVE_API bool
-    int_multiply_overflow (unsigned long long int a, unsigned long long int b);
+    int_multiply_overflow (unsigned long long int a, unsigned long long int b,
+                           unsigned long long int *r);
 #endif
   }
 }

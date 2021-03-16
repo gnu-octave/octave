@@ -405,10 +405,11 @@ namespace octave
         // entries.
         m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, 0, CSC_MAT);
 #    else
-        if (math::int_multiply_overflow (m_num, m_num))
+        octave_f77_int_type max_elems;
+        if (math::int_multiply_overflow (m_num, m_num, &max_elems))
           error ("Unable to allocate memory for sparse Jacobian");
 
-        m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, m_num*m_num, CSC_MAT);
+        m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, max_elems, CSC_MAT);
 #    endif
         if (! m_sunJacMatrix)
           error ("Unable to create sparse Jacobian for Sundials");

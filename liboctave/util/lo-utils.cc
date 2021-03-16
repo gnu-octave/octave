@@ -478,38 +478,42 @@ namespace octave
 
   namespace math
   {
-    bool int_multiply_overflow (int a, int b)
+    bool int_multiply_overflow (int a, int b, int *r)
     {
-      return octave_i_multiply_overflow_wrapper (a, b);
+      return octave_i_multiply_overflow_wrapper (a, b, r);
     }
 
-    bool int_multiply_overflow (long int a, long int b)
+    bool int_multiply_overflow (long int a, long int b, long int *r)
     {
-      return octave_li_multiply_overflow_wrapper (a, b);
+      return octave_li_multiply_overflow_wrapper (a, b, r);
     }
 
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
-    bool int_multiply_overflow (long long int a, long long int b)
+    bool int_multiply_overflow (long long int a, long long int b,
+                                long long int *r)
     {
-      return octave_lli_multiply_overflow_wrapper (a, b);
+      return octave_lli_multiply_overflow_wrapper (a, b, r);
     }
 #endif
 
-    bool int_multiply_overflow (unsigned int a, unsigned int b)
+    bool int_multiply_overflow (unsigned int a, unsigned int b,
+                                unsigned int *r)
     {
-      return octave_ui_multiply_overflow_wrapper (a, b);
+      return octave_ui_multiply_overflow_wrapper (a, b, r);
     }
 
-    bool int_multiply_overflow (unsigned long int a, unsigned long int b)
+    bool int_multiply_overflow (unsigned long int a, unsigned long int b,
+                          unsigned long int *r)
     {
-      return octave_uli_multiply_overflow_wrapper (a, b);
+      return octave_uli_multiply_overflow_wrapper (a, b, r);
     }
 
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
     bool int_multiply_overflow (unsigned long long int a,
-                                unsigned long long int b)
+                          unsigned long long int b,
+                          unsigned long long int *r)
     {
-      return octave_ulli_multiply_overflow_wrapper (a, b);
+      return octave_ulli_multiply_overflow_wrapper (a, b, r);
     }
 #endif
 

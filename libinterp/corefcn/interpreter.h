@@ -29,6 +29,7 @@
 #include "octave-config.h"
 
 #include <map>
+#include <set>
 #include <stack>
 #include <string>
 
@@ -486,6 +487,22 @@ namespace octave
     // Exit debugger or stop execution and return to the top-level REPL
     // or server loop.
     void stop (void);
+
+    // Add EXPR to the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    void add_debug_watch_expression (const std::string& expr);
+
+    // Remove EXPR from the set of expressions that may be evaluated
+    // when the debugger stops at a breakpoint.
+    void remove_debug_watch_expression (const std::string& expr);
+
+    // Clear the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    void clear_debug_watch_expressions (void);
+
+    // Return the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    std::set<std::string> debug_watch_expressions (void) const;
 
     // Resume interpreter execution if paused.
     void resume (void);

@@ -1768,6 +1768,26 @@ namespace octave
       m_evaluator.dbcont ();
   }
 
+  void interpreter::add_debug_watch_expression (const std::string& expr)
+  {
+    m_evaluator.add_debug_watch_expression (expr);
+  }
+
+  void interpreter::remove_debug_watch_expression (const std::string& expr)
+  {
+    m_evaluator.remove_debug_watch_expression (expr);
+  }
+
+  void interpreter::clear_debug_watch_expressions (void)
+  {
+    m_evaluator.clear_debug_watch_expressions ();
+  }
+
+  std::set<std::string> interpreter::debug_watch_expressions (void) const
+  {
+    return m_evaluator.debug_watch_expressions ();
+  }
+
   void interpreter::handle_exception (const execution_exception& ee)
   {
     m_error_system.save_exception (ee);

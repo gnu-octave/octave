@@ -647,6 +647,34 @@ namespace octave
 
     void dbquit (bool all = false);
 
+    // Add EXPR to the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    void add_debug_watch_expression (const std::string& expr)
+    {
+      m_debug_watch_expressions.insert (expr);
+    }
+
+    // Remove EXPR from the set of expressions that may be evaluated
+    // when the debugger stops at a breakpoint.
+    void remove_debug_watch_expression (const std::string& expr)
+    {
+      m_debug_watch_expressions.erase (expr);
+    }
+
+    // Clear the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    void clear_debug_watch_expressions (void)
+    {
+      m_debug_watch_expressions.clear ();
+    }
+
+    // Return the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    std::set<std::string> debug_watch_expressions (void) const
+    {
+      return m_debug_watch_expressions;
+    }
+
     octave_value PS4 (const octave_value_list& args, int nargout);
 
     std::string PS4 (void) const { return m_PS4; }
@@ -863,6 +891,8 @@ namespace octave
     // from the stack and deleted and we resume working with the
     // previous debugger (if any) that is now at the top of the stack.
     std::stack<debugger *> m_debugger_stack;
+
+    std::set<std::string> m_debug_watch_expressions;
 
     int m_exit_status;
 

@@ -121,6 +121,26 @@ function plotimages (d, nm, typ)
             '\int_{\fontsize{8}0}^{\fontsize{8}x}} e^{-t^2} dt} = 0.6175']);
       print (outfile, d_typ);
     endif
+  elseif (strcmp (nm, "precisiondate"))
+    rand ("state", 1);
+    t = datenum (2020, 1, 1):(1/1440):datenum (2020, 1, 2);
+    x = -cos (2*pi*t) + rand (size (t)) / 10;
+    subplot (1, 2, 1);
+    plot (t, x);
+    datetick ("x");
+    xlabel ("serial date");
+    title ("problem");
+    subplot (1, 2, 2);
+    plot (t - 730485, x);
+    datetick ("x");
+    xlabel ("2000 years off");
+    title ("workaround");
+    # set wider aspect ratio
+    image_size = [8.25, 3.5]; # in inches, 5:2 format
+    border = 0;              # For postscript use 50/72
+    set (gcf, "papersize", image_size + 2*border);
+    set (gcf, "paperposition", [border, border, image_size]);
+    print (outfile, d_typ);
   else
     error ("unrecognized plot requested");
   endif

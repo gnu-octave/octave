@@ -1679,22 +1679,19 @@ namespace octave
 
     if (settings)
       {
-        if (settings->value (global_restore_ov_dir.key,
-                             global_restore_ov_dir.def).toBool ())
+        if (settings->value (global_restore_ov_dir).toBool ())
           {
             // restore last dir from previous session
             QStringList curr_dirs
               = settings->value (mw_dir_list).toStringList ();
-            startup_dir
-              = QDir (curr_dirs.at (0));  // last dir in previous session
+            if (curr_dirs.length () > 0)
+              startup_dir = QDir (curr_dirs.at (0));  // last dir prev. session
           }
-        else if (! settings->value (global_ov_startup_dir.key,
-                                    global_ov_startup_dir.def).toString ().isEmpty ())
+        else if (! settings->value (global_ov_startup_dir).toString ().isEmpty ())
           {
             // do not restore but there is a startup dir configured
             startup_dir
-              = QDir (settings->value (global_ov_startup_dir.key,
-                                       global_ov_startup_dir.def).toString ());
+              = QDir (settings->value (global_ov_startup_dir).toString ());
           }
 
         update_default_encoding (settings->value (ed_default_enc).toString ());

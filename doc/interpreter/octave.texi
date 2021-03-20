@@ -420,7 +420,7 @@ Functions and Scripts
 * Function Files::
 * Script Files::
 * Function Handles and Anonymous Functions::
-* Commands::
+* Command Syntax and Function Syntax::
 * Organization of Functions::
 
 Validating Arguments
@@ -624,6 +624,7 @@ Graphics Toolkits
 
 * Customizing Toolkit Behavior::
 * Hardware vs. Software Rendering::
+* Precision issues::
 
 Matrix Manipulation
 

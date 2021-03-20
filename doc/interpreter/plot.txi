@@ -2753,9 +2753,9 @@ microseconds.  But with single precision, the resolution is reduced to about
 granularity will result in a distorted graph.
 
 As a workaround, it is possible to use the @qcode{"gnuplot"} graphics toolkit
-or subtract 2000 years---i.e. datenum(2000,0,0) or 730485---from the time
-values.  Due to the fact that the calendar structure repeats every 2000 years,
-the relation between year, month, day of month and day of week will stay
+or subtract 2000 years---i.e. @code{datenum (2000, 0, 0)} or 730485---from the
+time values.  Due to the fact that the calendar structure repeats every 2000
+years, the relation between year, month, day of month and day of week will stay
 unchanged and the ticks and ticklabels produced by the @code{datetick} function
 will still be correct.  Only years will lack the millennium digit.  Thus,
 "2020" will be printed as "20".  For example:
@@ -2791,3 +2791,5 @@ The result of which can be seen in @ref{fig:precisiondate}.
 @caption{Single precision issues with OpenGL graphics toolkits}
 @end float
 @end ifnotinfo
+
+Similarly, other data can be translated or re-scaled to work around this issue.

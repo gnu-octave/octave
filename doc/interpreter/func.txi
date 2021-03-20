@@ -41,7 +41,7 @@ functions.
 * Function Files::
 * Script Files::
 * Function Handles and Anonymous Functions::
-* Commands::
+* Command Syntax and Function Syntax::
 * Organization of Functions::
 @end menu
 
@@ -1889,12 +1889,14 @@ f = @@plus
 @xref{Operator Overloading}, for a list of operators which also have a
 functional form.
 
-@node Commands
-@section Commands
+@node Command Syntax and Function Syntax
+@section Command Syntax and Function Syntax
+@cindex commands functions
 
-Commands are a special class of functions that only accept string
-input arguments.  A command can be called as an ordinary function, but
-it can also be called without the parentheses.  For example,
+Additionally to the function syntax described above (i.e., calling a function
+like @code{fun (arg1, arg2, @dots{})}), a function can be called using command
+syntax (for example, calling a function like @code{fun arg1 arg2 @dots{}}).  In
+that case, all arguments are passed to the function as strings.  For example,
 
 @example
 my_command hello world
@@ -1911,18 +1913,31 @@ my_command ("hello", "world")
 The general form of a command call is
 
 @example
-@var{cmdname} @var{arg1} @var{arg2} @dots{}
+cmdname arg1 arg2 @dots{}
 @end example
 
 @noindent
 which translates directly to
 
 @example
-@var{cmdname} ("@var{arg1}", "@var{arg2}", @dots{})
+cmdname ("arg1", "arg2", @dots{})
 @end example
 
-Any regular function can be used as a command if it accepts string input
-arguments.  For example:
+If an argument including spaces should be passed to a function in command
+syntax, (double-)quotes can be used.  For example,
+@example
+my_command "first argument" "second argument"
+@end example
+
+@noindent
+is equivalent to
+
+@example
+my_command ("first argument", "second argument")
+@end example
+
+Any function can be used as a command if it accepts string input arguments.
+For example:
 
 @example
 @group
@@ -1931,11 +1946,9 @@ toupper lower_case_arg
 @end group
 @end example
 
-One difficulty of commands occurs when one of the string input arguments
-is stored in a variable.  Because Octave can't tell the difference between
-a variable name and an ordinary string, it is not possible to pass a
-variable as input to a command.  In such a situation a command must be
-called as a function.  For example:
+Since the arguments are passed as strings to the corresponding function, it is
+not possible to pass input arguments that are stored in variables.  In that
+case, a command must be called using the function syntax.  For example:
 
 @example
 @group
@@ -1946,6 +1959,12 @@ toupper (strvar)
    @result{} ans = HELLO WORLD
 @end group
 @end example
+
+Additionally, the return values of functions cannot be assigned to variables
+using the command syntax.  Only the first return argument is assigned to the
+built-in variable @code{ans}.  If the output argument of a command should be
+assigned to a variable, or multiple output arguments of a function should be
+returned, the function syntax must be used.
 
 
 @node Organization of Functions

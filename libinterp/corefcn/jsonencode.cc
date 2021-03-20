@@ -446,7 +446,7 @@ DEFUN (jsonencode, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{JSON_txt} =} jsonencode (@var{object})
 @deftypefnx {} {@var{JSON_txt} =} jsonencode (@dots{}, "ConvertInfAndNaN", @var{TF})
-@deftypefnx {} {@var{JSON_txt} =} jsonencode (@dots{}, "PrettyWriter", @var{TF})
+@deftypefnx {} {@var{JSON_txt} =} jsonencode (@dots{}, "PrettyPrint", @var{TF})
 
 Encode Octave data types into JSON text.
 
@@ -460,7 +460,7 @@ If the value of the option @qcode{"ConvertInfAndNaN"} is true then @code{NaN},
 @qcode{"null"} in the output.  If it is false then they will remain as their
 original values.  The default value for this option is true.
 
-If the value of the option @qcode{"PrettyWriter"} is true, the output text will
+If the value of the option @qcode{"PrettyPrint"} is true, the output text will
 have indentations and line feeds.  If it is false, the output will be condensed
 and written without whitespace.  The default value for this option is false.
 
@@ -545,10 +545,10 @@ jsonencode ("\a\b\t\n\v\f\r")
 @end group
 
 @group
-jsonencode ([true; false], "PrettyWriter", true)
+jsonencode ([true; false], "PrettyPrint", true)
 @result{} ans = [
-       true,
-       false
+     true,
+     false
    ]
 @end group
 
@@ -584,13 +584,13 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
 #if defined (HAVE_RAPIDJSON)
 
   int nargin = args.length ();
-  // jsonencode has two options 'ConvertInfAndNaN' and 'PrettyWriter'
+  // jsonencode has two options 'ConvertInfAndNaN' and 'PrettyPrint'
   if (nargin != 1 && nargin != 3 && nargin != 5)
     print_usage ();
 
   // Initialize options with their default values
   bool ConvertInfAndNaN = true;
-  bool PrettyWriter = false;
+  bool PrettyPrint = false;
 
   for (octave_idx_type i = 1; i < nargin; ++i)
     {
@@ -602,29 +602,30 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
       std::string option_name = args(i++).string_value ();
       if (octave::string::strcmpi (option_name, "ConvertInfAndNaN"))
         ConvertInfAndNaN = args(i).bool_value ();
-      else if (octave::string::strcmpi (option_name, "PrettyWriter"))
-        PrettyWriter = args(i).bool_value ();
+      else if (octave::string::strcmpi (option_name, "PrettyPrint"))
+        PrettyPrint = args(i).bool_value ();
       else
         error ("jsonencode: "
-               R"(Valid options are "ConvertInfAndNaN" and "PrettyWriter")");
+               R"(Valid options are "ConvertInfAndNaN" and "PrettyPrint")");
     }
 
 # if ! defined (HAVE_RAPIDJSON_PRETTYWRITER)
-  if (PrettyWriter)
+  if (PrettyPrint)
     {
       warn_disabled_feature ("jsonencode",
-                             R"(the "PrettyWriter" option of RapidJSON)");
-      PrettyWriter = false;
+                             R"(the "PrettyPrint" option of RapidJSON)");
+      PrettyPrint = false;
     }
 # endif
 
   rapidjson::StringBuffer json;
-  if (PrettyWriter)
+  if (PrettyPrint)
     {
 # if defined (HAVE_RAPIDJSON_PRETTYWRITER)
       rapidjson::PrettyWriter<rapidjson::StringBuffer, rapidjson::UTF8<>,
                               rapidjson::UTF8<>, rapidjson::CrtAllocator,
                               rapidjson::kWriteNanAndInfFlag> writer (json);
+      writer.SetIndent (' ', 2);
       encode (writer, args(0), ConvertInfAndNaN);
 # endif
     }
@@ -663,7 +664,7 @@ Functional BIST tests are located in test/json/jsonencode_BIST.tst
 %!       'Valid options are "ConvertInfAndNaN"');
 
 %!testif HAVE_RAPIDJSON; ! __have_feature__ ("RAPIDJSON_PRETTYWRITER")
-%! fail ("jsonencode (1, 'PrettyWriter', true)", ...
-%!       "warning", 'the "PrettyWriter" option of RapidJSON was unavailable');
+%! fail ("jsonencode (1, 'PrettyPrint', true)", ...
+%!       "warning", 'the "PrettyPrint" option of RapidJSON was unavailable');
 
 */

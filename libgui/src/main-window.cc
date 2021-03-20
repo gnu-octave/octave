@@ -1509,6 +1509,10 @@ namespace octave
 
   void main_window::set_window_layout (gui_settings *settings)
   {
+    // For resetting from some inconsistent state, first reset layout
+    // without saving or showing it
+    do_reset_windows (true, false);
+
     // Restore main window state and geometry from settings file or, in case
     // of an error (no pref values yet), from the default layout.
     if (! restoreGeometry (settings->value (mw_geometry).toByteArray ()))
@@ -2907,7 +2911,7 @@ namespace octave
   // Create the default layout of the main window. Do not use
   // restoreState () and restoreGeometry () with default values since
   // this might lead to problems when the Qt version changes
-  void main_window::do_reset_windows (bool show_it)
+  void main_window::do_reset_windows (bool show, bool save)
   {
     // Set main window default geometry and store its width for
     // later resizing the command window
@@ -2949,7 +2953,7 @@ namespace octave
 
     // Show main wibdow, save state and geometry of main window and
     // all dock widgets
-    if (show_it)
+    if (show)
       {
         // Show all dock widgets
         for (auto *widget : dock_widget_list ())
@@ -2958,11 +2962,14 @@ namespace octave
         // Show main window and store size and state
         showNormal ();
 
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-        gui_settings *settings = rmgr.get_settings ();
+        if (save)
+          {
+            resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+            gui_settings *settings = rmgr.get_settings ();
 
-        settings->setValue (mw_geometry.key, saveGeometry ());
-        settings->setValue (mw_state.key, saveState ());
+            settings->setValue (mw_geometry.key, saveGeometry ());
+            settings->setValue (mw_state.key, saveState ());
+          }
 
         focus_command_window ();
       }

@@ -163,7 +163,7 @@ namespace octave
     void prepare_to_exit (void);
     void go_to_previous_widget (void);
     void reset_windows (void);
-    void do_reset_windows (bool show_it = true);
+    void do_reset_windows (bool show = true, bool save = true);
 
     void update_octave_directory (const QString& dir);
     void browse_for_directory (void);

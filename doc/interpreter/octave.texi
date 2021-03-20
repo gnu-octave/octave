@@ -413,7 +413,7 @@ Functions and Scripts
 * Function Files::
 * Script Files::
 * Function Handles and Anonymous Functions::
-* Commands::
+* Command Syntax and Function Syntax::
 * Organization of Functions::
 
 Validating Arguments

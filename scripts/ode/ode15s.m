@@ -257,7 +257,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
   endif
 
   ## Use sparse methods only if all matrices are sparse
-  if (! options.havemasssparse)
+  if (! isempty (options.Mass)) && (! options.havemasssparse)
     options.havejacsparse = false;
   endif
 
@@ -271,7 +271,15 @@ function varargout = ode15s (fun, trange, y0, varargin)
                                                   options.havejacfun);
       options.havejacfun = true;
     else   # All matrices are constant
-      options.Jacobian = {[- options.Jacobian], [options.Mass]};
+      if (! isempty (options.Mass))
+        options.Jacobian = {[- options.Jacobian], [options.Mass]};
+      else
+        if (options.havejacsparse)
+          options.Jacobian = {[- options.Jacobian], speye(n)};
+        else
+          options.Jacobian = {[- options.Jacobian], eye(n)};
+        endif
+      endif
 
     endif
   endif
@@ -588,6 +596,16 @@ endfunction
 %!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
+
+## Jacobian as const matrix
+%!testif HAVE_SUNDIALS
+%! opt = odeset ("RelTol", 1e-4, "AbsTol", 1e-5,
+%!               "Jacobian", [98, 198; -99, -199]);
+%! [t, y] = ode15s (@(t, y)[98, 198; -99, -199] * (y - [1; 0]),
+%!                 [0, 5], [2; 0], opt);
+%! y1xct = @(t) 2 * exp (-t) - exp (-100 * t) + 1;
+%! y2xct = @(t) - exp (-t) + exp (-100 * t);
+%! assert ([y1xct(t), y2xct(t)], y, 1e-3);
 
 ## two output arguments
 %!testif HAVE_SUNDIALS

@@ -72,6 +72,9 @@
 #  define SHELL_PATH "/bin/sh"
 #endif
 
+#define STRINGIFY(s) STRINGIFY1(s)
+#define STRINGIFY1(s) #s
+
 DEFUN (warranty, , ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} warranty ()
@@ -423,9 +426,11 @@ specified option.
            { "localverarchlibdir", octave::config::local_ver_arch_lib_dir () },
            { "localverfcnfiledir", octave::config::local_ver_fcn_file_dir () },
            { "localveroctfiledir", octave::config::local_ver_oct_file_dir () },
+           { "major_version", STRINGIFY (OCTAVE_MAJOR_VERSION) },
            { "man1dir", octave::config::man1_dir () },
            { "man1ext", octave::config::man1_ext () },
            { "mandir", octave::config::man_dir () },
+           { "minor_version", STRINGIFY (OCTAVE_MINOR_VERSION) },
            { "octdatadir", octave::config::oct_data_dir () },
            { "octdocdir", octave::config::oct_doc_dir () },
            { "octetcdir", octave::config::oct_etc_dir () },
@@ -434,6 +439,7 @@ specified option.
            { "octincludedir", octave::config::oct_include_dir () },
            { "octlibdir", octave::config::oct_lib_dir () },
            { "octtestsdir", octave::config::oct_tests_dir () },
+           { "patch_version", STRINGIFY (OCTAVE_PATCH_VERSION) },
            { "release_date", OCTAVE_RELEASE_DATE },
            { "startupfiledir", octave::config::startupfile_dir () },
            { "version", OCTAVE_VERSION }};

@@ -546,6 +546,10 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(matlabroot)
 
+@DOCSTRING(user_config_dir)
+
+@DOCSTRING(user_data_dir)
+
 @DOCSTRING(OCTAVE_VERSION)
 
 @DOCSTRING(version)

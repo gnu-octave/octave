@@ -41,7 +41,8 @@ function [prefix, archprefix] = default_prefix (global_install, desc)
                              "packages");
     endif
   else
-    prefix = tilde_expand (fullfile ("~", "octave"));
+    prefix = fullfile (user_data_dir (), "octave", ...
+                       __octave_config_info__ ("major_version"), "packages");
     archprefix = prefix;
   endif
 

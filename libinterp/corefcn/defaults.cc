@@ -507,3 +507,40 @@ Return the version number of Octave as a string.
 %!assert (ischar (OCTAVE_VERSION ()))
 %!error OCTAVE_VERSION (1)
 */
+
+DEFUN (user_config_dir, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {cfg_dir = } user_config_dir ()
+Return the (platform-specific) directory for user configuration.
+@seealso{user_data_dir}
+@end deftypefn */)
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  return ovl (octave::sys::env::get_user_config_directory ());
+}
+
+/*
+%!assert (ischar (user_config_dir ()))
+%!error user_config_dir (1)
+*/
+
+DEFUN (user_data_dir, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {data_dir = } user_data_dir ()
+Return the (platform-specific) directory for user data.
+@seealso{user_config_dir}
+@end deftypefn */)
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  return ovl (octave::sys::env::get_user_data_directory ());
+}
+
+/*
+%!assert (ischar (user_data_dir ()))
+%!error user_data_dir (1)
+*/
+

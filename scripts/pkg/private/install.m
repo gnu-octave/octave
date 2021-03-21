@@ -282,6 +282,11 @@ function install (files, handle_deps, prefix, archprefix, verbose,
       if (ispc)
         local_packages = standardize_paths (local_packages);
       endif
+      if (! exist (fileparts (local_list), "dir")
+          && ! mkdir (fileparts (local_list)))
+        error ("Octave:pkg:install:local-dir", ...
+               "pkg: Could not create directory for local package configuration");
+      endif
       save (local_list, "local_packages");
       installed_pkgs_lst = {local_packages{:}, global_packages{:}};
     endif

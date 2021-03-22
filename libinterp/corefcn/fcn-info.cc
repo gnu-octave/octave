@@ -651,8 +651,8 @@ namespace octave
                         bp_table& bptab
                           = __get_bp_table__ ("out_of_date_check");
 
-                        bptab.remove_all_breakpoints_in_file (canonical_nm,
-                                                              true);
+                        bptab.remove_all_breakpoints_from_function (canonical_nm,
+                                                                    true);
                       }
                   }
               }

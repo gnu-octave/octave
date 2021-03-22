@@ -260,18 +260,7 @@ namespace octave
 
     base_qobject& m_octave_qobj;
 
-    struct bp_info
-    {
-      bp_info (const QString& fname, int l = 0, const QString& cond = "");
-
-      int line;
-      std::string file;
-      std::string dir;
-      std::string function_name;
-      std::string condition;
-    };
-
-    void add_breakpoint_event (const bp_info& info);
+    void add_breakpoint_event (int line, const QString& cond);
 
     bool valid_file_name (const QString& file = QString ());
     void save_file (const QString& saveFileName, bool remove_on_success = false,

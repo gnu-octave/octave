@@ -76,27 +76,93 @@ namespace octave
     typedef fname_bp_map::const_iterator const_fname_bp_map_iterator;
     typedef fname_bp_map::iterator fname_bp_map_iterator;
 
-    // Add a breakpoint at the nearest executable line.
+    OCTAVE_DEPRECATED (7, "use 'bp_table::add_breakpoints_in_function' instead")
     int add_breakpoint (const std::string& fname = "",
                         const std::string& class_name = "",
-                        int line = 1, const std::string& condition = "");
+                        int line = 1,
+                        const std::string& condition = "")
+    {
+      return add_breakpoint_in_function (fname, class_name, line, condition);
+    }
 
-    // Add a set of breakpoints at the nearest executable lines.
+    OCTAVE_DEPRECATED (7, "use 'bp_table::add_breakpoints_in_function' instead")
     bp_lines add_breakpoint (const std::string& fname = "",
-                           const std::string& class_name = "",
-                           const bp_lines& lines = bp_lines (),
-                           const std::string& condition = "");
+                             const std::string& class_name = "",
+                             const bp_lines& lines = bp_lines (),
+                             const std::string& condition = "")
+    {
+      return add_breakpoints_in_function (fname, class_name, lines, condition);
+    }
+
+    // Add a breakpoint at the nearest executable line in a function.
+    int add_breakpoint_in_function (const std::string& fname = "",
+                                    const std::string& class_name = "",
+                                    int line = 1,
+                                    const std::string& condition = "");
+
+    // Add a set of breakpoints at the nearest executable lines in a
+    // function.
+    bp_lines add_breakpoints_in_function (const std::string& fname = "",
+                                          const std::string& class_name = "",
+                                          const bp_lines& lines = bp_lines (),
+                                          const std::string& condition = "");
+
+    // Add a breakpoint at the nearest executable line in a file.
+    int add_breakpoint_in_file (const std::string& file = "",
+                                int line = 1,
+                                const std::string& condition = "");
+
+    // Add a set of breakpoints at the nearest executable lines in a
+    // file.
+    bp_lines add_breakpoints_in_file (const std::string& file = "",
+                                      const bp_lines& lines = bp_lines (),
+                                      const std::string& condition = "");
+
+    OCTAVE_DEPRECATED (7, "use 'bp_table::remove_breakpoint_from_function' instead")
+    int remove_breakpoint (const std::string& fname = "",
+                           int line = 1)
+    {
+      return remove_breakpoint_from_function (fname, line);
+    }
+
+    OCTAVE_DEPRECATED (7, "use 'bp_table::remove_breakpoints_from_function' instead")
+    int remove_breakpoint (const std::string& fname = "",
+                           const bp_lines& lines = bp_lines ())
+    {
+      return remove_breakpoints_from_function (fname, lines);
+    }
 
     // Remove a breakpoint from the given line in file.
-    int remove_breakpoint (const std::string& fname = "", int line = 1);
+    int remove_breakpoint_from_function (const std::string& fname = "",
+                                         int line = 1);
 
     // Remove a set of breakpoints from the given lines in file.
-    int remove_breakpoint (const std::string& fname = "",
-                           const bp_lines& lines = bp_lines ());
+    int remove_breakpoints_from_function (const std::string& fname = "",
+                                          const bp_lines& lines = bp_lines ());
 
-    // Remove all the breakpoints in a specified file.
+    // Remove all the breakpoints in a specified function.
+    bp_lines remove_all_breakpoints_from_function (const std::string& fname,
+                                                   bool silent = false);
+
+    // Remove a breakpoint from the given line in file.
+    int remove_breakpoint_from_file (const std::string& file = "",
+                                     int line = 1);
+
+    // Remove a set of breakpoints from the given lines in file.
+    int remove_breakpoints_from_file (const std::string& file = "",
+                                      const bp_lines& lines = bp_lines ());
+
+
+    OCTAVE_DEPRECATED (7, "use 'bp_table::remove_all_breakpoints_from_function' instead")
     bp_lines remove_all_breakpoints_in_file (const std::string& fname,
-                                           bool silent = false);
+                                             bool silent = false)
+    {
+      return remove_all_breakpoints_from_function (fname, silent);
+    }
+
+    // Remove all the breakpoints from a file.
+    bp_lines remove_all_breakpoints_from_file (const std::string& file,
+                                               bool silent = false);
 
     // Remove all the breakpoints registered with octave.
     void remove_all_breakpoints (void);

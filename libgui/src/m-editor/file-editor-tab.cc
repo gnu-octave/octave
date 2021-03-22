@@ -1122,67 +1122,27 @@ namespace octave
     m_edit_area->markerDeleteAll (marker::bookmark);
   }
 
-  file_editor_tab::bp_info::bp_info (const QString& fname, int l,
-                                     const QString& cond)
-    : line (l), file (fname.toStdString ()), condition (cond.toStdString ())
-  {
-    QFileInfo file_info (fname);
-
-    QString q_dir = file_info.absolutePath ();
-    QString q_function_name = file_info.fileName ();
-
-    // We have to cut off the suffix, because octave appends it.
-    q_function_name.chop (file_info.suffix ().length () + 1);
-
-    dir = q_dir.toStdString ();
-    function_name = q_function_name.toStdString ();
-
-    // Is the last component of DIR @foo?  If so, strip it and prepend it
-    // to the name of the function.
-
-    size_t pos = dir.rfind (sys::file_ops::dir_sep_chars ());
-
-    if (pos != std::string::npos && pos < dir.length () - 1)
-      {
-        if (dir[pos+1] == '@')
-          {
-            function_name = sys::file_ops::concat (dir.substr (pos+1), function_name);
-
-            dir = dir.substr (0, pos);
-          }
-      }
-  }
-
-  void file_editor_tab::handle_request_add_breakpoint (int line,
-                                                       const QString& condition)
+  void
+  file_editor_tab::handle_request_add_breakpoint (int line,
+                                                  const QString& condition)
   {
     if (! m_is_octave_file)
       return;
 
-    bp_info info (m_file_name, line, condition);
-
-    add_breakpoint_event (info);
+    add_breakpoint_event (line, condition);
   }
 
   void file_editor_tab::handle_request_remove_breakpoint (int line)
   {
-    bp_info info (m_file_name, line);
-
     emit interpreter_event
       ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
-         load_path& lp = interp.get_load_path ();
+         tree_evaluator& tw = interp.get_evaluator ();
+         bp_table& bptab = tw.get_bp_table ();
 
-         if (lp.contains_file_in_dir (info.file, info.dir))
-           {
-             tree_evaluator& tw = interp.get_evaluator ();
-
-             bp_table& bptab = tw.get_bp_table ();
-
-             bptab.remove_breakpoint (info.function_name, info.line);
-           }
+         bptab.remove_breakpoint_from_file (m_file_name.toStdString (), line);
        });
   }
 
@@ -1252,23 +1212,16 @@ namespace octave
     if (ID != this)
       return;
 
-    bp_info info (m_file_name);
-
     emit interpreter_event
       ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
-         load_path& lp = interp.get_load_path ();
+         tree_evaluator& tw = interp.get_evaluator ();
+         bp_table& bptab = tw.get_bp_table ();
 
-         if (lp.contains_file_in_dir (info.file, info.dir))
-           {
-             tree_evaluator& tw = interp.get_evaluator ();
-
-             bp_table& bptab = tw.get_bp_table ();
-
-             bptab.remove_all_breakpoints_in_file (info.function_name, true);
-           }
+         bptab.remove_all_breakpoints_from_file (m_file_name.toStdString (),
+                                                 true);
        });
   }
 
@@ -1360,7 +1313,7 @@ namespace octave
     auto_margin_width ();
   }
 
-  void file_editor_tab::add_breakpoint_event (const bp_info& info)
+  void file_editor_tab::add_breakpoint_event (int line, const QString& cond)
   {
     emit interpreter_event
       ([=] (interpreter& interp)
@@ -1370,20 +1323,14 @@ namespace octave
          // FIXME: note duplication with the code in
          // handle_context_menu_break_condition.
 
-         load_path& lp = interp.get_load_path ();
+         tree_evaluator& tw = interp.get_evaluator ();
+         bp_table& bptab = tw.get_bp_table ();
 
-         if (lp.contains_file_in_dir (info.file, info.dir))
-           {
-             tree_evaluator& tw = interp.get_evaluator ();
+         int lineno = bptab.add_breakpoint_in_file (m_file_name.toStdString (),
+                                                    line, cond.toStdString ());
 
-             bp_table& bptab = tw.get_bp_table ();
-
-             int lineno = bptab.add_breakpoint (info.function_name, "",
-                                                info.line, info.condition);
-
-             if (lineno)
-               emit maybe_remove_next (lineno);
-           }
+         if (lineno)
+           emit maybe_remove_next (lineno);
        });
   }
 

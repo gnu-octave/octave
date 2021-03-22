@@ -132,8 +132,13 @@
 ##
 ## @table @asis
 ## @item Font handling:
-## The actual font is embedded in the output file which allows for printing
-## arbitrary characters and fonts in all vector formats.
+## For interpreters "none" and "tex", the actual font is embedded in the output
+## file which allows for printing arbitrary characters and fonts in all vector
+## formats.
+##
+## Strings using the @qcode{"latex"} interpreter, are rendered using path
+## objects. This looks good but note that textual info (font, characters@dots{})
+## are lost.
 ##
 ## @item Output Simplification:
 ## By default, the option @option{-painters} renders patch and surface objects

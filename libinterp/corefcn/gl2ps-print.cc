@@ -64,8 +64,8 @@ namespace octave
 
     gl2ps_renderer (opengl_functions& glfcns, FILE *_fp,
                     const std::string& _term)
-      : opengl_renderer (glfcns), fp (_fp), term (_term),
-        fontsize (), fontname (), buffer_overflow (false)
+      : opengl_renderer (glfcns), fp (_fp), term (_term), fontsize (),
+        fontname (), buffer_overflow (false), m_svg_def_index (0)
     { }
 
     ~gl2ps_renderer (void) = default;
@@ -266,7 +266,11 @@ namespace octave
                                Matrix box, double rotation,
                                std::list<text_renderer::string>& lst);
 
-    // Build an svg text element from a list of parsed strings.
+    // Build an svg text element from a list of parsed strings
+    std::string format_svg_element (std::string str, Matrix bbox,
+                                    double rotation, ColumnVector coord_pix,
+                                    Matrix color);
+
     std::string strlist_to_svg (double x, double y, double z, Matrix box,
                                 double rotation,
                                 std::list<text_renderer::string>& lst);
@@ -283,6 +287,7 @@ namespace octave
     double fontsize;
     std::string fontname;
     bool buffer_overflow;
+    std::size_t m_svg_def_index;
   };
 
   static bool
@@ -487,8 +492,7 @@ namespace octave
                         error ("gl2ps_renderer::draw: internal pipe error");
                       }
                   }
-                else if (! header_found
-                         && term.find ("svg") != std::string::npos)
+                else if (term.find ("svg") != std::string::npos)
                   {
                     // FIXME: gl2ps uses pixel units for SVG format.
                     //        Modify resulting svg to use points instead.
@@ -496,7 +500,7 @@ namespace octave
                     //        make header_found true for SVG if gl2ps is fixed.
                     std::string srchstr (str);
                     size_t pos = srchstr.find ("px");
-                    if (pos != std::string::npos)
+                    if (! header_found && pos != std::string::npos)
                       {
                         header_found = true;
                         srchstr[pos+1] = 't';  // "px" -> "pt"
@@ -794,20 +798,134 @@ namespace octave
   }
 
   std::string
+  gl2ps_renderer::format_svg_element (std::string str, Matrix box,
+                                      double rotation, ColumnVector coord_pix,
+                                      Matrix color)
+  {
+    // Extract <defs> elements and change their id to avoid conflict with
+    // defs coming from another svg string
+    std::string::size_type n1 = str.find ("<defs>");
+    if (n1 == std::string::npos)
+      return std::string ();
+
+    std::string id, new_id;
+    n1 = str.find ("<path", ++n1);
+    std::string::size_type n2;
+
+    while (n1 != std::string::npos)
+      {
+        // Extract the identifier id='identifier'
+        n1 = str.find ("id='", n1) + 4;
+        n2 = str.find ("'", n1);
+        id = str.substr (n1, n2-n1);
+
+        new_id = std::to_string (m_svg_def_index) + "-" + id ;
+
+        str.replace (n1, n2-n1, new_id);
+
+        std::string::size_type n_ref = str.find ("#" + id);
+
+        while (n_ref != std::string::npos)
+          {
+            str.replace (n_ref + 1, id.length (), new_id);
+            n_ref = str.find ("#" + id);
+          }
+
+        n1 = str.find ("<path", n1);
+      }
+
+    m_svg_def_index++;
+
+    n1 = str.find ("<defs>");
+    n2 = str.find ("</defs>") + 7;
+
+    std::string defs = str.substr (n1, n2-n1);
+
+    // Extract the group containing the <use> elements and transform its
+    // coordinates using the bbox and coordinates info.
+
+    // Extract the original viewBox anchor
+    n1 = str.find ("viewBox='") + 9;
+    if (n1 == std::string::npos)
+      return std::string ();
+
+    n2 = str.find (" ", n1);
+    double original_x0 = std::stod (str.substr (n1, n2-n1));
+
+    n1 = n2+1;
+    n2 = str.find (" ", n1);
+    double original_y0 = std::stod (str.substr (n1, n2-n1));
+
+    // First look for local transform in the original svg
+    std::string orig_trans;
+    n1 = str.find ("<g id='page1' transform='");
+    if (n1 != std::string::npos)
+      {
+        n1 += 25;
+        n2 = str.find ("'", n1);
+        orig_trans = str.substr (n1, n2-n1);
+        n1 = n2 + 1;
+      }
+    else
+      {
+        n1 = str.find ("<g id='page1'");
+        n1 += 13;
+      }
+
+    n2 = str.find ("</g>", n1) + 4;
+
+    // The first applied transformation is the right-most
+    // 1* Apply original transform
+    std::string tform = orig_trans;
+
+    // 2* Move the anchor to the final position
+    tform = std::string ("translate")
+      + "(" + std::to_string (box(0) - original_x0 + coord_pix(0))
+      + "," + std::to_string (-(box(3) + box(1)) - original_y0 + coord_pix(1))
+      + ") " + tform;
+
+    // 3* Rotate around the final position
+    if (rotation != 0)
+      tform = std::string ("rotate")
+        + "(" + std::to_string (-rotation)
+        + "," + std::to_string (coord_pix(0))
+        + "," + std::to_string (coord_pix(1))
+        + ") " + tform;
+
+    // Fill color
+    std::string fill = "fill='rgb("
+      + std::to_string (static_cast<uint8_t> (color(0) * 255.0)) + ","
+      + std::to_string (static_cast<uint8_t> (color(1) * 255.0)) + ","
+      + std::to_string (static_cast<uint8_t> (color(2) * 255.0)) + ")' ";
+
+    std::string use_group = "<g "
+      + fill
+      + "transform='" + tform + "'"
+      + str.substr (n1, n2-n1);
+
+    return defs + "\n" + use_group;
+  }
+
+  std::string
   gl2ps_renderer::strlist_to_svg (double x, double y, double z,
                                   Matrix box, double rotation,
                                   std::list<text_renderer::string>& lst)
   {
-    if (lst.empty ())
-      return "";
-
     //Use pixel coordinates to conform to gl2ps
     ColumnVector coord_pix = get_transform ().transform (x, y, z, false);
 
-    std::ostringstream os;
-    os << R"(<text xml:space="preserve" )";
+    if (lst.empty ())
+      return "";
 
-    // Rotation and translation are applied to the whole text element
+    // This may already be an svg image.
+    std::string svg = lst.front ().get_svg_element ();
+    if (! svg.empty ())
+      return format_svg_element (svg, box, rotation, coord_pix,
+                                 lst.front ().get_color ());
+
+    // Rotation and translation are applied to the whole group
+    std::ostringstream os;
+    os << R"(<g xml:space="preserve" )";
     os << "transform=\""
        << "translate(" << coord_pix(0) + box(0) << "," << coord_pix(1) - box(1)
        << ") rotate(" << -rotation << "," << -box(0) << "," << box(1)
@@ -826,10 +944,10 @@ namespace octave
        << "font-size=\"" << size << "\">";
 
 
-    // build a tspan for each element in the strlist
+    // Build a text element for each element in the strlist
     for (p = lst.begin (); p != lst.end (); p++)
       {
-        os << "<tspan ";
+        os << "<text ";
 
         if (name.compare (p->get_family ()))
           os << "font-family=\"" << p->get_family () << "\" ";
@@ -882,9 +1000,9 @@ namespace octave
                   os << chr.str ();
               }
           }
-        os << "</tspan>";
+        os << "</text>";
       }
-    os << "</text>";
+    os << "</g>";
 
     return os.str ();
   }
@@ -894,6 +1012,26 @@ namespace octave
                                  Matrix box, double rotation,
                                  std::list<text_renderer::string>& lst)
   {
+    if (lst.empty ())
+      return "";
+    else if (lst.size () == 1)
+      {
+        static bool warned = false;
+        // This may be an svg image, not handled in native eps format.
+        if (! lst.front ().get_svg_element ().empty ())
+          {
+            if (! warned)
+              {
+                warned = true;
+                warning_with_id ("Octave:print:unhandled-svg-content",
+                                 "print: unhandled LaTeX strings. "
+                                 "Use -svgconvert option or -d*latex* output "
+                                 "device.");
+              }
+            return "";
+          }
+      }
+
     // Translate and rotate coordinates in order to use bottom-left alignment
     fix_strlist_position (x, y, z, box, rotation, lst);
     Matrix prev_color (1, 3, -1);

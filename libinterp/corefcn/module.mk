@@ -46,6 +46,7 @@ COREFCN_INC = \
   %reldir%/hook-fcn.h \
   %reldir%/input.h \
   %reldir%/interpreter.h \
+  %reldir%/latex-text-renderer.h \
   %reldir%/load-path.h \
   %reldir%/load-save.h \
   %reldir%/ls-ascii-helper.h \
@@ -124,6 +125,7 @@ COREFCN_SRC = \
   %reldir%/__qp__.cc \
   %reldir%/amd.cc \
   %reldir%/balance.cc \
+  %reldir%/base-text-renderer.cc \
   %reldir%/besselj.cc \
   %reldir%/bitfcns.cc \
   %reldir%/bsxfun.cc \
@@ -189,6 +191,7 @@ COREFCN_SRC = \
   %reldir%/jsondecode.cc \
   %reldir%/jsonencode.cc \
   %reldir%/kron.cc \
+  %reldir%/latex-text-renderer.cc \
   %reldir%/load-path.cc \
   %reldir%/load-save.cc \
   %reldir%/lookup.cc \

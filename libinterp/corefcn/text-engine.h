@@ -322,7 +322,7 @@ namespace octave
   text_processor
   {
   public:
-    virtual void visit (text_element_string& e) = 0;
+    virtual void visit (text_element_string&) { }
 
     virtual void visit (text_element_symbol&) { }
 

@@ -98,6 +98,12 @@ variables in the editor panel.
 
 - Support for Qt4 for both graphics and the GUI has been removed.
 
+- If a working LaTeX tool chain is found on the path, including `latex`,
+`dvipng`, and `dvisvgm` binaries, then text strings can now be rendered properly
+when using the `"latex"` value for the text objects' `"interpreter"` property
+and axes objects' `"ticklabelinterpreter"`.  Type `doc "latex interpreter"`
+for further info.
+
 - The additional property `"contextmenu"` has been added to all graphics
 objects.  It is equivalent to the previously used `"uicontextmenu"`
 property which is hidden now.

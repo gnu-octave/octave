@@ -59,6 +59,8 @@ namespace octave
 
     bool ok (void) const;
 
+    bool latex_ok (void) const;
+
     Matrix get_extent (text_element *elt, double rotation = 0.0);
 
     Matrix get_extent (const std::string& txt, double rotation = 0.0,
@@ -136,12 +138,13 @@ namespace octave
 
       string (const std::string& s, font& f, const double x0, const double y0)
         : str (s), family (f.get_name ()), fnt (f), x (x0), y (y0), z (0.0),
-          xdata (), code (0), color (Matrix (1,3,0.0))
+          xdata (), code (0), color (Matrix (1,3,0.0)), svg_element ()
       { }
 
       string (const string& s)
         : str (s.str), family (s.family), fnt (s.fnt), x (s.x), y (s.y),
-          z (s.z), xdata (s.xdata), code (s.code), color (s.color)
+          z (s.z), xdata (s.xdata), code (s.code), color (s.color),
+          svg_element (s.svg_element)
       { }
 
       ~string (void) = default;
@@ -200,6 +203,10 @@ namespace octave
 
       uint32_t get_code (void) const { return code; }
 
+      void set_svg_element (const std::string& svg) { svg_element = svg; }
+
+      std::string get_svg_element (void) const { return svg_element; }
+
       void set_color (const uint8NDArray& c)
       {
         color(0) = static_cast<double> (c(0)) / 255;
@@ -218,6 +225,7 @@ namespace octave
       std::vector<double> xdata;
       uint32_t code;
       Matrix color;
+      std::string svg_element;
     };
 
     void text_to_strlist (const std::string& txt,
@@ -228,6 +236,7 @@ namespace octave
   private:
 
     base_text_renderer *rep;
+    base_text_renderer *latex_rep;
   };
 }
 

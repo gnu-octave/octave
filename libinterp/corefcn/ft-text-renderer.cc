@@ -448,14 +448,6 @@ namespace octave
       MODE_RENDER = 1
     };
 
-    enum
-    {
-      ROTATION_0   = 0,
-      ROTATION_90  = 1,
-      ROTATION_180 = 2,
-      ROTATION_270 = 3
-    };
-
   public:
 
     ft_text_renderer (void)
@@ -525,8 +517,6 @@ namespace octave
                          bool handle_rotation);
 
   private:
-
-    int rotation_to_mode (double rotation) const;
 
     // Class to hold information about fonts and a strong
     // reference to the font objects loaded by FreeType.
@@ -1294,53 +1284,7 @@ namespace octave
       {
         elt->accept (*this);
 
-        switch (rotation)
-          {
-          case ROTATION_0:
-            break;
-
-          case ROTATION_90:
-            {
-              Array<octave_idx_type> perm (dim_vector (3, 1));
-              perm(0) = 0;
-              perm(1) = 2;
-              perm(2) = 1;
-              pixels = pixels.permute (perm);
-
-              Array<idx_vector> idx (dim_vector (3, 1));
-              idx(0) = idx_vector (':');
-              idx(1) = idx_vector (pixels.dim2 ()-1, -1, -1);
-              idx(2) = idx_vector (':');
-              pixels = uint8NDArray (pixels.index (idx));
-            }
-            break;
-
-          case ROTATION_180:
-            {
-              Array<idx_vector> idx (dim_vector (3, 1));
-              idx(0) = idx_vector (':');
-              idx(1) = idx_vector (pixels.dim2 ()-1, -1, -1);
-              idx(2) = idx_vector (pixels.dim3 ()-1, -1, -1);
-              pixels = uint8NDArray (pixels.index (idx));
-            }
-            break;
-
-          case ROTATION_270:
-            {
-              Array<octave_idx_type> perm (dim_vector (3, 1));
-              perm(0) = 0;
-              perm(1) = 2;
-              perm(2) = 1;
-              pixels = pixels.permute (perm);
-
-              Array<idx_vector> idx (dim_vector (3, 1));
-              idx(0) = idx_vector (':');
-              idx(1) = idx_vector (':');
-              idx(2) = idx_vector (pixels.dim3 ()-1, -1, -1);
-              pixels = uint8NDArray (pixels.index (idx));
-            }
-            break;
-          }
+        rotate_pixels (pixels, rotation);
       }
 
     return pixels;
@@ -1388,27 +1332,6 @@ namespace octave
     return extent;
   }
 
-  int
-  ft_text_renderer::rotation_to_mode (double rotation) const
-  {
-    // Clip rotation to range [0, 360]
-    while (rotation < 0)
-      rotation += 360.0;
-    while (rotation > 360.0)
-      rotation -= 360.0;
-
-    if (rotation == 0.0)
-      return ROTATION_0;
-    else if (rotation == 90.0)
-      return ROTATION_90;
-    else if (rotation == 180.0)
-      return ROTATION_180;
-    else if (rotation == 270.0)
-      return ROTATION_270;
-    else
-      return ROTATION_0;
-  }
-
   void
   ft_text_renderer::text_to_pixels (const std::string& txt,
                                     uint8NDArray& pxls, Matrix& box,
@@ -1427,65 +1350,9 @@ namespace octave
     if (pxls.isempty ())
       return;  // nothing to render
 
-    switch (halign)
-      {
-      case 1:
-        box(0) = -box(2)/2;
-        break;
-
-      case 2:
-        box(0) = -box(2);
-        break;
-
-      default:
-        box(0) = 0;
-        break;
-      }
-
-    switch (valign)
-      {
-      case 1:
-        box(1) = -box(3)/2;
-        break;
-
-      case 2:
-        box(1) = -box(3);
-        break;
-
-      case 3:
-        break;
-
-      case 4:
-        box(1) = -box(3)-box(1);
-        break;
-
-      default:
-        box(1) = 0;
-        break;
-      }
-
-    if (handle_rotation)
-      {
-        switch (rot_mode)
-          {
-          case ROTATION_90:
-            std::swap (box(0), box(1));
-            std::swap (box(2), box(3));
-            box(0) = -box(0)-box(2);
-            break;
-
-          case ROTATION_180:
-            box(0) = -box(0)-box(2);
-            box(1) = -box(1)-box(3);
-            break;
-
-          case ROTATION_270:
-            std::swap (box(0), box(1));
-            std::swap (box(2), box(3));
-            box(1) = -box(1)-box(3);
-            break;
-          }
-      }
+    // Move X0 and Y0 depending on alignments and eventually swap all values
+    // for text rotated 90° 180° or 270°
+    fix_bbox_anchor (box, halign, valign, rot_mode, handle_rotation);
   }
 
   ft_text_renderer::ft_font::ft_font (const ft_font& ft)

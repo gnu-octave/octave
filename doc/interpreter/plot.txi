@@ -749,20 +749,31 @@ figure window, call the @code{close} function.
 @subsection Use of the @code{interpreter} Property
 @anchor{XREFinterpreterusage}
 
-All text objects---such as titles, labels, legends, and text---include
-the property @qcode{"interpreter"} that determines the manner in
-which special control sequences in the text are rendered.
+@code{text} (such as titles, labels, legend item) and @code{axes} objects
+feature a @ref{XREFtextinterpreter,,interpreter} and
+@ref{XREFaxesticklabelinterpreter,,ticklabelinterpreter} property respectively.
+It determines the manner in which special control sequences in the text are
+rendered.
 
 The interpreter property can take three values: @qcode{"none"}, @qcode{"tex"},
-@qcode{"latex"}.  If the interpreter is set to @qcode{"none"} then no special
-rendering occurs---the displayed text is a verbatim copy of the specified text.
-Currently, the @qcode{"latex"} interpreter is not implemented for on-screen
-display and is equivalent to @qcode{"none"}.  Note that Octave does not parse
-or validate the text strings when in @qcode{"latex"} mode---it is the
-responsibility of the programmer to generate valid strings which may include
-wrapping sections that should appear in Math mode with @qcode{'$'} characters.
+@qcode{"latex"}.
 
-The @qcode{"tex"} option implements a subset of @TeX{} functionality when
+@menu
+* @code{none} interpreter::
+* @code{tex} interpreter::
+* @code{latex} interpreter::
+@end menu
+
+@node @code{none} interpreter
+@subsubsection @code{none} interpreter
+@anchor{XREFnoneinterpreter}
+If the interpreter is set to @qcode{"none"} then no special
+rendering occurs---the displayed text is a verbatim copy of the specified text.
+
+@node @code{tex} interpreter
+@subsubsection @code{tex} interpreter
+@anchor{XREFtexinterpreter}
+The @qcode{"tex"} interpreter implements a subset of @TeX{} functionality when
 rendering text.  This allows the insertion of special glyphs such as Greek
 characters or mathematical symbols.  Special characters are inserted by using
 a backslash (\) character followed by a code, as shown in @ref{tab:extended}.
@@ -1053,7 +1064,7 @@ width 0.6pt \tabskip=0pt\cr
 @end tex
 @end float
 
-@subsubsection Degree Symbol
+@strong{Caution: Degree Symbol}
 @cindex Degree Symbol
 
 Conformance to both @TeX{} and @sc{matlab} with respect to the @code{\circ}
@@ -1061,6 +1072,56 @@ symbol is impossible.  While @TeX{} translates this symbol to @w{Unicode 2218}
 (U+2218), @sc{matlab} maps this to @w{Unicode 00B0} (U+00B0) instead.  Octave
 has chosen to follow the @TeX{} specification, but has added the additional
 symbol @code{\deg} which maps to the degree symbol (U+00B0).
+
+@node @code{latex} interpreter
+@subsubsection @code{latex} interpreter
+@anchor{XREFlatexinterpreter}
+The @qcode{"latex"} interpreter only works if an external LaTeX tool chain is
+present.  Three binaries are needed: @code{latex}, @code{dvipng}, and
+@code{dvisvgm}.  If those binaries are installed but not on the path, one can
+still provide their respective path using the following environment variables:
+OCTAVE_LATEX_BINARY, OCTAVE_DVIPNG_BINARY, and OCTAVE_DVISVG_BINARY.
+
+Note that Octave does not parse or validate the text strings when in
+@qcode{"latex"} mode---it is the responsibility of the programmer to generate
+valid strings which may include wrapping sections that should appear in Math
+mode with @qcode{'$'} characters.
+See e.g. @url{https://www.latex-project.org/help/documentation/} for
+documentation about LaTeX typesetting.
+
+For debugging purpose, a convenience environment variable,
+OCTAVE_LATEX_DEBUG_FLAG, can be set to trigger more verbose output when Octave
+fails to have a given text compiled by an external latex engine. E.g.
+@qcode{"x^2"} is not a valid LaTeX string and the following example should fail
+
+@example
+@group
+setenv ("OCTAVE_LATEX_DEBUG_FLAG", "1")
+x = 1:10;
+plot (x, x.^2)
+title ("x^2", "interpreter", "latex")
+@end group
+@end example
+
+Searching the terminal output you should find some helpful info about the origin
+of the failure:
+
+@example
+@group
+...
+No file default.aux.
+! Missing $ inserted.
+<inserted text>
+                $
+l.6 x^
+      2
+! Missing $ inserted.
+...
+@end group
+@end example
+
+If no usable latex tool chain is found at the first text rendering, using
+the @qcode{"latex"} interpreter is equivalent to @qcode{"none"}.
 
 @node Printing and Saving Plots
 @subsection Printing and Saving Plots
@@ -1091,9 +1152,19 @@ in their capability to display unusual text and in their ability to print
 such text.  In general, the @qcode{"tex"} interpreter (default) is the best
 all-around performer for both on-screen display and printing.  However, for the
 reproduction of complicated text formulas the @qcode{"latex"} interpreter is
-preferred.  The @qcode{"latex"} interpreter will not display symbols on-screen,
-but the printed output will be correct.  When printing, use one of the
-@code{standalone} options which provide full access to @LaTeX{} commands.
+preferred.  When printing with the @code{-painters} renderer, the default for
+all vector formats, two options may be considered:
+@itemize @bullet
+@item
+Use the @option{-svgconvert} option to allow for rendering LaTeX formulas. Note
+that the glyph are rendered as path and the original textual info are lost.
+@item
+Use one of the @option{-d*latex*} devices to produce a .tex file (plus support
+.eps or .pdf files) to be further processed by an external LaTeX engine.
+Note that the @code{print} function will first set the interpreter of all
+strings to @qcode{"latex"}, which means all strings must be valid latex strings.
+provided that all strings can be processed by LaTeX, not only those.
+@end itemize
 
 A complete example showing the capabilities of text printing using the
 @option{-dpdflatexstandalone} option is:

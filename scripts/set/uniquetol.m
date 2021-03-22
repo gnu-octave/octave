@@ -166,57 +166,107 @@ function [c, ia, ic] = uniquetol (A, varargin)
     data_scale = max (abs (A(! isinf (A))(:)));
   endif
 
+  tol_data_scale = tol * data_scale;
+
   if (by_rows)
-    isrowvec = false;
+
+    points = rows (A);
+    d = columns (A);
+    Iall = zeros (points, 1);
+    I = NaN (d, 1);
+    ia = {};
+    J = NaN (d, 1);
+    j = 1;
+    ii = 0;
+
+    for i = 1:points
+      if (any (Iall == i))
+        continue;
+      else
+        equ = all (abs (A - A(i,:)) <= tol_data_scale, 2);
+        equ(i,1) = equ(i,1) || any (! isfinite (A(i,:)), 2);
+        sumeq = sum (equ);
+        ia_tmp = find (equ);
+        if (output_all_indices)
+          ia{end+1} = ia_tmp;
+        endif
+        Iall(ii+(1:sumeq)) = ia_tmp;
+        I(j) = ia_tmp(1);
+        J(equ) = j;
+        ii += sumeq;
+        j += 1;
+      endif
+    endfor
+
+    I(isnan (I)) = [];
+    J(isnan (J)) = [];
+    c = A(I,:);
+
+    if (! output_all_indices)
+      ia = I(1:j-1);
+    endif
+    ic = J;
+
   else
     isrowvec = isrow (A);
     A = A(:);
-  endif
-
-  points = rows (A);
-  d = columns (A);
-  Iall = zeros (points, 1);
-  I = NaN (d, 1);
-  ia = {};
-  J = NaN (d, 1);
-  j = 1;
-  ii = 0;
-  tol_data_scale = tol * data_scale;
-
-  for i = 1:points
-    if (any (Iall == i))
-      continue;
-    else
-      equ = all (abs (A - A(i,:)) <= tol_data_scale, 2);
-      equ(i,1) = equ(i,1) || any (! isfinite (A(i,:)), 2);
-      sumeq = sum (equ);
-      ia_tmp = find (equ);
-      if (output_all_indices)
-        ia{end+1} = ia_tmp;
-      endif
-      Iall(ii+(1:sumeq)) = ia_tmp;
-      I(j) = ia_tmp(1);
-      J(equ) = j;
-      ii += sumeq;
-      j += 1;
+    lengthA = length (A);
+    isnanA = isnan (A);
+    anyisnanA = any (isnanA);
+    [sortA, sAi] = sort (A);
+    diffsortA = diff (sortA);
+    isinfsortA = isinf (sortA);
+    isnansortA = isnan (sortA);
+    numnan = sum (isnansortA);
+    if (any (isinfsortA))
+      sAnin = sortA(! (isinfsortA | isnansortA));
+      diffsortA(isinf (diffsortA)) = abs (sAnin(end) - sAnin(1)) + 10;
     endif
-  endfor
+    csdx = cumsum (diffsortA);
+    ue = [true; diff([0; csdx-mod(csdx,tol_data_scale)])>eps(max(csdx))];
+    ueold = NaN;
+    while (any (ueold != ue))
+      ueold = ue;
+      belowtol = [false; diff(sortA(ue))<tol_data_scale];
+      if (any (belowtol))
+        needstomove = find (ue)(belowtol);
+        ue(needstomove) = false;
+        needstomove(needstomove >= lengthA-numnan) = [];
+        ue(needstomove+1) = true;
+      endif
+    endwhile
+    c = sortA(ue);
+    [~, sortsAi] = sort (sAi);
+    cumsumue = cumsum (ue);
+    ic = cumsumue(sortsAi);
+    if (anyisnanA)
+      findisnanA = find (isnanA);
+    else
+      findisnanA = [];
+    endif
+    if (output_all_indices)
+      nu = cumsumue(end);
+      ia = cell (1, nu);
+      for k = 1:nu
+        ia{k} = setdiff (sAi(cumsumue==k), findisnanA);
+      endfor
+    else
+      ia = sAi(ue);
+    endif
 
-  I(isnan (I)) = [];
-  J(isnan (J)) = [];
-  c = A(I,:);
+    if (anyisnanA)
+      rowsc1 = rows (c) + (1:sum (isnanA));
+      c(rowsc1) = NaN;
+      ia(rowsc1) = findisnanA;
+      ic(isnanA) = rowsc1;
+    endif
 
-  ## Matlab-compatible orientation of output
-  if (isrowvec)
-    c = c.';
-    I = I.';
-    J = J.';
+    ## Matlab-compatible orientation of output
+    if (isrowvec)
+      c = c.';
+    endif
+
   endif
-
-  if (! output_all_indices)
-    ia = I(1:j-1);
-  endif
-  ic = J;
 
 endfunction
 
@@ -226,22 +276,15 @@ endfunction
 %!        [1 1 2; 1 0 1])
 %!assert (uniquetol ([]), [])
 %!assert (uniquetol ([1]), [1])
-%!xtest <59850>
-%! ## FIXME: Matlab returns values sorted
-%! assert (uniquetol ([2, 1]), [1, 2]);
+%!assert (uniquetol ([2, 1]), [1, 2]);
 %!assert (uniquetol ([1; 2]), [1; 2])
-%!xtest <59850>
-%! ## FIXME: Matlab returns only one unique value for Inf.
-%! assert (uniquetol ([-Inf, 1, NaN, Inf, NaN, Inf]), [-Inf, 1, Inf, NaN, NaN]);
-%!xtest <59850>
-%! ## FIXME: Matlab returns empty column vectors.
-%! ##        Do we want to bother with that?
-%! assert (uniquetol (zeros (1,0)), zeros (0,1));
-%!assert (uniquetol (zeros (1,0), "byrows", true), zeros (1,0))
+%!assert (uniquetol ([-Inf, 1, NaN, Inf, NaN, Inf]), [-Inf, 1, Inf, NaN, NaN]);
+%!assert (uniquetol (zeros (1, 0)), zeros (1, 0));
+%!assert (uniquetol (zeros (1, 0), "byrows", true), zeros (1, 0))
 %!assert (uniquetol ([1,2,2,3,2,4], "byrows", true), [1,2,2,3,2,4])
 %!assert (uniquetol ([1,2,2,3,2,4]), [1,2,3,4])
 %!assert (uniquetol ([1,2,2,3,2,4].', "byrows", true), [1;2;3;4])
-%!assert (uniquetol (sparse ([2,0;2,0])), sparse ([2;0]))
+%!assert (uniquetol (sparse ([2,0;2,0])), sparse ([0;2]))
 %!assert (uniquetol (sparse ([1,2;2,3])), sparse ([1;2;3]))
 %!assert (uniquetol (single ([1,2,2,3,2,4]), "byrows", true),
 %!        single ([1,2,2,3,2,4]))
@@ -268,7 +311,7 @@ endfunction
 %! x = (2:7)'*pi;
 %! y = exp (log (x));
 %! C = uniquetol ([x; y]);
-%! assert (C, x);
+%! assert (C, x, 1e-12);
 
 ## Test "ByRows" Property
 %!test

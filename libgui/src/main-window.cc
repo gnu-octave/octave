@@ -1560,6 +1560,8 @@ namespace octave
                     else
                       widget->setVisible (true);
                   }
+                else
+                  widget->setVisible (false);
               }
             else  // not floating
               {

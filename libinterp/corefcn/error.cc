@@ -908,6 +908,7 @@ namespace octave
     last_error_stack (make_stack_map (ee.stack_info ()));
   }
 
+  // DEPRECATED in Octave 7.
   void error_system::display_exception (const execution_exception& ee,
                                         std::ostream& os) const
   {
@@ -916,6 +917,20 @@ namespace octave
 
     ee.display (octave_diary);
     ee.display (os);
+  }
+
+  void error_system::display_exception (const execution_exception& ee) const
+  {
+    if (m_beep_on_error)
+      os << "\a";
+
+    ee.display (octave_diary);
+
+    // FIXME: Handle display using an event manager message so that the
+    // GUI or other client can receive error messages without needing to
+    // capture them from std::cerr or some other stream.
+
+    ee.display (std::cerr);
   }
 }
 

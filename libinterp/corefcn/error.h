@@ -334,8 +334,11 @@ namespace octave
 
     OCTINTERP_API void save_exception (const execution_exception& ee);
 
-    OCTINTERP_API void
-    display_exception (const execution_exception& ee, std::ostream& os) const;
+    OCTAVE_DEPRECATED (7, "second argument is no longer accepted")
+    OCTINTERP_API void display_exception (const execution_exception& ee,
+                                          std::ostream& os) const;
+
+    OCTINTERP_API void display_exception (const execution_exception& ee) const;
 
   private:
 

@@ -213,7 +213,7 @@ namespace octave
             error_system& es = m_interpreter.get_error_system ();
 
             es.save_exception (ee);
-            es.display_exception (ee, std::cerr);
+            es.display_exception (ee);
 
             if (m_interpreter.interactive ())
               {
@@ -484,7 +484,7 @@ namespace octave
             catch (const execution_exception& ee)
               {
                 es.save_exception (ee);
-                es.display_exception (ee, std::cerr);
+                es.display_exception (ee);
 
                 // Ignore errors when in debugging mode;
                 m_interpreter.recover_from_exception ();
@@ -732,7 +732,7 @@ namespace octave
             error_system& es = m_interpreter.get_error_system ();
 
             es.save_exception (ee);
-            es.display_exception (ee, std::cerr);
+            es.display_exception (ee);
 
             if (m_interpreter.interactive ())
               m_interpreter.recover_from_exception ();
@@ -819,7 +819,7 @@ namespace octave
             error_system& es = m_interpreter.get_error_system ();
 
             es.save_exception (ee);
-            es.display_exception (ee, std::cerr);
+            es.display_exception (ee);
 
             if (m_interpreter.interactive ())
               {
@@ -3666,7 +3666,7 @@ namespace octave
                 && in_user_code ())
               {
                 es.save_exception (ee);
-                es.display_exception (ee, std::cerr);
+                es.display_exception (ee);
 
                 enter_debugger ();
 

@@ -47,6 +47,7 @@ namespace octave
   typedef std::function<void (void)> fcn_callback;
   typedef std::function<void (interpreter&)> meth_callback;
 
+  class execution_exception;
   class symbol_info_list;
 
   // The methods in this class provide a way to pass signals to the GUI
@@ -74,7 +75,7 @@ namespace octave
   // FIXME: audit this list of functions and determine whether they are
   // all necessary and whether there might be better names for them.
 
-  class interpreter_events
+  class OCTINTERP_API interpreter_events
   {
   public:
 
@@ -198,6 +199,8 @@ namespace octave
 
     virtual void interpreter_output (const std::string& /*msg*/) { }
 
+    virtual void display_exception (const execution_exception& ee,
+                                    bool beep = false);
 
     virtual void gui_status_update (const std::string& /*feature*/,
                                     const std::string& /*status*/) { }
@@ -508,6 +511,17 @@ namespace octave
       if (enabled ())
         {
           instance->interpreter_output (msg);
+          return true;
+        }
+      else
+        return false;
+    }
+
+    bool display_exception (const execution_exception& ee, bool beep = false)
+    {
+      if (enabled ())
+        {
+          instance->display_exception (ee, beep);
           return true;
         }
       else

@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <iostream>
+
 #include "builtin-defun-decls.h"
 #include "cmd-edit.h"
 #include "defun.h"
@@ -39,6 +41,8 @@
 #include "pager.h"
 #include "syminfo.h"
 
+#include "quit.h"
+
 namespace octave
 {
   static int readline_event_hook (void)
@@ -48,6 +52,15 @@ namespace octave
     evmgr.process_events ();
 
     return 0;
+  }
+
+  void interpreter_events::display_exception (const execution_exception& ee,
+                                              bool beep)
+  {
+    if (beep)
+      std::cerr << "\a";
+
+    ee.display (std::cerr);
   }
 
   event_manager::event_manager (interpreter& interp)

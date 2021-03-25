@@ -43,6 +43,7 @@
 #include "builtin-defun-decls.h"
 #include "defun.h"
 #include "error.h"
+#include "event-manager.h"
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
@@ -921,8 +922,7 @@ namespace octave
 
   void error_system::display_exception (const execution_exception& ee) const
   {
-    if (m_beep_on_error)
-      os << "\a";
+    // FIXME: How should we handle beep_on_error?
 
     ee.display (octave_diary);
 
@@ -930,7 +930,9 @@ namespace octave
     // GUI or other client can receive error messages without needing to
     // capture them from std::cerr or some other stream.
 
-    ee.display (std::cerr);
+    event_manager& evmgr = m_interpreter.get_event_manager ();
+
+    evmgr.display_exception (ee, m_beep_on_error);
   }
 }
 

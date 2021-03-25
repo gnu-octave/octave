@@ -166,24 +166,24 @@ function [c, ia, ic] = uniquetol (A, varargin)
     data_scale = max (abs (A(! isinf (A))(:)));
   endif
 
-  tol_data_scale = tol * data_scale;
+  tol *= data_scale;
 
   if (by_rows)
 
-    points = rows (A);
-    d = columns (A);
-    Iall = zeros (points, 1);
-    I = NaN (d, 1);
+    nr = rows (A);
+    nc = columns (A);
+    Iall = zeros (nr, 1);
+    I = NaN (nc, 1);
     ia = {};
-    J = NaN (d, 1);
+    J = NaN (nc, 1);
     j = 1;
     ii = 0;
 
-    for i = 1:points
+    for i = 1:nr
       if (any (Iall == i))
         continue;
       else
-        equ = all (abs (A - A(i,:)) <= tol_data_scale, 2);
+        equ = all (abs (A - A(i,:)) <= tol, 2);
         equ(i,1) = equ(i,1) || any (! isfinite (A(i,:)), 2);
         sumeq = sum (equ);
         ia_tmp = find (equ);
@@ -210,7 +210,7 @@ function [c, ia, ic] = uniquetol (A, varargin)
   else
     isrowvec = isrow (A);
     A = A(:);
-    lengthA = length (A);
+    nr = rows (A);
     isnanA = isnan (A);
     anyisnanA = any (isnanA);
     [sortA, sAi] = sort (A);
@@ -223,15 +223,15 @@ function [c, ia, ic] = uniquetol (A, varargin)
       diffsortA(isinf (diffsortA)) = abs (sAnin(end) - sAnin(1)) + 10;
     endif
     csdx = cumsum (diffsortA);
-    ue = [true; diff([0; csdx-mod(csdx,tol_data_scale)])>eps(max(csdx))];
+    ue = [true; diff([0; csdx-mod(csdx,tol)]) > eps(max(csdx))];
     ueold = NaN;
     while (any (ueold != ue))
       ueold = ue;
-      belowtol = [false; diff(sortA(ue))<tol_data_scale];
+      belowtol = [false; diff(sortA(ue)) < tol];
       if (any (belowtol))
         needstomove = find (ue)(belowtol);
         ue(needstomove) = false;
-        needstomove(needstomove >= lengthA-numnan) = [];
+        needstomove(needstomove >= nr-numnan) = [];
         ue(needstomove+1) = true;
       endif
     endwhile
@@ -261,7 +261,10 @@ function [c, ia, ic] = uniquetol (A, varargin)
       ic(isnanA) = rowsc1;
     endif
 
-    ## Matlab-compatible orientation of output
+    ## FIXME: Matlab-compatible orientation of output
+    ## Actually, Matlab prefers row vectors (2021/03/24), but this is different
+    ## from all the other set functions which prefer column vectors.  Assume
+    ## that this is a bug in Matlab's implementation and prefer column vectors.
     if (isrowvec)
       c = c.';
     endif
@@ -291,6 +294,12 @@ endfunction
 %!assert (uniquetol (single ([1,2,2,3,2,4])), single ([1,2,3,4]))
 %!assert (uniquetol (single ([1,2,2,3,2,4].'), "byrows", true),
 %!        single ([1;2;3;4]))
+
+## Matlab compatibility of output
+%!test
+%! x = 1:0.045:3;
+%! y = uniquetol (x, 0.1, "datascale", 1);
+%! assert (y(1:4), [1, 1.135, 1.27, 1.405]);
 
 ## Test index vector return arguments
 %!test

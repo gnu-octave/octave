@@ -27,6 +27,9 @@
 #  include "config.h"
 #endif
 
+#include <iostream>
+#include <sstream>
+
 #include <QDialog>
 #include <QDir>
 #include <QIcon>
@@ -128,6 +131,18 @@ namespace octave
              SIGNAL (gui_preference_signal (const QString&, const QString&)),
              this,
              SLOT (gui_preference_slot (const QString&, const QString&)));
+  }
+
+  void qt_interpreter_events::start_gui (bool gui_app)
+  {
+    if (m_octave_qobj.experimental_terminal_widget ())
+      emit start_gui_signal (gui_app);
+  }
+
+  void qt_interpreter_events::close_gui (void)
+  {
+    if (m_octave_qobj.experimental_terminal_widget ())
+      emit close_gui_signal ();
   }
 
   std::list<std::string>
@@ -447,6 +462,37 @@ namespace octave
     emit unregister_doc_signal (QString::fromStdString (file));
   }
 
+  void qt_interpreter_events::interpreter_output (const std::string& msg)
+  {
+    if (m_octave_qobj.experimental_terminal_widget ()
+        && m_octave_qobj.gui_running ())
+      emit interpreter_output_signal (QString::fromStdString (msg));
+    else
+      {
+        // FIXME: is this the correct thing to do?
+        std::cout << msg;
+      }
+  }
+
+  void qt_interpreter_events::display_exception (const execution_exception& ee,
+                                                 bool beep)
+  {
+    if (m_octave_qobj.experimental_terminal_widget ()
+        && m_octave_qobj.gui_running ())
+      {
+        std::ostringstream buf;
+        ee.display (buf);
+        emit interpreter_output_signal (QString::fromStdString (buf.str ()));
+      }
+    else
+      {
+        if (beep)
+          std::cerr << "\a";
+
+        ee.display (std::cerr);
+      }
+  }
+
   void qt_interpreter_events::gui_status_update (const std::string& feature,
                                                  const std::string& status)
   {
@@ -498,6 +544,11 @@ namespace octave
   void qt_interpreter_events::clear_workspace (void)
   {
     emit clear_workspace_signal ();
+  }
+
+  void qt_interpreter_events::update_prompt (const std::string& prompt)
+  {
+    emit update_prompt_signal (QString::fromStdString (prompt));
   }
 
   void qt_interpreter_events::set_history (const string_vector& hist)

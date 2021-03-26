@@ -182,6 +182,40 @@ namespace octave
   }
 }
 
+// FIXME: Should the following function be __event_manager_desktop__
+// with the desktop function implemented in a .m file, similar to the
+// way the UI* functions work?
+
+DEFMETHOD (desktop, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} desktop ()
+If running in command-line mode, start the GUI desktop.
+@end deftypefn */)
+{
+  if (interp.experimental_terminal_widget ())
+    {
+      if (! octave::application::is_gui_running ())
+        {
+          // FIXME: Currently, the following action is queued and
+          // executed in a Qt event loop and we return immediately to
+          // the command prompt where additional commands may be
+          // executed.  Is that what should happen?  Or should we be
+          // waiting until the GUI exits to return to the command
+          // prompt, similar to the way the UI* functions work?
+
+          octave::event_manager& evmgr = interp.get_event_manager ();
+
+          evmgr.start_gui ();
+        }
+      else
+        warning ("GUI desktop is already running");
+    }
+  else
+    error ("desktop function requires new experimental terminal widget");
+
+  return ovl ();
+}
+
 DEFMETHOD (__event_manager_enabled__, interp, , ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __event_manager_enabled__ ()

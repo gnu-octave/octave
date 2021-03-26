@@ -57,6 +57,7 @@ namespace octave
     bool debug_jit (void) const { return m_debug_jit; }
     bool echo_commands (void) const { return m_echo_commands; }
 
+    bool experimental_terminal_widget (void) const { return m_experimental_terminal_widget; }
     bool forced_interactive (void) const { return m_forced_interactive; }
     bool forced_line_editing (void) const { return m_forced_line_editing; }
     bool gui (void) const { return m_gui; }
@@ -88,6 +89,7 @@ namespace octave
     void debug_jit (bool arg) { m_debug_jit = arg; }
     void echo_commands (bool arg) { m_echo_commands = arg; }
 
+    void experimental_terminal_widget (bool arg) { m_experimental_terminal_widget = arg; }
     void forced_line_editing (bool arg) { m_forced_line_editing = arg; }
     void forced_interactive (bool arg) { m_forced_interactive = arg; }
     void gui (bool arg) { m_gui = arg; }
@@ -127,6 +129,10 @@ namespace octave
     // If TRUE, echo commands as they are read and executed.
     // (--echo-commands, -x)
     bool m_echo_commands = false;
+
+    // If TRUE, use new experimental terminal widget in the GUI.
+    // (--experimental-terminal-widget)
+    bool m_experimental_terminal_widget = false;
 
     // If TRUE, start the GUI.
     // (--gui) and (--force-gui) for backwards compatibility
@@ -292,6 +298,10 @@ namespace octave
     void program_name (const std::string& nm) { m_program_name = nm; }
 
     void forced_interactive (bool arg) { m_options.forced_interactive (arg); }
+
+    // Provided for convenience.  Will be removed once we eliminate the
+    // old terminal widget.
+    bool experimental_terminal_widget (void) const;
 
     static application * app (void) { return instance; }
 

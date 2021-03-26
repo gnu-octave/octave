@@ -777,6 +777,8 @@ namespace octave
 
     do
       {
+        m_parser->reset ();
+
         try
           {
             // FIXME: Should we call octave_quit in the octave::sleep
@@ -798,8 +800,6 @@ namespace octave
             octave_interrupt_state = 1;
             m_interpreter.recover_from_exception ();
 
-            m_parser->reset ();
-
             // Required newline when the user does Ctrl+C at the prompt.
             if (m_interpreter.interactive ())
               octave_stdout << "\n";
@@ -807,8 +807,6 @@ namespace octave
         catch (const index_exception& e)
           {
             m_interpreter.recover_from_exception ();
-
-            m_parser->reset ();
 
             std::cerr << "error: unhandled index exception: "
                       << e.message () << " -- trying to return to prompt"
@@ -824,8 +822,6 @@ namespace octave
             if (m_interpreter.interactive ())
               {
                 m_interpreter.recover_from_exception ();
-
-                m_parser->reset ();
               }
             else
               {
@@ -838,14 +834,15 @@ namespace octave
           {
             octave_interrupt_state = 1;
             m_interpreter.recover_from_exception ();
-
-            m_parser->reset ();
+          }
+        catch (const exit_exception& xe)
+          {
+            m_exit_status = xe.exit_status ();
+            break;
           }
         catch (const std::bad_alloc&)
           {
             m_interpreter.recover_from_exception ();
-
-            m_parser->reset ();
 
             std::cerr << "error: out of memory -- trying to return to prompt"
                       << std::endl;

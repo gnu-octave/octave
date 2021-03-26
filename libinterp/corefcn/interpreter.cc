@@ -33,6 +33,12 @@
 #include <string>
 #include <iostream>
 
+// The following headers are only needed for the new experimental
+// terminal widget.
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+
 #include "cmd-edit.h"
 #include "cmd-hist.h"
 #include "file-ops.h"
@@ -724,7 +730,15 @@ namespace octave
     if (m_initialized)
       return;
 
-    display_startup_message ();
+    const cmdline_options& options = m_app_context->options ();
+
+    if (options.experimental_terminal_widget ())
+      {
+        if (! options.gui ())
+          display_startup_message ();
+      }
+    else
+      display_startup_message ();
 
     // Wait to read the history file until the interpreter reads input
     // files and begins evaluating commands.
@@ -755,6 +769,131 @@ namespace octave
 
     m_initialized = true;
   }
+
+  // Note: this function is currently only used with the new
+  // experimental terminal widget.
+
+  void interpreter::get_line_and_eval (void)
+  {
+    std::mutex mtx;
+    std::unique_lock<std::mutex> lock (mtx);
+    std::condition_variable cv;
+    bool incomplete_parse = false;
+    bool evaluation_pending = false;
+    bool exiting = false;
+
+    while (true)
+      {
+        // FIXME: Detect EOF?  Use readline?  If
+        // so, then we need to disable idle event loop hook function
+        // execution.
+
+        std::string ps
+          = incomplete_parse ? m_input_system.PS2 () : m_input_system.PS1 ();
+
+        std::cout << command_editor::decode_prompt_string (ps);
+
+        std::string input;
+        std::getline (std::cin, input);
+
+        if (input.empty ())
+          continue;
+
+        incomplete_parse = false;
+        evaluation_pending = true;
+        exiting = false;
+
+        m_event_manager.post_event
+          ([&] (interpreter& interp)
+           {
+             // INTERPRETER THREAD
+
+             std::lock_guard<std::mutex> local_lock (mtx);
+
+             try
+               {
+                 interp.parse_and_execute (input, incomplete_parse);
+               }
+             catch (const exit_exception&)
+               {
+                 evaluation_pending = false;
+                 exiting = true;
+                 cv.notify_all ();
+                 throw;
+               }
+             catch (const execution_exception& ee)
+               {
+                 m_error_system.save_exception (ee);
+                 m_error_system.display_exception (ee);
+
+                 if (m_interactive)
+                   {
+                     recover_from_exception ();
+                     evaluation_pending = false;
+                     cv.notify_all ();
+                   }
+                 else
+                   {
+                     evaluation_pending = false;
+                     cv.notify_all ();
+                     throw exit_exception (1);
+                   }
+               }
+             catch (...)
+               {
+                 evaluation_pending = false;
+                 cv.notify_all ();
+                 throw;
+               }
+
+             evaluation_pending = false;
+             cv.notify_all ();
+           });
+
+        // Wait until evaluation is finished before prompting for input
+        // again.
+
+        cv.wait (lock, [&] { return ! evaluation_pending; });
+
+        if (exiting)
+          break;
+      }
+  }
+
+  // Note: the following class is currently only used with the new
+  // experimental terminal widget.
+
+  class cli_input_reader
+  {
+  public:
+
+    cli_input_reader (interpreter& interp)
+      : m_interpreter (interp), m_thread () { }
+
+    cli_input_reader (const cli_input_reader&) = delete;
+
+    cli_input_reader& operator = (const cli_input_reader&) = delete;
+
+    ~cli_input_reader (void)
+    {
+      // FIXME: Would it be better to ensure that
+      // interpreter::get_line_and_eval exits and then call
+      // m_thread.join () here?
+
+      m_thread.detach ();
+    }
+
+    void start (void)
+    {
+      m_thread = std::thread (&interpreter::get_line_and_eval, &m_interpreter);
+    }
+
+  private:
+
+    interpreter& m_interpreter;
+
+    std::thread m_thread;
+  };
 
   void interpreter::parse_and_execute (const std::string& input,
                                        bool& incomplete_parse)
@@ -810,13 +949,34 @@ namespace octave
 
             if (options.server ())
               exit_status = server_loop ();
+            else if (options.experimental_terminal_widget ())
+              {
+                if (options.gui ())
+                  {
+                    m_event_manager.start_gui (true);
+
+                    exit_status = server_loop ();
+                  }
+                else
+                  {
+                    // Use an object so that the thread started for the
+                    // reader will be cleaned up no matter how we exit
+                    // this function.
+
+                    cli_input_reader reader (*this);
+
+                    reader.start ();
+
+                    exit_status = server_loop ();
+                  }
+              }
             else
               exit_status = main_loop ();
           }
       }
     catch (const exit_exception& xe)
       {
-        return xe.exit_status ();
+        exit_status = xe.exit_status ();
       }
 
     return exit_status;
@@ -1766,6 +1926,19 @@ namespace octave
 
     if (m_evaluator.in_debug_repl ())
       m_evaluator.dbcont ();
+  }
+
+  // Provided for convenience.  Will be removed once we eliminate the
+  // old terminal widget.
+  bool interpreter::experimental_terminal_widget (void) const
+  {
+    if (! m_app_context)
+      return false;
+
+    // Embedded interpreters don't execute command line options.
+    const cmdline_options& options = m_app_context->options ();
+
+    return options.experimental_terminal_widget ();
   }
 
   void interpreter::add_debug_watch_expression (const std::string& expr)

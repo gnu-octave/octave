@@ -36,7 +36,7 @@
 static const char *usage_string =
   "octave [-HVWdfhiqvx] [--debug] [--debug-jit] [--doc-cache-file file]\n\
        [--echo-commands] [--eval CODE] [--exec-path path]\n\
-       [--gui] [--help] [--image-path path]\n\
+       [--experimental-terminal-widget] [--gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
        [--jit-compiler] [--line-editing] [--no-gui] [--no-history]\n\
        [--no-init-file] [--no-init-path] [--no-line-editing]\n\
@@ -78,6 +78,7 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define SERVER_OPTION 18
 #define TEXI_MACROS_FILE_OPTION 19
 #define TRADITIONAL_OPTION 20
+#define EXPERIMENTAL_TERMINAL_WIDGET_OPTION 21
 struct octave_getopt_options long_opts[] =
 {
   { "braindead",                octave_no_arg,       0, TRADITIONAL_OPTION },
@@ -88,6 +89,7 @@ struct octave_getopt_options long_opts[] =
   { "echo-commands",            octave_no_arg,       0, 'x' },
   { "eval",                     octave_required_arg, 0, EVAL_OPTION },
   { "exec-path",                octave_required_arg, 0, EXEC_PATH_OPTION },
+  { "experimental-terminal-widget", octave_no_arg,   0, EXPERIMENTAL_TERMINAL_WIDGET_OPTION },
   { "gui",                      octave_no_arg,       0, GUI_OPTION },
   { "help",                     octave_no_arg,       0, 'h' },
   { "image-path",               octave_required_arg, 0, IMAGE_PATH_OPTION },
@@ -140,6 +142,8 @@ Options:\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
+  --experimental-terminal-widget\n\
+                          Use new experimental terminal widget in the GUI.\n\
   --gui                   Start the graphical user interface.\n\
   --help, -h,             Print short help message and exit.\n\
   --image-path PATH       Add PATH to head of image search path.\n\

@@ -94,6 +94,10 @@ namespace octave
 
   signals:
 
+    // Note: CLOSE_GUI_SIGNAL is currently only used by the new
+    // experimental terminal widget.
+    void close_gui_signal (void);
+
     void active_dock_changed (octave_dock_widget *, octave_dock_widget *);
     void editor_focus_changed (bool);
 

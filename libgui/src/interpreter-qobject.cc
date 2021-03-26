@@ -66,7 +66,8 @@ namespace octave
 
         interp.initialize ();
 
-        if (app_context.start_gui_p ())
+        if (app_context.start_gui_p ()
+            && ! m_octave_qobj.experimental_terminal_widget ())
           {
             input_system& input_sys = interp.get_input_system ();
 
@@ -95,31 +96,40 @@ namespace octave
         exit_status = xe.exit_status ();
       }
 
-    // Signal that the interpreter is done executing code in the main
-    // REPL, from script files, or command line eval arguments.  By
-    // using a signal here, we give the GUI a chance to process any
-    // pending events, then signal that it is safe to shutdown the
-    // interpreter.  Our notification here allows the GUI to insert the
-    // request to shutdown the interpreter in the event queue after any
-    // other pending signals.  The application context owns the
-    // interpreter and will be responsible for deleting it later, when
-    // the application object destructor is executed.
+    if (m_octave_qobj.experimental_terminal_widget ())
+      {
+        interp.shutdown ();
 
-    emit execution_finished (exit_status);
+        emit shutdown_finished (exit_status);
+      }
+    else
+      {
+        // Signal that the interpreter is done executing code in the
+        // main REPL, from script files, or command line eval arguments.
+        // By using a signal here, we give the GUI a chance to process
+        // any pending events, then signal that it is safe to shutdown
+        // the interpreter.  Our notification here allows the GUI to
+        // insert the request to shutdown the interpreter in the event
+        // queue after any other pending signals.  The application
+        // context owns the interpreter and will be responsible for
+        // deleting it later, when the application object destructor is
+        // executed.
+
+        emit execution_finished (exit_status);
+      }
   }
-
-  // This function is expected to be executed when the GUI signals that
-  // it is finished processing events and ready for the interpreter to
-  // perform shutdown actions.
 
   void interpreter_qobject::shutdown (int exit_status)
   {
-    if (m_interpreter)
-      m_interpreter->shutdown ();
+    if (! m_octave_qobj.experimental_terminal_widget ())
+      {
+        if (m_interpreter)
+          m_interpreter->shutdown ();
 
-    // Signal that the interpreter has executed shutdown actions.
+        // Signal that the interpreter has executed shutdown actions.
 
-    emit shutdown_finished (exit_status);
+        emit shutdown_finished (exit_status);
+      }
   }
 
   void interpreter_qobject::interpreter_event (const fcn_callback& fcn)
@@ -147,7 +157,64 @@ namespace octave
     if (! m_interpreter)
       return;
 
+    // The following is a direct function call across threads.
+    // We need to ensure that it uses thread-safe functions.
+
     m_interpreter->interrupt ();
+  }
+
+  void interpreter_qobject::pause (void)
+  {
+    // FIXME: Should we make this action work with the old terminal
+    // widget?
+
+    if (m_octave_qobj.experimental_terminal_widget ())
+      {
+        if (! m_interpreter)
+          return;
+
+        // The following is a direct function call across threads.
+        // We need to ensure that it uses thread-safe functions.
+
+        m_interpreter->pause ();
+      }
+  }
+
+  void interpreter_qobject::stop (void)
+  {
+    // FIXME: Should we make this action work with the old terminal
+    // widget?
+
+    if (m_octave_qobj.experimental_terminal_widget ())
+      {
+        if (! m_interpreter)
+          return;
+
+        // The following is a direct function call across threads.
+        // We need to ensure that it uses thread-safe functions.
+
+        m_interpreter->stop ();
+      }
+  }
+
+  void interpreter_qobject::resume (void)
+  {
+    // FIXME: Should we make this action work with the old terminal
+    // widget?
+
+    if (m_octave_qobj.experimental_terminal_widget ())
+      {
+        // FIXME: This action should only be available when the
+        // interpreter is paused.
+
+        interpreter_event
+          ([=] (interpreter& interp)
+          {
+            // INTERPRETER THREAD
+
+            interp.resume ();
+          });
+      }
   }
 
   qt_interpreter_events * interpreter_qobject::qt_link (void)

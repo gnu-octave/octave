@@ -1722,6 +1722,25 @@ namespace octave
 #endif
       }
 
+    if (m_octave_qobj.experimental_terminal_widget ())
+      {
+        // Set initial prompt.
+
+        emit interpreter_event
+          ([] (interpreter& interp)
+          {
+            // INTERPRETER_THREAD
+
+            event_manager& evmgr = interp.get_event_manager ();
+            input_system& input_sys = interp.get_input_system ();
+
+            input_sys.PS1 (">> ");
+            std::string prompt = input_sys.PS1 ();
+
+            evmgr.update_prompt (command_editor::decode_prompt_string (prompt));
+          });
+      }
+
     focus_command_window ();  // make sure that the command window has focus
   }
 
@@ -1962,13 +1981,18 @@ namespace octave
 
         e->ignore ();
 
-        emit interpreter_event
-          ([] (interpreter& interp)
-           {
-             // INTERPRETER THREAD
+        if (m_octave_qobj.experimental_terminal_widget ())
+          emit close_gui_signal ();
+        else
+          {
+            emit interpreter_event
+              ([] (interpreter& interp)
+               {
+                 // INTERPRETER THREAD
 
-             interp.quit (0, false, false);
-           });
+                 interp.quit (0, false, false);
+               });
+          }
       }
     else
       e->ignore ();
@@ -2161,6 +2185,16 @@ namespace octave
 
     connect (qt_link, SIGNAL (apply_new_settings (void)),
              this, SLOT (request_reload_settings (void)));
+
+    if (m_octave_qobj.experimental_terminal_widget ())
+      {
+        connect (qt_link, SIGNAL (interpreter_output_signal (const QString&)),
+                 m_command_window,
+                 SLOT (interpreter_output (const QString&)));
+
+        connect (qt_link, SIGNAL (update_prompt_signal (const QString&)),
+                 m_command_window, SLOT (update_prompt (const QString&)));
+      }
 
     connect (qt_link,
              SIGNAL (set_workspace_signal (bool, bool, const symbol_info_list&)),

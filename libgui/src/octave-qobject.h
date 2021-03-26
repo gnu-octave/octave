@@ -83,6 +83,8 @@ namespace octave
 
   public:
 
+    // Note: the GUI_APP argument is not needed with the new
+    // experimental terminal widget.
     base_qobject (qt_application& app_context, bool gui_app = false);
 
     ~base_qobject (void);
@@ -98,6 +100,13 @@ namespace octave
 
     // The Qt QApplication.
     QApplication * qapplication (void) { return m_qapplication; };
+
+    // Provided for convenience.  Will be removed once we eliminate the
+    // old terminal widget.
+    bool experimental_terminal_widget (void) const;
+
+    // Provided for convenience.
+    bool gui_running (void) const;
 
     resource_manager& get_resource_manager (void)
     {
@@ -142,9 +151,15 @@ namespace octave
 
   public slots:
 
-    void interpreter_ready (void);
-
+    // Note: START_GUI and CLOSE_GUI don't currently perform any work
+    // with the old terminal widget and
+    // HANDLE_INTERPRETER_EXECUTION_FINISHED doesn't perform any action
+    // with the new experimental terminal widget.
+    void start_gui (bool gui_app);
+    void close_gui (void);
     void handle_interpreter_execution_finished (int);
+
+    void interpreter_ready (void);
 
     void handle_interpreter_shutdown_finished (int);
 
@@ -153,6 +168,12 @@ namespace octave
     void interpreter_event (const meth_callback& meth);
 
     void interpreter_interrupt (void);
+
+    // Note: these currently only work with the new experimental
+    // terminal widget.
+    void interpreter_pause (void);
+    void interpreter_stop (void);
+    void interpreter_resume (void);
 
     void copy_image_to_clipboard (const QString& file, bool remove_file);
 
@@ -188,9 +209,9 @@ namespace octave
 
     bool m_gui_app;
 
-    main_window *m_main_window;
-
     bool m_interpreter_ready;
+
+    main_window *m_main_window;
   };
 }
 

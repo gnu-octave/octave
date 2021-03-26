@@ -87,6 +87,17 @@ namespace octave
 
     virtual ~interpreter_events (void) = default;
 
+    // Note: START_GUI and CLOSE_GUI currently only work with the new
+    // experimental terminal widget.
+
+    // Set GUI_APP to true when starting Octave as a gui application
+    // (invoked with the --gui option) and false when starting the GUI
+    // from the Octave prompt when Octave is already running as a
+    // command line application.
+
+    virtual void start_gui (bool /*gui_app*/ = false) { }
+    virtual void close_gui (void) { }
+
     // Dialogs.
 
     typedef std::list<std::pair<std::string, std::string>> filter_list;
@@ -149,7 +160,7 @@ namespace octave
     // confirmation before another action.  Could these be reformulated
     // using the question_dialog action?
 
-    virtual bool confirm_shutdown (void) { return false; }
+    virtual bool confirm_shutdown (void) { return true; }
 
     virtual bool prompt_new_edit_file (const std::string& /*file*/)
     {
@@ -199,8 +210,7 @@ namespace octave
 
     virtual void interpreter_output (const std::string& /*msg*/) { }
 
-    virtual void display_exception (const execution_exception& ee,
-                                    bool beep = false);
+    virtual void display_exception (const execution_exception& ee, bool beep);
 
     virtual void gui_status_update (const std::string& /*feature*/,
                                     const std::string& /*status*/) { }
@@ -225,6 +235,8 @@ namespace octave
     { }
 
     virtual void clear_workspace (void) { }
+
+    virtual void update_prompt (const std::string& /*prompt*/) { }
 
     virtual void set_history (const string_vector& /*hist*/) { }
 
@@ -322,6 +334,22 @@ namespace octave
 
     // Please keep this list of declarations in the same order as the
     // ones above in the interpreter_events class.
+
+
+    // Note: START_GUI and CLOSE_GUI currently only work with the new
+    // experimental terminal object.
+
+    void start_gui (bool gui_app = false)
+    {
+      if (enabled ())
+        instance->start_gui (gui_app);
+    }
+
+    void close_gui (void)
+    {
+      if (enabled ())
+        instance->close_gui ();
+    }
 
     typedef std::list<std::pair<std::string, std::string>> filter_list;
 
@@ -583,6 +611,12 @@ namespace octave
     {
       if (enabled ())
         instance->clear_workspace ();
+    }
+
+    void update_prompt (const std::string& prompt)
+    {
+      if (enabled ())
+        instance->update_prompt (prompt);
     }
 
     void set_history (const string_vector& hist)

@@ -76,8 +76,13 @@
 #include "shared-fcns.h"
 
 #if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
+static bool fork_and_exec = false;
+#else
+static bool fork_and_exec = true;
+#endif
 
-// Forward signals to the GUI process.
+// If we fork and exec, we'll need the following signal handling code to
+// forward signals to the GUI process.
 
 static pid_t gui_pid = 0;
 
@@ -155,8 +160,6 @@ install_signal_handlers (void)
   gui_driver_set_signal_handler ("SIGXFSZ", gui_driver_sig_handler);
 }
 
-#endif
-
 static std::string
 get_octave_bindir (void)
 {
@@ -219,6 +222,7 @@ main (int argc, char **argv)
 
   bool eval_code = false;
   bool persist_octave = false;
+  bool experimental_terminal_widget = false;
 
   set_octave_home ();
 
@@ -281,6 +285,13 @@ main (int argc, char **argv)
 
           start_gui = true;
           idx_gui = i;
+        }
+      else if (! strcmp (argv[i], "--experimental-terminal-widget"))
+        {
+          // If we see this option, then we don't fork and exec.
+
+          fork_and_exec = false;
+          new_argv[k++] = argv[i];
         }
       else if (! strcmp (argv[i], "--persist"))
         {
@@ -428,9 +439,7 @@ main (int argc, char **argv)
   octave_block_async_signals ();
   octave_block_signal_by_name ("SIGTSTP");
 
-#if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
-
-  if (gui_libs && start_gui)
+  if (fork_and_exec && gui_libs && start_gui)
     {
       // Fork and exec when starting the GUI so that we will call
       // setsid to give up the controlling terminal (if any) and so that
@@ -508,14 +517,6 @@ main (int argc, char **argv)
         std::cerr << argv[0] << ": " << std::strerror (errno) << std::endl;
     }
 
-#else
-
-  retval = octave_exec (file, new_argv);
-
-  if (retval < 0)
-    std::cerr << argv[0] << ": " << std::strerror (errno) << std::endl;
-
-#endif
 
   return retval;
 }

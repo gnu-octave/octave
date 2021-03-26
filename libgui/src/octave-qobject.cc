@@ -51,6 +51,7 @@
 #  include <objc/message.h>
 #endif
 
+#include "interpreter.h"
 #include "oct-env.h"
 #include "version.h"
 
@@ -164,8 +165,10 @@ namespace octave
       m_qsci_tr (new QTranslator ()), m_translators_installed (false),
       m_qt_interpreter_events (new qt_interpreter_events (*this)),
       m_interpreter_qobj (new interpreter_qobject (*this)),
-      m_main_thread (new QThread ()), m_gui_app (gui_app),
-      m_main_window (nullptr), m_interpreter_ready (false)
+      m_main_thread (new QThread ()),
+      m_gui_app (gui_app),
+      m_interpreter_ready (false),
+      m_main_window (nullptr)
   {
     std::string show_gui_msgs =
       sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
@@ -201,11 +204,14 @@ namespace octave
     // Force left-to-right alignment (see bug #46204)
     m_qapplication->setLayoutDirection (Qt::LeftToRight);
 
-    connect (m_interpreter_qobj, SIGNAL (execution_finished (int)),
-             this, SLOT (handle_interpreter_execution_finished (int)));
+    if (! m_app_context.experimental_terminal_widget ())
+      {
+        connect (m_interpreter_qobj, SIGNAL (execution_finished (int)),
+                 this, SLOT (handle_interpreter_execution_finished (int)));
 
-    connect (this, SIGNAL (request_interpreter_shutdown (int)),
-             m_interpreter_qobj, SLOT (shutdown (int)));
+        connect (this, SIGNAL (request_interpreter_shutdown (int)),
+                 m_interpreter_qobj, SLOT (shutdown (int)));
+      }
 
     connect (m_interpreter_qobj, SIGNAL (shutdown_finished (int)),
              this, SLOT (handle_interpreter_shutdown_finished (int)));
@@ -222,24 +228,17 @@ namespace octave
     connect (m_qapplication, SIGNAL (interpreter_event (const meth_callback&)),
              this, SLOT (interpreter_event (const meth_callback&)));
 
+    if (m_app_context.experimental_terminal_widget ())
+      {
+        connect (qt_link (), SIGNAL (start_gui_signal (bool)),
+                 this, SLOT (start_gui (bool)));
+      }
+
     connect (qt_link (),
              SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
              this, SLOT (copy_image_to_clipboard (const QString&, bool)));
 
-    if (gui_app)
-      {
-        m_main_window = new main_window (*this);
-
-        if (m_interpreter_ready)
-          m_main_window->handle_octave_ready ();
-
-        connect (qt_link (),
-                 SIGNAL (focus_window_signal (const QString&)),
-                 m_main_window, SLOT (focus_window (const QString&)));
-
-        m_app_context.gui_running (true);
-      }
-    else
+    if (m_app_context.experimental_terminal_widget ())
       {
         // Get settings file.
         m_resource_manager.reload_settings ();
@@ -248,6 +247,35 @@ namespace octave
         config_translators ();
 
         m_qapplication->setQuitOnLastWindowClosed (false);
+      }
+    else
+      {
+        if (gui_app)
+          {
+            m_main_window = new main_window (*this);
+
+            if (m_interpreter_ready)
+              m_main_window->handle_octave_ready ();
+            else
+              connect (m_interpreter_qobj, SIGNAL (ready ()),
+                       m_main_window, SLOT (handle_octave_ready ()));
+
+            connect (qt_link (),
+                     SIGNAL (focus_window_signal (const QString&)),
+                     m_main_window, SLOT (focus_window (const QString&)));
+
+            m_app_context.gui_running (true);
+          }
+        else
+          {
+            // Get settings file.
+            m_resource_manager.reload_settings ();
+
+            // After settings.
+            config_translators ();
+
+            m_qapplication->setQuitOnLastWindowClosed (false);
+          }
       }
 
     start_main_thread ();
@@ -271,17 +299,6 @@ namespace octave
     string_vector::delete_c_str_vec (m_argv);
   }
 
-  void base_qobject::interpreter_ready (void)
-  {
-    // Slot for signal of interpreter being ready.
-    // If main window already exists, call initialization,
-    // otherwise store interpreter state
-    if (m_main_window)
-      m_main_window->handle_octave_ready ();
-    else
-      m_interpreter_ready = true;
-  }
-
   void base_qobject::config_translators (void)
   {
     if (m_translators_installed)
@@ -298,8 +315,14 @@ namespace octave
 
   void base_qobject::start_main_thread (void)
   {
-    // Defer initializing and executing the interpreter until after the main
-    // window and QApplication are running to prevent race conditions
+    // Note: if using the new experimental terminal widget, we defer
+    // initializing and executing the interpreter until the main event
+    // loop begins executing.
+
+    // With the old terminal widget, we defer initializing and executing
+    // the interpreter until after the main window and QApplication are
+    // running to prevent race conditions.
+
     QTimer::singleShot (0, m_interpreter_qobj, SLOT (execute (void)));
 
     m_interpreter_qobj->moveToThread (m_main_thread);
@@ -309,7 +332,31 @@ namespace octave
 
   int base_qobject::exec (void)
   {
-    return m_qapplication->exec ();
+    int status;
+
+    if (m_app_context.experimental_terminal_widget ())
+      {
+        status = m_qapplication->exec ();
+
+        m_main_thread->quit ();
+        m_main_thread->wait ();
+      }
+    else
+      status = m_qapplication->exec ();
+
+    return status;
+  }
+
+  // Provided for convenience.  Will be removed once we eliminate the
+  // old terminal widget.
+  bool base_qobject::experimental_terminal_widget (void) const
+  {
+    return m_app_context.experimental_terminal_widget ();
+  }
+
+  bool base_qobject::gui_running (void) const
+  {
+    return m_app_context.gui_running ();
   }
 
   bool base_qobject::confirm_shutdown (void)
@@ -321,9 +368,88 @@ namespace octave
     return m_main_window ? m_main_window->confirm_shutdown () : true;
   }
 
+  void base_qobject::start_gui (bool gui_app)
+  {
+    if (m_app_context.experimental_terminal_widget ())
+      {
+        if (m_main_window)
+          return;
+
+        m_gui_app = gui_app;
+
+        m_main_window = new main_window (*this);
+
+        connect (qt_link (),
+                 SIGNAL (focus_window_signal (const QString&)),
+                 m_main_window, SLOT (focus_window (const QString&)));
+
+        connect (qt_link (), SIGNAL (close_gui_signal ()),
+                 this, SLOT (close_gui ()));
+
+        connect (m_main_window, SIGNAL (close_gui_signal ()),
+                 this, SLOT (close_gui ()));
+
+        if (m_interpreter_ready)
+          m_main_window->handle_octave_ready ();
+        else
+          connect (m_interpreter_qobj, SIGNAL (ready ()),
+                   m_main_window, SLOT (handle_octave_ready ()));
+
+        if (m_gui_app)
+          m_qapplication->setQuitOnLastWindowClosed (true);
+        else
+          {
+            // FIXME: Save current values of PS1 and PS2 so they can be
+            // restored when we return to the command line?
+          }
+
+        m_app_context.gui_running (true);
+      }
+  }
+
+  void base_qobject::close_gui (void)
+  {
+    if (m_app_context.experimental_terminal_widget ())
+      {
+        if (! m_main_window)
+          return;
+
+        // FIXME: Restore previous values of PS1 and PS2 if we are
+        // returning to the command line?
+
+        interpreter_event
+          ([=] (interpreter& interp)
+          {
+            // INTERPRETER THREAD
+
+            application *app = interp.get_app_context ();
+
+            cmdline_options opts = app->options ();
+
+            if (opts.gui ())
+              interp.quit (0, false, false);
+          });
+
+        m_app_context.gui_running (false);
+
+        if (m_main_window)
+          {
+            m_main_window->deleteLater ();
+
+            m_main_window = nullptr;
+          }
+      }
+  }
+
   void base_qobject::handle_interpreter_execution_finished (int exit_status)
   {
-    emit request_interpreter_shutdown (exit_status);
+    if (! m_app_context.experimental_terminal_widget ())
+      emit request_interpreter_shutdown (exit_status);
+  }
+
+  void base_qobject::interpreter_ready (void)
+  {
+    m_interpreter_ready = true;
   }
 
   void base_qobject::handle_interpreter_shutdown_finished (int exit_status)
@@ -365,10 +491,28 @@ namespace octave
 
   void base_qobject::interpreter_interrupt (void)
   {
-    // The following is a direct function call across threads.  It works
-    // because the it is accessing a thread-safe function.
-
     m_interpreter_qobj->interrupt ();
+  }
+
+  // FIXME: Should we try to make the pause, stop, and resume actions
+  // work for both the old and new terminal widget?
+
+  void base_qobject::interpreter_pause (void)
+  {
+    if (m_app_context.experimental_terminal_widget ())
+      m_interpreter_qobj->pause ();
+  }
+
+  void base_qobject::interpreter_stop (void)
+  {
+    if (m_app_context.experimental_terminal_widget ())
+      m_interpreter_qobj->stop ();
+  }
+
+  void base_qobject::interpreter_resume (void)
+  {
+    if (m_app_context.experimental_terminal_widget ())
+      m_interpreter_qobj->resume ();
   }
 
   void base_qobject::copy_image_to_clipboard (const QString& file,

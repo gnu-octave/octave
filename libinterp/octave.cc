@@ -157,6 +157,10 @@ namespace octave
               m_exec_path = octave_optarg_wrapper ();
             break;
 
+          case EXPERIMENTAL_TERMINAL_WIDGET_OPTION:
+            m_experimental_terminal_widget = true;
+            break;
+
           case GUI_OPTION:
             m_gui = true;
             break;
@@ -322,6 +326,14 @@ namespace octave
   bool application::forced_interactive (void)
   {
     return instance ? instance->m_options.forced_interactive () : false;
+  }
+
+  // Provided for convenience.  Will be removed once we eliminate the
+  // old terminal widget.
+  bool application::experimental_terminal_widget (void) const
+  {
+    return (instance
+            ? instance->m_options.experimental_terminal_widget () : false);
   }
 
   application::~application (void)

@@ -74,6 +74,7 @@ namespace octave
 {
   class profiler;
   class child_list;
+  class push_parser;
 
   // The time we last time we changed directories.
   extern sys::time Vlast_chdir_time;
@@ -147,6 +148,11 @@ namespace octave
     // Load command line history, set the load path.
 
     void initialize (void);
+
+    // Note: GET_LINE_AND_EVAL is only used by new experimental terminal
+    // widget.
+
+    void get_line_and_eval (void);
 
     // Parse a line of input.  If input ends at a complete statement
     // boundary, execute the resulting parse tree.  Useful to handle
@@ -506,6 +512,10 @@ namespace octave
 
     // Resume interpreter execution if paused.
     void resume (void);
+
+    // Provided for convenience.  Will be removed once we eliminate the
+    // old terminal widget.
+    bool experimental_terminal_widget (void) const;
 
     void handle_exception (const execution_exception& ee);
 

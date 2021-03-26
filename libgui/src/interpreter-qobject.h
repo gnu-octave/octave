@@ -54,12 +54,20 @@ namespace octave
 
     void interrupt (void);
 
+    // Note: PAUSE, STOP, and RESUME are currently only used by the new
+    // experimental terminal widget.
+    void pause (void);
+    void stop (void);
+    void resume (void);
+
   signals:
 
     void ready (void);
 
     void execution_finished (int);
 
+    // Note: SHUTDOWN_FINISHED is currently only used by the new
+    // experimental terminal widget.
     void shutdown_finished (int);
 
   public slots:
@@ -86,6 +94,8 @@ namespace octave
 
     void execute (void);
 
+    // Note: SHUTDOWN is currently only used by the new experimental
+    // terminal widget.
     void shutdown (int);
 
   private:

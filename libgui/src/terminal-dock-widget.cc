@@ -29,23 +29,32 @@
 
 #include <QDesktopWidget>
 
+// This header is only needed for the new terminal widget.
+#include "command-widget.h"
+
+// This header is only needed for the old terminal widget.
+#include "QTerminal.h"
+
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
+
 #include "octave-qobject.h"
 #include "terminal-dock-widget.h"
-
-#include "quit.h"
-#include "signal-wrappers.h"
-
-#include "sighandlers.h"
 
 namespace octave
 {
   terminal_dock_widget::terminal_dock_widget (QWidget *p,
                                               base_qobject& oct_qobj)
     : octave_dock_widget ("TerminalDockWidget", p, oct_qobj),
-      m_terminal (QTerminal::create (oct_qobj, this, p))
+      m_experimental_terminal_widget (oct_qobj.experimental_terminal_widget ())
   {
+    // FIXME: we could do this in a better way, but improving it doesn't
+    // matter much if we will eventually be removing the old terminal.
+    if (m_experimental_terminal_widget)
+      m_terminal = new command_widget (oct_qobj, this);
+    else
+      m_terminal = QTerminal::create (oct_qobj, this, p);
+
     m_terminal->setObjectName ("OctaveTerminal");
     m_terminal->setFocusPolicy (Qt::StrongFocus);
 
@@ -55,12 +64,24 @@ namespace octave
     setWidget (m_terminal);
     setFocusProxy (m_terminal);
 
-    connect (m_terminal, SIGNAL (interrupt_signal (void)),
-             &oct_qobj, SLOT (interpreter_interrupt (void)));
+    if (m_experimental_terminal_widget)
+      {
+        // Any interpreter_event signal from the terminal widget is
+        // handled the same as for the parent terminal dock widget.
 
-    // Connect the visibility signal to the terminal for dis-/enabling timers
-    connect (this, SIGNAL (visibilityChanged (bool)),
-             m_terminal, SLOT (handle_visibility_changed (bool)));
+        connect (m_terminal, SIGNAL (interpreter_event (const fcn_callback&)),
+                 this, SIGNAL (interpreter_event (const fcn_callback&)));
+
+        connect (m_terminal, SIGNAL (interpreter_event (const meth_callback&)),
+                 this, SIGNAL (interpreter_event (const meth_callback&)));
+      }
+    else
+      {
+        // Connect the visibility signal to the terminal for
+        // dis-/enabling timers.
+        connect (this, SIGNAL (visibilityChanged (bool)),
+                 m_terminal, SLOT (handle_visibility_changed (bool)));
+      }
 
     // Chose a reasonable size at startup in order to avoid truncated
     // startup messages
@@ -96,7 +117,18 @@ namespace octave
   bool terminal_dock_widget::has_focus (void) const
   {
     QWidget *w = widget ();
-
     return w->hasFocus ();
+  }
+
+  void terminal_dock_widget::interpreter_output (const QString& msg)
+  {
+    if (m_experimental_terminal_widget)
+      emit interpreter_output_signal (msg);
+  }
+
+  void terminal_dock_widget::update_prompt (const QString& prompt)
+  {
+    if (m_experimental_terminal_widget)
+      emit update_prompt_signal (prompt);
   }
 }

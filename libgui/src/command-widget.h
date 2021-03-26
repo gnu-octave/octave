@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2021 The Octave Project Developers
+// Copyright (C) 2021 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,53 +23,49 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_terminal_dock_widget_h)
-#define octave_terminal_dock_widget_h 1
+#if ! defined (octave_command_widget_h)
+#define octave_command_widget_h 1
 
-#include <QString>
+#include <QWidget>
 
-#include "octave-dock-widget.h"
+#include "octave-qobject.h"
+
+class QLabel;
+class QLineEdit;
+class QStrung;
+class QTextBrowser;
 
 namespace octave
 {
   class base_qobject;
 
-  class terminal_dock_widget : public octave_dock_widget
+  class command_widget : public QWidget
   {
     Q_OBJECT
 
   public:
 
-    terminal_dock_widget (QWidget *parent, base_qobject& oct_qobj);
-
-    ~terminal_dock_widget (void);
-
-    bool has_focus (void) const;
+    command_widget (base_qobject& oct_qobj, QWidget *p);
 
   signals:
 
-    // Note: UPDATE_PROMPT_SIGNAL and INTERPRETER_OUTPUT_SIGNAL are
-    // currently only used by the new experimental terminal widget.
+    void clear_line_edit (void);
 
-    void update_prompt_signal (const QString&);
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
-    void interpreter_output_signal (const QString&);
+  protected slots:
 
-  public slots:
+    void accept_input_line (void);
 
-    // Note: INTERPRETER_OUTPUT and UPDATE_PROMPT are currently only
-    // used by the new experimental terminal widget.
-
-    void interpreter_output (const QString&);
-
-    void update_prompt (const QString&);
+    void insert_interpreter_output (const QString& msg);
 
   private:
 
-    bool m_experimental_terminal_widget;
-
-    // FIXME!!!  Maybe my_term should just be derived from QTerminal?
-    QWidget *m_terminal;
+    bool m_incomplete_parse;
+    QLabel *m_prompt;
+    QLineEdit *m_line_edit;
+    QTextBrowser *m_output_display;
   };
 }
 

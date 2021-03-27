@@ -2291,9 +2291,11 @@ namespace octave
     editor_widget->setLayout (vbox_layout);
     setWidget (editor_widget);
 
-    // create the context menu of the tab bar
+    // Create the basic context menu of the tab bar with editor actions.
+    // Actions for selecting an tab are added when the menu is activated.
     tab_bar *bar = m_tab_widget->get_tab_bar ();
     QMenu *ctx_men = bar->get_context_menu ();
+    ctx_men->addSeparator ();
     ctx_men->addAction (m_close_action);
     ctx_men->addAction (m_close_all_action);
     ctx_men->addAction (m_close_others_action);

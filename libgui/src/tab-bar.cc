@@ -166,7 +166,22 @@ namespace octave
           {
             // Right click, show context menu
             setCurrentIndex (clicked_idx);
-            if (! m_context_menu->exec (click_pos))
+
+            // Fill context menu with actions for selecting current tabs
+            m_ctx_actions = m_context_menu->actions (); // Copy of basic actions
+            QMenu ctx_menu;                             // The menu actually used
+            connect (&ctx_menu, SIGNAL (triggered (QAction*)),
+                     this, SLOT (ctx_menu_activated (QAction*)));
+            for (int i = count () - 1; i >= 0; i--)
+              {
+                // Prepend an action for each tab
+                QAction* a = new QAction (tabIcon (i), tabText (i));
+                m_ctx_actions.prepend (a);
+              }
+            // Add all actions to our menu
+            ctx_menu.insertActions (nullptr, m_ctx_actions);
+
+            if (! ctx_menu.exec (click_pos))
               {
                 // No action selected, back to previous tab
                 setCurrentIndex (current_idx);
@@ -202,4 +217,16 @@ namespace octave
         QTabBar::mousePressEvent (me);
       }
   }
+
+  // Slot if a menu entry in the context menu is activated
+  void tab_bar::ctx_menu_activated (QAction *a)
+  {
+    // If the index of the activated action is in the range of
+    // the current tabs, set the related current tab. The basic actions
+    // are handled by the editor
+    int i = m_ctx_actions.indexOf (a);
+    if ((i > -1) && (i < count ()))
+      setCurrentIndex (i);
+  }
+
 }

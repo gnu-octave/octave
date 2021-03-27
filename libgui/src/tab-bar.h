@@ -61,15 +61,20 @@ namespace octave
     void move_tab_right (void);
     void sort_tabs_alph (void);
 
+  private slots:
+
+    void ctx_menu_activated (QAction *a);
+
   protected:
 
     void mousePressEvent(QMouseEvent *event);
 
   private:
 
-    QMenu *m_context_menu;
-
     void switch_tab (int direction, bool movetab = false);
+
+    QMenu *m_context_menu;
+    QList <QAction *> m_ctx_actions;
   };
 }
 

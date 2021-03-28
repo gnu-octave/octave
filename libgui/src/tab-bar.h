@@ -31,11 +31,15 @@
 
 #include <QMenu>
 #include <QMouseEvent>
+#include <QSize>
+#include <QStyleOptionTab>
+#include <QStylePainter>
 #include <QTabBar>
 
 namespace octave
 {
-  // Subclassed QTabBar for usable tab-bar and reimplemented mouse event
+  // Subclassed QTabBar for usable tab-bar, rotated tabs and
+  // reimplemented mouse event
 
   class tab_bar : public QTabBar
   {
@@ -47,7 +51,9 @@ namespace octave
 
     ~tab_bar (void);
 
+    void set_rotated (int rotated);
     QMenu *get_context_menu (void) { return m_context_menu; };
+    QSize tabSizeHint (int idx) const;
 
   signals:
 
@@ -67,6 +73,7 @@ namespace octave
 
   protected:
 
+    void paintEvent(QPaintEvent *e);
     void mousePressEvent(QMouseEvent *event);
 
   private:
@@ -75,6 +82,7 @@ namespace octave
 
     QMenu *m_context_menu;
     QList <QAction *> m_ctx_actions;
+    int m_rotated;
   };
 }
 

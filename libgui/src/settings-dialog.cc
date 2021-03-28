@@ -311,6 +311,9 @@ namespace octave
     editor_combox_tab_pos->setCurrentIndex
       (settings->value (ed_tab_position).toInt ());
 
+    editor_cb_tabs_rotated->setChecked (settings->value (ed_tabs_rotated).toBool ());
+    editor_sb_tabs_max_width->setValue (settings->value (ed_tabs_max_width).toInt ());
+
     int selected_comment_string, selected_uncomment_string;
 
     if (settings->contains (ed_comment_str.key))   // new version (radio buttons)
@@ -961,6 +964,8 @@ namespace octave
     settings->setValue (ed_default_eol_mode.key, combo_eol_mode->currentIndex ());
 
     settings->setValue (ed_tab_position.key, editor_combox_tab_pos->currentIndex ());
+    settings->setValue (ed_tabs_rotated.key, editor_cb_tabs_rotated->isChecked ());
+    settings->setValue (ed_tabs_max_width.key, editor_sb_tabs_max_width->value ());
 
     // Comment strings
     int rb_uncomment = 0;

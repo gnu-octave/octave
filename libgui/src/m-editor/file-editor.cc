@@ -1238,26 +1238,24 @@ namespace octave
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
-    // Tab position
+    // Tab position and rotation
     QTabWidget::TabPosition pos
       = static_cast<QTabWidget::TabPosition> (settings->value (ed_tab_position).toInt ());
+    bool rotated = settings->value (ed_tabs_rotated).toBool ();
 
     m_tab_widget->setTabPosition (pos);
 
-    // Update style sheet properties depending on position
-    QString width_str ("width");
-    QString height_str ("height");
-    if (pos == QTabWidget::West || pos == QTabWidget::East)
-      {
-        width_str = QString ("height");
-        height_str = QString ("width");
-      }
+    if (rotated)
+      m_tab_widget->setTabsClosable (false);  // No close buttons
+      // FIXME: close buttons can not be correctly placed in rotated tabs
 
-    // Min and max width for full path titles
-    int tab_width_min = settings->value (ed_notebook_tab_width_min)
-                        .toInt ();
-    int tab_width_max = settings->value (ed_notebook_tab_width_max)
-                        .toInt ();
+    // Get the tab bar and set the rotation
+    int rotation = rotated;
+    if (pos == QTabWidget::West)
+      rotation = -rotation;
+
+    tab_bar *bar = m_tab_widget->get_tab_bar ();
+    bar->set_rotated (rotation);
 
     // Get suitable height of a tab related to font and icon size
     int height = 1.5*QFontMetrics (m_tab_widget->font ()).height ();
@@ -1265,13 +1263,32 @@ namespace octave
     if (is > height)
       height = is;
 
-    // Style sheet for tab height
-    QString style_sheet = QString ("QTabBar::tab {max-" + height_str + ": %1px;}")
-                          .arg (height);
+    // Calculate possibly limited width and set the elide mode
+    int chars = settings->value (ed_tabs_max_width).toInt ();
+    int width = 9999;
+    if (chars > 0)
+      width = chars * QFontMetrics (m_tab_widget->font ()).averageCharWidth ();
 
-    // Style sheet for tab height together with width
+    // Get tab bar size properties for style sheet depending on rotation
+    QString width_str ("width");
+    QString height_str ("height");
+    if ((pos == QTabWidget::West) || (pos == QTabWidget::East))
+      {
+        width_str = QString ("height");
+        height_str = QString ("width");
+      }
+
+    QString style_sheet
+        = QString ("QTabBar::tab {max-" + height_str + ": %1px;\n"
+                                 "max-" + width_str + ": %2px; }")
+                          .arg (height).arg (width);
+
+    // Style sheet for tab height together with width when full path is shown
     if (settings->value (ed_long_window_title).toBool ())
       {
+        // Min and max width for full path titles
+        int tab_width_min = settings->value (ed_notebook_tab_width_min).toInt ();
+        int tab_width_max = settings->value (ed_notebook_tab_width_max).toInt ();
         style_sheet = QString ("QTabBar::tab "
                                " {max-" + height_str + ": %1px;"
                                "  min-" + width_str + ": %2px;"
@@ -1279,21 +1296,21 @@ namespace octave
                       .arg (height).arg (tab_width_min).arg (tab_width_max);
         m_tab_widget->setElideMode (Qt::ElideLeft);
       }
-    else
-      {
-        m_tab_widget->setElideMode (Qt::ElideNone);
-      }
 
 #if defined (Q_OS_MAC)
     // FIXME: This is a workaround for missing tab close buttons on MacOS
     // in several Qt versions (https://bugreports.qt.io/browse/QTBUG-61092)
-    QString close_button_css
-      ("QTabBar::close-button"
-       "  { width: 6px; image: url(:/actions/icons/widget-close.png);}\n"
-       "QTabBar::close-button:hover"
-       "  { background-color: #cccccc; }");
+    if (! rotated)
+      {
+        QString close_button_css_mac (
+            "QTabBar::close-button"
+            "  { width: 6px; image: url(:/actions/icons/widget-close.png);"
+            "    subcontrol-position: button; }\n"
+            "QTabBar::close-button:hover"
+            "  { background-color: #cccccc; }");
 
-    style_sheet = style_sheet + close_button_css;
+        style_sheet = style_sheet + close_button_css_mac;
+      }
 #endif
 
     m_tab_widget->setStyleSheet (style_sheet);

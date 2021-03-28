@@ -204,6 +204,12 @@ ed_tab_position_names (QStringList ()
 const gui_pref
 ed_tab_position ("editor/tab_position", QVariant (QTabWidget::North));
 
+const gui_pref
+ed_tabs_rotated ("editor/tabs_rotated", QVariant (false));
+
+const gui_pref
+ed_tabs_max_width ("editor/tabs_max_width", QVariant (0));
+
 // File handling
 
 const gui_pref

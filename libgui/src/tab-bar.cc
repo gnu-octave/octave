@@ -34,11 +34,20 @@
 
 namespace octave
 {
+  //
+  // Reimplemented QTabbar
+  //
+
   tab_bar::tab_bar (QWidget *p)
     : QTabBar (p), m_context_menu (new QMenu (this))
   { }
 
   tab_bar::~tab_bar (void) { }
+
+  void tab_bar::set_rotated (int rotated)
+  {
+    m_rotated = rotated;
+  }
 
   // slots for tab navigation
   void tab_bar::switch_left_tab (void)
@@ -119,6 +128,48 @@ namespace octave
       }
 
     setCurrentIndex (tab_with_focus);
+  }
+
+  // Reimplemented size hint allowing rotated tabs
+  QSize tab_bar::tabSizeHint (int idx) const
+  {
+    QSize s = QTabBar::tabSizeHint (idx);
+    if (m_rotated)
+      s.transpose();
+
+    return s;
+  }
+
+  // Reimplemented paint event allowing rotated tabs
+  void tab_bar::paintEvent(QPaintEvent *e)
+  {
+    // Just process the original event if not rotated
+    if (! m_rotated)
+      return QTabBar::paintEvent (e);
+
+    // Process the event for rotated tabs
+    QStylePainter painter (this);
+    QStyleOptionTab opt;
+
+    for (int idx = 0; idx < count(); idx++)
+      {
+        initStyleOption (&opt, idx);
+        painter.drawControl (QStyle::CE_TabBarTabShape, opt);
+        painter.save ();
+
+        QSize s = opt.rect.size();
+        s.transpose();
+        QRect rect (QPoint (), s);
+        rect.moveCenter (opt.rect.center ());
+        opt.rect = rect;
+
+        QPoint p = tabRect (idx).center ();
+        painter.translate (p);
+        painter.rotate (-m_rotated*90);
+        painter.translate (-p);
+        painter.drawControl (QStyle::CE_TabBarTabLabel, opt);
+        painter.restore ();
+      }
   }
 
   // Reimplement mouse event for filtering out the desired mouse clicks

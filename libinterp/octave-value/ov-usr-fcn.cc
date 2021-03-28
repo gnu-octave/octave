@@ -215,16 +215,16 @@ octave_user_function::octave_user_function
   (const octave::symbol_scope& scope, octave::tree_parameter_list *pl,
    octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
   : octave_user_code ("", "", scope, cl, ""),
-    param_list (pl), ret_list (rl),
-    lead_comm (), trail_comm (),
-    location_line (0), location_column (0),
-    parent_name (), system_fcn_file (false),
-    num_named_args (param_list ? param_list->length () : 0),
-    subfunction (false), inline_function (false),
-    anonymous_function (false), nested_function (false),
-    class_constructor (none), class_method (none)
+    m_param_list (pl), m_ret_list (rl),
+    m_lead_comm (), m_trail_comm (),
+    m_location_line (0), m_location_column (0),
+    m_parent_name (), m_system_fcn_file (false),
+    m_num_named_args (m_param_list ? m_param_list->length () : 0),
+    m_subfunction (false), m_inline_function (false),
+    m_anonymous_function (false), m_nested_function (false),
+    m_class_constructor (none), m_class_method (none)
 #if defined (HAVE_LLVM)
-    , jit_info (0)
+    , m_jit_info (0)
 #endif
 {
   if (cmd_list)
@@ -233,20 +233,20 @@ octave_user_function::octave_user_function
 
 octave_user_function::~octave_user_function (void)
 {
-  delete param_list;
-  delete ret_list;
-  delete lead_comm;
-  delete trail_comm;
+  delete m_param_list;
+  delete m_ret_list;
+  delete m_lead_comm;
+  delete m_trail_comm;
 
 #if defined (HAVE_LLVM)
-  delete jit_info;
+  delete m_jit_info;
 #endif
 }
 
 octave_user_function *
 octave_user_function::define_ret_list (octave::tree_parameter_list *t)
 {
-  ret_list = t;
+  m_ret_list = t;
 
   return this;
 }
@@ -327,7 +327,7 @@ octave_user_function::profiler_name (void) const
 
   if (is_anonymous_function ())
     result << "anonymous@" << fcn_file_name ()
-           << ':' << location_line << ':' << location_column;
+           << ':' << m_location_line << ':' << m_location_column;
   else if (is_subfunction ())
     result << parent_fcn_name () << '>' << name ();
   else if (is_class_method ())
@@ -336,7 +336,7 @@ octave_user_function::profiler_name (void) const
     result << '@' << name ();
   else if (is_inline_function ())
     result << "inline@" << fcn_file_name ()
-           << ':' << location_line << ':' << location_column;
+           << ':' << m_location_line << ':' << m_location_column;
   else
     result << name ();
 
@@ -361,10 +361,10 @@ octave_user_function::mark_as_system_fcn_file (void)
 
       std::string fcn_file_dir = octave::config::fcn_file_dir ();
       if (fcn_file_dir == ff_name.substr (0, fcn_file_dir.length ()))
-        system_fcn_file = true;
+        m_system_fcn_file = true;
     }
   else
-    system_fcn_file = false;
+    m_system_fcn_file = false;
 }
 
 void
@@ -376,13 +376,13 @@ octave_user_function::erase_subfunctions (void)
 bool
 octave_user_function::takes_varargs (void) const
 {
-  return (param_list && param_list->takes_varargs ());
+  return (m_param_list && m_param_list->takes_varargs ());
 }
 
 bool
 octave_user_function::takes_var_return (void) const
 {
-  return (ret_list && ret_list->takes_varargs ());
+  return (m_ret_list && m_ret_list->takes_varargs ());
 }
 
 void
@@ -465,10 +465,10 @@ octave_user_function::all_va_args (const octave_value_list& args)
 {
   octave_value_list retval;
 
-  octave_idx_type n = args.length () - num_named_args;
+  octave_idx_type n = args.length () - m_num_named_args;
 
   if (n > 0)
-    retval = args.slice (num_named_args, n);
+    retval = args.slice (m_num_named_args, n);
 
   return retval;
 }
@@ -517,12 +517,12 @@ octave_user_function::subsasgn_optimization_ok (void)
 {
   bool retval = false;
   if (Voptimize_subsasgn_calls
-      && param_list && ret_list
-      && param_list->length () > 0 && ! param_list->varargs_only ()
-      && ret_list->length () == 1 && ! ret_list->takes_varargs ())
+      && m_param_list && m_ret_list
+      && m_param_list->length () > 0 && ! m_param_list->varargs_only ()
+      && m_ret_list->length () == 1 && ! m_ret_list->takes_varargs ())
     {
-      octave::tree_identifier *par1 = param_list->front ()->ident ();
-      octave::tree_identifier *ret1 = ret_list->front ()->ident ();
+      octave::tree_identifier *par1 = m_param_list->front ()->ident ();
+      octave::tree_identifier *ret1 = m_ret_list->front ()->ident ();
       retval = par1->name () == ret1->name ();
     }
 
@@ -534,7 +534,7 @@ octave_user_function::ctor_type_str (void) const
 {
   std::string retval;
 
-  switch (class_constructor)
+  switch (m_class_constructor)
     {
     case none:
       retval = "none";
@@ -561,7 +561,7 @@ octave_user_function::method_type_str (void) const
 {
   std::string retval;
 
-  switch (class_method)
+  switch (m_class_method)
     {
     case none:
       retval = "none";
@@ -588,19 +588,19 @@ octave_user_function::dump (void) const
 {
   std::map<std::string, octave_value> m
     = {{ "user_code", octave_user_code::dump () },
-       { "line", location_line },
-       { "col", location_column },
-       { "end_line", end_location_line },
-       { "end_col", end_location_column },
-       { "parent_name", parent_name },
-       { "system_fcn_file", system_fcn_file },
-       { "num_named_args", num_named_args },
-       { "subfunction", subfunction },
-       { "inline_function", inline_function },
-       { "anonymous_function", anonymous_function },
-       { "nested_function", nested_function },
+       { "line", m_location_line },
+       { "col", m_location_column },
+       { "end_line", m_end_location_line },
+       { "end_col", m_end_location_column },
+       { "parent_name", m_parent_name },
+       { "system_fcn_file", m_system_fcn_file },
+       { "num_named_args", m_num_named_args },
+       { "subfunction", m_subfunction },
+       { "inline_function", m_inline_function },
+       { "anonymous_function", m_anonymous_function },
+       { "nested_function", m_nested_function },
        { "ctor_type", ctor_type_str () },
-       { "class_method", class_method }};
+       { "class_method", m_class_method }};
 
   return octave_value (m);
 }
@@ -720,9 +720,9 @@ Programming Note: @code{nargin} does not work on compiled functions
                  type.c_str ());
         }
 
-      octave::tree_parameter_list *param_list = fcn->parameter_list ();
+      octave::tree_parameter_list *m_param_list = fcn->parameter_list ();
 
-      retval = (param_list ? param_list->length () : 0);
+      retval = (m_param_list ? m_param_list->length () : 0);
       if (fcn->takes_varargs ())
         retval = -1 - retval;
     }
@@ -842,9 +842,9 @@ returns -1 for all anonymous functions.
                  type.c_str ());
         }
 
-      octave::tree_parameter_list *ret_list = fcn->return_list ();
+      octave::tree_parameter_list *m_ret_list = fcn->return_list ();
 
-      retval = (ret_list ? ret_list->length () : 0);
+      retval = (m_ret_list ? m_ret_list->length () : 0);
 
       if (fcn->takes_var_return ())
         retval = -1 - retval;

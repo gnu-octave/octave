@@ -55,27 +55,27 @@ octave_class : public octave_base_value
 public:
 
   octave_class (void)
-    : octave_base_value (), map (), c_name (),
-      parent_list (), obsolete_copies (0)
+    : octave_base_value (), m_map (), c_name (),
+      m_parent_list (), m_obsolete_copies (0)
   { }
 
   octave_class (const octave_map& m, const std::string& id)
-    : octave_base_value (), map (m), c_name (id),
-      parent_list (), obsolete_copies (0)
+    : octave_base_value (), m_map (m), c_name (id),
+      m_parent_list (), m_obsolete_copies (0)
   { }
 
   octave_class (const octave_map& m, const std::string& id,
                 const std::list<std::string>& plist)
-    : octave_base_value (), map (m), c_name (id),
-      parent_list (plist), obsolete_copies (0)
+    : octave_base_value (), m_map (m), c_name (id),
+      m_parent_list (plist), m_obsolete_copies (0)
   { }
 
   octave_class (const octave_map& m, const std::string& id,
                 const octave_value_list& parents);
 
   octave_class (const octave_class& s)
-    : octave_base_value (s), map (s.map), c_name (s.c_name),
-      parent_list (s.parent_list), obsolete_copies (0)  { }
+    : octave_base_value (s), m_map (s.m_map), c_name (s.c_name),
+      m_parent_list (s.m_parent_list), m_obsolete_copies (0)  { }
 
   ~octave_class (void) = default;
 
@@ -85,7 +85,7 @@ public:
 
   octave_base_value * empty_clone (void) const
   {
-    return new octave_class (octave_map (map.keys ()), c_name, parent_list);
+    return new octave_class (octave_map (m_map.keys ()), c_name, m_parent_list);
   }
 
   OCTINTERP_API Cell dotref (const octave_value_list& idx);
@@ -114,7 +114,7 @@ public:
   numeric_conv (const Cell& val, const std::string& type);
 
   void assign(const std::string& k, const octave_value& rhs)
-  { map.assign (k, rhs); };
+  { m_map.assign (k, rhs); };
 
   OCTINTERP_API octave_value
    subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
@@ -127,7 +127,7 @@ public:
 
   OCTINTERP_API idx_vector index_vector (bool require_integers = false) const;
 
-  dim_vector dims (void) const { return map.dims (); }
+  dim_vector dims (void) const { return m_map.dims (); }
 
   OCTINTERP_API size_t byte_size (void) const;
 
@@ -139,21 +139,21 @@ public:
     return dv.numel ();
   }
 
-  octave_idx_type nfields (void) const { return map.nfields (); }
+  octave_idx_type nfields (void) const { return m_map.nfields (); }
 
-  size_t nparents (void) const { return parent_list.size (); }
+  size_t nparents (void) const { return m_parent_list.size (); }
 
   octave_value reshape (const dim_vector& new_dims) const
   {
     octave_class retval = octave_class (*this);
-    retval.map = retval.map_value ().reshape (new_dims);
+    retval.m_map = retval.map_value ().reshape (new_dims);
     return octave_value (new octave_class (retval));
   }
 
   octave_value resize (const dim_vector& dv, bool = false) const
   {
     octave_class retval = octave_class (*this);
-    retval.map.resize (dv);
+    retval.m_map.resize (dv);
     return octave_value (new octave_class (retval));
   }
 
@@ -165,15 +165,15 @@ public:
 
   OCTINTERP_API bool is_true (void) const;
 
-  octave_map map_value (void) const { return map; }
+  octave_map map_value (void) const { return m_map; }
 
   OCTINTERP_API string_vector map_keys (void) const;
 
   std::list<std::string> parent_class_name_list (void) const
-  { return parent_list; }
+  { return m_parent_list; }
 
   string_vector parent_class_names (void) const
-  { return string_vector (parent_list); }
+  { return string_vector (m_parent_list); }
 
   OCTINTERP_API octave_base_value * find_parent_class (const std::string&);
 
@@ -212,7 +212,7 @@ public:
   OCTINTERP_API mxArray * as_mxArray (bool interleaved) const;
 
 private:
-  octave_map map;
+  octave_map m_map;
 
 public:
   int type_id (void) const { return t_id; }
@@ -229,7 +229,7 @@ private:
 
   static const std::string t_name;
   std::string c_name;
-  std::list<std::string> parent_list;
+  std::list<std::string> m_parent_list;
 
   OCTINTERP_API bool in_class_method (void);
   OCTINTERP_API std::string get_current_method_class (void);
@@ -239,7 +239,7 @@ private:
                    const std::list<octave_value_list>& idx,
                    const octave_value& rhs);
 
-  int obsolete_copies;
+  int m_obsolete_copies;
 
 public:
   // The list of field names and parent classes defines a class.  We
@@ -248,38 +248,38 @@ public:
   {
   public:
 
-    exemplar_info (void) : field_names (), parent_class_names () { }
+    exemplar_info (void) : m_field_names (), m_parent_class_names () { }
 
     OCTINTERP_API exemplar_info (const octave_value& obj);
 
     exemplar_info (const exemplar_info& x)
-      : field_names (x.field_names),
-        parent_class_names (x.parent_class_names) { }
+      : m_field_names (x.m_field_names),
+        m_parent_class_names (x.m_parent_class_names) { }
 
     exemplar_info& operator = (const exemplar_info& x)
     {
       if (&x != this)
         {
-          field_names = x.field_names;
-          parent_class_names = x.parent_class_names;
+          m_field_names = x.m_field_names;
+          m_parent_class_names = x.m_parent_class_names;
         }
       return *this;
     }
 
-    octave_idx_type nfields (void) const { return field_names.numel (); }
+    octave_idx_type nfields (void) const { return m_field_names.numel (); }
 
-    size_t nparents (void) const { return parent_class_names.size (); }
+    size_t nparents (void) const { return m_parent_class_names.size (); }
 
-    string_vector fields (void) const { return field_names; }
+    string_vector fields (void) const { return m_field_names; }
 
-    std::list<std::string> parents (void) const { return parent_class_names; }
+    std::list<std::string> parents (void) const { return m_parent_class_names; }
 
     OCTINTERP_API bool compare (const octave_value& obj) const;
 
   private:
 
-    string_vector field_names;
-    std::list<std::string> parent_class_names;
+    string_vector m_field_names;
+    std::list<std::string> m_parent_class_names;
   };
 
   // A map from class names to lists of fields.

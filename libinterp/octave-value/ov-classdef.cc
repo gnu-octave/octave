@@ -76,7 +76,7 @@ octave_classdef::subsref (const std::string& type,
   size_t skip = 0;
   octave_value_list retval;
 
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
@@ -99,7 +99,7 @@ octave_classdef::subsref (const std::string& type,
 
   // At this point, the default subsref mechanism must be used.
 
-  retval = object.subsref (type, idx, nargout, skip, octave::cdef_class ());
+  retval = m_object.subsref (type, idx, nargout, skip, octave::cdef_class ());
 
   if (type.length () > skip && idx.size () > skip)
     retval = retval(0).next_subsref (nargout, type, idx, skip);
@@ -119,7 +119,7 @@ octave_classdef::subsref (const std::string& type,
   // assignment with multi-level indexing.  AFAIK this is only used for internal
   // purpose (not sure we should even implement this).
 
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls))
     {
@@ -140,7 +140,7 @@ octave_classdef::subsref (const std::string& type,
         }
     }
 
-  retval = object.subsref (type, idx, 1, skip, octave::cdef_class (), auto_add);
+  retval = m_object.subsref (type, idx, 1, skip, octave::cdef_class (), auto_add);
 
   if (type.length () > skip && idx.size () > skip)
     retval = retval(0).next_subsref (1, type, idx, skip);
@@ -155,7 +155,7 @@ octave_classdef::subsasgn (const std::string& type,
 {
   octave_value retval;
 
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
@@ -183,7 +183,7 @@ octave_classdef::subsasgn (const std::string& type,
     }
 
   if (! retval.is_defined ())
-    retval = object.subsasgn (type, idx, rhs);
+    retval = m_object.subsasgn (type, idx, rhs);
 
   return retval;
 }
@@ -195,7 +195,7 @@ octave_classdef::undef_subsasgn (const std::string& type,
 {
   if (type.length () == 1 && type[0] == '(')
     {
-      object = object.make_array ();
+      m_object = m_object.make_array ();
 
       return subsasgn (type, idx, rhs);
     }
@@ -208,7 +208,7 @@ octave_classdef::undef_subsasgn (const std::string& type,
 Matrix
 octave_classdef::size (void)
 {
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
@@ -236,7 +236,7 @@ octave_classdef::xnumel (const octave_value_list& idx)
 {
   octave_idx_type retval = -1;
 
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
@@ -287,16 +287,16 @@ octave_classdef::print (std::ostream& os, bool)
 void
 octave_classdef::print_raw (std::ostream& os, bool) const
 {
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (cls.ok ())
     {
-      bool is_array = object.is_array ();
+      bool is_array = m_object.is_array ();
 
       increment_indent_level ();
 
       indent (os);
-      os << class_name () << " object";
+      os << class_name () << " m_object";
       if (is_array)
         os << " array";
       os << " with properties:";
@@ -357,7 +357,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
             os << "  " << nm;
           else
             {
-              octave_value val = prop.get_value (object, false);
+              octave_value val = prop.get_value (m_object, false);
               dim_vector dims = val.dims ();
 
               os << std::setw (max_len+2) << nm << ": ";
@@ -383,7 +383,7 @@ octave_classdef::is_instance_of (const std::string& cls_name) const
   octave::cdef_class cls = octave::lookup_class (cls_name, false, false);
 
   if (cls.ok ())
-    return is_superclass (cls, object.get_class ());
+    return is_superclass (cls, m_object.get_class ());
 
   return false;
 }
@@ -405,13 +405,13 @@ bool octave_classdef_meta::is_classdef_method (const std::string& cname) const
 {
   bool retval = false;
 
-  if (object.is_method ())
+  if (m_object.is_method ())
     {
       if (cname.empty ())
         retval = true;
       else
         {
-          octave::cdef_method meth (object);
+          octave::cdef_method meth (m_object);
 
           return meth.is_defined_in_class (cname);
         }
@@ -424,13 +424,13 @@ bool octave_classdef_meta::is_classdef_constructor (const std::string& cname) co
 {
   bool retval = false;
 
-  if (object.is_class ())
+  if (m_object.is_class ())
     {
       if (cname.empty ())
         retval = true;
       else
         {
-          octave::cdef_class cls (object);
+          octave::cdef_class cls (m_object);
 
           if (cls.get_name () == cname)
             retval = true;
@@ -442,9 +442,9 @@ bool octave_classdef_meta::is_classdef_constructor (const std::string& cname) co
 
 std::string octave_classdef_meta::doc_string (const std::string& meth_name) const
 {
-  if (object.is_class ())
+  if (m_object.is_class ())
     {
-      octave::cdef_class cls (object);
+      octave::cdef_class cls (m_object);
 
       if (meth_name.empty ())
         return cls.doc_string ();

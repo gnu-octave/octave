@@ -48,10 +48,10 @@ octave_classdef : public octave_base_value
 public:
 
   octave_classdef (void)
-    : octave_base_value (), object () { }
+    : octave_base_value (), m_object () { }
 
   octave_classdef (const octave::cdef_object& obj)
-    : octave_base_value (), object (obj) { }
+    : octave_base_value (), m_object (obj) { }
 
   octave_classdef (const octave_classdef&) = delete;
 
@@ -61,19 +61,19 @@ public:
 
   octave_base_value * clone (void) const
   {
-    return new octave_classdef (object.clone ());
+    return new octave_classdef (m_object.clone ());
   }
 
   octave_base_value * empty_clone (void) const
   {
-    return new octave_classdef (object.empty_clone ());
+    return new octave_classdef (m_object.empty_clone ());
   }
 
   octave_classdef * classdef_object_value (bool = false) { return this; }
 
-  octave::cdef_object get_object (void) const { return object; }
+  octave::cdef_object get_object (void) const { return m_object; }
 
-  octave::cdef_object& get_object_ref (void) { return object; }
+  octave::cdef_object& get_object_ref (void) { return m_object; }
 
   bool is_defined (void) const { return true; }
 
@@ -118,22 +118,22 @@ public:
 
   OCTINTERP_API octave_idx_type xnumel (const octave_value_list&);
 
-  string_vector map_keys (void) const { return object.map_keys (); }
+  string_vector map_keys (void) const { return m_object.map_keys (); }
 
-  octave_map map_value (void) const { return object.map_value (); }
+  octave_map map_value (void) const { return m_object.map_value (); }
 
-  dim_vector dims (void) const { return object.dims (); }
+  dim_vector dims (void) const { return m_object.dims (); }
 
   void set_property (octave_idx_type idx, const std::string& name,
                      const octave_value& pval)
   {
-    object.set_property (idx, name, pval);
+    m_object.set_property (idx, name, pval);
   }
 
   octave_value
   get_property (octave_idx_type idx, const std::string& name) const
   {
-    return object.get_property (idx, name);
+    return m_object.get_property (idx, name);
   }
 
   static OCTINTERP_API octave_value
@@ -145,7 +145,7 @@ public:
 
   int type_id (void) const { return t_id; }
   std::string type_name (void) const { return t_name; }
-  std::string class_name (void) const { return object.class_name (); }
+  std::string class_name (void) const { return m_object.class_name (); }
 
   static int static_type_id (void) { return t_id; }
   static std::string static_type_name (void) { return t_name; }
@@ -154,7 +154,7 @@ public:
 
 private:
 
-  octave::cdef_object object;
+  octave::cdef_object m_object;
 
   static int t_id;
 
@@ -168,18 +168,18 @@ class octave_classdef_meta : public octave_function
 public:
 
   octave_classdef_meta (const octave::cdef_meta_object& obj)
-    : object (obj)
+    : m_object (obj)
   { }
 
   octave_classdef_meta (const octave_classdef_meta&) = delete;
 
   octave_classdef_meta& operator = (const octave_classdef_meta&) = delete;
 
-  ~octave_classdef_meta (void) { object.meta_release (); }
+  ~octave_classdef_meta (void) { m_object.meta_release (); }
 
   bool is_classdef_meta (void) const { return true; }
 
-  bool is_package (void) const { return object.is_package(); }
+  bool is_package (void) const { return m_object.is_package(); }
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -193,7 +193,7 @@ public:
            const std::list<octave_value_list>& idx,
            int nargout)
   {
-    return object.meta_subsref (type, idx, nargout);
+    return m_object.meta_subsref (type, idx, nargout);
   }
 
   // Override default call method because we don't push a new stack
@@ -217,7 +217,7 @@ public:
   }
 
   bool accepts_postfix_index (char type) const
-  { return object.meta_accepts_postfix_index (type); }
+  { return m_object.meta_accepts_postfix_index (type); }
 
   OCTINTERP_API bool is_classdef_method (const std::string& cname = "") const;
 
@@ -228,7 +228,7 @@ public:
 
 private:
 
-  octave::cdef_meta_object object;
+  octave::cdef_meta_object m_object;
 };
 
 class octave_classdef_superclass_ref : public octave_function

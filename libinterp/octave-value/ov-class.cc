@@ -75,7 +75,7 @@ octave_class::register_type (octave::type_info& ti)
 
 octave_class::octave_class (const octave_map& m, const std::string& id,
                             const octave_value_list& parents)
-  : octave_base_value (), map (m), c_name (id), obsolete_copies (0)
+  : octave_base_value (), m_map (m), c_name (id), m_obsolete_copies (0)
 {
   octave_idx_type n = parents.length ();
 
@@ -91,9 +91,9 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
       if (find_parent_class (pcnm))
         error ("duplicate class in parent tree");
 
-      parent_list.push_back (pcnm);
+      m_parent_list.push_back (pcnm);
 
-      octave_idx_type nel = map.numel ();
+      octave_idx_type nel = m_map.numel ();
       octave_idx_type p_nel = parent.numel ();
 
       if (nel == 0)
@@ -103,20 +103,20 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
               // No elements in MAP or the parent class object,
               // so just add the field name.
 
-              map.assign (pcnm, Cell (map.dims ()));
+              m_map.assign (pcnm, Cell (m_map.dims ()));
             }
           else if (p_nel == 1)
             {
-              if (map.nfields () == 0)
+              if (m_map.nfields () == 0)
                 {
                   // No elements or fields in MAP, but the
                   // parent is class object with one element.
                   // Resize to match size of parent class and
                   // make the parent a field in MAP.
 
-                  map.resize (parent.dims ());
+                  m_map.resize (parent.dims ());
 
-                  map.assign (pcnm, parent);
+                  m_map.assign (pcnm, parent);
                 }
               else
                 {
@@ -124,10 +124,10 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
                   // one field.  So don't resize, just add the
                   // field name.
 
-                  map.assign (pcnm, Cell (map.dims ()));
+                  m_map.assign (pcnm, Cell (m_map.dims ()));
                 }
             }
-          else if (map.nfields () == 0)
+          else if (m_map.nfields () == 0)
             {
               // No elements or fields in MAP and more than one
               // element in the parent class object, so we can
@@ -137,7 +137,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
 
               dim_vector parent_dims = parent.dims ();
 
-              map.resize (parent_dims);
+              m_map.resize (parent_dims);
 
               Cell c (parent_dims);
 
@@ -149,7 +149,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
               for (octave_idx_type i = 0; i < p_nel; i++)
                 c(i) = octave_value (pmap.index (i), pcnm, plist);
 
-              map.assign (pcnm, c);
+              m_map.assign (pcnm, c);
             }
           else
             error ("class: parent class dimension mismatch");
@@ -158,7 +158,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
         {
           // Simple assignment.
 
-          map.assign (pcnm, parent);
+          m_map.assign (pcnm, parent);
         }
       else
         {
@@ -167,9 +167,9 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
               // Broadcast the scalar parent class object to
               // each element of MAP.
 
-              Cell pcell (map.dims (), parent);
+              Cell pcell (m_map.dims (), parent);
 
-              map.assign (pcnm, pcell);
+              m_map.assign (pcnm, pcell);
             }
           else if (nel == p_nel)
             {
@@ -193,7 +193,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
               for (octave_idx_type i = 0; i < p_nel; i++)
                 c(i) = octave_value (pmap.index (i), pcnm, plist);
 
-              map.assign (pcnm, c);
+              m_map.assign (pcnm, c);
             }
           else
             error ("class: parent class dimension mismatch");
@@ -202,13 +202,13 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
 
   octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class");
 
-  symtab.add_to_parent_map (id, parent_list);
+  symtab.add_to_parent_map (id, m_parent_list);
 }
 
 octave_base_value *
 octave_class::unique_clone (void)
 {
-  if (count == obsolete_copies)
+  if (count == m_obsolete_copies)
     {
       // All remaining copies are obsolete.  We don't actually need to clone.
       count++;
@@ -217,8 +217,8 @@ octave_class::unique_clone (void)
   else
     {
       // In theory, this shouldn't be happening, but it's here just in case.
-      if (count < obsolete_copies)
-        obsolete_copies = 0;
+      if (count < m_obsolete_copies)
+        m_obsolete_copies = 0;
 
       return clone ();
     }
@@ -281,7 +281,7 @@ octave_class::dotref (const octave_value_list& idx)
   if (obvp == nullptr)
     error ("malformed class");
 
-  octave_map my_map = (obvp != this) ? obvp->map_value () : map;
+  octave_map my_map = (obvp != this) ? obvp->map_value () : m_map;
 
   std::string nm = idx(0).xstring_value ("invalid index for class");
 
@@ -405,14 +405,14 @@ octave_class::subsref (const std::string& type,
                 skip++;
               }
             else
-              retval(0) = octave_value (map.index (idx.front ()),
-                                        c_name, parent_list);
+              retval(0) = octave_value (m_map.index (idx.front ()),
+                                        c_name, m_parent_list);
           }
           break;
 
         case '.':
           {
-            if (map.numel () > 0)
+            if (m_map.numel () > 0)
               {
                 Cell t = dotref (idx.front ());
 
@@ -482,8 +482,8 @@ octave_class::subsref (const std::string& type,
       else
         {
           if (type.length () == 1 && type[0] == '(')
-            retval(0) = octave_value (map.index (idx.front ()), c_name,
-                                      parent_list);
+            retval(0) = octave_value (m_map.index (idx.front ()), c_name,
+                                      m_parent_list);
           else
             err_invalid_index1 ();
         }
@@ -576,11 +576,11 @@ octave_class::subsasgn_common (const octave_value& obj,
 
           octave_value_list tmp;
 
-          if (obsolete_copies == 0 && meth.is_user_function ()
+          if (m_obsolete_copies == 0 && meth.is_user_function ()
               && meth.user_function_value ()->subsasgn_optimization_ok ())
             {
-              octave::unwind_protect_var<int> restore_var (obsolete_copies);
-              obsolete_copies = 2;
+              octave::unwind_protect_var<int> restore_var (m_obsolete_copies);
+              m_obsolete_copies = 2;
 
               tmp = octave::feval (meth.function_value (), args);
             }
@@ -648,11 +648,11 @@ octave_class::subsasgn_common (const octave_value& obj,
 
                 octave_value u;
 
-                if (! map.contains (key))
+                if (! m_map.contains (key))
                   u = octave_value::empty_conv (type.substr (2), rhs);
                 else
                   {
-                    Cell map_val = map.contents (key);
+                    Cell map_val = m_map.contents (key);
 
                     Cell map_elt = map_val.index (idx.front (), true);
 
@@ -691,11 +691,11 @@ octave_class::subsasgn_common (const octave_value& obj,
             std::string next_type = type.substr (1);
 
             Cell tmpc (1, 1);
-            auto pkey = map.seek (key);
-            if (pkey != map.end ())
+            auto pkey = m_map.seek (key);
+            if (pkey != m_map.end ())
               {
-                map.contents (pkey).make_unique ();
-                tmpc = map.contents (pkey);
+                m_map.contents (pkey).make_unique ();
+                tmpc = m_map.contents (pkey);
               }
 
             // FIXME: better code reuse?
@@ -739,7 +739,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
             std::string key = key_idx(0).xstring_value ("assignment to class element failed");
 
-            map.assign (idx.front (), key, t_rhs);
+            m_map.assign (idx.front (), key, t_rhs);
 
             count++;
             retval = octave_value (this);
@@ -750,7 +750,7 @@ octave_class::subsasgn_common (const octave_value& obj,
               {
                 octave_map rhs_map = t_rhs.xmap_value ("invalid class assignment");
 
-                map.assign (idx.front (), rhs_map);
+                m_map.assign (idx.front (), rhs_map);
 
                 count++;
                 retval = octave_value (this);
@@ -760,7 +760,7 @@ octave_class::subsasgn_common (const octave_value& obj,
                 if (! t_rhs.isempty ())
                   error ("invalid class assignment");
 
-                map.delete_elements (idx.front ());
+                m_map.delete_elements (idx.front ());
 
                 count++;
                 retval = octave_value (this);
@@ -788,13 +788,13 @@ octave_class::subsasgn_common (const octave_value& obj,
             if (numel () == tmp_cell.numel ())
               tmp_cell = tmp_cell.reshape (dims ());
 
-            map.setfield (key, tmp_cell);
+            m_map.setfield (key, tmp_cell);
           }
         else
           {
             Cell tmp_cell(1, 1);
             tmp_cell(0) = t_rhs.storable_value ();
-            map.setfield (key, tmp_cell);
+            m_map.setfield (key, tmp_cell);
           }
 
         count++;
@@ -826,7 +826,7 @@ octave_class::index_vector (bool require_integers) const
            class_name ().c_str ());
 
   octave_value_list args;
-  args(0) = octave_value (new octave_class (map, c_name, parent_list));
+  args(0) = octave_value (new octave_class (m_map, c_name, m_parent_list));
 
   octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
 
@@ -848,11 +848,11 @@ octave_class::byte_size (void) const
 
   size_t retval = 0;
 
-  for (auto it = map.cbegin (); it != map.cend (); it++)
+  for (auto it = m_map.cbegin (); it != m_map.cend (); it++)
     {
-      std::string key = map.key (it);
+      std::string key = m_map.key (it);
 
-      octave_value val = octave_value (map.contents (it));
+      octave_value val = octave_value (m_map.contents (it));
 
       retval += val.byte_size ();
     }
@@ -896,11 +896,11 @@ octave_class::find_parent_class (const std::string& parent_class_name)
     retval = this;
   else
     {
-      for (auto& par : parent_list)
+      for (auto& par : m_parent_list)
         {
-          octave_map::const_iterator smap = map.seek (par);
+          octave_map::const_iterator smap = m_map.seek (par);
 
-          const Cell& tmp = map.contents (smap);
+          const Cell& tmp = m_map.contents (smap);
 
           octave_value vtmp = tmp(0);
 
@@ -925,11 +925,11 @@ octave_class::unique_parent_class (const std::string& parent_class_name)
     retval = this;
   else
     {
-      for (auto& par : parent_list)
+      for (auto& par : m_parent_list)
         {
-          auto smap = map.seek (par);
+          auto smap = m_map.seek (par);
 
-          Cell& tmp = map.contents (smap);
+          Cell& tmp = m_map.contents (smap);
 
           octave_value& vtmp = tmp(0);
 
@@ -961,11 +961,11 @@ octave_class::is_instance_of (const std::string& cls_name) const
     retval = true;
   else
     {
-      for (auto& par : parent_list)
+      for (auto& par : m_parent_list)
         {
-          octave_map::const_iterator smap = map.seek (par);
+          octave_map::const_iterator smap = m_map.seek (par);
 
-          const Cell& tmp = map.contents (smap);
+          const Cell& tmp = m_map.contents (smap);
 
           const octave_value& vtmp = tmp(0);
 
@@ -993,7 +993,7 @@ octave_class::string_vector_value (bool pad) const
     error ("no char method defined for class %s", class_name ().c_str ());
 
   octave_value_list args;
-  args(0) = octave_value (new octave_class (map, c_name, parent_list));
+  args(0) = octave_value (new octave_class (m_map, c_name, m_parent_list));
 
   octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
 
@@ -1113,10 +1113,10 @@ octave_class::reconstruct_parents (void)
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.
-  for (auto it = map.cbegin (); it != map.cend (); it++)
+  for (auto it = m_map.cbegin (); it != m_map.cend (); it++)
     {
-      std::string key = map.key (it);
-      Cell        val = map.contents (it);
+      std::string key = m_map.key (it);
+      Cell        val = m_map.contents (it);
       if (val(0).isobject ())
         {
           dbgstr = "blork";
@@ -1139,11 +1139,11 @@ octave_class::reconstruct_parents (void)
       else
         {
           octave_class::exemplar_info exmplr = it->second;
-          parent_list = exmplr.parents ();
-          for (auto& par : parent_list)
+          m_parent_list = exmplr.parents ();
+          for (auto& par : m_parent_list)
             {
               dbgstr = par;
-              bool dbgbool = map.contains (par);
+              bool dbgbool = m_map.contains (par);
               if (! dbgbool)
                 {
                   retval = false;
@@ -1179,7 +1179,7 @@ octave_class::save_ascii (std::ostream& os)
   auto i = m.begin ();
   while (i != m.end ())
     {
-      octave_value val = map.contents (i);
+      octave_value val = m_map.contents (i);
 
       bool b = save_text_data (os, val, m.key (i), false, 0);
 
@@ -1206,7 +1206,7 @@ octave_class::load_ascii (std::istream& is)
 
   if (len > 0)
     {
-      octave_map m (map);
+      octave_map m (m_map);
 
       for (octave_idx_type j = 0; j < len; j++)
         {
@@ -1231,7 +1231,7 @@ octave_class::load_ascii (std::istream& is)
       c_name = classname;
       reconstruct_exemplar ();
 
-      map = m;
+      m_map = m;
 
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
@@ -1243,12 +1243,12 @@ octave_class::load_ascii (std::istream& is)
           octave_value in = new octave_class (*this);
           octave_value_list tmp = octave::feval ("loadobj", in, 1);
 
-          map = tmp(0).map_value ();
+          m_map = tmp(0).map_value ();
         }
     }
   else if (len == 0)
     {
-      map = octave_map (dim_vector (1, 1));
+      m_map = octave_map (dim_vector (1, 1));
       c_name = classname;
     }
   else
@@ -1285,7 +1285,7 @@ octave_class::save_binary (std::ostream& os, bool save_as_floats)
   auto i = m.begin ();
   while (i != m.end ())
     {
-      octave_value val = map.contents (i);
+      octave_value val = m_map.contents (i);
 
       bool b = save_binary_data (os, val, m.key (i), "", 0, save_as_floats);
 
@@ -1329,7 +1329,7 @@ octave_class::load_binary (std::istream& is, bool swap,
 
   if (len > 0)
     {
-      octave_map m (map);
+      octave_map m (m_map);
 
       for (octave_idx_type j = 0; j < len; j++)
         {
@@ -1351,7 +1351,7 @@ octave_class::load_binary (std::istream& is, bool swap,
 
       if (is)
         {
-          map = m;
+          m_map = m;
 
           if (! reconstruct_parents ())
             warning ("load: unable to reconstruct object inheritance");
@@ -1363,7 +1363,7 @@ octave_class::load_binary (std::istream& is, bool swap,
               octave_value in = new octave_class (*this);
               octave_value_list tmp = octave::feval ("loadobj", in, 1);
 
-              map = tmp(0).map_value ();
+              m_map = tmp(0).map_value ();
             }
         }
       else
@@ -1373,7 +1373,7 @@ octave_class::load_binary (std::istream& is, bool swap,
         }
     }
   else if (len == 0)
-    map = octave_map (dim_vector (1, 1));
+    m_map = octave_map (dim_vector (1, 1));
   else
     panic_impossible ();
 
@@ -1451,7 +1451,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   i = m.begin ();
   while (i != m.end ())
     {
-      octave_value val = map.contents (i);
+      octave_value val = m_map.contents (i);
 
       bool retval2 = add_hdf5_data (data_hid, val, m.key (i), "", false,
                                     save_as_floats);
@@ -1600,7 +1600,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   if (retval2 >= 0)
     {
-      map = m;
+      m_map = m;
 
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
@@ -1612,7 +1612,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
           octave_value in = new octave_class (*this);
           octave_value_list tmp = octave::feval ("loadobj", in, 1);
 
-          map = tmp(0).map_value ();
+          m_map = tmp(0).map_value ();
           retval = true;
         }
     }
@@ -1657,15 +1657,15 @@ octave_class::in_class_method (void)
 }
 
 octave_class::exemplar_info::exemplar_info (const octave_value& obj)
-  : field_names (), parent_class_names ()
+  : m_field_names (), m_parent_class_names ()
 {
   if (! obj.isobject ())
     error ("invalid call to exemplar_info constructor");
 
   octave_map m = obj.map_value ();
-  field_names = m.keys ();
+  m_field_names = m.keys ();
 
-  parent_class_names = obj.parent_class_name_list ();
+  m_parent_class_names = obj.parent_class_name_list ();
 }
 
 // A map from class names to lists of fields.

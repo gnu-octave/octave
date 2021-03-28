@@ -53,8 +53,9 @@ octave_builtin : public octave_function
 {
 public:
 
-  octave_builtin (void) : octave_function (), f (nullptr), m (nullptr),
-                          file (), jtype (nullptr)
+  octave_builtin (void)
+    : octave_function (), m_fcn (nullptr), m_meth (nullptr), m_file (),
+      m_jtype (nullptr)
   { }
 
   typedef octave_value_list (*meth) (octave::interpreter&,
@@ -64,22 +65,26 @@ public:
 
   octave_builtin (fcn ff, const std::string& nm = "",
                   const std::string& ds = "")
-    : octave_function (nm, ds), f (ff), m (nullptr), file (), jtype (nullptr)
+    : octave_function (nm, ds), m_fcn (ff), m_meth (nullptr), m_file (),
+      m_jtype (nullptr)
   { }
 
   octave_builtin (meth mm, const std::string& nm = "",
                   const std::string& ds = "")
-    : octave_function (nm, ds), f (nullptr), m (mm), file (), jtype (nullptr)
+    : octave_function (nm, ds), m_fcn (nullptr), m_meth (mm), m_file (),
+      m_jtype (nullptr)
   { }
 
   octave_builtin (fcn ff, const std::string& nm, const std::string& fnm,
                   const std::string& ds)
-    : octave_function (nm, ds), f (ff), m (nullptr), file (fnm), jtype (nullptr)
+    : octave_function (nm, ds), m_fcn (ff), m_meth (nullptr), m_file (fnm),
+      m_jtype (nullptr)
   { }
 
   octave_builtin (meth mm, const std::string& nm, const std::string& fnm,
                   const std::string& ds)
-    : octave_function (nm, ds), f (nullptr), m (mm), file (fnm), jtype (nullptr)
+    : octave_function (nm, ds), m_fcn (nullptr), m_meth (mm), m_file (fnm),
+      m_jtype (nullptr)
   { }
 
   // No copying!
@@ -90,7 +95,7 @@ public:
 
   ~octave_builtin (void) = default;
 
-  std::string src_file_name (void) const { return file; }
+  std::string src_file_name (void) const { return m_file; }
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -115,17 +120,17 @@ public:
 protected:
 
   // A pointer to the actual function.
-  fcn f;
-  meth m;
+  fcn m_fcn;
+  meth m_meth;
 
   // The name of the file where this function was defined.
-  std::string file;
+  std::string m_file;
 
   // The types this function has been declared to handle (if any).
-  std::set<std::string> dispatch_classes;
+  std::set<std::string> m_dispatch_classes;
 
   // A pointer to the jit type that represents the function.
-  octave::jit_type *jtype;
+  octave::jit_type *m_jtype;
 
 private:
 

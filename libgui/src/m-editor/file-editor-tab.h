@@ -307,7 +307,6 @@ namespace octave
     QDateTime m_last_modified;
 
     bool m_autoc_active;
-    bool m_long_title;
     bool m_copy_available;
     bool m_is_octave_file;
     bool m_always_reload_changed_files;

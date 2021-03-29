@@ -1632,14 +1632,9 @@ namespace octave
       title = tr ("<unnamed>");
     else
       {
-        if (m_long_title)
-          title = m_file_name;
-        else
-          {
-            QFileInfo file (m_file_name);
-            title = file.fileName ();
-            tooltip = m_file_name;
-          }
+        QFileInfo file (m_file_name);
+        title = file.fileName ();
+        tooltip = m_file_name;
       }
 
     emit file_name_changed (title, tooltip, modified);
@@ -2730,7 +2725,6 @@ namespace octave
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTHTRACKING,true);
 
-    m_long_title = settings->value (ed_long_window_title).toBool ();
     update_window_title (m_edit_area->isModified ());
 
     m_auto_endif = settings->value (ed_auto_endif).toInt ();

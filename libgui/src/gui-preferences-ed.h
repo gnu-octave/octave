@@ -213,15 +213,6 @@ ed_tabs_max_width ("editor/tabs_max_width", QVariant (0));
 // File handling
 
 const gui_pref
-ed_long_window_title ("editor/longWindowTitle", QVariant (false));
-
-const gui_pref
-ed_notebook_tab_width_min ("editor/notebook_tab_width_min", QVariant (160));
-
-const gui_pref
-ed_notebook_tab_width_max ("editor/notebook_tab_width_max", QVariant (300));
-
-const gui_pref
 ed_force_newline ("editor/force_newline", QVariant (true));
 
 const gui_pref

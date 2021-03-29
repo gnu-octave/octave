@@ -352,9 +352,6 @@ namespace octave
     editor_ind_width_spinbox->setValue (settings->value (ed_indent_width).toInt ());
     editor_ind_uses_tabs_checkbox->setChecked (settings->value (ed_indent_uses_tabs).toBool ());
     editor_tab_width_spinbox->setValue (settings->value (ed_tab_width).toInt ());
-    editor_longWindowTitle->setChecked (settings->value (ed_long_window_title).toBool ());
-    editor_notebook_tab_width_min->setValue (settings->value (ed_notebook_tab_width_min).toInt ());
-    editor_notebook_tab_width_max->setValue (settings->value (ed_notebook_tab_width_max).toInt ());
     editor_restoreSession->setChecked (settings->value (ed_restore_session).toBool ());
     editor_create_new_file->setChecked (settings->value (ed_create_new_file).toBool ());
     editor_reload_changed_files->setChecked (settings->value (ed_always_reload_changed_files).toBool ());
@@ -992,9 +989,6 @@ namespace octave
     settings->setValue (ed_indent_width.key, editor_ind_width_spinbox->value ());
     settings->setValue (ed_indent_uses_tabs.key, editor_ind_uses_tabs_checkbox->isChecked ());
     settings->setValue (ed_tab_width.key, editor_tab_width_spinbox->value ());
-    settings->setValue (ed_long_window_title.key, editor_longWindowTitle->isChecked ());
-    settings->setValue (ed_notebook_tab_width_min.key, editor_notebook_tab_width_min->value ());
-    settings->setValue (ed_notebook_tab_width_max.key, editor_notebook_tab_width_max->value ());
     settings->setValue (ed_restore_session.key, editor_restoreSession->isChecked ());
     settings->setValue (ed_create_new_file.key, editor_create_new_file->isChecked ());
     settings->setValue (ed_hiding_closes_files.key, editor_hiding_closes_files->isChecked ());

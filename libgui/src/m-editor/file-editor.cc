@@ -1283,20 +1283,6 @@ namespace octave
                                  "max-" + width_str + ": %2px; }")
                           .arg (height).arg (width);
 
-    // Style sheet for tab height together with width when full path is shown
-    if (settings->value (ed_long_window_title).toBool ())
-      {
-        // Min and max width for full path titles
-        int tab_width_min = settings->value (ed_notebook_tab_width_min).toInt ();
-        int tab_width_max = settings->value (ed_notebook_tab_width_max).toInt ();
-        style_sheet = QString ("QTabBar::tab "
-                               " {max-" + height_str + ": %1px;"
-                               "  min-" + width_str + ": %2px;"
-                               "  max-" + width_str + ": %3px;}")
-                      .arg (height).arg (tab_width_min).arg (tab_width_max);
-        m_tab_widget->setElideMode (Qt::ElideLeft);
-      }
-
 #if defined (Q_OS_MAC)
     // FIXME: This is a workaround for missing tab close buttons on MacOS
     // in several Qt versions (https://bugreports.qt.io/browse/QTBUG-61092)

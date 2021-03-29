@@ -193,6 +193,7 @@ namespace octave
     void request_close_file (bool);
     void request_close_all_files (bool);
     void request_close_other_files (bool);
+    void copy_full_file_path (bool);
     void request_mru_open_file (QAction *action);
     void request_print_file (bool);
 

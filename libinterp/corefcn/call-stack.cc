@@ -412,7 +412,8 @@ namespace octave
   }
 
   void call_stack::push (octave_user_function *fcn,
-                         const stack_frame::local_vars_map& local_vars)
+                         const stack_frame::local_vars_map& local_vars,
+                         const std::shared_ptr<stack_frame>& closure_frames)
   {
     size_t new_frame_idx;
     std::shared_ptr<stack_frame> parent_link;
@@ -422,7 +423,8 @@ namespace octave
 
     std::shared_ptr<stack_frame>
       new_frame (stack_frame::create (m_evaluator, fcn, new_frame_idx,
-                                      parent_link, static_link, local_vars));
+                                      parent_link, static_link, local_vars,
+                                      closure_frames));
 
     m_cs.push_back (new_frame);
 

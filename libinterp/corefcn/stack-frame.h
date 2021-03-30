@@ -173,7 +173,8 @@ namespace octave
     create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
             const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link,
-            const local_vars_map& local_vars);
+            const local_vars_map& local_vars,
+            const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ());
 
     // Scope.
     static stack_frame *

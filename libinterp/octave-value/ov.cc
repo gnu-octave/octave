@@ -1137,6 +1137,8 @@ octave_value::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& 
 
       if (fhdl->is_nested (frame) && ! fhdl->is_weak_nested ())
         *this = fhdl->make_weak_nested_handle ();
+      else if (fhdl->is_anonymous () && ! fhdl->is_weak_anonymous ())
+        *this = fhdl->make_weak_anonymous_handle ();
     }
   else
     {

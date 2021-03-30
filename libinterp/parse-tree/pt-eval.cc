@@ -1853,9 +1853,10 @@ namespace octave
   }
 
   void tree_evaluator::push_stack_frame (octave_user_function *fcn,
-                                         const stack_frame::local_vars_map& local_vars)
+                                         const stack_frame::local_vars_map& local_vars,
+                                         const std::shared_ptr<stack_frame>& closure_frames)
   {
-    m_call_stack.push (fcn, local_vars);
+    m_call_stack.push (fcn, local_vars, closure_frames);
   }
 
   void tree_evaluator::push_stack_frame (octave_user_script *script)

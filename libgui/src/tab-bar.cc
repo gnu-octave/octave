@@ -130,6 +130,10 @@ namespace octave
     setCurrentIndex (tab_with_focus);
   }
 
+  // The following two functions are reimplemented for allowing rotated
+  // tabs and are based on this answer on stack overflow:
+  // https://stackoverflow.com/a/50579369
+
   // Reimplemented size hint allowing rotated tabs
   QSize tab_bar::tabSizeHint (int idx) const
   {

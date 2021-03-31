@@ -2803,15 +2803,16 @@ namespace octave
     scmgr.set_shortcut (m_show_editor_action, sc_main_window_show_editor, enable);
     scmgr.set_shortcut (m_show_documentation_action, sc_main_window_show_doc, enable);
     scmgr.set_shortcut (m_show_variable_editor_action, sc_main_window_show_variable_editor, enable);
-    scmgr.set_shortcut (m_command_window_action, sc_main_window_command, enable);
-    scmgr.set_shortcut (m_history_action, sc_main_window_history, enable);
-    scmgr.set_shortcut (m_workspace_action, sc_main_window_workspace, enable);
-    scmgr.set_shortcut (m_file_browser_action, sc_main_window_file_browser, enable);
-    scmgr.set_shortcut (m_editor_action, sc_main_window_editor, enable);
-    scmgr.set_shortcut (m_documentation_action, sc_main_window_doc, enable);
-    scmgr.set_shortcut (m_variable_editor_action, sc_main_window_variable_editor, enable);
-    scmgr.set_shortcut (m_previous_dock_action, sc_main_window_previous_dock, enable);
     scmgr.set_shortcut (m_reset_windows_action, sc_main_window_reset, enable);
+    scmgr.set_shortcut (m_command_window_action, sc_main_window_command, enable);
+    // Switching to the other widgets (including the previous one) is always enabled
+    scmgr.set_shortcut (m_history_action, sc_main_window_history, true);
+    scmgr.set_shortcut (m_workspace_action, sc_main_window_workspace, true);
+    scmgr.set_shortcut (m_file_browser_action, sc_main_window_file_browser, true);
+    scmgr.set_shortcut (m_editor_action, sc_main_window_editor, true);
+    scmgr.set_shortcut (m_documentation_action, sc_main_window_doc, true);
+    scmgr.set_shortcut (m_variable_editor_action, sc_main_window_variable_editor, true);
+    scmgr.set_shortcut (m_previous_dock_action, sc_main_window_previous_dock, true);
 
     // help menu
     scmgr.set_shortcut (m_ondisk_doc_action, sc_main_help_ondisk_doc, enable);

@@ -31,8 +31,11 @@
        <height>0</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Disable global shortcuts in order to prevent interference with readline key strokes. Exceptions: Ctrl-C for interrupting the interpreter and the shortcuts for switching to other widgets.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">

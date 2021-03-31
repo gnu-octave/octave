@@ -32,6 +32,7 @@
 #include <algorithm>
 
 #include <QApplication>
+#include <QClipboard>
 #include <QFile>
 #include <QFileDialog>
 #include <QFont>
@@ -589,6 +590,15 @@ namespace octave
             editor_tab->conditional_close ();
           }
       }
+  }
+
+  void file_editor::copy_full_file_path (bool)
+  {
+    file_editor_tab *editor_tab
+      = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
+
+    if (editor_tab)
+      QGuiApplication::clipboard ()->setText (editor_tab->file_name ());
   }
 
   // open a file from the mru list
@@ -2304,6 +2314,8 @@ namespace octave
     ctx_men->addAction (m_close_others_action);
     ctx_men->addSeparator ();
     ctx_men->addAction (m_sort_tabs_action);
+    add_action (ctx_men, tr ("Copy Full File &Path"),
+                SLOT (copy_full_file_path (bool)), this);
 
     // signals
     connect (this, SIGNAL (request_settings_dialog (const QString&)),

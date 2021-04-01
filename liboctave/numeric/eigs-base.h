@@ -28,6 +28,7 @@
 
 #include "octave-config.h"
 
+#include <functional>
 #include <iosfwd>
 #include <string>
 
@@ -38,10 +39,12 @@ class ComplexColumnVector;
 class Matrix;
 class ComplexMatrix;
 
-typedef ColumnVector (*EigsFunc) (const ColumnVector& x, int& eigs_error);
+typedef
+std::function<ColumnVector (const ColumnVector& x, int& eigs_error)> EigsFunc;
 
-typedef ComplexColumnVector (*EigsComplexFunc) (const ComplexColumnVector& x,
-                                                int& eigs_error);
+typedef
+std::function<ComplexColumnVector
+              (const ComplexColumnVector& x, int& eigs_error)> EigsComplexFunc;
 
 template <typename M>
 OCTAVE_API octave_idx_type

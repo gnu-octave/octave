@@ -47,17 +47,25 @@
 
 #if defined (HAVE_ARPACK)
 
-// Global pointer for user defined function.
-static octave_value eigs_fcn;
+struct eigs_callback {
+  // Pointer for user defined function.
+  octave_value eigs_fcn;
 
-// Have we warned about imaginary values returned from user function?
-static bool warned_imaginary = false;
+  // Have we warned about imaginary values returned from user function?
+  bool warned_imaginary = false;
+
+  ColumnVector
+  eigs_func (const ColumnVector& x, int& eigs_error);
+  
+  ComplexColumnVector
+  eigs_complex_func (const ComplexColumnVector& x, int& eigs_error);
+};
 
 // Is this a recursive call?
 static int call_depth = 0;
 
 ColumnVector
-eigs_func (const ColumnVector& x, int& eigs_error)
+eigs_callback::eigs_func (const ColumnVector& x, int& eigs_error)
 {
   ColumnVector retval;
   octave_value_list args;
@@ -97,7 +105,8 @@ eigs_func (const ColumnVector& x, int& eigs_error)
 }
 
 ComplexColumnVector
-eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
+eigs_callback::eigs_complex_func (const ComplexColumnVector& x,
+                                  int& eigs_error)
 {
   ComplexColumnVector retval;
   octave_value_list args;
@@ -197,9 +206,8 @@ Undocumented internal function.
   ComplexColumnVector cresid;
   octave_idx_type info = 1;
 
-  warned_imaginary = false;
+  eigs_callback callback;
 
-  octave::unwind_protect_var<octave_value> restore_eigs_fnc(eigs_fcn);
   octave::unwind_protect_var<int> restore_var (call_depth);
   call_depth++;
 
@@ -209,9 +217,9 @@ Undocumented internal function.
   if (args(0).is_function_handle () || args(0).is_inline_function ()
       || args(0).is_string ())
     {
-      eigs_fcn = octave::get_function_handle (interp, args(0), "x");
+      callback.eigs_fcn = octave::get_function_handle (interp, args(0), "x");
 
-      if (eigs_fcn.is_undefined ())
+      if (callback.eigs_fcn.is_undefined ())
         error ("eigs: unknown function");
 
       if (nargin < 2)
@@ -427,6 +435,13 @@ Undocumented internal function.
   octave_idx_type nconv;
   if (a_is_complex || b_is_complex)
     {
+      EigsComplexFunc
+      eigs_complex_fcn = [&callback] (const ComplexColumnVector& x,
+                                      int& eigs_error)
+                           {
+                             return callback.eigs_complex_func (x, eigs_error);
+                           };
+
       ComplexMatrix eig_vec;
       ComplexColumnVector eig_val;
 
@@ -434,12 +449,12 @@ Undocumented internal function.
         {
           if (b_is_sparse)
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
                eig_val, bscm, permB, cresid, octave_stdout, tol,
                (nargout > 1), cholB, disp, maxit);
           else
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
                eig_val, bcm, permB, cresid, octave_stdout, tol,
                (nargout > 1), cholB, disp, maxit);
         }
@@ -487,6 +502,13 @@ Undocumented internal function.
     }
   else if (sigmai != 0.0)
     {
+      EigsComplexFunc
+      eigs_complex_fcn = [&callback] (const ComplexColumnVector& x,
+                                      int& eigs_error)
+                           {
+                             return callback.eigs_complex_func (x, eigs_error);
+                           };
+
       // Promote real problem to a complex one.
       ComplexMatrix eig_vec;
       ComplexColumnVector eig_val;
@@ -495,12 +517,12 @@ Undocumented internal function.
         {
           if (b_is_sparse)
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
                eig_val, bscm, permB, cresid, octave_stdout, tol,
                (nargout > 1), cholB, disp, maxit);
           else
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
                eig_val, bcm, permB, cresid, octave_stdout, tol,
                (nargout > 1), cholB, disp, maxit);
         }
@@ -535,6 +557,11 @@ Undocumented internal function.
     }
   else
     {
+      EigsFunc eigs_fcn = [&callback] (const ColumnVector& x, int& eigs_error)
+                            {
+                              return callback.eigs_func (x, eigs_error);
+                            };
+
       if (symmetric)
         {
           Matrix eig_vec;
@@ -544,12 +571,12 @@ Undocumented internal function.
             {
               if (b_is_sparse)
                 nconv = EigsRealSymmetricFunc
-                       (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                       (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
                         eig_val, bsmm, permB, resid, octave_stdout, tol,
                         (nargout > 1), cholB, disp, maxit);
               else
                 nconv = EigsRealSymmetricFunc
-                       (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                       (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
                         eig_val, bmm, permB, resid, octave_stdout, tol,
                         (nargout > 1), cholB, disp, maxit);
             }
@@ -594,12 +621,12 @@ Undocumented internal function.
             {
               if (b_is_sparse)
                 nconv = EigsRealNonSymmetricFunc
-                        (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                        (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
                          eig_val, bsmm, permB, resid, octave_stdout, tol,
                          (nargout > 1), cholB, disp, maxit);
               else
                 nconv = EigsRealNonSymmetricFunc
-                        (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                        (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
                          eig_val, bmm, permB, resid, octave_stdout, tol,
                          (nargout > 1), cholB, disp, maxit);
             }

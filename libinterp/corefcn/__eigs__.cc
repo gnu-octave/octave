@@ -199,6 +199,7 @@ Undocumented internal function.
 
   warned_imaginary = false;
 
+  octave::unwind_protect_var<octave_value> restore_eigs_fnc(eigs_fcn);
   octave::unwind_protect_var<int> restore_var (call_depth);
   call_depth++;
 

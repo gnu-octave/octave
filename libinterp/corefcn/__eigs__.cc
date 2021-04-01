@@ -201,6 +201,7 @@ Undocumented internal function.
 
   octave::unwind_protect frame;
 
+  frame.protect_var (eigs_fcn);
   frame.protect_var (call_depth);
   call_depth++;
 

@@ -50,6 +50,7 @@
 #include "utils.h"
 #include "ov-base-mat.h"
 #include "ov-base-mat.cc"
+#include "ov-fcn-handle.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "pr-output.h"
@@ -142,6 +143,12 @@ octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
 template class octave_base_matrix<Cell>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
+
+void octave_cell::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
+{
+  for (octave_idx_type i = 0; i < matrix.numel (); i++)
+    matrix(i).break_closure_cycles (frame);
+}
 
 octave_value_list
 octave_cell::subsref (const std::string& type,

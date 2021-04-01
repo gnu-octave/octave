@@ -90,6 +90,11 @@ public:
 
   OCTINTERP_API bool is_instance_of (const std::string& cls_name) const;
 
+  void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
+  {
+    m_object.break_closure_cycles (frame);
+  }
+
   OCTINTERP_API octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
            int nargout);

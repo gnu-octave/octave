@@ -63,6 +63,18 @@ static int Vstruct_levels_to_print = 2;
 // specified by struct_levels_to_print.
 static bool Vprint_struct_array_contents = false;
 
+void
+octave_struct::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
+{
+  for (octave_idx_type j = 0; j < map.nfields (); j++)
+    {
+      Cell& c = map.contents (j);
+
+      for (octave_idx_type i = 0; i < c.numel (); i++)
+        c(i).break_closure_cycles (frame);
+    }
+}
+
 octave_base_value *
 octave_struct::try_narrowing_conversion (void)
 {
@@ -1082,6 +1094,13 @@ octave_struct::fast_elem_insert (octave_idx_type n,
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct",
                                     "struct");
+
+void
+octave_scalar_struct::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
+{
+  for (octave_idx_type i = 0; i < map.nfields (); i++)
+    map.contents(i).break_closure_cycles (frame);
+}
 
 octave_value
 octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)

@@ -151,6 +151,8 @@ namespace octave
 
     octave_function *curr_fcn = cs.current_function ();
 
+    bool is_nested = false;
+
     if (curr_fcn)
       {
         // FIXME: maybe it would be better to just stash curr_fcn
@@ -162,6 +164,7 @@ namespace octave
 
         if (curr_fcn->is_parent_function () || curr_fcn->is_nested_function ())
           {
+            is_nested = true;
             af->mark_as_nested_function ();
             new_scope.set_nesting_depth (parent_scope.nesting_depth () + 1);
           }
@@ -185,7 +188,9 @@ namespace octave
 
     octave_value ov_fcn (af);
 
-    return octave_value (new octave_fcn_handle (ov_fcn, local_vars));
+    return (is_nested
+            ? octave_value (new octave_fcn_handle (ov_fcn, local_vars, frame))
+            : octave_value (new octave_fcn_handle (ov_fcn, local_vars)));
   }
 }
 

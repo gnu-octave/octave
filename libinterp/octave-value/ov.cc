@@ -1241,6 +1241,33 @@ octave_value::clone (void) const
 }
 
 void
+octave_value::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
+{
+  if (is_function_handle ())
+    {
+      octave_fcn_handle *fhdl = rep->fcn_handle_value ();
+
+      if (fhdl->is_nested (frame) && ! fhdl->is_weak_nested ())
+        *this = fhdl->make_weak_nested_handle ();
+      else if (fhdl->is_anonymous () && ! fhdl->is_weak_anonymous ())
+        *this = fhdl->make_weak_anonymous_handle ();
+    }
+  else
+    {
+      // FIXME: Is there a efficient way to avoid calling make_unique
+      // if REP doesn't contain any nested function handles?
+      //
+      // Probably we should be asking REP to make a modified copy IFF it
+      // is needed, then replace our REP with that if a copy is made,
+      // otherwise we leave it alone.
+
+      make_unique ();
+
+      rep->break_closure_cycles (frame);
+    }
+}
+
+void
 octave_value::maybe_mutate (void)
 {
   octave_base_value *tmp = rep->try_narrowing_conversion ();

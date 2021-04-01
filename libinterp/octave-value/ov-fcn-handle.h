@@ -72,9 +72,22 @@ namespace octave
 
     virtual bool is_nested (void) const { return false; }
 
+    virtual bool is_nested (const std::shared_ptr<stack_frame>&) const
+    {
+      return false;
+    }
+
+    virtual bool is_weak_nested (void) const { return false; }
+
     virtual bool is_class_simple (void) const { return false; }
 
     virtual bool is_anonymous (void) const { return false; }
+
+    virtual bool is_weak_anonymous (void) const { return false; }
+
+    virtual octave_value make_weak_nested_handle (void) const;
+
+    virtual octave_value make_weak_anonymous_handle (void) const;
 
     std::string fcn_name (void) const { return m_name; }
 
@@ -203,7 +216,11 @@ public:
   // Create an anonymous function handle with local variable values
   // provided in LOCAL_VARS.
   octave_fcn_handle (const octave_value& fcn,
-                     const octave::stack_frame::local_vars_map& local_vars);
+                     const octave::stack_frame::local_vars_map& local_vars,
+                     const std::shared_ptr<octave::stack_frame>& closure_frames
+                       = std::shared_ptr<octave::stack_frame> ());
+
+  octave_fcn_handle (octave::base_fcn_handle *rep);
 
   octave_fcn_handle (const octave_fcn_handle& fh);
 
@@ -254,9 +271,28 @@ public:
 
   bool is_nested (void) const { return m_rep->is_nested (); }
 
+  bool is_nested (const std::shared_ptr<octave::stack_frame>& frame) const
+  {
+    return m_rep->is_nested (frame);
+  }
+
+  bool is_weak_nested (void) const { return m_rep->is_weak_nested (); }
+
   bool is_class_simple (void) const { return m_rep->is_class_simple (); }
 
   bool is_anonymous (void) const { return m_rep->is_anonymous (); }
+
+  bool is_weak_anonymous (void) const { return m_rep->is_weak_anonymous (); }
+
+  octave_value make_weak_nested_handle (void) const
+  {
+    return m_rep->make_weak_nested_handle ();
+  }
+
+  octave_value make_weak_anonymous_handle (void) const
+  {
+    return m_rep->make_weak_anonymous_handle ();
+  }
 
   dim_vector dims (void) const;
 
@@ -327,8 +363,6 @@ public:
 private:
 
   std::shared_ptr<octave::base_fcn_handle> m_rep;
-
-  octave_fcn_handle (octave::base_fcn_handle *rep);
 
   octave::base_fcn_handle * get_rep (void) const { return m_rep.get (); }
 

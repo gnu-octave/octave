@@ -266,6 +266,18 @@ err_invalid_index_type (const std::string& nm, char t)
   error ("%s cannot be indexed with %c", nm.c_str (), t);
 }
 
+void
+octave_class::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
+{
+  for (octave_idx_type j = 0; j < m_map.nfields (); j++)
+    {
+      Cell& c = m_map.contents (j);
+
+      for (octave_idx_type i = 0; i < c.numel (); i++)
+        c(i).break_closure_cycles (frame);
+    }
+}
+
 Cell
 octave_class::dotref (const octave_value_list& idx)
 {

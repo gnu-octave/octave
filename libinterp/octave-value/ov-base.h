@@ -32,6 +32,7 @@
 
 #include <iosfwd>
 #include <list>
+#include <memory>
 #include <string>
 
 #include "Range.h"
@@ -44,6 +45,7 @@
 
 namespace octave
 {
+  class stack_frame;
   class type_info;
 
   // FIXME: This is not ideal, but it avoids including
@@ -271,6 +273,8 @@ public:
   // instance (see octave_class).
   virtual octave_base_value *
   unique_clone (void) { return clone (); }
+
+  virtual void break_closure_cycles (const std::shared_ptr<octave::stack_frame>&) { }
 
   virtual type_conv_info
   numeric_conversion_function (void) const

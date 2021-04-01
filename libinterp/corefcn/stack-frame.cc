@@ -412,10 +412,13 @@ namespace octave
                           size_t index,
                           const std::shared_ptr<stack_frame>& parent_link,
                           const std::shared_ptr<stack_frame>& static_link,
-                          const local_vars_map& local_vars)
+                          const local_vars_map& local_vars,
+                          const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ())
       : base_value_stack_frame (tw, get_num_symbols (fcn), index,
                                 parent_link, static_link,
-                                get_access_link (fcn, static_link)),
+                                (access_link
+                                 ? access_link
+                                 : get_access_link (fcn, static_link))),
         m_fcn (fcn), m_unwind_protect_frame (nullptr)
     {
       // Initialize local variable values.
@@ -476,6 +479,8 @@ namespace octave
     void display (bool follow = true) const;
 
     void accept (stack_frame_walker& sfw);
+
+    void break_closure_cycles (const std::shared_ptr<stack_frame>& frame);
 
   private:
 
@@ -1061,9 +1066,10 @@ namespace octave
                                      octave_user_function *fcn, size_t index,
                                      const std::shared_ptr<stack_frame>& parent_link,
                                      const std::shared_ptr<stack_frame>& static_link,
-                                     const local_vars_map& local_vars)
+                                     const local_vars_map& local_vars,
+                                     const std::shared_ptr<stack_frame>& access_link)
   {
-    return new user_fcn_stack_frame (tw, fcn, index, parent_link, static_link, local_vars);
+    return new user_fcn_stack_frame (tw, fcn, index, parent_link, static_link, local_vars, access_link);
   }
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
@@ -2350,6 +2356,15 @@ namespace octave
   void user_fcn_stack_frame::accept (stack_frame_walker& sfw)
   {
     sfw.visit_user_fcn_stack_frame (*this);
+  }
+
+  void user_fcn_stack_frame::break_closure_cycles (const std::shared_ptr<stack_frame>& frame)
+  {
+    for (auto& val : m_values)
+      val.break_closure_cycles (frame);
+
+    if (m_access_link)
+      m_access_link->break_closure_cycles (frame);
   }
 
   symbol_record scope_stack_frame::insert_symbol (const std::string& name)

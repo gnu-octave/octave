@@ -33,6 +33,7 @@
 #include <iosfwd>
 #include <string>
 #include <list>
+#include <memory>
 #include <map>
 
 #include "Range.h"
@@ -46,6 +47,7 @@
 
 namespace octave
 {
+  class stack_frame;
   class type_info;
 }
 
@@ -387,6 +389,12 @@ public:
         rep = r;
       }
   }
+
+  // Convert any nested function handles in this object to use weak
+  // references to their enclosing stack frame context.  Used to break
+  // shared_ptr reference cycles for handles to nested functions
+  // (closures).
+  void break_closure_cycles (const std::shared_ptr<octave::stack_frame>&);
 
   // Simple assignment.
 

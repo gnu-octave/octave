@@ -411,7 +411,8 @@ namespace octave
                            const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
 
     void push_stack_frame (octave_user_function *fcn,
-                           const stack_frame::local_vars_map& local_vars);
+                           const stack_frame::local_vars_map& local_vars,
+                           const std::shared_ptr<stack_frame>& closure_frames = std::shared_ptr<stack_frame> ());
 
     void push_stack_frame (octave_user_script *script);
 

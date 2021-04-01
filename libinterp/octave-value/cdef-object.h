@@ -120,6 +120,11 @@ namespace octave
       err_invalid_object ("get_property");
     }
 
+    virtual void break_closure_cycles (const std::shared_ptr<octave::stack_frame>&)
+    {
+      err_invalid_object ("break_closure_cycles");
+    }
+
     virtual octave_value_list
     subsref (const std::string&, const std::list<octave_value_list>&,
              int, size_t&, const cdef_class&, bool)
@@ -274,6 +279,11 @@ namespace octave
     get_property (octave_idx_type idx, const std::string& pname) const
     {
       return rep->get_property (idx, pname);
+    }
+
+    void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
+    {
+      rep->break_closure_cycles (frame);
     }
 
     octave_value_list
@@ -455,6 +465,8 @@ namespace octave
     ~cdef_object_scalar (void) = default;
 
     dim_vector dims (void) const { return dim_vector (1, 1); }
+
+    void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
 
     void put (const std::string& pname, const octave_value& val)
     {

@@ -88,6 +88,8 @@ public:
     return new octave_class (octave_map (m_map.keys ()), c_name, m_parent_list);
   }
 
+  void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
+
   OCTINTERP_API Cell dotref (const octave_value_list& idx);
 
   OCTINTERP_API Matrix size (void);

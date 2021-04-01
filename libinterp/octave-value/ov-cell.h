@@ -69,6 +69,8 @@ public:
   octave_base_value * clone (void) const { return new octave_cell (*this); }
   octave_base_value * empty_clone (void) const { return new octave_cell (); }
 
+  void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
+
 #if 0
   octave_base_value * try_narrowing_conversion (void);
 #endif

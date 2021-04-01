@@ -143,7 +143,8 @@ namespace octave
                  const std::shared_ptr<stack_frame>& parent_link,
                  const std::shared_ptr<stack_frame>& static_link,
                  const std::shared_ptr<stack_frame>& access_link)
-      : m_evaluator (tw), m_line (-1), m_column (-1), m_index (index),
+      : m_evaluator (tw), m_is_closure_context (false),
+        m_line (-1), m_column (-1), m_index (index),
         m_parent_link (parent_link), m_static_link (static_link),
         m_access_link (access_link), m_dispatch_class ()
     { }
@@ -172,7 +173,8 @@ namespace octave
     create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
             const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link,
-            const local_vars_map& local_vars);
+            const local_vars_map& local_vars,
+            const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ());
 
     // Scope.
     static stack_frame *
@@ -550,12 +552,21 @@ namespace octave
 
     virtual void accept (stack_frame_walker& sfw) = 0;
 
+    virtual void break_closure_cycles (const std::shared_ptr<stack_frame>&) { }
+
+    void mark_closure_context (void) { m_is_closure_context = true; }
+    bool is_closure_context (void) const { return m_is_closure_context; }
+
   protected:
 
     // Reference to the call stack that contains this frame.  Global
     // variables are stored in the call stack.  This link gives us
     // immediate access to them.
     tree_evaluator& m_evaluator;
+
+    // TRUE if this stack frame is saved with a handle to a nested
+    // function (closure).
+    bool m_is_closure_context;
 
     // The line and column of the source file where this stack frame
     // was created.  Used to print stack traces.

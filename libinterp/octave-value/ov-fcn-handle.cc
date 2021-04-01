@@ -312,36 +312,28 @@ namespace octave
     std::list<std::string> m_parentage;
   };
 
-  class nested_fcn_handle : public base_fcn_handle
+  class base_nested_fcn_handle : public base_fcn_handle
   {
   public:
 
     // FIXME: octaveroot is temporary information used when loading
     // handles.  Can we avoid using it in the constructor?
 
-    nested_fcn_handle (const std::string& name = "",
-                       const std::string& file = "",
-                       const std::string& /*octaveroot*/ = "")
+    base_nested_fcn_handle (const std::string& name = "",
+                            const std::string& file = "",
+                            const std::string& /*octaveroot*/ = "")
       : base_fcn_handle (name, file)
     { }
 
-    nested_fcn_handle (const octave_value& fcn, const std::string& name,
-                       const std::shared_ptr<stack_frame>& closure_frames);
-
-    nested_fcn_handle (const nested_fcn_handle&) = default;
-
-    ~nested_fcn_handle (void) = default;
-
-    nested_fcn_handle * clone (void) const
-    {
-      return new nested_fcn_handle (*this);
-    }
+    base_nested_fcn_handle (const octave_value& fcn, const std::string& name)
+      : base_fcn_handle (name), m_fcn (fcn)
+    { }
 
     std::string type (void) const { return "nested"; }
 
-    bool is_nested (void) const { return true; }
+    using base_fcn_handle::is_nested;
 
-    octave_value_list call (int nargout, const octave_value_list& args);
+    bool is_nested (void) const { return true; }
 
     // FIXME: These must go away.  They don't do the right thing for
     // scoping or overloads.
@@ -357,7 +349,7 @@ namespace octave
 
     octave_value fcn_val (void) { return m_fcn; }
 
-    octave_value workspace (void) const;
+    virtual octave_value workspace (void) const = 0;
 
     // Should be const.
     octave_scalar_map info (void);
@@ -378,16 +370,98 @@ namespace octave
     void print_raw (std::ostream&, bool pr_as_read_syntax,
                     int current_print_indent_level) const;
 
-    friend bool is_equal_to (const nested_fcn_handle& fh1,
-                             const nested_fcn_handle& fh2);
-
   protected:
 
     // The function we are handling.
     octave_value m_fcn;
+  };
+
+  class nested_fcn_handle : public base_nested_fcn_handle
+  {
+  public:
+
+    // FIXME: octaveroot is temporary information used when loading
+    // handles.  Can we avoid using it in the constructor?
+
+    nested_fcn_handle (const std::string& name = "",
+                       const std::string& file = "",
+                       const std::string& octaveroot = "")
+      : base_nested_fcn_handle (name, file, octaveroot)
+    { }
+
+    nested_fcn_handle (const octave_value& fcn, const std::string& name,
+                       const std::shared_ptr<stack_frame>& stack_context)
+      : base_nested_fcn_handle (fcn, name), m_stack_context (stack_context)
+    {
+      m_stack_context->mark_closure_context ();
+    }
+
+    nested_fcn_handle (const nested_fcn_handle&) = default;
+
+    ~nested_fcn_handle (void) = default;
+
+    using base_nested_fcn_handle::is_nested;
+
+    bool is_nested (const std::shared_ptr<stack_frame>& frame) const
+    {
+      return frame == m_stack_context;
+    }
+
+    nested_fcn_handle * clone (void) const
+    {
+      return new nested_fcn_handle (*this);
+    }
+
+    octave_value make_weak_nested_handle (void) const;
+
+    octave_value_list call (int nargout, const octave_value_list& args);
+
+    octave_value workspace (void) const;
+
+    friend bool is_equal_to (const nested_fcn_handle& fh1,
+                             const nested_fcn_handle& fh2);
+
+    std::shared_ptr<stack_frame> stack_context (void) const
+    {
+      return m_stack_context;
+    }
+
+  protected:
 
     // Pointer to closure stack frames.
-    std::shared_ptr<stack_frame> m_closure_frames;
+    std::shared_ptr<stack_frame> m_stack_context;
+  };
+
+  class weak_nested_fcn_handle : public base_nested_fcn_handle
+  {
+  public:
+
+    weak_nested_fcn_handle (const nested_fcn_handle& nfh)
+      : base_nested_fcn_handle (nfh), m_stack_context (nfh.stack_context ())
+    { }
+
+    weak_nested_fcn_handle (const weak_nested_fcn_handle&) = default;
+
+    ~weak_nested_fcn_handle (void) = default;
+
+    weak_nested_fcn_handle * clone (void) const
+    {
+      return new weak_nested_fcn_handle (*this);
+    }
+
+    bool is_weak_nested (void) const { return true; }
+
+    octave_value_list call (int nargout, const octave_value_list& args);
+
+    octave_value workspace (void) const;
+
+    friend bool is_equal_to (const weak_nested_fcn_handle& fh1,
+                             const weak_nested_fcn_handle& fh2);
+
+  protected:
+
+    // Pointer to closure stack frames.
+    std::weak_ptr<stack_frame> m_stack_context;
   };
 
   class class_simple_fcn_handle : public base_fcn_handle
@@ -501,7 +575,7 @@ namespace octave
     std::string m_dispatch_class;
   };
 
-  class anonymous_fcn_handle : public base_fcn_handle
+  class base_anonymous_fcn_handle : public base_fcn_handle
   {
   public:
 
@@ -512,27 +586,22 @@ namespace octave
     // tag in the binary file format.  See also the save_binary and
     // load_binary functions.
 
-    anonymous_fcn_handle (const std::string& name = "")
+    base_anonymous_fcn_handle (const std::string& name = "")
       : base_fcn_handle (name)
     { }
 
-    anonymous_fcn_handle (const octave_value& fcn,
-                          const stack_frame::local_vars_map& local_vars);
+    base_anonymous_fcn_handle (const octave_value& fcn,
+                               const stack_frame::local_vars_map& local_vars)
+      : base_fcn_handle (anonymous), m_fcn (fcn), m_local_vars (local_vars)
+    { }
 
-    anonymous_fcn_handle (const anonymous_fcn_handle&) = default;
+    base_anonymous_fcn_handle (const base_anonymous_fcn_handle&) = default;
 
-    ~anonymous_fcn_handle (void) = default;
-
-    anonymous_fcn_handle * clone (void) const
-    {
-      return new anonymous_fcn_handle (*this);
-    }
+    ~base_anonymous_fcn_handle (void) = default;
 
     std::string type (void) const { return "anonymous"; }
 
     bool is_anonymous (void) const { return true; }
-
-    octave_value_list call (int nargout, const octave_value_list& args);
 
     // FIXME: These must go away.  They don't do the right thing for
     // scoping or overloads.
@@ -548,7 +617,7 @@ namespace octave
 
     octave_value fcn_val (void) { return m_fcn; }
 
-    octave_value workspace (void) const;
+    virtual octave_value workspace (void) const = 0;
 
     // Should be const.
     octave_scalar_map info (void);
@@ -574,9 +643,6 @@ namespace octave
 
     bool parse (const std::string& fcn_text);
 
-    friend bool is_equal_to (const anonymous_fcn_handle& fh1,
-                             const anonymous_fcn_handle& fh2);
-
   protected:
 
     // The function we are handling.
@@ -586,7 +652,87 @@ namespace octave
     stack_frame::local_vars_map m_local_vars;
   };
 
-  const std::string anonymous_fcn_handle::anonymous ("@<anonymous>");
+  class anonymous_fcn_handle : public base_anonymous_fcn_handle
+  {
+  public:
+
+    using base_anonymous_fcn_handle::anonymous;
+
+    // Setting NAME here is a bit of a kluge to cope with a bad choice
+    // made to append the number of local variables to the @<anonymous>
+    // tag in the binary file format.  See also the save_binary and
+    // load_binary functions.
+
+    anonymous_fcn_handle (const std::string& name = "")
+      : base_anonymous_fcn_handle (name), m_stack_context ()
+    { }
+
+    anonymous_fcn_handle (const octave_value& fcn,
+                          const stack_frame::local_vars_map& local_vars,
+                          const std::shared_ptr<stack_frame>& stack_context = std::shared_ptr<stack_frame> ());
+
+    anonymous_fcn_handle (const anonymous_fcn_handle&) = default;
+
+    ~anonymous_fcn_handle (void) = default;
+
+    anonymous_fcn_handle * clone (void) const
+    {
+      return new anonymous_fcn_handle (*this);
+    }
+
+    octave_value make_weak_anonymous_handle (void) const;
+
+    octave_value_list call (int nargout, const octave_value_list& args);
+
+    octave_value workspace (void) const;
+
+    friend bool is_equal_to (const anonymous_fcn_handle& fh1,
+                             const anonymous_fcn_handle& fh2);
+
+    std::shared_ptr<stack_frame> stack_context (void) const
+    {
+      return m_stack_context;
+    }
+
+  protected:
+
+    // Pointer to closure stack frames.
+    std::shared_ptr<stack_frame> m_stack_context;
+  };
+
+  class weak_anonymous_fcn_handle : public base_anonymous_fcn_handle
+  {
+  public:
+
+    using base_anonymous_fcn_handle::anonymous;
+
+    weak_anonymous_fcn_handle (const anonymous_fcn_handle& afh)
+      : base_anonymous_fcn_handle (afh), m_stack_context (afh.stack_context ())
+    { }
+
+    weak_anonymous_fcn_handle (const weak_anonymous_fcn_handle&) = default;
+
+    ~weak_anonymous_fcn_handle (void) = default;
+
+    weak_anonymous_fcn_handle * clone (void) const
+    {
+      return new weak_anonymous_fcn_handle (*this);
+    }
+
+    bool is_weak_anonymous (void) const { return true; }
+
+    octave_value_list call (int nargout, const octave_value_list& args);
+
+    octave_value workspace (void) const;
+
+    friend bool is_equal_to (const weak_anonymous_fcn_handle& fh1,
+                             const weak_anonymous_fcn_handle& fh2);
+
+  protected:
+
+    // Pointer to closure stack frames.
+    std::weak_ptr<stack_frame> m_stack_context;
+  };
 
   extern bool is_equal_to (const anonymous_fcn_handle& fh1,
                            const anonymous_fcn_handle& fh2);
@@ -595,6 +741,20 @@ namespace octave
   {
     error ("invalid function handle, unable to find function for @%s",
            name.c_str ());
+  }
+
+  octave_value base_fcn_handle::make_weak_nested_handle (void) const
+  {
+    std::string type_str = type ();
+    error ("invalid conversion from %s handle to weak nestead handle",
+           type_str.c_str ());
+  }
+
+  octave_value base_fcn_handle::make_weak_anonymous_handle (void) const
+  {
+    std::string type_str = type ();
+    error ("invalid conversion from %s handle to weak anonymous handle",
+           type_str.c_str ());
   }
 
   octave_value_list
@@ -1500,32 +1660,7 @@ namespace octave
       }
   }
 
-  nested_fcn_handle::nested_fcn_handle (const octave_value& fcn,
-                                        const std::string& name,
-                                        const std::shared_ptr<stack_frame>& closure_frames)
-    : base_fcn_handle (name), m_fcn (fcn), m_closure_frames (closure_frames)
-  { }
-
-  octave_value_list
-  nested_fcn_handle::call (int nargout, const octave_value_list& args)
-  {
-    tree_evaluator& tw = __get_evaluator__ ("nested_fcn_handle::call");
-
-    octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
-
-    tw.push_stack_frame (oct_usr_fcn, m_closure_frames);
-
-    unwind_action act ([&tw] () { tw.pop_stack_frame (); });
-
-    return oct_usr_fcn->execute (tw, nargout, args);
-  }
-
-  octave_value nested_fcn_handle::workspace (void) const
-  {
-    return m_closure_frames->workspace ();
-  }
-
-  octave_scalar_map nested_fcn_handle::info (void)
+  octave_scalar_map base_nested_fcn_handle::info (void)
   {
     octave_scalar_map m;
 
@@ -1546,7 +1681,7 @@ namespace octave
   // Is it an error if that fails?  Or should this job always be
   // deferred until the handle is used?
 
-  bool nested_fcn_handle::save_ascii (std::ostream& os)
+  bool base_nested_fcn_handle::save_ascii (std::ostream& os)
   {
     unimplemented ("save", "text");
 
@@ -1555,7 +1690,7 @@ namespace octave
     return true;
   }
 
-  bool nested_fcn_handle::load_ascii (std::istream& is)
+  bool base_nested_fcn_handle::load_ascii (std::istream& is)
   {
     unimplemented ("load", "text");
 
@@ -1564,7 +1699,8 @@ namespace octave
     return true;
   }
 
-  bool nested_fcn_handle::save_binary (std::ostream& os, bool save_as_floats)
+  bool base_nested_fcn_handle::save_binary (std::ostream& os,
+                                            bool save_as_floats)
   {
     unimplemented ("save", "binary");
 
@@ -1574,8 +1710,8 @@ namespace octave
     return true;
   }
 
-  bool nested_fcn_handle::load_binary (std::istream& is, bool swap,
-                                       mach_info::float_format fmt)
+  bool base_nested_fcn_handle::load_binary (std::istream& is, bool swap,
+                                            mach_info::float_format fmt)
   {
     unimplemented ("load", "binary");
 
@@ -1586,8 +1722,8 @@ namespace octave
     return true;
   }
 
-  bool nested_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                     bool)
+  bool base_nested_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
+                                          const char *name, bool)
   {
 #if defined (HAVE_HDF5)
 
@@ -1610,9 +1746,9 @@ namespace octave
 #endif
   }
 
-  bool nested_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
-                                     octave_hdf5_id& space_hid,
-                                     octave_hdf5_id& type_hid)
+  bool base_nested_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
+                                          octave_hdf5_id& space_hid,
+                                          octave_hdf5_id& type_hid)
   {
 #if defined (HAVE_HDF5)
 
@@ -1635,15 +1771,73 @@ namespace octave
 #endif
   }
 
-  void nested_fcn_handle::print_raw (std::ostream& os,
-                                     bool pr_as_read_syntax,
-                                     int current_print_indent_level) const
+  void base_nested_fcn_handle::print_raw (std::ostream& os,
+                                          bool pr_as_read_syntax,
+                                          int current_print_indent_level) const
   {
     octave_print_internal (os, '@' + m_name, pr_as_read_syntax,
                            current_print_indent_level);
   }
 
+  octave_value nested_fcn_handle::make_weak_nested_handle (void) const
+  {
+    return octave_value (new octave_fcn_handle
+                         (new weak_nested_fcn_handle (*this)));
+  }
+
+  octave_value_list
+  nested_fcn_handle::call (int nargout, const octave_value_list& args)
+  {
+    tree_evaluator& tw = __get_evaluator__ ("nested_fcn_handle::call");
+
+    octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
+
+    tw.push_stack_frame (oct_usr_fcn, m_stack_context);
+
+    unwind_action act ([&tw] () { tw.pop_stack_frame (); });
+
+    return oct_usr_fcn->execute (tw, nargout, args);
+  }
+
+  octave_value nested_fcn_handle::workspace (void) const
+  {
+    return m_stack_context->workspace ();
+  }
+
   bool is_equal_to (const nested_fcn_handle& fh1, const nested_fcn_handle& fh2)
+  {
+    if (fh1.m_name == fh2.m_name
+        && fh1.m_fcn.is_defined () && fh2.m_fcn.is_defined ())
+      return fh1.m_fcn.is_copy_of (fh2.m_fcn);
+    else
+      return false;
+  }
+
+  octave_value_list
+  weak_nested_fcn_handle::call (int nargout, const octave_value_list& args)
+  {
+    tree_evaluator& tw = __get_evaluator__ ("weak_nested_fcn_handle::call");
+
+    octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
+
+    std::shared_ptr<stack_frame> frames = m_stack_context.lock ();
+
+    tw.push_stack_frame (oct_usr_fcn, frames);
+
+    unwind_action act ([&tw] () { tw.pop_stack_frame (); });
+
+    return oct_usr_fcn->execute (tw, nargout, args);
+  }
+
+  octave_value weak_nested_fcn_handle::workspace (void) const
+  {
+    std::shared_ptr<stack_frame> frames = m_stack_context.lock ();
+
+    return frames ? frames->workspace () : octave_value ();
+  }
+
+  bool is_equal_to (const weak_nested_fcn_handle& fh1,
+                    const weak_nested_fcn_handle& fh2)
   {
     if (fh1.m_name == fh2.m_name
         && fh1.m_fcn.is_defined () && fh2.m_fcn.is_defined ())
@@ -1830,36 +2024,9 @@ namespace octave
       return false;
   }
 
-  anonymous_fcn_handle::anonymous_fcn_handle (const octave_value& fcn,
-                                              const stack_frame::local_vars_map& local_vars)
-    : base_fcn_handle (anonymous), m_fcn (fcn), m_local_vars (local_vars)
-  { }
+  const std::string base_anonymous_fcn_handle::anonymous ("@<anonymous>");
 
-  octave_value_list
-  anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
-  {
-    tree_evaluator& tw = __get_evaluator__ ("anonymous_fcn_handle::call");
-
-    octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
-
-    tw.push_stack_frame (oct_usr_fcn, m_local_vars);
-
-    unwind_action act ([&tw] () { tw.pop_stack_frame (); });
-
-    return oct_usr_fcn->execute (tw, nargout, args);
-  }
-
-  octave_value anonymous_fcn_handle::workspace (void) const
-  {
-    octave_scalar_map ws;
-
-    for (const auto& nm_val : m_local_vars)
-      ws.assign (nm_val.first, nm_val.second);
-
-    return ws;
-  }
-
-  octave_scalar_map anonymous_fcn_handle::info (void)
+  octave_scalar_map base_anonymous_fcn_handle::info (void)
   {
     octave_scalar_map m;
 
@@ -1869,13 +2036,13 @@ namespace octave
 
     m.setfield ("type", type ());
     m.setfield ("file", "");
-    m.setfield ("workspace", Cell (workspace ()));
+    m.setfield ("workspace", workspace ());
     m.setfield ("within_file_path", "");
 
     return m;
   }
 
-  bool anonymous_fcn_handle::save_ascii (std::ostream& os)
+  bool base_anonymous_fcn_handle::save_ascii (std::ostream& os)
   {
     // FIXME: can we ensure that m_fcn is always defined?
 
@@ -1903,7 +2070,7 @@ namespace octave
     return true;
   }
 
-  bool anonymous_fcn_handle::load_ascii (std::istream& is)
+  bool base_anonymous_fcn_handle::load_ascii (std::istream& is)
   {
     skip_preceeding_newline (is);
 
@@ -1923,7 +2090,7 @@ namespace octave
     // defines the anonymous function.
 
     interpreter& interp
-      = __get_interpreter__ ("anonymous_fcn_handle::load_ascii");
+      = __get_interpreter__ ("base_anonymous_fcn_handle::load_ascii");
 
     tree_evaluator& tw = interp.get_evaluator ();
 
@@ -1962,7 +2129,8 @@ namespace octave
     return false;
   }
 
-  bool anonymous_fcn_handle::save_binary (std::ostream& os, bool save_as_floats)
+  bool base_anonymous_fcn_handle::save_binary (std::ostream& os,
+                                               bool save_as_floats)
   {
     // FIXME: can we ensure that m_fcn is always defined?
 
@@ -2002,8 +2170,8 @@ namespace octave
     return true;
   }
 
-  bool anonymous_fcn_handle::load_binary (std::istream& is, bool swap,
-                                          mach_info::float_format fmt)
+  bool base_anonymous_fcn_handle::load_binary (std::istream& is, bool swap,
+                                               mach_info::float_format fmt)
   {
     // Read extra characters in m_name as the number of local variable
     // values in this anonymous function.
@@ -2039,7 +2207,7 @@ namespace octave
     // defines the anonymous function.
 
     interpreter& interp
-      = __get_interpreter__ ("anonymous_fcn_handle::load_binary");
+      = __get_interpreter__ ("base_anonymous_fcn_handle::load_binary");
 
     tree_evaluator& tw = interp.get_evaluator ();
 
@@ -2070,8 +2238,9 @@ namespace octave
     return false;
   }
 
-  bool anonymous_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
-                                        const char *name, bool save_as_floats)
+  bool base_anonymous_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
+                                             const char *name,
+                                             bool save_as_floats)
   {
 #if defined (HAVE_HDF5)
 
@@ -2235,9 +2404,9 @@ namespace octave
 #endif
   }
 
-  bool anonymous_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
-                                        octave_hdf5_id& space_hid,
-                                        octave_hdf5_id& type_hid)
+  bool base_anonymous_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
+                                             octave_hdf5_id& space_hid,
+                                             octave_hdf5_id& type_hid)
   {
 #if defined (HAVE_HDF5)
 
@@ -2353,7 +2522,7 @@ namespace octave
     // defines the anonymous function.
 
     interpreter& interp
-      = __get_interpreter__ ("anonymous_fcn_handle::load_hdf5");
+      = __get_interpreter__ ("base_anonymous_fcn_handle::load_hdf5");
 
     tree_evaluator& tw = interp.get_evaluator ();
 
@@ -2402,7 +2571,7 @@ namespace octave
 #endif
   }
 
-  void anonymous_fcn_handle::print_raw (std::ostream& os, bool, int) const
+  void base_anonymous_fcn_handle::print_raw (std::ostream& os, bool, int) const
   {
     tree_print_code tpc (os);
 
@@ -2443,8 +2612,7 @@ namespace octave
     tpc.print_fcn_handle_body (e);
   }
 
-  bool
-  anonymous_fcn_handle::parse (const std::string& fcn_text)
+  bool base_anonymous_fcn_handle::parse (const std::string& fcn_text)
   {
     // FIXME: If evaluation of the string gives us an anonymous function
     // handle object, then why extract the function and create a new
@@ -2452,7 +2620,8 @@ namespace octave
     // values to the object returned by eval_string?  This code is also is
     // duplicated in read_mat5_binary_element in ls-mat5.cc.
 
-    interpreter& interp = __get_interpreter__ ("anonymous_fcn_handle::parse");
+    interpreter& interp
+      = __get_interpreter__ ("base_anonymous_fcn_handle::parse");
 
     // Set up temporary scope to use for evaluating the text that defines
     // the anonymous function so that we don't pick up values of random
@@ -2490,10 +2659,125 @@ namespace octave
     return true;
   }
 
+  anonymous_fcn_handle::anonymous_fcn_handle (const octave_value& fcn,
+                                              const stack_frame::local_vars_map& local_vars,
+                                              const std::shared_ptr<stack_frame>& stack_context)
+    : base_anonymous_fcn_handle (fcn, local_vars),
+      m_stack_context (stack_context)
+  { }
+
+  octave_value anonymous_fcn_handle::make_weak_anonymous_handle (void) const
+  {
+    return octave_value (new octave_fcn_handle
+                         (new weak_anonymous_fcn_handle (*this)));
+  }
+
+  octave_value_list
+  anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
+  {
+    tree_evaluator& tw = __get_evaluator__ ("anonymous_fcn_handle::call");
+
+    octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
+
+    tw.push_stack_frame (oct_usr_fcn, m_local_vars, m_stack_context);
+
+    unwind_action act ([&tw] () { tw.pop_stack_frame (); });
+
+    return oct_usr_fcn->execute (tw, nargout, args);
+  }
+
+  octave_value anonymous_fcn_handle::workspace (void) const
+  {
+    octave_scalar_map local_vars_map;
+
+    for (const auto& nm_val : m_local_vars)
+      local_vars_map.assign (nm_val.first, nm_val.second);
+
+    // FIXME: it would be more convenient if stack_frame::workspace
+    // returned a Cell object directly instead of a Cell in an
+    // octave_value object.
+
+    Cell cell_frames;
+
+    if (m_stack_context)
+      {
+        octave_value ov_frames = m_stack_context->workspace ();
+        cell_frames = ov_frames.cell_value ();
+      }
+
+    octave_idx_type num_frames = cell_frames.numel ();
+    // FIXME: It seems there should be a simple way to concatenate cells...
+    Cell retval = Cell (num_frames+1, 1);
+    retval(0) = m_local_vars;
+    for (octave_idx_type i = 0; i < num_frames; i++)
+      retval(i+1) = cell_frames(i);
+
+    return retval;
+  }
+
   bool is_equal_to (const anonymous_fcn_handle& fh1,
                     const anonymous_fcn_handle& fh2)
   {
     if (fh1.m_fcn.is_defined () && fh2.m_fcn.is_defined ())
+      return fh1.m_fcn.is_copy_of (fh2.m_fcn);
+    else
+      return false;
+  }
+
+  octave_value_list
+  weak_anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
+  {
+    tree_evaluator& tw = __get_evaluator__ ("anonymous_fcn_handle::call");
+
+    octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
+
+    std::shared_ptr<stack_frame> frames = m_stack_context.lock ();
+
+    tw.push_stack_frame (oct_usr_fcn, m_local_vars, frames);
+
+    unwind_action act ([&tw] () { tw.pop_stack_frame (); });
+
+    return oct_usr_fcn->execute (tw, nargout, args);
+  }
+
+  octave_value weak_anonymous_fcn_handle::workspace (void) const
+  {
+    octave_scalar_map local_vars_map;
+
+    for (const auto& nm_val : m_local_vars)
+      local_vars_map.assign (nm_val.first, nm_val.second);
+
+    // FIXME: it would be more convenient if stack_frame::workspace
+    // returned a Cell object directly instead of a Cell in an
+    // octave_value object.
+
+    std::shared_ptr<stack_frame> frames = m_stack_context.lock ();
+
+    Cell cell_frames;
+
+    if (frames)
+      {
+        octave_value ov_frames = frames->workspace ();
+        cell_frames = ov_frames.cell_value ();
+      }
+
+    octave_idx_type num_frames = cell_frames.numel ();
+
+    // FIXME: It seems there should be a simple way to concatenate
+    // cells...
+    Cell retval = Cell (num_frames+1, 1);
+    retval(0) = m_local_vars;
+    for (octave_idx_type i = 0; i < num_frames; i++)
+      retval(i+1) = cell_frames(i);
+
+    return retval;
+  }
+
+  bool is_equal_to (const weak_anonymous_fcn_handle& fh1,
+                    const weak_anonymous_fcn_handle& fh2)
+  {
+    if (fh1.m_name == fh2.m_name
+        && fh1.m_fcn.is_defined () && fh2.m_fcn.is_defined ())
       return fh1.m_fcn.is_copy_of (fh2.m_fcn);
     else
       return false;
@@ -2547,15 +2831,16 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& fcn,
 
 octave_fcn_handle::octave_fcn_handle (const octave_value& fcn,
                                       const std::string& name,
-                                      const std::shared_ptr<octave::stack_frame>& closure_frames)
+                                      const std::shared_ptr<octave::stack_frame>& stack_context)
   : octave_base_value (),
-    m_rep (new octave::nested_fcn_handle (fcn, name, closure_frames))
+    m_rep (new octave::nested_fcn_handle (fcn, name, stack_context))
 { }
 
 octave_fcn_handle::octave_fcn_handle (const octave_value& fcn,
-                                      const octave::stack_frame::local_vars_map& local_vars)
+                                      const octave::stack_frame::local_vars_map& local_vars,
+                                      const std::shared_ptr<octave::stack_frame>& stack_context)
   : octave_base_value (),
-    m_rep (new octave::anonymous_fcn_handle (fcn, local_vars))
+    m_rep (new octave::anonymous_fcn_handle (fcn, local_vars, stack_context))
 { }
 
 octave_fcn_handle::octave_fcn_handle (octave::base_fcn_handle *rep)

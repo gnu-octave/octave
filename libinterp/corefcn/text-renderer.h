@@ -59,8 +59,6 @@ namespace octave
 
     bool ok (void) const;
 
-    bool latex_ok (void) const;
-
     Matrix get_extent (text_element *elt, double rotation = 0.0);
 
     Matrix get_extent (const std::string& txt, double rotation = 0.0,

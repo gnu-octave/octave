@@ -63,7 +63,8 @@ namespace octave
     latex_renderer (void)
       : m_fontsize (10.0), m_fontname ("cmr"), m_tmp_dir (),
         m_color (dim_vector (1, 3), 0), m_latex_binary ("latex"),
-        m_dvipng_binary ("dvipng"), m_dvisvg_binary ("dvisvgm"), m_debug (false)
+        m_dvipng_binary ("dvipng"), m_dvisvg_binary ("dvisvgm"),
+        m_debug (false), m_testing (true)
       {
         std::string bin = sys::env::getenv ("OCTAVE_LATEX_BINARY");
         if (! bin.empty ())
@@ -141,8 +142,7 @@ namespace octave
 
     octave_map get_system_fonts (void) { return octave_map (); }
 
-    /* method that checks if all required programs are installed */
-    bool is_usable (void);
+    bool ok (void);
 
   private:
 
@@ -155,6 +155,9 @@ namespace octave
               + std::to_string (m_color(1)) + ":"
               + std::to_string (m_color(2)));
     }
+
+    void warn_helper (std::string caller, std::string txt,std::string cmd,
+                      process_execution_result result);
 
     uint8NDArray render (const std::string& txt, int halign = 0);
 
@@ -171,14 +174,17 @@ namespace octave
     std::string m_dvipng_binary;
     std::string m_dvisvg_binary;
     bool m_debug;
+    bool m_testing;
 
   };
 
   bool
-  latex_renderer::is_usable (void)
+  latex_renderer::ok (void)
   {
+    // Only run the test once in a session
     static bool tested = false;
-    static bool ok = false;
+
+    static bool isok = false;
 
     if (! tested)
       {
@@ -188,10 +194,12 @@ namespace octave
         uint8NDArray pixels = render ("?");
 
         if (! pixels.isempty ())
-          ok = true;
+          isok = true;
       }
 
-    return ok;
+    m_testing = false;
+
+    return isok;
   }
 
   std::string
@@ -317,10 +325,13 @@ namespace octave
   }
 
   void
-  warn_helper (std::string caller, std::string txt, std::string cmd,
-               process_execution_result result, bool debug)
+  latex_renderer::warn_helper (std::string caller, std::string txt,
+                               std::string cmd, process_execution_result result)
   {
-    if (! debug)
+    if (m_testing && ! m_debug)
+      return;
+
+    if (! m_debug)
       warning_with_id ("Octave:LaTeX:internal-error",
                        "latex_renderer: unable to compile \"%s\"",
                        txt.c_str ());
@@ -368,12 +379,17 @@ namespace octave
 
     if (result.exit_status () != 0)
       {
-        warn_helper ("latex", txt, cmd, result, m_debug);
+        warn_helper ("latex", txt, cmd, result);
 
-        write_tex_file ("?", halign);
+        if (txt != "?")
+          {
+            write_tex_file ("?", halign);
 
-        result = run_command_and_return_output (cmd);
-        if (result.exit_status () != 0)
+            result = run_command_and_return_output (cmd);
+            if (result.exit_status () != 0)
+              return data;
+          }
+        else
           return data;
       }
 
@@ -397,7 +413,7 @@ namespace octave
 
     if (result.exit_status () != 0)
       {
-        warn_helper ("dvisvg", txt, cmd, result, m_debug);
+        warn_helper ("dvisvg", txt, cmd, result);
         return data;
       }
 
@@ -423,7 +439,7 @@ namespace octave
 
     if (result.exit_status () != 0)
       {
-        warn_helper ("dvipng", txt, cmd, result, m_debug);
+        warn_helper ("dvipng", txt, cmd, result);
         return data;
       }
 
@@ -451,7 +467,7 @@ namespace octave
     if (txt.empty ())
       return;
 
-    if (is_usable ())
+    if (ok ())
       pixels = render (txt, halign);
     else
       pixels = uint8NDArray (dim_vector (4, 1, 1), static_cast<uint8_t> (0));
@@ -478,24 +494,7 @@ namespace octave
   base_text_renderer*
   make_latex_text_renderer (void)
   {
-    static bool latex_tested = false;
-    static bool latex_ok = true;
-
-    if (! latex_ok)
-      return nullptr;
-
     latex_renderer *renderer = new latex_renderer ();
-
-    if (! latex_tested)
-      {
-        latex_tested = true;
-        latex_ok = renderer->is_usable ();
-        if (! latex_ok)
-          {
-            delete renderer;
-            renderer = nullptr;
-          }
-      }
 
     return renderer;
   }

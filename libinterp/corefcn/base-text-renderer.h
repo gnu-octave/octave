@@ -77,6 +77,9 @@ namespace octave
     set_font (const std::string& name, const std::string& weight,
               const std::string& angle, double size) = 0;
 
+    virtual bool
+    ok (void) { return true; };
+
     virtual octave_map
     get_system_fonts (void) = 0;
 

@@ -32,7 +32,6 @@
 #include "errwarn.h"
 #include "ft-text-renderer.h"
 #include "latex-text-renderer.h"
-#include "oct-env.h"
 #include "text-renderer.h"
 
 namespace octave
@@ -66,22 +65,6 @@ namespace octave
     return rep != nullptr;
   }
 
-  bool
-  text_renderer::latex_ok (void) const
-  {
-    static bool warned = false;
-
-    if (! sys::env::getenv ("OCTAVE_LATEX_DEBUG_FLAG").empty ()
-        && ! latex_rep && ! warned)
-      {
-        warning_with_id ("Octave:LaTeX:internal-error",
-                         "latex_renderer: unusable latex tool-chain");
-        warned = true;
-      }
-
-    return latex_rep != nullptr;
-  }
-
   Matrix
   text_renderer::get_extent (text_element *elt, double rotation)
   {
@@ -96,7 +79,7 @@ namespace octave
   {
     static Matrix retval (1, 4, 0.0);
 
-    if (interpreter == "latex" && latex_ok ())
+    if (interpreter == "latex" && latex_rep->ok ())
       retval = latex_rep->get_extent (txt, rotation, interpreter);
     else if (ok ())
       retval = rep->get_extent (txt, rotation, interpreter);
@@ -109,9 +92,6 @@ namespace octave
   {
     if (ok ())
       rep->set_anti_aliasing (val);
-
-    if (latex_ok ())
-      latex_rep->set_anti_aliasing (val);
   }
 
   octave_map
@@ -130,20 +110,20 @@ namespace octave
                            const std::string& angle, double size)
   {
     if (ok ())
-      rep->set_font (name, weight, angle, size);
-
-    if (latex_ok ())
-      latex_rep->set_font (name, weight, angle, size);
+      {
+        rep->set_font (name, weight, angle, size);
+        latex_rep->set_font (name, weight, angle, size);
+      }
   }
 
   void
   text_renderer::set_color (const Matrix& c)
   {
     if (ok ())
-      rep->set_color (c);
-
-    if (latex_ok ())
-      latex_rep->set_color (c);
+      {
+        rep->set_color (c);
+        latex_rep->set_color (c);
+      }
   }
 
   void
@@ -156,7 +136,7 @@ namespace octave
     static Matrix empty_bbox (1, 4, 0.0);
     static uint8NDArray empty_pxls;
 
-    if (interpreter == "latex" && latex_ok ())
+    if (interpreter == "latex" && latex_rep->ok ())
       latex_rep->text_to_pixels (txt, pxls, bbox, halign, valign, rotation,
                                  interpreter, handle_rotation);
     else if (ok ())
@@ -179,7 +159,7 @@ namespace octave
     static Matrix empty_bbox (1, 4, 0.0);
     static std::list<text_renderer::string> empty_lst;
 
-    if (interpreter == "latex" && latex_ok ())
+    if (interpreter == "latex" && latex_rep->ok ())
       latex_rep->text_to_strlist (txt, lst, bbox, halign, valign, rotation,
                                   interpreter);
     else if (ok ())

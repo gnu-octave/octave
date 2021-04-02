@@ -241,17 +241,16 @@ QTerminal::notice_settings (const gui_settings *settings)
   bool cursorUseForegroundColor
     = settings->value (cs_cursor_use_fgcol).toBool ();
 
-  setForegroundColor
-    (settings->value (cs_colors[0].key, cs_colors[0].def).value<QColor> ());
+  int mode = settings->value (cs_color_mode).toInt ();
 
-  setBackgroundColor
-    (settings->value (cs_colors[1].key, cs_colors[1].def).value<QColor> ());
+  setForegroundColor (settings->color_value (cs_colors[0], mode));
 
-  setSelectionColor
-    (settings->value (cs_colors[2].key, cs_colors[2].def).value<QColor> ());
+  setBackgroundColor (settings->color_value (cs_colors[1], mode));
+
+  setSelectionColor (settings->color_value (cs_colors[2], mode));
 
   setCursorColor (cursorUseForegroundColor,
-     settings->value (cs_colors[3].key, cs_colors[3].def).value<QColor> ());
+                  settings->color_value (cs_colors[3], mode));
 
   setScrollBufferSize (settings->value (cs_hist_buffer).toInt ());
 

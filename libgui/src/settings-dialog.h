@@ -67,6 +67,9 @@ namespace octave
     void set_disabled_pref_file_browser_dir (bool disable);
     void proxy_items_update (void);
 
+    // slots updating colors depending on theme
+    void update_terminal_colors (int cb_dark);
+
     // slots for dialog's buttons
     void button_clicked (QAbstractButton *button);
 

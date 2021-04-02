@@ -68,12 +68,56 @@ namespace octave
       return value (pref.key, pref.def);
     }
 
+    /*!
+      Reading a color from the gui_settings taking possible color modes
+      into account. The default value for a second color mode @p mode=1 is
+      deterimined from the standard default value @p mode=0 by inverting
+      the lightness
+        \f{eqnarray*}{
+           H_1 &=& H_0\\
+           S_1 &=& S_0\\
+           L_1 &=& 1.0 - L_0
+        \f}
+
+      @param pref gui preference (key string, default value); the default
+                  value can be given by QColor or QPalette::ColorRole
+      @param mode Color mode (currently 0 or 1, default is 0)
+
+      @return Color as QColor
+    */
+    QColor color_value (const gui_pref& pref, int mode = 0) const;
+
+    /*!
+      Writing a color to the gui_settings taking possible color modes
+      into account. When @p mode is not zero (standard mode), the
+      extension related to the mode is appended to the settings key string
+
+      @param pref gui preference where the color should be written
+      @param color QColor to write to the settings
+      @param mode Color mode (currently 0 or 1, default is 0)
+
+    */
+    void set_color_value (const gui_pref& pref, const QColor& color,
+                          int mode = 0);
+
     QString sc_value (const sc_pref& pref) const;
 
     QKeySequence sc_def_value (const sc_pref& pref) const;
 
   };
+
 }
+
+// Some strings used several times in the settings
+
+// Other color schemes (currently one extra, but possibly more in the future)
+const QString settings_color_modes = QT_TRANSLATE_NOOP (
+    "octave::settings_dialog",
+    "Second color mode (light/dark)\n(discards non-applied current changes)");
+const QString settings_color_modes_tooltip = QT_TRANSLATE_NOOP (
+    "octave::settings_dialog",
+    "Switches to another set of colors. Useful for defining a dark/light mode");
+const QStringList settings_color_modes_ext (QStringList () << "" << "_2");
 
 #endif
 

@@ -388,6 +388,8 @@ namespace octave
           }
       }
 
+    read_terminal_colors (settings);
+
     // file browser
     connect (sync_octave_directory, SIGNAL (toggled (bool)),
              this, SLOT (set_disabled_pref_file_browser_dir (bool)));
@@ -432,9 +434,6 @@ namespace octave
 
     // Workspace
     read_workspace_colors (settings);
-
-    // terminal colors
-    read_terminal_colors (settings);
 
     // variable editor
     varedit_columnWidth->setValue (settings->value (ve_column_width).toInt ());
@@ -997,15 +996,13 @@ namespace octave
     settings->setValue (ed_rm_trailing_spaces.key, editor_remove_trailing_spaces->isChecked ());
     settings->setValue (ed_show_dbg_file.key, editor_show_dbg_file->isChecked ());
 
-    settings->setValue (cs_font_size.key, terminal_fontSize->value ());
-    settings->setValue (cs_font.key, terminal_fontName->currentFont ().family ());
-
     // file browser
     settings->setValue (fb_sync_octdir.key, sync_octave_directory->isChecked ());
     settings->setValue (fb_restore_last_dir.key, cb_restore_file_browser_dir->isChecked ());
     settings->setValue (fb_startup_dir.key, le_file_browser_dir->text ());
     settings->setValue (fb_txt_file_ext.key, le_file_browser_extensions->text ());
 
+    // network
     settings->setValue (nr_allow_connection.key, checkbox_allow_web_connect->isChecked ());
     settings->setValue (global_use_proxy.key, use_proxy_server->isChecked ());
     settings->setValue (global_proxy_type.key, proxy_type->currentText ());
@@ -1013,10 +1010,15 @@ namespace octave
     settings->setValue (global_proxy_port.key, proxy_port->text ());
     settings->setValue (global_proxy_user.key, proxy_username->text ());
     settings->setValue (global_proxy_pass.key, proxy_password->text ());
+
+    // command window
+    settings->setValue (cs_font_size.key, terminal_fontSize->value ());
+    settings->setValue (cs_font.key, terminal_fontName->currentFont ().family ());
     settings->setValue (cs_cursor_use_fgcol.key, terminal_cursorUseForegroundColor->isChecked ());
     settings->setValue (cs_focus_cmd.key, terminal_focus_command->isChecked ());
     settings->setValue (cs_dbg_location.key, terminal_print_dbg_location->isChecked ());
     settings->setValue (cs_hist_buffer.key, terminal_history_buffer->value ());
+    write_terminal_colors (settings);
 
     // the cursor
     QString cursor_type;
@@ -1078,9 +1080,6 @@ namespace octave
 
     // Workspace
     write_workspace_colors (settings);
-
-    // Terminal
-    write_terminal_colors (settings);
 
     // Variable editor
     settings->setValue (ve_column_width.key, varedit_columnWidth->value ());
@@ -1183,42 +1182,84 @@ namespace octave
     QVector<QLabel*> description (cs_colors_count);
     QVector<color_picker*> color (cs_colors_count);
 
-    int column = 0;
+    int mode = 0;
+    if (settings->value (cs_color_mode).toBool ())
+      mode = 1;
+
+    QCheckBox *cb_color_mode = new QCheckBox (settings_color_modes);
+    cb_color_mode->setToolTip (settings_color_modes_tooltip);
+    cb_color_mode->setChecked (mode == 1);
+    cb_color_mode->setObjectName (cs_color_mode.key);
+    style_grid->addWidget (cb_color_mode, 0, 0);
+
+    int column = 1;               // column 0 is for the color mode checkbox
+    const int color_columns = 2;  // place colors in so many columns
     int row = 0;
     for (unsigned int i = 0; i < cs_colors_count; i++)
       {
         description[i] = new QLabel ("    "
             + tr (cs_color_names.at (i).toStdString ().data ()));
         description[i]->setAlignment (Qt::AlignRight);
-        QVariant default_var = cs_colors[i].def;
-        QColor setting_color = settings->value (cs_colors[i].key, cs_colors[i].def).value<QColor> ();
+        QColor setting_color = settings->color_value (cs_colors[i], mode);
         color[i] = new color_picker (setting_color);
         color[i]->setObjectName (cs_colors[i].key);
         color[i]->setMinimumSize (30, 10);
         style_grid->addWidget (description[i], row, 2*column);
         style_grid->addWidget (color[i], row, 2*column+1);
-        if (++column == 2)
+        if (++column > color_columns)
           {
             style_grid->setColumnStretch (3*column, 10);
             row++;
-            column = 0;
+            column = 1;
           }
       }
 
     // place grid with elements into the tab
     terminal_colors_box->setLayout (style_grid);
+
+    // update colors depending on second theme selection
+    connect (cb_color_mode, SIGNAL (stateChanged (int)),
+             this, SLOT (update_terminal_colors (int)));
+  }
+
+  void settings_dialog::update_terminal_colors (int mode)
+  {
+    int m = mode;
+    if (m > 1)
+      m = 1; // Currently one more color mode
+
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    color_picker *c_picker;
+
+    for (unsigned int i = 0; i < cs_colors_count; i++)
+      {
+        c_picker = terminal_colors_box->findChild <color_picker *> (cs_colors[i].key);
+        if (c_picker)
+          c_picker->set_color (settings->color_value (cs_colors[i], m));
+      }
   }
 
   void settings_dialog::write_terminal_colors (gui_settings *settings)
   {
+    QCheckBox *cb_color_mode
+      = terminal_colors_box->findChild <QCheckBox *> (cs_color_mode.key);
+
+    int mode = 0;
+    if (cb_color_mode->isChecked ())
+      mode = 1;
+
     color_picker *color;
 
     for (int i = 0; i < cs_color_names.size (); i++)
       {
         color = terminal_colors_box->findChild <color_picker *> (cs_colors[i].key);
         if (color)
-          settings->setValue (cs_colors[i].key, color->color ());
+          settings->set_color_value (cs_colors[i], color->color (), mode);
       }
+
+    settings->setValue (cs_color_mode.key, mode);
 
     settings->sync ();
   }

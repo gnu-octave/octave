@@ -27,6 +27,7 @@
 #define octave_gui_preferences_cs_h 1
 
 #include "gui-preferences.h"
+#include "gui-settings.h"
 
 // Console preferences
 
@@ -55,13 +56,20 @@ cs_cursor_use_fgcol ("terminal/cursorUseForegroundColor", QVariant (true));
 const gui_pref
 cs_hist_buffer ("terminal/history_buffer", QVariant (1000));
 
+const gui_pref
+cs_color_mode ("terminal/color_mode", QVariant (0));
+
 const unsigned int cs_colors_count = 4;
-const gui_pref cs_colors[cs_colors_count] =
+const gui_pref cs_colors[2*cs_colors_count] =
 {
-  {"terminal/color_f", QVariant (QColor(0,0,0))},
-  {"terminal/color_b", QVariant (QColor(255,255,255))},
-  {"terminal/color_s", QVariant (QColor(192,192,192))},
-  {"terminal/color_c", QVariant (QColor(128,128,128))}
+  {"terminal/color_f" + settings_color_modes_ext[0], QVariant (QPalette::WindowText)},
+  {"terminal/color_b" + settings_color_modes_ext[0], QVariant (QPalette::Base)},
+  {"terminal/color_s" + settings_color_modes_ext[0], QVariant (QPalette::Highlight)},
+  {"terminal/color_c" + settings_color_modes_ext[0], QVariant (QPalette::QPalette::WindowText)},
+  {"terminal/color_f" + settings_color_modes_ext[1], QVariant ()}, // Default colors for 2nd mode empty,
+  {"terminal/color_b" + settings_color_modes_ext[1], QVariant ()}, // since they are determined at runtime
+  {"terminal/color_s" + settings_color_modes_ext[1], QVariant ()}, // by inverting the lightness of the
+  {"terminal/color_c" + settings_color_modes_ext[1], QVariant ()}  // default colors in light mode
 };
 const QStringList
 cs_color_names (QStringList ()

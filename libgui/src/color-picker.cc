@@ -57,6 +57,13 @@ namespace octave
       }
   }
 
+  // Set the color of the button
+  void color_picker::set_color (QColor new_color)
+  {
+    m_color = new_color;
+    update_button ();
+  }
+
   // Draw the button with the actual color (using a stylesheet)
   void color_picker::update_button (void)
   {

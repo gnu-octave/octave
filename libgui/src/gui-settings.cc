@@ -27,12 +27,53 @@
 #  include "config.h"
 #endif
 
+#include <QApplication>
 #include <QSettings>
 
 #include "gui-settings.h"
 
 namespace octave
 {
+
+  QColor gui_settings::color_value (const gui_pref& pref, int mode) const
+  {
+    QColor default_color;
+
+    // Determine whether the default value in pref is given as
+    // QPalette::ColorRole or as QColor
+    if (pref.def.canConvert (QMetaType::QColor))
+      default_color = pref.def.value<QColor> ();
+    else
+      {
+        // The default colors are given as color roles for
+        // the application's palette
+        default_color = QApplication::palette ().color
+                        (static_cast<QPalette::ColorRole> (pref.def.toInt ()));
+                  // FIXME: use value<QPalette::ColorRole> instead of static cast after
+                  //        dropping support of Qt 5.4
+      }
+
+    if (mode == 1)
+      {
+        // In second mode, determine the default color from the first mode
+        qreal h, s, l, a;
+        default_color.getHslF (&h, &s, &l, &a);
+        default_color.setHslF (h, s, 1.0-l, a);
+      }
+
+    return value (pref.key + settings_color_modes_ext.at (mode),
+                  QVariant (default_color)).value<QColor> ();
+  }
+
+  void gui_settings::set_color_value (const gui_pref& pref,
+                                      const QColor& color, int mode)
+  {
+    int m = mode;
+    if (m > 1)
+      m = 1;
+
+    setValue (pref.key + settings_color_modes_ext.at (m), QVariant (color));
+  }
 
   QString gui_settings::sc_value (const sc_pref& pref) const
   {

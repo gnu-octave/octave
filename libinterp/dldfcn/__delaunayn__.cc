@@ -65,17 +65,17 @@
 
 #  include "oct-qhull.h"
 
-#  if defined (NEED_QHULL_VERSION)
+#  if defined (NEED_QHULL_R_VERSION)
 char qh_version[] = "__delaunayn__.oct 2007-08-21";
 #  endif
 
 static void
-free_qhull_memory ()
+free_qhull_memory (qhT *qh)
 {
-  qh_freeqhull (! qh_ALL);
+  qh_freeqhull (qh, ! qh_ALL);
 
   int curlong, totlong;
-  qh_memfreeshort (&curlong, &totlong);
+  qh_memfreeshort (qh, &curlong, &totlong);
 
   if (curlong || totlong)
     warning ("__delaunayn__: did not free %d bytes of long memory (%d pieces)",
@@ -155,10 +155,7 @@ Undocumented internal function.
       double *pt_array = p.fortran_vec ();
       boolT ismalloc = false;
 
-      // Qhull flags argument is not const char*
-      OCTAVE_LOCAL_BUFFER (char, flags, 9 + options.length ());
-
-      sprintf (flags, "qhull d %s", options.c_str ());
+      std::string cmd = "qhull d " + options;
 
       // Set the outfile pointer to stdout for status information.
       FILE *outfile = nullptr;
@@ -176,16 +173,19 @@ Undocumented internal function.
 
       octave::unwind_action close_errfile ([=] () { std::fclose (errfile); });
 
-      int exitcode = qh_new_qhull (dim, n, pt_array,
-                                   ismalloc, flags, outfile, errfile);
+      qhT context = { };
+      qhT *qh = &context;
 
-      octave::unwind_action free_memory ([] () { free_qhull_memory (); });
+      int exitcode = qh_new_qhull (qh, dim, n, pt_array, ismalloc, &cmd[0],
+                                   outfile, errfile);
+
+      octave::unwind_action free_memory ([qh] () { free_qhull_memory (qh); });
 
       if (exitcode)
         error ("__delaunayn__: qhull failed");
 
       // triangulate non-simplicial facets
-      qh_triangulate ();
+      qh_triangulate (qh);
 
       facetT *facet;
       vertexT *vertex, **vertexp;
@@ -212,7 +212,7 @@ Undocumented internal function.
 
               FOREACHvertex_ (facet->vertices)
                 {
-                  simpl(i, j++) = 1 + qh_pointid(vertex->point);
+                  simpl(i, j++) = 1 + qh_pointid(qh, vertex->point);
                 }
               i++;
             }

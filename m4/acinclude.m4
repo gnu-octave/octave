@@ -1436,38 +1436,24 @@ dnl
 dnl Check whether Qhull works (does not crash).
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
-  AC_CACHE_CHECK([whether the qhull library works],
-    [octave_cv_lib_qhull_ok],
+  AC_CACHE_CHECK([whether the qhull_r library works],
+    [octave_cv_lib_qhull_r_ok],
     [AC_RUN_IFELSE([AC_LANG_PROGRAM([[
         #include <stdio.h>
-        #if defined (HAVE_LIBQHULL_LIBQHULL_H)
-        # include <libqhull/libqhull.h>
-        # include <libqhull/qset.h>
-        # include <libqhull/geom.h>
-        # include <libqhull/poly.h>
-        # include <libqhull/io.h>
-        #elif defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
-        # if defined (HAVE_QHULL_LIBQHULL_H)
-        #  include <qhull/libqhull.h>
-        # else
-        #  include <qhull/qhull.h>
-        # endif
-        # include <qhull/qset.h>
-        # include <qhull/geom.h>
-        # include <qhull/poly.h>
-        # include <qhull/io.h>
-        #elif defined (HAVE_LIBQHULL_H) || defined (HAVE_QHULL_H)
-        # if defined (HAVE_LIBQHULL_H)
-        #  include <libqhull.h>
-        # else
-        #  include <qhull.h>
-        # endif
-        # include <qset.h>
-        # include <geom.h>
-        # include <poly.h>
-        # include <io.h>
+        #if defined (HAVE_LIBQHULL_R_LIBQHULL_R_H)
+        # include <libqhull_r/libqhull_r.h>
+        # include <libqhull_r/qset_r.h>
+        # include <libqhull_r/geom_r.h>
+        # include <libqhull_r/poly_r.h>
+        # include <libqhull_r/io_r.h>
+        #elif defined (HAVE_LIBQHULL_R_H)
+        # include <libqhull_r.h>
+        # include <qset_r.h>
+        # include <geom_r.h>
+        # include <poly_r.h>
+        # include <io_r.h>
         #endif
-        #if defined (NEED_QHULL_VERSION)
+        #if defined (NEED_QHULL_R_VERSION)
           char *qh_version = "version";
         #endif
         ]], [[
@@ -1475,13 +1461,15 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
         int n = 4;
         coordT points[8] = { -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5 };
         boolT ismalloc = 0;
-        return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr);
+        qhT context;
+        qhT* qh = &context;
+        return qh_new_qhull (qh, dim, n, points, ismalloc, "qhull ", 0, stderr);
       ]])],
-      octave_cv_lib_qhull_ok=yes,
-      octave_cv_lib_qhull_ok=no,
-      octave_cv_lib_qhull_ok=yes)
+      octave_cv_lib_qhull_r_ok=yes,
+      octave_cv_lib_qhull_r_ok=no,
+      octave_cv_lib_qhull_r_ok=yes)
   ])
-  if test $octave_cv_lib_qhull_ok = yes; then
+  if test $octave_cv_lib_qhull_r_ok = yes; then
     $1
     :
   else
@@ -1578,44 +1566,30 @@ dnl
 dnl Check for the Qhull version.
 dnl
 AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION], [
-  AC_CACHE_CHECK([for qh_version in $QHULL_LIBS],
-    [octave_cv_lib_qhull_version],
+  AC_CACHE_CHECK([for qh_version in $QHULL_R_LIBS],
+    [octave_cv_lib_qhull_r_version],
     [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
         #include <stdio.h>
-        #if defined (HAVE_LIBQHULL_LIBQHULL_H)
-        # include <libqhull/libqhull.h>
-        # include <libqhull/qset.h>
-        # include <libqhull/geom.h>
-        # include <libqhull/poly.h>
-        # include <libqhull/io.h>
-        #elif defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
-        # if defined (HAVE_QHULL_LIBQHULL_H)
-        #  include <qhull/libqhull.h>
-        # else
-        #  include <qhull/qhull.h>
-        # endif
-        # include <qhull/qset.h>
-        # include <qhull/geom.h>
-        # include <qhull/poly.h>
-        # include <qhull/io.h>
-        #elif defined (HAVE_LIBQHULL_H) || defined (HAVE_QHULL_H)
-        # if defined (HAVE_LIBQHULL_H)
-        #  include <libqhull.h>
-        # else
-        #  include <qhull.h>
-        # endif
-        # include <qset.h>
-        # include <geom.h>
-        # include <poly.h>
-        # include <io.h>
+        #if defined (HAVE_LIBQHULL_R_LIBQHULL_R_H)
+        # include <libqhull_r/libqhull_r.h>
+        # include <libqhull_r/qset_r.h>
+        # include <libqhull_r/geom_r.h>
+        # include <libqhull_r/poly_r.h>
+        # include <libqhull_r/io_r.h>
+        #elif defined (HAVE_LIBQHULL_R_H)
+        # include <libqhull_r.h>
+        # include <qset_r.h>
+        # include <geom_r.h>
+        # include <poly_r.h>
+        # include <io_r.h>
         #endif
         ]], [[
         const char *tmp = qh_version;
       ]])],
-      octave_cv_lib_qhull_version=yes, octave_cv_lib_qhull_version=no)
+      octave_cv_lib_qhull_r_version=yes, octave_cv_lib_qhull_r_version=no)
   ])
-  if test $octave_cv_lib_qhull_version = no; then
-    AC_DEFINE(NEED_QHULL_VERSION, 1,
+  if test $octave_cv_lib_qhull_r_version = no; then
+    AC_DEFINE(NEED_QHULL_R_VERSION, 1,
       [Define to 1 if the Qhull library needs a qh_version variable defined.])
   fi
 ])

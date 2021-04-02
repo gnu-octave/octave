@@ -73,9 +73,9 @@ const int ws_colors_count = 3;
 
 const gui_pref ws_colors[ws_colors_count] =
 {
-  {"terminal/color_a", QVariant (QColor(190,255,255))},
-  {"terminal/color_g", QVariant (QColor(255,255,190))},
-  {"terminal/color_p", QVariant (QColor(255,190,255))}
+  {"workspaceview/color_a", QVariant (QColor(190,255,255))},
+  {"workspaceview/color_g", QVariant (QColor(255,255,190))},
+  {"workspaceview/color_p", QVariant (QColor(255,190,255))}
 };
 
 const QString ws_class_chars ("agp");

@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Disable global shortcuts in order to prevent interference with readline key strokes. Exceptions: Ctrl-C for interrupting the interpreter and the shortcuts for switching to other widgets.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string/>
      </property>
      <property name="currentIndex">
       <number>6</number>
@@ -55,7 +55,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1021</width>
+            <width>661</width>
             <height>616</height>
            </rect>
           </property>
@@ -865,8 +865,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1021</width>
-            <height>1494</height>
+            <width>765</width>
+            <height>1513</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -2217,8 +2217,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>569</height>
+            <width>595</width>
+            <height>410</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2367,8 +2367,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>569</height>
+            <width>259</width>
+            <height>67</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2429,8 +2429,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>569</height>
+            <width>581</width>
+            <height>233</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2619,7 +2619,7 @@
                <item row="0" column="0">
                 <widget class="QCheckBox" name="cb_prevent_readline_conflicts">
                  <property name="toolTip">
-                  <string>Select this option to prevent conflicts with readline shortcuts</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;html&amp;gt;&amp;lt;head/&amp;gt;&amp;lt;body&amp;gt;&amp;lt;p&amp;gt;Disable global shortcuts in order to prevent interference with readline key strokes. Exceptions: Ctrl-C for interrupting the interpreter and the shortcuts for switching to other widgets.&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
                   <string>Disable global shortcuts when Command Window has focus</string>
@@ -2807,8 +2807,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>569</height>
+            <width>703</width>
+            <height>310</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

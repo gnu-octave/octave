@@ -698,24 +698,14 @@ namespace octave
   FILE * popen (const char *command, const char *mode)
   {
 #if defined (__MINGW32__) || defined (_MSC_VER)
-    wchar_t *wcommand = u8_to_wchar (command);
-    wchar_t *wmode = u8_to_wchar (mode);
+    std::wstring wcommand = octave::sys::u8_to_wstring (command);
+    std::wstring wmode = octave::sys::u8_to_wstring (mode);
 
-    unwind_action free_memory ([=] ()
-                               {
-                                 ::free (wcommand);
-                                 ::free (wmode);
-                               });
+    // Use binary mode on Windows if unspecified
+    if (wmode.length () < 2)
+      wmode += L'b';
 
-    if (wmode && wmode[0] && ! wmode[1])
-      {
-        // Use binary mode on Windows if unspecified
-        wchar_t tmode[3] = {wmode[0], L'b', L'\0'};
-
-        return _wpopen (wcommand, tmode);
-      }
-    else
-      return _wpopen (wcommand, wmode);
+    return _wpopen (wcommand.c_str (), wmode.c_str ());
 #else
     return ::popen (command, mode);
 #endif

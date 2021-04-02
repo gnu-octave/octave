@@ -28,6 +28,8 @@
 #endif
 
 #include <cstdlib>
+#include <locale>
+#include <codecvt>
 
 #include "dir-ops.h"
 #include "file-ops.h"
@@ -35,7 +37,6 @@
 #include "lo-sysdep.h"
 #include "localcharset-wrapper.h"
 #include "putenv-wrapper.h"
-#include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
 #include "unsetenv-wrapper.h"
 
@@ -46,6 +47,7 @@
 #  include "filepos-wrappers.h"
 #  include "lo-hash.h"
 #  include "oct-locbuf.h"
+#  include "uniconv-wrappers.h"
 #  include "unwind-prot.h"
 #endif
 
@@ -425,33 +427,34 @@ namespace octave
     void
     putenv_wrapper (const std::string& name, const std::string& value)
     {
-      // This function was adapted from xputenv from Karl Berry's kpathsearch
-      // library.
-      // FIXME: make this do the right thing if we don't have a SMART_PUTENV.
+      std::string new_env = name + "=" + value;
 
-      int new_len = name.length () + value.length () + 2;
-
-      // FIXME: This leaks memory, but so would a call to setenv.
+      // FIXME: The malloc leaks memory, but so would a call to setenv.
       // Short of extreme measures to track memory, altering the environment
       // always leaks memory, but the saving grace is that the leaks are small.
-
-      char *new_item = static_cast<char *> (std::malloc (new_len));
-
-      if (new_item)
-        sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());
 
       // As far as I can see there's no way to distinguish between the
       // various errors; putenv doesn't have errno values.
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-      wchar_t *wnew_item = u8_to_wchar (new_item);
+      std::wstring new_wenv = u8_to_wstring (new_env);
 
-      // free new_item, but leak wnew_item (see above)
-      unwind_action free_new_item ([=] () { std::free (new_item); });
+      int len = (new_wenv.length () + 1) * sizeof (wchar_t);
 
-      if (_wputenv (wnew_item) < 0)
-        (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
+      wchar_t *new_item = static_cast<wchar_t *> (std::malloc (len));
+
+      wcscpy (new_item, new_wenv.c_str());
+
+      if (_wputenv (new_item) < 0)
+        (*current_liboctave_error_handler)
+          ("putenv (%s) failed", new_env.c_str());
 #else
+      int len = new_env.length () + 1;
+
+      char *new_item = static_cast<char *> (std::malloc (len));
+
+      std::strcpy (new_item, new_env.c_str());
+
       if (octave_putenv_wrapper (new_item) < 0)
         (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
 #endif
@@ -486,20 +489,21 @@ namespace octave
     std::wstring
     u8_to_wstring (const std::string& utf8_string)
     {
-      size_t srclen = utf8_string.length ();
-      const uint8_t *src = reinterpret_cast<const uint8_t *>
-                           (utf8_string.c_str ());
-
-      size_t length = 0;
-      wchar_t *wchar = reinterpret_cast<wchar_t *>
-                       (octave_u8_conv_to_encoding ("wchar_t", src, srclen,
-                                                    &length));
+      // convert multibyte UTF-8 string to wide character string
+      static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>
+        wchar_conv;
 
       std::wstring retval = L"";
-      if (wchar != nullptr)
+
+      try
         {
-          retval = std::wstring (wchar, length / sizeof (wchar_t));
-          free (static_cast<void *> (wchar));
+          retval = wchar_conv.from_bytes (utf8_string);
+        }
+      catch (const std::range_error& e)
+        {
+          // What to do in case of error?
+          // error ("u8_to_wstring: converting from UTF-8 to wchar_t: %s",
+          //        e.what ());
         }
 
       return retval;
@@ -508,19 +512,21 @@ namespace octave
     std::string
     u8_from_wstring (const std::wstring& wchar_string)
     {
-      size_t srclen = wchar_string.length () * sizeof (wchar_t);
-      const char *src = reinterpret_cast<const char *> (wchar_string.c_str ());
-
-      size_t length = 0;
-      char *mbchar = reinterpret_cast<char *>
-                     (octave_u8_conv_from_encoding ("wchar_t", src, srclen,
-                                                    &length));
+      // convert wide character string to multibyte UTF-8 string
+      static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>
+        wchar_conv;
 
       std::string retval = "";
-      if (mbchar != nullptr)
+
+      try
         {
-          retval = std::string (mbchar, length);
-          free (static_cast<void *> (mbchar));
+          retval = wchar_conv.to_bytes (wchar_string);
+        }
+      catch (const std::range_error& e)
+        {
+          // What to do in case of error?
+          // error ("u8_from_wstring: converting from wchar_t to UTF-8: %s",
+          //        e.what ());
         }
 
       return retval;

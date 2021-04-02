@@ -61,8 +61,6 @@ Free Software Foundation, Inc.
 #include "unistd-wrappers.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-#  include "uniconv-wrappers.h"
-
 #  include <windows.h>
 #  include <shlobj.h>
 #endif
@@ -254,18 +252,14 @@ namespace octave
       wchar_t path[MAX_PATH+1];
       if (SHGetFolderPathW (nullptr, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY,
                             nullptr, SHGFP_TYPE_CURRENT, path) == S_OK)
-        {
-          char *app_data = u8_from_wchar (path);
-          cfg_dir = app_data;
-          free (app_data);
-        }
+        cfg_dir = u8_from_wstring (path);
 #else
       cfg_dir = do_getenv ("XDG_CONFIG_HOME");
+#endif
 
       if (cfg_dir.empty ())
         cfg_dir = do_get_home_directory () + sys::file_ops::dir_sep_str ()
              + ".config";
-#endif
 
       return cfg_dir;
     }
@@ -279,18 +273,14 @@ namespace octave
       wchar_t path[MAX_PATH+1];
       if (SHGetFolderPathW (nullptr, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY,
                             nullptr, SHGFP_TYPE_CURRENT, path) == S_OK)
-        {
-          char *app_data = u8_from_wchar (path);
-          data_dir = app_data;
-          free (app_data);
-        }
+        data_dir = u8_from_wstring (path);
 #else
       data_dir = do_getenv ("XDG_DATA_HOME");
+#endif
 
       if (data_dir.empty ())
         data_dir = do_get_home_directory () + sys::file_ops::dir_sep_str ()
              + ".local" + sys::file_ops::dir_sep_str () + "share";
-#endif
 
       return data_dir;
   }

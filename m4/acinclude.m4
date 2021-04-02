@@ -639,6 +639,37 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QMAINWINDOW_RESIZEDOCKS], [
   fi
 ])
 dnl
+dnl Check whether the Qt class QPrinter has the setPageSize member function.
+dnl This member function was introduced in Qt 5.3.
+dnl
+dnl FIXME: remove this test when we drop support for Qt older than 5.3.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QPRINTER_SETPAGESIZE], [
+  AC_CACHE_CHECK([for QPrinter::setPageSize in <QPrinter>],
+    [octave_cv_func_qprinter_setpagesizes],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QPrinter>
+        ]], [[
+        QPrinter printer;
+        printer.setPageSize (QPageSize (QSizeF (8.5, 11.0), QPageSize::Inch));
+        ]])],
+      octave_cv_func_qprinter_setpagesize=yes,
+      octave_cv_func_qprinter_setpagesize=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qprinter_setpagesize = yes; then
+    AC_DEFINE(HAVE_QPRINTER_SETPAGESIZE, 1,
+      [Define to 1 if you have the 'QPrinter::setPageSize' member function.])
+  fi
+])
+dnl
 dnl Check whether the Qt class QScreen has the devicePixelRatio member function.
 dnl This member function was introduced in Qt 5.5.
 dnl
@@ -2136,6 +2167,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_NEW_QHELPINDEXWIDGET_API
     OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR
     OCTAVE_CHECK_FUNC_QMAINWINDOW_RESIZEDOCKS
+    OCTAVE_CHECK_FUNC_QPRINTER_SETPAGESIZE
     OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
     OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER
     OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA

@@ -23,6 +23,10 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
+
 #include <iostream>
 
 #include <QtCore>
@@ -52,7 +56,11 @@ public:
     m_printer.setFontEmbeddingEnabled (true);
     m_printer.setOutputFileName (fname);
     m_printer.setFullPage (true);
+#if defined (HAVE_QPRINTER_SETPAGESIZE)
+    m_printer.setPageSize (QPageSize (sz.size (), QPageSize::Point));
+#else
     m_printer.setPaperSize (sz.size (), QPrinter::DevicePixel);
+#endif
   }
 
   ~pdfpainter (void) { }

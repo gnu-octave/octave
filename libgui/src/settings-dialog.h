@@ -68,7 +68,8 @@ namespace octave
     void proxy_items_update (void);
 
     // slots updating colors depending on theme
-    void update_terminal_colors (int cb_dark);
+    void update_terminal_colors (int mode);
+    void update_workspace_colors (int mode);
 
     // slots for dialog's buttons
     void button_clicked (QAbstractButton *button);

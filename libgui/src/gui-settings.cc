@@ -58,7 +58,7 @@ namespace octave
         // In second mode, determine the default color from the first mode
         qreal h, s, l, a;
         default_color.getHslF (&h, &s, &l, &a);
-        default_color.setHslF (h, s, 1.0-l, a);
+        default_color.setHslF (h, s, 1.0-l*0.85, a);
       }
 
     return value (pref.key + settings_color_modes_ext.at (mode),

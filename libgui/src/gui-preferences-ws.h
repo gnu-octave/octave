@@ -27,6 +27,7 @@
 #define octave_gui_preferences_ws_h 1
 
 #include "gui-preferences.h"
+#include "gui-settings.h"
 
 // Workspace view
 
@@ -69,13 +70,18 @@ const QStringList ws_columns_shown_keys (QStringList ()
 const gui_pref
 ws_max_filter_history ("workspaceview/max_filter_history", QVariant (10));
 
-const int ws_colors_count = 3;
+const gui_pref
+ws_color_mode ("workspaceview/color_mode", QVariant (0));
 
-const gui_pref ws_colors[ws_colors_count] =
+const int ws_colors_count = 3;
+const gui_pref ws_colors[2*ws_colors_count] =
 {
-  {"workspaceview/color_a", QVariant (QColor(190,255,255))},
-  {"workspaceview/color_g", QVariant (QColor(255,255,190))},
-  {"workspaceview/color_p", QVariant (QColor(255,190,255))}
+  {"workspaceview/color_a" + settings_color_modes_ext[0], QVariant (QPalette::Button)},
+  {"workspaceview/color_g" + settings_color_modes_ext[0], QVariant (QPalette::Mid)},
+  {"workspaceview/color_p" + settings_color_modes_ext[0], QVariant (QPalette::Dark)},
+  {"workspaceview/color_a" + settings_color_modes_ext[1], QVariant ()},
+  {"workspaceview/color_g" + settings_color_modes_ext[1], QVariant ()},
+  {"workspaceview/color_p" + settings_color_modes_ext[1], QVariant ()}
 };
 
 const QString ws_class_chars ("agp");

@@ -1112,7 +1112,9 @@ namespace octave
     QVector<color_picker*> color (ws_colors_count);
 
     int column = 0;
+    const int color_columns = 3;  // place colors in so many columns
     int row = 0;
+    int mode = settings->value (ws_color_mode).toInt ();
 
     m_ws_enable_colors = new QCheckBox (tr ("Enable attribute colors"));
     style_grid->addWidget (m_ws_enable_colors, row++, column, 1, 4);
@@ -1124,40 +1126,73 @@ namespace octave
     m_ws_hide_tool_tips->setChecked
       (settings->value (ws_hide_tool_tips).toBool ());
 
+    QCheckBox *cb_color_mode = new QCheckBox (settings_color_modes);
+    cb_color_mode->setToolTip (settings_color_modes_tooltip);
+    cb_color_mode->setChecked (mode == 1);
+    cb_color_mode->setObjectName (ws_color_mode.key);
+    connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
+             cb_color_mode, SLOT (setEnabled (bool)));
+    style_grid->addWidget (cb_color_mode, row, column++);
+
+    bool colors_enabled = settings->value (ws_enable_colors).toBool ();
+
     for (int i = 0; i < ws_colors_count; i++)
       {
         description[i] = new QLabel ("    "
           + tr (ws_color_names.at (i).toStdString ().data ()));
         description[i]->setAlignment (Qt::AlignRight);
+        description[i]->setEnabled (colors_enabled);
         connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
                  description[i], SLOT(setEnabled (bool)));
 
-        QColor setting_color = settings->value (ws_colors[i].key,
-                                                ws_colors[i].def).value<QColor> ();
+        QColor setting_color = settings->color_value (ws_colors[i], mode);
         color[i] = new color_picker (setting_color);
         color[i]->setObjectName (ws_colors[i].key);
         color[i]->setMinimumSize (30, 10);
+        color[i]->setEnabled (colors_enabled);
         connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
                  color[i], SLOT(setEnabled (bool)));
 
         style_grid->addWidget (description[i], row, 3*column);
         style_grid->addWidget (color[i], row, 3*column+1);
-        if (++column == 3)
+        if (++column > color_columns)
           {
             style_grid->setColumnStretch (4*column, 10);
             row++;
-            column = 0;
+            column = 1;
           }
       }
 
     // Load enable settings at the end for having signals already connected
-    bool colors_enabled =
-      settings->value (ws_enable_colors).toBool ();
     m_ws_enable_colors->setChecked (colors_enabled);
     m_ws_hide_tool_tips->setEnabled (colors_enabled);
+    cb_color_mode->setEnabled (colors_enabled);
 
     // place grid with elements into the tab
     workspace_colors_box->setLayout (style_grid);
+
+    // update colors depending on second theme selection
+    connect (cb_color_mode, SIGNAL (stateChanged (int)),
+             this, SLOT (update_workspace_colors (int)));
+  }
+
+  void settings_dialog::update_workspace_colors (int mode)
+  {
+    int m = mode;
+    if (m > 1)
+      m = 1; // Currently one more color mode
+
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    color_picker *c_picker;
+
+    for (unsigned int i = 0; i < ws_colors_count; i++)
+      {
+        c_picker = workspace_colors_box->findChild <color_picker *> (ws_colors[i].key);
+        if (c_picker)
+          c_picker->set_color (settings->color_value (ws_colors[i], m));
+      }
   }
 
   void settings_dialog::write_workspace_colors (gui_settings *settings)
@@ -1165,14 +1200,24 @@ namespace octave
     settings->setValue (ws_enable_colors.key, m_ws_enable_colors->isChecked ());
     settings->setValue (ws_hide_tool_tips.key, m_ws_hide_tool_tips->isChecked ());
 
+    QCheckBox *cb_color_mode
+      = workspace_colors_box->findChild <QCheckBox *> (ws_color_mode.key);
+
+    int mode = 0;
+    if (cb_color_mode && cb_color_mode->isChecked ())
+      mode = 1;
+
     color_picker *color;
 
     for (int i = 0; i < ws_colors_count; i++)
       {
         color = workspace_colors_box->findChild <color_picker *> (ws_colors[i].key);
         if (color)
-          settings->setValue (ws_colors[i].key, color->color ());
+          settings->set_color_value (ws_colors[i], color->color (), mode);
       }
+
+    settings->setValue (ws_color_mode.key, mode);
+
     settings->sync ();
   }
 
@@ -1182,9 +1227,7 @@ namespace octave
     QVector<QLabel*> description (cs_colors_count);
     QVector<color_picker*> color (cs_colors_count);
 
-    int mode = 0;
-    if (settings->value (cs_color_mode).toBool ())
-      mode = 1;
+    int mode = settings->value (cs_color_mode).toInt ();
 
     QCheckBox *cb_color_mode = new QCheckBox (settings_color_modes);
     cb_color_mode->setToolTip (settings_color_modes_tooltip);
@@ -1247,7 +1290,7 @@ namespace octave
       = terminal_colors_box->findChild <QCheckBox *> (cs_color_mode.key);
 
     int mode = 0;
-    if (cb_color_mode->isChecked ())
+    if (cb_color_mode && cb_color_mode->isChecked ())
       mode = 1;
 
     color_picker *color;

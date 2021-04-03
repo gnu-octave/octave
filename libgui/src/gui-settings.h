@@ -113,10 +113,12 @@ namespace octave
 // Other color schemes (currently one extra, but possibly more in the future)
 const QString settings_color_modes = QT_TRANSLATE_NOOP (
     "octave::settings_dialog",
-    "Second color mode (light/dark)\n(discards non-applied current changes)");
+    "Second color mode (light/dark)");
 const QString settings_color_modes_tooltip = QT_TRANSLATE_NOOP (
     "octave::settings_dialog",
-    "Switches to another set of colors. Useful for defining a dark/light mode");
+    "Switches to another set of colors.\n"
+    "Useful for defining a dark/light mode.\n"
+    "Discards non-applied current changes!");
 const QStringList settings_color_modes_ext (QStringList () << "" << "_2");
 
 #endif

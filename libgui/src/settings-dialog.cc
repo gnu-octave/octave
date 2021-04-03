@@ -1313,7 +1313,16 @@ namespace octave
     QVector<QLabel*> description (ve_colors_count);
     QVector<color_picker*> color (ve_colors_count);
 
-    int column = 0;
+    int mode = settings->value (ve_color_mode).toInt ();
+
+    QCheckBox *cb_color_mode = new QCheckBox (settings_color_modes);
+    cb_color_mode->setToolTip (settings_color_modes_tooltip);
+    cb_color_mode->setChecked (mode == 1);
+    cb_color_mode->setObjectName (ve_color_mode.key);
+    style_grid->addWidget (cb_color_mode, 0, 0);
+
+    int column = 1;
+    int color_columns = 2;
     int row = 0;
     for (int i = 0; i < ve_colors_count; i++)
       {
@@ -1321,43 +1330,66 @@ namespace octave
             + tr (ve_color_names.at (i).toStdString ().data ()));
         description[i]->setAlignment (Qt::AlignRight);
 
-        // The default colors are given as color roles for
-        // the application's palette
-        QColor default_color = qApp->palette ().color
-                              (static_cast<QPalette::ColorRole> (ve_colors[i].def.toInt ()));
-                  // FIXME: use value<QPalette::ColorRole> instead of static cast after
-                  //        dropping support of Qt 5.4
-
-        QColor setting_color =
-            settings->value (ve_colors[i].key, default_color).value<QColor> ();
-
+        QColor setting_color = settings->color_value (ve_colors[i], mode);
         color[i] = new color_picker (setting_color);
         color[i]->setObjectName (ve_colors[i].key);
         color[i]->setMinimumSize (30, 10);
         style_grid->addWidget (description[i], row, 2*column);
         style_grid->addWidget (color[i], row, 2*column+1);
-        if (++column == 2)
+        if (++column > color_columns)
           {
             style_grid->setColumnStretch (3*column, 10);
             row++;
-            column = 0;
+            column = 1;
           }
       }
 
     // place grid with elements into the tab
     varedit_colors_box->setLayout (style_grid);
+
+    // update colors depending on second theme selection
+    connect (cb_color_mode, SIGNAL (stateChanged (int)),
+             this, SLOT (update_varedit_colors (int)));
+  }
+
+  void settings_dialog::update_varedit_colors (int mode)
+  {
+    int m = mode;
+    if (m > 1)
+      m = 1; // Currently one more color mode
+
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    color_picker *c_picker;
+
+    for (unsigned int i = 0; i < ve_colors_count; i++)
+      {
+        c_picker = varedit_colors_box->findChild <color_picker *> (ve_colors[i].key);
+        if (c_picker)
+          c_picker->set_color (settings->color_value (ve_colors[i], m));
+      }
   }
 
   void settings_dialog::write_varedit_colors (gui_settings *settings)
   {
+    QCheckBox *cb_color_mode
+      = varedit_colors_box->findChild <QCheckBox *> (ve_color_mode.key);
+
+    int mode = 0;
+    if (cb_color_mode && cb_color_mode->isChecked ())
+      mode = 1;
+
     color_picker *color;
 
     for (int i = 0; i < ve_colors_count; i++)
       {
         color = varedit_colors_box->findChild <color_picker *> (ve_colors[i].key);
         if (color)
-          settings->setValue (ve_colors[i].key, color->color ());
+          settings->set_color_value (ve_colors[i], color->color (), mode);
       }
+
+    settings->setValue (ve_color_mode.key, mode);
 
     settings->sync ();
   }

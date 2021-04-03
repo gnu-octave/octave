@@ -50,17 +50,24 @@ ve_row_height ("variable_editor/row_height", QVariant (10));
 const gui_pref
 ve_alternate_rows ("variable_editor/alternate_rows", QVariant (false));
 
-const int ve_colors_count = 5;
+const gui_pref
+ve_color_mode ("variable_editor/color_mode", QVariant (0));
 
 const QString ve_color_chars ("fbsha");
 
-const gui_pref ve_colors[ve_colors_count] =
+const int ve_colors_count = 5;
+const gui_pref ve_colors[2*ve_colors_count] =
 {
-  {"variable_editor/color_f", QVariant (QPalette::WindowText)},
-  {"variable_editor/color_b", QVariant (QPalette::Base)},
-  {"variable_editor/color_s", QVariant (QPalette::HighlightedText)},
-  {"variable_editor/color_h", QVariant (QPalette::Highlight)},
-  {"variable_editor/color_a", QVariant (QPalette::AlternateBase)}
+  {"variable_editor/color_f" + settings_color_modes_ext[0], QVariant (QPalette::WindowText)},
+  {"variable_editor/color_b" + settings_color_modes_ext[0], QVariant (QPalette::Base)},
+  {"variable_editor/color_s" + settings_color_modes_ext[0], QVariant (QPalette::HighlightedText)},
+  {"variable_editor/color_h" + settings_color_modes_ext[0], QVariant (QPalette::Highlight)},
+  {"variable_editor/color_a" + settings_color_modes_ext[0], QVariant (QPalette::AlternateBase)},
+  {"variable_editor/color_f" + settings_color_modes_ext[1], QVariant ()},
+  {"variable_editor/color_b" + settings_color_modes_ext[1], QVariant ()},
+  {"variable_editor/color_s" + settings_color_modes_ext[1], QVariant ()},
+  {"variable_editor/color_h" + settings_color_modes_ext[1], QVariant ()},
+  {"variable_editor/color_a" + settings_color_modes_ext[1], QVariant ()}
 };
 
 const QStringList ve_color_names (QStringList ()

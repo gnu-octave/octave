@@ -1415,18 +1415,11 @@ namespace octave
 
     m_add_font_height = fm.height ();
 
+    int mode = settings->value (ve_color_mode).toInt ();
+
     for (int i = 0; i < ve_colors_count; i++)
       {
-        // The default colors are given as color roles for
-        // the application's palette
-        QColor default_color = qApp->palette ().color
-                               (static_cast<QPalette::ColorRole> (ve_colors[i].def.toInt ()));
-        // FIXME: use value<QPalette::ColorRole> instead of static cast after
-        //        dropping support of Qt 5.4
-
-        QColor setting_color =
-          settings->value (ve_colors[i].key, default_color).value<QColor> ();
-
+        QColor setting_color = settings->color_value (ve_colors[i], mode);
         m_table_colors.replace (i, setting_color);
       }
 
@@ -1564,7 +1557,7 @@ namespace octave
     m_stylesheet = "";
 
     if (m_table_colors.length () > 0)
-      m_stylesheet += "QTableView::item{ foreground-color: "
+      m_stylesheet += "QTableView::item{ color: "
                       + m_table_colors[0].name () +" }";
 
     if (m_table_colors.length () > 1)

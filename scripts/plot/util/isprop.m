@@ -30,8 +30,12 @@
 ## @var{obj} may also be an array of objects in which case @var{res} will be a
 ## logical array indicating whether each handle has the property @var{prop}.
 ##
-## For plotting, @var{obj} is a handle to a graphics object.  Otherwise,
-## @var{obj} should be an instance of a class.
+## For plotting, @var{obj} is a handle to a graphics object.
+##
+## Programming Note: There is no support in Octave versions 6.X.X for @var{obj}
+## to be an instance of a class (i.e., a classdef object).  This functionality
+## has already been added on the development branch which will become Octave
+## 7.1.0.
 ## @seealso{get, set, ismethod, isobject}
 ## @end deftypefn
 

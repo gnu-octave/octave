@@ -62,6 +62,7 @@
 #include "file-ops.h"
 #include "oct-env.h"
 #include "pr-output.h"
+#include "sysdep.h"
 #include "text-renderer.h"
 
 namespace octave
@@ -387,7 +388,8 @@ namespace octave
         ::warning ("unable to find default font files");
       else
         {
-          if (FT_New_Face (library, file.c_str (), 0, &retval))
+          std::string ascii_file = sys::get_ASCII_filename (file);
+          if (FT_New_Face (library, ascii_file.c_str (), 0, &retval))
             ::warning ("ft_manager: unable to load font: %s", file.c_str ());
 #if defined (HAVE_FT_REFERENCE_FACE)
           else
@@ -821,7 +823,12 @@ namespace octave
       {
         glyph_index = FT_Get_Char_Index (face, code);
 
+
+// FIXME: Add rotated characters:
+//     FT_Set_Transform( face, &matrix, &pen );
+
         if (code != '\n' && code != '\t'
+
             && (! glyph_index
                 || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
           {

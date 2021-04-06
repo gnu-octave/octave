@@ -36,6 +36,10 @@
 // may be caused by the way that gnulib overrides standard library
 // functions.
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
+
 int
 octave_i_multiply_overflow_wrapper (int a, int b, int *r)
 {

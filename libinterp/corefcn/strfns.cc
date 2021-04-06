@@ -831,7 +831,7 @@ risk of using @code{eval} on unknown data.
 %!assert (str2double ("-.1e-5"), -1e-6)
 %!testif ; ! ismac ()
 %! assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
@@ -859,12 +859,12 @@ risk of using @code{eval} on unknown data.
 %!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
 %!testif ; ! ismac ()
 %! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
-%!xtest <47413>
+%!test <47413>
 %! if (! ismac ()), return; endif
 %! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
 %!testif ; ! ismac ()
 %! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
-%!xtest <47413>
+%!test <47413>
 %! if (! ismac ()), return; endif
 %! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
 %!assert (str2double (zeros (3,1,2)), NaN)

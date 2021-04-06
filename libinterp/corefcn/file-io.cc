@@ -2323,7 +2323,7 @@ as the name of the function when reporting errors.
 %! C = textscan (str, '%s', 'Delimiter', '\t', 'MultipleDelimsAsOne', false);
 %! assert (C{1}, {'a'; ''; 'b'; 'c'});
 
-%!xtest <50743>
+%!test <50743>
 %! C = textscan ('5973459727478852968', '%u64');
 %! assert (C{1}, uint64 (5973459727478852968));
 

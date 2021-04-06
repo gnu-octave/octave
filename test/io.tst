@@ -346,7 +346,7 @@
 %! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
@@ -362,7 +362,7 @@
 %! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! [val, count, msg, pos] = sscanf ("3In2", "%f");
@@ -378,7 +378,7 @@
 %! assert (msg, "");
 %! assert (pos, 6);
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! [val, count, msg, pos] = sscanf ("3Inf2", "%f");

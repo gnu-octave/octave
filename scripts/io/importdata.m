@@ -535,7 +535,7 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! ## Complex numbers

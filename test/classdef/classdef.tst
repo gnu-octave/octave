@@ -55,9 +55,9 @@
 %!assert (p.principle == 50e3)
 %!assert (p.amount, amt, eps ())
 %!assert (amount (p), amt, eps ())
-%!xtest <55961>
+%!test <55961>
 %! assert (properties (p), {'rate'; 'term'; 'principle'});
-%!xtest <*55858>
+%!test <*55858>
 %! assert (methods (p), {'amount'; 'foo_value_class'});
 %!assert (isempty (foo_value_class().rate))
 %!error <property 'rate' is not constant> foo_value_class.rate
@@ -135,7 +135,7 @@
 %! assert (isequal (obj(2:end), 5:7))
 %! assert (isequal (obj.x, [7 5 6 7]))
 
-%!xtest <54966>
+%!test <54966>
 %! obj = foo_subsref_subsasgn (1);
 %! obj{1:3} = 5:7;
 %! assert (isequal ([obj{1:3}], 5:7))
@@ -171,7 +171,7 @@
 %! assert (isequal (obj.x(2:end), 5:7))
 %! assert (isequal (obj.x, [7 5 6 7]))
 
-%!xtest <54966>
+%!test <54966>
 %! obj = foo_subsref_subsasgn (1);
 %! obj.x{1:3} = 5:7;
 %! assert (isequal ([obj.x{1:3}], 5:7))
@@ -187,7 +187,7 @@
 %! obj{2}{2} = 4;
 %! assert (obj{2}{2} == 4);
 
-%!xtest <54966>
+%!test <54966>
 %! obj = foo_subsref_subsasgn (2);
 %! obj{1:2}(1:2) = ones (2);
 %! assert (isequal (obj{1:2}(1:2), ones (2)));

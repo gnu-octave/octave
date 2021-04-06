@@ -610,7 +610,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! file = tempname ();
@@ -667,7 +667,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! file = tempname ();

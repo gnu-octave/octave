@@ -539,7 +539,7 @@
 %! assert (b, 1);
 %! assert (jit_failcnt, 0);
 
-%!xtest <53615>
+%!test <53615>
 %! ## FIXME: No support for functions with complex input prototypes
 %! if (! __have_feature__ ("ENABLE_JIT"))
 %!   return;
@@ -572,7 +572,7 @@
 %!shared id
 %! id = @(x) x;
 
-%!xtest <53615>
+%!test <53615>
 %! ## FIXME: No support for functions with complex input prototypes
 %! if (! __have_feature__ ("ENABLE_JIT"))
 %!   return;

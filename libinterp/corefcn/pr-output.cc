@@ -3305,7 +3305,7 @@ x = str2num (r)
 
 %!assert <*57004> (rats ([]), '')
 
-%!xtest <57704>
+%!test <57704>
 %! [old_fmt, old_spacing] = format ();
 %! unwind_protect
 %!   format short;

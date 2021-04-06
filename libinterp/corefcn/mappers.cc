@@ -133,7 +133,7 @@ Compute the inverse cosine in radians for each element of @var{x}.
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
 
-%!xtest <*52627>
+%!test <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
 %! if (! ismac () && ! ispc ()), return; endif
@@ -164,7 +164,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
 
-%!xtest <*52627>
+%!test <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! ## Mac trig/hyperbolic functions have huge tolerances.
 %! if (! ismac ()), return; endif
@@ -187,7 +187,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
 
-%!xtest <*52627>
+%!test <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! ## Mac trig/hyperbolic functions have huge tolerances.
 %! if (! ismac ()), return; endif
@@ -208,7 +208,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
 
-%!xtest <*52627>
+%!test <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
 %! if (! ismac () && ! ispc ()), return; endif
@@ -336,7 +336,7 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
 
-%!xtest <*52627>
+%!test <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows. Their trig/hyperbolic functions have huge tolerances.
 %! if (! ismac () && ! ispc ()), return; endif
@@ -379,7 +379,7 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);
 
-%!xtest <*52627>
+%!test <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
 %! if (! ismac () && ! ispc ()), return; endif

@@ -538,7 +538,7 @@ endfunction
 %! y_exp = 9.995001666250085e-04;
 %! assert (gammainc (1/1000, 1), y_exp, -eps);
 
-%!xtest <53612>
+%!test <53612>
 %! assert (gammainc (-20, 1.1, "upper"), ...
 %!         6.50986687074979e8 + 2.11518396291149e8*i, -1e-13);
 

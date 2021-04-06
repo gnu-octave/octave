@@ -38,6 +38,7 @@
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic ignored "-Wsign-compare"
+#  pragma GCC diagnostic ignored "-Wtype-limits"
 #endif
 
 int

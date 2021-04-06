@@ -2121,7 +2121,7 @@ Example:
 %! fail ("__undef_sym__ (end)",
 %!       "invalid use of 'end': may only be used to index existing value");
 
-%!test <58953>
+%!test <*58953>
 %! x = 1:10;
 %! assert (x(end), 10);
 %! assert (x(minus (end, 1)), 9);

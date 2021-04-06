@@ -257,7 +257,7 @@
 %! assert (isequal (obs, exp));
 
 %% N-D logical array
-%!testif HAVE_RAPIDJSON <59198>
+%!testif HAVE_RAPIDJSON <*59198>
 %! data = true (2,2,2);
 %! data(1,1,2) = false;
 %! exp  = '[[[true,false],[true,true]],[[true,true],[true,true]]]';

@@ -49,7 +49,7 @@
 %! assert (isa (obs, 'logical'));
 %! assert (isequal (obs, exp));
 
-%!testif HAVE_RAPIDJSON <59135>
+%!testif HAVE_RAPIDJSON <*59135>
 %! json = '[[true, true], [false, true]]';
 %! exp  = logical ([1, 1; 0, 1]);
 %! obs  = jsondecode (json);

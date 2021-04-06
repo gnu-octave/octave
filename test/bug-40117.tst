@@ -34,7 +34,7 @@
 %!  end_unwind_protect
 %!endfunction
 
-%!test <40117>
+%!test <*40117>
 %! unwind_protect
 %!   tmp_dir = tempname ();
 %!   mkdir (tmp_dir);

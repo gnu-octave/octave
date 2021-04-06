@@ -1010,7 +1010,7 @@ nevermind:
 %!  __errmsg = S.message;
 %!  retval = NaN;
 %!endfunction
-%!test <58411>
+%!test <*58411>
 %! global __errmsg;
 %! assert (cellfun (@factorial, {1, 2, -3}, "ErrorHandler", @__errfcn), [1, 2, NaN]);
 %! assert (! isempty (__errmsg));

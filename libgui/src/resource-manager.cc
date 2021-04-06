@@ -342,68 +342,97 @@ namespace octave
 
   }
 
+#if defined (HAVE_QSCINTILLA)
+  int resource_manager::get_valid_lexer_styles (QsciLexer *lexer, int *styles)
+  {
+    int max_style = 0;
+    int actual_style = 0;
+    while (actual_style < ed_max_style_number && max_style < ed_max_lexer_styles)
+      {
+        if ((lexer->description (actual_style)) != "")  // valid style
+          styles[max_style++] = actual_style;
+        actual_style++;
+      }
+    return max_style;
+  }
+#endif
+
+  QFont resource_manager::copy_font_attributes (const QFont& attr,
+                                                const QFont& base) const
+  {
+    QFont dest (base);
+
+    dest.setBold (attr.bold ());
+    dest.setItalic (attr.italic ());
+    dest.setUnderline (attr.underline ());
+
+    return dest;
+  }
+
+#if defined (HAVE_QSCINTILLA)
   void resource_manager::read_lexer_settings (QsciLexer *lexer,
-                                              QSettings *settings)
+                                              gui_settings *settings, int mode)
   {
     // Test whether the settings for lexer is already contained in the
     // given gui settings file. If yes, load them, if not copy them from the
     // default settings file.
     // This is useful when a new language support is implemented and the
     // existing settings file is used (which is of course the common case).
+    int m = mode;
+    if (m > 1)
+      m = 1;
 
-    settings->beginGroup ("Scintilla");
+    QString group ("Scintilla" + settings_color_modes_ext[m]);
+
+    settings->beginGroup (group);
     settings->beginGroup (lexer->language ());
 
     QStringList lexer_keys = settings->allKeys ();
 
+    settings->endGroup ();
+    settings->endGroup ();
+
     if (lexer_keys.count () == 0)
       {
-        // No Lexer keys found
-        // => copy all settings from the default settings
-        QSettings def_settings (default_qt_settings_file (),
-                                QSettings::IniFormat);
-        // Get all lexer keys and copy the ones for the given lexer
-        def_settings.beginGroup ("Scintilla");
-        def_settings.beginGroup (lexer->language ());
+        // No Lexer keys found:
+        // If mode == 0, take all settings except font from default lexer
+        // If Mode == 1, take all settings except font from default lexer
+        //               and convert the color by inverting the lightness
 
         // Get the default font
         QStringList def_font = get_default_font ();
+        QFont df (def_font[0], def_font[1].toInt ());
+        QFont dfa = copy_font_attributes (lexer->defaultFont (), df);
+        lexer->setDefaultFont (dfa);
 
-        lexer_keys = def_settings.allKeys ();
+        QColor c, p;
 
-        for (int i = 0; i < lexer_keys.count (); i++)
+        int styles[ed_max_lexer_styles];  // array for saving valid styles
+        int max_style = get_valid_lexer_styles (lexer, styles);
+
+        for (int i = 0; i < max_style; i++)
           {
-            QString key = lexer_keys.at (i);
-            if (key.contains ("font"))
-              {
-                // font setting, insert default font and size
-                QStringList val = def_settings.value (key).toStringList ();
-                val.removeFirst ();
-                val.removeFirst ();
-                val.prepend (def_font.at (1));
-                val.prepend (def_font.at (0));
-                settings->setValue (key, val);
-              }
-            else
-              {
-                // No font setting just copy
-                QVariant var = def_settings.value (key);
-                settings->setValue (key, var);
-              }
+            c = settings->get_color_value (QVariant (lexer->color (styles[i])), m);
+            lexer->setColor (c, styles[i]);
+            p = settings->get_color_value (QVariant (lexer->paper (styles[i])), m);
+            lexer->setPaper (p, styles[i]);
+            dfa = copy_font_attributes (lexer->font (styles[i]), df);
+            lexer->setFont (dfa, styles[i]);
           }
+        // Set defaults last for not changing the defaults of the styles
+        lexer->setDefaultColor (lexer->color (styles[0]));
+        lexer->setDefaultPaper (lexer->paper (styles[0]));
 
-        def_settings.endGroup ();
-        def_settings.endGroup ();
-
+        lexer->writeSettings (*settings, group.toStdString ().c_str ());
+        settings->sync ();
       }
-
-    settings->endGroup ();
-    settings->endGroup ();
-
-    settings->sync ();
-
-    lexer->readSettings (*settings);
+    else
+      {
+        // Found lexer keys, read the settings
+        lexer->readSettings (*settings, group.toStdString ().c_str ());
+      }
   }
+#endif
 
   void resource_manager::set_settings (const QString& file)
   {

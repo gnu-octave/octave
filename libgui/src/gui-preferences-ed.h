@@ -35,6 +35,14 @@
 
 // Editor preferences
 
+// Lexer
+
+const gui_pref
+ed_color_mode ("editor/color_mode", QVariant (0));
+
+const int ed_max_lexer_styles = 64;
+const int ed_max_style_number = 128;
+
 // Code completion
 
 const gui_pref
@@ -117,6 +125,8 @@ ed_break_lines ("editor/break_lines", QVariant (false));
 const gui_pref
 ed_break_lines_comments ("editor/break_lines_comments", QVariant (false));
 
+// Other
+
 const gui_pref
 ed_highlight_all_occurrences ("editor/highlight_all_occurrences",
                               QVariant (true));
@@ -132,10 +142,6 @@ ed_show_edit_status_bar ("editor/show_edit_status_bar", QVariant (true));
 
 const gui_pref
 ed_highlight_current_line ("editor/highlightCurrentLine", QVariant (true));
-
-const gui_pref
-ed_highlight_current_line_color ("editor/highlight_current_line_color",
-                                 QVariant (QColor (240, 240, 240)));
 
 const gui_pref
 ed_show_white_space ("editor/show_white_space", QVariant (false));

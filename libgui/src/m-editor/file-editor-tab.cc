@@ -867,7 +867,8 @@ namespace octave
     if (update_apis_only)
       return;   // We are done here
 
-    rmgr.read_lexer_settings (lexer, settings);
+    int mode = settings->value (ed_color_mode).toInt ();
+    rmgr.read_lexer_settings (lexer, settings, mode);
 
     m_edit_area->setCaretForegroundColor (lexer->color (0));
     m_edit_area->setIndentationGuidesForegroundColor (lexer->color (0));
@@ -876,7 +877,7 @@ namespace octave
     QColor bg = lexer->paper (0);
     QColor fg = lexer->color (0);
 
-    // margin colors
+    // margin and current line marker colors
     QColor bgm, fgm;
 
     bgm = interpolate_color (bg, fg, 0.5, 0.2);
@@ -889,6 +890,9 @@ namespace octave
     fgm = interpolate_color (bg, fg, 0.5, 0.25);
     m_edit_area->setMarginsBackgroundColor (bgm);
     m_edit_area->setFoldMarginColors (bgm, fgm);
+
+    bgm = interpolate_color (bg, fg, 0.5, 0.1);
+    m_edit_area->setCaretLineBackgroundColor (bgm);
 
     // color indicator for highlighting all occurrences:
     // applications highlight color with more transparency
@@ -2646,11 +2650,10 @@ namespace octave
       m_status_bar->hide ();
 
     //highlight current line color
-    QColor setting_color = settings->value (ed_highlight_current_line_color).value<QColor> ();
-    m_edit_area->setCaretLineBackgroundColor (setting_color);
     m_edit_area->setCaretLineVisible
       (settings->value (ed_highlight_current_line).toBool ());
 
+    // auto completion
     bool match_keywords = settings->value
                           (ed_code_completion_keywords).toBool ();
     bool match_document = settings->value

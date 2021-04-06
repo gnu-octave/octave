@@ -71,6 +71,7 @@ namespace octave
     void update_terminal_colors (int mode);
     void update_workspace_colors (int mode);
     void update_varedit_colors (int mode);
+    void update_editor_lexers (int mode);
 
     // slots for dialog's buttons
     void button_clicked (QAbstractButton *button);
@@ -82,8 +83,11 @@ namespace octave
 
   private:
 
-    void read_lexer_settings (QsciLexer *lexer, gui_settings *settings);
-    void write_lexer_settings (QsciLexer *lexer, gui_settings *settings);
+#if defined (HAVE_QSCINTILLA)
+    void update_lexer (QsciLexer *lexer, gui_settings *settings, int mode);
+    void get_lexer_settings (QsciLexer *lexer, gui_settings *settings);
+    void write_lexer_settings (QsciLexer *lexer, gui_settings *settings, int mode);
+#endif
 
     void write_changed_settings (bool closing);
 
@@ -102,7 +106,6 @@ namespace octave
     color_picker *m_widget_title_bg_color_active;
     color_picker *m_widget_title_fg_color;
     color_picker *m_widget_title_fg_color_active;
-    color_picker *m_editor_current_line_color;
 
     QRadioButton *m_rb_comment_strings[ed_comment_strings_count];
     QCheckBox *m_rb_uncomment_strings[ed_comment_strings_count];

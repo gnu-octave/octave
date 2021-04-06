@@ -235,7 +235,7 @@ namespace octave
   void octave_qscintilla::set_selection_marker_color (const QColor& c)
   {
     QColor ic = c;
-    ic.setAlphaF (0.25);
+    ic.setAlphaF (0.45);
     setIndicatorForegroundColor (ic, m_indicator_id);
     setIndicatorOutlineColor (ic, m_indicator_id);
 

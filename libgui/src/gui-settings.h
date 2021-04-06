@@ -69,15 +69,30 @@ namespace octave
     }
 
     /*!
-      Reading a color from the gui_settings taking possible color modes
-      into account. The default value for a second color mode @p mode=1 is
-      deterimined from the standard default value @p mode=0 by inverting
-      the lightness
+      Reading a color from the given QVaraitn @p def taking different
+      color modes into account. The default value for a second color mode
+      @p mode=1 is deterimined from the standard default value @p mode=0
+      by inverting the lightness
         \f{eqnarray*}{
            H_1 &=& H_0\\
            S_1 &=& S_0\\
-           L_1 &=& 1.0 - L_0
+           L_1 &=& 1.0 - 0.85 L_0    L_0 > 0.3
+           L_1 &=& 1.0 - 0.70 L_0    L_0 < 0.3
         \f}
+
+      @param def  Color default value given by a QVariant of QColor
+                  or QPalette::ColorRole
+      @param mode Color mode (currently 0 or 1, default is 0)
+
+      @return Color as QColor
+    */
+    QColor get_color_value (const QVariant& def, int mode = 0) const;
+
+    /*!
+      Reading a color from the gui_settings taking possible color modes
+      into account. The default value for a second color mode @p mode=1 is
+      deterimined from the standard default value @p mode=0 by inverting
+      the lightness (see get_color_value())
 
       @param pref gui preference (key string, default value); the default
                   value can be given by QColor or QPalette::ColorRole
@@ -108,7 +123,10 @@ namespace octave
 
 }
 
-// Some strings used several times in the settings
+// Some constants used several times in the settings
+
+// Special color indicating no change compared to default color
+const QColor settings_color_no_change (255,0,255);
 
 // Other color schemes (currently one extra, but possibly more in the future)
 const QString settings_color_modes = QT_TRANSLATE_NOOP (

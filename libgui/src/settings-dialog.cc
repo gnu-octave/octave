@@ -71,25 +71,6 @@
 
 namespace octave
 {
-#if defined (HAVE_QSCINTILLA)
-
-  static const int MaxLexerStyles = 64;
-  static const int MaxStyleNumber = 128;
-
-  static int get_valid_lexer_styles (QsciLexer *lexer, int *styles)
-  {
-    int max_style = 0;
-    int actual_style = 0;
-    while (actual_style < MaxStyleNumber && max_style < MaxLexerStyles)
-      {
-        if ((lexer->description (actual_style)) != "")  // valid style
-          styles[max_style++] = actual_style;
-        actual_style++;
-      }
-    return max_style;
-  }
-
-#endif
 
   settings_dialog::settings_dialog (QWidget *p, base_qobject& oct_qobj,
                                     const QString& desired_tab)
@@ -260,15 +241,6 @@ namespace octave
     editor_linenr_size->setValue (settings->value (ed_line_numbers_size).toInt ());
 
     rmgr.combo_encoding (editor_combo_encoding);
-
-    QColor setting_color = settings->value (ed_highlight_current_line_color).value<QColor> ();
-    m_editor_current_line_color = new color_picker (setting_color);
-    editor_grid_current_line->addWidget (m_editor_current_line_color, 0, 3);
-    m_editor_current_line_color->setMinimumSize (20, 10);
-    m_editor_current_line_color->setEnabled (false);
-
-    connect (editor_highlightCurrentLine, SIGNAL (toggled (bool)),
-             m_editor_current_line_color, SLOT (setEnabled (bool)));
 
     editor_highlightCurrentLine->setChecked (settings->value (ed_highlight_current_line).toBool ());
     editor_long_line_marker->setChecked (settings->value (ed_long_line_marker).toBool ());
@@ -481,50 +453,17 @@ namespace octave
 
 #if defined (HAVE_QSCINTILLA)
 
-    // editor styles: create lexer, read settings, and create dialog elements
-    QsciLexer *lexer;
+    int ed_mode = settings->value (ed_color_mode).toInt ();
+    editor_cb_color_mode->setText (settings_color_modes);
+    editor_cb_color_mode->setToolTip (settings_color_modes_tooltip);
+    editor_cb_color_mode->setChecked (ed_mode > 0);
 
-#if defined (HAVE_LEXER_OCTAVE)
+    // update colors depending on second theme selection
+    connect (editor_cb_color_mode, SIGNAL (stateChanged (int)),
+             this, SLOT (update_editor_lexers (int)));
 
-    lexer = new QsciLexerOctave ();
-    read_lexer_settings (lexer, settings);
-    delete lexer;
-
-#elif defined (HAVE_LEXER_MATLAB)
-
-    lexer = new QsciLexerMatlab ();
-    read_lexer_settings (lexer, settings);
-    delete lexer;
-
-#endif
-
-    lexer = new QsciLexerCPP ();
-    read_lexer_settings (lexer, settings);
-    delete lexer;
-
-    lexer = new QsciLexerJava ();
-    read_lexer_settings (lexer, settings);
-    delete lexer;
-
-    lexer = new QsciLexerPerl ();
-    read_lexer_settings (lexer, settings);
-    delete lexer;
-
-    lexer = new QsciLexerBatch ();
-    read_lexer_settings (lexer, settings);
-    delete lexer;
-
-    lexer = new QsciLexerDiff ();
-    read_lexer_settings (lexer, settings);
-    delete lexer;
-
-    lexer = new QsciLexerBash ();
-    read_lexer_settings (lexer, settings);
-    delete lexer;
-
-    lexer = new octave_txt_lexer ();
-    read_lexer_settings (lexer, settings);
-    delete lexer;
+    // finally read the lexer colors using the update slot
+    update_editor_lexers (ed_mode);
 
 #endif
 
@@ -668,19 +607,129 @@ namespace octave
     scmgr.import_export (shortcut_manager::OSC_DEFAULT);
   }
 
-  void settings_dialog::read_lexer_settings (QsciLexer *lexer,
-                                             gui_settings *settings)
+  void settings_dialog::update_editor_lexers (int mode)
   {
 #if defined (HAVE_QSCINTILLA)
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+     int m = mode;
+     if (m > 1)
+       m = 1;
 
+    // editor styles: create lexer, read settings, and
+    // create or update dialog elements
+    QsciLexer *lexer;
+
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+#if defined (HAVE_LEXER_OCTAVE)
+    lexer = new QsciLexerOctave ();
+    update_lexer (lexer, settings, m);
+    delete lexer;
+#elif defined (HAVE_LEXER_MATLAB)
+    lexer = new QsciLexerMatlab ();
+    update_lexer (lexer, settings, m);
+    delete lexer;
+#endif
+
+    lexer = new QsciLexerCPP ();
+    update_lexer (lexer, settings, m);
+    delete lexer;
+
+    lexer = new QsciLexerJava ();
+    update_lexer (lexer, settings, m);
+    delete lexer;
+
+    lexer = new QsciLexerPerl ();
+    update_lexer (lexer, settings, m);
+    delete lexer;
+
+    lexer = new QsciLexerBatch ();
+    update_lexer (lexer, settings, m);
+    delete lexer;
+
+    lexer = new QsciLexerDiff ();
+    update_lexer (lexer, settings, m);
+    delete lexer;
+
+    lexer = new QsciLexerBash ();
+    update_lexer (lexer, settings, m);
+    delete lexer;
+
+    lexer = new octave_txt_lexer ();
+    update_lexer (lexer, settings, m);
+    delete lexer;
+#endif
+  }
+
+#if defined (HAVE_QSCINTILLA)
+
+  void settings_dialog::update_lexer (QsciLexer *lexer,
+                                      gui_settings *settings, int mode)
+  {
     // Get lexer settings and copy from default settings if not yet
     // available in normal settings file
-    rmgr.read_lexer_settings (lexer, settings);
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    rmgr.read_lexer_settings (lexer, settings, mode);
 
-    int styles[MaxLexerStyles];  // array for saving valid styles
+    QString lexer_name = lexer->language ();
+
+    int index = -1;
+    for (int i = 0; i < tabs_editor_lexers->count (); i++)
+      {
+        if (tabs_editor_lexers->tabText (i) == lexer_name)
+          {
+            index = i;
+            break;
+          }
+      }
+
+    if (index == -1)
+      {
+        // This is not an update, call get_lexer_settings for building
+        // the settings tab
+        get_lexer_settings (lexer, settings);
+        return;
+      }
+
+    // Update the color picker in all styles
+    int styles[ed_max_lexer_styles];  // array for saving valid styles
+    int max_style = rmgr.get_valid_lexer_styles (lexer, styles);
+    QWidget *tab = tabs_editor_lexers->widget (index);
+    color_picker *color, *bg_color;
+
+    for (int i = 0; i < max_style; i++)  // create dialog elements for all styles
+      {
+        QString actual_name = lexer->description (styles[i]);
+        bg_color = tab->findChild <color_picker *> (actual_name + "_bg_color");
+        if (bg_color)
+          {
+            // Update
+            if (styles[i] == 0)
+              bg_color->set_color (lexer->defaultPaper ());
+            else
+              {
+                if (lexer->paper (styles[i]) == lexer->defaultPaper ())
+                  bg_color->set_color (settings_color_no_change);
+                else
+                  bg_color->set_color (lexer->paper (styles[i]));
+              }
+          }
+
+        color = tab->findChild <color_picker *> (actual_name + "_color");
+        if (color)
+          color->set_color (lexer->color (styles[i]));
+      }
+
+  }
+
+  void settings_dialog::get_lexer_settings (QsciLexer *lexer,
+                                             gui_settings *settings)
+  {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    int styles[ed_max_lexer_styles];  // array for saving valid styles
     // (enum is not continuous)
-    int max_style = get_valid_lexer_styles (lexer, styles);
+    int max_style = rmgr.get_valid_lexer_styles (lexer, styles);
     QGridLayout *style_grid = new QGridLayout ();
     QVector<QLabel*> description (max_style);
     QVector<QFontComboBox*> select_font (max_style);
@@ -692,7 +741,6 @@ namespace octave
     QFont default_font = QFont ();
     int label_width;
     QColor default_color = QColor ();
-    QColor dummy_color = QColor (255, 0, 255);
 
     for (int i = 0; i < max_style; i++)  // create dialog elements for all styles
       {
@@ -728,7 +776,7 @@ namespace octave
             font_size[i]->setValue (actual_font.pointSize ()-default_size);
             font_size[i]->setToolTip (QObject::tr ("Difference to the default size"));
             if (lexer->paper (styles[i]) == default_color)
-              bg_color[i] = new color_picker (dummy_color);
+              bg_color[i] = new color_picker (settings_color_no_change);
             else
               bg_color[i] = new color_picker (lexer->paper (styles[i]));
             bg_color[i]->setToolTip
@@ -756,6 +804,7 @@ namespace octave
         style_grid->addWidget (color[i], i, column++);
         style_grid->addWidget (bg_color[i], i, column++);
       }
+
     // place grid with elements into the tab
     QScrollArea *scroll_area = new QScrollArea ();
     QWidget *scroll_area_contents = new QWidget ();
@@ -765,25 +814,18 @@ namespace octave
     tabs_editor_lexers->addTab (scroll_area, lexer->language ());
 
     tabs_editor_lexers->setCurrentIndex (settings->value (sd_last_editor_styles_tab).toInt ());
-
-#else
-
-    octave_unused_parameter (lexer);
-    octave_unused_parameter (settings);
-
-#endif
   }
 
   void settings_dialog::write_lexer_settings (QsciLexer *lexer,
-                                              gui_settings *settings)
+                                              gui_settings *settings, int mode)
   {
-#if defined (HAVE_QSCINTILLA)
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
     QWidget *tab = tabs_editor_lexers->
       findChild <QWidget *> (QString (lexer->language ()) + "_styles");
-    int styles[MaxLexerStyles];  // array for saving valid styles
+    int styles[ed_max_lexer_styles];  // array for saving valid styles
     // (enum is not continuous)
-    int max_style = get_valid_lexer_styles (lexer, styles);
+    int max_style = rmgr.get_valid_lexer_styles (lexer, styles);
     QFontComboBox *select_font;
     QSpinBox *font_size;
     QCheckBox *attrib_font[3];
@@ -795,7 +837,6 @@ namespace octave
       = settings->value (global_mono_font).toString ();
     QFont default_font = QFont (default_font_name, 10, -1, 0);
     QColor default_color = QColor ();
-    QColor dummy_color = QColor (255, 0, 255);
 
     for (int i = 0; i < max_style; i++)  // get dialog elements and their contents
       {
@@ -847,7 +888,7 @@ namespace octave
               }
             else
               {
-                if (bg_color->color () == dummy_color)
+                if (bg_color->color () == settings_color_no_change)
                   lexer->setPaper (default_color, styles[i]);
                 else
                   lexer->setPaper (bg_color->color (), styles[i]);
@@ -855,19 +896,21 @@ namespace octave
           }
       }
 
-    lexer->writeSettings (*settings);
+    int m = mode;
+    if (m > 1)
+      m = 1;
+
+    const char* group = QString ("Scintilla" + settings_color_modes_ext[m])
+                                .toStdString ().c_str ();
+
+    lexer->writeSettings (*settings, group);
 
     settings->setValue (sd_last_editor_styles_tab.key,
                         tabs_editor_lexers->currentIndex ());
     settings->sync ();
-
-#else
-
-    octave_unused_parameter (lexer);
-    octave_unused_parameter (settings);
+  }
 
 #endif
-  }
 
   void settings_dialog::write_changed_settings (bool closing)
   {
@@ -927,12 +970,16 @@ namespace octave
     settings->setValue (global_ov_startup_dir.key, le_octave_dir->text ());
 
     //editor
+    int ed_mode = 0;
+    if (editor_cb_color_mode->isChecked ())
+      ed_mode = 1;
+    settings->setValue (ed_color_mode.key, ed_mode);
+
     settings->setValue (global_use_custom_editor.key, useCustomFileEditor->isChecked ());
     settings->setValue (global_custom_editor.key, customFileEditor->text ());
     settings->setValue (ed_show_line_numbers.key, editor_showLineNumbers->isChecked ());
     settings->setValue (ed_line_numbers_size.key, editor_linenr_size->value ());
     settings->setValue (ed_highlight_current_line.key, editor_highlightCurrentLine->isChecked ());
-    settings->setValue (ed_highlight_current_line_color.key, m_editor_current_line_color->color ());
     settings->setValue (ed_long_line_marker.key, editor_long_line_marker->isChecked ());
     settings->setValue (ed_long_line_marker_line.key, editor_long_line_marker_line->isChecked ());
     settings->setValue (ed_long_line_marker_background.key, editor_long_line_marker_background->isChecked ());
@@ -1037,43 +1084,43 @@ namespace octave
 #if defined (HAVE_LEXER_OCTAVE)
 
     lexer = new QsciLexerOctave ();
-    write_lexer_settings (lexer, settings);
+    write_lexer_settings (lexer, settings, ed_mode);
     delete lexer;
 
 #elif defined (HAVE_LEXER_MATLAB)
 
     lexer = new QsciLexerMatlab ();
-    write_lexer_settings (lexer, settings);
+    write_lexer_settings (lexer, settings, ed_mode);
     delete lexer;
 
 #endif
 
     lexer = new QsciLexerCPP ();
-    write_lexer_settings (lexer, settings);
+    write_lexer_settings (lexer, settings, ed_mode);
     delete lexer;
 
     lexer = new QsciLexerJava ();
-    write_lexer_settings (lexer, settings);
+    write_lexer_settings (lexer, settings, ed_mode);
     delete lexer;
 
     lexer = new QsciLexerPerl ();
-    write_lexer_settings (lexer, settings);
+    write_lexer_settings (lexer, settings, ed_mode);
     delete lexer;
 
     lexer = new QsciLexerBatch ();
-    write_lexer_settings (lexer, settings);
+    write_lexer_settings (lexer, settings, ed_mode);
     delete lexer;
 
     lexer = new QsciLexerDiff ();
-    write_lexer_settings (lexer, settings);
+    write_lexer_settings (lexer, settings, ed_mode);
     delete lexer;
 
     lexer = new QsciLexerBash ();
-    write_lexer_settings (lexer, settings);
+    write_lexer_settings (lexer, settings, ed_mode);
     delete lexer;
 
     lexer = new octave_txt_lexer ();
-    write_lexer_settings (lexer, settings);
+    write_lexer_settings (lexer, settings, ed_mode);
     delete lexer;
 
 #endif

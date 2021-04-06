@@ -35,33 +35,43 @@
 namespace octave
 {
 
-  QColor gui_settings::color_value (const gui_pref& pref, int mode) const
+  QColor gui_settings::get_color_value (const QVariant& def, int mode) const
   {
     QColor default_color;
 
     // Determine whether the default value in pref is given as
     // QPalette::ColorRole or as QColor
-    if (pref.def.canConvert (QMetaType::QColor))
-      default_color = pref.def.value<QColor> ();
+    if (def.canConvert (QMetaType::QColor))
+      default_color = def.value<QColor> ();
     else
       {
         // The default colors are given as color roles for
         // the application's palette
         default_color = QApplication::palette ().color
-                        (static_cast<QPalette::ColorRole> (pref.def.toInt ()));
+                        (static_cast<QPalette::ColorRole> (def.toInt ()));
                   // FIXME: use value<QPalette::ColorRole> instead of static cast after
                   //        dropping support of Qt 5.4
       }
 
-    if (mode == 1)
+    if ((mode == 1) && (default_color != settings_color_no_change))
       {
         // In second mode, determine the default color from the first mode
         qreal h, s, l, a;
         default_color.getHslF (&h, &s, &l, &a);
-        default_color.setHslF (h, s, 1.0-l*0.85, a);
+        qreal l_new = 1.0-l*0.85;
+        if (l < 0.3)
+          l_new = 1.0-l*0.7;  // convert darker into lighter colors
+        default_color.setHslF (h, s, l_new, a);
       }
 
-    return value (pref.key + settings_color_modes_ext.at (mode),
+    return default_color;
+  }
+
+  QColor gui_settings::color_value (const gui_pref& pref, int mode) const
+  {
+    QColor default_color = get_color_value (pref.def, mode);
+
+    return value (pref.key + settings_color_modes_ext[mode],
                   QVariant (default_color)).value<QColor> ();
   }
 
@@ -72,7 +82,7 @@ namespace octave
     if (m > 1)
       m = 1;
 
-    setValue (pref.key + settings_color_modes_ext.at (m), QVariant (color));
+    setValue (pref.key + settings_color_modes_ext[m], QVariant (color));
   }
 
   QString gui_settings::sc_value (const sc_pref& pref) const

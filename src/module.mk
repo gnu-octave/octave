@@ -38,6 +38,7 @@ octinclude_HEADERS += \
 
 noinst_HEADERS += \
   %reldir%/display-available.h \
+  %reldir%/octave-qsvghandler.h \
   %reldir%/shared-fcns.h
 
 OCTAVE_VERSION_LINKS += %reldir%/octave-cli-$(version)$(EXEEXT)

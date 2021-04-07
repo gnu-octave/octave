@@ -38,46 +38,66 @@
 #include <QPainter>
 #include <QPrinter>
 #include <QRegExp>
-#include <QSvgRenderer>
+
+// Include a set of path rendering functions extracted from Qt-5.12 source
+#include "octave-qsvghandler.h"
 
 // Render to pdf
 class pdfpainter : public QPainter
 {
 public:
-  pdfpainter (QString fname, QRectF sz, double dpi)
-    : m_printer ()
+  pdfpainter (QString fname, QRectF sz)
+      :  m_printer ()
   {
-    double scl = dpi / 72.0;
-    sz.setWidth (sz.width () * scl);
-    sz.setHeight (sz.height () * scl);
-
     // Printer settings
     m_printer.setOutputFormat (QPrinter::PdfFormat);
     m_printer.setFontEmbeddingEnabled (true);
     m_printer.setOutputFileName (fname);
     m_printer.setFullPage (true);
 #if defined (HAVE_QPRINTER_SETPAGESIZE)
-    m_printer.setPageSize (QPageSize (sz.size (), QPageSize::Point));
+    m_printer.setPageSize (QPageSize (sz.size (), QPageSize::Point,
+                                      QString ("custom"),
+                                      QPageSize::ExactMatch));
 #else
-    m_printer.setPaperSize (sz.size (), QPrinter::DevicePixel);
+    m_printer.setPaperSize (sz.size (), QPrinter::Point);
 #endif
-  }
 
-  ~pdfpainter (void) { }
-
-  void render (const QByteArray svg_content)
-  {
-    QSvgRenderer renderer (svg_content);
+    // Painter settings
     begin (&m_printer);
-    renderer.render (this);
-    end ();
+    setWindow (sz.toRect ());
   }
+
+  ~pdfpainter (void) { end (); }
 
 private:
   QPrinter m_printer;
 };
 
-// String conversion functions
+// String conversion functions+QVector<double> qstr2vectorf (QString str)
+QVector<double> qstr2vectorf (QString str)
+{
+  QVector<double> pts;
+  QStringList coords = str.split (",");
+  for (QStringList::iterator p = coords.begin (); p != coords.end (); p += 1)
+    {
+      double pt = (*p).toDouble ();
+      pts.append (pt);
+    }
+  return pts;
+}
+
+QVector<double> qstr2vectord (QString str)
+{
+  QVector<double> pts;
+  QStringList coords = str.split (",");
+  for (QStringList::iterator p = coords.begin (); p != coords.end (); p += 1)
+    {
+      double pt = (*p).toDouble ();
+      pts.append (pt);
+    }
+
+  return pts;
+}
 
 QVector<QPointF> qstr2ptsvector (QString str)
 {
@@ -91,6 +111,33 @@ QVector<QPointF> qstr2ptsvector (QString str)
       pts.append (pt);
     }
   return pts;
+}
+
+QVector<QPoint> qstr2ptsvectord (QString str)
+{
+  QVector<QPoint> pts;
+  str = str.trimmed ();
+  str.replace (" ", ",");
+  QStringList coords = str.split (",");
+  for (QStringList::iterator p = coords.begin (); p != coords.end (); p += 2)
+    {
+      QPoint pt ((*p).toDouble (), (*(p+1)).toDouble ());
+      pts.append (pt);
+    }
+  return pts;
+}
+
+// Extract field arguments in a style-like string, e.g. "bla field(1,34,56) bla"
+QString get_field (QString str, QString field)
+{
+  QString retval;
+  QRegExp rx (field + "\\(([^\\)]*)\\)");
+  int pos = 0;
+  pos = rx.indexIn (str, pos);
+  if (pos > -1)
+    retval = rx.cap (1);
+
+  return retval;
 }
 
 // Polygon reconstruction class
@@ -281,6 +328,384 @@ private:
   QList<QPolygonF> m_polygons;
 };
 
+void draw (QDomElement& parent_elt, pdfpainter& painter)
+{
+  QDomNodeList nodes = parent_elt.childNodes ();
+
+  static QString clippath_id;
+  static QMap< QString, QVector<QPoint> > clippath;
+
+  // tspan elements must have access to the font and position extracted from
+  // their parent text element
+  static QFont font;
+  static double dx = 0, dy = 0;
+
+  // Store path defined in <defs> in a map
+  static bool in_defs = false;
+  static QMap< QString, QPainterPath> path_map;
+
+  for (int i = 0; i < nodes.count (); i++)
+    {
+      QDomNode node = nodes.at (i);
+      if (! node.isElement ())
+        continue;
+
+      QDomElement elt = node.toElement ();
+
+      if (elt.tagName () == "clipPath")
+        {
+          clippath_id = "#" + elt.attribute ("id");
+          draw (elt, painter);
+          clippath_id = QString ();
+        }
+      else if (elt.tagName () == "g")
+        {
+          QString str = elt.attribute ("font-family");
+          if (! str.isEmpty ())
+            {
+              // Font
+              font = QFont ();
+              font.setFamily (elt.attribute ("font-family"));
+
+              str = elt.attribute ("font-weight");
+              if (! str.isEmpty () && str != "normal")
+                font.setWeight (QFont::Bold);
+
+              str = elt.attribute ("font-style");
+              if (! str.isEmpty () && str != "normal")
+                font.setStyle (QFont::StyleItalic);
+
+              str = elt.attribute ("font-size");
+              if (! str.isEmpty ())
+                font.setPixelSize (str.toDouble ());
+
+              painter.setFont (font);
+
+              // Translation and rotation
+              painter.save ();
+              str = get_field (elt.attribute ("transform"), "translate");
+              if (! str.isEmpty ())
+                {
+                  QStringList trans = str.split (",");
+                  dx = trans[0].toDouble ();
+                  dy = trans[1].toDouble ();
+
+                  str = get_field (elt.attribute ("transform"), "rotate");
+                  if (! str.isEmpty ())
+                    {
+                      QStringList rot = str.split (",");
+                      painter.translate (dx+rot[1].toDouble (),
+                                         dy+rot[2].toDouble ());
+                      painter.rotate (rot[0].toDouble ());
+                      dx = rot[1].toDouble ();
+                      dy = rot[2].toDouble ();
+                    }
+                  else
+                    {
+                      painter.translate (dx, dy);
+                      dx = 0;
+                      dy = 0;
+                    }
+                }
+
+              draw (elt, painter);
+              painter.restore ();
+            }
+          else
+            {
+              bool current_clipstate = painter.hasClipping ();
+              QRegion current_clippath = painter.clipRegion ();
+
+              str = elt.attribute ("clip-path");
+              if (! str.isEmpty ())
+                {
+                  QVector<QPoint> pts = clippath[get_field (str, "url")];
+                  if (! pts.isEmpty ())
+                    {
+                      painter.setClipRegion (QRegion (QPolygon (pts)));
+                      painter.setClipping (true);
+                    }
+                }
+
+              // Fill color
+              str = get_field (elt.attribute ("fill"), "rgb");
+              if (! str.isEmpty ())
+                {
+                  QStringList clist = str.split (",");
+                  painter.setBrush (QColor (clist[0].toInt (),
+                                            clist[1].toInt (),
+                                            clist[2].toInt ()));
+                }
+
+              // Transform
+              str = elt.attribute ("transform");
+              painter.save ();
+              if (! str.isEmpty ())
+                {
+                  QStringRef tf (&str);
+                  QTransform  tform =
+                    parseTransformationMatrix (tf) * painter.transform ();
+                  painter.setTransform (tform);
+                }
+
+              draw (elt, painter);
+
+              // Restore previous clipping settings
+              painter.restore  ();
+              painter.setClipRegion (current_clippath);
+              painter.setClipping (current_clipstate);
+            }
+        }
+      else if (elt.tagName () == "defs")
+        {
+          in_defs = true;
+          draw (elt, painter);
+          in_defs = false;
+        }
+      else if (elt.tagName () == "path")
+        {
+          // Store QPainterPath for latter use
+          QString id = elt.attribute ("id");
+          if (! id.isEmpty ())
+            {
+              QString d = elt.attribute ("d");
+
+              if (! d.isEmpty ())
+                {
+                  QStringRef data (&d);
+                  QPainterPath path;
+                  if (! parsePathDataFast (data, path))
+                    continue; // Something went wrong, pass
+                  else if (path.isEmpty ())
+                    std::cout << "Empty path for data:"
+                              << d.toStdString () << std::endl;
+                  else if (in_defs)
+                    path_map["#" + id] = path;
+                  else
+                    painter.drawPath (path);
+
+
+                  if (path_map["#" + id].isEmpty ())
+                    std::cout << "Empty path for data:"
+                              << d.toStdString () << std::endl;
+                }
+            }
+        }
+      else if (elt.tagName () == "use")
+        {
+          painter.setPen (Qt::NoPen);
+
+          QString str = elt.attribute ("xlink:href");
+          if (! str.isEmpty () && str.size () > 2)
+            {
+              QPainterPath path = path_map[str];
+              if (! path.isEmpty ())
+                {
+                  str = elt.attribute ("x");
+                  double x = elt.attribute ("x").toDouble ();
+                  str = elt.attribute ("y");
+                  double y = elt.attribute ("y").toDouble ();
+                  painter.translate (x, y);
+                  painter.drawPath (path);
+                  painter.translate (-x, -y);
+                }
+            }
+        }
+      else if (elt.tagName () == "text")
+        {
+          // Font
+          QFont saved_font (font);
+
+          QString str = elt.attribute ("font-family");
+          if (! str.isEmpty ())
+            font.setFamily (elt.attribute ("font-family"));
+
+          str = elt.attribute ("font-weight");
+          if (! str.isEmpty ())
+            {
+              if (str != "normal")
+                font.setWeight (QFont::Bold);
+              else
+                font.setWeight (QFont::Normal);
+            }
+
+          str = elt.attribute ("font-style");
+          if (! str.isEmpty ())
+            {
+              if (str != "normal")
+                font.setStyle (QFont::StyleItalic);
+              else
+                font.setStyle (QFont::StyleNormal);
+            }
+
+          str = elt.attribute ("font-size");
+          if (! str.isEmpty ())
+            font.setPixelSize (str.toDouble ());
+
+          painter.setFont (font);
+
+          // Color is specified in rgb
+          str = get_field (elt.attribute ("fill"), "rgb");
+          if (! str.isEmpty ())
+            {
+              QStringList clist = str.split (",");
+              painter.setPen (QColor (clist[0].toInt (), clist[1].toInt (),
+                                      clist[2].toInt ()));
+            }
+
+          QStringList xx = elt.attribute ("x").split (" ");
+          int y = elt.attribute ("y").toInt ();
+          str = elt.text ();
+          if (! str.isEmpty ())
+            {
+              int ii = 0;
+              foreach (QString s,  xx)
+                if (ii < str.size ())
+                  painter.drawText (s.toInt ()-dx, y-dy, str.at (ii++));
+            }
+
+          draw (elt, painter);
+          font = saved_font;
+        }
+      else if (elt.tagName () == "polyline")
+        {
+          // Color
+          QColor c (elt.attribute ("stroke"));
+          QString str = elt.attribute ("stroke-opacity");
+          if (! str.isEmpty () && str.toDouble () != 1.0
+              && str.toDouble () >= 0.0)
+            c.setAlphaF (str.toDouble ());
+
+          QPen pen;
+          pen.setColor (c);
+
+          // Line properties
+          str = elt.attribute ("stroke-width");
+          if (! str.isEmpty ())
+            {
+              double w = str.toDouble ();
+              if (w > 0)
+                pen.setWidthF (w);
+            }
+
+          str = elt.attribute ("stroke-linecap");
+          pen.setCapStyle (Qt::SquareCap);
+          if (str == "round")
+            pen.setCapStyle (Qt::RoundCap);
+          else if (str == "butt")
+            pen.setCapStyle (Qt::FlatCap);
+
+          str = elt.attribute ("stroke-linejoin");
+          pen.setJoinStyle (Qt::MiterJoin);
+          if (str == "round")
+            pen.setJoinStyle (Qt::RoundJoin);
+          else if (str == "bevel")
+            pen.setJoinStyle (Qt::BevelJoin);
+
+          str = elt.attribute ("stroke-dasharray");
+          pen.setStyle (Qt::SolidLine);
+          if (! str.isEmpty ())
+            {
+              QVector<double> pat = qstr2vectord (str);
+              if (pat.count () != 2 || pat[1] != 0)
+                {
+                  // Express pattern in linewidth units
+                  for (auto& p : pat)
+                    p /= pen.widthF ();
+
+                  pen.setDashPattern (pat);
+                }
+            }
+
+          painter.setPen (pen);
+          painter.drawPolyline (qstr2ptsvector (elt.attribute ("points")));
+        }
+      else if (elt.tagName () == "image")
+        {
+          // Images are represented as a base64 stream of png formatted data
+          QString href_att = elt.attribute ("xlink:href");
+          QString prefix ("data:image/png;base64,");
+          QByteArray data
+            = QByteArray::fromBase64 (href_att.mid (prefix.length ()).toLatin1 ());
+          QImage img;
+          if (img.loadFromData (data, "PNG"))
+            {
+              QRect pos(elt.attribute ("x").toInt (),
+                        elt.attribute ("y").toInt (),
+                        elt.attribute ("width").toInt (),
+                        elt.attribute ("height").toInt ());
+
+              // Translate
+              painter.save ();
+              QString str = get_field (elt.attribute ("transform"), "matrix");
+              if (! str.isEmpty ())
+                {
+                  QVector<double> m = qstr2vectorf (str);
+                  QTransform tform(m[0], m[1], m[2],
+                                   m[3], m[4], m[5]);
+                  painter.setTransform (tform);
+                }
+
+              painter.setRenderHint (QPainter::Antialiasing, false);
+              painter.drawImage (pos, img);
+              painter.setRenderHint (QPainter::Antialiasing, true);
+              painter.restore  ();
+            }
+        }
+      else if (elt.tagName () == "rect")
+        {
+          // Color
+          QColor col (Qt::black);
+          QString str = elt.attribute ("fill");
+          if (! str.isEmpty ())
+            col = QColor (str);
+
+          // Position
+          double x = elt.attribute ("x").toDouble ();
+          double y = elt.attribute ("y").toDouble ();
+
+          // Size
+          double wd = elt.attribute ("width").toDouble ();
+          double hg = elt.attribute ("height").toDouble ();
+
+          painter.setBrush (col);
+          painter.setPen (Qt::NoPen);
+
+          painter.drawRect (QRectF (x, y, wd, hg));
+        }
+      else if (elt.tagName () == "polygon")
+        {
+          if (! clippath_id.isEmpty ())
+            clippath[clippath_id] = qstr2ptsvectord (elt.attribute ("points"));
+          else
+            {
+              QString str = elt.attribute ("fill");
+              if (! str.isEmpty ())
+                {
+                  QColor color (str);
+
+                  str = elt.attribute ("fill-opacity");
+                  if (! str.isEmpty () && str.toDouble () != 1.0
+                      && str.toDouble () >= 0.0)
+                    color.setAlphaF (str.toDouble ());
+
+                  QPolygonF p (qstr2ptsvector (elt.attribute ("points")));
+
+                  if (p.count () > 2)
+                    {
+                      painter.setBrush (color);
+                      painter.setPen (Qt::NoPen);
+
+                      painter.setRenderHint (QPainter::Antialiasing, false);
+                      painter.drawPolygon (p);
+                      painter.setRenderHint (QPainter::Antialiasing, true);
+                    }
+                }
+            }
+        }
+    }
+}
+
 // Append a list of reconstructed child polygons to a QDomElement and remove
 // the original nodes
 
@@ -390,61 +815,6 @@ void reconstruct_polygons (QDomElement& parent_elt)
     replace_polygons (parent_elt, collection[ii].first, collection[ii].second);
 }
 
-// Split "text" elements into single characters elements
-void split_strings (QDomElement& parent_elt)
-{
-  QDomNodeList nodes = parent_elt.childNodes ();
-
-  for (int ii = 0; ii < nodes.count (); ii++)
-    {
-      QDomNode node = nodes.at (ii);
-
-      if (! node.isElement ())
-        continue;
-
-      QDomElement elt = node.toElement ();
-
-      if (elt.tagName () == "text")
-        {
-          QString str = elt.attribute ("x");
-          if (! str.isEmpty ())
-            {
-              QStringList xx = elt.attribute ("x").split (" ");
-              str = elt.text ();
-
-              if (! str.isEmpty () && xx.count () > 1)
-                {
-                  QDomNode last_node = node;
-
-                  for (int jj = 0; jj < (xx.count ()) && (jj < str.size ());
-                       jj++)
-                    {
-                      if (! last_node.isNull ())
-                        {
-                          QDomNode new_node = node.cloneNode ();
-                          new_node.toElement ().setAttribute ("x", xx.at (jj));
-
-                          QDomNodeList subnodes = new_node.childNodes ();
-
-                          // Change the text node of this element
-                          for (int kk = 0; kk < subnodes.count (); kk++)
-                            if (subnodes.at (kk).isText ())
-                              subnodes.at (kk).toText ().setData (str.at (jj));
-
-                          parent_elt.insertAfter (new_node, last_node);
-                          last_node = new_node;
-                        }
-                    }
-
-                  parent_elt.removeChild (node);
-                }
-            }
-        }
-      else
-        split_strings (elt);
-    }
-}
-
 int main(int argc, char *argv[])
 {
   const char *doc = "See \"octave-svgconvert -h\"";
@@ -488,7 +858,7 @@ read from stdin\n\
       // Read from stdin
       if (! file.open (stdin, QIODevice::ReadOnly | QIODevice::Text))
         {
-          std::cerr << "Unable read from stdin\n";
+          std::cerr << "Unable to read from stdin\n";
           std::cerr << doc;
           return -1;
         }
@@ -515,14 +885,9 @@ read from stdin\n\
       return -1;
     }
 
-  // Resolution
-  double dpi = QString (argv[3]).toDouble ();
-  if (dpi <= 0.0)
-    {
-      std::cerr << "DPI must be positive\n";
-      return -1;
-    }
-
+  // Resolution (Currently unused). Keep the DPI argument in case
+  // we implement raster outputs.
+  // double dpi = QString (argv[3]).toDouble ();
 
   // Get the viewport from the root element
   QDomElement root = document.firstChildElement();
@@ -568,18 +933,10 @@ read from stdin\n\
   // Draw
   if (! strcmp (argv[2], "pdf"))
     {
-      // Remove clippath which is not supported in svg-tiny
-      QDomNodeList lst = root.elementsByTagName ("clipPath");
-      for (int ii = lst.count (); ii > 0; ii--)
-        lst.at (ii-1).parentNode ().removeChild (lst.at (ii-1));
-
-      // Split text strings into single characters with single x coordinates
-      split_strings (root);
-
       // PDF painter
-      pdfpainter painter (fout.fileName (), vp, dpi);
+      pdfpainter painter (fout.fileName (), vp);
 
-      painter.render (document.toByteArray ());
+      draw (root, painter);
     }
   else
     {

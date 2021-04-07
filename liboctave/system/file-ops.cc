@@ -703,6 +703,11 @@ namespace octave
       std::string retval;
 
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+      // This is a work-around to allow running files in the current path if it
+      // contains characters that cannot be encoded in the locale charset.
+      if (name.compare (".") == 0)
+        return env::get_current_directory ();
+
       // On Windows, convert to locale charset before passing to
       // canonicalize_file_name, and convert back to UTF-8 after that.
 

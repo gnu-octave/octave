@@ -686,6 +686,15 @@ if $use_gnulib; then
       git clone $shallow ${GNULIB_URL:-$default_gnulib_url} "$gnulib_path" \
         || cleanup_gnulib
 
+    elif test -n "$GNULIB_REVISION" \
+         && ! git --git-dir="$gnulib_path"/.git cat-file \
+              commit "$GNULIB_REVISION"; then
+      # This is a local change in GNU Octave to allow automatic updates.
+      # This change has not (yet) been accepted upstream. Manually merge it
+      # when updating gnulib.
+      # See: https://lists.gnu.org/archive/html/bug-gnulib/2020-08/msg00150.html
+      git --git-dir="$gnulib_path"/.git fetch
+
       trap - 1 2 13 15
     fi
     GNULIB_SRCDIR=$gnulib_path

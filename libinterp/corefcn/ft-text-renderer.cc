@@ -823,12 +823,7 @@ namespace octave
       {
         glyph_index = FT_Get_Char_Index (face, code);
 
-
-// FIXME: Add rotated characters:
-//     FT_Set_Transform( face, &matrix, &pen );
-
         if (code != '\n' && code != '\t'
-
             && (! glyph_index
                 || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
           {

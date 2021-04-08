@@ -61,7 +61,28 @@ class gnuplot_graphics_toolkit : public octave::base_graphics_toolkit
 {
 public:
   gnuplot_graphics_toolkit (octave::interpreter& interp)
-    : octave::base_graphics_toolkit ("gnuplot"), m_interpreter (interp) { }
+    : octave::base_graphics_toolkit ("gnuplot"), m_interpreter (interp)
+  {
+    static bool warned = false;
+
+    if (! warned)
+      {
+        warning_with_id
+          ("Octave:gnuplot-graphics",
+           "using the gnuplot graphics toolkit is discouraged\n\
+\n\
+The gnuplot graphics toolkit is not actively maintained and has a number\n\
+of limitations that are ulikely to be fixed.  Communication with gnuplot\n\
+uses a one-directional pipe and limited information is passed back to the\n\
+Octave interpreter so most changes made interactively in the plot window\n\
+will not be reflected in the graphics properties managed by Octave.  For\n\
+example, if the plot window is closed with a mouse click, Octave will not\n\
+be notified and will not update it's internal list of open figure windows.\n\
+We recommend using the qt toolkit instead.\n");
+
+          warned = true;
+      }
+  }
 
   ~gnuplot_graphics_toolkit (void) = default;
 

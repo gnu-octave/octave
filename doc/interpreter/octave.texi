@@ -259,6 +259,11 @@ Command Line Editing
 * Customizing the Prompt::
 * Diary and Echo Commands::
 
+Executable Octave Programs
+
+* Passing Arguments to Executable Scripts::
+* Dual-Purpose Executable Scripts and Octave Functions::
+
 Comments
 
 * Single Line Comments::

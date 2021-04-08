@@ -6152,7 +6152,7 @@ DEFUN (uplus, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} uplus (@var{x})
 This function and @w{@tcode{+ @var{x}}} are equivalent.
-@seealso{uminus, plus, minus}
+@seealso{uminus, plus}
 @end deftypefn */)
 {
   return unary_op_defun_body (octave_value::op_uplus, args);
@@ -6173,7 +6173,7 @@ DEFUN (transpose, args, ,
 @deftypefn {} {} transpose (@var{x})
 Return the transpose of @var{x}.
 
-This function and @tcode{@var{x}.'} are equivalent.
+This function and @tcode{@var{x}.'@:} are equivalent.
 @seealso{ctranspose}
 @end deftypefn */)
 {

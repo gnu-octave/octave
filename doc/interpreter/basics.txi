@@ -1047,6 +1047,14 @@ not possible for Octave to determine whether it has been called from the
 command line or from a @samp{#!} script, so some care is needed when using the
 @samp{#!} mechanism.
 
+@menu
+* Passing Arguments to Executable Scripts::
+* Dual-Purpose Executable Scripts and Octave Functions::
+@end menu
+
+@node Passing Arguments to Executable Scripts
+@subsection Passing Arguments to Executable Scripts
+
 Note that when Octave is started from an executable script, the built-in
 function @code{argv} returns a cell array containing the command line
 arguments passed to the executable Octave script, not the arguments
@@ -1064,6 +1072,47 @@ for i = 1:nargin
 endfor
 printf ("\n");
 @end group
+@end example
+
+@node Dual-Purpose Executable Scripts and Octave Functions
+@subsection Dual-Purpose Executable Scripts and Octave Functions
+
+To write m-files that can act as executable programs when called from the shell
+or as normal functions when called from within Octave, use default input
+arguments initialized with the @code{argv} function.  
+
+If a function is called from the shell Octave will not pass any input
+parameters to the function and therefore the default argument is used.  But
+when a function is called from the interpreter any arguments @emph{are} passed
+to the function and these override the default.
+
+Additionally, the file must end with the extension @file{.m} so that the
+interpreter will recognize it as an Octave function.  Finally, the output from
+@code{argv} is a cell array of strings.  It may be necessary to convert this
+to a numeric value with @code{str2double} or @code{str2num} before processing.
+
+As a complete example, consider the following code located in the file
+@file{mysin.m}.
+
+@example
+@group
+#! /bin/octave -qf
+function retval = mysin (x = str2double (argv()@{end@}))
+  retval = sin (x)
+endfunction
+@end group
+@end example
+
+This can be called from the shell with
+
+@example
+mysin.m 1.5
+@end example
+
+or from Octave with
+
+@example
+mysin (1.5)
 @end example
 
 @node Comments

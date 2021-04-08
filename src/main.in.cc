@@ -222,7 +222,6 @@ main (int argc, char **argv)
 
   bool eval_code = false;
   bool persist_octave = false;
-  bool experimental_terminal_widget = false;
 
   set_octave_home ();
 

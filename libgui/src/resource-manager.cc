@@ -47,6 +47,7 @@
 #include <QTextCodec>
 
 #include "QTerminal.h"
+#include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-global.h"
 #include "octave-qobject.h"
@@ -64,19 +65,6 @@
 
 namespace octave
 {
-  static QString
-  default_qt_settings_file (void)
-  {
-    std::string dsf = sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
-
-    if (dsf.empty ())
-      dsf = (config::oct_etc_dir ()
-             + sys::file_ops::dir_sep_str ()
-             + "default-qt-settings");
-
-    return QString::fromStdString (dsf);
-  }
-
   resource_manager::resource_manager (void)
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
       m_default_settings (nullptr), m_temporary_files ()
@@ -287,59 +275,45 @@ namespace octave
 
   void resource_manager::reload_settings (void)
   {
+    // Declare some empty options, which may be set at first startup for
+    // writing them into the newly created settings file
+    QString custom_editor;
+    QStringList def_font;
+
+    // Check whether the settings file does not yet exist
     if (! QFile::exists (m_settings_file))
       {
-        QDir ("/").mkpath (m_settings_directory);
-        QFile qt_settings (default_qt_settings_file ());
+        // Get the default font (for terminal)
+        def_font = get_default_font ();
 
-        if (! qt_settings.open (QFile::ReadOnly))
-          return;
-
-        QTextStream in (&qt_settings);
-        QString settings_text = in.readAll ();
-        qt_settings.close ();
-
-        // Get the default font
-        QStringList def_font = get_default_font ();
-
-        // Get the default custom editor
-#if defined (Q_OS_WIN32)
-        QString custom_editor = "notepad++ -n%l %f";
-#else
-        QString custom_editor = "emacs +%l %f";
-#endif
-
+        // Get a custom editor defined as env variable
         std::string env_default_editor
           = sys::env::getenv ("OCTAVE_DEFAULT_EDITOR");
 
         if (! env_default_editor.empty ())
           custom_editor = QString::fromStdString (env_default_editor);
-
-        // Replace placeholders
-        settings_text.replace ("__default_custom_editor__", custom_editor);
-        settings_text.replace ("__default_font__", def_font.at(0));
-        settings_text.replace ("__default_font_size__", def_font.at (1));
-
-        QFile user_settings (m_settings_file);
-
-        if (! user_settings.open (QIODevice::WriteOnly))
-          return;
-
-        QTextStream out (&user_settings);
-
-        out << settings_text;
-
-        user_settings.close ();
       }
 
     set_settings (m_settings_file);
 
-    // Write the default monospace font into the settings for later use by
-    // console and editor as fallbacks of their font preferences.
+    // Write some settings that were dynamically determined at first startup
     if (m_settings)
-      m_settings->setValue (global_mono_font.key,
-                            get_default_font_family ());
+      {
+        // Custom editor
+        if (! custom_editor.isEmpty ())
+          m_settings->setValue (global_custom_editor.key, custom_editor);
 
+        // Default monospace font for the terminal
+        if (def_font.count () > 1)
+          {
+            m_settings->setValue (cs_font.key, def_font[0]);
+            m_settings->setValue (cs_font_size.key, def_font[1].toInt ());
+          }
+
+        // Write the default monospace font into the settings for later use by
+        // console and editor as fallbacks of their font preferences.
+        m_settings->setValue (global_mono_font.key, get_default_font_family ());
+      }
   }
 
 #if defined (HAVE_QSCINTILLA)
@@ -439,6 +413,13 @@ namespace octave
     delete m_settings;
     m_settings = new gui_settings (file, QSettings::IniFormat);
 
+    if (m_settings->status () == QSettings::NoError)
+      {
+        // Test usability (force file to be really created)
+        m_settings->setValue ("dummy", 0);
+        m_settings->sync ();
+      }
+
     if (! (QFile::exists (m_settings->fileName ())
            && m_settings->isWritable ()
            && m_settings->status () == QSettings::NoError))
@@ -455,6 +436,8 @@ namespace octave
 
         exit (1);
       }
+    else
+      m_settings->remove ("dummy"); // Remove test entry
   }
 
   bool resource_manager::update_settings_key (const QString& old_key,

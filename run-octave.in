@@ -111,7 +111,6 @@ fi
 
 OCTAVE_ARCHLIBDIR="$builddir/src"; export OCTAVE_ARCHLIBDIR
 OCTAVE_BINDIR="$builddir/src"; export OCTAVE_BINDIR
-OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings"; export OCTAVE_DEFAULT_QT_SETTINGS
 OCTAVE_FONTS_DIR="$top_srcdir/etc/fonts"; export OCTAVE_FONTS_DIR
 OCTAVE_JAVA_DIR="$builddir/scripts/java"; export OCTAVE_JAVA_DIR
 OCTAVE_LOCALE_DIR="$builddir/libgui/languages"; export OCTAVE_LOCALE_DIR

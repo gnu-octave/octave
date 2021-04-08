@@ -115,8 +115,14 @@ global_restore_ov_dir ("restore_octave_dir", QVariant (false));
 
 const gui_pref
 global_use_custom_editor ("useCustomFileEditor", QVariant (false));
+
+#if defined (Q_OS_WIN32)
+const gui_pref
+global_custom_editor ("customFileEditor", QVariant ("notepad++ -n%l %f"));
+#else
 const gui_pref
 global_custom_editor ("customFileEditor", QVariant ("emacs +%l %f"));
+#endif
 
 const gui_pref
 global_prompt_to_exit ("prompt_to_exit", QVariant (false));

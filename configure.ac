@@ -3070,7 +3070,6 @@ AC_CONFIG_COMMANDS([oct-conf-post.h],
   [$SHELL $srcdir/build-aux/move-if-change oct-conf-post.h-tmp oct-conf-post.h])
 
 OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
-  libgui/mk-default-qt-settings.sh
   liboctave/external/mk-f77-def.sh
   liboctave/mk-version-h.sh
   libinterp/corefcn/mk-mxtypes-h.sh

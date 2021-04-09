@@ -152,21 +152,11 @@ Undocumented internal function.
 
   boolT ismalloc = false;
 
-  // Replace the outfile pointer with stdout for debugging information.
-#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-  FILE *outfile = std::fopen ("NUL", "w");
-#else
-  FILE *outfile = std::fopen ("/dev/null", "w");
-#endif
+  // Set the outfile pointer to stdout for status information.
+  FILE *outfile = nullptr;
   FILE *errfile = stderr;
 
-  if (! outfile)
-    error ("__voronoi__: unable to create temporary file for output");
-
-  octave::unwind_action close_outfile ([outfile] () { std::fclose (outfile); });
-
   // qh_new_qhull command and points arguments are not const...
-
   std::string cmd = "qhull v" + options;
 
   OCTAVE_LOCAL_BUFFER (char, cmd_str, cmd.length () + 1);

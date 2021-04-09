@@ -160,19 +160,21 @@ Undocumented internal function.
 
       sprintf (flags, "qhull d %s", options.c_str ());
 
-      // Replace the outfile pointer with stdout for debugging information.
+      // Set the outfile pointer to stdout for status information.
+      FILE *outfile = nullptr;
+
+      // Set the errfile pointer to stderr for errors and summary information.
+      // Note: pointer cannot be NULL to disable reporting, unlike outfile.
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-      FILE *outfile = std::fopen ("NUL", "w");
+      FILE *errfile = std::fopen ("NUL", "w");
 #else
-      FILE *outfile = std::fopen ("/dev/null", "w");
+      FILE *errfile = std::fopen ("/dev/null", "w");
 #endif
-      FILE *errfile = stderr;
 
-      if (! outfile)
-        error ("__delaunayn__: unable to create temporary file for output");
+      if (! errfile)
+        error ("__delaunayn__: unable to redirect Qhull errors to /dev/null");
 
-      octave::unwind_action close_outfile
-        ([outfile] () { std::fclose (outfile); });
+      octave::unwind_action close_errfile ([=] () { std::fclose (errfile); });
 
       int exitcode = qh_new_qhull (dim, n, pt_array,
                                    ismalloc, flags, outfile, errfile);

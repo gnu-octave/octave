@@ -36,17 +36,12 @@
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
-#  include <shlwapi.h>
-#endif
-
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-#  include <algorithm>
-#  include "localcharset-wrapper.h"
-#  include "uniconv-wrappers.h"
+#  include "unwind-prot.h"
+#else
+#  include "canonicalize-file-name-wrapper.h"
 #endif
 
 #include "areadlink-wrapper.h"
-#include "canonicalize-file-name-wrapper.h"
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -702,49 +697,45 @@ namespace octave
 
       std::string retval;
 
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-      // This is a work-around to allow running files in the current path if it
-      // contains characters that cannot be encoded in the locale charset.
-      if (name.compare (".") == 0)
-        return env::get_current_directory ();
+      // FIXME:  Consider replacing this with std::filesystem::canonical on all
+      // platforms once we allow using C++17.
 
-      // On Windows, convert to locale charset before passing to
-      // canonicalize_file_name, and convert back to UTF-8 after that.
+#if defined (OCTAVE_USE_WINDOWS_API)
+      // open file handle
+      std::wstring wname = u8_to_wstring (name);
+      HANDLE h_file = CreateFileW (wname.c_str (), GENERIC_READ,
+                                   FILE_SHARE_READ, nullptr, OPEN_EXISTING,
+                                   FILE_FLAG_BACKUP_SEMANTICS, nullptr);
 
-      // FIXME: This only allows non-ASCII characters in the file or path that
-      // can be encoded in the locale charset.
-      // Consider replacing this with std::filesystem::canonical once we allow
-      // using C++17.
-
-      const char *locale = octave_locale_charset_wrapper ();
-      const uint8_t *name_u8 = reinterpret_cast<const uint8_t *>
-                                 (name.c_str ());
-      size_t length = 0;
-      char *name_locale = octave_u8_conv_to_encoding (locale, name_u8,
-                                                      name.length () + 1,
-                                                      &length);
-
-      if (name_locale)
+      if (h_file == INVALID_HANDLE_VALUE)
         {
-          char *tmp_locale =
-            octave_canonicalize_file_name_wrapper (name_locale);
-          free (name_locale);
-
-          if (tmp_locale)
-            {
-              char *tmp = reinterpret_cast<char *>
-                            (octave_u8_conv_from_encoding (locale, tmp_locale,
-                                                           strlen (tmp_locale),
-                                                           &length));
-              free (tmp_locale);
-
-              if (tmp)
-                {
-                  retval = std::string (tmp, length);
-                  free (tmp);
-                }
-            }
+          msg = "Unable to open file \"" + name + "\"";
+          return retval;
         }
+
+      octave::unwind_action close_file_handle (CloseHandle, h_file);
+
+      const size_t buf_size = 32767;
+      wchar_t buffer[buf_size] = L"";
+
+      // query canonical name
+      DWORD len = GetFinalPathNameByHandleW (h_file, buffer, buf_size,
+                                             FILE_NAME_NORMALIZED);
+      if (len >= buf_size)
+      {
+          msg = "Error querying normalized name for \"" + name + "\"";
+          return retval;
+      }
+
+      retval = u8_from_wstring (std::wstring (buffer, len));
+
+      // remove prefix
+      // "Normal" paths are prefixed by "\\?\".
+      // UNC paths are prefixed by "\\?\UNC\".
+      if (retval.compare (0, 8, R"(\\?\UNC\)") == 0)
+        retval = retval.erase (2, 6);
+      else
+        retval = retval.erase (0, 4);
 #else
       char *tmp = octave_canonicalize_file_name_wrapper (name.c_str ());
 
@@ -753,63 +744,10 @@ namespace octave
           retval = tmp;
           free (tmp);
         }
-#endif
-
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-      // Canonical Windows file separator is backslash.
-      std::replace (retval.begin (), retval.end (), '/', '\\');
-#endif
-
-#if defined (OCTAVE_USE_WINDOWS_API)
-      std::wstring w_tmp;
-      bool strip_marker = true;
-      if (retval.empty ())
-        {
-          // For UNC paths, take the input as is.
-          // Also translate forward slashes to backslashes.
-          std::string name_backsl = name;
-          std::replace (name_backsl.begin (), name_backsl.end (), '/', '\\');
-          if (name_backsl.compare (0, 2, "\\\\") == 0)
-            {
-              w_tmp = u8_to_wstring (name_backsl);
-              strip_marker = false;
-              wchar_t canon_path[MAX_PATH];
-              if (PathCanonicalizeW (canon_path, w_tmp.c_str ()))
-                w_tmp = std::wstring (canon_path);
-            }
-        }
-      else
-        w_tmp = L"\\\\?\\" + u8_to_wstring (retval);
-
-      if (! w_tmp.empty ())
-        {
-          // Get a more canonical name wrt case and full names
-          // FIXME: To make this work on partitions that don't store short file
-          // names, use FindFirstFileW on each component of the path.
-          // Insufficient access permissions on parent folders might make this
-          // tricky.
-
-          // Parts of the path that wouldn't fit into a short 8.3 file name are
-          // copied as is by GetLongPathNameW.  To also get the correct case
-          // for these parts, first convert to short file names and than back
-          // to long.
-          wchar_t buffer[32767] = L"";
-          int w_len = GetShortPathNameW (w_tmp.c_str (), buffer, 32767);
-          w_len = GetLongPathNameW (buffer, buffer, 32767);
-
-          if (! strip_marker)
-            retval = u8_from_wstring (std::wstring (buffer, w_len));
-          else if (w_len > 4)
-            retval = u8_from_wstring (std::wstring (buffer+4, w_len-4));
-
-          // If root is a drive, use an upper case letter for the drive letter.
-          if (retval.length () > 1 && retval[1] == ':')
-            retval[0] = toupper (retval[0]);
-        }
-#endif
 
       if (retval.empty ())
         msg = std::strerror (errno);
+#endif
 
       return retval;
     }

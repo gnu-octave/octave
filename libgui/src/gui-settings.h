@@ -138,6 +138,21 @@ const QString settings_color_modes_tooltip = QT_TRANSLATE_NOOP (
     "Useful for defining a dark/light mode.\n"
     "Discards non-applied current changes!");
 const QStringList settings_color_modes_ext (QStringList () << "" << "_2");
-
+// Reset colors (reload default values)
+const QString settings_reload_colors = QT_TRANSLATE_NOOP (
+    "octave::settings_dialog",
+    "&Reload default colors");
+const QString settings_reload_colors_tooltip = QT_TRANSLATE_NOOP (
+    "octave::settings_dialog",
+    "Reloads the default colors,\n"
+    "depending on currently selected mode.");
+const QString settings_reload_styles = QT_TRANSLATE_NOOP (
+    "octave::settings_dialog",
+    "&Reload default styles");
+const QString settings_reload_styles_tooltip = QT_TRANSLATE_NOOP (
+    "octave::settings_dialog",
+    "Reloads the default values of the styles,\n"
+    "depending on currently selected mode.");
+const int settings_reload_default_colors_flag = -1;
 #endif
 

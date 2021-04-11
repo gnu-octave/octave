@@ -454,16 +454,30 @@ namespace octave
 #if defined (HAVE_QSCINTILLA)
 
     int ed_mode = settings->value (ed_color_mode).toInt ();
-    editor_cb_color_mode->setText (settings_color_modes);
-    editor_cb_color_mode->setToolTip (settings_color_modes_tooltip);
-    editor_cb_color_mode->setChecked (ed_mode > 0);
+
+    QCheckBox *cb_color_mode = new QCheckBox (settings_color_modes,
+                                              group_box_editor_styles);
+    cb_color_mode->setToolTip (settings_color_modes_tooltip);
+    cb_color_mode->setChecked (ed_mode > 0);
+    cb_color_mode->setObjectName (ed_color_mode.key);
+
+    QPushButton *pb_reload_default_colors = new QPushButton (settings_reload_styles);
+    pb_reload_default_colors->setToolTip (settings_reload_styles_tooltip);
+
+    editor_style_grid->addWidget (cb_color_mode, 0, 0);
+    editor_style_grid->addWidget (pb_reload_default_colors, 0, 1);
+    editor_style_grid->addItem (new QSpacerItem (5,5,QSizePolicy::Expanding), 0, 2);
+
+
 
     // update colors depending on second theme selection
-    connect (editor_cb_color_mode, SIGNAL (stateChanged (int)),
+    connect (cb_color_mode, SIGNAL (stateChanged (int)),
              this, SLOT (update_editor_lexers (int)));
+    connect (pb_reload_default_colors, &QPushButton::clicked,
+             [=] () { update_editor_lexers (settings_reload_default_colors_flag); });
 
     // finally read the lexer colors using the update slot
-    update_editor_lexers (ed_mode);
+    update_editor_lexers ();
 
 #endif
 
@@ -607,12 +621,15 @@ namespace octave
     scmgr.import_export (shortcut_manager::OSC_DEFAULT);
   }
 
-  void settings_dialog::update_editor_lexers (int mode)
+  void settings_dialog::update_editor_lexers (int def)
   {
 #if defined (HAVE_QSCINTILLA)
-     int m = mode;
-     if (m > 1)
-       m = 1;
+    QCheckBox *cb_color_mode
+      = group_box_editor_styles->findChild <QCheckBox *> (ed_color_mode.key);
+
+    int m = 0;
+    if (cb_color_mode && cb_color_mode->isChecked ())
+      m = 1;
 
     // editor styles: create lexer, read settings, and
     // create or update dialog elements
@@ -623,54 +640,56 @@ namespace octave
 
 #if defined (HAVE_LEXER_OCTAVE)
     lexer = new QsciLexerOctave ();
-    update_lexer (lexer, settings, m);
+    update_lexer (lexer, settings, m, def);
     delete lexer;
 #elif defined (HAVE_LEXER_MATLAB)
     lexer = new QsciLexerMatlab ();
-    update_lexer (lexer, settings, m);
+    update_lexer (lexer, settings, m, def);
     delete lexer;
 #endif
 
     lexer = new QsciLexerCPP ();
-    update_lexer (lexer, settings, m);
+    update_lexer (lexer, settings, m, def);
     delete lexer;
 
     lexer = new QsciLexerJava ();
-    update_lexer (lexer, settings, m);
+    update_lexer (lexer, settings, m, def);
     delete lexer;
 
     lexer = new QsciLexerPerl ();
-    update_lexer (lexer, settings, m);
+    update_lexer (lexer, settings, m, def);
     delete lexer;
 
     lexer = new QsciLexerBatch ();
-    update_lexer (lexer, settings, m);
+    update_lexer (lexer, settings, m, def);
     delete lexer;
 
     lexer = new QsciLexerDiff ();
-    update_lexer (lexer, settings, m);
+    update_lexer (lexer, settings, m, def);
     delete lexer;
 
     lexer = new QsciLexerBash ();
-    update_lexer (lexer, settings, m);
+    update_lexer (lexer, settings, m, def);
     delete lexer;
 
     lexer = new octave_txt_lexer ();
-    update_lexer (lexer, settings, m);
+    update_lexer (lexer, settings, m, def);
     delete lexer;
 #endif
   }
 
 #if defined (HAVE_QSCINTILLA)
 
-  void settings_dialog::update_lexer (QsciLexer *lexer,
-                                      gui_settings *settings, int mode)
+  void settings_dialog::update_lexer (QsciLexer *lexer, gui_settings *settings,
+                                      int mode, int def)
   {
     // Get lexer settings and copy from default settings if not yet
     // available in normal settings file
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    rmgr.read_lexer_settings (lexer, settings, mode);
+    rmgr.read_lexer_settings (lexer, settings, mode, def);
 
+    // When reloading default styles, the style tabs do already exists.
+    // Otherwise, check if they exist or not.
     QString lexer_name = lexer->language ();
 
     int index = -1;
@@ -691,16 +710,18 @@ namespace octave
         return;
       }
 
-    // Update the color picker in all styles
+    // Update the styles elements in all styles
     int styles[ed_max_lexer_styles];  // array for saving valid styles
     int max_style = rmgr.get_valid_lexer_styles (lexer, styles);
     QWidget *tab = tabs_editor_lexers->widget (index);
-    color_picker *color, *bg_color;
+    int default_size = 0;
+    QString default_family;
 
     for (int i = 0; i < max_style; i++)  // create dialog elements for all styles
       {
         QString actual_name = lexer->description (styles[i]);
-        bg_color = tab->findChild <color_picker *> (actual_name + "_bg_color");
+        color_picker *bg_color
+          = tab->findChild <color_picker *> (actual_name + "_bg_color");
         if (bg_color)
           {
             // Update
@@ -715,9 +736,49 @@ namespace octave
               }
           }
 
-        color = tab->findChild <color_picker *> (actual_name + "_color");
+        color_picker *color = tab->findChild <color_picker *> (actual_name + "_color");
         if (color)
           color->set_color (lexer->color (styles[i]));
+
+        QFont font = lexer->font (styles[i]);
+
+        QCheckBox *cb = tab->findChild <QCheckBox *> (actual_name + "_bold");
+        if (cb)
+          cb->setChecked (font.bold ());
+        cb = tab->findChild <QCheckBox *> (actual_name + "_italic");
+        if (cb)
+          cb->setChecked (font.italic ());
+        cb = tab->findChild <QCheckBox *> (actual_name + "_underline");
+        if (cb)
+          cb->setChecked (font.underline ());
+
+        QFontComboBox *fcb = tab->findChild <QFontComboBox *> (actual_name + "_font");
+        if (fcb)
+          {
+            if (styles[i] == 0)
+              {
+                default_family = font.family ();
+                fcb->setEditText (default_family);
+              }
+            else
+              {
+                if (font.family () == default_family)
+                  fcb->setEditText (lexer->description (0));
+                else
+                  fcb->setEditText (font.family ());
+              }
+          }
+        QSpinBox *fs = tab->findChild <QSpinBox *> (actual_name + "_size");
+        if (fs)
+          {
+            if (styles[i] == 0)
+              {
+                default_size = font.pointSize ();
+                fs->setValue (default_size);
+              }
+            else
+              fs->setValue (font.pointSize () - default_size);
+          }
       }
 
   }
@@ -817,9 +878,17 @@ namespace octave
   }
 
   void settings_dialog::write_lexer_settings (QsciLexer *lexer,
-                                              gui_settings *settings, int mode)
+                                              gui_settings *settings)
   {
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    QCheckBox *cb_color_mode
+      = group_box_editor_styles->findChild <QCheckBox *> (ed_color_mode.key);
+    int mode = 0;
+    if (cb_color_mode && cb_color_mode->isChecked ())
+      mode = 1;
+
+    settings->setValue (ed_color_mode.key, mode);
 
     QWidget *tab = tabs_editor_lexers->
       findChild <QWidget *> (QString (lexer->language ()) + "_styles");
@@ -896,11 +965,7 @@ namespace octave
           }
       }
 
-    int m = mode;
-    if (m > 1)
-      m = 1;
-
-    const char* group = QString ("Scintilla" + settings_color_modes_ext[m])
+    const char* group = QString ("Scintilla" + settings_color_modes_ext[mode])
                                 .toStdString ().c_str ();
 
     lexer->writeSettings (*settings, group);
@@ -970,11 +1035,6 @@ namespace octave
     settings->setValue (global_ov_startup_dir.key, le_octave_dir->text ());
 
     //editor
-    int ed_mode = 0;
-    if (editor_cb_color_mode->isChecked ())
-      ed_mode = 1;
-    settings->setValue (ed_color_mode.key, ed_mode);
-
     settings->setValue (global_use_custom_editor.key, useCustomFileEditor->isChecked ());
     settings->setValue (global_custom_editor.key, customFileEditor->text ());
     settings->setValue (ed_show_line_numbers.key, editor_showLineNumbers->isChecked ());
@@ -1084,43 +1144,43 @@ namespace octave
 #if defined (HAVE_LEXER_OCTAVE)
 
     lexer = new QsciLexerOctave ();
-    write_lexer_settings (lexer, settings, ed_mode);
+    write_lexer_settings (lexer, settings);
     delete lexer;
 
 #elif defined (HAVE_LEXER_MATLAB)
 
     lexer = new QsciLexerMatlab ();
-    write_lexer_settings (lexer, settings, ed_mode);
+    write_lexer_settings (lexer, settings);
     delete lexer;
 
 #endif
 
     lexer = new QsciLexerCPP ();
-    write_lexer_settings (lexer, settings, ed_mode);
+    write_lexer_settings (lexer, settings);
     delete lexer;
 
     lexer = new QsciLexerJava ();
-    write_lexer_settings (lexer, settings, ed_mode);
+    write_lexer_settings (lexer, settings);
     delete lexer;
 
     lexer = new QsciLexerPerl ();
-    write_lexer_settings (lexer, settings, ed_mode);
+    write_lexer_settings (lexer, settings);
     delete lexer;
 
     lexer = new QsciLexerBatch ();
-    write_lexer_settings (lexer, settings, ed_mode);
+    write_lexer_settings (lexer, settings);
     delete lexer;
 
     lexer = new QsciLexerDiff ();
-    write_lexer_settings (lexer, settings, ed_mode);
+    write_lexer_settings (lexer, settings);
     delete lexer;
 
     lexer = new QsciLexerBash ();
-    write_lexer_settings (lexer, settings, ed_mode);
+    write_lexer_settings (lexer, settings);
     delete lexer;
 
     lexer = new octave_txt_lexer ();
-    write_lexer_settings (lexer, settings, ed_mode);
+    write_lexer_settings (lexer, settings);
     delete lexer;
 
 #endif
@@ -1179,7 +1239,13 @@ namespace octave
     cb_color_mode->setObjectName (ws_color_mode.key);
     connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
              cb_color_mode, SLOT (setEnabled (bool)));
-    style_grid->addWidget (cb_color_mode, row, column++);
+    style_grid->addWidget (cb_color_mode, row, column);
+
+    QPushButton *pb_reload_default_colors = new QPushButton (settings_reload_colors);
+    pb_reload_default_colors->setToolTip (settings_reload_colors_tooltip);
+    connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
+             pb_reload_default_colors, SLOT (setEnabled (bool)));
+    style_grid->addWidget (pb_reload_default_colors, row+1, column++);
 
     bool colors_enabled = settings->value (ws_enable_colors).toBool ();
 
@@ -1214,20 +1280,27 @@ namespace octave
     m_ws_enable_colors->setChecked (colors_enabled);
     m_ws_hide_tool_tips->setEnabled (colors_enabled);
     cb_color_mode->setEnabled (colors_enabled);
+    pb_reload_default_colors->setEnabled (colors_enabled);
 
     // place grid with elements into the tab
     workspace_colors_box->setLayout (style_grid);
 
-    // update colors depending on second theme selection
+    // update colors depending on second theme selection or reloading
+    // the dfault values
     connect (cb_color_mode, SIGNAL (stateChanged (int)),
              this, SLOT (update_workspace_colors (int)));
+    connect (pb_reload_default_colors, &QPushButton::clicked,
+             [=] () { update_workspace_colors (settings_reload_default_colors_flag); });
   }
 
-  void settings_dialog::update_workspace_colors (int mode)
+  void settings_dialog::update_workspace_colors (int def)
   {
-    int m = mode;
-    if (m > 1)
-      m = 1; // Currently one more color mode
+    QCheckBox *cb_color_mode
+      = workspace_colors_box->findChild <QCheckBox *> (ws_color_mode.key);
+
+    int m = 0;
+    if (cb_color_mode && cb_color_mode->isChecked ())
+      m = 1;
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
@@ -1238,7 +1311,18 @@ namespace octave
       {
         c_picker = workspace_colors_box->findChild <color_picker *> (ws_colors[i].key);
         if (c_picker)
-          c_picker->set_color (settings->color_value (ws_colors[i], m));
+          {
+            if (def != settings_reload_default_colors_flag)
+              {
+                // Get current value from settings or the default
+                c_picker->set_color (settings->color_value (ws_colors[i], m));
+              }
+            else
+              {
+                // Get the default value
+                c_picker->set_color (settings->get_color_value (ws_colors[i].def, m));
+              }
+          }
       }
   }
 
@@ -1282,6 +1366,10 @@ namespace octave
     cb_color_mode->setObjectName (cs_color_mode.key);
     style_grid->addWidget (cb_color_mode, 0, 0);
 
+    QPushButton *pb_reload_default_colors = new QPushButton (settings_reload_colors);
+    pb_reload_default_colors->setToolTip (settings_reload_colors_tooltip);
+    style_grid->addWidget (pb_reload_default_colors, 1, 0);
+
     int column = 1;               // column 0 is for the color mode checkbox
     const int color_columns = 2;  // place colors in so many columns
     int row = 0;
@@ -1310,13 +1398,18 @@ namespace octave
     // update colors depending on second theme selection
     connect (cb_color_mode, SIGNAL (stateChanged (int)),
              this, SLOT (update_terminal_colors (int)));
+    connect (pb_reload_default_colors, &QPushButton::clicked,
+             [=] () { update_terminal_colors (settings_reload_default_colors_flag); });
   }
 
-  void settings_dialog::update_terminal_colors (int mode)
+  void settings_dialog::update_terminal_colors (int def)
   {
-    int m = mode;
-    if (m > 1)
-      m = 1; // Currently one more color mode
+    QCheckBox *cb_color_mode
+      = terminal_colors_box->findChild <QCheckBox *> (cs_color_mode.key);
+
+    int m = 0;
+    if (cb_color_mode && cb_color_mode->isChecked ())
+      m = 1;
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
@@ -1327,7 +1420,18 @@ namespace octave
       {
         c_picker = terminal_colors_box->findChild <color_picker *> (cs_colors[i].key);
         if (c_picker)
-          c_picker->set_color (settings->color_value (cs_colors[i], m));
+          {
+            if (def != settings_reload_default_colors_flag)
+              {
+                // Get current value from settings or the default
+                c_picker->set_color (settings->color_value (cs_colors[i], m));
+              }
+            else
+              {
+                // Get the default value
+                c_picker->set_color (settings->get_color_value (cs_colors[i].def, m));
+              }
+          }
       }
   }
 
@@ -1368,6 +1472,10 @@ namespace octave
     cb_color_mode->setObjectName (ve_color_mode.key);
     style_grid->addWidget (cb_color_mode, 0, 0);
 
+    QPushButton *pb_reload_default_colors = new QPushButton (settings_reload_colors);
+    pb_reload_default_colors->setToolTip (settings_reload_colors_tooltip);
+    style_grid->addWidget (pb_reload_default_colors, 1, 0);
+
     int column = 1;
     int color_columns = 2;
     int row = 0;
@@ -1397,13 +1505,18 @@ namespace octave
     // update colors depending on second theme selection
     connect (cb_color_mode, SIGNAL (stateChanged (int)),
              this, SLOT (update_varedit_colors (int)));
+    connect (pb_reload_default_colors, &QPushButton::clicked,
+             [=] () { update_varedit_colors (settings_reload_default_colors_flag); });
   }
 
-  void settings_dialog::update_varedit_colors (int mode)
+  void settings_dialog::update_varedit_colors (int def)
   {
-    int m = mode;
-    if (m > 1)
-      m = 1; // Currently one more color mode
+    QCheckBox *cb_color_mode
+      = varedit_colors_box->findChild <QCheckBox *> (ve_color_mode.key);
+
+    int m = 0;
+    if (cb_color_mode && cb_color_mode->isChecked ())
+      m = 1;
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
@@ -1414,7 +1527,18 @@ namespace octave
       {
         c_picker = varedit_colors_box->findChild <color_picker *> (ve_colors[i].key);
         if (c_picker)
-          c_picker->set_color (settings->color_value (ve_colors[i], m));
+          {
+            if (def != settings_reload_default_colors_flag)
+              {
+                // Get current value from settings or the default
+                c_picker->set_color (settings->color_value (ve_colors[i], m));
+              }
+            else
+              {
+                // Get the default value
+                c_picker->set_color (settings->get_color_value (ve_colors[i].def, m));
+              }
+          }
       }
   }
 

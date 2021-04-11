@@ -82,7 +82,8 @@ namespace octave
 
 #if defined (HAVE_QSCINTILLA)
     int get_valid_lexer_styles (QsciLexer *lexer, int *styles);
-    void read_lexer_settings (QsciLexer *lexer, gui_settings *settings, int mode = 0);
+    void read_lexer_settings (QsciLexer *lexer, gui_settings *settings,
+                              int mode = 0, int def = 0);
 #endif
 
     void set_settings (const QString& file);

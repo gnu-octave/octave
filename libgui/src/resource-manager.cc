@@ -352,7 +352,8 @@ namespace octave
 
 #if defined (HAVE_QSCINTILLA)
   void resource_manager::read_lexer_settings (QsciLexer *lexer,
-                                              gui_settings *settings, int mode)
+                                              gui_settings *settings,
+                                              int mode, int def)
   {
     // Test whether the settings for lexer is already contained in the
     // given gui settings file. If yes, load them, if not copy them from the
@@ -373,9 +374,9 @@ namespace octave
     settings->endGroup ();
     settings->endGroup ();
 
-    if (lexer_keys.count () == 0)
+    if (def == settings_reload_default_colors_flag || lexer_keys.count () == 0)
       {
-        // No Lexer keys found:
+        // We have to reload the default values or no Lexer keys found:
         // If mode == 0, take all settings except font from default lexer
         // If Mode == 1, take all settings except font from default lexer
         //               and convert the color by inverting the lightness
@@ -404,8 +405,12 @@ namespace octave
         lexer->setDefaultColor (lexer->color (styles[0]));
         lexer->setDefaultPaper (lexer->paper (styles[0]));
 
-        lexer->writeSettings (*settings, group.toStdString ().c_str ());
-        settings->sync ();
+        // Write settings if not just reload the default values
+        if (def != settings_reload_default_colors_flag)
+          {
+            lexer->writeSettings (*settings, group.toStdString ().c_str ());
+            settings->sync ();
+          }
       }
     else
       {

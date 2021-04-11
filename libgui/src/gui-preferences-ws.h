@@ -76,8 +76,8 @@ ws_color_mode ("workspaceview/color_mode", QVariant (0));
 const int ws_colors_count = 3;
 const gui_pref ws_colors[2*ws_colors_count] =
 {
-  {"workspaceview/color_a" + settings_color_modes_ext[0], QVariant (QPalette::Button)},
-  {"workspaceview/color_g" + settings_color_modes_ext[0], QVariant (QPalette::Mid)},
+  {"workspaceview/color_a" + settings_color_modes_ext[0], QVariant (QPalette::Highlight)},
+  {"workspaceview/color_g" + settings_color_modes_ext[0], QVariant (QPalette::Midlight)},
   {"workspaceview/color_p" + settings_color_modes_ext[0], QVariant (QPalette::Dark)},
   {"workspaceview/color_a" + settings_color_modes_ext[1], QVariant ()},
   {"workspaceview/color_g" + settings_color_modes_ext[1], QVariant ()},

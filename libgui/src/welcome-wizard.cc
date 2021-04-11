@@ -265,9 +265,6 @@ namespace octave
 
     m_checkbox_message->setText
       (tr ("<html><head>\n"
-           "<style>\n"
-           "a:link { text-decoration: underline; color: #0000ff; }\n"
-           "</style>\n"
            "</head><body>\n"
            "<p>Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.</p>\n"
            "</body></html>"));
@@ -351,9 +348,6 @@ namespace octave
 
     m_links->setText
       (tr ("<html><head>\n"
-           "<style>\n"
-           "a:link { text-decoration: underline; color: #0000ff; }\n"
-           "</style>\n"
            "</head><body>\n"
            "<p>For more information about Octave:</p>\n"
            "<ul>\n"

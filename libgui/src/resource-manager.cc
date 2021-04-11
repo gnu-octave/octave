@@ -209,10 +209,6 @@ namespace octave
   {
     QString default_family;
 
-#if defined (Q_OS_MAC)
-    // Use hard coded default on macOS, since selection of fixed width
-    // default font is unreliable (see bug #59128).
-
     // Get all available fixed width fonts via a font combobox
     QFontComboBox font_combo_box;
     font_combo_box.setFontFilters (QFontComboBox::MonospacedFonts);
@@ -221,6 +217,9 @@ namespace octave
     for (int index = 0; index < font_combo_box.count(); index++)
       fonts << font_combo_box.itemText(index);
 
+#if defined (Q_OS_MAC)
+    // Use hard coded default on macOS, since selection of fixed width
+    // default font is unreliable (see bug #59128).
     // Test for macOS default fixed width font
     if (fonts.contains (global_mono_font.def.toString ()))
       default_family = global_mono_font.def.toString ();
@@ -233,6 +232,14 @@ namespace octave
         // Get the system's default monospaced font
         QFont fixed_font = QFontDatabase::systemFont (QFontDatabase::FixedFont);
         default_family = fixed_font.defaultFamily ();
+
+        // Since this might be unreliable, test all available fixed width fonts
+        if (! fonts.contains (default_family))
+          {
+            // Font returned by QFontDatabase is not in fixed fonts list.
+            // Fallback: take first from this list
+            default_family = fonts[0];
+          }
       }
 
     // Test env variable which has preference

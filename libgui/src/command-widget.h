@@ -29,6 +29,7 @@
 #include <QWidget>
 
 #include "octave-qobject.h"
+#include "gui-settings.h"
 
 class QLabel;
 class QLineEdit;
@@ -54,6 +55,10 @@ namespace octave
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
 
+  public slots:
+
+    void notice_settings (const gui_settings *settings);
+
   protected slots:
 
     void accept_input_line (void);
@@ -66,6 +71,7 @@ namespace octave
     QLabel *m_prompt;
     QLineEdit *m_line_edit;
     QTextBrowser *m_output_display;
+    QColor m_input_color;
   };
 }
 

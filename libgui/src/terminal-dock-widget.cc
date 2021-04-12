@@ -64,6 +64,9 @@ namespace octave
     setWidget (m_terminal);
     setFocusProxy (m_terminal);
 
+    connect (p, SIGNAL (settings_changed (const gui_settings *)),
+             m_terminal, SLOT (notice_settings (const gui_settings *)));
+
     if (m_experimental_terminal_widget)
       {
         // Any interpreter_event signal from the terminal widget is
@@ -131,4 +134,5 @@ namespace octave
     if (m_experimental_terminal_widget)
       emit update_prompt_signal (prompt);
   }
+
 }

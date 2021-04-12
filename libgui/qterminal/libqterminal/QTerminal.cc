@@ -335,9 +335,6 @@ QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
   connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
            xparent, SLOT (execute_command_in_terminal (const QString&)));
 
-  connect (xparent, SIGNAL (settings_changed (const gui_settings *)),
-           this, SLOT (notice_settings (const gui_settings *)));
-
   connect (xparent, SIGNAL (init_terminal_size_signal ()),
            this, SLOT (init_terminal_size ()));
 

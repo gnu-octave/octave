@@ -39,6 +39,9 @@
 
 #include "cmd-edit.h"
 #include "event-manager.h"
+#include "gui-preferences-cs.h"
+#include "gui-preferences-global.h"
+#include "gui-utils.h"
 #include "input.h"
 #include "interpreter.h"
 
@@ -51,7 +54,8 @@ namespace octave
     : QWidget (p), m_incomplete_parse (false),
       m_prompt (new QLabel ("", this)),
       m_line_edit (new QLineEdit (this)),
-      m_output_display (new QTextBrowser (this))
+      m_output_display (new QTextBrowser (this)),
+      m_input_color (QColor ())
   {
     QPushButton *pause_button = new QPushButton (tr("Pause"), this);
     QPushButton *stop_button = new QPushButton (tr("Stop"), this);
@@ -72,10 +76,12 @@ namespace octave
     output_group_box->setLayout (output_layout);
 
     QVBoxLayout *main_layout = new QVBoxLayout ();
-    main_layout->addWidget (input_group_box);
     main_layout->addWidget (output_group_box);
+    main_layout->addWidget (input_group_box);
 
     setLayout (main_layout);
+
+    setFocusProxy (m_line_edit);
 
     connect (m_line_edit, SIGNAL (returnPressed (void)),
              this, SLOT (accept_input_line (void)));
@@ -114,12 +120,16 @@ namespace octave
 
     QString input_line = m_line_edit->text ();
 
+    QString style;
     if (! m_incomplete_parse)
-      cursor.insertHtml ("<b>[in]:</b> ");
-    cursor.insertText (input_line);
-    cursor.insertHtml ("<br>");
-
-    m_output_display->setTextCursor (cursor);
+      {
+        style = QString ("<div style=\"color:%1; font-weight:bold;\">[in]:</div> ")
+                .arg (m_input_color.name ());
+        m_output_display->insertHtml (style);
+      }
+    style = QString ("<div style=\"color:%1\">%2</div><br>\n")
+            .arg (m_input_color.name ()).arg (input_line);
+    m_output_display->insertHtml (style);
 
     emit interpreter_event
       ([=] (interpreter& interp)
@@ -140,4 +150,32 @@ namespace octave
 
     emit clear_line_edit ();
   }
+
+  void command_widget::notice_settings (const gui_settings *settings)
+  {
+    // Set terminal font:
+    QFont term_font = QFont ();
+    term_font.setStyleHint (QFont::TypeWriter);
+    QString default_font = settings->value (global_mono_font).toString ();
+    term_font.setFamily
+      (settings->value (cs_font.key, default_font).toString ());
+    term_font.setPointSize
+      (settings->value (cs_font_size).toInt ());
+
+    m_line_edit->setFont (term_font);
+    m_output_display->setFont (term_font);
+
+    // Colors
+    int mode = settings->value (cs_color_mode).toInt ();
+    QColor fgc = settings->color_value (cs_colors[0], mode);
+    QColor bgc = settings->color_value (cs_colors[1], mode);
+
+    m_output_display->setStyleSheet (QString ("color: %1; background-color:%2;")
+                                     .arg (fgc.name ()).arg (bgc.name ()));
+    m_line_edit->setStyleSheet (QString ("color: %1; background-color:%2;")
+                                .arg (fgc.name ()).arg (bgc.name ()));
+
+    m_input_color = interpolate_color (fgc, bgc, 0.75, 0.5);
+  }
+
 }

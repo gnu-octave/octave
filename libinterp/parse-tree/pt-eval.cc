@@ -621,6 +621,10 @@ namespace octave
     else
       incomplete_parse = true;
 
+    // FIXME: Should we be checking m_exit_status or incomplete_parse or
+    // both here?  Could EOF have a value other than -1, and is there
+    // possible confusion between that state and the parser returning -1?
+
     if (m_exit_status == -1)
       m_exit_status = 0;
     else
@@ -777,8 +781,6 @@ namespace octave
 
     do
       {
-        m_parser->reset ();
-
         try
           {
             // FIXME: Should we call octave_quit in the octave::sleep
@@ -820,9 +822,7 @@ namespace octave
             es.display_exception (ee);
 
             if (m_interpreter.interactive ())
-              {
-                m_interpreter.recover_from_exception ();
-              }
+              m_interpreter.recover_from_exception ();
             else
               {
                 // We should exit with a nonzero status.
@@ -1205,6 +1205,12 @@ namespace octave
   {
     return ! (m_silent_functions && (m_statement_context == SC_FUNCTION
                                      || m_statement_context == SC_SCRIPT));
+  }
+
+  void
+  tree_evaluator::reset (void)
+  {
+    m_parser->reset ();
   }
 
   void

@@ -1983,6 +1983,8 @@ namespace octave
     octave_signal_caught = 0;
     octave_restore_signal_mask ();
     catch_interrupts ();
+
+    m_evaluator.reset ();
   }
 
   void interpreter::mark_for_deletion (const std::string& file)

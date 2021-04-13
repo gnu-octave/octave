@@ -308,6 +308,10 @@ namespace octave
 
     bool statement_printing_enabled (void);
 
+    // Currently called from interpreter::recover_from_exception to
+    // reset parser state.
+    void reset (void);
+
     void reset_debug_state (void);
 
     void reset_debug_state (bool mode);

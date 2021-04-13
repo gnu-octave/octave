@@ -61,9 +61,6 @@ Undocumented internal function
 {
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 3)
-    print_usage ();
-
   std::string host = args(0).xstring_value ("__ftp__: HOST must be a string");
 
   std::string user = (nargin > 1)
@@ -88,9 +85,6 @@ DEFMETHOD (__ftp_pwd__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 1)
-    error ("__ftp_pwd__: incorrect number of arguments");
-
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
   octave::url_transfer url_xfer = uhm.get_object (args(0));
@@ -108,9 +102,6 @@ Undocumented internal function
 @end deftypefn */)
 {
   int nargin = args.length ();
-
-  if (nargin != 1 && nargin != 2)
-    error ("__ftp_cwd__: incorrect number of arguments");
 
   std::string path = "";
   if (nargin > 1)
@@ -134,9 +125,6 @@ DEFMETHOD (__ftp_dir__, interp, args, nargout,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 1)
-    error ("__ftp_dir__: incorrect number of arguments");
-
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
   octave::url_transfer url_xfer = uhm.get_object (args(0));
@@ -184,10 +172,10 @@ Undocumented internal function
 
               url_xfer.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
-              fileisdir (i) = fisdir;
-              filectime (i) = ctime (&ftime);
-              filesize (i) = fsize;
-              filedatenum (i) = double (ftime);
+              fileisdir(i) = fisdir;
+              filectime(i) = ctime (&ftime);
+              filesize(i)  = fsize;
+              filedatenum(i) = double (ftime);
             }
 
           st.assign ("date", filectime);
@@ -208,9 +196,6 @@ DEFMETHOD (__ftp_ascii__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 1)
-    error ("__ftp_ascii__: incorrect number of arguments");
-
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
   octave::url_transfer url_xfer = uhm.get_object (args(0));
@@ -229,9 +214,6 @@ DEFMETHOD (__ftp_binary__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 1)
-    error ("__ftp_binary__: incorrect number of arguments");
-
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
   octave::url_transfer url_xfer = uhm.get_object (args(0));
@@ -250,9 +232,6 @@ DEFMETHOD (__ftp_close__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 1)
-    error ("__ftp_close__: incorrect number of arguments");
-
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
   octave::url_handle h = uhm.lookup (args(0));
@@ -271,9 +250,6 @@ DEFMETHOD (__ftp_mode__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 1)
-    error ("__ftp_mode__: incorrect number of arguments");
-
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
   octave::url_transfer url_xfer = uhm.get_object (args(0));
@@ -290,9 +266,6 @@ DEFMETHOD (__ftp_delete__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 2)
-    error ("__ftp_delete__: incorrect number of arguments");
-
   std::string file = args(1).xstring_value ("__ftp_delete__: FILE must be a string");
 
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
@@ -313,9 +286,6 @@ DEFMETHOD (__ftp_rmdir__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 2)
-    error ("__ftp_rmdir__: incorrect number of arguments");
-
   std::string dir = args(1).xstring_value ("__ftp_rmdir__: DIR must be a string");
 
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
@@ -336,9 +306,6 @@ DEFMETHOD (__ftp_mkdir__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 2)
-    error ("__ftp_mkdir__: incorrect number of arguments");
-
   std::string dir = args(1).xstring_value ("__ftp_mkdir__: DIR must be a string");
 
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
@@ -359,9 +326,6 @@ DEFMETHOD (__ftp_rename__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 3)
-    error ("__ftp_rename__: incorrect number of arguments");
-
   std::string oldname = args(1).xstring_value ("__ftp_rename__: OLDNAME must be a string");
   std::string newname = args(2).xstring_value ("__ftp_rename__: NEWNAME must be a string");
 
@@ -383,9 +347,6 @@ DEFMETHOD (__ftp_mput__, interp, args, nargout,
 Undocumented internal function
 @end deftypefn */)
 {
-  if (args.length () != 2)
-    error ("__ftp_mput__: incorrect number of arguments");
-
   std::string pat = args(1).xstring_value ("__ftp_mput__: PATTERN must be a string");
 
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
@@ -452,9 +413,6 @@ Undocumented internal function
 {
   int nargin = args.length ();
 
-  if (nargin != 2 && nargin != 3)
-    error ("__ftp_mget__: incorrect number of arguments");
-
   std::string file = args(1).xstring_value ("__ftp_mget__: PATTERN must be a string");
 
   std::string target;
@@ -510,7 +468,7 @@ Undocumented internal function
             }
 
           if (! url_xfer.good ())
-            error ("__ftp_mget__: %s", url_xfer.lasterror().c_str());
+            error ("__ftp_mget__: %s", url_xfer.lasterror ().c_str ());
         }
     }
 

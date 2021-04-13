@@ -779,6 +779,12 @@ namespace octave
     std::shared_ptr<push_parser> parser (new push_parser (m_interpreter));
     unwind_protect_var<std::shared_ptr<push_parser>> upv2 (m_parser, parser);
 
+    // FIXME: We are currently resetting the parser after every call to
+    // recover_from_exception.  This action should probably be handled
+    // in a more consistent way, but resetting the parser in every call
+    // to interpreter::recover_from_exception appears to cause
+    // segfaults in the test suite.
+
     do
       {
         try
@@ -801,6 +807,7 @@ namespace octave
           {
             octave_interrupt_state = 1;
             m_interpreter.recover_from_exception ();
+            m_parser->reset ();
 
             // Required newline when the user does Ctrl+C at the prompt.
             if (m_interpreter.interactive ())
@@ -809,6 +816,7 @@ namespace octave
         catch (const index_exception& e)
           {
             m_interpreter.recover_from_exception ();
+            m_parser->reset ();
 
             std::cerr << "error: unhandled index exception: "
                       << e.message () << " -- trying to return to prompt"
@@ -822,7 +830,10 @@ namespace octave
             es.display_exception (ee);
 
             if (m_interpreter.interactive ())
-              m_interpreter.recover_from_exception ();
+              {
+                m_interpreter.recover_from_exception ();
+                m_parser->reset ();
+              }
             else
               {
                 // We should exit with a nonzero status.
@@ -834,6 +845,7 @@ namespace octave
           {
             octave_interrupt_state = 1;
             m_interpreter.recover_from_exception ();
+            m_parser->reset ();
           }
         catch (const exit_exception& xe)
           {
@@ -843,6 +855,7 @@ namespace octave
         catch (const std::bad_alloc&)
           {
             m_interpreter.recover_from_exception ();
+            m_parser->reset ();
 
             std::cerr << "error: out of memory -- trying to return to prompt"
                       << std::endl;
@@ -1205,12 +1218,6 @@ namespace octave
   {
     return ! (m_silent_functions && (m_statement_context == SC_FUNCTION
                                      || m_statement_context == SC_SCRIPT));
-  }
-
-  void
-  tree_evaluator::reset (void)
-  {
-    m_parser->reset ();
   }
 
   void

@@ -80,6 +80,10 @@ namespace octave
       }
     else
       {
+        // Connect the interrupt signal (emitted by Ctrl-C)
+        connect (m_terminal, SIGNAL (interrupt_signal (void)),
+                 &oct_qobj, SLOT (interpreter_interrupt (void)));
+
         // Connect the visibility signal to the terminal for
         // dis-/enabling timers.
         connect (this, SIGNAL (visibilityChanged (bool)),

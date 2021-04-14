@@ -360,11 +360,12 @@ endfunction
 %! assert (b, [1, -5, 9, -3, 1], 1e-12);
 %! assert (a, [1, -5, 8, -4], 1e-12);
 %! [rr, pr, kr, er] = residue (b, a);
-%! [jnk, n] = mpoles (p);
-%! assert (rr, r(n), 1e-12);
-%! assert (pr, p(n), 1e-12);
+%! [~, m] = mpoles (rr);
+%! [~, n] = mpoles (r);
+%! assert (rr(m), r(n), 1e-12);
+%! assert (pr(m), p(n), 1e-12);
 %! assert (kr, k, 1e-12);
-%! assert (er, e(n), 1e-12);
+%! assert (er(m), e(n), 1e-12);
 
 %!test
 %! b = [1];
@@ -413,3 +414,12 @@ endfunction
 %! k = 0;
 %! [p, q] = residue (r, pin, k);
 %! assert (p(4), 4.6828e+42, -1e-5);
+
+%!test <*60384>
+%! B = [1315.789473684211];
+%! A = [1, 1.100000536842105e+04, 1.703789473684211e+03, 0];
+%! poles1 = roots (A);
+%! [r, p, k, e] = residue (B, A);
+%! [B1, A1] = residue (r, p, k, e);
+%! assert (B, B1);
+%! assert (A, A1);

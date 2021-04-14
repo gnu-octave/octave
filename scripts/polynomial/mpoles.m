@@ -29,7 +29,8 @@
 ## @deftypefnx {} {[@var{multp}, @var{idxp}] =} mpoles (@var{p}, @var{tol}, @var{reorder})
 ## Identify unique poles in @var{p} and their associated multiplicity.
 ##
-## The output is ordered from largest pole to smallest pole.
+## The output is ordered from pole with largest magnitude to smallest
+## magnitude.
 ##
 ## If the relative difference of two poles is less than @var{tol} then they are
 ## considered to be multiples.  The default value for @var{tol} is 0.001.
@@ -71,25 +72,19 @@ function [multp, indx] = mpoles (p, tol, reorder)
 
   Np = numel (p);
 
-  ## Force the poles to be a column vector.
+  ## force poles to be a column vector
 
   p = p(:);
 
-  ## Sort the poles according to their magnitidues, largest first.
-
   if (reorder)
-    ## Sort with smallest magnitude first.
-    [p, ordr] = sort (p);
-    ## Reverse order, largest maginitude first.
-    n = Np:-1:1;
-    p = p(n);
-    ordr = ordr(n);
+    ## sort with largest magnitude first
+    [~, ordr] = sort (abs (p), "descend");
+    p = p(ordr);
   else
-    ordr = 1:Np;
+    ordr = (1:Np).';
   endif
 
-  ## Find pole multiplicity by comparing the relative difference in the
-  ## poles.
+  ## find pole multiplicity by comparing relative difference of poles
 
   multp = zeros (Np, 1);
   indx = [];
@@ -124,3 +119,8 @@ endfunction
 %!test
 %! [mp, n] = mpoles ([0 0], 0.01);
 %! assert (mp, [1; 2]);
+
+%!test
+%! [mp, n] = mpoles ([-1e4, -0.1, 0]);
+%! assert (mp, ones (3, 1));
+%! assert (n, [1; 2; 3]);

@@ -127,7 +127,7 @@ namespace octave
                 .arg (m_input_color.name ());
         m_output_display->insertHtml (style);
       }
-    style = QString ("<div style=\"color:%1\">%2</div><br>\n")
+    style = QString ("<div style=\"color:%1\">%2</div><br>")
             .arg (m_input_color.name ()).arg (input_line);
     m_output_display->insertHtml (style);
 
@@ -136,7 +136,7 @@ namespace octave
        {
          // INTERPRETER THREAD
 
-         interp.parse_and_execute (input_line.toStdString () + "\n",
+         interp.parse_and_execute (input_line.toStdString (),
                                    m_incomplete_parse);
 
          event_manager& evmgr = interp.get_event_manager ();

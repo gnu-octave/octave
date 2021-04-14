@@ -734,7 +734,7 @@ namespace octave
       // UNC paths are prefixed by "\\?\UNC\".
       if (retval.compare (0, 8, R"(\\?\UNC\)") == 0)
         retval = retval.erase (2, 6);
-      else
+      else if (retval.compare (0, 4, R"(\\?\)") == 0)
         retval = retval.erase (0, 4);
 #else
       char *tmp = octave_canonicalize_file_name_wrapper (name.c_str ());

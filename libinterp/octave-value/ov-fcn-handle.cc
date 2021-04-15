@@ -575,6 +575,32 @@ namespace octave
     std::string m_dispatch_class;
   };
 
+  // Handles to anonymous functions are similar to handles to nested
+  // functions.  If they are created in a context that contains nested
+  // functions, then they store a link to the parent call stack frames
+  // that are active when they are created.  These call stack frames
+  // (closure frames) provide access to variables needed by any nested
+  // functions that are called from the anonymous function.  Anonymous
+  // functions also store a list of values from their parent scope
+  // corresponding to the symbols in the anonymous function.  This list
+  // of values captures the variable values that are visible in the
+  // scope where they are created.
+  //
+  // Note that because handles to anonymous and nested functions capture
+  // call stack frames when they are created, they will cause deletion
+  // of the values in those frames to be deferred until the handles to
+  // the anonymous or nested functions are deleted.
+  //
+  // Would it be possible to avoid storing the closure frames for
+  // handles to anonymous functions if we can determine that the
+  // anonymous function has no unbound variables (or parameters, which
+  // could be handles to nested functions?) or if it is not created in a
+  // context that contains nested functions?
+  //
+  // Would it be possible to define anonymous functions as a special
+  // type of nested function object that also has an variable
+  // initialization list associated with it?
+
   class base_anonymous_fcn_handle : public base_fcn_handle
   {
   public:

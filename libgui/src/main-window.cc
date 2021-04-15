@@ -2955,8 +2955,10 @@ namespace octave
     set_default_geometry ();
     int win_x = geometry ().width ();
 
-    // Resize command window, the important one in the default layout
-    resize_dock (m_command_window, 7*win_x/8, -1);
+    // Resize command window (if docked),
+    //the important one in the default layout
+    if (dockWidgetArea (m_command_window) != Qt::NoDockWidgetArea)
+      resize_dock (m_command_window, 7*win_x/8, -1);
 
     // See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
 #if (QT_VERSION < 0x050601) || (QT_VERSION >= 0x050701)

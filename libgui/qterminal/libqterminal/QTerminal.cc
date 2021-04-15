@@ -317,7 +317,7 @@ QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
 
   _contextMenu->addSeparator ();
 
-  _contextMenu->addAction (tr ("Clear Window"), parent (),
+  _contextMenu->addAction (tr ("Clear Window"), xparent,
                            SLOT (handle_clear_command_window_request ()));
 
   connect (this, SIGNAL (customContextMenuRequested (QPoint)),

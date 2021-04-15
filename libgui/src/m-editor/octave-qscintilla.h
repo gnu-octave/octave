@@ -94,10 +94,12 @@ namespace octave
     void show_doc_signal (const QString&);
     void context_menu_break_condition_signal (int);
     void context_menu_break_once (int);
-    void interpreter_event (const meth_callback& meth);
     void ctx_menu_run_finished_signal (bool, int, QTemporaryFile*,
                                        QTemporaryFile*, bool, bool);
     void focus_console_after_command_signal (void);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
   public slots:
 

@@ -51,8 +51,8 @@ void QUnixTerminalImpl::initialize(QWidget* main_win)
 
     connect (file_filter, SIGNAL (request_edit_mfile_signal (const QString&, int)),
              main_win, SLOT (edit_mfile (const QString&, int)));
-    connect (file_filter, SIGNAL (request_open_file_signal (const QString&, int)),
-             main_win, SLOT (open_file (const QString&, int)));
+    connect (file_filter, SIGNAL (request_open_file_signal (const QString&, const QString&,int)),
+             main_win, SIGNAL (open_file_signal (const QString&, const QString&,int)));
 
     connect(m_terminalView, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(handleCustomContextMenuRequested(QPoint)));

@@ -49,8 +49,6 @@ global_style ("style", QVariant ("default"));
 
 const QString
 global_toolbar_style ("QToolBar {"
-                      "spacing-top: 0px;"
-                      "spacing-bottom: 0px;"
                       "margin-top: 0px;"
                       "margin-bottom: 0px;"
                       "padding-top: 0px;"
@@ -61,8 +59,6 @@ global_toolbar_style ("QToolBar {"
 
 const QString
 global_menubar_style ("QMenuBar {"
-                      "spacing-top: 0px;"
-                      "spacing-bottom: 0px;"
                       "margin-top: 0px;"
                       "margin-bottom: 0px;"
                       "padding-top: 0px;"

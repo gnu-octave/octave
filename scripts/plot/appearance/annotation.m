@@ -675,7 +675,7 @@ function textmenu (hui, hpar)
 
   ## String;
   prop = "String";
-  fcn = @() stringdlg (hpar, prop);
+  fcn = @(~, ~) stringdlg (hpar, prop);
   uimenu (hm, "label", prop, "callback", fcn);
 
   ## Font properties
@@ -743,7 +743,7 @@ function textboxmenu (hui, hpar)
   hm1 = uimenu ("parent", hui, "label", "Text");
 
   prop = "String";
-  fcn = @() stringdlg (hpar, prop);
+  fcn = @(~, ~) stringdlg (hpar, prop);
   uimenu (hm1, "label", prop, "callback", fcn);
 
   prop = "Color";
@@ -853,7 +853,7 @@ function addbasemenu (hm, hpar, pname, vals, mainlabel = "", varargin)
       label = disp (val);
     endif
 
-    fcn = @() set (hpar, pname, val);
+    fcn = @(~, ~) set (hpar, pname, val);
     htmp(i) = uimenu (h, "label", label, "callback", fcn);
   endfor
 

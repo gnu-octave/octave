@@ -34,13 +34,15 @@
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-#include <windows.h>
-#include <tlhelp32.h>
+#  include <windows.h>
+#  include <tlhelp32.h>
+#  include <locale>
+#  include <codecvt>
 
-#if defined (_MSC_VER)
-#  define popen _popen
-#  define pclose _pclose
-#endif
+#  if defined (_MSC_VER)
+#    define popen _popen
+#    define pclose _pclose
+#  endif
 
 static std::string
 w32_get_octave_home (void)
@@ -49,12 +51,16 @@ w32_get_octave_home (void)
 
   std::string bin_dir;
 
-  char namebuf[MAX_PATH+1];
-  if (GetModuleFileName (GetModuleHandle (nullptr), namebuf, MAX_PATH))
+  wchar_t namebuf[MAX_PATH+1];
+  DWORD n_size
+    = GetModuleFileNameW (GetModuleHandle (nullptr), namebuf, MAX_PATH);
+  if (n_size < MAX_PATH)
     {
-      namebuf[MAX_PATH] = '\0';
+      // convert wide character string to multibyte UTF-8 string
+      std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
+      std::string exe_name
+        = wchar_conv.to_bytes (std::wstring (namebuf, n_size));
 
-      std::string exe_name = namebuf;
       size_t pos = exe_name.rfind ('\\');
 
       if (pos != std::string::npos)

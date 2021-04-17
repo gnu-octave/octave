@@ -44,6 +44,8 @@
 #  include <io.h>
 #  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
+
+#  include "uniconv-wrappers.h"
 #else
 #  include <errno.h>
 #  include <fcntl.h>
@@ -137,9 +139,14 @@ octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
 
   command = make_command_string (cmd, args);
 
-  status = CreateProcess (0, command, 0, 0, TRUE, 0, 0, 0, &si, &pi);
+  wchar_t *wcmd = u8_to_wchar (command);
 
   free (command);
+
+  status = CreateProcessW (NULL, wcmd, NULL, NULL, TRUE, CREATE_NO_WINDOW,
+                           NULL, NULL, &si, &pi);
+
+  free (wcmd);
 
   if (! status)
     {

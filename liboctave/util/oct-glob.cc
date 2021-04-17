@@ -247,7 +247,8 @@ namespace octave
               if (xpat.empty ())
                 {
                   // don't glob if input is only disc root
-                  if (PathFileExistsA (pat(i).c_str ()))
+                  std::wstring wpat = u8_to_wstring (pat(i));
+                  if (PathFileExistsW (wpat.c_str ()))
                     {
                       if (sys::file_ops::is_dir_sep (pat(i).back ()))
                         dirlist.push_back (dir +

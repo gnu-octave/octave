@@ -164,7 +164,7 @@ namespace QtHandles
       m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
 
     if (pp.is_visible ())
-      QTimer::singleShot (0, frame, SLOT (show (void)));
+      QTimer::singleShot (0, frame, &QFrame::show);
     else
       frame->hide ();
   }

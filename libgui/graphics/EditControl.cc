@@ -93,12 +93,12 @@ namespace QtHandles
     edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
                                             up.get_verticalalignment ()));
 
-    connect (edit, SIGNAL (textEdited (const QString&)),
-             SLOT (textChanged (void)));
-    connect (edit, SIGNAL (editingFinished (void)),
-             SLOT (editingFinished (void)));
-    connect (edit, SIGNAL (returnPressed (void)),
-             SLOT (returnPressed (void)));
+    connect (edit, &QLineEdit::textEdited,
+             this, &EditControl::textChanged);
+    connect (edit, &QLineEdit::editingFinished,
+             this, &EditControl::editingFinished);
+    connect (edit, &QLineEdit::returnPressed,
+             this, &EditControl::returnPressed);
   }
 
   EditControl::EditControl (octave::base_qobject& oct_qobj,
@@ -131,12 +131,12 @@ namespace QtHandles
     edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
                                             up.get_verticalalignment ()));
 
-    connect (edit, SIGNAL (textChanged (void)),
-             SLOT (textChanged (void)));
-    connect (edit, SIGNAL (editingFinished (void)),
-             SLOT (editingFinished (void)));
-    connect (edit, SIGNAL (returnPressed (void)),
-             SLOT (returnPressed (void)));
+    connect (edit, &TextEdit::textChanged,
+             this, &EditControl::textChanged);
+    connect (edit, &TextEdit::editingFinished,
+             this, &EditControl::editingFinished);
+    connect (edit, &TextEdit::returnPressed,
+             this, &EditControl::returnPressed);
   }
 
   EditControl::~EditControl (void)

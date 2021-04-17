@@ -63,8 +63,8 @@ namespace QtHandles
   {
     xmenu->setAutoFillBackground (true);
 
-    connect (xmenu, SIGNAL (aboutToShow (void)), SLOT (aboutToShow (void)));
-    connect (xmenu, SIGNAL (aboutToHide (void)), SLOT (aboutToHide (void)));
+    connect (xmenu, &QMenu::aboutToShow, this, &ContextMenu::aboutToShow);
+    connect (xmenu, &QMenu::aboutToHide, this, &ContextMenu::aboutToHide);
   }
 
   ContextMenu::~ContextMenu (void)

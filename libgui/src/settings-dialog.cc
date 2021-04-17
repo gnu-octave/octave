@@ -156,32 +156,32 @@ namespace octave
     m_widget_title_bg_color->setEnabled (false);
     layout_widget_bgtitle->addWidget (m_widget_title_bg_color, 0);
 
-    connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
-             m_widget_title_bg_color, SLOT (setEnabled (bool)));
+    connect (cb_widget_custom_style, &QCheckBox::toggled,
+             m_widget_title_bg_color, &color_picker::setEnabled);
 
     QColor bg_color_active = settings->value (dw_title_bg_color_active).value<QColor> ();
     m_widget_title_bg_color_active = new color_picker (bg_color_active);
     m_widget_title_bg_color_active->setEnabled (false);
     layout_widget_bgtitle_active->addWidget (m_widget_title_bg_color_active, 0);
 
-    connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
-             m_widget_title_bg_color_active, SLOT (setEnabled (bool)));
+    connect (cb_widget_custom_style, &QCheckBox::toggled,
+             m_widget_title_bg_color_active, &color_picker::setEnabled);
 
     QColor fg_color = settings->value (dw_title_fg_color).value<QColor> ();
     m_widget_title_fg_color = new color_picker (fg_color);
     m_widget_title_fg_color->setEnabled (false);
     layout_widget_fgtitle->addWidget (m_widget_title_fg_color, 0);
 
-    connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
-             m_widget_title_fg_color, SLOT (setEnabled (bool)));
+    connect (cb_widget_custom_style, &QCheckBox::toggled,
+             m_widget_title_fg_color, &color_picker::setEnabled);
 
     QColor fg_color_active = settings->value (dw_title_fg_color_active).value<QColor> ();
     m_widget_title_fg_color_active = new color_picker (fg_color_active);
     m_widget_title_fg_color_active->setEnabled (false);
     layout_widget_fgtitle_active->addWidget (m_widget_title_fg_color_active, 0);
 
-    connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
-             m_widget_title_fg_color_active, SLOT (setEnabled (bool)));
+    connect (cb_widget_custom_style, &QCheckBox::toggled,
+             m_widget_title_fg_color_active, &color_picker::setEnabled);
 
     sb_3d_title->setValue (settings->value (dw_title_3d.key,
                                             dw_title_3d.def).toInt ());
@@ -227,8 +227,8 @@ namespace octave
     le_octave_dir->setText (settings->value (global_ov_startup_dir.key,
                                              global_ov_startup_dir.def).toString ());
 
-    connect (pb_octave_dir, SIGNAL (pressed (void)),
-             this, SLOT (get_octave_dir (void)));
+    connect (pb_octave_dir, &QPushButton::pressed,
+             this, &settings_dialog::get_octave_dir);
 
     //
     // editor
@@ -300,10 +300,10 @@ namespace octave
         m_rb_comment_strings[i] = new QRadioButton ();
         m_rb_uncomment_strings[i] = new QCheckBox ();
 
-        connect (m_rb_comment_strings[i], SIGNAL (clicked (bool)),
-                 m_rb_uncomment_strings[i], SLOT (setChecked (bool)));
-        connect (m_rb_comment_strings[i], SIGNAL (toggled (bool)),
-                 m_rb_uncomment_strings[i], SLOT (setDisabled (bool)));
+        connect (m_rb_comment_strings[i], &QRadioButton::clicked,
+                 m_rb_uncomment_strings[i], &QCheckBox::setChecked);
+        connect (m_rb_comment_strings[i], &QRadioButton::toggled,
+                 m_rb_uncomment_strings[i], &QCheckBox::setDisabled);
 
         m_rb_comment_strings[i]->setText (ed_comment_strings.at(i));
         m_rb_comment_strings[i]->setChecked (i == selected_comment_string);
@@ -363,15 +363,15 @@ namespace octave
     read_terminal_colors (settings);
 
     // file browser
-    connect (sync_octave_directory, SIGNAL (toggled (bool)),
-             this, SLOT (set_disabled_pref_file_browser_dir (bool)));
+    connect (sync_octave_directory, &QCheckBox::toggled,
+             this, &settings_dialog::set_disabled_pref_file_browser_dir);
 
     sync_octave_directory->setChecked (settings->value (fb_sync_octdir).toBool ());
     cb_restore_file_browser_dir->setChecked (settings->value (fb_restore_last_dir).toBool ());
     le_file_browser_dir->setText (settings->value (fb_startup_dir.key).toString ());
 
-    connect (pb_file_browser_dir, SIGNAL (pressed (void)),
-             this, SLOT (get_file_browser_dir (void)));
+    connect (pb_file_browser_dir, &QPushButton::pressed,
+             this, &settings_dialog::get_file_browser_dir);
 
     le_file_browser_extensions->setText (settings->value (fb_txt_file_ext).toString ());
 
@@ -397,10 +397,10 @@ namespace octave
     proxy_username->setText (settings->value (global_proxy_user.key, global_proxy_user.def).toString ());
     proxy_password->setText (settings->value (global_proxy_pass.key, global_proxy_pass.def).toString ());
     // Connect relevant signals for dis-/enabling some elements
-    connect (proxy_type, SIGNAL (currentIndexChanged (int)),
-             this, SLOT (proxy_items_update (void)));
-    connect (use_proxy_server, SIGNAL (toggled (bool)),
-             this, SLOT (proxy_items_update (void)));
+    connect (proxy_type, QOverload<int>::of (&QComboBox::currentIndexChanged),
+             this, &settings_dialog::proxy_items_update);
+    connect (use_proxy_server, &QCheckBox::toggled,
+             this, &settings_dialog::proxy_items_update);
     // Check whehter line edits have to be enabled
     proxy_items_update ();
 
@@ -414,10 +414,10 @@ namespace octave
     varedit_font->setCurrentFont (QFont (settings->value (ve_font_name.key,
                                                           settings->value (cs_font.key, default_font)).toString ()));
     varedit_fontSize->setValue (settings->value (ve_font_size).toInt ());
-    connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
-             varedit_font, SLOT (setDisabled (bool)));
-    connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
-             varedit_fontSize, SLOT (setDisabled (bool)));
+    connect (varedit_useTerminalFont, &QCheckBox::toggled,
+             varedit_font, &QFontComboBox::setDisabled);
+    connect (varedit_useTerminalFont, &QCheckBox::toggled,
+             varedit_fontSize, &QSpinBox::setDisabled);
     varedit_useTerminalFont->setChecked (settings->value (ve_use_terminal_font).toBool ());
     varedit_font->setDisabled (varedit_useTerminalFont->isChecked ());
     varedit_fontSize->setDisabled (varedit_useTerminalFont->isChecked ());
@@ -442,14 +442,14 @@ namespace octave
     scmgr.fill_treewidget (shortcuts_treewidget);
 
     // connect the buttons for import/export of the shortcut sets
-    connect (btn_import_shortcut_set, SIGNAL (clicked (void)),
-             this, SLOT (import_shortcut_set (void)));
+    connect (btn_import_shortcut_set, &QPushButton::clicked,
+             this, &settings_dialog::import_shortcut_set);
 
-    connect (btn_export_shortcut_set, SIGNAL (clicked (void)),
-             this, SLOT (export_shortcut_set (void)));
+    connect (btn_export_shortcut_set, &QPushButton::clicked,
+             this, &settings_dialog::export_shortcut_set);
 
-    connect (btn_default_shortcut_set, SIGNAL (clicked (void)),
-             this, SLOT (default_shortcut_set (void)));
+    connect (btn_default_shortcut_set, &QPushButton::clicked,
+             this, &settings_dialog::default_shortcut_set);
 
 #if defined (HAVE_QSCINTILLA)
 
@@ -471,8 +471,8 @@ namespace octave
 
 
     // update colors depending on second theme selection
-    connect (cb_color_mode, SIGNAL (stateChanged (int)),
-             this, SLOT (update_editor_lexers (int)));
+    connect (cb_color_mode, &QCheckBox::stateChanged,
+             this, &settings_dialog::update_editor_lexers);
     connect (pb_reload_default_colors, &QPushButton::clicked,
              [=] () { update_editor_lexers (settings_reload_default_colors_flag); });
 
@@ -485,8 +485,8 @@ namespace octave
     show_tab (desired_tab);
 
     // connect button box signal
-    connect (button_box, SIGNAL (clicked (QAbstractButton *)),
-             this, SLOT (button_clicked (QAbstractButton *)));
+    connect (button_box, &QDialogButtonBox::clicked,
+             this, &settings_dialog::button_clicked);
 
     // restore last geometry
     if (settings->contains (sd_geometry.key))
@@ -1228,8 +1228,8 @@ namespace octave
 
     m_ws_hide_tool_tips = new QCheckBox (tr ("Hide tools tips"));
     style_grid->addWidget (m_ws_hide_tool_tips, row++, column, 1, 4);
-    connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
-             m_ws_hide_tool_tips, SLOT(setEnabled (bool)));
+    connect (m_ws_enable_colors, &QCheckBox::toggled,
+             m_ws_hide_tool_tips, &QCheckBox::setEnabled);
     m_ws_hide_tool_tips->setChecked
       (settings->value (ws_hide_tool_tips).toBool ());
 
@@ -1237,14 +1237,14 @@ namespace octave
     cb_color_mode->setToolTip (settings_color_modes_tooltip);
     cb_color_mode->setChecked (mode == 1);
     cb_color_mode->setObjectName (ws_color_mode.key);
-    connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
-             cb_color_mode, SLOT (setEnabled (bool)));
+    connect (m_ws_enable_colors, &QCheckBox::toggled,
+             cb_color_mode, &QCheckBox::setEnabled);
     style_grid->addWidget (cb_color_mode, row, column);
 
     QPushButton *pb_reload_default_colors = new QPushButton (settings_reload_colors);
     pb_reload_default_colors->setToolTip (settings_reload_colors_tooltip);
-    connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
-             pb_reload_default_colors, SLOT (setEnabled (bool)));
+    connect (m_ws_enable_colors, &QCheckBox::toggled,
+             pb_reload_default_colors, &QPushButton::setEnabled);
     style_grid->addWidget (pb_reload_default_colors, row+1, column++);
 
     bool colors_enabled = settings->value (ws_enable_colors).toBool ();
@@ -1255,16 +1255,16 @@ namespace octave
           + tr (ws_color_names.at (i).toStdString ().data ()));
         description[i]->setAlignment (Qt::AlignRight);
         description[i]->setEnabled (colors_enabled);
-        connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
-                 description[i], SLOT(setEnabled (bool)));
+        connect (m_ws_enable_colors, &QCheckBox::toggled,
+                 description[i], &QLabel::setEnabled);
 
         QColor setting_color = settings->color_value (ws_colors[i], mode);
         color[i] = new color_picker (setting_color);
         color[i]->setObjectName (ws_colors[i].key);
         color[i]->setMinimumSize (30, 10);
         color[i]->setEnabled (colors_enabled);
-        connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
-                 color[i], SLOT(setEnabled (bool)));
+        connect (m_ws_enable_colors, &QCheckBox::toggled,
+                 color[i], &color_picker::setEnabled);
 
         style_grid->addWidget (description[i], row, 3*column);
         style_grid->addWidget (color[i], row, 3*column+1);
@@ -1287,8 +1287,8 @@ namespace octave
 
     // update colors depending on second theme selection or reloading
     // the dfault values
-    connect (cb_color_mode, SIGNAL (stateChanged (int)),
-             this, SLOT (update_workspace_colors (int)));
+    connect (cb_color_mode, &QCheckBox::stateChanged,
+             this, &settings_dialog::update_workspace_colors);
     connect (pb_reload_default_colors, &QPushButton::clicked,
              [=] () { update_workspace_colors (settings_reload_default_colors_flag); });
   }
@@ -1396,8 +1396,8 @@ namespace octave
     terminal_colors_box->setLayout (style_grid);
 
     // update colors depending on second theme selection
-    connect (cb_color_mode, SIGNAL (stateChanged (int)),
-             this, SLOT (update_terminal_colors (int)));
+    connect (cb_color_mode, &QCheckBox::stateChanged,
+             this, &settings_dialog::update_terminal_colors);
     connect (pb_reload_default_colors, &QPushButton::clicked,
              [=] () { update_terminal_colors (settings_reload_default_colors_flag); });
   }
@@ -1503,8 +1503,8 @@ namespace octave
     varedit_colors_box->setLayout (style_grid);
 
     // update colors depending on second theme selection
-    connect (cb_color_mode, SIGNAL (stateChanged (int)),
-             this, SLOT (update_varedit_colors (int)));
+    connect (cb_color_mode, &QCheckBox::stateChanged,
+             this, &settings_dialog::update_varedit_colors);
     connect (pb_reload_default_colors, &QPushButton::clicked,
              [=] () { update_varedit_colors (settings_reload_default_colors_flag); });
   }

@@ -225,8 +225,9 @@ namespace octave
             // Fill context menu with actions for selecting current tabs
             m_ctx_actions = m_context_menu->actions (); // Copy of basic actions
             QMenu ctx_menu;                             // The menu actually used
-            connect (&ctx_menu, SIGNAL (triggered (QAction*)),
-                     this, SLOT (ctx_menu_activated (QAction*)));
+            connect (&ctx_menu, &QMenu::triggered,
+                     this, &tab_bar::ctx_menu_activated);
+
             for (int i = count () - 1; i >= 0; i--)
               {
                 // Prepend an action for each tab

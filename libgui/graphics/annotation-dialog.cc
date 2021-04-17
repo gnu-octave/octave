@@ -64,20 +64,20 @@ annotation_dialog::init ()
     restoreGeometry (settings->value (gp_annotation_geometry).toByteArray ());
 
   // connect signals
-  connect (ui->button_box, SIGNAL (clicked (QAbstractButton *)),
-           this, SLOT (button_clicked (QAbstractButton *)));
+  connect (ui->button_box, &QDialogButtonBox::clicked,
+           this, &annotation_dialog::button_clicked);
 
-  connect (ui->edit_string, SIGNAL (textChanged (const QString&)),
-           this, SLOT (edit_string_changed (const QString&)));
+  connect (ui->edit_string, &QLineEdit::textChanged,
+           this, &annotation_dialog::edit_string_changed);
 
-  connect (ui->btn_color, SIGNAL (clicked ()),
-           this, SLOT (prompt_for_color ()));
+  connect (ui->btn_color, &QPushButton::clicked,
+           this, &annotation_dialog::prompt_for_color);
 
-  connect (ui->btn_background_color, SIGNAL (clicked ()),
-           this, SLOT (prompt_for_color ()));
+  connect (ui->btn_background_color, &QPushButton::clicked,
+           this, &annotation_dialog::prompt_for_color);
 
-  connect (ui->btn_edge_color, SIGNAL (clicked ()),
-           this, SLOT (prompt_for_color ()));
+  connect (ui->btn_edge_color, &QPushButton::clicked,
+           this, &annotation_dialog::prompt_for_color);
 
   // set gui element to default values
   ui->cb_fit_box_to_text->setChecked (true);

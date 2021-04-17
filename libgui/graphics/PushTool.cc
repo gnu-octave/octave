@@ -59,7 +59,7 @@ namespace QtHandles
                       const graphics_object& go, QAction *action)
     : ToolBarButton<uipushtool> (oct_qobj, interp, go, action)
   {
-    connect (action, SIGNAL (triggered (bool)), this, SLOT (clicked (void)));
+    connect (action, &QAction::triggered, this, &PushTool::clicked);
   }
 
   PushTool::~PushTool (void)

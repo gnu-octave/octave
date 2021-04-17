@@ -124,12 +124,12 @@ namespace QtHandles
 
     list->viewport ()->installEventFilter (this);
 
-    connect (list, SIGNAL (itemSelectionChanged (void)),
-             SLOT (itemSelectionChanged (void)));
-    connect (list, SIGNAL (activated (const QModelIndex &)),
-             SLOT (itemActivated (const QModelIndex &)));
-    connect (list, SIGNAL (itemPressed (QListWidgetItem*)),
-             SLOT (itemPressed (QListWidgetItem*)));
+    connect (list, &QListWidget::itemSelectionChanged,
+             this, &ListBoxControl::itemSelectionChanged);
+    connect (list, &QListWidget::activated,
+             this, &ListBoxControl::itemActivated);
+    connect (list, &QListWidget::itemPressed,
+             this, &ListBoxControl::itemPressed);
   }
 
   ListBoxControl::~ListBoxControl (void)

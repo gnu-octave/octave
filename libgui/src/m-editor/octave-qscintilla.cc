@@ -115,16 +115,14 @@ namespace octave
       m_selection_line (-1), m_selection_col (-1), m_indicator_id (1),
       m_tooltip_font (QToolTip::font ())
   {
-    connect (this, SIGNAL (textChanged (void)),
-             this, SLOT (text_changed (void)));
+    connect (this, &octave_qscintilla::textChanged,
+             this, &octave_qscintilla::text_changed);
 
-    connect (this, SIGNAL (cursorPositionChanged (int, int)),
-             this, SLOT (cursor_position_changed (int, int)));
+    connect (this, &octave_qscintilla::cursorPositionChanged,
+             this, &octave_qscintilla::cursor_position_changed);
 
-    connect (this, SIGNAL (ctx_menu_run_finished_signal (bool, int, QTemporaryFile*,
-                                                         QTemporaryFile*, bool, bool)),
-             this, SLOT (ctx_menu_run_finished (bool, int, QTemporaryFile*,
-                                                QTemporaryFile*, bool, bool)),
+    connect (this, &octave_qscintilla::ctx_menu_run_finished_signal,
+             this, &octave_qscintilla::ctx_menu_run_finished,
              Qt::QueuedConnection);
 
     // clear scintilla edit shortcuts that are handled by the editor
@@ -291,12 +289,12 @@ namespace octave
             if (! m_word_at_cursor.isEmpty ())
               {
                 context_menu->addAction (tr ("Help on") + ' ' + m_word_at_cursor,
-                                         this, SLOT (contextmenu_help (bool)));
+                                         this, &octave_qscintilla::contextmenu_help);
                 context_menu->addAction (tr ("Documentation on")
                                          + ' ' + m_word_at_cursor,
-                                         this, SLOT (contextmenu_doc (bool)));
+                                         this, &octave_qscintilla::contextmenu_doc);
                 context_menu->addAction (tr ("Edit") + ' ' + m_word_at_cursor,
-                                         this, SLOT (contextmenu_edit (bool)));
+                                         this, &octave_qscintilla::contextmenu_edit);
               }
           }
       }
@@ -311,7 +309,7 @@ namespace octave
 
         QAction *act
           = context_menu->addAction (tr ("dbstop if ..."), this,
-                                     SLOT (contextmenu_break_condition (bool)));
+                                     &octave_qscintilla::contextmenu_break_condition);
         act->setData (local_pos);
       }
 #endif

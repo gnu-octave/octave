@@ -94,12 +94,12 @@ namespace octave
     setFocusPolicy (Qt::StrongFocus);
     setAttribute (Qt::WA_DeleteOnClose);
 
-    connect (m_dock_action, SIGNAL (triggered (bool)),
-             this, SLOT (change_floating (bool)));
-    connect (m_close_action, SIGNAL (triggered (bool)),
-             this, SLOT (change_existence (bool)));
-    connect (this, SIGNAL (topLevelChanged(bool)),
-             this, SLOT (toplevel_change (bool)));
+    connect (m_dock_action, &QAction::triggered,
+             this, &variable_dock_widget::change_floating);
+    connect (m_close_action, &QAction::triggered,
+             this, &variable_dock_widget::change_existence);
+    connect (this, &variable_dock_widget::topLevelChanged,
+             this, &variable_dock_widget::toplevel_change);
     connect (p, SIGNAL (visibilityChanged (bool)),
              this, SLOT (setVisible (bool)));
 
@@ -124,8 +124,8 @@ namespace octave
     QString css_button = QString ("QToolButton {background: transparent; border: 0px;}");
     fullscreen_button->setStyleSheet (css_button);
 
-    connect (m_fullscreen_action, SIGNAL (triggered ()),
-             this, SLOT (change_fullscreen ()));
+    connect (m_fullscreen_action, &QAction::triggered,
+             this, &variable_dock_widget::change_fullscreen);
 
     int index = -1;
     QToolButton *first = m_title_widget->findChild<QToolButton *> ();
@@ -466,8 +466,8 @@ namespace octave
             = Fsave_default_options (interp, octave_value_list (), 1);
           QString save_opts = QString::fromStdString (argout(0).string_value ());
 
-          connect (this, SIGNAL (do_save_signal (const QString&, const QString&)),
-                   this, SLOT (do_save (const QString&, const QString&)));
+          connect (this, &variable_editor_stack::do_save_signal,
+                   this, &variable_editor_stack::do_save);
 
           emit (do_save_signal (format_string, save_opts));
 
@@ -644,29 +644,29 @@ namespace octave
 
     menu->addAction (rmgr.icon ("edit-cut"),
                      tr ("Cut") + qualifier_string,
-                     this, SLOT (cutClipboard ()));
+                     this, &variable_editor_view::cutClipboard);
 
     menu->addAction (rmgr.icon ("edit-copy"),
                      tr ("Copy") + qualifier_string,
-                     this, SLOT (copyClipboard ()));
+                     this, &variable_editor_view::copyClipboard);
 
     menu->addAction (rmgr.icon ("edit-paste"),
                      tr ("Paste"),
-                     this, SLOT (pasteClipboard ()));
+                     this, &variable_editor_view::pasteClipboard);
 
     menu->addSeparator ();
 
     menu->addAction (rmgr.icon ("edit-delete"),
                      tr ("Clear") + qualifier_string,
-                     this, SLOT (clearContent ()));
+                     this, &variable_editor_view::clearContent);
 
     menu->addAction (rmgr.icon ("edit-delete"),
                      tr ("Delete") + qualifier_string,
-                     this, SLOT (delete_selected ()));
+                     this, &variable_editor_view::delete_selected);
 
     menu->addAction (rmgr.icon ("document-new"),
                      tr ("Variable from Selection"),
-                     this, SLOT (createVariable ()));
+                     this, &variable_editor_view::createVariable);
   }
 
   void
@@ -683,7 +683,8 @@ namespace octave
         // FIXME: addAction for sort?
         // FIXME: Add icon for transpose.
 
-        menu->addAction (tr ("Transpose"), this, SLOT (transposeContent ()));
+        menu->addAction (tr ("Transpose"),
+                         this, &variable_editor_view::transposeContent);
 
         QItemSelectionModel *sel = selectionModel ();
 
@@ -1226,18 +1227,18 @@ namespace octave
     page->setObjectName (name);
     m_main->addDockWidget (Qt::LeftDockWidgetArea, page);
 
-    connect (QApplication::instance(), SIGNAL (focusChanged (QWidget *, QWidget *)),
-             page, SLOT (handle_focus_change (QWidget *, QWidget *)));
-    connect (page, SIGNAL (destroyed (QObject *)),
-             this, SLOT (variable_destroyed (QObject *)));
-    connect (page, SIGNAL (variable_focused_signal (const QString&)),
-             this, SLOT (variable_focused (const QString&)));
+    connect (qApp, &QApplication::focusChanged,
+             page, &variable_dock_widget::handle_focus_change);
+    connect (page, &variable_dock_widget::destroyed,
+             this, &variable_editor::variable_destroyed);
+    connect (page, &variable_dock_widget::variable_focused_signal,
+             this, &variable_editor::variable_focused);
 // See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
     connect (page, SIGNAL (queue_unfloat_float ()),
              page, SLOT (unfloat_float ()), Qt::QueuedConnection);
     connect (page, SIGNAL (queue_float ()),
-             page, SLOT (refloat ()), Qt::QueuedConnection);
+             page, SIGNAL (refloat ()), Qt::QueuedConnection);
 #endif
 
     variable_editor_stack *stack
@@ -1249,18 +1250,18 @@ namespace octave
 
     // Any interpreter_event signal from a variable_editor_stack object is
     // handled the same as for the parent variable_editor object.
-    connect (stack, SIGNAL (interpreter_event (const fcn_callback&)),
-             this, SIGNAL (interpreter_event (const fcn_callback&)));
+    connect (stack, QOverload<const fcn_callback&>::of (&variable_editor_stack::interpreter_event),
+             this, QOverload<const fcn_callback&>::of (&variable_editor::interpreter_event));
 
-    connect (stack, SIGNAL (interpreter_event (const meth_callback&)),
-             this, SIGNAL (interpreter_event (const meth_callback&)));
+    connect (stack, QOverload<const meth_callback&>::of (&variable_editor_stack::interpreter_event),
+             this, QOverload<const meth_callback&>::of (&variable_editor::interpreter_event));
 
-    connect (stack, SIGNAL (edit_variable_signal (const QString&, const octave_value&)),
-             this, SLOT (edit_variable (const QString&, const octave_value&)));
-    connect (this, SIGNAL (level_up_signal ()),
-             stack, SLOT (levelUp ()));
-    connect (this, SIGNAL (save_signal ()),
-             stack, SLOT (save ()));
+    connect (stack, &variable_editor_stack::edit_variable_signal,
+             this, &variable_editor::edit_variable);
+    connect (this, &variable_editor::level_up_signal,
+             stack, &variable_editor_stack::levelUp);
+    connect (this, &variable_editor::save_signal,
+             stack, [=] () { stack->save (); });
 
     variable_editor_view *edit_view = stack->edit_view ();
 
@@ -1276,53 +1277,53 @@ namespace octave
     connect (m_save_mapper, SIGNAL (mapped (const QString&)),
              stack, SLOT (save (const QString&)));
 
-    connect (edit_view, SIGNAL (command_signal (const QString&)),
-             this, SIGNAL (command_signal (const QString&)));
-    connect (this, SIGNAL (delete_selected_signal ()),
-             edit_view, SLOT (delete_selected ()));
-    connect (this, SIGNAL (clear_content_signal ()),
-             edit_view, SLOT (clearContent ()));
-    connect (this, SIGNAL (copy_clipboard_signal ()),
-             edit_view, SLOT (copyClipboard ()));
-    connect (this, SIGNAL (paste_clipboard_signal ()),
-             edit_view, SLOT (pasteClipboard ()));
+    connect (edit_view, &variable_editor_view::command_signal,
+             this, &variable_editor::command_signal);
+    connect (this, &variable_editor::delete_selected_signal,
+             edit_view, &variable_editor_view::delete_selected);
+    connect (this, &variable_editor::clear_content_signal,
+             edit_view, &variable_editor_view::clearContent);
+    connect (this, &variable_editor::copy_clipboard_signal,
+             edit_view, &variable_editor_view::copyClipboard);
+    connect (this, &variable_editor::paste_clipboard_signal,
+             edit_view, &variable_editor_view::pasteClipboard);
     connect (edit_view->horizontalHeader (),
-             SIGNAL (customContextMenuRequested (const QPoint&)),
-             edit_view, SLOT (createColumnMenu (const QPoint&)));
+             &QHeaderView::customContextMenuRequested,
+             edit_view, &variable_editor_view::createColumnMenu);
     connect (edit_view->verticalHeader (),
-             SIGNAL (customContextMenuRequested (const QPoint&)),
-             edit_view, SLOT (createRowMenu (const QPoint&)));
-    connect (edit_view, SIGNAL (customContextMenuRequested (const QPoint&)),
-             edit_view, SLOT (createContextMenu (const QPoint&)));
-    connect (edit_view->horizontalScrollBar (), SIGNAL (actionTriggered (int)),
-             edit_view, SLOT (handle_horizontal_scroll_action (int)));
-    connect (edit_view->verticalScrollBar (), SIGNAL (actionTriggered (int)),
-             edit_view, SLOT (handle_vertical_scroll_action (int)));
+             &QHeaderView::customContextMenuRequested,
+             edit_view, &variable_editor_view::createRowMenu);
+    connect (edit_view, &variable_editor_view::customContextMenuRequested,
+             edit_view, &variable_editor_view::createContextMenu);
+    connect (edit_view->horizontalScrollBar (), &QScrollBar::actionTriggered,
+             edit_view, &variable_editor_view::handle_horizontal_scroll_action);
+    connect (edit_view->verticalScrollBar (), &QScrollBar::actionTriggered,
+             edit_view, &variable_editor_view::handle_vertical_scroll_action);
 
     variable_editor_model *model =
       new variable_editor_model (name, val, stack);
 
-    connect (model, SIGNAL (edit_variable_signal (const QString&, const octave_value&)),
-             this, SLOT (edit_variable (const QString&, const octave_value&)));
-    connect (model, SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
-             this, SLOT (callUpdate (const QModelIndex&, const QModelIndex&)));
-    connect (this, SIGNAL (refresh_signal ()),
-             model, SLOT (update_data_cache ()));
-    connect (model, SIGNAL (set_editable_signal (bool)),
-             stack, SLOT (set_editable (bool)));
+    connect (model, &variable_editor_model::edit_variable_signal,
+             this, &variable_editor::edit_variable);
+    connect (model, &variable_editor_model::dataChanged,
+             this, &variable_editor::callUpdate);
+    connect (this, &variable_editor::refresh_signal,
+             model, &variable_editor_model::update_data_cache);
+    connect (model, &variable_editor_model::set_editable_signal,
+             stack, &variable_editor_stack::set_editable);
 
     edit_view->setModel (model);
-    connect (edit_view, SIGNAL (doubleClicked (const QModelIndex&)),
-             model, SLOT (double_click (const QModelIndex&)));
+    connect (edit_view, &variable_editor_view::doubleClicked,
+             model, &variable_editor_model::double_click);
 
     // Any interpreter_event signal from a variable_editor_model object is
     // handled the same as for the parent variable_editor object.
 
-    connect (model, SIGNAL (interpreter_event (const fcn_callback&)),
-             this, SIGNAL (interpreter_event (const fcn_callback&)));
+    connect (model, QOverload<const fcn_callback&>::of (&variable_editor_model::interpreter_event),
+             this, QOverload<const fcn_callback&>::of (&variable_editor::interpreter_event));
 
-    connect (model, SIGNAL (interpreter_event (const meth_callback&)),
-             this, SIGNAL (interpreter_event (const meth_callback&)));
+    connect (model, QOverload<const meth_callback&>::of (&variable_editor_model::interpreter_event),
+             this, QOverload<const meth_callback&>::of (&variable_editor::interpreter_event));
 
     // Must supply a title for a QLabel to be created.  Calling set_title()
     // more than once will add more QLabels.  Could change octave_dock_widget
@@ -1332,6 +1333,9 @@ namespace octave
     if (page->titleBarWidget () != nullptr)
       {
         QLabel *existing_ql = page->titleBarWidget ()->findChild<QLabel *> ();
+
+        // FIXME: What was the intent here?  update_label_signal does
+        // not seem to exist now.
         connect (model, SIGNAL (update_label_signal (const QString&)),
                  existing_ql, SLOT (setText (const QString&)));
         existing_ql->setMargin (2);
@@ -1711,10 +1715,10 @@ namespace octave
                                                     );
     for (int i = 0; i < hbuttonlist.size (); i++)
       {
-        connect (hbuttonlist.at (i), SIGNAL (hovered_signal ()),
-                 this, SLOT (record_hovered_focus_variable ()));
-        connect (hbuttonlist.at (i), SIGNAL (popup_shown_signal ()),
-                 this, SLOT (restore_hovered_focus_variable ()));
+        connect (hbuttonlist.at (i), &HoverToolButton::hovered_signal,
+                 this, &variable_editor::record_hovered_focus_variable);
+        connect (hbuttonlist.at (i), &HoverToolButton::popup_shown_signal,
+                 this, &variable_editor::restore_hovered_focus_variable);
       }
 
     QList<ReturnFocusToolButton *> rfbuttonlist
@@ -1723,8 +1727,8 @@ namespace octave
                                                           );
     for (int i = 0; i < rfbuttonlist.size (); i++)
       {
-        connect (rfbuttonlist.at (i), SIGNAL (about_to_activate ()),
-                 this, SLOT (restore_hovered_focus_variable ()));
+        connect (rfbuttonlist.at (i), &ReturnFocusToolButton::about_to_activate,
+                 this, &variable_editor::restore_hovered_focus_variable);
       }
 
     // Same for QMenu
@@ -1732,8 +1736,8 @@ namespace octave
       = m_tool_bar->findChildren<ReturnFocusMenu *> ();
     for (int i = 0; i < menulist.size (); i++)
       {
-        connect (menulist.at (i), SIGNAL (about_to_activate ()),
-                 this, SLOT (restore_hovered_focus_variable ()));
+        connect (menulist.at (i), &ReturnFocusMenu::about_to_activate,
+                 this, &variable_editor::restore_hovered_focus_variable);
       }
 
     m_tool_bar->setAttribute(Qt::WA_ShowWithoutActivating);
@@ -1743,4 +1747,5 @@ namespace octave
 
     m_tool_bar->setEnabled (false);
   }
+
 }

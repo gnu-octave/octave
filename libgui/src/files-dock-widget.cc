@@ -165,29 +165,29 @@ namespace octave
     popdown_menu->addSeparator ();
     popdown_menu->addAction (rmgr.icon ("folder"),
                              tr ("Set Browser Directory..."),
-                             this, SLOT (popdownmenu_search_dir (bool)));
+                             this, &files_dock_widget::popdownmenu_search_dir);
     popdown_menu->addSeparator ();
     popdown_menu->addAction (rmgr.icon ("edit-find"),
                              tr ("Find Files..."),
-                             this, SLOT (popdownmenu_findfiles (bool)));
+                             this, &files_dock_widget::popdownmenu_findfiles);
     popdown_menu->addSeparator ();
     popdown_menu->addAction (rmgr.icon ("document-new"),
                              tr ("New File..."),
-                             this, SLOT (popdownmenu_newfile (bool)));
+                             this, &files_dock_widget::popdownmenu_newfile);
     popdown_menu->addAction (rmgr.icon ("folder-new"),
                              tr ("New Directory..."),
-                             this, SLOT (popdownmenu_newdir (bool)));
+                             this, &files_dock_widget::popdownmenu_newdir);
 
     m_navigation_tool_bar->addWidget (m_current_directory);
     m_navigation_tool_bar->addAction (directory_up_action);
     m_navigation_tool_bar->addWidget (popdown_button);
 
-    connect (directory_up_action, SIGNAL (triggered ()), this,
-             SLOT (change_directory_up ()));
-    connect (m_sync_octave_directory_action, SIGNAL (triggered ()), this,
-             SLOT (do_sync_octave_directory ()));
-    connect (m_sync_browser_directory_action, SIGNAL (triggered ()), this,
-             SLOT (do_sync_browser_directory ()));
+    connect (directory_up_action, &QAction::triggered,
+             this, &files_dock_widget::change_directory_up);
+    connect (m_sync_octave_directory_action, &QAction::triggered,
+             this, &files_dock_widget::do_sync_octave_directory);
+    connect (m_sync_browser_directory_action, &QAction::triggered,
+             this, &files_dock_widget::do_sync_browser_directory);
 
     gui_settings *settings = rmgr.get_settings ();
     // FIXME: what should happen if settings is 0?
@@ -256,19 +256,18 @@ namespace octave
     m_current_directory->setEditText
       (m_file_system_model->fileInfo (rootPathIndex). absoluteFilePath ());
 
-    connect (m_file_tree_view, SIGNAL (activated (const QModelIndex &)),
-             this, SLOT (item_double_clicked (const QModelIndex &)));
+    connect (m_file_tree_view, &FileTreeViewer::activated,
+             this, &files_dock_widget::item_double_clicked);
 
     // add context menu to tree_view
     m_file_tree_view->setContextMenuPolicy (Qt::CustomContextMenu);
-    connect (m_file_tree_view,
-             SIGNAL (customContextMenuRequested (const QPoint &)),
-             this, SLOT (contextmenu_requested (const QPoint &)));
+    connect (m_file_tree_view, &FileTreeViewer::customContextMenuRequested,
+             this, &files_dock_widget::contextmenu_requested);
 
     m_file_tree_view->header ()->setContextMenuPolicy (Qt::CustomContextMenu);
     connect (m_file_tree_view->header (),
-             SIGNAL (customContextMenuRequested (const QPoint &)),
-             this, SLOT (headercontextmenu_requested (const QPoint &)));
+             &QHeaderView::customContextMenuRequested,
+             this, &files_dock_widget::headercontextmenu_requested);
 
     // Layout the widgets vertically with the toolbar on top
     QVBoxLayout *vbox_layout = new QVBoxLayout ();
@@ -282,8 +281,23 @@ namespace octave
     // FIXME: Add right-click contextual menus for copying, pasting,
     //        deleting files (and others).
 
-    connect (m_current_directory->lineEdit (), SIGNAL (returnPressed ()),
-             this, SLOT (accept_directory_line_edit ()));
+    connect (m_current_directory->lineEdit (), &QLineEdit::returnPressed,
+             this, &files_dock_widget::accept_directory_line_edit);
+
+    // FIXME: We could use
+    //
+    //    connect (m_current_directory,
+    //             QOverload<const QString&>::of (&QComboBox::activated),
+    //             this, &files_dock_widget::set_current_directory);
+    //
+    // but referring to QComboBox::activated will generate deprecated
+    // function warnings from GCC.  We could also use
+    //
+    //    connect (m_current_directory, &QComboBox::textActivated,
+    //             this, &files_dock_widget::set_current_directory);
+    //
+    // but the function textActivated was not introduced until Qt 5.14
+    // so we'll need a feature test.
 
     connect (m_current_directory, SIGNAL (activated (const QString &)),
              this, SLOT (set_current_directory (const QString &)));
@@ -483,6 +497,20 @@ namespace octave
                             m_columns_shown_defs.at (i)).toBool ());
       }
 
+    // FIXME: We could use
+    //
+    //   connect (&m_sig_mapper, QOverload<int>::of (&QSignalMapper::mapped),
+    //            this, &workspace_view::toggle_header);
+    //
+    // but referring to QSignalMapper::mapped will generate deprecated
+    // function warnings from GCC.  We could also use
+    //
+    //   connect (&m_sig_mapper, &QSignalMapper::mappedInt,
+    //            this, &workspace_view::toggle_header);
+    //
+    // but the function mappedInt was not introduced until Qt 5.15 so
+    // we'll need a feature test.
+
     connect (m_sig_mapper, SIGNAL (mapped (int)),
              this, SLOT (toggle_header (int)));
 
@@ -517,70 +545,68 @@ namespace octave
 
         // construct the context menu depending on item
         menu.addAction (rmgr.icon ("document-open"), tr ("Open"),
-                        this, SLOT (contextmenu_open (bool)));
+                        this, &files_dock_widget::contextmenu_open);
 
         if (info.isDir ())
           {
             menu.addAction (tr ("Open in System File Explorer"),
-                            this, SLOT (contextmenu_open_in_app (bool)));
+                            this, &files_dock_widget::contextmenu_open_in_app);
           }
 
         if (info.isFile ())
           menu.addAction (tr ("Open in Text Editor"),
-                          this, SLOT (contextmenu_open_in_editor (bool)));
+                          this, &files_dock_widget::contextmenu_open_in_editor);
 
         menu.addAction (tr ("Copy Selection to Clipboard"),
-                        this, SLOT (contextmenu_copy_selection (bool)));
+                        this, &files_dock_widget::contextmenu_copy_selection);
 
         if (info.isFile () && info.suffix () == "m")
-          menu.addAction (rmgr.icon ("media-playback-start"),
-                          tr ("Run"), this, SLOT (contextmenu_run (bool)));
+          menu.addAction (rmgr.icon ("media-playback-start"), tr ("Run"),
+                          this, &files_dock_widget::contextmenu_run);
 
         if (info.isFile ())
-          menu.addAction (tr ("Load Data"), this, SLOT (contextmenu_load (bool)));
+          menu.addAction (tr ("Load Data"),
+                          this, &files_dock_widget::contextmenu_load);
 
         if (info.isDir ())
           {
             menu.addSeparator ();
-            menu.addAction (rmgr.icon ("go-first"),
-                            tr ("Set Current Directory"),
-                            this, SLOT (contextmenu_setcurrentdir (bool)));
+            menu.addAction (rmgr.icon ("go-first"), tr ("Set Current Directory"),
+                            this, &files_dock_widget::contextmenu_setcurrentdir);
 
             QMenu *add_path_menu = menu.addMenu (tr ("Add to Path"));
 
             add_path_menu->addAction (tr ("Selected Directories"),
-                                      this, SLOT (contextmenu_add_to_path (bool)));
+                                      this, [=] (bool checked) { contextmenu_add_to_path (checked); });
             add_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
-                                      this, SLOT (contextmenu_add_to_path_subdirs (bool)));
+                                      this, &files_dock_widget::contextmenu_add_to_path_subdirs);
 
             QMenu *rm_path_menu = menu.addMenu (tr ("Remove from Path"));
 
-            rm_path_menu->addAction (tr ("Selected Directories"), this,
-                                     SLOT (contextmenu_rm_from_path (bool)));
+            rm_path_menu->addAction (tr ("Selected Directories"),
+                                     this, &files_dock_widget::contextmenu_rm_from_path);
             rm_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
-                                     this, SLOT (contextmenu_rm_from_path_subdirs (bool)));
+                                     this, &files_dock_widget::contextmenu_rm_from_path_subdirs);
 
             menu.addSeparator ();
 
-            menu.addAction (rmgr.icon ("edit-find"),
-                            tr ("Find Files..."), this,
-                            SLOT (contextmenu_findfiles (bool)));
+            menu.addAction (rmgr.icon ("edit-find"), tr ("Find Files..."),
+                            this, &files_dock_widget::contextmenu_findfiles);
           }
 
         menu.addSeparator ();
-        menu.addAction (tr ("Rename..."), this, SLOT (contextmenu_rename (bool)));
-        menu.addAction (rmgr.icon ("edit-delete"),
-                        tr ("Delete..."), this, SLOT (contextmenu_delete (bool)));
+        menu.addAction (tr ("Rename..."),
+                        this, &files_dock_widget::contextmenu_rename);
+        menu.addAction (rmgr.icon ("edit-delete"), tr ("Delete..."),
+                        this, &files_dock_widget::contextmenu_delete);
 
         if (info.isDir ())
           {
             menu.addSeparator ();
-            menu.addAction (rmgr.icon ("document-new"),
-                            tr ("New File..."),
-                            this, SLOT (contextmenu_newfile (bool)));
-            menu.addAction (rmgr.icon ("folder-new"),
-                            tr ("New Directory..."),
-                            this, SLOT (contextmenu_newdir (bool)));
+            menu.addAction (rmgr.icon ("document-new"), tr ("New File..."),
+                            this, &files_dock_widget::contextmenu_newfile);
+            menu.addAction (rmgr.icon ("folder-new"), tr ("New Directory..."),
+                            this, &files_dock_widget::contextmenu_newdir);
           }
 
         // show the menu

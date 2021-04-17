@@ -61,8 +61,8 @@ namespace QtHandles
           btn->setChecked (true);
       }
 
-    connect (btn, SIGNAL (clicked (void)), SLOT (clicked (void)));
-    connect (btn, SIGNAL (toggled (bool)), SLOT (toggled (bool)));
+    connect (btn, &QAbstractButton::clicked, this, &ButtonControl::clicked);
+    connect (btn, &QAbstractButton::toggled, this, &ButtonControl::toggled);
   }
 
   ButtonControl::~ButtonControl (void)

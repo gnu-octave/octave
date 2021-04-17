@@ -192,10 +192,10 @@ namespace octave
     m_parent = static_cast<QMainWindow *> (p);     // store main window
     m_predecessor_widget = nullptr;
 
-    connect (this, SIGNAL (topLevelChanged (bool)),
-             this, SLOT (toplevel_change (bool)));
-    connect (this, SIGNAL (visibilityChanged (bool)),
-             this, SLOT (handle_visibility (bool)));
+    connect (this, &octave_dock_widget::topLevelChanged,
+             this, &octave_dock_widget::toplevel_change);
+    connect (this, &octave_dock_widget::visibilityChanged,
+             this, &octave_dock_widget::handle_visibility);
 
     connect (p, SIGNAL (init_window_menu (void)),
              this, SLOT (init_window_menu_entry (void)));
@@ -211,26 +211,26 @@ namespace octave
     if (m_default_float_button != nullptr)
       {
         disconnect (m_default_float_button, 0, 0, 0);
-        connect (m_default_float_button, SIGNAL (clicked (bool)),
-                 this, SLOT (make_window (bool)));
+        connect (m_default_float_button, &QAbstractButton::clicked,
+                 this, &octave_dock_widget::make_window);
       }
-    connect (this, SIGNAL (queue_make_window (bool)),
-             this, SLOT (make_window (bool)), Qt::QueuedConnection);
-    connect (this, SIGNAL (queue_make_widget ()),
-             this, SLOT (make_widget ()), Qt::QueuedConnection);
+    connect (this, &octave_dock_widget::queue_make_window,
+             this, &octave_dock_widget::make_window, Qt::QueuedConnection);
+    connect (this, &octave_dock_widget::queue_make_widget,
+             this, [=] () { make_widget (); }, Qt::QueuedConnection);
 
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
     scmgr.set_shortcut (m_dock_action, sc_dock_widget_dock);
     m_dock_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     addAction (m_dock_action);
-    connect (m_dock_action, SIGNAL (triggered (bool)),
-             this, SLOT (make_window (bool)));
+    connect (m_dock_action, &QAction::triggered,
+             this, &octave_dock_widget::make_window);
 
     scmgr.set_shortcut (m_close_action, sc_dock_widget_close);
     m_close_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     addAction (m_close_action);
-    connect (m_close_action, SIGNAL (triggered (bool)),
-             this, SLOT (change_visibility (bool)));
+    connect (m_close_action, &QAction::triggered,
+             this, &octave_dock_widget::change_visibility);
 
     // Any interpreter_event signal from an octave_dock_widget object is
     // handled the same as for the parent main_window object.
@@ -309,8 +309,8 @@ namespace octave
 
     // adjust the (un)dock action
     disconnect (m_dock_action, 0, this, 0);
-    connect (m_dock_action, SIGNAL (triggered (bool)),
-             this, SLOT (make_widget (bool)));
+    connect (m_dock_action, &QAction::triggered,
+             this, &octave_dock_widget::make_widget);
 
     // adjust the (un)dock icon
     if (titleBarWidget ())
@@ -322,8 +322,8 @@ namespace octave
     else
       {
         disconnect (m_default_float_button, 0, this, 0);
-        connect (m_default_float_button, SIGNAL (clicked (bool)),
-                 this, SLOT (make_widget (bool)));
+        connect (m_default_float_button, &QAbstractButton::clicked,
+                 this, &octave_dock_widget::make_widget);
       }
 
     raise ();
@@ -363,8 +363,8 @@ namespace octave
     setGeometry (m_recent_dock_geom);
 
     // adjust the (un)dock icon
-    connect (m_dock_action, SIGNAL (triggered (bool)),
-             this, SLOT (make_window (bool)));
+    connect (m_dock_action, &QAction::triggered,
+             this, &octave_dock_widget::make_window);
     if (titleBarWidget ())
       {
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-undock"
@@ -374,8 +374,8 @@ namespace octave
     else
       {
         disconnect (m_default_float_button, 0, this, 0);
-        connect (m_default_float_button, SIGNAL (clicked (bool)),
-                 this, SLOT (make_window (bool)));
+        connect (m_default_float_button, &QAbstractButton::clicked,
+                 this, &octave_dock_widget::make_window);
       }
 
     raise ();

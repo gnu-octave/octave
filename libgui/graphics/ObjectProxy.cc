@@ -53,24 +53,24 @@ namespace QtHandles
       {
         if (m_object)
           {
-            disconnect (this, SIGNAL (sendUpdate (int)),
-                        m_object, SLOT (slotUpdate (int)));
-            disconnect (this, SIGNAL (sendRedraw (void)),
-                        m_object, SLOT (slotRedraw (void)));
-            disconnect (this, SIGNAL (sendShow (void)),
-                        m_object, SLOT (slotShow (void)));
+            disconnect (this, &ObjectProxy::sendUpdate,
+                        m_object, &Object::slotUpdate);
+            disconnect (this, &ObjectProxy::sendRedraw,
+                        m_object, &Object::slotRedraw);
+            disconnect (this, &ObjectProxy::sendShow,
+                        m_object, &Object::slotShow);
           }
 
         m_object = obj;
 
         if (m_object)
           {
-            connect (this, SIGNAL (sendUpdate (int)),
-                     m_object, SLOT (slotUpdate (int)));
-            connect (this, SIGNAL (sendRedraw (void)),
-                     m_object, SLOT (slotRedraw (void)));
-            connect (this, SIGNAL (sendShow (void)),
-                     m_object, SLOT (slotShow (void)));
+            connect (this, &ObjectProxy::sendUpdate,
+                     m_object, &Object::slotUpdate);
+            connect (this, &ObjectProxy::sendRedraw,
+                     m_object, &Object::slotRedraw);
+            connect (this, &ObjectProxy::sendShow,
+                     m_object, &Object::slotShow);
           }
       }
   }

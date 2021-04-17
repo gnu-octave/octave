@@ -71,8 +71,8 @@ namespace QtHandles
       {
         m_qobject->setProperty ("QtHandles::Object",
                                 QVariant::fromValue<void*> (this));
-        connect (m_qobject, SIGNAL (destroyed (QObject*)),
-                 SLOT (objectDestroyed (QObject*)));
+        connect (m_qobject, &QObject::destroyed,
+                 this, &Object::objectDestroyed);
       }
   }
 

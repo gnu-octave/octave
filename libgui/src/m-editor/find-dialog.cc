@@ -144,23 +144,23 @@ namespace octave
     _search_selection_check_box = new QCheckBox (tr ("Search se&lection"));
     _search_selection_check_box->setCheckable (true);
 
-    connect (_find_next_button,   SIGNAL (clicked ()),
-             this,                SLOT (find_next ()));
-    connect (_find_prev_button,   SIGNAL (clicked ()),
-             this,                SLOT (find_prev ()));
-    connect (_more_button,        SIGNAL (toggled (bool)),
-             _extension,          SLOT (setVisible (bool)));
-    connect (_replace_button,     SIGNAL (clicked ()),
-             this,                SLOT (replace ()));
-    connect (_replace_all_button, SIGNAL (clicked ()),
-             this,                SLOT (replace_all ()));
-    connect (_backward_check_box, SIGNAL (stateChanged (int)),
-             this,                SLOT (handle_backward_search_changed (int)));
-    connect (_button_box,         SIGNAL (rejected ()),
-             this,                SLOT (close ()));
+    connect (_find_next_button, &QPushButton::clicked,
+             this, &find_dialog::find_next);
+    connect (_find_prev_button, &QPushButton::clicked,
+             this, &find_dialog::find_prev);
+    connect (_more_button, &QPushButton::toggled,
+             _extension, &QWidget::setVisible);
+    connect (_replace_button, &QPushButton::clicked,
+             this, &find_dialog::replace);
+    connect (_replace_all_button, &QPushButton::clicked,
+             this, &find_dialog::replace_all);
+    connect (_backward_check_box, &QCheckBox::stateChanged,
+             this, &find_dialog::handle_backward_search_changed);
+    connect (_button_box, &QDialogButtonBox::rejected,
+             this, &find_dialog::close);
 
-    connect (_search_selection_check_box, SIGNAL (stateChanged (int)),
-             this,                        SLOT (handle_sel_search_changed (int)));
+    connect (_search_selection_check_box, &QCheckBox::stateChanged,
+             this, &find_dialog::handle_sel_search_changed);
 
     QVBoxLayout *extension_layout = new QVBoxLayout ();
     extension_layout->setMargin (0);
@@ -212,8 +212,8 @@ namespace octave
     _edit_area = edit_area;
     _search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
 
-    connect (_edit_area, SIGNAL (copyAvailable (bool)),
-             this,       SLOT (handle_selection_changed (bool)),
+    connect (_edit_area, &octave_qscintilla::copyAvailable,
+             this, &find_dialog::handle_selection_changed,
              Qt::UniqueConnection);
   }
 

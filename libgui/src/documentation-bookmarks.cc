@@ -75,10 +75,10 @@ namespace octave
     m_tree->setEditTriggers (QAbstractItemView::EditKeyPressed
                                       | QAbstractItemView::SelectedClicked);
 
-    connect (m_tree, SIGNAL (customContextMenuRequested (const QPoint &)),
-             this, SLOT (ctx_menu (const QPoint &)));
-    connect (m_tree, SIGNAL (itemDoubleClicked (QTreeWidgetItem*, int)),
-             this, SLOT (handle_double_click (QTreeWidgetItem*, int)));
+    connect (m_tree, &QTreeWidget::customContextMenuRequested,
+             this, &documentation_bookmarks::ctx_menu);
+    connect (m_tree, &QTreeWidget::itemDoubleClicked,
+             this, &documentation_bookmarks::handle_double_click);
 
     // Define the icons for the tree view
     icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirClosedIcon),
@@ -122,18 +122,18 @@ namespace octave
 
     m_filter->addItems (settings->value (dc_bookmark_filter_mru).toStringList ());
 
-    connect (m_filter, SIGNAL (editTextChanged (const QString &)),
-             this, SLOT (filter_bookmarks (const QString &)));
-    connect (m_filter->lineEdit (), SIGNAL (editingFinished (void)),
-             this, SLOT (update_filter_history (void)));
+    connect (m_filter, &QComboBox::editTextChanged,
+             this, &documentation_bookmarks::filter_bookmarks);
+    connect (m_filter->lineEdit (), &QLineEdit::editingFinished,
+             this, &documentation_bookmarks::update_filter_history);
 
     m_filter_checkbox = new QCheckBox (m_filter_widget);
     bool filter_state = settings->value (dc_bookmark_filter_active).toBool ();
     m_filter_checkbox->setChecked (filter_state);
     filter_activate (filter_state);
 
-    connect (m_filter_checkbox, SIGNAL (toggled (bool)),
-             this, SLOT (filter_activate (bool)));
+    connect (m_filter_checkbox, &QCheckBox::toggled,
+             this, &documentation_bookmarks::filter_activate);
 
     QLabel *filter_label = new QLabel (tr ("Filter"), m_filter_widget);
     QHBoxLayout *h_box_bm = new QHBoxLayout (m_filter_widget);
@@ -326,21 +326,24 @@ namespace octave
       {
         resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
-        menu.addAction (tr ("&Open"), this, SLOT (open (bool)));
-        menu.addAction (tr ("&Rename"), this, SLOT (edit (bool)));
-        menu.addAction (rmgr.icon ("window-close"), tr ("Remo&ve"), this,
-                        SLOT (remove (bool)));
+        menu.addAction (tr ("&Open"), this, &documentation_bookmarks::open);
+        menu.addAction (tr ("&Rename"), this, &documentation_bookmarks::edit);
+        menu.addAction (rmgr.icon ("window-close"), tr ("Remo&ve"),
+                        this, &documentation_bookmarks::remove);
         menu.addSeparator ();
       }
 
-    menu.addAction (tr ("&Add Folder"), this, SLOT (add_folder (bool)));
+    menu.addAction (tr ("&Add Folder"), this,
+                    QOverload<bool>::of (&documentation_bookmarks::add_folder));
 
     menu.addSeparator ();
 
     if (m_filter_shown)
-      menu.addAction (tr ("Hide &Filter"), this, SLOT (show_filter (bool)));
+      menu.addAction (tr ("Hide &Filter"),
+                      this, &documentation_bookmarks::show_filter);
     else
-      menu.addAction (tr ("Show &Filter"), this, SLOT (show_filter (bool)));
+      menu.addAction (tr ("Show &Filter"),
+                      this, &documentation_bookmarks::show_filter);
 
     menu.exec (m_tree->mapToGlobal (xpos));
   }

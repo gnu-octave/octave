@@ -479,12 +479,12 @@ namespace QtHandles
     m_tableWidget->installEventFilter (this);
 
 
-    connect (m_tableWidget, SIGNAL (itemChanged (QTableWidgetItem*)),
-             SLOT (itemChanged (QTableWidgetItem*)));
-    connect (m_tableWidget, SIGNAL (cellClicked (int, int)),
-             SLOT (cellClicked (int, int)));
-    connect (m_tableWidget, SIGNAL (itemSelectionChanged (void)),
-             SLOT (itemSelectionChanged (void)));
+    connect (m_tableWidget, &QTableWidget::itemChanged,
+             this, &Table::itemChanged);
+    connect (m_tableWidget, &QTableWidget::cellClicked,
+             this, &Table::cellClicked);
+    connect (m_tableWidget, &QTableWidget::itemSelectionChanged,
+             this, &Table::itemSelectionChanged);
   }
 
   Table::~Table (void) { }

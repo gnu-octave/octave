@@ -132,8 +132,8 @@ namespace octave
 
         m_view->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
         connect (m_view->horizontalHeader (),
-                 SIGNAL (customContextMenuRequested (const QPoint &)),
-                 this, SLOT (header_contextmenu_requested (const QPoint &)));
+                 &QTableView::customContextMenuRequested,
+                 this, &workspace_view::header_contextmenu_requested);
 
         // Init state of the filter
         m_filter->addItems (settings->value (ws_mru_list.key).toStringList ());
@@ -146,18 +146,18 @@ namespace octave
 
     // Connect signals and slots.
 
-    connect (m_filter, SIGNAL (editTextChanged (const QString&)),
-             this, SLOT (filter_update (const QString&)));
-    connect (m_filter_checkbox, SIGNAL (toggled (bool)),
-             this, SLOT (filter_activate (bool)));
-    connect (m_filter->lineEdit (), SIGNAL (editingFinished ()),
-             this, SLOT (update_filter_history ()));
+    connect (m_filter, &QComboBox::editTextChanged,
+             this, &workspace_view::filter_update);
+    connect (m_filter_checkbox, &QCheckBox::toggled,
+             this, &workspace_view::filter_activate);
+    connect (m_filter->lineEdit (), &QLineEdit::editingFinished,
+             this, &workspace_view::update_filter_history);
 
-    connect (m_view, SIGNAL (customContextMenuRequested (const QPoint&)),
-             this, SLOT (contextmenu_requested (const QPoint&)));
+    connect (m_view, &QTableView::customContextMenuRequested,
+             this, &workspace_view::contextmenu_requested);
 
-    connect (m_view, SIGNAL (activated (QModelIndex)),
-             this, SLOT (handle_contextmenu_edit (void)));
+    connect (m_view, &QTableView::activated,
+             this, &workspace_view::handle_contextmenu_edit);
 
     connect (this, SIGNAL (command_requested (const QString&)),
              p, SLOT (execute_command_in_terminal (const QString&)));
@@ -313,6 +313,20 @@ namespace octave
         action->setChecked (settings->value (ws_columns_shown_keys.at (i),true).toBool ());
       }
 
+    // FIXME: We could use
+    //
+    //   connect (&m_sig_mapper, QOverload<int>::of (&QSignalMapper::mapped),
+    //            this, &workspace_view::toggle_header);
+    //
+    // but referring to QSignalMapper::mapped will generate deprecated
+    // function warnings from GCC.  We could also use
+    //
+    //   connect (&m_sig_mapper, &QSignalMapper::mappedInt,
+    //            this, &workspace_view::toggle_header);
+    //
+    // but the function mappedInt was not introduced until Qt 5.15 so
+    // we'll need a feature test.
+
     connect (&sig_mapper, SIGNAL (mapped (int)),
              this, SLOT (toggle_header (int)));
 
@@ -349,16 +363,17 @@ namespace octave
         QString var_name = get_var_name (index);
 
         menu.addAction (tr ("Open in Variable Editor"), this,
-                        SLOT (handle_contextmenu_edit ()));
+                        &workspace_view::handle_contextmenu_edit);
 
         menu.addAction (tr ("Copy name"), this,
-                        SLOT (handle_contextmenu_copy ()));
+                        &workspace_view::handle_contextmenu_copy);
 
         menu.addAction (tr ("Copy value"), this,
-                        SLOT (handle_contextmenu_copy_value ()));
+                        &workspace_view::handle_contextmenu_copy_value);
 
-        QAction *rename = menu.addAction (tr ("Rename"), this,
-                                          SLOT (handle_contextmenu_rename ()));
+        QAction *rename
+          = menu.addAction (tr ("Rename"), this,
+                            &workspace_view::handle_contextmenu_rename);
 
         // Use m_model here instead of using "m_view->model ()" because
         // that points to the proxy model.
@@ -369,18 +384,18 @@ namespace octave
           }
 
         menu.addAction ("Clear " + var_name, this,
-                        SLOT (handle_contextmenu_clear ()));
+                        &workspace_view::handle_contextmenu_clear);
 
         menu.addSeparator ();
 
         menu.addAction ("disp (" + var_name + ')', this,
-                        SLOT (handle_contextmenu_disp ()));
+                        &workspace_view::handle_contextmenu_disp);
 
         menu.addAction ("plot (" + var_name + ')', this,
-                        SLOT (handle_contextmenu_plot ()));
+                        &workspace_view::handle_contextmenu_plot);
 
         menu.addAction ("stem (" + var_name + ')', this,
-                        SLOT (handle_contextmenu_stem ()));
+                        &workspace_view::handle_contextmenu_stem);
 
         menu.addSeparator ();
 
@@ -388,10 +403,10 @@ namespace octave
 
     if (m_filter_shown)
       menu.addAction (tr ("Hide filter"), this,
-                      SLOT (handle_contextmenu_filter ()));
+                      &workspace_view::handle_contextmenu_filter);
     else
       menu.addAction (tr ("Show filter"), this,
-                      SLOT (handle_contextmenu_filter ()));
+                      &workspace_view::handle_contextmenu_filter);
 
     menu.exec (m_view->mapToGlobal (qpos));
   }

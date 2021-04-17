@@ -47,8 +47,8 @@ namespace octave
   set_path_model::set_path_model (QObject *p)
     : QAbstractListModel (p)
   {
-    connect (this, SIGNAL (update_data_signal (const QStringList&)),
-             this, SLOT (update_data (const QStringList&)));
+    connect (this, &set_path_model::update_data_signal,
+             this, &set_path_model::update_data);
 
     m_revertible = false;
   }

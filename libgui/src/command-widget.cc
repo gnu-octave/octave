@@ -83,23 +83,23 @@ namespace octave
 
     setFocusProxy (m_line_edit);
 
-    connect (m_line_edit, SIGNAL (returnPressed (void)),
-             this, SLOT (accept_input_line (void)));
+    connect (m_line_edit, &QLineEdit::returnPressed,
+             this, &command_widget::accept_input_line);
 
-    connect (this, SIGNAL (clear_line_edit (void)),
-             m_line_edit, SLOT (clear (void)));
+    connect (this, &command_widget::clear_line_edit,
+             m_line_edit, &QLineEdit::clear);
 
-    connect (pause_button, SIGNAL (clicked (void)),
-             &oct_qobj, SLOT (interpreter_pause (void)));
+    connect (pause_button, &QPushButton::clicked,
+             &oct_qobj, &base_qobject::interpreter_pause);
 
-    connect (stop_button, SIGNAL (clicked (void)),
-             &oct_qobj, SLOT (interpreter_stop (void)));
+    connect (stop_button, &QPushButton::clicked,
+             &oct_qobj, &base_qobject::interpreter_stop);
 
-    connect (resume_button, SIGNAL (clicked (void)),
-             &oct_qobj, SLOT (interpreter_resume (void)));
+    connect (resume_button, &QPushButton::clicked,
+             &oct_qobj, &base_qobject::interpreter_resume);
 
     connect (p, SIGNAL (update_prompt_signal (const QString&)),
-             m_prompt, SLOT (setText (const QString&)));
+             m_prompt, SLOT (setText (const QSTring&)));
 
     connect (p, SIGNAL (interpreter_output_signal (const QString&)),
              this, SLOT (insert_interpreter_output (const QString&)));

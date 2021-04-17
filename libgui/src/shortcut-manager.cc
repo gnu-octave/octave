@@ -456,8 +456,8 @@ namespace octave
 
     m_level_hash[sc_doc] = doc_browser;
 
-    connect (tree_view, SIGNAL (itemDoubleClicked (QTreeWidgetItem*, int)),
-             this, SLOT (handle_double_clicked (QTreeWidgetItem*, int)));
+    connect (tree_view, &QTreeWidget::itemDoubleClicked,
+             this, &shortcut_manager::handle_double_clicked);
 
     for (int i = 0; i < m_sc.count (); i++)
       {
@@ -682,8 +682,7 @@ namespace octave
         shift->setStyleSheet
           ("QCheckBox::indicator { subcontrol-position: left top; }");
 
-        connect (direct, SIGNAL (clicked (bool)),
-                 shift, SLOT (setEnabled (bool)));
+        connect (direct, &QCheckBox::clicked, shift, &QCheckBox::setEnabled);
 
         direct->setCheckState (Qt::Checked);
 
@@ -708,8 +707,8 @@ namespace octave
 
         QPushButton *set_default = new QPushButton (tr ("Set to default"));
         grid->addWidget (set_default, 0, 2);
-        connect (set_default, SIGNAL (clicked ()),
-                 this, SLOT (shortcut_dialog_set_default ()));
+        connect (set_default, &QPushButton::clicked,
+                 this, &shortcut_manager::shortcut_dialog_set_default);
 
         box->addLayout (grid);
 
@@ -720,18 +719,20 @@ namespace octave
         QList<QAbstractButton *> buttons = button_box->buttons ();
         for (int i = 0; i < buttons.count (); i++)
           buttons.at (i)->setShortcut (QKeySequence ());
-        connect (button_box, SIGNAL (accepted ()), m_dialog, SLOT (accept ()));
-        connect (button_box, SIGNAL (rejected ()), m_dialog, SLOT (reject ()));
+        connect (button_box, &QDialogButtonBox::accepted,
+                 m_dialog, &QDialog::accept);
+        connect (button_box, &QDialogButtonBox::rejected,
+                 m_dialog, &QDialog::reject);
         box->addWidget (button_box);
 
         m_dialog->setLayout (box);
 
-        connect (direct, SIGNAL (stateChanged (int)),
-                 m_edit_actual, SLOT (handle_direct_shortcut (int)));
-        connect (shift, SIGNAL (stateChanged (int)),
-                 m_edit_actual, SLOT (handle_shift_modifier (int)));
-        connect (m_dialog, SIGNAL (finished (int)),
-                 this, SLOT (shortcut_dialog_finished (int)));
+        connect (direct, &QCheckBox::stateChanged,
+                 m_edit_actual, &enter_shortcut::handle_direct_shortcut);
+        connect (shift, &QCheckBox::stateChanged,
+                 m_edit_actual, &enter_shortcut::handle_shift_modifier);
+        connect (m_dialog, &QDialog::finished,
+                 this, &shortcut_manager::shortcut_dialog_finished);
 
       }
 

@@ -132,8 +132,8 @@ namespace octave
     // The browser
     QWidget *browser_find = new QWidget (this);
     m_doc_browser = new documentation_browser (m_help_engine, browser_find);
-    connect (m_doc_browser, SIGNAL (cursorPositionChanged (void)),
-             this, SLOT(handle_cursor_position_change (void)));
+    connect (m_doc_browser, &documentation_browser::cursorPositionChanged,
+             this, &documentation::handle_cursor_position_change);
 
     // Tool bar
     construct_tool_bar ();
@@ -142,23 +142,23 @@ namespace octave
     QWidget *find_footer = new QWidget (browser_find);
     QLabel *find_label = new QLabel (tr ("Find:"), find_footer);
     m_find_line_edit = new QLineEdit (find_footer);
-    connect (m_find_line_edit, SIGNAL (returnPressed (void)),
-             this, SLOT(find (void)));
-    connect (m_find_line_edit, SIGNAL (textEdited (const QString&)),
-             this, SLOT(find_forward_from_anchor (const QString&)));
+    connect (m_find_line_edit, &QLineEdit::returnPressed,
+             this, [=] () { find (); });
+    connect (m_find_line_edit, &QLineEdit::textEdited,
+             this, &documentation::find_forward_from_anchor);
     QToolButton *forward_button = new QToolButton (find_footer);
     forward_button->setText (tr ("Search forward"));
     forward_button->setToolTip (tr ("Search forward"));
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     forward_button->setIcon (rmgr.icon ("go-down"));
-    connect (forward_button, SIGNAL (pressed (void)),
-             this, SLOT(find (void)));
+    connect (forward_button, &QToolButton::pressed,
+             this, [=] () { find (); });
     QToolButton *backward_button = new QToolButton (find_footer);
     backward_button->setText (tr ("Search backward"));
     backward_button->setToolTip (tr ("Search backward"));
     backward_button->setIcon (rmgr.icon ("go-up"));
-    connect (backward_button, SIGNAL (pressed (void)),
-             this, SLOT(find_backward (void)));
+    connect (backward_button, &QToolButton::pressed,
+             this, &documentation::find_backward);
     QHBoxLayout *h_box_find_footer = new QHBoxLayout (find_footer);
     h_box_find_footer->addWidget (find_label);
     h_box_find_footer->addWidget (m_find_line_edit);
@@ -176,11 +176,11 @@ namespace octave
     notice_settings (rmgr.get_settings ());
 
     m_findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (m_findnext_shortcut, SIGNAL (activated (void)),
-             this, SLOT(find (void)));
+    connect (m_findnext_shortcut, &QShortcut::activated,
+             this, [=] () { find (); });
     m_findprev_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (m_findprev_shortcut, SIGNAL (activated (void)),
-             this, SLOT(find_backward (void)));
+    connect (m_findprev_shortcut, &QShortcut::activated,
+             this, &documentation::find_backward);
 
     find_footer->hide ();
     m_search_anchor_position = 0;
@@ -201,9 +201,10 @@ namespace octave
         content->setObjectName ("documentation_tab_contents");
         navi->addTab (content, tr ("Contents"));
 
-        connect(m_help_engine->contentWidget (),
-                SIGNAL (linkActivated (const QUrl&)),
-                m_doc_browser, SLOT(handle_index_clicked (const QUrl&)));
+        connect (m_help_engine->contentWidget (),
+                 &QHelpContentWidget::linkActivated,
+                 m_doc_browser, [=] (const QUrl& url) {
+                   m_doc_browser->handle_index_clicked (url); });
 
         // Index
         QHelpIndexWidget *index = m_help_engine->indexWidget ();
@@ -239,28 +240,27 @@ namespace octave
 #if defined (HAVE_NEW_QHELPINDEXWIDGET_API)
         connect (m_help_engine->indexWidget (),
                  &QHelpIndexWidget::documentActivated,
-                 this, [this](const QHelpLink &link) {
-                        m_doc_browser->handle_index_clicked (link.url);});
+                 this, [=] (const QHelpLink &link) {
+                   m_doc_browser->handle_index_clicked (link.url); });
 #else
         connect (m_help_engine->indexWidget (),
-                 SIGNAL (linkActivated (const QUrl&, const QString&)),
-                 m_doc_browser, SLOT(handle_index_clicked (const QUrl&,
-                                                           const QString&)));
+                 &QHelpIndexWidget::linkActivated,
+                 m_doc_browser, &documentation_browser::handle_index_clicked);
 #endif
 
-        connect (m_filter, SIGNAL (editTextChanged (const QString&)),
-                 this, SLOT(filter_update (const QString&)));
+        connect (m_filter, &QComboBox::editTextChanged,
+                 this, &documentation::filter_update);
 
-        connect (m_filter->lineEdit (), SIGNAL (editingFinished (void)),
-                 this, SLOT(filter_update_history (void)));
+        connect (m_filter->lineEdit (), &QLineEdit::editingFinished,
+                 this, &documentation::filter_update_history);
 
         // Bookmarks (own class)
         documentation_bookmarks *bookmarks
           = new documentation_bookmarks (this, m_doc_browser, m_octave_qobj, navi);
         navi->addTab (bookmarks, tr ("Bookmarks"));
 
-        connect (m_action_bookmark, SIGNAL (triggered ()),
-                 bookmarks, SLOT (add_bookmark ()));
+        connect (m_action_bookmark, &QAction::triggered,
+                 bookmarks, [=] () { bookmarks->add_bookmark (); });
         connect (p, SIGNAL (save_settings_signal (void)),
                  bookmarks, SLOT (save_settings (void)));
 
@@ -276,18 +276,17 @@ namespace octave
         search_all->setObjectName ("documentation_tab_search");
         navi->addTab (search_all, tr ("Search"));
 
-        connect (search, SIGNAL (search (void)),
-                 this, SLOT(global_search (void)));
+        connect (search, &QHelpSearchQueryWidget::search,
+                 this, &documentation::global_search);
 
-        connect (search_engine, SIGNAL (searchingStarted (void)),
-                 this, SLOT(global_search_started (void)));
-        connect (search_engine, SIGNAL (searchingFinished (int)),
-                 this, SLOT(global_search_finished (int)));
+        connect (search_engine, &QHelpSearchEngine::searchingStarted,
+                 this, &documentation::global_search_started);
+        connect (search_engine, &QHelpSearchEngine::searchingFinished,
+                 this, &documentation::global_search_finished);
 
         connect (search_engine->resultWidget (),
-                 SIGNAL (requestShowLink (const QUrl&)),
-                 this,
-                 SLOT(handle_search_result_clicked (const QUrl&)));
+                 &QHelpSearchResultWidget::requestShowLink,
+                 this, &documentation::handle_search_result_clicked);
 
         // Fill the splitter
         insertWidget (0, navi);
@@ -383,16 +382,16 @@ namespace octave
     popdown_button_next_pages->setArrowType(Qt::DownArrow);
     m_tool_bar->addWidget (popdown_button_next_pages);
 
-    connect (m_doc_browser, SIGNAL (backwardAvailable (bool)),
-             m_action_go_prev, SLOT (setEnabled (bool)));
-    connect (m_doc_browser, SIGNAL (backwardAvailable (bool)),
-             popdown_button_prev_pages, SLOT (setEnabled (bool)));
-    connect (m_doc_browser, SIGNAL (forwardAvailable (bool)),
-             m_action_go_next, SLOT (setEnabled (bool)));
-    connect (m_doc_browser, SIGNAL (forwardAvailable (bool)),
-             popdown_button_next_pages, SLOT (setEnabled (bool)));
-    connect (m_doc_browser, SIGNAL (historyChanged (void)),
-             this, SLOT (update_history_menus (void)));
+    connect (m_doc_browser, &documentation_browser::backwardAvailable,
+             m_action_go_prev, &QAction::setEnabled);
+    connect (m_doc_browser, &documentation_browser::backwardAvailable,
+             popdown_button_prev_pages, &QToolButton::setEnabled);
+    connect (m_doc_browser, &documentation_browser::forwardAvailable,
+             m_action_go_next, &QAction::setEnabled);
+    connect (m_doc_browser, &documentation_browser::forwardAvailable,
+             popdown_button_next_pages, &QToolButton::setEnabled);
+    connect (m_doc_browser, &documentation_browser::historyChanged,
+             this, &documentation::update_history_menus);
 
     // Init prev/next menus
     for (int i = 0; i < max_history_entries; ++i)
@@ -405,10 +404,10 @@ namespace octave
         m_next_pages_menu->addAction (m_next_pages_actions[i]);
       }
 
-    connect (m_prev_pages_menu, SIGNAL (triggered (QAction *)),
-             this, SLOT (open_hist_url (QAction *)));
-    connect (m_next_pages_menu, SIGNAL (triggered (QAction *)),
-             this, SLOT (open_hist_url (QAction *)));
+    connect (m_prev_pages_menu, &QMenu::triggered,
+             this, &documentation::open_hist_url);
+    connect (m_next_pages_menu, &QMenu::triggered,
+             this, &documentation::open_hist_url);
 
     // Find
     m_tool_bar->addSeparator ();
@@ -536,9 +535,8 @@ namespace octave
 
                 if (! url.isEmpty ())
                   {
-                    connect (this, SIGNAL (show_single_result (const QUrl&)),
-                             this,
-                             SLOT (handle_search_result_clicked (const QUrl&)));
+                    connect (this, &documentation::show_single_result,
+                             this, &documentation::handle_search_result_clicked);
 
                     emit show_single_result (url);
                   }
@@ -965,8 +963,8 @@ namespace octave
     : QTextBrowser (p), m_help_engine (he), m_zoom_level (0)
   {
     setOpenLinks (false);
-    connect (this, SIGNAL (anchorClicked (QUrl)),
-             this, SLOT (handle_index_clicked (QUrl)));
+    connect (this, &documentation_browser::anchorClicked,
+             this, [=] (const QUrl& url) { handle_index_clicked (url); });
   }
 
   documentation_browser::~documentation_browser (void)

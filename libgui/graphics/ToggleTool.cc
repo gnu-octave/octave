@@ -64,8 +64,7 @@ namespace QtHandles
     action->setCheckable (true);
     action->setChecked (tp.is_state ());
 
-    connect (action, SIGNAL (toggled (bool)),
-             this, SLOT (triggered (bool)));
+    connect (action, &QAction::toggled, this, &ToggleTool::triggered);
   }
 
   ToggleTool::~ToggleTool (void)

@@ -90,7 +90,8 @@ namespace QtHandles
                                                * RANGE_INT_MAX));
       }
 
-    connect (slider, SIGNAL (valueChanged (int)), SLOT (valueChanged (int)));
+    connect (slider, &QAbstractSlider::valueChanged,
+             this, &SliderControl::valueChanged);
   }
 
   SliderControl::~SliderControl (void)

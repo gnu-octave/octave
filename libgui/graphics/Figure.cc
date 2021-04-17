@@ -180,13 +180,12 @@ namespace QtHandles
     // Visibility
     update (figure::properties::ID_VISIBLE);
 
-    connect (this, SIGNAL (asyncUpdate (void)),
-             this, SLOT (updateContainer (void)));
+    connect (this, &Figure::asyncUpdate, this, &Figure::updateContainer);
 
     // Register for the signal that indicates when a window has moved
     // to a different screen
-    connect (win, SIGNAL (figureWindowShown ()),
-             this, SLOT (figureWindowShown ()));
+    connect (win, &FigureWindow::figureWindowShown,
+             this, &Figure::figureWindowShown);
 
     win->addReceiver (this);
     m_container->addReceiver (this);
@@ -406,7 +405,7 @@ namespace QtHandles
       case figure::properties::ID_VISIBLE:
         if (fp.is_visible ())
           {
-            QTimer::singleShot (0, win, SLOT (show ()));
+            QTimer::singleShot (0, win, &QMainWindow::show);
             if (! fp.is___gl_window__ ())
               {
                 gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
@@ -868,8 +867,7 @@ namespace QtHandles
     figure::properties& fp = properties<figure> ();
     fp.set___device_pixel_ratio__ (screen->devicePixelRatio ());
 
-    connect (window, SIGNAL (screenChanged (QScreen*)),
-             this, SLOT (screenChanged (QScreen*)));
+    connect (window, &QWindow::screenChanged, this, &Figure::screenChanged);
 #endif
   }
 

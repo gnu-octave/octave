@@ -175,14 +175,17 @@ namespace QtHandles
 
     if (pp.is_visible ())
       {
-        QTimer::singleShot (0, frame, SLOT (show (void)));
+        QTimer::singleShot (0, frame, &QFrame::show);
+        // FIXME: What is the intent here?  QButtonGroup::show is not a
+        // member of QButtonGroup.
         QTimer::singleShot (0, buttongroup, SLOT (show (void)));
       }
     else
       frame->hide ();
 
-    connect (m_buttongroup, SIGNAL (buttonClicked (QAbstractButton*)),
-             SLOT (buttonClicked (QAbstractButton*)));
+    connect (m_buttongroup,
+             QOverload<QAbstractButton *>::of (&QButtonGroup::buttonClicked),
+             this, &ButtonGroup::buttonClicked);
   }
 
   ButtonGroup::~ButtonGroup (void)
@@ -464,7 +467,7 @@ namespace QtHandles
   ButtonGroup::addButton (QAbstractButton *btn)
   {
     m_buttongroup->addButton (btn);
-    connect (btn, SIGNAL (toggled (bool)), SLOT (buttonToggled (bool)));
+    connect (btn, &QAbstractButton::toggled, this, &ButtonGroup::buttonToggled);
   }
 
   void

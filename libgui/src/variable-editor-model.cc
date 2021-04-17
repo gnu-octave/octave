@@ -954,14 +954,14 @@ namespace octave
   {
     update_description ();
 
-    connect (this, SIGNAL (user_error_signal (const QString&, const QString&)),
-             this, SLOT (user_error (const QString&, const QString&)));
+    connect (this, &variable_editor_model::user_error_signal,
+             this, &variable_editor_model::user_error);
 
-    connect (this, SIGNAL (update_data_signal (const octave_value&)),
-             this, SLOT (update_data (const octave_value&)));
+    connect (this, &variable_editor_model::update_data_signal,
+             this, &variable_editor_model::update_data);
 
-    connect (this, SIGNAL (data_error_signal (const QString&)),
-             this, SLOT (data_error (const QString&)));
+    connect (this, &variable_editor_model::data_error_signal,
+             this, &variable_editor_model::data_error);
 
     if (is_editable ())
       {

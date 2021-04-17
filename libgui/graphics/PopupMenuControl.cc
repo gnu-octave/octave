@@ -69,8 +69,8 @@ namespace QtHandles
 
     update (uicontrol::properties::ID_VALUE);
 
-    connect (box, SIGNAL (activated (int)),
-             SLOT (currentIndexChanged (int)));
+    connect (box, QOverload<int>::of (&QComboBox::activated),
+             this, &PopupMenuControl::currentIndexChanged);
   }
 
   PopupMenuControl::~PopupMenuControl (void)

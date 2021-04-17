@@ -92,7 +92,7 @@ namespace octave
 
     void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
     void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
-    void remove_all_breakpoints (void);
+    void remove_all_breakpoints_signal (void);
     void find_translated_line_number (int original_linenr,
                                       int& translated_linenr, marker*&);
     void find_linenr_just_before (int linenr, int& original_linenr,

@@ -97,6 +97,8 @@ namespace octave
     void handle_contextmenu_stem (void);
     void handle_contextmenu_filter (void);
 
+  public slots:
+
     void handle_model_changed (void);
 
     void copyClipboard (void);

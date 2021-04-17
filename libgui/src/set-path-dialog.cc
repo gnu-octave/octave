@@ -72,9 +72,9 @@ namespace octave
     QMenu *add_dir_menu = new QMenu ();
     m_add_folder_button->setMenu (add_dir_menu);
     add_dir_menu->addAction (tr ("Single Folder"),
-                             this, SLOT (add_dir (void)));
+                             this, &set_path_dialog::add_dir);
     add_dir_menu->addAction (tr ("Folder with Subfolders"),
-                             this, SLOT (add_dir_subdirs (void)));
+                             this, &set_path_dialog::add_dir_subdirs);
 
     m_move_to_top_button = new QPushButton (tr ("Move to Top"));
     m_move_to_bottom_button = new QPushButton (tr ("Move to Bottom"));
@@ -90,41 +90,41 @@ namespace octave
     QMenu *revert_menu = new QMenu ();
     m_revert_button->setMenu (revert_menu);
     revert_menu->addAction (tr ("Revert Last Change"),
-                            model, SLOT (revert_last (void)));
+                            model, &set_path_model::revert_last);
     revert_menu->addAction (tr ("Revert All Changes"),
-                            model, SLOT (revert (void)));
+                            model, &set_path_model::revert);
 
     m_save_button->setFocus ();
 
-    connect (m_remove_button, SIGNAL (clicked (void)),
-             this, SLOT (rm_dir (void)));
+    connect (m_remove_button, &QPushButton::clicked,
+             this, &set_path_dialog::rm_dir);
 
-    connect (m_move_to_top_button, SIGNAL (clicked (void)),
-             this, SLOT (move_dir_top (void)));
+    connect (m_move_to_top_button, &QPushButton::clicked,
+             this, &set_path_dialog::move_dir_top);
 
-    connect (m_move_to_bottom_button, SIGNAL (clicked (void)),
-             this, SLOT (move_dir_bottom (void)));
+    connect (m_move_to_bottom_button, &QPushButton::clicked,
+             this, &set_path_dialog::move_dir_bottom);
 
-    connect (m_move_up_button, SIGNAL (clicked (void)),
-             this, SLOT (move_dir_up (void)));
+    connect (m_move_up_button, &QPushButton::clicked,
+             this, &set_path_dialog::move_dir_up);
 
-    connect (m_move_down_button, SIGNAL (clicked (void)),
-             this, SLOT (move_dir_down (void)));
+    connect (m_move_down_button, &QPushButton::clicked,
+             this, &set_path_dialog::move_dir_down);
 
-    connect (m_reload_button, SIGNAL (clicked (void)),
-             model, SLOT (path_to_model (void)));
+    connect (m_reload_button, &QPushButton::clicked,
+             model, &set_path_model::path_to_model);
 
-    connect (m_save_button, SIGNAL (clicked (void)),
-             model, SLOT (save (void)));
+    connect (m_save_button, &QPushButton::clicked,
+             model, &set_path_model::save);
 
     // Any interpreter_event signal from a set_path_model object is
     // handled the same as for the parent set_path_dialog object.
 
-    connect (model, SIGNAL (interpreter_event (const fcn_callback&)),
-             this, SIGNAL (interpreter_event (const fcn_callback&)));
+    connect (model, QOverload<const fcn_callback&>::of (&set_path_model::interpreter_event),
+             this, QOverload<const fcn_callback&>::of (&set_path_dialog::interpreter_event));
 
-    connect (model, SIGNAL (interpreter_event (const meth_callback&)),
-             this, SIGNAL (interpreter_event (const meth_callback&)));
+    connect (model, QOverload<const meth_callback&>::of (&set_path_model::interpreter_event),
+             this, QOverload<const meth_callback&>::of (&set_path_dialog::interpreter_event));
 
     m_path_list = new QListView (this);
     m_path_list->setWordWrap (false);
@@ -141,7 +141,8 @@ namespace octave
 
     // add dialog close button
     m_close_button = button_box->addButton (QDialogButtonBox::Close);
-    connect (button_box, SIGNAL (rejected (void)), this, SLOT (close (void)));
+    connect (button_box, &QDialogButtonBox::rejected,
+             this, &set_path_dialog::close);
 
     button_box->addButton (m_revert_button, QDialogButtonBox::ActionRole);
 

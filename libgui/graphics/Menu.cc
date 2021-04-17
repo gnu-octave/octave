@@ -161,7 +161,7 @@ namespace QtHandles
           }
       }
 
-    connect (action, SIGNAL (triggered (bool)), SLOT (actionTriggered (void)));
+    connect (action, &QAction::triggered, this, &Menu::actionTriggered);
   }
 
   Menu::~Menu (void)
@@ -281,8 +281,7 @@ namespace QtHandles
         _menu = new QMenu (action->parentWidget ());
         action->setMenu (_menu);
         action->setShortcut (QKeySequence ());
-        connect (_menu, SIGNAL (aboutToShow (void)),
-                 this, SLOT (actionHovered (void)));
+        connect (_menu, &QMenu::aboutToShow, this, &Menu::actionHovered);
       }
 
     return _menu;

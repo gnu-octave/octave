@@ -130,20 +130,20 @@ namespace octave
     // Initialize last modification date to now
     m_last_modified = QDateTime::currentDateTimeUtc();
 
-    connect (m_edit_area, SIGNAL (cursorPositionChanged (int, int)),
-             this, SLOT (handle_cursor_moved (int,int)));
+    connect (m_edit_area, &octave_qscintilla::cursorPositionChanged,
+             this, &file_editor_tab::handle_cursor_moved);
 
-    connect (m_edit_area, SIGNAL (SCN_CHARADDED (int)),
-             this, SLOT (handle_char_added (int)));
+    connect (m_edit_area, &octave_qscintilla::SCN_CHARADDED,
+             this, &file_editor_tab::handle_char_added);
 
-    connect (m_edit_area, SIGNAL (SCN_DOUBLECLICK (int, int, int)),
-             this, SLOT (handle_double_click (int, int, int)));
+    connect (m_edit_area, &octave_qscintilla::SCN_DOUBLECLICK,
+             this, &file_editor_tab::handle_double_click);
 
-    connect (m_edit_area, SIGNAL (linesChanged ()),
-             this, SLOT (handle_lines_changed ()));
+    connect (m_edit_area, &octave_qscintilla::linesChanged,
+             this, &file_editor_tab::handle_lines_changed);
 
-    connect (m_edit_area, SIGNAL (context_menu_edit_signal (const QString&)),
-             this, SLOT (handle_context_menu_edit (const QString&)));
+    connect (m_edit_area, &octave_qscintilla::context_menu_edit_signal,
+             this, &file_editor_tab::handle_context_menu_edit);
 
     // create statusbar for row/col indicator and eol mode
     m_status_bar = new QStatusBar (this);
@@ -193,13 +193,11 @@ namespace octave
     m_edit_area->setMarkerBackgroundColor (QColor (192,192,192),
                                            marker::unsure_debugger_position);
 
-    connect (m_edit_area, SIGNAL (marginClicked (int, int,
-                                  Qt::KeyboardModifiers)),
-             this, SLOT (handle_margin_clicked (int, int,
-                                                Qt::KeyboardModifiers)));
+    connect (m_edit_area, &octave_qscintilla::marginClicked,
+             this, &file_editor_tab::handle_margin_clicked);
 
-    connect (m_edit_area, SIGNAL (context_menu_break_condition_signal (int)),
-             this, SLOT (handle_context_menu_break_condition (int)));
+    connect (m_edit_area, &octave_qscintilla::context_menu_break_condition_signal,
+             this, &file_editor_tab::handle_context_menu_break_condition);
 
     // line numbers
     m_edit_area->setMarginsForegroundColor (QColor (96, 96, 96));
@@ -227,40 +225,39 @@ namespace octave
     // Any interpreter_event signal from a file_editor_tab_widget is
     // handled the same as for the parent main_window object.
 
-    connect (m_edit_area, SIGNAL (interpreter_event (const fcn_callback&)),
-             this, SIGNAL (interpreter_event (const fcn_callback&)));
+    connect (m_edit_area, QOverload<const fcn_callback&>::of (&octave_qscintilla::interpreter_event),
+             this, QOverload<const fcn_callback&>::of (&file_editor_tab::interpreter_event));
 
-    connect (m_edit_area, SIGNAL (interpreter_event (const meth_callback&)),
-             this, SIGNAL (interpreter_event (const meth_callback&)));
+    connect (m_edit_area, QOverload<const meth_callback&>::of (&octave_qscintilla::interpreter_event),
+             this, QOverload<const meth_callback&>::of (&file_editor_tab::interpreter_event));
 
     // connect modified signal
-    connect (m_edit_area, SIGNAL (modificationChanged (bool)),
-             this, SLOT (update_window_title (bool)));
+    connect (m_edit_area, &octave_qscintilla::modificationChanged,
+             this, &file_editor_tab::update_window_title);
 
-    connect (m_edit_area, SIGNAL (copyAvailable (bool)),
-             this, SLOT (handle_copy_available (bool)));
+    connect (m_edit_area, &octave_qscintilla::copyAvailable,
+             this, &file_editor_tab::handle_copy_available);
 
-    connect (&m_file_system_watcher, SIGNAL (fileChanged (const QString&)),
-             this, SLOT (file_has_changed (const QString&)));
+    connect (&m_file_system_watcher, &QFileSystemWatcher::fileChanged,
+             this, [=] (const QString& path) { file_has_changed (path); });
 
-    connect (this, SIGNAL (maybe_remove_next (int)),
-             this, SLOT (handle_remove_next (int)));
+    connect (this, &file_editor_tab::maybe_remove_next,
+             this, &file_editor_tab::handle_remove_next);
 
-    connect (this, SIGNAL (dbstop_if (const QString&, int, const QString&)),
-             this,
-             SLOT (handle_dbstop_if (const QString&, int, const QString&)));
+    connect (this, &file_editor_tab::dbstop_if,
+             this, &file_editor_tab::handle_dbstop_if);
 
-    connect (this, SIGNAL (request_add_breakpoint (int, const QString&)),
-             this, SLOT (handle_request_add_breakpoint (int, const QString&)));
+    connect (this, &file_editor_tab::request_add_breakpoint,
+             this, &file_editor_tab::handle_request_add_breakpoint);
 
-    connect (this, SIGNAL (api_entries_added (void)),
-             this, SLOT (handle_api_entries_added (void)));
+    connect (this, &file_editor_tab::api_entries_added,
+             this, &file_editor_tab::handle_api_entries_added);
 
-    connect (this, SIGNAL (confirm_dbquit_and_save_signal (const QString&, const QString&, bool, bool)),
-             this, SLOT (confirm_dbquit_and_save (const QString&, const QString&, bool, bool)));
+    connect (this, &file_editor_tab::confirm_dbquit_and_save_signal,
+             this, &file_editor_tab::confirm_dbquit_and_save);
 
-    connect (this, SIGNAL (do_save_file_signal (const QString&, bool, bool)),
-             this, SLOT (do_save_file (const QString&, bool, bool)));
+    connect (this, &file_editor_tab::do_save_file_signal,
+             this, &file_editor_tab::do_save_file);
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
@@ -277,7 +274,7 @@ namespace octave
   file_editor_tab::~file_editor_tab (void)
   {
     // Tell all connected markers to self-destruct.
-    emit remove_all_breakpoints ();
+    emit remove_all_breakpoints_signal ();
     emit remove_all_positions ();
 
     // Destroy lexer attached to m_edit_area, which is not the parent
@@ -673,8 +670,8 @@ namespace octave
         // Build information for auto completion (APIs)
         m_lexer_apis = new QsciAPIs (lexer);
 
-        connect (this, SIGNAL (request_add_octave_apis (const QStringList&)),
-                 this, SLOT (handle_add_octave_apis (const QStringList&)));
+        connect (this, &file_editor_tab::request_add_octave_apis,
+                 this, &file_editor_tab::handle_add_octave_apis);
 
         // Get the settings for this new lexer
         update_lexer_settings ();
@@ -933,15 +930,15 @@ namespace octave
   void file_editor_tab::handle_api_entries_added (void)
   {
     // disconnect slot for saving prepared info if already connected
-    disconnect (m_lexer_apis, SIGNAL (apiPreparationFinished ()),
+    disconnect (m_lexer_apis, &QsciAPIs::apiPreparationFinished,
                 nullptr, nullptr);
 
     // check whether path for prepared info exists or can be created
     if (QDir ("/").mkpath (m_prep_apis_path))
       {
         // path exists, apis info can be saved there
-        connect (m_lexer_apis, SIGNAL (apiPreparationFinished ()),
-                 this, SLOT (save_apis_info ()));
+        connect (m_lexer_apis, &QsciAPIs::apiPreparationFinished,
+                 this, &file_editor_tab::save_apis_info);
       }
 
     m_lexer_apis->prepare ();  // prepare apis info
@@ -1825,8 +1822,8 @@ namespace octave
         msg_box->addButton (tr ("Chan&ge encoding"), QMessageBox::AcceptRole);
         msg_box->addButton (tr ("&Close"), QMessageBox::RejectRole);
 
-        connect (msg_box, SIGNAL (buttonClicked (QAbstractButton *)),
-                 this, SLOT (handle_decode_warning_answer (QAbstractButton *)));
+        connect (msg_box, &QMessageBox::buttonClicked,
+                 this, &file_editor_tab::handle_decode_warning_answer);
 
         msg_box->setWindowModality (Qt::WindowModal);
         msg_box->setAttribute (Qt::WA_DeleteOnClose);
@@ -1876,14 +1873,14 @@ namespace octave
         resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
         rmgr.combo_encoding (enc_combo);
         m_new_encoding = enc_combo->currentText ();
-        connect (enc_combo, SIGNAL (currentTextChanged (const QString&)),
-                 this, SLOT (handle_current_enc_changed (const QString&)));
+        connect (enc_combo, &QComboBox::currentTextChanged,
+                 this, &file_editor_tab::handle_current_enc_changed);
 
         QDialogButtonBox *buttons
           = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                   Qt::Horizontal);
-        connect (buttons, SIGNAL (accepted ()), &dlg, SLOT (accept ()));
-        connect (buttons, SIGNAL (rejected ()), &dlg, SLOT (reject ()));
+        connect (buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+        connect (buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
 
         QGridLayout *main_layout = new QGridLayout;
         main_layout->setSizeConstraint (QLayout::SetFixedSize);
@@ -1980,8 +1977,8 @@ namespace octave
 
          octave_value_list argout = Fdbstatus (interp, ovl (), 1);
 
-         connect (this, SIGNAL (update_breakpoints_signal (const octave_value_list&)),
-                  this, SLOT (update_breakpoints_handler (const octave_value_list&)),
+         connect (this, &file_editor_tab::update_breakpoints_signal,
+                  this, &file_editor_tab::update_breakpoints_handler,
                   Qt::QueuedConnection);
 
          emit update_breakpoints_signal (argout);
@@ -2337,21 +2334,21 @@ namespace octave
         fileDialog->setOption(QFileDialog::DontConfirmOverwrite);
       }
 
-    connect (fileDialog, SIGNAL (filterSelected (const QString&)),
-             this, SLOT (handle_save_as_filter_selected (const QString&)));
+    connect (fileDialog, &QFileDialog::filterSelected,
+             this, &file_editor_tab::handle_save_as_filter_selected);
 
     if (remove_on_success)
       {
-        connect (fileDialog, SIGNAL (fileSelected (const QString&)),
-                 this, SLOT (handle_save_file_as_answer_close (const QString&)));
+        connect (fileDialog, &QFileDialog::fileSelected,
+                 this, &file_editor_tab::handle_save_file_as_answer_close);
 
-        connect (fileDialog, SIGNAL (rejected ()),
-                 this, SLOT (handle_save_file_as_answer_cancel ()));
+        connect (fileDialog, &QFileDialog::rejected,
+                 this, &file_editor_tab::handle_save_file_as_answer_cancel);
       }
     else
       {
-        connect (fileDialog, SIGNAL (fileSelected (const QString&)),
-                 this, SLOT (handle_save_file_as_answer (const QString&)));
+        connect (fileDialog, &QFileDialog::fileSelected,
+                 this, &file_editor_tab::handle_save_file_as_answer);
       }
 
     show_dialog (fileDialog, ! valid_file_name ());
@@ -2575,8 +2572,8 @@ namespace octave
                                  arg (m_file_name),
                                  QMessageBox::Yes | QMessageBox::No, this);
 
-            connect (msgBox, SIGNAL (finished (int)),
-                     this, SLOT (handle_file_reload_answer (int)));
+            connect (msgBox, &QMessageBox::finished,
+                     this, &file_editor_tab::handle_file_reload_answer);
 
             msgBox->setWindowModality (Qt::WindowModal);
             msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -2615,8 +2612,8 @@ namespace octave
 
         m_edit_area->setReadOnly (true);
 
-        connect (msgBox, SIGNAL (finished (int)),
-                 this, SLOT (handle_file_resave_answer (int)));
+        connect (msgBox, &QMessageBox::finished,
+                 this, &file_editor_tab::handle_file_resave_answer);
 
         msgBox->setWindowModality (Qt::WindowModal);
         msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -2694,13 +2691,14 @@ namespace octave
       {
         m_edit_area->setMarginLineNumbers (2, true);
         auto_margin_width ();
-        connect (m_edit_area, SIGNAL (linesChanged ()),
-                 this, SLOT (auto_margin_width ()));
+        connect (m_edit_area, &octave_qscintilla::linesChanged,
+                 this, &file_editor_tab::auto_margin_width);
       }
     else
       {
         m_edit_area->setMarginLineNumbers (2, false);
-        disconnect (m_edit_area, SIGNAL (linesChanged ()), nullptr, nullptr);
+        disconnect (m_edit_area, &octave_qscintilla::linesChanged,
+                    nullptr, nullptr);
       }
 
     m_smart_indent = settings->value (ed_auto_indent).toBool ();
@@ -2915,10 +2913,11 @@ namespace octave
               }
           }
 
-        connect (this, SIGNAL (remove_position_via_debugger_linenr (int)),
-                 dp,   SLOT (handle_remove_via_original_linenr (int)));
-        connect (this, SIGNAL (remove_all_positions (void)),
-                 dp,   SLOT (handle_remove (void)));
+        connect (this, &file_editor_tab::remove_position_via_debugger_linenr,
+                 dp, &marker::handle_remove_via_original_linenr);
+
+        connect (this, &file_editor_tab::remove_all_positions,
+                 dp, &marker::handle_remove);
 
         center_current_line (false);
       }
@@ -2968,27 +2967,20 @@ namespace octave
                                  cond == "" ? marker::breakpoint
                                  : marker::cond_break, cond);
 
-                connect (this, SIGNAL (remove_breakpoint_via_debugger_linenr
-                                       (int)),
-                         bp,   SLOT (handle_remove_via_original_linenr (int)));
-                connect (this, SIGNAL (request_remove_breakpoint_via_editor_linenr
-                                       (int)),
-                         bp,   SLOT (handle_request_remove_via_editor_linenr
-                                     (int)));
-                connect (this, SIGNAL (remove_all_breakpoints (void)),
-                         bp,   SLOT (handle_remove (void)));
-                connect (this, SIGNAL (find_translated_line_number (int, int&,
-                                                                    marker*&)),
-                         bp,   SLOT (handle_find_translation (int, int&,
-                                                              marker*&)));
-                connect (this, SIGNAL (find_linenr_just_before (int, int&, int&)),
-                         bp,   SLOT (handle_find_just_before (int, int&, int&)));
-                connect (this, SIGNAL (report_marker_linenr (QIntList&,
-                                                             QStringList&)),
-                         bp,   SLOT (handle_report_editor_linenr (QIntList&,
-                                                                  QStringList&)));
-                connect (bp,   SIGNAL (request_remove (int)),
-                         this, SLOT (handle_request_remove_breakpoint (int)));
+                connect (this, &file_editor_tab::remove_breakpoint_via_debugger_linenr,
+                         bp, &marker::handle_remove_via_original_linenr);
+                connect (this, &file_editor_tab::request_remove_breakpoint_via_editor_linenr,
+                         bp, &marker::handle_request_remove_via_editor_linenr);
+                connect (this, &file_editor_tab::remove_all_breakpoints_signal,
+                         bp, &marker::handle_remove);
+                connect (this, &file_editor_tab::find_translated_line_number,
+                         bp, &marker::handle_find_translation);
+                connect (this, &file_editor_tab::find_linenr_just_before,
+                         bp, &marker::handle_find_just_before);
+                connect (this, &file_editor_tab::report_marker_linenr,
+                         bp, &marker::handle_report_editor_linenr);
+                connect (bp, &marker::request_remove,
+                         this, &file_editor_tab::handle_request_remove_breakpoint);
               }
           }
         else

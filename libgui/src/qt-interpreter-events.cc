@@ -121,16 +121,14 @@ namespace octave
     qRegisterMetaType<fcn_callback> ("fcn_callback");
     qRegisterMetaType<meth_callback> ("meth_callback");
 
-    connect (this, SIGNAL (confirm_shutdown_signal (void)),
-             this, SLOT (confirm_shutdown_octave (void)));
+    connect (this, &qt_interpreter_events::confirm_shutdown_signal,
+             this, &qt_interpreter_events::confirm_shutdown_octave);
 
-    connect (this, SIGNAL (get_named_icon_signal (const QString&)),
-             this, SLOT (get_named_icon_slot (const QString&)));
+    connect (this, &qt_interpreter_events::get_named_icon_signal,
+             this, &qt_interpreter_events::get_named_icon_slot);
 
-    connect (this,
-             SIGNAL (gui_preference_signal (const QString&, const QString&)),
-             this,
-             SLOT (gui_preference_slot (const QString&, const QString&)));
+    connect (this, &qt_interpreter_events::gui_preference_signal,
+             this, &qt_interpreter_events::gui_preference_slot);
   }
 
   void qt_interpreter_events::start_gui (bool gui_app)

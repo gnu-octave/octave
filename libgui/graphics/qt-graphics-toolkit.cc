@@ -112,8 +112,8 @@ namespace QtHandles
     // BlockingQueuedConnection. After the signal is emitted, the interpreter
     // thread is locked until the slot has returned.
 
-    connect (this, SIGNAL (create_object_signal (double)),
-             this, SLOT (create_object (double)),
+    connect (this, &qt_graphics_toolkit::create_object_signal,
+             this, &qt_graphics_toolkit::create_object,
              Qt::BlockingQueuedConnection);
   }
 

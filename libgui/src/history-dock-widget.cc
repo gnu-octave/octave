@@ -162,18 +162,18 @@ namespace octave
         resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
         menu.addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
-                        SLOT (handle_contextmenu_copy (bool)));
+                        &history_dock_widget::handle_contextmenu_copy);
         menu.addAction (tr ("Evaluate"), this,
-                        SLOT (handle_contextmenu_evaluate (bool)));
+                        &history_dock_widget::handle_contextmenu_evaluate);
         menu.addAction (rmgr.icon ("document-new"), tr ("Create script"), this,
-                        SLOT (handle_contextmenu_create_script (bool)));
+                        &history_dock_widget::handle_contextmenu_create_script);
       }
     if (m_filter_shown)
       menu.addAction (tr ("Hide filter"), this,
-                      SLOT (handle_contextmenu_filter ()));
+                      &history_dock_widget::handle_contextmenu_filter);
     else
       menu.addAction (tr ("Show filter"), this,
-                      SLOT (handle_contextmenu_filter ()));
+                      &history_dock_widget::handle_contextmenu_filter);
 
     menu.exec (m_history_list_view->mapToGlobal (xpos));
   }
@@ -298,9 +298,8 @@ namespace octave
       (tr ("Double-click a command to transfer it to the Command Window."));
     m_history_list_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
     m_history_list_view->setContextMenuPolicy (Qt::CustomContextMenu);
-    connect (m_history_list_view,
-             SIGNAL (customContextMenuRequested (const QPoint &)), this,
-             SLOT (ctxMenu (const QPoint &)));
+    connect (m_history_list_view, &QListView::customContextMenuRequested,
+             this, &history_dock_widget::ctxMenu);
 
     m_filter = new QComboBox (this);
     m_filter->setToolTip (tr ("Enter text to filter the command history"));
@@ -353,16 +352,16 @@ namespace octave
     filter_activate (filter_state);
 
     // Connect signals and slots
-    connect (m_filter, SIGNAL (editTextChanged (const QString&)),
+    connect (m_filter, &QComboBox::editTextChanged,
              &m_sort_filter_proxy_model,
-             SLOT (setFilterWildcard (const QString&)));
-    connect (m_filter_checkbox, SIGNAL (toggled (bool)),
-             this, SLOT (filter_activate (bool)));
-    connect (m_filter->lineEdit (), SIGNAL (editingFinished (void)),
-             this, SLOT (update_filter_history (void)));
+             &QSortFilterProxyModel::setFilterWildcard);
+    connect (m_filter_checkbox, &QCheckBox::toggled,
+             this, &history_dock_widget::filter_activate);
+    connect (m_filter->lineEdit (), &QLineEdit::editingFinished,
+             this, &history_dock_widget::update_filter_history);
 
-    connect (m_history_list_view, SIGNAL (doubleClicked (QModelIndex)),
-             this, SLOT (handle_double_click (QModelIndex)));
+    connect (m_history_list_view, &QListView::doubleClicked,
+             this, &history_dock_widget::handle_double_click);
 
     m_history_list_view->setTextElideMode (Qt::ElideRight);
   }

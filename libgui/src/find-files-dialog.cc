@@ -64,8 +64,8 @@ namespace octave
     m_dir_iterator = nullptr;
 
     m_timer = new QTimer (this);
-    connect (m_timer, SIGNAL (timeout (void)),
-             this, SLOT (look_for_files (void)));
+    connect (m_timer, &QTimer::timeout,
+             this, &find_files_dialog::look_for_files);
 
     gui_settings *settings = rmgr.get_settings ();
 
@@ -86,8 +86,8 @@ namespace octave
 
     m_browse_button = new QPushButton (tr ("Browse..."));
     m_browse_button->setToolTip (tr ("Browse for start directory"));
-    connect (m_browse_button, SIGNAL (clicked (void)),
-             this, SLOT (browse_folders (void)));
+    connect (m_browse_button, &QPushButton::clicked,
+             this, &find_files_dialog::browse_folders);
 
     m_recurse_dirs_check = new QCheckBox (tr ("Search subdirectories"));
     m_recurse_dirs_check->setChecked (settings->value (ff_recurse_dirs).toBool ());
@@ -134,22 +134,22 @@ namespace octave
                 // FIXME: use value<Qt::SortOrder> instead of static cast after
                 //        dropping support of Qt 5.4
 
-    connect (m_file_list, SIGNAL (doubleClicked (const QModelIndex&)),
-             this, SLOT (item_double_clicked (const QModelIndex &)));
+    connect (m_file_list, &QTableView::doubleClicked,
+             this, &find_files_dialog::item_double_clicked);
 
     m_status_bar = new QStatusBar;
     m_status_bar->showMessage (tr ("Idle."));
 
     m_find_button = new QPushButton (tr ("Find"));
     m_find_button->setToolTip (tr ("Start search for matching files"));
-    connect (m_find_button, SIGNAL (clicked (void)),
-             this, SLOT (start_find (void)));
+    connect (m_find_button, &QPushButton::clicked,
+             this, &find_files_dialog::start_find);
 
     m_stop_button = new QPushButton (tr ("Stop"));
     m_stop_button->setToolTip (tr ("Stop searching"));
     m_stop_button->setEnabled (false);
-    connect (m_stop_button, SIGNAL (clicked (void)),
-             this, SLOT (stop_find (void)));
+    connect (m_stop_button, &QPushButton::clicked,
+             this, &find_files_dialog::stop_find);
 
     // layout everything
     QDialogButtonBox *button_box = new QDialogButtonBox (Qt::Vertical);
@@ -158,7 +158,8 @@ namespace octave
 
     // add dialog close button
     m_close_button = button_box->addButton (QDialogButtonBox::Close);
-    connect (button_box, SIGNAL (rejected (void)), this, SLOT (close (void)));
+    connect (button_box, &QDialogButtonBox::rejected,
+             this, &find_files_dialog::close);
 
     // name options
     QGroupBox *name_group = new QGroupBox (tr ("Filename/location"));
@@ -197,7 +198,8 @@ namespace octave
 
     setLayout (main_layout);
 
-    connect (this, SIGNAL (finished (int)), this, SLOT (handle_done (int)));
+    connect (this, &find_files_dialog::finished,
+             this, &find_files_dialog::handle_done);
   }
 
   find_files_dialog::~find_files_dialog (void)

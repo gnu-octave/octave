@@ -32,6 +32,12 @@
 #include <iostream>
 #include <string>
 
+#if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
+#  include <vector>
+#  include <locale>
+#  include <codecvt>
+#endif
+
 #include "liboctave-build-info.h"
 
 #include "liboctinterp-build-info.h"
@@ -81,9 +87,28 @@ check_hg_versions (void)
     exit (1);
 }
 
+#if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
+extern "C"
+int
+wmain (int argc, wchar_t **wargv)
+{
+  static char **argv = new char * [argc + 1];
+  std::vector<std::string> argv_str;
+
+  // convert wide character strings to multibyte UTF-8 strings
+  std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
+  for (int i_arg = 0; i_arg < argc; i_arg++)
+    {
+      argv_str.push_back (wchar_conv.to_bytes (wargv[i_arg]));
+      argv[i_arg] = &argv_str[i_arg][0];
+    }
+  argv[argc] = nullptr;
+
+#else
 int
 main (int argc, char **argv)
 {
+#endif
   check_hg_versions ();
 
   octave_block_async_signals ();

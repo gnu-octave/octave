@@ -29,6 +29,12 @@
 
 #include <iostream>
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <vector>
+#  include <locale>
+#  include <codecvt>
+#endif
+
 #include <QtCore>
 #include <QtXml>
 
@@ -815,8 +821,28 @@ void reconstruct_polygons (QDomElement& parent_elt)
     replace_polygons (parent_elt, collection[ii].first, collection[ii].second);
 }
 
-int main(int argc, char *argv[])
+#if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
+extern "C"
+int
+wmain (int argc, wchar_t **wargv)
 {
+  static char **argv = new char * [argc + 1];
+  std::vector<std::string> argv_str;
+
+  // convert wide character strings to multibyte UTF-8 strings
+  std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
+  for (int i_arg = 0; i_arg < argc; i_arg++)
+    {
+      argv_str.push_back (wchar_conv.to_bytes (wargv[i_arg]));
+      argv[i_arg] = &argv_str[i_arg][0];
+    }
+  argv[argc] = nullptr;
+
+#else
+int
+main (int argc, char **argv)
+{
+#endif
   const char *doc = "See \"octave-svgconvert -h\"";
   const char *help = "Usage:\n\
 octave-svgconvert infile fmt dpi font reconstruct outfile\n\n\

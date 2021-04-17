@@ -40,6 +40,11 @@
 #include <vector>
 #include <cstdlib>
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <locale>
+#  include <codecvt>
+#endif
+
 // Programming note:  The CROSS macro here refers to building a
 // cross-compiler aware version of mkoctfile that can be used to cross
 // compile .oct file for Windows builds of Octave, not that mkoctfile
@@ -90,14 +95,6 @@ static int
 octave_mkostemps_wrapper (char *tmpl, int suffixlen)
 {
   return mkostemps (tmpl, suffixlen, 0);
-}
-
-static char *
-octave_u8_conv_to_encoding (const char *tocode, const uint8_t *src,
-                            size_t srclen, size_t *lengthp)
-{
-  // FIXME: Do we need to provide the conversion here?
-  return nullptr;
 }
 
 static int
@@ -702,9 +699,28 @@ clean_up_tmp_files (const std::list<std::string>& tmp_files)
     octave_unlink_wrapper (file.c_str ());
 }
 
+#if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
+extern "C"
+int
+wmain (int argc, wchar_t **wargv)
+{
+  static char **argv = new char * [argc + 1];
+  std::vector<std::string> argv_str;
+
+  // convert wide character strings to multibyte UTF-8 strings
+  std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
+  for (int i_arg = 0; i_arg < argc; i_arg++)
+    {
+      argv_str.push_back (wchar_conv.to_bytes (wargv[i_arg]));
+      argv[i_arg] = &argv_str[i_arg][0];
+    }
+  argv[argc] = nullptr;
+
+#else
 int
 main (int argc, char **argv)
 {
+#endif
   if (argc == 1)
     {
       std::cout << usage_msg << std::endl;
@@ -1032,6 +1048,10 @@ main (int argc, char **argv)
 
   if (depend)
     {
+#if defined (OCTAVE_USE_WINDOWS_API) && ! defined (_UNICODE)
+      std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
+#endif
+
       for (const auto& f : cfiles)
         {
           std::string dfile = basename (f, true) + ".d", line;
@@ -1043,33 +1063,34 @@ main (int argc, char **argv)
                + vars["CPPFLAGS"] + ' ' + vars["ALL_CFLAGS"] + ' '
                + incflags  + ' ' + defs + ' ' + quote_path (f));
 
-          // FIXME: Use wide character API for popen on Windows.
-          FILE *fd = popen (cmd.c_str (), "r");
-
 #if defined (OCTAVE_USE_WINDOWS_API)
-          // FIXME: liboctinterp isn't linked in to mkoctfile.
-          // So we cannot use octave::sys::ofstream. Instead we fall back
-          // on using the functions available from libwrappers.
-          size_t srclen = dfile.length ();
-          const uint8_t *src = reinterpret_cast<const uint8_t *>
-                               (dfile.c_str ());
-
-          size_t length = 0;
-          wchar_t *wchar = reinterpret_cast<wchar_t *>
-                           (octave_u8_conv_to_encoding ("wchar_t", src, srclen,
-                                                        &length));
+          FILE *fd;
+          try
+            {
+              std::wstring wcmd = wchar_conv.from_bytes (cmd);
+              fd = ::_wpopen (wcmd.c_str (), L"r");
+            }
+          catch (const std::range_error& e)
+            {
+              fd = ::popen (cmd.c_str (), "r");
+            }
 
           std::ofstream fo;
-          if (wchar != nullptr)
+          try
             {
-              fo.open (wchar);
-              free (static_cast<void *> (wchar));
+              std::wstring wfile = wchar_conv.from_bytes (dfile);
+              fo.open (wfile.c_str ());
             }
-          else
-            fo.open (dfile.c_str ());
+          catch (const std::range_error& e)
+            {
+              fo.open (dfile.c_str ());
+            }
 #else
+          FILE *fd = popen (cmd.c_str (), "r");
+
           std::ofstream fo (dfile.c_str ());
 #endif
+
           size_t pos;
           while (! feof (fd))
             {
@@ -1102,33 +1123,34 @@ main (int argc, char **argv)
                + vars["CPPFLAGS"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
                + incflags  + ' ' + defs + ' ' + quote_path (f));
 
-          // FIXME: Use wide character API for popen on Windows.
-          FILE *fd = popen (cmd.c_str (), "r");
-
 #if defined (OCTAVE_USE_WINDOWS_API)
-          // FIXME: liboctinterp isn't linked in to mkoctfile.
-          // So we cannot use octave::sys::ofstream. Instead we fall back
-          // on using the functions available from libwrappers.
-          size_t srclen = dfile.length ();
-          const uint8_t *src = reinterpret_cast<const uint8_t *>
-                               (dfile.c_str ());
-
-          size_t length = 0;
-          wchar_t *wchar = reinterpret_cast<wchar_t *>
-                           (octave_u8_conv_to_encoding ("wchar_t", src, srclen,
-                                                        &length));
+          FILE *fd;
+          try
+            {
+              std::wstring wcmd = wchar_conv.from_bytes (cmd);
+              fd = ::_wpopen (wcmd.c_str (), L"r");
+            }
+          catch (const std::range_error& e)
+            {
+              fd = ::popen (cmd.c_str (), "r");
+            }
 
           std::ofstream fo;
-          if (wchar != nullptr)
+          try
             {
-              fo.open (wchar);
-              free (static_cast<void *> (wchar));
+              std::wstring wfile = wchar_conv.from_bytes (dfile);
+              fo.open (wfile.c_str ());
             }
-          else
-            fo.open (dfile.c_str ());
+          catch (const std::range_error& e)
+            {
+              fo.open (dfile.c_str ());
+            }
 #else
+          FILE *fd = popen (cmd.c_str (), "r");
+
           std::ofstream fo (dfile.c_str ());
 #endif
+
           size_t pos;
           while (! feof (fd))
             {

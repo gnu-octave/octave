@@ -1251,6 +1251,23 @@ else
   AC_MSG_ERROR([MATH DEFINES in math.h such as M_PI are required to build Octave])
 fi
 
+## Use Unicode aware functions on Windows
+case $host_os in
+  msdosmsvc | mingw*)
+    AC_DEFINE(_UNICODE, 1, [Use Unicode CRT functions on Windows by default.])
+    AC_DEFINE(UNICODE, 1, [Use Windows Unicode API by default.])
+  ;;
+esac
+
+OCTAVE_UNICODE_EXE_LDFLAGS=""
+case $host_os in
+  mingw*)
+    OCTAVE_UNICODE_EXE_LDFLAGS="-municode"
+  ;;
+esac
+
+AC_SUBST(OCTAVE_UNICODE_EXE_LDFLAGS)
+
 ## Windows-specific use of functions
 case $host_os in
   msdosmsvc | mingw*)

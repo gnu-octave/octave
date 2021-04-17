@@ -74,7 +74,8 @@ nodist_%canon_reldir%_octave_SOURCES = %reldir%/main.cc
 %canon_reldir%_octave_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS) \
-  $(WARN_LDFLAGS)
+  $(WARN_LDFLAGS) \
+  $(OCTAVE_UNICODE_EXE_LDFLAGS)
 
 if AMCOND_BUILD_QT_GUI
   OCTAVE_CPPFLAGS = -DHAVE_OCTAVE_QT_GUI
@@ -94,7 +95,8 @@ nodist_%canon_reldir%_octave_cli_SOURCES = %reldir%/octave-build-info.cc
 %canon_reldir%_octave_cli_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS) \
-  $(WARN_LDFLAGS)
+  $(WARN_LDFLAGS) \
+  $(OCTAVE_UNICODE_EXE_LDFLAGS)
 
 %canon_reldir%_octave_cli_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
@@ -119,7 +121,8 @@ endif
 %canon_reldir%_octave_gui_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_GUI_LINK_OPTS) \
-  $(WARN_LDFLAGS)
+  $(WARN_LDFLAGS) \
+  $(OCTAVE_UNICODE_EXE_LDFLAGS)
 
 %canon_reldir%_octave_svgconvert_SOURCES = %reldir%/octave-svgconvert.cc
 
@@ -127,7 +130,9 @@ endif
 
 %canon_reldir%_octave_svgconvert_LDADD = $(QT_LIBS)
 
-%canon_reldir%_octave_svgconvert_LDFLAGS = $(QT_LDFLAGS)
+%canon_reldir%_octave_svgconvert_LDFLAGS = \
+  $(QT_LDFLAGS) \
+  $(OCTAVE_UNICODE_EXE_LDFLAGS)
 
 %canon_reldir%_mkoctfile_SOURCES =
 
@@ -136,6 +141,9 @@ nodist_%canon_reldir%_mkoctfile_SOURCES = %reldir%/mkoctfile.cc
 %canon_reldir%_mkoctfile_LDADD = \
   liboctave/wrappers/libwrappers.la \
   libgnu/libgnu.la $(LIBS)
+
+%canon_reldir%_mkoctfile_LDFLAGS = \
+  $(OCTAVE_UNICODE_EXE_LDFLAGS)
 
 %canon_reldir%_mkoctfile_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
@@ -149,6 +157,9 @@ nodist_%canon_reldir%_octave_config_SOURCES = %reldir%/octave-config.cc
   libinterp/corefcn/libcorefcn.la \
   libgnu/libgnu.la \
   $(LIBS)
+
+%canon_reldir%_octave_config_LDFLAGS = \
+  $(OCTAVE_UNICODE_EXE_LDFLAGS)
 
 %canon_reldir%_octave_config_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \

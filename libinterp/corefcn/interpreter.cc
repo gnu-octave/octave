@@ -730,11 +730,16 @@ namespace octave
     if (m_initialized)
       return;
 
-    const cmdline_options& options = m_app_context->options ();
-
-    if (options.experimental_terminal_widget ())
+    if (m_app_context)
       {
-        if (! options.gui ())
+        const cmdline_options& options = m_app_context->options ();
+
+        if (options.experimental_terminal_widget ())
+          {
+            if (! options.gui ())
+              display_startup_message ();
+          }
+        else
           display_startup_message ();
       }
     else

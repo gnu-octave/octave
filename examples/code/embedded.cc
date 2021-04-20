@@ -76,8 +76,5 @@ main (void)
       std::cerr << "error encountered in Octave evaluator!" << std::endl;
     }
 
-  // Shutdown the interpreter which cleanly releases all memory.
-  interpreter.shutdown ();
-
   return 0;
 }

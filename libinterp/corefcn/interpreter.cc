@@ -635,6 +635,8 @@ namespace octave
 
   interpreter::~interpreter (void)
   {
+    shutdown ();
+
     delete m_gh_manager;
   }
 
@@ -845,6 +847,13 @@ namespace octave
 
   void interpreter::shutdown (void)
   {
+    // Attempt to prevent more than one call to shutdown.
+
+    if (! m_initialized)
+      return;
+
+    m_initialized = false;
+
     OCTAVE_SAFE_CALL (feval, ("close", ovl ("all"), 0));
 
     // If we are attached to a GUI, process pending events and

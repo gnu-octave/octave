@@ -378,8 +378,6 @@ namespace octave
 
     int status = interp.execute ();
 
-    interp.shutdown ();
-
     return status;
   }
 }

@@ -155,14 +155,18 @@ namespace octave
   // thread to the interpreter thread.
 
   base_qobject::base_qobject (qt_application& app_context, bool gui_app)
-    : QObject (), m_app_context (app_context),
+    : QObject (),
+      m_app_context (app_context),
       m_argc (m_app_context.sys_argc ()),
       m_argv (m_app_context.sys_argv ()),
       m_qapplication (new octave_qapplication (m_argc, m_argv)),
-      m_resource_manager (), m_shortcut_manager (*this),
+      m_resource_manager (),
+      m_shortcut_manager (*this),
       m_workspace_model (new workspace_model (*this)),
-      m_qt_tr (new QTranslator ()), m_gui_tr (new QTranslator ()),
-      m_qsci_tr (new QTranslator ()), m_translators_installed (false),
+      m_qt_tr (new QTranslator ()),
+      m_gui_tr (new QTranslator ()),
+      m_qsci_tr (new QTranslator ()),
+      m_translators_installed (false),
       m_qt_interpreter_events (new qt_interpreter_events (*this)),
       m_interpreter_qobj (new interpreter_qobject (*this)),
       m_main_thread (new QThread ()),
@@ -176,9 +180,7 @@ namespace octave
     // Installing our handler suppresses the messages.
 
     if (show_gui_msgs.empty ())
-      {
-        qInstallMessageHandler (message_handler);
-      }
+      qInstallMessageHandler (message_handler);
 
     // Set the codec for all strings (before wizard or any GUI object)
 #if ! defined (Q_OS_WIN32)
@@ -223,10 +225,8 @@ namespace octave
              this, SLOT (interpreter_event (const meth_callback&)));
 
     if (m_app_context.experimental_terminal_widget ())
-      {
-        connect (qt_link (), SIGNAL (start_gui_signal (bool)),
-                 this, SLOT (start_gui (bool)));
-      }
+      connect (qt_link (), SIGNAL (start_gui_signal (bool)),
+               this, SLOT (start_gui (bool)));
 
     connect (qt_link (),
              SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),

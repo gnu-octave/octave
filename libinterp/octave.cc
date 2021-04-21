@@ -296,6 +296,14 @@ namespace octave
     init ();
   }
 
+  // Note: Although the application destructor doesn't explicitly
+  // perform any actions, it can't be declared "default" in the header
+  // file if the octave::interpreter is an incomplete type.  Providing
+  // an explicit definition of the destructor here is much simpler than
+  // including the full declaration of octave::interpreter in the
+  // octave.h header file.
+  application::~application (void) { }
+
   void
   application::set_program_names (const std::string& pname)
   {
@@ -336,15 +344,6 @@ namespace octave
             ? instance->m_options.experimental_terminal_widget () : false);
   }
 
-  application::~application (void)
-  {
-    // Delete interpreter if it still exists.
-
-    delete m_interpreter;
-
-    instance = nullptr;
-  }
-
   bool application::interpreter_initialized (void)
   {
     return m_interpreter ? m_interpreter->initialized () : false;
@@ -353,7 +352,7 @@ namespace octave
   interpreter& application::create_interpreter (void)
   {
     if (! m_interpreter)
-      m_interpreter = new interpreter (this);
+      m_interpreter = std::unique_ptr<interpreter> (new interpreter (this));
 
     return *m_interpreter;
   }
@@ -371,9 +370,7 @@ namespace octave
 
   void application::delete_interpreter (void)
   {
-    delete m_interpreter;
-
-    m_interpreter = nullptr;
+    m_interpreter.reset ();
   }
 
   void application::init (void)

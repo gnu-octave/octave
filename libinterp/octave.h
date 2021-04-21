@@ -29,6 +29,7 @@
 #include "octave-config.h"
 
 #include <list>
+#include <memory>
 #include <string>
 
 #include "str-vec.h"
@@ -364,7 +365,7 @@ namespace octave
     // from eval without persist.
     bool m_is_octave_program = false;
 
-    interpreter *m_interpreter = nullptr;
+    std::unique_ptr<interpreter> m_interpreter;
   };
 
   class OCTINTERP_API cli_application : public application

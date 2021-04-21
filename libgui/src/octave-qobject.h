@@ -145,23 +145,14 @@ namespace octave
 
     virtual bool confirm_shutdown (void);
 
-  signals:
-
-    void request_interpreter_shutdown (int);
-
   public slots:
 
     // Note: START_GUI and CLOSE_GUI don't currently perform any work
-    // with the old terminal widget and
-    // HANDLE_INTERPRETER_EXECUTION_FINISHED doesn't perform any action
-    // with the new experimental terminal widget.
+    // with the old terminal widget.
     void start_gui (bool gui_app);
     void close_gui (void);
-    void handle_interpreter_execution_finished (int);
 
     void interpreter_ready (void);
-
-    void handle_interpreter_shutdown_finished (int);
 
     void interpreter_event (const fcn_callback& fcn);
 

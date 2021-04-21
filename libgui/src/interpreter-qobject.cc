@@ -96,40 +96,20 @@ namespace octave
         exit_status = xe.exit_status ();
       }
 
-    if (m_octave_qobj.experimental_terminal_widget ())
-      {
-        interp.shutdown ();
+    interp.shutdown ();
 
-        emit shutdown_finished (exit_status);
-      }
-    else
-      {
-        // Signal that the interpreter is done executing code in the
-        // main REPL, from script files, or command line eval arguments.
-        // By using a signal here, we give the GUI a chance to process
-        // any pending events, then signal that it is safe to shutdown
-        // the interpreter.  Our notification here allows the GUI to
-        // insert the request to shutdown the interpreter in the event
-        // queue after any other pending signals.  The application
-        // context owns the interpreter and will be responsible for
-        // deleting it later, when the application object destructor is
-        // executed.
+    // Signal that the interpreter is done executing code in the
+    // main REPL, from script files, or command line eval arguments.
+    // By using a signal here, we give the GUI a chance to process
+    // any pending events, then signal that it is safe to shutdown
+    // the interpreter.  Our notification here allows the GUI to
+    // insert the request to shutdown the interpreter in the event
+    // queue after any other pending signals.  The application
+    // context owns the interpreter and will be responsible for
+    // deleting it later, when the application object destructor is
+    // executed.
 
-        emit execution_finished (exit_status);
-      }
-  }
-
-  void interpreter_qobject::shutdown (int exit_status)
-  {
-    if (! m_octave_qobj.experimental_terminal_widget ())
-      {
-        if (m_interpreter)
-          m_interpreter->shutdown ();
-
-        // Signal that the interpreter has executed shutdown actions.
-
-        emit shutdown_finished (exit_status);
-      }
+    emit shutdown_finished (exit_status);
   }
 
   void interpreter_qobject::interpreter_event (const fcn_callback& fcn)

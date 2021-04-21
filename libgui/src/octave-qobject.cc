@@ -204,17 +204,11 @@ namespace octave
     // Force left-to-right alignment (see bug #46204)
     m_qapplication->setLayoutDirection (Qt::LeftToRight);
 
-    if (! m_app_context.experimental_terminal_widget ())
-      {
-        connect (m_interpreter_qobj, SIGNAL (execution_finished (int)),
-                 this, SLOT (handle_interpreter_execution_finished (int)));
-
-        connect (this, SIGNAL (request_interpreter_shutdown (int)),
-                 m_interpreter_qobj, SLOT (shutdown (int)));
-      }
-
-    connect (m_interpreter_qobj, SIGNAL (shutdown_finished (int)),
-             this, SLOT (handle_interpreter_shutdown_finished (int)));
+    // Qt docs recommend using Qt::QueuedConnection when connecting to
+    // the QCoreApplication::exit slot.
+    connect (m_interpreter_qobj, &interpreter_qobject::shutdown_finished,
+             m_qapplication, &octave_qapplication::exit,
+             Qt::QueuedConnection);
 
     connect (m_main_thread, SIGNAL (finished (void)),
              m_main_thread, SLOT (deleteLater (void)));
@@ -332,17 +326,15 @@ namespace octave
 
   int base_qobject::exec (void)
   {
-    int status;
+    int status = m_qapplication->exec ();
 
-    if (m_app_context.experimental_terminal_widget ())
-      {
-        status = m_qapplication->exec ();
+#if defined (Q_OS_MAC)
+    // fprintf to stderr is needed by macOS, for poorly-understood reasons.
+    fprintf (stderr, "\n");
+#endif
 
-        m_main_thread->quit ();
-        m_main_thread->wait ();
-      }
-    else
-      status = m_qapplication->exec ();
+    m_main_thread->quit ();
+    m_main_thread->wait ();
 
     return status;
   }
@@ -441,28 +433,9 @@ namespace octave
       }
   }
 
-  void base_qobject::handle_interpreter_execution_finished (int exit_status)
-  {
-    if (! m_app_context.experimental_terminal_widget ())
-      emit request_interpreter_shutdown (exit_status);
-  }
-
   void base_qobject::interpreter_ready (void)
   {
     m_interpreter_ready = true;
-  }
-
-  void base_qobject::handle_interpreter_shutdown_finished (int exit_status)
-  {
-#if defined (Q_OS_MAC)
-    // fprintf to stderr is needed by macOS, for poorly-understood reasons.
-    fprintf (stderr, "\n");
-#endif
-
-    m_main_thread->quit ();
-    m_main_thread->wait ();
-
-    qApp->exit (exit_status);
   }
 
   void base_qobject::interpreter_event (const fcn_callback& fcn)

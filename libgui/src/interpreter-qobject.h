@@ -64,10 +64,6 @@ namespace octave
 
     void ready (void);
 
-    void execution_finished (int);
-
-    // Note: SHUTDOWN_FINISHED is currently only used by the new
-    // experimental terminal widget.
     void shutdown_finished (int);
 
   public slots:
@@ -93,10 +89,6 @@ namespace octave
     //! Initialize and execute the octave interpreter.
 
     void execute (void);
-
-    // Note: SHUTDOWN is currently only used by the new experimental
-    // terminal widget.
-    void shutdown (int);
 
   private:
 

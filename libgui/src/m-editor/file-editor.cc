@@ -127,11 +127,6 @@ namespace octave
     setFocusPolicy (Qt::StrongFocus);
   }
 
-  file_editor::~file_editor (void)
-  {
-    delete m_mru_file_menu;
-  }
-
   void file_editor::focusInEvent (QFocusEvent *e)
   {
     // The focus is transferred to the active tab and its edit

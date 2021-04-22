@@ -153,9 +153,6 @@ namespace octave
     setLayout (v_box_bm);
   }
 
-  documentation_bookmarks::~documentation_bookmarks (void)
-  { }
-
   // Slot for adding the current page as a bookmark
   void documentation_bookmarks::add_bookmark (void)
   {

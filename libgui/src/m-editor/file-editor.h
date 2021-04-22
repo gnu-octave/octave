@@ -90,7 +90,7 @@ namespace octave
 
     file_editor (QWidget *p, base_qobject& oct_qobj);
 
-    ~file_editor (void);
+    ~file_editor (void) = default;
 
     QMenu * get_mru_menu (void) { return m_mru_file_menu; }
 

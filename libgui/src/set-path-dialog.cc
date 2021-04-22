@@ -173,10 +173,6 @@ namespace octave
       settings->value(pd_geometry.key).toByteArray());
   }
 
-  set_path_dialog::~set_path_dialog (void)
-  {
-  }
-
   void set_path_dialog::update_model (void)
   {
     set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());

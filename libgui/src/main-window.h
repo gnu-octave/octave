@@ -84,7 +84,7 @@ namespace octave
 
     main_window (base_qobject& oct_qobj);
 
-    ~main_window (void);
+    ~main_window (void) = default;
 
     bool command_window_has_focus (void) const;
 

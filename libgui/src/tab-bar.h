@@ -49,7 +49,7 @@ namespace octave
 
     tab_bar (QWidget *p);
 
-    ~tab_bar (void);
+    ~tab_bar (void) = default;
 
     void set_rotated (int rotated);
     QMenu *get_context_menu (void) { return m_context_menu; };

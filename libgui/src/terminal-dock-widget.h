@@ -42,7 +42,7 @@ namespace octave
 
     terminal_dock_widget (QWidget *parent, base_qobject& oct_qobj);
 
-    ~terminal_dock_widget (void);
+    ~terminal_dock_widget (void) = default;
 
     bool has_focus (void) const;
 

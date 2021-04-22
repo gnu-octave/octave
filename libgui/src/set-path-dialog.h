@@ -55,7 +55,7 @@ namespace octave
 
     set_path_dialog (QWidget *parent, base_qobject& oct_qobj);
 
-    virtual ~set_path_dialog (void);
+    virtual ~set_path_dialog (void) = default;
 
     void save_settings (void);
 

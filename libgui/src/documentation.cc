@@ -301,9 +301,6 @@ namespace octave
 
   documentation::~documentation (void)
   {
-    if (m_help_engine)
-      delete m_help_engine;
-
     // Cleanup temporary file and directory
     QFile file (m_collection);
     if (file.exists ())
@@ -966,9 +963,6 @@ namespace octave
     connect (this, &documentation_browser::anchorClicked,
              this, [=] (const QUrl& url) { handle_index_clicked (url); });
   }
-
-  documentation_browser::~documentation_browser (void)
-  { }
 
   void documentation_browser::handle_index_clicked (const QUrl& url,
                                                     const QString&)

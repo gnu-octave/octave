@@ -253,12 +253,6 @@ namespace octave
     focus_command_window ();
   }
 
-  main_window::~main_window (void)
-  {
-    delete m_release_notes_window;
-    delete m_community_news_window;
-  }
-
   bool main_window::command_window_has_focus (void) const
   {
     return m_command_window->has_focus ();
@@ -695,7 +689,7 @@ namespace octave
         // a title bar, so don't its parent to main_window.  Do remember
         // to delete in the main_window destructor.
 
-        m_release_notes_window = new QWidget ();
+        m_release_notes_window = new QWidget (this);
 
         QTextBrowser *browser = new QTextBrowser (m_release_notes_window);
         browser->setText (news);
@@ -770,7 +764,7 @@ namespace octave
         // a title bar, so don't its parent to main_window.  Do remember
         // to delete in the main_window destructor.
 
-        m_community_news_window = new QWidget ();
+        m_community_news_window = new QWidget (this);
 
         QTextBrowser *browser = new QTextBrowser (m_community_news_window);
 

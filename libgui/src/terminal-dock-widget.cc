@@ -119,8 +119,6 @@ namespace octave
     setGeometry (0, 0, win_x, win_y);
   }
 
-  terminal_dock_widget::~terminal_dock_widget (void) { }
-
   bool terminal_dock_widget::has_focus (void) const
   {
     QWidget *w = widget ();

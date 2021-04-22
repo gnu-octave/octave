@@ -42,8 +42,6 @@ namespace octave
     : QTabBar (p), m_context_menu (new QMenu (this))
   { }
 
-  tab_bar::~tab_bar (void) { }
-
   void tab_bar::set_rotated (int rotated)
   {
     m_rotated = rotated;

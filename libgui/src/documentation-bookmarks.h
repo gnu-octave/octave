@@ -49,7 +49,8 @@ namespace octave
     documentation_bookmarks (
                 documentation *doc, documentation_browser *browser,
                 base_qobject& oct_qobj, QWidget *p = nullptr);
-    ~documentation_bookmarks (void);
+
+    ~documentation_bookmarks (void) = default;
 
   public slots:
 

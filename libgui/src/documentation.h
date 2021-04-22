@@ -53,7 +53,7 @@ namespace octave
   public:
 
     documentation_browser (QHelpEngine *help_engine, QWidget *parent = nullptr);
-    ~documentation_browser (void);
+    ~documentation_browser (void) = default;
 
     virtual QVariant loadResource (int type, const QUrl &url);
 

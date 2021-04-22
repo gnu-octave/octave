@@ -394,7 +394,7 @@ namespace octave
                           const QStringList& prompt,
                           const QString& ok_string,
                           const QString& cancel_string)
-    : QDialog (), m_model (new QStringListModel (list))
+    : QDialog (), m_model (new QStringListModel (list, this))
   {
     QListView *view = new QListView;
     view->setModel (m_model);
@@ -484,11 +484,6 @@ namespace octave
 
     connect (view, &QListView::doubleClicked,
              this, &ListDialog::item_double_clicked);
-  }
-
-  ListDialog::~ListDialog (void)
-  {
-    delete m_model;
   }
 
   void ListDialog::buttonOk_clicked (void)

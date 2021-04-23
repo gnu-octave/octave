@@ -915,14 +915,11 @@ compatibility with @sc{matlab}.
 %! [aa, bb, q, z, v, w, lambda] = qz (a, b);
 %! assert (q * a * z, aa, norm (aa) * 1e-14);
 %! assert (q * b * z, bb, norm (bb) * 1e-14);
-%! sz = find (isinf (lambda), 1);
-%! if (isempty (sz))
-%!   sz = numel (lamdda);
-%! endif
-%! observed = (b * v * diag (lambda)) (:, 1:sz);
-%! assert ((a*v)(:, 1:sz), observed, norm (observed) * 1e-14);
-%! observed = (diag (lambda) * w' * b) (1:sz, :);
-%! assert ((w'*a)(1:sz, :) , observed, norm (observed) * 1e-13);
+%! is_finite = abs (lambda) < 1 / eps (max (a(:)));
+%! observed = (b * v * diag (lambda))(:,is_finite);
+%! assert (observed, (a*v)(:,is_finite), norm (observed) * 1e-14);
+%! observed = (diag (lambda) * w' * b)(is_finite,:);
+%! assert (observed, (w'*a)(is_finite,:), norm (observed) * 1e-13);
 
 %!test
 %! A = [0, 0, -1, 0; 1, 0, 0, 0; -1, 0, -2, -1; 0, -1, 1, 0];

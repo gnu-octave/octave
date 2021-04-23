@@ -97,18 +97,18 @@ $\lambda.$
 Compute QZ@tie{}decomposition, generalized eigenvectors, and generalized
 eigenvalues.
 @tex
+$$ AA = Q^T AZ, BB = Q^T BZ $$
 $$ AV = BV{ \rm diag }(\lambda) $$
 $$ W^T A = { \rm diag }(\lambda)W^T B $$
-$$ AA = Q^T AZ, BB = Q^T BZ $$
 @end tex
 @ifnottex
 
 @example
 @group
 
+@var{AA} = @var{Q} * @var{A} * @var{Z}, @var{BB} = @var{Q} * @var{B} * @var{Z}
 @var{A} * @var{V} = @var{B} * @var{V} * diag (@var{lambda})
 @var{W}' * @var{A} = diag (@var{lambda}) * @var{W}' * @var{B}
-@var{AA} = @var{Q} * @var{A} * @var{Z}, @var{BB} = @var{Q} * @var{B} * @var{Z}
 
 @end group
 @end example
@@ -165,7 +165,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 (@pxref{XREFbalance,,@code{balance}}), which may be lead to less accurate
 results than @code{eig}.  The order of output arguments was selected for
 compatibility with @sc{matlab}.
-@seealso{eig, ordeig, balance, lu, chol, hess, qr, qzhess, schur, svd}
+@seealso{eig, gsvd, balance, chol, hess, lu, qr, qzhess, schur}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -682,12 +682,13 @@ compatibility with @sc{matlab}.
           // Return finite generalized eigenvalues.
           ComplexColumnVector tmp (nn);
 
-          F77_INT cnt = 0;
           for (F77_INT i = 0; i < nn; i++)
-            if (betar(i) != 0)
-              tmp(cnt++) = Complex (alphar(i), alphai(i)) / betar(i);
-
-          tmp.resize (cnt);  // Trim vector to number of return values
+            {
+              if (betar(i) != 0)
+                tmp(i) = Complex (alphar(i), alphai(i)) / betar(i);
+              else
+                tmp(i) = octave::numeric_limits<double>::Inf ();
+            }
 
           gev = tmp;
         }
@@ -898,27 +899,30 @@ compatibility with @sc{matlab}.
 }
 
 /*
-%!shared a, b, c
-%! a = [1 2; 0 3];
-%! b = [1 0; 0 0];
-%! c = [0 1; 0 0];
-%!assert (qz (a,b), 1)
-%!assert (isempty (qz (a,c)))
+%!test
+%! A = [1 2; 0 3];
+%! B = [1 0; 0 0];
+%! C = [0 1; 0 0];
+%! assert (qz (A,B), [1; Inf]);
+%! assert (qz (A,C), [Inf; Inf]);
 
 ## Example 7.7.3 in Golub & Van Loan
 %!test
 %! a = [ 10  1  2;
 %!        1  2 -1;
-%!        1  1  2];
-%! b = reshape (1:9,3,3);
+%!        1  1  2 ];
+%! b = reshape (1:9, 3,3);
 %! [aa, bb, q, z, v, w, lambda] = qz (a, b);
-%! sz = length (lambda);
-%! observed = (b * v * diag ([lambda;0])) (:, 1:sz);
-%! assert ((a*v)(:, 1:sz), observed, norm (observed) * 1e-14);
-%! observed = (diag ([lambda;0]) * w' * b) (1:sz, :);
-%! assert ((w'*a)(1:sz, :) , observed, norm (observed) * 1e-13);
 %! assert (q * a * z, aa, norm (aa) * 1e-14);
 %! assert (q * b * z, bb, norm (bb) * 1e-14);
+%! sz = find (isinf (lambda), 1);
+%! if (isempty (sz))
+%!   sz = numel (lamdda);
+%! endif
+%! observed = (b * v * diag (lambda)) (:, 1:sz);
+%! assert ((a*v)(:, 1:sz), observed, norm (observed) * 1e-14);
+%! observed = (diag (lambda) * w' * b) (1:sz, :);
+%! assert ((w'*a)(1:sz, :) , observed, norm (observed) * 1e-13);
 
 %!test
 %! A = [0, 0, -1, 0; 1, 0, 0, 0; -1, 0, -2, -1; 0, -1, 1, 0];
@@ -937,15 +941,15 @@ compatibility with @sc{matlab}.
 %!        0.169281 -0.405205 -1.775834  1.511730;
 %!        0.717770  1.291390 -1.766607 -0.531352 ];
 %! [AA, BB, Z, lambda] = qz (A, B, "+");
-%! assert (all (real (lambda(1:3)) >= 0))
-%! assert (real (lambda(4) < 0))
+%! assert (all (real (lambda(1:3)) >= 0));
+%! assert (real (lambda(4) < 0));
 %! [AA, BB, Z, lambda] = qz (A, B, "-");
-%! assert (real (lambda(1) < 0))
-%! assert (all (real (lambda(2:4)) >= 0))
+%! assert (real (lambda(1) < 0));
+%! assert (all (real (lambda(2:4)) >= 0));
 %! [AA, BB, Z, lambda] = qz (A, B, "B");
-%! assert (all (abs (lambda(1:3)) >= 1))
-%! assert (abs (lambda(4) < 1))
+%! assert (all (abs (lambda(1:3)) >= 1));
+%! assert (abs (lambda(4) < 1));
 %! [AA, BB, Z, lambda] = qz (A, B, "S");
-%! assert (abs (lambda(1) < 1))
-%! assert (all (abs (lambda(2:4)) >= 1))
+%! assert (abs (lambda(1) < 1));
+%! assert (all (abs (lambda(2:4)) >= 1));
 */

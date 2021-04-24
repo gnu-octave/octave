@@ -529,9 +529,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       // We uncompress the first 8 bytes of the header to get the buffer length
       // This will fail with an error Z_MEM_ERROR
       uLongf destLen = 8;
+      uLongf elt_len = element_length;
       OCTAVE_LOCAL_BUFFER (unsigned int, tmp, 2);
-      if (uncompress (reinterpret_cast<Bytef *> (tmp), &destLen,
-                      reinterpret_cast<Bytef *> (inbuf), element_length)
+      if (uncompress2 (reinterpret_cast<Bytef *> (tmp), &destLen,
+                       reinterpret_cast<Bytef *> (inbuf), &elt_len)
           == Z_MEM_ERROR)
         error ("load: error probing size of compressed data element");
 
@@ -544,10 +545,19 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
       // FIXME: find a way to avoid casting away const here!
 
-      int err = uncompress (reinterpret_cast<Bytef *>
-                            (const_cast<char *> (outbuf.c_str ())),
-                            &destLen, reinterpret_cast<Bytef *> (inbuf),
-                            element_length);
+      elt_len = element_length;
+      int err = uncompress2 (reinterpret_cast<Bytef *>
+                             (const_cast<char *> (outbuf.c_str ())),
+                             &destLen, reinterpret_cast<Bytef *> (inbuf),
+                             &elt_len);
+
+      // Ignore buffer error if we have consumed all the input buffer
+      // and uncompressing the data generated as many bytes of output as
+      // we were expecting given the data element size that was stored
+      // in the Matlab data element header.
+      if (err == Z_BUF_ERROR && destLen == tmp[1] + 8
+          && elt_len == static_cast<uLongf> (element_length))
+        err = Z_OK;
 
       if (err != Z_OK)
         {

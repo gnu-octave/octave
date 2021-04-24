@@ -159,6 +159,7 @@ quote_path (const std::string& s)
 static std::string
 replace_prefix (std::string s)
 {
+#if defined (OCTAVE_REPLACE_PREFIX)
   const std::string match = "${prefix}";
   size_t pos = s.find (match);
   while (pos != std::string::npos )
@@ -166,6 +167,7 @@ replace_prefix (std::string s)
       s.replace(pos, match.length (), prepend_octave_exec_home (""));
       pos = s.find (match);
     }
+#endif
 
   return s;
 }

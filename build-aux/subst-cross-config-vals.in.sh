@@ -87,13 +87,22 @@ octtestsdir=`echo "@octtestsdir@" | sed "s|^${prefix}/\\+||"`
 startupfiledir=`echo "@startupfiledir@" | sed "s|^${prefix}/\\+||"`
 texi_macros_file=`echo "@texi_macros_file@" | sed "s|^${prefix}/\\+||"`
 
-## Replace portions of compiler flags that depend on prefix on target
-cppflags=`echo "@CPPFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
-fftw3f_ldflags=`echo "@FFTW3F_LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
-fftw3_ldflags=`echo "@FFTW3_LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
-flibs=`echo "@FLIBS@" | sed "s|@prefix@|\$\{prefix\}|g"`
-ldflags=`echo "@LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
-oct_link_opts=`echo "@OCT_LINK_OPTS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+if [ "x@OCTAVE_RELOCATE_ALL@" = "xyes" ]; then
+  ## Replace portions of compiler flags that depend on prefix on target
+  cppflags=`echo "@CPPFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+  fftw3f_ldflags=`echo "@FFTW3F_LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+  fftw3_ldflags=`echo "@FFTW3_LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+  flibs=`echo "@FLIBS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+  ldflags=`echo "@LDFLAGS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+  oct_link_opts=`echo "@OCT_LINK_OPTS@" | sed "s|@prefix@|\$\{prefix\}|g"`
+else
+  cppflags="@CPPFLAGS@"
+  fftw3f_ldflags="@FFTW3F_LDFLAGS@"
+  fftw3_ldflags="@FFTW3_LDFLAGS@"
+  flibs="@FLIBS@"
+  ldflags="@LDFLAGS@"
+  oct_link_opts="@OCT_LINK_OPTS@"
+fi
 
 
 srcdir="@srcdir@"

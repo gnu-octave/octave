@@ -2686,6 +2686,16 @@ AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
 AM_CONDITIONAL([AMCOND_BUILD_QT_DOCS],
                [test $ENABLE_DOCS = yes && test $build_qt_gui = yes])
 
+OCTAVE_RELOCATE_ALL=no
+AC_ARG_ENABLE([relocate-all],
+  [AS_HELP_STRING([--enable-relocate-all],
+    [assume that all dependencies that are installed under the same prefix are relocated when Octave is relocated])],
+  [if test "$enableval" = yes; then OCTAVE_RELOCATE_ALL=yes; fi], [])
+AC_SUBST(OCTAVE_RELOCATE_ALL)
+if test $OCTAVE_RELOCATE_ALL = yes; then
+  AC_DEFINE(OCTAVE_REPLACE_PREFIX, 1, [Replace prefix in mkoctfile flags.])
+fi
+
 ### Determine whether Mercurial ID should be embedded in library binaries.
 
 ENABLE_HG_ID=yes

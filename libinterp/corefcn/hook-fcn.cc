@@ -36,11 +36,11 @@ hook_function::hook_function (const octave_value& f, const octave_value& d)
     {
       std::string name = f.string_value ();
 
-      rep = std::shared_ptr<base_hook_function> (new named_hook_function (name, d));
+      m_rep = std::shared_ptr<base_hook_function> (new named_hook_function (name, d));
     }
   else if (f.is_function_handle ())
     {
-      rep = std::shared_ptr<base_hook_function> (new fcn_handle_hook_function (f, d));
+      m_rep = std::shared_ptr<base_hook_function> (new fcn_handle_hook_function (f, d));
     }
   else
     error ("invalid hook function");
@@ -50,19 +50,19 @@ void named_hook_function::eval (const octave_value_list& initial_args)
 {
   octave_value_list args = initial_args;
 
-  if (data.is_defined ())
-    args.append (data);
+  if (m_data.is_defined ())
+    args.append (m_data);
 
-  octave::feval (name, args, 0);
+  octave::feval (m_name, args, 0);
 }
 
 void fcn_handle_hook_function::eval (const octave_value_list& initial_args)
 {
   octave_value_list args = initial_args;
 
-  if (data.is_defined ())
-    args.append (data);
+  if (m_data.is_defined ())
+    args.append (m_data);
 
-  octave::feval (fcn_handle, args, 0);
+  octave::feval (m_fcn_handle, args, 0);
 }
 

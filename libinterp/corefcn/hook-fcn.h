@@ -64,7 +64,7 @@ public:
     static std::shared_ptr<base_hook_function>
       nil_rep (new base_hook_function ());
 
-    rep = nil_rep;
+    m_rep = nil_rep;
   }
 
   hook_function (const octave_value& f,
@@ -76,18 +76,18 @@ public:
 
   hook_function& operator = (const hook_function& hf) = default;
 
-  std::string id (void) const { return rep->id (); }
+  std::string id (void) const { return m_rep->id (); }
 
-  bool is_valid (void) const { return rep->is_valid (); }
+  bool is_valid (void) const { return m_rep->is_valid (); }
 
   void eval (const octave_value_list& initial_args)
   {
-    rep->eval (initial_args);
+    m_rep->eval (initial_args);
   }
 
 private:
 
-  std::shared_ptr<base_hook_function> rep;
+  std::shared_ptr<base_hook_function> m_rep;
 };
 
 class
@@ -96,20 +96,20 @@ named_hook_function : public base_hook_function
 public:
 
   named_hook_function (const std::string& n, const octave_value& d)
-    : name (n), data (d)
+    : m_name (n), m_data (d)
   { }
 
   void eval (const octave_value_list& initial_args);
 
-  std::string id (void) const { return name; }
+  std::string id (void) const { return m_name; }
 
-  bool is_valid (void) const { return is_valid_function (name); }
+  bool is_valid (void) const { return is_valid_function (m_name); }
 
 private:
 
-  std::string name;
+  std::string m_name;
 
-  octave_value data;
+  octave_value m_data;
 };
 
 class
@@ -118,35 +118,35 @@ fcn_handle_hook_function : public base_hook_function
 public:
 
   fcn_handle_hook_function (const octave_value& fh_arg, const octave_value& d)
-    : ident (), valid (false), fcn_handle (fh_arg), data (d)
+    : m_ident (), m_valid (false), m_fcn_handle (fh_arg), m_data (d)
   {
-    octave_fcn_handle *fh = fcn_handle.fcn_handle_value (true);
+    octave_fcn_handle *fh = m_fcn_handle.fcn_handle_value (true);
 
     if (fh)
       {
-        valid = true;
+        m_valid = true;
 
         std::ostringstream buf;
         buf << fh;
-        ident = fh->fcn_name () + ':' + buf.str ();
+        m_ident = fh->fcn_name () + ':' + buf.str ();
       }
   }
 
   void eval (const octave_value_list& initial_args);
 
-  std::string id (void) const { return ident; }
+  std::string id (void) const { return m_ident; }
 
-  bool is_valid (void) const { return valid; }
+  bool is_valid (void) const { return m_valid; }
 
 private:
 
-  std::string ident;
+  std::string m_ident;
 
-  bool valid;
+  bool m_valid;
 
-  octave_value fcn_handle;
+  octave_value m_fcn_handle;
 
-  octave_value data;
+  octave_value m_data;
 };
 
 class
@@ -167,36 +167,36 @@ public:
 
   hook_function_list& operator = (const hook_function_list& lst) = default;
 
-  bool empty (void) const { return fcn_map.empty (); }
+  bool empty (void) const { return m_fcn_map.empty (); }
 
-  void clear (void) { fcn_map.clear (); }
+  void clear (void) { m_fcn_map.clear (); }
 
   void insert (const std::string& id, const hook_function& f)
   {
-    fcn_map[id] = f;
+    m_fcn_map[id] = f;
   }
 
   iterator find (const std::string& id)
   {
-    return fcn_map.find (id);
+    return m_fcn_map.find (id);
   }
 
   const_iterator find (const std::string& id) const
   {
-    return fcn_map.find (id);
+    return m_fcn_map.find (id);
   }
 
-  iterator end (void) { return fcn_map.end (); }
+  iterator end (void) { return m_fcn_map.end (); }
 
-  const_iterator end (void) const { return fcn_map.end (); }
+  const_iterator end (void) const { return m_fcn_map.end (); }
 
-  void erase (iterator p) { fcn_map.erase (p); }
+  void erase (iterator p) { m_fcn_map.erase (p); }
 
   void run (const octave_value_list& initial_args = octave_value_list ())
   {
-    auto p = fcn_map.begin ();
+    auto p = m_fcn_map.begin ();
 
-    while (p != fcn_map.end ())
+    while (p != m_fcn_map.end ())
       {
         std::string hook_fcn_id = p->first;
         hook_function hook_fcn = p->second;
@@ -206,13 +206,13 @@ public:
         if (hook_fcn.is_valid ())
           hook_fcn.eval (initial_args);
         else
-          fcn_map.erase (q);
+          m_fcn_map.erase (q);
       }
   }
 
 private:
 
-  map_type fcn_map;
+  map_type m_fcn_map;
 };
 
 #endif

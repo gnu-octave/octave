@@ -128,7 +128,7 @@ nodist_%canon_reldir%_libgraphics_la_SOURCES = $(libgraphics_MOC)
   @OCTGUI_DLL_DEFS@ \
   @QT_OPENGL_CPPFLAGS@ \
   -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
-  -Isrc -I$(srcdir)/libgui/src \
+  -Ilibgui/src -I$(srcdir)/libgui/src \
   -Iliboctave \
   -I$(srcdir)/liboctave/array \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \

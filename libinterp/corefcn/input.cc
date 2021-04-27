@@ -1409,7 +1409,7 @@ list of input hook functions.
 
   octave::input_system& input_sys = interp.get_input_system ();
 
-  hook_function hook_fcn (args(0), user_data);
+  octave::hook_function hook_fcn (args(0), user_data);
 
   input_sys.add_input_event_hook (hook_fcn);
 

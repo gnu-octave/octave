@@ -1620,6 +1620,39 @@ AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION], [
   fi
 ])
 dnl
+dnl Check whether Qt has the QOverload template introduced in Qt 5.7.
+dnl
+AC_DEFUN([OCTAVE_CHECK_QOVERLOAD_TEMPLATE], [
+  AC_CACHE_CHECK([for QOverload template],
+    [octave_cv_qoverload_template],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QtGlobal>
+        ]], [[
+        struct Foo
+        {
+            void overloadedFunction (int) const;
+            void overloadedFunction (int, const QString &) const;
+        };
+        QOverload<int>::of (&Foo::overloadedFunction);
+        QOverload<int, const QString &>::of (&Foo::overloadedFunction);
+        ]])],
+      octave_cv_qoverload_template=yes,
+      octave_cv_qoverload_template=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_qoverload_template = yes; then
+    AC_DEFINE(HAVE_QOVERLOAD_TEMPLATE, 1,
+      [Define to 1 if you have the `QOverload' template.])
+  fi
+])
+dnl
 dnl Check whether the Qt class QRegion has the iterators and related
 dnl functions introduced in Qt 5.8.
 dnl
@@ -2173,6 +2206,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA
     OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION
 
+    OCTAVE_CHECK_QOVERLOAD_TEMPLATE
     OCTAVE_CHECK_QREGION_ITERATORS
     OCTAVE_CHECK_QT_SPLITBEHAVIOR_ENUM
 

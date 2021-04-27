@@ -55,6 +55,7 @@
 #include "gui-preferences-sc.h"
 #include "gui-preferences-ve.h"
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 #include "ovl.h"
 #include "qt-utils.h"
 #include "shortcut-manager.h"

@@ -73,6 +73,7 @@
 #include "gui-utils.h"
 #include "marker.h"
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 #include "octave-txt-lexer.h"
 
 #include "cmd-edit.h"

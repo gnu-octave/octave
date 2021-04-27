@@ -48,6 +48,7 @@
 #include "gui-preferences-fb.h"
 #include "gui-preferences-global.h"
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 #include "qt-interpreter-events.h"
 
 #include "interpreter.h"

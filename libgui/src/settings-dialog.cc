@@ -65,6 +65,7 @@
 
 #include "gui-preferences-all.h"
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 #include "settings-dialog.h"
 #include "variable-editor.h"
 #include "workspace-model.h"

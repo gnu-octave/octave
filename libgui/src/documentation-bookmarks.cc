@@ -40,6 +40,7 @@
 #include "gui-preferences-global.h"
 #include "gui-preferences-dc.h"
 #include "gui-preferences-sc.h"
+#include "octave-qtutils.h"
 #include "shortcut-manager.h"
 
 #include "defaults.h"

@@ -51,6 +51,7 @@
 
 #include "gui-preferences-pd.h"
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 #include "set-path-dialog.h"
 #include "set-path-model.h"
 

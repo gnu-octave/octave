@@ -46,6 +46,7 @@
 #include "qt-graphics-toolkit.h"
 
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 
 #include "interpreter.h"
 #include "oct-map.h"

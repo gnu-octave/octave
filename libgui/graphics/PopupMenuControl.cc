@@ -34,6 +34,7 @@
 #include "QtHandlesUtils.h"
 
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 
 namespace QtHandles
 {

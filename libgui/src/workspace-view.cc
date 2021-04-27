@@ -43,6 +43,7 @@
 
 #include "gui-preferences-ws.h"
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 #include "workspace-view.h"
 
 #include "interpreter-private.h"

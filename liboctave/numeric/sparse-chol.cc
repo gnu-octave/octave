@@ -35,7 +35,6 @@
 #include "dSparse.h"
 #include "lo-error.h"
 #include "oct-cmplx.h"
-#include "oct-refcount.h"
 #include "oct-sparse.h"
 #include "oct-spparms.h"
 #include "quit.h"
@@ -52,14 +51,14 @@ namespace octave
     public:
 
       sparse_chol_rep (void)
-        : count (1), is_pd (false), minor_p (0), perms (), cond (0)
+        : is_pd (false), minor_p (0), perms (), cond (0)
 #if defined (HAVE_CHOLMOD)
         , Lsparse (nullptr), Common ()
 #endif
       { }
 
       sparse_chol_rep (const chol_type& a, bool natural, bool force)
-        : count (1), is_pd (false), minor_p (0), perms (), cond (0)
+        : is_pd (false), minor_p (0), perms (), cond (0)
 #if defined (HAVE_CHOLMOD)
         , Lsparse (nullptr), Common ()
 #endif
@@ -69,7 +68,7 @@ namespace octave
 
       sparse_chol_rep (const chol_type& a, octave_idx_type& info,
                        bool natural, bool force)
-        : count (1), is_pd (false), minor_p (0), perms (), cond (0)
+        : is_pd (false), minor_p (0), perms (), cond (0)
 #if defined (HAVE_CHOLMOD)
         , Lsparse (nullptr), Common ()
 #endif
@@ -117,8 +116,6 @@ namespace octave
       bool is_positive_definite (void) const { return is_pd; }
 
       double rcond (void) const { return cond; }
-
-      refcount<octave_idx_type> count;
 
     private:
 
@@ -414,36 +411,6 @@ namespace octave
       : rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, false, false))
     { }
-
-    template <typename chol_type>
-    sparse_chol<chol_type>::sparse_chol (const sparse_chol<chol_type>& a)
-      : rep (a.rep)
-    {
-      rep->count++;
-    }
-
-    template <typename chol_type>
-    sparse_chol<chol_type>::~sparse_chol (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
-
-    template <typename chol_type>
-    sparse_chol<chol_type>&
-    sparse_chol<chol_type>::operator = (const sparse_chol& a)
-    {
-      if (this != &a)
-        {
-          if (--rep->count == 0)
-            delete rep;
-
-          rep = a.rep;
-          rep->count++;
-        }
-
-      return *this;
-    }
 
     template <typename chol_type>
     chol_type

@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#include <memory>
+
 #include "oct-cmplx.h"
 
 class Matrix;
@@ -61,11 +63,11 @@ namespace octave
       OCTAVE_API sparse_qr (const SPARSE_T& a, int order = 0);
 #endif
 
-      OCTAVE_API sparse_qr (const sparse_qr& a);
+      OCTAVE_API sparse_qr (const sparse_qr& a) = default;
 
-      OCTAVE_API ~sparse_qr (void);
+      OCTAVE_API ~sparse_qr (void) = default;
 
-      OCTAVE_API sparse_qr& operator = (const sparse_qr& a);
+      OCTAVE_API sparse_qr& operator = (const sparse_qr& a) = default;
 
       OCTAVE_API bool ok (void) const;
 
@@ -102,7 +104,7 @@ namespace octave
 
       class sparse_qr_rep;
 
-      sparse_qr_rep *rep;
+      std::shared_ptr<sparse_qr_rep> rep;
 
       template <typename RHS_T, typename RET_T>
       OCTAVE_API RET_T

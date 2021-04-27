@@ -35,7 +35,6 @@
 #include "dSparse.h"
 #include "lo-error.h"
 #include "oct-locbuf.h"
-#include "oct-refcount.h"
 #include "oct-sparse.h"
 #include "quit.h"
 #include "sparse-qr.h"
@@ -109,8 +108,6 @@ namespace octave
       C (const typename SPARSE_T::dense_matrix_type& b, bool econ = false);
 
       typename SPARSE_T::dense_matrix_type Q (bool econ = false);
-
-      refcount<octave_idx_type> count;
 
       octave_idx_type nrows;
       octave_idx_type ncols;
@@ -500,7 +497,7 @@ namespace octave
     template <>
     sparse_qr<SparseMatrix>::sparse_qr_rep::sparse_qr_rep
     (const SparseMatrix& a, int order)
-      : count (1), nrows (a.rows ()), ncols (a.columns ())
+      : nrows (a.rows ()), ncols (a.columns ())
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
       , m_cc (), m_R (nullptr), m_E (nullptr), m_H (nullptr), m_Htau (nullptr),
         m_HPinv (nullptr)
@@ -1435,7 +1432,7 @@ namespace octave
     template <>
     sparse_qr<SparseComplexMatrix>::sparse_qr_rep::sparse_qr_rep
     (const SparseComplexMatrix& a, int order)
-      : count (1), nrows (a.rows ()), ncols (a.columns ())
+      : nrows (a.rows ()), ncols (a.columns ())
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
         , m_cc (), m_R (nullptr), m_E (nullptr), m_H (nullptr),
           m_Htau (nullptr), m_HPinv (nullptr)
@@ -2684,36 +2681,6 @@ namespace octave
     { }
 
     template <typename SPARSE_T>
-    sparse_qr<SPARSE_T>::sparse_qr (const sparse_qr<SPARSE_T>& a)
-      : rep (a.rep)
-    {
-      rep->count++;
-    }
-
-    template <typename SPARSE_T>
-    sparse_qr<SPARSE_T>::~sparse_qr (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
-
-    template <typename SPARSE_T>
-    sparse_qr<SPARSE_T>&
-    sparse_qr<SPARSE_T>::operator = (const sparse_qr<SPARSE_T>& a)
-    {
-      if (this != &a)
-        {
-          if (--rep->count == 0)
-            delete rep;
-
-          rep = a.rep;
-          rep->count++;
-        }
-
-      return *this;
-    }
-
-    template <typename SPARSE_T>
     bool
     sparse_qr<SPARSE_T>::ok (void) const
     {
@@ -3282,9 +3249,6 @@ namespace octave
     template OCTAVE_API sparse_qr<SparseMatrix>::sparse_qr (void);
     template OCTAVE_API
     sparse_qr<SparseMatrix>::sparse_qr (const SparseMatrix& a, int order);
-    template OCTAVE_API
-    sparse_qr<SparseMatrix>::sparse_qr (const sparse_qr<SparseMatrix>& a);
-    template OCTAVE_API sparse_qr<SparseMatrix>::~sparse_qr (void);
     template OCTAVE_API bool sparse_qr<SparseMatrix>::ok (void) const;
     template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::E (void) const;
     template OCTAVE_API SparseMatrix sparse_qr<SparseMatrix>::V (void) const;
@@ -3300,10 +3264,6 @@ namespace octave
     template OCTAVE_API
     sparse_qr<SparseComplexMatrix>::sparse_qr
     (const SparseComplexMatrix& a, int order);
-    template OCTAVE_API
-    sparse_qr<SparseComplexMatrix>::sparse_qr
-    (const sparse_qr<SparseComplexMatrix>& a);
-    template OCTAVE_API sparse_qr<SparseComplexMatrix>::~sparse_qr (void);
     template OCTAVE_API bool sparse_qr<SparseComplexMatrix>::ok (void) const;
     template OCTAVE_API ColumnVector
     sparse_qr<SparseComplexMatrix>::E (void) const;

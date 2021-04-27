@@ -36,11 +36,11 @@ hook_function::hook_function (const octave_value& f, const octave_value& d)
     {
       std::string name = f.string_value ();
 
-      rep = new named_hook_function (name, d);
+      rep = std::shared_ptr<base_hook_function> (new named_hook_function (name, d));
     }
   else if (f.is_function_handle ())
     {
-      rep = new fcn_handle_hook_function (f, d);
+      rep = std::shared_ptr<base_hook_function> (new fcn_handle_hook_function (f, d));
     }
   else
     error ("invalid hook function");

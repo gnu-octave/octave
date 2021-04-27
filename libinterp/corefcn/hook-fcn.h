@@ -28,6 +28,7 @@
 
 #include "octave-config.h"
 
+#include <memory>
 #include <string>
 
 #include "ovl.h"
@@ -40,11 +41,9 @@ base_hook_function
 {
 public:
 
-  friend class hook_function;
+  base_hook_function (void) = default;
 
-  base_hook_function (void) : count (1) { }
-
-  base_hook_function (const base_hook_function&) : count (1) { }
+  base_hook_function (const base_hook_function&) = default;
 
   virtual ~base_hook_function (void) = default;
 
@@ -53,10 +52,6 @@ public:
   virtual bool is_valid (void) const { return false; }
 
   virtual void eval (const octave_value_list&) { }
-
-protected:
-
-  size_t count;
 };
 
 class
@@ -66,39 +61,20 @@ public:
 
   hook_function (void)
   {
-    static base_hook_function nil_rep;
-    rep = &nil_rep;
-    rep->count++;
+    static std::shared_ptr<base_hook_function>
+      nil_rep (new base_hook_function ());
+
+    rep = nil_rep;
   }
 
   hook_function (const octave_value& f,
                  const octave_value& d = octave_value ());
 
-  ~hook_function (void)
-  {
-    if (--rep->count == 0)
-      delete rep;
-  }
+  ~hook_function (void) = default;
 
-  hook_function (const hook_function& hf)
-    : rep (hf.rep)
-  {
-    rep->count++;
-  }
+  hook_function (const hook_function& hf) = default;
 
-  hook_function& operator = (const hook_function& hf)
-  {
-    if (rep != hf.rep)
-      {
-        if (--rep->count == 0)
-          delete rep;
-
-        rep = hf.rep;
-        rep->count++;
-      }
-
-    return *this;
-  }
+  hook_function& operator = (const hook_function& hf) = default;
 
   std::string id (void) const { return rep->id (); }
 
@@ -111,7 +87,7 @@ public:
 
 private:
 
-  base_hook_function *rep;
+  std::shared_ptr<base_hook_function> rep;
 };
 
 class
@@ -183,21 +159,13 @@ public:
   typedef map_type::iterator iterator;
   typedef map_type::const_iterator const_iterator;
 
-  hook_function_list (void) : fcn_map () { }
+  hook_function_list (void) = default;
 
   ~hook_function_list (void) = default;
 
-  hook_function_list (const hook_function_list& lst)
-    : fcn_map (lst.fcn_map)
-  { }
+  hook_function_list (const hook_function_list& lst) = default;
 
-  hook_function_list& operator = (const hook_function_list& lst)
-  {
-    if (&lst != this)
-      fcn_map = lst.fcn_map;
-
-    return *this;
-  }
+  hook_function_list& operator = (const hook_function_list& lst) = default;
 
   bool empty (void) const { return fcn_map.empty (); }
 

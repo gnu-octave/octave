@@ -42,14 +42,13 @@
 #include "lo-error.h"
 #include "lo-mappers.h"
 
-OCTAVE_NORETURN static
-void
+OCTAVE_NORETURN static void
 err_invalid_range (void)
 {
   (*current_liboctave_error_handler) ("invalid range used as index");
 }
 
-static void
+OCTAVE_NORETURN static void
 err_index_out_of_range (void)
 {
   (*current_liboctave_error_handler)
@@ -60,14 +59,6 @@ idx_vector::idx_vector_rep *
 idx_vector::nil_rep (void)
 {
   static idx_vector_rep ivr;
-  return &ivr;
-}
-
-idx_vector::idx_vector_rep *
-idx_vector::err_rep (void)
-{
-  static idx_vector_rep ivr;
-  ivr.err = true;
   return &ivr;
 }
 
@@ -85,12 +76,8 @@ idx_vector::idx_colon_rep::idx_colon_rep (char c)
   : idx_base_rep ()
 {
   if (c != ':')
-    {
-      (*current_liboctave_error_handler)
-        ("internal error: invalid character converted to idx_vector; must be ':'");
-      // FIXME: this is unreachable now.
-      err = true;
-    }
+    (*current_liboctave_error_handler)
+      ("internal error: invalid character converted to idx_vector; must be ':'");
 }
 
 octave_idx_type
@@ -225,10 +212,9 @@ idx_vector::idx_range_rep::as_array (void)
 }
 
 inline octave_idx_type
-convert_index (octave_idx_type i, bool& conv_error,
-               octave_idx_type& ext)
+convert_index (octave_idx_type i, octave_idx_type& ext)
 {
-  if (i <= 0 && ! conv_error)
+  if (i <= 0)
     octave::err_invalid_index (i-1);
 
   if (ext < i)
@@ -238,30 +224,29 @@ convert_index (octave_idx_type i, bool& conv_error,
 }
 
 inline octave_idx_type
-convert_index (double x, bool& conv_error, octave_idx_type& ext)
+convert_index (double x, octave_idx_type& ext)
 {
   octave_idx_type i = static_cast<octave_idx_type> (x);
 
   if (static_cast<double> (i) != x)
     octave::err_invalid_index (x-1);
 
-  return convert_index (i, conv_error, ext);
+  return convert_index (i, ext);
 }
 
 inline octave_idx_type
-convert_index (float x, bool& conv_error, octave_idx_type& ext)
+convert_index (float x, octave_idx_type& ext)
 {
-  return convert_index (static_cast<double> (x), conv_error, ext);
+  return convert_index (static_cast<double> (x), ext);
 }
 
 template <typename T>
 inline octave_idx_type
-convert_index (octave_int<T> x, bool& conv_error,
-               octave_idx_type& ext)
+convert_index (octave_int<T> x, octave_idx_type& ext)
 {
   octave_idx_type i = octave_int<octave_idx_type> (x).value ();
 
-  return convert_index (i, conv_error, ext);
+  return convert_index (i, ext);
 }
 
 template <typename T>
@@ -270,7 +255,7 @@ idx_vector::idx_scalar_rep::idx_scalar_rep (T x)
 {
   octave_idx_type dummy = 0;
 
-  data = convert_index (x, err, dummy);
+  data = convert_index (x, dummy);
 }
 
 idx_vector::idx_scalar_rep::idx_scalar_rep (octave_idx_type i)
@@ -325,7 +310,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
       std::unique_ptr<octave_idx_type []> d (new octave_idx_type [len]);
 
       for (octave_idx_type i = 0; i < len; i++)
-        d[i] = convert_index (nda.xelem (i), err, ext);
+        d[i] = convert_index (nda.xelem (i), ext);
 
       data = d.release ();
     }
@@ -344,10 +329,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda)
         {
           octave_idx_type k = inda.xelem (i);
           if (k < 0)
-            {
-              if (! err)
-                octave::err_invalid_index (k);
-            }
+            octave::err_invalid_index (k);
           else if (k > max)
             max = k;
         }
@@ -1285,13 +1267,8 @@ octave_idx_type
 idx_vector::freeze (octave_idx_type z_len, const char *, bool resize_ok)
 {
   if (! resize_ok && extent (z_len) > z_len)
-    {
-      (*current_liboctave_error_handler)
-        ("invalid matrix index = %" OCTAVE_IDX_TYPE_FORMAT, extent (z_len));
-      // FIXME: Should we call this before calling error_handler?
-      rep->err = true;
-      chkerr ();
-    }
+    (*current_liboctave_error_handler)
+      ("invalid matrix index = %" OCTAVE_IDX_TYPE_FORMAT, extent (z_len));
 
   return length (z_len);
 }

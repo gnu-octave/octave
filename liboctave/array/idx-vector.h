@@ -81,7 +81,7 @@ private:
   {
   public:
 
-    idx_base_rep (void) : count (1), err (false) { }
+    idx_base_rep (void) : count (1) { }
 
     // No copying!
 
@@ -123,8 +123,6 @@ private:
     virtual Array<octave_idx_type> as_array (void);
 
     octave::refcount<octave_idx_type> count;
-
-    bool err;
   };
 
   // The magic colon index.
@@ -235,8 +233,7 @@ private:
 
     idx_scalar_rep (void) = delete;
 
-    idx_scalar_rep (octave_idx_type i, direct)
-      : idx_base_rep (), data (i) { }
+    idx_scalar_rep (octave_idx_type i, direct) : idx_base_rep (), data (i) { }
 
     // No copying!
 
@@ -290,8 +287,7 @@ private:
   public:
 
     idx_vector_rep (void)
-      : data (nullptr), len (0), ext (0), aowner (nullptr), orig_dims ()
-    { }
+      : data (nullptr), len (0), ext (0), aowner (nullptr), orig_dims () { }
 
     // Direct constructor.
     idx_vector_rep (octave_idx_type *_data, octave_idx_type _len,
@@ -450,41 +446,22 @@ private:
   // constructor).
   static idx_vector_rep *nil_rep (void);
 
-  // The shared empty vector representation with the error flag set.
-  static idx_vector_rep *err_rep (void);
-
-  // If there was an error in constructing the rep, replace it with
-  // empty vector for safety.
-  void chkerr (void)
-  {
-    if (rep->err)
-      {
-        if (--rep->count == 0)
-          delete rep;
-        rep = err_rep ();
-        rep->count++;
-      }
-  }
-
 public:
 
   // Fast empty constructor.
   idx_vector (void) : rep (nil_rep ()) { rep->count++; }
 
   // Zero-based constructors (for use from C++).
-  idx_vector (octave_idx_type i) : rep (new idx_scalar_rep (i))
-  { chkerr (); }
+  idx_vector (octave_idx_type i) : rep (new idx_scalar_rep (i)) { }
 
 #if OCTAVE_SIZEOF_F77_INT_TYPE != OCTAVE_SIZEOF_IDX_TYPE
   idx_vector (octave_f77_int_type i)
-    : rep (new idx_scalar_rep (static_cast<octave_idx_type> (i)))
-  { chkerr (); }
+    : rep (new idx_scalar_rep (static_cast<octave_idx_type> (i))) { }
 #endif
 
   idx_vector (octave_idx_type start, octave_idx_type limit,
               octave_idx_type step = 1)
-    : rep (new idx_range_rep (start, limit, step))
-  { chkerr (); }
+    : rep (new idx_range_rep (start, limit, step)) { }
 
   static idx_vector
   make_range (octave_idx_type start, octave_idx_type step,
@@ -494,50 +471,43 @@ public:
   }
 
   idx_vector (const Array<octave_idx_type>& inda)
-    : rep (new idx_vector_rep (inda))
-  { chkerr (); }
+    : rep (new idx_vector_rep (inda)) { }
 
   // Directly pass extent, no checking.
   idx_vector (const Array<octave_idx_type>& inda, octave_idx_type ext)
-    : rep (new idx_vector_rep (inda, ext, DIRECT))
-  { }
+    : rep (new idx_vector_rep (inda, ext, DIRECT)) { }
 
   // Colon is best constructed by simply copying (or referencing) this member.
   static const idx_vector colon;
 
   // or passing ':' here
-  idx_vector (char c) : rep (new idx_colon_rep (c)) { chkerr (); }
+  idx_vector (char c) : rep (new idx_colon_rep (c)) { }
 
   // Conversion constructors (used by interpreter).
 
   template <typename T>
-  idx_vector (octave_int<T> x) : rep (new idx_scalar_rep (x)) { chkerr (); }
+  idx_vector (octave_int<T> x) : rep (new idx_scalar_rep (x)) { }
 
-  idx_vector (double x) : rep (new idx_scalar_rep (x)) { chkerr (); }
+  idx_vector (double x) : rep (new idx_scalar_rep (x)) { }
 
-  idx_vector (float x) : rep (new idx_scalar_rep (x)) { chkerr (); }
+  idx_vector (float x) : rep (new idx_scalar_rep (x)) { }
 
   // A scalar bool does not necessarily map to scalar index.
-  idx_vector (bool x) : rep (new idx_mask_rep (x)) { chkerr (); }
+  idx_vector (bool x) : rep (new idx_mask_rep (x)) { }
 
   template <typename T>
-  idx_vector (const Array<octave_int<T>>& nda) : rep (new idx_vector_rep (nda))
-  { chkerr (); }
+  idx_vector (const Array<octave_int<T>>& nda)
+    : rep (new idx_vector_rep (nda)) { }
 
-  idx_vector (const Array<double>& nda) : rep (new idx_vector_rep (nda))
-  { chkerr (); }
+  idx_vector (const Array<double>& nda) : rep (new idx_vector_rep (nda)) { }
 
-  idx_vector (const Array<float>& nda) : rep (new idx_vector_rep (nda))
-  { chkerr (); }
+  idx_vector (const Array<float>& nda) : rep (new idx_vector_rep (nda)) { }
 
   idx_vector (const Array<bool>& nda);
 
-  idx_vector (const octave::range<double>& r)
-    : rep (new idx_range_rep (r))
-  { chkerr (); }
+  idx_vector (const octave::range<double>& r) : rep (new idx_range_rep (r)) { }
 
-  idx_vector (const Sparse<bool>& nda) : rep (new idx_vector_rep (nda))
-  { chkerr (); }
+  idx_vector (const Sparse<bool>& nda) : rep (new idx_vector_rep (nda)) { }
 
   idx_vector (const idx_vector& a) : rep (a.rep) { rep->count++; }
 
@@ -577,8 +547,9 @@ public:
   octave_idx_type operator () (octave_idx_type n) const
   { return rep->xelem (n); }
 
-  operator bool (void) const
-  { return ! rep->err; }
+  // FIXME: idx_vector objects are either created successfully or an
+  // error is thrown, so this method no longer makes sense.
+  operator bool (void) const { return true; }
 
   bool is_colon (void) const
   { return rep->idx_class () == class_colon; }

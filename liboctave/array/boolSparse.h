@@ -70,8 +70,8 @@ public:
 
   explicit SparseBoolMatrix (const PermMatrix& a) : Sparse<bool> (a) { };
 
-  SparseBoolMatrix (const Array<bool>& a, const idx_vector& r,
-                    const idx_vector& c, octave_idx_type nr = -1,
+  SparseBoolMatrix (const Array<bool>& a, const octave::idx_vector& r,
+                    const octave::idx_vector& c, octave_idx_type nr = -1,
                     octave_idx_type nc = -1, bool sum_terms = true,
                     octave_idx_type nzm = -1)
     : Sparse<bool> (a, r, c, nr, nc, sum_terms, nzm) { }
@@ -108,9 +108,9 @@ public:
 
   SparseBoolMatrix squeeze (void) const;
 
-  SparseBoolMatrix index (const idx_vector& i, bool resize_ok) const;
+  SparseBoolMatrix index (const octave::idx_vector& i, bool resize_ok) const;
 
-  SparseBoolMatrix index (const idx_vector& i, const idx_vector& j,
+  SparseBoolMatrix index (const octave::idx_vector& i, const octave::idx_vector& j,
                           bool resize_ok) const;
 
   SparseBoolMatrix reshape (const dim_vector& new_dims) const;

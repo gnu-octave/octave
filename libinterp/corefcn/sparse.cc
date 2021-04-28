@@ -214,9 +214,9 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
       int k = 0;    // index we're checking when index_vector throws
       try
         {
-          idx_vector i = args(0).index_vector ();
+          octave::idx_vector i = args(0).index_vector ();
           k = 1;
-          idx_vector j = args(1).index_vector ();
+          octave::idx_vector j = args(1).index_vector ();
 
           if (args(2).islogical ())
             retval = SparseBoolMatrix (args(2).bool_array_value (), i,j,

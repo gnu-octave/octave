@@ -75,7 +75,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
 
         case 1:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             retval = octave_value (matrix.index (i, resize_ok));
           }
@@ -83,10 +83,10 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
 
         case 2:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             k = 1;
-            idx_vector j = idx (1).index_vector ();
+            octave::idx_vector j = idx (1).index_vector ();
 
             retval = octave_value (matrix.index (i, j, resize_ok));
           }
@@ -198,7 +198,7 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
         {
         case 1:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             matrix.assign (i, rhs);
 
@@ -207,10 +207,10 @@ octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
 
         case 2:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             k = 1;
-            idx_vector j = idx (1).index_vector ();
+            octave::idx_vector j = idx (1).index_vector ();
 
             matrix.assign (i, j, rhs);
 
@@ -250,7 +250,7 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
         {
         case 1:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             matrix.delete_elements (i);
 
@@ -259,10 +259,10 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
 
         case 2:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             k = 1;
-            idx_vector j = idx (1).index_vector ();
+            octave::idx_vector j = idx (1).index_vector ();
 
             matrix.delete_elements (i, j);
 

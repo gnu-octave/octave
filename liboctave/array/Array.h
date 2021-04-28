@@ -593,11 +593,11 @@ public:
 
   //@{
   //! Indexing without resizing.
-  OCTARRAY_API Array<T> index (const idx_vector& i) const;
+  OCTARRAY_API Array<T> index (const octave::idx_vector& i) const;
 
-  OCTARRAY_API Array<T> index (const idx_vector& i, const idx_vector& j) const;
+  OCTARRAY_API Array<T> index (const octave::idx_vector& i, const octave::idx_vector& j) const;
 
-  OCTARRAY_API Array<T> index (const Array<idx_vector>& ia) const;
+  OCTARRAY_API Array<T> index (const Array<octave::idx_vector>& ia) const;
   //@}
 
   virtual OCTARRAY_API T resize_fill_value (void) const;
@@ -623,23 +623,23 @@ public:
   // FIXME: this is really a corner case, that should better be
   // handled directly in liboctinterp.
 
-  OCTARRAY_API Array<T> index (const idx_vector& i, bool resize_ok, const T& rfv) const;
-  Array<T> index (const idx_vector& i, bool resize_ok) const
+  OCTARRAY_API Array<T> index (const octave::idx_vector& i, bool resize_ok, const T& rfv) const;
+  Array<T> index (const octave::idx_vector& i, bool resize_ok) const
   {
     return index (i, resize_ok, resize_fill_value ());
   }
 
-  OCTARRAY_API Array<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok,
+  OCTARRAY_API Array<T> index (const octave::idx_vector& i, const octave::idx_vector& j, bool resize_ok,
                   const T& rfv) const;
-  Array<T> index (const idx_vector& i, const idx_vector& j,
+  Array<T> index (const octave::idx_vector& i, const octave::idx_vector& j,
                   bool resize_ok) const
   {
     return index (i, j, resize_ok, resize_fill_value ());
   }
 
-  OCTARRAY_API Array<T> index (const Array<idx_vector>& ia, bool resize_ok,
+  OCTARRAY_API Array<T> index (const Array<octave::idx_vector>& ia, bool resize_ok,
                   const T& rfv) const;
-  Array<T> index (const Array<idx_vector>& ia, bool resize_ok) const
+  Array<T> index (const Array<octave::idx_vector>& ia, bool resize_ok) const
   {
     return index (ia, resize_ok, resize_fill_value ());
   }
@@ -647,21 +647,21 @@ public:
 
   //@{
   //! Indexed assignment (always with resize & fill).
-  OCTARRAY_API void assign (const idx_vector& i, const Array<T>& rhs, const T& rfv);
-  void assign (const idx_vector& i, const Array<T>& rhs)
+  OCTARRAY_API void assign (const octave::idx_vector& i, const Array<T>& rhs, const T& rfv);
+  void assign (const octave::idx_vector& i, const Array<T>& rhs)
   {
     assign (i, rhs, resize_fill_value ());
   }
 
-  OCTARRAY_API void assign (const idx_vector& i, const idx_vector& j, const Array<T>& rhs,
+  OCTARRAY_API void assign (const octave::idx_vector& i, const octave::idx_vector& j, const Array<T>& rhs,
                const T& rfv);
-  void assign (const idx_vector& i, const idx_vector& j, const Array<T>& rhs)
+  void assign (const octave::idx_vector& i, const octave::idx_vector& j, const Array<T>& rhs)
   {
     assign (i, j, rhs, resize_fill_value ());
   }
 
-  OCTARRAY_API void assign (const Array<idx_vector>& ia, const Array<T>& rhs, const T& rfv);
-  void assign (const Array<idx_vector>& ia, const Array<T>& rhs)
+  OCTARRAY_API void assign (const Array<octave::idx_vector>& ia, const Array<T>& rhs, const T& rfv);
+  void assign (const Array<octave::idx_vector>& ia, const Array<T>& rhs)
   {
     assign (ia, rhs, resize_fill_value ());
   }
@@ -671,13 +671,13 @@ public:
   //! Deleting elements.
 
   //! A(I) = [] (with a single subscript)
-  OCTARRAY_API void delete_elements (const idx_vector& i);
+  OCTARRAY_API void delete_elements (const octave::idx_vector& i);
 
   //! A(:,...,I,...,:) = [] (>= 2 subscripts, one of them is non-colon)
-  OCTARRAY_API void delete_elements (int dim, const idx_vector& i);
+  OCTARRAY_API void delete_elements (int dim, const octave::idx_vector& i);
 
   //! Dispatcher to the above two.
-  OCTARRAY_API void delete_elements (const Array<idx_vector>& ia);
+  OCTARRAY_API void delete_elements (const Array<octave::idx_vector>& ia);
   //@}
 
   //! Insert an array into another at a specified position.  If
@@ -740,7 +740,7 @@ public:
   //! Returns the n-th element in increasing order, using the same
   //! ordering as used for sort.  n can either be a scalar index or a
   //! contiguous range.
-  OCTARRAY_API Array<T> nth_element (const idx_vector& n, int dim = 0) const;
+  OCTARRAY_API Array<T> nth_element (const octave::idx_vector& n, int dim = 0) const;
 
   //! Get the kth super or subdiagonal.  The zeroth diagonal is the
   //! ordinary diagonal.

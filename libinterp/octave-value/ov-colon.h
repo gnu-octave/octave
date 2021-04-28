@@ -62,7 +62,8 @@ public:
   octave_base_value * empty_clone (void) const
   { return new octave_magic_colon (); }
 
-  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (':'); }
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
+  { return octave::idx_vector (':'); }
 
   bool is_defined (void) const { return true; }
 

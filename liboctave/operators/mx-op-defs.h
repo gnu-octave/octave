@@ -607,7 +607,7 @@
     else                                                                \
       {                                                                 \
         result = M (nr, nc);                                            \
-        result.assign (p.col_perm_vec (), idx_vector::colon, x);        \
+        result.assign (p.col_perm_vec (), octave::idx_vector::colon, x);        \
       }                                                                 \
                                                                         \
     return result;                                                      \
@@ -622,7 +622,7 @@
     if (p.rows () != nc)                                                \
       octave::err_nonconformant ("operator *", nr, nc, p.rows (), p.columns ()); \
                                                                         \
-    result = x.index (idx_vector::colon, p.col_perm_vec ());            \
+    result = x.index (octave::idx_vector::colon, p.col_perm_vec ());            \
                                                                         \
     return result;                                                      \
   }

@@ -236,7 +236,7 @@ compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims)
 }
 
 Array<octave_idx_type>
-conv_to_int_array (const Array<idx_vector>& a)
+conv_to_int_array (const Array<octave::idx_vector>& a)
 {
   Array<octave_idx_type> retval (a.dims ());
 
@@ -246,10 +246,10 @@ conv_to_int_array (const Array<idx_vector>& a)
   return retval;
 }
 
-Array<idx_vector>
-conv_to_array (const idx_vector *tmp, const octave_idx_type len)
+Array<octave::idx_vector>
+conv_to_array (const octave::idx_vector *tmp, const octave_idx_type len)
 {
-  Array<idx_vector> retval (dim_vector (len, 1));
+  Array<octave::idx_vector> retval (dim_vector (len, 1));
 
   for (octave_idx_type i = 0; i < len; i++)
     retval(i) = tmp[i];
@@ -258,7 +258,7 @@ conv_to_array (const idx_vector *tmp, const octave_idx_type len)
 }
 
 dim_vector
-freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions, int resize_ok)
+freeze (Array<octave::idx_vector>& ra_idx, const dim_vector& dimensions, int resize_ok)
 {
   dim_vector retval;
 
@@ -299,7 +299,7 @@ vector_equivalent (const dim_vector& dv)
 }
 
 bool
-all_ok (const Array<idx_vector>& ra_idx)
+all_ok (const Array<octave::idx_vector>& ra_idx)
 {
   bool retval = true;
 
@@ -318,7 +318,7 @@ all_ok (const Array<idx_vector>& ra_idx)
 }
 
 bool
-any_orig_empty (const Array<idx_vector>& ra_idx)
+any_orig_empty (const Array<octave::idx_vector>& ra_idx)
 {
   bool retval = false;
 
@@ -337,7 +337,7 @@ any_orig_empty (const Array<idx_vector>& ra_idx)
 }
 
 bool
-all_colon_equiv (const Array<idx_vector>& ra_idx,
+all_colon_equiv (const Array<octave::idx_vector>& ra_idx,
                  const dim_vector& frozen_lengths)
 {
   bool retval = true;
@@ -378,7 +378,7 @@ all_ones (const Array<octave_idx_type>& arr)
 }
 
 Array<octave_idx_type>
-get_elt_idx (const Array<idx_vector>& ra_idx,
+get_elt_idx (const Array<octave::idx_vector>& ra_idx,
              const Array<octave_idx_type>& result_idx)
 {
   octave_idx_type n = ra_idx.numel ();
@@ -426,7 +426,7 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
 }
 
 dim_vector
-zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
+zero_dims_inquire (const Array<octave::idx_vector>& ia, const dim_vector& rhdv)
 {
   int ial = ia.numel ();
   int rhdvl = rhdv.ndims ();
@@ -483,7 +483,7 @@ zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
 }
 
 dim_vector
-zero_dims_inquire (const idx_vector& i, const idx_vector& j,
+zero_dims_inquire (const octave::idx_vector& i, const octave::idx_vector& j,
                    const dim_vector& rhdv)
 {
   bool icol = i.is_colon ();
@@ -531,10 +531,10 @@ struct sub2ind_helper
   void operator ()(octave_idx_type k) { (*ind++ *= n) += k; }
 };
 
-idx_vector
-sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
+octave::idx_vector
+sub2ind (const dim_vector& dv, const Array<octave::idx_vector>& idxa)
 {
-  idx_vector retval;
+  octave::idx_vector retval;
   octave_idx_type len = idxa.numel ();
 
   if (len == 0)
@@ -548,7 +548,7 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
     {
       try
         {
-          idx_vector idx = idxa(i);
+          octave::idx_vector idx = idxa(i);
           octave_idx_type n = dvx(i);
 
           all_ranges = all_ranges && idx.is_range ();
@@ -581,7 +581,7 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
       octave_idx_type idx = idxa(len-1)(0);
       for (octave_idx_type i = len - 2; i >= 0; i--)
         idx = dvx(i) * idx + idxa(i)(0);
-      retval = idx_vector (idx);
+      retval = octave::idx_vector (idx);
     }
   else if (all_ranges && clen != 0)
     {
@@ -595,7 +595,7 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
           start = dvx(i) * start + xstart;
           step = dvx(i) * step + xstep;
         }
-      retval = idx_vector::make_range (start, step, clen);
+      retval = octave::idx_vector::make_range (start, step, clen);
     }
   else
     {
@@ -610,18 +610,18 @@ sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
             idxa(i).copy_data (idx_vec);
         }
 
-      retval = idx_vector (idx);
+      retval = octave::idx_vector (idx);
     }
 
   return retval;
 }
 
-Array<idx_vector>
-ind2sub (const dim_vector& dv, const idx_vector& idx)
+Array<octave::idx_vector>
+ind2sub (const dim_vector& dv, const octave::idx_vector& idx)
 {
   octave_idx_type len = idx.length (0);
   octave_idx_type n = dv.ndims ();
-  Array<idx_vector> retval (dim_vector (n, 1));
+  Array<octave::idx_vector> retval (dim_vector (n, 1));
   octave_idx_type numel = dv.numel ();
 
   if (idx.extent (numel) > numel)

@@ -53,7 +53,7 @@ struct _idxadda_helper
 
 template <typename T>
 void
-MArray<T>::idx_add (const idx_vector& idx, T val)
+MArray<T>::idx_add (const octave::idx_vector& idx, T val)
 {
   octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
@@ -71,7 +71,7 @@ MArray<T>::idx_add (const idx_vector& idx, T val)
 
 template <typename T>
 void
-MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
+MArray<T>::idx_add (const octave::idx_vector& idx, const MArray<T>& vals)
 {
   octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
@@ -100,7 +100,7 @@ struct _idxbinop_helper
 
 template <typename T>
 void
-MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
+MArray<T>::idx_min (const octave::idx_vector& idx, const MArray<T>& vals)
 {
   octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
@@ -119,7 +119,7 @@ MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
 
 template <typename T>
 void
-MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
+MArray<T>::idx_max (const octave::idx_vector& idx, const MArray<T>& vals)
 {
   octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
@@ -137,8 +137,8 @@ MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
 }
 
 template <typename T>
-void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
-                            int dim)
+void MArray<T>::idx_add_nd (const octave::idx_vector& idx,
+                            const MArray<T>& vals, int dim)
 {
   int nd = std::max (this->ndims (), vals.ndims ());
   if (dim < 0)

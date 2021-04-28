@@ -301,9 +301,9 @@ public:
     matrix_ref ().changesign ();
   }
 
-  idx_vector index_vector (bool /* require_integers */ = false) const
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
-    return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix));
+    return idx_cache ? *idx_cache : set_idx_cache (octave::idx_vector (matrix));
   }
 
   int write (octave::stream& os, int block_size,
@@ -624,7 +624,8 @@ public:
     scalar -= OCTAVE_INT_T (1);
   }
 
-  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (scalar); }
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
+  { return octave::idx_vector (scalar); }
 
   int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,

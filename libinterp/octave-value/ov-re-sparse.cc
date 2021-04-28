@@ -57,11 +57,11 @@ template class octave_base_sparse<SparseMatrix>;
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_matrix, "sparse matrix",
                                      "double");
 
-idx_vector
+octave::idx_vector
 octave_sparse_matrix::index_vector (bool /* require_integers */) const
 {
   if (matrix.numel () == matrix.nnz ())
-    return idx_vector (array_value ());
+    return octave::idx_vector (array_value ());
   else
     {
       std::string nm = '<' + type_name () + '>';

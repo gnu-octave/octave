@@ -87,10 +87,10 @@ public:
   {
     // Auto-create cache to speed up subsequent indexing.
     if (zero_based && cache_index)
-      set_idx_cache (idx_vector (idx));
+      set_idx_cache (octave::idx_vector (idx));
   }
 
-  octave_matrix (const NDArray& nda, const idx_vector& cache)
+  octave_matrix (const NDArray& nda, const octave::idx_vector& cache)
     : octave_base_matrix<NDArray> (nda)
   {
     set_idx_cache (cache);
@@ -105,8 +105,8 @@ public:
 
   octave_base_value * try_narrowing_conversion (void);
 
-  idx_vector index_vector (bool /* require_integers */ = false) const
-  { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
+  { return idx_cache ? *idx_cache : set_idx_cache (octave::idx_vector (matrix)); }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 

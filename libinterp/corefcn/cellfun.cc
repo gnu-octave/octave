@@ -1920,14 +1920,14 @@ prepare_idx (container *idx, int idim, int nd,
 {
   octave_idx_type nidx = (idim < nd ? d[idim].numel () : 1);
   if (nidx == 1)
-    idx[0] = idx_vector::colon;
+    idx[0] = octave::idx_vector::colon;
   else
     {
       octave_idx_type l = 0;
       for (octave_idx_type i = 0; i < nidx; i++)
         {
           octave_idx_type u = l + d[idim](i);
-          idx[i] = idx_vector (l, u);
+          idx[i] = octave::idx_vector (l, u);
           l = u;
         }
     }
@@ -1965,17 +1965,17 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
       for (octave_idx_type i = 0; i < nidx; i++)
         {
           octave_idx_type u = l + d[ivec](i);
-          retval.xelem (i) = a.index (idx_vector (l, u));
+          retval.xelem (i) = a.index (octave::idx_vector (l, u));
           l = u;
         }
     }
   else
     {
       // General 2D case.  Use 2D indexing.
-      OCTAVE_LOCAL_BUFFER (idx_vector, ridx, nridx);
+      OCTAVE_LOCAL_BUFFER (octave::idx_vector, ridx, nridx);
       prepare_idx (ridx, 0, nd, d);
 
-      OCTAVE_LOCAL_BUFFER (idx_vector, cidx, ncidx);
+      OCTAVE_LOCAL_BUFFER (octave::idx_vector, cidx, ncidx);
       prepare_idx (cidx, 1, nd, d);
 
       for (octave_idx_type j = 0; j < ncidx; j++)
@@ -2014,8 +2014,8 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 
   retval.clear (rdv);
 
-  OCTAVE_LOCAL_BUFFER (idx_vector, xidx, idxtot);
-  OCTAVE_LOCAL_BUFFER (idx_vector *, idx, nd);
+  OCTAVE_LOCAL_BUFFER (octave::idx_vector, xidx, idxtot);
+  OCTAVE_LOCAL_BUFFER (octave::idx_vector *, idx, nd);
 
   idxtot = 0;
   for (int i = 0; i < nd; i++)
@@ -2026,8 +2026,8 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
     }
 
   OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, nd, 0);
-  Array<idx_vector> ra_idx
-    (dim_vector (1, std::max (nd, a.ndims ())), idx_vector::colon);
+  Array<octave::idx_vector> ra_idx
+    (dim_vector (1, std::max (nd, a.ndims ())), octave::idx_vector::colon);
 
   for (octave_idx_type j = 0; j < retval.numel (); j++)
     {
@@ -2300,7 +2300,7 @@ do_cellslices_nda (const NDA& array,
                             || (dim == 1 && array.rows () == 1)))
     {
       for (octave_idx_type i = 0; i < n; i++)
-        retval.xelem (i) = array.index (idx_vector (lb(i) - 1, ub(i)));
+        retval.xelem (i) = array.index (octave::idx_vector (lb(i) - 1, ub(i)));
     }
   else
     {
@@ -2310,11 +2310,11 @@ do_cellslices_nda (const NDA& array,
         dim = dv.first_non_singleton ();
       ndims = std::max (ndims, dim + 1);
 
-      Array<idx_vector> idx (dim_vector (ndims, 1), idx_vector::colon);
+      Array<octave::idx_vector> idx (dim_vector (ndims, 1), octave::idx_vector::colon);
 
       for (octave_idx_type i = 0; i < n; i++)
         {
-          idx(dim) = idx_vector (lb(i) - 1, ub(i));
+          idx(dim) = octave::idx_vector (lb(i) - 1, ub(i));
           retval.xelem (i) = array.index (idx);
         }
     }

@@ -285,7 +285,7 @@ public:
                               bool zero_based = false,
                               bool cache_index = false);
   OCTINTERP_API octave_value (const Array<std::string>& cellstr);
-  OCTINTERP_API octave_value (const idx_vector& idx, bool lazy = true);
+  OCTINTERP_API octave_value (const octave::idx_vector& idx, bool lazy = true);
   OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
   OCTINTERP_API octave_value (double base, double limit, double inc);
   OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
@@ -532,7 +532,7 @@ public:
 
   OCTINTERP_API octave_value& assign (assign_op, const octave_value& rhs);
 
-  idx_vector index_vector (bool require_integers = false) const
+  octave::idx_vector index_vector (bool require_integers = false) const
   {
     return rep->index_vector (require_integers);
   }

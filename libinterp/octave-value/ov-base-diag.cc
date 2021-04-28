@@ -110,9 +110,9 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
       int k = 0;        // index we're accessing when index_vector throws
       try
         {
-          idx_vector idx0 = idx(0).index_vector ();
+          octave::idx_vector idx0 = idx(0).index_vector ();
           k = 1;
-          idx_vector idx1 = idx(1).index_vector ();
+          octave::idx_vector idx1 = idx(1).index_vector ();
 
           if (idx0.is_scalar () && idx1.is_scalar ())
             {
@@ -180,12 +180,12 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
             int k = 0;
             try
               {
-                idx_vector ind = jdx(0).index_vector ();
+                octave::idx_vector ind = jdx(0).index_vector ();
                 k = 1;
                 dim_vector dv (matrix.rows (), matrix.cols ());
-                Array<idx_vector> ivec = ind2sub (dv, ind);
-                idx_vector i0 = ivec(0);
-                idx_vector i1 = ivec(1);
+                Array<octave::idx_vector> ivec = ind2sub (dv, ind);
+                octave::idx_vector i0 = ivec(0);
+                octave::idx_vector i1 = ivec(1);
 
                 if (i0(0) == i1(0)
                     && chk_valid_scalar (rhs, val))
@@ -211,9 +211,9 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
             int k = 0;
             try
               {
-                idx_vector i0 = jdx(0).index_vector ();
+                octave::idx_vector i0 = jdx(0).index_vector ();
                 k = 1;
-                idx_vector i1 = jdx(1).index_vector ();
+                octave::idx_vector i1 = jdx(1).index_vector ();
                 if (i0(0) == i1(0)
                     && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
                     && chk_valid_scalar (rhs, val))
@@ -456,7 +456,7 @@ octave_base_diag<DMT, MT>::sparse_complex_matrix_value (bool) const
 }
 
 template <typename DMT, typename MT>
-idx_vector
+octave::idx_vector
 octave_base_diag<DMT, MT>::index_vector (bool require_integers) const
 {
   return to_dense ().index_vector (require_integers);

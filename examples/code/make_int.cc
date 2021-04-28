@@ -49,7 +49,8 @@ public:
   void operator delete (void *p, size_t size);
 #endif
 
-  idx_vector index_vector (bool) const { return idx_vector ((double) scalar); }
+  octave::idx_vector index_vector (bool) const
+  { return octave::idx_vector ((double) scalar); }
 
   int rows (void) const { return 1; }
   int columns (void) const { return 1; }

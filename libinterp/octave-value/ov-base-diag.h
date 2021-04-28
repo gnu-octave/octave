@@ -155,7 +155,7 @@ public:
   double scalar_value (bool frc_str_conv = false) const
   { return double_value (frc_str_conv); }
 
-  OCTINTERP_API idx_vector
+  OCTINTERP_API octave::idx_vector
   index_vector (bool /* require_integers */ = false) const;
 
   OCTINTERP_API Matrix matrix_value (bool = false) const;

@@ -112,15 +112,15 @@ public:
 
   //! Performs indexed accumulative addition.
   //@{
-  void idx_add (const idx_vector& idx, T val);
-  void idx_add (const idx_vector& idx, const MArray<T>& vals);
+  void idx_add (const octave::idx_vector& idx, T val);
+  void idx_add (const octave::idx_vector& idx, const MArray<T>& vals);
   //@}
 
-  void idx_min (const idx_vector& idx, const MArray<T>& vals);
+  void idx_min (const octave::idx_vector& idx, const MArray<T>& vals);
 
-  void idx_max (const idx_vector& idx, const MArray<T>& vals);
+  void idx_max (const octave::idx_vector& idx, const MArray<T>& vals);
 
-  void idx_add_nd (const idx_vector& idx, const MArray<T>& vals, int dim = -1);
+  void idx_add_nd (const octave::idx_vector& idx, const MArray<T>& vals, int dim = -1);
 
   void changesign (void);
 };

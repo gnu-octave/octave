@@ -341,8 +341,8 @@ octave_matrix::reshape (const dim_vector& new_dims) const
   if (idx_cache)
     {
       return new octave_matrix (matrix.reshape (new_dims),
-                                idx_vector (idx_cache->as_array ().reshape (new_dims),
-                                            idx_cache->extent (0)));
+                                octave::idx_vector (idx_cache->as_array ().reshape (new_dims),
+                                                    idx_cache->extent (0)));
     }
   else
     return octave_base_matrix<NDArray>::reshape (new_dims);
@@ -354,8 +354,8 @@ octave_matrix::squeeze (void) const
   if (idx_cache)
     {
       return new octave_matrix (matrix.squeeze (),
-                                idx_vector (idx_cache->as_array ().squeeze (),
-                                            idx_cache->extent (0)));
+                                octave::idx_vector (idx_cache->as_array ().squeeze (),
+                                                    idx_cache->extent (0)));
     }
   else
     return octave_base_matrix<NDArray>::squeeze ();

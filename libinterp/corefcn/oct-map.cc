@@ -845,7 +845,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
 */
 
 octave_map
-octave_map::index (const idx_vector& i, bool resize_ok) const
+octave_map::index (const octave::idx_vector& i, bool resize_ok) const
 {
   octave_map retval (xkeys);
   octave_idx_type nf = nfields ();
@@ -869,7 +869,7 @@ octave_map::index (const idx_vector& i, bool resize_ok) const
 }
 
 octave_map
-octave_map::index (const idx_vector& i, const idx_vector& j,
+octave_map::index (const octave::idx_vector& i, const octave::idx_vector& j,
                    bool resize_ok) const
 {
   octave_map retval (xkeys);
@@ -894,7 +894,7 @@ octave_map::index (const idx_vector& i, const idx_vector& j,
 }
 
 octave_map
-octave_map::index (const Array<idx_vector>& ia, bool resize_ok) const
+octave_map::index (const Array<octave::idx_vector>& ia, bool resize_ok) const
 {
   octave_map retval (xkeys);
   octave_idx_type nf = nfields ();
@@ -935,7 +935,7 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
         {
         case 1:
           {
-            idx_vector i = idx(0).index_vector ();
+            octave::idx_vector i = idx(0).index_vector ();
 
             retval = index (i, resize_ok);
           }
@@ -943,10 +943,10 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
 
         case 2:
           {
-            idx_vector i = idx(0).index_vector ();
+            octave::idx_vector i = idx(0).index_vector ();
 
             k = 1;
-            idx_vector j = idx(1).index_vector ();
+            octave::idx_vector j = idx(1).index_vector ();
 
             retval = index (i, j, resize_ok);
           }
@@ -954,7 +954,7 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
 
         default:
           {
-            Array<idx_vector> ia (dim_vector (n_idx, 1));
+            Array<octave::idx_vector> ia (dim_vector (n_idx, 1));
 
             for (k = 0; k < n_idx; k++)
               ia(k) = idx(k).index_vector ();
@@ -978,20 +978,20 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
 octave_map
 octave_map::column (octave_idx_type k) const
 {
-  return index (idx_vector::colon, k);
+  return index (octave::idx_vector::colon, k);
 }
 
 octave_map
 octave_map::page (octave_idx_type k) const
 {
-  static Array<idx_vector> ia (dim_vector (3, 1), idx_vector::colon);
+  static Array<octave::idx_vector> ia (dim_vector (3, 1), octave::idx_vector::colon);
 
   ia(2) = k;
   return index (ia);
 }
 
 void
-octave_map::assign (const idx_vector& i, const octave_map& rhs)
+octave_map::assign (const octave::idx_vector& i, const octave_map& rhs)
 {
   if (rhs.xkeys.is_same (xkeys))
     {
@@ -1038,7 +1038,7 @@ octave_map::assign (const idx_vector& i, const octave_map& rhs)
 }
 
 void
-octave_map::assign (const idx_vector& i, const idx_vector& j,
+octave_map::assign (const octave::idx_vector& i, const octave::idx_vector& j,
                     const octave_map& rhs)
 {
   if (rhs.xkeys.is_same (xkeys))
@@ -1086,7 +1086,7 @@ octave_map::assign (const idx_vector& i, const idx_vector& j,
 }
 
 void
-octave_map::assign (const Array<idx_vector>& ia,
+octave_map::assign (const Array<octave::idx_vector>& ia,
                     const octave_map& rhs)
 {
   if (rhs.xkeys.is_same (xkeys))
@@ -1150,7 +1150,7 @@ octave_map::assign (const octave_value_list& idx, const octave_map& rhs)
         {
         case 1:
           {
-            idx_vector i = idx(0).index_vector ();
+            octave::idx_vector i = idx(0).index_vector ();
 
             assign (i, rhs);
           }
@@ -1158,10 +1158,10 @@ octave_map::assign (const octave_value_list& idx, const octave_map& rhs)
 
         case 2:
           {
-            idx_vector i = idx(0).index_vector ();
+            octave::idx_vector i = idx(0).index_vector ();
 
             k = 1;
-            idx_vector j = idx(1).index_vector ();
+            octave::idx_vector j = idx(1).index_vector ();
 
             assign (i, j, rhs);
           }
@@ -1169,7 +1169,7 @@ octave_map::assign (const octave_value_list& idx, const octave_map& rhs)
 
         default:
           {
-            Array<idx_vector> ia (dim_vector (n_idx, 1));
+            Array<octave::idx_vector> ia (dim_vector (n_idx, 1));
 
             for (k = 0; k < n_idx; k++)
               ia(k) = idx(k).index_vector ();
@@ -1226,7 +1226,7 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
 */
 
 void
-octave_map::delete_elements (const idx_vector& i)
+octave_map::delete_elements (const octave::idx_vector& i)
 {
   octave_idx_type nf = nfields ();
   for (octave_idx_type k = 0; k < nf; k++)
@@ -1246,7 +1246,7 @@ octave_map::delete_elements (const idx_vector& i)
 }
 
 void
-octave_map::delete_elements (int dim, const idx_vector& i)
+octave_map::delete_elements (int dim, const octave::idx_vector& i)
 {
   octave_idx_type nf = nfields ();
   for (octave_idx_type k = 0; k < nf; k++)
@@ -1266,7 +1266,7 @@ octave_map::delete_elements (int dim, const idx_vector& i)
 }
 
 void
-octave_map::delete_elements (const Array<idx_vector>& ia)
+octave_map::delete_elements (const Array<octave::idx_vector>& ia)
 {
   octave_idx_type nf = nfields ();
   for (octave_idx_type k = 0; k < nf; k++)
@@ -1290,7 +1290,7 @@ octave_map::delete_elements (const octave_value_list& idx)
 {
   octave_idx_type n_idx = idx.length ();
 
-  Array<idx_vector> ia (dim_vector (n_idx, 1));
+  Array<octave::idx_vector> ia (dim_vector (n_idx, 1));
 
   for (octave_idx_type i = 0; i < n_idx; i++)
     {

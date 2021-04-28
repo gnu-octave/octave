@@ -157,7 +157,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 
         case 1:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             // optimize single scalar index.
             if (! resize_ok && i.is_scalar ())
@@ -169,10 +169,10 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 
         case 2:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             k=1;
-            idx_vector j = idx (1).index_vector ();
+            octave::idx_vector j = idx (1).index_vector ();
 
             // optimize two scalar indices.
             if (! resize_ok && i.is_scalar () && j.is_scalar ())
@@ -184,7 +184,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 
         default:
           {
-            Array<idx_vector> idx_vec (dim_vector (n_idx, 1));
+            Array<octave::idx_vector> idx_vec (dim_vector (n_idx, 1));
             bool scalar_opt = n_idx == nd && ! resize_ok;
             const dim_vector dv = matrix.dims ();
 
@@ -242,7 +242,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 
         case 1:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             matrix.assign (i, rhs);
           }
@@ -250,10 +250,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 
         case 2:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             k = 1;
-            idx_vector j = idx (1).index_vector ();
+            octave::idx_vector j = idx (1).index_vector ();
 
             matrix.assign (i, j, rhs);
           }
@@ -261,7 +261,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 
         default:
           {
-            Array<idx_vector> idx_vec (dim_vector (n_idx, 1));
+            Array<octave::idx_vector> idx_vec (dim_vector (n_idx, 1));
 
             for (k = 0; k < n_idx; k++)
               idx_vec(k) = idx(k).index_vector ();
@@ -318,7 +318,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
 
         case 1:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             // optimize single scalar index.
             if (i.is_scalar () && i(0) < matrix.numel ())
@@ -330,10 +330,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
 
         case 2:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             k = 1;
-            idx_vector j = idx (1).index_vector ();
+            octave::idx_vector j = idx (1).index_vector ();
 
             // optimize two scalar indices.
             if (i.is_scalar () && j.is_scalar () && nd == 2
@@ -346,7 +346,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
 
         default:
           {
-            Array<idx_vector> idx_vec (dim_vector (n_idx, 1));
+            Array<octave::idx_vector> idx_vec (dim_vector (n_idx, 1));
             bool scalar_opt = n_idx == nd;
             const dim_vector dv = matrix.dims ().redim (n_idx);
 
@@ -394,7 +394,7 @@ octave_base_matrix<MT>::delete_elements (const octave_value_list& idx)
 {
   octave_idx_type len = idx.length ();
 
-  Array<idx_vector> ra_idx (dim_vector (len, 1));
+  Array<octave::idx_vector> ra_idx (dim_vector (len, 1));
 
   for (octave_idx_type i = 0; i < len; i++)
     ra_idx(i) = idx(i).index_vector ();

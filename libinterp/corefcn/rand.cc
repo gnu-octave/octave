@@ -1202,8 +1202,8 @@ likely.
   if (m < n)
     idx.resize (dim_vector (1, m));
 
-  // Now create an array object with a cached idx_vector.
-  return ovl (new octave_matrix (r, idx_vector (idx)));
+  // Now create an array object with a cached octave::idx_vector.
+  return ovl (new octave_matrix (r, octave::idx_vector (idx)));
 }
 
 /*

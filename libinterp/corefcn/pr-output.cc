@@ -2161,13 +2161,13 @@ void print_nd_array (std::ostream& os, const NDA_T& nda,
               nm += buf.str ();
             }
 
-          Array<idx_vector> idx (dim_vector (ndims, 1));
+          Array<octave::idx_vector> idx (dim_vector (ndims, 1));
 
-          idx(0) = idx_vector (':');
-          idx(1) = idx_vector (':');
+          idx(0) = octave::idx_vector (':');
+          idx(1) = octave::idx_vector (':');
 
           for (int k = 2; k < ndims; k++)
-            idx(k) = idx_vector (ra_idx(k));
+            idx(k) = octave::idx_vector (ra_idx(k));
 
           octave_value page
             = MAT_T (Array<ELT_T> (nda.index (idx), dim_vector (nr, nc)));
@@ -2746,13 +2746,13 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
               nm += buf.str ();
             }
 
-          Array<idx_vector> idx (dim_vector (ndims, 1));
+          Array<octave::idx_vector> idx (dim_vector (ndims, 1));
 
-          idx(0) = idx_vector (':');
-          idx(1) = idx_vector (':');
+          idx(0) = octave::idx_vector (':');
+          idx(1) = octave::idx_vector (':');
 
           for (int k = 2; k < ndims; k++)
-            idx(k) = idx_vector (ra_idx(k));
+            idx(k) = octave::idx_vector (ra_idx(k));
 
           Array<std::string> page (nda.index (idx), dim_vector (nr, nc));
 
@@ -2988,13 +2988,13 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                 os << "\n";
             }
 
-          Array<idx_vector> idx (dim_vector (ndims, 1));
+          Array<octave::idx_vector> idx (dim_vector (ndims, 1));
 
-          idx(0) = idx_vector (':');
-          idx(1) = idx_vector (':');
+          idx(0) = octave::idx_vector (':');
+          idx(1) = octave::idx_vector (':');
 
           for (int k = 2; k < ndims; k++)
-            idx(k) = idx_vector (ra_idx(k));
+            idx(k) = octave::idx_vector (ra_idx(k));
 
           Array<T> page (nda.index (idx), dim_vector (nr, nc));
 
@@ -3096,13 +3096,13 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                 os << "\n";
             }
 
-          Array<idx_vector> idx (dim_vector (ndims, 1));
+          Array<octave::idx_vector> idx (dim_vector (ndims, 1));
 
-          idx(0) = idx_vector (':');
-          idx(1) = idx_vector (':');
+          idx(0) = octave::idx_vector (':');
+          idx(1) = octave::idx_vector (':');
 
           for (int k = 2; k < ndims; k++)
-            idx(k) = idx_vector (ra_idx(k));
+            idx(k) = octave::idx_vector (ra_idx(k));
 
           Array<T> page (nda.index (idx), dim_vector (nr, nc));
 

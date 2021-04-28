@@ -492,7 +492,7 @@ public:
   double operator () (octave_idx_type i, octave_idx_type j) const
   { return elem (i, j); }
 
-  OCTAVE_API Array<double> index (const idx_vector& i) const;
+  OCTAVE_API Array<double> index (const octave::idx_vector& i) const;
 
   OCTAVE_API void set_base (double b);
 

@@ -57,14 +57,14 @@
 
 template class octave_base_matrix<charNDArray>;
 
-idx_vector
+octave::idx_vector
 octave_char_matrix::index_vector (bool /* require_integers */) const
 {
   const char *p = matrix.data ();
   if (numel () == 1 && *p == ':')
-    return idx_vector (':');
+    return octave::idx_vector (':');
   else
-    return idx_vector (array_value (true));
+    return octave::idx_vector (array_value (true));
 }
 
 double

@@ -47,7 +47,7 @@ extern template class Array<bool>;
 extern template class Array<char>;
 extern template class Array<double>;
 extern template class Array<float>;
-extern template class Array<idx_vector>;
+extern template class Array<octave::idx_vector>;
 extern template class Array<octave_idx_type>;
 extern template class Array<std::string>;
 

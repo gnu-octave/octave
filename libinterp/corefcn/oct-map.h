@@ -443,12 +443,12 @@ public:
   static octave_map
   cat (int dim, octave_idx_type n, const octave_map *map_list);
 
-  octave_map index (const idx_vector& i, bool resize_ok = false) const;
+  octave_map index (const octave::idx_vector& i, bool resize_ok = false) const;
 
-  octave_map index (const idx_vector& i, const idx_vector& j,
+  octave_map index (const octave::idx_vector& i, const octave::idx_vector& j,
                     bool resize_ok = false) const;
 
-  octave_map index (const Array<idx_vector>& ia,
+  octave_map index (const Array<octave::idx_vector>& ia,
                     bool resize_ok = false) const;
 
   octave_map index (const octave_value_list&, bool resize_ok = false) const;
@@ -456,22 +456,23 @@ public:
   octave_map column (octave_idx_type k) const;
   octave_map page (octave_idx_type k) const;
 
-  void assign (const idx_vector& i, const octave_map& rhs);
+  void assign (const octave::idx_vector& i, const octave_map& rhs);
 
-  void assign (const idx_vector& i, const idx_vector& j, const octave_map& rhs);
+  void assign (const octave::idx_vector& i, const octave::idx_vector& j,
+               const octave_map& rhs);
 
-  void assign (const Array<idx_vector>& ia, const octave_map& rhs);
+  void assign (const Array<octave::idx_vector>& ia, const octave_map& rhs);
 
   void assign (const octave_value_list&, const octave_map& rhs);
 
   void assign (const octave_value_list& idx, const std::string& k,
                const Cell& rhs);
 
-  void delete_elements (const idx_vector& i);
+  void delete_elements (const octave::idx_vector& i);
 
-  void delete_elements (int dim, const idx_vector& i);
+  void delete_elements (int dim, const octave::idx_vector& i);
 
-  void delete_elements (const Array<idx_vector>& ia);
+  void delete_elements (const Array<octave::idx_vector>& ia);
 
   void delete_elements (const octave_value_list&);
 

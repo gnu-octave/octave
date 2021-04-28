@@ -479,7 +479,7 @@ private:
 };
 
 Array<double>
-Range::index (const idx_vector& i) const
+Range::index (const octave::idx_vector& i) const
 {
   Array<double> retval;
 

@@ -256,7 +256,7 @@ ov_range<T>::do_index_op (const octave_value_list& idx,
 
       try
         {
-          idx_vector i = idx(0).index_vector ();
+          octave::idx_vector i = idx(0).index_vector ();
 
           if (i.is_scalar () && i(0) < numel ())
             retval = m_range.elem (i(0));
@@ -282,7 +282,7 @@ ov_range<T>::do_index_op (const octave_value_list& idx,
 }
 
 template <typename T>
-idx_vector
+octave::idx_vector
 ov_range<T>::index_vector (bool require_integers) const
 {
   octave_value tmp (raw_array_value ());
@@ -1013,14 +1013,14 @@ ov_range<octave_uint64>::uint64_range_value (void) const
 }
 
 template <>
-idx_vector
+octave::idx_vector
 ov_range<double>::index_vector (bool require_integers) const
 {
   if (m_idx_cache)
     return *m_idx_cache;
 
   if (require_integers || m_range.all_elements_are_ints ())
-    return set_idx_cache (idx_vector (m_range));
+    return set_idx_cache (octave::idx_vector (m_range));
 
   warning_with_id ("Octave:noninteger-range-as-index",
                    "non-integer range used as index");

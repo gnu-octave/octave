@@ -82,7 +82,7 @@ public:
                             bool resize_ok = false);
 
   // Use this to give a more specific error message.
-  idx_vector index_vector (bool /* require_integers */ = false) const;
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const;
 
   octave_value any (int = 0) const
   {

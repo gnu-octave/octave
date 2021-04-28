@@ -400,14 +400,14 @@ Matrix::extract (octave_idx_type r1, octave_idx_type c1,
   if (r1 > r2) { std::swap (r1, r2); }
   if (c1 > c2) { std::swap (c1, c2); }
 
-  return index (idx_vector (r1, r2+1), idx_vector (c1, c2+1));
+  return index (octave::idx_vector (r1, r2+1), octave::idx_vector (c1, c2+1));
 }
 
 Matrix
 Matrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr,
                    octave_idx_type nc) const
 {
-  return index (idx_vector (r1, r1 + nr), idx_vector (c1, c1 + nc));
+  return index (octave::idx_vector (r1, r1 + nr), octave::idx_vector (c1, c1 + nc));
 }
 
 // extract row or column i.
@@ -415,13 +415,13 @@ Matrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr,
 RowVector
 Matrix::row (octave_idx_type i) const
 {
-  return index (idx_vector (i), idx_vector::colon);
+  return index (octave::idx_vector (i), octave::idx_vector::colon);
 }
 
 ColumnVector
 Matrix::column (octave_idx_type i) const
 {
-  return index (idx_vector::colon, idx_vector (i));
+  return index (octave::idx_vector::colon, octave::idx_vector (i));
 }
 
 // Local function to calculate the 1-norm.

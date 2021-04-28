@@ -69,10 +69,11 @@ public:
 
   ov_range (const ov_range<T>& r)
     : octave_base_value (), m_range (r.m_range),
-      m_idx_cache (r.m_idx_cache ? new idx_vector (*r.m_idx_cache) : nullptr)
+      m_idx_cache (r.m_idx_cache
+                   ? new octave::idx_vector (*r.m_idx_cache) : nullptr)
   { }
 
-  ov_range (const octave::range<T>& r, const idx_vector& cache)
+  ov_range (const octave::range<T>& r, const octave::idx_vector& cache)
     : octave_base_value (), m_range (r), m_idx_cache ()
   {
     set_idx_cache (cache);
@@ -118,7 +119,7 @@ public:
   OCTINTERP_API octave_value
   do_index_op (const octave_value_list& idx, bool resize_ok = false);
 
-  OCTINTERP_API idx_vector index_vector (bool require_integers = false) const;
+  OCTINTERP_API octave::idx_vector index_vector (bool require_integers = false) const;
 
   dim_vector dims (void) const
   {
@@ -473,10 +474,10 @@ protected:
 
   octave::range<T> m_range;
 
-  idx_vector set_idx_cache (const idx_vector& idx) const
+  octave::idx_vector set_idx_cache (const octave::idx_vector& idx) const
   {
     delete m_idx_cache;
-    m_idx_cache = (idx ? new idx_vector (idx) : nullptr);
+    m_idx_cache = (idx ? new octave::idx_vector (idx) : nullptr);
     return idx;
   }
 
@@ -485,7 +486,7 @@ protected:
     delete m_idx_cache; m_idx_cache = nullptr;
   }
 
-  mutable idx_vector *m_idx_cache;
+  mutable octave::idx_vector *m_idx_cache;
 
   static octave_hdf5_id hdf5_save_type;
 
@@ -549,7 +550,7 @@ ov_range<octave_uint64>::uint64_range_value (void) const;
 // performance until solutions can be generalized for other types.
 
 template <>
-OCTINTERP_API idx_vector
+OCTINTERP_API octave::idx_vector
 ov_range<double>::index_vector (bool require_integers) const;
 
 template <>

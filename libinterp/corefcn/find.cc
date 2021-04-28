@@ -58,7 +58,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
     {
     default:
     case 3:
-      retval(2) = Array<T> (nda.index (idx_vector (idx)));
+      retval(2) = Array<T> (nda.index (octave::idx_vector (idx)));
       OCTAVE_FALLTHROUGH;
 
     case 2:
@@ -72,13 +72,13 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
             idx.xelem (i) %= nr;
           }
         iext = -1;
-        retval(1) = idx_vector (jdx, -1);
+        retval(1) = octave::idx_vector (jdx, -1);
       }
       OCTAVE_FALLTHROUGH;
 
     case 1:
     case 0:
-      retval(0) = idx_vector (idx, iext);
+      retval(0) = octave::idx_vector (idx, iext);
       break;
     }
 

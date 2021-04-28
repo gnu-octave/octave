@@ -50,7 +50,7 @@ public:
 
   PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check = true);
 
-  PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n = 0);
+  PermMatrix (const octave::idx_vector& idx, bool colp, octave_idx_type n = 0);
 
   octave_idx_type dim1 (void) const
   { return Array<octave_idx_type>::numel (); }
@@ -120,7 +120,7 @@ private:
 
   void setup (const Array<octave_idx_type>& p, bool colp, bool check);
 
-  void setup (const idx_vector& idx, bool colp, octave_idx_type n);
+  void setup (const octave::idx_vector& idx, bool colp, octave_idx_type n);
 };
 
 // Multiplying permutations together.

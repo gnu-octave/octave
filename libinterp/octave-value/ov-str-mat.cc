@@ -110,7 +110,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
         case 1:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
                                    type);
@@ -119,9 +119,9 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
         case 2:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
             k = 1;
-            idx_vector j = idx (1).index_vector ();
+            octave::idx_vector j = idx (1).index_vector ();
 
             retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
                                    type);
@@ -130,7 +130,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
         default:
           {
-            Array<idx_vector> idx_vec (dim_vector (len, 1));
+            Array<octave::idx_vector> idx_vec (dim_vector (len, 1));
 
             for (k = 0; k < len; k++)
               idx_vec(k) = idx(k).index_vector ();

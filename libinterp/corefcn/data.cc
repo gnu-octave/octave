@@ -6858,7 +6858,7 @@ ordered lists.
       // NOTE: Can not change this to ovl() call because arg.sort changes sidx
       //       and objects are declared const in ovl prototype.
       retval(0) = arg.sort (sidx, dim, smode);
-      retval(1) = idx_vector (sidx, dv(dim));  // No checking, extent is known.
+      retval(1) = octave::idx_vector (sidx, dv(dim));  // No checking, extent is known.
     }
   else
     retval = ovl (arg.sort (dim, smode));
@@ -7284,7 +7284,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
 
   try
     {
-      idx_vector n = args(1).index_vector ();
+      octave::idx_vector n = args(1).index_vector ();
 
       switch (argx.builtin_type ())
         {
@@ -7350,7 +7350,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
 
 template <typename NDT>
 static NDT
-do_accumarray_sum (const idx_vector& idx, const NDT& vals,
+do_accumarray_sum (const octave::idx_vector& idx, const NDT& vals,
                    octave_idx_type n = -1)
 {
   typedef typename NDT::element_type T;
@@ -7389,7 +7389,7 @@ Undocumented internal function.
 
   try
     {
-      idx_vector idx = args(0).index_vector ();
+      octave::idx_vector idx = args(0).index_vector ();
       octave_idx_type n = -1;
       if (nargin == 3)
         n = args(2).idx_type_value (true);
@@ -7434,7 +7434,7 @@ Undocumented internal function.
 
 template <typename NDT>
 static NDT
-do_accumarray_minmax (const idx_vector& idx, const NDT& vals,
+do_accumarray_minmax (const octave::idx_vector& idx, const NDT& vals,
                       octave_idx_type n, bool ismin,
                       const typename NDT::element_type& zero_val)
 {
@@ -7447,7 +7447,7 @@ do_accumarray_minmax (const idx_vector& idx, const NDT& vals,
   NDT retval (dim_vector (n, 1), zero_val);
 
   // Pick minimizer or maximizer.
-  void (MArray<T>::*op) (const idx_vector&, const MArray<T>&)
+  void (MArray<T>::*op) (const octave::idx_vector&, const MArray<T>&)
     = ismin ? (&MArray<T>::idx_min) : (&MArray<T>::idx_max);
 
   octave_idx_type l = idx.length (n);
@@ -7477,7 +7477,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
 
   try
     {
-      idx_vector idx = args(0).index_vector ();
+      octave::idx_vector idx = args(0).index_vector ();
       octave_idx_type n = -1;
       if (nargin == 4)
         n = args(3).idx_type_value (true);
@@ -7563,7 +7563,7 @@ Undocumented internal function.
 
 template <typename NDT>
 static NDT
-do_accumdim_sum (const idx_vector& idx, const NDT& vals,
+do_accumdim_sum (const octave::idx_vector& idx, const NDT& vals,
                  int dim = -1, octave_idx_type n = -1)
 {
   typedef typename NDT::element_type T;
@@ -7610,7 +7610,7 @@ Undocumented internal function.
 
   try
     {
-      idx_vector idx = args(0).index_vector ();
+      octave::idx_vector idx = args(0).index_vector ();
       int dim = -1;
       if (nargin >= 3)
         dim = args(2).int_value () - 1;
@@ -7832,7 +7832,7 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
       octave_idx_type k = retval.columns ();
       while (order > 0 && k > 0)
         {
-          idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
+          octave::idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
           retval = SparseT (retval.index (col1, sl1))
                    - SparseT (retval.index (col2, sl2));
           assert (retval.columns () == k-1);
@@ -7845,7 +7845,7 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
       octave_idx_type k = retval.rows ();
       while (order > 0 && k > 0)
         {
-          idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
+          octave::idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
           retval = SparseT (retval.index (sl1, col1))
                    - SparseT (retval.index (sl2, col2));
           assert (retval.rows () == k-1);

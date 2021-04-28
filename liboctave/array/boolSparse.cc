@@ -180,8 +180,8 @@ SparseBoolMatrix::any (int dim) const
           Array<octave_idx_type> tmp (dim_vector (nz, 1));
           std::copy_n (ridx (), nz, tmp.fortran_vec ());
           retval = Sparse<bool> (Array<bool> (dim_vector (1, 1), true),
-                                 idx_vector (tmp),
-                                 idx_vector (static_cast<octave_idx_type> (0)),
+                                 octave::idx_vector (tmp),
+                                 octave::idx_vector (static_cast<octave_idx_type> (0)),
                                  nr, 1, false);
         }
     }
@@ -231,8 +231,8 @@ SparseBoolMatrix::sum (int dim) const
           Array<octave_idx_type> tmp (dim_vector (nz, 1));
           std::copy_n (ridx (), nz, tmp.fortran_vec ());
           retval = Sparse<double> (Array<double> (dim_vector (1, 1), 1.0),
-                                   idx_vector (tmp),
-                                   idx_vector (static_cast<octave_idx_type> (0)),
+                                   octave::idx_vector (tmp),
+                                   octave::idx_vector (static_cast<octave_idx_type> (0)),
                                    nr, 1);
         }
     }
@@ -292,13 +292,13 @@ SparseBoolMatrix::squeeze (void) const
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::index (const idx_vector& i, bool resize_ok) const
+SparseBoolMatrix::index (const octave::idx_vector& i, bool resize_ok) const
 {
   return Sparse<bool>::index (i, resize_ok);
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::index (const idx_vector& i, const idx_vector& j,
+SparseBoolMatrix::index (const octave::idx_vector& i, const octave::idx_vector& j,
                          bool resize_ok) const
 {
   return Sparse<bool>::index (i, j, resize_ok);

@@ -74,7 +74,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
 {
   octave_value retval;
   octave_idx_type nidx = idx.length ();
-  idx_vector idx0, idx1;
+  octave::idx_vector idx0, idx1;
   if (nidx == 2)
     {
       int k = 0;    // index we're processing when index_vector throws
@@ -240,7 +240,7 @@ FORWARD_MATRIX_VALUE (FloatComplexNDArray, float_complex_array)
 FORWARD_MATRIX_VALUE (boolNDArray, bool_array)
 FORWARD_MATRIX_VALUE (charNDArray, char_array)
 
-idx_vector
+octave::idx_vector
 octave_perm_matrix::index_vector (bool require_integers) const
 {
   return to_dense ().index_vector (require_integers);

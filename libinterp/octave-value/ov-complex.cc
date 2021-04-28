@@ -144,7 +144,7 @@ octave_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 }
 
 // Can't make an index_vector from a complex number.  Throw an error.
-idx_vector
+octave::idx_vector
 octave_complex::index_vector (bool) const
 {
   std::ostringstream buf;

@@ -67,7 +67,7 @@ public:
   octave_base_matrix (const octave_base_matrix& m)
     : octave_base_value (), matrix (m.matrix),
       typ (m.typ ? new MatrixType (*m.typ) : nullptr),
-      idx_cache (m.idx_cache ? new idx_vector (*m.idx_cache) : nullptr)
+      idx_cache (m.idx_cache ? new octave::idx_vector (*m.idx_cache) : nullptr)
   { }
 
   ~octave_base_matrix (void) { clear_cached_info (); }
@@ -202,10 +202,10 @@ protected:
 
   MT matrix;
 
-  idx_vector set_idx_cache (const idx_vector& idx) const
+  octave::idx_vector set_idx_cache (const octave::idx_vector& idx) const
   {
     delete idx_cache;
-    idx_cache = (idx ? new idx_vector (idx) : nullptr);
+    idx_cache = (idx ? new octave::idx_vector (idx) : nullptr);
     return idx;
   }
 
@@ -216,7 +216,7 @@ protected:
   }
 
   mutable MatrixType *typ;
-  mutable idx_vector *idx_cache;
+  mutable octave::idx_vector *idx_cache;
 
 private:
 

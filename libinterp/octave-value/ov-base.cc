@@ -229,7 +229,7 @@ octave_base_value::do_index_op (const octave_value_list&, bool)
   error ("can't perform indexing operations for %s type", nm.c_str ());
 }
 
-idx_vector
+octave::idx_vector
 octave_base_value::index_vector (bool /* require_integers */) const
 {
   std::string nm = '<' + type_name () + '>';

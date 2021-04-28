@@ -85,7 +85,7 @@ octave_base_magic_int<T>::do_index_op (const octave_value_list& idx,
 }
 
 template <typename T>
-idx_vector
+octave::idx_vector
 octave_base_magic_int<T>::index_vector (bool require_integers) const
 {
   octave_value tmp (double_value ());

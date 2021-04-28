@@ -168,10 +168,10 @@ convolve (const MArray<T>& a, const MArray<R>& b,
   if (ct == convn_same)
     {
       // Pick the relevant part.
-      Array<idx_vector> sidx (dim_vector (nd, 1));
+      Array<octave::idx_vector> sidx (dim_vector (nd, 1));
 
       for (int i = 0; i < nd; i++)
-        sidx(i) = idx_vector::make_range (bdims(i)/2, 1, adims(i));
+        sidx(i) = octave::idx_vector::make_range (bdims(i)/2, 1, adims(i));
       c = c.index (sidx);
     }
 

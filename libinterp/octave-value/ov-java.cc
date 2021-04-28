@@ -1121,7 +1121,7 @@ make_java_index (JNIEnv *jni_env, const octave_value_list& idx)
   for (int i = 0; i < idx.length (); i++)
     try
       {
-        idx_vector v = idx(i).index_vector ();
+        octave::idx_vector v = idx(i).index_vector ();
 
         jintArray_ref i_array (jni_env, jni_env->NewIntArray (v.length ()));
         jint *buf = jni_env->GetIntArrayElements (i_array, nullptr);

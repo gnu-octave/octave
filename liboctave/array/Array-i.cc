@@ -41,7 +41,7 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class Array<idx_vector>;
+extern template class Array<octave::idx_vector>;
 
 template class octave_sort<signed char>;
 //template class octave_sort<short>;

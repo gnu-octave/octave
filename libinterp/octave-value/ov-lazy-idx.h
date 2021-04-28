@@ -42,7 +42,7 @@ public:
   octave_lazy_index (void)
     : octave_base_value (), index (), value () { }
 
-  octave_lazy_index (const idx_vector& idx)
+  octave_lazy_index (const octave::idx_vector& idx)
     : octave_base_value (), index (idx), value () { }
 
   octave_lazy_index (const octave_lazy_index& i)
@@ -66,7 +66,8 @@ public:
 
   octave_value full_value (void) const { return make_value (); }
 
-  idx_vector index_vector (bool /* require_integers */ = false) const { return index; }
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
+  { return index; }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 
@@ -269,7 +270,7 @@ private:
     return value;
   }
 
-  idx_vector index;
+  octave::idx_vector index;
   mutable octave_value value;
 
   static octave_base_value *

@@ -74,7 +74,8 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (scalar); }
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
+  { return octave::idx_vector (scalar); }
 
   builtin_type_t builtin_type (void) const { return btyp_bool; }
 

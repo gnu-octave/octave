@@ -98,9 +98,9 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
       int k = 0;        // index we're accessing when index_vector throws
       try
         {
-          idx_vector idx0 = idx(0).index_vector ();
+          octave::idx_vector idx0 = idx(0).index_vector ();
           k = 1;
-          idx_vector idx1 = idx(1).index_vector ();
+          octave::idx_vector idx1 = idx(1).index_vector ();
 
           bool left = idx0.is_permutation (matrix.rows ());
           bool right = idx1.is_permutation (matrix.cols ());

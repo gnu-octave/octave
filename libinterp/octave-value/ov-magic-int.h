@@ -76,7 +76,7 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  idx_vector index_vector (bool require_integers = false) const;
+  octave::idx_vector index_vector (bool require_integers = false) const;
 
   octave_value any (int = 0) const { return scalar_ref () != T (0); }
 

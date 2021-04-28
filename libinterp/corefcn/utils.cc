@@ -1677,7 +1677,7 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 
   try
     {
-      idx_vector idx = args(0).index_vector (true);
+      octave::idx_vector idx = args(0).index_vector (true);
 
       if (nargin == 2)
         retval = idx.extent (n) <= n;

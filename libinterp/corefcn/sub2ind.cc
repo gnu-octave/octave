@@ -116,7 +116,7 @@ ind = sub2ind ([3, 3], s1, s2)
 
   dim_vector dv = get_dim_vector (args(0), "sub2ind");
 
-  Array<idx_vector> idxa (dim_vector (nargin-1, 1));
+  Array<octave::idx_vector> idxa (dim_vector (nargin-1, 1));
 
   for (int j = 0; j < nargin - 1; j++)
     {

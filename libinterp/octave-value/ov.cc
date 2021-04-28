@@ -1004,22 +1004,22 @@ octave_value::octave_value (const Array<octave_idx_type>& inda, bool zero_based,
   maybe_mutate ();
 }
 
-octave_value::octave_value (const idx_vector& idx, bool lazy)
+octave_value::octave_value (const octave::idx_vector& idx, bool lazy)
   : rep ()
 {
   double scalar;
   octave::range<double> range;
   NDArray array;
   boolNDArray mask;
-  idx_vector::idx_class_type idx_class;
+  octave::idx_vector::idx_class_type idx_class;
 
   if (lazy)
     {
       // Only make lazy indices out of ranges and index vectors.
       switch (idx.idx_class ())
         {
-        case idx_vector::class_range:
-        case idx_vector::class_vector:
+        case octave::idx_vector::class_range:
+        case octave::idx_vector::class_vector:
           rep = new octave_lazy_index (idx);
           maybe_mutate ();
           return;
@@ -1033,23 +1033,23 @@ octave_value::octave_value (const idx_vector& idx, bool lazy)
 
   switch (idx_class)
     {
-    case idx_vector::class_colon:
+    case octave::idx_vector::class_colon:
       rep = new octave_magic_colon ();
       break;
 
-    case idx_vector::class_range:
+    case octave::idx_vector::class_range:
       rep = new octave_range (range, idx);
       break;
 
-    case idx_vector::class_scalar:
+    case octave::idx_vector::class_scalar:
       rep = new octave_scalar (scalar);
       break;
 
-    case idx_vector::class_vector:
+    case octave::idx_vector::class_vector:
       rep = new octave_matrix (array, idx);
       break;
 
-    case idx_vector::class_mask:
+    case octave::idx_vector::class_mask:
       rep = new octave_bool_matrix (mask, idx);
       break;
 

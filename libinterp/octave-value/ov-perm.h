@@ -146,7 +146,7 @@ public:
   double scalar_value (bool frc_str_conv = false) const
   { return double_value (frc_str_conv); }
 
-  idx_vector index_vector (bool require_integers = false) const;
+  octave::idx_vector index_vector (bool require_integers = false) const;
 
   PermMatrix perm_matrix_value (void) const
   { return matrix; }

@@ -68,7 +68,7 @@ public:
   octave_bool_matrix (const boolMatrix& bm, const MatrixType& t)
     : octave_base_matrix<boolNDArray> (bm, t) { }
 
-  octave_bool_matrix (const boolNDArray& bm, const idx_vector& cache)
+  octave_bool_matrix (const boolNDArray& bm, const octave::idx_vector& cache)
     : octave_base_matrix<boolNDArray> (bm)
   {
     set_idx_cache (cache);
@@ -89,9 +89,9 @@ public:
 
   octave_base_value * try_narrowing_conversion (void);
 
-  idx_vector index_vector (bool /* require_integers */ = false) const
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
-    return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix));
+    return idx_cache ? *idx_cache : set_idx_cache (octave::idx_vector (matrix));
   }
 
   builtin_type_t builtin_type (void) const { return btyp_bool; }

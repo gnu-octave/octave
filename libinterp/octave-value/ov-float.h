@@ -79,7 +79,8 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (scalar); }
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
+  { return octave::idx_vector (scalar); }
 
   octave_value any (int = 0) const
   { return (scalar != 0 && ! lo_ieee_isnan (scalar)); }

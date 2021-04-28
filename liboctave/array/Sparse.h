@@ -37,7 +37,6 @@
 
 #include "Array.h"
 
-class idx_vector;
 class PermMatrix;
 
 // Two dimensional sparse class.  Handles the reference counting for
@@ -223,7 +222,7 @@ public:
   OCTAVE_API Sparse (const Sparse<T>& a, const dim_vector& dv);
 
   OCTAVE_API
-  Sparse (const Array<T>& a, const idx_vector& r, const idx_vector& c,
+  Sparse (const Array<T>& a, const octave::idx_vector& r, const octave::idx_vector& c,
           octave_idx_type nr = -1, octave_idx_type nc = -1,
           bool sum_terms = true, octave_idx_type nzm = -1);
 
@@ -511,23 +510,23 @@ public:
 
   octave_idx_type ndims (void) const { return dimensions.ndims (); }
 
-  OCTAVE_API void delete_elements (const idx_vector& i);
+  OCTAVE_API void delete_elements (const octave::idx_vector& i);
 
-  OCTAVE_API void delete_elements (int dim, const idx_vector& i);
+  OCTAVE_API void delete_elements (int dim, const octave::idx_vector& i);
 
-  OCTAVE_API void delete_elements (const idx_vector& i, const idx_vector& j);
-
-  OCTAVE_API Sparse<T>
-  index (const idx_vector& i, bool resize_ok = false) const;
+  OCTAVE_API void delete_elements (const octave::idx_vector& i, const octave::idx_vector& j);
 
   OCTAVE_API Sparse<T>
-  index (const idx_vector& i, const idx_vector& j,
+  index (const octave::idx_vector& i, bool resize_ok = false) const;
+
+  OCTAVE_API Sparse<T>
+  index (const octave::idx_vector& i, const octave::idx_vector& j,
          bool resize_ok = false) const;
 
-  OCTAVE_API void assign (const idx_vector& i, const Sparse<T>& rhs);
+  OCTAVE_API void assign (const octave::idx_vector& i, const Sparse<T>& rhs);
 
   OCTAVE_API void
-  assign (const idx_vector& i, const idx_vector& j, const Sparse<T>& rhs);
+  assign (const octave::idx_vector& i, const octave::idx_vector& j, const Sparse<T>& rhs);
 
   OCTAVE_API void
   print_info (std::ostream& os, const std::string& prefix) const;

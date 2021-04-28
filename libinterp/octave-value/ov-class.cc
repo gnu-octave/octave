@@ -825,7 +825,7 @@ octave_class::subsasgn_common (const octave_value& obj,
   return retval;
 }
 
-idx_vector
+octave::idx_vector
 octave_class::index_vector (bool require_integers) const
 {
   octave::symbol_table& symtab

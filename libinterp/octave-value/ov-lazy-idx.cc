@@ -81,8 +81,8 @@ octave_lazy_index::fast_elem_extract (octave_idx_type n) const
 octave_value
 octave_lazy_index::reshape (const dim_vector& new_dims) const
 {
-  return idx_vector (index.as_array ().reshape (new_dims),
-                     index.extent (0));
+  return octave::idx_vector (index.as_array ().reshape (new_dims),
+                             index.extent (0));
 }
 
 octave_value
@@ -92,15 +92,14 @@ octave_lazy_index::permute (const Array<int>& vec, bool inv) const
   if (value.is_defined ())
     return value.permute (vec, inv);
   else
-    return idx_vector (index.as_array ().permute (vec, inv),
-                       index.extent (0));
+    return octave::idx_vector (index.as_array ().permute (vec, inv),
+                               index.extent (0));
 }
 
 octave_value
 octave_lazy_index::squeeze (void) const
 {
-  return idx_vector (index.as_array ().squeeze (),
-                     index.extent (0));
+  return octave::idx_vector (index.as_array ().squeeze (), index.extent (0));
 }
 
 octave_value
@@ -112,8 +111,8 @@ octave_lazy_index::sort (octave_idx_type dim, sortmode mode) const
       && (dim >= 0 && dim <= 1) && odims(1-dim) == 1)
     return index_vector ().sorted ();
   else
-    return idx_vector (index.as_array ().sort (dim, mode),
-                       index.extent (0));
+    return octave::idx_vector (index.as_array ().sort (dim, mode),
+                               index.extent (0));
 }
 
 octave_value
@@ -126,8 +125,8 @@ octave_lazy_index::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
       && (dim >= 0 && dim <= 1) && odims(1-dim) == 1)
     return index_vector ().sorted (sidx);
   else
-    return idx_vector (index.as_array ().sort (sidx, dim, mode),
-                       index.extent (0));
+    return octave::idx_vector (index.as_array ().sort (sidx, dim, mode),
+                               index.extent (0));
 }
 
 sortmode

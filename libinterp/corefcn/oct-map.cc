@@ -169,9 +169,9 @@ octave_fields::fieldnames (void) const
 octave_scalar_map::octave_scalar_map
   (const std::map<std::string, octave_value>& m)
 {
-  size_t sz = m.size ();
+  std::size_t sz = m.size ();
   xvals.resize (sz);
-  size_t i = 0;
+  std::size_t i = 0;
   for (const auto& k_v : m)
     {
       xkeys.getfield (k_v.first);

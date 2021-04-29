@@ -449,8 +449,8 @@ public:
     return d >= ndims () ? 1 : dimensions(d);
   }
 
-  size_t byte_size (void) const
-  { return static_cast<size_t> (numel ()) * sizeof (T); }
+  std::size_t byte_size (void) const
+  { return static_cast<std::size_t> (numel ()) * sizeof (T); }
 
   //! Return a const-reference so that dims ()(i) works efficiently.
   const dim_vector& dims (void) const { return dimensions; }

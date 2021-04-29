@@ -196,8 +196,8 @@ namespace octave
           const char *fmt_str = fmt.c_str ();
 
           char *buf = nullptr;
-          size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
-          size_t chars_written = 0;
+          std::size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
+          std::size_t chars_written = 0;
 
           while (chars_written == 0)
             {

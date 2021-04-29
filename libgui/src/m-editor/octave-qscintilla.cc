@@ -1236,7 +1236,7 @@ namespace octave
 
     bool autofill_simple_end = (auto_endif == 2);
 
-    size_t start = line.toStdString ().find_first_not_of (" \t");
+    std::size_t start = line.toStdString ().find_first_not_of (" \t");
 
     // Check if following line has the same or less indentation
     // Check if the following line does not start with
@@ -1245,7 +1245,7 @@ namespace octave
       {
         int offset = 2;     // linenr is the old line, thus, linnr+1 is the
                             // new one and can not be taken into account
-        size_t next_start;
+        std::size_t next_start;
         QString next_line;
 
         do                            // find next non-blank line

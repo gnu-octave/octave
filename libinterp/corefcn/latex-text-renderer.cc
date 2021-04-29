@@ -224,7 +224,7 @@ namespace octave
     // Duplicate \n characters and align multi-line strings based on
     // horizontalalignment
     std::string latex_txt (txt);
-    size_t pos = 0;
+    std::size_t pos = 0;
 
     while (true)
       {

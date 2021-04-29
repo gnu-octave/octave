@@ -67,7 +67,7 @@ namespace octave
 {
   std::string execution_exception::stack_trace (void) const
   {
-    size_t nframes = m_stack_info.size ();
+    std::size_t nframes = m_stack_info.size ();
 
     if (nframes == 0)
       return std::string ();

@@ -202,9 +202,9 @@ namespace octave
   {
     std::string retval;
 
-    size_t len = s.length ();
+    std::size_t len = s.length ();
 
-    size_t i = 0;
+    std::size_t i = 0;
 
     while (i < len)
       {
@@ -300,7 +300,7 @@ namespace octave
     // the list is 3 because of the characters that appear after the
     // last conversion.
 
-    size_t length (void) const { return fmt_elts.size (); }
+    std::size_t length (void) const { return fmt_elts.size (); }
 
     const scanf_format_elt * first (void)
     {
@@ -348,7 +348,7 @@ namespace octave
     octave_idx_type nconv;
 
     // Index to current element;
-    size_t curr_idx;
+    std::size_t curr_idx;
 
     // List of format elements.
     std::deque<scanf_format_elt*> fmt_elts;
@@ -359,11 +359,11 @@ namespace octave
     void add_elt_to_list (int width, bool discard, char type, char modifier,
                           const std::string& char_class = "");
 
-    void process_conversion (const std::string& s, size_t& i, size_t n,
+    void process_conversion (const std::string& s, std::size_t& i, std::size_t n,
                              int& width, bool& discard, char& type,
                              char& modifier);
 
-    int finish_conversion (const std::string& s, size_t& i, size_t n,
+    int finish_conversion (const std::string& s, std::size_t& i, std::size_t n,
                            int width, bool discard, char& type,
                            char modifier);
   };
@@ -371,9 +371,9 @@ namespace octave
   scanf_format_list::scanf_format_list (const std::string& s)
     : nconv (0), curr_idx (0), fmt_elts (), buf ()
   {
-    size_t n = s.length ();
+    std::size_t n = s.length ();
 
-    size_t i = 0;
+    std::size_t i = 0;
 
     int width = 0;
     bool discard = false;
@@ -442,9 +442,9 @@ namespace octave
 
   scanf_format_list::~scanf_format_list (void)
   {
-    size_t n = fmt_elts.size ();
+    std::size_t n = fmt_elts.size ();
 
-    for (size_t i = 0; i < n; i++)
+    for (std::size_t i = 0; i < n; i++)
       {
         scanf_format_elt *elt = fmt_elts[i];
         delete elt;
@@ -472,8 +472,8 @@ namespace octave
   }
 
   void
-  scanf_format_list::process_conversion (const std::string& s, size_t& i,
-                                         size_t n, int& width, bool& discard,
+  scanf_format_list::process_conversion (const std::string& s, std::size_t& i,
+                                         std::size_t n, int& width, bool& discard,
                                          char& type, char& modifier)
   {
     width = 0;
@@ -579,16 +579,16 @@ namespace octave
   }
 
   int
-  scanf_format_list::finish_conversion (const std::string& s, size_t& i,
-                                        size_t n, int width, bool discard,
+  scanf_format_list::finish_conversion (const std::string& s, std::size_t& i,
+                                        std::size_t n, int width, bool discard,
                                         char& type, char modifier)
   {
     int retval = 0;
 
     std::string char_class;
 
-    size_t beg_idx = std::string::npos;
-    size_t end_idx = std::string::npos;
+    std::size_t beg_idx = std::string::npos;
+    std::size_t end_idx = std::string::npos;
 
     if (s[i] == '%')
       {
@@ -657,9 +657,9 @@ namespace octave
   void
   scanf_format_list::printme (void) const
   {
-    size_t n = fmt_elts.size ();
+    std::size_t n = fmt_elts.size ();
 
-    for (size_t i = 0; i < n; i++)
+    for (std::size_t i = 0; i < n; i++)
       {
         scanf_format_elt *elt = fmt_elts[i];
 
@@ -685,11 +685,11 @@ namespace octave
   bool
   scanf_format_list::all_character_conversions (void)
   {
-    size_t n = fmt_elts.size ();
+    std::size_t n = fmt_elts.size ();
 
     if (n > 0)
       {
-        for (size_t i = 0; i < n; i++)
+        for (std::size_t i = 0; i < n; i++)
           {
             scanf_format_elt *elt = fmt_elts[i];
 
@@ -715,11 +715,11 @@ namespace octave
   bool
   scanf_format_list::all_numeric_conversions (void)
   {
-    size_t n = fmt_elts.size ();
+    std::size_t n = fmt_elts.size ();
 
     if (n > 0)
       {
-        for (size_t i = 0; i < n; i++)
+        for (std::size_t i = 0; i < n; i++)
           {
             scanf_format_elt *elt = fmt_elts[i];
 
@@ -810,7 +810,7 @@ namespace octave
       return length () > 0 ? fmt_elts[curr_idx] : nullptr;
     }
 
-    size_t length (void) const { return fmt_elts.size (); }
+    std::size_t length (void) const { return fmt_elts.size (); }
 
     const printf_format_elt * next (bool cycle = true)
     {
@@ -842,7 +842,7 @@ namespace octave
     octave_idx_type nconv;
 
     // Index to current element;
-    size_t curr_idx;
+    std::size_t curr_idx;
 
     // List of format elements.
     std::deque<printf_format_elt*> fmt_elts;
@@ -853,11 +853,11 @@ namespace octave
     void add_elt_to_list (int args, const std::string& flags, int fw,
                           int prec, char type, char modifier);
 
-    void process_conversion (const std::string& s, size_t& i, size_t n,
+    void process_conversion (const std::string& s, std::size_t& i, std::size_t n,
                              int& args, std::string& flags, int& fw,
                              int& prec, char& modifier, char& type);
 
-    void finish_conversion (const std::string& s, size_t& i, int args,
+    void finish_conversion (const std::string& s, std::size_t& i, int args,
                             const std::string& flags, int fw, int prec,
                             char modifier, char& type);
   };
@@ -865,9 +865,9 @@ namespace octave
   printf_format_list::printf_format_list (const std::string& s)
     : nconv (0), curr_idx (0), fmt_elts (), buf ()
   {
-    size_t n = s.length ();
+    std::size_t n = s.length ();
 
-    size_t i = 0;
+    std::size_t i = 0;
 
     int args = 0;
     std::string flags;
@@ -946,9 +946,9 @@ namespace octave
 
   printf_format_list::~printf_format_list (void)
   {
-    size_t n = fmt_elts.size ();
+    std::size_t n = fmt_elts.size ();
 
-    for (size_t i = 0; i < n; i++)
+    for (std::size_t i = 0; i < n; i++)
       {
         printf_format_elt *elt = fmt_elts[i];
         delete elt;
@@ -976,8 +976,8 @@ namespace octave
   }
 
   void
-  printf_format_list::process_conversion (const std::string& s, size_t& i,
-                                          size_t n, int& args,
+  printf_format_list::process_conversion (const std::string& s, std::size_t& i,
+                                          std::size_t n, int& args,
                                           std::string& flags, int& fw,
                                           int& prec, char& modifier,
                                           char& type)
@@ -1091,7 +1091,7 @@ namespace octave
   }
 
   void
-  printf_format_list::finish_conversion (const std::string& s, size_t& i,
+  printf_format_list::finish_conversion (const std::string& s, std::size_t& i,
                                          int args, const std::string& flags,
                                          int fw, int prec, char modifier,
                                          char& type)
@@ -1148,9 +1148,9 @@ namespace octave
   void
   printf_format_list::printme (void) const
   {
-    size_t n = fmt_elts.size ();
+    std::size_t n = fmt_elts.size ();
 
-    for (size_t i = 0; i < n; i++)
+    for (std::size_t i = 0; i < n; i++)
       {
         printf_format_elt *elt = fmt_elts[i];
 
@@ -1442,7 +1442,7 @@ namespace octave
     if (eob < idx)
       idx = eob;
 
-    size_t old_remaining = eob - idx;
+    std::size_t old_remaining = eob - idx;
 
     octave_quit ();                       // allow ctrl-C
 
@@ -1694,7 +1694,7 @@ namespace octave
     // the list is 3 because of the characters that appear after the
     // last conversion.
 
-    size_t numel (void) const { return fmt_elts.size (); }
+    std::size_t numel (void) const { return fmt_elts.size (); }
 
     const textscan_format_elt * first (void)
     {
@@ -1748,7 +1748,7 @@ namespace octave
     octave_idx_type nconv;
 
     // Index to current element;
-    size_t curr_idx;
+    std::size_t curr_idx;
 
     // List of format elements.
     std::deque<textscan_format_elt*> fmt_elts;
@@ -1764,11 +1764,11 @@ namespace octave
                           char type,
                           const std::string& char_class = std::string ());
 
-    void process_conversion (const std::string& s, size_t& i, size_t n);
+    void process_conversion (const std::string& s, std::size_t& i, std::size_t n);
 
     std::string parse_char_class (const std::string& pattern) const;
 
-    int finish_conversion (const std::string& s, size_t& i, size_t n,
+    int finish_conversion (const std::string& s, std::size_t& i, std::size_t n,
                            unsigned int width, int prec, int bitwidth,
                            octave_value& val_type,
                            bool discard, char& type);
@@ -1934,9 +1934,9 @@ namespace octave
     : who (who_arg), set_from_first (false), has_string (false),
       nconv (0), curr_idx (0), fmt_elts (), buf ()
   {
-    size_t n = s.length ();
+    std::size_t n = s.length ();
 
-    size_t i = 0;
+    std::size_t i = 0;
 
     unsigned int width = -1;              // Unspecified width = max (except %c)
     int prec = -1;
@@ -2031,9 +2031,9 @@ namespace octave
 
   textscan_format_list::~textscan_format_list (void)
   {
-    size_t n = numel ();
+    std::size_t n = numel ();
 
-    for (size_t i = 0; i < n; i++)
+    for (std::size_t i = 0; i < n; i++)
       {
         textscan_format_elt *elt = fmt_elts[i];
         delete elt;
@@ -2065,8 +2065,8 @@ namespace octave
   }
 
   void
-  textscan_format_list::process_conversion (const std::string& s, size_t& i,
-                                            size_t n)
+  textscan_format_list::process_conversion (const std::string& s, std::size_t& i,
+                                            std::size_t n)
   {
     unsigned width = 0;
     int prec = -1;
@@ -2348,8 +2348,8 @@ namespace octave
   }
 
   int
-  textscan_format_list::finish_conversion (const std::string& s, size_t& i,
-                                           size_t n, unsigned int width,
+  textscan_format_list::finish_conversion (const std::string& s, std::size_t& i,
+                                           std::size_t n, unsigned int width,
                                            int prec, int bitwidth,
                                            octave_value& val_type, bool discard,
                                            char& type)
@@ -2358,8 +2358,8 @@ namespace octave
 
     std::string char_class;
 
-    size_t beg_idx = std::string::npos;
-    size_t end_idx = std::string::npos;
+    std::size_t beg_idx = std::string::npos;
+    std::size_t end_idx = std::string::npos;
 
     if (type != '%')
       {
@@ -2417,9 +2417,9 @@ namespace octave
   void
   textscan_format_list::printme (void) const
   {
-    size_t n = numel ();
+    std::size_t n = numel ();
 
-    for (size_t i = 0; i < n; i++)
+    for (std::size_t i = 0; i < n; i++)
       {
         textscan_format_elt *elt = fmt_elts[i];
 
@@ -3098,7 +3098,7 @@ namespace octave
             for (int i = 0; i < delimiters.numel (); i++)
               {
                 std::string delim = delimiters(i).string_value ();
-                size_t start = (retval.length () > delim.length ()
+                std::size_t start = (retval.length () > delim.length ()
                                 ? retval.length () - delim.length ()
                                 : 0);
                 std::string may_match = retval.substr (start);
@@ -3136,7 +3136,7 @@ namespace octave
             // Grow string in an exponential fashion if necessary.
             if (i >= val.length ())
               val.append (std::max (val.length (),
-                                    static_cast<size_t> (16)), '\0');
+                                    static_cast<std::size_t> (16)), '\0');
 
             int ch = is.get ();
             if (is_delim (ch) || ch == std::istream::traits_type::eof ())
@@ -3429,7 +3429,7 @@ namespace octave
 
     octave_quit ();
 
-    for (size_t i = 0; i < fmt_list.numel (); i++)
+    for (std::size_t i = 0; i < fmt_list.numel (); i++)
       {
         bool this_conversion_failed = false;
 
@@ -3823,7 +3823,7 @@ namespace octave
                         may_match = may_match + dummy + last;
                         if (may_match.length () > end_c.length ())
                           {
-                            size_t start = may_match.length () - end_c.length ();
+                            std::size_t start = may_match.length () - end_c.length ();
                             may_match = may_match.substr (start);
                           }
                       }
@@ -3867,7 +3867,7 @@ namespace octave
                                  // FIXME: pos may be corrupted by is.read
 
     int i;
-    int (*compare)(const char *, const char *, size_t);
+    int (*compare)(const char *, const char *, std::size_t);
     compare = (case_sensitive ? strncmp : strncasecmp);
 
     for (i = 0; i < targets.numel (); i++)
@@ -5633,7 +5633,7 @@ namespace octave
     return retval;
   }
 
-  static size_t
+  static std::size_t
   do_printf_string (std::ostream& os, const printf_format_elt *elt,
                     int nsa, int sa_1, int sa_2, const std::string& arg,
                     const std::string& encoding, const std::string& who)
@@ -5645,19 +5645,19 @@ namespace octave
 
     bool left = flags.find ('-') != std::string::npos;
 
-    size_t len = arg.length ();
+    std::size_t len = arg.length ();
 
-    size_t prec = (nsa > 1 ? sa_2 : (elt->prec == -1 ? len : elt->prec));
+    std::size_t prec = (nsa > 1 ? sa_2 : (elt->prec == -1 ? len : elt->prec));
 
     std::string print_str = prec < arg.length () ? arg.substr (0, prec) : arg;
     if (encoding.compare ("utf-8"))
       {
-        size_t src_len = print_str.length ();
+        std::size_t src_len = print_str.length ();
         print_str = string::u8_to_encoding (who, print_str, encoding);
         len -= src_len - print_str.length ();
       }
 
-    size_t fw = (nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw));
+    std::size_t fw = (nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw));
 
     os << std::setw (fw) << (left ? std::left : std::right) << print_str;
 
@@ -6566,9 +6566,9 @@ namespace octave
     // oct_data_conv class.
 
     // Expose this in a future version?
-    size_t char_count = 0;
+    std::size_t char_count = 0;
 
-    ptrdiff_t tmp_count = 0;
+    std::ptrdiff_t tmp_count = 0;
 
     try
       {
@@ -6627,8 +6627,8 @@ namespace octave
     octave_idx_type input_elt_size
       = oct_data_conv::data_type_size (input_type);
 
-    ptrdiff_t input_buf_size
-      = static_cast<ptrdiff_t> (input_buf_elts) * input_elt_size;
+    std::ptrdiff_t input_buf_size
+      = static_cast<std::ptrdiff_t> (input_buf_elts) * input_elt_size;
 
     assert (input_buf_size >= 0);
 
@@ -6669,7 +6669,7 @@ namespace octave
 
             is.read (input_buf, input_buf_size);
 
-            size_t gcount = is.gcount ();
+            std::size_t gcount = is.gcount ();
 
             char_count += gcount;
             cur_pos += gcount;
@@ -6913,7 +6913,7 @@ namespace octave
   }
 
   bool
-  stream::write_bytes (const void *data, size_t nbytes)
+  stream::write_bytes (const void *data, std::size_t nbytes)
   {
     bool status = false;
 
@@ -6936,7 +6936,7 @@ namespace octave
   }
 
   bool
-  stream::skip_bytes (size_t skip)
+  stream::skip_bytes (std::size_t skip)
   {
     bool status = false;
 
@@ -6958,7 +6958,7 @@ namespace octave
     // Is it possible for this to fail to return us to the original position?
     seek (orig_pos, SEEK_SET);
 
-    size_t remaining = eof_pos - orig_pos;
+    std::size_t remaining = eof_pos - orig_pos;
 
     if (remaining < skip)
       {
@@ -6966,7 +6966,7 @@ namespace octave
 
         // FIXME: probably should try to write larger blocks...
         unsigned char zero = 0;
-        for (size_t j = 0; j < skip - remaining; j++)
+        for (std::size_t j = 0; j < skip - remaining; j++)
           os.write (reinterpret_cast<const char *> (&zero), 1);
       }
     else
@@ -7027,7 +7027,7 @@ namespace octave
 
         if (do_data_conversion)
           {
-            size_t output_size
+            std::size_t output_size
               = chunk_size * oct_data_conv::data_type_size (output_type);
 
             OCTAVE_LOCAL_BUFFER (unsigned char, conv_data, output_size);

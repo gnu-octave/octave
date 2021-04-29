@@ -74,7 +74,7 @@ namespace octave
 
     std::string class_name;
 
-    size_t pos = dir_name.find_last_of (sys::file_ops::dir_sep_chars ());
+    std::size_t pos = dir_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
       {
@@ -381,7 +381,7 @@ namespace octave
   split_name_with_package (const std::string& name, std::string& fname,
                            std::string& pname)
   {
-    size_t pos = name.rfind ('.');
+    std::size_t pos = name.rfind ('.');
 
     fname.clear ();
     pname.clear ();
@@ -421,7 +421,7 @@ namespace octave
 
     if (dir_name.empty ())
       {
-        size_t pos = file_name.find_last_of (sys::file_ops::dir_sep_chars ());
+        std::size_t pos = file_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
         dir_name = file_name.substr (0, pos);
       }
@@ -429,7 +429,7 @@ namespace octave
     // FIXME: do the following job of determining private status and
     // class membership in a separate function?
 
-    size_t pos = dir_name.find_last_of (sys::file_ops::dir_sep_chars ());
+    std::size_t pos = dir_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
     bool is_private_fcn
       = pos != std::string::npos && dir_name.substr (pos+1) == "private";
@@ -1024,7 +1024,7 @@ namespace octave
 
         if (! file_name.empty ())
           {
-            size_t pos = file_name.find_last_of (sys::file_ops::dir_sep_chars ());
+            std::size_t pos = file_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
             std::string dir_name = file_name.substr (0, pos);
 

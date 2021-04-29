@@ -211,26 +211,26 @@ strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
 {
   int nargin = args.length ();
   int n_elts = 0;
-  size_t max_len = 0;
+  std::size_t max_len = 0;
   std::queue<string_vector> args_as_strings;
 
   for (int i = 0; i < nargin; i++)
     {
       string_vector s = args(i).xstring_vector_value ("strvcat: unable to convert some args to strings");
 
-      size_t n = s.numel ();
+      std::size_t n = s.numel ();
 
       // do not count empty strings in calculation of number of elements
       if (n > 0)
         {
-          for (size_t j = 0; j < n; j++)
+          for (std::size_t j = 0; j < n; j++)
             {
               if (! s[j].empty ())
                 n_elts++;
             }
         }
 
-      size_t s_max_len = s.max_length ();
+      std::size_t s_max_len = s.max_length ();
 
       if (s_max_len > max_len)
         max_len = s_max_len;
@@ -247,16 +247,16 @@ strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
       string_vector s = args_as_strings.front ();
       args_as_strings.pop ();
 
-      size_t n = s.numel ();
+      std::size_t n = s.numel ();
 
       if (n > 0)
         {
-          for (size_t j = 0; j < n; j++)
+          for (std::size_t j = 0; j < n; j++)
             {
               std::string t = s[j];
               if (t.length () > 0)
                 {
-                  size_t t_len = t.length ();
+                  std::size_t t_len = t.length ();
 
                   if (max_len > t_len)
                     t += std::string (max_len - t_len, ' ');
@@ -894,9 +894,9 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
   charNDArray native_bytes = args(0).char_array_value ();
 
   const char *src = native_bytes.data ();
-  size_t srclen = native_bytes.numel ();
+  std::size_t srclen = native_bytes.numel ();
 
-  size_t length;
+  std::size_t length;
   uint8_t *utf8_str = nullptr;
 
   utf8_str = octave_u8_conv_from_encoding (codepage, src, srclen, &length);
@@ -942,9 +942,9 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
   charNDArray utf8_str = args(0).char_array_value ();
 
   const uint8_t *src = reinterpret_cast<const uint8_t *> (utf8_str.data ());
-  size_t srclen = utf8_str.numel ();
+  std::size_t srclen = utf8_str.numel ();
 
-  size_t length;
+  std::size_t length;
   char *native_bytes = nullptr;
 
   native_bytes = octave_u8_conv_to_encoding (codepage, src, srclen, &length);

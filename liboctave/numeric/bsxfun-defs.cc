@@ -39,9 +39,9 @@
 template <typename R, typename X, typename Y>
 Array<R>
 do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
-              void (*op_vv) (size_t, R *, const X *, const Y *),
-              void (*op_sv) (size_t, R *, X, const Y *),
-              void (*op_vs) (size_t, R *, const X *, Y))
+              void (*op_vv) (std::size_t, R *, const X *, const Y *),
+              void (*op_sv) (std::size_t, R *, X, const Y *),
+              void (*op_vs) (std::size_t, R *, const X *, Y))
 {
   int nd = std::max (x.ndims (), y.ndims ());
   dim_vector dvx = x.dims ().redim (nd);
@@ -140,8 +140,8 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
 template <typename R, typename X>
 void
 do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
-                      void (*op_vv) (size_t, R *, const X *),
-                      void (*op_vs) (size_t, R *, X))
+                      void (*op_vv) (std::size_t, R *, const X *),
+                      void (*op_vs) (std::size_t, R *, X))
 {
   dim_vector dvr = r.dims ();
   dim_vector dvx = x.dims ();

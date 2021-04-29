@@ -67,11 +67,11 @@ namespace octave
 
       std::string dir = sys::file_ops::dirname (abs_file);
       std::string fcn = sys::file_ops::tail (abs_file);
-      size_t len = fcn.length ();
+      std::size_t len = fcn.length ();
       if (len >= 2 && fcn[len-2] == '.' && fcn[len-1] == 'm')
         fcn = fcn.substr (0, len-2);
 
-      size_t pos = dir.rfind (sys::file_ops::dir_sep_chars ());
+      std::size_t pos = dir.rfind (sys::file_ops::dir_sep_chars ());
 
       if (pos != std::string::npos && pos < dir.length () - 1)
         {

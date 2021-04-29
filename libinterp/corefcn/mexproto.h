@@ -55,6 +55,7 @@ SUCH DAMAGE.
 
 #if defined (__cplusplus)
 #  include <cstdlib>
+using std::size_t;
 extern "C" {
 #else
 #  include <stdlib.h>

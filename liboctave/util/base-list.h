@@ -49,8 +49,8 @@ namespace octave
 
     bool empty (void) const { return m_lst.empty (); }
 
-    size_t size (void) const { return m_lst.size (); }
-    size_t length (void) const { return size (); }
+    std::size_t size (void) const { return m_lst.size (); }
+    std::size_t length (void) const { return size (); }
 
     iterator erase (iterator pos) { return m_lst.erase (pos); }
 

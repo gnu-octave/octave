@@ -86,7 +86,7 @@ validate_property_name (const std::string& who, const std::string& what,
                         const std::set<std::string>& pnames,
                         const caseless_str& pname)
 {
-  size_t len = pname.length ();
+  std::size_t len = pname.length ();
   std::set<std::string> matches;
 
   // Find exact or partial matches to property name
@@ -101,7 +101,7 @@ validate_property_name (const std::string& who, const std::string& what,
         }
     }
 
-  size_t num_matches = matches.size ();
+  std::size_t num_matches = matches.size ();
 
   if (num_matches == 0)
     error ("%s: unknown %s property %s",
@@ -1297,13 +1297,13 @@ base_property::run_listeners (listener_mode mode)
 radio_values::radio_values (const std::string& opt_string)
   : default_val (), possible_vals ()
 {
-  size_t beg = 0;
-  size_t len = opt_string.length ();
+  std::size_t beg = 0;
+  std::size_t len = opt_string.length ();
   bool done = len == 0;
 
   while (! done)
     {
-      size_t end = opt_string.find ('|', beg);
+      std::size_t end = opt_string.find ('|', beg);
 
       if (end == std::string::npos)
         {
@@ -2305,9 +2305,9 @@ figure::properties::update___device_pixel_ratio__ (void)
 void
 property_list::set (const caseless_str& name, const octave_value& val)
 {
-  size_t offset = 0;
+  std::size_t offset = 0;
 
-  size_t len = name.length ();
+  std::size_t len = name.length ();
 
   if (len > 4)
     {
@@ -2450,9 +2450,9 @@ property_list::lookup (const caseless_str& name) const
 {
   octave_value retval;
 
-  size_t offset = 0;
+  std::size_t offset = 0;
 
-  size_t len = name.length ();
+  std::size_t len = name.length ();
 
   if (len > 4)
     {
@@ -9295,7 +9295,7 @@ figure::properties::init_toolkit (void)
 void
 axes::properties::clear_zoom_stack (bool do_unzoom)
 {
-  size_t items_to_leave_on_stack = (do_unzoom ? 7 : 0);
+  std::size_t items_to_leave_on_stack = (do_unzoom ? 7 : 0);
 
   while (zoom_stack.size () > items_to_leave_on_stack)
     zoom_stack.pop_front ();
@@ -13970,7 +13970,7 @@ undocumented.
             error ("drawnow: empty pipe '|'");
           else if (file[0] != '|')
             {
-              size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+              std::size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
               if (pos != std::string::npos)
                 {

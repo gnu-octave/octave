@@ -32,12 +32,12 @@
 
 namespace octave
 {
-  void action_container::run (size_t num)
+  void action_container::run (std::size_t num)
   {
     if (num > size ())
       num = size ();
 
-    for (size_t i = 0; i < num; i++)
+    for (std::size_t i = 0; i < num; i++)
       {
         run_first ();
 

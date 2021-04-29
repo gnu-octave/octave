@@ -74,10 +74,10 @@ namespace octave
     // If we had a previously compiled pattern, release it.
     free ();
 
-    size_t max_length = MAXLOOKBEHIND;
+    std::size_t max_length = MAXLOOKBEHIND;
 
-    size_t pos = 0;
-    size_t new_pos;
+    std::size_t pos = 0;
+    std::size_t new_pos;
     int inames = 0;
     std::ostringstream buf;
 
@@ -96,7 +96,7 @@ namespace octave
             // that here by replacing name tokens by dummy names, and dealing
             // with the dummy names later.
 
-            size_t tmp_pos = m_pattern.find_first_of ('>', new_pos);
+            std::size_t tmp_pos = m_pattern.find_first_of ('>', new_pos);
 
             if (tmp_pos == std::string::npos)
               (*current_liboctave_error_handler)
@@ -146,8 +146,8 @@ namespace octave
             // avoid issues.
 
             int brackets = 1;
-            size_t tmp_pos1 = new_pos + 2;
-            size_t tmp_pos2 = tmp_pos1;
+            std::size_t tmp_pos1 = new_pos + 2;
+            std::size_t tmp_pos2 = tmp_pos1;
 
             while (tmp_pos1 < m_pattern.length () && brackets > 0)
               {
@@ -173,7 +173,7 @@ namespace octave
               }
             else
               {
-                size_t tmp_pos3 = m_pattern.find_first_of ("*+", tmp_pos2);
+                std::size_t tmp_pos3 = m_pattern.find_first_of ("*+", tmp_pos2);
 
                 if (tmp_pos3 != std::string::npos && tmp_pos3 < tmp_pos1)
                   {
@@ -188,7 +188,7 @@ namespace octave
 
                     buf << m_pattern.substr (pos, new_pos - pos) << '(';
 
-                    size_t i;
+                    std::size_t i;
 
                     if (m_pattern.at (tmp_pos3) == '*')
                       i = 0;
@@ -263,7 +263,7 @@ namespace octave
     int namecount;
     int nameentrysize;
     char *nametable;
-    size_t idx = 0;
+    std::size_t idx = 0;
 
     pcre *re = static_cast<pcre *> (m_data);
 
@@ -393,7 +393,7 @@ namespace octave
                               {
                                 if (nidx[j] == i)
                                   {
-                                    size_t len = ovector[2*i+1] - ovector[2*i];
+                                    std::size_t len = ovector[2*i+1] - ovector[2*i];
                                     named_tokens(m_named_idx(j))
                                       = std::string (*(listptr+i-pos_offset),
                                                      len);
@@ -402,7 +402,7 @@ namespace octave
                               }
                           }
 
-                        size_t len = ovector[2*i+1] - ovector[2*i];
+                        std::size_t len = ovector[2*i+1] - ovector[2*i];
                         tokens(pos_match++) = std::string (*(listptr+i), len);
                       }
                     else
@@ -460,7 +460,7 @@ namespace octave
   // Declare rep_token_t used in processing replacement string
   typedef struct
   {
-    size_t pos;
+    std::size_t pos;
     int num;
   } rep_token_t;
 
@@ -472,7 +472,7 @@ namespace octave
 
     const regexp::match_data rx_lst = match (buffer);
 
-    size_t num_matches = rx_lst.size ();
+    std::size_t num_matches = rx_lst.size ();
 
     if (num_matches == 0)
       {
@@ -492,7 +492,7 @@ namespace octave
     std::vector<rep_token_t> tokens;
     tokens.reserve (5);  // Reserve memory for 5 pattern replacements
 
-    for (size_t i=0; i < repstr.size (); i++)
+    for (std::size_t i=0; i < repstr.size (); i++)
       {
         if (repstr[i] == '\\')
           {
@@ -527,10 +527,10 @@ namespace octave
     if (num_tokens > 0)
       {
         // Determine replacement length
-        const size_t replen = repstr.size () - 2*num_tokens;
+        const std::size_t replen = repstr.size () - 2*num_tokens;
         int delta = 0;
         auto p = rx_lst.begin ();
-        for (size_t i = 0; i < num_matches; i++)
+        for (std::size_t i = 0; i < num_matches; i++)
           {
             octave_quit ();
 
@@ -538,13 +538,13 @@ namespace octave
             double end = p->end ();
 
             const Matrix pairs (p->token_extents ());
-            size_t pairlen = 0;
+            std::size_t pairlen = 0;
             for (int j = 0; j < num_tokens; j++)
               {
                 if (tokens[j].num == 0)
-                  pairlen += static_cast<size_t> (end - start + 1);
+                  pairlen += static_cast<std::size_t> (end - start + 1);
                 else if (tokens[j].num <= pairs.rows ())
-                  pairlen += static_cast<size_t> (pairs(tokens[j].num-1,1)
+                  pairlen += static_cast<std::size_t> (pairs(tokens[j].num-1,1)
                                                   - pairs(tokens[j].num-1,0)
                                                   + 1);
               }
@@ -555,9 +555,9 @@ namespace octave
 
         // Build replacement string
         rep.reserve (buffer.size () + delta);
-        size_t from = 0;
+        std::size_t from = 0;
         p = rx_lst.begin ();
-        for (size_t i = 0; i < num_matches; i++)
+        for (std::size_t i = 0; i < num_matches; i++)
           {
             octave_quit ();
 
@@ -565,10 +565,10 @@ namespace octave
             double end = p->end ();
 
             const Matrix pairs (p->token_extents ());
-            rep.append (&buffer[from], static_cast<size_t> (start - 1 - from));
-            from = static_cast<size_t> (end);
+            rep.append (&buffer[from], static_cast<std::size_t> (start - 1 - from));
+            from = static_cast<std::size_t> (end);
 
-            size_t cur_pos = 0;
+            std::size_t cur_pos = 0;
 
             for (int j = 0; j < num_tokens; j++)
               {
@@ -579,14 +579,14 @@ namespace octave
                 if (k == 0)
                   {
                     // replace with entire match
-                    rep.append (&buffer[static_cast<size_t> (end - 1)],
-                                static_cast<size_t> (end - start + 1));
+                    rep.append (&buffer[static_cast<std::size_t> (end - 1)],
+                                static_cast<std::size_t> (end - start + 1));
                   }
                 else if (k <= pairs.rows ())
                   {
                     // replace with group capture
-                    rep.append (&buffer[static_cast<size_t> (pairs(k-1,0)-1)],
-                                static_cast<size_t> (pairs(k-1,1)
+                    rep.append (&buffer[static_cast<std::size_t> (pairs(k-1,0)-1)],
+                                static_cast<std::size_t> (pairs(k-1,1)
                                                      - pairs(k-1,0) + 1));
                   }
                 else
@@ -604,10 +604,10 @@ namespace octave
     else
       {
         // Determine repstr length
-        const size_t replen = repstr.size ();
+        const std::size_t replen = repstr.size ();
         int delta = 0;
         auto p = rx_lst.begin ();
-        for (size_t i = 0; i < num_matches; i++)
+        for (std::size_t i = 0; i < num_matches; i++)
           {
             octave_quit ();
 
@@ -618,15 +618,15 @@ namespace octave
 
         // Build replacement string
         rep.reserve (buffer.size () + delta);
-        size_t from = 0;
+        std::size_t from = 0;
         p = rx_lst.begin ();
-        for (size_t i = 0; i < num_matches; i++)
+        for (std::size_t i = 0; i < num_matches; i++)
           {
             octave_quit ();
 
             rep.append (&buffer[from],
-                        static_cast<size_t> (p->start () - 1 - from));
-            from = static_cast<size_t> (p->end ());
+                        static_cast<std::size_t> (p->start () - 1 - from));
+            from = static_cast<std::size_t> (p->end ());
             rep.append (repstr);
             p++;
           }

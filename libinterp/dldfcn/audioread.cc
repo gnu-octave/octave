@@ -297,7 +297,7 @@ Comment.
     error ("audiowrite: sample rate FS must be a positive scalar integer");
 
   std::string ext;
-  size_t dotpos = filename.find_last_of ('.');
+  std::size_t dotpos = filename.find_last_of ('.');
   if (dotpos != std::string::npos)
     ext = filename.substr (dotpos + 1);
   std::transform (ext.begin (), ext.end (), ext.begin (), ::tolower);

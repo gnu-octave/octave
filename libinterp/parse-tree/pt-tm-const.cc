@@ -608,7 +608,7 @@ namespace octave
           {
             // Optimize all scalars case.
             TYPE result (m_dv);
-            assert (static_cast<size_t> (result.numel ()) == row.length ());
+            assert (static_cast<std::size_t> (result.numel ()) == row.length ());
             octave_idx_type i = 0;
             for (const auto& elt : row)
               result(i++) = octave_value_extract<ELT_T> (elt);

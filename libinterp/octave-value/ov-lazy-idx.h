@@ -60,7 +60,7 @@ public:
 
   octave_value fast_elem_extract (octave_idx_type n) const;
 
-  size_t byte_size (void) const { return numel () * sizeof (octave_idx_type); }
+  std::size_t byte_size (void) const { return numel () * sizeof (octave_idx_type); }
 
   octave_value squeeze (void) const;
 

@@ -36,11 +36,11 @@
 namespace octave
 {
   bool
-  base64_encode (const char *inc, const size_t inlen, char **out)
+  base64_encode (const char *inc, const std::size_t inlen, char **out)
   {
     bool ret = false;
 
-    size_t outlen = octave_base64_encode_alloc_wrapper (inc, inlen, out);
+    std::size_t outlen = octave_base64_encode_alloc_wrapper (inc, inlen, out);
 
     if (! out)
       {
@@ -63,7 +63,7 @@ namespace octave
     Array<double> retval;
 
     double *out;
-    size_t outlen;
+    std::size_t outlen;
 
     bool ok
       = octave_base64_decode_alloc_wrapper (str.data (), str.length (),
@@ -101,7 +101,7 @@ namespace octave
     intNDArray<octave_uint8> retval;
 
     char *out;
-    size_t outlen;
+    std::size_t outlen;
 
     bool ok
       = octave_base64_decode_alloc_wrapper (str.data (), str.length (),

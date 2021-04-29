@@ -363,7 +363,7 @@ public:
 
   virtual octave_idx_type numel (void) const { return dims ().numel (); }
 
-  virtual size_t byte_size (void) const { return 0; }
+  virtual std::size_t byte_size (void) const { return 0; }
 
   virtual octave_idx_type nnz (void) const;
 
@@ -654,7 +654,7 @@ public:
 
   virtual string_vector map_keys (void) const;
 
-  virtual size_t nparents (void) const;
+  virtual std::size_t nparents (void) const;
 
   virtual std::list<std::string> parent_class_name_list (void) const;
 

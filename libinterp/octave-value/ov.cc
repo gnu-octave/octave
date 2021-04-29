@@ -1563,12 +1563,12 @@ octave_value::subsref (const std::string& type,
 octave_value
 octave_value::next_subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,
-                            size_t skip)
+                            std::size_t skip)
 {
   if (idx.size () > skip)
     {
       std::list<octave_value_list> new_idx (idx);
-      for (size_t i = 0; i < skip; i++)
+      for (std::size_t i = 0; i < skip; i++)
         new_idx.erase (new_idx.begin ());
       return subsref (type.substr (skip), new_idx);
     }
@@ -1579,12 +1579,12 @@ octave_value::next_subsref (const std::string& type,
 octave_value_list
 octave_value::next_subsref (int nargout, const std::string& type,
                             const std::list<octave_value_list>& idx,
-                            size_t skip)
+                            std::size_t skip)
 {
   if (idx.size () > skip)
     {
       std::list<octave_value_list> new_idx (idx);
-      for (size_t i = 0; i < skip; i++)
+      for (std::size_t i = 0; i < skip; i++)
         new_idx.erase (new_idx.begin ());
       return subsref (type.substr (skip), new_idx, nargout);
     }
@@ -1595,12 +1595,12 @@ octave_value::next_subsref (int nargout, const std::string& type,
 octave_value
 octave_value::next_subsref (bool auto_add, const std::string& type,
                             const std::list<octave_value_list>& idx,
-                            size_t skip)
+                            std::size_t skip)
 {
   if (idx.size () > skip)
     {
       std::list<octave_value_list> new_idx (idx);
-      for (size_t i = 0; i < skip; i++)
+      for (std::size_t i = 0; i < skip; i++)
         new_idx.erase (new_idx.begin ());
       return subsref (type.substr (skip), new_idx, auto_add);
     }

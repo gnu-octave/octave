@@ -354,8 +354,8 @@ namespace octave
       (*current_liboctave_error_handler)
         ("Unable to get handle to own process.");
 
-    size_t lib_num = 64;
-    size_t size_lib = sizeof (HMODULE);
+    std::size_t lib_num = 64;
+    std::size_t size_lib = sizeof (HMODULE);
     HMODULE *h_libs;
     DWORD bytes_all_libs;
     bool got_libs;
@@ -375,7 +375,7 @@ namespace octave
 
     if (got_libs)
       {
-        for (size_t i = 0; i < (bytes_all_libs / size_lib); i++)
+        for (std::size_t i = 0; i < (bytes_all_libs / size_lib); i++)
           {
             // Check for function in library.
             function = reinterpret_cast<void *>

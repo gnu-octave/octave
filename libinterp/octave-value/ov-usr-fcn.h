@@ -88,9 +88,9 @@ public:
 
   bool is_user_code (void) const { return true; }
 
-  std::string get_code_line (size_t line);
+  std::string get_code_line (std::size_t line);
 
-  std::deque<std::string> get_code_lines (size_t line, size_t num_lines);
+  std::deque<std::string> get_code_lines (std::size_t line, std::size_t num_lines);
 
   void cache_function_text (const std::string& text,
                             const octave::sys::time& timestamp);

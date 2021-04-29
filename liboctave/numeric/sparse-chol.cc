@@ -306,7 +306,7 @@ namespace octave
 
           if (minor_p > 0 && minor_p < a_nr)
             {
-              size_t n1 = a_nr + 1;
+              std::size_t n1 = a_nr + 1;
               Lsparse->p = CHOLMOD_NAME(realloc) (minor_p+1,
                                                   sizeof(octave_idx_type),
                                                   Lsparse->p, &n1, cm);

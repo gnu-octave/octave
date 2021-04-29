@@ -132,7 +132,7 @@ public:
 
   dim_vector dims (void) const { return m_map.dims (); }
 
-  OCTINTERP_API size_t byte_size (void) const;
+  OCTINTERP_API std::size_t byte_size (void) const;
 
   // This is the number of elements in each field.  The total number
   // of elements is numel () * nfields ().
@@ -144,7 +144,7 @@ public:
 
   octave_idx_type nfields (void) const { return m_map.nfields (); }
 
-  size_t nparents (void) const { return m_parent_list.size (); }
+  std::size_t nparents (void) const { return m_parent_list.size (); }
 
   octave_value reshape (const dim_vector& new_dims) const
   {
@@ -271,7 +271,7 @@ public:
 
     octave_idx_type nfields (void) const { return m_field_names.numel (); }
 
-    size_t nparents (void) const { return m_parent_class_names.size (); }
+    std::size_t nparents (void) const { return m_parent_class_names.size (); }
 
     string_vector fields (void) const { return m_field_names; }
 

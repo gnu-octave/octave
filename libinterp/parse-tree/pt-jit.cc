@@ -211,7 +211,7 @@ namespace octave
     if (plist)
       {
         auto piter = plist->begin ();
-        for (size_t i = 0; i < args.size (); ++i, ++piter)
+        for (std::size_t i = 0; i < args.size (); ++i, ++piter)
           {
             if (piter == plist->end ())
               throw jit_fail_exception ("Too many parameter to function");
@@ -584,7 +584,7 @@ namespace octave
   jit_convert::visit_if_command_list (tree_if_command_list& lst)
   {
     tree_if_clause *last = lst.back ();
-    size_t last_else = static_cast<size_t> (last->is_else_clause ());
+    std::size_t last_else = static_cast<std::size_t> (last->is_else_clause ());
 
     // entry_blocks represents the block you need to enter in order to execute
     // the condition check for the ith clause.  For the else, it is simple the
@@ -595,7 +595,7 @@ namespace octave
     // Need to construct blocks first, because they have jumps to each other.
     auto iter = lst.begin ();
     ++iter;
-    for (size_t i = 1; iter != lst.end (); ++iter, ++i)
+    for (std::size_t i = 1; iter != lst.end (); ++iter, ++i)
       {
         tree_if_clause *tic = *iter;
         if (tic->is_else_clause ())
@@ -614,9 +614,9 @@ namespace octave
     m_breaks.clear ();
     m_continues.clear ();
 
-    size_t num_incoming = 0; // number of incoming blocks to our tail
+    std::size_t num_incoming = 0; // number of incoming blocks to our tail
     iter = lst.begin ();
-    for (size_t i = 0; iter != lst.end (); ++iter, ++i)
+    for (std::size_t i = 0; iter != lst.end (); ++iter, ++i)
       {
         tree_if_clause *tic = *iter;
         m_block = entry_blocks[i];
@@ -858,13 +858,13 @@ namespace octave
     jit_value *value = visit (expr);
     assert (value);
 
-    size_t case_blocks_num = lst->size ();
+    std::size_t case_blocks_num = lst->size ();
 
     if (! case_blocks_num)  // there's nothing to do
       return;
 
     // check for otherwise, it's interpreted as last 'else' condition
-    size_t has_otherwise = 0;
+    std::size_t has_otherwise = 0;
     tree_switch_case *last = lst->back ();
     if (last->is_default_case ())
       has_otherwise = 1;
@@ -874,7 +874,7 @@ namespace octave
     // the first entry point is always the actual block.  Afterward, new blocks
     // are created for every case and the otherwise branch
     entry_blocks[0] = m_block;
-    for (size_t i = 1; i < case_blocks_num; ++i)
+    for (std::size_t i = 1; i < case_blocks_num; ++i)
       entry_blocks[i] = m_factory.create<jit_block> ("case_cond");
 
     jit_block *tail = m_factory.create<jit_block> ("switch_tail");
@@ -890,10 +890,10 @@ namespace octave
     m_breaks.clear ();
     m_continues.clear ();
 
-    size_t num_incoming = 0; // number of incoming blocks to our tail
+    std::size_t num_incoming = 0; // number of incoming blocks to our tail
 
     auto iter = lst->begin ();
-    for (size_t i = 0; i < case_blocks_num; ++iter, ++i)
+    for (std::size_t i = 0; i < case_blocks_num; ++iter, ++i)
       {
         tree_switch_case *twc = *iter;
         m_block = entry_blocks[i]; // case_cond
@@ -1185,7 +1185,7 @@ namespace octave
   }
 
   std::string
-  jit_convert::next_name (const char *prefix, size_t& count, bool inc)
+  jit_convert::next_name (const char *prefix, std::size_t& count, bool inc)
   {
     std::stringstream ss;
     ss << prefix << count;
@@ -1226,13 +1226,13 @@ namespace octave
     else
       object = visit (tree_object);
 
-    size_t narg = arg_list->size ();
+    std::size_t narg = arg_list->size ();
     auto iter = arg_list->begin ();
     bool have_extra = extra_arg;
     std::vector<jit_value *> call_args (narg + 1 + have_extra);
     call_args[0] = object;
 
-    for (size_t idx = 0; iter != arg_list->end (); ++idx, ++iter)
+    for (std::size_t idx = 0; iter != arg_list->end (); ++idx, ++iter)
       {
         unwind_action pop_end_context
           (&std::vector<jit_magic_end::context>::pop_back, &m_end_context));
@@ -1350,7 +1350,7 @@ namespace octave
         // octave_base_value** type
         llvm::Value *arg = &*(m_function->arg_begin ());
 
-        for (size_t i = 0; i < m_argument_vec.size (); ++i)
+        for (std::size_t i = 0; i < m_argument_vec.size (); ++i)
           {
 #if defined (LLVM_IRBUILDER_CREATECONSTINBOUNDSGEP1_32_REQUIRES_TYPE)
             // LLVM >= 3.7
@@ -1400,7 +1400,7 @@ namespace octave
           {
             auto piter = plist->begin ();
             auto pend = plist->end ();
-            for (size_t i = 0; i < args.size () && piter != pend; ++i, ++piter)
+            for (std::size_t i = 0; i < args.size () && piter != pend; ++i, ++piter)
               {
                 tree_decl_elt *elt = *piter;
                 std::string arg_name = elt->name ();
@@ -1462,7 +1462,7 @@ namespace octave
   jit_convert_llvm::finish_phi (jit_phi *phi)
   {
     llvm::PHINode *llvm_phi = phi->to_llvm ();
-    for (size_t i = 0; i < phi->argument_count (); ++i)
+    for (std::size_t i = 0; i < phi->argument_count (); ++i)
       {
         llvm::BasicBlock *pred = phi->incoming_llvm (i);
         llvm_phi->addIncoming (phi->argument_llvm (i), pred);
@@ -1553,7 +1553,7 @@ namespace octave
     const jit_function& ol = call.overload ();
 
     std::vector<jit_value *> args (call.arguments ().size ());
-    for (size_t i = 0; i < args.size (); ++i)
+    for (std::size_t i = 0; i < args.size (); ++i)
       args[i] = call.argument (i);
 
     llvm::Value *ret = ol.call (builder, args);
@@ -1726,7 +1726,7 @@ namespace octave
   void
   jit_infer::append_users_term (jit_terminator *term)
   {
-    for (size_t i = 0; i < term->successor_count (); ++i)
+    for (std::size_t i = 0; i < term->successor_count (); ++i)
       {
         if (term->alive (i))
           {
@@ -1788,7 +1788,7 @@ namespace octave
   }
 
   void
-  jit_infer::do_construct_ssa (jit_block& ablock, size_t avisit_count)
+  jit_infer::do_construct_ssa (jit_block& ablock, std::size_t avisit_count)
   {
     if (ablock.visited (avisit_count))
       return;
@@ -1802,7 +1802,7 @@ namespace octave
       }
 
     // finish phi nodes of successors
-    for (size_t i = 0; i < ablock.successor_count (); ++i)
+    for (std::size_t i = 0; i < ablock.successor_count (); ++i)
       {
         jit_block *finish = ablock.successor (i);
 
@@ -1826,7 +1826,7 @@ namespace octave
           }
       }
 
-    for (size_t i = 0; i < ablock.dom_successor_count (); ++i)
+    for (std::size_t i = 0; i < ablock.dom_successor_count (); ++i)
       do_construct_ssa (*ablock.dom_successor (i), avisit_count);
 
     ablock.pop_all ();
@@ -1921,7 +1921,7 @@ namespace octave
           {
             // instead of releasing on assign, release on all incoming
             // branches, this can get rid of casts inside loops
-            for (size_t i = 0; i < phi->argument_count (); ++i)
+            for (std::size_t i = 0; i < phi->argument_count (); ++i)
               {
                 jit_value *arg = phi->argument (i);
                 if (! arg->needs_release ())
@@ -1962,7 +1962,7 @@ namespace octave
         if (isa<jit_call> (instr))
           {
             // place releases for temporary arguments
-            for (size_t i = 0; i < instr->argument_count (); ++i)
+            for (std::size_t i = 0; i < instr->argument_count (); ++i)
               {
                 jit_value *arg = instr->argument (i);
                 if (! arg->needs_release ())
@@ -2014,7 +2014,7 @@ namespace octave
     jit_block& pblock = *phi.parent ();
     const jit_operation& cast_fn = jit_typeinfo::cast (phi.type ());
     jit_variable *dest = phi.dest ();
-    for (size_t i = 0; i < phi.argument_count (); ++i)
+    for (std::size_t i = 0; i < phi.argument_count (); ++i)
       {
         jit_value *arg = phi.argument (i);
         if (arg->type () != phi.type ())
@@ -2236,7 +2236,7 @@ namespace octave
   tree_jit::do_execute (tree_simple_for_command& cmd,
                         const octave_value& bounds)
   {
-    size_t tc = trip_count (bounds);
+    std::size_t tc = trip_count (bounds);
     if (! tc || ! initialized || ! enabled ())
       return false;
 
@@ -2247,7 +2247,7 @@ namespace octave
 
     if (! info || ! info->match (extra_vars))
       {
-        if (tc < static_cast<size_t> (Vjit_startcnt))
+        if (tc < static_cast<std::size_t> (Vjit_startcnt))
           return false;
 
         delete info;
@@ -2308,7 +2308,7 @@ namespace octave
             && ! Vdebug_on_interrupt && ! Vdebug_on_error);
   }
 
-  size_t
+  std::size_t
   tree_jit::trip_count (const octave_value& bounds) const
   {
     if (bounds.is_range ())
@@ -2368,7 +2368,7 @@ namespace octave
   // Create or insert an LLVM Function declaration for an intrinsic and return
   // it
   llvm::Function*
-  jit_module::get_intrinsic_declaration (size_t id,
+  jit_module::get_intrinsic_declaration (std::size_t id,
                                          std::vector<llvm::Type*> types) const
   {
     return llvm::Intrinsic::getDeclaration
@@ -2484,8 +2484,8 @@ namespace octave
       m_function (nullptr),
       m_argument_types (ov_args.length ())
   {
-    size_t nargs = ov_args.length ();
-    for (size_t i = 0; i < nargs; ++i)
+    std::size_t nargs = ov_args.length ();
+    for (std::size_t i = 0; i < nargs; ++i)
       m_argument_types[i] = jit_typeinfo::type_of (ov_args(i));
 
     jit_function raw_fn;
@@ -2537,7 +2537,7 @@ namespace octave
 
         llvm::Value *wrapper_arg = wrapper.argument (builder, 0);
         std::vector<llvm::Value *> raw_args (nargs);
-        for (size_t i = 0; i < nargs; ++i)
+        for (std::size_t i = 0; i < nargs; ++i)
           {
             llvm::Value *arg;
             // LLVM <= 3.6
@@ -2621,9 +2621,9 @@ namespace octave
 
     // FIXME: figure out a way to delete ov_args so we avoid duplicating
     // refcount
-    size_t nargs = ov_args.length ();
+    std::size_t nargs = ov_args.length ();
     std::vector<octave_base_value *> args (nargs);
-    for (size_t i = 0; i < nargs; ++i)
+    for (std::size_t i = 0; i < nargs; ++i)
       {
         octave_base_value *obv = ov_args(i).internal_rep ();
         obv->grab ();
@@ -2645,11 +2645,11 @@ namespace octave
     if (! m_function)
       return true;
 
-    size_t nargs = ov_args.length ();
+    std::size_t nargs = ov_args.length ();
     if (nargs != m_argument_types.size ())
       return false;
 
-    for (size_t i = 0; i < nargs; ++i)
+    for (std::size_t i = 0; i < nargs; ++i)
       if (jit_typeinfo::type_of (ov_args(i)) != m_argument_types[i])
         return false;
 
@@ -2687,7 +2687,7 @@ namespace octave
       return false;
 
     std::vector<octave_base_value *> real_arguments (m_arguments.size ());
-    for (size_t i = 0; i < m_arguments.size (); ++i)
+    for (std::size_t i = 0; i < m_arguments.size (); ++i)
       {
         if (m_arguments[i].second)
           {
@@ -2704,7 +2704,7 @@ namespace octave
 
     symbol_scope scope = __require_current_scope__ ("jit_info::execute");
 
-    for (size_t i = 0; i < m_arguments.size (); ++i)
+    for (std::size_t i = 0; i < m_arguments.size (); ++i)
       {
         const std::string& name = m_arguments[i].first;
 
@@ -2724,7 +2724,7 @@ namespace octave
     if (! m_function)
       return true;
 
-    for (size_t i = 0; i < m_bounds.size (); ++i)
+    for (std::size_t i = 0; i < m_bounds.size (); ++i)
       {
         const std::string& arg_name = m_bounds[i].second;
         octave_value value = find (extra_vars, arg_name);

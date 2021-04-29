@@ -141,7 +141,7 @@ namespace octave
   }
 
 #define CHECK_SIMD_ALIGNMENT(x)                         \
-  (((reinterpret_cast<ptrdiff_t> (x)) & 0xF) == 0)
+  (((reinterpret_cast<std::ptrdiff_t> (x)) & 0xF) == 0)
 
   void *
   fftw_planner::do_create_plan (int dir, const int rank,
@@ -241,8 +241,8 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (Complex, itmp, nn * howmany + 32);
             itmp = reinterpret_cast<Complex *>
-                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p
               = fftw_plan_many_dft (rank, tmp, howmany,
@@ -360,8 +360,8 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (double, itmp, nn + 32);
             itmp = reinterpret_cast<double *>
-                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p
               = fftw_plan_many_dft_r2c (rank, tmp, howmany, itmp,
@@ -593,8 +593,8 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (FloatComplex, itmp, nn * howmany + 32);
             itmp = reinterpret_cast<FloatComplex *>
-                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p
               = fftwf_plan_many_dft (rank, tmp, howmany,
@@ -712,8 +712,8 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (float, itmp, nn + 32);
             itmp = reinterpret_cast<float *>
-                   (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-                    ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
+                   (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF) +
+                    ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p
               = fftwf_plan_many_dft_r2c (rank, tmp, howmany, itmp,
@@ -771,15 +771,15 @@ namespace octave
 
   template <typename T>
   static inline void
-  convert_packcomplex_1d (T *out, size_t nr, size_t nc,
+  convert_packcomplex_1d (T *out, std::size_t nr, std::size_t nc,
                           octave_idx_type stride, octave_idx_type dist)
   {
     octave_quit ();
 
     // Fill in the missing data.
 
-    for (size_t i = 0; i < nr; i++)
-      for (size_t j = nc/2+1; j < nc; j++)
+    for (std::size_t i = 0; i < nr; i++)
+      for (std::size_t j = nc/2+1; j < nc; j++)
         out[j*stride + i*dist] = conj (out[(nc - j)*stride + i*dist]);
 
     octave_quit ();
@@ -789,21 +789,21 @@ namespace octave
   static inline void
   convert_packcomplex_Nd (T *out, const dim_vector& dv)
   {
-    size_t nc = dv(0);
-    size_t nr = dv(1);
-    size_t np = (dv.ndims () > 2 ? dv.numel () / nc / nr : 1);
-    size_t nrp = nr * np;
+    std::size_t nc = dv(0);
+    std::size_t nr = dv(1);
+    std::size_t np = (dv.ndims () > 2 ? dv.numel () / nc / nr : 1);
+    std::size_t nrp = nr * np;
     T *ptr1, *ptr2;
 
     octave_quit ();
 
     // Create space for the missing elements.
 
-    for (size_t i = 0; i < nrp; i++)
+    for (std::size_t i = 0; i < nrp; i++)
       {
         ptr1 = out + i * (nc/2 + 1) + nrp*((nc-1)/2);
         ptr2 = out + i * nc;
-        for (size_t j = 0; j < nc/2+1; j++)
+        for (std::size_t j = 0; j < nc/2+1; j++)
           *ptr2++ = *ptr1++;
       }
 
@@ -811,13 +811,13 @@ namespace octave
 
     // Fill in the missing data for the rank = 2 case directly for speed.
 
-    for (size_t i = 0; i < np; i++)
+    for (std::size_t i = 0; i < np; i++)
       {
-        for (size_t j = 1; j < nr; j++)
-          for (size_t k = nc/2+1; k < nc; k++)
+        for (std::size_t j = 1; j < nr; j++)
+          for (std::size_t k = nc/2+1; k < nc; k++)
             out[k + (j + i*nr)*nc] = conj (out[nc - k + ((i+1)*nr - j)*nc]);
 
-        for (size_t j = nc/2+1; j < nc; j++)
+        for (std::size_t j = nc/2+1; j < nc; j++)
           out[j + i*nr*nc] = conj (out[(i*nr+1)*nc - j]);
       }
 
@@ -825,18 +825,18 @@ namespace octave
 
     // Now do the permutations needed for rank > 2 cases.
 
-    size_t jstart = dv(0) * dv(1);
-    size_t kstep = dv(0);
-    size_t nel = dv.numel ();
+    std::size_t jstart = dv(0) * dv(1);
+    std::size_t kstep = dv(0);
+    std::size_t nel = dv.numel ();
 
     for (int inner = 2; inner < dv.ndims (); inner++)
       {
-        size_t jmax = jstart * dv(inner);
-        for (size_t i = 0; i < nel; i+=jmax)
-          for (size_t j = jstart, jj = jmax-jstart; j < jj;
+        std::size_t jmax = jstart * dv(inner);
+        for (std::size_t i = 0; i < nel; i+=jmax)
+          for (std::size_t j = jstart, jj = jmax-jstart; j < jj;
                j+=jstart, jj-=jstart)
-            for (size_t k = 0; k < jstart; k+= kstep)
-              for (size_t l = nc/2+1; l < nc; l++)
+            for (std::size_t k = 0; k < jstart; k+= kstep)
+              for (std::size_t l = nc/2+1; l < nc; l++)
                 {
                   T tmp = out[i+ j + k + l];
                   out[i + j + k + l] = out[i + jj + k + l];
@@ -849,8 +849,8 @@ namespace octave
   }
 
   int
-  fftw::fft (const double *in, Complex *out, size_t npts,
-             size_t nsamples, octave_idx_type stride, octave_idx_type dist)
+  fftw::fft (const double *in, Complex *out, std::size_t npts,
+             std::size_t nsamples, octave_idx_type stride, octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
 
@@ -870,8 +870,8 @@ namespace octave
   }
 
   int
-  fftw::fft (const Complex *in, Complex *out, size_t npts,
-             size_t nsamples, octave_idx_type stride, octave_idx_type dist)
+  fftw::fft (const Complex *in, Complex *out, std::size_t npts,
+             std::size_t nsamples, octave_idx_type stride, octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
 
@@ -889,8 +889,8 @@ namespace octave
   }
 
   int
-  fftw::ifft (const Complex *in, Complex *out, size_t npts,
-              size_t nsamples, octave_idx_type stride,
+  fftw::ifft (const Complex *in, Complex *out, std::size_t npts,
+              std::size_t nsamples, octave_idx_type stride,
               octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
@@ -905,8 +905,8 @@ namespace octave
                       reinterpret_cast<fftw_complex *> (out));
 
     const Complex scale = npts;
-    for (size_t j = 0; j < nsamples; j++)
-      for (size_t i = 0; i < npts; i++)
+    for (std::size_t j = 0; j < nsamples; j++)
+      for (std::size_t i = 0; i < npts; i++)
         out[i*stride + j*dist] /= scale;
 
     return 0;
@@ -974,17 +974,17 @@ namespace octave
                       reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
                       reinterpret_cast<fftw_complex *> (out));
 
-    const size_t npts = dv.numel ();
+    const std::size_t npts = dv.numel ();
     const Complex scale = npts;
-    for (size_t i = 0; i < npts; i++)
+    for (std::size_t i = 0; i < npts; i++)
       out[i] /= scale;
 
     return 0;
   }
 
   int
-  fftw::fft (const float *in, FloatComplex *out, size_t npts,
-             size_t nsamples, octave_idx_type stride, octave_idx_type dist)
+  fftw::fft (const float *in, FloatComplex *out, std::size_t npts,
+             std::size_t nsamples, octave_idx_type stride, octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
 
@@ -1004,8 +1004,8 @@ namespace octave
   }
 
   int
-  fftw::fft (const FloatComplex *in, FloatComplex *out, size_t npts,
-             size_t nsamples, octave_idx_type stride, octave_idx_type dist)
+  fftw::fft (const FloatComplex *in, FloatComplex *out, std::size_t npts,
+             std::size_t nsamples, octave_idx_type stride, octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
 
@@ -1023,8 +1023,8 @@ namespace octave
   }
 
   int
-  fftw::ifft (const FloatComplex *in, FloatComplex *out, size_t npts,
-              size_t nsamples, octave_idx_type stride,
+  fftw::ifft (const FloatComplex *in, FloatComplex *out, std::size_t npts,
+              std::size_t nsamples, octave_idx_type stride,
               octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
@@ -1040,8 +1040,8 @@ namespace octave
                        reinterpret_cast<fftwf_complex *> (out));
 
     const FloatComplex scale = npts;
-    for (size_t j = 0; j < nsamples; j++)
-      for (size_t i = 0; i < npts; i++)
+    for (std::size_t j = 0; j < nsamples; j++)
+      for (std::size_t i = 0; i < npts; i++)
         out[i*stride + j*dist] /= scale;
 
     return 0;
@@ -1109,9 +1109,9 @@ namespace octave
                        reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *>(in)),
                        reinterpret_cast<fftwf_complex *> (out));
 
-    const size_t npts = dv.numel ();
+    const std::size_t npts = dv.numel ();
     const FloatComplex scale = npts;
-    for (size_t i = 0; i < npts; i++)
+    for (std::size_t i = 0; i < npts; i++)
       out[i] /= scale;
 
     return 0;

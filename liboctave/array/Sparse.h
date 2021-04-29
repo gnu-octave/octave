@@ -263,10 +263,10 @@ public:
     return ret;
   }
 
-  size_t byte_size (void) const
+  std::size_t byte_size (void) const
   {
-    return (static_cast<size_t> (cols () + 1) * sizeof (octave_idx_type)
-            + static_cast<size_t> (nzmax ())
+    return (static_cast<std::size_t> (cols () + 1) * sizeof (octave_idx_type)
+            + static_cast<std::size_t> (nzmax ())
             * (sizeof (T) + sizeof (octave_idx_type)));
   }
 

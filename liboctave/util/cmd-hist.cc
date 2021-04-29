@@ -124,8 +124,8 @@ namespace octave
   {
     m_history_control = 0;
 
-    size_t len = control_arg.length ();
-    size_t beg = 0;
+    std::size_t len = control_arg.length ();
+    std::size_t beg = 0;
 
     while (beg < len)
       {
@@ -133,7 +133,7 @@ namespace octave
           beg++;
         else
           {
-            size_t end = control_arg.find (':', beg);
+            std::size_t end = control_arg.find (':', beg);
 
             if (end == std::string::npos)
               end = len;

@@ -46,7 +46,7 @@ namespace octave
   {
   public:
 
-    typedef size_t context_id;
+    typedef std::size_t context_id;
 
     // generic variable
     static const unsigned int local = 1;
@@ -78,13 +78,13 @@ namespace octave
       // FIXME: use special storage class instead?
       bool is_valid (void) const { return ! m_name.empty (); }
 
-      void set_frame_offset (size_t offset) { m_frame_offset = offset; }
+      void set_frame_offset (std::size_t offset) { m_frame_offset = offset; }
 
-      size_t frame_offset (void) const { return m_frame_offset; }
+      std::size_t frame_offset (void) const { return m_frame_offset; }
 
-      void set_data_offset (size_t offset) { m_data_offset = offset; }
+      void set_data_offset (std::size_t offset) { m_data_offset = offset; }
 
-      size_t data_offset (void) const { return m_data_offset; }
+      std::size_t data_offset (void) const { return m_data_offset; }
 
       bool is_local (void) const
       {
@@ -143,8 +143,8 @@ namespace octave
 
     private:
 
-      size_t m_frame_offset;
-      size_t m_data_offset;
+      std::size_t m_frame_offset;
+      std::size_t m_data_offset;
 
       unsigned int m_storage_class;
 
@@ -172,13 +172,13 @@ namespace octave
 
     explicit operator bool () const { return is_valid (); }
 
-    void set_frame_offset (size_t offset) { m_rep->set_frame_offset (offset); }
+    void set_frame_offset (std::size_t offset) { m_rep->set_frame_offset (offset); }
 
-    size_t frame_offset (void) const { return m_rep->frame_offset (); }
+    std::size_t frame_offset (void) const { return m_rep->frame_offset (); }
 
-    void set_data_offset (size_t offset) { m_rep->set_data_offset (offset); }
+    void set_data_offset (std::size_t offset) { m_rep->set_data_offset (offset); }
 
-    size_t data_offset (void) const { return m_rep->data_offset (); }
+    std::size_t data_offset (void) const { return m_rep->data_offset (); }
 
     symbol_record dup (void) const { return symbol_record (m_rep->dup ()); }
 

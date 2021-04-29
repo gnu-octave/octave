@@ -148,7 +148,7 @@ namespace octave
   {
     char *buf = pbase () + diary_skip;
 
-    size_t len = pptr () - buf;
+    std::size_t len = pptr () - buf;
 
     octave_diary.write (buf, len);
 

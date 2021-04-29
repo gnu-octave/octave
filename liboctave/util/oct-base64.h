@@ -37,7 +37,7 @@ template <typename T> class Array;
 namespace octave
 {
   extern OCTAVE_API bool
-  base64_encode (const char *inc, const size_t inlen, char **out);
+  base64_encode (const char *inc, const std::size_t inlen, char **out);
 
   extern OCTAVE_API Array<double>
   base64_decode (const std::string& str);

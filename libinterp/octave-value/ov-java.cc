@@ -523,7 +523,7 @@ get_jvm_lib_path_in_subdir (std::string java_home_path)
     };
 #endif
 
-  for (size_t i = 0; i < subdirs.size (); i++)
+  for (std::size_t i = 0; i < subdirs.size (); i++)
     {
       std::string candidate = java_home_path + "/" + subdirs[i]
                               + "/" LIBJVM_FILE_NAME;

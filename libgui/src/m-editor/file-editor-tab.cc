@@ -2428,7 +2428,7 @@ namespace octave
         const uint32_t *src = reinterpret_cast<const uint32_t *>
                               (u32_str.data ());
 
-        size_t length;
+        std::size_t length;
         char *res_str =
           octave_u32_conv_to_encoding_strict (m_encoding.toStdString ().c_str (),
                                               src, u32_str.size (), &length);

@@ -954,7 +954,7 @@ namespace octave
 
     symbol_table& symtab = interp.get_symbol_table ();
 
-    size_t pos = m_name.find ('.');
+    std::size_t pos = m_name.find ('.');
 
     if (pos != std::string::npos)
       {
@@ -976,8 +976,8 @@ namespace octave
         // package.  An object may only appear as the first element,
         // then it must be followed directly by a function name.
 
-        size_t beg = 0;
-        size_t end = pos;
+        std::size_t beg = 0;
+        std::size_t end = pos;
 
         std::vector<std::string> idx_elts;
 
@@ -993,7 +993,7 @@ namespace octave
             beg = end+1;
           }
 
-        size_t n_elts = idx_elts.size ();
+        std::size_t n_elts = idx_elts.size ();
 
         bool have_object = false;
         octave_value partial_expr_val;
@@ -1017,7 +1017,7 @@ namespace octave
         std::string type;
         std::list<octave_value_list> arg_list;
 
-        for (size_t i = 1; i < n_elts; i++)
+        for (std::size_t i = 1; i < n_elts; i++)
           {
             if (partial_expr_val.is_package ())
               {
@@ -1642,7 +1642,7 @@ namespace octave
       {
         std::string dir_name = sys::file_ops::dirname (m_file);
 
-        size_t pos = dir_name.find_last_of (sys::file_ops::dir_sep_chars ());
+        std::size_t pos = dir_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
         if (pos != std::string::npos)
           dir_name = dir_name.substr (0, pos);
@@ -2080,7 +2080,7 @@ namespace octave
     print_raw (os, true, 0);
     os << "\n";
 
-    size_t varlen = m_local_vars.size ();
+    std::size_t varlen = m_local_vars.size ();
 
     if (varlen > 0)
       {
@@ -2165,7 +2165,7 @@ namespace octave
 
     std::ostringstream nmbuf;
 
-    size_t varlen = m_local_vars.size ();
+    std::size_t varlen = m_local_vars.size ();
 
     nmbuf << anonymous;
     if (varlen > 0)
@@ -2203,7 +2203,7 @@ namespace octave
     // values in this anonymous function.
 
     octave_idx_type len = 0;
-    size_t anl = anonymous.length ();
+    std::size_t anl = anonymous.length ();
     if (m_name.length () > anl)
       {
         std::istringstream nm_is (m_name.substr (anl));
@@ -2356,7 +2356,7 @@ namespace octave
 
     H5Dclose (data_hid);
 
-    size_t varlen = m_local_vars.size ();
+    std::size_t varlen = m_local_vars.size ();
 
     if (varlen > 0)
       {
@@ -2920,7 +2920,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
   if (! (octaveroot.empty () || fpath.empty ()))
     {
-      size_t len = octaveroot.size ();
+      std::size_t len = octaveroot.size ();
       if (octaveroot == fpath.substr (0, len))
         fpath = octave::config::octave_exec_home () + fpath.substr (len);
     }
@@ -3022,7 +3022,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 
   std::shared_ptr<octave::base_fcn_handle> new_rep;
 
-  size_t anl = anonymous.length ();
+  std::size_t anl = anonymous.length ();
 
   if (name.length () >= anl && name.substr (0, anl) == anonymous)
     {
@@ -3045,19 +3045,19 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 
       if (name.find_first_of ('\n') != std::string::npos)
         {
-          size_t pos1 = name.find_first_of ('\n');
-          size_t pos2 = name.find_first_of ('\n', pos1 + 1);
+          std::size_t pos1 = name.find_first_of ('\n');
+          std::size_t pos2 = name.find_first_of ('\n', pos1 + 1);
           octaveroot = name.substr (pos1 + 1, pos2 - pos1 - 1);
           fpath = name.substr (pos2 + 1);
           name = name.substr (0, pos1);
         }
 
-      size_t pos1 = name.find ('@');
+      std::size_t pos1 = name.find ('@');
       if (pos1 != std::string::npos)
         {
           if (name[pos1+1] == '<')
             {
-              size_t pos2 = name.find ('>', pos1 + 2);
+              std::size_t pos2 = name.find ('>', pos1 + 2);
 
               if (pos2 != std::string::npos)
                 subtype = name.substr (pos1 + 2, pos2 - pos1 - 2);
@@ -3198,19 +3198,19 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name_arg)
 
       if (name.find_first_of ('\n') != std::string::npos)
         {
-          size_t pos1 = name.find_first_of ('\n');
-          size_t pos2 = name.find_first_of ('\n', pos1 + 1);
+          std::size_t pos1 = name.find_first_of ('\n');
+          std::size_t pos2 = name.find_first_of ('\n', pos1 + 1);
           octaveroot = name.substr (pos1 + 1, pos2 - pos1 - 1);
           fpath = name.substr (pos2 + 1);
           name = name.substr (0, pos1);
         }
 
-      size_t pos1 = name.find ('@');
+      std::size_t pos1 = name.find ('@');
       if (pos1 != std::string::npos)
         {
           if (name[pos1+1] == '<')
             {
-              size_t pos2 = name.find ('>', pos1 + 2);
+              std::size_t pos2 = name.find ('>', pos1 + 2);
 
               if (pos2 != std::string::npos)
                 subtype = name.substr (pos1 + 2, pos2 - pos1 - 2);

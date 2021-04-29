@@ -1425,7 +1425,7 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
       if (hex_format > 1
           || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
         {
-          for (size_t i = 0; i < sizeof (T); i++)
+          for (std::size_t i = 0; i < sizeof (T); i++)
             os << std::setw (2) << static_cast<int> (tmp.i[i]);
         }
       else
@@ -1444,14 +1444,14 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
 
       if (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
         {
-          for (size_t i = 0; i < sizeof (T); i++)
+          for (std::size_t i = 0; i < sizeof (T); i++)
             PRINT_CHAR_BITS (os, tmp.i[i]);
         }
       else
         {
           if (bit_format > 1)
             {
-              for (size_t i = 0; i < sizeof (T); i++)
+              for (std::size_t i = 0; i < sizeof (T); i++)
                 PRINT_CHAR_BITS_SWAPPED (os, tmp.i[i]);
             }
           else
@@ -2808,7 +2808,7 @@ template <typename T>
 static inline void
 pr_int (std::ostream& os, const T& d, int fw = 0)
 {
-  size_t sz = d.byte_size ();
+  std::size_t sz = d.byte_size ();
   const unsigned char *tmpi = d.iptr ();
 
   // Unless explicitly asked for, always print in big-endian
@@ -2829,7 +2829,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
 
       if (hex_format > 1 || octave::mach_info::words_big_endian ())
         {
-          for (size_t i = 0; i < sz; i++)
+          for (std::size_t i = 0; i < sz; i++)
             os << std::setw (2) << static_cast<int> (tmpi[i]);
         }
       else
@@ -2842,14 +2842,14 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
     {
       if (octave::mach_info::words_big_endian ())
         {
-          for (size_t i = 0; i < sz; i++)
+          for (std::size_t i = 0; i < sz; i++)
             PRINT_CHAR_BITS (os, tmpi[i]);
         }
       else
         {
           if (bit_format > 1)
             {
-              for (size_t i = 0; i < sz; i++)
+              for (std::size_t i = 0; i < sz; i++)
                 PRINT_CHAR_BITS_SWAPPED (os, tmpi[i]);
             }
           else
@@ -3260,12 +3260,12 @@ x = str2num (r)
 
   std::list<std::string> lst;
 
-  size_t n = 0;
-  size_t s_len = s.length ();
+  std::size_t n = 0;
+  std::size_t s_len = s.length ();
 
   while (n < s_len)
     {
-      size_t m = s.find ('\n',  n);
+      std::size_t m = s.find ('\n',  n);
 
       if (m == std::string::npos)
         {

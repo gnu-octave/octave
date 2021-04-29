@@ -117,7 +117,7 @@ namespace octave
       stats (void);
 
       double m_time;
-      size_t m_calls;
+      std::size_t m_calls;
 
       bool m_recursive;
 
@@ -176,7 +176,7 @@ namespace octave
       // This is only time spent *directly* on this level, excluding children!
       double m_time;
 
-      size_t m_calls;
+      std::size_t m_calls;
     };
 
     // Each function we see in the profiler is given a unique index (which

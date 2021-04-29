@@ -101,7 +101,7 @@ public:
 
   dim_vector dims (void) const { return map.dims (); }
 
-  size_t byte_size (void) const;
+  std::size_t byte_size (void) const;
 
   // This is the number of elements in each field.  The total number
   // of elements is numel () * nfields ().
@@ -225,7 +225,7 @@ public:
 
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
-  size_t byte_size (void) const;
+  std::size_t byte_size (void) const;
 
   // This is the number of elements in each field.  The total number
   // of elements is numel () * nfields ().

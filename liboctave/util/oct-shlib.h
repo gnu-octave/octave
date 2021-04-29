@@ -86,7 +86,7 @@ namespace octave
       std::string file_name (void) const
       { return m_file; }
 
-      size_t num_fcn_names (void) const { return m_fcn_names.size (); }
+      std::size_t num_fcn_names (void) const { return m_fcn_names.size (); }
 
       OCTAVE_API std::list<std::string> function_names (void) const;
 
@@ -107,10 +107,10 @@ namespace octave
       static OCTAVE_API std::map<std::string, dynlib_rep *> s_instances;
 
       // Set of hooked function names.
-      typedef std::map<std::string, size_t>::iterator fcn_names_iterator;
-      typedef std::map<std::string, size_t>::const_iterator fcn_names_const_iterator;
+      typedef std::map<std::string, std::size_t>::iterator fcn_names_iterator;
+      typedef std::map<std::string, std::size_t>::const_iterator fcn_names_const_iterator;
 
-      std::map<std::string, size_t> m_fcn_names;
+      std::map<std::string, std::size_t> m_fcn_names;
       std::string m_file;
       sys::time m_time_loaded;
       bool m_search_all_loaded;
@@ -188,7 +188,7 @@ namespace octave
     bool remove (const std::string& name)
     { return m_rep->remove_fcn_name (name); }
 
-    size_t number_of_functions_loaded (void) const
+    std::size_t number_of_functions_loaded (void) const
     { return m_rep->num_fcn_names (); }
 
     bool is_out_of_date (void) const

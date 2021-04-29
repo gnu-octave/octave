@@ -56,7 +56,7 @@ namespace octave
     compiled_fcn_stack_frame (void) = delete;
 
     compiled_fcn_stack_frame (tree_evaluator& tw, octave_function *fcn,
-                              size_t index,
+                              std::size_t index,
                               const std::shared_ptr<stack_frame>& parent_link,
                               const std::shared_ptr<stack_frame>& static_link)
       : stack_frame (tw, index, parent_link, static_link,
@@ -177,7 +177,7 @@ namespace octave
     script_stack_frame (void) = delete;
 
     script_stack_frame (tree_evaluator& tw, octave_user_script *script,
-                        size_t index,
+                        std::size_t index,
                         const std::shared_ptr<stack_frame>& parent_link,
                         const std::shared_ptr<stack_frame>& static_link);
 
@@ -195,7 +195,7 @@ namespace octave
     static std::shared_ptr<stack_frame>
     get_access_link (const std::shared_ptr<stack_frame>& static_link);
 
-    static size_t get_num_symbols (octave_user_script *script);
+    static std::size_t get_num_symbols (octave_user_script *script);
 
     void set_script_offsets (void);
 
@@ -214,24 +214,24 @@ namespace octave
 
     symbol_record insert_symbol (const std::string&);
 
-    size_t size (void) const { return m_lexical_frame_offsets.size (); }
+    std::size_t size (void) const { return m_lexical_frame_offsets.size (); }
 
-    void resize (size_t size)
+    void resize (std::size_t size)
     {
       m_lexical_frame_offsets.resize (size, 0);
       m_value_offsets.resize (size, 0);
     }
 
     void get_val_offsets_with_insert (const symbol_record& sym,
-                                      size_t& frame_offset,
-                                      size_t& data_offset);
+                                      std::size_t& frame_offset,
+                                      std::size_t& data_offset);
 
     bool get_val_offsets_internal (const symbol_record& sym,
-                                   size_t& frame_offset,
-                                   size_t& data_offset) const;
+                                   std::size_t& frame_offset,
+                                   std::size_t& data_offset) const;
 
-    bool get_val_offsets (const symbol_record& sym, size_t& frame_offset,
-                          size_t& data_offset) const;
+    bool get_val_offsets (const symbol_record& sym, std::size_t& frame_offset,
+                          std::size_t& data_offset) const;
 
     scope_flags scope_flag (const symbol_record& sym) const;
 
@@ -276,8 +276,8 @@ namespace octave
     // frame offsets may be greater than one if the script is executed
     // in a nested function context.
 
-    std::vector<size_t> m_lexical_frame_offsets;
-    std::vector<size_t> m_value_offsets;
+    std::vector<std::size_t> m_lexical_frame_offsets;
+    std::vector<std::size_t> m_value_offsets;
   };
 
   // Base class for values and offsets shared by user_fcn and scope
@@ -289,8 +289,8 @@ namespace octave
 
     base_value_stack_frame (void) = delete;
 
-    base_value_stack_frame (tree_evaluator& tw, size_t num_symbols,
-                            size_t index,
+    base_value_stack_frame (tree_evaluator& tw, std::size_t num_symbols,
+                            std::size_t index,
                             const std::shared_ptr<stack_frame>& parent_link,
                             const std::shared_ptr<stack_frame>& static_link,
                             const std::shared_ptr<stack_frame>& access_link)
@@ -307,23 +307,23 @@ namespace octave
 
     ~base_value_stack_frame (void) = default;
 
-    size_t size (void) const
+    std::size_t size (void) const
     {
       return m_values.size ();
     }
 
-    void resize (size_t size)
+    void resize (std::size_t size)
     {
       m_values.resize (size, octave_value ());
       m_flags.resize (size, LOCAL);
     }
 
-    stack_frame::scope_flags get_scope_flag (size_t data_offset) const
+    stack_frame::scope_flags get_scope_flag (std::size_t data_offset) const
     {
       return m_flags.at (data_offset);
     }
 
-    void set_scope_flag (size_t data_offset, scope_flags flag)
+    void set_scope_flag (std::size_t data_offset, scope_flags flag)
     {
       m_flags.at (data_offset) = flag;
     }
@@ -344,12 +344,12 @@ namespace octave
     using stack_frame::varval;
     using stack_frame::varref;
 
-    octave_value varval (size_t data_offset) const
+    octave_value varval (std::size_t data_offset) const
     {
       return m_values.at (data_offset);
     }
 
-    octave_value& varref (size_t data_offset)
+    octave_value& varref (std::size_t data_offset)
     {
       return m_values.at (data_offset);
     }
@@ -396,7 +396,7 @@ namespace octave
     user_fcn_stack_frame (void) = delete;
 
     user_fcn_stack_frame (tree_evaluator& tw, octave_user_function *fcn,
-                          size_t index,
+                          std::size_t index,
                           const std::shared_ptr<stack_frame>& parent_link,
                           const std::shared_ptr<stack_frame>& static_link,
                           const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ())
@@ -409,7 +409,7 @@ namespace octave
     { }
 
     user_fcn_stack_frame (tree_evaluator& tw, octave_user_function *fcn,
-                          size_t index,
+                          std::size_t index,
                           const std::shared_ptr<stack_frame>& parent_link,
                           const std::shared_ptr<stack_frame>& static_link,
                           const local_vars_map& local_vars,
@@ -443,7 +443,7 @@ namespace octave
     get_access_link (octave_user_function *fcn,
                      const std::shared_ptr<stack_frame>& static_link);
 
-    static size_t get_num_symbols (octave_user_function *fcn)
+    static std::size_t get_num_symbols (octave_user_function *fcn)
     {
       symbol_scope fcn_scope = fcn->scope ();
 
@@ -507,7 +507,7 @@ namespace octave
     scope_stack_frame (void) = delete;
 
     scope_stack_frame (tree_evaluator& tw, const symbol_scope& scope,
-                       size_t index,
+                       std::size_t index,
                        const std::shared_ptr<stack_frame>& parent_link,
                        const std::shared_ptr<stack_frame>& static_link)
       : base_value_stack_frame (tw, scope.num_symbols (), index,
@@ -852,11 +852,11 @@ namespace octave
 
       // FIXME: is there a better way to concatenate structures?
 
-      size_t n_frames = m_sym_inf_list.size ();
+      std::size_t n_frames = m_sym_inf_list.size ();
 
       OCTAVE_LOCAL_BUFFER (octave_map, map_list, n_frames);
 
-      size_t j = 0;
+      std::size_t j = 0;
       for (const auto& nm_sil : m_sym_inf_list)
         {
           std::string scope_name = nm_sil.first;
@@ -1037,7 +1037,7 @@ namespace octave
   };
 
   stack_frame * stack_frame::create (tree_evaluator& tw, octave_function *fcn,
-                                     size_t index,
+                                     std::size_t index,
                                      const std::shared_ptr<stack_frame>& parent_link,
                                      const std::shared_ptr<stack_frame>& static_link)
   {
@@ -1046,7 +1046,7 @@ namespace octave
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
                                      octave_user_script *script,
-                                     size_t index,
+                                     std::size_t index,
                                      const std::shared_ptr<stack_frame>& parent_link,
                                      const std::shared_ptr<stack_frame>& static_link)
   {
@@ -1054,7 +1054,7 @@ namespace octave
   }
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
-                                     octave_user_function *fcn, size_t index,
+                                     octave_user_function *fcn, std::size_t index,
                                      const std::shared_ptr<stack_frame>& parent_link,
                                      const std::shared_ptr<stack_frame>& static_link,
                                      const std::shared_ptr<stack_frame>& access_link)
@@ -1063,7 +1063,7 @@ namespace octave
   }
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
-                                     octave_user_function *fcn, size_t index,
+                                     octave_user_function *fcn, std::size_t index,
                                      const std::shared_ptr<stack_frame>& parent_link,
                                      const std::shared_ptr<stack_frame>& static_link,
                                      const local_vars_map& local_vars,
@@ -1073,7 +1073,7 @@ namespace octave
   }
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
-                                     const symbol_scope& scope, size_t index,
+                                     const symbol_scope& scope, std::size_t index,
                                      const std::shared_ptr<stack_frame>& parent_link,
                                      const std::shared_ptr<stack_frame>& static_link)
   {
@@ -1236,7 +1236,7 @@ namespace octave
     return sia.symbol_info ();
   }
 
-  size_t stack_frame::size (void) const
+  std::size_t stack_frame::size (void) const
   {
     // This function should only be called for user_fcn_stack_frame or
     // scope_stack_frame objects.  Anything else indicates an error in
@@ -1245,7 +1245,7 @@ namespace octave
     panic_impossible ();
   }
 
-  void stack_frame::resize (size_t)
+  void stack_frame::resize (std::size_t)
   {
     // This function should only be called for user_fcn_stack_frame or
     // scope_stack_frame objects.  Anything else indicates an error in
@@ -1254,7 +1254,7 @@ namespace octave
     panic_impossible ();
   }
 
-  stack_frame::scope_flags stack_frame::get_scope_flag (size_t) const
+  stack_frame::scope_flags stack_frame::get_scope_flag (std::size_t) const
   {
     // This function should only be called for user_fcn_stack_frame or
     // scope_stack_frame objects.  Anything else indicates an error in
@@ -1263,7 +1263,7 @@ namespace octave
     panic_impossible ();
   }
 
-  void stack_frame::set_scope_flag (size_t, scope_flags)
+  void stack_frame::set_scope_flag (std::size_t, scope_flags)
   {
     // This function should only be called for user_fcn_stack_frame or
     // scope_stack_frame objects.  Anything else indicates an error in
@@ -1318,7 +1318,7 @@ namespace octave
       assign (sym, value);
   }
 
-  octave_value stack_frame::varval (size_t) const
+  octave_value stack_frame::varval (std::size_t) const
   {
     // This function should only be called for user_fcn_stack_frame or
     // scope_stack_frame objects.  Anything else indicates an error in
@@ -1327,7 +1327,7 @@ namespace octave
     panic_impossible ();
   }
 
-  octave_value& stack_frame::varref (size_t)
+  octave_value& stack_frame::varref (std::size_t)
   {
     // This function should only be called for user_fcn_stack_frame or
     // scope_stack_frame objects.  Anything else indicates an error in
@@ -1466,7 +1466,7 @@ namespace octave
 
   script_stack_frame::script_stack_frame (tree_evaluator& tw,
                                           octave_user_script *script,
-                                          size_t index,
+                                          std::size_t index,
                                           const std::shared_ptr<stack_frame>& parent_link,
                                           const std::shared_ptr<stack_frame>& static_link)
     : stack_frame (tw, index, parent_link, static_link,
@@ -1478,7 +1478,7 @@ namespace octave
     set_script_offsets ();
   }
 
-  size_t script_stack_frame::get_num_symbols (octave_user_script *script)
+  std::size_t script_stack_frame::get_num_symbols (octave_user_script *script)
   {
     symbol_scope script_scope = script->scope ();
 
@@ -1492,7 +1492,7 @@ namespace octave
 
     symbol_scope script_scope = m_script->scope ();
 
-    size_t num_script_symbols = script_scope.num_symbols ();
+    std::size_t num_script_symbols = script_scope.num_symbols ();
 
     resize (num_script_symbols);
 
@@ -1521,7 +1521,7 @@ namespace octave
 
             symbol_scope parent_scope = eval_scope;
 
-            size_t count = 1;
+            std::size_t count = 1;
 
             while (parent_scope)
               {
@@ -1535,7 +1535,7 @@ namespace octave
                     found = true;
                     symbol_record parent_scope_sr = p->second;
 
-                    size_t script_sr_data_offset = script_sr.data_offset ();
+                    std::size_t script_sr_data_offset = script_sr.data_offset ();
 
                     m_lexical_frame_offsets.at (script_sr_data_offset)
                       = parent_scope_sr.frame_offset () + count;
@@ -1576,7 +1576,7 @@ namespace octave
             else
               eval_scope_sr = p->second;
 
-            size_t script_sr_data_offset = script_sr.data_offset ();
+            std::size_t script_sr_data_offset = script_sr.data_offset ();
 
             // The +1 is for going from the script frame to the eval
             // frame.  Only one access_link should need to be followed.
@@ -1592,7 +1592,7 @@ namespace octave
 
   void script_stack_frame::resize_and_update_script_offsets (const symbol_record& sym)
   {
-    size_t data_offset = sym.data_offset ();
+    std::size_t data_offset = sym.data_offset ();
 
     // This function is called when adding new symbols to a script
     // scope.  If the symbol wasn't present before, it should be outside
@@ -1701,8 +1701,8 @@ namespace octave
 
   bool
   script_stack_frame::get_val_offsets_internal (const symbol_record& script_sr,
-                                                size_t& frame_offset,
-                                                size_t& data_offset) const
+                                                std::size_t& frame_offset,
+                                                std::size_t& data_offset) const
   {
     bool found = false;
 
@@ -1717,7 +1717,7 @@ namespace octave
 
         symbol_scope parent_scope = eval_scope;
 
-        size_t count = 1;
+        std::size_t count = 1;
 
         while (parent_scope)
           {
@@ -1773,8 +1773,8 @@ namespace octave
   }
 
   bool script_stack_frame::get_val_offsets (const symbol_record& sym,
-                                            size_t& frame_offset,
-                                            size_t& data_offset) const
+                                            std::size_t& frame_offset,
+                                            std::size_t& data_offset) const
   {
     data_offset = sym.data_offset ();
     frame_offset = sym.frame_offset ();
@@ -1822,8 +1822,8 @@ namespace octave
   }
 
   void script_stack_frame::get_val_offsets_with_insert (const symbol_record& sym,
-                                                        size_t& frame_offset,
-                                                        size_t& data_offset)
+                                                        std::size_t& frame_offset,
+                                                        std::size_t& data_offset)
   {
     data_offset = sym.data_offset ();
     frame_offset = sym.frame_offset ();
@@ -1880,8 +1880,8 @@ namespace octave
   stack_frame::scope_flags
   script_stack_frame::scope_flag (const symbol_record& sym) const
   {
-    size_t frame_offset;
-    size_t data_offset;
+    std::size_t frame_offset;
+    std::size_t data_offset;
 
     bool found = get_val_offsets (sym, frame_offset, data_offset);
 
@@ -1894,7 +1894,7 @@ namespace octave
 
     const stack_frame *frame = this;
 
-    for (size_t i = 0; i < frame_offset; i++)
+    for (std::size_t i = 0; i < frame_offset; i++)
       {
         std::shared_ptr<stack_frame> nxt = frame->access_link ();
         frame = nxt.get ();
@@ -1911,8 +1911,8 @@ namespace octave
 
   octave_value script_stack_frame::varval (const symbol_record& sym) const
   {
-    size_t frame_offset;
-    size_t data_offset;
+    std::size_t frame_offset;
+    std::size_t data_offset;
 
     bool found = get_val_offsets (sym, frame_offset, data_offset);
 
@@ -1924,7 +1924,7 @@ namespace octave
 
     const stack_frame *frame = this;
 
-    for (size_t i = 0; i < frame_offset; i++)
+    for (std::size_t i = 0; i < frame_offset; i++)
       {
         std::shared_ptr<stack_frame> nxt = frame->access_link ();
         frame = nxt.get ();
@@ -1957,8 +1957,8 @@ namespace octave
 
   octave_value& script_stack_frame::varref (const symbol_record& sym)
   {
-    size_t frame_offset;
-    size_t data_offset;
+    std::size_t frame_offset;
+    std::size_t data_offset;
     get_val_offsets_with_insert (sym, frame_offset, data_offset);
 
     // Follow frame_offset access links to stack frame that holds
@@ -1966,7 +1966,7 @@ namespace octave
 
     stack_frame *frame = this;
 
-    for (size_t i = 0; i < frame_offset; i++)
+    for (std::size_t i = 0; i < frame_offset; i++)
       {
         std::shared_ptr<stack_frame> nxt = frame->access_link ();
         frame = nxt.get ();
@@ -1997,14 +1997,14 @@ namespace octave
   void script_stack_frame::mark_scope (const symbol_record& sym,
                                        scope_flags flag)
   {
-    size_t data_offset = sym.data_offset ();
+    std::size_t data_offset = sym.data_offset ();
 
     if (data_offset >= size ())
       resize_and_update_script_offsets (sym);
 
     // Redirection to evaluation context for the script.
 
-    size_t frame_offset = m_lexical_frame_offsets.at (data_offset);
+    std::size_t frame_offset = m_lexical_frame_offsets.at (data_offset);
     data_offset = m_value_offsets.at (data_offset);
 
     if (frame_offset > 1)
@@ -2031,12 +2031,12 @@ namespace octave
     os << "lexical_offsets: " << m_lexical_frame_offsets.size ()
        << " elements:";
 
-    for (size_t i = 0; i < m_lexical_frame_offsets.size (); i++)
+    for (std::size_t i = 0; i < m_lexical_frame_offsets.size (); i++)
       os << "  " << m_lexical_frame_offsets.at (i);
     os << std::endl;
 
     os << "value_offsets: " << m_value_offsets.size () << " elements:";
-    for (size_t i = 0; i < m_value_offsets.size (); i++)
+    for (std::size_t i = 0; i < m_value_offsets.size (); i++)
       os << "  " << m_value_offsets.at (i);
     os << std::endl;
 
@@ -2058,7 +2058,7 @@ namespace octave
     os << "values: " << m_values.size ()
        << " elements (idx, scope flag, type):" << std::endl;
 
-    for (size_t i = 0; i < m_values.size (); i++)
+    for (std::size_t i = 0; i < m_values.size (); i++)
       {
         os << "  (" << i << ", " << m_flags.at (i) << ", ";
 
@@ -2131,12 +2131,12 @@ namespace octave
 
     for (const auto& sym : symbols)
       {
-        size_t frame_offset = sym.frame_offset ();
+        std::size_t frame_offset = sym.frame_offset ();
 
         if (frame_offset > 0)
           continue;
 
-        size_t data_offset = sym.data_offset ();
+        std::size_t data_offset = sym.data_offset ();
 
         if (data_offset >= size ())
           continue;
@@ -2223,15 +2223,15 @@ namespace octave
   stack_frame::scope_flags
   user_fcn_stack_frame::scope_flag (const symbol_record& sym) const
   {
-    size_t frame_offset = sym.frame_offset ();
-    size_t data_offset = sym.data_offset ();
+    std::size_t frame_offset = sym.frame_offset ();
+    std::size_t data_offset = sym.data_offset ();
 
     // Follow frame_offset access links to stack frame that holds
     // the value.
 
     const stack_frame *frame = this;
 
-    for (size_t i = 0; i < frame_offset; i++)
+    for (std::size_t i = 0; i < frame_offset; i++)
       {
         std::shared_ptr<stack_frame> nxt = frame->access_link ();
         frame = nxt.get ();
@@ -2248,15 +2248,15 @@ namespace octave
 
   octave_value user_fcn_stack_frame::varval (const symbol_record& sym) const
   {
-    size_t frame_offset = sym.frame_offset ();
-    size_t data_offset = sym.data_offset ();
+    std::size_t frame_offset = sym.frame_offset ();
+    std::size_t data_offset = sym.data_offset ();
 
     // Follow frame_offset access links to stack frame that holds
     // the value.
 
     const stack_frame *frame = this;
 
-    for (size_t i = 0; i < frame_offset; i++)
+    for (std::size_t i = 0; i < frame_offset; i++)
       {
         std::shared_ptr<stack_frame> nxt = frame->access_link ();
         frame = nxt.get ();
@@ -2289,15 +2289,15 @@ namespace octave
 
   octave_value& user_fcn_stack_frame::varref (const symbol_record& sym)
   {
-    size_t frame_offset = sym.frame_offset ();
-    size_t data_offset = sym.data_offset ();
+    std::size_t frame_offset = sym.frame_offset ();
+    std::size_t data_offset = sym.data_offset ();
 
     // Follow frame_offset access links to stack frame that holds
     // the value.
 
     stack_frame *frame = this;
 
-    for (size_t i = 0; i < frame_offset; i++)
+    for (std::size_t i = 0; i < frame_offset; i++)
       {
         std::shared_ptr<stack_frame> nxt = frame->access_link ();
         frame = nxt.get ();
@@ -2327,12 +2327,12 @@ namespace octave
 
   void user_fcn_stack_frame::mark_scope (const symbol_record& sym, scope_flags flag)
   {
-    size_t frame_offset = sym.frame_offset ();
+    std::size_t frame_offset = sym.frame_offset ();
 
     if (frame_offset > 0 && (flag == PERSISTENT || flag == GLOBAL))
       error ("variables must be made PERSISTENT or GLOBAL in the first scope in which they are used");
 
-    size_t data_offset = sym.data_offset ();
+    std::size_t data_offset = sym.data_offset ();
 
     if (data_offset >= size ())
       resize (data_offset+1);
@@ -2393,7 +2393,7 @@ namespace octave
     // There is no access link for scope frames, so the frame
     // offset must be zero.
 
-    size_t data_offset = sym.data_offset ();
+    std::size_t data_offset = sym.data_offset ();
 
     if (data_offset >= size ())
       return LOCAL;
@@ -2406,7 +2406,7 @@ namespace octave
     // There is no access link for scope frames, so the frame
     // offset must be zero.
 
-    size_t data_offset = sym.data_offset ();
+    std::size_t data_offset = sym.data_offset ();
 
     if (data_offset >= size ())
       return octave_value ();
@@ -2431,7 +2431,7 @@ namespace octave
     // There is no access link for scope frames, so the frame
     // offset must be zero.
 
-    size_t data_offset = sym.data_offset ();
+    std::size_t data_offset = sym.data_offset ();
 
     if (data_offset >= size ())
       resize (data_offset+1);
@@ -2457,7 +2457,7 @@ namespace octave
     // There is no access link for scope frames, so the frame
     // offset must be zero.
 
-    size_t data_offset = sym.data_offset ();
+    std::size_t data_offset = sym.data_offset ();
 
     if (data_offset >= size ())
       resize (data_offset+1);

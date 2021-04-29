@@ -127,7 +127,7 @@ namespace octave
 
       ~parent_scope_info (void) = default;
 
-      OCTINTERP_API size_t size (void) const;
+      OCTINTERP_API std::size_t size (void) const;
 
       OCTINTERP_API void push (const value_type& elt);
 

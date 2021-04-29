@@ -196,24 +196,24 @@ namespace octave
 
     virtual void run_first (void) = 0;
 
-    OCTAVE_API void run (size_t num);
+    OCTAVE_API void run (std::size_t num);
 
     void run (void) { run (size ()); }
 
     virtual void discard_first (void) = 0;
 
-    void discard (size_t num)
+    void discard (std::size_t num)
     {
       if (num > size ())
         num = size ();
 
-      for (size_t i = 0; i < num; i++)
+      for (std::size_t i = 0; i < num; i++)
         discard_first ();
     }
 
     void discard (void) { discard (size ()); }
 
-    virtual size_t size (void) const = 0;
+    virtual std::size_t size (void) const = 0;
 
     bool empty (void) const { return size () == 0; }
 

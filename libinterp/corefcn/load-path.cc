@@ -101,10 +101,10 @@ namespace octave
   {
     std::list<std::string> retval;
 
-    size_t beg = 0;
-    size_t end = p.find (directory_path::path_sep_char ());
+    std::size_t beg = 0;
+    std::size_t end = p.find (directory_path::path_sep_char ());
 
-    size_t len = p.length ();
+    std::size_t len = p.length ();
 
     while (end != std::string::npos)
       {
@@ -136,7 +136,7 @@ namespace octave
   {
     std::string dir = dir_arg;
 
-    size_t k = dir.length ();
+    std::size_t k = dir.length ();
 
     while (k > 1 && sys::file_ops::is_dir_sep (dir[k-1]))
       k--;
@@ -191,9 +191,9 @@ namespace octave
   static bool
   in_path_list (const std::string& path_list, const std::string& path)
   {
-    size_t ps = path.size ();
-    size_t pls = path_list.size ();
-    size_t pos = path_list.find (path);
+    std::size_t ps = path.size ();
+    std::size_t pls = path_list.size ();
+    std::size_t pos = path_list.find (path);
     char psc = directory_path::path_sep_char ();
     while (pos != std::string::npos)
       {
@@ -611,7 +611,7 @@ namespace octave
           {
             std::string dname = di.abs_dir_name;
 
-            size_t dname_len = dname.length ();
+            std::size_t dname_len = dname.length ();
 
             if (dname.substr (dname_len - 1)
                 == sys::file_ops::dir_sep_str ())
@@ -620,7 +620,7 @@ namespace octave
                 dname_len--;
               }
 
-            size_t dir_len = canon_dir.length ();
+            std::size_t dir_len = canon_dir.length ();
 
             if (dname_len > dir_len
                 && sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
@@ -658,7 +658,7 @@ namespace octave
           {
             std::string dname = di.abs_dir_name;
 
-            size_t dname_len = dname.length ();
+            std::size_t dname_len = dname.length ();
 
             if (dname.substr (dname_len - 1)
                 == sys::file_ops::dir_sep_str ())
@@ -667,7 +667,7 @@ namespace octave
                 dname_len--;
               }
 
-            size_t dir_len = canon_dir.length ();
+            std::size_t dir_len = canon_dir.length ();
 
             if (dname_len > dir_len
                 && sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
@@ -832,7 +832,7 @@ namespace octave
   string_vector
   load_path::dirs (void) const
   {
-    size_t len = dir_info_list.size ();
+    std::size_t len = dir_info_list.size ();
 
     string_vector retval (len);
 
@@ -873,7 +873,7 @@ namespace octave
           {
             std::string fname = retval[i];
 
-            size_t pos = fname.rfind ('.');
+            std::size_t pos = fname.rfind ('.');
 
             if (pos != std::string::npos)
               retval[i] = fname.substr (0, pos);
@@ -1061,7 +1061,7 @@ namespace octave
   void
   load_path::add (const std::string& dir_arg, bool at_end, bool warn)
   {
-    size_t len = dir_arg.length ();
+    std::size_t len = dir_arg.length ();
 
     if (len > 1 && dir_arg.substr (len-2) == "//")
       warning_with_id ("Octave:recursive-path-search",
@@ -1176,7 +1176,7 @@ namespace octave
         if (conf_str.compare (0, enc_prop.size (), enc_prop) == 0)
           {
             // skip delimiter characters
-            size_t pos = conf_str.find_first_not_of (" \t=:",
+            std::size_t pos = conf_str.find_first_not_of (" \t=:",
                                                      enc_prop.size ());
             if (pos == std::string::npos)
               continue;
@@ -1288,7 +1288,7 @@ namespace octave
           {
             std::string fname = flist[i];
 
-            size_t pos = fname.rfind ('.');
+            std::size_t pos = fname.rfind ('.');
 
             if (pos != std::string::npos)
               {
@@ -1406,7 +1406,7 @@ namespace octave
   bool
   load_path::dir_info::is_package (const std::string& name) const
   {
-    size_t pos = name.find ('.');
+    std::size_t pos = name.find ('.');
 
     if (pos == std::string::npos)
       return package_dir_map.find (name) != package_dir_map.end ();
@@ -1514,7 +1514,7 @@ namespace octave
               {
                 all_files[all_files_count++] = fname;
 
-                size_t pos = fname.rfind ('.');
+                std::size_t pos = fname.rfind ('.');
 
                 if (pos != std::string::npos)
                   {
@@ -1680,7 +1680,7 @@ namespace octave
 
     if (fcn.length () > 0 && fcn[0] == '@')
       {
-        size_t pos = fcn.find ('/');
+        std::size_t pos = fcn.find ('/');
 
         if (pos != std::string::npos)
           {
@@ -1841,7 +1841,7 @@ namespace octave
   string_vector
   load_path::package_info::fcn_names (void) const
   {
-    size_t len = fcn_map.size ();
+    std::size_t len = fcn_map.size ();
 
     string_vector retval (len);
 
@@ -1870,7 +1870,7 @@ namespace octave
         std::string ext;
         std::string base = fname;
 
-        size_t pos = fname.rfind ('.');
+        std::size_t pos = fname.rfind ('.');
 
         if (pos != std::string::npos)
           {
@@ -2045,7 +2045,7 @@ namespace octave
         std::string ext;
         std::string base = fname;
 
-        size_t pos = fname.rfind ('.');
+        std::size_t pos = fname.rfind ('.');
 
         if (pos != std::string::npos)
           {
@@ -2137,7 +2137,7 @@ namespace octave
         std::string ext;
         std::string base = fname;
 
-        size_t pos = fname.rfind ('.');
+        std::size_t pos = fname.rfind ('.');
 
         if (pos != std::string::npos)
           {

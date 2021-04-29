@@ -62,7 +62,7 @@ public:
 
   ~octave_base_diag (void) = default;
 
-  size_t byte_size (void) const { return matrix.byte_size (); }
+  std::size_t byte_size (void) const { return matrix.byte_size (); }
 
   octave_value squeeze (void) const { return matrix; }
 

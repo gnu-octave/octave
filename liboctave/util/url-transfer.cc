@@ -231,7 +231,7 @@ namespace octave
 #if defined (HAVE_CURL)
 
   static int
-  write_data (void *buffer, size_t size, size_t nmemb, void *streamp)
+  write_data (void *buffer, std::size_t size, std::size_t nmemb, void *streamp)
   {
     std::ostream& stream = *(static_cast<std::ostream *> (streamp));
     stream.write (static_cast<const char *> (buffer), size*nmemb);
@@ -239,7 +239,7 @@ namespace octave
   }
 
   static int
-  read_data (void *buffer, size_t size, size_t nmemb, void *streamp)
+  read_data (void *buffer, std::size_t size, std::size_t nmemb, void *streamp)
   {
     std::istream& stream = *(static_cast<std::istream *> (streamp));
     stream.read (static_cast<char *> (buffer), size*nmemb);
@@ -249,10 +249,10 @@ namespace octave
       return (stream.fail () ? 0 : size * nmemb);
   }
 
-  static size_t
-  throw_away (void *, size_t size, size_t nmemb, void *)
+  static std::size_t
+  throw_away (void *, std::size_t size, std::size_t nmemb, void *)
   {
-    return static_cast<size_t> (size * nmemb);
+    return static_cast<std::size_t> (size * nmemb);
   }
 
   // I'd love to rewrite this as a private method of the url_transfer
@@ -522,7 +522,7 @@ namespace octave
       // Count number of directory entries
       std::string str = buf.str ();
       octave_idx_type n = 0;
-      size_t pos = 0;
+      std::size_t pos = 0;
       while (true)
         {
           pos = str.find_first_of ('\n', pos);
@@ -535,7 +535,7 @@ namespace octave
       pos = 0;
       for (octave_idx_type i = 0; i < n; i++)
         {
-          size_t newpos = str.find_first_of ('\n', pos);
+          std::size_t newpos = str.find_first_of ('\n', pos);
           if (newpos == std::string::npos)
             break;
 
@@ -615,8 +615,8 @@ namespace octave
       retval = buf.str ();
 
       // Can I assume that the path is always in "" on the last line
-      size_t pos2 = retval.rfind ('"');
-      size_t pos1 = retval.rfind ('"', pos2 - 1);
+      std::size_t pos2 = retval.rfind ('"');
+      std::size_t pos1 = retval.rfind ('"', pos2 - 1);
       retval = retval.substr (pos1 + 1, pos2 - pos1 - 1);
 
       SETOPTR (CURLOPT_HEADERFUNCTION, 0);

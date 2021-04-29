@@ -894,7 +894,7 @@ octave_base_value::map_keys (void) const
   err_wrong_type_arg ("octave_base_value::map_keys()", type_name ());
 }
 
-size_t
+std::size_t
 octave_base_value::nparents (void) const
 {
   err_wrong_type_arg ("octave_base_value::nparents()", type_name ());
@@ -1449,7 +1449,7 @@ make_idx_args (const std::string& type,
                const std::list<octave_value_list>& idx,
                const std::string& who)
 {
-  size_t len = type.length ();
+  std::size_t len = type.length ();
 
   if (len != idx.size ())
     error ("invalid index for %s", who.c_str ());
@@ -1459,7 +1459,7 @@ make_idx_args (const std::string& type,
 
   auto p = idx.begin ();
 
-  for (size_t i = 0; i < len; i++)
+  for (std::size_t i = 0; i < len; i++)
     {
       char t = type[i];
 

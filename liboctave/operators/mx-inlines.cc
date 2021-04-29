@@ -44,64 +44,64 @@
 // Provides some commonly repeated, basic loop templates.
 
 template <typename R, typename S>
-inline void mx_inline_fill (size_t n, R *r, S s)
+inline void mx_inline_fill (std::size_t n, R *r, S s)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = s;
 }
 
 template <typename R, typename X>
 inline void
-mx_inline_uminus (size_t n, R *r, const X *x)
+mx_inline_uminus (std::size_t n, R *r, const X *x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = -x[i];
 }
 
 template <typename R>
 inline void
-mx_inline_uminus2 (size_t n, R *r)
+mx_inline_uminus2 (std::size_t n, R *r)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = -r[i];
 }
 
 template <typename X>
 inline void
-mx_inline_iszero (size_t n, bool *r, const X *x)
+mx_inline_iszero (std::size_t n, bool *r, const X *x)
 {
   const X zero = X ();
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = x[i] == zero;
 }
 
 template <typename X>
 inline void
-mx_inline_notzero (size_t n, bool *r, const X *x)
+mx_inline_notzero (std::size_t n, bool *r, const X *x)
 {
   const X zero = X ();
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = x[i] != zero;
 }
 
-#define DEFMXBINOP(F, OP)                                               \
-  template <typename R, typename X, typename Y>                         \
-  inline void F (size_t n, R *r, const X *x, const Y *y)        \
-  {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
-      r[i] = x[i] OP y[i];                                              \
-  }                                                                     \
-  template <typename R, typename X, typename Y>                         \
-  inline void F (size_t n, R *r, const X *x, Y y)               \
-  {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
-      r[i] = x[i] OP y;                                                 \
-  }                                                                     \
-  template <typename R, typename X, typename Y>                         \
-  inline void F (size_t n, R *r, X x, const Y *y)               \
-  {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
-      r[i] = x OP y[i];                                                 \
+#define DEFMXBINOP(F, OP)                                       \
+  template <typename R, typename X, typename Y>                 \
+  inline void F (std::size_t n, R *r, const X *x, const Y *y)   \
+  {                                                             \
+    for (std::size_t i = 0; i < n; i++)                         \
+      r[i] = x[i] OP y[i];                                      \
+  }                                                             \
+  template <typename R, typename X, typename Y>                 \
+  inline void F (std::size_t n, R *r, const X *x, Y y)          \
+  {                                                             \
+    for (std::size_t i = 0; i < n; i++)                         \
+      r[i] = x[i] OP y;                                         \
+  }                                                             \
+  template <typename R, typename X, typename Y>                 \
+  inline void F (std::size_t n, R *r, X x, const Y *y)          \
+  {                                                             \
+    for (std::size_t i = 0; i < n; i++)                         \
+      r[i] = x OP y[i];                                         \
   }
 
 DEFMXBINOP (mx_inline_add, +)
@@ -111,15 +111,15 @@ DEFMXBINOP (mx_inline_div, /)
 
 #define DEFMXBINOPEQ(F, OP)                             \
   template <typename R, typename X>                     \
-  inline void F (size_t n, R *r, const X *x)    \
+  inline void F (std::size_t n, R *r, const X *x)       \
   {                                                     \
-    for (size_t i = 0; i < n; i++)                      \
+    for (std::size_t i = 0; i < n; i++)                 \
       r[i] OP x[i];                                     \
   }                                                     \
   template <typename R, typename X>                     \
-  inline void F (size_t n, R *r, X x)           \
+  inline void F (std::size_t n, R *r, X x)              \
   {                                                     \
-    for (size_t i = 0; i < n; i++)                      \
+    for (std::size_t i = 0; i < n; i++)                 \
       r[i] OP x;                                        \
   }
 
@@ -130,21 +130,21 @@ DEFMXBINOPEQ (mx_inline_div2, /=)
 
 #define DEFMXCMPOP(F, OP)                                               \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, const X *x, const Y *y)     \
+  inline void F (std::size_t n, bool *r, const X *x, const Y *y)        \
   {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
+    for (std::size_t i = 0; i < n; i++)                                 \
       r[i] = x[i] OP y[i];                                              \
   }                                                                     \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, const X *x, Y y)            \
+  inline void F (std::size_t n, bool *r, const X *x, Y y)               \
   {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
+    for (std::size_t i = 0; i < n; i++)                                 \
       r[i] = x[i] OP y;                                                 \
   }                                                                     \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, X x, const Y *y)            \
+  inline void F (std::size_t n, bool *r, X x, const Y *y)               \
   {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
+    for (std::size_t i = 0; i < n; i++)                                 \
       r[i] = x OP y[i];                                                 \
   }
 
@@ -178,38 +178,38 @@ logical_value (const octave_int<T>& x)
 }
 
 template <typename X>
-void mx_inline_not (size_t n, bool *r, const X *x)
+void mx_inline_not (std::size_t n, bool *r, const X *x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = ! logical_value (x[i]);
 }
 
-inline void mx_inline_not2 (size_t n, bool *r)
+inline void mx_inline_not2 (std::size_t n, bool *r)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = ! r[i];
 }
 
 #define DEFMXBOOLOP(F, NOT1, OP, NOT2)                                  \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, const X *x, const Y *y)     \
+  inline void F (std::size_t n, bool *r, const X *x, const Y *y)        \
   {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
+    for (std::size_t i = 0; i < n; i++)                                 \
       r[i] = ((NOT1 logical_value (x[i]))                               \
               OP (NOT2 logical_value (y[i])));                          \
   }                                                                     \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, const X *x, Y y)            \
+  inline void F (std::size_t n, bool *r, const X *x, Y y)               \
   {                                                                     \
     const bool yy = (NOT2 logical_value (y));                           \
-    for (size_t i = 0; i < n; i++)                                      \
+    for (std::size_t i = 0; i < n; i++)                                 \
       r[i] = (NOT1 logical_value (x[i])) OP yy;                         \
   }                                                                     \
   template <typename X, typename Y>                                     \
-  inline void F (size_t n, bool *r, X x, const Y *y)            \
+  inline void F (std::size_t n, bool *r, X x, const Y *y)               \
   {                                                                     \
     const bool xx = (NOT1 logical_value (x));                           \
-    for (size_t i = 0; i < n; i++)                                      \
+    for (std::size_t i = 0; i < n; i++)                                 \
       r[i] = xx OP (NOT2 logical_value (y[i]));                         \
   }
 
@@ -222,41 +222,41 @@ DEFMXBOOLOP (mx_inline_or_not, , |, !)
 
 template <typename X>
 inline void
-mx_inline_and2 (size_t n, bool *r, const X *x)
+mx_inline_and2 (std::size_t n, bool *r, const X *x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] &= logical_value (x[i]);
 }
 
 template <typename X>
 inline void
-mx_inline_and2 (size_t n, bool *r, X x)
+mx_inline_and2 (std::size_t n, bool *r, X x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] &= x;
 }
 
 template <typename X>
 inline void
-mx_inline_or2 (size_t n, bool *r, const X *x)
+mx_inline_or2 (std::size_t n, bool *r, const X *x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] |= logical_value (x[i]);
 }
 
 template <typename X>
 inline void
-mx_inline_or2 (size_t n, bool *r, X x)
+mx_inline_or2 (std::size_t n, bool *r, X x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] |= x;
 }
 
 template <typename T>
 inline bool
-mx_inline_any_nan (size_t n, const T *x)
+mx_inline_any_nan (std::size_t n, const T *x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     {
       if (octave::math::isnan (x[i]))
         return true;
@@ -267,9 +267,9 @@ mx_inline_any_nan (size_t n, const T *x)
 
 template <typename T>
 inline bool
-mx_inline_all_finite (size_t n, const T *x)
+mx_inline_all_finite (std::size_t n, const T *x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     {
       if (! octave::math::isfinite (x[i]))
         return false;
@@ -280,9 +280,9 @@ mx_inline_all_finite (size_t n, const T *x)
 
 template <typename T>
 inline bool
-mx_inline_any_negative (size_t n, const T *x)
+mx_inline_any_negative (std::size_t n, const T *x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     {
       if (x[i] < 0)
         return true;
@@ -293,9 +293,9 @@ mx_inline_any_negative (size_t n, const T *x)
 
 template <typename T>
 inline bool
-mx_inline_any_positive (size_t n, const T *x)
+mx_inline_any_positive (std::size_t n, const T *x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     {
       if (x[i] > 0)
         return true;
@@ -306,9 +306,9 @@ mx_inline_any_positive (size_t n, const T *x)
 
 template <typename T>
 inline bool
-mx_inline_all_real (size_t n, const std::complex<T>* x)
+mx_inline_all_real (std::size_t n, const std::complex<T>* x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     {
       if (x[i].imag () != 0)
         return false;
@@ -318,85 +318,85 @@ mx_inline_all_real (size_t n, const std::complex<T>* x)
 }
 
 template <typename T>
-inline void mx_inline_real (size_t n, T *r, const std::complex<T>* x)
+inline void mx_inline_real (std::size_t n, T *r, const std::complex<T>* x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = x[i].real ();
 }
 
 template <typename T>
-inline void mx_inline_imag (size_t n, T *r, const std::complex<T>* x)
+inline void mx_inline_imag (std::size_t n, T *r, const std::complex<T>* x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = x[i].imag ();
 }
 
 template <typename T>
 inline void
-mx_inline_xmin (size_t n, T *r, const T *x, const T *y)
+mx_inline_xmin (std::size_t n, T *r, const T *x, const T *y)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = octave::math::min (x[i], y[i]);
 }
 
 template <typename T>
 inline void
-mx_inline_xmin (size_t n, T *r, const T *x, T y)
+mx_inline_xmin (std::size_t n, T *r, const T *x, T y)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = octave::math::min (x[i], y);
 }
 
 template <typename T>
 inline void
-mx_inline_xmin (size_t n, T *r, T x, const T *y)
+mx_inline_xmin (std::size_t n, T *r, T x, const T *y)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = octave::math::min (x, y[i]);
 }
 
 template <typename T>
 inline void
-mx_inline_xmax (size_t n, T *r, const T *x, const T *y)
+mx_inline_xmax (std::size_t n, T *r, const T *x, const T *y)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = octave::math::max (x[i], y[i]);
 }
 
 template <typename T>
 inline void
-mx_inline_xmax (size_t n, T *r, const T *x, T y)
+mx_inline_xmax (std::size_t n, T *r, const T *x, T y)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = octave::math::max (x[i], y);
 }
 
 template <typename T>
 inline void
-mx_inline_xmax (size_t n, T *r, T x, const T *y)
+mx_inline_xmax (std::size_t n, T *r, T x, const T *y)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = octave::math::max (x, y[i]);
 }
 
 // Specialize array-scalar max/min
 #define DEFMINMAXSPEC(T, F, OP)                                 \
   template <>                                                   \
-  inline void F<T> (size_t n, T *r, const T *x, T y)    \
+  inline void F<T> (std::size_t n, T *r, const T *x, T y)       \
   {                                                             \
     if (octave::math::isnan (y))                                \
       std::memcpy (r, x, n * sizeof (T));                       \
     else                                                        \
-      for (size_t i = 0; i < n; i++)                            \
+      for (std::size_t i = 0; i < n; i++)                       \
         r[i] = (x[i] OP y ? x[i] : y);                          \
   }                                                             \
   template <>                                                   \
-  inline void F<T> (size_t n, T *r, T x, const T *y)    \
+  inline void F<T> (std::size_t n, T *r, T x, const T *y)       \
   {                                                             \
     if (octave::math::isnan (x))                                \
       std::memcpy (r, y, n * sizeof (T));                       \
     else                                                        \
-      for (size_t i = 0; i < n; i++)                            \
+      for (std::size_t i = 0; i < n; i++)                       \
         r[i] = (y[i] OP x ? y[i] : x);                          \
   }
 
@@ -411,47 +411,47 @@ DEFMINMAXSPEC (float, mx_inline_xmax, >=)
 
 template <typename R, typename X, typename Y>
 inline void
-mx_inline_pow (size_t n, R *r, const X *x, const Y *y)
+mx_inline_pow (std::size_t n, R *r, const X *x, const Y *y)
 {
   using std::pow;
 
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = pow (x[i], y[i]);
 }
 
 template <typename R, typename X, typename Y>
 inline void
-mx_inline_pow (size_t n, R *r, const X *x, Y y)
+mx_inline_pow (std::size_t n, R *r, const X *x, Y y)
 {
   using std::pow;
 
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = pow (x[i], y);
 }
 
 template <typename R, typename X, typename Y>
 inline void
-mx_inline_pow (size_t n, R *r, X x, const Y *y)
+mx_inline_pow (std::size_t n, R *r, X x, const Y *y)
 {
   using std::pow;
 
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = pow (x, y[i]);
 }
 
 // Arbitrary function appliers.
 // The function is a template parameter to enable inlining.
 template <typename R, typename X, R fun (X x)>
-inline void mx_inline_map (size_t n, R *r, const X *x)
+inline void mx_inline_map (std::size_t n, R *r, const X *x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = fun (x[i]);
 }
 
 template <typename R, typename X, R fun (const X& x)>
-inline void mx_inline_map (size_t n, R *r, const X *x)
+inline void mx_inline_map (std::size_t n, R *r, const X *x)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     r[i] = fun (x[i]);
 }
 
@@ -461,7 +461,7 @@ inline void mx_inline_map (size_t n, R *r, const X *x)
 template <typename R, typename X>
 inline Array<R>
 do_mx_unary_op (const Array<X>& x,
-                void (*op) (size_t, R *, const X *))
+                void (*op) (std::size_t, R *, const X *))
 {
   Array<R> r (x.dims ());
   op (r.numel (), r.fortran_vec (), x.data ());
@@ -487,7 +487,7 @@ do_mx_unary_map (const Array<X>& x)
 template <typename R>
 inline Array<R>&
 do_mx_inplace_op (Array<R>& r,
-                  void (*op) (size_t, R *))
+                  void (*op) (std::size_t, R *))
 {
   op (r.numel (), r.fortran_vec ());
   return r;
@@ -496,9 +496,9 @@ do_mx_inplace_op (Array<R>& r,
 template <typename R, typename X, typename Y>
 inline Array<R>
 do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
-                 void (*op) (size_t, R *, const X *, const Y *),
-                 void (*op1) (size_t, R *, X, const Y *),
-                 void (*op2) (size_t, R *, const X *, Y),
+                 void (*op) (std::size_t, R *, const X *, const Y *),
+                 void (*op1) (std::size_t, R *, X, const Y *),
+                 void (*op2) (std::size_t, R *, const X *, Y),
                  const char *opname)
 {
   dim_vector dx = x.dims ();
@@ -520,7 +520,7 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
 template <typename R, typename X, typename Y>
 inline Array<R>
 do_ms_binary_op (const Array<X>& x, const Y& y,
-                 void (*op) (size_t, R *, const X *, Y))
+                 void (*op) (std::size_t, R *, const X *, Y))
 {
   Array<R> r (x.dims ());
   op (r.numel (), r.fortran_vec (), x.data (), y);
@@ -530,7 +530,7 @@ do_ms_binary_op (const Array<X>& x, const Y& y,
 template <typename R, typename X, typename Y>
 inline Array<R>
 do_sm_binary_op (const X& x, const Array<Y>& y,
-                 void (*op) (size_t, R *, X, const Y *))
+                 void (*op) (std::size_t, R *, X, const Y *))
 {
   Array<R> r (y.dims ());
   op (r.numel (), r.fortran_vec (), x, y.data ());
@@ -540,8 +540,8 @@ do_sm_binary_op (const X& x, const Array<Y>& y,
 template <typename R, typename X>
 inline Array<R>&
 do_mm_inplace_op (Array<R>& r, const Array<X>& x,
-                  void (*op) (size_t, R *, const X *),
-                  void (*op1) (size_t, R *, X),
+                  void (*op) (std::size_t, R *, const X *),
+                  void (*op1) (std::size_t, R *, X),
                   const char *opname)
 {
   dim_vector dr = r.dims ();
@@ -559,7 +559,7 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
 template <typename R, typename X>
 inline Array<R>&
 do_ms_inplace_op (Array<R>& r, const X& x,
-                  void (*op) (size_t, R *, X))
+                  void (*op) (std::size_t, R *, X))
 {
   op (r.numel (), r.fortran_vec (), x);
   return r;
@@ -567,9 +567,9 @@ do_ms_inplace_op (Array<R>& r, const X& x,
 
 template <typename T1, typename T2>
 inline bool
-mx_inline_equal (size_t n, const T1 *x, const T2 *y)
+mx_inline_equal (std::size_t n, const T1 *x, const T2 *y)
 {
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     if (x[i] != y[i])
       return false;
   return true;
@@ -578,7 +578,7 @@ mx_inline_equal (size_t n, const T1 *x, const T2 *y)
 template <typename T>
 inline bool
 do_mx_check (const Array<T>& a,
-             bool (*op) (size_t, const T *))
+             bool (*op) (std::size_t, const T *))
 {
   return op (a.numel (), a.data ());
 }

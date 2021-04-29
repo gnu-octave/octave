@@ -570,12 +570,12 @@ octave_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
     return map.index (idx, resize_ok);
 }
 
-size_t
+std::size_t
 octave_struct::byte_size (void) const
 {
   // Neglect the size of the fieldnames.
 
-  size_t retval = 0;
+  std::size_t retval = 0;
 
   for (auto p = map.cbegin (); p != map.cend (); p++)
     {
@@ -1288,12 +1288,12 @@ octave_scalar_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
   return octave_map (map).index (idx, resize_ok);
 }
 
-size_t
+std::size_t
 octave_scalar_struct::byte_size (void) const
 {
   // Neglect the size of the fieldnames.
 
-  size_t retval = 0;
+  std::size_t retval = 0;
 
   for (auto p = map.cbegin (); p != map.cend (); p++)
     {

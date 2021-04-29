@@ -56,9 +56,9 @@ do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
 {
   std::string retval;
 
-  size_t i = 0;
-  size_t j = 0;
-  size_t len = s.length ();
+  std::size_t i = 0;
+  std::size_t j = 0;
+  std::size_t len = s.length ();
 
   retval.resize (len);
 
@@ -102,7 +102,7 @@ do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
                 }
 
               int tmpi = 0;
-              size_t k;
+              std::size_t k;
               for (k = j; k < std::min (j+3+brace, len); k++)
                 {
                   int digit = s[k] - '0';
@@ -146,9 +146,9 @@ do_regexp_rep_string_escapes (const std::string& s)
 {
   std::string retval;
 
-  size_t i = 0;
-  size_t j = 0;
-  size_t len = s.length ();
+  std::size_t i = 0;
+  std::size_t j = 0;
+  std::size_t len = s.length ();
 
   retval.resize (len);
 
@@ -195,7 +195,7 @@ do_regexp_rep_string_escapes (const std::string& s)
             case '6':
             case '7': // octal input
             {
-              size_t k;
+              std::size_t k;
               int tmpi = s[j] - '0';
               for (k = j+1; k < std::min (j+3, len); k++)
                 {
@@ -222,7 +222,7 @@ do_regexp_rep_string_escapes (const std::string& s)
                 }
 
               int tmpi = 0;
-              size_t k;
+              std::size_t k;
               for (k = j; k < std::min (j+3+brace, len); k++)
                 {
                   int digit = s[k] - '0';
@@ -253,7 +253,7 @@ do_regexp_rep_string_escapes (const std::string& s)
                 }
 
               int tmpi = 0;
-              size_t k;
+              std::size_t k;
               for (k = j; k < std::min (j+2+brace, len); k++)
                 {
                   if (! isxdigit (s[k]))
@@ -384,7 +384,7 @@ octregexp (const octave_value_list& args, int nargout,
 
   string_vector named_pats = rx_lst.named_patterns ();
 
-  size_t sz = rx_lst.size ();
+  std::size_t sz = rx_lst.size ();
 
   // Converted the linked list in the correct form for the return values
 
@@ -447,7 +447,7 @@ octregexp (const octave_value_list& args, int nargout,
       NDArray end (dim_vector (1, sz));
       NDArray start (dim_vector (1, sz));
       Cell split (dim_vector (1, sz+1));
-      size_t sp_start = 0;
+      std::size_t sp_start = 0;
 
       octave_idx_type i = 0;
       for (const auto& match_data : rx_lst)

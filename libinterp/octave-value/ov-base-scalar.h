@@ -99,7 +99,7 @@ public:
 
   OCTINTERP_API octave_value reshape (const dim_vector& new_dims) const;
 
-  size_t byte_size (void) const { return sizeof (ST); }
+  std::size_t byte_size (void) const { return sizeof (ST); }
 
   octave_value all (int = 0) const { return (scalar != ST ()); }
 

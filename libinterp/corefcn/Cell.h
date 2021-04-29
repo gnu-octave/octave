@@ -78,7 +78,7 @@ public:
   Cell (const C<V>& container)
     : Array<octave_value> ()
   {
-    size_t n = container.size ();
+    std::size_t n = container.size ();
 
     if (n > 0)
       {

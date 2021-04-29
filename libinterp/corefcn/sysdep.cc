@@ -163,7 +163,7 @@ namespace octave
 
     if (! bin_dir.empty ())
       {
-        size_t pos = bin_dir.rfind (R"(\bin\)");
+        std::size_t pos = bin_dir.rfind (R"(\bin\)");
 
         if (pos != std::string::npos)
           sys::env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
@@ -206,7 +206,7 @@ Internal function.  Returns 1 on successful system call and 0 otherwise.
   HINSTANCE status = ShellExecuteW (0, 0, wfile.c_str (), 0, 0, SW_SHOWNORMAL);
 
   // ShellExecute returns a value greater than 32 if successful.
-  return octave_value (reinterpret_cast<ptrdiff_t> (status) > 32);
+  return octave_value (reinterpret_cast<std::ptrdiff_t> (status) > 32);
 #else
   // Quote file path
   file = '"' + file + '"';
@@ -463,7 +463,7 @@ namespace octave
   bool drive_or_unc_share (const std::string& name)
   {
 #if defined (OCTAVE_USE_WINDOWS_API)
-    size_t len = name.length ();
+    std::size_t len = name.length ();
     bool candidate = false;
     if (len > 1 && isalpha(name[0]) && name[1]==':'
         && (len == 2 || (len == 3 && name[2] == '\\')))
@@ -471,11 +471,11 @@ namespace octave
     if (len > 4 && name[0] == '\\' && name[1] == '\\')
       {
         // It starts with two slashes.  Find the next slash.
-        size_t next_slash = name.find ('\\', 3);
+        std::size_t next_slash = name.find ('\\', 3);
         if (next_slash != std::string::npos && len > next_slash+1)
           {
             // Check if it ends with the share
-            size_t last_slash = name.find ('\\', next_slash+1);
+            std::size_t last_slash = name.find ('\\', next_slash+1);
             if (last_slash == std::string::npos
                 || (len > next_slash+2 && last_slash == len-1))
               candidate = true;
@@ -1131,7 +1131,7 @@ On non-Windows platforms this function fails with an error.
         error ("winqueryreg: error %ld reading names from registry", retval);
 
       Cell fieldnames (dim_vector (1, fields.size ()));
-      size_t i;
+      std::size_t i;
       std::list<std::string>::const_iterator it;
       for (i = 0, it = fields.begin (); it != fields.end (); ++it, ++i)
         fieldnames(i) = *it;

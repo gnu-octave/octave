@@ -189,9 +189,9 @@ namespace octave
 
     std::vector<jit_magic_end::context> m_end_context;
 
-    size_t m_iterator_count;
-    size_t m_for_bounds_count;
-    size_t m_short_count;
+    std::size_t m_iterator_count;
+    std::size_t m_for_bounds_count;
+    std::size_t m_short_count;
 
     variable_map m_vmap;
 
@@ -223,7 +223,7 @@ namespace octave
     std::string next_shortcircut_result (bool inc = true)
     { return next_name ("#shortcircut_result", m_short_count, inc); }
 
-    std::string next_name (const char *prefix, size_t& count, bool inc);
+    std::string next_name (const char *prefix, std::size_t& count, bool inc);
 
     jit_instruction * resolve (tree_index_expression& exp,
                                jit_value *extra_arg = nullptr, bool lhs = false);
@@ -337,7 +337,7 @@ namespace octave
 
     void construct_ssa (void);
 
-    void do_construct_ssa (jit_block& block, size_t avisit_count);
+    void do_construct_ssa (jit_block& block, std::size_t avisit_count);
 
     jit_block& entry_block (void) { return *m_blocks.front (); }
 
@@ -510,7 +510,7 @@ namespace octave
 
     bool enabled (void);
 
-    size_t trip_count (const octave_value& bounds) const;
+    std::size_t trip_count (const octave_value& bounds) const;
   };
 
 
@@ -545,7 +545,7 @@ namespace octave
     // Create or insert an LLVM Function declaration for an intrinsic,
     // and return it
     llvm::Function*
-    get_intrinsic_declaration (size_t id,
+    get_intrinsic_declaration (std::size_t id,
                                std::vector<llvm::Type*> types) const;
 
     // Underlying type of enums defined in yet-inconplete types

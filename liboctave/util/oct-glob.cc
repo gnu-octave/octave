@@ -184,7 +184,7 @@ namespace octave
           else
             {
               // get next component of path (or file name)
-              size_t sep_pos
+              std::size_t sep_pos
                 = file.find_first_of (sys::file_ops::dir_sep_chars ());
               std::string pat_str = file.substr (0, sep_pos);
               std::string file_str = (sep_pos != std::string::npos
@@ -221,7 +221,7 @@ namespace octave
             continue;
 
           // separate component until first dir separator
-          size_t sep_pos
+          std::size_t sep_pos
             = xpat.find_first_of (sys::file_ops::dir_sep_chars ());
           std::string file = (sep_pos != std::string::npos
                               && xpat.length () > sep_pos+1)
@@ -283,7 +283,7 @@ namespace octave
               std::string escaped;
               escaped.reserve (xpat.length ());
 
-              for (size_t j = 0; j < xpat.length (); j++)
+              for (std::size_t j = 0; j < xpat.length (); j++)
                 {
 #  if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
        && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
@@ -333,7 +333,7 @@ namespace octave
                           std::string unescaped;
                           unescaped.reserve (tmp.length ());
 
-                          for (size_t m = 0; m < tmp.length (); m++)
+                          for (std::size_t m = 0; m < tmp.length (); m++)
                             {
 #  if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))

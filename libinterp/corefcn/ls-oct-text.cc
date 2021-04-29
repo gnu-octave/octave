@@ -314,7 +314,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
     error ("load: failed to extract keyword specifying value type");
 
   std::string typ;
-  size_t pos = tag.rfind (' ');
+  std::size_t pos = tag.rfind (' ');
 
   if (pos != std::string::npos)
     {

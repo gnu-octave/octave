@@ -853,12 +853,12 @@ octave_class::index_vector (bool require_integers) const
                                octave_value (1.0)).index_vector (require_integers);
 }
 
-size_t
+std::size_t
 octave_class::byte_size (void) const
 {
   // Neglect the size of the fieldnames.
 
-  size_t retval = 0;
+  std::size_t retval = 0;
 
   for (auto it = m_map.cbegin (); it != m_map.cend (); it++)
     {

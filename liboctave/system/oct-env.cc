@@ -337,7 +337,7 @@ namespace octave
           prog_invocation_name
             = octave_set_program_name_wrapper (strsave (s.c_str ()));
 
-          size_t pos
+          std::size_t pos
             = prog_invocation_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
           // Also keep a shortened version of the program name.
@@ -359,7 +359,7 @@ namespace octave
 
       std::string home_dir = do_get_home_directory ();
 
-      size_t len = home_dir.length ();
+      std::size_t len = home_dir.length ();
 
       if (len > 1 && home_dir == name.substr (0, len)
           && (name.length () == len || sys::file_ops::is_dir_sep (name[len])))
@@ -376,7 +376,7 @@ namespace octave
     bool
     env::do_absolute_pathname (const std::string& s) const
     {
-      size_t len = s.length ();
+      std::size_t len = s.length ();
 
       if (len == 0)
         return false;
@@ -397,7 +397,7 @@ namespace octave
     bool
     env::do_rooted_relative_pathname (const std::string& s) const
     {
-      size_t len = s.length ();
+      std::size_t len = s.length ();
 
       if (len == 0)
         return false;
@@ -428,7 +428,7 @@ namespace octave
       if (! (do_absolute_pathname (s) || do_rooted_relative_pathname (s)))
         return s;
 
-      size_t pos = s.find_last_of (sys::file_ops::dir_sep_chars ());
+      std::size_t pos = s.find_last_of (sys::file_ops::dir_sep_chars ());
 
       if (pos == std::string::npos)
         return s;
@@ -456,8 +456,8 @@ namespace octave
       if (! sys::file_ops::is_dir_sep (current_dir.back ()))
         current_dir.append (sys::file_ops::dir_sep_str ());
 
-      size_t i = 0;
-      size_t slen = s.length ();
+      std::size_t i = 0;
+      std::size_t slen = s.length ();
 
       while (i < slen)
         {
@@ -486,7 +486,7 @@ namespace octave
                 }
             }
 
-          size_t sep_pos;
+          std::size_t sep_pos;
           sep_pos = s.find_first_of (sys::file_ops::dir_sep_chars (), i);
 
           if (sep_pos == std::string::npos)
@@ -635,7 +635,7 @@ namespace octave
       if (path.empty ())
         return;
 
-      size_t i = path.length () - 1;
+      std::size_t i = path.length () - 1;
 
       while (n--)
         {

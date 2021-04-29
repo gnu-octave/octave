@@ -184,8 +184,8 @@ namespace octave
   {
     std::string fname = find_data_file_in_load_path ("load", name, true);
 
-    size_t dot_pos = fname.rfind ('.');
-    size_t sep_pos = fname.find_last_of (sys::file_ops::dir_sep_chars ());
+    std::size_t dot_pos = fname.rfind ('.');
+    std::size_t sep_pos = fname.find_last_of (sys::file_ops::dir_sep_chars ());
 
     if (dot_pos == std::string::npos
         || (sep_pos != std::string::npos && dot_pos < sep_pos))
@@ -851,7 +851,7 @@ namespace octave
                                       OCTAVE_VERSION ", %Y-%m-%d %T UTC";
           std::string comment_string = now.strftime (matlab_format);
 
-          size_t len = std::min (comment_string.length (), static_cast<size_t> (124));
+          std::size_t len = std::min (comment_string.length (), static_cast<std::size_t> (124));
           memset (headertext, ' ', 124);
           memcpy (headertext, comment_string.data (), len);
 
@@ -905,7 +905,7 @@ namespace octave
   // Save variables with names matching PATTERN on stream OS in the
   // format specified by FMT.
 
-  size_t load_save_system::save_vars (std::ostream& os,
+  std::size_t load_save_system::save_vars (std::ostream& os,
                                       const std::string& pattern,
                                       const load_save_format& fmt,
                                       bool save_as_floats)
@@ -914,7 +914,7 @@ namespace octave
 
     symbol_info_list syminfo_list = tw.glob_symbol_info (pattern);
 
-    size_t saved = 0;
+    std::size_t saved = 0;
 
     for (const auto& syminfo : syminfo_list)
       {
@@ -995,7 +995,7 @@ namespace octave
   // save fields of a scalar structure STR matching PATTERN on stream OS
   // in the format specified by FMT.
 
-  size_t load_save_system::save_fields (std::ostream& os,
+  std::size_t load_save_system::save_fields (std::ostream& os,
                                         const octave_scalar_map& m,
                                         const std::string& pattern,
                                         const load_save_format& fmt,
@@ -1003,7 +1003,7 @@ namespace octave
   {
     glob_match pat (pattern);
 
-    size_t saved = 0;
+    std::size_t saved = 0;
 
     for (auto it = m.begin (); it != m.end (); it++)
       {

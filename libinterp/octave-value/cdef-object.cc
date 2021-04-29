@@ -215,7 +215,7 @@ namespace octave
   octave_value_list
   cdef_object_array::subsref (const std::string& type,
                               const std::list<octave_value_list>& idx,
-                              int /* nargout */, size_t& skip,
+                              int /* nargout */, std::size_t& skip,
                               const cdef_class& /* context */, bool auto_add)
   {
     octave_value_list retval;
@@ -284,7 +284,7 @@ namespace octave
             octave_idx_type n = array.numel ();
 
             // dummy variables
-            size_t dummy_skip;
+            std::size_t dummy_skip;
             cdef_class dummy_cls;
 
             for (octave_idx_type i = 0; i < n; i++)
@@ -509,7 +509,7 @@ namespace octave
   octave_value_list
   cdef_object_scalar::subsref (const std::string& type,
                                const std::list<octave_value_list>& idx,
-                               int nargout, size_t& skip,
+                               int nargout, std::size_t& skip,
                                const cdef_class& context, bool auto_add)
   {
     skip = 0;

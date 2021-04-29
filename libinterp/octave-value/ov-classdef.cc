@@ -73,7 +73,7 @@ octave_classdef::subsref (const std::string& type,
                           const std::list<octave_value_list>& idx,
                           int nargout)
 {
-  size_t skip = 0;
+  std::size_t skip = 0;
   octave_value_list retval;
 
   octave::cdef_class cls = m_object.get_class ();
@@ -112,7 +112,7 @@ octave_classdef::subsref (const std::string& type,
                           const std::list<octave_value_list>& idx,
                           bool auto_add)
 {
-  size_t skip = 0;
+  std::size_t skip = 0;
   octave_value_list retval;
 
   // This variant of subsref is used to create temporary values when doing
@@ -309,7 +309,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
       std::map<std::string, octave::cdef_property> property_map
         = cls.get_property_map ();
 
-      size_t max_len = 0;
+      std::size_t max_len = 0;
       for (const auto& pname_prop : property_map)
         {
           // FIXME: this loop duplicates a significant portion of the
@@ -329,7 +329,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
           if (hid.bool_value ())
             continue;
 
-          size_t sz = nm.size ();
+          std::size_t sz = nm.size ();
 
           if (sz > max_len)
             max_len = sz;
@@ -500,7 +500,7 @@ octave_classdef_superclass_ref::execute (octave::tree_evaluator& tw,
     }
   else
     {
-      size_t pos = mname.find ('.');
+      std::size_t pos = mname.find ('.');
 
       octave::cdef_object obj;
 

@@ -365,7 +365,7 @@ public:
             // End of submenu? Pop back one level.
             if (! m->label ())
               {
-                size_t idx = menupath.find_last_of ('/');
+                std::size_t idx = menupath.find_last_of ('/');
                 if (idx != std::string::npos)
                   menupath.erase (idx);
                 else
@@ -586,8 +586,8 @@ public:
             if (item)
               {
                 //avoid duplicate menulabels
-                size_t idx1 = fltk_label.find_last_of ('(');
-                size_t idx2 = fltk_label.find_last_of (')');
+                std::size_t idx1 = fltk_label.find_last_of ('(');
+                std::size_t idx2 = fltk_label.find_last_of (')');
                 int len = idx2 - idx1;
                 int val = 1;
                 if (len > 0)
@@ -660,7 +660,7 @@ public:
       }
 
     // create any delayed menus
-    for (size_t ii = 0; ii < delayed_menus.size (); ii++)
+    for (std::size_t ii = 0; ii < delayed_menus.size (); ii++)
       {
         graphics_object kgo = gh_mgr.get_object (kids (delayed_menus[ii]));
 
@@ -707,7 +707,7 @@ public:
       }
 
     // create any delayed menus
-    for (size_t ii = 0; ii < delayed_menus.size (); ii++)
+    for (std::size_t ii = 0; ii < delayed_menus.size (); ii++)
       {
         graphics_object kgo = gh_mgr.get_object (kids (delayed_menus[ii]));
 

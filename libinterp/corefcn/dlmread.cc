@@ -357,11 +357,11 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
       if (sep.empty ())
         {
           // Skip leading whitespace.
-          size_t pos1 = line.find_first_not_of (" \t");
+          std::size_t pos1 = line.find_first_not_of (" \t");
 
           // For Matlab compatibility, blank delimiter should
           // correspond to whitespace (space and tab).
-          size_t n = line.find_first_of (",:; \t", pos1);
+          std::size_t n = line.find_first_of (",:; \t", pos1);
           if (n == std::string::npos)
             {
               sep = " \t";
@@ -389,7 +389,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
       // Estimate the number of columns from first line of data.
       if (cmax == 0)
         {
-          size_t pos1, pos2;
+          std::size_t pos1, pos2;
           if (auto_sep_is_wspace)
             pos1 = line.find_first_not_of (" \t");
           else
@@ -426,7 +426,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
       r = (r > i + 1 ? r : i + 1);
       j = 0;
 
-      size_t pos1, pos2;
+      std::size_t pos1, pos2;
       if (auto_sep_is_wspace)
         pos1 = line.find_first_not_of (" \t");  // Skip leading whitespace.
       else

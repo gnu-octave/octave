@@ -254,7 +254,7 @@ namespace octave
 
     if (name[0] == '@')
       {
-        size_t pos = name.find_first_of ('/');
+        std::size_t pos = name.find_first_of ('/');
 
         if (pos == std::string::npos)
           return octave_value ();

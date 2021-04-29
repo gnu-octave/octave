@@ -556,7 +556,7 @@ namespace octave
                                             const std::list<octave_value_list>& idx,
                                             int nargout)
   {
-    size_t skip = 1;
+    std::size_t skip = 1;
 
     octave_value_list retval;
 

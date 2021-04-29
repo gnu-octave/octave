@@ -495,10 +495,10 @@ octave_sort<T>::gallop_right (T key, T *a, octave_idx_type n,
 }
 
 static inline octave_idx_type
-roundupsize (size_t n)
+roundupsize (std::size_t n)
 {
   unsigned int nbits = 3;
-  size_t n2 = n >> 8;
+  std::size_t n2 = n >> 8;
 
   /* Round up:
    * If n <       256, to a multiple of        8.
@@ -528,11 +528,11 @@ roundupsize (size_t n)
       nbits += 3;
     }
 
-  size_t new_size = ((n >> nbits) + 1) << nbits;
+  std::size_t new_size = ((n >> nbits) + 1) << nbits;
 
   if (new_size == 0
       || new_size
-         > static_cast<size_t> (std::numeric_limits<octave_idx_type>::max ()))
+         > static_cast<std::size_t> (std::numeric_limits<octave_idx_type>::max ()))
     (*current_liboctave_error_handler)
       ("unable to allocate sufficient memory for sort");
 

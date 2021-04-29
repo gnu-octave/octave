@@ -45,8 +45,8 @@ public:
   octave_base_value * clone (void) { return new octave_integer (*this); }
 
 #if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
+  void *operator new (std::size_t size);
+  void operator delete (void *p, std::size_t size);
 #endif
 
   octave::idx_vector index_vector (bool) const

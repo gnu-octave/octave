@@ -158,7 +158,7 @@ namespace octave
   {
     string_vector names;
 
-    size_t pos = text.rfind ('.');
+    std::size_t pos = text.rfind ('.');
     bool array = false;
 
     if (pos != std::string::npos)
@@ -267,13 +267,13 @@ namespace octave
   is_completing_dirfns (void)
   {
     static std::string dirfns_commands[] = {"cd", "isfile", "isfolder", "ls"};
-    static const size_t dirfns_commands_length = 4;
+    static const std::size_t dirfns_commands_length = 4;
 
     bool retval = false;
 
     std::string line = command_editor::get_line_buffer ();
 
-    for (size_t i = 0; i < dirfns_commands_length; i++)
+    for (std::size_t i = 0; i < dirfns_commands_length; i++)
       {
         int index = line.find (dirfns_commands[i] + ' ');
 
@@ -295,7 +295,7 @@ namespace octave
     static std::string prefix;
     static std::string hint;
 
-    static size_t hint_len = 0;
+    static std::size_t hint_len = 0;
 
     static int list_index = 0;
     static int name_list_len = 0;
@@ -548,7 +548,7 @@ namespace octave
     std::string lp_dir = dir;
 
     // strip trailing filesep
-    size_t ipos = lp_dir.find_last_not_of (sys::file_ops::dir_sep_chars ());
+    std::size_t ipos = lp_dir.find_last_not_of (sys::file_ops::dir_sep_chars ());
     if (ipos != std::string::npos)
       lp_dir = lp_dir.erase (ipos+1);
 
@@ -715,7 +715,7 @@ namespace octave
     if (input_buf.empty ())
       error ("input: reading user-input failed!");
 
-    size_t len = input_buf.length ();
+    std::size_t len = input_buf.length ();
 
     octave_diary << input_buf;
 
@@ -990,7 +990,7 @@ namespace octave
       {
         std::string input = octave_gets (prompt, m_eof);
 
-        size_t len = input.size ();
+        std::size_t len = input.size ();
 
         if (len == 0)
           {
@@ -1009,10 +1009,10 @@ namespace octave
               }
           }
 
-        size_t beg = 0;
+        std::size_t beg = 0;
         while (beg < len)
           {
-            size_t end = input.find ('\n', beg);
+            std::size_t end = input.find ('\n', beg);
 
             if (end == std::string::npos)
               {
@@ -1084,9 +1084,9 @@ namespace octave
       {
         // convert encoding to UTF-8 before returning string
         const char *src = src_str.c_str ();
-        size_t srclen = src_str.length ();
+        std::size_t srclen = src_str.length ();
 
-        size_t length;
+        std::size_t length;
         uint8_t *utf8_str;
 
         utf8_str = octave_u8_conv_from_encoding (encoding.c_str (), src, srclen,

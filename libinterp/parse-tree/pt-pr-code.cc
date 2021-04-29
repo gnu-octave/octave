@@ -1223,9 +1223,9 @@ namespace octave
 
     std::string comment = elt.text ();
 
-    size_t len = comment.length ();
+    std::size_t len = comment.length ();
 
-    size_t i = 0;
+    std::size_t i = 0;
 
     while (i < len && comment[i++] == '\n')
       ; // Skip leading new lines.

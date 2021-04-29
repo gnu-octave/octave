@@ -607,7 +607,7 @@ namespace octave
             {
               const uint8_t *name_u8 = reinterpret_cast<const uint8_t *>
                                          (orig_file_name.c_str ());
-              size_t length = 0;
+              std::size_t length = 0;
               char *name_locale = octave_u8_conv_to_encoding_strict
                                     (locale, name_u8,
                                      orig_file_name.length () + 1, &length);
@@ -670,7 +670,7 @@ namespace octave
       std::wstring tmp_substr
         = std::wstring (w_full_file_name_str.begin (), w_first_non_ASCII);
 
-      size_t pos
+      std::size_t pos
         = tmp_substr.find_last_of (u8_to_wstring (file_ops::dir_sep_chars ()));
 
       std::string par_dir
@@ -706,7 +706,7 @@ namespace octave
 
       wchar_t w_filename_hash[filename_hash.length ()+1] = {0};
 
-      for (size_t i=0; i < filename_hash.length (); i++)
+      for (std::size_t i=0; i < filename_hash.length (); i++)
         w_filename_hash[i] = filename_hash.at (i);
 
       if (CreateHardLinkW (w_filename_hash, w_orig_file_name, nullptr))

@@ -500,9 +500,9 @@ octave::string::u8_to_encoding (const std::string& who,
 {
   const uint8_t *src = reinterpret_cast<const uint8_t *>
                        (u8_string.c_str ());
-  size_t srclen = u8_string.length ();
+  std::size_t srclen = u8_string.length ();
 
-  size_t length;
+  std::size_t length;
   char *native_str = octave_u8_conv_to_encoding (encoding.c_str (), src,
                                                  srclen, &length);
 
@@ -531,9 +531,9 @@ octave::string::u8_from_encoding (const std::string& who,
                                   const std::string& encoding)
 {
   const char *src = native_string.c_str ();
-  size_t srclen = native_string.length ();
+  std::size_t srclen = native_string.length ();
 
-  size_t length;
+  std::size_t length;
   uint8_t *utf8_str = octave_u8_conv_from_encoding (encoding.c_str (), src,
                                                     srclen, &length);
   if (! utf8_str)
@@ -585,7 +585,7 @@ octave::string::u8_validate (const std::string& who,
           else if (type == U8_ISO_8859_1)
             {
               std::string fallback = "iso-8859-1";
-              size_t lengthp;
+              std::size_t lengthp;
               uint8_t *val_utf8 = octave_u8_conv_from_encoding
                                     (fallback.c_str (), inv_utf8, 1, &lengthp);
 

@@ -847,7 +847,7 @@ public:
     return calc_single_subscript_internal (ndims, dims, nsubs, subs);
   }
 
-  size_t get_element_size (void) const
+  std::size_t get_element_size (void) const
   {
     // Force id to be cached.
     get_class_id ();
@@ -1479,7 +1479,7 @@ public:
     return calc_single_subscript_internal (ndims, dims, nsubs, subs);
   }
 
-  size_t get_element_size (void) const
+  std::size_t get_element_size (void) const
   {
     switch (id)
       {
@@ -1650,12 +1650,12 @@ public:
       {
         const char *ptr = str[j];
 
-        size_t tmp_len = strlen (ptr);
+        std::size_t tmp_len = strlen (ptr);
 
-        for (size_t i = 0; i < tmp_len; i++)
+        for (std::size_t i = 0; i < tmp_len; i++)
           cpr[m*i+j] = static_cast<mxChar> (ptr[i]);
 
-        for (size_t i = tmp_len; i < static_cast<size_t> (nc); i++)
+        for (std::size_t i = tmp_len; i < static_cast<std::size_t> (nc); i++)
           cpr[m*i+j] = static_cast<mxChar> (' ');
       }
   }
@@ -1671,7 +1671,7 @@ protected:
              ? mxArray::malloc (get_number_of_elements () * get_element_size ())
              : nullptr))
   {
-    size_t nbytes = get_number_of_elements () * get_element_size ();
+    std::size_t nbytes = get_number_of_elements () * get_element_size ();
 
     if (pr)
       memcpy (pr, val.pr, nbytes);
@@ -2124,7 +2124,7 @@ private:
       ir (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex)))),
       jc (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex))))
   {
-    size_t nbytes = nzmax * get_element_size ();
+    std::size_t nbytes = nzmax * get_element_size ();
 
     if (pr)
       memcpy (pr, val.pr, nbytes);
@@ -2935,7 +2935,7 @@ public:
   }
 
   // Allocate memory.
-  void * malloc_unmarked (size_t n)
+  void * malloc_unmarked (std::size_t n)
   {
     void *ptr = std::malloc (n);
 
@@ -2952,7 +2952,7 @@ public:
   }
 
   // Allocate memory to be freed on exit.
-  void * malloc (size_t n)
+  void * malloc (std::size_t n)
   {
     void *ptr = malloc_unmarked (n);
 
@@ -2962,7 +2962,7 @@ public:
   }
 
   // Allocate memory and initialize to 0.
-  void * calloc_unmarked (size_t n, size_t t)
+  void * calloc_unmarked (std::size_t n, std::size_t t)
   {
     void *ptr = malloc_unmarked (n*t);
 
@@ -2972,7 +2972,7 @@ public:
   }
 
   // Allocate memory to be freed on exit and initialize to 0.
-  void * calloc (size_t n, size_t t)
+  void * calloc (std::size_t n, std::size_t t)
   {
     void *ptr = calloc_unmarked (n, t);
 
@@ -2984,7 +2984,7 @@ public:
   // Reallocate a pointer obtained from malloc or calloc.
   // If the pointer is NULL, allocate using malloc.
   // We don't need an "unmarked" version of this.
-  void * realloc (void *ptr, size_t n)
+  void * realloc (void *ptr, std::size_t n)
   {
     void *v;
 
@@ -3200,13 +3200,13 @@ std::set<void *> mex::global_memlist;
 mex *mex_context = nullptr;
 
 void *
-mxArray::malloc (size_t n)
+mxArray::malloc (std::size_t n)
 {
   return mex_context ? mex_context->malloc_unmarked (n) : std::malloc (n);
 }
 
 void *
-mxArray::calloc (size_t n, size_t t)
+mxArray::calloc (std::size_t n, std::size_t t)
 {
   return mex_context ? mex_context->calloc_unmarked (n, t) : ::calloc (n, t);
 }
@@ -3297,19 +3297,19 @@ mxGetNaN (void)
 
 // Memory management.
 void *
-mxCalloc (size_t n, size_t size)
+mxCalloc (std::size_t n, std::size_t size)
 {
   return mex_context ? mex_context->calloc (n, size) : ::calloc (n, size);
 }
 
 void *
-mxMalloc (size_t n)
+mxMalloc (std::size_t n)
 {
   return mex_context ? mex_context->malloc (n) : std::malloc (n);
 }
 
 void *
-mxRealloc (void *ptr, size_t size)
+mxRealloc (void *ptr, std::size_t size)
 {
   return mex_context ? mex_context->realloc (ptr, size)
                      : std::realloc (ptr, size);
@@ -3731,13 +3731,13 @@ mxIsFromGlobalWS (const mxArray * /*ptr*/)
 }
 
 // Dimension extractors.
-size_t
+std::size_t
 mxGetM (const mxArray *ptr)
 {
   return ptr->get_m ();
 }
 
-size_t
+std::size_t
 mxGetN (const mxArray *ptr)
 {
   return ptr->get_n ();
@@ -3755,7 +3755,7 @@ mxGetNumberOfDimensions (const mxArray *ptr)
   return ptr->get_number_of_dimensions ();
 }
 
-size_t
+std::size_t
 mxGetNumberOfElements (const mxArray *ptr)
 {
   return ptr->get_number_of_elements ();
@@ -4216,7 +4216,7 @@ mxCalcSingleSubscript (const mxArray *ptr, mwSize nsubs, mwIndex *subs)
   return ptr->calc_single_subscript (nsubs, subs);
 }
 
-size_t
+std::size_t
 mxGetElementSize (const mxArray *ptr)
 {
   return ptr->get_element_size ();
@@ -4483,7 +4483,7 @@ mexEvalStringWithTrap (const char *s)
 void
 mexErrMsgTxt (const char *s)
 {
-  size_t len;
+  std::size_t len;
 
   if (s && (len = strlen (s)) > 0)
     {
@@ -4509,7 +4509,7 @@ mexErrMsgIdAndTxt (const char *id, const char *fmt, ...)
   if (fmt && strlen (fmt) > 0)
     {
       const char *fname = mexFunctionName ();
-      size_t len = strlen (fname) + 2 + strlen (fmt) + 1;
+      std::size_t len = strlen (fname) + 2 + strlen (fmt) + 1;
       OCTAVE_LOCAL_BUFFER (char, tmpfmt, len);
       sprintf (tmpfmt, "%s: %s", fname, fmt);
       va_list args;
@@ -4528,7 +4528,7 @@ mexErrMsgIdAndTxt (const char *id, const char *fmt, ...)
 void
 mexWarnMsgTxt (const char *s)
 {
-  size_t len;
+  std::size_t len;
 
   if (s && (len = strlen (s)) > 0)
     {
@@ -4557,7 +4557,7 @@ mexWarnMsgIdAndTxt (const char *id, const char *fmt, ...)
   if (fmt && strlen (fmt) > 0)
     {
       const char *fname = mexFunctionName ();
-      size_t len = strlen (fname) + 2 + strlen (fmt) + 1;
+      std::size_t len = strlen (fname) + 2 + strlen (fmt) + 1;
       OCTAVE_LOCAL_BUFFER (char, tmpfmt, len);
       sprintf (tmpfmt, "%s: %s", fname, fmt);
       va_list args;

@@ -34,7 +34,7 @@ namespace octave
 {
   namespace crypto
   {
-    typedef void * (hash_fptr) (const char *buffer, size_t len, void *res);
+    typedef void * (hash_fptr) (const char *buffer, std::size_t len, void *res);
 
     OCTAVE_API std::string
     hash (hash_fptr hash_fcn, const std::string& str, int result_buf_len);

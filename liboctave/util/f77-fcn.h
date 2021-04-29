@@ -32,11 +32,12 @@
 #include "quit.h"
 
 #if defined (__cplusplus)
+#  include <cstddef>
 #  include <limits>
-#endif
-
-#if defined (__cplusplus)
+using std::size_t;
 extern "C" {
+#else
+#  include <stddef.h>
 #endif
 
 /* This macro is obsolete.  */

@@ -72,7 +72,7 @@ public:
 
   ~octave_base_matrix (void) { clear_cached_info (); }
 
-  size_t byte_size (void) const { return matrix.byte_size (); }
+  std::size_t byte_size (void) const { return matrix.byte_size (); }
 
   octave_value squeeze (void) const { return MT (matrix.squeeze ()); }
 

@@ -37,7 +37,7 @@
 
 namespace octave
 {
-  std::string file_info::get_line (size_t line) const
+  std::string file_info::get_line (std::size_t line) const
   {
     std::string retval;
 
@@ -46,8 +46,8 @@ namespace octave
 
     if (line < m_offsets.size ())
       {
-        size_t bol = m_offsets[line-1];
-        size_t eol = m_offsets[line];
+        std::size_t bol = m_offsets[line-1];
+        std::size_t eol = m_offsets[line];
 
         while (eol > 0 && eol > bol
                && (m_file_buf[eol-1] == '\n' || m_file_buf[eol-1] == '\r'))
@@ -60,11 +60,11 @@ namespace octave
   }
 
   std::deque<std::string>
-  file_info::get_lines (size_t line, size_t num_lines) const
+  file_info::get_lines (std::size_t line, std::size_t num_lines) const
   {
     std::deque<std::string> retval;
 
-    for (size_t i = line; i < line+num_lines; i++)
+    for (std::size_t i = line; i < line+num_lines; i++)
       retval.push_back (get_line (i));
 
     return retval;
@@ -81,7 +81,7 @@ namespace octave
     if (! fs)
       (*current_liboctave_error_handler) ("no such file, '%s'", fname.c_str ());
 
-    size_t sz = fs.size ();
+    std::size_t sz = fs.size ();
 
     std::ifstream file = sys::ifstream (fname.c_str (),
                                         std::ios::in | std::ios::binary);
@@ -103,15 +103,15 @@ namespace octave
     return retval;
   }
 
-  std::vector<size_t> file_info::get_line_offsets (const std::string& buf)
+  std::vector<std::size_t> file_info::get_line_offsets (const std::string& buf)
   {
-    std::deque<size_t> tmp_offsets;
+    std::deque<std::size_t> tmp_offsets;
 
     tmp_offsets.push_back (0);
 
-    size_t len = buf.length ();
+    std::size_t len = buf.length ();
 
-    for (size_t i = 0; i < len; i++)
+    for (std::size_t i = 0; i < len; i++)
       {
         char c = buf[i];
 
@@ -130,10 +130,10 @@ namespace octave
 
     tmp_offsets.push_back (len-1);
 
-    size_t n = tmp_offsets.size ();
+    std::size_t n = tmp_offsets.size ();
 
-    std::vector<size_t> retval (n);
-    size_t i = 0;
+    std::vector<std::size_t> retval (n);
+    std::size_t i = 0;
     for (auto& elt : tmp_offsets)
       retval[i++] = elt;
 

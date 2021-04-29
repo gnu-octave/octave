@@ -300,7 +300,7 @@ public:
 
   virtual mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const = 0;
 
-  virtual size_t get_element_size (void) const = 0;
+  virtual std::size_t get_element_size (void) const = 0;
 
   virtual bool mutation_needed (void) const { return false; }
 
@@ -315,7 +315,7 @@ protected:
 
   mxArray_base (const mxArray_base&) = default;
 
-  size_t get_numeric_element_size (size_t size) const
+  std::size_t get_numeric_element_size (std::size_t size) const
   {
     return (m_interleaved
             ? is_complex () ? 2 * size : size
@@ -665,15 +665,15 @@ public:
   mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
   { return rep->calc_single_subscript (nsubs, subs); }
 
-  size_t get_element_size (void) const { return rep->get_element_size (); }
+  std::size_t get_element_size (void) const { return rep->get_element_size (); }
 
   bool mutation_needed (void) const { return rep->mutation_needed (); }
 
   mxArray * mutate (void) const { return rep->mutate (); }
 
-  static OCTINTERP_API void * malloc (size_t n);
+  static OCTINTERP_API void * malloc (std::size_t n);
 
-  static OCTINTERP_API void * calloc (size_t n, size_t t);
+  static OCTINTERP_API void * calloc (std::size_t n, std::size_t t);
 
   static char * strsave (const char *str)
   {

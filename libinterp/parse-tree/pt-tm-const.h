@@ -171,7 +171,7 @@ namespace octave
 
     bool empty (void) const { return m_values.empty (); }
 
-    size_t length (void) const { return m_values.size (); }
+    std::size_t length (void) const { return m_values.size (); }
 
     void cellify (void);
 

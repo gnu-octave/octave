@@ -165,16 +165,16 @@ namespace octave
   extern OCTINTERP_API FloatMatrix
   float_identity_matrix (octave_idx_type nr, octave_idx_type nc);
 
-  extern OCTINTERP_API size_t
+  extern OCTINTERP_API std::size_t
   format (std::ostream& os, const char *fmt, ...);
 
-  extern OCTINTERP_API size_t
+  extern OCTINTERP_API std::size_t
   format (std::ostream& os, const std::string& enc, const char *fmt, ...);
 
-  extern OCTINTERP_API size_t
+  extern OCTINTERP_API std::size_t
   vformat (std::ostream& os, const char *fmt, va_list args);
 
-  extern OCTINTERP_API size_t
+  extern OCTINTERP_API std::size_t
   vformat (std::ostream& os, const std::string& enc,
            const char *fmt, va_list args);
 

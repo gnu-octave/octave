@@ -353,9 +353,9 @@ main (int argc, char **argv)
           // Handle all single-letter command line options here; they may
           // occur alone or may be aggregated into a single argument.
 
-          size_t len = strlen (argv[i]);
+          std::size_t len = strlen (argv[i]);
 
-          for (size_t j = 1; j < len; j++)
+          for (std::size_t j = 1; j < len; j++)
             switch (argv[i][j])
               {
               case 'W':

@@ -144,13 +144,13 @@ namespace octave
 
     NODE_T * first_use (void) const { return m_use_head; }
 
-    size_t use_count (void) const { return m_use_count; }
+    std::size_t use_count (void) const { return m_use_count; }
 
   private:
 
     NODE_T *m_use_head;
     NODE_T *m_use_tail;
-    size_t m_use_count;
+    std::size_t m_use_count;
   };
 
   // a node for internal linked lists

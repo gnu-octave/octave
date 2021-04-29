@@ -8164,7 +8164,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       if (args(0).is_ ## X ## _type ())                                  \
         {                                                                \
           const X##NDArray in = args(0).  X## _array_value ();           \
-          size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char);  \
+          std::size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char);  \
           const char *inc = reinterpret_cast<const char *> (in.data ()); \
           char *out;                                                     \
           if (octave::base64_encode (inc, inlen, &out))                  \
@@ -8191,7 +8191,7 @@ Encode a double matrix or array @var{x} into the base64 format string
   else if (args(0).is_single_type ())
     {
       const Array<float> in = args(0).float_array_value ();
-      size_t inlen;
+      std::size_t inlen;
       inlen = in.numel () * sizeof (float) / sizeof (char);
       const char*  inc;
       inc = reinterpret_cast<const char *> (in.data ());
@@ -8205,7 +8205,7 @@ Encode a double matrix or array @var{x} into the base64 format string
   else  // double_type
     {
       const Array<double> in = args(0).array_value ();
-      size_t inlen;
+      std::size_t inlen;
       inlen = in.numel () * sizeof (double) / sizeof (char);
       const char*  inc;
       inc = reinterpret_cast<const char *> (in.data ());

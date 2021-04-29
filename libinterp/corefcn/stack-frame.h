@@ -139,7 +139,7 @@ namespace octave
 
     stack_frame (void) = delete;
 
-    stack_frame (tree_evaluator& tw, size_t index,
+    stack_frame (tree_evaluator& tw, std::size_t index,
                  const std::shared_ptr<stack_frame>& parent_link,
                  const std::shared_ptr<stack_frame>& static_link,
                  const std::shared_ptr<stack_frame>& access_link)
@@ -151,26 +151,26 @@ namespace octave
 
     // Compiled function.
     static stack_frame *
-    create (tree_evaluator& tw, octave_function *fcn, size_t index,
+    create (tree_evaluator& tw, octave_function *fcn, std::size_t index,
             const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link);
 
     // Script.
     static stack_frame *
-    create (tree_evaluator& tw, octave_user_script *script, size_t index,
+    create (tree_evaluator& tw, octave_user_script *script, std::size_t index,
             const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link);
 
     // User-defined function.
     static stack_frame *
-    create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
+    create (tree_evaluator& tw, octave_user_function *fcn, std::size_t index,
             const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link,
             const std::shared_ptr<stack_frame>& access_link = std::shared_ptr<stack_frame> ());
 
     // Anonymous user-defined function with init vars.
     static stack_frame *
-    create (tree_evaluator& tw, octave_user_function *fcn, size_t index,
+    create (tree_evaluator& tw, octave_user_function *fcn, std::size_t index,
             const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link,
             const local_vars_map& local_vars,
@@ -178,7 +178,7 @@ namespace octave
 
     // Scope.
     static stack_frame *
-    create (tree_evaluator& tw, const symbol_scope& scope, size_t index,
+    create (tree_evaluator& tw, const symbol_scope& scope, std::size_t index,
             const std::shared_ptr<stack_frame>& parent_link,
             const std::shared_ptr<stack_frame>& static_link);
 
@@ -199,7 +199,7 @@ namespace octave
 
     virtual void clear_values (void);
 
-    size_t index (void) const { return m_index; }
+    std::size_t index (void) const { return m_index; }
 
     void line (int l) { m_line = l; }
     int line (void) const { return m_line; }
@@ -316,9 +316,9 @@ namespace octave
     std::shared_ptr<stack_frame>
     access_link (void) const {return m_access_link; }
 
-    virtual size_t size (void) const;
+    virtual std::size_t size (void) const;
 
-    virtual void resize (size_t);
+    virtual void resize (std::size_t);
 
     void mark_global (const symbol_record& sym)
     {
@@ -384,9 +384,9 @@ namespace octave
 
     virtual scope_flags scope_flag (const symbol_record&) const = 0;
 
-    virtual scope_flags get_scope_flag (size_t) const;
+    virtual scope_flags get_scope_flag (std::size_t) const;
 
-    virtual void set_scope_flag (size_t, scope_flags);
+    virtual void set_scope_flag (std::size_t, scope_flags);
 
     bool is_global (const symbol_record& sym) const
     {
@@ -429,7 +429,7 @@ namespace octave
 
     virtual octave_value varval (const symbol_record& sym) const = 0;;
 
-    virtual octave_value varval (size_t data_offset) const;
+    virtual octave_value varval (std::size_t data_offset) const;
 
     octave_value varval (const std::string& name) const
     {
@@ -440,7 +440,7 @@ namespace octave
 
     virtual octave_value& varref (const symbol_record& sym) = 0;
 
-    virtual octave_value& varref (size_t data_offset);
+    virtual octave_value& varref (std::size_t data_offset);
 
     void assign (const symbol_record& sym, const octave_value& val)
     {
@@ -574,7 +574,7 @@ namespace octave
     int m_column;
 
     // Index in call stack.
-    size_t m_index;
+    std::size_t m_index;
 
     // Pointer to the nearest parent frame.  May include compiled
     // functions.

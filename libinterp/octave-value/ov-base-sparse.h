@@ -81,7 +81,7 @@ public:
 
   octave_idx_type nzmax (void) const { return matrix.nzmax (); }
 
-  size_t byte_size (void) const { return matrix.byte_size (); }
+  std::size_t byte_size (void) const { return matrix.byte_size (); }
 
   octave_value squeeze (void) const { return matrix.squeeze (); }
 

@@ -68,7 +68,7 @@ namespace octave
 
       bool empty (void) const { return m_frame_stack.empty (); }
 
-      size_t size (void) const { return m_frame_stack.size (); }
+      std::size_t size (void) const { return m_frame_stack.size (); }
 
       void pop (void);
 
@@ -216,12 +216,12 @@ namespace octave
       }
 
       // Direct access.
-      token * at (size_t n)
+      token * at (std::size_t n)
       {
         return empty () ? nullptr : m_buffer.at (n);
       }
 
-      const token * at (size_t n) const
+      const token * at (std::size_t n) const
       {
         return empty () ? nullptr : m_buffer.at (n);
       }
@@ -248,7 +248,7 @@ namespace octave
       }
 
       // Number of elements currently in the buffer.
-      size_t size (void) const { return m_buffer.size (); }
+      std::size_t size (void) const { return m_buffer.size (); }
 
       bool empty (void) const { return m_buffer.empty (); }
 
@@ -463,7 +463,7 @@ namespace octave
 
     // Count of tokens recognized by this lexer since initialized or
     // since the last reset.
-    size_t m_token_count;
+    std::size_t m_token_count;
 
     // The current position in the file (line and column).
     filepos m_filepos;
@@ -548,7 +548,7 @@ namespace octave
       void fill (const std::string& input, bool eof_arg);
 
       // Copy at most max_size characters to buf.
-      int copy_chunk (char *buf, size_t max_size, bool by_lines = false);
+      int copy_chunk (char *buf, std::size_t max_size, bool by_lines = false);
 
       bool empty (void) const { return m_chars_left == 0; }
 
@@ -557,8 +557,8 @@ namespace octave
     private:
 
       std::string m_buffer;
-      size_t m_offset;
-      size_t m_chars_left;
+      std::size_t m_offset;
+      std::size_t m_chars_left;
       bool m_eof;
     };
 
@@ -699,7 +699,7 @@ namespace octave
 
     token * current_token (void);
 
-    size_t pending_token_count (void) const;
+    std::size_t pending_token_count (void) const;
 
     void display_token (int tok);
 

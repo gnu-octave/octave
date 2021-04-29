@@ -104,7 +104,7 @@ namespace octave
         return m_stack.top ();
       }
 
-      size_t size (void) const
+      std::size_t size (void) const
       {
         return m_stack.size ();
       }
@@ -455,13 +455,13 @@ namespace octave
 
     octave_function * caller_function (void) const;
 
-    bool goto_frame (size_t n = 0, bool verbose = false);
+    bool goto_frame (std::size_t n = 0, bool verbose = false);
 
     void goto_caller_frame (void);
 
     void goto_base_frame (void);
 
-    void restore_frame (size_t n);
+    void restore_frame (std::size_t n);
 
     std::string get_dispatch_class (void) const;
 
@@ -603,16 +603,16 @@ namespace octave
     octave_value
     silent_functions (const octave_value_list& args, int nargout);
 
-    size_t debug_frame (void) const { return m_debug_frame; }
+    std::size_t debug_frame (void) const { return m_debug_frame; }
 
-    size_t debug_frame (size_t n)
+    std::size_t debug_frame (std::size_t n)
     {
-      size_t val = m_debug_frame;
+      std::size_t val = m_debug_frame;
       m_debug_frame = n;
       return val;
     }
 
-    size_t current_call_stack_frame_number (void) const
+    std::size_t current_call_stack_frame_number (void) const
     {
       return m_call_stack.current_frame ();
     }
@@ -880,7 +880,7 @@ namespace octave
     profiler m_profiler;
 
     // The number of the stack frame we are currently debugging.
-    size_t m_debug_frame;
+    std::size_t m_debug_frame;
 
     bool m_debug_mode;
 

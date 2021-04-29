@@ -486,11 +486,11 @@ public:
                          const desired_enum& typ = string_t)
     : base_property (s, h), desired_type (typ), separator (sep), str ()
   {
-    size_t pos = 0;
+    std::size_t pos = 0;
 
     while (true)
       {
-        size_t new_pos = val.find_first_of (separator, pos);
+        std::size_t new_pos = val.find_first_of (separator, pos);
 
         if (new_pos == std::string::npos)
           {
@@ -568,12 +568,12 @@ protected:
         bool replace = false;
         std::string new_str = val.string_value ();
         string_vector strings;
-        size_t pos = 0;
+        std::size_t pos = 0;
 
         // Split single string on delimiter (usually '|')
         while (pos != std::string::npos)
           {
-            size_t new_pos = new_str.find_first_of (separator, pos);
+            std::size_t new_pos = new_str.find_first_of (separator, pos);
 
             if (new_pos == std::string::npos)
               {
@@ -871,9 +871,9 @@ public:
 
   bool contains (const std::string& val, std::string& match)
   {
-    size_t k = 0;
+    std::size_t k = 0;
 
-    size_t len = val.length ();
+    std::size_t len = val.length ();
 
     std::string first_match;
 

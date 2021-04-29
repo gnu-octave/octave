@@ -240,7 +240,7 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
       std::string xname = name;
       std::string ext;
 
-      size_t pos = name.rfind ('.');
+      std::size_t pos = name.rfind ('.');
 
       if (pos != std::string::npos)
         {
@@ -299,7 +299,7 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
             file_name = lp.find_fcn (name);
         }
 
-      size_t len = file_name.length ();
+      std::size_t len = file_name.length ();
 
       if (len > 0)
         {
@@ -372,11 +372,11 @@ unique_symbol_name (const std::string& basename)
   static const std::string alpha
     = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  static size_t len = alpha.length ();
+  static std::size_t len = alpha.length ();
 
   std::string nm = basename + alpha[GET_IDX (len)];
 
-  size_t pos = nm.length ();
+  std::size_t pos = nm.length ();
 
   if (nm.substr (0, 2) == "__")
     nm.append ("__");

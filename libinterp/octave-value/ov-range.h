@@ -140,7 +140,7 @@ public:
   OCTINTERP_API octave_value
   resize (const dim_vector& dv, bool fill = false) const;
 
-  size_t byte_size (void) const { return 3 * sizeof (T); }
+  std::size_t byte_size (void) const { return 3 * sizeof (T); }
 
   octave_value reshape (const dim_vector& new_dims) const
   {

@@ -187,7 +187,7 @@ namespace octave
                                             "abcdefghijklmnopqrstuvwxyz"
                                             "_0123456789";
         // Get the first non-permitted char.
-        size_t pos = str.find_first_not_of (permitted_chars);
+        std::size_t pos = str.find_first_not_of (permitted_chars);
         // Buffer for hex string "0xFF" (+1 for null terminator).
         char hex_str[5];
         // Repeat until end of string.
@@ -774,7 +774,7 @@ namespace octave
         else
           {
             std::string fname = name;
-            size_t pos = name.find_first_of ('>');
+            std::size_t pos = name.find_first_of ('>');
             if (pos != std::string::npos)
               fname = name.substr (0, pos);
 
@@ -816,9 +816,9 @@ namespace octave
   {
     std::string retval;
 
-    size_t i = 0;
-    size_t j = 0;
-    size_t len = s.length ();
+    std::size_t i = 0;
+    std::size_t j = 0;
+    std::size_t len = s.length ();
 
     retval.resize (len);
 
@@ -877,7 +877,7 @@ namespace octave
               case '6':
               case '7': // octal input
                 {
-                  size_t k;
+                  std::size_t k;
                   int tmpi = s[j] - '0';
                   for (k = j+1; k < std::min (j+3, len); k++)
                     {
@@ -894,7 +894,7 @@ namespace octave
 
               case 'x': // hex input
                 {
-                  size_t k;
+                  std::size_t k;
                   int tmpi = 0;
                   for (k = j+1; k < std::min (j+3, len); k++)
                     {
@@ -1047,7 +1047,7 @@ namespace octave
   {
     std::string retval;
 
-    for (size_t i = 0; i < s.length (); i++)
+    for (std::size_t i = 0; i < s.length (); i++)
       retval.append (undo_string_escape (s[i]));
 
     return retval;
@@ -1487,9 +1487,9 @@ namespace octave
     return m;
   }
 
-  size_t format (std::ostream& os, const char *fmt, ...)
+  std::size_t format (std::ostream& os, const char *fmt, ...)
   {
-    size_t retval;
+    std::size_t retval;
 
     va_list args;
     va_start (args, fmt);
@@ -1501,7 +1501,7 @@ namespace octave
     return retval;
   }
 
-  size_t vformat (std::ostream& os, const char *fmt, va_list args)
+  std::size_t vformat (std::ostream& os, const char *fmt, va_list args)
   {
     std::string s = vasprintf (fmt, args);
 
@@ -1510,9 +1510,9 @@ namespace octave
     return s.length ();
   }
 
-  size_t format (std::ostream& os, const std::string& enc, const char *fmt, ...)
+  std::size_t format (std::ostream& os, const std::string& enc, const char *fmt, ...)
   {
-    size_t retval;
+    std::size_t retval;
 
     va_list args;
     va_start (args, fmt);
@@ -1524,7 +1524,7 @@ namespace octave
     return retval;
   }
 
-  size_t vformat (std::ostream& os, const std::string& enc, const char *fmt,
+  std::size_t vformat (std::ostream& os, const std::string& enc, const char *fmt,
                   va_list args)
   {
     std::string s = vasprintf (fmt, args);

@@ -209,9 +209,9 @@ namespace octave
   }
 
   inline octave_idx_type
-  from_size_t (size_t x)
+  from_size_t (std::size_t x)
   {
-    // size_t is guaranteed to be unsigned
+    // std::size_t is guaranteed to be unsigned
     if (x > std::numeric_limits<octave_idx_type>::max ())
       (*current_liboctave_error_handler)
         ("integer dimension or index out of range for Octave's index type");

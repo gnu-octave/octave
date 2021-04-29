@@ -663,7 +663,7 @@ typedef void (*vfp)(void);
 extern vfp __new_handler;
 
 void *
-__builtin_new (size_t sz)
+__builtin_new (std::size_t sz)
 {
   void *p;
 

@@ -995,9 +995,9 @@ namespace octave
         const uint8_t *c = reinterpret_cast<const uint8_t *> (str.c_str ());
         uint32_t u32_c;
 
-        size_t n = str.size ();
-        size_t icurr = 0;
-        size_t ibegin = 0;
+        std::size_t n = str.size ();
+        std::size_t icurr = 0;
+        std::size_t ibegin = 0;
 
         // Initialize a new string
         std::string fname = font.get_face ()->family_name;

@@ -98,7 +98,7 @@ octave_user_code::get_file_info (void)
 }
 
 std::string
-octave_user_code::get_code_line (size_t line)
+octave_user_code::get_code_line (std::size_t line)
 {
   if (! m_file_info)
     get_file_info ();
@@ -107,7 +107,7 @@ octave_user_code::get_code_line (size_t line)
 }
 
 std::deque<std::string>
-octave_user_code::get_code_lines (size_t line, size_t num_lines)
+octave_user_code::get_code_lines (std::size_t line, std::size_t num_lines)
 {
   if (! m_file_info)
     get_file_info ();
@@ -422,7 +422,7 @@ octave_user_function::find_subfunction (const std::string& subfuns_arg) const
 
   std::string first_fun = subfuns;
 
-  size_t pos = subfuns.find ('>');
+  std::size_t pos = subfuns.find ('>');
 
   if (pos == std::string::npos)
     subfuns = "";

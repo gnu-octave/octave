@@ -161,7 +161,7 @@ replace_prefix (std::string s)
 #if defined (OCTAVE_REPLACE_PREFIX)
   const std::string match = "${prefix}";
   const std::string repl = prepend_octave_exec_home ("");
-  size_t pos = s.find (match);
+  std::size_t pos = s.find (match);
   while (pos != std::string::npos )
     {
       s.replace(pos, match.length (), repl);
@@ -547,7 +547,7 @@ basename (const std::string& s, bool strip_path = false)
 {
   std::string retval;
 
-  size_t pos = s.rfind ('.');
+  std::size_t pos = s.rfind ('.');
 
   if (pos == std::string::npos)
     retval = s;
@@ -556,7 +556,7 @@ basename (const std::string& s, bool strip_path = false)
 
   if (strip_path)
     {
-      size_t p1 = retval.rfind ('/'), p2 = retval.rfind ('\\');
+      std::size_t p1 = retval.rfind ('/'), p2 = retval.rfind ('\\');
 
       pos = (p1 != std::string::npos && p2 != std::string::npos
              ? std::max (p1, p2) : (p2 != std::string::npos ? p2 : p1));
@@ -1039,8 +1039,8 @@ main (int argc, char **argv)
           // length.
 
           octfile = outputfile;
-          size_t len = octfile.length ();
-          size_t len_ext = output_ext.length ();
+          std::size_t len = octfile.length ();
+          std::size_t len_ext = output_ext.length ();
           if (len <= len_ext || octfile.substr (len-len_ext) != output_ext)
             octfile += output_ext;
         }
@@ -1093,13 +1093,13 @@ main (int argc, char **argv)
           std::ofstream fo (dfile.c_str ());
 #endif
 
-          size_t pos;
+          std::size_t pos;
           while (! feof (fd))
             {
               line = get_line (fd);
               if ((pos = line.rfind (".o:")) != std::string::npos)
                 {
-                  size_t spos = line.rfind ('/', pos);
+                  std::size_t spos = line.rfind ('/', pos);
                   std::string ofile
                     = (spos == std::string::npos
                        ? line.substr (0, pos+2)
@@ -1153,13 +1153,13 @@ main (int argc, char **argv)
           std::ofstream fo (dfile.c_str ());
 #endif
 
-          size_t pos;
+          std::size_t pos;
           while (! feof (fd))
             {
               line = get_line (fd);
               if ((pos = line.rfind (".o:")) != std::string::npos)
                 {
-                  size_t spos = line.rfind ('/', pos);
+                  std::size_t spos = line.rfind ('/', pos);
                   std::string ofile
                     = (spos == std::string::npos
                        ? line.substr (0, pos+2)

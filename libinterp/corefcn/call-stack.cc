@@ -70,7 +70,7 @@ namespace octave
 
     octave_function *fcn = nullptr;
 
-    size_t idx = m_curr_frame;
+    std::size_t idx = m_curr_frame;
 
     if (idx > 0 && skip_first)
       --idx;
@@ -118,7 +118,7 @@ namespace octave
   {
     // Start at current frame.
 
-    size_t xframe = find_current_user_frame ();
+    std::size_t xframe = find_current_user_frame ();
 
     if (xframe > 0)
       {
@@ -137,7 +137,7 @@ namespace octave
   {
     // Start at current frame.
 
-    size_t xframe = find_current_user_frame ();
+    std::size_t xframe = find_current_user_frame ();
 
     if (xframe > 0)
       {
@@ -161,7 +161,7 @@ namespace octave
   {
     // Start at current frame.
 
-    size_t xframe = find_current_user_frame ();
+    std::size_t xframe = find_current_user_frame ();
 
     if (xframe > 0)
       {
@@ -185,7 +185,7 @@ namespace octave
   {
     // Start at current frame.
 
-    size_t xframe = find_current_user_frame ();
+    std::size_t xframe = find_current_user_frame ();
 
     if (xframe > 0)
       {
@@ -208,7 +208,7 @@ namespace octave
     if (m_curr_frame == 0)
       return retval;
 
-    size_t i = m_curr_frame;
+    std::size_t i = m_curr_frame;
 
     while (i != 0)
       {
@@ -234,7 +234,7 @@ namespace octave
     if (m_curr_frame == 0)
       return retval;
 
-    size_t i = m_curr_frame;
+    std::size_t i = m_curr_frame;
 
     while (i != 0)
       {
@@ -264,7 +264,7 @@ namespace octave
       return retval;
 
     // Start looking with the caller of the calling debug function.
-    size_t i = m_curr_frame;
+    std::size_t i = m_curr_frame;
 
     while (i != 0)
       {
@@ -346,17 +346,17 @@ namespace octave
   }
 
   void call_stack::get_new_frame_index_and_links
-    (size_t& new_frame_idx, std::shared_ptr<stack_frame>& parent_link,
+    (std::size_t& new_frame_idx, std::shared_ptr<stack_frame>& parent_link,
      std::shared_ptr<stack_frame>& static_link) const
   {
     // FIXME: is there a better way?
 
-    size_t prev_frame_idx = m_curr_frame;
+    std::size_t prev_frame_idx = m_curr_frame;
 
     new_frame_idx = m_cs.size ();
 
     // m_max_stack_depth should never be less than zero.
-    if (new_frame_idx > static_cast<size_t> (m_max_stack_depth))
+    if (new_frame_idx > static_cast<std::size_t> (m_max_stack_depth))
       error ("max_stack_depth exceeded");
 
     // There can't be any links to previous frames if this is the first
@@ -377,7 +377,7 @@ namespace octave
 
   void call_stack::push (const symbol_scope& scope)
   {
-    size_t new_frame_idx;
+    std::size_t new_frame_idx;
     std::shared_ptr<stack_frame> parent_link;
     std::shared_ptr<stack_frame> static_link;
 
@@ -395,7 +395,7 @@ namespace octave
   void call_stack::push (octave_user_function *fcn,
                          const std::shared_ptr<stack_frame>& closure_frames)
   {
-    size_t new_frame_idx;
+    std::size_t new_frame_idx;
     std::shared_ptr<stack_frame> parent_link;
     std::shared_ptr<stack_frame> static_link;
 
@@ -415,7 +415,7 @@ namespace octave
                          const stack_frame::local_vars_map& local_vars,
                          const std::shared_ptr<stack_frame>& closure_frames)
   {
-    size_t new_frame_idx;
+    std::size_t new_frame_idx;
     std::shared_ptr<stack_frame> parent_link;
     std::shared_ptr<stack_frame> static_link;
 
@@ -433,7 +433,7 @@ namespace octave
 
   void call_stack::push (octave_user_script *script)
   {
-    size_t new_frame_idx;
+    std::size_t new_frame_idx;
     std::shared_ptr<stack_frame> parent_link;
     std::shared_ptr<stack_frame> static_link;
 
@@ -450,7 +450,7 @@ namespace octave
 
   void call_stack::push (octave_function *fcn)
   {
-    size_t new_frame_idx;
+    std::size_t new_frame_idx;
     std::shared_ptr<stack_frame> parent_link;
     std::shared_ptr<stack_frame> static_link;
 
@@ -465,7 +465,7 @@ namespace octave
     m_curr_frame = new_frame_idx;
   }
 
-  bool call_stack::goto_frame (size_t n, bool verbose)
+  bool call_stack::goto_frame (std::size_t n, bool verbose)
   {
     bool retval = false;
 
@@ -486,9 +486,9 @@ namespace octave
     return retval;
   }
 
-  size_t call_stack::find_current_user_frame (void) const
+  std::size_t call_stack::find_current_user_frame (void) const
   {
-    size_t user_frame = m_curr_frame;
+    std::size_t user_frame = m_curr_frame;
 
     std::shared_ptr<stack_frame> frm = m_cs[user_frame];
 
@@ -505,7 +505,7 @@ namespace octave
 
   std::shared_ptr<stack_frame> call_stack::current_user_frame (void) const
   {
-    size_t frame = find_current_user_frame ();
+    std::size_t frame = find_current_user_frame ();
 
     return m_cs[frame];
   }
@@ -514,7 +514,7 @@ namespace octave
   // the call stack that corresponds to a script, function, or scope
   // beginning with the frame indexed by START.
 
-  size_t call_stack::dbupdown (size_t start, int n, bool verbose)
+  std::size_t call_stack::dbupdown (std::size_t start, int n, bool verbose)
   {
     if (start >= m_cs.size ())
       error ("invalid stack frame");
@@ -542,7 +542,7 @@ namespace octave
     // explanation.  May be easiest with some pictures of the call stack
     // for an example or two.
 
-    size_t xframe = frm->index ();
+    std::size_t xframe = frm->index ();
 
     if (n == 0)
       {
@@ -562,7 +562,7 @@ namespace octave
     else if (n > 0)
       incr = 1;
 
-    size_t last_good_frame = 0;
+    std::size_t last_good_frame = 0;
 
     while (true)
       {
@@ -604,9 +604,9 @@ namespace octave
   // function, script or scope frame then there is an error in the
   // implementation.
 
-  size_t call_stack::dbupdown (int n, bool verbose)
+  std::size_t call_stack::dbupdown (int n, bool verbose)
   {
-    size_t start = find_current_user_frame ();
+    std::size_t start = find_current_user_frame ();
 
     return dbupdown (start, n, verbose);
   }
@@ -618,7 +618,7 @@ namespace octave
 
   void call_stack::goto_caller_frame (void)
   {
-    size_t start = find_current_user_frame ();
+    std::size_t start = find_current_user_frame ();
 
     std::shared_ptr<stack_frame> caller_frame = m_cs[start]->static_link ();
 
@@ -644,11 +644,11 @@ namespace octave
     // frames.  The curr_user_frame value we set is the index into the
     // subset of frames returned in the octave_map object.
 
-    size_t curr_frame = find_current_user_frame ();
+    std::size_t curr_frame = find_current_user_frame ();
 
     // Don't include top-level stack frame in the list.
 
-    for (size_t n = m_cs.size () - 1; n > 0; n--)
+    for (std::size_t n = m_cs.size () - 1; n > 0; n--)
       {
         std::shared_ptr<stack_frame> frm = m_cs[n];
 
@@ -712,7 +712,7 @@ namespace octave
     std::list<std::shared_ptr<stack_frame>> frames
       = backtrace_frames (curr_user_frame);
 
-    size_t nframes = frames.size ();
+    std::size_t nframes = frames.size ();
 
     octave_map retval (dim_vector (nframes, 1), bt_fields);
 
@@ -1113,9 +1113,9 @@ namespace octave
   {
     std::ostream& os = octave_stdout;
 
-    size_t nframes = size ();
+    std::size_t nframes = size ();
 
-    for (size_t i = 0; i < nframes; i++)
+    for (std::size_t i = 0; i < nframes; i++)
       {
         m_cs[i]->display (false);
         if (i < nframes - 1)

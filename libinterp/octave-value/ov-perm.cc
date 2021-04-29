@@ -525,7 +525,7 @@ octave_perm_matrix::short_disp (std::ostream& os) const
               octave_int<octave_idx_type> tval (matrix(i,j));
               octave_print_internal (buf, tval);
               std::string tmp = buf.str ();
-              size_t pos = tmp.find_first_not_of (' ');
+              std::size_t pos = tmp.find_first_not_of (' ');
               if (pos != std::string::npos)
                 os << tmp.substr (pos);
               else if (! tmp.empty ())

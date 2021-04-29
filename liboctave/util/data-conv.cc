@@ -140,13 +140,13 @@ init_sized_type_lookup_table (oct_data_conv::data_type table[3][4])
 static std::string
 strip_spaces (const std::string& str)
 {
-  size_t n = str.length ();
+  std::size_t n = str.length ();
 
-  size_t k = 0;
+  std::size_t k = 0;
 
   std::string s (n, '\0');
 
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     if (! isspace (str[i]))
       s[k++] = tolower (str[i]);
 
@@ -183,10 +183,10 @@ strip_spaces (const std::string& str)
     }                                           \
   while (0)
 
-size_t
+std::size_t
 oct_data_conv::data_type_size (data_type dt)
 {
-  size_t retval = -1;
+  std::size_t retval = -1;
 
   switch (dt)
     {
@@ -376,13 +376,13 @@ oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
 
   std::string s = strip_spaces (str);
 
-  size_t pos = 0;
+  std::size_t pos = 0;
 
   if (s[0] == '*')
     input_is_output = true;
   else
     {
-      size_t len = s.length ();
+      std::size_t len = s.length ();
 
       while (pos < len && isdigit (s[pos]))
         pos++;
@@ -447,9 +447,9 @@ oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
 
   std::string s = strip_spaces (str);
 
-  size_t pos = 0;
+  std::size_t pos = 0;
 
-  size_t len = s.length ();
+  std::size_t len = s.length ();
 
   while (pos < len && isdigit (s[pos]))
     pos++;
@@ -750,7 +750,7 @@ do_float_format_conversion (void *data, octave_idx_type len,
 }
 
 void
-do_float_format_conversion (void *data, size_t sz, octave_idx_type len,
+do_float_format_conversion (void *data, std::size_t sz, octave_idx_type len,
                             octave::mach_info::float_format from_fmt,
                             octave::mach_info::float_format to_fmt)
 {

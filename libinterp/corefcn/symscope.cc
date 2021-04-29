@@ -53,7 +53,7 @@ namespace octave
 
   void symbol_scope_rep::insert_symbol_record (symbol_record& sr)
   {
-    size_t data_offset = num_symbols ();
+    std::size_t data_offset = num_symbols ();
     std::string name = sr.name ();
 
     sr.set_data_offset (data_offset);
@@ -69,13 +69,13 @@ namespace octave
       {
         symbol_record ret (name);
 
-        size_t data_offset = num_symbols ();
+        std::size_t data_offset = num_symbols ();
 
         ret.set_data_offset (data_offset);
 
         auto t_parent = m_parent.lock ();
 
-        size_t offset = 0;
+        std::size_t offset = 0;
 
         if (is_nested () && t_parent
             && t_parent->look_nonlocal (name, offset, ret))
@@ -264,7 +264,7 @@ namespace octave
           {
             symbol_record& ours = nm_sr.second;
 
-            size_t offset = 0;
+            std::size_t offset = 0;
 
             if (! ours.is_formal () && is_nested ())
               t_parent->look_nonlocal (nm_sr.first, offset, ours);
@@ -291,7 +291,7 @@ namespace octave
   }
 
   bool symbol_scope_rep::look_nonlocal (const std::string& name,
-                                        size_t offset, symbol_record& result)
+                                        std::size_t offset, symbol_record& result)
   {
     offset++;
 
@@ -312,8 +312,8 @@ namespace octave
         // occurrence because we do the overall nesting update from the
         // parent function down through the lists of all children.
 
-        size_t t_frame_offset = offset + p->second.frame_offset ();
-        size_t t_data_offset = p->second.data_offset ();
+        std::size_t t_frame_offset = offset + p->second.frame_offset ();
+        std::size_t t_data_offset = p->second.data_offset ();
 
         result.set_frame_offset (t_frame_offset);
         result.set_data_offset (t_data_offset);

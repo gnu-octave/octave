@@ -561,7 +561,7 @@ namespace octave
       = [&out_dir, &ext] (const std::string& source_path) -> std::string
       {
         // Strip any relative path (bug #58547)
-        size_t pos = source_path.find_last_of (sys::file_ops::dir_sep_str ());
+        std::size_t pos = source_path.find_last_of (sys::file_ops::dir_sep_str ());
         const std::string basename =
           (pos == std::string::npos ? source_path : source_path.substr (pos+1));
         return sys::file_ops::concat (out_dir, basename + ext);

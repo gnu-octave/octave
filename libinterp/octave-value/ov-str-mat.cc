@@ -285,7 +285,7 @@ octave_char_matrix_str::short_disp (std::ostream& os) const
       std::string tmp = chm.row_as_string (0);
 
       // FIXME: should this be configurable?
-      size_t max_len = 100;
+      std::size_t max_len = 100;
 
       os << (tmp.length () > max_len ? tmp.substr (0, 100) : tmp);
     }

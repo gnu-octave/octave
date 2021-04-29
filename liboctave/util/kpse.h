@@ -61,14 +61,14 @@ public:
 
   std::string operator * (void) { return m_path.substr (m_b, m_e-m_b); }
 
-  bool operator != (const size_t sz) { return m_b != sz; }
+  bool operator != (const std::size_t sz) { return m_b != sz; }
 
 private:
 
   const std::string& m_path;
-  size_t m_b;
-  size_t m_e;
-  size_t m_len;
+  std::size_t m_b;
+  std::size_t m_e;
+  std::size_t m_len;
 
   void set_end (void);
   void next (void);

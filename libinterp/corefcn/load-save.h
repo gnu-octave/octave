@@ -226,7 +226,7 @@ namespace octave
     OCTINTERP_API void
     write_header (std::ostream& os, const load_save_format& fmt);
 
-    OCTINTERP_API size_t
+    OCTINTERP_API std::size_t
     save_vars (std::ostream& os, const std::string& pattern,
                const load_save_format& fmt, bool save_as_floats);
 
@@ -239,7 +239,7 @@ namespace octave
     do_save (std::ostream& os, const symbol_info& syminfo,
              const load_save_format& fmt, bool save_as_floats);
 
-    OCTINTERP_API size_t
+    OCTINTERP_API std::size_t
     save_fields (std::ostream& os, const octave_scalar_map& m,
                  const std::string& pattern, const load_save_format& fmt,
                  bool save_as_floats);

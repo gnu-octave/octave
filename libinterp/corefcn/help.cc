@@ -130,16 +130,16 @@ namespace octave
   static bool
   looks_like_html (const std::string& msg)
   {
-    const size_t p1 = msg.find ('\n');
+    const std::size_t p1 = msg.find ('\n');
     std::string t = msg.substr (0, p1);
     // FIXME: this comparison should be case-insensitive
-    const size_t p2 = t.find ("<html");
+    const std::size_t p2 = t.find ("<html");
 
     return (p2 != std::string::npos);
   }
 
   static bool
-  looks_like_texinfo (const std::string& msg, size_t& p1)
+  looks_like_texinfo (const std::string& msg, std::size_t& p1)
   {
     p1 = msg.find ('\n');
 
@@ -148,7 +148,7 @@ namespace octave
     if (p1 == std::string::npos)
       p1 = 0;
 
-    size_t p2 = t.find ("-*- texinfo -*-");
+    std::size_t p2 = t.find ("-*- texinfo -*-");
 
     return (p2 != std::string::npos);
   }
@@ -377,7 +377,7 @@ namespace octave
     format = "Not found";
     if (symbol_found)
       {
-        size_t idx = -1;
+        std::size_t idx = -1;
         if (text.empty ())
           {
             format = "Not documented";
@@ -411,7 +411,7 @@ namespace octave
     format = "Not found";
     if (symbol_found)
       {
-        size_t idx = -1;
+        std::size_t idx = -1;
         if (text.empty ())
           {
             format = "Not documented";
@@ -508,11 +508,11 @@ namespace octave
     // Get subfunctions.
     const std::list<std::string> names = curr_fcn->subfunction_names ();
 
-    size_t sz = names.size ();
+    std::size_t sz = names.size ();
     retval.resize (sz);
 
     // Loop over them.
-    size_t i = 0;
+    std::size_t i = 0;
     for (const auto& nm : names)
       retval(i++) = nm;
 
@@ -531,7 +531,7 @@ namespace octave
 
     if (! val.is_defined ())
       {
-        size_t pos = nm.rfind ('.');
+        std::size_t pos = nm.rfind ('.');
 
         if (pos != std::string::npos)
           {
@@ -614,7 +614,7 @@ namespace octave
           error ("invalid built-in-docstrings file!");
 
         // FIXME: eliminate fixed buffer size.
-        size_t bufsize = 1000;
+        std::size_t bufsize = 1000;
         OCTAVE_LOCAL_BUFFER (char, buf, bufsize);
 
         while (! file.eof ())
@@ -692,7 +692,7 @@ namespace octave
 
         file.seekg (beg);
 
-        size_t txt_len = len;
+        std::size_t txt_len = len;
         OCTAVE_LOCAL_BUFFER (char, buf, txt_len + 1);
 
         file.read (buf, txt_len);

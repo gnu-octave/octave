@@ -252,7 +252,7 @@ inline void octave_quit (void)
       octave_signal_caught = 0;
       octave_handle_signal ();
     }
-};
+}
 
 #define OCTAVE_QUIT octave_quit ()
 

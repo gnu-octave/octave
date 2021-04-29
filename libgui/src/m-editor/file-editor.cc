@@ -1138,7 +1138,7 @@ namespace octave
     QString old_name_clean = old_name.trimmed ();
     int s = old_name_clean.size ();
 
-    if (old_name_clean.at (0) == QChar ('\"')
+    if (s > 1 && old_name_clean.at (0) == QChar ('\"')
         && old_name_clean.at (s - 1) == QChar ('\"'))
       old_name_clean = old_name_clean.mid (1, s - 2);
 

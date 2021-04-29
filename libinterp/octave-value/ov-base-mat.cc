@@ -495,7 +495,7 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
               std::ostringstream buf;
               octave_print_internal (buf, matrix(j*nr+i));
               std::string tmp = buf.str ();
-              size_t pos = tmp.find_first_not_of (' ');
+              std::size_t pos = tmp.find_first_not_of (' ');
               if (pos != std::string::npos)
                 os << tmp.substr (pos);
               else if (! tmp.empty ())

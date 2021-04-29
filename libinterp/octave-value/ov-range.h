@@ -123,7 +123,7 @@ public:
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
-  size_t byte_size (void) const { return 3 * sizeof (double); }
+  std::size_t byte_size (void) const { return 3 * sizeof (double); }
 
   octave_value reshape (const dim_vector& new_dims) const
   { return NDArray (array_value ().reshape (new_dims)); }

@@ -81,23 +81,23 @@ public:
   }
 
   static void
-  op_mm (size_t n, R *r, const X *x, const Y *y)
+  op_mm (std::size_t n, R *r, const X *x, const Y *y)
   {
-    for (size_t i = 0; i < n; i++)
+    for (std::size_t i = 0; i < n; i++)
       r[i] = s_fcn (x[i], y[i]);
   }
 
   static void
-  op_sm (size_t n, R *r, X x, const Y *y)
+  op_sm (std::size_t n, R *r, X x, const Y *y)
   {
-    for (size_t i = 0; i < n; i++)
+    for (std::size_t i = 0; i < n; i++)
       r[i] = s_fcn (x, y[i]);
   }
 
   static void
-  op_ms (size_t n, R *r, const X *x, Y y)
+  op_ms (std::size_t n, R *r, const X *x, Y y)
   {
-    for (size_t i = 0; i < n; i++)
+    for (std::size_t i = 0; i < n; i++)
       r[i] = s_fcn (x[i], y);
   }
 };

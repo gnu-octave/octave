@@ -55,7 +55,7 @@ w32_get_octave_home (void)
       namebuf[MAX_PATH] = '\0';
 
       std::string exe_name = namebuf;
-      size_t pos = exe_name.rfind ('\\');
+      std::size_t pos = exe_name.rfind ('\\');
 
       if (pos != std::string::npos)
         bin_dir = exe_name.substr (0, pos + 1);
@@ -63,7 +63,7 @@ w32_get_octave_home (void)
 
   if (! bin_dir.empty ())
     {
-      size_t pos = bin_dir.rfind (R"(\bin\)");
+      std::size_t pos = bin_dir.rfind (R"(\bin\)");
 
       if (pos != std::string::npos)
         retval = bin_dir.substr (0, pos);
@@ -141,7 +141,7 @@ static bool is_dir_sep (char c)
 static bool
 absolute_pathname (const std::string& s)
 {
-  size_t len = s.length ();
+  std::size_t len = s.length ();
 
   if (len == 0)
     return false;

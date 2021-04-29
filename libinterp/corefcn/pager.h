@@ -59,7 +59,7 @@ namespace octave
 
   private:
 
-    size_t diary_skip;
+    std::size_t diary_skip;
   };
 
   class

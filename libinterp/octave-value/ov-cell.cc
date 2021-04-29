@@ -465,10 +465,10 @@ octave_cell::delete_elements (const octave_value_list& idx)
   octave_base_matrix<Cell>::delete_elements (idx);
 }
 
-size_t
+std::size_t
 octave_cell::byte_size (void) const
 {
-  size_t retval = 0;
+  std::size_t retval = 0;
 
   for (octave_idx_type i = 0; i < numel (); i++)
     retval += matrix(i).byte_size ();

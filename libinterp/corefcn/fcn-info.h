@@ -59,7 +59,7 @@ namespace octave
           cmdline_function (), autoload_function (), function_on_path (),
           built_in_function ()
       {
-        size_t pos = name.rfind ('.');
+        std::size_t pos = name.rfind ('.');
 
         if (pos != std::string::npos)
           {

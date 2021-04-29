@@ -469,16 +469,16 @@ public:
 
   octave_value next_subsref (const std::string& type, const
                              std::list<octave_value_list>& idx,
-                             size_t skip = 1);
+                             std::size_t skip = 1);
 
   octave_value_list next_subsref (int nargout,
                                   const std::string& type, const
                                   std::list<octave_value_list>& idx,
-                                  size_t skip = 1);
+                                  std::size_t skip = 1);
 
   octave_value next_subsref (bool auto_add, const std::string& type, const
                              std::list<octave_value_list>& idx,
-                             size_t skip = 1);
+                             std::size_t skip = 1);
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)
@@ -526,7 +526,7 @@ public:
   octave_idx_type numel (void) const
   { return rep->numel (); }
 
-  size_t byte_size (void) const
+  std::size_t byte_size (void) const
   { return rep->byte_size (); }
 
   octave_idx_type nnz (void) const { return rep->nnz (); }
@@ -953,7 +953,7 @@ public:
   string_vector map_keys (void) const
   { return rep->map_keys (); }
 
-  size_t nparents (void) const
+  std::size_t nparents (void) const
   { return rep->nparents (); }
 
   std::list<std::string> parent_class_name_list (void) const

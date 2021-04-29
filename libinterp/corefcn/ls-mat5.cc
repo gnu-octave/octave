@@ -891,7 +891,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     if (fs.exists ())
                       {
-                        size_t xpos
+                        std::size_t xpos
                           = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
                         std::string dir_name = str.substr (0, xpos);
@@ -918,7 +918,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         str = octave::sys::env::make_absolute (p.find_first_of (names));
 
-                        size_t xpos
+                        std::size_t xpos
                           = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
                         std::string dir_name = str.substr (0, xpos);
@@ -941,7 +941,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                   }
                 else
                   {
-                    size_t xpos
+                    std::size_t xpos
                       = fpath.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
                     std::string dir_name = fpath.substr (0, xpos);
@@ -2074,8 +2074,8 @@ int
 save_mat5_element_length (const octave_value& tc, const std::string& name,
                           bool save_as_floats, bool mat7_format)
 {
-  size_t max_namelen = 63;
-  size_t len = name.length ();
+  std::size_t max_namelen = 63;
+  std::size_t len = name.length ();
   std::string cname = tc.class_name ();
   int ret = 32;
 
@@ -2194,7 +2194,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
         ret += 8 + PAD (6);  // length of "inline" is 6
       else if (tc.isobject ())
         {
-          size_t classlen = tc.class_name ().length ();
+          std::size_t classlen = tc.class_name ().length ();
 
           ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
         }
@@ -2257,7 +2257,7 @@ save_mat5_binary_element (std::ostream& os,
   int32_t flags = 0;
   int32_t nnz_32 = 0;
   std::string cname = tc.class_name ();
-  size_t max_namelen = 63;
+  std::size_t max_namelen = 63;
 
   dim_vector dv = tc.dims ();
   int nd = tc.ndims ();
@@ -2428,7 +2428,7 @@ save_mat5_binary_element (std::ostream& os,
 
   // array name subelement
   {
-    size_t namelen = name.length ();
+    std::size_t namelen = name.length ();
 
     if (namelen > max_namelen)
       namelen = max_namelen;  // Truncate names if necessary
@@ -2606,7 +2606,7 @@ save_mat5_binary_element (std::ostream& os,
       if (tc.is_inline_function () || tc.isobject ())
         {
           std::string classname = (tc.isobject () ? tc.class_name () : "inline");
-          size_t namelen = classname.length ();
+          std::size_t namelen = classname.length ();
 
           if (namelen > max_namelen)
             namelen = max_namelen; // Truncate names if necessary

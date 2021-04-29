@@ -85,7 +85,7 @@ namespace octave
 
     ~symbol_scope_rep (void) = default;
 
-    size_t num_symbols (void) const { return m_symbols.size (); }
+    std::size_t num_symbols (void) const { return m_symbols.size (); }
 
     // Simply inserts symbol.  No non-local searching.
 
@@ -95,9 +95,9 @@ namespace octave
 
     bool is_nested (void) const { return m_nesting_depth > 0; }
 
-    size_t nesting_depth (void) const { return m_nesting_depth; }
+    std::size_t nesting_depth (void) const { return m_nesting_depth; }
 
-    void set_nesting_depth (size_t depth) { m_nesting_depth = depth; }
+    void set_nesting_depth (std::size_t depth) { m_nesting_depth = depth; }
 
     bool is_parent (void) const { return ! m_children.empty (); }
 
@@ -141,12 +141,12 @@ namespace octave
       return new_sid;
     }
 
-    octave_value& persistent_varref (size_t data_offset)
+    octave_value& persistent_varref (std::size_t data_offset)
     {
       return m_persistent_values[data_offset];
     }
 
-    octave_value persistent_varval (size_t data_offset) const
+    octave_value persistent_varval (std::size_t data_offset) const
     {
       auto p = m_persistent_values.find (data_offset);
 
@@ -294,7 +294,7 @@ namespace octave
 
     void update_nest (void);
 
-    bool look_nonlocal (const std::string& name, size_t offset,
+    bool look_nonlocal (const std::string& name, std::size_t offset,
                         symbol_record& result);
 
     octave_value dump_symbols_map (void) const;
@@ -327,7 +327,7 @@ namespace octave
     std::map<std::string, octave_value> m_subfunctions;
 
     //! Map from data offset to persistent values in this scope.
-    std::map<size_t, octave_value> m_persistent_values;
+    std::map<std::size_t, octave_value> m_persistent_values;
 
     //! The list of subfunctions (if any) in the order they appear in
     //! the function file.
@@ -369,7 +369,7 @@ namespace octave
 
     //! If true, then this scope belongs to a nested function.
 
-    size_t m_nesting_depth;
+    std::size_t m_nesting_depth;
 
     //! If true then no variables can be added.
 
@@ -404,7 +404,7 @@ namespace octave
 
     explicit operator bool () const { return bool (m_rep); }
 
-    size_t num_symbols (void) const
+    std::size_t num_symbols (void) const
     {
       return m_rep ? m_rep->num_symbols () : 0;
     }
@@ -430,13 +430,13 @@ namespace octave
       return m_rep ? m_rep->is_parent () : false;
     }
 
-    void set_nesting_depth (size_t depth)
+    void set_nesting_depth (std::size_t depth)
     {
       if (m_rep)
         m_rep->set_nesting_depth (depth);
     }
 
-    size_t nesting_depth (void) const
+    std::size_t nesting_depth (void) const
     {
       return m_rep ? m_rep->nesting_depth () : 0;
     }
@@ -467,14 +467,14 @@ namespace octave
       return symbol_scope (m_rep ? m_rep->dup () : nullptr);
     }
 
-    octave_value& persistent_varref (size_t data_offset)
+    octave_value& persistent_varref (std::size_t data_offset)
     {
       static octave_value dummy_value;
 
       return m_rep ? m_rep->persistent_varref (data_offset) : dummy_value;
     }
 
-    octave_value persistent_varval (size_t data_offset) const
+    octave_value persistent_varval (std::size_t data_offset) const
     {
       return m_rep ? m_rep->persistent_varval (data_offset) : octave_value ();
     }
@@ -676,7 +676,7 @@ namespace octave
         m_rep->update_nest ();
     }
 
-    bool look_nonlocal (const std::string& name, size_t offset,
+    bool look_nonlocal (const std::string& name, std::size_t offset,
                         symbol_record& result)
     {
       return m_rep ? m_rep->look_nonlocal (name, offset, result) : false;

@@ -447,11 +447,11 @@ namespace octave
 
   // FIXME: Add support for multiple outputs
   extern "C" octave_base_value *
-  octave_jit_call (octave_builtin::fcn fn, size_t nargin,
+  octave_jit_call (octave_builtin::fcn fn, std::size_t nargin,
                    octave_base_value **argin, jit_type *result_type)
   {
     octave_value_list ovl (nargin);
-    for (size_t i = 0; i < nargin; ++i)
+    for (std::size_t i = 0; i < nargin; ++i)
       ovl.xelem (i) = octave_value (argin[i]);
 
     ovl = fn (ovl, 1);
@@ -515,7 +515,7 @@ namespace octave
     std::memset (m_pack, 0, sizeof (m_pack));
     std::memset (m_unpack, 0, sizeof (m_unpack));
 
-    for (size_t i = 0; i < jit_convention::length; ++i)
+    for (std::size_t i = 0; i < jit_convention::length; ++i)
       m_packed_type[i] = m_llvm_type;
   }
 
@@ -663,7 +663,7 @@ namespace octave
 
     assert (in_args.size () == m_args.size ());
     std::vector<llvm::Value *> llvm_args (m_args.size ());
-    for (size_t i = 0; i < in_args.size (); ++i)
+    for (std::size_t i = 0; i < in_args.size (); ++i)
       llvm_args[i] = in_args[i]->to_llvm ();
 
     return call (builder, llvm_args);
@@ -695,7 +695,7 @@ namespace octave
         llvm_args.push_back (sret_mem);
       }
 
-    for (size_t i = 0; i < in_args.size (); ++i)
+    for (std::size_t i = 0; i < in_args.size (); ++i)
       {
         llvm::Value *arg = in_args[i];
         jit_type::convert_fn convert = m_args[i]->pack (m_call_conv);
@@ -740,7 +740,7 @@ namespace octave
   }
 
   llvm::Value *
-  jit_function::argument (llvm::IRBuilderD& builder, size_t idx) const
+  jit_function::argument (llvm::IRBuilderD& builder, std::size_t idx) const
   {
     assert (idx < m_args.size ());
 
@@ -751,7 +751,7 @@ namespace octave
     if (sret ())
       ++iter;
 
-    for (size_t i = 0; i < idx; ++i, ++iter);
+    for (std::size_t i = 0; i < idx; ++i, ++iter);
 
     if (m_args[idx]->pointer_arg (m_call_conv))
       return builder.CreateLoad (&*iter);
@@ -812,7 +812,7 @@ namespace octave
                                const std::vector<jit_type*>& args)
   {
     // Number of input arguments of the overload that is being registered
-    size_t nargs = args.size ();
+    std::size_t nargs = args.size ();
 
     if (nargs >= m_overloads.size ())
       m_overloads.resize (nargs + 1);
@@ -845,10 +845,10 @@ namespace octave
   jit_operation::overload (const std::vector<jit_type*>& types) const
   {
     // Number of input arguments of the overload that is being looked for
-    size_t nargs = types.size ();
+    std::size_t nargs = types.size ();
 
     static jit_function null_overload;
-    for (size_t i = 0; i < nargs; ++i)
+    for (std::size_t i = 0; i < nargs; ++i)
       if (! types[i])
         return null_overload;
 
@@ -928,7 +928,7 @@ namespace octave
     else if (l.size () > r.size ())
       return false;
 
-    for (size_t i = 0; i < l.size (); ++i)
+    for (std::size_t i = 0; i < l.size (); ++i)
       {
         if (l[i]->type_id () < r[i]->type_id ())
           return true;
@@ -947,7 +947,7 @@ namespace octave
       {
         // indexing a matrix with scalars
         jit_type *scalar = jit_typeinfo::get_scalar ();
-        for (size_t i = 1; i < types.size (); ++i)
+        for (std::size_t i = 1; i < types.size (); ++i)
           if (types[i] != scalar)
             return 0;
 
@@ -960,14 +960,14 @@ namespace octave
   llvm::Value *
   jit_index_operation::create_arg_array (llvm::IRBuilderD& builder,
                                          const jit_function& fn,
-                                         size_t start_idx,
-                                         size_t end_idx) const
+                                         std::size_t start_idx,
+                                         std::size_t end_idx) const
   {
-    size_t n = end_idx - start_idx;
+    std::size_t n = end_idx - start_idx;
     llvm::Type *scalar_t = jit_typeinfo::get_scalar_llvm ();
     llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, n);
     llvm::Value *array = llvm::UndefValue::get (array_t);
-    for (size_t i = start_idx; i < end_idx; ++i)
+    for (std::size_t i = start_idx; i < end_idx; ++i)
       {
         llvm::Value *idx = fn.argument (builder, i);
         array = builder.CreateInsertValue (array, idx, i - start_idx);
@@ -1278,14 +1278,14 @@ namespace octave
                                                m_any, m_any);
     any_binary.mark_can_error ();
 
-    for (size_t i = 0; i < octave_value::num_binary_ops; ++i)
+    for (std::size_t i = 0; i < octave_value::num_binary_ops; ++i)
       {
         octave_value::binary_op op = static_cast<octave_value::binary_op> (i);
         std::string op_name = octave_value::binary_op_as_string (op);
         m_binary_ops.push_back (jit_operation ("binary" + op_name));
       }
 
-    for (size_t i = 0; i < octave_value::num_unary_ops; ++i)
+    for (std::size_t i = 0; i < octave_value::num_unary_ops; ++i)
       {
         octave_value::unary_op op = static_cast<octave_value::unary_op> (i);
         std::string op_name = octave_value::unary_op_as_string (op);
@@ -2023,9 +2023,9 @@ namespace octave
   }
 
   jit_type*
-  jit_typeinfo::do_get_intN (size_t nbits) const
+  jit_typeinfo::do_get_intN (std::size_t nbits) const
   {
-    std::map<size_t, jit_type *>::const_iterator iter = m_ints.find (nbits);
+    std::map<std::size_t, jit_type *>::const_iterator iter = m_ints.find (nbits);
     if (iter != m_ints.end ())
       return iter->second;
 
@@ -2116,7 +2116,7 @@ namespace octave
   jit_function
   jit_typeinfo::create_identity (jit_type *type)
   {
-    size_t id = type->type_id ();
+    std::size_t id = type->type_id ();
     if (id >= m_identities.size ())
       m_identities.resize (id + 1);
 
@@ -2161,14 +2161,14 @@ namespace octave
   }
 
   void
-  jit_typeinfo::register_intrinsic (const std::string& name, size_t iid,
+  jit_typeinfo::register_intrinsic (const std::string& name, std::size_t iid,
                                     jit_type *result,
                                     const std::vector<jit_type *>& args)
   {
     jit_type *builtin_type = m_builtins[name];
-    size_t nargs = args.size ();
+    std::size_t nargs = args.size ();
     std::vector<llvm::Type*> llvm_args (nargs);
-    for (size_t i = 0; i < nargs; ++i)
+    for (std::size_t i = 0; i < nargs; ++i)
       llvm_args[i] = args[i]->to_llvm ();
 
     llvm::Function *ifun = m_base_jit_module->
@@ -2189,7 +2189,7 @@ namespace octave
     m_builder.SetInsertPoint (body);
 
     llvm::SmallVector<llvm::Value *, 5> fargs (nargs);
-    for (size_t i = 0; i < nargs; ++i)
+    for (std::size_t i = 0; i < nargs; ++i)
       fargs[i] = fn.argument (m_builder, i + 1);
 
     llvm::Value *ret = m_builder.CreateCall (ifun, fargs);
@@ -2225,7 +2225,7 @@ namespace octave
     m_builder.SetInsertPoint (block);
     llvm::ArrayType *array_t = llvm::ArrayType::get (m_any_t, args.size ());
     llvm::Value *array = llvm::UndefValue::get (array_t);
-    for (size_t i = 0; i < args.size (); ++i)
+    for (std::size_t i = 0; i < args.size (); ++i)
       {
         llvm::Value *arg = fn.argument (m_builder, i + 1);
         jit_function agrab = m_grab_fn.overload (args[i]);
@@ -2242,10 +2242,10 @@ namespace octave
 
     jit_type *jintTy = do_get_intN (sizeof (octave_builtin::fcn) * 8);
     llvm::Type *intTy = jintTy->to_llvm ();
-    size_t fcn_int = reinterpret_cast<size_t> (builtin->function ());
+    std::size_t fcn_int = reinterpret_cast<std::size_t> (builtin->function ());
     llvm::Value *fcn = llvm::ConstantInt::get (intTy, fcn_int);
     llvm::Value *nargin = llvm::ConstantInt::get (intTy, args.size ());
-    size_t result_int = reinterpret_cast<size_t> (result);
+    std::size_t result_int = reinterpret_cast<std::size_t> (result);
     llvm::Value *res_llvm = llvm::ConstantInt::get (intTy, result_int);
     llvm::Value *ret = m_any_call.call (m_builder, fcn, nargin, array,
                                         res_llvm);

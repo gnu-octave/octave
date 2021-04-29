@@ -98,7 +98,7 @@ normalize_fopen_mode (std::string& mode, bool& use_zlib)
       // when using automatic flushing and seems completely unnecessary.
       // See bug #52644.
 
-      size_t pos = mode.find ('W');
+      std::size_t pos = mode.find ('W');
 
       if (pos != std::string::npos)
         mode[pos] = 'w';
@@ -128,8 +128,8 @@ normalize_fopen_mode (std::string& mode, bool& use_zlib)
       // Use binary mode if 't' is not specified, but don't add
       // 'b' if it is already present.
 
-      size_t bpos = mode.find ('b');
-      size_t tpos = mode.find ('t');
+      std::size_t bpos = mode.find ('b');
+      std::size_t tpos = mode.find ('t');
 
       if (bpos == std::string::npos && tpos == std::string::npos)
         mode += 'b';

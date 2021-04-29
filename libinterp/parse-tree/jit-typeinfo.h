@@ -162,7 +162,7 @@ namespace octave
     // how this type gets passed as a function argument
     llvm::Type * to_llvm_arg (void) const;
 
-    size_t depth (void) const { return m_depth; }
+    std::size_t depth (void) const { return m_depth; }
 
     bool skip_paren (void) const { return m_skip_paren; }
 
@@ -211,7 +211,7 @@ namespace octave
     jit_type *m_parent;
     llvm::Type *m_llvm_type;
     int m_id;
-    size_t m_depth;
+    std::size_t m_depth;
     bool m_skip_paren;
 
     bool m_sret[jit_convention::length];
@@ -310,7 +310,7 @@ namespace octave
       return call (builder, in_args, other_args...);
     }
 
-    llvm::Value * argument (llvm::IRBuilderD& builder, size_t idx) const;
+    llvm::Value * argument (llvm::IRBuilderD& builder, std::size_t idx) const;
 
     void do_return (llvm::IRBuilderD& builder, llvm::Value *rval = nullptr,
                     bool verify = true);
@@ -326,7 +326,7 @@ namespace octave
 
     jit_type * result (void) const { return m_result; }
 
-    jit_type * argument_type (size_t idx) const
+    jit_type * argument_type (std::size_t idx) const
     {
       assert (idx < m_args.size ());
       return m_args[idx];
@@ -457,8 +457,8 @@ namespace octave
     // helper functions
     // [start_idx, end_idx).
     llvm::Value * create_arg_array (llvm::IRBuilderD& builder,
-                                    const jit_function& fn, size_t start_idx,
-                                    size_t end_idx) const;
+                                    const jit_function& fn, std::size_t start_idx,
+                                    std::size_t end_idx) const;
 
     const jit_typeinfo& m_typeinfo;
   };
@@ -561,7 +561,7 @@ namespace octave
 
     static jit_type *get_complex (void) { return instance ().m_complex; }
 
-    static jit_type *intN (size_t nbits) { return instance ().do_get_intN (nbits); }
+    static jit_type *intN (std::size_t nbits) { return instance ().do_get_intN (nbits); }
 
     // FIXME: do we really need these two ?
     static llvm::Type *get_scalar_llvm (void) { return instance ().m_scalar->to_llvm (); }  // this one is weird
@@ -603,11 +603,11 @@ namespace octave
     llvm::StructType *m_complex_ret;
 
     // Get integer type from number of bits
-    jit_type *do_get_intN (size_t nbits) const;
+    jit_type *do_get_intN (std::size_t nbits) const;
 
     // map container for integer types: int8, int16, etc.
     // (note that they are also stored in id_to_types)
-    std::map<size_t, jit_type *> m_ints;
+    std::map<std::size_t, jit_type *> m_ints;
 
     // ----- parenthesis subsref/subsasgn -----
 
@@ -755,13 +755,13 @@ namespace octave
 
     const jit_operation& do_binary_op (int op) const
     {
-      assert (static_cast<size_t> (op) < m_binary_ops.size ());
+      assert (static_cast<std::size_t> (op) < m_binary_ops.size ());
       return m_binary_ops[op];
     }
 
     const jit_operation& do_unary_op (int op) const
     {
-      assert (static_cast<size_t> (op) < m_unary_ops.size ());
+      assert (static_cast<std::size_t> (op) < m_unary_ops.size ());
       return m_unary_ops[op];
     }
 
@@ -771,7 +771,7 @@ namespace octave
       if (! to)
         return null_function;
 
-      size_t id = to->type_id ();
+      std::size_t id = to->type_id ();
       if (id >= m_casts.size ())
         return null_function;
       return m_casts[id];
@@ -858,14 +858,14 @@ namespace octave
 
     void add_builtin (const std::string& name);
 
-    void register_intrinsic (const std::string& name, size_t id,
+    void register_intrinsic (const std::string& name, std::size_t id,
                              jit_type *result, jit_type *arg0)
     {
       std::vector<jit_type *> args (1, arg0);
       register_intrinsic (name, id, result, args);
     }
 
-    void register_intrinsic (const std::string& name, size_t id, jit_type *result,
+    void register_intrinsic (const std::string& name, std::size_t id, jit_type *result,
                              const std::vector<jit_type *>& args);
 
     void register_generic (const std::string& name, jit_type *result,

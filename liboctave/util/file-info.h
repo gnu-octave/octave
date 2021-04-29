@@ -62,19 +62,19 @@ namespace octave
 
     ~file_info (void) = default;
 
-    std::string get_line (size_t line) const;
+    std::string get_line (std::size_t line) const;
 
     std::deque<std::string> get_lines (size_t line, size_t num_lines) const;
 
-    size_t num_lines (void) const { return m_offsets.size (); }
+    std::size_t num_lines (void) const { return m_offsets.size (); }
 
     std::string text (void) const { return m_file_buf; }
 
-    std::vector<size_t> line_offsets (void) const { return m_offsets; }
+    std::vector<std::size_t> line_offsets (void) const { return m_offsets; }
 
     sys::time timestamp (void) const { return m_timestamp; }
 
-    size_t size (void) const { return m_file_buf.length (); }
+    std::size_t size (void) const { return m_file_buf.length (); }
 
   private:
 
@@ -82,14 +82,14 @@ namespace octave
     std::string m_file_buf;
 
     // Offsets to line beginnings.
-    std::vector<size_t> m_offsets;
+    std::vector<std::size_t> m_offsets;
 
     sys::time m_timestamp;
 
     // Read entire file called fname and return the contents as a string
     static std::string snarf_file (const std::string& fname);
 
-    static std::vector<size_t> get_line_offsets (const std::string& buf);
+    static std::vector<std::size_t> get_line_offsets (const std::string& buf);
   };
 }
 

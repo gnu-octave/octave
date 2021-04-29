@@ -232,7 +232,8 @@ get_mapper_fun_options (octave::symbol_table& symtab,
     {
       std::string arg = args(nargin-2).string_value ();
 
-      size_t compare_len = std::max (arg.length (), static_cast<size_t> (2));
+      std::size_t compare_len
+        = std::max (arg.length (), static_cast<std::size_t> (2));
 
       if (octave::string::strncmpi (arg, "uniformoutput", compare_len))
         uniform_output = args(nargin-1).bool_value ();

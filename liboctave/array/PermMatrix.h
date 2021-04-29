@@ -69,7 +69,7 @@ public:
 
   octave_idx_type numel (void) const { return dim1 () * dim2 (); }
 
-  size_t byte_size (void) const
+  std::size_t byte_size (void) const
   { return Array<octave_idx_type>::byte_size (); }
 
   dim_vector dims (void) const { return dim_vector (dim1 (), dim2 ()); }

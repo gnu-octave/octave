@@ -239,14 +239,14 @@ make_valid_identifier (const std::string& nm)
 {
   std::string retval;
 
-  size_t nm_len = nm.length ();
+  std::size_t nm_len = nm.length ();
 
   if (nm_len > 0)
     {
       if (! isalpha (nm[0]))
         retval += '_';
 
-      for (size_t i = 0; i < nm_len; i++)
+      for (std::size_t i = 0; i < nm_len; i++)
         {
           char c = nm[i];
           retval += (isalnum (c) || c == '_') ? c : '_';
@@ -487,7 +487,7 @@ load_inline_fcn (hid_t loc_id, const char *name, octave_value& retval)
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
-  for (size_t i = 0; i < hdims[1]; i++)
+  for (std::size_t i = 0; i < hdims[1]; i++)
     args(i+1) = std::string (s1 + i*hdims[0]);
 
 #if defined (HAVE_HDF5_18)
@@ -1107,7 +1107,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
     {
       std::vector<char> var_name;
       bool found = false;
-      size_t len = 0;
+      std::size_t len = 0;
 
       len = H5Gget_objname_by_idx (hs.file_id, hs.current_item, nullptr, 0);
       var_name.resize (len+1);

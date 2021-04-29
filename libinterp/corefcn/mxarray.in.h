@@ -295,7 +295,7 @@ public:
 
   virtual mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const = 0;
 
-  virtual size_t get_element_size (void) const = 0;
+  virtual std::size_t get_element_size (void) const = 0;
 
   virtual bool mutation_needed (void) const { return false; }
 
@@ -519,15 +519,15 @@ public:
   mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
   { return rep->calc_single_subscript (nsubs, subs); }
 
-  size_t get_element_size (void) const { return rep->get_element_size (); }
+  std::size_t get_element_size (void) const { return rep->get_element_size (); }
 
   bool mutation_needed (void) const { return rep->mutation_needed (); }
 
   mxArray * mutate (void) const { return rep->mutate (); }
 
-  static void * malloc (size_t n);
+  static void * malloc (std::size_t n);
 
-  static void * calloc (size_t n, size_t t);
+  static void * calloc (std::size_t n, std::size_t t);
 
   static char * strsave (const char *str)
   {

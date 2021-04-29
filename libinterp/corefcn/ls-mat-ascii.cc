@@ -126,7 +126,7 @@ get_lines_and_columns (std::istream& is,
 
       file_line_number++;
 
-      size_t beg = buf.find_first_not_of (", \t");
+      std::size_t beg = buf.find_first_not_of (", \t");
 
       // If we see a CR as the last character in the buffer, we had a
       // CRLF pair as the line separator.  Any other CR in the text
@@ -146,7 +146,7 @@ get_lines_and_columns (std::istream& is,
         {
           tmp_nc++;
 
-          size_t end = buf.find_first_of (", \t", beg);
+          std::size_t end = buf.find_first_of (", \t", beg);
 
           if (end != std::string::npos)
             {
@@ -232,7 +232,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 {
   std::string varname;
 
-  size_t pos = filename.rfind ('/');
+  std::size_t pos = filename.rfind ('/');
 
   if (pos != std::string::npos)
     varname = filename.substr (pos+1);
@@ -244,8 +244,8 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
   if (pos != std::string::npos)
     varname = varname.substr (0, pos);
 
-  size_t len = varname.length ();
-  for (size_t i = 0; i < len; i++)
+  std::size_t len = varname.length ();
+  for (std::size_t i = 0; i < len; i++)
     {
       char c = varname[i];
       if (! (isalnum (c) || c == '_'))

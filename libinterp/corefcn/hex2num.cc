@@ -62,21 +62,21 @@ hex2nibble (unsigned char ch)
 }
 
 static void
-hex2num (const std::string& hex, void *num, size_t nbytes, bool swap_bytes)
+hex2num (const std::string& hex, void *num, std::size_t nbytes, bool swap_bytes)
 {
   unsigned char *cp = reinterpret_cast<unsigned char *> (num);
 
-  const size_t nc = hex.length ();
-  const size_t nchars = 2 * nbytes;
+  const std::size_t nc = hex.length ();
+  const std::size_t nchars = 2 * nbytes;
 
   if (nc > nchars)
     error ("hex2num: S must be no more than %zd characters", nchars);
 
-  size_t j = 0;
+  std::size_t j = 0;
 
-  for (size_t i = 0; i < nbytes; i++)
+  for (std::size_t i = 0; i < nbytes; i++)
     {
-      size_t k = (swap_bytes ? nbytes - i - 1 : i);
+      std::size_t k = (swap_bytes ? nbytes - i - 1 : i);
 
       unsigned char ch1 = (j < nc) ? hex[j++] : '0';
       unsigned char ch2 = (j < nc) ? hex[j++] : '0';
@@ -93,7 +93,7 @@ hex2num (const Array<std::string>& val, bool swap_bytes)
 
   Array<T> m (val.dims ());
 
-  size_t nbytes = sizeof (T);
+  std::size_t nbytes = sizeof (T);
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
@@ -223,15 +223,15 @@ nibble2hex (unsigned char ch)
 }
 
 static inline void
-num2hex (const void *p, size_t n, char *hex, bool swap_bytes)
+num2hex (const void *p, std::size_t n, char *hex, bool swap_bytes)
 {
   const unsigned char *cp = reinterpret_cast<const unsigned char *> (p);
 
-  size_t k = 0;
+  std::size_t k = 0;
 
-  for (size_t i = 0; i < n; i++)
+  for (std::size_t i = 0; i < n; i++)
     {
-      size_t j = (swap_bytes ? n - i - 1 : i);
+      std::size_t j = (swap_bytes ? n - i - 1 : i);
 
       unsigned char ch = cp[j];
 
@@ -244,8 +244,8 @@ template <typename T>
 Cell
 num2hex (const Array<T>& v, bool swap_bytes)
 {
-  const size_t nbytes = sizeof (T);
-  const size_t nchars = 2 * nbytes;
+  const std::size_t nbytes = sizeof (T);
+  const std::size_t nchars = 2 * nbytes;
 
   octave_idx_type nel = v.numel ();
 

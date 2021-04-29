@@ -642,7 +642,7 @@ namespace octave
           {
             octave_value ov_cls;
 
-            size_t pos = name.rfind ('.');
+            std::size_t pos = name.rfind ('.');
 
             if (pos == std::string::npos)
               ov_cls = m_interpreter.find (name);
@@ -721,7 +721,7 @@ namespace octave
 
         if (load_if_not_found && lp.find_package (name))
           {
-            size_t pos = name.rfind ('.');
+            std::size_t pos = name.rfind ('.');
 
             if (pos == std::string::npos)
               retval = make_package (name, "");

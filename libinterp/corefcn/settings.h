@@ -65,7 +65,7 @@ namespace octave
     }
 
     // Read only.
-    size_t token_count (void) const { return m_token_count; }
+    std::size_t token_count (void) const { return m_token_count; }
 
     void increment_token_count (void) { ++m_token_count; }
 
@@ -86,7 +86,7 @@ namespace octave
     bool m_display_tokens = false;
 
     // Number of tokens processed since interpreter startup.
-    size_t m_token_count = 0;
+    std::size_t m_token_count = 0;
 
     // Internal variable for lexer debugging state.
     bool m_lexer_debug_flag = false;

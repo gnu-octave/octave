@@ -107,7 +107,7 @@ public:
 
   void delete_elements (const octave_value_list& idx);
 
-  size_t byte_size (void) const;
+  std::size_t byte_size (void) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
 

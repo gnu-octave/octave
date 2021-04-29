@@ -126,7 +126,7 @@ namespace octave
 
     virtual octave_value_list
     subsref (const std::string&, const std::list<octave_value_list>&,
-             int, size_t&, const cdef_class&, bool)
+             int, std::size_t&, const cdef_class&, bool)
     {
       err_invalid_object ("subsref");
     }
@@ -287,7 +287,7 @@ namespace octave
 
     octave_value_list
     subsref (const std::string& type, const std::list<octave_value_list>& idx,
-             int nargout, size_t& skip, const cdef_class& context,
+             int nargout, std::size_t& skip, const cdef_class& context,
              bool auto_add = false)
     {
       return rep->subsref (type, idx, nargout, skip, context, auto_add);
@@ -415,7 +415,7 @@ namespace octave
 
     octave_value_list
     subsref (const std::string& type, const std::list<octave_value_list>& idx,
-             int nargout, size_t& skip, const cdef_class& context,
+             int nargout, std::size_t& skip, const cdef_class& context,
              bool auto_add);
 
     octave_value
@@ -502,7 +502,7 @@ namespace octave
 
     octave_value_list
     subsref (const std::string& type, const std::list<octave_value_list>& idx,
-             int nargout, size_t& skip, const cdef_class& context,
+             int nargout, std::size_t& skip, const cdef_class& context,
              bool auto_add);
 
     octave_value

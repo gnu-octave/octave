@@ -80,7 +80,7 @@ namespace octave
         }
     }
 
-    size_t size (void) const { return m_lifo.size (); }
+    std::size_t size (void) const { return m_lifo.size (); }
 
   protected:
 

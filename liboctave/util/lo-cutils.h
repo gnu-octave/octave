@@ -28,10 +28,12 @@
 
 #include "octave-config.h"
 
-#include <sys/types.h>
-
 #if defined (__cplusplus)
+#include <cstddef>
+using std::size_t;
 extern "C" {
+#else
+#include <stddef.h>  
 #endif
 
 OCTAVE_API void

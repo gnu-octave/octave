@@ -81,7 +81,7 @@ namespace octave
             std::string cls_name = dispatch_type;
             std::string pack_name;
 
-            size_t pos = cls_name.rfind ('.');
+            std::size_t pos = cls_name.rfind ('.');
 
             if (pos != std::string::npos)
               {

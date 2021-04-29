@@ -75,12 +75,12 @@ public:
   }
 
   // Case-insensitive comparison.
-  bool compare (const std::string& s, size_t limit = std::string::npos) const
+  bool compare (const std::string& s, std::size_t limit = std::string::npos) const
   {
     auto p1 = begin ();
     auto p2 = s.begin ();
 
-    size_t k = 0;
+    std::size_t k = 0;
 
     while (p1 != end () && p2 != s.end () && k++ < limit)
       {

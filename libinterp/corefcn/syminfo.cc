@@ -190,7 +190,7 @@ namespace octave
   symbol_info_list::map_value (const std::string& caller_function_name,
                                int nesting_level) const
   {
-    size_t len = m_lst.size ();
+    std::size_t len = m_lst.size ();
 
     Cell name_info (len, 1);
     Cell size_info (len, 1);
@@ -202,7 +202,7 @@ namespace octave
     Cell nesting_info (len, 1);
     Cell persistent_info (len, 1);
 
-    size_t j = 0;
+    std::size_t j = 0;
 
     for (const auto& syminfo : m_lst)
       {
@@ -332,8 +332,8 @@ namespace octave
   {
     if (! m_lst.empty ())
       {
-        size_t bytes = 0;
-        size_t elements = 0;
+        std::size_t bytes = 0;
+        std::size_t elements = 0;
 
         std::list<whos_parameter> params = parse_whos_line_format (format);
 
@@ -362,17 +362,17 @@ namespace octave
   symbol_info_list::parse_whos_line_format (const std::string& format) const
   {
     int idx;
-    size_t format_len = format.length ();
+    std::size_t format_len = format.length ();
     char garbage;
     std::list<whos_parameter> params;
 
-    size_t bytes1;
+    std::size_t bytes1;
     int elements1;
 
     std::string param_string = "abcenst";
     Array<int> param_length (dim_vector (param_string.length (), 1));
     Array<std::string> param_names (dim_vector (param_string.length (), 1));
-    size_t pos_a, pos_b, pos_c, pos_e, pos_n, pos_s, pos_t;
+    std::size_t pos_a, pos_b, pos_c, pos_e, pos_n, pos_s, pos_t;
 
     pos_a = param_string.find ('a'); // Attributes
     pos_b = param_string.find ('b'); // Bytes
@@ -390,7 +390,7 @@ namespace octave
     param_names(pos_s) = "Size";
     param_names(pos_t) = "Type";
 
-    for (size_t i = 0; i < param_string.length (); i++)
+    for (std::size_t i = 0; i < param_string.length (); i++)
       param_length(i) = param_names(i).length ();
 
     // The attribute column needs size 5.
@@ -406,33 +406,33 @@ namespace octave
 
         str = syminfo.name ();
         param_length(pos_n) = ((str.length ()
-                                > static_cast<size_t> (param_length(pos_n)))
+                                > static_cast<std::size_t> (param_length(pos_n)))
                                ? str.length () : param_length(pos_n));
 
         octave_value val = syminfo.value ();
 
         str = val.type_name ();
         param_length(pos_t) = ((str.length ()
-                                > static_cast<size_t> (param_length(pos_t)))
+                                > static_cast<std::size_t> (param_length(pos_t)))
                                ? str.length () : param_length(pos_t));
 
         elements1 = val.numel ();
         ss1 << elements1;
         str = ss1.str ();
         param_length(pos_e) = ((str.length ()
-                                > static_cast<size_t> (param_length(pos_e)))
+                                > static_cast<std::size_t> (param_length(pos_e)))
                                ? str.length () : param_length(pos_e));
 
         bytes1 = val.byte_size ();
         ss2 << bytes1;
         str = ss2.str ();
         param_length(pos_b) = ((str.length ()
-                                > static_cast<size_t> (param_length(pos_b)))
+                                > static_cast<std::size_t> (param_length(pos_b)))
                                ? str.length () : param_length (pos_b));
       }
 
     idx = 0;
-    while (static_cast<size_t> (idx) < format_len)
+    while (static_cast<std::size_t> (idx) < format_len)
       {
         whos_parameter param;
         param.command = '\0';
@@ -446,7 +446,7 @@ namespace octave
             int b = -1;
             int balance = 1;
             unsigned int items;
-            size_t pos;
+            std::size_t pos;
             std::string cmd;
 
             // Parse one command from format
@@ -559,7 +559,7 @@ namespace octave
           {
             // Text string, to be printed as it is ...
             std::string text;
-            size_t pos;
+            std::size_t pos;
             text = format.substr (idx, format.length ());
             pos = text.find ('%');
             if (pos != std::string::npos)

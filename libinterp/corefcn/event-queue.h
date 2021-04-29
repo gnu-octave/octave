@@ -75,7 +75,7 @@ namespace octave
         }
     }
 
-    size_t size (void) const { return fifo.size (); }
+    std::size_t size (void) const { return fifo.size (); }
 
   protected:
 

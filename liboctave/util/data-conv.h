@@ -65,7 +65,7 @@ public:
     dt_unknown   = 23 // Must be last, have largest value!
   };
 
-  static size_t data_type_size (data_type dt);
+  static std::size_t data_type_size (data_type dt);
 
   static data_type string_to_data_type (const std::string& s);
 
@@ -110,7 +110,7 @@ do_float_format_conversion (void *data, octave_idx_type len,
                             = octave::mach_info::native_float_format ());
 
 extern OCTAVE_API void
-do_float_format_conversion (void *data, size_t sz, octave_idx_type len,
+do_float_format_conversion (void *data, std::size_t sz, octave_idx_type len,
                             octave::mach_info::float_format from_fmt,
                             octave::mach_info::float_format to_fmt
                             = octave::mach_info::native_float_format ());

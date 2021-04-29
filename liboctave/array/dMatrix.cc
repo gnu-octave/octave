@@ -715,12 +715,12 @@ Matrix::pseudo_inverse (double tol) const
 ComplexMatrix
 Matrix::fourier (void) const
 {
-  size_t nr = rows ();
-  size_t nc = cols ();
+  std::size_t nr = rows ();
+  std::size_t nc = cols ();
 
   ComplexMatrix retval (nr, nc);
 
-  size_t npts, nsamples;
+  std::size_t npts, nsamples;
 
   if (nr == 1 || nc == 1)
     {
@@ -744,12 +744,12 @@ Matrix::fourier (void) const
 ComplexMatrix
 Matrix::ifourier (void) const
 {
-  size_t nr = rows ();
-  size_t nc = cols ();
+  std::size_t nr = rows ();
+  std::size_t nc = cols ();
 
   ComplexMatrix retval (nr, nc);
 
-  size_t npts, nsamples;
+  std::size_t npts, nsamples;
 
   if (nr == 1 || nc == 1)
     {

@@ -830,7 +830,7 @@ namespace octave
 
     std::string tmp = f (text, state);
 
-    size_t len = tmp.length ();
+    std::size_t len = tmp.length ();
 
     if (len > 0)
       {
@@ -852,7 +852,7 @@ namespace octave
 
     std::string tmp = f (text, matches, *qcp);
 
-    size_t len = tmp.length ();
+    std::size_t len = tmp.length ();
 
     if (len > 0)
       {
@@ -874,7 +874,7 @@ namespace octave
 
     std::string tmp = f (text, quote);
 
-    size_t len = tmp.length ();
+    std::size_t len = tmp.length ();
 
     if (len > 0)
       {
@@ -1683,8 +1683,8 @@ namespace octave
   {
     std::string retval;
     std::string tmpstr;
-    size_t i = 0;
-    size_t slen = s.length ();
+    std::size_t i = 0;
+    std::size_t slen = s.length ();
     int c;
 
     while (i < slen)
@@ -1763,7 +1763,7 @@ namespace octave
                 {
                   tmpstr = sys::env::get_host_name ();
 
-                  size_t pos = tmpstr.find ('.');
+                  std::size_t pos = tmpstr.find ('.');
 
                   if (pos != std::string::npos)
                     tmpstr.resize (pos);
@@ -1825,7 +1825,7 @@ namespace octave
                     {
                       if (tmpstr != "/" && tmpstr != "//")
                         {
-                          size_t pos = tmpstr.rfind ('/');
+                          std::size_t pos = tmpstr.rfind ('/');
 
                           if (pos != std::string::npos && pos != 0)
                             tmpstr = tmpstr.substr (pos + 1);
@@ -1929,8 +1929,8 @@ namespace octave
     int result = 0;
     int digits = 0;
 
-    size_t i = 0;
-    size_t slen = s.length ();
+    std::size_t i = 0;
+    std::size_t slen = s.length ();
 
     while (i < slen && s[i] >= '0' && s[i] < '8')
       {

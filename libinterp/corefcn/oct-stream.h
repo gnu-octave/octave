@@ -301,9 +301,9 @@ namespace octave
                            octave_idx_type skip,
                            mach_info::float_format flt_fmt);
 
-    bool write_bytes (const void *data, size_t n_elts);
+    bool write_bytes (const void *data, std::size_t n_elts);
 
-    bool skip_bytes (size_t n_elts);
+    bool skip_bytes (std::size_t n_elts);
 
     template <typename T>
       octave_idx_type write (const Array<T>& data, octave_idx_type block_size,

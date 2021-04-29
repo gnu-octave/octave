@@ -2284,7 +2284,7 @@ yyerror (octave::base_parser& parser, const char *s)
 
 namespace octave
 {
-  size_t
+  std::size_t
   base_parser::parent_scope_info::size (void) const
   {
     return m_info.size ();
@@ -2318,7 +2318,7 @@ namespace octave
 
     std::string full_name;
 
-    for (size_t i = 0; i < size()-1; i++)
+    for (std::size_t i = 0; i < size()-1; i++)
       {
         const value_type& elt = m_info[i];
 
@@ -3638,7 +3638,7 @@ namespace octave
 
         std::string nm = m_lexer.m_fcn_file_name;
 
-        size_t pos = nm.find_last_of (sys::file_ops::dir_sep_chars ());
+        std::size_t pos = nm.find_last_of (sys::file_ops::dir_sep_chars ());
 
         if (pos != std::string::npos)
           nm = m_lexer.m_fcn_file_name.substr (pos+1);
@@ -3879,7 +3879,7 @@ namespace octave
 
     std::string nm = m_lexer.m_fcn_file_name;
 
-    size_t pos = nm.find_last_of (sys::file_ops::dir_sep_chars ());
+    std::size_t pos = nm.find_last_of (sys::file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
       nm = m_lexer.m_fcn_file_name.substr (pos+1);
@@ -4400,7 +4400,7 @@ namespace octave
     std::string va_type = (type == tree_parameter_list::in
                            ? "varargin" : "varargout");
 
-    size_t len = lst->length ();
+    std::size_t len = lst->length ();
 
     if (len > 0)
       {
@@ -4743,7 +4743,7 @@ namespace octave
         // input file in a list.  See also functions for managing input
         // buffers in lex.ll.
 
-        size_t len = curr_line.length ();
+        std::size_t len = curr_line.length ();
 
         if (curr_line[len-1] == '\n')
           curr_line.resize (len-1);
@@ -5074,7 +5074,7 @@ namespace octave
 
     std::string file = full_file;
 
-    size_t file_len = file.length ();
+    std::size_t file_len = file.length ();
 
     if ((file_len > 4 && file.substr (file_len-4) == ".oct")
         || (file_len > 4 && file.substr (file_len-4) == ".mex")
@@ -5083,7 +5083,7 @@ namespace octave
         file = sys::env::base_pathname (file);
         file = file.substr (0, file.find_last_of ('.'));
 
-        size_t pos = file.find_last_of (sys::file_ops::dir_sep_str ());
+        std::size_t pos = file.find_last_of (sys::file_ops::dir_sep_str ());
         if (pos != std::string::npos)
           file = file.substr (pos+1);
       }
@@ -5130,7 +5130,7 @@ namespace octave
 
     std::string nm = file_name;
 
-    size_t nm_len = nm.length ();
+    std::size_t nm_len = nm.length ();
 
     std::string file;
 
@@ -5145,7 +5145,7 @@ namespace octave
         nm = sys::env::base_pathname (file);
         nm = nm.substr (0, nm.find_last_of ('.'));
 
-        size_t pos = nm.find_last_of (sys::file_ops::dir_sep_str ());
+        std::size_t pos = nm.find_last_of (sys::file_ops::dir_sep_str ());
         if (pos != std::string::npos)
           nm = nm.substr (pos+1);
       }
@@ -5913,7 +5913,7 @@ Undocumented internal function.
 
   std::string dir_name;
 
-  size_t file_len = file.length ();
+  std::size_t file_len = file.length ();
 
   if ((file_len > 4 && file.substr (file_len-4) == ".oct")
       || (file_len > 4 && file.substr (file_len-4) == ".mex")
@@ -5922,7 +5922,7 @@ Undocumented internal function.
       file = octave::sys::env::base_pathname (file);
       file = file.substr (0, file.find_last_of ('.'));
 
-      size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_str ());
+      std::size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_str ());
       if (pos != std::string::npos)
         {
           dir_name = file.substr (0, pos);

@@ -169,7 +169,7 @@ namespace octave
               std::string escaped;
               escaped.reserve (xpat.length ());
 
-              for (size_t j = 0; j < xpat.length (); j++)
+              for (std::size_t j = 0; j < xpat.length (); j++)
                 {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
@@ -219,7 +219,7 @@ namespace octave
                           std::string unescaped;
                           unescaped.reserve (tmp.length ());
 
-                          for (size_t m = 0; m < tmp.length (); m++)
+                          for (std::size_t m = 0; m < tmp.length (); m++)
                             {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))

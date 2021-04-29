@@ -173,7 +173,7 @@ namespace octave
     while (first_use ())
       {
         jit_instruction *user = first_use ()->user ();
-        size_t idx = first_use ()->index ();
+        std::size_t idx = first_use ()->index ();
         user->stash_argument (idx, value);
       }
   }
@@ -226,9 +226,9 @@ namespace octave
   }
 
   void
-  jit_instruction::do_construct_ssa (size_t start, size_t end)
+  jit_instruction::do_construct_ssa (std::size_t start, std::size_t end)
   {
-    for (size_t i = start; i < end; ++i)
+    for (std::size_t i = start; i < end; ++i)
       {
         jit_value *arg = argument (i);
         jit_variable *var = dynamic_cast<jit_variable *> (arg);
@@ -377,13 +377,13 @@ namespace octave
   }
 
   jit_block *
-  jit_block::successor (size_t i) const
+  jit_block::successor (std::size_t i) const
   {
     jit_terminator *term = terminator ();
     return term->successor (i);
   }
 
-  size_t
+  std::size_t
   jit_block::successor_count (void) const
   {
     jit_terminator *term = terminator ();
@@ -408,7 +408,7 @@ namespace octave
     os << std::endl;
 
     os << "  successors: ";
-    for (size_t i = 0; i < successor_count (); ++i)
+    for (std::size_t i = 0; i < successor_count (); ++i)
       os << *successor (i) << ' ';
     os << std::endl;
 
@@ -424,14 +424,14 @@ namespace octave
     os << std::endl;
 
     os << "  m_dom_succ: ";
-    for (size_t i = 0; i < m_dom_succ.size (); ++i)
+    for (std::size_t i = 0; i < m_dom_succ.size (); ++i)
       os << *m_dom_succ[i] << ' ';
 
     return os << std::endl;
   }
 
   void
-  jit_block::compute_df (size_t avisit_count)
+  jit_block::compute_df (std::size_t avisit_count)
   {
     if (visited (avisit_count))
       return;
@@ -449,12 +449,12 @@ namespace octave
           }
       }
 
-    for (size_t i = 0; i < successor_count (); ++i)
+    for (std::size_t i = 0; i < successor_count (); ++i)
       successor (i)->compute_df (avisit_count);
   }
 
   bool
-  jit_block::update_idom (size_t avisit_count)
+  jit_block::update_idom (std::size_t avisit_count)
   {
     if (visited (avisit_count) || ! use_count ())
       return false;
@@ -488,7 +488,7 @@ namespace octave
   }
 
   void
-  jit_block::label (size_t avisit_count, size_t& number)
+  jit_block::label (std::size_t avisit_count, std::size_t& number)
   {
     if (visited (avisit_count))
       return;
@@ -513,7 +513,7 @@ namespace octave
   }
 
   std::ostream&
-  jit_block::print (std::ostream& os, size_t indent) const
+  jit_block::print (std::ostream& os, std::size_t indent) const
   {
     print_indent (os, indent);
     short_print (os) << ":        %pred = ";
@@ -541,7 +541,7 @@ namespace octave
     if (successor_count () > 1)
       {
         jit_terminator *term = terminator ();
-        size_t idx = term->successor_index (asuccessor);
+        std::size_t idx = term->successor_index (asuccessor);
         jit_block *split = factory.create<jit_block> ("phi_split", m_visit_count);
 
         // place after this to ensure define before use in the blocks list
@@ -564,7 +564,7 @@ namespace octave
   }
 
   void
-  jit_block::create_dom_tree (size_t avisit_count)
+  jit_block::create_dom_tree (std::size_t avisit_count)
   {
     if (visited (avisit_count))
       return;
@@ -572,7 +572,7 @@ namespace octave
     if (m_idom != this)
       m_idom->m_dom_succ.push_back (this);
 
-    for (size_t i = 0; i < successor_count (); ++i)
+    for (std::size_t i = 0; i < successor_count (); ++i)
       successor (i)->create_dom_tree (avisit_count);
   }
 
@@ -602,10 +602,10 @@ namespace octave
   jit_phi::prune (void)
   {
     jit_block *p = parent ();
-    size_t new_idx = 0;
+    std::size_t new_idx = 0;
     jit_value *unique = argument (1);
 
-    for (size_t i = 0; i < argument_count (); ++i)
+    for (std::size_t i = 0; i < argument_count (); ++i)
       {
         jit_block *inc = incoming (i);
         if (inc->branch_alive (p))
@@ -647,7 +647,7 @@ namespace octave
       return false;
 
     jit_type *infered = nullptr;
-    for (size_t i = 0; i < argument_count (); ++i)
+    for (std::size_t i = 0; i < argument_count (); ++i)
       {
         jit_block *inc = incoming (i);
         if (inc->branch_alive (p))
@@ -670,11 +670,11 @@ namespace octave
   }
 
   // -------------------- jit_terminator --------------------
-  size_t
+  std::size_t
   jit_terminator::successor_index (const jit_block *asuccessor) const
   {
-    size_t scount = successor_count ();
-    for (size_t i = 0; i < scount; ++i)
+    std::size_t scount = successor_count ();
+    for (std::size_t i = 0; i < scount; ++i)
       if (successor (i) == asuccessor)
         return i;
 
@@ -688,7 +688,7 @@ namespace octave
       return false;
 
     bool changed = false;
-    for (size_t i = 0; i < m_alive.size (); ++i)
+    for (std::size_t i = 0; i < m_alive.size (); ++i)
       if (! m_alive[i] && check_alive (i))
         {
           changed = true;
@@ -727,7 +727,7 @@ namespace octave
   jit_call::infer (void)
   {
     // FIXME: explain algorithm
-    for (size_t i = 0; i < argument_count (); ++i)
+    for (std::size_t i = 0; i < argument_count (); ++i)
       {
         m_already_infered[i] = argument_type (i);
         if (! m_already_infered[i])
@@ -768,7 +768,7 @@ namespace octave
   }
 
   std::ostream&
-  jit_error_check::print (std::ostream& os, size_t indent) const
+  jit_error_check::print (std::ostream& os, std::size_t indent) const
   {
     print_indent (os, indent) << "error_check " << variable_to_string (m_variable)
                               << ", ";
@@ -781,7 +781,7 @@ namespace octave
 
   // -------------------- jit_magic_end --------------------
   jit_magic_end::context::context (jit_factory& factory, jit_value *avalue,
-                                   size_t aindex, size_t acount)
+                                   std::size_t aindex, std::size_t acount)
     : m_value (avalue), m_index (factory.create<jit_const_index> (aindex)),
       m_count (factory.create<jit_const_index> (acount))
   { }
@@ -791,7 +791,7 @@ namespace octave
   {
     resize_arguments (m_contexts.size ());
 
-    size_t i;
+    std::size_t i;
     std::vector<context>::const_iterator iter;
     for (iter = m_contexts.begin (), i = 0; iter != m_contexts.end (); ++iter, ++i)
       stash_argument (i, iter->m_value);
@@ -800,7 +800,7 @@ namespace octave
   jit_magic_end::context
   jit_magic_end::resolve_context (void) const
   {
-    size_t idx;
+    std::size_t idx;
     for (idx = 0; idx < m_contexts.size (); ++idx)
       {
         jit_type *ctx_type = m_contexts[idx].m_value->type ();
@@ -830,7 +830,7 @@ namespace octave
   }
 
   std::ostream&
-  jit_magic_end::print (std::ostream& os, size_t indent) const
+  jit_magic_end::print (std::ostream& os, std::size_t indent) const
   {
     context ctx = resolve_context ();
     short_print (print_indent (os, indent)) << " (" << *ctx.m_value << ", ";

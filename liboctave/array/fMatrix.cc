@@ -721,12 +721,12 @@ FloatMatrix::pseudo_inverse (float tol) const
 FloatComplexMatrix
 FloatMatrix::fourier (void) const
 {
-  size_t nr = rows ();
-  size_t nc = cols ();
+  std::size_t nr = rows ();
+  std::size_t nc = cols ();
 
   FloatComplexMatrix retval (nr, nc);
 
-  size_t npts, nsamples;
+  std::size_t npts, nsamples;
 
   if (nr == 1 || nc == 1)
     {
@@ -750,12 +750,12 @@ FloatMatrix::fourier (void) const
 FloatComplexMatrix
 FloatMatrix::ifourier (void) const
 {
-  size_t nr = rows ();
-  size_t nc = cols ();
+  std::size_t nr = rows ();
+  std::size_t nc = cols ();
 
   FloatComplexMatrix retval (nr, nc);
 
-  size_t npts, nsamples;
+  std::size_t npts, nsamples;
 
   if (nr == 1 || nc == 1)
     {

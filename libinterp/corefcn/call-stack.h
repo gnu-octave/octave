@@ -84,9 +84,9 @@ namespace octave
     // Current column in current function.
     int current_column (void) const;
 
-    size_t current_frame (void) const { return m_curr_frame; }
+    std::size_t current_frame (void) const { return m_curr_frame; }
 
-    size_t size (void) const { return m_cs.size (); }
+    std::size_t size (void) const { return m_cs.size (); }
 
     std::shared_ptr<stack_frame> get_current_stack_frame (void) const
     {
@@ -112,7 +112,7 @@ namespace octave
 
     // Function at location N on the call stack (N == 0 is current), may
     // be built-in.
-    octave_function * element (size_t n)
+    octave_function * element (std::size_t n)
     {
       octave_function *retval = nullptr;
 
@@ -197,19 +197,19 @@ namespace octave
         }
     }
 
-    bool goto_frame (size_t n = 0, bool verbose = false);
+    bool goto_frame (std::size_t n = 0, bool verbose = false);
 
-    void restore_frame (size_t n)
+    void restore_frame (std::size_t n)
     {
       goto_frame (n);
     }
 
-    size_t find_current_user_frame (void) const;
+    std::size_t find_current_user_frame (void) const;
 
     std::shared_ptr<stack_frame> current_user_frame (void) const;
 
-    size_t dbupdown (size_t start, int n, bool verbose);
-    size_t dbupdown (int n = -1, bool verbose = false);
+    std::size_t dbupdown (std::size_t start, int n, bool verbose);
+    std::size_t dbupdown (int n = -1, bool verbose = false);
 
     void goto_caller_frame (void);
 
@@ -304,7 +304,7 @@ namespace octave
   private:
 
     void get_new_frame_index_and_links
-      (size_t& new_frame_idx, std::shared_ptr<stack_frame>& parent_link,
+      (std::size_t& new_frame_idx, std::shared_ptr<stack_frame>& parent_link,
        std::shared_ptr<stack_frame>& static_link) const;
 
     tree_evaluator& m_evaluator;
@@ -319,7 +319,7 @@ namespace octave
 
     // FIXME: should the current frame be managed by the evaluator
     // instead?
-    size_t m_curr_frame;
+    std::size_t m_curr_frame;
 
     int m_max_stack_depth;
 

@@ -282,7 +282,7 @@ namespace octave
 
   template <typename T>
   static void
-  poisson_cdf_lookup (double lambda, T *p, size_t n)
+  poisson_cdf_lookup (double lambda, T *p, std::size_t n)
   {
     double t[TABLESIZE];
 
@@ -291,7 +291,7 @@ namespace octave
     int intlambda = static_cast<int> (std::floor (lambda));
     double P;
     int tableidx;
-    size_t i = n;
+    std::size_t i = n;
 
     t[0] = P = exp (-lambda);
     for (tableidx = 1; tableidx <= intlambda; tableidx++)
@@ -347,12 +347,12 @@ namespace octave
   /* From Press, et al., Numerical Recipes */
   template <typename T>
   static void
-  poisson_rejection (double lambda, T *p, size_t n)
+  poisson_rejection (double lambda, T *p, std::size_t n)
   {
     double sq = std::sqrt (2.0*lambda);
     double alxm = std::log (lambda);
     double g = lambda*alxm - xlgamma (lambda+1.0);
-    size_t i;
+    std::size_t i;
 
     for (i = 0; i < n; i++)
       {

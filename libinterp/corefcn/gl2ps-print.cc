@@ -399,18 +399,18 @@ namespace octave
 
             std::string include_graph;
 
-            size_t found_redirect = old_print_cmd.find ('>');
+            std::size_t found_redirect = old_print_cmd.find ('>');
 
             if (found_redirect != std::string::npos)
               include_graph = old_print_cmd.substr (found_redirect + 1);
             else
               include_graph = old_print_cmd;
 
-            size_t n_begin = include_graph.find_first_not_of (" \"'");
+            std::size_t n_begin = include_graph.find_first_not_of (" \"'");
 
             if (n_begin != std::string::npos)
               {
-                size_t n_end = include_graph.find_last_not_of (" \"'");
+                std::size_t n_end = include_graph.find_last_not_of (" \"'");
                 include_graph = include_graph.substr (n_begin,
                                                       n_end - n_begin + 1);
               }
@@ -460,7 +460,7 @@ namespace octave
         // Copy temporary file to pipe
         std::fseek (tmpf, 0, SEEK_SET);
         char str[8192];  // 8 kB is a common kernel buffersize
-        size_t nread, nwrite;
+        std::size_t nread, nwrite;
         nread = 1;
 
         // In EPS terminal read the header line by line and insert a
@@ -497,7 +497,7 @@ namespace octave
                     //        Remove this "else if" block, and
                     //        make header_found true for SVG if gl2ps is fixed.
                     std::string srchstr (str);
-                    size_t pos = srchstr.find ("px");
+                    std::size_t pos = srchstr.find ("px");
                     if (pos != std::string::npos)
                       {
                         header_found = true;
@@ -935,7 +935,7 @@ namespace octave
             const uint8_t *c
               = reinterpret_cast<const uint8_t *> (tmpstr.c_str ());
 
-            for (size_t i = 0; i < tmpstr.size ();)
+            for (std::size_t i = 0; i < tmpstr.size ();)
               {
                 int mblen = octave_u8_strmblen_wrapper (c + i);
 
@@ -979,7 +979,7 @@ namespace octave
         ss << "(" << str << ") [";
 
         std::vector<double> xdata = txtobj.get_xdata ();
-        for (size_t i = 1; i < xdata.size (); i++)
+        for (std::size_t i = 1; i < xdata.size (); i++)
           ss << xdata[i] - xdata[i-1] << " ";
 
         ss << "10] " << rotation << " " << txtobj.get_x ()

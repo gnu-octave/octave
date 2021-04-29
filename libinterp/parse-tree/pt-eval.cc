@@ -106,7 +106,7 @@ namespace octave
         EX_QUIT_ALL = 3
       };
 
-    debugger (interpreter& interp, size_t level)
+    debugger (interpreter& interp, std::size_t level)
       : m_interpreter (interp), m_level (level), m_debug_frame (0),
         m_execution_mode (EX_NORMAL), m_in_debug_repl (false)
     { }
@@ -134,8 +134,8 @@ namespace octave
 
     interpreter& m_interpreter;
 
-    size_t m_level;
-    size_t m_debug_frame;
+    std::size_t m_level;
+    std::size_t m_debug_frame;
     execution_mode m_execution_mode;
     bool m_in_debug_repl;
   };
@@ -446,8 +446,8 @@ namespace octave
     if (opt == "fullpathext")
       return fname;
 
-    size_t dpos = fname.rfind (sys::file_ops::dir_sep_char ());
-    size_t epos = fname.rfind ('.');
+    std::size_t dpos = fname.rfind (sys::file_ops::dir_sep_char ());
+    std::size_t epos = fname.rfind ('.');
 
     if (epos <= dpos+1)
       epos = std::string::npos;
@@ -618,7 +618,7 @@ namespace octave
                                             const std::string& try_code,
                                             int nargout)
   {
-    unwind_action act ([this] (size_t frm)
+    unwind_action act ([this] (std::size_t frm)
                        {
                          m_call_stack.restore_frame (frm);
                        }, m_call_stack.current_frame ());
@@ -642,7 +642,7 @@ namespace octave
   {
     octave_value_list retval;
 
-    unwind_action act1 ([this] (size_t frm)
+    unwind_action act1 ([this] (std::size_t frm)
                         {
                           m_call_stack.restore_frame (frm);
                         }, m_call_stack.current_frame ());
@@ -896,7 +896,7 @@ namespace octave
     // the corresponding function name.  At least try to do it without N
     // string compares.
 
-    size_t len = name.length ();
+    std::size_t len = name.length ();
 
     if (len == 3 && name == ".**")
       return "power";
@@ -1026,7 +1026,7 @@ namespace octave
 
     bool name_is_operator = fcn_name != name;
 
-    size_t pos = fcn_name.find ('.');
+    std::size_t pos = fcn_name.find ('.');
 
     if (pos != std::string::npos)
       {
@@ -1414,7 +1414,7 @@ namespace octave
     // by getting a reference to the caller or base stack frame and
     // calling assign on that?
 
-    unwind_action act ([this] (size_t frm)
+    unwind_action act ([this] (std::size_t frm)
                        {
                          m_call_stack.restore_frame (frm);
                        }, m_call_stack.current_frame ());
@@ -1485,7 +1485,7 @@ namespace octave
     std::string file_full_name
       = sys::file_ops::tilde_expand (file_name);
 
-    size_t pos
+    std::size_t pos
       = file_full_name.find_last_of (sys::file_ops::dir_sep_str ());
 
     std::string dir_name = file_full_name.substr (0, pos);
@@ -1518,11 +1518,11 @@ namespace octave
       }
 
     // Find symbol name that would be in symbol_table, if it were loaded.
-    size_t dir_end
+    std::size_t dir_end
       = file_name.find_last_of (sys::file_ops::dir_sep_chars ());
     dir_end = (dir_end == std::string::npos) ? 0 : dir_end + 1;
 
-    size_t extension = file_name.find_last_of ('.');
+    std::size_t extension = file_name.find_last_of ('.');
     if (extension == std::string::npos)
       extension = file_name.length ();
 
@@ -1926,7 +1926,7 @@ namespace octave
     return m_call_stack.current_function (true);
   }
 
-  bool tree_evaluator::goto_frame (size_t n, bool verbose)
+  bool tree_evaluator::goto_frame (std::size_t n, bool verbose)
   {
     return m_call_stack.goto_frame (n, verbose);
   }
@@ -1941,7 +1941,7 @@ namespace octave
     m_call_stack.goto_base_frame ();
   }
 
-  void tree_evaluator::restore_frame (size_t n)
+  void tree_evaluator::restore_frame (std::size_t n)
   {
     return m_call_stack.restore_frame (n);
   }
@@ -2280,7 +2280,7 @@ namespace octave
             std::replace (beg, end, '/', sys::file_ops::dir_sep_char ());
           }
 
-        size_t name_len = name.length ();
+        std::size_t name_len = name.length ();
 
         if (name_len > 2 && name.substr (name_len-2) == ".m")
           name = name.substr (0, name_len-2);
@@ -2291,11 +2291,11 @@ namespace octave
         symbol_table& symtab = m_interpreter.get_symbol_table ();
 
         octave_value fcn;
-        size_t p2 = std::string::npos;
+        std::size_t p2 = std::string::npos;
 
         if (name[0] == '@')
           {
-            size_t p1 = name.find (sys::file_ops::dir_sep_char (), 1);
+            std::size_t p1 = name.find (sys::file_ops::dir_sep_char (), 1);
 
             if (p1 == std::string::npos)
               return nullptr;
@@ -2653,7 +2653,7 @@ namespace octave
     if (! cmd_list)
       return retval;
 
-    if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
+    if (m_call_stack.size () >= static_cast<std::size_t> (m_max_recursion_depth))
       error ("max_recursion_depth exceeded");
 
     unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_SCRIPT);
@@ -4176,12 +4176,12 @@ namespace octave
             // evaluate the partial expression that the special "end"
             // token applies to in the calling stack frame.
 
-            unwind_action act ([this] (size_t frm)
+            unwind_action act ([this] (std::size_t frm)
                                {
                                  m_call_stack.restore_frame (frm);
                                }, m_call_stack.current_frame ());
 
-            size_t n = m_call_stack.find_current_user_frame ();
+            std::size_t n = m_call_stack.find_current_user_frame ();
             m_call_stack.goto_frame (n);
 
             // End is only valid inside argument lists used for

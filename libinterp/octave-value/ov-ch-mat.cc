@@ -320,12 +320,12 @@ octave_char_matrix::map (unary_mapper_t umap) const
             p(1) = 0;                                                          \
             in_m = matrix.permute (p);                                         \
           }                                                                    \
-        size_t output_length = in_m.numel ();                                  \
+        std::size_t output_length = in_m.numel ();                                  \
         charNDArray ch_array = charNDArray (in_m.dims ());                     \
         const uint8_t *in = reinterpret_cast<const uint8_t *> (in_m.data ());  \
         uint8_t *buf = reinterpret_cast<uint8_t *> (ch_array.fortran_vec ());  \
         U8_FCN (in, matrix.numel (), nullptr, buf, &output_length);            \
-        if (output_length != static_cast<size_t> (matrix.numel ()))            \
+        if (output_length != static_cast<std::size_t> (matrix.numel ()))            \
           {                                                                    \
             warning_with_id ("Octave:multi_byte_char_length",                  \
                              "UMAP: Possible multi-byte error.");              \

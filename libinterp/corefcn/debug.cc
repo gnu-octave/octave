@@ -651,7 +651,7 @@ numbers.
       {
         std::string arg = argv[1];
 
-        size_t ind = arg.find (':');
+        std::size_t ind = arg.find (':');
 
         if (ind != std::string::npos)  // (dbtype start:end)
           {
@@ -717,7 +717,7 @@ numbers.
 
         std::string arg = argv[2];
         int start, end;
-        size_t ind = arg.find (':');
+        std::size_t ind = arg.find (':');
 
         if (ind != std::string::npos)
           {
@@ -842,7 +842,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 
   octave_idx_type curr_frame = -1;
 
-  size_t nskip = 0;
+  std::size_t nskip = 0;
 
   if (nargin == 1 || nargin == 2)
     {
@@ -892,7 +892,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 
           bool show_top_level = true;
 
-          size_t max_name_len = 0;
+          std::size_t max_name_len = 0;
 
           for (octave_idx_type i = nskip; i < nframes; i++)
             {

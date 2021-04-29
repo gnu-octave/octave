@@ -53,7 +53,7 @@ public:
 
   octave_base_value * try_narrowing_conversion (void);
 
-  size_t byte_size (void) const { return matrix.byte_size (); }
+  std::size_t byte_size (void) const { return matrix.byte_size (); }
 
   octave_value squeeze (void) const { return matrix; }
 

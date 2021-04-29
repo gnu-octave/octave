@@ -795,7 +795,7 @@ ANY_INCLUDING_NL (.|{NL})
     // Grab text of comment without leading space or comment
     // characters.
 
-    size_t i = 0;
+    std::size_t i = 0;
     while (i < yyleng && is_space_or_tab (yytext[i]))
       i++;
 
@@ -1357,11 +1357,11 @@ ANY_INCLUDING_NL (.|{NL})
           {
             std::string txt = yytext;
 
-            size_t at_or_dot_pos = txt.find_first_of ("@.");
+            std::size_t at_or_dot_pos = txt.find_first_of ("@.");
 
             if (at_or_dot_pos != std::string::npos)
               {
-                size_t spc_pos = txt.find_first_of (" \t");
+                std::size_t spc_pos = txt.find_first_of (" \t");
 
                 if (spc_pos != std::string::npos && spc_pos < at_or_dot_pos)
                   {
@@ -2192,7 +2192,7 @@ namespace octave
   symbol_scope
   lexical_feedback::symbol_table_context::parent_scope (void) const
   {
-    size_t sz = size ();
+    std::size_t sz = size ();
 
     return (sz > 1
             ? m_frame_stack[1]
@@ -2364,7 +2364,7 @@ looks_like_copyright (const std::string& s)
   // Comment characters have been stripped but whitespace
   // (including newlines) remains.
 
-  size_t offset = s.find_first_not_of (" \t\n\r");
+  std::size_t offset = s.find_first_not_of (" \t\n\r");
 
   return (offset != std::string::npos
           && (s.substr (offset, 9) == "Copyright"
@@ -2391,15 +2391,15 @@ namespace octave
 
   // If BY_LINES is true, return chunks to the lexer line by line.
   int
-  base_lexer::input_buffer::copy_chunk (char *buf, size_t max_size,
+  base_lexer::input_buffer::copy_chunk (char *buf, std::size_t max_size,
                                         bool by_lines)
   {
     static const char * const eol = "\n";
 
-    size_t len = 0;
+    std::size_t len = 0;
     if (by_lines)
       {
-        size_t newline_pos = m_buffer.find ('\n', m_offset);
+        std::size_t newline_pos = m_buffer.find ('\n', m_offset);
         len = (newline_pos != std::string::npos
                ? newline_pos - m_offset + 1
                : (max_size > m_chars_left ? m_chars_left : max_size));
@@ -2900,8 +2900,8 @@ bool
   bool
   base_lexer::fq_identifier_contains_keyword (const std::string& s)
   {
-    size_t p1 = 0;
-    size_t p2;
+    std::size_t p1 = 0;
+    std::size_t p2;
 
     std::string s_part;
 
@@ -3144,7 +3144,7 @@ namespace octave
     txt.erase (std::remove_if (txt.begin (), txt.end (), is_space_or_tab),
                txt.end ());
 
-    size_t pos = txt.find ("@");
+    std::size_t pos = txt.find ("@");
 
     std::string meth = txt.substr (0, pos);
     std::string cls = txt.substr (pos + 1);
@@ -3391,7 +3391,7 @@ namespace octave
     return lval->tok_val;
   }
 
-  size_t
+  std::size_t
   base_lexer::pending_token_count (void) const
   {
     return m_tokens.size ();

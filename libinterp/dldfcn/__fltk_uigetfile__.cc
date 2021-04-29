@@ -113,7 +113,7 @@ Undocumented internal function.
 
       // FLTK uses forward slash even for Windows
       std::string sep = "/";
-      size_t idx;
+      std::size_t idx;
 
       if (file_count == 1 && multi_type != Fl_File_Chooser::DIRECTORY)
         {

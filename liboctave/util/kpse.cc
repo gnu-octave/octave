@@ -136,9 +136,9 @@ kpse_truncate_filename (const std::string& name)
 
   std::string ret = name;
 
-  size_t m_len = name.length ();
+  std::size_t m_len = name.length ();
 
-  for (size_t i = 0; i < m_len; i++)
+  for (std::size_t i = 0; i < m_len; i++)
     {
       if (IS_DIR_SEP (name[i]) || IS_DEVICE_SEP (name[i]))
         {
@@ -421,7 +421,7 @@ kpse_tilde_expand (const std::string& name)
       if (home.empty ())
         home = ".";
 
-      size_t home_len = home.length ();
+      std::size_t home_len = home.length ();
 
       /* handle leading // */
       if (home_len > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
@@ -778,7 +778,7 @@ kpse_path_expand (const std::string& path)
          Be faster to check the database, but this is more reliable.  */
       dir = kpse_element_dir (elt);
 
-      size_t dirlen = dir.length ();
+      std::size_t dirlen = dir.length ();
 
       if (dirlen > 0)
         {
@@ -900,8 +900,8 @@ expand_amble (const std::string& text)
 {
   std::list<std::string> result;
 
-  size_t text_len = text.length ();
-  size_t start;
+  std::size_t text_len = text.length ();
+  std::size_t start;
   int i, c;
 
   for (start = 0, i = 0, c = 1; c && start < text_len; start = ++i)
@@ -938,9 +938,9 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
   int quoted = 0;
   int pass_next = 0;
 
-  size_t text_len = text.length ();
+  std::size_t text_len = text.length ();
 
-  size_t i = indx;
+  std::size_t i = indx;
 
   for (; i < text_len; i++)
     {

@@ -35,7 +35,7 @@
 
 octave_value_list::octave_value_list (const std::list<octave_value>& lst)
 {
-  size_t nel = lst.size ();
+  std::size_t nel = lst.size ();
 
   if (nel > 0)
     {

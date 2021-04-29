@@ -609,7 +609,7 @@ namespace octave
       std::wstring tmp_substr
         = std::wstring (w_full_file_name_str.begin (), w_first_non_ASCII);
 
-      size_t pos
+      std::size_t pos
         = tmp_substr.find_last_of (u8_to_wstring (file_ops::dir_sep_chars ()));
 
       std::string par_dir
@@ -645,7 +645,7 @@ namespace octave
 
       wchar_t w_filename_hash[filename_hash.length ()+1] = {0};
 
-      for (size_t i=0; i < filename_hash.length (); i++)
+      for (std::size_t i=0; i < filename_hash.length (); i++)
         w_filename_hash[i] = filename_hash.at (i);
 
       if (CreateHardLinkW (w_filename_hash, w_orig_file_name, nullptr))

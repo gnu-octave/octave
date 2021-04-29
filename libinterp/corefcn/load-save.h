@@ -227,8 +227,8 @@ namespace octave
 
     void write_header (std::ostream& os, const load_save_format& fmt);
 
-    size_t save_vars (std::ostream& os, const std::string& pattern,
-                      const load_save_format& fmt, bool save_as_floats);
+    std::size_t save_vars (std::ostream& os, const std::string& pattern,
+                           const load_save_format& fmt, bool save_as_floats);
 
     void do_save (std::ostream& os, const octave_value& tc,
                   const std::string& name, const std::string& help,
@@ -238,9 +238,9 @@ namespace octave
     void do_save (std::ostream& os, const symbol_info& syminfo,
                   const load_save_format& fmt, bool save_as_floats);
 
-    size_t save_fields (std::ostream& os, const octave_scalar_map& m,
-                        const std::string& pattern,
-                        const load_save_format& fmt, bool save_as_floats);
+    std::size_t save_fields (std::ostream& os, const octave_scalar_map& m,
+                             const std::string& pattern,
+                             const load_save_format& fmt, bool save_as_floats);
 
     void dump_octave_core (std::ostream& os, const char *fname,
                            const load_save_format& fmt, bool save_as_floats);

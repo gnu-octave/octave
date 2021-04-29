@@ -126,7 +126,7 @@ namespace octave
 
       ~parent_scope_info (void) = default;
 
-      size_t size (void) const;
+      std::size_t size (void) const;
 
       void push (const value_type& elt);
 

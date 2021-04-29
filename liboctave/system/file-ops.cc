@@ -75,12 +75,12 @@ namespace octave
   // any word separation get desired behavior.
   static const char *default_suffixes[] = { " ", "\n", ":", nullptr };
 
-  static size_t
-  tilde_find_prefix (const std::string& s, size_t& len)
+  static std::size_t
+  tilde_find_prefix (const std::string& s, std::size_t& len)
   {
     len = 0;
 
-    size_t s_len = s.length ();
+    std::size_t s_len = s.length ();
 
     if (s_len == 0 || s[0] == '~')
       return 0;
@@ -89,11 +89,11 @@ namespace octave
 
     if (! prefixes.empty ())
       {
-        for (size_t i = 0; i < s_len; i++)
+        for (std::size_t i = 0; i < s_len; i++)
           {
             for (int j = 0; j < prefixes.numel (); j++)
               {
-                size_t pfx_len = prefixes[j].length ();
+                std::size_t pfx_len = prefixes[j].length ();
 
                 if (prefixes[j] == s.substr (i, pfx_len))
                   {
@@ -110,14 +110,14 @@ namespace octave
   // Find the end of a tilde expansion in S, and return the index
   // of the character which ends the tilde definition.
 
-  static size_t
+  static std::size_t
   tilde_find_suffix (const std::string& s)
   {
-    size_t s_len = s.length ();
+    std::size_t s_len = s.length ();
 
     string_vector suffixes = sys::file_ops::tilde_additional_suffixes;
 
-    size_t i = 0;
+    std::size_t i = 0;
 
     for ( ; i < s_len; i++)
       {
@@ -128,7 +128,7 @@ namespace octave
           {
             for (int j = 0; j < suffixes.numel (); j++)
               {
-                size_t sfx_len = suffixes[j].length ();
+                std::size_t sfx_len = suffixes[j].length ();
 
                 if (suffixes[j] == s.substr (i, sfx_len))
                   return i;
@@ -144,9 +144,9 @@ namespace octave
   static std::string
   isolate_tilde_prefix (const std::string& fname)
   {
-    size_t f_len = fname.length ();
+    std::size_t f_len = fname.length ();
 
-    size_t len = 1;
+    std::size_t len = 1;
 
     while (len < f_len && ! sys::file_ops::is_dir_sep (fname[len]))
       len++;
@@ -160,7 +160,7 @@ namespace octave
   static std::string
   tilde_expand_word (const std::string& filename)
   {
-    size_t f_len = filename.length ();
+    std::size_t f_len = filename.length ();
 
     if (f_len == 0 || filename[0] != '~')
       return std::string (filename);
@@ -174,7 +174,7 @@ namespace octave
 
     std::string username = isolate_tilde_prefix (filename);
 
-    size_t user_len = username.length ();
+    std::size_t user_len = username.length ();
 
     std::string dirname;
 
@@ -291,22 +291,22 @@ namespace octave
           {
             std::string result;
 
-            size_t name_len = name.length ();
+            std::size_t name_len = name.length ();
 
             // Scan through S expanding tildes as we come to them.
 
-            size_t pos = 0;
+            std::size_t pos = 0;
 
             while (1)
               {
                 if (pos > name_len)
                   break;
 
-                size_t len;
+                std::size_t len;
 
                 // Make START point to the tilde which starts the expansion.
 
-                size_t start = tilde_find_prefix (name.substr (pos), len);
+                std::size_t start = tilde_find_prefix (name.substr (pos), len);
 
                 result.append (name.substr (pos, start));
 
@@ -317,7 +317,7 @@ namespace octave
                 // Make FINI be the index of one after the last character of the
                 // username.
 
-                size_t fini = tilde_find_suffix (name.substr (pos));
+                std::size_t fini = tilde_find_suffix (name.substr (pos));
 
                 // If both START and FINI are zero, we are all done.
 
@@ -362,14 +362,14 @@ namespace octave
 
       std::string dirname (const std::string& path)
       {
-        size_t ipos = path.find_last_of (dir_sep_chars ());
+        std::size_t ipos = path.find_last_of (dir_sep_chars ());
 
         return (ipos != std::string::npos) ? path.substr (0, ipos) : "";
       }
 
       std::string tail (const std::string& path)
       {
-        size_t ipos = path.find_last_of (dir_sep_chars ());
+        std::size_t ipos = path.find_last_of (dir_sep_chars ());
 
         if (ipos != std::string::npos)
           ipos++;
@@ -387,8 +387,8 @@ namespace octave
           retval = path;
         else
           {
-            size_t n = path.length ();
-            for (size_t i = 0; i < n; i++)
+            std::size_t n = path.length ();
+            for (std::size_t i = 0; i < n; i++)
               {
                 if (path[i] == '/')
                   retval += dir_sep_char();

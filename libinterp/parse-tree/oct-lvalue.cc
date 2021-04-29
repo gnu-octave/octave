@@ -66,7 +66,7 @@ namespace octave
     // around internally but they are not supposed to be stored as
     // single symbols in a stack frame.
 
-    size_t num_indices = m_idx.size ();
+    std::size_t num_indices = m_idx.size ();
 
     if (num_indices == 0)
       return 1;

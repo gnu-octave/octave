@@ -30,6 +30,7 @@
 #include <cinttypes>
 #include <cmath>
 
+#include <limits>
 #include <sstream>
 
 #include "lo-array-errwarn.h"

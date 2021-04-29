@@ -66,15 +66,15 @@ namespace octave
   // of the doc dock widget
   documentation::documentation (QWidget *p, base_qobject& oct_qobj)
     : QSplitter (Qt::Horizontal, p),
-      m_octave_qobj (oct_qobj), m_doc_widget (p),
-      m_tool_bar (new QToolBar (p)),
+      m_octave_qobj (oct_qobj), m_doc_widget (this),
+      m_tool_bar (new QToolBar (this)),
       m_query_string (QString ()),
-      m_prev_pages_menu (new QMenu (p)),
-      m_next_pages_menu (new QMenu (p)),
+      m_prev_pages_menu (new QMenu (this)),
+      m_next_pages_menu (new QMenu (this)),
       m_prev_pages_count (0),
       m_next_pages_count (0),
-      m_findnext_shortcut (new QShortcut (p)),
-      m_findprev_shortcut (new QShortcut (p))
+      m_findnext_shortcut (new QShortcut (this)),
+      m_findprev_shortcut (new QShortcut (this))
   {
     // Get original collection
     QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
@@ -351,6 +351,7 @@ namespace octave
     m_action_go_home
       = add_action (rmgr.icon ("go-home"), tr ("Go home"), SLOT (home (void)),
                     m_doc_browser, m_tool_bar);
+
     m_action_go_prev
       = add_action (rmgr.icon ("go-previous"), tr ("Go back"),
                     SLOT (backward (void)), m_doc_browser, m_tool_bar);
@@ -365,6 +366,7 @@ namespace octave
     popdown_button_prev_pages->setCheckable (false);
     popdown_button_prev_pages->setArrowType(Qt::DownArrow);
     m_tool_bar->addWidget (popdown_button_prev_pages);
+
     m_action_go_next
       = add_action (rmgr.icon ("go-next"), tr ("Go forward"),
                     SLOT (forward (void)), m_doc_browser, m_tool_bar);

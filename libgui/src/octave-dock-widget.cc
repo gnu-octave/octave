@@ -41,6 +41,7 @@
 #include "gui-preferences-mw.h"
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
+#include "main-window.h"
 #include "octave-dock-widget.h"
 #include "octave-qobject.h"
 
@@ -189,7 +190,9 @@ namespace octave
   {
     setObjectName (obj_name);
 
-    m_parent = static_cast<QMainWindow *> (p);     // store main window
+    // FIXME: Can we avoid the cast here?
+    m_main_window = dynamic_cast<main_window *> (p);
+
     m_predecessor_widget = nullptr;
 
     connect (this, &octave_dock_widget::topLevelChanged,
@@ -278,10 +281,14 @@ namespace octave
     if (isFloating ())
       setFloating (false);
 
-    // Before making it a separate (no more parent) floating widget, remove
-    // the dock widget from the main window. This ensures that tabbed widgets
-    // keep their focus when it is re-docked later
-    m_parent->removeDockWidget (this);
+    if (m_main_window)
+      {
+        // Before making it a separate (no more parent) floating widget,
+        // remove the dock widget from the main window. This ensures
+        // that tabbed widgets keep their focus when it is re-docked
+        // later
+        m_main_window->removeDockWidget (this);
+      }
 
     setParent (0, Qt::CustomizeWindowHint | Qt::WindowTitleHint |
                Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::Window);
@@ -335,18 +342,22 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
 
-    settings->setValue (mw_state.key, m_parent->saveState ());
-    // Stay window, otherwise will bounce back to window by default because
-    // there is no layout information for this widget in the saved settings.
-    setParent (m_parent, Qt::Window);
-    m_parent->addDockWidget (Qt::BottomDockWidgetArea, this);
-    // recover old window states, hide and re-show new added widget
-    m_parent->restoreState (settings->value (mw_state.key).toByteArray ());
-    setFloating (false);
-    // restore size using setGeometry instead of restoreGeometry following
-    // this post:
-    // https://forum.qt.io/topic/79326/qdockwidget-restoregeometry-not-working-correctly-when-qmainwindow-is-maximized/5
-    setGeometry (m_recent_dock_geom);
+    if (m_main_window)
+      {
+        settings->setValue (mw_state.key, m_main_window->saveState ());
+        // Stay window, otherwise will bounce back to window by default
+        // because there is no layout information for this widget in the
+        // saved settings.
+        setParent (m_main_window, Qt::Window);
+        m_main_window->addDockWidget (Qt::BottomDockWidgetArea, this);
+        // recover old window states, hide and re-show new added widget
+        m_main_window->restoreState (settings->value (mw_state.key).toByteArray ());
+        setFloating (false);
+        // restore size using setGeometry instead of restoreGeometry
+        // following this post:
+        // https://forum.qt.io/topic/79326/qdockwidget-restoregeometry-not-working-correctly-when-qmainwindow-is-maximized/5
+        setGeometry (m_recent_dock_geom);
+      }
 
     // adjust the (un)dock icon
     connect (m_dock_action, &QAction::triggered,
@@ -387,6 +398,27 @@ namespace octave
   octave_dock_widget::set_predecessor_widget (octave_dock_widget *prev_widget)
   {
     m_predecessor_widget = prev_widget;
+  }
+
+  void
+  octave_dock_widget::set_main_window (main_window *mw)
+  {
+    m_main_window = mw;
+
+    if (m_main_window)
+      {
+        connect (m_main_window, &main_window::copyClipboard_signal,
+                 this, &octave_dock_widget::copyClipboard);
+
+        connect (m_main_window, &main_window::pasteClipboard_signal,
+                 this, &octave_dock_widget::pasteClipboard);
+
+        connect (m_main_window, &main_window::selectAll_signal,
+                 this, &octave_dock_widget::selectAll);
+
+        connect (m_main_window, &main_window::undo_signal,
+                 this, &octave_dock_widget::do_undo);
+      }
   }
 
   // close event
@@ -433,6 +465,9 @@ namespace octave
   void
   octave_dock_widget::handle_settings (const gui_settings *settings)
   {
+    if (! settings)
+      return;
+
     m_focus_follows_mouse = settings->value (dw_focus_follows_mouse).toBool ();
 
     m_custom_style
@@ -473,33 +508,38 @@ namespace octave
     else
       m_icon_color_active = "";
 
-    QRect available_size = QApplication::desktop ()->availableGeometry (m_parent);
-    int x, y, w, h;
-    available_size.getRect (&x, &y, &w, &h);
-    QRect default_floating_size = QRect (x+16, y+32, w/3, h/2);
-    m_parent->geometry ().getRect (&x, &y, &w, &h);
-    QRect default_dock_size = QRect (x+16, y+32, w/3, h/3);
+    if (m_main_window)
+      {
+        QRect available_size
+          = QApplication::desktop ()->availableGeometry (m_main_window);
 
-    m_recent_float_geom
-      = settings->value (dw_float_geometry.key.arg (objectName ()),
-                         default_floating_size).toRect ();
+        int x, y, w, h;
+        available_size.getRect (&x, &y, &w, &h);
+        QRect default_floating_size = QRect (x+16, y+32, w/3, h/2);
+        m_main_window->geometry ().getRect (&x, &y, &w, &h);
+        QRect default_dock_size = QRect (x+16, y+32, w/3, h/3);
 
-    QWidget dummy;
-    dummy.setGeometry (m_recent_float_geom);
+        m_recent_float_geom
+          = settings->value (dw_float_geometry.key.arg (objectName ()),
+                             default_floating_size).toRect ();
 
-    if (QApplication::desktop ()->screenNumber (&dummy) == -1)
-      m_recent_float_geom = default_floating_size;
+        QWidget dummy;
+        dummy.setGeometry (m_recent_float_geom);
 
-    // The following is required for ensure smooth transition from old
-    // saveGeomety to new QRect setting (see comment for restoring size
-    // of docked widgets)
-    QVariant dock_geom
-      = settings->value (dw_dock_geometry.key.arg (objectName ()),
-                         default_dock_size);
-    if (dock_geom.canConvert (QMetaType::QRect))
-      m_recent_dock_geom = dock_geom.toRect ();
-    else
-      m_recent_dock_geom = dw_dock_geometry.def.toRect ();
+        if (QApplication::desktop ()->screenNumber (&dummy) == -1)
+          m_recent_float_geom = default_floating_size;
+
+        // The following is required for ensure smooth transition from old
+        // saveGeomety to new QRect setting (see comment for restoring size
+        // of docked widgets)
+        QVariant dock_geom
+          = settings->value (dw_dock_geometry.key.arg (objectName ()),
+                             default_dock_size);
+        if (dock_geom.canConvert (QMetaType::QRect))
+          m_recent_dock_geom = dock_geom.toRect ();
+        else
+          m_recent_dock_geom = dw_dock_geometry.def.toRect ();
+      }
 
     notice_settings (settings);  // call individual handler
 

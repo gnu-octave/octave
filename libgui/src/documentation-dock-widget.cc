@@ -43,6 +43,9 @@ namespace octave
     setStatusTip (tr ("See the documentation for help."));
 
     setWidget (m_docs);
+
+    if (! p)
+      make_window ();
   }
 
   void documentation_dock_widget::notice_settings (const gui_settings *settings)

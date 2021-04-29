@@ -259,9 +259,26 @@ namespace octave
     emit apply_new_settings ();
   }
 
-  void qt_interpreter_events::show_doc (const std::string& file)
+  bool qt_interpreter_events::show_documentation (const std::string& file)
   {
-    emit show_doc_signal (QString::fromStdString (file));
+    emit show_documentation_signal (QString::fromStdString (file));
+
+    return true;
+  }
+
+  void qt_interpreter_events::show_file_browser (void)
+  {
+    emit show_file_browser_signal ();
+  }
+
+  void qt_interpreter_events::show_command_history (void)
+  {
+    emit show_command_history_signal ();
+  }
+
+  void qt_interpreter_events::show_workspace (void)
+  {
+    emit show_workspace_signal ();
   }
 
   bool qt_interpreter_events::edit_file (const std::string& file)
@@ -450,14 +467,14 @@ namespace octave
     emit execute_command_in_terminal_signal (QString::fromStdString (command));
   }
 
-  void qt_interpreter_events::register_doc (const std::string& file)
+  void qt_interpreter_events::register_documentation (const std::string& file)
   {
-    emit register_doc_signal (QString::fromStdString (file));
+    emit register_documentation_signal (QString::fromStdString (file));
   }
 
-  void qt_interpreter_events::unregister_doc (const std::string& file)
+  void qt_interpreter_events::unregister_documentation (const std::string& file)
   {
-    emit unregister_doc_signal (QString::fromStdString (file));
+    emit unregister_documentation_signal (QString::fromStdString (file));
   }
 
   void qt_interpreter_events::interpreter_output (const std::string& msg)

@@ -60,7 +60,6 @@
 #include "set-path-dialog.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"
-#include "workspace-model.h"
 #include "workspace-view.h"
 
 class octave_value;
@@ -84,7 +83,7 @@ namespace octave
 
     main_window (base_qobject& oct_qobj);
 
-    ~main_window (void) = default;
+    ~main_window (void);
 
     void make_dock_widget_connections (octave_dock_widget *dw);
 
@@ -308,8 +307,6 @@ namespace octave
 
     base_qobject& m_octave_qobj;
 
-    workspace_model *m_workspace_model;
-
     QHash<QMenu*, QStringList> m_hash_menu_text;
 
     QString m_default_encoding;
@@ -323,13 +320,14 @@ namespace octave
 
     //! Dock widgets.
     //!@{
-    terminal_dock_widget *m_command_window;
-    history_dock_widget *m_history_window;
-    files_dock_widget *m_file_browser_window;
-    documentation_dock_widget *m_doc_browser_window;
-    file_editor_interface *m_editor_window;
-    workspace_view *m_workspace_window;
-    variable_editor *m_variable_editor_window;
+    QPointer<terminal_dock_widget> m_command_window;
+
+    QPointer<history_dock_widget> m_history_window;
+    QPointer<files_dock_widget> m_file_browser_window;
+    QPointer<documentation_dock_widget> m_doc_browser_window;
+    QPointer<file_editor_interface> m_editor_window;
+    QPointer<workspace_view> m_workspace_window;
+    QPointer<variable_editor> m_variable_editor_window;
     //!@}
 
     external_editor_interface *m_external_editor;

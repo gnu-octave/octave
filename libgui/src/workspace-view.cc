@@ -159,6 +159,9 @@ namespace octave
 
     connect (m_view, &QTableView::activated,
              this, &workspace_view::handle_contextmenu_edit);
+
+    if (! p)
+      make_window ();
   }
 
   void workspace_view::setModel (workspace_model *model)

@@ -298,6 +298,9 @@ namespace octave
 
     m_sync_octave_dir = true;   // default, overwritten with notice_settings ()
     m_octave_dir = "";
+
+    if (! p)
+      make_window ();
   }
 
   void files_dock_widget::save_settings (void)

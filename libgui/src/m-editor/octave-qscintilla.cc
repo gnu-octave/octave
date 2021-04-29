@@ -59,6 +59,7 @@
 #include "octave-qobject.h"
 #include "octave-qscintilla.h"
 #include "shortcut-manager.h"
+#include "workspace-model.h"
 
 #include "builtin-defun-decls.h"
 #include "cmd-edit.h"

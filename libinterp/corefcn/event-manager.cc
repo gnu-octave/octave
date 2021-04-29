@@ -31,6 +31,7 @@
 
 #include "builtin-defun-decls.h"
 #include "cmd-edit.h"
+#include "cmd-hist.h"
 #include "defun.h"
 #include "event-manager.h"
 #include "interpreter.h"
@@ -593,19 +594,14 @@ Open the variable @var{name} in the graphical Variable Editor.
 
   std::string name = args(0).string_value ();
 
-  if (! (Fisguirunning ())(0).is_true ())
-    warning ("openvar: GUI is not running, can't start Variable Editor");
-  else
-    {
-      octave_value val = interp.varval (name);
+  octave_value val = interp.varval (name);
 
-      if (val.is_undefined ())
-        error ("openvar: '%s' is not a variable", name.c_str ());
+  if (val.is_undefined ())
+    error ("openvar: '%s' is not a variable", name.c_str ());
 
-      octave::event_manager& evmgr = interp.get_event_manager ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-      evmgr.edit_variable (name, val);
-    }
+  evmgr.edit_variable (name, val);
 
   return ovl ();
 }
@@ -616,9 +612,9 @@ Open the variable @var{name} in the graphical Variable Editor.
 %!error <NAME must be a string> openvar (1:10)
 */
 
-DEFMETHOD (__event_manager_show_doc__, interp, args, ,
+DEFMETHOD (__event_manager_show_documentation__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_show_doc__ (@var{filename})
+@deftypefn {} {} __event_manager_show_documentation__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -629,12 +625,12 @@ Undocumented internal function.
 
   octave::event_manager& evmgr = interp.get_event_manager ();
 
-  return ovl (evmgr.show_doc (file));
+  return ovl (evmgr.show_documentation (file));
 }
 
-DEFMETHOD (__event_manager_register_doc__, interp, args, ,
+DEFMETHOD (__event_manager_register_documentation__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_register_doc__ (@var{filename})
+@deftypefn {} {} __event_manager_register_documentation__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -645,12 +641,12 @@ Undocumented internal function.
 
   octave::event_manager& evmgr = interp.get_event_manager ();
 
-  return ovl (evmgr.register_doc (file));
+  return ovl (evmgr.register_documentation (file));
 }
 
-DEFMETHOD (__event_manager_unregister_doc__, interp, args, ,
+DEFMETHOD (__event_manager_unregister_documentation__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_unregister_doc__ (@var{filename})
+@deftypefn {} {} __event_manager_unregister_documentation__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -661,7 +657,46 @@ Undocumented internal function.
 
   octave::event_manager& evmgr = interp.get_event_manager ();
 
-  return ovl (evmgr.unregister_doc (file));
+  return ovl (evmgr.unregister_documentation (file));
+}
+
+DEFMETHOD (__event_manager_show_file_browser__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_show_file_browser__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.show_file_browser ();
+
+  return ovl ();
+}
+
+DEFMETHOD (__event_manager_show_command_history__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_show_command_history__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.show_command_history ();
+
+  return ovl ();
+}
+
+DEFMETHOD (__event_manager_show_workspace__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_show_workspace__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.show_workspace ();
+
+  return ovl ();
 }
 
 DEFMETHOD (__event_manager_gui_status_update__, interp, args, ,

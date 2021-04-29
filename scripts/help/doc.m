@@ -51,10 +51,12 @@ function retval = doc (function_name)
     ftype = 0;
   endif
 
-  ## if GUI is running, let it display the function
-  if (isguirunning ())
-    status = ! __event_manager_show_doc__ (function_name);
-  else
+  ## Give event manager the first shot.
+
+  status = ! __event_manager_show_documentation__ (function_name);
+
+  if (status)
+
     if (ftype == 2 || ftype == 3)
       ffile = which (function_name);
     else

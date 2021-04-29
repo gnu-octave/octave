@@ -148,7 +148,16 @@ namespace octave
 
     virtual void apply_preferences (void) { }
 
-    virtual void show_doc (const std::string& /*file*/) { }
+    virtual bool show_documentation (const std::string& /*file*/)
+    {
+      return false;
+    }
+
+    virtual void show_file_browser (void) { }
+
+    virtual void show_command_history (void) { }
+
+    virtual void show_workspace (void) { }
 
     virtual bool edit_file (const std::string& /*file*/) { return false; }
 
@@ -204,9 +213,9 @@ namespace octave
     virtual void
     execute_command_in_terminal (const std::string& /*command*/) { }
 
-    virtual void register_doc (const std::string& /*file*/) { }
+    virtual void register_documentation (const std::string& /*file*/) { }
 
-    virtual void unregister_doc (const std::string& /*file*/) { }
+    virtual void unregister_documentation (const std::string& /*file*/) { }
 
     virtual void interpreter_output (const std::string& /*msg*/) { }
 
@@ -432,15 +441,27 @@ namespace octave
         return false;
     }
 
-    bool show_doc (const std::string& file)
+    bool show_documentation (const std::string& file)
+    {
+      return enabled () ? instance->show_documentation (file) : false;
+    }
+
+    void show_file_browser (void)
     {
       if (enabled ())
-        {
-          instance->show_doc (file);
-          return true;
-        }
-      else
-        return false;
+        instance->show_file_browser ();
+    }
+
+    void show_command_history (void)
+    {
+      if (enabled ())
+        instance->show_command_history ();
+    }
+
+    void show_workspace (void)
+    {
+      if (enabled ())
+        instance->show_workspace ();
     }
 
     bool edit_file (const std::string& file)
@@ -512,22 +533,22 @@ namespace octave
         instance->execute_command_in_terminal (command);
     }
 
-    bool register_doc (const std::string& file)
+    bool register_documentation (const std::string& file)
     {
       if (enabled ())
         {
-          instance->register_doc (file);
+          instance->register_documentation (file);
           return true;
         }
       else
         return false;
     }
 
-    bool unregister_doc (const std::string& file)
+    bool unregister_documentation (const std::string& file)
     {
       if (enabled ())
         {
-          instance->unregister_doc (file);
+          instance->unregister_documentation (file);
           return true;
         }
       else

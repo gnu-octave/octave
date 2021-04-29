@@ -53,6 +53,9 @@ namespace octave
     setStatusTip (tr ("Browse and search the command history."));
 
     construct ();
+
+    if (! p)
+      make_window ();
   }
 
   void history_dock_widget::set_history (const QStringList& hist)

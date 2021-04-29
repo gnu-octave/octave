@@ -27,6 +27,7 @@
 #define octave_file_editor_interface_h 1
 
 #include <QMenu>
+#include <QMenuBar>
 #include <QToolBar>
 
 #include "gui-settings.h"

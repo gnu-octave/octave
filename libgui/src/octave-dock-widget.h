@@ -28,7 +28,6 @@
 
 #include <QDockWidget>
 #include <QIcon>
-#include <QMainWindow>
 #include <QMouseEvent>
 #include <QToolButton>
 
@@ -38,6 +37,7 @@
 namespace octave
 {
   class base_qobject;
+  class main_window;
 
   // The few decoration items common to both main window and variable editor.
 
@@ -48,6 +48,8 @@ namespace octave
   public:
 
     label_dock_widget (QWidget *p, base_qobject& oct_qobj);
+
+    ~label_dock_widget (void) = default;
 
     // set_title() uses the custom title bar while setWindowTitle() uses
     // the default title bar (with style sheets)
@@ -90,9 +92,11 @@ namespace octave
     octave_dock_widget (const QString& obj_name, QWidget *p,
                         base_qobject& oct_qobj);
 
-    virtual ~octave_dock_widget (void) = default;
+    ~octave_dock_widget (void) = default;
 
     void set_predecessor_widget (octave_dock_widget *prev_widget);
+
+    void set_main_window (main_window *mw);
 
   signals:
 
@@ -162,7 +166,7 @@ namespace octave
 
     //! Stores the parent, since we are reparenting to 0.
 
-    QMainWindow *m_parent;
+    main_window *m_main_window;
 
     bool m_custom_style;
     bool m_focus_follows_mouse;

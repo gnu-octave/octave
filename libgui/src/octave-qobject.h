@@ -37,7 +37,6 @@
 #include "interpreter-qobject.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
-#include "workspace-model.h"
 
 namespace octave
 {
@@ -71,6 +70,22 @@ namespace octave
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
   };
+
+  //! Container for windows that may be created from the command line or
+  //! docked with the main GUI window.  Any of these windows that are
+  //! created in command line mode will be adopted by the main window if
+  //! it is opened from the command line.  Any that are undocked from
+  //! the main window will remain open if control returns to the command
+  //! line.
+
+  class base_qobject;
+  class documentation_dock_widget;
+  class file_editor_interface;
+  class files_dock_widget;
+  class history_dock_widget;
+  class variable_editor;
+  class workspace_model;
+  class workspace_view;
 
   //! Base class for Octave interfaces that use Qt.  There are two
   //! classes derived from this one.  One provides a command-line
@@ -118,11 +133,6 @@ namespace octave
       return m_shortcut_manager;
     }
 
-    workspace_model * get_workspace_model (void)
-    {
-      return m_workspace_model;
-    }
-
     std::shared_ptr<qt_interpreter_events> get_qt_interpreter_events (void)
     {
       return m_qt_interpreter_events;
@@ -138,6 +148,32 @@ namespace octave
       return m_interpreter_qobj;
     }
 
+    workspace_model * get_workspace_model (void)
+    {
+      return m_workspace_model;
+    }
+
+    QPointer<documentation_dock_widget>
+    documentation_widget (main_window *mw = nullptr);
+
+    QPointer<files_dock_widget>
+    file_browser_widget (main_window *mw = nullptr);
+
+    QPointer<history_dock_widget>
+    history_widget (main_window *mw = nullptr);
+
+    QPointer<workspace_view>
+    workspace_widget (main_window *mw = nullptr);
+
+    // FIXME: The file_editor_interface needs to be a proper generic
+    // interface for all editors (internal and external) for this to
+    // work properly.
+    QPointer<file_editor_interface>
+    editor_widget (main_window *mw = nullptr);
+
+    QPointer<variable_editor>
+    variable_editor_widget (main_window *mw = nullptr);
+
     QThread *main_thread (void) { return m_main_thread; }
 
     // Declared virtual so that a derived class may redefine this
@@ -151,6 +187,18 @@ namespace octave
     // with the old terminal widget.
     void start_gui (bool gui_app);
     void close_gui (void);
+
+    void show_documentation_window (const QString& file);
+
+    void show_file_browser_window (void);
+
+    void show_command_history_window (void);
+
+    void show_workspace_window (void);
+
+    void edit_variable (const QString& expr, const octave_value& val);
+
+    void handle_variable_editor_update (void);
 
     void interpreter_ready (void);
 
@@ -184,8 +232,6 @@ namespace octave
 
     shortcut_manager m_shortcut_manager;
 
-    workspace_model *m_workspace_model;
-
     QTranslator *m_qt_tr;
     QTranslator *m_gui_tr;
     QTranslator *m_qsci_tr;
@@ -201,6 +247,24 @@ namespace octave
     bool m_gui_app;
 
     bool m_interpreter_ready;
+
+    workspace_model *m_workspace_model;
+
+    // Dock widgets that may be used from the command line.  They are
+    // adopted by the desktop (main window) if it is also started from
+    // the command line.
+
+    QPointer<documentation_dock_widget> m_documentation_widget;
+
+    QPointer<files_dock_widget> m_file_browser_widget;
+
+    QPointer<history_dock_widget> m_history_widget;
+
+    QPointer<workspace_view> m_workspace_widget;
+
+    QPointer<file_editor_interface> m_editor_widget;
+
+    QPointer<variable_editor> m_variable_editor_widget;
 
     main_window *m_main_window;
   };

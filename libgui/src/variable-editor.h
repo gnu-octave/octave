@@ -60,6 +60,8 @@ namespace octave
 
     variable_dock_widget (QWidget *p, base_qobject& oct_qobj);
 
+    ~variable_dock_widget (void) = default;
+
   signals:
 
     void variable_focused_signal (const QString& name);
@@ -131,6 +133,8 @@ namespace octave
 
     variable_editor_stack (QWidget *p, base_qobject& oct_qobj);
 
+    ~variable_editor_stack (void) = default;
+
     variable_editor_view *edit_view (void) {return m_edit_view;};
 
     QTextEdit *disp_view (void) {return m_disp_view;};
@@ -173,6 +177,8 @@ namespace octave
   public:
 
     variable_editor_view (QWidget *p, base_qobject& oct_qobj);
+
+    ~variable_editor_view (void) = default;
 
     void setModel (QAbstractItemModel *model);
 
@@ -232,6 +238,8 @@ namespace octave
 
     HoverToolButton (QWidget *parent = nullptr);
 
+    ~HoverToolButton (void) = default;
+
   signals:
 
     void hovered_signal (void);
@@ -251,6 +259,8 @@ namespace octave
 
     ReturnFocusToolButton (QWidget *parent = nullptr);
 
+    ~ReturnFocusToolButton (void) = default;
+
   signals:
 
     void about_to_activate (void);
@@ -267,6 +277,8 @@ namespace octave
   public:
 
     ReturnFocusMenu (QWidget *parent = nullptr);
+
+    ~ReturnFocusMenu (void) = default;
 
   signals:
 
@@ -287,7 +299,7 @@ namespace octave
 
     variable_editor (QWidget *parent, base_qobject& oct_qobj);
 
-    ~variable_editor (void) = default;
+    ~variable_editor (void);
 
     // No copying!
 

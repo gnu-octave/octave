@@ -37,6 +37,9 @@
 #include <QTimer>
 #include <QTranslator>
 
+#include "documentation-dock-widget.h"
+#include "files-dock-widget.h"
+#include "history-dock-widget.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
 #include "octave-qobject.h"
@@ -44,6 +47,9 @@
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
+#include "variable-editor.h"
+#include "workspace-model.h"
+#include "workspace-view.h"
 
 // Bug #55940 (Disable App Nap on Mac)
 #if defined (Q_OS_MAC)
@@ -162,7 +168,6 @@ namespace octave
       m_qapplication (new octave_qapplication (m_argc, m_argv)),
       m_resource_manager (),
       m_shortcut_manager (*this),
-      m_workspace_model (new workspace_model (*this)),
       m_qt_tr (new QTranslator ()),
       m_gui_tr (new QTranslator ()),
       m_qsci_tr (new QTranslator ()),
@@ -172,6 +177,13 @@ namespace octave
       m_main_thread (new QThread ()),
       m_gui_app (gui_app),
       m_interpreter_ready (false),
+      m_workspace_model (new workspace_model (*this)),
+      m_documentation_widget (),
+      m_file_browser_widget (),
+      m_history_widget (),
+      m_workspace_widget (),
+      m_editor_widget (),
+      m_variable_editor_widget (),
       m_main_window (nullptr)
   {
     std::string show_gui_msgs =
@@ -231,14 +243,29 @@ namespace octave
     connect (qt_link (), &qt_interpreter_events::copy_image_to_clipboard_signal,
              this, &base_qobject::copy_image_to_clipboard);
 
+    // Get settings file.
+    m_resource_manager.reload_settings ();
+
+    // After settings.
+    config_translators ();
+
+    connect (qt_link (), &qt_interpreter_events::show_documentation_signal,
+             this, &base_qobject::show_documentation_window);
+
+    connect (qt_link (), &qt_interpreter_events::show_file_browser_signal,
+             this, &base_qobject::show_file_browser_window);
+
+    connect (qt_link (), &qt_interpreter_events::show_command_history_signal,
+             this, &base_qobject::show_command_history_window);
+
+    connect (qt_link (), &qt_interpreter_events::show_workspace_signal,
+             this, &base_qobject::show_workspace_window);
+
+    connect (qt_link (), &qt_interpreter_events::edit_variable_signal,
+             this, &base_qobject::edit_variable);
+
     if (m_app_context.experimental_terminal_widget ())
       {
-        // Get settings file.
-        m_resource_manager.reload_settings ();
-
-        // After settings.
-        config_translators ();
-
         m_qapplication->setQuitOnLastWindowClosed (false);
       }
     else
@@ -349,6 +376,107 @@ namespace octave
     return m_app_context.gui_running ();
   }
 
+  QPointer<documentation_dock_widget>
+  base_qobject::documentation_widget (main_window *mw)
+  {
+    if (m_documentation_widget)
+      m_documentation_widget->set_main_window (mw);
+    else
+      m_documentation_widget
+        = QPointer<documentation_dock_widget> (new documentation_dock_widget (mw, *this));
+
+    connect (qt_link (), &qt_interpreter_events::register_documentation_signal,
+             m_documentation_widget, &documentation_dock_widget::registerDoc);
+
+    connect (qt_link (), &qt_interpreter_events::unregister_documentation_signal,
+             m_documentation_widget, &documentation_dock_widget::unregisterDoc);
+
+    return m_documentation_widget;
+  }
+
+  QPointer<files_dock_widget>
+  base_qobject::file_browser_widget (main_window *mw)
+  {
+    if (m_file_browser_widget)
+      m_file_browser_widget->set_main_window (mw);
+    else
+      m_file_browser_widget
+        = QPointer<files_dock_widget> (new files_dock_widget (mw, *this));
+
+    return m_file_browser_widget;
+  }
+
+  QPointer<history_dock_widget>
+  base_qobject::history_widget (main_window *mw)
+  {
+    if (m_history_widget)
+      m_history_widget->set_main_window (mw);
+    else
+      m_history_widget
+        = QPointer<history_dock_widget> (new history_dock_widget (mw, *this));
+
+    connect (qt_link (), &qt_interpreter_events::set_history_signal,
+             m_history_widget, &history_dock_widget::set_history);
+
+    connect (qt_link (), &qt_interpreter_events::append_history_signal,
+             m_history_widget, &history_dock_widget::append_history);
+
+    connect (qt_link (), &qt_interpreter_events::clear_history_signal,
+             m_history_widget, &history_dock_widget::clear_history);
+
+    qt_link()->set_history (octave::command_history::list ());
+
+    return m_history_widget;
+  }
+
+  QPointer<workspace_view>
+  base_qobject::workspace_widget (main_window *mw)
+  {
+    if (m_workspace_widget)
+      m_workspace_widget->set_main_window (mw);
+    else
+      m_workspace_widget
+        = QPointer<workspace_view> (new workspace_view (mw, *this));
+
+    m_workspace_widget->setModel (m_workspace_model);
+
+    connect (m_workspace_model, &workspace_model::model_changed,
+             m_workspace_widget, &workspace_view::handle_model_changed);
+
+    connect (qt_link (), &qt_interpreter_events::set_workspace_signal,
+             m_workspace_model, &workspace_model::set_workspace);
+
+    connect (qt_link (), &qt_interpreter_events::clear_workspace_signal,
+             m_workspace_model, &workspace_model::clear_workspace);
+
+    return m_workspace_widget;
+  }
+
+  QPointer<file_editor_interface>
+  base_qobject::editor_widget (main_window */*mw*/)
+  {
+#if 0
+    if (m_editor_widget)
+      m_editor_widget->set_main_window (mw);
+    else
+      m_editor_widget = new file_editor (mw, *this);
+#endif
+
+    return m_editor_widget;
+  }
+
+  QPointer<variable_editor>
+  base_qobject::variable_editor_widget (main_window *mw)
+  {
+    if (m_variable_editor_widget)
+      m_variable_editor_widget->set_main_window (mw);
+    else
+      m_variable_editor_widget
+        = QPointer<variable_editor> (new variable_editor (mw, *this));
+
+    return m_variable_editor_widget;
+  }
+
   bool base_qobject::confirm_shutdown (void)
   {
     // Currently, we forward to main_window::confirm_shutdown instead of
@@ -394,6 +522,96 @@ namespace octave
 
         m_app_context.gui_running (true);
       }
+  }
+
+  void base_qobject::show_documentation_window (const QString& file)
+  {
+    documentation_dock_widget *widget = documentation_widget ();
+
+    widget->showDoc (file);
+
+    if (! widget->isVisible ())
+      {
+        widget->show ();
+        widget->raise ();
+      }
+  }
+
+  void base_qobject::show_file_browser_window (void)
+  {
+    files_dock_widget *widget = file_browser_widget ();
+
+    if (! widget->isVisible ())
+      {
+        widget->show ();
+        widget->raise ();
+      }
+  }
+
+  void base_qobject::show_command_history_window (void)
+  {
+    history_dock_widget *widget = history_widget ();
+
+    if (! widget->isVisible ())
+      {
+        widget->show ();
+        widget->raise ();
+      }
+  }
+
+  void base_qobject::show_workspace_window (void)
+  {
+    workspace_view *widget = workspace_widget ();
+
+    if (! widget->isVisible ())
+      {
+        widget->show ();
+        widget->raise ();
+      }
+  }
+
+  void base_qobject::edit_variable (const QString& expr,
+                                    const octave_value& val)
+  {
+    variable_editor *widget = variable_editor_widget ();
+
+#if 0
+    // FIXME: This connection needs to be made whether running with the
+    // GUI main window or not, but only needs to be made once.
+    // Currently we have handle_variable_editor_update methods here and
+    // in the main_window object.
+
+    connect (widget, &variable_editor::updated,
+             this, &base_qobject::handle_variable_editor_update);
+#endif
+
+    widget->edit_variable (expr, val);
+
+    if (! widget->isVisible ())
+      {
+        widget->show ();
+        widget->raise ();
+      }
+  }
+
+  void base_qobject::handle_variable_editor_update (void)
+  {
+    // Called when the variable editor emits the updated signal.  The size
+    // of a variable may have changed, so we refresh the workspace in the
+    // interpreter.  That will eventually cause the workspace view in the
+    // GUI to be updated.
+
+    interpreter_event
+      ([] (interpreter& interp)
+       {
+         // INTERPRETER THREAD
+
+         tree_evaluator& tw = interp.get_evaluator ();
+
+         event_manager& xevmgr = interp.get_event_manager ();
+
+         xevmgr.set_workspace (true, tw.get_symbol_info (), false);
+       });
   }
 
   void base_qobject::close_gui (void)

@@ -1018,15 +1018,85 @@ unicode_idx ("aäbc")
       if (mblen < 1)
         mblen = 1;
       for (octave_idx_type j = 0; j < mblen; j++)
-        idx (i+j) = u8_char_num;
+        idx(i+j) = u8_char_num;
       i += mblen;
     }
 
-  return ovl(str.ndims () > 1 ? idx.permute (p, true) : idx);
+  return ovl (str.ndims () > 1 ? idx.permute (p, true) : idx);
 }
 
 /*
 %!assert (unicode_idx (["aäou"; "Ä∞"]), [1 2 2 3 4; 5 5 6 6 6])
+*/
+
+DEFUN (__unicode_length__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{len} =} __unicode_length__ (@var{str})
+Return number of Unicode code points in @var{str}.
+
+The input @var{str} must be a UTF-8 encoded character vector or cell string.
+
+@example
+@group
+length ("aäbc")
+     @result{} 5
+__unicode_length__ ("aäbc")
+     @result{} 4
+@end group
+@end example
+
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  bool arg_char = args(0).is_char_matrix ();
+
+  if (! arg_char && ! args(0).iscellstr ())
+    error ("STR must be a character array or cell string.");
+
+  octave_value_list retval;
+
+  if (arg_char)
+    {
+      charNDArray str = args(0).char_array_value ();
+      Array<octave_idx_type> p (dim_vector (str.ndims (), 1));
+      if (str.ndims () > 1)
+        {
+          for (octave_idx_type i=0; i < str.ndims (); i++)
+            p(i) = i;
+          p(0) = 1;
+          p(1) = 0;
+          str = str.permute (p);
+        }
+
+      const uint8_t *src = reinterpret_cast<const uint8_t *> (str.data ());
+      octave_idx_type mbsnlen = octave_u8_mbsnlen_wrapper (src, str.numel ());
+
+      retval = ovl (mbsnlen);
+    }
+  else
+    {
+      const Array<std::string> cellstr = args(0).cellstr_value ();
+      NDArray output (args(0).dims (), false);
+      for (octave_idx_type i = 0; i < cellstr.numel (); i++)
+        {
+          const uint8_t *src 
+            = reinterpret_cast<const uint8_t *> (cellstr(i).c_str ());
+          output(i) = octave_u8_mbsnlen_wrapper (src, cellstr(i).size ());
+        }
+
+      retval = ovl (output);
+    }
+
+  return retval;
+}
+
+/*
+%!assert (__unicode_length__ (""), 0)
+%!assert (__unicode_length__ ("aäbc"), 4)
+%!assert (__unicode_length__ (["aä"; "öo"]), 4)
+%!assert (__unicode_length__ ({"aäbc", "abc"}), [4, 3])
 */
 
 DEFUN (__u8_validate__, args, ,

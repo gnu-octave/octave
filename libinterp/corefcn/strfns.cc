@@ -881,9 +881,6 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
 @seealso{native2unicode, __unicode2native__}
 @end deftypefn */)
 {
-  if (args.length () != 2)
-    print_usage ();
-
   if (args(0).is_string ())
     return ovl (args(0));
 
@@ -904,7 +901,7 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
   if (! utf8_str)
     {
       if (errno == ENOSYS)
-        error ("native2unicode: iconv() is not supported. Installing GNU "
+        error ("native2unicode: iconv() is not supported.  Installing GNU "
                "libiconv and then re-compiling Octave could fix this.");
       else
         error ("native2unicode: converting from codepage '%s' to UTF-8: %s",
@@ -918,7 +915,7 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
   charNDArray retval (dim_vector (1, len));
 
   for (octave_idx_type i = 0; i < len; i++)
-    retval.xelem(i) = utf8_str[i];
+    retval.xelem (i) = utf8_str[i];
 
   return ovl (retval);
 }
@@ -932,9 +929,6 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
 @seealso{unicode2native, __native2unicode__}
 @end deftypefn */)
 {
-  if (args.length () != 2)
-    print_usage ();
-
   std::string tmp = args(1).string_value ();
   const char *codepage
     = (tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ());
@@ -952,7 +946,7 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
   if (! native_bytes)
     {
       if (errno == ENOSYS)
-        error ("unicode2native: iconv() is not supported. Installing GNU "
+        error ("unicode2native: iconv() is not supported.  Installing GNU "
                "libiconv and then re-compiling Octave could fix this.");
       else
         error ("unicode2native: converting from UTF-8 to codepage '%s': %s",
@@ -966,7 +960,7 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
   uint8NDArray retval (dim_vector (1, len));
 
   for (octave_idx_type i = 0; i < len; i++)
-    retval.xelem(i) = native_bytes[i];
+    retval.xelem (i) = native_bytes[i];
 
   return ovl (retval);
 }

@@ -58,17 +58,12 @@ function utf8_str = native2unicode (native_bytes, codepage = "")
     error ("native2unicode: NATIVE_BYTES must be a numeric vector");
   endif
 
-  if (! ischar (codepage))
+  if (nargin == 2 && ! (ischar (codepage) && isrow (codepage)))
     error ("native2unicode: CODEPAGE must be a string");
   endif
 
-  ## FIXME: Would it be better to do this by converting to uint8?  Or to
-  ## let __native2unicode to the clipping?  Multiple steps here means
-  ## looping through the data and allocating memory multiple times.
-
-  native_bytes = round (native_bytes);
-  native_bytes(native_bytes < 0) = 0;
-  native_bytes(native_bytes > 255) = 255;
+  ## Convert to uint8 which rounds and clips values to range [0, 255]3
+  native_bytes = uint8 (native_bytes);
 
   utf8_str = __native2unicode__ (native_bytes, codepage);
 
@@ -97,6 +92,7 @@ endfunction
 %!error <NATIVE_BYTES must be a numeric vector> native2unicode ([1 2; 3 4])
 %!error <NATIVE_BYTES must be a numeric vector> native2unicode ({1 2 3 4})
 %!error <CODEPAGE must be a string> native2unicode (164:170, 123)
+%!error <CODEPAGE must be a string> native2unicode (164:170, ['ISO-8859-1']')
 %!testif HAVE_ICONV
 %! fail ("native2unicode (234, 'foo')",
 %!       "converting from codepage 'foo' to UTF-8");

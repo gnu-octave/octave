@@ -212,25 +212,24 @@ namespace octave
              m_qapplication, &octave_qapplication::exit,
              Qt::QueuedConnection);
 
-    connect (m_main_thread, SIGNAL (finished (void)),
-             m_main_thread, SLOT (deleteLater (void)));
+    connect (m_main_thread, &QThread::finished,
+             m_main_thread, &QThread::deleteLater);
 
     // Handle any interpreter_event signal from the octave_qapplication
     // object here.
 
-    connect (m_qapplication, SIGNAL (interpreter_event (const fcn_callback&)),
-             this, SLOT (interpreter_event (const fcn_callback&)));
+    connect (m_qapplication, QOverload<const fcn_callback&>::of (&octave_qapplication::interpreter_event),
+             this, QOverload<const fcn_callback&>::of (&base_qobject::interpreter_event));
 
-    connect (m_qapplication, SIGNAL (interpreter_event (const meth_callback&)),
-             this, SLOT (interpreter_event (const meth_callback&)));
+    connect (m_qapplication, QOverload<const meth_callback&>::of (&octave_qapplication::interpreter_event),
+             this, QOverload<const meth_callback&>::of (&base_qobject::interpreter_event));
 
     if (m_app_context.experimental_terminal_widget ())
-      connect (qt_link (), SIGNAL (start_gui_signal (bool)),
-               this, SLOT (start_gui (bool)));
+      connect (qt_link (), &qt_interpreter_events::start_gui_signal,
+               this, &base_qobject::start_gui);
 
-    connect (qt_link (),
-             SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
-             this, SLOT (copy_image_to_clipboard (const QString&, bool)));
+    connect (qt_link (), &qt_interpreter_events::copy_image_to_clipboard_signal,
+             this, &base_qobject::copy_image_to_clipboard);
 
     if (m_app_context.experimental_terminal_widget ())
       {
@@ -251,12 +250,11 @@ namespace octave
             if (m_interpreter_ready)
               m_main_window->handle_octave_ready ();
             else
-              connect (m_interpreter_qobj, SIGNAL (ready ()),
-                       m_main_window, SLOT (handle_octave_ready ()));
+              connect (m_interpreter_qobj, &interpreter_qobject::ready,
+                       m_main_window, &main_window::handle_octave_ready);
 
-            connect (qt_link (),
-                     SIGNAL (focus_window_signal (const QString&)),
-                     m_main_window, SLOT (focus_window (const QString&)));
+            connect (qt_link (), &qt_interpreter_events::focus_window_signal,
+                     m_main_window, &main_window::focus_window);
 
             m_app_context.gui_running (true);
           }
@@ -371,21 +369,20 @@ namespace octave
 
         m_main_window = new main_window (*this);
 
-        connect (qt_link (),
-                 SIGNAL (focus_window_signal (const QString&)),
-                 m_main_window, SLOT (focus_window (const QString&)));
+        connect (qt_link (), &qt_interpreter_events::focus_window_signal,
+                 m_main_window, &main_window::focus_window);
 
-        connect (qt_link (), SIGNAL (close_gui_signal ()),
-                 this, SLOT (close_gui ()));
+        connect (qt_link (), &qt_interpreter_events::close_gui_signal,
+                 this, &base_qobject::close_gui);
 
-        connect (m_main_window, SIGNAL (close_gui_signal ()),
-                 this, SLOT (close_gui ()));
+        connect (m_main_window, &main_window::close_gui_signal,
+                 this, &base_qobject::close_gui);
 
         if (m_interpreter_ready)
           m_main_window->handle_octave_ready ();
         else
-          connect (m_interpreter_qobj, SIGNAL (ready ()),
-                   m_main_window, SLOT (handle_octave_ready ()));
+          connect (m_interpreter_qobj, &interpreter_qobject::ready,
+                   m_main_window, &main_window::handle_octave_ready);
 
         if (m_gui_app)
           m_qapplication->setQuitOnLastWindowClosed (true);

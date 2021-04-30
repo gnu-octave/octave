@@ -1228,8 +1228,11 @@ namespace octave
     page->setObjectName (name);
     m_main->addDockWidget (Qt::LeftDockWidgetArea, page);
 
-    connect (qApp, &QApplication::focusChanged,
-             page, &variable_dock_widget::handle_focus_change);
+    // The old-style signal/slot connection appears to be needed here to
+    // prevent a crash when closing a variable_dock_widget object.
+    connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
+             page, SLOT (handle_focus_change (QWidget*, QWidget*)));
+
     connect (page, &variable_dock_widget::destroyed,
              this, &variable_editor::variable_destroyed);
     connect (page, &variable_dock_widget::variable_focused_signal,

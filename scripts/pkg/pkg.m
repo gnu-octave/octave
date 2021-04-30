@@ -398,7 +398,7 @@ function [local_packages, global_packages] = pkg (varargin)
     global_install = (geteuid () == 0);
   endif
 
-  if (isbool (prefix))
+  if (! user_prefix)
     [prefix, archprefix] = default_prefix (global_install);
     prefix = tilde_expand (prefix);
     archprefix = tilde_expand (archprefix);

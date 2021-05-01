@@ -106,8 +106,14 @@ endfunction
 ## Edge cases
 %!assert (logspace (Inf, Inf, 3), [Inf, Inf, Inf])
 %!assert (logspace (-Inf, Inf, 3), [0, 1, Inf])
-%!assert (logspace (Inf + 1i, Inf + 1i, 3), repmat (complex (-Inf,Inf), [1, 3]))
-%!assert (logspace (-Inf + 1i, Inf + 1i, 3), [0, NaN + NaN * 1i, complex(-Inf, Inf)])
+%!testif ; ! ismac ()
+%! assert (logspace (Inf + 1i, Inf + 1i, 3), repmat (complex (-Inf,Inf), [1, 3]))
+%!testif ; ismac () <55538>
+%! assert (logspace (Inf + 1i, Inf + 1i, 3), repmat (complex (-Inf,Inf), [1, 3]))
+%!testif ; ! ismac ()
+%! assert (logspace (-Inf + 1i, Inf + 1i, 3), [0, NaN + NaN * 1i, complex(-Inf, Inf)])
+%!testif ; ismac () <55538>
+%! assert (logspace (-Inf + 1i, Inf + 1i, 3), [0, NaN + NaN * 1i, complex(-Inf, Inf)])
 %!assert (logspace (0, Inf, 3), [1, Inf, Inf])
 %!assert (logspace (0, -Inf, 3), [1, 0, 0])
 %!assert (logspace (Inf, -Inf, 3), [Inf, 1, 0])

@@ -47,8 +47,8 @@ jobs:
             libreadline-dev librsvg2-bin libsndfile1-dev libsuitesparse-dev \
             libsundials-dev libtool libxft-dev llvm-dev make openjdk-8-jdk \
             perl portaudio19-dev pstoedit qtbase5-dev qttools5-dev \
-            qttools5-dev-tools rsync tar texinfo texlive-latex-extra xvfb \
-            zlib1g-dev
+            qttools5-dev-tools rapidjson-dev rsync tar texinfo \
+            texlive-latex-extra xvfb zlib1g-dev
 
       - name: prepare ccache
         # create human readable timestamp
@@ -166,7 +166,7 @@ jobs:
           brew install arpack epstool fftw fig2dev fltk fontconfig freetype \
             gcc ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 libsndfile \
             libtool openblas pcre portaudio pstoedit qhull qrupdate \
-            qscintilla2 qt@5 readline suite-sparse sundials texinfo \
+            qscintilla2 qt@5 rapidjson readline suite-sparse sundials texinfo \
             ccache gnu-sed openjdk pkg-config \
             automake autoconf bison gettext icoutils librsvg mactex-no-gui
             eval "$(/usr/libexec/path_helper)"

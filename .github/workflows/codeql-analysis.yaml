@@ -36,7 +36,7 @@ jobs:
             libreadline-dev librsvg2-bin libsndfile1-dev libsuitesparse-dev \
             libsundials-dev libtool libxft-dev llvm-dev make openjdk-8-jdk \
             perl portaudio19-dev pstoedit qtbase5-dev qttools5-dev \
-            qttools5-dev-tools rsync tar zlib1g-dev
+            qttools5-dev-tools rapidjson-dev rsync tar zlib1g-dev
 
       - name: bootstrap
         run: ./bootstrap

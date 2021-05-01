@@ -1,0 +1,66 @@
+name: "CodeQL"
+
+on:
+  schedule:
+    # Run job every Monday and Thursday at 16:30 UTC
+    - cron: '30 16 * * 1,4'
+
+jobs:
+  analyze:
+    name: CodeQL analysis
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Override automatic language detection by changing the below list
+        # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
+        language: ['cpp']
+        # Learn more...
+        # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: install dependencies
+        run: |
+          sudo apt -qq update
+          sudo apt install -y autoconf automake bison dvipng epstool fig2dev \
+            flex g++ gcc gfortran gnuplot-x11 gperf gzip icoutils \
+            libarpack2-dev libblas-dev libcurl4-gnutls-dev libfftw3-dev \
+            libfltk1.3-dev libfontconfig1-dev libfreetype6-dev \
+            libgl1-mesa-dev libgl2ps-dev libglpk-dev libgraphicsmagick++1-dev \
+            libhdf5-dev liblapack-dev libosmesa6-dev libpcre3-dev \
+            libqhull-dev libqscintilla2-qt5-dev libqrupdate-dev \
+            libreadline-dev librsvg2-bin libsndfile1-dev libsuitesparse-dev \
+            libsundials-dev libtool libxft-dev llvm-dev make openjdk-8-jdk \
+            perl portaudio19-dev pstoedit qtbase5-dev qttools5-dev \
+            qttools5-dev-tools rsync tar zlib1g-dev
+
+      - name: bootstrap
+        run: ./bootstrap
+
+      - name: configure
+        run: |
+          mkdir .build
+          cd .build && ../configure \
+            CPPFLAGS="-I/usr/include/hdf5/serial -I/usr/include/suitesparse" \
+            LDFLAGS="-L/usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/hdf5/serial" \
+            --disable-docs
+
+      - name: initialize CodeQL
+        # Initialize the CodeQL tools for scanning.
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+          # If you wish to specify custom queries, you can do so here or in a config file.
+          # By default, queries listed here will override any specified in a config file. 
+          # Prefix the list here with "+" to use these queries and those in the config file.
+          # queries: ./path/to/local/query, your-org/your-repo/queries@main
+
+      - name: build
+        run: make -C ./.build all -j2 V=1
+
+      - name: perform CodeQL analysis
+        uses: github/codeql-action/analyze@v1

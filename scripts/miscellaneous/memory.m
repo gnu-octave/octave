@@ -131,7 +131,7 @@
 
 function [userdata, systemdata] = memory ()
 
-  if (! isunix () && ! ispc ())
+  if ((! isunix () || ismac ()) && ! ispc ())
     if (nargout > 0)
       error ("memory: function not yet implemented for this architecture");
     else
@@ -143,7 +143,7 @@ function [userdata, systemdata] = memory ()
   kiB = 1024;
   [architecture, bits] = computer ();
 
-  if (isunix ())
+  if (isunix () && ! ismac ())
     ## Read values from pseudofiles
     [status, meminfo] = lmemory ();
 
@@ -259,14 +259,14 @@ function [status, meminfo] = lmemory ()
 endfunction
 
 
-%!testif ; isunix () || ispc ()
+%!testif ; (isunix () && ! ismac ()) || ispc ()
 %! [user, syst] = memory ();
 %! assert (user.mem_used_octave > 0);
 %! assert (user.ram_used_octave <= user.mem_used_octave);
 %! assert (user.mem_used_octave < syst.SystemMemory.Total);
 %! assert (user.MemAvailableAllArrays <= syst.SystemMemory.Available);
 
-%!testif ; ! isunix () && ! ispc ()
+%!testif ; (! isunix () || ismac ()) && ! ispc ()
 %! fail ("[user] = memory ()",
 %!       "function not yet implemented for this architecture");
 %! fail ("memory ()", "warning",

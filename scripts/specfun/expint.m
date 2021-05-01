@@ -254,7 +254,7 @@ endfunction
 %!         9.018757389858152e-22 - 1.475771020004195e-21i, -4*eps);
 
 %!test <*47738>
-%! assert (expint (10i), 0.0454564330044554 + 0.0875512674239774i, -4*eps);
+%! assert (expint (10i), 0.0454564330044554 + 0.0875512674239774i, -5*eps);
 
 ## Test preservation or conversion of the class
 %!assert (class (expint (single (1))), "single")

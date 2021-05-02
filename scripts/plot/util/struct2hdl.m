@@ -275,10 +275,10 @@ function [h, sout] = createaxes (s, p, par)
       plty = s.properties.__plotyy_axes__;
       addproperty ("__plotyy_axes__", h, "data");
       tmp = [p [s.handle; h]];
-      tst = ismember (tmp(1:2:end), plty);
+      tst = ismember (tmp(1,:), plty);
       if (sum (tst) == numel (plty))
         for ii = 1:numel (plty)
-          plty(ii) = tmp(find (tmp == plty(ii)) + 1);
+          plty(ii) = tmp(2, find (tmp(1,:) == plty(ii)));
         endfor
         for ii = 1:numel (plty)
           set (plty(ii), "__plotyy_axes__", plty);

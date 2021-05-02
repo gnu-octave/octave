@@ -1,5 +1,6 @@
 name: make
 on: [push]
+concurrency: ci-${{ github.ref }}
 
 jobs:
 

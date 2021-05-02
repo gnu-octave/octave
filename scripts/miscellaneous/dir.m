@@ -257,7 +257,7 @@ endfunction
 %!   endif
 %! end_unwind_protect
 
-%!testif ; isunix () <*57666>
+%!test <*57666>
 %! orig_dir = pwd ();
 %! tmp_dir = tempname ();
 %! unwind_protect

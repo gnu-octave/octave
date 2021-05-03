@@ -82,9 +82,9 @@
 #include "shared-fcns.h"
 
 #if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
-static bool fork_and_exec = false;
-#else
 static bool fork_and_exec = true;
+#else
+static bool fork_and_exec = false;
 #endif
 
 // If we fork and exec, we'll need the following signal handling code to

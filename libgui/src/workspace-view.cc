@@ -159,13 +159,6 @@ namespace octave
 
     connect (m_view, &QTableView::activated,
              this, &workspace_view::handle_contextmenu_edit);
-
-    connect (this, SIGNAL (command_requested (const QString&)),
-             p, SLOT (execute_command_in_terminal (const QString&)));
-
-    connect (this,
-             SIGNAL (edit_variable_signal (const QString&, const octave_value&)),
-             p, SLOT (edit_variable (const QString&, const octave_value&)));
   }
 
   void workspace_view::setModel (workspace_model *model)

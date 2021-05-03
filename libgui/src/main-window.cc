@@ -217,6 +217,12 @@ namespace octave
 
     m_workspace_window = new workspace_view (this, m_octave_qobj);
 
+    connect (m_workspace_window, &workspace_view::command_requested,
+             this, &main_window::execute_command_in_terminal);
+
+    connect (m_workspace_window, &workspace_view::edit_variable_signal,
+             this, &main_window::edit_variable);
+
     m_previous_dock = m_command_window;
 
     // Set active editor depending on editor window.  If the latter is

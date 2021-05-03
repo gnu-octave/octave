@@ -1362,18 +1362,25 @@ namespace octave
   void
   variable_editor::tab_to_front (void)
   {
-    if (parent () != nullptr)
+    QWidget *parent = parentWidget ();
+
+    if (parent)
       {
-        QList<QTabBar *> barlist = main_win ()->findChildren<QTabBar *> ();
+        QList<QTabBar *> barlist = parent->findChildren<QTabBar *> ();
+
         QVariant this_value (reinterpret_cast<quintptr> (this));
 
         for (auto *tbar : barlist)
-          for (int i = 0; i < tbar->count (); i++)
-            if (tbar->tabData (i) == this_value)
+          {
+            for (int i = 0; i < tbar->count (); i++)
               {
-                tbar->setCurrentIndex (i);
-                return;
+                if (tbar->tabData (i) == this_value)
+                  {
+                    tbar->setCurrentIndex (i);
+                    return;
+                  }
               }
+          }
       }
   }
 

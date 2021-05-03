@@ -130,8 +130,6 @@ namespace octave
 
     void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
 
-    QMainWindow * main_win (void) { return m_parent; }
-
     void save_settings (void);
 
     void moveEvent (QMoveEvent *event);
@@ -179,7 +177,6 @@ namespace octave
     QRect m_recent_float_geom;
     QRect m_recent_dock_geom;
     bool m_waiting_for_mouse_button_release;
-
   };
 }
 

@@ -178,11 +178,26 @@ namespace octave
     m_status_bar->addPermanentWidget (m_profiler_status_indicator);
 
     m_command_window = new terminal_dock_widget (this, m_octave_qobj);
+
     m_history_window = new history_dock_widget (this, m_octave_qobj);
+
     m_file_browser_window = new files_dock_widget (this, m_octave_qobj);
+    connect (m_file_browser_window, &files_dock_widget::open_file,
+             this, QOverload<const QString&>::of (&main_window::open_file_signal));
+    connect (m_file_browser_window,
+             &files_dock_widget::displayed_directory_changed,
+             this, &main_window::set_current_working_directory);
+    connect (m_file_browser_window, &files_dock_widget::modify_path_signal,
+             this, &main_window::modify_path);
+    connect (m_file_browser_window, &files_dock_widget::run_file_signal,
+             this, &main_window::run_file_in_terminal);
+
     m_doc_browser_window = new documentation_dock_widget (this, m_octave_qobj);
+
     m_editor_window = create_default_editor (this, m_octave_qobj);
+
     m_variable_editor_window = new variable_editor (this, m_octave_qobj);
+
     m_workspace_window = new workspace_view (this, m_octave_qobj);
 
     m_previous_dock = m_command_window;

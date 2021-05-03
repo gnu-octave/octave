@@ -168,6 +168,15 @@ namespace octave
 
     m_history_window = new history_dock_widget (this, m_octave_qobj);
 
+    connect (m_history_window, &history_dock_widget::command_create_script,
+             this, &main_window::new_file_signal);
+
+    connect (m_history_window, &history_dock_widget::information,
+             this, &main_window::report_status_message);
+
+    connect (m_history_window, &history_dock_widget::command_double_clicked,
+             this, &main_window::execute_command_in_terminal);
+
     m_file_browser_window = new files_dock_widget (this, m_octave_qobj);
     connect (m_file_browser_window, &files_dock_widget::open_file,
              this, QOverload<const QString&>::of (&main_window::open_file_signal));

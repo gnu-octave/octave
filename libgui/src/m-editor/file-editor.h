@@ -177,6 +177,13 @@ namespace octave
     void enter_debug_mode_signal (void);
     void exit_debug_mode_signal (void);
 
+    void update_gui_lexer_signal (bool);
+    void execute_command_in_terminal_signal (const QString&);
+    void focus_console_after_command_signal (void);
+    void run_file_signal (const QFileInfo&);
+    void edit_mfile_request (const QString&, const QString&, const QString&, int);
+    void debug_quit_signal (void);
+
   public slots:
 
     void activate (void);

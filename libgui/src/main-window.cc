@@ -95,19 +95,6 @@
 
 namespace octave
 {
-  static file_editor_interface *
-  create_default_editor (QWidget *p, base_qobject& oct_qobj)
-  {
-#if defined (HAVE_QSCINTILLA)
-    return new file_editor (p, oct_qobj);
-#else
-    octave_unused_parameter (p);
-    octave_unused_parameter (oct_qobj);
-
-    return 0;
-#endif
-  }
-
   main_window::main_window (base_qobject& oct_qobj)
     : QMainWindow (), m_octave_qobj (oct_qobj),
       m_workspace_model (nullptr),
@@ -194,7 +181,37 @@ namespace octave
 
     m_doc_browser_window = new documentation_dock_widget (this, m_octave_qobj);
 
-    m_editor_window = create_default_editor (this, m_octave_qobj);
+#if defined (HAVE_QSCINTILLA)
+    file_editor *editor = new file_editor (this, m_octave_qobj);
+
+    connect (editor, &file_editor::request_settings_dialog,
+             this, QOverload<const QString&>::of (&main_window::process_settings_dialog_request));
+
+    connect (editor, &file_editor::request_dbcont_signal,
+             this, &main_window::debug_continue);
+
+    connect (this, &main_window::update_gui_lexer_signal,
+             editor, &file_editor::update_gui_lexer_signal);
+
+    connect (editor, &file_editor::execute_command_in_terminal_signal,
+             this, &main_window::execute_command_in_terminal);
+
+    connect (editor, &file_editor::focus_console_after_command_signal,
+             this, &main_window::focus_console_after_command);
+
+    connect (editor, &file_editor::run_file_signal,
+             this, &main_window::run_file_in_terminal);
+
+    connect (editor, &file_editor::edit_mfile_request,
+             this, &main_window::handle_edit_mfile_request);
+
+    connect (editor, &file_editor::debug_quit_signal,
+             this, &main_window::debug_quit);
+
+    m_editor_window = editor;
+#else
+    m_editor_window = nullptr;
+#endif
 
     m_variable_editor_window = new variable_editor (this, m_octave_qobj);
 

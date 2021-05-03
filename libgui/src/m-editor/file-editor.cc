@@ -72,6 +72,7 @@ namespace octave
   {
     tab_bar *bar = new tab_bar (this);
 
+    // FIXME: Making a connection to a grandparent object seems bad.
     connect (bar, SIGNAL (close_current_tab_signal (bool)),
              p->parent (), SLOT (request_close_file (bool)));
 
@@ -273,28 +274,33 @@ namespace octave
     if (startup && ! isFloating ())
       {
         // check if editor is really visible or hidden between tabbed widgets
-        QList<QTabBar *> tab_list = main_win ()->findChildren<QTabBar *>();
+        QWidget *parent = parentWidget ();
 
-        bool in_tab = false;
-        int i = 0;
-        while ((i < tab_list.count ()) && (! in_tab))
+        if (parent)
           {
-            QTabBar *tab = tab_list.at (i);
-            i++;
+            QList<QTabBar *> tab_list = parent->findChildren<QTabBar *>();
 
-            int j = 0;
-            while ((j < tab->count ()) && (! in_tab))
+            bool in_tab = false;
+            int i = 0;
+            while ((i < tab_list.count ()) && (! in_tab))
               {
-                // check all tabs for the editor
-                if (tab->tabText (j) == windowTitle ())
+                QTabBar *tab = tab_list.at (i);
+                i++;
+
+                int j = 0;
+                while ((j < tab->count ()) && (! in_tab))
                   {
-                    // editor is in this tab widget
-                    in_tab = true;
-                    int top = tab->currentIndex ();
-                    if (! (top > -1 && tab->tabText (top) == windowTitle ()))
-                      return; // not current tab -> not visible
+                    // check all tabs for the editor
+                    if (tab->tabText (j) == windowTitle ())
+                      {
+                        // editor is in this tab widget
+                        in_tab = true;
+                        int top = tab->currentIndex ();
+                        if (! (top > -1 && tab->tabText (top) == windowTitle ()))
+                          return; // not current tab -> not visible
+                      }
+                    j++;
                   }
-                j++;
               }
           }
       }
@@ -867,7 +873,7 @@ namespace octave
     if (isFloating ())
       m_find_dialog = new find_dialog (m_octave_qobj, this, this);
     else
-      m_find_dialog = new find_dialog (m_octave_qobj, this, main_win ());
+      m_find_dialog = new find_dialog (m_octave_qobj, this, parentWidget ());
 
     // Add required actions
     m_find_dialog->addAction (m_find_next_action);
@@ -888,8 +894,14 @@ namespace octave
     if (! isFloating ())
       {
         // Fix position if editor is docked
-        xp = xp + main_win ()->x();
-        yp = yp + main_win ()->y();
+
+        QWidget *parent = parentWidget ();
+
+        if  (parent)
+          {
+            xp = xp + parent->x ();
+            yp = yp + parent->y ();
+          }
       }
 
     if (yp < 0)
@@ -1828,15 +1840,22 @@ namespace octave
 
   bool file_editor::is_editor_console_tabbed (void)
   {
-    main_window *w = static_cast<main_window *>(main_win ());
-    QList<QDockWidget *> w_list = w->tabifiedDockWidgets (this);
-    QDockWidget *console =
-      static_cast<QDockWidget *> (w->get_dock_widget_list ().at (0));
+    // FIXME: is there a way to do this job that doesn't require casting
+    // the parent to a main_window object?
 
-    for (int i = 0; i < w_list.count (); i++)
+    main_window *w = dynamic_cast<main_window *> (parentWidget ());
+
+    if (w)
       {
-        if (w_list.at (i) == console)
-          return true;
+        QList<QDockWidget *> w_list = w->tabifiedDockWidgets (this);
+        QDockWidget *console =
+          static_cast<QDockWidget *> (w->get_dock_widget_list ().at (0));
+
+        for (int i = 0; i < w_list.count (); i++)
+          {
+            if (w_list.at (i) == console)
+              return true;
+          }
       }
 
     return false;
@@ -2314,12 +2333,6 @@ namespace octave
                 SLOT (copy_full_file_path (bool)), this);
 
     // signals
-    connect (this, SIGNAL (request_settings_dialog (const QString&)),
-             main_win (), SLOT (process_settings_dialog_request (const QString&)));
-
-    connect (this, SIGNAL (request_dbcont_signal (void)),
-             main_win (), SLOT (debug_continue (void)));
-
     connect (m_mru_file_menu, &QMenu::triggered,
              this, &file_editor::request_mru_open_file);
 
@@ -2381,18 +2394,8 @@ namespace octave
     connect (f->qsci_edit_area (), &octave_qscintilla::status_update,
              this, &file_editor::edit_status_update);
 
-    connect (f->qsci_edit_area (), SIGNAL (show_doc_signal (const QString&)),
-             main_win (), SLOT (handle_show_doc (const QString&)));
-
     connect (f->qsci_edit_area (), &octave_qscintilla::create_context_menu_signal,
              this, &file_editor::create_context_menu);
-
-    connect (f->qsci_edit_area (), SIGNAL (execute_command_in_terminal_signal (const QString&)),
-             main_win (), SLOT (execute_command_in_terminal (const QString&)));
-
-    connect (f->qsci_edit_area (),
-             SIGNAL (focus_console_after_command_signal (void)),
-             main_win (), SLOT (focus_console_after_command (void)));
 
     connect (f->qsci_edit_area (), &octave_qscintilla::SCN_AUTOCCOMPLETED,
              this, &file_editor::reset_focus);
@@ -2426,17 +2429,8 @@ namespace octave
     connect (f, &file_editor_tab::mru_add_file,
              this, &file_editor::handle_mru_add_file);
 
-    connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
-             main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));
-
     connect (f, &file_editor_tab::request_open_file,
              this, [=] (const QString& fname, const QString& encoding) { request_open_file (fname, encoding); });
-
-    connect (f, SIGNAL (edit_mfile_request (const QString&, const QString&,
-                                            const QString&, int)),
-             main_win (), SLOT (handle_edit_mfile_request (const QString&,
-                                                           const QString&,
-                                                           const QString&, int)));
 
     connect (f, &file_editor_tab::edit_area_changed,
              this, &file_editor::edit_area_changed);
@@ -2451,12 +2445,8 @@ namespace octave
     connect (this, &file_editor::fetab_change_request,
              f, &file_editor_tab::change_editor_state);
 
-    connect (this, SIGNAL (fetab_save_file (const QWidget*, const QString&,
-                                            bool)),
-             f, SLOT (save_file (const QWidget*, const QString&, bool)));
-
-    connect (main_win (), SIGNAL (update_gui_lexer_signal (bool)),
-             f, SLOT (update_lexer_settings (bool)));
+    connect (this, QOverload<const QWidget*, const QString&, bool>::of (&file_editor::fetab_save_file),
+             f, QOverload<const QWidget*, const QString&, bool>::of (&file_editor_tab::save_file));
 
     // Signals from the file_editor trivial operations
     connect (this, &file_editor::fetab_recover_from_exit,
@@ -2478,11 +2468,11 @@ namespace octave
     connect (this, &file_editor::fetab_context_edit,
              f, &file_editor_tab::context_edit);
 
-    connect (this, SIGNAL (fetab_save_file (const QWidget*)),
-             f, SLOT (save_file (const QWidget*)));
+    connect (this, QOverload<const QWidget*>::of (&file_editor::fetab_save_file),
+             f, QOverload<const QWidget*>::of (&file_editor_tab::save_file));
 
-    connect (this, SIGNAL (fetab_save_file_as (const QWidget*)),
-             f, SLOT (save_file_as (const QWidget*)));
+    connect (this, &file_editor::fetab_save_file_as,
+             f, QOverload<const QWidget *>::of (&file_editor_tab::save_file_as));
 
     connect (this, &file_editor::fetab_print_file,
              f, &file_editor_tab::print_file);
@@ -2556,11 +2546,34 @@ namespace octave
     connect (this, &file_editor::fetab_delete_debugger_pointer,
              f, &file_editor_tab::delete_debugger_pointer);
 
-    connect (f, SIGNAL (debug_quit_signal (void)),
-             main_win (), SLOT (debug_quit (void)));
-
     connect (this, &file_editor::fetab_do_breakpoint_marker,
              f, &file_editor_tab::do_breakpoint_marker);
+
+    connect (this, &file_editor::update_gui_lexer_signal,
+             f, &file_editor_tab::update_lexer_settings);
+
+    // FIXME: What was the intent here?  The
+    // main_window::handle_show_doc slot no longer exists.
+    //
+    // connect (f->qsci_edit_area (), SIGNAL (show_doc_signal (const QString&)),
+    //          main_win (), SLOT (handle_show_doc (const QString&)));
+
+    // Convert other signals from the edit area and tab to editor signals.
+
+    connect (f->qsci_edit_area (), &octave_qscintilla::execute_command_in_terminal_signal,
+             this, &file_editor::execute_command_in_terminal_signal);
+
+    connect (f->qsci_edit_area (), &octave_qscintilla::focus_console_after_command_signal,
+             this, &file_editor::focus_console_after_command_signal);
+
+    connect (f, &file_editor_tab::run_file_signal,
+             this, &file_editor::run_file_signal);
+
+    connect (f, &file_editor_tab::edit_mfile_request,
+             this, &file_editor::edit_mfile_request);
+
+    connect (f, &file_editor_tab::debug_quit_signal,
+             this, &file_editor::debug_quit_signal);
 
     // Any interpreter_event signal from a file_editor_tab_widget is
     // handled the same as for the parent main_window object.

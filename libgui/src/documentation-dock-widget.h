@@ -52,8 +52,6 @@ namespace octave
     void notice_settings (const gui_settings *settings);
     void save_settings (void);
 
-  protected slots:
-
     void copyClipboard (void);
     void pasteClipboard (void);
     void selectAll (void);

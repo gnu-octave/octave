@@ -1639,22 +1639,6 @@ namespace octave
       emit selectAll_signal ();
   }
 
-  void main_window::handle_show_doc (const QString& file)
-  {
-    m_doc_browser_window->setVisible (true);
-    emit show_doc_signal (file);
-  }
-
-  void main_window::handle_register_doc (const QString& file)
-  {
-    emit register_doc_signal (file);
-  }
-
-  void main_window::handle_unregister_doc (const QString& file)
-  {
-    emit unregister_doc_signal (file);
-  }
-
   void main_window::handle_gui_status_update (const QString& feature,
                                               const QString& status)
   {
@@ -2232,13 +2216,13 @@ namespace octave
              this, &main_window::handle_update_breakpoint_marker_request);
 
     connect (qt_link, &qt_interpreter_events::show_doc_signal,
-             this, &main_window::handle_show_doc);
+             m_doc_browser_window, &documentation_dock_widget::showDoc);
 
     connect (qt_link, &qt_interpreter_events::register_doc_signal,
-             this, &main_window::handle_register_doc);
+             m_doc_browser_window, &documentation_dock_widget::registerDoc);
 
     connect (qt_link, &qt_interpreter_events::unregister_doc_signal,
-             this, &main_window::handle_unregister_doc);
+             m_doc_browser_window, &documentation_dock_widget::unregisterDoc);
 
     connect (qt_link, &qt_interpreter_events::gui_status_update_signal,
              this, &main_window::handle_gui_status_update);

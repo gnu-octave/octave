@@ -109,9 +109,6 @@ namespace octave
     void open_file_signal (const QString& file, const QString& enc, int line);
     void step_into_file_signal (void);
 
-    void show_doc_signal (const QString&);
-    void register_doc_signal (const QString&);
-    void unregister_doc_signal (const QString&);
     void update_gui_lexer_signal (bool);
 
     void insert_debugger_pointer_signal (const QString& file, int line);
@@ -213,9 +210,6 @@ namespace octave
     void handle_gui_status_update (const QString& feature, const QString& status);
 
     void focus_console_after_command (void);
-    void handle_show_doc (const QString& file);
-    void handle_register_doc (const QString& file);
-    void handle_unregister_doc (const QString& file);
 
     void profiler_session (void);
     void profiler_session_resume (void);

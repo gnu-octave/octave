@@ -43,15 +43,6 @@ namespace octave
     setStatusTip (tr ("See the documentation for help."));
 
     setWidget (m_docs);
-
-    connect (p, SIGNAL (show_doc_signal (const QString&)),
-             this, SLOT (showDoc (const QString&)));
-
-    connect (p, SIGNAL (register_doc_signal (const QString&)),
-             this, SLOT (registerDoc (const QString&)));
-
-    connect (p, SIGNAL (unregister_doc_signal (const QString&)),
-             this, SLOT (unregisterDoc (const QString&)));
   }
 
   void documentation_dock_widget::notice_settings (const gui_settings *settings)

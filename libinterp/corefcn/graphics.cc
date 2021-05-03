@@ -13004,7 +13004,7 @@ being @qcode{"portrait"}.
                 }
             }
           else
-            error ("set: unknown property");
+            error (R"(set: unknown property "%s")", property.c_str ());
         }
       else if (nargin == 1)
         {

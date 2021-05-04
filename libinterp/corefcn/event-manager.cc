@@ -64,9 +64,9 @@ namespace octave
   }
 
   event_manager::event_manager (interpreter& interp)
-    : m_interpreter (interp), instance (nullptr),
+    : m_interpreter (interp), instance (new interpreter_events ()),
       event_queue_mutex (new mutex ()), gui_event_queue (),
-      debugging (false), link_enabled (false)
+      debugging (false), link_enabled (true)
   {
     push_event_queue ();
     command_editor::add_event_hook (readline_event_hook);

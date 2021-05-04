@@ -64,7 +64,11 @@ namespace octave
     setWidget (m_terminal);
     setFocusProxy (m_terminal);
 
-    connect (p, SIGNAL (settings_changed (const gui_settings *)),
+    // FIXME: The new terminal needs to be a more specific type than
+    // QWidget for this to work properly and to be able to use the new
+    // signal/slot connection style.  Probably the new terminal widget
+    // should be derived from QTerminal.
+    connect (this, SIGNAL (settings_changed (const gui_settings *)),
              m_terminal, SLOT (notice_settings (const gui_settings *)));
 
     if (m_experimental_terminal_widget)
@@ -80,6 +84,11 @@ namespace octave
       }
     else
       {
+        // FIXME: As with the settings_changed signal above, the
+        // following connections won't work with the new signal/slot
+        // connection style because m_terminal is a pointer to QWidget
+        // instead of QTerminal.
+
         // Connect the interrupt signal (emitted by Ctrl-C)
         connect (m_terminal, SIGNAL (interrupt_signal (void)),
                  &oct_qobj, SLOT (interpreter_interrupt (void)));
@@ -123,6 +132,11 @@ namespace octave
   {
     QWidget *w = widget ();
     return w->hasFocus ();
+  }
+
+  void terminal_dock_widget::notice_settings (const gui_settings *settings)
+  {
+    emit settings_changed (settings);
   }
 
   void terminal_dock_widget::interpreter_output (const QString& msg)

@@ -48,6 +48,8 @@ namespace octave
 
   signals:
 
+    void settings_changed (const gui_settings *settings);
+
     // Note: UPDATE_PROMPT_SIGNAL and INTERPRETER_OUTPUT_SIGNAL are
     // currently only used by the new experimental terminal widget.
 
@@ -56,6 +58,8 @@ namespace octave
     void interpreter_output_signal (const QString&);
 
   public slots:
+
+    void notice_settings (const gui_settings *settings);
 
     // Note: INTERPRETER_OUTPUT and UPDATE_PROMPT are currently only
     // used by the new experimental terminal widget.

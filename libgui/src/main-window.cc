@@ -166,6 +166,9 @@ namespace octave
 
     m_command_window = new terminal_dock_widget (this, m_octave_qobj);
 
+    connect (this, &main_window::settings_changed,
+             m_command_window, &terminal_dock_widget::notice_settings);
+
     m_history_window = new history_dock_widget (this, m_octave_qobj);
 
     connect (m_history_window, &history_dock_widget::command_create_script,

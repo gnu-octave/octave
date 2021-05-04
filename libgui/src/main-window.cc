@@ -224,6 +224,9 @@ namespace octave
 
     m_variable_editor_window = new variable_editor (this, m_octave_qobj);
 
+    connect (m_variable_editor_window, &variable_editor::command_signal,
+             this, &main_window::execute_command_in_terminal);
+
     m_workspace_window = new workspace_view (this, m_octave_qobj);
 
     connect (m_workspace_window, &workspace_view::command_requested,

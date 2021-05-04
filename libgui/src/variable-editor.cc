@@ -101,8 +101,6 @@ namespace octave
              this, &variable_dock_widget::change_existence);
     connect (this, &variable_dock_widget::topLevelChanged,
              this, &variable_dock_widget::toplevel_change);
-    connect (p, SIGNAL (visibilityChanged (bool)),
-             this, SLOT (setVisible (bool)));
 
 #define DOCKED_FULLSCREEN_BUTTON_TOOLTIP "Fullscreen undock"
 #define UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP "Fullscreen"
@@ -1149,9 +1147,6 @@ namespace octave
     m_main->setCentralWidget (central_mdiarea);
 
     setWidget (m_main);
-
-    connect (this, SIGNAL (command_signal (const QString&)),
-             p, SLOT (execute_command_in_terminal (const QString&)));
   }
 
   void variable_editor::focusInEvent (QFocusEvent *ev)
@@ -1232,6 +1227,9 @@ namespace octave
     // prevent a crash when closing a variable_dock_widget object.
     connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
              page, SLOT (handle_focus_change (QWidget*, QWidget*)));
+
+    connect (this, &variable_editor::visibilityChanged,
+             page, &variable_dock_widget::setVisible);
 
     connect (page, &variable_dock_widget::destroyed,
              this, &variable_editor::variable_destroyed);

@@ -166,7 +166,7 @@ octave_cell::subsref (const std::string& type,
     case '{':
       {
         if (idx.front ().empty ())
-          error ("invalid empty index expression");
+          error ("invalid empty index expression {}, use {:} instead");
 
         octave_value tmp = do_index_op (idx.front ());
 

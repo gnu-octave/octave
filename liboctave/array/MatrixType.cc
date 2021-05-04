@@ -116,8 +116,8 @@ matrix_real_probe (const MArray<T>& a)
         {
           for (octave_idx_type i = 0; i < j; i++)
             {
-              double aij = a.elem (i,j);
-              double aji = a.elem (j,i);
+              T aij = a.elem (i,j);
+              T aji = a.elem (j,i);
               lower = lower && (aij == zero);
               upper = upper && (aji == zero);
               hermitian = hermitian && (aij == aji

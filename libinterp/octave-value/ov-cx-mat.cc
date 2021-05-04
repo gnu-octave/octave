@@ -516,7 +516,7 @@ octave_complex_matrix::load_binary (std::istream& is, bool swap,
         return false;
       ComplexMatrix m (nr, nc);
       Complex *im = m.fortran_vec ();
-      octave_idx_type len = nr * nc;
+      octave_idx_type len = static_cast<octave_idx_type> (nr) * nc;
       read_doubles (is, reinterpret_cast<double *> (im),
                     static_cast<save_type> (tmp), 2*len, swap, fmt);
 

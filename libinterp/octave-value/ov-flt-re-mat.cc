@@ -556,7 +556,7 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
         return false;
       FloatMatrix m (nr, nc);
       float *re = m.fortran_vec ();
-      octave_idx_type len = nr * nc;
+      octave_idx_type len = static_cast<octave_idx_type> (nr) * nc;
       read_floats (is, re, static_cast<save_type> (tmp), len, swap, fmt);
 
       if (! is)

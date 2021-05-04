@@ -430,7 +430,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       int32_t imag = (tc.iscomplex () ? 1 : 0);
       os.write (reinterpret_cast<char *> (&imag), 4);
 
-      len = nr * nc;
+      len = static_cast<octave_idx_type> (nr) * nc;
     }
 
   // LEN includes the terminating character, and the file is also

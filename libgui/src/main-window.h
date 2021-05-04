@@ -86,6 +86,8 @@ namespace octave
 
     ~main_window (void) = default;
 
+    void make_dock_widget_connections (octave_dock_widget *dw);
+
     bool command_window_has_focus (void) const;
 
     void focus_command_window (void);

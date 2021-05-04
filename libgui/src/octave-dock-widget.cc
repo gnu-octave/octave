@@ -197,17 +197,6 @@ namespace octave
     connect (this, &octave_dock_widget::visibilityChanged,
              this, &octave_dock_widget::handle_visibility);
 
-    connect (p, SIGNAL (init_window_menu (void)),
-             this, SLOT (init_window_menu_entry (void)));
-
-    connect (p, SIGNAL (settings_changed (const gui_settings *)),
-             this, SLOT (handle_settings (const gui_settings *)));
-
-    connect (p, SIGNAL (active_dock_changed (octave_dock_widget*,
-                                             octave_dock_widget*)),
-             this, SLOT (handle_active_dock_changed (octave_dock_widget*,
-                                                     octave_dock_widget*)));
-
     if (m_default_float_button != nullptr)
       {
         disconnect (m_default_float_button, 0, 0, 0);
@@ -232,14 +221,11 @@ namespace octave
     connect (m_close_action, &QAction::triggered,
              this, &octave_dock_widget::change_visibility);
 
-    // Any interpreter_event signal from an octave_dock_widget object is
-    // handled the same as for the parent main_window object.
+    connect (this, QOverload<const fcn_callback&>::of (&octave_dock_widget::interpreter_event),
+             &oct_qobj, QOverload<const fcn_callback&>::of (&base_qobject::interpreter_event));
 
-    connect (this, SIGNAL (interpreter_event (const fcn_callback&)),
-             p, SIGNAL (interpreter_event (const fcn_callback&)));
-
-    connect (this, SIGNAL (interpreter_event (const meth_callback&)),
-             p, SIGNAL (interpreter_event (const meth_callback&)));
+    connect (this, QOverload<const meth_callback&>::of (&octave_dock_widget::interpreter_event),
+             &oct_qobj, QOverload<const meth_callback&>::of (&base_qobject::interpreter_event));
 
     m_close_action->setToolTip (tr ("Hide widget"));
 

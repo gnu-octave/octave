@@ -166,10 +166,14 @@ namespace octave
 
     m_command_window = new terminal_dock_widget (this, m_octave_qobj);
 
+    make_dock_widget_connections (m_command_window);
+
     connect (this, &main_window::settings_changed,
              m_command_window, &terminal_dock_widget::notice_settings);
 
     m_history_window = new history_dock_widget (this, m_octave_qobj);
+
+    make_dock_widget_connections (m_history_window);
 
     connect (m_history_window, &history_dock_widget::command_create_script,
              this, &main_window::new_file_signal);
@@ -181,6 +185,9 @@ namespace octave
              this, &main_window::execute_command_in_terminal);
 
     m_file_browser_window = new files_dock_widget (this, m_octave_qobj);
+
+    make_dock_widget_connections (m_file_browser_window);
+
     connect (m_file_browser_window, &files_dock_widget::open_file,
              this, QOverload<const QString&>::of (&main_window::open_file_signal));
     connect (m_file_browser_window,
@@ -193,8 +200,12 @@ namespace octave
 
     m_doc_browser_window = new documentation_dock_widget (this, m_octave_qobj);
 
+    make_dock_widget_connections (m_doc_browser_window);
+
 #if defined (HAVE_QSCINTILLA)
     file_editor *editor = new file_editor (this, m_octave_qobj);
+
+    make_dock_widget_connections (editor);
 
     connect (editor, &file_editor::request_settings_dialog,
              this, QOverload<const QString&>::of (&main_window::process_settings_dialog_request));
@@ -227,10 +238,14 @@ namespace octave
 
     m_variable_editor_window = new variable_editor (this, m_octave_qobj);
 
+    make_dock_widget_connections (m_variable_editor_window);
+
     connect (m_variable_editor_window, &variable_editor::command_signal,
              this, &main_window::execute_command_in_terminal);
 
     m_workspace_window = new workspace_view (this, m_octave_qobj);
+
+    make_dock_widget_connections (m_workspace_window);
 
     connect (m_workspace_window, &workspace_view::command_requested,
              this, &main_window::execute_command_in_terminal);
@@ -305,6 +320,18 @@ namespace octave
 #endif
 
     focus_command_window ();
+  }
+
+  void main_window::make_dock_widget_connections (octave_dock_widget *dw)
+  {
+    connect (this, &main_window::init_window_menu,
+             dw, &octave_dock_widget::init_window_menu_entry);
+
+    connect (this, &main_window::settings_changed,
+             dw, &octave_dock_widget::handle_settings);
+
+    connect (this, &main_window::active_dock_changed,
+             dw, &octave_dock_widget::handle_active_dock_changed);
   }
 
   bool main_window::command_window_has_focus (void) const

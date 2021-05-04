@@ -139,7 +139,7 @@ namespace QtHandles
 
         gh_mgr.unlock ();
 
-        Logger::debug ("qt_graphics_toolkit::initialize %s from thread %08x",
+        Logger::debug ("qt_graphics_toolkit::initialize %s from thread %p",
                        go.type ().c_str (), QThread::currentThreadId ());
 
         ObjectProxy *proxy = new ObjectProxy ();
@@ -173,7 +173,7 @@ namespace QtHandles
         || pId == base_properties::ID___MODIFIED__)
       return;
 
-    Logger::debug ("qt_graphics_toolkit::update %s(%d) from thread %08x",
+    Logger::debug ("qt_graphics_toolkit::update %s(%d) from thread %p",
                    go.type ().c_str (), pId, QThread::currentThreadId ());
 
     ObjectProxy *proxy = toolkitObjectProxy (go);
@@ -205,7 +205,7 @@ namespace QtHandles
 
     gh_mgr.unlock ();
 
-    Logger::debug ("qt_graphics_toolkit::finalize %s from thread %08x",
+    Logger::debug ("qt_graphics_toolkit::finalize %s from thread %p",
                    go.type ().c_str (), QThread::currentThreadId ());
 
     ObjectProxy *proxy = toolkitObjectProxy (go);
@@ -401,7 +401,7 @@ namespace QtHandles
       }
 
     Logger::debug ("qt_graphics_toolkit::create_object: "
-                   "create %s from thread %08x",
+                   "create %s from thread %p",
                    go.type ().c_str (), QThread::currentThreadId ());
 
     Object *obj = nullptr;

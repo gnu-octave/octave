@@ -408,8 +408,10 @@ namespace octave
         bool ok = di.update ();
 
         if (! ok)
-          warning ("load-path: update failed for '%s', removing from path",
-                   di.dir_name.c_str ());
+          warning_with_id
+            ("Octave:load-path:update-failed",
+             "load-path: update failed for '%s', removing from path",
+             di.dir_name.c_str ());
         else
           add (di, true, "", true);
       }
@@ -1332,7 +1334,9 @@ namespace octave
     if (! fs)
       {
         std::string msg = fs.error ();
-        warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
+        warning_with_id ("Octave:load-path:dir-info:update-failed",
+                         "load_path: %s: %s", dir_name.c_str (), msg.c_str ());
+
         return false;
       }
 

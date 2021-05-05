@@ -233,7 +233,7 @@ octave_bool::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5)
 
-  hsize_t dimens[3];
+  hsize_t dimens[3] = {0};
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
 

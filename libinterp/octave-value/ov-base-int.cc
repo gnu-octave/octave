@@ -729,7 +729,7 @@ octave_base_int_scalar<T>::save_hdf5_internal (octave_hdf5_id loc_id,
 #if defined (HAVE_HDF5)
 
   hid_t save_type_hid = save_type;
-  hsize_t dimens[3];
+  hsize_t dimens[3] = {0};
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
 

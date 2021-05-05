@@ -293,13 +293,15 @@ do_trilu (const std::string& name,
         tmp = tmp.subsasgn ("(", idx_tmp, arg.index_op (ov_idx));
         tmp = tmp.resize (dims);
 
+        octave_idx_type one = 1;
+
         if (lower)
           {
-            octave_idx_type st = (nc < nr + k ? nc : nr + k);
+            octave_idx_type st = std::min (nc, nr + k);
 
             for (octave_idx_type j = 1; j <= st; j++)
               {
-                octave_idx_type nr_limit = (1 > j - k ? 1 : j - k);
+                octave_idx_type nr_limit = std::max (one, j - k);
                 ov_idx(1) = static_cast<double> (j);
                 ov_idx(0) = octave::range<double> (nr_limit, nr);
                 std::list<octave_value_list> idx;
@@ -310,11 +312,11 @@ do_trilu (const std::string& name,
           }
         else
           {
-            octave_idx_type st = (k + 1 > 1 ? k + 1 : 1);
+            octave_idx_type st = std::max (k + 1, one);
 
             for (octave_idx_type j = st; j <= nc; j++)
               {
-                octave_idx_type nr_limit = (nr < j - k ? nr : j - k);
+                octave_idx_type nr_limit = std::min (nr, j - k);
                 ov_idx(1) = static_cast<double> (j);
                 ov_idx(0) = octave::range<double> (1, nr_limit);
                 std::list<octave_value_list> idx;

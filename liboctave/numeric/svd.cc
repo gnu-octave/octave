@@ -30,6 +30,7 @@
 #include <cassert>
 
 #include <algorithm>
+#include <unordered_map>
 
 #include "CMatrix.h"
 #include "dDiagMatrix.h"
@@ -666,8 +667,7 @@ namespace octave
 #undef GEJSV_COMPLEX_STEP
 
     template<typename T>
-    svd<T>::svd (const T& a, svd::Type type,
-                 svd::Driver driver)
+    svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
       : m_type (type), m_driver (driver), left_sm (), sigma (), right_sm ()
     {
       F77_INT info;
@@ -805,18 +805,13 @@ namespace octave
             }
 
           // translate jobu and jobv from gesvd to gejsv.
-          assert ('A' <= jobu && jobu <= 'S' && 'A' <= jobv && jobv <= 'S');
-          char job_svd2jsv[1 + 'S' - 'A'][2] = {0};
-          job_svd2jsv['A' - 'A'][0] = 'F';
-          job_svd2jsv['A' - 'A'][1] = 'J';
-          job_svd2jsv['S' - 'A'][0] = 'U';
-          job_svd2jsv['S' - 'A'][1] = 'V';
-          job_svd2jsv['O' - 'A'][0] = 'W';
-          job_svd2jsv['O' - 'A'][1] = 'W';
-          job_svd2jsv['N' - 'A'][0] = 'N';
-          job_svd2jsv['N' - 'A'][1] = 'N';
-          jobu = job_svd2jsv[jobu - 'A'][0];
-          jobv = job_svd2jsv[jobv - 'A'][1];
+          std::unordered_map<char, std::string> job_svd2jsv;
+          job_svd2jsv['A'] = "FJ";
+          job_svd2jsv['S'] = "UV";
+          job_svd2jsv['O'] = "WW";
+          job_svd2jsv['N'] = "NN";
+          jobu = job_svd2jsv[jobu][0];
+          jobv = job_svd2jsv[jobv][1];
 
           char joba = 'F';  // 'F': most conservative
           char jobr = 'R';  // 'R' is recommended.

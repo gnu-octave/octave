@@ -236,6 +236,7 @@ function x = newton_method (F, JF, x0, a, b, y, tol, maxit);
   while (any (todo) && (it < maxit))
     it++;
     x(todo) += res(todo);
+    x(x(todo) < 0) = eps;  # Avoid negative x in betainc() call, bug #60528
     res(todo) = -F(x(todo), a(todo), b(todo), y(todo)) ...
                 ./ JF (x(todo), a(todo), b(todo));
     todo = (abs (res) >= tol * abs (x));
@@ -281,6 +282,8 @@ endfunction
 %!assert (class (betaincinv (0.5, int8 (1), 1)), "double")
 %!assert (class (betaincinv (int8 (0), single (1), 1)), "single")
 %!assert (class (betaincinv (single (0.5), int8 (1), 1)), "single")
+
+%!assert <*60528> (betaincinv (1e-6, 1, 3), 3.3333344444450657e-07, eps)
 
 ## Test input validation
 %!error <Invalid call> betaincinv ()

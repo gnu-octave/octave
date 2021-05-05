@@ -408,14 +408,16 @@ namespace octave
         // Write settings if not just reload the default values
         if (def != settings_reload_default_colors_flag)
           {
-            lexer->writeSettings (*settings, group.toStdString ().c_str ());
+            const std::string group_str = group.toStdString ();
+            lexer->writeSettings (*settings, group_str.c_str ());
             settings->sync ();
           }
       }
     else
       {
         // Found lexer keys, read the settings
-        lexer->readSettings (*settings, group.toStdString ().c_str ());
+        const std::string group_str = group.toStdString ();
+        lexer->writeSettings (*settings, group_str.c_str ());
       }
   }
 #endif

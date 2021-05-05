@@ -966,10 +966,10 @@ namespace octave
           }
       }
 
-    const char* group = QString ("Scintilla" + settings_color_modes_ext[mode])
-                                .toStdString ().c_str ();
+    const std::string group = 
+      QString ("Scintilla" + settings_color_modes_ext[mode]).toStdString ();
 
-    lexer->writeSettings (*settings, group);
+    lexer->writeSettings (*settings, group.c_str ());
 
     settings->setValue (sd_last_editor_styles_tab.key,
                         tabs_editor_lexers->currentIndex ());

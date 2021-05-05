@@ -2429,9 +2429,10 @@ namespace octave
                               (u32_str.data ());
 
         std::size_t length;
+        const std::string encoding = m_encoding.toStdString ();
         char *res_str =
-          octave_u32_conv_to_encoding_strict (m_encoding.toStdString ().c_str (),
-                                              src, u32_str.size (), &length);
+          octave_u32_conv_to_encoding_strict (encoding.c_str (), src,
+                                              u32_str.size (), &length);
         if (! res_str)
           {
             if (errno == EILSEQ)

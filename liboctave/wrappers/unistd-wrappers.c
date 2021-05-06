@@ -166,7 +166,7 @@ prepare_spawn (char *const *argv)
     ;
 
   /* Allocate new argument vector.  */
-  new_argv = (char **) malloc (argc + 1);
+  new_argv = (char **) malloc ((argc + 1) * sizeof (char *));
 
   /* Put quoted arguments into the new argument vector.  */
   for (i = 0; i < argc; i++)

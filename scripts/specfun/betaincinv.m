@@ -93,12 +93,10 @@ function x = betaincinv (y, a, b, tail = "lower")
     error ("betaincinv: Y, A, and B must be of common size or scalars");
   endif
 
-  if (iscomplex (y) || iscomplex (a) || iscomplex (b))
-    error ("betaincinv: all inputs must be real");
+  if (! (isfloat (y) && isfloat (a) && isfloat (b)
+         && isreal (y) && isreal (a) && isreal (b)))
+    error ("betaincinv: Y, A, and B must be real, floating point values");
   endif
-
-  ## FIXME: Should there be isnumeric checking?  Right now it accepts char
-  ##        arrays, but then produces a weird error later on.
 
   ## Remember original shape of data, but convert to column vector for calcs.
   orig_sz = size (y);
@@ -119,28 +117,16 @@ function x = betaincinv (y, a, b, tail = "lower")
   endif
 
   ## If any of the arguments is single then the output should be as well.
-  if (strcmp (class (y), "single") || strcmp (class (a), "single")
-      || strcmp (class (b), "single"))
+  if (isa (y, "single") || isa (a, "single") || isa (b, "single"))
     y = single (y);
     a = single (a);
     b = single (b);
   endif
 
-  ## Convert to floating point if necessary
-  if (isinteger (y))
-    y = double (y);
-  endif
-  if (isinteger (a))
-    a = double (a);
-  endif
-  if (isinteger (b))
-    b = double (b);
-  endif
-
   ## Initialize output array
   x = zeros (size (y), class (y));
 
-  ## Parameters for the Newton method
+  ## Parameters for the Newton's method search
   maxit = 20;
   tol = eps (class (y));
 
@@ -170,8 +156,8 @@ function x = betaincinv (y, a, b, tail = "lower")
     n = nnz (idx);
     ## Function and derivative of the lower version.
     F = @(x, a, b, y) y - betainc (x, a, b);
-    JF = @(x, a, b) - real (exp ((a-1) .* log (x) + (b-1) .* log1p (-x) + ...
-                            gammaln (a+b) - gammaln (a) - gammaln (b)));
+    JF = @(x, a, b) -real (exp ((a-1) .* log (x) + (b-1) .* log1p (-x) + ...
+                           gammaln (a+b) - gammaln (a) - gammaln (b)));
 
     ## Compute the initial guess with a bisection method of 10 steps.
     x0 = bisection_method (F, zeros (n,1), ones (n,1), ...
@@ -228,7 +214,6 @@ endfunction
 
 function x = newton_method (F, JF, x0, a, b, y, tol, maxit);
 
-  l = numel (y);
   res = -F (x0, a, b, y) ./ JF (x0, a, b);
   todo = (abs (res) >= tol * abs (x0));
   x = x0;
@@ -280,10 +265,7 @@ endfunction
 %!assert (class (betaincinv (0.5, 1, 1)), "double")
 %!assert (class (betaincinv (single (0.5), 1, 1)), "single")
 %!assert (class (betaincinv (0.5, single (1), 1)), "single")
-%!assert (class (betaincinv (int8 (0), 1, 1)), "double")
-%!assert (class (betaincinv (0.5, int8 (1), 1)), "double")
-%!assert (class (betaincinv (int8 (0), single (1), 1)), "single")
-%!assert (class (betaincinv (single (0.5), int8 (1), 1)), "single")
+%!assert (class (betaincinv (0.5, 1, single (1))), "single")
 
 %!assert <*60528> (betaincinv (1e-6, 1, 3), 3.3333344444450657e-07, 5*eps)
 %!assert <*60528> (betaincinv (1-1e-6, 3, 1), 0.999999666666556, 5*eps)
@@ -294,9 +276,12 @@ endfunction
 %!error <Invalid call> betaincinv (1,2)
 %!error <must be of common size or scalars>
 %! betaincinv (ones (2,2), ones (1,2), 1);
-%!error <all inputs must be real> betaincinv (0.5i, 1, 2)
-%!error <all inputs must be real> betaincinv (0, 1i, 1)
-%!error <all inputs must be real> betaincinv (0, 1, 1i)
+%!error <must be .* floating point> betaincinv ('a', 1, 2)
+%!error <must be .* floating point> betaincinv (0, int8 (1), 1)
+%!error <must be .* floating point> betaincinv (0, 1, true)
+%!error <must be real> betaincinv (0.5i, 1, 2)
+%!error <must be real> betaincinv (0, 1i, 1)
+%!error <must be real> betaincinv (0, 1, 1i)
 %!error <Y must be in the range \[0, 1\]> betaincinv (-0.1,1,1)
 %!error <Y must be in the range \[0, 1\]> betaincinv (1.1,1,1)
 %!error <Y must be in the range \[0, 1\]>

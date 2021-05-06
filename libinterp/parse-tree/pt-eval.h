@@ -172,6 +172,8 @@ namespace octave
 
     void parse_and_execute (const std::string& input, bool& incomplete_parse);
 
+    void get_line_and_eval (void);
+
     int repl (void);
 
     bool in_top_level_repl (void) const { return m_in_top_level_repl; }

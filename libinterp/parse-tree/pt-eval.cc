@@ -29,9 +29,12 @@
 
 #include <cctype>
 
+#include <condition_variable>
 #include <iostream>
 #include <list>
+#include <mutex>
 #include <string>
+#include <thread>
 
 #include "cmd-edit.h"
 #include "file-ops.h"
@@ -633,6 +636,97 @@ namespace octave
     evmgr.pre_input_event ();
   }
 
+  void tree_evaluator::get_line_and_eval (void)
+  {
+    std::mutex mtx;
+    std::unique_lock<std::mutex> lock (mtx);
+    std::condition_variable cv;
+    bool incomplete_parse = false;
+    bool evaluation_pending = false;
+    bool exiting = false;
+
+    input_system& input_sys = m_interpreter.get_input_system ();
+    event_manager& evmgr = m_interpreter.get_event_manager ();
+
+    while (true)
+      {
+        // FIXME: Detect EOF?  Use readline?  If
+        // so, then we need to disable idle event loop hook function
+        // execution.
+
+        std::string ps = incomplete_parse ? input_sys.PS2 () : input_sys.PS1 ();
+
+        std::cout << command_editor::decode_prompt_string (ps);
+
+        std::string input;
+        std::getline (std::cin, input);
+
+        if (input.empty ())
+          continue;
+
+        incomplete_parse = false;
+        evaluation_pending = true;
+        exiting = false;
+
+        evmgr.post_event
+          ([&] (interpreter& interp)
+           {
+             // INTERPRETER THREAD
+
+             std::lock_guard<std::mutex> local_lock (mtx);
+
+             try
+               {
+                 interp.parse_and_execute (input, incomplete_parse);
+               }
+             catch (const exit_exception&)
+               {
+                 evaluation_pending = false;
+                 exiting = true;
+                 cv.notify_all ();
+                 throw;
+               }
+             catch (const execution_exception& ee)
+               {
+                 error_system& es = m_interpreter.get_error_system ();
+
+                 es.save_exception (ee);
+                 es.display_exception (ee);
+
+                 if (m_interpreter.interactive ())
+                   {
+                     m_interpreter.recover_from_exception ();
+                     evaluation_pending = false;
+                     cv.notify_all ();
+                   }
+                 else
+                   {
+                     evaluation_pending = false;
+                     cv.notify_all ();
+                     throw exit_exception (1);
+                   }
+               }
+             catch (...)
+               {
+                 evaluation_pending = false;
+                 cv.notify_all ();
+                 throw;
+               }
+
+             evaluation_pending = false;
+             cv.notify_all ();
+           });
+
+        // Wait until evaluation is finished before prompting for input
+        // again.
+
+        cv.wait (lock, [&] { return ! evaluation_pending; });
+
+        if (exiting)
+          break;
+      }
+  }
+
   int tree_evaluator::repl (void)
   {
     // The big loop.  Read, Eval, Print, Loop.  Normally user
@@ -831,6 +925,7 @@ namespace octave
 
             if (m_interpreter.interactive ())
               {
+                std::cerr << "recover from exception and reset parser" << std::endl;
                 m_interpreter.recover_from_exception ();
                 m_parser->reset ();
               }

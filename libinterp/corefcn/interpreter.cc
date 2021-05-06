@@ -29,14 +29,9 @@
 
 #include <cstdio>
 
+#include <iostream>
 #include <set>
 #include <string>
-#include <iostream>
-
-// The following headers are only needed for the new experimental
-// terminal widget.
-#include <condition_variable>
-#include <mutex>
 #include <thread>
 
 #include "cmd-edit.h"
@@ -782,89 +777,7 @@ namespace octave
 
   void interpreter::get_line_and_eval (void)
   {
-    std::mutex mtx;
-    std::unique_lock<std::mutex> lock (mtx);
-    std::condition_variable cv;
-    bool incomplete_parse = false;
-    bool evaluation_pending = false;
-    bool exiting = false;
-
-    while (true)
-      {
-        // FIXME: Detect EOF?  Use readline?  If
-        // so, then we need to disable idle event loop hook function
-        // execution.
-
-        std::string ps
-          = incomplete_parse ? m_input_system.PS2 () : m_input_system.PS1 ();
-
-        std::cout << command_editor::decode_prompt_string (ps);
-
-        std::string input;
-        std::getline (std::cin, input);
-
-        if (input.empty ())
-          continue;
-
-        incomplete_parse = false;
-        evaluation_pending = true;
-        exiting = false;
-
-        m_event_manager.post_event
-          ([&] (interpreter& interp)
-           {
-             // INTERPRETER THREAD
-
-             std::lock_guard<std::mutex> local_lock (mtx);
-
-             try
-               {
-                 interp.parse_and_execute (input, incomplete_parse);
-               }
-             catch (const exit_exception&)
-               {
-                 evaluation_pending = false;
-                 exiting = true;
-                 cv.notify_all ();
-                 throw;
-               }
-             catch (const execution_exception& ee)
-               {
-                 m_error_system.save_exception (ee);
-                 m_error_system.display_exception (ee);
-
-                 if (m_interactive)
-                   {
-                     recover_from_exception ();
-                     evaluation_pending = false;
-                     cv.notify_all ();
-                   }
-                 else
-                   {
-                     evaluation_pending = false;
-                     cv.notify_all ();
-                     throw exit_exception (1);
-                   }
-               }
-             catch (...)
-               {
-                 evaluation_pending = false;
-                 cv.notify_all ();
-                 throw;
-               }
-
-             evaluation_pending = false;
-             cv.notify_all ();
-           });
-
-        // Wait until evaluation is finished before prompting for input
-        // again.
-
-        cv.wait (lock, [&] { return ! evaluation_pending; });
-
-        if (exiting)
-          break;
-      }
+    m_evaluator.get_line_and_eval ();
   }
 
   // Note: the following class is currently only used with the new

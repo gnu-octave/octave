@@ -321,13 +321,13 @@ namespace octave
     // solution to allow Qt actions like opening the documentation
     // browser when the primary interpreter_events object is not the one
     // defined for the Qt GUI.
-    OCTINTERP_API void
+    void
     install_qt_event_handlers (const std::shared_ptr<interpreter_events>& obj)
     {
       m_qt_event_handlers = obj;
     }
 
-    OCTINTERP_API std::shared_ptr<interpreter_events>
+    std::shared_ptr<interpreter_events>
     qt_event_handlers (void) const { return m_qt_event_handlers; }
 
     // If disable is TRUE, then no additional events will be processed

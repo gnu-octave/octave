@@ -53,6 +53,7 @@ namespace octave
     event_manager& evmgr = interp.get_event_manager ();
 
     evmgr.connect_link (m_octave_qobj.get_qt_interpreter_events ());
+    evmgr.install_qt_event_handlers (m_octave_qobj.get_qt_interpreter_events ());
     evmgr.enable ();
 
     connect (this, &interpreter_qobject::ready,

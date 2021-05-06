@@ -317,6 +317,19 @@ namespace octave
       return link_enabled;
     }
 
+    // Make the Qt actions available for others.  This is a temporary
+    // solution to allow Qt actions like opening the documentation
+    // browser when the primary interpreter_events object is not the one
+    // defined for the Qt GUI.
+    OCTINTERP_API void
+    install_qt_event_handlers (const std::shared_ptr<interpreter_events>& obj)
+    {
+      m_qt_event_handlers = obj;
+    }
+
+    OCTINTERP_API std::shared_ptr<interpreter_events>
+    qt_event_handlers (void) const { return m_qt_event_handlers; }
+
     // If disable is TRUE, then no additional events will be processed
     // other than exit.
 
@@ -718,6 +731,8 @@ namespace octave
     // will be valid until it is no longer needed.
 
     std::shared_ptr<interpreter_events> instance;
+
+    std::shared_ptr<interpreter_events> m_qt_event_handlers;
 
   protected:
 

@@ -66,6 +66,7 @@ namespace octave
 
   event_manager::event_manager (interpreter& interp)
     : m_interpreter (interp), instance (new interpreter_events ()),
+      m_qt_event_handlers (),
       event_queue_mutex (new mutex ()), gui_event_queue (),
       debugging (false), link_enabled (true)
   {

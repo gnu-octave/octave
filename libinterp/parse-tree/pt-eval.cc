@@ -696,6 +696,7 @@ namespace octave
                  if (m_interpreter.interactive ())
                    {
                      m_interpreter.recover_from_exception ();
+                     m_parser->reset ();
                      evaluation_pending = false;
                      cv.notify_all ();
                    }

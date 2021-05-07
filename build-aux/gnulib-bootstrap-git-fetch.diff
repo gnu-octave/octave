@@ -1,0 +1,31 @@
+Update bootstrap script from upstream gnulib to automatically fetch from repository if needed
+
+See also: https://lists.gnu.org/archive/html/bug-gnulib/2020-08/msg00150.html
+
+diff --git a/bootstrap b/bootstrap
+index 8f76d6962..2d0a06376 100755
+--- a/bootstrap
++++ b/bootstrap
+@@ -670,6 +670,11 @@ if $use_gnulib; then
+         || cleanup_gnulib
+ 
+       trap - 1 2 13 15
++
++    elif test -n "$GNULIB_REVISION" \
++         && ! git --git-dir="$gnulib_path"/.git cat-file \
++              commit "$GNULIB_REVISION"; then
++      git --git-dir="$gnulib_path"/.git fetch
+     fi
+     GNULIB_SRCDIR=$gnulib_path
+     ;;
+@@ -704,6 +709,10 @@ if $use_gnulib; then
+ 
+   if test -d "$GNULIB_SRCDIR"/.git && test -n "$GNULIB_REVISION" \
+      && ! git_modules_config submodule.gnulib.url >/dev/null; then
++    if ! git --git-dir="$GNULIB_SRCDIR"/.git cat-file \
++         commit "$GNULIB_REVISION"; then
++      git --git-dir="$GNULIB_SRCDIR"/.git fetch
++    fi
+     (cd "$GNULIB_SRCDIR" && git checkout "$GNULIB_REVISION") || cleanup_gnulib
+   fi
+ 

@@ -252,6 +252,40 @@ octave_execv_wrapper (const char *file, char *const *argv)
 
   char **sanitized_argv = prepare_spawn (argv);
 
+#  if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
+
+  // count number of arguments
+  size_t argc;
+  for (argc = 0; sanitized_argv[argc] != NULL; argc++)
+    ;
+
+  wchar_t *wfile = u8_to_wchar (file);
+  const wchar_t **wargv = malloc ((argc + 1) * sizeof (wchar_t *));
+
+  // convert multibyte UTF-8 strings to wide character strings
+  for (size_t i_arg = 0; i_arg < argc; i_arg++)
+    wargv[i_arg] = u8_to_wchar (sanitized_argv[i_arg]);
+
+  wargv[argc] = NULL;
+
+  char **p = sanitized_argv;
+  while (*p)
+    free (*p++);
+  free (sanitized_argv);
+
+  int status = _wspawnv (P_OVERLAY, wfile, wargv);
+
+  // This only happens if _wspawnv fails.
+
+  free (wfile);
+  const wchar_t **wp = wargv;
+  // Casting away the const in the loop is ok here.
+  while (*wp)
+    free ((wchar_t *) *wp++);
+  free (wargv);
+
+#  else
+
   int status = spawnv (P_OVERLAY, file, sanitized_argv);
 
   // This only happens if spawnv fails.
@@ -260,6 +294,8 @@ octave_execv_wrapper (const char *file, char *const *argv)
   while (*p)
     free (*p++);
   free (sanitized_argv);
+
+#  endif
 
   return status;
 

@@ -419,15 +419,6 @@ namespace octave
           }
       }
 
-    if (m_options.server ())
-      {
-        if (m_options.forced_interactive ())
-          {
-            std::cerr << "error: --server and --forced-interactive are mutually exclusive options" << std::endl;
-            octave_print_terse_usage_and_exit ();
-          }
-      }
-
     m_is_octave_program = ((m_have_script_file || m_have_eval_option_code)
                            && ! m_options.persist ()
                            && ! m_options.traditional ());

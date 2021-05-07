@@ -926,7 +926,6 @@ namespace octave
 
             if (m_interpreter.interactive ())
               {
-                std::cerr << "recover from exception and reset parser" << std::endl;
                 m_interpreter.recover_from_exception ();
                 m_parser->reset ();
               }

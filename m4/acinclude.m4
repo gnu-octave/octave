@@ -1461,7 +1461,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
         int n = 4;
         coordT points[8] = { -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5 };
         boolT ismalloc = 0;
-        qhT context;
+        qhT context = { };
         qhT* qh = &context;
         return qh_new_qhull (qh, dim, n, points, ismalloc, "qhull ", 0, stderr);
       ]])],

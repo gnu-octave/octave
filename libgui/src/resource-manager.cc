@@ -417,7 +417,7 @@ namespace octave
       {
         // Found lexer keys, read the settings
         const std::string group_str = group.toStdString ();
-        lexer->writeSettings (*settings, group_str.c_str ());
+        lexer->readSettings (*settings, group_str.c_str ());
       }
   }
 #endif

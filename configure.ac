@@ -1344,6 +1344,9 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 
 ### Check for the Qhull library.
 
+QHULL_CPPFLAGS=
+QHULL_LDFLAGS=
+QHULL_LIBS=
 OCTAVE_CHECK_LIB(qhull_r, QHull,
   [Qhull library not found.  This will result in loss of functionality for some geometry functions.],
   [libqhull_r/libqhull_r.h libqhull_r.h],
@@ -1351,8 +1354,14 @@ OCTAVE_CHECK_LIB(qhull_r, QHull,
   [warn_qhull_r=
   OCTAVE_CHECK_QHULL_VERSION
   OCTAVE_CHECK_LIB_QHULL_OK(
-    [AC_DEFINE(HAVE_QHULL, 1, [Define to 1 if Qhull is available.])],
+    [AC_DEFINE(HAVE_QHULL, 1, [Define to 1 if Qhull is available.])
+     QHULL_CPPFLAGS="$QHULL_R_CPPFLAGS"
+     QHULL_LDFLAGS="$QHULL_R_LDFLAGS"
+     QHULL_LIBS="$QHULL_R_LIBS"],
     [warn_qhull_r="Qhull library found, but does not seem to work properly.  This will result in loss of functionality for some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
+AC_SUBST(QHULL_CPPFLAGS)
+AC_SUBST(QHULL_LDFLAGS)
+AC_SUBST(QHULL_LIBS)
 
 ### Check for PCRE regex library.
 
@@ -3198,9 +3207,9 @@ Octave is now configured for $canonical_host_type
   PortAudio libraries:           $PORTAUDIO_LIBS
   PTHREAD flags:                 $PTHREAD_CFLAGS
   PTHREAD libraries:             $PTHREAD_LIBS
-  QHULL CPPFLAGS:                $QHULL_R_CPPFLAGS
-  QHULL LDFLAGS:                 $QHULL_R_LDFLAGS
-  QHULL libraries:               $QHULL_R_LIBS
+  QHULL CPPFLAGS:                $QHULL_CPPFLAGS
+  QHULL LDFLAGS:                 $QHULL_LDFLAGS
+  QHULL libraries:               $QHULL_LIBS
   QRUPDATE CPPFLAGS:             $QRUPDATE_CPPFLAGS
   QRUPDATE LDFLAGS:              $QRUPDATE_LDFLAGS
   QRUPDATE libraries:            $QRUPDATE_LIBS

@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include "file-ops.h"
 #include "oct-shlib.h"
 
 #include "defaults.h"
@@ -51,7 +52,8 @@ octave_dld_function::octave_dld_function
 
   std::string file_name = fcn_file_name ();
 
-  std::string oct_file_dir = octave::config::oct_file_dir ();
+  static const std::string oct_file_dir
+    = octave::sys::canonicalize_file_name (octave::config::oct_file_dir ());
 
   system_fcn_file
     = (! file_name.empty ()
@@ -67,7 +69,8 @@ octave_dld_function::octave_dld_function
 
   std::string file_name = fcn_file_name ();
 
-  std::string oct_file_dir = octave::config::oct_file_dir ();
+  static const std::string oct_file_dir
+    = octave::sys::canonicalize_file_name (octave::config::oct_file_dir ());
 
   system_fcn_file
     = (! file_name.empty ()

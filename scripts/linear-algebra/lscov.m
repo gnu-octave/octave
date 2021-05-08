@@ -198,7 +198,7 @@ endfunction
 %! assert (se_b2, [se_b 2*se_b], 2*eps);
 %! assert (mse2, [mse 4*mse], eps);
 %! assert (S2(:, :, 1), S, eps);
-%! assert (S2(:, :, 2), 4*S, eps);
+%! assert (S2(:, :, 2), 4*S, 2*eps);
 
 %!test
 %! ## Artificial example with positive semi-definite weight matrix

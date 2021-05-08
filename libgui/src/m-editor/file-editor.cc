@@ -515,6 +515,10 @@ namespace octave
     if (m_closing_canceled)
       return;
 
+    // FIXME: Why count down to zero here before doing anything?  Why
+    // not remove and delete each tab that is ready to be closed, one
+    // per invocation?
+
     m_number_of_tabs--;
 
     if (m_number_of_tabs > 0)
@@ -534,7 +538,7 @@ namespace octave
 
     std::list<file_editor_tab *> editor_tab_lst = m_tab_widget->tab_list ();
     for (auto editor_tab : editor_tab_lst)
-      delete editor_tab;
+      editor_tab->deleteLater ();
 
     m_tab_widget->clear ();
 
@@ -979,10 +983,10 @@ namespace octave
             if (m_tab_widget->widget (i) == fileEditorTab)
               {
                 m_tab_widget->removeTab (i);
-                // Deleting sender is dodgy, but works because the signal
-                // is the last item in the sender's routines.
-                // FIXME: can we use deleteLater here?
-                delete fileEditorTab;
+
+                // Deleting the sender (even with deleteLater) seems a
+                // bit strange.  Is there a better way?
+                fileEditorTab->deleteLater ();
                 break;
               }
           }

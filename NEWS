@@ -87,6 +87,10 @@ where $DATA is a platform dependent location for (roaming) user data
 files (e.g., ${XDG_DATA_HOME} or, if that is not set, ~/.local/share on
 Unix-like operating systems or %APPDATA% on Windows).
 
+- The non-re-entrant version of the QHull library "libqhull" was
+deprecated upstream.  Octave now requires the re-entrant version of
+that library "libqhull_r" instead.
+
 ### Graphical User Interface
 
 - Turkish translation added.

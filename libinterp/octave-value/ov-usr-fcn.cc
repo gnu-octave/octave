@@ -360,9 +360,13 @@ octave_user_function::mark_as_system_fcn_file (void)
 
       std::string ff_name = octave::fcn_file_in_path (file_name);
 
-      static const std::string fcn_file_dir
+      static const std::string canonical_fcn_file_dir
         = octave::sys::canonicalize_file_name
             (octave::config::fcn_file_dir ());
+      static const std::string fcn_file_dir
+        = canonical_fcn_file_dir.empty () ? octave::config::fcn_file_dir ()
+                                          : canonical_fcn_file_dir;
+
       if (fcn_file_dir == ff_name.substr (0, fcn_file_dir.length ()))
         m_system_fcn_file = true;
     }

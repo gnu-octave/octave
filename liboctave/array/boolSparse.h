@@ -85,50 +85,53 @@ public:
     return *this;
   }
 
-  bool operator == (const SparseBoolMatrix& a) const;
-  bool operator != (const SparseBoolMatrix& a) const;
+  OCTAVE_API bool operator == (const SparseBoolMatrix& a) const;
+  OCTAVE_API bool operator != (const SparseBoolMatrix& a) const;
 
   SparseBoolMatrix transpose (void) const
   { return Sparse<bool>::transpose (); }
 
   // destructive insert/delete/reorder operations
 
-  SparseBoolMatrix& insert (const SparseBoolMatrix& a,
-                            octave_idx_type r, octave_idx_type c);
+  OCTAVE_API SparseBoolMatrix&
+  insert (const SparseBoolMatrix& a, octave_idx_type r, octave_idx_type c);
 
-  SparseBoolMatrix& insert (const SparseBoolMatrix& a,
-                            const Array<octave_idx_type>& indx);
+  OCTAVE_API SparseBoolMatrix&
+  insert (const SparseBoolMatrix& a, const Array<octave_idx_type>& indx);
 
-  SparseBoolMatrix concat (const SparseBoolMatrix& rb,
-                           const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API SparseBoolMatrix
+  concat (const SparseBoolMatrix& rb, const Array<octave_idx_type>& ra_idx);
 
-  SparseBoolMatrix diag (octave_idx_type k = 0) const;
+  OCTAVE_API SparseBoolMatrix diag (octave_idx_type k = 0) const;
 
-  boolMatrix matrix_value (void) const;
+  OCTAVE_API boolMatrix matrix_value (void) const;
 
-  SparseBoolMatrix squeeze (void) const;
+  OCTAVE_API SparseBoolMatrix squeeze (void) const;
 
-  SparseBoolMatrix index (const octave::idx_vector& i, bool resize_ok) const;
+  OCTAVE_API SparseBoolMatrix
+  index (const octave::idx_vector& i, bool resize_ok) const;
 
-  SparseBoolMatrix index (const octave::idx_vector& i, const octave::idx_vector& j,
-                          bool resize_ok) const;
+  OCTAVE_API SparseBoolMatrix
+  index (const octave::idx_vector& i, const octave::idx_vector& j,
+         bool resize_ok) const;
 
-  SparseBoolMatrix reshape (const dim_vector& new_dims) const;
+  OCTAVE_API SparseBoolMatrix reshape (const dim_vector& new_dims) const;
 
-  SparseBoolMatrix permute (const Array<octave_idx_type>& vec,
-                            bool inv = false) const;
+  OCTAVE_API SparseBoolMatrix
+  permute (const Array<octave_idx_type>& vec, bool inv = false) const;
 
-  SparseBoolMatrix ipermute (const Array<octave_idx_type>& vec) const;
+  OCTAVE_API SparseBoolMatrix
+  ipermute (const Array<octave_idx_type>& vec) const;
 
   // unary operations
 
-  SparseBoolMatrix operator ! (void) const;
+  OCTAVE_API SparseBoolMatrix operator ! (void) const;
 
   // other operations
 
-  SparseBoolMatrix all (int dim = -1) const;
-  SparseBoolMatrix any (int dim = -1) const;
-  SparseMatrix sum (int dim = -1) const;
+  OCTAVE_API SparseBoolMatrix all (int dim = -1) const;
+  OCTAVE_API SparseBoolMatrix any (int dim = -1) const;
+  OCTAVE_API SparseMatrix sum (int dim = -1) const;
 
   // i/o
 

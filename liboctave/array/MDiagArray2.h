@@ -107,22 +107,25 @@ public:
   MDiagArray2<T> hermitian (T (*fcn) (const T&) = nullptr) const
   { return DiagArray2<T>::hermitian (fcn); }
 
-  bool is_multiple_of_identity (T val) const;
+  OCTAVE_API bool is_multiple_of_identity (T val) const;
 
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 
-  friend MDiagArray2<T> operator + <> (const MDiagArray2<T>&);
-  friend MDiagArray2<T> operator - <> (const MDiagArray2<T>&);
-  friend MDiagArray2<T> operator * <> (const MDiagArray2<T>&, const T&);
-  friend MDiagArray2<T> operator / <> (const MDiagArray2<T>&, const T&);
-  friend MDiagArray2<T> operator * <> (const T&, const MDiagArray2<T>&);
-  friend MDiagArray2<T> operator + <> (const MDiagArray2<T>&,
-                                       const MDiagArray2<T>&);
-  friend MDiagArray2<T> operator - <> (const MDiagArray2<T>&,
-                                       const MDiagArray2<T>&);
-  friend MDiagArray2<T> product <> (const MDiagArray2<T>&,
-                                    const MDiagArray2<T>&);
+  friend OCTAVE_API MDiagArray2<T> operator + <> (const MDiagArray2<T>&);
+  friend OCTAVE_API MDiagArray2<T> operator - <> (const MDiagArray2<T>&);
+  friend OCTAVE_API MDiagArray2<T>
+  operator * <> (const MDiagArray2<T>&, const T&);
+  friend OCTAVE_API MDiagArray2<T>
+  operator / <> (const MDiagArray2<T>&, const T&);
+  friend OCTAVE_API MDiagArray2<T>
+  operator * <> (const T&, const MDiagArray2<T>&);
+  friend OCTAVE_API MDiagArray2<T>
+  operator + <> (const MDiagArray2<T>&, const MDiagArray2<T>&);
+  friend OCTAVE_API MDiagArray2<T>
+  operator - <> (const MDiagArray2<T>&, const MDiagArray2<T>&);
+  friend OCTAVE_API MDiagArray2<T>
+  product <> (const MDiagArray2<T>&, const MDiagArray2<T>&);
 
 };
 

@@ -61,7 +61,7 @@ public:
   FloatComplexColumnVector (const Array<FloatComplex>& a)
     : MArray<FloatComplex> (a.as_column ()) { }
 
-  explicit FloatComplexColumnVector (const FloatColumnVector& a);
+  explicit OCTAVE_API FloatComplexColumnVector (const FloatColumnVector& a);
 
   FloatComplexColumnVector& operator = (const FloatComplexColumnVector& a)
   {
@@ -69,44 +69,47 @@ public:
     return *this;
   }
 
-  bool operator == (const FloatComplexColumnVector& a) const;
-  bool operator != (const FloatComplexColumnVector& a) const;
+  OCTAVE_API bool operator == (const FloatComplexColumnVector& a) const;
+  OCTAVE_API bool operator != (const FloatComplexColumnVector& a) const;
 
   // destructive insert/delete/reorder operations
 
-  FloatComplexColumnVector& insert (const FloatColumnVector& a,
-                                    octave_idx_type r);
-  FloatComplexColumnVector& insert (const FloatComplexColumnVector& a,
-                                    octave_idx_type r);
+  OCTAVE_API FloatComplexColumnVector&
+  insert (const FloatColumnVector& a, octave_idx_type r);
+  OCTAVE_API FloatComplexColumnVector&
+  insert (const FloatComplexColumnVector& a, octave_idx_type r);
 
-  FloatComplexColumnVector& fill (float val);
-  FloatComplexColumnVector& fill (const FloatComplex& val);
-  FloatComplexColumnVector& fill (float val,
-                                  octave_idx_type r1, octave_idx_type r2);
-  FloatComplexColumnVector& fill (const FloatComplex& val,
-                                  octave_idx_type r1, octave_idx_type r2);
+  OCTAVE_API FloatComplexColumnVector& fill (float val);
+  OCTAVE_API FloatComplexColumnVector& fill (const FloatComplex& val);
+  OCTAVE_API FloatComplexColumnVector&
+  fill (float val, octave_idx_type r1, octave_idx_type r2);
+  OCTAVE_API FloatComplexColumnVector&
+  fill (const FloatComplex& val, octave_idx_type r1, octave_idx_type r2);
 
-  FloatComplexColumnVector stack (const FloatColumnVector& a) const;
-  FloatComplexColumnVector stack (const FloatComplexColumnVector& a) const;
+  OCTAVE_API FloatComplexColumnVector stack (const FloatColumnVector& a) const;
+  OCTAVE_API FloatComplexColumnVector
+  stack (const FloatComplexColumnVector& a) const;
 
-  FloatComplexRowVector hermitian (void) const;
-  FloatComplexRowVector transpose (void) const;
+  OCTAVE_API FloatComplexRowVector hermitian (void) const;
+  OCTAVE_API FloatComplexRowVector transpose (void) const;
 
   friend OCTAVE_API FloatComplexColumnVector
-  conj (const FloatComplexColumnVector& a);
+  OCTAVE_API conj (const FloatComplexColumnVector& a);
 
   // resize is the destructive equivalent for this one
 
-  FloatComplexColumnVector extract (octave_idx_type r1,
-                                    octave_idx_type r2) const;
+  OCTAVE_API FloatComplexColumnVector
+  extract (octave_idx_type r1, octave_idx_type r2) const;
 
-  FloatComplexColumnVector extract_n (octave_idx_type r1,
-                                      octave_idx_type n) const;
+  OCTAVE_API FloatComplexColumnVector
+  extract_n (octave_idx_type r1, octave_idx_type n) const;
 
   // column vector by column vector -> column vector operations
 
-  FloatComplexColumnVector& operator += (const FloatColumnVector& a);
-  FloatComplexColumnVector& operator -= (const FloatColumnVector& a);
+  OCTAVE_API FloatComplexColumnVector&
+  operator += (const FloatColumnVector& a);
+  OCTAVE_API FloatComplexColumnVector&
+  operator -= (const FloatColumnVector& a);
 
   // matrix by column vector -> column vector operations
 
@@ -134,17 +137,17 @@ public:
 
   // other operations
 
-  FloatComplex min (void) const;
-  FloatComplex max (void) const;
+  OCTAVE_API FloatComplex min (void) const;
+  OCTAVE_API FloatComplex max (void) const;
 
-  FloatColumnVector abs (void) const;
+  OCTAVE_API FloatColumnVector abs (void) const;
 
   // i/o
 
   friend OCTAVE_API std::ostream&
   operator << (std::ostream& os, const FloatComplexColumnVector& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is,
-                                               FloatComplexColumnVector& a);
+  friend OCTAVE_API std::istream&
+  operator >> (std::istream& is, FloatComplexColumnVector& a);
 
   void resize (octave_idx_type n, const FloatComplex& rfv = FloatComplex (0))
   {

@@ -46,11 +46,13 @@ public:
 
   ~PermMatrix (void) = default;
 
-  PermMatrix (octave_idx_type n);
+  OCTAVE_API PermMatrix (octave_idx_type n);
 
-  PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check = true);
+  OCTAVE_API PermMatrix (const Array<octave_idx_type>& p, bool colp,
+                         bool check = true);
 
-  PermMatrix (const octave::idx_vector& idx, bool colp, octave_idx_type n = 0);
+  OCTAVE_API PermMatrix (const octave::idx_vector& idx, bool colp,
+                         octave_idx_type n = 0);
 
   octave_idx_type dim1 (void) const
   { return Array<octave_idx_type>::numel (); }
@@ -97,14 +99,14 @@ public:
   }
 
   // These are, in fact, super-fast.
-  PermMatrix transpose (void) const;
-  PermMatrix inverse (void) const;
+  OCTAVE_API PermMatrix transpose (void) const;
+  OCTAVE_API PermMatrix inverse (void) const;
 
   // Determinant, i.e., the sign of permutation.
-  octave_idx_type determinant (void) const;
+  OCTAVE_API octave_idx_type determinant (void) const;
 
   // Efficient integer power of a permutation.
-  PermMatrix power (octave_idx_type n) const;
+  OCTAVE_API PermMatrix power (octave_idx_type n) const;
 
   bool is_col_perm (void) const { return true; }
   bool is_row_perm (void) const { return false; }
@@ -112,7 +114,7 @@ public:
   void print_info (std::ostream& os, const std::string& prefix) const
   { Array<octave_idx_type>::print_info (os, prefix); }
 
-  static PermMatrix eye (octave_idx_type n);
+  static OCTAVE_API PermMatrix eye (octave_idx_type n);
 
 private:
 
@@ -124,8 +126,7 @@ private:
 };
 
 // Multiplying permutations together.
-PermMatrix
-OCTAVE_API
+OCTAVE_API PermMatrix
 operator * (const PermMatrix& a, const PermMatrix& b);
 
 #endif

@@ -59,7 +59,7 @@ public:
   ComplexColumnVector (const Array<Complex>& a)
     : MArray<Complex> (a.as_column ()) { }
 
-  explicit ComplexColumnVector (const ColumnVector& a);
+  explicit OCTAVE_API ComplexColumnVector (const ColumnVector& a);
 
   ComplexColumnVector& operator = (const ComplexColumnVector& a)
   {
@@ -67,39 +67,43 @@ public:
     return *this;
   }
 
-  bool operator == (const ComplexColumnVector& a) const;
-  bool operator != (const ComplexColumnVector& a) const;
+  OCTAVE_API bool operator == (const ComplexColumnVector& a) const;
+  OCTAVE_API bool operator != (const ComplexColumnVector& a) const;
 
   // destructive insert/delete/reorder operations
 
-  ComplexColumnVector& insert (const ColumnVector& a, octave_idx_type r);
-  ComplexColumnVector& insert (const ComplexColumnVector& a, octave_idx_type r);
+  OCTAVE_API ComplexColumnVector&
+  insert (const ColumnVector& a, octave_idx_type r);
+  OCTAVE_API ComplexColumnVector&
+  insert (const ComplexColumnVector& a, octave_idx_type r);
 
-  ComplexColumnVector& fill (double val);
-  ComplexColumnVector& fill (const Complex& val);
-  ComplexColumnVector& fill (double val,
-                             octave_idx_type r1, octave_idx_type r2);
-  ComplexColumnVector& fill (const Complex& val,
-                             octave_idx_type r1, octave_idx_type r2);
+  OCTAVE_API ComplexColumnVector& fill (double val);
+  OCTAVE_API ComplexColumnVector& fill (const Complex& val);
+  OCTAVE_API ComplexColumnVector&
+  fill (double val, octave_idx_type r1, octave_idx_type r2);
+  OCTAVE_API ComplexColumnVector&
+  fill (const Complex& val, octave_idx_type r1, octave_idx_type r2);
 
-  ComplexColumnVector stack (const ColumnVector& a) const;
-  ComplexColumnVector stack (const ComplexColumnVector& a) const;
+  OCTAVE_API ComplexColumnVector stack (const ColumnVector& a) const;
+  OCTAVE_API ComplexColumnVector stack (const ComplexColumnVector& a) const;
 
-  ComplexRowVector hermitian (void) const;
-  ComplexRowVector transpose (void) const;
+  OCTAVE_API ComplexRowVector hermitian (void) const;
+  OCTAVE_API ComplexRowVector transpose (void) const;
 
   friend OCTAVE_API ComplexColumnVector conj (const ComplexColumnVector& a);
 
   // resize is the destructive equivalent for this one
 
-  ComplexColumnVector extract (octave_idx_type r1, octave_idx_type r2) const;
+  OCTAVE_API ComplexColumnVector
+  extract (octave_idx_type r1, octave_idx_type r2) const;
 
-  ComplexColumnVector extract_n (octave_idx_type r1, octave_idx_type n) const;
+  OCTAVE_API ComplexColumnVector
+  extract_n (octave_idx_type r1, octave_idx_type n) const;
 
   // column vector by column vector -> column vector operations
 
-  ComplexColumnVector& operator += (const ColumnVector& a);
-  ComplexColumnVector& operator -= (const ColumnVector& a);
+  OCTAVE_API ComplexColumnVector& operator += (const ColumnVector& a);
+  OCTAVE_API ComplexColumnVector& operator -= (const ColumnVector& a);
 
   // matrix by column vector -> column vector operations
 
@@ -127,10 +131,10 @@ public:
 
   // other operations
 
-  Complex min (void) const;
-  Complex max (void) const;
+  OCTAVE_API Complex min (void) const;
+  OCTAVE_API Complex max (void) const;
 
-  ColumnVector abs (void) const;
+  OCTAVE_API ColumnVector abs (void) const;
 
   // i/o
 

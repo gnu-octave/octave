@@ -104,7 +104,7 @@ public:
 
   int ndims (void) const { return 2; }
 
-  Array<T> extract_diag (octave_idx_type k = 0) const;
+  OCTAVE_API Array<T> extract_diag (octave_idx_type k = 0) const;
 
   DiagArray2<T> build_diag_matrix () const
   {
@@ -119,7 +119,7 @@ public:
     return (r == c) ? Array<T>::elem (r) : T (0);
   }
 
-  T& elem (octave_idx_type r, octave_idx_type c);
+  OCTAVE_API T& elem (octave_idx_type r, octave_idx_type c);
 
   T dgelem (octave_idx_type i) const
   { return Array<T>::elem (i); }
@@ -155,16 +155,16 @@ public:
   T dgxelem (octave_idx_type i) const
   { return Array<T>::xelem (i); }
 
-  void resize (octave_idx_type n, octave_idx_type m, const T& rfv);
+  OCTAVE_API void resize (octave_idx_type n, octave_idx_type m, const T& rfv);
   void resize (octave_idx_type n, octave_idx_type m)
   {
     resize (n, m, Array<T>::resize_fill_value ());
   }
 
-  DiagArray2<T> transpose (void) const;
-  DiagArray2<T> hermitian (T (*fcn) (const T&) = nullptr) const;
+  OCTAVE_API DiagArray2<T> transpose (void) const;
+  OCTAVE_API DiagArray2<T> hermitian (T (*fcn) (const T&) = nullptr) const;
 
-  Array<T> array_value (void) const;
+  OCTAVE_API Array<T> array_value (void) const;
 
   const T * data (void) const { return Array<T>::data (); }
 

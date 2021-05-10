@@ -251,7 +251,7 @@ public:
       }
   }
 
-  void chop_all_singletons (void);
+  OCTAVE_API void chop_all_singletons (void);
 
   // WARNING: Only call by jit
   octave_idx_type * to_jit (void) const
@@ -265,7 +265,7 @@ private:
 
 public:
 
-  static octave_idx_type dim_max (void);
+  static OCTAVE_API octave_idx_type dim_max (void);
 
   explicit dim_vector (void) : rep (nil_rep ())
   { increment_count (); }
@@ -361,7 +361,7 @@ public:
       }
   }
 
-  std::string str (char sep = 'x') const;
+  OCTAVE_API std::string str (char sep = 'x') const;
 
   bool all_zero (void) const
   {
@@ -385,7 +385,7 @@ public:
                         [] (octave_idx_type dim) { return dim == 0; });
   }
 
-  int num_ones (void) const;
+  OCTAVE_API int num_ones (void) const;
 
   bool all_ones (void) const
   {
@@ -418,7 +418,7 @@ public:
   //! function that is iterating over an array using octave_idx_type
   //! indices.
 
-  octave_idx_type safe_numel (void) const;
+  OCTAVE_API octave_idx_type safe_numel (void) const;
 
   bool any_neg (void) const
   {
@@ -426,21 +426,21 @@ public:
                         [] (octave_idx_type dim) { return dim < 0; });
   }
 
-  dim_vector squeeze (void) const;
+  OCTAVE_API dim_vector squeeze (void) const;
 
   //! This corresponds to cat().
-  bool concat (const dim_vector& dvb, int dim);
+  OCTAVE_API bool concat (const dim_vector& dvb, int dim);
 
   //! This corresponds to [,] (horzcat, dim = 0) and [;] (vertcat, dim = 1).
   // The rules are more relaxed here.
-  bool hvcat (const dim_vector& dvb, int dim);
+  OCTAVE_API bool hvcat (const dim_vector& dvb, int dim);
 
   //! Force certain dimensionality, preserving numel ().  Missing
   //! dimensions are set to 1, redundant are folded into the trailing
   //! one.  If n = 1, the result is 2d and the second dim is 1
   //! (dim_vectors are always at least 2D).
 
-  dim_vector redim (int n) const;
+  OCTAVE_API dim_vector redim (int n) const;
 
   dim_vector as_column (void) const
   {
@@ -576,9 +576,10 @@ public:
     return k;
   }
 
-  friend bool operator == (const dim_vector& a, const dim_vector& b);
+  friend OCTAVE_API bool
+  operator == (const dim_vector& a, const dim_vector& b);
 
-  Array<octave_idx_type> as_array (void) const;
+  OCTAVE_API Array<octave_idx_type> as_array (void) const;
 };
 
 inline bool

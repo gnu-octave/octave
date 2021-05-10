@@ -66,15 +66,16 @@ public:
   DiagMatrix (const Array<double>& a, octave_idx_type r, octave_idx_type c)
     : MDiagArray2<double> (a, r, c) { }
 
-  bool operator == (const DiagMatrix& a) const;
-  bool operator != (const DiagMatrix& a) const;
+  OCTAVE_API bool operator == (const DiagMatrix& a) const;
+  OCTAVE_API bool operator != (const DiagMatrix& a) const;
 
-  DiagMatrix& fill (double val);
-  DiagMatrix& fill (double val, octave_idx_type beg, octave_idx_type end);
-  DiagMatrix& fill (const ColumnVector& a);
-  DiagMatrix& fill (const RowVector& a);
-  DiagMatrix& fill (const ColumnVector& a, octave_idx_type beg);
-  DiagMatrix& fill (const RowVector& a, octave_idx_type beg);
+  OCTAVE_API DiagMatrix& fill (double val);
+  OCTAVE_API DiagMatrix&
+  fill (double val, octave_idx_type beg, octave_idx_type end);
+  OCTAVE_API DiagMatrix& fill (const ColumnVector& a);
+  OCTAVE_API DiagMatrix& fill (const RowVector& a);
+  OCTAVE_API DiagMatrix& fill (const ColumnVector& a, octave_idx_type beg);
+  OCTAVE_API DiagMatrix& fill (const RowVector& a, octave_idx_type beg);
 
   DiagMatrix transpose (void) const
   { return MDiagArray2<double>::transpose (); }
@@ -85,33 +86,34 @@ public:
 
   // resize is the destructive analog for this one
 
-  Matrix extract (octave_idx_type r1, octave_idx_type c1,
-                  octave_idx_type r2, octave_idx_type c2) const;
+  OCTAVE_API Matrix
+  extract (octave_idx_type r1, octave_idx_type c1,
+           octave_idx_type r2, octave_idx_type c2) const;
 
   // extract row or column i.
 
-  RowVector row (octave_idx_type i) const;
-  RowVector row (char *s) const;
+  OCTAVE_API RowVector row (octave_idx_type i) const;
+  OCTAVE_API RowVector row (char *s) const;
 
-  ColumnVector column (octave_idx_type i) const;
-  ColumnVector column (char *s) const;
+  OCTAVE_API ColumnVector column (octave_idx_type i) const;
+  OCTAVE_API ColumnVector column (char *s) const;
 
-  DiagMatrix inverse (void) const;
-  DiagMatrix inverse (octave_idx_type& info) const;
-  DiagMatrix pseudo_inverse (double tol = 0.0) const;
+  OCTAVE_API DiagMatrix inverse (void) const;
+  OCTAVE_API DiagMatrix inverse (octave_idx_type& info) const;
+  OCTAVE_API DiagMatrix pseudo_inverse (double tol = 0.0) const;
 
   // other operations
 
   ColumnVector extract_diag (octave_idx_type k = 0) const
   { return MDiagArray2<double>::extract_diag (k); }
 
-  DET determinant (void) const;
-  double rcond (void) const;
+  OCTAVE_API DET determinant (void) const;
+  OCTAVE_API double rcond (void) const;
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
-                                               const DiagMatrix& a);
+  friend OCTAVE_API std::ostream&
+  operator << (std::ostream& os, const DiagMatrix& a);
 
 };
 

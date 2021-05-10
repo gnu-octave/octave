@@ -55,7 +55,7 @@ public:
   template <typename U>
   FloatComplexNDArray (const Array<U>& a) : MArray<FloatComplex> (a) { }
 
-  FloatComplexNDArray (const charNDArray&);
+  OCTAVE_API FloatComplexNDArray (const charNDArray&);
 
   FloatComplexNDArray& operator = (const FloatComplexNDArray& a)
   {
@@ -65,77 +65,80 @@ public:
 
   // unary operations
 
-  boolNDArray operator ! (void) const;
+  OCTAVE_API boolNDArray operator ! (void) const;
 
   // FIXME: this is not quite the right thing.
 
-  bool any_element_is_nan (void) const;
-  bool any_element_is_inf_or_nan (void) const;
-  bool all_elements_are_real (void) const;
-  bool all_integers (float& max_val, float& min_val) const;
-  bool too_large_for_float (void) const;
+  OCTAVE_API bool any_element_is_nan (void) const;
+  OCTAVE_API bool any_element_is_inf_or_nan (void) const;
+  OCTAVE_API bool all_elements_are_real (void) const;
+  OCTAVE_API bool all_integers (float& max_val, float& min_val) const;
+  OCTAVE_API bool too_large_for_float (void) const;
 
-  boolNDArray all (int dim = -1) const;
-  boolNDArray any (int dim = -1) const;
+  OCTAVE_API boolNDArray all (int dim = -1) const;
+  OCTAVE_API boolNDArray any (int dim = -1) const;
 
-  FloatComplexNDArray cumprod (int dim = -1) const;
-  FloatComplexNDArray cumsum (int dim = -1) const;
-  FloatComplexNDArray prod (int dim = -1) const;
-  ComplexNDArray dprod (int dim = -1) const;
-  FloatComplexNDArray sum (int dim = -1) const;
-  ComplexNDArray dsum (int dim = -1) const;
-  FloatComplexNDArray sumsq (int dim = -1) const;
-  FloatComplexNDArray concat (const FloatComplexNDArray& rb,
-                              const Array<octave_idx_type>& ra_idx);
-  FloatComplexNDArray concat (const FloatNDArray& rb,
-                              const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API FloatComplexNDArray cumprod (int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray cumsum (int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray prod (int dim = -1) const;
+  OCTAVE_API ComplexNDArray dprod (int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray sum (int dim = -1) const;
+  OCTAVE_API ComplexNDArray dsum (int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray sumsq (int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray
+  concat (const FloatComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API FloatComplexNDArray
+  concat (const FloatNDArray& rb, const Array<octave_idx_type>& ra_idx);
 
-  FloatComplexNDArray max (int dim = -1) const;
-  FloatComplexNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
-  FloatComplexNDArray min (int dim = -1) const;
-  FloatComplexNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray max (int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray
+  max (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray min (int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray
+  min (Array<octave_idx_type>& index, int dim = -1) const;
 
-  FloatComplexNDArray cummax (int dim = -1) const;
-  FloatComplexNDArray cummax (Array<octave_idx_type>& index,
-                              int dim = -1) const;
-  FloatComplexNDArray cummin (int dim = -1) const;
-  FloatComplexNDArray cummin (Array<octave_idx_type>& index,
-                              int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray cummax (int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray
+  cummax (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray cummin (int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray
+  cummin (Array<octave_idx_type>& index, int dim = -1) const;
 
-  FloatComplexNDArray diff (octave_idx_type order = 1, int dim = -1) const;
+  OCTAVE_API FloatComplexNDArray
+  diff (octave_idx_type order = 1, int dim = -1) const;
 
-  FloatComplexNDArray& insert (const NDArray& a,
-                               octave_idx_type r, octave_idx_type c);
-  FloatComplexNDArray& insert (const FloatComplexNDArray& a,
-                               octave_idx_type r, octave_idx_type c);
-  FloatComplexNDArray& insert (const FloatComplexNDArray& a,
-                               const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API FloatComplexNDArray&
+  insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
+  OCTAVE_API FloatComplexNDArray&
+  insert (const FloatComplexNDArray& a, octave_idx_type r, octave_idx_type c);
+  OCTAVE_API FloatComplexNDArray&
+  insert (const FloatComplexNDArray& a, const Array<octave_idx_type>& ra_idx);
 
-  FloatNDArray abs (void) const;
-  boolNDArray isnan (void) const;
-  boolNDArray isinf (void) const;
-  boolNDArray isfinite (void) const;
+  OCTAVE_API FloatNDArray abs (void) const;
+  OCTAVE_API boolNDArray isnan (void) const;
+  OCTAVE_API boolNDArray isinf (void) const;
+  OCTAVE_API boolNDArray isfinite (void) const;
 
   friend OCTAVE_API FloatComplexNDArray conj (const FloatComplexNDArray& a);
 
-  FloatComplexNDArray fourier (int dim = 1) const;
-  FloatComplexNDArray ifourier (int dim = 1) const;
+  OCTAVE_API FloatComplexNDArray fourier (int dim = 1) const;
+  OCTAVE_API FloatComplexNDArray ifourier (int dim = 1) const;
 
-  FloatComplexNDArray fourier2d (void) const;
-  FloatComplexNDArray ifourier2d (void) const;
+  OCTAVE_API FloatComplexNDArray fourier2d (void) const;
+  OCTAVE_API FloatComplexNDArray ifourier2d (void) const;
 
-  FloatComplexNDArray fourierNd (void) const;
-  FloatComplexNDArray ifourierNd (void) const;
+  OCTAVE_API FloatComplexNDArray fourierNd (void) const;
+  OCTAVE_API FloatComplexNDArray ifourierNd (void) const;
 
   FloatComplexNDArray squeeze (void) const
   { return MArray<FloatComplex>::squeeze (); }
 
-  static void increment_index (Array<octave_idx_type>& ra_idx,
-                               const dim_vector& dimensions,
-                               int start_dimension = 0);
+  static OCTAVE_API void
+  increment_index (Array<octave_idx_type>& ra_idx,
+                   const dim_vector& dimensions, int start_dimension = 0);
 
-  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                                        const dim_vector& dimensions);
+  static OCTAVE_API octave_idx_type
+  compute_index (Array<octave_idx_type>& ra_idx, const dim_vector& dimensions);
 
   // i/o
 
@@ -147,9 +150,10 @@ public:
   //  bool all_elements_are_real (void) const;
   //  bool all_integers (float& max_val, float& min_val) const;
 
-  FloatComplexNDArray diag (octave_idx_type k = 0) const;
+  OCTAVE_API FloatComplexNDArray diag (octave_idx_type k = 0) const;
 
-  FloatComplexNDArray diag (octave_idx_type m, octave_idx_type n) const;
+  OCTAVE_API FloatComplexNDArray
+  diag (octave_idx_type m, octave_idx_type n) const;
 
   FloatComplexNDArray& changesign (void)
   {

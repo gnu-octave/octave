@@ -77,64 +77,69 @@ public:
 
   // unary operations
 
-  boolNDArray operator ! (void) const;
+  OCTAVE_API boolNDArray operator ! (void) const;
 
-  bool any_element_is_negative (bool = false) const;
-  bool any_element_is_positive (bool = false) const;
-  bool any_element_is_nan (void) const;
-  bool any_element_is_inf_or_nan (void) const;
-  bool any_element_not_one_or_zero (void) const;
-  bool all_elements_are_zero (void) const;
-  bool all_elements_are_int_or_inf_or_nan (void) const;
-  bool all_integers (double& max_val, double& min_val) const;
-  bool all_integers (void) const;
-  bool too_large_for_float (void) const;
+  OCTAVE_API bool any_element_is_negative (bool = false) const;
+  OCTAVE_API bool any_element_is_positive (bool = false) const;
+  OCTAVE_API bool any_element_is_nan (void) const;
+  OCTAVE_API bool any_element_is_inf_or_nan (void) const;
+  OCTAVE_API bool any_element_not_one_or_zero (void) const;
+  OCTAVE_API bool all_elements_are_zero (void) const;
+  OCTAVE_API bool all_elements_are_int_or_inf_or_nan (void) const;
+  OCTAVE_API bool all_integers (double& max_val, double& min_val) const;
+  OCTAVE_API bool all_integers (void) const;
+  OCTAVE_API bool too_large_for_float (void) const;
 
   // FIXME: this is not quite the right thing.
 
-  boolNDArray all (int dim = -1) const;
-  boolNDArray any (int dim = -1) const;
+  OCTAVE_API boolNDArray all (int dim = -1) const;
+  OCTAVE_API boolNDArray any (int dim = -1) const;
 
-  NDArray cumprod (int dim = -1) const;
-  NDArray cumsum (int dim = -1) const;
-  NDArray prod (int dim = -1) const;
-  NDArray sum (int dim = -1) const;
-  NDArray xsum (int dim = -1) const;
-  NDArray sumsq (int dim = -1) const;
-  NDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
-  ComplexNDArray concat (const ComplexNDArray& rb,
-                         const Array<octave_idx_type>& ra_idx);
-  charNDArray concat (const charNDArray& rb,
-                      const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API NDArray cumprod (int dim = -1) const;
+  OCTAVE_API NDArray cumsum (int dim = -1) const;
+  OCTAVE_API NDArray prod (int dim = -1) const;
+  OCTAVE_API NDArray sum (int dim = -1) const;
+  OCTAVE_API NDArray xsum (int dim = -1) const;
+  OCTAVE_API NDArray sumsq (int dim = -1) const;
+  OCTAVE_API NDArray
+  concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API ComplexNDArray
+  concat (const ComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API charNDArray
+  concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
 
-  NDArray max (int dim = -1) const;
-  NDArray max (Array<octave_idx_type>& index, int dim = -1) const;
-  NDArray min (int dim = -1) const;
-  NDArray min (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API NDArray max (int dim = -1) const;
+  OCTAVE_API NDArray max (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API NDArray min (int dim = -1) const;
+  OCTAVE_API NDArray min (Array<octave_idx_type>& index, int dim = -1) const;
 
-  NDArray cummax (int dim = -1) const;
-  NDArray cummax (Array<octave_idx_type>& index, int dim = -1) const;
-  NDArray cummin (int dim = -1) const;
-  NDArray cummin (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API NDArray cummax (int dim = -1) const;
+  OCTAVE_API NDArray
+  cummax (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API NDArray cummin (int dim = -1) const;
+  OCTAVE_API NDArray
+  cummin (Array<octave_idx_type>& index, int dim = -1) const;
 
-  NDArray diff (octave_idx_type order = 1, int dim = -1) const;
+  OCTAVE_API NDArray diff (octave_idx_type order = 1, int dim = -1) const;
 
-  NDArray& insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
-  NDArray& insert (const NDArray& a, const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API NDArray&
+  insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
+  OCTAVE_API NDArray&
+  insert (const NDArray& a, const Array<octave_idx_type>& ra_idx);
 
-  NDArray abs (void) const;
-  boolNDArray isnan (void) const;
-  boolNDArray isinf (void) const;
-  boolNDArray isfinite (void) const;
+  OCTAVE_API NDArray abs (void) const;
+  OCTAVE_API boolNDArray isnan (void) const;
+  OCTAVE_API boolNDArray isinf (void) const;
+  OCTAVE_API boolNDArray isfinite (void) const;
 
-  ComplexNDArray fourier (int dim = 1) const;
-  ComplexNDArray ifourier (int dim = 1) const;
+  OCTAVE_API ComplexNDArray fourier (int dim = 1) const;
+  OCTAVE_API ComplexNDArray ifourier (int dim = 1) const;
 
-  ComplexNDArray fourier2d (void) const;
-  ComplexNDArray ifourier2d (void) const;
+  OCTAVE_API ComplexNDArray fourier2d (void) const;
+  OCTAVE_API ComplexNDArray ifourier2d (void) const;
 
-  ComplexNDArray fourierNd (void) const;
-  ComplexNDArray ifourierNd (void) const;
+  OCTAVE_API ComplexNDArray fourierNd (void) const;
+  OCTAVE_API ComplexNDArray ifourierNd (void) const;
 
   friend OCTAVE_API NDArray real (const ComplexNDArray& a);
   friend OCTAVE_API NDArray imag (const ComplexNDArray& a);
@@ -143,22 +148,22 @@ public:
 
   NDArray squeeze (void) const { return MArray<double>::squeeze (); }
 
-  static void increment_index (Array<octave_idx_type>& ra_idx,
-                               const dim_vector& dimensions,
-                               int start_dimension = 0);
+  static OCTAVE_API void
+  increment_index (Array<octave_idx_type>& ra_idx,
+                   const dim_vector& dimensions, int start_dimension = 0);
 
-  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                                        const dim_vector& dimensions);
+  static OCTAVE_API octave_idx_type
+  compute_index (Array<octave_idx_type>& ra_idx, const dim_vector& dimensions);
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
-                                               const NDArray& a);
+  friend OCTAVE_API std::ostream&
+  operator << (std::ostream& os, const NDArray& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, NDArray& a);
 
-  NDArray diag (octave_idx_type k = 0) const;
+  OCTAVE_API NDArray diag (octave_idx_type k = 0) const;
 
-  NDArray diag (octave_idx_type m, octave_idx_type n) const;
+  OCTAVE_API NDArray diag (octave_idx_type m, octave_idx_type n) const;
 
   NDArray& changesign (void)
   {

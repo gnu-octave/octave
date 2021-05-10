@@ -131,7 +131,7 @@ namespace octave
 
       idx_colon_rep (void) = default;
 
-      idx_colon_rep (char c);
+      OCTAVE_API idx_colon_rep (char c);
 
       // No copying!
 
@@ -141,7 +141,7 @@ namespace octave
 
       octave_idx_type xelem (octave_idx_type i) const { return i; }
 
-      octave_idx_type checkelem (octave_idx_type i) const;
+      OCTAVE_API octave_idx_type checkelem (octave_idx_type i) const;
 
       octave_idx_type length (octave_idx_type n) const { return n; }
 
@@ -156,7 +156,7 @@ namespace octave
 
       bool is_colon_equiv (octave_idx_type) const { return true; }
 
-      std::ostream& print (std::ostream& os) const;
+      OCTAVE_API std::ostream& print (std::ostream& os) const;
     };
 
     // To distinguish the "direct" constructors that blindly trust the data.
@@ -177,7 +177,7 @@ namespace octave
       idx_range_rep (octave_idx_type start, octave_idx_type limit,
                      octave_idx_type step);
 
-      idx_range_rep (const range<double>&);
+      OCTAVE_API idx_range_rep (const range<double>&);
 
       // No copying!
 
@@ -199,9 +199,9 @@ namespace octave
 
       idx_class_type idx_class (void) const { return class_range; }
 
-      idx_base_rep * sort_uniq_clone (bool uniq = false);
+      OCTAVE_API idx_base_rep * sort_uniq_clone (bool uniq = false);
 
-      idx_base_rep * sort_idx (Array<octave_idx_type>&);
+      OCTAVE_API idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
       bool is_colon_equiv (octave_idx_type n) const
       { return m_start == 0 && m_step == 1 && m_len == n; }
@@ -213,11 +213,11 @@ namespace octave
 
       octave_idx_type get_step (void) const { return m_step; }
 
-      std::ostream& print (std::ostream& os) const;
+      OCTAVE_API std::ostream& print (std::ostream& os) const;
 
-      range<double> unconvert (void) const;
+      OCTAVE_API range<double> unconvert (void) const;
 
-      Array<octave_idx_type> as_array (void);
+      OCTAVE_API Array<octave_idx_type> as_array (void);
 
     private:
 
@@ -240,14 +240,14 @@ namespace octave
       idx_scalar_rep& operator = (const idx_scalar_rep& idx) = delete;
 
       // Zero-based constructor.
-      idx_scalar_rep (octave_idx_type i);
+      OCTAVE_API idx_scalar_rep (octave_idx_type i);
 
       template <typename T>
         idx_scalar_rep (T x);
 
       octave_idx_type xelem (octave_idx_type) const { return m_data; }
 
-      octave_idx_type checkelem (octave_idx_type i) const;
+      OCTAVE_API octave_idx_type checkelem (octave_idx_type i) const;
 
       octave_idx_type length (octave_idx_type) const { return 1; }
 
@@ -259,7 +259,7 @@ namespace octave
       idx_base_rep * sort_uniq_clone (bool = false)
       { m_count++; return this; }
 
-      idx_base_rep * sort_idx (Array<octave_idx_type>&);
+      OCTAVE_API idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
       bool is_colon_equiv (octave_idx_type n) const
       { return n == 1 && m_data == 0; }
@@ -268,11 +268,11 @@ namespace octave
 
       octave_idx_type get_data (void) const { return m_data; }
 
-      std::ostream& print (std::ostream& os) const;
+      OCTAVE_API std::ostream& print (std::ostream& os) const;
 
-      double unconvert (void) const;
+      OCTAVE_API double unconvert (void) const;
 
-      Array<octave_idx_type> as_array (void);
+      OCTAVE_API Array<octave_idx_type> as_array (void);
 
     private:
 
@@ -295,19 +295,19 @@ namespace octave
         { }
 
       // Zero-based constructor.
-      idx_vector_rep (const Array<octave_idx_type>& inda);
+      OCTAVE_API idx_vector_rep (const Array<octave_idx_type>& inda);
 
-      idx_vector_rep (const Array<octave_idx_type>& inda,
-                      octave_idx_type ext, direct);
+      OCTAVE_API idx_vector_rep (const Array<octave_idx_type>& inda,
+                                 octave_idx_type ext, direct);
 
       template <typename T>
         idx_vector_rep (const Array<T>&);
 
-      idx_vector_rep (bool);
+      OCTAVE_API idx_vector_rep (bool);
 
-      idx_vector_rep (const Array<bool>&, octave_idx_type = -1);
+      OCTAVE_API idx_vector_rep (const Array<bool>&, octave_idx_type = -1);
 
-      idx_vector_rep (const Sparse<bool>&);
+      OCTAVE_API idx_vector_rep (const Sparse<bool>&);
 
       // No copying!
 
@@ -319,7 +319,7 @@ namespace octave
 
       octave_idx_type xelem (octave_idx_type i) const { return m_data[i]; }
 
-      octave_idx_type checkelem (octave_idx_type i) const;
+      OCTAVE_API octave_idx_type checkelem (octave_idx_type i) const;
 
       octave_idx_type length (octave_idx_type) const { return m_len; }
 
@@ -330,17 +330,17 @@ namespace octave
 
       idx_base_rep * sort_uniq_clone (bool uniq = false);
 
-      idx_base_rep * sort_idx (Array<octave_idx_type>&);
+      OCTAVE_API idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
       dim_vector orig_dimensions (void) const { return m_orig_dims; }
 
       const octave_idx_type * get_data (void) const { return m_data; }
 
-      std::ostream& print (std::ostream& os) const;
+      OCTAVE_API std::ostream& print (std::ostream& os) const;
 
-      Array<double> unconvert (void) const;
+      OCTAVE_API Array<double> unconvert (void) const;
 
-      Array<octave_idx_type> as_array (void);
+      OCTAVE_API Array<octave_idx_type> as_array (void);
 
     private:
 
@@ -374,9 +374,9 @@ namespace octave
         m_lsti (-1), m_lste (-1), m_aowner (nullptr), m_orig_dims (od)
         { }
 
-      idx_mask_rep (bool);
+      OCTAVE_API idx_mask_rep (bool);
 
-      idx_mask_rep (const Array<bool>&, octave_idx_type = -1);
+      OCTAVE_API idx_mask_rep (const Array<bool>&, octave_idx_type = -1);
 
       // No copying!
 
@@ -384,7 +384,7 @@ namespace octave
 
       idx_mask_rep& operator = (const idx_mask_rep& idx) = delete;
 
-      ~idx_mask_rep (void);
+      OCTAVE_API ~idx_mask_rep (void);
 
       octave_idx_type xelem (octave_idx_type i) const;
 
@@ -400,7 +400,7 @@ namespace octave
       idx_base_rep * sort_uniq_clone (bool = false)
       { m_count++; return this; }
 
-      idx_base_rep * sort_idx (Array<octave_idx_type>&);
+      OCTAVE_API idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
       dim_vector orig_dimensions (void) const { return m_orig_dims; }
 
@@ -409,11 +409,11 @@ namespace octave
 
       const bool * get_data (void) const { return m_data; }
 
-      std::ostream& print (std::ostream& os) const;
+      OCTAVE_API std::ostream& print (std::ostream& os) const;
 
-      Array<bool> unconvert (void) const;
+      OCTAVE_API Array<bool> unconvert (void) const;
 
-      Array<octave_idx_type> as_array (void);
+      OCTAVE_API Array<octave_idx_type> as_array (void);
 
     private:
 
@@ -442,7 +442,7 @@ namespace octave
 
     // The shared empty vector representation (for fast default
     // constructor).
-    static idx_vector_rep *nil_rep (void);
+    static OCTAVE_API idx_vector_rep *nil_rep (void);
 
     public:
 
@@ -501,7 +501,7 @@ namespace octave
 
     idx_vector (const Array<float>& nda) : m_rep (new idx_vector_rep (nda)) { }
 
-    idx_vector (const Array<bool>& nda);
+    OCTAVE_API idx_vector (const Array<bool>& nda);
 
     idx_vector (const range<double>& r) : m_rep (new idx_range_rep (r)) { }
 
@@ -962,43 +962,44 @@ namespace octave
     // A(i,j)(:) is equal to A(k)(:).
 
     // If the next index can be reduced, returns true and updates this.
-    bool maybe_reduce (octave_idx_type n, const idx_vector& j,
-                       octave_idx_type nj);
+    OCTAVE_API bool
+    maybe_reduce (octave_idx_type n, const idx_vector& j, octave_idx_type nj);
 
-    bool is_cont_range (octave_idx_type n,
-                        octave_idx_type& l, octave_idx_type& u) const;
+    OCTAVE_API bool
+    is_cont_range (octave_idx_type n, octave_idx_type& l,
+                   octave_idx_type& u) const;
 
     // Returns the increment for ranges and colon, 0 for scalars and empty
     // vectors, 1st difference otherwise.
-    octave_idx_type increment (void) const;
+    OCTAVE_API octave_idx_type increment (void) const;
 
-    idx_vector
+    OCTAVE_API idx_vector
     complement (octave_idx_type n) const;
 
-    bool is_permutation (octave_idx_type n) const;
+    OCTAVE_API bool is_permutation (octave_idx_type n) const;
 
     // Returns the inverse permutation.  If this is not a permutation on 1:n, the
     // result is undefined (but no error unless extent () != n).
-    idx_vector inverse_permutation (octave_idx_type n) const;
+    OCTAVE_API idx_vector inverse_permutation (octave_idx_type n) const;
 
     // Copies all the indices to a given array.  Not allowed for colons.
-    void copy_data (octave_idx_type *data) const;
+    OCTAVE_API void copy_data (octave_idx_type *data) const;
 
     // If the index is a mask, convert it to index vector.
-    idx_vector unmask (void) const;
+    OCTAVE_API idx_vector unmask (void) const;
 
     // Unconverts the index to a scalar, Range, double array or a mask.
-    void unconvert (idx_class_type& iclass,
-                    double& scalar, range<double>& range,
-                    Array<double>& array, Array<bool>& mask) const;
+    OCTAVE_API void
+    unconvert (idx_class_type& iclass, double& scalar, range<double>& range,
+               Array<double>& array, Array<bool>& mask) const;
 
-    Array<octave_idx_type> as_array (void) const;
+    OCTAVE_API Array<octave_idx_type> as_array (void) const;
 
     // Raw pointer to index array.  This is non-const because it may be
     // necessary to mutate the index.
-    const octave_idx_type * raw (void);
+    const OCTAVE_API octave_idx_type * raw (void);
 
-    bool isvector (void) const;
+    OCTAVE_API bool isvector (void) const;
 
     // FIXME: these are here for compatibility.  They should be removed
     // when no longer in use.
@@ -1009,13 +1010,13 @@ namespace octave
     bool is_colon_equiv (octave_idx_type n, int) const
     { return is_colon_equiv (n); }
 
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     freeze (octave_idx_type z_len, const char *tag, bool resize_ok = false);
 
     void sort (bool uniq = false)
     { *this = sorted (uniq); }
 
-    octave_idx_type ones_count (void) const;
+    OCTAVE_API octave_idx_type ones_count (void) const;
 
     octave_idx_type max (void) const { return extent (1) - 1; }
 

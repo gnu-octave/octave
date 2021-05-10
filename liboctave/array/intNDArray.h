@@ -66,14 +66,14 @@ public:
   template <typename U>
   intNDArray (const intNDArray<U>& a) : MArray<T> (a) { }
 
-  boolNDArray operator ! (void) const;
+  OCTAVE_API boolNDArray operator ! (void) const;
 
   bool any_element_is_nan (void) const { return false; }
-  bool any_element_not_one_or_zero (void) const;
+  OCTAVE_API bool any_element_not_one_or_zero (void) const;
 
-  intNDArray diag (octave_idx_type k = 0) const;
+  OCTAVE_API intNDArray diag (octave_idx_type k = 0) const;
 
-  intNDArray diag (octave_idx_type m, octave_idx_type n) const;
+  OCTAVE_API intNDArray diag (octave_idx_type m, octave_idx_type n) const;
 
   intNDArray& changesign (void)
   {
@@ -83,28 +83,32 @@ public:
 
   // FIXME: this is not quite the right thing.
 
-  boolNDArray all (int dim = -1) const;
-  boolNDArray any (int dim = -1) const;
+  OCTAVE_API boolNDArray all (int dim = -1) const;
+  OCTAVE_API boolNDArray any (int dim = -1) const;
 
-  intNDArray max (int dim = -1) const;
-  intNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
-  intNDArray min (int dim = -1) const;
-  intNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API intNDArray max (int dim = -1) const;
+  OCTAVE_API intNDArray
+  max (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API intNDArray min (int dim = -1) const;
+  OCTAVE_API intNDArray
+  min (Array<octave_idx_type>& index, int dim = -1) const;
 
-  intNDArray cummax (int dim = -1) const;
-  intNDArray cummax (Array<octave_idx_type>& index, int dim = -1) const;
-  intNDArray cummin (int dim = -1) const;
-  intNDArray cummin (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API intNDArray cummax (int dim = -1) const;
+  OCTAVE_API intNDArray
+  cummax (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API intNDArray cummin (int dim = -1) const;
+  OCTAVE_API intNDArray
+  cummin (Array<octave_idx_type>& index, int dim = -1) const;
 
-  intNDArray prod (int dim) const;
-  intNDArray sum (int dim) const;
-  NDArray dsum (int dim) const;
-  intNDArray cumsum (int dim) const;
+  OCTAVE_API intNDArray prod (int dim) const;
+  OCTAVE_API intNDArray sum (int dim) const;
+  OCTAVE_API NDArray dsum (int dim) const;
+  OCTAVE_API intNDArray cumsum (int dim) const;
 
-  intNDArray diff (octave_idx_type order = 1, int dim = -1) const;
+  OCTAVE_API intNDArray diff (octave_idx_type order = 1, int dim = -1) const;
 
-  intNDArray abs (void) const;
-  intNDArray signum (void) const;
+  OCTAVE_API intNDArray abs (void) const;
+  OCTAVE_API intNDArray signum (void) const;
 
   intNDArray squeeze (void) const
   { return intNDArray<T> (MArray<T>::squeeze ()); }
@@ -112,30 +116,30 @@ public:
   intNDArray transpose (void) const
   { return intNDArray<T> (MArray<T>::transpose ()); }
 
-  intNDArray concat (const intNDArray<T>& rb,
-                     const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API intNDArray
+  concat (const intNDArray<T>& rb, const Array<octave_idx_type>& ra_idx);
 
-  intNDArray& insert (const intNDArray<T>& a,
-                      octave_idx_type r, octave_idx_type c);
-  intNDArray& insert (const intNDArray<T>& a,
-                      const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API intNDArray&
+  insert (const intNDArray<T>& a, octave_idx_type r, octave_idx_type c);
+  OCTAVE_API intNDArray&
+  insert (const intNDArray<T>& a, const Array<octave_idx_type>& ra_idx);
 
-  static void increment_index (Array<octave_idx_type>& ra_idx,
-                               const dim_vector& dimensions,
-                               int start_dimension = 0);
+  static OCTAVE_API void
+  increment_index (Array<octave_idx_type>& ra_idx,
+                   const dim_vector& dimensions, int start_dimension = 0);
 
-  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                                        const dim_vector& dimensions);
+  static OCTAVE_API octave_idx_type
+  compute_index (Array<octave_idx_type>& ra_idx, const dim_vector& dimensions);
 };
 
 // i/o
 
 template <typename T>
-OCTAVE_API
-std::ostream& operator << (std::ostream& os, const intNDArray<T>& a);
+OCTAVE_API std::ostream&
+operator << (std::ostream& os, const intNDArray<T>& a);
 
 template <typename T>
-OCTAVE_API
-std::istream& operator >> (std::istream& is, intNDArray<T>& a);
+OCTAVE_API std::istream&
+operator >> (std::istream& is, intNDArray<T>& a);
 
 #endif

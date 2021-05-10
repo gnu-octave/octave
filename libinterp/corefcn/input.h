@@ -51,7 +51,7 @@ extern OCTINTERP_API bool Vdrawnow_requested;
 OCTAVE_DEPRECATED (6, "'Vtrack_line_num' is an obsolete internal variable; any uses should be removed")
 extern OCTINTERP_API bool Vtrack_line_num;
 
-extern octave::sys::time Vlast_prompt_time;
+extern OCTINTERP_API octave::sys::time Vlast_prompt_time;
 
 class octave_value;
 

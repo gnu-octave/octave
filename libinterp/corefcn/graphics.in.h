@@ -4012,12 +4012,12 @@ public:
 
     void update_ticklabelinterpreter (void)
     {
-      update_xtick ();
-      update_ytick ();
-      update_ztick ();
+      update_xtick (false);
+      update_ytick (false);
+      update_ztick (true);
     }
 
-    void update_xtick (void)
+    void update_xtick (bool sync_pos = true)
     {
       calc_ticks_and_lims (xlim, xtick, xminortickvalues, xlimmode.is ("auto"),
                            xtickmode.is ("auto"), xscale.is ("log"));
@@ -4028,9 +4028,11 @@ public:
                            (yaxislocation_is ("origin") ? 0 :
                              (yaxislocation_is ("left") ? -1 : 1)),
                          xlim);
-      sync_positions ();
+
+      if (sync_pos)
+        sync_positions ();
     }
-    void update_ytick (void)
+    void update_ytick (bool sync_pos = true)
     {
       calc_ticks_and_lims (ylim, ytick, yminortickvalues, ylimmode.is ("auto"),
                            ytickmode.is ("auto"), yscale.is ("log"));
@@ -4041,15 +4043,19 @@ public:
                            (xaxislocation_is ("origin") ? 0 :
                              (xaxislocation_is ("bottom") ? -1 : 1)),
                          ylim);
-      sync_positions ();
+
+      if (sync_pos)
+        sync_positions ();
     }
-    void update_ztick (void)
+    void update_ztick (bool sync_pos = true)
     {
       calc_ticks_and_lims (zlim, ztick, zminortickvalues, zlimmode.is ("auto"),
                            ztickmode.is ("auto"), zscale.is ("log"));
       if (zticklabelmode.is ("auto"))
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"), false, 2, zlim);
-      sync_positions ();
+
+      if (sync_pos)
+        sync_positions ();
     }
 
     void update_xtickmode (void)

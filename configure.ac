@@ -2736,6 +2736,11 @@ AC_ARG_ENABLE(lib-visibility-flags,
      *) AC_MSG_ERROR([bad value $enableval for --enable-lib-visibility-flags]) ;;
    esac])
 
+if test $ENABLE_LIB_VISIBILITY_FLAGS = yes && test $HAVE_VISIBILITY = 0; then
+  AC_MSG_NOTICE([cannot build with visibility flags on this platform])
+  ENABLE_LIB_VISIBILITY_FLAGS=no
+fi
+
 if test $ENABLE_LIB_VISIBILITY_FLAGS = yes; then
   AC_DEFINE(OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS, 1,
     [Define to 1 if building libraries with visibility flags])
@@ -2749,6 +2754,33 @@ fi
 
 AM_CONDITIONAL([AMCOND_LIB_VISIBILITY_FLAGS],
   [test $ENABLE_LIB_VISIBILITY_FLAGS = yes])
+
+### Set flags for symbol visibility
+
+if test $ENABLE_LIB_VISIBILITY_FLAGS = yes; then
+  EXTERNAL_DLL_DEFS="-DEXTERNAL_DLL"
+  OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
+  OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+  OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
+  OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
+else
+  EXTERNAL_DLL_DEFS=
+  OCTAVE_DLL_DEFS=
+  OCTINTERP_DLL_DEFS=
+  OCTGUI_DLL_DEFS=
+  OCTGRAPHICS_DLL_DEFS=
+fi
+AC_MSG_NOTICE([defining EXTERNAL_DLL_DEFS to be $EXTERNAL_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTGUI_DLL_DEFS to be $OCTGUI_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTGRAPHICS_DLL_DEFS to be $OCTGRAPHICS_DLL_DEFS])
+
+AC_SUBST(EXTERNAL_DLL_DEFS)
+AC_SUBST(OCTAVE_DLL_DEFS)
+AC_SUBST(OCTINTERP_DLL_DEFS)
+AC_SUBST(OCTGUI_DLL_DEFS)
+AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 
 ### Add extra compiler flags now that feature testing is complete.
 

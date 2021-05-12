@@ -195,6 +195,9 @@ namespace octave
 
         if (! pixels.isempty ())
           isok = true;
+        else
+          warning_with_id ("Octave:LaTeX:internal-error",
+                           "latex_renderer: a run-time test failed and the 'latex' interpreter has been disabled.");
       }
 
     m_testing = false;

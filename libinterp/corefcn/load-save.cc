@@ -906,9 +906,9 @@ namespace octave
   // format specified by FMT.
 
   std::size_t load_save_system::save_vars (std::ostream& os,
-                                      const std::string& pattern,
-                                      const load_save_format& fmt,
-                                      bool save_as_floats)
+                                           const std::string& pattern,
+                                           const load_save_format& fmt,
+                                           bool save_as_floats)
   {
     tree_evaluator& tw = m_interpreter.get_evaluator ();
 
@@ -996,10 +996,10 @@ namespace octave
   // in the format specified by FMT.
 
   std::size_t load_save_system::save_fields (std::ostream& os,
-                                        const octave_scalar_map& m,
-                                        const std::string& pattern,
-                                        const load_save_format& fmt,
-                                        bool save_as_floats)
+                                             const octave_scalar_map& m,
+                                             const std::string& pattern,
+                                             const load_save_format& fmt,
+                                             bool save_as_floats)
   {
     glob_match pat (pattern);
 

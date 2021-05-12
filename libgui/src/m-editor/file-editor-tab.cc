@@ -2689,6 +2689,9 @@ namespace octave
 
     m_edit_area->setEolVisibility (settings->value (ed_show_eol_chars).toBool ());
 
+    m_save_as_desired_eol = static_cast<QsciScintilla::EolMode>
+                              (settings->value (ed_default_eol_mode).toInt ());
+
     if (settings->value (ed_show_line_numbers).toBool ())
       {
         m_edit_area->setMarginLineNumbers (2, true);

@@ -38,6 +38,7 @@
 // Two dimensional sparse array with math ops.
 template <typename T>
 class
+OCTAVE_API
 MSparse : public Sparse<T>
 {
 public:

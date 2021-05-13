@@ -28,6 +28,7 @@
 // Element by element MSparse by MSparse ops.
 
 template <typename T, typename OP>
+OCTAVE_API
 MSparse<T>&
 plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char *op_name)
 {
@@ -98,6 +99,7 @@ plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char *op_name)
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>&
 operator += (MSparse<T>& a, const MSparse<T>& b)
 {
@@ -105,6 +107,7 @@ operator += (MSparse<T>& a, const MSparse<T>& b)
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>&
 operator -= (MSparse<T>& a, const MSparse<T>& b)
 {
@@ -114,6 +117,7 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
 // Element by element MSparse by scalar ops.
 
 template <typename T, typename OP>
+OCTAVE_API
 MArray<T>
 plus_or_minus (const MSparse<T>& a, const T& s, OP op)
 {
@@ -129,6 +133,7 @@ plus_or_minus (const MSparse<T>& a, const T& s, OP op)
 }
 
 template <typename T>
+OCTAVE_API
 MArray<T>
 operator + (const MSparse<T>& a, const T& s)
 {
@@ -136,6 +141,7 @@ operator + (const MSparse<T>& a, const T& s)
 }
 
 template <typename T>
+OCTAVE_API
 MArray<T>
 operator - (const MSparse<T>& a, const T& s)
 {
@@ -143,6 +149,7 @@ operator - (const MSparse<T>& a, const T& s)
 }
 
 template <typename T, typename OP>
+OCTAVE_API
 MSparse<T>
 times_or_divide (const MSparse<T>& a, const T& s, OP op)
 {
@@ -164,6 +171,7 @@ times_or_divide (const MSparse<T>& a, const T& s, OP op)
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>
 operator * (const MSparse<T>& a, const T& s)
 {
@@ -171,6 +179,7 @@ operator * (const MSparse<T>& a, const T& s)
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>
 operator / (const MSparse<T>& a, const T& s)
 {
@@ -180,6 +189,7 @@ operator / (const MSparse<T>& a, const T& s)
 // Element by element scalar by MSparse ops.
 
 template <typename T, typename OP>
+OCTAVE_API
 MArray<T>
 plus_or_minus (const T& s, const MSparse<T>& a, OP op)
 {
@@ -195,6 +205,7 @@ plus_or_minus (const T& s, const MSparse<T>& a, OP op)
 }
 
 template <typename T>
+OCTAVE_API
 MArray<T>
 operator + (const T& s, const MSparse<T>& a)
 {
@@ -202,6 +213,7 @@ operator + (const T& s, const MSparse<T>& a)
 }
 
 template <typename T>
+OCTAVE_API
 MArray<T>
 operator - (const T& s, const MSparse<T>& a)
 {
@@ -209,6 +221,7 @@ operator - (const T& s, const MSparse<T>& a)
 }
 
 template <typename T, typename OP>
+OCTAVE_API
 MSparse<T>
 times_or_divides (const T& s, const MSparse<T>& a, OP op)
 {
@@ -230,6 +243,7 @@ times_or_divides (const T& s, const MSparse<T>& a, OP op)
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>
 operator * (const T& s, const MSparse<T>& a)
 {
@@ -237,6 +251,7 @@ operator * (const T& s, const MSparse<T>& a)
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>
 operator / (const T& s, const MSparse<T>& a)
 {
@@ -246,6 +261,7 @@ operator / (const T& s, const MSparse<T>& a)
 // Element by element MSparse by MSparse ops.
 
 template <typename T, typename OP>
+OCTAVE_API
 MSparse<T>
 plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
                const char *op_name, bool negate)
@@ -365,6 +381,7 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>
 operator+ (const MSparse<T>& a, const MSparse<T>& b)
 {
@@ -372,6 +389,7 @@ operator+ (const MSparse<T>& a, const MSparse<T>& b)
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>
 operator- (const MSparse<T>& a, const MSparse<T>& b)
 {
@@ -379,6 +397,7 @@ operator- (const MSparse<T>& a, const MSparse<T>& b)
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>
 product (const MSparse<T>& a, const MSparse<T>& b)
 {
@@ -476,6 +495,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>
 quotient (const MSparse<T>& a, const MSparse<T>& b)
 {
@@ -592,6 +612,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
 // Unary MSparse ops.
 
 template <typename T>
+OCTAVE_API
 MSparse<T>
 operator + (const MSparse<T>& a)
 {
@@ -599,6 +620,7 @@ operator + (const MSparse<T>& a)
 }
 
 template <typename T>
+OCTAVE_API
 MSparse<T>
 operator - (const MSparse<T>& a)
 {

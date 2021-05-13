@@ -3265,7 +3265,9 @@ AC_DEFUN([OCTAVE_PROG_FLEX], [
   ##
   ## Also make sure that we generate an interactive scanner if we are
   ## using flex.
-  AC_PROG_LEX
+dnl We declare %noyywrap in the lexer files so we use the noyywrap
+dnl option here to skip the search for that function.
+  AC_PROG_LEX([noyywrap])
   case "`$LEX --version`" in
     *flex*)
       LFLAGS="-I"

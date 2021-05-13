@@ -2890,19 +2890,19 @@ AC_SUBST(WARN_LDFLAGS)
 
 ### Check for GCC-specific pragmas to control warnings.
 
+AC_LANG_PUSH(C++)
 AC_CACHE_CHECK([for @%:@pragma GCC diagnostic push/pop/ignore],
   [octave_cv_gcc_has_pragma_GCC_diagnostic],
-  [AC_LANG_PUSH(C++)
-   AC_TRY_COMPILE([], [
+  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignore "-Wold-style-cast"
   int three = (int) 3.1415926;
 #pragma GCC diagnostic pop
-    ],
+    ]])],
     [octave_cv_gcc_has_pragma_GCC_diagnostic=yes],
-    [octave_cv_gcc_has_pragma_GCC_diagnostic=no])
-   AC_LANG_POP(C++)],
+    [octave_cv_gcc_has_pragma_GCC_diagnostic=no])],
   ])
+AC_LANG_POP(C++)
 
 if test $octave_cv_gcc_has_pragma_GCC_diagnostic = yes; then
   AC_DEFINE(HAVE_PRAGMA_GCC_DIAGNOSTIC, 1,

@@ -2082,8 +2082,10 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
           QT_OPENGL_LIBS="`$PKG_CONFIG --libs-only-other $QT_OPENGL_MODULE | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
           ## Enabling link_all_deps works around libtool's imperfect handling
           ## of the -F flag
-          AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS],
-                         [test $link_all_deps = yes || test -n "$QT_LDFLAGS"])
+          if test -n "$QT_LDFLAGS"; then
+            link_all_deps=yes
+          fi
+          AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
         fi
       ;;
     esac

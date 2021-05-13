@@ -2964,7 +2964,7 @@ OCT_GUI_LINK_DEPS=""
 OCT_LINK_OPTS="$LDFLAGS"
 OCT_GUI_LINK_OPTS="$LDFLAGS"
 
-if test $AMCOND_LINK_ALL_DEPS = yes; then
+if test $link_all_deps = yes; then
   AC_DEFINE(OCTAVE_LINK_ALL_DEPS, 1, [Link with all dependencies.])
 
   OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"

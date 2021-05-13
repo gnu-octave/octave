@@ -66,7 +66,7 @@ intmap_to_ov (const octave::bp_table::intmap& line)
 
   NDArray retval (dim_vector (1, line.size ()));
 
-  for (size_t i = 0; i < line.size (); i++)
+  for (std::size_t i = 0; i < line.size (); i++)
     {
       octave::bp_table::const_intmap_iterator p = line.find (i);
 

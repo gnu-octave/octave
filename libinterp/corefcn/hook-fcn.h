@@ -56,7 +56,7 @@ public:
 
 protected:
 
-  size_t count;
+  std::size_t count;
 };
 
 class

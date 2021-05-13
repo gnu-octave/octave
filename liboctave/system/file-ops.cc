@@ -714,7 +714,7 @@ namespace octave
       const char *locale = octave_locale_charset_wrapper ();
       const uint8_t *name_u8 = reinterpret_cast<const uint8_t *>
                                  (name.c_str ());
-      size_t length = 0;
+      std::size_t length = 0;
       char *name_locale = octave_u8_conv_to_encoding (locale, name_u8,
                                                       name.length () + 1,
                                                       &length);

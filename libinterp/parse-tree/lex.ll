@@ -2979,7 +2979,7 @@ namespace octave
       {
         uintmax_t long_int_value = 0;
 
-        for (size_t i = 0; i < strlen (tmptxt); i++)
+        for (std::size_t i = 0; i < strlen (tmptxt); i++)
           {
             if (tmptxt[i] == '0')
               long_int_value <<= 1;

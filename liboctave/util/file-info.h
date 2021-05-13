@@ -64,7 +64,7 @@ namespace octave
 
     std::string get_line (std::size_t line) const;
 
-    std::deque<std::string> get_lines (size_t line, size_t num_lines) const;
+    std::deque<std::string> get_lines (std::size_t line, std::size_t num_lines) const;
 
     std::size_t num_lines (void) const { return m_offsets.size (); }
 

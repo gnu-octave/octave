@@ -1135,7 +1135,7 @@ namespace octave
     // Is the last component of DIR @foo?  If so, strip it and prepend it
     // to the name of the function.
 
-    size_t pos = dir.rfind (sys::file_ops::dir_sep_chars ());
+    std::size_t pos = dir.rfind (sys::file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos && pos < dir.length () - 1)
       {

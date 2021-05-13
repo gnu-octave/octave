@@ -92,7 +92,7 @@ octave_mkostemps_wrapper (char *tmpl, int suffixlen)
 
 static char *
 octave_u8_conv_to_encoding (const char *tocode, const uint8_t *src,
-                            size_t srclen, size_t *lengthp)
+                            std::size_t srclen, std::size_t *lengthp)
 {
   // FIXME: Do we need to provide the conversion here?
   return nullptr;
@@ -937,11 +937,11 @@ main (int argc, char **argv)
           // FIXME: liboctinterp isn't linked in to mkoctfile.
           // So we cannot use octave::sys::ofstream. Instead we fall back
           // on using the functions available from libwrappers.
-          size_t srclen = dfile.length ();
+          std::size_t srclen = dfile.length ();
           const uint8_t *src = reinterpret_cast<const uint8_t *>
                                (dfile.c_str ());
 
-          size_t length = 0;
+          std::size_t length = 0;
           wchar_t *wchar = reinterpret_cast<wchar_t *>
                            (octave_u8_conv_to_encoding ("wchar_t", src, srclen,
                                                         &length));
@@ -996,11 +996,11 @@ main (int argc, char **argv)
           // FIXME: liboctinterp isn't linked in to mkoctfile.
           // So we cannot use octave::sys::ofstream. Instead we fall back
           // on using the functions available from libwrappers.
-          size_t srclen = dfile.length ();
+          std::size_t srclen = dfile.length ();
           const uint8_t *src = reinterpret_cast<const uint8_t *>
                                (dfile.c_str ());
 
-          size_t length = 0;
+          std::size_t length = 0;
           wchar_t *wchar = reinterpret_cast<wchar_t *>
                            (octave_u8_conv_to_encoding ("wchar_t", src, srclen,
                                                         &length));

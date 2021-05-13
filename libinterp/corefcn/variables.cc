@@ -1528,9 +1528,9 @@ get_struct_elts (const std::string& text)
 {
   int n = 1;
 
-  size_t pos = 0;
+  std::size_t pos = 0;
 
-  size_t len = text.length ();
+  std::size_t len = text.length ();
 
   while ((pos = text.find ('.', pos)) != std::string::npos)
     {

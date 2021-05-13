@@ -153,9 +153,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: install dependencies
-        # It looks like "gfortran" isn't working correctly unless it is
-        # re-installed as part of "gcc".
-
         # See also: https://formulae.brew.sh/formula/octave#default
         # The packages are listed in (alphabetically sorted) blocks:
         # The first block is for "direct" dependencies.
@@ -163,7 +160,6 @@ jobs:
         # The third block is for additional dependencies needed when building from a repository checkout.
         run: |
           brew update
-          brew uninstall gfortran
           brew install arpack epstool fftw fig2dev fltk fontconfig freetype \
             gcc ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 libsndfile \
             libtool openblas pcre portaudio pstoedit qhull qrupdate \

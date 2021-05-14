@@ -1925,6 +1925,7 @@ cmdname ("arg1", "arg2", @dots{})
 
 If an argument including spaces should be passed to a function in command
 syntax, (double-)quotes can be used.  For example,
+
 @example
 my_command "first argument" "second argument"
 @end example

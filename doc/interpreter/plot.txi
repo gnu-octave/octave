@@ -2715,7 +2715,7 @@ default is @file{C:\Octave\Octave-@var{version}}).
 
 The OpenGL graphics toolkits (@qcode{"qt"} and @qcode{"fltk"}) use single
 precision for rendering.  This limitation in particular applies to plots of
-timeseries against serial dates as used by the @code{datenum}, @code{datestr},
+time series against serial dates as used by the @code{datenum}, @code{datestr},
 @code{datestruct}, and @code{datetick} functions.
 
 Serial dates encode timestamps as days elapsed since the year zero with hours,
@@ -2739,7 +2739,7 @@ will still be correct.  Only years will lack the millennium digit.  Thus,
 # timestamps of 24 hours in one minute steps
 t = datenum (2020, 1, 1):(1/1440):datenum (2020, 1, 2);
 
-# some example timeseries data
+# some example time series data
 x = -cos (2*pi*t) + rand (size (t)) / 10;
 
 subplot (1, 2, 1);

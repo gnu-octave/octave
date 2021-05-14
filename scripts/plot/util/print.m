@@ -120,11 +120,11 @@
 ## @itemx -painters
 ##   Specifies whether the opengl (pixel-based) or painters (vector-based)
 ## renderer is used.  This is equivalent to changing the figure's
-## @qcode{"Renderer"} property.  When the figure @qcode{"RendererMode"}
-## property is @qcode{"auto"} (the default) Octave will use the
-## @qcode{"opengl"} renderer for raster formats (e.g., JPEG) and
-## @qcode{"painters"} for vector formats (e.g., PDF).  Those options are only
-## supported for the "qt" graphics toolkit.
+## @qcode{"Renderer"} property.  When the figure
+## @nospell{@qcode{"RendererMode"}} property is @qcode{"auto"} (the default)
+## Octave will use the @qcode{"opengl"} renderer for raster formats (e.g.,
+## JPEG) and @qcode{"painters"} for vector formats (e.g., PDF).  Those options
+## are only supported for the "qt" graphics toolkit.
 ##
 ## @item -svgconvert
 ##   When using the @option{-painters} renderer, this enables a different

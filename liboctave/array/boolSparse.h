@@ -28,7 +28,6 @@
 
 #include "octave-config.h"
 
-#include "MSparse.h"
 #include "PermMatrix.h"
 #include "Sparse-op-decls.h"
 #include "Sparse.h"

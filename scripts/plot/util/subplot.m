@@ -110,6 +110,7 @@
 ## position.
 ##
 ## Example:
+##
 ## @example
 ## @group
 ## x = 1:10;

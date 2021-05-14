@@ -1024,9 +1024,9 @@ DEFMETHOD (info_program, interp, args, nargout,
 Query or set the internal variable that specifies the name of the
 info program to run.
 
-The default value is "@file{info}".  The default value may be overridden by the
-environment variable @w{@env{OCTAVE_INFO_PROGRAM}}, or the command line
-argument @option{--info-program NAME}.
+The default value is @file{info}.  The default value may be
+overridden by the environment variable @w{@env{OCTAVE_INFO_PROGRAM}}, or the
+command line argument @option{--info-program NAME}.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.

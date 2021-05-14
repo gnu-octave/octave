@@ -1079,7 +1079,7 @@ printf ("\n");
 
 To write m-files that can act as executable programs when called from the shell
 or as normal functions when called from within Octave, use default input
-arguments initialized with the @code{argv} function.  
+arguments initialized with the @code{argv} function.
 
 If a function is called from the shell Octave will not pass any input
 parameters to the function and therefore the default argument is used.  But
@@ -1109,6 +1109,7 @@ This can be called from the shell with
 mysin.m 1.5
 @end example
 
+@noindent
 or from Octave with
 
 @example

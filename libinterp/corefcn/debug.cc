@@ -853,7 +853,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
           else
             n = arg.int_value ();
 
-          if (n <= 0)
+          if (n < 0)
             error ("dbstack: N must be a non-negative integer");
         }
 
@@ -952,8 +952,8 @@ With optional argument @var{n}, omit the @var{n} innermost stack frames.
 Although accepted, the argument @var{-completenames} is silently ignored.
 Octave always returns absolute filenames.
 
-The arguments @var{n} and @var{-completenames} can be both specified in any
-order.
+The arguments @var{n} and @var{-completenames} can both be specified and may
+appear in any order.
 
 The optional return argument @var{stack} is a struct array with the
 following fields:
@@ -971,11 +971,6 @@ The line number of an active breakpoint.
 @item column
 The column number of the line where the breakpoint begins.
 
-@item scope
-Undocumented.
-
-@item context
-Undocumented.
 @end table
 
 The return argument @var{idx} specifies which element of the @var{stack}

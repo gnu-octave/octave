@@ -576,7 +576,8 @@ namespace octave
 
     int compute_line_xoffset (const Matrix& lb) const;
 
-    FT_UInt process_character (FT_ULong code, FT_UInt previous = 0);
+    FT_UInt process_character (FT_ULong code, FT_UInt previous,
+                               std::string& sub_font);
 
   public:
 
@@ -828,9 +829,13 @@ namespace octave
   }
 
   FT_UInt
-  ft_text_renderer::process_character (FT_ULong code, FT_UInt previous)
+  ft_text_renderer::process_character (FT_ULong code, FT_UInt previous,
+                                       std::string& sub_name)
   {
     FT_Face face = m_font.get_face ();
+
+    sub_name = face->family_name;
+
     FT_UInt glyph_index = 0;
 
     if (face)
@@ -859,27 +864,24 @@ namespace octave
                     && (FT_Load_Glyph (sub_face, glyph_index, FT_LOAD_DEFAULT)
                         == 0))
                   {
-                    static std::string sub_name;
+                    static std::string prev_sub_name;
 
-                    if (sub_name.empty ()
-                        || sub_name != std::string (sub_face->family_name))
+                    if (prev_sub_name.empty ()
+                        || prev_sub_name != std::string (sub_face->family_name))
                       {
-                        sub_name = sub_face->family_name;
+                        prev_sub_name = sub_face->family_name;
                         warning_with_id ("Octave:substituted-glyph",
                                          "text_renderer: substituting font to '%s' for some characters",
                                          sub_face->family_name);
                       }
 
-                    // FIXME: With this approach the substituted font is
-                    // not stored in the str_list and thus won't appear in
-                    // svg output.
                     ft_font saved_font = m_font;
 
                     m_font = ft_font (m_font.get_name (), m_font.get_weight (),
                                       m_font.get_angle (), m_font.get_size (),
                                       sub_face);
 
-                    process_character (code, previous);
+                    process_character (code, previous, sub_name);
 
                     m_font = saved_font;
                   }
@@ -1071,9 +1073,17 @@ namespace octave
         std::size_t ibegin = 0;
 
         // Initialize a new string
-        std::string fname = m_font.get_face ()->family_name;
         text_renderer::string fs (str, m_font, m_xoffset, m_yoffset);
+
+        std::string fname = m_font.get_face ()->family_name;
+
+        if (fname.find (" ") != std::string::npos)
+          fname = "'" + fname + "'";
+
+        fs.set_family (fname);
+
         std::vector<double> xdata;
+        std::string sub_name;
 
         while (n > 0)
           {
@@ -1112,7 +1122,21 @@ namespace octave
                   xdata.push_back (m_xoffset);
               }
 
-            glyph_index = process_character (u32_c, previous);
+            glyph_index = process_character (u32_c, previous, sub_name);
+
+            if (m_do_strlist && m_mode == MODE_RENDER && ! sub_name.empty ())
+              {
+                // Add substitution font to the family name stack
+                std::string tmp_family = fs.get_family ();
+
+                if (tmp_family.find (sub_name) == std::string::npos)
+                  {
+                    if (sub_name.find (" ") != std::string::npos)
+                      sub_name = "'" + sub_name + "'";
+
+                    fs.set_family (tmp_family + ", " + sub_name);
+                  }
+              }
 
             if (u32_c == 10)
               {
@@ -1139,7 +1163,6 @@ namespace octave
             fs.set_y (m_line_yoffset + m_yoffset);
             fs.set_color (m_color);
             fs.set_xdata (xdata);
-            fs.set_family (fname);
             m_strlist.push_back (fs);
           }
       }
@@ -1289,9 +1312,26 @@ namespace octave
 
     if (code != text_element_symbol::invalid_code && m_font.is_valid ())
       {
-        process_character (code);
+        std::string sub_name;
+
+        process_character (code, 0, sub_name);
+
         if (m_do_strlist && m_mode == MODE_RENDER)
           {
+            if (! sub_name.empty ())
+              {
+                // Add substitution font to the family name
+                std::string tmp_family = fs.get_family ();
+
+                if (tmp_family.find (sub_name) == std::string::npos)
+                  {
+                    if (sub_name.find (" ") != std::string::npos)
+                      sub_name = "'" + sub_name + "'";
+
+                    fs.set_family (tmp_family + ", " + sub_name);
+                  }
+              }
+
             fs.set_code (code);
             fs.set_xdata (xdata);
           }

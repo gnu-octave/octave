@@ -141,6 +141,7 @@ function varargout = uisetfont (varargin)
 
   ## Run the dialog
   warning ("off", "Octave:missing-glyph", "local");
+  warning ("off", "Octave:substituted-glyph", "local");
   hf = run_fontdialog (sysfonts, h, fontstruct, ttl, str);
 
   ## Now wait for a button to be pressed or the figure to be closed

@@ -161,10 +161,11 @@ namespace octave
     static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
     static FT_Face get_font (const std::string& name, const std::string& weight,
-                             const std::string& angle, double size)
+                             const std::string& angle, double size,
+                             FT_ULong c = 0)
     {
       return (instance_ok ()
-              ? instance->do_get_font (name, weight, angle, size)
+              ? instance->do_get_font (name, weight, angle, size, c)
               : nullptr);
     }
 
@@ -278,7 +279,8 @@ namespace octave
     }
 
     FT_Face do_get_font (const std::string& name, const std::string& weight,
-                         const std::string& angle, double size)
+                         const std::string& angle, double size,
+                         FT_ULong search_code_point)
     {
       FT_Face retval = nullptr;
 
@@ -286,7 +288,8 @@ namespace octave
       // Look first into the font cache, then use fontconfig.  If the font
       // is present in the cache, simply add a reference and return it.
 
-      ft_key key (name + ':' + weight + ':' + angle, size);
+      ft_key key (name + ':' + weight + ':' + angle + ':'
+                  + std::to_string (search_code_point), size);
       ft_cache::const_iterator it = cache.find (key);
 
       if (it != cache.end ())
@@ -328,7 +331,7 @@ namespace octave
         }
 
 #if defined (HAVE_FONTCONFIG)
-      if (name != "*" && fontconfig_initialized)
+      if ((search_code_point != 0 || name != "*") && fontconfig_initialized)
         {
           int fc_weight, fc_angle;
 
@@ -354,12 +357,21 @@ namespace octave
           FcPatternAddInteger (pat, FC_SLANT, fc_angle);
           FcPatternAddDouble (pat, FC_PIXEL_SIZE, size);
 
+          if (search_code_point > 0)
+            {
+              FcCharSet *minimal_charset =  FcCharSetCreate ();
+              FcCharSetAddChar (minimal_charset,
+                                static_cast<FcChar32> (search_code_point));
+              FcPatternAddCharSet (pat, FC_CHARSET, minimal_charset);
+            }
+
           if (FcConfigSubstitute (nullptr, pat, FcMatchPattern))
             {
               FcResult res;
               FcPattern *match;
 
               FcDefaultSubstitute (pat);
+
               match = FcFontMatch (nullptr, pat, &res);
 
               // FIXME: originally, this test also required that
@@ -389,6 +401,7 @@ namespace octave
       else
         {
           std::string ascii_file = sys::get_ASCII_filename (file);
+
           if (FT_New_Face (library, ascii_file.c_str (), 0, &retval))
             ::warning ("ft_manager: unable to load font: %s", file.c_str ());
 #if defined (HAVE_FT_REFERENCE_FACE)
@@ -827,8 +840,63 @@ namespace octave
             && (! glyph_index
                 || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
           {
+#if defined (HAVE_FONTCONFIG)
+            // Try to substitue font
+            FT_Face sub_face = ft_manager::get_font (font.get_name (),
+                                                     font.get_weight (),
+                                                     font.get_angle (),
+                                                     font.get_size (),
+                                                     code);
+
+            if (sub_face)
+              {
+                FT_Set_Char_Size (sub_face, 0, font.get_size ()*64, 0, 0);
+
+                glyph_index = FT_Get_Char_Index (sub_face, code);
+
+                if (glyph_index
+                    && (FT_Load_Glyph (sub_face, glyph_index, FT_LOAD_DEFAULT)
+                        == 0))
+                  {
+                    static std::string sub_name;
+
+                    if (sub_name.empty ()
+                        || sub_name != std::string (sub_face->family_name))
+                      {
+                        sub_name = sub_face->family_name;
+                        warning_with_id ("Octave:substituted-glyph",
+                                         "text_renderer: substituting font to '%s' for some characters",
+                                         sub_face->family_name);
+                      }
+
+                    // FIXME: With this approach the substituted font is
+                    // not stored in the str_list and thus won't appear in
+                    // svg output.
+                    ft_font saved_font = font;
+
+                    font = ft_font (font.get_name (), font.get_weight (),
+                                    font.get_angle (), font.get_size (),
+                                    sub_face);
+
+                    process_character (code, previous);
+
+                    font = saved_font;
+                  }
+                else
+                  {
+                    glyph_index = 0;
+                    warn_missing_glyph (code);
+                  }
+              }
+            else
+              {
+                glyph_index = 0;
+                warn_missing_glyph (code);
+              }
+#else
             glyph_index = 0;
             warn_missing_glyph (code);
+#endif
           }
         else if ((code == '\n') || (code == '\t'))
           {

@@ -1374,14 +1374,22 @@ OCTAVE_CHECK_LIB(pcre, PCRE,
 
 ### Check for RapidJSON header only library.
 
+warn_rapidjson=
 AC_LANG_PUSH(C++)
 AC_CHECK_HEADER([rapidjson/rapidjson.h],
-                [have_rapidjson=yes], [have_rapidjson=no])
+                [have_rapidjson=yes],
+                [have_rapidjson=no
+                 warn_rapidjson="RapidJSON library not found.  Octave will not be able to read or write JSON files."])
 
 if test $have_rapidjson = yes; then
   AC_DEFINE(HAVE_RAPIDJSON, 1, [Define to 1 if RapidJSON is available.])
 
   ## Additional check on RapidJSON library that was found
+  ## Some features of the version of RapidJSON that is packaged in many
+  ## distributions do not build correctly with newer compilers.
+  ## See also:
+  ## https://github.com/Tencent/rapidjson/issues/909
+  ## https://github.com/Tencent/rapidjson/issues/1718
   AC_CACHE_CHECK([for working PrettyWriter in RapidJSON],
     [octave_cv_rapidjson_has_prettywriter],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -1399,11 +1407,14 @@ if test $have_rapidjson = yes; then
     AC_DEFINE(HAVE_RAPIDJSON_PRETTYWRITER, 1,
       [Define to 1 if the RapidJSON PrettyWriter function is available.])
   else
-    rapid_json_warning='Older RapidJSON library found.  The "PrettyWriter" option in jsonencode will be disabled.'
-    OCTAVE_CONFIGURE_WARNING([rapid_json_warning])
+    warn_rapidjson='RapidJSON library found, but does not seem to work properly.  The "PrettyWriter" option in jsonencode will be disabled.'
   fi
 fi
 AC_LANG_POP([C++])
+
+if test -n "$warn_rapidjson"; then
+  OCTAVE_CONFIGURE_WARNING([warn_rapidjson])
+fi
 
 ### Check for readline library.
 

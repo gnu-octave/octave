@@ -387,22 +387,22 @@ CollocWt::error (const char *msg)
 CollocWt&
 CollocWt::set_left (double val)
 {
-  if (val >= rb)
+  if (val >= m_rb)
     error ("CollocWt: left bound greater than right bound");
 
-  lb = val;
-  initialized = 0;
+  m_lb = val;
+  m_initialized = 0;
   return *this;
 }
 
 CollocWt&
 CollocWt::set_right (double val)
 {
-  if (val <= lb)
+  if (val <= m_lb)
     error ("CollocWt: right bound less than left bound");
 
-  rb = val;
-  initialized = 0;
+  m_rb = val;
+  m_initialized = 0;
   return *this;
 }
 
@@ -411,13 +411,13 @@ CollocWt::init (void)
 {
   // Check for possible errors.
 
-  double wid = rb - lb;
+  double wid = m_rb - m_lb;
   if (wid <= 0.0)
     {
       error ("CollocWt: width less than or equal to zero");
     }
 
-  octave_idx_type nt = n + inc_left + inc_right;
+  octave_idx_type nt = m_n + m_inc_left + m_inc_right;
 
   if (nt < 0)
     error ("CollocWt: total number of collocation points less than zero");
@@ -436,16 +436,16 @@ CollocWt::init (void)
   Array<double> vect (dim_vector (nt, 1));
   double *pvect = vect.fortran_vec ();
 
-  r.resize (nt, 1);
-  q.resize (nt, 1);
-  A.resize (nt, nt);
-  B.resize (nt, nt);
+  m_r.resize (nt, 1);
+  m_q.resize (nt, 1);
+  m_A.resize (nt, nt);
+  m_B.resize (nt, nt);
 
-  double *pr = r.fortran_vec ();
+  double *pr = m_r.fortran_vec ();
 
   // Compute roots.
 
-  if (! jcobi (n, inc_left, inc_right, Alpha, Beta, pdif1, pdif2, pdif3, pr))
+  if (! jcobi (m_n, m_inc_left, m_inc_right, m_alpha, m_beta, pdif1, pdif2, pdif3, pr))
     error ("jcobi: newton iteration failed");
 
   octave_idx_type id;
@@ -455,10 +455,10 @@ CollocWt::init (void)
   id = 1;
   for (octave_idx_type i = 0; i < nt; i++)
     {
-      dfopr (n, inc_left, inc_right, i, id, pdif1, pdif2, pdif3, pr, pvect);
+      dfopr (m_n, m_inc_left, m_inc_right, i, id, pdif1, pdif2, pdif3, pr, pvect);
 
       for (octave_idx_type j = 0; j < nt; j++)
-        A(i,j) = vect(j);
+        m_A(i,j) = vect(j);
     }
 
   // Second derivative weights.
@@ -466,19 +466,19 @@ CollocWt::init (void)
   id = 2;
   for (octave_idx_type i = 0; i < nt; i++)
     {
-      dfopr (n, inc_left, inc_right, i, id, pdif1, pdif2, pdif3, pr, pvect);
+      dfopr (m_n, m_inc_left, m_inc_right, i, id, pdif1, pdif2, pdif3, pr, pvect);
 
       for (octave_idx_type j = 0; j < nt; j++)
-        B(i,j) = vect(j);
+        m_B(i,j) = vect(j);
     }
 
   // Gaussian quadrature weights.
 
   id = 3;
-  double *pq = q.fortran_vec ();
-  dfopr (n, inc_left, inc_right, id, id, pdif1, pdif2, pdif3, pr, pq);
+  double *pq = m_q.fortran_vec ();
+  dfopr (m_n, m_inc_left, m_inc_right, id, id, pdif1, pdif2, pdif3, pr, pq);
 
-  initialized = 1;
+  m_initialized = 1;
 }
 
 std::ostream&
@@ -496,11 +496,11 @@ operator << (std::ostream& os, const CollocWt& a)
 
   os << "\n";
 
-  os << a.Alpha << ' ' << a.Beta << "\n\n"
-     << a.r << "\n\n"
-     << a.q << "\n\n"
-     << a.A << "\n"
-     << a.B << "\n";
+  os << a.m_alpha << ' ' << a.m_beta << "\n\n"
+     << a.m_r << "\n\n"
+     << a.m_q << "\n\n"
+     << a.m_A << "\n"
+     << a.m_B << "\n";
 
   return os;
 }

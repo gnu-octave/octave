@@ -1084,7 +1084,8 @@ namespace octave
                         warning_with_id ("Octave:print:unsupported-multibyte",
                                          "print: only ASCII characters are "
                                          "supported for EPS and derived "
-                                         "formats.");
+                                         "formats. Use the '-svgconvert' "
+                                         "option for better font support.");
                         warned = true;
                       }
                   }
@@ -1097,7 +1098,8 @@ namespace octave
                         warning_with_id ("Octave:print:unhandled-character",
                                          "print: only ASCII characters are "
                                          "supported for EPS and derived "
-                                         "formats.");
+                                         "formats. Use the '-svgconvert' "
+                                         "option for better font support.");
                         warned = true;
                       }
                   }

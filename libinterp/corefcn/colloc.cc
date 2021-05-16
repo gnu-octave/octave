@@ -85,7 +85,7 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
   if (ntot < 1)
     error (R"("colloc: the total number of roots (N + "left" + "right") must be >= 1)");
 
-  CollocWt wts (ncol, left, right);
+  octave::CollocWt wts (ncol, left, right);
 
   ColumnVector r = wts.roots ();
   Matrix A = wts.first ();

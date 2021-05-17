@@ -147,7 +147,7 @@ namespace octave
       fail = (U.numel () > 1);
     else
       {
-        Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
+        Array<octave_value> W = U.index (0);
         if (W.isempty () || W(0).isempty ())
           es.debug_on_error (true);    // like "dbstop if error" with no identifier
         else if (! W(0).iscell ())
@@ -174,7 +174,7 @@ namespace octave
       fail = (U.numel () > 1);
     else
       {
-        Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
+        Array<octave_value> W = U.index (0);
         if (W.isempty () || W(0).isempty ())
           es.debug_on_caught (true);    // like "dbstop if caught error" with no ID
         else if (! W(0).iscell ())
@@ -201,7 +201,7 @@ namespace octave
       fail = (U.numel () > 1);
     else
       {
-        Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
+        Array<octave_value> W = U.index (0);
         if (W.isempty () || W(0).isempty ())
           es.debug_on_warning (true);    // like "dbstop if warning" with no identifier
         else if (! W(0).iscell ())

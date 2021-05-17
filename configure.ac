@@ -491,6 +491,10 @@ OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS
 
 ### Use a 64-bit integer type for array dimensions and indexing, if possible.
 
+AC_CHECK_SIZEOF([int])
+AC_DEFINE_UNQUOTED(OCTAVE_SIZEOF_INT, [$ac_cv_sizeof_int],
+  [Define to the size of int.])
+
 AC_CHECK_SIZEOF([void *])
 if test $ac_cv_sizeof_void_p -ge 8; then
   ENABLE_64=yes

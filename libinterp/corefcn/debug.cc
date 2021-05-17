@@ -915,7 +915,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 
       octave_idx_type num_skip = std::min (nskip, stk.numel ());
 
-      idx_vector first = idx_vector (static_cast<octave_idx_type> (0));
+      idx_vector first = idx_vector (0);
 
       for (octave_idx_type i = 0; i < num_skip; i++)
         stk.delete_elements (first);

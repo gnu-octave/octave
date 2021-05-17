@@ -283,6 +283,7 @@ $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p'
 $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_F77_INT_TYPE.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_IDX_TYPE.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_INT.*$\)/#  \1/p' $config_h_file
 
 cat << EOF
 

@@ -1407,7 +1407,7 @@ if test $have_rapidjson = yes; then
     AC_DEFINE(HAVE_RAPIDJSON_PRETTYWRITER, 1,
       [Define to 1 if the RapidJSON PrettyWriter function is available.])
   else
-    warn_rapidjson='RapidJSON library found, but does not seem to work properly.  The "PrettyWriter" option in jsonencode will be disabled.'
+    warn_rapidjson='RapidJSON library found, but some features do not seem to work properly.  The "PrettyWriter" option in jsonencode will be disabled.'
   fi
 fi
 AC_LANG_POP([C++])

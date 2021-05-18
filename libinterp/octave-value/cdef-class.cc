@@ -907,6 +907,11 @@ namespace octave
           retval.put ("ContainingPackage", to_ov (pack));
       }
 
+    // FIXME: instead of attaching attributes here, pass them to
+    // cdef_manager::make_method.  The classdef manager contains a meta
+    // object with a list of all valid properties that can be used to
+    // validate the attribute list (see bug #60593).
+
     // Class attributes
 
     if (t->attribute_list ())
@@ -992,6 +997,13 @@ namespace octave
                                       : "method")
                                   << ": " << mname << std::endl;
 #endif
+
+                        // FIXME: instead of attaching attributes here,
+                        // pass them to cdef_manager::make_method.  The
+                        // classdef manager contains a meta object with
+                        // a list of all valid properties that can be
+                        // used to validate the attribute list (see bug
+                        // #60593).
 
                         for (auto& attrnm_val : amap)
                           meth.put (attrnm_val.first, attrnm_val.second);
@@ -1107,6 +1119,12 @@ namespace octave
 
                         prop.put ("DefaultValue", pvalue);
                       }
+
+                    // FIXME: instead of attaching attributes here, pass
+                    // them to cdef_manager::make_property.  The
+                    // classdef manager contains a meta object with a
+                    // list of all valid properties that can be used to
+                    // validate the attribute list (see bug #60593).
 
                     // Install property attributes.  This is done before assigning
                     // the property accessors so we can do validation by using

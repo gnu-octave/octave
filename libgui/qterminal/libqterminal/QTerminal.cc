@@ -54,9 +54,9 @@ QTerminal::create (octave::base_qobject& oct_qobj, QWidget *p, QWidget *main_win
   // p:       real parent
   // xparent: main window for signal connections
 #if defined (Q_OS_WIN32)
-  QTerminal *terminal = new QWinTerminalImpl (p, main_win);
+  QTerminal *terminal = new QWinTerminalImpl (oct_qobj, p, main_win);
 #else
-  QTerminal *terminal = new QUnixTerminalImpl (p, main_win);
+  QTerminal *terminal = new QUnixTerminalImpl (oct_qobj, p, main_win);
 #endif
 
   // FIXME: this function should probably be called from or part of the
@@ -197,8 +197,7 @@ void QTerminal::help_on_expression ()
 void QTerminal::doc_on_expression ()
 {
   QString expr = m_doc_selected_action->data ().toString ();
-
-  emit show_doc_signal (expr);
+  m_octave_qobj.show_documentation_window (expr);
 }
 
 void
@@ -325,9 +324,6 @@ QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
 
   connect (this, SIGNAL (report_status_message (const QString&)),
            xparent, SLOT (report_status_message (const QString&)));
-
-  connect (this, SIGNAL (show_doc_signal (const QString&)),
-           xparent, SLOT (handle_show_doc (const QString&)));
 
   connect (this, SIGNAL (edit_mfile_request (const QString&, int)),
            xparent, SLOT (edit_mfile (const QString&, int)));

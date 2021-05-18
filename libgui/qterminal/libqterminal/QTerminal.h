@@ -34,6 +34,7 @@ see <https://www.gnu.org/licenses/>.
 // for the signal/slot macros.  Could maybe change later when using
 // Qt5-style signal/slot connections.
 #include "gui-settings.h"
+
 using octave::gui_settings;
 
 namespace octave
@@ -137,11 +138,14 @@ public slots:
 
 protected:
 
-  QTerminal (QWidget *xparent = nullptr) : QWidget (xparent) { }
+  QTerminal (octave::base_qobject& oct_qobj, QWidget *xparent = nullptr)
+            : QWidget (xparent), m_octave_qobj (oct_qobj) { }
 
   void construct (octave::base_qobject& oct_qobj, QWidget *xparent);
 
 private:
+
+  octave::base_qobject& m_octave_qobj;
 
   QMenu *_contextMenu;
   QAction * _copy_action;

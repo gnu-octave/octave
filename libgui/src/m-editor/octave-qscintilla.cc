@@ -324,7 +324,7 @@ namespace octave
   void octave_qscintilla::contextmenu_help_doc (bool documentation)
   {
     if (documentation)
-      emit show_doc_signal (m_word_at_cursor);
+      m_octave_qobj.show_documentation_window (m_word_at_cursor);
     else
       emit execute_command_in_terminal_signal ("help " + m_word_at_cursor);
   }

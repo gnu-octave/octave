@@ -2556,12 +2556,6 @@ namespace octave
     connect (this, &file_editor::update_gui_lexer_signal,
              f, &file_editor_tab::update_lexer_settings);
 
-    // FIXME: What was the intent here?  The
-    // main_window::handle_show_doc slot no longer exists.
-    //
-    // connect (f->qsci_edit_area (), SIGNAL (show_doc_signal (const QString&)),
-    //          main_win (), SLOT (handle_show_doc (const QString&)));
-
     // Convert other signals from the edit area and tab to editor signals.
 
     connect (f->qsci_edit_area (), &octave_qscintilla::execute_command_in_terminal_signal,

@@ -1441,8 +1441,9 @@ QConsolePrivate::cursorRect (void)
 
 //////////////////////////////////////////////////////////////////////////////
 
-QWinTerminalImpl::QWinTerminalImpl (QWidget* parent, QWidget* main_win)
-    : QTerminal (parent), d (new QConsolePrivate (this)),
+QWinTerminalImpl::QWinTerminalImpl (octave::base_qobject& oct_qobj,
+                                    QWidget* parent, QWidget* main_win)
+    : QTerminal (oct_qobj, parent), d (new QConsolePrivate (this)),
       allowTripleClick (false)
 {
     installEventFilter (this);

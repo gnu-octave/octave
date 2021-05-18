@@ -47,6 +47,7 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QTabWidget>
+#include <QTimer>
 #include <QVBoxLayout>
 
 #include "documentation.h"
@@ -295,8 +296,16 @@ namespace octave
       }
 
     // Initial view: Contents
-    m_doc_browser->setSource
-      (QUrl ("qthelp://org.octave.interpreter-1.0/doc/octave.html/index.html"));
+    // FIXME: Setting the URL immediately leads to the "No dcument error"
+    //        although the data setup of the help engine seems to be finished.
+    //        At least, when when calling m_doc_browser->setSource in a slot
+    //        of the setupFinished signal, m_doc_browser is still NULL.
+    //        The current workaround is to delay setting the url by 100 ms.
+    QTimer::singleShot (100, this, [=] ()
+      { m_doc_browser->setSource
+        (QUrl ("qthelp://org.octave.interpreter-1.0/doc/octave.html/index.html"));
+      });
+
   }
 
   documentation::~documentation (void)

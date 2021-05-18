@@ -452,7 +452,7 @@ namespace octave
     // Zero-based constructors (for use from C++).
     idx_vector (octave_idx_type i) : m_rep (new idx_scalar_rep (i)) { }
 
-#if SIZEOF_INT != OCTAVE_SIZEOF_IDX_TYPE
+#if OCTAVE_SIZEOF_INT != OCTAVE_SIZEOF_IDX_TYPE
     idx_vector (int i)
       : m_rep (new idx_scalar_rep (static_cast<octave_idx_type> (i))) { }
 #endif

@@ -1456,13 +1456,6 @@ QWinTerminalImpl::QWinTerminalImpl (octave::base_qobject& oct_qobj,
 
 //////////////////////////////////////////////////////////////////////////////
 
-QWinTerminalImpl::QWinTerminalImpl (const QString& cmd, QWidget* parent)
-    : QTerminal (parent), d (new QConsolePrivate (this, cmd))
-{
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
 QWinTerminalImpl::~QWinTerminalImpl (void)
 {
   delete d;

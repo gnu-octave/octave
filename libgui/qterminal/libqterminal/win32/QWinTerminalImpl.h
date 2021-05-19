@@ -50,7 +50,6 @@ class QWinTerminalImpl : public QTerminal
 
 public:
   QWinTerminalImpl (octave::base_qobject&, QWidget* parent, QWidget* main_win);
-  QWinTerminalImpl (const QString& cmd, QWidget* parent = 0);
   ~QWinTerminalImpl (void);
 
   void setTerminalFont (const QFont& font);

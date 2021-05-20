@@ -508,38 +508,48 @@ namespace octave
     else
       m_icon_color_active = "";
 
+
+    QWidget *ref_widget = m_main_window;
+    if (! ref_widget)
+      ref_widget = this;
+
+    int x, y, w, h;
+    QApplication::desktop ()->availableGeometry (ref_widget).getRect (&x, &y, &w, &h);
+    QRect default_floating_size = QRect (x+16, y+32, w/3, h/2);
+
+    QRect default_dock_size;
     if (m_main_window)
       {
-        QRect available_size
-          = QApplication::desktop ()->availableGeometry (m_main_window);
-
-        int x, y, w, h;
-        available_size.getRect (&x, &y, &w, &h);
-        QRect default_floating_size = QRect (x+16, y+32, w/3, h/2);
+        // We have a main window, dock size depends on size of main window
         m_main_window->geometry ().getRect (&x, &y, &w, &h);
-        QRect default_dock_size = QRect (x+16, y+32, w/3, h/3);
+        default_dock_size = QRect (x+16, y+32, w/3, h/3);
+      }
+    else
+      {
+        // No main window, default dock size should never be used
+        default_dock_size = QRect (0, 0, w/10, h/10);
+      }
 
-        m_recent_float_geom
-          = settings->value (dw_float_geometry.key.arg (objectName ()),
+      m_recent_float_geom
+        = settings->value (dw_float_geometry.key.arg (objectName ()),
                              default_floating_size).toRect ();
 
-        QWidget dummy;
-        dummy.setGeometry (m_recent_float_geom);
+      QWidget dummy;
+      dummy.setGeometry (m_recent_float_geom);
 
-        if (QApplication::desktop ()->screenNumber (&dummy) == -1)
-          m_recent_float_geom = default_floating_size;
+      if (QApplication::desktop ()->screenNumber (&dummy) == -1)
+        m_recent_float_geom = default_floating_size;
 
-        // The following is required for ensure smooth transition from old
-        // saveGeomety to new QRect setting (see comment for restoring size
-        // of docked widgets)
-        QVariant dock_geom
-          = settings->value (dw_dock_geometry.key.arg (objectName ()),
-                             default_dock_size);
-        if (dock_geom.canConvert (QMetaType::QRect))
-          m_recent_dock_geom = dock_geom.toRect ();
-        else
-          m_recent_dock_geom = dw_dock_geometry.def.toRect ();
-      }
+      // The following is required for ensure smooth transition from old
+      // saveGeomety to new QRect setting (see comment for restoring size
+      // of docked widgets)
+      QVariant dock_geom
+        = settings->value (dw_dock_geometry.key.arg (objectName ()),
+                           default_dock_size);
+      if (dock_geom.canConvert (QMetaType::QRect))
+        m_recent_dock_geom = dock_geom.toRect ();
+      else
+        m_recent_dock_geom = dw_dock_geometry.def.toRect ();
 
     notice_settings (settings);  // call individual handler
 

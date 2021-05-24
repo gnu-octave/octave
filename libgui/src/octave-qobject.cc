@@ -308,6 +308,13 @@ namespace octave
 
     delete m_main_window;
 
+    delete m_documentation_widget;
+    delete m_file_browser_widget;
+    delete m_history_widget;
+    delete m_workspace_widget;
+    delete m_editor_widget;
+    delete m_variable_editor_widget;
+
     delete m_interpreter_qobj;
     delete m_qsci_tr;
     delete m_gui_tr;

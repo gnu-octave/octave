@@ -389,14 +389,20 @@ namespace octave
     if (m_documentation_widget)
       m_documentation_widget->set_main_window (mw);
     else
-      m_documentation_widget
-        = QPointer<documentation_dock_widget> (new documentation_dock_widget (mw, *this));
+      {
+        m_documentation_widget
+          = QPointer<documentation_dock_widget> (new documentation_dock_widget (mw, *this));
 
-    connect (qt_link (), &qt_interpreter_events::register_documentation_signal,
-             m_documentation_widget, &documentation_dock_widget::registerDoc);
+        connect (qt_link (),
+                 &qt_interpreter_events::register_documentation_signal,
+                 m_documentation_widget,
+                 &documentation_dock_widget::registerDoc);
 
-    connect (qt_link (), &qt_interpreter_events::unregister_documentation_signal,
-             m_documentation_widget, &documentation_dock_widget::unregisterDoc);
+        connect (qt_link (),
+                 &qt_interpreter_events::unregister_documentation_signal,
+                 m_documentation_widget,
+                 &documentation_dock_widget::unregisterDoc);
+      }
 
     return m_documentation_widget;
   }
@@ -419,19 +425,21 @@ namespace octave
     if (m_history_widget)
       m_history_widget->set_main_window (mw);
     else
-      m_history_widget
-        = QPointer<history_dock_widget> (new history_dock_widget (mw, *this));
+      {
+        m_history_widget
+          = QPointer<history_dock_widget> (new history_dock_widget (mw, *this));
 
-    connect (qt_link (), &qt_interpreter_events::set_history_signal,
-             m_history_widget, &history_dock_widget::set_history);
+        connect (qt_link (), &qt_interpreter_events::set_history_signal,
+                 m_history_widget, &history_dock_widget::set_history);
 
-    connect (qt_link (), &qt_interpreter_events::append_history_signal,
-             m_history_widget, &history_dock_widget::append_history);
+        connect (qt_link (), &qt_interpreter_events::append_history_signal,
+                 m_history_widget, &history_dock_widget::append_history);
 
-    connect (qt_link (), &qt_interpreter_events::clear_history_signal,
-             m_history_widget, &history_dock_widget::clear_history);
+        connect (qt_link (), &qt_interpreter_events::clear_history_signal,
+                 m_history_widget, &history_dock_widget::clear_history);
 
-    qt_link()->set_history (octave::command_history::list ());
+        qt_link()->set_history (octave::command_history::list ());
+      }
 
     return m_history_widget;
   }
@@ -442,19 +450,21 @@ namespace octave
     if (m_workspace_widget)
       m_workspace_widget->set_main_window (mw);
     else
-      m_workspace_widget
-        = QPointer<workspace_view> (new workspace_view (mw, *this));
+      {
+        m_workspace_widget
+          = QPointer<workspace_view> (new workspace_view (mw, *this));
 
-    m_workspace_widget->setModel (m_workspace_model);
+        m_workspace_widget->setModel (m_workspace_model);
 
-    connect (m_workspace_model, &workspace_model::model_changed,
-             m_workspace_widget, &workspace_view::handle_model_changed);
+        connect (m_workspace_model, &workspace_model::model_changed,
+                 m_workspace_widget, &workspace_view::handle_model_changed);
 
-    connect (qt_link (), &qt_interpreter_events::set_workspace_signal,
-             m_workspace_model, &workspace_model::set_workspace);
+        connect (qt_link (), &qt_interpreter_events::set_workspace_signal,
+                 m_workspace_model, &workspace_model::set_workspace);
 
-    connect (qt_link (), &qt_interpreter_events::clear_workspace_signal,
-             m_workspace_model, &workspace_model::clear_workspace);
+        connect (qt_link (), &qt_interpreter_events::clear_workspace_signal,
+                 m_workspace_model, &workspace_model::clear_workspace);
+      }
 
     return m_workspace_widget;
   }

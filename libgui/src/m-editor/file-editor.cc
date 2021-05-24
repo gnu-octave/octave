@@ -121,6 +121,7 @@ namespace octave
 
     m_copy_action_enabled = false;
     m_undo_action_enabled = false;
+    m_current_tab_modified = false;
 
     construct ();
 
@@ -239,7 +240,7 @@ namespace octave
     m_remove_all_breakpoints_action->setEnabled (have_tabs && m_is_octave_file);
 
     m_edit_function_action->setEnabled (have_tabs);
-    m_save_action->setEnabled (have_tabs);
+    m_save_action->setEnabled (have_tabs && m_current_tab_modified);
     m_save_as_action->setEnabled (have_tabs);
     m_close_action->setEnabled (have_tabs);
     m_close_all_action->setEnabled (have_tabs);
@@ -956,6 +957,10 @@ namespace octave
               {
                 m_tab_widget->setTabText (i, fname);
                 m_tab_widget->setTabToolTip (i, tip);
+
+                m_save_action->setEnabled (modified);
+                m_current_tab_modified = modified;
+
                 if (modified)
                   m_tab_widget->setTabIcon (i, rmgr.icon ("document-save"));
                 else
@@ -1005,14 +1010,19 @@ namespace octave
   }
 
   void file_editor::handle_editor_state_changed (bool copy_available,
-                                                 bool is_octave_file)
+                                                 bool is_octave_file,
+                                                 bool is_modified)
   {
     // In case there is some scenario where traffic could be coming from
     // all the file editor tabs, just process info from the current active tab.
     if (sender () == m_tab_widget->currentWidget ())
       {
+        m_save_action->setEnabled (is_modified);
+        m_current_tab_modified = is_modified;
+
         if (m_copy_action)
           m_copy_action->setEnabled (copy_available);
+
         m_cut_action->setEnabled (copy_available);
 
         m_run_selection_action->setEnabled (copy_available);

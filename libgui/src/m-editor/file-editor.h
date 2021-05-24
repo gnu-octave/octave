@@ -262,7 +262,8 @@ namespace octave
     void handle_tab_close_request (int index);
     void handle_tab_remove_request (void);
     void active_tab_changed (int index);
-    void handle_editor_state_changed (bool enableCopy, bool is_octave_file);
+    void handle_editor_state_changed (bool enableCopy, bool is_octave_file,
+                                      bool is_modified);
     void handle_mru_add_file (const QString& file_name, const QString& encoding);
     void check_conflict_save (const QString& fileName, bool remove_on_success);
 
@@ -458,6 +459,7 @@ namespace octave
     bool m_copy_action_enabled;
     bool m_undo_action_enabled;
     bool m_is_octave_file;
+    bool m_current_tab_modified;
 
     QMenu *m_edit_menu;
     QMenu *m_edit_cmd_menu;

@@ -504,7 +504,8 @@ namespace octave
       }
 
     // update the file editor with current editing directory
-    emit editor_state_changed (m_copy_available, m_is_octave_file);
+    emit editor_state_changed (m_copy_available, m_is_octave_file,
+                               m_edit_area->isModified ());
 
     // add the new file to the most-recently-used list
     emit mru_add_file (m_file_name, m_encoding);
@@ -1645,7 +1646,8 @@ namespace octave
   void file_editor_tab::handle_copy_available (bool enableCopy)
   {
     m_copy_available = enableCopy;
-    emit editor_state_changed (m_copy_available, m_is_octave_file);
+    emit editor_state_changed (m_copy_available, m_is_octave_file,
+                               m_edit_area->isModified ());
   }
 
   // show_dialog: shows a modal or non modal dialog depending on input arg
@@ -2818,7 +2820,8 @@ namespace octave
     if (ID != this)
       return;
 
-    emit editor_state_changed (m_copy_available, m_is_octave_file);
+    emit editor_state_changed (m_copy_available, m_is_octave_file,
+                               m_edit_area->isModified ());
   }
 
   void file_editor_tab::handle_file_reload_answer (int decision)

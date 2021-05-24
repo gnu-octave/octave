@@ -74,7 +74,8 @@ namespace octave
     void file_name_changed (const QString& fileName,
                             const QString& toolTip,
                             bool modified);
-    void editor_state_changed (bool copy_available, bool is_octave_file);
+    void editor_state_changed (bool copy_available, bool is_octave_file,
+                               bool is_modified);
     void set_focus_editor_signal (QWidget *);
     void edit_area_changed (octave_qscintilla *edit_area);
     void tab_remove_request (void);

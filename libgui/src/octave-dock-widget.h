@@ -92,7 +92,7 @@ namespace octave
     octave_dock_widget (const QString& obj_name, QWidget *p,
                         base_qobject& oct_qobj);
 
-    ~octave_dock_widget (void) = default;
+    ~octave_dock_widget (void);
 
     void set_predecessor_widget (octave_dock_widget *prev_widget);
 

@@ -255,6 +255,15 @@ namespace octave
     handle_settings (rmgr.get_settings ());
   }
 
+  octave_dock_widget::~octave_dock_widget (void)
+  {
+    // Also save settings here because closeEvent will not be called for
+    // dock widgets that may be opened from the command line and that
+    // are not children of the main window.
+
+    save_settings ();
+  }
+
   void
   octave_dock_widget::init_window_menu_entry (void)
   {

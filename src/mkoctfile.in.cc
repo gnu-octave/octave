@@ -703,34 +703,35 @@ clean_up_tmp_files (const std::list<std::string>& tmp_files)
 #if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
 extern "C"
 int
-wmain (int argc, wchar_t **wargv)
+wmain (int argc, wchar_t **sys_argv)
 {
-  static char **argv = new char * [argc + 1];
-  std::vector<std::string> argv_str;
+  std::vector<std::string> argv;
 
-  // convert wide character strings to multibyte UTF-8 strings
+  // Convert wide character strings to multibyte UTF-8 strings and save
+  // them in a vector of std::string objects for later processing.
+
   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
   for (int i_arg = 0; i_arg < argc; i_arg++)
-    {
-      argv_str.push_back (wchar_conv.to_bytes (wargv[i_arg]));
-      argv[i_arg] = &argv_str[i_arg][0];
-    }
-  argv[argc] = nullptr;
-
+    argv.push_back (wchar_conv.to_bytes (sys_argv[i_arg]));
 #else
 int
-main (int argc, char **argv)
+main (int argc, char **sys_argv)
 {
+  std::vector<std::string> argv;
+
+  // Save args as vector of std::string objects for later processing.
+  for (int i_arg = 0; i_arg < argc; i_arg++)
+    argv.push_back (sys_argv[i_arg]);
 #endif
-  if (argc == 1)
+
+ if (argc == 1)
     {
       std::cout << usage_msg << std::endl;
       return 1;
     }
 
-  if (argc == 2 && (! strcmp (argv[1], "-v")
-                    || ! strcmp (argv[1], "-version")
-                    || ! strcmp (argv[1], "--version")))
+  if (argc == 2 && (argv[1] == "-v" || argv[1] == "-version"
+                    || argv[1] == "--version"))
     {
       std::cout << version_msg << std::endl;
       return 0;
@@ -888,7 +889,7 @@ main (int argc, char **argv)
               ++i;
 
               // FIXME: Remove LFLAGS checking in Octave 7.0
-              if (! strcmp (argv[i], "LFLAGS"))
+              if (argv[i] == "LFLAGS")
                 std::cerr << "mkoctfile: warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
 
               if (! var_to_print.empty ())

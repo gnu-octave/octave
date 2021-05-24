@@ -113,7 +113,9 @@ wmain (int argc, wchar_t **wargv)
   for (int i_arg = 0; i_arg < argc; i_arg++)
     {
       argv_str.push_back (wchar_conv.to_bytes (wargv[i_arg]));
-      argv[i_arg] = &argv_str[i_arg][0];
+
+      // Save the string becuase argv_str[i_arg] may return a temporary.
+      argv[i_arg] = strsave (&argv_str[i_arg][0]);
     }
   argv[argc] = nullptr;
 

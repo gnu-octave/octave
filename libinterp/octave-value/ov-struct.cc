@@ -602,10 +602,10 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
   if (Vstruct_levels_to_print >= 0)
     {
-      bool max_depth_reached = Vstruct_levels_to_print-- == 0;
+      bool max_depth_reached = (Vstruct_levels_to_print-- == 0);
 
-      bool print_fieldnames_only
-        = (max_depth_reached || ! Vprint_struct_array_contents);
+      bool print_fieldnames_only = (max_depth_reached
+                                    || ! Vprint_struct_array_contents);
 
       increment_indent_level ();
 
@@ -1320,18 +1320,11 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
 
   if (Vstruct_levels_to_print >= 0)
     {
-      bool max_depth_reached = Vstruct_levels_to_print-- == 0;
+      bool max_depth_reached = (Vstruct_levels_to_print-- == 0);
 
       bool print_fieldnames_only = max_depth_reached;
 
       increment_indent_level ();
-
-      indent (os);
-      os << "scalar structure containing the fields:";
-      newline (os);
-      if (! Vcompact_format)
-        newline (os);
-
       increment_indent_level ();
 
       string_vector key_list = map.fieldnames ();
@@ -1381,6 +1374,16 @@ octave_scalar_struct::print_name_tag (std::ostream& os,
       newline (os);
       if (! Vcompact_format)
         newline (os);
+
+      increment_indent_level ();
+
+      indent (os);
+      os << "scalar structure containing the fields:";
+      newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
+      decrement_indent_level ();
 
       retval = true;
     }

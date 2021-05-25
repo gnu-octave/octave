@@ -512,6 +512,7 @@ namespace octave
                             srchstr[pos+1] = 't';  // "px" -> "pt"
                             std::strcpy (str, srchstr.c_str ());
                           }
+                          }
                       }
                   }
 

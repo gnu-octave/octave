@@ -116,11 +116,11 @@ namespace octave
       m_selection_line (-1), m_selection_col (-1), m_indicator_id (1),
       m_tooltip_font (QToolTip::font ())
   {
-    connect (this, &octave_qscintilla::textChanged,
-             this, &octave_qscintilla::text_changed);
+    connect (this, SIGNAL (textChanged (void)),
+             this, SLOT (text_changed (void)));
 
-    connect (this, &octave_qscintilla::cursorPositionChanged,
-             this, &octave_qscintilla::cursor_position_changed);
+    connect (this, SIGNAL (cursorPositionChanged (int, int)),
+             this, SLOT (cursor_position_changed (int, int)));
 
     connect (this, &octave_qscintilla::ctx_menu_run_finished_signal,
              this, &octave_qscintilla::ctx_menu_run_finished,

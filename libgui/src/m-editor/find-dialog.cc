@@ -212,8 +212,8 @@ namespace octave
     _edit_area = edit_area;
     _search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
 
-    connect (_edit_area, &octave_qscintilla::copyAvailable,
-             this, &find_dialog::handle_selection_changed,
+    connect (_edit_area, SIGNAL (copyAvailable (bool)),
+             this,       SLOT (handle_selection_changed (bool)),
              Qt::UniqueConnection);
   }
 

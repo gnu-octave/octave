@@ -131,17 +131,17 @@ namespace octave
     // Initialize last modification date to now
     m_last_modified = QDateTime::currentDateTimeUtc();
 
-    connect (m_edit_area, &octave_qscintilla::cursorPositionChanged,
-             this, &file_editor_tab::handle_cursor_moved);
+    connect (m_edit_area, SIGNAL (cursorPositionChanged (int, int)),
+             this, SLOT (handle_cursor_moved (int,int)));
 
-    connect (m_edit_area, &octave_qscintilla::SCN_CHARADDED,
-             this, &file_editor_tab::handle_char_added);
+    connect (m_edit_area, SIGNAL (SCN_CHARADDED (int)),
+             this, SLOT (handle_char_added (int)));
 
-    connect (m_edit_area, &octave_qscintilla::SCN_DOUBLECLICK,
-             this, &file_editor_tab::handle_double_click);
+    connect (m_edit_area, SIGNAL (SCN_DOUBLECLICK (int, int, int)),
+             this, SLOT (handle_double_click (int, int, int)));
 
-    connect (m_edit_area, &octave_qscintilla::linesChanged,
-             this, &file_editor_tab::handle_lines_changed);
+    connect (m_edit_area, SIGNAL (linesChanged ()),
+             this, SLOT (handle_lines_changed ()));
 
     connect (m_edit_area, &octave_qscintilla::context_menu_edit_signal,
              this, &file_editor_tab::handle_context_menu_edit);
@@ -194,8 +194,10 @@ namespace octave
     m_edit_area->setMarkerBackgroundColor (QColor (192,192,192),
                                            marker::unsure_debugger_position);
 
-    connect (m_edit_area, &octave_qscintilla::marginClicked,
-             this, &file_editor_tab::handle_margin_clicked);
+    connect (m_edit_area, SIGNAL (marginClicked (int, int,
+                                  Qt::KeyboardModifiers)),
+             this, SLOT (handle_margin_clicked (int, int,
+                                                Qt::KeyboardModifiers)));
 
     connect (m_edit_area, &octave_qscintilla::context_menu_break_condition_signal,
              this, &file_editor_tab::handle_context_menu_break_condition);
@@ -233,11 +235,11 @@ namespace octave
              this, QOverload<const meth_callback&>::of (&file_editor_tab::interpreter_event));
 
     // connect modified signal
-    connect (m_edit_area, &octave_qscintilla::modificationChanged,
-             this, &file_editor_tab::update_window_title);
+    connect (m_edit_area, SIGNAL (modificationChanged (bool)),
+             this, SLOT (update_window_title (bool)));
 
-    connect (m_edit_area, &octave_qscintilla::copyAvailable,
-             this, &file_editor_tab::handle_copy_available);
+    connect (m_edit_area, SIGNAL (copyAvailable (bool)),
+             this, SLOT (handle_copy_available (bool)));
 
     connect (&m_file_system_watcher, &QFileSystemWatcher::fileChanged,
              this, [=] (const QString& path) { file_has_changed (path); });
@@ -2698,14 +2700,13 @@ namespace octave
       {
         m_edit_area->setMarginLineNumbers (2, true);
         auto_margin_width ();
-        connect (m_edit_area, &octave_qscintilla::linesChanged,
-                 this, &file_editor_tab::auto_margin_width);
+        connect (m_edit_area, SIGNAL (linesChanged ()),
+                 this, SLOT (auto_margin_width ()));
       }
     else
       {
         m_edit_area->setMarginLineNumbers (2, false);
-        disconnect (m_edit_area, &octave_qscintilla::linesChanged,
-                    nullptr, nullptr);
+        disconnect (m_edit_area, SIGNAL (linesChanged ()), nullptr, nullptr);
       }
 
     m_smart_indent = settings->value (ed_auto_indent).toBool ();

@@ -2411,11 +2411,12 @@ namespace octave
     connect (f->qsci_edit_area (), &octave_qscintilla::create_context_menu_signal,
              this, &file_editor::create_context_menu);
 
-    connect (f->qsci_edit_area (), &octave_qscintilla::SCN_AUTOCCOMPLETED,
-             this, &file_editor::reset_focus);
+    connect (f->qsci_edit_area (),
+             SIGNAL (SCN_AUTOCCOMPLETED (const char*, int, int, int)),
+             this, SLOT (reset_focus (void)));
 
-    connect (f->qsci_edit_area (), &octave_qscintilla::SCN_AUTOCCANCELLED,
-             this, &file_editor::handle_autoc_cancelled);
+    connect (f->qsci_edit_area (), SIGNAL (SCN_AUTOCCANCELLED (void)),
+             this, SLOT (handle_autoc_cancelled (void)));
 
     // signals from the qscintilla edit area
     connect (this, &file_editor::enter_debug_mode_signal,

@@ -34,6 +34,7 @@
 #include "builtin-defun-decls.h"
 #include "dim-vector.h"
 #include "error.h"
+#include "graphics.h"
 #include "file-ops.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
@@ -42,11 +43,6 @@
 
 namespace octave
 {
-  // FIXME: get rid of this global variable
-  // Store both the generated pixmap and the svg image
-  typedef std::pair<uint8NDArray /*pixels*/, std::string /*svg*/> latex_data;
-  std::unordered_map<std::string, latex_data> latex_cache;
-
   std::string
   quote_string (std::string str)
   {
@@ -113,7 +109,9 @@ namespace octave
     {
       Matrix bbox;
       uint8NDArray pixels;
+
       text_to_pixels (txt, pixels, bbox, 0, 0, rotation, interpreter, false);
+
       return bbox.extract_n (0, 2, 1, 2);
     }
 
@@ -129,7 +127,13 @@ namespace octave
       text_renderer::font fnt;
       text_renderer::string str ("", fnt, 0.0, 0.0);
       str.set_color (m_color);
-      str.set_svg_element (latex_cache[key (txt, halign)].second);
+
+      gh_manager& gh_mgr = octave::__get_gh_manager__ ("text_to_strlist");
+
+      gh_manager::latex_data ldata = gh_mgr.get_latex_data (key (txt, halign));
+
+      str.set_svg_element (ldata.second);
+
       lst.push_back (str);
     }
 
@@ -351,10 +355,12 @@ namespace octave
   latex_renderer::render (const std::string& txt, int halign)
   {
     // Render if it was not already done
-    auto it = latex_cache.find (key (txt, halign));
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("latex_renderer::render");
 
-    if (it != latex_cache.end ())
-      return it->second.first;
+    gh_manager::latex_data ldata = gh_mgr.get_latex_data (key (txt, halign));
+
+    if (! ldata.first.isempty ())
+      return ldata.first;
 
     uint8NDArray data;
 
@@ -450,11 +456,13 @@ namespace octave
       return data;
 
     // Cache pixel and svg data for this string
-    latex_cache[key (txt, halign)] = latex_data (data, svg_string);
+    ldata.first = data;
+    ldata.second = svg_string;
+
+    gh_mgr.set_latex_data (key (txt, halign), ldata);
 
     if (m_debug)
-      std::cout << "* Caching " << key (txt, halign)
-                << " (numel: " << latex_cache.size () << ")\n";
+      std::cout << "* Caching " << key (txt, halign) << std::endl;
 
     return data;
   }
@@ -468,7 +476,10 @@ namespace octave
   {
     // Return early for empty strings
     if (txt.empty ())
-      return;
+      {
+        bbox = Matrix (1, 4, 0.0);
+        return;
+      }
 
     if (ok ())
       pixels = render (txt, halign);

@@ -38,6 +38,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "caseless-str.h"
@@ -6627,6 +6628,8 @@ class OCTINTERP_API gh_manager
 {
 public:
 
+  typedef std::pair<uint8NDArray /*pixels*/, std::string /*svg*/> latex_data;
+
   OCTINTERP_API gh_manager (octave::interpreter& interp);
 
   // FIXME: eventually eliminate these static functions and access
@@ -6797,6 +6800,35 @@ public:
     return m_graphics_lock;
   }
 
+  latex_data get_latex_data (const std::string& key) const
+  {
+    latex_data retval;
+
+    const auto it = m_latex_cache.find (key);
+
+    if (it != m_latex_cache.end ())
+      retval = it->second;
+
+    return retval;
+  }
+
+  void set_latex_data (const std::string& key, latex_data val)
+  {
+    // Limit the number of cache entries to 500
+    if (m_latex_keys.size () >= 500)
+      {
+        auto it = m_latex_cache.find (m_latex_keys.front ());
+
+        if (it != m_latex_cache.end ())
+          m_latex_cache.erase (it);
+
+        m_latex_keys.pop_front ();
+      }
+
+    m_latex_cache[key] = val;
+    m_latex_keys.push_back (key);
+  }
+
 private:
 
   typedef std::map<graphics_handle, graphics_object>::iterator iterator;
@@ -6835,6 +6867,11 @@ private:
 
   // A flag telling whether event processing must be constantly on.
   int m_event_processing;
+
+  // Cache of already parsed latex strings. Store a separate list of keys
+  // to allow for erasing oldest entries if cache size becomes too large.
+  std::unordered_map<std::string, latex_data> m_latex_cache;
+  std::list<std::string> m_latex_keys;
 };
 
 OCTINTERP_API void

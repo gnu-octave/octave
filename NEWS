@@ -81,6 +81,9 @@ decomposition to solve nearly singular full square matrices.  This is
 Matlab-compatible and yields results which more nearly minimize `norm
 (A*x - b)`.  Previously, Octave computed a minimum-norm solution.
 
+- The `betainc` function now calculates an exact output for the
+important special cases where a or b are 1.
+
 - The `whos` function now displays an additional attribute 's' when
 the variable is a sparse type.
 

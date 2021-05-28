@@ -127,13 +127,38 @@ function y = betainc (x, a, b, tail = "lower")
   ## Initialize output array
   y = zeros (size (x), class (x));
 
+  ## Trivial cases (long code here trades memory for speed)
+  a_one = (a == 1);
+  b_one = (b == 1);
+  a_b_one = a_one & b_one;
+  a_not_one = ! a_one;
+  b_not_one = ! b_one;
+  non_trivial = a_not_one & b_not_one;
+  a_one &= b_not_one;
+  b_one &= a_not_one;
+  
+  if (strcmpi (tail, "lower"))
+    y(a_b_one) = x(a_b_one);
+    y(a_one) = 1 - (1 - x(a_one)) .^ b(a_one);
+    y(b_one) = x(b_one) .^ a(b_one);
+  elseif (strcmpi (tail, "upper"))
+    y(a_b_one) = 1 - x(a_b_one);
+    y(a_one) = (1 - x(a_one)) .^ b(a_one);
+    y(b_one) = 1 - x(b_one) .^ a(b_one);
+  endif
+  
+  ## Non-Trivial cases
   ## In the following, we use the fact that the continued fraction Octave uses
   ## is more efficient when x <= a / (a + b).  Moreover, to compute the upper
   ## version, which is defined as I_x(a,b,"upper") = 1 - I_x(a,b) we use the
   ## property I_x(a,b) + I_(1-x) (b,a) = 1.
+  
+  x = x(non_trivial);
+  a = a(non_trivial);
+  b = b(non_trivial);
 
   if (strcmpi (tail, "lower"))
-    fflag = (x > a./(a+b));
+    fflag = (x > a./(a + b));
     x(fflag) = 1 - x(fflag);
     [a(fflag), b(fflag)] = deal (b(fflag), a(fflag));
   elseif (strcmpi (tail, "upper"))
@@ -153,10 +178,12 @@ function y = betainc (x, a, b, tail = "lower")
   f = __betainc__ (x, a, b);
 
   ## Divide continued fraction by B(a,b) / (x^a * (1-x)^b) to obtain I_x(a,b).
-  y = a .* log (x) + b .* log1p (-x) ...
-      + (gammaln (a + b) - gammaln (a) - gammaln (b)) + log (f);
-  y = real (exp (y));
-  y(fflag) = 1 - y(fflag);
+  y_nt = a .* log (x) + b .* log1p (-x) ...
+         + (gammaln (a + b) - gammaln (a) - gammaln (b)) + log (f);
+  y_nt = real (exp (y_nt));
+  y_nt(fflag) = 1 - y_nt(fflag);
+  
+  y(non_trivial) = y_nt;
 
   ## Restore original shape
   y = reshape (y, orig_sz);
@@ -220,7 +247,7 @@ endfunction
 
 %!test <*34405>
 %! assert (betainc (NaN, 1, 2), NaN);
-%! assert (betainc (0.5, 1, Inf), NaN);
+%! assert (betainc (0.5, 1, Inf), 1);
 
 ## Test input validation
 %!error <Invalid call> betainc ()

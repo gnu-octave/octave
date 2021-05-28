@@ -54,4 +54,8 @@ const QLatin1String dc_xbel_name_folder ("folder");
 const QLatin1String dc_xbel_name_bookmark ("bookmark");
 const QLatin1String dc_xbel_name_format ("xbel");
 
+// Zoom level
+const gui_pref
+dc_browser_zoom_level ("documentation_widget/browser_zoom_level", QVariant (0));
+
 #endif

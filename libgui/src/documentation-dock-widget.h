@@ -43,10 +43,6 @@ namespace octave
 
     ~documentation_dock_widget (void) = default;
 
-  signals:
-
-    void save_settings_signal (void);
-
   public slots:
 
     void notice_settings (const gui_settings *settings);

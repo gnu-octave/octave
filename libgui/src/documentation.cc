@@ -53,6 +53,7 @@
 #include "documentation.h"
 #include "documentation-bookmarks.h"
 #include "gui-preferences-global.h"
+#include "gui-preferences-dc.h"
 #include "gui-preferences-sc.h"
 #include "octave-qobject.h"
 #include "shortcut-manager.h"
@@ -256,14 +257,12 @@ namespace octave
                  this, &documentation::filter_update_history);
 
         // Bookmarks (own class)
-        documentation_bookmarks *bookmarks
+        m_bookmarks
           = new documentation_bookmarks (this, m_doc_browser, m_octave_qobj, navi);
-        navi->addTab (bookmarks, tr ("Bookmarks"));
+        navi->addTab (m_bookmarks, tr ("Bookmarks"));
 
         connect (m_action_bookmark, &QAction::triggered,
-                 bookmarks, [=] () { bookmarks->add_bookmark (); });
-        connect (p, SIGNAL (save_settings_signal (void)),
-                 bookmarks, SLOT (save_settings (void)));
+                 m_bookmarks, [=] () { m_bookmarks->add_bookmark (); });
 
         // Search
         QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();
@@ -639,6 +638,18 @@ namespace octave
     scmgr.set_shortcut (m_action_go_prev, sc_doc_go_back);
     scmgr.set_shortcut (m_action_go_next, sc_doc_go_next);
     scmgr.set_shortcut (m_action_bookmark, sc_doc_bookmark);
+
+    // Settings for the browser
+    m_doc_browser->notice_settings (settings);
+  }
+
+  void documentation::save_settings (void)
+  {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    m_doc_browser->save_settings (settings);
+    m_bookmarks->save_settings (settings);
   }
 
   void documentation::copyClipboard (void)
@@ -968,7 +979,7 @@ namespace octave
   //
 
   documentation_browser::documentation_browser (QHelpEngine *he, QWidget *p)
-    : QTextBrowser (p), m_help_engine (he), m_zoom_level (0)
+    : QTextBrowser (p), m_help_engine (he), m_zoom_level (max_zoom_level+1)
   {
     setOpenLinks (false);
     connect (this, &documentation_browser::anchorClicked,
@@ -984,8 +995,15 @@ namespace octave
       QDesktopServices::openUrl (url);
   }
 
-  void documentation_browser::notice_settings (const gui_settings *)
-  { }
+  void documentation_browser::notice_settings (const gui_settings *settings)
+  {
+    // Zoom level only at startup, not when other settings have changed
+    if (m_zoom_level > max_zoom_level)
+      {
+        m_zoom_level = settings->value (dc_browser_zoom_level).toInt ();
+        zoomIn (m_zoom_level);
+      }
+  }
 
   QVariant documentation_browser::loadResource (int type, const QUrl &url)
   {
@@ -993,6 +1011,13 @@ namespace octave
       return QVariant (m_help_engine->fileData(url));
     else
       return QTextBrowser::loadResource(type, url);
+  }
+
+  void documentation_browser::save_settings (gui_settings *settings)
+  {
+    settings->setValue (dc_browser_zoom_level.key, m_zoom_level);
+
+    settings->sync ();
   }
 
   void documentation_browser::zoom_in (void)

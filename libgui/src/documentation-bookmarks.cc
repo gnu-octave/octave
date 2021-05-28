@@ -380,15 +380,12 @@ namespace octave
     m_filter_widget->setVisible (m_filter_shown);
   }
 
-  void documentation_bookmarks::save_settings (void)
+  void documentation_bookmarks::save_settings (gui_settings *settings)
   {
     // Write the bookmarks to the xbel-file
     write_bookmarks ();
 
     // Store settings
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-
     settings->setValue (dc_bookmark_filter_active.key, m_filter_checkbox->isChecked ());
     settings->setValue (dc_bookmark_filter_shown.key, m_filter_shown);
 

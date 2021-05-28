@@ -43,6 +43,7 @@ namespace octave
 {
   class base_qobject;
   class documentation;
+  class documentation_bookmarks;
 
   //! Documentation browser derived from Textbrowser
 
@@ -62,6 +63,7 @@ namespace octave
     void handle_index_clicked (const QUrl& url,
                                const QString& keyword = QString ());
     void notice_settings (const gui_settings *settings);
+    void save_settings (gui_settings *settings);
 
     //! Zooming in and out while taking care of the zoom level
     //!@{
@@ -121,6 +123,7 @@ namespace octave
   public slots:
 
     void notice_settings (const gui_settings *settings);
+    void save_settings (void);
 
     void copyClipboard (void);
     void pasteClipboard (void);
@@ -164,6 +167,7 @@ namespace octave
     QHelpEngine *m_help_engine;
     QString m_internal_search;
     documentation_browser *m_doc_browser;
+    documentation_bookmarks *m_bookmarks;
     QLineEdit *m_find_line_edit;
     int m_search_anchor_position;
     QComboBox *m_filter;

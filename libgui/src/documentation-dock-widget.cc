@@ -55,7 +55,7 @@ namespace octave
 
   void documentation_dock_widget::save_settings (void)
   {
-    emit save_settings_signal ();
+    m_docs->save_settings ();
     octave_dock_widget::save_settings ();
   }
 

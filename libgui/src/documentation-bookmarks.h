@@ -56,7 +56,7 @@ namespace octave
 
     void add_bookmark (void);
     void add_folder (bool);
-    void save_settings (void);
+    void save_settings (gui_settings *settings);
 
   private slots:
 

@@ -67,14 +67,13 @@ namespace octave
 {
   // Functions of the the reimplemented tab widget
 
-  file_editor_tab_widget::file_editor_tab_widget (QWidget *p)
+  file_editor_tab_widget::file_editor_tab_widget (QWidget *p, file_editor *fe)
     : QTabWidget (p)
   {
     tab_bar *bar = new tab_bar (this);
 
-    // FIXME: Making a connection to a grandparent object seems bad.
-    connect (bar, SIGNAL (close_current_tab_signal (bool)),
-             p->parent (), SLOT (request_close_file (bool)));
+    connect (bar, &tab_bar::close_current_tab_signal,
+             fe, &file_editor::request_close_file);
 
     this->setTabBar (bar);
 
@@ -1891,7 +1890,7 @@ namespace octave
     m_tool_bar = new QToolBar (editor_widget);
     m_tool_bar->setMovable (true);
 
-    m_tab_widget = new file_editor_tab_widget (editor_widget);
+    m_tab_widget = new file_editor_tab_widget (editor_widget, this);
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 

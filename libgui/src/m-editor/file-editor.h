@@ -47,6 +47,7 @@
 namespace octave
 {
   class base_qobject;
+  class file_editor;
 
   // subclassed QTabWidget for using custom tabbar
 
@@ -56,7 +57,7 @@ namespace octave
 
   public:
 
-    file_editor_tab_widget (QWidget *p);
+    file_editor_tab_widget (QWidget *p, file_editor *fe);
 
     ~file_editor_tab_widget (void) = default;
 

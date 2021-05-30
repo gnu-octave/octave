@@ -231,6 +231,12 @@ namespace octave
     emit status_update (isUndoAvailable (), isRedoAvailable ());
   }
 
+  void octave_qscintilla::setCursorPosition (int line, int col)
+  {
+    QsciScintilla::setCursorPosition (line, col);
+    emit update_rowcol_indicator_signal (line, col);
+  }
+
   void octave_qscintilla::set_selection_marker_color (const QColor& c)
   {
     QColor ic = c;

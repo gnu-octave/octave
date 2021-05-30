@@ -58,6 +58,7 @@ namespace octave
     };
 
     virtual void contextMenuEvent (QContextMenuEvent *e);
+    virtual void setCursorPosition (int line, int col);
 
     void context_help_doc (bool);
     void context_edit (void);
@@ -86,6 +87,7 @@ namespace octave
 
   signals:
 
+    void update_rowcol_indicator_signal (int line, int col);
     void execute_command_in_terminal_signal (const QString&);
     void create_context_menu_signal (QMenu*);
     void context_menu_edit_signal (const QString&);

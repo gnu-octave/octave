@@ -204,7 +204,7 @@ namespace octave
     void handle_request_remove_breakpoint (int line);
 
     void update_breakpoints_handler (const octave_value_list& argout);
-
+    void update_rowcol_indicator (int line, int col);
     void update_lexer_settings (bool update_apis_only = false);
 
   private slots:

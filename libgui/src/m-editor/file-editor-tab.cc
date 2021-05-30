@@ -146,6 +146,9 @@ namespace octave
     connect (m_edit_area, &octave_qscintilla::context_menu_edit_signal,
              this, &file_editor_tab::handle_context_menu_edit);
 
+    connect (m_edit_area, &octave_qscintilla::update_rowcol_indicator_signal,
+             this, &file_editor_tab::update_rowcol_indicator);
+
     // create statusbar for row/col indicator and eol mode
     m_status_bar = new QStatusBar (this);
 
@@ -3044,20 +3047,25 @@ namespace octave
         emit autoc_closed (); // Tell editor about closed list
       }
 
-    // Lines changed? Take care of indentation
-    if (m_lines_changed)  // cursor moved and lines have changed
-      {
-        m_lines_changed = false;
-        if (m_is_octave_file && line == m_line+1 && col < m_col)
-          {
-            // Obviously, we have a newline here
-            if (m_smart_indent || m_auto_endif)
-              m_edit_area->smart_indent (m_smart_indent, m_auto_endif,
-                                         m_line, m_ind_char_width);
-          }
-      }
+    // Lines changed? Take care of indentation!
+    bool do_smart_indent = m_lines_changed && m_is_octave_file
+                           && (line == m_line+1) && (col < m_col)
+                           && (m_smart_indent || m_auto_endif);
+    m_lines_changed = false;
 
     // Update line and column indicator in the status bar
+    int o_line = m_line;
+    update_rowcol_indicator (line, col);
+
+    // Do smart indent after update of line indicator for having
+    // consistent indicator data
+    if (do_smart_indent)
+      m_edit_area->smart_indent (m_smart_indent, m_auto_endif,
+                                 o_line, m_ind_char_width);
+  }
+
+  void file_editor_tab::update_rowcol_indicator (int line, int col)
+  {
     m_line = line;
     m_col  = col;
     m_row_indicator->setNum (line+1);

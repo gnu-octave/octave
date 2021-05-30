@@ -117,6 +117,7 @@ namespace octave
 
     m_closed = false;
     m_no_focus = false;
+    m_editor_ready = false;
 
     m_copy_action_enabled = false;
     m_undo_action_enabled = false;
@@ -255,6 +256,15 @@ namespace octave
   // 2. When the editor becomes visible when octave is running
   void file_editor::empty_script (bool startup, bool visible)
   {
+
+    if (startup)
+      m_editor_ready = true;
+    else
+      {
+        if (! m_editor_ready)
+          return;  // not yet ready but got visibility changed signals
+      }
+
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     if (settings->value (global_use_custom_editor.key,
@@ -1460,6 +1470,9 @@ namespace octave
   void file_editor::handle_visibility (bool visible)
   {
     octave_dock_widget::handle_visibility (visible);
+
+    if (! m_editor_ready)
+      return;
 
     if (m_closed && visible)
       {

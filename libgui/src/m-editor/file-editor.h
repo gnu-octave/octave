@@ -476,6 +476,7 @@ namespace octave
     bool m_closing_canceled;
     bool m_closed;
     bool m_no_focus;
+    bool m_editor_ready;
 
     enum { MaxMRUFiles = 10 };
     QMenu *m_mru_file_menu;

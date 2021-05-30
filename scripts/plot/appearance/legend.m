@@ -625,7 +625,7 @@ function legend_autoupdate_cb (hax, ~, hl)
 
     ## FIXME: if the latest child is an hggroup, we cannot label it since this
     ## function is called before the hggroup has been properly populated.
-    persistent valid_types = {"line", "patch", "surface"};
+    persistent valid_types = {"line", "patch", "scatter", "surface"};
     if (! any (strcmp (get (kids, "type"), valid_types)))
       kids = [];
     endif
@@ -735,7 +735,7 @@ function opts = parse_opts (varargin)
 
   ## List plot objects that can be handled
   warn_extra_obj = false;
-  persistent valid_types = {"line", "patch", "surface", "hggroup"};
+  persistent valid_types = {"hggroup", "line", "patch", "scatter", "surface"};
 
   if (nargs > 0 && all (ishghandle (varargin{1})))
 
@@ -1031,7 +1031,7 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
 
   ## For unknown hggroups use the first child that can be labeled
   persistent known_creators = {"__contour__", "__errplot__", "__quiver__", ...
-                               "__scatter__", "__stem__"};
+                               "__stem__"};
   base_hplt = hplt;
 
   if (strcmp (typ, "hggroup"))
@@ -1067,6 +1067,8 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
                        "linestyle", "linewidth", ...
                        "marker", "markeredgecolor", ...
                        "markerfacecolor", "markersize"};
+  persistent sprops = {"marker", "markeredgecolor", ...
+                       "markerfacecolor"};
 
   switch (typ)
     case {"line", "__errplot__", "__quiver__", "__stem__"}
@@ -1100,7 +1102,7 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
                     "__format__", get (base_hplt, "format"));
       endif
 
-    case {"patch", "surface", "__scatter__"}
+    case {"patch", "surface"}
 
       vals = get (hplt, pprops);
 
@@ -1108,6 +1110,36 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
 
       ## Listeners
       safe_property_link (hplt(1), hicon, pprops);
+
+      setappdata (hicon, "__creator__", typ);
+
+    case "scatter"
+
+      all_sprops = [sprops, "sizedata", "cdata"];
+
+      vals = get (hplt, all_sprops);
+
+      ## sizedata and cdata may be N-by-1 vectors or N-by-3 (RGB) martrices.
+      ## Take the average for the icon.
+      vals {end-1} = mean (vals {end-1}, 1);
+      vals {end} = mean (vals {end}, 1);
+
+      hicon = __go_scatter__ (hl, [all_sprops; vals]{:});
+
+      ## Simple Listeners
+      safe_property_link (hplt(1), hicon, sprops);
+
+      ## Listener to sizedata
+      lsn = {hplt(1), "sizedata", @(h, ~) set (hicon, "sizedata", ...
+                                               mean (get (h, "sizedata")))};
+      addlistener (lsn{:});
+      addlistener (hicon, "beingdeleted", @(~, ~) dellistener (lsn{:}));
+
+      ## Listener to cdata
+      lsn = {hplt(1), "cdata", @(h, ~) set (hicon, "cdata", ...
+                                            mean (get (h, "cdata"), 1))};
+      addlistener (lsn{:});
+      addlistener (hicon, "beingdeleted", @(~, ~) dellistener (lsn{:}));
 
       setappdata (hicon, "__creator__", typ);
 
@@ -1194,10 +1226,25 @@ function sz = update_texticon_position (hl, objlist)
   icon_height = 0.7 * get (hl, "fontsize");
   set (hl, "fontunits", units);
 
+  types = get (objlist(:,2), "type");
   ext = get (objlist(:,1), "extent");
   markers = get (objlist(:,2), "marker");
-  markersz = get (objlist(:,2), "markersize");
-  types = get (objlist(:,2), "type");
+
+  is_scatter = strcmp (types, "scatter");
+  if (! any (is_scatter))
+    markersz = get (objlist(:,2), "markersize");
+  elseif (rows (objlist) == 1)
+    markersz = mean (get (objlist(1,2), "sizedata").^0.5);
+  else
+    markersz = cell (rows (objlist), 1);
+    for ii = 1:rows (objlist)
+      if (! is_scatter(ii))
+        markersz{ii} = get (objlist(ii,2), "markersize");
+      else
+        markersz{ii} = mean (get (objlist(ii,2), "sizedata").^0.5);
+      endif
+    endfor
+  endif
 
   ## Simple case of 1 text/icon pair
   nitem = rows (objlist);
@@ -1225,7 +1272,9 @@ function sz = update_texticon_position (hl, objlist)
 
     nrow = ceil (nitem / ncol);
 
-    rowheights = arrayfun (@(idx) max([icon_height; ext(idx:nrow:end, 2)]), ...
+    rowheights = arrayfun (@(idx) max([icon_height;
+                                       ext(idx:nrow:end, 2);
+                                       vertcat(markersz(idx:nrow:end){:})]), ...
                            1:nrow);
     x = hmargin;
     for ii = 1:ncol
@@ -1242,8 +1291,8 @@ function sz = update_texticon_position (hl, objlist)
         endif
 
         ybase = y + hg / 2;
-        y0 = y + hg/2 - icon_height/2 + dx;
-        y1 = y + hg/2 + icon_height/2 - dx;
+        y0 = ybase - max (icon_height, dx)/2 + dx;
+        y1 = ybase + max (icon_height, dx)/2 - dx;
 
         update_icon_position (objlist(iter,2), [x+dx, x+icon_width-dx], ...
                               [y0, y1]);
@@ -1275,7 +1324,8 @@ function sz = update_texticon_position (hl, objlist)
       x = hmargin;
 
       endidx = min (iter+ncol-1, nitem);
-      hg = max ([icon_height; ext(iter:endidx,2)]);
+      hg = max ([icon_height; ext(iter:endidx,2); ...
+                 vertcat(markersz{:})]);
 
       for jj = 1:ncol
         if (iter > nitem)
@@ -1290,8 +1340,8 @@ function sz = update_texticon_position (hl, objlist)
         endif
 
         ybase = y + hg / 2;
-        y0 = y + hg/2 - icon_height/2 + dx;
-        y1 = y + hg/2 + icon_height/2 - dx;
+        y0 = ybase - max (icon_height, dx)/2 + dx;
+        y1 = ybase + max (icon_height, dx)/2 - dx;
 
         update_icon_position (objlist(iter,2), [x+dx, x+icon_width-dx], ...
                               [y0, y1]);
@@ -1378,7 +1428,7 @@ function update_icon_position (hicon, xdata, ydata)
       ydata = [y0, y0, y0+2, y0, y0-2];
       set (hicon, "markerxdata", x0, "markerydata", y0, ...
            "xdata", xdata, "ydata", ydata);
-    case "__scatter__"
+    case "scatter"
       set (hicon, "xdata", mean (xdata), "ydata", mean (ydata));
     case "__stem__"
       xdata(2) -= (get (get (hicon, "peer_object"), "markersize") / 2);

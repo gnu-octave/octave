@@ -604,28 +604,40 @@ namespace octave
     if (prevline.contains (case_key) && do_smart_indent)
       {
         QString last_line = text (line-1);
+        int prev_ind = indentation (line-1);
         int act_ind = indentation (line);
 
-        if (last_line.contains ("switch"))
+        if (last_line.contains (QRegExp ("^[\t ]*switch")))
           {
             indent (line+1);
             act_ind = indentation (line+1);
           }
         else
-          unindent (line);
+          {
+            if (prev_ind == act_ind)
+              unindent (line);
+            else if (prev_ind > act_ind)
+              act_ind = prev_ind;
+          }
 
         setIndentation (line+1, act_ind);
         setCursorPosition (line+1, act_ind);
       }
 
     ekey = QRegExp ("^[\t ]*(?:end|endif|endfor|endwhile|until|endfunction"
-                    "|end_try_catch|end_unwind_protect)[\r]?[\t #%\n(;]");
+                    "|endswitch|end_try_catch|end_unwind_protect)[\r]?[\t #%\n(;]");
     if (prevline.contains (ekey))
       {
         if (indentation (line-1) <= indentation (line))
           {
             unindent (line+1);
             unindent (line);
+            if (prevline.contains ("endswitch"))
+              {
+                // endswitch has to me unndented twice
+                unindent (line+1);
+                unindent (line);
+              }
             setCursorPosition (line+1,
                                indentation (line));
           }
@@ -655,7 +667,6 @@ namespace octave
 
     QRegExp mid_block_regexp
       = QRegExp ("^[\t ]*(?:elseif|else"
-                 "|otherwise"
                  "|unwind_protect_cleanup|catch)"
                  "[\r\n\t #%]");
 

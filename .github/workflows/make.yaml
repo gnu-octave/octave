@@ -259,3 +259,177 @@ jobs:
         # automatically.
         continue-on-error: true
         run: make -C ./.build check V=1
+
+
+  windows:
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        # Use pre-installed MSYS2 as default shell
+        shell: C:/msys64/usr/bin/bash.exe --login -eo pipefail "{0}"
+
+    strategy:
+      matrix:
+        # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+        os: [windows-2019]
+        compiler: [gcc]
+        target: [x86_64, i686]
+        include:
+          - compiler: gcc
+            target: x86_64
+            target-triplet: x86_64-w64-mingw32
+            target-prefix: mingw-w64-x86_64
+            msystem: MINGW64
+            mingw-prefix: mingw64
+            cc: x86_64-w64-mingw32-gcc
+            cxx: x86_64-w64-mingw32-g++
+            f77: x86_64-w64-mingw32-gfortran
+          - compiler: gcc
+            target: i686
+            target-triplet: i686-w64-mingw32
+            target-prefix: mingw-w64-i686
+            msystem: MINGW32
+            mingw-prefix: mingw32
+            cc: i686-w64-mingw32-gcc
+            cxx: i686-w64-mingw32-g++
+            f77: i686-w64-mingw32-gfortran
+
+    env:
+      MSYSTEM: ${{ matrix.msystem }}
+      CHERE_INVOKING: 1
+      CC:  ${{ matrix.cc }}
+      CXX:  ${{ matrix.cxx }}
+      F77:  ${{ matrix.f77 }}
+      TARGET_TRIPLET:  ${{ matrix.target-triplet }}
+      TARGET_PREFIX:  ${{ matrix.target-prefix }}
+      # perl uses cmd shell by default
+      PERL5SHELL: bash -l -c
+
+    steps:
+      - name: install dependencies
+        # The packages are listed in (alphabetically sorted) blocks:
+        # The first block is for mandatory dependencies.
+        # The second block is for optional dependencies needed when building from a release tarball.
+        # The third block is for additional dependencies needed when building from a repository checkout.
+        run: |
+          pacman --noconfirm -S --needed --overwrite * \
+            base-devel ${TARGET_PREFIX}-toolchain ${TARGET_PREFIX}-lapack ${TARGET_PREFIX}-openblas ${TARGET_PREFIX}-pcre \
+            ${TARGET_PREFIX}-arpack ${TARGET_PREFIX}-curl ${TARGET_PREFIX}-cvode ${TARGET_PREFIX}-fftw ${TARGET_PREFIX}-fltk ${TARGET_PREFIX}-gl2ps ${TARGET_PREFIX}-glpk ${TARGET_PREFIX}-ghostscript ${TARGET_PREFIX}-gnuplot ${TARGET_PREFIX}-graphicsmagick ${TARGET_PREFIX}-hdf5 ${TARGET_PREFIX}-libsndfile ${TARGET_PREFIX}-portaudio ${TARGET_PREFIX}-qhull ${TARGET_PREFIX}-qrupdate ${TARGET_PREFIX}-qscintilla ${TARGET_PREFIX}-qt5 ${TARGET_PREFIX}-rapidjson ${TARGET_PREFIX}-suitesparse \
+            git ${TARGET_PREFIX}-ccache ${TARGET_PREFIX}-icoutils ${TARGET_PREFIX}-librsvg texinfo
+
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: prepare ccache
+        # Create human readable timestamp
+        id: ccache_cache_timestamp
+        run: |
+          echo "::set-output name=TIMESTAMP::$(date +"%Y-%m-%d_%H-%M-%S")"
+
+      - name: setup ccache
+        # Setup the github cache used to maintain the ccache from one job to the next
+        uses: actions/cache@v2
+        with:
+          path: C:/msys64/home/runneradmin/.ccache
+          key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.target }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          restore-keys: |
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.target }}:${{ github.ref }}
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.target }}
+
+      - name: configure ccache
+        # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
+        run: |
+          which ccache
+          test -d ~/.ccache || mkdir -p ~/.ccache
+          echo "max_size = 1.2G" > ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache -s
+          # create ccache helper script for Fortran compiler
+          echo -e '#!/bin/bash\nccache '$MINGW_PREFIX'/bin/'$F77' "$@"' > $MINGW_PREFIX/lib/ccache/bin/$F77
+          # prepend path to helper scripts to PATH
+          echo 'export PATH="$MINGW_PREFIX/lib/ccache/bin:$PATH"' >> ~/.bash_profile
+
+      - name: bootstrap
+        run: |
+          ./bootstrap
+
+      - name: configure
+        # PortAudio requires linking to libuuid. But its pkg-config file doesn't reference the path to that library.
+        # FIXME: Fix building with Java support. Override JAVA_HOME for now.
+        # FIXME: How do we get a working TeX environment in MSYS2? Disable building the documentation for now.
+        # Linking with ncurses fails. Use termcap library instead.
+        run: |
+          which $CC
+          echo $CC --version
+          $CC --version
+          which $CXX
+          echo $CXX --version
+          $CXX --version
+          which $F77
+          echo $F77 --version
+          $F77 --version
+          mkdir .build
+          cd .build && ../configure \
+            JAVA_HOME="" \
+            --disable-docs \
+            ac_cv_search_tputs=-ltermcap
+
+      - name: build
+        # Spawning processes seems to have a big overhead on this platform. Use a somewhat larger number of parallel processes to compensate for that.
+        # MSYS2's "fltk-config" returns wrong LIBS. Override them for make.
+        # See: https://github.com/msys2/MINGW-packages/issues/8806
+        # MSYS2's "portaudio" doesn't depend on uuid. But its package-config file still contains "-luuid". Override the flags for make.
+        # See: https://github.com/msys2/MINGW-packages/issues/8805
+        run: |
+          make -C ./.build all -j8 V=1 \
+            FLTK_LIBS="-lfltk_gl -lopengl32 -lglu32 -lfltk -lpthread" \
+            PORTAUDIO_LIBS="-lportaudio -ldsound -lsetupapi -lwinmm -lm -lole32"
+
+      - name: ccache status
+        continue-on-error: true
+        run: ccache -s
+
+      - name: install
+        # Install Octave
+        # Create symlinks to the libexec binaries in bin (or they won't find their libraries?)
+        run: |
+          make -C ./.build install V=1
+          ln -sf ${MINGW_PREFIX}/libexec/octave/7.0.0/exec/${TARGET_TRIPLET}/octave-gui.exe ${MINGW_PREFIX}/bin/octave-gui.exe
+          ln -sf ${MINGW_PREFIX}/libexec/octave/7.0.0/exec/${TARGET_TRIPLET}/octave-svgconvert.exe ${MINGW_PREFIX}/bin/octave-svgconvert.exe
+
+      - name: check
+        # Continuing on error in this step means that jobs will be "green" even
+        # if the test suite crashes.  But if we don't continue, we'll loose the
+        # ccache and other jobs will be cancelled, too.
+        # It would be nice if we could mark the job as "yellow" (and continue)
+        # in that case.
+        # It would also be nice if we could analyze the test suite results
+        # automatically.
+        continue-on-error: true
+
+        # We cannot run "make check" in the MSYS2 shell because it will fail with backslash as a file separator.
+        # Instead, use the CMD shell and set up the environment to pick up what we just built.
+        shell: cmd
+        env:
+          MSYS_PATH: C:\msys64\${{ matrix.mingw-prefix }}\bin;C:\msys64\usr\bin
+          MSYSTEM: ${{ matrix.msystem }}
+          TERM: cygwin
+          GNUTERM: wxt
+          GS: gs.exe
+
+        # Also, install .bat file for "makeinfo" so that it can be called from that shell.
+        run: |
+          set PATH=%MSYS_PATH%;%PATH%
+          echo @echo off > C:/msys64/usr/bin/makeinfo.bat
+          echo %%~d0 >> C:/msys64/usr/bin/makeinfo.bat
+          echo cd "%%~dp0" >> C:/msys64/usr/bin/makeinfo.bat
+          echo perl "%%~n0" %%* >> C:/msys64/usr/bin/makeinfo.bat
+          rem Start Octave and run test suite
+          octave-gui --eval "__run_test_suite__"
+
+      - name: display test results
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat fntests.log

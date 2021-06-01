@@ -174,6 +174,12 @@ static void yyerror (octave::base_parser& parser, const char *s);
   octave::tree_decl_command *tree_decl_command_type;
   octave::tree_statement *tree_statement_type;
   octave::tree_statement_list *tree_statement_list_type;
+  octave::tree_arguments_block *tree_arguments_block_type;
+  octave::tree_args_block_attribute_list *tree_args_block_attribute_list_type;
+  octave::tree_args_block_validation_list *tree_args_block_validation_list_type;
+  octave::tree_arg_size_spec *tree_arg_size_spec_type;
+  octave::tree_arg_validation *tree_arg_validation_type;
+  octave::tree_arg_validation_fcns *tree_arg_validation_fcns_type;
   octave_user_function *octave_user_function_type;
 
   octave::tree_classdef *tree_classdef_type;
@@ -228,6 +234,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token <tok_val> FQ_IDENT
 %token <tok_val> GET SET
 %token <tok_val> FCN
+%token <tok_val> ARGUMENTS
 %token <tok_val> LEXICAL_ERROR
 %token <tok_val> END_OF_INPUT
 
@@ -239,9 +246,9 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <dummy_type> indirect_ref_op decl_param_init
 %type <dummy_type> push_fcn_symtab push_script_symtab begin_file
 %type <dummy_type> param_list_beg param_list_end stmt_begin anon_fcn_begin
-%type <dummy_type> parsing_local_fcns parse_error
+%type <dummy_type> parsing_local_fcns parse_error at_first_executable_stmt
 %type <comment_type> stash_comment
-%type <tok_val> function_beg classdef_beg
+%type <tok_val> function_beg classdef_beg arguments_beg
 %type <punct_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
@@ -277,7 +284,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement function_end
 %type <tree_statement_list_type> simple_list simple_list1 list list1
-%type <tree_statement_list_type> opt_list
+%type <tree_statement_list_type> opt_list function_body function_body1
 %type <tree_statement_list_type> opt_fcn_list fcn_list fcn_list1
 %type <tree_classdef_attribute_type> attr
 %type <tree_classdef_attribute_list_type> attr_list attr_list1
@@ -296,6 +303,14 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_classdef_enum_list_type> enum_list enum_list1
 %type <tree_classdef_enum_block_type> enum_block
 %type <tree_function_def_type> method_decl method
+%type <tree_arguments_block_type> arguments_block
+%type <tree_args_block_attribute_list_type> args_attr_list
+%type <tree_args_block_validation_list_type> args_validation_list
+%type <tree_arg_validation_type> arg_validation
+%type <tree_arg_size_spec_type> size_spec
+%type <tree_identifier_type> class_name
+%type <tree_arg_validation_fcns_type> validation_fcns
+%type <tree_expression_type> default_value
 %type <octave_user_function_type> method_decl1
 
 // Precedence and associativity.
@@ -351,6 +366,12 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %destructor { delete $$; } <tree_decl_command_type>
 %destructor { delete $$; } <tree_statement_type>
 %destructor { delete $$; } <tree_statement_list_type>
+%destructor { delete $$; } <tree_arguments_block_type>
+%destructor { delete $$; } <tree_args_block_attribute_list_type>
+%destructor { delete $$; } <tree_args_block_validation_list_type>
+%destructor { delete $$; } <tree_arg_validation_type>
+%destructor { delete $$; } <tree_arg_size_spec_type>
+%destructor { delete $$; } <tree_arg_validation_fcns_type>
 %destructor { delete $$; } <octave_user_function_type>
 
 %destructor { delete $$; } <tree_classdef_type>
@@ -1430,6 +1451,7 @@ param_list_beg  : '('
 
                     $$ = 0;
                     lexer.m_looking_at_parameter_list = true;
+                    lexer.m_arguments_is_keyword = false;
 
                     if (lexer.m_looking_at_function_handle)
                       {
@@ -1447,6 +1469,7 @@ param_list_end  : ')'
 
                     $$ = 0;
                     lexer.m_looking_at_parameter_list = false;
+                    lexer.m_arguments_is_keyword = true;
                     lexer.m_looking_for_object_index = false;
                   }
                 ;
@@ -1654,32 +1677,37 @@ function_beg    : push_fcn_symtab FCN
 
 fcn_name        : identifier
                   {
-                    $$ = parser.make_fcn_name ($1);
-                    if (! $$)
+                    if (! ($$ = parser.make_fcn_name ($1)))
                       {
                         // make_fcn_name deleted $1.
                         YYABORT;
                       }
+
+                    lexer.m_arguments_is_keyword = true;
                   }
                 | GET '.' identifier
                   {
                     OCTAVE_YYUSE ($1);
                     OCTAVE_YYUSE ($2);
 
+                    $$ = $3;
+
                     lexer.m_parsed_function_name.top () = true;
                     lexer.m_maybe_classdef_get_set_method = false;
                     lexer.m_parsing_classdef_get_method = true;
-                    $$ = $3;
+                    lexer.m_arguments_is_keyword = true;
                   }
                 | SET '.' identifier
                   {
                     OCTAVE_YYUSE ($1);
                     OCTAVE_YYUSE ($2);
 
+                    $$ = $3;
+
                     lexer.m_parsed_function_name.top () = true;
                     lexer.m_maybe_classdef_get_set_method = false;
                     lexer.m_parsing_classdef_set_method = true;
-                    $$ = $3;
+                    lexer.m_arguments_is_keyword = true;
                   }
                 ;
 
@@ -1732,19 +1760,178 @@ function_end    : END
                 ;
 
 function        : function_beg stash_comment fcn_name
-                  opt_param_list opt_sep opt_list function_end
+                  opt_param_list opt_sep function_body function_end
                   {
                     OCTAVE_YYUSE ($5);
 
                     $$ = parser.make_function ($1, nullptr, $3, $4, $6, $7, $2);
                   }
                 | function_beg stash_comment return_list '=' fcn_name
-                  opt_param_list opt_sep opt_list function_end
+                  opt_param_list opt_sep function_body function_end
                   {
                     OCTAVE_YYUSE ($4);
                     OCTAVE_YYUSE ($7);
 
                     $$ = parser.make_function ($1, $3, $5, $6, $8, $9, $2);
+                  }
+                ;
+
+function_body   : at_first_executable_stmt opt_list
+                  {
+                    OCTAVE_YYUSE ($1);
+
+                    $$ = $2;
+                  }
+                | function_body1 opt_sep at_first_executable_stmt opt_list
+                  {
+                    OCTAVE_YYUSE ($2);
+
+                    if ($4)
+                      {
+                        for (const auto& elt : *($4))
+                          $1->append (elt);
+                      }
+
+                    $4->clear ();
+                    delete ($4);
+
+                    $$ = $1;
+                  }
+                ;
+
+at_first_executable_stmt
+                : // empty
+                  {
+                    $$ = 0;
+                    lexer.m_arguments_is_keyword = false;
+                  }
+                ;
+
+function_body1  : arguments_block
+                  {
+                    octave::tree_statement *stmt = parser.make_statement ($1);
+
+                    $$ = parser.make_statement_list (stmt);
+                  }
+                | function_body1 opt_sep arguments_block
+                  {
+                    octave::tree_statement *stmt = parser.make_statement ($3);
+
+                    $$ = parser.append_statement_list ($1, $2, stmt, false);
+                  }
+                ;
+
+arguments_block : arguments_beg stash_comment opt_sep args_attr_list
+                  args_validation_list opt_sep END
+                  {
+                    OCTAVE_YYUSE ($3);
+                    OCTAVE_YYUSE ($6);
+
+                    octave::comment_list *lc = $2;
+                    octave::comment_list *tc = lexer.get_comment ();
+
+                    if (! ($$ = parser.make_arguments_block ($1, $4, $5, $7, lc, tc)))
+                      {
+                        // make_arguments_block deleted $4, $5, LC, and TC.
+                        YYABORT;
+                      }
+
+                    lexer.m_arguments_is_keyword = true;
+                  }
+                ;
+
+arguments_beg   : ARGUMENTS
+                  {
+                    $$ = $1;
+                    lexer.m_arguments_is_keyword = false;
+                  }
+                ;
+
+
+args_attr_list  : // empty
+                  { $$ = nullptr; }
+                | '(' identifier ')'
+                  {
+                    OCTAVE_YYUSE ($1);
+                    OCTAVE_YYUSE ($3);
+
+                    // Error if $$ is nullptr.
+                    if  (! ($$ = parser.make_args_attribute_list ($2)))
+                      {
+                        // make_args_attribute_list deleted $2.
+                        YYABORT;
+                      }
+                  }
+                ;
+
+args_validation_list
+                  : arg_validation
+                    { $$ = parser.make_args_validation_list ($1); }
+                  | args_validation_list sep arg_validation
+                    {
+                      OCTAVE_YYUSE ($2);
+
+                      $$ = parser.append_args_validation_list ($1, $3);
+                    }
+                  ;
+
+arg_validation    : identifier size_spec class_name validation_fcns default_value
+                  {
+                    // FIXME: Change grammar to allow IDENTIFIER to be
+                    // be either "NAME" or "NAME '.' NAME".
+
+                    if (! ($$ = parser.make_arg_validation ($1, $2, $3, $4, $5)))
+                      {
+                        // make_arg_validation deleted ...
+                        YYABORT;
+                      }
+                  }
+                ;
+
+size_spec       : // empty
+                  { $$ = nullptr; }
+                | '(' arg_list ')'
+                  {
+                    OCTAVE_YYUSE ($1);
+                    OCTAVE_YYUSE ($3);
+
+                    if (! ($$ = parser.make_arg_size_spec ($2)))
+                      {
+                        // make_arg_size_spec deleted $2.
+                        YYABORT;
+                      }
+                  }
+                ;
+
+class_name      : // empty
+                  { $$ = nullptr; }
+                | identifier
+                  { $$ = $1; }
+                ;
+
+// Use argument list so we can accept anonymous functions.
+validation_fcns : // empty
+                  { $$ = nullptr; }
+                | '{' arg_list '}'
+                  {
+                    OCTAVE_YYUSE ($1);
+                    OCTAVE_YYUSE ($3);
+
+                    if (! ($$ = parser.make_arg_validation_fcns ($2)))
+                      {
+                        // make_arg_validation_fcns deleted $2.
+                        YYABORT;
+                      }
+                  }
+                ;
+
+default_value   : // empty
+                  { $$ = nullptr; }
+                | '=' expression
+                  {
+                    OCTAVE_YYUSE ($1);
+
+                    $$ = $2;
                   }
                 ;
 
@@ -3886,6 +4073,90 @@ namespace octave
       }
 
     return retval;
+  }
+
+  tree_arguments_block *
+  base_parser::make_arguments_block (token *arguments_tok,
+                                     tree_args_block_attribute_list *attr_list,
+                                     tree_args_block_validation_list *validation_list,
+                                     token *end_tok,
+                                     comment_list *lc, comment_list *tc)
+  {
+    tree_arguments_block *retval = nullptr;
+
+    if (end_token_ok (end_tok, token::arguments_end))
+      {
+        filepos beg_pos = arguments_tok->beg_pos ();
+
+        int l = beg_pos.line ();
+        int c = beg_pos.column ();
+
+        retval = new tree_arguments_block (attr_list, validation_list, l, c);
+      }
+    else
+      {
+        delete attr_list;
+        delete validation_list;
+
+        delete lc;
+        delete tc;
+      }
+
+    return retval;
+  }
+
+  tree_arg_validation *
+  base_parser::make_arg_validation (tree_expression *arg_name,
+                                    tree_arg_size_spec *size_spec,
+                                    tree_identifier *class_name,
+                                    tree_arg_validation_fcns *validation_fcns,
+                                    tree_expression *default_value)
+  {
+    // FIXME: Validate arguments and convert to more specific types
+    // (std::string for arg_name and class_name, etc).
+
+    return new tree_arg_validation (arg_name, size_spec, class_name,
+                                    validation_fcns, default_value);
+  }
+
+  tree_args_block_attribute_list *
+  base_parser::make_args_attribute_list (tree_identifier *attribute_name)
+  {
+    // FIXME: Validate argument and convert to more specific type
+    // (std::string for attribute_name).
+
+    return new tree_args_block_attribute_list (attribute_name);
+  }
+
+  tree_args_block_validation_list *
+  base_parser::make_args_validation_list (tree_arg_validation *arg_validation)
+  {
+    return new tree_args_block_validation_list (arg_validation);
+  }
+
+  tree_args_block_validation_list *
+  base_parser::append_args_validation_list (tree_args_block_validation_list *list,
+                                            tree_arg_validation *arg_validation)
+  {
+    list->append (arg_validation);
+
+    return list;
+  }
+
+  tree_arg_size_spec *
+  base_parser::make_arg_size_spec (tree_argument_list *size_args)
+  {
+    // FIXME: Validate argument.
+
+    return new tree_arg_size_spec (size_args);
+  }
+
+  tree_arg_validation_fcns *
+  base_parser::make_arg_validation_fcns (tree_argument_list *fcn_args)
+  {
+    // FIXME: Validate argument.
+
+    return new tree_arg_validation_fcns (fcn_args);
   }
 
   void

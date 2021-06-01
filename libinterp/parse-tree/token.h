@@ -52,6 +52,7 @@ namespace octave
     enum end_tok_type
     {
       simple_end,
+      arguments_end,
       classdef_end,
       enumeration_end,
       events_end,

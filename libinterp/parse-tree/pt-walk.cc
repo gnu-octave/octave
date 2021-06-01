@@ -49,6 +49,36 @@ namespace octave
       }
   }
 
+  void tree_walker::visit_arguments_block (tree_arguments_block&)
+  {
+    // FIXME?
+  }
+
+  void tree_walker::visit_args_block_attribute_list (tree_args_block_attribute_list&)
+  {
+    // FIXME?
+  }
+
+  void tree_walker::visit_args_block_validation_list (tree_args_block_validation_list&)
+  {
+    // FIXME?
+  }
+
+  void tree_walker::visit_arg_validation (tree_arg_validation&)
+  {
+    // FIXME?
+  }
+
+  void tree_walker::visit_arg_size_spec (tree_arg_size_spec&)
+  {
+    // FIXME?
+  }
+
+  void tree_walker::visit_arg_validation_fcns (tree_arg_validation_fcns&)
+  {
+    // FIXME?
+  }
+
   void tree_walker::visit_binary_expression (tree_binary_expression& expr)
   {
     tree_expression *op1 = expr.lhs ();

@@ -341,11 +341,12 @@ namespace octave
     // "set" and "get" portions of the names using the same mechanism
     // as is used for keywords.  However, they are not really keywords
     // in the language, so omit them from the list of possible
-    // keywords.  Likewise for "enumeration", "events", "methods", and
-    // "properties".
+    // keywords.  Likewise for "arguments", "enumeration", "events",
+    // "methods", and "properties".
 
+    // FIXME: The following check is duplicated in Fiskeyword.
     return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != nullptr
-            && ! (s == "set" || s == "get"
+            && ! (s == "set" || s == "get" || s == "arguments"
                   || s == "enumeration" || s == "events"
                   || s == "methods" || s == "properties"));
   }
@@ -2141,7 +2142,8 @@ If @var{name} is omitted, return a list of keywords.
         {
           std::string kword = wordlist[i].name;
 
-          if (! (kword == "set" || kword == "get"
+          // FIXME: The following check is duplicated in octave::iskeyword.
+          if (! (kword == "set" || kword == "get" || kword == "arguments"
                  || kword == "enumeration" || kword == "events"
                  || kword == "methods" || kword == "properties"))
             lst[j++] = kword;
@@ -2237,6 +2239,7 @@ namespace octave
     m_looking_at_matrix_or_assign_lhs = false;
     m_looking_for_object_index = false;
     m_looking_at_indirect_ref = false;
+    m_arguments_is_keyword = false;
     m_parsing_anon_fcn_body = false;
     m_parsing_class_method = false;
     m_parsing_classdef = false;
@@ -2628,7 +2631,7 @@ namespace octave
     m_filepos.increment_column (tok_len);
   }
 
-bool
+  bool
   base_lexer::looking_at_space (void)
   {
     int c = text_yyinput ();
@@ -2764,6 +2767,16 @@ bool
         m_at_beginning_of_statement = true;
         break;
 
+      case endarguments_kw:
+#if defined (DISABLE_ARGUMENTS_VALIDATION_BLOCK)
+        return 0;
+#else
+        tok_val = new token (endarguments_kw, token::arguments_end, m_tok_beg,
+                             m_tok_end);
+        m_at_beginning_of_statement = true;
+        break;
+#endif
+
       case endclassdef_kw:
         tok_val = new token (endclassdef_kw, token::classdef_end, m_tok_beg,
                              m_tok_end);
@@ -2873,6 +2886,15 @@ bool
             update_token_positions (slen);
           }
         break;
+
+      case arguments_kw:
+#if defined (DISABLE_ARGUMENTS_VALIDATION_BLOCK)
+        return 0;
+#else
+        if (! m_arguments_is_keyword)
+          return 0;
+        break;
+#endif
 
       case spmd_kw:
         m_at_beginning_of_statement = true;

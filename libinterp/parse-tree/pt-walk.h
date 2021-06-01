@@ -41,7 +41,13 @@ namespace octave
   //  class tree_black_hole
 
   class tree_anon_fcn_handle;
+  class tree_arg_size_spec;
+  class tree_arg_validation;
+  class tree_arg_validation_fcns;
+  class tree_args_block_attribute_list;
+  class tree_args_block_validation_list;
   class tree_argument_list;
+  class tree_arguments_block;
   class tree_binary_expression;
   class tree_boolean_expression;
   class tree_compound_binary_expression;
@@ -120,6 +126,18 @@ namespace octave
     virtual void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
     virtual void visit_argument_list (tree_argument_list&);
+
+    virtual void visit_arguments_block (tree_arguments_block&);
+
+    virtual void visit_args_block_attribute_list (tree_args_block_attribute_list&);
+
+    virtual void visit_args_block_validation_list (tree_args_block_validation_list&);
+
+    virtual void visit_arg_validation (tree_arg_validation&);
+
+    virtual void visit_arg_size_spec (tree_arg_size_spec&);
+
+    virtual void visit_arg_validation_fcns (tree_arg_validation_fcns&);
 
     virtual void visit_binary_expression (tree_binary_expression&);
 

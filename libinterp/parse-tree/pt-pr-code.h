@@ -70,6 +70,18 @@ namespace octave
 
     void visit_argument_list (tree_argument_list&);
 
+    void visit_arguments_block (tree_arguments_block&);
+
+    void visit_args_block_attribute_list (tree_args_block_attribute_list&);
+
+    void visit_args_block_validation_list (tree_args_block_validation_list&);
+
+    void visit_arg_validation (tree_arg_validation&);
+
+    void visit_arg_size_spec (tree_arg_size_spec&);
+
+    void visit_arg_validation_fcns (tree_arg_validation_fcns&);
+
     void visit_binary_expression (tree_binary_expression&);
 
     void visit_break_command (tree_break_command&);

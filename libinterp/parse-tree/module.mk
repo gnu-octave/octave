@@ -13,6 +13,7 @@ PARSE_TREE_INC = \
   %reldir%/pt-all.h \
   %reldir%/pt-anon-scopes.h \
   %reldir%/pt-arg-list.h \
+  %reldir%/pt-args-block.h \
   %reldir%/pt-array-list.h \
   %reldir%/pt-assign.h \
   %reldir%/pt-binop.h \
@@ -65,6 +66,7 @@ PARSE_TREE_SRC = \
   %reldir%/profiler.cc \
   %reldir%/pt-anon-scopes.cc \
   %reldir%/pt-arg-list.cc \
+  %reldir%/pt-args-block.cc \
   %reldir%/pt-array-list.cc \
   %reldir%/pt-assign.cc \
   %reldir%/pt-binop.cc \

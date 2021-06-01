@@ -50,7 +50,13 @@ namespace octave
   class comment_list;
   class tree;
   class tree_anon_fcn_handle;
+  class tree_arg_size_spec;
+  class tree_arg_validation;
+  class tree_arg_validation_fcns;
+  class tree_args_block_attribute_list;
+  class tree_args_block_validation_list;
   class tree_argument_list;
+  class tree_arguments_block;
   class tree_array_list;
   class tree_cell;
   class tree_classdef;
@@ -376,6 +382,41 @@ namespace octave
     finish_function (tree_parameter_list *ret_list,
                      octave_user_function *fcn, comment_list *lc,
                      int l, int c);
+
+    // Make an arguments validation block.
+    OCTINTERP_API tree_arguments_block *
+    make_arguments_block (token *arguments_tok,
+                          tree_args_block_attribute_list *attr_list,
+                          tree_args_block_validation_list *validation_list,
+                          token *end_tok, comment_list *lc, comment_list *tc);
+
+    OCTINTERP_API tree_args_block_attribute_list *
+    make_args_attribute_list (tree_identifier *attribute_name);
+
+    // Make an argument validation.
+    OCTINTERP_API tree_arg_validation *
+    make_arg_validation (tree_expression *arg_name,
+                         tree_arg_size_spec *size_spec,
+                         tree_identifier *class_name,
+                         tree_arg_validation_fcns *validation_fcns,
+                         tree_expression *default_value);
+
+    // Make an argument validation list.
+    OCTINTERP_API tree_args_block_validation_list *
+    make_args_validation_list (tree_arg_validation *arg_validation);
+
+    // Append an argument validation to an existing list.
+    OCTINTERP_API tree_args_block_validation_list *
+    append_args_validation_list (tree_args_block_validation_list *list,
+                                 tree_arg_validation *arg_validation);
+
+    // Make an argument size specification object.
+    OCTINTERP_API tree_arg_size_spec *
+    make_arg_size_spec (tree_argument_list *size_args);
+
+    // Make a list of argument validation functions.
+    OCTINTERP_API tree_arg_validation_fcns *
+    make_arg_validation_fcns (tree_argument_list *fcn_args);
 
     // Reset state after parsing function.
     OCTINTERP_API void

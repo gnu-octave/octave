@@ -1245,6 +1245,42 @@ namespace octave
   }
 
   void
+  tree_evaluator::visit_arguments_block (tree_arguments_block&)
+  {
+    warning ("function arguments validation blocks are not supported");
+  }
+
+  void
+  tree_evaluator::visit_args_block_attribute_list (tree_args_block_attribute_list&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_evaluator::visit_args_block_validation_list (tree_args_block_validation_list&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_evaluator::visit_arg_validation (tree_arg_validation&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_evaluator::visit_arg_size_spec (tree_arg_size_spec&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_evaluator::visit_arg_validation_fcns (tree_arg_validation_fcns&)
+  {
+    panic_impossible ();
+  }
+
+  void
   tree_evaluator::visit_binary_expression (tree_binary_expression&)
   {
     panic_impossible ();

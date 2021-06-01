@@ -516,8 +516,18 @@ word_list       : string
 
 identifier      : NAME
                   {
-                    $$ = new octave::tree_identifier ($1->sym_rec (),
-                                                      $1->line (),
+                    // Find the token in the symbol table.
+                    octave::symbol_scope scope
+                      = lexer.m_symtab_context.curr_scope ();
+
+                    std::string nm = $1->text ();
+
+                    octave::symbol_record sr
+                      = (scope
+                         ? scope.insert (nm) : octave::symbol_record (nm));
+
+
+                    $$ = new octave::tree_identifier (sr, $1->line (),
                                                       $1->column ());
                   }
                 ;

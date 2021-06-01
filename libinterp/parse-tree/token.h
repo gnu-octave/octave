@@ -32,7 +32,6 @@
 
 #include "filepos.h"
 #include "ov.h"
-#include "symrec.h"
 
 namespace octave
 {
@@ -47,7 +46,6 @@ namespace octave
       string_token,
       numeric_token,
       ettype_token,
-      sym_rec_token,
       scls_name_token,
     };
 
@@ -87,9 +85,6 @@ namespace octave
     token (int tv, end_tok_type t, const filepos& beg_pos,
            const filepos& end_pos);
 
-    token (int tv, const symbol_record& s, const filepos& beg_pos,
-           const filepos& end_pos);
-
     token (int tv, const std::string& mth, const std::string& cls,
            const filepos& beg_pos, const filepos& end_pos);
 
@@ -125,17 +120,12 @@ namespace octave
       return m_type_tag == keyword_token || m_type_tag == ettype_token;
     }
 
-    bool is_symbol (void) const
-    {
-      return m_type_tag == sym_rec_token;
-    }
+    bool isstring (void) const { return m_type_tag == string_token; }
 
     std::string text (void) const;
-    std::string symbol_name (void) const;
     octave_value number (void) const;
     token_type ttype (void) const;
     end_tok_type ettype (void) const;
-    symbol_record sym_rec (void) const;
 
     std::string superclass_method_name (void) const;
     std::string superclass_class_name (void) const;
@@ -167,10 +157,6 @@ namespace octave
 
       tok_info (end_tok_type et) : m_et (et) { }
 
-      tok_info (const symbol_record& sr)
-        : m_sr (new symbol_record (sr))
-      { }
-
       tok_info (const std::string& meth, const std::string& cls)
         : m_superclass_info (new superclass_info (meth, cls))
       { }
@@ -186,8 +172,6 @@ namespace octave
       octave_value *m_num;
 
       end_tok_type m_et;
-
-      symbol_record *m_sr;
 
       struct superclass_info
       {

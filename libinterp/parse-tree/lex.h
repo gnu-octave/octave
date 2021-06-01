@@ -653,7 +653,7 @@ namespace octave
 
     bool inside_any_object_index (void);
 
-    bool is_variable (const std::string& name, const symbol_scope& scope);
+    bool is_variable (const std::string& name);
 
     int make_keyword_token (const std::string& s);
 

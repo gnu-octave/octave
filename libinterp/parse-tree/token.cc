@@ -29,7 +29,6 @@
 
 #include <cassert>
 
-#include "symrec.h"
 #include "token.h"
 
 namespace octave
@@ -76,13 +75,6 @@ namespace octave
       m_tok_info (t), m_orig_text ()
   { }
 
-  token::token (int tv, const symbol_record& sr, const filepos& beg_pos,
-                const filepos& end_pos)
-    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
-      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (sym_rec_token),
-      m_tok_info (sr), m_orig_text ()
-  { }
-
   token::token (int tv, const std::string& meth, const std::string& cls,
                 const filepos& beg_pos, const filepos& end_pos)
     : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
@@ -94,8 +86,6 @@ namespace octave
   {
     if (m_type_tag == string_token)
       delete m_tok_info.m_str;
-    else if (m_type_tag == sym_rec_token)
-      delete m_tok_info.m_sr;
     else if (m_type_tag == scls_name_token)
       delete m_tok_info.m_superclass_info;
   }
@@ -105,13 +95,6 @@ namespace octave
   {
     assert (m_type_tag == string_token);
     return *m_tok_info.m_str;
-  }
-
-  std::string
-  token::symbol_name (void) const
-  {
-    assert (m_type_tag == sym_rec_token);
-    return m_tok_info.m_sr->name ();
   }
 
   octave_value
@@ -132,13 +115,6 @@ namespace octave
   {
     assert (m_type_tag == ettype_token);
     return m_tok_info.m_et;
-  }
-
-  symbol_record
-  token::sym_rec (void) const
-  {
-    assert (m_type_tag == sym_rec_token);
-    return *m_tok_info.m_sr;
   }
 
   std::string

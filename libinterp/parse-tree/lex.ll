@@ -2354,8 +2354,8 @@ namespace octave
   {
     token *tok = m_tokens.front ();
 
-    if (tok && tok->is_symbol ())
-      m_pending_local_variables.insert (tok->symbol_name ());
+    if (tok && tok->isstring ())
+      m_pending_local_variables.insert (tok->text ());
   }
 
   void
@@ -2654,8 +2654,7 @@ bool
   }
 
   bool
-  base_lexer::is_variable (const std::string& name,
-                           const symbol_scope& /*scope*/)
+  base_lexer::is_variable (const std::string& name)
   {
     return ((m_interpreter.at_top_level ()
              && m_interpreter.is_variable (name))
@@ -3555,13 +3554,7 @@ namespace octave
         return count_token_internal (kw_token);
       }
 
-    // Find the token in the symbol table.
-
-    symbol_scope scope = m_symtab_context.curr_scope ();
-
-    symbol_record sr = (scope ? scope.insert (ident) : symbol_record (ident));
-
-    token *tok = new token (NAME, sr, m_tok_beg, m_tok_end);
+    token *tok = new token (NAME, ident, m_tok_beg, m_tok_end);
 
     // The following symbols are handled specially so that things like
     //
@@ -3572,7 +3565,7 @@ namespace octave
 
     if (m_at_beginning_of_statement
         && ! (m_parsing_anon_fcn_body
-              || is_variable (ident, scope)
+              || is_variable (ident)
               || ident == "e" || ident == "pi"
               || ident == "I" || ident == "i"
               || ident == "J" || ident == "j"
@@ -3748,8 +3741,7 @@ namespace octave
       case NAME:
         {
           token *tok_val = current_token ();
-          symbol_record sr = tok_val->sym_rec ();
-          std::cerr << "NAME [" << sr.name () << "]\n";
+          std::cerr << "NAME [" << tok_val->text () << "]\n";
         }
         break;
 

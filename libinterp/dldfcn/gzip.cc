@@ -740,11 +740,11 @@ The optional output @var{filelist} is a list of the compressed files.
 %!
 %!  z_file = [test_file z.ext];
 %!  z_filelist = z.zip (test_file);
-%!  assert (z_filelist, {z_file})
+%!  assert (is_same_file (z_filelist, {z_file}))
 %!
 %!  unlink_or_error (test_file);
 %!  uz_filelist = z.unzip (z_file);
-%!  assert (uz_filelist, {test_file})
+%!  assert (is_same_file (uz_filelist, {test_file}))
 %!
 %!  assert (hash ("md5", fileread (test_file)), md5)
 %!endfunction
@@ -758,27 +758,27 @@ The optional output @var{filelist} is a list of the compressed files.
 %!
 %!  z_file = [ori_file z.ext];
 %!  z_filelist = z.zip (ori_file);
-%!  assert (z_filelist, {z_file}) # check output
+%!  assert (is_same_file (z_filelist, {z_file})) # check output
 %!  assert (exist (z_file), 2) # confirm file exists
 %!  assert (exist (ori_file), 2) # and did not remove original file
 %!
 %!  unlink_or_error (ori_file);
 %!  uz_filelist = z.unzip (z_file);
-%!  assert (uz_filelist, {ori_file}) # bug #48598
+%!  assert (is_same_file (uz_filelist, {ori_file})) # bug #48598
 %!  assert (hash ("md5", fileread (ori_file)), md5_ori)
 %!  assert (exist (z_file), 2) # bug #48597
 %!
 %!  ## xzip should dutifully re-xzip files even if they already are zipped
 %!  z_z_file = [z_file z.ext];
 %!  z_z_filelist = z.zip (z_file);
-%!  assert (z_z_filelist, {z_z_file}) # check output
+%!  assert (is_same_file (z_z_filelist, {z_z_file})) # check output
 %!  assert (exist (z_z_file), 2) # confirm file exists
 %!  assert (exist (z_file), 2)
 %!
 %!  md5_z = hash ("md5", fileread (z_file));
 %!  unlink_or_error (z_file);
 %!  uz_z_filelist = z.unzip (z_z_file);
-%!  assert (uz_z_filelist, {z_file}) # bug #48598
+%!  assert (is_same_file (uz_z_filelist, {z_file})) # bug #48598
 %!  assert (exist (z_z_file), 2) # bug #48597
 %!  assert (hash ("md5", fileread (z_file)), md5_z)
 %!endfunction
@@ -811,7 +811,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!      uz_filelist(idx) = z.unzip (z_filelist{idx});
 %!    endfor
 %!  endif
-%!  assert (sort (uz_filelist), fpaths(:)) # bug #48598
+%!  assert (is_same_file (sort (uz_filelist), fpaths(:))) # bug #48598
 %!  for idx = 1:numel (fpaths)
 %!    assert (hash ("md5", fileread (fpaths{idx})), md5s{idx})
 %!  endfor
@@ -840,7 +840,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!      assert (exist (z_file, "file"), 2)
 %!
 %!      uz_filelist = z.unzip (z_file);
-%!      assert (uz_filelist, {uz_file}) # bug #48598
+%!      assert (is_same_file (uz_filelist, {uz_file})) # bug #48598
 %!
 %!      assert (hash ("md5", fileread (uz_file)), md5)
 %!    endfor

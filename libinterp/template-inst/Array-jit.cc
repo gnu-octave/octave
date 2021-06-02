@@ -40,7 +40,7 @@
 extern template class Array<octave::idx_vector>;
 extern template class Array<octave_idx_type>;
 
-NO_INSTANTIATE_ARRAY_SORT (octave::jit_function, OCTINTERP_API);
+NO_INSTANTIATE_ARRAY_SORT_API (octave::jit_function, OCTINTERP_API);
 
 // Visibility attributes are ignored on template instantiation.
 // As a work-around, set visibility to default overriding compiler options.

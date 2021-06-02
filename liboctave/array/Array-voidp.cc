@@ -40,6 +40,6 @@
 extern template class Array<octave::idx_vector>;
 extern template class Array<octave_idx_type>;
 
-NO_INSTANTIATE_ARRAY_SORT (void *, OCTAVE_API);
+NO_INSTANTIATE_ARRAY_SORT_API (void *, OCTAVE_API);
 
 INSTANTIATE_ARRAY (void *, OCTAVE_API);

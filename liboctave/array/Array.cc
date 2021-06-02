@@ -2471,7 +2471,7 @@ Array<T>::nth_element (const octave::idx_vector& n, int dim) const
   return m;
 }
 
-#define NO_INSTANTIATE_ARRAY_SORT(T, API)                               \
+#define NO_INSTANTIATE_ARRAY_SORT_API(T, API)                           \
   template <> API Array<T>                                              \
   Array<T>::sort (int, sortmode) const                                  \
   {                                                                     \
@@ -2524,9 +2524,11 @@ Array<T>::nth_element (const octave::idx_vector& n, int dim) const
     return Array<octave_idx_type> ();                                   \
   }                                                                     \
   template <> API Array<T>                                              \
-  Array<T>::nth_element (const octave::idx_vector&, int) const {                \
+  Array<T>::nth_element (const octave::idx_vector&, int) const {        \
     return Array<T> ();                                                 \
   }
+
+#define NO_INSTANTIATE_ARRAY_SORT(T) NO_INSTANTIATE_ARRAY_SORT_API (T,)
 
 template <typename T>
 Array<T>

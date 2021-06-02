@@ -345,9 +345,9 @@ jobs:
           echo "max_size = 1.2G" > ~/.ccache/ccache.conf
           echo "compression = true" >> ~/.ccache/ccache.conf
           ccache -s
-          # create ccache helper script for Fortran compiler
-          echo -e '#!/bin/bash\nccache '$MINGW_PREFIX'/bin/'$F77' "$@"' > $MINGW_PREFIX/lib/ccache/bin/$F77
-          # prepend path to helper scripts to PATH
+          # # create ccache helper script for Fortran compiler
+          # echo -e '#!/bin/bash\nccache '$MINGW_PREFIX'/bin/'$F77' "$@"' > $MINGW_PREFIX/lib/ccache/bin/$F77
+          # prepend path to ccache helper scripts to PATH
           echo 'export PATH="$MINGW_PREFIX/lib/ccache/bin:$PATH"' >> ~/.bash_profile
 
       - name: bootstrap

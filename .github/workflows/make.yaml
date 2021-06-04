@@ -307,12 +307,19 @@ jobs:
       PERL5SHELL: bash -l -c
 
     steps:
+      - name: update MSYS2
+        # This step might update the runtime which requires a console restart
+        # In this case, it will kill the console which shouldn't count as an error.
+        continue-on-error: true
+        run: pacman --noconfirm -Syu
+
       - name: install dependencies
         # The packages are listed in (alphabetically sorted) blocks:
         # The first block is for mandatory dependencies.
         # The second block is for optional dependencies needed when building from a release tarball.
         # The third block is for additional dependencies needed when building from a repository checkout.
         run: |
+          pacman --noconfirm -Syu
           pacman --noconfirm -S --needed --overwrite * \
             base-devel ${TARGET_PREFIX}-toolchain ${TARGET_PREFIX}-lapack ${TARGET_PREFIX}-openblas ${TARGET_PREFIX}-pcre \
             ${TARGET_PREFIX}-arpack ${TARGET_PREFIX}-curl ${TARGET_PREFIX}-cvode ${TARGET_PREFIX}-fftw ${TARGET_PREFIX}-fltk ${TARGET_PREFIX}-gl2ps ${TARGET_PREFIX}-glpk ${TARGET_PREFIX}-ghostscript ${TARGET_PREFIX}-gnuplot ${TARGET_PREFIX}-graphicsmagick ${TARGET_PREFIX}-hdf5 ${TARGET_PREFIX}-libsndfile ${TARGET_PREFIX}-portaudio ${TARGET_PREFIX}-qhull ${TARGET_PREFIX}-qrupdate ${TARGET_PREFIX}-qscintilla ${TARGET_PREFIX}-qt5 ${TARGET_PREFIX}-rapidjson ${TARGET_PREFIX}-suitesparse \
@@ -345,8 +352,8 @@ jobs:
           echo "max_size = 1.2G" > ~/.ccache/ccache.conf
           echo "compression = true" >> ~/.ccache/ccache.conf
           ccache -s
-          # # create ccache helper script for Fortran compiler
-          # echo -e '#!/bin/bash\nccache '$MINGW_PREFIX'/bin/'$F77' "$@"' > $MINGW_PREFIX/lib/ccache/bin/$F77
+          # create ccache helper script for Fortran compiler
+          echo -e '#!/bin/bash\nccache '$MINGW_PREFIX'/bin/'$F77' "$@"' > $MINGW_PREFIX/lib/ccache/bin/$F77
           # prepend path to ccache helper scripts to PATH
           echo 'export PATH="$MINGW_PREFIX/lib/ccache/bin:$PATH"' >> ~/.bash_profile
 

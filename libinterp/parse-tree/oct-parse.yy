@@ -259,6 +259,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_expression_type> matrix cell
 %type <tree_expression_type> primary_expr oper_expr power_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
+%type <tree_expression_type> arg_name
 %type <tree_identifier_type> identifier fcn_name magic_tilde
 %type <tree_superclass_ref_type> superclass_identifier
 %type <tree_metaclass_query_type> meta_identifier
@@ -1858,22 +1859,31 @@ args_attr_list  : // empty
                 ;
 
 args_validation_list
-                  : arg_validation
-                    { $$ = parser.make_args_validation_list ($1); }
-                  | args_validation_list sep arg_validation
+                  : arg_name arg_validation
+                    {
+                      $2->arg_name ($1);
+                      $$ = parser.make_args_validation_list ($2);
+                    }
+                  | args_validation_list sep arg_name arg_validation
                     {
                       OCTAVE_YYUSE ($2);
 
-                      $$ = parser.append_args_validation_list ($1, $3);
+                      $4->arg_name ($3);
+                      $$ = parser.append_args_validation_list ($1, $4);
                     }
                   ;
 
-arg_validation    : identifier size_spec class_name validation_fcns default_value
-                  {
-                    // FIXME: Change grammar to allow IDENTIFIER to be
-                    // be either "NAME" or "NAME '.' NAME".
+// FIXME: Change grammar to allow IDENTIFIER to be be either
+// "NAME" or "NAME '.' NAME", possibly not entered in the symbol
+// table for the current scope.  Also stash comments before identifier.
 
-                    if (! ($$ = parser.make_arg_validation ($1, $2, $3, $4, $5)))
+arg_name          : identifier
+                    { $$ = $1; }
+                  ;
+
+arg_validation    : size_spec class_name validation_fcns default_value
+                  {
+                    if (! ($$ = parser.make_arg_validation ($1, $2, $3, $4)))
                       {
                         // make_arg_validation deleted ...
                         YYABORT;
@@ -2156,15 +2166,20 @@ property_list1
                   }
                 ;
 
-class_property  : stash_comment identifier
+class_property  : stash_comment identifier arg_validation
                   {
-                    $$ = new octave::tree_classdef_property ($2, $1);
-                  }
-                | stash_comment identifier '=' expression
-                  {
-                    OCTAVE_YYUSE ($3);
+                    // FIXME: Maybe this should be in a separate
+                    // base_parser::make_classdef_property function?
 
-                    $$ = new octave::tree_classdef_property ($2, $4, $1);
+                    octave::tree_arg_validation *av = $3;
+
+                    av->arg_name ($2);
+
+                    if (av->size_spec () || av->class_name ()
+                        || av->validation_fcns ())
+                      warning ("size, class, and validation function specifications are not yet supported for classdef properties; INCORRECT RESULTS ARE POSSIBLE!");
+
+                    $$ = new octave::tree_classdef_property (av, $1);
                   }
                 ;
 
@@ -4096,8 +4111,7 @@ namespace octave
   }
 
   tree_arg_validation *
-  base_parser::make_arg_validation (tree_expression *arg_name,
-                                    tree_arg_size_spec *size_spec,
+  base_parser::make_arg_validation (tree_arg_size_spec *size_spec,
                                     tree_identifier *class_name,
                                     tree_arg_validation_fcns *validation_fcns,
                                     tree_expression *default_value)
@@ -4105,7 +4119,7 @@ namespace octave
     // FIXME: Validate arguments and convert to more specific types
     // (std::string for arg_name and class_name, etc).
 
-    return new tree_arg_validation (arg_name, size_spec, class_name,
+    return new tree_arg_validation (size_spec, class_name,
                                     validation_fcns, default_value);
   }
 

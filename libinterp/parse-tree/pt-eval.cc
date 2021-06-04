@@ -1247,7 +1247,7 @@ namespace octave
   void
   tree_evaluator::visit_arguments_block (tree_arguments_block&)
   {
-    warning ("function arguments validation blocks are not supported");
+    warning ("function arguments validation blocks are not supported; INCORRECT RESULTS ARE POSSIBLE");
   }
 
   void

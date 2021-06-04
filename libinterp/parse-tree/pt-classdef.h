@@ -44,6 +44,8 @@ namespace octave
 {
   class interpreter;
 
+  class tree_arg_validation;
+
   class tree_superclass_ref : public tree_expression
   {
   public:
@@ -317,10 +319,7 @@ namespace octave
   {
   public:
 
-    tree_classdef_property (tree_identifier *i,
-                            comment_list *comments = nullptr);
-
-    tree_classdef_property (tree_identifier *i, tree_expression *e,
+    tree_classdef_property (tree_arg_validation *av,
                             comment_list *comments = nullptr);
 
     // No copying!
@@ -329,15 +328,11 @@ namespace octave
 
     tree_classdef_property& operator = (const tree_classdef_property&) = delete;
 
-    ~tree_classdef_property (void)
-    {
-      delete m_id;
-      delete m_expr;
-    }
+    ~tree_classdef_property (void);
 
-    tree_identifier * ident (void) { return m_id; }
+    tree_identifier * ident (void);
 
-    tree_expression * expression (void) { return m_expr; }
+    tree_expression * expression (void);
 
     comment_list * comments (void) const { return m_comments; }
 
@@ -354,8 +349,7 @@ namespace octave
 
   private:
 
-    tree_identifier *m_id;
-    tree_expression *m_expr;
+    tree_arg_validation *m_av;
     comment_list *m_comments;
     std::string m_doc_string;
   };

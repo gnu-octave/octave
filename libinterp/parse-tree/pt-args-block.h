@@ -36,6 +36,9 @@
 
 #include "base-list.h"
 
+// FIXME: We could maybe re-think the naming of some of these objects
+// before releasing a version that contains these new classes...
+
 namespace octave
 {
   class tree_arg_size_spec
@@ -100,12 +103,11 @@ namespace octave
   {
   public:
 
-    tree_arg_validation (tree_expression *arg_name,
-                         tree_arg_size_spec *size_spec,
+    tree_arg_validation (tree_arg_size_spec *size_spec,
                          tree_identifier *class_name,
                          tree_arg_validation_fcns *validation_fcns,
                          tree_expression *default_value)
-      : m_arg_name (arg_name), m_size_spec (size_spec),
+      : m_arg_name (nullptr), m_size_spec (size_spec),
         m_class_name (class_name), m_validation_fcns (validation_fcns),
         m_default_value (default_value)
     { }
@@ -124,6 +126,23 @@ namespace octave
       delete m_validation_fcns;
       delete m_default_value;
     }
+
+    void arg_name (tree_expression *name)
+    {
+      m_arg_name = name;
+    }
+
+    tree_expression * identifier_expression (void) { return m_arg_name; }
+
+    tree_arg_size_spec * size_spec (void) { return m_size_spec; }
+
+    tree_identifier * class_name (void) { return m_class_name; }
+
+    tree_arg_validation_fcns *
+    validation_fcns (void) { return m_validation_fcns; }
+
+    tree_expression *
+    initializer_expression (void) { return m_default_value; }
 
     void accept (tree_walker& tw)
     {

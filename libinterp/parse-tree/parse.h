@@ -395,8 +395,7 @@ namespace octave
 
     // Make an argument validation.
     OCTINTERP_API tree_arg_validation *
-    make_arg_validation (tree_expression *arg_name,
-                         tree_arg_size_spec *size_spec,
+    make_arg_validation (tree_arg_size_spec *size_spec,
                          tree_identifier *class_name,
                          tree_arg_validation_fcns *validation_fcns,
                          tree_expression *default_value);

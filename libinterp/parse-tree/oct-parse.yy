@@ -243,7 +243,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // %token VARARGIN VARARGOUT
 
 // Nonterminals we construct.
-%type <dummy_type> indirect_ref_op decl_param_init
+%type <dummy_type> indirect_ref_op
 %type <dummy_type> push_fcn_symtab push_script_symtab begin_file
 %type <dummy_type> param_list_beg param_list_end stmt_begin anon_fcn_begin
 %type <dummy_type> parsing_local_fcns parse_error at_first_executable_stmt
@@ -1129,20 +1129,13 @@ decl1           : decl2
                   }
                 ;
 
-decl_param_init : // empty
-                  {
-                    $$ = 0;
-                    lexer.m_looking_at_initializer_expression = true;
-                  }
-
 decl2           : identifier
                   { $$ = new octave::tree_decl_elt ($1); }
-                | identifier '=' decl_param_init expression
+                | identifier '=' expression
                   {
                     OCTAVE_YYUSE ($2);
 
-                    lexer.m_looking_at_initializer_expression = false;
-                    $$ = new octave::tree_decl_elt ($1, $4);
+                    $$ = new octave::tree_decl_elt ($1, $3);
                   }
                 ;
 
@@ -2000,12 +1993,11 @@ attr_list1      : attr
 
 attr            : identifier
                   { $$ = new octave::tree_classdef_attribute ($1); }
-                | identifier '=' decl_param_init expression
+                | identifier '=' expression
                   {
                     OCTAVE_YYUSE ($2);
 
-                    lexer.m_looking_at_initializer_expression = false;
-                    $$ = new octave::tree_classdef_attribute ($1, $4);
+                    $$ = new octave::tree_classdef_attribute ($1, $3);
                   }
                 | EXPR_NOT identifier
                   {
@@ -2168,13 +2160,11 @@ class_property  : stash_comment identifier
                   {
                     $$ = new octave::tree_classdef_property ($2, $1);
                   }
-                | stash_comment identifier '=' decl_param_init expression
+                | stash_comment identifier '=' expression
                   {
                     OCTAVE_YYUSE ($3);
 
-                    lexer.m_looking_at_initializer_expression = false;
-
-                    $$ = new octave::tree_classdef_property ($2, $5, $1);
+                    $$ = new octave::tree_classdef_property ($2, $4, $1);
                   }
                 ;
 

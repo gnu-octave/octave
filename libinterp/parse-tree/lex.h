@@ -272,7 +272,6 @@ namespace octave
         m_looking_at_return_list (false),
         m_looking_at_parameter_list (false),
         m_looking_at_decl_list (false),
-        m_looking_at_initializer_expression (false),
         m_looking_at_matrix_or_assign_lhs (false),
         m_looking_for_object_index (false),
         m_looking_at_indirect_ref (false),
@@ -376,10 +375,6 @@ namespace octave
     // true means we're parsing a declaration list (global or
     // persistent).
     bool m_looking_at_decl_list;
-
-    // true means we are looking at the initializer expression for a
-    // parameter list element.
-    bool m_looking_at_initializer_expression;
 
     // true means we're parsing a matrix or the left hand side of
     // multi-value assignment statement.

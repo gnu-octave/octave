@@ -2235,7 +2235,6 @@ namespace octave
     m_looking_at_return_list = false;
     m_looking_at_parameter_list = false;
     m_looking_at_decl_list = false;
-    m_looking_at_initializer_expression = false;
     m_looking_at_matrix_or_assign_lhs = false;
     m_looking_for_object_index = false;
     m_looking_at_indirect_ref = false;

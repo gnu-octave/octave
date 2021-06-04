@@ -279,8 +279,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_switch_command_type> switch_command
 %type <tree_switch_case_type> switch_case default_case
 %type <tree_switch_case_list_type> case_list1 case_list
-%type <tree_decl_elt_type> decl2 param_list_elt
-%type <tree_decl_init_list_type> decl1
+%type <tree_decl_elt_type> decl_elt param_list_elt
+%type <tree_decl_init_list_type> decl_init_list
 %type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement function_end
 %type <tree_statement_list_type> simple_list simple_list1 list list1
@@ -1108,28 +1108,28 @@ command         : declaration
 // Declaration statements
 // ======================
 
-declaration     : GLOBAL decl1
+declaration     : GLOBAL decl_init_list
                   {
                     $$ = parser.make_decl_command (GLOBAL, $1, $2);
                     lexer.m_looking_at_decl_list = false;
                   }
-                | PERSISTENT decl1
+                | PERSISTENT decl_init_list
                   {
                     $$ = parser.make_decl_command (PERSISTENT, $1, $2);
                     lexer.m_looking_at_decl_list = false;
                   }
                 ;
 
-decl1           : decl2
+decl_init_list   : decl_elt
                   { $$ = new octave::tree_decl_init_list ($1); }
-                | decl1 decl2
+                | decl_init_list decl_elt
                   {
                     $1->append ($2);
                     $$ = $1;
                   }
                 ;
 
-decl2           : identifier
+decl_elt        : identifier
                   { $$ = new octave::tree_decl_elt ($1); }
                 | identifier '=' expression
                   {
@@ -1518,7 +1518,7 @@ param_list2     : param_list_elt
                   }
                 ;
 
-param_list_elt  : decl2
+param_list_elt  : decl_elt
                   { $$ = $1; }
                 | magic_tilde
                   { $$ = new octave::tree_decl_elt ($1); }

@@ -1,3 +1,81 @@
+Summary of bugs fixed for version 6.3.0 (tbd)
+---------------------------------------------
+
+See: tbd
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Important notice
+
+- This bug fix release breaks ABI compatiblity with Octave 6.2.0. Re-build
+  binaries (like .oct or .mex files) when updating to this version.
+
+### Improvements and fixes
+
+- `ls-hdf5.cc`: Avoid throwing inside HDF5 function (bug #60081).
+- `ls-hdf5.cc`: Handle non-zero terminated type strings (bug #60081).
+- Fix occasional segfault in `symbfact` (bug #60101).
+- `fsolve.m`: Fix undefined output error when using `Output` function (bug #60144).
+- Fix compilation error with `iconv_t` on Solaris (bug #60162).
+- build: Check for `stropts.h` (bug #60163).
+- Avoid ambiguous call to `pow` (bug #60169).
+- Fix context link when creating handle to nested function.
+- `print.m`: Warn when figure is too large to be printed to output page (bug #60236).
+- Defer clearing function vars until stack frame is deleted (bug #60137).
+- Avoid memory leaks when returning handles to nested functions.
+- Hold references to closure frames in anon functions if needed (bug #60237).
+- `eigs`: Prevent possible segmentation fault at exit (bug #60311).
+- Issue warning when gnuplot graphics toolkit is initialized.
+- mpoles.m: Fix detection of pole multiplicity (bug #60384).
+- Perform shutdown actions in interpreter destructor (bug #60334).
+- build: Make relocation of dependencies with Octave optional (bug #60413).
+- `qz.cc`: Return correct number of eigenvalues (bug #60357).
+- `qz.cc`: Let test pass with LAPACK 3.9.1 and earlier versions (bug #60357).
+- `pkg.m`: Use default prefixes unless otherwise set previously (bug #60472).
+- `betaincinv.m`: Correctly handle small inputs (bug #60528).
+- `betaincinv.m`: Correctly handle inputs very close to 1.0 (bug #60528).
+- `unistd-wrappers.c`: Allocate sufficient memory for `new_argv` (bug #60535).
+- Mark system functions correctly if `OCTAVE_HOME` is non-canonical (bug #60554).
+- Mark compiled system functions correctly if `OCTAVE_HOME` is non-canonical (bug #60554).
+- Fix error if test suite is run before Octave is installed (bug #60554).
+- `lo-array-errwarn.cc`: Include `<limits>` (bug #60470).
+- Use `std::size_t` and `std::ptrdiff_t` in C++ code (bug #60471).
+- Use `std::size_t` in more instances (bug #60471).
+- Return proper number of stack frames for `dbstack (N)` call (bug #60531).
+- Avoid ambiguous match of overloaded function (bug #60531).
+- `lscov.m`: Relax BIST tolerance to pass with OpenBLAS (bug #60552).
+- `print`: Fix error when `"px"` word is present in a figure (bug #60641).
+
+### GUI
+
+- Fix calling external editor (bug #60198).
+- Fix missing file suffix .m when saving a new script (bug #60214).
+- Do not run files that are not saved as Octave files (bug #60214).
+- Fix confirm overwrite for native editor file "save as" dialogs (bug #60214).
+- Fix crash when GUI tries to restore missing previous Octave dir (bug #60255).
+- Fix restoring the horizontal position of docked GUI widgets (bug #59426).
+- Prevent floating widgets from re-opening after restart (bug #60279).
+- Avoid crash in GUI for `rmdir("")` (bug #60473).
+- Fix EOL mode when saving files under new names (bug #60585).
+- Fix auto indentation of switch-structure in GUI editor (bug #60649).
+
+### Documentation
+
+- Clarify usage of "Depends" keyword in package `DESCRIPTION` file (bug #60053).
+- Add note that wildcard patterns for `save` are glob patterns (bug #60157).
+- Change example for Delaunay triangulation to match the generating code (bug #60216).
+- Document single precision issues with OpenGL graphics toolkits (bug #59418).
+- Minor changes to documentation of single precision issues with OpenGL (bug #59418).
+- Expand on documentation for command syntax (bug #60084).
+- `isprop.m`: Document that function only works on graphics objects in Octave 6.X (bug #60295).
+- Explain how to write dual-purpose executable scripts and Octave functions (bug #60291).
+- Update keyword docstrings (bug #60275).
+- Use Texinfo commands to improve `transpose()` docstring rendering.
+- `betainc.m`, `betaincinv.m`: Correct non-TeX definition of beta incomplete integral.
+- Grammarcheck documentation ahead of 6.3 release.
+- Spellcheck documentation ahead of 6.3 release.
+
+
 Summary of bugs fixed for version 6.2.0 (2021-02-19):
 ----------------------------------------------------
 

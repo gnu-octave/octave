@@ -63,7 +63,7 @@ dnl
 dnl FIXME: Since we also set libtool versions for liboctave and libinterp,
 dnl perhaps we should be computing the "api version" from those versions numbers
 dnl in some way instead of setting it independently here.
-OCTAVE_API_VERSION="api-v55+"
+OCTAVE_API_VERSION="api-v56+"
 
 AC_SUBST(OCTAVE_MAJOR_VERSION)
 AC_SUBST(OCTAVE_MINOR_VERSION)

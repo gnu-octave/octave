@@ -270,6 +270,7 @@ jobs:
         shell: C:/msys64/usr/bin/bash.exe --login -eo pipefail "{0}"
 
     strategy:
+      fail-fast: false
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
         os: [windows-2019]
@@ -362,6 +363,9 @@ jobs:
           ./bootstrap
 
       - name: configure
+        # configure sometimes hangs while compiling 32bit Fortran.
+        # It should take much less than 30 minutes. Cancel the step if it takes longer.
+        timeout-minutes: 30
         # PortAudio requires linking to libuuid. But its pkg-config file doesn't reference the path to that library.
         # FIXME: Fix building with Java support. Override JAVA_HOME for now.
         # FIXME: How do we get a working TeX environment in MSYS2? Disable building the documentation for now.

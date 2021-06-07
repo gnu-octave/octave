@@ -75,12 +75,13 @@ function [s, iters] = logm (A, opt_iters = 100)
   endif
 
   eigv = diag (s);
-  if (any (eigv < 0))
+  real_neg_eigv = (real (eigv) < 0) & (imag (eigv) == 0);
+  if (any (real_neg_eigv))
     warning ("Octave:logm:non-principal",
              "logm: principal matrix logarithm is not defined for matrices with negative eigenvalues; computing non-principal logarithm");
   endif
 
-  real_eig = all (eigv >= 0);
+  real_eig = ! any (real_neg_eigv);
 
   k = 0;
   ## Algorithm 11.9 in "Function of matrices", by N. Higham
@@ -180,6 +181,12 @@ endfunction
 %!assert (full (logm (eye (3))), logm (full (eye (3))))
 %!assert (full (logm (10*eye (3))), logm (full (10*eye (3))), 8*eps)
 %!assert (logm (expm ([0 1i; -1i 0])), [0 1i; -1i 0], 10 * eps)
+%!test <*60738>
+%! A = [0.2510, 1.2808, -1.2252; ...
+%!      0.2015, 1.0766, 0.5630; ...
+%!      -1.9769, -1.0922, -0.5831];
+%! warning ("off", "Octave:logm:non-principal", "local");
+%! assert (expm (logm (A)), A, 40*eps);
 
 ## Test input validation
 %!error <Invalid call> logm ()

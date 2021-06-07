@@ -1289,7 +1289,7 @@ esac
 case $host_os in
   msdosmsvc | mingw*)
     AC_CHECK_HEADERS([psapi.h],
-      [LIBS="-lpsapi $LIBS"],
+      [LIBS="-lpsapi $LIBS" CPPFLAGS="-DPSAPI_VERSION=1 $CPPFLAGS"],
       [AC_MSG_ERROR([Missing PSAPI required to build for Windows target.])],
       [#include <windows.h>])
   ;;

@@ -118,7 +118,8 @@ noinst_LTLIBRARIES += \
 
 %canon_reldir%_libparse_tree_la_CPPFLAGS = \
   $(libinterp_liboctinterp_la_CPPFLAGS) \
-  $(LLVM_CPPFLAGS)
+  $(LLVM_CPPFLAGS) \
+  $(OCTAVE_PARSER_CPPFLAGS)
 
 libinterp_EXTRA_DIST += \
   %reldir%/octave.gperf

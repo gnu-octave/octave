@@ -333,7 +333,8 @@ noinst_LTLIBRARIES += \
   $(HDF5_CPPFLAGS) \
   $(LLVM_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS) \
-  $(Z_CPPFLAGS)
+  $(Z_CPPFLAGS) \
+  $(OCTAVE_TEX_PARSER_CPPFLAGS)
 
 libinterp_EXTRA_DIST += \
   %reldir%/default-defs.in.h \

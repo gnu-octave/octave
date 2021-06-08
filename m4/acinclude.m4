@@ -3221,6 +3221,39 @@ EOF
       done
       rm -f conftest.yy y.tab.h y.tab.c
       ])
+
+    AC_CACHE_CHECK([whether api.prefix applies to yysymbol_kind_t],
+                   [octave_cv_bison_api_prefix_applies_to_yysymbol_kind_t], [
+      [case "$octave_cv_bison_api_prefix_decl_style" in
+        "api brace")
+          def='%define api.prefix {PREFIX_}'
+        ;;
+        "api quote")
+          def='%define api.prefix "PREFIX_"'
+        ;;
+        "name brace")
+          def='%define name-prefix {PREFIX_}'
+        ;;
+        "name quote")
+          def='%define name-prefix "PREFIX_"'
+        ;;
+      esac]
+      cat << EOF > conftest.yy
+$def
+%start input
+%%
+input:;
+%%
+EOF
+      ## Older versions of bison only warn and exit with success.
+      $YACC $WARN_YFLAGS conftest.yy
+      if grep PREFIX_symbol_kind_t y.tab.c > /dev/null; then
+        octave_cv_bison_api_prefix_applies_to_yysymbol_kind_t=yes
+      else
+        octave_cv_bison_api_prefix_applies_to_yysymbol_kind_t=no
+      fi
+      rm -f conftest.yy y.tab.h y.tab.c
+      ])
   fi
 
   if test -z "$octave_cv_bison_api_prefix_decl_style" \
@@ -3245,7 +3278,14 @@ if you need to reconstruct parse.cc, which is the case if you're
 building from VCS sources.
 "
     OCTAVE_CONFIGURE_WARNING([warn_bison])
+
   fi
+  if test "$octave_cv_bison_api_prefix_applies_to_yysymbol_kind_t" = no; then
+    OCTAVE_PARSER_CPPFLAGS="-Dyysymbol_kind_t=octave_symbol_kind_t"
+    OCTAVE_TEX_PARSER_CPPFLAGS="-Dyysymbol_kind_t=octave_tex_symbol_kind_t"
+  fi
+  AC_SUBST(OCTAVE_PARSER_CPPFLAGS)
+  AC_SUBST(OCTAVE_TEX_PARSER_CPPFLAGS)
   AC_SUBST(WARN_YFLAGS)
 ])
 dnl

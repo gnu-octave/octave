@@ -61,6 +61,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Documentation
 
+- Improve Differential Equations chapter and example for lsode (bug #57508).
 - Clarify usage of "Depends" keyword in package `DESCRIPTION` file (bug #60053).
 - Add note that wildcard patterns for `save` are glob patterns (bug #60157).
 - Change example for Delaunay triangulation to match the generating code (bug #60216).

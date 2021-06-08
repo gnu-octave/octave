@@ -19,13 +19,13 @@
 @node Differential Equations
 @chapter Differential Equations
 
-Octave has built-in functions for solving ordinary differential equations,
-and differential-algebraic equations.
-All solvers are based on reliable ODE routines written in Fortran.
+Octave has built-in functions for solving ordinary differential equations
+(ODEs), and differential-algebraic equations (DAEs).
 
 @menu
 * Ordinary Differential Equations::
 * Differential-Algebraic Equations::
+* Matlab-compatible solvers::
 @end menu
 
 @cindex differential equations
@@ -104,21 +104,63 @@ t = [0, logspace(-1, log10(303), 150), ...
 @end group
 @end example
 
-See @nospell{Alan C. Hindmarsh},
-@cite{ODEPACK, A Systematized Collection of ODE Solvers},
-in Scientific Computing, @nospell{R. S. Stepleman}, editor, (1983)
-for more information about the inner workings of @code{lsode}.
-
 An m-file for the differential equation used above is included with the
 Octave distribution in the examples directory under the name
 @file{oregonator.m}.
 
-@menu
-* Matlab-compatible solvers::
-@end menu
+
+@node Differential-Algebraic Equations
+@section Differential-Algebraic Equations
+
+The function @code{daspk} can be used to solve DAEs of the form
+@tex
+$$
+ 0 = f (\dot{x}, x, t), \qquad x(t=0) = x_0, \dot{x}(t=0) = \dot{x}_0
+$$
+@end tex
+@ifnottex
+
+@example
+0 = f (x-dot, x, t),    x(t=0) = x_0, x-dot(t=0) = x-dot_0
+@end example
+
+@end ifnottex
+
+@noindent
+where
+@tex
+$\dot{x} = {dx \over dt}$
+@end tex
+@ifnottex
+@math{x-dot}
+@end ifnottex
+is the derivative of @math{x}.  The equation is solved using
+@nospell{Petzold's} DAE solver @sc{daspk}.
+
+@DOCSTRING(daspk)
+
+@DOCSTRING(daspk_options)
+
+Octave also includes @sc{dassl}, an earlier version of @sc{daspk},
+and @sc{dasrt}, which can be used to solve DAEs with constraints
+(stopping conditions).
+
+@DOCSTRING(dassl)
+
+@DOCSTRING(dassl_options)
+
+@DOCSTRING(dasrt)
+
+@DOCSTRING(dasrt_options)
+
+See @nospell{K. E. Brenan}, et al., @cite{Numerical Solution of Initial-Value
+Problems in Differential-Algebraic Equations}, North-Holland (1989),
+DOI: @url{https://doi.org/10.1137/1.9781611971224},
+for more information about the implementation of @sc{dassl}.
+
 
 @node Matlab-compatible solvers
-@subsection Matlab-compatible solvers
+@section Matlab-compatible solvers
 
 Octave also provides a set of solvers for initial value problems for ordinary
 differential equations (ODEs) that have a @sc{matlab}-compatible interface.
@@ -169,7 +211,8 @@ Currently implemented solvers are:
 
 Detailed information on the solvers are given in @nospell{L. F. Shampine} and
 @nospell{M. W. Reichelt}, @cite{The MATLAB ODE Suite}, SIAM Journal on
-Scientific Computing, Vol. 18, 1997, pp. 1–22.
+Scientific Computing, Vol. 18, 1997, pp. 1–22,
+DOI: @url{https://doi.org/10.1137/S1064827594276424}.
 
 @DOCSTRING(ode45)
 
@@ -188,51 +231,3 @@ Scientific Computing, Vol. 18, 1997, pp. 1–22.
 @DOCSTRING(odeget)
 
 @DOCSTRING(odeplot)
-
-@node Differential-Algebraic Equations
-@section Differential-Algebraic Equations
-
-The function @code{daspk} can be used to solve DAEs of the form
-@tex
-$$
- 0 = f (\dot{x}, x, t), \qquad x(t=0) = x_0, \dot{x}(t=0) = \dot{x}_0
-$$
-@end tex
-@ifnottex
-
-@example
-0 = f (x-dot, x, t),    x(t=0) = x_0, x-dot(t=0) = x-dot_0
-@end example
-
-@end ifnottex
-
-@noindent
-where
-@tex
-$\dot{x} = {dx \over dt}$
-@end tex
-@ifnottex
-@math{x-dot}
-@end ifnottex
-is the derivative of @math{x}.  The equation is solved using
-@nospell{Petzold's} DAE solver @sc{daspk}.
-
-@DOCSTRING(daspk)
-
-@DOCSTRING(daspk_options)
-
-Octave also includes @sc{dassl}, an earlier version of @sc{daspk},
-and @sc{dasrt}, which can be used to solve DAEs with constraints
-(stopping conditions).
-
-@DOCSTRING(dassl)
-
-@DOCSTRING(dassl_options)
-
-@DOCSTRING(dasrt)
-
-@DOCSTRING(dasrt_options)
-
-See @nospell{K. E. Brenan}, et al., @cite{Numerical Solution of Initial-Value
-Problems in Differential-Algebraic Equations}, North-Holland (1989) for
-more information about the implementation of @sc{dassl}.

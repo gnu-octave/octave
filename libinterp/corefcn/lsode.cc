@@ -258,6 +258,22 @@ other than 2 and @var{msg} will contain additional information.
 
 You can use the function @code{lsode_options} to set optional
 parameters for @code{lsode}.
+
+See @nospell{Alan C. Hindmarsh},
+@cite{ODEPACK, A Systematized Collection of ODE Solvers},
+in Scientific Computing, @nospell{R. S. Stepleman}, editor, (1983)
+or @url{https://computing.llnl.gov/projects/odepack}
+for more information about the inner workings of @code{lsode}.
+
+Example: Solve the @nospell{Van der Pol} equation
+
+@example
+@group
+fvdp = @@(@var{y},@var{t}) [@var{y}(2); (1 - @var{y}(1)^2) * @var{y}(2) - @var{y}(1)];
+@var{t} = linspace (0, 20, 100);
+@var{y} = lsode (fvdp, [2; 0], @var{t});
+@end group
+@end example
 @seealso{daspk, dassl, dasrt}
 @end deftypefn */)
 {

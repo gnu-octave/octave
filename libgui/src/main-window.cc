@@ -323,6 +323,13 @@ namespace octave
 
   main_window::~main_window (void)
   {
+    // These must be explicitly deleted because they are not
+    // intentionally not children of main_window.  See the comments in
+    // the functions where they are constructed.
+
+    delete m_release_notes_window;
+    delete m_community_news_window;
+
     // Prevent floating dock widgets from being deleted.
 
     if (m_history_window->isFloating ())
@@ -794,7 +801,7 @@ namespace octave
         // a title bar, so don't its parent to main_window.  Do remember
         // to delete in the main_window destructor.
 
-        m_release_notes_window = new QWidget (this);
+        m_release_notes_window = new QWidget ();
 
         QTextBrowser *browser = new QTextBrowser (m_release_notes_window);
         browser->setText (news);
@@ -869,7 +876,7 @@ namespace octave
         // a title bar, so don't its parent to main_window.  Do remember
         // to delete in the main_window destructor.
 
-        m_community_news_window = new QWidget (this);
+        m_community_news_window = new QWidget ();
 
         QTextBrowser *browser = new QTextBrowser (m_community_news_window);
 

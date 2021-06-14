@@ -306,8 +306,27 @@ namespace octave
     // deleteLater slot that is called when the m_main_thread issues a
     // finished signal.
 
-    delete m_main_window;
+    // Calling close will cause settings to be saved. 
 
+    if (m_documentation_widget)
+      m_documentation_widget->close ();
+
+    if (m_file_browser_widget)
+      m_file_browser_widget->close ();
+
+    if (m_history_widget)
+      m_history_widget->close ();
+
+    if (m_workspace_widget)
+      m_workspace_widget->close ();
+
+    if (m_editor_widget)
+      m_editor_widget->close ();
+
+    if (m_variable_editor_widget)
+      m_variable_editor_widget->close ();
+
+    delete m_main_window;
     delete m_documentation_widget;
     delete m_file_browser_widget;
     delete m_history_widget;

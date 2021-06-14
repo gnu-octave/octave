@@ -306,6 +306,12 @@ namespace octave
     // deleteLater slot that is called when the m_main_thread issues a
     // finished signal.
 
+    // FIXME: Why are dock widget settings and/or the main window
+    // configuration not saved correctly if the main window is deleted
+    // after the dock widgets?
+
+    delete m_main_window;
+
     // Calling close will cause settings to be saved.
 
     if (m_documentation_widget)
@@ -343,8 +349,6 @@ namespace octave
         m_variable_editor_widget->close ();
         m_variable_editor_widget->deleteLater ();
       }
-
-    delete m_main_window;
 
     delete m_interpreter_qobj;
     delete m_qsci_tr;

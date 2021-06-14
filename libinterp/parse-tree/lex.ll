@@ -2239,6 +2239,7 @@ namespace octave
     m_looking_for_object_index = false;
     m_looking_at_indirect_ref = false;
     m_arguments_is_keyword = false;
+    m_classdef_element_names_are_keywords = false;
     m_parsing_anon_fcn_body = false;
     m_parsing_class_method = false;
     m_parsing_classdef = false;
@@ -2843,7 +2844,7 @@ namespace octave
       case properties_kw:
         // 'properties', 'methods' and 'events' are keywords for
         // classdef blocks.
-        if (! m_parsing_classdef)
+        if (! m_classdef_element_names_are_keywords)
           {
             m_at_beginning_of_statement = previous_at_bos;
             return 0;

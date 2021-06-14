@@ -276,6 +276,7 @@ namespace octave
         m_looking_for_object_index (false),
         m_looking_at_indirect_ref (false),
         m_arguments_is_keyword (false),
+        m_classdef_element_names_are_keywords (false),
         m_parsing_anon_fcn_body (false),
         m_parsing_class_method (false),
         m_parsing_classdef (false),
@@ -389,6 +390,10 @@ namespace octave
 
     // true means arguments is handled as keyword.
     bool m_arguments_is_keyword;
+
+    // true means "properties", "methods", "events", and "enumeration"
+    // are treated like keywords.
+    bool m_classdef_element_names_are_keywords;
 
     // true means we are parsing the body of an anonymous function.
     bool m_parsing_anon_fcn_body;

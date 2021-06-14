@@ -205,3 +205,8 @@
 %! x = class_bug55766 ();
 %! props = {"notahiddentestprop"; "publictestprop"; "testprop"};
 %! assert (properties (x), props);
+
+%!test <60763>
+%! x = bug_69763 ();
+%! assert (x.foobar (), {"some_property"});
+%! assert (x.methods (), 42);

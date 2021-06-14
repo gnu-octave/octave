@@ -249,6 +249,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <dummy_type> parsing_local_fcns parse_error at_first_executable_stmt
 %type <comment_type> stash_comment
 %type <tok_val> function_beg classdef_beg arguments_beg
+%type <tok_val> properties_beg methods_beg events_beg enumeration_beg
 %type <punct_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
@@ -1841,7 +1842,6 @@ arguments_beg   : ARGUMENTS
                   }
                 ;
 
-
 args_attr_list  : // empty
                   { $$ = nullptr; }
                 | '(' identifier ')'
@@ -1954,6 +1954,7 @@ classdef_beg    : CLASSDEF
                     lexer.m_symtab_context.push (octave::symbol_scope ());
                     lexer.m_parsing_classdef = true;
                     lexer.m_parsing_classdef_decl = true;
+                    lexer.m_classdef_element_names_are_keywords = true;
 
                     $$ = $1;
                   }
@@ -2056,11 +2057,15 @@ superclass      : FQ_IDENT
                 ;
 
 class_body      : // empty
-                  { $$ = nullptr; }
+                  {
+                    lexer.m_classdef_element_names_are_keywords = false;
+                    $$ = nullptr;
+                  }
                 | class_body1 opt_sep
                   {
                     OCTAVE_YYUSE ($2);
 
+                    lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
                   }
                 ;
@@ -2104,7 +2109,7 @@ class_body1     : properties_block
                 ;
 
 properties_block
-                : PROPERTIES stash_comment opt_sep attr_list property_list END
+                : properties_beg stash_comment opt_sep attr_list property_list END
                   {
                     OCTAVE_YYUSE ($3);
 
@@ -2121,12 +2126,23 @@ properties_block
                   }
                 ;
 
+properties_beg  : PROPERTIES
+                  {
+                    lexer.m_classdef_element_names_are_keywords = false;
+                    $$ = $1;
+                  }
+                ;
+
 property_list   : // empty
-                  { $$ = nullptr; }
+                  {
+                    lexer.m_classdef_element_names_are_keywords = true;
+                    $$ = nullptr;
+                  }
                 | property_list1 opt_sep
                   {
                     OCTAVE_YYUSE ($2);
 
+                    lexer.m_classdef_element_names_are_keywords = true;
                     $$ = $1;
                   }
                 ;
@@ -2183,7 +2199,7 @@ class_property  : stash_comment identifier arg_validation
                   }
                 ;
 
-methods_block   : METHODS stash_comment opt_sep attr_list methods_list END
+methods_block   : methods_beg stash_comment opt_sep attr_list methods_list END
                   {
                     OCTAVE_YYUSE ($3);
 
@@ -2197,6 +2213,13 @@ methods_block   : METHODS stash_comment opt_sep attr_list methods_list END
                         // LC, and TC.
                         YYABORT;
                       }
+                  }
+                ;
+
+methods_beg     : METHODS
+                  {
+                    lexer.m_classdef_element_names_are_keywords = false;
+                    $$ = $1;
                   }
                 ;
 
@@ -2237,11 +2260,15 @@ method          : method_decl
                 ;
 
 methods_list    : // empty
-                  { $$ = nullptr; }
+                  {
+                    lexer.m_classdef_element_names_are_keywords = true;
+                    $$ = nullptr;
+                  }
                 | methods_list1 opt_sep
                   {
                     OCTAVE_YYUSE ($2);
 
+                    lexer.m_classdef_element_names_are_keywords = true;
                     $$ = $1;
                   }
                 ;
@@ -2268,7 +2295,7 @@ methods_list1   : method
                   }
                 ;
 
-events_block    : EVENTS stash_comment opt_sep attr_list events_list END
+events_block    : events_beg stash_comment opt_sep attr_list events_list END
                   {
                     OCTAVE_YYUSE ($3);
 
@@ -2285,12 +2312,23 @@ events_block    : EVENTS stash_comment opt_sep attr_list events_list END
                   }
                 ;
 
+events_beg      : EVENTS
+                  {
+                    lexer.m_classdef_element_names_are_keywords = false;
+                    $$ = $1;
+                  }
+                ;
+
 events_list     : // empty
-                  { $$ = nullptr; }
+                  {
+                    lexer.m_classdef_element_names_are_keywords = true;
+                    $$ = nullptr;
+                  }
                 | events_list1 opt_sep
                   {
                     OCTAVE_YYUSE ($2);
 
+                    lexer.m_classdef_element_names_are_keywords = true;
                     $$ = $1;
                   }
                 ;
@@ -2310,7 +2348,7 @@ class_event     : stash_comment identifier
                   { $$ = new octave::tree_classdef_event ($2, $1); }
                 ;
 
-enum_block      : ENUMERATION stash_comment opt_sep attr_list enum_list END
+enum_block      : enumeration_beg stash_comment opt_sep attr_list enum_list END
                   {
                     OCTAVE_YYUSE ($3);
 
@@ -2327,12 +2365,23 @@ enum_block      : ENUMERATION stash_comment opt_sep attr_list enum_list END
                   }
                 ;
 
+enumeration_beg : ENUMERATION
+                  {
+                    lexer.m_classdef_element_names_are_keywords = false;
+                    $$ = $1;
+                  }
+                ;
+
 enum_list       : // empty
-                  { $$ = nullptr; }
+                  {
+                    lexer.m_classdef_element_names_are_keywords = true;
+                    $$ = nullptr;
+                  }
                 | enum_list1 opt_sep
                   {
                     OCTAVE_YYUSE ($2);
 
+                    lexer.m_classdef_element_names_are_keywords = true;
                     $$ = $1;
                   }
                 ;

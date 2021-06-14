@@ -1147,6 +1147,9 @@ namespace octave
     m_main->setCentralWidget (central_mdiarea);
 
     setWidget (m_main);
+
+    if (! p)
+      make_window ();
   }
 
   void variable_editor::focusInEvent (QFocusEvent *ev)
@@ -1365,8 +1368,6 @@ namespace octave
         if (viewlist.size () == 1 && m_tool_bar)
           m_tool_bar->setEnabled (true);
       }
-
-    make_window ();
 
     show ();
     page->show ();

@@ -262,7 +262,7 @@ namespace octave
              this, &base_qobject::show_workspace_window);
 
     connect (qt_link (), &qt_interpreter_events::edit_variable_signal,
-             this, &base_qobject::edit_variable);
+             this, &base_qobject::show_variable_editor_window);
 
     if (m_app_context.experimental_terminal_widget ())
       {
@@ -386,9 +386,12 @@ namespace octave
   QPointer<documentation_dock_widget>
   base_qobject::documentation_widget (main_window *mw)
   {
-    if (m_documentation_widget)
-      m_documentation_widget->set_main_window (mw);
-    else
+    if (m_documentation_widget && mw)
+      {
+        m_documentation_widget->set_main_window (mw);
+        m_documentation_widget->set_adopted (true);
+      }
+    else if (! m_documentation_widget)
       {
         m_documentation_widget
           = QPointer<documentation_dock_widget> (new documentation_dock_widget (mw, *this));
@@ -411,8 +414,11 @@ namespace octave
   base_qobject::file_browser_widget (main_window *mw)
   {
     if (m_file_browser_widget)
-      m_file_browser_widget->set_main_window (mw);
-    else
+      {
+        m_file_browser_widget->set_main_window (mw);
+        m_file_browser_widget->set_adopted (true);
+      }
+    else if (! m_file_browser_widget)
       m_file_browser_widget
         = QPointer<files_dock_widget> (new files_dock_widget (mw, *this));
 
@@ -423,8 +429,11 @@ namespace octave
   base_qobject::history_widget (main_window *mw)
   {
     if (m_history_widget)
-      m_history_widget->set_main_window (mw);
-    else
+      {
+        m_history_widget->set_main_window (mw);
+        m_history_widget->set_adopted (true);
+      }
+    else if (! m_history_widget)
       {
         m_history_widget
           = QPointer<history_dock_widget> (new history_dock_widget (mw, *this));
@@ -448,8 +457,11 @@ namespace octave
   base_qobject::workspace_widget (main_window *mw)
   {
     if (m_workspace_widget)
-      m_workspace_widget->set_main_window (mw);
-    else
+      {
+        m_workspace_widget->set_main_window (mw);
+        m_workspace_widget->set_adopted (true);
+      }
+    else if (! m_workspace_widget)
       {
         m_workspace_widget
           = QPointer<workspace_view> (new workspace_view (mw, *this));
@@ -473,9 +485,12 @@ namespace octave
   base_qobject::editor_widget (main_window */*mw*/)
   {
 #if 0
-    if (m_editor_widget)
-      m_editor_widget->set_main_window (mw);
-    else
+    if (m_editor_widget && mw)
+      {
+        m_editor_widget->set_main_window (mw);
+        m_editor_widget->set_adopted (true);
+      }
+    else if (! m_editor_widget)
       m_editor_widget = new file_editor (mw, *this);
 #endif
 
@@ -485,9 +500,12 @@ namespace octave
   QPointer<variable_editor>
   base_qobject::variable_editor_widget (main_window *mw)
   {
-    if (m_variable_editor_widget)
-      m_variable_editor_widget->set_main_window (mw);
-    else
+    if (m_variable_editor_widget && mw)
+      {
+        m_variable_editor_widget->set_main_window (mw);
+        m_variable_editor_widget->set_adopted (true);
+      }
+    else if (! m_variable_editor_widget)
       m_variable_editor_widget
         = QPointer<variable_editor> (new variable_editor (mw, *this));
 
@@ -543,7 +561,9 @@ namespace octave
 
   void base_qobject::show_documentation_window (const QString& file)
   {
-    documentation_dock_widget *widget = documentation_widget ();
+    documentation_dock_widget *widget
+      = (m_documentation_widget
+         ? m_documentation_widget : documentation_widget ());
 
     widget->showDoc (file);
 
@@ -556,7 +576,8 @@ namespace octave
 
   void base_qobject::show_file_browser_window (void)
   {
-    files_dock_widget *widget = file_browser_widget ();
+    files_dock_widget *widget
+      = m_file_browser_widget ? m_file_browser_widget : file_browser_widget ();
 
     if (! widget->isVisible ())
       {
@@ -567,7 +588,8 @@ namespace octave
 
   void base_qobject::show_command_history_window (void)
   {
-    history_dock_widget *widget = history_widget ();
+    history_dock_widget *widget
+      = m_history_widget ? m_history_widget : history_widget ();
 
     if (! widget->isVisible ())
       {
@@ -578,7 +600,8 @@ namespace octave
 
   void base_qobject::show_workspace_window (void)
   {
-    workspace_view *widget = workspace_widget ();
+    workspace_view *widget
+      = m_workspace_widget ? m_workspace_widget : workspace_widget ();
 
     if (! widget->isVisible ())
       {
@@ -587,28 +610,21 @@ namespace octave
       }
   }
 
-  void base_qobject::edit_variable (const QString& expr,
-                                    const octave_value& val)
+  void base_qobject::show_variable_editor_window (const QString& name,
+                                                  const octave_value& value)
   {
-    variable_editor *widget = variable_editor_widget ();
-
-#if 0
-    // FIXME: This connection needs to be made whether running with the
-    // GUI main window or not, but only needs to be made once.
-    // Currently we have handle_variable_editor_update methods here and
-    // in the main_window object.
-
-    connect (widget, &variable_editor::updated,
-             this, &base_qobject::handle_variable_editor_update);
-#endif
-
-    widget->edit_variable (expr, val);
+    variable_editor *widget
+      = (m_variable_editor_widget
+         ? m_variable_editor_widget : variable_editor_widget ());
 
     if (! widget->isVisible ())
       {
         widget->show ();
         widget->raise ();
       }
+
+    // FIXME: Should this be done with a signal/slot connection?
+    widget->edit_variable (name, value);
   }
 
   void base_qobject::handle_variable_editor_update (void)

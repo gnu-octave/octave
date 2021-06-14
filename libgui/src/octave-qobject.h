@@ -196,7 +196,8 @@ namespace octave
 
     void show_workspace_window (void);
 
-    void edit_variable (const QString& expr, const octave_value& val);
+    void show_variable_editor_window (const QString& name,
+                                      const octave_value& value);
 
     void handle_variable_editor_update (void);
 

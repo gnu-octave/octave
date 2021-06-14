@@ -1639,8 +1639,15 @@ namespace octave
       }
 
     // Restore the geometry of all dock-widgets
+
     for (auto *widget : dock_widget_list ())
       {
+        // Leave any widgets that existed before main_window was created
+        // as they were.
+
+        if (widget->adopted ())
+          continue;
+
         QString name = widget->objectName ();
 
         if (! name.isEmpty ())
@@ -2108,9 +2115,6 @@ namespace octave
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
     qt_interpreter_events *qt_link = interp_qobj->qt_link ();
-
-    connect (qt_link, &qt_interpreter_events::edit_variable_signal,
-             this, &main_window::edit_variable);
 
     connect (qt_link, &qt_interpreter_events::refresh_variable_editor_signal,
              this, &main_window::refresh_variable_editor);
@@ -2970,16 +2974,18 @@ namespace octave
     // Slot for resetting the window layout to the default one
     hide ();
     showNormal ();              // Unmaximize
-    do_reset_windows (false);   // Add all widgets
+    do_reset_windows (false, true, true);   // Add all widgets
+
+    // FIXME: WHAT?!?
     // Re-add after giving time: This seems to be a reliable way to
     // reset the main window's layout
-    QTimer::singleShot (250, this, [=] () { do_reset_windows (); });
+    QTimer::singleShot (250, this, [=] () { do_reset_windows (false, true, true); });
   }
 
   // Create the default layout of the main window. Do not use
   // restoreState () and restoreGeometry () with default values since
   // this might lead to problems when the Qt version changes
-  void main_window::do_reset_windows (bool show, bool save)
+  void main_window::do_reset_windows (bool show, bool save, bool force_all)
   {
     // Set main window default geometry and store its width for
     // later resizing the command window
@@ -3001,17 +3007,46 @@ namespace octave
 #endif
 
     // Add the dock widgets and show them
-    addDockWidget (Qt::LeftDockWidgetArea, m_file_browser_window);
-    addDockWidget (Qt::LeftDockWidgetArea, m_workspace_window);
-    addDockWidget (Qt::LeftDockWidgetArea, m_history_window);
+    if (! m_file_browser_window->adopted () || force_all)
+      {
+        // FIXME: Maybe there should be a main_window::add_dock_widget
+        // function that combines both of these actions?
 
-    addDockWidget (Qt::RightDockWidgetArea, m_command_window);
+        addDockWidget (Qt::LeftDockWidgetArea, m_file_browser_window);
+        m_file_browser_window->set_adopted (false);
+      }
 
-    addDockWidget (Qt::RightDockWidgetArea, m_doc_browser_window);
-    tabifyDockWidget (m_command_window, m_doc_browser_window);
+    if (! m_workspace_window->adopted () || force_all)
+      {
+        addDockWidget (Qt::LeftDockWidgetArea, m_workspace_window);
+        m_workspace_window->set_adopted (false);
+      }
 
-    addDockWidget (Qt::RightDockWidgetArea, m_variable_editor_window);
-    tabifyDockWidget (m_command_window, m_variable_editor_window);
+    if (! m_history_window->adopted () || force_all)
+      {
+        addDockWidget (Qt::LeftDockWidgetArea, m_history_window);
+        m_history_window->set_adopted (false);
+      }
+
+    if (! m_command_window->adopted () || force_all)
+      {
+        addDockWidget (Qt::RightDockWidgetArea, m_command_window);
+        m_command_window->set_adopted (false);
+      }
+
+    if (! m_doc_browser_window->adopted () || force_all)
+      {
+        addDockWidget (Qt::RightDockWidgetArea, m_doc_browser_window);
+        tabifyDockWidget (m_command_window, m_doc_browser_window);
+        m_doc_browser_window->set_adopted (false);
+      }
+
+    if (! m_variable_editor_window->adopted () || force_all)
+      {
+        addDockWidget (Qt::RightDockWidgetArea, m_variable_editor_window);
+        tabifyDockWidget (m_command_window, m_variable_editor_window);
+        m_variable_editor_window->set_adopted (false);
+      }
 
 #if defined (HAVE_QSCINTILLA)
     addDockWidget (Qt::RightDockWidgetArea, m_editor_window);

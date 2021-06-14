@@ -310,45 +310,41 @@ namespace octave
     // configuration not saved correctly if the main window is deleted
     // after the dock widgets?
 
-    delete m_main_window;
 
     // Calling close will cause settings to be saved.
+    // If m_main_window exists, the widgets are closed by the main window
 
-    if (m_documentation_widget)
+    if (! m_main_window)
       {
-        m_documentation_widget->close ();
-        m_documentation_widget->deleteLater ();
+        if (m_documentation_widget)
+          m_documentation_widget->close ();
+
+        if (m_file_browser_widget)
+          m_file_browser_widget->close ();
+
+        if (m_history_widget)
+          m_history_widget->close ();
+
+        if (m_workspace_widget)
+          m_workspace_widget->close ();
+
+        if (m_editor_widget)
+          m_editor_widget->close ();
+
+        if (m_variable_editor_widget)
+          m_variable_editor_widget->close ();
+      }
+    else
+      {
+        delete m_main_window;
       }
 
-    if (m_file_browser_widget)
-      {
-        m_file_browser_widget->close ();
-        m_file_browser_widget->deleteLater ();
-      }
-
-    if (m_history_widget)
-      {
-        m_history_widget->close ();
-        m_history_widget->deleteLater ();
-      }
-
-    if (m_workspace_widget)
-      {
-        m_workspace_widget->close ();
-        m_workspace_widget->deleteLater ();
-      }
-
-    if (m_editor_widget)
-      {
-        m_editor_widget->close ();
-        m_editor_widget->deleteLater ();
-      }
-
-    if (m_variable_editor_widget)
-      {
-        m_variable_editor_widget->close ();
-        m_variable_editor_widget->deleteLater ();
-      }
+    delete m_documentation_widget;
+    delete m_file_browser_widget;
+    delete m_history_widget;
+    delete m_workspace_widget;
+    delete m_editor_widget;
+    delete m_variable_editor_widget;
 
     delete m_interpreter_qobj;
     delete m_qsci_tr;

@@ -329,28 +329,6 @@ namespace octave
 
     delete m_release_notes_window;
     delete m_community_news_window;
-
-    // Prevent floating dock widgets from being deleted.
-
-    if (m_history_window->isFloating ())
-      m_history_window.clear ();
-
-    if (m_file_browser_window->isFloating ())
-      m_file_browser_window.clear ();
-
-    if (m_doc_browser_window->isFloating ())
-      m_doc_browser_window.clear ();
-
-#if 0
-    if (m_editor_window->isFloating ())
-      m_editor_window.clear ();
-#endif
-
-    if (m_workspace_window->isFloating ())
-      m_workspace_window.clear ();
-
-    if (m_variable_editor_window->isFloating ())
-      m_variable_editor_window.clear ();
   }
 
   void main_window::make_dock_widget_connections (octave_dock_widget *dw)

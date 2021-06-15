@@ -75,7 +75,8 @@ function [s, iters] = logm (A, opt_iters = 100)
   endif
 
   eigv = diag (s);
-  real_neg_eigv = (real (eigv) < 0) & (imag (eigv) == 0);
+  tol = rows (A) * eps (max (abs (eigv)));
+  real_neg_eigv = (real (eigv) < -tol) & (imag (eigv) <= tol);
   if (any (real_neg_eigv))
     warning ("Octave:logm:non-principal",
              "logm: principal matrix logarithm is not defined for matrices with negative eigenvalues; computing non-principal logarithm");

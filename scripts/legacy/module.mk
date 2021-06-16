@@ -9,6 +9,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/isdir.m \
   %reldir%/isequalwithequalnans.m \
   %reldir%/isstr.m \
+  %reldir%/maxNumCompThreads.m \
   %reldir%/setstr.m \
   %reldir%/strmatch.m \
   %reldir%/strread.m \

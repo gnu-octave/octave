@@ -980,7 +980,6 @@ function rlist = missing_functions ()
   "maxflow",
   "MaximizeCommandWindow",
   "maxk",
-  "maxNumCompThreads",
   "memmapfile",
   "memoize",
   "MemoizedFunction",

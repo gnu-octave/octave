@@ -249,9 +249,6 @@ namespace octave
 
     make_dock_widget_connections (m_variable_editor_window);
 
-    connect (m_variable_editor_window, &variable_editor::command_signal,
-             this, &main_window::execute_command_in_terminal);
-
     m_previous_dock = m_command_window;
 
     // Set active editor depending on editor window.  If the latter is
@@ -1961,31 +1958,6 @@ namespace octave
       }
   }
 
-  void main_window::refresh_variable_editor (void)
-  {
-    m_variable_editor_window->refresh ();
-  }
-
-  void main_window::handle_variable_editor_update (void)
-  {
-    // Called when the variable editor emits the updated signal.  The size
-    // of a variable may have changed, so we refresh the workspace in the
-    // interpreter.  That will eventually cause the workspace view in the
-    // GUI to be updated.
-
-    emit interpreter_event
-      ([] (interpreter& interp)
-       {
-         // INTERPRETER THREAD
-
-         tree_evaluator& tw = interp.get_evaluator ();
-
-         event_manager& xevmgr = interp.get_event_manager ();
-
-         xevmgr.set_workspace (true, tw.get_symbol_info (), false);
-       });
-  }
-
   void main_window::profiler_session (void)
   {
     emit interpreter_event
@@ -2096,14 +2068,8 @@ namespace octave
 
     qt_interpreter_events *qt_link = interp_qobj->qt_link ();
 
-    connect (qt_link, &qt_interpreter_events::refresh_variable_editor_signal,
-             this, &main_window::refresh_variable_editor);
-
     connect (m_workspace_window, &workspace_view::rename_variable_signal,
              this, &main_window::handle_rename_variable_request);
-
-    connect (m_variable_editor_window, &variable_editor::updated,
-             this, &main_window::handle_variable_editor_update);
 
     construct_menu_bar ();
 

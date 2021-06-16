@@ -183,6 +183,8 @@ namespace octave
 
   public slots:
 
+    void execute_command (const QString& command);
+
     // Note: START_GUI and CLOSE_GUI don't currently perform any work
     // with the old terminal widget.
     void start_gui (bool gui_app);
@@ -200,6 +202,8 @@ namespace octave
                                       const octave_value& value);
 
     void handle_variable_editor_update (void);
+
+    void refresh_variable_editor (void);
 
     void interpreter_ready (void);
 

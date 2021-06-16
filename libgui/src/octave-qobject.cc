@@ -537,8 +537,20 @@ namespace octave
         m_variable_editor_widget->set_adopted (true);
       }
     else if (! m_variable_editor_widget)
-      m_variable_editor_widget
-        = QPointer<variable_editor> (new variable_editor (mw, *this));
+      {
+        m_variable_editor_widget
+          = QPointer<variable_editor> (new variable_editor (mw, *this));
+
+        connect (m_variable_editor_widget, &variable_editor::updated,
+                 this, &base_qobject::handle_variable_editor_update);
+
+        connect (m_variable_editor_widget, &variable_editor::command_signal,
+                 this, &base_qobject::execute_command);
+
+        connect (qt_link (),
+                 &qt_interpreter_events::refresh_variable_editor_signal,
+                 this, &base_qobject::refresh_variable_editor);
+      }
 
     return m_variable_editor_widget;
   }
@@ -676,6 +688,29 @@ namespace octave
 
          xevmgr.set_workspace (true, tw.get_symbol_info (), false);
        });
+  }
+
+  void base_qobject::refresh_variable_editor (void)
+  {
+    m_variable_editor_widget->refresh ();
+  }
+
+  void base_qobject::execute_command (const QString& command)
+  {
+    emit interpreter_event
+      ([=] (interpreter& interp)
+      {
+        // INTERPRETER THREAD
+
+        // FIXME: Do we need to do anything special about errors here?
+        // Currently the eval function will just call error() in the
+        // interpreter event loop and throw an execution error.  It will
+        // be caught, so shouldn't crash the interpreter, but the
+        // message may not go anywhere useful depending on how the GUI
+        // is being used or if Octave running server mode.
+
+        interp.eval (command.toStdString (), 0);
+      });
   }
 
   void base_qobject::close_gui (void)

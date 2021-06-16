@@ -257,10 +257,6 @@ namespace octave
 
     void edit_variable (const QString &name, const octave_value&);
 
-    void refresh_variable_editor (void);
-
-    void handle_variable_editor_update (void);
-
   protected:
 
     void closeEvent (QCloseEvent *closeEvent);

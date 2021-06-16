@@ -47,8 +47,20 @@
 ## of the bins.  The width of the bins is determined from the adjacent values
 ## in the vector.  The total number of bins is @code{numel (@var{x})}.
 ##
-## If a third argument is provided, the histogram is normalized such that
-## the sum of the bars is equal to @var{norm}.
+## If a third argument @var{norm} is provided, the histogram is normalized.
+## In case @var{norm} is a positive scalar, the resulting bars are normalized
+## to @var{norm}.  If @var{norm} is a vector of positive scalars of length
+## @code{columns (@var{y})}, then the resulting bar of @code{@var{y}(:,i)} is
+## normalized to @code{@var{norm}(i)}.
+##
+## @example
+## @group
+## [nn, xx] = hist (rand (10, 3), 5, [1 2 3]);
+## sum (nn, 1)
+## @result{} ans =
+##       1   2   3
+## @end group
+## @end example
 ##
 ## The histogram's appearance may be modified by specifying property/value
 ## pairs to the underlying patch object.  For example, the face and edge color
@@ -171,6 +183,11 @@ function [nn, xx] = hist (varargin)
     if (! isnumeric (norm) || ! all (norm > 0))
       error ("hist: NORM must be a numeric constant > 0");
     endif
+    if (! isvector (norm) ...
+        || ! (length (norm) == 1 || length (norm) == columns (y)))
+      error ("hist: NORM must be scalar or vector of length 'columns (y)'");
+    endif
+    norm = norm (:).';  # Ensure vector orientation.
   endif
 
   ## Perform histogram calculation
@@ -278,8 +295,17 @@ endfunction
 %! assert (nn, [0,5,0]);
 %! assert (xx, [0,1,2]);
 %!assert (size (hist (randn (750,240), 200)), [200, 240])
+
+## Test normalization
 %!assert <*42394> (isempty (hist (rand (10,2), 0:5, 1)), false)
 %!assert <*42394> (isempty (hist (rand (10,2), 0:5, [1 1])), false)
+%!test <*60783>
+%! [nn, xx] = hist (rand (10, 3), 5, 1);
+%! assert (sum (nn, 1), [1 1 1], 2*eps);
+%! [nn, xx] = hist (rand (10, 3), 5, [1 2 3]);
+%! assert (sum (nn, 1), [1 2 3], 2*eps);
+%! [nn, xx] = hist (rand (10, 3), 5, [1 2 3]');
+%! assert (sum (nn, 1), [1 2 3], 2*eps);
 
 %!test <*47707>
 %! y = [1  9  2  2  9  3  8  9  1  7  1  1  3  2  4  4  8  2  1  9  4  1 ...
@@ -396,3 +422,4 @@ endfunction
 %!error <bin specification must be a scalar or vector> hist (1, ones (2,2))
 %!error <NORM must be a numeric constant> hist (1,1, {1})
 %!error <NORM must be a numeric constant . 0> hist (1,1, -1)
+%!error <NORM must be scalar or vector> hist (1,1, ones (4))

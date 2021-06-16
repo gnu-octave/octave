@@ -2042,11 +2042,13 @@ namespace octave
 
   void main_window::closeEvent (QCloseEvent *e)
   {
+    write_settings ();
+
     if (confirm_shutdown ())
       {
         // FIXME: Instead of ignoring the event and posting an
         // interpreter event, should we just accept the event and
-        // shutdown and clean up the interprter as part of closing the
+        // shutdown and clean up the interpreter as part of closing the
         // GUI?  Going that route might make it easier to close the GUI
         // without having to stop the interpreter, for example, if the
         // GUI is started from the interpreter command line.
@@ -2952,12 +2954,19 @@ namespace octave
     // Slot for resetting the window layout to the default one
     hide ();
     showNormal ();              // Unmaximize
-    do_reset_windows (false, true, true);   // Add all widgets
+    do_reset_windows (true, true, true);   // Add all widgets
 
-    // FIXME: WHAT?!?
     // Re-add after giving time: This seems to be a reliable way to
     // reset the main window's layout
-    QTimer::singleShot (250, this, [=] () { do_reset_windows (false, true, true); });
+
+    // JWE says: The following also works for me with 0 delay, so I
+    // think the problem might just be that the event loop needs to run
+    // somewhere in the sequence of resizing and adding widgets.  Maybe
+    // some actions in do_reset_windows should be using signal/slot
+    // connections so that the event loop can do what it needs to do.
+    // But I haven't been able to find the magic sequence.
+
+    QTimer::singleShot (250, this, [=] () { do_reset_windows (true, true, true); });
   }
 
   // Create the default layout of the main window. Do not use

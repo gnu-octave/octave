@@ -185,7 +185,7 @@ function [nn, xx] = hist (varargin)
     endif
     if (! isvector (norm) ...
         || ! (length (norm) == 1 || length (norm) == columns (y)))
-      error ("hist: NORM must be scalar or vector of length 'columns (y)'");
+      error ("hist: NORM must be scalar or vector of length 'columns (Y)'");
     endif
     norm = norm (:).';  # Ensure vector orientation.
   endif

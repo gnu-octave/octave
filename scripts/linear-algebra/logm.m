@@ -63,7 +63,7 @@ function [s, iters] = logm (A, opt_iters = 100)
   if (isscalar (A))
     s = log (A);
     return;
-  elseif (strfind (typeinfo (A), "diagonal matrix"))
+  elseif (isdiag (A))
     s = diag (log (diag (A)));
     return;
   endif
@@ -188,6 +188,8 @@ endfunction
 %!      -1.9769, -1.0922, -0.5831];
 %! warning ("off", "Octave:logm:non-principal", "local");
 %! assert (expm (logm (A)), A, 40*eps);
+%!assert (expm (logm (diag (ones (1, 3)))), diag (ones (1, 3)));
+%!assert (expm (logm (zeros (3))), zeros (3));
 
 ## Test input validation
 %!error logm ()

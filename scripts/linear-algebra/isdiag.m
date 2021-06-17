@@ -49,6 +49,7 @@ endfunction
 
 %!assert (isdiag ("string"), false)
 %!assert (isdiag (zeros (2,2,2)), false)
+%!assert (isdiag (zeros (2)))
 %!assert (isdiag ([]))
 %!assert (isdiag (1))
 %!assert (isdiag ([1, 1]), false)

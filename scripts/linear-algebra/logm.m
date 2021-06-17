@@ -63,7 +63,7 @@ function [s, iters] = logm (A, opt_iters = 100)
   if (isscalar (A))
     s = log (A);
     return;
-  elseif (strfind (typeinfo (A), "diagonal matrix"))
+  elseif (isdiag (A))
     s = diag (log (diag (A)));
     return;
   endif
@@ -75,7 +75,8 @@ function [s, iters] = logm (A, opt_iters = 100)
   endif
 
   eigv = diag (s);
-  real_neg_eigv = (real (eigv) < 0) & (imag (eigv) == 0);
+  tol = rows (A) * eps (max (abs (eigv)));
+  real_neg_eigv = (real (eigv) < -tol) & (imag (eigv) <= tol);
   if (any (real_neg_eigv))
     warning ("Octave:logm:non-principal",
              "logm: principal matrix logarithm is not defined for matrices with negative eigenvalues; computing non-principal logarithm");
@@ -187,6 +188,8 @@ endfunction
 %!      -1.9769, -1.0922, -0.5831];
 %! warning ("off", "Octave:logm:non-principal", "local");
 %! assert (expm (logm (A)), A, 40*eps);
+%!assert (expm (logm (diag (ones (1, 3)))), diag (ones (1, 3)));
+%!assert (expm (logm (zeros (3))), zeros (3));
 
 ## Test input validation
 %!error <Invalid call> logm ()

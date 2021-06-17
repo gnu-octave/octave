@@ -95,7 +95,7 @@ function r = expm (A)
   elseif (isscalar (A))
     r = exp (A);
     return;
-  elseif (strfind (typeinfo (A), "diagonal matrix"))
+  elseif (isdiag (A))
     r = diag (exp (diag (A)));
     return;
   endif
@@ -155,6 +155,7 @@ endfunction
 %!assert (expm (10), exp (10))
 %!assert (full (expm (eye (3))), expm (full (eye (3))))
 %!assert (full (expm (10*eye (3))), expm (full (10*eye (3))), 8*eps)
+%!assert (expm (zeros (3)), eye (3))
 
 ## Test input validation
 %!error <Invalid call> expm ()

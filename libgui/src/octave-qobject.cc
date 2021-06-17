@@ -478,7 +478,14 @@ namespace octave
         connect (qt_link (), &qt_interpreter_events::clear_history_signal,
                  m_history_widget, &history_dock_widget::clear_history);
 
-        qt_link()->set_history (octave::command_history::list ());
+        emit interpreter_event
+          ([=] (interpreter& interp) {
+            // INTERPRETER THREAD
+
+            event_manager& xevmgr = interp.get_event_manager ();
+
+            xevmgr.set_history ();
+          });
       }
 
     return m_history_widget;
@@ -571,6 +578,15 @@ namespace octave
                        xevmgr.edit_variable (name, val);
                      });
                  });
+
+        emit interpreter_event
+          ([=] (interpreter& interp) {
+            // INTERPRETER THREAD
+
+            event_manager& xevmgr = interp.get_event_manager ();
+
+            xevmgr.set_workspace ();
+          });
       }
 
     return m_workspace_widget;

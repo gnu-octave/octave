@@ -182,6 +182,12 @@ namespace octave
                                  tw.get_symbol_info (), true);
       }
   }
+
+  void event_manager::set_history (void)
+  {
+    if (enabled ())
+      instance->set_history (octave::command_history::list ());
+  }
 }
 
 // FIXME: Should the following function be __event_manager_desktop__

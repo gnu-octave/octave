@@ -653,6 +653,8 @@ namespace octave
         instance->update_prompt (prompt);
     }
 
+    OCTINTERP_API void set_history (void);
+
     void set_history (const string_vector& hist)
     {
       if (enabled ())

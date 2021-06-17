@@ -253,10 +253,6 @@ namespace octave
 
     void warning_function_not_found (const QString& message);
 
-    //! Opens the variable editor for @p name.
-
-    void edit_variable (const QString &name, const octave_value&);
-
   protected:
 
     void closeEvent (QCloseEvent *closeEvent);

@@ -507,6 +507,9 @@ namespace octave
 
         connect (qt_link (), &qt_interpreter_events::clear_workspace_signal,
                  m_workspace_model, &workspace_model::clear_workspace);
+
+        connect (m_workspace_widget, &workspace_view::edit_variable_signal,
+                 this, &base_qobject::show_variable_editor_window);
       }
 
     return m_workspace_widget;

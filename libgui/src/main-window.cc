@@ -205,9 +205,6 @@ namespace octave
     connect (m_workspace_window, &workspace_view::command_requested,
              this, &main_window::execute_command_in_terminal);
 
-    connect (m_workspace_window, &workspace_view::edit_variable_signal,
-             this, &main_window::edit_variable);
-
 #if defined (HAVE_QSCINTILLA)
     file_editor *editor = new file_editor (this, m_octave_qobj);
 
@@ -1942,17 +1939,6 @@ namespace octave
   {
     for (int i = 0; i < open_file_names.count (); i++)
       emit open_file_signal (open_file_names.at (i), m_file_encoding, -1);
-  }
-
-  void main_window::edit_variable (const QString &expr, const octave_value& val)
-  {
-    m_variable_editor_window->edit_variable (expr, val);
-
-    if (! m_variable_editor_window->isVisible ())
-      {
-        m_variable_editor_window->show ();
-        m_variable_editor_window->raise ();
-      }
   }
 
   void main_window::profiler_session (void)

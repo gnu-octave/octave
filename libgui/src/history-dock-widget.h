@@ -51,8 +51,6 @@ namespace octave
 
   signals:
 
-    void information (const QString& message);
-
     //! Signal emitted whenever the user double-clicks a command in the
     //! history.
 

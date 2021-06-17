@@ -647,36 +647,6 @@ namespace octave
       emit undo_signal ();
   }
 
-  void main_window::handle_rename_variable_request (const QString& old_name_arg,
-                                                    const QString& new_name_arg)
-
-  {
-    std::string old_name = old_name_arg.toStdString ();
-    std::string new_name = new_name_arg.toStdString ();
-
-    emit interpreter_event
-      ([=] (interpreter& interp)
-       {
-         // INTERPRETER THREAD
-
-         symbol_scope scope = interp.get_current_scope ();
-
-         if (scope)
-           {
-             scope.rename (old_name, new_name);
-
-             tree_evaluator& tw = interp.get_evaluator ();
-
-             event_manager& xevmgr = interp.get_event_manager ();
-
-             xevmgr.set_workspace (true, tw.get_symbol_info ());
-           }
-
-         // FIXME: if this action fails, do we need a way to display that info
-         // in the GUI?
-       });
-  }
-
   void main_window::modify_path (const octave_value_list& dir_list,
                                  bool rm, bool subdirs)
   {
@@ -2050,9 +2020,6 @@ namespace octave
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
     qt_interpreter_events *qt_link = interp_qobj->qt_link ();
-
-    connect (m_workspace_window, &workspace_view::rename_variable_signal,
-             this, &main_window::handle_rename_variable_request);
 
     construct_menu_bar ();
 

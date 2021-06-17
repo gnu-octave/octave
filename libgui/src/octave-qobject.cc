@@ -510,6 +510,31 @@ namespace octave
 
         connect (m_workspace_widget, &workspace_view::edit_variable_signal,
                  this, &base_qobject::show_variable_editor_window);
+
+        connect (m_workspace_widget, &workspace_view::rename_variable_signal,
+                 [=] (const QString& old_name, const QString& new_name) {
+                   emit interpreter_event
+                     ([=] (interpreter& interp) {
+                       // INTERPRETER THREAD
+
+                       symbol_scope scope = interp.get_current_scope ();
+
+                       if (scope)
+                         {
+                           scope.rename (old_name.toStdString (),
+                                         new_name.toStdString ());
+
+                           tree_evaluator& tw = interp.get_evaluator ();
+
+                           event_manager& xevmgr = interp.get_event_manager ();
+
+                           xevmgr.set_workspace (true, tw.get_symbol_info ());
+                         }
+
+                       // FIXME: if this action fails, do we need a way to
+                       // display that info in the GUI?
+                     });
+                 });
       }
 
     return m_workspace_widget;

@@ -143,8 +143,6 @@ namespace octave
     void handle_clear_command_window_request (void);
     void handle_clear_history_request (void);
     void handle_undo_request (void);
-    void handle_rename_variable_request (const QString& old_name,
-                                         const QString& new_name);
     void modify_path (const octave_value_list& dir_list, bool rm, bool subdirs);
     void edit_mfile (const QString&, int);
     void file_remove_proxy (const QString& o, const QString& n);

@@ -46,10 +46,6 @@
 #include "octave-qtutils.h"
 #include "workspace-view.h"
 
-#include "interpreter-private.h"
-#include "interpreter.h"
-#include "syminfo.h"
-
 namespace octave
 {
   workspace_view::workspace_view (QWidget *p, base_qobject& oct_qobj)
@@ -429,29 +425,7 @@ namespace octave
     QModelIndex index = m_view->currentIndex ();
 
     if (index.isValid ())
-      {
-        QString var_name = get_var_name (index);
-
-        emit interpreter_event
-          ([=] (interpreter& interp)
-           {
-             // INTERPRETER THREAD
-
-             octave_value val = interp.varval (var_name.toStdString ());
-
-             if (val.is_undefined ())
-               val = 0;
-
-             std::ostringstream buf;
-             val.print_raw (buf, true);
-
-             // FIXME: is the following operation thread safe or should
-             // it be done with a signal/slot connection?
-
-             QClipboard *clipboard = QApplication::clipboard ();
-             clipboard->setText (QString::fromStdString (buf.str ()));
-           });
-      }
+      emit copy_variable_value_to_clipboard (get_var_name (index));
   }
 
   void
@@ -484,14 +458,7 @@ namespace octave
     QModelIndex index = m_view->currentIndex ();
 
     if (index.isValid ())
-      {
-        QString var_name = get_var_name (index);
-
-        symbol_info_list syminfo = m_model->get_symbol_info ();
-        octave_value val = syminfo.varval (var_name.toStdString ());
-
-        emit edit_variable_signal (var_name, val);
-      }
+      emit edit_variable_signal (get_var_name (index));
   }
 
   void

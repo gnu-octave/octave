@@ -508,8 +508,29 @@ namespace octave
         connect (qt_link (), &qt_interpreter_events::clear_workspace_signal,
                  m_workspace_model, &workspace_model::clear_workspace);
 
-        connect (m_workspace_widget, &workspace_view::edit_variable_signal,
-                 this, &base_qobject::show_variable_editor_window);
+        connect (m_workspace_widget,
+                 &workspace_view::copy_variable_value_to_clipboard,
+                 [=] (const QString& var_name) {
+                   emit interpreter_event
+                     ([=] (interpreter& interp)
+                      {
+                        // INTERPRETER THREAD
+
+                        octave_value val = interp.varval (var_name.toStdString ());
+
+                        if (val.is_undefined ())
+                          val = 0;
+
+                        std::ostringstream buf;
+                        val.print_raw (buf, true);
+
+                        // FIXME: is the following operation thread safe or should
+                        // it be done with a signal/slot connection?
+
+                        QClipboard *clipboard = QApplication::clipboard ();
+                        clipboard->setText (QString::fromStdString (buf.str ()));
+                      });
+                 });
 
         connect (m_workspace_widget, &workspace_view::rename_variable_signal,
                  [=] (const QString& old_name, const QString& new_name) {
@@ -533,6 +554,21 @@ namespace octave
 
                        // FIXME: if this action fails, do we need a way to
                        // display that info in the GUI?
+                     });
+                 });
+
+        connect (m_workspace_widget, &workspace_view::edit_variable_signal,
+                 [=] (const QString& var_name) {
+                   emit interpreter_event
+                     ([=] (interpreter& interp) {
+                       // INTERPRETER THREAD
+
+                       std::string name = var_name.toStdString ();
+                       octave_value val = interp.varval (name);
+
+                       event_manager& xevmgr = interp.get_event_manager ();
+
+                       xevmgr.edit_variable (name, val);
                      });
                  });
       }

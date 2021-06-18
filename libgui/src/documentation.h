@@ -129,7 +129,8 @@ namespace octave
     void pasteClipboard (void);
     void selectAll (void);
 
-    void load_ref (const QString & name);
+    void load_index (void);
+    void load_ref (const QString & name = QString ());
     void registerDoc (const QString & name);
     void unregisterDoc (const QString & name);
 
@@ -176,6 +177,9 @@ namespace octave
     QWidget *m_doc_widget;
     QToolBar *m_tool_bar;
     QString m_query_string;
+
+    bool m_indexed;
+    QString m_current_ref_name;
 
     QAction *m_action_go_home;
     QAction *m_action_go_prev;

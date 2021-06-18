@@ -71,6 +71,8 @@ namespace octave
       m_octave_qobj (oct_qobj), m_doc_widget (this),
       m_tool_bar (new QToolBar (this)),
       m_query_string (QString ()),
+      m_indexed (false),
+      m_current_ref_name (QString ()),
       m_prev_pages_menu (new QMenu (this)),
       m_next_pages_menu (new QMenu (this)),
       m_prev_pages_count (0),
@@ -113,8 +115,10 @@ namespace octave
                                 "%1").arg (m_help_engine->error ()));
 #endif
 
-    connect(m_help_engine, SIGNAL(setupFinished()),
-            m_help_engine->searchEngine(), SLOT(indexDocumentation()));
+    connect(m_help_engine->searchEngine (), SIGNAL(indexingFinished ()),
+            this, SLOT(load_index ()));
+    connect(m_help_engine, SIGNAL(setupFinished ()),
+            m_help_engine->searchEngine (), SLOT(reindexDocumentation ()));
 
     if (! m_help_engine->setupData())
       {
@@ -293,18 +297,6 @@ namespace octave
         insertWidget (1, browser_find);
         setStretchFactor (1, 1);
       }
-
-    // Initial view: Contents
-    // FIXME: Setting the URL immediately leads to the "No dcument error"
-    //        although the data setup of the help engine seems to be finished.
-    //        At least, when when calling m_doc_browser->setSource in a slot
-    //        of the setupFinished signal, m_doc_browser is still NULL.
-    //        The current workaround is to delay setting the url by 100 ms.
-    QTimer::singleShot (100, this, [=] ()
-      { m_doc_browser->setSource
-        (QUrl ("qthelp://org.octave.interpreter-1.0/doc/octave.html/index.html"));
-      });
-
   }
 
   documentation::~documentation (void)
@@ -664,9 +656,26 @@ namespace octave
 
   void documentation::selectAll (void) { }
 
+  void documentation::load_index (void)
+  {
+    m_indexed = true;
+
+    // Show index if no other page is required.
+    if (m_current_ref_name.isEmpty ())
+      m_doc_browser->setSource
+        (QUrl ("qthelp://org.octave.interpreter-1.0/doc/octave.html/index.html"));
+    else
+      load_ref (m_current_ref_name);
+  }
+
   void documentation::load_ref (const QString& ref_name)
   {
     if (! m_help_engine || ref_name.isEmpty ())
+      return;
+
+    m_current_ref_name = ref_name;
+
+    if (! m_indexed)
       return;
 
 #if defined (HAVE_QHELPENGINE_DOCUMENTSFORIDENTIFIER)

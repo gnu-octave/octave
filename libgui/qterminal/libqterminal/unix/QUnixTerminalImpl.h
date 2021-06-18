@@ -36,7 +36,7 @@ class QUnixTerminalImpl : public QTerminal
     int fdstderr;
 
 public:
-    QUnixTerminalImpl(octave::base_qobject&, QWidget *parent, QWidget *main_win);
+    QUnixTerminalImpl(octave::base_qobject&, QWidget *parent);
     virtual ~QUnixTerminalImpl();
 
     void setTerminalFont(const QFont &font);
@@ -65,7 +65,7 @@ protected:
     virtual void resizeEvent(QResizeEvent *);
 
 private:
-    void initialize (QWidget* main_win);
+    void initialize ();
     void connectToPty();
 
     TerminalView *m_terminalView;

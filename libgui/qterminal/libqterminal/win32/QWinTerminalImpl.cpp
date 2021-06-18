@@ -1442,14 +1442,11 @@ QConsolePrivate::cursorRect (void)
 //////////////////////////////////////////////////////////////////////////////
 
 QWinTerminalImpl::QWinTerminalImpl (octave::base_qobject& oct_qobj,
-                                    QWidget* parent, QWidget* main_win)
+                                    QWidget* parent)
     : QTerminal (oct_qobj, parent), d (new QConsolePrivate (this)),
       allowTripleClick (false)
 {
     installEventFilter (this);
-
-    connect (this, SIGNAL (set_screen_size_signal (int, int)),
-             main_win, SLOT (set_screen_size (int, int)));
 
     setAcceptDrops (true);
 }

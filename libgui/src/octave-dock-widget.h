@@ -112,9 +112,6 @@ namespace octave
 
     void queue_make_widget (void);
 
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
-
   protected:
 
     virtual void closeEvent (QCloseEvent *e);

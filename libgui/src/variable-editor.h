@@ -333,6 +333,9 @@ namespace octave
 
     void delete_selected_signal (void);
 
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
+
   public slots:
 
     void callUpdate (const QModelIndex&, const QModelIndex&);

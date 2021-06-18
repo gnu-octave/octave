@@ -30,8 +30,11 @@
 
 #include "octave-dock-widget.h"
 
+class QTerminal;
+
 namespace octave
 {
+  class command_widget;
   class base_qobject;
 
   class terminal_dock_widget : public octave_dock_widget
@@ -45,6 +48,16 @@ namespace octave
     ~terminal_dock_widget (void) = default;
 
     bool has_focus (void) const;
+
+    // FIXME: The next two functions could be eliminated (or combined)
+    // if we had a common interface for the old and new terminal
+    // widgets.
+
+    // Only valid if using the old terminal widget.
+    QTerminal * get_qterminal (void);
+
+    // Only valid if using the new terminal widget.
+    command_widget * get_command_widget (void);
 
   signals:
 

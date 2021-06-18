@@ -78,6 +78,11 @@ namespace octave
 
     virtual void enable_menu_shortcuts (bool enable) = 0;
 
+  signals:
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
+
   public slots:
 
     virtual void toplevel_change (bool) = 0;

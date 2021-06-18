@@ -633,6 +633,8 @@ namespace octave
         connect (qt_link (),
                  &qt_interpreter_events::refresh_variable_editor_signal,
                  this, &base_qobject::refresh_variable_editor);
+
+        connect_interpreter_events<variable_editor> (m_variable_editor_widget);
       }
 
     return m_variable_editor_widget;
@@ -838,7 +840,7 @@ namespace octave
   void base_qobject::interpreter_event (const fcn_callback& fcn)
   {
     // The following is a direct function call across threads.  It works
-    // because the it is accessing a thread-safe queue of events that
+    // because it is accessing a thread-safe queue of events that
     // are later executed by the Octave interpreter in the other thread.
 
     // See also the comments in interpreter-qobject.h about
@@ -850,7 +852,7 @@ namespace octave
   void base_qobject::interpreter_event (const meth_callback& meth)
   {
     // The following is a direct function call across threads.  It works
-    // because the it is accessing a thread-safe queue of events that
+    // because it is accessing a thread-safe queue of events that
     // are later executed by the Octave interpreter in the other thread.
 
     // See also the comments in interpreter-qobject.h about

@@ -49,14 +49,12 @@ see <https://www.gnu.org/licenses/>.
 #endif
 
 QTerminal *
-QTerminal::create (octave::base_qobject& oct_qobj, QWidget *p, QWidget *main_win)
+QTerminal::create (octave::base_qobject& oct_qobj, QWidget *p)
 {
-  // p:       real parent
-  // xparent: main window for signal connections
 #if defined (Q_OS_WIN32)
-  QTerminal *terminal = new QWinTerminalImpl (oct_qobj, p, main_win);
+  QTerminal *terminal = new QWinTerminalImpl (oct_qobj, p);
 #else
-  QTerminal *terminal = new QUnixTerminalImpl (oct_qobj, p, main_win);
+  QTerminal *terminal = new QUnixTerminalImpl (oct_qobj, p);
 #endif
 
   // FIXME: this function should probably be called from or part of the
@@ -65,7 +63,7 @@ QTerminal::create (octave::base_qobject& oct_qobj, QWidget *p, QWidget *main_win
   // Unix- and Windows-specific versions would need access to the
   // base_qobject object, or the design would have to change significantly.
 
-  terminal->construct (oct_qobj, main_win);
+  terminal->construct (oct_qobj);
 
   return terminal;
 }
@@ -276,7 +274,7 @@ QTerminal::notice_settings (const gui_settings *settings)
 }
 
 void
-QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
+QTerminal::construct (octave::base_qobject& oct_qobj)
 {
   octave::resource_manager& rmgr = oct_qobj.get_resource_manager ();
 
@@ -316,32 +314,11 @@ QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
 
   _contextMenu->addSeparator ();
 
-  _contextMenu->addAction (tr ("Clear Window"), xparent,
-                           SLOT (handle_clear_command_window_request ()));
+  _contextMenu->addAction (tr ("Clear Window"), this,
+                           SIGNAL (clear_command_window_request ()));
 
   connect (this, SIGNAL (customContextMenuRequested (QPoint)),
            this, SLOT (handleCustomContextMenuRequested (QPoint)));
-
-  connect (this, SIGNAL (report_status_message (const QString&)),
-           xparent, SLOT (report_status_message (const QString&)));
-
-  connect (this, SIGNAL (edit_mfile_request (const QString&, int)),
-           xparent, SLOT (edit_mfile (const QString&, int)));
-
-  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
-           xparent, SLOT (execute_command_in_terminal (const QString&)));
-
-  connect (xparent, SIGNAL (init_terminal_size_signal ()),
-           this, SLOT (init_terminal_size ()));
-
-  connect (xparent, SIGNAL (copyClipboard_signal ()),
-           this, SLOT (copyClipboard ()));
-
-  connect (xparent, SIGNAL (pasteClipboard_signal ()),
-           this, SLOT (pasteClipboard ()));
-
-  connect (xparent, SIGNAL (selectAll_signal ()),
-           this, SLOT (selectAll ()));
 
   // extra interrupt action
   _interrupt_action = new QAction (this);

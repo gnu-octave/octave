@@ -229,12 +229,6 @@ namespace octave
     connect (m_close_action, &QAction::triggered,
              this, &octave_dock_widget::change_visibility);
 
-    connect (this, QOverload<const fcn_callback&>::of (&octave_dock_widget::interpreter_event),
-             &oct_qobj, QOverload<const fcn_callback&>::of (&base_qobject::interpreter_event));
-
-    connect (this, QOverload<const meth_callback&>::of (&octave_dock_widget::interpreter_event),
-             &oct_qobj, QOverload<const meth_callback&>::of (&base_qobject::interpreter_event));
-
     m_close_action->setToolTip (tr ("Hide widget"));
 
     setStyleSheet (qdockwidget_css (QString (":/actions/icons/widget-close.png"),

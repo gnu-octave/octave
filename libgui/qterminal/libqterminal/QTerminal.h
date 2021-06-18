@@ -52,7 +52,7 @@ class QTerminal : public QWidget
 public:
 
   static QTerminal *
-  create (octave::base_qobject& oct_qobj, QWidget *xparent, QWidget* main_win);
+  create (octave::base_qobject& oct_qobj, QWidget *xparent);
 
   virtual ~QTerminal (void) = default;
 
@@ -108,6 +108,14 @@ signals:
 
   void execute_command_in_terminal_signal (const QString&);
 
+  void request_edit_mfile_signal (const QString&, int);
+
+  void request_open_file_signal (const QString&, const QString&, int);
+
+  void set_screen_size_signal (int, int);
+
+  void clear_command_window_request (void);
+
 public slots:
 
   virtual void copyClipboard (void) = 0;
@@ -141,7 +149,7 @@ protected:
   QTerminal (octave::base_qobject& oct_qobj, QWidget *xparent = nullptr)
             : QWidget (xparent), m_octave_qobj (oct_qobj) { }
 
-  void construct (octave::base_qobject& oct_qobj, QWidget *xparent);
+  void construct (octave::base_qobject& oct_qobj);
 
 private:
 

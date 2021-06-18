@@ -53,7 +53,7 @@ namespace octave
     if (m_experimental_terminal_widget)
       m_terminal = new command_widget (oct_qobj, this);
     else
-      m_terminal = QTerminal::create (oct_qobj, this, p);
+      m_terminal = QTerminal::create (oct_qobj, this);
 
     m_terminal->setObjectName ("OctaveTerminal");
     m_terminal->setFocusPolicy (Qt::StrongFocus);
@@ -63,41 +63,6 @@ namespace octave
 
     setWidget (m_terminal);
     setFocusProxy (m_terminal);
-
-    // FIXME: The new terminal needs to be a more specific type than
-    // QWidget for this to work properly and to be able to use the new
-    // signal/slot connection style.  Probably the new terminal widget
-    // should be derived from QTerminal.
-    connect (this, SIGNAL (settings_changed (const gui_settings *)),
-             m_terminal, SLOT (notice_settings (const gui_settings *)));
-
-    if (m_experimental_terminal_widget)
-      {
-        // Any interpreter_event signal from the terminal widget is
-        // handled the same as for the parent terminal dock widget.
-
-        connect (m_terminal, SIGNAL (interpreter_event (const fcn_callback&)),
-                 this, SIGNAL (interpreter_event (const fcn_callback&)));
-
-        connect (m_terminal, SIGNAL (interpreter_event (const meth_callback&)),
-                 this, SIGNAL (interpreter_event (const meth_callback&)));
-      }
-    else
-      {
-        // FIXME: As with the settings_changed signal above, the
-        // following connections won't work with the new signal/slot
-        // connection style because m_terminal is a pointer to QWidget
-        // instead of QTerminal.
-
-        // Connect the interrupt signal (emitted by Ctrl-C)
-        connect (m_terminal, SIGNAL (interrupt_signal (void)),
-                 &oct_qobj, SLOT (interpreter_interrupt (void)));
-
-        // Connect the visibility signal to the terminal for
-        // dis-/enabling timers.
-        connect (this, SIGNAL (visibilityChanged (bool)),
-                 m_terminal, SLOT (handle_visibility_changed (bool)));
-      }
 
     // Chose a reasonable size at startup in order to avoid truncated
     // startup messages
@@ -132,6 +97,18 @@ namespace octave
   {
     QWidget *w = widget ();
     return w->hasFocus ();
+  }
+
+  QTerminal * terminal_dock_widget::get_qterminal (void)
+  {
+    return (m_experimental_terminal_widget
+            ? nullptr : dynamic_cast<QTerminal *> (m_terminal));
+  }
+
+  command_widget * terminal_dock_widget::get_command_widget (void)
+  {
+    return (m_experimental_terminal_widget
+            ? dynamic_cast<command_widget *> (m_terminal) : nullptr);
   }
 
   void terminal_dock_widget::notice_settings (const gui_settings *settings)

@@ -57,6 +57,7 @@
 #if defined (HAVE_QSCINTILLA)
 #  include "file-editor.h"
 #endif
+#include "command-widget.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-ed.h"
@@ -170,6 +171,70 @@ namespace octave
     connect (this, &main_window::settings_changed,
              m_command_window, &terminal_dock_widget::notice_settings);
 
+    if (m_octave_qobj.experimental_terminal_widget ())
+      {
+        command_widget *cmd_widget = m_command_window->get_command_widget ();
+
+        connect (m_command_window, &terminal_dock_widget::settings_changed,
+                 cmd_widget, &command_widget::notice_settings);
+
+        m_octave_qobj.connect_interpreter_events (cmd_widget);
+      }
+    else
+      {
+        QTerminal *cmd_widget = m_command_window->get_qterminal ();
+
+        connect (m_command_window, &terminal_dock_widget::settings_changed,
+                 cmd_widget, &QTerminal::notice_settings);
+
+        // Connect the interrupt signal (emitted by Ctrl-C)
+        connect (cmd_widget, &QTerminal::interrupt_signal,
+                 &m_octave_qobj, &base_qobject::interpreter_interrupt);
+
+        // Connect the visibility signal to the terminal for
+        // dis-/enabling timers.
+        connect (m_command_window, &terminal_dock_widget::visibilityChanged,
+                 cmd_widget, &QTerminal::handle_visibility_changed);
+
+        // The following connections were previously made in
+        // QTerminal::construct, QWinTerminalImpl::QWinTerminalImpl, and
+        // QUnixTerminalImpl::QUnixTerminalImpl.  Similar actions should
+        // probably be possible for the new command widget.
+
+        connect (cmd_widget, &QTerminal::report_status_message,
+                 this, &main_window::report_status_message);
+
+        connect (cmd_widget, &QTerminal::edit_mfile_request,
+                 this, &main_window::edit_mfile);
+
+        connect (cmd_widget, &QTerminal::execute_command_in_terminal_signal,
+                 this, &main_window::execute_command_in_terminal);
+
+        connect (this, &main_window::init_terminal_size_signal,
+                 cmd_widget, &QTerminal::init_terminal_size);
+
+        connect (this, &main_window::copyClipboard_signal,
+                 cmd_widget, &QTerminal::copyClipboard);
+
+        connect (this, &main_window::pasteClipboard_signal,
+                 cmd_widget, &QTerminal::pasteClipboard);
+
+        connect (this, &main_window::selectAll_signal,
+                 cmd_widget, &QTerminal::selectAll);
+
+        connect (cmd_widget, &QTerminal::request_edit_mfile_signal,
+                 this, &main_window::edit_mfile);
+
+        connect (cmd_widget, &QTerminal::request_open_file_signal,
+                 this, QOverload<const QString&, const QString&, int>::of (&main_window::open_file_signal));
+
+        connect (cmd_widget, &QTerminal::set_screen_size_signal,
+                 this, &main_window::set_screen_size);
+
+        connect (cmd_widget, &QTerminal::clear_command_window_request,
+                 this, &main_window::handle_clear_command_window_request);
+      }
+
     m_doc_browser_window = m_octave_qobj.documentation_widget (this);
 
     make_dock_widget_connections (m_doc_browser_window);
@@ -209,6 +274,11 @@ namespace octave
     file_editor *editor = new file_editor (this, m_octave_qobj);
 
     make_dock_widget_connections (editor);
+
+    // The editor is currently different from other dock widgets.  Until
+    // those differences are resolved, make interpreter_event
+    // connections here instead of in base_qobject::editor_widget.
+    m_octave_qobj.connect_interpreter_events (editor);
 
     connect (editor, &file_editor::request_settings_dialog,
              this, QOverload<const QString&>::of (&main_window::process_settings_dialog_request));

@@ -181,6 +181,15 @@ namespace octave
 
     virtual bool confirm_shutdown (void);
 
+    template <typename T> void connect_interpreter_events (T *widget)
+    {
+      connect (widget, QOverload<const fcn_callback&>::of (&T::interpreter_event),
+               this, QOverload<const fcn_callback&>::of (&base_qobject::interpreter_event));
+
+      connect (widget, QOverload<const meth_callback&>::of (&T::interpreter_event),
+               this, QOverload<const meth_callback&>::of (&base_qobject::interpreter_event));
+    }
+
   public slots:
 
     void execute_command (const QString& command);

@@ -54,7 +54,9 @@ sqrtm_utri_inplace (Matrix& T)
   //   for j = 1:n
   //     T(j,j) = sqrt (T(j,j));
   //     for i = j-1:-1:1
-  //       T(i,j) /= (T(i,i) + T(j,j));
+  //       if T(i,j) != 0
+  //         T(i,j) /= (T(i,i) + T(j,j));
+  //       endif
   //       k = 1:i-1;
   //       T(k,j) -= T(k,i) * T(i,j);
   //     endfor
@@ -76,7 +78,9 @@ sqrtm_utri_inplace (Matrix& T)
       for (octave_idx_type i = j-1; i >= 0; i--)
         {
           const element_type *coli = Tp + n*i;
-          const element_type colji = colj[i] /= (coli[i] + colj[j]);
+          if (colj[i] != zero)
+            colj[i] /= (coli[i] + colj[j]);
+          const element_type colji = colj[i];
           for (octave_idx_type k = 0; k < i; k++)
             colj[k] -= coli[k] * colji;
         }
@@ -256,6 +260,7 @@ Mathematics, Manchester, England, January 1999.
 
 /*
 %!assert (sqrtm (2*ones (2)), ones (2), 3*eps)
+%!assert (real (sqrtm (ones (4))), 0.5*ones (4), 4*eps)
 
 ## The following two tests are from the reference in the docstring above.
 %!test

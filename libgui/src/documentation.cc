@@ -666,6 +666,8 @@ namespace octave
         (QUrl ("qthelp://org.octave.interpreter-1.0/doc/octave.html/index.html"));
     else
       load_ref (m_current_ref_name);
+
+    m_help_engine->contentWidget ()->expandToDepth (0);
   }
 
   void documentation::load_ref (const QString& ref_name)

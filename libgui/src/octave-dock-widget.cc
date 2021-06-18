@@ -103,16 +103,20 @@ namespace octave
 
     m_title_widget->setLayout (h_layout);
 
-    // copy & paste handling
-    connect (p, SIGNAL (copyClipboard_signal ()),
-             this, SLOT (copyClipboard ()));
-    connect (p, SIGNAL (pasteClipboard_signal ()),
-             this, SLOT (pasteClipboard ()));
-    connect (p, SIGNAL (selectAll_signal ()),
-             this, SLOT (selectAll ()));
+    if (p)
+      {
+        // Only connect the when a parent (main window) is given
+        // copy & paste handling
+        connect (p, SIGNAL (copyClipboard_signal ()),
+                this, SLOT (copyClipboard ()));
+        connect (p, SIGNAL (pasteClipboard_signal ()),
+                this, SLOT (pasteClipboard ()));
+        connect (p, SIGNAL (selectAll_signal ()),
+                this, SLOT (selectAll ()));
 
-    // undo handling
-    connect (p, SIGNAL (undo_signal ()), this, SLOT (do_undo ()));
+        // undo handling
+        connect (p, SIGNAL (undo_signal ()), this, SLOT (do_undo ()));
+      }
   }
 
   // set the title in the dockwidgets title bar

@@ -293,6 +293,9 @@ namespace octave
             // After settings.
             config_translators ();
 
+            // Initilize the shortcut-manager
+            m_shortcut_manager.init_data ();
+
             m_qapplication->setQuitOnLastWindowClosed (false);
           }
       }

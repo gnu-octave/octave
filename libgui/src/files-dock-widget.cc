@@ -51,8 +51,6 @@
 #include "octave-qtutils.h"
 #include "qt-interpreter-events.h"
 
-#include "interpreter.h"
-#include "load-save.h"
 #include "oct-env.h"
 
 namespace octave
@@ -861,10 +859,10 @@ namespace octave
   {
     QList<QFileInfo> infos = get_selected_items_info (true);
 
-    octave_value_list dir_list = ovl ();
+    QStringList dir_list;
 
     for (int i = 0; i < infos.length (); i++)
-      dir_list.append (infos.at (i).absoluteFilePath ().toStdString ());
+      dir_list.append (infos.at (i).absoluteFilePath ());
 
     if (infos.length () > 0)
       emit modify_path_signal (dir_list, rm, subdirs);

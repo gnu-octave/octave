@@ -647,7 +647,7 @@ namespace octave
       emit undo_signal ();
   }
 
-  void main_window::modify_path (const octave_value_list& dir_list,
+  void main_window::modify_path (const QStringList& dir_list,
                                  bool rm, bool subdirs)
   {
     emit interpreter_event
@@ -655,16 +655,18 @@ namespace octave
       {
         // INTERPRETER THREAD
 
-        octave_value_list paths = ovl ();
+        octave_value_list paths;
 
-        if (subdirs)
+        // Loop over all directories in order to get all subdirs
+        for (octave_idx_type i = 0; i < dir_list.length (); i++)
           {
-            // Loop over all directories in order to get all subdirs
-            for (octave_idx_type i = 0; i < dir_list.length (); i++)
-              paths.append (Fgenpath (dir_list(i)));
+            std::string dir = dir_list.at(i).toStdString ();
+
+            if (subdirs)
+              paths.append (Fgenpath (ovl (dir)));
+            else
+              paths.append (dir);
           }
-        else
-          paths = dir_list;
 
         if (rm)
           Frmpath (interp, paths);

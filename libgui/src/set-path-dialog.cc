@@ -194,9 +194,7 @@ namespace octave
           {
             // Use existing method mofifying load path and updating dialog
             // instead of adding string and updating load path
-            octave_value_list dirlist = ovl ();
-            dirlist.append (dir.toStdString ());
-            emit modify_path_signal (dirlist, false, true);
+            emit modify_path_signal (QStringList (dir), false, true);
           }
         else
           {

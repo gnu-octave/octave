@@ -927,7 +927,13 @@ function str = trimleft (str)
 endfunction
 
 function body = __extract_test_code (nm)
-  fid = fopen (nm, "rt");
+  filedir = fileparts (nm);
+  if (is_same_file (filedir, pwd ()))
+    # The canonical current directory is not added as key to the load path.
+    # So it doesn't work as key for "dir_encoding". Use "." instead.
+    filedir = ".";
+  endif
+  fid = fopen (nm, "rt", "n", dir_encoding (filedir));
   body = "";
   if (fid >= 0)
     while (ischar (ln = fgets (fid)))

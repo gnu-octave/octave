@@ -177,7 +177,7 @@ namespace octave
       m_main_thread (new QThread ()),
       m_gui_app (gui_app),
       m_interpreter_ready (false),
-      m_workspace_model (new workspace_model (*this)),
+      m_workspace_model (new workspace_model ()),
       m_documentation_widget (),
       m_file_browser_widget (),
       m_history_widget (),

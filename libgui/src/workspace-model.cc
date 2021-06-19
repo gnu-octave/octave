@@ -41,8 +41,8 @@
 
 namespace octave
 {
-  workspace_model::workspace_model (base_qobject& oct_qobj, QObject *p)
-    : QAbstractTableModel (p), m_octave_qobj (oct_qobj)
+  workspace_model::workspace_model (QObject *p)
+    : QAbstractTableModel (p)
   {
     m_columnNames.append (tr ("Name"));
     m_columnNames.append (tr ("Class"));

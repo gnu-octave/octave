@@ -43,15 +43,13 @@ typedef QList<int> QIntList;
 
 namespace octave
 {
-  class base_qobject;
-
   class workspace_model : public QAbstractTableModel
   {
     Q_OBJECT
 
   public:
 
-    workspace_model (base_qobject& oct_qobj, QObject *parent = nullptr);
+    workspace_model (QObject *parent = nullptr);
 
     ~workspace_model (void) = default;
 
@@ -96,8 +94,6 @@ namespace octave
 
     void clear_data (void);
     void update_table (void);
-
-    base_qobject& m_octave_qobj;
 
     bool m_top_level;
     symbol_info_list m_syminfo_list;

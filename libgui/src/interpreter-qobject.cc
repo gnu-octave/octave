@@ -56,9 +56,6 @@ namespace octave
     evmgr.install_qt_event_handlers (m_octave_qobj.get_qt_interpreter_events ());
     evmgr.enable ();
 
-    connect (this, &interpreter_qobject::ready,
-             &m_octave_qobj, &base_qobject::interpreter_ready);
-
     int exit_status = 0;
 
     try

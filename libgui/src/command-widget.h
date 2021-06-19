@@ -52,6 +52,10 @@ namespace octave
 
     void clear_line_edit (void);
 
+    void interpreter_pause (void);
+    void interpreter_resume (void);
+    void interpreter_stop (void);
+
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
 

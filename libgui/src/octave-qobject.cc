@@ -224,6 +224,9 @@ namespace octave
              m_qapplication, &octave_qapplication::exit,
              Qt::QueuedConnection);
 
+    connect (m_interpreter_qobj, &interpreter_qobject::ready,
+             this, &base_qobject::interpreter_ready);
+
     connect (m_main_thread, &QThread::finished,
              m_main_thread, &QThread::deleteLater);
 

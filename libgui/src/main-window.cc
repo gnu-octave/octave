@@ -178,6 +178,15 @@ namespace octave
         connect (m_command_window, &terminal_dock_widget::settings_changed,
                  cmd_widget, &command_widget::notice_settings);
 
+        connect (cmd_widget, &command_widget::interpreter_pause,
+                 &m_octave_qobj, &base_qobject::interpreter_pause);
+
+        connect (cmd_widget, &command_widget::interpreter_resume,
+                 &m_octave_qobj, &base_qobject::interpreter_resume);
+
+        connect (cmd_widget, &command_widget::interpreter_stop,
+                 &m_octave_qobj, &base_qobject::interpreter_stop);
+
         m_octave_qobj.connect_interpreter_events (cmd_widget);
       }
     else

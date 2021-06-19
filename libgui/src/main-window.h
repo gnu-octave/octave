@@ -254,6 +254,16 @@ namespace octave
 
   private:
 
+    void adopt_dock_widgets (void);
+
+    void adopt_terminal_widget (void);
+    void adopt_documentation_widget (void);
+    void adopt_file_browser_widget (void);
+    void adopt_history_widget (void);
+    void adopt_workspace_widget (void);
+    void adopt_editor_widget (void);
+    void adopt_variable_editor_widget (void);
+
     void construct_central_widget (void);
 
     void construct (void);

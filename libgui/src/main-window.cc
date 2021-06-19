@@ -167,133 +167,7 @@ namespace octave
     m_status_bar->addPermanentWidget (text);
     m_status_bar->addPermanentWidget (m_profiler_status_indicator);
 
-    m_command_window = m_octave_qobj.terminal_widget (this);
-
-    make_dock_widget_connections (m_command_window);
-
-    connect (this, &main_window::settings_changed,
-             m_command_window, &terminal_dock_widget::notice_settings);
-
-    if (! m_octave_qobj.experimental_terminal_widget ())
-      {
-        QTerminal *cmd_widget = m_command_window->get_qterminal ();
-
-        // The following connections were previously made in
-        // QTerminal::construct, QWinTerminalImpl::QWinTerminalImpl, and
-        // QUnixTerminalImpl::QUnixTerminalImpl.  Similar actions should
-        // probably be possible for the new command widget.
-
-        connect (cmd_widget, &QTerminal::report_status_message,
-                 this, &main_window::report_status_message);
-
-        connect (cmd_widget, &QTerminal::edit_mfile_request,
-                 this, &main_window::edit_mfile);
-
-        connect (cmd_widget, &QTerminal::execute_command_in_terminal_signal,
-                 this, &main_window::execute_command_in_terminal);
-
-        connect (this, &main_window::init_terminal_size_signal,
-                 cmd_widget, &QTerminal::init_terminal_size);
-
-        connect (this, &main_window::copyClipboard_signal,
-                 cmd_widget, &QTerminal::copyClipboard);
-
-        connect (this, &main_window::pasteClipboard_signal,
-                 cmd_widget, &QTerminal::pasteClipboard);
-
-        connect (this, &main_window::selectAll_signal,
-                 cmd_widget, &QTerminal::selectAll);
-
-        connect (cmd_widget, &QTerminal::request_edit_mfile_signal,
-                 this, &main_window::edit_mfile);
-
-        connect (cmd_widget, &QTerminal::request_open_file_signal,
-                 this, QOverload<const QString&, const QString&, int>::of (&main_window::open_file_signal));
-
-        connect (cmd_widget, &QTerminal::set_screen_size_signal,
-                 this, &main_window::set_screen_size);
-
-        connect (cmd_widget, &QTerminal::clear_command_window_request,
-                 this, &main_window::handle_clear_command_window_request);
-      }
-
-    m_doc_browser_window = m_octave_qobj.documentation_widget (this);
-
-    make_dock_widget_connections (m_doc_browser_window);
-
-    m_file_browser_window = m_octave_qobj.file_browser_widget (this);
-
-    make_dock_widget_connections (m_file_browser_window);
-
-    connect (m_file_browser_window, &files_dock_widget::open_file,
-             this, QOverload<const QString&>::of (&main_window::open_file_signal));
-    connect (m_file_browser_window,
-             &files_dock_widget::displayed_directory_changed,
-             this, &main_window::set_current_working_directory);
-    connect (m_file_browser_window, &files_dock_widget::modify_path_signal,
-             this, &main_window::modify_path);
-    connect (m_file_browser_window, &files_dock_widget::run_file_signal,
-             this, &main_window::run_file_in_terminal);
-
-    m_history_window = m_octave_qobj.history_widget (this);
-
-    make_dock_widget_connections (m_history_window);
-
-    connect (m_history_window, &history_dock_widget::command_create_script,
-             this, &main_window::new_file_signal);
-
-    connect (m_history_window, &history_dock_widget::command_double_clicked,
-             this, &main_window::execute_command_in_terminal);
-
-    m_workspace_window = m_octave_qobj.workspace_widget (this);
-
-    make_dock_widget_connections (m_workspace_window);
-
-    connect (m_workspace_window, &workspace_view::command_requested,
-             this, &main_window::execute_command_in_terminal);
-
-#if defined (HAVE_QSCINTILLA)
-    file_editor *editor = new file_editor (this, m_octave_qobj);
-
-    make_dock_widget_connections (editor);
-
-    // The editor is currently different from other dock widgets.  Until
-    // those differences are resolved, make interpreter_event
-    // connections here instead of in base_qobject::editor_widget.
-    m_octave_qobj.connect_interpreter_events (editor);
-
-    connect (editor, &file_editor::request_settings_dialog,
-             this, QOverload<const QString&>::of (&main_window::process_settings_dialog_request));
-
-    connect (editor, &file_editor::request_dbcont_signal,
-             this, &main_window::debug_continue);
-
-    connect (this, &main_window::update_gui_lexer_signal,
-             editor, &file_editor::update_gui_lexer_signal);
-
-    connect (editor, &file_editor::execute_command_in_terminal_signal,
-             this, &main_window::execute_command_in_terminal);
-
-    connect (editor, &file_editor::focus_console_after_command_signal,
-             this, &main_window::focus_console_after_command);
-
-    connect (editor, &file_editor::run_file_signal,
-             this, &main_window::run_file_in_terminal);
-
-    connect (editor, &file_editor::edit_mfile_request,
-             this, &main_window::handle_edit_mfile_request);
-
-    connect (editor, &file_editor::debug_quit_signal,
-             this, &main_window::debug_quit);
-
-    m_editor_window = editor;
-#else
-    m_editor_window = nullptr;
-#endif
-
-    m_variable_editor_window = m_octave_qobj.variable_editor_widget (this);
-
-    make_dock_widget_connections (m_variable_editor_window);
+    adopt_dock_widgets ();
 
     m_previous_dock = m_command_window;
 
@@ -372,6 +246,169 @@ namespace octave
 
     delete m_release_notes_window;
     delete m_community_news_window;
+  }
+
+  void main_window::adopt_dock_widgets (void)
+  {
+    adopt_terminal_widget ();
+    adopt_documentation_widget ();
+    adopt_file_browser_widget ();
+    adopt_history_widget ();
+    adopt_workspace_widget ();
+    adopt_editor_widget ();
+    adopt_variable_editor_widget ();
+  }
+
+  void main_window::adopt_terminal_widget (void)
+  {
+    m_command_window = m_octave_qobj.terminal_widget (this);
+
+    make_dock_widget_connections (m_command_window);
+
+    connect (this, &main_window::settings_changed,
+             m_command_window, &terminal_dock_widget::notice_settings);
+
+    if (! m_octave_qobj.experimental_terminal_widget ())
+      {
+        QTerminal *cmd_widget = m_command_window->get_qterminal ();
+
+        // The following connections were previously made in
+        // QTerminal::construct, QWinTerminalImpl::QWinTerminalImpl, and
+        // QUnixTerminalImpl::QUnixTerminalImpl.  Similar actions should
+        // probably be possible for the new command widget.
+
+        connect (cmd_widget, &QTerminal::report_status_message,
+                 this, &main_window::report_status_message);
+
+        connect (cmd_widget, &QTerminal::edit_mfile_request,
+                 this, &main_window::edit_mfile);
+
+        connect (cmd_widget, &QTerminal::execute_command_in_terminal_signal,
+                 this, &main_window::execute_command_in_terminal);
+
+        connect (this, &main_window::init_terminal_size_signal,
+                 cmd_widget, &QTerminal::init_terminal_size);
+
+        connect (this, &main_window::copyClipboard_signal,
+                 cmd_widget, &QTerminal::copyClipboard);
+
+        connect (this, &main_window::pasteClipboard_signal,
+                 cmd_widget, &QTerminal::pasteClipboard);
+
+        connect (this, &main_window::selectAll_signal,
+                 cmd_widget, &QTerminal::selectAll);
+
+        connect (cmd_widget, &QTerminal::request_edit_mfile_signal,
+                 this, &main_window::edit_mfile);
+
+        connect (cmd_widget, &QTerminal::request_open_file_signal,
+                 this, QOverload<const QString&, const QString&, int>::of (&main_window::open_file_signal));
+
+        connect (cmd_widget, &QTerminal::set_screen_size_signal,
+                 this, &main_window::set_screen_size);
+
+        connect (cmd_widget, &QTerminal::clear_command_window_request,
+                 this, &main_window::handle_clear_command_window_request);
+      }
+  }
+
+  void main_window::adopt_documentation_widget (void)
+  {
+    m_doc_browser_window = m_octave_qobj.documentation_widget (this);
+
+    make_dock_widget_connections (m_doc_browser_window);
+  }
+
+  void main_window::adopt_file_browser_widget (void)
+  {
+    m_file_browser_window = m_octave_qobj.file_browser_widget (this);
+
+    make_dock_widget_connections (m_file_browser_window);
+
+    connect (m_file_browser_window, &files_dock_widget::open_file,
+             this, QOverload<const QString&>::of (&main_window::open_file_signal));
+    connect (m_file_browser_window,
+             &files_dock_widget::displayed_directory_changed,
+             this, &main_window::set_current_working_directory);
+
+    connect (m_file_browser_window, &files_dock_widget::modify_path_signal,
+             this, &main_window::modify_path);
+
+    connect (m_file_browser_window, &files_dock_widget::run_file_signal,
+             this, &main_window::run_file_in_terminal);
+  }
+
+  void main_window::adopt_history_widget (void)
+  {
+    m_history_window = m_octave_qobj.history_widget (this);
+
+    make_dock_widget_connections (m_history_window);
+
+    connect (m_history_window, &history_dock_widget::command_create_script,
+             this, &main_window::new_file_signal);
+
+    connect (m_history_window, &history_dock_widget::command_double_clicked,
+             this, &main_window::execute_command_in_terminal);
+  }
+
+  void main_window::adopt_workspace_widget (void)
+  {
+    m_workspace_window = m_octave_qobj.workspace_widget (this);
+
+    make_dock_widget_connections (m_workspace_window);
+
+    connect (m_workspace_window, &workspace_view::command_requested,
+             this, &main_window::execute_command_in_terminal);
+  }
+
+  void main_window::adopt_editor_widget (void)
+  {
+#if defined (HAVE_QSCINTILLA)
+    file_editor *editor = new file_editor (this, m_octave_qobj);
+
+    make_dock_widget_connections (editor);
+
+    // The editor is currently different from other dock widgets.  Until
+    // those differences are resolved, make interpreter_event
+    // connections here instead of in base_qobject::editor_widget.
+    m_octave_qobj.connect_interpreter_events (editor);
+
+    connect (editor, &file_editor::request_settings_dialog,
+             this, QOverload<const QString&>::of (&main_window::process_settings_dialog_request));
+
+    connect (editor, &file_editor::request_dbcont_signal,
+             this, &main_window::debug_continue);
+
+    connect (this, &main_window::update_gui_lexer_signal,
+             editor, &file_editor::update_gui_lexer_signal);
+
+    connect (editor, &file_editor::execute_command_in_terminal_signal,
+             this, &main_window::execute_command_in_terminal);
+
+    connect (editor, &file_editor::focus_console_after_command_signal,
+             this, &main_window::focus_console_after_command);
+
+    connect (editor, &file_editor::run_file_signal,
+             this, &main_window::run_file_in_terminal);
+
+    connect (editor, &file_editor::edit_mfile_request,
+             this, &main_window::handle_edit_mfile_request);
+
+    connect (editor, &file_editor::debug_quit_signal,
+             this, &main_window::debug_quit);
+
+    m_editor_window = editor;
+#else
+    m_editor_window = nullptr;
+#endif
+
+  }
+
+  void main_window::adopt_variable_editor_widget (void)
+  {
+    m_variable_editor_window = m_octave_qobj.variable_editor_widget (this);
+
+    make_dock_widget_connections (m_variable_editor_window);
   }
 
   void main_window::make_dock_widget_connections (octave_dock_widget *dw)

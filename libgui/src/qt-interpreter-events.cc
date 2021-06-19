@@ -259,6 +259,11 @@ namespace octave
     emit apply_new_settings ();
   }
 
+  void qt_interpreter_events::show_terminal_window (void)
+  {
+    emit show_terminal_window_signal ();
+  }
+
   bool qt_interpreter_events::show_documentation (const std::string& file)
   {
     emit show_documentation_signal (QString::fromStdString (file));

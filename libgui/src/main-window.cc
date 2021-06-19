@@ -54,6 +54,9 @@
 #include <QTimer>
 #include <QToolBar>
 
+// QTerminal includes
+#include "QTerminal.h"
+
 #if defined (HAVE_QSCINTILLA)
 #  include "file-editor.h"
 #endif
@@ -164,46 +167,16 @@ namespace octave
     m_status_bar->addPermanentWidget (text);
     m_status_bar->addPermanentWidget (m_profiler_status_indicator);
 
-    m_command_window = new terminal_dock_widget (this, m_octave_qobj);
+    m_command_window = m_octave_qobj.terminal_widget (this);
 
     make_dock_widget_connections (m_command_window);
 
     connect (this, &main_window::settings_changed,
              m_command_window, &terminal_dock_widget::notice_settings);
 
-    if (m_octave_qobj.experimental_terminal_widget ())
-      {
-        command_widget *cmd_widget = m_command_window->get_command_widget ();
-
-        connect (m_command_window, &terminal_dock_widget::settings_changed,
-                 cmd_widget, &command_widget::notice_settings);
-
-        connect (cmd_widget, &command_widget::interpreter_pause,
-                 &m_octave_qobj, &base_qobject::interpreter_pause);
-
-        connect (cmd_widget, &command_widget::interpreter_resume,
-                 &m_octave_qobj, &base_qobject::interpreter_resume);
-
-        connect (cmd_widget, &command_widget::interpreter_stop,
-                 &m_octave_qobj, &base_qobject::interpreter_stop);
-
-        m_octave_qobj.connect_interpreter_events (cmd_widget);
-      }
-    else
+    if (! m_octave_qobj.experimental_terminal_widget ())
       {
         QTerminal *cmd_widget = m_command_window->get_qterminal ();
-
-        connect (m_command_window, &terminal_dock_widget::settings_changed,
-                 cmd_widget, &QTerminal::notice_settings);
-
-        // Connect the interrupt signal (emitted by Ctrl-C)
-        connect (cmd_widget, &QTerminal::interrupt_signal,
-                 &m_octave_qobj, &base_qobject::interpreter_interrupt);
-
-        // Connect the visibility signal to the terminal for
-        // dis-/enabling timers.
-        connect (m_command_window, &terminal_dock_widget::visibilityChanged,
-                 cmd_widget, &QTerminal::handle_visibility_changed);
 
         // The following connections were previously made in
         // QTerminal::construct, QWinTerminalImpl::QWinTerminalImpl, and

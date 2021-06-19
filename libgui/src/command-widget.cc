@@ -94,12 +94,11 @@ namespace octave
 
     connect (stop_button, &QPushButton::clicked,
              this, &command_widget::interpreter_stop);
+  }
 
-    connect (p, SIGNAL (update_prompt_signal (const QString&)),
-             m_prompt, SLOT (setText (const QSTring&)));
-
-    connect (p, SIGNAL (interpreter_output_signal (const QString&)),
-             this, SLOT (insert_interpreter_output (const QString&)));
+  void command_widget::update_prompt (const QString& prompt)
+  {
+    m_prompt->setText (prompt);
   }
 
   void command_widget::insert_interpreter_output (const QString& msg)

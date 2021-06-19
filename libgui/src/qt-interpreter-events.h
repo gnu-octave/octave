@@ -117,6 +117,8 @@ namespace octave
 
     void apply_preferences (void);
 
+    void show_terminal_window (void);
+
     bool show_documentation (const std::string& file);
 
     void show_file_browser (void);
@@ -262,6 +264,8 @@ namespace octave
     void show_preferences_signal (void);
 
     void gui_preference_signal (const QString& key, const QString& value);
+
+    void show_terminal_window_signal (void);
 
     void show_documentation_signal (const QString& file);
 

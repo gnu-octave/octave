@@ -83,6 +83,7 @@ namespace octave
   class file_editor_interface;
   class files_dock_widget;
   class history_dock_widget;
+  class terminal_dock_widget;
   class variable_editor;
   class workspace_model;
   class workspace_view;
@@ -153,6 +154,9 @@ namespace octave
       return m_workspace_model;
     }
 
+    QPointer<terminal_dock_widget>
+    terminal_widget (main_window *mw = nullptr);
+
     QPointer<documentation_dock_widget>
     documentation_widget (main_window *mw = nullptr);
 
@@ -198,6 +202,8 @@ namespace octave
     // with the old terminal widget.
     void start_gui (bool gui_app);
     void close_gui (void);
+
+    void show_terminal_window (void);
 
     void show_documentation_window (const QString& file);
 
@@ -267,6 +273,8 @@ namespace octave
     // Dock widgets that may be used from the command line.  They are
     // adopted by the desktop (main window) if it is also started from
     // the command line.
+
+    QPointer<terminal_dock_widget> m_terminal_widget;
 
     QPointer<documentation_dock_widget> m_documentation_widget;
 

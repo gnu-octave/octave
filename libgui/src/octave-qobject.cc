@@ -37,6 +37,10 @@
 #include <QTimer>
 #include <QTranslator>
 
+// QTerminal includes
+#include "QTerminal.h"
+
+#include "command-widget.h"
 #include "documentation-dock-widget.h"
 #include "files-dock-widget.h"
 #include "history-dock-widget.h"
@@ -47,6 +51,7 @@
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
+#include "terminal-dock-widget.h"
 #include "variable-editor.h"
 #include "workspace-model.h"
 #include "workspace-view.h"
@@ -240,8 +245,13 @@ namespace octave
              this, QOverload<const meth_callback&>::of (&base_qobject::interpreter_event));
 
     if (m_app_context.experimental_terminal_widget ())
-      connect (qt_link (), &qt_interpreter_events::start_gui_signal,
-               this, &base_qobject::start_gui);
+      {
+        connect (qt_link (), &qt_interpreter_events::start_gui_signal,
+                 this, &base_qobject::start_gui);
+
+        connect (qt_link (), &qt_interpreter_events::show_terminal_window_signal,
+                 this, &base_qobject::show_terminal_window);
+      }
 
     connect (qt_link (), &qt_interpreter_events::copy_image_to_clipboard_signal,
              this, &base_qobject::copy_image_to_clipboard);
@@ -322,6 +332,9 @@ namespace octave
 
     if (! m_main_window)
       {
+        if (m_terminal_widget)
+          m_terminal_widget->close ();
+
         if (m_documentation_widget)
           m_documentation_widget->close ();
 
@@ -345,6 +358,7 @@ namespace octave
         delete m_main_window;
       }
 
+    delete m_terminal_widget;
     delete m_documentation_widget;
     delete m_file_browser_widget;
     delete m_history_widget;
@@ -418,6 +432,47 @@ namespace octave
   bool base_qobject::gui_running (void) const
   {
     return m_app_context.gui_running ();
+  }
+
+  QPointer<terminal_dock_widget>
+  base_qobject::terminal_widget (main_window *mw)
+  {
+    if (m_terminal_widget && mw)
+      {
+        m_terminal_widget->set_main_window (mw);
+        m_terminal_widget->set_adopted (true);
+      }
+    else if (! m_terminal_widget)
+      {
+        m_terminal_widget
+          = QPointer<terminal_dock_widget> (new terminal_dock_widget (mw, *this));
+        if (experimental_terminal_widget ())
+          {
+            command_widget *cmd_widget
+              = m_terminal_widget->get_command_widget ();
+
+            connect (cmd_widget, &command_widget::interpreter_pause,
+                     this, &base_qobject::interpreter_pause);
+
+            connect (cmd_widget, &command_widget::interpreter_resume,
+                     this, &base_qobject::interpreter_resume);
+
+            connect (cmd_widget, &command_widget::interpreter_stop,
+                     this, &base_qobject::interpreter_stop);
+
+            connect_interpreter_events (cmd_widget);
+          }
+        else
+          {
+            QTerminal *cmd_widget = m_terminal_widget->get_qterminal ();
+
+            // Connect the interrupt signal (emitted by Ctrl-C)
+            connect (cmd_widget, &QTerminal::interrupt_signal,
+                     this, &base_qobject::interpreter_interrupt);
+          }
+      }
+
+    return m_terminal_widget;
   }
 
   QPointer<documentation_dock_widget>
@@ -687,6 +742,19 @@ namespace octave
           }
 
         m_app_context.gui_running (true);
+      }
+  }
+
+  void base_qobject::show_terminal_window (void)
+  {
+    terminal_dock_widget *widget
+      = (m_terminal_widget
+         ? m_terminal_widget : terminal_widget ());
+
+    if (! widget->isVisible ())
+      {
+        widget->show ();
+        widget->raise ();
       }
   }
 

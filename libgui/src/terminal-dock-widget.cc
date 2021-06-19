@@ -51,9 +51,34 @@ namespace octave
     // FIXME: we could do this in a better way, but improving it doesn't
     // matter much if we will eventually be removing the old terminal.
     if (m_experimental_terminal_widget)
-      m_terminal = new command_widget (oct_qobj, this);
+      {
+        command_widget *widget = new command_widget (oct_qobj, this);
+
+        connect (this, &terminal_dock_widget::settings_changed,
+                 widget, &command_widget::notice_settings);
+
+        connect (this, &terminal_dock_widget::update_prompt_signal,
+                 widget, &command_widget::update_prompt);
+
+        connect (this, &terminal_dock_widget::interpreter_output_signal,
+                 widget, &command_widget::insert_interpreter_output);
+
+        m_terminal = widget;
+      }
     else
-      m_terminal = QTerminal::create (oct_qobj, this);
+      {
+        QTerminal *widget = QTerminal::create (oct_qobj, this);
+
+        connect (this, &terminal_dock_widget::settings_changed,
+                 widget, &QTerminal::notice_settings);
+
+        // Connect the visibility signal to the terminal for
+        // dis-/enabling timers.
+        connect (this, &terminal_dock_widget::visibilityChanged,
+                 widget, &QTerminal::handle_visibility_changed);
+
+        m_terminal = widget;
+      }
 
     m_terminal->setObjectName ("OctaveTerminal");
     m_terminal->setFocusPolicy (Qt::StrongFocus);
@@ -91,6 +116,9 @@ namespace octave
       win_y = max_y;
 
     setGeometry (0, 0, win_x, win_y);
+
+    if (! p)
+      make_window ();
   }
 
   bool terminal_dock_widget::has_focus (void) const

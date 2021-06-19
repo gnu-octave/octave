@@ -619,6 +619,21 @@ Open the variable @var{name} in the graphical Variable Editor.
 %!error <NAME must be a string> openvar (1:10)
 */
 
+DEFMETHOD (__event_manager_show_terminal_window__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_show_terminal_window__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  std::string file;
+
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.show_terminal_window ();
+
+  return ovl ();
+}
+
 DEFMETHOD (__event_manager_show_documentation__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __event_manager_show_documentation__ (@var{filename})

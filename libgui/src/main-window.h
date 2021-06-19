@@ -43,9 +43,6 @@
 #include "external-editor-interface.h"
 #include "file-editor-interface.h"
 
-// QTerminal includes
-#include "QTerminal.h"
-
 // Own includes
 #include "dialog.h"
 #include "documentation-dock-widget.h"
@@ -312,7 +309,6 @@ namespace octave
     //! Dock widgets.
     //!@{
     QPointer<terminal_dock_widget> m_command_window;
-
     QPointer<history_dock_widget> m_history_window;
     QPointer<files_dock_widget> m_file_browser_window;
     QPointer<documentation_dock_widget> m_doc_browser_window;

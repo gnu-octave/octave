@@ -148,6 +148,8 @@ namespace octave
 
     virtual void apply_preferences (void) { }
 
+    virtual void show_terminal_window (void) { }
+
     virtual bool show_documentation (const std::string& /*file*/)
     {
       return false;
@@ -452,6 +454,12 @@ namespace octave
         }
       else
         return false;
+    }
+
+    void show_terminal_window (void)
+    {
+      if (enabled ())
+        instance->show_terminal_window ();
     }
 
     bool show_documentation (const std::string& file)

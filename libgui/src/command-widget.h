@@ -61,13 +61,15 @@ namespace octave
 
   public slots:
 
+    void update_prompt (const QString& prompt);
+
+    void insert_interpreter_output (const QString& msg);
+
     void notice_settings (const gui_settings *settings);
 
   protected slots:
 
     void accept_input_line (void);
-
-    void insert_interpreter_output (const QString& msg);
 
   private:
 

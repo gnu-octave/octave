@@ -278,7 +278,7 @@ endfunction
 %!   sphere ();
 %!   camorbit (hax, -20, -30)
 %!   y = campos (hax);
-%!   assert (x, y, -eps);
+%!   assert (x, y, -2*eps);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

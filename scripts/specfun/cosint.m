@@ -184,7 +184,7 @@ endfunction
 ## tests against maple
 %!assert (cosint (1), 0.337403922900968135, -2*eps)
 %!assert (cosint (-1), 0.337403922900968135 + 3.14159265358979324*I, -2*eps)
-%!assert (cosint (pi), 0.0736679120464254860, -2e-15)
+%!assert (cosint (pi), 0.0736679120464254860, -3e-15)
 %!assert (cosint (-pi), 0.0736679120464254860 + 3.14159265358979324*I, -2*eps)
 %!assert (cosint (300), -0.00333219991859211178, -2*eps)
 %!assert (cosint (1e4), -0.0000305519167244852127, -2*eps)

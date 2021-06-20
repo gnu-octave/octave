@@ -8,6 +8,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
       matrix:
         # For available GitHub-hosted runners, see:
         # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
@@ -59,7 +62,11 @@ jobs:
 
       - name: setup ccache
         # setup the github cache used to maintain the ccache from one job to the next
-        uses: actions/cache@v2
+        # uses: actions/cache@v2
+        # The original action doesn't upload on error. Use this fork instead.
+        # FIXME: Consider reverting to the original action when it allows uploading on error.
+        #        See: https://github.com/actions/cache/issues/92
+        uses: pat-s/always-upload-cache@v2
         with:
           path: /home/runner/.ccache
           key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
@@ -120,7 +127,14 @@ jobs:
         continue-on-error: true
         env:
           XDG_RUNTIME_DIR: "/home/runner/tmp"
-        run: xvfb-run -a make -C ./.build check V=1
+        run: xvfb-run -a make -C ./.build check V=1 | tee ./test-suite.log
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run:  |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
+          echo No unknown failing tests.
 
 
   macos:

@@ -322,12 +322,18 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! ival = 1.31695789692481635;
 %! obs = asin ([2, 2-i*eps, 2+i*eps]);
 %! exp = [rval - ival*i, rval - ival*i, rval + ival*i];
-%! assert (obs, exp, 2*eps);
+%! if (ismac ())
+%!   ## Math libraries on macOS seem to implement asin with less accuracy.
+%!   tol = 6*eps;
+%! else
+%!   tol = 2*eps;
+%! endif
+%! assert (obs, exp, tol);
 %! obs = asin ([-2, -2-i*eps, -2+i*eps]);
 %! exp = [-rval + ival*i, -rval - ival*i, -rval + ival*i];
-%! assert (obs, exp, 2*eps);
-%! assert (asin ([2 0]),  [rval - ival*i, 0], 2*eps);
-%! assert (asin ([2 0i]), [rval - ival*i, 0], 2*eps);
+%! assert (obs, exp, tol);
+%! assert (asin ([2 0]),  [rval - ival*i, 0], tol);
+%! assert (asin ([2 0i]), [rval - ival*i, 0], tol);
 
 ## Test large magnitude arguments (bug #45507)
 ## Test fails with older versions of libm, solution is to upgrade.

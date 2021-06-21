@@ -300,12 +300,12 @@ endfunction
 %!assert <*42394> (isempty (hist (rand (10,2), 0:5, 1)), false)
 %!assert <*42394> (isempty (hist (rand (10,2), 0:5, [1 1])), false)
 %!test <*60783>
-%! [nn, xx] = hist (rand (10, 3), 5, 1);
-%! assert (sum (nn, 1), [1 1 1], 2*eps);
-%! [nn, xx] = hist (rand (10, 3), 5, [1 2 3]);
-%! assert (sum (nn, 1), [1 2 3], 2*eps);
-%! [nn, xx] = hist (rand (10, 3), 5, [1 2 3]');
-%! assert (sum (nn, 1), [1 2 3], 2*eps);
+%! [nn, xx] = hist (reshape (1:30, 10, 3), 5, 1);
+%! assert (sum (nn, 1), [1 1 1]);
+%! [nn, xx] = hist (reshape (1:30, 10, 3), 5, [1 2 3]);
+%! assert (sum (nn, 1), [1 2 3]);
+%! [nn, xx] = hist (reshape (1:30, 10, 3), 5, [1 2 3]');
+%! assert (sum (nn, 1), [1 2 3]);
 
 %!test <*47707>
 %! y = [1  9  2  2  9  3  8  9  1  7  1  1  3  2  4  4  8  2  1  9  4  1 ...
